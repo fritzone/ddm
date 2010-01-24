@@ -3,6 +3,9 @@
 
 #include "AbstractCodepageSupplier.h"
 
+/**
+ * Class supplying code pages for MySQL
+ */
 class MySQLCodepageSupplier : public AbstractCodepageSupplier
 {
 public:
