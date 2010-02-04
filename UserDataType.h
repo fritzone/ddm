@@ -2,6 +2,7 @@
 #define USERDATATYPE_H
 
 #include <QMetaType>
+#include <QtXml>
 
 #include "DataType.h"
 
@@ -76,6 +77,26 @@ public:
     {
         return miscStuff;
     }
+
+    /**
+     * Serializes this UserDataType to be saved in the final XML.
+     * Modifies the doc object, this is why it's passed in by reference.
+     * XML will look like:
+     * <DataType>
+     *  <Name> NAME </Name>
+     *  <Type> DT_TYPE </Type> -- From the DataType.h
+     *  <SQLType> SQL_TYPE </SQLType>
+     *  <Size> SIZE </Size>
+     *  <DefaultValue> DEFAULT_VALUE </DefaultValue>
+     *  <CodePage> CODEPAGE </CodePage>
+     *  <Unsigned> YES/NO </Unsigned>
+     *  <Values>                -- In case this is ENUM or SET or anything
+     *   <Value> VALUE </Value>
+     *  </Values>
+     * </DataType>
+     */
+    void serialize(QDomDocument& doc, QDomElement& parent) const;
+
 
 private:
 

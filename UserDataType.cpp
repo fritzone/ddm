@@ -16,3 +16,16 @@ QString UserDataType::sizeAsString() const
 {
     return size>0?size:QString("N/A");
 }
+
+void UserDataType::serialize(QDomDocument& doc, QDomElement& parent) const
+{
+    QDomElement dtElement = doc.createElement("DataType");      // will hold the data in this element
+    QDomElement nameElement = doc.createElement("Name");
+    QDomElement nameNode = doc.createTextNode(name);
+    nameElement.appendChild(nameNode);
+
+
+
+    parent.appendChild(dtElement);
+
+}
