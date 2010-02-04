@@ -1,9 +1,9 @@
-#include "MainWindow.h"
+#include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "MainWindowButtonDialog.h"
-#include "NewProjectDialog.h"
-#include "DatatypesListForm.h"
-#include "NewDataTypeForm.h"
+#include "mainwindowbuttondialog.h"
+#include "newprojectdialog.h"
+#include "datatypeslistform.h"
+#include "newdatatypeform.h"
 #include "UserDataType.h"
 #include "Project.h"
 #include "DatabaseEngine.h"
@@ -56,6 +56,7 @@ void MainWindow::onNewProject()
         dock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
         dock->setFeatures(QDockWidget::AllDockWidgetFeatures);
         dock->setFloating(false);
+        dock->setMinimumSize(300,0);
 
         // set up the tree
         projectTree = new QTreeWidget();

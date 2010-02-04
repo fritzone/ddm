@@ -1,4 +1,4 @@
-#include "MainWindowButtonDialog.h"
+#include "mainwindowbuttondialog.h"
 #include "ui_mainwindowbuttondialog.h"
 #include "mainwindow.h"
 

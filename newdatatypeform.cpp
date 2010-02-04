@@ -1,6 +1,6 @@
-#include "NewDatatypeForm.h"
+#include "newdatatypeform.h"
 #include "ui_newdatatypeform.h"
-#include "MainWindow.h"
+#include "mainwindow.h"
 #include "DatabaseEngine.h"
 #include "DataType.h"
 #include "AbstractDTSupplier.h"
@@ -10,7 +10,7 @@
 #include "strings.h"
 #include "Configuration.h"
 
-#include <QMessageBox.h>
+#include <QMessageBox>
 #include <QListWidget>
 #include <QListWidgetItem>
 

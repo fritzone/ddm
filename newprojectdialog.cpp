@@ -1,8 +1,8 @@
-#include "NewProjectDialog.h"
+#include "newprojectdialog.h"
 #include "ui_newprojectdialog.h"
 #include "DatabaseEngine.h"
 
-#include <QMessageBox.h>
+#include <QMessageBox>
 
 NewProjectDialog::NewProjectDialog(QWidget *parent) :
     QDialog(parent),

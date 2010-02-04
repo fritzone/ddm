@@ -6,9 +6,15 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
-    <height>600</height>
+    <width>132</width>
+    <height>102</height>
    </rect>
+  </property>
+  <property name="font">
+   <font>
+    <family>Sans Serif</family>
+    <pointsize>12</pointsize>
+   </font>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
@@ -19,8 +25,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>800</width>
-     <height>21</height>
+     <width>132</width>
+     <height>27</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -46,7 +52,7 @@
   <widget class="QStatusBar" name="statusBar"/>
   <action name="action_New">
    <property name="icon">
-    <iconset>
+    <iconset resource="dbm.qrc">
      <normaloff>:/images/actions/images/actions/filenew.png</normaloff>:/images/actions/images/actions/filenew.png</iconset>
    </property>
    <property name="text">
@@ -55,7 +61,7 @@
   </action>
   <action name="action_Save">
    <property name="icon">
-    <iconset>
+    <iconset resource="dbm.qrc">
      <normaloff>:/images/actions/images/actions/filesave.png</normaloff>:/images/actions/images/actions/filesave.png</iconset>
    </property>
    <property name="text">
@@ -70,7 +76,7 @@
   </action>
   <action name="action_NewDataType">
    <property name="icon">
-    <iconset>
+    <iconset resource="dbm.qrc">
      <normaloff>:/images/actions/images/actions/add.png</normaloff>:/images/actions/images/actions/add.png</iconset>
    </property>
    <property name="text">
@@ -85,7 +91,9 @@
   </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <resources/>
+ <resources>
+  <include location="dbm.qrc"/>
+ </resources>
  <connections>
   <connection>
    <sender>action_New</sender>

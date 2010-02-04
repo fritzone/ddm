@@ -35,7 +35,7 @@ public:
     // returns the icon
     const QIcon& getIcon() const
     {
-        assert(icon);
+        //assert(icon);
         return *icon;
     }
 

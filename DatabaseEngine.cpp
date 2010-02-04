@@ -1,7 +1,7 @@
 #include "DatabaseEngine.h"
 #include "AbstractCodepageSupplier.h"
 #include "MySQLDTSupplier.h"
-#include "MySQLCodepageSupplier.h"
+#include "MysqlCodepageSupplier.h"
 
 QMap<QString, AbstractDTSupplier*> DatabaseEngine::dtsuppliers;
 QMap<QString, AbstractCodepageSupplier*> DatabaseEngine::cpsuppliers;
