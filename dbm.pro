@@ -23,7 +23,8 @@ SOURCES += main.cpp \
     MySQLCodepageSupplier.cpp \
     Codepage.cpp \
     DatabaseEngine.cpp \
-    Configuration.cpp
+    Configuration.cpp \
+    Table.cpp
 HEADERS += MainWindow.h \
     MainWindowButtonDialog.h \
     NewProjectDialog.h \
@@ -41,7 +42,8 @@ HEADERS += MainWindow.h \
     MySQLCodepageSupplier.h \
     Codepage.h \
     DatabaseEngine.h \
-    Configuration.h
+    Configuration.h \
+    Table.h
 FORMS += mainwindow.ui \
     mainwindowbuttondialog.ui \
     newprojectdialog.ui \

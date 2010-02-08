@@ -17,6 +17,7 @@ INPUT(
 ./release\Codepage.o
 ./release\DatabaseEngine.o
 ./release\Configuration.o
+./release\Table.o
 ./release\moc_MainWindow.o
 ./release\moc_MainWindowButtonDialog.o
 ./release\moc_NewProjectDialog.o

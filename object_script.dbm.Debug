@@ -17,6 +17,7 @@ INPUT(
 ./debug\Codepage.o
 ./debug\DatabaseEngine.o
 ./debug\Configuration.o
+./debug\Table.o
 ./debug\moc_MainWindow.o
 ./debug\moc_MainWindowButtonDialog.o
 ./debug\moc_NewProjectDialog.o
