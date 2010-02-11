@@ -9,6 +9,7 @@
 #include "DatabaseEngine.h"
 #include "Version.h"
 #include "AbstractDTSupplier.h"
+#include "NewTableForm.h"
 
 #include <QtGui>
 
@@ -26,6 +27,7 @@ MainWindow::MainWindow(QWidget *parent)
     setCentralWidget(btndlg);
 
     this->ui->mainToolBar->actions().at(3)->setVisible(false);
+    this->ui->mainToolBar->actions().at(4)->setVisible(false);
 }
 
 MainWindow::~MainWindow()
@@ -37,10 +39,6 @@ void MainWindow::createOtherDialogs()
 {
 
 }
-
-
-
-
 
 void MainWindow::onNewProject()
 {
@@ -87,6 +85,10 @@ void MainWindow::onNewProject()
         projectTree->expandAll();
         weHaveProject = true;
 
+        // show all the icons
+        this->ui->mainToolBar->actions().at(3)->setVisible(true);
+        this->ui->mainToolBar->actions().at(4)->setVisible(true);
+
     }
 }
 
@@ -103,8 +105,6 @@ void MainWindow::onProjectTreeClicked()
             DataTypesListForm* dtLst = new DataTypesListForm(this);
             dtLst->feedInDataTypes(getWorkingProject()->getWorkingVersion()->getDataTypes());
             setCentralWidget(dtLst);
-
-            this->ui->mainToolBar->actions().at(3)->setVisible(true);
         }
         else
         if(item == getWorkingProject()->getWorkingVersion()->getTablesItem())
@@ -137,10 +137,20 @@ void MainWindow::onProjectTreeClicked()
     }
 }
 
+void MainWindow::onNewTable()
+{
+    NewTableForm* frm = new NewTableForm(getWorkingProject()->getEngine(),     this);
+    //frm->focusOnName();
+    frm->setMainWindow(this);
+    projectTree->setCurrentItem(0);
+    setCentralWidget(frm);
+
+}
+
+
 void MainWindow::onNewDataType()
 {
-    NewDataTypeForm* frm = new NewDataTypeForm(getWorkingProject()->getEngine(),
-                                               this);
+    NewDataTypeForm* frm = new NewDataTypeForm(getWorkingProject()->getEngine(), this);
     frm->focusOnName();
     frm->setMainWindow(this);
     projectTree->setCurrentItem(0);

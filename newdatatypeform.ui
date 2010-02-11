@@ -40,7 +40,7 @@
         <x>0</x>
         <y>0</y>
         <width>382</width>
-        <height>504</height>
+        <height>537</height>
        </rect>
       </property>
       <attribute name="label">
@@ -236,7 +236,7 @@ p, li { white-space: pre-wrap; }
         <x>0</x>
         <y>0</y>
         <width>382</width>
-        <height>510</height>
+        <height>471</height>
        </rect>
       </property>
       <attribute name="label">
@@ -303,16 +303,12 @@ p, li { white-space: pre-wrap; }
     </widget>
    </item>
    <item row="1" column="0">
-    <widget class="QPushButton" name="btnReset">
-     <property name="text">
-      <string>Reset</string>
+    <widget class="QDialogButtonBox" name="buttons">
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Reset|QDialogButtonBox::Save</set>
      </property>
-    </widget>
-   </item>
-   <item row="2" column="0">
-    <widget class="QPushButton" name="btnSave">
-     <property name="text">
-      <string>Save</string>
+     <property name="centerButtons">
+      <bool>true</bool>
      </property>
     </widget>
    </item>
@@ -322,38 +318,6 @@ p, li { white-space: pre-wrap; }
   <include location="dbm.qrc"/>
  </resources>
  <connections>
-  <connection>
-   <sender>btnSave</sender>
-   <signal>clicked()</signal>
-   <receiver>NewDataTypeForm</receiver>
-   <slot>onSave()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>365</x>
-     <y>471</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>199</x>
-     <y>249</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>btnReset</sender>
-   <signal>clicked()</signal>
-   <receiver>NewDataTypeForm</receiver>
-   <slot>onReset()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>305</x>
-     <y>471</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>199</x>
-     <y>249</y>
-    </hint>
-   </hints>
-  </connection>
   <connection>
    <sender>cmbDTType</sender>
    <signal>currentIndexChanged(QString)</signal>
@@ -434,6 +398,22 @@ p, li { white-space: pre-wrap; }
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>buttons</sender>
+   <signal>clicked(QAbstractButton*)</signal>
+   <receiver>NewDataTypeForm</receiver>
+   <slot>buttonClicked(QAbstractButton*)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>199</x>
+     <y>627</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>199</x>
+     <y>324</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>basicDTselected(QString)</slot>
@@ -443,5 +423,6 @@ p, li { white-space: pre-wrap; }
   <slot>onAddMiscValue()</slot>
   <slot>onRemoveSelectedMiscValue()</slot>
   <slot>onCharacterSetCmbChanged(int)</slot>
+  <slot>buttonClicked(QAbstractButton*)</slot>
  </slots>
 </ui>

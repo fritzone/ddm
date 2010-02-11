@@ -45,6 +45,9 @@ public slots:
     // called when the user activated on the new data type action
     void onNewDataType();
 
+    // called when the user activated a new table action
+    void onNewTable();
+
 private:
     Ui::MainWindow *ui;
 

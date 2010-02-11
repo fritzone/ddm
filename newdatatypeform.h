@@ -2,6 +2,7 @@
 #define NEWDATATYPEFORM_H
 
 #include <QtGui/QWidget>
+#include <QAbstractButton>
 
 class DatabaseEngine;
 
@@ -69,6 +70,9 @@ public slots:
 
     /// when the user changed the character set
     void onCharacterSetCmbChanged(int);
+
+    /// when the user clicked Reset/Save in the button box
+    void buttonClicked(QAbstractButton*);
 
 protected:
     void changeEvent(QEvent *e);
