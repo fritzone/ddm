@@ -83,7 +83,6 @@ void NewDataTypeForm::basicDTselected(QString newSelection)
 
     hideSpecialComponents();
 
-
     DataType::DT_TYPE type = DataType::getDT_TYPE(newSelection);
     QList<DataType> types = AbstractDTSupplier::getDTList(m_dbEngine->getDTSupplier(), type);
 
@@ -109,6 +108,9 @@ void NewDataTypeForm::hideSpecialComponents()
     m_ui->txtEnumCurrentValue->hide();
     m_ui->btnAddEnumValue->hide();
     m_ui->btnRemoveEnumValue->hide();
+
+    m_ui->txtDefaultValue->show();
+    m_ui->cmbEnumItems->hide();
 }
 
 void NewDataTypeForm::resetContent()
@@ -250,6 +252,8 @@ void NewDataTypeForm::onSqlTypeSelected(QString selectedItem)
 {
     int size = m_dbEngine->getDTSupplier()->maximumSize(selectedItem);
 
+    m_ui->txtDefaultValue->show();
+    m_ui->cmbEnumItems->hide();
     // enum/set?
     if(size == -1)
     {
@@ -258,6 +262,8 @@ void NewDataTypeForm::onSqlTypeSelected(QString selectedItem)
         m_ui->txtEnumCurrentValue->show();
         m_ui->btnAddEnumValue->show();
         m_ui->btnRemoveEnumValue->show();
+        m_ui->cmbEnumItems->show();
+        m_ui->txtDefaultValue->hide();
     }
     else
     if(size == 0)// size not supported
@@ -299,14 +305,20 @@ void NewDataTypeForm::onAddMiscValue()
 {
     QListWidgetItem* newMiscValue = new QListWidgetItem(m_ui->txtEnumCurrentValue->text());
     m_ui->lstEnumValues->addItem(newMiscValue);
+    m_ui->cmbEnumItems->addItem(m_ui->txtEnumCurrentValue->text());
+
     m_ui->txtEnumCurrentValue->clear();
+
 }
 
 void NewDataTypeForm::onRemoveSelectedMiscValue()
 {
     if(m_ui->lstEnumValues->selectedItems().size() > 0)
     {
-        m_ui->lstEnumValues->takeItem (m_ui->lstEnumValues->currentRow());
+        int x = m_ui->lstEnumValues->currentRow();
+        QString s = m_ui->lstEnumValues->item(x)->text();
+        m_ui->lstEnumValues->takeItem (x);
+        m_ui->cmbEnumItems->removeItem(x);
     }
 }
 

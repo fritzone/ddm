@@ -24,7 +24,9 @@ SOURCES += main.cpp \
     Codepage.cpp \
     DatabaseEngine.cpp \
     Configuration.cpp \
-    Table.cpp
+    Table.cpp \
+    TablesListForm.cpp \
+    NewTableForm.cpp
 HEADERS += MainWindow.h \
     MainWindowButtonDialog.h \
     NewProjectDialog.h \
@@ -43,10 +45,15 @@ HEADERS += MainWindow.h \
     Codepage.h \
     DatabaseEngine.h \
     Configuration.h \
-    Table.h
+    Table.h \
+    TablesListForm.h \
+    NewTableForm.h \
+    IconFactory.h
 FORMS += mainwindow.ui \
     mainwindowbuttondialog.ui \
     newprojectdialog.ui \
     newdatatypeform.ui \
-    datatypeslistform.ui
+    datatypeslistform.ui \
+    TablesListForm.ui \
+    NewTableForm.ui
 RESOURCES += dbm.qrc

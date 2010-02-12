@@ -139,8 +139,8 @@ void MainWindow::onProjectTreeClicked()
 
 void MainWindow::onNewTable()
 {
-    NewTableForm* frm = new NewTableForm(getWorkingProject()->getEngine(),     this);
-    //frm->focusOnName();
+    NewTableForm* frm = new NewTableForm(getWorkingProject()->getEngine(), getWorkingProject(), this);
+    frm->focusOnName();
     frm->setMainWindow(this);
     projectTree->setCurrentItem(0);
     setCentralWidget(frm);

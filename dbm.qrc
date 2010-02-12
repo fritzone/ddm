@@ -1,5 +1,5 @@
 <RCC>
-    <qresource prefix="/images/actions" >
+    <qresource prefix="/images/actions">
         <file>images/actions/filenew.png</file>
         <file>images/actions/filesave.png</file>
         <file>images/big/bigfilenew.png</file>
@@ -64,5 +64,9 @@
         <file>images/small/datatypes_spatial.PNG</file>
         <file>images/small/add.png</file>
         <file>images/small/remove.png</file>
+        <file>images/actions/table.png</file>
+        <file>images/small/key.png</file>
+        <file>images/small/up.png</file>
+        <file>images/small/down.png</file>
     </qresource>
 </RCC>

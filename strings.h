@@ -20,4 +20,7 @@ static const QString strDtBoolIcon = ":/images/actions/images/small/datatypes_bo
 static const QString strDtBlobIcon = ":/images/actions/images/small/datatypes_blob.PNG";
 static const QString strDtSpatialIcon = ":/images/actions/images/small/datatypes_spatial.PNG";
 
+static const QString strKeyIcon = ":/images/actions/images/small/key.png";
+
+
 #endif // STRINGS_H
