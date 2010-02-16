@@ -12,6 +12,25 @@ UserDataType::UserDataType(const QString& name, const QString& typeString,
 {
 }
 
+UserDataType& UserDataType::operator = (const UserDataType& other)
+{
+    if(this != &other)
+    {
+        name = other.name;
+        type = other.type;
+        sqlType = other.sqlType;
+        size = other.size;
+        defaultValue = other.defaultValue;
+        miscStuff = other.miscStuff;
+        codePage = other.codePage;
+        unsignedDT = other.unsignedDT;
+        icon = other.icon;
+    }
+
+    return *this;
+}
+
+
 QString UserDataType::sizeAsString() const
 {
     return size>0?size:QString("N/A");

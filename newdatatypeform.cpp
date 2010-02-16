@@ -151,7 +151,7 @@ void NewDataTypeForm::onSave()
                                    m_ui->txtWidth->text(),
                                    m_ui->txtDefaultValue->text(),
                                    cp, mv,
-                                   m_ui->chkUnsigned->checkState() == Qt::Checked))
+                                   m_ui->chkUnsigned->checkState() == Qt::Checked, m_udt))
         {
             resetContent();
         }

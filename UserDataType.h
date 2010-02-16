@@ -5,11 +5,12 @@
 #include <QtXml>
 
 #include "DataType.h"
+#include "TreeItem.h"
 
 /**
  * Class representing a data type
  */
-class UserDataType : public DataType
+class UserDataType : public DataType, virtual public TreeItem
 {
 public:
 
@@ -32,6 +33,7 @@ public:
                  const QString& _defaultValue, const QString& _cp,
                  const QStringList& _mvs, bool unsi);
 
+    UserDataType& operator = (const UserDataType& other);
 
     // returns the icon
     const QIcon& getIcon() const
@@ -104,7 +106,7 @@ private:
     QString sqlType;
 
     // the icon of this data type
-    const QIcon* const icon;
+    const QIcon* icon;
 
     // the size of this Data Type
     QString size;

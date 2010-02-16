@@ -18,6 +18,8 @@ NewTableForm::NewTableForm(DatabaseEngine* db, Project* prj, QWidget *parent) :
     {
         m_ui->cmbNewColumnType->addItem(dts[i]->getIcon(), dts[i]->getName());
     }
+
+    m_ui->lstColumns->header()->adjustSize();
 }
 
 NewTableForm::~NewTableForm()

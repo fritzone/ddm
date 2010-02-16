@@ -27,6 +27,13 @@ public:
         return dataTypes;
     }
 
+    /**
+     * Checks if this version has a data type with the specified name
+     */
+    bool hasDataType(const QString& name) const;
+
+    UserDataType* getDataType(const QString& name);
+
 private:
 
     QVector<UserDataType*> dataTypes;

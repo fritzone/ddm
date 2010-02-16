@@ -48,7 +48,8 @@ HEADERS += MainWindow.h \
     Table.h \
     TablesListForm.h \
     NewTableForm.h \
-    IconFactory.h
+    IconFactory.h \
+    TreeItem.h
 FORMS += mainwindow.ui \
     mainwindowbuttondialog.ui \
     newprojectdialog.ui \

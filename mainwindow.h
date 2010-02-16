@@ -10,6 +10,7 @@ class MainWindowButtonDialog;
 class DataTypesListForm;
 class NewDataTypeForm;
 class AbstractDTSupplier;
+class UserDataType;
 
 namespace Ui
 {
@@ -30,7 +31,7 @@ public:
     bool onSaveNewDataType(const QString& name, const QString& type,
                              const QString& sqlType, const QString& size,
                              const QString& defaultValue, const QString& cp,
-                             const QStringList& mvs, bool unsi);
+                             const QStringList& mvs, bool unsi, UserDataType* pudt);
 
     Project* getWorkingProject();
 

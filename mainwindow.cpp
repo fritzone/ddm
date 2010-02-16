@@ -124,16 +124,17 @@ void MainWindow::onProjectTreeClicked()
             {   // the user clicked on a Data Type item
                 QVariant qv = item->data(0, Qt::UserRole);
                 UserDataType* udt = static_cast<UserDataType*>(qv.data());
-                NewDataTypeForm* frm = new NewDataTypeForm(getWorkingProject()->getEngine(),  this);
+                if(getWorkingProject()->getWorkingVersion()->hasDataType(udt->getName()))
+                {
+                    udt = getWorkingProject()->getWorkingVersion()->getDataType(udt->getName());
+                }
+                NewDataTypeForm* frm = new NewDataTypeForm(getWorkingProject()->getEngine(), this);
                 frm->focusOnName();
                 frm->setMainWindow(this);
                 frm->setDataType(udt);
                 setCentralWidget(frm);
             }
-
         }
-
-
     }
 }
 
@@ -158,41 +159,46 @@ void MainWindow::onNewDataType()
 
 }
 
-bool MainWindow::onSaveNewDataType(const QString& name, const QString& type,
-                             const QString& sqlType, const QString& size,
-                             const QString& defaultValue, const QString& cp,
-                             const QStringList& mvs, bool unsi)
+bool MainWindow::onSaveNewDataType(const QString& name, const QString& type, const QString& sqlType, const QString& size, const QString& defaultValue, const QString& cp,
+                             const QStringList& mvs, bool unsi, UserDataType* pudt)
 {
     if(name.length() == 0 || type.length() == 0 || sqlType.length() == 0)
     {
-        QMessageBox::critical (this, tr("Error"),
-                               tr("Please specify all the required data"),
-                               QMessageBox::Ok);
+        QMessageBox::critical (this, tr("Error"), tr("Please specify all the required data"), QMessageBox::Ok);
         return false;
     }
 
-    UserDataType* udt = new UserDataType(name, type, sqlType,
-                                         size, defaultValue, cp, mvs, unsi);
+
+    UserDataType* udt = new UserDataType(name, type, sqlType, size, defaultValue, cp, mvs, unsi);
     if(! getWorkingProject()->getEngine()->getDTSupplier()->isValid(udt))
     {
-        QMessageBox::critical (this, tr("Error"),
-                               tr("This datatype requires a length"),
-                               QMessageBox::Ok);
+        QMessageBox::critical (this, tr("Error"), tr("This datatype requires a length"), QMessageBox::Ok);
         return false;
     }
 
-    QTreeWidgetItem* newDTItem = new QTreeWidgetItem(
-            getWorkingProject()->getWorkingVersion()->getDtsItem()
-            , QStringList(name)) ;
+    // check if this is Saving an existing data type or updating a new one
+    if(pudt)    // saving
+    {
+        *pudt = *udt;
+        pudt->getLocation()->setIcon(0, pudt->getIcon());
+        pudt->getLocation()->setText(0, name);
+    }
+    else        // new stuff
+    {
+        QTreeWidgetItem* newDTItem = new QTreeWidgetItem(getWorkingProject()->getWorkingVersion()->getDtsItem(), QStringList(name)) ;
 
-    QVariant var;
-    var.setValue(*udt);
-    newDTItem->setData(0, Qt::UserRole, var);
-    newDTItem->setIcon(0, udt->getIcon());
-    projectTree->insertTopLevelItem(0,newDTItem);
-    getWorkingProject()->getWorkingVersion()->addNewDataType(udt);
+        QVariant var;
+        var.setValue(*udt);
+        newDTItem->setData(0, Qt::UserRole, var);
+        newDTItem->setIcon(0, udt->getIcon());
+        projectTree->insertTopLevelItem(0,newDTItem);
+        getWorkingProject()->getWorkingVersion()->addNewDataType(udt);
 
-    return true;
+        udt->setLocation(newDTItem);
+
+        return true;
+
+    }
 }
 
 Project* MainWindow::getWorkingProject()
