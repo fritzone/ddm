@@ -26,7 +26,8 @@ SOURCES += main.cpp \
     Configuration.cpp \
     Table.cpp \
     TablesListForm.cpp \
-    NewTableForm.cpp
+    NewTableForm.cpp \
+    Column.cpp
 HEADERS += MainWindow.h \
     MainWindowButtonDialog.h \
     NewProjectDialog.h \
@@ -49,7 +50,8 @@ HEADERS += MainWindow.h \
     TablesListForm.h \
     NewTableForm.h \
     IconFactory.h \
-    TreeItem.h
+    TreeItem.h \
+    Column.h
 FORMS += mainwindow.ui \
     mainwindowbuttondialog.ui \
     newprojectdialog.ui \

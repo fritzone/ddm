@@ -108,8 +108,11 @@ p, li { white-space: pre-wrap; }
                  <string/>
                 </property>
                 <property name="icon">
-                 <iconset resource="dbm.qrc">
+                 <iconset>
                   <normaloff>:/images/actions/images/small/up.png</normaloff>:/images/actions/images/small/up.png</iconset>
+                </property>
+                <property name="popupMode">
+                 <enum>QToolButton::DelayedPopup</enum>
                 </property>
                </widget>
               </item>
@@ -119,8 +122,11 @@ p, li { white-space: pre-wrap; }
                  <string/>
                 </property>
                 <property name="icon">
-                 <iconset resource="dbm.qrc">
+                 <iconset>
                   <normaloff>:/images/actions/images/small/down.png</normaloff>:/images/actions/images/small/down.png</iconset>
+                </property>
+                <property name="popupMode">
+                 <enum>QToolButton::DelayedPopup</enum>
                 </property>
                </widget>
               </item>
@@ -130,7 +136,7 @@ p, li { white-space: pre-wrap; }
                  <string/>
                 </property>
                 <property name="icon">
-                 <iconset resource="dbm.qrc">
+                 <iconset>
                   <normaloff>:/images/actions/images/small/remove.png</normaloff>:/images/actions/images/small/remove.png</iconset>
                 </property>
                </widget>
@@ -207,7 +213,7 @@ p, li { white-space: pre-wrap; }
                  <string>...</string>
                 </property>
                 <property name="icon">
-                 <iconset resource="dbm.qrc">
+                 <iconset>
                   <normaloff>:/images/actions/images/small/add.png</normaloff>:/images/actions/images/small/add.png</iconset>
                 </property>
                </widget>
@@ -329,15 +335,13 @@ p, li { white-space: pre-wrap; }
    </item>
   </layout>
  </widget>
- <resources>
-  <include location="dbm.qrc"/>
- </resources>
+ <resources/>
  <connections>
   <connection>
    <sender>btnRemove</sender>
    <signal>clicked()</signal>
    <receiver>NewTableForm</receiver>
-   <slot>onAddColumn()</slot>
+   <slot>onDeleteColumn()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>49</x>
@@ -365,8 +369,77 @@ p, li { white-space: pre-wrap; }
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>btnDown</sender>
+   <signal>clicked()</signal>
+   <receiver>NewTableForm</receiver>
+   <slot>onMoveColumnDown()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>356</x>
+     <y>192</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>199</x>
+     <y>289</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnUp</sender>
+   <signal>clicked()</signal>
+   <receiver>NewTableForm</receiver>
+   <slot>onMoveColumnUp()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>356</x>
+     <y>139</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>199</x>
+     <y>289</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>lstColumns</sender>
+   <signal>currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)</signal>
+   <receiver>NewTableForm</receiver>
+   <slot>onItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>185</x>
+     <y>192</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>199</x>
+     <y>289</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>lstColumns</sender>
+   <signal>itemClicked(QTreeWidgetItem*,int)</signal>
+   <receiver>NewTableForm</receiver>
+   <slot>onItemSelected(QTreeWidgetItem*,int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>185</x>
+     <y>192</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>199</x>
+     <y>289</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>onAddColumn()</slot>
+  <slot>onDeleteColumn()</slot>
+  <slot>onMoveColumnDown()</slot>
+  <slot>onMoveColumnUp()</slot>
+  <slot>onItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)</slot>
+  <slot>onItemSelected(QTreeWidgetItem*,int)</slot>
  </slots>
 </ui>

@@ -2,6 +2,7 @@
 #define NEWTABLEFORM_H
 
 #include <QWidget>
+#include <QTreeWidgetItem>
 
 namespace Ui {
     class NewTableForm;
@@ -10,6 +11,8 @@ namespace Ui {
 class MainWindow;
 class DatabaseEngine;
 class Project;
+class Table;
+class Column;
 
 class NewTableForm : public QWidget {
     Q_OBJECT
@@ -22,7 +25,11 @@ public:
 public slots:
 
     void onAddColumn();
-
+    void onDeleteColumn();
+    void onMoveColumnDown();
+    void onMoveColumnUp();
+    void onItemChanged(QTreeWidgetItem*,QTreeWidgetItem*);
+    void onItemSelected(QTreeWidgetItem*, int);
 protected:
     void changeEvent(QEvent *e);
 
@@ -31,6 +38,7 @@ private:
     MainWindow* m_mw;
     DatabaseEngine* m_dbEngine;
     Project* m_project;
+    Table* m_table;
 };
 
 #endif // NEWTABLEFORM_H

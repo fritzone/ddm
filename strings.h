@@ -21,6 +21,7 @@ static const QString strDtBlobIcon = ":/images/actions/images/small/datatypes_bl
 static const QString strDtSpatialIcon = ":/images/actions/images/small/datatypes_spatial.PNG";
 
 static const QString strKeyIcon = ":/images/actions/images/small/key.png";
-
+static const QString strSaveIcon = ":/images/actions/images/actions/filesave.png";
+static const QString strApplyIcon = ":/images/actions/images/small/apply.png";
 
 #endif // STRINGS_H

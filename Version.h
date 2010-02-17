@@ -34,6 +34,8 @@ public:
 
     UserDataType* getDataType(const QString& name);
 
+    int getDataTypeIndex(const QString& name);
+
 private:
 
     QVector<UserDataType*> dataTypes;

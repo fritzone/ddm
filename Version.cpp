@@ -36,5 +36,17 @@ UserDataType* Version::getDataType(const QString& name)
             return const_cast<UserDataType*>(dataTypes.at(i));  // yeah, this sucks
         }
     }
-    return false;
+    return 0;
+}
+
+int Version::getDataTypeIndex(const QString& name)
+{
+    for(int i=0; i<dataTypes.size(); i++)
+    {
+        if(dataTypes.at(i)->getName() == name)
+        {
+            return i;
+        }
+    }
+    return -1;
 }

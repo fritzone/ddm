@@ -54,7 +54,7 @@ void MainWindow::onNewProject()
         dock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
         dock->setFeatures(QDockWidget::AllDockWidgetFeatures);
         dock->setFloating(false);
-        dock->setMinimumSize(300,0);
+        dock->setMinimumSize(300, 640);
 
         // set up the tree
         projectTree = new QTreeWidget();
@@ -182,18 +182,29 @@ bool MainWindow::onSaveNewDataType(const QString& name, const QString& type, con
         *pudt = *udt;
         pudt->getLocation()->setIcon(0, pudt->getIcon());
         pudt->getLocation()->setText(0, name);
+
+        // updating the "data" of the tree item
+        QVariant var;
+        var.setValue(*udt);
+        pudt->getLocation()->setData(0, Qt::UserRole, var);
+
     }
     else        // new stuff
     {
+        // create the tree entry
         QTreeWidgetItem* newDTItem = new QTreeWidgetItem(getWorkingProject()->getWorkingVersion()->getDtsItem(), QStringList(name)) ;
 
         QVariant var;
         var.setValue(*udt);
         newDTItem->setData(0, Qt::UserRole, var);
+        // set the icon, add to the tree
         newDTItem->setIcon(0, udt->getIcon());
         projectTree->insertTopLevelItem(0,newDTItem);
+
+        // add to the project itself
         getWorkingProject()->getWorkingVersion()->addNewDataType(udt);
 
+        // set the link to the tree
         udt->setLocation(newDTItem);
 
         return true;
