@@ -29,7 +29,7 @@ void Table::moveColumnUp(int c)
     }
 }
 
-const Column* Table::getColumn(int c)
+Column* Table::getColumn(int c)
 {
     return m_columns[c];
 }

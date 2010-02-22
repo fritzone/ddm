@@ -15,7 +15,7 @@ public:
     void addColumn(Column* column);
     void moveColumnDown(int c);
     void moveColumnUp(int c);
-    const Column* getColumn(int c);
+    Column* getColumn(int c);
 private:
 
     QVector<Column*> m_columns;

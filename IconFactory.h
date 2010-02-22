@@ -29,6 +29,19 @@ public:
         static const QIcon apply(strApplyIcon);
         return apply;
     }
+
+    static const QIcon& getAddIcon()
+    {
+        static const QIcon icon(strAddIcon);
+        return icon;
+    }
+
+    static const QIcon& getEmptyIcon()
+    {
+        static const QIcon icon(strEmptyIcon);
+        return icon;
+    }
+
 };
 
 #endif // ICONFACTORY_H

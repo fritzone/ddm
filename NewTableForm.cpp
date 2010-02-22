@@ -8,7 +8,10 @@
 #include "Column.h"
 #include "Table.h"
 
-NewTableForm::NewTableForm(DatabaseEngine* db, Project* prj, QWidget *parent) : QWidget(parent), m_ui(new Ui::NewTableForm), m_dbEngine(db), m_project(prj), m_table(new Table())
+#include <QMessageBox>
+
+NewTableForm::NewTableForm(DatabaseEngine* db, Project* prj, QWidget *parent) : QWidget(parent), m_ui(new Ui::NewTableForm),
+    m_dbEngine(db), m_project(prj), m_table(new Table()), m_currentColumn(0)
 {
     m_ui->setupUi(this);
 
@@ -19,6 +22,7 @@ NewTableForm::NewTableForm(DatabaseEngine* db, Project* prj, QWidget *parent) : 
     }
 
     m_ui->lstColumns->header()->resizeSection(0,50);
+    m_ui->cmbNewColumnType->setCurrentIndex(-1);
 }
 
 NewTableForm::~NewTableForm()
@@ -50,24 +54,58 @@ void NewTableForm::setMainWindow(MainWindow *mw)
 
 void NewTableForm::onAddColumn()
 {
-    // create the tree widget item
-    QStringList a("");
-    a.append(m_ui->txtNewColumnName->text());
-    a.append(m_ui->cmbNewColumnType->currentText());
-
-    int idx = m_ui->cmbNewColumnType->currentIndex();
-
-    QTreeWidgetItem* item = new QTreeWidgetItem((QTreeWidget*)0, a);
-    if(m_ui->chkPrimary->checkState())
+    if(m_ui->cmbNewColumnType->currentIndex() == -1)
     {
-        item->setIcon(0, IconFactory::getKeyIcon());
+        QMessageBox::critical (this, tr("Error"), tr("Please select a type"), QMessageBox::Ok);
+        return;
     }
-    item->setIcon(2, m_project->getWorkingVersion()->getDataTypes()[idx]->getIcon());
-    m_ui->lstColumns->addTopLevelItem(item);
 
-    // now create the Column object for it
-    Column* col = new Column(m_ui->txtNewColumnName->text(),  m_project->getWorkingVersion()->getDataType(m_ui->cmbNewColumnType->currentText()), m_ui->chkPrimary->checkState()) ;
-    m_table->addColumn(col);
+    if(m_currentColumn)     // we are working on a column
+    {
+        m_currentColumn->setName(m_ui->txtNewColumnName->text());
+        m_currentColumn->setPk(m_ui->chkPrimary->checkState());
+        m_currentColumn->setDataType(m_project->getWorkingVersion()->getDataType(m_ui->cmbNewColumnType->currentText()));
+
+        m_currentColumn->getLocation()->setText(1, m_currentColumn->getName());
+        if(m_ui->chkPrimary->checkState())
+        {
+            m_currentColumn->getLocation()->setIcon(0, IconFactory::getKeyIcon());
+        }
+        else
+        {
+            m_currentColumn->getLocation()->setIcon(0, IconFactory::getEmptyIcon());
+        }
+        m_currentColumn->getLocation()->setIcon(2, m_currentColumn->getDataType()->getIcon());
+        m_currentColumn->getLocation()->setText(2, m_currentColumn->getDataType()->getName());
+        m_currentColumn = 0;
+        m_ui->btnAdd->setIcon(IconFactory::getAddIcon());
+    }
+    else                    // we are not working on a column, but adding a new one
+    {
+        // create the tree widget item
+        QStringList a("");
+        a.append(m_ui->txtNewColumnName->text());
+        a.append(m_ui->cmbNewColumnType->currentText());
+
+        int idx = m_ui->cmbNewColumnType->currentIndex();
+
+        QTreeWidgetItem* item = new QTreeWidgetItem((QTreeWidget*)0, a);
+        if(m_ui->chkPrimary->checkState())
+        {
+            item->setIcon(0, IconFactory::getKeyIcon());
+        }
+        item->setIcon(2, m_project->getWorkingVersion()->getDataTypes()[idx]->getIcon());
+        m_ui->lstColumns->addTopLevelItem(item);
+
+        // now create the Column object for it
+        Column* col = new Column(m_ui->txtNewColumnName->text(),  m_project->getWorkingVersion()->getDataType(m_ui->cmbNewColumnType->currentText()), m_ui->chkPrimary->checkState()) ;
+        m_table->addColumn(col);
+
+        col->setLocation(item);
+    }
+
+    m_ui->txtNewColumnName->setText("");
+    m_ui->cmbNewColumnType->setCurrentIndex(-1);
 
 }
 
@@ -118,10 +156,11 @@ void NewTableForm::onItemChanged(QTreeWidgetItem* current, QTreeWidgetItem* prev
 void NewTableForm::onItemSelected(QTreeWidgetItem* current, int column)
 {
     QModelIndex x = m_ui->lstColumns->currentIndex();
+    m_currentColumn = m_table->getColumn(x.row());
 
-    m_ui->txtNewColumnName->setText(m_table->getColumn(x.row())->getName());
-    m_ui->cmbNewColumnType->setCurrentIndex(m_project->getWorkingVersion()->getDataTypeIndex(m_table->getColumn(x.row())->getdataType()->getName()));
-    m_ui->chkPrimary->setChecked(m_table->getColumn(x.row())->isPk());
+    m_ui->txtNewColumnName->setText(m_currentColumn->getName());
+    m_ui->cmbNewColumnType->setCurrentIndex(m_project->getWorkingVersion()->getDataTypeIndex(m_currentColumn->getDataType()->getName()));
+    m_ui->chkPrimary->setChecked(m_currentColumn->isPk());
 
     m_ui->btnAdd->setIcon(IconFactory::getApplyIcon());
 }

@@ -30,15 +30,22 @@ public slots:
     void onMoveColumnUp();
     void onItemChanged(QTreeWidgetItem*,QTreeWidgetItem*);
     void onItemSelected(QTreeWidgetItem*, int);
+
 protected:
     void changeEvent(QEvent *e);
 
 private:
     Ui::NewTableForm *m_ui;
+    // the main window
     MainWindow* m_mw;
+    // the DB engine
     DatabaseEngine* m_dbEngine;
+    // the project we are working on
     Project* m_project;
+    // the table we are working on
     Table* m_table;
+    // the column which is currenty selected (NULL if none)
+    Column* m_currentColumn;
 };
 
 #endif // NEWTABLEFORM_H

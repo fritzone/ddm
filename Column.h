@@ -1,6 +1,8 @@
 #ifndef COLUMN_H
 #define COLUMN_H
 
+#include "TreeItem.h"
+
 #include <QString>
 
 class UserDataType;
@@ -8,7 +10,7 @@ class UserDataType;
 /**
  * This class holds the necessary data to define a column
  */
-class Column
+class Column : virtual public TreeItem
 {
 public:
     Column(const QString& name, const UserDataType* type, bool pk);
@@ -18,7 +20,7 @@ public:
         return m_name;
     }
 
-    const UserDataType* getdataType() const
+    const UserDataType* getDataType() const
     {
         return m_type;
     }
@@ -26,6 +28,21 @@ public:
     bool isPk() const
     {
         return m_pk;
+    }
+
+    void setName(const QString& name)
+    {
+        m_name = name;
+    }
+
+    void setDataType(const UserDataType* dt)
+    {
+        m_type = dt;
+    }
+
+    void setPk(bool pk)
+    {
+        m_pk = pk;
     }
 
 private:

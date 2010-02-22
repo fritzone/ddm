@@ -23,5 +23,7 @@ static const QString strDtSpatialIcon = ":/images/actions/images/small/datatypes
 static const QString strKeyIcon = ":/images/actions/images/small/key.png";
 static const QString strSaveIcon = ":/images/actions/images/actions/filesave.png";
 static const QString strApplyIcon = ":/images/actions/images/small/apply.png";
+static const QString strAddIcon = ":/images/actions/images/small/add.png";
+static const QString strEmptyIcon = ":/images/actions/images/actions/empty_icon.png";
 
 #endif // STRINGS_H

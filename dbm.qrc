@@ -69,5 +69,6 @@
         <file>images/small/up.png</file>
         <file>images/small/down.png</file>
         <file>images/small/apply.png</file>
+        <file>images/actions/empty_icon.png</file>
     </qresource>
 </RCC>

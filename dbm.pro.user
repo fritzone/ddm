@@ -231,8 +231,6 @@
     <value type="QString">USERPROFILE=C:\Users\Ferenc</value>
     <value type="QString">VS90COMNTOOLS=C:\Program Files\Microsoft Visual Studio 9.0\Common7\Tools\</value>
     <value type="QString">WINDIR=C:\Windows</value>
-    <value type="QString">__APPCOMPAT_MANIFEST=</value>
-    <value type="QString">__COMPAT_LAYER=VistaSetUp </value>
    </valuelist>
    <value key="abstractProcess.IgnoreReturnValue" type="bool">true</value>
    <valuelist key="abstractProcess.arguments" type="QVariantList">
