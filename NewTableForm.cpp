@@ -7,8 +7,14 @@
 #include "UserDataType.h"
 #include "Column.h"
 #include "Table.h"
+#include "mainwindow.h"
 
 #include <QMessageBox>
+
+// the positions of various items in the columns view, used for icon retrieval mostly
+const int COL_POS_PK = 0;
+const int COL_POS_NM = 1;
+const int COL_POS_DT = 2;
 
 NewTableForm::NewTableForm(DatabaseEngine* db, Project* prj, QWidget *parent) : QWidget(parent), m_ui(new Ui::NewTableForm),
     m_dbEngine(db), m_project(prj), m_table(new Table()), m_currentColumn(0)
@@ -21,7 +27,7 @@ NewTableForm::NewTableForm(DatabaseEngine* db, Project* prj, QWidget *parent) : 
         m_ui->cmbNewColumnType->addItem(dts[i]->getIcon(), dts[i]->getName());
     }
 
-    m_ui->lstColumns->header()->resizeSection(0,50);
+    m_ui->lstColumns->header()->resizeSection(0, 50);
     m_ui->cmbNewColumnType->setCurrentIndex(-1);
 }
 
@@ -69,14 +75,14 @@ void NewTableForm::onAddColumn()
         m_currentColumn->getLocation()->setText(1, m_currentColumn->getName());
         if(m_ui->chkPrimary->checkState())
         {
-            m_currentColumn->getLocation()->setIcon(0, IconFactory::getKeyIcon());
+            m_currentColumn->getLocation()->setIcon(COL_POS_PK, IconFactory::getKeyIcon());
         }
         else
         {
-            m_currentColumn->getLocation()->setIcon(0, IconFactory::getEmptyIcon());
+            m_currentColumn->getLocation()->setIcon(COL_POS_PK, IconFactory::getEmptyIcon());
         }
-        m_currentColumn->getLocation()->setIcon(2, m_currentColumn->getDataType()->getIcon());
-        m_currentColumn->getLocation()->setText(2, m_currentColumn->getDataType()->getName());
+        m_currentColumn->getLocation()->setIcon(COL_POS_DT, m_currentColumn->getDataType()->getIcon());
+        m_currentColumn->getLocation()->setText(COL_POS_DT, m_currentColumn->getDataType()->getName());
         m_currentColumn = 0;
         m_ui->btnAdd->setIcon(IconFactory::getAddIcon());
     }
@@ -92,9 +98,9 @@ void NewTableForm::onAddColumn()
         QTreeWidgetItem* item = new QTreeWidgetItem((QTreeWidget*)0, a);
         if(m_ui->chkPrimary->checkState())
         {
-            item->setIcon(0, IconFactory::getKeyIcon());
+            item->setIcon(COL_POS_PK, IconFactory::getKeyIcon());
         }
-        item->setIcon(2, m_project->getWorkingVersion()->getDataTypes()[idx]->getIcon());
+        item->setIcon(COL_POS_DT, m_project->getWorkingVersion()->getDataTypes()[idx]->getIcon());
         m_ui->lstColumns->addTopLevelItem(item);
 
         // now create the Column object for it
@@ -106,6 +112,8 @@ void NewTableForm::onAddColumn()
 
     m_ui->txtNewColumnName->setText("");
     m_ui->cmbNewColumnType->setCurrentIndex(-1);
+
+    populateColumnsForIndices();
 
 }
 
@@ -165,3 +173,62 @@ void NewTableForm::onItemSelected(QTreeWidgetItem* current, int column)
     m_ui->btnAdd->setIcon(IconFactory::getApplyIcon());
 }
 
+void NewTableForm::populateColumnsForIndices()
+{
+    m_ui->lstAvailableColumnsForIndex->clear();
+    for(int i=0; i<m_table->getColumns().size(); i++)
+    {
+        QListWidgetItem* qlwi = new QListWidgetItem(m_table->getColumns()[i]->getName(), m_ui->lstAvailableColumnsForIndex);
+        qlwi->setIcon(m_table->getColumns()[i]->getLocation()->icon(COL_POS_DT));
+    }
+}
+
+void NewTableForm::onButtonsClicked(QAbstractButton* btn)
+{
+    if(btn == m_ui->buttons->buttons().at(0)) // Seems very strange, but works like this... Save is the First, after Reset
+    {
+        onSave();
+    }
+    else
+    {
+        onReset();
+    }
+}
+
+void NewTableForm::onSave()
+{
+    if(m_ui->txtTableName->text().length() == 0)
+    {
+        QMessageBox::critical (this, tr("Error"), tr("Please specify at least the name of the table!"), QMessageBox::Ok);
+        return;
+    }
+
+    m_table->setName(m_ui->txtTableName->text());
+
+    if(m_project->getWorkingVersion()->hasTable(m_table))
+    {
+        // update the data of the table, and the tree view
+    }
+    else
+    {
+        m_mw->onSaveNewTable(m_table);
+        // create a new tree entry, add to the tree, update the m_table's tree item.
+    }
+
+}
+
+void NewTableForm::onReset()
+{
+}
+
+void NewTableForm::onMoveColumnToRight()
+{
+    QListWidgetItem* itm = m_ui->lstAvailableColumnsForIndex->currentItem();
+    m_ui->lstAvailableColumnsForIndex->removeItemWidget(itm);
+    m_ui->lstSelectedColumnsForIndex->addItem(itm);
+}
+
+void NewTableForm::onMoveColumnToLeft()
+{
+
+}

@@ -14,6 +14,8 @@ public:
 
     TreeItem() : m_location(0){}
 
+    virtual ~TreeItem() {}
+
     void setLocation(QTreeWidgetItem* loc)
     {
         this->m_location = loc;

@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include <QTreeWidgetItem>
+#include <QAbstractButton>
 
 namespace Ui {
     class NewTableForm;
@@ -24,15 +25,27 @@ public:
 
 public slots:
 
+    // on the columns page
     void onAddColumn();
     void onDeleteColumn();
     void onMoveColumnDown();
     void onMoveColumnUp();
-    void onItemChanged(QTreeWidgetItem*,QTreeWidgetItem*);
     void onItemSelected(QTreeWidgetItem*, int);
+    // on the index page
+    void onMoveColumnToRight();
+    void onMoveColumnToLeft();
+    // main page
+    void onItemChanged(QTreeWidgetItem*,QTreeWidgetItem*); // this is not used
+    void onButtonsClicked(QAbstractButton*);
 
 protected:
     void changeEvent(QEvent *e);
+
+private:
+
+    void populateColumnsForIndices();
+    void onSave();
+    void onReset();
 
 private:
     Ui::NewTableForm *m_ui;

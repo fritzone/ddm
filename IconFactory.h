@@ -42,6 +42,12 @@ public:
         return icon;
     }
 
+    static const QIcon& getTablesIcon()
+    {
+        static const QIcon icon(strTablesIcon);
+        return icon;
+    }
+
 };
 
 #endif // ICONFACTORY_H

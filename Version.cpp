@@ -11,15 +11,15 @@ Version::~Version()
 
 void Version::addNewDataType(UserDataType* dt)
 {
-    dataTypes.append(dt);
+    m_dataTypes.append(dt);
 }
 
 
 bool Version::hasDataType(const QString& name) const
 {
-    for(int i=0; i<dataTypes.size(); i++)
+    for(int i=0; i < m_dataTypes.size(); i++)
     {
-        if(dataTypes.at(i)->getName() == name)
+        if(m_dataTypes.at(i)->getName() == name)
         {
             return true;
         }
@@ -29,11 +29,11 @@ bool Version::hasDataType(const QString& name) const
 
 UserDataType* Version::getDataType(const QString& name)
 {
-    for(int i=0; i<dataTypes.size(); i++)
+    for(int i=0; i< m_dataTypes.size(); i++)
     {
-        if(dataTypes.at(i)->getName() == name)
+        if(m_dataTypes.at(i)->getName() == name)
         {
-            return const_cast<UserDataType*>(dataTypes.at(i));  // yeah, this sucks
+            return const_cast<UserDataType*>(m_dataTypes.at(i));  // yeah, this sucks
         }
     }
     return 0;
@@ -41,12 +41,22 @@ UserDataType* Version::getDataType(const QString& name)
 
 int Version::getDataTypeIndex(const QString& name)
 {
-    for(int i=0; i<dataTypes.size(); i++)
+    for(int i=0; i < m_dataTypes.size(); i++)
     {
-        if(dataTypes.at(i)->getName() == name)
+        if(m_dataTypes.at(i)->getName() == name)
         {
             return i;
         }
     }
     return -1;
+}
+
+void Version::addTable(Table *t)
+{
+    m_tables.append(t);
+}
+
+bool Version::hasTable(Table *t)
+{
+    return m_tables.indexOf(t) >= 0;
 }

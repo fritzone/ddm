@@ -10,7 +10,7 @@ SOURCES += main.cpp \
     MainWindow.cpp \
     MainWindowButtonDialog.cpp \
     NewProjectDialog.cpp \
-    NewDatatypeForm.cpp \
+    newdatatypeform.cpp \
     DatatypesListForm.cpp \
     AbstractDTSupplier.cpp \
     DataType.cpp \

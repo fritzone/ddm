@@ -10,6 +10,8 @@
 #include "Version.h"
 #include "AbstractDTSupplier.h"
 #include "NewTableForm.h"
+#include "Table.h"
+#include "IconFactory.h"
 
 #include <QtGui>
 
@@ -159,6 +161,28 @@ void MainWindow::onNewDataType()
 
 }
 
+bool MainWindow::onSaveNewTable(Table* tbl)
+{
+    // create the tree entry
+    QTreeWidgetItem* newTblsItem = new QTreeWidgetItem(getWorkingProject()->getWorkingVersion()->getTablesItem(), QStringList(tbl->getName())) ;
+
+    QVariant var;
+    var.setValue(*tbl);
+    newTblsItem->setData(0, Qt::UserRole, var);
+    // set the icon, add to the tree
+    newTblsItem->setIcon(0, IconFactory::getTablesIcon());
+    projectTree->insertTopLevelItem(0, newTblsItem);
+
+    // add to the project itself
+    getWorkingProject()->getWorkingVersion()->addTable(tbl);
+
+    // set the link to the tree
+    tbl->setLocation(newTblsItem);
+
+    return true;
+
+}
+
 bool MainWindow::onSaveNewDataType(const QString& name, const QString& type, const QString& sqlType, const QString& size, const QString& defaultValue, const QString& cp,
                              const QStringList& mvs, bool unsi, UserDataType* pudt)
 {
@@ -210,6 +234,8 @@ bool MainWindow::onSaveNewDataType(const QString& name, const QString& type, con
         return true;
 
     }
+
+    return false;
 }
 
 Project* MainWindow::getWorkingProject()

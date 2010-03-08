@@ -25,5 +25,6 @@ static const QString strSaveIcon = ":/images/actions/images/actions/filesave.png
 static const QString strApplyIcon = ":/images/actions/images/small/apply.png";
 static const QString strAddIcon = ":/images/actions/images/small/add.png";
 static const QString strEmptyIcon = ":/images/actions/images/actions/empty_icon.png";
+static const QString strTablesIcon = ":/images/actions/images/actions/table.png";
 
 #endif // STRINGS_H

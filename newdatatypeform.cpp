@@ -136,9 +136,7 @@ void NewDataTypeForm::onSave()
 {
     if(m_mw != 0)
     {
-        QString cp = m_ui->cmbCharacterSets->currentIndex()>0?
-                     m_dbEngine->getCodepageSupplier()->getCodepages()
-                     [m_ui->cmbCharacterSets->currentIndex()]->getName():"";
+        QString cp = m_ui->cmbCharacterSets->currentIndex() > 0 ? m_dbEngine->getCodepageSupplier()->getCodepages()[m_ui->cmbCharacterSets->currentIndex()]->getName() : "";
         QStringList mv;
         for(int i=0; i<m_ui->lstEnumValues->count(); i++)
         {

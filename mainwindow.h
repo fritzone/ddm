@@ -11,6 +11,7 @@ class DataTypesListForm;
 class NewDataTypeForm;
 class AbstractDTSupplier;
 class UserDataType;
+class Table;
 
 namespace Ui
 {
@@ -34,6 +35,11 @@ public:
                              const QStringList& mvs, bool unsi, UserDataType* pudt);
 
     Project* getWorkingProject();
+
+    /**
+     * This methid gets called when a new table is saved
+     */
+    bool onSaveNewTable(Table* tbl);
 
 public slots:
 

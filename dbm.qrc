@@ -70,5 +70,7 @@
         <file>images/small/down.png</file>
         <file>images/small/apply.png</file>
         <file>images/actions/empty_icon.png</file>
+        <file>images/small/right.png</file>
+        <file>images/small/left.png</file>
     </qresource>
 </RCC>
