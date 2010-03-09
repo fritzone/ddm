@@ -29,6 +29,7 @@ NewTableForm::NewTableForm(DatabaseEngine* db, Project* prj, QWidget *parent) : 
 
     m_ui->lstColumns->header()->resizeSection(0, 50);
     m_ui->cmbNewColumnType->setCurrentIndex(-1);
+    m_ui->btnAdvanced->hide();
 }
 
 NewTableForm::~NewTableForm()
@@ -178,8 +179,22 @@ void NewTableForm::populateColumnsForIndices()
     m_ui->lstAvailableColumnsForIndex->clear();
     for(int i=0; i<m_table->getColumns().size(); i++)
     {
-        QListWidgetItem* qlwi = new QListWidgetItem(m_table->getColumns()[i]->getName(), m_ui->lstAvailableColumnsForIndex);
-        qlwi->setIcon(m_table->getColumns()[i]->getLocation()->icon(COL_POS_DT));
+        if(m_ui->lstSelectedColumnsForIndex->count() == 0)
+        {
+            QListWidgetItem* qlwi = new QListWidgetItem(m_table->getColumns()[i]->getName(), m_ui->lstAvailableColumnsForIndex);
+            qlwi->setIcon(m_table->getColumns()[i]->getLocation()->icon(COL_POS_DT));
+        }
+        else
+        {
+            for(int j = 0; j<m_ui->lstSelectedColumnsForIndex->count(); j++)
+            {
+                if(m_ui->lstSelectedColumnsForIndex->item(j)->text() != m_table->getColumns()[i]->getName())
+                {
+                    QListWidgetItem* qlwi = new QListWidgetItem(m_table->getColumns()[i]->getName(), m_ui->lstAvailableColumnsForIndex);
+                    qlwi->setIcon(m_table->getColumns()[i]->getLocation()->icon(COL_POS_DT));
+                }
+            }
+        }
     }
 }
 
@@ -223,12 +238,17 @@ void NewTableForm::onReset()
 
 void NewTableForm::onMoveColumnToRight()
 {
-    QListWidgetItem* itm = m_ui->lstAvailableColumnsForIndex->currentItem();
-    m_ui->lstAvailableColumnsForIndex->removeItemWidget(itm);
+
+    if(!m_ui->lstAvailableColumnsForIndex->currentItem()) return;
+    QListWidgetItem* itm = new QListWidgetItem(*m_ui->lstAvailableColumnsForIndex->currentItem());
+    delete m_ui->lstAvailableColumnsForIndex->currentItem();
     m_ui->lstSelectedColumnsForIndex->addItem(itm);
 }
 
 void NewTableForm::onMoveColumnToLeft()
 {
-
+    if(!m_ui->lstSelectedColumnsForIndex->currentItem()) return;
+    QListWidgetItem* itm = new QListWidgetItem(*m_ui->lstSelectedColumnsForIndex->currentItem());
+    delete m_ui->lstSelectedColumnsForIndex->currentItem();
+    populateColumnsForIndices();
 }
