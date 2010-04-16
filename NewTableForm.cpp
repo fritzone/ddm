@@ -6,8 +6,10 @@
 #include "Version.h"
 #include "UserDataType.h"
 #include "Column.h"
+#include "Index.h"
 #include "Table.h"
 #include "mainwindow.h"
+#include "AbstractIndextypeProvider.h"
 
 #include <QMessageBox>
 
@@ -29,6 +31,16 @@ NewTableForm::NewTableForm(DatabaseEngine* db, Project* prj, QWidget *parent) : 
 
     m_ui->lstColumns->header()->resizeSection(0, 50);
     m_ui->cmbNewColumnType->setCurrentIndex(-1);
+
+    // fill in the index types combo box
+    const QStringList& indexTypes = db->getIndextypeProvider()->getIndexTypes();
+    QStringList::const_iterator it = indexTypes.constBegin();
+    while(it != indexTypes.constEnd())
+    {
+        m_ui->cmbIndexType->addItem(*it);
+        it ++;
+    }
+
     m_ui->btnAdvanced->hide();
 }
 
@@ -65,6 +77,21 @@ void NewTableForm::onAddColumn()
     {
         QMessageBox::critical (this, tr("Error"), tr("Please select a type"), QMessageBox::Ok);
         return;
+    }
+
+    if(m_ui->txtNewColumnName->text().length() == 0)
+    {
+        QMessageBox::critical (this, tr("Error"), tr("Please specify a name"), QMessageBox::Ok);
+        return;
+    }
+
+    for(int i=0; i < m_table->getColumns().size(); i++)
+    {
+        if(m_table->getColumn(i)->getName() == m_ui->txtNewColumnName->text())
+        {
+            QMessageBox::critical (this, tr("Error"), tr("Please use a unique name for each of the columns"), QMessageBox::Ok);
+            return;
+        }
     }
 
     if(m_currentColumn)     // we are working on a column
@@ -118,6 +145,14 @@ void NewTableForm::onAddColumn()
 
 }
 
+void NewTableForm::onCancelColumnEditing()
+{
+    m_ui->txtNewColumnName->clear();
+    m_ui->cmbNewColumnType->setCurrentIndex(-1);
+    m_currentColumn = 0;
+    m_ui->btnAdd->setIcon(IconFactory::getAddIcon());
+}
+
 void NewTableForm::onDeleteColumn()
 {
     delete m_ui->lstColumns->currentItem();
@@ -162,6 +197,9 @@ void NewTableForm::onItemChanged(QTreeWidgetItem* current, QTreeWidgetItem* prev
 
 }
 
+/**
+ * Called when a column is selected.
+ */
 void NewTableForm::onItemSelected(QTreeWidgetItem* current, int column)
 {
     QModelIndex x = m_ui->lstColumns->currentIndex();
@@ -172,7 +210,9 @@ void NewTableForm::onItemSelected(QTreeWidgetItem* current, int column)
     m_ui->chkPrimary->setChecked(m_currentColumn->isPk());
 
     m_ui->btnAdd->setIcon(IconFactory::getApplyIcon());
+    m_ui->btnCancelColumnEditing->show();
 }
+
 
 void NewTableForm::populateColumnsForIndices()
 {
@@ -238,7 +278,6 @@ void NewTableForm::onReset()
 
 void NewTableForm::onMoveColumnToRight()
 {
-
     if(!m_ui->lstAvailableColumnsForIndex->currentItem()) return;
     QListWidgetItem* itm = new QListWidgetItem(*m_ui->lstAvailableColumnsForIndex->currentItem());
     delete m_ui->lstAvailableColumnsForIndex->currentItem();
@@ -251,4 +290,28 @@ void NewTableForm::onMoveColumnToLeft()
     QListWidgetItem* itm = new QListWidgetItem(*m_ui->lstSelectedColumnsForIndex->currentItem());
     delete m_ui->lstSelectedColumnsForIndex->currentItem();
     populateColumnsForIndices();
+}
+
+void NewTableForm::onAddIndex()
+{
+    // create the index object and populate with requried columns
+    Index* index = new Index(m_ui->txtNewIndexName->text(), m_ui->cmbIndexType->currentText());
+    for(int i = 0; i< m_ui->lstSelectedColumnsForIndex->count(); i++)
+    {
+        index->addColumn(m_table->getColumn(m_ui->lstSelectedColumnsForIndex->item(i)->text()));
+    }
+    m_table->addIndex(index);
+
+    // create the listview entry
+    QStringList a("");
+    a.append(m_ui->txtNewIndexName->text());
+    a.append(m_ui->cmbIndexType->currentText());
+
+    QTreeWidgetItem* item = new QTreeWidgetItem((QTreeWidget*)0, a);
+    m_ui->lstIndices->addTopLevelItem(item);
+
+    // now reset the index gui
+    m_ui->lstSelectedColumnsForIndex->clear();
+    populateColumnsForIndices();
+    m_ui->cmbIndexType->setCurrentIndex(0);
 }

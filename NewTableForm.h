@@ -30,10 +30,12 @@ public slots:
     void onDeleteColumn();
     void onMoveColumnDown();
     void onMoveColumnUp();
-    void onItemSelected(QTreeWidgetItem*, int);
+    void onCancelColumnEditing();
+    void onItemSelected(QTreeWidgetItem*, int);             // when a column gets selected... sorry for bad naming
     // on the index page
     void onMoveColumnToRight();
     void onMoveColumnToLeft();
+    void onAddIndex();
     // main page
     void onItemChanged(QTreeWidgetItem*,QTreeWidgetItem*); // this is not used
     void onButtonsClicked(QAbstractButton*);
@@ -43,6 +45,10 @@ protected:
 
 private:
 
+    /**
+     * Populates the two listboxes on the index screen in a way that they are containing all the columns,
+     * part of them in the left, part of them in the right, depending how the user assigned them to an index
+     */
     void populateColumnsForIndices();
     void onSave();
     void onReset();

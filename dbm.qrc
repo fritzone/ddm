@@ -72,5 +72,6 @@
         <file>images/actions/empty_icon.png</file>
         <file>images/small/right.png</file>
         <file>images/small/left.png</file>
+        <file>images/small/cancel.png</file>
     </qresource>
 </RCC>

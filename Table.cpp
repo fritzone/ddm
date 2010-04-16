@@ -1,12 +1,18 @@
 #include "Table.h"
+#include "Column.h"
 
-Table::Table() : m_columns()
+Table::Table() : m_columns(), m_indices()
 {
 }
 
 void Table::addColumn(Column *column)
 {
     m_columns.append(column);
+}
+
+void Table::addIndex(Index *index)
+{
+    m_indices.append(index);
 }
 
 void Table::moveColumnDown(int c)
@@ -32,4 +38,15 @@ void Table::moveColumnUp(int c)
 Column* Table::getColumn(int c)
 {
     return m_columns[c];
+}
+
+const Column* Table::getColumn(const QString& name)
+{
+    for(int i = 0; i<m_columns.size(); i++)
+    {
+        if(m_columns[i]->getName() == name)
+        {
+            return m_columns[i];
+        }
+    }
 }

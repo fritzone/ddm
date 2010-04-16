@@ -7,6 +7,7 @@
 #include <QVector>
 
 class Column;
+class Index;
 
 /**
  * The table class holds a database table defined by the user. It must be derived from the TreeItem since a table can be placed in
@@ -21,15 +22,18 @@ public:
      */
     Table();
 
+    /**
+     * copy constructor
+     */
     Table(const Table& other) : m_name(other.m_name), m_columns(other.m_columns)
     {}
-
-
 
     /**
      * Adds a new column to the table
      */
     void addColumn(Column* column);
+
+    void addIndex(Index* index);
 
     /**
      * Moves the column down in the column list (right in the vector)
@@ -45,6 +49,11 @@ public:
      * Returns the given column for read/write access
      */
     Column* getColumn(int c);
+
+    /**
+     * Returns the column with the given name for read only access
+     */
+    const Column* getColumn(const QString& name);
 
     /**
      * Returns the columns of this table for a read-only access
@@ -70,6 +79,9 @@ private:
 
     // the columns that this table is having
     QVector<Column*> m_columns;
+
+    // the indices of the table
+    QVector<Index*> m_indices;
 
 };
 

@@ -6,6 +6,7 @@
 
 class AbstractDTSupplier;
 class AbstractCodepageSupplier;
+class AbstractIndextypeProvider;
 
 /**
  * This class is a kind of "wrapper" for the other classes that all deal
@@ -31,6 +32,11 @@ public:
      */
     AbstractCodepageSupplier* getCodepageSupplier() const;
 
+    /**
+     * Returns the index types provided by this Database Engine
+     */
+    AbstractIndextypeProvider* getIndextypeProvider() const;
+
 private:
 
     // the database on which this is running
@@ -41,6 +47,9 @@ private:
 
     // map of the Codepage suppliers supported
     static QMap<QString, AbstractCodepageSupplier*> cpsuppliers;
+
+    // map of the index type providers
+    static QMap<QString, AbstractIndextypeProvider*> indextypeProviders;
 
     // whether the map above was initialized or not
     static bool genericInit;

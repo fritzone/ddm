@@ -27,7 +27,9 @@ SOURCES += main.cpp \
     Table.cpp \
     TablesListForm.cpp \
     NewTableForm.cpp \
-    Column.cpp
+    Column.cpp \
+    AbstractIndextypeProvider.cpp \
+    Index.cpp
 HEADERS += MainWindow.h \
     MainWindowButtonDialog.h \
     NewProjectDialog.h \
@@ -51,7 +53,10 @@ HEADERS += MainWindow.h \
     NewTableForm.h \
     IconFactory.h \
     TreeItem.h \
-    Column.h
+    Column.h \
+    AbstractIndextypeProvider.h \
+    MySQLIndextypeProvider.h \
+    Index.h
 FORMS += mainwindow.ui \
     mainwindowbuttondialog.ui \
     newprojectdialog.ui \
