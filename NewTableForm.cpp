@@ -296,16 +296,23 @@ void NewTableForm::onAddIndex()
 {
     // create the index object and populate with requried columns
     Index* index = new Index(m_ui->txtNewIndexName->text(), m_ui->cmbIndexType->currentText());
-    for(int i = 0; i< m_ui->lstSelectedColumnsForIndex->count(); i++)
+    QString columnsAsString = "";
+    int cnt = m_ui->lstSelectedColumnsForIndex->count();
+    for(int i = 0; i< cnt; i++)
     {
         index->addColumn(m_table->getColumn(m_ui->lstSelectedColumnsForIndex->item(i)->text()));
+        columnsAsString += m_ui->lstSelectedColumnsForIndex->item(i)->text();
+        if(i < cnt - 1)
+        {
+            columnsAsString += ", ";
+        }
     }
     m_table->addIndex(index);
 
     // create the listview entry
-    QStringList a("");
-    a.append(m_ui->txtNewIndexName->text());
+    QStringList a(m_ui->txtNewIndexName->text());
     a.append(m_ui->cmbIndexType->currentText());
+    a.append(columnsAsString);
 
     QTreeWidgetItem* item = new QTreeWidgetItem((QTreeWidget*)0, a);
     m_ui->lstIndices->addTopLevelItem(item);
