@@ -315,7 +315,7 @@ p, li { white-space: pre-wrap; }
            </widget>
           </item>
           <item>
-           <widget class="QToolButton" name="btnremoveIndex">
+           <widget class="QToolButton" name="btnRemoveIndex">
             <property name="text">
              <string>...</string>
             </property>
@@ -398,6 +398,32 @@ p, li { white-space: pre-wrap; }
             <item>
              <widget class="QListWidget" name="lstSelectedColumnsForIndex"/>
             </item>
+            <item>
+             <layout class="QVBoxLayout" name="verticalLayout_17">
+              <item>
+               <widget class="QToolButton" name="btnMoveIndexColumnUp">
+                <property name="text">
+                 <string>...</string>
+                </property>
+                <property name="icon">
+                 <iconset resource="dbm.qrc">
+                  <normaloff>:/images/actions/images/small/up.png</normaloff>:/images/actions/images/small/up.png</iconset>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QToolButton" name="btnMoveIndexColumnDown">
+                <property name="text">
+                 <string>...</string>
+                </property>
+                <property name="icon">
+                 <iconset resource="dbm.qrc">
+                  <normaloff>:/images/actions/images/small/down.png</normaloff>:/images/actions/images/small/down.png</iconset>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
            </layout>
           </item>
           <item>
@@ -460,6 +486,9 @@ p, li { white-space: pre-wrap; }
             </item>
             <item>
              <widget class="QToolButton" name="btnCancelIndexEditing">
+              <property name="toolTip">
+               <string>Cancel editing this index, reset the fields</string>
+              </property>
               <property name="text">
                <string/>
               </property>
@@ -471,6 +500,9 @@ p, li { white-space: pre-wrap; }
             </item>
             <item>
              <widget class="QToolButton" name="btnAddIndex">
+              <property name="toolTip">
+               <string>Save this index</string>
+              </property>
               <property name="text">
                <string/>
               </property>
@@ -981,6 +1013,86 @@ p, li { white-space: pre-wrap; }
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>lstIndices</sender>
+   <signal>itemClicked(QTreeWidgetItem*,int)</signal>
+   <receiver>NewTableForm</receiver>
+   <slot>onSelectIndex(QTreeWidgetItem*,int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>230</x>
+     <y>227</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>243</x>
+     <y>386</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnCancelIndexEditing</sender>
+   <signal>clicked()</signal>
+   <receiver>NewTableForm</receiver>
+   <slot>onCancelIndexEditing()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>410</x>
+     <y>602</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>243</x>
+     <y>386</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnRemoveIndex</sender>
+   <signal>clicked()</signal>
+   <receiver>NewTableForm</receiver>
+   <slot>onBtnRemoveIndex()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>445</x>
+     <y>227</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>243</x>
+     <y>386</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnMoveIndexColumnUp</sender>
+   <signal>clicked()</signal>
+   <receiver>NewTableForm</receiver>
+   <slot>onMoveSelectedIndexColumnUp()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>443</x>
+     <y>450</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>243</x>
+     <y>386</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnMoveIndexColumnDown</sender>
+   <signal>clicked()</signal>
+   <receiver>NewTableForm</receiver>
+   <slot>onMoveSelectedIndexColumnDown()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>443</x>
+     <y>524</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>243</x>
+     <y>386</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>onAddColumn()</slot>
@@ -994,5 +1106,10 @@ p, li { white-space: pre-wrap; }
   <slot>onMoveColumnToLeft()</slot>
   <slot>onCancelColumnEditing()</slot>
   <slot>onAddIndex()</slot>
+  <slot>onSelectIndex(QTreeWidgetItem*,int)</slot>
+  <slot>onCancelIndexEditing()</slot>
+  <slot>onBtnRemoveIndex()</slot>
+  <slot>onMoveSelectedIndexColumnUp()</slot>
+  <slot>onMoveSelectedIndexColumnDown()</slot>
  </slots>
 </ui>

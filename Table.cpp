@@ -40,6 +40,11 @@ Column* Table::getColumn(int c)
     return m_columns[c];
 }
 
+Index* Table::getIndex(int c)
+{
+    return m_indices[c];
+}
+
 const Column* Table::getColumn(const QString& name)
 {
     for(int i = 0; i<m_columns.size(); i++)
@@ -48,5 +53,23 @@ const Column* Table::getColumn(const QString& name)
         {
             return m_columns[i];
         }
+    }
+}
+
+void Table::removeIndex(Index* toRemove)
+{
+    int idx = m_indices.indexOf(toRemove);
+    if(idx != -1)
+    {
+        m_indices.remove(idx);
+    }
+}
+
+void Table::removeColumn(Column* toRemove)
+{
+    int idx = m_columns.indexOf(toRemove);
+    if(idx != -1)
+    {
+        m_columns.remove(idx);
     }
 }

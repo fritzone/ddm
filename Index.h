@@ -17,6 +17,19 @@ public:
 
     void addColumn(const Column* column);
 
+    bool hasColumn(const Column*) const;
+
+    const QString& getName() const;
+
+    const QString& getType() const;
+
+    void setName(const QString& name);
+
+    void setType(const QString& type);
+
+    void resetColumns();
+
+
 private:
 
     QString m_name;

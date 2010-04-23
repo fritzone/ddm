@@ -19,7 +19,7 @@ const int COL_POS_NM = 1;
 const int COL_POS_DT = 2;
 
 NewTableForm::NewTableForm(DatabaseEngine* db, Project* prj, QWidget *parent) : QWidget(parent), m_ui(new Ui::NewTableForm),
-    m_dbEngine(db), m_project(prj), m_table(new Table()), m_currentColumn(0)
+    m_dbEngine(db), m_project(prj), m_table(new Table()), m_currentColumn(0), m_currentIndex(0)
 {
     m_ui->setupUi(this);
 
@@ -156,6 +156,9 @@ void NewTableForm::onCancelColumnEditing()
 void NewTableForm::onDeleteColumn()
 {
     delete m_ui->lstColumns->currentItem();
+    onCancelColumnEditing();
+    m_table->removeColumn(m_currentColumn);
+    m_currentColumn = 0;
 }
 
 void NewTableForm::onMoveColumnDown()
@@ -294,31 +297,167 @@ void NewTableForm::onMoveColumnToLeft()
 
 void NewTableForm::onAddIndex()
 {
-    // create the index object and populate with requried columns
-    Index* index = new Index(m_ui->txtNewIndexName->text(), m_ui->cmbIndexType->currentText());
-    QString columnsAsString = "";
-    int cnt = m_ui->lstSelectedColumnsForIndex->count();
-    for(int i = 0; i< cnt; i++)
+    // check the prerequisites: a valid and unique name, and at least one column
+    if(m_ui->txtNewIndexName->text().length() == 0)
     {
-        index->addColumn(m_table->getColumn(m_ui->lstSelectedColumnsForIndex->item(i)->text()));
-        columnsAsString += m_ui->lstSelectedColumnsForIndex->item(i)->text();
-        if(i < cnt - 1)
-        {
-            columnsAsString += ", ";
-        }
+        QMessageBox::critical (this, tr("Error"), tr("Please specify a name"), QMessageBox::Ok);
+        return;
     }
-    m_table->addIndex(index);
 
-    // create the listview entry
-    QStringList a(m_ui->txtNewIndexName->text());
-    a.append(m_ui->cmbIndexType->currentText());
-    a.append(columnsAsString);
+    if(m_ui->lstSelectedColumnsForIndex->count() == 0)
+    {
+        QMessageBox::critical (this, tr("Error"), tr("Please specify at least one column"), QMessageBox::Ok);
+        return;
+    }
 
-    QTreeWidgetItem* item = new QTreeWidgetItem((QTreeWidget*)0, a);
-    m_ui->lstIndices->addTopLevelItem(item);
+    if(m_currentIndex == 0)
+    {
+        // create the index object and populate with requried columns
+        Index* index = new Index(m_ui->txtNewIndexName->text(), m_ui->cmbIndexType->currentText());
+        QString columnsAsString = "";
+        int cnt = m_ui->lstSelectedColumnsForIndex->count();
+        for(int i = 0; i< cnt; i++)
+        {
+            index->addColumn(m_table->getColumn(m_ui->lstSelectedColumnsForIndex->item(i)->text()));
+            columnsAsString += m_ui->lstSelectedColumnsForIndex->item(i)->text();
+            if(i < cnt - 1)
+            {
+                columnsAsString += ", ";
+            }
+        }
+        m_table->addIndex(index);
 
-    // now reset the index gui
+        // create the listview entry
+        QStringList a(m_ui->txtNewIndexName->text());
+        a.append(m_ui->cmbIndexType->currentText());
+        a.append(columnsAsString);
+
+        QTreeWidgetItem* item = new QTreeWidgetItem((QTreeWidget*)0, a);
+        m_ui->lstIndices->addTopLevelItem(item);
+        index->setLocation(item);
+
+        resetIndexGui();
+
+        m_currentIndex = 0;
+    }
+    else    // update the index with the modified data
+    {
+        m_currentIndex->setName(m_ui->txtNewIndexName->text());
+        m_currentIndex->setType(m_ui->cmbIndexType->currentText());
+        m_currentIndex->resetColumns();
+        // TODO: "almost" duplicate code, consider refactoring
+        QString columnsAsString = "";
+        int cnt = m_ui->lstSelectedColumnsForIndex->count();
+        for(int i = 0; i< cnt; i++)
+        {
+            m_currentIndex->addColumn(m_table->getColumn(m_ui->lstSelectedColumnsForIndex->item(i)->text()));
+            columnsAsString += m_ui->lstSelectedColumnsForIndex->item(i)->text();
+            if(i < cnt - 1)
+            {
+                columnsAsString += ", ";
+            }
+        }
+
+        m_currentIndex->getLocation()->setText(0, m_currentIndex->getName());
+        m_currentIndex->getLocation()->setText(1, m_currentIndex->getType());
+        m_currentIndex->getLocation()->setText(2, columnsAsString);
+
+        resetIndexGui();
+
+        m_currentIndex = 0;
+    }
+}
+
+void NewTableForm::resetIndexGui()
+{
     m_ui->lstSelectedColumnsForIndex->clear();
     populateColumnsForIndices();
     m_ui->cmbIndexType->setCurrentIndex(0);
+    m_ui->txtNewIndexName->setText("");
+}
+
+void NewTableForm::onSelectIndex(QTreeWidgetItem* current, int column)
+{
+    QModelIndex x = m_ui->lstIndices->currentIndex();
+    m_currentIndex = m_table->getIndex(x.row());
+
+    m_ui->txtNewIndexName->setText(m_currentIndex->getName());
+
+    // fill up the two lists for the index columns
+    m_ui->lstAvailableColumnsForIndex->clear();
+    m_ui->lstSelectedColumnsForIndex->clear();
+
+    for(int i=0; i< m_table->getColumns().size(); i++)
+    {
+        Column* column = m_table->getColumns()[i];
+        QListWidget *targetList = 0;
+        if(m_currentIndex->hasColumn(column))
+        {
+            targetList = m_ui->lstSelectedColumnsForIndex;
+        }
+        else
+        {
+            targetList = m_ui->lstAvailableColumnsForIndex;
+        }
+        QListWidgetItem* qlwi = new QListWidgetItem(column->getName(), targetList);
+        qlwi->setIcon(column->getLocation()->icon(COL_POS_DT));
+    }
+
+    // select the required combo box item
+    const QStringList& indexTypes = m_dbEngine->getIndextypeProvider()->getIndexTypes();
+    QStringList::const_iterator it = indexTypes.constBegin();
+    int indx = 0;
+    while(it != indexTypes.constEnd())
+    {
+        if(*it == m_currentIndex->getType())
+        {
+            break;
+        }
+        indx ++;
+        it ++;
+    }
+    m_ui->cmbIndexType->setCurrentIndex(indx);
+}
+
+void NewTableForm::onCancelIndexEditing()
+{
+    resetIndexGui();
+}
+
+void NewTableForm::onBtnRemoveIndex()
+{
+    delete m_ui->lstIndices->currentItem();
+    resetIndexGui();
+    m_table->removeIndex(m_currentIndex);
+    m_currentIndex = 0;
+}
+
+void NewTableForm::onMoveSelectedIndexColumnUp()
+{
+    if(m_ui->lstSelectedColumnsForIndex->selectedItems().size() > 0)
+    {
+        QModelIndex x = m_ui->lstSelectedColumnsForIndex->currentIndex();
+        if(x.row() > 0)
+        {
+            QListWidgetItem* w = new QListWidgetItem(*m_ui->lstSelectedColumnsForIndex->currentItem());
+            delete m_ui->lstSelectedColumnsForIndex->currentItem();
+            m_ui->lstSelectedColumnsForIndex->insertItem(x.row() - 1, w);
+            m_ui->lstSelectedColumnsForIndex->setCurrentItem(w);
+        }
+    }
+}
+
+void NewTableForm::onMoveSelectedIndexColumnDown()
+{
+    if(m_ui->lstSelectedColumnsForIndex->selectedItems().size() > 0)
+    {
+        QModelIndex x = m_ui->lstSelectedColumnsForIndex->currentIndex();
+        if(x.row() < m_ui->lstSelectedColumnsForIndex->count() - 1)
+        {
+            QListWidgetItem* w = new QListWidgetItem(*m_ui->lstSelectedColumnsForIndex->currentItem());
+            delete m_ui->lstSelectedColumnsForIndex->currentItem();
+            m_ui->lstSelectedColumnsForIndex->insertItem(x.row() + 1, w);
+            m_ui->lstSelectedColumnsForIndex->setCurrentItem(w);
+        }
+    }
 }

@@ -14,6 +14,7 @@ class DatabaseEngine;
 class Project;
 class Table;
 class Column;
+class Index;
 
 class NewTableForm : public QWidget {
     Q_OBJECT
@@ -33,12 +34,19 @@ public slots:
     void onCancelColumnEditing();
     void onItemSelected(QTreeWidgetItem*, int);             // when a column gets selected... sorry for bad naming
     // on the index page
+    void onSelectIndex(QTreeWidgetItem*,int);
     void onMoveColumnToRight();
     void onMoveColumnToLeft();
     void onAddIndex();
+    void onCancelIndexEditing();
+    void onBtnRemoveIndex();
+    void onMoveSelectedIndexColumnUp();
+    void onMoveSelectedIndexColumnDown();
     // main page
     void onItemChanged(QTreeWidgetItem*,QTreeWidgetItem*); // this is not used
     void onButtonsClicked(QAbstractButton*);
+
+
 
 protected:
     void changeEvent(QEvent *e);
@@ -53,6 +61,9 @@ private:
     void onSave();
     void onReset();
 
+    void resetIndexGui();
+
+
 private:
     Ui::NewTableForm *m_ui;
     // the main window
@@ -65,6 +76,8 @@ private:
     Table* m_table;
     // the column which is currenty selected (NULL if none)
     Column* m_currentColumn;
+    // the index that was selected in the indices list
+    Index* m_currentIndex;
 };
 
 #endif // NEWTABLEFORM_H

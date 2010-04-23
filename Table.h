@@ -33,6 +33,9 @@ public:
      */
     void addColumn(Column* column);
 
+    /**
+     * Add an index to the table
+     */
     void addIndex(Index* index);
 
     /**
@@ -47,8 +50,15 @@ public:
 
     /**
      * Returns the given column for read/write access
+     * @param c - is the index of the column
      */
     Column* getColumn(int c);
+
+    /**
+     * Returns the given Index to be found at the cth position for read/write operations
+     * @param c - the index of the Index
+     */
+    Index* getIndex(int c);
 
     /**
      * Returns the column with the given name for read only access
@@ -72,6 +82,12 @@ public:
     {
         m_name = name;
     }
+
+
+    void removeIndex(Index* toRemove);
+
+    void removeColumn(Column* toRemove);
+
 
 private:
     // the name of the table

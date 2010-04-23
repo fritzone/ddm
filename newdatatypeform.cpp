@@ -130,6 +130,8 @@ void NewDataTypeForm::resetContent()
     m_ui->lstEnumValues->clear();
 
     m_ui->toolBox->setCurrentIndex(0);
+
+    m_ui->txtDTName->setFocus();
 }
 
 void NewDataTypeForm::onSave()
