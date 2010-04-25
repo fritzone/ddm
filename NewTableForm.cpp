@@ -116,23 +116,24 @@ void NewTableForm::onAddColumn()
     }
     else                    // we are not working on a column, but adding a new one
     {
+        UserDataType* colsDt = m_project->getWorkingVersion()->getDataType(m_ui->cmbNewColumnType->currentText());
         // create the tree widget item
         QStringList a("");
         a.append(m_ui->txtNewColumnName->text());
         a.append(m_ui->cmbNewColumnType->currentText());
+        a.append(colsDt->sqlAsString());
 
-        int idx = m_ui->cmbNewColumnType->currentIndex();
 
         QTreeWidgetItem* item = new QTreeWidgetItem((QTreeWidget*)0, a);
         if(m_ui->chkPrimary->checkState())
         {
             item->setIcon(COL_POS_PK, IconFactory::getKeyIcon());
         }
-        item->setIcon(COL_POS_DT, m_project->getWorkingVersion()->getDataTypes()[idx]->getIcon());
+        item->setIcon(COL_POS_DT, colsDt->getIcon());
         m_ui->lstColumns->addTopLevelItem(item);
 
         // now create the Column object for it
-        Column* col = new Column(m_ui->txtNewColumnName->text(),  m_project->getWorkingVersion()->getDataType(m_ui->cmbNewColumnType->currentText()), m_ui->chkPrimary->checkState()) ;
+        Column* col = new Column(m_ui->txtNewColumnName->text(), colsDt, m_ui->chkPrimary->checkState()) ;
         m_table->addColumn(col);
 
         col->setLocation(item);
@@ -290,7 +291,6 @@ void NewTableForm::onMoveColumnToRight()
 void NewTableForm::onMoveColumnToLeft()
 {
     if(!m_ui->lstSelectedColumnsForIndex->currentItem()) return;
-    QListWidgetItem* itm = new QListWidgetItem(*m_ui->lstSelectedColumnsForIndex->currentItem());
     delete m_ui->lstSelectedColumnsForIndex->currentItem();
     populateColumnsForIndices();
 }
