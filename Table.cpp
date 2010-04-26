@@ -54,6 +54,8 @@ const Column* Table::getColumn(const QString& name)
             return m_columns[i];
         }
     }
+
+    return 0;
 }
 
 void Table::removeIndex(Index* toRemove)

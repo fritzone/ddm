@@ -60,6 +60,8 @@ public:
      */
     bool hasTable(Table*);
 
+    Table* getTable(const QString& name);
+
 private:
 
     // The vector of data types. The order in it is the one the user creates the data types

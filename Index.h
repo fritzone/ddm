@@ -29,6 +29,11 @@ public:
 
     void resetColumns();
 
+    const QVector<const Column*>& getColumns() const
+    {
+        return m_columns;
+    }
+
 
 private:
 

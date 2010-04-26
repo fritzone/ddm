@@ -1,5 +1,6 @@
 #include "Version.h"
 #include "UserDataType.h"
+#include "Table.h"
 
 Version::Version()
 {
@@ -59,4 +60,16 @@ void Version::addTable(Table *t)
 bool Version::hasTable(Table *t)
 {
     return m_tables.indexOf(t) >= 0;
+}
+
+Table* Version::getTable(const QString &name)
+{
+    for(int i=0; i< m_tables.size(); i++)
+    {
+        if(m_tables[i]->getName() == name)
+        {
+            return m_tables[i];
+        }
+    }
+    return 0;
 }

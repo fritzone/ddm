@@ -49,6 +49,47 @@ NewTableForm::~NewTableForm()
     delete m_ui;
 }
 
+QTreeWidgetItem* NewTableForm::createTWIForColumn(const Column* col)
+{
+    QStringList a("");
+    a.append(col->getName());
+    a.append(col->getDataType()->getName());
+    a.append(col->getDataType()->sqlAsString());
+
+    QTreeWidgetItem* item = new QTreeWidgetItem((QTreeWidget*)0, a);
+    if(col->isPk())
+    {
+        item->setIcon(COL_POS_PK, IconFactory::getKeyIcon());
+    }
+    item->setIcon(COL_POS_DT, col->getDataType()->getIcon());
+    return item;
+}
+
+void NewTableForm::setTable(Table *table)
+{
+    m_table = table;
+
+    // first step: set the columns
+    const QVector<Column*>& columns = m_table->getColumns();
+    for(int i=0; i<columns.count(); i++)
+    {
+        QTreeWidgetItem* item = createTWIForColumn(columns[i]);
+        m_ui->lstColumns->addTopLevelItem(item);
+        columns[i]->setLocation(item);
+    }
+
+    // second step: set up the indices
+    const QVector<Index*>& indices = m_table->getIndices();
+    for(int i=0; i<indices.count(); i++)
+    {
+        QTreeWidgetItem* item = createTWIForIndex(indices[i]);
+        m_ui->lstIndices->addTopLevelItem(item);
+        indices[i]->setLocation(item);
+    }
+
+    m_ui->txtTableName->setText(m_table->getName());
+}
+
 void NewTableForm::focusOnName()
 {
     m_ui->txtTableName->setFocus();
@@ -117,23 +158,9 @@ void NewTableForm::onAddColumn()
     else                    // we are not working on a column, but adding a new one
     {
         UserDataType* colsDt = m_project->getWorkingVersion()->getDataType(m_ui->cmbNewColumnType->currentText());
-        // create the tree widget item
-        QStringList a("");
-        a.append(m_ui->txtNewColumnName->text());
-        a.append(m_ui->cmbNewColumnType->currentText());
-        a.append(colsDt->sqlAsString());
-
-
-        QTreeWidgetItem* item = new QTreeWidgetItem((QTreeWidget*)0, a);
-        if(m_ui->chkPrimary->checkState())
-        {
-            item->setIcon(COL_POS_PK, IconFactory::getKeyIcon());
-        }
-        item->setIcon(COL_POS_DT, colsDt->getIcon());
-        m_ui->lstColumns->addTopLevelItem(item);
-
-        // now create the Column object for it
         Column* col = new Column(m_ui->txtNewColumnName->text(), colsDt, m_ui->chkPrimary->checkState()) ;
+        QTreeWidgetItem* item = createTWIForColumn(col);
+        m_ui->lstColumns->addTopLevelItem(item);
         m_table->addColumn(col);
 
         col->setLocation(item);
@@ -295,6 +322,31 @@ void NewTableForm::onMoveColumnToLeft()
     populateColumnsForIndices();
 }
 
+QTreeWidgetItem* NewTableForm::createTWIForIndex(const Index* index)
+{
+    // create the tree widget item
+    QString columnsAsString = "";
+
+    const QVector<const Column*>& indexColumns = index->getColumns();
+    int cnt = indexColumns.size();
+    for(int i = 0; i < cnt; i++)
+    {
+        columnsAsString += indexColumns[i]->getName();
+        if(i < cnt - 1)
+        {
+            columnsAsString += ", ";
+        }
+    }
+
+    // create the listview entry
+    QStringList a(m_ui->txtNewIndexName->text());
+    a.append(m_ui->cmbIndexType->currentText());
+    a.append(columnsAsString);
+
+    QTreeWidgetItem* item = new QTreeWidgetItem((QTreeWidget*)0, a);
+    return item;
+}
+
 void NewTableForm::onAddIndex()
 {
     // check the prerequisites: a valid and unique name, and at least one column
@@ -314,25 +366,14 @@ void NewTableForm::onAddIndex()
     {
         // create the index object and populate with requried columns
         Index* index = new Index(m_ui->txtNewIndexName->text(), m_ui->cmbIndexType->currentText());
-        QString columnsAsString = "";
         int cnt = m_ui->lstSelectedColumnsForIndex->count();
         for(int i = 0; i< cnt; i++)
         {
             index->addColumn(m_table->getColumn(m_ui->lstSelectedColumnsForIndex->item(i)->text()));
-            columnsAsString += m_ui->lstSelectedColumnsForIndex->item(i)->text();
-            if(i < cnt - 1)
-            {
-                columnsAsString += ", ";
-            }
         }
         m_table->addIndex(index);
 
-        // create the listview entry
-        QStringList a(m_ui->txtNewIndexName->text());
-        a.append(m_ui->cmbIndexType->currentText());
-        a.append(columnsAsString);
-
-        QTreeWidgetItem* item = new QTreeWidgetItem((QTreeWidget*)0, a);
+        QTreeWidgetItem* item = createTWIForIndex(index);
         m_ui->lstIndices->addTopLevelItem(item);
         index->setLocation(item);
 

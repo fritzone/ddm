@@ -25,7 +25,7 @@ public:
     /**
      * copy constructor
      */
-    Table(const Table& other) : m_name(other.m_name), m_columns(other.m_columns)
+    Table(const Table& other) : m_name(other.m_name), m_columns(other.m_columns), m_indices(other.m_indices)
     {}
 
     /**
@@ -72,6 +72,15 @@ public:
     {
         return m_columns;
     }
+
+    /**
+     * Returns the indicess of this table for a read-only access
+     */
+    const QVector<Index*> & getIndices() const
+    {
+        return m_indices;
+    }
+
 
     const QString& getName() const
     {

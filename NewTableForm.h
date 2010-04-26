@@ -24,6 +24,11 @@ public:
     void setMainWindow(MainWindow* mw);
     void focusOnName();
 
+    /**
+     * Sets the table, also updates all the GUI elements
+     */
+    void setTable(Table* table);
+
 public slots:
 
     // on the columns page
@@ -62,6 +67,8 @@ private:
     void onReset();
 
     void resetIndexGui();
+    QTreeWidgetItem* createTWIForColumn(const Column* col);
+    QTreeWidgetItem* createTWIForIndex(const Index* col);
 
 
 private:

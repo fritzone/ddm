@@ -136,6 +136,21 @@ void MainWindow::onProjectTreeClicked()
                 frm->setDataType(udt);
                 setCentralWidget(frm);
             }
+            else
+            if(item->parent() && item->parent() == getWorkingProject()->getWorkingVersion()->getTablesItem())
+            {
+                // the user clicked on a table
+                QVariant qv = item->data(0, Qt::UserRole);
+                QString tabName = qv.toString();
+                Table* table =  getWorkingProject()->getWorkingVersion()->getTable(tabName);
+                NewTableForm* frm = new NewTableForm(getWorkingProject()->getEngine(), getWorkingProject(), this);
+                frm->setTable(table);
+                frm->focusOnName();
+                frm->setMainWindow(this);
+                projectTree->setCurrentItem(0);
+                setCentralWidget(frm);
+
+            }
         }
     }
 }
@@ -147,7 +162,6 @@ void MainWindow::onNewTable()
     frm->setMainWindow(this);
     projectTree->setCurrentItem(0);
     setCentralWidget(frm);
-
 }
 
 
@@ -166,8 +180,7 @@ bool MainWindow::onSaveNewTable(Table* tbl)
     // create the tree entry
     QTreeWidgetItem* newTblsItem = new QTreeWidgetItem(getWorkingProject()->getWorkingVersion()->getTablesItem(), QStringList(tbl->getName())) ;
 
-    QVariant var;
-    var.setValue(*tbl);
+    QVariant var(tbl->getName());
     newTblsItem->setData(0, Qt::UserRole, var);
     // set the icon, add to the tree
     newTblsItem->setIcon(0, IconFactory::getTablesIcon());
