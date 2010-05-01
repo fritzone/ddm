@@ -44,13 +44,16 @@
      <property name="currentIndex">
       <number>0</number>
      </property>
+     <property name="tabSpacing">
+      <number>2</number>
+     </property>
      <widget class="QWidget" name="page">
       <property name="geometry">
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>382</width>
-        <height>506</height>
+        <width>378</width>
+        <height>494</height>
        </rect>
       </property>
       <attribute name="label">
@@ -248,8 +251,8 @@ p, li { white-space: pre-wrap; }
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>382</width>
-        <height>506</height>
+        <width>361</width>
+        <height>286</height>
        </rect>
       </property>
       <attribute name="label">
@@ -356,6 +359,14 @@ p, li { white-space: pre-wrap; }
       </layout>
      </widget>
      <widget class="QWidget" name="page_3">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>202</width>
+        <height>97</height>
+       </rect>
+      </property>
       <attribute name="label">
        <string>Description</string>
       </attribute>

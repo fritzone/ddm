@@ -41,6 +41,13 @@ public:
      */
     bool onSaveNewTable(Table* tbl);
 
+    /**
+     * This method gets called when a table is updated. The only thing this must do
+     * for now is to update the tree entry in the project tree and the associated tree widget
+     */
+    bool onUpdateTable(Table* tbl);
+
+
 public slots:
 
     // called when the user wants to create a new project

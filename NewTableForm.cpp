@@ -41,6 +41,13 @@ NewTableForm::NewTableForm(DatabaseEngine* db, Project* prj, QWidget *parent) : 
         it ++;
     }
 
+    // create the foreign keys screen
+    const QVector<Table*>& tables = m_project->getWorkingVersion()->getTables();
+    for(int i=0; i<tables.size(); i++)
+    {
+        m_ui->cmbForeignTables->addItem(tables[i]->getName());
+    }
+
     m_ui->btnAdvanced->hide();
 }
 
@@ -86,6 +93,7 @@ void NewTableForm::setTable(Table *table)
         m_ui->lstIndices->addTopLevelItem(item);
         indices[i]->setLocation(item);
     }
+    resetIndexGui();
 
     m_ui->txtTableName->setText(m_table->getName());
 }
@@ -294,11 +302,12 @@ void NewTableForm::onSave()
     if(m_project->getWorkingVersion()->hasTable(m_table))
     {
         // update the data of the table, and the tree view
+        m_mw->onUpdateTable(m_table);
     }
     else
     {
-        m_mw->onSaveNewTable(m_table);
         // create a new tree entry, add to the tree, update the m_table's tree item.
+        m_mw->onSaveNewTable(m_table);
     }
 
 }
@@ -339,8 +348,8 @@ QTreeWidgetItem* NewTableForm::createTWIForIndex(const Index* index)
     }
 
     // create the listview entry
-    QStringList a(m_ui->txtNewIndexName->text());
-    a.append(m_ui->cmbIndexType->currentText());
+    QStringList a(index->getName());
+    a.append(index->getType());
     a.append(columnsAsString);
 
     QTreeWidgetItem* item = new QTreeWidgetItem((QTreeWidget*)0, a);
@@ -500,5 +509,22 @@ void NewTableForm::onMoveSelectedIndexColumnDown()
             m_ui->lstSelectedColumnsForIndex->insertItem(x.row() + 1, w);
             m_ui->lstSelectedColumnsForIndex->setCurrentItem(w);
         }
+    }
+}
+
+void NewTableForm::onForeignTableComboChange(QString selected)
+{
+    Table* table = m_project->getWorkingVersion()->getTable(selected);
+    if(table == 0)
+    {
+        return;
+    }
+    const QVector<Column*> & foreignColumns = table->getColumns();
+    m_ui->lstForeignTablesColumns->clear();
+    for(int i=0; i<foreignColumns.size(); i++)
+    {
+        QListWidgetItem* qlwi = new QListWidgetItem(table->getColumns()[i]->getName(), m_ui->lstForeignTablesColumns);
+        qlwi->setIcon(table->getColumns()[i]->getDataType()->getIcon());
+
     }
 }

@@ -52,9 +52,6 @@ void UserDataType::serialize(QDomDocument& doc, QDomElement& parent) const
     QDomText sqlTypeNode = doc.createTextNode(getSqlType());
     sqlTypeElement.appendChild(sqlTypeNode);
 
-
-
-
     parent.appendChild(dtElement);
 
 }

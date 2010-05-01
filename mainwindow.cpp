@@ -62,6 +62,9 @@ void MainWindow::onNewProject()
         projectTree = new QTreeWidget();
         projectTree->setColumnCount(1);
         projectTree->setHeaderHidden(true);
+        QFont a(projectTree->font());
+        a.setPixelSize(14);
+        projectTree->setFont(a);
 
         QObject::connect(projectTree, SIGNAL(itemSelectionChanged()), this, SLOT(onProjectTreeClicked()));
 
@@ -172,6 +175,15 @@ void MainWindow::onNewDataType()
     frm->setMainWindow(this);
     projectTree->setCurrentItem(0);
     setCentralWidget(frm);
+
+}
+
+bool MainWindow::onUpdateTable(Table* tbl)
+{
+    QTreeWidgetItem* tblsItem = tbl->getLocation();
+    QVariant var(tbl->getName());
+    tblsItem->setData(0, Qt::UserRole, var);
+    tblsItem->setText(0, tbl->getName());
 
 }
 

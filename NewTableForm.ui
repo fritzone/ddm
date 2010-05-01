@@ -44,15 +44,18 @@ p, li { white-space: pre-wrap; }
       </font>
      </property>
      <property name="currentIndex">
-      <number>1</number>
+      <number>2</number>
+     </property>
+     <property name="tabSpacing">
+      <number>2</number>
      </property>
      <widget class="QWidget" name="page">
       <property name="geometry">
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>469</width>
-        <height>536</height>
+        <width>465</width>
+        <height>519</height>
        </rect>
       </property>
       <attribute name="label">
@@ -69,8 +72,17 @@ p, li { white-space: pre-wrap; }
            <layout class="QHBoxLayout" name="horizontalLayout_2">
             <item>
              <widget class="QTreeWidget" name="lstColumns">
+              <property name="rootIsDecorated">
+               <bool>false</bool>
+              </property>
+              <property name="itemsExpandable">
+               <bool>false</bool>
+              </property>
               <property name="animated">
-               <bool>true</bool>
+               <bool>false</bool>
+              </property>
+              <property name="expandsOnDoubleClick">
+               <bool>false</bool>
               </property>
               <attribute name="headerDefaultSectionSize">
                <number>150</number>
@@ -281,8 +293,8 @@ p, li { white-space: pre-wrap; }
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>469</width>
-        <height>536</height>
+        <width>465</width>
+        <height>519</height>
        </rect>
       </property>
       <attribute name="label">
@@ -297,6 +309,15 @@ p, li { white-space: pre-wrap; }
          <layout class="QHBoxLayout" name="horizontalLayout_7">
           <item>
            <widget class="QTreeWidget" name="lstIndices">
+            <property name="rootIsDecorated">
+             <bool>false</bool>
+            </property>
+            <property name="itemsExpandable">
+             <bool>false</bool>
+            </property>
+            <property name="expandsOnDoubleClick">
+             <bool>false</bool>
+            </property>
             <column>
              <property name="text">
               <string notr="true">Name</string>
@@ -524,8 +545,8 @@ p, li { white-space: pre-wrap; }
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>469</width>
-        <height>536</height>
+        <width>468</width>
+        <height>518</height>
        </rect>
       </property>
       <attribute name="label">
@@ -539,10 +560,40 @@ p, li { white-space: pre-wrap; }
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_13">
           <item>
-           <widget class="QTreeWidget" name="treeWidget">
+           <widget class="QTreeWidget" name="treeForeignKeys">
+            <property name="rootIsDecorated">
+             <bool>false</bool>
+            </property>
+            <property name="itemsExpandable">
+             <bool>false</bool>
+            </property>
+            <property name="expandsOnDoubleClick">
+             <bool>false</bool>
+            </property>
+            <attribute name="headerDefaultSectionSize">
+             <number>90</number>
+            </attribute>
+            <attribute name="headerDefaultSectionSize">
+             <number>90</number>
+            </attribute>
             <column>
              <property name="text">
-              <string notr="true">1</string>
+              <string>Name</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>Foreign table</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>Foreign columns</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>Local columns</string>
              </property>
             </column>
            </widget>
@@ -579,28 +630,18 @@ p, li { white-space: pre-wrap; }
               </property>
              </widget>
             </item>
-            <item row="0" column="1">
-             <widget class="QLabel" name="label_12">
-              <property name="text">
-               <string>TextLabel</string>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="1">
-             <widget class="QListView" name="listView_2"/>
-            </item>
             <item row="1" column="0">
-             <widget class="QComboBox" name="comboBox_3"/>
+             <widget class="QComboBox" name="cmbForeignTables"/>
             </item>
             <item row="0" column="2">
              <widget class="QLabel" name="label_13">
               <property name="text">
-               <string>TextLabel</string>
+               <string>Local Column</string>
               </property>
              </widget>
             </item>
             <item row="1" column="2">
-             <widget class="QListWidget" name="listWidget_2"/>
+             <widget class="QListWidget" name="lstLocalColumn"/>
             </item>
             <item row="1" column="3">
              <widget class="QToolButton" name="toolButton_10">
@@ -610,6 +651,16 @@ p, li { white-space: pre-wrap; }
               <property name="icon">
                <iconset resource="dbm.qrc">
                 <normaloff>:/images/actions/images/small/add.png</normaloff>:/images/actions/images/small/add.png</iconset>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="1">
+             <widget class="QListWidget" name="lstForeignTablesColumns"/>
+            </item>
+            <item row="0" column="1">
+             <widget class="QLabel" name="label_12">
+              <property name="text">
+               <string>Foreign Column</string>
               </property>
              </widget>
             </item>
@@ -743,8 +794,8 @@ p, li { white-space: pre-wrap; }
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>469</width>
-        <height>536</height>
+        <width>465</width>
+        <height>519</height>
        </rect>
       </property>
       <attribute name="label">
@@ -788,8 +839,8 @@ p, li { white-space: pre-wrap; }
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>469</width>
-        <height>536</height>
+        <width>465</width>
+        <height>519</height>
        </rect>
       </property>
       <attribute name="label">
@@ -1093,6 +1144,22 @@ p, li { white-space: pre-wrap; }
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>cmbForeignTables</sender>
+   <signal>activated(QString)</signal>
+   <receiver>NewTableForm</receiver>
+   <slot>onForeignTableComboChange(QString)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>93</x>
+     <y>427</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>243</x>
+     <y>386</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>onAddColumn()</slot>
@@ -1111,5 +1178,6 @@ p, li { white-space: pre-wrap; }
   <slot>onBtnRemoveIndex()</slot>
   <slot>onMoveSelectedIndexColumnUp()</slot>
   <slot>onMoveSelectedIndexColumnDown()</slot>
+  <slot>onForeignTableComboChange(QString)</slot>
  </slots>
 </ui>

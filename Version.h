@@ -62,6 +62,11 @@ public:
 
     Table* getTable(const QString& name);
 
+    const QVector<Table*>& getTables() const
+    {
+        return m_tables;
+    }
+
 private:
 
     // The vector of data types. The order in it is the one the user creates the data types

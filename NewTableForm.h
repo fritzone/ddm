@@ -50,8 +50,8 @@ public slots:
     // main page
     void onItemChanged(QTreeWidgetItem*,QTreeWidgetItem*); // this is not used
     void onButtonsClicked(QAbstractButton*);
-
-
+    // foreign columns page
+    void onForeignTableComboChange(QString);
 
 protected:
     void changeEvent(QEvent *e);
