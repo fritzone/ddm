@@ -52,6 +52,8 @@ public slots:
     void onButtonsClicked(QAbstractButton*);
     // foreign columns page
     void onForeignTableComboChange(QString);
+    void onForeignTableColumnChange();
+    void onAddForeignKeyAssociation();
 
 protected:
     void changeEvent(QEvent *e);
@@ -85,6 +87,8 @@ private:
     Column* m_currentColumn;
     // the index that was selected in the indices list
     Index* m_currentIndex;
+
+    Table* m_foreignTable;
 };
 
 #endif // NEWTABLEFORM_H

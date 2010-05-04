@@ -19,7 +19,7 @@ const int COL_POS_NM = 1;
 const int COL_POS_DT = 2;
 
 NewTableForm::NewTableForm(DatabaseEngine* db, Project* prj, QWidget *parent) : QWidget(parent), m_ui(new Ui::NewTableForm),
-    m_dbEngine(db), m_project(prj), m_table(new Table()), m_currentColumn(0), m_currentIndex(0)
+    m_dbEngine(db), m_project(prj), m_table(new Table()), m_currentColumn(0), m_currentIndex(0), m_foreignTable(0)
 {
     m_ui->setupUi(this);
 
@@ -519,12 +519,36 @@ void NewTableForm::onForeignTableComboChange(QString selected)
     {
         return;
     }
+    m_foreignTable = table;
     const QVector<Column*> & foreignColumns = table->getColumns();
     m_ui->lstForeignTablesColumns->clear();
     for(int i=0; i<foreignColumns.size(); i++)
     {
         QListWidgetItem* qlwi = new QListWidgetItem(table->getColumns()[i]->getName(), m_ui->lstForeignTablesColumns);
         qlwi->setIcon(table->getColumns()[i]->getDataType()->getIcon());
-
     }
+}
+
+void NewTableForm::onForeignTableColumnChange()
+{
+     m_ui->lstLocalColumn->clear();
+    QList<QListWidgetItem *> selectedItems = m_ui->lstForeignTablesColumns->selectedItems();
+    for(int i=0; i< selectedItems.size(); i++)
+    {
+        const Column* foreignColumn = m_foreignTable->getColumn(selectedItems[i]->text());
+        for(int j=0; j<m_table->getColumns().size(); j++)
+        {
+            if(m_table->getColumns()[j]->getDataType()->getName() == foreignColumn->getDataType()->getName())
+            {
+                QListWidgetItem* qlwj = new QListWidgetItem(m_table->getColumns()[j]->getName(), m_ui->lstLocalColumn);
+                qlwj->setIcon(m_table->getColumns()[j]->getDataType()->getIcon());
+            }
+        }
+        break;
+    }
+}
+
+void NewTableForm::onAddForeignKeyAssociation()
+{
+
 }

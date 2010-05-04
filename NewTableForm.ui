@@ -54,8 +54,8 @@ p, li { white-space: pre-wrap; }
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>465</width>
-        <height>519</height>
+        <width>469</width>
+        <height>556</height>
        </rect>
       </property>
       <attribute name="label">
@@ -126,7 +126,7 @@ p, li { white-space: pre-wrap; }
                  <string/>
                 </property>
                 <property name="icon">
-                 <iconset resource="dbm.qrc">
+                 <iconset>
                   <normaloff>:/images/actions/images/small/up.png</normaloff>:/images/actions/images/small/up.png</iconset>
                 </property>
                 <property name="popupMode">
@@ -146,7 +146,7 @@ p, li { white-space: pre-wrap; }
                  <string/>
                 </property>
                 <property name="icon">
-                 <iconset resource="dbm.qrc">
+                 <iconset>
                   <normaloff>:/images/actions/images/small/down.png</normaloff>:/images/actions/images/small/down.png</iconset>
                 </property>
                 <property name="popupMode">
@@ -166,7 +166,7 @@ p, li { white-space: pre-wrap; }
                  <string/>
                 </property>
                 <property name="icon">
-                 <iconset resource="dbm.qrc">
+                 <iconset>
                   <normaloff>:/images/actions/images/small/remove.png</normaloff>:/images/actions/images/small/remove.png</iconset>
                 </property>
                </widget>
@@ -257,7 +257,7 @@ p, li { white-space: pre-wrap; }
                  <string/>
                 </property>
                 <property name="icon">
-                 <iconset resource="dbm.qrc">
+                 <iconset>
                   <normaloff>:/images/actions/images/small/cancel.png</normaloff>:/images/actions/images/small/cancel.png</iconset>
                 </property>
                </widget>
@@ -274,7 +274,7 @@ p, li { white-space: pre-wrap; }
                  <string>...</string>
                 </property>
                 <property name="icon">
-                 <iconset resource="dbm.qrc">
+                 <iconset>
                   <normaloff>:/images/actions/images/small/add.png</normaloff>:/images/actions/images/small/add.png</iconset>
                 </property>
                </widget>
@@ -293,8 +293,8 @@ p, li { white-space: pre-wrap; }
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>465</width>
-        <height>519</height>
+        <width>469</width>
+        <height>556</height>
        </rect>
       </property>
       <attribute name="label">
@@ -341,7 +341,7 @@ p, li { white-space: pre-wrap; }
              <string>...</string>
             </property>
             <property name="icon">
-             <iconset resource="dbm.qrc">
+             <iconset>
               <normaloff>:/images/actions/images/small/remove.png</normaloff>:/images/actions/images/small/remove.png</iconset>
             </property>
            </widget>
@@ -398,7 +398,7 @@ p, li { white-space: pre-wrap; }
                  <string>...</string>
                 </property>
                 <property name="icon">
-                 <iconset resource="dbm.qrc">
+                 <iconset>
                   <normaloff>:/images/actions/images/small/left.png</normaloff>:/images/actions/images/small/left.png</iconset>
                 </property>
                </widget>
@@ -409,7 +409,7 @@ p, li { white-space: pre-wrap; }
                  <string>...</string>
                 </property>
                 <property name="icon">
-                 <iconset resource="dbm.qrc">
+                 <iconset>
                   <normaloff>:/images/actions/images/small/right.png</normaloff>:/images/actions/images/small/right.png</iconset>
                 </property>
                </widget>
@@ -427,7 +427,7 @@ p, li { white-space: pre-wrap; }
                  <string>...</string>
                 </property>
                 <property name="icon">
-                 <iconset resource="dbm.qrc">
+                 <iconset>
                   <normaloff>:/images/actions/images/small/up.png</normaloff>:/images/actions/images/small/up.png</iconset>
                 </property>
                </widget>
@@ -438,7 +438,7 @@ p, li { white-space: pre-wrap; }
                  <string>...</string>
                 </property>
                 <property name="icon">
-                 <iconset resource="dbm.qrc">
+                 <iconset>
                   <normaloff>:/images/actions/images/small/down.png</normaloff>:/images/actions/images/small/down.png</iconset>
                 </property>
                </widget>
@@ -514,7 +514,7 @@ p, li { white-space: pre-wrap; }
                <string/>
               </property>
               <property name="icon">
-               <iconset resource="dbm.qrc">
+               <iconset>
                 <normaloff>:/images/actions/images/small/cancel.png</normaloff>:/images/actions/images/small/cancel.png</iconset>
               </property>
              </widget>
@@ -528,7 +528,7 @@ p, li { white-space: pre-wrap; }
                <string/>
               </property>
               <property name="icon">
-               <iconset resource="dbm.qrc">
+               <iconset>
                 <normaloff>:/images/actions/images/small/add.png</normaloff>:/images/actions/images/small/add.png</iconset>
               </property>
              </widget>
@@ -545,8 +545,8 @@ p, li { white-space: pre-wrap; }
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>468</width>
-        <height>518</height>
+        <width>469</width>
+        <height>556</height>
        </rect>
       </property>
       <attribute name="label">
@@ -644,12 +644,12 @@ p, li { white-space: pre-wrap; }
              <widget class="QListWidget" name="lstLocalColumn"/>
             </item>
             <item row="1" column="3">
-             <widget class="QToolButton" name="toolButton_10">
+             <widget class="QToolButton" name="btnAddForeignKeyAssociation">
               <property name="text">
                <string>...</string>
               </property>
               <property name="icon">
-               <iconset resource="dbm.qrc">
+               <iconset>
                 <normaloff>:/images/actions/images/small/add.png</normaloff>:/images/actions/images/small/add.png</iconset>
               </property>
              </widget>
@@ -684,7 +684,7 @@ p, li { white-space: pre-wrap; }
                <string>...</string>
               </property>
               <property name="icon">
-               <iconset resource="dbm.qrc">
+               <iconset>
                 <normaloff>:/images/actions/images/small/remove.png</normaloff>:/images/actions/images/small/remove.png</iconset>
               </property>
              </widget>
@@ -732,19 +732,6 @@ p, li { white-space: pre-wrap; }
              </widget>
             </item>
             <item>
-             <spacer name="horizontalSpacer_3">
-              <property name="orientation">
-               <enum>Qt::Horizontal</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>40</width>
-                <height>20</height>
-               </size>
-              </property>
-             </spacer>
-            </item>
-            <item>
              <widget class="QGroupBox" name="groupBox_7">
               <property name="title">
                <string>On Delete</string>
@@ -782,6 +769,45 @@ p, li { white-space: pre-wrap; }
               </layout>
              </widget>
             </item>
+            <item>
+             <spacer name="horizontalSpacer_3">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_4">
+              <item>
+               <widget class="QToolButton" name="toolButton_12">
+                <property name="text">
+                 <string>...</string>
+                </property>
+                <property name="icon">
+                 <iconset>
+                  <normaloff>:/images/actions/images/small/cancel.png</normaloff>:/images/actions/images/small/cancel.png</iconset>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QToolButton" name="btnAddForeignKeyAssociation_2">
+                <property name="text">
+                 <string>...</string>
+                </property>
+                <property name="icon">
+                 <iconset>
+                  <normaloff>:/images/actions/images/small/add.png</normaloff>:/images/actions/images/small/add.png</iconset>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
            </layout>
           </item>
          </layout>
@@ -794,8 +820,8 @@ p, li { white-space: pre-wrap; }
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>465</width>
-        <height>519</height>
+        <width>469</width>
+        <height>556</height>
        </rect>
       </property>
       <attribute name="label">
@@ -839,8 +865,8 @@ p, li { white-space: pre-wrap; }
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>465</width>
-        <height>519</height>
+        <width>469</width>
+        <height>556</height>
        </rect>
       </property>
       <attribute name="label">
@@ -884,9 +910,7 @@ p, li { white-space: pre-wrap; }
    </item>
   </layout>
  </widget>
- <resources>
-  <include location="dbm.qrc"/>
- </resources>
+ <resources/>
  <connections>
   <connection>
    <sender>lstColumns</sender>
@@ -1160,6 +1184,38 @@ p, li { white-space: pre-wrap; }
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>lstForeignTablesColumns</sender>
+   <signal>itemSelectionChanged()</signal>
+   <receiver>NewTableForm</receiver>
+   <slot>onForeignTableColumnChange()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>207</x>
+     <y>399</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>243</x>
+     <y>386</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnAddForeignKeyAssociation</sender>
+   <signal>clicked()</signal>
+   <receiver>NewTableForm</receiver>
+   <slot>onAddForeignKeyAssociation()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>443</x>
+     <y>399</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>243</x>
+     <y>386</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>onAddColumn()</slot>
@@ -1179,5 +1235,7 @@ p, li { white-space: pre-wrap; }
   <slot>onMoveSelectedIndexColumnUp()</slot>
   <slot>onMoveSelectedIndexColumnDown()</slot>
   <slot>onForeignTableComboChange(QString)</slot>
+  <slot>onForeignTableColumnChange()</slot>
+  <slot>onAddForeignKeyAssociation()</slot>
  </slots>
 </ui>
