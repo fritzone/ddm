@@ -6,11 +6,12 @@
 
 #include "DataType.h"
 #include "TreeItem.h"
+#include "SerializableElement.h"
 
 /**
  * Class representing a data type
  */
-class UserDataType : public DataType, virtual public TreeItem
+class UserDataType : public DataType, virtual public TreeItem, public SerializableElement
 {
 public:
 
@@ -97,7 +98,7 @@ public:
      *  </Values>
      * </DataType>
      */
-    void serialize(QDomDocument& doc, QDomElement& parent) const;
+    virtual void serialize(QDomDocument& doc, QDomElement& parent) const;
 
 
 private:

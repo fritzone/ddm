@@ -184,7 +184,7 @@ bool MainWindow::onUpdateTable(Table* tbl)
     QVariant var(tbl->getName());
     tblsItem->setData(0, Qt::UserRole, var);
     tblsItem->setText(0, tbl->getName());
-
+    return true;
 }
 
 bool MainWindow::onSaveNewTable(Table* tbl)

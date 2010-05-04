@@ -7,7 +7,7 @@
  */
 class SerializableElement
 {
-    void serialize(QDomDocument& doc, QDomElement& parent) const = 0;
+    virtual void serialize(QDomDocument& doc, QDomElement& parent) const = 0;
 };
 
 #endif // _SERIALIZABLEELEMENT_H_
