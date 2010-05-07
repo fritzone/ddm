@@ -36,7 +36,7 @@ p, li { white-space: pre-wrap; }
     </layout>
    </item>
    <item>
-    <widget class="QToolBox" name="toolBox">
+    <widget class="QTabWidget" name="tabWidget">
      <property name="font">
       <font>
        <family>Sans Serif</family>
@@ -46,19 +46,8 @@ p, li { white-space: pre-wrap; }
      <property name="currentIndex">
       <number>2</number>
      </property>
-     <property name="tabSpacing">
-      <number>2</number>
-     </property>
-     <widget class="QWidget" name="page">
-      <property name="geometry">
-       <rect>
-        <x>0</x>
-        <y>0</y>
-        <width>469</width>
-        <height>556</height>
-       </rect>
-      </property>
-      <attribute name="label">
+     <widget class="QWidget" name="tabWidgetPage1">
+      <attribute name="title">
        <string>Columns</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -126,7 +115,7 @@ p, li { white-space: pre-wrap; }
                  <string/>
                 </property>
                 <property name="icon">
-                 <iconset>
+                 <iconset resource="dbm.qrc">
                   <normaloff>:/images/actions/images/small/up.png</normaloff>:/images/actions/images/small/up.png</iconset>
                 </property>
                 <property name="popupMode">
@@ -146,7 +135,7 @@ p, li { white-space: pre-wrap; }
                  <string/>
                 </property>
                 <property name="icon">
-                 <iconset>
+                 <iconset resource="dbm.qrc">
                   <normaloff>:/images/actions/images/small/down.png</normaloff>:/images/actions/images/small/down.png</iconset>
                 </property>
                 <property name="popupMode">
@@ -166,7 +155,7 @@ p, li { white-space: pre-wrap; }
                  <string/>
                 </property>
                 <property name="icon">
-                 <iconset>
+                 <iconset resource="dbm.qrc">
                   <normaloff>:/images/actions/images/small/remove.png</normaloff>:/images/actions/images/small/remove.png</iconset>
                 </property>
                </widget>
@@ -257,7 +246,7 @@ p, li { white-space: pre-wrap; }
                  <string/>
                 </property>
                 <property name="icon">
-                 <iconset>
+                 <iconset resource="dbm.qrc">
                   <normaloff>:/images/actions/images/small/cancel.png</normaloff>:/images/actions/images/small/cancel.png</iconset>
                 </property>
                </widget>
@@ -274,7 +263,7 @@ p, li { white-space: pre-wrap; }
                  <string>...</string>
                 </property>
                 <property name="icon">
-                 <iconset>
+                 <iconset resource="dbm.qrc">
                   <normaloff>:/images/actions/images/small/add.png</normaloff>:/images/actions/images/small/add.png</iconset>
                 </property>
                </widget>
@@ -288,16 +277,8 @@ p, li { white-space: pre-wrap; }
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="page_3">
-      <property name="geometry">
-       <rect>
-        <x>0</x>
-        <y>0</y>
-        <width>469</width>
-        <height>556</height>
-       </rect>
-      </property>
-      <attribute name="label">
+     <widget class="QWidget" name="tabWidgetPage2">
+      <attribute name="title">
        <string>Indices</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -341,7 +322,7 @@ p, li { white-space: pre-wrap; }
              <string>...</string>
             </property>
             <property name="icon">
-             <iconset>
+             <iconset resource="dbm.qrc">
               <normaloff>:/images/actions/images/small/remove.png</normaloff>:/images/actions/images/small/remove.png</iconset>
             </property>
            </widget>
@@ -398,7 +379,7 @@ p, li { white-space: pre-wrap; }
                  <string>...</string>
                 </property>
                 <property name="icon">
-                 <iconset>
+                 <iconset resource="dbm.qrc">
                   <normaloff>:/images/actions/images/small/left.png</normaloff>:/images/actions/images/small/left.png</iconset>
                 </property>
                </widget>
@@ -409,7 +390,7 @@ p, li { white-space: pre-wrap; }
                  <string>...</string>
                 </property>
                 <property name="icon">
-                 <iconset>
+                 <iconset resource="dbm.qrc">
                   <normaloff>:/images/actions/images/small/right.png</normaloff>:/images/actions/images/small/right.png</iconset>
                 </property>
                </widget>
@@ -427,7 +408,7 @@ p, li { white-space: pre-wrap; }
                  <string>...</string>
                 </property>
                 <property name="icon">
-                 <iconset>
+                 <iconset resource="dbm.qrc">
                   <normaloff>:/images/actions/images/small/up.png</normaloff>:/images/actions/images/small/up.png</iconset>
                 </property>
                </widget>
@@ -438,7 +419,7 @@ p, li { white-space: pre-wrap; }
                  <string>...</string>
                 </property>
                 <property name="icon">
-                 <iconset>
+                 <iconset resource="dbm.qrc">
                   <normaloff>:/images/actions/images/small/down.png</normaloff>:/images/actions/images/small/down.png</iconset>
                 </property>
                </widget>
@@ -514,7 +495,7 @@ p, li { white-space: pre-wrap; }
                <string/>
               </property>
               <property name="icon">
-               <iconset>
+               <iconset resource="dbm.qrc">
                 <normaloff>:/images/actions/images/small/cancel.png</normaloff>:/images/actions/images/small/cancel.png</iconset>
               </property>
              </widget>
@@ -528,7 +509,7 @@ p, li { white-space: pre-wrap; }
                <string/>
               </property>
               <property name="icon">
-               <iconset>
+               <iconset resource="dbm.qrc">
                 <normaloff>:/images/actions/images/small/add.png</normaloff>:/images/actions/images/small/add.png</iconset>
               </property>
              </widget>
@@ -540,17 +521,9 @@ p, li { white-space: pre-wrap; }
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="page_5">
-      <property name="geometry">
-       <rect>
-        <x>0</x>
-        <y>0</y>
-        <width>469</width>
-        <height>556</height>
-       </rect>
-      </property>
-      <attribute name="label">
-       <string>Foreign Keys</string>
+     <widget class="QWidget" name="tabWidgetPage3">
+      <attribute name="title">
+       <string>Foreign keys</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_15">
        <item>
@@ -649,7 +622,7 @@ p, li { white-space: pre-wrap; }
                <string>...</string>
               </property>
               <property name="icon">
-               <iconset>
+               <iconset resource="dbm.qrc">
                 <normaloff>:/images/actions/images/small/add.png</normaloff>:/images/actions/images/small/add.png</iconset>
               </property>
              </widget>
@@ -676,7 +649,33 @@ p, li { white-space: pre-wrap; }
              </widget>
             </item>
             <item>
-             <widget class="QListWidget" name="listWidget_3"/>
+             <widget class="QTreeWidget" name="lstForeignKeyAssociations">
+              <property name="rootIsDecorated">
+               <bool>false</bool>
+              </property>
+              <property name="itemsExpandable">
+               <bool>false</bool>
+              </property>
+              <property name="expandsOnDoubleClick">
+               <bool>false</bool>
+              </property>
+              <attribute name="headerDefaultSectionSize">
+               <number>120</number>
+              </attribute>
+              <attribute name="headerDefaultSectionSize">
+               <number>120</number>
+              </attribute>
+              <column>
+               <property name="text">
+                <string>Foreign column</string>
+               </property>
+              </column>
+              <column>
+               <property name="text">
+                <string>Local column</string>
+               </property>
+              </column>
+             </widget>
             </item>
             <item>
              <widget class="QToolButton" name="toolButton_11">
@@ -684,7 +683,7 @@ p, li { white-space: pre-wrap; }
                <string>...</string>
               </property>
               <property name="icon">
-               <iconset>
+               <iconset resource="dbm.qrc">
                 <normaloff>:/images/actions/images/small/remove.png</normaloff>:/images/actions/images/small/remove.png</iconset>
               </property>
              </widget>
@@ -790,7 +789,7 @@ p, li { white-space: pre-wrap; }
                  <string>...</string>
                 </property>
                 <property name="icon">
-                 <iconset>
+                 <iconset resource="dbm.qrc">
                   <normaloff>:/images/actions/images/small/cancel.png</normaloff>:/images/actions/images/small/cancel.png</iconset>
                 </property>
                </widget>
@@ -801,7 +800,7 @@ p, li { white-space: pre-wrap; }
                  <string>...</string>
                 </property>
                 <property name="icon">
-                 <iconset>
+                 <iconset resource="dbm.qrc">
                   <normaloff>:/images/actions/images/small/add.png</normaloff>:/images/actions/images/small/add.png</iconset>
                 </property>
                </widget>
@@ -815,17 +814,9 @@ p, li { white-space: pre-wrap; }
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="page_2">
-      <property name="geometry">
-       <rect>
-        <x>0</x>
-        <y>0</y>
-        <width>469</width>
-        <height>556</height>
-       </rect>
-      </property>
-      <attribute name="label">
-       <string>Advanced properties</string>
+     <widget class="QWidget" name="tabWidgetPage4">
+      <attribute name="title">
+       <string>Advanced</string>
       </attribute>
       <layout class="QFormLayout" name="formLayout_2">
        <property name="fieldGrowthPolicy">
@@ -860,16 +851,8 @@ p, li { white-space: pre-wrap; }
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="page_4">
-      <property name="geometry">
-       <rect>
-        <x>0</x>
-        <y>0</y>
-        <width>469</width>
-        <height>556</height>
-       </rect>
-      </property>
-      <attribute name="label">
+     <widget class="QWidget" name="tabWidgetPage5">
+      <attribute name="title">
        <string>Description</string>
       </attribute>
       <layout class="QFormLayout" name="formLayout_5">
@@ -910,104 +893,10 @@ p, li { white-space: pre-wrap; }
    </item>
   </layout>
  </widget>
- <resources/>
+ <resources>
+  <include location="dbm.qrc"/>
+ </resources>
  <connections>
-  <connection>
-   <sender>lstColumns</sender>
-   <signal>itemClicked(QTreeWidgetItem*,int)</signal>
-   <receiver>NewTableForm</receiver>
-   <slot>onItemSelected(QTreeWidgetItem*,int)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>185</x>
-     <y>192</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>199</x>
-     <y>289</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>btnUp</sender>
-   <signal>clicked()</signal>
-   <receiver>NewTableForm</receiver>
-   <slot>onMoveColumnUp()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>356</x>
-     <y>139</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>199</x>
-     <y>289</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>lstColumns</sender>
-   <signal>currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)</signal>
-   <receiver>NewTableForm</receiver>
-   <slot>onItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>185</x>
-     <y>192</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>199</x>
-     <y>289</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>btnDown</sender>
-   <signal>clicked()</signal>
-   <receiver>NewTableForm</receiver>
-   <slot>onMoveColumnDown()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>356</x>
-     <y>192</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>199</x>
-     <y>289</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>btnAdd</sender>
-   <signal>clicked()</signal>
-   <receiver>NewTableForm</receiver>
-   <slot>onAddColumn()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>358</x>
-     <y>412</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>199</x>
-     <y>289</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>btnRemove</sender>
-   <signal>clicked()</signal>
-   <receiver>NewTableForm</receiver>
-   <slot>onDeleteColumn()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>49</x>
-     <y>191</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>199</x>
-     <y>289</y>
-    </hint>
-   </hints>
-  </connection>
   <connection>
    <sender>buttons</sender>
    <signal>clicked(QAbstractButton*)</signal>
@@ -1025,14 +914,110 @@ p, li { white-space: pre-wrap; }
    </hints>
   </connection>
   <connection>
+   <sender>lstColumns</sender>
+   <signal>itemClicked(QTreeWidgetItem*,int)</signal>
+   <receiver>NewTableForm</receiver>
+   <slot>onItemSelected(QTreeWidgetItem*,int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>228</x>
+     <y>246</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>243</x>
+     <y>386</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnUp</sender>
+   <signal>clicked()</signal>
+   <receiver>NewTableForm</receiver>
+   <slot>onMoveColumnUp()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>440</x>
+     <y>165</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>243</x>
+     <y>386</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>lstColumns</sender>
+   <signal>currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)</signal>
+   <receiver>NewTableForm</receiver>
+   <slot>onItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>228</x>
+     <y>246</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>243</x>
+     <y>386</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnDown</sender>
+   <signal>clicked()</signal>
+   <receiver>NewTableForm</receiver>
+   <slot>onMoveColumnDown()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>440</x>
+     <y>245</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>243</x>
+     <y>386</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnAdd</sender>
+   <signal>clicked()</signal>
+   <receiver>NewTableForm</receiver>
+   <slot>onAddColumn()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>440</x>
+     <y>512</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>243</x>
+     <y>386</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnRemove</sender>
+   <signal>clicked()</signal>
+   <receiver>NewTableForm</receiver>
+   <slot>onDeleteColumn()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>440</x>
+     <y>325</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>243</x>
+     <y>386</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
    <sender>btnMoveColumnToRight</sender>
    <signal>clicked()</signal>
    <receiver>NewTableForm</receiver>
    <slot>onMoveColumnToRight()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>246</x>
-     <y>524</y>
+     <x>263</x>
+     <y>509</y>
     </hint>
     <hint type="destinationlabel">
      <x>243</x>
@@ -1047,8 +1032,8 @@ p, li { white-space: pre-wrap; }
    <slot>onMoveColumnToLeft()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>246</x>
-     <y>450</y>
+     <x>263</x>
+     <y>431</y>
     </hint>
     <hint type="destinationlabel">
      <x>243</x>
@@ -1063,8 +1048,8 @@ p, li { white-space: pre-wrap; }
    <slot>onCancelColumnEditing()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>409</x>
-     <y>452</y>
+     <x>404</x>
+     <y>512</y>
     </hint>
     <hint type="destinationlabel">
      <x>243</x>
@@ -1079,8 +1064,8 @@ p, li { white-space: pre-wrap; }
    <slot>onAddIndex()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>444</x>
-     <y>602</y>
+     <x>445</x>
+     <y>590</y>
     </hint>
     <hint type="destinationlabel">
      <x>243</x>
@@ -1095,8 +1080,8 @@ p, li { white-space: pre-wrap; }
    <slot>onSelectIndex(QTreeWidgetItem*,int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>230</x>
-     <y>227</y>
+     <x>231</x>
+     <y>201</y>
     </hint>
     <hint type="destinationlabel">
      <x>243</x>
@@ -1111,8 +1096,8 @@ p, li { white-space: pre-wrap; }
    <slot>onCancelIndexEditing()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>410</x>
-     <y>602</y>
+     <x>405</x>
+     <y>692</y>
     </hint>
     <hint type="destinationlabel">
      <x>243</x>
@@ -1127,8 +1112,8 @@ p, li { white-space: pre-wrap; }
    <slot>onBtnRemoveIndex()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>445</x>
-     <y>227</y>
+     <x>442</x>
+     <y>245</y>
     </hint>
     <hint type="destinationlabel">
      <x>243</x>
@@ -1143,8 +1128,8 @@ p, li { white-space: pre-wrap; }
    <slot>onMoveSelectedIndexColumnUp()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>443</x>
-     <y>450</y>
+     <x>440</x>
+     <y>525</y>
     </hint>
     <hint type="destinationlabel">
      <x>243</x>
@@ -1156,11 +1141,11 @@ p, li { white-space: pre-wrap; }
    <sender>btnMoveIndexColumnDown</sender>
    <signal>clicked()</signal>
    <receiver>NewTableForm</receiver>
-   <slot>onMoveSelectedIndexColumnDown()</slot>
+   <slot>onMoveSelectedIndexColumnUp()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>443</x>
-     <y>524</y>
+     <x>440</x>
+     <y>607</y>
     </hint>
     <hint type="destinationlabel">
      <x>243</x>
@@ -1175,8 +1160,8 @@ p, li { white-space: pre-wrap; }
    <slot>onForeignTableComboChange(QString)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>93</x>
-     <y>427</y>
+     <x>85</x>
+     <y>398</y>
     </hint>
     <hint type="destinationlabel">
      <x>243</x>
@@ -1191,8 +1176,8 @@ p, li { white-space: pre-wrap; }
    <slot>onForeignTableColumnChange()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>207</x>
-     <y>399</y>
+     <x>208</x>
+     <y>398</y>
     </hint>
     <hint type="destinationlabel">
      <x>243</x>
@@ -1207,8 +1192,24 @@ p, li { white-space: pre-wrap; }
    <slot>onAddForeignKeyAssociation()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>443</x>
-     <y>399</y>
+     <x>441</x>
+     <y>398</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>243</x>
+     <y>386</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>lstForeignKeyAssociations</sender>
+   <signal>itemClicked(QTreeWidgetItem*,int)</signal>
+   <receiver>NewTableForm</receiver>
+   <slot>onSelectAssociation(QTreeWidgetItem*,int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>276</x>
+     <y>560</y>
     </hint>
     <hint type="destinationlabel">
      <x>243</x>
@@ -1237,5 +1238,6 @@ p, li { white-space: pre-wrap; }
   <slot>onForeignTableComboChange(QString)</slot>
   <slot>onForeignTableColumnChange()</slot>
   <slot>onAddForeignKeyAssociation()</slot>
+  <slot>onSelectAssociation(QTreeWidgetItem*,int)</slot>
  </slots>
 </ui>

@@ -49,6 +49,7 @@ NewTableForm::NewTableForm(DatabaseEngine* db, Project* prj, QWidget *parent) : 
     }
 
     m_ui->btnAdvanced->hide();
+    m_ui->tabWidget->setCurrentIndex(0);
 }
 
 NewTableForm::~NewTableForm()
@@ -191,10 +192,12 @@ void NewTableForm::onCancelColumnEditing()
 
 void NewTableForm::onDeleteColumn()
 {
+    const Column* currentColumn = m_table->getColumn(m_ui->lstColumns->currentItem()->text(1));
     delete m_ui->lstColumns->currentItem();
     onCancelColumnEditing();
-    m_table->removeColumn(m_currentColumn);
+    m_table->removeColumn(const_cast<Column*>(currentColumn));
     m_currentColumn = 0;
+    populateColumnsForIndices();
 }
 
 void NewTableForm::onMoveColumnDown()
@@ -210,6 +213,7 @@ void NewTableForm::onMoveColumnDown()
             delete m_ui->lstColumns->currentItem();
             m_ui->lstColumns->insertTopLevelItem(x.row() + 1, w);
             m_ui->lstColumns->setCurrentItem(w);
+            populateColumnsForIndices();
         }
     }
 }
@@ -227,6 +231,7 @@ void NewTableForm::onMoveColumnUp()
             delete m_ui->lstColumns->currentItem();
             m_ui->lstColumns->insertTopLevelItem(x.row() - 1, w);
             m_ui->lstColumns->setCurrentItem(w);
+            populateColumnsForIndices();
         }
     }
 }
@@ -261,7 +266,7 @@ void NewTableForm::populateColumnsForIndices()
         if(m_ui->lstSelectedColumnsForIndex->count() == 0)
         {
             QListWidgetItem* qlwi = new QListWidgetItem(m_table->getColumns()[i]->getName(), m_ui->lstAvailableColumnsForIndex);
-            qlwi->setIcon(m_table->getColumns()[i]->getLocation()->icon(COL_POS_DT));
+            qlwi->setIcon(m_table->getColumns()[i]->getDataType()->getIcon());
         }
         else
         {
@@ -270,7 +275,7 @@ void NewTableForm::populateColumnsForIndices()
                 if(m_ui->lstSelectedColumnsForIndex->item(j)->text() != m_table->getColumns()[i]->getName())
                 {
                     QListWidgetItem* qlwi = new QListWidgetItem(m_table->getColumns()[i]->getName(), m_ui->lstAvailableColumnsForIndex);
-                    qlwi->setIcon(m_table->getColumns()[i]->getLocation()->icon(COL_POS_DT));
+                    qlwi->setIcon(m_table->getColumns()[i]->getDataType()->getIcon());
                 }
             }
         }
@@ -550,5 +555,61 @@ void NewTableForm::onForeignTableColumnChange()
 
 void NewTableForm::onAddForeignKeyAssociation()
 {
+    QString foreignColumn, localColumn;
+    const Column* cforeignColumn, *clocalColumn;
+    QList<QListWidgetItem *> selectedItems = m_ui->lstForeignTablesColumns->selectedItems();
+    for(int i=0; i< selectedItems.size(); i++)
+    {
+        foreignColumn = selectedItems[i]->text();
+        cforeignColumn = m_foreignTable->getColumn(selectedItems[i]->text());
+        break;
+    }
 
+    selectedItems = m_ui->lstLocalColumn->selectedItems();
+    for(int i=0; i< selectedItems.size(); i++)
+    {
+        localColumn = selectedItems[i]->text();
+        clocalColumn = m_table->getColumn(selectedItems[i]->text());
+        break;
+    }
+
+    if(localColumn.length() == 0 || foreignColumn.length() == 0)
+    {
+        QMessageBox::critical (this, tr("Error"), tr("Please select two columns: one from the foreign table, one from the local table"), QMessageBox::Ok);
+        return;
+    }
+
+    QStringList a(foreignColumn);
+    a.append(localColumn);
+    QTreeWidgetItem* item = new QTreeWidgetItem((QTreeWidget*)0, a);
+
+    // sets the data, this will be used on the "on click on this item" method to correctly populate the controls
+    QVariant var(m_foreignTable->getName());
+    item->setData(0, Qt::UserRole, var);
+
+    item->setIcon(0, cforeignColumn->getDataType()->getIcon());
+    item->setIcon(0, clocalColumn->getDataType()->getIcon());
+
+    m_ui->lstForeignKeyAssociations->addTopLevelItem(item);
+}
+
+void NewTableForm::onSelectAssociation(QTreeWidgetItem* current, int column)
+{
+    QVariant qv = current->data(0, Qt::UserRole);
+    QString tabName = qv.toString();
+    int foundIndex = m_ui->cmbForeignTables->findText(tabName);
+    if(foundIndex == -1)
+    {
+        QMessageBox::critical (this, tr("Internal Error"), tr("Please contact the developers"), QMessageBox::Ok);
+        return;
+    }
+    m_ui->cmbForeignTables->setCurrentIndex(foundIndex);
+
+    for(int i=0; i<m_ui->lstForeignTablesColumns->count(); i++)
+    {
+        if(m_ui->lstForeignTablesColumns->item(i)->text() == current->text(0))
+        {
+            m_ui->lstForeignTablesColumns->setCurrentItem(m_ui->lstForeignTablesColumns->item(i));
+        }
+    }
 }

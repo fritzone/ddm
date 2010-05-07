@@ -97,6 +97,11 @@ public:
 
     void removeColumn(Column* toRemove);
 
+    /**
+     * Returns true if this column is used in an index. In this case the column cannot be deleted.
+     */
+    bool isColumnUsedInIndex(const Column*);
+
 
 private:
     // the name of the table

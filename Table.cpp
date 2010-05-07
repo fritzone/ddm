@@ -21,7 +21,7 @@ void Table::moveColumnDown(int c)
     {
         Column* tc = m_columns[c];
         m_columns[c] = m_columns[c+1];
-        m_columns[c] = tc;
+        m_columns[c+1] = tc;
     }
 }
 
@@ -31,7 +31,7 @@ void Table::moveColumnUp(int c)
     {
         Column* tc = m_columns[c];
         m_columns[c] = m_columns[c-1];
-        m_columns[c] = tc;
+        m_columns[c-1] = tc;
     }
 }
 

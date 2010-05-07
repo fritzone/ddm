@@ -34,7 +34,7 @@
     </widget>
    </item>
    <item row="1" column="0">
-    <widget class="QToolBox" name="toolBox">
+    <widget class="QTabWidget" name="tabWidget">
      <property name="font">
       <font>
        <family>Sans Serif</family>
@@ -44,20 +44,9 @@
      <property name="currentIndex">
       <number>0</number>
      </property>
-     <property name="tabSpacing">
-      <number>2</number>
-     </property>
-     <widget class="QWidget" name="page">
-      <property name="geometry">
-       <rect>
-        <x>0</x>
-        <y>0</y>
-        <width>378</width>
-        <height>494</height>
-       </rect>
-      </property>
-      <attribute name="label">
-       <string>Basic settings</string>
+     <widget class="QWidget" name="tabWidgetPage1" native="true">
+      <attribute name="title">
+       <string>Basic properties</string>
       </attribute>
       <layout class="QFormLayout" name="formLayout">
        <property name="fieldGrowthPolicy">
@@ -246,17 +235,9 @@ p, li { white-space: pre-wrap; }
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="page_2">
-      <property name="geometry">
-       <rect>
-        <x>0</x>
-        <y>0</y>
-        <width>361</width>
-        <height>286</height>
-       </rect>
-      </property>
-      <attribute name="label">
-       <string>Advanced properties</string>
+     <widget class="QWidget" name="tabWidgetPage2" native="true">
+      <attribute name="title">
+       <string>Advanced</string>
       </attribute>
       <layout class="QFormLayout" name="formLayout_2">
        <item row="1" column="0">
@@ -358,16 +339,8 @@ p, li { white-space: pre-wrap; }
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="page_3">
-      <property name="geometry">
-       <rect>
-        <x>0</x>
-        <y>0</y>
-        <width>202</width>
-        <height>97</height>
-       </rect>
-      </property>
-      <attribute name="label">
+     <widget class="QWidget" name="tabWidgetPage3" native="true">
+      <attribute name="title">
        <string>Description</string>
       </attribute>
       <layout class="QFormLayout" name="formLayout_3">
@@ -392,18 +365,34 @@ p, li { white-space: pre-wrap; }
  </resources>
  <connections>
   <connection>
+   <sender>buttons</sender>
+   <signal>clicked(QAbstractButton*)</signal>
+   <receiver>NewDataTypeForm</receiver>
+   <slot>buttonClicked(QAbstractButton*)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>199</x>
+     <y>627</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>199</x>
+     <y>324</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
    <sender>cmbDTType</sender>
    <signal>currentIndexChanged(QString)</signal>
    <receiver>NewDataTypeForm</receiver>
    <slot>basicDTselected(QString)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>289</x>
-     <y>189</y>
+     <x>257</x>
+     <y>95</y>
     </hint>
     <hint type="destinationlabel">
      <x>199</x>
-     <y>249</y>
+     <y>324</y>
     </hint>
    </hints>
   </connection>
@@ -414,8 +403,8 @@ p, li { white-space: pre-wrap; }
    <slot>onSqlTypeSelected(QString)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>289</x>
-     <y>256</y>
+     <x>257</x>
+     <y>128</y>
     </hint>
     <hint type="destinationlabel">
      <x>199</x>
@@ -430,8 +419,8 @@ p, li { white-space: pre-wrap; }
    <slot>onAddMiscValue()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>320</x>
-     <y>329</y>
+     <x>363</x>
+     <y>395</y>
     </hint>
     <hint type="destinationlabel">
      <x>199</x>
@@ -446,8 +435,8 @@ p, li { white-space: pre-wrap; }
    <slot>onRemoveSelectedMiscValue()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>320</x>
-     <y>216</y>
+     <x>363</x>
+     <y>277</y>
     </hint>
     <hint type="destinationlabel">
      <x>199</x>
@@ -462,24 +451,8 @@ p, li { white-space: pre-wrap; }
    <slot>onCharacterSetCmbChanged(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>282</x>
-     <y>128</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>199</x>
-     <y>324</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>buttons</sender>
-   <signal>clicked(QAbstractButton*)</signal>
-   <receiver>NewDataTypeForm</receiver>
-   <slot>buttonClicked(QAbstractButton*)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>199</x>
-     <y>627</y>
+     <x>261</x>
+     <y>260</y>
     </hint>
     <hint type="destinationlabel">
      <x>199</x>
