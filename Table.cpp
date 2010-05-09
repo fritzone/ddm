@@ -1,5 +1,6 @@
 #include "Table.h"
 #include "Column.h"
+#include "Index.h"
 
 Table::Table() : m_columns(), m_indices()
 {
@@ -74,4 +75,16 @@ void Table::removeColumn(Column* toRemove)
     {
         m_columns.remove(idx);
     }
+}
+
+Index* Table::isColumnUsedInIndex(const Column *column)
+{
+    for(int i=0; i<m_indices.size(); i++)
+    {
+        if(m_indices[i]->hasColumn(column))
+        {
+            return m_indices[i];
+        }
+    }
+    return 0;
 }

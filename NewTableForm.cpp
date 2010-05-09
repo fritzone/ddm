@@ -193,6 +193,12 @@ void NewTableForm::onCancelColumnEditing()
 void NewTableForm::onDeleteColumn()
 {
     const Column* currentColumn = m_table->getColumn(m_ui->lstColumns->currentItem()->text(1));
+    const Index* usedIn = m_table->isColumnUsedInIndex(currentColumn);
+    if(usedIn != 0)
+    {
+        QMessageBox::critical (this, tr("Error"), tr("This column cannot be deleted since it's used in an index. Delete this index first: ") + usedIn->getName(), QMessageBox::Ok);
+        return;
+    }
     delete m_ui->lstColumns->currentItem();
     onCancelColumnEditing();
     m_table->removeColumn(const_cast<Column*>(currentColumn));
@@ -605,6 +611,7 @@ void NewTableForm::onSelectAssociation(QTreeWidgetItem* current, int column)
     }
     m_ui->cmbForeignTables->setCurrentIndex(foundIndex);
 
+    // select in the foreign tables column
     for(int i=0; i<m_ui->lstForeignTablesColumns->count(); i++)
     {
         if(m_ui->lstForeignTablesColumns->item(i)->text() == current->text(0))
@@ -612,4 +619,13 @@ void NewTableForm::onSelectAssociation(QTreeWidgetItem* current, int column)
             m_ui->lstForeignTablesColumns->setCurrentItem(m_ui->lstForeignTablesColumns->item(i));
         }
     }
+    // select in the working tables column
+    for(int i=0; i<m_ui->lstLocalColumn->count(); i++)
+    {
+        if(m_ui->lstLocalColumn->item(i)->text() == current->text(1))
+        {
+            m_ui->lstLocalColumn->setCurrentItem(m_ui->lstLocalColumn->item(i));
+        }
+    }
+
 }

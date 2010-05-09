@@ -100,7 +100,7 @@ public:
     /**
      * Returns true if this column is used in an index. In this case the column cannot be deleted.
      */
-    bool isColumnUsedInIndex(const Column*);
+    Index* isColumnUsedInIndex(const Column*);
 
 
 private:

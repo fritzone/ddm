@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>487</width>
+    <width>522</width>
     <height>774</height>
    </rect>
   </property>
@@ -42,6 +42,9 @@ p, li { white-space: pre-wrap; }
        <family>Sans Serif</family>
        <pointsize>12</pointsize>
       </font>
+     </property>
+     <property name="tabShape">
+      <enum>QTabWidget::Rounded</enum>
      </property>
      <property name="currentIndex">
       <number>2</number>
@@ -531,7 +534,7 @@ p, li { white-space: pre-wrap; }
          <property name="title">
           <string>Foreign keys</string>
          </property>
-         <layout class="QVBoxLayout" name="verticalLayout_13">
+         <layout class="QHBoxLayout" name="horizontalLayout_10">
           <item>
            <widget class="QTreeWidget" name="treeForeignKeys">
             <property name="rootIsDecorated">
@@ -569,6 +572,20 @@ p, li { white-space: pre-wrap; }
               <string>Local columns</string>
              </property>
             </column>
+           </widget>
+          </item>
+          <item>
+           <widget class="QToolButton" name="toolButton_13">
+            <property name="toolTip">
+             <string>Delete foriegn key</string>
+            </property>
+            <property name="text">
+             <string>...</string>
+            </property>
+            <property name="icon">
+             <iconset resource="dbm.qrc">
+              <normaloff>:/images/actions/images/small/remove.png</normaloff>:/images/actions/images/small/remove.png</iconset>
+            </property>
            </widget>
           </item>
          </layout>
@@ -616,17 +633,6 @@ p, li { white-space: pre-wrap; }
             <item row="1" column="2">
              <widget class="QListWidget" name="lstLocalColumn"/>
             </item>
-            <item row="1" column="3">
-             <widget class="QToolButton" name="btnAddForeignKeyAssociation">
-              <property name="text">
-               <string>...</string>
-              </property>
-              <property name="icon">
-               <iconset resource="dbm.qrc">
-                <normaloff>:/images/actions/images/small/add.png</normaloff>:/images/actions/images/small/add.png</iconset>
-              </property>
-             </widget>
-            </item>
             <item row="1" column="1">
              <widget class="QListWidget" name="lstForeignTablesColumns"/>
             </item>
@@ -634,6 +640,20 @@ p, li { white-space: pre-wrap; }
              <widget class="QLabel" name="label_12">
               <property name="text">
                <string>Foreign Column</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="3">
+             <widget class="QToolButton" name="btnAddForeignKeyAssociation">
+              <property name="toolTip">
+               <string>Add column associations</string>
+              </property>
+              <property name="text">
+               <string>...</string>
+              </property>
+              <property name="icon">
+               <iconset resource="dbm.qrc">
+                <normaloff>:/images/actions/images/small/add.png</normaloff>:/images/actions/images/small/add.png</iconset>
               </property>
              </widget>
             </item>
@@ -679,6 +699,9 @@ p, li { white-space: pre-wrap; }
             </item>
             <item>
              <widget class="QToolButton" name="toolButton_11">
+              <property name="toolTip">
+               <string>Delete column association</string>
+              </property>
               <property name="text">
                <string>...</string>
               </property>
@@ -785,6 +808,9 @@ p, li { white-space: pre-wrap; }
              <layout class="QHBoxLayout" name="horizontalLayout_4">
               <item>
                <widget class="QToolButton" name="toolButton_12">
+                <property name="toolTip">
+                 <string>Cancel editing foreign key</string>
+                </property>
                 <property name="text">
                  <string>...</string>
                 </property>
@@ -796,6 +822,9 @@ p, li { white-space: pre-wrap; }
               </item>
               <item>
                <widget class="QToolButton" name="btnAddForeignKeyAssociation_2">
+                <property name="toolTip">
+                 <string>Add foreign key</string>
+                </property>
                 <property name="text">
                  <string>...</string>
                 </property>
@@ -811,6 +840,52 @@ p, li { white-space: pre-wrap; }
           </item>
          </layout>
         </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tab">
+      <attribute name="title">
+       <string>Startup values</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout_8">
+       <item>
+        <layout class="QVBoxLayout" name="verticalLayout_9">
+         <item>
+          <widget class="QTableWidget" name="tableWidget"/>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_11">
+           <item>
+            <widget class="QToolButton" name="btnAddForeignKeyAssociation_3">
+             <property name="toolTip">
+              <string>Add column associations</string>
+             </property>
+             <property name="text">
+              <string>...</string>
+             </property>
+             <property name="icon">
+              <iconset resource="dbm.qrc">
+               <normaloff>:/images/actions/images/small/add.png</normaloff>:/images/actions/images/small/add.png</iconset>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QToolButton" name="toolButton_14">
+             <property name="toolTip">
+              <string>Delete column association</string>
+             </property>
+             <property name="text">
+              <string>...</string>
+             </property>
+             <property name="icon">
+              <iconset resource="dbm.qrc">
+               <normaloff>:/images/actions/images/small/remove.png</normaloff>:/images/actions/images/small/remove.png</iconset>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+        </layout>
        </item>
       </layout>
      </widget>
