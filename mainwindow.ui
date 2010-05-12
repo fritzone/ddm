@@ -159,10 +159,27 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>action_Save</sender>
+   <signal>activated()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>onSaveProject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>30</x>
+     <y>52</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>onNewProject()</slot>
   <slot>onNewDataType()</slot>
   <slot>onNewTable()</slot>
+  <slot>onSaveProject()</slot>
  </slots>
 </ui>

@@ -40,3 +40,26 @@ Version* Project::getWorkingVersion() const
 
     return 0;
 }
+
+void Project::serialize(QDomDocument& doc, QDomElement& parent) const
+{
+    QDomElement projectElement = doc.createElement("Project");      // will hold the data in this element
+
+    QDomElement nameElement = doc.createElement("Name");        // the name node
+    QDomText nameNode = doc.createTextNode(name);
+    nameElement.appendChild(nameNode);
+    projectElement.appendChild(nameElement);
+
+    // now saving the major versions of the project
+    QDomElement majorVersionsElement = doc.createElement("MajorVersions");
+    for(int i=0; i< majorVersions.size(); i++)
+    {
+        majorVersions[i]->serialize(doc, majorVersionsElement);
+    }
+    projectElement.appendChild(majorVersionsElement);
+
+    // now serialize the tables
+
+    parent.appendChild(projectElement);
+
+}

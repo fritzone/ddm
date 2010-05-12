@@ -698,7 +698,7 @@ p, li { white-space: pre-wrap; }
              </widget>
             </item>
             <item>
-             <widget class="QToolButton" name="toolButton_11">
+             <widget class="QToolButton" name="btnRemoveAssociation">
               <property name="toolTip">
                <string>Delete column association</string>
               </property>
@@ -1292,6 +1292,22 @@ p, li { white-space: pre-wrap; }
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>btnRemoveAssociation</sender>
+   <signal>clicked()</signal>
+   <receiver>NewTableForm</receiver>
+   <slot>onRemoveForeignKeyAssociation()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>477</x>
+     <y>558</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>260</x>
+     <y>386</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>onAddColumn()</slot>
@@ -1314,5 +1330,6 @@ p, li { white-space: pre-wrap; }
   <slot>onForeignTableColumnChange()</slot>
   <slot>onAddForeignKeyAssociation()</slot>
   <slot>onSelectAssociation(QTreeWidgetItem*,int)</slot>
+  <slot>onRemoveForeignKeyAssociation()</slot>
  </slots>
 </ui>

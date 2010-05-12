@@ -2,13 +2,14 @@
 #define INDEX_H
 
 #include "TreeItem.h"
+#include "SerializableElement.h"
 
 #include <QVector>
 #include <QString>
 
 class Column;
 
-class Index : public TreeItem
+class Index : virtual public TreeItem, virtual public SerializableElement
 {
 public:
     Index();
@@ -33,6 +34,8 @@ public:
     {
         return m_columns;
     }
+
+    virtual void serialize(QDomDocument &doc, QDomElement &parent) const;
 
 
 private:

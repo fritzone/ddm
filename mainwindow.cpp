@@ -12,6 +12,7 @@
 #include "NewTableForm.h"
 #include "Table.h"
 #include "IconFactory.h"
+#include "TablesListForm.h"
 
 #include <QtGui>
 
@@ -103,17 +104,18 @@ void MainWindow::onProjectTreeClicked()
     if(selectedItems.length() == 1)
     {
         QTreeWidgetItem* item = selectedItems[0];
-
-        // see if we have clicked on the Data Types item
         if(item == getWorkingProject()->getWorkingVersion()->getDtsItem())
-        {
+        {// we have clicked on the Data Types item
             DataTypesListForm* dtLst = new DataTypesListForm(this);
             dtLst->feedInDataTypes(getWorkingProject()->getWorkingVersion()->getDataTypes());
             setCentralWidget(dtLst);
         }
         else
         if(item == getWorkingProject()->getWorkingVersion()->getTablesItem())
-        {
+        {// we have clicked on the Tables item
+            TablesListForm* tblLst = new TablesListForm(this);
+            tblLst->populateTables(getWorkingProject()->getWorkingVersion()->getTables());
+            setCentralWidget(tblLst);
         }
         else
         if(item == getWorkingProject()->getWorkingVersion()->getViewsItem())
@@ -126,7 +128,7 @@ void MainWindow::onProjectTreeClicked()
         else// here means the user clicked on something which has a "TAG"
         {
             if(item->parent() && item->parent() == getWorkingProject()->getWorkingVersion()->getDtsItem())
-            {   // the user clicked on a Data Type item
+            {   // the user clicked on a Data Type item. The UserDataType class is something that can be put in a user role TAG
                 QVariant qv = item->data(0, Qt::UserRole);
                 UserDataType* udt = static_cast<UserDataType*>(qv.data());
                 if(getWorkingProject()->getWorkingVersion()->hasDataType(udt->getName()))
@@ -142,7 +144,7 @@ void MainWindow::onProjectTreeClicked()
             else
             if(item->parent() && item->parent() == getWorkingProject()->getWorkingVersion()->getTablesItem())
             {
-                // the user clicked on a table
+                // the user clicked on a table, the name of the table is a tag
                 QVariant qv = item->data(0, Qt::UserRole);
                 QString tabName = qv.toString();
                 Table* table =  getWorkingProject()->getWorkingVersion()->getTable(tabName);
@@ -271,4 +273,16 @@ Project* MainWindow::getWorkingProject()
     }
 
     return 0;
+}
+
+void MainWindow::onSaveProject()
+{
+    QDomDocument doc("DBM");
+    QDomElement root = doc.createElement("DBM");
+    getWorkingProject()->serialize(doc, root);
+    doc.appendChild(root);
+    QString xml = doc.toString();
+    QFile f1("blaa.xml");
+    f1.write(xml.toAscii());
+    f1.close();
 }

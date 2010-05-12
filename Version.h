@@ -1,6 +1,8 @@
 #ifndef VERSION_H
 #define VERSION_H
 
+#include "SerializableElement.h"
+
 #include <QTreeWidgetItem>
 
 class UserDataType;
@@ -9,71 +11,79 @@ class Table;
 /**
  * Basic class holding data related to versions
  */
-class Version
+class Version : virtual public SerializableElement
 {
 public:
     Version();
     virtual ~Version();
 
-    // the methods below will return the various tree items
+    /**
+     * Return the tree item of the Data Types
+     */
     virtual QTreeWidgetItem* getDtsItem() const = 0;
+
+    /**
+     * Return the tree item of the Tables
+     */
     virtual QTreeWidgetItem* getTablesItem() const = 0;
+
+    /**
+     * Return the tree item of the Views
+     */
     virtual QTreeWidgetItem* getViewsItem() const = 0;
+
+    /**
+     * Return the tree item of the Version
+     */
     virtual QTreeWidgetItem* getVersionItem() const = 0;
 
     /**
      * Adds a new data type to this version
      */
-    void addNewDataType(UserDataType*);
+    virtual void addNewDataType(UserDataType*) = 0;
 
     /**
      * Returns a constant reference to the data types of the version
      */
-    const QVector<UserDataType*>& getDataTypes() const
-    {
-        return m_dataTypes;
-    }
+    virtual const QVector<UserDataType*>& getDataTypes() const = 0;
 
     /**
      * Checks if this version has a data type with the specified name
      */
-    bool hasDataType(const QString& name) const;
+    virtual bool hasDataType(const QString& name) const = 0;
 
     /**
      * Returns a r/w reference to the given data type, the caller can modify it.
      */
-    UserDataType* getDataType(const QString& name);
+    virtual UserDataType* getDataType(const QString& name) = 0;
 
     /**
      * Returns the index of the given data type...
      */
-    int getDataTypeIndex(const QString& name);
+    virtual int getDataTypeIndex(const QString& name) = 0;
 
     /**
      * Adds a new table to the system
      */
-    void addTable(Table*);
+    virtual void addTable(Table*) = 0;
 
     /**
      * Checks if this version has the given table already. The comparison is done based on
      * the table name which is supposed to be unique.
      */
-    bool hasTable(Table*);
+    virtual bool hasTable(Table*) = 0;
 
-    Table* getTable(const QString& name);
+    /**
+     * Return the table with the given name for r/w access
+     */
+    virtual Table* getTable(const QString& name) = 0;
 
-    const QVector<Table*>& getTables() const
-    {
-        return m_tables;
-    }
+    virtual const QVector<Table*>& getTables() const = 0;
+
+    virtual void serialize(QDomDocument &doc, QDomElement &parent) const = 0;
 
 private:
 
-    // The vector of data types. The order in it is the one the user creates the data types
-    QVector<UserDataType*> m_dataTypes;
-
-    // the tables in the system
-    QVector<Table*> m_tables;
 };
 
 #endif // VERSION_H

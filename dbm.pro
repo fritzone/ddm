@@ -7,11 +7,11 @@ QT += network \
 TARGET = dbm
 TEMPLATE = app
 SOURCES += main.cpp \
-    MainWindow.cpp \
+    mainwindow.cpp \
     MainWindowButtonDialog.cpp \
     NewProjectDialog.cpp \
     newdatatypeform.cpp \
-    DatatypesListForm.cpp \
+    datatypeslistform.cpp \
     AbstractDTSupplier.cpp \
     DataType.cpp \
     MySQLDTSupplier.cpp \
@@ -34,7 +34,7 @@ HEADERS += MainWindow.h \
     MainWindowButtonDialog.h \
     NewProjectDialog.h \
     NewDatatypeForm.h \
-    DatatypesListForm.h \
+    datatypeslistform.h \
     AbstractDTSupplier.h \
     DataType.h \
     MySQLDTSupplier.h \
@@ -56,7 +56,9 @@ HEADERS += MainWindow.h \
     Column.h \
     AbstractIndextypeProvider.h \
     MySQLIndextypeProvider.h \
-    Index.h
+    Index.h \
+    SerializableElement.h \
+    NamedItem.h
 FORMS += mainwindow.ui \
     mainwindowbuttondialog.ui \
     newprojectdialog.ui \

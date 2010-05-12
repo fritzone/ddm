@@ -599,16 +599,38 @@ void NewTableForm::onAddForeignKeyAssociation()
     m_ui->lstForeignKeyAssociations->addTopLevelItem(item);
 }
 
+void NewTableForm::onRemoveForeignKeyAssociation()
+{
+    // this deletes only the current entry in the list
+    delete m_ui->lstForeignKeyAssociations->currentItem();
+}
+
 void NewTableForm::onSelectAssociation(QTreeWidgetItem* current, int column)
 {
     QVariant qv = current->data(0, Qt::UserRole);
     QString tabName = qv.toString();
+    m_foreignTable = m_project->getWorkingVersion()->getTable(tabName);
+    if(m_foreignTable == 0)
+    {
+        QMessageBox::critical (this, tr("Internal Error (1)"), tr("Please contact the developers"), QMessageBox::Ok);
+        return;
+    }
+    // populate the first list view with the foreign table columns
+    const QVector<Column*> & foreignColumns = m_foreignTable->getColumns();
+    m_ui->lstForeignTablesColumns->clear();
+    for(int i=0; i<foreignColumns.size(); i++)
+    {
+        QListWidgetItem* qlwi = new QListWidgetItem(m_foreignTable->getColumns()[i]->getName(), m_ui->lstForeignTablesColumns);
+        qlwi->setIcon(m_foreignTable->getColumns()[i]->getDataType()->getIcon());
+    }
+
     int foundIndex = m_ui->cmbForeignTables->findText(tabName);
     if(foundIndex == -1)
     {
         QMessageBox::critical (this, tr("Internal Error"), tr("Please contact the developers"), QMessageBox::Ok);
         return;
     }
+
     m_ui->cmbForeignTables->setCurrentIndex(foundIndex);
 
     // select in the foreign tables column
@@ -629,3 +651,4 @@ void NewTableForm::onSelectAssociation(QTreeWidgetItem* current, int column)
     }
 
 }
+

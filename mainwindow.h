@@ -62,6 +62,8 @@ public slots:
     // called when the user activated a new table action
     void onNewTable();
 
+    void onSaveProject();
+
 private:
     Ui::MainWindow *ui;
 

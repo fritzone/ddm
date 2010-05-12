@@ -1,6 +1,8 @@
 #ifndef PROJECT_H
 #define PROJECT_H
 
+#include "SerializableElement.h"
+
 #include <QTreeWidget>
 #include <QTreeWidgetItem>
 #include <QVector>
@@ -13,7 +15,7 @@ class DatabaseEngine;
 /**
  * Holds the data of a project.
  */
-class Project
+class Project : virtual public SerializableElement
 {
 public:
 
@@ -29,6 +31,8 @@ public:
     Version* getWorkingVersion() const;
 
     DatabaseEngine* getEngine() const;
+
+    virtual void serialize(QDomDocument& doc, QDomElement& parent) const;
 
 private:
 

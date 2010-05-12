@@ -55,6 +55,7 @@ public slots:
     void onForeignTableColumnChange();
     void onAddForeignKeyAssociation();
     void onSelectAssociation(QTreeWidgetItem*,int);
+    void onRemoveForeignKeyAssociation();
 
 protected:
     void changeEvent(QEvent *e);

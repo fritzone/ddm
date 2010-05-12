@@ -3,13 +3,15 @@
 
 #include <QtGui/QWidget>
 
-namespace Ui {
+namespace Ui
+{
     class DataTypesListForm;
 }
 
 class UserDataType;
 
-class DataTypesListForm : public QWidget {
+class DataTypesListForm : public QWidget
+{
     Q_OBJECT
 public:
     DataTypesListForm(QWidget *parent = 0);

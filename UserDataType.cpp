@@ -43,15 +43,22 @@ void UserDataType::serialize(QDomDocument& doc, QDomElement& parent) const
     QDomElement nameElement = doc.createElement("Name");        // the name node
     QDomText nameNode = doc.createTextNode(name);
     nameElement.appendChild(nameNode);
+    dtElement.appendChild(nameElement);
 
-    QDomElement dtTypeElement = doc.createElement("Type");
+    QDomElement dtTypeElement = doc.createElement("Type");      // type (as number)
     QDomText dtTypeNode = doc.createTextNode(QString::number(getType()));
     dtTypeElement.appendChild(dtTypeNode);
+    dtElement.appendChild(dtTypeElement);
 
-    QDomElement sqlTypeElement = doc.createElement("SqlType");
+    QDomElement sqlTypeElement = doc.createElement("SqlType");  // type as SQL
     QDomText sqlTypeNode = doc.createTextNode(getSqlType());
     sqlTypeElement.appendChild(sqlTypeNode);
+    dtElement.appendChild(sqlTypeElement);
+
+    QDomElement sizeElement = doc.createElement("Size");  // size
+    QDomText sizeNode = doc.createTextNode(getSize());
+    sizeElement.appendChild(sizeNode);
+    dtElement.appendChild(sizeElement);
 
     parent.appendChild(dtElement);
-
 }
