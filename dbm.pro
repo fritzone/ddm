@@ -29,7 +29,8 @@ SOURCES += main.cpp \
     NewTableForm.cpp \
     Column.cpp \
     AbstractIndextypeProvider.cpp \
-    Index.cpp
+    Index.cpp \
+    DeserializationFactory.cpp
 HEADERS += MainWindow.h \
     MainWindowButtonDialog.h \
     NewProjectDialog.h \
@@ -58,7 +59,8 @@ HEADERS += MainWindow.h \
     MySQLIndextypeProvider.h \
     Index.h \
     SerializableElement.h \
-    NamedItem.h
+    NamedItem.h \
+    DeserializationFactory.h
 FORMS += mainwindow.ui \
     mainwindowbuttondialog.ui \
     newprojectdialog.ui \

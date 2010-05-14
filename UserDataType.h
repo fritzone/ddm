@@ -17,13 +17,14 @@ public:
 
     UserDataType():DataType("", DataType::DT_INVALID), sqlType(""),
     icon(0), size(""), defaultValue(""), miscStuff(), codePage(""),
-    unsignedDT(false)
+    unsignedDT(false), description(""), canBeNull(true)
     {}
 
     UserDataType(const UserDataType& other):DataType(other.name, other.type),
     sqlType(other.sqlType), icon(other.icon), size(other.size),
     defaultValue(other.defaultValue), miscStuff(other.miscStuff),
-    codePage(other.codePage),unsignedDT(other.unsignedDT)
+    codePage(other.codePage),unsignedDT(other.unsignedDT),
+    description(other.description), canBeNull(true)
     {}
 
     ~UserDataType()
@@ -32,7 +33,7 @@ public:
     UserDataType(const QString& name, const QString& typeString,
                  const QString& _sqlType, const QString& _s,
                  const QString& _defaultValue, const QString& _cp,
-                 const QStringList& _mvs, bool unsi);
+                 const QStringList& _mvs, bool unsi, const QString& desc, bool nullable);
 
     UserDataType& operator = (const UserDataType& other);
 
@@ -81,19 +82,23 @@ public:
         return miscStuff;
     }
 
+    const QString& getDescription() const
+    {
+        return description;
+    }
+
+    bool isNullable() const
+    {
+        return canBeNull;
+    }
+
     /**
      * Serializes this UserDataType to be saved in the final XML.
      * Modifies the doc object, this is why it's passed in by reference.
      * XML will look like:
-     * <DataType>
-     *  <Name> NAME </Name>
-     *  <Type> DT_TYPE </Type> -- From the DataType.h
-     *  <SQLType> SQL_TYPE </SQLType>
-     *  <Size> SIZE </Size>
-     *  <DefaultValue> DEFAULT_VALUE </DefaultValue>
-     *  <CodePage> CODEPAGE </CodePage>
-     *  <Unsigned> YES/NO </Unsigned>
-     *  <Values>                -- In case this is ENUM or SET or anything
+     * <DataType Name = NAME, Type=DT_TYPE, SqlType=SQL_TYPE, Size=SIZE, DefaultValue=DEFAULT_VALUE, Codepage=CODEPAGE, Unsigned=0/1, CanBeNull=0/1>
+     *  <Description> Description </Description>
+     *  <Values>
      *   <Value> VALUE </Value>
      *  </Values>
      * </DataType>
@@ -123,6 +128,10 @@ private:
 
     // if the data type is numeric and this will be unsigned
     bool unsignedDT;
+
+    QString description;
+
+    bool canBeNull;
 
 };
 

@@ -11,6 +11,7 @@
 #include "Configuration.h"
 
 #include <QMessageBox>
+#include <QComboBox>
 #include <QListWidget>
 #include <QListWidgetItem>
 
@@ -31,6 +32,10 @@ NewDataTypeForm::NewDataTypeForm(DatabaseEngine* dbe, QWidget *parent) :
     m_ui->txtEnumCurrentValue->hide();
     m_ui->btnAddEnumValue->hide();
     m_ui->btnRemoveEnumValue->hide();
+
+    m_ui->label_6->hide();
+    m_ui->chkAutoIncrement->hide();
+
 
     populateCodepageCombo();
     resetContent();
@@ -145,13 +150,25 @@ void NewDataTypeForm::onSave()
             mv.append(m_ui->lstEnumValues->item(i)->text());
         }
 
+        QString defaultValue = m_ui->txtDefaultValue->text();
+        if( DataType::getDT_TYPE(m_ui->cmbDTType->currentText()) == 5)  // MISC type (Enum or Set)
+        {
+            defaultValue = m_ui->cmbEnumItems->currentText();
+        }
+
+        if(m_ui->chkNullIsDefault->isChecked())
+        {
+            defaultValue = "null";
+        }
+
         if(m_mw->onSaveNewDataType(m_ui->txtDTName->text(),
                                    m_ui->cmbDTType->currentText(),
                                    m_ui->cmbDTSQLType->currentText(),
                                    m_ui->txtWidth->text(),
-                                   m_ui->txtDefaultValue->text(),
-                                   cp, mv,
-                                   m_ui->chkUnsigned->checkState() == Qt::Checked, m_udt))
+                                   defaultValue,
+                                   cp, mv, m_ui->txtDescription->toPlainText(),
+                                   m_ui->chkUnsigned->isChecked(),
+                                   m_ui->chkCanBeNull->isChecked(), m_udt))
         {
             resetContent();
         }
@@ -306,7 +323,7 @@ void NewDataTypeForm::onAddMiscValue()
     QListWidgetItem* newMiscValue = new QListWidgetItem(m_ui->txtEnumCurrentValue->text());
     m_ui->lstEnumValues->addItem(newMiscValue);
     m_ui->cmbEnumItems->addItem(m_ui->txtEnumCurrentValue->text());
-
+    m_ui->cmbEnumItems->setCurrentIndex(-1);
     m_ui->txtEnumCurrentValue->clear();
 
 }
@@ -379,5 +396,62 @@ void NewDataTypeForm::setDataType(UserDataType* udt)
     {
         QListWidgetItem* newMiscValue = new QListWidgetItem(udt->getMiscValues()[i]);
         m_ui->lstEnumValues->addItem(newMiscValue);
+        m_ui->cmbEnumItems->addItem(udt->getMiscValues()[i]);
+    }
+
+    // now find the default item (if any) and focus on it in the cmbEnumItems
+    m_ui->cmbEnumItems->setCurrentIndex(-1);
+    for(int i=0; i<udt->getMiscValues().count(); i++)
+    {
+        if(udt->getDefaultValue() == udt->getMiscValues()[i])
+        {
+            m_ui->cmbEnumItems->setCurrentIndex(i);
+            break;
+        }
+    }
+
+    m_ui->chkNullIsDefault->setChecked(false);
+    if(udt->getDefaultValue() == "null")
+    {
+        m_ui->cmbEnumItems->setEnabled(false);
+        m_ui->chkNullIsDefault->setChecked(true);
+        m_ui->txtDefaultValue->setEnabled(false);
+    }
+
+    if(!udt->isNullable())
+    {
+        m_ui->chkNullIsDefault->setEnabled(false);
+        m_ui->chkCanBeNull->setChecked(false);
+    }
+    else
+    {
+        m_ui->chkCanBeNull->setChecked(true);
+    }
+}
+
+void NewDataTypeForm::onNullClicked()
+{
+    if(m_ui->chkNullIsDefault->isChecked())
+    {
+        m_ui->cmbEnumItems->setEnabled(false);
+        m_ui->txtDefaultValue->setEnabled(false);
+    }
+    else
+    {
+        m_ui->cmbEnumItems->setEnabled(true);
+        m_ui->txtDefaultValue->setEnabled(true);
+    }
+}
+
+
+void NewDataTypeForm::onCanBeNullClicked()
+{
+    if(m_ui->chkCanBeNull->isChecked())
+    {
+        m_ui->chkNullIsDefault->setEnabled(true);
+    }
+    else
+    {
+        m_ui->chkNullIsDefault->setEnabled(false);
     }
 }

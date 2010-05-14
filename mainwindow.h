@@ -32,7 +32,8 @@ public:
     bool onSaveNewDataType(const QString& name, const QString& type,
                              const QString& sqlType, const QString& size,
                              const QString& defaultValue, const QString& cp,
-                             const QStringList& mvs, bool unsi, UserDataType* pudt);
+                             const QStringList& mvs, const QString& desc,
+                             bool unsi, bool canBeNull, UserDataType* pudt);
 
     Project* getWorkingProject();
 

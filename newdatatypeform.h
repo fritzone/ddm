@@ -74,6 +74,12 @@ public slots:
     /// when the user clicked Reset/Save in the button box
     void buttonClicked(QAbstractButton*);
 
+    /// when the user clicked the "Null" is default value
+    void onNullClicked();
+
+    /// when the user clicked the cna be null checkbox
+    void onCanBeNullClicked();
+
 protected:
     void changeEvent(QEvent *e);
 

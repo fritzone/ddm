@@ -42,9 +42,9 @@
       </font>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
-     <widget class="QWidget" name="tabWidgetPage1" native="true">
+     <widget class="QWidget" name="tabWidgetPage1">
       <attribute name="title">
        <string>Basic properties</string>
       </attribute>
@@ -235,7 +235,7 @@ p, li { white-space: pre-wrap; }
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="tabWidgetPage2" native="true">
+     <widget class="QWidget" name="tabWidgetPage2">
       <attribute name="title">
        <string>Advanced</string>
       </attribute>
@@ -335,11 +335,14 @@ p, li { white-space: pre-wrap; }
          <property name="text">
           <string>Yes</string>
          </property>
+         <property name="checked">
+          <bool>true</bool>
+         </property>
         </widget>
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="tabWidgetPage3" native="true">
+     <widget class="QWidget" name="tabWidgetPage3">
       <attribute name="title">
        <string>Description</string>
       </attribute>
@@ -460,6 +463,38 @@ p, li { white-space: pre-wrap; }
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>chkNullIsDefault</sender>
+   <signal>clicked()</signal>
+   <receiver>NewDataTypeForm</receiver>
+   <slot>onNullClicked()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>272</x>
+     <y>138</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>199</x>
+     <y>324</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>chkCanBeNull</sender>
+   <signal>clicked()</signal>
+   <receiver>NewDataTypeForm</receiver>
+   <slot>onCanBeNullClicked()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>272</x>
+     <y>209</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>199</x>
+     <y>324</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>basicDTselected(QString)</slot>
@@ -470,5 +505,7 @@ p, li { white-space: pre-wrap; }
   <slot>onRemoveSelectedMiscValue()</slot>
   <slot>onCharacterSetCmbChanged(int)</slot>
   <slot>buttonClicked(QAbstractButton*)</slot>
+  <slot>onNullClicked()</slot>
+  <slot>onCanBeNullClicked()</slot>
  </slots>
 </ui>

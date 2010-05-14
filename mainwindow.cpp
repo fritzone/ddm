@@ -211,7 +211,7 @@ bool MainWindow::onSaveNewTable(Table* tbl)
 }
 
 bool MainWindow::onSaveNewDataType(const QString& name, const QString& type, const QString& sqlType, const QString& size, const QString& defaultValue, const QString& cp,
-                             const QStringList& mvs, bool unsi, UserDataType* pudt)
+                             const QStringList& mvs, const QString& desc, bool unsi, bool canBeNull, UserDataType* pudt)
 {
     if(name.length() == 0 || type.length() == 0 || sqlType.length() == 0)
     {
@@ -220,7 +220,8 @@ bool MainWindow::onSaveNewDataType(const QString& name, const QString& type, con
     }
 
 
-    UserDataType* udt = new UserDataType(name, type, sqlType, size, defaultValue, cp, mvs, unsi);
+    UserDataType* udt = new UserDataType(name, type, sqlType, size, defaultValue, cp, mvs, unsi, desc, canBeNull);
+
     if(! getWorkingProject()->getEngine()->getDTSupplier()->isValid(udt))
     {
         QMessageBox::critical (this, tr("Error"), tr("This datatype requires a length"), QMessageBox::Ok);
@@ -279,10 +280,27 @@ void MainWindow::onSaveProject()
 {
     QDomDocument doc("DBM");
     QDomElement root = doc.createElement("DBM");
-    getWorkingProject()->serialize(doc, root);
+    Project* prj = getWorkingProject();
+    if(prj == NULL)
+    {
+        return;
+    }
+
+    prj->serialize(doc, root);
     doc.appendChild(root);
     QString xml = doc.toString();
-    QFile f1("blaa.xml");
+
+    QString fileName = QFileDialog::getSaveFileName(this,  tr("Save project"), "", tr("DBM project files (*.dmx)"));
+    if(fileName.length() == 0)
+    {
+        return;
+    }
+
+    QFile f1(fileName);
+    if (!f1.open(QIODevice::WriteOnly | QIODevice::Text))
+    {
+        return;
+    }
     f1.write(xml.toAscii());
     f1.close();
 }
