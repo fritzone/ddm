@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>61</width>
+    <height>105</height>
+   </rect>
+  </property>
+  <property name="font">
+   <font>
+    <family>Sans Serif</family>
+    <pointsize>12</pointsize>
+   </font>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralWidget"/>
+  <widget class="QMenuBar" name="menuBar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>61</width>
+     <height>27</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menu_File">
+    <property name="title">
+     <string>&amp;File</string>
+    </property>
+    <addaction name="action_New"/>
+   </widget>
+   <addaction name="menu_File"/>
+  </widget>
+  <widget class="QToolBar" name="mainToolBar">
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="action_New"/>
+   <addaction name="action_Save"/>
+   <addaction name="separator"/>
+   <addaction name="action_NewDataType"/>
+   <addaction name="action_NewTable"/>
+  </widget>
+  <widget class="QStatusBar" name="statusBar"/>
+  <action name="action_New">
+   <property name="icon">
+    <iconset resource="dbm.qrc">
+     <normaloff>:/images/actions/images/actions/filenew.png</normaloff>:/images/actions/images/actions/filenew.png</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;New</string>
+   </property>
+  </action>
+  <action name="action_Save">
+   <property name="icon">
+    <iconset resource="dbm.qrc">
+     <normaloff>:/images/actions/images/actions/filesave.png</normaloff>:/images/actions/images/actions/filesave.png</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Save</string>
+   </property>
+   <property name="toolTip">
+    <string>Save</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+S</string>
+   </property>
+  </action>
+  <action name="action_NewDataType">
+   <property name="icon">
+    <iconset resource="dbm.qrc">
+     <normaloff>:/images/actions/images/actions/add.png</normaloff>:/images/actions/images/actions/add.png</iconset>
+   </property>
+   <property name="text">
+    <string>New &amp;Data Type</string>
+   </property>
+   <property name="toolTip">
+    <string>Create a new data type</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+D</string>
+   </property>
+  </action>
+  <action name="action_NewTable">
+   <property name="icon">
+    <iconset resource="dbm.qrc">
+     <normaloff>:/images/actions/images/actions/table.png</normaloff>:/images/actions/images/actions/table.png</iconset>
+   </property>
+   <property name="text">
+    <string>New Table</string>
+   </property>
+   <property name="toolTip">
+    <string>Create a New Table</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+T</string>
+   </property>
+  </action>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <resources>
+  <include location="dbm.qrc"/>
+ </resources>
+ <connections>
+  <connection>
+   <sender>action_New</sender>
+   <signal>activated()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>onNewProject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>299</x>
+     <y>199</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>action_NewDataType</sender>
+   <signal>activated()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>onNewDataType()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>399</x>
+     <y>299</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>action_NewTable</sender>
+   <signal>activated()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>onNewTable()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>30</x>
+     <y>52</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>action_Save</sender>
+   <signal>activated()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>onSaveProject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>30</x>
+     <y>52</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>onNewProject()</slot>
+  <slot>onNewDataType()</slot>
+  <slot>onNewTable()</slot>
+  <slot>onSaveProject()</slot>
+ </slots>
+</ui>
