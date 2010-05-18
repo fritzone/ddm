@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
+ <author>fritzone</author>
  <class>NewTableForm</class>
  <widget class="QWidget" name="NewTableForm">
   <property name="geometry">
@@ -19,14 +20,7 @@
      <item>
       <widget class="QLabel" name="label">
        <property name="text">
-        <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Sans'; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;table border=&quot;0&quot; style=&quot;-qt-table-type: root; margin-top:4px; margin-bottom:4px; margin-left:4px; margin-right:4px;&quot;&gt;
-&lt;tr&gt;
-&lt;td style=&quot;border: none;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Sans Serif'; font-size:12pt;&quot;&gt;Table Name&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        <string>Table name</string>
        </property>
       </widget>
      </item>
@@ -37,12 +31,6 @@ p, li { white-space: pre-wrap; }
    </item>
    <item>
     <widget class="QTabWidget" name="tabWidget">
-     <property name="font">
-      <font>
-       <family>Sans Serif</family>
-       <pointsize>12</pointsize>
-      </font>
-     </property>
      <property name="tabShape">
       <enum>QTabWidget::Rounded</enum>
      </property>
@@ -536,7 +524,7 @@ p, li { white-space: pre-wrap; }
          </property>
          <layout class="QHBoxLayout" name="horizontalLayout_10">
           <item>
-           <widget class="QTreeWidget" name="treeForeignKeys">
+           <widget class="QTreeWidget" name="lstForeignKeys">
             <property name="rootIsDecorated">
              <bool>false</bool>
             </property>
@@ -607,7 +595,7 @@ p, li { white-space: pre-wrap; }
              </widget>
             </item>
             <item>
-             <widget class="QLineEdit" name="lineEdit_2"/>
+             <widget class="QLineEdit" name="txtForeignKeyName"/>
             </item>
            </layout>
           </item>
@@ -821,7 +809,7 @@ p, li { white-space: pre-wrap; }
                </widget>
               </item>
               <item>
-               <widget class="QToolButton" name="btnAddForeignKeyAssociation_2">
+               <widget class="QToolButton" name="btnAddForeignKey">
                 <property name="toolTip">
                  <string>Add foreign key</string>
                 </property>
@@ -1308,7 +1296,40 @@ p, li { white-space: pre-wrap; }
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>btnAddForeignKey</sender>
+   <signal>clicked()</signal>
+   <receiver>NewTableForm</receiver>
+   <slot>onBtnAddForeignKey()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>468</x>
+     <y>661</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>260</x>
+     <y>386</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
+ <designerdata>
+  <property name="gridDeltaX">
+   <number>10</number>
+  </property>
+  <property name="gridDeltaY">
+   <number>10</number>
+  </property>
+  <property name="gridSnapX">
+   <bool>true</bool>
+  </property>
+  <property name="gridSnapY">
+   <bool>true</bool>
+  </property>
+  <property name="gridVisible">
+   <bool>true</bool>
+  </property>
+ </designerdata>
  <slots>
   <slot>onAddColumn()</slot>
   <slot>onDeleteColumn()</slot>
@@ -1331,5 +1352,6 @@ p, li { white-space: pre-wrap; }
   <slot>onAddForeignKeyAssociation()</slot>
   <slot>onSelectAssociation(QTreeWidgetItem*,int)</slot>
   <slot>onRemoveForeignKeyAssociation()</slot>
+  <slot>onBtnAddForeignKey()</slot>
  </slots>
 </ui>

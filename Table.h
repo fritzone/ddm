@@ -8,6 +8,7 @@
 
 class Column;
 class Index;
+class ForeignKey;
 
 /**
  * The table class holds a database table defined by the user. It must be derived from the TreeItem since a table can be placed in
@@ -102,6 +103,10 @@ public:
      */
     Index* isColumnUsedInIndex(const Column*);
 
+    void addForeignKey(ForeignKey* fk)
+    {
+        m_foreignKeys.append(fk);
+    }
 
 private:
     // the name of the table
@@ -112,6 +117,9 @@ private:
 
     // the indices of the table
     QVector<Index*> m_indices;
+
+    // the vector will hold the foreign keys
+    QVector<ForeignKey*> m_foreignKeys;
 
 };
 

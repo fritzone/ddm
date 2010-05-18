@@ -2,7 +2,7 @@
 #include "Column.h"
 #include "Index.h"
 
-Table::Table() : m_columns(), m_indices()
+Table::Table() : m_name(""), m_columns(), m_indices(), m_foreignKeys()
 {
 }
 
