@@ -10,6 +10,7 @@
 #include "Table.h"
 #include "mainwindow.h"
 #include "AbstractIndextypeProvider.h"
+#include "ForeignKey.h"
 
 #include <QMessageBox>
 
@@ -19,7 +20,8 @@ const int COL_POS_NM = 1;
 const int COL_POS_DT = 2;
 
 NewTableForm::NewTableForm(DatabaseEngine* db, Project* prj, QWidget *parent) : QWidget(parent), m_ui(new Ui::NewTableForm),
-    m_dbEngine(db), m_project(prj), m_table(new Table()), m_currentColumn(0), m_currentIndex(0), m_foreignTable(0)
+    m_dbEngine(db), m_project(prj), m_table(new Table()), m_currentColumn(0), m_currentIndex(0), m_foreignTable(0),
+    m_currentForeignKey(0), m_foreignKeySelected(false)
 {
     m_ui->setupUi(this);
 
@@ -47,6 +49,7 @@ NewTableForm::NewTableForm(DatabaseEngine* db, Project* prj, QWidget *parent) : 
     {
         m_ui->cmbForeignTables->addItem(tables[i]->getName());
     }
+    m_ui->cmbForeignTables->setCurrentIndex(-1);
 
     m_ui->btnAdvanced->hide();
     m_ui->tabWidget->setCurrentIndex(0);
@@ -55,6 +58,30 @@ NewTableForm::NewTableForm(DatabaseEngine* db, Project* prj, QWidget *parent) : 
 NewTableForm::~NewTableForm()
 {
     delete m_ui;
+}
+
+QTreeWidgetItem* NewTableForm::createTWIForForeignKey(const ForeignKey* fk)
+{
+    QStringList a(fk->getName());
+    const QVector<ForeignKey::ColumnAssociation*>& assocs = fk->getAssociations();
+    QString tabName = "";
+    QString foreignColumns = "";
+    QString localColumns = "";
+    for(int i=0; i<assocs.size(); i++)
+    {
+        tabName = assocs[i]->getForeignTable()->getName();
+        foreignColumns += assocs[i]->getForeignColumn()->getName();
+        if(i < assocs.size()-1) foreignColumns += ", ";
+        localColumns += assocs[i]->getLocalColumn()->getName();
+        if(i < assocs.size()-1) localColumns += ", ";
+    }
+
+    a.append(tabName);
+    a.append(foreignColumns);
+    a.append(localColumns);
+
+    QTreeWidgetItem* item = new QTreeWidgetItem((QTreeWidget*)0, a);
+    return item;
 }
 
 QTreeWidgetItem* NewTableForm::createTWIForColumn(const Column* col)
@@ -538,6 +565,10 @@ void NewTableForm::onForeignTableComboChange(QString selected)
         QListWidgetItem* qlwi = new QListWidgetItem(table->getColumns()[i]->getName(), m_ui->lstForeignTablesColumns);
         qlwi->setIcon(table->getColumns()[i]->getDataType()->getIcon());
     }
+    // now clear the current stuff, it's not valid keeping foreign keys from other tables, when moving to a new table
+    m_ui->lstForeignKeyAssociations->clear();
+    delete m_currentForeignKey;
+    m_currentForeignKey = 0;
 }
 
 void NewTableForm::onForeignTableColumnChange()
@@ -561,6 +592,12 @@ void NewTableForm::onForeignTableColumnChange()
 
 void NewTableForm::onAddForeignKeyAssociation()
 {
+    if(!m_currentForeignKey)
+    {
+        m_currentForeignKey = new ForeignKey();
+        m_foreignKeySelected = false;
+    }
+
     QString foreignColumn, localColumn;
     const Column* cforeignColumn, *clocalColumn;
     QList<QListWidgetItem *> selectedItems = m_ui->lstForeignTablesColumns->selectedItems();
@@ -594,9 +631,13 @@ void NewTableForm::onAddForeignKeyAssociation()
     item->setData(0, Qt::UserRole, var);
 
     item->setIcon(0, cforeignColumn->getDataType()->getIcon());
-    item->setIcon(0, clocalColumn->getDataType()->getIcon());
+    item->setIcon(1, clocalColumn->getDataType()->getIcon());
 
     m_ui->lstForeignKeyAssociations->addTopLevelItem(item);
+
+    ForeignKey::ColumnAssociation* fca = new ForeignKey::ColumnAssociation(m_foreignTable, cforeignColumn, m_table, clocalColumn);
+    m_currentForeignKey->addAssociation(fca);
+
 }
 
 void NewTableForm::onRemoveForeignKeyAssociation()
@@ -652,3 +693,30 @@ void NewTableForm::onSelectAssociation(QTreeWidgetItem* current, int column)
 
 }
 
+void NewTableForm::onBtnAddForeignKey()
+{
+    if(m_currentForeignKey == 0 || m_ui->lstForeignKeyAssociations->topLevelItemCount() == 0)
+    {
+        QMessageBox::critical (this, tr("Error"), tr("Please specify at least 1 foreign key association"), QMessageBox::Ok);
+        return;
+    }
+
+    if(m_ui->txtForeignKeyName->text().length() == 0)
+    {
+        QMessageBox::critical (this, tr("Error"), tr("Please specify a name for the foreign key"), QMessageBox::Ok);
+        return;
+    }
+
+    if(m_foreignKeySelected)
+    {
+
+    }
+    else
+    {
+        QTreeWidgetItem* twi = createTWIForForeignKey(m_currentForeignKey);
+        m_ui->lstForeignKeys->addTopLevelItem(twi);
+        m_currentForeignKey->setLocation(twi);
+        m_table->addForeignKey(m_currentForeignKey);
+        m_currentForeignKey = 0;
+    }
+}

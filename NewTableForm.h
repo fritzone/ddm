@@ -15,6 +15,7 @@ class Project;
 class Table;
 class Column;
 class Index;
+class ForeignKey;
 
 class NewTableForm : public QWidget {
     Q_OBJECT
@@ -56,6 +57,7 @@ public slots:
     void onAddForeignKeyAssociation();
     void onSelectAssociation(QTreeWidgetItem*,int);
     void onRemoveForeignKeyAssociation();
+    void onBtnAddForeignKey();
 
 protected:
     void changeEvent(QEvent *e);
@@ -73,7 +75,7 @@ private:
     void resetIndexGui();
     QTreeWidgetItem* createTWIForColumn(const Column* col);
     QTreeWidgetItem* createTWIForIndex(const Index* col);
-
+    QTreeWidgetItem* createTWIForForeignKey(const ForeignKey* col);
 
 private:
     Ui::NewTableForm *m_ui;
@@ -89,8 +91,14 @@ private:
     Column* m_currentColumn;
     // the index that was selected in the indices list
     Index* m_currentIndex;
-
+    // the foreign table we have selected in the combo
     Table* m_foreignTable;
+    // the foreign key we are curently working on. This is either created when selecting from the foreign key list
+    // or created when we add the first assoiation in the GUI
+    ForeignKey* m_currentForeignKey;
+    // true if the m_currentForeignKey was created from an item from the foreign key list, false if it was created with
+    // the first association
+    bool m_foreignKeySelected;
 };
 
 #endif // NEWTABLEFORM_H
