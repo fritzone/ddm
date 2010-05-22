@@ -63,10 +63,6 @@ void MainWindow::onNewProject()
         projectTree = new QTreeWidget();
         projectTree->setColumnCount(1);
         projectTree->setHeaderHidden(true);
-        QFont a(projectTree->font());
-        a.setPixelSize(14);
-        projectTree->setFont(a);
-
         QObject::connect(projectTree, SIGNAL(itemSelectionChanged()), this, SLOT(onProjectTreeClicked()));
 
         dock->setWidget(projectTree);
