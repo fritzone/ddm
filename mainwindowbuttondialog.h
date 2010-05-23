@@ -21,6 +21,7 @@ public slots:
     // when the user clicked the "new" button
     void onNewProject();
 
+
 protected:
     void changeEvent(QEvent *e);
 

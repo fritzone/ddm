@@ -73,5 +73,6 @@
         <file>images/small/right.png</file>
         <file>images/small/left.png</file>
         <file>images/small/cancel.png</file>
+        <file>images/big/icon.png</file>
     </qresource>
 </RCC>

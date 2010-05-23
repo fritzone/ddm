@@ -108,6 +108,13 @@ public:
         m_foreignKeys.append(fk);
     }
 
+    ForeignKey* getForeignKey(int i);
+
+    /**
+     * Returns the columns as a QStringList
+     */
+    QStringList columns() const;
+
 private:
     // the name of the table
     QString m_name;

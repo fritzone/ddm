@@ -46,6 +46,11 @@ Index* Table::getIndex(int c)
     return m_indices[c];
 }
 
+ForeignKey* Table::getForeignKey(int i)
+{
+    return m_foreignKeys[i];
+}
+
 const Column* Table::getColumn(const QString& name)
 {
     for(int i = 0; i<m_columns.size(); i++)
@@ -87,4 +92,14 @@ Index* Table::isColumnUsedInIndex(const Column *column)
         }
     }
     return 0;
+}
+
+QStringList Table::columns() const
+{
+    QStringList result;
+    for(int i=0; i<m_columns.size(); i++)
+    {
+        result << m_columns[i]->getName();
+    }
+    return result;
 }

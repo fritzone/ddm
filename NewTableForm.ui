@@ -35,7 +35,7 @@
       <enum>QTabWidget::Rounded</enum>
      </property>
      <property name="currentIndex">
-      <number>2</number>
+      <number>3</number>
      </property>
      <widget class="QWidget" name="tabWidgetPage1">
       <attribute name="title">
@@ -106,7 +106,7 @@
                  <string/>
                 </property>
                 <property name="icon">
-                 <iconset resource="dbm.qrc">
+                 <iconset>
                   <normaloff>:/images/actions/images/small/up.png</normaloff>:/images/actions/images/small/up.png</iconset>
                 </property>
                 <property name="popupMode">
@@ -126,7 +126,7 @@
                  <string/>
                 </property>
                 <property name="icon">
-                 <iconset resource="dbm.qrc">
+                 <iconset>
                   <normaloff>:/images/actions/images/small/down.png</normaloff>:/images/actions/images/small/down.png</iconset>
                 </property>
                 <property name="popupMode">
@@ -146,7 +146,7 @@
                  <string/>
                 </property>
                 <property name="icon">
-                 <iconset resource="dbm.qrc">
+                 <iconset>
                   <normaloff>:/images/actions/images/small/remove.png</normaloff>:/images/actions/images/small/remove.png</iconset>
                 </property>
                </widget>
@@ -237,7 +237,7 @@
                  <string/>
                 </property>
                 <property name="icon">
-                 <iconset resource="dbm.qrc">
+                 <iconset>
                   <normaloff>:/images/actions/images/small/cancel.png</normaloff>:/images/actions/images/small/cancel.png</iconset>
                 </property>
                </widget>
@@ -254,7 +254,7 @@
                  <string>...</string>
                 </property>
                 <property name="icon">
-                 <iconset resource="dbm.qrc">
+                 <iconset>
                   <normaloff>:/images/actions/images/small/add.png</normaloff>:/images/actions/images/small/add.png</iconset>
                 </property>
                </widget>
@@ -313,7 +313,7 @@
              <string>...</string>
             </property>
             <property name="icon">
-             <iconset resource="dbm.qrc">
+             <iconset>
               <normaloff>:/images/actions/images/small/remove.png</normaloff>:/images/actions/images/small/remove.png</iconset>
             </property>
            </widget>
@@ -370,7 +370,7 @@
                  <string>...</string>
                 </property>
                 <property name="icon">
-                 <iconset resource="dbm.qrc">
+                 <iconset>
                   <normaloff>:/images/actions/images/small/left.png</normaloff>:/images/actions/images/small/left.png</iconset>
                 </property>
                </widget>
@@ -381,7 +381,7 @@
                  <string>...</string>
                 </property>
                 <property name="icon">
-                 <iconset resource="dbm.qrc">
+                 <iconset>
                   <normaloff>:/images/actions/images/small/right.png</normaloff>:/images/actions/images/small/right.png</iconset>
                 </property>
                </widget>
@@ -399,7 +399,7 @@
                  <string>...</string>
                 </property>
                 <property name="icon">
-                 <iconset resource="dbm.qrc">
+                 <iconset>
                   <normaloff>:/images/actions/images/small/up.png</normaloff>:/images/actions/images/small/up.png</iconset>
                 </property>
                </widget>
@@ -410,7 +410,7 @@
                  <string>...</string>
                 </property>
                 <property name="icon">
-                 <iconset resource="dbm.qrc">
+                 <iconset>
                   <normaloff>:/images/actions/images/small/down.png</normaloff>:/images/actions/images/small/down.png</iconset>
                 </property>
                </widget>
@@ -486,7 +486,7 @@
                <string/>
               </property>
               <property name="icon">
-               <iconset resource="dbm.qrc">
+               <iconset>
                 <normaloff>:/images/actions/images/small/cancel.png</normaloff>:/images/actions/images/small/cancel.png</iconset>
               </property>
              </widget>
@@ -500,7 +500,7 @@
                <string/>
               </property>
               <property name="icon">
-               <iconset resource="dbm.qrc">
+               <iconset>
                 <normaloff>:/images/actions/images/small/add.png</normaloff>:/images/actions/images/small/add.png</iconset>
               </property>
              </widget>
@@ -560,6 +560,16 @@
               <string>Local columns</string>
              </property>
             </column>
+            <column>
+             <property name="text">
+              <string>On Update</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>On Delete</string>
+             </property>
+            </column>
            </widget>
           </item>
           <item>
@@ -571,7 +581,7 @@
              <string>...</string>
             </property>
             <property name="icon">
-             <iconset resource="dbm.qrc">
+             <iconset>
               <normaloff>:/images/actions/images/small/remove.png</normaloff>:/images/actions/images/small/remove.png</iconset>
             </property>
            </widget>
@@ -640,7 +650,7 @@
                <string>...</string>
               </property>
               <property name="icon">
-               <iconset resource="dbm.qrc">
+               <iconset>
                 <normaloff>:/images/actions/images/small/add.png</normaloff>:/images/actions/images/small/add.png</iconset>
               </property>
              </widget>
@@ -694,7 +704,7 @@
                <string>...</string>
               </property>
               <property name="icon">
-               <iconset resource="dbm.qrc">
+               <iconset>
                 <normaloff>:/images/actions/images/small/remove.png</normaloff>:/images/actions/images/small/remove.png</iconset>
               </property>
              </widget>
@@ -710,7 +720,7 @@
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_12">
                <item>
-                <widget class="QComboBox" name="comboBox_4">
+                <widget class="QComboBox" name="cmbFkOnUpdate">
                  <item>
                   <property name="text">
                    <string>CASCADE</string>
@@ -748,7 +758,7 @@
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_11">
                <item>
-                <widget class="QComboBox" name="comboBox_5">
+                <widget class="QComboBox" name="cmbFkOnDelete">
                  <item>
                   <property name="text">
                    <string>CASCADE</string>
@@ -803,7 +813,7 @@
                  <string>...</string>
                 </property>
                 <property name="icon">
-                 <iconset resource="dbm.qrc">
+                 <iconset>
                   <normaloff>:/images/actions/images/small/cancel.png</normaloff>:/images/actions/images/small/cancel.png</iconset>
                 </property>
                </widget>
@@ -817,7 +827,7 @@
                  <string>...</string>
                 </property>
                 <property name="icon">
-                 <iconset resource="dbm.qrc">
+                 <iconset>
                   <normaloff>:/images/actions/images/small/add.png</normaloff>:/images/actions/images/small/add.png</iconset>
                 </property>
                </widget>
@@ -839,12 +849,12 @@
        <item>
         <layout class="QVBoxLayout" name="verticalLayout_9">
          <item>
-          <widget class="QTableWidget" name="tableWidget"/>
+          <widget class="QTableWidget" name="tableStartupValues"/>
          </item>
          <item>
           <layout class="QHBoxLayout" name="horizontalLayout_11">
            <item>
-            <widget class="QToolButton" name="btnAddForeignKeyAssociation_3">
+            <widget class="QToolButton" name="btnAddNewDefaultRow">
              <property name="toolTip">
               <string>Add column associations</string>
              </property>
@@ -852,7 +862,7 @@
               <string>...</string>
              </property>
              <property name="icon">
-              <iconset resource="dbm.qrc">
+              <iconset>
                <normaloff>:/images/actions/images/small/add.png</normaloff>:/images/actions/images/small/add.png</iconset>
              </property>
             </widget>
@@ -866,7 +876,7 @@
               <string>...</string>
              </property>
              <property name="icon">
-              <iconset resource="dbm.qrc">
+              <iconset>
                <normaloff>:/images/actions/images/small/remove.png</normaloff>:/images/actions/images/small/remove.png</iconset>
              </property>
             </widget>
@@ -956,9 +966,7 @@ p, li { white-space: pre-wrap; }
    </item>
   </layout>
  </widget>
- <resources>
-  <include location="dbm.qrc"/>
- </resources>
+ <resources/>
  <connections>
   <connection>
    <sender>buttons</sender>
@@ -1312,6 +1320,38 @@ p, li { white-space: pre-wrap; }
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>lstForeignKeys</sender>
+   <signal>itemClicked(QTreeWidgetItem*,int)</signal>
+   <receiver>NewTableForm</receiver>
+   <slot>onSelectForeignKey(QTreeWidgetItem*,int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>242</x>
+     <y>160</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>260</x>
+     <y>386</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnAddNewDefaultRow</sender>
+   <signal>clicked()</signal>
+   <receiver>NewTableForm</receiver>
+   <slot>onAddNewDefaultRow()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>174</x>
+     <y>697</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>260</x>
+     <y>386</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <designerdata>
   <property name="gridDeltaX">
@@ -1353,5 +1393,7 @@ p, li { white-space: pre-wrap; }
   <slot>onSelectAssociation(QTreeWidgetItem*,int)</slot>
   <slot>onRemoveForeignKeyAssociation()</slot>
   <slot>onBtnAddForeignKey()</slot>
+  <slot>onSelectForeignKey(QTreeWidgetItem*,int)</slot>
+  <slot>onAddNewDefaultRow()</slot>
  </slots>
 </ui>
