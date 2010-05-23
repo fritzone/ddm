@@ -2,6 +2,7 @@
 #define PROJECT_H
 
 #include "SerializableElement.h"
+#include "TreeItem.h"
 
 #include <QTreeWidget>
 #include <QTreeWidgetItem>
@@ -11,11 +12,11 @@ class AbstractDTSupplier;
 class MajorVersion;
 class Version;
 class DatabaseEngine;
-
+class ProjectDetailsForm;
 /**
  * Holds the data of a project.
  */
-class Project : virtual public SerializableElement
+class Project : virtual public SerializableElement, TreeItem
 {
 public:
 
@@ -34,13 +35,15 @@ public:
 
     virtual void serialize(QDomDocument& doc, QDomElement& parent) const;
 
+    void setDetailsForm(ProjectDetailsForm* pfrm)
+    {
+        prjDetailsForm = pfrm;
+    }
+
 private:
 
     // this is the tree from the main window of the application
     QTreeWidget* tree;
-
-    // the tree item containing the "Project" name
-    QTreeWidgetItem* projectItem;
 
     // the name of the project
     QString name;
@@ -50,6 +53,8 @@ private:
 
     // the list of major versions
     QVector<MajorVersion*> majorVersions;
+
+    ProjectDetailsForm* prjDetailsForm;
 
 };
 

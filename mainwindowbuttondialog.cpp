@@ -24,7 +24,7 @@ void MainWindowButtonDialog::onNewProject()
 {
     if(m_mw)
     {
-	m_mw->onNewProject();
+        m_mw->onNewProject();
     }
 }
 
@@ -33,9 +33,9 @@ void MainWindowButtonDialog::changeEvent(QEvent *e)
     QDialog::changeEvent(e);
     switch (e->type()) {
     case QEvent::LanguageChange:
-	m_ui->retranslateUi(this);
-	break;
+        m_ui->retranslateUi(this);
+        break;
     default:
-	break;
+        break;
     }
 }

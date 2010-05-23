@@ -10,12 +10,18 @@
     <height>110</height>
    </rect>
   </property>
+  <property name="minimumSize">
+   <size>
+    <width>0</width>
+    <height>0</height>
+   </size>
+  </property>
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="dbm.qrc">
-    <normaloff>:/images/actions/images/big/bigdatatypes.PNG</normaloff>:/images/actions/images/big/bigdatatypes.PNG</iconset>
+   <iconset>
+    <normaloff>:/images/actions/images/big/icon.png</normaloff>:/images/actions/images/big/icon.png</iconset>
   </property>
   <property name="documentMode">
    <bool>true</bool>
@@ -30,7 +36,7 @@
      <x>0</x>
      <y>0</y>
      <width>66</width>
-     <height>25</height>
+     <height>26</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -57,7 +63,7 @@
   <widget class="QStatusBar" name="statusBar"/>
   <action name="action_New">
    <property name="icon">
-    <iconset resource="dbm.qrc">
+    <iconset>
      <normaloff>:/images/actions/images/actions/filenew.png</normaloff>:/images/actions/images/actions/filenew.png</iconset>
    </property>
    <property name="text">
@@ -66,7 +72,7 @@
   </action>
   <action name="action_Save">
    <property name="icon">
-    <iconset resource="dbm.qrc">
+    <iconset>
      <normaloff>:/images/actions/images/actions/filesave.png</normaloff>:/images/actions/images/actions/filesave.png</iconset>
    </property>
    <property name="text">
@@ -81,7 +87,7 @@
   </action>
   <action name="action_NewDataType">
    <property name="icon">
-    <iconset resource="dbm.qrc">
+    <iconset>
      <normaloff>:/images/actions/images/actions/add.png</normaloff>:/images/actions/images/actions/add.png</iconset>
    </property>
    <property name="text">
@@ -96,7 +102,7 @@
   </action>
   <action name="action_NewTable">
    <property name="icon">
-    <iconset resource="dbm.qrc">
+    <iconset>
      <normaloff>:/images/actions/images/actions/table.png</normaloff>:/images/actions/images/actions/table.png</iconset>
    </property>
    <property name="text">
@@ -111,9 +117,7 @@
   </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <resources>
-  <include location="dbm.qrc"/>
- </resources>
+ <resources/>
  <connections>
   <connection>
    <sender>action_New</sender>

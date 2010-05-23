@@ -79,6 +79,8 @@ QTreeWidgetItem* NewTableForm::createTWIForForeignKey(const ForeignKey* fk)
     a.append(tabName);
     a.append(foreignColumns);
     a.append(localColumns);
+    a.append(fk->getOnUpdate());
+    a.append(fk->getOnDelete());
 
     QTreeWidgetItem* item = new QTreeWidgetItem((QTreeWidget*)0, a);
     return item;
@@ -200,12 +202,15 @@ void NewTableForm::onAddColumn()
         m_table->addColumn(col);
 
         col->setLocation(item);
+        m_ui->txtNewColumnName->setFocus( );
+
     }
 
     m_ui->txtNewColumnName->setText("");
     m_ui->cmbNewColumnType->setCurrentIndex(-1);
 
     populateColumnsForIndices();
+    updateDefaultValuesTableHeader();
 
 }
 
@@ -231,6 +236,7 @@ void NewTableForm::onDeleteColumn()
     m_table->removeColumn(const_cast<Column*>(currentColumn));
     m_currentColumn = 0;
     populateColumnsForIndices();
+    updateDefaultValuesTableHeader();
 }
 
 void NewTableForm::onMoveColumnDown()
@@ -247,6 +253,8 @@ void NewTableForm::onMoveColumnDown()
             m_ui->lstColumns->insertTopLevelItem(x.row() + 1, w);
             m_ui->lstColumns->setCurrentItem(w);
             populateColumnsForIndices();
+            // TODO: repatriate the columns from the exchanged one
+            updateDefaultValuesTableHeader();
         }
     }
 }
@@ -265,6 +273,8 @@ void NewTableForm::onMoveColumnUp()
             m_ui->lstColumns->insertTopLevelItem(x.row() - 1, w);
             m_ui->lstColumns->setCurrentItem(w);
             populateColumnsForIndices();
+            // TODO: repatriate the columns from the exchanged one
+            updateDefaultValuesTableHeader();
         }
     }
 }
@@ -567,13 +577,12 @@ void NewTableForm::onForeignTableComboChange(QString selected)
     }
     // now clear the current stuff, it's not valid keeping foreign keys from other tables, when moving to a new table
     m_ui->lstForeignKeyAssociations->clear();
-    delete m_currentForeignKey;
     m_currentForeignKey = 0;
 }
 
 void NewTableForm::onForeignTableColumnChange()
 {
-     m_ui->lstLocalColumn->clear();
+    m_ui->lstLocalColumn->clear();
     QList<QListWidgetItem *> selectedItems = m_ui->lstForeignTablesColumns->selectedItems();
     for(int i=0; i< selectedItems.size(); i++)
     {
@@ -642,8 +651,17 @@ void NewTableForm::onAddForeignKeyAssociation()
 
 void NewTableForm::onRemoveForeignKeyAssociation()
 {
+
+    // from the foreign key (if it was selected) delete the FK Association in the current item
+    QString localColumn = m_ui->lstForeignKeyAssociations->currentItem()->text(1);
+    QString foreignColumn = m_ui->lstForeignKeyAssociations->currentItem()->text(0);
+    if(m_foreignKeySelected && m_currentForeignKey)
+    {
+        m_currentForeignKey->removeAssociation(foreignColumn, localColumn);
+    }
     // this deletes only the current entry in the list
     delete m_ui->lstForeignKeyAssociations->currentItem();
+
 }
 
 void NewTableForm::onSelectAssociation(QTreeWidgetItem* current, int column)
@@ -707,8 +725,30 @@ void NewTableForm::onBtnAddForeignKey()
         return;
     }
 
+    m_currentForeignKey->setName(m_ui->txtForeignKeyName->text());
+    m_currentForeignKey->setOnUpdate(m_ui->cmbFkOnUpdate->currentText());
+    m_currentForeignKey->setOnDelete(m_ui->cmbFkOnDelete->currentText());
+
     if(m_foreignKeySelected)
     {
+        m_currentForeignKey->getLocation()->setText(0, m_currentForeignKey->getName());
+        const QVector<ForeignKey::ColumnAssociation*>& assocs = m_currentForeignKey->getAssociations();
+        /* TODO : Duplicate code, consider refactoring */
+        QString tabName = "";
+        QString foreignColumns = "";
+        QString localColumns = "";
+        for(int i=0; i<assocs.size(); i++)
+        {
+            tabName = assocs[i]->getForeignTable()->getName();
+            foreignColumns += assocs[i]->getForeignColumn()->getName();
+            if(i < assocs.size()-1) foreignColumns += ", ";
+            localColumns += assocs[i]->getLocalColumn()->getName();
+            if(i < assocs.size()-1) localColumns += ", ";
+        }
+
+        m_currentForeignKey->getLocation()->setText(1,tabName);
+        m_currentForeignKey->getLocation()->setText(2,foreignColumns);
+        m_currentForeignKey->getLocation()->setText(3,localColumns);
 
     }
     else
@@ -717,6 +757,88 @@ void NewTableForm::onBtnAddForeignKey()
         m_ui->lstForeignKeys->addTopLevelItem(twi);
         m_currentForeignKey->setLocation(twi);
         m_table->addForeignKey(m_currentForeignKey);
-        m_currentForeignKey = 0;
     }
+
+    m_currentForeignKey = 0;
+    m_foreignKeySelected = false;
+    // empty the FK ui fields
+    m_ui->cmbForeignTables->setCurrentIndex(-1);
+    m_ui->lstForeignKeyAssociations->clear();
+    m_ui->lstForeignTablesColumns->clear();
+    m_ui->lstLocalColumn->clear();
+    m_ui->txtForeignKeyName->clear();
+    m_ui->cmbFkOnDelete->setCurrentIndex(-1);
+    m_ui->cmbFkOnUpdate->setCurrentIndex(-1);
+}
+
+void NewTableForm::onSelectForeignKey(QTreeWidgetItem* itm, int col)
+{
+    QModelIndex x = m_ui->lstForeignKeys->currentIndex();
+    m_currentForeignKey = m_table->getForeignKey(x.row());
+
+    m_ui->lstForeignKeyAssociations->clear();
+    m_ui->cmbForeignTables->setCurrentIndex(-1);
+    m_ui->txtForeignKeyName->setText(m_currentForeignKey->getName());
+
+    m_foreignKeySelected = true;
+
+    // create the columns associations
+    QString tabName = "";
+    const QVector<ForeignKey::ColumnAssociation*>& assocs = m_currentForeignKey->getAssociations();
+    for(int i=0; i<assocs.size(); i++)
+    {
+        tabName = assocs[i]->getForeignTable()->getName();
+        QStringList a(assocs[i]->getForeignColumn()->getName());
+        a.append(assocs[i]->getLocalColumn()->getName());
+        QTreeWidgetItem* item = new QTreeWidgetItem((QTreeWidget*)0, a);
+
+        // sets the data, this will be used on the "on click on this item" method to correctly populate the controls
+        QVariant var(assocs[i]->getForeignTable()->getName());
+        item->setData(0, Qt::UserRole, var);
+
+        item->setIcon(0, assocs[i]->getForeignColumn()->getDataType()->getIcon());
+        item->setIcon(1, assocs[i]->getLocalColumn()->getDataType()->getIcon());
+
+        m_ui->lstForeignKeyAssociations->addTopLevelItem(item);
+    }
+    // find the foreign keys table in the combo box
+    int idx = m_ui->cmbForeignTables->findText(tabName);
+    Table* table = m_project->getWorkingVersion()->getTable(tabName);
+    // populate the foreign columns list
+    if(table == 0)
+    {
+        return;
+    }
+    m_foreignTable = table;
+    m_ui->cmbForeignTables->setCurrentIndex(idx);
+    const QVector<Column*> & foreignColumns = table->getColumns();
+    m_ui->lstForeignTablesColumns->clear();
+    for(int i=0; i<foreignColumns.size(); i++)
+    {
+        QListWidgetItem* qlwi = new QListWidgetItem(table->getColumns()[i]->getName(), m_ui->lstForeignTablesColumns);
+        qlwi->setIcon(table->getColumns()[i]->getDataType()->getIcon());
+    }
+    // select the on update, on delete combo boxes
+    idx = m_ui->cmbFkOnDelete->findText(m_currentForeignKey->getOnDelete());
+    m_ui->cmbFkOnDelete->setCurrentIndex(idx);
+    idx = m_ui->cmbFkOnUpdate->findText(m_currentForeignKey->getOnUpdate());
+    m_ui->cmbFkOnUpdate->setCurrentIndex(idx);
+}
+
+void NewTableForm::updateDefaultValuesTableHeader()
+{
+    m_ui->tableStartupValues->setColumnCount(m_table->getColumns().count());
+    for(int i=0; i<m_table->getColumns().count(); i++)
+    {
+        QTableWidgetItem *cubesHeaderItem = new QTableWidgetItem(m_table->getColumns()[i]->getName());
+        cubesHeaderItem->setIcon(m_table->getColumns()[i]->getDataType()->getIcon());
+        cubesHeaderItem->setTextAlignment(Qt::AlignVCenter);
+        m_ui->tableStartupValues->setHorizontalHeaderItem(i, cubesHeaderItem);
+    }
+}
+
+void NewTableForm::onAddNewDefaultRow()
+{
+    int curRowC = m_ui->tableStartupValues->rowCount();
+    m_ui->tableStartupValues->insertRow(curRowC);
 }

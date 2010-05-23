@@ -58,7 +58,9 @@ public slots:
     void onSelectAssociation(QTreeWidgetItem*,int);
     void onRemoveForeignKeyAssociation();
     void onBtnAddForeignKey();
-
+    void onSelectForeignKey(QTreeWidgetItem*,int);
+    // default values page
+    void onAddNewDefaultRow();
 protected:
     void changeEvent(QEvent *e);
 
@@ -76,6 +78,7 @@ private:
     QTreeWidgetItem* createTWIForColumn(const Column* col);
     QTreeWidgetItem* createTWIForIndex(const Index* col);
     QTreeWidgetItem* createTWIForForeignKey(const ForeignKey* col);
+    void updateDefaultValuesTableHeader();
 
 private:
     Ui::NewTableForm *m_ui;

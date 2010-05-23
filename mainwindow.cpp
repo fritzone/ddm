@@ -13,6 +13,7 @@
 #include "Table.h"
 #include "IconFactory.h"
 #include "TablesListForm.h"
+#include "ProjectDetailsForm.h"
 
 #include <QtGui>
 
@@ -91,6 +92,12 @@ void MainWindow::onNewProject()
         this->ui->mainToolBar->actions().at(3)->setVisible(true);
         this->ui->mainToolBar->actions().at(4)->setVisible(true);
 
+        // show the project properties window
+        ProjectDetailsForm* prjDetailsForm = new ProjectDetailsForm(this);
+        setCentralWidget(prjDetailsForm);
+
+        // set a normal size
+        resize(800, 600);
     }
 }
 

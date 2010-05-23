@@ -2,9 +2,9 @@
 #define FOREIGNKEY_H
 
 #include "TreeItem.h"
+#include "Column.h"
 
 class Table;
-class Column;
 
 class ForeignKey : public TreeItem
 {
@@ -54,12 +54,53 @@ public:
         return m_name;
     }
 
+    void setName(const QString& name)
+    {
+        m_name = name;
+    }
+
+    const QString& getOnUpdate() const
+    {
+        return m_onUpdate;
+    }
+
+    void setOnUpdate(const QString& onUpdate)
+    {
+        m_onUpdate = onUpdate;
+    }
+
+    const QString& getOnDelete() const
+    {
+        return m_onDelete;
+    }
+
+    void setOnDelete(const QString& onDelete)
+    {
+        m_onDelete = onDelete;
+    }
+
+    void removeAssociation(const QString& fcName, const QString& lcName)
+    {
+        for(int i=0; i<m_associations.size(); i++)
+        {
+            if(m_associations[i]->getForeignColumn()->getName() == fcName && m_associations[i]->getLocalColumn()->getName() == lcName)
+            {
+                m_associations.remove(i);
+                return;
+            }
+        }
+    }
+
 private:
 
     // the associations between the columns
     QVector<ColumnAssociation*> m_associations;
 
     QString m_name;
+
+    QString m_onUpdate;
+
+    QString m_onDelete;
 };
 
 #endif // FOREIGNKEY_H
