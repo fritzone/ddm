@@ -79,6 +79,8 @@ private:
     QTreeWidgetItem* createTWIForIndex(const Index* col);
     QTreeWidgetItem* createTWIForForeignKey(const ForeignKey* col);
     void updateDefaultValuesTableHeader();
+    void backupDefaultValuesTable();
+    void restoreDefaultValuesTable();
 
 private:
     Ui::NewTableForm *m_ui;
@@ -102,6 +104,12 @@ private:
     // true if the m_currentForeignKey was created from an item from the foreign key list, false if it was created with
     // the first association
     bool m_foreignKeySelected;
+    // holds the values that were saved from the startup table before a change in the tables columns happened
+    QHash<QString, QVector<QString> > m_startupSaves;
+    // 0 = no op, 1 = column deletion, 2 = colum insertion , 3 = column rename ...
+    int m_columnOperation;
+    QString m_newColumnName;
+    QString m_oldColumnName;
 };
 
 #endif // NEWTABLEFORM_H

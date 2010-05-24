@@ -13,6 +13,8 @@
 #include "ForeignKey.h"
 
 #include <QMessageBox>
+#include <QHashIterator>
+#include <QHash>
 
 // the positions of various items in the columns view, used for icon retrieval mostly
 const int COL_POS_PK = 0;
@@ -173,8 +175,15 @@ void NewTableForm::onAddColumn()
         }
     }
 
+    backupDefaultValuesTable();
     if(m_currentColumn)     // we are working on a column
     {
+        if(m_currentColumn->getName() != m_ui->txtNewColumnName->text())
+        {
+            m_columnOperation = 3;
+            m_newColumnName = m_ui->txtNewColumnName->text();
+            m_oldColumnName = m_currentColumn->getName();
+        }
         m_currentColumn->setName(m_ui->txtNewColumnName->text());
         m_currentColumn->setPk(m_ui->chkPrimary->checkState());
         m_currentColumn->setDataType(m_project->getWorkingVersion()->getDataType(m_ui->cmbNewColumnType->currentText()));
@@ -203,7 +212,6 @@ void NewTableForm::onAddColumn()
 
         col->setLocation(item);
         m_ui->txtNewColumnName->setFocus( );
-
     }
 
     m_ui->txtNewColumnName->setText("");
@@ -211,7 +219,7 @@ void NewTableForm::onAddColumn()
 
     populateColumnsForIndices();
     updateDefaultValuesTableHeader();
-
+    restoreDefaultValuesTable();
 }
 
 void NewTableForm::onCancelColumnEditing()
@@ -224,19 +232,27 @@ void NewTableForm::onCancelColumnEditing()
 
 void NewTableForm::onDeleteColumn()
 {
-    const Column* currentColumn = m_table->getColumn(m_ui->lstColumns->currentItem()->text(1));
+    QTreeWidgetItem* currentItem = m_ui->lstColumns->currentItem();
+    if(currentItem == 0)
+    {
+        QMessageBox::critical (this, tr("Error"), tr("Internal Error: Nothing is selected?"), QMessageBox::Ok);
+        return;
+    }
+    const Column* currentColumn = m_table->getColumn(currentItem->text(1));
     const Index* usedIn = m_table->isColumnUsedInIndex(currentColumn);
     if(usedIn != 0)
     {
         QMessageBox::critical (this, tr("Error"), tr("This column cannot be deleted since it's used in an index. Delete this index first: ") + usedIn->getName(), QMessageBox::Ok);
         return;
     }
+    backupDefaultValuesTable();
     delete m_ui->lstColumns->currentItem();
     onCancelColumnEditing();
     m_table->removeColumn(const_cast<Column*>(currentColumn));
     m_currentColumn = 0;
     populateColumnsForIndices();
     updateDefaultValuesTableHeader();
+    restoreDefaultValuesTable();
 }
 
 void NewTableForm::onMoveColumnDown()
@@ -254,7 +270,9 @@ void NewTableForm::onMoveColumnDown()
             m_ui->lstColumns->setCurrentItem(w);
             populateColumnsForIndices();
             // TODO: repatriate the columns from the exchanged one
+            backupDefaultValuesTable();
             updateDefaultValuesTableHeader();
+            restoreDefaultValuesTable();
         }
     }
 }
@@ -274,7 +292,9 @@ void NewTableForm::onMoveColumnUp()
             m_ui->lstColumns->setCurrentItem(w);
             populateColumnsForIndices();
             // TODO: repatriate the columns from the exchanged one
+            backupDefaultValuesTable();
             updateDefaultValuesTableHeader();
+            restoreDefaultValuesTable();
         }
     }
 }
@@ -830,10 +850,11 @@ void NewTableForm::updateDefaultValuesTableHeader()
     m_ui->tableStartupValues->setColumnCount(m_table->getColumns().count());
     for(int i=0; i<m_table->getColumns().count(); i++)
     {
-        QTableWidgetItem *cubesHeaderItem = new QTableWidgetItem(m_table->getColumns()[i]->getName());
-        cubesHeaderItem->setIcon(m_table->getColumns()[i]->getDataType()->getIcon());
-        cubesHeaderItem->setTextAlignment(Qt::AlignVCenter);
-        m_ui->tableStartupValues->setHorizontalHeaderItem(i, cubesHeaderItem);
+        QTableWidgetItem *columnHeaderItem = new QTableWidgetItem(m_table->getColumns()[i]->getName());
+        columnHeaderItem->setIcon(m_table->getColumns()[i]->getDataType()->getIcon());
+        columnHeaderItem->setTextAlignment(Qt::AlignVCenter);
+
+        m_ui->tableStartupValues->setHorizontalHeaderItem(i, columnHeaderItem);
     }
 }
 
@@ -841,4 +862,52 @@ void NewTableForm::onAddNewDefaultRow()
 {
     int curRowC = m_ui->tableStartupValues->rowCount();
     m_ui->tableStartupValues->insertRow(curRowC);
+}
+
+void NewTableForm::backupDefaultValuesTable()
+{
+    QHash<QString, QVector<QString> > backupData;
+    for(int i=0; i<m_ui->tableStartupValues->columnCount(); i++)
+    {
+        QVector <QString> columnI;
+        for(int j=0; j<m_ui->tableStartupValues->rowCount(); j++)
+        {
+            columnI.append(m_ui->tableStartupValues->item(j,i)->text());
+            m_ui->tableStartupValues->item(j,i)->setText("");
+        }
+        backupData[m_ui->tableStartupValues->horizontalHeaderItem(i)->text()] = columnI;
+    }
+    m_startupSaves = backupData;
+}
+
+void NewTableForm::restoreDefaultValuesTable()
+{
+    QHashIterator<QString, QVector <QString> > it(m_startupSaves);
+    while(it.hasNext())
+    {
+        it.next();
+        QString colName = it.key();
+        // the value below is determined from the last operation
+        QString finalColumnName = colName;
+        if(m_columnOperation == 3 && colName == m_oldColumnName)
+        {
+            m_oldColumnName = "";
+            finalColumnName = m_newColumnName;
+        }
+        QVector <QString> columnI = it.value();
+        int foundColumn = -1;
+        int hc = m_ui->tableStartupValues->horizontalHeader()->count();
+        for(int i=0; i<hc; i++)
+        {
+            QTableWidgetItem *headerI = m_ui->tableStartupValues->horizontalHeaderItem(i);
+            if(headerI && (headerI->text() == finalColumnName))
+            {
+                for(int j=0; j<columnI.size(); j++)
+                {
+                    m_ui->tableStartupValues->item(j,i)->setText(columnI[j]);
+                }
+            }
+        }
+    }
+    m_columnOperation = -1;
 }
