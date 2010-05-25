@@ -36,7 +36,7 @@
    <item row="1" column="0">
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="tabWidgetPage1">
       <attribute name="title">
@@ -73,7 +73,7 @@
            <string>Text/String</string>
           </property>
           <property name="icon">
-           <iconset resource="dbm.qrc">
+           <iconset>
             <normaloff>:/images/actions/images/small/datatypes_text.PNG</normaloff>:/images/actions/images/small/datatypes_text.PNG</iconset>
           </property>
          </item>
@@ -82,7 +82,7 @@
            <string>Numeric</string>
           </property>
           <property name="icon">
-           <iconset resource="dbm.qrc">
+           <iconset>
             <normaloff>:/images/actions/images/small/datatypes_numeric.PNG</normaloff>:/images/actions/images/small/datatypes_numeric.PNG</iconset>
           </property>
          </item>
@@ -91,7 +91,7 @@
            <string>Boolean</string>
           </property>
           <property name="icon">
-           <iconset resource="dbm.qrc">
+           <iconset>
             <normaloff>:/images/actions/images/small/datatypes_bool.PNG</normaloff>:/images/actions/images/small/datatypes_bool.PNG</iconset>
           </property>
          </item>
@@ -100,7 +100,7 @@
            <string>Date/Time</string>
           </property>
           <property name="icon">
-           <iconset resource="dbm.qrc">
+           <iconset>
             <normaloff>:/images/actions/images/small/datatypes_datetime.PNG</normaloff>:/images/actions/images/small/datatypes_datetime.PNG</iconset>
           </property>
          </item>
@@ -109,7 +109,7 @@
            <string>Blob/Binary</string>
           </property>
           <property name="icon">
-           <iconset resource="dbm.qrc">
+           <iconset>
             <normaloff>:/images/actions/images/small/datatypes_blob.PNG</normaloff>:/images/actions/images/small/datatypes_blob.PNG</iconset>
           </property>
          </item>
@@ -118,7 +118,7 @@
            <string>Misc</string>
           </property>
           <property name="icon">
-           <iconset resource="dbm.qrc">
+           <iconset>
             <normaloff>:/images/actions/images/small/datatypes_misc.PNG</normaloff>:/images/actions/images/small/datatypes_misc.PNG</iconset>
           </property>
          </item>
@@ -127,7 +127,7 @@
            <string>Spatial</string>
           </property>
           <property name="icon">
-           <iconset resource="dbm.qrc">
+           <iconset>
             <normaloff>:/images/actions/images/small/datatypes_spatial.PNG</normaloff>:/images/actions/images/small/datatypes_spatial.PNG</iconset>
           </property>
          </item>
@@ -171,7 +171,7 @@
             <string>...</string>
            </property>
            <property name="icon">
-            <iconset resource="dbm.qrc">
+            <iconset>
              <normaloff>:/images/actions/images/small/remove.png</normaloff>:/images/actions/images/small/remove.png</iconset>
            </property>
           </widget>
@@ -182,7 +182,7 @@
             <string>...</string>
            </property>
            <property name="icon">
-            <iconset resource="dbm.qrc">
+            <iconset>
              <normaloff>:/images/actions/images/small/add.png</normaloff>:/images/actions/images/small/add.png</iconset>
            </property>
           </widget>
@@ -301,9 +301,7 @@
    </item>
   </layout>
  </widget>
- <resources>
-  <include location="dbm.qrc"/>
- </resources>
+ <resources/>
  <connections>
   <connection>
    <sender>buttons</sender>

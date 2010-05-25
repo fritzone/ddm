@@ -2,15 +2,15 @@
 #define FOREIGNKEY_H
 
 #include "TreeItem.h"
+#include "SerializableElement.h"
 #include "Column.h"
 
 class Table;
 
-class ForeignKey : public TreeItem
+class ForeignKey : public TreeItem, public SerializableElement
 {
 
 public:
-
 
     /**
      * Association between a foreign table column and a local table column.
@@ -89,6 +89,34 @@ public:
                 return;
             }
         }
+    }
+
+    virtual void serialize(QDomDocument &doc, QDomElement &parent) const
+    {
+        QDomElement fkElement = doc.createElement("ForeignKey");      // will hold the foreign keys' stuff
+
+        fkElement.setAttribute("Name", m_name);
+        fkElement.setAttribute("OnUpdate", m_onUpdate);
+        fkElement.setAttribute("OnDelete", m_onDelete);
+
+        // save the associations
+        QDomElement associationsElement = doc.createElement("Association");      // will hold the foreign keys' stuff
+        for(int i=0; i<m_associations.size(); i++)
+        {
+            QString foreignTabName = m_associations[i]->getForeignTable()->getName();
+            QString localTabName = m_associations[i]->getLocalTable()->getName();
+            QString foreignColumn = m_associations[i]->getForeignColumn()->getName();
+            QString localColumn = m_associations[i]->getLocalColumn()->getName();
+            QDomElement assocElement = doc.createElement("Association");      // will hold the data in this element
+            assocElement.setAttribute("ForeignTable", foreignTabName);
+            assocElement.setAttribute("LocalTable", localTabName);
+            assocElement.setAttribute("ForeignColumn", foreignColumn);
+            assocElement.setAttribute("LocalColumn", localColumn);
+            associationsElement.appendChild(assocElement);
+        }
+        fkElement.appendChild(associationsElement);
+        parent.appendChild(fkElement);
+
     }
 
 private:

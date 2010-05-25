@@ -17,14 +17,14 @@ public:
 
     UserDataType():DataType("", DataType::DT_INVALID), sqlType(""),
     icon(0), size(""), defaultValue(""), miscStuff(), codePage(""),
-    unsignedDT(false), description(""), canBeNull(true)
+    unsignedDT(false), description(""), canBeNull(true), autoIncrement(false)
     {}
 
     UserDataType(const UserDataType& other):DataType(other.name, other.type),
     sqlType(other.sqlType), icon(other.icon), size(other.size),
     defaultValue(other.defaultValue), miscStuff(other.miscStuff),
     codePage(other.codePage),unsignedDT(other.unsignedDT),
-    description(other.description), canBeNull(true)
+    description(other.description), canBeNull(other.canBeNull), autoIncrement(other.autoIncrement)
     {}
 
     ~UserDataType()
@@ -33,7 +33,8 @@ public:
     UserDataType(const QString& name, const QString& typeString,
                  const QString& _sqlType, const QString& _s,
                  const QString& _defaultValue, const QString& _cp,
-                 const QStringList& _mvs, bool unsi, const QString& desc, bool nullable);
+                 const QStringList& _mvs, bool unsi, const QString& desc,
+                 bool nullable, bool autoInc);
 
     UserDataType& operator = (const UserDataType& other);
 
@@ -96,7 +97,7 @@ public:
      * Serializes this UserDataType to be saved in the final XML.
      * Modifies the doc object, this is why it's passed in by reference.
      * XML will look like:
-     * <DataType Name = NAME, Type=DT_TYPE, SqlType=SQL_TYPE, Size=SIZE, DefaultValue=DEFAULT_VALUE, Codepage=CODEPAGE, Unsigned=0/1, CanBeNull=0/1>
+     * <DataType Name = NAME, Type=DT_TYPE, SqlType=SQL_TYPE, Size=SIZE, DefaultValue=DEFAULT_VALUE, Codepage=CODEPAGE, Unsigned=0/1, CanBeNull=0/1 AutoIncrement=0/1>
      *  <Description> Description </Description>
      *  <Values>
      *   <Value> VALUE </Value>
@@ -132,6 +133,9 @@ private:
     QString description;
 
     bool canBeNull;
+
+    // if the data type is numeric it can be auto increment or not ...
+    bool autoIncrement;
 
 };
 

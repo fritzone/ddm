@@ -3,12 +3,13 @@
 UserDataType::UserDataType(const QString& name, const QString& typeString,
                            const QString& _sqlType, const QString& _s,
                            const QString& _defaultValue, const QString& _cp,
-                           const QStringList& _mvs, bool unsi, const QString& desc, bool nullable) :
+                           const QStringList& _mvs, bool unsi, const QString& desc,
+                           bool nullable, bool autoInc) :
         DataType(name, DataType::getDT_TYPE(typeString)),
         sqlType(_sqlType),
         icon(& DataType::getIcon(DataType::getDT_TYPE(typeString))),
         size(_s), defaultValue(_defaultValue), miscStuff(_mvs), codePage(_cp),
-        unsignedDT(unsi), description(desc), canBeNull(nullable)
+        unsignedDT(unsi), description(desc), canBeNull(nullable), autoIncrement(autoInc)
 {
 }
 
@@ -27,6 +28,7 @@ UserDataType& UserDataType::operator = (const UserDataType& other)
         description = other.description;
         canBeNull = other.canBeNull;
         icon = other.icon;
+        autoIncrement = other.autoIncrement;
     }
 
     return *this;
@@ -50,6 +52,7 @@ void UserDataType::serialize(QDomDocument& doc, QDomElement& parent) const
     dtElement.setAttribute("Codepage", getCodepage());
     dtElement.setAttribute("Unsigned", isUnsigned() );
     dtElement.setAttribute("CanBeNull", canBeNull);
+    dtElement.setAttribute("AutoIncrement", autoIncrement);
 
     {
     QDomElement descElement = doc.createElement("Description");  // description

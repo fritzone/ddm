@@ -33,7 +33,7 @@ public:
                              const QString& sqlType, const QString& size,
                              const QString& defaultValue, const QString& cp,
                              const QStringList& mvs, const QString& desc,
-                             bool unsi, bool canBeNull, UserDataType* pudt);
+                             bool unsi, bool canBeNull, bool autoInc, UserDataType* pudt);
 
     Project* getWorkingProject();
 

@@ -33,10 +33,6 @@ NewDataTypeForm::NewDataTypeForm(DatabaseEngine* dbe, QWidget *parent) :
     m_ui->btnAddEnumValue->hide();
     m_ui->btnRemoveEnumValue->hide();
 
-    m_ui->label_6->hide();
-    m_ui->chkAutoIncrement->hide();
-
-
     populateCodepageCombo();
     resetContent();
 }
@@ -168,7 +164,8 @@ void NewDataTypeForm::onSave()
                                    defaultValue,
                                    cp, mv, m_ui->txtDescription->toPlainText(),
                                    m_ui->chkUnsigned->isChecked(),
-                                   m_ui->chkCanBeNull->isChecked(), m_udt))
+                                   m_ui->chkCanBeNull->isChecked(),
+                                   m_ui->chkAutoIncrement->isChecked(), m_udt))
         {
             resetContent();
         }

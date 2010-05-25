@@ -9,7 +9,10 @@
  */
 class SerializableElement
 {
+public:
     virtual void serialize(QDomDocument& doc, QDomElement& parent) const = 0;
+
+    virtual ~SerializableElement() {}
 };
 
 #endif // _SERIALIZABLEELEMENT_H_

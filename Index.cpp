@@ -56,25 +56,20 @@ void Index::serialize(QDomDocument &doc, QDomElement &parent) const
 {
     QDomElement indexElement = doc.createElement("Index");      // will hold the Index
 
-    QDomElement nameElement = doc.createElement("Name");        // the name node
-    QDomText nameNode = doc.createTextNode(getName());
-    nameElement.appendChild(nameNode);
-    indexElement.appendChild(nameElement);
+    indexElement.setAttribute("Name", getName());
+    indexElement.setAttribute("Type", getType());
 
-    QDomElement indexTypeElement = doc.createElement("Type");
-    QDomText indexTypeNode = doc.createTextNode(getType());
-    indexTypeElement.appendChild(indexTypeNode);
-    indexElement.appendChild(indexTypeElement);
 
+    {
     QDomElement sqlColumnsElement = doc.createElement("Columns");
     for(int i=0; i<m_columns.size(); i++)
     {
         QDomElement sqlColumnElement = doc.createElement("Column");
-        QDomText columnNameNode = doc.createTextNode(m_columns[i]->getName());
-        sqlColumnElement.appendChild(columnNameNode );
+        sqlColumnElement.setAttribute("Name", m_columns[i]->getName());
         sqlColumnsElement.appendChild(sqlColumnElement);
     }
     indexElement.appendChild(sqlColumnsElement);
+    }
 
     parent.appendChild(indexElement);
 }

@@ -185,6 +185,7 @@ void NewTableForm::onAddColumn()
             m_oldColumnName = m_currentColumn->getName();
         }
         m_currentColumn->setName(m_ui->txtNewColumnName->text());
+        m_currentColumn->setDescription(m_ui->txtColumnDescription->toPlainText());
         m_currentColumn->setPk(m_ui->chkPrimary->checkState());
         m_currentColumn->setDataType(m_project->getWorkingVersion()->getDataType(m_ui->cmbNewColumnType->currentText()));
 
@@ -206,6 +207,7 @@ void NewTableForm::onAddColumn()
     {
         UserDataType* colsDt = m_project->getWorkingVersion()->getDataType(m_ui->cmbNewColumnType->currentText());
         Column* col = new Column(m_ui->txtNewColumnName->text(), colsDt, m_ui->chkPrimary->checkState()) ;
+        col->setDescription(m_ui->txtColumnDescription->toPlainText());
         QTreeWidgetItem* item = createTWIForColumn(col);
         m_ui->lstColumns->addTopLevelItem(item);
         m_table->addColumn(col);
@@ -315,6 +317,7 @@ void NewTableForm::onItemSelected(QTreeWidgetItem* current, int column)
     m_ui->txtNewColumnName->setText(m_currentColumn->getName());
     m_ui->cmbNewColumnType->setCurrentIndex(m_project->getWorkingVersion()->getDataTypeIndex(m_currentColumn->getDataType()->getName()));
     m_ui->chkPrimary->setChecked(m_currentColumn->isPk());
+    m_ui->txtColumnDescription->setText(m_currentColumn->getDescription());
 
     m_ui->btnAdd->setIcon(IconFactory::getApplyIcon());
     m_ui->btnCancelColumnEditing->show();
@@ -366,6 +369,7 @@ void NewTableForm::onSave()
     }
 
     m_table->setName(m_ui->txtTableName->text());
+    m_table->setDescription(m_ui->txtDescription->toPlainText());
 
     if(m_project->getWorkingVersion()->hasTable(m_table))
     {
