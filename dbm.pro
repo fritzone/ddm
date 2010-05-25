@@ -30,7 +30,8 @@ SOURCES += main.cpp \
     Column.cpp \
     AbstractIndextypeProvider.cpp \
     Index.cpp \
-    DeserializationFactory.cpp
+    DeserializationFactory.cpp \
+    ProjectDetailsForm.cpp
 HEADERS += MainWindow.h \
     MainWindowButtonDialog.h \
     NewProjectDialog.h \
@@ -60,12 +61,15 @@ HEADERS += MainWindow.h \
     Index.h \
     SerializableElement.h \
     NamedItem.h \
-    DeserializationFactory.h
+    DeserializationFactory.h \
+    ProjectDetailsForm.h \
+    ForeignKey.h
 FORMS += mainwindow.ui \
     mainwindowbuttondialog.ui \
     newprojectdialog.ui \
     newdatatypeform.ui \
     datatypeslistform.ui \
     TablesListForm.ui \
-    NewTableForm.ui
+    NewTableForm.ui \
+    ProjectDetailsForm.ui
 RESOURCES += dbm.qrc

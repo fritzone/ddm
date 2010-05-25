@@ -1,6 +1,8 @@
 #include "Table.h"
 #include "Column.h"
 #include "Index.h"
+#include "ForeignKey.h"
+
 
 Table::Table() : m_name(""), m_columns(), m_indices(), m_foreignKeys()
 {
@@ -102,4 +104,51 @@ QStringList Table::columns() const
         result << m_columns[i]->getName();
     }
     return result;
+}
+
+
+void Table::serialize(QDomDocument &doc, QDomElement &parent) const
+{
+    QDomElement tableElement = doc.createElement("Table");      // will hold the data in this element
+    tableElement.setAttribute("Name", m_name);
+
+    {
+    QDomElement descElement = doc.createElement("Description");  // description
+    QDomText descNode = doc.createTextNode(m_description);
+    descElement.appendChild(descNode);
+    tableElement.appendChild(descElement);
+    }
+
+    // save the columns
+    {
+    QDomElement columnsElement = doc.createElement("Columns");
+    for(int i=0; i<m_columns.size(); i++)
+    {
+        m_columns[i]->serialize(doc, columnsElement);
+    }
+    tableElement.appendChild(columnsElement);
+    }
+
+    // save the indices
+    {
+    QDomElement indicesElement = doc.createElement("Indices");
+    for(int i=0; i<m_indices.size(); i++)
+    {
+        m_indices[i]->serialize(doc, indicesElement);
+    }
+    tableElement.appendChild(indicesElement);
+    }
+
+    // save the foreign keys
+    {
+    QDomElement fksElement = doc.createElement("ForeignKeys");
+    for(int i=0; i<m_foreignKeys.size(); i++)
+    {
+        m_foreignKeys[i]->serialize(doc, fksElement);
+    }
+    tableElement.appendChild(fksElement);
+    }
+
+
+    parent.appendChild(tableElement);
 }

@@ -6,7 +6,8 @@
 /**
  * Every object that can be put in the tree (DataType, Table, etc...) must be derived from this class
  * to ensure that the object knows how to update its tree entry. This class gives read/write access
- * to the tree location
+ * to the tree location. On the other end, all the other elements that are put in the trees in the
+ * NewTableForm are also using this, since they are also can be found in a tree widget.
  */
 class TreeItem
 {

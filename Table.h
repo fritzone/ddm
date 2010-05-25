@@ -2,6 +2,7 @@
 #define _TABLE_H_
 
 #include "TreeItem.h"
+#include "SerializableElement.h"
 
 #include <QString>
 #include <QVector>
@@ -14,7 +15,7 @@ class ForeignKey;
  * The table class holds a database table defined by the user. It must be derived from the TreeItem since a table can be placed in
  * the tree, so the user of it must know how to update the visual part too.
  */
-class Table : virtual public TreeItem
+class Table : virtual public TreeItem, public SerializableElement
 {
 public:
 
@@ -93,6 +94,10 @@ public:
         m_name = name;
     }
 
+    void setDescription(const QString& desc)
+    {
+        m_description = desc;
+    }
 
     void removeIndex(Index* toRemove);
 
@@ -115,9 +120,14 @@ public:
      */
     QStringList columns() const;
 
+    virtual void serialize(QDomDocument &doc, QDomElement &parent) const;
+
 private:
     // the name of the table
     QString m_name;
+
+    // describes the table
+    QString m_description;
 
     // the columns that this table is having
     QVector<Column*> m_columns;

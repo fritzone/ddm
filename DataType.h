@@ -35,6 +35,8 @@ public:
     DataType(const DataType& other):name(other.name), type(other.type)
     {}
 
+    virtual ~DataType() {}
+
     QString getName() const
     {
         return name;

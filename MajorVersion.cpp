@@ -47,12 +47,23 @@ void MajorVersion::serialize(QDomDocument &doc, QDomElement &parent) const
     majorVersionElement.appendChild(versionElement);
 
     // now saving the data types
+    {
     QDomElement dataTypesElement = doc.createElement("DataTypes");
     for(int i=0; i< m_dataTypes.size(); i++)
     {
         m_dataTypes[i]->serialize(doc, dataTypesElement);
     }
     majorVersionElement.appendChild(dataTypesElement);
+    }
+
+    {
+    QDomElement tablesElement = doc.createElement("Tables");
+    for(int i=0; i< m_dataTypes.size(); i++)
+    {
+        m_tables[i]->serialize(doc, tablesElement);
+    }
+    majorVersionElement.appendChild(tablesElement);
+    }
 
     // now serialize the tables
 

@@ -17,6 +17,7 @@ UserDataType* DeserializationFactory::createUserDataType(QDomDocument& doc, QDom
     QString codepage = element.attribute("Codepage");
     QString isUnsigned = element.attribute("Unsigned");
     QString canBeNull = element.attribute("CanBeNull");
+    QString autoInc = element.attribute("CanBeNull");
     QString description = "";
     QStringList miscValues;
 
@@ -38,7 +39,7 @@ UserDataType* DeserializationFactory::createUserDataType(QDomDocument& doc, QDom
         }
     }
 
-    UserDataType* result = new UserDataType(name, type, sqlType, size, defaultValue, codepage, miscValues, isUnsigned=="1", description, canBeNull == "1");
+    UserDataType* result = new UserDataType(name, type, sqlType, size, defaultValue, codepage, miscValues, isUnsigned=="1", description, canBeNull == "1", autoInc == "1");
 
     return result;
 
