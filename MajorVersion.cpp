@@ -15,6 +15,10 @@ MajorVersion::MajorVersion(QTreeWidget* tree, QTreeWidgetItem* projectItem, int 
     createTreeItems();
 }
 
+MajorVersion::MajorVersion(QString verAsString):version(verAsString)
+{
+}
+
 void MajorVersion::createTreeItems()
 {
     QIcon tablesIcon(":/images/actions/images/small/table.png");
@@ -69,8 +73,6 @@ void MajorVersion::serialize(QDomDocument &doc, QDomElement &parent) const
     }
     majorVersionElement.appendChild(tablesElement);
     }
-
-    // now serialize the tables
 
     parent.appendChild(majorVersionElement);
 
