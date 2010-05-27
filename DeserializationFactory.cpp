@@ -70,7 +70,41 @@ Index* DeserializationFactory::createIndex(Table* table, const QDomDocument &doc
 
 MajorVersion* DeserializationFactory::createMajorVersion(const QDomDocument &doc, const QDomElement &element)
 {
-    // folytasd innen
+    QString name = "";
+
+    for(int i=0; i<element.childNodes().count(); i++)
+    {
+        if(element.childNodes().at(i).nodeName() == "Version")
+        {
+            name = element.childNodes().at(i).firstChild().nodeValue();// first child is a text node
+        }
+    }
+
+    MajorVersion* result = new MajorVersion(name);
+
+    // getting the data types
+    for(int i=0; i<element.childNodes().count(); i++)
+    {
+        if(element.childNodes().at(i).nodeName() == "DataTypes")
+        {
+            for(int j=0; j<element.childNodes().at(i).childNodes().count(); j++)
+            {
+                UserDataType* dt = createUserDataType(doc, element.childNodes().at(i).childNodes().at(j).toElement());
+                result->addNewDataType(dt);
+            }
+        }
+    }
+    for(int i=0; i<element.childNodes().count(); i++)
+    {
+        if(element.childNodes().at(i).nodeName() == "Tables")   // in a well formatted result, the Tables child node is always after the datatypes
+        {
+            for(int j=0; j<element.childNodes().at(i).childNodes().count(); j++)
+            {
+                Table* tab = createTable(result, doc, element.childNodes().at(i).childNodes().at(j).toElement());
+                result->addTable(tab);
+            }
+        }
+    }
 }
 
 Column* DeserializationFactory::createColumn(MajorVersion* ver, const QDomDocument &doc, const QDomElement &element)
@@ -78,8 +112,7 @@ Column* DeserializationFactory::createColumn(MajorVersion* ver, const QDomDocume
     QString name = element.attribute("Name");
     QString pk = element.attribute("PK");
     QString type = element.attribute("Type");
-
-    UserDataType* udt = NULL; // vedd ezt kia MajorVersion -bol
+    UserDataType* udt = ver->getDataType(type);
 
     Column* col = new Column(name, udt, pk == "1");
     return col;
