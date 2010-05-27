@@ -100,7 +100,7 @@ public:
         fkElement.setAttribute("OnDelete", m_onDelete);
 
         // save the associations
-        QDomElement associationsElement = doc.createElement("Association");      // will hold the foreign keys' stuff
+        QDomElement associationsElement = doc.createElement("Association");
         for(int i=0; i<m_associations.size(); i++)
         {
             QString foreignTabName = m_associations[i]->getForeignTable()->getName();

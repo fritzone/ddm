@@ -1,5 +1,9 @@
 #include "DeserializationFactory.h"
 #include "UserDataType.h"
+#include "Index.h"
+#include "Table.h"
+#include "Column.h"
+#include "MajorVersion.h"
 
 #include <QStringList>
 
@@ -7,7 +11,7 @@ DeserializationFactory::DeserializationFactory()
 {
 }
 
-UserDataType* DeserializationFactory::createUserDataType(QDomDocument& doc, QDomElement& element)
+UserDataType* DeserializationFactory::createUserDataType(const QDomDocument& doc, const QDomElement& element)
 {
     QString name = element.attribute("Name");
     QString type = element.attribute("Type");
@@ -43,4 +47,63 @@ UserDataType* DeserializationFactory::createUserDataType(QDomDocument& doc, QDom
 
     return result;
 
+}
+
+Index* DeserializationFactory::createIndex(Table* table, const QDomDocument &doc, const QDomElement &element)
+{
+    QString name = element.attribute("Name");
+    QString type = element.attribute("Type");
+
+    Index* result = new Index(name, type);
+
+    for(int i=0; i<element.childNodes().size(); i++)
+    {
+        if(element.childNodes().at(i).nodeName() == "Columns")
+        {
+            for(int j=0; j<element.childNodes().at(i).childNodes().size(); j++) // iterating through the "Column" nodes
+            {
+                result->addColumn(table->getColumn(element.childNodes().at(i).childNodes().at(j).toElement().attribute("Name")));    // finding the Name attribute
+            }
+        }
+    }
+}
+
+MajorVersion* DeserializationFactory::createMajorVersion(const QDomDocument &doc, const QDomElement &element)
+{
+    // folytasd innen
+}
+
+Column* DeserializationFactory::createColumn(MajorVersion* ver, const QDomDocument &doc, const QDomElement &element)
+{
+    QString name = element.attribute("Name");
+    QString pk = element.attribute("PK");
+    QString type = element.attribute("Type");
+
+    UserDataType* udt = NULL; // vedd ezt kia MajorVersion -bol
+
+    Column* col = new Column(name, udt, pk == "1");
+    return col;
+}
+
+Table* DeserializationFactory::createTable(MajorVersion* ver, const QDomDocument &doc, const QDomElement &element)
+{
+    Table* result = new Table();
+    QString name = element.attribute("Name");
+    result->setName(name);
+
+    for(int i=0; i<element.childNodes().count(); i++)
+    {
+        if(element.childNodes().at(i).nodeName() == "Description")
+        {
+            result->setDescription(element.childNodes().at(i).firstChild().nodeValue());
+        }
+        if(element.childNodes().at(i).nodeName() == "Columns")
+        {
+            for(int j=0; j<element.childNodes().at(i).childNodes().count(); j++)
+            {
+                Column* col = createColumn(ver, doc, element.childNodes().at(i).childNodes().at(j).toElement());
+                result->addColumn(col);
+            }
+        }
+    }
 }

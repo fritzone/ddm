@@ -24,6 +24,11 @@ public:
      */
     MajorVersion(QTreeWidget* tree, QTreeWidgetItem* projectItem, int ver);
 
+    /**
+     * This constructos is used when deserializing. In this case the tree and projectItem are set later
+     */
+    MajorVersion(QString verAsString);
+
     virtual QTreeWidgetItem* getDtsItem() const
     {
         return dtsItem;
@@ -64,6 +69,9 @@ public:
 
     virtual const QVector<Table*>& getTables() const;
 
+private:
+
+    void createTreeItems();
 
 private:
 
@@ -87,6 +95,12 @@ private:
 
     // the tables in the system
     QVector<Table*> m_tables;
+
+    QTreeWidget* m_tree;
+
+    QTreeWidgetItem* m_projectItem;
+
+
 };
 
 #endif // MAJORVERSION_H

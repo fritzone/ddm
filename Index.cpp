@@ -59,7 +59,6 @@ void Index::serialize(QDomDocument &doc, QDomElement &parent) const
     indexElement.setAttribute("Name", getName());
     indexElement.setAttribute("Type", getType());
 
-
     {
     QDomElement sqlColumnsElement = doc.createElement("Columns");
     for(int i=0; i<m_columns.size(); i++)
