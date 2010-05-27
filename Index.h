@@ -1,0 +1,50 @@
+#ifndef INDEX_H
+#define INDEX_H
+
+#include "TreeItem.h"
+#include "SerializableElement.h"
+
+#include <QVector>
+#include <QString>
+
+class Column;
+
+class Index : virtual public TreeItem, virtual public SerializableElement
+{
+public:
+    Index();
+
+    Index(const QString& name, const QString& type);
+
+    void addColumn(const Column* column);
+
+    bool hasColumn(const Column*) const;
+
+    const QString& getName() const;
+
+    const QString& getType() const;
+
+    void setName(const QString& name);
+
+    void setType(const QString& type);
+
+    void resetColumns();
+
+    const QVector<const Column*>& getColumns() const
+    {
+        return m_columns;
+    }
+
+    virtual void serialize(QDomDocument &doc, QDomElement &parent) const;
+
+
+private:
+
+    QString m_name;
+
+    QString m_type;
+
+    QVector<const Column*> m_columns;
+};
+
+#endif // INDEX_H
