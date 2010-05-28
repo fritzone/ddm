@@ -56,21 +56,10 @@
   <variable>buildConfiguration-Debug</variable>
   <valuemap type="QVariantMap">
    <value key="ProjectExplorer.BuildConfiguration.DisplayName" type="QString">Debug</value>
-   <value key="QtVersionId" type="int">0</value>
+   <value key="QtVersionId" type="int">5</value>
    <value key="ToolChain" type="int">0</value>
    <value key="addQDumper" type=""></value>
    <value key="buildConfiguration" type="int">2</value>
-   <value key="buildDirectory" type="QString">C:\ferenc\wrc\dbm</value>
-  </valuemap>
- </data>
- <data>
-  <variable>buildConfiguration-Release</variable>
-  <valuemap type="QVariantMap">
-   <value key="ProjectExplorer.BuildConfiguration.DisplayName" type="QString">Release</value>
-   <value key="QtVersionId" type="int">0</value>
-   <value key="ToolChain" type="int">0</value>
-   <value key="addQDumper" type=""></value>
-   <value key="buildConfiguration" type="int">0</value>
   </valuemap>
  </data>
  <data>
@@ -79,139 +68,15 @@
    <value key="ProjectExplorer.BuildConfiguration.DisplayName" type="QString">Debug</value>
    <valuelist key="abstractProcess.Environment" type="QVariantList">
     <value type="QString">CVS_RSH=ssh</value>
-    <value type="QString">DBUS_SESSION_BUS_ADDRESS=unix:abstract=/tmp/dbus-fhoStbtT3S,guid=c493066bbd13226ed8efabbf4bc5bee1</value>
+    <value type="QString">DBUS_SESSION_BUS_ADDRESS=unix:abstract=/tmp/dbus-LXB3yH9IiH,guid=c97f0b4b78b81fc5f72d4cee4be7ede9</value>
     <value type="QString">DESKTOP_SESSION=gnome</value>
     <value type="QString">DISPLAY=:0.0</value>
     <value type="QString">GDMSESSION=gnome</value>
     <value type="QString">GDM_KEYBOARD_LAYOUT=no</value>
     <value type="QString">GDM_LANG=en_US.UTF-8</value>
     <value type="QString">GNOME_DESKTOP_SESSION_ID=this-is-deprecated</value>
-    <value type="QString">GNOME_KEYRING_PID=2396</value>
-    <value type="QString">GNOME_KEYRING_SOCKET=/tmp/keyring-CNxWDC/socket</value>
-    <value type="QString">GTK_RC_FILES=/etc/gtk/gtkrc:/home/ferenc/.gtkrc-1.2-gnome2</value>
-    <value type="QString">G_BROKEN_FILENAMES=1</value>
-    <value type="QString">HISTCONTROL=ignoreboth</value>
-    <value type="QString">HISTSIZE=1000</value>
-    <value type="QString">HOME=/home/ferenc</value>
-    <value type="QString">HOSTNAME=DFL</value>
-    <value type="QString">IMSETTINGS_INTEGRATE_DESKTOP=yes</value>
-    <value type="QString">IMSETTINGS_MODULE=none</value>
-    <value type="QString">KDEDIRS=/usr</value>
-    <value type="QString">KDE_IS_PRELINKED=1</value>
-    <value type="QString">KMIX_PULSEAUDIO_DISABLE=1</value>
-    <value type="QString">LANG=en_US.UTF-8</value>
-    <value type="QString">LD_LIBRARY_PATH=/home/ferenc/qtsdk-2010.02/lib/qtcreator:</value>
-    <value type="QString">LESSOPEN=|/usr/bin/lesspipe.sh %s</value>
-    <value type="QString">LOGNAME=ferenc</value>
-    <value type="QString">MAIL=/var/spool/mail/ferenc</value>
-    <value type="QString">ORBIT_SOCKETDIR=/tmp/orbit-ferenc</value>
-    <value type="QString">PATH=/home/ferenc/qtsdk-2010.02/qt/bin:/usr/lib64/qt-3.3/bin:/usr/kerberos/sbin:/usr/kerberos/bin:/usr/lib64/ccache:/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin:/home/ferenc/bin</value>
-    <value type="QString">PWD=/home/ferenc</value>
-    <value type="QString">QTDIR=/home/ferenc/qtsdk-2010.02/qt</value>
-    <value type="QString">QTINC=/usr/lib64/qt-3.3/include</value>
-    <value type="QString">QTLIB=/usr/lib64/qt-3.3/lib</value>
-    <value type="QString">QT_IM_MODULE=xim</value>
-    <value type="QString">SESSION_MANAGER=local/unix:@/tmp/.ICE-unix/2403,unix/unix:/tmp/.ICE-unix/2403</value>
-    <value type="QString">SHELL=/bin/bash</value>
-    <value type="QString">SHLVL=1</value>
-    <value type="QString">SSH_ASKPASS=/usr/libexec/openssh/gnome-ssh-askpass</value>
-    <value type="QString">SSH_AUTH_SOCK=/tmp/keyring-CNxWDC/socket.ssh</value>
-    <value type="QString">TERM=dumb</value>
-    <value type="QString">TTY=not a tty</value>
-    <value type="QString">USER=ferenc</value>
-    <value type="QString">USERNAME=ferenc</value>
-    <value type="QString">XAUTHORITY=/var/run/gdm/auth-for-ferenc-dwl2GD/database</value>
-    <value type="QString">XDG_SESSION_COOKIE=627354ab72a661ae3e7a741e4b5584fe-1271250656.521792-1789042895</value>
-    <value type="QString">XMODIFIERS=@im=none</value>
-   </valuelist>
-   <valuelist key="abstractProcess.arguments" type="QVariantList">
-    <value type="QString">/home/ferenc/work/dbm-project/dbm.pro</value>
-    <value type="QString">-spec</value>
-    <value type="QString">linux-g++-64</value>
-    <value type="QString">-r</value>
-    <value type="QString">CONFIG+=debug</value>
-   </valuelist>
-   <value key="abstractProcess.command" type="QString">/home/ferenc/qtsdk-2010.02/qt/bin/qmake</value>
-   <value key="abstractProcess.enabled" type="bool">false</value>
-   <value key="abstractProcess.workingDirectory" type="QString">/home/ferenc/work/dbm-project</value>
-   <value key="buildConfiguration" type=""></value>
-  </valuemap>
- </data>
- <data>
-  <variable>buildconfiguration-Debug-buildstep1</variable>
-  <valuemap type="QVariantMap">
-   <value key="ProjectExplorer.BuildConfiguration.DisplayName" type="QString">Debug</value>
-   <valuelist key="abstractProcess.Environment" type="QVariantList">
-    <value type="QString">CVS_RSH=ssh</value>
-    <value type="QString">DBUS_SESSION_BUS_ADDRESS=unix:abstract=/tmp/dbus-fhoStbtT3S,guid=c493066bbd13226ed8efabbf4bc5bee1</value>
-    <value type="QString">DESKTOP_SESSION=gnome</value>
-    <value type="QString">DISPLAY=:0.0</value>
-    <value type="QString">GDMSESSION=gnome</value>
-    <value type="QString">GDM_KEYBOARD_LAYOUT=no</value>
-    <value type="QString">GDM_LANG=en_US.UTF-8</value>
-    <value type="QString">GNOME_DESKTOP_SESSION_ID=this-is-deprecated</value>
-    <value type="QString">GNOME_KEYRING_PID=2396</value>
-    <value type="QString">GNOME_KEYRING_SOCKET=/tmp/keyring-CNxWDC/socket</value>
-    <value type="QString">GTK_RC_FILES=/etc/gtk/gtkrc:/home/ferenc/.gtkrc-1.2-gnome2</value>
-    <value type="QString">G_BROKEN_FILENAMES=1</value>
-    <value type="QString">HISTCONTROL=ignoreboth</value>
-    <value type="QString">HISTSIZE=1000</value>
-    <value type="QString">HOME=/home/ferenc</value>
-    <value type="QString">HOSTNAME=DFL</value>
-    <value type="QString">IMSETTINGS_INTEGRATE_DESKTOP=yes</value>
-    <value type="QString">IMSETTINGS_MODULE=none</value>
-    <value type="QString">KDEDIRS=/usr</value>
-    <value type="QString">KDE_IS_PRELINKED=1</value>
-    <value type="QString">KMIX_PULSEAUDIO_DISABLE=1</value>
-    <value type="QString">LANG=en_US.UTF-8</value>
-    <value type="QString">LD_LIBRARY_PATH=/home/ferenc/qtsdk-2010.02/lib/qtcreator:</value>
-    <value type="QString">LESSOPEN=|/usr/bin/lesspipe.sh %s</value>
-    <value type="QString">LOGNAME=ferenc</value>
-    <value type="QString">MAIL=/var/spool/mail/ferenc</value>
-    <value type="QString">ORBIT_SOCKETDIR=/tmp/orbit-ferenc</value>
-    <value type="QString">PATH=/home/ferenc/qtsdk-2010.02/qt/bin:/usr/lib64/qt-3.3/bin:/usr/kerberos/sbin:/usr/kerberos/bin:/usr/lib64/ccache:/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin:/home/ferenc/bin</value>
-    <value type="QString">PWD=/home/ferenc</value>
-    <value type="QString">QTDIR=/home/ferenc/qtsdk-2010.02/qt</value>
-    <value type="QString">QTINC=/usr/lib64/qt-3.3/include</value>
-    <value type="QString">QTLIB=/usr/lib64/qt-3.3/lib</value>
-    <value type="QString">QT_IM_MODULE=xim</value>
-    <value type="QString">SESSION_MANAGER=local/unix:@/tmp/.ICE-unix/2403,unix/unix:/tmp/.ICE-unix/2403</value>
-    <value type="QString">SHELL=/bin/bash</value>
-    <value type="QString">SHLVL=1</value>
-    <value type="QString">SSH_ASKPASS=/usr/libexec/openssh/gnome-ssh-askpass</value>
-    <value type="QString">SSH_AUTH_SOCK=/tmp/keyring-CNxWDC/socket.ssh</value>
-    <value type="QString">TERM=dumb</value>
-    <value type="QString">TTY=not a tty</value>
-    <value type="QString">USER=ferenc</value>
-    <value type="QString">USERNAME=ferenc</value>
-    <value type="QString">XAUTHORITY=/var/run/gdm/auth-for-ferenc-dwl2GD/database</value>
-    <value type="QString">XDG_SESSION_COOKIE=627354ab72a661ae3e7a741e4b5584fe-1271250656.521792-1789042895</value>
-    <value type="QString">XMODIFIERS=@im=none</value>
-   </valuelist>
-   <value key="abstractProcess.IgnoreReturnValue" type="bool">false</value>
-   <valuelist key="abstractProcess.arguments" type="QVariantList">
-    <value type="QString">-w</value>
-   </valuelist>
-   <value key="abstractProcess.command" type="QString">/usr/bin/make</value>
-   <value key="abstractProcess.enabled" type="bool">true</value>
-   <value key="abstractProcess.workingDirectory" type="QString">/home/ferenc/work/dbm-project</value>
-  </valuemap>
- </data>
- <data>
-  <variable>buildconfiguration-Debug-cleanstep0</variable>
-  <valuemap type="QVariantMap">
-   <value key="ProjectExplorer.BuildConfiguration.DisplayName" type="QString">Debug</value>
-   <valuelist key="abstractProcess.Environment" type="QVariantList">
-    <value type="QString">CVS_RSH=ssh</value>
-    <value type="QString">DBUS_SESSION_BUS_ADDRESS=unix:abstract=/tmp/dbus-jctHNOhNfV,guid=1eb721853039b8a4d4e776cd4b94cae3</value>
-    <value type="QString">DESKTOP_SESSION=gnome</value>
-    <value type="QString">DISPLAY=:0.0</value>
-    <value type="QString">GDMSESSION=gnome</value>
-    <value type="QString">GDM_KEYBOARD_LAYOUT=us</value>
-    <value type="QString">GDM_LANG=en_US.UTF-8</value>
-    <value type="QString">GNOME_DESKTOP_SESSION_ID=this-is-deprecated</value>
-    <value type="QString">GNOME_KEYRING_PID=2424</value>
-    <value type="QString">GNOME_KEYRING_SOCKET=/tmp/keyring-g9CNlb/socket</value>
+    <value type="QString">GNOME_KEYRING_PID=3086</value>
+    <value type="QString">GNOME_KEYRING_SOCKET=/tmp/keyring-G8NW4J/socket</value>
     <value type="QString">GTK_RC_FILES=/etc/gtk/gtkrc:/home/ferenc/.gtkrc-1.2-gnome2</value>
     <value type="QString">G_BROKEN_FILENAMES=1</value>
     <value type="QString">HISTCONTROL=ignoreboth</value>
@@ -236,26 +101,96 @@
     <value type="QString">QTINC=/usr/lib64/qt-3.3/include</value>
     <value type="QString">QTLIB=/usr/lib64/qt-3.3/lib</value>
     <value type="QString">QT_IM_MODULE=xim</value>
-    <value type="QString">SESSION_MANAGER=local/unix:@/tmp/.ICE-unix/2448,unix/unix:/tmp/.ICE-unix/2448</value>
+    <value type="QString">SESSION_MANAGER=local/unix:@/tmp/.ICE-unix/3095,unix/unix:/tmp/.ICE-unix/3095</value>
     <value type="QString">SHELL=/bin/bash</value>
     <value type="QString">SHLVL=1</value>
     <value type="QString">SSH_ASKPASS=/usr/libexec/openssh/gnome-ssh-askpass</value>
-    <value type="QString">SSH_AUTH_SOCK=/tmp/keyring-g9CNlb/socket.ssh</value>
+    <value type="QString">SSH_AUTH_SOCK=/tmp/keyring-G8NW4J/socket.ssh</value>
     <value type="QString">TERM=dumb</value>
+    <value type="QString">TTY=not a tty</value>
     <value type="QString">USER=ferenc</value>
     <value type="QString">USERNAME=ferenc</value>
-    <value type="QString">XAUTHORITY=/var/run/gdm/auth-for-ferenc-tUgBZ5/database</value>
-    <value type="QString">XDG_SESSION_COOKIE=627354ab72a661ae3e7a741e4b5584fe-1268042466.280880-1364322327</value>
+    <value type="QString">XAUTHORITY=/var/run/gdm/auth-for-ferenc-uP5CQL/database</value>
+    <value type="QString">XDG_SESSION_COOKIE=627354ab72a661ae3e7a741e4b5584fe-1273490920.631416-2032570668</value>
     <value type="QString">XMODIFIERS=@im=none</value>
    </valuelist>
-   <value key="abstractProcess.IgnoreReturnValue" type="bool">true</value>
    <valuelist key="abstractProcess.arguments" type="QVariantList">
-    <value type="QString">clean</value>
+    <value type="QString">/home/ferenc/work/dbm-project/dbm.pro</value>
+    <value type="QString">-spec</value>
+    <value type="QString">linux-g++-64</value>
+    <value type="QString">-r</value>
+    <value type="QString">CONFIG+=debug</value>
+   </valuelist>
+   <value key="abstractProcess.command" type="QString">/home/ferenc/qtsdk-2010.02/qt/bin/qmake</value>
+   <value key="abstractProcess.enabled" type="bool">false</value>
+   <value key="abstractProcess.workingDirectory" type="QString">/home/ferenc/work/dbm-project</value>
+  </valuemap>
+ </data>
+ <data>
+  <variable>buildconfiguration-Debug-buildstep1</variable>
+  <valuemap type="QVariantMap">
+   <value key="ProjectExplorer.BuildConfiguration.DisplayName" type="QString">Debug</value>
+   <valuelist key="abstractProcess.Environment" type="QVariantList">
+    <value type="QString">CVS_RSH=ssh</value>
+    <value type="QString">DBUS_SESSION_BUS_ADDRESS=unix:abstract=/tmp/dbus-LXB3yH9IiH,guid=c97f0b4b78b81fc5f72d4cee4be7ede9</value>
+    <value type="QString">DESKTOP_SESSION=gnome</value>
+    <value type="QString">DISPLAY=:0.0</value>
+    <value type="QString">GDMSESSION=gnome</value>
+    <value type="QString">GDM_KEYBOARD_LAYOUT=no</value>
+    <value type="QString">GDM_LANG=en_US.UTF-8</value>
+    <value type="QString">GNOME_DESKTOP_SESSION_ID=this-is-deprecated</value>
+    <value type="QString">GNOME_KEYRING_PID=3086</value>
+    <value type="QString">GNOME_KEYRING_SOCKET=/tmp/keyring-G8NW4J/socket</value>
+    <value type="QString">GTK_RC_FILES=/etc/gtk/gtkrc:/home/ferenc/.gtkrc-1.2-gnome2</value>
+    <value type="QString">G_BROKEN_FILENAMES=1</value>
+    <value type="QString">HISTCONTROL=ignoreboth</value>
+    <value type="QString">HISTSIZE=1000</value>
+    <value type="QString">HOME=/home/ferenc</value>
+    <value type="QString">HOSTNAME=DFL</value>
+    <value type="QString">IMSETTINGS_INTEGRATE_DESKTOP=yes</value>
+    <value type="QString">IMSETTINGS_MODULE=none</value>
+    <value type="QString">KDEDIRS=/usr</value>
+    <value type="QString">KDE_IS_PRELINKED=1</value>
+    <value type="QString">KMIX_PULSEAUDIO_DISABLE=1</value>
+    <value type="QString">LANG=en_US.UTF-8</value>
+    <value type="QString">LANGUAGE=</value>
+    <value type="QString">LD_LIBRARY_PATH=/home/ferenc/qtsdk-2010.02/lib/qtcreator:</value>
+    <value type="QString">LESSOPEN=|/usr/bin/lesspipe.sh %s</value>
+    <value type="QString">LOGNAME=ferenc</value>
+    <value type="QString">MAIL=/var/spool/mail/ferenc</value>
+    <value type="QString">ORBIT_SOCKETDIR=/tmp/orbit-ferenc</value>
+    <value type="QString">PATH=/home/ferenc/qtsdk-2010.02/qt/bin:/usr/lib64/qt-3.3/bin:/usr/kerberos/sbin:/usr/kerberos/bin:/usr/lib64/ccache:/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin:/home/ferenc/bin</value>
+    <value type="QString">PWD=/home/ferenc</value>
+    <value type="QString">QTDIR=/home/ferenc/qtsdk-2010.02/qt</value>
+    <value type="QString">QTINC=/usr/lib64/qt-3.3/include</value>
+    <value type="QString">QTLIB=/usr/lib64/qt-3.3/lib</value>
+    <value type="QString">QT_IM_MODULE=xim</value>
+    <value type="QString">SESSION_MANAGER=local/unix:@/tmp/.ICE-unix/3095,unix/unix:/tmp/.ICE-unix/3095</value>
+    <value type="QString">SHELL=/bin/bash</value>
+    <value type="QString">SHLVL=1</value>
+    <value type="QString">SSH_ASKPASS=/usr/libexec/openssh/gnome-ssh-askpass</value>
+    <value type="QString">SSH_AUTH_SOCK=/tmp/keyring-G8NW4J/socket.ssh</value>
+    <value type="QString">TERM=dumb</value>
+    <value type="QString">TTY=not a tty</value>
+    <value type="QString">USER=ferenc</value>
+    <value type="QString">USERNAME=ferenc</value>
+    <value type="QString">XAUTHORITY=/var/run/gdm/auth-for-ferenc-uP5CQL/database</value>
+    <value type="QString">XDG_SESSION_COOKIE=627354ab72a661ae3e7a741e4b5584fe-1273490920.631416-2032570668</value>
+    <value type="QString">XMODIFIERS=@im=none</value>
+   </valuelist>
+   <value key="abstractProcess.IgnoreReturnValue" type="bool">false</value>
+   <valuelist key="abstractProcess.arguments" type="QVariantList">
     <value type="QString">-w</value>
    </valuelist>
    <value key="abstractProcess.command" type="QString">/usr/bin/make</value>
    <value key="abstractProcess.enabled" type="bool">true</value>
    <value key="abstractProcess.workingDirectory" type="QString">/home/ferenc/work/dbm-project</value>
+  </valuemap>
+ </data>
+ <data>
+  <variable>buildconfiguration-Debug-cleanstep0</variable>
+  <valuemap type="QVariantMap">
+   <value key="ProjectExplorer.BuildConfiguration.DisplayName" type="QString">Debug</value>
    <value key="cleanConfig" type="bool">true</value>
    <valuelist key="makeargs" type="QVariantList">
     <value type="QString">clean</value>
@@ -263,29 +198,9 @@
   </valuemap>
  </data>
  <data>
-  <variable>buildconfiguration-Release-buildstep0</variable>
-  <valuemap type="QVariantMap">
-   <value key="ProjectExplorer.BuildConfiguration.DisplayName" type="QString">Release</value>
-   <value key="buildConfiguration" type=""></value>
-  </valuemap>
- </data>
- <data>
-  <variable>buildconfiguration-Release-buildstep1</variable>
-  <valuemap type="QVariantMap">
-   <value key="ProjectExplorer.BuildConfiguration.DisplayName" type="QString">Release</value>
-  </valuemap>
- </data>
- <data>
-  <variable>buildconfiguration-Release-cleanstep0</variable>
-  <valuemap type="QVariantMap">
-   <value key="ProjectExplorer.BuildConfiguration.DisplayName" type="QString">Release</value>
-  </valuemap>
- </data>
- <data>
   <variable>buildconfigurations</variable>
   <valuelist type="QVariantList">
    <value type="QString">Debug</value>
-   <value type="QString">Release</value>
   </valuelist>
  </data>
  <data>
