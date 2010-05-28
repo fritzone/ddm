@@ -23,6 +23,11 @@ public:
 	return projectName;
     }
 
+    QString getSolutionName() const
+    {
+        return solutionName;
+    }
+
     QString getTargetDatabase() const;
 
     void focusOnEditField() const;
@@ -38,6 +43,7 @@ private:
 
     // the name of the project
     QString projectName;
+    QString solutionName;
 };
 
 #endif // NEWPROJECTDIALOG_H

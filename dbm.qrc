@@ -74,5 +74,7 @@
         <file>images/small/left.png</file>
         <file>images/small/cancel.png</file>
         <file>images/big/icon.png</file>
+        <file>images/actions/fileopen.png</file>
+        <file>images/small/folder_orange.png</file>
     </qresource>
 </RCC>

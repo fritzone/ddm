@@ -9,6 +9,8 @@ class Index;
 class Table;
 class Column;
 class MajorVersion;
+class Solution;
+class Project;
 
 class DeserializationFactory
 {
@@ -19,6 +21,8 @@ public:
     static Table* createTable(MajorVersion* ver, const QDomDocument& doc, const QDomElement& element);
     static Column* createColumn(MajorVersion* ver, const QDomDocument& doc, const QDomElement& element);
     static MajorVersion* createMajorVersion(const QDomDocument& doc, const QDomElement& element);
+    static Solution* createSolution(const QDomDocument& doc, const QDomElement& element);
+    static Project* createProject(const QDomDocument& doc, const QDomElement& element);
 
 private:
     DeserializationFactory();

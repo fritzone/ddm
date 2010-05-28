@@ -12,6 +12,7 @@ class NewDataTypeForm;
 class AbstractDTSupplier;
 class UserDataType;
 class Table;
+class Solution;
 
 namespace Ui
 {
@@ -48,22 +49,16 @@ public:
      */
     bool onUpdateTable(Table* tbl);
 
+    Solution* currentSolution();
 
 public slots:
 
-    // called when the user wants to create a new project
     void onNewProject();
-
-    // called when the user clicked somewhere on the project tree
     void onProjectTreeClicked();
-
-    // called when the user activated on the new data type action
     void onNewDataType();
-
-    // called when the user activated a new table action
     void onNewTable();
-
     void onSaveProject();
+    void onOpenProject();
 
 private:
     Ui::MainWindow *ui;
@@ -80,14 +75,14 @@ private:
     // true if we are working on a project
     bool weHaveProject;
 
+    QVector<Solution*> m_solutions;
+    Solution* m_currentSolution;
+
 private:
 
     // to create the other dialogs needed in the app
     void createOtherDialogs();
 
-private:
-    // the vector holding the projects
-    QVector<Project*> projects;
 
 };
 
