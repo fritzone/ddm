@@ -5,6 +5,16 @@
 
 Project::Project(const QString& _name, QTreeWidget* _tree):tree(_tree), name(_name)
 {
+    createTreeItem();
+}
+
+Project::Project(const QString &_name) : tree(0), name(_name)
+{
+
+}
+
+void Project::createTreeItem()
+{
     QIcon prjIcon(":/images/actions/images/small/project_open.png");
     QList<QTreeWidgetItem *> items;
     QTreeWidgetItem* projectItem = new QTreeWidgetItem((QTreeWidget*)0, QStringList(name)) ;
@@ -26,6 +36,11 @@ void Project::createMajorVersion()
     majorVersions.append(mjw);
 }
 
+void Project::addMajorVersion(MajorVersion* mv)
+{
+    majorVersions.append(mv);
+}
+
 DatabaseEngine* Project::getEngine() const
 {
     return engine;
@@ -45,10 +60,7 @@ void Project::serialize(QDomDocument& doc, QDomElement& parent) const
 {
     QDomElement projectElement = doc.createElement("Project");      // will hold the data in this element
 
-    QDomElement nameElement = doc.createElement("Name");        // the name node
-    QDomText nameNode = doc.createTextNode(name);
-    nameElement.appendChild(nameNode);
-    projectElement.appendChild(nameElement);
+    projectElement.setAttribute("Name", name);
 
     // now saving the major versions of the project
     QDomElement majorVersionsElement = doc.createElement("MajorVersions");

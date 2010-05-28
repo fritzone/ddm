@@ -23,8 +23,13 @@ public:
     // constructor
     Project(const QString& _name, QTreeWidget* _tree);
 
+    Project(const QString& _name);
+
     // creates a version, updates the GUI
     void createMajorVersion();
+
+    // creates a major version, does not update the gui, it must be done at a later stage
+    void addMajorVersion(MajorVersion*);
 
     // set the SQL Data Type supplier for this project
     void setEngine(DatabaseEngine* eng);
@@ -39,6 +44,10 @@ public:
     {
         prjDetailsForm = pfrm;
     }
+
+private:
+
+    void createTreeItem();
 
 private:
 

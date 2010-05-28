@@ -24,9 +24,10 @@ void NewProjectDialog::focusOnEditField() const
 
 void NewProjectDialog::accept()
 {
-    if(m_ui->txtProjectName->text().size() > 0)
+    if(m_ui->txtProjectName->text().size() > 0 && m_ui->txtSolutionName->text().size() > 0)
     {
 	projectName = m_ui->txtProjectName->text();
+        solutionName = m_ui->txtSolutionName->text();
 	QDialog::accept();
     }
     else
@@ -57,3 +58,5 @@ DatabaseEngine* NewProjectDialog::getDatabaseEngine() const
     DatabaseEngine* engine = new DatabaseEngine(getTargetDatabase());
     return engine;
 }
+
+

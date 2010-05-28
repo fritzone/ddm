@@ -4,6 +4,7 @@
 #include "Table.h"
 #include "Column.h"
 #include "MajorVersion.h"
+#include "Solution.h"
 
 #include <QStringList>
 
@@ -66,6 +67,8 @@ Index* DeserializationFactory::createIndex(Table* table, const QDomDocument &doc
             }
         }
     }
+
+    return result;
 }
 
 MajorVersion* DeserializationFactory::createMajorVersion(const QDomDocument &doc, const QDomElement &element)
@@ -94,6 +97,8 @@ MajorVersion* DeserializationFactory::createMajorVersion(const QDomDocument &doc
             }
         }
     }
+
+    // getting the tables
     for(int i=0; i<element.childNodes().count(); i++)
     {
         if(element.childNodes().at(i).nodeName() == "Tables")   // in a well formatted result, the Tables child node is always after the datatypes
@@ -105,6 +110,8 @@ MajorVersion* DeserializationFactory::createMajorVersion(const QDomDocument &doc
             }
         }
     }
+
+    return result;
 }
 
 Column* DeserializationFactory::createColumn(MajorVersion* ver, const QDomDocument &doc, const QDomElement &element)
@@ -139,4 +146,35 @@ Table* DeserializationFactory::createTable(MajorVersion* ver, const QDomDocument
             }
         }
     }
+
+    return result;
+}
+
+Project* DeserializationFactory::createProject(const QDomDocument &doc, const QDomElement &element)
+{
+    Project* prj = new Project(element.attribute("Name"));
+
+    QDomNodeList majorVersionNodes = element.firstChild().childNodes();
+    for(int i=0; i<majorVersionNodes.count(); i++)
+    {
+        MajorVersion* majVer = createMajorVersion(doc, majorVersionNodes.at(i).toElement());
+        prj->addMajorVersion(majVer);
+    }
+
+    return prj;
+
+}
+
+Solution* DeserializationFactory::createSolution(const QDomDocument &doc, const QDomElement &element)
+{
+    Solution* sol = new Solution(element.attribute("Name"));
+
+    QDomNodeList projectElements = element.firstChild().childNodes();
+    for(int i=0; i<projectElements.count(); i++) //
+    {
+        Project* prj = createProject(doc, projectElements.at(i).toElement());
+        sol->addProject(prj);
+    }
+
+    return sol;
 }

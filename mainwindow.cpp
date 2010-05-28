@@ -14,12 +14,14 @@
 #include "IconFactory.h"
 #include "TablesListForm.h"
 #include "ProjectDetailsForm.h"
+#include "Solution.h"
+#include "DeserializationFactory.h"
 
 #include <QtGui>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), ui(new Ui::MainWindow), dock(0), projectTree(0),
-    btndlg(0), weHaveProject(false)
+    btndlg(0), weHaveProject(false), m_currentSolution(0)
 {
     ui->setupUi(this);
 
@@ -30,8 +32,8 @@ MainWindow::MainWindow(QWidget *parent)
 
     setCentralWidget(btndlg);
 
-    this->ui->mainToolBar->actions().at(3)->setVisible(false);
-    this->ui->mainToolBar->actions().at(4)->setVisible(false);
+    //this->ui->mainToolBar->actions().at(3)->setVisible(false);
+    //this->ui->mainToolBar->actions().at(4)->setVisible(false);
 }
 
 MainWindow::~MainWindow()
@@ -75,14 +77,19 @@ void MainWindow::onNewProject()
 
         // the project name will be uppercase
         QString prjName = nprjdlg->getProjectName();
+        QString solName = nprjdlg->getSolutionName();
         prjName = prjName.toUpper();
 
-
         Project* project = new Project(prjName, projectTree);
-        projects.append(project);
         project->setEngine(nprjdlg->getDatabaseEngine());
         project->createMajorVersion();
 
+        if(!m_currentSolution)
+        {
+            m_currentSolution = new Solution(solName);
+            m_solutions.append(m_currentSolution);
+        }
+        m_currentSolution->addProject(project);
 
         // expand the tree
         projectTree->expandAll();
@@ -271,29 +278,25 @@ bool MainWindow::onSaveNewDataType(const QString& name, const QString& type, con
 
 Project* MainWindow::getWorkingProject()
 {
-    if(projects.size() > 0)
-    {
-        return projects[0];
-    }
+    return m_currentSolution->currentProject();
+}
 
-    return 0;
+Solution* MainWindow::currentSolution()
+{
+    return m_currentSolution;
 }
 
 void MainWindow::onSaveProject()
 {
+    if(!m_currentSolution) return;
     QDomDocument doc("DBM");
-    QDomElement root = doc.createElement("DBM");
-    Project* prj = getWorkingProject();
-    if(prj == NULL)
-    {
-        return;
-    }
+    QDomElement root = doc.createElement("Solutions");
+    currentSolution()->serialize(doc, root);
 
-    prj->serialize(doc, root);
     doc.appendChild(root);
     QString xml = doc.toString();
 
-    QString fileName = QFileDialog::getSaveFileName(this,  tr("Save project"), "", tr("DBM project files (*.dmx)"));
+    QString fileName = QFileDialog::getSaveFileName(this,  tr("Save solution"), "", tr("DBM solution files (*.dmx)"));
     if(fileName.length() == 0)
     {
         return;
@@ -306,4 +309,26 @@ void MainWindow::onSaveProject()
     }
     f1.write(xml.toAscii());
     f1.close();
+}
+
+void MainWindow::onOpenProject()
+{
+    QString fileName = QFileDialog::getOpenFileName(this,  tr("Open solution"), "", tr("DBM solution files (*.dmx)"));
+    if(fileName.length() == 0)
+    {
+        return;
+    }
+
+    QDomDocument doc ("DBM");
+    QFile file (fileName);
+    if (!file.open(QIODevice::ReadOnly)) return;
+    if (!doc.setContent(&file))
+    {
+        file.close();
+        return;
+    }
+    file.close();
+
+    QDomElement docElem = doc.documentElement();
+    Solution* sol = DeserializationFactory::createSolution(doc, docElem.firstChild().toElement());
 }

@@ -67,7 +67,7 @@ void MajorVersion::serialize(QDomDocument &doc, QDomElement &parent) const
 
     {
     QDomElement tablesElement = doc.createElement("Tables");
-    for(int i=0; i< m_dataTypes.size(); i++)
+    for(int i=0; i< m_tables.size(); i++)
     {
         m_tables[i]->serialize(doc, tablesElement);
     }

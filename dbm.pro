@@ -31,7 +31,8 @@ SOURCES += main.cpp \
     AbstractIndextypeProvider.cpp \
     Index.cpp \
     DeserializationFactory.cpp \
-    ProjectDetailsForm.cpp
+    ProjectDetailsForm.cpp \
+    Solution.cpp
 HEADERS += MainWindow.h \
     MainWindowButtonDialog.h \
     NewProjectDialog.h \
@@ -63,7 +64,9 @@ HEADERS += MainWindow.h \
     NamedItem.h \
     DeserializationFactory.h \
     ProjectDetailsForm.h \
-    ForeignKey.h
+    ForeignKey.h \
+    newprojectdialog.h \
+    Solution.h
 FORMS += mainwindow.ui \
     mainwindowbuttondialog.ui \
     newprojectdialog.ui \

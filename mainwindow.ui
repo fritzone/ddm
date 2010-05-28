@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>66</width>
+    <width>339</width>
     <height>110</height>
    </rect>
   </property>
@@ -21,7 +21,7 @@
   </property>
   <property name="windowIcon">
    <iconset resource="dbm.qrc">
-    <normaloff>:/images/actions/images/big/bigdatatypes.PNG</normaloff>:/images/actions/images/big/bigdatatypes.PNG</iconset>
+    <normaloff>:/images/actions/images/big/icon.png</normaloff>:/images/actions/images/big/icon.png</iconset>
   </property>
   <property name="documentMode">
    <bool>true</bool>
@@ -35,7 +35,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>66</width>
+     <width>339</width>
      <height>25</height>
     </rect>
    </property>
@@ -44,10 +44,20 @@
      <string>&amp;File</string>
     </property>
     <addaction name="action_New"/>
+    <addaction name="action_Open"/>
    </widget>
    <addaction name="menu_File"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
+   <property name="movable">
+    <bool>false</bool>
+   </property>
+   <property name="toolButtonStyle">
+    <enum>Qt::ToolButtonIconOnly</enum>
+   </property>
+   <property name="floatable">
+    <bool>false</bool>
+   </property>
    <attribute name="toolBarArea">
     <enum>TopToolBarArea</enum>
    </attribute>
@@ -55,6 +65,7 @@
     <bool>false</bool>
    </attribute>
    <addaction name="action_New"/>
+   <addaction name="action_Open"/>
    <addaction name="action_Save"/>
    <addaction name="separator"/>
    <addaction name="action_NewDataType"/>
@@ -113,6 +124,15 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+Shift+T</string>
+   </property>
+  </action>
+  <action name="action_Open">
+   <property name="icon">
+    <iconset resource="dbm.qrc">
+     <normaloff>:/images/actions/images/actions/fileopen.png</normaloff>:/images/actions/images/actions/fileopen.png</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Open</string>
    </property>
   </action>
  </widget>
@@ -185,11 +205,28 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>action_Open</sender>
+   <signal>activated()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>onOpenProject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>169</x>
+     <y>54</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>onNewProject()</slot>
   <slot>onNewDataType()</slot>
   <slot>onNewTable()</slot>
   <slot>onSaveProject()</slot>
+  <slot>onOpenProject()</slot>
  </slots>
 </ui>
