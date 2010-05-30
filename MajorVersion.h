@@ -69,8 +69,6 @@ public:
 
     virtual const QVector<Table*>& getTables() const;
 
-private:
-
     void createTreeItems();
 
 private:

@@ -5,6 +5,7 @@
 #include "Column.h"
 #include "MajorVersion.h"
 #include "Solution.h"
+#include "DatabaseEngine.h"
 
 #include <QStringList>
 
@@ -153,6 +154,7 @@ Table* DeserializationFactory::createTable(MajorVersion* ver, const QDomDocument
 Project* DeserializationFactory::createProject(const QDomDocument &doc, const QDomElement &element)
 {
     Project* prj = new Project(element.attribute("Name"));
+    prj->setEngine(new DatabaseEngine(element.attribute("DB")));
 
     QDomNodeList majorVersionNodes = element.firstChild().childNodes();
     for(int i=0; i<majorVersionNodes.count(); i++)

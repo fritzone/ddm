@@ -65,7 +65,6 @@ HEADERS += MainWindow.h \
     DeserializationFactory.h \
     ProjectDetailsForm.h \
     ForeignKey.h \
-    newprojectdialog.h \
     Solution.h
 FORMS += mainwindow.ui \
     mainwindowbuttondialog.ui \

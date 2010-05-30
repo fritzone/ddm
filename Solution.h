@@ -34,6 +34,8 @@ public:
 
     virtual void serialize(QDomDocument &doc, QDomElement &parent) const;
 
+    const QString& name() const {return m_name;}
+
 private:
     // the vector holding the projects
     QVector<Project*> m_projects;

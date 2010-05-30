@@ -15,7 +15,7 @@ MajorVersion::MajorVersion(QTreeWidget* tree, QTreeWidgetItem* projectItem, int 
     createTreeItems();
 }
 
-MajorVersion::MajorVersion(QString verAsString):version(verAsString)
+MajorVersion::MajorVersion(QString verAsString):version(verAsString), m_projectItem(0), m_tree(0)
 {
 }
 

@@ -14,13 +14,10 @@ DatabaseEngine::DatabaseEngine(const QString& db):database(db)
 {
     if(!genericInit)
     {
-	genericInit = true;
-	// initialize the DT suppliers
-	dtsuppliers.insert("MySQL", new MySQLDTSupplier());
-
-	// initialize the Codepage suppliers
-	cpsuppliers.insert("MySQL", new MySQLCodepageSupplier());
-
+        genericInit = true;
+        // initialize the DT suppliers
+        dtsuppliers.insert("MySQL", new MySQLDTSupplier());
+        cpsuppliers.insert("MySQL", new MySQLCodepageSupplier());
         indextypeProviders.insert("MySQL", new MySQLIndexTypeProvider());
     }
 
