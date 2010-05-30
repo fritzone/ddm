@@ -13,10 +13,12 @@ class MajorVersion;
 class Version;
 class DatabaseEngine;
 class ProjectDetailsForm;
+
+
 /**
  * Holds the data of a project.
  */
-class Project : virtual public SerializableElement, TreeItem
+class Project : public SerializableElement, public TreeItem
 {
 public:
 
@@ -45,9 +47,8 @@ public:
         prjDetailsForm = pfrm;
     }
 
-private:
-
-    void createTreeItem();
+    void createTreeItem(QTreeWidget* _tree);
+    void populateTreeItem();
 
 private:
 

@@ -218,6 +218,8 @@ void NewTableForm::onAddColumn()
 
     m_ui->txtNewColumnName->setText("");
     m_ui->cmbNewColumnType->setCurrentIndex(-1);
+    m_ui->txtColumnDescription->setText("");
+    m_ui->chkPrimary->setChecked(false);
 
     populateColumnsForIndices();
     updateDefaultValuesTableHeader();

@@ -46,6 +46,34 @@ void MainWindow::createOtherDialogs()
 
 }
 
+QTreeWidget* MainWindow::setupGuiForNewSolution()
+{
+    // create the dock window
+    dock = new QDockWidget(tr("Solution - ") + m_currentSolution->name(), this);
+    dock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
+    dock->setFeatures(QDockWidget::AllDockWidgetFeatures);
+    dock->setFloating(false);
+    dock->setMinimumSize(300, 640);
+
+    // set up the tree
+    projectTree = new QTreeWidget();
+    projectTree->setColumnCount(1);
+    projectTree->setHeaderHidden(true);
+    QObject::connect(projectTree, SIGNAL(itemSelectionChanged()), this, SLOT(onProjectTreeClicked()));
+
+    dock->setWidget(projectTree);
+    addDockWidget(Qt::LeftDockWidgetArea, dock);
+
+    // show all the icons
+    ui->mainToolBar->actions().at(3)->setVisible(true);
+    ui->mainToolBar->actions().at(4)->setVisible(true);
+
+    // set a normal size
+    resize(800, 600);
+
+    return projectTree;
+}
+
 void MainWindow::onNewProject()
 {
     NewProjectDialog* nprjdlg = new NewProjectDialog();
@@ -53,58 +81,29 @@ void MainWindow::onNewProject()
     nprjdlg->focusOnEditField();
     nprjdlg->exec();
 
-    if(nprjdlg->getProjectName().size() > 0)
+    if(nprjdlg->getProjectName().length() > 0 && nprjdlg->getSolutionName().length() > 0)
     {
-        // create the dock window
-        dock = new QDockWidget(tr("Project"), this);
-        dock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
-        dock->setFeatures(QDockWidget::AllDockWidgetFeatures);
-        dock->setFloating(false);
-        dock->setMinimumSize(300, 640);
+        if(!m_currentSolution)
+        {
+            m_currentSolution = new Solution(nprjdlg->getSolutionName());
+            m_solutions.append(m_currentSolution);
+        }
 
-        // set up the tree
-        projectTree = new QTreeWidget();
-        projectTree->setColumnCount(1);
-        projectTree->setHeaderHidden(true);
-        QObject::connect(projectTree, SIGNAL(itemSelectionChanged()), this, SLOT(onProjectTreeClicked()));
+        projectTree = setupGuiForNewSolution();
 
-        dock->setWidget(projectTree);
-        addDockWidget(Qt::LeftDockWidgetArea, dock);
-
-        // we have a new project add the requried tree entries
-        // icons
-
-
-        // the project name will be uppercase
-        QString prjName = nprjdlg->getProjectName();
-        QString solName = nprjdlg->getSolutionName();
-        prjName = prjName.toUpper();
-
-        Project* project = new Project(prjName, projectTree);
+        Project* project = new Project(nprjdlg->getProjectName().toUpper(), projectTree);
         project->setEngine(nprjdlg->getDatabaseEngine());
         project->createMajorVersion();
 
-        if(!m_currentSolution)
-        {
-            m_currentSolution = new Solution(solName);
-            m_solutions.append(m_currentSolution);
-        }
         m_currentSolution->addProject(project);
 
         // expand the tree
         projectTree->expandAll();
         weHaveProject = true;
 
-        // show all the icons
-        this->ui->mainToolBar->actions().at(3)->setVisible(true);
-        this->ui->mainToolBar->actions().at(4)->setVisible(true);
-
         // show the project properties window
         ProjectDetailsForm* prjDetailsForm = new ProjectDetailsForm(this);
         setCentralWidget(prjDetailsForm);
-
-        // set a normal size
-        resize(800, 600);
     }
 }
 
@@ -249,7 +248,6 @@ bool MainWindow::onSaveNewDataType(const QString& name, const QString& type, con
         QVariant var;
         var.setValue(*udt);
         pudt->getLocation()->setData(0, Qt::UserRole, var);
-
     }
     else        // new stuff
     {
@@ -311,6 +309,15 @@ void MainWindow::onSaveProject()
     f1.close();
 }
 
+void MainWindow::populateTreeWithSolution(Solution* sol)
+{
+    for(int i=0; i<sol->projects().size(); i++)
+    {
+        sol->projects()[i]->createTreeItem(projectTree);
+        sol->projects()[i]->populateTreeItem();
+    }
+}
+
 void MainWindow::onOpenProject()
 {
     QString fileName = QFileDialog::getOpenFileName(this,  tr("Open solution"), "", tr("DBM solution files (*.dmx)"));
@@ -330,5 +337,9 @@ void MainWindow::onOpenProject()
     file.close();
 
     QDomElement docElem = doc.documentElement();
-    Solution* sol = DeserializationFactory::createSolution(doc, docElem.firstChild().toElement());
+    m_currentSolution = DeserializationFactory::createSolution(doc, docElem.firstChild().toElement());
+    setupGuiForNewSolution();
+
+    populateTreeWithSolution(m_currentSolution);
+
 }

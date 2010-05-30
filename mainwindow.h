@@ -4,7 +4,6 @@
 #include <QtGui/QMainWindow>
 #include <QtGui/QTreeWidget>
 
-
 class Project;
 class MainWindowButtonDialog;
 class DataTypesListForm;
@@ -61,6 +60,11 @@ public slots:
     void onOpenProject();
 
 private:
+
+    QTreeWidget* setupGuiForNewSolution();
+    void populateTreeWithSolution(Solution* sol);
+
+private:
     Ui::MainWindow *ui;
 
     // the dock window in which the project tree is to be found
@@ -82,7 +86,6 @@ private:
 
     // to create the other dialogs needed in the app
     void createOtherDialogs();
-
 
 };
 

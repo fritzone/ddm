@@ -37,6 +37,11 @@ public:
      */
     AbstractIndextypeProvider* getIndextypeProvider() const;
 
+    const QString& getDatabase() const
+    {
+        return database;
+    }
+
 private:
 
     // the database on which this is running
