@@ -24,6 +24,13 @@ void NewProjectDialog::focusOnEditField() const
 
 void NewProjectDialog::accept()
 {
+
+    if(!m_ui->groupBox->isChecked())
+    {
+        QMessageBox::critical (this, tr("Error"), tr("This version does not allow creating new solutions without a default project. Please create a project."), QMessageBox::Ok);
+        return;
+    }
+
     if(m_ui->txtProjectName->text().size() > 0 && m_ui->txtSolutionName->text().size() > 0)
     {
         projectName = m_ui->txtProjectName->text();

@@ -48,6 +48,12 @@ public:
         return icon;
     }
 
+    static const QIcon& getProjectOpenIcon()
+    {
+        static const QIcon icon(strProjectOpenIcon);
+        return icon;
+    }
+
 };
 
 #endif // ICONFACTORY_H

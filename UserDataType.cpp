@@ -34,7 +34,6 @@ UserDataType& UserDataType::operator = (const UserDataType& other)
     return *this;
 }
 
-
 QString UserDataType::sizeAsString() const
 {
     return size>0?size:QString("N/A");
@@ -45,7 +44,7 @@ void UserDataType::serialize(QDomDocument& doc, QDomElement& parent) const
     QDomElement dtElement = doc.createElement("DataType");      // will hold the data in this element
 
     dtElement.setAttribute("Name", name);
-    dtElement.setAttribute("Type", getType());
+    dtElement.setAttribute("Type", typeAsString());
     dtElement.setAttribute("SqlType", getSqlType());
     dtElement.setAttribute("Size", getSize());
     dtElement.setAttribute("DefaultValue", getDefaultValue());

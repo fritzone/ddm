@@ -6,6 +6,7 @@
 #include "MajorVersion.h"
 #include "Solution.h"
 #include "DatabaseEngine.h"
+#include "ForeignKey.h"
 
 #include <QStringList>
 
@@ -48,6 +49,31 @@ UserDataType* DeserializationFactory::createUserDataType(const QDomDocument& doc
     UserDataType* result = new UserDataType(name, type, sqlType, size, defaultValue, codepage, miscValues, isUnsigned=="1", description, canBeNull == "1", autoInc == "1");
 
     return result;
+
+}
+
+ForeignKey* DeserializationFactory::createForeignKey(Table *tab, const QDomDocument &doc, const QDomElement &element)
+{
+    QString name = element.attribute("Name");
+    QString onUpdate = element.attribute("OnUpdate");
+    QString onDelete = element.attribute("OnDelete");
+
+    ForeignKey* fk = new ForeignKey();
+    fk->setName(name);
+
+    QDomNodeList associationsNodeList = element.firstChild().childNodes();
+    for(int i=0; i<associationsNodeList.size(); i++)
+    {
+        QDomElement assocElement = associationsNodeList.at(i).toElement();
+        QString foreignTable = assocElement.attribute("ForeignTable");
+        QString localTable = assocElement.attribute("LocalTable");
+        QString foreignColumn = assocElement.attribute("ForeignColumn");
+        QString localColumn = assocElement.attribute("LocalColumn");
+
+        ForeignKey::ColumnAssociation* fkas = new ForeignKey::ColumnAssociation(foreignTable, foreignColumn, localTable, localColumn);
+        fk->addAssociation(fkas);
+    }
+
 
 }
 
@@ -112,6 +138,49 @@ MajorVersion* DeserializationFactory::createMajorVersion(const QDomDocument &doc
         }
     }
 
+    // now update the tables so that the foreign keys get populated
+    for(int i=0; i<result->getTables().size(); i++)
+    {
+        Table* tabI = result->getTables().at(i);
+        for(int j=0; j<tabI->getFks().size(); j++)
+        {
+            ForeignKey* fkJ = tabI->getForeignKey(j);
+            for(int k=0; k<fkJ->getAssociations().size(); k++)
+            {
+                ForeignKey::ColumnAssociation* assK = fkJ->getAssociation(k);
+                // first: set the tables
+                for(int l=0; l<result->getTables().size(); l++)
+                {
+                    if(result->getTables().at(l)->getName() == assK->getSForeignTable())
+                    {
+                        assK->setForeignTable(result->getTables().at(l));
+                    }
+                    if(result->getTables().at(l)->getName() == assK->getSLocalTable())
+                    {
+                        assK->setLocalTable(result->getTables().at(l));
+                    }
+                }
+                // then: set the columns of those tables
+                for(int l=0; l<assK->getLocalTable()->columns().size(); l++)
+                {
+                    Column* colL = assK->getLocalTable()->getColumns().at(l);
+                    if(colL->getName() == assK->getSLocalColumn())
+                    {
+                        assK->setLocalColumn(colL);
+                    }
+                }
+                for(int l=0; l<assK->getForeignTable()->columns().size(); l++)
+                {
+                    Column* colL = assK->getForeignTable()->getColumns().at(l);
+                    if(colL->getName() == assK->getSForeignColumn())
+                    {
+                        assK->setLocalColumn(colL);
+                    }
+                }
+            }
+        }
+    }
+
     return result;
 }
 
@@ -144,6 +213,22 @@ Table* DeserializationFactory::createTable(MajorVersion* ver, const QDomDocument
             {
                 Column* col = createColumn(ver, doc, element.childNodes().at(i).childNodes().at(j).toElement());
                 result->addColumn(col);
+            }
+        }
+        if(element.childNodes().at(i).nodeName() == "Indices")
+        {
+            for(int j=0; j<element.childNodes().at(i).childNodes().count(); j++)
+            {
+                Index* idx = createIndex(result, doc, element.childNodes().at(i).childNodes().at(j).toElement());
+                result->addIndex(idx);
+            }
+        }
+        if(element.childNodes().at(i).nodeName() == "ForeignKeys")
+        {
+            for(int j=0; j<element.childNodes().at(i).childNodes().count(); j++)
+            {
+                ForeignKey* fk = createForeignKey(result, doc, element.childNodes().at(i).childNodes().at(j).toElement());
+                result->addForeignKey(fk);
             }
         }
     }

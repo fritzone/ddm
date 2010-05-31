@@ -3,6 +3,7 @@
 #include "MajorVersion.h"
 #include "UserDataType.h"
 #include "Table.h"
+#include "IconFactory.h"
 
 MajorVersion::MajorVersion(QTreeWidget* tree, QTreeWidgetItem* projectItem, int ver) : m_tree(tree), m_projectItem(projectItem)
 {
@@ -15,12 +16,54 @@ MajorVersion::MajorVersion(QTreeWidget* tree, QTreeWidgetItem* projectItem, int 
     createTreeItems();
 }
 
-MajorVersion::MajorVersion(QString verAsString):version(verAsString), m_projectItem(0), m_tree(0)
+MajorVersion::MajorVersion(QString verAsString):version(verAsString), m_tree(0), m_projectItem(0)
 {
 }
 
-void MajorVersion::createTreeItems()
+void MajorVersion::populateTreeItems()
 {
+    // insert the user data types in the tree
+    for(int i=0; i<m_dataTypes.size(); i++)
+    {
+        QTreeWidgetItem* newDTItem = new QTreeWidgetItem(getDtsItem(), QStringList(m_dataTypes[i]->getName())) ;
+        QVariant var;
+        var.setValue(*m_dataTypes[i]);
+        newDTItem->setData(0, Qt::UserRole, var);
+        // set the icon, add to the tree
+        newDTItem->setIcon(0, m_dataTypes[i]->getIcon());
+        m_tree->insertTopLevelItem(0, newDTItem);
+        m_dataTypes[i]->setLocation(newDTItem);
+    }
+
+    // insert the tables
+    for(int i=0; i<m_tables.size(); i++)
+    {
+        Table* tbl = m_tables[i];
+        QTreeWidgetItem* newTblsItem = new QTreeWidgetItem(getTablesItem(), QStringList(tbl->getName())) ;
+
+        QVariant var(tbl->getName());
+        newTblsItem->setData(0, Qt::UserRole, var);
+        // set the icon, add to the tree
+        newTblsItem->setIcon(0, IconFactory::getTablesIcon());
+        m_tree->insertTopLevelItem(0, newTblsItem);
+
+        // set the link to the tree
+        tbl->setLocation(newTblsItem);
+
+    }
+}
+
+void MajorVersion::createTreeItems(QTreeWidget* tree, QTreeWidgetItem* projectIem)
+{
+    if(tree)
+    {
+        m_tree = tree;
+    }
+    if(projectIem)
+    {
+        m_projectItem = projectIem;
+    }
+
     QIcon tablesIcon(":/images/actions/images/small/table.png");
     QIcon viewsIcon(":/images/actions/images/small/view_icon.png");
     QIcon dtsIcon(":/images/actions/images/small/datatypes.PNG");
