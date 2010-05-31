@@ -342,4 +342,6 @@ void MainWindow::onOpenProject()
 
     populateTreeWithSolution(m_currentSolution);
 
+    projectTree->expandAll();
+
 }

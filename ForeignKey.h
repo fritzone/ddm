@@ -20,12 +20,29 @@ public:
     public:
 
         ColumnAssociation(const Table* foreignTable, const Column* foreignColumn, const Table* localTable, const Column* localColumn):
-                m_foreignTable(foreignTable), m_localTable(localTable), m_foreignColumn(foreignColumn), m_localColumn(localColumn) {}
+                m_foreignTable(foreignTable), m_localTable(localTable), m_foreignColumn(foreignColumn), m_localColumn(localColumn),
+                m_sforeignTable(""), m_slocalTable(""), m_sforeignColumn(""), m_slocalColumn("")
+        {}
+
+        ColumnAssociation(QString foreignTable, QString foreignColumn, QString localTable, QString localColumn):
+                m_foreignTable(0), m_localTable(0), m_foreignColumn(0), m_localColumn(0),
+                m_sforeignTable(foreignTable), m_slocalTable(localTable), m_sforeignColumn(foreignColumn), m_slocalColumn(localColumn)
+        {}
 
         const Table* getForeignTable() const { return m_foreignTable; }
         const Table* getLocalTable() const { return m_localTable; }
         const Column* getForeignColumn() const { return m_foreignColumn; }
         const Column* getLocalColumn() const { return m_localColumn; }
+
+        QString getSForeignTable() const { return m_sforeignTable; }
+        QString getSLocalTable() const { return m_slocalTable; }
+        QString getSForeignColumn() const { return m_sforeignColumn; }
+        QString getSLocalColumn() const { return m_slocalColumn; }
+
+        void setForeignTable(const Table* foreignTable) {m_foreignTable = foreignTable;}
+        void setForeignColumn(const Column* foreignColumn) {m_foreignColumn = foreignColumn;}
+        void setLocalColumn(const Column* localColumn) {m_localColumn = localColumn;}
+        void setLocalTable(const Table* localTable) {m_localTable = localTable;}
 
     private:
 
@@ -33,6 +50,12 @@ public:
         const Table* m_localTable;
         const Column* m_foreignColumn;
         const Column* m_localColumn;
+
+        QString m_sforeignTable;
+        QString m_slocalTable;
+        QString m_sforeignColumn;
+        QString m_slocalColumn;
+
     };
 
 public:
@@ -42,6 +65,11 @@ public:
     void addAssociation(ColumnAssociation* assoc)
     {
         m_associations.append(assoc);
+    }
+
+    ColumnAssociation* getAssociation(int i)
+    {
+        return m_associations.at(i);
     }
 
     const QVector<ColumnAssociation*>& getAssociations() const
@@ -100,7 +128,7 @@ public:
         fkElement.setAttribute("OnDelete", m_onDelete);
 
         // save the associations
-        QDomElement associationsElement = doc.createElement("Association");
+        QDomElement associationsElement = doc.createElement("Associations");
         for(int i=0; i<m_associations.size(); i++)
         {
             QString foreignTabName = m_associations[i]->getForeignTable()->getName();
@@ -116,7 +144,6 @@ public:
         }
         fkElement.appendChild(associationsElement);
         parent.appendChild(fkElement);
-
     }
 
 private:

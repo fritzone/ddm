@@ -69,7 +69,12 @@ public:
 
     virtual const QVector<Table*>& getTables() const;
 
-    void createTreeItems();
+    void createTreeItems(QTreeWidget* tree = 0, QTreeWidgetItem* projectIem = 0);
+
+    /**
+     * Populates the tree items of this major version with all the data it contains, such as UserDataTypes, Tables, etc...
+     */
+    void populateTreeItems();
 
 private:
 

@@ -17,6 +17,7 @@ class ProjectDetailsForm;
 
 /**
  * Holds the data of a project.
+ * TODO: I don't like that the clas is knowing a QTreeWidget item. When there's new time, find a way to detach it from this class.
  */
 class Project : public SerializableElement, public TreeItem
 {
@@ -44,27 +45,32 @@ public:
 
     void setDetailsForm(ProjectDetailsForm* pfrm)
     {
-        prjDetailsForm = pfrm;
+        m_prjDetailsForm = pfrm;
     }
 
+
     void createTreeItem(QTreeWidget* _tree);
+
+    /**
+     * This should be called only by the deserialization method.
+     */
     void populateTreeItem();
 
 private:
 
     // this is the tree from the main window of the application
-    QTreeWidget* tree;
+    QTreeWidget* m_tree;
 
     // the name of the project
-    QString name;
+    QString m_name;
 
     // the data supplier of this project
-    DatabaseEngine* engine;
+    DatabaseEngine* m_engine;
 
     // the list of major versions
-    QVector<MajorVersion*> majorVersions;
+    QVector<MajorVersion*> m_majorVersions;
 
-    ProjectDetailsForm* prjDetailsForm;
+    ProjectDetailsForm* m_prjDetailsForm;
 
 };
 

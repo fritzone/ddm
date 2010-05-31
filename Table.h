@@ -76,13 +76,21 @@ public:
     }
 
     /**
-     * Returns the indicess of this table for a read-only access
+     * Returns the indices of this table for a read-only access
      */
     const QVector<Index*> & getIndices() const
     {
         return m_indices;
     }
 
+
+    /**
+     * Returns the foreign keys of this table for a read-only access
+     */
+    const QVector<ForeignKey*> & getFks() const
+    {
+        return m_foreignKeys;
+    }
 
     const QString& getName() const
     {
@@ -114,6 +122,8 @@ public:
     }
 
     ForeignKey* getForeignKey(int i);
+
+
 
     /**
      * Returns the columns as a QStringList

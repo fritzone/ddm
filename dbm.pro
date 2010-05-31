@@ -36,7 +36,7 @@ SOURCES += main.cpp \
 HEADERS += MainWindow.h \
     MainWindowButtonDialog.h \
     NewProjectDialog.h \
-    NewDatatypeForm.h \
+    newdatatypeform.h \
     datatypeslistform.h \
     AbstractDTSupplier.h \
     DataType.h \

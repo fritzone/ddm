@@ -11,6 +11,7 @@ class Column;
 class MajorVersion;
 class Solution;
 class Project;
+class ForeignKey;
 
 class DeserializationFactory
 {
@@ -23,6 +24,7 @@ public:
     static MajorVersion* createMajorVersion(const QDomDocument& doc, const QDomElement& element);
     static Solution* createSolution(const QDomDocument& doc, const QDomElement& element);
     static Project* createProject(const QDomDocument& doc, const QDomElement& element);
+    static ForeignKey* createForeignKey(Table* tab, const QDomDocument& doc, const QDomElement& element);
 
 private:
     DeserializationFactory();
