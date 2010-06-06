@@ -36,7 +36,7 @@
      <x>0</x>
      <y>0</y>
      <width>339</width>
-     <height>25</height>
+     <height>26</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -45,8 +45,23 @@
     </property>
     <addaction name="action_New"/>
     <addaction name="action_Open"/>
+    <addaction name="action_Save"/>
+   </widget>
+   <widget class="QMenu" name="menu_Solution">
+    <property name="title">
+     <string>&amp;Solution</string>
+    </property>
+    <addaction name="action_NewDataType"/>
+    <addaction name="action_NewTable"/>
+   </widget>
+   <widget class="QMenu" name="menu_Edit">
+    <property name="title">
+     <string>&amp;Edit</string>
+    </property>
    </widget>
    <addaction name="menu_File"/>
+   <addaction name="menu_Edit"/>
+   <addaction name="menu_Solution"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <property name="movable">
@@ -78,7 +93,10 @@
      <normaloff>:/images/actions/images/actions/filenew.png</normaloff>:/images/actions/images/actions/filenew.png</iconset>
    </property>
    <property name="text">
-    <string>&amp;New</string>
+    <string>&amp;New Solution</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+N</string>
    </property>
   </action>
   <action name="action_Save">
@@ -87,7 +105,7 @@
      <normaloff>:/images/actions/images/actions/filesave.png</normaloff>:/images/actions/images/actions/filesave.png</iconset>
    </property>
    <property name="text">
-    <string>&amp;Save</string>
+    <string>&amp;Save Solution</string>
    </property>
    <property name="toolTip">
     <string>Save</string>
@@ -97,12 +115,18 @@
    </property>
   </action>
   <action name="action_NewDataType">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="icon">
     <iconset resource="dbm.qrc">
      <normaloff>:/images/actions/images/actions/add.png</normaloff>:/images/actions/images/actions/add.png</iconset>
    </property>
    <property name="text">
     <string>New &amp;Data Type</string>
+   </property>
+   <property name="iconText">
+    <string>New DataType</string>
    </property>
    <property name="toolTip">
     <string>Create a new data type</string>
@@ -112,12 +136,18 @@
    </property>
   </action>
   <action name="action_NewTable">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="icon">
     <iconset resource="dbm.qrc">
      <normaloff>:/images/actions/images/actions/table.png</normaloff>:/images/actions/images/actions/table.png</iconset>
    </property>
    <property name="text">
     <string>New Table</string>
+   </property>
+   <property name="iconText">
+    <string>New &amp;Table</string>
    </property>
    <property name="toolTip">
     <string>Create a New Table</string>
@@ -132,7 +162,10 @@
      <normaloff>:/images/actions/images/actions/fileopen.png</normaloff>:/images/actions/images/actions/fileopen.png</iconset>
    </property>
    <property name="text">
-    <string>&amp;Open</string>
+    <string>&amp;Open Solution</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+O</string>
    </property>
   </action>
  </widget>

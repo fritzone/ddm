@@ -73,6 +73,7 @@ public slots:
     void onSelectForeignKey(QTreeWidgetItem*,int);
     // default values page
     void onAddNewDefaultRow();
+    void onBtnUpdateTableWithDefaultValues();
 protected:
     void changeEvent(QEvent *e);
 
@@ -83,6 +84,11 @@ private:
      * part of them in the left, part of them in the right, depending how the user assigned them to an index
      */
     void populateColumnsForIndices();
+
+    /*
+     * Prepares the list of "grayed" items that represent the columns of the parent tables
+     */
+    void prepareColumnsListWithParentItems(const Table*);
 
     void onSave();
     void onReset();

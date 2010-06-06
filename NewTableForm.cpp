@@ -108,6 +108,29 @@ QTreeWidgetItem* NewTableForm::createTWIForColumn(const Column* col)
     return item;
 }
 
+void NewTableForm::prepareColumnsListWithParentItems(const Table* ctable)
+{
+    // first step: go back upwards, recursively
+    if(ctable->getParent())
+    {
+        prepareColumnsListWithParentItems(ctable->getParent());
+    }
+    // then create the column list
+    if(ctable)
+    {
+        const QVector<Column*>& columns = ctable->getColumns();
+        for(int i=0; i<columns.count(); i++)
+        {
+            static QBrush grayBrush(QColor(Qt::gray));
+            QTreeWidgetItem* item = createTWIForColumn(columns[i]);
+            item->setBackground(0, grayBrush);
+            m_ui->lstColumns->addTopLevelItem(item);
+            columns[i]->setLocation(item);
+        }
+    }
+
+}
+
 void NewTableForm::setTable(Table *table)
 {
     m_table = table;
@@ -977,4 +1000,20 @@ void NewTableForm::keyPressEvent(QKeyEvent *evt)
             }
         }
     }
+}
+
+void NewTableForm::onBtnUpdateTableWithDefaultValues()
+{
+    QVector <QVector <QString > > values;
+    for(int i=0; i<m_ui->tableStartupValues->rowCount(); i++)
+    {
+        QVector<QString> rowI;
+        for(int j=0; j<m_ui->tableStartupValues->columnCount(); j++)
+        {
+            rowI.append(m_ui->tableStartupValues->item(i,j)->text());
+        }
+        values.append(rowI);
+    }
+
+    m_table->setDefaultValues(values);
 }

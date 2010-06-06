@@ -87,6 +87,8 @@ private:
     // to create the other dialogs needed in the app
     void createOtherDialogs();
 
+    void enableActions();
+
 };
 
 #endif // MAINWINDOW_H

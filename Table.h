@@ -7,6 +7,7 @@
 #include <QString>
 #include <QVector>
 
+
 class Column;
 class Index;
 class ForeignKey;
@@ -123,7 +124,7 @@ public:
 
     ForeignKey* getForeignKey(int i);
 
-
+    void setDefaultValues(QVector <QVector <QString> > &);
 
     /**
      * Returns the columns as a QStringList
@@ -131,6 +132,16 @@ public:
     QStringList columns() const;
 
     virtual void serialize(QDomDocument &doc, QDomElement &parent) const;
+
+    const Table* getParent() const
+    {
+        return m_parent;
+    }
+
+    void setParent(const Table* parent)
+    {
+        m_parent = parent;
+    }
 
 private:
     // the name of the table
@@ -147,6 +158,12 @@ private:
 
     // the vector will hold the foreign keys
     QVector<ForeignKey*> m_foreignKeys;
+
+    // the default values as typed in in the startup values screen. Format: per row. Each QVector<QStrig> holds columnCount values
+    QVector <QVector <QString> > m_startupValues;
+
+    // tables can be built up in a OO hierarchy, each table inherits the parent table's properties (columns, indices, etc), and it can extend it
+    const Table* m_parent;
 
 };
 
