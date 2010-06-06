@@ -15,6 +15,7 @@
 #include <QMessageBox>
 #include <QHashIterator>
 #include <QHash>
+#include <QKeyEvent>
 
 // the positions of various items in the columns view, used for icon retrieval mostly
 const int COL_POS_PK = 0;
@@ -23,7 +24,7 @@ const int COL_POS_DT = 2;
 
 NewTableForm::NewTableForm(DatabaseEngine* db, Project* prj, QWidget *parent) : QWidget(parent), m_ui(new Ui::NewTableForm),
     m_dbEngine(db), m_project(prj), m_table(new Table()), m_currentColumn(0), m_currentIndex(0), m_foreignTable(0),
-    m_currentForeignKey(0), m_foreignKeySelected(false)
+    m_currentForeignKey(0), m_foreignKeySelected(false), m_changes(false)
 {
     m_ui->setupUi(this);
 
@@ -49,7 +50,10 @@ NewTableForm::NewTableForm(DatabaseEngine* db, Project* prj, QWidget *parent) : 
     const QVector<Table*>& tables = m_project->getWorkingVersion()->getTables();
     for(int i=0; i<tables.size(); i++)
     {
-        m_ui->cmbForeignTables->addItem(tables[i]->getName());
+        if(tables[i]->getName() != m_table->getName())
+        {
+            m_ui->cmbForeignTables->addItem(tables[i]->getName());
+        }
     }
     m_ui->cmbForeignTables->setCurrentIndex(-1);
 
@@ -127,6 +131,17 @@ void NewTableForm::setTable(Table *table)
     }
     resetIndexGui();
 
+    // third step: set up the foreign keys
+    const QVector<ForeignKey*> & fks = m_table->getFks();
+    for(int i=0; i<fks.size(); i++)
+    {
+        QTreeWidgetItem* item = createTWIForForeignKey(fks[i]);
+        m_ui->lstForeignKeys->addTopLevelItem(item);
+        fks[i]->setLocation(item);
+    }
+
+    // set the default values
+    updateDefaultValuesTableHeader();
     m_ui->txtTableName->setText(m_table->getName());
 }
 
@@ -201,7 +216,6 @@ void NewTableForm::onAddColumn()
         m_currentColumn->getLocation()->setIcon(COL_POS_DT, m_currentColumn->getDataType()->getIcon());
         m_currentColumn->getLocation()->setText(COL_POS_DT, m_currentColumn->getDataType()->getName());
         m_currentColumn = 0;
-        m_ui->btnAdd->setIcon(IconFactory::getAddIcon());
     }
     else                    // we are not working on a column, but adding a new one
     {
@@ -220,10 +234,13 @@ void NewTableForm::onAddColumn()
     m_ui->cmbNewColumnType->setCurrentIndex(-1);
     m_ui->txtColumnDescription->setText("");
     m_ui->chkPrimary->setChecked(false);
+    m_ui->btnAdd->setIcon(IconFactory::getAddIcon());
 
     populateColumnsForIndices();
     updateDefaultValuesTableHeader();
     restoreDefaultValuesTable();
+
+    m_changes = true;
 }
 
 void NewTableForm::onCancelColumnEditing()
@@ -257,6 +274,8 @@ void NewTableForm::onDeleteColumn()
     populateColumnsForIndices();
     updateDefaultValuesTableHeader();
     restoreDefaultValuesTable();
+
+    m_changes = true;
 }
 
 void NewTableForm::onMoveColumnDown()
@@ -277,6 +296,8 @@ void NewTableForm::onMoveColumnDown()
             backupDefaultValuesTable();
             updateDefaultValuesTableHeader();
             restoreDefaultValuesTable();
+
+            m_changes = true;
         }
     }
 }
@@ -299,6 +320,7 @@ void NewTableForm::onMoveColumnUp()
             backupDefaultValuesTable();
             updateDefaultValuesTableHeader();
             restoreDefaultValuesTable();
+            m_changes = true;
         }
     }
 }
@@ -384,6 +406,7 @@ void NewTableForm::onSave()
         m_mw->onSaveNewTable(m_table);
     }
 
+    m_changes = false;
 }
 
 void NewTableForm::onReset()
@@ -435,7 +458,8 @@ void NewTableForm::onAddIndex()
     // check the prerequisites: a valid and unique name, and at least one column
     if(m_ui->txtNewIndexName->text().length() == 0)
     {
-        QMessageBox::critical (this, tr("Error"), tr("Please specify a name"), QMessageBox::Ok);
+        QMessageBox::critical (this, tr("Error"), tr("Please specify a name for the index"), QMessageBox::Ok);
+        m_ui->txtNewIndexName->setFocus();
         return;
     }
 
@@ -459,10 +483,6 @@ void NewTableForm::onAddIndex()
         QTreeWidgetItem* item = createTWIForIndex(index);
         m_ui->lstIndices->addTopLevelItem(item);
         index->setLocation(item);
-
-        resetIndexGui();
-
-        m_currentIndex = 0;
     }
     else    // update the index with the modified data
     {
@@ -485,11 +505,12 @@ void NewTableForm::onAddIndex()
         m_currentIndex->getLocation()->setText(0, m_currentIndex->getName());
         m_currentIndex->getLocation()->setText(1, m_currentIndex->getType());
         m_currentIndex->getLocation()->setText(2, columnsAsString);
-
-        resetIndexGui();
-
-        m_currentIndex = 0;
     }
+    resetIndexGui();
+
+    m_currentIndex = 0;
+
+    m_changes = true;
 }
 
 void NewTableForm::resetIndexGui()
@@ -498,6 +519,7 @@ void NewTableForm::resetIndexGui()
     populateColumnsForIndices();
     m_ui->cmbIndexType->setCurrentIndex(0);
     m_ui->txtNewIndexName->setText("");
+    m_ui->btnAddIndex->setIcon(IconFactory::getAddIcon());
 }
 
 void NewTableForm::onSelectIndex(QTreeWidgetItem* current, int column)
@@ -541,6 +563,8 @@ void NewTableForm::onSelectIndex(QTreeWidgetItem* current, int column)
         it ++;
     }
     m_ui->cmbIndexType->setCurrentIndex(indx);
+    m_ui->btnAddIndex->setIcon(IconFactory::getApplyIcon());
+
 }
 
 void NewTableForm::onCancelIndexEditing()
@@ -554,6 +578,16 @@ void NewTableForm::onBtnRemoveIndex()
     resetIndexGui();
     m_table->removeIndex(m_currentIndex);
     m_currentIndex = 0;
+    m_changes = true;
+}
+
+void NewTableForm::onDoubleClickColumnForIndex(QListWidgetItem* item)
+{
+    if(!item) return;
+    QListWidgetItem* itm = new QListWidgetItem(*item);
+    delete m_ui->lstAvailableColumnsForIndex->currentItem();
+    m_ui->lstSelectedColumnsForIndex->addItem(itm);
+
 }
 
 void NewTableForm::onMoveSelectedIndexColumnUp()
@@ -748,6 +782,7 @@ void NewTableForm::onBtnAddForeignKey()
     if(m_ui->txtForeignKeyName->text().length() == 0)
     {
         QMessageBox::critical (this, tr("Error"), tr("Please specify a name for the foreign key"), QMessageBox::Ok);
+        m_ui->txtForeignKeyName->setFocus();
         return;
     }
 
@@ -795,6 +830,8 @@ void NewTableForm::onBtnAddForeignKey()
     m_ui->txtForeignKeyName->clear();
     m_ui->cmbFkOnDelete->setCurrentIndex(-1);
     m_ui->cmbFkOnUpdate->setCurrentIndex(-1);
+    m_ui->btnAdd->setIcon(IconFactory::getAddIcon());
+    m_changes = true;
 }
 
 void NewTableForm::onSelectForeignKey(QTreeWidgetItem* itm, int col)
@@ -849,6 +886,7 @@ void NewTableForm::onSelectForeignKey(QTreeWidgetItem* itm, int col)
     m_ui->cmbFkOnDelete->setCurrentIndex(idx);
     idx = m_ui->cmbFkOnUpdate->findText(m_currentForeignKey->getOnUpdate());
     m_ui->cmbFkOnUpdate->setCurrentIndex(idx);
+    m_ui->btnAddForeignKey->setIcon(IconFactory::getApplyIcon());
 }
 
 void NewTableForm::updateDefaultValuesTableHeader()
@@ -868,6 +906,14 @@ void NewTableForm::onAddNewDefaultRow()
 {
     int curRowC = m_ui->tableStartupValues->rowCount();
     m_ui->tableStartupValues->insertRow(curRowC);
+    for(int i=0; i<m_table->getColumns().count(); i++)
+    {
+        QWidget *defWidget = m_table->getColumns()[i]->getDataType()->getDefaultsTableWidget();
+        if(defWidget != 0)
+        {
+            m_ui->tableStartupValues->setCellWidget(curRowC, i, defWidget);
+        }
+    }
 }
 
 void NewTableForm::backupDefaultValuesTable()
@@ -916,4 +962,19 @@ void NewTableForm::restoreDefaultValuesTable()
         }
     }
     m_columnOperation = -1;
+}
+
+
+void NewTableForm::keyPressEvent(QKeyEvent *evt)
+{
+    if(evt->key() == Qt::Key_Return)
+    {
+        if(m_ui->tabWidget->currentIndex() == 0)    // Columns page
+        {
+            if(m_ui->txtNewColumnName->hasFocus() || m_ui->cmbNewColumnType->hasFocus() || m_ui->chkPrimary->hasFocus())
+            {
+                onAddColumn();
+            }
+        }
+    }
 }

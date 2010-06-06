@@ -1,5 +1,7 @@
 #include "UserDataType.h"
 
+#include <QComboBox>
+
 UserDataType::UserDataType(const QString& name, const QString& typeString,
                            const QString& _sqlType, const QString& _s,
                            const QString& _defaultValue, const QString& _cp,
@@ -75,4 +77,17 @@ void UserDataType::serialize(QDomDocument& doc, QDomElement& parent) const
 
 
     parent.appendChild(dtElement);
+}
+
+QWidget* UserDataType::getDefaultsTableWidget() const
+{
+//    if(getType() == DT_BOOLEAN)
+//    {
+//        QComboBox* cmb = new QComboBox(0);
+//        cmb->addItem("TRUE");
+//        cmb->addItem("FALSE");
+//        return cmb;
+//    }
+
+    return 0;
 }

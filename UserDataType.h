@@ -106,6 +106,8 @@ public:
      */
     virtual void serialize(QDomDocument& doc, QDomElement& parent) const;
 
+    virtual QWidget* getDefaultsTableWidget() const;
+
 
 private:
 

@@ -35,7 +35,7 @@
       <enum>QTabWidget::Rounded</enum>
      </property>
      <property name="currentIndex">
-      <number>1</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="tabWidgetPage1">
       <attribute name="title">
@@ -106,7 +106,7 @@
                  <string/>
                 </property>
                 <property name="icon">
-                 <iconset>
+                 <iconset resource="dbm.qrc">
                   <normaloff>:/images/actions/images/small/up.png</normaloff>:/images/actions/images/small/up.png</iconset>
                 </property>
                 <property name="popupMode">
@@ -126,7 +126,7 @@
                  <string/>
                 </property>
                 <property name="icon">
-                 <iconset>
+                 <iconset resource="dbm.qrc">
                   <normaloff>:/images/actions/images/small/down.png</normaloff>:/images/actions/images/small/down.png</iconset>
                 </property>
                 <property name="popupMode">
@@ -146,7 +146,7 @@
                  <string/>
                 </property>
                 <property name="icon">
-                 <iconset>
+                 <iconset resource="dbm.qrc">
                   <normaloff>:/images/actions/images/small/remove.png</normaloff>:/images/actions/images/small/remove.png</iconset>
                 </property>
                </widget>
@@ -230,7 +230,7 @@
                  <string/>
                 </property>
                 <property name="icon">
-                 <iconset>
+                 <iconset resource="dbm.qrc">
                   <normaloff>:/images/actions/images/small/cancel.png</normaloff>:/images/actions/images/small/cancel.png</iconset>
                 </property>
                </widget>
@@ -247,7 +247,7 @@
                  <string>...</string>
                 </property>
                 <property name="icon">
-                 <iconset>
+                 <iconset resource="dbm.qrc">
                   <normaloff>:/images/actions/images/small/add.png</normaloff>:/images/actions/images/small/add.png</iconset>
                 </property>
                </widget>
@@ -323,7 +323,7 @@
              <string>...</string>
             </property>
             <property name="icon">
-             <iconset>
+             <iconset resource="dbm.qrc">
               <normaloff>:/images/actions/images/small/remove.png</normaloff>:/images/actions/images/small/remove.png</iconset>
             </property>
            </widget>
@@ -380,7 +380,7 @@
                  <string>...</string>
                 </property>
                 <property name="icon">
-                 <iconset>
+                 <iconset resource="dbm.qrc">
                   <normaloff>:/images/actions/images/small/left.png</normaloff>:/images/actions/images/small/left.png</iconset>
                 </property>
                </widget>
@@ -391,7 +391,7 @@
                  <string>...</string>
                 </property>
                 <property name="icon">
-                 <iconset>
+                 <iconset resource="dbm.qrc">
                   <normaloff>:/images/actions/images/small/right.png</normaloff>:/images/actions/images/small/right.png</iconset>
                 </property>
                </widget>
@@ -409,7 +409,7 @@
                  <string>...</string>
                 </property>
                 <property name="icon">
-                 <iconset>
+                 <iconset resource="dbm.qrc">
                   <normaloff>:/images/actions/images/small/up.png</normaloff>:/images/actions/images/small/up.png</iconset>
                 </property>
                </widget>
@@ -420,7 +420,7 @@
                  <string>...</string>
                 </property>
                 <property name="icon">
-                 <iconset>
+                 <iconset resource="dbm.qrc">
                   <normaloff>:/images/actions/images/small/down.png</normaloff>:/images/actions/images/small/down.png</iconset>
                 </property>
                </widget>
@@ -496,7 +496,7 @@
                <string/>
               </property>
               <property name="icon">
-               <iconset>
+               <iconset resource="dbm.qrc">
                 <normaloff>:/images/actions/images/small/cancel.png</normaloff>:/images/actions/images/small/cancel.png</iconset>
               </property>
              </widget>
@@ -510,7 +510,7 @@
                <string/>
               </property>
               <property name="icon">
-               <iconset>
+               <iconset resource="dbm.qrc">
                 <normaloff>:/images/actions/images/small/add.png</normaloff>:/images/actions/images/small/add.png</iconset>
               </property>
              </widget>
@@ -591,7 +591,7 @@
              <string>...</string>
             </property>
             <property name="icon">
-             <iconset>
+             <iconset resource="dbm.qrc">
               <normaloff>:/images/actions/images/small/remove.png</normaloff>:/images/actions/images/small/remove.png</iconset>
             </property>
            </widget>
@@ -660,7 +660,7 @@
                <string>...</string>
               </property>
               <property name="icon">
-               <iconset>
+               <iconset resource="dbm.qrc">
                 <normaloff>:/images/actions/images/small/add.png</normaloff>:/images/actions/images/small/add.png</iconset>
               </property>
              </widget>
@@ -714,7 +714,7 @@
                <string>...</string>
               </property>
               <property name="icon">
-               <iconset>
+               <iconset resource="dbm.qrc">
                 <normaloff>:/images/actions/images/small/remove.png</normaloff>:/images/actions/images/small/remove.png</iconset>
               </property>
              </widget>
@@ -823,7 +823,7 @@
                  <string>...</string>
                 </property>
                 <property name="icon">
-                 <iconset>
+                 <iconset resource="dbm.qrc">
                   <normaloff>:/images/actions/images/small/cancel.png</normaloff>:/images/actions/images/small/cancel.png</iconset>
                 </property>
                </widget>
@@ -837,7 +837,7 @@
                  <string>...</string>
                 </property>
                 <property name="icon">
-                 <iconset>
+                 <iconset resource="dbm.qrc">
                   <normaloff>:/images/actions/images/small/add.png</normaloff>:/images/actions/images/small/add.png</iconset>
                 </property>
                </widget>
@@ -872,7 +872,7 @@
               <string>...</string>
              </property>
              <property name="icon">
-              <iconset>
+              <iconset resource="dbm.qrc">
                <normaloff>:/images/actions/images/small/add.png</normaloff>:/images/actions/images/small/add.png</iconset>
              </property>
             </widget>
@@ -886,7 +886,7 @@
               <string>...</string>
              </property>
              <property name="icon">
-              <iconset>
+              <iconset resource="dbm.qrc">
                <normaloff>:/images/actions/images/small/remove.png</normaloff>:/images/actions/images/small/remove.png</iconset>
              </property>
             </widget>
@@ -971,7 +971,56 @@ p, li { white-space: pre-wrap; }
    </item>
   </layout>
  </widget>
- <resources/>
+ <tabstops>
+  <tabstop>txtTableName</tabstop>
+  <tabstop>txtNewColumnName</tabstop>
+  <tabstop>cmbNewColumnType</tabstop>
+  <tabstop>chkPrimary</tabstop>
+  <tabstop>txtColumnDescription</tabstop>
+  <tabstop>btnCancelColumnEditing</tabstop>
+  <tabstop>btnAdd</tabstop>
+  <tabstop>lstColumns</tabstop>
+  <tabstop>btnUp</tabstop>
+  <tabstop>btnDown</tabstop>
+  <tabstop>btnRemove</tabstop>
+  <tabstop>tabWidget</tabstop>
+  <tabstop>txtNewIndexName</tabstop>
+  <tabstop>lstAvailableColumnsForIndex</tabstop>
+  <tabstop>btnMoveColumnToLeft</tabstop>
+  <tabstop>btnMoveColumnToRight</tabstop>
+  <tabstop>cmbIndexType</tabstop>
+  <tabstop>btnAdvanced</tabstop>
+  <tabstop>lstSelectedColumnsForIndex</tabstop>
+  <tabstop>btnMoveIndexColumnUp</tabstop>
+  <tabstop>btnMoveIndexColumnDown</tabstop>
+  <tabstop>btnCancelIndexEditing</tabstop>
+  <tabstop>btnAddIndex</tabstop>
+  <tabstop>lstIndices</tabstop>
+  <tabstop>btnRemoveIndex</tabstop>
+  <tabstop>txtForeignKeyName</tabstop>
+  <tabstop>cmbForeignTables</tabstop>
+  <tabstop>lstForeignTablesColumns</tabstop>
+  <tabstop>lstLocalColumn</tabstop>
+  <tabstop>btnAddForeignKeyAssociation</tabstop>
+  <tabstop>lstForeignKeyAssociations</tabstop>
+  <tabstop>btnRemoveAssociation</tabstop>
+  <tabstop>cmbFkOnUpdate</tabstop>
+  <tabstop>cmbFkOnDelete</tabstop>
+  <tabstop>toolButton_12</tabstop>
+  <tabstop>btnAddForeignKey</tabstop>
+  <tabstop>btnAddNewDefaultRow</tabstop>
+  <tabstop>toolButton_14</tabstop>
+  <tabstop>cmbCharacterSets</tabstop>
+  <tabstop>comboBox</tabstop>
+  <tabstop>txtDescription</tabstop>
+  <tabstop>toolButton_13</tabstop>
+  <tabstop>lstForeignKeys</tabstop>
+  <tabstop>tableStartupValues</tabstop>
+  <tabstop>buttons</tabstop>
+ </tabstops>
+ <resources>
+  <include location="dbm.qrc"/>
+ </resources>
  <connections>
   <connection>
    <sender>buttons</sender>
@@ -1012,8 +1061,8 @@ p, li { white-space: pre-wrap; }
    <slot>onMoveColumnUp()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>440</x>
-     <y>165</y>
+     <x>481</x>
+     <y>174</y>
     </hint>
     <hint type="destinationlabel">
      <x>243</x>
@@ -1044,8 +1093,8 @@ p, li { white-space: pre-wrap; }
    <slot>onMoveColumnDown()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>440</x>
-     <y>245</y>
+     <x>481</x>
+     <y>248</y>
     </hint>
     <hint type="destinationlabel">
      <x>243</x>
@@ -1060,8 +1109,8 @@ p, li { white-space: pre-wrap; }
    <slot>onAddColumn()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>440</x>
-     <y>512</y>
+     <x>481</x>
+     <y>698</y>
     </hint>
     <hint type="destinationlabel">
      <x>243</x>
@@ -1076,8 +1125,8 @@ p, li { white-space: pre-wrap; }
    <slot>onDeleteColumn()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>440</x>
-     <y>325</y>
+     <x>481</x>
+     <y>322</y>
     </hint>
     <hint type="destinationlabel">
      <x>243</x>
@@ -1092,8 +1141,8 @@ p, li { white-space: pre-wrap; }
    <slot>onMoveColumnToRight()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>263</x>
-     <y>509</y>
+     <x>282</x>
+     <y>612</y>
     </hint>
     <hint type="destinationlabel">
      <x>243</x>
@@ -1108,8 +1157,8 @@ p, li { white-space: pre-wrap; }
    <slot>onMoveColumnToLeft()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>263</x>
-     <y>431</y>
+     <x>282</x>
+     <y>532</y>
     </hint>
     <hint type="destinationlabel">
      <x>243</x>
@@ -1124,8 +1173,8 @@ p, li { white-space: pre-wrap; }
    <slot>onCancelColumnEditing()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>404</x>
-     <y>512</y>
+     <x>447</x>
+     <y>698</y>
     </hint>
     <hint type="destinationlabel">
      <x>243</x>
@@ -1140,8 +1189,8 @@ p, li { white-space: pre-wrap; }
    <slot>onAddIndex()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>445</x>
-     <y>590</y>
+     <x>482</x>
+     <y>698</y>
     </hint>
     <hint type="destinationlabel">
      <x>243</x>
@@ -1172,8 +1221,8 @@ p, li { white-space: pre-wrap; }
    <slot>onCancelIndexEditing()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>405</x>
-     <y>692</y>
+     <x>448</x>
+     <y>698</y>
     </hint>
     <hint type="destinationlabel">
      <x>243</x>
@@ -1188,8 +1237,8 @@ p, li { white-space: pre-wrap; }
    <slot>onBtnRemoveIndex()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>442</x>
-     <y>245</y>
+     <x>483</x>
+     <y>255</y>
     </hint>
     <hint type="destinationlabel">
      <x>243</x>
@@ -1204,8 +1253,8 @@ p, li { white-space: pre-wrap; }
    <slot>onMoveSelectedIndexColumnUp()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>440</x>
-     <y>525</y>
+     <x>481</x>
+     <y>532</y>
     </hint>
     <hint type="destinationlabel">
      <x>243</x>
@@ -1220,8 +1269,8 @@ p, li { white-space: pre-wrap; }
    <slot>onMoveSelectedIndexColumnUp()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>440</x>
-     <y>607</y>
+     <x>481</x>
+     <y>612</y>
     </hint>
     <hint type="destinationlabel">
      <x>243</x>
@@ -1268,8 +1317,8 @@ p, li { white-space: pre-wrap; }
    <slot>onAddForeignKeyAssociation()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>441</x>
-     <y>398</y>
+     <x>482</x>
+     <y>405</y>
     </hint>
     <hint type="destinationlabel">
      <x>243</x>
@@ -1357,6 +1406,22 @@ p, li { white-space: pre-wrap; }
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>lstAvailableColumnsForIndex</sender>
+   <signal>itemDoubleClicked(QListWidgetItem*)</signal>
+   <receiver>NewTableForm</receiver>
+   <slot>onDoubleClickColumnForIndex(QListWidgetItem*)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>170</x>
+     <y>560</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>260</x>
+     <y>386</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <designerdata>
   <property name="gridDeltaX">
@@ -1400,5 +1465,6 @@ p, li { white-space: pre-wrap; }
   <slot>onBtnAddForeignKey()</slot>
   <slot>onSelectForeignKey(QTreeWidgetItem*,int)</slot>
   <slot>onAddNewDefaultRow()</slot>
+  <slot>onDoubleClickColumnForIndex(QListWidgetItem*)</slot>
  </slots>
 </ui>
