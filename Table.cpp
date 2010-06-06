@@ -2,9 +2,9 @@
 #include "Column.h"
 #include "Index.h"
 #include "ForeignKey.h"
+#include "UserDataType.h"
 
-
-Table::Table() : m_name(""), m_columns(), m_indices(), m_foreignKeys()
+Table::Table() : m_name(""), m_description(""), m_columns(), m_indices(), m_foreignKeys(), m_startupValues(), m_parent(0)
 {
 }
 
@@ -111,6 +111,10 @@ void Table::serialize(QDomDocument &doc, QDomElement &parent) const
 {
     QDomElement tableElement = doc.createElement("Table");      // will hold the data in this element
     tableElement.setAttribute("Name", m_name);
+    if(m_parent !=0)
+    {
+        tableElement.setAttribute("Parent", m_parent->getName());
+    }
 
     {
     QDomElement descElement = doc.createElement("Description");  // description
@@ -149,6 +153,30 @@ void Table::serialize(QDomDocument &doc, QDomElement &parent) const
     tableElement.appendChild(fksElement);
     }
 
+    // save the default values
+    {
+    QDomElement startupsElement = doc.createElement("StartupValues");
+    for(int i=0; i<m_startupValues.size(); i++)
+    {
+        QDomElement row = doc.createElement("Row");
+        const QVector<QString> &rowI = m_startupValues[i];
+        for(int j=0; j<rowI.size(); j++)
+        {
+            QDomElement column = doc.createElement("Data");
+            column.setAttribute("Type", m_columns[j]->getDataType()->getName());
+            column.setAttribute("Value", rowI[j]);
+            row.appendChild(column);
+        }
+        startupsElement.appendChild(row);
+    }
+    tableElement.appendChild(startupsElement);
+
+    }
 
     parent.appendChild(tableElement);
+}
+
+void Table::setDefaultValues(QVector <QVector <QString> > & values)
+{
+    m_startupValues = values;
 }

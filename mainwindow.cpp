@@ -71,6 +71,8 @@ QTreeWidget* MainWindow::setupGuiForNewSolution()
     // set a normal size
     resize(800, 600);
 
+    enableActions();
+
     return projectTree;
 }
 
@@ -343,5 +345,10 @@ void MainWindow::onOpenProject()
     populateTreeWithSolution(m_currentSolution);
 
     projectTree->expandAll();
+}
 
+void MainWindow::enableActions()
+{
+    ui->action_NewDataType->setEnabled(true);
+    ui->action_NewTable->setEnabled(true);
 }
