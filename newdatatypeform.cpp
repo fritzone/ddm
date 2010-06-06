@@ -452,3 +452,15 @@ void NewDataTypeForm::onCanBeNullClicked()
         m_ui->chkNullIsDefault->setEnabled(false);
     }
 }
+
+void NewDataTypeForm::keyPressEvent(QKeyEvent *evt)
+{
+    if(evt->key() == Qt::Key_Return)
+    {
+        onSave();
+    }
+    else
+    {
+        QWidget::keyPressEvent(evt);
+    }
+}

@@ -3,6 +3,7 @@
 
 #include <QtGui/QWidget>
 #include <QAbstractButton>
+#include <QKeyEvent>
 
 class DatabaseEngine;
 
@@ -80,8 +81,12 @@ public slots:
     /// when the user clicked the cna be null checkbox
     void onCanBeNullClicked();
 
+
+
 protected:
+
     void changeEvent(QEvent *e);
+    virtual void keyPressEvent(QKeyEvent *);
 
 private:
 

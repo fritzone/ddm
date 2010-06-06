@@ -73,7 +73,7 @@ ForeignKey* DeserializationFactory::createForeignKey(Table *tab, const QDomDocum
         ForeignKey::ColumnAssociation* fkas = new ForeignKey::ColumnAssociation(foreignTable, foreignColumn, localTable, localColumn);
         fk->addAssociation(fkas);
     }
-
+    return fk;
 
 }
 
@@ -174,7 +174,7 @@ MajorVersion* DeserializationFactory::createMajorVersion(const QDomDocument &doc
                     Column* colL = assK->getForeignTable()->getColumns().at(l);
                     if(colL->getName() == assK->getSForeignColumn())
                     {
-                        assK->setLocalColumn(colL);
+                        assK->setForeignColumn(colL);
                     }
                 }
             }
