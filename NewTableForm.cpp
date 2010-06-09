@@ -165,6 +165,18 @@ void NewTableForm::setTable(Table *table)
 
     // set the default values
     updateDefaultValuesTableHeader();
+    for(int i=0; i<m_table->getStartupValues().size(); i++)
+    {
+        const QVector<QString>& rowI = m_table->getStartupValues()[i];
+        m_ui->tableStartupValues->insertRow(i);
+        for(int j=0; j<rowI.size(); j++)
+        {
+            int rc = m_ui->tableStartupValues->rowCount();
+            int cc = m_ui->tableStartupValues->columnCount();
+            QTableWidgetItem* newItem = new QTableWidgetItem(rowI[j]);
+            m_ui->tableStartupValues->setItem(i, j, newItem);
+        }
+    }
     m_ui->txtTableName->setText(m_table->getName());
 }
 
@@ -947,8 +959,15 @@ void NewTableForm::backupDefaultValuesTable()
         QVector <QString> columnI;
         for(int j=0; j<m_ui->tableStartupValues->rowCount(); j++)
         {
-            columnI.append(m_ui->tableStartupValues->item(j,i)->text());
-            m_ui->tableStartupValues->item(j,i)->setText("");
+            if(m_ui->tableStartupValues->item(j,i))
+            {
+                columnI.append(m_ui->tableStartupValues->item(j,i)->text());
+                m_ui->tableStartupValues->item(j,i)->setText("");
+            }
+            else
+            {
+                columnI.append("");
+            }            
         }
         backupData[m_ui->tableStartupValues->horizontalHeaderItem(i)->text()] = columnI;
     }
@@ -979,7 +998,15 @@ void NewTableForm::restoreDefaultValuesTable()
             {
                 for(int j=0; j<columnI.size(); j++)
                 {
-                    m_ui->tableStartupValues->item(j,i)->setText(columnI[j]);
+                    if(m_ui->tableStartupValues->item(j,i))
+                    {
+                        m_ui->tableStartupValues->item(j,i)->setText(columnI[j]);
+                    }
+                    else
+                    {
+                        QTableWidgetItem* newItem = new QTableWidgetItem(columnI[j]);
+                        m_ui->tableStartupValues->setItem(j, i, newItem);
+                    }
                 }
             }
         }

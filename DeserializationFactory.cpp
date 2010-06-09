@@ -231,6 +231,21 @@ Table* DeserializationFactory::createTable(MajorVersion* ver, const QDomDocument
                 result->addForeignKey(fk);
             }
         }
+        if(element.childNodes().at(i).nodeName() == "StartupValues")
+        {
+            QVector <QVector <QString> > values;
+            for(int j=0; j<element.childNodes().at(i).childNodes().count(); j++)    // willl count the rows
+            {
+                QDomElement childJ = element.childNodes().at(i).childNodes().at(j).toElement();
+                QVector <QString> rowJ;
+                for(int k=0; k<element.childNodes().at(i).childNodes().at(j).childNodes().count(); k++) // Datas in the row
+                {
+                    rowJ.append(element.childNodes().at(i).childNodes().at(j).childNodes().at(k).toElement().attribute("Value"));
+                }
+                values.append(rowJ);
+            }
+            result->setDefaultValues(values);
+        }
     }
 
     return result;

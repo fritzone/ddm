@@ -126,6 +126,11 @@ public:
 
     void setDefaultValues(QVector <QVector <QString> > &);
 
+    const QVector <QVector <QString> > & getStartupValues()
+    {
+        return m_startupValues;
+    }
+
     /**
      * Returns the columns as a QStringList
      */
