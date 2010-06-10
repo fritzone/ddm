@@ -4,7 +4,7 @@
 #include "ForeignKey.h"
 #include "UserDataType.h"
 
-Table::Table() : m_name(""), m_description(""), m_columns(), m_indices(), m_foreignKeys(), m_startupValues(), m_parent(0)
+Table::Table() : m_name(""), m_description(""), m_columns(), m_indices(), m_foreignKeys(), m_startupValues(), m_parent(0), m_persistent(false)
 {
 }
 
@@ -111,6 +111,8 @@ void Table::serialize(QDomDocument &doc, QDomElement &parent) const
 {
     QDomElement tableElement = doc.createElement("Table");      // will hold the data in this element
     tableElement.setAttribute("Name", m_name);
+    tableElement.setAttribute("Persistent", m_persistent);
+
     if(m_parent !=0)
     {
         tableElement.setAttribute("Parent", m_parent->getName());

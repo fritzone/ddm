@@ -3,10 +3,13 @@
 #include "MySQLDTSupplier.h"
 #include "MysqlCodepageSupplier.h"
 #include "MySQLIndextypeProvider.h"
+#include "MySQLDatabaseEngine.h"
+#include "MySQLStorageEngineListProvider.h"
 
 QMap<QString, AbstractDTSupplier*> DatabaseEngine::dtsuppliers;
 QMap<QString, AbstractCodepageSupplier*> DatabaseEngine::cpsuppliers;
 QMap<QString, AbstractIndextypeProvider*> DatabaseEngine::indextypeProviders;
+QMap<QString, AbstractStorageEngineListProvider*> DatabaseEngine::storageEngineProviders;
 
 bool DatabaseEngine::genericInit = false;
 
@@ -16,9 +19,10 @@ DatabaseEngine::DatabaseEngine(const QString& db):database(db)
     {
         genericInit = true;
         // initialize the DT suppliers
-        dtsuppliers.insert("MySQL", new MySQLDTSupplier());
-        cpsuppliers.insert("MySQL", new MySQLCodepageSupplier());
-        indextypeProviders.insert("MySQL", new MySQLIndexTypeProvider());
+        dtsuppliers.insert(db, new MySQLDTSupplier());
+        cpsuppliers.insert(db, new MySQLCodepageSupplier());
+        indextypeProviders.insert(db, new MySQLIndexTypeProvider());
+        storageEngineProviders.insert(db, new MySQLStorageEngineListProvider());
     }
 
 }
@@ -36,4 +40,9 @@ AbstractCodepageSupplier* DatabaseEngine::getCodepageSupplier() const
 AbstractIndextypeProvider* DatabaseEngine::getIndextypeProvider() const
 {
     return indextypeProviders.contains(database)?indextypeProviders[database]:0;
+}
+
+DatabaseEngine* DatabaseEngine::createEngine(const QString &db)
+{
+    if(db == "MySQL") return new MySQLDatabaseEngine();
 }

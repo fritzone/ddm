@@ -16,6 +16,7 @@
 #include <QHashIterator>
 #include <QHash>
 #include <QKeyEvent>
+#include <QtGui>
 
 // the positions of various items in the columns view, used for icon retrieval mostly
 const int COL_POS_PK = 0;
@@ -58,6 +59,20 @@ NewTableForm::NewTableForm(DatabaseEngine* db, Project* prj, QWidget *parent) : 
     m_ui->cmbForeignTables->setCurrentIndex(-1);
 
     m_ui->btnAdvanced->hide();
+
+    m_ui->lblCharacterSet->hide();
+    m_ui->cmbCharacterSets->hide();
+
+    if(!db->supportsEngines())
+    {
+        m_ui->lblStorageEngine->hide();
+        m_ui->cmbStorageEngine->hide();
+    }
+    else
+    {
+
+    }
+
     m_ui->tabWidget->setCurrentIndex(0);
 }
 
@@ -178,6 +193,7 @@ void NewTableForm::setTable(Table *table)
         }
     }
     m_ui->txtTableName->setText(m_table->getName());
+    m_ui->chkPersistent->setChecked(m_table->isPersistent());
 }
 
 void NewTableForm::focusOnName()
@@ -428,6 +444,7 @@ void NewTableForm::onSave()
     }
 
     m_table->setName(m_ui->txtTableName->text());
+    m_table->setPersistent(m_ui->chkPersistent->isChecked());
     m_table->setDescription(m_ui->txtDescription->toPlainText());
 
     if(m_project->getWorkingVersion()->hasTable(m_table))
@@ -1043,4 +1060,83 @@ void NewTableForm::onBtnUpdateTableWithDefaultValues()
     }
 
     m_table->setDefaultValues(values);
+}
+
+void NewTableForm::onSaveStartupValuestoCSV()
+{
+    QVector<QString> rows;
+
+    for(int i=0; i<m_ui->tableStartupValues->rowCount(); i++)
+    {
+        QString rowI;
+        for(int j=0; j<m_ui->tableStartupValues->columnCount(); j++)
+        {
+            rowI += m_ui->tableStartupValues->item(i,j)->text();
+            if(j<m_ui->tableStartupValues->columnCount() - 1)
+            {
+                rowI += ",";
+            }
+        }
+        rows.append(rowI);
+    }
+    QString fileName = QFileDialog::getSaveFileName(this,  tr("Save startup values"), "", tr("CSV files (*.csv)"));
+    QFile file(fileName);
+
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
+    {
+        return;
+    }
+    QTextStream out(&file);
+    for(int i=0; i<rows.size(); i++)
+    {
+        out << rows[i] << "\n";
+    }
+}
+
+void NewTableForm::onLoadStartupValuesFromCSV()
+{
+    QString fileName = QFileDialog::getOpenFileName(this,  tr("Load startup values"), "", tr("CSV files (*.csv)"));
+    if(fileName.length() == 0)
+    {
+        return;
+    }
+
+    QFile file(fileName);
+
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+    {
+        return;
+    }
+
+    m_ui->tableStartupValues->clearContents();
+    m_ui->tableStartupValues->setRowCount(0);
+
+    int i = 0;
+    QTextStream in(&file);
+    while (!in.atEnd())
+    {
+        m_ui->tableStartupValues->insertRow(i);
+        QString line = in.readLine();
+        int j = 0, cc = 0;
+        QString cellV = "";
+        while(j<line.length())
+        {
+            if(line.at(j) !=',')
+            {
+                cellV += line.at(j);
+            }
+            else
+            {
+                QTableWidgetItem *twl = new QTableWidgetItem(cellV);
+                m_ui->tableStartupValues->setItem(i, cc, twl);
+                cc ++;
+                cellV = "";
+            }
+            j++;
+        }
+        // last value
+        QTableWidgetItem *twl = new QTableWidgetItem(cellV);
+        m_ui->tableStartupValues->setItem(i, cc, twl);
+        i++;
+    }
 }

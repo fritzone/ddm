@@ -7,6 +7,7 @@
 class AbstractDTSupplier;
 class AbstractCodepageSupplier;
 class AbstractIndextypeProvider;
+class AbstractStorageEngineListProvider;
 
 /**
  * This class is a kind of "wrapper" for the other classes that all deal
@@ -42,6 +43,13 @@ public:
         return database;
     }
 
+    static DatabaseEngine* createEngine(const QString& db);
+
+    // anyone deriving from this class (such as MysqlDatabaseEngine) should provide this method to see if we show the combo box in the GUI
+    virtual bool supportsEngines() = 0;
+
+    virtual QString dbname() = 0;
+
 private:
 
     // the database on which this is running
@@ -55,6 +63,8 @@ private:
 
     // map of the index type providers
     static QMap<QString, AbstractIndextypeProvider*> indextypeProviders;
+
+    static QMap<QString, AbstractStorageEngineListProvider*> storageEngineProviders;
 
     // whether the map above was initialized or not
     static bool genericInit;
