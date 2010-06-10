@@ -148,6 +148,16 @@ public:
         m_parent = parent;
     }
 
+    bool isPersistent() const
+    {
+        return m_persistent;
+    }
+
+    void setPersistent(bool t)
+    {
+        m_persistent = t;
+    }
+
 private:
     // the name of the table
     QString m_name;
@@ -169,6 +179,9 @@ private:
 
     // tables can be built up in a OO hierarchy, each table inherits the parent table's properties (columns, indices, etc), and it can extend it
     const Table* m_parent;
+
+    // if the table is marked as persistent the C++ (Java) code generator will generate some extra code which will load the table on instantiation
+    bool m_persistent;
 
 };
 

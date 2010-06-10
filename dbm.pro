@@ -32,7 +32,11 @@ SOURCES += main.cpp \
     Index.cpp \
     DeserializationFactory.cpp \
     ProjectDetailsForm.cpp \
-    Solution.cpp
+    Solution.cpp \
+    MySQLDatabaseEngine.cpp \
+    AbstractStorageEngine.cpp \
+    AbstractStorageEngineListProvider.cpp \
+    MySQLStorageEngineListProvider.cpp
 HEADERS += MainWindow.h \
     MainWindowButtonDialog.h \
     NewProjectDialog.h \
@@ -65,7 +69,11 @@ HEADERS += MainWindow.h \
     DeserializationFactory.h \
     ProjectDetailsForm.h \
     ForeignKey.h \
-    Solution.h
+    Solution.h \
+    MySQLDatabaseEngine.h \
+    AbstractStorageEngine.h \
+    AbstractStorageEngineListProvider.h \
+    MySQLStorageEngineListProvider.h
 FORMS += mainwindow.ui \
     mainwindowbuttondialog.ui \
     newprojectdialog.ui \

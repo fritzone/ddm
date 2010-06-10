@@ -74,6 +74,8 @@ public slots:
     // default values page
     void onAddNewDefaultRow();
     void onBtnUpdateTableWithDefaultValues();
+    void onSaveStartupValuestoCSV();
+    void onLoadStartupValuesFromCSV();
 protected:
     void changeEvent(QEvent *e);
 

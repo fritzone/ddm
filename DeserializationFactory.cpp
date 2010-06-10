@@ -200,6 +200,7 @@ Table* DeserializationFactory::createTable(MajorVersion* ver, const QDomDocument
     Table* result = new Table();
     QString name = element.attribute("Name");
     result->setName(name);
+    result->setPersistent(element.attribute("Persistent")=="1");
 
     for(int i=0; i<element.childNodes().count(); i++)
     {
@@ -254,7 +255,7 @@ Table* DeserializationFactory::createTable(MajorVersion* ver, const QDomDocument
 Project* DeserializationFactory::createProject(const QDomDocument &doc, const QDomElement &element)
 {
     Project* prj = new Project(element.attribute("Name"));
-    prj->setEngine(new DatabaseEngine(element.attribute("DB")));
+    prj->setEngine(DatabaseEngine::createEngine(element.attribute("DB")));
 
     QDomNodeList majorVersionNodes = element.firstChild().childNodes();
     for(int i=0; i<majorVersionNodes.count(); i++)

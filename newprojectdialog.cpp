@@ -62,7 +62,7 @@ QString NewProjectDialog::getTargetDatabase() const
 
 DatabaseEngine* NewProjectDialog::getDatabaseEngine() const
 {
-    DatabaseEngine* engine = new DatabaseEngine(getTargetDatabase());
+    DatabaseEngine* engine = DatabaseEngine::createEngine(getTargetDatabase());
     return engine;
 }
 
