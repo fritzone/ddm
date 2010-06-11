@@ -112,6 +112,7 @@ void Table::serialize(QDomDocument &doc, QDomElement &parent) const
     QDomElement tableElement = doc.createElement("Table");      // will hold the data in this element
     tableElement.setAttribute("Name", m_name);
     tableElement.setAttribute("Persistent", m_persistent);
+    tableElement.setAttribute("Temporary", m_temporary);
 
     if(m_parent !=0)
     {

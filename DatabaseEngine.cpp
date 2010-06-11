@@ -42,6 +42,11 @@ AbstractIndextypeProvider* DatabaseEngine::getIndextypeProvider() const
     return indextypeProviders.contains(database)?indextypeProviders[database]:0;
 }
 
+AbstractStorageEngineListProvider* DatabaseEngine::getStorageEngineListProviders() const
+{
+    return storageEngineProviders.contains(database)?storageEngineProviders[database]:0;
+}
+
 DatabaseEngine* DatabaseEngine::createEngine(const QString &db)
 {
     if(db == "MySQL") return new MySQLDatabaseEngine();

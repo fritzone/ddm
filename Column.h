@@ -14,7 +14,7 @@ class UserDataType;
 class Column : virtual public TreeItem, public SerializableElement
 {
 public:
-    Column(const QString& name, const UserDataType* type, bool pk);
+    Column(const QString& name, const UserDataType* type, bool, bool );
 
     const QString& getName() const
     {
@@ -58,10 +58,21 @@ public:
 
     virtual void serialize(QDomDocument &doc, QDomElement &parent) const;
 
+    bool hasAutoIncrement() const
+    {
+        return m_autoIncrement;
+    }
+
+    void setAutoIncrement(bool a)
+    {
+        m_autoIncrement = a;
+    }
+
 private:
     QString m_name;
     const UserDataType* m_type;
     bool m_pk;
+    bool m_autoIncrement;
     QString m_description;
 };
 

@@ -1,11 +1,17 @@
 #include "MySQLStorageEngineListProvider.h"
 
-MySQLStorageEngineListProvider::MySQLStorageEngineListProvider()
+#include "MySQLMyISAMStorageEngine.h"
+#include "MySQLInnoDBStorageEngine.h"
+#include "MySQLMemoryStorageEngine.h"
+
+MySQLStorageEngineListProvider::MySQLStorageEngineListProvider():m_stEngines()
 {
+    m_stEngines.append(new MySQLMyISAMStorageEngine());
+    m_stEngines.append(new MySQLInnoDBStorageEngine());
+    m_stEngines.append(new MySQLMemoryStorageEngine());
 }
 
 QVector<AbstractStorageEngine*> MySQLStorageEngineListProvider::getStorageEngines()
 {
-    QVector<AbstractStorageEngine*> result;
-    return result;
+    return m_stEngines;
 }

@@ -73,7 +73,10 @@ HEADERS += MainWindow.h \
     MySQLDatabaseEngine.h \
     AbstractStorageEngine.h \
     AbstractStorageEngineListProvider.h \
-    MySQLStorageEngineListProvider.h
+    MySQLStorageEngineListProvider.h \
+    MySQLMyISAMStorageEngine.h \
+    MySQLInnoDBStorageEngine.h \
+    MySQLMemoryStorageEngine.h
 FORMS += mainwindow.ui \
     mainwindowbuttondialog.ui \
     newprojectdialog.ui \

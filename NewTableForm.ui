@@ -17,6 +17,9 @@
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
     <layout class="QFormLayout" name="formLayout_4">
+     <property name="fieldGrowthPolicy">
+      <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+     </property>
      <item row="0" column="0">
       <widget class="QLabel" name="label">
        <property name="text">
@@ -45,7 +48,7 @@
       <enum>QTabWidget::Rounded</enum>
      </property>
      <property name="currentIndex">
-      <number>4</number>
+      <number>2</number>
      </property>
      <widget class="QWidget" name="tabWidgetPage1">
       <attribute name="title">
@@ -116,7 +119,7 @@
                  <string/>
                 </property>
                 <property name="icon">
-                 <iconset>
+                 <iconset resource="dbm.qrc">
                   <normaloff>:/images/actions/images/small/up.png</normaloff>:/images/actions/images/small/up.png</iconset>
                 </property>
                 <property name="popupMode">
@@ -136,7 +139,7 @@
                  <string/>
                 </property>
                 <property name="icon">
-                 <iconset>
+                 <iconset resource="dbm.qrc">
                   <normaloff>:/images/actions/images/small/remove.png</normaloff>:/images/actions/images/small/remove.png</iconset>
                 </property>
                </widget>
@@ -153,7 +156,7 @@
                  <string/>
                 </property>
                 <property name="icon">
-                 <iconset>
+                 <iconset resource="dbm.qrc">
                   <normaloff>:/images/actions/images/small/down.png</normaloff>:/images/actions/images/small/down.png</iconset>
                 </property>
                 <property name="popupMode">
@@ -226,7 +229,7 @@
               </property>
              </widget>
             </item>
-            <item row="3" column="1">
+            <item row="5" column="1">
              <layout class="QHBoxLayout" name="horizontalLayout_3">
               <item>
                <spacer name="horizontalSpacer">
@@ -253,7 +256,7 @@
                  <string/>
                 </property>
                 <property name="icon">
-                 <iconset>
+                 <iconset resource="dbm.qrc">
                   <normaloff>:/images/actions/images/small/cancel.png</normaloff>:/images/actions/images/small/cancel.png</iconset>
                 </property>
                </widget>
@@ -270,27 +273,34 @@
                  <string>...</string>
                 </property>
                 <property name="icon">
-                 <iconset>
+                 <iconset resource="dbm.qrc">
                   <normaloff>:/images/actions/images/small/add.png</normaloff>:/images/actions/images/small/add.png</iconset>
                 </property>
                </widget>
               </item>
              </layout>
             </item>
-            <item row="2" column="1">
+            <item row="4" column="1">
              <widget class="QTextEdit" name="txtColumnDescription"/>
             </item>
-            <item row="2" column="0">
+            <item row="4" column="0">
              <widget class="QLabel" name="lblDescription">
               <property name="text">
                <string>Description</string>
               </property>
              </widget>
             </item>
-            <item row="3" column="0">
+            <item row="2" column="0">
              <widget class="QCheckBox" name="chkPrimary">
               <property name="text">
                <string>Primary Key</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="1">
+             <widget class="QCheckBox" name="chkAutoInc">
+              <property name="text">
+               <string>Auto Increment</string>
               </property>
              </widget>
             </item>
@@ -355,7 +365,7 @@
              <string>...</string>
             </property>
             <property name="icon">
-             <iconset>
+             <iconset resource="dbm.qrc">
               <normaloff>:/images/actions/images/small/remove.png</normaloff>:/images/actions/images/small/remove.png</iconset>
             </property>
            </widget>
@@ -376,10 +386,7 @@
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_7">
           <item>
-           <layout class="QFormLayout" name="formLayout_3">
-            <property name="fieldGrowthPolicy">
-             <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
-            </property>
+           <layout class="QGridLayout" name="gridLayout_3">
             <item row="0" column="0">
              <widget class="QLabel" name="label_6">
               <property name="text">
@@ -387,8 +394,18 @@
               </property>
              </widget>
             </item>
-            <item row="0" column="1">
+            <item row="0" column="2">
              <widget class="QLineEdit" name="txtNewIndexName"/>
+            </item>
+            <item row="1" column="0">
+             <widget class="QLabel" name="label_8">
+              <property name="text">
+               <string>Type</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="2">
+             <widget class="QComboBox" name="cmbIndexType"/>
             </item>
            </layout>
           </item>
@@ -421,7 +438,7 @@
                  <string>...</string>
                 </property>
                 <property name="icon">
-                 <iconset>
+                 <iconset resource="dbm.qrc">
                   <normaloff>:/images/actions/images/small/right.png</normaloff>:/images/actions/images/small/right.png</iconset>
                 </property>
                </widget>
@@ -441,7 +458,7 @@
                  <string>...</string>
                 </property>
                 <property name="icon">
-                 <iconset>
+                 <iconset resource="dbm.qrc">
                   <normaloff>:/images/actions/images/small/left.png</normaloff>:/images/actions/images/small/left.png</iconset>
                 </property>
                </widget>
@@ -459,7 +476,7 @@
                  <string>...</string>
                 </property>
                 <property name="icon">
-                 <iconset>
+                 <iconset resource="dbm.qrc">
                   <normaloff>:/images/actions/images/small/up.png</normaloff>:/images/actions/images/small/up.png</iconset>
                 </property>
                </widget>
@@ -470,7 +487,7 @@
                  <string>...</string>
                 </property>
                 <property name="icon">
-                 <iconset>
+                 <iconset resource="dbm.qrc">
                   <normaloff>:/images/actions/images/small/down.png</normaloff>:/images/actions/images/small/down.png</iconset>
                 </property>
                </widget>
@@ -481,42 +498,6 @@
           </item>
           <item>
            <layout class="QHBoxLayout" name="horizontalLayout_5">
-            <item>
-             <widget class="QLabel" name="label_8">
-              <property name="text">
-               <string>Type</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <spacer name="horizontalSpacer_5">
-              <property name="orientation">
-               <enum>Qt::Horizontal</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>40</width>
-                <height>20</height>
-               </size>
-              </property>
-             </spacer>
-            </item>
-            <item>
-             <widget class="QComboBox" name="cmbIndexType"/>
-            </item>
-            <item>
-             <spacer name="horizontalSpacer_4">
-              <property name="orientation">
-               <enum>Qt::Horizontal</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>40</width>
-                <height>20</height>
-               </size>
-              </property>
-             </spacer>
-            </item>
             <item>
              <widget class="QPushButton" name="btnAdvanced">
               <property name="text">
@@ -546,7 +527,7 @@
                <string/>
               </property>
               <property name="icon">
-               <iconset>
+               <iconset resource="dbm.qrc">
                 <normaloff>:/images/actions/images/small/cancel.png</normaloff>:/images/actions/images/small/cancel.png</iconset>
               </property>
              </widget>
@@ -560,7 +541,7 @@
                <string/>
               </property>
               <property name="icon">
-               <iconset>
+               <iconset resource="dbm.qrc">
                 <normaloff>:/images/actions/images/small/add.png</normaloff>:/images/actions/images/small/add.png</iconset>
               </property>
              </widget>
@@ -578,7 +559,21 @@
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_15">
        <item>
-        <widget class="QGroupBox" name="groupBox_5">
+        <widget class="QLabel" name="lblForeignKeysNotAllowed">
+         <property name="text">
+          <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Sans'; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;table style=&quot;-qt-table-type: root; margin-top:4px; margin-bottom:4px; margin-left:4px; margin-right:4px;&quot;&gt;
+&lt;tr&gt;
+&lt;td style=&quot;border: none;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;img src=&quot;:/images/actions/images/small/remove.png&quot; /&gt; &lt;span style=&quot; font-style:italic;&quot;&gt;Foreign keys are not supported by this storage engine&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="grpForeignKeysList">
          <property name="title">
           <string>Foreign keys</string>
          </property>
@@ -641,7 +636,7 @@
              <string>...</string>
             </property>
             <property name="icon">
-             <iconset>
+             <iconset resource="dbm.qrc">
               <normaloff>:/images/actions/images/small/remove.png</normaloff>:/images/actions/images/small/remove.png</iconset>
             </property>
            </widget>
@@ -650,7 +645,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QGroupBox" name="groupBox_6">
+        <widget class="QGroupBox" name="grpNewForeignKey">
          <property name="title">
           <string>New Foreign Key</string>
          </property>
@@ -710,7 +705,7 @@
                <string>...</string>
               </property>
               <property name="icon">
-               <iconset>
+               <iconset resource="dbm.qrc">
                 <normaloff>:/images/actions/images/small/add.png</normaloff>:/images/actions/images/small/add.png</iconset>
               </property>
              </widget>
@@ -764,7 +759,7 @@
                <string>...</string>
               </property>
               <property name="icon">
-               <iconset>
+               <iconset resource="dbm.qrc">
                 <normaloff>:/images/actions/images/small/remove.png</normaloff>:/images/actions/images/small/remove.png</iconset>
               </property>
              </widget>
@@ -873,7 +868,7 @@
                  <string>...</string>
                 </property>
                 <property name="icon">
-                 <iconset>
+                 <iconset resource="dbm.qrc">
                   <normaloff>:/images/actions/images/small/cancel.png</normaloff>:/images/actions/images/small/cancel.png</iconset>
                 </property>
                </widget>
@@ -887,7 +882,7 @@
                  <string>...</string>
                 </property>
                 <property name="icon">
-                 <iconset>
+                 <iconset resource="dbm.qrc">
                   <normaloff>:/images/actions/images/small/add.png</normaloff>:/images/actions/images/small/add.png</iconset>
                 </property>
                </widget>
@@ -922,7 +917,7 @@
               <string>...</string>
              </property>
              <property name="icon">
-              <iconset>
+              <iconset resource="dbm.qrc">
                <normaloff>:/images/actions/images/actions/fileopen.png</normaloff>:/images/actions/images/actions/fileopen.png</iconset>
              </property>
             </widget>
@@ -942,7 +937,7 @@
               <string>...</string>
              </property>
              <property name="icon">
-              <iconset>
+              <iconset resource="dbm.qrc">
                <normaloff>:/images/actions/images/big/bigfileimport.png</normaloff>:/images/actions/images/big/bigfileimport.png</iconset>
              </property>
             </widget>
@@ -959,7 +954,7 @@
               <string>...</string>
              </property>
              <property name="icon">
-              <iconset>
+              <iconset resource="dbm.qrc">
                <normaloff>:/images/actions/images/actions/filesave.png</normaloff>:/images/actions/images/actions/filesave.png</iconset>
              </property>
             </widget>
@@ -1013,7 +1008,7 @@ p, li { white-space: pre-wrap; }
               <string>...</string>
              </property>
              <property name="icon">
-              <iconset>
+              <iconset resource="dbm.qrc">
                <normaloff>:/images/actions/images/small/add.png</normaloff>:/images/actions/images/small/add.png</iconset>
              </property>
             </widget>
@@ -1030,7 +1025,7 @@ p, li { white-space: pre-wrap; }
               <string>...</string>
              </property>
              <property name="icon">
-              <iconset>
+              <iconset resource="dbm.qrc">
                <normaloff>:/images/actions/images/small/remove.png</normaloff>:/images/actions/images/small/remove.png</iconset>
              </property>
             </widget>
@@ -1060,7 +1055,7 @@ p, li { white-space: pre-wrap; }
               <string>...</string>
              </property>
              <property name="icon">
-              <iconset>
+              <iconset resource="dbm.qrc">
                <normaloff>:/images/actions/images/small/apply.png</normaloff>:/images/actions/images/small/apply.png</iconset>
              </property>
             </widget>
@@ -1109,6 +1104,19 @@ p, li { white-space: pre-wrap; }
          </property>
         </widget>
        </item>
+       <item row="2" column="0">
+        <widget class="QCheckBox" name="chkTemporary">
+         <property name="statusTip">
+          <string>This table is not updated when the application runs.</string>
+         </property>
+         <property name="whatsThis">
+          <string>This table is not updated when the application runs. This allows the code generator to generate code which loads the content of this table at startup for faster usage</string>
+         </property>
+         <property name="text">
+          <string>Temporary table</string>
+         </property>
+        </widget>
+       </item>
       </layout>
      </widget>
      <widget class="QWidget" name="tabWidgetPage5">
@@ -1152,7 +1160,6 @@ p, li { white-space: pre-wrap; }
   <tabstop>txtTableName</tabstop>
   <tabstop>txtNewColumnName</tabstop>
   <tabstop>cmbNewColumnType</tabstop>
-  <tabstop>chkPrimary</tabstop>
   <tabstop>txtColumnDescription</tabstop>
   <tabstop>btnCancelColumnEditing</tabstop>
   <tabstop>btnAdd</tabstop>
@@ -1163,8 +1170,6 @@ p, li { white-space: pre-wrap; }
   <tabstop>txtNewIndexName</tabstop>
   <tabstop>lstAvailableColumnsForIndex</tabstop>
   <tabstop>btnMoveColumnToLeft</tabstop>
-  <tabstop>cmbIndexType</tabstop>
-  <tabstop>btnAdvanced</tabstop>
   <tabstop>lstSelectedColumnsForIndex</tabstop>
   <tabstop>btnMoveIndexColumnUp</tabstop>
   <tabstop>btnMoveIndexColumnDown</tabstop>
@@ -1191,7 +1196,9 @@ p, li { white-space: pre-wrap; }
   <tabstop>tableStartupValues</tabstop>
   <tabstop>buttons</tabstop>
  </tabstops>
- <resources/>
+ <resources>
+  <include location="dbm.qrc"/>
+ </resources>
  <connections>
   <connection>
    <sender>buttons</sender>
@@ -1641,6 +1648,22 @@ p, li { white-space: pre-wrap; }
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>cmbStorageEngine</sender>
+   <signal>activated(QString)</signal>
+   <receiver>NewTableForm</receiver>
+   <slot>onStorageEngineChange(QString)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>309</x>
+     <y>53</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>260</x>
+     <y>386</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <designerdata>
   <property name="gridDeltaX">
@@ -1688,5 +1711,6 @@ p, li { white-space: pre-wrap; }
   <slot>onBtnUpdateTableWithDefaultValues()</slot>
   <slot>onSaveStartupValuestoCSV()</slot>
   <slot>onLoadStartupValuesFromCSV()</slot>
+  <slot>onStorageEngineChange(QString)</slot>
  </slots>
 </ui>

@@ -191,7 +191,7 @@ Column* DeserializationFactory::createColumn(MajorVersion* ver, const QDomDocume
     QString type = element.attribute("Type");
     UserDataType* udt = ver->getDataType(type);
 
-    Column* col = new Column(name, udt, pk == "1");
+    Column* col = new Column(name, udt, pk == "1", element.attribute("AutoIncrement")=="1");
     return col;
 }
 
@@ -201,6 +201,7 @@ Table* DeserializationFactory::createTable(MajorVersion* ver, const QDomDocument
     QString name = element.attribute("Name");
     result->setName(name);
     result->setPersistent(element.attribute("Persistent")=="1");
+    result->setTemporary(element.attribute("Temporary")=="1");
 
     for(int i=0; i<element.childNodes().count(); i++)
     {
