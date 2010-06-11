@@ -9,6 +9,9 @@ public:
     MySQLStorageEngineListProvider();
 
     virtual QVector<AbstractStorageEngine*> getStorageEngines();
+
+private:
+    QVector<AbstractStorageEngine*> m_stEngines;
 };
 
 #endif // MYSQLSTORAGEENGINELISTPROVIDER_H

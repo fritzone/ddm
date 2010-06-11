@@ -2,7 +2,7 @@
 
 #include "UserDataType.h"
 
-Column::Column(const QString& name, const UserDataType* type, bool pk) : m_name(name), m_type(type), m_pk(pk)
+Column::Column(const QString& name, const UserDataType* type, bool pk, bool autoInc) : m_name(name), m_type(type), m_autoIncrement(autoInc), m_pk(pk)
 {
 
 }
@@ -14,6 +14,8 @@ void Column::serialize(QDomDocument &doc, QDomElement &parent) const
     columnElement.setAttribute("Name", m_name);
     columnElement.setAttribute("PK", m_pk);
     columnElement.setAttribute("Type", m_type->getName());
+    columnElement.setAttribute("AutoIncrement", m_autoIncrement);
+
     {
     QDomElement descElement = doc.createElement("Description");  // description
     QDomText descNode = doc.createTextNode(m_description);

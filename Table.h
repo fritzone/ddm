@@ -158,6 +158,16 @@ public:
         m_persistent = t;
     }
 
+    bool isTemporary() const
+    {
+        return m_temporary;
+    }
+
+    void setTemporary(bool t)
+    {
+        m_temporary = t;
+    }
+
 private:
     // the name of the table
     QString m_name;
@@ -182,6 +192,9 @@ private:
 
     // if the table is marked as persistent the C++ (Java) code generator will generate some extra code which will load the table on instantiation
     bool m_persistent;
+
+    // this is a temporary table. The SQL code generator for the CREATE TABLE syntax will contain TEMPORARY
+    bool m_temporary;
 
 };
 

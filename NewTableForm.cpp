@@ -10,6 +10,7 @@
 #include "Table.h"
 #include "mainwindow.h"
 #include "AbstractIndextypeProvider.h"
+#include "AbstractStorageEngineListProvider.h"
 #include "ForeignKey.h"
 
 #include <QMessageBox>
@@ -25,7 +26,7 @@ const int COL_POS_DT = 2;
 
 NewTableForm::NewTableForm(DatabaseEngine* db, Project* prj, QWidget *parent) : QWidget(parent), m_ui(new Ui::NewTableForm),
     m_dbEngine(db), m_project(prj), m_table(new Table()), m_currentColumn(0), m_currentIndex(0), m_foreignTable(0),
-    m_currentForeignKey(0), m_foreignKeySelected(false), m_changes(false)
+    m_currentForeignKey(0), m_foreignKeySelected(false), m_changes(false), m_currentStorageEngine(0), m_engineProviders(0)
 {
     m_ui->setupUi(this);
 
@@ -38,14 +39,29 @@ NewTableForm::NewTableForm(DatabaseEngine* db, Project* prj, QWidget *parent) : 
     m_ui->lstColumns->header()->resizeSection(0, 50);
     m_ui->cmbNewColumnType->setCurrentIndex(-1);
 
-    // fill in the index types combo box
-    const QStringList& indexTypes = db->getIndextypeProvider()->getIndexTypes();
-    QStringList::const_iterator it = indexTypes.constBegin();
-    while(it != indexTypes.constEnd())
+    // fill in the storage engine types
+    m_engineProviders = db->getStorageEngineListProviders();
+    if(m_engineProviders)
     {
-        m_ui->cmbIndexType->addItem(*it);
-        it ++;
+        const QVector<AbstractStorageEngine*>& storageEngines = m_engineProviders->getStorageEngines();
+        for(int i=0; i<storageEngines.size(); i++)
+        {
+            m_ui->cmbStorageEngine->addItem(storageEngines.at(i)->name());
+            if(i==0)
+            {
+                m_currentStorageEngine = storageEngines.at(i);
+            }
+        }
     }
+    else
+    {
+        m_ui->lblStorageEngine->hide();
+        m_ui->cmbStorageEngine->hide();
+    }
+
+    // fill in the index types combo box depending on the storage engine if applicable
+    populateIndexTypesDependingOnStorageEngine();
+    enableForeignKeysDependingOnStorageEngine();
 
     // create the foreign keys screen
     const QVector<Table*>& tables = m_project->getWorkingVersion()->getTables();
@@ -79,6 +95,46 @@ NewTableForm::NewTableForm(DatabaseEngine* db, Project* prj, QWidget *parent) : 
 NewTableForm::~NewTableForm()
 {
     delete m_ui;
+}
+
+void NewTableForm::populateIndexTypesDependingOnStorageEngine()
+{
+    const QStringList& indexTypes = m_dbEngine->getIndextypeProvider()->getIndexTypes();
+    QStringList::const_iterator it = indexTypes.constBegin();
+
+    m_ui->cmbIndexType->clear();
+    while(it != indexTypes.constEnd())
+    {
+        if(m_engineProviders)
+        {
+            if(m_currentStorageEngine && m_currentStorageEngine->supportsIndexType(*it))
+            {
+                m_ui->cmbIndexType->addItem(*it);
+            }
+        }
+        else
+        {
+            m_ui->cmbIndexType->addItem(*it);
+        }
+
+        it ++;
+    }
+}
+
+void NewTableForm::enableForeignKeysDependingOnStorageEngine()
+{
+    m_ui->grpForeignKeysList->setEnabled(true);
+    m_ui->grpNewForeignKey->setEnabled(true);
+    m_ui->lblForeignKeysNotAllowed->setVisible(false);
+    if(m_engineProviders && m_currentStorageEngine)
+    {
+        if(!m_currentStorageEngine->supportsForeignKeys())
+        {
+            m_ui->grpForeignKeysList->setEnabled(false);
+            m_ui->grpNewForeignKey->setEnabled(false);
+            m_ui->lblForeignKeysNotAllowed->setVisible(true);
+        }
+    }
 }
 
 QTreeWidgetItem* NewTableForm::createTWIForForeignKey(const ForeignKey* fk)
@@ -194,6 +250,7 @@ void NewTableForm::setTable(Table *table)
     }
     m_ui->txtTableName->setText(m_table->getName());
     m_ui->chkPersistent->setChecked(m_table->isPersistent());
+    m_ui->chkTemporary->setChecked(m_table->isTemporary());
 }
 
 void NewTableForm::focusOnName()
@@ -232,15 +289,6 @@ void NewTableForm::onAddColumn()
         return;
     }
 
-    for(int i=0; i < m_table->getColumns().size(); i++)
-    {
-        if(m_table->getColumn(i)->getName() == m_ui->txtNewColumnName->text())
-        {
-            QMessageBox::critical (this, tr("Error"), tr("Please use a unique name for each of the columns"), QMessageBox::Ok);
-            return;
-        }
-    }
-
     backupDefaultValuesTable();
     if(m_currentColumn)     // we are working on a column
     {
@@ -252,11 +300,12 @@ void NewTableForm::onAddColumn()
         }
         m_currentColumn->setName(m_ui->txtNewColumnName->text());
         m_currentColumn->setDescription(m_ui->txtColumnDescription->toPlainText());
-        m_currentColumn->setPk(m_ui->chkPrimary->checkState());
+        m_currentColumn->setPk(m_ui->chkPrimary->isChecked());
+        m_currentColumn->setAutoIncrement(m_ui->chkAutoInc->isChecked());
         m_currentColumn->setDataType(m_project->getWorkingVersion()->getDataType(m_ui->cmbNewColumnType->currentText()));
 
         m_currentColumn->getLocation()->setText(1, m_currentColumn->getName());
-        if(m_ui->chkPrimary->checkState())
+        if(m_ui->chkPrimary->isChecked())
         {
             m_currentColumn->getLocation()->setIcon(COL_POS_PK, IconFactory::getKeyIcon());
         }
@@ -270,8 +319,17 @@ void NewTableForm::onAddColumn()
     }
     else                    // we are not working on a column, but adding a new one
     {
+        for(int i=0; i < m_table->getColumns().size(); i++)
+        {
+            if(m_table->getColumn(i)->getName() == m_ui->txtNewColumnName->text())
+            {
+                QMessageBox::critical (this, tr("Error"), tr("Please use a unique name for each of the columns"), QMessageBox::Ok);
+                return;
+            }
+        }
+
         UserDataType* colsDt = m_project->getWorkingVersion()->getDataType(m_ui->cmbNewColumnType->currentText());
-        Column* col = new Column(m_ui->txtNewColumnName->text(), colsDt, m_ui->chkPrimary->checkState()) ;
+        Column* col = new Column(m_ui->txtNewColumnName->text(), colsDt, m_ui->chkAutoInc->isChecked(), m_ui->chkPrimary->isChecked()) ;
         col->setDescription(m_ui->txtColumnDescription->toPlainText());
         QTreeWidgetItem* item = createTWIForColumn(col);
         m_ui->lstColumns->addTopLevelItem(item);
@@ -285,6 +343,7 @@ void NewTableForm::onAddColumn()
     m_ui->cmbNewColumnType->setCurrentIndex(-1);
     m_ui->txtColumnDescription->setText("");
     m_ui->chkPrimary->setChecked(false);
+    m_ui->chkAutoInc->setChecked(false);
     m_ui->btnAdd->setIcon(IconFactory::getAddIcon());
 
     populateColumnsForIndices();
@@ -299,6 +358,8 @@ void NewTableForm::onCancelColumnEditing()
     m_ui->txtNewColumnName->clear();
     m_ui->cmbNewColumnType->setCurrentIndex(-1);
     m_currentColumn = 0;
+    m_ui->chkPrimary->setChecked(false);
+    m_ui->chkAutoInc->setChecked(false);
     m_ui->btnAdd->setIcon(IconFactory::getAddIcon());
 }
 
@@ -382,7 +443,7 @@ void NewTableForm::onItemChanged(QTreeWidgetItem* current, QTreeWidgetItem* prev
 }
 
 /**
- * Called when a column is selected.
+ * Called when a column is selected. onColumnSelect onSelectColumn
  */
 void NewTableForm::onItemSelected(QTreeWidgetItem* current, int column)
 {
@@ -392,6 +453,7 @@ void NewTableForm::onItemSelected(QTreeWidgetItem* current, int column)
     m_ui->txtNewColumnName->setText(m_currentColumn->getName());
     m_ui->cmbNewColumnType->setCurrentIndex(m_project->getWorkingVersion()->getDataTypeIndex(m_currentColumn->getDataType()->getName()));
     m_ui->chkPrimary->setChecked(m_currentColumn->isPk());
+    m_ui->chkAutoInc->setChecked(m_currentColumn->hasAutoIncrement());
     m_ui->txtColumnDescription->setText(m_currentColumn->getDescription());
 
     m_ui->btnAdd->setIcon(IconFactory::getApplyIcon());
@@ -445,6 +507,7 @@ void NewTableForm::onSave()
 
     m_table->setName(m_ui->txtTableName->text());
     m_table->setPersistent(m_ui->chkPersistent->isChecked());
+    m_table->setTemporary(m_ui->chkTemporary->isChecked());
     m_table->setDescription(m_ui->txtDescription->toPlainText());
 
     if(m_project->getWorkingVersion()->hasTable(m_table))
@@ -1139,4 +1202,20 @@ void NewTableForm::onLoadStartupValuesFromCSV()
         m_ui->tableStartupValues->setItem(i, cc, twl);
         i++;
     }
+}
+
+
+void NewTableForm::onStorageEngineChange(QString name)
+{
+    const QVector<AbstractStorageEngine*>& storageEngines = m_engineProviders->getStorageEngines();
+    for(int i=0; i<storageEngines.size(); i++)
+    {
+        if(storageEngines.at(i)->name() == name)
+        {
+            m_currentStorageEngine = storageEngines.at(i);
+        }
+    }
+
+    populateIndexTypesDependingOnStorageEngine();
+    enableForeignKeysDependingOnStorageEngine();
 }

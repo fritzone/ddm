@@ -38,6 +38,8 @@ public:
      */
     AbstractIndextypeProvider* getIndextypeProvider() const;
 
+    AbstractStorageEngineListProvider* getStorageEngineListProviders() const;
+
     const QString& getDatabase() const
     {
         return database;

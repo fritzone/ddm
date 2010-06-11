@@ -17,6 +17,8 @@ class Table;
 class Column;
 class Index;
 class ForeignKey;
+class AbstractStorageEngine;
+class AbstractStorageEngineListProvider;
 
 class NewTableForm : public QWidget {
     Q_OBJECT
@@ -42,6 +44,10 @@ protected:
 
 public slots:
 
+    // main page
+    void onStorageEngineChange(QString);
+    void onItemChanged(QTreeWidgetItem*,QTreeWidgetItem*); // this is not used
+    void onButtonsClicked(QAbstractButton*);
 
     // on the columns page
     void onAddColumn();
@@ -50,6 +56,7 @@ public slots:
     void onMoveColumnUp();
     void onCancelColumnEditing();
     void onItemSelected(QTreeWidgetItem*, int);             // when a column gets selected... sorry for bad naming
+
     // on the index page
     void onSelectIndex(QTreeWidgetItem*,int);
     void onMoveColumnToRight();
@@ -60,9 +67,7 @@ public slots:
     void onMoveSelectedIndexColumnUp();
     void onMoveSelectedIndexColumnDown();
     void onDoubleClickColumnForIndex(QListWidgetItem*);
-    // main page
-    void onItemChanged(QTreeWidgetItem*,QTreeWidgetItem*); // this is not used
-    void onButtonsClicked(QAbstractButton*);
+
     // foreign columns page
     void onForeignTableComboChange(QString);
     void onForeignTableColumnChange();
@@ -71,11 +76,13 @@ public slots:
     void onRemoveForeignKeyAssociation();
     void onBtnAddForeignKey();
     void onSelectForeignKey(QTreeWidgetItem*,int);
+
     // default values page
     void onAddNewDefaultRow();
     void onBtnUpdateTableWithDefaultValues();
     void onSaveStartupValuestoCSV();
     void onLoadStartupValuesFromCSV();
+
 protected:
     void changeEvent(QEvent *e);
 
@@ -111,6 +118,9 @@ private:
     void backupDefaultValuesTable();
     void restoreDefaultValuesTable();
 
+    void populateIndexTypesDependingOnStorageEngine();
+    void enableForeignKeysDependingOnStorageEngine();
+
 private:
     Ui::NewTableForm *m_ui;
     // the main window
@@ -142,6 +152,8 @@ private:
 
     // if we have changed anything at all in the screen
     bool m_changes;
+    AbstractStorageEngine* m_currentStorageEngine;
+    AbstractStorageEngineListProvider* m_engineProviders;
 };
 
 #endif // NEWTABLEFORM_H
