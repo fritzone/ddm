@@ -11,6 +11,7 @@
 class Column;
 class Index;
 class ForeignKey;
+class AbstractStorageEngine;
 
 /**
  * The table class holds a database table defined by the user. It must be derived from the TreeItem since a table can be placed in
@@ -24,12 +25,6 @@ public:
      * Constructor, creates a new object
      */
     Table();
-
-    /**
-     * copy constructor
-     */
-    Table(const Table& other) : m_name(other.m_name), m_columns(other.m_columns), m_indices(other.m_indices)
-    {}
 
     /**
      * Adds a new column to the table
@@ -168,6 +163,16 @@ public:
         m_temporary = t;
     }
 
+    void setStorageEngine(AbstractStorageEngine* ste)
+    {
+        m_storageEngine = ste;
+    }
+
+    AbstractStorageEngine* getStorageEngine() const
+    {
+        return m_storageEngine;
+    }
+
 private:
     // the name of the table
     QString m_name;
@@ -195,6 +200,8 @@ private:
 
     // this is a temporary table. The SQL code generator for the CREATE TABLE syntax will contain TEMPORARY
     bool m_temporary;
+
+    AbstractStorageEngine* m_storageEngine;
 
 };
 

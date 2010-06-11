@@ -509,6 +509,7 @@ void NewTableForm::onSave()
     m_table->setPersistent(m_ui->chkPersistent->isChecked());
     m_table->setTemporary(m_ui->chkTemporary->isChecked());
     m_table->setDescription(m_ui->txtDescription->toPlainText());
+    m_table->setStorageEngine(m_currentStorageEngine);
 
     if(m_project->getWorkingVersion()->hasTable(m_table))
     {

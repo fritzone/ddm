@@ -7,6 +7,8 @@
 #include "Solution.h"
 #include "DatabaseEngine.h"
 #include "ForeignKey.h"
+#include "AbstractStorageEngineListProvider.h"
+#include "AbstractStorageEngine.h"
 
 #include <QStringList>
 
@@ -98,7 +100,7 @@ Index* DeserializationFactory::createIndex(Table* table, const QDomDocument &doc
     return result;
 }
 
-MajorVersion* DeserializationFactory::createMajorVersion(const QDomDocument &doc, const QDomElement &element)
+MajorVersion* DeserializationFactory::createMajorVersion(DatabaseEngine* engine, const QDomDocument &doc, const QDomElement &element)
 {
     QString name = "";
 
@@ -132,7 +134,7 @@ MajorVersion* DeserializationFactory::createMajorVersion(const QDomDocument &doc
         {
             for(int j=0; j<element.childNodes().at(i).childNodes().count(); j++)
             {
-                Table* tab = createTable(result, doc, element.childNodes().at(i).childNodes().at(j).toElement());
+                Table* tab = createTable(engine, result, doc, element.childNodes().at(i).childNodes().at(j).toElement());
                 result->addTable(tab);
             }
         }
@@ -195,13 +197,27 @@ Column* DeserializationFactory::createColumn(MajorVersion* ver, const QDomDocume
     return col;
 }
 
-Table* DeserializationFactory::createTable(MajorVersion* ver, const QDomDocument &doc, const QDomElement &element)
+Table* DeserializationFactory::createTable(DatabaseEngine* engine, MajorVersion* ver, const QDomDocument &doc, const QDomElement &element)
 {
     Table* result = new Table();
     QString name = element.attribute("Name");
     result->setName(name);
     result->setPersistent(element.attribute("Persistent")=="1");
     result->setTemporary(element.attribute("Temporary")=="1");
+
+    QString stEngineName = element.attribute("StorageEngine");
+    AbstractStorageEngineListProvider* lp = engine->getStorageEngineListProviders();
+    QVector<AbstractStorageEngine*>const & engines = lp->getStorageEngines();
+    AbstractStorageEngine* ceng = 0;
+    for(int i=0; i<engines.size(); i++)
+    {
+        if(engines.at(i)->name() == stEngineName)
+        {
+            ceng = engines.at(i);
+        }
+    }
+
+    result->setStorageEngine(ceng);
 
     for(int i=0; i<element.childNodes().count(); i++)
     {
@@ -256,12 +272,13 @@ Table* DeserializationFactory::createTable(MajorVersion* ver, const QDomDocument
 Project* DeserializationFactory::createProject(const QDomDocument &doc, const QDomElement &element)
 {
     Project* prj = new Project(element.attribute("Name"));
-    prj->setEngine(DatabaseEngine::createEngine(element.attribute("DB")));
+    DatabaseEngine* engine = DatabaseEngine::createEngine(element.attribute("DB"));
+    prj->setEngine(engine);
 
     QDomNodeList majorVersionNodes = element.firstChild().childNodes();
     for(int i=0; i<majorVersionNodes.count(); i++)
     {
-        MajorVersion* majVer = createMajorVersion(doc, majorVersionNodes.at(i).toElement());
+        MajorVersion* majVer = createMajorVersion(engine, doc, majorVersionNodes.at(i).toElement());
         prj->addMajorVersion(majVer);
     }
 
