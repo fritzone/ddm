@@ -3,8 +3,9 @@
 #include "Index.h"
 #include "ForeignKey.h"
 #include "UserDataType.h"
+#include "AbstractStorageEngine.h"
 
-Table::Table() : m_name(""), m_description(""), m_columns(), m_indices(), m_foreignKeys(), m_startupValues(), m_parent(0), m_persistent(false)
+Table::Table() : m_name(""), m_description(""), m_columns(), m_indices(), m_foreignKeys(), m_startupValues(), m_parent(0), m_persistent(false), m_storageEngine(0)
 {
 }
 
@@ -113,6 +114,7 @@ void Table::serialize(QDomDocument &doc, QDomElement &parent) const
     tableElement.setAttribute("Name", m_name);
     tableElement.setAttribute("Persistent", m_persistent);
     tableElement.setAttribute("Temporary", m_temporary);
+    tableElement.setAttribute("StorageEngine", m_storageEngine->name());
 
     if(m_parent !=0)
     {
