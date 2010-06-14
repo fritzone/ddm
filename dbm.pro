@@ -36,7 +36,8 @@ SOURCES += main.cpp \
     MySQLDatabaseEngine.cpp \
     AbstractStorageEngine.cpp \
     AbstractStorageEngineListProvider.cpp \
-    MySQLStorageEngineListProvider.cpp
+    MySQLStorageEngineListProvider.cpp \
+    AboutBoxDialog.cpp
 HEADERS += MainWindow.h \
     MainWindowButtonDialog.h \
     NewProjectDialog.h \
@@ -76,7 +77,9 @@ HEADERS += MainWindow.h \
     MySQLStorageEngineListProvider.h \
     MySQLMyISAMStorageEngine.h \
     MySQLInnoDBStorageEngine.h \
-    MySQLMemoryStorageEngine.h
+    MySQLMemoryStorageEngine.h \
+    MySQLArchiveStorageEngine.h \
+    AboutBoxDialog.h
 FORMS += mainwindow.ui \
     mainwindowbuttondialog.ui \
     newprojectdialog.ui \
@@ -84,5 +87,6 @@ FORMS += mainwindow.ui \
     datatypeslistform.ui \
     TablesListForm.ui \
     NewTableForm.ui \
-    ProjectDetailsForm.ui
+    ProjectDetailsForm.ui \
+    AboutBoxDialog.ui
 RESOURCES += dbm.qrc

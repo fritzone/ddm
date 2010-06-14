@@ -62,6 +62,7 @@ NewTableForm::NewTableForm(DatabaseEngine* db, Project* prj, QWidget *parent) : 
     // fill in the index types combo box depending on the storage engine if applicable
     populateIndexTypesDependingOnStorageEngine();
     enableForeignKeysDependingOnStorageEngine();
+    m_table->setStorageEngine(m_currentStorageEngine);
 
     // create the foreign keys screen
     const QVector<Table*>& tables = m_project->getWorkingVersion()->getTables();
@@ -1216,6 +1217,8 @@ void NewTableForm::onStorageEngineChange(QString name)
             m_currentStorageEngine = storageEngines.at(i);
         }
     }
+
+    m_table->setStorageEngine(m_currentStorageEngine);
 
     populateIndexTypesDependingOnStorageEngine();
     enableForeignKeysDependingOnStorageEngine();
