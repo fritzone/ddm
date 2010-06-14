@@ -114,7 +114,7 @@ void Table::serialize(QDomDocument &doc, QDomElement &parent) const
     tableElement.setAttribute("Name", m_name);
     tableElement.setAttribute("Persistent", m_persistent);
     tableElement.setAttribute("Temporary", m_temporary);
-    tableElement.setAttribute("StorageEngine", m_storageEngine->name());
+    tableElement.setAttribute("StorageEngine", m_storageEngine?m_storageEngine->name():"");
 
     if(m_parent !=0)
     {

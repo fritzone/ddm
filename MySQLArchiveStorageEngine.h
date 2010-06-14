@@ -1,12 +1,12 @@
-#ifndef MYSQLMYISAMSTORAGEENGINE_H
-#define MYSQLMYISAMSTORAGEENGINE_H
+#ifndef MYSQLARCHIVESTORAGEENGINE_H
+#define MYSQLARCHIVESTORAGEENGINE_H
 
 #include "AbstractStorageEngine.h"
 
-class MySQLMyISAMStorageEngine : public AbstractStorageEngine
+class MySQLArchiveStorageEngine : public AbstractStorageEngine
 {
 public:
-    MySQLMyISAMStorageEngine()
+    MySQLArchiveStorageEngine()
     {
     }
 
@@ -22,8 +22,8 @@ public:
 
     virtual bool supportsIndexType(const QString& type)
     {
-        if(type == "HASH") return false;
-        if(type == "BTREE") return false;
+        if(type=="HASH") return false;
+        if(type=="BTREE") return false;
         return true;
     }
 
@@ -39,9 +39,9 @@ public:
 
     virtual QString name()
     {
-        return "MyISAM";
+        return "Archive";
     }
 
 };
 
-#endif // MYSQLMYISAMSTORAGEENGINE_H
+#endif // MYSQLARCHIVESTORAGEENGINE_H

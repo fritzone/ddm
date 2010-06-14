@@ -58,6 +58,7 @@ public slots:
     void onNewTable();
     void onSaveProject();
     void onOpenProject();
+    void onAbout();
 
 private:
 

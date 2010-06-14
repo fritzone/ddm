@@ -16,6 +16,7 @@
 #include "ProjectDetailsForm.h"
 #include "Solution.h"
 #include "DeserializationFactory.h"
+#include "AboutBoxDialog.h"
 
 #include <QtGui>
 
@@ -351,4 +352,11 @@ void MainWindow::enableActions()
 {
     ui->action_NewDataType->setEnabled(true);
     ui->action_NewTable->setEnabled(true);
+}
+
+void MainWindow::onAbout()
+{
+    AboutBoxDialog* about = new AboutBoxDialog(this);
+    about->setModal(true);
+    about->exec();
 }

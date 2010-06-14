@@ -36,7 +36,7 @@
      <x>0</x>
      <y>0</y>
      <width>339</width>
-     <height>26</height>
+     <height>23</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -59,9 +59,16 @@
      <string>&amp;Edit</string>
     </property>
    </widget>
+   <widget class="QMenu" name="menu_Help">
+    <property name="title">
+     <string>&amp;Help</string>
+    </property>
+    <addaction name="action_About"/>
+   </widget>
    <addaction name="menu_File"/>
    <addaction name="menu_Edit"/>
    <addaction name="menu_Solution"/>
+   <addaction name="menu_Help"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <property name="movable">
@@ -168,6 +175,11 @@
     <string>Ctrl+O</string>
    </property>
   </action>
+  <action name="action_About">
+   <property name="text">
+    <string>&amp;About</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources>
@@ -254,6 +266,22 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>action_About</sender>
+   <signal>activated()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>onAbout()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>169</x>
+     <y>54</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>onNewProject()</slot>
@@ -261,5 +289,6 @@
   <slot>onNewTable()</slot>
   <slot>onSaveProject()</slot>
   <slot>onOpenProject()</slot>
+  <slot>onAbout()</slot>
  </slots>
 </ui>
