@@ -39,14 +39,19 @@ public:
         return tablesItem;
     }
 
-    virtual QTreeWidgetItem* getViewsItem() const
+    virtual QTreeWidgetItem* getQueriesItem() const
     {
-        return viewsItem;
+        return queriesItem;
     }
 
     virtual QTreeWidgetItem* getVersionItem() const
     {
         return versionItem;
+    }
+
+    virtual QTreeWidgetItem* getDiagramsItem() const
+    {
+        return diagramsItem;
     }
 
     virtual void serialize(QDomDocument &doc, QDomElement &parent) const;
@@ -78,17 +83,20 @@ public:
 
 private:
 
-    // the tree item containing the "Tables" collector.
+    // the tree item containing the "Tables"
     QTreeWidgetItem* tablesItem;
 
-    // the tree item containing the "Views" collector.
-    QTreeWidgetItem* viewsItem;
+    // the tree item containing the "Views"
+    QTreeWidgetItem* queriesItem;
 
-    // the tree item containing the "DataType" collector.
+    // the tree item containing the "DataType"
     QTreeWidgetItem* dtsItem;
 
     // the tree item holding the version
     QTreeWidgetItem* versionItem;
+
+    // the tree item holding the version
+    QTreeWidgetItem* diagramsItem;
 
     // the version as a string representation. Major versions are always of form X.0
     QString version;

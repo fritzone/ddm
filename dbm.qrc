@@ -76,5 +76,8 @@
         <file>images/big/icon.png</file>
         <file>images/actions/fileopen.png</file>
         <file>images/small/folder_orange.png</file>
+        <file>images/actions/solutionnew.png</file>
+        <file>images/small/view.png</file>
+        <file>images/small/diagram.png</file>
     </qresource>
 </RCC>

@@ -28,14 +28,15 @@ public:
     virtual QTreeWidgetItem* getTablesItem() const = 0;
 
     /**
-     * Return the tree item of the Views
+     * Return the tree item of the defined queries
      */
-    virtual QTreeWidgetItem* getViewsItem() const = 0;
+    virtual QTreeWidgetItem* getQueriesItem() const = 0;
 
     /**
      * Return the tree item of the Version
      */
     virtual QTreeWidgetItem* getVersionItem() const = 0;
+    virtual QTreeWidgetItem* getDiagramsItem() const = 0;
 
     /**
      * Adds a new data type to this version

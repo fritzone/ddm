@@ -65,9 +65,10 @@ void MajorVersion::createTreeItems(QTreeWidget* tree, QTreeWidgetItem* projectIe
     }
 
     QIcon tablesIcon(":/images/actions/images/small/table.png");
-    QIcon viewsIcon(":/images/actions/images/small/view_icon.png");
+    QIcon queriesIcon(":/images/actions/images/small/view.png");
     QIcon dtsIcon(":/images/actions/images/small/datatypes.PNG");
     QIcon versionIcon(":/images/actions/images/small/version.PNG");
+    QIcon diagramIcon(":/images/actions/images/small/diagram.png");
 
     versionItem = new QTreeWidgetItem(m_projectItem, QStringList(QString("Ver: ") + version)) ;
     versionItem->setIcon(0, versionIcon);
@@ -84,9 +85,14 @@ void MajorVersion::createTreeItems(QTreeWidget* tree, QTreeWidgetItem* projectIe
     m_tree->addTopLevelItem(tablesItem);
 
     // make the views sub item coming from the project
-    viewsItem = new QTreeWidgetItem(versionItem, QStringList(QObject::tr("Views"))) ;
-    viewsItem->setIcon(0, viewsIcon);
-    m_tree->addTopLevelItem(viewsItem);
+    queriesItem = new QTreeWidgetItem(versionItem, QStringList(QObject::tr("Queries"))) ;
+    queriesItem->setIcon(0, queriesIcon);
+    m_tree->addTopLevelItem(queriesItem);
+
+    diagramsItem = new QTreeWidgetItem(versionItem, QStringList(QObject::tr("Diagrams"))) ;
+    diagramsItem->setIcon(0, diagramIcon);
+    m_tree->addTopLevelItem(diagramsItem);
+
 }
 
 void MajorVersion::serialize(QDomDocument &doc, QDomElement &parent) const

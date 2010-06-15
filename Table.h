@@ -6,7 +6,7 @@
 
 #include <QString>
 #include <QVector>
-
+#include <QGraphicsItemGroup>
 
 class Column;
 class Index;
@@ -172,6 +172,8 @@ public:
     {
         return m_storageEngine;
     }
+
+    QGraphicsItemGroup* prepareDiagramEntity(qreal x, qreal y);
 
 private:
     // the name of the table

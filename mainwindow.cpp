@@ -17,6 +17,7 @@
 #include "Solution.h"
 #include "DeserializationFactory.h"
 #include "AboutBoxDialog.h"
+#include "DiagramForm.h"
 
 #include <QtGui>
 
@@ -32,6 +33,8 @@ MainWindow::MainWindow(QWidget *parent)
     btndlg->setMainWindow(this);
 
     setCentralWidget(btndlg);
+
+    setWindowTitle("DBM - [No Solution]");
 
     //this->ui->mainToolBar->actions().at(3)->setVisible(false);
     //this->ui->mainToolBar->actions().at(4)->setVisible(false);
@@ -77,7 +80,7 @@ QTreeWidget* MainWindow::setupGuiForNewSolution()
     return projectTree;
 }
 
-void MainWindow::onNewProject()
+void MainWindow::onNewSolution()
 {
     NewProjectDialog* nprjdlg = new NewProjectDialog();
     nprjdlg->setModal(true);
@@ -90,6 +93,17 @@ void MainWindow::onNewProject()
         {
             m_currentSolution = new Solution(nprjdlg->getSolutionName());
             m_solutions.append(m_currentSolution);
+        }
+        else
+        {
+            m_solutions.clear();
+            m_currentSolution = new Solution(nprjdlg->getSolutionName());
+            m_solutions.append(m_currentSolution);
+        }
+
+        if(projectTree)
+        {
+            delete dock;
         }
 
         projectTree = setupGuiForNewSolution();
@@ -107,6 +121,8 @@ void MainWindow::onNewProject()
         // show the project properties window
         ProjectDetailsForm* prjDetailsForm = new ProjectDetailsForm(this);
         setCentralWidget(prjDetailsForm);
+
+        setWindowTitle("DBM - [" + m_currentSolution->name() + "]");
     }
 }
 
@@ -130,8 +146,14 @@ void MainWindow::onProjectTreeClicked()
             setCentralWidget(tblLst);
         }
         else
-        if(item == getWorkingProject()->getWorkingVersion()->getViewsItem())
+        if(item == getWorkingProject()->getWorkingVersion()->getQueriesItem())
         {
+        }
+        else
+        if(item == getWorkingProject()->getWorkingVersion()->getDiagramsItem())
+        {
+            DiagramForm* df = new DiagramForm(getWorkingProject()->getWorkingVersion(), this);
+            setCentralWidget(df);
         }
         else
         if(item == getWorkingProject()->getWorkingVersion()->getVersionItem())
@@ -346,6 +368,8 @@ void MainWindow::onOpenProject()
     populateTreeWithSolution(m_currentSolution);
 
     projectTree->expandAll();
+
+    setWindowTitle("DBM - [" + m_currentSolution->name() + "]");
 }
 
 void MainWindow::enableActions()
