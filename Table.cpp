@@ -185,3 +185,11 @@ void Table::setDefaultValues(QVector <QVector <QString> > & values)
 {
     m_startupValues = values;
 }
+
+QGraphicsItemGroup* Table::prepareDiagramEntity(qreal x, qreal y)
+{
+    QGraphicsItemGroup* grp = new QGraphicsItemGroup();
+    QGraphicsTextItem* txtName = new QGraphicsTextItem(getName(), grp);
+    QGraphicsRectItem* rect = new QGraphicsRectItem(txtName->boundingRect(), grp);
+    return grp;
+}

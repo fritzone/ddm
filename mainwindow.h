@@ -52,7 +52,7 @@ public:
 
 public slots:
 
-    void onNewProject();
+    void onNewSolution();
     void onProjectTreeClicked();
     void onNewDataType();
     void onNewTable();

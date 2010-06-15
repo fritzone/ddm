@@ -20,7 +20,7 @@
    <string>MainWindow</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="dbm.qrc">
+   <iconset>
     <normaloff>:/images/actions/images/big/icon.png</normaloff>:/images/actions/images/big/icon.png</iconset>
   </property>
   <property name="documentMode">
@@ -96,7 +96,7 @@
   <widget class="QStatusBar" name="statusBar"/>
   <action name="action_New">
    <property name="icon">
-    <iconset resource="dbm.qrc">
+    <iconset>
      <normaloff>:/images/actions/images/actions/filenew.png</normaloff>:/images/actions/images/actions/filenew.png</iconset>
    </property>
    <property name="text">
@@ -108,7 +108,7 @@
   </action>
   <action name="action_Save">
    <property name="icon">
-    <iconset resource="dbm.qrc">
+    <iconset>
      <normaloff>:/images/actions/images/actions/filesave.png</normaloff>:/images/actions/images/actions/filesave.png</iconset>
    </property>
    <property name="text">
@@ -126,7 +126,7 @@
     <bool>false</bool>
    </property>
    <property name="icon">
-    <iconset resource="dbm.qrc">
+    <iconset>
      <normaloff>:/images/actions/images/actions/add.png</normaloff>:/images/actions/images/actions/add.png</iconset>
    </property>
    <property name="text">
@@ -147,7 +147,7 @@
     <bool>false</bool>
    </property>
    <property name="icon">
-    <iconset resource="dbm.qrc">
+    <iconset>
      <normaloff>:/images/actions/images/actions/table.png</normaloff>:/images/actions/images/actions/table.png</iconset>
    </property>
    <property name="text">
@@ -165,7 +165,7 @@
   </action>
   <action name="action_Open">
    <property name="icon">
-    <iconset resource="dbm.qrc">
+    <iconset>
      <normaloff>:/images/actions/images/actions/fileopen.png</normaloff>:/images/actions/images/actions/fileopen.png</iconset>
    </property>
    <property name="text">
@@ -180,17 +180,24 @@
     <string>&amp;About</string>
    </property>
   </action>
+  <action name="action_NewProject">
+   <property name="icon">
+    <iconset>
+     <normaloff>:/images/actions/images/actions/filenew.png</normaloff>:/images/actions/images/actions/filenew.png</iconset>
+   </property>
+   <property name="text">
+    <string>New &amp;Project</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <resources>
-  <include location="dbm.qrc"/>
- </resources>
+ <resources/>
  <connections>
   <connection>
    <sender>action_New</sender>
    <signal>activated()</signal>
    <receiver>MainWindow</receiver>
-   <slot>onNewProject()</slot>
+   <slot>onNewSolution()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>-1</x>
@@ -284,7 +291,7 @@
   </connection>
  </connections>
  <slots>
-  <slot>onNewProject()</slot>
+  <slot>onNewSolution()</slot>
   <slot>onNewDataType()</slot>
   <slot>onNewTable()</slot>
   <slot>onSaveProject()</slot>

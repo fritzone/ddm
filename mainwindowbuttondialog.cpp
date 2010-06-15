@@ -24,7 +24,7 @@ void MainWindowButtonDialog::onNewProject()
 {
     if(m_mw)
     {
-        m_mw->onNewProject();
+        m_mw->onNewSolution();
     }
 }
 
