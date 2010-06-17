@@ -12,54 +12,70 @@
 #include <QDropEvent>
 #include <QGraphicsScene>
 #include <QMimeData>
+#include <QtGlobal>
+
+#include <qdebug.h>
 
 class ERGraphicsScene : public QGraphicsScene
 {
 public:
-    ERGraphicsScene(QWidget* parent, Version* v) : QGraphicsScene(parent), m_version(v), lastX(-1), lastY(-1)
-    {}
-
-    void setLastCoords(int x, int y)
+    ERGraphicsScene(QWidget* parent, Version* v) : QGraphicsScene(parent), itm(0), m_version(v), justDropped(false)
     {
-        if(x != 0) lastX = x;
-        if(y != 0) lastY = y;
+        // to mark the centre of the view
+        addLine(0, -10, 0, 10);
+        addLine(-10, 0, 10, 0);
     }
+
+
+    void finalizeItem(int x, int y)
+    {
+        itm->setX(x);
+        itm->setY(y);
+
+        justDropped = false;
+    }
+
+    bool justDropped;
 
 protected:
     virtual void dropEvent ( QGraphicsSceneDragDropEvent * event )
     {
+        qDebug() << "GraphicsScene::dropEvent : X=" << event->pos().x() << " Y=" << event->pos().y();
         QString tabName = event->mimeData()->text();
         event->acceptProposedAction();
 
-        QGraphicsItemGroup* itm = m_version->getTable(tabName)->prepareDiagramEntity(event->pos().x(), event->pos().y());
-        itm->setX(lastX);
-        itm->setY(lastY);
+        itm = m_version->getTable(tabName)->prepareDiagramEntity(event->pos().x(), event->pos().y());
+        justDropped = true;
         addItem(itm);
+
     }
 
     void dragEnterEvent ( QGraphicsSceneDragDropEvent * event )
     {
+        qDebug() << "GraphicsScene::dragEnter : X=" << event->pos().x() << " Y=" << event->pos().y();
         event->acceptProposedAction();
     }
 
     void dragMoveEvent ( QGraphicsSceneDragDropEvent * event )
     {
+        qDebug() << "GraphicsScene::dragMove : X=" << event->pos().x() << " Y=" << event->pos().y();
         event->acceptProposedAction();
-        int x = event->pos().x();
-        int y = event->pos().y();
-        setLastCoords(x,y);
     }
 
     virtual void mouseMoveEvent(QGraphicsSceneMouseEvent *event)
     {
-        setLastCoords(event->pos().x(), event->pos().y());
+        qDebug() << "ERGraphicsScene::mouseMove : X=" << event->pos().x() << " Y=" << event->pos().y();
+    }
+
+    virtual void mouseReleaseEvent ( QGraphicsSceneMouseEvent * event )
+    {
+        qDebug() << "GraphicsScene::mouseRelease: X=" << event->pos().x() << " Y=" << event->pos().y();
     }
 
 private:
-
+    QGraphicsItemGroup* itm;
     Version* m_version;
-    int lastX;
-    int lastY;
+
 
 };
 
@@ -74,19 +90,23 @@ public:
         setScene(scene);
     }
 
-
-    void setLastCoords(int x, int y)
-    {
-        scene->setLastCoords(x, y);
-    }
-
 protected:
 
     virtual void mouseMoveEvent(QMouseEvent *event)
     {
-        scene->setLastCoords(event->pos().x(), event->pos().y());
+        qDebug() << "GraphicsView::mouseMove : X=" << event->pos().x() << " Y=" << event->pos().y();
+        if(scene->justDropped)
+        {
+            QPointF scpos = mapToScene(event->pos().x(), event->pos().y());
+            scene->finalizeItem(scpos.x(), scpos.y());
+        }
     }
 
+    void dragEnterEvent ( QGraphicsSceneDragDropEvent * event )
+    {
+        qDebug() << "GraphicsView::dragEnter : X=" << event->pos().x() << " Y=" << event->pos().y();
+        event->acceptProposedAction();
+    }
 private:
 
     ERGraphicsScene* scene;
@@ -108,9 +128,17 @@ protected:
         e->accept(); 
     }
 
-    virtual void dragMoveEvent(QDragMoveEvent *e)
+    virtual void dragLeaveEvent(QDragLeaveEvent *event)
     {
-        e->accept();
+        qDebug() << "TabListWidget::dragLeave " ;
+        event->accept();
+    }
+
+
+    virtual void dragMoveEvent(QDragMoveEvent *event)
+    {
+        qDebug() << "TabListWidget::dragMove : X=" << event->pos().x() << " Y=" << event->pos().y();
+        event->accept();
     }
 
     virtual void dropEvent(QDropEvent *event)
@@ -120,10 +148,7 @@ protected:
 
     virtual void mouseMoveEvent(QMouseEvent *event)
     {
-        // if not left button - return
         if (!(event->buttons() & Qt::LeftButton)) return;
-
-        // if no item selected, return (else it would crash)
         if (currentItem() == NULL) return;
 
         QDrag *drag = new QDrag(this);
@@ -136,8 +161,6 @@ protected:
 
         // start drag
         drag->start(Qt::CopyAction | Qt::MoveAction);
-
-        grv->setLastCoords(event->pos().x(), event->pos().y());
     }
 private:
     ERGraphicsView* grv;
