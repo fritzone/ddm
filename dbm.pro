@@ -38,7 +38,9 @@ SOURCES += main.cpp \
     AbstractStorageEngineListProvider.cpp \
     MySQLStorageEngineListProvider.cpp \
     AboutBoxDialog.cpp \
-    DiagramForm.cpp
+    DiagramForm.cpp \
+    DraggableGraphicsItem.cpp \
+    ERGraphicsView.cpp
 HEADERS += MainWindow.h \
     MainWindowButtonDialog.h \
     NewProjectDialog.h \
@@ -81,7 +83,11 @@ HEADERS += MainWindow.h \
     MySQLMemoryStorageEngine.h \
     MySQLArchiveStorageEngine.h \
     AboutBoxDialog.h \
-    DiagramForm.h
+    DiagramForm.h \
+    DraggableGraphicsItem.h \
+    ERGraphicsScene.h \
+    ERGraphicsView.h \
+    TableListWidget.h
 FORMS += mainwindow.ui \
     mainwindowbuttondialog.ui \
     newprojectdialog.ui \
