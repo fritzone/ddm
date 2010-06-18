@@ -12,6 +12,7 @@ class Column;
 class Index;
 class ForeignKey;
 class AbstractStorageEngine;
+class DraggableGraphicsViewItem ;
 
 /**
  * The table class holds a database table defined by the user. It must be derived from the TreeItem since a table can be placed in
@@ -173,7 +174,7 @@ public:
         return m_storageEngine;
     }
 
-    QGraphicsItemGroup* prepareDiagramEntity(qreal x, qreal y);
+    DraggableGraphicsViewItem * prepareDiagramEntity(qreal x, qreal y);
 
 private:
     // the name of the table

@@ -4,6 +4,7 @@
 #include "ForeignKey.h"
 #include "UserDataType.h"
 #include "AbstractStorageEngine.h"
+#include "DraggableGraphicsItem.h"
 
 Table::Table() : m_name(""), m_description(""), m_columns(), m_indices(), m_foreignKeys(), m_startupValues(), m_parent(0), m_persistent(false), m_storageEngine(0)
 {
@@ -186,10 +187,18 @@ void Table::setDefaultValues(QVector <QVector <QString> > & values)
     m_startupValues = values;
 }
 
-QGraphicsItemGroup* Table::prepareDiagramEntity(qreal x, qreal y)
+DraggableGraphicsViewItem * Table::prepareDiagramEntity(qreal x, qreal y)
 {
-    QGraphicsItemGroup* grp = new QGraphicsItemGroup();
+    DraggableGraphicsViewItem* grp = new DraggableGraphicsViewItem();
+
+
     QGraphicsTextItem* txtName = new QGraphicsTextItem(getName(), grp);
+    txtName->setToolTip(m_name);
+    txtName->setCursor(Qt::OpenHandCursor);
+
+
     QGraphicsRectItem* rect = new QGraphicsRectItem(txtName->boundingRect(), grp);
+    rect->setCursor(Qt::OpenHandCursor);
+    grp->setToolTip(m_name);
     return grp;
 }
