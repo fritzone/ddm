@@ -191,14 +191,20 @@ DraggableGraphicsViewItem * Table::prepareDiagramEntity(qreal x, qreal y)
 {
     DraggableGraphicsViewItem* grp = new DraggableGraphicsViewItem();
 
-
     QGraphicsTextItem* txtName = new QGraphicsTextItem(getName(), grp);
+    txtName->setPos(0,0);
     txtName->setToolTip(m_name);
-    txtName->setCursor(Qt::OpenHandCursor);
-
+    int py = txtName->boundingRect().height();
+    for(int i=0; i<m_columns.size(); i++)
+    {
+        QGraphicsTextItem* txtColName = new QGraphicsTextItem(m_columns[i]->getName(), grp);
+        txtColName->setY(py);
+        py+=txtColName->boundingRect().height();
+    }
 
     QGraphicsRectItem* rect = new QGraphicsRectItem(txtName->boundingRect(), grp);
-    rect->setCursor(Qt::OpenHandCursor);
     grp->setToolTip(m_name);
+
+
     return grp;
 }

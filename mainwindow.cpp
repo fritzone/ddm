@@ -57,7 +57,17 @@ QTreeWidget* MainWindow::setupGuiForNewSolution()
     dock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
     dock->setFeatures(QDockWidget::AllDockWidgetFeatures);
     dock->setFloating(false);
-    dock->setMinimumSize(300, 640);
+    dock->setMinimumSize(200, 340);
+    dock->setMaximumWidth(400);
+    dock->resize(201,341);
+
+
+    dockdt = new QDockWidget(tr("DataTypes") , this);
+    dockdt->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
+    dockdt->setFeatures(QDockWidget::AllDockWidgetFeatures);
+    dockdt->setFloating(false);
+    dockdt->setMinimumSize(200, 340);
+
 
     // set up the tree
     projectTree = new QTreeWidget();
@@ -65,15 +75,27 @@ QTreeWidget* MainWindow::setupGuiForNewSolution()
     projectTree->setHeaderHidden(true);
     QObject::connect(projectTree, SIGNAL(itemSelectionChanged()), this, SLOT(onProjectTreeClicked()));
 
+    dataypesTree = new QTreeWidget();
+    dataypesTree ->setColumnCount(2);
+    QTreeWidgetItem *hdr = dataypesTree->headerItem();
+    hdr->setText(0, "Type");
+    hdr->setText(1, "SQL");
+    dataypesTree->header()->setDefaultSectionSize(200);
+
+    dataypesTree ->setHeaderHidden(false);
+    QObject::connect(dataypesTree, SIGNAL(itemSelectionChanged()), this, SLOT(onDTTreeClicked()));
+
+    dockdt->setWidget(dataypesTree);
     dock->setWidget(projectTree);
     addDockWidget(Qt::LeftDockWidgetArea, dock);
+    addDockWidget(Qt::LeftDockWidgetArea, dockdt);
 
     // show all the icons
     ui->mainToolBar->actions().at(3)->setVisible(true);
     ui->mainToolBar->actions().at(4)->setVisible(true);
 
     // set a normal size
-    resize(800, 600);
+    showMaximized();
 
     enableActions();
 
@@ -108,7 +130,7 @@ void MainWindow::onNewSolution()
 
         projectTree = setupGuiForNewSolution();
 
-        Project* project = new Project(nprjdlg->getProjectName().toUpper(), projectTree);
+        Project* project = new Project(nprjdlg->getProjectName().toUpper(), projectTree, dataypesTree);
         project->setEngine(nprjdlg->getDatabaseEngine());
         project->createMajorVersion();
 
@@ -126,9 +148,9 @@ void MainWindow::onNewSolution()
     }
 }
 
-void MainWindow::onProjectTreeClicked()
+void MainWindow::onDTTreeClicked()
 {
-    QList<QTreeWidgetItem*> selectedItems = projectTree->selectedItems();
+    QList<QTreeWidgetItem*> selectedItems = dataypesTree->selectedItems();
     if(selectedItems.length() == 1)
     {
         QTreeWidgetItem* item = selectedItems[0];
@@ -139,6 +161,29 @@ void MainWindow::onProjectTreeClicked()
             setCentralWidget(dtLst);
         }
         else
+        if(item->parent() && item->parent() == getWorkingProject()->getWorkingVersion()->getDtsItem())
+        {   // the user clicked on a Data Type item. The UserDataType class is something that can be put in a user role TAG
+            QVariant qv = item->data(0, Qt::UserRole);
+            UserDataType* udt = static_cast<UserDataType*>(qv.data());
+            if(getWorkingProject()->getWorkingVersion()->hasDataType(udt->getName()))
+            {
+                udt = getWorkingProject()->getWorkingVersion()->getDataType(udt->getName());
+            }
+            NewDataTypeForm* frm = new NewDataTypeForm(getWorkingProject()->getEngine(), this);
+            frm->focusOnName();
+            frm->setMainWindow(this);
+            frm->setDataType(udt);
+            setCentralWidget(frm);
+        }
+    }
+}
+
+void MainWindow::onProjectTreeClicked()
+{
+    QList<QTreeWidgetItem*> selectedItems = projectTree->selectedItems();
+    if(selectedItems.length() == 1)
+    {
+        QTreeWidgetItem* item = selectedItems[0];
         if(item == getWorkingProject()->getWorkingVersion()->getTablesItem())
         {// we have clicked on the Tables item
             TablesListForm* tblLst = new TablesListForm(this);
@@ -161,21 +206,6 @@ void MainWindow::onProjectTreeClicked()
         }
         else// here means the user clicked on something which has a "TAG"
         {
-            if(item->parent() && item->parent() == getWorkingProject()->getWorkingVersion()->getDtsItem())
-            {   // the user clicked on a Data Type item. The UserDataType class is something that can be put in a user role TAG
-                QVariant qv = item->data(0, Qt::UserRole);
-                UserDataType* udt = static_cast<UserDataType*>(qv.data());
-                if(getWorkingProject()->getWorkingVersion()->hasDataType(udt->getName()))
-                {
-                    udt = getWorkingProject()->getWorkingVersion()->getDataType(udt->getName());
-                }
-                NewDataTypeForm* frm = new NewDataTypeForm(getWorkingProject()->getEngine(), this);
-                frm->focusOnName();
-                frm->setMainWindow(this);
-                frm->setDataType(udt);
-                setCentralWidget(frm);
-            }
-            else
             if(item->parent() && item->parent() == getWorkingProject()->getWorkingVersion()->getTablesItem())
             {
                 // the user clicked on a table, the name of the table is a tag
@@ -268,6 +298,7 @@ bool MainWindow::onSaveNewDataType(const QString& name, const QString& type, con
         *pudt = *udt;
         pudt->getLocation()->setIcon(0, pudt->getIcon());
         pudt->getLocation()->setText(0, name);
+        pudt->getLocation()->setText(1, pudt->sqlAsString());
 
         // updating the "data" of the tree item
         QVariant var;
@@ -277,20 +308,24 @@ bool MainWindow::onSaveNewDataType(const QString& name, const QString& type, con
     else        // new stuff
     {
         // create the tree entry
-        QTreeWidgetItem* newDTItem = new QTreeWidgetItem(getWorkingProject()->getWorkingVersion()->getDtsItem(), QStringList(name)) ;
+        QStringList itm(name);
+        itm << udt->sqlAsString();
+        QTreeWidgetItem* newDTItem = new QTreeWidgetItem(getWorkingProject()->getWorkingVersion()->getDtsItem(), itm) ;
 
         QVariant var;
         var.setValue(*udt);
         newDTItem->setData(0, Qt::UserRole, var);
         // set the icon, add to the tree
         newDTItem->setIcon(0, udt->getIcon());
-        projectTree->insertTopLevelItem(0,newDTItem);
+        dataypesTree->insertTopLevelItem(0,newDTItem);
 
         // add to the project itself
         getWorkingProject()->getWorkingVersion()->addNewDataType(udt);
 
         // set the link to the tree
         udt->setLocation(newDTItem);
+        dataypesTree->expandItem(newDTItem);
+        dataypesTree->scrollToItem(newDTItem);
 
         return true;
 
@@ -338,7 +373,7 @@ void MainWindow::populateTreeWithSolution(Solution* sol)
 {
     for(int i=0; i<sol->projects().size(); i++)
     {
-        sol->projects()[i]->createTreeItem(projectTree);
+        sol->projects()[i]->createTreeItem(projectTree, dataypesTree);
         sol->projects()[i]->populateTreeItem();
     }
 }

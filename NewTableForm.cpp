@@ -131,8 +131,8 @@ void NewTableForm::enableForeignKeysDependingOnStorageEngine()
     {
         if(!m_currentStorageEngine->supportsForeignKeys())
         {
-            m_ui->grpForeignKeysList->setEnabled(false);
-            m_ui->grpNewForeignKey->setEnabled(false);
+            //m_ui->grpForeignKeysList->setEnabled(false);
+            //m_ui->grpNewForeignKey->setEnabled(false);
             m_ui->lblForeignKeysNotAllowed->setVisible(true);
         }
     }
@@ -243,8 +243,6 @@ void NewTableForm::setTable(Table *table)
         m_ui->tableStartupValues->insertRow(i);
         for(int j=0; j<rowI.size(); j++)
         {
-            int rc = m_ui->tableStartupValues->rowCount();
-            int cc = m_ui->tableStartupValues->columnCount();
             QTableWidgetItem* newItem = new QTableWidgetItem(rowI[j]);
             m_ui->tableStartupValues->setItem(i, j, newItem);
         }
@@ -1049,7 +1047,7 @@ void NewTableForm::backupDefaultValuesTable()
             else
             {
                 columnI.append("");
-            }            
+            }
         }
         backupData[m_ui->tableStartupValues->horizontalHeaderItem(i)->text()] = columnI;
     }
@@ -1071,7 +1069,7 @@ void NewTableForm::restoreDefaultValuesTable()
             finalColumnName = m_newColumnName;
         }
         QVector <QString> columnI = it.value();
-        int foundColumn = -1;
+
         int hc = m_ui->tableStartupValues->horizontalHeader()->count();
         for(int i=0; i<hc; i++)
         {

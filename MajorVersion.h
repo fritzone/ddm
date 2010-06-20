@@ -22,7 +22,7 @@ public:
     /**
      * Constructor: Takes in the project Item and the current version
      */
-    MajorVersion(QTreeWidget* tree, QTreeWidgetItem* projectItem, int ver);
+    MajorVersion(QTreeWidget* tree, QTreeWidget* dttree, QTreeWidgetItem* projectItem, int ver);
 
     /**
      * This constructos is used when deserializing. In this case the tree and projectItem are set later
@@ -74,7 +74,7 @@ public:
 
     virtual const QVector<Table*>& getTables() const;
 
-    void createTreeItems(QTreeWidget* tree = 0, QTreeWidgetItem* projectIem = 0);
+    void createTreeItems(QTreeWidget* tree = 0, QTreeWidget* dtTree = 0, QTreeWidgetItem* projectIem = 0);
 
     /**
      * Populates the tree items of this major version with all the data it contains, such as UserDataTypes, Tables, etc...
@@ -107,7 +107,10 @@ private:
     // the tables in the system
     QVector<Table*> m_tables;
 
+    // the project tree
     QTreeWidget* m_tree;
+    // the  data types tree
+    QTreeWidget* m_dtTree;
 
     QTreeWidgetItem* m_projectItem;
 

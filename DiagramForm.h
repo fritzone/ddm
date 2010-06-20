@@ -13,9 +13,9 @@ class DiagramForm : public QWidget
 {
     Q_OBJECT
 public:
+
     DiagramForm(Version* v, QWidget *parent = 0);
     ~DiagramForm();
-
 
 protected:
     void changeEvent(QEvent *e);

@@ -12,7 +12,13 @@
 class ERGraphicsScene : public QGraphicsScene
 {
 public:
-    ERGraphicsScene(QWidget* parent, Version* v) : QGraphicsScene(-10000, -10000, 20000, 20000, parent), itm(0), m_version(v), justDropped(false), m_draggedItem(0)
+
+    static const int WIDTH = 20000;
+    static const int HEIGHT = 20000;
+    static const int LEFT = -10000;
+    static const int TOP = -10000;
+
+    ERGraphicsScene(QWidget* parent, Version* v) : QGraphicsScene(LEFT, TOP, WIDTH, HEIGHT, parent), itm(0), m_version(v), justDropped(false), m_draggedItem(0)
     {
         // to mark the centre of the view
         addLine(0, -10, 0, 10);
@@ -38,12 +44,12 @@ public:
         return justDropped;
     }
 
-    bool setJustDropped(bool jd)
+    void setJustDropped(bool jd)
     {
         justDropped = jd;
     }
 
-    bool setStartDragPos(int x, int y)
+    void setStartDragPos(int x, int y)
     {
         startDragX = x;
         startDragY = y;
@@ -65,12 +71,11 @@ public:
     }
 
 protected:
+
     virtual void dropEvent ( QGraphicsSceneDragDropEvent * event )
     {
-        qDebug() << "GraphicsScene::dropEvent : X=" << event->pos().x() << " Y=" << event->pos().y();
         QString tabName = event->mimeData()->text();
         event->acceptProposedAction();
-
         itm = m_version->getTable(tabName)->prepareDiagramEntity(event->pos().x(), event->pos().y());
         justDropped = true;
         addItem(itm);
@@ -79,17 +84,16 @@ protected:
 
     void dragEnterEvent ( QGraphicsSceneDragDropEvent * event )
     {
-        qDebug() << "GraphicsScene::dragEnter : X=" << event->pos().x() << " Y=" << event->pos().y();
         event->acceptProposedAction();
     }
 
     void dragMoveEvent ( QGraphicsSceneDragDropEvent * event )
     {
-        qDebug() << "GraphicsScene::dragMove : X=" << event->pos().x() << " Y=" << event->pos().y();
         event->acceptProposedAction();
     }
 
 private:
+
     DraggableGraphicsViewItem* itm;
     Version* m_version;
     bool justDropped;
