@@ -44,6 +44,9 @@
   <layout class="QVBoxLayout" name="verticalLayout_2">
    <item>
     <layout class="QFormLayout" name="formLayout">
+     <property name="fieldGrowthPolicy">
+      <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+     </property>
      <item row="0" column="0">
       <widget class="QLabel" name="label_3">
        <property name="text">
@@ -72,6 +75,9 @@ p, li { white-space: pre-wrap; }
    </item>
    <item>
     <layout class="QFormLayout" name="formLayout_2">
+     <property name="fieldGrowthPolicy">
+      <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+     </property>
      <item row="0" column="0">
       <widget class="QLabel" name="label">
        <property name="text">
@@ -182,6 +188,16 @@ p, li { white-space: pre-wrap; }
            <normaloff>:/images/actions/images/small/oracle.PNG</normaloff>:/images/actions/images/small/oracle.PNG</iconset>
          </property>
         </item>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="chkInheritDefaultDatatypes">
+        <property name="text">
+         <string>Inherit default datatypes</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
        </widget>
       </item>
      </layout>

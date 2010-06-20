@@ -4,18 +4,20 @@
 #include "DatabaseEngine.h"
 #include "IconFactory.h"
 
-Project::Project(const QString& _name, QTreeWidget* _tree):m_tree(_tree), m_name(_name), m_engine(0), m_majorVersions(), m_prjDetailsForm(0)
+Project::Project(const QString& _name, QTreeWidget* _tree, QTreeWidget* _dtTree):
+        m_tree(_tree), m_dtTree(_dtTree), m_name(_name), m_engine(0), m_majorVersions(), m_prjDetailsForm(0)
 {
-    createTreeItem(m_tree);
+    createTreeItem(m_tree, m_dtTree);
 }
 
 Project::Project(const QString &_name) : m_tree(0), m_name(_name), m_engine(0), m_majorVersions(), m_prjDetailsForm(0)
 {
 }
 
-void Project::createTreeItem(QTreeWidget* _tree)
+void Project::createTreeItem(QTreeWidget* _tree, QTreeWidget* _dtt)
 {
     m_tree = _tree;
+    m_dtTree = _dtt;
 
     QTreeWidgetItem* projectItem = new QTreeWidgetItem((QTreeWidget*)0, QStringList(m_name)) ;
     projectItem->setIcon(0, IconFactory::getProjectOpenIcon());
@@ -31,7 +33,7 @@ void Project::populateTreeItem()
 {
     for(int i=0; i<m_majorVersions.size(); i++)
     {
-        m_majorVersions[i]->createTreeItems(m_tree, getLocation());
+        m_majorVersions[i]->createTreeItems(m_tree, m_dtTree, getLocation());
         m_majorVersions[i]->populateTreeItems();
     }
 }
@@ -43,7 +45,7 @@ void Project::setEngine(DatabaseEngine* eng)
 
 void Project::createMajorVersion()
 {
-    MajorVersion* mjw = new MajorVersion(m_tree, getLocation(), 1);
+    MajorVersion* mjw = new MajorVersion(m_tree, m_dtTree, getLocation(), 1);
     m_majorVersions.append(mjw);
 }
 

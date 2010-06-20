@@ -24,7 +24,7 @@ class Project : public SerializableElement, public TreeItem
 public:
 
     // constructor
-    Project(const QString& _name, QTreeWidget* _tree);
+    Project(const QString& _name, QTreeWidget* _tree, QTreeWidget* _dtTree);
 
     Project(const QString& _name);
 
@@ -49,7 +49,7 @@ public:
     }
 
 
-    void createTreeItem(QTreeWidget* _tree);
+    void createTreeItem(QTreeWidget* _tree, QTreeWidget* _dtt);
 
     /**
      * This should be called only by the deserialization method.
@@ -60,6 +60,7 @@ private:
 
     // this is the tree from the main window of the application
     QTreeWidget* m_tree;
+    QTreeWidget* m_dtTree;
 
     // the name of the project
     QString m_name;

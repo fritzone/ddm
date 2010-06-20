@@ -59,6 +59,7 @@ public slots:
     void onSaveProject();
     void onOpenProject();
     void onAbout();
+    void onDTTreeClicked();
 
 private:
 
@@ -71,8 +72,13 @@ private:
     // the dock window in which the project tree is to be found
     QDockWidget* dock;
 
+    // the dock widget for the data types
+    QDockWidget* dockdt;
+
     // the tree which contains everything related to the current project
     QTreeWidget* projectTree;
+    // the tree containing the data types
+    QTreeWidget* dataypesTree;
 
     // the initial three button dialog
     MainWindowButtonDialog* btndlg;

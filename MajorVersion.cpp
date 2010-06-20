@@ -5,7 +5,8 @@
 #include "Table.h"
 #include "IconFactory.h"
 
-MajorVersion::MajorVersion(QTreeWidget* tree, QTreeWidgetItem* projectItem, int ver) : m_tree(tree), m_projectItem(projectItem)
+MajorVersion::MajorVersion(QTreeWidget* tree, QTreeWidget* dttree, QTreeWidgetItem* projectItem, int ver) :
+        m_tree(tree), m_dtTree(dttree), m_projectItem(projectItem)
 {
     // make the dts sub item coming from the project
     QString v = QString::number(ver);
@@ -25,15 +26,18 @@ void MajorVersion::populateTreeItems()
     // insert the user data types in the tree
     for(int i=0; i<m_dataTypes.size(); i++)
     {
-        QTreeWidgetItem* newDTItem = new QTreeWidgetItem(getDtsItem(), QStringList(m_dataTypes[i]->getName())) ;
+        QStringList a(m_dataTypes[i]->getName());
+        a << m_dataTypes[i]->sqlAsString();
+        QTreeWidgetItem* newDTItem = new QTreeWidgetItem(getDtsItem(), a) ;
         QVariant var;
         var.setValue(*m_dataTypes[i]);
         newDTItem->setData(0, Qt::UserRole, var);
         // set the icon, add to the tree
         newDTItem->setIcon(0, m_dataTypes[i]->getIcon());
-        m_tree->insertTopLevelItem(0, newDTItem);
+        m_dtTree->insertTopLevelItem(0, newDTItem);
         m_dataTypes[i]->setLocation(newDTItem);
     }
+    m_dtTree->expandAll();
 
     // insert the tables
     for(int i=0; i<m_tables.size(); i++)
@@ -53,11 +57,15 @@ void MajorVersion::populateTreeItems()
     }
 }
 
-void MajorVersion::createTreeItems(QTreeWidget* tree, QTreeWidgetItem* projectIem)
+void MajorVersion::createTreeItems(QTreeWidget* tree, QTreeWidget* dtTree, QTreeWidgetItem* projectIem)
 {
     if(tree)
     {
         m_tree = tree;
+    }
+    if(dtTree)
+    {
+        m_dtTree = dtTree;
     }
     if(projectIem)
     {
@@ -75,9 +83,9 @@ void MajorVersion::createTreeItems(QTreeWidget* tree, QTreeWidgetItem* projectIe
     m_tree->addTopLevelItem(versionItem);
 
     // make the dts sub item coming from the project
-    dtsItem = new QTreeWidgetItem(versionItem, QStringList(QObject::tr("Data Types"))) ;
+    dtsItem = new QTreeWidgetItem((QTreeWidget*)0, QStringList(QObject::tr("Data Types"))) ;
     dtsItem->setIcon(0, dtsIcon);
-    m_tree->addTopLevelItem(dtsItem);
+    m_dtTree->addTopLevelItem(dtsItem);
 
     // make the tables sub item coming from the project
     tablesItem = new QTreeWidgetItem(versionItem, QStringList(QObject::tr("Tables"))) ;
