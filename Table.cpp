@@ -5,14 +5,16 @@
 #include "UserDataType.h"
 #include "AbstractStorageEngine.h"
 #include "DraggableGraphicsItem.h"
+#include "IconFactory.h"
 
-Table::Table() : m_name(""), m_description(""), m_columns(), m_indices(), m_foreignKeys(), m_startupValues(), m_parent(0), m_persistent(false), m_storageEngine(0)
+Table::Table() : m_name(""), m_description(""), m_columns(), m_indices(), m_foreignKeys(), m_startupValues(), m_parent(0), m_persistent(false), m_storageEngine(0), m_diagramEntity(0)
 {
 }
 
 void Table::addColumn(Column *column)
 {
     m_columns.append(column);
+    prepareDiagramEntity();
 }
 
 void Table::addIndex(Index *index)
@@ -27,6 +29,7 @@ void Table::moveColumnDown(int c)
         Column* tc = m_columns[c];
         m_columns[c] = m_columns[c+1];
         m_columns[c+1] = tc;
+        prepareDiagramEntity();
     }
 }
 
@@ -37,6 +40,7 @@ void Table::moveColumnUp(int c)
         Column* tc = m_columns[c];
         m_columns[c] = m_columns[c-1];
         m_columns[c-1] = tc;
+        prepareDiagramEntity();
     }
 }
 
@@ -83,6 +87,7 @@ void Table::removeColumn(Column* toRemove)
     if(idx != -1)
     {
         m_columns.remove(idx);
+        prepareDiagramEntity();
     }
 }
 
@@ -187,7 +192,7 @@ void Table::setDefaultValues(QVector <QVector <QString> > & values)
     m_startupValues = values;
 }
 
-DraggableGraphicsViewItem * Table::prepareDiagramEntity(qreal x, qreal y)
+void Table::prepareDiagramEntity()
 {
     DraggableGraphicsViewItem* grp = new DraggableGraphicsViewItem();
 
@@ -195,16 +200,51 @@ DraggableGraphicsViewItem * Table::prepareDiagramEntity(qreal x, qreal y)
     txtName->setPos(0,0);
     txtName->setToolTip(m_name);
     int py = txtName->boundingRect().height();
+    int headerHeight = py;
+    int maxX = txtName->boundingRect().right();
+
     for(int i=0; i<m_columns.size(); i++)
     {
         QGraphicsTextItem* txtColName = new QGraphicsTextItem(m_columns[i]->getName(), grp);
         txtColName->setY(py);
+
+        QGraphicsPixmapItem* icon = new QGraphicsPixmapItem(m_columns[i]->getDataType()->getIcon().pixmap(16,16), grp);
+        if(m_columns[i]->isPk())
+        {
+            QGraphicsPixmapItem* keyicon = new QGraphicsPixmapItem(IconFactory::getKeyIcon().pixmap(16,16), grp);
+            keyicon->setY(py + 2);
+        }
+
+        txtColName->setX(32);
+        icon->setY(py + 2);
+        icon->setX(18);
         py+=txtColName->boundingRect().height();
+        maxX = txtColName->boundingRect().right() + 16 > maxX ? txtColName->boundingRect().right() + 16:maxX;
     }
 
-    QGraphicsRectItem* rect = new QGraphicsRectItem(txtName->boundingRect(), grp);
+    maxX += 30;
+    int finMaxX = maxX;
+    py = headerHeight;
+
+    for(int i=0; i<m_columns.size(); i++)
+    {
+        QGraphicsTextItem* txtColName = new QGraphicsTextItem(m_columns[i]->getDataType()->sqlAsString(), grp);
+        txtColName->setY(py);
+        txtColName->setX(maxX);
+        py += txtColName->boundingRect().height();
+        finMaxX = txtColName->boundingRect().width() + maxX > finMaxX?txtColName->boundingRect().width() + maxX:finMaxX;
+    }
+
+    maxX = finMaxX;
+
+    QGraphicsRectItem* rect = new QGraphicsRectItem(0,0, maxX, py, grp);
+    QGraphicsRectItem* recta = new QGraphicsRectItem(0,0, maxX, headerHeight, grp);
+    QBrush brush (Qt::lightGray);
+    recta->setBrush(brush);
+    recta->setZValue(0.5);
+    txtName->setZValue(1);
     grp->setToolTip(m_name);
 
+    m_diagramEntity = grp;
 
-    return grp;
 }

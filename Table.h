@@ -174,7 +174,14 @@ public:
         return m_storageEngine;
     }
 
-    DraggableGraphicsViewItem * prepareDiagramEntity(qreal x, qreal y);
+    DraggableGraphicsViewItem* getDiagramEntity() const
+    {
+        return m_diagramEntity;
+    }
+
+private:
+
+    void prepareDiagramEntity();
 
 private:
     // the name of the table
@@ -206,6 +213,8 @@ private:
 
     AbstractStorageEngine* m_storageEngine;
 
+    // will be shown on the diagrams
+    DraggableGraphicsViewItem* m_diagramEntity;
 };
 
 Q_DECLARE_METATYPE(Table)

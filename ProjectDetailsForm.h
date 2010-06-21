@@ -3,21 +3,31 @@
 
 #include <QWidget>
 
-namespace Ui {
+class Project;
+
+namespace Ui
+{
     class ProjectDetailsForm;
 }
 
-class ProjectDetailsForm : public QWidget {
+class ProjectDetailsForm : public QWidget
+{
     Q_OBJECT
 public:
     ProjectDetailsForm(QWidget *parent = 0);
     ~ProjectDetailsForm();
+    void setProject(Project* prj);
+
+public slots:
+    void onBtnUpdate();
 
 protected:
     void changeEvent(QEvent *e);
 
 private:
     Ui::ProjectDetailsForm *ui;
+
+    Project* m_project;
 };
 
 #endif // PROJECTDETAILSFORM_H

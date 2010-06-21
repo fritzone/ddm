@@ -15,35 +15,87 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <layout class="QFormLayout" name="formLayout">
-     <item row="0" column="1">
-      <widget class="QLineEdit" name="txtProjectName">
-       <property name="echoMode">
-        <enum>QLineEdit::Normal</enum>
+    <widget class="QGroupBox" name="groupBox">
+     <property name="title">
+      <string>Project Details</string>
+     </property>
+     <property name="flat">
+      <bool>false</bool>
+     </property>
+     <layout class="QFormLayout" name="formLayout">
+      <item row="2" column="0">
+       <widget class="QLabel" name="label_2">
+        <property name="text">
+         <string>Description</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QTextEdit" name="textEdit"/>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="label">
+        <property name="text">
+         <string>Name</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QLineEdit" name="txtProjectName">
+        <property name="echoMode">
+         <enum>QLineEdit::Normal</enum>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <spacer name="horizontalSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
        </property>
-      </widget>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
      </item>
-     <item row="0" column="0">
-      <widget class="QLabel" name="label">
+     <item>
+      <widget class="QPushButton" name="btnUpdate">
        <property name="text">
-        <string>Name</string>
+        <string>Update</string>
        </property>
       </widget>
-     </item>
-     <item row="1" column="0">
-      <widget class="QLabel" name="label_2">
-       <property name="text">
-        <string>Description</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="1">
-      <widget class="QTextEdit" name="textEdit"/>
      </item>
     </layout>
    </item>
   </layout>
  </widget>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>btnUpdate</sender>
+   <signal>clicked()</signal>
+   <receiver>ProjectDetailsForm</receiver>
+   <slot>onBtnUpdate()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>347</x>
+     <y>276</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>199</x>
+     <y>149</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>onBtnUpdate()</slot>
+ </slots>
 </ui>

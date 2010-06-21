@@ -76,7 +76,7 @@ protected:
     {
         QString tabName = event->mimeData()->text();
         event->acceptProposedAction();
-        itm = m_version->getTable(tabName)->prepareDiagramEntity(event->pos().x(), event->pos().y());
+        itm = m_version->getTable(tabName)->getDiagramEntity();
         justDropped = true;
         addItem(itm);
 
