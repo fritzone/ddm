@@ -28,6 +28,7 @@ public:
 
     void finalizeItem(int x, int y)
     {
+        if(!itm) return;
         itm->setX(x);
         itm->setY(y);
 
@@ -77,6 +78,7 @@ protected:
         QString tabName = event->mimeData()->text();
         event->acceptProposedAction();
         itm = m_version->getTable(tabName)->getDiagramEntity();
+        if(!itm) return;
         justDropped = true;
         addItem(itm);
 
