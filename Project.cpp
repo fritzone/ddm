@@ -5,12 +5,12 @@
 #include "IconFactory.h"
 
 Project::Project(const QString& _name, QTreeWidget* _tree, QTreeWidget* _dtTree):
-        m_tree(_tree), m_dtTree(_dtTree), m_name(_name), m_engine(0), m_majorVersions(), m_prjDetailsForm(0)
+        m_tree(_tree), m_dtTree(_dtTree), m_name(_name), m_engine(0), m_majorVersions()
 {
     createTreeItem(m_tree, m_dtTree);
 }
 
-Project::Project(const QString &_name) : m_tree(0), m_name(_name), m_engine(0), m_majorVersions(), m_prjDetailsForm(0)
+Project::Project(const QString &_name) : m_tree(0), m_name(_name), m_engine(0), m_majorVersions()
 {
 }
 
@@ -75,6 +75,13 @@ void Project::serialize(QDomDocument& doc, QDomElement& parent) const
 
     projectElement.setAttribute("Name", m_name);
     projectElement.setAttribute("DB", m_engine->getDatabase());
+
+    {
+    QDomElement descElement = doc.createElement("Description");  // description
+    QDomText descNode = doc.createTextNode(getDescription());
+    descElement.appendChild(descNode);
+    projectElement.appendChild(descElement);
+    }
 
     // now saving the major versions of the project
     QDomElement majorVersionsElement = doc.createElement("MajorVersions");

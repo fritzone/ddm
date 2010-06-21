@@ -275,11 +275,22 @@ Project* DeserializationFactory::createProject(const QDomDocument &doc, const QD
     DatabaseEngine* engine = DatabaseEngine::createEngine(element.attribute("DB"));
     prj->setEngine(engine);
 
-    QDomNodeList majorVersionNodes = element.firstChild().childNodes();
-    for(int i=0; i<majorVersionNodes.count(); i++)
+    for(int i=0; i<element.childNodes().count(); i++)
     {
-        MajorVersion* majVer = createMajorVersion(engine, doc, majorVersionNodes.at(i).toElement());
-        prj->addMajorVersion(majVer);
+        if(element.childNodes().at(i).nodeName() == "MajorVersions")
+        {
+            QDomNodeList majorVersionNodes = element.childNodes().at(i).childNodes();
+            for(int i=0; i<majorVersionNodes.count(); i++)
+            {
+                MajorVersion* majVer = createMajorVersion(engine, doc, majorVersionNodes.at(i).toElement());
+                prj->addMajorVersion(majVer);
+            }
+        }
+        else
+        if(element.childNodes().at(i).nodeName() == "Description")
+        {
+            prj->setDescription(element.childNodes().at(i).firstChild().nodeValue());
+        }
     }
 
     return prj;

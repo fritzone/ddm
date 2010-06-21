@@ -27,8 +27,7 @@ public:
         return m_location;
     }
 
-
-private:
+protected:
     // where the object is to be found
     QTreeWidgetItem* m_location;
 

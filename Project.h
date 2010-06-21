@@ -12,7 +12,6 @@ class AbstractDTSupplier;
 class MajorVersion;
 class Version;
 class DatabaseEngine;
-class ProjectDetailsForm;
 
 
 /**
@@ -43,18 +42,33 @@ public:
 
     virtual void serialize(QDomDocument& doc, QDomElement& parent) const;
 
-    void setDetailsForm(ProjectDetailsForm* pfrm)
-    {
-        m_prjDetailsForm = pfrm;
-    }
-
-
     void createTreeItem(QTreeWidget* _tree, QTreeWidget* _dtt);
 
     /**
      * This should be called only by the deserialization method.
      */
     void populateTreeItem();
+
+    const QString& getName() const
+    {
+        return m_name;
+    }
+
+    void setName(const QString& nm)
+    {
+        m_name = nm;
+        m_location->setText(0, nm);
+    }
+
+    const QString& getDescription() const
+    {
+        return m_description;
+    }
+
+    void setDescription(const QString& desc)
+    {
+        m_description = desc;
+    }
 
 private:
 
@@ -65,13 +79,14 @@ private:
     // the name of the project
     QString m_name;
 
+    // the description of the project
+    QString m_description;
+
     // the data supplier of this project
     DatabaseEngine* m_engine;
 
     // the list of major versions
     QVector<MajorVersion*> m_majorVersions;
-
-    ProjectDetailsForm* m_prjDetailsForm;
 
 };
 

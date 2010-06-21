@@ -142,6 +142,7 @@ void MainWindow::onNewSolution()
 
         // show the project properties window
         ProjectDetailsForm* prjDetailsForm = new ProjectDetailsForm(this);
+        prjDetailsForm->setProject(project);
         setCentralWidget(prjDetailsForm);
 
         setWindowTitle("DBM - [" + m_currentSolution->name() + "]");
@@ -403,6 +404,11 @@ void MainWindow::onOpenProject()
     populateTreeWithSolution(m_currentSolution);
 
     projectTree->expandAll();
+
+    ProjectDetailsForm* prjDetailsForm = new ProjectDetailsForm(this);
+    prjDetailsForm->setProject(m_currentSolution->currentProject());
+    setCentralWidget(prjDetailsForm);
+
 
     setWindowTitle("DBM - [" + m_currentSolution->name() + "]");
 }
