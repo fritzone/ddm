@@ -79,5 +79,6 @@
         <file>images/actions/solutionnew.png</file>
         <file>images/small/view.png</file>
         <file>images/small/diagram.png</file>
+        <file>images/actions/new_diagram.png</file>
     </qresource>
 </RCC>

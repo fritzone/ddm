@@ -505,6 +505,7 @@ void NewTableForm::onSave()
     }
 
     m_table->setName(m_ui->txtTableName->text());
+    m_table->prepareDiagramEntity();
     m_table->setPersistent(m_ui->chkPersistent->isChecked());
     m_table->setTemporary(m_ui->chkTemporary->isChecked());
     m_table->setDescription(m_ui->txtDescription->toPlainText());

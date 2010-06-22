@@ -174,12 +174,12 @@ public:
         return m_storageEngine;
     }
 
-    DraggableGraphicsViewItem* getDiagramEntity() const
+    DraggableGraphicsViewItem* getDiagramEntity()
     {
+        prepareDiagramEntity(); // this is sort of stupid ... and might leak some memory, but otherwise it breaks the underlying QT architecture
+        // TODO: remvoe the above call from everywhere it's used
         return m_diagramEntity;
     }
-
-private:
 
     void prepareDiagramEntity();
 

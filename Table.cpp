@@ -194,7 +194,7 @@ void Table::setDefaultValues(QVector <QVector <QString> > & values)
 
 void Table::prepareDiagramEntity()
 {
-    DraggableGraphicsViewItem* grp = new DraggableGraphicsViewItem();
+    DraggableGraphicsViewItem* grp = new DraggableGraphicsViewItem(this);
 
     QGraphicsTextItem* txtName = new QGraphicsTextItem(getName(), grp);
     txtName->setPos(0,0);
