@@ -40,7 +40,8 @@ SOURCES += main.cpp \
     AboutBoxDialog.cpp \
     DiagramForm.cpp \
     DraggableGraphicsItem.cpp \
-    ERGraphicsView.cpp
+    ERGraphicsView.cpp \
+    ERGraphicsScene.cpp
 HEADERS += MainWindow.h \
     MainWindowButtonDialog.h \
     NewProjectDialog.h \
@@ -87,7 +88,8 @@ HEADERS += MainWindow.h \
     DraggableGraphicsItem.h \
     ERGraphicsScene.h \
     ERGraphicsView.h \
-    TableListWidget.h
+    TableListWidget.h \
+    DraggableGraphicsItemForForeignKey.h
 FORMS += mainwindow.ui \
     mainwindowbuttondialog.ui \
     newprojectdialog.ui \

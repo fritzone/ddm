@@ -425,3 +425,8 @@ void MainWindow::onAbout()
     about->setModal(true);
     about->exec();
 }
+
+void MainWindow::onNewDiagram()
+{
+
+}

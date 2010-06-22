@@ -4,43 +4,48 @@
 #include <QGraphicsItemGroup>
 #include <QGraphicsSceneDragDropEvent>
 
-#include <qdebug.h>
+class Table;
 
 class DraggableGraphicsViewItem : public QGraphicsItemGroup
 {
 public:
 
-    DraggableGraphicsViewItem() : QGraphicsItemGroup()
+    DraggableGraphicsViewItem(Table* tab) : QGraphicsItemGroup(), m_table(tab)
     {
         setAcceptDrops(true);
     }
 
     QPixmap getDragImage();
 
-
+    const Table* getTable() const
+    {
+        return m_table;
+    }
 
 protected:
 
     virtual void dragEnterEvent ( QGraphicsSceneDragDropEvent * event )
     {
-        qDebug() << "Draggable::dragEnter : X=" << event->pos().x() << " Y=" << event->pos().y();
         event->acceptProposedAction();
     }
 
     virtual void dragMoveEvent ( QGraphicsSceneDragDropEvent * event )
     {
-        qDebug() << "Draggable::dragmove : X=" << event->pos().x() << " Y=" << event->pos().y();
         event->acceptProposedAction();
     }
 
     virtual void dropEvent ( QGraphicsSceneDragDropEvent * event )
     {
-        qDebug() << "Draggable::drop : X=" << event->pos().x() << " Y=" << event->pos().y();
         event->acceptProposedAction();
     }
 
     virtual void mousePressEvent ( QGraphicsSceneMouseEvent * event );
     virtual void mouseReleaseEvent ( QGraphicsSceneMouseEvent * event );
+
+
+private:
+
+    Table* m_table;
 };
 
 #endif // DRAGGABLEGRAPHICSITEM_H

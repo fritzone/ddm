@@ -4,6 +4,7 @@
 #include "TreeItem.h"
 #include "SerializableElement.h"
 #include "Column.h"
+#include "DraggableGraphicsItemForForeignKey.h"
 
 class Table;
 
@@ -144,6 +145,41 @@ public:
         }
         fkElement.appendChild(associationsElement);
         parent.appendChild(fkElement);
+    }
+
+    /**                                            /\
+     *                                            /  \
+     * This should prepare a graphics like: __ __/name\__ ____
+     *                                           \    /
+     *                                            \  /
+     *                                             \/
+     * and the two lines after and before the space should be movable so that they move when the user moves the tables
+     */
+    DraggableGraphicsViewItemForForeignKey* getItem()
+    {
+        DraggableGraphicsViewItemForForeignKey* grp = new DraggableGraphicsViewItemForForeignKey(this);
+        QGraphicsTextItem* txtName = new QGraphicsTextItem(getName(), grp);
+        QRectF boundingForName = txtName->boundingRect();
+        int rombX1 = boundingForName.left() - 5;
+        int rombY1 = (boundingForName.bottom() + boundingForName.top()) / 2;
+        int rombX2 = (boundingForName.right() + boundingForName.left()) / 2;
+        int rombY2 = boundingForName.top() - (boundingForName.right() + boundingForName.left()) / 2;
+        int rombX3 = boundingForName.right() + 5;
+        int rombY3 = (boundingForName.bottom() + boundingForName.top()) / 2;
+        int rombX4 = (boundingForName.right() + boundingForName.left()) / 2;
+        int rombY4 = boundingForName.bottom() + (boundingForName.right() + boundingForName.left()) / 2;
+        QGraphicsLineItem* line1 = new QGraphicsLineItem(rombX1, rombY1, rombX2, rombY2, grp);
+        QGraphicsLineItem* line2 = new QGraphicsLineItem(rombX2, rombY2, rombX3, rombY3, grp);
+        QGraphicsLineItem* line3 = new QGraphicsLineItem(rombX3, rombY3, rombX4, rombY4, grp);
+        QGraphicsLineItem* line4 = new QGraphicsLineItem(rombX4, rombY4, rombX1, rombY1, grp);
+
+        QGraphicsLineItem* line5 = new QGraphicsLineItem(rombX1, rombY1, rombX1-10, rombY1, grp);
+        QGraphicsLineItem* line6 = new QGraphicsLineItem(rombX3, rombY3, rombX3+10, rombY3, grp);
+
+        grp->setLeftPoint(QPointF(rombX1-10, rombY1));
+        grp->setRightPoint(QPointF(rombX3+10, rombY3));
+
+        return grp;
     }
 
 private:

@@ -60,6 +60,7 @@ public slots:
     void onOpenProject();
     void onAbout();
     void onDTTreeClicked();
+    void onNewDiagram();
 
 private:
 
