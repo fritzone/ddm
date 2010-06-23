@@ -1,6 +1,7 @@
 #include "ERGraphicsView.h"
 
 #include "ERGraphicsScene.h"
+#include <qdebug.h>
 
 ERGraphicsView::ERGraphicsView(QWidget* parent, Version* v) : QGraphicsView(parent)
 {
@@ -26,7 +27,8 @@ void ERGraphicsView::mouseMoveEvent(QMouseEvent *event)
     if(scene->getDraggedItem() != 0)
     {
         QPointF scpos = mapToScene(event->pos().x(), event->pos().y());
-
+        qDebug() << "moving something around";
         scene->getDraggedItem()->setPos(scpos.x() - scene->getStartDragX(), scpos.y() - scene->getStartDragY());
+        scene->upadteFkrds();
     }
 }

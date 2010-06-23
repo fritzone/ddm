@@ -173,11 +173,11 @@ public:
         QGraphicsLineItem* line3 = new QGraphicsLineItem(rombX3, rombY3, rombX4, rombY4, grp);
         QGraphicsLineItem* line4 = new QGraphicsLineItem(rombX4, rombY4, rombX1, rombY1, grp);
 
-        QGraphicsLineItem* line5 = new QGraphicsLineItem(rombX1, rombY1, rombX1-10, rombY1, grp);
-        QGraphicsLineItem* line6 = new QGraphicsLineItem(rombX3, rombY3, rombX3+10, rombY3, grp);
 
-        grp->setLeftPoint(QPointF(rombX1-10, rombY1));
-        grp->setRightPoint(QPointF(rombX3+10, rombY3));
+        grp->setLeftPoint(QPointF(rombX1, rombY1));
+        grp->setTopPoint(QPointF(rombX2, rombY2));
+        grp->setRightPoint(QPointF(rombX3, rombY3));
+        grp->setBottomPoint(QPointF(rombX4, rombY4));
 
         return grp;
     }
