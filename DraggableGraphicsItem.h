@@ -10,7 +10,7 @@ class DraggableGraphicsViewItem : public QGraphicsItemGroup
 {
 public:
 
-    DraggableGraphicsViewItem(Table* tab) : QGraphicsItemGroup(), m_table(tab)
+    DraggableGraphicsViewItem(Table* tab) : QGraphicsItemGroup(), m_table(tab), lastX(0), lastY(0)
     {
         setAcceptDrops(true);
     }
@@ -20,6 +20,18 @@ public:
     const Table* getTable() const
     {
         return m_table;
+    }
+
+    virtual QRectF boundingRect() const;
+
+    void setLastX(qreal x)
+    {
+        lastX = x;
+    }
+
+    void setLastY(qreal y)
+    {
+        lastY = y;
     }
 
 protected:
@@ -46,6 +58,8 @@ protected:
 private:
 
     Table* m_table;
+    qreal lastX;
+    qreal lastY;
 };
 
 #endif // DRAGGABLEGRAPHICSITEM_H

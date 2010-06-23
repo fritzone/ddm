@@ -31,3 +31,8 @@ void DraggableGraphicsViewItem::mouseReleaseEvent ( QGraphicsSceneMouseEvent * e
     event->accept();
     dynamic_cast<ERGraphicsScene*>(this->scene())->setDraggedItem(0);
 }
+
+QRectF DraggableGraphicsViewItem::boundingRect() const
+{
+    return QRectF(0,0,lastX,lastY);
+}

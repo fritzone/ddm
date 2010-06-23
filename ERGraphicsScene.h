@@ -9,23 +9,7 @@
 
 #include "DraggableGraphicsItem.h"
 #include "DraggableGraphicsItemForForeignKey.h"
-
-class FkRelationDescriptor
-{
-public:
-    FkRelationDescriptor(DraggableGraphicsViewItemForForeignKey* fkitm, DraggableGraphicsViewItem* tab1, DraggableGraphicsViewItem* tab2) : m_fkitm(fkitm),m_tab1(tab1), m_tab2(tab2), firstLine(0), secondLine(0)
-    {}
-
-    QGraphicsLineItem* firstLine;
-    QGraphicsLineItem* secondLine;
-
-private:
-
-    DraggableGraphicsViewItemForForeignKey* m_fkitm;
-    DraggableGraphicsViewItem* m_tab1;
-    DraggableGraphicsViewItem* m_tab2;
-
-};
+#include "FkRelationDescriptor.h"
 
 class ERGraphicsScene : public QGraphicsScene
 {
@@ -43,9 +27,19 @@ public:
 
         addLine(0, -5, 0, 5, pen);
         addLine(-5, 0, 5, 0, pen);
-        // to draw a bunch of pixels
+        // should we draw a bunch of pixels ?
     }
 
+    void upadteFkrds()
+    {
+        for(int i=0; i<m_fksOnStage.size(); i++)
+        {
+            m_fksOnStage[i]->updateContent();
+            addItem(m_fksOnStage[i]->firstLine);
+            addItem(m_fksOnStage[i]->secondLine);
+
+        }
+    }
 
     /**
      * Called on the first mouse move after the drop item ... weird, but works.
@@ -104,7 +98,6 @@ protected:
     {
         event->acceptProposedAction();
     }
-
 
 private:
 

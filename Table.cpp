@@ -238,9 +238,14 @@ void Table::prepareDiagramEntity()
     maxX = finMaxX;
 
     QGraphicsRectItem* rect = new QGraphicsRectItem(0,0, maxX, py, grp);
+    grp->setLastX(maxX);
+    grp->setLastY(py);
     QGraphicsRectItem* recta = new QGraphicsRectItem(0,0, maxX, headerHeight, grp);
     QBrush brush (Qt::lightGray);
+    QBrush wbrush (Qt::white);
     recta->setBrush(brush);
+    rect->setBrush(wbrush);
+    rect->setZValue(-1);
     recta->setZValue(0.5);
     txtName->setZValue(1);
     grp->setToolTip(m_name);
