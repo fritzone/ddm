@@ -213,13 +213,14 @@ void Table::prepareDiagramEntity()
         {
             QGraphicsPixmapItem* keyicon = new QGraphicsPixmapItem(IconFactory::getKeyIcon().pixmap(16,16), grp);
             keyicon->setY(py + 2);
+            keyicon->setX(2);
         }
 
-        txtColName->setX(32);
+        txtColName->setX(36);
         icon->setY(py + 2);
-        icon->setX(18);
+        icon->setX(20);
         py+=txtColName->boundingRect().height();
-        maxX = txtColName->boundingRect().right() + 16 > maxX ? txtColName->boundingRect().right() + 16:maxX;
+        maxX = txtColName->boundingRect().right() + 20 > maxX ? txtColName->boundingRect().right() + 20:maxX;
     }
 
     maxX += 30;
@@ -248,7 +249,7 @@ void Table::prepareDiagramEntity()
     rect->setZValue(-1);
     recta->setZValue(0.5);
     txtName->setZValue(1);
-    grp->setToolTip(m_name);
+    grp->setToolTip(m_description);
 
     m_diagramEntity = grp;
 

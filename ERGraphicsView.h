@@ -6,12 +6,18 @@
 
 class ERGraphicsScene;
 class Version;
+class TableListWidget;
 
 class ERGraphicsView : public QGraphicsView
 {
 public:
 
-    ERGraphicsView(QWidget* parent, Version* v);
+    ERGraphicsView(QWidget* parent, Version* v, TableListWidget *tlst);
+
+    ERGraphicsScene* scene() const
+    {
+        return m_scene;
+    }
 
 protected:
 
@@ -19,8 +25,8 @@ protected:
 
 private:
 
-    ERGraphicsScene* scene;
-
+    ERGraphicsScene* m_scene;
+    TableListWidget *lstTables;
 };
 
 

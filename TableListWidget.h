@@ -4,6 +4,7 @@
 #include "IconFactory.h"
 
 #include <QListWidget>
+#include <QDragEnterEvent>
 
 class ERGraphicsView;
 
@@ -14,6 +15,18 @@ public:
     TableListWidget(QWidget* parent, ERGraphicsView* associatedGrView) : QListWidget(parent), grv(associatedGrView)
     {
         setDragEnabled(true);
+    }
+
+    void removeItem(const QString& str)
+    {
+        for(int i=0; i<count(); i++)
+        {
+            if(item(i)->text() == str)
+            {
+                takeItem(i);
+                return;
+            }
+        }
     }
 
 protected:
@@ -54,6 +67,8 @@ protected:
         // start drag
         drag->start(Qt::CopyAction | Qt::MoveAction);
     }
+
+
 private:
     ERGraphicsView* grv;
 };

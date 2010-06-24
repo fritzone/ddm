@@ -16,6 +16,12 @@ public:
     QGraphicsLineItem* firstLine;
     QGraphicsLineItem* secondLine;
 
+    DraggableGraphicsViewItemForForeignKey* getItem()
+    {
+        return m_fkitm;
+    }
+
+
 private:
 
     // finds the closes point to "to" from p1..4

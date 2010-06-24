@@ -3,7 +3,8 @@
 # -------------------------------------------------
 QT += network \
     sql \
-    xml
+    xml \
+    svg
 TARGET = dbm
 TEMPLATE = app
 SOURCES += main.cpp \
