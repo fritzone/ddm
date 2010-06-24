@@ -11,6 +11,8 @@
 #include "DraggableGraphicsItemForForeignKey.h"
 #include "FkRelationDescriptor.h"
 
+class TableListWidget;
+
 class ERGraphicsScene : public QGraphicsScene
 {
 public:
@@ -20,13 +22,15 @@ public:
     static const int LEFT = -10000;
     static const int TOP = -10000;
 
-    ERGraphicsScene(QWidget* parent, Version* v) : QGraphicsScene(LEFT, TOP, WIDTH, HEIGHT, parent), itm(0), m_version(v), justDropped(false), m_draggedItem(0)
+    ERGraphicsScene(QWidget* parent, Version* v, TableListWidget *lstTables) :  QGraphicsScene(LEFT, TOP, WIDTH, HEIGHT, parent),
+                                                                                itm(0), m_version(v), justDropped(false), m_draggedItem(0), m_lstTables(lstTables)
     {
         // to mark the centre of the view
         QPen pen(Qt::lightGray);
 
-        addLine(0, -5, 0, 5, pen);
-        addLine(-5, 0, 5, 0, pen);
+        //addLine(0, -5, 0, 5, pen);
+        //addLine(-5, 0, 5, 0, pen);
+
         // should we draw a bunch of pixels ?
     }
 
@@ -82,6 +86,8 @@ public:
         return m_draggedItem;
     }
 
+    QRectF getCoverageRect();
+
 protected:
 
     /**
@@ -127,6 +133,8 @@ private:
 
     // these foreign key elements are already on the stage
     QVector <FkRelationDescriptor*> m_fksOnStage;
+
+    TableListWidget *m_lstTables;
 };
 
 

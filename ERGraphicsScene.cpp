@@ -1,6 +1,6 @@
 #include "ERGraphicsScene.h"
 #include "ForeignKey.h"
-
+#include "TableListWidget.h"
 #include <qdebug.h>
 
 void ERGraphicsScene::finalizeItem(int x, int y)
@@ -12,6 +12,9 @@ void ERGraphicsScene::finalizeItem(int x, int y)
 
     itm->setX(x);
     itm->setY(y);
+
+    QString tabName = itm->getTable()->getName();
+    m_lstTables->removeItem(tabName);
 
     justDropped = false;
 
@@ -77,4 +80,30 @@ void ERGraphicsScene::dropEvent(QGraphicsSceneDragDropEvent * event)
     }
     justDropped = true;
     addItem(itm);
+}
+
+QRectF ERGraphicsScene::getCoverageRect()
+{
+    qreal minx = 99999999999, miny = 99999999999, maxx = -99999999999, maxy = -99999999999;
+    for(int i=0; i<m_onStage.size(); i++)
+    {
+        QPointF a  = m_onStage[i]->mapToScene(m_onStage[i]->boundingRect().topLeft());
+        QPointF b  = m_onStage[i]->mapToScene(m_onStage[i]->boundingRect().bottomRight());
+        if(a.x() < minx) minx = a.x();
+        if(a.y() < miny) miny = a.y();
+        if(b.x() > maxx) maxx = b.x();
+        if(b.y() > maxy) maxy = b.y();
+    }
+
+    for(int i=0; i<m_fksOnStage.size(); i++)
+    {
+        QPointF a  = m_fksOnStage[i]->getItem()->mapToScene(m_fksOnStage[i]->getItem()->boundingRect().topLeft());
+        QPointF b  = m_fksOnStage[i]->getItem()->mapToScene(m_fksOnStage[i]->getItem()->boundingRect().bottomRight());
+        if(a.x() < minx) minx = a.x();
+        if(a.y() < miny) miny = a.y();
+        if(b.x() > maxx) maxx = b.x();
+        if(b.y() > maxy) maxy = b.y();
+    }
+
+    return QRectF(minx, miny, maxx - minx, maxy - miny);
 }

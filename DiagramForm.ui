@@ -81,7 +81,7 @@
         <number>0</number>
        </property>
        <item>
-        <widget class="QToolButton" name="btnSaveToPNG">
+        <widget class="QToolButton" name="btnSaveToImageFile">
          <property name="maximumSize">
           <size>
            <width>24</width>
@@ -161,5 +161,25 @@
  <resources>
   <include location="dbm.qrc"/>
  </resources>
- <connections/>
+ <connections>
+  <connection>
+   <sender>btnSaveToImageFile</sender>
+   <signal>clicked()</signal>
+   <receiver>DiagramForm</receiver>
+   <slot>saveToImageFile()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>21</x>
+     <y>196</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>280</x>
+     <y>217</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>saveToImageFile()</slot>
+ </slots>
 </ui>

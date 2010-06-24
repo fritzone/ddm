@@ -179,7 +179,44 @@ public:
         grp->setRightPoint(QPointF(rombX3, rombY3));
         grp->setBottomPoint(QPointF(rombX4, rombY4));
 
+        grp->setToolTip(getDescriptiveText());
+        txtName->setToolTip(getDescriptiveText());
+        line1->setToolTip(getDescriptiveText());
+        line2->setToolTip(getDescriptiveText());
+        line3->setToolTip(getDescriptiveText());
+        line4->setToolTip(getDescriptiveText());
+
         return grp;
+    }
+
+    QString getDescriptiveText()
+    {
+        QString result = "";
+        QString localTable = "";
+        QString foreignTable = "";
+        for(int i=0; i<m_associations.size(); i++)
+        {
+            localTable = m_associations[i]->getSLocalTable();
+            foreignTable = m_associations[i]->getSForeignTable();
+            break;
+        }
+        localTable += "(";
+        foreignTable += "(";
+        for(int i=0; i<m_associations.size(); i++)
+        {
+            localTable += m_associations[i]->getSLocalColumn();
+            foreignTable += m_associations[i]->getSForeignColumn();
+
+            if(i<m_associations.size() - 1)
+            {
+                localTable += ", ";
+                foreignTable += ", ";
+            }
+        }
+        localTable += ") -> ";
+        foreignTable += ")";
+        result = localTable + foreignTable;
+        return result;
     }
 
 private:

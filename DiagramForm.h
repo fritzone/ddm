@@ -2,7 +2,10 @@
 #define DIAGRAMFORM_H
 
 #include <QWidget>
+
+class ERGraphicsView;
 class Version;
+class TableListWidget;
 
 namespace Ui
 {
@@ -17,12 +20,20 @@ public:
     DiagramForm(Version* v, QWidget *parent = 0);
     ~DiagramForm();
 
+
+public slots:
+
+    void saveToImageFile();
+
 protected:
     void changeEvent(QEvent *e);
+    bool saveToFile(const QString& fileName, bool transparent, const char* mode);
 
 private:
     Ui::DiagramForm *ui;
     Version* ver;
+    ERGraphicsView *graphicsView;
+    TableListWidget *lstTables;
 
 };
 
