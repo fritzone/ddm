@@ -12,6 +12,7 @@
 #include "FkRelationDescriptor.h"
 
 class TableListWidget;
+class Diagram;
 
 class ERGraphicsScene : public QGraphicsScene
 {
@@ -22,28 +23,11 @@ public:
     static const int LEFT = -10000;
     static const int TOP = -10000;
 
-    ERGraphicsScene(QWidget* parent, Version* v, TableListWidget *lstTables) :  QGraphicsScene(LEFT, TOP, WIDTH, HEIGHT, parent),
-                                                                                itm(0), m_version(v), justDropped(false), m_draggedItem(0), m_lstTables(lstTables)
-    {
-        // to mark the centre of the view
-        QPen pen(Qt::lightGray);
+    ERGraphicsScene(QWidget* parent, Version* v, Diagram* dgram, TableListWidget *lstTables);
 
-        //addLine(0, -5, 0, 5, pen);
-        //addLine(-5, 0, 5, 0, pen);
+    virtual ~ERGraphicsScene(){}
 
-        // should we draw a bunch of pixels ?
-    }
-
-    void upadteFkrds()
-    {
-        for(int i=0; i<m_fksOnStage.size(); i++)
-        {
-            m_fksOnStage[i]->updateContent();
-            addItem(m_fksOnStage[i]->firstLine);
-            addItem(m_fksOnStage[i]->secondLine);
-
-        }
-    }
+    void upadteFkrds();
 
     /**
      * Called on the first mouse move after the drop item ... weird, but works.
@@ -88,6 +72,13 @@ public:
 
     QRectF getCoverageRect();
 
+    Diagram* getDiagram()
+    {
+        return m_diagram;
+    }
+
+    void removeTable(const QString& tabName);
+
 protected:
 
     /**
@@ -128,13 +119,9 @@ private:
     // this is the dragegd item
     DraggableGraphicsViewItem* m_draggedItem;
 
-    // these table elements are already on the stage
-    QVector <DraggableGraphicsViewItem*> m_onStage;
-
-    // these foreign key elements are already on the stage
-    QVector <FkRelationDescriptor*> m_fksOnStage;
-
     TableListWidget *m_lstTables;
+
+    Diagram* m_diagram;
 };
 
 

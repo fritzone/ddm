@@ -3,10 +3,10 @@
 #include "ERGraphicsScene.h"
 #include <qdebug.h>
 
-ERGraphicsView::ERGraphicsView(QWidget* parent, Version* v, TableListWidget* tlst) : QGraphicsView(parent), lstTables(tlst)
+ERGraphicsView::ERGraphicsView(QWidget* parent, Version* v, Diagram* dgram, TableListWidget* tlst) : QGraphicsView(parent), lstTables(tlst), m_diagram(dgram)
 {
     setAcceptDrops(true);
-    m_scene = new ERGraphicsScene(this, v, tlst);
+    m_scene = new ERGraphicsScene(this, v, dgram, tlst);
     setScene(m_scene);
 
     setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);

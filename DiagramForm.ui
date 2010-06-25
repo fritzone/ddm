@@ -92,7 +92,7 @@
           <string>...</string>
          </property>
          <property name="icon">
-          <iconset resource="dbm.qrc">
+          <iconset>
            <normaloff>:/images/actions/images/actions/filesave.png</normaloff>:/images/actions/images/actions/filesave.png</iconset>
          </property>
         </widget>
@@ -158,9 +158,7 @@
    </item>
   </layout>
  </widget>
- <resources>
-  <include location="dbm.qrc"/>
- </resources>
+ <resources/>
  <connections>
   <connection>
    <sender>btnSaveToImageFile</sender>
@@ -178,8 +176,26 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>clicked(QAbstractButton*)</signal>
+   <receiver>DiagramForm</receiver>
+   <slot>onButtonBoxClicked(QAbstractButton*)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>280</x>
+     <y>413</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>280</x>
+     <y>217</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>saveToImageFile()</slot>
+  <slot>onButtonBoxClicked(QAbstractButton*)</slot>
+  <slot>removeFromDiagram()</slot>
  </slots>
 </ui>

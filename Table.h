@@ -27,6 +27,10 @@ public:
      */
     Table();
 
+    virtual ~Table()
+    {
+    }
+
     /**
      * Adds a new column to the table
      */

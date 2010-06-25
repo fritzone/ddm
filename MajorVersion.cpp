@@ -181,6 +181,10 @@ inline void MajorVersion::addTable(Table *t)
     m_tables.append(t);
 }
 
+inline void MajorVersion::addDiagram(Diagram* d)
+{
+    m_diagrams.append(d);
+}
 
 inline bool MajorVersion::hasTable(Table *t)
 {

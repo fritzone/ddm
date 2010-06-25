@@ -7,12 +7,13 @@
 class ERGraphicsScene;
 class Version;
 class TableListWidget;
+class Diagram;
 
 class ERGraphicsView : public QGraphicsView
 {
 public:
 
-    ERGraphicsView(QWidget* parent, Version* v, TableListWidget *tlst);
+    ERGraphicsView(QWidget* parent, Version* v, Diagram* dgram, TableListWidget *tlst);
 
     ERGraphicsScene* scene() const
     {
@@ -27,6 +28,7 @@ private:
 
     ERGraphicsScene* m_scene;
     TableListWidget *lstTables;
+    Diagram* m_diagram;
 };
 
 

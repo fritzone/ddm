@@ -63,3 +63,10 @@ QPointF FkRelationDescriptor::closest(QPointF to, QPointF p1, QPointF p2, QPoint
 
     return result;
 }
+
+void FkRelationDescriptor::eliberate()
+{
+    delete firstLine;
+    delete secondLine;
+    delete m_fkitm;
+}

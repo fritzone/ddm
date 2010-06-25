@@ -18,6 +18,7 @@
 #include "DeserializationFactory.h"
 #include "AboutBoxDialog.h"
 #include "DiagramForm.h"
+#include "Diagram.h"
 
 #include <QtGui>
 
@@ -89,10 +90,6 @@ QTreeWidget* MainWindow::setupGuiForNewSolution()
     dock->setWidget(projectTree);
     addDockWidget(Qt::LeftDockWidgetArea, dock);
     addDockWidget(Qt::LeftDockWidgetArea, dockdt);
-
-    // show all the icons
-    ui->mainToolBar->actions().at(3)->setVisible(true);
-    ui->mainToolBar->actions().at(4)->setVisible(true);
 
     // set a normal size
     showMaximized();
@@ -198,8 +195,6 @@ void MainWindow::onProjectTreeClicked()
         else
         if(item == getWorkingProject()->getWorkingVersion()->getDiagramsItem())
         {
-            DiagramForm* df = new DiagramForm(getWorkingProject()->getWorkingVersion(), this);
-            setCentralWidget(df);
         }
         else
         if(item == getWorkingProject()->getWorkingVersion()->getVersionItem())
@@ -417,6 +412,7 @@ void MainWindow::enableActions()
 {
     ui->action_NewDataType->setEnabled(true);
     ui->action_NewTable->setEnabled(true);
+    ui->action_NewDiagram->setEnabled(true);
 }
 
 void MainWindow::onAbout()
@@ -428,5 +424,25 @@ void MainWindow::onAbout()
 
 void MainWindow::onNewDiagram()
 {
+    Diagram* dgram = new Diagram();
+    DiagramForm* df = new DiagramForm(getWorkingProject()->getWorkingVersion(), dgram, this);
+    setCentralWidget(df);
+    dgram->setForm(df);
+}
 
+bool MainWindow::onSaveDiagram(Diagram* dgram)
+{
+    if(!dgram->isSaved())
+    {
+        QIcon diagramIcon(":/images/actions/images/small/diagram.png");
+        QTreeWidgetItem* newDgramItem = new QTreeWidgetItem(m_currentSolution->currentProject()->getWorkingVersion()->getDiagramsItem(), QStringList(dgram->getName())) ;
+        newDgramItem->setIcon(0, diagramIcon);
+        dgram->setLocation(newDgramItem);
+        dgram->setSaved(true);
+        projectTree->addTopLevelItem(newDgramItem);
+    }
+    else
+    {
+        dgram->getLocation()->setText(0, dgram->getName());
+    }
 }

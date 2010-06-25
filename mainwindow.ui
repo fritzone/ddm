@@ -2,6 +2,9 @@
 <ui version="4.0">
  <class>MainWindow</class>
  <widget class="QMainWindow" name="MainWindow">
+  <property name="enabled">
+   <bool>true</bool>
+  </property>
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -191,6 +194,9 @@
    </property>
   </action>
   <action name="action_NewDiagram">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="icon">
     <iconset resource="dbm.qrc">
      <normaloff>:/images/actions/images/actions/new_diagram.png</normaloff>:/images/actions/images/actions/new_diagram.png</iconset>
@@ -304,6 +310,22 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>action_NewDiagram</sender>
+   <signal>activated()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>onNewDiagram()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>169</x>
+     <y>54</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>onNewSolution()</slot>
@@ -312,5 +334,6 @@
   <slot>onSaveProject()</slot>
   <slot>onOpenProject()</slot>
   <slot>onAbout()</slot>
+  <slot>onNewDiagram()</slot>
  </slots>
 </ui>

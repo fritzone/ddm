@@ -44,7 +44,8 @@ SOURCES += main.cpp \
     ERGraphicsView.cpp \
     ERGraphicsScene.cpp \
     DraggableGraphicsViewItemForForeignKey.cpp \
-    FkRelationDescriptor.cpp
+    FkRelationDescriptor.cpp \
+    Diagram.cpp
 HEADERS += MainWindow.h \
     MainWindowButtonDialog.h \
     NewProjectDialog.h \
@@ -93,7 +94,8 @@ HEADERS += MainWindow.h \
     ERGraphicsView.h \
     TableListWidget.h \
     DraggableGraphicsItemForForeignKey.h \
-    FkRelationDescriptor.h
+    FkRelationDescriptor.h \
+    Diagram.h
 FORMS += mainwindow.ui \
     mainwindowbuttondialog.ui \
     newprojectdialog.ui \

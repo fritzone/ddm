@@ -1,7 +1,15 @@
 #include "ERGraphicsScene.h"
 #include "ForeignKey.h"
 #include "TableListWidget.h"
+#include "Diagram.h"
+
 #include <qdebug.h>
+
+ERGraphicsScene::ERGraphicsScene(QWidget* parent, Version* v, Diagram* dgram, TableListWidget *lstTables) :  QGraphicsScene(LEFT, TOP, WIDTH, HEIGHT, parent),
+                                                                            itm(0), m_version(v), justDropped(false), m_draggedItem(0), m_lstTables(lstTables), m_diagram(dgram)
+{
+}
+
 
 void ERGraphicsScene::finalizeItem(int x, int y)
 {
@@ -18,10 +26,10 @@ void ERGraphicsScene::finalizeItem(int x, int y)
 
     justDropped = false;
 
-    m_onStage.append(itm);
+    m_diagram->m_onStage.append(itm);
 
-    // now search in the version if there are any other tables that have a foreign key with the table from itm and add
-    // the foreign key to the scene
+    // now search in the elements that are in the diagram if there are any other tables that have a foreign key with the table from itm and add
+    // the foreign key to the scene.
     const QVector<Table*>&  allTables = m_version->getTables();
     for(int i=0; i<allTables.size(); i++)
     {
@@ -35,7 +43,7 @@ void ERGraphicsScene::finalizeItem(int x, int y)
                 {
                     if(assocs.at(k)->getForeignTable() == itm->getTable())
                     {
-                        DraggableGraphicsViewItem* itmForOtherTable = getItemForTable(allTables.at(i)->getName());
+                        DraggableGraphicsViewItem* itmForOtherTable = getItemForTable(allTables.at(i)->getName());  // this returns a table only if the table is in the scene already
                         if(itmForOtherTable != 0)
                         {
                             qDebug() << "do the stuff here: prepare a new object to be put on the screen between itm and itmForOtherTable";
@@ -46,7 +54,7 @@ void ERGraphicsScene::finalizeItem(int x, int y)
                             addItem(difks);
                             addItem(fkrd->firstLine);
                             addItem(fkrd->secondLine);
-                            m_fksOnStage.append(fkrd);
+                            m_diagram->m_fksOnStage.append(fkrd);
                         }
                     }
                 }
@@ -54,15 +62,39 @@ void ERGraphicsScene::finalizeItem(int x, int y)
         }
     }
 
+    // now we should do: search in the foreign keys of the new item, to see if it has a FK to any table in the scene
+    const QVector<ForeignKey*> & cfks = itm->getTable()->getFks();
+    for(int i=0; i<cfks.size(); i++)
+    {
+        const QVector<ForeignKey::ColumnAssociation*>&  assocs = cfks.at(i)->getAssociations();
+        for(int j=0; j<assocs.size(); j++)
+        {
+            if(assocs.at(j)->getLocalTable() == itm->getTable())
+            {
+                DraggableGraphicsViewItem* itmForOtherTable = getItemForTable(assocs.at(j)->getForeignTable()->getName());
+                if(itmForOtherTable != 0)
+                {
+                    DraggableGraphicsViewItemForForeignKey* difks = cfks.at(i)->getItem();
+                    FkRelationDescriptor* fkrd = new FkRelationDescriptor(difks, itmForOtherTable, itm);
+                    fkrd->updateContent(true);
+                    addItem(difks);
+                    addItem(fkrd->firstLine);
+                    addItem(fkrd->secondLine);
+                    m_diagram->m_fksOnStage.append(fkrd);
+
+                }
+            }
+        }
+    }
 }
 
 DraggableGraphicsViewItem* ERGraphicsScene::getItemForTable(const QString &tabName)
 {
-    for(int i=0; i<m_onStage.size(); i++)
+    for(int i=0; i<m_diagram->m_onStage.size(); i++)
     {
-        if(m_onStage.at(i)->getTable()->getName() == tabName)
+        if(m_diagram->m_onStage.at(i)->getTable()->getName() == tabName)
         {
-            return m_onStage.at(i);
+            return m_diagram->m_onStage.at(i);
         }
     }
     return 0;
@@ -85,20 +117,20 @@ void ERGraphicsScene::dropEvent(QGraphicsSceneDragDropEvent * event)
 QRectF ERGraphicsScene::getCoverageRect()
 {
     qreal minx = 99999999999, miny = 99999999999, maxx = -99999999999, maxy = -99999999999;
-    for(int i=0; i<m_onStage.size(); i++)
+    for(int i=0; i<m_diagram->m_onStage.size(); i++)
     {
-        QPointF a  = m_onStage[i]->mapToScene(m_onStage[i]->boundingRect().topLeft());
-        QPointF b  = m_onStage[i]->mapToScene(m_onStage[i]->boundingRect().bottomRight());
+        QPointF a  = m_diagram->m_onStage[i]->mapToScene(m_diagram->m_onStage[i]->boundingRect().topLeft());
+        QPointF b  = m_diagram->m_onStage[i]->mapToScene(m_diagram->m_onStage[i]->boundingRect().bottomRight());
         if(a.x() < minx) minx = a.x();
         if(a.y() < miny) miny = a.y();
         if(b.x() > maxx) maxx = b.x();
         if(b.y() > maxy) maxy = b.y();
     }
 
-    for(int i=0; i<m_fksOnStage.size(); i++)
+    for(int i=0; i<m_diagram->m_fksOnStage.size(); i++)
     {
-        QPointF a  = m_fksOnStage[i]->getItem()->mapToScene(m_fksOnStage[i]->getItem()->boundingRect().topLeft());
-        QPointF b  = m_fksOnStage[i]->getItem()->mapToScene(m_fksOnStage[i]->getItem()->boundingRect().bottomRight());
+        QPointF a  = m_diagram->m_fksOnStage[i]->getItem()->mapToScene(m_diagram->m_fksOnStage[i]->getItem()->boundingRect().topLeft());
+        QPointF b  = m_diagram->m_fksOnStage[i]->getItem()->mapToScene(m_diagram->m_fksOnStage[i]->getItem()->boundingRect().bottomRight());
         if(a.x() < minx) minx = a.x();
         if(a.y() < miny) miny = a.y();
         if(b.x() > maxx) maxx = b.x();
@@ -106,4 +138,19 @@ QRectF ERGraphicsScene::getCoverageRect()
     }
 
     return QRectF(minx, miny, maxx - minx, maxy - miny);
+}
+
+void ERGraphicsScene::upadteFkrds()
+{
+    for(int i=0; i<m_diagram->m_fksOnStage.size(); i++)
+    {
+        m_diagram->m_fksOnStage[i]->updateContent();
+        addItem(m_diagram->m_fksOnStage[i]->firstLine);
+        addItem(m_diagram->m_fksOnStage[i]->secondLine);
+    }
+}
+
+void ERGraphicsScene::removeTable(const QString &tabName)
+{
+    m_diagram->removeTable(tabName);
 }
