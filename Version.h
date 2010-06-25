@@ -7,6 +7,7 @@
 
 class UserDataType;
 class Table;
+class Diagram;
 
 /**
  * Basic class holding data related to versions
@@ -36,6 +37,10 @@ public:
      * Return the tree item of the Version
      */
     virtual QTreeWidgetItem* getVersionItem() const = 0;
+
+    /**
+     * Return the tree item of the diagrams
+     */
     virtual QTreeWidgetItem* getDiagramsItem() const = 0;
 
     /**
@@ -67,6 +72,11 @@ public:
      * Adds a new table to the system
      */
     virtual void addTable(Table*) = 0;
+
+    /**
+     * Add a diagram to the system
+     */
+    virtual void addDiagram(Diagram*) = 0;
 
     /**
      * Checks if this version has the given table already. The comparison is done based on

@@ -58,6 +58,8 @@ public:
 
     virtual void addNewDataType(UserDataType*);
 
+    virtual void addDiagram(Diagram*);
+
     virtual const QVector<UserDataType*>& getDataTypes() const;
 
     virtual bool hasDataType(const QString& name) const;
@@ -106,6 +108,8 @@ private:
 
     // the tables in the system
     QVector<Table*> m_tables;
+
+    QVector<Diagram*> m_diagrams;
 
     // the project tree
     QTreeWidget* m_tree;

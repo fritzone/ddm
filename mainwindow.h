@@ -12,6 +12,7 @@ class AbstractDTSupplier;
 class UserDataType;
 class Table;
 class Solution;
+class Diagram;
 
 namespace Ui
 {
@@ -49,6 +50,8 @@ public:
     bool onUpdateTable(Table* tbl);
 
     Solution* currentSolution();
+
+    bool onSaveDiagram(Diagram*);
 
 public slots:
 

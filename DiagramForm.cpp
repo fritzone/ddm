@@ -7,6 +7,8 @@
 #include "ERGraphicsView.h"
 #include "DraggableGraphicsItem.h"
 #include "TableListWidget.h"
+#include "Diagram.h"
+#include "mainwindow.h"
 
 #include <QListWidgetItem>
 #include <QGraphicsView>
@@ -19,7 +21,7 @@
 #include <QSvgGenerator>
 #include <qdebug.h>
 
-DiagramForm::DiagramForm(Version* v, QWidget *parent) : QWidget(parent), ui(new Ui::DiagramForm), ver(v)
+DiagramForm::DiagramForm(Version* v, Diagram* dgram, QWidget *parent) : QWidget(parent), ui(new Ui::DiagramForm), ver(v), m_diagram(dgram), m_mw(dynamic_cast<MainWindow*>(parent)), m_tabToRemove("")
 {
 
     ui->setupUi(this);
@@ -33,11 +35,12 @@ DiagramForm::DiagramForm(Version* v, QWidget *parent) : QWidget(parent), ui(new 
     lstTables->setSizePolicy(sizePolicy);
     lstTables->setDragDropMode(QAbstractItemView::DragDrop);
 
-    graphicsView = new ERGraphicsView(this, v, lstTables);
+    graphicsView = new ERGraphicsView(this, v, dgram, lstTables);
     graphicsView->setObjectName(QString::fromUtf8("graphicsView"));
     graphicsView->setDragMode(QGraphicsView::RubberBandDrag);
     graphicsView->setAcceptDrops(true);
 
+    ui->txtDiagramName->setText(m_diagram->getName());
 
     ui->verticalLayout_2->addWidget(lstTables);
     ui->horizontalLayout->addWidget(graphicsView);
@@ -133,12 +136,18 @@ void DiagramForm::saveToImageFile()
 {
     QString name = QFileDialog::getSaveFileName(this, tr("Save diagram"), "", tr("Images (*.png *.bmp *.jpg *.jpeg *.tiff);;SVG(*.svg)"));
 
-    const char* mode = "png";
+    const char* mode = "";
     if(name.endsWith(".png", Qt::CaseInsensitive)) mode = "png";
     if(name.endsWith(".bmp", Qt::CaseInsensitive)) mode = "bmp";
     if(name.endsWith(".jpg", Qt::CaseInsensitive)) mode = "jpg";
     if(name.endsWith(".tiff", Qt::CaseInsensitive)) mode = "tiff";
     if(name.endsWith(".svg", Qt::CaseInsensitive)) mode = "svg";
+
+    if(QString(mode).length() == 0)
+    {
+        QMessageBox::critical(this, "Error", "Please specify one the extensions: png bmp jpg tiff svg", QMessageBox::Ok);
+        return;
+    }
 
     bool transparent = false;
 
@@ -159,4 +168,45 @@ void DiagramForm::saveToImageFile()
     }
 
     saveToFile(name, transparent, mode);
+}
+
+void DiagramForm::onButtonBoxClicked(QAbstractButton* btn)
+{
+    if(btn == ui->buttonBox->buttons().at(0)) // Seems very strange, but works like this... Save is the First, after Reset
+    {
+        onSave();
+    }
+    else
+    {
+        onReset();
+    }
+}
+
+void DiagramForm::onSave()
+{
+    m_diagram->setName(ui->txtDiagramName->text());
+    if(!m_diagram->isSaved())
+    {
+        ver->addDiagram(m_diagram);
+    }
+    m_mw->onSaveDiagram(m_diagram);
+}
+
+void DiagramForm::onReset()
+{
+
+}
+
+void DiagramForm::removeFromDiagram()
+{
+    graphicsView->scene()->removeTable(m_tabToRemove);
+    QListWidgetItem* qlwi = new QListWidgetItem(m_tabToRemove, lstTables);
+    qlwi->setIcon(IconFactory::getTablesIcon());
+
+    m_tabToRemove = "";
+}
+
+void DiagramForm::setTableToRemoveFromDiagram(const QString& tabName)
+{
+    m_tabToRemove = tabName;
 }

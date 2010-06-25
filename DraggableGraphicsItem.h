@@ -8,11 +8,17 @@ class Table;
 
 class DraggableGraphicsViewItem : public QGraphicsItemGroup
 {
+
+
 public:
 
     DraggableGraphicsViewItem(Table* tab) : QGraphicsItemGroup(), m_table(tab), lastX(0), lastY(0)
     {
         setAcceptDrops(true);
+    }
+
+    virtual ~DraggableGraphicsViewItem()
+    {
     }
 
     QPixmap getDragImage();
