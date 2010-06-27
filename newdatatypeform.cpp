@@ -137,6 +137,12 @@ void NewDataTypeForm::resetContent()
 
 void NewDataTypeForm::onSave()
 {
+    if(!m_ui->chkCanBeNull->isChecked() && m_ui->chkNullIsDefault->isChecked())
+    {
+        QMessageBox::critical(this, "Error", "This data type cannot be null, however it's default value is set to null", QMessageBox::Ok);
+        m_ui->tabWidget->setCurrentIndex(1);
+        return;
+    }
     if(m_mw != 0)
     {
         QString cp = m_ui->cmbCharacterSets->currentIndex() > 0 ? m_dbEngine->getCodepageSupplier()->getCodepages()[m_ui->cmbCharacterSets->currentIndex()]->getName() : "";
