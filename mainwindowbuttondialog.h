@@ -20,6 +20,8 @@ public slots:
 
     // when the user clicked the "new" button
     void onNewProject();
+    void onCloseWindow();
+    void onOpenProject();
 
 
 protected:
