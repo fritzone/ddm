@@ -25,6 +25,24 @@
   <layout class="QGridLayout" name="gridLayout">
    <item row="0" column="0">
     <widget class="QPushButton" name="btnNew">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="minimumSize">
+      <size>
+       <width>128</width>
+       <height>92</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>128</width>
+       <height>92</height>
+      </size>
+     </property>
      <property name="text">
       <string/>
      </property>
@@ -99,6 +117,18 @@ p, li { white-space: pre-wrap; }
    </item>
    <item row="2" column="0">
     <widget class="QPushButton" name="btnOpen">
+     <property name="minimumSize">
+      <size>
+       <width>128</width>
+       <height>92</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>128</width>
+       <height>92</height>
+      </size>
+     </property>
      <property name="text">
       <string/>
      </property>
