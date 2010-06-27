@@ -44,7 +44,7 @@
     </widget>
    </item>
    <item row="0" column="2">
-    <widget class="QPushButton" name="pushButton_2">
+    <widget class="QPushButton" name="btnImport">
      <property name="text">
       <string/>
      </property>
@@ -81,7 +81,7 @@ p, li { white-space: pre-wrap; }
     </widget>
    </item>
    <item row="1" column="2">
-    <widget class="QLabel" name="label_2">
+    <widget class="QLabel" name="lblImport">
      <property name="text">
       <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
@@ -98,7 +98,7 @@ p, li { white-space: pre-wrap; }
     </widget>
    </item>
    <item row="2" column="0">
-    <widget class="QPushButton" name="pushButton">
+    <widget class="QPushButton" name="btnOpen">
      <property name="text">
       <string/>
      </property>
@@ -115,7 +115,7 @@ p, li { white-space: pre-wrap; }
     </widget>
    </item>
    <item row="2" column="2">
-    <widget class="QPushButton" name="pushButton_3">
+    <widget class="QPushButton" name="btnExport">
      <property name="text">
       <string/>
      </property>
@@ -152,7 +152,7 @@ p, li { white-space: pre-wrap; }
     </widget>
    </item>
    <item row="3" column="2">
-    <widget class="QLabel" name="label_4">
+    <widget class="QLabel" name="lblExport">
      <property name="text">
       <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
@@ -219,9 +219,26 @@ p, li { white-space: pre-wrap; }
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>btnOpen</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindowButtonDialog</receiver>
+   <slot>onOpenProject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>71</x>
+     <y>221</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>199</x>
+     <y>149</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>onNewProject()</slot>
   <slot>onCloseWindow()</slot>
+  <slot>onOpenProject()</slot>
  </slots>
 </ui>

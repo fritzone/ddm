@@ -8,6 +8,11 @@ MainWindowButtonDialog::MainWindowButtonDialog(QWidget *parent) :
     m_mw(0)
 {
     m_ui->setupUi(this);
+
+    m_ui->btnImport->hide();
+    m_ui->lblImport->hide();
+    m_ui->lblExport->hide();
+    m_ui->btnExport->hide();
 }
 
 MainWindowButtonDialog::~MainWindowButtonDialog()
@@ -26,6 +31,20 @@ void MainWindowButtonDialog::onNewProject()
     {
         m_mw->onNewSolution();
     }
+}
+
+void MainWindowButtonDialog::onOpenProject()
+{
+    if(m_mw)
+    {
+        m_mw->onOpenProject();
+    }
+}
+
+
+void MainWindowButtonDialog::onCloseWindow()
+{
+
 }
 
 void MainWindowButtonDialog::changeEvent(QEvent *e)
