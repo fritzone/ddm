@@ -18,6 +18,8 @@ class ERGraphicsScene : public QGraphicsScene
 {
 public:
 
+    friend class ERGraphicsView;
+
     static const int WIDTH = 20000;
     static const int HEIGHT = 20000;
     static const int LEFT = -10000;

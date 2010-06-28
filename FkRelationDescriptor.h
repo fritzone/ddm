@@ -17,7 +17,8 @@ public:
     static const int BOTTOM = 2;
 
     FkRelationDescriptor(DraggableGraphicsViewItemForForeignKey* fkitm, DraggableGraphicsViewItem* tab1, DraggableGraphicsViewItem* tab2) : 
-            firstLine(0), secondLine(0), m_fkitm(fkitm),m_tab1(tab1), m_tab2(tab2), m_sentenced(false), m_ellipse(0), rel1Txt(0), rel2Txt(0)
+            m_ellipse(0), rel1Txt(0), rel2Txt(0),
+            m_fkitm(fkitm),m_tab1(tab1), m_tab2(tab2), m_sentenced(false), firstLine(0), secondLine(0)
     {}
 
     void updateContent(bool first = false);

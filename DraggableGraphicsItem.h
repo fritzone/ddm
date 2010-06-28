@@ -9,7 +9,8 @@ class Table;
 class DraggableGraphicsViewItem : public QGraphicsItemGroup
 {
 
-
+    friend class ERGraphicsView;
+    
 public:
 
     DraggableGraphicsViewItem(Table* tab) : QGraphicsItemGroup(), m_table(tab), lastX(0), lastY(0)

@@ -9,6 +9,7 @@ class Version;
 class TableListWidget;
 class Diagram;
 class MainWindow;
+class DiagramTextItem;
 
 namespace Ui
 {
@@ -23,12 +24,16 @@ public:
     DiagramForm(Version* v, Diagram* dgram, QWidget *parent);
     ~DiagramForm();
     void setTableToRemoveFromDiagram(const QString& tabName);
+    void doneNote();
 
 public slots:
 
     void saveToImageFile();
     void onButtonBoxClicked(QAbstractButton*);
     void removeFromDiagram();
+    void onAddNote();
+    void editorLostFocus(DiagramTextItem *item);
+
 
 protected:
     void changeEvent(QEvent *e);
