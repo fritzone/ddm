@@ -52,9 +52,13 @@ void ERGraphicsScene::finalizeItem(int x, int y)
                             FkRelationDescriptor* fkrd = new FkRelationDescriptor(difks, itm, itmForOtherTable);
                             fkrd->updateContent(true);
                             addItem(difks);
-                            addItem(fkrd->firstLine);
-                            addItem(fkrd->secondLine);
+                            addItem(fkrd->getFirstLine() );
+                            addItem(fkrd->getSecondLine() );
+                            addItem(fkrd->m_ellipse );
+                            addItem(fkrd->rel1Txt);
+                            addItem(fkrd->rel2Txt);
                             m_diagram->m_fksOnStage.append(fkrd);
+                            break;
                         }
                     }
                 }
@@ -78,10 +82,13 @@ void ERGraphicsScene::finalizeItem(int x, int y)
                     FkRelationDescriptor* fkrd = new FkRelationDescriptor(difks, itmForOtherTable, itm);
                     fkrd->updateContent(true);
                     addItem(difks);
-                    addItem(fkrd->firstLine);
-                    addItem(fkrd->secondLine);
+                    addItem(fkrd->getFirstLine() );
+                    addItem(fkrd->getSecondLine() );
+                    addItem(fkrd->m_ellipse );
+                    addItem(fkrd->rel1Txt);
+                    addItem(fkrd->rel2Txt);
                     m_diagram->m_fksOnStage.append(fkrd);
-
+                    break;
                 }
             }
         }
@@ -145,8 +152,12 @@ void ERGraphicsScene::upadteFkrds()
     for(int i=0; i<m_diagram->m_fksOnStage.size(); i++)
     {
         m_diagram->m_fksOnStage[i]->updateContent();
-        addItem(m_diagram->m_fksOnStage[i]->firstLine);
-        addItem(m_diagram->m_fksOnStage[i]->secondLine);
+        addItem(m_diagram->m_fksOnStage[i]->getFirstLine() );
+        addItem(m_diagram->m_fksOnStage[i]->getSecondLine() );
+
+        addItem(m_diagram->m_fksOnStage[i]->m_ellipse );
+        addItem(m_diagram->m_fksOnStage[i]->rel1Txt);
+        addItem(m_diagram->m_fksOnStage[i]->rel2Txt);
     }
 }
 
