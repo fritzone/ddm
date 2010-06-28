@@ -5,8 +5,8 @@
 #include "SerializableElement.h"
 #include "Column.h"
 #include "DraggableGraphicsItemForForeignKey.h"
+#include "Table.h"
 
-class Table;
 
 class ForeignKey : public TreeItem, public SerializableElement
 {
@@ -218,6 +218,38 @@ public:
         result = localTable + foreignTable;
         return result;
     }
+
+
+    // TODO: Code duplication below, and above ... look for a nicer solution :)
+    QString getLocalDescriptiveText()
+    {
+        QString result = "";
+        for(int i=0; i<m_associations.size(); i++)
+        {
+            result += m_associations[i]->getSLocalColumn();
+            if(i<m_associations.size() - 1)
+            {
+                result += ", ";
+            }
+        }
+
+        return result;
+    }
+
+    QString getForeignDescriptiveText()
+    {
+        QString result = "";
+        for(int i=0; i<m_associations.size(); i++)
+        {
+            result += m_associations[i]->getSForeignColumn();
+            if(i<m_associations.size() - 1)
+            {
+                result += ", ";
+            }
+        }
+        return result;
+    }
+
 
 private:
 

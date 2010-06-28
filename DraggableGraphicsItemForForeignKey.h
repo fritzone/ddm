@@ -58,6 +58,11 @@ public:
         return QRectF(leftPoint.x(), topPoint.y(), rightPoint.x(), bottomPoint.y());
     }
 
+    ForeignKey* getFk() const
+    {
+        return m_fk;
+    }
+
 protected:
 
     void mousePressEvent ( QGraphicsSceneMouseEvent * event );
