@@ -9,6 +9,8 @@ class DraggableGraphicsViewItemForForeignKey : public DraggableGraphicsViewItem
 {
 public:
 
+    friend class ERGraphicsView;
+
     DraggableGraphicsViewItemForForeignKey(ForeignKey* fk) : DraggableGraphicsViewItem(0), m_fk(fk)
     {}
 

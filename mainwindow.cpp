@@ -445,4 +445,6 @@ bool MainWindow::onSaveDiagram(Diagram* dgram)
     {
         dgram->getLocation()->setText(0, dgram->getName());
     }
+
+    return true;
 }

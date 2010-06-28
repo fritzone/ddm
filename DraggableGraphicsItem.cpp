@@ -45,6 +45,7 @@ void DraggableGraphicsViewItem:: mousePressEvent ( QGraphicsSceneMouseEvent * ev
     }
     dynamic_cast<ERGraphicsScene*>(this->scene())->setDraggedItem(this);
     dynamic_cast<ERGraphicsScene*>(this->scene())->setStartDragPos(event->pos().x(), event->pos().y());
+    event->accept();
 }
 
 void DraggableGraphicsViewItem::mouseReleaseEvent ( QGraphicsSceneMouseEvent * event )

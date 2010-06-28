@@ -145,7 +145,7 @@ void DiagramForm::saveToImageFile()
 
     if(QString(mode).length() == 0)
     {
-        QMessageBox::critical(this, "Error", "Please specify one the extensions: png bmp jpg tiff svg", QMessageBox::Ok);
+        QMessageBox::critical(this, "Error", "Please specify one of the extensions: png bmp jpg tiff svg", QMessageBox::Ok);
         return;
     }
 
@@ -209,4 +209,36 @@ void DiagramForm::removeFromDiagram()
 void DiagramForm::setTableToRemoveFromDiagram(const QString& tabName)
 {
     m_tabToRemove = tabName;
+}
+
+void DiagramForm::onAddNote()
+{
+    if(ui->btnAddNote->isChecked())
+    {
+        graphicsView->setMode(ERGraphicsView::Note);
+    }
+    else
+    {
+        graphicsView->setMode(ERGraphicsView::Nothing);
+    }
+}
+
+void DiagramForm::doneNote()
+{
+    ui->btnAddNote->setChecked(false);
+    graphicsView->setMode(ERGraphicsView::Nothing);
+}
+
+
+void DiagramForm::editorLostFocus(DiagramTextItem *item)
+{
+    if(!item) return;
+    QTextCursor cursor = item->textCursor();
+    cursor.clearSelection();
+    item->setTextCursor(cursor);
+
+    if (item->toPlainText().isEmpty()) {
+        graphicsView->scene()->removeItem(item);
+        item->deleteLater();
+    }
 }

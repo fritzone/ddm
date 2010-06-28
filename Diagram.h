@@ -49,6 +49,7 @@ public:
 public:
 
     friend class ERGraphicsScene;
+    friend class ERGraphicsView;
 
 private:
 
