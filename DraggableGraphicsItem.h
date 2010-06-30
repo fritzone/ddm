@@ -4,6 +4,8 @@
 #include <QGraphicsItemGroup>
 #include <QGraphicsSceneDragDropEvent>
 
+#include <qdebug.h>
+
 class Table;
 
 class DraggableGraphicsViewItem : public QGraphicsItemGroup
@@ -60,7 +62,6 @@ protected:
 
     virtual void mousePressEvent ( QGraphicsSceneMouseEvent * event );
     virtual void mouseReleaseEvent ( QGraphicsSceneMouseEvent * event );
-
 
 private:
 

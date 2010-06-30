@@ -62,7 +62,7 @@ protected:
         // mime stuff
         mimeData->setText(currentItem()->text());
         drag->setMimeData(mimeData);
-        drag->setPixmap(IconFactory::getTablesIcon().pixmap(16,16));
+        drag->setPixmap(currentItem()->icon().pixmap(32,32));
 
         // start drag
         drag->start(Qt::CopyAction | Qt::MoveAction);

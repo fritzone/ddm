@@ -8,7 +8,7 @@
 
 #include <QObject>
 
-ERGraphicsView::ERGraphicsView(QWidget* parent, Version* v, Diagram* dgram, TableListWidget* tlst) : QGraphicsView(parent), lstTables(tlst), m_diagram(dgram), m_mode(Nothing), textItem(0)
+ERGraphicsView::ERGraphicsView(QWidget* parent, Version* v, Diagram* dgram, TableListWidget* tlst) : QGraphicsView(parent), lstTables(tlst), m_diagram(dgram), m_mode(Nothing)
 {
     setAcceptDrops(true);
     m_scene = new ERGraphicsScene(this, v, dgram, tlst);
@@ -70,23 +70,10 @@ void ERGraphicsView::mousePressEvent(QMouseEvent *mouseEvent)
             }
         }
 
-        // nothing here
-
     }
     else
     if(m_mode == Note)
     {
-        textItem = new DiagramTextItem("<Type Here>");
-        //textItem->setFont(myFont);
-        textItem->setTextInteractionFlags(Qt::TextEditorInteraction);
-        textItem->setZValue(1.0);
-        connect(textItem, SIGNAL(lostFocus(DiagramTextItem*)), m_scene->getDiagram()->getDiagramForm(), SLOT(editorLostFocus(DiagramTextItem*)));
-
-        m_scene->addItem(textItem);
-        //textItem->setDefaultTextColor(myTextColor);
-        textItem->setPos(mapToScene(mouseEvent->pos()));
-
-        m_diagram->m_form->doneNote();
     }
 }
 
@@ -100,6 +87,4 @@ void ERGraphicsView::mouseReleaseEvent(QMouseEvent *mouseEvent)
     if(m_mode == Note)
     {
     }
-
-
 }
