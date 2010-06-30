@@ -47,7 +47,7 @@ private:
     Ui::DiagramForm *ui;
     Version* ver;
     ERGraphicsView *graphicsView;
-    TableListWidget *lstTables;
+    TableListWidget *lstTables, *lstDiagramForms;
     Diagram* m_diagram;
     MainWindow* m_mw;
     QString m_tabToRemove;

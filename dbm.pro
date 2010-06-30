@@ -46,7 +46,8 @@ SOURCES += main.cpp \
     DraggableGraphicsViewItemForForeignKey.cpp \
     FkRelationDescriptor.cpp \
     Diagram.cpp \
-    DraggableGraphicsViewItemForText.cpp
+    DraggableGraphicsViewItemForText.cpp \
+    EnterNoteTextDialog.cpp
 HEADERS += MainWindow.h \
     MainWindowButtonDialog.h \
     NewProjectDialog.h \
@@ -97,7 +98,8 @@ HEADERS += MainWindow.h \
     DraggableGraphicsItemForForeignKey.h \
     FkRelationDescriptor.h \
     Diagram.h \
-    DraggableGraphicsItemForText.h
+    DraggableGraphicsItemForText.h \
+    EnterNoteTextDialog.h
 FORMS += mainwindow.ui \
     mainwindowbuttondialog.ui \
     newprojectdialog.ui \
@@ -107,5 +109,6 @@ FORMS += mainwindow.ui \
     NewTableForm.ui \
     ProjectDetailsForm.ui \
     AboutBoxDialog.ui \
-    DiagramForm.ui
+    DiagramForm.ui \
+    EnterNoteTextDialog.ui
 RESOURCES += dbm.qrc
