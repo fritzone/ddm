@@ -232,13 +232,4 @@ void DiagramForm::doneNote()
 
 void DiagramForm::editorLostFocus(DiagramTextItem *item)
 {
-    if(!item) return;
-    QTextCursor cursor = item->textCursor();
-    cursor.clearSelection();
-    item->setTextCursor(cursor);
-
-    if (item->toPlainText().isEmpty()) {
-        graphicsView->scene()->removeItem(item);
-        item->deleteLater();
-    }
 }

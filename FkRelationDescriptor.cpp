@@ -5,6 +5,8 @@
 
 #include <QtGui>
 
+#include <math.h>
+
 void FkRelationDescriptor::updateContent(bool first)
 {
     QPointF tab1_brCenter = m_tab1->mapToScene(m_tab1->boundingRect().center());
@@ -76,6 +78,12 @@ void FkRelationDescriptor::updateContent(bool first)
         delete rel2Txt;
         rel2Txt = 0;
     }
+
+    if(m_arrowHead)
+    {
+        delete m_arrowHead;
+        m_arrowHead = 0;
+    }
     
     int whichSecond = -1;
     QPointF closestPoint2 = closest(tab2_brCenter, leftPtInScne, rightPtInScne, toptPtInScne, bottomPtInScne, &whichSecond);
@@ -105,8 +113,42 @@ void FkRelationDescriptor::updateContent(bool first)
         QPoint(tab1_topCenter.x(), tab1_topCenter.y() - 20),
         tab1_bottomCenter};
 
+    QPointF tab1SidePointsForArrow[4]  = {
+        QPoint(tab1_leftCenter.x() - 10, tab1_leftCenter.y()),
+        tab1_rightCenter,
+        QPoint(tab1_topCenter.x(), tab1_topCenter.y() - 10),
+        tab1_bottomCenter};
+
 
     rel2Txt->setPos(tab1SidePointsForText[whichFirst]);
+
+
+    QVector<QPointF> polyPoints;    // the arrowhead: will be built on a circle, first point being the side point of the line, second
+                                    // being at 30 degrees to the left, other one at 30 degrees to the right, thus forming an equilateral triangle
+    double angle = ::acos(firstLine->line().dx() / firstLine->line().length());
+    if (firstLine->line().dy() >= 0)
+    {
+        angle = (M_PI * 2) - angle;
+    }
+    
+    double arrowSize = 10;
+    QPointF arrowP1 = firstLine->line().p1() + QPointF(sin(angle + M_PI / 3) * arrowSize,
+                                            cos(angle + M_PI / 3) * arrowSize);
+    QPointF arrowP2 = firstLine->line().p1() + QPointF(sin(angle + M_PI - M_PI / 3) * arrowSize,
+                                            cos(angle + M_PI - M_PI / 3) * arrowSize);
+
+    polyPoints.append(arrowP1);
+    polyPoints.append(arrowP2);
+    polyPoints.append(QPointF(0,0));
+
+    QPolygonF polyf(polyPoints);
+    m_arrowHead = new QGraphicsPolygonItem(polyPoints);
+    m_arrowHead->scale(1.2, 1.2);
+    m_arrowHead->rotate(180);
+    m_arrowHead->setBrush(QBrush(Qt::black));
+    m_arrowHead->setZValue(4);
+
+    m_arrowHead->setPos(tab1SidePoints[whichFirst]);
 
     secondLine->setX(closestPoint2.x());
     secondLine->setY(closestPoint2.y());
