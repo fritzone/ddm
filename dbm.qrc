@@ -81,5 +81,9 @@
         <file>images/small/diagram.png</file>
         <file>images/actions/new_diagram.png</file>
         <file>images/small/font.png</file>
+        <file>images/actions/note.png</file>
+        <file>images/actions/bold.png</file>
+        <file>images/actions/italic.png</file>
+        <file>images/actions/underline.png</file>
     </qresource>
 </RCC>

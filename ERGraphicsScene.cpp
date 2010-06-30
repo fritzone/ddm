@@ -2,7 +2,7 @@
 #include "ForeignKey.h"
 #include "TableListWidget.h"
 #include "Diagram.h"
-
+#include "EnterNoteTextDialog.h"
 #include <qdebug.h>
 
 ERGraphicsScene::ERGraphicsScene(QWidget* parent, Version* v, Diagram* dgram, TableListWidget *lstTables) :  QGraphicsScene(LEFT, TOP, WIDTH, HEIGHT, parent),
@@ -113,14 +113,27 @@ void ERGraphicsScene::dropEvent(QGraphicsSceneDragDropEvent * event)
 {
     QString tabName = event->mimeData()->text();
     event->acceptProposedAction();
-    Table* tab = m_version->getTable(tabName);
-    itm = tab->getDiagramEntity();
-    if(!itm)
+
+    if(tabName == "Add Note")
     {
-        return;
+        EnterNoteTextDialog* enterText = new EnterNoteTextDialog();
+        enterText->setModal(true);
+        enterText->exec();
+
+
     }
-    justDropped = true;
-    addItem(itm);
+    else
+    {
+        Table* tab = m_version->getTable(tabName);
+        if(!tab) return;
+        itm = tab->getDiagramEntity();
+        if(!itm)
+        {
+            return;
+        }
+        justDropped = true;
+        addItem(itm);
+    }
 }
 
 QRectF ERGraphicsScene::getCoverageRect()

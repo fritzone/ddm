@@ -35,6 +35,16 @@ DiagramForm::DiagramForm(Version* v, Diagram* dgram, QWidget *parent) : QWidget(
     lstTables->setSizePolicy(sizePolicy);
     lstTables->setDragDropMode(QAbstractItemView::DragDrop);
 
+    lstDiagramForms = new TableListWidget(ui->groupBox, graphicsView);
+    lstDiagramForms->setObjectName(QString::fromUtf8("lstDiagramForms"));
+
+    sizePolicy.setHorizontalStretch(0);
+    sizePolicy.setVerticalStretch(0);
+    sizePolicy.setHeightForWidth(lstDiagramForms->sizePolicy().hasHeightForWidth());
+    lstDiagramForms->setSizePolicy(sizePolicy);
+    lstDiagramForms->setDragDropMode(QAbstractItemView::DragDrop);
+
+
     graphicsView = new ERGraphicsView(this, v, dgram, lstTables);
     graphicsView->setObjectName(QString::fromUtf8("graphicsView"));
     graphicsView->setDragMode(QGraphicsView::RubberBandDrag);
@@ -43,6 +53,7 @@ DiagramForm::DiagramForm(Version* v, Diagram* dgram, QWidget *parent) : QWidget(
     ui->txtDiagramName->setText(m_diagram->getName());
 
     ui->verticalLayout_2->addWidget(lstTables);
+    ui->verticalLayout_2->addWidget(lstDiagramForms);
     ui->horizontalLayout->addWidget(graphicsView);
 
     for(int i=0; i<v->getTables().size(); i++)
@@ -50,6 +61,10 @@ DiagramForm::DiagramForm(Version* v, Diagram* dgram, QWidget *parent) : QWidget(
         QListWidgetItem* qlwi = new QListWidgetItem(v->getTables()[i]->getName(), lstTables);
         qlwi->setIcon(IconFactory::getTablesIcon());
     }
+
+    QListWidgetItem* qlwNotes = new QListWidgetItem("Add Note", lstDiagramForms);
+    qlwNotes->setIcon(QIcon(":/images/actions/images/actions/note.png"));
+
 }
 
 DiagramForm::~DiagramForm()
@@ -76,7 +91,7 @@ bool DiagramForm::saveToFile(const QString& fileName, bool transparent, const ch
     QPoint tl = graphicsView->mapFromScene(cvr.topLeft());
     QPoint br = graphicsView->mapFromScene(cvr.bottomRight());
     QRect fr(tl, br);
-    
+
     QGraphicsRectItem* r1 = 0;
     if(!transparent)
     {
