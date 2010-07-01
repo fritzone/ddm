@@ -3,6 +3,8 @@
 
 #include "DraggableGraphicsItem.h"
 
+#include <QGraphicsTextItem>
+
 class ForeignKey;
 
 class DraggableGraphicsViewItemForText : public DraggableGraphicsViewItem
@@ -11,8 +13,14 @@ public:
 
     friend class ERGraphicsView;
 
-    DraggableGraphicsViewItemForText(const QString& txt) : DraggableGraphicsViewItem(0)
-    {}
+    DraggableGraphicsViewItemForText(const QString& txt) : DraggableGraphicsViewItem(0), m_txt(txt)
+    {
+        m_item = new QGraphicsTextItem();
+        m_item->setHtml(txt);
+        QGraphicsRectItem* rect = new QGraphicsRectItem(m_item->boundingRect());
+        addToGroup(m_item);
+        addToGroup(rect);
+    }
 
 protected:
 
@@ -23,6 +31,7 @@ protected:
 private:
 
     QString m_txt;
+    QGraphicsTextItem* m_item;
 
 };
 

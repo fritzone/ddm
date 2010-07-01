@@ -13,6 +13,8 @@ public:
     EnterNoteTextDialog(QWidget *parent = 0);
     ~EnterNoteTextDialog();
 
+    QString getText();
+
 protected:
     void changeEvent(QEvent *e);
 

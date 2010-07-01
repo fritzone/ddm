@@ -108,8 +108,8 @@ void FkRelationDescriptor::updateContent(bool first)
     rel2Txt = new QGraphicsTextItem(m_fkitm->getFk()->getForeignDescriptiveText());
 
     QPointF tab1SidePointsForText[4]  = {
-        QPoint(tab1_leftCenter.x() - rel2Txt->boundingRect().width(), tab1_leftCenter.y()),
-        tab1_rightCenter,
+        QPoint(tab1_leftCenter.x() - rel2Txt->boundingRect().width() - 10, tab1_leftCenter.y()),
+        QPoint(tab1_rightCenter.x() + 10, tab1_rightCenter.y()),
         QPoint(tab1_topCenter.x(), tab1_topCenter.y() - 20),
         tab1_bottomCenter};
 

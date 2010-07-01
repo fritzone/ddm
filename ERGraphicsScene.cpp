@@ -3,6 +3,7 @@
 #include "TableListWidget.h"
 #include "Diagram.h"
 #include "EnterNoteTextDialog.h"
+#include "DraggableGraphicsItemForText.h"
 #include <qdebug.h>
 
 ERGraphicsScene::ERGraphicsScene(QWidget* parent, Version* v, Diagram* dgram, TableListWidget *lstTables) :  QGraphicsScene(LEFT, TOP, WIDTH, HEIGHT, parent),
@@ -27,6 +28,8 @@ void ERGraphicsScene::finalizeItem(int x, int y)
     justDropped = false;
 
     m_diagram->m_onStage.append(itm);
+
+    // TODO: There is duplication in the code below. Refactor
 
     // now search in the elements that are in the diagram if there are any other tables that have a foreign key with the table from itm and add
     // the foreign key to the scene.
@@ -118,9 +121,11 @@ void ERGraphicsScene::dropEvent(QGraphicsSceneDragDropEvent * event)
     {
         EnterNoteTextDialog* enterText = new EnterNoteTextDialog();
         enterText->setModal(true);
-        enterText->exec();
-
-
+        if(enterText->exec() == QDialog::Accepted)
+        {
+            DraggableGraphicsViewItemForText* dftext = new DraggableGraphicsViewItemForText(enterText->getText());
+            addItem(dftext);
+        }
     }
     else
     {

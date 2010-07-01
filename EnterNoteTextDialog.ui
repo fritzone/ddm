@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>300</height>
+    <width>536</width>
+    <height>424</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -43,7 +43,7 @@
         <x>0</x>
         <y>0</y>
         <width>541</width>
-        <height>27</height>
+        <height>29</height>
        </rect>
       </property>
       <layout class="QHBoxLayout" name="horizontalLayout_2">
@@ -68,7 +68,7 @@
           <string>...</string>
          </property>
          <property name="icon">
-          <iconset resource="dbm.qrc">
+          <iconset>
            <normaloff>:/images/actions/images/actions/bold.png</normaloff>:/images/actions/images/actions/bold.png</iconset>
          </property>
          <property name="checkable">
@@ -94,7 +94,7 @@
           <string>...</string>
          </property>
          <property name="icon">
-          <iconset resource="dbm.qrc">
+          <iconset>
            <normaloff>:/images/actions/images/actions/italic.png</normaloff>:/images/actions/images/actions/italic.png</iconset>
          </property>
          <property name="checkable">
@@ -120,7 +120,7 @@
           <string>...</string>
          </property>
          <property name="icon">
-          <iconset resource="dbm.qrc">
+          <iconset>
            <normaloff>:/images/actions/images/actions/underline.png</normaloff>:/images/actions/images/actions/underline.png</iconset>
          </property>
          <property name="checkable">
@@ -132,30 +132,88 @@
         <widget class="QFontComboBox" name="fontComboBox"/>
        </item>
        <item>
-        <widget class="QToolButton" name="btnAddNote">
+        <widget class="QComboBox" name="comboBox">
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>24</height>
+          </size>
+         </property>
+         <property name="editable">
+          <bool>true</bool>
+         </property>
+         <item>
+          <property name="text">
+           <string>6</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>8</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>10</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>12</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>14</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>16</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>18</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>20</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>24</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>36</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>48</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>72</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="btnChangeColor">
          <property name="maximumSize">
           <size>
            <width>24</width>
            <height>24</height>
           </size>
          </property>
-         <property name="toolTip">
-          <string>Add a note to the diagram</string>
-         </property>
-         <property name="statusTip">
-          <string>Add a note to the diagram</string>
-         </property>
-         <property name="autoFillBackground">
-          <bool>true</bool>
-         </property>
          <property name="text">
           <string/>
-         </property>
-         <property name="checkable">
-          <bool>true</bool>
-         </property>
-         <property name="checked">
-          <bool>false</bool>
          </property>
         </widget>
        </item>
@@ -191,9 +249,7 @@
    </item>
   </layout>
  </widget>
- <resources>
-  <include location="dbm.qrc"/>
- </resources>
+ <resources/>
  <connections>
   <connection>
    <sender>buttonBox</sender>
