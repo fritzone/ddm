@@ -14,12 +14,24 @@ public:
     ~EnterNoteTextDialog();
 
     QString getText();
+    void setText(const QString&);
+    bool isFramed() const;
+    void setFramed(bool);
+
+public slots:
+
+    void onChangeColor();
+private:
+
+    void setColorIcon();
 
 protected:
     void changeEvent(QEvent *e);
 
 private:
     Ui::EnterNoteTextDialog *ui;
+
+    QColor m_currentColor;
 };
 
 #endif // ENTERNOTETEXTDIALOG_H

@@ -2,14 +2,15 @@
 #include "Table.h"
 #include "DraggableGraphicsItem.h"
 #include "DraggableGraphicsItemForForeignKey.h"
+#include "DraggableGraphicsItemForText.h"
 #include "FkRelationDescriptor.h"
 
-Diagram::Diagram() : TreeItem(), NamedItem("Table diagram"), m_onStage(), m_fksOnStage(), m_form(0), m_saved(false)
+Diagram::Diagram() : TreeItem(), NamedItem("Table diagram"), m_onStage(), m_fksOnStage(), m_notes(), m_form(0), m_saved(false)
 {
 
 }
 
-Diagram::Diagram(const QString & name) : TreeItem(), NamedItem(name), m_onStage(), m_fksOnStage(), m_form(0), m_saved(false)
+Diagram::Diagram(const QString & name) : TreeItem(), NamedItem(name), m_onStage(), m_fksOnStage(), m_notes(), m_form(0), m_saved(false)
 {
 
 }
@@ -56,6 +57,22 @@ void Diagram::removeTable(const QString &tabName)
     }
 }
 
+void Diagram::removeNote(const QString &note)
+{
+    int i=0;
+    while(i<m_notes.size())
+    {
+        if(m_notes.at(i)->getText() == note)
+        {
+            m_notes.at(i)->removeFromScene();
+            m_notes.remove(i);
+            return;
+        }
+        i++;
+    }
+}
+
+
 QVector<const Table*> Diagram::getTables() const
 {
     QVector<const Table*> result;
@@ -65,4 +82,18 @@ QVector<const Table*> Diagram::getTables() const
     }
 
     return result;
+}
+
+DraggableGraphicsViewItemForText* Diagram::getNote(const QString& note)
+{
+    int i=0;
+    while(i<m_notes.size())
+    {
+        if(m_notes.at(i)->getText() == note)
+        {
+            return m_notes.at(i);
+        }
+        i++;
+    }
+    return 0;
 }

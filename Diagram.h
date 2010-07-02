@@ -8,6 +8,7 @@ class Table;
 class ERGraphicsScene;
 class FkRelationDescriptor;
 class DraggableGraphicsViewItem;
+class DraggableGraphicsViewItemForText;
 class FkRelationDescriptor;
 class DiagramForm;
 
@@ -43,8 +44,11 @@ public:
     }
 
     void removeTable(const QString& tabName);
+    void removeNote(const QString& note);
 
     QVector<const Table*> getTables() const;
+
+    DraggableGraphicsViewItemForText* getNote(const QString& note);
 
 public:
 
@@ -58,6 +62,9 @@ private:
 
     // these foreign key elements are already on the stage
     QVector <FkRelationDescriptor*> m_fksOnStage;
+
+    // the diagrams' notes
+    QVector <DraggableGraphicsViewItemForText*> m_notes;
 
     DiagramForm* m_form;
 

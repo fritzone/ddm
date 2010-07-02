@@ -41,14 +41,9 @@ public:
         m_draggedItem = item;
     }
 
-    bool getJustDropped() const
+    int getJustDropped() const
     {
         return justDropped;
-    }
-
-    void setJustDropped(bool jd)
-    {
-        justDropped = jd;
     }
 
     void setStartDragPos(int x, int y)
@@ -80,6 +75,7 @@ public:
     }
 
     void removeTable(const QString& tabName);
+    void removeNote(const QString& note);
 
 protected:
 
@@ -111,8 +107,8 @@ private:
     // the version in which we are working
     Version* m_version;
 
-    // if we have just dropped an item from the tree view
-    bool justDropped;
+    // if we have just dropped an item from one of the tree views: 0 - no, 1 - a table, 2 - a note
+    int justDropped;
 
     // when we start dragging
     int startDragX;
