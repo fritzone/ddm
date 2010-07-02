@@ -6,6 +6,7 @@
 #include "ERGraphicsScene.h"
 #include "ERGraphicsView.h"
 #include "DraggableGraphicsItem.h"
+#include "DraggableGraphicsItemForText.h"
 #include "TableListWidget.h"
 #include "Diagram.h"
 #include "mainwindow.h"
@@ -21,7 +22,8 @@
 #include <QSvgGenerator>
 #include <qdebug.h>
 
-DiagramForm::DiagramForm(Version* v, Diagram* dgram, QWidget *parent) : QWidget(parent), ui(new Ui::DiagramForm), ver(v), m_diagram(dgram), m_mw(dynamic_cast<MainWindow*>(parent)), m_tabToRemove("")
+DiagramForm::DiagramForm(Version* v, Diagram* dgram, QWidget *parent) : QWidget(parent),
+        ui(new Ui::DiagramForm), ver(v), m_diagram(dgram), m_mw(dynamic_cast<MainWindow*>(parent)), m_tabToRemove(""), m_noteToRemove("")
 {
 
     ui->setupUi(this);
@@ -64,6 +66,7 @@ DiagramForm::DiagramForm(Version* v, Diagram* dgram, QWidget *parent) : QWidget(
 
     QListWidgetItem* qlwNotes = new QListWidgetItem("Add Note", lstDiagramForms);
     qlwNotes->setIcon(QIcon(":/images/actions/images/actions/note.png"));
+    lstDiagramForms->setEnabled(false);
 
 }
 
@@ -221,30 +224,43 @@ void DiagramForm::removeFromDiagram()
     m_tabToRemove = "";
 }
 
+void DiagramForm::removeNoteFromDiagram()
+{
+    graphicsView->scene()->removeNote(m_noteToRemove);
+    m_noteToRemove = "";
+}
+
+
 void DiagramForm::setTableToRemoveFromDiagram(const QString& tabName)
 {
     m_tabToRemove = tabName;
 }
 
+void DiagramForm::setCurrentWorkNoteOnDiagram(const QString& note)
+{
+    m_noteToRemove = note;
+}
+
+
 void DiagramForm::onAddNote()
 {
-    if(ui->btnAddNote->isChecked())
-    {
-        graphicsView->setMode(ERGraphicsView::Note);
-    }
-    else
-    {
-        graphicsView->setMode(ERGraphicsView::Nothing);
-    }
 }
 
 void DiagramForm::doneNote()
 {
-    ui->btnAddNote->setChecked(false);
-    graphicsView->setMode(ERGraphicsView::Nothing);
+    lstDiagramForms->setEnabled(true);
 }
 
 
 void DiagramForm::editorLostFocus(DiagramTextItem *item)
 {
+}
+
+void DiagramForm::onEditNote()
+{
+    DraggableGraphicsViewItemForText* note = m_diagram->getNote(m_noteToRemove);
+    if(note)
+    {
+        note->editNote();
+    }
 }

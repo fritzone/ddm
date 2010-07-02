@@ -3,101 +3,127 @@
 #include "TableListWidget.h"
 #include "Diagram.h"
 #include "EnterNoteTextDialog.h"
+#include "DiagramForm.h"
 #include "DraggableGraphicsItemForText.h"
 #include <qdebug.h>
 
 ERGraphicsScene::ERGraphicsScene(QWidget* parent, Version* v, Diagram* dgram, TableListWidget *lstTables) :  QGraphicsScene(LEFT, TOP, WIDTH, HEIGHT, parent),
-                                                                            itm(0), m_version(v), justDropped(false), m_draggedItem(0), m_lstTables(lstTables), m_diagram(dgram)
+                                                                            itm(0), m_version(v), justDropped(0),
+                                                                            m_draggedItem(0), m_lstTables(lstTables), m_diagram(dgram)
 {
 }
 
 
 void ERGraphicsScene::finalizeItem(int x, int y)
 {
+    qDebug() << "finalize" ;
+    if(justDropped == 2)
+    {
+        EnterNoteTextDialog* enterText = new EnterNoteTextDialog();
+        enterText->setModal(true);
+        if(enterText->exec() == QDialog::Accepted)
+        {
+            DraggableGraphicsViewItemForText* dftext = new DraggableGraphicsViewItemForText(enterText->getText(), enterText->isFramed());
+            addItem(dftext);
+            dftext->setX(x);
+            dftext->setY(y);
+            m_diagram->m_notes.append(dftext);
+        }
+        justDropped = 0;
+        return;
+    }
+
     if(!itm)
     {
-        return; // meaning: we dragged in a table which somehow didn't create its object ... this is so sad
+        return;
     }
+
+    m_diagram->getDiagramForm()->doneNote();
 
     itm->setX(x);
     itm->setY(y);
 
-    QString tabName = itm->getTable()->getName();
-    m_lstTables->removeItem(tabName);
-
-    justDropped = false;
-
-    m_diagram->m_onStage.append(itm);
-
-    // TODO: There is duplication in the code below. Refactor
-
-    // now search in the elements that are in the diagram if there are any other tables that have a foreign key with the table from itm and add
-    // the foreign key to the scene.
-    const QVector<Table*>&  allTables = m_version->getTables();
-    for(int i=0; i<allTables.size(); i++)
+    if(justDropped == 1)
     {
-        if(allTables.at(i) != itm->getTable())
-        {
-            const QVector<ForeignKey*> & fksI = allTables.at(i)->getFks();
-            for(int j=0; j<fksI.size(); j++)
-            {
-                const QVector<ForeignKey::ColumnAssociation*>&  assocs = fksI.at(j)->getAssociations();
-                for(int k=0; k<assocs.size(); k++)
-                {
-                    if(assocs.at(k)->getForeignTable() == itm->getTable())
-                    {
-                        DraggableGraphicsViewItem* itmForOtherTable = getItemForTable(allTables.at(i)->getName());  // this returns a table only if the table is in the scene already
-                        if(itmForOtherTable != 0)
-                        {
-                            qDebug() << "do the stuff here: prepare a new object to be put on the screen between itm and itmForOtherTable";
+        QString tabName = itm->getTable()->getName();
+        m_lstTables->removeItem(tabName);
 
-                            DraggableGraphicsViewItemForForeignKey* difks = fksI.at(j)->getItem();
-                            FkRelationDescriptor* fkrd = new FkRelationDescriptor(difks, itm, itmForOtherTable);
-                            fkrd->updateContent(true);
-                            addItem(difks);
-                            addItem(fkrd->getFirstLine() );
-                            addItem(fkrd->getSecondLine() );
-                            addItem(fkrd->m_ellipse );
-                            addItem(fkrd->m_arrowHead );
-                            addItem(fkrd->rel1Txt);
-                            addItem(fkrd->rel2Txt);
-                            m_diagram->m_fksOnStage.append(fkrd);
-                            break;
+        justDropped = 0;
+
+        m_diagram->m_onStage.append(itm);
+
+        // TODO: There is duplication in the code below. Refactor
+
+        // now search in the elements that are in the diagram if there are any other tables that have a foreign key with the table from itm and add
+        // the foreign key to the scene.
+        const QVector<Table*>&  allTables = m_version->getTables();
+        for(int i=0; i<allTables.size(); i++)
+        {
+            if(allTables.at(i) != itm->getTable())
+            {
+                const QVector<ForeignKey*> & fksI = allTables.at(i)->getFks();
+                for(int j=0; j<fksI.size(); j++)
+                {
+                    const QVector<ForeignKey::ColumnAssociation*>&  assocs = fksI.at(j)->getAssociations();
+                    for(int k=0; k<assocs.size(); k++)
+                    {
+                        if(assocs.at(k)->getForeignTable() == itm->getTable())
+                        {
+                            DraggableGraphicsViewItem* itmForOtherTable = getItemForTable(allTables.at(i)->getName());  // this returns a table only if the table is in the scene already
+                            if(itmForOtherTable != 0)
+                            {
+                                qDebug() << "do the stuff here: prepare a new object to be put on the screen between itm and itmForOtherTable";
+
+                                DraggableGraphicsViewItemForForeignKey* difks = fksI.at(j)->getItem();
+                                FkRelationDescriptor* fkrd = new FkRelationDescriptor(difks, itm, itmForOtherTable);
+                                fkrd->updateContent(true);
+                                addItem(difks);
+                                addItem(fkrd->getFirstLine() );
+                                addItem(fkrd->getSecondLine() );
+                                addItem(fkrd->m_ellipse );
+                                addItem(fkrd->m_arrowHead );
+                                addItem(fkrd->rel1Txt);
+                                addItem(fkrd->rel2Txt);
+                                m_diagram->m_fksOnStage.append(fkrd);
+                                break;
+                            }
                         }
                     }
                 }
             }
         }
-    }
 
-    // now we should do: search in the foreign keys of the new item, to see if it has a FK to any table in the scene
-    const QVector<ForeignKey*> & cfks = itm->getTable()->getFks();
-    for(int i=0; i<cfks.size(); i++)
-    {
-        const QVector<ForeignKey::ColumnAssociation*>&  assocs = cfks.at(i)->getAssociations();
-        for(int j=0; j<assocs.size(); j++)
+        // now we should do: search in the foreign keys of the new item, to see if it has a FK to any table in the scene
+        const QVector<ForeignKey*> & cfks = itm->getTable()->getFks();
+        for(int i=0; i<cfks.size(); i++)
         {
-            if(assocs.at(j)->getLocalTable() == itm->getTable())
+            const QVector<ForeignKey::ColumnAssociation*>&  assocs = cfks.at(i)->getAssociations();
+            for(int j=0; j<assocs.size(); j++)
             {
-                DraggableGraphicsViewItem* itmForOtherTable = getItemForTable(assocs.at(j)->getForeignTable()->getName());
-                if(itmForOtherTable != 0)
+                if(assocs.at(j)->getLocalTable() == itm->getTable())
                 {
-                    DraggableGraphicsViewItemForForeignKey* difks = cfks.at(i)->getItem();
-                    FkRelationDescriptor* fkrd = new FkRelationDescriptor(difks, itmForOtherTable, itm);
-                    fkrd->updateContent(true);
-                    addItem(difks);
-                    addItem(fkrd->getFirstLine() );
-                    addItem(fkrd->getSecondLine() );
-                    addItem(fkrd->m_ellipse );
-                    addItem(fkrd->m_arrowHead );
-                    addItem(fkrd->rel1Txt);
-                    addItem(fkrd->rel2Txt);
-                    m_diagram->m_fksOnStage.append(fkrd);
-                    break;
+                    DraggableGraphicsViewItem* itmForOtherTable = getItemForTable(assocs.at(j)->getForeignTable()->getName());
+                    if(itmForOtherTable != 0)
+                    {
+                        DraggableGraphicsViewItemForForeignKey* difks = cfks.at(i)->getItem();
+                        FkRelationDescriptor* fkrd = new FkRelationDescriptor(difks, itmForOtherTable, itm);
+                        fkrd->updateContent(true);
+                        addItem(difks);
+                        addItem(fkrd->getFirstLine() );
+                        addItem(fkrd->getSecondLine() );
+                        addItem(fkrd->m_ellipse );
+                        addItem(fkrd->m_arrowHead );
+                        addItem(fkrd->rel1Txt);
+                        addItem(fkrd->rel2Txt);
+                        m_diagram->m_fksOnStage.append(fkrd);
+                        break;
+                    }
                 }
             }
         }
+
     }
+
 }
 
 DraggableGraphicsViewItem* ERGraphicsScene::getItemForTable(const QString &tabName)
@@ -119,13 +145,7 @@ void ERGraphicsScene::dropEvent(QGraphicsSceneDragDropEvent * event)
 
     if(tabName == "Add Note")
     {
-        EnterNoteTextDialog* enterText = new EnterNoteTextDialog();
-        enterText->setModal(true);
-        if(enterText->exec() == QDialog::Accepted)
-        {
-            DraggableGraphicsViewItemForText* dftext = new DraggableGraphicsViewItemForText(enterText->getText());
-            addItem(dftext);
-        }
+        justDropped = 2;
     }
     else
     {
@@ -136,7 +156,7 @@ void ERGraphicsScene::dropEvent(QGraphicsSceneDragDropEvent * event)
         {
             return;
         }
-        justDropped = true;
+        justDropped = 1;
         addItem(itm);
     }
 }
@@ -148,6 +168,16 @@ QRectF ERGraphicsScene::getCoverageRect()
     {
         QPointF a  = m_diagram->m_onStage[i]->mapToScene(m_diagram->m_onStage[i]->boundingRect().topLeft());
         QPointF b  = m_diagram->m_onStage[i]->mapToScene(m_diagram->m_onStage[i]->boundingRect().bottomRight());
+        if(a.x() < minx) minx = a.x();
+        if(a.y() < miny) miny = a.y();
+        if(b.x() > maxx) maxx = b.x();
+        if(b.y() > maxy) maxy = b.y();
+    }
+
+    for(int i=0; i<m_diagram->m_notes.size(); i++)
+    {
+        QPointF a  = m_diagram->m_notes[i]->mapToScene(m_diagram->m_notes[i]->boundingRect().topLeft());
+        QPointF b  = m_diagram->m_notes[i]->mapToScene(m_diagram->m_notes[i]->boundingRect().bottomRight());
         if(a.x() < minx) minx = a.x();
         if(a.y() < miny) miny = a.y();
         if(b.x() > maxx) maxx = b.x();
@@ -185,4 +215,9 @@ void ERGraphicsScene::upadteFkrds()
 void ERGraphicsScene::removeTable(const QString &tabName)
 {
     m_diagram->removeTable(tabName);
+}
+
+void ERGraphicsScene::removeNote(const QString &note)
+{
+    m_diagram->removeNote(note);
 }

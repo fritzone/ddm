@@ -91,35 +91,6 @@
         </widget>
        </item>
        <item>
-        <widget class="QToolButton" name="btnAddNote">
-         <property name="maximumSize">
-          <size>
-           <width>24</width>
-           <height>24</height>
-          </size>
-         </property>
-         <property name="toolTip">
-          <string>Add a note to the diagram</string>
-         </property>
-         <property name="statusTip">
-          <string>Add a note to the diagram</string>
-         </property>
-         <property name="text">
-          <string>...</string>
-         </property>
-         <property name="icon">
-          <iconset resource="dbm.qrc">
-           <normaloff>:/images/actions/images/small/font.png</normaloff>:/images/actions/images/small/font.png</iconset>
-         </property>
-         <property name="checkable">
-          <bool>true</bool>
-         </property>
-         <property name="checked">
-          <bool>false</bool>
-         </property>
-        </widget>
-       </item>
-       <item>
         <widget class="QComboBox" name="comboBox">
          <property name="maximumSize">
           <size>
@@ -209,22 +180,6 @@
     <hint type="sourcelabel">
      <x>280</x>
      <y>413</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>280</x>
-     <y>217</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>btnAddNote</sender>
-   <signal>clicked()</signal>
-   <receiver>DiagramForm</receiver>
-   <slot>onAddNote()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>45</x>
-     <y>196</y>
     </hint>
     <hint type="destinationlabel">
      <x>280</x>

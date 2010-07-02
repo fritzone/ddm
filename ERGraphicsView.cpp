@@ -2,6 +2,7 @@
 #include "ERGraphicsScene.h"
 #include "Diagram.h"
 #include "FkRelationDescriptor.h"
+#include "DraggableGraphicsItemForText.h"
 #include "DiagramForm.h"
 
 #include <qdebug.h>
@@ -22,8 +23,9 @@ ERGraphicsView::ERGraphicsView(QWidget* parent, Version* v, Diagram* dgram, Tabl
 
 void ERGraphicsView::mouseMoveEvent(QMouseEvent *event)
 {
-    if(m_scene->getJustDropped())
+    if(m_scene->getJustDropped() != 0)
     {
+        qDebug() << "just dropped in move" ;
         QPointF scpos = mapToScene(event->pos().x(), event->pos().y());
         m_scene->finalizeItem(scpos.x(), scpos.y());
         return;
@@ -56,6 +58,22 @@ void ERGraphicsView::mousePressEvent(QMouseEvent *mouseEvent)
                 return;
             }
         }
+
+        for(int i=0; i<m_scene->m_diagram->m_notes.size(); i++)
+        {
+            qDebug() << "checking: " << m_scene->m_diagram->m_notes[i]->boundingRect();
+            if(m_scene->m_diagram->m_notes[i]->isUnderMouse())
+            {
+                QGraphicsSceneMouseEvent* gsme = new QGraphicsSceneMouseEvent(mouseEvent->type());
+                QPointF inScene = mapToScene(mouseEvent->pos());
+
+                gsme->setPos( m_scene->m_diagram->m_notes[i]->mapFromScene( inScene));
+                gsme->setButton(mouseEvent->button());
+                m_scene->m_diagram->m_notes[i]->mousePressEvent(gsme);
+                return;
+            }
+        }
+
         for(int i=0; i<m_scene->m_diagram->m_fksOnStage.size(); i++)
         {
             if(m_scene->m_diagram->m_fksOnStage[i]->getItem()->isUnderMouse())
@@ -70,10 +88,6 @@ void ERGraphicsView::mousePressEvent(QMouseEvent *mouseEvent)
             }
         }
 
-    }
-    else
-    if(m_mode == Note)
-    {
     }
 }
 

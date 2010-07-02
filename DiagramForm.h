@@ -24,6 +24,8 @@ public:
     DiagramForm(Version* v, Diagram* dgram, QWidget *parent);
     ~DiagramForm();
     void setTableToRemoveFromDiagram(const QString& tabName);
+    void setCurrentWorkNoteOnDiagram(const QString& note);
+
     void doneNote();
 
 public slots:
@@ -31,8 +33,10 @@ public slots:
     void saveToImageFile();
     void onButtonBoxClicked(QAbstractButton*);
     void removeFromDiagram();
+    void removeNoteFromDiagram();
     void onAddNote();
     void editorLostFocus(DiagramTextItem *item);
+    void onEditNote();
 
 
 protected:
@@ -51,6 +55,7 @@ private:
     Diagram* m_diagram;
     MainWindow* m_mw;
     QString m_tabToRemove;
+    QString m_noteToRemove;
 };
 
 #endif // DIAGRAMFORM_H

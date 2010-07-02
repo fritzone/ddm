@@ -24,7 +24,7 @@ void DraggableGraphicsViewItem:: mousePressEvent ( QGraphicsSceneMouseEvent * ev
         {
             QMenu popup;
             QAction * action_Remove = new QAction(this->scene());
-            action_Remove->setText("Remove from graph");
+            action_Remove->setText("Remove from diagram");
             QIcon remove(":/images/actions/images/small/remove.png");
             action_Remove->setIcon(remove);
 
