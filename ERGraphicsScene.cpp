@@ -72,19 +72,10 @@ void ERGraphicsScene::finalizeItem(int x, int y)
                             DraggableGraphicsViewItem* itmForOtherTable = getItemForTable(allTables.at(i)->getName());  // this returns a table only if the table is in the scene already
                             if(itmForOtherTable != 0)
                             {
-                                qDebug() << "do the stuff here: prepare a new object to be put on the screen between itm and itmForOtherTable";
-
                                 DraggableGraphicsViewItemForForeignKey* difks = fksI.at(j)->getItem();
                                 FkRelationDescriptor* fkrd = new FkRelationDescriptor(difks, itm, itmForOtherTable);
-                                fkrd->updateContent(true);
                                 addItem(difks);
-                                addItem(fkrd->getFirstLine() );
-                                addItem(fkrd->getSecondLine() );
-                                addItem(fkrd->m_ellipse );
-                                addItem(fkrd->m_arrowHead );
-                                addItem(fkrd->rel1Txt);
-                                addItem(fkrd->rel2Txt);
-                                m_diagram->m_fksOnStage.append(fkrd);
+                                addForeignKey(fkrd);
                                 break;
                             }
                         }
@@ -107,23 +98,26 @@ void ERGraphicsScene::finalizeItem(int x, int y)
                     {
                         DraggableGraphicsViewItemForForeignKey* difks = cfks.at(i)->getItem();
                         FkRelationDescriptor* fkrd = new FkRelationDescriptor(difks, itmForOtherTable, itm);
-                        fkrd->updateContent(true);
                         addItem(difks);
-                        addItem(fkrd->getFirstLine() );
-                        addItem(fkrd->getSecondLine() );
-                        addItem(fkrd->m_ellipse );
-                        addItem(fkrd->m_arrowHead );
-                        addItem(fkrd->rel1Txt);
-                        addItem(fkrd->rel2Txt);
-                        m_diagram->m_fksOnStage.append(fkrd);
+                        addForeignKey(fkrd);
                         break;
                     }
                 }
             }
         }
-
     }
+}
 
+void ERGraphicsScene::addForeignKey(FkRelationDescriptor* fkrd )
+{
+    fkrd->updateContent(true);
+    addItem(fkrd->getFirstLine() );
+    addItem(fkrd->getSecondLine() );
+    addItem(fkrd->m_ellipse );
+    addItem(fkrd->m_arrowHead );
+    addItem(fkrd->rel1Txt);
+    addItem(fkrd->rel2Txt);
+    m_diagram->m_fksOnStage.append(fkrd);
 }
 
 DraggableGraphicsViewItem* ERGraphicsScene::getItemForTable(const QString &tabName)
@@ -163,7 +157,7 @@ void ERGraphicsScene::dropEvent(QGraphicsSceneDragDropEvent * event)
 
 QRectF ERGraphicsScene::getCoverageRect()
 {
-    qreal minx = 99999999999, miny = 99999999999, maxx = -99999999999, maxy = -99999999999;
+    qreal minx = 99999, miny = 99999, maxx = -99999, maxy = -99999;
     for(int i=0; i<m_diagram->m_onStage.size(); i++)
     {
         QPointF a  = m_diagram->m_onStage[i]->mapToScene(m_diagram->m_onStage[i]->boundingRect().topLeft());

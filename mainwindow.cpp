@@ -214,7 +214,11 @@ void MainWindow::onProjectTreeClicked()
                 frm->setMainWindow(this);
                 projectTree->setCurrentItem(0);
                 setCentralWidget(frm);
-
+            }
+            else
+            if(item->parent() && item->parent() == getWorkingProject()->getWorkingVersion()->getDiagramsItem())
+            {
+                // the user clicked on a diagram
             }
         }
     }
@@ -436,6 +440,8 @@ bool MainWindow::onSaveDiagram(Diagram* dgram)
     {
         QIcon diagramIcon(":/images/actions/images/small/diagram.png");
         QTreeWidgetItem* newDgramItem = new QTreeWidgetItem(m_currentSolution->currentProject()->getWorkingVersion()->getDiagramsItem(), QStringList(dgram->getName())) ;
+        QVariant var(dgram->getName());
+        newDgramItem->setData(0, Qt::UserRole, var);
         newDgramItem->setIcon(0, diagramIcon);
         dgram->setLocation(newDgramItem);
         dgram->setSaved(true);

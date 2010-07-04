@@ -264,3 +264,7 @@ void DiagramForm::onEditNote()
         note->editNote();
     }
 }
+
+void DiagramForm::paintDiagram()
+{
+}

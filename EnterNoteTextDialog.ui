@@ -132,7 +132,13 @@
         <widget class="QFontComboBox" name="fontComboBox"/>
        </item>
        <item>
-        <widget class="QComboBox" name="comboBox">
+        <widget class="QComboBox" name="cmbSize">
+         <property name="minimumSize">
+          <size>
+           <width>48</width>
+           <height>0</height>
+          </size>
+         </property>
          <property name="maximumSize">
           <size>
            <width>16777215</width>
@@ -298,16 +304,16 @@
   <connection>
    <sender>fontComboBox</sender>
    <signal>currentFontChanged(QFont)</signal>
-   <receiver>textEdit</receiver>
-   <slot>setCurrentFont(QFont)</slot>
+   <receiver>EnterNoteTextDialog</receiver>
+   <slot>onChangeFont(QFont)</slot>
    <hints>
     <hint type="sourcelabel">
      <x>169</x>
      <y>23</y>
     </hint>
     <hint type="destinationlabel">
-     <x>199</x>
-     <y>148</y>
+     <x>267</x>
+     <y>211</y>
     </hint>
    </hints>
   </connection>
@@ -327,8 +333,94 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>btnSetBold</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>EnterNoteTextDialog</receiver>
+   <slot>onChangeBold(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>23</x>
+     <y>24</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>267</x>
+     <y>211</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnSetItalic</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>EnterNoteTextDialog</receiver>
+   <slot>onChangeItalic(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>47</x>
+     <y>24</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>267</x>
+     <y>211</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnSetUnderline</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>EnterNoteTextDialog</receiver>
+   <slot>onChangeUnderline(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>71</x>
+     <y>24</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>267</x>
+     <y>211</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>cmbSize</sender>
+   <signal>activated(QString)</signal>
+   <receiver>EnterNoteTextDialog</receiver>
+   <slot>onChangeSize(QString)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>326</x>
+     <y>24</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>267</x>
+     <y>211</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>textEdit</sender>
+   <signal>currentCharFormatChanged(QTextCharFormat)</signal>
+   <receiver>EnterNoteTextDialog</receiver>
+   <slot>onCurrentCharFormatChanged(QTextCharFormat)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>267</x>
+     <y>197</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>267</x>
+     <y>211</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>onChangeColor()</slot>
+  <slot>onChangeBold(bool)</slot>
+  <slot>onChangeItalic(bool)</slot>
+  <slot>onChangeUnderline(bool)</slot>
+  <slot>onChangeSize(QString)</slot>
+  <slot>onCurrentCharFormatChanged(QTextCharFormat)</slot>
+  <slot>onChangeFont(QFont)</slot>
  </slots>
 </ui>

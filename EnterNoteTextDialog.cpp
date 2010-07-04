@@ -1,8 +1,11 @@
 #include "EnterNoteTextDialog.h"
 #include "ui_EnterNoteTextDialog.h"
 
+#include <QPaintEngine>
+#include <QPaintDevice>
 #include <QPainter>
 #include <QColorDialog>
+
 
 EnterNoteTextDialog::EnterNoteTextDialog(QWidget *parent) :
     QDialog(parent),
@@ -29,6 +32,9 @@ void EnterNoteTextDialog::setColorIcon()
     painter.fillRect( QRectF(2,14,14,4), QBrush(m_currentColor));
     painter.setPen(Qt::black);
     QFont boldItalic("Arial", 14, QFont::Bold);
+    //QFont boldItalic(boldItalic1, painter.paintEngine()->paintDevice());
+    boldItalic.setBold(true);
+    boldItalic.setPixelSize(14);
     boldItalic.setItalic(true);
     painter.setFont(boldItalic);
     painter.drawText( QRectF(4, 0, 12, 12), Qt::AlignLeft, "T");
@@ -68,6 +74,16 @@ void EnterNoteTextDialog::onChangeColor()
     ui->textEdit->setTextColor(m_currentColor);
 }
 
+void EnterNoteTextDialog::onChangeBold(bool b)
+{
+    ui->textEdit->setFontWeight(b?QFont::Bold:QFont::Normal);
+}
+
+void EnterNoteTextDialog::onChangeItalic(bool b)
+{
+    ui->textEdit->setFontItalic(b);
+}
+
 bool EnterNoteTextDialog::isFramed() const
 {
     return ui->chkFramed->isChecked();
@@ -76,4 +92,33 @@ bool EnterNoteTextDialog::isFramed() const
 void EnterNoteTextDialog::setFramed(bool b)
 {
     ui->chkFramed->setCheckState(b?Qt::Checked:Qt::Unchecked);
+}
+
+void EnterNoteTextDialog::onChangeUnderline(bool b)
+{
+    ui->textEdit->setFontUnderline(b);
+}
+
+void EnterNoteTextDialog::onChangeSize(QString si)
+{
+    ui->textEdit->setFontPointSize(si.toInt());
+}
+
+void EnterNoteTextDialog::onCurrentCharFormatChanged(QTextCharFormat tcf)
+{
+    ui->btnSetUnderline->setChecked(tcf.fontUnderline());
+    ui->btnSetBold->setChecked(tcf.fontWeight() == QFont::Bold);
+    ui->btnSetItalic->setChecked(tcf.fontItalic());
+    ui->cmbSize->setEditText(QString::number((int)tcf.fontPointSize()));
+    ui->fontComboBox->setCurrentFont(tcf.font());
+}
+
+void EnterNoteTextDialog::onChangeFont(QFont _fnt)
+{
+    QFont fnt = _fnt;
+    fnt.setPointSize(ui->cmbSize->currentText().toInt());
+    fnt.setItalic(ui->btnSetItalic->isChecked());
+    fnt.setBold(ui->btnSetBold->isChecked());
+    fnt.setUnderline(ui->btnSetUnderline->isChecked());
+    ui->textEdit->setCurrentFont(fnt);
 }
