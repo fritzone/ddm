@@ -74,6 +74,8 @@ public:
         return m_diagram;
     }
 
+    void addForeignKey(FkRelationDescriptor* fkrd);
+
     void removeTable(const QString& tabName);
     void removeNote(const QString& note);
 

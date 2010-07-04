@@ -25,7 +25,7 @@ public:
     ~DiagramForm();
     void setTableToRemoveFromDiagram(const QString& tabName);
     void setCurrentWorkNoteOnDiagram(const QString& note);
-
+    void paintDiagram();
     void doneNote();
 
 public slots:
@@ -46,6 +46,7 @@ protected:
 private:
     void onSave();
     void onReset();
+
 
 private:
     Ui::DiagramForm *ui;

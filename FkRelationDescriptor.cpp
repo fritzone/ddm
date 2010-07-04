@@ -84,7 +84,7 @@ void FkRelationDescriptor::updateContent(bool first)
         delete m_arrowHead;
         m_arrowHead = 0;
     }
-    
+
     int whichSecond = -1;
     QPointF closestPoint2 = closest(tab2_brCenter, leftPtInScne, rightPtInScne, toptPtInScne, bottomPtInScne, &whichSecond);
 
@@ -130,7 +130,7 @@ void FkRelationDescriptor::updateContent(bool first)
     {
         angle = (M_PI * 2) - angle;
     }
-    
+
     double arrowSize = 10;
     QPointF arrowP1 = firstLine->line().p1() + QPointF(sin(angle + M_PI / 3) * arrowSize,
                                             cos(angle + M_PI / 3) * arrowSize);
@@ -178,4 +178,8 @@ void FkRelationDescriptor::eliberate()
     delete firstLine;
     delete secondLine;
     delete m_fkitm;
+    delete m_ellipse;
+    delete m_arrowHead;
+    delete rel1Txt;
+    delete rel2Txt;
 }

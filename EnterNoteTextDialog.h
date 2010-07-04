@@ -2,6 +2,7 @@
 #define ENTERNOTETEXTDIALOG_H
 
 #include <QDialog>
+#include <QTextCharFormat>
 
 namespace Ui {
     class EnterNoteTextDialog;
@@ -21,6 +22,13 @@ public:
 public slots:
 
     void onChangeColor();
+    void onChangeBold(bool);
+    void onChangeItalic(bool);
+    void onChangeUnderline(bool);
+    void onChangeSize(QString);
+    void onCurrentCharFormatChanged(QTextCharFormat);
+    void onChangeFont(QFont);
+
 private:
 
     void setColorIcon();
