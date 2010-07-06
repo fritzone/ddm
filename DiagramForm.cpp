@@ -267,4 +267,14 @@ void DiagramForm::onEditNote()
 
 void DiagramForm::paintDiagram()
 {
+    // first step, put on all the notes
+    m_diagram->reset();
+    for(int i=0; i<m_diagram->getNoteDescriptors().size(); i++)
+    {
+        DiagramNoteDescriptor* noteItem = m_diagram->getNoteDescriptors()[i];
+        DraggableGraphicsViewItemForText* toAdd = Diagram::clone(noteItem);
+        graphicsView->scene()->addItem(toAdd);
+        toAdd->place();
+        m_diagram->addNoteItem(toAdd);
+    }
 }

@@ -43,6 +43,26 @@ public:
         lastY = y;
     }
 
+    void pSetX(int x)
+    {
+        m_scenePosX = x;
+    }
+
+    void pSetY(int y)
+    {
+        m_scenePosY = y;
+    }
+
+    int getpSX()
+    {
+        return m_scenePosX;
+    }
+
+    int getpSY()
+    {
+        return m_scenePosY;
+    }
+
 protected:
 
     virtual void dragEnterEvent ( QGraphicsSceneDragDropEvent * event )
@@ -68,6 +88,11 @@ private:
     Table* m_table;
     qreal lastX;
     qreal lastY;
+
+protected:
+
+    int m_scenePosX;
+    int m_scenePosY;
 };
 
 #endif // DRAGGABLEGRAPHICSITEM_H

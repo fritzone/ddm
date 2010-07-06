@@ -93,6 +93,8 @@ public:
 
     virtual void serialize(QDomDocument &doc, QDomElement &parent) const = 0;
 
+    virtual Diagram* getDiagram(const QString& name) = 0;
+
 private:
 
 };

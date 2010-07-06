@@ -83,6 +83,8 @@ public:
      */
     void populateTreeItems();
 
+    virtual Diagram* getDiagram(const QString& name);
+
 private:
 
     // the tree item containing the "Tables"

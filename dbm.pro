@@ -99,7 +99,9 @@ HEADERS += MainWindow.h \
     FkRelationDescriptor.h \
     Diagram.h \
     DraggableGraphicsItemForText.h \
-    EnterNoteTextDialog.h
+    EnterNoteTextDialog.h \
+    DiagramNoteDescriptor.h \
+    DiagramObjectDescriptor.h
 FORMS += mainwindow.ui \
     mainwindowbuttondialog.ui \
     newprojectdialog.ui \

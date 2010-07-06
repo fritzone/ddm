@@ -3,6 +3,7 @@
 
 #include "TreeItem.h"
 #include "NamedItem.h"
+#include "DiagramNoteDescriptor.h"
 
 class Table;
 class ERGraphicsScene;
@@ -48,7 +49,23 @@ public:
 
     QVector<const Table*> getTables() const;
 
+    const QVector<DiagramNoteDescriptor*> & getNoteDescriptors();
+
     DraggableGraphicsViewItemForText* getNote(const QString& note);
+
+    static DraggableGraphicsViewItemForText* clone(DiagramNoteDescriptor* src);
+
+    void addDescriptor(DraggableGraphicsViewItemForText* df);
+    void addDescriptor(DraggableGraphicsViewItem* df);
+
+    void reset()
+    {
+        m_notes.clear();
+        m_fksOnStage.clear();
+        m_onStage.clear();
+    }
+
+    void addNoteItem(DraggableGraphicsViewItemForText*);
 
 public:
 
@@ -63,8 +80,12 @@ private:
     // these foreign key elements are already on the stage
     QVector <FkRelationDescriptor*> m_fksOnStage;
 
-    // the diagrams' notes
+    // the diagrams' notes used internally by the scene. These are cleared from time to time, so don't trust them. Use the noteDescriptors below instead
     QVector <DraggableGraphicsViewItemForText*> m_notes;
+
+    // the notes that are saved to the file
+    QVector <DiagramNoteDescriptor*> m_noteDescriptors;
+    QVector <DiagramObjectDescriptor*> m_tableDescriptors;
 
     DiagramForm* m_form;
 
