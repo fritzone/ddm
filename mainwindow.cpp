@@ -208,6 +208,10 @@ void MainWindow::onProjectTreeClicked()
                 QVariant qv = item->data(0, Qt::UserRole);
                 QString tabName = qv.toString();
                 Table* table =  getWorkingProject()->getWorkingVersion()->getTable(tabName);
+                if(table == 0)  // shouldn't be ...
+                {
+                    return;
+                }
                 NewTableForm* frm = new NewTableForm(getWorkingProject()->getEngine(), getWorkingProject(), this);
                 frm->setTable(table);
                 frm->focusOnName();
@@ -219,6 +223,17 @@ void MainWindow::onProjectTreeClicked()
             if(item->parent() && item->parent() == getWorkingProject()->getWorkingVersion()->getDiagramsItem())
             {
                 // the user clicked on a diagram
+                QVariant qv = item->data(0, Qt::UserRole);
+                QString diagramName = qv.toString();
+                Diagram* dgram = getWorkingProject()->getWorkingVersion()->getDiagram(diagramName);
+                if(dgram == 0)
+                {
+                    return;
+                }
+                DiagramForm* df = new DiagramForm(getWorkingProject()->getWorkingVersion(), dgram, this);
+                dgram->setForm(df);
+                setCentralWidget(dgram->getDiagramForm());
+                df->paintDiagram();
             }
         }
     }

@@ -14,7 +14,7 @@ public:
 
     friend class ERGraphicsView;
 
-    DraggableGraphicsViewItemForText(const QString& txt, bool framed) : DraggableGraphicsViewItem(0), m_txt(txt), m_rect(0)
+    DraggableGraphicsViewItemForText(const QString& txt, bool framed) : DraggableGraphicsViewItem(0), m_txt(txt), m_rect(0), m_framed(framed)
     {
         m_item = new QGraphicsTextItem();
         m_item->setHtml(txt);
@@ -42,6 +42,18 @@ public:
     void editNote();
 
 
+
+    void place()
+    {
+        setX(m_scenePosX);
+        setY(m_scenePosY);
+    }
+
+    bool isFramed()
+    {
+        return m_framed;
+    }
+
 protected:
 
     void mousePressEvent ( QGraphicsSceneMouseEvent * event );
@@ -51,6 +63,10 @@ protected:
 private:
 
     QString m_txt;
+
+    bool m_framed;
+
+    // temporary stuff
     QGraphicsTextItem* m_item;
     QGraphicsRectItem* m_rect;
 };

@@ -35,6 +35,8 @@ void ERGraphicsView::mouseMoveEvent(QMouseEvent *event)
     {
         QPointF scpos = mapToScene(event->pos().x(), event->pos().y());
         m_scene->getDraggedItem()->setPos(scpos.x() - m_scene->getStartDragX(), scpos.y() - m_scene->getStartDragY());
+        m_scene->getDraggedItem()->pSetX(scpos.x() - m_scene->getStartDragX());
+        m_scene->getDraggedItem()->pSetY(scpos.y() - m_scene->getStartDragY());
         m_scene->upadteFkrds();
     }
 }

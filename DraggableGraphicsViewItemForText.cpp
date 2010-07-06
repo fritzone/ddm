@@ -56,7 +56,7 @@ void DraggableGraphicsViewItemForText::mouseReleaseEvent ( QGraphicsSceneMouseEv
 
 QString DraggableGraphicsViewItemForText::getText() const
 {
-    return m_item->toHtml();
+    return m_txt;
 }
 
 void DraggableGraphicsViewItemForText::removeFromScene()

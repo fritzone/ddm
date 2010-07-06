@@ -97,3 +97,35 @@ DraggableGraphicsViewItemForText* Diagram::getNote(const QString& note)
     }
     return 0;
 }
+
+const QVector<DiagramNoteDescriptor*> & Diagram::getNoteDescriptors()
+{
+    return m_noteDescriptors;
+}
+
+DraggableGraphicsViewItemForText* Diagram::clone(DiagramNoteDescriptor* src)
+{
+    DraggableGraphicsViewItemForText* result= new DraggableGraphicsViewItemForText(src->getText(), src->isFramed());
+    result->pSetX(src->getX());
+    result->pSetY(src->getY());
+    return result;
+}
+
+
+void Diagram::addDescriptor(DraggableGraphicsViewItemForText* df)
+{
+    DiagramNoteDescriptor* desc = new DiagramNoteDescriptor(df->getText(), df->getpSX(), df->getpSY(), df->isFramed());
+    m_noteDescriptors.append(desc);
+}
+
+void Diagram::addDescriptor(DraggableGraphicsViewItem* df)
+{
+    DiagramObjectDescriptor* desc = new DiagramObjectDescriptor(df->getTable()->getName(), df->getpSX(), df->getpSY());
+    m_tableDescriptors.append(desc);
+}
+
+
+void Diagram::addNoteItem(DraggableGraphicsViewItemForText *itm)
+{
+    m_notes.append(itm);
+}

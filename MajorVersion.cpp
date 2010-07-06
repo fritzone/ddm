@@ -3,6 +3,7 @@
 #include "MajorVersion.h"
 #include "UserDataType.h"
 #include "Table.h"
+#include "Diagram.h"
 #include "IconFactory.h"
 
 MajorVersion::MajorVersion(QTreeWidget* tree, QTreeWidget* dttree, QTreeWidgetItem* projectItem, int ver) :
@@ -191,6 +192,8 @@ inline bool MajorVersion::hasTable(Table *t)
     return m_tables.indexOf(t) >= 0;
 }
 
+// TODO: 1. Make the Table class to come from the named item
+//       2. the two methods below could be very easily templated after this
 
 Table* MajorVersion::getTable(const QString &name)
 {
@@ -201,6 +204,19 @@ Table* MajorVersion::getTable(const QString &name)
             return m_tables[i];
         }
     }
+    return 0;
+}
+
+Diagram* MajorVersion::getDiagram(const QString& name)
+{
+    for(int i=0; i<m_diagrams.size(); i++)
+    {
+        if(m_diagrams[i]->getName() == name)
+        {
+            return m_diagrams[i];
+        }
+    }
+
     return 0;
 }
 

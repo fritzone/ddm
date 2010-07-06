@@ -25,9 +25,10 @@ void ERGraphicsScene::finalizeItem(int x, int y)
         {
             DraggableGraphicsViewItemForText* dftext = new DraggableGraphicsViewItemForText(enterText->getText(), enterText->isFramed());
             addItem(dftext);
-            dftext->setX(x);
-            dftext->setY(y);
+            dftext->setX(x); dftext->pSetX(x);
+            dftext->setY(y); dftext->pSetY(y);
             m_diagram->m_notes.append(dftext);
+            m_diagram->addDescriptor(dftext);
         }
         justDropped = 0;
         return;
@@ -42,6 +43,9 @@ void ERGraphicsScene::finalizeItem(int x, int y)
 
     itm->setX(x);
     itm->setY(y);
+
+    itm->pSetX(x);
+    itm->pSetY(y);
 
     if(justDropped == 1)
     {
