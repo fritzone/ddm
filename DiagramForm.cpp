@@ -273,6 +273,7 @@ void DiagramForm::paintDiagram()
     for(int i=0; i<m_diagram->getNoteDescriptors().size(); i++)
     {
         DiagramNoteDescriptor* noteItem = m_diagram->getNoteDescriptors()[i];
+        qDebug() << noteItem->isFramed();
         DraggableGraphicsViewItemForText* toAdd = m_diagram->clone(noteItem);
         graphicsView->scene()->addItem(toAdd);
         toAdd->place();
@@ -284,6 +285,7 @@ void DiagramForm::paintDiagram()
         DiagramObjectDescriptor* tabDescriptor = m_diagram->getTableDescriptors()[i];
         DraggableGraphicsViewItem* toAdd = m_diagram->clone(tabDescriptor);
         graphicsView->scene()->addItem(toAdd);
+        lstTables->removeItem(toAdd->getTable()->getName());
         toAdd->place();
         m_diagram->addTableItem(toAdd);
     }
