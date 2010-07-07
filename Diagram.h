@@ -4,6 +4,7 @@
 #include "TreeItem.h"
 #include "NamedItem.h"
 #include "DiagramNoteDescriptor.h"
+#include "DiagramFKDescriptor.h"
 
 class Table;
 class ERGraphicsScene;
@@ -12,6 +13,7 @@ class DraggableGraphicsViewItem;
 class DraggableGraphicsViewItemForText;
 class FkRelationDescriptor;
 class DiagramForm;
+class Version;
 
 /**
  * Class responsible for managing the diagrams of a project
@@ -20,9 +22,9 @@ class Diagram : public TreeItem, public NamedItem
 {
 public:
 
-    Diagram();
+    Diagram(Version*);
 
-    Diagram(const QString&);
+    Diagram(Version*, const QString&);
 
     void setForm(DiagramForm* form)
     {
@@ -45,27 +47,31 @@ public:
     }
 
     void removeTable(const QString& tabName);
-    void removeNote(const QString& note);
+    void removeNote(int);
 
     QVector<const Table*> getTables() const;
 
     const QVector<DiagramNoteDescriptor*> & getNoteDescriptors();
+    const QVector<DiagramObjectDescriptor*> & getTableDescriptors();
 
-    DraggableGraphicsViewItemForText* getNote(const QString& note);
+    DraggableGraphicsViewItemForText* getNote(int);
 
-    static DraggableGraphicsViewItemForText* clone(DiagramNoteDescriptor* src);
+    DraggableGraphicsViewItemForText* clone(DiagramNoteDescriptor* src);
+    DraggableGraphicsViewItem* clone(DiagramObjectDescriptor* src);
 
     void addDescriptor(DraggableGraphicsViewItemForText* df);
     void addDescriptor(DraggableGraphicsViewItem* df);
 
-    void reset()
-    {
-        m_notes.clear();
-        m_fksOnStage.clear();
-        m_onStage.clear();
-    }
+    void reset();
+
+    void recreateFks(ERGraphicsScene*);
 
     void addNoteItem(DraggableGraphicsViewItemForText*);
+    void addTableItem(DraggableGraphicsViewItem*);
+
+    DraggableGraphicsViewItem* getTableItem(const QString& name);
+
+    void updateDescriptors();
 
 public:
 
@@ -90,6 +96,8 @@ private:
     DiagramForm* m_form;
 
     bool m_saved;
+
+    Version* m_version;
 };
 
 #endif // DIAGRAM_H

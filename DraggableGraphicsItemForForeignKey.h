@@ -3,15 +3,13 @@
 
 #include "DraggableGraphicsItem.h"
 
-class ForeignKey;
-
 class DraggableGraphicsViewItemForForeignKey : public DraggableGraphicsViewItem
 {
 public:
 
     friend class ERGraphicsView;
 
-    DraggableGraphicsViewItemForForeignKey(ForeignKey* fk) : DraggableGraphicsViewItem(0), m_fk(fk)
+    DraggableGraphicsViewItemForForeignKey() : DraggableGraphicsViewItem(0)
     {}
 
     void setLeftPoint(QPointF p)
@@ -60,19 +58,12 @@ public:
         return QRectF(leftPoint.x(), topPoint.y(), rightPoint.x(), bottomPoint.y());
     }
 
-    ForeignKey* getFk() const
-    {
-        return m_fk;
-    }
-
 protected:
 
     void mousePressEvent ( QGraphicsSceneMouseEvent * event );
     void mouseReleaseEvent ( QGraphicsSceneMouseEvent * event );
 
 private:
-
-    ForeignKey* m_fk;
 
     QPointF leftPoint;
     QPointF rightPoint;

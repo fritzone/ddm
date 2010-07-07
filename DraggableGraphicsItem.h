@@ -63,6 +63,12 @@ public:
         return m_scenePosY;
     }
 
+    void place()
+    {
+        setX(m_scenePosX);
+        setY(m_scenePosY);
+    }
+
 protected:
 
     virtual void dragEnterEvent ( QGraphicsSceneDragDropEvent * event )

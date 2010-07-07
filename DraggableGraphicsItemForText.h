@@ -16,6 +16,7 @@ public:
 
     DraggableGraphicsViewItemForText(const QString& txt, bool framed) : DraggableGraphicsViewItem(0), m_txt(txt), m_rect(0), m_framed(framed)
     {
+        m_index = indexCounter ++;
         m_item = new QGraphicsTextItem();
         m_item->setHtml(txt);
         addToGroup(m_item);
@@ -37,17 +38,14 @@ public:
 
     QString getText() const;
 
+    int index() const
+    {
+        return m_index;
+    }
+
     void removeFromScene();
 
     void editNote();
-
-
-
-    void place()
-    {
-        setX(m_scenePosX);
-        setY(m_scenePosY);
-    }
 
     bool isFramed()
     {
@@ -69,7 +67,9 @@ private:
     // temporary stuff
     QGraphicsTextItem* m_item;
     QGraphicsRectItem* m_rect;
-};
+    int m_index;
 
+    static int indexCounter;
+};
 
 #endif // DRAGGABLEGRAPHICSITEMFORTEXT_H

@@ -3,17 +3,15 @@
 
 #include "DiagramObjectDescriptor.h"
 
-#include <QString>
-
 class DiagramNoteDescriptor : public DiagramObjectDescriptor
 {
 public:
 
     DiagramNoteDescriptor(const QString& txt, int x, int y, bool framed) : DiagramObjectDescriptor(txt, x, y), m_framed(framed) {}
 
-
     bool isFramed() {return m_framed;}
 
+    void setFramed(bool f) {m_framed = f;}
 private:
 
     bool m_framed;

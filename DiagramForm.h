@@ -24,7 +24,7 @@ public:
     DiagramForm(Version* v, Diagram* dgram, QWidget *parent);
     ~DiagramForm();
     void setTableToRemoveFromDiagram(const QString& tabName);
-    void setCurrentWorkNoteOnDiagram(const QString& note);
+    void setCurrentWorkNoteOnDiagram(int noteIndex);
     void paintDiagram();
     void doneNote();
 
@@ -56,7 +56,7 @@ private:
     Diagram* m_diagram;
     MainWindow* m_mw;
     QString m_tabToRemove;
-    QString m_noteToRemove;
+    int m_noteToRemove;
 };
 
 #endif // DIAGRAMFORM_H

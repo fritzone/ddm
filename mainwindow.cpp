@@ -443,7 +443,7 @@ void MainWindow::onAbout()
 
 void MainWindow::onNewDiagram()
 {
-    Diagram* dgram = new Diagram();
+    Diagram* dgram = new Diagram(getWorkingProject()->getWorkingVersion());
     DiagramForm* df = new DiagramForm(getWorkingProject()->getWorkingVersion(), dgram, this);
     setCentralWidget(df);
     dgram->setForm(df);

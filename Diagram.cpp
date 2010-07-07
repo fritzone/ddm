@@ -4,13 +4,14 @@
 #include "DraggableGraphicsItemForForeignKey.h"
 #include "DraggableGraphicsItemForText.h"
 #include "FkRelationDescriptor.h"
+#include "Version.h"
 
-Diagram::Diagram() : TreeItem(), NamedItem("Table diagram"), m_onStage(), m_fksOnStage(), m_notes(), m_form(0), m_saved(false)
+Diagram::Diagram(Version* v) : TreeItem(), NamedItem("Table diagram"), m_onStage(), m_fksOnStage(), m_notes(), m_form(0), m_saved(false), m_version(v)
 {
 
 }
 
-Diagram::Diagram(const QString & name) : TreeItem(), NamedItem(name), m_onStage(), m_fksOnStage(), m_notes(), m_form(0), m_saved(false)
+Diagram::Diagram(Version* v, const QString & name) : TreeItem(), NamedItem(name), m_onStage(), m_fksOnStage(), m_notes(), m_form(0), m_saved(false), m_version(v)
 {
 
 }
@@ -37,7 +38,10 @@ void Diagram::removeTable(const QString &tabName)
     {
         DraggableGraphicsViewItem* toDelete = m_onStage[idx];
         m_onStage.remove(idx);
+        DiagramObjectDescriptor* descToDel = m_tableDescriptors[idx];
+        m_tableDescriptors.remove(idx);
         delete toDelete;
+        delete descToDel;
     }
 
     int i=0;
@@ -57,12 +61,12 @@ void Diagram::removeTable(const QString &tabName)
     }
 }
 
-void Diagram::removeNote(const QString &note)
+void Diagram::removeNote(int note)
 {
     int i=0;
     while(i<m_notes.size())
     {
-        if(m_notes.at(i)->getText() == note)
+        if(m_notes.at(i)->index() == note)
         {
             m_notes.at(i)->removeFromScene();
             m_notes.remove(i);
@@ -84,12 +88,14 @@ QVector<const Table*> Diagram::getTables() const
     return result;
 }
 
-DraggableGraphicsViewItemForText* Diagram::getNote(const QString& note)
+DraggableGraphicsViewItemForText* Diagram::getNote(int noteIdx)
 {
+    qDebug() << "Note: "<< noteIdx;
     int i=0;
     while(i<m_notes.size())
     {
-        if(m_notes.at(i)->getText() == note)
+        qDebug() << "Note " << i << m_notes.at(i)->index();
+        if(m_notes.at(i)->index() == noteIdx)
         {
             return m_notes.at(i);
         }
@@ -103,6 +109,11 @@ const QVector<DiagramNoteDescriptor*> & Diagram::getNoteDescriptors()
     return m_noteDescriptors;
 }
 
+const QVector<DiagramObjectDescriptor*> & Diagram::getTableDescriptors()
+{
+    return m_tableDescriptors;
+}
+
 DraggableGraphicsViewItemForText* Diagram::clone(DiagramNoteDescriptor* src)
 {
     DraggableGraphicsViewItemForText* result= new DraggableGraphicsViewItemForText(src->getText(), src->isFramed());
@@ -111,6 +122,13 @@ DraggableGraphicsViewItemForText* Diagram::clone(DiagramNoteDescriptor* src)
     return result;
 }
 
+DraggableGraphicsViewItem* Diagram::clone(DiagramObjectDescriptor* src)
+{
+    DraggableGraphicsViewItem* result= m_version->getTable(src->getText())->getDiagramEntity() ;
+    result->pSetX(src->getX());
+    result->pSetY(src->getY());
+    return result;
+}
 
 void Diagram::addDescriptor(DraggableGraphicsViewItemForText* df)
 {
@@ -128,4 +146,50 @@ void Diagram::addDescriptor(DraggableGraphicsViewItem* df)
 void Diagram::addNoteItem(DraggableGraphicsViewItemForText *itm)
 {
     m_notes.append(itm);
+}
+
+void Diagram::addTableItem(DraggableGraphicsViewItem *itm)
+{
+    m_onStage.append(itm);
+}
+
+void Diagram::reset()
+{
+    m_notes.clear();
+    m_onStage.clear();
+}
+
+void Diagram::recreateFks(ERGraphicsScene* scene)
+{
+    for(int i=0; i<m_fksOnStage.size();i ++)
+    {
+        m_fksOnStage[i]->recreate(this, scene);
+    }
+}
+
+DraggableGraphicsViewItem* Diagram::getTableItem(const QString& name)
+{
+    for(int i=0; i<m_onStage.size(); i++)
+    {
+        if(m_onStage[i]->getTable()->getName() == name)
+        {
+            return m_onStage[i];
+        }
+    }
+}
+
+void Diagram::updateDescriptors()
+{
+    for(int i=0; i<m_onStage.size();i++)
+    {
+        m_tableDescriptors[i]->setX(m_onStage[i]->x());
+        m_tableDescriptors[i]->setY(m_onStage[i]->y());
+    }
+
+    for(int i=0; i<m_notes.size();i++)
+    {
+        m_noteDescriptors[i]->setX(m_notes[i]->x());
+        m_noteDescriptors[i]->setY(m_notes[i]->y());
+        m_noteDescriptors[i]->setFramed(m_notes[i]->isFramed());
+    }
 }
