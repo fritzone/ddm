@@ -23,7 +23,7 @@
 #include <qdebug.h>
 
 DiagramForm::DiagramForm(Version* v, Diagram* dgram, QWidget *parent) : QWidget(parent),
-        ui(new Ui::DiagramForm), ver(v), m_diagram(dgram), m_mw(dynamic_cast<MainWindow*>(parent)), m_tabToRemove(""), m_noteToRemove("")
+        ui(new Ui::DiagramForm), ver(v), m_diagram(dgram), m_mw(dynamic_cast<MainWindow*>(parent)), m_tabToRemove(""), m_noteToRemove(-1)
 {
 
     ui->setupUi(this);
@@ -227,7 +227,7 @@ void DiagramForm::removeFromDiagram()
 void DiagramForm::removeNoteFromDiagram()
 {
     graphicsView->scene()->removeNote(m_noteToRemove);
-    m_noteToRemove = "";
+    m_noteToRemove = -1;
 }
 
 
@@ -236,9 +236,9 @@ void DiagramForm::setTableToRemoveFromDiagram(const QString& tabName)
     m_tabToRemove = tabName;
 }
 
-void DiagramForm::setCurrentWorkNoteOnDiagram(const QString& note)
+void DiagramForm::setCurrentWorkNoteOnDiagram(int noteIndex)
 {
-    m_noteToRemove = note;
+    m_noteToRemove = noteIndex;
 }
 
 
@@ -262,19 +262,32 @@ void DiagramForm::onEditNote()
     if(note)
     {
         note->editNote();
+        m_diagram->updateDescriptors();
     }
 }
 
 void DiagramForm::paintDiagram()
 {
-    // first step, put on all the notes
     m_diagram->reset();
+    // first step, put on all the notes
     for(int i=0; i<m_diagram->getNoteDescriptors().size(); i++)
     {
         DiagramNoteDescriptor* noteItem = m_diagram->getNoteDescriptors()[i];
-        DraggableGraphicsViewItemForText* toAdd = Diagram::clone(noteItem);
+        DraggableGraphicsViewItemForText* toAdd = m_diagram->clone(noteItem);
         graphicsView->scene()->addItem(toAdd);
         toAdd->place();
         m_diagram->addNoteItem(toAdd);
     }
+    // then the tables
+    for(int i=0; i<m_diagram->getTableDescriptors().size(); i++)
+    {
+        DiagramObjectDescriptor* tabDescriptor = m_diagram->getTableDescriptors()[i];
+        DraggableGraphicsViewItem* toAdd = m_diagram->clone(tabDescriptor);
+        graphicsView->scene()->addItem(toAdd);
+        toAdd->place();
+        m_diagram->addTableItem(toAdd);
+    }
+
+    m_diagram->recreateFks(graphicsView->scene());
+
 }

@@ -7,6 +7,8 @@
 #include <QtGui>
 #include <QGraphicsScene>
 
+int DraggableGraphicsViewItemForText::indexCounter = 0;
+
 void DraggableGraphicsViewItemForText::mousePressEvent ( QGraphicsSceneMouseEvent * event )
 {
     qDebug() << "note mousepress : X=" << event->pos().x() << " Y=" << event->pos().y();
@@ -26,7 +28,7 @@ void DraggableGraphicsViewItemForText::mousePressEvent ( QGraphicsSceneMouseEven
 
             QObject::connect(action_Remove, SIGNAL(activated()), dynamic_cast<ERGraphicsScene*>(this->scene())->getDiagram()->getDiagramForm(), SLOT(removeNoteFromDiagram()));
             QObject::connect(action_Change, SIGNAL(activated()), dynamic_cast<ERGraphicsScene*>(this->scene())->getDiagram()->getDiagramForm(), SLOT(onEditNote()));
-            dynamic_cast<ERGraphicsScene*>(this->scene())->getDiagram()->getDiagramForm()->setCurrentWorkNoteOnDiagram(m_item->toHtml());
+            dynamic_cast<ERGraphicsScene*>(this->scene())->getDiagram()->getDiagramForm()->setCurrentWorkNoteOnDiagram(m_index);
 
             popup.addAction(action_Remove);
             popup.addAction(action_Change);

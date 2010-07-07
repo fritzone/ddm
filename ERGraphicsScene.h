@@ -77,7 +77,7 @@ public:
     void addForeignKey(FkRelationDescriptor* fkrd);
 
     void removeTable(const QString& tabName);
-    void removeNote(const QString& note);
+    void removeNote(int);
 
 protected:
 

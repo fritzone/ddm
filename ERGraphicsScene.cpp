@@ -47,6 +47,8 @@ void ERGraphicsScene::finalizeItem(int x, int y)
     itm->pSetX(x);
     itm->pSetY(y);
 
+    m_diagram->addDescriptor(itm);
+
     if(justDropped == 1)
     {
         QString tabName = itm->getTable()->getName();
@@ -77,7 +79,7 @@ void ERGraphicsScene::finalizeItem(int x, int y)
                             if(itmForOtherTable != 0)
                             {
                                 DraggableGraphicsViewItemForForeignKey* difks = fksI.at(j)->getItem();
-                                FkRelationDescriptor* fkrd = new FkRelationDescriptor(difks, itm, itmForOtherTable);
+                                FkRelationDescriptor* fkrd = new FkRelationDescriptor(fksI.at(j), difks, itm, itmForOtherTable);
                                 addItem(difks);
                                 addForeignKey(fkrd);
                                 break;
@@ -101,7 +103,7 @@ void ERGraphicsScene::finalizeItem(int x, int y)
                     if(itmForOtherTable != 0)
                     {
                         DraggableGraphicsViewItemForForeignKey* difks = cfks.at(i)->getItem();
-                        FkRelationDescriptor* fkrd = new FkRelationDescriptor(difks, itmForOtherTable, itm);
+                        FkRelationDescriptor* fkrd = new FkRelationDescriptor(cfks.at(i), difks, itmForOtherTable, itm);
                         addItem(difks);
                         addForeignKey(fkrd);
                         break;
@@ -197,6 +199,7 @@ QRectF ERGraphicsScene::getCoverageRect()
 
 void ERGraphicsScene::upadteFkrds()
 {
+    m_diagram->updateDescriptors();
     for(int i=0; i<m_diagram->m_fksOnStage.size(); i++)
     {
         m_diagram->m_fksOnStage[i]->updateContent();
@@ -215,7 +218,7 @@ void ERGraphicsScene::removeTable(const QString &tabName)
     m_diagram->removeTable(tabName);
 }
 
-void ERGraphicsScene::removeNote(const QString &note)
+void ERGraphicsScene::removeNote(int note)
 {
     m_diagram->removeNote(note);
 }

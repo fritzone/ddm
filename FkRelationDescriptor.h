@@ -1,10 +1,15 @@
 #ifndef FKRELATIONDESCRIPTOR_H
 #define FKRELATIONDESCRIPTOR_H
 
+#include "DiagramFKDescriptor.h"
+
 #include <QGraphicsLineItem>
 
 class DraggableGraphicsViewItemForForeignKey;
 class DraggableGraphicsViewItem;
+class ERGraphicsScene;
+class ForeignKey;
+class Diagram;
 
 class FkRelationDescriptor
 {
@@ -16,10 +21,7 @@ public:
     static const int TOP = 3;
     static const int BOTTOM = 2;
 
-    FkRelationDescriptor(DraggableGraphicsViewItemForForeignKey* fkitm, DraggableGraphicsViewItem* tab1, DraggableGraphicsViewItem* tab2) : 
-            m_ellipse(0), m_arrowHead(0), rel1Txt(0), rel2Txt(0),
-            m_fkitm(fkitm),m_tab1(tab1), m_tab2(tab2), m_sentenced(false), firstLine(0), secondLine(0)
-    {}
+    FkRelationDescriptor(ForeignKey* fk, DraggableGraphicsViewItemForForeignKey* fkitm, DraggableGraphicsViewItem* tab1, DraggableGraphicsViewItem* tab2);
 
     void updateContent(bool first = false);
     
@@ -51,7 +53,8 @@ public:
         return m_sentenced;
     }
     
-    void eliberate();
+    void eliberate(bool desc_too = true);
+    void recreate(Diagram*,ERGraphicsScene*);
 
     QGraphicsLineItem* getFirstLine() const
     {
@@ -70,11 +73,17 @@ public:
     QGraphicsTextItem* rel1Txt;
     QGraphicsTextItem* rel2Txt;
 
+    const ForeignKey* getFk() const
+    {
+        return m_fk;
+    }
 
 private:
 
     // finds the closes point to "to" from p1..4
     QPointF closest(QPointF, QPointF, QPointF, QPointF, QPointF, int*);
+
+    void freePreviousData();
 
 private:
 
@@ -84,7 +93,10 @@ private:
     bool m_sentenced ;
     QGraphicsLineItem* firstLine;
     QGraphicsLineItem* secondLine;
-
+    DiagramFKDescriptor* m_descriptor;
+    const ForeignKey* m_fk;
+    QString tab1Name;
+    QString tab2Name;
 
 };
 
