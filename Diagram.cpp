@@ -6,7 +6,8 @@
 #include "FkRelationDescriptor.h"
 #include "Version.h"
 
-Diagram::Diagram(Version* v) : TreeItem(), NamedItem("Table diagram"), m_onStage(), m_fksOnStage(), m_notes(), m_form(0), m_saved(false), m_version(v)
+Diagram::Diagram(Version* v) : TreeItem(), NamedItem("Table diagram"), m_onStage(), m_fksOnStage(), m_notes(), m_form(0), m_saved(false), m_version(v),
+        m_noteDescriptors(0), m_tableDescriptors()
 {
 
 }
@@ -192,4 +193,9 @@ void Diagram::updateDescriptors()
         m_noteDescriptors[i]->setY(m_notes[i]->y());
         m_noteDescriptors[i]->setFramed(m_notes[i]->isFramed());
     }
+}
+
+void Diagram::serialize(QDomDocument &doc, QDomElement &parent) const
+{
+
 }

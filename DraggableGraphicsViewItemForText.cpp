@@ -87,6 +87,7 @@ void DraggableGraphicsViewItemForText::editNote()
     if(enterText->exec() == QDialog::Accepted)
     {
         m_item->setHtml(enterText->getText());
+        m_framed = enterText->isFramed();
         if(enterText->isFramed())
         {
             if(m_rect)

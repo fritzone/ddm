@@ -5,6 +5,7 @@
 #include "NamedItem.h"
 #include "DiagramNoteDescriptor.h"
 #include "DiagramFKDescriptor.h"
+#include "SerializableElement.h"
 
 class Table;
 class ERGraphicsScene;
@@ -18,7 +19,7 @@ class Version;
 /**
  * Class responsible for managing the diagrams of a project
  */
-class Diagram : public TreeItem, public NamedItem
+class Diagram : public TreeItem, public NamedItem, public SerializableElement
 {
 public:
 
@@ -73,6 +74,24 @@ public:
 
     void updateDescriptors();
 
+    /**
+     * Will generate the following XML:
+     <Diagram>
+     <Tables>
+        <Table name="TabName" x="TableX" y="TableY" />
+     </Tables>
+     <Notes>
+        <Note x+"X" y="Y" frame="1/0">
+            <Text> CDATA </Text>
+        </Note>
+     </Notes>
+     <Fks>
+        <Fk ... everything from the descriptor>
+     </Fks>
+     </Diagram>
+     */
+    virtual void serialize(QDomDocument &doc, QDomElement &parent) const;
+
 public:
 
     friend class ERGraphicsScene;
@@ -83,14 +102,17 @@ private:
     // these table elements are already on the stage
     QVector <DraggableGraphicsViewItem*> m_onStage;
 
-    // these foreign key elements are already on the stage
+    // these foreign key elements are already on the stage. FkRelationDescriptor objects contain the DiagramFKDescriptor
+    // objects that are being saved to the file
     QVector <FkRelationDescriptor*> m_fksOnStage;
 
     // the diagrams' notes used internally by the scene. These are cleared from time to time, so don't trust them. Use the noteDescriptors below instead
     QVector <DraggableGraphicsViewItemForText*> m_notes;
 
-    // the notes that are saved to the file
+    // the note descriptors that are saved to the file
     QVector <DiagramNoteDescriptor*> m_noteDescriptors;
+
+    // the table descriptors that are saved to the file
     QVector <DiagramObjectDescriptor*> m_tableDescriptors;
 
     DiagramForm* m_form;
