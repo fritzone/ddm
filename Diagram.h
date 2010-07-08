@@ -4,6 +4,7 @@
 #include "TreeItem.h"
 #include "NamedItem.h"
 #include "DiagramNoteDescriptor.h"
+#include "DiagramTableDescriptor.h"
 #include "DiagramFKDescriptor.h"
 #include "SerializableElement.h"
 
@@ -53,7 +54,7 @@ public:
     QVector<const Table*> getTables() const;
 
     const QVector<DiagramNoteDescriptor*> & getNoteDescriptors();
-    const QVector<DiagramObjectDescriptor*> & getTableDescriptors();
+    const QVector<DiagramTableDescriptor*> & getTableDescriptors();
 
     DraggableGraphicsViewItemForText* getNote(int);
 
@@ -76,7 +77,7 @@ public:
 
     /**
      * Will generate the following XML:
-     <Diagram>
+     <Diagram name="Name">
      <Tables>
         <Table name="TabName" x="TableX" y="TableY" />
      </Tables>
@@ -113,7 +114,7 @@ private:
     QVector <DiagramNoteDescriptor*> m_noteDescriptors;
 
     // the table descriptors that are saved to the file
-    QVector <DiagramObjectDescriptor*> m_tableDescriptors;
+    QVector <DiagramTableDescriptor*> m_tableDescriptors;
 
     DiagramForm* m_form;
 

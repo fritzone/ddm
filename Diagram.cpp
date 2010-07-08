@@ -110,7 +110,7 @@ const QVector<DiagramNoteDescriptor*> & Diagram::getNoteDescriptors()
     return m_noteDescriptors;
 }
 
-const QVector<DiagramObjectDescriptor*> & Diagram::getTableDescriptors()
+const QVector<DiagramTableDescriptor*> & Diagram::getTableDescriptors()
 {
     return m_tableDescriptors;
 }
@@ -139,7 +139,7 @@ void Diagram::addDescriptor(DraggableGraphicsViewItemForText* df)
 
 void Diagram::addDescriptor(DraggableGraphicsViewItem* df)
 {
-    DiagramObjectDescriptor* desc = new DiagramObjectDescriptor(df->getTable()->getName(), df->getpSX(), df->getpSY());
+    DiagramTableDescriptor* desc = new DiagramTableDescriptor(df->getTable()->getName(), df->getpSX(), df->getpSY());
     m_tableDescriptors.append(desc);
 }
 
@@ -197,5 +197,39 @@ void Diagram::updateDescriptors()
 
 void Diagram::serialize(QDomDocument &doc, QDomElement &parent) const
 {
+    QDomElement diagramElement = doc.createElement("Diagram");      // will hold the data in this element
+    diagramElement.setAttribute("Name", m_name);
+
+    // save the tables
+    {
+    QDomElement tablesElement = doc.createElement("Tables");
+    for(int i=0; i<m_tableDescriptors.size(); i++)
+    {
+        m_tableDescriptors[i]->serialize(doc, tablesElement);
+    }
+    diagramElement.appendChild(tablesElement);
+    }
+
+    // save the notes
+    {
+    QDomElement notesElement = doc.createElement("Notes");
+    for(int i=0; i<m_noteDescriptors.size(); i++)
+    {
+        m_noteDescriptors[i]->serialize(doc, notesElement);
+    }
+    diagramElement.appendChild(notesElement);
+    }
+
+    // save the fks
+    {
+    QDomElement fksElement = doc.createElement("FKs");
+    for(int i=0; i<m_fksOnStage.size(); i++)
+    {
+        m_fksOnStage[i]->descriptor()->serialize(doc, fksElement);
+    }
+    diagramElement.appendChild(fksElement);
+    }
+
+    parent.appendChild(diagramElement);
 
 }

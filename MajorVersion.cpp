@@ -113,7 +113,7 @@ void MajorVersion::serialize(QDomDocument &doc, QDomElement &parent) const
     versionElement.appendChild(versionNode);
     majorVersionElement.appendChild(versionElement);
 
-    // now saving the data types
+    // the data types
     {
     QDomElement dataTypesElement = doc.createElement("DataTypes");
     for(int i=0; i< m_dataTypes.size(); i++)
@@ -123,6 +123,7 @@ void MajorVersion::serialize(QDomDocument &doc, QDomElement &parent) const
     majorVersionElement.appendChild(dataTypesElement);
     }
 
+    // the tables
     {
     QDomElement tablesElement = doc.createElement("Tables");
     for(int i=0; i< m_tables.size(); i++)
@@ -131,6 +132,17 @@ void MajorVersion::serialize(QDomDocument &doc, QDomElement &parent) const
     }
     majorVersionElement.appendChild(tablesElement);
     }
+
+    // the diagrams
+    {
+    QDomElement diagramsElement = doc.createElement("Diagrams");
+    for(int i=0; i< m_diagrams.size(); i++)
+    {
+        m_diagrams[i]->serialize(doc, diagramsElement);
+    }
+    majorVersionElement.appendChild(diagramsElement);
+    }
+
 
     parent.appendChild(majorVersionElement);
 

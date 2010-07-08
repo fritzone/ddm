@@ -78,6 +78,11 @@ public:
         return m_fk;
     }
 
+    DiagramFKDescriptor* descriptor() const
+    {
+        return m_descriptor;
+    }
+
 private:
 
     // finds the closes point to "to" from p1..4
