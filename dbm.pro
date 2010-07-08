@@ -48,7 +48,8 @@ SOURCES += main.cpp \
     Diagram.cpp \
     DraggableGraphicsViewItemForText.cpp \
     EnterNoteTextDialog.cpp \
-    ForeignKey.cpp
+    ForeignKey.cpp \
+    DiagramTableDescriptor.cpp
 HEADERS += MainWindow.h \
     MainWindowButtonDialog.h \
     NewProjectDialog.h \
@@ -103,7 +104,8 @@ HEADERS += MainWindow.h \
     EnterNoteTextDialog.h \
     DiagramNoteDescriptor.h \
     DiagramObjectDescriptor.h \
-    DiagramFKDescriptor.h
+    DiagramFKDescriptor.h \
+    DiagramTableDescriptor.h
 FORMS += mainwindow.ui \
     mainwindowbuttondialog.ui \
     newprojectdialog.ui \

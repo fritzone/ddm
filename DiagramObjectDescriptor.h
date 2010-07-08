@@ -3,7 +3,9 @@
 
 #include <QString>
 
-class DiagramObjectDescriptor
+#include "SerializableElement.h"
+
+class DiagramObjectDescriptor : public SerializableElement
 {
 public:
 
@@ -15,8 +17,15 @@ public:
         return m_txt;
     }
 
-    int getX() {return m_x;}
-    int getY() {return m_y;}
+    int getX() const
+    {
+        return m_x;
+    }
+
+    int getY() const
+    {
+        return m_y;
+    }
 
     void setX(int x)
     {
@@ -27,6 +36,8 @@ public:
     {
         m_y = y;
     }
+
+    virtual void serialize(QDomDocument& doc, QDomElement& parent) const = 0;
 
 private:
 
