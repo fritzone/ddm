@@ -54,7 +54,22 @@ void MajorVersion::populateTreeItems()
 
         // set the link to the tree
         tbl->setLocation(newTblsItem);
+    }
 
+    // insert the diagrams
+    for(int i=0; i<m_diagrams.size(); i++)
+    {
+        Diagram* dI = m_diagrams[i];
+        QTreeWidgetItem* newDgramItem = new QTreeWidgetItem(getDiagramsItem(), QStringList(dI->getName())) ;
+
+        QVariant var(dI->getName());
+        newDgramItem->setData(0, Qt::UserRole, var);
+        // set the icon, add to the tree
+        newDgramItem->setIcon(0, IconFactory::getDiagramIcon());
+        m_tree->insertTopLevelItem(0, newDgramItem);
+
+        // set the link to the tree
+        dI->setLocation(newDgramItem);
     }
 }
 
@@ -77,7 +92,6 @@ void MajorVersion::createTreeItems(QTreeWidget* tree, QTreeWidget* dtTree, QTree
     QIcon queriesIcon(":/images/actions/images/small/view.png");
     QIcon dtsIcon(":/images/actions/images/small/datatypes.PNG");
     QIcon versionIcon(":/images/actions/images/small/version.PNG");
-    QIcon diagramIcon(":/images/actions/images/small/diagram.png");
 
     versionItem = new QTreeWidgetItem(m_projectItem, QStringList(QString("Ver: ") + version)) ;
     versionItem->setIcon(0, versionIcon);
@@ -99,7 +113,7 @@ void MajorVersion::createTreeItems(QTreeWidget* tree, QTreeWidget* dtTree, QTree
     m_tree->addTopLevelItem(queriesItem);
 
     diagramsItem = new QTreeWidgetItem(versionItem, QStringList(QObject::tr("Diagrams"))) ;
-    diagramsItem->setIcon(0, diagramIcon);
+    diagramsItem->setIcon(0, IconFactory::getDiagramIcon());
     m_tree->addTopLevelItem(diagramsItem);
 
 }

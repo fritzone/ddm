@@ -124,6 +124,8 @@ public:
 
     ForeignKey* getForeignKey(int i);
 
+    ForeignKey* getForeignKeyToTable(const QString& tableName);
+
     void setDefaultValues(QVector <QVector <QString> > &);
 
     const QVector <QVector <QString> > & getStartupValues()

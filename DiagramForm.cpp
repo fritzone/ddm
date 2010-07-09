@@ -268,6 +268,7 @@ void DiagramForm::onEditNote()
 
 void DiagramForm::paintDiagram()
 {
+    bool enableNotes = false;
     m_diagram->reset();
     // first step, put on all the notes
     for(int i=0; i<m_diagram->getNoteDescriptors().size(); i++)
@@ -288,8 +289,13 @@ void DiagramForm::paintDiagram()
         lstTables->removeItem(toAdd->getTable()->getName());
         toAdd->place();
         m_diagram->addTableItem(toAdd);
+        enableNotes = true;
     }
 
+    // and finally the foreign keys
     m_diagram->recreateFks(graphicsView->scene());
 
+    lstDiagramForms->setEnabled(enableNotes);
+
+    graphicsView->centerOn(graphicsView->scene()->getCoverageRect().center());
 }

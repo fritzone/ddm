@@ -9,6 +9,10 @@
 #include "ForeignKey.h"
 #include "AbstractStorageEngineListProvider.h"
 #include "AbstractStorageEngine.h"
+#include "DiagramTableDescriptor.h"
+#include "DiagramNoteDescriptor.h"
+#include "DiagramFKDescriptor.h"
+#include "Diagram.h"
 
 #include <QStringList>
 
@@ -183,10 +187,22 @@ MajorVersion* DeserializationFactory::createMajorVersion(DatabaseEngine* engine,
         }
     }
 
+    // getting the diagrams
+    for(int i=0; i<element.childNodes().count(); i++)
+    {
+        if(element.childNodes().at(i).nodeName() == "Diagrams")   // in a well formatted result, the Diagrams child node is always after the tables
+        {
+            for(int j=0; j<element.childNodes().at(i).childNodes().count(); j++)
+            {
+                Diagram* diagram = createDiagram(result, doc, element.childNodes().at(i).childNodes().at(j).toElement());
+                result->addDiagram(diagram);
+            }
+        }
+    }
     return result;
 }
 
-Column* DeserializationFactory::createColumn(MajorVersion* ver, const QDomDocument &doc, const QDomElement &element)
+Column* DeserializationFactory::createColumn(Version* ver, const QDomDocument &doc, const QDomElement &element)
 {
     QString name = element.attribute("Name");
     QString pk = element.attribute("PK");
@@ -197,7 +213,7 @@ Column* DeserializationFactory::createColumn(MajorVersion* ver, const QDomDocume
     return col;
 }
 
-Table* DeserializationFactory::createTable(DatabaseEngine* engine, MajorVersion* ver, const QDomDocument &doc, const QDomElement &element)
+Table* DeserializationFactory::createTable(DatabaseEngine* engine, Version* ver, const QDomDocument &doc, const QDomElement &element)
 {
     Table* result = new Table();
     QString name = element.attribute("Name");
@@ -309,4 +325,110 @@ Solution* DeserializationFactory::createSolution(const QDomDocument &doc, const 
     }
 
     return sol;
+}
+
+DiagramTableDescriptor* DeserializationFactory::createDiagramTableDescriptor(const QDomDocument &doc, const QDomElement &element)
+{
+    QString tabName = element.attribute("Name");
+    int x = element.attribute("x").toInt();
+    int y = element.attribute("y").toInt();
+
+    DiagramTableDescriptor* result = new DiagramTableDescriptor(tabName, x, y);
+    return result;
+}
+
+DiagramNoteDescriptor* DeserializationFactory::createDiagramNoteDescriptor(const QDomDocument &doc, const QDomElement &element)
+{
+    int x = element.attribute("x").toInt();
+    int y = element.attribute("y").toInt();
+    bool framed = element.attribute("frame")=="1";
+    QDomElement textNode = element.firstChild().toElement();
+    QDomNode cdataNode = textNode.firstChild();
+    QString text = cdataNode.nodeValue();
+
+    DiagramNoteDescriptor* result = new DiagramNoteDescriptor(text, x, y, framed);
+    return result;
+}
+
+DiagramFKDescriptor* DeserializationFactory::createDiagramFKDescriptor(const QDomDocument& doc, const QDomElement& element)
+{
+    QString tab1 = element.attribute("tab1");
+    QString tab2 = element.attribute("tab2");
+    int x = element.attribute("x").toInt();
+    int y = element.attribute("y").toInt();
+    qreal ellx = element.attribute("ellipseX").toFloat();
+    qreal elly = element.attribute("ellipseY").toFloat();
+
+    qreal l1otx = element.attribute("line1OthX").toFloat();
+    qreal l1oty = element.attribute("line1OthY").toFloat();
+
+    qreal l1posx = element.attribute("line1PosX").toFloat();
+    qreal l1posy = element.attribute("line1PosY").toFloat();
+
+    qreal l2otx = element.attribute("line2OthX").toFloat();
+    qreal l2oty = element.attribute("line2OthY").toFloat();
+
+    qreal l2posx = element.attribute("line2PosX").toFloat();
+    qreal l2posy = element.attribute("line2PosY").toFloat();
+
+    qreal rel1posx = element.attribute("rel1PosX").toFloat();
+    qreal rel1posy = element.attribute("rel1PosY").toFloat();
+
+    qreal rel2posx = element.attribute("rel2PosX").toFloat();
+    qreal rel2posy = element.attribute("rel2PosY").toFloat();
+
+    qreal arrowp1x = element.attribute("arrowP1x").toFloat();
+    qreal arrowp1y = element.attribute("arrowP1y").toFloat();
+
+    qreal arrowp2x = element.attribute("arrowP2x").toFloat();
+    qreal arrowp2y = element.attribute("arrowP2y").toFloat();
+
+    qreal arrowposx = element.attribute("arrowPosx").toFloat();
+    qreal arrowposy = element.attribute("arrowPosy").toFloat();
+
+    DiagramFKDescriptor* dfk = new     DiagramFKDescriptor(tab1, tab2, x, y,  ellx,  elly,  l1otx,  l1oty,  l1posx, l1posy,  l2otx,  l2oty,  l2posx,
+                                                           l2posy,  rel1posx,  rel1posy,  rel2posx,  rel2posy,
+                                                           arrowp1x,  arrowp1y,  arrowp2x,  arrowp2y,  arrowposx,  arrowposy);
+
+    return dfk;
+
+}
+
+Diagram* DeserializationFactory::createDiagram(Version* v, const QDomDocument &doc, const QDomElement &element)
+{
+    QString name = element.attribute("Name");
+    Diagram* result = new Diagram(v, name);
+
+    for(int i=0; i<element.childNodes().count(); i++)
+    {
+        if(element.childNodes().at(i).nodeName() == "Tables")
+        {
+            for(int j=0; j<element.childNodes().at(i).childNodes().count(); j++)
+            {
+                DiagramTableDescriptor* tabDesc = createDiagramTableDescriptor(doc, element.childNodes().at(i).childNodes().at(j).toElement());
+                result->addTableDescriptor(tabDesc);
+            }
+        }
+
+        if(element.childNodes().at(i).nodeName() == "Notes")
+        {
+            for(int j=0; j<element.childNodes().at(i).childNodes().count(); j++)
+            {
+                DiagramNoteDescriptor* noteDesc = createDiagramNoteDescriptor(doc, element.childNodes().at(i).childNodes().at(j).toElement());
+                result->addNoteDescriptor(noteDesc);
+            }
+        }
+
+        if(element.childNodes().at(i).nodeName() == "FKs")
+        {
+            for(int j=0; j<element.childNodes().at(i).childNodes().count(); j++)
+            {
+                DiagramFKDescriptor* fkDesc = createDiagramFKDescriptor(doc, element.childNodes().at(i).childNodes().at(j).toElement());
+                result->addFKDescriptor(fkDesc);
+            }
+        }
+    }
+
+
+    return result;
 }
