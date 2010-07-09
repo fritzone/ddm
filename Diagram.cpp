@@ -27,7 +27,10 @@ void Diagram::removeTable(const QString &tabName)
             idx = i;
             for(int j=0; j<m_fksOnStage.size(); j++)
             {
-                if(m_fksOnStage[j]->getFirst() == m_onStage[i] || m_fksOnStage[j]->getSecond() == m_onStage[i])
+                const Table* tab1 = m_fksOnStage[j]->getFirst()->getTable();
+                const Table* tab2 = m_fksOnStage[j]->getSecond()->getTable();
+                const Table* tabc = m_onStage[i]->getTable();
+                if(tab1->getName() == tabc->getName() || tab2->getName() == tabc->getName())
                 {
                     m_fksOnStage[j]->sentence();
                 }
@@ -164,7 +167,8 @@ void Diagram::recreateFks(ERGraphicsScene* scene)
 {
     for(int i=0; i<m_fksOnStage.size();i ++)
     {
-        m_fksOnStage[i]->recreate(this, scene);
+        m_fksOnStage[i]->recreate(this);
+        m_fksOnStage[i]->addToScene(scene);
     }
 }
 
@@ -177,6 +181,7 @@ DraggableGraphicsViewItem* Diagram::getTableItem(const QString& name)
             return m_onStage[i];
         }
     }
+    return 0;
 }
 
 void Diagram::updateDescriptors()
@@ -232,4 +237,21 @@ void Diagram::serialize(QDomDocument &doc, QDomElement &parent) const
 
     parent.appendChild(diagramElement);
 
+}
+
+void Diagram::addTableDescriptor(DiagramTableDescriptor* td)
+{
+    m_tableDescriptors.append(td);
+}
+
+void Diagram::addNoteDescriptor(DiagramNoteDescriptor* nd)
+{
+    m_noteDescriptors.append(nd);
+}
+
+void Diagram::addFKDescriptor(DiagramFKDescriptor* nd)
+{
+    FkRelationDescriptor* fkrd = new FkRelationDescriptor();
+    fkrd->setDescriptor(nd);
+    m_fksOnStage.append(fkrd);
 }

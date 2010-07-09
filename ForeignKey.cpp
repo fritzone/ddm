@@ -81,6 +81,17 @@ DraggableGraphicsViewItemForForeignKey* ForeignKey::getItem() const
     return grp;
 }
 
+QString ForeignKey::getForeignTable() const
+{
+    QString result = "";
+    for(int i=0; i<m_associations.size(); i++)
+    {
+        result = m_associations[i]->getSForeignTable();
+        break;
+    }
+    return result;
+}
+
 QString ForeignKey::getDescriptiveText() const
 {
     QString result = "";

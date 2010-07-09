@@ -54,6 +54,12 @@ public:
         return icon;
     }
 
+    static const QIcon& getDiagramIcon()
+    {
+        static const QIcon icon(strDiagramIcon);
+        return icon;
+    }
+
 };
 
 #endif // ICONFACTORY_H

@@ -23,6 +23,11 @@ public:
 
     FkRelationDescriptor(ForeignKey* fk, DraggableGraphicsViewItemForForeignKey* fkitm, DraggableGraphicsViewItem* tab1, DraggableGraphicsViewItem* tab2);
 
+    FkRelationDescriptor() : m_ellipse(0), m_arrowHead(0), rel1Txt(0), rel2Txt(0),
+        m_fkitm(0),m_tab1(0), m_tab2(0), m_sentenced(false), firstLine(0), secondLine(0),
+        m_descriptor(), m_fk(0), tab1Name(""), tab2Name("")
+    {}
+
     void updateContent(bool first = false);
     
     
@@ -54,7 +59,9 @@ public:
     }
     
     void eliberate(bool desc_too = true);
-    void recreate(Diagram*,ERGraphicsScene*);
+    void recreate(Diagram*);
+
+    void addToScene(ERGraphicsScene*);
 
     QGraphicsLineItem* getFirstLine() const
     {
@@ -81,6 +88,13 @@ public:
     DiagramFKDescriptor* descriptor() const
     {
         return m_descriptor;
+    }
+
+    void setDescriptor(DiagramFKDescriptor* dfks)
+    {
+        m_descriptor = dfks;
+        tab1Name = dfks->getText();
+        tab2Name = dfks->getText2();
     }
 
 private:

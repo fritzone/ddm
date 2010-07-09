@@ -61,6 +61,10 @@ public:
     DraggableGraphicsViewItemForText* clone(DiagramNoteDescriptor* src);
     DraggableGraphicsViewItem* clone(DiagramObjectDescriptor* src);
 
+    /**
+     * These two below will add a descriptor for the newly created item. Called when the df was just created after dropping something on the scene.
+     */
+
     void addDescriptor(DraggableGraphicsViewItemForText* df);
     void addDescriptor(DraggableGraphicsViewItem* df);
 
@@ -74,6 +78,18 @@ public:
     DraggableGraphicsViewItem* getTableItem(const QString& name);
 
     void updateDescriptors();
+
+    Version* getVesion() const
+    {
+        return m_version;
+    }
+
+    /**
+     * These below are called from the deserializer
+     */
+    void addTableDescriptor(DiagramTableDescriptor*);
+    void addNoteDescriptor(DiagramNoteDescriptor* nd);
+    void addFKDescriptor(DiagramFKDescriptor* nd);
 
     /**
      * Will generate the following XML:

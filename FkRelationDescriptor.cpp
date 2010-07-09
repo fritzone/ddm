@@ -219,11 +219,16 @@ void FkRelationDescriptor::eliberate(bool desc_too) // this should not delete th
     }
 }
 
-void FkRelationDescriptor::recreate(Diagram* dgr, ERGraphicsScene* scene)
+void FkRelationDescriptor::recreate(Diagram* dgr)
 {
 
     m_tab1 = dgr->getTableItem(tab1Name);
     m_tab2 = dgr->getTableItem(tab2Name);
+
+    if(m_fk == 0)
+    {
+        m_fk = dgr->getVesion()->getTable(m_descriptor->getText2())->getForeignKeyToTable(m_descriptor->getText());
+    }
 
     m_fkitm = m_fk->getItem();
     m_fkitm->setX(m_descriptor->getX());
@@ -260,7 +265,10 @@ void FkRelationDescriptor::recreate(Diagram* dgr, ERGraphicsScene* scene)
     m_arrowHead->setZValue(4);
 
     m_arrowHead->setPos(m_descriptor->arrowPos);
+}
 
+void FkRelationDescriptor::addToScene(ERGraphicsScene * scene)
+{
     scene->addItem(m_fkitm);
     scene->addItem(firstLine);
     scene->addItem(secondLine);
@@ -268,5 +276,4 @@ void FkRelationDescriptor::recreate(Diagram* dgr, ERGraphicsScene* scene)
     scene->addItem(rel1Txt);
     scene->addItem(rel2Txt);
     scene->addItem(m_arrowHead);
-
 }

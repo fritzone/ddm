@@ -128,6 +128,8 @@ public:
 
     QString getForeignDescriptiveText() const;
 
+    QString getForeignTable() const;
+
 private:
 
     // the associations between the columns

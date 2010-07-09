@@ -59,6 +59,18 @@ ForeignKey* Table::getForeignKey(int i)
     return m_foreignKeys[i];
 }
 
+ForeignKey* Table::getForeignKeyToTable(const QString& tableName)
+{
+    for(int i=0; i<m_foreignKeys.size(); i++)
+    {
+        if(m_foreignKeys[i]->getForeignTable() == tableName)
+        {
+            return m_foreignKeys[i];
+        }
+    }
+    return 0;
+}
+
 const Column* Table::getColumn(const QString& name)
 {
     for(int i = 0; i<m_columns.size(); i++)
