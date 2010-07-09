@@ -36,11 +36,23 @@ public:
 
     const QString& name() const {return m_name;}
 
+    void setFile(const QString& f)
+    {
+        savedToFile = f;
+    }
+
+    QString savedFile() const
+    {
+        return savedToFile;
+    }
+
 private:
     // the vector holding the projects
     QVector<Project*> m_projects;
 
     QString m_name;
+
+    QString savedToFile;
 
 };
 

@@ -1,6 +1,6 @@
 #include "Solution.h"
 
-Solution::Solution(const QString & nm) : m_name(nm)
+Solution::Solution(const QString & nm) : m_name(nm), savedToFile("")
 {
 }
 

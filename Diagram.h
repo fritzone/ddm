@@ -68,7 +68,7 @@ public:
     void addDescriptor(DraggableGraphicsViewItemForText* df);
     void addDescriptor(DraggableGraphicsViewItem* df);
 
-    void reset();
+    void reset(bool byButton = false);
 
     void recreateFks(ERGraphicsScene*);
 
@@ -134,6 +134,7 @@ private:
 
     DiagramForm* m_form;
 
+    // a little bit confusing, means that the diagram was saved on the GUI (ie. a new tree entry has appeared for it)
     bool m_saved;
 
     Version* m_version;

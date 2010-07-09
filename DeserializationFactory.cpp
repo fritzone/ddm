@@ -429,6 +429,7 @@ Diagram* DeserializationFactory::createDiagram(Version* v, const QDomDocument &d
         }
     }
 
-
+    // means, there's a tree item for this diagram
+    result->setSaved(true);
     return result;
 }

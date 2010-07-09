@@ -17,7 +17,7 @@
 #include <QMessageBox>
 #include <QDragEnterEvent>
 #include <QDropEvent>
-
+#include <QPrintDialog>
 #include <QtGlobal>
 #include <QSvgGenerator>
 #include <qdebug.h>
@@ -58,16 +58,23 @@ DiagramForm::DiagramForm(Version* v, Diagram* dgram, QWidget *parent) : QWidget(
     ui->verticalLayout_2->addWidget(lstDiagramForms);
     ui->horizontalLayout->addWidget(graphicsView);
 
-    for(int i=0; i<v->getTables().size(); i++)
+    prepareLists();
+}
+
+void DiagramForm::prepareLists()
+{
+    lstTables->clear();
+    lstDiagramForms->clear();
+
+    for(int i=0; i<ver->getTables().size(); i++)
     {
-        QListWidgetItem* qlwi = new QListWidgetItem(v->getTables()[i]->getName(), lstTables);
+        QListWidgetItem* qlwi = new QListWidgetItem(ver->getTables()[i]->getName(), lstTables);
         qlwi->setIcon(IconFactory::getTablesIcon());
     }
 
     QListWidgetItem* qlwNotes = new QListWidgetItem("Add Note", lstDiagramForms);
     qlwNotes->setIcon(QIcon(":/images/actions/images/actions/note.png"));
     lstDiagramForms->setEnabled(false);
-
 }
 
 DiagramForm::~DiagramForm()
@@ -89,7 +96,7 @@ void DiagramForm::changeEvent(QEvent *e)
 
 bool DiagramForm::saveToFile(const QString& fileName, bool transparent, const char* mode)
 {
-    // fidn the area which has diagram elemts in it
+    // fin the area which has diagram elemts in it
     QRectF cvr = graphicsView->scene()->getCoverageRect();
     QPoint tl = graphicsView->mapFromScene(cvr.topLeft());
     QPoint br = graphicsView->mapFromScene(cvr.bottomRight());
@@ -114,7 +121,6 @@ bool DiagramForm::saveToFile(const QString& fileName, bool transparent, const ch
     QPainter painter(&newImage);
     if(transparent)
     {
-        //QBrush trBrush(Qt::transparent);
         painter.fillRect(fr, Qt::transparent);
         newImage.fill(Qt::transparent);;
     }
@@ -149,6 +155,25 @@ bool DiagramForm::saveToFile(const QString& fileName, bool transparent, const ch
     return true;
 }
 
+void DiagramForm::printDiagram()
+{
+    QRectF cvr = graphicsView->scene()->getCoverageRect();
+    QPoint tl = graphicsView->mapFromScene(cvr.topLeft());
+    QPoint br = graphicsView->mapFromScene(cvr.bottomRight());
+    QRect fr(tl, br);
+
+    QPrinter printer(QPrinter::HighResolution);
+
+    QPrintDialog printDialog(&printer, this);
+
+    if(printDialog.exec() == QDialog::Accepted)
+    {
+        printer.setPageSize(QPrinter::A4);
+        QPainter painter(&printer);
+        QRect t1;
+        graphicsView->render(&painter, t1, fr);
+    }
+}
 
 void DiagramForm::saveToImageFile()
 {
@@ -212,7 +237,9 @@ void DiagramForm::onSave()
 
 void DiagramForm::onReset()
 {
-
+    m_diagram->reset(true);
+    graphicsView->scene()->clear();
+    prepareLists();
 }
 
 void DiagramForm::removeFromDiagram()

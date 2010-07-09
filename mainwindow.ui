@@ -23,7 +23,7 @@
    <string>MainWindow</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="dbm.qrc">
+   <iconset>
     <normaloff>:/images/actions/images/big/icon.png</normaloff>:/images/actions/images/big/icon.png</iconset>
   </property>
   <property name="documentMode">
@@ -39,7 +39,7 @@
      <x>0</x>
      <y>0</y>
      <width>339</width>
-     <height>25</height>
+     <height>26</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -92,6 +92,7 @@
    <addaction name="action_New"/>
    <addaction name="action_Open"/>
    <addaction name="action_Save"/>
+   <addaction name="action_SaveAs"/>
    <addaction name="separator"/>
    <addaction name="action_NewDataType"/>
    <addaction name="action_NewTable"/>
@@ -100,7 +101,7 @@
   <widget class="QStatusBar" name="statusBar"/>
   <action name="action_New">
    <property name="icon">
-    <iconset resource="dbm.qrc">
+    <iconset>
      <normaloff>:/images/actions/images/actions/filenew.png</normaloff>:/images/actions/images/actions/filenew.png</iconset>
    </property>
    <property name="text">
@@ -112,7 +113,7 @@
   </action>
   <action name="action_Save">
    <property name="icon">
-    <iconset resource="dbm.qrc">
+    <iconset>
      <normaloff>:/images/actions/images/actions/filesave.png</normaloff>:/images/actions/images/actions/filesave.png</iconset>
    </property>
    <property name="text">
@@ -130,7 +131,7 @@
     <bool>false</bool>
    </property>
    <property name="icon">
-    <iconset resource="dbm.qrc">
+    <iconset>
      <normaloff>:/images/actions/images/actions/add.png</normaloff>:/images/actions/images/actions/add.png</iconset>
    </property>
    <property name="text">
@@ -151,7 +152,7 @@
     <bool>false</bool>
    </property>
    <property name="icon">
-    <iconset resource="dbm.qrc">
+    <iconset>
      <normaloff>:/images/actions/images/actions/table.png</normaloff>:/images/actions/images/actions/table.png</iconset>
    </property>
    <property name="text">
@@ -169,7 +170,7 @@
   </action>
   <action name="action_Open">
    <property name="icon">
-    <iconset resource="dbm.qrc">
+    <iconset>
      <normaloff>:/images/actions/images/actions/fileopen.png</normaloff>:/images/actions/images/actions/fileopen.png</iconset>
    </property>
    <property name="text">
@@ -186,7 +187,7 @@
   </action>
   <action name="action_NewProject">
    <property name="icon">
-    <iconset resource="dbm.qrc">
+    <iconset>
      <normaloff>:/images/actions/images/actions/filenew.png</normaloff>:/images/actions/images/actions/filenew.png</iconset>
    </property>
    <property name="text">
@@ -198,7 +199,7 @@
     <bool>false</bool>
    </property>
    <property name="icon">
-    <iconset resource="dbm.qrc">
+    <iconset>
      <normaloff>:/images/actions/images/actions/new_diagram.png</normaloff>:/images/actions/images/actions/new_diagram.png</iconset>
    </property>
    <property name="text">
@@ -208,11 +209,21 @@
     <string>Ctrl+Shift+G</string>
    </property>
   </action>
+  <action name="action_SaveAs">
+   <property name="icon">
+    <iconset>
+     <normaloff>:/images/actions/images/actions/file_saveas.png</normaloff>:/images/actions/images/actions/file_saveas.png</iconset>
+   </property>
+   <property name="text">
+    <string>Save As</string>
+   </property>
+   <property name="toolTip">
+    <string>Save as...</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <resources>
-  <include location="dbm.qrc"/>
- </resources>
+ <resources/>
  <connections>
   <connection>
    <sender>action_New</sender>

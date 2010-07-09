@@ -361,7 +361,11 @@ Solution* MainWindow::currentSolution()
 
 void MainWindow::onSaveProject()
 {
-    if(!m_currentSolution) return;
+    if(!m_currentSolution)
+    {
+        return;
+    }
+
     QDomDocument doc("DBM");
     QDomElement root = doc.createElement("Solutions");
     currentSolution()->serialize(doc, root);
@@ -369,13 +373,17 @@ void MainWindow::onSaveProject()
     doc.appendChild(root);
     QString xml = doc.toString();
 
-    QString fileName = QFileDialog::getSaveFileName(this,  tr("Save solution"), "", tr("DBM solution files (*.dmx)"));
-    if(fileName.length() == 0)
+    if(m_currentSolution->savedFile().length() == 0)
     {
-        return;
+        QString fileName = QFileDialog::getSaveFileName(this,  tr("Save solution"), "", tr("DBM solution files (*.dmx)"));
+        if(fileName.length() == 0)
+        {
+            return;
+        }
+        m_currentSolution->setFile(fileName);
     }
 
-    QFile f1(fileName);
+    QFile f1(m_currentSolution->savedFile());
     if (!f1.open(QIODevice::WriteOnly | QIODevice::Text))
     {
         return;
@@ -413,6 +421,7 @@ void MainWindow::onOpenProject()
 
     QDomElement docElem = doc.documentElement();
     m_currentSolution = DeserializationFactory::createSolution(doc, docElem.firstChild().toElement());
+    m_currentSolution->setFile(fileName);
     setupGuiForNewSolution();
 
     populateTreeWithSolution(m_currentSolution);
