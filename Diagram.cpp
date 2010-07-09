@@ -157,10 +157,17 @@ void Diagram::addTableItem(DraggableGraphicsViewItem *itm)
     m_onStage.append(itm);
 }
 
-void Diagram::reset()
+void Diagram::reset(bool byButton )
 {
     m_notes.clear();
     m_onStage.clear();
+
+    if(byButton)
+    {
+        m_fksOnStage.clear();
+        m_tableDescriptors.clear();
+        m_noteDescriptors.clear();
+    }
 }
 
 void Diagram::recreateFks(ERGraphicsScene* scene)

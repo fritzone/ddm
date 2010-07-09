@@ -37,7 +37,7 @@ public slots:
     void onAddNote();
     void editorLostFocus(DiagramTextItem *item);
     void onEditNote();
-
+    void printDiagram();
 
 protected:
     void changeEvent(QEvent *e);
@@ -46,7 +46,7 @@ protected:
 private:
     void onSave();
     void onReset();
-
+    void prepareLists();
 
 private:
     Ui::DiagramForm *ui;

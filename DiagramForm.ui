@@ -91,6 +91,29 @@
         </widget>
        </item>
        <item>
+        <widget class="QToolButton" name="btnPrint">
+         <property name="maximumSize">
+          <size>
+           <width>24</width>
+           <height>24</height>
+          </size>
+         </property>
+         <property name="toolTip">
+          <string>Print diagram</string>
+         </property>
+         <property name="statusTip">
+          <string>Save diagram as image</string>
+         </property>
+         <property name="text">
+          <string>...</string>
+         </property>
+         <property name="icon">
+          <iconset resource="dbm.qrc">
+           <normaloff>:/images/actions/images/small/printer.png</normaloff>:/images/actions/images/small/printer.png</iconset>
+         </property>
+        </widget>
+       </item>
+       <item>
         <widget class="QComboBox" name="comboBox">
          <property name="maximumSize">
           <size>
@@ -187,11 +210,28 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>btnPrint</sender>
+   <signal>clicked()</signal>
+   <receiver>DiagramForm</receiver>
+   <slot>printDiagram()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>47</x>
+     <y>195</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>280</x>
+     <y>217</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>saveToImageFile()</slot>
   <slot>onButtonBoxClicked(QAbstractButton*)</slot>
   <slot>removeFromDiagram()</slot>
   <slot>onAddNote()</slot>
+  <slot>printDiagram()</slot>
  </slots>
 </ui>
