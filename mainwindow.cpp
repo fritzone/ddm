@@ -359,7 +359,7 @@ Solution* MainWindow::currentSolution()
     return m_currentSolution;
 }
 
-void MainWindow::onSaveProject()
+void MainWindow::saveProject(bool saveAs)
 {
     if(!m_currentSolution)
     {
@@ -373,7 +373,7 @@ void MainWindow::onSaveProject()
     doc.appendChild(root);
     QString xml = doc.toString();
 
-    if(m_currentSolution->savedFile().length() == 0)
+    if((m_currentSolution->savedFile().length() == 0 && !saveAs) || saveAs )
     {
         QString fileName = QFileDialog::getSaveFileName(this,  tr("Save solution"), "", tr("DBM solution files (*.dmx)"));
         if(fileName.length() == 0)
@@ -390,6 +390,12 @@ void MainWindow::onSaveProject()
     }
     f1.write(xml.toAscii());
     f1.close();
+
+}
+
+void MainWindow::onSaveProject()
+{
+    saveProject(false);
 }
 
 void MainWindow::populateTreeWithSolution(Solution* sol)
@@ -441,6 +447,8 @@ void MainWindow::enableActions()
     ui->action_NewDataType->setEnabled(true);
     ui->action_NewTable->setEnabled(true);
     ui->action_NewDiagram->setEnabled(true);
+    ui->action_Save->setEnabled(true);
+    ui->action_SaveAs->setEnabled(true);
 }
 
 void MainWindow::onAbout()
@@ -477,4 +485,9 @@ bool MainWindow::onSaveDiagram(Diagram* dgram)
     }
 
     return true;
+}
+
+void MainWindow::onSaveAs()
+{
+    saveProject(true);
 }
