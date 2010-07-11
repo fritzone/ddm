@@ -4,6 +4,7 @@
 QT += network \
     sql \
     xml \
+    webkit \
     svg
 TARGET = dbm
 TEMPLATE = app

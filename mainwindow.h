@@ -64,11 +64,13 @@ public slots:
     void onAbout();
     void onDTTreeClicked();
     void onNewDiagram();
+    void onSaveAs();
 
 private:
 
     QTreeWidget* setupGuiForNewSolution();
     void populateTreeWithSolution(Solution* sol);
+    void saveProject(bool saveAs = false);
 
 private:
     Ui::MainWindow *ui;

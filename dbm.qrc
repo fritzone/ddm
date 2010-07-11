@@ -87,5 +87,6 @@
         <file>images/actions/underline.png</file>
         <file>images/small/printer.png</file>
         <file>images/actions/file_saveas.png</file>
+        <file>images/actions/insert_table.png</file>
     </qresource>
 </RCC>
