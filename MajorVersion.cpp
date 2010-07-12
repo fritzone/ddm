@@ -6,8 +6,8 @@
 #include "Diagram.h"
 #include "IconFactory.h"
 
-MajorVersion::MajorVersion(QTreeWidget* tree, QTreeWidget* dttree, QTreeWidgetItem* projectItem, int ver) :
-        m_tree(tree), m_dtTree(dttree), m_projectItem(projectItem)
+MajorVersion::MajorVersion(QTreeWidget* tree, QTreeWidget* dttree, ContextMenuEnabledTreeWidgetItem* projectItem, int ver) :
+        m_tree(tree), m_dtTree(dttree), m_projectItem(projectItem), action_RemoveTable(0)
 {
     // make the dts sub item coming from the project
     QString v = QString::number(ver);
@@ -29,7 +29,7 @@ void MajorVersion::populateTreeItems()
     {
         QStringList a(m_dataTypes[i]->getName());
         a << m_dataTypes[i]->sqlAsString();
-        QTreeWidgetItem* newDTItem = new QTreeWidgetItem(getDtsItem(), a) ;
+        ContextMenuEnabledTreeWidgetItem* newDTItem = new ContextMenuEnabledTreeWidgetItem(getDtsItem(), a) ;
         QVariant var;
         var.setValue(*m_dataTypes[i]);
         newDTItem->setData(0, Qt::UserRole, var);
@@ -44,10 +44,11 @@ void MajorVersion::populateTreeItems()
     for(int i=0; i<m_tables.size(); i++)
     {
         Table* tbl = m_tables[i];
-        QTreeWidgetItem* newTblsItem = new QTreeWidgetItem(getTablesItem(), QStringList(tbl->getName())) ;
+        ContextMenuEnabledTreeWidgetItem* newTblsItem = new ContextMenuEnabledTreeWidgetItem(getTablesItem(), QStringList(tbl->getName())) ;
 
         QVariant var(tbl->getName());
         newTblsItem->setData(0, Qt::UserRole, var);
+        newTblsItem->setPopupMenu(getTablePopupMenu());
         // set the icon, add to the tree
         newTblsItem->setIcon(0, IconFactory::getTablesIcon());
         m_tree->insertTopLevelItem(0, newTblsItem);
@@ -60,7 +61,7 @@ void MajorVersion::populateTreeItems()
     for(int i=0; i<m_diagrams.size(); i++)
     {
         Diagram* dI = m_diagrams[i];
-        QTreeWidgetItem* newDgramItem = new QTreeWidgetItem(getDiagramsItem(), QStringList(dI->getName())) ;
+        ContextMenuEnabledTreeWidgetItem* newDgramItem = new ContextMenuEnabledTreeWidgetItem(getDiagramsItem(), QStringList(dI->getName())) ;
 
         QVariant var(dI->getName());
         newDgramItem->setData(0, Qt::UserRole, var);
@@ -73,7 +74,7 @@ void MajorVersion::populateTreeItems()
     }
 }
 
-void MajorVersion::createTreeItems(QTreeWidget* tree, QTreeWidget* dtTree, QTreeWidgetItem* projectIem)
+void MajorVersion::createTreeItems(QTreeWidget* tree, QTreeWidget* dtTree, ContextMenuEnabledTreeWidgetItem* projectIem)
 {
     if(tree)
     {
@@ -93,28 +94,39 @@ void MajorVersion::createTreeItems(QTreeWidget* tree, QTreeWidget* dtTree, QTree
     QIcon dtsIcon(":/images/actions/images/small/datatypes.PNG");
     QIcon versionIcon(":/images/actions/images/small/version.PNG");
 
-    versionItem = new QTreeWidgetItem(m_projectItem, QStringList(QString("Ver: ") + version)) ;
+    versionItem = new ContextMenuEnabledTreeWidgetItem(m_projectItem, QStringList(QString("Ver: ") + version)) ;
     versionItem->setIcon(0, versionIcon);
     m_tree->addTopLevelItem(versionItem);
 
     // make the dts sub item coming from the project
-    dtsItem = new QTreeWidgetItem((QTreeWidget*)0, QStringList(QObject::tr("Data Types"))) ;
+    dtsItem = new ContextMenuEnabledTreeWidgetItem((ContextMenuEnabledTreeWidgetItem*)0, QStringList(QObject::tr("Data Types"))) ;
     dtsItem->setIcon(0, dtsIcon);
     m_dtTree->addTopLevelItem(dtsItem);
 
     // make the tables sub item coming from the project
-    tablesItem = new QTreeWidgetItem(versionItem, QStringList(QObject::tr("Tables"))) ;
+    tablesItem = new ContextMenuEnabledTreeWidgetItem(versionItem, QStringList(QObject::tr("Tables"))) ;
     tablesItem->setIcon(0, tablesIcon);
     m_tree->addTopLevelItem(tablesItem);
 
     // make the views sub item coming from the project
-    queriesItem = new QTreeWidgetItem(versionItem, QStringList(QObject::tr("Queries"))) ;
-    queriesItem->setIcon(0, queriesIcon);
-    m_tree->addTopLevelItem(queriesItem);
+    //queriesItem = new ContextMenuEnabledTreeWidgetItem(versionItem, QStringList(QObject::tr("Queries"))) ;
+    //queriesItem->setIcon(0, queriesIcon);
+    //m_tree->addTopLevelItem(queriesItem);
 
-    diagramsItem = new QTreeWidgetItem(versionItem, QStringList(QObject::tr("Diagrams"))) ;
+    diagramsItem = new ContextMenuEnabledTreeWidgetItem(versionItem, QStringList(QObject::tr("Diagrams"))) ;
     diagramsItem->setIcon(0, IconFactory::getDiagramIcon());
     m_tree->addTopLevelItem(diagramsItem);
+
+    m_tablePopupMenu = new QMenu();
+
+    action_RemoveTable = new QAction("Delete table", 0);
+    action_TableAddColumn = new QAction("Add column", 0);
+
+    QIcon remove(":/images/actions/images/small/remove.png");
+    action_RemoveTable->setIcon(remove);
+
+    m_tablePopupMenu->addAction(action_RemoveTable);
+    m_tablePopupMenu->addAction(action_TableAddColumn);
 
 }
 
@@ -254,4 +266,32 @@ inline const QVector<UserDataType*>& MajorVersion::getDataTypes() const
 inline const QVector<Table*>& MajorVersion::getTables() const
 {
     return m_tables;
+}
+
+void MajorVersion::deleteTable(Table *tab)
+{
+    int tabIndex = -1;
+    QString incomingForeignKeys = "";
+    for(int i=0; i<m_tables.size(); i++)
+    {
+        if(m_tables[i]->getForeignKeyToTable(tab->getName()) != 0)
+        {
+            incomingForeignKeys+= "\n - " + m_tables[i]->getName();
+        }
+
+        if(m_tables[i]->getName() == tab->getName())
+        {
+            tabIndex = i;
+        }
+
+    }
+    if(incomingForeignKeys.length() > 0)
+    {
+        QMessageBox::warning(0, "Foreign keys found",
+                              "Cannot delete this table since the following tables are referencing it through a foreign key: " + incomingForeignKeys + "\nFirstly remove the foreign keys, then delete the table.", QMessageBox::Ok);
+        return;
+    }
+
+    delete m_tables[tabIndex]->getLocation();
+    m_tables.remove(tabIndex);
 }

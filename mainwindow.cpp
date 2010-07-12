@@ -19,6 +19,7 @@
 #include "AboutBoxDialog.h"
 #include "DiagramForm.h"
 #include "Diagram.h"
+#include "ContextMenuEnabledTreeWidget.h"
 
 #include <QtGui>
 
@@ -36,9 +37,6 @@ MainWindow::MainWindow(QWidget *parent)
     setCentralWidget(btndlg);
 
     setWindowTitle("DBM - [No Solution]");
-
-    //this->ui->mainToolBar->actions().at(3)->setVisible(false);
-    //this->ui->mainToolBar->actions().at(4)->setVisible(false);
 }
 
 MainWindow::~MainWindow()
@@ -51,7 +49,7 @@ void MainWindow::createOtherDialogs()
 
 }
 
-QTreeWidget* MainWindow::setupGuiForNewSolution()
+ContextMenuEnabledTreeWidget* MainWindow::setupGuiForNewSolution()
 {
     // create the dock window
     dock = new QDockWidget(tr("Solution - ") + m_currentSolution->name(), this);
@@ -71,12 +69,16 @@ QTreeWidget* MainWindow::setupGuiForNewSolution()
 
 
     // set up the tree
-    projectTree = new QTreeWidget();
+    projectTree = new ContextMenuEnabledTreeWidget();
+
+    ContextMenuHandler* contextMenuHandler = new ContextMenuHandler();
+
+    projectTree->setItemDelegate(new ContextMenuDelegate(contextMenuHandler,projectTree));
     projectTree->setColumnCount(1);
     projectTree->setHeaderHidden(true);
     QObject::connect(projectTree, SIGNAL(itemSelectionChanged()), this, SLOT(onProjectTreeClicked()));
 
-    dataypesTree = new QTreeWidget();
+    dataypesTree = new ContextMenuEnabledTreeWidget();
     dataypesTree ->setColumnCount(2);
     QTreeWidgetItem *hdr = dataypesTree->headerItem();
     hdr->setText(0, "Type");
@@ -143,6 +145,8 @@ void MainWindow::onNewSolution()
         setCentralWidget(prjDetailsForm);
 
         setWindowTitle("DBM - [" + m_currentSolution->name() + "]");
+
+        connectActionsFromTablePopupMenu();
     }
 }
 
@@ -271,10 +275,11 @@ bool MainWindow::onUpdateTable(Table* tbl)
 bool MainWindow::onSaveNewTable(Table* tbl)
 {
     // create the tree entry
-    QTreeWidgetItem* newTblsItem = new QTreeWidgetItem(getWorkingProject()->getWorkingVersion()->getTablesItem(), QStringList(tbl->getName())) ;
+    ContextMenuEnabledTreeWidgetItem* newTblsItem = new ContextMenuEnabledTreeWidgetItem(getWorkingProject()->getWorkingVersion()->getTablesItem(), QStringList(tbl->getName())) ;
 
     QVariant var(tbl->getName());
     newTblsItem->setData(0, Qt::UserRole, var);
+    newTblsItem->setPopupMenu(getWorkingProject()->getWorkingVersion()->getTablePopupMenu());
     // set the icon, add to the tree
     newTblsItem->setIcon(0, IconFactory::getTablesIcon());
     projectTree->insertTopLevelItem(0, newTblsItem);
@@ -325,7 +330,7 @@ bool MainWindow::onSaveNewDataType(const QString& name, const QString& type, con
         // create the tree entry
         QStringList itm(name);
         itm << udt->sqlAsString();
-        QTreeWidgetItem* newDTItem = new QTreeWidgetItem(getWorkingProject()->getWorkingVersion()->getDtsItem(), itm) ;
+        ContextMenuEnabledTreeWidgetItem* newDTItem = new ContextMenuEnabledTreeWidgetItem(getWorkingProject()->getWorkingVersion()->getDtsItem(), itm) ;
 
         QVariant var;
         var.setValue(*udt);
@@ -438,8 +443,9 @@ void MainWindow::onOpenProject()
     prjDetailsForm->setProject(m_currentSolution->currentProject());
     setCentralWidget(prjDetailsForm);
 
-
     setWindowTitle("DBM - [" + m_currentSolution->name() + "]");
+
+    connectActionsFromTablePopupMenu();
 }
 
 void MainWindow::enableActions()
@@ -449,6 +455,12 @@ void MainWindow::enableActions()
     ui->action_NewDiagram->setEnabled(true);
     ui->action_Save->setEnabled(true);
     ui->action_SaveAs->setEnabled(true);
+}
+
+void MainWindow::connectActionsFromTablePopupMenu()
+{
+    QObject::connect(getWorkingProject()->getWorkingVersion()->getAction_RemoveTable(), SIGNAL(activated()), this, SLOT(onDeleteTableFromPopup()));
+    QObject::connect(getWorkingProject()->getWorkingVersion()->getAction_TableAddColumn(), SIGNAL(activated()), this, SLOT(onTableAddColumnFromPopup()));
 }
 
 void MainWindow::onAbout()
@@ -471,7 +483,7 @@ bool MainWindow::onSaveDiagram(Diagram* dgram)
     if(!dgram->isSaved())
     {
         QIcon diagramIcon(":/images/actions/images/small/diagram.png");
-        QTreeWidgetItem* newDgramItem = new QTreeWidgetItem(m_currentSolution->currentProject()->getWorkingVersion()->getDiagramsItem(), QStringList(dgram->getName())) ;
+        ContextMenuEnabledTreeWidgetItem* newDgramItem = new ContextMenuEnabledTreeWidgetItem(m_currentSolution->currentProject()->getWorkingVersion()->getDiagramsItem(), QStringList(dgram->getName())) ;
         QVariant var(dgram->getName());
         newDgramItem->setData(0, Qt::UserRole, var);
         newDgramItem->setIcon(0, diagramIcon);
@@ -490,4 +502,28 @@ bool MainWindow::onSaveDiagram(Diagram* dgram)
 void MainWindow::onSaveAs()
 {
     saveProject(true);
+}
+
+
+void MainWindow::onTableAddColumnFromPopup()
+{
+
+}
+
+void MainWindow::onDeleteTableFromPopup()
+{
+    if(projectTree->getLastRightclickedItem() != 0)
+    {
+        ContextMenuEnabledTreeWidgetItem* item = projectTree->getLastRightclickedItem();
+        projectTree->setLastRightclickedItem(0);
+
+        QVariant qv = item->data(0, Qt::UserRole);
+        QString tabName = qv.toString();
+        Table* table =  getWorkingProject()->getWorkingVersion()->getTable(tabName);
+        if(table == 0)  // shouldn't be ...
+        {
+            return;
+        }
+        getWorkingProject()->getWorkingVersion()->deleteTable(getWorkingProject()->getWorkingVersion()->getTable(tabName));
+    }
 }

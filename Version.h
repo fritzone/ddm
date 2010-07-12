@@ -8,6 +8,7 @@
 class UserDataType;
 class Table;
 class Diagram;
+class ContextMenuEnabledTreeWidgetItem;
 
 /**
  * Basic class holding data related to versions
@@ -21,27 +22,27 @@ public:
     /**
      * Return the tree item of the Data Types
      */
-    virtual QTreeWidgetItem* getDtsItem() const = 0;
+    virtual ContextMenuEnabledTreeWidgetItem* getDtsItem() const = 0;
 
     /**
      * Return the tree item of the Tables
      */
-    virtual QTreeWidgetItem* getTablesItem() const = 0;
+    virtual ContextMenuEnabledTreeWidgetItem* getTablesItem() const = 0;
 
     /**
      * Return the tree item of the defined queries
      */
-    virtual QTreeWidgetItem* getQueriesItem() const = 0;
+    virtual ContextMenuEnabledTreeWidgetItem* getQueriesItem() const = 0;
 
     /**
      * Return the tree item of the Version
      */
-    virtual QTreeWidgetItem* getVersionItem() const = 0;
+    virtual ContextMenuEnabledTreeWidgetItem* getVersionItem() const = 0;
 
     /**
      * Return the tree item of the diagrams
      */
-    virtual QTreeWidgetItem* getDiagramsItem() const = 0;
+    virtual ContextMenuEnabledTreeWidgetItem* getDiagramsItem() const = 0;
 
     /**
      * Adds a new data type to this version
@@ -95,6 +96,16 @@ public:
 
     virtual Diagram* getDiagram(const QString& name) = 0;
 
+    /**
+     * Deletes a table from the system. Also resolves the FK dependencies: 1. deletes the table and the foreign table referencing this table 2. Deletes the FK reference from the foreign table
+     */
+    virtual void deleteTable(Table*) = 0;
+
+    // don't know if this is a good design or not for the popups ....
+
+    virtual QMenu* getTablePopupMenu() = 0;
+    virtual QAction * getAction_RemoveTable() = 0;
+    virtual QAction * getAction_TableAddColumn() = 0;
 private:
 
 };

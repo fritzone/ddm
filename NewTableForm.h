@@ -19,6 +19,7 @@ class Index;
 class ForeignKey;
 class AbstractStorageEngine;
 class AbstractStorageEngineListProvider;
+class ContextMenuEnabledTreeWidgetItem;
 
 class NewTableForm : public QWidget {
     Q_OBJECT
@@ -107,9 +108,9 @@ private:
     /*
      * Creates various tree widget items for Columns, Indices, ForeignKeys
      */
-    QTreeWidgetItem* createTWIForColumn(const Column* col);
-    QTreeWidgetItem* createTWIForIndex(const Index* col);
-    QTreeWidgetItem* createTWIForForeignKey(const ForeignKey* col);
+    ContextMenuEnabledTreeWidgetItem* createTWIForColumn(const Column* col);
+    ContextMenuEnabledTreeWidgetItem* createTWIForIndex(const Index* col);
+    ContextMenuEnabledTreeWidgetItem* createTWIForForeignKey(const ForeignKey* col);
 
     /*
      * Used when the columns have changed, tries to do an intelligent update for the default values screen

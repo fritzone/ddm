@@ -3,6 +3,8 @@
 
 #include <QTreeWidgetItem>
 
+#include "ContextMenuEnabledTreeWidget.h"
+
 /**
  * Every object that can be put in the tree (DataType, Table, etc...) must be derived from this class
  * to ensure that the object knows how to update its tree entry. This class gives read/write access
@@ -17,19 +19,19 @@ public:
 
     virtual ~TreeItem() {}
 
-    void setLocation(QTreeWidgetItem* loc)
+    void setLocation(ContextMenuEnabledTreeWidgetItem* loc)
     {
         this->m_location = loc;
     }
 
-    QTreeWidgetItem*& getLocation()
+    ContextMenuEnabledTreeWidgetItem*& getLocation()
     {
         return m_location;
     }
 
 protected:
     // where the object is to be found
-    QTreeWidgetItem* m_location;
+    ContextMenuEnabledTreeWidgetItem* m_location;
 
 };
 

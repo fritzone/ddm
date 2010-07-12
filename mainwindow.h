@@ -13,6 +13,7 @@ class UserDataType;
 class Table;
 class Solution;
 class Diagram;
+class ContextMenuEnabledTreeWidget;
 
 namespace Ui
 {
@@ -66,11 +67,20 @@ public slots:
     void onNewDiagram();
     void onSaveAs();
 
+    // when the user clicked the "Delete table" from the popups
+    void onDeleteTableFromPopup();
+    void onTableAddColumnFromPopup();
+
 private:
 
-    QTreeWidget* setupGuiForNewSolution();
+    ContextMenuEnabledTreeWidget* setupGuiForNewSolution();
     void populateTreeWithSolution(Solution* sol);
     void saveProject(bool saveAs = false);
+    // to create the other dialogs needed in the app
+    void createOtherDialogs();
+
+    void enableActions();
+    void connectActionsFromTablePopupMenu();
 
 private:
     Ui::MainWindow *ui;
@@ -82,9 +92,9 @@ private:
     QDockWidget* dockdt;
 
     // the tree which contains everything related to the current project
-    QTreeWidget* projectTree;
+    ContextMenuEnabledTreeWidget* projectTree;
     // the tree containing the data types
-    QTreeWidget* dataypesTree;
+    ContextMenuEnabledTreeWidget* dataypesTree;
 
     // the initial three button dialog
     MainWindowButtonDialog* btndlg;
@@ -94,13 +104,6 @@ private:
 
     QVector<Solution*> m_solutions;
     Solution* m_currentSolution;
-
-private:
-
-    // to create the other dialogs needed in the app
-    void createOtherDialogs();
-
-    void enableActions();
 
 };
 
