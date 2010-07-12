@@ -51,7 +51,8 @@ SOURCES += main.cpp \
     EnterNoteTextDialog.cpp \
     ForeignKey.cpp \
     DiagramTableDescriptor.cpp \
-    DiagramNoteDescriptor.cpp
+    DiagramNoteDescriptor.cpp \
+    ContextMenuDelegate.cpp
 HEADERS += MainWindow.h \
     MainWindowButtonDialog.h \
     NewProjectDialog.h \
@@ -107,7 +108,8 @@ HEADERS += MainWindow.h \
     DiagramNoteDescriptor.h \
     DiagramObjectDescriptor.h \
     DiagramFKDescriptor.h \
-    DiagramTableDescriptor.h
+    DiagramTableDescriptor.h \
+    ContextMenuEnabledTreeWidget.h
 FORMS += mainwindow.ui \
     mainwindowbuttondialog.ui \
     newprojectdialog.ui \

@@ -19,7 +19,7 @@ void Project::createTreeItem(QTreeWidget* _tree, QTreeWidget* _dtt)
     m_tree = _tree;
     m_dtTree = _dtt;
 
-    QTreeWidgetItem* projectItem = new QTreeWidgetItem((QTreeWidget*)0, QStringList(m_name)) ;
+    ContextMenuEnabledTreeWidgetItem* projectItem = new ContextMenuEnabledTreeWidgetItem((ContextMenuEnabledTreeWidgetItem*)0, QStringList(m_name)) ;
     projectItem->setIcon(0, IconFactory::getProjectOpenIcon());
 
     QList<QTreeWidgetItem *> items;

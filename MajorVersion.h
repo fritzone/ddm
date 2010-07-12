@@ -2,6 +2,7 @@
 #define MAJORVERSION_H
 
 #include "Version.h"
+#include "ContextMenuEnabledTreeWidget.h"
 
 #include <QString>
 #include <QTreeWidgetItem>
@@ -22,34 +23,34 @@ public:
     /**
      * Constructor: Takes in the project Item and the current version
      */
-    MajorVersion(QTreeWidget* tree, QTreeWidget* dttree, QTreeWidgetItem* projectItem, int ver);
+    MajorVersion(QTreeWidget* tree, QTreeWidget* dttree, ContextMenuEnabledTreeWidgetItem* projectItem, int ver);
 
     /**
      * This constructos is used when deserializing. In this case the tree and projectItem are set later
      */
     MajorVersion(QString verAsString);
 
-    virtual QTreeWidgetItem* getDtsItem() const
+    virtual ContextMenuEnabledTreeWidgetItem* getDtsItem() const
     {
         return dtsItem;
     }
 
-    virtual QTreeWidgetItem* getTablesItem() const
+    virtual ContextMenuEnabledTreeWidgetItem* getTablesItem() const
     {
         return tablesItem;
     }
 
-    virtual QTreeWidgetItem* getQueriesItem() const
+    virtual ContextMenuEnabledTreeWidgetItem* getQueriesItem() const
     {
         return queriesItem;
     }
 
-    virtual QTreeWidgetItem* getVersionItem() const
+    virtual ContextMenuEnabledTreeWidgetItem* getVersionItem() const
     {
         return versionItem;
     }
 
-    virtual QTreeWidgetItem* getDiagramsItem() const
+    virtual ContextMenuEnabledTreeWidgetItem* getDiagramsItem() const
     {
         return diagramsItem;
     }
@@ -72,11 +73,13 @@ public:
 
     virtual bool hasTable(Table*);
 
+    virtual void deleteTable(Table*);
+
     virtual Table* getTable(const QString& name);
 
     virtual const QVector<Table*>& getTables() const;
 
-    void createTreeItems(QTreeWidget* tree = 0, QTreeWidget* dtTree = 0, QTreeWidgetItem* projectIem = 0);
+    void createTreeItems(QTreeWidget* tree = 0, QTreeWidget* dtTree = 0, ContextMenuEnabledTreeWidgetItem* projectIem = 0);
 
     /**
      * Populates the tree items of this major version with all the data it contains, such as UserDataTypes, Tables, etc...
@@ -85,22 +88,38 @@ public:
 
     virtual Diagram* getDiagram(const QString& name);
 
+    virtual QMenu* getTablePopupMenu()
+    {
+        return m_tablePopupMenu;
+    }
+
+
+    virtual QAction * getAction_RemoveTable()
+    {
+        return action_RemoveTable;
+    }
+
+    virtual QAction * getAction_TableAddColumn()
+    {
+        return action_TableAddColumn;
+    }
+
 private:
 
     // the tree item containing the "Tables"
-    QTreeWidgetItem* tablesItem;
+    ContextMenuEnabledTreeWidgetItem* tablesItem;
 
     // the tree item containing the "Views"
-    QTreeWidgetItem* queriesItem;
+    ContextMenuEnabledTreeWidgetItem* queriesItem;
 
     // the tree item containing the "DataType"
-    QTreeWidgetItem* dtsItem;
+    ContextMenuEnabledTreeWidgetItem* dtsItem;
 
     // the tree item holding the version
-    QTreeWidgetItem* versionItem;
+    ContextMenuEnabledTreeWidgetItem* versionItem;
 
     // the tree item holding the version
-    QTreeWidgetItem* diagramsItem;
+    ContextMenuEnabledTreeWidgetItem* diagramsItem;
 
     // the version as a string representation. Major versions are always of form X.0
     QString version;
@@ -118,9 +137,12 @@ private:
     // the  data types tree
     QTreeWidget* m_dtTree;
 
-    QTreeWidgetItem* m_projectItem;
+    ContextMenuEnabledTreeWidgetItem* m_projectItem;
 
+    QMenu* m_tablePopupMenu;
 
+    QAction * action_RemoveTable;
+    QAction * action_TableAddColumn;
 };
 
 #endif // MAJORVERSION_H

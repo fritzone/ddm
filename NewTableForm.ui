@@ -7,7 +7,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>522</width>
+    <width>737</width>
     <height>774</height>
    </rect>
   </property>
@@ -28,7 +28,14 @@
       </widget>
      </item>
      <item row="0" column="1">
-      <widget class="QLineEdit" name="txtTableName"/>
+      <widget class="QLineEdit" name="txtTableName">
+       <property name="font">
+        <font>
+         <family>Sans Serif</family>
+         <pointsize>14</pointsize>
+        </font>
+       </property>
+      </widget>
      </item>
      <item row="1" column="0">
       <widget class="QLabel" name="lblStorageEngine">

@@ -138,7 +138,7 @@ void NewTableForm::enableForeignKeysDependingOnStorageEngine()
     }
 }
 
-QTreeWidgetItem* NewTableForm::createTWIForForeignKey(const ForeignKey* fk)
+ContextMenuEnabledTreeWidgetItem* NewTableForm::createTWIForForeignKey(const ForeignKey* fk)
 {
     QStringList a(fk->getName());
     const QVector<ForeignKey::ColumnAssociation*>& assocs = fk->getAssociations();
@@ -160,18 +160,18 @@ QTreeWidgetItem* NewTableForm::createTWIForForeignKey(const ForeignKey* fk)
     a.append(fk->getOnUpdate());
     a.append(fk->getOnDelete());
 
-    QTreeWidgetItem* item = new QTreeWidgetItem((QTreeWidget*)0, a);
+    ContextMenuEnabledTreeWidgetItem* item = new ContextMenuEnabledTreeWidgetItem((ContextMenuEnabledTreeWidgetItem*)0, a);
     return item;
 }
 
-QTreeWidgetItem* NewTableForm::createTWIForColumn(const Column* col)
+ContextMenuEnabledTreeWidgetItem* NewTableForm::createTWIForColumn(const Column* col)
 {
     QStringList a("");
     a.append(col->getName());
     a.append(col->getDataType()->getName());
     a.append(col->getDataType()->sqlAsString());
 
-    QTreeWidgetItem* item = new QTreeWidgetItem((QTreeWidget*)0, a);
+    ContextMenuEnabledTreeWidgetItem* item = new ContextMenuEnabledTreeWidgetItem((ContextMenuEnabledTreeWidgetItem*)0, a);
     if(col->isPk())
     {
         item->setIcon(COL_POS_PK, IconFactory::getKeyIcon());
@@ -194,7 +194,7 @@ void NewTableForm::prepareColumnsListWithParentItems(const Table* ctable)
         for(int i=0; i<columns.count(); i++)
         {
             static QBrush grayBrush(QColor(Qt::gray));
-            QTreeWidgetItem* item = createTWIForColumn(columns[i]);
+            ContextMenuEnabledTreeWidgetItem* item = createTWIForColumn(columns[i]);
             item->setBackground(0, grayBrush);
             m_ui->lstColumns->addTopLevelItem(item);
             columns[i]->setLocation(item);
@@ -211,7 +211,7 @@ void NewTableForm::setTable(Table *table)
     const QVector<Column*>& columns = m_table->getColumns();
     for(int i=0; i<columns.count(); i++)
     {
-        QTreeWidgetItem* item = createTWIForColumn(columns[i]);
+        ContextMenuEnabledTreeWidgetItem* item = createTWIForColumn(columns[i]);
         m_ui->lstColumns->addTopLevelItem(item);
         columns[i]->setLocation(item);
     }
@@ -220,7 +220,7 @@ void NewTableForm::setTable(Table *table)
     const QVector<Index*>& indices = m_table->getIndices();
     for(int i=0; i<indices.count(); i++)
     {
-        QTreeWidgetItem* item = createTWIForIndex(indices[i]);
+        ContextMenuEnabledTreeWidgetItem* item = createTWIForIndex(indices[i]);
         m_ui->lstIndices->addTopLevelItem(item);
         indices[i]->setLocation(item);
     }
@@ -230,7 +230,7 @@ void NewTableForm::setTable(Table *table)
     const QVector<ForeignKey*> & fks = m_table->getFks();
     for(int i=0; i<fks.size(); i++)
     {
-        QTreeWidgetItem* item = createTWIForForeignKey(fks[i]);
+        ContextMenuEnabledTreeWidgetItem* item = createTWIForForeignKey(fks[i]);
         m_ui->lstForeignKeys->addTopLevelItem(item);
         fks[i]->setLocation(item);
     }
@@ -330,7 +330,7 @@ void NewTableForm::onAddColumn()
         UserDataType* colsDt = m_project->getWorkingVersion()->getDataType(m_ui->cmbNewColumnType->currentText());
         Column* col = new Column(m_ui->txtNewColumnName->text(), colsDt, m_ui->chkAutoInc->isChecked(), m_ui->chkPrimary->isChecked()) ;
         col->setDescription(m_ui->txtColumnDescription->toPlainText());
-        QTreeWidgetItem* item = createTWIForColumn(col);
+        ContextMenuEnabledTreeWidgetItem* item = createTWIForColumn(col);
         m_ui->lstColumns->addTopLevelItem(item);
         m_table->addColumn(col);
 
@@ -544,7 +544,7 @@ void NewTableForm::onMoveColumnToLeft()
     populateColumnsForIndices();
 }
 
-QTreeWidgetItem* NewTableForm::createTWIForIndex(const Index* index)
+ContextMenuEnabledTreeWidgetItem* NewTableForm::createTWIForIndex(const Index* index)
 {
     // create the tree widget item
     QString columnsAsString = "";
@@ -565,7 +565,7 @@ QTreeWidgetItem* NewTableForm::createTWIForIndex(const Index* index)
     a.append(index->getType());
     a.append(columnsAsString);
 
-    QTreeWidgetItem* item = new QTreeWidgetItem((QTreeWidget*)0, a);
+    ContextMenuEnabledTreeWidgetItem* item = new ContextMenuEnabledTreeWidgetItem((ContextMenuEnabledTreeWidgetItem*)0, a);
     return item;
 }
 
@@ -596,7 +596,7 @@ void NewTableForm::onAddIndex()
         }
         m_table->addIndex(index);
 
-        QTreeWidgetItem* item = createTWIForIndex(index);
+        ContextMenuEnabledTreeWidgetItem* item = createTWIForIndex(index);
         m_ui->lstIndices->addTopLevelItem(item);
         index->setLocation(item);
     }
@@ -930,7 +930,7 @@ void NewTableForm::onBtnAddForeignKey()
     }
     else
     {
-        QTreeWidgetItem* twi = createTWIForForeignKey(m_currentForeignKey);
+        ContextMenuEnabledTreeWidgetItem* twi = createTWIForForeignKey(m_currentForeignKey);
         m_ui->lstForeignKeys->addTopLevelItem(twi);
         m_currentForeignKey->setLocation(twi);
         m_table->addForeignKey(m_currentForeignKey);
