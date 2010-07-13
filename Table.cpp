@@ -44,14 +44,67 @@ void Table::moveColumnUp(int c)
     }
 }
 
-Column* Table::getColumn(int c)
+bool Table::hasIndex(const QString& colName) const
 {
-    return m_columns[c];
+    for(int i=0; i<m_indices.size(); i++)
+    {
+        if(m_indices[i]->getName() == colName)
+        {
+            return true;
+        }
+    }
+    return false;
 }
 
-Index* Table::getIndex(int c)
+bool Table::hasColumn(const QString& colName) const
 {
-    return m_indices[c];
+    for(int i=0; i<m_columns.size(); i++)
+    {
+        if(m_columns[i]->getName() == colName)
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
+int Table::getTotalParentColumnCount() const
+{
+    int tc = 0;
+    const Table* p = m_parent;
+    while(p)
+    {
+        tc += p->getColumnCount();
+        p = p->m_parent;
+    }
+    return tc;
+
+}
+
+bool Table::parentsHaveColumn(const QString& colName) const
+{
+    const Table* p = m_parent;
+    while(p)
+    {
+        if(p->hasColumn(colName))
+        {
+            return true;
+        }
+        p = p->m_parent;
+    }
+    return false;
+}
+
+Index* Table::getIndex(const QString& idxName)
+{
+    for(int c=0; c<m_indices.size(); c++)
+    {
+        if(m_indices.at(c)->getName() == idxName)
+        {
+            return m_indices[c];
+        }
+    }
+    return 0;
 }
 
 ForeignKey* Table::getForeignKey(int i)
@@ -71,7 +124,7 @@ ForeignKey* Table::getForeignKeyToTable(const QString& tableName)
     return 0;
 }
 
-const Column* Table::getColumn(const QString& name)
+Column* Table::getColumn(const QString& name) const
 {
     for(int i = 0; i<m_columns.size(); i++)
     {
@@ -80,9 +133,24 @@ const Column* Table::getColumn(const QString& name)
             return m_columns[i];
         }
     }
-
     return 0;
 }
+
+Column* Table::getColumnFromParents(const QString& name) const
+{
+    const Table* p = m_parent;
+    while(p)
+    {
+        Column* c = p->getColumn(name);
+        if(c)
+        {
+            return c;
+        }
+        p = p->m_parent;
+    }
+    return 0;
+}
+
 
 void Table::removeIndex(Index* toRemove)
 {
@@ -124,6 +192,26 @@ QStringList Table::columns() const
     }
     return result;
 }
+
+QStringList Table::fullColumns() const
+{
+    QStringList result;
+
+    const Table* p = m_parent;
+    while(p)
+    {
+        result << p->columns();
+        p = p->m_parent;
+    }
+
+
+    for(int i=0; i<m_columns.size(); i++)
+    {
+        result << m_columns[i]->getName();
+    }
+    return result;
+}
+
 
 
 void Table::serialize(QDomDocument &doc, QDomElement &parent) const

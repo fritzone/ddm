@@ -104,6 +104,11 @@ public:
         return action_TableAddColumn;
     }
 
+    virtual QAction * getAction_SpecializeTable()
+    {
+        return action_SpecializeTable;
+    }
+
 private:
 
     // the tree item containing the "Tables"
@@ -142,6 +147,7 @@ private:
     QMenu* m_tablePopupMenu;
 
     QAction * action_RemoveTable;
+    QAction * action_SpecializeTable;
     QAction * action_TableAddColumn;
 };
 

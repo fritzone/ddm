@@ -14,6 +14,7 @@ class Table;
 class Solution;
 class Diagram;
 class ContextMenuEnabledTreeWidget;
+class NewTableForm;
 
 namespace Ui
 {
@@ -70,6 +71,7 @@ public slots:
     // when the user clicked the "Delete table" from the popups
     void onDeleteTableFromPopup();
     void onTableAddColumnFromPopup();
+    void onSpecializeTableFromPopup();
 
 private:
 
@@ -104,6 +106,9 @@ private:
 
     QVector<Solution*> m_solutions;
     Solution* m_currentSolution;
+
+    // this is the table screen which is current
+    NewTableForm* frm;
 
 };
 

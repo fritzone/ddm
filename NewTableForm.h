@@ -29,15 +29,12 @@ public:
     ~NewTableForm();
     void setMainWindow(MainWindow* mw);
 
-    /**
-     * Focuses the cursor to the text edit where the user should put the name of the table
-     */
     void focusOnName();
+    void focusOnNewColumnName();
 
-    /**
-     * Sets the table, also updates all the GUI elements
-     */
     void setTable(Table* table);
+
+    void selectTab(int);
 
 protected:
 
@@ -121,6 +118,12 @@ private:
 
     void populateIndexTypesDependingOnStorageEngine();
     void enableForeignKeysDependingOnStorageEngine();
+
+    /*
+     * Populates the gui with the given table. current has the following role: if this is the "bottom" of a specialization chain then the fields are editable (white background)
+     * otherwise they are disabled (grey background)
+     */
+    void populateTable(const Table* table, bool);
 
 private:
     Ui::NewTableForm *m_ui;

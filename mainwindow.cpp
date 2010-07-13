@@ -25,7 +25,7 @@
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), ui(new Ui::MainWindow), dock(0), projectTree(0),
-    btndlg(0), weHaveProject(false), m_currentSolution(0)
+    btndlg(0), weHaveProject(false), m_currentSolution(0), frm(0)
 {
     ui->setupUi(this);
 
@@ -216,7 +216,7 @@ void MainWindow::onProjectTreeClicked()
                 {
                     return;
                 }
-                NewTableForm* frm = new NewTableForm(getWorkingProject()->getEngine(), getWorkingProject(), this);
+                frm = new NewTableForm(getWorkingProject()->getEngine(), getWorkingProject(), this);
                 frm->setTable(table);
                 frm->focusOnName();
                 frm->setMainWindow(this);
@@ -238,6 +238,23 @@ void MainWindow::onProjectTreeClicked()
                 dgram->setForm(df);
                 setCentralWidget(dgram->getDiagramForm());
                 df->paintDiagram();
+            }
+            else    // user possibly clicked on a table which had a parent a table ...
+            {   // TODO: Code duplication with the "table" stuff above
+                QVariant qv = item->data(0, Qt::UserRole);
+                QString tabName = qv.toString();
+                Table* table =  getWorkingProject()->getWorkingVersion()->getTable(tabName);
+                if(table == 0)  // shouldn't be ...
+                {
+                    return;
+                }
+                frm = new NewTableForm(getWorkingProject()->getEngine(), getWorkingProject(), this);
+                frm->setTable(table);
+                frm->focusOnName();
+                frm->setMainWindow(this);
+                projectTree->setCurrentItem(0);
+                setCentralWidget(frm);
+
             }
         }
     }
@@ -461,6 +478,7 @@ void MainWindow::connectActionsFromTablePopupMenu()
 {
     QObject::connect(getWorkingProject()->getWorkingVersion()->getAction_RemoveTable(), SIGNAL(activated()), this, SLOT(onDeleteTableFromPopup()));
     QObject::connect(getWorkingProject()->getWorkingVersion()->getAction_TableAddColumn(), SIGNAL(activated()), this, SLOT(onTableAddColumnFromPopup()));
+    QObject::connect(getWorkingProject()->getWorkingVersion()->getAction_SpecializeTable(), SIGNAL(activated()), this, SLOT(onSpecializeTableFromPopup()));
 }
 
 void MainWindow::onAbout()
@@ -505,9 +523,68 @@ void MainWindow::onSaveAs()
 }
 
 
+void MainWindow::onSpecializeTableFromPopup()
+{
+    if(projectTree->getLastRightclickedItem() == 0)
+    {
+        return;
+    }
+
+    // TODO: Code duplication with some stuff from below (onDelete...)
+    ContextMenuEnabledTreeWidgetItem* item = projectTree->getLastRightclickedItem();
+    projectTree->setLastRightclickedItem(0);
+
+    QVariant qv = item->data(0, Qt::UserRole);
+    QString tabName = qv.toString();
+    Table* table =  getWorkingProject()->getWorkingVersion()->getTable(tabName);
+    if(table == 0)  // shouldn't be ...
+    {
+        return;
+    }
+
+    Table* tbl = new Table();
+    tbl->setName(table->getName() + "_specialized");
+    tbl->setParent(table);
+
+    // TODO: Code duplication from the "Save table"
+    ContextMenuEnabledTreeWidgetItem* newTblsItem = new ContextMenuEnabledTreeWidgetItem(item, QStringList(tbl->getName())) ;
+
+    QVariant var(tbl->getName());
+    newTblsItem->setData(0, Qt::UserRole, var);
+    newTblsItem->setPopupMenu(getWorkingProject()->getWorkingVersion()->getTablePopupMenu());
+    // set the icon, add to the tree
+    newTblsItem->setIcon(0, IconFactory::getTablesIcon());
+    projectTree->insertTopLevelItem(0, newTblsItem);
+
+    // add to the project itself
+    getWorkingProject()->getWorkingVersion()->addTable(tbl);
+
+    // set the link to the tree
+    tbl->setLocation(newTblsItem);
+
+    // now open the new table for to show this table
+   newTblsItem->setSelected(true);
+    if(frm != 0)
+    {
+        frm->selectTab(0);
+        frm->focusOnNewColumnName();
+    }
+
+
+}
+
 void MainWindow::onTableAddColumnFromPopup()
 {
-
+    if(projectTree->getLastRightclickedItem() != 0)
+    {
+        projectTree->getLastRightclickedItem()->setSelected(true);
+        if(frm != 0)
+        {
+            frm->selectTab(0);
+            frm->focusOnNewColumnName();
+            projectTree->setLastRightclickedItem(0);
+        }
+    }
 }
 
 void MainWindow::onDeleteTableFromPopup()
