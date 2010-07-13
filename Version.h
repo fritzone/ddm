@@ -106,6 +106,7 @@ public:
     virtual QMenu* getTablePopupMenu() = 0;
     virtual QAction * getAction_RemoveTable() = 0;
     virtual QAction * getAction_TableAddColumn() = 0;
+    virtual QAction * getAction_SpecializeTable() = 0;
 private:
 
 };

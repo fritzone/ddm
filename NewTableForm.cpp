@@ -91,6 +91,7 @@ NewTableForm::NewTableForm(DatabaseEngine* db, Project* prj, QWidget *parent) : 
     }
 
     m_ui->tabWidget->setCurrentIndex(0);
+    m_ui->tabWidget->removeTab(3);
 }
 
 NewTableForm::~NewTableForm()
@@ -203,58 +204,104 @@ void NewTableForm::prepareColumnsListWithParentItems(const Table* ctable)
 
 }
 
-void NewTableForm::setTable(Table *table)
+void NewTableForm::selectTab(int i)
 {
-    m_table = table;
+    m_ui->tabWidget->setCurrentIndex(i);
+}
 
+void NewTableForm::populateTable(const Table *table, bool parentTab)
+{
     // first step: set the columns
-    const QVector<Column*>& columns = m_table->getColumns();
+    const QVector<Column*>& columns = table->getColumns();
     for(int i=0; i<columns.count(); i++)
     {
         ContextMenuEnabledTreeWidgetItem* item = createTWIForColumn(columns[i]);
         m_ui->lstColumns->addTopLevelItem(item);
         columns[i]->setLocation(item);
+        if(parentTab)
+        {
+            item->setBackground(0, QBrush(Qt::lightGray));
+            item->setBackground(1, QBrush(Qt::lightGray));
+            item->setBackground(2, QBrush(Qt::lightGray));
+            item->setBackground(3, QBrush(Qt::lightGray));
+        }
     }
 
     // second step: set up the indices
-    const QVector<Index*>& indices = m_table->getIndices();
+    const QVector<Index*>& indices = table->getIndices();
     for(int i=0; i<indices.count(); i++)
     {
         ContextMenuEnabledTreeWidgetItem* item = createTWIForIndex(indices[i]);
         m_ui->lstIndices->addTopLevelItem(item);
         indices[i]->setLocation(item);
+        if(parentTab)
+        {
+            item->setBackground(0, QBrush(Qt::lightGray));
+            item->setBackground(1, QBrush(Qt::lightGray));
+            item->setBackground(2, QBrush(Qt::lightGray));
+            item->setBackground(3, QBrush(Qt::lightGray));
+        }
     }
     resetIndexGui();
 
     // third step: set up the foreign keys
-    const QVector<ForeignKey*> & fks = m_table->getFks();
+    const QVector<ForeignKey*> & fks = table->getFks();
     for(int i=0; i<fks.size(); i++)
     {
         ContextMenuEnabledTreeWidgetItem* item = createTWIForForeignKey(fks[i]);
         m_ui->lstForeignKeys->addTopLevelItem(item);
         fks[i]->setLocation(item);
+        item->setDisabled(parentTab);
     }
 
     // set the default values
-    updateDefaultValuesTableHeader();
-    for(int i=0; i<m_table->getStartupValues().size(); i++)
+/*    updateDefaultValuesTableHeader();
+    for(int i=0; i<table->getStartupValues().size(); i++)
     {
-        const QVector<QString>& rowI = m_table->getStartupValues()[i];
+        const QVector<QString>& rowI = table->getStartupValues()[i];
         m_ui->tableStartupValues->insertRow(i);
         for(int j=0; j<rowI.size(); j++)
         {
             QTableWidgetItem* newItem = new QTableWidgetItem(rowI[j]);
             m_ui->tableStartupValues->setItem(i, j, newItem);
+
         }
+    }*/
+    m_ui->txtTableName->setText(table->getName());
+    m_ui->chkPersistent->setChecked(table->isPersistent());
+    m_ui->chkTemporary->setChecked(table->isTemporary());
+
+
+}
+
+void NewTableForm::setTable(Table *table)
+{
+    m_table = table;
+    const Table* ctab = table->parent();
+    QStack<const Table*> tabStack;
+    while(ctab)
+    {
+        tabStack.push(ctab);
+        ctab = ctab->parent();
     }
-    m_ui->txtTableName->setText(m_table->getName());
-    m_ui->chkPersistent->setChecked(m_table->isPersistent());
-    m_ui->chkTemporary->setChecked(m_table->isTemporary());
+
+    while(!tabStack.empty())
+    {
+        populateTable(tabStack.front(), true);
+        tabStack.pop();
+    }
+
+    populateTable(table, false);
 }
 
 void NewTableForm::focusOnName()
 {
     m_ui->txtTableName->setFocus();
+}
+
+void NewTableForm::focusOnNewColumnName()
+{
+    m_ui->txtNewColumnName->setFocus();
 }
 
 void NewTableForm::changeEvent(QEvent *e)
@@ -318,13 +365,10 @@ void NewTableForm::onAddColumn()
     }
     else                    // we are not working on a column, but adding a new one
     {
-        for(int i=0; i < m_table->getColumns().size(); i++)
+        if(m_table->hasColumn(m_ui->txtNewColumnName->text()) || m_table->parentsHaveColumn(m_ui->txtNewColumnName->text()))
         {
-            if(m_table->getColumn(i)->getName() == m_ui->txtNewColumnName->text())
-            {
-                QMessageBox::critical (this, tr("Error"), tr("Please use a unique name for each of the columns"), QMessageBox::Ok);
-                return;
-            }
+            QMessageBox::critical (this, tr("Error"), tr("Please use a unique name for each of the columns"), QMessageBox::Ok);
+            return;
         }
 
         UserDataType* colsDt = m_project->getWorkingVersion()->getDataType(m_ui->cmbNewColumnType->currentText());
@@ -370,7 +414,15 @@ void NewTableForm::onDeleteColumn()
         QMessageBox::critical (this, tr("Error"), tr("Internal Error: Nothing is selected?"), QMessageBox::Ok);
         return;
     }
+
+    if(!m_table->hasColumn(currentItem->text(1)) && m_table->parentsHaveColumn(currentItem->text(1)))
+    {
+        QMessageBox::critical (this, tr("Error"), tr("You cannot delete the columns from a parent table from a sibling table. Go to the parent table to do this."), QMessageBox::Ok);
+        return;
+    }
+
     const Column* currentColumn = m_table->getColumn(currentItem->text(1));
+
     const Index* usedIn = m_table->isColumnUsedInIndex(currentColumn);
     if(usedIn != 0)
     {
@@ -393,6 +445,12 @@ void NewTableForm::onMoveColumnDown()
 {
     if(m_ui->lstColumns->selectedItems().size() > 0)
     {
+        if(!m_table->hasColumn(m_ui->lstColumns->currentItem()->text(1)))
+        {
+            QMessageBox::critical (this, tr("Error"), tr("You cannot move the columns of a parent table from a sibling table. Go to the parent table to do this."), QMessageBox::Ok);
+            return;
+        }
+
         QModelIndex x = m_ui->lstColumns->currentIndex();
         if(x.row() < m_ui->lstColumns->topLevelItemCount() - 1)
         {
@@ -417,10 +475,16 @@ void NewTableForm::onMoveColumnUp()
 {
     if(m_ui->lstColumns->selectedItems().size() > 0)
     {
-        QModelIndex x = m_ui->lstColumns->currentIndex();
-        if(x.row() > 0)
+        if(!m_table->hasColumn(m_ui->lstColumns->currentItem()->text(1)))
         {
-            m_table->moveColumnUp(x.row());
+            QMessageBox::critical (this, tr("Error"), tr("You cannot move the columns of a parent table from a sibling table. Go to the parent table to do this."), QMessageBox::Ok);
+            return;
+        }
+        QModelIndex x = m_ui->lstColumns->currentIndex();
+        if(x.row() > m_table->getTotalParentColumnCount())
+        {
+            m_table->moveColumnUp(x.row() - m_table->getTotalParentColumnCount());
+
             QTreeWidgetItem* w = new QTreeWidgetItem(m_ui->lstColumns->currentItem()->type());
             *w = *m_ui->lstColumns->currentItem();
             delete m_ui->lstColumns->currentItem();
@@ -447,7 +511,12 @@ void NewTableForm::onItemChanged(QTreeWidgetItem* current, QTreeWidgetItem* prev
 void NewTableForm::onItemSelected(QTreeWidgetItem* current, int column)
 {
     QModelIndex x = m_ui->lstColumns->currentIndex();
-    m_currentColumn = m_table->getColumn(x.row());
+    m_currentColumn = m_table->getColumn(current->text(1));
+
+    if(m_currentColumn == 0)
+    {
+        return;
+    }
 
     m_ui->txtNewColumnName->setText(m_currentColumn->getName());
     m_ui->cmbNewColumnType->setCurrentIndex(m_project->getWorkingVersion()->getDataTypeIndex(m_currentColumn->getDataType()->getName()));
@@ -463,12 +532,24 @@ void NewTableForm::onItemSelected(QTreeWidgetItem* current, int column)
 void NewTableForm::populateColumnsForIndices()
 {
     m_ui->lstAvailableColumnsForIndex->clear();
-    for(int i=0; i<m_table->getColumns().size(); i++)
+    for(int i=0; i<m_table->fullColumns().size(); i++)
     {
         if(m_ui->lstSelectedColumnsForIndex->count() == 0)
         {
-            QListWidgetItem* qlwi = new QListWidgetItem(m_table->getColumns()[i]->getName(), m_ui->lstAvailableColumnsForIndex);
-            qlwi->setIcon(m_table->getColumns()[i]->getDataType()->getIcon());
+            QListWidgetItem* qlwi = new QListWidgetItem(m_table->fullColumns()[i], m_ui->lstAvailableColumnsForIndex);
+            Column* col = m_table->getColumn(m_table->fullColumns()[i]);
+            if(col)
+            {
+                qlwi->setIcon(col->getDataType()->getIcon());
+            }
+            else
+            {
+                col = m_table->getColumnFromParents(m_table->fullColumns()[i]);
+                if(col)
+                {
+                    qlwi->setIcon(col->getDataType()->getIcon());
+                }
+            }
         }
         else
         {
@@ -476,8 +557,21 @@ void NewTableForm::populateColumnsForIndices()
             {
                 if(m_ui->lstSelectedColumnsForIndex->item(j)->text() != m_table->getColumns()[i]->getName())
                 {
-                    QListWidgetItem* qlwi = new QListWidgetItem(m_table->getColumns()[i]->getName(), m_ui->lstAvailableColumnsForIndex);
-                    qlwi->setIcon(m_table->getColumns()[i]->getDataType()->getIcon());
+                    QListWidgetItem* qlwi = new QListWidgetItem(m_table->fullColumns()[i], m_ui->lstAvailableColumnsForIndex);
+                    // TODO: duplication with the one above
+                    Column* col = m_table->getColumn(m_table->fullColumns()[i]);
+                    if(col)
+                    {
+                        qlwi->setIcon(col->getDataType()->getIcon());
+                    }
+                    else
+                    {
+                        col = m_table->getColumnFromParents(m_table->fullColumns()[i]);
+                        if(col)
+                        {
+                            qlwi->setIcon(col->getDataType()->getIcon());
+                        }
+                    }
                 }
             }
         }
@@ -592,7 +686,24 @@ void NewTableForm::onAddIndex()
         int cnt = m_ui->lstSelectedColumnsForIndex->count();
         for(int i = 0; i< cnt; i++)
         {
-            index->addColumn(m_table->getColumn(m_ui->lstSelectedColumnsForIndex->item(i)->text()));
+            // check if this goes to a parent table or stays here
+            Column* col = m_table->getColumn(m_ui->lstSelectedColumnsForIndex->item(i)->text());
+            if(col)  // stays here
+            {
+                index->addColumn(col);
+            }
+            else
+            {
+                col = m_table->getColumnFromParents(m_ui->lstSelectedColumnsForIndex->item(i)->text());
+                if(col)
+                {
+                    index->addColumn(col);
+                }
+                else
+                {
+                    // something wrent wrong ... we shouldn't be here
+                }
+            }
         }
         m_table->addIndex(index);
 
@@ -641,7 +752,12 @@ void NewTableForm::resetIndexGui()
 void NewTableForm::onSelectIndex(QTreeWidgetItem* current, int column)
 {
     QModelIndex x = m_ui->lstIndices->currentIndex();
-    m_currentIndex = m_table->getIndex(x.row());
+    m_currentIndex = m_table->getIndex(m_ui->lstIndices->currentItem()->text(0));
+
+    if(m_currentIndex == 0)
+    {
+        return;
+    }
 
     m_ui->txtNewIndexName->setText(m_currentIndex->getName());
 
@@ -690,6 +806,11 @@ void NewTableForm::onCancelIndexEditing()
 
 void NewTableForm::onBtnRemoveIndex()
 {
+    if(!m_table->hasIndex(m_ui->lstIndices->currentItem()->text(0)))
+    {
+        QMessageBox::critical (this, tr("Error"), tr("You cannot delete the index of a parent table from a sibling table. Go to the parent table to do this."), QMessageBox::Ok);
+        return;
+    }
     delete m_ui->lstIndices->currentItem();
     resetIndexGui();
     m_table->removeIndex(m_currentIndex);

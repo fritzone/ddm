@@ -52,21 +52,20 @@ public:
     void moveColumnUp(int c);
 
     /**
-     * Returns the given column for read/write access
-     * @param c - is the index of the column
-     */
-    Column* getColumn(int c);
-
-    /**
      * Returns the given Index to be found at the cth position for read/write operations
      * @param c - the index of the Index
      */
-    Index* getIndex(int c);
+    Index* getIndex(const QString&);
 
     /**
-     * Returns the column with the given name for read only access
+     * Returns the column with the given name
      */
-    const Column* getColumn(const QString& name);
+    Column* getColumn(const QString& name) const;
+
+    /**
+     * Returns the column with the given name, performs a search only in the parent tables
+     */
+    Column* getColumnFromParents(const QString& name) const;
 
     /**
      * Returns the columns of this table for a read-only access
@@ -138,6 +137,11 @@ public:
      */
     QStringList columns() const;
 
+    /**
+     * Returns the columns and the columns of the parent tables as a QStringList
+     */
+    QStringList fullColumns() const;
+
     virtual void serialize(QDomDocument &doc, QDomElement &parent) const;
 
     const Table* getParent() const
@@ -188,6 +192,24 @@ public:
     }
 
     void prepareDiagramEntity();
+
+    const Table* parent() const
+    {
+        return m_parent;
+    }
+
+    bool hasColumn(const QString& colName) const ;
+
+    bool parentsHaveColumn(const QString& colName) const;
+
+    int getTotalParentColumnCount() const;
+
+    int getColumnCount() const
+    {
+        return m_columns.size();
+    }
+
+    bool hasIndex(const QString& colName) const ;
 
 private:
     // the name of the table
