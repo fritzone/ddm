@@ -70,13 +70,16 @@ ContextMenuEnabledTreeWidget* MainWindow::setupGuiForNewSolution()
 
     // set up the tree
     projectTree = new ContextMenuEnabledTreeWidget();
+    projectTree->setAllColumnsShowFocus(true);
+    projectTree->setSelectionMode(QAbstractItemView::SingleSelection);
+    projectTree->setSelectionBehavior(QAbstractItemView::SelectItems);
 
     ContextMenuHandler* contextMenuHandler = new ContextMenuHandler();
 
     projectTree->setItemDelegate(new ContextMenuDelegate(contextMenuHandler,projectTree));
     projectTree->setColumnCount(1);
     projectTree->setHeaderHidden(true);
-    QObject::connect(projectTree, SIGNAL(itemSelectionChanged()), this, SLOT(onProjectTreeClicked()));
+    QObject::connect(projectTree, SIGNAL (currentItemChanged ( QTreeWidgetItem*, QTreeWidgetItem*)), this, SLOT(currentProjectTreeItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)));
 
     dataypesTree = new ContextMenuEnabledTreeWidget();
     dataypesTree ->setColumnCount(2);
@@ -180,36 +183,22 @@ void MainWindow::onDTTreeClicked()
     }
 }
 
-void MainWindow::onProjectTreeClicked()
+void MainWindow::currentProjectTreeItemChanged ( QTreeWidgetItem * current, QTreeWidgetItem * previous )
 {
-    QList<QTreeWidgetItem*> selectedItems = projectTree->selectedItems();
-    if(selectedItems.length() == 1)
+    if(current)
     {
-        QTreeWidgetItem* item = selectedItems[0];
-        if(item == getWorkingProject()->getWorkingVersion()->getTablesItem())
+        if(current == getWorkingProject()->getWorkingVersion()->getTablesItem())
         {// we have clicked on the Tables item
             TablesListForm* tblLst = new TablesListForm(this);
             tblLst->populateTables(getWorkingProject()->getWorkingVersion()->getTables());
             setCentralWidget(tblLst);
         }
         else
-        if(item == getWorkingProject()->getWorkingVersion()->getQueriesItem())
         {
-        }
-        else
-        if(item == getWorkingProject()->getWorkingVersion()->getDiagramsItem())
-        {
-        }
-        else
-        if(item == getWorkingProject()->getWorkingVersion()->getVersionItem())
-        {
-        }
-        else// here means the user clicked on something which has a "TAG"
-        {
-            if(item->parent() && item->parent() == getWorkingProject()->getWorkingVersion()->getTablesItem())
+            if(current->parent() && current->parent() == getWorkingProject()->getWorkingVersion()->getTablesItem())
             {
                 // the user clicked on a table, the name of the table is a tag
-                QVariant qv = item->data(0, Qt::UserRole);
+                QVariant qv = current->data(0, Qt::UserRole);
                 QString tabName = qv.toString();
                 Table* table =  getWorkingProject()->getWorkingVersion()->getTable(tabName);
                 if(table == 0)  // shouldn't be ...
@@ -220,14 +209,12 @@ void MainWindow::onProjectTreeClicked()
                 frm->setTable(table);
                 frm->focusOnName();
                 frm->setMainWindow(this);
-                projectTree->setCurrentItem(0);
                 setCentralWidget(frm);
             }
-            else
-            if(item->parent() && item->parent() == getWorkingProject()->getWorkingVersion()->getDiagramsItem())
+            if(current->parent() && current->parent() == getWorkingProject()->getWorkingVersion()->getDiagramsItem())
             {
                 // the user clicked on a diagram
-                QVariant qv = item->data(0, Qt::UserRole);
+                QVariant qv = current->data(0, Qt::UserRole);
                 QString diagramName = qv.toString();
                 Diagram* dgram = getWorkingProject()->getWorkingVersion()->getDiagram(diagramName);
                 if(dgram == 0)
@@ -241,7 +228,7 @@ void MainWindow::onProjectTreeClicked()
             }
             else    // user possibly clicked on a table which had a parent a table ...
             {   // TODO: Code duplication with the "table" stuff above
-                QVariant qv = item->data(0, Qt::UserRole);
+                QVariant qv = current->data(0, Qt::UserRole);
                 QString tabName = qv.toString();
                 Table* table =  getWorkingProject()->getWorkingVersion()->getTable(tabName);
                 if(table == 0)  // shouldn't be ...
@@ -252,11 +239,12 @@ void MainWindow::onProjectTreeClicked()
                 frm->setTable(table);
                 frm->focusOnName();
                 frm->setMainWindow(this);
-                projectTree->setCurrentItem(0);
                 setCentralWidget(frm);
 
             }
+
         }
+
     }
 }
 
@@ -299,7 +287,7 @@ bool MainWindow::onSaveNewTable(Table* tbl)
     newTblsItem->setPopupMenu(getWorkingProject()->getWorkingVersion()->getTablePopupMenu());
     // set the icon, add to the tree
     newTblsItem->setIcon(0, IconFactory::getTablesIcon());
-    projectTree->insertTopLevelItem(0, newTblsItem);
+    projectTree->addTopLevelItem(newTblsItem);
 
     // add to the project itself
     getWorkingProject()->getWorkingVersion()->addTable(tbl);
@@ -545,6 +533,7 @@ void MainWindow::onSpecializeTableFromPopup()
     Table* tbl = new Table();
     tbl->setName(table->getName() + "_specialized");
     tbl->setParent(table);
+    tbl->setStorageEngine(table->getStorageEngine());
 
     // TODO: Code duplication from the "Save table"
     ContextMenuEnabledTreeWidgetItem* newTblsItem = new ContextMenuEnabledTreeWidgetItem(item, QStringList(tbl->getName())) ;
@@ -563,7 +552,8 @@ void MainWindow::onSpecializeTableFromPopup()
     tbl->setLocation(newTblsItem);
 
     // now open the new table for to show this table
-   newTblsItem->setSelected(true);
+   projectTree->setCurrentItem(newTblsItem);
+   projectTree->scrollToItem(newTblsItem);
     if(frm != 0)
     {
         frm->selectTab(0);

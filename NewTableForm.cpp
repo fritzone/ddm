@@ -165,14 +165,14 @@ ContextMenuEnabledTreeWidgetItem* NewTableForm::createTWIForForeignKey(const For
     return item;
 }
 
-ContextMenuEnabledTreeWidgetItem* NewTableForm::createTWIForColumn(const Column* col)
+ContextMenuEnabledTreeWidgetItem* NewTableForm::createTWIForColumn(const Column* col, ContextMenuEnabledTreeWidgetItem* parent )
 {
     QStringList a("");
     a.append(col->getName());
     a.append(col->getDataType()->getName());
     a.append(col->getDataType()->sqlAsString());
 
-    ContextMenuEnabledTreeWidgetItem* item = new ContextMenuEnabledTreeWidgetItem((ContextMenuEnabledTreeWidgetItem*)0, a);
+    ContextMenuEnabledTreeWidgetItem* item = new ContextMenuEnabledTreeWidgetItem(parent, a);
     if(col->isPk())
     {
         item->setIcon(COL_POS_PK, IconFactory::getKeyIcon());
@@ -251,7 +251,15 @@ void NewTableForm::populateTable(const Table *table, bool parentTab)
         ContextMenuEnabledTreeWidgetItem* item = createTWIForForeignKey(fks[i]);
         m_ui->lstForeignKeys->addTopLevelItem(item);
         fks[i]->setLocation(item);
-        item->setDisabled(parentTab);
+        if(parentTab)
+        {
+            item->setBackground(0, QBrush(Qt::lightGray));
+            item->setBackground(1, QBrush(Qt::lightGray));
+            item->setBackground(2, QBrush(Qt::lightGray));
+            item->setBackground(3, QBrush(Qt::lightGray));
+            item->setBackground(4, QBrush(Qt::lightGray));
+            item->setBackground(5, QBrush(Qt::lightGray));
+        }
     }
 
     // set the default values
@@ -267,9 +275,6 @@ void NewTableForm::populateTable(const Table *table, bool parentTab)
 
         }
     }*/
-    m_ui->txtTableName->setText(table->getName());
-    m_ui->chkPersistent->setChecked(table->isPersistent());
-    m_ui->chkTemporary->setChecked(table->isTemporary());
 
 
 }
@@ -287,11 +292,20 @@ void NewTableForm::setTable(Table *table)
 
     while(!tabStack.empty())
     {
-        populateTable(tabStack.front(), true);
-        tabStack.pop();
+        populateTable(tabStack.at(0), true);
+        tabStack.pop_front();
     }
 
     populateTable(table, false);
+
+    m_ui->txtTableName->setText(table->getName());
+    m_ui->chkPersistent->setChecked(table->isPersistent());
+    m_ui->chkTemporary->setChecked(table->isTemporary());
+
+    m_currentStorageEngine = table->getStorageEngine();
+    m_ui->cmbStorageEngine->setCurrentIndex(m_ui->cmbStorageEngine->findText(table->getStorageEngine()->name()));
+    populateIndexTypesDependingOnStorageEngine();
+    enableForeignKeysDependingOnStorageEngine();
 }
 
 void NewTableForm::focusOnName()
@@ -365,6 +379,13 @@ void NewTableForm::onAddColumn()
     }
     else                    // we are not working on a column, but adding a new one
     {
+
+        if(m_table->parentsHaveColumn(m_ui->txtNewColumnName->text()))
+        {
+            QMessageBox::critical (this, tr("Error"), tr("You are not allowed to update a parent tables columns from a specialized table. (If you want to enable the text fields, press the cancel button next to this button.)"), QMessageBox::Ok);
+            return;
+        }
+
         if(m_table->hasColumn(m_ui->txtNewColumnName->text()) || m_table->parentsHaveColumn(m_ui->txtNewColumnName->text()))
         {
             QMessageBox::critical (this, tr("Error"), tr("Please use a unique name for each of the columns"), QMessageBox::Ok);
@@ -372,7 +393,7 @@ void NewTableForm::onAddColumn()
         }
 
         UserDataType* colsDt = m_project->getWorkingVersion()->getDataType(m_ui->cmbNewColumnType->currentText());
-        Column* col = new Column(m_ui->txtNewColumnName->text(), colsDt, m_ui->chkAutoInc->isChecked(), m_ui->chkPrimary->isChecked()) ;
+        Column* col = new Column(m_ui->txtNewColumnName->text(), colsDt, m_ui->chkPrimary->isChecked(), m_ui->chkAutoInc->isChecked());
         col->setDescription(m_ui->txtColumnDescription->toPlainText());
         ContextMenuEnabledTreeWidgetItem* item = createTWIForColumn(col);
         m_ui->lstColumns->addTopLevelItem(item);
@@ -404,6 +425,7 @@ void NewTableForm::onCancelColumnEditing()
     m_ui->chkPrimary->setChecked(false);
     m_ui->chkAutoInc->setChecked(false);
     m_ui->btnAdd->setIcon(IconFactory::getAddIcon());
+    toggleColumnFieldDisableness(false);
 }
 
 void NewTableForm::onDeleteColumn()
@@ -505,6 +527,15 @@ void NewTableForm::onItemChanged(QTreeWidgetItem* current, QTreeWidgetItem* prev
 
 }
 
+void NewTableForm::toggleColumnFieldDisableness(bool a)
+{
+    m_ui->txtNewColumnName->setDisabled(a);
+    m_ui->cmbNewColumnType->setDisabled(a);
+    m_ui->chkPrimary->setDisabled(a);
+    m_ui->chkAutoInc->setDisabled(a);
+    m_ui->txtColumnDescription->setDisabled(a);
+}
+
 /**
  * Called when a column is selected. onColumnSelect onSelectColumn
  */
@@ -515,6 +546,24 @@ void NewTableForm::onItemSelected(QTreeWidgetItem* current, int column)
 
     if(m_currentColumn == 0)
     {
+        Column* colFromParent = m_table->getColumnFromParents(current->text(1));
+        if(colFromParent == 0)
+        {
+            return; // shouldn't happen
+        }
+
+        // TODO: feels like code duplication with the section below... refactor
+
+        m_ui->txtNewColumnName->setText(colFromParent->getName());
+        m_ui->cmbNewColumnType->setCurrentIndex(m_project->getWorkingVersion()->getDataTypeIndex(colFromParent->getDataType()->getName()));
+        m_ui->chkPrimary->setChecked(colFromParent->isPk());
+        m_ui->chkAutoInc->setChecked(colFromParent->hasAutoIncrement());
+        m_ui->txtColumnDescription->setText(colFromParent->getDescription());
+
+        m_ui->btnAdd->setIcon(IconFactory::getApplyIcon());
+        m_ui->btnCancelColumnEditing->show();
+
+        toggleColumnFieldDisableness(true);
         return;
     }
 
@@ -526,6 +575,7 @@ void NewTableForm::onItemSelected(QTreeWidgetItem* current, int column)
 
     m_ui->btnAdd->setIcon(IconFactory::getApplyIcon());
     m_ui->btnCancelColumnEditing->show();
+    toggleColumnFieldDisableness(false);
 }
 
 
@@ -682,6 +732,21 @@ void NewTableForm::onAddIndex()
     if(m_currentIndex == 0)
     {
         // create the index object and populate with requried columns
+
+        if(m_table->getIndexFromParents(m_ui->txtNewIndexName->text()) != 0)
+        {
+            QMessageBox::critical (this, tr("Error"), tr("You cannot modify the index of a parent table from a specialized table. (If you want to eanble the fields press the Cancel button)"), QMessageBox::Ok);
+            m_ui->txtNewIndexName->setFocus();
+            return;
+        }
+
+        if(m_table->hasIndex(m_ui->txtNewIndexName->text()))
+        {
+            QMessageBox::critical (this, tr("Error"), tr("You already have an index with this name for this table"), QMessageBox::Ok);
+            m_ui->txtNewIndexName->setFocus();
+            return;
+        }
+
         Index* index = new Index(m_ui->txtNewIndexName->text(), m_ui->cmbIndexType->currentText());
         int cnt = m_ui->lstSelectedColumnsForIndex->count();
         for(int i = 0; i< cnt; i++)
@@ -747,29 +812,31 @@ void NewTableForm::resetIndexGui()
     m_ui->cmbIndexType->setCurrentIndex(0);
     m_ui->txtNewIndexName->setText("");
     m_ui->btnAddIndex->setIcon(IconFactory::getAddIcon());
+
+    toggleIndexFieldDisableness(false);
 }
 
-void NewTableForm::onSelectIndex(QTreeWidgetItem* current, int column)
+void NewTableForm::populateIndexGui(Index* idx)
 {
-    QModelIndex x = m_ui->lstIndices->currentIndex();
-    m_currentIndex = m_table->getIndex(m_ui->lstIndices->currentItem()->text(0));
-
-    if(m_currentIndex == 0)
-    {
-        return;
-    }
-
-    m_ui->txtNewIndexName->setText(m_currentIndex->getName());
+    m_ui->txtNewIndexName->setText(idx->getName());
 
     // fill up the two lists for the index columns
     m_ui->lstAvailableColumnsForIndex->clear();
     m_ui->lstSelectedColumnsForIndex->clear();
 
-    for(int i=0; i< m_table->getColumns().size(); i++)
+    for(int i=0; i< m_table->fullColumns().size(); i++)
     {
-        Column* column = m_table->getColumns()[i];
+        Column* column = m_table->getColumn(m_table->fullColumns()[i]);
+        if(!column)
+        {
+            column = m_table->getColumnFromParents(m_table->fullColumns()[i]);
+            if(!column) // this shouldn't be
+            {
+                return;
+            }
+        }
         QListWidget *targetList = 0;
-        if(m_currentIndex->hasColumn(column))
+        if(idx->hasColumn(column))
         {
             targetList = m_ui->lstSelectedColumnsForIndex;
         }
@@ -787,7 +854,7 @@ void NewTableForm::onSelectIndex(QTreeWidgetItem* current, int column)
     int indx = 0;
     while(it != indexTypes.constEnd())
     {
-        if(*it == m_currentIndex->getType())
+        if(*it == idx->getType())
         {
             break;
         }
@@ -795,8 +862,43 @@ void NewTableForm::onSelectIndex(QTreeWidgetItem* current, int column)
         it ++;
     }
     m_ui->cmbIndexType->setCurrentIndex(indx);
-    m_ui->btnAddIndex->setIcon(IconFactory::getApplyIcon());
+}
 
+void NewTableForm::toggleIndexFieldDisableness(bool a)
+{
+    m_ui->txtNewIndexName->setDisabled(a);
+    m_ui->lstAvailableColumnsForIndex->setDisabled(a);
+    m_ui->lstSelectedColumnsForIndex->setDisabled(a);
+    m_ui->cmbIndexType->setDisabled(a);
+
+    m_ui->btnMoveColumnToLeft->setDisabled(a);
+    m_ui->btnMoveColumnToRight->setDisabled(a);
+    m_ui->btnMoveIndexColumnUp->setDisabled(a);
+    m_ui->btnMoveIndexColumnDown->setDisabled(a);
+}
+
+void NewTableForm::onSelectIndex(QTreeWidgetItem* current, int column)
+{
+    QModelIndex x = m_ui->lstIndices->currentIndex();
+    m_currentIndex = m_table->getIndex(m_ui->lstIndices->currentItem()->text(0));
+
+    if(m_currentIndex == 0)
+    {
+        Index* parentsIndex = m_table->getIndexFromParents(m_ui->lstIndices->currentItem()->text(0));
+        if(parentsIndex == 0)
+        {
+            return;
+        }
+        populateIndexGui(parentsIndex);
+        toggleIndexFieldDisableness(true);
+    }
+    else
+    {
+        populateIndexGui(m_currentIndex);
+        toggleIndexFieldDisableness(false);
+    }
+
+    m_ui->btnAddIndex->setIcon(IconFactory::getApplyIcon());
 }
 
 void NewTableForm::onCancelIndexEditing()
@@ -865,12 +967,25 @@ void NewTableForm::onForeignTableComboChange(QString selected)
         return;
     }
     m_foreignTable = table;
-    const QVector<Column*> & foreignColumns = table->getColumns();
+    QStringList foreignColumns = table->fullColumns();
     m_ui->lstForeignTablesColumns->clear();
     for(int i=0; i<foreignColumns.size(); i++)
     {
-        QListWidgetItem* qlwi = new QListWidgetItem(table->getColumns()[i]->getName(), m_ui->lstForeignTablesColumns);
-        qlwi->setIcon(table->getColumns()[i]->getDataType()->getIcon());
+        QListWidgetItem* qlwi = new QListWidgetItem(foreignColumns[i], m_ui->lstForeignTablesColumns);
+        // TODO: these few lines below are duplicates with populateColumnsForIndices
+        Column* col = table->getColumn(foreignColumns[i]);
+        if(col)
+        {
+            qlwi->setIcon(col->getDataType()->getIcon());
+        }
+        else
+        {
+            col = table->getColumnFromParents(foreignColumns[i]);
+            if(col)
+            {
+                qlwi->setIcon(col->getDataType()->getIcon());
+            }
+        }
     }
     // now clear the current stuff, it's not valid keeping foreign keys from other tables, when moving to a new table
     m_ui->lstForeignKeyAssociations->clear();
@@ -884,14 +999,43 @@ void NewTableForm::onForeignTableColumnChange()
     for(int i=0; i< selectedItems.size(); i++)
     {
         const Column* foreignColumn = m_foreignTable->getColumn(selectedItems[i]->text());
-        for(int j=0; j<m_table->getColumns().size(); j++)
+
+        if(foreignColumn == 0)
         {
-            if(m_table->getColumns()[j]->getDataType()->getName() == foreignColumn->getDataType()->getName())
+            foreignColumn = m_foreignTable->getColumnFromParents(selectedItems[i]->text());
+            if(foreignColumn == 0)
             {
-                QListWidgetItem* qlwj = new QListWidgetItem(m_table->getColumns()[j]->getName(), m_ui->lstLocalColumn);
-                qlwj->setIcon(m_table->getColumns()[j]->getDataType()->getIcon());
+                return ;
             }
         }
+
+        QStringList parentColumns = m_table->fullColumns();
+        for(int j=0; j<parentColumns.size(); j++)
+        {
+            Column* col = m_table->getColumn(parentColumns[j]);
+            if(col)
+            {
+                if(col->getDataType()->getName() == foreignColumn->getDataType()->getName())
+                {
+                    //qDebug() << col->getName() << " is " << col->getDataType()->getName() << " >> " << foreignColumn->getName() << " is " << foreignColumn->getDataType()->getName();
+                    QListWidgetItem* qlwj = new QListWidgetItem(parentColumns[j], m_ui->lstLocalColumn);
+                    qlwj->setIcon(col->getDataType()->getIcon());
+                }
+            }
+            else
+            {
+                col = m_table->getColumnFromParents(parentColumns[j]);
+                if(col)
+                {
+                    if(col->getDataType()->getName() == foreignColumn->getDataType()->getName())
+                    {
+                        QListWidgetItem* qlwj = new QListWidgetItem(parentColumns[j], m_ui->lstLocalColumn);
+                        qlwj->setIcon(col->getDataType()->getIcon());
+                    }
+                }
+            }
+        }
+
         break;
     }
 }
@@ -911,6 +1055,14 @@ void NewTableForm::onAddForeignKeyAssociation()
     {
         foreignColumn = selectedItems[i]->text();
         cforeignColumn = m_foreignTable->getColumn(selectedItems[i]->text());
+        if(cforeignColumn == 0)
+        {
+            cforeignColumn = m_foreignTable->getColumnFromParents(selectedItems[i]->text());
+            if(cforeignColumn == 0)
+            {
+                return ; // Shouldn't happen
+            }
+        }
         break;
     }
 
@@ -919,6 +1071,14 @@ void NewTableForm::onAddForeignKeyAssociation()
     {
         localColumn = selectedItems[i]->text();
         clocalColumn = m_table->getColumn(selectedItems[i]->text());
+        if(clocalColumn == 0)
+        {
+            clocalColumn = m_table->getColumnFromParents(selectedItems[i]->text());
+            if(clocalColumn == 0)
+            {
+                return; // Neither this
+            }
+        }
         break;
     }
 
@@ -1010,6 +1170,14 @@ void NewTableForm::onSelectAssociation(QTreeWidgetItem* current, int column)
 
 void NewTableForm::onBtnAddForeignKey()
 {
+
+    if(m_table->getForeignKeyFromParents(m_ui->txtForeignKeyName->text()))
+    {
+        QMessageBox::critical (this, tr("Error"), tr("You cannot modify a foreign key from the parent table in a specialized table. (If you want to enable the GUI fields press Cancel)"), QMessageBox::Ok);
+        m_ui->txtForeignKeyName->setFocus();
+        return;
+    }
+
     if(m_currentForeignKey == 0 || m_ui->lstForeignKeyAssociations->topLevelItemCount() == 0)
     {
         QMessageBox::critical (this, tr("Error"), tr("Please specify at least 1 foreign key association"), QMessageBox::Ok);
@@ -1019,6 +1187,13 @@ void NewTableForm::onBtnAddForeignKey()
     if(m_ui->txtForeignKeyName->text().length() == 0)
     {
         QMessageBox::critical (this, tr("Error"), tr("Please specify a name for the foreign key"), QMessageBox::Ok);
+        m_ui->txtForeignKeyName->setFocus();
+        return;
+    }
+
+    if(m_table->getForeignKey(m_ui->txtForeignKeyName->text()) || m_table->getForeignKeyFromParents(m_ui->txtForeignKeyName->text()))
+    {
+        QMessageBox::critical (this, tr("Error"), tr("Duplicate foreign key name. Please use a name which cannot be found in this table, nor the parent tables."), QMessageBox::Ok);
         m_ui->txtForeignKeyName->setFocus();
         return;
     }
@@ -1057,6 +1232,12 @@ void NewTableForm::onBtnAddForeignKey()
         m_table->addForeignKey(m_currentForeignKey);
     }
 
+    m_changes = true;
+    resetFkGui();
+}
+
+void NewTableForm::resetFkGui()
+{
     m_currentForeignKey = 0;
     m_foreignKeySelected = false;
     // empty the FK ui fields
@@ -1068,23 +1249,35 @@ void NewTableForm::onBtnAddForeignKey()
     m_ui->cmbFkOnDelete->setCurrentIndex(-1);
     m_ui->cmbFkOnUpdate->setCurrentIndex(-1);
     m_ui->btnAdd->setIcon(IconFactory::getAddIcon());
-    m_changes = true;
+
 }
 
-void NewTableForm::onSelectForeignKey(QTreeWidgetItem* itm, int col)
+void NewTableForm::toggleFkFieldDisableness(bool a)
 {
-    QModelIndex x = m_ui->lstForeignKeys->currentIndex();
-    m_currentForeignKey = m_table->getForeignKey(x.row());
 
+    m_ui->lstForeignKeyAssociations->setDisabled(a);
+    m_ui->lstForeignTablesColumns->setDisabled(a);
+    m_ui->cmbForeignTables->setDisabled(a);
+    m_ui->txtForeignKeyName->setDisabled(a);
+    m_ui->cmbFkOnDelete->setDisabled(a);
+    m_ui->cmbFkOnUpdate->setDisabled(a);
+    m_ui->lstLocalColumn->setDisabled(a);
+    m_ui->btnAddForeignKeyAssociation->setDisabled(a);
+    m_ui->btnRemoveAssociation->setDisabled(a);
+}
+
+void NewTableForm::populateFKGui(ForeignKey * fk)
+{
     m_ui->lstForeignKeyAssociations->clear();
     m_ui->cmbForeignTables->setCurrentIndex(-1);
-    m_ui->txtForeignKeyName->setText(m_currentForeignKey->getName());
-
     m_foreignKeySelected = true;
+
+
+    m_ui->txtForeignKeyName->setText(fk->getName());
 
     // create the columns associations
     QString tabName = "";
-    const QVector<ForeignKey::ColumnAssociation*>& assocs = m_currentForeignKey->getAssociations();
+    const QVector<ForeignKey::ColumnAssociation*>& assocs = fk->getAssociations();
     for(int i=0; i<assocs.size(); i++)
     {
         tabName = assocs[i]->getForeignTable()->getName();
@@ -1111,19 +1304,54 @@ void NewTableForm::onSelectForeignKey(QTreeWidgetItem* itm, int col)
     }
     m_foreignTable = table;
     m_ui->cmbForeignTables->setCurrentIndex(idx);
-    const QVector<Column*> & foreignColumns = table->getColumns();
+    QStringList foreignColumns = table->fullColumns();
     m_ui->lstForeignTablesColumns->clear();
     for(int i=0; i<foreignColumns.size(); i++)
     {
-        QListWidgetItem* qlwi = new QListWidgetItem(table->getColumns()[i]->getName(), m_ui->lstForeignTablesColumns);
-        qlwi->setIcon(table->getColumns()[i]->getDataType()->getIcon());
+        QListWidgetItem* qlwi = new QListWidgetItem(foreignColumns[i], m_ui->lstForeignTablesColumns);
+
+        Column* col = table->getColumn(foreignColumns[i]);
+        if(col)
+        {
+            qlwi->setIcon(col->getDataType()->getIcon());
+        }
+        else
+        {
+            col = table->getColumnFromParents(foreignColumns[i]);
+            if(col)
+            {
+                qlwi->setIcon(col->getDataType()->getIcon());
+            }
+        }
     }
     // select the on update, on delete combo boxes
-    idx = m_ui->cmbFkOnDelete->findText(m_currentForeignKey->getOnDelete());
+    idx = m_ui->cmbFkOnDelete->findText(fk->getOnDelete());
     m_ui->cmbFkOnDelete->setCurrentIndex(idx);
-    idx = m_ui->cmbFkOnUpdate->findText(m_currentForeignKey->getOnUpdate());
+    idx = m_ui->cmbFkOnUpdate->findText(fk->getOnUpdate());
     m_ui->cmbFkOnUpdate->setCurrentIndex(idx);
     m_ui->btnAddForeignKey->setIcon(IconFactory::getApplyIcon());
+}
+
+void NewTableForm::onSelectForeignKey(QTreeWidgetItem* itm, int col)
+{
+    QModelIndex x = m_ui->lstForeignKeys->currentIndex();
+    m_currentForeignKey = m_table->getForeignKey(m_ui->lstForeignKeys->currentItem()->text(0));
+
+    if(m_currentForeignKey == 0)
+    {
+        ForeignKey* parFk = m_table->getForeignKeyFromParents(m_ui->lstForeignKeys->currentItem()->text(0));
+        if(parFk == 0)
+        {
+            return; // Shouldn't be
+        }
+
+        populateFKGui(parFk);
+        toggleFkFieldDisableness(true);
+        return;
+    }
+
+    populateFKGui(m_currentForeignKey);
+    toggleFkFieldDisableness(false);
 }
 
 void NewTableForm::updateDefaultValuesTableHeader()
@@ -1342,4 +1570,17 @@ void NewTableForm::onStorageEngineChange(QString name)
 
     populateIndexTypesDependingOnStorageEngine();
     enableForeignKeysDependingOnStorageEngine();
+}
+
+
+void NewTableForm::onBtnCancelForeignKeyEditing()
+{
+    toggleFkFieldDisableness(false);
+    resetFkGui();
+    m_ui->btnAddForeignKey->setIcon(IconFactory::getAddIcon());
+}
+
+void NewTableForm::onBtnRemoveForeignKey()
+{
+    // TODO: Implement
 }

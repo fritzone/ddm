@@ -150,7 +150,7 @@ MajorVersion* DeserializationFactory::createMajorVersion(DatabaseEngine* engine,
         Table* tabI = result->getTables().at(i);
         for(int j=0; j<tabI->getFks().size(); j++)
         {
-            ForeignKey* fkJ = tabI->getForeignKey(j);
+            ForeignKey* fkJ = tabI->getFks()[j];
             for(int k=0; k<fkJ->getAssociations().size(); k++)
             {
                 ForeignKey::ColumnAssociation* assK = fkJ->getAssociation(k);

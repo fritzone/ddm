@@ -55,7 +55,7 @@
       <enum>QTabWidget::Rounded</enum>
      </property>
      <property name="currentIndex">
-      <number>3</number>
+      <number>2</number>
      </property>
      <widget class="QWidget" name="tabWidgetPage1">
       <attribute name="title">
@@ -236,20 +236,48 @@
               </property>
              </widget>
             </item>
-            <item row="5" column="1">
+            <item row="2" column="0">
+             <widget class="QCheckBox" name="chkPrimary">
+              <property name="text">
+               <string>Primary Key</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="1">
+             <widget class="QCheckBox" name="chkAutoInc">
+              <property name="text">
+               <string>Auto Increment</string>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="0">
+             <widget class="QLabel" name="lblDescription">
+              <property name="text">
+               <string>Description</string>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="1">
+             <widget class="QTextEdit" name="txtColumnDescription"/>
+            </item>
+            <item row="4" column="0">
              <layout class="QHBoxLayout" name="horizontalLayout_3">
               <item>
-               <spacer name="horizontalSpacer">
-                <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
+               <widget class="QToolButton" name="btnAdd">
+                <property name="toolTip">
+                 <string>Add/Update the column</string>
                 </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>40</width>
-                  <height>20</height>
-                 </size>
+                <property name="statusTip">
+                 <string>Add/Update the column</string>
                 </property>
-               </spacer>
+                <property name="text">
+                 <string>...</string>
+                </property>
+                <property name="icon">
+                 <iconset>
+                  <normaloff>:/images/actions/images/small/add.png</normaloff>:/images/actions/images/small/add.png</iconset>
+                </property>
+               </widget>
               </item>
               <item>
                <widget class="QToolButton" name="btnCancelColumnEditing">
@@ -268,48 +296,7 @@
                 </property>
                </widget>
               </item>
-              <item>
-               <widget class="QToolButton" name="btnAdd">
-                <property name="toolTip">
-                 <string>Add/Update the column</string>
-                </property>
-                <property name="statusTip">
-                 <string>Add/Update the column</string>
-                </property>
-                <property name="text">
-                 <string>...</string>
-                </property>
-                <property name="icon">
-                 <iconset>
-                  <normaloff>:/images/actions/images/small/add.png</normaloff>:/images/actions/images/small/add.png</iconset>
-                </property>
-               </widget>
-              </item>
              </layout>
-            </item>
-            <item row="4" column="1">
-             <widget class="QTextEdit" name="txtColumnDescription"/>
-            </item>
-            <item row="4" column="0">
-             <widget class="QLabel" name="lblDescription">
-              <property name="text">
-               <string>Description</string>
-              </property>
-             </widget>
-            </item>
-            <item row="2" column="0">
-             <widget class="QCheckBox" name="chkPrimary">
-              <property name="text">
-               <string>Primary Key</string>
-              </property>
-             </widget>
-            </item>
-            <item row="2" column="1">
-             <widget class="QCheckBox" name="chkAutoInc">
-              <property name="text">
-               <string>Auto Increment</string>
-              </property>
-             </widget>
             </item>
            </layout>
           </item>
@@ -506,6 +493,34 @@
           <item>
            <layout class="QHBoxLayout" name="horizontalLayout_5">
             <item>
+             <widget class="QToolButton" name="btnAddIndex">
+              <property name="toolTip">
+               <string>Save this index</string>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+              <property name="icon">
+               <iconset>
+                <normaloff>:/images/actions/images/small/add.png</normaloff>:/images/actions/images/small/add.png</iconset>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QToolButton" name="btnCancelIndexEditing">
+              <property name="toolTip">
+               <string>Cancel editing this index, reset the fields</string>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+              <property name="icon">
+               <iconset>
+                <normaloff>:/images/actions/images/small/cancel.png</normaloff>:/images/actions/images/small/cancel.png</iconset>
+              </property>
+             </widget>
+            </item>
+            <item>
              <widget class="QPushButton" name="btnAdvanced">
               <property name="text">
                <string>Advanced</string>
@@ -524,34 +539,6 @@
                </size>
               </property>
              </spacer>
-            </item>
-            <item>
-             <widget class="QToolButton" name="btnCancelIndexEditing">
-              <property name="toolTip">
-               <string>Cancel editing this index, reset the fields</string>
-              </property>
-              <property name="text">
-               <string/>
-              </property>
-              <property name="icon">
-               <iconset>
-                <normaloff>:/images/actions/images/small/cancel.png</normaloff>:/images/actions/images/small/cancel.png</iconset>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QToolButton" name="btnAddIndex">
-              <property name="toolTip">
-               <string>Save this index</string>
-              </property>
-              <property name="text">
-               <string/>
-              </property>
-              <property name="icon">
-               <iconset>
-                <normaloff>:/images/actions/images/small/add.png</normaloff>:/images/actions/images/small/add.png</iconset>
-              </property>
-             </widget>
             </item>
            </layout>
           </item>
@@ -635,7 +622,7 @@ p, li { white-space: pre-wrap; }
            </widget>
           </item>
           <item>
-           <widget class="QToolButton" name="toolButton_13">
+           <widget class="QToolButton" name="btnRemoveForeignKey">
             <property name="toolTip">
              <string>Delete foriegn key</string>
             </property>
@@ -776,6 +763,51 @@ p, li { white-space: pre-wrap; }
           <item>
            <layout class="QHBoxLayout" name="horizontalLayout_8">
             <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_4">
+              <item>
+               <widget class="QToolButton" name="btnCancelForeignKeyEditing">
+                <property name="toolTip">
+                 <string>Cancel editing foreign key</string>
+                </property>
+                <property name="text">
+                 <string>...</string>
+                </property>
+                <property name="icon">
+                 <iconset>
+                  <normaloff>:/images/actions/images/small/cancel.png</normaloff>:/images/actions/images/small/cancel.png</iconset>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QToolButton" name="btnAddForeignKey">
+                <property name="toolTip">
+                 <string>Add foreign key</string>
+                </property>
+                <property name="text">
+                 <string>...</string>
+                </property>
+                <property name="icon">
+                 <iconset>
+                  <normaloff>:/images/actions/images/small/add.png</normaloff>:/images/actions/images/small/add.png</iconset>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <spacer name="horizontalSpacer_3">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item>
              <widget class="QGroupBox" name="groupBox_8">
               <property name="title">
                <string>On Update</string>
@@ -850,51 +882,6 @@ p, li { white-space: pre-wrap; }
                </item>
               </layout>
              </widget>
-            </item>
-            <item>
-             <spacer name="horizontalSpacer_3">
-              <property name="orientation">
-               <enum>Qt::Horizontal</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>40</width>
-                <height>20</height>
-               </size>
-              </property>
-             </spacer>
-            </item>
-            <item>
-             <layout class="QHBoxLayout" name="horizontalLayout_4">
-              <item>
-               <widget class="QToolButton" name="toolButton_12">
-                <property name="toolTip">
-                 <string>Cancel editing foreign key</string>
-                </property>
-                <property name="text">
-                 <string>...</string>
-                </property>
-                <property name="icon">
-                 <iconset>
-                  <normaloff>:/images/actions/images/small/cancel.png</normaloff>:/images/actions/images/small/cancel.png</iconset>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QToolButton" name="btnAddForeignKey">
-                <property name="toolTip">
-                 <string>Add foreign key</string>
-                </property>
-                <property name="text">
-                 <string>...</string>
-                </property>
-                <property name="icon">
-                 <iconset>
-                  <normaloff>:/images/actions/images/small/add.png</normaloff>:/images/actions/images/small/add.png</iconset>
-                </property>
-               </widget>
-              </item>
-             </layout>
             </item>
            </layout>
           </item>
@@ -1153,6 +1140,9 @@ p, li { white-space: pre-wrap; }
      <property name="autoFillBackground">
       <bool>false</bool>
      </property>
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
      <property name="standardButtons">
       <set>QDialogButtonBox::Save</set>
      </property>
@@ -1168,8 +1158,6 @@ p, li { white-space: pre-wrap; }
   <tabstop>txtNewColumnName</tabstop>
   <tabstop>cmbNewColumnType</tabstop>
   <tabstop>txtColumnDescription</tabstop>
-  <tabstop>btnCancelColumnEditing</tabstop>
-  <tabstop>btnAdd</tabstop>
   <tabstop>lstColumns</tabstop>
   <tabstop>btnUp</tabstop>
   <tabstop>btnRemove</tabstop>
@@ -1180,8 +1168,6 @@ p, li { white-space: pre-wrap; }
   <tabstop>lstSelectedColumnsForIndex</tabstop>
   <tabstop>btnMoveIndexColumnUp</tabstop>
   <tabstop>btnMoveIndexColumnDown</tabstop>
-  <tabstop>btnCancelIndexEditing</tabstop>
-  <tabstop>btnAddIndex</tabstop>
   <tabstop>lstIndices</tabstop>
   <tabstop>btnRemoveIndex</tabstop>
   <tabstop>txtForeignKeyName</tabstop>
@@ -1193,12 +1179,12 @@ p, li { white-space: pre-wrap; }
   <tabstop>btnRemoveAssociation</tabstop>
   <tabstop>cmbFkOnUpdate</tabstop>
   <tabstop>cmbFkOnDelete</tabstop>
-  <tabstop>toolButton_12</tabstop>
+  <tabstop>btnCancelForeignKeyEditing</tabstop>
   <tabstop>btnAddForeignKey</tabstop>
   <tabstop>btnUpdateTableWithDefaultValues</tabstop>
   <tabstop>cmbCharacterSets</tabstop>
   <tabstop>txtDescription</tabstop>
-  <tabstop>toolButton_13</tabstop>
+  <tabstop>btnRemoveForeignKey</tabstop>
   <tabstop>lstForeignKeys</tabstop>
   <tabstop>tableStartupValues</tabstop>
   <tabstop>buttons</tabstop>
@@ -1669,6 +1655,22 @@ p, li { white-space: pre-wrap; }
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>btnCancelForeignKeyEditing</sender>
+   <signal>clicked()</signal>
+   <receiver>NewTableForm</receiver>
+   <slot>onBtnCancelForeignKeyEditing()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>52</x>
+     <y>676</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>368</x>
+     <y>386</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <designerdata>
   <property name="gridDeltaX">
@@ -1717,5 +1719,7 @@ p, li { white-space: pre-wrap; }
   <slot>onSaveStartupValuestoCSV()</slot>
   <slot>onLoadStartupValuesFromCSV()</slot>
   <slot>onStorageEngineChange(QString)</slot>
+  <slot>onBtnCancelForeignKeyEditing()</slot>
+  <slot>onBtnRemoveForeignKey()</slot>
  </slots>
 </ui>
