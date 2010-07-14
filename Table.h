@@ -55,7 +55,7 @@ public:
      * Returns the given Index to be found at the cth position for read/write operations
      * @param c - the index of the Index
      */
-    Index* getIndex(const QString&);
+    Index* getIndex(const QString&) const;
 
     /**
      * Returns the column with the given name
@@ -121,8 +121,11 @@ public:
         m_foreignKeys.append(fk);
     }
 
-    ForeignKey* getForeignKey(int i);
+    ForeignKey* getForeignKey(const QString&) const;
 
+    /**
+     * Returns the first ForeignKey object if this table has a foreign key to the specified table
+     */
     ForeignKey* getForeignKeyToTable(const QString& tableName);
 
     void setDefaultValues(QVector <QVector <QString> > &);
@@ -209,7 +212,11 @@ public:
         return m_columns.size();
     }
 
-    bool hasIndex(const QString& colName) const ;
+    bool hasIndex(const QString&) const ;
+
+    Index* getIndexFromParents(const QString&) const;
+
+    ForeignKey* getForeignKeyFromParents(const QString&) const;
 
 private:
     // the name of the table

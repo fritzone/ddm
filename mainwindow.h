@@ -58,7 +58,7 @@ public:
 public slots:
 
     void onNewSolution();
-    void onProjectTreeClicked();
+    //void onProjectTreeClicked();
     void onNewDataType();
     void onNewTable();
     void onSaveProject();
@@ -67,6 +67,7 @@ public slots:
     void onDTTreeClicked();
     void onNewDiagram();
     void onSaveAs();
+    void currentProjectTreeItemChanged ( QTreeWidgetItem * current, QTreeWidgetItem * previous );
 
     // when the user clicked the "Delete table" from the popups
     void onDeleteTableFromPopup();
@@ -109,6 +110,8 @@ private:
 
     // this is the table screen which is current
     NewTableForm* frm;
+
+
 
 };
 

@@ -84,6 +84,7 @@ public:
     ContextMenuDelegate(ContextMenuHandler *const contextMenu, ContextMenuEnabledTreeWidget *const parent );
 
     bool editorEvent(QEvent * event, QAbstractItemModel * model, const QStyleOptionViewItem & option, const QModelIndex & index );
+
 private:
     ContextMenuEnabledTreeWidget* m_tree;
     ContextMenuHandler *const m_contextMenu;

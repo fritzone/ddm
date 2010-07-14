@@ -73,7 +73,9 @@ public slots:
     void onSelectAssociation(QTreeWidgetItem*,int);
     void onRemoveForeignKeyAssociation();
     void onBtnAddForeignKey();
+    void onBtnCancelForeignKeyEditing();
     void onSelectForeignKey(QTreeWidgetItem*,int);
+    void onBtnRemoveForeignKey();
 
     // default values page
     void onAddNewDefaultRow();
@@ -105,7 +107,7 @@ private:
     /*
      * Creates various tree widget items for Columns, Indices, ForeignKeys
      */
-    ContextMenuEnabledTreeWidgetItem* createTWIForColumn(const Column* col);
+    ContextMenuEnabledTreeWidgetItem* createTWIForColumn(const Column* col, ContextMenuEnabledTreeWidgetItem* parent = 0);
     ContextMenuEnabledTreeWidgetItem* createTWIForIndex(const Index* col);
     ContextMenuEnabledTreeWidgetItem* createTWIForForeignKey(const ForeignKey* col);
 
@@ -124,6 +126,18 @@ private:
      * otherwise they are disabled (grey background)
      */
     void populateTable(const Table* table, bool);
+
+    void toggleColumnFieldDisableness(bool);
+
+    void populateIndexGui(Index* idx);
+
+    void toggleIndexFieldDisableness(bool);
+
+    void populateFKGui(ForeignKey*);
+
+    void toggleFkFieldDisableness(bool);
+
+    void resetFkGui();
 
 private:
     Ui::NewTableForm *m_ui;

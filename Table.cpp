@@ -44,11 +44,11 @@ void Table::moveColumnUp(int c)
     }
 }
 
-bool Table::hasIndex(const QString& colName) const
+bool Table::hasIndex(const QString& indexName) const
 {
     for(int i=0; i<m_indices.size(); i++)
     {
-        if(m_indices[i]->getName() == colName)
+        if(m_indices[i]->getName() == indexName)
         {
             return true;
         }
@@ -81,6 +81,7 @@ int Table::getTotalParentColumnCount() const
 
 }
 
+
 bool Table::parentsHaveColumn(const QString& colName) const
 {
     const Table* p = m_parent;
@@ -95,7 +96,35 @@ bool Table::parentsHaveColumn(const QString& colName) const
     return false;
 }
 
-Index* Table::getIndex(const QString& idxName)
+Index* Table::getIndexFromParents(const QString& indexName) const
+{
+    const Table* p = m_parent;
+    while(p)
+    {
+        if(p->getIndex(indexName))
+        {
+            return p->getIndex(indexName);
+        }
+        p = p->m_parent;
+    }
+    return 0;
+}
+
+ForeignKey* Table::getForeignKeyFromParents(const QString& fkName) const
+{
+    const Table* p = m_parent;
+    while(p)
+    {
+        if(p->getForeignKey(fkName))
+        {
+            return p->getForeignKey(fkName);
+        }
+        p = p->m_parent;
+    }
+    return 0;
+}
+
+Index* Table::getIndex(const QString& idxName) const
 {
     for(int c=0; c<m_indices.size(); c++)
     {
@@ -107,9 +136,16 @@ Index* Table::getIndex(const QString& idxName)
     return 0;
 }
 
-ForeignKey* Table::getForeignKey(int i)
+ForeignKey* Table::getForeignKey(const QString& name) const
 {
-    return m_foreignKeys[i];
+    for(int i=0; i<m_foreignKeys.size(); i++)
+    {
+        if(m_foreignKeys[i]->getName() == name)
+        {
+            return m_foreignKeys[i];
+        }
+    }
+    return 0;
 }
 
 ForeignKey* Table::getForeignKeyToTable(const QString& tableName)
