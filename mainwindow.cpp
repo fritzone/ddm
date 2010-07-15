@@ -242,9 +242,7 @@ void MainWindow::currentProjectTreeItemChanged ( QTreeWidgetItem * current, QTre
                 setCentralWidget(frm);
 
             }
-
         }
-
     }
 }
 
@@ -467,6 +465,7 @@ void MainWindow::connectActionsFromTablePopupMenu()
     QObject::connect(getWorkingProject()->getWorkingVersion()->getAction_RemoveTable(), SIGNAL(activated()), this, SLOT(onDeleteTableFromPopup()));
     QObject::connect(getWorkingProject()->getWorkingVersion()->getAction_TableAddColumn(), SIGNAL(activated()), this, SLOT(onTableAddColumnFromPopup()));
     QObject::connect(getWorkingProject()->getWorkingVersion()->getAction_SpecializeTable(), SIGNAL(activated()), this, SLOT(onSpecializeTableFromPopup()));
+    QObject::connect(getWorkingProject()->getWorkingVersion()->getAction_DuplicateTable(), SIGNAL(activated()), this, SLOT(onDuplicateTableFromPopup()));
 }
 
 void MainWindow::onAbout()
@@ -530,7 +529,7 @@ void MainWindow::onSpecializeTableFromPopup()
         return;
     }
 
-    Table* tbl = new Table();
+    Table* tbl = new Table(getWorkingProject()->getWorkingVersion());
     tbl->setName(table->getName() + "_specialized");
     tbl->setParent(table);
     tbl->setStorageEngine(table->getStorageEngine());
@@ -577,7 +576,7 @@ void MainWindow::onTableAddColumnFromPopup()
     }
 }
 
-void MainWindow::onDeleteTableFromPopup()
+Table* MainWindow::getRightclickedTable()
 {
     if(projectTree->getLastRightclickedItem() != 0)
     {
@@ -587,10 +586,28 @@ void MainWindow::onDeleteTableFromPopup()
         QVariant qv = item->data(0, Qt::UserRole);
         QString tabName = qv.toString();
         Table* table =  getWorkingProject()->getWorkingVersion()->getTable(tabName);
-        if(table == 0)  // shouldn't be ...
-        {
-            return;
-        }
-        getWorkingProject()->getWorkingVersion()->deleteTable(getWorkingProject()->getWorkingVersion()->getTable(tabName));
+        return table;
+    }
+
+    return 0;
+}
+
+void MainWindow::onDeleteTableFromPopup()
+{
+    Table* tab = getRightclickedTable();
+    if(tab)
+    {
+        getWorkingProject()->getWorkingVersion()->deleteTable(tab);
+    }
+
+}
+
+void MainWindow::onDuplicateTableFromPopup()
+{
+    Table* tab = getRightclickedTable();
+    if(tab)
+    {
+        Table* dupped = getWorkingProject()->getWorkingVersion()->duplicateTable(tab);
+        onSaveNewTable(dupped);
     }
 }

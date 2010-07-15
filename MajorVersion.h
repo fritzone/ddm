@@ -109,6 +109,18 @@ public:
         return action_SpecializeTable;
     }
 
+
+    virtual Table* duplicateTable(Table*);
+
+    virtual void removeForeignKeyFromDiagrams(ForeignKey*);
+
+    virtual QAction * getAction_DuplicateTable()
+    {
+        return action_DuplicateTable;
+    }
+
+    virtual void setupTableParentChildRelationships();
+
 private:
 
     // the tree item containing the "Tables"
@@ -147,6 +159,7 @@ private:
     QMenu* m_tablePopupMenu;
 
     QAction * action_RemoveTable;
+    QAction * action_DuplicateTable;
     QAction * action_SpecializeTable;
     QAction * action_TableAddColumn;
 };

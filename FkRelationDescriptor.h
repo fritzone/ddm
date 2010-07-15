@@ -59,6 +59,7 @@ public:
     }
     
     void eliberate(bool desc_too = true);
+    void removeFromScene();
     void recreate(Diagram*);
 
     void addToScene(ERGraphicsScene*);

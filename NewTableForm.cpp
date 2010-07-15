@@ -4,6 +4,7 @@
 #include "DatabaseEngine.h"
 #include "Project.h"
 #include "Version.h"
+#include "Configuration.h"
 #include "UserDataType.h"
 #include "Column.h"
 #include "Index.h"
@@ -25,7 +26,7 @@ const int COL_POS_NM = 1;
 const int COL_POS_DT = 2;
 
 NewTableForm::NewTableForm(DatabaseEngine* db, Project* prj, QWidget *parent) : QWidget(parent), m_ui(new Ui::NewTableForm),
-    m_dbEngine(db), m_project(prj), m_table(new Table()), m_currentColumn(0), m_currentIndex(0), m_foreignTable(0),
+    m_dbEngine(db), m_project(prj), m_table(new Table(prj->getWorkingVersion())), m_currentColumn(0), m_currentIndex(0), m_foreignTable(0),
     m_currentForeignKey(0), m_foreignKeySelected(false), m_changes(false), m_currentStorageEngine(0), m_engineProviders(0)
 {
     m_ui->setupUi(this);
@@ -243,6 +244,11 @@ void NewTableForm::populateTable(const Table *table, bool parentTab)
         }
     }
     resetIndexGui();
+
+    if(parentTab && !Configuration::instance().allowForeignKeyPropagation())
+    {
+        return;
+    }
 
     // third step: set up the foreign keys
     const QVector<ForeignKey*> & fks = table->getFks();
@@ -1582,5 +1588,26 @@ void NewTableForm::onBtnCancelForeignKeyEditing()
 
 void NewTableForm::onBtnRemoveForeignKey()
 {
-    // TODO: Implement
+    if(m_currentForeignKey == 0 && m_table->getForeignKeyFromParents(m_ui->lstForeignKeys->currentItem()->text(0)) != 0)
+    {
+        QMessageBox::critical (this, tr("Error"), tr("You cannot remove this foreign key, since it does not belong to this table. Remove it from the parent table."), QMessageBox::Ok);
+        return;
+    }
+    m_table->removeForeignKey(m_currentForeignKey);
+    m_table->version()->removeForeignKeyFromDiagrams(m_currentForeignKey);
+    delete m_currentForeignKey->getLocation();
+    m_currentForeignKey = 0;
+    resetFkGui();
+}
+
+void NewTableForm::onPersistentChange(int a)
+{
+    m_table->setPersistent(a == Qt::Checked);
+    m_table->prepareDiagramEntity();
+}
+
+void NewTableForm::onTemporaryChange(int a)
+{
+    m_table->setTemporary(a == Qt::Checked);
+    m_table->prepareDiagramEntity();
 }

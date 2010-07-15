@@ -55,7 +55,7 @@
       <enum>QTabWidget::Rounded</enum>
      </property>
      <property name="currentIndex">
-      <number>2</number>
+      <number>4</number>
      </property>
      <widget class="QWidget" name="tabWidgetPage1">
       <attribute name="title">
@@ -1671,6 +1671,54 @@ p, li { white-space: pre-wrap; }
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>btnRemoveForeignKey</sender>
+   <signal>clicked()</signal>
+   <receiver>NewTableForm</receiver>
+   <slot>onBtnRemoveForeignKey()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>693</x>
+     <y>209</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>368</x>
+     <y>386</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>chkPersistent</sender>
+   <signal>stateChanged(int)</signal>
+   <receiver>NewTableForm</receiver>
+   <slot>onPersistentChange(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>80</x>
+     <y>160</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>368</x>
+     <y>386</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>chkTemporary</sender>
+   <signal>stateChanged(int)</signal>
+   <receiver>NewTableForm</receiver>
+   <slot>onTemporaryChange(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>82</x>
+     <y>186</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>368</x>
+     <y>386</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <designerdata>
   <property name="gridDeltaX">
@@ -1721,5 +1769,7 @@ p, li { white-space: pre-wrap; }
   <slot>onStorageEngineChange(QString)</slot>
   <slot>onBtnCancelForeignKeyEditing()</slot>
   <slot>onBtnRemoveForeignKey()</slot>
+  <slot>onPersistentChange(int)</slot>
+  <slot>onTemporaryChange(int)</slot>
  </slots>
 </ui>

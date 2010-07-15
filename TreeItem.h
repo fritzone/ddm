@@ -24,7 +24,7 @@ public:
         this->m_location = loc;
     }
 
-    ContextMenuEnabledTreeWidgetItem*& getLocation()
+    ContextMenuEnabledTreeWidgetItem* getLocation() const
     {
         return m_location;
     }

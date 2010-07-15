@@ -13,6 +13,7 @@ class Index;
 class ForeignKey;
 class AbstractStorageEngine;
 class DraggableGraphicsViewItem ;
+class Version;
 
 /**
  * The table class holds a database table defined by the user. It must be derived from the TreeItem since a table can be placed in
@@ -25,7 +26,7 @@ public:
     /**
      * Constructor, creates a new object
      */
-    Table();
+    Table(Version* v);
 
     virtual ~Table()
     {
@@ -218,6 +219,24 @@ public:
 
     ForeignKey* getForeignKeyFromParents(const QString&) const;
 
+
+    void removeForeignKey(ForeignKey* toRemove);
+
+    Version* version() const
+    {
+        return m_version;
+    }
+
+    void setTempTabName(const QString& s)
+    {
+        m_tempTabName = s;
+    }
+
+    QString getTempTabName() const
+    {
+        return m_tempTabName;
+    }
+
 private:
     // the name of the table
     QString m_name;
@@ -250,8 +269,10 @@ private:
 
     // will be shown on the diagrams
     DraggableGraphicsViewItem* m_diagramEntity;
-};
 
-Q_DECLARE_METATYPE(Table)
+    Version* m_version;
+
+    QString m_tempTabName;
+};
 
 #endif // TABLE_H
