@@ -73,6 +73,7 @@ public slots:
     void onDeleteTableFromPopup();
     void onTableAddColumnFromPopup();
     void onSpecializeTableFromPopup();
+    void onDuplicateTableFromPopup();
 
 private:
 
@@ -84,6 +85,7 @@ private:
 
     void enableActions();
     void connectActionsFromTablePopupMenu();
+    Table* getRightclickedTable();
 
 private:
     Ui::MainWindow *ui;

@@ -57,6 +57,17 @@ void MajorVersion::populateTreeItems()
         tbl->setLocation(newTblsItem);
     }
 
+    // now update the parents
+    for(int i=0; i<m_tables.size(); i++)
+    {
+        if(m_tables[i]->getParent() != 0)
+        {
+            QTreeWidgetItem* p = m_tables[i]->getLocation();
+            p->parent()->removeChild(p);
+            m_tables[i]->getParent()->getLocation()->addChild(p);
+        }
+    }
+
     // insert the diagrams
     for(int i=0; i<m_diagrams.size(); i++)
     {
@@ -120,6 +131,7 @@ void MajorVersion::createTreeItems(QTreeWidget* tree, QTreeWidget* dtTree, Conte
     m_tablePopupMenu = new QMenu();
 
     action_RemoveTable = new QAction("Delete table", 0);
+    action_DuplicateTable = new QAction("Duplicate table", 0);
     action_TableAddColumn = new QAction("Add column", 0);
     action_SpecializeTable = new QAction("Specialize table", 0);
 
@@ -129,10 +141,8 @@ void MajorVersion::createTreeItems(QTreeWidget* tree, QTreeWidget* dtTree, Conte
     m_tablePopupMenu->addAction(action_TableAddColumn);
     m_tablePopupMenu->addSeparator();
     m_tablePopupMenu->addAction(action_RemoveTable);
+    m_tablePopupMenu->addAction(action_DuplicateTable);
     m_tablePopupMenu->addAction(action_SpecializeTable);
-
-
-
 }
 
 void MajorVersion::serialize(QDomDocument &doc, QDomElement &parent) const
@@ -297,6 +307,40 @@ void MajorVersion::deleteTable(Table *tab)
         return;
     }
 
+    for(int i=0; i<m_diagrams.size(); i++)
+    {
+        m_diagrams[i]->removeTable(tab->getName());
+    }
+
     delete m_tables[tabIndex]->getLocation();
     m_tables.remove(tabIndex);
+}
+
+
+
+void MajorVersion::removeForeignKeyFromDiagrams(ForeignKey* fkToRemove)
+{
+    for(int i=0; i<m_diagrams.size(); i++)
+    {
+        m_diagrams[i]->forcefullyRemoveForeignKey(fkToRemove);
+    }
+}
+
+Table* MajorVersion::duplicateTable(Table *src)
+{
+    Table* dup = new Table(*src);
+    dup->setName(src->getName()+"_copy");
+    addTable(dup);
+    return dup;
+}
+
+void MajorVersion::setupTableParentChildRelationships()
+{
+    for(int i=0; i<m_tables.size(); i++)
+    {
+        if(m_tables[i]->getTempTabName().length() > 0)
+        {
+            m_tables[i]->setParent(getTable(m_tables[i]->getTempTabName()));
+        }
+    }
 }

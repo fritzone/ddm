@@ -2,12 +2,15 @@
 #include "Column.h"
 #include "Index.h"
 #include "ForeignKey.h"
+#include "Configuration.h"
 #include "UserDataType.h"
 #include "AbstractStorageEngine.h"
 #include "DraggableGraphicsItem.h"
 #include "IconFactory.h"
+#include <QPen>
 
-Table::Table() : m_name(""), m_description(""), m_columns(), m_indices(), m_foreignKeys(), m_startupValues(), m_parent(0), m_persistent(false), m_storageEngine(0), m_diagramEntity(0)
+Table::Table(Version* v) :  m_name(""), m_description(""), m_columns(), m_indices(), m_foreignKeys(), m_startupValues(),
+                            m_parent(0), m_persistent(false), m_temporary(false), m_storageEngine(0), m_diagramEntity(0), m_version(v)
 {
 }
 
@@ -207,6 +210,16 @@ void Table::removeColumn(Column* toRemove)
     }
 }
 
+void Table::removeForeignKey(ForeignKey* toRemove)
+{
+    int idx = m_foreignKeys.indexOf(toRemove);
+    if(idx != -1)
+    {
+        m_foreignKeys.remove(idx);
+    }
+}
+
+
 Index* Table::isColumnUsedInIndex(const Column *column)
 {
     for(int i=0; i<m_indices.size(); i++)
@@ -256,6 +269,7 @@ void Table::serialize(QDomDocument &doc, QDomElement &parent) const
     tableElement.setAttribute("Name", m_name);
     tableElement.setAttribute("Persistent", m_persistent);
     tableElement.setAttribute("Temporary", m_temporary);
+    tableElement.setAttribute("Parent",m_parent?m_parent->getName():"N/A");
     tableElement.setAttribute("StorageEngine", m_storageEngine?m_storageEngine->name():"");
 
     if(m_parent !=0)
@@ -338,14 +352,25 @@ void Table::prepareDiagramEntity()
     int py = txtName->boundingRect().height();
     int headerHeight = py;
     int maxX = txtName->boundingRect().right();
-
-    for(int i=0; i<m_columns.size(); i++)
+    QStringList fullC = fullColumns();
+    for(int i=0; i<fullC.size(); i++)
     {
-        QGraphicsTextItem* txtColName = new QGraphicsTextItem(m_columns[i]->getName(), grp);
+        Column* col = getColumn(fullC[i]);
+        if(!col)
+        {
+            col = getColumnFromParents(fullC[i]);
+            if(!col)
+            {
+                return; // Shouldn't ever happen
+            }
+        }
+
+
+        QGraphicsTextItem* txtColName = new QGraphicsTextItem(fullC[i], grp);
         txtColName->setY(py);
 
-        QGraphicsPixmapItem* icon = new QGraphicsPixmapItem(m_columns[i]->getDataType()->getIcon().pixmap(16,16), grp);
-        if(m_columns[i]->isPk())
+        QGraphicsPixmapItem* icon = new QGraphicsPixmapItem(col->getDataType()->getIcon().pixmap(16,16), grp);
+        if(col->isPk())
         {
             QGraphicsPixmapItem* keyicon = new QGraphicsPixmapItem(IconFactory::getKeyIcon().pixmap(16,16), grp);
             keyicon->setY(py + 2);
@@ -363,9 +388,19 @@ void Table::prepareDiagramEntity()
     int finMaxX = maxX;
     py = headerHeight;
 
-    for(int i=0; i<m_columns.size(); i++)
+    for(int i=0; i<fullC.size(); i++)
     {
-        QGraphicsTextItem* txtColName = new QGraphicsTextItem(m_columns[i]->getDataType()->sqlAsString(), grp);
+        Column* col = getColumn(fullC[i]);
+        if(!col)
+        {
+            col = getColumnFromParents(fullC[i]);
+            if(!col)
+            {
+                return; // Shouldn't ever happen
+            }
+        }
+
+        QGraphicsTextItem* txtColName = new QGraphicsTextItem(col->getDataType()->sqlAsString(), grp);
         txtColName->setY(py);
         txtColName->setX(maxX);
         py += txtColName->boundingRect().height();
@@ -375,9 +410,23 @@ void Table::prepareDiagramEntity()
     maxX = finMaxX;
 
     QGraphicsRectItem* rect = new QGraphicsRectItem(0,0, maxX, py, grp);
+    QPen tPen;
+
+    if(m_temporary)
+    {
+        tPen.setStyle(Qt::DashLine);
+    }
+
+    if(m_persistent)
+    {
+        tPen.setWidth(2);
+    }
+    if(Configuration::instance().drawTableTypes()) rect->setPen(tPen);
+
     grp->setLastX(maxX);
     grp->setLastY(py);
     QGraphicsRectItem* recta = new QGraphicsRectItem(0,0, maxX, headerHeight, grp);
+    if(Configuration::instance().drawTableTypes()) recta->setPen(tPen);
     QBrush brush (Qt::lightGray);
     QBrush wbrush (Qt::white);
     recta->setBrush(brush);
@@ -386,7 +435,5 @@ void Table::prepareDiagramEntity()
     recta->setZValue(0.5);
     txtName->setZValue(1);
     grp->setToolTip(m_description);
-
     m_diagramEntity = grp;
-
 }

@@ -144,6 +144,9 @@ MajorVersion* DeserializationFactory::createMajorVersion(DatabaseEngine* engine,
         }
     }
 
+    // update the parent child relationships of the table
+    result->setupTableParentChildRelationships();
+
     // now update the tables so that the foreign keys get populated
     for(int i=0; i<result->getTables().size(); i++)
     {
@@ -215,11 +218,12 @@ Column* DeserializationFactory::createColumn(Version* ver, const QDomDocument &d
 
 Table* DeserializationFactory::createTable(DatabaseEngine* engine, Version* ver, const QDomDocument &doc, const QDomElement &element)
 {
-    Table* result = new Table();
+    Table* result = new Table(ver);
     QString name = element.attribute("Name");
     result->setName(name);
     result->setPersistent(element.attribute("Persistent")=="1");
     result->setTemporary(element.attribute("Temporary")=="1");
+    result->setTempTabName(element.attribute("Parent"));
 
     QString stEngineName = element.attribute("StorageEngine");
     AbstractStorageEngineListProvider* lp = engine->getStorageEngineListProviders();
@@ -386,9 +390,11 @@ DiagramFKDescriptor* DeserializationFactory::createDiagramFKDescriptor(const QDo
     qreal arrowposx = element.attribute("arrowPosx").toFloat();
     qreal arrowposy = element.attribute("arrowPosy").toFloat();
 
+    QString fkn = element.attribute("fkn");
+
     DiagramFKDescriptor* dfk = new     DiagramFKDescriptor(tab1, tab2, x, y,  ellx,  elly,  l1otx,  l1oty,  l1posx, l1posy,  l2otx,  l2oty,  l2posx,
                                                            l2posy,  rel1posx,  rel1posy,  rel2posx,  rel2posy,
-                                                           arrowp1x,  arrowp1y,  arrowp2x,  arrowp2y,  arrowposx,  arrowposy);
+                                                           arrowp1x,  arrowp1y,  arrowp2x,  arrowp2y,  arrowposx,  arrowposy, fkn);
 
     return dfk;
 

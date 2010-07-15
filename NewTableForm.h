@@ -83,6 +83,11 @@ public slots:
     void onSaveStartupValuestoCSV();
     void onLoadStartupValuesFromCSV();
 
+    // the advanced page
+
+    void onPersistentChange(int);
+    void onTemporaryChange(int);
+
 protected:
     void changeEvent(QEvent *e);
 

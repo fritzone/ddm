@@ -16,6 +16,7 @@ class DraggableGraphicsViewItemForText;
 class FkRelationDescriptor;
 class DiagramForm;
 class Version;
+class ForeignKey;
 
 /**
  * Class responsible for managing the diagrams of a project
@@ -50,6 +51,8 @@ public:
 
     void removeTable(const QString& tabName);
     void removeNote(int);
+
+    void forcefullyRemoveForeignKey(ForeignKey* fk);
 
     QVector<const Table*> getTables() const;
 

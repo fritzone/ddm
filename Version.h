@@ -7,6 +7,7 @@
 
 class UserDataType;
 class Table;
+class ForeignKey;
 class Diagram;
 class ContextMenuEnabledTreeWidgetItem;
 
@@ -96,10 +97,16 @@ public:
 
     virtual Diagram* getDiagram(const QString& name) = 0;
 
+    virtual void removeForeignKeyFromDiagrams(ForeignKey*) = 0;
+
     /**
      * Deletes a table from the system. Also resolves the FK dependencies: 1. deletes the table and the foreign table referencing this table 2. Deletes the FK reference from the foreign table
      */
     virtual void deleteTable(Table*) = 0;
+
+    virtual Table* duplicateTable(Table*) = 0;
+
+    virtual void setupTableParentChildRelationships() = 0;
 
     // don't know if this is a good design or not for the popups ....
 
@@ -107,6 +114,7 @@ public:
     virtual QAction * getAction_RemoveTable() = 0;
     virtual QAction * getAction_TableAddColumn() = 0;
     virtual QAction * getAction_SpecializeTable() = 0;
+    virtual QAction * getAction_DuplicateTable() = 0;
 private:
 
 };

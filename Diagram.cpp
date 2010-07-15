@@ -4,6 +4,7 @@
 #include "DraggableGraphicsItemForForeignKey.h"
 #include "DraggableGraphicsItemForText.h"
 #include "FkRelationDescriptor.h"
+#include "ForeignKey.h"
 #include "Version.h"
 
 Diagram::Diagram(Version* v) : TreeItem(), NamedItem("Table diagram"), m_onStage(), m_fksOnStage(), m_notes(), m_form(0), m_saved(false), m_version(v),
@@ -20,17 +21,16 @@ Diagram::Diagram(Version* v, const QString & name) : TreeItem(), NamedItem(name)
 void Diagram::removeTable(const QString &tabName)
 {
     int idx = -1;
-    for(int i=0; i<m_onStage.size(); i++)
+    for(int i=0; i<m_tableDescriptors.size(); i++)
     {
-        if(m_onStage[i]->getTable()->getName() == tabName)
+        if(m_tableDescriptors[i]->getText() == tabName)
         {
             idx = i;
             for(int j=0; j<m_fksOnStage.size(); j++)
             {
                 const Table* tab1 = m_fksOnStage[j]->getFirst()->getTable();
                 const Table* tab2 = m_fksOnStage[j]->getSecond()->getTable();
-                const Table* tabc = m_onStage[i]->getTable();
-                if(tab1->getName() == tabc->getName() || tab2->getName() == tabc->getName())
+                if(tab1->getName() == m_tableDescriptors[i]->getText() || tab2->getName() == m_tableDescriptors[i]->getText())
                 {
                     m_fksOnStage[j]->sentence();
                 }
@@ -74,6 +74,20 @@ void Diagram::removeNote(int note)
         {
             m_notes.at(i)->removeFromScene();
             m_notes.remove(i);
+            return;
+        }
+        i++;
+    }
+}
+
+void Diagram::forcefullyRemoveForeignKey(ForeignKey* fk)
+{
+    int i=0;
+    while(i<m_fksOnStage.size())
+    {
+        if(m_fksOnStage.at(i)->descriptor()->fkName == fk->getName())
+        {
+            m_fksOnStage.remove(i);
             return;
         }
         i++;

@@ -39,7 +39,7 @@
      <x>0</x>
      <y>0</y>
      <width>339</width>
-     <height>26</height>
+     <height>25</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -49,6 +49,9 @@
     <addaction name="action_New"/>
     <addaction name="action_Open"/>
     <addaction name="action_Save"/>
+    <addaction name="action_SaveAs"/>
+    <addaction name="separator"/>
+    <addaction name="actionQuit"/>
    </widget>
    <widget class="QMenu" name="menu_Solution">
     <property name="title">
@@ -56,6 +59,7 @@
     </property>
     <addaction name="action_NewDataType"/>
     <addaction name="action_NewTable"/>
+    <addaction name="action_NewDiagram"/>
    </widget>
    <widget class="QMenu" name="menu_Edit">
     <property name="title">
@@ -227,6 +231,18 @@
     <string>Save as...</string>
    </property>
   </action>
+  <action name="actionQuit">
+   <property name="icon">
+    <iconset resource="dbm.qrc">
+     <normaloff>:/images/actions/images/actions/application_exit.png</normaloff>:/images/actions/images/actions/application_exit.png</iconset>
+   </property>
+   <property name="text">
+    <string>Quit</string>
+   </property>
+   <property name="shortcut">
+    <string>Alt+X, Ctrl+Q</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources>
@@ -350,6 +366,22 @@
    <signal>activated()</signal>
    <receiver>MainWindow</receiver>
    <slot>onSaveAs()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>169</x>
+     <y>54</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionQuit</sender>
+   <signal>activated()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>close()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>-1</x>
