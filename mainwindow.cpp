@@ -37,6 +37,7 @@ MainWindow::MainWindow(QWidget *parent)
     setCentralWidget(btndlg);
 
     setWindowTitle("DBM - [No Solution]");
+    resize(800, 600);
 }
 
 MainWindow::~MainWindow()
