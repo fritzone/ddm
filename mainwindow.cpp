@@ -609,5 +609,11 @@ void MainWindow::onDuplicateTableFromPopup()
     {
         Table* dupped = getWorkingProject()->getWorkingVersion()->duplicateTable(tab);
         onSaveNewTable(dupped);
+        if(tab->getParent())
+        {
+            QTreeWidgetItem* p = dupped->getLocation();
+            p->parent()->removeChild(p);
+            tab->getParent()->getLocation()->addChild(p);
+        }
     }
 }
