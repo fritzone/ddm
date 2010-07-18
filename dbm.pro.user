@@ -56,8 +56,8 @@
   <variable>buildConfiguration-Debug</variable>
   <valuemap type="QVariantMap">
    <value key="ProjectExplorer.BuildConfiguration.DisplayName" type="QString">Debug</value>
-   <value key="QtVersionId" type="int">5</value>
-   <value key="ToolChain" type="int">0</value>
+   <value key="QtVersionId" type="int">0</value>
+   <value key="ToolChain" type="int">2</value>
    <value key="addQDumper" type=""></value>
    <value key="buildConfiguration" type="int">2</value>
   </valuemap>
@@ -67,63 +67,61 @@
   <valuemap type="QVariantMap">
    <value key="ProjectExplorer.BuildConfiguration.DisplayName" type="QString">Debug</value>
    <valuelist key="abstractProcess.Environment" type="QVariantList">
-    <value type="QString">CVS_RSH=ssh</value>
-    <value type="QString">DBUS_SESSION_BUS_ADDRESS=unix:abstract=/tmp/dbus-LXB3yH9IiH,guid=c97f0b4b78b81fc5f72d4cee4be7ede9</value>
-    <value type="QString">DESKTOP_SESSION=gnome</value>
-    <value type="QString">DISPLAY=:0.0</value>
-    <value type="QString">GDMSESSION=gnome</value>
-    <value type="QString">GDM_KEYBOARD_LAYOUT=no</value>
-    <value type="QString">GDM_LANG=en_US.UTF-8</value>
-    <value type="QString">GNOME_DESKTOP_SESSION_ID=this-is-deprecated</value>
-    <value type="QString">GNOME_KEYRING_PID=3086</value>
-    <value type="QString">GNOME_KEYRING_SOCKET=/tmp/keyring-G8NW4J/socket</value>
-    <value type="QString">GTK_RC_FILES=/etc/gtk/gtkrc:/home/ferenc/.gtkrc-1.2-gnome2</value>
-    <value type="QString">G_BROKEN_FILENAMES=1</value>
-    <value type="QString">HISTCONTROL=ignoreboth</value>
-    <value type="QString">HISTSIZE=1000</value>
-    <value type="QString">HOME=/home/ferenc</value>
-    <value type="QString">HOSTNAME=DFL</value>
-    <value type="QString">IMSETTINGS_INTEGRATE_DESKTOP=yes</value>
-    <value type="QString">IMSETTINGS_MODULE=none</value>
-    <value type="QString">KDEDIRS=/usr</value>
-    <value type="QString">KDE_IS_PRELINKED=1</value>
-    <value type="QString">KMIX_PULSEAUDIO_DISABLE=1</value>
-    <value type="QString">LANG=en_US.UTF-8</value>
-    <value type="QString">LANGUAGE=</value>
-    <value type="QString">LD_LIBRARY_PATH=/home/ferenc/qtsdk-2010.02/lib/qtcreator:</value>
-    <value type="QString">LESSOPEN=|/usr/bin/lesspipe.sh %s</value>
-    <value type="QString">LOGNAME=ferenc</value>
-    <value type="QString">MAIL=/var/spool/mail/ferenc</value>
-    <value type="QString">ORBIT_SOCKETDIR=/tmp/orbit-ferenc</value>
-    <value type="QString">PATH=/home/ferenc/qtsdk-2010.02/qt/bin:/usr/lib64/qt-3.3/bin:/usr/kerberos/sbin:/usr/kerberos/bin:/usr/lib64/ccache:/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin:/home/ferenc/bin</value>
-    <value type="QString">PWD=/home/ferenc</value>
-    <value type="QString">QTDIR=/home/ferenc/qtsdk-2010.02/qt</value>
-    <value type="QString">QTINC=/usr/lib64/qt-3.3/include</value>
-    <value type="QString">QTLIB=/usr/lib64/qt-3.3/lib</value>
-    <value type="QString">QT_IM_MODULE=xim</value>
-    <value type="QString">SESSION_MANAGER=local/unix:@/tmp/.ICE-unix/3095,unix/unix:/tmp/.ICE-unix/3095</value>
-    <value type="QString">SHELL=/bin/bash</value>
-    <value type="QString">SHLVL=1</value>
-    <value type="QString">SSH_ASKPASS=/usr/libexec/openssh/gnome-ssh-askpass</value>
-    <value type="QString">SSH_AUTH_SOCK=/tmp/keyring-G8NW4J/socket.ssh</value>
-    <value type="QString">TERM=dumb</value>
-    <value type="QString">TTY=not a tty</value>
-    <value type="QString">USER=ferenc</value>
-    <value type="QString">USERNAME=ferenc</value>
-    <value type="QString">XAUTHORITY=/var/run/gdm/auth-for-ferenc-uP5CQL/database</value>
-    <value type="QString">XDG_SESSION_COOKIE=627354ab72a661ae3e7a741e4b5584fe-1273490920.631416-2032570668</value>
-    <value type="QString">XMODIFIERS=@im=none</value>
+    <value type="QString">ALLUSERSPROFILE=C:\ProgramData</value>
+    <value type="QString">APPDATA=C:\Users\Ferenc\AppData\Roaming</value>
+    <value type="QString">ASL.LOG=Destination=file;OnFirstLog=command,environment</value>
+    <value type="QString">CLASSPATH=.;D:\work\jre6\lib\ext\QTJava.zip</value>
+    <value type="QString">COMMONPROGRAMFILES=C:\Program Files\Common Files</value>
+    <value type="QString">COMPUTERNAME=BLUE</value>
+    <value type="QString">COMSPEC=C:\Windows\system32\cmd.exe</value>
+    <value type="QString">DEFAULT_CA_NR=CA8</value>
+    <value type="QString">DFSTRACINGON=FALSE</value>
+    <value type="QString">FP_NO_HOST_CHECK=NO</value>
+    <value type="QString">HOMEDRIVE=C:</value>
+    <value type="QString">HOMEPATH=\Users\Ferenc</value>
+    <value type="QString">LOCALAPPDATA=C:\Users\Ferenc\AppData\Local</value>
+    <value type="QString">LOGONSERVER=\\BLUE</value>
+    <value type="QString">NTIPATH=C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Program Files\Acer\Empowering Technology\eDataSecurity\;C:\Program Files\Acer\Empowering Technology\eDataSecurity\x86;C:\Program Files\Acer\Empowering Technology\eDataSecurity\x64</value>
+    <value type="QString">NUMBER_OF_PROCESSORS=2</value>
+    <value type="QString">OS=Windows_NT</value>
+    <value type="QString">PATH=d:\work\Qt\2010.02.01\mingw\bin;d:\work\Qt\2010.02.01\qt\bin;C:\Program Files\NVIDIA Corporation\PhysX\Common;d:\work\Ruby\bin;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Program Files\Common Files\Roxio Shared\DLLShared\;C:\Program Files\Common Files\Roxio Shared\11.0\DLLShared\;C:\Program Files\TortoiseHg;d:\work\mercurial;C:\Windows\System32\WindowsPowerShell\v1.0\;d:\work\python;C:\Program Files\MySQL\MySQL Server 5.1\bin;C:\Program Files\Common Files\Teleca Shared;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Program Files\QuickTime\QTSystem\;c:\Program Files\Microsoft SQL Server\100\Tools\Binn\;c:\Program Files\Microsoft SQL Server\100\DTS\Binn\</value>
+    <value type="QString">PATHEXT=.COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC;.RB;.RBW</value>
+    <value type="QString">PROCESSOR_ARCHITECTURE=x86</value>
+    <value type="QString">PROCESSOR_IDENTIFIER=x86 Family 6 Model 23 Stepping 6, GenuineIntel</value>
+    <value type="QString">PROCESSOR_LEVEL=6</value>
+    <value type="QString">PROCESSOR_REVISION=1706</value>
+    <value type="QString">PROGRAMDATA=C:\ProgramData</value>
+    <value type="QString">PROGRAMFILES=C:\Program Files</value>
+    <value type="QString">PSMODULEPATH=C:\Windows\system32\WindowsPowerShell\v1.0\Modules\</value>
+    <value type="QString">PUBLIC=C:\Users\Public</value>
+    <value type="QString">QTDIR=d:/work/Qt/2010.02.01/qt</value>
+    <value type="QString">QTJAVA=D:\work\jre6\lib\ext\QTJava.zip</value>
+    <value type="QString">RUBYOPT=-rubygems</value>
+    <value type="QString">SESSIONNAME=Console</value>
+    <value type="QString">SYSTEMDRIVE=C:</value>
+    <value type="QString">SYSTEMROOT=C:\Windows</value>
+    <value type="QString">TEMP=C:\Users\Ferenc\AppData\Local\Temp</value>
+    <value type="QString">TMP=C:\Users\Ferenc\AppData\Local\Temp</value>
+    <value type="QString">TRACE_FORMAT_SEARCH_PATH=\\NTREL202.ntdev.corp.microsoft.com\4F18C3A5-CA09-4DBD-B6FC-219FDD4C6BE0\TraceFormat</value>
+    <value type="QString">USERDOMAIN=blue</value>
+    <value type="QString">USERNAME=Ferenc</value>
+    <value type="QString">USERPROFILE=C:\Users\Ferenc</value>
+    <value type="QString">VS90COMNTOOLS=C:\Program Files\Microsoft Visual Studio 9.0\Common7\Tools\</value>
+    <value type="QString">WINDIR=C:\Windows</value>
    </valuelist>
    <valuelist key="abstractProcess.arguments" type="QVariantList">
-    <value type="QString">/home/ferenc/work/dbm-project/dbm.pro</value>
-    <value type="QString">-spec</value>
-    <value type="QString">linux-g++-64</value>
+    <value type="QString">D:/work/dbm-project/dbm.pro</value>
     <value type="QString">-r</value>
-    <value type="QString">CONFIG+=debug</value>
+    <value type="QString">-spec</value>
+    <value type="QString">..\Qt\2010.03\qt\mkspecs\win32-g++</value>
    </valuelist>
-   <value key="abstractProcess.command" type="QString">/home/ferenc/qtsdk-2010.02/qt/bin/qmake</value>
+   <value key="abstractProcess.command" type="QString">d:/work/qt/2010.02.01/qt/bin/qmake.exe</value>
    <value key="abstractProcess.enabled" type="bool">false</value>
-   <value key="abstractProcess.workingDirectory" type="QString">/home/ferenc/work/dbm-project</value>
+   <value key="abstractProcess.workingDirectory" type="QString">D:/work/dbm-project</value>
+   <valuelist key="qmakeArgs" type="QVariantList">
+    <value type="QString">-spec</value>
+    <value type="QString">..\Qt\2010.03\qt\mkspecs\win32-g++</value>
+   </valuelist>
   </valuemap>
  </data>
  <data>
@@ -131,66 +129,115 @@
   <valuemap type="QVariantMap">
    <value key="ProjectExplorer.BuildConfiguration.DisplayName" type="QString">Debug</value>
    <valuelist key="abstractProcess.Environment" type="QVariantList">
-    <value type="QString">CVS_RSH=ssh</value>
-    <value type="QString">DBUS_SESSION_BUS_ADDRESS=unix:abstract=/tmp/dbus-LXB3yH9IiH,guid=c97f0b4b78b81fc5f72d4cee4be7ede9</value>
-    <value type="QString">DESKTOP_SESSION=gnome</value>
-    <value type="QString">DISPLAY=:0.0</value>
-    <value type="QString">GDMSESSION=gnome</value>
-    <value type="QString">GDM_KEYBOARD_LAYOUT=no</value>
-    <value type="QString">GDM_LANG=en_US.UTF-8</value>
-    <value type="QString">GNOME_DESKTOP_SESSION_ID=this-is-deprecated</value>
-    <value type="QString">GNOME_KEYRING_PID=3086</value>
-    <value type="QString">GNOME_KEYRING_SOCKET=/tmp/keyring-G8NW4J/socket</value>
-    <value type="QString">GTK_RC_FILES=/etc/gtk/gtkrc:/home/ferenc/.gtkrc-1.2-gnome2</value>
-    <value type="QString">G_BROKEN_FILENAMES=1</value>
-    <value type="QString">HISTCONTROL=ignoreboth</value>
-    <value type="QString">HISTSIZE=1000</value>
-    <value type="QString">HOME=/home/ferenc</value>
-    <value type="QString">HOSTNAME=DFL</value>
-    <value type="QString">IMSETTINGS_INTEGRATE_DESKTOP=yes</value>
-    <value type="QString">IMSETTINGS_MODULE=none</value>
-    <value type="QString">KDEDIRS=/usr</value>
-    <value type="QString">KDE_IS_PRELINKED=1</value>
-    <value type="QString">KMIX_PULSEAUDIO_DISABLE=1</value>
-    <value type="QString">LANG=en_US.UTF-8</value>
-    <value type="QString">LANGUAGE=</value>
-    <value type="QString">LD_LIBRARY_PATH=/home/ferenc/qtsdk-2010.02/lib/qtcreator:</value>
-    <value type="QString">LESSOPEN=|/usr/bin/lesspipe.sh %s</value>
-    <value type="QString">LOGNAME=ferenc</value>
-    <value type="QString">MAIL=/var/spool/mail/ferenc</value>
-    <value type="QString">ORBIT_SOCKETDIR=/tmp/orbit-ferenc</value>
-    <value type="QString">PATH=/home/ferenc/qtsdk-2010.02/qt/bin:/usr/lib64/qt-3.3/bin:/usr/kerberos/sbin:/usr/kerberos/bin:/usr/lib64/ccache:/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin:/home/ferenc/bin</value>
-    <value type="QString">PWD=/home/ferenc</value>
-    <value type="QString">QTDIR=/home/ferenc/qtsdk-2010.02/qt</value>
-    <value type="QString">QTINC=/usr/lib64/qt-3.3/include</value>
-    <value type="QString">QTLIB=/usr/lib64/qt-3.3/lib</value>
-    <value type="QString">QT_IM_MODULE=xim</value>
-    <value type="QString">SESSION_MANAGER=local/unix:@/tmp/.ICE-unix/3095,unix/unix:/tmp/.ICE-unix/3095</value>
-    <value type="QString">SHELL=/bin/bash</value>
-    <value type="QString">SHLVL=1</value>
-    <value type="QString">SSH_ASKPASS=/usr/libexec/openssh/gnome-ssh-askpass</value>
-    <value type="QString">SSH_AUTH_SOCK=/tmp/keyring-G8NW4J/socket.ssh</value>
-    <value type="QString">TERM=dumb</value>
-    <value type="QString">TTY=not a tty</value>
-    <value type="QString">USER=ferenc</value>
-    <value type="QString">USERNAME=ferenc</value>
-    <value type="QString">XAUTHORITY=/var/run/gdm/auth-for-ferenc-uP5CQL/database</value>
-    <value type="QString">XDG_SESSION_COOKIE=627354ab72a661ae3e7a741e4b5584fe-1273490920.631416-2032570668</value>
-    <value type="QString">XMODIFIERS=@im=none</value>
+    <value type="QString">ALLUSERSPROFILE=C:\ProgramData</value>
+    <value type="QString">APPDATA=C:\Users\Ferenc\AppData\Roaming</value>
+    <value type="QString">ASL.LOG=Destination=file;OnFirstLog=command,environment</value>
+    <value type="QString">CLASSPATH=.;D:\work\jre6\lib\ext\QTJava.zip</value>
+    <value type="QString">COMMONPROGRAMFILES=C:\Program Files\Common Files</value>
+    <value type="QString">COMPUTERNAME=BLUE</value>
+    <value type="QString">COMSPEC=C:\Windows\system32\cmd.exe</value>
+    <value type="QString">DEFAULT_CA_NR=CA8</value>
+    <value type="QString">DFSTRACINGON=FALSE</value>
+    <value type="QString">FP_NO_HOST_CHECK=NO</value>
+    <value type="QString">HOMEDRIVE=C:</value>
+    <value type="QString">HOMEPATH=\Users\Ferenc</value>
+    <value type="QString">LOCALAPPDATA=C:\Users\Ferenc\AppData\Local</value>
+    <value type="QString">LOGONSERVER=\\BLUE</value>
+    <value type="QString">NTIPATH=C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Program Files\Acer\Empowering Technology\eDataSecurity\;C:\Program Files\Acer\Empowering Technology\eDataSecurity\x86;C:\Program Files\Acer\Empowering Technology\eDataSecurity\x64</value>
+    <value type="QString">NUMBER_OF_PROCESSORS=2</value>
+    <value type="QString">OS=Windows_NT</value>
+    <value type="QString">PATH=d:\work\Qt\2010.02.01\mingw\bin;d:\work\Qt\2010.02.01\qt\bin;C:\Program Files\NVIDIA Corporation\PhysX\Common;d:\work\Ruby\bin;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Program Files\Common Files\Roxio Shared\DLLShared\;C:\Program Files\Common Files\Roxio Shared\11.0\DLLShared\;C:\Program Files\TortoiseHg;d:\work\mercurial;C:\Windows\System32\WindowsPowerShell\v1.0\;d:\work\python;C:\Program Files\MySQL\MySQL Server 5.1\bin;C:\Program Files\Common Files\Teleca Shared;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Program Files\QuickTime\QTSystem\;c:\Program Files\Microsoft SQL Server\100\Tools\Binn\;c:\Program Files\Microsoft SQL Server\100\DTS\Binn\</value>
+    <value type="QString">PATHEXT=.COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC;.RB;.RBW</value>
+    <value type="QString">PROCESSOR_ARCHITECTURE=x86</value>
+    <value type="QString">PROCESSOR_IDENTIFIER=x86 Family 6 Model 23 Stepping 6, GenuineIntel</value>
+    <value type="QString">PROCESSOR_LEVEL=6</value>
+    <value type="QString">PROCESSOR_REVISION=1706</value>
+    <value type="QString">PROGRAMDATA=C:\ProgramData</value>
+    <value type="QString">PROGRAMFILES=C:\Program Files</value>
+    <value type="QString">PSMODULEPATH=C:\Windows\system32\WindowsPowerShell\v1.0\Modules\</value>
+    <value type="QString">PUBLIC=C:\Users\Public</value>
+    <value type="QString">QTDIR=d:/work/Qt/2010.02.01/qt</value>
+    <value type="QString">QTJAVA=D:\work\jre6\lib\ext\QTJava.zip</value>
+    <value type="QString">RUBYOPT=-rubygems</value>
+    <value type="QString">SESSIONNAME=Console</value>
+    <value type="QString">SYSTEMDRIVE=C:</value>
+    <value type="QString">SYSTEMROOT=C:\Windows</value>
+    <value type="QString">TEMP=C:\Users\Ferenc\AppData\Local\Temp</value>
+    <value type="QString">TMP=C:\Users\Ferenc\AppData\Local\Temp</value>
+    <value type="QString">TRACE_FORMAT_SEARCH_PATH=\\NTREL202.ntdev.corp.microsoft.com\4F18C3A5-CA09-4DBD-B6FC-219FDD4C6BE0\TraceFormat</value>
+    <value type="QString">USERDOMAIN=blue</value>
+    <value type="QString">USERNAME=Ferenc</value>
+    <value type="QString">USERPROFILE=C:\Users\Ferenc</value>
+    <value type="QString">VS90COMNTOOLS=C:\Program Files\Microsoft Visual Studio 9.0\Common7\Tools\</value>
+    <value type="QString">WINDIR=C:\Windows</value>
    </valuelist>
    <value key="abstractProcess.IgnoreReturnValue" type="bool">false</value>
    <valuelist key="abstractProcess.arguments" type="QVariantList">
     <value type="QString">-w</value>
    </valuelist>
-   <value key="abstractProcess.command" type="QString">/usr/bin/make</value>
+   <value key="abstractProcess.command" type="QString">D:/work/Qt/2010.02.01/mingw/bin/mingw32-make.exe</value>
    <value key="abstractProcess.enabled" type="bool">true</value>
-   <value key="abstractProcess.workingDirectory" type="QString">/home/ferenc/work/dbm-project</value>
+   <value key="abstractProcess.workingDirectory" type="QString">D:/work/dbm-project</value>
   </valuemap>
  </data>
  <data>
   <variable>buildconfiguration-Debug-cleanstep0</variable>
   <valuemap type="QVariantMap">
    <value key="ProjectExplorer.BuildConfiguration.DisplayName" type="QString">Debug</value>
+   <valuelist key="abstractProcess.Environment" type="QVariantList">
+    <value type="QString">ALLUSERSPROFILE=C:\ProgramData</value>
+    <value type="QString">APPDATA=C:\Users\Ferenc\AppData\Roaming</value>
+    <value type="QString">ASL.LOG=Destination=file;OnFirstLog=command,environment</value>
+    <value type="QString">CLASSPATH=.;D:\work\jre6\lib\ext\QTJava.zip</value>
+    <value type="QString">COM.ADOBE.VERSIONCUE.CLIENT.APPLOCALE=en_US</value>
+    <value type="QString">COM.ADOBE.VERSIONCUE.CLIENT.APPNAME=AdobeDrive</value>
+    <value type="QString">COM.ADOBE.VERSIONCUE.CLIENT.APPVERSION=1.0.0</value>
+    <value type="QString">COMMONPROGRAMFILES=C:\Program Files\Common Files</value>
+    <value type="QString">COMPUTERNAME=BLUE</value>
+    <value type="QString">COMSPEC=C:\Windows\system32\cmd.exe</value>
+    <value type="QString">DEFAULT_CA_NR=CA8</value>
+    <value type="QString">DFSTRACINGON=FALSE</value>
+    <value type="QString">FP_NO_HOST_CHECK=NO</value>
+    <value type="QString">HOMEDRIVE=C:</value>
+    <value type="QString">HOMEPATH=\Users\Ferenc</value>
+    <value type="QString">LOCALAPPDATA=C:\Users\Ferenc\AppData\Local</value>
+    <value type="QString">LOGONSERVER=\\BLUE</value>
+    <value type="QString">NTIPATH=C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Program Files\Acer\Empowering Technology\eDataSecurity\;C:\Program Files\Acer\Empowering Technology\eDataSecurity\x86;C:\Program Files\Acer\Empowering Technology\eDataSecurity\x64</value>
+    <value type="QString">NUMBER_OF_PROCESSORS=2</value>
+    <value type="QString">OS=Windows_NT</value>
+    <value type="QString">PATH=d:\work\Qt\2010.02.01\mingw\bin;d:\work\Qt\2010.02.01\qt\bin;C:\Program Files\NVIDIA Corporation\PhysX\Common;d:\work\Ruby\bin;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Program Files\Common Files\Roxio Shared\DLLShared\;C:\Program Files\Common Files\Roxio Shared\11.0\DLLShared\;C:\Program Files\TortoiseHg;d:\work\mercurial;C:\Windows\System32\WindowsPowerShell\v1.0\;d:\work\python;C:\Program Files\MySQL\MySQL Server 5.1\bin;C:\Program Files\Common Files\Teleca Shared;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Program Files\QuickTime\QTSystem\</value>
+    <value type="QString">PATHEXT=.COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC;.RB;.RBW</value>
+    <value type="QString">PROCESSOR_ARCHITECTURE=x86</value>
+    <value type="QString">PROCESSOR_IDENTIFIER=x86 Family 6 Model 23 Stepping 6, GenuineIntel</value>
+    <value type="QString">PROCESSOR_LEVEL=6</value>
+    <value type="QString">PROCESSOR_REVISION=1706</value>
+    <value type="QString">PROGRAMDATA=C:\ProgramData</value>
+    <value type="QString">PROGRAMFILES=C:\Program Files</value>
+    <value type="QString">PSMODULEPATH=C:\Windows\system32\WindowsPowerShell\v1.0\Modules\</value>
+    <value type="QString">PUBLIC=C:\Users\Public</value>
+    <value type="QString">QTDIR=d:/work/Qt/2010.02.01/qt</value>
+    <value type="QString">QTJAVA=D:\work\jre6\lib\ext\QTJava.zip</value>
+    <value type="QString">RUBYOPT=-rubygems</value>
+    <value type="QString">SESSIONNAME=Console</value>
+    <value type="QString">SYSTEMDRIVE=C:</value>
+    <value type="QString">SYSTEMROOT=C:\Windows</value>
+    <value type="QString">TEMP=C:\Users\Ferenc\AppData\Local\Temp</value>
+    <value type="QString">TMP=C:\Users\Ferenc\AppData\Local\Temp</value>
+    <value type="QString">TRACE_FORMAT_SEARCH_PATH=\\NTREL202.ntdev.corp.microsoft.com\4F18C3A5-CA09-4DBD-B6FC-219FDD4C6BE0\TraceFormat</value>
+    <value type="QString">USERDOMAIN=blue</value>
+    <value type="QString">USERNAME=Ferenc</value>
+    <value type="QString">USERPROFILE=C:\Users\Ferenc</value>
+    <value type="QString">VS90COMNTOOLS=C:\Program Files\Microsoft Visual Studio 9.0\Common7\Tools\</value>
+    <value type="QString">WINDIR=C:\Windows</value>
+   </valuelist>
+   <value key="abstractProcess.IgnoreReturnValue" type="bool">true</value>
+   <valuelist key="abstractProcess.arguments" type="QVariantList">
+    <value type="QString">clean</value>
+    <value type="QString">-w</value>
+   </valuelist>
+   <value key="abstractProcess.command" type="QString">D:/work/Qt/2010.02.01/mingw/bin/mingw32-make.exe</value>
+   <value key="abstractProcess.enabled" type="bool">true</value>
+   <value key="abstractProcess.workingDirectory" type="QString">D:/work/dbm-project</value>
    <value key="cleanConfig" type="bool">true</value>
    <valuelist key="makeargs" type="QVariantList">
     <value type="QString">clean</value>

@@ -101,7 +101,7 @@ void MajorVersion::createTreeItems(QTreeWidget* tree, QTreeWidget* dtTree, Conte
     }
 
     QIcon tablesIcon(":/images/actions/images/small/table.png");
-    QIcon queriesIcon(":/images/actions/images/small/view.png");
+    QIcon tabInstanceIcon(":/images/actions/images/small/tabinst.png");
     QIcon dtsIcon(":/images/actions/images/small/datatypes.PNG");
     QIcon versionIcon(":/images/actions/images/small/version.PNG");
 
@@ -115,14 +115,14 @@ void MajorVersion::createTreeItems(QTreeWidget* tree, QTreeWidget* dtTree, Conte
     m_dtTree->addTopLevelItem(dtsItem);
 
     // make the tables sub item coming from the project
-    tablesItem = new ContextMenuEnabledTreeWidgetItem(versionItem, QStringList(QObject::tr("Tables"))) ;
+    tablesItem = new ContextMenuEnabledTreeWidgetItem(versionItem, QStringList(QObject::tr("Table types"))) ;
     tablesItem->setIcon(0, tablesIcon);
     m_tree->addTopLevelItem(tablesItem);
 
     // make the views sub item coming from the project
-    //queriesItem = new ContextMenuEnabledTreeWidgetItem(versionItem, QStringList(QObject::tr("Queries"))) ;
-    //queriesItem->setIcon(0, queriesIcon);
-    //m_tree->addTopLevelItem(queriesItem);
+    tableInstancesItem = new ContextMenuEnabledTreeWidgetItem(versionItem, QStringList(QObject::tr("Tables"))) ;
+    tableInstancesItem->setIcon(0, tabInstanceIcon);
+    m_tree->addTopLevelItem(tableInstancesItem);
 
     diagramsItem = new ContextMenuEnabledTreeWidgetItem(versionItem, QStringList(QObject::tr("Diagrams"))) ;
     diagramsItem->setIcon(0, IconFactory::getDiagramIcon());

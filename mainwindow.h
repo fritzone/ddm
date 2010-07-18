@@ -100,6 +100,8 @@ private:
     ContextMenuEnabledTreeWidget* projectTree;
     // the tree containing the data types
     ContextMenuEnabledTreeWidget* dataypesTree;
+    // the tree which contains everything related to the current project
+    ContextMenuEnabledTreeWidget* tableInstancesTree;
 
     // the initial three button dialog
     MainWindowButtonDialog* btndlg;
