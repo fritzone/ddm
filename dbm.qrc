@@ -89,5 +89,6 @@
         <file>images/actions/file_saveas.png</file>
         <file>images/actions/insert_table.png</file>
         <file>images/actions/application_exit.png</file>
+        <file>images/small/tabinst.png</file>
     </qresource>
 </RCC>

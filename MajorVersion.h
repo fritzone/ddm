@@ -42,7 +42,7 @@ public:
 
     virtual ContextMenuEnabledTreeWidgetItem* getQueriesItem() const
     {
-        return queriesItem;
+        return tableInstancesItem;
     }
 
     virtual ContextMenuEnabledTreeWidgetItem* getVersionItem() const
@@ -127,7 +127,7 @@ private:
     ContextMenuEnabledTreeWidgetItem* tablesItem;
 
     // the tree item containing the "Views"
-    ContextMenuEnabledTreeWidgetItem* queriesItem;
+    ContextMenuEnabledTreeWidgetItem* tableInstancesItem;
 
     // the tree item containing the "DataType"
     ContextMenuEnabledTreeWidgetItem* dtsItem;
