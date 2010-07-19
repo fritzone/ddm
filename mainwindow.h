@@ -21,6 +21,28 @@ namespace Ui
     class MainWindow;
 }
 
+class MainWindow;
+
+class DynamicActionHandlerforMainWindow : public QObject
+{
+    Q_OBJECT
+
+public:
+
+    DynamicActionHandlerforMainWindow(const QString& a, MainWindow* w);
+
+
+public slots:
+
+    void called();
+
+private:
+
+    QString actionName;
+    MainWindow* mainWindow;
+
+};
+
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -68,6 +90,8 @@ public slots:
     void onNewDiagram();
     void onSaveAs();
     void currentProjectTreeItemChanged ( QTreeWidgetItem * current, QTreeWidgetItem * previous );
+    void onNewTableInstance();
+    void onNewTableInstanceHovered();
 
     // when the user clicked the "Delete table" from the popups
     void onDeleteTableFromPopup();
@@ -114,7 +138,7 @@ private:
 
     // this is the table screen which is current
     NewTableForm* frm;
-
+    QMenu* m_createTabkeInstancesPopup;
 
 
 };

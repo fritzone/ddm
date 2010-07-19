@@ -20,12 +20,13 @@
 #include "DiagramForm.h"
 #include "Diagram.h"
 #include "ContextMenuEnabledTreeWidget.h"
+#include "CreateTableInstancesDialog.h"
 
 #include <QtGui>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), ui(new Ui::MainWindow), dock(0), projectTree(0),
-    btndlg(0), weHaveProject(false), m_currentSolution(0), frm(0)
+    btndlg(0), weHaveProject(false), m_currentSolution(0), frm(0), m_createTabkeInstancesPopup(0)
 {
     ui->setupUi(this);
 
@@ -38,6 +39,12 @@ MainWindow::MainWindow(QWidget *parent)
 
     setWindowTitle("DBM - [No Solution]");
     resize(800, 600);
+
+    m_createTabkeInstancesPopup = new QMenu();
+    m_createTabkeInstancesPopup->clear();
+
+    ui->action_NewTableInstance->setMenu(m_createTabkeInstancesPopup);
+
 }
 
 MainWindow::~MainWindow()
@@ -459,6 +466,7 @@ void MainWindow::enableActions()
     ui->action_NewDiagram->setEnabled(true);
     ui->action_Save->setEnabled(true);
     ui->action_SaveAs->setEnabled(true);
+    ui->action_NewTableInstance->setEnabled(true);
 }
 
 void MainWindow::connectActionsFromTablePopupMenu()
@@ -617,4 +625,56 @@ void MainWindow::onDuplicateTableFromPopup()
             tab->getParent()->getLocation()->addChild(p);
         }
     }
+}
+
+void MainWindow::onNewTableInstance()
+{
+    CreateTableInstancesDialog* newDialog = new CreateTableInstancesDialog(this);
+    for(int i=0; i<currentSolution()->currentProject()->getWorkingVersion()->getTables().size(); i++)
+    {
+        newDialog->addTable(currentSolution()->currentProject()->getWorkingVersion()->getTables()[i]->getName());
+    }
+
+    if(newDialog->exec() == QDialog::Accepted)
+    {
+        QStringList items = newDialog->getSelectedTables();
+    }
+}
+
+void MainWindow::onNewTableInstanceHovered()
+{
+
+    if(!m_createTabkeInstancesPopup)
+    {
+        return;
+    }
+    m_createTabkeInstancesPopup->clear();
+
+    if(currentSolution() && currentSolution()->currentProject() && currentSolution()->currentProject()->getWorkingVersion())
+    {
+
+        for(int i=0; i<currentSolution()->currentProject()->getWorkingVersion()->getTables().size(); i++)
+        {
+            QAction * actionToAdd = new QAction(this);
+            actionToAdd->setText(currentSolution()->currentProject()->getWorkingVersion()->getTables()[i]->getName());
+            QIcon icon(IconFactory::getTablesIcon());
+            actionToAdd->setData(QVariant(currentSolution()->currentProject()->getWorkingVersion()->getTables()[i]->getName()));
+            actionToAdd->setIcon(icon);
+            m_createTabkeInstancesPopup->addAction(actionToAdd);
+            QObject::connect(actionToAdd, SIGNAL(activated()),
+                             new DynamicActionHandlerforMainWindow(currentSolution()->currentProject()->getWorkingVersion()->getTables()[i]->getName(), this), SLOT(called()));
+        }
+    }
+}
+
+DynamicActionHandlerforMainWindow::DynamicActionHandlerforMainWindow(const QString &a, MainWindow *w) : actionName(a), mainWindow(w)
+{}
+
+void DynamicActionHandlerforMainWindow::called()
+{
+    qDebug() << actionName;
+    TableInstance* inst = mainWindow->currentSolution()->currentProject()->getWorkingVersion()->instantiateTable(mainWindow->currentSolution()->currentProject()->getWorkingVersion()->getTable(actionName));
+    ContextMenuEnabledTreeWidgetItem* itm = new ContextMenuEnabledTreeWidgetItem(mainWindow->currentSolution()->currentProject()->getWorkingVersion()->getTableInstancesItem(),
+                                                                                 QStringList(mainWindow->currentSolution()->currentProject()->getWorkingVersion()->getTable(actionName)->getName()));
+    //itm->setIcon(IconFactory::getTablesIcon());
 }

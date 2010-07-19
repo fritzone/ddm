@@ -40,7 +40,7 @@ public:
         return tablesItem;
     }
 
-    virtual ContextMenuEnabledTreeWidgetItem* getQueriesItem() const
+    virtual ContextMenuEnabledTreeWidgetItem* getTableInstancesItem() const
     {
         return tableInstancesItem;
     }
@@ -120,6 +120,8 @@ public:
     }
 
     virtual void setupTableParentChildRelationships();
+
+    virtual TableInstance* instantiateTable(Table* tab);
 
 private:
 

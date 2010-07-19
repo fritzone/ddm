@@ -52,7 +52,9 @@ SOURCES += main.cpp \
     ForeignKey.cpp \
     DiagramTableDescriptor.cpp \
     DiagramNoteDescriptor.cpp \
-    ContextMenuDelegate.cpp
+    ContextMenuDelegate.cpp \
+    CreateTableInstancesDialog.cpp \
+    TableInstance.cpp
 HEADERS += MainWindow.h \
     MainWindowButtonDialog.h \
     NewProjectDialog.h \
@@ -109,7 +111,9 @@ HEADERS += MainWindow.h \
     DiagramObjectDescriptor.h \
     DiagramFKDescriptor.h \
     DiagramTableDescriptor.h \
-    ContextMenuEnabledTreeWidget.h
+    ContextMenuEnabledTreeWidget.h \
+    CreateTableInstancesDialog.h \
+    TableInstance.h
 FORMS += mainwindow.ui \
     mainwindowbuttondialog.ui \
     newprojectdialog.ui \
@@ -120,5 +124,6 @@ FORMS += mainwindow.ui \
     ProjectDetailsForm.ui \
     AboutBoxDialog.ui \
     DiagramForm.ui \
-    EnterNoteTextDialog.ui
+    EnterNoteTextDialog.ui \
+    CreateTableInstancesDialog.ui
 RESOURCES += dbm.qrc

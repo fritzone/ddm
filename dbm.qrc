@@ -90,5 +90,6 @@
         <file>images/actions/insert_table.png</file>
         <file>images/actions/application_exit.png</file>
         <file>images/small/tabinst.png</file>
+        <file>images/actions/tabinstnew.png</file>
     </qresource>
 </RCC>

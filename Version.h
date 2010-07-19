@@ -10,6 +10,7 @@ class Table;
 class ForeignKey;
 class Diagram;
 class ContextMenuEnabledTreeWidgetItem;
+class TableInstance;
 
 /**
  * Basic class holding data related to versions
@@ -33,7 +34,7 @@ public:
     /**
      * Return the tree item of the defined queries
      */
-    virtual ContextMenuEnabledTreeWidgetItem* getQueriesItem() const = 0;
+    virtual ContextMenuEnabledTreeWidgetItem* getTableInstancesItem() const = 0;
 
     /**
      * Return the tree item of the Version
@@ -107,6 +108,11 @@ public:
     virtual Table* duplicateTable(Table*) = 0;
 
     virtual void setupTableParentChildRelationships() = 0;
+
+    /**
+     * Instantiates a table from the given table template
+     */
+    virtual TableInstance* instantiateTable(Table* tab) = 0;
 
     // don't know if this is a good design or not for the popups ....
 
