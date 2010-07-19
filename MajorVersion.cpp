@@ -5,6 +5,7 @@
 #include "Table.h"
 #include "Diagram.h"
 #include "IconFactory.h"
+#include "TableInstance.h"
 
 MajorVersion::MajorVersion(QTreeWidget* tree, QTreeWidget* dttree, ContextMenuEnabledTreeWidgetItem* projectItem, int ver) :
         m_tree(tree), m_dtTree(dttree), m_projectItem(projectItem), action_RemoveTable(0)
@@ -115,7 +116,7 @@ void MajorVersion::createTreeItems(QTreeWidget* tree, QTreeWidget* dtTree, Conte
     m_dtTree->addTopLevelItem(dtsItem);
 
     // make the tables sub item coming from the project
-    tablesItem = new ContextMenuEnabledTreeWidgetItem(versionItem, QStringList(QObject::tr("Table types"))) ;
+    tablesItem = new ContextMenuEnabledTreeWidgetItem(versionItem, QStringList(QObject::tr("Table templates"))) ;
     tablesItem->setIcon(0, tablesIcon);
     m_tree->addTopLevelItem(tablesItem);
 
@@ -343,4 +344,9 @@ void MajorVersion::setupTableParentChildRelationships()
             m_tables[i]->setParent(getTable(m_tables[i]->getTempTabName()));
         }
     }
+}
+
+TableInstance* MajorVersion::instantiateTable(Table* tab)
+{
+    TableInstance* tabInst = new TableInstance(tab);
 }

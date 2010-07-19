@@ -23,7 +23,7 @@
    <string>MainWindow</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="dbm.qrc">
+   <iconset>
     <normaloff>:/images/actions/images/big/icon.png</normaloff>:/images/actions/images/big/icon.png</iconset>
   </property>
   <property name="documentMode">
@@ -85,7 +85,7 @@
     <enum>Qt::ToolButtonIconOnly</enum>
    </property>
    <property name="floatable">
-    <bool>false</bool>
+    <bool>true</bool>
    </property>
    <attribute name="toolBarArea">
     <enum>TopToolBarArea</enum>
@@ -100,12 +100,13 @@
    <addaction name="separator"/>
    <addaction name="action_NewDataType"/>
    <addaction name="action_NewTable"/>
+   <addaction name="action_NewTableInstance"/>
    <addaction name="action_NewDiagram"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <action name="action_New">
    <property name="icon">
-    <iconset resource="dbm.qrc">
+    <iconset>
      <normaloff>:/images/actions/images/actions/filenew.png</normaloff>:/images/actions/images/actions/filenew.png</iconset>
    </property>
    <property name="text">
@@ -120,7 +121,7 @@
     <bool>false</bool>
    </property>
    <property name="icon">
-    <iconset resource="dbm.qrc">
+    <iconset>
      <normaloff>:/images/actions/images/actions/filesave.png</normaloff>:/images/actions/images/actions/filesave.png</iconset>
    </property>
    <property name="text">
@@ -138,7 +139,7 @@
     <bool>false</bool>
    </property>
    <property name="icon">
-    <iconset resource="dbm.qrc">
+    <iconset>
      <normaloff>:/images/actions/images/actions/add.png</normaloff>:/images/actions/images/actions/add.png</iconset>
    </property>
    <property name="text">
@@ -159,7 +160,7 @@
     <bool>false</bool>
    </property>
    <property name="icon">
-    <iconset resource="dbm.qrc">
+    <iconset>
      <normaloff>:/images/actions/images/actions/insert_table.png</normaloff>:/images/actions/images/actions/insert_table.png</iconset>
    </property>
    <property name="text">
@@ -177,7 +178,7 @@
   </action>
   <action name="action_Open">
    <property name="icon">
-    <iconset resource="dbm.qrc">
+    <iconset>
      <normaloff>:/images/actions/images/actions/fileopen.png</normaloff>:/images/actions/images/actions/fileopen.png</iconset>
    </property>
    <property name="text">
@@ -194,7 +195,7 @@
   </action>
   <action name="action_NewProject">
    <property name="icon">
-    <iconset resource="dbm.qrc">
+    <iconset>
      <normaloff>:/images/actions/images/actions/filenew.png</normaloff>:/images/actions/images/actions/filenew.png</iconset>
    </property>
    <property name="text">
@@ -206,7 +207,7 @@
     <bool>false</bool>
    </property>
    <property name="icon">
-    <iconset resource="dbm.qrc">
+    <iconset>
      <normaloff>:/images/actions/images/actions/new_diagram.png</normaloff>:/images/actions/images/actions/new_diagram.png</iconset>
    </property>
    <property name="text">
@@ -221,7 +222,7 @@
     <bool>false</bool>
    </property>
    <property name="icon">
-    <iconset resource="dbm.qrc">
+    <iconset>
      <normaloff>:/images/actions/images/actions/file_saveas.png</normaloff>:/images/actions/images/actions/file_saveas.png</iconset>
    </property>
    <property name="text">
@@ -233,7 +234,7 @@
   </action>
   <action name="actionQuit">
    <property name="icon">
-    <iconset resource="dbm.qrc">
+    <iconset>
      <normaloff>:/images/actions/images/actions/application_exit.png</normaloff>:/images/actions/images/actions/application_exit.png</iconset>
    </property>
    <property name="text">
@@ -243,11 +244,21 @@
     <string>Alt+X, Ctrl+Q</string>
    </property>
   </action>
+  <action name="action_NewTableInstance">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset>
+     <normaloff>:/images/actions/images/actions/tabinstnew.png</normaloff>:/images/actions/images/actions/tabinstnew.png</iconset>
+   </property>
+   <property name="text">
+    <string>New Table Instance</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <resources>
-  <include location="dbm.qrc"/>
- </resources>
+ <resources/>
  <connections>
   <connection>
    <sender>action_New</sender>
@@ -393,6 +404,38 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>action_NewTableInstance</sender>
+   <signal>activated()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>onNewTableInstance()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>169</x>
+     <y>54</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>action_NewTableInstance</sender>
+   <signal>hovered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>onNewTableInstanceHovered()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>169</x>
+     <y>54</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>onNewSolution()</slot>
@@ -403,5 +446,7 @@
   <slot>onAbout()</slot>
   <slot>onNewDiagram()</slot>
   <slot>onSaveAs()</slot>
+  <slot>onNewTableInstance()</slot>
+  <slot>onNewTableInstanceHovered()</slot>
  </slots>
 </ui>
