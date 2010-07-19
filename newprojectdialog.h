@@ -20,7 +20,7 @@ public:
 
     QString getProjectName() const
     {
-	return projectName;
+        return projectName;
     }
 
     QString getSolutionName() const
@@ -29,6 +29,8 @@ public:
     }
 
     QString getTargetDatabase() const;
+
+    bool enableOOPFeatures() const;
 
     void focusOnEditField() const;
 

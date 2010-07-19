@@ -6,9 +6,10 @@
 #include "Diagram.h"
 #include "IconFactory.h"
 #include "TableInstance.h"
+#include "Project.h"
 
-MajorVersion::MajorVersion(QTreeWidget* tree, QTreeWidget* dttree, ContextMenuEnabledTreeWidgetItem* projectItem, int ver) :
-        m_tree(tree), m_dtTree(dttree), m_projectItem(projectItem), action_RemoveTable(0)
+MajorVersion::MajorVersion(QTreeWidget* tree, QTreeWidget* dttree, ContextMenuEnabledTreeWidgetItem* projectItem, int ver, Project* p) :
+        m_tree(tree), m_dtTree(dttree), m_projectItem(projectItem), action_RemoveTable(0), m_project(p)
 {
     // make the dts sub item coming from the project
     QString v = QString::number(ver);
@@ -19,7 +20,7 @@ MajorVersion::MajorVersion(QTreeWidget* tree, QTreeWidget* dttree, ContextMenuEn
     createTreeItems();
 }
 
-MajorVersion::MajorVersion(QString verAsString):version(verAsString), m_tree(0), m_projectItem(0)
+MajorVersion::MajorVersion(QString verAsString, Project* p):version(verAsString), m_tree(0), m_projectItem(0), m_project(p)
 {
 }
 
@@ -349,4 +350,9 @@ void MajorVersion::setupTableParentChildRelationships()
 TableInstance* MajorVersion::instantiateTable(Table* tab)
 {
     TableInstance* tabInst = new TableInstance(tab);
+}
+
+bool MajorVersion::oop()
+{
+    return m_project->oopProject();
 }

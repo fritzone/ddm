@@ -131,7 +131,7 @@ public:
 
     void setDefaultValues(QVector <QVector <QString> > &);
 
-    const QVector <QVector <QString> > & getStartupValues()
+    const QVector <QVector <QString> > & getStartupValues() const
     {
         return m_startupValues;
     }
