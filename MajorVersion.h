@@ -7,6 +7,8 @@
 #include <QString>
 #include <QTreeWidgetItem>
 
+class Project;
+
 /**
  * Class representing a major version of the database. Major versions are always baselined versions, ie. they contain only
  * the elements that (technically) do not contain the changes vectors. Minor versions contain changes vectors, and a
@@ -23,12 +25,12 @@ public:
     /**
      * Constructor: Takes in the project Item and the current version
      */
-    MajorVersion(QTreeWidget* tree, QTreeWidget* dttree, ContextMenuEnabledTreeWidgetItem* projectItem, int ver);
+    MajorVersion(QTreeWidget* tree, QTreeWidget* dttree, ContextMenuEnabledTreeWidgetItem* projectItem, int ver, Project*);
 
     /**
      * This constructos is used when deserializing. In this case the tree and projectItem are set later
      */
-    MajorVersion(QString verAsString);
+    MajorVersion(QString verAsString, Project*);
 
     virtual ContextMenuEnabledTreeWidgetItem* getDtsItem() const
     {
@@ -123,6 +125,8 @@ public:
 
     virtual TableInstance* instantiateTable(Table* tab);
 
+    virtual bool oop();
+
 private:
 
     // the tree item containing the "Tables"
@@ -164,6 +168,8 @@ private:
     QAction * action_DuplicateTable;
     QAction * action_SpecializeTable;
     QAction * action_TableAddColumn;
+
+    Project* m_project;
 };
 
 #endif // MAJORVERSION_H

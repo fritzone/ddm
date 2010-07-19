@@ -114,6 +114,8 @@ public:
      */
     virtual TableInstance* instantiateTable(Table* tab) = 0;
 
+    virtual bool oop() = 0;
+
     // don't know if this is a good design or not for the popups ....
 
     virtual QMenu* getTablePopupMenu() = 0;

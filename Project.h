@@ -23,9 +23,9 @@ class Project : public SerializableElement, public TreeItem
 public:
 
     // constructor
-    Project(const QString& _name, QTreeWidget* _tree, QTreeWidget* _dtTree);
+    Project(const QString& _name, QTreeWidget* _tree, QTreeWidget* _dtTree, bool oopIsEnabled);
 
-    Project(const QString& _name);
+    Project(const QString& _name, bool);
 
     // creates a version, updates the GUI
     void createMajorVersion();
@@ -70,6 +70,11 @@ public:
         m_description = desc;
     }
 
+    bool oopProject() const
+    {
+        return m_oopIsEnabled;
+    }
+
 private:
 
     // this is the tree from the main window of the application
@@ -87,6 +92,9 @@ private:
 
     // the list of major versions
     QVector<MajorVersion*> m_majorVersions;
+
+    // if this project supports OOP features
+    bool m_oopIsEnabled;
 
 };
 

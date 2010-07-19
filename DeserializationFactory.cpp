@@ -104,7 +104,7 @@ Index* DeserializationFactory::createIndex(Table* table, const QDomDocument &doc
     return result;
 }
 
-MajorVersion* DeserializationFactory::createMajorVersion(DatabaseEngine* engine, const QDomDocument &doc, const QDomElement &element)
+MajorVersion* DeserializationFactory::createMajorVersion(Project* p, DatabaseEngine* engine, const QDomDocument &doc, const QDomElement &element)
 {
     QString name = "";
 
@@ -116,7 +116,7 @@ MajorVersion* DeserializationFactory::createMajorVersion(DatabaseEngine* engine,
         }
     }
 
-    MajorVersion* result = new MajorVersion(name);
+    MajorVersion* result = new MajorVersion(name, p);
 
     // getting the data types
     for(int i=0; i<element.childNodes().count(); i++)
@@ -291,7 +291,7 @@ Table* DeserializationFactory::createTable(DatabaseEngine* engine, Version* ver,
 
 Project* DeserializationFactory::createProject(const QDomDocument &doc, const QDomElement &element)
 {
-    Project* prj = new Project(element.attribute("Name"));
+    Project* prj = new Project(element.attribute("Name"), element.attribute("OOP")=="1");
     DatabaseEngine* engine = DatabaseEngine::createEngine(element.attribute("DB"));
     prj->setEngine(engine);
 
@@ -302,7 +302,7 @@ Project* DeserializationFactory::createProject(const QDomDocument &doc, const QD
             QDomNodeList majorVersionNodes = element.childNodes().at(i).childNodes();
             for(int i=0; i<majorVersionNodes.count(); i++)
             {
-                MajorVersion* majVer = createMajorVersion(engine, doc, majorVersionNodes.at(i).toElement());
+                MajorVersion* majVer = createMajorVersion(prj, engine, doc, majorVersionNodes.at(i).toElement());
                 prj->addMajorVersion(majVer);
             }
         }

@@ -66,4 +66,7 @@ DatabaseEngine* NewProjectDialog::getDatabaseEngine() const
     return engine;
 }
 
-
+bool NewProjectDialog::enableOOPFeatures() const
+{
+    return m_ui->chkAllowOOPModel->isChecked();
+}

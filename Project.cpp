@@ -4,13 +4,13 @@
 #include "DatabaseEngine.h"
 #include "IconFactory.h"
 
-Project::Project(const QString& _name, QTreeWidget* _tree, QTreeWidget* _dtTree):
-        m_tree(_tree), m_dtTree(_dtTree), m_name(_name), m_engine(0), m_majorVersions()
+Project::Project(const QString& _name, QTreeWidget* _tree, QTreeWidget* _dtTree, bool oopIsEnabled):
+        m_tree(_tree), m_dtTree(_dtTree), m_name(_name), m_engine(0), m_majorVersions(), m_oopIsEnabled(oopIsEnabled)
 {
     createTreeItem(m_tree, m_dtTree);
 }
 
-Project::Project(const QString &_name) : m_tree(0), m_name(_name), m_engine(0), m_majorVersions()
+Project::Project(const QString &_name, bool oop) : m_tree(0), m_name(_name), m_engine(0), m_majorVersions(), m_oopIsEnabled(oop)
 {
 }
 
@@ -45,7 +45,7 @@ void Project::setEngine(DatabaseEngine* eng)
 
 void Project::createMajorVersion()
 {
-    MajorVersion* mjw = new MajorVersion(m_tree, m_dtTree, getLocation(), 1);
+    MajorVersion* mjw = new MajorVersion(m_tree, m_dtTree, getLocation(), 1, this);
     m_majorVersions.append(mjw);
 }
 
@@ -74,6 +74,7 @@ void Project::serialize(QDomDocument& doc, QDomElement& parent) const
     QDomElement projectElement = doc.createElement("Project");      // will hold the data in this element
 
     projectElement.setAttribute("Name", m_name);
+    projectElement.setAttribute("OOP", m_oopIsEnabled);
     projectElement.setAttribute("DB", m_engine->getDatabase());
 
     {

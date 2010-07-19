@@ -24,10 +24,14 @@
 
 #include <QtGui>
 
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), ui(new Ui::MainWindow), dock(0), projectTree(0),
     btndlg(0), weHaveProject(false), m_currentSolution(0), frm(0), m_createTabkeInstancesPopup(0)
 {
+
+    QApplication::setStyle(new QCleanlooksStyle);
+
     ui->setupUi(this);
 
     createOtherDialogs();
@@ -43,7 +47,7 @@ MainWindow::MainWindow(QWidget *parent)
     m_createTabkeInstancesPopup = new QMenu();
     m_createTabkeInstancesPopup->clear();
 
-    ui->action_NewTableInstance->setMenu(m_createTabkeInstancesPopup);
+   ui->action_NewTableInstance->setMenu(m_createTabkeInstancesPopup);
 
 }
 
@@ -65,7 +69,6 @@ ContextMenuEnabledTreeWidget* MainWindow::setupGuiForNewSolution()
     dock->setFeatures(QDockWidget::AllDockWidgetFeatures);
     dock->setFloating(false);
     dock->setMinimumSize(200, 340);
-    dock->setMaximumWidth(400);
     dock->resize(201,341);
 
 
@@ -107,8 +110,6 @@ ContextMenuEnabledTreeWidget* MainWindow::setupGuiForNewSolution()
     // set a normal size
     showMaximized();
 
-    enableActions();
-
     return projectTree;
 }
 
@@ -140,7 +141,7 @@ void MainWindow::onNewSolution()
 
         projectTree = setupGuiForNewSolution();
 
-        Project* project = new Project(nprjdlg->getProjectName().toUpper(), projectTree, dataypesTree);
+        Project* project = new Project(nprjdlg->getProjectName().toUpper(), projectTree, dataypesTree, nprjdlg->enableOOPFeatures());
         project->setEngine(nprjdlg->getDatabaseEngine());
         project->createMajorVersion();
 
@@ -158,6 +159,14 @@ void MainWindow::onNewSolution()
         setWindowTitle("DBM - [" + m_currentSolution->name() + "]");
 
         connectActionsFromTablePopupMenu();
+        if(!currentSolution()->currentProject()->oopProject())
+        {
+            currentSolution()->currentProject()->getWorkingVersion()->getTablesItem()->setText(0, tr("Tables"));
+            delete currentSolution()->currentProject()->getWorkingVersion()->getTableInstancesItem();
+        }
+
+        enableActions();
+
     }
 }
 
@@ -448,6 +457,11 @@ void MainWindow::onOpenProject()
 
     populateTreeWithSolution(m_currentSolution);
 
+    if(currentSolution()->currentProject()->oopProject())
+    {
+        currentSolution()->currentProject()->getWorkingVersion()->getTablesItem()->setText(0, tr("Tables"));
+    }
+
     projectTree->expandAll();
 
     ProjectDetailsForm* prjDetailsForm = new ProjectDetailsForm(this);
@@ -466,14 +480,28 @@ void MainWindow::enableActions()
     ui->action_NewDiagram->setEnabled(true);
     ui->action_Save->setEnabled(true);
     ui->action_SaveAs->setEnabled(true);
-    ui->action_NewTableInstance->setEnabled(true);
+    if(currentSolution()->currentProject()->oopProject())
+    {
+        ui->action_NewTableInstance->setEnabled(true);
+    }
+    else
+    {
+        ui->action_NewTableInstance->setVisible(false);
+    }
 }
 
 void MainWindow::connectActionsFromTablePopupMenu()
 {
     QObject::connect(getWorkingProject()->getWorkingVersion()->getAction_RemoveTable(), SIGNAL(activated()), this, SLOT(onDeleteTableFromPopup()));
     QObject::connect(getWorkingProject()->getWorkingVersion()->getAction_TableAddColumn(), SIGNAL(activated()), this, SLOT(onTableAddColumnFromPopup()));
-    QObject::connect(getWorkingProject()->getWorkingVersion()->getAction_SpecializeTable(), SIGNAL(activated()), this, SLOT(onSpecializeTableFromPopup()));
+    if(currentSolution()->currentProject()->oopProject())
+    {
+        QObject::connect(getWorkingProject()->getWorkingVersion()->getAction_SpecializeTable(), SIGNAL(activated()), this, SLOT(onSpecializeTableFromPopup()));
+    }
+    else
+    {
+        getWorkingProject()->getWorkingVersion()->getAction_SpecializeTable()->setVisible(false);;
+    }
     QObject::connect(getWorkingProject()->getWorkingVersion()->getAction_DuplicateTable(), SIGNAL(activated()), this, SLOT(onDuplicateTableFromPopup()));
 }
 
@@ -560,8 +588,8 @@ void MainWindow::onSpecializeTableFromPopup()
     tbl->setLocation(newTblsItem);
 
     // now open the new table for to show this table
-   projectTree->setCurrentItem(newTblsItem);
-   projectTree->scrollToItem(newTblsItem);
+    projectTree->setCurrentItem(newTblsItem);
+    projectTree->scrollToItem(newTblsItem);
     if(frm != 0)
     {
         frm->selectTab(0);

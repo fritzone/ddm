@@ -92,7 +92,11 @@ NewTableForm::NewTableForm(DatabaseEngine* db, Project* prj, QWidget *parent) : 
     }
 
     m_ui->tabWidget->setCurrentIndex(0);
-    m_ui->tabWidget->removeTab(3);
+
+    if(prj->oopProject())
+    {
+        m_ui->tabWidget->removeTab(3);
+    }
 }
 
 NewTableForm::~NewTableForm()
@@ -269,19 +273,21 @@ void NewTableForm::populateTable(const Table *table, bool parentTab)
     }
 
     // set the default values
-/*    updateDefaultValuesTableHeader();
-    for(int i=0; i<table->getStartupValues().size(); i++)
+    if(table->version()->oop())
     {
-        const QVector<QString>& rowI = table->getStartupValues()[i];
-        m_ui->tableStartupValues->insertRow(i);
-        for(int j=0; j<rowI.size(); j++)
+        updateDefaultValuesTableHeader();
+        for(int i=0; i<table->getStartupValues().size(); i++)
         {
-            QTableWidgetItem* newItem = new QTableWidgetItem(rowI[j]);
-            m_ui->tableStartupValues->setItem(i, j, newItem);
+            const QVector<QString>& rowI = table->getStartupValues()[i];
+            m_ui->tableStartupValues->insertRow(i);
+            for(int j=0; j<rowI.size(); j++)
+            {
+                QTableWidgetItem* newItem = new QTableWidgetItem(rowI[j]);
+                m_ui->tableStartupValues->setItem(i, j, newItem);
 
+            }
         }
-    }*/
-
+    }
 
 }
 

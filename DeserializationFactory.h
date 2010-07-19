@@ -27,7 +27,7 @@ public:
     static Index* createIndex(Table* table, const QDomDocument& doc, const QDomElement& element);
     static Table* createTable(DatabaseEngine* engine, Version* ver, const QDomDocument& doc, const QDomElement& element);
     static Column* createColumn(Version* ver, const QDomDocument& doc, const QDomElement& element);
-    static MajorVersion* createMajorVersion(DatabaseEngine* engine, const QDomDocument& doc, const QDomElement& element);
+    static MajorVersion* createMajorVersion(Project* p, DatabaseEngine* engine, const QDomDocument& doc, const QDomElement& element);
     static Solution* createSolution(const QDomDocument& doc, const QDomElement& element);
     static Project* createProject(const QDomDocument& doc, const QDomElement& element);
     static ForeignKey* createForeignKey(Table* tab, const QDomDocument& doc, const QDomElement& element);

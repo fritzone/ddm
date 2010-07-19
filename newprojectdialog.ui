@@ -200,6 +200,16 @@ p, li { white-space: pre-wrap; }
         </property>
        </widget>
       </item>
+      <item>
+       <widget class="QCheckBox" name="chkAllowOOPModel">
+        <property name="text">
+         <string>Allow Object Oriented Modelling</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
      </layout>
     </widget>
    </item>
