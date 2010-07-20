@@ -116,6 +116,8 @@ public:
 
     virtual bool oop() = 0;
 
+    virtual TableInstance* getTableInstance(const QString& ) = 0;
+
     // don't know if this is a good design or not for the popups ....
 
     virtual QMenu* getTablePopupMenu() = 0;
@@ -124,6 +126,7 @@ public:
     virtual QAction * getAction_SpecializeTable() = 0;
     virtual QAction * getAction_DuplicateTable() = 0;
     virtual QAction * getAction_InstantiateTable() = 0;
+
 private:
 
 };

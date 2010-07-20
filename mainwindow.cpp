@@ -21,9 +21,9 @@
 #include "Diagram.h"
 #include "ContextMenuEnabledTreeWidget.h"
 #include "CreateTableInstancesDialog.h"
+#include "TableInstanceForm.h"
 
 #include <QtGui>
-
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), ui(new Ui::MainWindow), dock(0), projectTree(0),
@@ -246,6 +246,14 @@ void MainWindow::currentProjectTreeItemChanged ( QTreeWidgetItem * current, QTre
             else
             if(current->parent() && current->parent() == getWorkingProject()->getWorkingVersion()->getTableInstancesItem())
             {
+                TableInstanceForm* frm = new TableInstanceForm(this);
+                QVariant qv = current->data(0, Qt::UserRole);
+                QString instanceName = qv.toString();
+
+                frm->setTableInstance(getWorkingProject()->getWorkingVersion()->getTableInstance(instanceName));
+                frm->createTableWithValues();
+                setCentralWidget(frm);
+
             }
             else    // user possibly clicked on a table which had a parent a table ...
             {   // TODO: Code duplication with the "table" stuff above

@@ -342,6 +342,20 @@ void Table::setDefaultValues(QVector <QVector <QString> > & values)
     m_startupValues = values;
 }
 
+const UserDataType* Table::getDataTypeOfColumn(const QString& cname)
+{
+    Column* col = getColumn(cname);
+    if(!col)
+    {
+        col = getColumnFromParents(cname);
+        if(!col)
+        {
+            return 0; // Shouldn't ever happen
+        }
+    }
+    return col->getDataType();
+}
+
 void Table::prepareDiagramEntity()
 {
     DraggableGraphicsViewItem* grp = new DraggableGraphicsViewItem(this);

@@ -315,7 +315,10 @@ void NewTableForm::setTable(Table *table)
     m_ui->chkTemporary->setChecked(table->isTemporary());
 
     m_currentStorageEngine = table->getStorageEngine();
-    m_ui->cmbStorageEngine->setCurrentIndex(m_ui->cmbStorageEngine->findText(table->getStorageEngine()->name()));
+    if(table->getStorageEngine())
+    {
+        m_ui->cmbStorageEngine->setCurrentIndex(m_ui->cmbStorageEngine->findText(table->getStorageEngine()->name()));
+    }
     populateIndexTypesDependingOnStorageEngine();
     enableForeignKeysDependingOnStorageEngine();
 }

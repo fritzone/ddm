@@ -14,6 +14,7 @@ class ForeignKey;
 class AbstractStorageEngine;
 class DraggableGraphicsViewItem ;
 class Version;
+class UserDataType;
 
 /**
  * The table class holds a database table defined by the user. It must be derived from the TreeItem since a table can be placed in
@@ -236,6 +237,8 @@ public:
     {
         return m_tempTabName;
     }
+
+    const UserDataType* getDataTypeOfColumn(const QString& cname);
 
 private:
     // the name of the table
