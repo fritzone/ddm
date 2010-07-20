@@ -136,6 +136,7 @@ void MajorVersion::createTreeItems(QTreeWidget* tree, QTreeWidget* dtTree, Conte
     action_DuplicateTable = new QAction("Duplicate table", 0);
     action_TableAddColumn = new QAction("Add column", 0);
     action_SpecializeTable = new QAction("Specialize table", 0);
+    action_InstantiateTable = new QAction("Instantiate table", 0);
 
     QIcon remove(":/images/actions/images/small/remove.png");
     action_RemoveTable->setIcon(remove);
@@ -145,6 +146,8 @@ void MajorVersion::createTreeItems(QTreeWidget* tree, QTreeWidget* dtTree, Conte
     m_tablePopupMenu->addAction(action_RemoveTable);
     m_tablePopupMenu->addAction(action_DuplicateTable);
     m_tablePopupMenu->addAction(action_SpecializeTable);
+    m_tablePopupMenu->addSeparator();
+    m_tablePopupMenu->addAction(action_InstantiateTable);
 }
 
 void MajorVersion::serialize(QDomDocument &doc, QDomElement &parent) const

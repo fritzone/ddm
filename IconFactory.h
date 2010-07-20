@@ -48,6 +48,12 @@ public:
         return icon;
     }
 
+    static const QIcon& getTabinstIcon()
+    {
+        static const QIcon icon(strTableInstIcon);
+        return icon;
+    }
+
     static const QIcon& getProjectOpenIcon()
     {
         static const QIcon icon(strProjectOpenIcon);

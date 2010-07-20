@@ -30,7 +30,7 @@ MainWindow::MainWindow(QWidget *parent)
     btndlg(0), weHaveProject(false), m_currentSolution(0), frm(0), m_createTabkeInstancesPopup(0)
 {
 
-    QApplication::setStyle(new QCleanlooksStyle);
+//    QApplication::setStyle(new QCleanlooksStyle);
 
     ui->setupUi(this);
 
@@ -166,7 +166,6 @@ void MainWindow::onNewSolution()
         }
 
         enableActions();
-
     }
 }
 
@@ -228,6 +227,7 @@ void MainWindow::currentProjectTreeItemChanged ( QTreeWidgetItem * current, QTre
                 frm->setMainWindow(this);
                 setCentralWidget(frm);
             }
+            else
             if(current->parent() && current->parent() == getWorkingProject()->getWorkingVersion()->getDiagramsItem())
             {
                 // the user clicked on a diagram
@@ -242,6 +242,10 @@ void MainWindow::currentProjectTreeItemChanged ( QTreeWidgetItem * current, QTre
                 dgram->setForm(df);
                 setCentralWidget(dgram->getDiagramForm());
                 df->paintDiagram();
+            }
+            else
+            if(current->parent() && current->parent() == getWorkingProject()->getWorkingVersion()->getTableInstancesItem())
+            {
             }
             else    // user possibly clicked on a table which had a parent a table ...
             {   // TODO: Code duplication with the "table" stuff above
@@ -457,7 +461,7 @@ void MainWindow::onOpenProject()
 
     populateTreeWithSolution(m_currentSolution);
 
-    if(currentSolution()->currentProject()->oopProject())
+    if(!currentSolution()->currentProject()->oopProject())
     {
         currentSolution()->currentProject()->getWorkingVersion()->getTablesItem()->setText(0, tr("Tables"));
     }
@@ -471,6 +475,8 @@ void MainWindow::onOpenProject()
     setWindowTitle("DBM - [" + m_currentSolution->name() + "]");
 
     connectActionsFromTablePopupMenu();
+
+    enableActions();
 }
 
 void MainWindow::enableActions()
@@ -497,10 +503,12 @@ void MainWindow::connectActionsFromTablePopupMenu()
     if(currentSolution()->currentProject()->oopProject())
     {
         QObject::connect(getWorkingProject()->getWorkingVersion()->getAction_SpecializeTable(), SIGNAL(activated()), this, SLOT(onSpecializeTableFromPopup()));
+        QObject::connect(getWorkingProject()->getWorkingVersion()->getAction_InstantiateTable(), SIGNAL(activated()), this, SLOT(onInstantiateTableFromPopup()));
     }
     else
     {
-        getWorkingProject()->getWorkingVersion()->getAction_SpecializeTable()->setVisible(false);;
+        getWorkingProject()->getWorkingVersion()->getAction_SpecializeTable()->setVisible(false);
+        getWorkingProject()->getWorkingVersion()->getAction_InstantiateTable()->setVisible(false);
     }
     QObject::connect(getWorkingProject()->getWorkingVersion()->getAction_DuplicateTable(), SIGNAL(activated()), this, SLOT(onDuplicateTableFromPopup()));
 }
@@ -546,6 +554,27 @@ void MainWindow::onSaveAs()
     saveProject(true);
 }
 
+void MainWindow::onInstantiateTableFromPopup()
+{
+    if(projectTree->getLastRightclickedItem() == 0)
+    {
+        return;
+    }
+
+    // TODO: Code duplication with some stuff from below (onDelete...)
+    ContextMenuEnabledTreeWidgetItem* item = projectTree->getLastRightclickedItem();
+    projectTree->setLastRightclickedItem(0);
+
+    QVariant qv = item->data(0, Qt::UserRole);
+    QString tabName = qv.toString();
+    Table* table =  getWorkingProject()->getWorkingVersion()->getTable(tabName);
+    if(table == 0)  // shouldn't be ...
+    {
+        return;
+    }
+
+    instantiateTable(table->getName());
+}
 
 void MainWindow::onSpecializeTableFromPopup()
 {
@@ -701,8 +730,15 @@ DynamicActionHandlerforMainWindow::DynamicActionHandlerforMainWindow(const QStri
 void DynamicActionHandlerforMainWindow::called()
 {
     qDebug() << actionName;
-    TableInstance* inst = mainWindow->currentSolution()->currentProject()->getWorkingVersion()->instantiateTable(mainWindow->currentSolution()->currentProject()->getWorkingVersion()->getTable(actionName));
-    ContextMenuEnabledTreeWidgetItem* itm = new ContextMenuEnabledTreeWidgetItem(mainWindow->currentSolution()->currentProject()->getWorkingVersion()->getTableInstancesItem(),
-                                                                                 QStringList(mainWindow->currentSolution()->currentProject()->getWorkingVersion()->getTable(actionName)->getName()));
-    //itm->setIcon(IconFactory::getTablesIcon());
+    mainWindow->instantiateTable(actionName);
+}
+
+void MainWindow::instantiateTable(const QString& tabName)
+{
+    TableInstance* inst = currentSolution()->currentProject()->getWorkingVersion()->instantiateTable(currentSolution()->currentProject()->getWorkingVersion()->getTable(tabName));
+    ContextMenuEnabledTreeWidgetItem* itm = new ContextMenuEnabledTreeWidgetItem(currentSolution()->currentProject()->getWorkingVersion()->getTableInstancesItem(),
+                                                                                 QStringList(currentSolution()->currentProject()->getWorkingVersion()->getTable(tabName)->getName()));
+    itm->setIcon(0, IconFactory::getTabinstIcon());
+    QVariant a(tabName);
+    itm->setData(0, Qt::UserRole, a);
 }

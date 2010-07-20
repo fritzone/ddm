@@ -76,6 +76,7 @@ public:
     Solution* currentSolution();
 
     bool onSaveDiagram(Diagram*);
+    void instantiateTable(const QString& tabName);
 
 public slots:
 
@@ -97,6 +98,7 @@ public slots:
     void onDeleteTableFromPopup();
     void onTableAddColumnFromPopup();
     void onSpecializeTableFromPopup();
+    void onInstantiateTableFromPopup();
     void onDuplicateTableFromPopup();
 
 private:
@@ -110,6 +112,7 @@ private:
     void enableActions();
     void connectActionsFromTablePopupMenu();
     Table* getRightclickedTable();
+
 
 private:
     Ui::MainWindow *ui;
