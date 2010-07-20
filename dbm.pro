@@ -54,7 +54,8 @@ SOURCES += main.cpp \
     DiagramNoteDescriptor.cpp \
     ContextMenuDelegate.cpp \
     CreateTableInstancesDialog.cpp \
-    TableInstance.cpp
+    TableInstance.cpp \
+    TableInstanceForm.cpp
 HEADERS += MainWindow.h \
     MainWindowButtonDialog.h \
     NewProjectDialog.h \
@@ -113,7 +114,8 @@ HEADERS += MainWindow.h \
     DiagramTableDescriptor.h \
     ContextMenuEnabledTreeWidget.h \
     CreateTableInstancesDialog.h \
-    TableInstance.h
+    TableInstance.h \
+    TableInstanceForm.h
 FORMS += mainwindow.ui \
     mainwindowbuttondialog.ui \
     newprojectdialog.ui \
@@ -125,5 +127,6 @@ FORMS += mainwindow.ui \
     AboutBoxDialog.ui \
     DiagramForm.ui \
     EnterNoteTextDialog.ui \
-    CreateTableInstancesDialog.ui
+    CreateTableInstancesDialog.ui \
+    TableInstanceForm.ui
 RESOURCES += dbm.qrc

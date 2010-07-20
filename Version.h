@@ -123,6 +123,7 @@ public:
     virtual QAction * getAction_TableAddColumn() = 0;
     virtual QAction * getAction_SpecializeTable() = 0;
     virtual QAction * getAction_DuplicateTable() = 0;
+    virtual QAction * getAction_InstantiateTable() = 0;
 private:
 
 };

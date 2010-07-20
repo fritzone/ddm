@@ -120,7 +120,10 @@ public:
     {
         return action_DuplicateTable;
     }
-
+    virtual QAction * getAction_InstantiateTable()
+    {
+        return action_InstantiateTable;
+    }
     virtual void setupTableParentChildRelationships();
 
     virtual TableInstance* instantiateTable(Table* tab);
@@ -167,6 +170,7 @@ private:
     QAction * action_RemoveTable;
     QAction * action_DuplicateTable;
     QAction * action_SpecializeTable;
+    QAction * action_InstantiateTable;
     QAction * action_TableAddColumn;
 
     Project* m_project;
