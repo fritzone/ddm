@@ -30,7 +30,7 @@
           <string>...</string>
          </property>
          <property name="icon">
-          <iconset resource="dbm.qrc">
+          <iconset>
            <normaloff>:/images/actions/images/actions/fileopen.png</normaloff>:/images/actions/images/actions/fileopen.png</iconset>
          </property>
         </widget>
@@ -50,7 +50,7 @@
           <string>...</string>
          </property>
          <property name="icon">
-          <iconset resource="dbm.qrc">
+          <iconset>
            <normaloff>:/images/actions/images/big/bigfileimport.png</normaloff>:/images/actions/images/big/bigfileimport.png</iconset>
          </property>
         </widget>
@@ -67,7 +67,7 @@
           <string>...</string>
          </property>
          <property name="icon">
-          <iconset resource="dbm.qrc">
+          <iconset>
            <normaloff>:/images/actions/images/actions/filesave.png</normaloff>:/images/actions/images/actions/filesave.png</iconset>
          </property>
         </widget>
@@ -88,7 +88,7 @@
       </layout>
      </item>
      <item>
-      <widget class="QTableWidget" name="tableStartupValues"/>
+      <widget class="QTableWidget" name="values"/>
      </item>
      <item>
       <widget class="QLabel" name="label_15">
@@ -121,7 +121,7 @@ p, li { white-space: pre-wrap; }
           <string>...</string>
          </property>
          <property name="icon">
-          <iconset resource="dbm.qrc">
+          <iconset>
            <normaloff>:/images/actions/images/small/add.png</normaloff>:/images/actions/images/small/add.png</iconset>
          </property>
         </widget>
@@ -138,7 +138,7 @@ p, li { white-space: pre-wrap; }
           <string>...</string>
          </property>
          <property name="icon">
-          <iconset resource="dbm.qrc">
+          <iconset>
            <normaloff>:/images/actions/images/small/remove.png</normaloff>:/images/actions/images/small/remove.png</iconset>
          </property>
         </widget>
@@ -168,7 +168,7 @@ p, li { white-space: pre-wrap; }
           <string>...</string>
          </property>
          <property name="icon">
-          <iconset resource="dbm.qrc">
+          <iconset>
            <normaloff>:/images/actions/images/small/apply.png</normaloff>:/images/actions/images/small/apply.png</iconset>
          </property>
         </widget>
@@ -179,8 +179,6 @@ p, li { white-space: pre-wrap; }
    </item>
   </layout>
  </widget>
- <resources>
-  <include location="dbm.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

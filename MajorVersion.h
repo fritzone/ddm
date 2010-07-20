@@ -128,6 +128,8 @@ public:
 
     virtual TableInstance* instantiateTable(Table* tab);
 
+    virtual TableInstance* getTableInstance(const QString& );
+
     virtual bool oop();
 
 private:
@@ -157,6 +159,8 @@ private:
     QVector<Table*> m_tables;
 
     QVector<Diagram*> m_diagrams;
+
+    QVector<TableInstance*> m_tableInstances;
 
     // the project tree
     QTreeWidget* m_tree;

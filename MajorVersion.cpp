@@ -353,9 +353,23 @@ void MajorVersion::setupTableParentChildRelationships()
 TableInstance* MajorVersion::instantiateTable(Table* tab)
 {
     TableInstance* tabInst = new TableInstance(tab);
+    m_tableInstances.append(tabInst);
+    return tabInst;
 }
 
 bool MajorVersion::oop()
 {
     return m_project->oopProject();
+}
+
+TableInstance* MajorVersion::getTableInstance(const QString& name)
+{
+    for(int i=0; i<m_tableInstances.size(); i++)
+    {
+        if(m_tableInstances.at(i)->getName() == name)
+        {
+            return m_tableInstances.at(i);
+        }
+    }
+    return 0;
 }
