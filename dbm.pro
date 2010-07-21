@@ -55,7 +55,8 @@ SOURCES += main.cpp \
     ContextMenuDelegate.cpp \
     CreateTableInstancesDialog.cpp \
     TableInstance.cpp \
-    TableInstanceForm.cpp
+    TableInstanceForm.cpp \
+    StartupValuesHelper.cpp
 HEADERS += MainWindow.h \
     MainWindowButtonDialog.h \
     NewProjectDialog.h \
@@ -115,7 +116,8 @@ HEADERS += MainWindow.h \
     ContextMenuEnabledTreeWidget.h \
     CreateTableInstancesDialog.h \
     TableInstance.h \
-    TableInstanceForm.h
+    TableInstanceForm.h \
+    StartupValuesHelper.h
 FORMS += mainwindow.ui \
     mainwindowbuttondialog.ui \
     newprojectdialog.ui \

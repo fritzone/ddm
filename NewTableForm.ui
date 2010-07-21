@@ -1001,7 +1001,7 @@ p, li { white-space: pre-wrap; }
             </widget>
            </item>
            <item>
-            <widget class="QToolButton" name="toolButton_15">
+            <widget class="QToolButton" name="btnDeleteDefaultRow">
              <property name="toolTip">
               <string>Delete row</string>
              </property>
@@ -1016,19 +1016,6 @@ p, li { white-space: pre-wrap; }
                <normaloff>:/images/actions/images/small/remove.png</normaloff>:/images/actions/images/small/remove.png</iconset>
              </property>
             </widget>
-           </item>
-           <item>
-            <spacer name="horizontalSpacer_7">
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>40</width>
-               <height>20</height>
-              </size>
-             </property>
-            </spacer>
            </item>
            <item>
             <widget class="QToolButton" name="btnUpdateTableWithDefaultValues">
@@ -1046,6 +1033,19 @@ p, li { white-space: pre-wrap; }
                <normaloff>:/images/actions/images/small/apply.png</normaloff>:/images/actions/images/small/apply.png</iconset>
              </property>
             </widget>
+           </item>
+           <item>
+            <spacer name="horizontalSpacer_7">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>40</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
            </item>
           </layout>
          </item>
@@ -1174,7 +1174,6 @@ p, li { white-space: pre-wrap; }
   <tabstop>cmbFkOnDelete</tabstop>
   <tabstop>btnCancelForeignKeyEditing</tabstop>
   <tabstop>btnAddForeignKey</tabstop>
-  <tabstop>btnUpdateTableWithDefaultValues</tabstop>
   <tabstop>cmbCharacterSets</tabstop>
   <tabstop>txtDescription</tabstop>
   <tabstop>btnRemoveForeignKey</tabstop>
@@ -1714,6 +1713,22 @@ p, li { white-space: pre-wrap; }
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>btnDeleteDefaultRow</sender>
+   <signal>clicked()</signal>
+   <receiver>NewTableForm</receiver>
+   <slot>onDeleteDefaultRow()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>69</x>
+     <y>703</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>450</x>
+     <y>386</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <designerdata>
   <property name="gridDeltaX">
@@ -1766,5 +1781,6 @@ p, li { white-space: pre-wrap; }
   <slot>onBtnRemoveForeignKey()</slot>
   <slot>onPersistentChange(int)</slot>
   <slot>onTemporaryChange(int)</slot>
+  <slot>onDeleteDefaultRow()</slot>
  </slots>
 </ui>

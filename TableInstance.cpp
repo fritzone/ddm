@@ -14,3 +14,8 @@ QList<QString> TableInstance::columns() const
     QList<QString> v = m_values.keys();
     return v;
 }
+
+void TableInstance::serialize(QDomDocument &doc, QDomElement &parent) const
+{
+
+}

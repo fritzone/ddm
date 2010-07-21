@@ -4,12 +4,13 @@
 #include "Table.h"
 #include "TreeItem.h"
 #include "NamedItem.h"
+#include "SerializableElement.h"
 
 #include <QHash>
 #include <QList>
 #include <QString>
 
-class TableInstance : public TreeItem, public NamedItem
+class TableInstance : public TreeItem, public NamedItem, public SerializableElement
 {
 public:
 
@@ -21,6 +22,13 @@ public:
     {
         return m_table;
     }
+
+    void setValues(QHash < QString, QVector<QString> > v)
+    {
+        m_values = v;
+    }
+
+    void serialize(QDomDocument &doc, QDomElement &parent) const;
 
 private:
 

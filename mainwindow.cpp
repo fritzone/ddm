@@ -749,4 +749,15 @@ void MainWindow::instantiateTable(const QString& tabName)
     itm->setIcon(0, IconFactory::getTabinstIcon());
     QVariant a(tabName);
     itm->setData(0, Qt::UserRole, a);
+
+    /*TableInstanceForm* frm = new TableInstanceForm(this);
+    QVariant qv = itm->data(0, Qt::UserRole);
+    QString instanceName = qv.toString();
+
+    frm->setTableInstance(getWorkingProject()->getWorkingVersion()->getTableInstance(instanceName));
+    frm->createTableWithValues();
+    setCentralWidget(frm);*/
+    projectTree->setCurrentItem(itm);
+    //itm->setSelected(true);
+
 }

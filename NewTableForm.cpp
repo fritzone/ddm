@@ -13,6 +13,7 @@
 #include "AbstractIndextypeProvider.h"
 #include "AbstractStorageEngineListProvider.h"
 #include "ForeignKey.h"
+#include "StartupValuesHelper.h"
 
 #include <QMessageBox>
 #include <QHashIterator>
@@ -273,7 +274,7 @@ void NewTableForm::populateTable(const Table *table, bool parentTab)
     }
 
     // set the default values
-    if(table->version()->oop())
+    if(!table->version()->oop())
     {
         updateDefaultValuesTableHeader();
         for(int i=0; i<table->getStartupValues().size(); i++)
@@ -1384,16 +1385,7 @@ void NewTableForm::updateDefaultValuesTableHeader()
 
 void NewTableForm::onAddNewDefaultRow()
 {
-    int curRowC = m_ui->tableStartupValues->rowCount();
-    m_ui->tableStartupValues->insertRow(curRowC);
-    for(int i=0; i<m_table->getColumns().count(); i++)
-    {
-        QWidget *defWidget = m_table->getColumns()[i]->getDataType()->getDefaultsTableWidget();
-        if(defWidget != 0)
-        {
-            m_ui->tableStartupValues->setCellWidget(curRowC, i, defWidget);
-        }
-    }
+    addNewRowToTable(m_ui->tableStartupValues, m_table);
 }
 
 void NewTableForm::backupDefaultValuesTable()
@@ -1482,7 +1474,15 @@ void NewTableForm::onBtnUpdateTableWithDefaultValues()
         QVector<QString> rowI;
         for(int j=0; j<m_ui->tableStartupValues->columnCount(); j++)
         {
-            rowI.append(m_ui->tableStartupValues->item(i,j)->text());
+            if(m_ui->tableStartupValues->item(i,j))
+            {
+                rowI.append(m_ui->tableStartupValues->item(i,j)->text());
+            }
+            else
+            {
+                rowI.append("");
+            }
+
         }
         values.append(rowI);
     }
@@ -1492,83 +1492,13 @@ void NewTableForm::onBtnUpdateTableWithDefaultValues()
 
 void NewTableForm::onSaveStartupValuestoCSV()
 {
-    QVector<QString> rows;
-
-    for(int i=0; i<m_ui->tableStartupValues->rowCount(); i++)
-    {
-        QString rowI;
-        for(int j=0; j<m_ui->tableStartupValues->columnCount(); j++)
-        {
-            rowI += m_ui->tableStartupValues->item(i,j)->text();
-            if(j<m_ui->tableStartupValues->columnCount() - 1)
-            {
-                rowI += ",";
-            }
-        }
-        rows.append(rowI);
-    }
-    QString fileName = QFileDialog::getSaveFileName(this,  tr("Save startup values"), "", tr("CSV files (*.csv)"));
-    QFile file(fileName);
-
-    if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
-    {
-        return;
-    }
-    QTextStream out(&file);
-    for(int i=0; i<rows.size(); i++)
-    {
-        out << rows[i] << "\n";
-    }
+    saveStartupValuesToCSVFromTable(m_ui->tableStartupValues, this);
 }
 
 void NewTableForm::onLoadStartupValuesFromCSV()
 {
-    QString fileName = QFileDialog::getOpenFileName(this,  tr("Load startup values"), "", tr("CSV files (*.csv)"));
-    if(fileName.length() == 0)
-    {
-        return;
-    }
-
-    QFile file(fileName);
-
-    if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
-    {
-        return;
-    }
-
-    m_ui->tableStartupValues->clearContents();
-    m_ui->tableStartupValues->setRowCount(0);
-
-    int i = 0;
-    QTextStream in(&file);
-    while (!in.atEnd())
-    {
-        m_ui->tableStartupValues->insertRow(i);
-        QString line = in.readLine();
-        int j = 0, cc = 0;
-        QString cellV = "";
-        while(j<line.length())
-        {
-            if(line.at(j) !=',')
-            {
-                cellV += line.at(j);
-            }
-            else
-            {
-                QTableWidgetItem *twl = new QTableWidgetItem(cellV);
-                m_ui->tableStartupValues->setItem(i, cc, twl);
-                cc ++;
-                cellV = "";
-            }
-            j++;
-        }
-        // last value
-        QTableWidgetItem *twl = new QTableWidgetItem(cellV);
-        m_ui->tableStartupValues->setItem(i, cc, twl);
-        i++;
-    }
+    loadStartupValuesFromCSVIntoTable(m_ui->tableStartupValues, this);
 }
-
 
 void NewTableForm::onStorageEngineChange(QString name)
 {
@@ -1619,4 +1549,9 @@ void NewTableForm::onTemporaryChange(int a)
 {
     m_table->setTemporary(a == Qt::Checked);
     m_table->prepareDiagramEntity();
+}
+
+void NewTableForm::onDeleteDefaultRow()
+{
+    m_ui->tableStartupValues->removeRow(m_ui->tableStartupValues->currentRow());
 }
