@@ -82,6 +82,7 @@ public slots:
     void onBtnUpdateTableWithDefaultValues();
     void onSaveStartupValuestoCSV();
     void onLoadStartupValuesFromCSV();
+    void onDeleteDefaultRow();
 
     // the advanced page
 

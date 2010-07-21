@@ -22,6 +22,13 @@ public:
 
     void createTableWithValues();
 
+public slots:
+    void onLoadValuesFromCSV();
+    void onSaveValuesToCSV();
+    void onAddNewRow();
+    void onDeleteRow();
+    void onValidateData();
+
 protected:
     void changeEvent(QEvent *e);
 
