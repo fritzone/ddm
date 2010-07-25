@@ -132,6 +132,11 @@ public:
 
     virtual bool oop();
 
+    virtual void addTableInstance(TableInstance* inst)
+    {
+        m_tableInstances.append(inst);
+    }
+
 private:
 
     // the tree item containing the "Tables"

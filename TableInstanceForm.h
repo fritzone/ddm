@@ -28,6 +28,7 @@ public slots:
     void onAddNewRow();
     void onDeleteRow();
     void onValidateData();
+    void onCellChange(int,int);
 
 protected:
     void changeEvent(QEvent *e);
@@ -35,6 +36,7 @@ protected:
 private:
     Ui::TableInstanceForm *ui;
     TableInstance* m_tinst;
+    bool m_populated;
 };
 
 #endif // TABLEINSTANCEFORM_H

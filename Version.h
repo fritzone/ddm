@@ -116,6 +116,8 @@ public:
 
     virtual bool oop() = 0;
 
+    virtual void addTableInstance(TableInstance* inst) = 0;
+
     virtual TableInstance* getTableInstance(const QString& ) = 0;
 
     // don't know if this is a good design or not for the popups ....

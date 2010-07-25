@@ -141,7 +141,7 @@ private:
 
     // this is the table screen which is current
     NewTableForm* frm;
-    QMenu* m_createTabkeInstancesPopup;
+    QMenu* m_createTableInstancesPopup;
 
 
 };

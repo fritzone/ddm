@@ -13,6 +13,7 @@
 #include "DiagramNoteDescriptor.h"
 #include "DiagramFKDescriptor.h"
 #include "Diagram.h"
+#include "TableInstance.h"
 
 #include <QStringList>
 
@@ -202,6 +203,19 @@ MajorVersion* DeserializationFactory::createMajorVersion(Project* p, DatabaseEng
             }
         }
     }
+
+    // getting the table instances
+    for(int i=0; i<element.childNodes().count(); i++)
+    {
+        if(element.childNodes().at(i).nodeName() == "TableInstances")   // in a well formatted result, the Diagrams child node is always after the tables
+        {
+            for(int j=0; j<element.childNodes().at(i).childNodes().count(); j++)
+            {
+                TableInstance* tabInst = createTableInstance(result, doc, element.childNodes().at(i).childNodes().at(j).toElement());
+                result->addTableInstance(tabInst);
+            }
+        }
+    }
     return result;
 }
 
@@ -314,7 +328,6 @@ Project* DeserializationFactory::createProject(const QDomDocument &doc, const QD
     }
 
     return prj;
-
 }
 
 Solution* DeserializationFactory::createSolution(const QDomDocument &doc, const QDomElement &element)
@@ -437,5 +450,29 @@ Diagram* DeserializationFactory::createDiagram(Version* v, const QDomDocument &d
 
     // means, there's a tree item for this diagram
     result->setSaved(true);
+    return result;
+}
+
+TableInstance* DeserializationFactory::createTableInstance(Version* v, const QDomDocument &doc, const QDomElement &element)
+{
+    QString name = element.attribute("Name");
+    QString tabName = element.attribute("Table");
+
+    QHash <QString, QVector<QString> > data;
+    for(int i=0; i<element.childNodes().count(); i++)
+    {
+        QString colName = element.childNodes().at(i).toElement().attribute("Name");
+        QVector<QString> col;
+        for(int j=0; j<element.childNodes().at(i).toElement().childNodes().count(); j++)
+        {
+            col.append(element.childNodes().at(i).toElement().childNodes().at(j).toElement().attribute("value"));
+        }
+        data[colName] = col;
+    }
+
+    TableInstance* result = new TableInstance(v->getTable(tabName));
+    result->setValues(data);
+    result->setName(name);
+
     return result;
 }

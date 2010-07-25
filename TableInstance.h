@@ -30,6 +30,11 @@ public:
 
     void serialize(QDomDocument &doc, QDomElement &parent) const;
 
+    const QHash < QString, QVector<QString> >& values() const
+    {
+        return m_values;
+    }
+
 private:
 
     Table* m_table;

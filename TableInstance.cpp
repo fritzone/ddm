@@ -17,5 +17,24 @@ QList<QString> TableInstance::columns() const
 
 void TableInstance::serialize(QDomDocument &doc, QDomElement &parent) const
 {
+    QDomElement tableInstanceElement = doc.createElement("TableInstance");      // will hold the data in this element
+    tableInstanceElement.setAttribute("Name", getName());
+    tableInstanceElement.setAttribute("Table", m_table->getName());
+    QList <QString> cols = columns();
 
+    for(int i=0; i<cols.size(); i++)
+    {
+        QDomElement column = doc.createElement("Column");
+        column.setAttribute("Name", cols[i]);
+        QVector<QString> colVs = m_values[cols[i]];
+        for(int j=0; j<colVs.size(); j++)
+        {
+            QDomElement value = doc.createElement("Value");
+            value.setAttribute("value", colVs[j]);
+            column.appendChild(value);
+        }
+        tableInstanceElement.appendChild(column);
+    }
+
+    parent.appendChild(tableInstanceElement);
 }

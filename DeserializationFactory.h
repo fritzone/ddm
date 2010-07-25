@@ -18,6 +18,7 @@ class DiagramNoteDescriptor;
 class DiagramFKDescriptor;
 class Diagram;
 class Version;
+class TableInstance;
 
 class DeserializationFactory
 {
@@ -35,6 +36,7 @@ public:
     static DiagramNoteDescriptor* createDiagramNoteDescriptor(const QDomDocument& doc, const QDomElement& element);
     static DiagramFKDescriptor* createDiagramFKDescriptor(const QDomDocument& doc, const QDomElement& element);
     static Diagram* createDiagram(Version* v, const QDomDocument& doc, const QDomElement& element);
+    static TableInstance* createTableInstance(Version* v, const QDomDocument& doc, const QDomElement& element);
 
 private:
     DeserializationFactory();

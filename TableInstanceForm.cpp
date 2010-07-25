@@ -4,9 +4,14 @@
 #include "UserDataType.h"
 #include "StartupValuesHelper.h"
 
+
+template <class T> const T& max ( const T& a, const T& b ) {
+  return (b<a)?a:b;
+}
+
 TableInstanceForm::TableInstanceForm(QWidget *parent) :
     QWidget(parent),
-    ui(new Ui::TableInstanceForm)
+    ui(new Ui::TableInstanceForm), m_populated(false)
 {
     ui->setupUi(this);
 }
@@ -32,21 +37,38 @@ void TableInstanceForm::createTableWithValues()
 {
     QList<QString> columns = m_tinst->columns();
     ui->values->setColumnCount(columns.size());
+    bool rowcSet = false;
+    // header
     for(int i=0; i<columns.size(); i++)
     {
         QTableWidgetItem *columnHeaderItem = new QTableWidgetItem(columns[i]);
         columnHeaderItem->setIcon(m_tinst->table()->getDataTypeOfColumn(columns[i])->getIcon());
         columnHeaderItem->setTextAlignment(Qt::AlignVCenter);
 
-        ui->values->setHorizontalHeaderItem(i, columnHeaderItem);
+        QVector <QString> v = m_tinst->values()[columns[i]];
 
+        ui->values->setHorizontalHeaderItem(i, columnHeaderItem);
+        if(!rowcSet)
+        {
+            ui->values->setRowCount(v.size());
+            rowcSet = true;
+        }
+
+        for(int j=0; j<v.size(); j++)
+        {
+            QTableWidgetItem* itm = new QTableWidgetItem(v[j]);
+            qDebug() << v[j];
+            ui->values->setItem(j, i, itm);
+        }
     }
+    m_populated = true;
 }
 
 
 void TableInstanceForm::onLoadValuesFromCSV()
 {
     loadStartupValuesFromCSVIntoTable(ui->values, this);
+    onValidateData();
 }
 
 void TableInstanceForm::onSaveValuesToCSV()
@@ -62,6 +84,7 @@ void TableInstanceForm::onAddNewRow()
 void TableInstanceForm::onDeleteRow()
 {
     ui->values->removeRow(ui->values->currentRow());
+    onValidateData();
 }
 
 void TableInstanceForm::onValidateData()
@@ -69,8 +92,6 @@ void TableInstanceForm::onValidateData()
     QHash < QString, QVector<QString> > v;
     for(int i=0; i<ui->values->columnCount(); i++)
     {
-        qDebug() << ui->values->horizontalHeaderItem(i)->text();
-
         QVector<QString> a ;
         for(int j=0; j<ui->values->rowCount(); j++)
         {
@@ -82,11 +103,18 @@ void TableInstanceForm::onValidateData()
             {
                 a.append("");
             }
-            qDebug() << a;
         }
         v[ui->values->horizontalHeaderItem(i)->text()] = a;
     }
 
     m_tinst->setValues(v);
 
+}
+
+void TableInstanceForm::onCellChange(int,int)
+{
+    if(m_populated)
+    {
+        onValidateData();
+    }
 }
