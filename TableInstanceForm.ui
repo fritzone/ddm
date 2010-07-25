@@ -282,6 +282,22 @@ p, li { white-space: pre-wrap; }
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>values</sender>
+   <signal>cellChanged(int,int)</signal>
+   <receiver>TableInstanceForm</receiver>
+   <slot>onCellChange(int,int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>219</x>
+     <y>179</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>219</x>
+     <y>242</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>onLoadValuesFromCSV()</slot>
@@ -289,5 +305,6 @@ p, li { white-space: pre-wrap; }
   <slot>onAddNewRow()</slot>
   <slot>onDeleteRow()</slot>
   <slot>onValidateData()</slot>
+  <slot>onCellChange(int,int)</slot>
  </slots>
 </ui>

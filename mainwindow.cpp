@@ -27,7 +27,7 @@
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), ui(new Ui::MainWindow), dock(0), projectTree(0),
-    btndlg(0), weHaveProject(false), m_currentSolution(0), frm(0), m_createTabkeInstancesPopup(0)
+    btndlg(0), weHaveProject(false), m_currentSolution(0), frm(0), m_createTableInstancesPopup(0)
 {
 
 //    QApplication::setStyle(new QCleanlooksStyle);
@@ -44,10 +44,10 @@ MainWindow::MainWindow(QWidget *parent)
     setWindowTitle("DBM - [No Solution]");
     resize(800, 600);
 
-    m_createTabkeInstancesPopup = new QMenu();
-    m_createTabkeInstancesPopup->clear();
+    m_createTableInstancesPopup = new QMenu();
+    m_createTableInstancesPopup->clear();
 
-   ui->action_NewTableInstance->setMenu(m_createTabkeInstancesPopup);
+   ui->action_NewTableInstance->setMenu(m_createTableInstancesPopup);
 
 }
 
@@ -221,6 +221,7 @@ void MainWindow::currentProjectTreeItemChanged ( QTreeWidgetItem * current, QTre
                 {
                     return;
                 }
+
                 frm = new NewTableForm(getWorkingProject()->getEngine(), getWorkingProject(), this);
                 frm->setTable(table);
                 frm->focusOnName();
@@ -501,6 +502,12 @@ void MainWindow::enableActions()
     else
     {
         ui->action_NewTableInstance->setVisible(false);
+
+        ui->action_NewTable->setText(tr("New Table"));
+        ui->action_NewTable->setToolTip(tr("Create a new Table"));
+
+        getWorkingProject()->getWorkingVersion()->getTableInstancesItem()->setHidden(true);
+
     }
 }
 
@@ -632,15 +639,13 @@ void MainWindow::onSpecializeTableFromPopup()
         frm->selectTab(0);
         frm->focusOnNewColumnName();
     }
-
-
 }
 
 void MainWindow::onTableAddColumnFromPopup()
 {
     if(projectTree->getLastRightclickedItem() != 0)
     {
-        projectTree->getLastRightclickedItem()->setSelected(true);
+        projectTree->setCurrentItem(projectTree->getLastRightclickedItem(), 0);  // this is supposed to open the window "frm" too
         if(frm != 0)
         {
             frm->selectTab(0);
@@ -709,11 +714,11 @@ void MainWindow::onNewTableInstance()
 void MainWindow::onNewTableInstanceHovered()
 {
 
-    if(!m_createTabkeInstancesPopup)
+    if(!m_createTableInstancesPopup)
     {
         return;
     }
-    m_createTabkeInstancesPopup->clear();
+    m_createTableInstancesPopup->clear();
 
     if(currentSolution() && currentSolution()->currentProject() && currentSolution()->currentProject()->getWorkingVersion())
     {
@@ -725,7 +730,7 @@ void MainWindow::onNewTableInstanceHovered()
             QIcon icon(IconFactory::getTablesIcon());
             actionToAdd->setData(QVariant(currentSolution()->currentProject()->getWorkingVersion()->getTables()[i]->getName()));
             actionToAdd->setIcon(icon);
-            m_createTabkeInstancesPopup->addAction(actionToAdd);
+            m_createTableInstancesPopup->addAction(actionToAdd);
             QObject::connect(actionToAdd, SIGNAL(activated()),
                              new DynamicActionHandlerforMainWindow(currentSolution()->currentProject()->getWorkingVersion()->getTables()[i]->getName(), this), SLOT(called()));
         }
@@ -750,14 +755,5 @@ void MainWindow::instantiateTable(const QString& tabName)
     QVariant a(tabName);
     itm->setData(0, Qt::UserRole, a);
 
-    /*TableInstanceForm* frm = new TableInstanceForm(this);
-    QVariant qv = itm->data(0, Qt::UserRole);
-    QString instanceName = qv.toString();
-
-    frm->setTableInstance(getWorkingProject()->getWorkingVersion()->getTableInstance(instanceName));
-    frm->createTableWithValues();
-    setCentralWidget(frm);*/
     projectTree->setCurrentItem(itm);
-    //itm->setSelected(true);
-
 }

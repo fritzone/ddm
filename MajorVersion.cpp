@@ -85,6 +85,23 @@ void MajorVersion::populateTreeItems()
         // set the link to the tree
         dI->setLocation(newDgramItem);
     }
+
+    // insert the table instances (but only if this is an OOP project...)
+    for(int i=0; i<m_tableInstances.size(); i++)
+    {
+        TableInstance* tI = m_tableInstances[i];
+        ContextMenuEnabledTreeWidgetItem* newTabInstItem = new ContextMenuEnabledTreeWidgetItem(getTableInstancesItem(), QStringList(tI->getName())) ;
+
+        QVariant var(tI->getName());
+        newTabInstItem->setData(0, Qt::UserRole, var);
+
+        // set the icon, add to the tree
+        newTabInstItem->setIcon(0, IconFactory::getTabinstIcon());
+        m_tree->insertTopLevelItem(0, newTabInstItem);
+
+        // set the link to the tree
+        tI->setLocation(newTabInstItem);
+    }
 }
 
 void MajorVersion::createTreeItems(QTreeWidget* tree, QTreeWidget* dtTree, ContextMenuEnabledTreeWidgetItem* projectIem)
@@ -187,6 +204,16 @@ void MajorVersion::serialize(QDomDocument &doc, QDomElement &parent) const
         m_diagrams[i]->serialize(doc, diagramsElement);
     }
     majorVersionElement.appendChild(diagramsElement);
+    }
+
+    // the table instances
+    {
+    QDomElement tableInstancesElement = doc.createElement("TableInstances");
+    for(int i=0; i< m_tableInstances.size(); i++)
+    {
+        m_tableInstances[i]->serialize(doc, tableInstancesElement);
+    }
+    majorVersionElement.appendChild(tableInstancesElement);
     }
 
 
