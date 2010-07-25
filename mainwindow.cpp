@@ -22,6 +22,7 @@
 #include "ContextMenuEnabledTreeWidget.h"
 #include "CreateTableInstancesDialog.h"
 #include "TableInstanceForm.h"
+#include "DynamicActionHandlerForMainWindow.h"
 
 #include <QtGui>
 
@@ -735,15 +736,6 @@ void MainWindow::onNewTableInstanceHovered()
                              new DynamicActionHandlerforMainWindow(currentSolution()->currentProject()->getWorkingVersion()->getTables()[i]->getName(), this), SLOT(called()));
         }
     }
-}
-
-DynamicActionHandlerforMainWindow::DynamicActionHandlerforMainWindow(const QString &a, MainWindow *w) : actionName(a), mainWindow(w)
-{}
-
-void DynamicActionHandlerforMainWindow::called()
-{
-    qDebug() << actionName;
-    mainWindow->instantiateTable(actionName);
 }
 
 void MainWindow::instantiateTable(const QString& tabName)

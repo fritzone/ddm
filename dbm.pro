@@ -56,7 +56,8 @@ SOURCES += main.cpp \
     CreateTableInstancesDialog.cpp \
     TableInstance.cpp \
     TableInstanceForm.cpp \
-    StartupValuesHelper.cpp
+    StartupValuesHelper.cpp \
+    DynamicActionHandlerforMainWindow.cpp
 HEADERS += MainWindow.h \
     MainWindowButtonDialog.h \
     NewProjectDialog.h \
@@ -117,7 +118,8 @@ HEADERS += MainWindow.h \
     CreateTableInstancesDialog.h \
     TableInstance.h \
     TableInstanceForm.h \
-    StartupValuesHelper.h
+    StartupValuesHelper.h \
+    DynamicActionHandlerForMainWindow.h
 FORMS += mainwindow.ui \
     mainwindowbuttondialog.ui \
     newprojectdialog.ui \

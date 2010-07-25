@@ -21,28 +21,6 @@ namespace Ui
     class MainWindow;
 }
 
-class MainWindow;
-
-class DynamicActionHandlerforMainWindow : public QObject
-{
-    Q_OBJECT
-
-public:
-
-    DynamicActionHandlerforMainWindow(const QString& a, MainWindow* w);
-
-
-public slots:
-
-    void called();
-
-private:
-
-    QString actionName;
-    MainWindow* mainWindow;
-
-};
-
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
