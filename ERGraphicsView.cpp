@@ -93,7 +93,7 @@ void ERGraphicsView::mousePressEvent(QMouseEvent *mouseEvent)
     }
 }
 
-void ERGraphicsView::mouseReleaseEvent(QMouseEvent *mouseEvent)
+void ERGraphicsView::mouseReleaseEvent(QMouseEvent *)
 {
     if(m_mode == Nothing)
     {

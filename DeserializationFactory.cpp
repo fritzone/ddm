@@ -21,7 +21,7 @@ DeserializationFactory::DeserializationFactory()
 {
 }
 
-UserDataType* DeserializationFactory::createUserDataType(const QDomDocument& doc, const QDomElement& element)
+UserDataType* DeserializationFactory::createUserDataType(const QDomDocument&, const QDomElement& element)
 {
     QString name = element.attribute("Name");
     QString type = element.attribute("Type");
@@ -59,7 +59,7 @@ UserDataType* DeserializationFactory::createUserDataType(const QDomDocument& doc
 
 }
 
-ForeignKey* DeserializationFactory::createForeignKey(Table *tab, const QDomDocument &doc, const QDomElement &element)
+ForeignKey* DeserializationFactory::createForeignKey(Table *, const QDomDocument &, const QDomElement &element)
 {
     QString name = element.attribute("Name");
     QString onUpdate = element.attribute("OnUpdate");
@@ -84,7 +84,7 @@ ForeignKey* DeserializationFactory::createForeignKey(Table *tab, const QDomDocum
 
 }
 
-Index* DeserializationFactory::createIndex(Table* table, const QDomDocument &doc, const QDomElement &element)
+Index* DeserializationFactory::createIndex(Table* table, const QDomDocument &, const QDomElement &element)
 {
     QString name = element.attribute("Name");
     QString type = element.attribute("Type");
@@ -219,7 +219,7 @@ MajorVersion* DeserializationFactory::createMajorVersion(Project* p, DatabaseEng
     return result;
 }
 
-Column* DeserializationFactory::createColumn(Version* ver, const QDomDocument &doc, const QDomElement &element)
+Column* DeserializationFactory::createColumn(Version* ver, const QDomDocument &, const QDomElement &element)
 {
     QString name = element.attribute("Name");
     QString pk = element.attribute("PK");
@@ -344,7 +344,7 @@ Solution* DeserializationFactory::createSolution(const QDomDocument &doc, const 
     return sol;
 }
 
-DiagramTableDescriptor* DeserializationFactory::createDiagramTableDescriptor(const QDomDocument &doc, const QDomElement &element)
+DiagramTableDescriptor* DeserializationFactory::createDiagramTableDescriptor(const QDomDocument &, const QDomElement &element)
 {
     QString tabName = element.attribute("Name");
     int x = element.attribute("x").toInt();
@@ -354,7 +354,7 @@ DiagramTableDescriptor* DeserializationFactory::createDiagramTableDescriptor(con
     return result;
 }
 
-DiagramNoteDescriptor* DeserializationFactory::createDiagramNoteDescriptor(const QDomDocument &doc, const QDomElement &element)
+DiagramNoteDescriptor* DeserializationFactory::createDiagramNoteDescriptor(const QDomDocument &, const QDomElement &element)
 {
     int x = element.attribute("x").toInt();
     int y = element.attribute("y").toInt();
@@ -367,7 +367,7 @@ DiagramNoteDescriptor* DeserializationFactory::createDiagramNoteDescriptor(const
     return result;
 }
 
-DiagramFKDescriptor* DeserializationFactory::createDiagramFKDescriptor(const QDomDocument& doc, const QDomElement& element)
+DiagramFKDescriptor* DeserializationFactory::createDiagramFKDescriptor(const QDomDocument&, const QDomElement& element)
 {
     QString tab1 = element.attribute("tab1");
     QString tab2 = element.attribute("tab2");
@@ -453,7 +453,7 @@ Diagram* DeserializationFactory::createDiagram(Version* v, const QDomDocument &d
     return result;
 }
 
-TableInstance* DeserializationFactory::createTableInstance(Version* v, const QDomDocument &doc, const QDomElement &element)
+TableInstance* DeserializationFactory::createTableInstance(Version* v, const QDomDocument&, const QDomElement &element)
 {
     QString name = element.attribute("Name");
     QString tabName = element.attribute("Table");

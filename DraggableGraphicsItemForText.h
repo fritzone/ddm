@@ -14,7 +14,7 @@ public:
 
     friend class ERGraphicsView;
 
-    DraggableGraphicsViewItemForText(const QString& txt, bool framed) : DraggableGraphicsViewItem(0), m_txt(txt), m_rect(0), m_framed(framed)
+    DraggableGraphicsViewItemForText(const QString& txt, bool framed) : DraggableGraphicsViewItem(0), m_txt(txt), m_framed(framed), m_rect(0)
     {
         m_index = indexCounter ++;
         m_item = new QGraphicsTextItem();

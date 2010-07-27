@@ -200,7 +200,7 @@ void MainWindow::onDTTreeClicked()
     }
 }
 
-void MainWindow::currentProjectTreeItemChanged ( QTreeWidgetItem * current, QTreeWidgetItem * previous )
+void MainWindow::currentProjectTreeItemChanged(QTreeWidgetItem * current, QTreeWidgetItem*)
 {
     if(current)
     {
@@ -740,9 +740,9 @@ void MainWindow::onNewTableInstanceHovered()
 
 void MainWindow::instantiateTable(const QString& tabName)
 {
-    TableInstance* inst = currentSolution()->currentProject()->getWorkingVersion()->instantiateTable(currentSolution()->currentProject()->getWorkingVersion()->getTable(tabName));
-    ContextMenuEnabledTreeWidgetItem* itm = new ContextMenuEnabledTreeWidgetItem(currentSolution()->currentProject()->getWorkingVersion()->getTableInstancesItem(),
-                                                                                 QStringList(currentSolution()->currentProject()->getWorkingVersion()->getTable(tabName)->getName()));
+    Version* cVersion = currentSolution()->currentProject()->getWorkingVersion();
+    cVersion->instantiateTable(cVersion->getTable(tabName));
+    ContextMenuEnabledTreeWidgetItem* itm = new ContextMenuEnabledTreeWidgetItem(cVersion->getTableInstancesItem(), QStringList(cVersion->getTable(tabName)->getName()));
     itm->setIcon(0, IconFactory::getTabinstIcon());
     QVariant a(tabName);
     itm->setData(0, Qt::UserRole, a);

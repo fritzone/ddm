@@ -7,8 +7,8 @@
 #include "ForeignKey.h"
 #include "Version.h"
 
-Diagram::Diagram(Version* v) : TreeItem(), NamedItem("Table diagram"), m_onStage(), m_fksOnStage(), m_notes(), m_form(0), m_saved(false), m_version(v),
-        m_noteDescriptors(0), m_tableDescriptors()
+Diagram::Diagram(Version* v) : TreeItem(), NamedItem("Table diagram"), m_onStage(), m_fksOnStage(), m_notes(),
+        m_noteDescriptors(0), m_tableDescriptors(), m_form(0), m_saved(false), m_version(v)
 {
 
 }

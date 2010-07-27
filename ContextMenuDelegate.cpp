@@ -3,11 +3,11 @@
 #include <QMouseEvent>
 
 
-ContextMenuDelegate::ContextMenuDelegate(ContextMenuHandler *const contextMenu, ContextMenuEnabledTreeWidget *const parent ) : QItemDelegate(parent) , m_contextMenu(contextMenu), m_tree(parent)
+ContextMenuDelegate::ContextMenuDelegate(ContextMenuHandler *const contextMenu, ContextMenuEnabledTreeWidget *const parent ) : QItemDelegate(parent) , m_tree(parent), m_contextMenu(contextMenu)
 {
 }
 
-bool ContextMenuDelegate::editorEvent(QEvent * event, QAbstractItemModel * model, const QStyleOptionViewItem & option, const QModelIndex & index )
+bool ContextMenuDelegate::editorEvent(QEvent * event, QAbstractItemModel * , const QStyleOptionViewItem & , const QModelIndex & index )
 {
     if((event->type()==QEvent::MouseButtonPress) && index.isValid())
     {
@@ -28,4 +28,6 @@ bool ContextMenuDelegate::editorEvent(QEvent * event, QAbstractItemModel * model
             return true;
         }
     }
+
+    return false;
 }
