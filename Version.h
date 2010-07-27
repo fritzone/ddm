@@ -92,12 +92,24 @@ public:
      */
     virtual Table* getTable(const QString& name) = 0;
 
+    /**
+     * Returns the tables stored in this version
+     */
     virtual const QVector<Table*>& getTables() const = 0;
 
+    /**
+     * Serializes this version
+     */
     virtual void serialize(QDomDocument &doc, QDomElement &parent) const = 0;
 
+    /**
+     * Returns the diagram with the given name
+     */
     virtual Diagram* getDiagram(const QString& name) = 0;
 
+    /**
+     * Removes the foreign key from teh version
+     */
     virtual void removeForeignKeyFromDiagrams(ForeignKey*) = 0;
 
     /**
@@ -105,8 +117,14 @@ public:
      */
     virtual void deleteTable(Table*) = 0;
 
+    /**
+     * Duplicates the table
+     */
     virtual Table* duplicateTable(Table*) = 0;
 
+    /**
+     * Sets up a parent child relationship
+     */
     virtual void setupTableParentChildRelationships() = 0;
 
     /**
@@ -114,10 +132,19 @@ public:
      */
     virtual TableInstance* instantiateTable(Table* tab) = 0;
 
+    /**
+     * Returns true if this version is in a project which has OOP features enabled
+     */
     virtual bool oop() = 0;
 
+    /**
+     * Adds a new table instance to this version
+     */
     virtual void addTableInstance(TableInstance* inst) = 0;
 
+    /**
+     * Retursn a table instance
+     */
     virtual TableInstance* getTableInstance(const QString& ) = 0;
 
     // don't know if this is a good design or not for the popups ....

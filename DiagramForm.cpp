@@ -279,7 +279,7 @@ void DiagramForm::doneNote()
 }
 
 
-void DiagramForm::editorLostFocus(DiagramTextItem *item)
+void DiagramForm::editorLostFocus(DiagramTextItem *)
 {
 }
 

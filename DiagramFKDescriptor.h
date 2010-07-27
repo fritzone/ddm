@@ -11,15 +11,15 @@ class DiagramFKDescriptor : public DiagramObjectDescriptor
 
 public:
 
-    DiagramFKDescriptor(const QString& txt, const QString& txt_2, int x, int y, const QString& fkn) : DiagramObjectDescriptor(txt, x, y), m_txt2(txt_2), fkName(fkn)
+    DiagramFKDescriptor(const QString& txt, const QString& txt_2, int x, int y, const QString& fkn) : DiagramObjectDescriptor(txt, x, y), fkName(fkn), m_txt2(txt_2)
     {}
 
     DiagramFKDescriptor(const QString &txt, const QString &txt_2, int x, int y, qreal ellx, qreal elly, qreal l1otx, qreal l1oty, qreal l1posx,
                         qreal l1posy, qreal l2otx, qreal l2oty, qreal l2posx, qreal l2posy, qreal rel1posx, qreal rel1posy, qreal rel2posx, qreal rel2posy,
                         qreal arrowp1x, qreal arrowp1y, qreal arrowp2x, qreal arrowp2y, qreal arrowposx, qreal arrowposy, const QString& fkn) :
-                    DiagramObjectDescriptor(txt, x, y), m_txt2(txt_2),
+                    DiagramObjectDescriptor(txt, x, y),
                     m_ellipsePos(ellx,elly), line1OtherPoint(l1otx, l1oty), line1PosPoint(l1posx, l1posy), line2OtherPoint(l2otx, l2oty), line2PosPoint(l2posx, l2posy),
-                    rel1TxtPos(rel1posx, rel1posy), rel2TxtPos(rel2posx, rel2posy), arrowP1(arrowp1x, arrowp1y), arrowP2(arrowp2x, arrowp2y), arrowPos(arrowposx, arrowposy), fkName(fkn)
+                    rel1TxtPos(rel1posx, rel1posy), rel2TxtPos(rel2posx, rel2posy), arrowP1(arrowp1x, arrowp1y), arrowP2(arrowp2x, arrowp2y), arrowPos(arrowposx, arrowposy), fkName(fkn), m_txt2(txt_2)
     {}
 
     QString getText2() const

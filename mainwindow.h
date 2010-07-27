@@ -68,7 +68,7 @@ public slots:
     void onDTTreeClicked();
     void onNewDiagram();
     void onSaveAs();
-    void currentProjectTreeItemChanged ( QTreeWidgetItem * current, QTreeWidgetItem * previous );
+    void currentProjectTreeItemChanged(QTreeWidgetItem * current, QTreeWidgetItem*);
     void onNewTableInstance();
     void onNewTableInstanceHovered();
 

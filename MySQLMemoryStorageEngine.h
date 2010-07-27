@@ -20,7 +20,7 @@ public:
         return false;
     }
 
-    virtual bool supportsIndexType(const QString& type)
+    virtual bool supportsIndexType(const QString& )
     {
         return true;
     }

@@ -538,7 +538,7 @@ void NewTableForm::onMoveColumnUp()
     }
 }
 
-void NewTableForm::onItemChanged(QTreeWidgetItem* current, QTreeWidgetItem* previous)
+void NewTableForm::onItemChanged(QTreeWidgetItem*, QTreeWidgetItem*)
 {
 
 }
@@ -555,7 +555,7 @@ void NewTableForm::toggleColumnFieldDisableness(bool a)
 /**
  * Called when a column is selected. onColumnSelect onSelectColumn
  */
-void NewTableForm::onItemSelected(QTreeWidgetItem* current, int column)
+void NewTableForm::onItemSelected(QTreeWidgetItem* current, int)
 {
     QModelIndex x = m_ui->lstColumns->currentIndex();
     m_currentColumn = m_table->getColumn(current->text(1));
@@ -893,7 +893,7 @@ void NewTableForm::toggleIndexFieldDisableness(bool a)
     m_ui->btnMoveIndexColumnDown->setDisabled(a);
 }
 
-void NewTableForm::onSelectIndex(QTreeWidgetItem* current, int column)
+void NewTableForm::onSelectIndex(QTreeWidgetItem*, int)
 {
     QModelIndex x = m_ui->lstIndices->currentIndex();
     m_currentIndex = m_table->getIndex(m_ui->lstIndices->currentItem()->text(0));
@@ -1137,7 +1137,7 @@ void NewTableForm::onRemoveForeignKeyAssociation()
 
 }
 
-void NewTableForm::onSelectAssociation(QTreeWidgetItem* current, int column)
+void NewTableForm::onSelectAssociation(QTreeWidgetItem* current, int)
 {
     QVariant qv = current->data(0, Qt::UserRole);
     QString tabName = qv.toString();
@@ -1348,7 +1348,7 @@ void NewTableForm::populateFKGui(ForeignKey * fk)
     m_ui->btnAddForeignKey->setIcon(IconFactory::getApplyIcon());
 }
 
-void NewTableForm::onSelectForeignKey(QTreeWidgetItem* itm, int col)
+void NewTableForm::onSelectForeignKey(QTreeWidgetItem*, int)
 {
     QModelIndex x = m_ui->lstForeignKeys->currentIndex();
     m_currentForeignKey = m_table->getForeignKey(m_ui->lstForeignKeys->currentItem()->text(0));

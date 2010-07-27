@@ -200,7 +200,7 @@ QString MySQLDTSupplier::defaultSqlForGenericType(const QString& genericType)
     return "";
 }
 
-bool MySQLDTSupplier::isValid(const UserDataType* udt)
+bool MySQLDTSupplier::isValid(const UserDataType* )
 {
     return true;
 }
