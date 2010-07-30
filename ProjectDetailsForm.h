@@ -20,6 +20,7 @@ public:
 
 public slots:
     void onBtnUpdate();
+    void onOopCheckChange(int);
 
 protected:
     void changeEvent(QEvent *e);

@@ -40,6 +40,10 @@ protected:
     void changeEvent(QEvent *e);
     void accept();
 
+public slots:
+
+    void onHelp();
+
 private:
     Ui::NewProjectDialog *m_ui;
 

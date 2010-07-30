@@ -119,7 +119,8 @@ HEADERS += MainWindow.h \
     TableInstance.h \
     TableInstanceForm.h \
     StartupValuesHelper.h \
-    DynamicActionHandlerForMainWindow.h
+    DynamicActionHandlerForMainWindow.h \
+    newprojectdialog.h
 FORMS += mainwindow.ui \
     mainwindowbuttondialog.ui \
     newprojectdialog.ui \

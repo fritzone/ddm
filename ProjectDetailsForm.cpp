@@ -32,10 +32,16 @@ void ProjectDetailsForm::setProject(Project *prj)
 
     ui->txtProjectName->setText(m_project->getName());
     ui->textEdit->setText(m_project->getDescription());
+    ui->checkBox->setCheckState(prj->oopProject()?Qt::Checked:Qt::Unchecked);
 }
 
 void ProjectDetailsForm::onBtnUpdate()
 {
     m_project->setName(ui->txtProjectName->text());
     m_project->setDescription(ui->textEdit->toPlainText());
+}
+
+void ProjectDetailsForm::onOopCheckChange(int)
+{
+    ui->checkBox->setCheckState(m_project->oopProject()?Qt::Checked:Qt::Unchecked);
 }

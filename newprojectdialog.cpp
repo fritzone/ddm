@@ -10,6 +10,8 @@ NewProjectDialog::NewProjectDialog(QWidget *parent) :
 {
     m_ui->setupUi(this);
 
+    m_ui->grpWebView->setHidden(true);
+
 }
 
 NewProjectDialog::~NewProjectDialog()
@@ -69,4 +71,12 @@ DatabaseEngine* NewProjectDialog::getDatabaseEngine() const
 bool NewProjectDialog::enableOOPFeatures() const
 {
     return m_ui->chkAllowOOPModel->isChecked();
+}
+
+void NewProjectDialog::onHelp()
+{
+    resize(800, height());
+    m_ui->grpWebView->setHidden(false);
+    m_ui->btnHelp->setHidden(true);
+    m_ui->webView->setUrl(QString("doc/newp.html"));
 }
