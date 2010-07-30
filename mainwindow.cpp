@@ -163,7 +163,7 @@ void MainWindow::onNewSolution()
         if(!currentSolution()->currentProject()->oopProject())
         {
             currentSolution()->currentProject()->getWorkingVersion()->getTablesItem()->setText(0, tr("Tables"));
-            delete currentSolution()->currentProject()->getWorkingVersion()->getTableInstancesItem();
+            //delete currentSolution()->currentProject()->getWorkingVersion()->getTableInstancesItem();
         }
 
         enableActions();
@@ -205,10 +205,17 @@ void MainWindow::currentProjectTreeItemChanged(QTreeWidgetItem * current, QTreeW
     if(current)
     {
         if(current == getWorkingProject()->getWorkingVersion()->getTablesItem())
-        {// we have clicked on the Tables item
+        {// we have clicked on the Tables item (i.e.t. the list of tables)
             TablesListForm* tblLst = new TablesListForm(this);
             tblLst->populateTables(getWorkingProject()->getWorkingVersion()->getTables());
             setCentralWidget(tblLst);
+        }
+        else
+        if(current == getWorkingProject()->getLocation())
+        {
+            ProjectDetailsForm* prjDetailsForm = new ProjectDetailsForm(this);
+            prjDetailsForm->setProject(m_currentSolution->currentProject());
+            setCentralWidget(prjDetailsForm);
         }
         else
         {
@@ -507,7 +514,8 @@ void MainWindow::enableActions()
         ui->action_NewTable->setText(tr("New Table"));
         ui->action_NewTable->setToolTip(tr("Create a new Table"));
 
-        getWorkingProject()->getWorkingVersion()->getTableInstancesItem()->setHidden(true);
+        ContextMenuEnabledTreeWidgetItem* item = getWorkingProject()->getWorkingVersion()->getTableInstancesItem();
+        item->setHidden(true);
 
     }
 }

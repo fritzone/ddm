@@ -81,7 +81,7 @@ public slots:
     /// when the user clicked the cna be null checkbox
     void onCanBeNullClicked();
 
-
+    void onHelp();
 
 protected:
 

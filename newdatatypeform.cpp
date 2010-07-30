@@ -35,6 +35,8 @@ NewDataTypeForm::NewDataTypeForm(DatabaseEngine* dbe, QWidget *parent) :
 
     populateCodepageCombo();
     resetContent();
+
+    m_ui->grpHelp->setHidden(true);
 }
 
 NewDataTypeForm::~NewDataTypeForm()
@@ -469,4 +471,11 @@ void NewDataTypeForm::keyPressEvent(QKeyEvent *evt)
     {
         QWidget::keyPressEvent(evt);
     }
+}
+
+void NewDataTypeForm::onHelp()
+{
+    m_ui->grpHelp->setHidden(false);
+    m_ui->btnHelp->setHidden(true);
+    m_ui->webView->setUrl(QString("doc/dtyp.html"));
 }
