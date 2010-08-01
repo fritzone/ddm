@@ -9,7 +9,7 @@
 #include "Project.h"
 
 MajorVersion::MajorVersion(QTreeWidget* tree, QTreeWidget* dttree, ContextMenuEnabledTreeWidgetItem* projectItem, int ver, Project* p) :
-        m_project(p), tablesItem(0), tableInstancesItem(0),
+        tablesItem(0), m_project(p), tableInstancesItem(0),
         dtsItem(0), versionItem(0), diagramsItem(0), version(""), m_dataTypes(), m_tables(), m_diagrams(), m_tableInstances(),
         m_tree(tree), m_dtTree(dttree), m_projectItem(projectItem), m_tablePopupMenu(0),
         action_RemoveTable(0), action_DuplicateTable(0), action_SpecializeTable(0), action_InstantiateTable(0),

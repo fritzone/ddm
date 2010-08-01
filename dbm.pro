@@ -11,7 +11,7 @@ TEMPLATE = app
 SOURCES += main.cpp \
     mainwindow.cpp \
     MainWindowButtonDialog.cpp \
-    NewProjectDialog.cpp \
+    newprojectdialog.cpp \
     newdatatypeform.cpp \
     datatypeslistform.cpp \
     AbstractDTSupplier.cpp \
@@ -60,7 +60,7 @@ SOURCES += main.cpp \
     DynamicActionHandlerforMainWindow.cpp
 HEADERS += MainWindow.h \
     MainWindowButtonDialog.h \
-    NewProjectDialog.h \
+    newprojectdialog.h \
     newdatatypeform.h \
     datatypeslistform.h \
     AbstractDTSupplier.h \
@@ -119,8 +119,7 @@ HEADERS += MainWindow.h \
     TableInstance.h \
     TableInstanceForm.h \
     StartupValuesHelper.h \
-    DynamicActionHandlerForMainWindow.h \
-    newprojectdialog.h
+    DynamicActionHandlerForMainWindow.h
 FORMS += mainwindow.ui \
     mainwindowbuttondialog.ui \
     newprojectdialog.ui \
