@@ -70,6 +70,7 @@ ContextMenuEnabledTreeWidget* MainWindow::setupGuiForNewSolution()
     dock->setFeatures(QDockWidget::AllDockWidgetFeatures);
     dock->setFloating(false);
     dock->setMinimumSize(200, 340);
+    dock->setMaximumSize(400, 340);
     dock->resize(201,341);
 
 
