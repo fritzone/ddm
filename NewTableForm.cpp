@@ -98,6 +98,8 @@ NewTableForm::NewTableForm(DatabaseEngine* db, Project* prj, QWidget *parent) : 
     {
         m_ui->tabWidget->removeTab(3);
     }
+
+    m_ui->grpHelp->setHidden(true);
 }
 
 NewTableForm::~NewTableForm()
@@ -1554,4 +1556,11 @@ void NewTableForm::onTemporaryChange(int a)
 void NewTableForm::onDeleteDefaultRow()
 {
     m_ui->tableStartupValues->removeRow(m_ui->tableStartupValues->currentRow());
+}
+
+void NewTableForm::onHelp()
+{
+    m_ui->grpHelp->setHidden(false);
+    m_ui->btnHelp->setHidden(true);
+    m_ui->webView->setUrl(QString("doc/tabl.html"));
 }
