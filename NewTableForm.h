@@ -44,8 +44,9 @@ public slots:
 
     // main page
     void onStorageEngineChange(QString);
-    void onItemChanged(QTreeWidgetItem*,QTreeWidgetItem*); // this is not used
+    void onItemChanged(QTreeWidgetItem*,QTreeWidgetItem*);
     void onButtonsClicked(QAbstractButton*);
+    void onHelp();
 
     // on the columns page
     void onAddColumn();

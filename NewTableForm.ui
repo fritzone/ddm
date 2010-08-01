@@ -7,8 +7,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>902</width>
-    <height>683</height>
+    <width>1257</width>
+    <height>731</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -1170,9 +1170,9 @@ p, li { white-space: pre-wrap; }
           </widget>
          </item>
          <item>
-          <widget class="QPushButton" name="pushButton">
+          <widget class="QPushButton" name="btnHelp">
            <property name="text">
-            <string>PushButton</string>
+            <string>Help</string>
            </property>
           </widget>
          </item>
@@ -1183,7 +1183,7 @@ p, li { white-space: pre-wrap; }
     </widget>
    </item>
    <item>
-    <widget class="QGroupBox" name="groupBox_9">
+    <widget class="QGroupBox" name="grpHelp">
      <property name="title">
       <string/>
      </property>
@@ -1798,6 +1798,22 @@ p, li { white-space: pre-wrap; }
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>btnHelp</sender>
+   <signal>clicked()</signal>
+   <receiver>NewTableForm</receiver>
+   <slot>onHelp()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>844</x>
+     <y>681</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>628</x>
+     <y>365</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <designerdata>
   <property name="gridDeltaX">
@@ -1851,5 +1867,6 @@ p, li { white-space: pre-wrap; }
   <slot>onPersistentChange(int)</slot>
   <slot>onTemporaryChange(int)</slot>
   <slot>onDeleteDefaultRow()</slot>
+  <slot>onHelp()</slot>
  </slots>
 </ui>
