@@ -16,57 +16,27 @@ class Column : virtual public TreeItem, public SerializableElement
 public:
     Column(const QString& name, const UserDataType* type, bool, bool );
 
-    const QString& getName() const
-    {
-        return m_name;
-    }
+    const QString& getName() const;
 
-    const UserDataType* getDataType() const
-    {
-        return m_type;
-    }
+    const UserDataType* getDataType() const;
 
-    bool isPk() const
-    {
-        return m_pk;
-    }
+    bool isPk() const;
 
-    void setName(const QString& name)
-    {
-        m_name = name;
-    }
+    void setName(const QString& name);
 
-    void setDataType(const UserDataType* dt)
-    {
-        m_type = dt;
-    }
+    void setDataType(const UserDataType* dt);
 
-    void setPk(bool pk)
-    {
-        m_pk = pk;
-    }
+    void setPk(bool pk);
 
-    void setDescription(const QString& desc)
-    {
-        m_description = desc;
-    }
+    void setDescription(const QString& desc);
 
-    QString getDescription() const
-    {
-        return m_description;
-    }
+    QString getDescription() const;
 
     virtual void serialize(QDomDocument &doc, QDomElement &parent) const;
 
-    bool hasAutoIncrement() const
-    {
-        return m_autoIncrement;
-    }
+    bool hasAutoIncrement() const;
 
-    void setAutoIncrement(bool a)
-    {
-        m_autoIncrement = a;
-    }
+    void setAutoIncrement(bool a);
 
 private:
     QString m_name;

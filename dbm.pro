@@ -20,7 +20,6 @@ SOURCES += main.cpp \
     UserDataType.cpp \
     Project.cpp \
     MajorVersion.cpp \
-    Version.cpp \
     AbstractCodepageSupplier.cpp \
     MySQLCodepageSupplier.cpp \
     Codepage.cpp \

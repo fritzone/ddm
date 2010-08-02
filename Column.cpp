@@ -26,3 +26,54 @@ void Column::serialize(QDomDocument &doc, QDomElement &parent) const
     parent.appendChild(columnElement);
 
 }
+
+const QString& Column::getName() const
+{
+    return m_name;
+}
+
+const UserDataType* Column::getDataType() const
+{
+    return m_type;
+}
+
+bool Column::isPk() const
+{
+    return m_pk;
+}
+
+void Column::setName(const QString& name)
+{
+    m_name = name;
+}
+
+void Column::setDataType(const UserDataType* dt)
+{
+    m_type = dt;
+}
+
+void Column::setPk(bool pk)
+{
+    m_pk = pk;
+}
+
+void Column::setDescription(const QString& desc)
+{
+    m_description = desc;
+}
+
+QString Column::getDescription() const
+{
+    return m_description;
+}
+
+bool Column::hasAutoIncrement() const
+{
+    return m_autoIncrement;
+}
+
+void Column::setAutoIncrement(bool a)
+{
+    m_autoIncrement = a;
+}
+
