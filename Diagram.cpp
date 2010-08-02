@@ -85,7 +85,7 @@ void Diagram::forcefullyRemoveForeignKey(ForeignKey* fk)
     int i=0;
     while(i<m_fksOnStage.size())
     {
-        if(m_fksOnStage.at(i)->descriptor()->fkName == fk->getName())
+        if(m_fksOnStage.at(i)->descriptor()->getFkName() == fk->getName())
         {
             m_fksOnStage.remove(i);
             return;

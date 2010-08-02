@@ -100,7 +100,7 @@ void FkRelationDescriptor::updateContent(bool first)
 
     rel1Txt->setPos(tab2SidePointsForText[whichSecond]);
 
-    m_descriptor->rel1TxtPos = tab2SidePointsForText[whichSecond];
+    m_descriptor->setRel1TxtPos(tab2SidePointsForText[whichSecond]);
 
     // now setting up the second relation text
 
@@ -114,7 +114,7 @@ void FkRelationDescriptor::updateContent(bool first)
 
     rel2Txt->setPos(tab1SidePointsForText[whichFirst]);
 
-    m_descriptor->rel2TxtPos = tab1SidePointsForText[whichFirst];
+    m_descriptor->setRel2TxtPos(tab1SidePointsForText[whichFirst]);
 
     QVector<QPointF> polyPoints;    // the arrowhead: will be built on a circle, first point being the side point of the line, second
                                     // being at 30 degrees to the left, other one at 30 degrees to the right, thus forming an equilateral triangle
@@ -130,8 +130,10 @@ void FkRelationDescriptor::updateContent(bool first)
     QPointF arrowP2 = firstLine->line().p1() + QPointF(sin(angle + M_PI - M_PI / 3) * arrowSize,
                                             cos(angle + M_PI - M_PI / 3) * arrowSize);
 
-    polyPoints.append(arrowP1);         m_descriptor->arrowP1 = arrowP1;
-    polyPoints.append(arrowP2);         m_descriptor->arrowP2 = arrowP2;
+    polyPoints.append(arrowP1);
+    m_descriptor->setArrowP1 (arrowP1);
+    polyPoints.append(arrowP2);
+    m_descriptor->setArrowP2(arrowP2);
     polyPoints.append(QPointF(0, 0));
 
     QPolygonF polyf(polyPoints);
@@ -141,7 +143,8 @@ void FkRelationDescriptor::updateContent(bool first)
     m_arrowHead->setBrush(QBrush(Qt::black));
     m_arrowHead->setZValue(4);
 
-    m_arrowHead->setPos(tab1SidePoints[whichFirst]);    m_descriptor->arrowPos = tab1SidePoints[whichFirst];
+    m_arrowHead->setPos(tab1SidePoints[whichFirst]);
+    m_descriptor->setArrowPos(tab1SidePoints[whichFirst]);
 }
 
 void FkRelationDescriptor::freePreviousData()
@@ -247,14 +250,14 @@ void FkRelationDescriptor::recreate(Diagram* dgr)
     m_ellipse->setBrush(QBrush(Qt::black));
 
     rel1Txt = new QGraphicsTextItem(getFk()->getLocalDescriptiveText());
-    rel1Txt->setPos(m_descriptor->rel1TxtPos);
+    rel1Txt->setPos(m_descriptor->getRel1TxtPos());
 
     rel2Txt = new QGraphicsTextItem(getFk()->getForeignDescriptiveText());
-    rel2Txt->setPos(m_descriptor->rel2TxtPos);
+    rel2Txt->setPos(m_descriptor->getRel2TxtPos());
 
     QVector<QPointF> polyPoints;
-    polyPoints.append(m_descriptor->arrowP1);
-    polyPoints.append(m_descriptor->arrowP2);
+    polyPoints.append(m_descriptor->getArrowP1());
+    polyPoints.append(m_descriptor->getArrowP2());
     polyPoints.append(QPointF(0, 0));
 
     QPolygonF polyf(polyPoints);
@@ -264,7 +267,7 @@ void FkRelationDescriptor::recreate(Diagram* dgr)
     m_arrowHead->setBrush(QBrush(Qt::black));
     m_arrowHead->setZValue(4);
 
-    m_arrowHead->setPos(m_descriptor->arrowPos);
+    m_arrowHead->setPos(m_descriptor->getArrowPos());
 }
 
 void FkRelationDescriptor::addToScene(ERGraphicsScene * scene)

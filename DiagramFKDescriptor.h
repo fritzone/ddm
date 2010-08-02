@@ -70,6 +70,61 @@ public:
 
     }
 
+    QString getFkName() const
+    {
+        return fkName;
+    }
+
+    QPointF getArrowPos() const
+    {
+        return arrowPos;
+    }
+
+    void setArrowPos(QPointF ap)
+    {
+        arrowPos = ap;
+    }
+
+    QPointF getArrowP2() const
+    {
+        return arrowP2;
+    }
+
+    void setArrowP2(QPointF ap)
+    {
+        arrowP2 = ap;
+    }
+
+    QPointF getArrowP1() const
+    {
+        return arrowP1;
+    }
+
+    void setArrowP1(QPointF ap)
+    {
+        arrowP1 = ap;
+    }
+
+    QPointF getRel2TxtPos() const
+    {
+        return rel2TxtPos;
+    }
+
+    void setRel2TxtPos(QPointF p)
+    {
+        rel2TxtPos = p;
+    }
+
+    QPointF getRel1TxtPos() const
+    {
+        return rel1TxtPos;
+    }
+
+    void setRel1TxtPos(QPointF p)
+    {
+        rel1TxtPos = p;
+    }
+
     QPointF m_ellipsePos;       // the place of the ellipse
 
     QPointF line1OtherPoint;    // the first point of the line is (0,0) this is the other point
@@ -78,16 +133,17 @@ public:
     QPointF line2OtherPoint;    // the first point of the line is (0,0) this is the other point
     QPointF line2PosPoint;      // where the line is placed after created
 
+private:
     QPointF rel1TxtPos;         // where the first relation text will be placed
-    QPointF rel2TxtPos;         // where the second relation text will be placed
 
+    QPointF rel2TxtPos;         // where the second relation text will be placed
     QPointF arrowP1;
     QPointF arrowP2;
-
     QPointF arrowPos;
+
     QString fkName;
 
-private:
+
 
     // the second table name
     QString m_txt2;

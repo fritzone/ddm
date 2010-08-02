@@ -18,8 +18,8 @@ class TableInstance;
 class Version : virtual public SerializableElement
 {
 public:
-    Version();
-    virtual ~Version();
+    Version() {};
+    virtual ~Version() {};
 
     /**
      * Return the tree item of the Data Types
