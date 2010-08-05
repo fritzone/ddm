@@ -8,6 +8,7 @@ class AbstractDTSupplier;
 class AbstractCodepageSupplier;
 class AbstractIndextypeProvider;
 class AbstractStorageEngineListProvider;
+class AbstractSqlGenerator;
 
 /**
  * This class is a kind of "wrapper" for the other classes that all deal
@@ -40,6 +41,11 @@ public:
 
     AbstractStorageEngineListProvider* getStorageEngineListProviders() const;
 
+    /**
+     * Returns an SQL generator for this database engine
+     */
+    AbstractSqlGenerator* getSqlGenerator() const;
+
     const QString& getDatabase() const
     {
         return database;
@@ -67,6 +73,8 @@ private:
     static QMap<QString, AbstractIndextypeProvider*> indextypeProviders;
 
     static QMap<QString, AbstractStorageEngineListProvider*> storageEngineProviders;
+
+    static QMap<QString, AbstractSqlGenerator*> sqlGenerators;
 
     // whether the map above was initialized or not
     static bool genericInit;

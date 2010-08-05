@@ -14,6 +14,8 @@
 #include "AbstractStorageEngineListProvider.h"
 #include "ForeignKey.h"
 #include "StartupValuesHelper.h"
+#include "AbstractSQLGenerator.h"
+#include "SqlHighlighter.h"
 
 #include <QMessageBox>
 #include <QHashIterator>
@@ -31,6 +33,8 @@ NewTableForm::NewTableForm(DatabaseEngine* db, Project* prj, QWidget *parent) : 
     m_currentForeignKey(0), m_foreignKeySelected(false), m_changes(false), m_currentStorageEngine(0), m_engineProviders(0)
 {
     m_ui->setupUi(this);
+
+    highlighter = new SqlHighlighter(m_ui->txtSql->document());
 
     const QVector<UserDataType*>& dts = m_project->getWorkingVersion()->getDataTypes();
     for(int i=0; i<dts.size(); i++)
@@ -60,6 +64,8 @@ NewTableForm::NewTableForm(DatabaseEngine* db, Project* prj, QWidget *parent) : 
         m_ui->lblStorageEngine->hide();
         m_ui->cmbStorageEngine->hide();
     }
+
+    m_ui->grpSqlOptions->hide();
 
     // fill in the index types combo box depending on the storage engine if applicable
     populateIndexTypesDependingOnStorageEngine();
@@ -287,11 +293,9 @@ void NewTableForm::populateTable(const Table *table, bool parentTab)
             {
                 QTableWidgetItem* newItem = new QTableWidgetItem(rowI[j]);
                 m_ui->tableStartupValues->setItem(i, j, newItem);
-
             }
         }
     }
-
 }
 
 void NewTableForm::setTable(Table *table)
@@ -397,7 +401,6 @@ void NewTableForm::onAddColumn()
     }
     else                    // we are not working on a column, but adding a new one
     {
-
         if(m_table->parentsHaveColumn(m_ui->txtNewColumnName->text()))
         {
             QMessageBox::critical (this, tr("Error"), tr("You are not allowed to update a parent tables columns from a specialized table. (If you want to enable the text fields, press the cancel button next to this button.)"), QMessageBox::Ok);
@@ -538,11 +541,6 @@ void NewTableForm::onMoveColumnUp()
             m_changes = true;
         }
     }
-}
-
-void NewTableForm::onItemChanged(QTreeWidgetItem*, QTreeWidgetItem*)
-{
-
 }
 
 void NewTableForm::toggleColumnFieldDisableness(bool a)
@@ -1563,4 +1561,26 @@ void NewTableForm::onHelp()
     m_ui->grpHelp->setHidden(false);
     m_ui->btnHelp->setHidden(true);
     m_ui->webView->setUrl(QString("doc/tabl.html"));
+}
+
+void NewTableForm::onChangeTab(int idx)
+{
+    if(idx > 0)
+    {
+        if(m_ui->tabWidget->tabText(idx) == "SQL")
+        {
+            m_ui->txtSql->setText(m_project->getEngine()->getSqlGenerator()->generateSql(m_table, QHash<QString,QString>()));
+        }
+    }
+}
+
+void NewTableForm::onChangeDescription()
+{
+    m_table->setDescription(m_ui->txtDescription->toPlainText());
+}
+
+void NewTableForm::onChangeName(QString a)
+{
+    m_table->setName(a);
+    m_ui->txtSql->setText(m_project->getEngine()->getSqlGenerator()->generateSql(m_table, QHash<QString,QString>()));
 }

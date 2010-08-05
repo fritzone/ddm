@@ -125,15 +125,56 @@ public:
         rel1TxtPos = p;
     }
 
+    QPointF getLine2PosPoint() const
+    {
+        return line2PosPoint;
+    }
+
+    void setLine2PosPoint(QPointF p)
+    {
+        line2PosPoint = p;
+    }
+
+    QPointF getLine2OtherPoint() const
+    {
+        return line2OtherPoint;
+    }
+
+    void setLine2OtherPoint(QPointF p)
+    {
+        line2OtherPoint = p;
+    }
+
+
+    QPointF getLine1PosPoint() const
+    {
+        return line1PosPoint;
+    }
+
+    void setLine1PosPoint(QPointF p)
+    {
+        line1PosPoint = p;
+    }
+
+    QPointF getLine1OtherPoint() const
+    {
+        return line1OtherPoint;
+    }
+
+    void setLine1OtherPoint(QPointF p)
+    {
+        line1OtherPoint = p;
+    }
+
     QPointF m_ellipsePos;       // the place of the ellipse
 
-    QPointF line1OtherPoint;    // the first point of the line is (0,0) this is the other point
-    QPointF line1PosPoint;      // where the line is placed after created
 
-    QPointF line2OtherPoint;    // the first point of the line is (0,0) this is the other point
-    QPointF line2PosPoint;      // where the line is placed after created
 
 private:
+    QPointF line1OtherPoint;    // the first point of the line is (0,0) this is the other point
+    QPointF line1PosPoint;      // where the line is placed after created
+    QPointF line2OtherPoint;    // the first point of the line is (0,0) this is the other point
+    QPointF line2PosPoint;      // where the line is placed after created
     QPointF rel1TxtPos;         // where the first relation text will be placed
 
     QPointF rel2TxtPos;         // where the second relation text will be placed

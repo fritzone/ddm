@@ -242,6 +242,17 @@ QStringList Table::columns() const
     return result;
 }
 
+QStringList Table::indices() const
+{
+    QStringList result;
+    for(int i=0; i<m_indices.size(); i++)
+    {
+        result << m_indices[i]->getName();
+    }
+    return result;
+
+}
+
 QStringList Table::fullColumns() const
 {
     QStringList result;
@@ -261,6 +272,24 @@ QStringList Table::fullColumns() const
     return result;
 }
 
+QStringList Table::fullIndices() const
+{
+    QStringList result;
+
+    const Table* p = m_parent;
+    while(p)
+    {
+        result << p->indices();
+        p = p->m_parent;
+    }
+
+
+    for(int i=0; i<indices().size(); i++)
+    {
+        result << indices()[i];
+    }
+    return result;
+}
 
 
 void Table::serialize(QDomDocument &doc, QDomElement &parent) const
@@ -342,7 +371,7 @@ void Table::setDefaultValues(QVector <QVector <QString> > & values)
     m_startupValues = values;
 }
 
-const UserDataType* Table::getDataTypeOfColumn(const QString& cname)
+const UserDataType* Table::getDataTypeOfColumn(const QString& cname) const
 {
     Column* col = getColumn(cname);
     if(!col)
