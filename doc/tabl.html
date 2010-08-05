@@ -15,33 +15,60 @@
 </HEAD>
 <BODY LANG="en-US" BGCOLOR="#23b8dc" DIR="LTR">
 <P ALIGN=CENTER STYLE="margin-bottom: 0in; background: #23b8dc; border: none; padding: 0in; font-style: normal; line-height: 115%; text-decoration: none">
-<FONT COLOR="#000000"><FONT FACE="Arial"><FONT SIZE=3><B> Data type</B></FONT></FONT></FONT></P>
+<FONT COLOR="#000000"><FONT FACE="Arial"><FONT SIZE=3><B> Tables</B></FONT></FONT></FONT></P>
 <P STYLE="margin-bottom: 0in; background: #23b8dc; font-style: normal; font-weight: normal; line-height: 115%; text-decoration: none">
-<FONT COLOR="#000000"><FONT FACE="Arial"><FONT SIZE=2 STYLE="font-size: 11pt">Properties
-of the data type</FONT></FONT></FONT></P>
+<FONT COLOR="#000000"><FONT FACE="Arial"><FONT SIZE=2 STYLE="font-size: 11pt">In a relational database a table is a set of data, organized in a model using horizontal rows and vertical columns. The columns are identified by a name, and the rows are identified by the values appearing in the columns belonging to the rows key elements. The table can have a specific number of columns and an unlimited number of rows. DDM allows you to create tables using the Data types yo have defined acting as the types for columns, and also allows you to set up relationships between various tables, which can be later presented in a diagram.</FONT></FONT></FONT></P>
 <P STYLE="margin-bottom: 0in; background: #23b8dc; line-height: 115%">
-<FONT SIZE=2 STYLE="font-size: 11pt"><FONT COLOR="#000000"><SPAN STYLE="text-decoration: none"><FONT FACE="Arial"><SPAN STYLE="font-style: normal"><B>Name:
-</B></SPAN></FONT></SPAN></FONT><FONT COLOR="#000000"><SPAN STYLE="text-decoration: none"><FONT FACE="Arial"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">Give
-a unique name for the data type. A small advice is to follow some
-consistent notation among your datatypes.<BR><BR></SPAN></SPAN></FONT></SPAN></FONT><FONT COLOR="#000000"><SPAN STYLE="text-decoration: none"><FONT FACE="Arial"><SPAN STYLE="font-style: normal"><B>Type</B></SPAN></FONT></SPAN></FONT><FONT COLOR="#000000"><SPAN STYLE="text-decoration: none"><FONT FACE="Arial"><SPAN STYLE="font-style: normal"><B>:
-</B></SPAN></FONT></SPAN></FONT><FONT COLOR="#000000"><SPAN STYLE="text-decoration: none"><FONT FACE="Arial"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">A</SPAN></SPAN></FONT></SPAN></FONT><FONT COLOR="#000000"><SPAN STYLE="text-decoration: none"><FONT FACE="Arial"><SPAN STYLE="font-style: normal"><B>
-</B></SPAN></FONT></SPAN></FONT><FONT COLOR="#000000"><SPAN STYLE="text-decoration: none"><FONT FACE="Arial"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">datatype
-can be either a number, or a string, a boolean, a date or a.blob.
-Specify here the type of teh datatype</SPAN></SPAN></FONT></SPAN></FONT><FONT COLOR="#000000"><SPAN STYLE="text-decoration: none"><FONT FACE="Arial"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal"><BR><BR></SPAN></SPAN></FONT></SPAN></FONT><FONT COLOR="#000000"><SPAN STYLE="text-decoration: none"><FONT FACE="Arial"><SPAN STYLE="font-style: normal"><B>Underlying
-SQL</B></SPAN></FONT></SPAN></FONT><FONT COLOR="#000000"><SPAN STYLE="text-decoration: none"><FONT FACE="Arial"><SPAN STYLE="font-style: normal"><B>:
-</B></SPAN></FONT></SPAN></FONT><FONT COLOR="#000000"><SPAN STYLE="text-decoration: none"><FONT FACE="Arial"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">Select
-the SQL type this datatype will have. This combobox is populated
-bassed on the type of the datatype</SPAN></SPAN></FONT></SPAN></FONT><FONT COLOR="#000000"><SPAN STYLE="text-decoration: none"><FONT FACE="Arial"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal"><BR><BR></SPAN></SPAN></FONT></SPAN></FONT><FONT COLOR="#000000"><SPAN STYLE="text-decoration: none"><FONT FACE="Arial"><SPAN STYLE="font-style: normal"><B>Width:
-</B></SPAN></FONT></SPAN></FONT><FONT COLOR="#000000"><SPAN STYLE="text-decoration: none"><FONT FACE="Arial"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">This
-is the width of the data-type. For text/blob type DTs this.is the
-length of the text, for numerical types this is the max number of
-column digits. Also you can specify a decimal counter, seprated by a
-comma from the width (such as 10,2). This field is not used for the
-other types.<BR><BR></SPAN></SPAN></FONT></SPAN></FONT><FONT COLOR="#000000"><SPAN STYLE="text-decoration: none"><FONT FACE="Arial"><SPAN STYLE="font-style: normal"><B>Values:</B></SPAN></FONT></SPAN></FONT><FONT COLOR="#000000"><SPAN STYLE="text-decoration: none">
-</SPAN></FONT><FONT COLOR="#000000"><SPAN STYLE="text-decoration: none"><FONT FACE="Arial"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">In
-case you want to create a “Misc” datatype which can choose its
-values from a list (such as ENUM, or SET) here you can add the
-initial values of the datatype.<BR><BR></SPAN></SPAN></FONT></SPAN></FONT></FONT><BR>
+<FONT SIZE=2 STYLE="font-size: 11pt"><FONT COLOR="#000000"><SPAN STYLE="text-decoration: none"><FONT FACE="Arial"><SPAN STYLE="font-style: normal"><B>Table Name:
+</B><SPAN STYLE="font-weight: normal">Give
+a unique name for the table type. A small advice is to follow some
+consistent notation among your tables. <br>
+<strong>Save:</strong> When you're done with the modifications of the current table please press this button.</SPAN></SPAN></FONT></SPAN></FONT></FONT></P>
+<P STYLE="margin-bottom: 0in; background: #23b8dc; line-height: 115%"><FONT SIZE=2 STYLE="font-size: 11pt"><FONT COLOR="#000000"><SPAN STYLE="text-decoration: none"><FONT FACE="Arial"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal"><em><strong>Columns page</strong></em><BR>
+              <br>
+              <em>Columns list<br>
+              </em><br>
+              The list of columns contains all the columns you have created for this table. The PK field has a <img src="key.png" alt="key" width="16" height="16"> icon in case this is a primary key. By clicking on a column in the list you select the column, and you can modify the name, type or other properties of it.<br>
+              <br>
+  By clicking the <img src="up.png" alt="up" width="16" height="16"> button you move the selected column &quot;Up&quot; in the list(ie. to the left in the tables columns), and by clicking the <img src="down.png" alt="down" width="16" height="16"> button you move the selected column &quot;Down&quot; (ie. to the rght in the tables columns). By clicking the <img src="remove.png" alt="remove" width="16" height="16"> button you delete the selected column from the list (and from the table).<br>
+  <br>
+  <em>New Column<br>
+  <br>
+  </em></SPAN></SPAN><SPAN STYLE="font-weight: bold">Name: </SPAN>Give a unique name in this table for th<SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">e new column.<br>
+  <br>
+  <strong>Type: </strong>Choose the type of the column from the list of Data types you have created.<br>
+  <br>
+  <strong>Primary key:</strong> If you want your column to take part from a list of primary key columns, check this checkbox.<br>
+  <br>
+  <strong>Auto increment: </strong>The incrementation of Numeric types can be taken care automatically by the MySQL database, however this is ignored for non numeric types.<br>
+  <br>
+  <strong>Description: </strong>Give a meaningful description for the column, as this text will appear in the generated code in form of comments and in the generated documentation too.<br>
+  <br>
+  When you have filled up the required fields to create a column press the <img src="add.png" alt="add" width="16" height="16"> button to add the new column to the table. If you have a column already selected the <img src="add.png" alt="add" width="16" height="16"> button will be replaced by the <img src="apply.png" alt="apply" width="16" height="16"> button and pressing it will update the column in the table. </SPAN></SPAN><FONT SIZE=2 STYLE="font-size: 11pt"><FONT COLOR="#000000"><span style="font-weight: normal">By pressing the <img src="cancel.png" alt="cancel" width="16" height="16"> button you will reset the changes you have done and can start over again. No changes will be saved to the selected column.</span></FONT></FONT><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal"><br>
+  <BR>
+</SPAN></SPAN></FONT></SPAN></FONT></FONT></P>
+<P STYLE="margin-bottom: 0in; background: #23b8dc; line-height: 115%"><FONT SIZE=2 STYLE="font-size: 11pt"><em><FONT COLOR="#000000"><FONT FACE="Arial"><B>Indices Page</B></FONT></FONT></em><FONT COLOR="#000000"><SPAN STYLE="text-decoration: none"><FONT FACE="Arial"><SPAN STYLE="font-style: normal"><B><br>
+              <br>
+  </B><em>Indices list<br>
+  <br>
+  </em></SPAN>This l<SPAN STYLE="font-style: normal">ist contains the indices that were created for the table. By clicking on an index you select it, and you can modify its properties. You also can delete the selected index with the </SPAN><FONT SIZE=2 STYLE="font-size: 11pt"><FONT COLOR="#000000"><span style="font-weight: normal"><img src="remove.png" alt="remove" width="16" height="16"> button.</span></FONT></FONT><SPAN STYLE="font-style: normal"><br>
+  <br>
+  <em>New Index group.<br>
+  <br>
+  </em></SPAN><strong>Name: </strong>is the name of the index.<br>
+  <br>
+  <strong>Type: </strong>you can define the type of the index depending on the Storage <SPAN STYLE="font-style: normal">Engine.<br>
+  <br>
+  <strong>Columns:</strong> the available columns for the index are on the left side, you can use the <img src="right.png" alt="right" width="16" height="16"> button to move the selected columnto the right (and you can use the <img src="left.png" alt="left" width="16" height="16"> button to remove the selected column from the index). Once a column has been moved to the right side (meaning it was added to the index) you can move them up/down with the </SPAN><FONT SIZE=2 STYLE="font-size: 11pt"><FONT COLOR="#000000"><span style="font-weight: normal"> <img src="up.png" alt="up" width="16" height="16">/</span><FONT SIZE=2 STYLE="font-size: 11pt"><FONT COLOR="#000000"><FONT SIZE=2 STYLE="font-size: 11pt"><FONT COLOR="#000000"><span style="font-weight: normal"><img src="down.png" alt="down" width="16" height="16"></span></FONT></FONT></FONT></FONT><span style="font-weight: normal"> buttons.<br>
+  <br>
+When done press the </span></FONT></FONT></FONT><FONT SIZE=2 STYLE="font-size: 11pt"><FONT COLOR="#000000"><FONT FACE="Arial"><span style="font-weight: normal"> <img src="add.png" alt="add" width="16" height="16"> button to add the new index to the table. Pressing</span></FONT><FONT SIZE=2 STYLE="font-size: 11pt"><FONT COLOR="#000000"><FONT FACE="Arial"><FONT SIZE=2 STYLE="font-size: 11pt"><FONT COLOR="#000000"><span style="font-weight: normal"> <img src="cancel.png" alt="cancel" width="16" height="16"></span></FONT></FONT></FONT></FONT></FONT><FONT FACE="Arial"><span style="font-weight: normal"> the button you will cancel editing the current index.</span></FONT></FONT></FONT></SPAN></FONT></FONT></P>
+<P STYLE="margin-bottom: 0in; background: #23b8dc; line-height: 115%"><FONT SIZE=2 STYLE="font-size: 11pt"><FONT COLOR="#000000"><SPAN STYLE="text-decoration: none"><FONT SIZE=2 STYLE="font-size: 11pt"><FONT COLOR="#000000"><FONT FACE="Arial"><span style="font-weight: normal">.</span></FONT></FONT></FONT><FONT FACE="Arial"><SPAN STYLE="font-style: normal"><br>
+  <br>
+  Values:</SPAN></FONT></SPAN></FONT>
+  <FONT COLOR="#000000"><SPAN STYLE="text-decoration: none"><FONT FACE="Arial"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">In
+      case you want to create a “Misc” datatype which can choose its
+      values from a list (such as ENUM, or SET) here you can add the
+    initial values of the datatype.<BR><BR></SPAN></SPAN></FONT></SPAN></FONT></FONT><BR>
 </P>
 </BODY>
 </HTML>
