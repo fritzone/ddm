@@ -242,6 +242,8 @@ public:
      */
     Column* getColumnFromParents(const QString& name) const;
 
+
+
     QStringList fullIndices() const;
 
     QStringList indices() const;
@@ -250,7 +252,7 @@ public:
     {
         return m_description;
     }
-    
+
 private:
     // the name of the table
     QString m_name;

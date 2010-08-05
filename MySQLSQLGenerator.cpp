@@ -34,7 +34,7 @@ QString MySQLSQLGenerator::generateSql(const Table *table, const QHash<QString, 
 
     QString result ;
     result = "-- ";
-    result += table->getDescription() + "\n";
+    result += (table->getDescription().length()>0?table->getDescription():" Create table " + table->getName()) + "\n";
     result += upcase? "CREATE " : "create ";
     result += table->isTemporary()? upcase? "TEMPORARY ":"temporary ":"";
 
@@ -67,7 +67,7 @@ QString MySQLSQLGenerator::generateSql(const Table *table, const QHash<QString, 
 
         // column type
         const UserDataType* dt = table->getDataTypeOfColumn(table->fullColumns()[i]);
-        result += dt->getSqlType();
+        result += upcase?dt->sqlAsString().toUpper():dt->sqlAsString().toLower();
 
         // is this primary key?
         if(col->isPk())
@@ -91,7 +91,9 @@ QString MySQLSQLGenerator::generateSql(const Table *table, const QHash<QString, 
         // do we have a default value for this columns' data type?
         if(dt->getDefaultValue().length() > 0)
         {
-            result += QString(upcase?" DEFAULT ":" default ") + dt->getDefaultValue();
+            result += QString(upcase?" DEFAULT ":" default ") +
+                      QString(dt->getType()==DataType::DT_STRING?"\"":"") + dt->getDefaultValue() +
+                      QString(dt->getType()==DataType::DT_STRING?"\"":"") ;
         }
 
         // do we have more columns after this?
@@ -128,7 +130,6 @@ QString MySQLSQLGenerator::generateSql(const Table *table, const QHash<QString, 
 
     // now create the indexes of the table
 
-    fix the next stuff, add a new field to Table.h to get index from parents
     for(int i=0; i<table->fullIndices().size(); i++)
     {
         result += upcase?"CREATE INDEX ":"create index ";
@@ -136,10 +137,19 @@ QString MySQLSQLGenerator::generateSql(const Table *table, const QHash<QString, 
         result +=upcase?" ON":" on ";
         result += table->getName();
         result += "(";
-        for(int j=0; j<table->getIndices().at(i)->getColumns().size(); j++)
+        Index* idx = table->getIndex(table->fullIndices().at(i));
+        if(idx == 0)
         {
-            result += table->getIndices().at(i)->getColumns().at(j)->getName();
-            if(j<table->getIndices().at(i)->getColumns().size() - 1)
+            idx = table->getIndexFromParents(table->fullIndices().at(i));
+            if(idx == 0)
+            {
+                return "ERROR";
+            }
+        }
+        for(int j=0; j<idx->getColumns().size(); j++)
+        {
+            result += idx->getColumns().at(j)->getName();
+            if(j<idx->getColumns().size() - 1)
             {
                 result += ", ";
             }
