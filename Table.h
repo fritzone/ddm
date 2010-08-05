@@ -29,12 +29,11 @@ public:
      */
     Table(Version* v);
 
-    virtual ~Table()
-    {
-    }
+    virtual ~Table() {}
 
     /**
      * Adds a new column to the table
+     * @param column - the column to add
      */
     void addColumn(Column* column);
 
@@ -60,14 +59,10 @@ public:
     Index* getIndex(const QString&) const;
 
     /**
-     * Returns the column with the given name
+     * Returns the column with the given name. It searches only in the current table, parent tables are not searched.
+     * @param name - the name of the column we're looking for
      */
     Column* getColumn(const QString& name) const;
-
-    /**
-     * Returns the column with the given name, performs a search only in the parent tables
-     */
-    Column* getColumnFromParents(const QString& name) const;
 
     /**
      * Returns the columns of this table for a read-only access
@@ -238,8 +233,24 @@ public:
         return m_tempTabName;
     }
 
-    const UserDataType* getDataTypeOfColumn(const QString& cname);
+    /**
+     */
+    const UserDataType* getDataTypeOfColumn(const QString& cname) const;
 
+    /**
+     * Returns the column with the given name, performs a search only in the parent tables
+     */
+    Column* getColumnFromParents(const QString& name) const;
+
+    QStringList fullIndices() const;
+
+    QStringList indices() const;
+
+    QString getDescription() const
+    {
+        return m_description;
+    }
+    
 private:
     // the name of the table
     QString m_name;

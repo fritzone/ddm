@@ -13,7 +13,6 @@ class MajorVersion;
 class Version;
 class DatabaseEngine;
 
-
 /**
  * Holds the data of a project.
  * TODO: I don't like that the clas is knowing a QTreeWidget item. When there's new time, find a way to detach it from this class.

@@ -56,7 +56,9 @@ SOURCES += main.cpp \
     TableInstance.cpp \
     TableInstanceForm.cpp \
     StartupValuesHelper.cpp \
-    DynamicActionHandlerforMainWindow.cpp
+    DynamicActionHandlerforMainWindow.cpp \
+    MySQLSQLGenerator.cpp \
+    SqlHighlighter.cpp
 HEADERS += MainWindow.h \
     MainWindowButtonDialog.h \
     newprojectdialog.h \
@@ -118,7 +120,10 @@ HEADERS += MainWindow.h \
     TableInstance.h \
     TableInstanceForm.h \
     StartupValuesHelper.h \
-    DynamicActionHandlerForMainWindow.h
+    DynamicActionHandlerForMainWindow.h \
+    AbstractSQLGenerator.h \
+    MySQLSQLGenerator.h \
+    SqlHighlighter.h
 FORMS += mainwindow.ui \
     mainwindowbuttondialog.ui \
     newprojectdialog.ui \
