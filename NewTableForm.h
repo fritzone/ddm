@@ -20,6 +20,7 @@ class ForeignKey;
 class AbstractStorageEngine;
 class AbstractStorageEngineListProvider;
 class ContextMenuEnabledTreeWidgetItem;
+class SqlHighlighter;
 
 class NewTableForm : public QWidget {
     Q_OBJECT
@@ -44,9 +45,10 @@ public slots:
 
     // main page
     void onStorageEngineChange(QString);
-    void onItemChanged(QTreeWidgetItem*,QTreeWidgetItem*);
+    void onChangeTab(int);
     void onButtonsClicked(QAbstractButton*);
     void onHelp();
+    void onChangeName(QString);
 
     // on the columns page
     void onAddColumn();
@@ -89,6 +91,9 @@ public slots:
 
     void onPersistentChange(int);
     void onTemporaryChange(int);
+
+    // description page
+    void onChangeDescription();
 
 protected:
     void changeEvent(QEvent *e);
@@ -179,6 +184,7 @@ private:
     bool m_changes;
     AbstractStorageEngine* m_currentStorageEngine;
     AbstractStorageEngineListProvider* m_engineProviders;
+    SqlHighlighter* highlighter;
 };
 
 #endif // NEWTABLEFORM_H
