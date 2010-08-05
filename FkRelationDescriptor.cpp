@@ -59,13 +59,13 @@ void FkRelationDescriptor::updateContent(bool first)
 
     firstLine = new QGraphicsLineItem(0, 0, tab1SidePoints[whichFirst].x() - closestPoint.x(), tab1SidePoints[whichFirst].y() - closestPoint.y());
 
-    m_descriptor->line1OtherPoint = QPointF(tab1SidePoints[whichFirst].x() - closestPoint.x(), tab1SidePoints[whichFirst].y() - closestPoint.y());   // when cloning this item the order of construction should be the same as here
+    m_descriptor->setLine1OtherPoint(QPointF(tab1SidePoints[whichFirst].x() - closestPoint.x(), tab1SidePoints[whichFirst].y() - closestPoint.y()));   // when cloning this item the order of construction should be the same as here
 
     firstLine->setX(closestPoint.x());
     firstLine->setY(closestPoint.y());
     firstLine->setZValue(-2);
 
-    m_descriptor->line1PosPoint = closestPoint;
+    m_descriptor->setLine1PosPoint(closestPoint);
 
     // setting up the second line
     int whichSecond = -1;
@@ -73,13 +73,13 @@ void FkRelationDescriptor::updateContent(bool first)
 
     secondLine = new QGraphicsLineItem(0, 0, tab2SidePoints[whichSecond].x() - closestPoint2.x(), tab2SidePoints[whichSecond].y() - closestPoint2.y());
 
-    m_descriptor->line2OtherPoint = QPointF(tab2SidePoints[whichSecond].x() - closestPoint2.x(), tab2SidePoints[whichSecond].y() - closestPoint2.y());
+    m_descriptor->setLine2OtherPoint(QPointF(tab2SidePoints[whichSecond].x() - closestPoint2.x(), tab2SidePoints[whichSecond].y() - closestPoint2.y()));
 
     secondLine->setX(closestPoint2.x());
     secondLine->setY(closestPoint2.y());
     secondLine->setZValue(-2);
 
-    m_descriptor->line2PosPoint = closestPoint2;
+    m_descriptor->setLine2PosPoint(closestPoint2);
 
     // now setting up the ellipse
 
@@ -237,12 +237,12 @@ void FkRelationDescriptor::recreate(Diagram* dgr)
     m_fkitm->setX(m_descriptor->getX());
     m_fkitm->setY(m_descriptor->getY());
 
-    firstLine = new QGraphicsLineItem(0, 0, m_descriptor->line1OtherPoint.x(), m_descriptor->line1OtherPoint.y());
-    firstLine->setPos(m_descriptor->line1PosPoint);
+    firstLine = new QGraphicsLineItem(0, 0, m_descriptor->getLine1OtherPoint().x(), m_descriptor->getLine1OtherPoint().y());
+    firstLine->setPos(m_descriptor->getLine1PosPoint());
     firstLine->setZValue(-2);
 
-    secondLine = new QGraphicsLineItem(0, 0, m_descriptor->line2OtherPoint.x(), m_descriptor->line2OtherPoint.y());
-    secondLine->setPos(m_descriptor->line2PosPoint);
+    secondLine = new QGraphicsLineItem(0, 0, m_descriptor->getLine2OtherPoint().x(), m_descriptor->getLine2OtherPoint().y());
+    secondLine->setPos(m_descriptor->getLine2PosPoint());
     secondLine->setZValue(-2);
 
     m_ellipse = new QGraphicsEllipseItem (m_descriptor->m_ellipsePos.x(), m_descriptor->m_ellipsePos.y(), 10, 10);
