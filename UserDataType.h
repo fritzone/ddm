@@ -73,9 +73,9 @@ public:
         return unsignedDT;
     }
 
-    const QString& getDefaultValue() const
+    const QString getDefaultValue() const
     {
-        return defaultValue;
+        return defaultValue ;
     }
 
     const QStringList& getMiscValues() const

@@ -256,6 +256,7 @@ SqlHighlighter::SqlHighlighter(QTextDocument *parent) : QSyntaxHighlighter(paren
             <<"\\bBIGINT\\b"	    <<"\\bbigint\\b"
             <<"\\bBINARY\\b"	    <<"\\bbinary\\b"
             <<"\\bBLOB\\b"	    <<"\\bblob\\b"
+            <<"\\bBOOL\\b"	    <<"\\bbool\\b"
             <<"\\bCHAR\\b"	    <<"\\bchar\\b"
             <<"\\bCHARACTER\\b"	    <<"\\bcharacter\\b"
             <<"\\bDEC\\b"	    <<"\\bdec\\b"
