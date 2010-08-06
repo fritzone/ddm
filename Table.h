@@ -3,6 +3,7 @@
 
 #include "TreeItem.h"
 #include "SerializableElement.h"
+#include "SqlSourceEntity.h"
 
 #include <QString>
 #include <QVector>
@@ -20,7 +21,7 @@ class UserDataType;
  * The table class holds a database table defined by the user. It must be derived from the TreeItem since a table can be placed in
  * the tree, so the user of it must know how to update the visual part too.
  */
-class Table : virtual public TreeItem, public SerializableElement
+class Table : virtual public TreeItem, public SerializableElement, public SqlSourceEntity
 {
 public:
 
@@ -253,6 +254,28 @@ public:
         return m_description;
     }
 
+    /**
+     * Adds a foreign key command to this table. These commands are used in the "final SQL" rendering, in case there are two tables that each reference
+     * each other through a foreign key.
+     */
+    void addForeignKeyCommand(const QString& com)
+    {
+        foreignKeyCommands << com;
+    }
+
+    void restartSqlRendering()
+    {
+        foreignKeyCommands.clear();
+    }
+
+    QStringList getForeignKeyCommands() const
+    {
+        return foreignKeyCommands;
+    }
+
+    virtual QString generateSqlSource(AbstractSqlGenerator * generator, QHash<QString,QString>) const;
+
+
 private:
     // the name of the table
     QString m_name;
@@ -289,6 +312,12 @@ private:
     Version* m_version;
 
     QString m_tempTabName;
+
+    mutable QStringList foreignKeyCommands;
+
+private:
+
 };
+
 
 #endif // TABLE_H

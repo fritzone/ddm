@@ -4,10 +4,12 @@
 #include "Column.h"
 #include "AbstractStorageEngine.h"
 #include "Index.h"
+#include "ForeignKey.h"
 
-QString MySQLSQLGenerator::generateSql(const Table *table, const QHash<QString, QString> &options)
+QString MySQLSQLGenerator::generateSql(Table *table, const QHash<QString, QString> &options, QString tabName) const
 {
     bool upcase = options.contains("Case") && options["Case"] == "Upper";
+    bool comments = options.contains("GenerateComments") && options["GenerateComments"] == "Yes";
     bool backticks = options.contains("Backticks") && options["Backticks"] == "Yes";
     // primary key pos = 0 if the primary key is specified in the column declaration (default)
     // it is 1 if the primary key is defined in a PRIMARY KEY section in the table definition
@@ -28,13 +30,37 @@ QString MySQLSQLGenerator::generateSql(const Table *table, const QHash<QString, 
             pkpos = 2;
         }
     }
+    // foreign key pos: 1 in the table script, 2 in an alter script after the table, 3 - not now, just update the table
+    int fkpos = 1;
+    if(options.contains("FKSposition"))
+    {
+        if(options["FKSposition"] == "InTable")
+        {
+            fkpos = 1;
+        }
+        if(options["FKSposition"] == "AfterTable")
+        {
+            fkpos = 2;
+        }
+        if(options["FKSposition"] == "OnlyInternal")
+        {
+            fkpos = 3;
+        }
+    }
 
     // the list of primary key columns, used only if pkpos is 1 or 2
     QStringList primaryKeys;
 
+    // the list of foreign key SQLs
+    QStringList foreignKeys;
+    QString foreignKeysTable = "";
+
     QString result ;
-    result = "-- ";
-    result += (table->getDescription().length()>0?table->getDescription():" Create table " + table->getName()) + "\n";
+    if(comments)
+    {
+        result = "-- ";
+        result += (table->getDescription().length()>0?table->getDescription():" Create table " + tabName) + "\n";
+    }
     result += upcase? "CREATE " : "create ";
     result += table->isTemporary()? upcase? "TEMPORARY ":"temporary ":"";
 
@@ -42,11 +68,12 @@ QString MySQLSQLGenerator::generateSql(const Table *table, const QHash<QString, 
 
     // table name
     result += backticks?"`":"";
-    result += table->getName();
+    result += tabName;
     result += backticks?"`":"";
 
     result += "\n(\n";
 
+    // creating the columns
     for(int i=0; i<table->fullColumns().size(); i++)
     {
         // column name
@@ -56,7 +83,7 @@ QString MySQLSQLGenerator::generateSql(const Table *table, const QHash<QString, 
         result += " ";
 
         Column *col = table->getColumn(table->fullColumns()[i]);
-        if(col ==0)
+        if(col == 0)
         {
             col = table->getColumnFromParents(table->fullColumns()[i]);
             if(col == 0)
@@ -103,7 +130,7 @@ QString MySQLSQLGenerator::generateSql(const Table *table, const QHash<QString, 
         }
     }
 
-    // are we havin primary keys after columns?
+    // are we having primary keys after columns?
     if(pkpos == 1)
     {
         result += "\n, ";
@@ -118,6 +145,56 @@ QString MySQLSQLGenerator::generateSql(const Table *table, const QHash<QString, 
         }
     }
 
+
+    // creating the FOREIGN KEY sql(s)...
+    for(int i=0; i<table->getFks().size(); i++)
+    {
+        // just pre-render the SQL for foreign keys
+        QString foreignKeySql1 = "";
+        QString foreignKeySql2 = "";
+
+        ForeignKey* fkI = table->getFks().at(i);
+        foreignKeysTable = fkI->getForeignTable();
+        for(int j=0; j<fkI->getAssociations().size(); j++)
+        {
+
+            ForeignKey::ColumnAssociation* assocJ = fkI->getAssociations().at(j);
+            foreignKeySql1 += assocJ->getLocalColumn()->getName();
+            foreignKeySql2 += assocJ->getForeignColumn()->getName();
+
+            if(j < fkI->getAssociations().size() - 1)
+            {
+                foreignKeySql1 += ", ";
+                foreignKeySql2 += ", ";
+            }
+        }
+        QString foreignKeySql = upcase?"FOREIGN KEY (":"foreign key(";
+        foreignKeySql += foreignKeySql1;
+        foreignKeySql += upcase?") REFERENCES ":") references ";
+        foreignKeySql += foreignKeysTable;
+        foreignKeySql += "(" + foreignKeySql2 + ")";
+
+        foreignKeys.append(foreignKeySql);
+
+        // and send it back to the table for the final SQL rendering
+        table->addForeignKeyCommand(foreignKeySql);
+    }
+
+    // now check the foreign keys if any
+    if(fkpos == 1 && foreignKeys.size() > 0)
+    {
+        result += ",\n";
+        for(int i=0; i<foreignKeys.size(); i++)
+        {
+            result += "\t" + foreignKeys[i];
+            if(i<foreignKeys.size() - 1)
+            {
+                result += ",\n";
+            }
+        }
+    }
+
+    // this is closing the crate table SQL
     result += "\n)\n";
 
     // now check the engine
@@ -127,6 +204,7 @@ QString MySQLSQLGenerator::generateSql(const Table *table, const QHash<QString, 
         result += QString(upcase?"ENGINE = ":"engine = ") + table->getStorageEngine()->name();
     }
     result += ";\n\n";
+    if(comments) result += table->fullIndices().size()>0?"-- Create the indexes for table " + table->getName() + "\n":"";
 
     // now create the indexes of the table
 
@@ -134,9 +212,7 @@ QString MySQLSQLGenerator::generateSql(const Table *table, const QHash<QString, 
     {
         result += upcase?"CREATE INDEX ":"create index ";
         result += table->fullIndices().at(i);
-        result +=upcase?" ON":" on ";
-        result += table->getName();
-        result += "(";
+        result += upcase?" USING ":" using ";
         Index* idx = table->getIndex(table->fullIndices().at(i));
         if(idx == 0)
         {
@@ -146,6 +222,11 @@ QString MySQLSQLGenerator::generateSql(const Table *table, const QHash<QString, 
                 return "ERROR";
             }
         }
+        result += upcase?idx->getType().toUpper():idx->getType().toLower();
+        result +=upcase?" ON":" on ";
+        result += table->getName();
+        result += "(";
+
         for(int j=0; j<idx->getColumns().size(); j++)
         {
             result += idx->getColumns().at(j)->getName();
@@ -154,7 +235,23 @@ QString MySQLSQLGenerator::generateSql(const Table *table, const QHash<QString, 
                 result += ", ";
             }
         }
-        result +=");\n";
+        result +=");\n\n";
+    }
+
+    // and check if we have foreign keys
+    if(fkpos == 2 && foreignKeys.size() > 0)
+    {
+        if(comments) result += "-- Create the foreign keys for table " + table->getName() + "\n";
+        result += upcase?"\nALTER TABLE" + table->getName() :"\nalter table " + table->getName();
+        result += upcase?" ADD":" add";
+        for(int i=0; i<foreignKeys.size(); i++)
+        {
+            result += foreignKeys[i];
+            if(i<foreignKeys.size() - 1)
+            {
+                result += ",\n";
+            }
+        }
     }
 
     return result;

@@ -1,6 +1,9 @@
 #ifndef CONFIGURATION_H
 #define CONFIGURATION_H
 
+#include <QHash>
+#include <QString>
+
 class Configuration
 {
 public:
@@ -32,6 +35,11 @@ public:
     bool drawTableTypes() const
     {
         return m_drawTableTypes;
+    }
+
+    QHash<QString,QString> sqlGenerationOptions() const
+    {
+        return QHash<QString,QString>();
     }
 
 private:

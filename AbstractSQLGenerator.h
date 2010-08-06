@@ -11,9 +11,9 @@ class AbstractSqlGenerator
 public:
 
     /**
-     * Generates SQL for the given table, using the given set of options
+     * Generates SQL for the given table, using the given set of options. The table name although should be tabName
      */
-    virtual QString generateSql(const Table* table, const QHash<QString, QString>& options) = 0;
+    virtual QString generateSql(Table* table, const QHash<QString, QString>& options, QString tabName) const = 0;
 };
 
 #endif // ABSTRACTSQLGENERATOR_H

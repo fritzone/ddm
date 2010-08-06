@@ -1569,7 +1569,7 @@ void NewTableForm::onChangeTab(int idx)
     {
         if(m_ui->tabWidget->tabText(idx) == "SQL")
         {
-            m_ui->txtSql->setText(m_project->getEngine()->getSqlGenerator()->generateSql(m_table, QHash<QString,QString>()));
+            m_ui->txtSql->setText(m_project->getEngine()->getSqlGenerator()->generateSql(m_table, Configuration::instance().sqlGenerationOptions(),m_table->getName()));
         }
     }
 }
@@ -1582,5 +1582,5 @@ void NewTableForm::onChangeDescription()
 void NewTableForm::onChangeName(QString a)
 {
     m_table->setName(a);
-    m_ui->txtSql->setText(m_project->getEngine()->getSqlGenerator()->generateSql(m_table, QHash<QString,QString>()));
+    m_ui->txtSql->setText(m_project->getEngine()->getSqlGenerator()->generateSql(m_table, Configuration::instance().sqlGenerationOptions(), m_table->getName()));
 }

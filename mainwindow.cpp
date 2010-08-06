@@ -12,6 +12,7 @@
 #include "NewTableForm.h"
 #include "Table.h"
 #include "IconFactory.h"
+#include "Configuration.h"
 #include "TablesListForm.h"
 #include "ProjectDetailsForm.h"
 #include "Solution.h"
@@ -23,6 +24,8 @@
 #include "CreateTableInstancesDialog.h"
 #include "TableInstanceForm.h"
 #include "DynamicActionHandlerForMainWindow.h"
+#include "SqlForm.h"
+#include "TableInstance.h"
 
 #include <QtGui>
 
@@ -219,6 +222,47 @@ void MainWindow::currentProjectTreeItemChanged(QTreeWidgetItem * current, QTreeW
             setCentralWidget(prjDetailsForm);
         }
         else
+        if(current == getWorkingProject()->getWorkingVersion()->getFinalSqlItem())
+        {
+            SqlForm* frm = new SqlForm(this);
+
+            // here create the final SQL:
+            // firstly only the tables and then the foreign keys. We'll see the other elements later
+
+            QString finalSql = "-- Full SQL listing for project " + getWorkingProject()->getName() + "\n";
+            if(getWorkingProject()->oopProject())
+            {
+                QHash<QString, QString> opts = Configuration::instance().sqlGenerationOptions();
+                bool upcase = opts.contains("Case") && opts["Case"] == "Upper";
+                opts["FKSposition"] = "OnlyInternal";
+                for(int i=0; i<getWorkingProject()->getWorkingVersion()->getTableInstances().size(); i++)
+                {
+                    QString sql = getWorkingProject()->getWorkingVersion()->getTableInstances().at(i)->generateSqlSource(getWorkingProject()->getEngine()->getSqlGenerator(), opts);
+                    finalSql += sql;
+                }
+
+                for(int i=0; i<getWorkingProject()->getWorkingVersion()->getTableInstances().size(); i++)
+                {
+                    for(int j=0; j<getWorkingProject()->getWorkingVersion()->getTableInstances().at(i)->table()->getForeignKeyCommands().size(); j++)
+                    {
+                        finalSql += upcase?"ALTER TABLE ":"alter table ";
+                        finalSql += getWorkingProject()->getWorkingVersion()->getTableInstances().at(i)->getName();
+                        finalSql += upcase?" ADD ":" add ";
+                        finalSql += getWorkingProject()->getWorkingVersion()->getTableInstances().at(i)->table()->getForeignKeyCommands().at(j);
+                        finalSql += ";\n";
+                    }
+                }
+            }
+            else
+            {
+
+            }
+
+            frm->setSource(finalSql);
+            setCentralWidget(frm);
+
+        }
+        else
         {
             if(current->parent() && current->parent() == getWorkingProject()->getWorkingVersion()->getTablesItem())
             {
@@ -256,12 +300,37 @@ void MainWindow::currentProjectTreeItemChanged(QTreeWidgetItem * current, QTreeW
             else
             if(current->parent() && current->parent() == getWorkingProject()->getWorkingVersion()->getTableInstancesItem())
             {
+                // user clicked on a table instance
                 TableInstanceForm* frm = new TableInstanceForm(this);
                 QVariant qv = current->data(0, Qt::UserRole);
                 QString instanceName = qv.toString();
 
                 frm->setTableInstance(getWorkingProject()->getWorkingVersion()->getTableInstance(instanceName));
                 frm->createTableWithValues();
+                setCentralWidget(frm);
+
+            }
+            else
+            if(current->parent() && current->parent() == getWorkingProject()->getWorkingVersion()->getFinalSqlItem())
+            {
+                // user clicked on a SQL item
+                SqlForm* frm = new SqlForm(this);
+                QVariant qv = current->data(0, Qt::UserRole);
+                QString name = qv.toString();
+                SqlSourceEntity* ent = NULL;
+
+                if(getWorkingProject()->oopProject())
+                {
+                    ent = getWorkingProject()->getWorkingVersion()->getTableInstance(name);
+                }
+                else
+                {
+                    ent = getWorkingProject()->getWorkingVersion()->getTable(name);
+                }
+
+                frm->setSqlSource(ent);
+                frm->setSource(ent->generateSqlSource(getWorkingProject()->getEngine()->getSqlGenerator(), Configuration::instance().sqlGenerationOptions()));
+
                 setCentralWidget(frm);
 
             }
@@ -732,7 +801,6 @@ void MainWindow::onNewTableInstanceHovered()
 
     if(currentSolution() && currentSolution()->currentProject() && currentSolution()->currentProject()->getWorkingVersion())
     {
-
         for(int i=0; i<currentSolution()->currentProject()->getWorkingVersion()->getTables().size(); i++)
         {
             QAction * actionToAdd = new QAction(this);
@@ -755,6 +823,10 @@ void MainWindow::instantiateTable(const QString& tabName)
     itm->setIcon(0, IconFactory::getTabinstIcon());
     QVariant a(tabName);
     itm->setData(0, Qt::UserRole, a);
+
+    ContextMenuEnabledTreeWidgetItem* itma = new ContextMenuEnabledTreeWidgetItem(cVersion->getFinalSqlItem(), QStringList(cVersion->getTable(tabName)->getName()));
+    itma->setIcon(0, IconFactory::getTabinstIcon());
+    itma->setData(0, Qt::UserRole, a);
 
     projectTree->setCurrentItem(itm);
 }

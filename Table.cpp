@@ -5,6 +5,7 @@
 #include "Configuration.h"
 #include "UserDataType.h"
 #include "AbstractStorageEngine.h"
+#include "AbstractSQLGenerator.h"
 #include "DraggableGraphicsItem.h"
 #include "IconFactory.h"
 #include <QPen>
@@ -479,4 +480,10 @@ void Table::prepareDiagramEntity()
     txtName->setZValue(1);
     grp->setToolTip(m_description);
     m_diagramEntity = grp;
+}
+
+QString Table::generateSqlSource(AbstractSqlGenerator *generator, QHash<QString,QString> opts) const
+{
+    const_cast<Table*>(this)->restartSqlRendering();
+    return generator->generateSql(const_cast<Table*>(this), opts, getName());
 }

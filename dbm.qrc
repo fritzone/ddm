@@ -91,5 +91,8 @@
         <file>images/actions/application_exit.png</file>
         <file>images/small/tabinst.png</file>
         <file>images/actions/tabinstnew.png</file>
+        <file>images/small/inject.png</file>
+        <file>images/small/sql.png</file>
+        <file>images/small/code.png</file>
     </qresource>
 </RCC>

@@ -125,7 +125,7 @@
                     <string/>
                    </property>
                    <property name="icon">
-                    <iconset resource="dbm.qrc">
+                    <iconset>
                      <normaloff>:/images/actions/images/small/up.png</normaloff>:/images/actions/images/small/up.png</iconset>
                    </property>
                    <property name="popupMode">
@@ -145,7 +145,7 @@
                     <string/>
                    </property>
                    <property name="icon">
-                    <iconset resource="dbm.qrc">
+                    <iconset>
                      <normaloff>:/images/actions/images/small/remove.png</normaloff>:/images/actions/images/small/remove.png</iconset>
                    </property>
                   </widget>
@@ -162,7 +162,7 @@
                     <string/>
                    </property>
                    <property name="icon">
-                    <iconset resource="dbm.qrc">
+                    <iconset>
                      <normaloff>:/images/actions/images/small/down.png</normaloff>:/images/actions/images/small/down.png</iconset>
                    </property>
                    <property name="popupMode">
@@ -273,7 +273,7 @@
                     <string>...</string>
                    </property>
                    <property name="icon">
-                    <iconset resource="dbm.qrc">
+                    <iconset>
                      <normaloff>:/images/actions/images/small/add.png</normaloff>:/images/actions/images/small/add.png</iconset>
                    </property>
                   </widget>
@@ -290,7 +290,7 @@
                     <string/>
                    </property>
                    <property name="icon">
-                    <iconset resource="dbm.qrc">
+                    <iconset>
                      <normaloff>:/images/actions/images/small/cancel.png</normaloff>:/images/actions/images/small/cancel.png</iconset>
                    </property>
                   </widget>
@@ -358,7 +358,7 @@
                 <string>...</string>
                </property>
                <property name="icon">
-                <iconset resource="dbm.qrc">
+                <iconset>
                  <normaloff>:/images/actions/images/small/remove.png</normaloff>:/images/actions/images/small/remove.png</iconset>
                </property>
               </widget>
@@ -431,7 +431,7 @@
                     <string>...</string>
                    </property>
                    <property name="icon">
-                    <iconset resource="dbm.qrc">
+                    <iconset>
                      <normaloff>:/images/actions/images/small/right.png</normaloff>:/images/actions/images/small/right.png</iconset>
                    </property>
                   </widget>
@@ -451,7 +451,7 @@
                     <string>...</string>
                    </property>
                    <property name="icon">
-                    <iconset resource="dbm.qrc">
+                    <iconset>
                      <normaloff>:/images/actions/images/small/left.png</normaloff>:/images/actions/images/small/left.png</iconset>
                    </property>
                   </widget>
@@ -469,7 +469,7 @@
                     <string>...</string>
                    </property>
                    <property name="icon">
-                    <iconset resource="dbm.qrc">
+                    <iconset>
                      <normaloff>:/images/actions/images/small/up.png</normaloff>:/images/actions/images/small/up.png</iconset>
                    </property>
                   </widget>
@@ -480,7 +480,7 @@
                     <string>...</string>
                    </property>
                    <property name="icon">
-                    <iconset resource="dbm.qrc">
+                    <iconset>
                      <normaloff>:/images/actions/images/small/down.png</normaloff>:/images/actions/images/small/down.png</iconset>
                    </property>
                   </widget>
@@ -500,7 +500,7 @@
                   <string/>
                  </property>
                  <property name="icon">
-                  <iconset resource="dbm.qrc">
+                  <iconset>
                    <normaloff>:/images/actions/images/small/add.png</normaloff>:/images/actions/images/small/add.png</iconset>
                  </property>
                 </widget>
@@ -514,7 +514,7 @@
                   <string/>
                  </property>
                  <property name="icon">
-                  <iconset resource="dbm.qrc">
+                  <iconset>
                    <normaloff>:/images/actions/images/small/cancel.png</normaloff>:/images/actions/images/small/cancel.png</iconset>
                  </property>
                 </widget>
@@ -629,7 +629,7 @@ p, li { white-space: pre-wrap; }
                 <string>...</string>
                </property>
                <property name="icon">
-                <iconset resource="dbm.qrc">
+                <iconset>
                  <normaloff>:/images/actions/images/small/remove.png</normaloff>:/images/actions/images/small/remove.png</iconset>
                </property>
               </widget>
@@ -698,7 +698,7 @@ p, li { white-space: pre-wrap; }
                   <string>...</string>
                  </property>
                  <property name="icon">
-                  <iconset resource="dbm.qrc">
+                  <iconset>
                    <normaloff>:/images/actions/images/small/add.png</normaloff>:/images/actions/images/small/add.png</iconset>
                  </property>
                 </widget>
@@ -752,7 +752,7 @@ p, li { white-space: pre-wrap; }
                   <string>...</string>
                  </property>
                  <property name="icon">
-                  <iconset resource="dbm.qrc">
+                  <iconset>
                    <normaloff>:/images/actions/images/small/remove.png</normaloff>:/images/actions/images/small/remove.png</iconset>
                  </property>
                 </widget>
@@ -772,7 +772,7 @@ p, li { white-space: pre-wrap; }
                     <string>...</string>
                    </property>
                    <property name="icon">
-                    <iconset resource="dbm.qrc">
+                    <iconset>
                      <normaloff>:/images/actions/images/small/cancel.png</normaloff>:/images/actions/images/small/cancel.png</iconset>
                    </property>
                   </widget>
@@ -786,7 +786,7 @@ p, li { white-space: pre-wrap; }
                     <string>...</string>
                    </property>
                    <property name="icon">
-                    <iconset resource="dbm.qrc">
+                    <iconset>
                      <normaloff>:/images/actions/images/small/add.png</normaloff>:/images/actions/images/small/add.png</iconset>
                    </property>
                   </widget>
@@ -910,7 +910,7 @@ p, li { white-space: pre-wrap; }
                  <string>...</string>
                 </property>
                 <property name="icon">
-                 <iconset resource="dbm.qrc">
+                 <iconset>
                   <normaloff>:/images/actions/images/actions/fileopen.png</normaloff>:/images/actions/images/actions/fileopen.png</iconset>
                 </property>
                </widget>
@@ -930,7 +930,7 @@ p, li { white-space: pre-wrap; }
                  <string>...</string>
                 </property>
                 <property name="icon">
-                 <iconset resource="dbm.qrc">
+                 <iconset>
                   <normaloff>:/images/actions/images/big/bigfileimport.png</normaloff>:/images/actions/images/big/bigfileimport.png</iconset>
                 </property>
                </widget>
@@ -947,7 +947,7 @@ p, li { white-space: pre-wrap; }
                  <string>...</string>
                 </property>
                 <property name="icon">
-                 <iconset resource="dbm.qrc">
+                 <iconset>
                   <normaloff>:/images/actions/images/actions/filesave.png</normaloff>:/images/actions/images/actions/filesave.png</iconset>
                 </property>
                </widget>
@@ -1001,7 +1001,7 @@ p, li { white-space: pre-wrap; }
                  <string>...</string>
                 </property>
                 <property name="icon">
-                 <iconset resource="dbm.qrc">
+                 <iconset>
                   <normaloff>:/images/actions/images/small/add.png</normaloff>:/images/actions/images/small/add.png</iconset>
                 </property>
                </widget>
@@ -1018,7 +1018,7 @@ p, li { white-space: pre-wrap; }
                  <string>...</string>
                 </property>
                 <property name="icon">
-                 <iconset resource="dbm.qrc">
+                 <iconset>
                   <normaloff>:/images/actions/images/small/remove.png</normaloff>:/images/actions/images/small/remove.png</iconset>
                 </property>
                </widget>
@@ -1035,7 +1035,7 @@ p, li { white-space: pre-wrap; }
                  <string>...</string>
                 </property>
                 <property name="icon">
-                 <iconset resource="dbm.qrc">
+                 <iconset>
                   <normaloff>:/images/actions/images/small/apply.png</normaloff>:/images/actions/images/small/apply.png</iconset>
                 </property>
                </widget>
@@ -1133,47 +1133,168 @@ p, li { white-space: pre-wrap; }
          <attribute name="title">
           <string>SQL</string>
          </attribute>
-         <layout class="QHBoxLayout" name="horizontalLayout_15">
+         <layout class="QVBoxLayout" name="verticalLayout_16">
           <item>
-           <widget class="QGroupBox" name="grpSqlOptions">
-            <property name="title">
-             <string>Options</string>
+           <widget class="QGroupBox" name="groupBox_9">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
             </property>
-            <layout class="QVBoxLayout" name="verticalLayout_13">
-             <item>
-              <widget class="QCheckBox" name="checkBox">
-               <property name="text">
-                <string>Use backticks in names (`)</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <spacer name="verticalSpacer_2">
-               <property name="orientation">
-                <enum>Qt::Vertical</enum>
-               </property>
-               <property name="sizeHint" stdset="0">
-                <size>
-                 <width>20</width>
-                 <height>40</height>
-                </size>
-               </property>
-              </spacer>
-             </item>
-            </layout>
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>26</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>16777215</width>
+              <height>36</height>
+             </size>
+            </property>
+            <property name="title">
+             <string/>
+            </property>
+            <widget class="QWidget" name="horizontalLayoutWidget">
+             <property name="geometry">
+              <rect>
+               <x>0</x>
+               <y>0</y>
+               <width>541</width>
+               <height>27</height>
+              </rect>
+             </property>
+             <layout class="QHBoxLayout" name="horizontalLayout_15">
+              <property name="spacing">
+               <number>0</number>
+              </property>
+              <item>
+               <widget class="QToolButton" name="btnSaveToImageFile">
+                <property name="maximumSize">
+                 <size>
+                  <width>24</width>
+                  <height>24</height>
+                 </size>
+                </property>
+                <property name="toolTip">
+                 <string>Save SQL to a file</string>
+                </property>
+                <property name="statusTip">
+                 <string>Save SQL to a file</string>
+                </property>
+                <property name="text">
+                 <string>...</string>
+                </property>
+                <property name="icon">
+                 <iconset>
+                  <normaloff>:/images/actions/images/actions/filesave.png</normaloff>:/images/actions/images/actions/filesave.png</iconset>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QToolButton" name="btnPrint">
+                <property name="maximumSize">
+                 <size>
+                  <width>24</width>
+                  <height>24</height>
+                 </size>
+                </property>
+                <property name="toolTip">
+                 <string>Inject this SQL to a database and create a table</string>
+                </property>
+                <property name="statusTip">
+                 <string>Inject this SQL to a database and create a table</string>
+                </property>
+                <property name="text">
+                 <string>...</string>
+                </property>
+                <property name="icon">
+                 <iconset>
+                  <normaloff>:/images/actions/images/small/inject.png</normaloff>:/images/actions/images/small/inject.png</iconset>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QComboBox" name="comboBox">
+                <property name="maximumSize">
+                 <size>
+                  <width>16777215</width>
+                  <height>24</height>
+                 </size>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <spacer name="horizontalSpacer_4">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+             </layout>
+            </widget>
            </widget>
           </item>
           <item>
-           <widget class="QTextEdit" name="txtSql">
-            <property name="font">
-             <font>
-              <family>Courier New</family>
-              <pointsize>11</pointsize>
-             </font>
+           <widget class="QGroupBox" name="groupBox_10">
+            <property name="title">
+             <string/>
             </property>
-            <property name="readOnly">
-             <bool>true</bool>
-            </property>
+            <layout class="QHBoxLayout" name="horizontalLayout_16">
+             <property name="topMargin">
+              <number>0</number>
+             </property>
+             <item>
+              <widget class="QGroupBox" name="grpSqlOptions">
+               <property name="title">
+                <string>Options</string>
+               </property>
+               <layout class="QVBoxLayout" name="verticalLayout_13">
+                <item>
+                 <widget class="QCheckBox" name="checkBox">
+                  <property name="text">
+                   <string>Use backticks in names (`)</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <spacer name="verticalSpacer_2">
+                  <property name="orientation">
+                   <enum>Qt::Vertical</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>20</width>
+                    <height>40</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+               </layout>
+              </widget>
+             </item>
+             <item>
+              <widget class="QTextEdit" name="txtSql">
+               <property name="font">
+                <font>
+                 <family>Courier New</family>
+                 <pointsize>11</pointsize>
+                </font>
+               </property>
+               <property name="readOnly">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+            </layout>
            </widget>
           </item>
          </layout>
@@ -1299,9 +1420,7 @@ p, li { white-space: pre-wrap; }
   <tabstop>tableStartupValues</tabstop>
   <tabstop>buttons</tabstop>
  </tabstops>
- <resources>
-  <include location="dbm.qrc"/>
- </resources>
+ <resources/>
  <connections>
   <connection>
    <sender>buttons</sender>
