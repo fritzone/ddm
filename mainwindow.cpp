@@ -72,17 +72,14 @@ ContextMenuEnabledTreeWidget* MainWindow::setupGuiForNewSolution()
     dock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
     dock->setFeatures(QDockWidget::AllDockWidgetFeatures);
     dock->setFloating(false);
-    dock->setMinimumSize(200, 340);
-    dock->setMaximumSize(400, 340);
-    dock->resize(201,341);
-
+    dock->setMinimumSize(300, 340);
+    dock->resize(301,341);
 
     dockdt = new QDockWidget(tr("DataTypes") , this);
     dockdt->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
     dockdt->setFeatures(QDockWidget::AllDockWidgetFeatures);
     dockdt->setFloating(false);
-    dockdt->setMinimumSize(200, 340);
-
+    dockdt->setMinimumSize(300, 340);
 
     // set up the tree
     projectTree = new ContextMenuEnabledTreeWidget();
