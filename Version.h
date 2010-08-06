@@ -32,6 +32,11 @@ public:
     virtual ContextMenuEnabledTreeWidgetItem* getTablesItem() const = 0;
 
     /**
+     * Return the tree item of the final SQL script
+     */
+    virtual ContextMenuEnabledTreeWidgetItem* getFinalSqlItem() const = 0;
+
+    /**
      * Return the tree item of the defined queries
      */
     virtual ContextMenuEnabledTreeWidgetItem* getTableInstancesItem() const = 0;
@@ -146,6 +151,8 @@ public:
      * Retursn a table instance
      */
     virtual TableInstance* getTableInstance(const QString& ) = 0;
+
+    virtual const QVector<TableInstance*> & getTableInstances() = 0;
 
     // don't know if this is a good design or not for the popups ....
 

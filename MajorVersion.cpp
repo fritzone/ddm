@@ -10,7 +10,7 @@
 
 MajorVersion::MajorVersion(QTreeWidget* tree, QTreeWidget* dttree, ContextMenuEnabledTreeWidgetItem* projectItem, int ver, Project* p) :
         tablesItem(0), tableInstancesItem(0),
-        dtsItem(0), versionItem(0), diagramsItem(0), version(""), m_dataTypes(), m_tables(), m_diagrams(), m_tableInstances(),
+        dtsItem(0), versionItem(0), diagramsItem(0), finalSqlItem(0), version(""), m_dataTypes(), m_tables(), m_diagrams(), m_tableInstances(),
         m_tree(tree), m_dtTree(dttree), m_projectItem(projectItem), m_tablePopupMenu(0),
         action_RemoveTable(0), action_DuplicateTable(0), action_SpecializeTable(0), action_InstantiateTable(0),
         action_TableAddColumn(0), m_project(p)
@@ -106,6 +106,48 @@ void MajorVersion::populateTreeItems()
         // set the link to the tree
         tI->setLocation(newTabInstItem);
     }
+
+    // now populate the "Code" tree items by adding the SQLs of the tables or table instances
+    if(oop())
+    {   // insert each table instance entry, since this is an OOP project
+        // TODO: The for below is a pure duplication of the one above from the tables, except the parent
+        for(int i=0; i<m_tableInstances.size(); i++)
+        {
+            TableInstance* tI = m_tableInstances[i];
+            ContextMenuEnabledTreeWidgetItem* newTabInstItem = new ContextMenuEnabledTreeWidgetItem(getFinalSqlItem(), QStringList(tI->getName())) ;
+
+            QVariant var(tI->getName());
+            newTabInstItem->setData(0, Qt::UserRole, var);
+
+            // set the icon, add to the tree
+            newTabInstItem->setIcon(0, IconFactory::getTabinstIcon());
+            m_tree->insertTopLevelItem(0, newTabInstItem);
+
+            // set the link to the tree
+            tI->setLocation(newTabInstItem);
+        }
+
+    }
+    else
+    {
+        // insert the tables
+        // TODO: The for below is a pure duplication of the one above from the tables, except the parent
+        for(int i=0; i<m_tables.size(); i++)
+        {
+            Table* tbl = m_tables[i];
+            ContextMenuEnabledTreeWidgetItem* newTblsItem = new ContextMenuEnabledTreeWidgetItem(getFinalSqlItem(), QStringList(tbl->getName())) ;
+
+            QVariant var(tbl->getName());
+            newTblsItem->setData(0, Qt::UserRole, var);
+            newTblsItem->setPopupMenu(getTablePopupMenu());
+            // set the icon, add to the tree
+            newTblsItem->setIcon(0, IconFactory::getTablesIcon());
+            m_tree->insertTopLevelItem(0, newTblsItem);
+
+            // set the link to the tree
+            tbl->setLocation(newTblsItem);
+        }
+    }
 }
 
 void MajorVersion::createTreeItems(QTreeWidget* tree, QTreeWidget* dtTree, ContextMenuEnabledTreeWidgetItem* projectIem)
@@ -127,6 +169,8 @@ void MajorVersion::createTreeItems(QTreeWidget* tree, QTreeWidget* dtTree, Conte
     QIcon tabInstanceIcon(":/images/actions/images/small/tabinst.png");
     QIcon dtsIcon(":/images/actions/images/small/datatypes.PNG");
     QIcon versionIcon(":/images/actions/images/small/version.PNG");
+    QIcon sqlIcon(":/images/actions/images/small/sql.png");
+    QIcon codeIcon(":/images/actions/images/small/code.png");
 
     versionItem = new ContextMenuEnabledTreeWidgetItem(m_projectItem, QStringList(QString("Ver: ") + version)) ;
     versionItem->setIcon(0, versionIcon);
@@ -150,6 +194,15 @@ void MajorVersion::createTreeItems(QTreeWidget* tree, QTreeWidget* dtTree, Conte
     diagramsItem = new ContextMenuEnabledTreeWidgetItem(versionItem, QStringList(QObject::tr("Diagrams"))) ;
     diagramsItem->setIcon(0, IconFactory::getDiagramIcon());
     m_tree->addTopLevelItem(diagramsItem);
+
+    ContextMenuEnabledTreeWidgetItem* codeItem= new ContextMenuEnabledTreeWidgetItem(versionItem, QStringList(QObject::tr("Code"))) ;
+    codeItem->setIcon(0, codeIcon);
+    m_tree->addTopLevelItem(codeItem);
+
+    finalSqlItem= new ContextMenuEnabledTreeWidgetItem(codeItem, QStringList(QObject::tr("SQL"))) ;
+    finalSqlItem->setIcon(0, sqlIcon);
+    m_tree->addTopLevelItem(finalSqlItem);
+
 
     m_tablePopupMenu = new QMenu();
 

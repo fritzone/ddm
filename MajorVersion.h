@@ -37,6 +37,11 @@ public:
         return dtsItem;
     }
 
+    virtual ContextMenuEnabledTreeWidgetItem* getFinalSqlItem() const
+    {
+        return finalSqlItem;
+    }
+
     virtual ContextMenuEnabledTreeWidgetItem* getTablesItem() const
     {
         return tablesItem;
@@ -137,6 +142,11 @@ public:
         m_tableInstances.append(inst);
     }
 
+    virtual const QVector<TableInstance*> & getTableInstances()
+    {
+        return m_tableInstances;
+    }
+
 private:
 
     // the tree item containing the "Tables"
@@ -153,6 +163,8 @@ private:
 
     // the tree item holding the version
     ContextMenuEnabledTreeWidgetItem* diagramsItem;
+    // the tree item holding the version
+    ContextMenuEnabledTreeWidgetItem* finalSqlItem;
 
     // the version as a string representation. Major versions are always of form X.0
     QString version;

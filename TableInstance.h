@@ -5,12 +5,13 @@
 #include "TreeItem.h"
 #include "NamedItem.h"
 #include "SerializableElement.h"
+#include "SqlSourceEntity.h"
 
 #include <QHash>
 #include <QList>
 #include <QString>
 
-class TableInstance : public TreeItem, public NamedItem, public SerializableElement
+class TableInstance : public TreeItem, public NamedItem, public SerializableElement, public SqlSourceEntity
 {
 public:
 
@@ -34,6 +35,8 @@ public:
     {
         return m_values;
     }
+
+    virtual QString generateSqlSource(AbstractSqlGenerator *generator,QHash<QString,QString>) const;
 
 private:
 
