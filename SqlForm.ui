@@ -82,10 +82,10 @@
           </size>
          </property>
          <property name="toolTip">
-          <string>Inject this SQL to a database and create a table</string>
+          <string>Inject this SQL to a database and create the structures defined</string>
          </property>
          <property name="statusTip">
-          <string>Inject this SQL to a database and create a table</string>
+          <string>Inject this SQL to a database and create the structures defined</string>
          </property>
          <property name="text">
           <string>...</string>
