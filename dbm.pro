@@ -59,7 +59,8 @@ SOURCES += main.cpp \
     DynamicActionHandlerforMainWindow.cpp \
     MySQLSQLGenerator.cpp \
     SqlHighlighter.cpp \
-    SqlForm.cpp
+    SqlForm.cpp \
+    InjectSqlDialog.cpp
 HEADERS += MainWindow.h \
     MainWindowButtonDialog.h \
     newprojectdialog.h \
@@ -126,7 +127,8 @@ HEADERS += MainWindow.h \
     MySQLSQLGenerator.h \
     SqlHighlighter.h \
     SqlForm.h \
-    SqlSourceEntity.h
+    SqlSourceEntity.h \
+    InjectSqlDialog.h
 FORMS += mainwindow.ui \
     mainwindowbuttondialog.ui \
     newprojectdialog.ui \
@@ -140,5 +142,6 @@ FORMS += mainwindow.ui \
     EnterNoteTextDialog.ui \
     CreateTableInstancesDialog.ui \
     TableInstanceForm.ui \
-    SqlForm.ui
+    SqlForm.ui \
+    InjectSqlDialog.ui
 RESOURCES += dbm.qrc
