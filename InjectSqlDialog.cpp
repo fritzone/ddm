@@ -39,7 +39,8 @@ void InjectSqlDialog::onConnect()
 
     if(!ok)
     {
-        QMessageBox::critical (this, tr("Error"), tr("Cannot connect to the database: ") + db.lastError().text(), QMessageBox::Ok);
+        QMessageBox::critical (this, tr("Error"), tr("Cannot connect to the database: ") + db.lastError().databaseText() + "/"
+                               + db.lastError().driverText(), QMessageBox::Ok);
         return;
     }
 
@@ -53,4 +54,24 @@ void InjectSqlDialog::onConnect()
         ui->cmbDatabases->addItem(db);
     }
 
+}
+
+QString InjectSqlDialog::getDatabase()
+{
+    return ui->cmbDatabases->currentText();
+}
+
+QString InjectSqlDialog::getUser()
+{
+    return ui->txtDatabaseUser->text();
+}
+
+QString InjectSqlDialog::getPassword()
+{
+    return ui->txtDatabasePassword->text();
+}
+
+QString InjectSqlDialog::getHost()
+{
+    return ui->txtDatabaseHost->text();
 }
