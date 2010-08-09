@@ -14,6 +14,14 @@ public:
     InjectSqlDialog(QWidget *parent = 0);
     ~InjectSqlDialog();
 
+    QString getDatabase();
+
+    QString getUser();
+
+    QString getPassword();
+
+    QString getHost();
+
 public slots:
 
     void onConnect();

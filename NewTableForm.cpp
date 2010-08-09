@@ -23,6 +23,9 @@
 #include <QHash>
 #include <QKeyEvent>
 #include <QtGui>
+#include <QSqlDatabase>
+#include <QSqlError>
+#include <QSqlQuery>
 
 // the positions of various items in the columns view, used for icon retrieval mostly
 const int COL_POS_PK = 0;
@@ -1621,6 +1624,27 @@ void NewTableForm::onInject()
 {
     InjectSqlDialog* injectDialog = new InjectSqlDialog(this);
     injectDialog->setModal(true);
-    injectDialog->exec();
+    if(injectDialog->exec() == QDialog::Accepted)
+    {
+        QSqlDatabase db = QSqlDatabase::addDatabase("QMYSQL");
+        db.setHostName(injectDialog->getHost());
+        db.setUserName(injectDialog->getUser());
+        db.setPassword(injectDialog->getPassword());
+        db.setDatabaseName(injectDialog->getDatabase());
+
+        bool ok = db.open();
+
+        if(!ok)
+        {
+            QMessageBox::critical (this, tr("Error"), tr("Cannot connect to the database: ") + db.lastError().databaseText() + "/"
+                                   + db.lastError().driverText(), QMessageBox::Ok);
+            return;
+        }
+
+        QSqlQuery query;
+
+        query.exec(m_ui->txtSql->toPlainText());
+
+    }
 }
 
