@@ -79,6 +79,7 @@ public:
     virtual void addTable(Table*);
 
     virtual bool hasTable(Table*);
+    virtual bool hasTable(const QString&);
 
     virtual void deleteTable(Table*);
 
@@ -146,6 +147,8 @@ public:
     {
         return m_tableInstances;
     }
+
+    QString generateUniqueTableintanceName(const QString& input);
 
 private:
 

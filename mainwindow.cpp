@@ -420,6 +420,14 @@ bool MainWindow::onSaveNewDataType(const QString& name, const QString& type, con
         return false;
     }
 
+    UserDataType* other = getWorkingProject()->getWorkingVersion()->getDataType(name);
+
+    if(other &&  other != pudt)
+    {
+        QMessageBox::critical (this, tr("Error"), tr("Only one datatype with the name ") + name + tr(" can exist in the project."), QMessageBox::Ok);
+        return false;
+    }
+
     // check if this is Saving an existing data type or updating a new one
     if(pudt)    // saving
     {
@@ -815,8 +823,8 @@ void MainWindow::onNewTableInstanceHovered()
 void MainWindow::instantiateTable(const QString& tabName)
 {
     Version* cVersion = currentSolution()->currentProject()->getWorkingVersion();
-    cVersion->instantiateTable(cVersion->getTable(tabName));
-    ContextMenuEnabledTreeWidgetItem* itm = new ContextMenuEnabledTreeWidgetItem(cVersion->getTableInstancesItem(), QStringList(cVersion->getTable(tabName)->getName()));
+    TableInstance* tinst = cVersion->instantiateTable(cVersion->getTable(tabName));
+    ContextMenuEnabledTreeWidgetItem* itm = new ContextMenuEnabledTreeWidgetItem(cVersion->getTableInstancesItem(), QStringList(tinst->getName()));
     itm->setIcon(0, IconFactory::getTabinstIcon());
     QVariant a(tabName);
     itm->setData(0, Qt::UserRole, a);
