@@ -334,6 +334,19 @@ inline bool MajorVersion::hasTable(Table *t)
     return m_tables.indexOf(t) >= 0;
 }
 
+inline bool MajorVersion::hasTable(const QString& tb)
+{
+    for(int i=0; i<m_tables.size(); i++)
+    {
+        if(QString::compare(m_tables[i]->getName(), tb, Qt::CaseInsensitive) == 0)
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
+
 // TODO: 1. Make the Table class to come from the named item
 //       2. the two methods below could be very easily templated after this
 
@@ -434,9 +447,40 @@ void MajorVersion::setupTableParentChildRelationships()
     }
 }
 
+QString MajorVersion::generateUniqueTableintanceName(const QString& input)
+{
+    int i = 1;
+    while(i<9999999)
+    {
+        QString result2 = input + "_" + QString::number(i);
+        if(getTableInstance(result2) == 0)
+        {
+            return result2;
+        }
+        i++;
+    }
+    i = 1;
+    while(i<9999999)
+    {
+        QString result2 = "_" + input + "_" + QString::number(i);
+        if(getTableInstance(result2) == 0)
+        {
+            return result2;
+        }
+        i++;
+    }
+
+}
+
+
 TableInstance* MajorVersion::instantiateTable(Table* tab)
 {
     TableInstance* tabInst = new TableInstance(tab);
+    TableInstance* other = getTableInstance(tabInst->getName());
+    if(other && other != tabInst)
+    {
+        tabInst->setName(generateUniqueTableintanceName(tabInst->getName()));
+    }
     m_tableInstances.append(tabInst);
     return tabInst;
 }

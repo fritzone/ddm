@@ -95,6 +95,9 @@ public slots:
     // description page
     void onChangeDescription();
 
+    // SQL page
+    void onInject();
+
 protected:
     void changeEvent(QEvent *e);
 

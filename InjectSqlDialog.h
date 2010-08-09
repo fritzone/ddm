@@ -7,11 +7,16 @@ namespace Ui {
     class InjectSqlDialog;
 }
 
-class InjectSqlDialog : public QDialog {
+class InjectSqlDialog : public QDialog
+{
     Q_OBJECT
 public:
     InjectSqlDialog(QWidget *parent = 0);
     ~InjectSqlDialog();
+
+public slots:
+
+    void onConnect();
 
 protected:
     void changeEvent(QEvent *e);

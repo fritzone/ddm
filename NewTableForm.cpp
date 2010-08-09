@@ -16,6 +16,7 @@
 #include "StartupValuesHelper.h"
 #include "AbstractSQLGenerator.h"
 #include "SqlHighlighter.h"
+#include "InjectSqlDialog.h"
 
 #include <QMessageBox>
 #include <QHashIterator>
@@ -662,6 +663,37 @@ void NewTableForm::onSave()
     {
         QMessageBox::critical (this, tr("Error"), tr("Please specify at least the name of the table!"), QMessageBox::Ok);
         return;
+    }
+
+    Table* other = m_table->version()->getTable(m_ui->txtTableName->text());
+    if(other &&  other != m_table )
+    {
+        QMessageBox::critical(this, "Error", "Only one table with the name " + m_ui->txtTableName->text() + " is allowed in the database.", QMessageBox::Ok);
+        return;
+    }
+
+    if(m_ui->tabWidget->currentIndex() == 0)    // The columns tab page is selected
+    {
+        if(m_ui->cmbNewColumnType->currentIndex() != -1 && m_ui->txtNewColumnName->text().length() != 0)    // if we are defining a column when pressed the "Save" button
+        {
+            onAddColumn();                      // add it and then save the table
+        }
+    }
+    else
+    if(m_ui->tabWidget->currentIndex() == 1)
+    {
+        if(m_ui->txtNewIndexName->text().length() != 0 && m_ui->lstSelectedColumnsForIndex->count() != 0)
+        {
+            onAddIndex();
+        }
+    }
+    else
+    if(m_ui->tabWidget->currentIndex() == 2)
+    {
+        if(m_ui->txtForeignKeyName->text().length() > 0 &&  m_ui->lstForeignKeyAssociations->topLevelItemCount() != 0)
+        {
+            onBtnAddForeignKey();
+        }
     }
 
     m_table->setName(m_ui->txtTableName->text());
@@ -1584,3 +1616,11 @@ void NewTableForm::onChangeName(QString a)
     m_table->setName(a);
     m_ui->txtSql->setText(m_project->getEngine()->getSqlGenerator()->generateSql(m_table, Configuration::instance().sqlGenerationOptions(), m_table->getName()));
 }
+
+void NewTableForm::onInject()
+{
+    InjectSqlDialog* injectDialog = new InjectSqlDialog(this);
+    injectDialog->setModal(true);
+    injectDialog->exec();
+}
+

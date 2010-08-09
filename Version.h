@@ -86,6 +86,13 @@ public:
      */
     virtual void addDiagram(Diagram*) = 0;
 
+
+    /**
+     * Checks if this version has the given table already. The comparison is done based on
+     * the table name which is supposed to be unique.
+     */
+    virtual bool hasTable(const QString&) = 0;
+
     /**
      * Checks if this version has the given table already. The comparison is done based on
      * the table name which is supposed to be unique.
