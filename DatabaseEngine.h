@@ -58,6 +58,13 @@ public:
 
     virtual QString dbname() = 0;
 
+    virtual bool injectSql(const QString& host, const QString& user, const QString& pass, const QString& dbName, const QStringList& sqls) = 0;
+
+    QString getLastError() const
+    {
+        return lastError;
+    }
+
 private:
 
     // the database on which this is running
@@ -78,6 +85,10 @@ private:
 
     // whether the map above was initialized or not
     static bool genericInit;
+
+protected:
+
+    QString lastError;
 };
 
 #endif // DATABASEENGINE_H

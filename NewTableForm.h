@@ -97,6 +97,7 @@ public slots:
 
     // SQL page
     void onInject();
+    void onSaveSql();
 
 protected:
     void changeEvent(QEvent *e);
@@ -188,6 +189,7 @@ private:
     AbstractStorageEngine* m_currentStorageEngine;
     AbstractStorageEngineListProvider* m_engineProviders;
     SqlHighlighter* highlighter;
+    QStringList finalSql;
 };
 
 #endif // NEWTABLEFORM_H

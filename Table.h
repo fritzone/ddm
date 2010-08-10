@@ -273,7 +273,7 @@ public:
         return foreignKeyCommands;
     }
 
-    virtual QString generateSqlSource(AbstractSqlGenerator * generator, QHash<QString,QString>) const;
+    virtual QStringList generateSqlSource(AbstractSqlGenerator * generator, QHash<QString,QString>) const;
 
 
 private:

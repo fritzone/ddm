@@ -17,6 +17,9 @@ public:
     {
         return "MySQL";
     }
+
+    virtual bool injectSql(const QString& host, const QString& user, const QString& pass, const QString& dbName, const QStringList& sqls);
+
 };
 
 #endif // MYSQLDATABASEENGINE_H

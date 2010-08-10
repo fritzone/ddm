@@ -23,9 +23,6 @@
 #include <QHash>
 #include <QKeyEvent>
 #include <QtGui>
-#include <QSqlDatabase>
-#include <QSqlError>
-#include <QSqlQuery>
 
 // the positions of various items in the columns view, used for icon retrieval mostly
 const int COL_POS_PK = 0;
@@ -1604,7 +1601,13 @@ void NewTableForm::onChangeTab(int idx)
     {
         if(m_ui->tabWidget->tabText(idx) == "SQL")
         {
-            m_ui->txtSql->setText(m_project->getEngine()->getSqlGenerator()->generateSql(m_table, Configuration::instance().sqlGenerationOptions(),m_table->getName()));
+            QString fs = "";
+            finalSql = m_project->getEngine()->getSqlGenerator()->generateSql(m_table, Configuration::instance().sqlGenerationOptions(),m_table->getName());
+            for(int i=0; i< finalSql.size(); i++)
+            {
+                fs += finalSql[i];
+            }
+            m_ui->txtSql->setText(fs);
         }
     }
 }
@@ -1617,7 +1620,15 @@ void NewTableForm::onChangeDescription()
 void NewTableForm::onChangeName(QString a)
 {
     m_table->setName(a);
-    m_ui->txtSql->setText(m_project->getEngine()->getSqlGenerator()->generateSql(m_table, Configuration::instance().sqlGenerationOptions(), m_table->getName()));
+
+    QString fs = "";
+    finalSql = m_project->getEngine()->getSqlGenerator()->generateSql(m_table, Configuration::instance().sqlGenerationOptions(), m_table->getName());
+    for(int i=0; i< finalSql.size(); i++)
+    {
+        fs += finalSql[i];
+    }
+
+    m_ui->txtSql->setText(fs);
 }
 
 void NewTableForm::onInject()
@@ -1626,25 +1637,23 @@ void NewTableForm::onInject()
     injectDialog->setModal(true);
     if(injectDialog->exec() == QDialog::Accepted)
     {
-        QSqlDatabase db = QSqlDatabase::addDatabase("QMYSQL");
-        db.setHostName(injectDialog->getHost());
-        db.setUserName(injectDialog->getUser());
-        db.setPassword(injectDialog->getPassword());
-        db.setDatabaseName(injectDialog->getDatabase());
-
-        bool ok = db.open();
-
-        if(!ok)
+        if(!m_dbEngine->injectSql(injectDialog->getHost(), injectDialog->getUser(), injectDialog->getPassword(), injectDialog->getDatabase(), finalSql))
         {
-            QMessageBox::critical (this, tr("Error"), tr("Cannot connect to the database: ") + db.lastError().databaseText() + "/"
-                                   + db.lastError().driverText(), QMessageBox::Ok);
-            return;
+            QMessageBox::critical (this, tr("Error"), tr("Cannot execute a query ") + m_dbEngine->getLastError(), QMessageBox::Ok);
         }
-
-        QSqlQuery query;
-
-        query.exec(m_ui->txtSql->toPlainText());
-
     }
+}
+
+void NewTableForm::onSaveSql()
+{
+    QString name = QFileDialog::getSaveFileName(this, tr("Save sql"), "", tr("SQL files (*.sql)"));
+    QFile file(name);
+
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
+    {
+        return;
+    }
+    QTextStream out(&file);
+    out << m_ui->txtSql->toPlainText() << "\n";
 }
 

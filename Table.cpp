@@ -482,7 +482,7 @@ void Table::prepareDiagramEntity()
     m_diagramEntity = grp;
 }
 
-QString Table::generateSqlSource(AbstractSqlGenerator *generator, QHash<QString,QString> opts) const
+QStringList Table::generateSqlSource(AbstractSqlGenerator *generator, QHash<QString,QString> opts) const
 {
     const_cast<Table*>(this)->restartSqlRendering();
     return generator->generateSql(const_cast<Table*>(this), opts, getName());

@@ -1,12 +1,13 @@
 #include "TablesListForm.h"
 #include "IconFactory.h"
 #include "Table.h"
+#include "mainwindow.h"
+#include "Project.h"
+#include "Version.h"
 
 #include "ui_TablesListForm.h"
 
-TablesListForm::TablesListForm(QWidget *parent) :
-    QWidget(parent),
-    ui(new Ui::TablesListForm)
+TablesListForm::TablesListForm(QWidget *parent) : QWidget(parent), ui(new Ui::TablesListForm), mw(reinterpret_cast<MainWindow*>(parent))
 {
     ui->setupUi(this);
 }
@@ -38,4 +39,11 @@ void TablesListForm::populateTables(QVector<Table*>const & tables)
         item->setIcon(0, IconFactory::getTablesIcon());
         ui->treeTables->addTopLevelItem(item);
     }
+}
+
+
+void TablesListForm::doubleClickTree(QTreeWidgetItem* item, int)
+{
+    QString tabName = item->text(0);
+    mw->showTable(tabName, true);
 }

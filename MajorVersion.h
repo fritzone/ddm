@@ -148,7 +148,8 @@ public:
         return m_tableInstances;
     }
 
-    QString generateUniqueTableintanceName(const QString& input);
+    QString generateUniqueTableInstanceName(const QString& input);
+    QString generateUniqueTableName(const QString& input);
 
 private:
 

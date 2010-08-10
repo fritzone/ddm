@@ -9,7 +9,7 @@ public:
 
     MySQLSQLGenerator(){}
 
-    virtual QString generateSql(Table* table, const QHash<QString, QString>& options, QString tabName) const;
+    virtual QStringList generateSql(Table* table, const QHash<QString, QString>& options, QString tabName) const;
 };
 
 #endif // MYSQLSQLGENERATOR_H
