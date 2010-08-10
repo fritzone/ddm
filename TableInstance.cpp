@@ -41,7 +41,7 @@ void TableInstance::serialize(QDomDocument &doc, QDomElement &parent) const
     parent.appendChild(tableInstanceElement);
 }
 
-QString TableInstance::generateSqlSource(AbstractSqlGenerator *generator, QHash<QString,QString> opts) const
+QStringList TableInstance::generateSqlSource(AbstractSqlGenerator *generator, QHash<QString,QString> opts) const
 {
     table()->restartSqlRendering();
     return generator->generateSql(this->table(), opts, getName());

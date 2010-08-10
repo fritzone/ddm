@@ -56,6 +56,8 @@ public:
     bool onSaveDiagram(Diagram*);
     void instantiateTable(const QString& tabName);
 
+    void showTable(const QString& tabName, bool focus = true);
+
 public slots:
 
     void onNewSolution();

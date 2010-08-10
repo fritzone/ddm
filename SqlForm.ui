@@ -51,7 +51,7 @@
         <number>0</number>
        </property>
        <item>
-        <widget class="QToolButton" name="btnSaveToImageFile">
+        <widget class="QToolButton" name="btnSave">
          <property name="maximumSize">
           <size>
            <width>24</width>
@@ -74,7 +74,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QToolButton" name="btnPrint">
+        <widget class="QToolButton" name="btnInject">
          <property name="maximumSize">
           <size>
            <width>24</width>
@@ -182,5 +182,42 @@
  <resources>
   <include location="dbm.qrc"/>
  </resources>
- <connections/>
+ <connections>
+  <connection>
+   <sender>btnInject</sender>
+   <signal>clicked()</signal>
+   <receiver>SqlForm</receiver>
+   <slot>onInject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>45</x>
+     <y>21</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>308</x>
+     <y>220</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnSave</sender>
+   <signal>clicked()</signal>
+   <receiver>SqlForm</receiver>
+   <slot>onSave()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>21</x>
+     <y>21</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>308</x>
+     <y>220</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>onInject()</slot>
+  <slot>onSave()</slot>
+ </slots>
 </ui>

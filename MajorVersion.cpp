@@ -431,7 +431,7 @@ void MajorVersion::removeForeignKeyFromDiagrams(ForeignKey* fkToRemove)
 Table* MajorVersion::duplicateTable(Table *src)
 {
     Table* dup = new Table(*src);
-    dup->setName(src->getName()+"_copy");
+    dup->setName(generateUniqueTableName(src->getName()+"_copy"));
     addTable(dup);
     return dup;
 }
@@ -447,7 +447,8 @@ void MajorVersion::setupTableParentChildRelationships()
     }
 }
 
-QString MajorVersion::generateUniqueTableintanceName(const QString& input)
+// TODO: These two below are ugly, duplicated code. Rewrite them somenhow, maybe with a method to member approach
+QString MajorVersion::generateUniqueTableInstanceName(const QString& input)
 {
     int i = 1;
     while(i<9999999)
@@ -469,7 +470,31 @@ QString MajorVersion::generateUniqueTableintanceName(const QString& input)
         }
         i++;
     }
+}
 
+
+QString MajorVersion::generateUniqueTableName(const QString& input)
+{
+    int i = 1;
+    while(i<9999999)
+    {
+        QString result2 = input + "_" + QString::number(i);
+        if(getTable(result2) == 0)
+        {
+            return result2;
+        }
+        i++;
+    }
+    i = 1;
+    while(i<9999999)
+    {
+        QString result2 = "_" + input + "_" + QString::number(i);
+        if(getTable(result2) == 0)
+        {
+            return result2;
+        }
+        i++;
+    }
 }
 
 
@@ -479,7 +504,7 @@ TableInstance* MajorVersion::instantiateTable(Table* tab)
     TableInstance* other = getTableInstance(tabInst->getName());
     if(other && other != tabInst)
     {
-        tabInst->setName(generateUniqueTableintanceName(tabInst->getName()));
+        tabInst->setName(generateUniqueTableInstanceName(tabInst->getName()));
     }
     m_tableInstances.append(tabInst);
     return tabInst;

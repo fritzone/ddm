@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>TablesListForm</class>
- <widget class="QWidget" name="TablesListForm">
+ <class>TableInstancesListForm</class>
+ <widget class="QWidget" name="TableInstancesListForm">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -62,25 +62,5 @@
   </layout>
  </widget>
  <resources/>
- <connections>
-  <connection>
-   <sender>treeTables</sender>
-   <signal>itemDoubleClicked(QTreeWidgetItem*,int)</signal>
-   <receiver>TablesListForm</receiver>
-   <slot>doubleClickTree(QTreeWidgetItem*,int)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>199</x>
-     <y>149</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>199</x>
-     <y>149</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
- <slots>
-  <slot>doubleClickTree(QTreeWidgetItem*,int)</slot>
- </slots>
+ <connections/>
 </ui>

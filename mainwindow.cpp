@@ -26,6 +26,7 @@
 #include "DynamicActionHandlerForMainWindow.h"
 #include "SqlForm.h"
 #include "TableInstance.h"
+#include "TableInstancesListForm.h"
 
 #include <QtGui>
 
@@ -73,6 +74,9 @@ ContextMenuEnabledTreeWidget* MainWindow::setupGuiForNewSolution()
     dock->setFeatures(QDockWidget::AllDockWidgetFeatures);
     dock->setFloating(false);
     dock->setMinimumSize(300, 340);
+    dock->setMaximumSize(360, 840);
+    dock->setSizePolicy(QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed));
+
     dock->resize(301,341);
 
     dockdt = new QDockWidget(tr("DataTypes") , this);
@@ -80,6 +84,7 @@ ContextMenuEnabledTreeWidget* MainWindow::setupGuiForNewSolution()
     dockdt->setFeatures(QDockWidget::AllDockWidgetFeatures);
     dockdt->setFloating(false);
     dockdt->setMinimumSize(300, 340);
+    dockdt->setMaximumSize(400, 840);
 
     // set up the tree
     projectTree = new ContextMenuEnabledTreeWidget();
@@ -201,6 +206,25 @@ void MainWindow::onDTTreeClicked()
     }
 }
 
+void MainWindow::showTable(const QString &tabName, bool focus)
+{
+    Table* table =  getWorkingProject()->getWorkingVersion()->getTable(tabName);
+    if(table == 0)  // shouldn't be ...
+    {
+        return;
+    }
+
+    frm = new NewTableForm(getWorkingProject()->getEngine(), getWorkingProject(), this);
+    frm->setTable(table);
+    frm->focusOnName();
+    frm->setMainWindow(this);
+    setCentralWidget(frm);
+
+    if(focus) projectTree->setCurrentItem(table->getLocation());
+
+
+}
+
 void MainWindow::currentProjectTreeItemChanged(QTreeWidgetItem * current, QTreeWidgetItem*)
 {
     if(current)
@@ -209,6 +233,13 @@ void MainWindow::currentProjectTreeItemChanged(QTreeWidgetItem * current, QTreeW
         {// we have clicked on the Tables item (i.e.t. the list of tables)
             TablesListForm* tblLst = new TablesListForm(this);
             tblLst->populateTables(getWorkingProject()->getWorkingVersion()->getTables());
+            setCentralWidget(tblLst);
+        }
+        else
+        if(current == getWorkingProject()->getWorkingVersion()->getTableInstancesItem())
+        {// we have clicked on the Table instances item (i.e.t. the list of table instances)
+            TableInstancesListForm* tblLst = new TableInstancesListForm(this);
+            tblLst->populateTableInstances(getWorkingProject()->getWorkingVersion()->getTableInstances());
             setCentralWidget(tblLst);
         }
         else
@@ -221,12 +252,12 @@ void MainWindow::currentProjectTreeItemChanged(QTreeWidgetItem * current, QTreeW
         else
         if(current == getWorkingProject()->getWorkingVersion()->getFinalSqlItem())
         {
-            SqlForm* frm = new SqlForm(this);
+            SqlForm* frm = new SqlForm(getWorkingProject()->getEngine(), this);
 
             // here create the final SQL:
             // firstly only the tables and then the foreign keys. We'll see the other elements later
 
-            QString finalSql = "-- Full SQL listing for project " + getWorkingProject()->getName() + "\n";
+            QStringList finalSql("-- Full SQL listing for project " + getWorkingProject()->getName() + "\n");
             if(getWorkingProject()->oopProject())
             {
                 QHash<QString, QString> opts = Configuration::instance().sqlGenerationOptions();
@@ -234,19 +265,21 @@ void MainWindow::currentProjectTreeItemChanged(QTreeWidgetItem * current, QTreeW
                 opts["FKSposition"] = "OnlyInternal";
                 for(int i=0; i<getWorkingProject()->getWorkingVersion()->getTableInstances().size(); i++)
                 {
-                    QString sql = getWorkingProject()->getWorkingVersion()->getTableInstances().at(i)->generateSqlSource(getWorkingProject()->getEngine()->getSqlGenerator(), opts);
-                    finalSql += sql;
+                    QStringList sql = getWorkingProject()->getWorkingVersion()->getTableInstances().at(i)->generateSqlSource(getWorkingProject()->getEngine()->getSqlGenerator(), opts);
+                    finalSql << sql;
                 }
 
                 for(int i=0; i<getWorkingProject()->getWorkingVersion()->getTableInstances().size(); i++)
                 {
                     for(int j=0; j<getWorkingProject()->getWorkingVersion()->getTableInstances().at(i)->table()->getForeignKeyCommands().size(); j++)
                     {
-                        finalSql += upcase?"ALTER TABLE ":"alter table ";
-                        finalSql += getWorkingProject()->getWorkingVersion()->getTableInstances().at(i)->getName();
-                        finalSql += upcase?" ADD ":" add ";
-                        finalSql += getWorkingProject()->getWorkingVersion()->getTableInstances().at(i)->table()->getForeignKeyCommands().at(j);
-                        finalSql += ";\n";
+                        QString f = upcase?"ALTER TABLE ":"alter table ";
+                        f += getWorkingProject()->getWorkingVersion()->getTableInstances().at(i)->getName();
+                        f += upcase?" ADD ":" add ";
+                        f += getWorkingProject()->getWorkingVersion()->getTableInstances().at(i)->table()->getForeignKeyCommands().at(j);
+                        f += ";\n";
+
+                        finalSql << f;
                     }
                 }
             }
@@ -255,7 +288,14 @@ void MainWindow::currentProjectTreeItemChanged(QTreeWidgetItem * current, QTreeW
 
             }
 
-            frm->setSource(finalSql);
+            QString fs = "";
+            for(int i=0; i< finalSql.size(); i++)
+            {
+                fs += finalSql[i];
+            }
+            frm->setSource(fs);
+            frm->setSqlList(finalSql);
+
             setCentralWidget(frm);
 
         }
@@ -266,17 +306,7 @@ void MainWindow::currentProjectTreeItemChanged(QTreeWidgetItem * current, QTreeW
                 // the user clicked on a table, the name of the table is a tag
                 QVariant qv = current->data(0, Qt::UserRole);
                 QString tabName = qv.toString();
-                Table* table =  getWorkingProject()->getWorkingVersion()->getTable(tabName);
-                if(table == 0)  // shouldn't be ...
-                {
-                    return;
-                }
-
-                frm = new NewTableForm(getWorkingProject()->getEngine(), getWorkingProject(), this);
-                frm->setTable(table);
-                frm->focusOnName();
-                frm->setMainWindow(this);
-                setCentralWidget(frm);
+                showTable(tabName, false);
             }
             else
             if(current->parent() && current->parent() == getWorkingProject()->getWorkingVersion()->getDiagramsItem())
@@ -311,7 +341,7 @@ void MainWindow::currentProjectTreeItemChanged(QTreeWidgetItem * current, QTreeW
             if(current->parent() && current->parent() == getWorkingProject()->getWorkingVersion()->getFinalSqlItem())
             {
                 // user clicked on a SQL item
-                SqlForm* frm = new SqlForm(this);
+                SqlForm* frm = new SqlForm(getWorkingProject()->getEngine(), this);
                 QVariant qv = current->data(0, Qt::UserRole);
                 QString name = qv.toString();
                 SqlSourceEntity* ent = NULL;
@@ -326,7 +356,15 @@ void MainWindow::currentProjectTreeItemChanged(QTreeWidgetItem * current, QTreeW
                 }
 
                 frm->setSqlSource(ent);
-                frm->setSource(ent->generateSqlSource(getWorkingProject()->getEngine()->getSqlGenerator(), Configuration::instance().sqlGenerationOptions()));
+                
+                QString fs = "";
+                QStringList finalSql = ent->generateSqlSource(getWorkingProject()->getEngine()->getSqlGenerator(), Configuration::instance().sqlGenerationOptions());
+                for(int i=0; i< finalSql.size(); i++)
+                {
+                    fs += finalSql[i];
+                }
+                frm->setSource(fs);
+                frm->setSqlList(finalSql);
 
                 setCentralWidget(frm);
 

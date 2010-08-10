@@ -11,6 +11,12 @@
     <height>734</height>
    </rect>
   </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
@@ -54,7 +60,7 @@
          <enum>QTabWidget::Rounded</enum>
         </property>
         <property name="currentIndex">
-         <number>2</number>
+         <number>6</number>
         </property>
         <widget class="QWidget" name="tabWidgetPage1">
          <attribute name="title">
@@ -1167,7 +1173,7 @@ p, li { white-space: pre-wrap; }
                <number>0</number>
               </property>
               <item>
-               <widget class="QToolButton" name="btnSaveToImageFile">
+               <widget class="QToolButton" name="btnSaveSql">
                 <property name="maximumSize">
                  <size>
                   <width>24</width>
@@ -2023,6 +2029,22 @@ p, li { white-space: pre-wrap; }
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>btnSaveSql</sender>
+   <signal>clicked()</signal>
+   <receiver>NewTableForm</receiver>
+   <slot>onSaveSql()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>49</x>
+     <y>150</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>628</x>
+     <y>366</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <designerdata>
   <property name="gridDeltaX">
@@ -2081,5 +2103,6 @@ p, li { white-space: pre-wrap; }
   <slot>onChangeDescription()</slot>
   <slot>onChangeName(QString)</slot>
   <slot>onInject()</slot>
+  <slot>onSaveSql()</slot>
  </slots>
 </ui>

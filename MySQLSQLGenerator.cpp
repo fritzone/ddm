@@ -6,7 +6,7 @@
 #include "Index.h"
 #include "ForeignKey.h"
 
-QString MySQLSQLGenerator::generateSql(Table *table, const QHash<QString, QString> &options, QString tabName) const
+QStringList MySQLSQLGenerator::generateSql(Table *table, const QHash<QString, QString> &options, QString tabName) const
 {
     bool upcase = options.contains("Case") && options["Case"] == "Upper";
     bool comments = options.contains("GenerateComments") && options["GenerateComments"] == "Yes";
@@ -55,32 +55,34 @@ QString MySQLSQLGenerator::generateSql(Table *table, const QHash<QString, QStrin
     QStringList foreignKeys;
     QString foreignKeysTable = "";
 
-    QString result ;
+    QStringList toReturn;
+
     if(comments)
     {
-        result = "-- ";
-        result += (table->getDescription().length()>0?table->getDescription():" Create table " + tabName) + "\n";
+        QString comment = "-- ";
+        comment += (table->getDescription().length()>0?table->getDescription():" Create table " + tabName) + "\n";
+        toReturn << comment;
     }
-    result += upcase? "CREATE " : "create ";
-    result += table->isTemporary()? upcase? "TEMPORARY ":"temporary ":"";
+    QString createTable = upcase? "CREATE " : "create ";
+    createTable += table->isTemporary()? upcase? "TEMPORARY ":"temporary ":"";
 
-    result += !upcase? "table ":" TABLE ";
+    createTable += !upcase? "table ":" TABLE ";
 
     // table name
-    result += backticks?"`":"";
-    result += tabName;
-    result += backticks?"`":"";
+    createTable += backticks?"`":"";
+    createTable += tabName;
+    createTable += backticks?"`":"";
 
-    result += "\n(\n";
+    createTable += "\n(\n";
 
     // creating the columns
     for(int i=0; i<table->fullColumns().size(); i++)
     {
         // column name
-        result += backticks?"`":"";
-        result += "\t" + table->fullColumns()[i];
-        result += backticks?"`":"";
-        result += " ";
+        createTable += backticks?"`":"";
+        createTable += "\t" + table->fullColumns()[i];
+        createTable += backticks?"`":"";
+        createTable += " ";
 
         Column *col = table->getColumn(table->fullColumns()[i]);
         if(col == 0)
@@ -88,20 +90,20 @@ QString MySQLSQLGenerator::generateSql(Table *table, const QHash<QString, QStrin
             col = table->getColumnFromParents(table->fullColumns()[i]);
             if(col == 0)
             {
-                return "ERROR";
+                return QStringList("ERROR");
             }
         }
 
         // column type
         const UserDataType* dt = table->getDataTypeOfColumn(table->fullColumns()[i]);
-        result += upcase?dt->sqlAsString().toUpper():dt->sqlAsString().toLower();
+        createTable += upcase?dt->sqlAsString().toUpper():dt->sqlAsString().toLower();
 
         // is this primary key?
         if(col->isPk())
         {
             if(pkpos == 0)
             {
-                result += upcase?" PRIMARY KEY ":" primary key ";
+                createTable += upcase?" PRIMARY KEY ":" primary key ";
             }
             else
             {
@@ -112,13 +114,13 @@ QString MySQLSQLGenerator::generateSql(Table *table, const QHash<QString, QStrin
         // is this a nullable column?
         if(!dt->isNullable())
         {
-            result += upcase? " NOT NULL " : " not null ";
+            createTable += upcase? " NOT NULL " : " not null ";
         }
 
         // do we have a default value for this columns' data type?
         if(dt->getDefaultValue().length() > 0)
         {
-            result += QString(upcase?" DEFAULT ":" default ") +
+            createTable += QString(upcase?" DEFAULT ":" default ") +
                       QString(dt->getType()==DataType::DT_STRING?"\"":"") + dt->getDefaultValue() +
                       QString(dt->getType()==DataType::DT_STRING?"\"":"") ;
         }
@@ -126,21 +128,21 @@ QString MySQLSQLGenerator::generateSql(Table *table, const QHash<QString, QStrin
         // do we have more columns after this?
         if(i<table->fullColumns().size() - 1)
         {
-            result += ",\n";
+            createTable += ",\n";
         }
     }
 
     // are we having primary keys after columns?
     if(pkpos == 1)
     {
-        result += "\n, ";
-        result += upcase?"PRIMARY KEY ":"primary key ";
+        createTable += "\n, ";
+        createTable += upcase?"PRIMARY KEY ":"primary key ";
         for(int i=0; i<primaryKeys.size(); i++)
         {
-            result += primaryKeys[i];
+            createTable += primaryKeys[i];
             if(i<primaryKeys.size() - 1)
             {
-                result += ", ";
+                createTable += ", ";
             }
         }
     }
@@ -183,76 +185,91 @@ QString MySQLSQLGenerator::generateSql(Table *table, const QHash<QString, QStrin
     // now check the foreign keys if any
     if(fkpos == 1 && foreignKeys.size() > 0)
     {
-        result += ",\n";
+        createTable += ",\n";
         for(int i=0; i<foreignKeys.size(); i++)
         {
-            result += "\t" + foreignKeys[i];
+            createTable += "\t" + foreignKeys[i];
             if(i<foreignKeys.size() - 1)
             {
-                result += ",\n";
+                createTable += ",\n";
             }
         }
     }
 
-    // this is closing the crate table SQL
-    result += "\n)\n";
+    // this is closing the create table SQL
+    createTable += "\n)\n";
 
     // now check the engine
     if(table->getStorageEngine())
     if(table->getStorageEngine()->name().length() > 0)
     {
-        result += QString(upcase?"ENGINE = ":"engine = ") + table->getStorageEngine()->name();
+        createTable += QString(upcase?"ENGINE = ":"engine = ") + table->getStorageEngine()->name();
     }
-    result += ";\n\n";
-    if(comments) result += table->fullIndices().size()>0?"-- Create the indexes for table " + table->getName() + "\n":"";
+    createTable += ";\n\n";
+    // and here we are done with the create table command
+    toReturn << createTable;
+
+    if(comments)
+    {
+        QString comment = table->fullIndices().size()>0?"-- Create the indexes for table " + table->getName() + "\n":"";
+        toReturn << comment;
+    }
 
     // now create the indexes of the table
-
     for(int i=0; i<table->fullIndices().size(); i++)
     {
-        result += upcase?"CREATE INDEX ":"create index ";
-        result += table->fullIndices().at(i);
-        result += upcase?" USING ":" using ";
+        QString indexCommand = upcase?"CREATE INDEX ":"create index ";
+        indexCommand += table->fullIndices().at(i);
+        indexCommand += upcase?" USING ":" using ";
         Index* idx = table->getIndex(table->fullIndices().at(i));
         if(idx == 0)
         {
             idx = table->getIndexFromParents(table->fullIndices().at(i));
             if(idx == 0)
             {
-                return "ERROR";
+                return QStringList("ERROR");
             }
         }
-        result += upcase?idx->getType().toUpper():idx->getType().toLower();
-        result +=upcase?" ON":" on ";
-        result += table->getName();
-        result += "(";
+        indexCommand += upcase?idx->getType().toUpper():idx->getType().toLower();
+        indexCommand +=upcase?" ON":" on ";
+        indexCommand += table->getName();
+        indexCommand += "(";
 
         for(int j=0; j<idx->getColumns().size(); j++)
         {
-            result += idx->getColumns().at(j)->getName();
+            indexCommand += idx->getColumns().at(j)->getName();
             if(j<idx->getColumns().size() - 1)
             {
-                result += ", ";
+                indexCommand += ", ";
             }
         }
-        result +=");\n\n";
+        indexCommand +=");\n\n";
+
+        toReturn << indexCommand;
     }
 
     // and check if we have foreign keys
     if(fkpos == 2 && foreignKeys.size() > 0)
     {
-        if(comments) result += "-- Create the foreign keys for table " + table->getName() + "\n";
-        result += upcase?"\nALTER TABLE" + table->getName() :"\nalter table " + table->getName();
-        result += upcase?" ADD":" add";
+        if(comments)
+        {
+            QString comment = "-- Create the foreign keys for table " + table->getName() + "\n";
+            toReturn << comment;
+        }
+
+        QString fkCommand = upcase?"\nALTER TABLE" + table->getName() :"\nalter table " + table->getName();
+        fkCommand += upcase?" ADD":" add";
         for(int i=0; i<foreignKeys.size(); i++)
         {
-            result += foreignKeys[i];
+            fkCommand += foreignKeys[i];
             if(i<foreignKeys.size() - 1)
             {
-                result += ",\n";
+                fkCommand += ",\n";
             }
         }
+
+        toReturn << fkCommand;
     }
 
-    return result;
+    return toReturn;
 }
