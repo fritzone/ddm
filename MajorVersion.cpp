@@ -498,9 +498,9 @@ QString MajorVersion::generateUniqueTableName(const QString& input)
 }
 
 
-TableInstance* MajorVersion::instantiateTable(Table* tab)
+TableInstance* MajorVersion::instantiateTable(Table* tab, bool reason)
 {
-    TableInstance* tabInst = new TableInstance(tab);
+    TableInstance* tabInst = new TableInstance(tab, reason);
     TableInstance* other = getTableInstance(tabInst->getName());
     if(other && other != tabInst)
     {

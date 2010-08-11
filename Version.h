@@ -142,7 +142,7 @@ public:
     /**
      * Instantiates a table from the given table template
      */
-    virtual TableInstance* instantiateTable(Table* tab) = 0;
+    virtual TableInstance* instantiateTable(Table* tab, bool reason) = 0;
 
     /**
      * Returns true if this version is in a project which has OOP features enabled

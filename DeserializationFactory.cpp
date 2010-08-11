@@ -457,6 +457,7 @@ TableInstance* DeserializationFactory::createTableInstance(Version* v, const QDo
 {
     QString name = element.attribute("Name");
     QString tabName = element.attribute("Table");
+    bool refed = element.attribute("Ref") == "1";
 
     QHash <QString, QVector<QString> > data;
     for(int i=0; i<element.childNodes().count(); i++)
@@ -470,7 +471,7 @@ TableInstance* DeserializationFactory::createTableInstance(Version* v, const QDo
         data[colName] = col;
     }
 
-    TableInstance* result = new TableInstance(v->getTable(tabName));
+    TableInstance* result = new TableInstance(v->getTable(tabName), refed);
     result->setValues(data);
     result->setName(name);
 

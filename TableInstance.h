@@ -15,7 +15,7 @@ class TableInstance : public TreeItem, public NamedItem, public SerializableElem
 {
 public:
 
-    TableInstance(Table* tab);
+    TableInstance(Table* tab, bool ref);
 
     QList<QString> columns() const;
 
@@ -36,13 +36,20 @@ public:
         return m_values;
     }
 
-    virtual QStringList generateSqlSource(AbstractSqlGenerator *generator,QHash<QString,QString>) const;
+    bool instantiatedBecuaseOfRkReference() const
+    {
+        return m_becauseOfReference;
+    }
+
+    virtual QStringList generateSqlSource(AbstractSqlGenerator *generator,QHash<QString,QString>);
 
 private:
 
     Table* m_table;
 
     QHash < QString, QVector<QString> > m_values;
+
+    bool m_becauseOfReference;
 
 };
 

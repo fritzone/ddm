@@ -14,6 +14,7 @@ class Table;
 class Solution;
 class Diagram;
 class ContextMenuEnabledTreeWidget;
+class ContextMenuEnabledTreeWidgetItem;
 class NewTableForm;
 
 namespace Ui
@@ -54,7 +55,8 @@ public:
     Solution* currentSolution();
 
     bool onSaveDiagram(Diagram*);
-    void instantiateTable(const QString& tabName);
+
+    ContextMenuEnabledTreeWidgetItem* instantiateTable(const QString& tabName, bool ref = false);
 
     void showTable(const QString& tabName, bool focus = true);
 
@@ -92,7 +94,6 @@ private:
     void enableActions();
     void connectActionsFromTablePopupMenu();
     Table* getRightclickedTable();
-
 
 private:
     Ui::MainWindow *ui;

@@ -132,7 +132,7 @@ public:
     }
     virtual void setupTableParentChildRelationships();
 
-    virtual TableInstance* instantiateTable(Table* tab);
+    virtual TableInstance* instantiateTable(Table* tab, bool reason);
 
     virtual TableInstance* getTableInstance(const QString& );
 

@@ -273,7 +273,14 @@ public:
         return foreignKeyCommands;
     }
 
-    virtual QStringList generateSqlSource(AbstractSqlGenerator * generator, QHash<QString,QString>) const;
+    /**
+     * This returns a list of tables that are referenced by the foreign keys of this table. This is used in the instantiation process
+     * so that the application know automatically to instantiate the correct tables (so that the SQL contains no errors)
+     * @param exception contains the tables that shouldn't be added there
+     */
+    QSet<const Table*> getTablesReferencedByForeignKeys();
+
+    virtual QStringList generateSqlSource(AbstractSqlGenerator * generator, QHash<QString,QString>);
 
 
 private:
@@ -314,6 +321,7 @@ private:
     QString m_tempTabName;
 
     mutable QStringList foreignKeyCommands;
+
 
 private:
 

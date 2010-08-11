@@ -710,7 +710,7 @@ void MainWindow::onInstantiateTableFromPopup()
         return;
     }
 
-    instantiateTable(table->getName());
+    projectTree->setCurrentItem(instantiateTable(table->getName()));
 }
 
 void MainWindow::onSpecializeTableFromPopup()
@@ -858,18 +858,27 @@ void MainWindow::onNewTableInstanceHovered()
     }
 }
 
-void MainWindow::instantiateTable(const QString& tabName)
+ContextMenuEnabledTreeWidgetItem* MainWindow::instantiateTable(const QString& tabName, bool ref)
 {
     Version* cVersion = currentSolution()->currentProject()->getWorkingVersion();
-    TableInstance* tinst = cVersion->instantiateTable(cVersion->getTable(tabName));
+    TableInstance* tinst = cVersion->instantiateTable(cVersion->getTable(tabName), ref);
     ContextMenuEnabledTreeWidgetItem* itm = new ContextMenuEnabledTreeWidgetItem(cVersion->getTableInstancesItem(), QStringList(tinst->getName()));
     itm->setIcon(0, IconFactory::getTabinstIcon());
-    QVariant a(tabName);
+    QVariant a(tinst->getName());
     itm->setData(0, Qt::UserRole, a);
 
-    ContextMenuEnabledTreeWidgetItem* itma = new ContextMenuEnabledTreeWidgetItem(cVersion->getFinalSqlItem(), QStringList(cVersion->getTable(tabName)->getName()));
+    ContextMenuEnabledTreeWidgetItem* itma = new ContextMenuEnabledTreeWidgetItem(cVersion->getFinalSqlItem(), QStringList(tinst->getName()));
     itma->setIcon(0, IconFactory::getTabinstIcon());
     itma->setData(0, Qt::UserRole, a);
-
-    projectTree->setCurrentItem(itm);
+    QSet<const Table*> referenced = cVersion->getTable(tabName)->getTablesReferencedByForeignKeys();
+    QSetIterator<const Table*> i(referenced);
+    while(i.hasNext())
+    {
+        const Table* tbl = i.next();
+        if(cVersion->getTableInstance(tbl->getName()) == 0)
+        {
+            instantiateTable(tbl->getName(), true);  // TODO: this is stupid. This method should get a Table already
+        }
+    }
+    return itm;
 }

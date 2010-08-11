@@ -3,7 +3,7 @@
 #include "Table.h"
 #include "Configuration.h"
 
-TableInstance::TableInstance(Table *tab) : TreeItem(), NamedItem(tab->getName()), m_table(tab), m_values()
+TableInstance::TableInstance(Table *tab, bool ref) : TreeItem(), NamedItem(tab->getName()), m_table(tab), m_values(), m_becauseOfReference(ref)
 {
     for(int i=0; i<m_table->fullColumns().size(); i++)
     {
@@ -22,6 +22,8 @@ void TableInstance::serialize(QDomDocument &doc, QDomElement &parent) const
     QDomElement tableInstanceElement = doc.createElement("TableInstance");      // will hold the data in this element
     tableInstanceElement.setAttribute("Name", getName());
     tableInstanceElement.setAttribute("Table", m_table->getName());
+    tableInstanceElement.setAttribute("Ref", instantiatedBecuaseOfRkReference());
+
     QList <QString> cols = columns();
 
     for(int i=0; i<cols.size(); i++)
@@ -41,7 +43,7 @@ void TableInstance::serialize(QDomDocument &doc, QDomElement &parent) const
     parent.appendChild(tableInstanceElement);
 }
 
-QStringList TableInstance::generateSqlSource(AbstractSqlGenerator *generator, QHash<QString,QString> opts) const
+QStringList TableInstance::generateSqlSource(AbstractSqlGenerator *generator, QHash<QString,QString> opts)
 {
     table()->restartSqlRendering();
     return generator->generateSql(this->table(), opts, getName());
