@@ -18,6 +18,11 @@ public:
         return indexTypes;
     }
 
+    virtual QString getDefaultIndextype()
+    {
+        return "BTREE";
+    }
+
 private:
 
     QStringList indexTypes;

@@ -12,6 +12,8 @@ public:
     AbstractIndextypeProvider();
 
     virtual QStringList getIndexTypes() = 0;
+
+    virtual QString getDefaultIndextype() = 0;
 };
 
 #endif // ABSTRACTINDEXTYPEPROVIDER_H

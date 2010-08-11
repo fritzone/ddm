@@ -5,8 +5,9 @@
 #include "AbstractStorageEngine.h"
 #include "Index.h"
 #include "ForeignKey.h"
+#include "TableInstance.h"
 
-QStringList MySQLSQLGenerator::generateSql(Table *table, const QHash<QString, QString> &options, QString tabName) const
+QStringList MySQLSQLGenerator::generateCreateTableSql(Table *table, const QHash<QString, QString> &options, QString tabName) const
 {
     bool upcase = options.contains("Case") && options["Case"] == "Upper";
     bool comments = options.contains("GenerateComments") && options["GenerateComments"] == "Yes";
@@ -232,7 +233,7 @@ QStringList MySQLSQLGenerator::generateSql(Table *table, const QHash<QString, QS
         }
         indexCommand += upcase?idx->getType().toUpper():idx->getType().toLower();
         indexCommand +=upcase?" ON":" on ";
-        indexCommand += table->getName();
+        indexCommand += tabName;
         indexCommand += "(";
 
         for(int j=0; j<idx->getColumns().size(); j++)
@@ -253,11 +254,11 @@ QStringList MySQLSQLGenerator::generateSql(Table *table, const QHash<QString, QS
     {
         if(comments)
         {
-            QString comment = "-- Create the foreign keys for table " + table->getName() + "\n";
+            QString comment = "-- Create the foreign keys for table " + tabName + "\n";
             toReturn << comment;
         }
 
-        QString fkCommand = upcase?"\nALTER TABLE" + table->getName() :"\nalter table " + table->getName();
+        QString fkCommand = upcase?"\nALTER TABLE" + tabName :"\nalter table " + tabName;
         fkCommand += upcase?" ADD":" add";
         for(int i=0; i<foreignKeys.size(); i++)
         {
@@ -272,4 +273,48 @@ QStringList MySQLSQLGenerator::generateSql(Table *table, const QHash<QString, QS
     }
 
     return toReturn;
+}
+
+
+QStringList MySQLSQLGenerator::generateDefaultValuesSql(TableInstance* tableInstance, const QHash<QString, QString>& options) const
+{
+    QStringList result;
+    int maxValues = 0;
+    bool upcase = options.contains("Case") && options["Case"] == "Upper";
+    // find how many values we have
+    for(int i=0; i<tableInstance->columns().size(); i++)
+    {
+        maxValues = tableInstance->values()[tableInstance->columns().at(i)].size();
+        break;
+    }
+    for(int i=0; i<maxValues; i++)
+    {
+        QString insert = upcase?"\nINSERT INTO ":"insert into ";
+        insert += tableInstance->getName();
+        insert += " (";
+        for(int j=0; j<tableInstance->columns().size(); j++)
+        {
+            insert += tableInstance->columns().at(j);
+            if(j< tableInstance->columns().size() - 1)
+            {
+                insert += ", ";
+            }
+
+        }
+        insert += upcase?" ) VALUES (" : ") values (";
+        for(int j=0; j<tableInstance->columns().size(); j++)
+        {
+            QVector<QString> vals = tableInstance->values()[tableInstance->columns().at(j)];
+            insert += "\"";
+            insert += vals.at(i);
+            insert += "\"";
+            if(j< tableInstance->columns().size() - 1)
+            {
+                insert += ", ";
+            }
+        }
+        insert += ");\n\n";
+        result << insert;
+    }
+    return result;
 }

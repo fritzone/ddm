@@ -1278,6 +1278,11 @@ void NewTableForm::onBtnAddForeignKey()
         m_ui->lstForeignKeys->addTopLevelItem(twi);
         m_currentForeignKey->setLocation(twi);
         m_table->addForeignKey(m_currentForeignKey);
+        // now, here create an index in the _foreign table_ which has columns the foreign columns of the index (this is required for some versions of MySQL, we'll see for the other ones)
+
+        TODO: ez valamiert nem megy ugy ahogy kellene ... javitsd ki
+        m_project->getWorkingVersion()->getTable(m_currentForeignKey->getForeignTable())->createAutoIndex(m_currentForeignKey->foreignColumns());
+
     }
 
     m_changes = true;
@@ -1501,6 +1506,7 @@ void NewTableForm::keyPressEvent(QKeyEvent *evt)
 void NewTableForm::onBtnUpdateTableWithDefaultValues()
 {
     QVector <QVector <QString > > values;
+    bool errorFound = false;
     for(int i=0; i<m_ui->tableStartupValues->rowCount(); i++)
     {
         QVector<QString> rowI;
@@ -1508,18 +1514,37 @@ void NewTableForm::onBtnUpdateTableWithDefaultValues()
         {
             if(m_ui->tableStartupValues->item(i,j))
             {
-                rowI.append(m_ui->tableStartupValues->item(i,j)->text());
+                QString cName = m_ui->tableStartupValues->horizontalHeaderItem(i)->text();
+                Column *c =m_table->getColumn(cName);
+                if(c == 0)
+                {
+                    c = m_table->getColumnFromParents(cName);
+                }
+                const UserDataType* dt = c->getDataType();
+                if(dt->isValid(m_ui->tableStartupValues->item(j,i)->text()))
+                {
+                    rowI.append(m_ui->tableStartupValues->item(i,j)->text());
+                    m_ui->tableStartupValues->item(j,i)->setBackgroundColor(Qt::white);
+                    m_ui->tableStartupValues->item(j,i)->setToolTip("");
+                }
+                else
+                {
+                    m_ui->tableStartupValues->item(j,i)->setBackgroundColor(Qt::red);
+                    errorFound = true;
+                    m_ui->tableStartupValues->item(j,i)->setToolTip("This column type does not support this value");
+                }
             }
             else
             {
                 rowI.append("");
             }
-
         }
         values.append(rowI);
     }
-
-    m_table->setDefaultValues(values);
+    if(!errorFound)
+    {
+        m_table->setDefaultValues(values);
+    }
 }
 
 void NewTableForm::onSaveStartupValuestoCSV()
@@ -1602,7 +1627,7 @@ void NewTableForm::onChangeTab(int idx)
         if(m_ui->tabWidget->tabText(idx) == "SQL")
         {
             QString fs = "";
-            finalSql = m_project->getEngine()->getSqlGenerator()->generateSql(m_table, Configuration::instance().sqlGenerationOptions(),m_table->getName());
+            finalSql = m_project->getEngine()->getSqlGenerator()->generateCreateTableSql(m_table, Configuration::instance().sqlGenerationOptions(),m_table->getName());
             for(int i=0; i< finalSql.size(); i++)
             {
                 fs += finalSql[i];
@@ -1622,7 +1647,7 @@ void NewTableForm::onChangeName(QString a)
     m_table->setName(a);
 
     QString fs = "";
-    finalSql = m_project->getEngine()->getSqlGenerator()->generateSql(m_table, Configuration::instance().sqlGenerationOptions(), m_table->getName());
+    finalSql = m_project->getEngine()->getSqlGenerator()->generateCreateTableSql(m_table, Configuration::instance().sqlGenerationOptions(), m_table->getName());
     for(int i=0; i< finalSql.size(); i++)
     {
         fs += finalSql[i];

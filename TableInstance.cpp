@@ -45,6 +45,10 @@ void TableInstance::serialize(QDomDocument &doc, QDomElement &parent) const
 
 QStringList TableInstance::generateSqlSource(AbstractSqlGenerator *generator, QHash<QString,QString> opts)
 {
+    QStringList result;
     table()->restartSqlRendering();
-    return generator->generateSql(this->table(), opts, getName());
+    result << generator->generateCreateTableSql(this->table(), opts, getName());
+    // and now the default values as "inserts"
+    result << generator->generateDefaultValuesSql(this, opts);
+    return result;
 }

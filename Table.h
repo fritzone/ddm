@@ -282,6 +282,16 @@ public:
 
     virtual QStringList generateSqlSource(AbstractSqlGenerator * generator, QHash<QString,QString>);
 
+    /**
+     * returns the first available index name
+     */
+    QString getAvailableIndexName(const QString& prefix);
+
+    /**
+     * Creates a new index for use with the
+     */
+    bool createAutoIndex(QVector<const Column*> cols);
+
 
 private:
     // the name of the table

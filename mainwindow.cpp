@@ -789,7 +789,6 @@ Table* MainWindow::getRightclickedTable()
         Table* table =  getWorkingProject()->getWorkingVersion()->getTable(tabName);
         return table;
     }
-
     return 0;
 }
 
@@ -800,7 +799,6 @@ void MainWindow::onDeleteTableFromPopup()
     {
         getWorkingProject()->getWorkingVersion()->deleteTable(tab);
     }
-
 }
 
 void MainWindow::onDuplicateTableFromPopup()
@@ -835,7 +833,6 @@ void MainWindow::onNewTableInstance()
 
 void MainWindow::onNewTableInstanceHovered()
 {
-
     if(!m_createTableInstancesPopup)
     {
         return;

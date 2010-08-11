@@ -108,6 +108,12 @@ public:
 
     virtual QWidget* getDefaultsTableWidget() const;
 
+    /**
+     * Checks if the passed in value (from the table instance default values) is valid for this data type.
+     * TODO: This design is really ugly, we should have string, numeric, other inheriting this, and those should have this method. Rewrite when there's some time.
+     */
+    bool isValid(const QString&) const;
+
 
 private:
 

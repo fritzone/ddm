@@ -11,6 +11,7 @@ class ForeignKey;
 class Diagram;
 class ContextMenuEnabledTreeWidgetItem;
 class TableInstance;
+class DatabaseEngine;
 
 /**
  * Basic class holding data related to versions
@@ -155,11 +156,13 @@ public:
     virtual void addTableInstance(TableInstance* inst) = 0;
 
     /**
-     * Retursn a table instance
+     * Returns a table instance
      */
     virtual TableInstance* getTableInstance(const QString& ) = 0;
 
     virtual const QVector<TableInstance*> & getTableInstances() = 0;
+
+    virtual DatabaseEngine* getDatabaseEngine() = 0;
 
     // don't know if this is a good design or not for the popups ....
 

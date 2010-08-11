@@ -1,13 +1,17 @@
 #include "Table.h"
 #include "Column.h"
 #include "Index.h"
+#include "Version.h"
 #include "ForeignKey.h"
+#include "DatabaseEngine.h"
 #include "Configuration.h"
 #include "UserDataType.h"
 #include "AbstractStorageEngine.h"
 #include "AbstractSQLGenerator.h"
 #include "DraggableGraphicsItem.h"
 #include "IconFactory.h"
+#include "AbstractIndextypeProvider.h"
+
 #include <QPen>
 
 Table::Table(Version* v) :  m_name(""), m_description(""), m_columns(), m_indices(), m_foreignKeys(), m_startupValues(),
@@ -485,7 +489,7 @@ void Table::prepareDiagramEntity()
 QStringList Table::generateSqlSource(AbstractSqlGenerator *generator, QHash<QString,QString> opts)
 {
     const_cast<Table*>(this)->restartSqlRendering();
-    return generator->generateSql(const_cast<Table*>(this), opts, getName());
+    return generator->generateCreateTableSql(const_cast<Table*>(this), opts, getName());
 }
 
 QSet<const Table*> Table::getTablesReferencedByForeignKeys()
@@ -499,4 +503,30 @@ QSet<const Table*> Table::getTablesReferencedByForeignKeys()
         }
     }
     return result;
+}
+
+QString Table::getAvailableIndexName(const QString& prefix)
+{
+    QString lprefix = prefix;
+    for(int i=0; i<999999; i++)
+    {
+        lprefix = prefix + "_" + QString::number(i);
+        if(getIndex(lprefix) == 0)
+        {
+            return lprefix;
+        }
+    }
+    return "None";
+}
+
+bool Table::createAutoIndex(QVector<const Column*> cols)
+{
+    QString idxName = getAvailableIndexName("autoidx");
+    Index* idx = new Index(idxName, m_version->getDatabaseEngine()->getIndextypeProvider()->getDefaultIndextype());
+    for(int i=0; i<cols.size(); i++)
+    {
+        idx->addColumn(cols.at(i));
+    }
+    addIndex(idx);
+    return true;
 }

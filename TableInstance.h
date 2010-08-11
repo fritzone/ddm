@@ -47,6 +47,7 @@ private:
 
     Table* m_table;
 
+    // a hash in which to the column name we have mapped a list of default values.
     QHash < QString, QVector<QString> > m_values;
 
     bool m_becauseOfReference;

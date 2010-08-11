@@ -138,6 +138,8 @@ public:
 
     virtual bool oop();
 
+    virtual DatabaseEngine* getDatabaseEngine();
+
     virtual void addTableInstance(TableInstance* inst)
     {
         m_tableInstances.append(inst);

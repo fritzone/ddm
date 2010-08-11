@@ -3,7 +3,7 @@
 #include "TableInstance.h"
 #include "UserDataType.h"
 #include "StartupValuesHelper.h"
-
+#include "Column.h"
 
 template <class T> const T& max ( const T& a, const T& b ) {
   return (b<a)?a:b;
@@ -90,6 +90,7 @@ void TableInstanceForm::onDeleteRow()
 void TableInstanceForm::onValidateData()
 {
     QHash < QString, QVector<QString> > v;
+    bool errorFound = false;
     for(int i=0; i<ui->values->columnCount(); i++)
     {
         QVector<QString> a ;
@@ -97,7 +98,25 @@ void TableInstanceForm::onValidateData()
         {
             if(ui->values->item(j,i))
             {
-                a.append(ui->values->item(j,i)->text());
+                QString cName = ui->values->horizontalHeaderItem(i)->text();
+                Column *c = m_tinst->table()->getColumn(cName);
+                if(c == 0)
+                {
+                    c = m_tinst->table()->getColumnFromParents(cName);
+                }
+                const UserDataType* dt = c->getDataType();
+                if(dt->isValid(ui->values->item(j,i)->text()))
+                {
+                    a.append(ui->values->item(j,i)->text());
+                    ui->values->item(j,i)->setBackgroundColor(Qt::white);
+                    ui->values->item(j,i)->setToolTip("");
+                }
+                else
+                {
+                    ui->values->item(j,i)->setBackgroundColor(Qt::red);
+                    errorFound = true;
+                    ui->values->item(j,i)->setToolTip("This column type does not support this value");
+                }
             }
             else
             {
@@ -107,8 +126,10 @@ void TableInstanceForm::onValidateData()
         v[ui->values->horizontalHeaderItem(i)->text()] = a;
     }
 
-    m_tinst->setValues(v);
-
+    if(!errorFound)
+    {
+        m_tinst->setValues(v);
+    }
 }
 
 void TableInstanceForm::onCellChange(int,int)
