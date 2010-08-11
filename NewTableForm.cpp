@@ -1279,9 +1279,9 @@ void NewTableForm::onBtnAddForeignKey()
         m_currentForeignKey->setLocation(twi);
         m_table->addForeignKey(m_currentForeignKey);
         // now, here create an index in the _foreign table_ which has columns the foreign columns of the index (this is required for some versions of MySQL, we'll see for the other ones)
-
-        TODO: ez valamiert nem megy ugy ahogy kellene ... javitsd ki
-        m_project->getWorkingVersion()->getTable(m_currentForeignKey->getForeignTable())->createAutoIndex(m_currentForeignKey->foreignColumns());
+        QString fktName = m_currentForeignKey->getForeignTable();
+        Table* tbl = m_project->getWorkingVersion()->getTable(fktName);
+        tbl->createAutoIndex(m_currentForeignKey->foreignColumns());
 
     }
 

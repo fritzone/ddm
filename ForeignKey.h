@@ -22,7 +22,7 @@ public:
 
         ColumnAssociation(const Table* foreignTable, const Column* foreignColumn, const Table* localTable, const Column* localColumn):
                 m_foreignTable(foreignTable), m_localTable(localTable), m_foreignColumn(foreignColumn), m_localColumn(localColumn),
-                m_sforeignTable(""), m_slocalTable(""), m_sforeignColumn(""), m_slocalColumn("")
+                m_sforeignTable(foreignTable->getName()), m_slocalTable(localTable->getName()), m_sforeignColumn(foreignColumn->getName()), m_slocalColumn(localColumn->getName())
         {}
 
         ColumnAssociation(QString foreignTable, QString foreignColumn, QString localTable, QString localColumn):
