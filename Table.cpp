@@ -482,8 +482,21 @@ void Table::prepareDiagramEntity()
     m_diagramEntity = grp;
 }
 
-QStringList Table::generateSqlSource(AbstractSqlGenerator *generator, QHash<QString,QString> opts) const
+QStringList Table::generateSqlSource(AbstractSqlGenerator *generator, QHash<QString,QString> opts)
 {
     const_cast<Table*>(this)->restartSqlRendering();
     return generator->generateSql(const_cast<Table*>(this), opts, getName());
+}
+
+QSet<const Table*> Table::getTablesReferencedByForeignKeys()
+{
+    QSet<const Table*> result;
+    for(int i=0; i<m_foreignKeys.size(); i++)
+    {
+        for(int j=0; j<m_foreignKeys.at(i)->getAssociations().size(); j++)
+        {
+            result.insert(m_foreignKeys.at(i)->getAssociations().at(j)->getForeignTable());
+        }
+    }
+    return result;
 }
