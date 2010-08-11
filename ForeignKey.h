@@ -130,6 +130,11 @@ public:
 
     QString getForeignTable() const;
 
+    /**
+     * Return a vector of the foreign columns
+     */
+    QVector<const Column*> foreignColumns() const;
+
 private:
 
     // the associations between the columns

@@ -91,3 +91,19 @@ QWidget* UserDataType::getDefaultsTableWidget() const
 
     return 0;
 }
+
+bool UserDataType::isValid(const QString& v) const
+{
+    if(type == DT_NUMERIC)
+    {
+        for(int i=0; i<v.length(); i++)
+        {
+            QChar c = v.at(i);
+            if(!c.isNumber())
+            {
+                return false;
+            }
+        }
+    }
+    return true;
+}

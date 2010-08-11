@@ -510,6 +510,11 @@ TableInstance* MajorVersion::instantiateTable(Table* tab, bool reason)
     return tabInst;
 }
 
+DatabaseEngine* MajorVersion::getDatabaseEngine()
+{
+    return m_project->getEngine();
+}
+
 bool MajorVersion::oop()
 {
     return m_project->oopProject();

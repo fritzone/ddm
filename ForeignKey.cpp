@@ -150,3 +150,14 @@ QString ForeignKey::getForeignDescriptiveText() const
     }
     return result;
 }
+
+QVector<const Column*> ForeignKey::foreignColumns() const
+{
+    QVector<const Column*> result;
+    for(int i=0; i<m_associations.size(); i++)
+    {
+        result.append(m_associations.at(i)->getForeignColumn());
+    }
+    return result;
+}
+
