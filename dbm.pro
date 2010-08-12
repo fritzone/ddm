@@ -61,7 +61,8 @@ SOURCES += main.cpp \
     SqlHighlighter.cpp \
     SqlForm.cpp \
     InjectSqlDialog.cpp \
-    TableInstancesListForm.cpp
+    TableInstancesListForm.cpp \
+    PreferencesDialog.cpp
 HEADERS += MainWindow.h \
     MainWindowButtonDialog.h \
     newprojectdialog.h \
@@ -130,7 +131,8 @@ HEADERS += MainWindow.h \
     SqlForm.h \
     SqlSourceEntity.h \
     InjectSqlDialog.h \
-    TableInstancesListForm.h
+    TableInstancesListForm.h \
+    PreferencesDialog.h
 FORMS += mainwindow.ui \
     mainwindowbuttondialog.ui \
     newprojectdialog.ui \
@@ -146,5 +148,6 @@ FORMS += mainwindow.ui \
     TableInstanceForm.ui \
     SqlForm.ui \
     InjectSqlDialog.ui \
-    TableInstancesListForm.ui
+    TableInstancesListForm.ui \
+    PreferencesDialog.ui
 RESOURCES += dbm.qrc

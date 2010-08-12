@@ -1282,7 +1282,6 @@ void NewTableForm::onBtnAddForeignKey()
         QString fktName = m_currentForeignKey->getForeignTable();
         Table* tbl = m_project->getWorkingVersion()->getTable(fktName);
         tbl->createAutoIndex(m_currentForeignKey->foreignColumns());
-
     }
 
     m_changes = true;

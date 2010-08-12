@@ -39,7 +39,7 @@
      <x>0</x>
      <y>0</y>
      <width>339</width>
-     <height>26</height>
+     <height>25</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -66,6 +66,7 @@
     <property name="title">
      <string>&amp;Edit</string>
     </property>
+    <addaction name="action_Preferences"/>
    </widget>
    <widget class="QMenu" name="menu_Help">
     <property name="title">
@@ -257,6 +258,11 @@
     <string>New Table Instance</string>
    </property>
   </action>
+  <action name="action_Preferences">
+   <property name="text">
+    <string>Preferences</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources>
@@ -439,6 +445,22 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>action_Preferences</sender>
+   <signal>activated()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>onPreferences()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>169</x>
+     <y>54</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>onNewSolution()</slot>
@@ -451,5 +473,6 @@
   <slot>onSaveAs()</slot>
   <slot>onNewTableInstance()</slot>
   <slot>onNewTableInstanceHovered()</slot>
+  <slot>onPreferences()</slot>
  </slots>
 </ui>

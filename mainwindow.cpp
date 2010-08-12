@@ -27,6 +27,7 @@
 #include "SqlForm.h"
 #include "TableInstance.h"
 #include "TableInstancesListForm.h"
+#include "PreferencesDialog.h"
 
 #include <QtGui>
 
@@ -878,4 +879,11 @@ ContextMenuEnabledTreeWidgetItem* MainWindow::instantiateTable(const QString& ta
         }
     }
     return itm;
+}
+
+void MainWindow::onPreferences()
+{
+    PreferencesDialog* dlg = new PreferencesDialog(this);
+    dlg->setModal(true);
+    dlg->exec();
 }
