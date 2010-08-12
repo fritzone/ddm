@@ -83,6 +83,9 @@ public slots:
     void onInstantiateTableFromPopup();
     void onDuplicateTableFromPopup();
 
+
+    void onPreferences();
+
 private:
 
     ContextMenuEnabledTreeWidget* setupGuiForNewSolution();
