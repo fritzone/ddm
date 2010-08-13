@@ -14,7 +14,6 @@ SqlForm::SqlForm(DatabaseEngine* engine, QWidget *parent) : QWidget(parent), ui(
 {
     ui->setupUi(this);
     highlighter = new SqlHighlighter(ui->txtSql->document());
-    ui->grpSqlOptions->hide();
 }
 
 SqlForm::~SqlForm()

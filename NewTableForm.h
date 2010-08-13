@@ -6,7 +6,8 @@
 #include <QAbstractButton>
 #include <QListWidgetItem>
 
-namespace Ui {
+namespace Ui
+{
     class NewTableForm;
 }
 
@@ -21,6 +22,7 @@ class AbstractStorageEngine;
 class AbstractStorageEngineListProvider;
 class ContextMenuEnabledTreeWidgetItem;
 class SqlHighlighter;
+class SqlNamesValidator;
 
 class NewTableForm : public QWidget {
     Q_OBJECT
@@ -190,6 +192,7 @@ private:
     AbstractStorageEngineListProvider* m_engineProviders;
     SqlHighlighter* highlighter;
     QStringList finalSql;
+    SqlNamesValidator* m_nameValidator;
 };
 
 #endif // NEWTABLEFORM_H

@@ -68,7 +68,7 @@
           <string>...</string>
          </property>
          <property name="icon">
-          <iconset resource="dbm.qrc">
+          <iconset>
            <normaloff>:/images/actions/images/actions/filesave.png</normaloff>:/images/actions/images/actions/filesave.png</iconset>
          </property>
         </widget>
@@ -91,7 +91,7 @@
           <string>...</string>
          </property>
          <property name="icon">
-          <iconset resource="dbm.qrc">
+          <iconset>
            <normaloff>:/images/actions/images/small/inject.png</normaloff>:/images/actions/images/small/inject.png</iconset>
          </property>
         </widget>
@@ -124,64 +124,21 @@
     </widget>
    </item>
    <item>
-    <widget class="QGroupBox" name="groupBox_10">
-     <property name="title">
-      <string/>
+    <widget class="QTextEdit" name="txtSql">
+     <property name="font">
+      <font>
+       <family>Courier New</family>
+       <pointsize>11</pointsize>
+      </font>
      </property>
-     <layout class="QHBoxLayout" name="horizontalLayout_16">
-      <property name="topMargin">
-       <number>0</number>
-      </property>
-      <item>
-       <widget class="QGroupBox" name="grpSqlOptions">
-        <property name="title">
-         <string>Options</string>
-        </property>
-        <layout class="QVBoxLayout" name="verticalLayout_13">
-         <item>
-          <widget class="QCheckBox" name="checkBox">
-           <property name="text">
-            <string>Use backticks in names (`)</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <spacer name="verticalSpacer_2">
-           <property name="orientation">
-            <enum>Qt::Vertical</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>20</width>
-             <height>40</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-        </layout>
-       </widget>
-      </item>
-      <item>
-       <widget class="QTextEdit" name="txtSql">
-        <property name="font">
-         <font>
-          <family>Courier New</family>
-          <pointsize>11</pointsize>
-         </font>
-        </property>
-        <property name="readOnly">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-     </layout>
+     <property name="readOnly">
+      <bool>true</bool>
+     </property>
     </widget>
    </item>
   </layout>
  </widget>
- <resources>
-  <include location="dbm.qrc"/>
- </resources>
+ <resources/>
  <connections>
   <connection>
    <sender>btnInject</sender>

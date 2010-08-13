@@ -82,6 +82,7 @@ public:
     virtual bool hasTable(const QString&);
 
     virtual void deleteTable(Table*);
+    virtual void deleteTableInstance(TableInstance*);
 
     virtual Table* getTable(const QString& name);
 
@@ -101,6 +102,11 @@ public:
         return m_tablePopupMenu;
     }
 
+    virtual QMenu* getTableInstancePopupMenu()
+    {
+        return m_tableInstancePopupMenu;
+    }
+
 
     virtual QAction * getAction_RemoveTable()
     {
@@ -115,6 +121,11 @@ public:
     virtual QAction * getAction_SpecializeTable()
     {
         return action_SpecializeTable;
+    }
+
+    virtual QAction * getAction_DeleteTableInstance()
+    {
+        return action_DeleteTableInstance;
     }
 
 
@@ -193,12 +204,15 @@ private:
     ContextMenuEnabledTreeWidgetItem* m_projectItem;
 
     QMenu* m_tablePopupMenu;
+    QMenu* m_tableInstancePopupMenu;
 
     QAction * action_RemoveTable;
     QAction * action_DuplicateTable;
     QAction * action_SpecializeTable;
     QAction * action_InstantiateTable;
     QAction * action_TableAddColumn;
+
+    QAction * action_DeleteTableInstance;
 
     Project* m_project;
 };

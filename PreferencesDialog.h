@@ -13,6 +13,10 @@ public:
     PreferencesDialog(QWidget *parent = 0);
     ~PreferencesDialog();
 
+protected slots:
+
+    void accept();
+
 protected:
     void changeEvent(QEvent *e);
 

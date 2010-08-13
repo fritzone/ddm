@@ -11,6 +11,7 @@ class NewDataTypeForm;
 class AbstractDTSupplier;
 class UserDataType;
 class Table;
+class TableInstance;
 class Solution;
 class Diagram;
 class ContextMenuEnabledTreeWidget;
@@ -59,6 +60,7 @@ public:
     ContextMenuEnabledTreeWidgetItem* instantiateTable(const QString& tabName, bool ref = false);
 
     void showTable(const QString& tabName, bool focus = true);
+    void showTableInstance(const QString& tabName, bool focus = true);
 
 public slots:
 
@@ -83,6 +85,7 @@ public slots:
     void onInstantiateTableFromPopup();
     void onDuplicateTableFromPopup();
 
+    void onDeleteInstanceFromPopup();
 
     void onPreferences();
 
@@ -97,6 +100,7 @@ private:
     void enableActions();
     void connectActionsFromTablePopupMenu();
     Table* getRightclickedTable();
+    TableInstance* getRightclickedTableInstance();
 
 private:
     Ui::MainWindow *ui;
