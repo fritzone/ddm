@@ -212,7 +212,7 @@ QStringList MySQLSQLGenerator::generateCreateTableSql(Table *table, const QHash<
 
     if(comments)
     {
-        QString comment = table->fullIndices().size()>0?"-- Create the indexes for table " + table->getName() + "\n":"";
+        QString comment = table->fullIndices().size()>0?"-- Create the indexes for table " + tabName + "\n":"";
         toReturn << comment;
     }
 

@@ -20,9 +20,9 @@
       <enum>QTabWidget::Rounded</enum>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>2</number>
      </property>
-     <widget class="QWidget" name="tabWidgetPage1" native="true">
+     <widget class="QWidget" name="tabWidgetPage1">
       <attribute name="icon">
        <iconset>
         <normaloff>:/images/actions/images/small/sql.png</normaloff>:/images/actions/images/small/sql.png</iconset>
@@ -31,36 +31,6 @@
        <string>Code generation</string>
       </attribute>
       <layout class="QFormLayout" name="formLayout">
-       <item row="0" column="0">
-        <widget class="QCheckBox" name="checkBox">
-         <property name="toolTip">
-          <string>Whether to use backticks in the names generated in the SQL</string>
-         </property>
-         <property name="text">
-          <string>Use backticks (`)</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="0">
-        <widget class="QCheckBox" name="checkBox_2">
-         <property name="toolTip">
-          <string>If the generated SQL code should be UPCASE of lowercase</string>
-         </property>
-         <property name="text">
-          <string>Upcase</string>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="0">
-        <widget class="QCheckBox" name="checkBox_3">
-         <property name="toolTip">
-          <string>Check if you want to insert comments in the generated code. These will be taken from the description of the elements, and also will contain some other comments</string>
-         </property>
-         <property name="text">
-          <string>Generate comments</string>
-         </property>
-        </widget>
-       </item>
        <item row="4" column="0">
         <widget class="QLabel" name="label">
          <property name="text">
@@ -69,7 +39,7 @@
         </widget>
        </item>
        <item row="4" column="1">
-        <widget class="QComboBox" name="comboBox">
+        <widget class="QComboBox" name="cmbPkPos">
          <property name="toolTip">
           <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
@@ -114,7 +84,7 @@ p, li { white-space: pre-wrap; }
         </widget>
        </item>
        <item row="5" column="1">
-        <widget class="QComboBox" name="comboBox_2">
+        <widget class="QComboBox" name="cmbFkPos">
          <item>
           <property name="text">
            <string>InTable</string>
@@ -130,6 +100,72 @@ p, li { white-space: pre-wrap; }
            <string>OnlyInternal</string>
           </property>
          </item>
+        </widget>
+       </item>
+       <item row="0" column="0" colspan="2">
+        <widget class="QCheckBox" name="chkBackticks">
+         <property name="toolTip">
+          <string>Whether to use backticks in the names generated in the SQL</string>
+         </property>
+         <property name="text">
+          <string>Use backticks (`)</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0" colspan="2">
+        <widget class="QCheckBox" name="chkUpcase">
+         <property name="toolTip">
+          <string>If the generated SQL code should be UPCASE of lowercase</string>
+         </property>
+         <property name="text">
+          <string>Upcase</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0" colspan="2">
+        <widget class="QCheckBox" name="chkComments">
+         <property name="toolTip">
+          <string>Check if you want to insert comments in the generated code. These will be taken from the description of the elements, and also will contain some other comments</string>
+         </property>
+         <property name="text">
+          <string>Generate comments</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tab">
+      <attribute name="icon">
+       <iconset>
+        <normaloff>:/images/actions/images/small/diagram.png</normaloff>:/images/actions/images/small/diagram.png</iconset>
+      </attribute>
+      <attribute name="title">
+       <string>Diagrams</string>
+      </attribute>
+      <layout class="QFormLayout" name="formLayout_2">
+       <item row="0" column="0" colspan="2">
+        <widget class="QCheckBox" name="chkDrawTableTypes">
+         <property name="text">
+          <string>Draw table types</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tab_2">
+      <attribute name="icon">
+       <iconset>
+        <normaloff>:/images/actions/images/small/widget_doc.png</normaloff>:/images/actions/images/small/widget_doc.png</iconset>
+      </attribute>
+      <attribute name="title">
+       <string>General</string>
+      </attribute>
+      <layout class="QFormLayout" name="formLayout_3">
+       <item row="0" column="0" colspan="2">
+        <widget class="QCheckBox" name="chkAllowFkPropagation">
+         <property name="text">
+          <string>Allow Foreign key propagation</string>
+         </property>
         </widget>
        </item>
       </layout>

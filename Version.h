@@ -130,6 +130,8 @@ public:
      */
     virtual void deleteTable(Table*) = 0;
 
+    virtual void deleteTableInstance(TableInstance*) = 0;
+
     /**
      * Duplicates the table
      */
@@ -172,6 +174,9 @@ public:
     virtual QAction * getAction_SpecializeTable() = 0;
     virtual QAction * getAction_DuplicateTable() = 0;
     virtual QAction * getAction_InstantiateTable() = 0;
+
+    virtual QMenu* getTableInstancePopupMenu() = 0;
+    virtual QAction * getAction_DeleteTableInstance() = 0;
 
 private:
 

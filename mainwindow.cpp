@@ -53,7 +53,9 @@ MainWindow::MainWindow(QWidget *parent)
     m_createTableInstancesPopup = new QMenu();
     m_createTableInstancesPopup->clear();
 
-   ui->action_NewTableInstance->setMenu(m_createTableInstancesPopup);
+    ui->action_NewTableInstance->setMenu(m_createTableInstancesPopup);
+
+    Configuration::instance();
 
 }
 
@@ -225,6 +227,24 @@ void MainWindow::showTable(const QString &tabName, bool focus)
 
 
 }
+
+void MainWindow::showTableInstance(const QString &tabName, bool focus)
+{
+    TableInstance* table =  getWorkingProject()->getWorkingVersion()->getTableInstance(tabName);
+    if(table == 0)  // shouldn't be ...
+    {
+        return;
+    }
+
+    TableInstanceForm* frmTinst = new TableInstanceForm(this);
+
+    frmTinst->setTableInstance(table);
+    frmTinst->createTableWithValues();
+    setCentralWidget(frmTinst);
+
+    if(focus) projectTree->setCurrentItem(table->getLocation());
+}
+
 
 void MainWindow::currentProjectTreeItemChanged(QTreeWidgetItem * current, QTreeWidgetItem*)
 {
@@ -793,6 +813,22 @@ Table* MainWindow::getRightclickedTable()
     return 0;
 }
 
+TableInstance* MainWindow::getRightclickedTableInstance()
+{
+    if(projectTree->getLastRightclickedItem() != 0)
+    {
+        ContextMenuEnabledTreeWidgetItem* item = projectTree->getLastRightclickedItem();
+        projectTree->setLastRightclickedItem(0);
+
+        QVariant qv = item->data(0, Qt::UserRole);
+        QString tabName = qv.toString();
+        TableInstance* table =  getWorkingProject()->getWorkingVersion()->getTableInstance(tabName);
+        return table;
+    }
+    return 0;
+}
+
+
 void MainWindow::onDeleteTableFromPopup()
 {
     Table* tab = getRightclickedTable();
@@ -861,6 +897,7 @@ ContextMenuEnabledTreeWidgetItem* MainWindow::instantiateTable(const QString& ta
     Version* cVersion = currentSolution()->currentProject()->getWorkingVersion();
     TableInstance* tinst = cVersion->instantiateTable(cVersion->getTable(tabName), ref);
     ContextMenuEnabledTreeWidgetItem* itm = new ContextMenuEnabledTreeWidgetItem(cVersion->getTableInstancesItem(), QStringList(tinst->getName()));
+    itm->setPopupMenu(cVersion->getTableInstancePopupMenu());
     itm->setIcon(0, IconFactory::getTabinstIcon());
     QVariant a(tinst->getName());
     itm->setData(0, Qt::UserRole, a);
@@ -886,4 +923,13 @@ void MainWindow::onPreferences()
     PreferencesDialog* dlg = new PreferencesDialog(this);
     dlg->setModal(true);
     dlg->exec();
+}
+
+void MainWindow::onDeleteInstanceFromPopup()
+{
+    TableInstance* tinst = getRightclickedTableInstance();
+    if(tinst)
+    {
+        getWorkingProject()->getWorkingVersion()->deleteTableInstance(tinst);
+    }
 }

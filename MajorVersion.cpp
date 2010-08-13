@@ -98,6 +98,7 @@ void MajorVersion::populateTreeItems()
 
         QVariant var(tI->getName());
         newTabInstItem->setData(0, Qt::UserRole, var);
+        newTabInstItem->setPopupMenu(getTableInstancePopupMenu());
 
         // set the icon, add to the tree
         newTabInstItem->setIcon(0, IconFactory::getTabinstIcon());
@@ -212,8 +213,11 @@ void MajorVersion::createTreeItems(QTreeWidget* tree, QTreeWidget* dtTree, Conte
     action_SpecializeTable = new QAction("Specialize table", 0);
     action_InstantiateTable = new QAction("Instantiate table", 0);
 
+    action_DeleteTableInstance = new QAction("Delete instance", 0);
+
     QIcon remove(":/images/actions/images/small/remove.png");
     action_RemoveTable->setIcon(remove);
+    action_DeleteTableInstance->setIcon(remove);
 
     m_tablePopupMenu->addAction(action_TableAddColumn);
     m_tablePopupMenu->addSeparator();
@@ -222,6 +226,9 @@ void MajorVersion::createTreeItems(QTreeWidget* tree, QTreeWidget* dtTree, Conte
     m_tablePopupMenu->addAction(action_SpecializeTable);
     m_tablePopupMenu->addSeparator();
     m_tablePopupMenu->addAction(action_InstantiateTable);
+
+    m_tableInstancePopupMenu = new QMenu();
+    m_tableInstancePopupMenu->addAction(action_DeleteTableInstance);
 }
 
 void MajorVersion::serialize(QDomDocument &doc, QDomElement &parent) const
@@ -384,6 +391,12 @@ inline const QVector<Table*>& MajorVersion::getTables() const
 {
     return m_tables;
 }
+
+void MajorVersion::deleteTableInstance(TableInstance *tinst)
+{
+
+}
+
 
 void MajorVersion::deleteTable(Table *tab)
 {

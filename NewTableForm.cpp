@@ -17,6 +17,7 @@
 #include "AbstractSQLGenerator.h"
 #include "SqlHighlighter.h"
 #include "InjectSqlDialog.h"
+#include "SqlNamesValidator.h"
 
 #include <QMessageBox>
 #include <QHashIterator>
@@ -66,8 +67,6 @@ NewTableForm::NewTableForm(DatabaseEngine* db, Project* prj, QWidget *parent) : 
         m_ui->cmbStorageEngine->hide();
     }
 
-    m_ui->grpSqlOptions->hide();
-
     // fill in the index types combo box depending on the storage engine if applicable
     populateIndexTypesDependingOnStorageEngine();
     enableForeignKeysDependingOnStorageEngine();
@@ -107,6 +106,12 @@ NewTableForm::NewTableForm(DatabaseEngine* db, Project* prj, QWidget *parent) : 
     }
 
     m_ui->grpHelp->setHidden(true);
+
+    m_ui->txtTableName->setValidator(m_nameValidator = new SqlNamesValidator());
+    m_ui->txtNewColumnName->setValidator(m_nameValidator);
+    m_ui->txtForeignKeyName->setValidator(m_nameValidator);
+    m_ui->txtNewIndexName->setValidator(m_nameValidator);
+
 }
 
 NewTableForm::~NewTableForm()
@@ -661,7 +666,16 @@ void NewTableForm::onSave()
 {
     if(m_ui->txtTableName->text().length() == 0)
     {
-        QMessageBox::critical (this, tr("Error"), tr("Please specify at least the name of the table!"), QMessageBox::Ok);
+        QMessageBox::critical (this, tr("Error"), tr("Please specify the name of the table!"), QMessageBox::Ok);
+        return;
+    }
+
+    int dummy;
+    QString tabName = m_ui->txtTableName->text();
+
+    if(dynamic_cast<const SqlNamesValidator*>(m_ui->txtTableName->validator())->validate(tabName, dummy) == QValidator::Invalid)
+    {
+        QMessageBox::critical (this, tr("Error"), tr("Please specify a valid name for the table!"), QMessageBox::Ok);
         return;
     }
 

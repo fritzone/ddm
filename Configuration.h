@@ -8,7 +8,7 @@ class Configuration
 {
 public:
 
-    static const Configuration& instance()
+    static Configuration& instance()
     {
         static Configuration inst;
         return inst;
@@ -19,6 +19,10 @@ private:
     Configuration();
 
     ~Configuration();
+
+    void readFromFile();
+
+    void writeToFile();
 
 public:
 
@@ -39,7 +43,22 @@ public:
 
     QHash<QString,QString> sqlGenerationOptions() const
     {
-        return QHash<QString,QString>();
+        return m_sqlOpts;
+    }
+
+    void setDrawTabletypes(bool a)
+    {
+        m_drawTableTypes = a;
+    }
+
+    void setAllowForeignKeyPropagation(bool a)
+    {
+        m_allowForeignKeyPropagation = a;
+    }
+
+    QHash<QString,QString>& sqlOpts()
+    {
+        return m_sqlOpts;
     }
 
 private:
@@ -52,6 +71,8 @@ private:
 
     // if we want to draw the specific table types (persistent, temporary) with double/dashed line
     bool m_drawTableTypes;
+
+    QHash<QString,QString> m_sqlOpts;
 };
 
 #endif // CONFIGURATION_H
