@@ -54,6 +54,42 @@ public:
         return icon;
     }
 
+    static const QIcon& getTabinstLockIcon()
+    {
+        static const QIcon icon(strTableInstLockIcon);
+        return icon;
+    }
+
+    static const QIcon& getDataTypesIcon()
+    {
+        static const QIcon icon(strDataTypesIcon);
+        return icon;
+    }
+
+    static const QIcon& getCodeIcon()
+    {
+        static const QIcon icon(strCodeIcon);
+        return icon;
+    }
+
+    static const QIcon& getSqlIcon()
+    {
+        static const QIcon icon(strSqlIcon);
+        return icon;
+    }
+
+    static const QIcon& getVersionIcon()
+    {
+        static const QIcon icon(strVersionIcon);
+        return icon;
+    }
+
+    static const QIcon& getRemoveIcon()
+    {
+        static const QIcon icon(strRemoveIcon);
+        return icon;
+    }
+
     static const QIcon& getProjectOpenIcon()
     {
         static const QIcon icon(strProjectOpenIcon);

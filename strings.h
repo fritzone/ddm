@@ -27,7 +27,13 @@ static const QString strAddIcon = ":/images/actions/images/small/add.png";
 static const QString strEmptyIcon = ":/images/actions/images/actions/empty_icon.png";
 static const QString strTablesIcon = ":/images/actions/images/actions/table.png";
 static const QString strTableInstIcon = ":/images/actions/images/small/tabinst.png";
+static const QString strTableInstLockIcon = ":/images/actions/images/small/tabinstlock.png";
 static const QString strProjectOpenIcon = ":/images/actions/images/small/project_open.png";
 static const QString strDiagramIcon = ":/images/actions/images/small/diagram.png";
+static const QString strDataTypesIcon = ":/images/actions/images/small/datatypes.PNG";
+static const QString strCodeIcon = ":/images/actions/images/small/code.png";
+static const QString strSqlIcon = ":/images/actions/images/small/sql.png";
+static const QString strVersionIcon = ":/images/actions/images/small/version.PNG";
+static const QString strRemoveIcon = ":/images/actions/images/small/remove.png";
 
 #endif // STRINGS_H

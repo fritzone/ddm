@@ -80,8 +80,9 @@ QStringList MySQLSQLGenerator::generateCreateTableSql(Table *table, const QHash<
     for(int i=0; i<table->fullColumns().size(); i++)
     {
         // column name
-        createTable += backticks?"`":"";
-        createTable += "\t" + table->fullColumns()[i];
+
+        createTable += "\t";
+        createTable += (backticks?"`":"") + table->fullColumns()[i];
         createTable += backticks?"`":"";
         createTable += " ";
 
@@ -232,7 +233,7 @@ QStringList MySQLSQLGenerator::generateCreateTableSql(Table *table, const QHash<
             }
         }
         indexCommand += upcase?idx->getType().toUpper():idx->getType().toLower();
-        indexCommand +=upcase?" ON":" on ";
+        indexCommand +=upcase?" ON ":" on ";
         indexCommand += tabName;
         indexCommand += "(";
 

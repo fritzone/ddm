@@ -94,5 +94,6 @@
         <file>images/small/inject.png</file>
         <file>images/small/sql.png</file>
         <file>images/small/code.png</file>
+        <file>images/small/tabinstlock.png</file>
     </qresource>
 </RCC>
