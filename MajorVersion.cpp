@@ -7,6 +7,7 @@
 #include "IconFactory.h"
 #include "TableInstance.h"
 #include "Project.h"
+#include "ForeignKey.h"
 
 MajorVersion::MajorVersion(QTreeWidget* tree, QTreeWidget* dttree, ContextMenuEnabledTreeWidgetItem* projectItem, int ver, Project* p) :
         tablesItem(0), tableInstancesItem(0),
@@ -101,7 +102,15 @@ void MajorVersion::populateTreeItems()
         newTabInstItem->setPopupMenu(getTableInstancePopupMenu());
 
         // set the icon, add to the tree
-        newTabInstItem->setIcon(0, IconFactory::getTabinstIcon());
+        if(tI->instantiatedBecuaseOfRkReference())
+        {
+            newTabInstItem->setIcon(0, IconFactory::getTabinstLockIcon());
+        }
+        else
+        {
+            newTabInstItem->setIcon(0, IconFactory::getTabinstIcon());
+        }
+
         m_tree->insertTopLevelItem(0, newTabInstItem);
 
         // set the link to the tree
@@ -111,32 +120,33 @@ void MajorVersion::populateTreeItems()
     // now populate the "Code" tree items by adding the SQLs of the tables or table instances
     if(oop())
     {   // insert each table instance entry, since this is an OOP project
-        // TODO: The for below is a pure duplication of the one above from the tables, except the parent
         for(int i=0; i<m_tableInstances.size(); i++)
         {
             TableInstance* tI = m_tableInstances[i];
-            ContextMenuEnabledTreeWidgetItem* newTabInstItem = new ContextMenuEnabledTreeWidgetItem(getFinalSqlItem(), QStringList(tI->getName())) ;
+            ContextMenuEnabledTreeWidgetItem* tabInstSqlItem = new ContextMenuEnabledTreeWidgetItem(getFinalSqlItem(), QStringList(tI->getName()+".sql")) ;
 
             QVariant var(tI->getName());
-            newTabInstItem->setData(0, Qt::UserRole, var);
+            tabInstSqlItem->setData(0, Qt::UserRole, var);
 
             // set the icon, add to the tree
-            newTabInstItem->setIcon(0, IconFactory::getTabinstIcon());
-            m_tree->insertTopLevelItem(0, newTabInstItem);
-
-            // set the link to the tree
-            tI->setLocation(newTabInstItem);
+            if(tI->instantiatedBecuaseOfRkReference())
+            {
+                tabInstSqlItem->setIcon(0, IconFactory::getTabinstLockIcon());
+            }
+            else
+            {
+                tabInstSqlItem->setIcon(0, IconFactory::getTabinstIcon());
+            }
+            m_tree->insertTopLevelItem(0, tabInstSqlItem);
         }
-
     }
     else
     {
         // insert the tables
-        // TODO: The for below is a pure duplication of the one above from the tables, except the parent
         for(int i=0; i<m_tables.size(); i++)
         {
             Table* tbl = m_tables[i];
-            ContextMenuEnabledTreeWidgetItem* newTblsItem = new ContextMenuEnabledTreeWidgetItem(getFinalSqlItem(), QStringList(tbl->getName())) ;
+            ContextMenuEnabledTreeWidgetItem* newTblsItem = new ContextMenuEnabledTreeWidgetItem(getFinalSqlItem(), QStringList(tbl->getName()+".sql")) ;
 
             QVariant var(tbl->getName());
             newTblsItem->setData(0, Qt::UserRole, var);
@@ -144,9 +154,6 @@ void MajorVersion::populateTreeItems()
             // set the icon, add to the tree
             newTblsItem->setIcon(0, IconFactory::getTablesIcon());
             m_tree->insertTopLevelItem(0, newTblsItem);
-
-            // set the link to the tree
-            tbl->setLocation(newTblsItem);
         }
     }
 }
@@ -166,30 +173,23 @@ void MajorVersion::createTreeItems(QTreeWidget* tree, QTreeWidget* dtTree, Conte
         m_projectItem = projectIem;
     }
 
-    QIcon tablesIcon(":/images/actions/images/small/table.png");
-    QIcon tabInstanceIcon(":/images/actions/images/small/tabinst.png");
-    QIcon dtsIcon(":/images/actions/images/small/datatypes.PNG");
-    QIcon versionIcon(":/images/actions/images/small/version.PNG");
-    QIcon sqlIcon(":/images/actions/images/small/sql.png");
-    QIcon codeIcon(":/images/actions/images/small/code.png");
-
     versionItem = new ContextMenuEnabledTreeWidgetItem(m_projectItem, QStringList(QString("Ver: ") + version)) ;
-    versionItem->setIcon(0, versionIcon);
+    versionItem->setIcon(0, IconFactory::getVersionIcon());
     m_tree->addTopLevelItem(versionItem);
 
     // make the dts sub item coming from the project
     dtsItem = new ContextMenuEnabledTreeWidgetItem((ContextMenuEnabledTreeWidgetItem*)0, QStringList(QObject::tr("Data Types"))) ;
-    dtsItem->setIcon(0, dtsIcon);
+    dtsItem->setIcon(0, IconFactory::getDataTypesIcon());
     m_dtTree->addTopLevelItem(dtsItem);
 
     // make the tables sub item coming from the project
     tablesItem = new ContextMenuEnabledTreeWidgetItem(versionItem, QStringList(QObject::tr("Table templates"))) ;
-    tablesItem->setIcon(0, tablesIcon);
+    tablesItem->setIcon(0, IconFactory::getTablesIcon());
     m_tree->addTopLevelItem(tablesItem);
 
     // make the views sub item coming from the project
     tableInstancesItem = new ContextMenuEnabledTreeWidgetItem(versionItem, QStringList(QObject::tr("Tables"))) ;
-    tableInstancesItem->setIcon(0, tabInstanceIcon);
+    tableInstancesItem->setIcon(0, IconFactory::getTabinstIcon());
     m_tree->addTopLevelItem(tableInstancesItem);
 
     diagramsItem = new ContextMenuEnabledTreeWidgetItem(versionItem, QStringList(QObject::tr("Diagrams"))) ;
@@ -197,28 +197,28 @@ void MajorVersion::createTreeItems(QTreeWidget* tree, QTreeWidget* dtTree, Conte
     m_tree->addTopLevelItem(diagramsItem);
 
     ContextMenuEnabledTreeWidgetItem* codeItem= new ContextMenuEnabledTreeWidgetItem(versionItem, QStringList(QObject::tr("Code"))) ;
-    codeItem->setIcon(0, codeIcon);
+    codeItem->setIcon(0, IconFactory::getCodeIcon());
     m_tree->addTopLevelItem(codeItem);
 
     finalSqlItem= new ContextMenuEnabledTreeWidgetItem(codeItem, QStringList(QObject::tr("SQL"))) ;
-    finalSqlItem->setIcon(0, sqlIcon);
+    finalSqlItem->setIcon(0, IconFactory::getSqlIcon());
     m_tree->addTopLevelItem(finalSqlItem);
 
-
+    // popup menus
     m_tablePopupMenu = new QMenu();
+    m_tableInstancePopupMenu = new QMenu();
 
-    action_RemoveTable = new QAction("Delete table", 0);
-    action_DuplicateTable = new QAction("Duplicate table", 0);
-    action_TableAddColumn = new QAction("Add column", 0);
-    action_SpecializeTable = new QAction("Specialize table", 0);
-    action_InstantiateTable = new QAction("Instantiate table", 0);
+    // actions
+    action_RemoveTable = new QAction(QObject::tr("Delete table"), 0);
+    action_RemoveTable->setIcon(IconFactory::getRemoveIcon());
+    action_DuplicateTable = new QAction(QObject::tr("Duplicate table"), 0);
+    action_TableAddColumn = new QAction(QObject::tr("Add column"), 0);
+    action_SpecializeTable = new QAction(QObject::tr("Specialize table"), 0);
+    action_InstantiateTable = new QAction(QObject::tr("Instantiate table"), 0);
+    action_DeleteTableInstance = new QAction(QObject::tr("Delete instance"), 0);
+    action_DeleteTableInstance->setIcon(IconFactory::getRemoveIcon());
 
-    action_DeleteTableInstance = new QAction("Delete instance", 0);
-
-    QIcon remove(":/images/actions/images/small/remove.png");
-    action_RemoveTable->setIcon(remove);
-    action_DeleteTableInstance->setIcon(remove);
-
+    // populate the table popup menu
     m_tablePopupMenu->addAction(action_TableAddColumn);
     m_tablePopupMenu->addSeparator();
     m_tablePopupMenu->addAction(action_RemoveTable);
@@ -227,7 +227,7 @@ void MajorVersion::createTreeItems(QTreeWidget* tree, QTreeWidget* dtTree, Conte
     m_tablePopupMenu->addSeparator();
     m_tablePopupMenu->addAction(action_InstantiateTable);
 
-    m_tableInstancePopupMenu = new QMenu();
+    // populate the table instances popup menu
     m_tableInstancePopupMenu->addAction(action_DeleteTableInstance);
 }
 
@@ -394,7 +394,32 @@ inline const QVector<Table*>& MajorVersion::getTables() const
 
 void MajorVersion::deleteTableInstance(TableInstance *tinst)
 {
+    // delete the table instance. Also, do the following: If there is another table instance which was instantiated due to a reference of this tinst
+    // and its table contains no foreign keys to another table instance, set it to not instantiated due to foreign key
 
+    // 1. find if there is a table instance instantiated due to this (check the tables foreign keys): in all the table instances
+    // check if the tinst's table any foreign key is referencing that instance
+    bool found = false;
+    QString a = "";
+    for(int i=0; i<tinst->table()->getFks().size(); i++)
+    {
+        for(int j=0; j<m_tableInstances.size(); j++)
+        {
+            _ez meg nincs kesz
+            if(tinst->table()->getFks().at(i)->getForeignTable() == m_tableInstances.at(j)->table()->getName())
+            {   // means we have found a table-instance whose table references this table
+                found = true;
+                a =  m_tableInstances.at(j)->table()->getName();
+                break;
+            }
+        }
+        if(found) break;
+    }
+    if(!found)
+    {
+        // search for the table instance being instantiated and see if other table instances are "linking" to it too
+
+    }
 }
 
 
@@ -417,8 +442,10 @@ void MajorVersion::deleteTable(Table *tab)
     }
     if(incomingForeignKeys.length() > 0)
     {
-        QMessageBox::warning(0, "Foreign keys found",
-                              "Cannot delete this table since the following tables are referencing it through a foreign key: " + incomingForeignKeys + "\nFirstly remove the foreign keys, then delete the table.", QMessageBox::Ok);
+        QMessageBox::warning(0, QObject::tr("Foreign keys found"),
+                             QObject::tr("Cannot delete this table since the following tables are referencing it through a foreign key: ") +
+                             incomingForeignKeys +
+                             QObject::tr("\nFirstly remove the foreign keys, then delete the table."), QMessageBox::Ok);
         return;
     }
 

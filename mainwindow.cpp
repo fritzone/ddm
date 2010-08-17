@@ -105,8 +105,8 @@ ContextMenuEnabledTreeWidget* MainWindow::setupGuiForNewSolution()
     dataypesTree = new ContextMenuEnabledTreeWidget();
     dataypesTree ->setColumnCount(2);
     QTreeWidgetItem *hdr = dataypesTree->headerItem();
-    hdr->setText(0, "Type");
-    hdr->setText(1, "SQL");
+    hdr->setText(0, tr("Type"));
+    hdr->setText(1, tr("SQL"));
     dataypesTree->header()->setDefaultSectionSize(200);
 
     dataypesTree ->setHeaderHidden(false);
@@ -166,7 +166,7 @@ void MainWindow::onNewSolution()
         prjDetailsForm->setProject(project);
         setCentralWidget(prjDetailsForm);
 
-        setWindowTitle("DBM - [" + m_currentSolution->name() + "]");
+        setWindowTitle("DDM - [" + m_currentSolution->name() + "]");
 
         connectActionsFromTablePopupMenu();
         if(!currentSolution()->currentProject()->oopProject())
@@ -662,6 +662,9 @@ void MainWindow::connectActionsFromTablePopupMenu()
     {
         QObject::connect(getWorkingProject()->getWorkingVersion()->getAction_SpecializeTable(), SIGNAL(activated()), this, SLOT(onSpecializeTableFromPopup()));
         QObject::connect(getWorkingProject()->getWorkingVersion()->getAction_InstantiateTable(), SIGNAL(activated()), this, SLOT(onInstantiateTableFromPopup()));
+
+        // now the table instance popup
+        QObject::connect(getWorkingProject()->getWorkingVersion()->getAction_DeleteTableInstance(), SIGNAL(activated()), this, SLOT(onDeleteInstanceFromPopup()));
     }
     else
     {
@@ -690,11 +693,10 @@ bool MainWindow::onSaveDiagram(Diagram* dgram)
 {
     if(!dgram->isSaved())
     {
-        QIcon diagramIcon(":/images/actions/images/small/diagram.png");
         ContextMenuEnabledTreeWidgetItem* newDgramItem = new ContextMenuEnabledTreeWidgetItem(m_currentSolution->currentProject()->getWorkingVersion()->getDiagramsItem(), QStringList(dgram->getName())) ;
         QVariant var(dgram->getName());
         newDgramItem->setData(0, Qt::UserRole, var);
-        newDgramItem->setIcon(0, diagramIcon);
+        newDgramItem->setIcon(0, IconFactory::getDiagramIcon());
         dgram->setLocation(newDgramItem);
         dgram->setSaved(true);
         projectTree->addTopLevelItem(newDgramItem);
@@ -898,7 +900,15 @@ ContextMenuEnabledTreeWidgetItem* MainWindow::instantiateTable(const QString& ta
     TableInstance* tinst = cVersion->instantiateTable(cVersion->getTable(tabName), ref);
     ContextMenuEnabledTreeWidgetItem* itm = new ContextMenuEnabledTreeWidgetItem(cVersion->getTableInstancesItem(), QStringList(tinst->getName()));
     itm->setPopupMenu(cVersion->getTableInstancePopupMenu());
-    itm->setIcon(0, IconFactory::getTabinstIcon());
+    if(!ref)
+    {
+        itm->setIcon(0, IconFactory::getTabinstIcon());
+    }
+    else
+    {
+        itm->setIcon(0, IconFactory::getTabinstLockIcon());
+    }
+
     QVariant a(tinst->getName());
     itm->setData(0, Qt::UserRole, a);
 
@@ -930,6 +940,25 @@ void MainWindow::onDeleteInstanceFromPopup()
     TableInstance* tinst = getRightclickedTableInstance();
     if(tinst)
     {
+        if(tinst->instantiatedBecuaseOfRkReference())
+        {
+            QMessageBox::critical(this, tr("Error"), tr("Cannot delete this table instance since it was auto-instantiated because another table has a foreign key to it"), QMessageBox::Ok);
+            projectTree->setLastRightclickedItem(0);
+            return;
+        }
+        QString name = tinst->getName();
         getWorkingProject()->getWorkingVersion()->deleteTableInstance(tinst);
+        // Now delete the tree entry and the SQL tree entry
+        delete tinst->getLocation();
+        ContextMenuEnabledTreeWidgetItem* sqlItem = getWorkingProject()->getWorkingVersion()->getFinalSqlItem();
+        for(int i=0; i<sqlItem->childCount(); i++)
+        {
+            QVariant a = sqlItem->child(i)->data(0, Qt::UserRole);
+            if(a.toString() == name)
+            {
+                delete sqlItem->child(i);
+                return;
+            }
+        }
     }
 }
