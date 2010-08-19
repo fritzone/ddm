@@ -214,6 +214,12 @@ MajorVersion* DeserializationFactory::createMajorVersion(Project* p, DatabaseEng
                 TableInstance* tabInst = createTableInstance(result, doc, element.childNodes().at(i).childNodes().at(j).toElement());
                 result->addTableInstance(tabInst);
             }
+
+            // and here populate the "instantiated" like stuff
+            for(int j=0; j<element.childNodes().at(i).childNodes().count(); j++)
+            {
+                TableInstance* tabInst = createTableInstance(result, doc, element.childNodes().at(i).childNodes().at(j).toElement(), true);
+            }
         }
     }
     return result;
@@ -453,11 +459,13 @@ Diagram* DeserializationFactory::createDiagram(Version* v, const QDomDocument &d
     return result;
 }
 
-TableInstance* DeserializationFactory::createTableInstance(Version* v, const QDomDocument&, const QDomElement &element)
+TableInstance* DeserializationFactory::createTableInstance(Version* v, const QDomDocument&, const QDomElement &element, bool secondStep)
 {
     QString name = element.attribute("Name");
     QString tabName = element.attribute("Table");
     bool refed = element.attribute("Ref") == "1";
+    QString refTables = element.attribute("ReferencingTables");
+    QString instantiatedTableInstances = element.attribute("InstantiatedTableInstances");
 
     QHash <QString, QVector<QString> > data;
     for(int i=0; i<element.childNodes().count(); i++)
@@ -471,9 +479,30 @@ TableInstance* DeserializationFactory::createTableInstance(Version* v, const QDo
         data[colName] = col;
     }
 
-    TableInstance* result = new TableInstance(v->getTable(tabName), refed);
-    result->setValues(data);
-    result->setName(name);
+    if(secondStep)
+    {
+        TableInstance* result = v->getTableInstance(name);
+        QStringList lst2 = instantiatedTableInstances.split(QChar(','), QString::SkipEmptyParts);
+        for(int i=0; i<lst2.size(); i++)
+        {
+            TableInstance* tabInst= v->getTableInstance(lst2.at(i));
+            result->addInstantiatedTableInstance(tabInst);
+        }
+        return 0;
+    }
+    else
+    {
+        TableInstance* result = new TableInstance(v->getTable(tabName), refed);
 
-    return result;
+        QStringList lst = refTables.split(QChar(','), QString::SkipEmptyParts);
+        for(int i=0; i<lst.size(); i++)
+        {
+            Table* tab = v->getTable(lst.at(i));
+            result->addTableReferencingThis(tab);
+        }
+
+        result->setValues(data);
+        result->setName(name);
+        return result;
+    }
 }

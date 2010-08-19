@@ -3,12 +3,17 @@
 #include "Table.h"
 #include "Configuration.h"
 
-TableInstance::TableInstance(Table *tab, bool ref) : TreeItem(), NamedItem(tab->getName()), m_table(tab), m_values(), m_becauseOfReference(ref)
+TableInstance::TableInstance(Table *tab, bool ref) : TreeItem(), NamedItem(tab->getName()), m_table(tab), m_values(), m_becauseOfReference(ref), m_instantiatedTablesInstances(), m_referencingTables(9), m_sentenced(false)
 {
     for(int i=0; i<m_table->fullColumns().size(); i++)
     {
         m_values.insert(m_table->fullColumns()[i], QVector<QString>());
     }
+}
+
+void TableInstance::addTableReferencingThis(Table* refTab)
+{
+    m_referencingTables.append(refTab);
 }
 
 QList<QString> TableInstance::columns() const
@@ -23,6 +28,31 @@ void TableInstance::serialize(QDomDocument &doc, QDomElement &parent) const
     tableInstanceElement.setAttribute("Name", getName());
     tableInstanceElement.setAttribute("Table", m_table->getName());
     tableInstanceElement.setAttribute("Ref", instantiatedBecuaseOfRkReference());
+    {
+    QString refTables = "";
+    for(int i=0; i<m_referencingTables.size(); i++)
+    {
+        refTables += m_referencingTables.at(i)->getName();
+        if(i<m_referencingTables.size()-1)
+        {
+            refTables += ",";
+        }
+    }
+    tableInstanceElement.setAttribute("ReferencingTables", refTables);
+    }
+
+    {
+    QString instantiatedTablesInstances = "";
+    for(int i=0; i<m_instantiatedTablesInstances.size(); i++)
+    {
+        instantiatedTablesInstances += m_instantiatedTablesInstances.at(i)->getName();
+        if(i<m_instantiatedTablesInstances.size()-1)
+        {
+            instantiatedTablesInstances += ",";
+        }
+    }
+    tableInstanceElement.setAttribute("InstantiatedTableInstances", instantiatedTablesInstances);
+    }
 
     QList <QString> cols = columns();
 

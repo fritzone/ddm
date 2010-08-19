@@ -164,6 +164,8 @@ public:
 
     virtual const QVector<TableInstance*> & getTableInstances() = 0;
 
+    virtual void purgeSentencedTableInstances() = 0;
+
     virtual DatabaseEngine* getDatabaseEngine() = 0;
 
     // don't know if this is a good design or not for the popups ....
