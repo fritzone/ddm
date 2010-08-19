@@ -65,6 +65,17 @@ public:
         return m_sentenced;
     }
 
+    QString getReferencingTables() const
+    {
+        QString result;
+        for(int i=0; i<m_referencingTables.size(); i++)
+        {
+            result += m_referencingTables.at(i)->getName();
+            result += " ";
+        }
+        return result;
+    }
+
 private:
 
     Table* m_table;

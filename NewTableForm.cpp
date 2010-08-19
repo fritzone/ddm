@@ -78,6 +78,7 @@ NewTableForm::NewTableForm(DatabaseEngine* db, Project* prj, QWidget *parent) : 
     {
         if(tables[i]->getName() != m_table->getName())
         {
+            // at this stage we can put in all the tables, this is supposed to be a new table
             m_ui->cmbForeignTables->addItem(tables[i]->getName());
         }
     }
@@ -1260,6 +1261,15 @@ void NewTableForm::onBtnAddForeignKey()
         return;
     }
 
+    // check for circular reference, meaning: if the "foreign table" has any foreign keys to this table, do not allow it
+    if(m_currentForeignKey->getForeignTable()->getForeignKeyToTable(m_table) != 0)
+    {
+        QMessageBox::critical (this, tr("Error"), tr("Trying to create a circular reference to this table, since ") + m_currentForeignKey->getForeignTableName() +
+                               tr(" already contains a foreign key to this table. This is not allowed."), QMessageBox::Ok);
+        m_ui->txtForeignKeyName->setFocus();
+        return;
+    }
+
     m_currentForeignKey->setName(m_ui->txtForeignKeyName->text());
     m_currentForeignKey->setOnUpdate(m_ui->cmbFkOnUpdate->currentText());
     m_currentForeignKey->setOnDelete(m_ui->cmbFkOnDelete->currentText());
@@ -1293,7 +1303,7 @@ void NewTableForm::onBtnAddForeignKey()
         m_currentForeignKey->setLocation(twi);
         m_table->addForeignKey(m_currentForeignKey);
         // now, here create an index in the _foreign table_ which has columns the foreign columns of the index (this is required for some versions of MySQL, we'll see for the other ones)
-        QString fktName = m_currentForeignKey->getForeignTable();
+        QString fktName = m_currentForeignKey->getForeignTableName();
         Table* tbl = m_project->getWorkingVersion()->getTable(fktName);
         tbl->createAutoIndex(m_currentForeignKey->foreignColumns());
     }

@@ -418,7 +418,7 @@ void MajorVersion::deleteTableInstance(TableInstance *tinst)
     for(int i=0; i<insted.size(); i++)
     {
         // except if there are other table instances that have it as instantiated
-        bool someoneElsealsoInstantiatedThis = false;
+        bool someoneElseAlsoInstantiatedThis = false;
         for(int j=0; j<m_tableInstances.size(); j++)
         {
             if(tinst != m_tableInstances.at(j) )
@@ -427,19 +427,22 @@ void MajorVersion::deleteTableInstance(TableInstance *tinst)
                 {
                     if(m_tableInstances.at(j)->getInstantiatedTableInstances().at(k) == insted.at(i))
                     {
-                        someoneElsealsoInstantiatedThis = true;
+                        someoneElseAlsoInstantiatedThis = true;
                         break;
                     }
                 }
-                if(someoneElsealsoInstantiatedThis)
+                if(someoneElseAlsoInstantiatedThis)
                 {
                     break;
                 }
             }
         }
-        if(!someoneElsealsoInstantiatedThis)
+        if(!someoneElseAlsoInstantiatedThis)
         {
-            if(!insted.at(i)->sentenced()) deleteTableInstance(insted.at(i));
+            if(!insted.at(i)->sentenced() && insted.at(i)->instantiatedBecuaseOfRkReference())
+            {
+                deleteTableInstance(insted.at(i));
+            }
         }
     }
 }

@@ -128,7 +128,9 @@ public:
 
     QString getForeignDescriptiveText() const;
 
-    QString getForeignTable() const;
+    QString getForeignTableName() const;
+
+    const Table* getForeignTable() const;
 
     /**
      * Return a vector of the foreign columns

@@ -158,7 +158,7 @@ QStringList MySQLSQLGenerator::generateCreateTableSql(Table *table, const QHash<
         QString foreignKeySql2 = "";
 
         ForeignKey* fkI = table->getFks().at(i);
-        foreignKeysTable = fkI->getForeignTable();
+        foreignKeysTable = fkI->getForeignTableName();
         for(int j=0; j<fkI->getAssociations().size(); j++)
         {
 
