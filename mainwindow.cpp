@@ -894,7 +894,7 @@ void MainWindow::onNewTableInstanceHovered()
     }
 }
 
-ContextMenuEnabledTreeWidgetItem* MainWindow::instantiateTable(const QString& tabName, bool ref)
+ContextMenuEnabledTreeWidgetItem* MainWindow::instantiateTable(const QString& tabName, bool ref, Table* referencingTable, TableInstance* becauseOfThis)
 {
     Version* cVersion = currentSolution()->currentProject()->getWorkingVersion();
     TableInstance* tinst = cVersion->instantiateTable(cVersion->getTable(tabName), ref);
@@ -906,7 +906,13 @@ ContextMenuEnabledTreeWidgetItem* MainWindow::instantiateTable(const QString& ta
     }
     else
     {
+        tinst->addTableReferencingThis(referencingTable);
         itm->setIcon(0, IconFactory::getTabinstLockIcon());
+    }
+
+    if(becauseOfThis)
+    {
+        becauseOfThis->addInstantiatedTableInstance(tinst);
     }
 
     QVariant a(tinst->getName());
@@ -920,9 +926,15 @@ ContextMenuEnabledTreeWidgetItem* MainWindow::instantiateTable(const QString& ta
     while(i.hasNext())
     {
         const Table* tbl = i.next();
+        // if this was not instantiated yet
         if(cVersion->getTableInstance(tbl->getName()) == 0)
         {
-            instantiateTable(tbl->getName(), true);  // TODO: this is stupid. This method should get a Table already
+            instantiateTable(tbl->getName(), true, tinst->table(), tinst);
+        }
+        else
+        {
+            // just add a remark to the tinst that this table instance was also be isntantiated because of this
+            tinst->addInstantiatedTableInstance(cVersion->getTableInstance(tbl->getName()));
         }
     }
     return itm;
@@ -946,19 +958,45 @@ void MainWindow::onDeleteInstanceFromPopup()
             projectTree->setLastRightclickedItem(0);
             return;
         }
-        QString name = tinst->getName();
+
+        // mark for purge
         getWorkingProject()->getWorkingVersion()->deleteTableInstance(tinst);
-        // Now delete the tree entry and the SQL tree entry
-        delete tinst->getLocation();
-        ContextMenuEnabledTreeWidgetItem* sqlItem = getWorkingProject()->getWorkingVersion()->getFinalSqlItem();
-        for(int i=0; i<sqlItem->childCount(); i++)
+
+        // Now delete the tree entries and the SQL tree entry
+        for(int i=0; i<getWorkingProject()->getWorkingVersion()->getTableInstances().size(); i++)
         {
-            QVariant a = sqlItem->child(i)->data(0, Qt::UserRole);
-            if(a.toString() == name)
+            if(getWorkingProject()->getWorkingVersion()->getTableInstances().at(i)->sentenced())
             {
-                delete sqlItem->child(i);
-                return;
+                QString name = getWorkingProject()->getWorkingVersion()->getTableInstances().at(i)->getName();
+
+                ContextMenuEnabledTreeWidgetItem* tabInstItem = getWorkingProject()->getWorkingVersion()->getTableInstancesItem();
+                for(int j=0; j<tabInstItem->childCount(); j++)
+                {
+                    QVariant a = tabInstItem->child(j)->data(0, Qt::UserRole);
+                    if(a.toString() == name)
+                    {
+                        delete tabInstItem->child(j);
+                    }
+                }
+
+                ContextMenuEnabledTreeWidgetItem* sqlItem = getWorkingProject()->getWorkingVersion()->getFinalSqlItem();
+                for(int j=0; j<sqlItem->childCount(); j++)
+                {
+                    QVariant a = sqlItem->child(j)->data(0, Qt::UserRole);
+                    if(a.toString() == name)
+                    {
+                        delete sqlItem->child(j);
+                    }
+                }
             }
         }
+
+        // and finally remove all purged table instances
+        getWorkingProject()->getWorkingVersion()->purgeSentencedTableInstances();
+
+        // and show a table instances list form
+        TableInstancesListForm* tblLst = new TableInstancesListForm(this);
+        tblLst->populateTableInstances(getWorkingProject()->getWorkingVersion()->getTableInstances());
+        setCentralWidget(tblLst);
     }
 }

@@ -41,7 +41,29 @@ public:
         return m_becauseOfReference;
     }
 
+    void addTableReferencingThis(Table* refTab);
+
+    void addInstantiatedTableInstance(TableInstance* tabInst)
+    {
+        m_instantiatedTablesInstances.append(tabInst);
+    }
+
     virtual QStringList generateSqlSource(AbstractSqlGenerator *generator,QHash<QString,QString>);
+
+    QVector<TableInstance*>& getInstantiatedTableInstances()
+    {
+        return m_instantiatedTablesInstances;
+    }
+
+    void sentence()
+    {
+        m_sentenced = true;
+    }
+
+    bool sentenced() const
+    {
+        return m_sentenced;
+    }
 
 private:
 
@@ -51,6 +73,12 @@ private:
     QHash < QString, QVector<QString> > m_values;
 
     bool m_becauseOfReference;
+
+    QVector<Table*> m_referencingTables;
+
+    QVector<TableInstance*> m_instantiatedTablesInstances;
+
+    bool m_sentenced;
 
 };
 

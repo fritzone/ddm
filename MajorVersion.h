@@ -83,6 +83,7 @@ public:
 
     virtual void deleteTable(Table*);
     virtual void deleteTableInstance(TableInstance*);
+    virtual void purgeSentencedTableInstances();
 
     virtual Table* getTable(const QString& name);
 

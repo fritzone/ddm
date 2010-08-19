@@ -36,7 +36,7 @@ public:
     static DiagramNoteDescriptor* createDiagramNoteDescriptor(const QDomDocument& doc, const QDomElement& element);
     static DiagramFKDescriptor* createDiagramFKDescriptor(const QDomDocument& doc, const QDomElement& element);
     static Diagram* createDiagram(Version* v, const QDomDocument& doc, const QDomElement& element);
-    static TableInstance* createTableInstance(Version* v, const QDomDocument& doc, const QDomElement& element);
+    static TableInstance* createTableInstance(Version* v, const QDomDocument& doc, const QDomElement& element, bool secondStep = false);
 
 private:
     DeserializationFactory();

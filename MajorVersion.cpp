@@ -392,36 +392,57 @@ inline const QVector<Table*>& MajorVersion::getTables() const
     return m_tables;
 }
 
-void MajorVersion::deleteTableInstance(TableInstance *tinst)
+void MajorVersion::purgeSentencedTableInstances()
 {
-    // delete the table instance. Also, do the following: If there is another table instance which was instantiated due to a reference of this tinst
-    // and its table contains no foreign keys to another table instance, set it to not instantiated due to foreign key
-
-    // 1. find if there is a table instance instantiated due to this (check the tables foreign keys): in all the table instances
-    // check if the tinst's table any foreign key is referencing that instance
-    bool found = false;
-    QString a = "";
-    for(int i=0; i<tinst->table()->getFks().size(); i++)
+    int i=0;
+    while(i<m_tableInstances.size())
     {
-        for(int j=0; j<m_tableInstances.size(); j++)
+        if(m_tableInstances.at(i)->sentenced())
         {
-            _ez meg nincs kesz
-            if(tinst->table()->getFks().at(i)->getForeignTable() == m_tableInstances.at(j)->table()->getName())
-            {   // means we have found a table-instance whose table references this table
-                found = true;
-                a =  m_tableInstances.at(j)->table()->getName();
-                break;
-            }
+            TableInstance* tinst = m_tableInstances.at(i);
+            m_tableInstances.remove(i);
+            delete tinst;
         }
-        if(found) break;
-    }
-    if(!found)
-    {
-        // search for the table instance being instantiated and see if other table instances are "linking" to it too
-
+        else
+        {
+            i++;
+        }
     }
 }
 
+void MajorVersion::deleteTableInstance(TableInstance *tinst)
+{
+    tinst->sentence();
+    // now find which table instances were created because of this and remove them
+    QVector<TableInstance*>& insted = tinst->getInstantiatedTableInstances();
+    for(int i=0; i<insted.size(); i++)
+    {
+        // except if there are other table instances that have it as instantiated
+        bool someoneElsealsoInstantiatedThis = false;
+        for(int j=0; j<m_tableInstances.size(); j++)
+        {
+            if(tinst != m_tableInstances.at(j) )
+            {
+                for(int k=0; k<m_tableInstances.at(j)->getInstantiatedTableInstances().size(); k++)
+                {
+                    if(m_tableInstances.at(j)->getInstantiatedTableInstances().at(k) == insted.at(i))
+                    {
+                        someoneElsealsoInstantiatedThis = true;
+                        break;
+                    }
+                }
+                if(someoneElsealsoInstantiatedThis)
+                {
+                    break;
+                }
+            }
+        }
+        if(!someoneElsealsoInstantiatedThis)
+        {
+            if(!insted.at(i)->sentenced()) deleteTableInstance(insted.at(i));
+        }
+    }
+}
 
 void MajorVersion::deleteTable(Table *tab)
 {
