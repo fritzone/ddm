@@ -3,7 +3,7 @@
 #include "Table.h"
 #include "Configuration.h"
 
-TableInstance::TableInstance(Table *tab, bool ref) : TreeItem(), NamedItem(tab->getName()), m_table(tab), m_values(), m_becauseOfReference(ref), m_instantiatedTablesInstances(), m_referencingTables(9), m_sentenced(false)
+TableInstance::TableInstance(Table *tab, bool ref) : TreeItem(), NamedItem(tab->getName()), m_table(tab), m_values(), m_becauseOfReference(ref), m_instantiatedTablesInstances(), m_referencingTables(0), m_sentenced(false)
 {
     for(int i=0; i<m_table->fullColumns().size(); i++)
     {

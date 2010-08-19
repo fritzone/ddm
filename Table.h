@@ -124,7 +124,8 @@ public:
     /**
      * Returns the first ForeignKey object if this table has a foreign key to the specified table
      */
-    ForeignKey* getForeignKeyToTable(const QString& tableName);
+    ForeignKey* getForeignKeyToTable(const QString& tableName) const;
+    ForeignKey* getForeignKeyToTable(Table* tab) const;
 
     void setDefaultValues(QVector <QVector <QString> > &);
 

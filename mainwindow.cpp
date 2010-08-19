@@ -954,7 +954,8 @@ void MainWindow::onDeleteInstanceFromPopup()
     {
         if(tinst->instantiatedBecuaseOfRkReference())
         {
-            QMessageBox::critical(this, tr("Error"), tr("Cannot delete this table instance since it was auto-instantiated because another table has a foreign key to it"), QMessageBox::Ok);
+
+            QMessageBox::critical(this, tr("Error"), tr("Cannot delete this table instance since it was auto-instantiated because another table has a foreign key to it. Deleting the following tables will remove this table too:\n") + tinst->getReferencingTables(), QMessageBox::Ok);
             projectTree->setLastRightclickedItem(0);
             return;
         }
