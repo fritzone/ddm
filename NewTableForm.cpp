@@ -1685,9 +1685,10 @@ void NewTableForm::onInject()
     injectDialog->setModal(true);
     if(injectDialog->exec() == QDialog::Accepted)
     {
-        if(!m_dbEngine->injectSql(injectDialog->getHost(), injectDialog->getUser(), injectDialog->getPassword(), injectDialog->getDatabase(), finalSql))
+        QString tSql;
+        if(!m_dbEngine->injectSql(injectDialog->getHost(), injectDialog->getUser(), injectDialog->getPassword(), injectDialog->getDatabase(), finalSql, tSql))
         {
-            QMessageBox::critical (this, tr("Error"), tr("Cannot execute a query ") + m_dbEngine->getLastError(), QMessageBox::Ok);
+            QMessageBox::critical (this, tr("Error"), tr("Cannot execute a query ") + m_dbEngine->getLastError() + tr(". Query:") + tSql, QMessageBox::Ok);
         }
     }
 }

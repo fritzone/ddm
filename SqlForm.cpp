@@ -44,9 +44,10 @@ void SqlForm::onInject()
     injectDialog->setModal(true);
     if(injectDialog->exec() == QDialog::Accepted)
     {
-        if(!m_engine->injectSql(injectDialog->getHost(), injectDialog->getUser(), injectDialog->getPassword(), injectDialog->getDatabase(), sqlList))
+        QString tSql;
+        if(!m_engine->injectSql(injectDialog->getHost(), injectDialog->getUser(), injectDialog->getPassword(), injectDialog->getDatabase(), sqlList, tSql))
         {
-            QMessageBox::critical (this, tr("Error"), tr("Cannot execute a query: ") + m_engine->getLastError(), QMessageBox::Ok);
+            QMessageBox::critical (this, tr("Error"), tr("Cannot execute a query: ") + m_engine->getLastError() + tr(". Query:") + tSql, QMessageBox::Ok);
         }
     }
 }
