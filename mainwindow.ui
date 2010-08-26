@@ -23,7 +23,7 @@
    <string>MainWindow</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="dbm.qrc">
+   <iconset>
     <normaloff>:/images/actions/images/big/icon.png</normaloff>:/images/actions/images/big/icon.png</iconset>
   </property>
   <property name="documentMode">
@@ -61,6 +61,7 @@
     <addaction name="action_NewTable"/>
     <addaction name="action_NewDiagram"/>
     <addaction name="action_NewTableInstance"/>
+    <addaction name="separator"/>
    </widget>
    <widget class="QMenu" name="menu_Edit">
     <property name="title">
@@ -108,7 +109,7 @@
   <widget class="QStatusBar" name="statusBar"/>
   <action name="action_New">
    <property name="icon">
-    <iconset resource="dbm.qrc">
+    <iconset>
      <normaloff>:/images/actions/images/actions/filenew.png</normaloff>:/images/actions/images/actions/filenew.png</iconset>
    </property>
    <property name="text">
@@ -123,7 +124,7 @@
     <bool>false</bool>
    </property>
    <property name="icon">
-    <iconset resource="dbm.qrc">
+    <iconset>
      <normaloff>:/images/actions/images/actions/filesave.png</normaloff>:/images/actions/images/actions/filesave.png</iconset>
    </property>
    <property name="text">
@@ -141,7 +142,7 @@
     <bool>false</bool>
    </property>
    <property name="icon">
-    <iconset resource="dbm.qrc">
+    <iconset>
      <normaloff>:/images/actions/images/actions/add.png</normaloff>:/images/actions/images/actions/add.png</iconset>
    </property>
    <property name="text">
@@ -162,7 +163,7 @@
     <bool>false</bool>
    </property>
    <property name="icon">
-    <iconset resource="dbm.qrc">
+    <iconset>
      <normaloff>:/images/actions/images/actions/insert_table.png</normaloff>:/images/actions/images/actions/insert_table.png</iconset>
    </property>
    <property name="text">
@@ -180,7 +181,7 @@
   </action>
   <action name="action_Open">
    <property name="icon">
-    <iconset resource="dbm.qrc">
+    <iconset>
      <normaloff>:/images/actions/images/actions/fileopen.png</normaloff>:/images/actions/images/actions/fileopen.png</iconset>
    </property>
    <property name="text">
@@ -197,7 +198,7 @@
   </action>
   <action name="action_NewProject">
    <property name="icon">
-    <iconset resource="dbm.qrc">
+    <iconset>
      <normaloff>:/images/actions/images/actions/filenew.png</normaloff>:/images/actions/images/actions/filenew.png</iconset>
    </property>
    <property name="text">
@@ -209,7 +210,7 @@
     <bool>false</bool>
    </property>
    <property name="icon">
-    <iconset resource="dbm.qrc">
+    <iconset>
      <normaloff>:/images/actions/images/actions/new_diagram.png</normaloff>:/images/actions/images/actions/new_diagram.png</iconset>
    </property>
    <property name="text">
@@ -224,7 +225,7 @@
     <bool>false</bool>
    </property>
    <property name="icon">
-    <iconset resource="dbm.qrc">
+    <iconset>
      <normaloff>:/images/actions/images/actions/file_saveas.png</normaloff>:/images/actions/images/actions/file_saveas.png</iconset>
    </property>
    <property name="text">
@@ -236,7 +237,7 @@
   </action>
   <action name="actionQuit">
    <property name="icon">
-    <iconset resource="dbm.qrc">
+    <iconset>
      <normaloff>:/images/actions/images/actions/application_exit.png</normaloff>:/images/actions/images/actions/application_exit.png</iconset>
    </property>
    <property name="text">
@@ -251,7 +252,7 @@
     <bool>false</bool>
    </property>
    <property name="icon">
-    <iconset resource="dbm.qrc">
+    <iconset>
      <normaloff>:/images/actions/images/actions/tabinstnew.png</normaloff>:/images/actions/images/actions/tabinstnew.png</iconset>
    </property>
    <property name="text">
@@ -263,11 +264,14 @@
     <string>Preferences</string>
    </property>
   </action>
+  <action name="actionClose">
+   <property name="text">
+    <string>Close</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <resources>
-  <include location="dbm.qrc"/>
- </resources>
+ <resources/>
  <connections>
   <connection>
    <sender>action_New</sender>

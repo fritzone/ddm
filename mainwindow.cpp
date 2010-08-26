@@ -279,7 +279,7 @@ void MainWindow::currentProjectTreeItemChanged(QTreeWidgetItem * current, QTreeW
             // firstly only the tables and then the foreign keys. We'll see the other elements later
 
             QStringList finalSql("-- Full SQL listing for project " + getWorkingProject()->getName() + "\n");
-            if(getWorkingProject()->oopProject())
+            if(getWorkingProject()->oopProject())   // list the table instances' SQL
             {
                 QHash<QString, QString> opts = Configuration::instance().sqlGenerationOptions();
                 bool upcase = opts.contains("Case") && opts["Case"] == "Upper";
@@ -304,9 +304,30 @@ void MainWindow::currentProjectTreeItemChanged(QTreeWidgetItem * current, QTreeW
                     }
                 }
             }
-            else
+            else    // list table's SQL
             {
+                QHash<QString, QString> opts = Configuration::instance().sqlGenerationOptions();
+                bool upcase = opts.contains("Case") && opts["Case"] == "Upper";
+                opts["FKSposition"] = "OnlyInternal";
+                for(int i=0; i<getWorkingProject()->getWorkingVersion()->getTables().size(); i++)
+                {
+                    QStringList sql = getWorkingProject()->getWorkingVersion()->getTables().at(i)->generateSqlSource(getWorkingProject()->getEngine()->getSqlGenerator(), opts);
+                    finalSql << sql;
+                }
 
+                for(int i=0; i<getWorkingProject()->getWorkingVersion()->getTables().size(); i++)
+                {
+                    for(int j=0; j<getWorkingProject()->getWorkingVersion()->getTables().at(i)->getForeignKeyCommands().size(); j++)
+                    {
+                        QString f = upcase?"ALTER TABLE ":"alter table ";
+                        f += getWorkingProject()->getWorkingVersion()->getTables().at(i)->getName();
+                        f += upcase?" ADD ":" add ";
+                        f += getWorkingProject()->getWorkingVersion()->getTables().at(i)->getForeignKeyCommands().at(j);
+                        f += ";\n";
+
+                        finalSql << f;
+                    }
+                }
             }
 
             QString fs = "";
@@ -853,6 +874,11 @@ void MainWindow::onDuplicateTableFromPopup()
             p->parent()->removeChild(p);
             tab->getParent()->getLocation()->addChild(p);
         }
+        // add the SQL item
+        ContextMenuEnabledTreeWidgetItem* sqlItm = new ContextMenuEnabledTreeWidgetItem(currentSolution()->currentProject()->getWorkingVersion()->getFinalSqlItem(), QStringList(dupped->getName() + ".sql"));
+        sqlItm->setIcon(0, IconFactory::getTablesIcon());
+        sqlItm->setData(0, Qt::UserRole, dupped->getName());
+
     }
 }
 
@@ -918,9 +944,9 @@ ContextMenuEnabledTreeWidgetItem* MainWindow::instantiateTable(const QString& ta
     QVariant a(tinst->getName());
     itm->setData(0, Qt::UserRole, a);
 
-    ContextMenuEnabledTreeWidgetItem* itma = new ContextMenuEnabledTreeWidgetItem(cVersion->getFinalSqlItem(), QStringList(tinst->getName()));
-    itma->setIcon(0, IconFactory::getTabinstIcon());
-    itma->setData(0, Qt::UserRole, a);
+    ContextMenuEnabledTreeWidgetItem* sqlItm = new ContextMenuEnabledTreeWidgetItem(cVersion->getFinalSqlItem(), QStringList(tinst->getName()));
+    sqlItm->setIcon(0, IconFactory::getTabinstIcon());
+    sqlItm->setData(0, Qt::UserRole, a);
     QSet<const Table*> referenced = cVersion->getTable(tabName)->getTablesReferencedByForeignKeys();
     QSetIterator<const Table*> i(referenced);
     while(i.hasNext())
