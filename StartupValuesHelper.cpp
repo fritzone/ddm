@@ -107,5 +107,4 @@ void addNewRowToTable(QTableWidget* guiTable, Table* src)
             guiTable->setCellWidget(curRowC, i, defWidget);
         }
     }
-
 }

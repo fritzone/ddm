@@ -30,9 +30,10 @@ const int COL_POS_PK = 0;
 const int COL_POS_NM = 1;
 const int COL_POS_DT = 2;
 
-NewTableForm::NewTableForm(DatabaseEngine* db, Project* prj, QWidget *parent) : QWidget(parent), m_ui(new Ui::NewTableForm),
-    m_dbEngine(db), m_project(prj), m_table(new Table(prj->getWorkingVersion())), m_currentColumn(0), m_currentIndex(0), m_foreignTable(0),
-    m_currentForeignKey(0), m_foreignKeySelected(false), m_changes(false), m_currentStorageEngine(0), m_engineProviders(0)
+NewTableForm::NewTableForm(DatabaseEngine* db, Project* prj, QWidget *parent, bool newTable) : QWidget(parent), m_ui(new Ui::NewTableForm),
+    m_mw(dynamic_cast<MainWindow*>(parent)), m_dbEngine(db), m_project(prj), m_table(new Table(prj->getWorkingVersion())),
+    m_currentColumn(0), m_currentIndex(0), m_foreignTable(0), m_currentForeignKey(0), m_foreignKeySelected(false),
+    m_changes(false), m_currentStorageEngine(0), m_engineProviders(0)
 {
     m_ui->setupUi(this);
 
@@ -112,6 +113,13 @@ NewTableForm::NewTableForm(DatabaseEngine* db, Project* prj, QWidget *parent) : 
     m_ui->txtNewColumnName->setValidator(m_nameValidator);
     m_ui->txtForeignKeyName->setValidator(m_nameValidator);
     m_ui->txtNewIndexName->setValidator(m_nameValidator);
+
+
+    if(newTable)
+    {
+        m_mw->onSaveNewTable(m_table);
+        m_ui->txtTableName->setText(m_table->getName());
+    }
 
 }
 
@@ -359,11 +367,6 @@ void NewTableForm::changeEvent(QEvent *e)
     }
 }
 
-void NewTableForm::setMainWindow(MainWindow *mw)
-{
-    this->m_mw = mw;
-}
-
 void NewTableForm::onAddColumn()
 {
     if(m_ui->cmbNewColumnType->currentIndex() == -1)
@@ -442,7 +445,7 @@ void NewTableForm::onAddColumn()
     updateDefaultValuesTableHeader();
     restoreDefaultValuesTable();
 
-    m_changes = true;
+    autoSave();
 }
 
 void NewTableForm::onCancelColumnEditing()
@@ -461,7 +464,7 @@ void NewTableForm::onDeleteColumn()
     QTreeWidgetItem* currentItem = m_ui->lstColumns->currentItem();
     if(currentItem == 0)
     {
-        QMessageBox::critical (this, tr("Error"), tr("Internal Error: Nothing is selected?"), QMessageBox::Ok);
+        QMessageBox::critical (this, tr("Error"), tr("Please make sure you have an index selected for deletion."), QMessageBox::Ok);
         return;
     }
 
@@ -488,7 +491,7 @@ void NewTableForm::onDeleteColumn()
     updateDefaultValuesTableHeader();
     restoreDefaultValuesTable();
 
-    m_changes = true;
+    autoSave();
 }
 
 void NewTableForm::onMoveColumnDown()
@@ -516,7 +519,7 @@ void NewTableForm::onMoveColumnDown()
             updateDefaultValuesTableHeader();
             restoreDefaultValuesTable();
 
-            m_changes = true;
+            autoSave();
         }
     }
 }
@@ -545,7 +548,7 @@ void NewTableForm::onMoveColumnUp()
             backupDefaultValuesTable();
             updateDefaultValuesTableHeader();
             restoreDefaultValuesTable();
-            m_changes = true;
+            autoSave();
         }
     }
 }
@@ -711,13 +714,24 @@ void NewTableForm::onSave()
         }
     }
 
-    m_table->setName(m_ui->txtTableName->text());
-    m_table->prepareDiagramEntity();
-    m_table->setPersistent(m_ui->chkPersistent->isChecked());
-    m_table->setTemporary(m_ui->chkTemporary->isChecked());
-    m_table->setDescription(m_ui->txtDescription->toPlainText());
-    m_table->setStorageEngine(m_currentStorageEngine);
+    prepareValuesToBeSaved();
+    doTheSave();
 
+    m_changes = false;
+}
+
+void NewTableForm::autoSave()
+{
+    prepareValuesToBeSaved();
+    doTheSave();
+}
+
+void NewTableForm::onReset()
+{
+}
+
+void NewTableForm::doTheSave()
+{
     if(m_project->getWorkingVersion()->hasTable(m_table))
     {
         // update the data of the table, and the tree view
@@ -728,12 +742,16 @@ void NewTableForm::onSave()
         // create a new tree entry, add to the tree, update the m_table's tree item.
         m_mw->onSaveNewTable(m_table);
     }
-
-    m_changes = false;
 }
 
-void NewTableForm::onReset()
+void NewTableForm::prepareValuesToBeSaved()
 {
+    m_table->setName(m_ui->txtTableName->text());
+    m_table->prepareDiagramEntity();
+    m_table->setPersistent(m_ui->chkPersistent->isChecked());
+    m_table->setTemporary(m_ui->chkTemporary->isChecked());
+    m_table->setDescription(m_ui->txtDescription->toPlainText());
+    m_table->setStorageEngine(m_currentStorageEngine);
 }
 
 void NewTableForm::onMoveColumnToRight()
@@ -865,7 +883,7 @@ void NewTableForm::onAddIndex()
 
     m_currentIndex = 0;
 
-    m_changes = true;
+    autoSave();
 }
 
 void NewTableForm::resetIndexGui()
@@ -971,6 +989,12 @@ void NewTableForm::onCancelIndexEditing()
 
 void NewTableForm::onBtnRemoveIndex()
 {
+    if(!m_ui->lstIndices->currentItem())
+    {
+        QMessageBox::critical (this, tr("Error"), tr("Please make sure you have selected an index to delete."), QMessageBox::Ok);
+        return;
+    }
+
     if(!m_table->hasIndex(m_ui->lstIndices->currentItem()->text(0)))
     {
         QMessageBox::critical (this, tr("Error"), tr("You cannot delete the index of a parent table from a sibling table. Go to the parent table to do this."), QMessageBox::Ok);
@@ -980,7 +1004,7 @@ void NewTableForm::onBtnRemoveIndex()
     resetIndexGui();
     m_table->removeIndex(m_currentIndex);
     m_currentIndex = 0;
-    m_changes = true;
+    autoSave();
 }
 
 void NewTableForm::onDoubleClickColumnForIndex(QListWidgetItem* item)
@@ -1172,6 +1196,12 @@ void NewTableForm::onAddForeignKeyAssociation()
 void NewTableForm::onRemoveForeignKeyAssociation()
 {
 
+    if(!m_ui->lstForeignKeyAssociations->currentItem())
+    {
+        QMessageBox::critical (this, tr("Error"), tr("Please make sure you have a foreign key association to delete."), QMessageBox::Ok);
+        return;
+    }
+
     // from the foreign key (if it was selected) delete the FK Association in the current item
     QString localColumn = m_ui->lstForeignKeyAssociations->currentItem()->text(1);
     QString foreignColumn = m_ui->lstForeignKeyAssociations->currentItem()->text(0);
@@ -1233,7 +1263,6 @@ void NewTableForm::onSelectAssociation(QTreeWidgetItem* current, int)
 
 void NewTableForm::onBtnAddForeignKey()
 {
-
     if(m_table->getForeignKeyFromParents(m_ui->txtForeignKeyName->text()))
     {
         QMessageBox::critical (this, tr("Error"), tr("You cannot modify a foreign key from the parent table in a specialized table. (If you want to enable the GUI fields press Cancel)"), QMessageBox::Ok);
@@ -1308,7 +1337,7 @@ void NewTableForm::onBtnAddForeignKey()
         tbl->createAutoIndex(m_currentForeignKey->foreignColumns());
     }
 
-    m_changes = true;
+    autoSave();
     resetFkGui();
 }
 
@@ -1446,6 +1475,8 @@ void NewTableForm::updateDefaultValuesTableHeader()
 void NewTableForm::onAddNewDefaultRow()
 {
     addNewRowToTable(m_ui->tableStartupValues, m_table);
+    onBtnUpdateTableWithDefaultValues();
+    autoSave();
 }
 
 void NewTableForm::backupDefaultValuesTable()
@@ -1578,6 +1609,19 @@ void NewTableForm::onSaveStartupValuestoCSV()
 void NewTableForm::onLoadStartupValuesFromCSV()
 {
     loadStartupValuesFromCSVIntoTable(m_ui->tableStartupValues, this);
+    autoSave();
+}
+
+void NewTableForm::updateSqlDueToChange()
+{
+    QString fs = "";
+    finalSql = m_project->getEngine()->getSqlGenerator()->generateCreateTableSql(m_table, Configuration::instance().sqlGenerationOptions(), m_table->getName());
+    for(int i=0; i< finalSql.size(); i++)
+    {
+        fs += finalSql[i];
+    }
+
+    m_ui->txtSql->setText(fs);
 }
 
 void NewTableForm::onStorageEngineChange(QString name)
@@ -1595,6 +1639,8 @@ void NewTableForm::onStorageEngineChange(QString name)
 
     populateIndexTypesDependingOnStorageEngine();
     enableForeignKeysDependingOnStorageEngine();
+
+    updateSqlDueToChange();
 }
 
 
@@ -1607,6 +1653,12 @@ void NewTableForm::onBtnCancelForeignKeyEditing()
 
 void NewTableForm::onBtnRemoveForeignKey()
 {
+    if(!m_ui->lstForeignKeys->currentItem())
+    {
+        QMessageBox::critical (this, tr("Error"), tr("Please make sure you have a foreign key selected to remove."), QMessageBox::Ok);
+        return;
+    }
+
     if(m_currentForeignKey == 0 && m_table->getForeignKeyFromParents(m_ui->lstForeignKeys->currentItem()->text(0)) != 0)
     {
         QMessageBox::critical (this, tr("Error"), tr("You cannot remove this foreign key, since it does not belong to this table. Remove it from the parent table."), QMessageBox::Ok);
@@ -1617,6 +1669,7 @@ void NewTableForm::onBtnRemoveForeignKey()
     delete m_currentForeignKey->getLocation();
     m_currentForeignKey = 0;
     resetFkGui();
+    autoSave();
 }
 
 void NewTableForm::onPersistentChange(int a)
@@ -1634,6 +1687,8 @@ void NewTableForm::onTemporaryChange(int a)
 void NewTableForm::onDeleteDefaultRow()
 {
     m_ui->tableStartupValues->removeRow(m_ui->tableStartupValues->currentRow());
+    onBtnUpdateTableWithDefaultValues();
+    autoSave();
 }
 
 void NewTableForm::onHelp()
@@ -1667,16 +1722,11 @@ void NewTableForm::onChangeDescription()
 
 void NewTableForm::onChangeName(QString a)
 {
+    QVariant v(a);
+    m_table->getLocation()->setData(0, Qt::UserRole, v);
     m_table->setName(a);
-
-    QString fs = "";
-    finalSql = m_project->getEngine()->getSqlGenerator()->generateCreateTableSql(m_table, Configuration::instance().sqlGenerationOptions(), m_table->getName());
-    for(int i=0; i< finalSql.size(); i++)
-    {
-        fs += finalSql[i];
-    }
-
-    m_ui->txtSql->setText(fs);
+    m_table->getLocation()->setText(0, a);
+    updateSqlDueToChange();
 }
 
 void NewTableForm::onInject()

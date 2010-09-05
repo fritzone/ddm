@@ -63,7 +63,8 @@ SOURCES += main.cpp \
     InjectSqlDialog.cpp \
     TableInstancesListForm.cpp \
     PreferencesDialog.cpp \
-    SqlNamesValidator.cpp
+    SqlNamesValidator.cpp \
+    NameGenerator.cpp
 HEADERS += MainWindow.h \
     MainWindowButtonDialog.h \
     newprojectdialog.h \
@@ -134,7 +135,8 @@ HEADERS += MainWindow.h \
     InjectSqlDialog.h \
     TableInstancesListForm.h \
     PreferencesDialog.h \
-    SqlNamesValidator.h
+    SqlNamesValidator.h \
+    NameGenerator.h
 FORMS += mainwindow.ui \
     mainwindowbuttondialog.ui \
     newprojectdialog.ui \

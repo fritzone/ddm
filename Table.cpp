@@ -11,12 +11,14 @@
 #include "DraggableGraphicsItem.h"
 #include "IconFactory.h"
 #include "AbstractIndextypeProvider.h"
+#include "NameGenerator.h"
 
 #include <QPen>
 
 Table::Table(Version* v) :  m_name(""), m_description(""), m_columns(), m_indices(), m_foreignKeys(), m_startupValues(),
                             m_parent(0), m_persistent(false), m_temporary(false), m_storageEngine(0), m_diagramEntity(0), m_version(v)
 {
+    m_name = NameGenerator::getNextTableNameFromVersion(v, "TABLE");
 }
 
 void Table::addColumn(Column *column)

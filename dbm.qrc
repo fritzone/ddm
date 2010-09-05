@@ -95,5 +95,6 @@
         <file>images/small/sql.png</file>
         <file>images/small/code.png</file>
         <file>images/small/tabinstlock.png</file>
+        <file>images/unaf.png</file>
     </qresource>
 </RCC>

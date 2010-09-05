@@ -163,7 +163,6 @@ public:
     }
 
     QString generateUniqueTableInstanceName(const QString& input);
-    QString generateUniqueTableName(const QString& input);
 
 private:
 
