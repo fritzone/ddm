@@ -28,9 +28,8 @@ class NewTableForm : public QWidget {
     Q_OBJECT
 public:
 
-    NewTableForm(DatabaseEngine* engine, Project* prj, QWidget *parent = 0);
+    NewTableForm(DatabaseEngine* engine, Project* prj, QWidget *parent = 0, bool newTable = false);
     ~NewTableForm();
-    void setMainWindow(MainWindow* mw);
 
     void focusOnName();
     void focusOnNewColumnName();
@@ -90,7 +89,6 @@ public slots:
     void onDeleteDefaultRow();
 
     // the advanced page
-
     void onPersistentChange(int);
     void onTemporaryChange(int);
 
@@ -156,6 +154,13 @@ private:
     void toggleFkFieldDisableness(bool);
 
     void resetFkGui();
+
+    void updateSqlDueToChange();
+
+    void prepareValuesToBeSaved();
+
+    void doTheSave();
+    void autoSave();
 
 private:
     Ui::NewTableForm *m_ui;

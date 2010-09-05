@@ -217,15 +217,13 @@ void MainWindow::showTable(const QString &tabName, bool focus)
         return;
     }
 
-    frm = new NewTableForm(getWorkingProject()->getEngine(), getWorkingProject(), this);
+    frm = new NewTableForm(getWorkingProject()->getEngine(), getWorkingProject(), this, false);
     frm->setTable(table);
     frm->focusOnName();
-    frm->setMainWindow(this);
+
     setCentralWidget(frm);
 
     if(focus) projectTree->setCurrentItem(table->getLocation());
-
-
 }
 
 void MainWindow::showTableInstance(const QString &tabName, bool focus)
@@ -398,7 +396,7 @@ void MainWindow::currentProjectTreeItemChanged(QTreeWidgetItem * current, QTreeW
                 }
 
                 frm->setSqlSource(ent);
-                
+
                 QString fs = "";
                 QStringList finalSql = ent->generateSqlSource(getWorkingProject()->getEngine()->getSqlGenerator(), Configuration::instance().sqlGenerationOptions());
                 for(int i=0; i< finalSql.size(); i++)
@@ -420,10 +418,10 @@ void MainWindow::currentProjectTreeItemChanged(QTreeWidgetItem * current, QTreeW
                 {
                     return;
                 }
-                frm = new NewTableForm(getWorkingProject()->getEngine(), getWorkingProject(), this);
+                frm = new NewTableForm(getWorkingProject()->getEngine(), getWorkingProject(), this, false);
                 frm->setTable(table);
                 frm->focusOnName();
-                frm->setMainWindow(this);
+
                 setCentralWidget(frm);
 
             }
@@ -433,9 +431,9 @@ void MainWindow::currentProjectTreeItemChanged(QTreeWidgetItem * current, QTreeW
 
 void MainWindow::onNewTable()
 {
-    NewTableForm* frm = new NewTableForm(getWorkingProject()->getEngine(), getWorkingProject(), this);
+    NewTableForm* frm = new NewTableForm(getWorkingProject()->getEngine(), getWorkingProject(), this, true);
     frm->focusOnName();
-    frm->setMainWindow(this);
+
     projectTree->setCurrentItem(0);
     setCentralWidget(frm);
 }
@@ -874,11 +872,14 @@ void MainWindow::onDuplicateTableFromPopup()
             p->parent()->removeChild(p);
             tab->getParent()->getLocation()->addChild(p);
         }
-        // add the SQL item
-        ContextMenuEnabledTreeWidgetItem* sqlItm = new ContextMenuEnabledTreeWidgetItem(currentSolution()->currentProject()->getWorkingVersion()->getFinalSqlItem(), QStringList(dupped->getName() + ".sql"));
-        sqlItm->setIcon(0, IconFactory::getTablesIcon());
-        sqlItm->setData(0, Qt::UserRole, dupped->getName());
+        // add the SQL item but only if it's not an oop project
+        if(!getWorkingProject()->oopProject())
+        {
+            ContextMenuEnabledTreeWidgetItem* sqlItm = new ContextMenuEnabledTreeWidgetItem(currentSolution()->currentProject()->getWorkingVersion()->getFinalSqlItem(), QStringList(dupped->getName() + ".sql"));
+            sqlItm->setIcon(0, IconFactory::getTablesIcon());
+            sqlItm->setData(0, Qt::UserRole, dupped->getName());
 
+        }
     }
 }
 
