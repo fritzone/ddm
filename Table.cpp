@@ -12,6 +12,7 @@
 #include "IconFactory.h"
 #include "AbstractIndextypeProvider.h"
 #include "NameGenerator.h"
+#include "TableInstance.h"
 
 #include <QPen>
 
@@ -544,4 +545,29 @@ bool Table::createAutoIndex(QVector<const Column*> cols)
     }
     addIndex(idx);
     return true;
+}
+
+void Table::tableInstancesAddColumn(Column* col)
+{
+    for(int i=0; i<tableInstances.size(); i++)
+    {
+        tableInstances.at(i)->addColumn(col->getName());
+    }
+}
+
+void Table::tableInstancesRenameColumn(const QString &oldName, const QString &newName)
+{
+    for(int i=0; i<tableInstances.size(); i++)
+    {
+        tableInstances.at(i)->renameColumn(oldName, newName);
+    }
+}
+
+
+void Table::tableInstancesRemoveColumn(Column* col)
+{
+    for(int i=0; i<tableInstances.size(); i++)
+    {
+        tableInstances.at(i)->removeColumn(col->getName());
+    }
 }

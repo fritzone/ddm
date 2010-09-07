@@ -16,6 +16,7 @@ class AbstractStorageEngine;
 class DraggableGraphicsViewItem ;
 class Version;
 class UserDataType;
+class TableInstance;
 
 /**
  * The table class holds a database table defined by the user. It must be derived from the TreeItem since a table can be placed in
@@ -244,8 +245,6 @@ public:
      */
     Column* getColumnFromParents(const QString& name) const;
 
-
-
     QStringList fullIndices() const;
 
     QStringList indices() const;
@@ -293,6 +292,17 @@ public:
      */
     bool createAutoIndex(QVector<const Column*> cols);
 
+    void addInstance(TableInstance* tinst)
+    {
+        tableInstances.append(tinst);
+    }
+
+    void tableInstancesAddColumn(Column* col);
+
+    void tableInstancesRemoveColumn(Column* col);
+
+    void tableInstancesRenameColumn(const QString& oldName, const QString& newName);
+
 
 private:
     // the name of the table
@@ -332,6 +342,9 @@ private:
     QString m_tempTabName;
 
     mutable QStringList foreignKeyCommands;
+
+    // all the table instances that were created from this table
+    QVector<TableInstance*> tableInstances;
 
 
 private:

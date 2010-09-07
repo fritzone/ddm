@@ -512,38 +512,13 @@ void MajorVersion::setupTableParentChildRelationships()
     }
 }
 
-// TODO: These two below are ugly, duplicated code. Rewrite them somenhow, maybe with a method to member approach
-QString MajorVersion::generateUniqueTableInstanceName(const QString& input)
-{
-    int i = 1;
-    while(i<9999999)
-    {
-        QString result2 = input + "_" + QString::number(i);
-        if(getTableInstance(result2) == 0)
-        {
-            return result2;
-        }
-        i++;
-    }
-    i = 1;
-    while(i<9999999)
-    {
-        QString result2 = "_" + input + "_" + QString::number(i);
-        if(getTableInstance(result2) == 0)
-        {
-            return result2;
-        }
-        i++;
-    }
-}
-
 TableInstance* MajorVersion::instantiateTable(Table* tab, bool reason)
 {
     TableInstance* tabInst = new TableInstance(tab, reason);
     TableInstance* other = getTableInstance(tabInst->getName());
     if(other && other != tabInst)
     {
-        tabInst->setName(generateUniqueTableInstanceName(tabInst->getName()));
+        tabInst->setName(NameGenerator::generateUniqueTableInstanceName(this, tabInst->getName()));
     }
     m_tableInstances.append(tabInst);
     return tabInst;
