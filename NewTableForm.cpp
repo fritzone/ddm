@@ -468,17 +468,22 @@ void NewTableForm::onDeleteColumn()
     QTreeWidgetItem* currentItem = m_ui->lstColumns->currentItem();
     if(currentItem == 0)
     {
-        QMessageBox::critical (this, tr("Error"), tr("Please make sure you have an index selected for deletion."), QMessageBox::Ok);
+        QMessageBox::critical (this, tr("Error"), tr("Please make sure you have a column selected for deletion."), QMessageBox::Ok);
         return;
     }
 
     if(!m_table->hasColumn(currentItem->text(1)) && m_table->parentsHaveColumn(currentItem->text(1)))
     {
-        QMessageBox::critical (this, tr("Error"), tr("You cannot delete the columns from a parent table from a sibling table. Go to the parent table to do this."), QMessageBox::Ok);
+        QMessageBox::critical (this, tr("Error"), tr("You cannot delete the columns of a parent table from a sibling table. Go to the parent table to do this."), QMessageBox::Ok);
         return;
     }
 
     const Column* currentColumn = m_table->getColumn(currentItem->text(1));
+    if(!currentColumn)
+    {
+        QMessageBox::critical (this, tr("Error"), tr("[Internal Error 001] The selected column cannot be found in the table."), QMessageBox::Ok);
+        return;
+    }
 
     const Index* usedIn = m_table->isColumnUsedInIndex(currentColumn);
     if(usedIn != 0)
