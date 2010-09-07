@@ -77,8 +77,8 @@ void TableInstance::serialize(QDomDocument &doc, QDomElement &parent) const
 QStringList TableInstance::generateSqlSource(AbstractSqlGenerator *generator, QHash<QString,QString> opts)
 {
     QStringList result;
-    table()->restartSqlRendering();
-    result << generator->generateCreateTableSql(this->table(), opts, getName());
+    m_table->restartSqlRendering();
+    result << generator->generateCreateTableSql(m_table, opts, getName());
     // and now the default values as "inserts"
     result << generator->generateDefaultValuesSql(this, opts);
     return result;
@@ -96,7 +96,7 @@ QVector<QString> TableInstance::removeColumn(const QString &colName)
     return result;
 }
 
-void TableInstance::renameColumn(const QString& oldName, const QString& newName)
+void    TableInstance::renameColumn(const QString& oldName, const QString& newName)
 {
     QVector<QString> tmp = removeColumn(oldName);
     m_values.insert(newName, tmp);
