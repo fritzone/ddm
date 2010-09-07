@@ -162,8 +162,6 @@ public:
         return m_tableInstances;
     }
 
-    QString generateUniqueTableInstanceName(const QString& input);
-
 private:
 
     // the tree item containing the "Tables"

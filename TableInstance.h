@@ -76,17 +76,29 @@ public:
         return result;
     }
 
+    void addColumn(const QString& colName);
+
+    QVector<QString> removeColumn(const QString& colName);
+
+    void renameColumn(const QString& oldName, const QString& newName);
+
 private:
 
+    // the table of the table instance
     Table* m_table;
 
     // a hash in which to the column name we have mapped a list of default values.
+    // TODO: This might need to be changed to be a hash of <Column*,QVector<QString> > instead ... think about it
+    // TODO: for later versions come up with a solution that the USerDataType has values that can be put here ...
     QHash < QString, QVector<QString> > m_values;
 
+    // true if this table instance was created because of a reference (ie. foreign key for ex.)
     bool m_becauseOfReference;
 
+    // this will contain a list of tables that have a foreign key to the table of this table instance
     QVector<Table*> m_referencingTables;
 
+    // contains a list of other table instances that were created because this table instance's table required it (foreign key)
     QVector<TableInstance*> m_instantiatedTablesInstances;
 
     bool m_sentenced;

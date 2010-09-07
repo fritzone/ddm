@@ -389,6 +389,7 @@ void NewTableForm::onAddColumn()
             m_columnOperation = 3;
             m_newColumnName = m_ui->txtNewColumnName->text();
             m_oldColumnName = m_currentColumn->getName();
+            m_table->tableInstancesRenameColumn(m_oldColumnName, m_newColumnName);
         }
         m_currentColumn->setName(m_ui->txtNewColumnName->text());
         m_currentColumn->setDescription(m_ui->txtColumnDescription->toPlainText());
@@ -428,7 +429,10 @@ void NewTableForm::onAddColumn()
         col->setDescription(m_ui->txtColumnDescription->toPlainText());
         ContextMenuEnabledTreeWidgetItem* item = createTWIForColumn(col);
         m_ui->lstColumns->addTopLevelItem(item);
+
         m_table->addColumn(col);
+        // and update the table instances of the table, by adding a new table instance
+        m_table->tableInstancesAddColumn(col);
 
         col->setLocation(item);
         m_ui->txtNewColumnName->setFocus( );
@@ -486,6 +490,7 @@ void NewTableForm::onDeleteColumn()
     delete m_ui->lstColumns->currentItem();
     onCancelColumnEditing();
     m_table->removeColumn(const_cast<Column*>(currentColumn));
+    m_table->tableInstancesRemoveColumn(const_cast<Column*>(currentColumn));
     m_currentColumn = 0;
     populateColumnsForIndices();
     updateDefaultValuesTableHeader();

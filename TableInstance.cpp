@@ -9,6 +9,7 @@ TableInstance::TableInstance(Table *tab, bool ref) : TreeItem(), NamedItem(tab->
     {
         m_values.insert(m_table->fullColumns()[i], QVector<QString>());
     }
+    tab->addInstance(this);
 }
 
 void TableInstance::addTableReferencingThis(Table* refTab)
@@ -81,4 +82,22 @@ QStringList TableInstance::generateSqlSource(AbstractSqlGenerator *generator, QH
     // and now the default values as "inserts"
     result << generator->generateDefaultValuesSql(this, opts);
     return result;
+}
+
+void TableInstance::addColumn(const QString& colName)
+{
+    m_values.insert(colName, QVector<QString>());
+}
+
+QVector<QString> TableInstance::removeColumn(const QString &colName)
+{
+    QVector<QString> result = m_values[colName];
+    m_values.erase(m_values.find(colName));
+    return result;
+}
+
+void TableInstance::renameColumn(const QString& oldName, const QString& newName)
+{
+    QVector<QString> tmp = removeColumn(oldName);
+    m_values.insert(newName, tmp);
 }
