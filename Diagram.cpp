@@ -6,8 +6,9 @@
 #include "FkRelationDescriptor.h"
 #include "ForeignKey.h"
 #include "Version.h"
+#include "NameGenerator.h"
 
-Diagram::Diagram(Version* v) : TreeItem(), NamedItem("Table diagram"), m_onStage(), m_fksOnStage(), m_notes(),
+Diagram::Diagram(Version* v) : TreeItem(), NamedItem(NameGenerator::generateUniqueDiagramName(v, QString("Diagram"))), m_onStage(), m_fksOnStage(), m_notes(),
         m_noteDescriptors(0), m_tableDescriptors(), m_form(0), m_saved(false), m_version(v)
 {
 

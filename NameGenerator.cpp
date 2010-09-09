@@ -61,3 +61,27 @@ QString NameGenerator::generateUniqueTableInstanceName(Version* v, QString input
         i++;
     }
 }
+
+QString NameGenerator::generateUniqueDiagramName(Version* v, QString input)
+{
+    int i = 1;
+    while(i<MAX_IT)
+    {
+        QString result2 = input + "_" + QString::number(i);
+        if(v->getDiagram(result2) == 0)
+        {
+            return result2;
+        }
+        i++;
+    }
+    i = 1;
+    while(i<MAX_IT)
+    {
+        QString result2 = "_" + input + "_" + QString::number(i);
+        if(v->getDiagram(result2) == 0)
+        {
+            return result2;
+        }
+        i++;
+    }
+}

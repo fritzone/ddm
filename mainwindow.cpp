@@ -706,6 +706,7 @@ void MainWindow::onNewDiagram()
     DiagramForm* df = new DiagramForm(getWorkingProject()->getWorkingVersion(), dgram, this);
     setCentralWidget(df);
     dgram->setForm(df);
+    onSaveDiagram(dgram);
 }
 
 bool MainWindow::onSaveDiagram(Diagram* dgram)

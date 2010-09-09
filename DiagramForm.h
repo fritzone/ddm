@@ -38,6 +38,7 @@ public slots:
     void editorLostFocus(DiagramTextItem *item);
     void onEditNote();
     void printDiagram();
+    void onHelp();
 
 protected:
     void changeEvent(QEvent *e);

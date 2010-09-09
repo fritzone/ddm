@@ -59,6 +59,9 @@ DiagramForm::DiagramForm(Version* v, Diagram* dgram, QWidget *parent) : QWidget(
     ui->horizontalLayout->addWidget(graphicsView);
 
     prepareLists();
+    ui->cmbDgramNotation->hide();
+    ui->grpHelp->hide();
+
 }
 
 void DiagramForm::prepareLists()
@@ -178,6 +181,11 @@ void DiagramForm::printDiagram()
 void DiagramForm::saveToImageFile()
 {
     QString name = QFileDialog::getSaveFileName(this, tr("Save diagram"), "", tr("Images (*.png *.bmp *.jpg *.jpeg *.tiff);;SVG(*.svg)"));
+
+    if(name.length() == 0)  // nothing selected
+    {
+        return;
+    }
 
     const char* mode = "";
     if(name.endsWith(".png", Qt::CaseInsensitive)) mode = "png";
@@ -325,4 +333,11 @@ void DiagramForm::paintDiagram()
     lstDiagramForms->setEnabled(enableNotes);
 
     graphicsView->centerOn(graphicsView->scene()->getCoverageRect().center());
+}
+
+void DiagramForm::onHelp()
+{
+    ui->grpHelp->show();
+    ui->btnHelp->setHidden(true);
+    ui->webView->setUrl(QString("doc/dgram.html"));
 }
