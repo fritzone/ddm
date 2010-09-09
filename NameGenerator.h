@@ -10,6 +10,7 @@ class NameGenerator
 public:
     static QString getNextTableNameFromVersion(Version* v, QString prefix);
     static QString generateUniqueTableInstanceName(Version* v, QString input);
+    static QString generateUniqueDiagramName(Version* v, QString input);
 
 private:
 
