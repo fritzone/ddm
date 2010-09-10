@@ -136,7 +136,8 @@ HEADERS += MainWindow.h \
     TableInstancesListForm.h \
     PreferencesDialog.h \
     SqlNamesValidator.h \
-    NameGenerator.h
+    NameGenerator.h \
+    SourceCodePresenterWidget.h
 FORMS += mainwindow.ui \
     mainwindowbuttondialog.ui \
     newprojectdialog.ui \

@@ -4,6 +4,7 @@
 #include <QWidget>
 
 #include "SqlSourceEntity.h"
+#include "SourceCodePresenterWidget.h"
 
 class SqlHighlighter;
 class DatabaseEngine;
@@ -13,16 +14,12 @@ namespace Ui
     class SqlForm;
 }
 
-class SqlForm : public QWidget {
+class SqlForm : public SourceCodePresenterWidget
+{
     Q_OBJECT
 public:
     SqlForm(DatabaseEngine* engine, QWidget *parent = 0);
     ~SqlForm();
-
-    void setSqlSource(SqlSourceEntity* ent)
-    {
-        entity = ent;
-    }
 
     void setSource(const QString& src);
 
@@ -30,6 +27,9 @@ public:
     {
         sqlList = s;
     }
+
+    virtual void presentSql(Project* p);
+    virtual void presentSql(Project*,SqlSourceEntity*);
 
 public slots:
 
@@ -41,7 +41,7 @@ protected:
 
 private:
     Ui::SqlForm *ui;
-    SqlSourceEntity* entity;
+
     SqlHighlighter* highlighter;
     DatabaseEngine* m_engine;
     QStringList sqlList;
