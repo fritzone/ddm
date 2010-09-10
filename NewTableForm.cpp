@@ -30,7 +30,7 @@ const int COL_POS_PK = 0;
 const int COL_POS_NM = 1;
 const int COL_POS_DT = 2;
 
-NewTableForm::NewTableForm(DatabaseEngine* db, Project* prj, QWidget *parent, bool newTable) : QWidget(parent), m_ui(new Ui::NewTableForm),
+NewTableForm::NewTableForm(DatabaseEngine* db, Project* prj, QWidget *parent, bool newTable) : SourceCodePresenterWidget(parent), m_ui(new Ui::NewTableForm),
     m_mw(dynamic_cast<MainWindow*>(parent)), m_dbEngine(db), m_project(prj), m_table(new Table(prj->getWorkingVersion())),
     m_currentColumn(0), m_currentIndex(0), m_foreignTable(0), m_currentForeignKey(0), m_foreignKeySelected(false),
     m_changes(false), m_currentStorageEngine(0), m_engineProviders(0)
@@ -1624,14 +1624,7 @@ void NewTableForm::onLoadStartupValuesFromCSV()
 
 void NewTableForm::updateSqlDueToChange()
 {
-    QString fs = "";
-    finalSql = m_project->getEngine()->getSqlGenerator()->generateCreateTableSql(m_table, Configuration::instance().sqlGenerationOptions(), m_table->getName());
-    for(int i=0; i< finalSql.size(); i++)
-    {
-        fs += finalSql[i];
-    }
-
-    m_ui->txtSql->setText(fs);
+    presentSql(m_project);
 }
 
 void NewTableForm::onStorageEngineChange(QString name)
@@ -1714,13 +1707,7 @@ void NewTableForm::onChangeTab(int idx)
     {
         if(m_ui->tabWidget->tabText(idx) == "SQL")
         {
-            QString fs = "";
-            finalSql = m_project->getEngine()->getSqlGenerator()->generateCreateTableSql(m_table, Configuration::instance().sqlGenerationOptions(),m_table->getName());
-            for(int i=0; i< finalSql.size(); i++)
-            {
-                fs += finalSql[i];
-            }
-            m_ui->txtSql->setText(fs);
+            presentSql(m_project);
         }
     }
 }
@@ -1766,3 +1753,14 @@ void NewTableForm::onSaveSql()
     out << m_ui->txtSql->toPlainText() << "\n";
 }
 
+void NewTableForm::presentSql(Project *)
+{
+    QString fs = "";
+    finalSql = m_project->getEngine()->getSqlGenerator()->generateCreateTableSql(m_table, Configuration::instance().sqlGenerationOptions(), m_table->getName());
+    for(int i=0; i< finalSql.size(); i++)
+    {
+        fs += finalSql[i];
+    }
+
+    m_ui->txtSql->setText(fs);
+}

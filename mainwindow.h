@@ -96,7 +96,6 @@ private:
     void saveProject(bool saveAs = false);
     // to create the other dialogs needed in the app
     void createOtherDialogs();
-
     void enableActions();
     void connectActionsFromTablePopupMenu();
     Table* getRightclickedTable();

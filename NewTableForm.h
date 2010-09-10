@@ -1,6 +1,8 @@
 #ifndef NEWTABLEFORM_H
 #define NEWTABLEFORM_H
 
+#include "SourceCodePresenterWidget.h"
+
 #include <QWidget>
 #include <QTreeWidgetItem>
 #include <QAbstractButton>
@@ -24,7 +26,7 @@ class ContextMenuEnabledTreeWidgetItem;
 class SqlHighlighter;
 class SqlNamesValidator;
 
-class NewTableForm : public QWidget {
+class NewTableForm : public SourceCodePresenterWidget {
     Q_OBJECT
 public:
 
@@ -37,6 +39,10 @@ public:
     void setTable(Table* table);
 
     void selectTab(int);
+
+    virtual void presentSql(Project*);
+    virtual void presentSql(Project*, SqlSourceEntity*){};
+
 
 protected:
 

@@ -272,72 +272,9 @@ void MainWindow::currentProjectTreeItemChanged(QTreeWidgetItem * current, QTreeW
         if(current == getWorkingProject()->getWorkingVersion()->getFinalSqlItem())
         {
             SqlForm* frm = new SqlForm(getWorkingProject()->getEngine(), this);
-
-            // here create the final SQL:
-            // firstly only the tables and then the foreign keys. We'll see the other elements later
-
-            QStringList finalSql("-- Full SQL listing for project " + getWorkingProject()->getName() + "\n");
-            if(getWorkingProject()->oopProject())   // list the table instances' SQL
-            {
-                QHash<QString, QString> opts = Configuration::instance().sqlGenerationOptions();
-                bool upcase = opts.contains("Case") && opts["Case"] == "Upper";
-                opts["FKSposition"] = "OnlyInternal";
-                for(int i=0; i<getWorkingProject()->getWorkingVersion()->getTableInstances().size(); i++)
-                {
-                    QStringList sql = getWorkingProject()->getWorkingVersion()->getTableInstances().at(i)->generateSqlSource(getWorkingProject()->getEngine()->getSqlGenerator(), opts);
-                    finalSql << sql;
-                }
-
-                for(int i=0; i<getWorkingProject()->getWorkingVersion()->getTableInstances().size(); i++)
-                {
-                    for(int j=0; j<getWorkingProject()->getWorkingVersion()->getTableInstances().at(i)->table()->getForeignKeyCommands().size(); j++)
-                    {
-                        QString f = upcase?"ALTER TABLE ":"alter table ";
-                        f += getWorkingProject()->getWorkingVersion()->getTableInstances().at(i)->getName();
-                        f += upcase?" ADD ":" add ";
-                        f += getWorkingProject()->getWorkingVersion()->getTableInstances().at(i)->table()->getForeignKeyCommands().at(j);
-                        f += ";\n";
-
-                        finalSql << f;
-                    }
-                }
-            }
-            else    // list table's SQL
-            {
-                QHash<QString, QString> opts = Configuration::instance().sqlGenerationOptions();
-                bool upcase = opts.contains("Case") && opts["Case"] == "Upper";
-                opts["FKSposition"] = "OnlyInternal";
-                for(int i=0; i<getWorkingProject()->getWorkingVersion()->getTables().size(); i++)
-                {
-                    QStringList sql = getWorkingProject()->getWorkingVersion()->getTables().at(i)->generateSqlSource(getWorkingProject()->getEngine()->getSqlGenerator(), opts);
-                    finalSql << sql;
-                }
-
-                for(int i=0; i<getWorkingProject()->getWorkingVersion()->getTables().size(); i++)
-                {
-                    for(int j=0; j<getWorkingProject()->getWorkingVersion()->getTables().at(i)->getForeignKeyCommands().size(); j++)
-                    {
-                        QString f = upcase?"ALTER TABLE ":"alter table ";
-                        f += getWorkingProject()->getWorkingVersion()->getTables().at(i)->getName();
-                        f += upcase?" ADD ":" add ";
-                        f += getWorkingProject()->getWorkingVersion()->getTables().at(i)->getForeignKeyCommands().at(j);
-                        f += ";\n";
-
-                        finalSql << f;
-                    }
-                }
-            }
-
-            QString fs = "";
-            for(int i=0; i< finalSql.size(); i++)
-            {
-                fs += finalSql[i];
-            }
-            frm->setSource(fs);
-            frm->setSqlList(finalSql);
-
+            frm->setSqlSource(0);
+            frm->presentSql(getWorkingProject());
             setCentralWidget(frm);
-
         }
         else
         {
@@ -396,16 +333,7 @@ void MainWindow::currentProjectTreeItemChanged(QTreeWidgetItem * current, QTreeW
                 }
 
                 frm->setSqlSource(ent);
-
-                QString fs = "";
-                QStringList finalSql = ent->generateSqlSource(getWorkingProject()->getEngine()->getSqlGenerator(), Configuration::instance().sqlGenerationOptions());
-                for(int i=0; i< finalSql.size(); i++)
-                {
-                    fs += finalSql[i];
-                }
-                frm->setSource(fs);
-                frm->setSqlList(finalSql);
-
+                frm->presentSql(getWorkingProject(), ent);
                 setCentralWidget(frm);
 
             }
@@ -973,6 +901,16 @@ void MainWindow::onPreferences()
     PreferencesDialog* dlg = new PreferencesDialog(this);
     dlg->setModal(true);
     dlg->exec();
+
+    QWidget* mainwidget = centralWidget();
+    if(mainwidget)
+    {
+        SourceCodePresenterWidget* scw = dynamic_cast<SourceCodePresenterWidget*> (mainwidget);
+        if(scw)
+        {
+            scw->updateSql(getWorkingProject());
+        }
+    }
 }
 
 void MainWindow::onDeleteInstanceFromPopup()
