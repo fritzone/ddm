@@ -108,6 +108,7 @@ NewTableForm::NewTableForm(DatabaseEngine* db, Project* prj, QWidget *parent, bo
     }
 
     m_ui->grpHelp->setHidden(true);
+    m_ui->cmbOptions->hide();
 
     m_ui->txtTableName->setValidator(m_nameValidator = new SqlNamesValidator());
     m_ui->txtNewColumnName->setValidator(m_nameValidator);
@@ -461,6 +462,7 @@ void NewTableForm::onCancelColumnEditing()
     m_ui->chkAutoInc->setChecked(false);
     m_ui->btnAdd->setIcon(IconFactory::getAddIcon());
     toggleColumnFieldDisableness(false);
+    m_ui->grpColumnDetails->setTitle("New column");
 }
 
 void NewTableForm::onDeleteColumn()
@@ -518,7 +520,7 @@ void NewTableForm::onMoveColumnDown()
         if(x.row() < m_ui->lstColumns->topLevelItemCount() - 1)
         {
             m_table->moveColumnDown(x.row());
-            QTreeWidgetItem* w = new QTreeWidgetItem(m_ui->lstColumns->currentItem()->type());
+            QTreeWidgetItem* w = new QTreeWidgetItem(m_ui->lstColumns->currentItem()->type());  /*TODO: This might lose the context menu  !!! */
             *w = *m_ui->lstColumns->currentItem();
             delete m_ui->lstColumns->currentItem();
             m_ui->lstColumns->insertTopLevelItem(x.row() + 1, w);
@@ -528,7 +530,7 @@ void NewTableForm::onMoveColumnDown()
             backupDefaultValuesTable();
             updateDefaultValuesTableHeader();
             restoreDefaultValuesTable();
-
+            m_currentColumn->setLocation(reinterpret_cast<ContextMenuEnabledTreeWidgetItem*>(w));
             autoSave();
         }
     }
@@ -558,6 +560,7 @@ void NewTableForm::onMoveColumnUp()
             backupDefaultValuesTable();
             updateDefaultValuesTableHeader();
             restoreDefaultValuesTable();
+            m_currentColumn->setLocation(reinterpret_cast<ContextMenuEnabledTreeWidgetItem*>(w));
             autoSave();
         }
     }
@@ -612,6 +615,7 @@ void NewTableForm::onItemSelected(QTreeWidgetItem* current, int)
     m_ui->btnAdd->setIcon(IconFactory::getApplyIcon());
     m_ui->btnCancelColumnEditing->show();
     toggleColumnFieldDisableness(false);
+    m_ui->grpColumnDetails->setTitle("Column details");
 }
 
 
