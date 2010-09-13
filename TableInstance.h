@@ -67,7 +67,7 @@ public:
 
     QString getReferencingTables() const
     {
-        QString result;
+        QString result = "";
         for(int i=0; i<m_referencingTables.size(); i++)
         {
             result += m_referencingTables.at(i)->getName();

@@ -18,6 +18,7 @@ SqlForm::SqlForm(DatabaseEngine* engine, QWidget *parent) : SourceCodePresenterW
 {
     ui->setupUi(this);
     highlighter = new SqlHighlighter(ui->txtSql->document());
+    ui->cmbOptions->hide();
 }
 
 SqlForm::~SqlForm()
