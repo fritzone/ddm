@@ -86,6 +86,7 @@ public slots:
     void onDuplicateTableFromPopup();
 
     void onDeleteInstanceFromPopup();
+    void onRenameInstanceFromPopup();
 
     void onPreferences();
 

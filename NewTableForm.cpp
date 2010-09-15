@@ -33,7 +33,7 @@ const int COL_POS_DT = 2;
 NewTableForm::NewTableForm(DatabaseEngine* db, Project* prj, QWidget *parent, bool newTable) : SourceCodePresenterWidget(parent), m_ui(new Ui::NewTableForm),
     m_mw(dynamic_cast<MainWindow*>(parent)), m_dbEngine(db), m_project(prj), m_table(new Table(prj->getWorkingVersion())),
     m_currentColumn(0), m_currentIndex(0), m_foreignTable(0), m_currentForeignKey(0), m_foreignKeySelected(false),
-    m_changes(false), m_currentStorageEngine(0), m_engineProviders(0)
+    m_currentStorageEngine(0), m_engineProviders(0)
 {
     m_ui->setupUi(this);
 
@@ -372,13 +372,13 @@ void NewTableForm::onAddColumn()
 {
     if(m_ui->cmbNewColumnType->currentIndex() == -1)
     {
-        QMessageBox::critical (this, tr("Error"), tr("Please select a type"), QMessageBox::Ok);
+        QMessageBox::critical (this, tr("Error"), tr("Please select a column type."), QMessageBox::Ok);
         return;
     }
 
     if(m_ui->txtNewColumnName->text().length() == 0)
     {
-        QMessageBox::critical (this, tr("Error"), tr("Please specify a name"), QMessageBox::Ok);
+        QMessageBox::critical (this, tr("Error"), tr("Please specify a column name."), QMessageBox::Ok);
         return;
     }
 
@@ -730,8 +730,6 @@ void NewTableForm::onSave()
 
     prepareValuesToBeSaved();
     doTheSave();
-
-    m_changes = false;
 }
 
 void NewTableForm::autoSave()

@@ -64,7 +64,8 @@ SOURCES += main.cpp \
     TableInstancesListForm.cpp \
     PreferencesDialog.cpp \
     SqlNamesValidator.cpp \
-    NameGenerator.cpp
+    NameGenerator.cpp \
+    SimpleTextInputDialog.cpp
 HEADERS += MainWindow.h \
     MainWindowButtonDialog.h \
     newprojectdialog.h \
@@ -137,7 +138,8 @@ HEADERS += MainWindow.h \
     PreferencesDialog.h \
     SqlNamesValidator.h \
     NameGenerator.h \
-    SourceCodePresenterWidget.h
+    SourceCodePresenterWidget.h \
+    SimpleTextInputDialog.h
 FORMS += mainwindow.ui \
     mainwindowbuttondialog.ui \
     newprojectdialog.ui \
@@ -154,5 +156,6 @@ FORMS += mainwindow.ui \
     SqlForm.ui \
     InjectSqlDialog.ui \
     TableInstancesListForm.ui \
-    PreferencesDialog.ui
+    PreferencesDialog.ui \
+    SimpleTextInputDialog.ui
 RESOURCES += dbm.qrc

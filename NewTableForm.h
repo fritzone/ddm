@@ -197,8 +197,6 @@ private:
     QString m_newColumnName;
     QString m_oldColumnName;
 
-    // if we have changed anything at all in the screen
-    bool m_changes;
     AbstractStorageEngine* m_currentStorageEngine;
     AbstractStorageEngineListProvider* m_engineProviders;
     SqlHighlighter* highlighter;
