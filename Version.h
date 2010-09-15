@@ -179,6 +179,7 @@ public:
 
     virtual QMenu* getTableInstancePopupMenu() = 0;
     virtual QAction * getAction_DeleteTableInstance() = 0;
+    virtual QAction * getAction_RenameTableInstance() = 0;
 
 private:
 

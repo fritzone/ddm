@@ -160,24 +160,6 @@ p, li { white-space: pre-wrap; }
               <normaloff>:/images/actions/images/small/network_server_database.png</normaloff>:/images/actions/images/small/network_server_database.png</iconset>
             </property>
            </item>
-           <item>
-            <property name="text">
-             <string>Conversion Project</string>
-            </property>
-            <property name="icon">
-             <iconset resource="dbm.qrc">
-              <normaloff>:/images/actions/images/small/document-convert.png</normaloff>:/images/actions/images/small/document-convert.png</iconset>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>Reverse engineer a Database</string>
-            </property>
-            <property name="icon">
-             <iconset resource="dbm.qrc">
-              <normaloff>:/images/actions/images/small/face-devilish.png</normaloff>:/images/actions/images/small/face-devilish.png</iconset>
-            </property>
-           </item>
           </widget>
          </item>
          <item>
@@ -189,15 +171,6 @@ p, li { white-space: pre-wrap; }
             <property name="icon">
              <iconset resource="dbm.qrc">
               <normaloff>:/images/actions/images/small/mysql.png</normaloff>:/images/actions/images/small/mysql.png</iconset>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>Oracle</string>
-            </property>
-            <property name="icon">
-             <iconset resource="dbm.qrc">
-              <normaloff>:/images/actions/images/small/oracle.PNG</normaloff>:/images/actions/images/small/oracle.PNG</iconset>
             </property>
            </item>
           </widget>

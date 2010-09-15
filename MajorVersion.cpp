@@ -218,6 +218,7 @@ void MajorVersion::createTreeItems(QTreeWidget* tree, QTreeWidget* dtTree, Conte
     action_InstantiateTable = new QAction(QObject::tr("Instantiate table"), 0);
     action_DeleteTableInstance = new QAction(QObject::tr("Delete instance"), 0);
     action_DeleteTableInstance->setIcon(IconFactory::getRemoveIcon());
+    action_RenameTableInstance = new QAction(QObject::tr("Rename instance"), 0);
 
     // populate the table popup menu
     m_tablePopupMenu->addAction(action_TableAddColumn);
@@ -230,6 +231,7 @@ void MajorVersion::createTreeItems(QTreeWidget* tree, QTreeWidget* dtTree, Conte
 
     // populate the table instances popup menu
     m_tableInstancePopupMenu->addAction(action_DeleteTableInstance);
+    m_tableInstancePopupMenu->addAction(action_RenameTableInstance);
 }
 
 void MajorVersion::serialize(QDomDocument &doc, QDomElement &parent) const

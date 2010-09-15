@@ -28,6 +28,7 @@
 #include "TableInstance.h"
 #include "TableInstancesListForm.h"
 #include "PreferencesDialog.h"
+#include "SimpleTextInputDialog.h"
 
 #include <QtGui>
 
@@ -607,11 +608,13 @@ void MainWindow::connectActionsFromTablePopupMenu()
     QObject::connect(getWorkingProject()->getWorkingVersion()->getAction_TableAddColumn(), SIGNAL(activated()), this, SLOT(onTableAddColumnFromPopup()));
     if(currentSolution()->currentProject()->oopProject())
     {
+        // the table popup
         QObject::connect(getWorkingProject()->getWorkingVersion()->getAction_SpecializeTable(), SIGNAL(activated()), this, SLOT(onSpecializeTableFromPopup()));
         QObject::connect(getWorkingProject()->getWorkingVersion()->getAction_InstantiateTable(), SIGNAL(activated()), this, SLOT(onInstantiateTableFromPopup()));
 
         // now the table instance popup
         QObject::connect(getWorkingProject()->getWorkingVersion()->getAction_DeleteTableInstance(), SIGNAL(activated()), this, SLOT(onDeleteInstanceFromPopup()));
+        QObject::connect(getWorkingProject()->getWorkingVersion()->getAction_RenameTableInstance(), SIGNAL(activated()), this, SLOT(onRenameInstanceFromPopup()));
     }
     else
     {
@@ -913,6 +916,25 @@ void MainWindow::onPreferences()
         if(scw)
         {
             scw->updateSql(getWorkingProject());
+        }
+    }
+}
+
+void MainWindow::onRenameInstanceFromPopup()
+{
+    TableInstance* tinst = getRightclickedTableInstance();
+    if(tinst)
+    {
+        SimpleTextInputDialog* dlg = new SimpleTextInputDialog(this, "Enter the new name");
+        dlg->setModal(true);
+        dlg->setText(tinst->getName());
+        if(dlg->exec() == QDialog::Accepted)
+        {
+            QString t = dlg->getText();
+            tinst->setName(t);
+            tinst->getLocation()->setText(0, t);
+            QVariant a(t);
+            tinst->getLocation()->setData(0, Qt::UserRole, a);
         }
     }
 }

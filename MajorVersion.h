@@ -129,6 +129,11 @@ public:
         return action_DeleteTableInstance;
     }
 
+    virtual QAction * getAction_RenameTableInstance()
+    {
+        return action_RenameTableInstance;
+    }
+
 
     virtual Table* duplicateTable(Table*);
 
@@ -211,6 +216,7 @@ private:
     QAction * action_TableAddColumn;
 
     QAction * action_DeleteTableInstance;
+    QAction * action_RenameTableInstance;
 
     Project* m_project;
 };

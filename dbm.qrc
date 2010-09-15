@@ -11,7 +11,6 @@
         <file>images/small/table.png</file>
         <file>images/small/view_icon.png</file>
         <file>images/small/widget_doc.png</file>
-        <file>images/small/mysql.png</file>
         <file>images/small/oracle.PNG</file>
         <file>images/big/bigfileexport.png</file>
         <file>images/small/document-convert.png</file>
@@ -96,5 +95,7 @@
         <file>images/small/code.png</file>
         <file>images/small/tabinstlock.png</file>
         <file>images/unaf.png</file>
+        <file>images/small/mysql.png</file>
+        <file>images/small/database_mysql.png</file>
     </qresource>
 </RCC>
