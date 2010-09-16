@@ -74,6 +74,7 @@ public slots:
     void onDTTreeClicked();
     void onNewDiagram();
     void onSaveAs();
+    void onCloseSolution();
     void currentProjectTreeItemChanged(QTreeWidgetItem * current, QTreeWidgetItem*);
     void onNewTableInstance();
     void onNewTableInstanceHovered();
@@ -88,6 +89,9 @@ public slots:
     void onDeleteInstanceFromPopup();
     void onRenameInstanceFromPopup();
 
+    void onDeleteDatatypeFromPopup();
+    void onDuplicateDatatypeFromPopup();
+
     void onPreferences();
 
 private:
@@ -101,6 +105,7 @@ private:
     void connectActionsFromTablePopupMenu();
     Table* getRightclickedTable();
     TableInstance* getRightclickedTableInstance();
+    UserDataType* getRightclickedDatatype();
 
 private:
     Ui::MainWindow *ui;
@@ -114,7 +119,7 @@ private:
     // the tree which contains everything related to the current project
     ContextMenuEnabledTreeWidget* projectTree;
     // the tree containing the data types
-    ContextMenuEnabledTreeWidget* dataypesTree;
+    ContextMenuEnabledTreeWidget* datatypesTree;
     // the tree which contains everything related to the current project
     ContextMenuEnabledTreeWidget* tableInstancesTree;
 

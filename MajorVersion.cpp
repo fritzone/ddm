@@ -41,6 +41,7 @@ void MajorVersion::populateTreeItems()
         QVariant var;
         var.setValue(*m_dataTypes[i]);
         newDTItem->setData(0, Qt::UserRole, var);
+        newDTItem->setPopupMenu(getDatatypePopupMenu());
         // set the icon, add to the tree
         newDTItem->setIcon(0, m_dataTypes[i]->getIcon());
         m_dtTree->insertTopLevelItem(0, newDTItem);
@@ -208,6 +209,7 @@ void MajorVersion::createTreeItems(QTreeWidget* tree, QTreeWidget* dtTree, Conte
     // popup menus
     m_tablePopupMenu = new QMenu();
     m_tableInstancePopupMenu = new QMenu();
+    m_datatypePopupMenu = new QMenu();
 
     // actions
     action_RemoveTable = new QAction(QObject::tr("Delete table"), 0);
@@ -219,6 +221,9 @@ void MajorVersion::createTreeItems(QTreeWidget* tree, QTreeWidget* dtTree, Conte
     action_DeleteTableInstance = new QAction(QObject::tr("Delete instance"), 0);
     action_DeleteTableInstance->setIcon(IconFactory::getRemoveIcon());
     action_RenameTableInstance = new QAction(QObject::tr("Rename instance"), 0);
+    action_DeleteDataType = new QAction(QObject::tr("Delete datatype"), 0);
+    action_DeleteDataType->setIcon(IconFactory::getRemoveIcon());
+    action_DuplicateDataType = new QAction(QObject::tr("Duplicate datatype"), 0);
 
     // populate the table popup menu
     m_tablePopupMenu->addAction(action_TableAddColumn);
@@ -232,6 +237,9 @@ void MajorVersion::createTreeItems(QTreeWidget* tree, QTreeWidget* dtTree, Conte
     // populate the table instances popup menu
     m_tableInstancePopupMenu->addAction(action_DeleteTableInstance);
     m_tableInstancePopupMenu->addAction(action_RenameTableInstance);
+
+    m_datatypePopupMenu->addAction(action_DeleteDataType);
+    m_datatypePopupMenu->addAction(action_DuplicateDataType);
 }
 
 void MajorVersion::serialize(QDomDocument &doc, QDomElement &parent) const
@@ -546,4 +554,37 @@ TableInstance* MajorVersion::getTableInstance(const QString& name)
         }
     }
     return 0;
+}
+
+void MajorVersion::deleteDataType(const QString& dtName)
+{
+    for(int i=0; i<m_dataTypes.size(); i++)
+    {
+        if(m_dataTypes.at(i)->getName() == dtName)
+        {
+            m_dataTypes.remove(i);
+            return;
+        }
+    }
+}
+
+UserDataType* MajorVersion::duplicateDataType(const QString& name)
+{
+    UserDataType* src = 0;
+    for(int i=0; i<m_dataTypes.size(); i++)
+    {
+        if(m_dataTypes.at(i)->getName() == name)
+        {
+            src = m_dataTypes.at(i);
+            break;
+        }
+    }
+    if(!src)
+    {
+        return 0;
+    }
+    UserDataType* dt = new UserDataType(*src);
+    dt->setName(NameGenerator::generateUniqueDatatypeName(this, dt->getName()));
+    addNewDataType(dt);
+    return dt;
 }

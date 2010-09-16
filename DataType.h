@@ -68,7 +68,10 @@ public:
 
     static const QIcon& getIcon(DT_TYPE dt);
 
-
+    void setName(const QString& s)
+    {
+        name = s;
+    }
 
 protected:
     // the name of the data type
