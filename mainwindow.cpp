@@ -11,6 +11,7 @@
 #include "AbstractDTSupplier.h"
 #include "NewTableForm.h"
 #include "Table.h"
+#include "Column.h"
 #include "IconFactory.h"
 #include "Configuration.h"
 #include "TablesListForm.h"
@@ -103,17 +104,17 @@ ContextMenuEnabledTreeWidget* MainWindow::setupGuiForNewSolution()
     projectTree->setHeaderHidden(true);
     QObject::connect(projectTree, SIGNAL (currentItemChanged ( QTreeWidgetItem*, QTreeWidgetItem*)), this, SLOT(currentProjectTreeItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)));
 
-    dataypesTree = new ContextMenuEnabledTreeWidget();
-    dataypesTree ->setColumnCount(2);
-    QTreeWidgetItem *hdr = dataypesTree->headerItem();
+    datatypesTree = new ContextMenuEnabledTreeWidget();
+    datatypesTree ->setColumnCount(2);
+    QTreeWidgetItem *hdr = datatypesTree->headerItem();
     hdr->setText(0, tr("Type"));
     hdr->setText(1, tr("SQL"));
-    dataypesTree->header()->setDefaultSectionSize(200);
+    datatypesTree->header()->setDefaultSectionSize(200);
+    datatypesTree->setItemDelegate(new ContextMenuDelegate(contextMenuHandler,datatypesTree));
+    datatypesTree ->setHeaderHidden(false);
+    QObject::connect(datatypesTree, SIGNAL(itemSelectionChanged()), this, SLOT(onDTTreeClicked()));
 
-    dataypesTree ->setHeaderHidden(false);
-    QObject::connect(dataypesTree, SIGNAL(itemSelectionChanged()), this, SLOT(onDTTreeClicked()));
-
-    dockdt->setWidget(dataypesTree);
+    dockdt->setWidget(datatypesTree);
     dock->setWidget(projectTree);
     addDockWidget(Qt::LeftDockWidgetArea, dock);
     addDockWidget(Qt::LeftDockWidgetArea, dockdt);
@@ -133,6 +134,8 @@ void MainWindow::onNewSolution()
 
     if(nprjdlg->getProjectName().length() > 0 && nprjdlg->getSolutionName().length() > 0)
     {
+        onCloseSolution();
+
         if(!m_currentSolution)
         {
             m_currentSolution = new Solution(nprjdlg->getSolutionName());
@@ -148,11 +151,16 @@ void MainWindow::onNewSolution()
         if(projectTree)
         {
             delete dock;
+            dock = 0;
+            delete dockdt;
+            dockdt = 0;
+            delete projectTree;
+            projectTree = 0;
         }
 
         projectTree = setupGuiForNewSolution();
 
-        Project* project = new Project(nprjdlg->getProjectName().toUpper(), projectTree, dataypesTree, nprjdlg->enableOOPFeatures());
+        Project* project = new Project(nprjdlg->getProjectName().toUpper(), projectTree, datatypesTree, nprjdlg->enableOOPFeatures());
         project->setEngine(nprjdlg->getDatabaseEngine());
         project->createMajorVersion();
 
@@ -182,7 +190,7 @@ void MainWindow::onNewSolution()
 
 void MainWindow::onDTTreeClicked()
 {
-    QList<QTreeWidgetItem*> selectedItems = dataypesTree->selectedItems();
+    QList<QTreeWidgetItem*> selectedItems = datatypesTree->selectedItems();
     if(selectedItems.length() == 1)
     {
         QTreeWidgetItem* item = selectedItems[0];
@@ -460,15 +468,15 @@ bool MainWindow::onSaveNewDataType(const QString& name, const QString& type, con
         newDTItem->setData(0, Qt::UserRole, var);
         // set the icon, add to the tree
         newDTItem->setIcon(0, udt->getIcon());
-        dataypesTree->insertTopLevelItem(0,newDTItem);
+        datatypesTree->insertTopLevelItem(0,newDTItem);
 
         // add to the project itself
         getWorkingProject()->getWorkingVersion()->addNewDataType(udt);
 
         // set the link to the tree
         udt->setLocation(newDTItem);
-        dataypesTree->expandItem(newDTItem);
-        dataypesTree->scrollToItem(newDTItem);
+        datatypesTree->expandItem(newDTItem);
+        datatypesTree->scrollToItem(newDTItem);
 
         return true;
 
@@ -479,7 +487,7 @@ bool MainWindow::onSaveNewDataType(const QString& name, const QString& type, con
 
 Project* MainWindow::getWorkingProject()
 {
-    return m_currentSolution->currentProject();
+    return currentSolution()->currentProject();
 }
 
 Solution* MainWindow::currentSolution()
@@ -530,7 +538,7 @@ void MainWindow::populateTreeWithSolution(Solution* sol)
 {
     for(int i=0; i<sol->projects().size(); i++)
     {
-        sol->projects()[i]->createTreeItem(projectTree, dataypesTree);
+        sol->projects()[i]->createTreeItem(projectTree, datatypesTree);
         sol->projects()[i]->populateTreeItem();
     }
 }
@@ -552,6 +560,8 @@ void MainWindow::onOpenProject()
         return;
     }
     file.close();
+
+    onCloseSolution();
 
     QDomElement docElem = doc.documentElement();
     m_currentSolution = DeserializationFactory::createSolution(doc, docElem.firstChild().toElement());
@@ -622,6 +632,8 @@ void MainWindow::connectActionsFromTablePopupMenu()
         getWorkingProject()->getWorkingVersion()->getAction_InstantiateTable()->setVisible(false);
     }
     QObject::connect(getWorkingProject()->getWorkingVersion()->getAction_DuplicateTable(), SIGNAL(activated()), this, SLOT(onDuplicateTableFromPopup()));
+    QObject::connect(getWorkingProject()->getWorkingVersion()->getAction_DeleteDataType(), SIGNAL(activated()), this, SLOT(onDeleteDatatypeFromPopup()));
+    QObject::connect(getWorkingProject()->getWorkingVersion()->getAction_DuplicateDataType(), SIGNAL(activated()), this, SLOT(onDuplicateDatatypeFromPopup()));
 }
 
 void MainWindow::onAbout()
@@ -781,6 +793,20 @@ TableInstance* MainWindow::getRightclickedTableInstance()
     return 0;
 }
 
+
+UserDataType* MainWindow::getRightclickedDatatype()
+{
+    if(datatypesTree->getLastRightclickedItem() != 0)
+    {
+        ContextMenuEnabledTreeWidgetItem* item = datatypesTree->getLastRightclickedItem();
+        datatypesTree->setLastRightclickedItem(0);
+
+        QVariant qv = item->data(0, Qt::UserRole);
+        UserDataType* udt = static_cast<UserDataType*>(qv.data());
+        return udt;
+    }
+    return 0;
+}
 
 void MainWindow::onDeleteTableFromPopup()
 {
@@ -993,5 +1019,93 @@ void MainWindow::onDeleteInstanceFromPopup()
         TableInstancesListForm* tblLst = new TableInstancesListForm(this);
         tblLst->populateTableInstances(getWorkingProject()->getWorkingVersion()->getTableInstances());
         setCentralWidget(tblLst);
+    }
+}
+
+void MainWindow::onCloseSolution()
+{
+    if(!m_currentSolution)
+    {
+        return;
+    }
+
+    delete dock;
+    delete dockdt;
+
+    m_solutions.clear();
+    m_currentSolution = 0;
+    dock = 0;
+    dockdt = 0;
+    projectTree = 0;
+
+    btndlg = new MainWindowButtonDialog();
+    btndlg->setMainWindow(this);
+    setCentralWidget(btndlg);
+    setWindowTitle("DBM - [No Solution]");
+
+    resize(800, 600);
+    showNormal();
+}
+
+void MainWindow::onDeleteDatatypeFromPopup()
+{
+    ContextMenuEnabledTreeWidgetItem* itm = datatypesTree->getLastRightclickedItem();
+    UserDataType* udt = getRightclickedDatatype();
+    if(udt)
+    {
+        QString dtName = udt->getName();
+        if(QMessageBox::question(this, tr("Are you sure?"), tr("Really delete ") + dtName + "?", QMessageBox::Yes | QMessageBox::No) ==  QMessageBox::Yes)
+        {
+            // now check that this stuff is not used in any of the tables and the delete it from the current version
+            const QVector<Table*>& allTables = getWorkingProject()->getWorkingVersion()->getTables();
+            QString usage = "";
+            for(int i=0; i<allTables.size(); i++)
+            {
+                const QVector<Column*> & tablesColumns = allTables.at(i)->getColumns();
+                for(int j=0; j<tablesColumns.size(); j++)
+                {
+                    QString cn = tablesColumns.at(j)->getDataType()->getName();
+                    if(cn == dtName)
+                    {
+                        usage += "Table: " + allTables.at(i)->getName() + " Column:" + tablesColumns.at(j)->getName() + "\n";
+                    }
+                }
+            }
+
+            if(usage.length() > 0)
+            {
+                QMessageBox::critical(this, tr("Error"), tr("Cannot delete this data type since it's used in the following locations:\n") + usage, QMessageBox::Ok);
+                return;
+            }
+
+            getWorkingProject()->getWorkingVersion()->deleteDataType(dtName);
+            delete itm;
+        }
+    }
+}
+
+void MainWindow::onDuplicateDatatypeFromPopup()
+{
+    ContextMenuEnabledTreeWidgetItem* itm = datatypesTree->getLastRightclickedItem();
+    UserDataType* udt = getRightclickedDatatype();
+    if(udt)
+    {
+        UserDataType* dup = getWorkingProject()->getWorkingVersion()->duplicateDataType(udt->getName());
+
+        QStringList itm(dup->getName());
+        itm << dup->sqlAsString();
+        ContextMenuEnabledTreeWidgetItem* newDTItem = new ContextMenuEnabledTreeWidgetItem(getWorkingProject()->getWorkingVersion()->getDtsItem(), itm) ;
+
+        QVariant var;
+        var.setValue(*dup);
+        newDTItem->setData(0, Qt::UserRole, var);
+        // set the icon, add to the tree
+        newDTItem->setIcon(0, dup->getIcon());
+        datatypesTree->insertTopLevelItem(0,newDTItem);
+
+        // set the link to the tree
+        dup->setLocation(newDTItem);
+        datatypesTree->expandItem(newDTItem);
+        datatypesTree->scrollToItem(newDTItem);
     }
 }

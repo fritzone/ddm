@@ -85,6 +85,8 @@ public:
     virtual void deleteTableInstance(TableInstance*);
     virtual void purgeSentencedTableInstances();
 
+    virtual void deleteDataType(const QString&);
+
     virtual Table* getTable(const QString& name);
 
     virtual const QVector<Table*>& getTables() const;
@@ -101,6 +103,11 @@ public:
     virtual QMenu* getTablePopupMenu()
     {
         return m_tablePopupMenu;
+    }
+
+    virtual QMenu* getDatatypePopupMenu()
+    {
+        return m_datatypePopupMenu;
     }
 
     virtual QMenu* getTableInstancePopupMenu()
@@ -134,6 +141,10 @@ public:
         return action_RenameTableInstance;
     }
 
+    virtual QAction* getAction_DeleteDataType()
+    {
+        return action_DeleteDataType;
+    }
 
     virtual Table* duplicateTable(Table*);
 
@@ -147,6 +158,11 @@ public:
     {
         return action_InstantiateTable;
     }
+    virtual QAction* getAction_DuplicateDataType()
+    {
+        return action_DuplicateDataType;
+    }
+
     virtual void setupTableParentChildRelationships();
 
     virtual TableInstance* instantiateTable(Table* tab, bool reason);
@@ -166,6 +182,8 @@ public:
     {
         return m_tableInstances;
     }
+
+    virtual UserDataType* duplicateDataType(const QString&);
 
 private:
 
@@ -208,6 +226,7 @@ private:
 
     QMenu* m_tablePopupMenu;
     QMenu* m_tableInstancePopupMenu;
+    QMenu* m_datatypePopupMenu;
 
     QAction * action_RemoveTable;
     QAction * action_DuplicateTable;
@@ -217,6 +236,9 @@ private:
 
     QAction * action_DeleteTableInstance;
     QAction * action_RenameTableInstance;
+
+    QAction * action_DeleteDataType;
+    QAction * action_DuplicateDataType;
 
     Project* m_project;
 };
