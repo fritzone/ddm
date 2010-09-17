@@ -87,6 +87,7 @@ void MajorVersion::populateTreeItems()
         newDgramItem->setData(0, Qt::UserRole, var);
         // set the icon, add to the tree
         newDgramItem->setIcon(0, IconFactory::getDiagramIcon());
+        newDgramItem->setPopupMenu(getDiagramPopupMenu());
         m_tree->insertTopLevelItem(0, newDgramItem);
 
         // set the link to the tree
@@ -210,6 +211,7 @@ void MajorVersion::createTreeItems(QTreeWidget* tree, QTreeWidget* dtTree, Conte
     m_tablePopupMenu = new QMenu();
     m_tableInstancePopupMenu = new QMenu();
     m_datatypePopupMenu = new QMenu();
+    m_diagramPopupMenu = new QMenu();
 
     // actions
     action_RemoveTable = new QAction(QObject::tr("Delete table"), 0);
@@ -224,6 +226,9 @@ void MajorVersion::createTreeItems(QTreeWidget* tree, QTreeWidget* dtTree, Conte
     action_DeleteDataType = new QAction(QObject::tr("Delete datatype"), 0);
     action_DeleteDataType->setIcon(IconFactory::getRemoveIcon());
     action_DuplicateDataType = new QAction(QObject::tr("Duplicate datatype"), 0);
+    action_DeleteDiagram = new QAction(QObject::tr("Delete diagram"), 0);
+    action_DeleteDiagram->setIcon(IconFactory::getRemoveIcon());
+    action_RenameDiagram = new QAction(QObject::tr("Rename diagram"), 0);
 
     // populate the table popup menu
     m_tablePopupMenu->addAction(action_TableAddColumn);
@@ -238,8 +243,13 @@ void MajorVersion::createTreeItems(QTreeWidget* tree, QTreeWidget* dtTree, Conte
     m_tableInstancePopupMenu->addAction(action_DeleteTableInstance);
     m_tableInstancePopupMenu->addAction(action_RenameTableInstance);
 
+    // datatypes popup menu
     m_datatypePopupMenu->addAction(action_DeleteDataType);
     m_datatypePopupMenu->addAction(action_DuplicateDataType);
+
+    // diagrams popup menu
+    m_diagramPopupMenu->addAction(action_DeleteDiagram);
+    m_diagramPopupMenu->addAction(action_RenameDiagram);
 }
 
 void MajorVersion::serialize(QDomDocument &doc, QDomElement &parent) const
@@ -587,4 +597,12 @@ UserDataType* MajorVersion::duplicateDataType(const QString& name)
     dt->setName(NameGenerator::generateUniqueDatatypeName(this, dt->getName()));
     addNewDataType(dt);
     return dt;
+}
+
+void MajorVersion::deleteDiagram(const QString& name)
+{
+    Diagram* dgr = getDiagram(name);
+    m_diagrams.remove(m_diagrams.indexOf(dgr));
+    delete dgr->getLocation();
+    delete dgr;
 }

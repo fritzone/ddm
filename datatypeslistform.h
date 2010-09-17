@@ -2,6 +2,9 @@
 #define DATATYPESLISTFORM_H
 
 #include <QtGui/QWidget>
+#include <QTreeWidgetItem>
+
+class MainWindow;
 
 namespace Ui
 {
@@ -18,11 +21,16 @@ public:
     ~DataTypesListForm();
     void feedInDataTypes(const QVector<UserDataType*>& dataTypes);
 
+public slots:
+
+    void doubleClickTree(QTreeWidgetItem* item, int);
+
 protected:
     void changeEvent(QEvent *e);
 
 private:
     Ui::DataTypesListForm *m_ui;
+    MainWindow* mw;
 };
 
 #endif // DATATYPESLISTFORM_H

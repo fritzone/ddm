@@ -252,6 +252,22 @@ void MainWindow::showTableInstance(const QString &tabName, bool focus)
     if(focus) projectTree->setCurrentItem(table->getLocation());
 }
 
+void MainWindow::showDataType(const QString &name, bool focus)
+{
+    UserDataType* dt = getWorkingProject()->getWorkingVersion()->getDataType(name);
+    if(dt == 0)  // shouldn't be ...
+    {
+        return;
+    }
+
+    NewDataTypeForm* frm = new NewDataTypeForm(getWorkingProject()->getEngine(), this);
+    frm->focusOnName();
+    frm->setMainWindow(this);
+    frm->setDataType(dt);
+    setCentralWidget(frm);
+
+    if(focus) datatypesTree->setCurrentItem(dt->getLocation());
+}
 
 void MainWindow::currentProjectTreeItemChanged(QTreeWidgetItem * current, QTreeWidgetItem*)
 {
@@ -634,6 +650,8 @@ void MainWindow::connectActionsFromTablePopupMenu()
     QObject::connect(getWorkingProject()->getWorkingVersion()->getAction_DuplicateTable(), SIGNAL(activated()), this, SLOT(onDuplicateTableFromPopup()));
     QObject::connect(getWorkingProject()->getWorkingVersion()->getAction_DeleteDataType(), SIGNAL(activated()), this, SLOT(onDeleteDatatypeFromPopup()));
     QObject::connect(getWorkingProject()->getWorkingVersion()->getAction_DuplicateDataType(), SIGNAL(activated()), this, SLOT(onDuplicateDatatypeFromPopup()));
+    QObject::connect(getWorkingProject()->getWorkingVersion()->getAction_DeleteDiagram(), SIGNAL(activated()), this, SLOT(onDeleteDiagramFromPopup()));
+    QObject::connect(getWorkingProject()->getWorkingVersion()->getAction_RenameDiagram(), SIGNAL(activated()), this, SLOT(onRenameDiagramFromPopup()));
 }
 
 void MainWindow::onAbout()
@@ -660,6 +678,7 @@ bool MainWindow::onSaveDiagram(Diagram* dgram)
         QVariant var(dgram->getName());
         newDgramItem->setData(0, Qt::UserRole, var);
         newDgramItem->setIcon(0, IconFactory::getDiagramIcon());
+        newDgramItem->setPopupMenu(getWorkingProject()->getWorkingVersion()->getDiagramPopupMenu());
         dgram->setLocation(newDgramItem);
         dgram->setSaved(true);
         projectTree->addTopLevelItem(newDgramItem);
@@ -793,6 +812,20 @@ TableInstance* MainWindow::getRightclickedTableInstance()
     return 0;
 }
 
+Diagram* MainWindow::getRightclickedDiagram()
+{
+    if(projectTree->getLastRightclickedItem() != 0)
+    {
+        ContextMenuEnabledTreeWidgetItem* item = projectTree->getLastRightclickedItem();
+        projectTree->setLastRightclickedItem(0);
+
+        QVariant qv = item->data(0, Qt::UserRole);
+        QString dgrName = qv.toString();
+        Diagram* dgr =  getWorkingProject()->getWorkingVersion()->getDiagram(dgrName);
+        return dgr;
+    }
+    return 0;
+}
 
 UserDataType* MainWindow::getRightclickedDatatype()
 {
@@ -965,6 +998,25 @@ void MainWindow::onRenameInstanceFromPopup()
     }
 }
 
+void MainWindow::onRenameDiagramFromPopup()
+{
+    Diagram* dgr = getRightclickedDiagram();
+    if(dgr)
+    {
+        SimpleTextInputDialog* dlg = new SimpleTextInputDialog(this, "Enter the new name");
+        dlg->setModal(true);
+        dlg->setText(dgr->getName());
+        if(dlg->exec() == QDialog::Accepted)
+        {
+            QString t = dlg->getText();
+            dgr->setName(t);
+            dgr->getLocation()->setText(0, t);
+            QVariant a(t);
+            dgr->getLocation()->setData(0, Qt::UserRole, a);
+        }
+    }
+}
+
 void MainWindow::onDeleteInstanceFromPopup()
 {
     TableInstance* tinst = getRightclickedTableInstance();
@@ -1050,6 +1102,10 @@ void MainWindow::onCloseSolution()
 void MainWindow::onDeleteDatatypeFromPopup()
 {
     ContextMenuEnabledTreeWidgetItem* itm = datatypesTree->getLastRightclickedItem();
+    if(!itm)
+    {
+        return;
+    }
     UserDataType* udt = getRightclickedDatatype();
     if(udt)
     {
@@ -1086,7 +1142,6 @@ void MainWindow::onDeleteDatatypeFromPopup()
 
 void MainWindow::onDuplicateDatatypeFromPopup()
 {
-    ContextMenuEnabledTreeWidgetItem* itm = datatypesTree->getLastRightclickedItem();
     UserDataType* udt = getRightclickedDatatype();
     if(udt)
     {
@@ -1107,5 +1162,14 @@ void MainWindow::onDuplicateDatatypeFromPopup()
         dup->setLocation(newDTItem);
         datatypesTree->expandItem(newDTItem);
         datatypesTree->scrollToItem(newDTItem);
+    }
+}
+
+void MainWindow::onDeleteDiagramFromPopup()
+{
+    Diagram* dgr = getRightclickedDiagram();
+    if(dgr)
+    {
+        getWorkingProject()->getWorkingVersion()->deleteDiagram(dgr->getName());
     }
 }

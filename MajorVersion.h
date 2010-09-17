@@ -115,6 +115,10 @@ public:
         return m_tableInstancePopupMenu;
     }
 
+    virtual QMenu* getDiagramPopupMenu()
+    {
+        return m_diagramPopupMenu;
+    }
 
     virtual QAction * getAction_RemoveTable()
     {
@@ -163,6 +167,11 @@ public:
         return action_DuplicateDataType;
     }
 
+    virtual QAction* getAction_DeleteDiagram()
+    {
+        return action_DeleteDiagram;
+    }
+
     virtual void setupTableParentChildRelationships();
 
     virtual TableInstance* instantiateTable(Table* tab, bool reason);
@@ -184,6 +193,13 @@ public:
     }
 
     virtual UserDataType* duplicateDataType(const QString&);
+
+    virtual void deleteDiagram(const QString&);
+
+    virtual QAction* getAction_RenameDiagram()
+    {
+        return action_RenameDiagram;
+    }
 
 private:
 
@@ -227,6 +243,7 @@ private:
     QMenu* m_tablePopupMenu;
     QMenu* m_tableInstancePopupMenu;
     QMenu* m_datatypePopupMenu;
+    QMenu* m_diagramPopupMenu;
 
     QAction * action_RemoveTable;
     QAction * action_DuplicateTable;
@@ -239,6 +256,10 @@ private:
 
     QAction * action_DeleteDataType;
     QAction * action_DuplicateDataType;
+
+    QAction * action_DeleteDiagram;
+    QAction * action_RenameDiagram;
+
 
     Project* m_project;
 };
