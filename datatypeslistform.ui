@@ -49,15 +49,6 @@
      <attribute name="headerStretchLastSection">
       <bool>true</bool>
      </attribute>
-     <attribute name="headerDefaultSectionSize">
-      <number>150</number>
-     </attribute>
-     <attribute name="headerShowSortIndicator" stdset="0">
-      <bool>true</bool>
-     </attribute>
-     <attribute name="headerStretchLastSection">
-      <bool>true</bool>
-     </attribute>
      <column>
       <property name="text">
        <string>Name</string>
@@ -83,5 +74,25 @@
   </layout>
  </widget>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>treeDataTypes</sender>
+   <signal>itemDoubleClicked(QTreeWidgetItem*,int)</signal>
+   <receiver>DataTypesListForm</receiver>
+   <slot>doubleClickTree(QTreeWidgetItem*,int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>199</x>
+     <y>167</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>199</x>
+     <y>167</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>doubleClickTree(QTreeWidgetItem*,int)</slot>
+ </slots>
 </ui>

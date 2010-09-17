@@ -172,6 +172,8 @@ public:
 
     virtual UserDataType* duplicateDataType(const QString&) = 0;
 
+    virtual void deleteDiagram(const QString&) = 0;
+
     // don't know if this is a good design or not for the popups ....
 
     virtual QMenu* getTablePopupMenu() = 0;
@@ -189,8 +191,13 @@ public:
     virtual QAction* getAction_DeleteDataType() = 0;
     virtual QAction* getAction_DuplicateDataType() = 0;
 
+    virtual QMenu* getDiagramPopupMenu() = 0;
+    virtual QAction* getAction_DeleteDiagram() = 0;
+    virtual QAction* getAction_RenameDiagram() = 0;
+
 private:
 
 };
 
 #endif // VERSION_H
+

@@ -61,6 +61,7 @@ public:
 
     void showTable(const QString& tabName, bool focus = true);
     void showTableInstance(const QString& tabName, bool focus = true);
+    void showDataType(const QString &name, bool focus = true);
 
 public slots:
 
@@ -92,6 +93,9 @@ public slots:
     void onDeleteDatatypeFromPopup();
     void onDuplicateDatatypeFromPopup();
 
+    void onDeleteDiagramFromPopup();
+    void onRenameDiagramFromPopup();
+
     void onPreferences();
 
 private:
@@ -106,6 +110,7 @@ private:
     Table* getRightclickedTable();
     TableInstance* getRightclickedTableInstance();
     UserDataType* getRightclickedDatatype();
+    Diagram* getRightclickedDiagram();
 
 private:
     Ui::MainWindow *ui;
