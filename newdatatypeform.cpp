@@ -133,8 +133,12 @@ void NewDataTypeForm::resetContent()
     m_ui->lstEnumValues->clear();
 
     m_ui->tabWidget->setCurrentIndex(0);
+    m_ui->txtDescription->clear();
+    m_ui->chkCanBeNull->setChecked(true);
+    m_ui->chkNullIsDefault->setChecked(false);
 
     m_ui->txtDTName->setFocus();
+
 }
 
 void NewDataTypeForm::onSave()
