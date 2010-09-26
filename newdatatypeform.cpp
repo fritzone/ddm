@@ -66,18 +66,6 @@ void NewDataTypeForm::setMainWindow(MainWindow* mw)
     m_mw = mw;
 }
 
-void NewDataTypeForm::buttonClicked(QAbstractButton* btn)
-{
-    if(btn == m_ui->buttons->buttons().at(0)) // Seems very strange, but works like this... Save is the First, after Reset
-    {
-        onSave();
-    }
-    else
-    {
-        onReset();
-    }
-}
-
 void NewDataTypeForm::basicDTselected(QString newSelection)
 {
     m_ui->cmbDTSQLType->clear();

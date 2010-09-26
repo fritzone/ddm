@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>640</width>
+    <width>960</width>
     <height>662</height>
    </rect>
   </property>
@@ -78,7 +78,7 @@
               <string>Text/String</string>
              </property>
              <property name="icon">
-              <iconset resource="dbm.qrc">
+              <iconset>
                <normaloff>:/images/actions/images/small/datatypes_text.PNG</normaloff>:/images/actions/images/small/datatypes_text.PNG</iconset>
              </property>
             </item>
@@ -87,7 +87,7 @@
               <string>Numeric</string>
              </property>
              <property name="icon">
-              <iconset resource="dbm.qrc">
+              <iconset>
                <normaloff>:/images/actions/images/small/datatypes_numeric.PNG</normaloff>:/images/actions/images/small/datatypes_numeric.PNG</iconset>
              </property>
             </item>
@@ -96,7 +96,7 @@
               <string>Boolean</string>
              </property>
              <property name="icon">
-              <iconset resource="dbm.qrc">
+              <iconset>
                <normaloff>:/images/actions/images/small/datatypes_bool.PNG</normaloff>:/images/actions/images/small/datatypes_bool.PNG</iconset>
              </property>
             </item>
@@ -105,7 +105,7 @@
               <string>Date/Time</string>
              </property>
              <property name="icon">
-              <iconset resource="dbm.qrc">
+              <iconset>
                <normaloff>:/images/actions/images/small/datatypes_datetime.PNG</normaloff>:/images/actions/images/small/datatypes_datetime.PNG</iconset>
              </property>
             </item>
@@ -114,7 +114,7 @@
               <string>Blob/Binary</string>
              </property>
              <property name="icon">
-              <iconset resource="dbm.qrc">
+              <iconset>
                <normaloff>:/images/actions/images/small/datatypes_blob.PNG</normaloff>:/images/actions/images/small/datatypes_blob.PNG</iconset>
              </property>
             </item>
@@ -123,7 +123,7 @@
               <string>Misc</string>
              </property>
              <property name="icon">
-              <iconset resource="dbm.qrc">
+              <iconset>
                <normaloff>:/images/actions/images/small/datatypes_misc.PNG</normaloff>:/images/actions/images/small/datatypes_misc.PNG</iconset>
              </property>
             </item>
@@ -132,7 +132,7 @@
               <string>Spatial</string>
              </property>
              <property name="icon">
-              <iconset resource="dbm.qrc">
+              <iconset>
                <normaloff>:/images/actions/images/small/datatypes_spatial.PNG</normaloff>:/images/actions/images/small/datatypes_spatial.PNG</iconset>
              </property>
             </item>
@@ -176,7 +176,7 @@
                <string>...</string>
               </property>
               <property name="icon">
-               <iconset resource="dbm.qrc">
+               <iconset>
                 <normaloff>:/images/actions/images/small/remove.png</normaloff>:/images/actions/images/small/remove.png</iconset>
               </property>
              </widget>
@@ -187,7 +187,7 @@
                <string>...</string>
               </property>
               <property name="icon">
-               <iconset resource="dbm.qrc">
+               <iconset>
                 <normaloff>:/images/actions/images/small/add.png</normaloff>:/images/actions/images/small/add.png</iconset>
               </property>
              </widget>
@@ -290,6 +290,9 @@
           <string>Description</string>
          </attribute>
          <layout class="QFormLayout" name="formLayout_3">
+          <property name="fieldGrowthPolicy">
+           <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+          </property>
           <item row="0" column="0">
            <widget class="QLabel" name="label_5">
             <property name="text">
@@ -312,79 +315,37 @@
        </widget>
       </item>
       <item>
-       <spacer name="verticalSpacer">
-        <property name="orientation">
-         <enum>Qt::Vertical</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>20</width>
-          <height>40</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-      <item>
        <widget class="QGroupBox" name="groupBox_6">
         <property name="title">
          <string/>
         </property>
-        <layout class="QVBoxLayout" name="verticalLayout_5">
+        <layout class="QHBoxLayout" name="horizontalLayout">
          <item>
-          <spacer name="verticalSpacer_2">
+          <widget class="QPushButton" name="btnSave">
+           <property name="text">
+            <string>Save</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="horizontalSpacer_2">
            <property name="orientation">
-            <enum>Qt::Vertical</enum>
+            <enum>Qt::Horizontal</enum>
            </property>
            <property name="sizeHint" stdset="0">
             <size>
-             <width>20</width>
-             <height>40</height>
+             <width>40</width>
+             <height>20</height>
             </size>
            </property>
           </spacer>
          </item>
          <item>
-          <layout class="QHBoxLayout" name="horizontalLayout_4">
-           <item>
-            <widget class="QDialogButtonBox" name="buttons">
-             <property name="toolTip">
-              <string>Save the table</string>
-             </property>
-             <property name="autoFillBackground">
-              <bool>false</bool>
-             </property>
-             <property name="orientation">
-              <enum>Qt::Vertical</enum>
-             </property>
-             <property name="standardButtons">
-              <set>QDialogButtonBox::Save</set>
-             </property>
-             <property name="centerButtons">
-              <bool>true</bool>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <spacer name="horizontalSpacer_2">
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>40</width>
-               <height>20</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-           <item>
-            <widget class="QPushButton" name="btnHelp">
-             <property name="text">
-              <string>Help</string>
-             </property>
-            </widget>
-           </item>
-          </layout>
+          <widget class="QPushButton" name="btnHelp">
+           <property name="text">
+            <string>Help</string>
+           </property>
+          </widget>
          </item>
         </layout>
        </widget>
@@ -398,7 +359,7 @@
       <string/>
      </property>
      <property name="flat">
-      <bool>true</bool>
+      <bool>false</bool>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_3">
       <item>
@@ -428,9 +389,7 @@
    <header>QtWebKit/QWebView</header>
   </customwidget>
  </customwidgets>
- <resources>
-  <include location="dbm.qrc"/>
- </resources>
+ <resources/>
  <connections>
   <connection>
    <sender>cmbDTType</sender>
@@ -561,17 +520,17 @@
    </hints>
   </connection>
   <connection>
-   <sender>buttons</sender>
-   <signal>clicked(QAbstractButton*)</signal>
+   <sender>btnSave</sender>
+   <signal>clicked()</signal>
    <receiver>NewDataTypeForm</receiver>
-   <slot>buttonClicked(QAbstractButton*)</slot>
+   <slot>onSave()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>85</x>
-     <y>552</y>
+     <x>81</x>
+     <y>612</y>
     </hint>
     <hint type="destinationlabel">
-     <x>319</x>
+     <x>479</x>
      <y>330</y>
     </hint>
    </hints>
@@ -585,7 +544,6 @@
   <slot>onAddMiscValue()</slot>
   <slot>onRemoveSelectedMiscValue()</slot>
   <slot>onCharacterSetCmbChanged(int)</slot>
-  <slot>buttonClicked(QAbstractButton*)</slot>
   <slot>onNullClicked()</slot>
   <slot>onCanBeNullClicked()</slot>
   <slot>onHelp()</slot>
