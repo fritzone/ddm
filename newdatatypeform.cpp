@@ -33,6 +33,9 @@ NewDataTypeForm::NewDataTypeForm(DatabaseEngine* dbe, QWidget *parent) :
     m_ui->btnAddEnumValue->hide();
     m_ui->btnRemoveEnumValue->hide();
 
+    m_ui->lblIncrement->hide();
+    m_ui->chkAutoIncrement->hide();
+
     populateCodepageCombo();
     resetContent();
 
