@@ -10,6 +10,9 @@
 TablesListForm::TablesListForm(QWidget *parent) : QWidget(parent), ui(new Ui::TablesListForm), mw(reinterpret_cast<MainWindow*>(parent))
 {
     ui->setupUi(this);
+    ui->btnUp->hide();
+    ui->btnDown->hide();
+    ui->btnRemove->hide();
 }
 
 TablesListForm::~TablesListForm()

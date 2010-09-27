@@ -7,6 +7,10 @@ DataTypesListForm::DataTypesListForm(QWidget *parent) :
     QWidget(parent), m_ui(new Ui::DataTypesListForm), mw(reinterpret_cast<MainWindow*>(parent))
 {
     m_ui->setupUi(this);
+
+    m_ui->btnUp->hide();
+    m_ui->btnDown->hide();
+    m_ui->btnRemove->hide();
 }
 
 DataTypesListForm::~DataTypesListForm()
