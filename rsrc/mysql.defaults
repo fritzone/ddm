@@ -1,0 +1,32 @@
+<!DOCTYPE DBM>
+<Solutions>
+ <Solution Name="defaults">
+  <Projects>
+   <Project Name="DEFAULT" OOP="0" DB="MySQL">
+    <Description></Description>
+    <MajorVersions>
+     <MajorVersion>
+      <Version>1.0</Version>
+      <DataTypes>
+       <DataType SqlType="CHAR" Size="255" Type="Text/String" Name="CHAR(255) DEFAULT NULL" Codepage="" DefaultValue="null" Unsigned="0" CanBeNull="1" AutoIncrement="0">
+        <Description></Description>
+        <Values/>
+       </DataType>
+       <DataType SqlType="VARCHAR" Size="255" Type="Text/String" Name="VARCHAR(255) DEFAULT NULL" Codepage="" DefaultValue="null" Unsigned="0" CanBeNull="1" AutoIncrement="0">
+        <Description></Description>
+        <Values/>
+       </DataType>
+       <DataType SqlType="TEXT" Size="255" Type="Text/String" Name="TEXT_DEF_NULL" Codepage="" DefaultValue="null" Unsigned="0" CanBeNull="1" AutoIncrement="0">
+        <Description>MySQL - TEXT - Default NULL</Description>
+        <Values/>
+       </DataType>
+      </DataTypes>
+      <Tables/>
+      <Diagrams/>
+      <TableInstances/>
+     </MajorVersion>
+    </MajorVersions>
+   </Project>
+  </Projects>
+ </Solution>
+</Solutions>

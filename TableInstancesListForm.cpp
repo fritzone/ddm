@@ -10,6 +10,10 @@
 TableInstancesListForm::TableInstancesListForm(QWidget *parent) : QWidget(parent),  mw(reinterpret_cast<MainWindow*>(parent)), ui(new Ui::TableInstancesListForm)
 {
     ui->setupUi(this);
+
+    ui->btnUp->hide();
+    ui->btnDown->hide();
+    ui->btnRemove->hide();
 }
 
 TableInstancesListForm::~TableInstancesListForm()
