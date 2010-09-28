@@ -80,3 +80,8 @@ void NewProjectDialog::onHelp()
     m_ui->btnHelp->setHidden(true);
     m_ui->webView->setUrl(QString("doc/newp.html"));
 }
+
+bool NewProjectDialog::inheritDefaultDatatypes() const
+{
+    return m_ui->chkInheritDefaultDatatypes->isChecked();
+}

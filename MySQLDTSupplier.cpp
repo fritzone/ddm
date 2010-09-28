@@ -90,17 +90,18 @@ QList<DataType> MySQLDTSupplier::blobTypes()
     QList<DataType> result;
 
     static DataType mysql_dt_binary("BINARY", DataType::DT_DATETIME);
+    static DataType mysql_dt_varbinary("VARBINARY", DataType::DT_DATETIME);
     static DataType mysql_dt_tinyblob("TINYBLOB", DataType::DT_DATETIME);
     static DataType mysql_dt_blob("BLOB", DataType::DT_DATETIME);
     static DataType mysql_dt_mediumblob("MEDIUMBLOB", DataType::DT_DATETIME);
     static DataType mysql_dt_longblob("LONGBLOB", DataType::DT_DATETIME);
 
-
     result.append(mysql_dt_binary);
+    result.append(mysql_dt_varbinary);
     result.append(mysql_dt_tinyblob);
     result.append(mysql_dt_blob);
     result.append(mysql_dt_mediumblob);
-    result.append(mysql_dt_longblob);
+    result.append(mysql_dt_longblob);    
 
     return result;
 }
@@ -179,7 +180,7 @@ int MySQLDTSupplier::maximumSize(const QString& sqldt)
     if(sqldt == "YEAR") return 0;
 
     if(sqldt == "BINARY") return 65535;
-
+    if(sqldt == "VARBINARY") return 65535;
     if(sqldt == "TINYBLOB") return 0;
     if(sqldt == "BLOB") return 0;
     if(sqldt == "MEDIUMBLOB") return 0;

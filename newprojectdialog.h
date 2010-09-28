@@ -34,6 +34,8 @@ public:
 
     void focusOnEditField() const;
 
+    bool inheritDefaultDatatypes() const;
+
     DatabaseEngine* getDatabaseEngine() const;
 
 protected:
