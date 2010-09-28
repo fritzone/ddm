@@ -257,6 +257,12 @@ void NewTableForm::populateTable(const Table *table, bool parentTab)
         }
     }
 
+    m_ui->lstColumns->resizeColumnToContents(0);
+    m_ui->lstColumns->resizeColumnToContents(1);
+    m_ui->lstColumns->resizeColumnToContents(2);
+    m_ui->lstColumns->resizeColumnToContents(3);
+
+
     // second step: set up the indices
     const QVector<Index*>& indices = table->getIndices();
     for(int i=0; i<indices.count(); i++)
@@ -271,8 +277,20 @@ void NewTableForm::populateTable(const Table *table, bool parentTab)
             item->setBackground(2, QBrush(Qt::lightGray));
             item->setBackground(3, QBrush(Qt::lightGray));
         }
+
+        if(indices[i]->getName().startsWith("autoidx"))
+        {
+            item->setBackground(0, QBrush(Qt::gray));
+            item->setBackground(1, QBrush(Qt::gray));
+            item->setBackground(2, QBrush(Qt::gray));
+            item->setBackground(3, QBrush(Qt::gray));
+        }
     }
     resetIndexGui();
+    m_ui->lstIndices->resizeColumnToContents(0);
+    m_ui->lstIndices->resizeColumnToContents(1);
+    m_ui->lstIndices->resizeColumnToContents(2);
+    m_ui->lstIndices->resizeColumnToContents(3);
 
     if(parentTab && !Configuration::instance().allowForeignKeyPropagation())
     {
@@ -296,6 +314,13 @@ void NewTableForm::populateTable(const Table *table, bool parentTab)
             item->setBackground(5, QBrush(Qt::lightGray));
         }
     }
+
+    m_ui->lstForeignKeys->resizeColumnToContents(0);
+    m_ui->lstForeignKeys->resizeColumnToContents(1);
+    m_ui->lstForeignKeys->resizeColumnToContents(2);
+    m_ui->lstForeignKeys->resizeColumnToContents(3);
+    m_ui->lstForeignKeys->resizeColumnToContents(4);
+    m_ui->lstForeignKeys->resizeColumnToContents(5);
 
     // set the default values
     if(!table->version()->oop())
@@ -1012,6 +1037,12 @@ void NewTableForm::onBtnRemoveIndex()
         QMessageBox::critical (this, tr("Error"), tr("You cannot delete the index of a parent table from a sibling table. Go to the parent table to do this."), QMessageBox::Ok);
         return;
     }
+
+    if(m_ui->lstIndices->currentItem()->text(0).startsWith("autoidx"))
+    {
+        QMessageBox::critical (this, tr("Error"), tr("You cannot delete an automatically generated index. Highly possibly the column is used in a foreign key."), QMessageBox::Ok);
+        return;
+    }
     delete m_ui->lstIndices->currentItem();
     resetIndexGui();
     m_table->removeIndex(m_currentIndex);
@@ -1295,7 +1326,7 @@ void NewTableForm::onBtnAddForeignKey()
         return;
     }
 
-    if(m_table->getForeignKey(m_ui->txtForeignKeyName->text()) || m_table->getForeignKeyFromParents(m_ui->txtForeignKeyName->text()))
+    if((m_table->getForeignKey(m_ui->txtForeignKeyName->text()) || m_table->getForeignKeyFromParents(m_ui->txtForeignKeyName->text()))&&!m_foreignKeySelected)
     {
         QMessageBox::critical (this, tr("Error"), tr("Duplicate foreign key name. Please use a name which cannot be found in this table, nor the parent tables."), QMessageBox::Ok);
         m_ui->txtForeignKeyName->setFocus();
@@ -1389,7 +1420,6 @@ void NewTableForm::populateFKGui(ForeignKey * fk)
     m_ui->cmbForeignTables->setCurrentIndex(-1);
     m_foreignKeySelected = true;
 
-
     m_ui->txtForeignKeyName->setText(fk->getName());
 
     // create the columns associations
@@ -1411,6 +1441,10 @@ void NewTableForm::populateFKGui(ForeignKey * fk)
 
         m_ui->lstForeignKeyAssociations->addTopLevelItem(item);
     }
+
+    m_ui->lstForeignKeyAssociations->resizeColumnToContents(0);
+    m_ui->lstForeignKeyAssociations->resizeColumnToContents(1);
+
     // find the foreign keys table in the combo box
     int idx = m_ui->cmbForeignTables->findText(tabName);
     Table* table = m_project->getWorkingVersion()->getTable(tabName);

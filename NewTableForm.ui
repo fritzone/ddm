@@ -60,7 +60,7 @@
          <enum>QTabWidget::Rounded</enum>
         </property>
         <property name="currentIndex">
-         <number>0</number>
+         <number>2</number>
         </property>
         <widget class="QWidget" name="tabWidgetPage1">
          <attribute name="title">
@@ -672,9 +672,6 @@ p, li { white-space: pre-wrap; }
                  </property>
                 </widget>
                </item>
-               <item row="1" column="0">
-                <widget class="QComboBox" name="cmbForeignTables"/>
-               </item>
                <item row="0" column="2">
                 <widget class="QLabel" name="label_13">
                  <property name="text">
@@ -709,17 +706,30 @@ p, li { white-space: pre-wrap; }
                  </property>
                 </widget>
                </item>
+               <item row="1" column="0">
+                <layout class="QVBoxLayout" name="verticalLayout_11">
+                 <item>
+                  <widget class="QComboBox" name="cmbForeignTables"/>
+                 </item>
+                 <item>
+                  <spacer name="verticalSpacer_2">
+                   <property name="orientation">
+                    <enum>Qt::Vertical</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>20</width>
+                     <height>40</height>
+                    </size>
+                   </property>
+                  </spacer>
+                 </item>
+                </layout>
+               </item>
               </layout>
              </item>
              <item>
               <layout class="QHBoxLayout" name="horizontalLayout_12">
-               <item>
-                <widget class="QLabel" name="label_10">
-                 <property name="text">
-                  <string>Associations</string>
-                 </property>
-                </widget>
-               </item>
                <item>
                 <widget class="QTreeWidget" name="lstForeignKeyAssociations">
                  <property name="rootIsDecorated">
@@ -731,11 +741,35 @@ p, li { white-space: pre-wrap; }
                  <property name="expandsOnDoubleClick">
                   <bool>false</bool>
                  </property>
-                 <attribute name="headerDefaultSectionSize">
-                  <number>120</number>
+                 <attribute name="headerCascadingSectionResizes">
+                  <bool>true</bool>
                  </attribute>
                  <attribute name="headerDefaultSectionSize">
-                  <number>120</number>
+                  <number>200</number>
+                 </attribute>
+                 <attribute name="headerHighlightSections">
+                  <bool>true</bool>
+                 </attribute>
+                 <attribute name="headerMinimumSectionSize">
+                  <number>150</number>
+                 </attribute>
+                 <attribute name="headerShowSortIndicator" stdset="0">
+                  <bool>false</bool>
+                 </attribute>
+                 <attribute name="headerCascadingSectionResizes">
+                  <bool>true</bool>
+                 </attribute>
+                 <attribute name="headerDefaultSectionSize">
+                  <number>200</number>
+                 </attribute>
+                 <attribute name="headerMinimumSectionSize">
+                  <number>150</number>
+                 </attribute>
+                 <attribute name="headerShowSortIndicator" stdset="0">
+                  <bool>false</bool>
+                 </attribute>
+                 <attribute name="headerHighlightSections">
+                  <bool>true</bool>
                  </attribute>
                  <column>
                   <property name="text">
@@ -1363,7 +1397,6 @@ p, li { white-space: pre-wrap; }
   <tabstop>btnMoveIndexColumnDown</tabstop>
   <tabstop>lstIndices</tabstop>
   <tabstop>txtForeignKeyName</tabstop>
-  <tabstop>cmbForeignTables</tabstop>
   <tabstop>lstForeignTablesColumns</tabstop>
   <tabstop>lstLocalColumn</tabstop>
   <tabstop>btnAddForeignKeyAssociation</tabstop>
