@@ -288,6 +288,7 @@ void NewDataTypeForm::onSqlTypeSelected(QString selectedItem)
         m_ui->txtEnumCurrentValue->clear();
         m_ui->lstEnumValues->clear();
         hideSpecialComponents();
+        m_ui->txtWidth->setText("");
     }
     else
     if(size > 0)
@@ -427,6 +428,8 @@ void NewDataTypeForm::setDataType(UserDataType* udt)
     {
         m_ui->chkCanBeNull->setChecked(true);
     }
+
+    m_ui->txtDescription->setText(udt->getDescription());
 }
 
 void NewDataTypeForm::onNullClicked()

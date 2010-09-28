@@ -43,6 +43,11 @@ void DataTypesListForm::feedInDataTypes(const QVector<UserDataType*>& dataTypes)
 	item->setIcon(0, dataTypes[i]->getIcon());
 	m_ui->treeDataTypes->addTopLevelItem(item);
     }
+
+    m_ui->treeDataTypes->resizeColumnToContents(0);
+    m_ui->treeDataTypes->resizeColumnToContents(1);
+    m_ui->treeDataTypes->resizeColumnToContents(2);
+    m_ui->treeDataTypes->resizeColumnToContents(3);
 }
 
 void DataTypesListForm::doubleClickTree(QTreeWidgetItem* item,int)

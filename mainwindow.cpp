@@ -163,8 +163,53 @@ void MainWindow::onNewSolution()
         Project* project = new Project(nprjdlg->getProjectName().toUpper(), projectTree, datatypesTree, nprjdlg->enableOOPFeatures());
         project->setEngine(nprjdlg->getDatabaseEngine());
         project->createMajorVersion();
-
         m_currentSolution->addProject(project);
+
+        //
+        if(nprjdlg->inheritDefaultDatatypes())
+        {
+            QDomDocument doc ("DBM");
+            QFile file ("rsrc/mysql.defaults"); // TODO: This will not work for other databases :)
+            if (file.open(QIODevice::ReadOnly))
+            {
+                if (!doc.setContent(&file))
+                {
+                    file.close();
+                    return;
+                }
+                file.close();
+
+                QDomElement docElem = doc.documentElement();
+                Solution* tempSolution = DeserializationFactory::createSolution(doc, docElem.firstChild().toElement());
+                const QVector<UserDataType*>& dts = tempSolution->currentProject()->getWorkingVersion()->getDataTypes();
+                for(int i=0; i<dts.size(); i++)
+                {
+                    // TODO: This is code duplication with SaveNewDataType ... refactor
+                    QStringList itm(dts.at(i)->getName());
+                    itm << dts.at(i)->sqlAsString();
+                    ContextMenuEnabledTreeWidgetItem* newDTItem = new ContextMenuEnabledTreeWidgetItem(getWorkingProject()->getWorkingVersion()->getDtsItem(), itm) ;
+
+                    QVariant var;
+                    var.setValue(*dts.at(i));
+                    newDTItem->setData(0, Qt::UserRole, var);
+                    // set the icon, add to the tree
+                    newDTItem->setIcon(0, dts.at(i)->getIcon());
+                    newDTItem->setPopupMenu(getWorkingProject()->getWorkingVersion()->getDatatypePopupMenu());
+                    datatypesTree->insertTopLevelItem(0,newDTItem);
+
+                    // add to the project itself
+                    getWorkingProject()->getWorkingVersion()->addNewDataType(dts.at(i));
+
+                    // set the link to the tree
+                    dts.at(i)->setLocation(newDTItem);
+                }
+            }
+            datatypesTree->scrollToItem(getWorkingProject()->getWorkingVersion()->getDtsItem());
+            datatypesTree->expandAll();
+        }
+        //
+
+
 
         // expand the tree
         projectTree->expandAll();
@@ -484,6 +529,7 @@ bool MainWindow::onSaveNewDataType(const QString& name, const QString& type, con
         newDTItem->setData(0, Qt::UserRole, var);
         // set the icon, add to the tree
         newDTItem->setIcon(0, udt->getIcon());
+        newDTItem->setPopupMenu(getWorkingProject()->getWorkingVersion()->getDatatypePopupMenu());
         datatypesTree->insertTopLevelItem(0,newDTItem);
 
         // add to the project itself
@@ -561,7 +607,7 @@ void MainWindow::populateTreeWithSolution(Solution* sol)
 
 void MainWindow::onOpenProject()
 {
-    QString fileName = QFileDialog::getOpenFileName(this,  tr("Open solution"), "", tr("DBM solution files (*.dmx)"));
+    QString fileName = QFileDialog::getOpenFileName(this,  tr("Open solution"), "", tr("DBM solution files (*.dmx);;All files (*.*)"));
     if(fileName.length() == 0)
     {
         return;
@@ -1156,6 +1202,7 @@ void MainWindow::onDuplicateDatatypeFromPopup()
         newDTItem->setData(0, Qt::UserRole, var);
         // set the icon, add to the tree
         newDTItem->setIcon(0, dup->getIcon());
+        newDTItem->setPopupMenu(getWorkingProject()->getWorkingVersion()->getDatatypePopupMenu());
         datatypesTree->insertTopLevelItem(0,newDTItem);
 
         // set the link to the tree

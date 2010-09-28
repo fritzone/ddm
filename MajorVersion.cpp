@@ -48,6 +48,8 @@ void MajorVersion::populateTreeItems()
         m_dataTypes[i]->setLocation(newDTItem);
     }
     m_dtTree->expandAll();
+    m_dtTree->resizeColumnToContents(0);
+    m_dtTree->resizeColumnToContents(1);
 
     // insert the tables
     for(int i=0; i<m_tables.size(); i++)
