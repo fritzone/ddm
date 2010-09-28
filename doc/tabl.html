@@ -57,18 +57,31 @@ consistent notation among your tables. <br>
   <br>
   </em></SPAN><strong>Name: </strong>is the name of the index.<br>
   <br>
-  <strong>Type: </strong>you can define the type of the index depending on the Storage <SPAN STYLE="font-style: normal">Engine.<br>
+  <strong>Type: </strong>you can define the type of the index depending on the Storage <SPAN STYLE="font-style: normal">Engine and the capabilities of the database.<br>
   <br>
   <strong>Columns:</strong> the available columns for the index are on the left side, you can use the <img src="right.png" alt="right" width="16" height="16"> button to move the selected columnto the right (and you can use the <img src="left.png" alt="left" width="16" height="16"> button to remove the selected column from the index). Once a column has been moved to the right side (meaning it was added to the index) you can move them up/down with the </SPAN><FONT SIZE=2 STYLE="font-size: 11pt"><FONT COLOR="#000000"><span style="font-weight: normal"> <img src="up.png" alt="up" width="16" height="16">/</span><FONT SIZE=2 STYLE="font-size: 11pt"><FONT COLOR="#000000"><FONT SIZE=2 STYLE="font-size: 11pt"><FONT COLOR="#000000"><span style="font-weight: normal"><img src="down.png" alt="down" width="16" height="16"></span></FONT></FONT></FONT></FONT><span style="font-weight: normal"> buttons.<br>
   <br>
 When done press the </span></FONT></FONT></FONT><FONT SIZE=2 STYLE="font-size: 11pt"><FONT COLOR="#000000"><FONT FACE="Arial"><span style="font-weight: normal"> <img src="add.png" alt="add" width="16" height="16"> button to add the new index to the table. Pressing</span></FONT><FONT SIZE=2 STYLE="font-size: 11pt"><FONT COLOR="#000000"><FONT FACE="Arial"><FONT SIZE=2 STYLE="font-size: 11pt"><FONT COLOR="#000000"><span style="font-weight: normal"> <img src="cancel.png" alt="cancel" width="16" height="16"></span></FONT></FONT></FONT></FONT></FONT><FONT FACE="Arial"><span style="font-weight: normal"> the button you will cancel editing the current index.</span></FONT></FONT></FONT></SPAN></FONT></FONT></P>
-<P STYLE="margin-bottom: 0in; background: #23b8dc; line-height: 115%"><FONT SIZE=2 STYLE="font-size: 11pt"><FONT COLOR="#000000"><SPAN STYLE="text-decoration: none"><FONT SIZE=2 STYLE="font-size: 11pt"><FONT COLOR="#000000"><FONT FACE="Arial"><span style="font-weight: normal">.</span></FONT></FONT></FONT><FONT FACE="Arial"><SPAN STYLE="font-style: normal"><br>
+<P STYLE="margin-bottom: 0in; background: #23b8dc; line-height: 115%"><FONT SIZE=2 STYLE="font-size: 11pt"><FONT COLOR="#000000"><SPAN STYLE="text-decoration: none"><FONT SIZE=2 STYLE="font-size: 11pt"><FONT COLOR="#000000"><FONT FACE="Arial"><span style="font-weight: normal"><em><strong>Foreign keys Page<br>
+                    <br>
+  </strong></em></span>In case the selected storage engine for the table does not support foreign keys you will see a warning regarding this. For MySQL right now the InnoDB storage engine has support for foreign keys. In case the selected storage engine does not support foreign keys, you still will be able to specify them, and they also will be shown on the E-R diagrams.<span style="font-weight: normal"><em><strong><br>
+</strong><br>
+Foreign keys list<br>
+  <br>
+</em>This list contains the foreign keys that were defined for this table. By clicking on a foreign key you select</span></FONT></FONT></FONT><FONT FACE="Arial"><SPAN STYLE="font-style: normal"> it and</SPAN><FONT SIZE=2 STYLE="font-size: 11pt"><FONT COLOR="#000000"><SPAN STYLE="font-style: normal"> you can delete the selected foreign key with the </SPAN><FONT SIZE=2 STYLE="font-size: 11pt"><FONT COLOR="#000000"><span style="font-weight: normal"><img src="remove.png" alt="remove" width="16" height="16"> button.</span></FONT></FONT></FONT></FONT><SPAN STYLE="font-style: normal"><br>
+<br>
+<em>New Foreign Key<br>
+<br>
+</em></SPAN><strong>FK Name</strong><SPAN STYLE="font-style: normal"><strong>:</strong> the name of the foreign key you will define. This must be unique<br>
+<br>
+<br>
   <br>
   Values:</SPAN></FONT></SPAN></FONT>
   <FONT COLOR="#000000"><SPAN STYLE="text-decoration: none"><FONT FACE="Arial"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">In
       case you want to create a “Misc” datatype which can choose its
       values from a list (such as ENUM, or SET) here you can add the
-    initial values of the datatype.<BR><BR></SPAN></SPAN></FONT></SPAN></FONT></FONT><BR>
+initial values of the datatype.<BR><BR></SPAN></SPAN></FONT></SPAN></FONT></FONT></P>
+<P STYLE="margin-bottom: 0in; background: #23b8dc; line-height: 115%"><BR>
 </P>
 </BODY>
 </HTML>
