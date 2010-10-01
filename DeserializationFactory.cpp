@@ -89,7 +89,7 @@ Index* DeserializationFactory::createIndex(Table* table, const QDomDocument &, c
     QString name = element.attribute("Name");
     QString type = element.attribute("Type");
 
-    Index* result = new Index(name, type);
+    Index* result = new Index(name, type, table);
 
     for(int i=0; i<element.childNodes().size(); i++)
     {

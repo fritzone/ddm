@@ -535,16 +535,16 @@ QString Table::getAvailableIndexName(const QString& prefix)
     return "None";
 }
 
-bool Table::createAutoIndex(QVector<const Column*> cols)
+Index* Table::createAutoIndex(QVector<const Column*> cols)
 {
     QString idxName = getAvailableIndexName("autoidx");
-    Index* idx = new Index(idxName, m_version->getDatabaseEngine()->getIndextypeProvider()->getDefaultIndextype());
+    Index* idx = new Index(idxName, m_version->getDatabaseEngine()->getIndextypeProvider()->getDefaultIndextype(), this);
     for(int i=0; i<cols.size(); i++)
     {
         idx->addColumn(cols.at(i));
     }
     addIndex(idx);
-    return true;
+    return idx;
 }
 
 void Table::tableInstancesAddColumn(Column* col)

@@ -8,13 +8,14 @@
 #include <QString>
 
 class Column;
+class Table;
 
 class Index : virtual public TreeItem, virtual public SerializableElement
 {
 public:
-    Index();
+    Index(Table*);
 
-    Index(const QString& name, const QString& type);
+    Index(const QString& name, const QString& type, Table* tab);
 
     void addColumn(const Column* column);
 
@@ -37,8 +38,14 @@ public:
 
     virtual void serialize(QDomDocument &doc, QDomElement &parent) const;
 
+    Table* getOwner() const
+    {
+        return m_owner;
+    }
 
 private:
+
+    Table* m_owner;
 
     QString m_name;
 

@@ -290,7 +290,7 @@ public:
     /**
      * Creates a new index for use with the
      */
-    bool createAutoIndex(QVector<const Column*> cols);
+    Index* createAutoIndex(QVector<const Column*> cols);
 
     void addInstance(TableInstance* tinst)
     {
