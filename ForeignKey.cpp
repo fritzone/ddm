@@ -14,6 +14,20 @@ void ForeignKey::removeAssociation(const QString& fcName, const QString& lcName)
     }
 }
 
+
+bool ForeignKey::hasAssociation(const QString& fcName, const QString& lcName)
+{
+    for(int i=0; i<m_associations.size(); i++)
+    {
+        if(m_associations[i]->getForeignColumn()->getName() == fcName && m_associations[i]->getLocalColumn()->getName() == lcName)
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
 void ForeignKey::serialize(QDomDocument &doc, QDomElement &parent) const
 {
     QDomElement fkElement = doc.createElement("ForeignKey");      // will hold the foreign keys' stuff

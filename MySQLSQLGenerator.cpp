@@ -177,6 +177,10 @@ QStringList MySQLSQLGenerator::generateCreateTableSql(Table *table, const QHash<
         foreignKeySql += upcase?") REFERENCES ":") references ";
         foreignKeySql += foreignKeysTable;
         foreignKeySql += "(" + foreignKeySql2 + ")";
+        QString t = fkI->getOnDelete();
+        if(t.length() > 0) foreignKeySql += QString(" ") + (!upcase?"on delete ":"ON DELETE ") + (upcase?t.toUpper():t.toLower());
+        t = fkI->getOnUpdate();
+        if(t.length() > 0) foreignKeySql += QString(" ") + (!upcase?"on update ":"ON UPDATE ") + (upcase?t.toUpper():t.toLower());
 
         foreignKeys.append(foreignKeySql);
 
