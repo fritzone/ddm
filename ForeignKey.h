@@ -118,6 +118,8 @@ public:
 
     void removeAssociation(const QString& fcName, const QString& lcName);
 
+    bool hasAssociation(const QString& fcName, const QString& lcName);
+
     virtual void serialize(QDomDocument &doc, QDomElement &parent) const;
 
     /**                                            /\

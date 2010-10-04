@@ -67,6 +67,8 @@ ForeignKey* DeserializationFactory::createForeignKey(Table *, const QDomDocument
 
     ForeignKey* fk = new ForeignKey();
     fk->setName(name);
+    fk->setOnDelete(onDelete);
+    fk->setOnUpdate(onUpdate);
 
     for(int i=0; i<element.childNodes().count(); i++)
     {

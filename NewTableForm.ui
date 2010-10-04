@@ -60,7 +60,7 @@
          <enum>QTabWidget::Rounded</enum>
         </property>
         <property name="currentIndex">
-         <number>2</number>
+         <number>3</number>
         </property>
         <widget class="QWidget" name="tabWidgetPage1">
          <attribute name="title">
@@ -89,7 +89,7 @@
                     <string/>
                    </property>
                    <property name="icon">
-                    <iconset>
+                    <iconset resource="dbm.qrc">
                      <normaloff>:/images/actions/images/small/up.png</normaloff>:/images/actions/images/small/up.png</iconset>
                    </property>
                    <property name="popupMode">
@@ -109,7 +109,7 @@
                     <string/>
                    </property>
                    <property name="icon">
-                    <iconset>
+                    <iconset resource="dbm.qrc">
                      <normaloff>:/images/actions/images/small/remove.png</normaloff>:/images/actions/images/small/remove.png</iconset>
                    </property>
                   </widget>
@@ -126,7 +126,7 @@
                     <string/>
                    </property>
                    <property name="icon">
-                    <iconset>
+                    <iconset resource="dbm.qrc">
                      <normaloff>:/images/actions/images/small/down.png</normaloff>:/images/actions/images/small/down.png</iconset>
                    </property>
                    <property name="popupMode">
@@ -279,7 +279,7 @@
                     <string>...</string>
                    </property>
                    <property name="icon">
-                    <iconset>
+                    <iconset resource="dbm.qrc">
                      <normaloff>:/images/actions/images/small/add.png</normaloff>:/images/actions/images/small/add.png</iconset>
                    </property>
                   </widget>
@@ -296,7 +296,7 @@
                     <string/>
                    </property>
                    <property name="icon">
-                    <iconset>
+                    <iconset resource="dbm.qrc">
                      <normaloff>:/images/actions/images/small/cancel.png</normaloff>:/images/actions/images/small/cancel.png</iconset>
                    </property>
                   </widget>
@@ -336,7 +336,7 @@
                 <string>...</string>
                </property>
                <property name="icon">
-                <iconset>
+                <iconset resource="dbm.qrc">
                  <normaloff>:/images/actions/images/small/remove.png</normaloff>:/images/actions/images/small/remove.png</iconset>
                </property>
               </widget>
@@ -437,7 +437,7 @@
                     <string>...</string>
                    </property>
                    <property name="icon">
-                    <iconset>
+                    <iconset resource="dbm.qrc">
                      <normaloff>:/images/actions/images/small/right.png</normaloff>:/images/actions/images/small/right.png</iconset>
                    </property>
                   </widget>
@@ -457,7 +457,7 @@
                     <string>...</string>
                    </property>
                    <property name="icon">
-                    <iconset>
+                    <iconset resource="dbm.qrc">
                      <normaloff>:/images/actions/images/small/left.png</normaloff>:/images/actions/images/small/left.png</iconset>
                    </property>
                   </widget>
@@ -475,7 +475,7 @@
                     <string>...</string>
                    </property>
                    <property name="icon">
-                    <iconset>
+                    <iconset resource="dbm.qrc">
                      <normaloff>:/images/actions/images/small/up.png</normaloff>:/images/actions/images/small/up.png</iconset>
                    </property>
                   </widget>
@@ -486,7 +486,7 @@
                     <string>...</string>
                    </property>
                    <property name="icon">
-                    <iconset>
+                    <iconset resource="dbm.qrc">
                      <normaloff>:/images/actions/images/small/down.png</normaloff>:/images/actions/images/small/down.png</iconset>
                    </property>
                   </widget>
@@ -506,7 +506,7 @@
                   <string/>
                  </property>
                  <property name="icon">
-                  <iconset>
+                  <iconset resource="dbm.qrc">
                    <normaloff>:/images/actions/images/small/add.png</normaloff>:/images/actions/images/small/add.png</iconset>
                  </property>
                 </widget>
@@ -520,7 +520,7 @@
                   <string/>
                  </property>
                  <property name="icon">
-                  <iconset>
+                  <iconset resource="dbm.qrc">
                    <normaloff>:/images/actions/images/small/cancel.png</normaloff>:/images/actions/images/small/cancel.png</iconset>
                  </property>
                 </widget>
@@ -586,7 +586,7 @@ p, li { white-space: pre-wrap; }
                 <string>...</string>
                </property>
                <property name="icon">
-                <iconset>
+                <iconset resource="dbm.qrc">
                  <normaloff>:/images/actions/images/small/remove.png</normaloff>:/images/actions/images/small/remove.png</iconset>
                </property>
               </widget>
@@ -701,7 +701,7 @@ p, li { white-space: pre-wrap; }
                   <string>...</string>
                  </property>
                  <property name="icon">
-                  <iconset>
+                  <iconset resource="dbm.qrc">
                    <normaloff>:/images/actions/images/small/add.png</normaloff>:/images/actions/images/small/add.png</iconset>
                  </property>
                 </widget>
@@ -792,7 +792,7 @@ p, li { white-space: pre-wrap; }
                   <string>...</string>
                  </property>
                  <property name="icon">
-                  <iconset>
+                  <iconset resource="dbm.qrc">
                    <normaloff>:/images/actions/images/small/remove.png</normaloff>:/images/actions/images/small/remove.png</iconset>
                  </property>
                 </widget>
@@ -812,7 +812,7 @@ p, li { white-space: pre-wrap; }
                     <string>...</string>
                    </property>
                    <property name="icon">
-                    <iconset>
+                    <iconset resource="dbm.qrc">
                      <normaloff>:/images/actions/images/small/add.png</normaloff>:/images/actions/images/small/add.png</iconset>
                    </property>
                   </widget>
@@ -826,7 +826,7 @@ p, li { white-space: pre-wrap; }
                     <string>...</string>
                    </property>
                    <property name="icon">
-                    <iconset>
+                    <iconset resource="dbm.qrc">
                      <normaloff>:/images/actions/images/small/cancel.png</normaloff>:/images/actions/images/small/cancel.png</iconset>
                    </property>
                   </widget>
@@ -946,8 +946,14 @@ p, li { white-space: pre-wrap; }
                  <string>...</string>
                 </property>
                 <property name="icon">
-                 <iconset>
+                 <iconset resource="dbm.qrc">
                   <normaloff>:/images/actions/images/actions/fileopen.png</normaloff>:/images/actions/images/actions/fileopen.png</iconset>
+                </property>
+                <property name="iconSize">
+                 <size>
+                  <width>16</width>
+                  <height>16</height>
+                 </size>
                 </property>
                </widget>
               </item>
@@ -966,8 +972,14 @@ p, li { white-space: pre-wrap; }
                  <string>...</string>
                 </property>
                 <property name="icon">
-                 <iconset>
+                 <iconset resource="dbm.qrc">
                   <normaloff>:/images/actions/images/big/bigfileimport.png</normaloff>:/images/actions/images/big/bigfileimport.png</iconset>
+                </property>
+                <property name="iconSize">
+                 <size>
+                  <width>16</width>
+                  <height>16</height>
+                 </size>
                 </property>
                </widget>
               </item>
@@ -983,8 +995,14 @@ p, li { white-space: pre-wrap; }
                  <string>...</string>
                 </property>
                 <property name="icon">
-                 <iconset>
+                 <iconset resource="dbm.qrc">
                   <normaloff>:/images/actions/images/actions/filesave.png</normaloff>:/images/actions/images/actions/filesave.png</iconset>
+                </property>
+                <property name="iconSize">
+                 <size>
+                  <width>16</width>
+                  <height>16</height>
+                 </size>
                 </property>
                </widget>
               </item>
@@ -1037,7 +1055,7 @@ p, li { white-space: pre-wrap; }
                  <string>...</string>
                 </property>
                 <property name="icon">
-                 <iconset>
+                 <iconset resource="dbm.qrc">
                   <normaloff>:/images/actions/images/small/add.png</normaloff>:/images/actions/images/small/add.png</iconset>
                 </property>
                </widget>
@@ -1054,7 +1072,7 @@ p, li { white-space: pre-wrap; }
                  <string>...</string>
                 </property>
                 <property name="icon">
-                 <iconset>
+                 <iconset resource="dbm.qrc">
                   <normaloff>:/images/actions/images/small/remove.png</normaloff>:/images/actions/images/small/remove.png</iconset>
                 </property>
                </widget>
@@ -1071,7 +1089,7 @@ p, li { white-space: pre-wrap; }
                  <string>...</string>
                 </property>
                 <property name="icon">
-                 <iconset>
+                 <iconset resource="dbm.qrc">
                   <normaloff>:/images/actions/images/small/apply.png</normaloff>:/images/actions/images/small/apply.png</iconset>
                 </property>
                </widget>
@@ -1136,10 +1154,10 @@ p, li { white-space: pre-wrap; }
           <item row="2" column="0">
            <widget class="QCheckBox" name="chkTemporary">
             <property name="statusTip">
-             <string>This table is not updated when the application runs.</string>
+             <string>This is a temporary table.</string>
             </property>
             <property name="whatsThis">
-             <string>This table is not updated when the application runs. This allows the code generator to generate code which loads the content of this table at startup for faster usage</string>
+             <string>This is a temporary table.</string>
             </property>
             <property name="text">
              <string>Temporary table</string>
@@ -1224,7 +1242,7 @@ p, li { white-space: pre-wrap; }
                  <string>...</string>
                 </property>
                 <property name="icon">
-                 <iconset>
+                 <iconset resource="dbm.qrc">
                   <normaloff>:/images/actions/images/actions/filesave.png</normaloff>:/images/actions/images/actions/filesave.png</iconset>
                 </property>
                </widget>
@@ -1247,7 +1265,7 @@ p, li { white-space: pre-wrap; }
                  <string>...</string>
                 </property>
                 <property name="icon">
-                 <iconset>
+                 <iconset resource="dbm.qrc">
                   <normaloff>:/images/actions/images/small/inject.png</normaloff>:/images/actions/images/small/inject.png</iconset>
                 </property>
                </widget>
@@ -1409,7 +1427,9 @@ p, li { white-space: pre-wrap; }
   <tabstop>tableStartupValues</tabstop>
   <tabstop>buttons</tabstop>
  </tabstops>
- <resources/>
+ <resources>
+  <include location="dbm.qrc"/>
+ </resources>
  <connections>
   <connection>
    <sender>buttons</sender>

@@ -102,6 +102,8 @@ NewTableForm::NewTableForm(DatabaseEngine* db, Project* prj, QWidget *parent, bo
 
     m_ui->tabWidget->setCurrentIndex(0);
 
+    // next two: don't change the order. This way the remove is done from the end
+    m_ui->tabWidget->removeTab(4);
     if(prj->oopProject())
     {
         m_ui->tabWidget->removeTab(3);
@@ -109,6 +111,8 @@ NewTableForm::NewTableForm(DatabaseEngine* db, Project* prj, QWidget *parent, bo
 
     m_ui->grpHelp->setHidden(true);
     m_ui->cmbOptions->hide();
+
+    m_ui->btnImportValues->hide();
 
     m_ui->txtTableName->setValidator(m_nameValidator = new SqlNamesValidator());
     m_ui->txtNewColumnName->setValidator(m_nameValidator);
@@ -121,6 +125,8 @@ NewTableForm::NewTableForm(DatabaseEngine* db, Project* prj, QWidget *parent, bo
         m_mw->onSaveNewTable(m_table);
         m_ui->txtTableName->setText(m_table->getName());
     }
+
+
 
 }
 
@@ -1172,11 +1178,6 @@ void NewTableForm::onForeignTableColumnChange()
 
 void NewTableForm::onAddForeignKeyAssociation()
 {
-    if(!m_currentForeignKey)
-    {
-        m_currentForeignKey = new ForeignKey();
-        m_foreignKeySelected = false;
-    }
 
     QString foreignColumn, localColumn;
     const Column* cforeignColumn, *clocalColumn;
@@ -1195,6 +1196,7 @@ void NewTableForm::onAddForeignKeyAssociation()
         }
         break;
     }
+
 
     selectedItems = m_ui->lstLocalColumn->selectedItems();
     for(int i=0; i< selectedItems.size(); i++)
@@ -1216,6 +1218,21 @@ void NewTableForm::onAddForeignKeyAssociation()
     {
         QMessageBox::critical (this, tr("Error"), tr("Please select two columns: one from the foreign table, one from the local table"), QMessageBox::Ok);
         return;
+    }
+
+
+    // check if we have the same column associations once more in the asociations
+    if(m_currentForeignKey->hasAssociation(foreignColumn, localColumn))
+    {
+        QMessageBox::critical (this, tr("Error"), tr("You cannot have the same column associoation two times, the database does not allow this."), QMessageBox::Ok);
+        return;
+    }
+
+    // finally do some work too
+    if(!m_currentForeignKey)
+    {
+        m_currentForeignKey = new ForeignKey();
+        m_foreignKeySelected = false;
     }
 
     QStringList a(foreignColumn);
