@@ -29,6 +29,7 @@ public slots:
     void onDeleteRow();
     void onValidateData();
     void onCellChange(int,int);
+    void onHelp();
 
 protected:
     void changeEvent(QEvent *e);

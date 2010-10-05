@@ -14,6 +14,10 @@ TableInstanceForm::TableInstanceForm(QWidget *parent) :
     ui(new Ui::TableInstanceForm), m_populated(false)
 {
     ui->setupUi(this);
+    ui->btnImportValues->hide();
+
+    ui->grpHelp->hide();
+
 }
 
 TableInstanceForm::~TableInstanceForm()
@@ -138,4 +142,12 @@ void TableInstanceForm::onCellChange(int,int)
     {
         onValidateData();
     }
+}
+
+
+void TableInstanceForm::onHelp()
+{
+    ui->grpHelp->show();
+    ui->btnHelp->hide();
+    ui->webView->setUrl(QString("doc/tinst.html"));
 }
