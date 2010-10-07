@@ -20,6 +20,7 @@ public:
     ~TablesListForm();
 
     void populateTables(QVector<Table*>const & tables);
+    void setOop(bool a);
 
 public slots:
 

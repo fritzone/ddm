@@ -341,3 +341,14 @@ void DiagramForm::onHelp()
     ui->btnHelp->setHidden(true);
     ui->webView->setUrl(QString("doc/dgram.html"));
 }
+
+void DiagramForm::onNameChange(QString a)
+{
+    if(m_diagram && m_diagram->getLocation())
+    {
+        m_diagram->setName(a);
+        m_diagram->getLocation()->setText(0, a);
+        QVariant var(a);
+        m_diagram->getLocation()->setData(0, Qt::UserRole, var);
+    }
+}

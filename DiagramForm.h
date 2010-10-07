@@ -39,6 +39,7 @@ public slots:
     void onEditNote();
     void printDiagram();
     void onHelp();
+    void onNameChange(QString);
 
 protected:
     void changeEvent(QEvent *e);

@@ -26,6 +26,13 @@
          <number>0</number>
         </property>
         <item>
+         <widget class="QLabel" name="label">
+          <property name="text">
+           <string>Name</string>
+          </property>
+         </widget>
+        </item>
+        <item>
          <widget class="QLineEdit" name="txtDiagramName">
           <property name="maximumSize">
            <size>
@@ -91,7 +98,7 @@
              <string>...</string>
             </property>
             <property name="icon">
-             <iconset resource="dbm.qrc">
+             <iconset>
               <normaloff>:/images/actions/images/actions/filesave.png</normaloff>:/images/actions/images/actions/filesave.png</iconset>
             </property>
            </widget>
@@ -114,7 +121,7 @@
              <string>...</string>
             </property>
             <property name="icon">
-             <iconset resource="dbm.qrc">
+             <iconset>
               <normaloff>:/images/actions/images/small/printer.png</normaloff>:/images/actions/images/small/printer.png</iconset>
             </property>
            </widget>
@@ -246,9 +253,7 @@
    <header>QtWebKit/QWebView</header>
   </customwidget>
  </customwidgets>
- <resources>
-  <include location="dbm.qrc"/>
- </resources>
+ <resources/>
  <connections>
   <connection>
    <sender>btnSaveToImageFile</sender>
@@ -314,6 +319,22 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>txtDiagramName</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>DiagramForm</receiver>
+   <slot>onNameChange(QString)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>146</x>
+     <y>46</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>451</x>
+     <y>319</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>saveToImageFile()</slot>
@@ -322,5 +343,6 @@
   <slot>onAddNote()</slot>
   <slot>printDiagram()</slot>
   <slot>onHelp()</slot>
+  <slot>onNameChange(QString)</slot>
  </slots>
 </ui>

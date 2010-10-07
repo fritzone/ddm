@@ -35,6 +35,7 @@ public slots:
 
     void onInject();
     void onSave();
+    void onHelp();
 
 protected:
     void changeEvent(QEvent *e);
