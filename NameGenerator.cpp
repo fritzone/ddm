@@ -60,6 +60,7 @@ QString NameGenerator::generateUniqueTableInstanceName(Version* v, QString input
         }
         i++;
     }
+    return input + "_copy";
 }
 
 QString NameGenerator::generateUniqueDiagramName(Version* v, QString input)
@@ -84,6 +85,7 @@ QString NameGenerator::generateUniqueDiagramName(Version* v, QString input)
         }
         i++;
     }
+    return input + "_copy";
 }
 
 QString NameGenerator::generateUniqueDatatypeName(Version* v, QString input)

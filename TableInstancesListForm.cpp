@@ -7,7 +7,7 @@
 
 #include <QTreeWidgetItem>
 
-TableInstancesListForm::TableInstancesListForm(QWidget *parent) : QWidget(parent),  mw(reinterpret_cast<MainWindow*>(parent)), ui(new Ui::TableInstancesListForm)
+TableInstancesListForm::TableInstancesListForm(QWidget *parent) : QWidget(parent), ui(new Ui::TableInstancesListForm), mw(reinterpret_cast<MainWindow*>(parent))
 {
     ui->setupUi(this);
 
