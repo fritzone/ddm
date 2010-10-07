@@ -1180,7 +1180,8 @@ void NewTableForm::onAddForeignKeyAssociation()
 {
 
     QString foreignColumn, localColumn;
-    const Column* cforeignColumn, *clocalColumn;
+    const Column* cforeignColumn = NULL;
+    const Column* clocalColumn = NULL;
     QList<QListWidgetItem *> selectedItems = m_ui->lstForeignTablesColumns->selectedItems();
     for(int i=0; i< selectedItems.size(); i++)
     {
