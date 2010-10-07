@@ -33,6 +33,8 @@
 
 #include <QtGui>
 
+Q_IMPORT_PLUGIN(qsqlmysql)
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), ui(new Ui::MainWindow), dock(0), projectTree(0),
     btndlg(0), weHaveProject(false), m_currentSolution(0), frm(0), m_createTableInstancesPopup(0)
@@ -49,7 +51,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     setCentralWidget(btndlg);
 
-    setWindowTitle("DBM - [No Solution]");
+    setWindowTitle("DDM - [No Solution]");
     resize(800, 600);
 
     m_createTableInstancesPopup = new QMenu();
@@ -322,6 +324,7 @@ void MainWindow::currentProjectTreeItemChanged(QTreeWidgetItem * current, QTreeW
         {// we have clicked on the Tables item (i.e.t. the list of tables)
             TablesListForm* tblLst = new TablesListForm(this);
             tblLst->populateTables(getWorkingProject()->getWorkingVersion()->getTables());
+            tblLst->setOop(getWorkingProject()->oopProject());
             setCentralWidget(tblLst);
         }
         else
@@ -573,7 +576,7 @@ void MainWindow::saveProject(bool saveAs)
 
     if((m_currentSolution->savedFile().length() == 0 && !saveAs) || saveAs )
     {
-        QString fileName = QFileDialog::getSaveFileName(this,  tr("Save solution"), "", tr("DBM solution files (*.dmx)"));
+        QString fileName = QFileDialog::getSaveFileName(this,  tr("Save solution"), "", tr("DDM solution files (*.dmx)"));
         if(fileName.length() == 0)
         {
             return;
@@ -607,7 +610,7 @@ void MainWindow::populateTreeWithSolution(Solution* sol)
 
 void MainWindow::onOpenProject()
 {
-    QString fileName = QFileDialog::getOpenFileName(this,  tr("Open solution"), "", tr("DBM solution files (*.dmx);;All files (*.*)"));
+    QString fileName = QFileDialog::getOpenFileName(this,  tr("Open solution"), "", tr("DDM solution files (*.dmx);;All files (*.*)"));
     if(fileName.length() == 0)
     {
         return;
@@ -643,7 +646,7 @@ void MainWindow::onOpenProject()
     prjDetailsForm->setProject(m_currentSolution->currentProject());
     setCentralWidget(prjDetailsForm);
 
-    setWindowTitle("DBM - [" + m_currentSolution->name() + "]");
+    setWindowTitle("DDM - [" + m_currentSolution->name() + "]");
 
     connectActionsFromTablePopupMenu();
 
@@ -1140,7 +1143,7 @@ void MainWindow::onCloseSolution()
     btndlg = new MainWindowButtonDialog();
     btndlg->setMainWindow(this);
     setCentralWidget(btndlg);
-    setWindowTitle("DBM - [No Solution]");
+    setWindowTitle("DDM - [No Solution]");
 
     resize(800, 600);
     showNormal();
@@ -1210,6 +1213,10 @@ void MainWindow::onDuplicateDatatypeFromPopup()
         dup->setLocation(newDTItem);
         datatypesTree->expandItem(newDTItem);
         datatypesTree->scrollToItem(newDTItem);
+
+        // resize to look better
+        datatypesTree->resizeColumnToContents(0);
+        datatypesTree->resizeColumnToContents(1);
     }
 }
 

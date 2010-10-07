@@ -19,6 +19,7 @@ SqlForm::SqlForm(DatabaseEngine* engine, QWidget *parent) : SourceCodePresenterW
     ui->setupUi(this);
     highlighter = new SqlHighlighter(ui->txtSql->document());
     ui->cmbOptions->hide();
+    ui->grpHelp->hide();
 }
 
 SqlForm::~SqlForm()
@@ -149,3 +150,9 @@ void SqlForm::presentSql(Project* p, SqlSourceEntity* ent)
     setSqlList(finalSql);
 }
 
+void SqlForm::onHelp()
+{
+    ui->grpHelp->show();
+    ui->btnHelp->hide();
+    ui->webView->setUrl(QString("doc/sqls.html"));
+}

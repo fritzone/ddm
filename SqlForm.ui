@@ -15,31 +15,6 @@
   </property>
   <layout class="QHBoxLayout" name="horizontalLayout_2">
    <item>
-    <widget class="QGroupBox" name="groupBox_9">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="minimumSize">
-      <size>
-       <width>0</width>
-       <height>26</height>
-      </size>
-     </property>
-     <property name="maximumSize">
-      <size>
-       <width>16777215</width>
-       <height>36</height>
-      </size>
-     </property>
-     <property name="title">
-      <string/>
-     </property>
-    </widget>
-   </item>
-   <item>
     <widget class="QGroupBox" name="groupBox">
      <property name="title">
       <string/>
@@ -125,7 +100,7 @@
        <widget class="QTextEdit" name="txtSql">
         <property name="minimumSize">
          <size>
-          <width>400</width>
+          <width>0</width>
           <height>0</height>
          </size>
         </property>
@@ -223,6 +198,22 @@
     <hint type="sourcelabel">
      <x>21</x>
      <y>21</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>308</x>
+     <y>220</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnHelp</sender>
+   <signal>clicked()</signal>
+   <receiver>SqlForm</receiver>
+   <slot>onHelp()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>412</x>
+     <y>406</y>
     </hint>
     <hint type="destinationlabel">
      <x>308</x>

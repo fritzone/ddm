@@ -15,7 +15,7 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <widget class="QLabel" name="label">
+    <widget class="QLabel" name="lblHeader">
      <property name="text">
       <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
@@ -51,7 +51,7 @@ p, li { white-space: pre-wrap; }
            <string/>
           </property>
           <property name="icon">
-           <iconset resource="dbm.qrc">
+           <iconset>
             <normaloff>:/images/actions/images/small/up.png</normaloff>:/images/actions/images/small/up.png</iconset>
           </property>
           <property name="popupMode">
@@ -71,7 +71,7 @@ p, li { white-space: pre-wrap; }
            <string/>
           </property>
           <property name="icon">
-           <iconset resource="dbm.qrc">
+           <iconset>
             <normaloff>:/images/actions/images/small/down.png</normaloff>:/images/actions/images/small/down.png</iconset>
           </property>
           <property name="popupMode">
@@ -91,7 +91,7 @@ p, li { white-space: pre-wrap; }
            <string/>
           </property>
           <property name="icon">
-           <iconset resource="dbm.qrc">
+           <iconset>
             <normaloff>:/images/actions/images/small/remove.png</normaloff>:/images/actions/images/small/remove.png</iconset>
           </property>
          </widget>
@@ -140,6 +140,15 @@ p, li { white-space: pre-wrap; }
         <attribute name="headerStretchLastSection">
          <bool>true</bool>
         </attribute>
+        <attribute name="headerDefaultSectionSize">
+         <number>150</number>
+        </attribute>
+        <attribute name="headerShowSortIndicator" stdset="0">
+         <bool>true</bool>
+        </attribute>
+        <attribute name="headerStretchLastSection">
+         <bool>true</bool>
+        </attribute>
         <column>
          <property name="text">
           <string>Name</string>
@@ -148,16 +157,11 @@ p, li { white-space: pre-wrap; }
        </widget>
       </item>
      </layout>
-     <zorder>treeTables</zorder>
-     <zorder>verticalSpacer</zorder>
-     <zorder>layoutWidget</zorder>
     </widget>
    </item>
   </layout>
  </widget>
- <resources>
-  <include location="dbm.qrc"/>
- </resources>
+ <resources/>
  <connections>
   <connection>
    <sender>treeTables</sender>
