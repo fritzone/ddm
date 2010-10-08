@@ -1754,7 +1754,7 @@ void NewTableForm::onHelp()
 {
     m_ui->grpHelp->setHidden(false);
     m_ui->btnHelp->setHidden(true);
-    m_ui->webView->setUrl(QString("doc/tabl.html"));
+    m_ui->webView->setUrl(QApplication::applicationDirPath() + QString("/doc/tabl.html"));
 }
 
 void NewTableForm::onChangeTab(int idx)

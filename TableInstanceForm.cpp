@@ -149,5 +149,5 @@ void TableInstanceForm::onHelp()
 {
     ui->grpHelp->show();
     ui->btnHelp->hide();
-    ui->webView->setUrl(QString("doc/tinst.html"));
+    ui->webView->setUrl(QApplication::applicationDirPath() + QString("/doc/tinst.html"));
 }

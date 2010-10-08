@@ -8,7 +8,8 @@ MainWindowButtonDialog::MainWindowButtonDialog(QWidget *parent) :
     m_mw(0)
 {
     m_ui->setupUi(this);
-    m_ui->webView->load(QUrl("doc/main.html"));
+    QString g = QApplication::applicationDirPath() + "/doc/main.html";
+    m_ui->webView->load(QUrl(g));
 }
 
 MainWindowButtonDialog::~MainWindowButtonDialog()

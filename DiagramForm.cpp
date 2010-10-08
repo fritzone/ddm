@@ -339,7 +339,7 @@ void DiagramForm::onHelp()
 {
     ui->grpHelp->show();
     ui->btnHelp->setHidden(true);
-    ui->webView->setUrl(QString("doc/dgram.html"));
+    ui->webView->setUrl(QApplication::applicationDirPath() + QString("/doc/dgram.html"));
 }
 
 void DiagramForm::onNameChange(QString a)
