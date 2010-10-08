@@ -154,5 +154,5 @@ void SqlForm::onHelp()
 {
     ui->grpHelp->show();
     ui->btnHelp->hide();
-    ui->webView->setUrl(QString("doc/sqls.html"));
+    ui->webView->setUrl(QApplication::applicationDirPath() + QString("/doc/sqls.html"));
 }

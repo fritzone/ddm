@@ -78,7 +78,7 @@ void NewProjectDialog::onHelp()
     resize(800, height());
     m_ui->grpWebView->setHidden(false);
     m_ui->btnHelp->setHidden(true);
-    m_ui->webView->setUrl(QString("doc/newp.html"));
+    m_ui->webView->setUrl(QApplication::applicationDirPath() + QString("/doc/newp.html"));
 }
 
 bool NewProjectDialog::inheritDefaultDatatypes() const

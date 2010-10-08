@@ -171,7 +171,7 @@ void MainWindow::onNewSolution()
         if(nprjdlg->inheritDefaultDatatypes())
         {
             QDomDocument doc ("DBM");
-            QFile file ("rsrc/mysql.defaults"); // TODO: This will not work for other databases :)
+            QFile file (QApplication::applicationDirPath() + "/rsrc/mysql.defaults"); // TODO: This will not work for other databases :)
             if (file.open(QIODevice::ReadOnly))
             {
                 if (!doc.setContent(&file))
