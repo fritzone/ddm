@@ -1,0 +1,426 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>EnterNoteTextDialog</class>
+ <widget class="QDialog" name="EnterNoteTextDialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>536</width>
+    <height>424</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Dialog</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QGroupBox" name="groupBox_2">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>26</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>16777215</width>
+       <height>36</height>
+      </size>
+     </property>
+     <property name="title">
+      <string/>
+     </property>
+     <widget class="QWidget" name="horizontalLayoutWidget">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>541</width>
+        <height>29</height>
+       </rect>
+      </property>
+      <layout class="QHBoxLayout" name="horizontalLayout_2">
+       <property name="spacing">
+        <number>0</number>
+       </property>
+       <item>
+        <widget class="QToolButton" name="btnSetBold">
+         <property name="maximumSize">
+          <size>
+           <width>24</width>
+           <height>24</height>
+          </size>
+         </property>
+         <property name="toolTip">
+          <string>Save diagram as image</string>
+         </property>
+         <property name="statusTip">
+          <string>Save diagram as image</string>
+         </property>
+         <property name="text">
+          <string>...</string>
+         </property>
+         <property name="icon">
+          <iconset resource="dbm.qrc">
+           <normaloff>:/images/actions/images/actions/bold.png</normaloff>:/images/actions/images/actions/bold.png</iconset>
+         </property>
+         <property name="checkable">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QToolButton" name="btnSetItalic">
+         <property name="maximumSize">
+          <size>
+           <width>24</width>
+           <height>24</height>
+          </size>
+         </property>
+         <property name="toolTip">
+          <string>Save diagram as image</string>
+         </property>
+         <property name="statusTip">
+          <string>Save diagram as image</string>
+         </property>
+         <property name="text">
+          <string>...</string>
+         </property>
+         <property name="icon">
+          <iconset resource="dbm.qrc">
+           <normaloff>:/images/actions/images/actions/italic.png</normaloff>:/images/actions/images/actions/italic.png</iconset>
+         </property>
+         <property name="checkable">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QToolButton" name="btnSetUnderline">
+         <property name="maximumSize">
+          <size>
+           <width>24</width>
+           <height>24</height>
+          </size>
+         </property>
+         <property name="toolTip">
+          <string>Save diagram as image</string>
+         </property>
+         <property name="statusTip">
+          <string>Save diagram as image</string>
+         </property>
+         <property name="text">
+          <string>...</string>
+         </property>
+         <property name="icon">
+          <iconset resource="dbm.qrc">
+           <normaloff>:/images/actions/images/actions/underline.png</normaloff>:/images/actions/images/actions/underline.png</iconset>
+         </property>
+         <property name="checkable">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QFontComboBox" name="fontComboBox"/>
+       </item>
+       <item>
+        <widget class="QComboBox" name="cmbSize">
+         <property name="minimumSize">
+          <size>
+           <width>48</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>24</height>
+          </size>
+         </property>
+         <property name="editable">
+          <bool>true</bool>
+         </property>
+         <item>
+          <property name="text">
+           <string>6</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>8</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>10</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>12</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>14</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>16</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>18</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>20</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>24</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>36</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>48</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>72</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="btnChangeColor">
+         <property name="maximumSize">
+          <size>
+           <width>24</width>
+           <height>24</height>
+          </size>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="autoDefault">
+          <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <spacer name="horizontalSpacer">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </widget>
+    </widget>
+   </item>
+   <item>
+    <widget class="QTextEdit" name="textEdit"/>
+   </item>
+   <item>
+    <widget class="QCheckBox" name="chkFramed">
+     <property name="text">
+      <string>Framed</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources>
+  <include location="dbm.qrc"/>
+ </resources>
+ <connections>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>accepted()</signal>
+   <receiver>EnterNoteTextDialog</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>248</x>
+     <y>254</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>157</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>rejected()</signal>
+   <receiver>EnterNoteTextDialog</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>316</x>
+     <y>260</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>286</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>fontComboBox</sender>
+   <signal>currentFontChanged(QFont)</signal>
+   <receiver>EnterNoteTextDialog</receiver>
+   <slot>onChangeFont(QFont)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>169</x>
+     <y>23</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>267</x>
+     <y>211</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnChangeColor</sender>
+   <signal>clicked()</signal>
+   <receiver>EnterNoteTextDialog</receiver>
+   <slot>onChangeColor()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>372</x>
+     <y>22</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>267</x>
+     <y>211</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnSetBold</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>EnterNoteTextDialog</receiver>
+   <slot>onChangeBold(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>23</x>
+     <y>24</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>267</x>
+     <y>211</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnSetItalic</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>EnterNoteTextDialog</receiver>
+   <slot>onChangeItalic(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>47</x>
+     <y>24</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>267</x>
+     <y>211</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnSetUnderline</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>EnterNoteTextDialog</receiver>
+   <slot>onChangeUnderline(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>71</x>
+     <y>24</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>267</x>
+     <y>211</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>cmbSize</sender>
+   <signal>activated(QString)</signal>
+   <receiver>EnterNoteTextDialog</receiver>
+   <slot>onChangeSize(QString)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>326</x>
+     <y>24</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>267</x>
+     <y>211</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>textEdit</sender>
+   <signal>currentCharFormatChanged(QTextCharFormat)</signal>
+   <receiver>EnterNoteTextDialog</receiver>
+   <slot>onCurrentCharFormatChanged(QTextCharFormat)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>267</x>
+     <y>197</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>267</x>
+     <y>211</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>onChangeColor()</slot>
+  <slot>onChangeBold(bool)</slot>
+  <slot>onChangeItalic(bool)</slot>
+  <slot>onChangeUnderline(bool)</slot>
+  <slot>onChangeSize(QString)</slot>
+  <slot>onCurrentCharFormatChanged(QTextCharFormat)</slot>
+  <slot>onChangeFont(QFont)</slot>
+ </slots>
+</ui>
