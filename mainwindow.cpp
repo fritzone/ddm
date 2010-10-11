@@ -33,7 +33,9 @@
 
 #include <QtGui>
 
+#ifdef Q_WS_X11
 Q_IMPORT_PLUGIN(qsqlmysql)
+#endif
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), ui(new Ui::MainWindow), dock(0), projectTree(0),
