@@ -105,6 +105,7 @@ ContextMenuEnabledTreeWidget* MainWindow::setupGuiForNewSolution()
     projectTree->setColumnCount(1);
     projectTree->setHeaderHidden(true);
     QObject::connect(projectTree, SIGNAL (currentItemChanged ( QTreeWidgetItem*, QTreeWidgetItem*)), this, SLOT(currentProjectTreeItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)));
+    QObject::connect(projectTree, SIGNAL (itemClicked ( QTreeWidgetItem * , int ) ), this, SLOT(projectTreeItemClicked (QTreeWidgetItem*,int)));
 
     datatypesTree = new ContextMenuEnabledTreeWidget();
     datatypesTree ->setColumnCount(2);
@@ -115,6 +116,7 @@ ContextMenuEnabledTreeWidget* MainWindow::setupGuiForNewSolution()
     datatypesTree->setItemDelegate(new ContextMenuDelegate(contextMenuHandler,datatypesTree));
     datatypesTree ->setHeaderHidden(false);
     QObject::connect(datatypesTree, SIGNAL(itemSelectionChanged()), this, SLOT(onDTTreeClicked()));
+    QObject::connect(datatypesTree, SIGNAL (itemClicked ( QTreeWidgetItem * , int ) ), this, SLOT(dtTreeItemClicked(QTreeWidgetItem*,int)));
 
     dockdt->setWidget(datatypesTree);
     dock->setWidget(projectTree);
@@ -1227,4 +1229,15 @@ void MainWindow::onDeleteDiagramFromPopup()
     {
         getWorkingProject()->getWorkingVersion()->deleteDiagram(dgr->getName());
     }
+}
+
+void MainWindow::projectTreeItemClicked ( QTreeWidgetItem * item, int column )
+{
+    currentProjectTreeItemChanged(item, 0);
+}
+
+
+void MainWindow::dtTreeItemClicked ( QTreeWidgetItem * item, int column )
+{
+    onDTTreeClicked();
 }

@@ -77,6 +77,9 @@ public slots:
     void onSaveAs();
     void onCloseSolution();
     void currentProjectTreeItemChanged(QTreeWidgetItem * current, QTreeWidgetItem*);
+
+    void dtTreeItemClicked ( QTreeWidgetItem * item, int column );
+    void projectTreeItemClicked ( QTreeWidgetItem * item, int column );
     void onNewTableInstance();
     void onNewTableInstanceHovered();
 
