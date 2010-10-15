@@ -175,25 +175,25 @@ public:
     virtual void deleteDiagram(const QString&) = 0;
 
     // don't know if this is a good design or not for the popups ....
-
-    virtual QMenu* getTablePopupMenu() = 0;
-    virtual QAction * getAction_RemoveTable() = 0;
-    virtual QAction * getAction_TableAddColumn() = 0;
-    virtual QAction * getAction_SpecializeTable() = 0;
-    virtual QAction * getAction_DuplicateTable() = 0;
-    virtual QAction * getAction_InstantiateTable() = 0;
-
-    virtual QMenu* getTableInstancePopupMenu() = 0;
-    virtual QAction * getAction_DeleteTableInstance() = 0;
-    virtual QAction * getAction_RenameTableInstance() = 0;
-
-    virtual QMenu* getDatatypePopupMenu() = 0;
-    virtual QAction* getAction_DeleteDataType() = 0;
-    virtual QAction* getAction_DuplicateDataType() = 0;
-
-    virtual QMenu* getDiagramPopupMenu() = 0;
-    virtual QAction* getAction_DeleteDiagram() = 0;
-    virtual QAction* getAction_RenameDiagram() = 0;
+//
+//    virtual QMenu* getTablePopupMenu() = 0;
+//    virtual QAction * getAction_RemoveTable() = 0;
+//    virtual QAction * getAction_TableAddColumn() = 0;
+//    virtual QAction * getAction_SpecializeTable() = 0;
+//    virtual QAction * getAction_DuplicateTable() = 0;
+//    virtual QAction * getAction_InstantiateTable() = 0;
+//
+//    virtual QMenu* getTableInstancePopupMenu() = 0;
+//    virtual QAction * getAction_DeleteTableInstance() = 0;
+//    virtual QAction * getAction_RenameTableInstance() = 0;
+//
+//    virtual QMenu* getDatatypePopupMenu() = 0;
+//    virtual QAction* getAction_DeleteDataType() = 0;
+//    virtual QAction* getAction_DuplicateDataType() = 0;
+//
+//    virtual QMenu* getDiagramPopupMenu() = 0;
+//    virtual QAction* getAction_DeleteDiagram() = 0;
+//    virtual QAction* getAction_RenameDiagram() = 0;
 
 private:
 

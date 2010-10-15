@@ -1,6 +1,7 @@
 #include <QtGui>
 
 #include "MajorVersion.h"
+#include "ContextMenuCollection.h"
 #include "UserDataType.h"
 #include "Table.h"
 #include "Diagram.h"
@@ -13,9 +14,7 @@
 MajorVersion::MajorVersion(QTreeWidget* tree, QTreeWidget* dttree, ContextMenuEnabledTreeWidgetItem* projectItem, int ver, Project* p) :
         tablesItem(0), tableInstancesItem(0),
         dtsItem(0), versionItem(0), diagramsItem(0), finalSqlItem(0), version(""), m_dataTypes(), m_tables(), m_diagrams(), m_tableInstances(),
-        m_tree(tree), m_dtTree(dttree), m_projectItem(projectItem), m_tablePopupMenu(0),
-        action_RemoveTable(0), action_DuplicateTable(0), action_SpecializeTable(0), action_InstantiateTable(0),
-        action_TableAddColumn(0), m_project(p)
+        m_tree(tree), m_dtTree(dttree), m_projectItem(projectItem), m_project(p)
 {
     // make the dts sub item coming from the project
     QString v = QString::number(ver);
@@ -41,7 +40,7 @@ void MajorVersion::populateTreeItems()
         QVariant var;
         var.setValue(*m_dataTypes[i]);
         newDTItem->setData(0, Qt::UserRole, var);
-        newDTItem->setPopupMenu(getDatatypePopupMenu());
+        newDTItem->setPopupMenu(ContextMenuCollection::getInstance()->getDatatypePopupMenu());
         // set the icon, add to the tree
         newDTItem->setIcon(0, m_dataTypes[i]->getIcon());
         m_dtTree->insertTopLevelItem(0, newDTItem);
@@ -59,7 +58,7 @@ void MajorVersion::populateTreeItems()
 
         QVariant var(tbl->getName());
         newTblsItem->setData(0, Qt::UserRole, var);
-        newTblsItem->setPopupMenu(getTablePopupMenu());
+        newTblsItem->setPopupMenu(ContextMenuCollection::getInstance()->getTablePopupMenu());
         // set the icon, add to the tree
         newTblsItem->setIcon(0, IconFactory::getTablesIcon());
         m_tree->insertTopLevelItem(0, newTblsItem);
@@ -89,7 +88,7 @@ void MajorVersion::populateTreeItems()
         newDgramItem->setData(0, Qt::UserRole, var);
         // set the icon, add to the tree
         newDgramItem->setIcon(0, IconFactory::getDiagramIcon());
-        newDgramItem->setPopupMenu(getDiagramPopupMenu());
+        newDgramItem->setPopupMenu(ContextMenuCollection::getInstance()->getDiagramPopupMenu());
         m_tree->insertTopLevelItem(0, newDgramItem);
 
         // set the link to the tree
@@ -104,7 +103,7 @@ void MajorVersion::populateTreeItems()
 
         QVariant var(tI->getName());
         newTabInstItem->setData(0, Qt::UserRole, var);
-        newTabInstItem->setPopupMenu(getTableInstancePopupMenu());
+        newTabInstItem->setPopupMenu(ContextMenuCollection::getInstance()->getTableInstancePopupMenu());
 
         // set the icon, add to the tree
         if(tI->instantiatedBecuaseOfRkReference())
@@ -155,7 +154,7 @@ void MajorVersion::populateTreeItems()
 
             QVariant var(tbl->getName());
             newTblsItem->setData(0, Qt::UserRole, var);
-            newTblsItem->setPopupMenu(getTablePopupMenu());
+            newTblsItem->setPopupMenu(ContextMenuCollection::getInstance()->getTablePopupMenu());
             // set the icon, add to the tree
             newTblsItem->setIcon(0, IconFactory::getTablesIcon());
             m_tree->insertTopLevelItem(0, newTblsItem);
@@ -209,49 +208,6 @@ void MajorVersion::createTreeItems(QTreeWidget* tree, QTreeWidget* dtTree, Conte
     finalSqlItem->setIcon(0, IconFactory::getSqlIcon());
     m_tree->addTopLevelItem(finalSqlItem);
 
-    // popup menus
-    m_tablePopupMenu = new QMenu();
-    m_tableInstancePopupMenu = new QMenu();
-    m_datatypePopupMenu = new QMenu();
-    m_diagramPopupMenu = new QMenu();
-
-    // actions
-    action_RemoveTable = new QAction(QObject::tr("Delete table"), 0);
-    action_RemoveTable->setIcon(IconFactory::getRemoveIcon());
-    action_DuplicateTable = new QAction(QObject::tr("Duplicate table"), 0);
-    action_TableAddColumn = new QAction(QObject::tr("Add column"), 0);
-    action_SpecializeTable = new QAction(QObject::tr("Specialize table"), 0);
-    action_InstantiateTable = new QAction(QObject::tr("Instantiate table"), 0);
-    action_DeleteTableInstance = new QAction(QObject::tr("Delete instance"), 0);
-    action_DeleteTableInstance->setIcon(IconFactory::getRemoveIcon());
-    action_RenameTableInstance = new QAction(QObject::tr("Rename instance"), 0);
-    action_DeleteDataType = new QAction(QObject::tr("Delete datatype"), 0);
-    action_DeleteDataType->setIcon(IconFactory::getRemoveIcon());
-    action_DuplicateDataType = new QAction(QObject::tr("Duplicate datatype"), 0);
-    action_DeleteDiagram = new QAction(QObject::tr("Delete diagram"), 0);
-    action_DeleteDiagram->setIcon(IconFactory::getRemoveIcon());
-    action_RenameDiagram = new QAction(QObject::tr("Rename diagram"), 0);
-
-    // populate the table popup menu
-    m_tablePopupMenu->addAction(action_TableAddColumn);
-    m_tablePopupMenu->addSeparator();
-    m_tablePopupMenu->addAction(action_RemoveTable);
-    m_tablePopupMenu->addAction(action_DuplicateTable);
-    m_tablePopupMenu->addAction(action_SpecializeTable);
-    m_tablePopupMenu->addSeparator();
-    m_tablePopupMenu->addAction(action_InstantiateTable);
-
-    // populate the table instances popup menu
-    m_tableInstancePopupMenu->addAction(action_DeleteTableInstance);
-    m_tableInstancePopupMenu->addAction(action_RenameTableInstance);
-
-    // datatypes popup menu
-    m_datatypePopupMenu->addAction(action_DeleteDataType);
-    m_datatypePopupMenu->addAction(action_DuplicateDataType);
-
-    // diagrams popup menu
-    m_diagramPopupMenu->addAction(action_DeleteDiagram);
-    m_diagramPopupMenu->addAction(action_RenameDiagram);
 }
 
 void MajorVersion::serialize(QDomDocument &doc, QDomElement &parent) const

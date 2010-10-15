@@ -10,7 +10,7 @@
 #include <math.h>
 
 FkRelationDescriptor::FkRelationDescriptor(ForeignKey* fk, DraggableGraphicsViewItemForForeignKey* fkitm, DraggableGraphicsViewItem* tab1, DraggableGraphicsViewItem* tab2) :
-        m_ellipse(0), m_arrowHead(0), rel1Txt(0), rel2Txt(0),
+        m_ellipse(0), m_arrowHead(0), rel2Txt(0), rel1Txt(0),
         m_fkitm(fkitm),m_tab1(tab1), m_tab2(tab2), m_sentenced(false), firstLine(0), secondLine(0),
         m_descriptor(new DiagramFKDescriptor(tab1->getTable()->getName(), tab2->getTable()->getName(), 0, 0, fk->getName())), m_fk(fk),
         tab1Name(tab1->getTable()->getName()), tab2Name(tab2->getTable()->getName())
@@ -91,28 +91,28 @@ void FkRelationDescriptor::updateContent(bool first)
 
     // now setting up the first relation text
 
-    rel1Txt = new QGraphicsTextItem(getFk()->getLocalDescriptiveText());
+    rel2Txt = new QGraphicsTextItem(getFk()->getLocalDescriptiveText());
     QPointF tab2SidePointsForText[4]  = {
-        QPoint(tab2_leftCenter.x() - rel1Txt->boundingRect().width(), tab2_leftCenter.y()),
+        QPoint(tab2_leftCenter.x() - rel2Txt->boundingRect().width(), tab2_leftCenter.y()),
         tab2_rightCenter,
         QPoint(tab2_topCenter.x(), tab2_topCenter.y() - 20),
         tab2_bottomCenter};
 
-    rel1Txt->setPos(tab2SidePointsForText[whichSecond]);
+    rel2Txt->setPos(tab2SidePointsForText[whichSecond]);
 
     m_descriptor->setRel1TxtPos(tab2SidePointsForText[whichSecond]);
 
     // now setting up the second relation text
 
-    rel2Txt = new QGraphicsTextItem(getFk()->getForeignDescriptiveText());
+    rel1Txt = new QGraphicsTextItem(getFk()->getForeignDescriptiveText());
 
     QPointF tab1SidePointsForText[4]  = {
-        QPoint(tab1_leftCenter.x() - rel2Txt->boundingRect().width() - 10, tab1_leftCenter.y()),
+        QPoint(tab1_leftCenter.x() - rel1Txt->boundingRect().width() - 10, tab1_leftCenter.y()),
         QPoint(tab1_rightCenter.x() + 10, tab1_rightCenter.y()),
         QPoint(tab1_topCenter.x(), tab1_topCenter.y() - 20),
         tab1_bottomCenter};
 
-    rel2Txt->setPos(tab1SidePointsForText[whichFirst]);
+    rel1Txt->setPos(tab1SidePointsForText[whichFirst]);
 
     m_descriptor->setRel2TxtPos(tab1SidePointsForText[whichFirst]);
 
@@ -167,16 +167,16 @@ void FkRelationDescriptor::freePreviousData()
         m_ellipse = 0;
     }
 
-    if(rel1Txt)
-    {
-        delete rel1Txt;
-        rel1Txt = 0;
-    }
-
     if(rel2Txt)
     {
         delete rel2Txt;
         rel2Txt = 0;
+    }
+
+    if(rel1Txt)
+    {
+        delete rel1Txt;
+        rel1Txt = 0;
     }
 
     if(m_arrowHead)
@@ -249,11 +249,11 @@ void FkRelationDescriptor::recreate(Diagram* dgr)
     m_ellipse->setZValue(-4);
     m_ellipse->setBrush(QBrush(Qt::black));
 
-    rel1Txt = new QGraphicsTextItem(getFk()->getLocalDescriptiveText());
-    rel1Txt->setPos(m_descriptor->getRel1TxtPos());
+    rel2Txt = new QGraphicsTextItem(getFk()->getLocalDescriptiveText());
+    rel2Txt->setPos(m_descriptor->getRel1TxtPos());
 
-    rel2Txt = new QGraphicsTextItem(getFk()->getForeignDescriptiveText());
-    rel2Txt->setPos(m_descriptor->getRel2TxtPos());
+    rel1Txt = new QGraphicsTextItem(getFk()->getForeignDescriptiveText());
+    rel1Txt->setPos(m_descriptor->getRel2TxtPos());
 
     QVector<QPointF> polyPoints;
     polyPoints.append(m_descriptor->getArrowP1());
@@ -276,8 +276,8 @@ void FkRelationDescriptor::addToScene(ERGraphicsScene * scene)
     scene->addItem(firstLine);
     scene->addItem(secondLine);
     scene->addItem(m_ellipse);
-    scene->addItem(rel1Txt);
     scene->addItem(rel2Txt);
+    scene->addItem(rel1Txt);
     scene->addItem(m_arrowHead);
 }
 
@@ -288,7 +288,7 @@ void FkRelationDescriptor::removeFromScene()
     scene->removeItem(firstLine);
     scene->removeItem(secondLine);
     scene->removeItem(m_ellipse);
-    scene->removeItem(rel1Txt);
     scene->removeItem(rel2Txt);
+    scene->removeItem(rel1Txt);
     scene->removeItem(m_arrowHead);
 }

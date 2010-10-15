@@ -65,7 +65,8 @@ SOURCES += main.cpp \
     PreferencesDialog.cpp \
     SqlNamesValidator.cpp \
     NameGenerator.cpp \
-    SimpleTextInputDialog.cpp
+    SimpleTextInputDialog.cpp \
+    ContextMenuCollection.cpp
 HEADERS += MainWindow.h \
     MainWindowButtonDialog.h \
     newprojectdialog.h \
@@ -139,7 +140,8 @@ HEADERS += MainWindow.h \
     SqlNamesValidator.h \
     NameGenerator.h \
     SourceCodePresenterWidget.h \
-    SimpleTextInputDialog.h
+    SimpleTextInputDialog.h \
+    ContextMenuCollection.h
 FORMS += mainwindow.ui \
     mainwindowbuttondialog.ui \
     newprojectdialog.ui \
@@ -160,4 +162,3 @@ FORMS += mainwindow.ui \
     SimpleTextInputDialog.ui
 RESOURCES += dbm.qrc
 QTPLUGIN += qsqlmysql
-
