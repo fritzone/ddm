@@ -31,6 +31,7 @@
 #include "PreferencesDialog.h"
 #include "SimpleTextInputDialog.h"
 #include "ContextMenuCollection.h"
+#include "strings.h"
 
 #include <QtGui>
 
@@ -38,29 +39,23 @@
 Q_IMPORT_PLUGIN(qsqlmysql)
 #endif
 
-MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow(parent), ui(new Ui::MainWindow), dock(0), projectTree(0),
-    btndlg(0), weHaveProject(false), m_currentSolution(0), frm(0), m_createTableInstancesPopup(0)
+MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), m_ui(new Ui::MainWindow), m_projectTreeDock(0), m_projectTree(0),
+    m_btndlg(0), m_newTableForm(0), m_createTableInstancesPopup(0)
 {
+    m_ui->setupUi(this);
 
-//    QApplication::setStyle(new QCleanlooksStyle);
+    m_btndlg = new MainWindowButtonDialog();
+    m_btndlg->setMainWindow(this);
 
-    ui->setupUi(this);
+    setCentralWidget(m_btndlg);
 
-    createOtherDialogs();
-
-    btndlg = new MainWindowButtonDialog();
-    btndlg->setMainWindow(this);
-
-    setCentralWidget(btndlg);
-
-    setWindowTitle("DDM - [No Solution]");
+    setWindowTitle(tr("DDM - [No Solution]"));
     resize(800, 600);
 
     m_createTableInstancesPopup = new QMenu();
     m_createTableInstancesPopup->clear();
 
-    ui->action_NewTableInstance->setMenu(m_createTableInstancesPopup);
+    m_ui->action_NewTableInstance->setMenu(m_createTableInstancesPopup);
 
     Configuration::instance();
 
@@ -68,68 +63,60 @@ MainWindow::MainWindow(QWidget *parent)
 
 MainWindow::~MainWindow()
 {
-    delete ui;
+    delete m_ui;
 }
 
-void MainWindow::createOtherDialogs()
-{
-
-}
-
-ContextMenuEnabledTreeWidget* MainWindow::setupGuiForNewSolution()
+void MainWindow::setupGuiForNewSolution()
 {
     // create the dock window
-    dock = new QDockWidget(tr("Solution - ") + m_currentSolution->name(), this);
-    dock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
-    dock->setFeatures(QDockWidget::AllDockWidgetFeatures);
-    dock->setFloating(false);
-    dock->setMinimumSize(300, 340);
-    dock->setMaximumSize(360, 840);
-    dock->setSizePolicy(QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed));
+    m_projectTreeDock = new QDockWidget(tr("Solution - ") + m_currentSolution->name(), this);
+    m_projectTreeDock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
+    m_projectTreeDock->setFeatures(QDockWidget::AllDockWidgetFeatures);
+    m_projectTreeDock->setFloating(false);
+    m_projectTreeDock->setMinimumSize(300, 340);
+    m_projectTreeDock->setMaximumSize(360, 840);
+    m_projectTreeDock->setSizePolicy(QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed));
 
-    dock->resize(301,341);
+    m_projectTreeDock->resize(301,341);
 
-    dockdt = new QDockWidget(tr("DataTypes") , this);
-    dockdt->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
-    dockdt->setFeatures(QDockWidget::AllDockWidgetFeatures);
-    dockdt->setFloating(false);
-    dockdt->setMinimumSize(300, 340);
-    dockdt->setMaximumSize(400, 840);
+    m_datatypesTreeDock = new QDockWidget(tr("DataTypes") , this);
+    m_datatypesTreeDock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
+    m_datatypesTreeDock->setFeatures(QDockWidget::AllDockWidgetFeatures);
+    m_datatypesTreeDock->setFloating(false);
+    m_datatypesTreeDock->setMinimumSize(300, 340);
+    m_datatypesTreeDock->setMaximumSize(400, 840);
 
     // set up the tree
-    projectTree = new ContextMenuEnabledTreeWidget();
-    projectTree->setAllColumnsShowFocus(true);
-    projectTree->setSelectionMode(QAbstractItemView::SingleSelection);
-    projectTree->setSelectionBehavior(QAbstractItemView::SelectItems);
+    m_projectTree = new ContextMenuEnabledTreeWidget();
+    m_projectTree->setAllColumnsShowFocus(true);
+    m_projectTree->setSelectionMode(QAbstractItemView::SingleSelection);
+    m_projectTree->setSelectionBehavior(QAbstractItemView::SelectItems);
 
     ContextMenuHandler* contextMenuHandler = new ContextMenuHandler();
 
-    projectTree->setItemDelegate(new ContextMenuDelegate(contextMenuHandler,projectTree));
-    projectTree->setColumnCount(1);
-    projectTree->setHeaderHidden(true);
-    QObject::connect(projectTree, SIGNAL (currentItemChanged ( QTreeWidgetItem*, QTreeWidgetItem*)), this, SLOT(currentProjectTreeItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)));
-    QObject::connect(projectTree, SIGNAL (itemClicked ( QTreeWidgetItem * , int ) ), this, SLOT(projectTreeItemClicked (QTreeWidgetItem*,int)));
+    m_projectTree->setItemDelegate(new ContextMenuDelegate(contextMenuHandler,m_projectTree));
+    m_projectTree->setColumnCount(1);
+    m_projectTree->setHeaderHidden(true);
+    QObject::connect(m_projectTree, SIGNAL (currentItemChanged ( QTreeWidgetItem*, QTreeWidgetItem*)), this, SLOT(currentProjectTreeItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)));
+    QObject::connect(m_projectTree, SIGNAL (itemClicked ( QTreeWidgetItem * , int ) ), this, SLOT(projectTreeItemClicked (QTreeWidgetItem*,int)));
 
-    datatypesTree = new ContextMenuEnabledTreeWidget();
-    datatypesTree ->setColumnCount(2);
-    QTreeWidgetItem *hdr = datatypesTree->headerItem();
+    m_datatypesTree = new ContextMenuEnabledTreeWidget();
+    m_datatypesTree ->setColumnCount(2);
+    QTreeWidgetItem *hdr = m_datatypesTree->headerItem();
     hdr->setText(0, tr("Type"));
     hdr->setText(1, tr("SQL"));
-    datatypesTree->header()->setDefaultSectionSize(200);
-    datatypesTree->setItemDelegate(new ContextMenuDelegate(contextMenuHandler,datatypesTree));
-    datatypesTree ->setHeaderHidden(false);
-    QObject::connect(datatypesTree, SIGNAL(itemSelectionChanged()), this, SLOT(onDTTreeClicked()));
-    QObject::connect(datatypesTree, SIGNAL (itemClicked ( QTreeWidgetItem * , int ) ), this, SLOT(dtTreeItemClicked(QTreeWidgetItem*,int)));
+    m_datatypesTree->header()->setDefaultSectionSize(200);
+    m_datatypesTree->setItemDelegate(new ContextMenuDelegate(contextMenuHandler,m_datatypesTree));
+    m_datatypesTree ->setHeaderHidden(false);
+    QObject::connect(m_datatypesTree, SIGNAL(itemSelectionChanged()), this, SLOT(onDTTreeClicked()));
+    QObject::connect(m_datatypesTree, SIGNAL (itemClicked ( QTreeWidgetItem * , int ) ), this, SLOT(dtTreeItemClicked(QTreeWidgetItem*,int)));
 
-    dockdt->setWidget(datatypesTree);
-    dock->setWidget(projectTree);
-    addDockWidget(Qt::LeftDockWidgetArea, dock);
-    addDockWidget(Qt::LeftDockWidgetArea, dockdt);
+    m_datatypesTreeDock->setWidget(m_datatypesTree);
+    m_projectTreeDock->setWidget(m_projectTree);
+    addDockWidget(Qt::LeftDockWidgetArea, m_projectTreeDock);
+    addDockWidget(Qt::LeftDockWidgetArea, m_datatypesTreeDock);
 
-    // set a normal size
     showMaximized();
-
-    return projectTree;
 }
 
 void MainWindow::onNewSolution()
@@ -155,19 +142,19 @@ void MainWindow::onNewSolution()
             m_solutions.append(m_currentSolution);
         }
 
-        if(projectTree)
+        if(m_projectTree)
         {
-            delete dock;
-            dock = 0;
-            delete dockdt;
-            dockdt = 0;
-            delete projectTree;
-            projectTree = 0;
+            delete m_projectTreeDock;
+            m_projectTreeDock = 0;
+            delete m_datatypesTreeDock;
+            m_datatypesTreeDock = 0;
+            delete m_projectTree;
+            m_projectTree = 0;
         }
 
-        projectTree = setupGuiForNewSolution();
+        setupGuiForNewSolution();
 
-        Project* project = new Project(nprjdlg->getProjectName().toUpper(), projectTree, datatypesTree, nprjdlg->enableOOPFeatures());
+        Project* project = new Project(nprjdlg->getProjectName().toUpper(), m_projectTree, m_datatypesTree, nprjdlg->enableOOPFeatures());
         project->setEngine(nprjdlg->getDatabaseEngine());
         project->createMajorVersion();
         m_currentSolution->addProject(project);
@@ -202,7 +189,7 @@ void MainWindow::onNewSolution()
                     // set the icon, add to the tree
                     newDTItem->setIcon(0, dts.at(i)->getIcon());
                     newDTItem->setPopupMenu(ContextMenuCollection::getInstance()->getDatatypePopupMenu());
-                    datatypesTree->insertTopLevelItem(0,newDTItem);
+                    m_datatypesTree->insertTopLevelItem(0,newDTItem);
 
                     // add to the project itself
                     getWorkingProject()->getWorkingVersion()->addNewDataType(dts.at(i));
@@ -211,23 +198,19 @@ void MainWindow::onNewSolution()
                     dts.at(i)->setLocation(newDTItem);
                 }
             }
-            datatypesTree->scrollToItem(getWorkingProject()->getWorkingVersion()->getDtsItem());
-            datatypesTree->expandAll();
+            m_datatypesTree->scrollToItem(getWorkingProject()->getWorkingVersion()->getDtsItem());
+            m_datatypesTree->expandAll();
         }
-        //
-
-
 
         // expand the tree
-        projectTree->expandAll();
-        weHaveProject = true;
+        m_projectTree->expandAll();
 
         // show the project properties window
         ProjectDetailsForm* prjDetailsForm = new ProjectDetailsForm(this);
         prjDetailsForm->setProject(project);
         setCentralWidget(prjDetailsForm);
 
-        setWindowTitle("DDM - [" + m_currentSolution->name() + "]");
+        setWindowTitle(tr("DDM - [") + m_currentSolution->name() + tr("]"));
 
         connectActionsFromTablePopupMenu();
         if(!currentSolution()->currentProject()->oopProject())
@@ -242,7 +225,7 @@ void MainWindow::onNewSolution()
 
 void MainWindow::onDTTreeClicked()
 {
-    QList<QTreeWidgetItem*> selectedItems = datatypesTree->selectedItems();
+    QList<QTreeWidgetItem*> selectedItems = m_datatypesTree->selectedItems();
     if(selectedItems.length() == 1)
     {
         QTreeWidgetItem* item = selectedItems[0];
@@ -278,13 +261,13 @@ void MainWindow::showTable(const QString &tabName, bool focus)
         return;
     }
 
-    frm = new NewTableForm(getWorkingProject()->getEngine(), getWorkingProject(), this, false);
-    frm->setTable(table);
-    frm->focusOnName();
+    m_newTableForm = new NewTableForm(getWorkingProject()->getEngine(), getWorkingProject(), this, false);
+    m_newTableForm->setTable(table);
+    m_newTableForm->focusOnName();
 
-    setCentralWidget(frm);
+    setCentralWidget(m_newTableForm);
 
-    if(focus) projectTree->setCurrentItem(table->getLocation());
+    if(focus) m_projectTree->setCurrentItem(table->getLocation());
 }
 
 void MainWindow::showTableInstance(const QString &tabName, bool focus)
@@ -301,7 +284,7 @@ void MainWindow::showTableInstance(const QString &tabName, bool focus)
     frmTinst->createTableWithValues();
     setCentralWidget(frmTinst);
 
-    if(focus) projectTree->setCurrentItem(table->getLocation());
+    if(focus) m_projectTree->setCurrentItem(table->getLocation());
 }
 
 void MainWindow::showDataType(const QString &name, bool focus)
@@ -318,7 +301,7 @@ void MainWindow::showDataType(const QString &name, bool focus)
     frm->setDataType(dt);
     setCentralWidget(frm);
 
-    if(focus) datatypesTree->setCurrentItem(dt->getLocation());
+    if(focus) m_datatypesTree->setCurrentItem(dt->getLocation());
 }
 
 void MainWindow::currentProjectTreeItemChanged(QTreeWidgetItem * current, QTreeWidgetItem*)
@@ -424,11 +407,11 @@ void MainWindow::currentProjectTreeItemChanged(QTreeWidgetItem * current, QTreeW
                 {
                     return;
                 }
-                frm = new NewTableForm(getWorkingProject()->getEngine(), getWorkingProject(), this, false);
-                frm->setTable(table);
-                frm->focusOnName();
+                m_newTableForm = new NewTableForm(getWorkingProject()->getEngine(), getWorkingProject(), this, false);
+                m_newTableForm->setTable(table);
+                m_newTableForm->focusOnName();
 
-                setCentralWidget(frm);
+                setCentralWidget(m_newTableForm);
 
             }
         }
@@ -440,7 +423,7 @@ void MainWindow::onNewTable()
     NewTableForm* frm = new NewTableForm(getWorkingProject()->getEngine(), getWorkingProject(), this, true);
     frm->focusOnName();
 
-    projectTree->setCurrentItem(0);
+    m_projectTree->setCurrentItem(0);
     setCentralWidget(frm);
 }
 
@@ -450,7 +433,7 @@ void MainWindow::onNewDataType()
     NewDataTypeForm* frm = new NewDataTypeForm(getWorkingProject()->getEngine(), this);
     frm->focusOnName();
     frm->setMainWindow(this);
-    projectTree->setCurrentItem(0);
+    m_projectTree->setCurrentItem(0);
     setCentralWidget(frm);
 
 }
@@ -474,7 +457,7 @@ bool MainWindow::onSaveNewTable(Table* tbl)
     newTblsItem->setPopupMenu(ContextMenuCollection::getInstance()->getTablePopupMenu());
     // set the icon, add to the tree
     newTblsItem->setIcon(0, IconFactory::getTablesIcon());
-    projectTree->addTopLevelItem(newTblsItem);
+    m_projectTree->addTopLevelItem(newTblsItem);
 
     // add to the project itself
     getWorkingProject()->getWorkingVersion()->addTable(tbl);
@@ -538,15 +521,15 @@ bool MainWindow::onSaveNewDataType(const QString& name, const QString& type, con
         // set the icon, add to the tree
         newDTItem->setIcon(0, udt->getIcon());
         newDTItem->setPopupMenu(ContextMenuCollection::getInstance()->getDatatypePopupMenu());
-        datatypesTree->insertTopLevelItem(0,newDTItem);
+        m_datatypesTree->insertTopLevelItem(0,newDTItem);
 
         // add to the project itself
         getWorkingProject()->getWorkingVersion()->addNewDataType(udt);
 
         // set the link to the tree
         udt->setLocation(newDTItem);
-        datatypesTree->expandItem(newDTItem);
-        datatypesTree->scrollToItem(newDTItem);
+        m_datatypesTree->expandItem(newDTItem);
+        m_datatypesTree->scrollToItem(newDTItem);
 
         return true;
 
@@ -608,7 +591,7 @@ void MainWindow::populateTreeWithSolution(Solution* sol)
 {
     for(int i=0; i<sol->projects().size(); i++)
     {
-        sol->projects()[i]->createTreeItem(projectTree, datatypesTree);
+        sol->projects()[i]->createTreeItem(m_projectTree, m_datatypesTree);
         sol->projects()[i]->populateTreeItem();
     }
 }
@@ -645,13 +628,13 @@ void MainWindow::onOpenProject()
         currentSolution()->currentProject()->getWorkingVersion()->getTablesItem()->setText(0, tr("Tables"));
     }
 
-    projectTree->expandAll();
+    m_projectTree->expandAll();
 
     ProjectDetailsForm* prjDetailsForm = new ProjectDetailsForm(this);
     prjDetailsForm->setProject(m_currentSolution->currentProject());
     setCentralWidget(prjDetailsForm);
 
-    setWindowTitle("DDM - [" + m_currentSolution->name() + "]");
+    setWindowTitle(tr("DDM - [") + m_currentSolution->name() + tr("]"));
 
     connectActionsFromTablePopupMenu();
 
@@ -660,21 +643,21 @@ void MainWindow::onOpenProject()
 
 void MainWindow::enableActions()
 {
-    ui->action_NewDataType->setEnabled(true);
-    ui->action_NewTable->setEnabled(true);
-    ui->action_NewDiagram->setEnabled(true);
-    ui->action_Save->setEnabled(true);
-    ui->action_SaveAs->setEnabled(true);
+    m_ui->action_NewDataType->setEnabled(true);
+    m_ui->action_NewTable->setEnabled(true);
+    m_ui->action_NewDiagram->setEnabled(true);
+    m_ui->action_Save->setEnabled(true);
+    m_ui->action_SaveAs->setEnabled(true);
     if(currentSolution()->currentProject()->oopProject())
     {
-        ui->action_NewTableInstance->setEnabled(true);
+        m_ui->action_NewTableInstance->setEnabled(true);
     }
     else
     {
-        ui->action_NewTableInstance->setVisible(false);
+        m_ui->action_NewTableInstance->setVisible(false);
 
-        ui->action_NewTable->setText(tr("New Table"));
-        ui->action_NewTable->setToolTip(tr("Create a new Table"));
+        m_ui->action_NewTable->setText(tr("New Table"));
+        m_ui->action_NewTable->setToolTip(tr("Create a new Table"));
 
         ContextMenuEnabledTreeWidgetItem* item = getWorkingProject()->getWorkingVersion()->getTableInstancesItem();
         item->setHidden(true);
@@ -736,7 +719,7 @@ bool MainWindow::onSaveDiagram(Diagram* dgram)
         newDgramItem->setPopupMenu(ContextMenuCollection::getInstance()->getDiagramPopupMenu());
         dgram->setLocation(newDgramItem);
         dgram->setSaved(true);
-        projectTree->addTopLevelItem(newDgramItem);
+        m_projectTree->addTopLevelItem(newDgramItem);
     }
     else
     {
@@ -753,14 +736,14 @@ void MainWindow::onSaveAs()
 
 void MainWindow::onInstantiateTableFromPopup()
 {
-    if(projectTree->getLastRightclickedItem() == 0)
+    if(m_projectTree->getLastRightclickedItem() == 0)
     {
         return;
     }
 
     // TODO: Code duplication with some stuff from below (onDelete...)
-    ContextMenuEnabledTreeWidgetItem* item = projectTree->getLastRightclickedItem();
-    projectTree->setLastRightclickedItem(0);
+    ContextMenuEnabledTreeWidgetItem* item = m_projectTree->getLastRightclickedItem();
+    m_projectTree->setLastRightclickedItem(0);
 
     QVariant qv = item->data(0, Qt::UserRole);
     QString tabName = qv.toString();
@@ -770,19 +753,19 @@ void MainWindow::onInstantiateTableFromPopup()
         return;
     }
 
-    projectTree->setCurrentItem(instantiateTable(table->getName()));
+    m_projectTree->setCurrentItem(instantiateTable(table->getName()));
 }
 
 void MainWindow::onSpecializeTableFromPopup()
 {
-    if(projectTree->getLastRightclickedItem() == 0)
+    if(m_projectTree->getLastRightclickedItem() == 0)
     {
         return;
     }
 
     // TODO: Code duplication with some stuff from below (onDelete...)
-    ContextMenuEnabledTreeWidgetItem* item = projectTree->getLastRightclickedItem();
-    projectTree->setLastRightclickedItem(0);
+    ContextMenuEnabledTreeWidgetItem* item = m_projectTree->getLastRightclickedItem();
+    m_projectTree->setLastRightclickedItem(0);
 
     QVariant qv = item->data(0, Qt::UserRole);
     QString tabName = qv.toString();
@@ -805,7 +788,7 @@ void MainWindow::onSpecializeTableFromPopup()
     newTblsItem->setPopupMenu(ContextMenuCollection::getInstance()->getTablePopupMenu());
     // set the icon, add to the tree
     newTblsItem->setIcon(0, IconFactory::getTablesIcon());
-    projectTree->insertTopLevelItem(0, newTblsItem);
+    m_projectTree->insertTopLevelItem(0, newTblsItem);
 
     // add to the project itself
     getWorkingProject()->getWorkingVersion()->addTable(tbl);
@@ -814,35 +797,35 @@ void MainWindow::onSpecializeTableFromPopup()
     tbl->setLocation(newTblsItem);
 
     // now open the new table for to show this table
-    projectTree->setCurrentItem(newTblsItem);
-    projectTree->scrollToItem(newTblsItem);
-    if(frm != 0)
+    m_projectTree->setCurrentItem(newTblsItem);
+    m_projectTree->scrollToItem(newTblsItem);
+    if(m_newTableForm != 0)
     {
-        frm->selectTab(0);
-        frm->focusOnNewColumnName();
+        m_newTableForm->selectTab(0);
+        m_newTableForm->focusOnNewColumnName();
     }
 }
 
 void MainWindow::onTableAddColumnFromPopup()
 {
-    if(projectTree->getLastRightclickedItem() != 0)
+    if(m_projectTree->getLastRightclickedItem() != 0)
     {
-        projectTree->setCurrentItem(projectTree->getLastRightclickedItem(), 0);  // this is supposed to open the window "frm" too
-        if(frm != 0)
+        m_projectTree->setCurrentItem(m_projectTree->getLastRightclickedItem(), 0);  // this is supposed to open the window "frm" too
+        if(m_newTableForm != 0)
         {
-            frm->selectTab(0);
-            frm->focusOnNewColumnName();
-            projectTree->setLastRightclickedItem(0);
+            m_newTableForm->selectTab(0);
+            m_newTableForm->focusOnNewColumnName();
+            m_projectTree->setLastRightclickedItem(0);
         }
     }
 }
 
 Table* MainWindow::getRightclickedTable()
 {
-    if(projectTree->getLastRightclickedItem() != 0)
+    if(m_projectTree->getLastRightclickedItem() != 0)
     {
-        ContextMenuEnabledTreeWidgetItem* item = projectTree->getLastRightclickedItem();
-        projectTree->setLastRightclickedItem(0);
+        ContextMenuEnabledTreeWidgetItem* item = m_projectTree->getLastRightclickedItem();
+        m_projectTree->setLastRightclickedItem(0);
 
         QVariant qv = item->data(0, Qt::UserRole);
         QString tabName = qv.toString();
@@ -854,10 +837,10 @@ Table* MainWindow::getRightclickedTable()
 
 TableInstance* MainWindow::getRightclickedTableInstance()
 {
-    if(projectTree->getLastRightclickedItem() != 0)
+    if(m_projectTree->getLastRightclickedItem() != 0)
     {
-        ContextMenuEnabledTreeWidgetItem* item = projectTree->getLastRightclickedItem();
-        projectTree->setLastRightclickedItem(0);
+        ContextMenuEnabledTreeWidgetItem* item = m_projectTree->getLastRightclickedItem();
+        m_projectTree->setLastRightclickedItem(0);
 
         QVariant qv = item->data(0, Qt::UserRole);
         QString tabName = qv.toString();
@@ -869,10 +852,10 @@ TableInstance* MainWindow::getRightclickedTableInstance()
 
 Diagram* MainWindow::getRightclickedDiagram()
 {
-    if(projectTree->getLastRightclickedItem() != 0)
+    if(m_projectTree->getLastRightclickedItem() != 0)
     {
-        ContextMenuEnabledTreeWidgetItem* item = projectTree->getLastRightclickedItem();
-        projectTree->setLastRightclickedItem(0);
+        ContextMenuEnabledTreeWidgetItem* item = m_projectTree->getLastRightclickedItem();
+        m_projectTree->setLastRightclickedItem(0);
 
         QVariant qv = item->data(0, Qt::UserRole);
         QString dgrName = qv.toString();
@@ -884,10 +867,10 @@ Diagram* MainWindow::getRightclickedDiagram()
 
 UserDataType* MainWindow::getRightclickedDatatype()
 {
-    if(datatypesTree->getLastRightclickedItem() != 0)
+    if(m_datatypesTree->getLastRightclickedItem() != 0)
     {
-        ContextMenuEnabledTreeWidgetItem* item = datatypesTree->getLastRightclickedItem();
-        datatypesTree->setLastRightclickedItem(0);
+        ContextMenuEnabledTreeWidgetItem* item = m_datatypesTree->getLastRightclickedItem();
+        m_datatypesTree->setLastRightclickedItem(0);
 
         QVariant qv = item->data(0, Qt::UserRole);
         UserDataType* udt = static_cast<UserDataType*>(qv.data());
@@ -1039,7 +1022,7 @@ void MainWindow::onRenameInstanceFromPopup()
     TableInstance* tinst = getRightclickedTableInstance();
     if(tinst)
     {
-        SimpleTextInputDialog* dlg = new SimpleTextInputDialog(this, "Enter the new name");
+        SimpleTextInputDialog* dlg = new SimpleTextInputDialog(this, tr("Enter the new name"));
         dlg->setModal(true);
         dlg->setText(tinst->getName());
         if(dlg->exec() == QDialog::Accepted)
@@ -1058,7 +1041,7 @@ void MainWindow::onRenameDiagramFromPopup()
     Diagram* dgr = getRightclickedDiagram();
     if(dgr)
     {
-        SimpleTextInputDialog* dlg = new SimpleTextInputDialog(this, "Enter the new name");
+        SimpleTextInputDialog* dlg = new SimpleTextInputDialog(this, tr("Enter the new name"));
         dlg->setModal(true);
         dlg->setText(dgr->getName());
         if(dlg->exec() == QDialog::Accepted)
@@ -1082,7 +1065,7 @@ void MainWindow::onDeleteInstanceFromPopup()
             if(tinst->getReferencingTables().length() > 0)
             {
                 QMessageBox::critical(this, tr("Error"), tr("Cannot delete this table instance since it was auto-instantiated because another table has a foreign key to it. Deleting the following tables will remove this table too:\n") + tinst->getReferencingTables(), QMessageBox::Ok);
-                projectTree->setLastRightclickedItem(0);
+                m_projectTree->setLastRightclickedItem(0);
                 return;
             }
         }
@@ -1136,19 +1119,19 @@ void MainWindow::onCloseSolution()
         return;
     }
 
-    delete dock;
-    delete dockdt;
+    delete m_projectTreeDock;
+    delete m_datatypesTreeDock;
 
     m_solutions.clear();
     m_currentSolution = 0;
-    dock = 0;
-    dockdt = 0;
-    projectTree = 0;
+    m_projectTreeDock = 0;
+    m_datatypesTreeDock = 0;
+    m_projectTree = 0;
 
-    btndlg = new MainWindowButtonDialog();
-    btndlg->setMainWindow(this);
-    setCentralWidget(btndlg);
-    setWindowTitle("DDM - [No Solution]");
+    m_btndlg = new MainWindowButtonDialog();
+    m_btndlg->setMainWindow(this);
+    setCentralWidget(m_btndlg);
+    setWindowTitle(tr("DDM - [No Solution]"));
 
     resize(800, 600);
     showNormal();
@@ -1156,7 +1139,7 @@ void MainWindow::onCloseSolution()
 
 void MainWindow::onDeleteDatatypeFromPopup()
 {
-    ContextMenuEnabledTreeWidgetItem* itm = datatypesTree->getLastRightclickedItem();
+    ContextMenuEnabledTreeWidgetItem* itm = m_datatypesTree->getLastRightclickedItem();
     if(!itm)
     {
         return;
@@ -1178,7 +1161,7 @@ void MainWindow::onDeleteDatatypeFromPopup()
                     QString cn = tablesColumns.at(j)->getDataType()->getName();
                     if(cn == dtName)
                     {
-                        usage += "Table: " + allTables.at(i)->getName() + " Column:" + tablesColumns.at(j)->getName() + "\n";
+                        usage += tr("Table: ") + allTables.at(i)->getName() + tr(" Column:") + tablesColumns.at(j)->getName() + "\n";
                     }
                 }
             }
@@ -1212,16 +1195,16 @@ void MainWindow::onDuplicateDatatypeFromPopup()
         // set the icon, add to the tree
         newDTItem->setIcon(0, dup->getIcon());
         newDTItem->setPopupMenu(ContextMenuCollection::getInstance()->getDatatypePopupMenu());
-        datatypesTree->insertTopLevelItem(0,newDTItem);
+        m_datatypesTree->insertTopLevelItem(0,newDTItem);
 
         // set the link to the tree
         dup->setLocation(newDTItem);
-        datatypesTree->expandItem(newDTItem);
-        datatypesTree->scrollToItem(newDTItem);
+        m_datatypesTree->expandItem(newDTItem);
+        m_datatypesTree->scrollToItem(newDTItem);
 
         // resize to look better
-        datatypesTree->resizeColumnToContents(0);
-        datatypesTree->resizeColumnToContents(1);
+        m_datatypesTree->resizeColumnToContents(0);
+        m_datatypesTree->resizeColumnToContents(1);
     }
 }
 
