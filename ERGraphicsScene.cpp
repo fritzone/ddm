@@ -121,8 +121,8 @@ void ERGraphicsScene::addForeignKey(FkRelationDescriptor* fkrd )
     addItem(fkrd->getSecondLine() );
     addItem(fkrd->m_ellipse );
     addItem(fkrd->m_arrowHead );
-    addItem(fkrd->rel1Txt);
     addItem(fkrd->rel2Txt);
+    addItem(fkrd->rel1Txt);
     m_diagram->m_fksOnStage.append(fkrd);
 }
 
@@ -208,8 +208,8 @@ void ERGraphicsScene::upadteFkrds()
 
         addItem(m_diagram->m_fksOnStage[i]->m_ellipse );
         addItem(m_diagram->m_fksOnStage[i]->m_arrowHead);
-        addItem(m_diagram->m_fksOnStage[i]->rel1Txt);
         addItem(m_diagram->m_fksOnStage[i]->rel2Txt);
+        addItem(m_diagram->m_fksOnStage[i]->rel1Txt);
     }
 }
 

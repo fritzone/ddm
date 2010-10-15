@@ -15,7 +15,7 @@ class FkRelationDescriptor
 {
 public:
 
-    /* TODO: something is messed up in the algorithm finding the closest points. Right now it works, but stinks. when you have time fix it.*/
+    /* LPTODO: something is messed up in the algorithm finding the closest points. Right now it works, but stinks. when you have time fix it.*/
     static const int LEFT = 1;
     static const int RIGHT = 0;
     static const int TOP = 3;
@@ -23,15 +23,12 @@ public:
 
     FkRelationDescriptor(ForeignKey* fk, DraggableGraphicsViewItemForForeignKey* fkitm, DraggableGraphicsViewItem* tab1, DraggableGraphicsViewItem* tab2);
 
-    FkRelationDescriptor() : m_ellipse(0), m_arrowHead(0), rel1Txt(0), rel2Txt(0),
+    FkRelationDescriptor() : m_ellipse(0), m_arrowHead(0), rel2Txt(0), rel1Txt(0),
         m_fkitm(0),m_tab1(0), m_tab2(0), m_sentenced(false), firstLine(0), secondLine(0),
         m_descriptor(), m_fk(0), tab1Name(""), tab2Name("")
     {}
 
     void updateContent(bool first = false);
-    
-    
-public:
     
     DraggableGraphicsViewItemForForeignKey* getItem()
     {
@@ -76,10 +73,8 @@ public:
 
     QGraphicsEllipseItem* m_ellipse;
     QGraphicsPolygonItem* m_arrowHead;
-
-    // TODO: rel1Txt and rel2Txt have inverted roles in the code. would be nice to fix
-    QGraphicsTextItem* rel1Txt;
     QGraphicsTextItem* rel2Txt;
+    QGraphicsTextItem* rel1Txt;
 
     const ForeignKey* getFk() const
     {

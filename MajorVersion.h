@@ -100,77 +100,9 @@ public:
 
     virtual Diagram* getDiagram(const QString& name);
 
-    virtual QMenu* getTablePopupMenu()
-    {
-        return m_tablePopupMenu;
-    }
-
-    virtual QMenu* getDatatypePopupMenu()
-    {
-        return m_datatypePopupMenu;
-    }
-
-    virtual QMenu* getTableInstancePopupMenu()
-    {
-        return m_tableInstancePopupMenu;
-    }
-
-    virtual QMenu* getDiagramPopupMenu()
-    {
-        return m_diagramPopupMenu;
-    }
-
-    virtual QAction * getAction_RemoveTable()
-    {
-        return action_RemoveTable;
-    }
-
-    virtual QAction * getAction_TableAddColumn()
-    {
-        return action_TableAddColumn;
-    }
-
-    virtual QAction * getAction_SpecializeTable()
-    {
-        return action_SpecializeTable;
-    }
-
-    virtual QAction * getAction_DeleteTableInstance()
-    {
-        return action_DeleteTableInstance;
-    }
-
-    virtual QAction * getAction_RenameTableInstance()
-    {
-        return action_RenameTableInstance;
-    }
-
-    virtual QAction* getAction_DeleteDataType()
-    {
-        return action_DeleteDataType;
-    }
-
     virtual Table* duplicateTable(Table*);
 
     virtual void removeForeignKeyFromDiagrams(ForeignKey*);
-
-    virtual QAction * getAction_DuplicateTable()
-    {
-        return action_DuplicateTable;
-    }
-    virtual QAction * getAction_InstantiateTable()
-    {
-        return action_InstantiateTable;
-    }
-    virtual QAction* getAction_DuplicateDataType()
-    {
-        return action_DuplicateDataType;
-    }
-
-    virtual QAction* getAction_DeleteDiagram()
-    {
-        return action_DeleteDiagram;
-    }
 
     virtual void setupTableParentChildRelationships();
 
@@ -195,11 +127,6 @@ public:
     virtual UserDataType* duplicateDataType(const QString&);
 
     virtual void deleteDiagram(const QString&);
-
-    virtual QAction* getAction_RenameDiagram()
-    {
-        return action_RenameDiagram;
-    }
 
 private:
 
@@ -239,27 +166,6 @@ private:
     QTreeWidget* m_dtTree;
 
     ContextMenuEnabledTreeWidgetItem* m_projectItem;
-
-    QMenu* m_tablePopupMenu;
-    QMenu* m_tableInstancePopupMenu;
-    QMenu* m_datatypePopupMenu;
-    QMenu* m_diagramPopupMenu;
-
-    QAction * action_RemoveTable;
-    QAction * action_DuplicateTable;
-    QAction * action_SpecializeTable;
-    QAction * action_InstantiateTable;
-    QAction * action_TableAddColumn;
-
-    QAction * action_DeleteTableInstance;
-    QAction * action_RenameTableInstance;
-
-    QAction * action_DeleteDataType;
-    QAction * action_DuplicateDataType;
-
-    QAction * action_DeleteDiagram;
-    QAction * action_RenameDiagram;
-
 
     Project* m_project;
 };

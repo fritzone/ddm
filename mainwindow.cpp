@@ -30,6 +30,7 @@
 #include "TableInstancesListForm.h"
 #include "PreferencesDialog.h"
 #include "SimpleTextInputDialog.h"
+#include "ContextMenuCollection.h"
 
 #include <QtGui>
 
@@ -200,7 +201,7 @@ void MainWindow::onNewSolution()
                     newDTItem->setData(0, Qt::UserRole, var);
                     // set the icon, add to the tree
                     newDTItem->setIcon(0, dts.at(i)->getIcon());
-                    newDTItem->setPopupMenu(getWorkingProject()->getWorkingVersion()->getDatatypePopupMenu());
+                    newDTItem->setPopupMenu(ContextMenuCollection::getInstance()->getDatatypePopupMenu());
                     datatypesTree->insertTopLevelItem(0,newDTItem);
 
                     // add to the project itself
@@ -470,7 +471,7 @@ bool MainWindow::onSaveNewTable(Table* tbl)
 
     QVariant var(tbl->getName());
     newTblsItem->setData(0, Qt::UserRole, var);
-    newTblsItem->setPopupMenu(getWorkingProject()->getWorkingVersion()->getTablePopupMenu());
+    newTblsItem->setPopupMenu(ContextMenuCollection::getInstance()->getTablePopupMenu());
     // set the icon, add to the tree
     newTblsItem->setIcon(0, IconFactory::getTablesIcon());
     projectTree->addTopLevelItem(newTblsItem);
@@ -536,7 +537,7 @@ bool MainWindow::onSaveNewDataType(const QString& name, const QString& type, con
         newDTItem->setData(0, Qt::UserRole, var);
         // set the icon, add to the tree
         newDTItem->setIcon(0, udt->getIcon());
-        newDTItem->setPopupMenu(getWorkingProject()->getWorkingVersion()->getDatatypePopupMenu());
+        newDTItem->setPopupMenu(ContextMenuCollection::getInstance()->getDatatypePopupMenu());
         datatypesTree->insertTopLevelItem(0,newDTItem);
 
         // add to the project itself
@@ -683,28 +684,28 @@ void MainWindow::enableActions()
 
 void MainWindow::connectActionsFromTablePopupMenu()
 {
-    QObject::connect(getWorkingProject()->getWorkingVersion()->getAction_RemoveTable(), SIGNAL(activated()), this, SLOT(onDeleteTableFromPopup()));
-    QObject::connect(getWorkingProject()->getWorkingVersion()->getAction_TableAddColumn(), SIGNAL(activated()), this, SLOT(onTableAddColumnFromPopup()));
+    QObject::connect(ContextMenuCollection::getInstance()->getAction_RemoveTable(), SIGNAL(activated()), this, SLOT(onDeleteTableFromPopup()));
+    QObject::connect(ContextMenuCollection::getInstance()->getAction_TableAddColumn(), SIGNAL(activated()), this, SLOT(onTableAddColumnFromPopup()));
     if(currentSolution()->currentProject()->oopProject())
     {
         // the table popup
-        QObject::connect(getWorkingProject()->getWorkingVersion()->getAction_SpecializeTable(), SIGNAL(activated()), this, SLOT(onSpecializeTableFromPopup()));
-        QObject::connect(getWorkingProject()->getWorkingVersion()->getAction_InstantiateTable(), SIGNAL(activated()), this, SLOT(onInstantiateTableFromPopup()));
+        QObject::connect(ContextMenuCollection::getInstance()->getAction_SpecializeTable(), SIGNAL(activated()), this, SLOT(onSpecializeTableFromPopup()));
+        QObject::connect(ContextMenuCollection::getInstance()->getAction_InstantiateTable(), SIGNAL(activated()), this, SLOT(onInstantiateTableFromPopup()));
 
         // now the table instance popup
-        QObject::connect(getWorkingProject()->getWorkingVersion()->getAction_DeleteTableInstance(), SIGNAL(activated()), this, SLOT(onDeleteInstanceFromPopup()));
-        QObject::connect(getWorkingProject()->getWorkingVersion()->getAction_RenameTableInstance(), SIGNAL(activated()), this, SLOT(onRenameInstanceFromPopup()));
+        QObject::connect(ContextMenuCollection::getInstance()->getAction_DeleteTableInstance(), SIGNAL(activated()), this, SLOT(onDeleteInstanceFromPopup()));
+        QObject::connect(ContextMenuCollection::getInstance()->getAction_RenameTableInstance(), SIGNAL(activated()), this, SLOT(onRenameInstanceFromPopup()));
     }
     else
     {
-        getWorkingProject()->getWorkingVersion()->getAction_SpecializeTable()->setVisible(false);
-        getWorkingProject()->getWorkingVersion()->getAction_InstantiateTable()->setVisible(false);
+        ContextMenuCollection::getInstance()->getAction_SpecializeTable()->setVisible(false);
+        ContextMenuCollection::getInstance()->getAction_InstantiateTable()->setVisible(false);
     }
-    QObject::connect(getWorkingProject()->getWorkingVersion()->getAction_DuplicateTable(), SIGNAL(activated()), this, SLOT(onDuplicateTableFromPopup()));
-    QObject::connect(getWorkingProject()->getWorkingVersion()->getAction_DeleteDataType(), SIGNAL(activated()), this, SLOT(onDeleteDatatypeFromPopup()));
-    QObject::connect(getWorkingProject()->getWorkingVersion()->getAction_DuplicateDataType(), SIGNAL(activated()), this, SLOT(onDuplicateDatatypeFromPopup()));
-    QObject::connect(getWorkingProject()->getWorkingVersion()->getAction_DeleteDiagram(), SIGNAL(activated()), this, SLOT(onDeleteDiagramFromPopup()));
-    QObject::connect(getWorkingProject()->getWorkingVersion()->getAction_RenameDiagram(), SIGNAL(activated()), this, SLOT(onRenameDiagramFromPopup()));
+    QObject::connect(ContextMenuCollection::getInstance()->getAction_DuplicateTable(), SIGNAL(activated()), this, SLOT(onDuplicateTableFromPopup()));
+    QObject::connect(ContextMenuCollection::getInstance()->getAction_DeleteDataType(), SIGNAL(activated()), this, SLOT(onDeleteDatatypeFromPopup()));
+    QObject::connect(ContextMenuCollection::getInstance()->getAction_DuplicateDataType(), SIGNAL(activated()), this, SLOT(onDuplicateDatatypeFromPopup()));
+    QObject::connect(ContextMenuCollection::getInstance()->getAction_DeleteDiagram(), SIGNAL(activated()), this, SLOT(onDeleteDiagramFromPopup()));
+    QObject::connect(ContextMenuCollection::getInstance()->getAction_RenameDiagram(), SIGNAL(activated()), this, SLOT(onRenameDiagramFromPopup()));
 }
 
 void MainWindow::onAbout()
@@ -732,7 +733,7 @@ bool MainWindow::onSaveDiagram(Diagram* dgram)
         QVariant var(dgram->getName());
         newDgramItem->setData(0, Qt::UserRole, var);
         newDgramItem->setIcon(0, IconFactory::getDiagramIcon());
-        newDgramItem->setPopupMenu(getWorkingProject()->getWorkingVersion()->getDiagramPopupMenu());
+        newDgramItem->setPopupMenu(ContextMenuCollection::getInstance()->getDiagramPopupMenu());
         dgram->setLocation(newDgramItem);
         dgram->setSaved(true);
         projectTree->addTopLevelItem(newDgramItem);
@@ -801,7 +802,7 @@ void MainWindow::onSpecializeTableFromPopup()
 
     QVariant var(tbl->getName());
     newTblsItem->setData(0, Qt::UserRole, var);
-    newTblsItem->setPopupMenu(getWorkingProject()->getWorkingVersion()->getTablePopupMenu());
+    newTblsItem->setPopupMenu(ContextMenuCollection::getInstance()->getTablePopupMenu());
     // set the icon, add to the tree
     newTblsItem->setIcon(0, IconFactory::getTablesIcon());
     projectTree->insertTopLevelItem(0, newTblsItem);
@@ -975,7 +976,7 @@ ContextMenuEnabledTreeWidgetItem* MainWindow::instantiateTable(const QString& ta
     Version* cVersion = currentSolution()->currentProject()->getWorkingVersion();
     TableInstance* tinst = cVersion->instantiateTable(cVersion->getTable(tabName), ref);
     ContextMenuEnabledTreeWidgetItem* itm = new ContextMenuEnabledTreeWidgetItem(cVersion->getTableInstancesItem(), QStringList(tinst->getName()));
-    itm->setPopupMenu(cVersion->getTableInstancePopupMenu());
+    itm->setPopupMenu(ContextMenuCollection::getInstance()->getTableInstancePopupMenu());
     if(!ref)
     {
         itm->setIcon(0, IconFactory::getTabinstIcon());
@@ -1210,7 +1211,7 @@ void MainWindow::onDuplicateDatatypeFromPopup()
         newDTItem->setData(0, Qt::UserRole, var);
         // set the icon, add to the tree
         newDTItem->setIcon(0, dup->getIcon());
-        newDTItem->setPopupMenu(getWorkingProject()->getWorkingVersion()->getDatatypePopupMenu());
+        newDTItem->setPopupMenu(ContextMenuCollection::getInstance()->getDatatypePopupMenu());
         datatypesTree->insertTopLevelItem(0,newDTItem);
 
         // set the link to the tree
