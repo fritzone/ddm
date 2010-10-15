@@ -66,7 +66,8 @@ SOURCES += main.cpp \
     SqlNamesValidator.cpp \
     NameGenerator.cpp \
     SimpleTextInputDialog.cpp \
-    ContextMenuCollection.cpp
+    ContextMenuCollection.cpp \
+    Workspace.cpp
 HEADERS += MainWindow.h \
     MainWindowButtonDialog.h \
     newprojectdialog.h \
@@ -141,7 +142,8 @@ HEADERS += MainWindow.h \
     NameGenerator.h \
     SourceCodePresenterWidget.h \
     SimpleTextInputDialog.h \
-    ContextMenuCollection.h
+    ContextMenuCollection.h \
+    Workspace.h
 FORMS += mainwindow.ui \
     mainwindowbuttondialog.ui \
     newprojectdialog.ui \

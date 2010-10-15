@@ -12,7 +12,6 @@ class AbstractDTSupplier;
 class UserDataType;
 class Table;
 class TableInstance;
-class Solution;
 class Diagram;
 class ContextMenuEnabledTreeWidget;
 class ContextMenuEnabledTreeWidgetItem;
@@ -103,11 +102,9 @@ public slots:
 
 private:
 
-    ContextMenuEnabledTreeWidget* setupGuiForNewSolution();
+    void setupGuiForNewSolution();
     void populateTreeWithSolution(Solution* sol);
     void saveProject(bool saveAs = false);
-    // to create the other dialogs needed in the app
-    void createOtherDialogs();
     void enableActions();
     void connectActionsFromTablePopupMenu();
     Table* getRightclickedTable();
@@ -116,34 +113,31 @@ private:
     Diagram* getRightclickedDiagram();
 
 private:
-    Ui::MainWindow *ui;
+    Ui::MainWindow *m_ui;
 
     // the dock window in which the project tree is to be found
-    QDockWidget* dock;
+    QDockWidget* m_projectTreeDock;
 
     // the dock widget for the data types
-    QDockWidget* dockdt;
+    QDockWidget* m_datatypesTreeDock;
 
     // the tree which contains everything related to the current project
-    ContextMenuEnabledTreeWidget* projectTree;
+    ContextMenuEnabledTreeWidget* m_projectTree;
+
     // the tree containing the data types
-    ContextMenuEnabledTreeWidget* datatypesTree;
+    ContextMenuEnabledTreeWidget* m_datatypesTree;
+
     // the tree which contains everything related to the current project
-    ContextMenuEnabledTreeWidget* tableInstancesTree;
+    ContextMenuEnabledTreeWidget* m_tableInstancesTree;
 
     // the initial three button dialog
-    MainWindowButtonDialog* btndlg;
-
-    // true if we are working on a project
-    bool weHaveProject;
-
-    QVector<Solution*> m_solutions;
-    Solution* m_currentSolution;
+    MainWindowButtonDialog* m_btndlg;
 
     // this is the table screen which is current
-    NewTableForm* frm;
-    QMenu* m_createTableInstancesPopup;
+    NewTableForm* m_newTableForm;
 
+    // this menu is popped up when the user clicked the create table instance button
+    QMenu* m_createTableInstancesPopup;
 
 };
 
