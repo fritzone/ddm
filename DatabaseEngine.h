@@ -58,6 +58,8 @@ public:
 
     virtual QString dbname() = 0;
 
+    virtual QString getDefaultDatatypesLocation() = 0;
+
     virtual bool injectSql(const QString& host, const QString& user, const QString& pass, const QString& dbName, const QStringList& sqls, QString& lastSql) = 0;
 
     QString getLastError() const

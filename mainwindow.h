@@ -16,6 +16,7 @@ class Diagram;
 class ContextMenuEnabledTreeWidget;
 class ContextMenuEnabledTreeWidgetItem;
 class NewTableForm;
+class Solution;
 
 namespace Ui
 {
@@ -39,8 +40,6 @@ public:
                              const QStringList& mvs, const QString& desc,
                              bool unsi, bool canBeNull, bool autoInc, UserDataType* pudt);
 
-    Project* getWorkingProject();
-
     /**
      * This methid gets called when a new table is saved
      */
@@ -51,8 +50,6 @@ public:
      * for now is to update the tree entry in the project tree and the associated tree widget
      */
     bool onUpdateTable(Table* tbl);
-
-    Solution* currentSolution();
 
     bool onSaveDiagram(Diagram*);
 
@@ -111,6 +108,7 @@ private:
     TableInstance* getRightclickedTableInstance();
     UserDataType* getRightclickedDatatype();
     Diagram* getRightclickedDiagram();
+    ContextMenuEnabledTreeWidgetItem* createDataTypeTreeEntry(UserDataType*);
 
 private:
     Ui::MainWindow *m_ui;

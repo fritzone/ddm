@@ -44,3 +44,8 @@ bool MySQLDatabaseEngine::injectSql(const QString& host, const QString& user, co
 
     return true;
 }
+
+QString MySQLDatabaseEngine::getDefaultDatatypesLocation()
+{
+    return "mysql.defaults";
+}
