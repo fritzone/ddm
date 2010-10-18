@@ -20,6 +20,8 @@ public:
 
     virtual bool injectSql(const QString& host, const QString& user, const QString& pass, const QString& dbName, const QStringList& sqls, QString& lastSql);
 
+    virtual QString getDefaultDatatypesLocation();
+
 };
 
 #endif // MYSQLDATABASEENGINE_H
