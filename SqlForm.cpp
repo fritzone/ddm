@@ -6,6 +6,7 @@
 #include "Version.h"
 #include "Configuration.h"
 #include "TableInstance.h"
+#include "Workspace.h"
 #include "Project.h"
 
 #include <QFileDialog>
@@ -78,7 +79,7 @@ void SqlForm::presentSql(Project* p)
 
     Version *v = p->getWorkingVersion();
     QStringList finalSql("-- Full SQL listing for project " + p->getName() + "\n");
-    if(v->oop())   // list the table instances' SQL
+    if(Workspace::getInstance()->currentProjectIsOop())   // list the table instances' SQL
     {
         QHash<QString, QString> opts = Configuration::instance().sqlGenerationOptions();
         bool upcase = opts.contains("Case") && opts["Case"] == "Upper";
