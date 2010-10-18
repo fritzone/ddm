@@ -17,6 +17,7 @@ class ContextMenuEnabledTreeWidget;
 class ContextMenuEnabledTreeWidgetItem;
 class NewTableForm;
 class Solution;
+class Workspace;
 
 namespace Ui
 {
@@ -109,6 +110,9 @@ private:
     UserDataType* getRightclickedDatatype();
     Diagram* getRightclickedDiagram();
     ContextMenuEnabledTreeWidgetItem* createDataTypeTreeEntry(UserDataType*);
+    void showButtonDialog();
+    void freeGuiElements();
+    void showProjectDetails();
 
 private:
     Ui::MainWindow *m_ui;
@@ -125,9 +129,6 @@ private:
     // the tree containing the data types
     ContextMenuEnabledTreeWidget* m_datatypesTree;
 
-    // the tree which contains everything related to the current project
-    ContextMenuEnabledTreeWidget* m_tableInstancesTree;
-
     // the initial three button dialog
     MainWindowButtonDialog* m_btndlg;
 
@@ -136,6 +137,8 @@ private:
 
     // this menu is popped up when the user clicked the create table instance button
     QMenu* m_createTableInstancesPopup;
+
+    Workspace* m_workspace;
 
 };
 

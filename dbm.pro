@@ -67,7 +67,9 @@ SOURCES += main.cpp \
     NameGenerator.cpp \
     SimpleTextInputDialog.cpp \
     ContextMenuCollection.cpp \
-    Workspace.cpp
+    Workspace.cpp \
+    VersionGuiElements.cpp \
+    DefaultVersionImplementation.cpp
 HEADERS += MainWindow.h \
     MainWindowButtonDialog.h \
     newprojectdialog.h \
@@ -143,7 +145,9 @@ HEADERS += MainWindow.h \
     SourceCodePresenterWidget.h \
     SimpleTextInputDialog.h \
     ContextMenuCollection.h \
-    Workspace.h
+    Workspace.h \
+    VersionGuiElements.h \
+    DefaultVersionImplementation.h
 FORMS += mainwindow.ui \
     mainwindowbuttondialog.ui \
     newprojectdialog.ui \

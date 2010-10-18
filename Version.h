@@ -12,6 +12,7 @@ class Diagram;
 class ContextMenuEnabledTreeWidgetItem;
 class TableInstance;
 class DatabaseEngine;
+class VersionGuiElements;
 
 /**
  * Basic class holding data related to versions
@@ -22,45 +23,31 @@ public:
     Version() {};
     virtual ~Version() {};
 
-    /**
-     * Return the tree item of the Data Types
-     */
-    virtual ContextMenuEnabledTreeWidgetItem* getDtsItem() const = 0;
-
-    /**
-     * Return the tree item of the Tables
-     */
-    virtual ContextMenuEnabledTreeWidgetItem* getTablesItem() const = 0;
-
-    /**
-     * Return the tree item of the final SQL script
-     */
-    virtual ContextMenuEnabledTreeWidgetItem* getFinalSqlItem() const = 0;
-
-    /**
-     * Return the tree item of the defined queries
-     */
-    virtual ContextMenuEnabledTreeWidgetItem* getTableInstancesItem() const = 0;
-
-    /**
-     * Return the tree item of the Version
-     */
-    virtual ContextMenuEnabledTreeWidgetItem* getVersionItem() const = 0;
-
-    /**
-     * Return the tree item of the diagrams
-     */
-    virtual ContextMenuEnabledTreeWidgetItem* getDiagramsItem() const = 0;
-
-    /**
-     * Adds a new data type to this version
-     */
-    virtual void addNewDataType(UserDataType*) = 0;
 
     /**
      * Returns a constant reference to the data types of the version
      */
     virtual const QVector<UserDataType*>& getDataTypes() const = 0;
+
+    /**
+     * Returns the tables stored in this version
+     */
+    virtual const QVector<Table*>& getTables() const = 0;
+
+    /**
+     * Return the table instances
+     */
+    virtual const QVector<TableInstance*> & getTableInstances() const = 0;
+
+    /**
+     * Return the diagrams
+     */
+    virtual const QVector<Diagram*> & getDiagrams() const = 0;
+
+    /**
+     * Adds a new data type to this version
+     */
+    virtual void addNewDataType(UserDataType*) = 0;
 
     /**
      * Checks if this version has a data type with the specified name
@@ -105,10 +92,6 @@ public:
      */
     virtual Table* getTable(const QString& name) = 0;
 
-    /**
-     * Returns the tables stored in this version
-     */
-    virtual const QVector<Table*>& getTables() const = 0;
 
     /**
      * Serializes this version
@@ -148,11 +131,6 @@ public:
     virtual TableInstance* instantiateTable(Table* tab, bool reason) = 0;
 
     /**
-     * Returns true if this version is in a project which has OOP features enabled
-     */
-    virtual bool oop() = 0;
-
-    /**
      * Adds a new table instance to this version
      */
     virtual void addTableInstance(TableInstance* inst) = 0;
@@ -162,11 +140,8 @@ public:
      */
     virtual TableInstance* getTableInstance(const QString& ) = 0;
 
-    virtual const QVector<TableInstance*> & getTableInstances() = 0;
 
     virtual void purgeSentencedTableInstances() = 0;
-
-    virtual DatabaseEngine* getDatabaseEngine() = 0;
 
     virtual void deleteDataType(const QString&) = 0;
 
@@ -174,30 +149,12 @@ public:
 
     virtual void deleteDiagram(const QString&) = 0;
 
-    // don't know if this is a good design or not for the popups ....
-//
-//    virtual QMenu* getTablePopupMenu() = 0;
-//    virtual QAction * getAction_RemoveTable() = 0;
-//    virtual QAction * getAction_TableAddColumn() = 0;
-//    virtual QAction * getAction_SpecializeTable() = 0;
-//    virtual QAction * getAction_DuplicateTable() = 0;
-//    virtual QAction * getAction_InstantiateTable() = 0;
-//
-//    virtual QMenu* getTableInstancePopupMenu() = 0;
-//    virtual QAction * getAction_DeleteTableInstance() = 0;
-//    virtual QAction * getAction_RenameTableInstance() = 0;
-//
-//    virtual QMenu* getDatatypePopupMenu() = 0;
-//    virtual QAction* getAction_DeleteDataType() = 0;
-//    virtual QAction* getAction_DuplicateDataType() = 0;
-//
-//    virtual QMenu* getDiagramPopupMenu() = 0;
-//    virtual QAction* getAction_DeleteDiagram() = 0;
-//    virtual QAction* getAction_RenameDiagram() = 0;
+    virtual VersionGuiElements* getGui() = 0;
+
+    virtual QString getVersionText() = 0;
 
 private:
 
 };
 
 #endif // VERSION_H
-

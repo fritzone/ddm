@@ -104,6 +104,11 @@ bool Workspace::loadSolution(const QString& fileName)
     QDomElement docElem = doc.documentElement();
     m_currentSolution = DeserializationFactory::createSolution(doc, docElem.firstChild().toElement());
     m_currentSolution->setFile(fileName);
+    if(m_solutions.size() > 0)  // TODO: This is here only till we release a version which can support multiple solutions
+    {
+        m_solutions.clear();
+    }
+    m_solutions.append(m_currentSolution);
 
     return true;
 }

@@ -3,6 +3,7 @@
 #include "MajorVersion.h"
 #include "DatabaseEngine.h"
 #include "IconFactory.h"
+#include "VersionGuiElements.h"
 
 Project::Project(const QString& _name, QTreeWidget* _tree, QTreeWidget* _dtTree, bool oopIsEnabled):
         m_tree(_tree), m_dtTree(_dtTree), m_name(_name), m_engine(0), m_majorVersions(), m_oopIsEnabled(oopIsEnabled)
@@ -34,7 +35,7 @@ void Project::populateTreeItem()
     for(int i=0; i<m_majorVersions.size(); i++)
     {
         m_majorVersions[i]->createTreeItems(m_tree, m_dtTree, getLocation());
-        m_majorVersions[i]->populateTreeItems();
+        m_majorVersions[i]->getGui()->populateTreeItems();
     }
 }
 

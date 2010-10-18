@@ -29,8 +29,10 @@ void Diagram::removeTable(const QString &tabName)
             idx = i;
             for(int j=0; j<m_fksOnStage.size(); j++)
             {
-                const Table* tab1 = m_fksOnStage[j]->getFirst()->getTable();
-                const Table* tab2 = m_fksOnStage[j]->getSecond()->getTable();
+                DraggableGraphicsViewItem* first = m_fksOnStage[j]->getFirst();
+                DraggableGraphicsViewItem* second = m_fksOnStage[j]->getSecond();
+                const Table* tab1 = first->getTable();
+                const Table* tab2 = second->getTable();
                 if(tab1->getName() == m_tableDescriptors[i]->getText() || tab2->getName() == m_tableDescriptors[i]->getText())
                 {
                     m_fksOnStage[j]->sentence();

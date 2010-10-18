@@ -18,6 +18,7 @@
 #include "SqlHighlighter.h"
 #include "InjectSqlDialog.h"
 #include "SqlNamesValidator.h"
+#include "Workspace.h"
 
 #include <QMessageBox>
 #include <QHashIterator>
@@ -329,7 +330,7 @@ void NewTableForm::populateTable(const Table *table, bool parentTab)
     m_ui->lstForeignKeys->resizeColumnToContents(5);
 
     // set the default values
-    if(!table->version()->oop())
+    if(! Workspace::getInstance()->currentProjectIsOop())
     {
         updateDefaultValuesTableHeader();
         for(int i=0; i<table->getStartupValues().size(); i++)
@@ -1223,7 +1224,7 @@ void NewTableForm::onAddForeignKeyAssociation()
 
 
     // check if we have the same column associations once more in the asociations
-    if(m_currentForeignKey->hasAssociation(foreignColumn, localColumn))
+    if(m_currentForeignKey && m_currentForeignKey->hasAssociation(foreignColumn, localColumn))
     {
         QMessageBox::critical (this, tr("Error"), tr("You cannot have the same column associoation two times, the database does not allow this."), QMessageBox::Ok);
         return;
