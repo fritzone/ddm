@@ -1252,12 +1252,10 @@ void NewTableForm::onAddForeignKeyAssociation()
 
     ForeignKey::ColumnAssociation* fca = new ForeignKey::ColumnAssociation(m_foreignTable, cforeignColumn, m_table, clocalColumn);
     m_currentForeignKey->addAssociation(fca);
-
 }
 
 void NewTableForm::onRemoveForeignKeyAssociation()
 {
-
     if(!m_ui->lstForeignKeyAssociations->currentItem())
     {
         QMessageBox::critical (this, tr("Error"), tr("Please make sure you have a foreign key association to delete."), QMessageBox::Ok);
@@ -1273,7 +1271,6 @@ void NewTableForm::onRemoveForeignKeyAssociation()
     }
     // this deletes only the current entry in the list
     delete m_ui->lstForeignKeyAssociations->currentItem();
-
 }
 
 void NewTableForm::onSelectAssociation(QTreeWidgetItem* current, int)

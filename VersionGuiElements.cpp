@@ -26,6 +26,7 @@ void VersionGuiElements::createGuiElements(ContextMenuEnabledTreeWidgetItem* pro
     // make the tables sub item coming from the version
     tablesItem = new ContextMenuEnabledTreeWidgetItem(versionItem, QStringList(QObject::tr("Table templates"))) ;
     tablesItem->setIcon(0, IconFactory::getTablesIcon());
+    tablesItem->setPopupMenu(ContextMenuCollection::getInstance()->getTablesPopupMenu());
     m_tree->addTopLevelItem(tablesItem);
 
     // make the views sub item coming from the version

@@ -70,8 +70,6 @@ void MajorVersion::serialize(QDomDocument &doc, QDomElement &parent) const
     majorVersionElement.appendChild(tableInstancesElement);
     }
 
-
     parent.appendChild(majorVersionElement);
 
 }
-

@@ -20,105 +20,85 @@ public:
         return m_instance;
     }
 
-    virtual QAction* getAction_RenameDiagram()
-    {
-        return action_RenameDiagram;
-    }
+    QAction* getAction_RenameDiagram() { return action_RenameDiagram; }
 
-    virtual QAction * getAction_DuplicateTable()
-    {
-        return action_DuplicateTable;
-    }
-    virtual QAction * getAction_InstantiateTable()
-    {
-        return action_InstantiateTable;
-    }
+    QAction * getAction_DuplicateTable() { return action_DuplicateTable; }
 
-    virtual QAction* getAction_DuplicateDataType()
-    {
-        return action_DuplicateDataType;
-    }
+    QAction * getAction_AddTable() { return action_AddTable; }
 
-    virtual QAction* getAction_DeleteDiagram()
-    {
-        return action_DeleteDiagram;
-    }
+    QAction * getAction_InstantiateTable() { return action_InstantiateTable; }
 
-    virtual QMenu* getTablePopupMenu()
-    {
-        return m_tablePopupMenu;
-    }
+    QAction * getAction_CopyTable() { return action_CopyTable; }
 
-    virtual QMenu* getDatatypePopupMenu()
-    {
-        return m_datatypePopupMenu;
-    }
+    QAction* getAction_DuplicateDataType() { return action_DuplicateDataType; }
 
-    virtual QMenu* getTableInstancePopupMenu()
-    {
-        return m_tableInstancePopupMenu;
-    }
+    QAction* getAction_DeleteDiagram() { return action_DeleteDiagram; }
 
-    virtual QMenu* getDiagramPopupMenu()
-    {
-        return m_diagramPopupMenu;
-    }
+    QMenu* getTablePopupMenu() { return m_tablePopupMenu; }
 
-    virtual QAction * getAction_RemoveTable()
-    {
-        return action_RemoveTable;
-    }
+    QMenu* getTablesPopupMenu() { return m_tablesPopupMenu; }
 
-    virtual QAction * getAction_TableAddColumn()
-    {
-        return action_TableAddColumn;
-    }
+    QMenu* getDatatypePopupMenu() { return m_datatypePopupMenu; }
 
-    virtual QAction * getAction_SpecializeTable()
-    {
-        return action_SpecializeTable;
-    }
+    QMenu* getTableInstancePopupMenu() { return m_tableInstancePopupMenu; }
 
-    virtual QAction * getAction_DeleteTableInstance()
-    {
-        return action_DeleteTableInstance;
-    }
+    QMenu* getDiagramPopupMenu() { return m_diagramPopupMenu; }
 
-    virtual QAction * getAction_RenameTableInstance()
-    {
-        return action_RenameTableInstance;
-    }
+    QAction * getAction_RemoveTable() { return action_RemoveTable; }
 
-    virtual QAction* getAction_DeleteDataType()
-    {
-        return action_DeleteDataType;
-    }
+    QAction * getAction_TableAddColumn() { return action_TableAddColumn; }
 
+    QAction * getAction_SpecializeTable() { return action_SpecializeTable; }
+
+    QAction * getAction_DeleteTableInstance() { return action_DeleteTableInstance; }
+
+    QAction * getAction_RenameTableInstance() { return action_RenameTableInstance; }
+
+    QAction* getAction_DeleteDataType() { return action_DeleteDataType; }
 
 private:
 
     ContextMenuCollection();
 
+    // popup menu for a table
     QMenu* m_tablePopupMenu;
+
+    // popup menu for a table instance
     QMenu* m_tableInstancePopupMenu;
+
+    // popup menu for a datatype
     QMenu* m_datatypePopupMenu;
+
+    // popup menu for a diagram
     QMenu* m_diagramPopupMenu;
 
-    QAction * action_RemoveTable;
-    QAction * action_DuplicateTable;
-    QAction * action_SpecializeTable;
-    QAction * action_InstantiateTable;
-    QAction * action_TableAddColumn;
+    // popup menu for the list of tables
+    QMenu* m_tablesPopupMenu;
 
-    QAction * action_DeleteTableInstance;
-    QAction * action_RenameTableInstance;
+    // the actions in the table popup menu
+    QAction* action_RemoveTable;
+    QAction* action_DuplicateTable;
+    QAction* action_SpecializeTable;
+    QAction* action_InstantiateTable;
+    QAction* action_TableAddColumn;
+    QAction* action_CopyTable;
 
-    QAction * action_DeleteDataType;
-    QAction * action_DuplicateDataType;
+    // the actions in the table instance popup menu
+    QAction* action_DeleteTableInstance;
+    QAction* action_RenameTableInstance;
 
-    QAction * action_DeleteDiagram;
-    QAction * action_RenameDiagram;
+    // the actions in the datatype menu
+    QAction* action_DeleteDataType;
+    QAction* action_DuplicateDataType;
 
+    // the actions in the diagram menu
+    QAction* action_DeleteDiagram;
+    QAction* action_RenameDiagram;
+
+    // the actions in the Tables popup menu
+    QAction* action_AddTable;
+
+    // the instance of the popup menu collection
     static ContextMenuCollection* m_instance;
 };
 
