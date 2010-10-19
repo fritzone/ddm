@@ -10,6 +10,7 @@ ContextMenuCollection::ContextMenuCollection()
     m_tableInstancePopupMenu = new QMenu();
     m_datatypePopupMenu = new QMenu();
     m_diagramPopupMenu = new QMenu();
+    m_tablesPopupMenu = new QMenu();
 
     // actions
     action_RemoveTable = new QAction(QObject::tr("Delete table"), 0);
@@ -27,6 +28,9 @@ ContextMenuCollection::ContextMenuCollection()
     action_DeleteDiagram = new QAction(QObject::tr("Delete diagram"), 0);
     action_DeleteDiagram->setIcon(IconFactory::getRemoveIcon());
     action_RenameDiagram = new QAction(QObject::tr("Rename diagram"), 0);
+    action_AddTable = new QAction(QObject::tr("Create table"), 0);
+    action_CopyTable = new QAction(QObject::tr("Copy"), 0);
+    action_CopyTable->setShortcut(QKeySequence::Copy);
 
     // populate the table popup menu
     m_tablePopupMenu->addAction(action_TableAddColumn);
@@ -36,6 +40,8 @@ ContextMenuCollection::ContextMenuCollection()
     m_tablePopupMenu->addAction(action_SpecializeTable);
     m_tablePopupMenu->addSeparator();
     m_tablePopupMenu->addAction(action_InstantiateTable);
+    m_tablePopupMenu->addSeparator();
+    m_tablePopupMenu->addAction(action_CopyTable);
 
     // populate the table instances popup menu
     m_tableInstancePopupMenu->addAction(action_DeleteTableInstance);
@@ -48,5 +54,8 @@ ContextMenuCollection::ContextMenuCollection()
     // diagrams popup menu
     m_diagramPopupMenu->addAction(action_DeleteDiagram);
     m_diagramPopupMenu->addAction(action_RenameDiagram);
+
+    //tables popup menu
+    m_tablesPopupMenu->addAction(action_AddTable);
 }
 
