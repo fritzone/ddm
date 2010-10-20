@@ -31,6 +31,8 @@ ContextMenuCollection::ContextMenuCollection()
     action_AddTable = new QAction(QObject::tr("Create table"), 0);
     action_CopyTable = new QAction(QObject::tr("Copy"), 0);
     action_CopyTable->setShortcut(QKeySequence::Copy);
+    action_PasteTable = new QAction(QObject::tr("Paste table"), 0);
+    action_PasteTable->setShortcut(QKeySequence::Paste);
 
     // populate the table popup menu
     m_tablePopupMenu->addAction(action_TableAddColumn);
@@ -57,5 +59,6 @@ ContextMenuCollection::ContextMenuCollection()
 
     //tables popup menu
     m_tablesPopupMenu->addAction(action_AddTable);
+    m_tablesPopupMenu->addAction(action_PasteTable);
 }
 

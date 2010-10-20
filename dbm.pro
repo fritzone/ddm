@@ -69,7 +69,8 @@ SOURCES += main.cpp \
     ContextMenuCollection.cpp \
     Workspace.cpp \
     VersionGuiElements.cpp \
-    DefaultVersionImplementation.cpp
+    DefaultVersionImplementation.cpp \
+    ClipboardFactory.cpp
 HEADERS += MainWindow.h \
     MainWindowButtonDialog.h \
     newprojectdialog.h \
@@ -147,7 +148,9 @@ HEADERS += MainWindow.h \
     ContextMenuCollection.h \
     Workspace.h \
     VersionGuiElements.h \
-    DefaultVersionImplementation.h
+    DefaultVersionImplementation.h \
+    CopyableElement.h \
+    ClipboardFactory.h
 FORMS += mainwindow.ui \
     mainwindowbuttondialog.ui \
     newprojectdialog.ui \

@@ -86,6 +86,7 @@ public slots:
     void onSpecializeTableFromPopup();
     void onInstantiateTableFromPopup();
     void onDuplicateTableFromPopup();
+    void onCopyTableFromPopup();
 
     void onDeleteInstanceFromPopup();
     void onRenameInstanceFromPopup();

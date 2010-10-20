@@ -16,6 +16,8 @@
 #include "Workspace.h"
 
 #include <QPen>
+#include <QApplication>
+#include <QClipboard>
 
 Table::Table(Version* v) :  m_name(""), m_description(""), m_columns(), m_indices(), m_foreignKeys(), m_startupValues(),
                             m_parent(0), m_persistent(false), m_temporary(false), m_storageEngine(0), m_diagramEntity(0), m_version(v)
@@ -571,4 +573,15 @@ void Table::tableInstancesRemoveColumn(Column* col)
     {
         tableInstances.at(i)->removeColumn(col->getName());
     }
+}
+
+void Table::copy()
+{
+    QDomDocument doc("ClipboardData");
+    QDomElement root = doc.createElement("CopiedTable");
+    serialize(doc, root);
+    doc.appendChild(root);
+    QString text = doc.toString();
+
+    QApplication::clipboard()->setText(text);
 }
