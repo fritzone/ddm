@@ -668,6 +668,8 @@ void MainWindow::connectActionsFromTablePopupMenu()
         ContextMenuCollection::getInstance()->getAction_InstantiateTable()->setVisible(false);
     }
     QObject::connect(ContextMenuCollection::getInstance()->getAction_DuplicateTable(), SIGNAL(activated()), this, SLOT(onDuplicateTableFromPopup()));
+    QObject::connect(ContextMenuCollection::getInstance()->getAction_CopyTable(), SIGNAL(activated()), this, SLOT(onCopyTableFromPopup()));
+
     QObject::connect(ContextMenuCollection::getInstance()->getAction_DeleteDataType(), SIGNAL(activated()), this, SLOT(onDeleteDatatypeFromPopup()));
     QObject::connect(ContextMenuCollection::getInstance()->getAction_DuplicateDataType(), SIGNAL(activated()), this, SLOT(onDuplicateDatatypeFromPopup()));
     QObject::connect(ContextMenuCollection::getInstance()->getAction_DeleteDiagram(), SIGNAL(activated()), this, SLOT(onDeleteDiagramFromPopup()));
@@ -868,6 +870,15 @@ void MainWindow::onDeleteTableFromPopup()
     if(tab)
     {
         m_workspace->workingVersion()->deleteTable(tab);
+    }
+}
+
+void MainWindow::onCopyTableFromPopup()
+{
+    Table* tab = getRightclickedTable();
+    if(tab)
+    {
+        tab->copy();
     }
 }
 

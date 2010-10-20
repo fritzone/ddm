@@ -4,6 +4,7 @@
 #include "TreeItem.h"
 #include "SerializableElement.h"
 #include "SqlSourceEntity.h"
+#include "CopyableElement.h"
 
 #include <QString>
 #include <QVector>
@@ -22,7 +23,7 @@ class TableInstance;
  * The table class holds a database table defined by the user. It must be derived from the TreeItem since a table can be placed in
  * the tree, so the user of it must know how to update the visual part too.
  */
-class Table : virtual public TreeItem, public SerializableElement, public SqlSourceEntity
+class Table : virtual public TreeItem, virtual public SerializableElement, virtual public SqlSourceEntity, virtual public CopyableElement
 {
 public:
 
@@ -303,6 +304,7 @@ public:
 
     void tableInstancesRenameColumn(const QString& oldName, const QString& newName);
 
+    virtual void copy();
 
 private:
     // the name of the table

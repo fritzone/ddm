@@ -24,6 +24,8 @@ public:
 
     QAction * getAction_DuplicateTable() { return action_DuplicateTable; }
 
+    QAction * getAction_PasteTable() { return action_PasteTable; }
+
     QAction * getAction_AddTable() { return action_AddTable; }
 
     QAction * getAction_InstantiateTable() { return action_InstantiateTable; }
@@ -97,6 +99,7 @@ private:
 
     // the actions in the Tables popup menu
     QAction* action_AddTable;
+    QAction* action_PasteTable;
 
     // the instance of the popup menu collection
     static ContextMenuCollection* m_instance;
