@@ -159,6 +159,7 @@ void VersionGuiElements::populateTreeItems()
 
             QVariant var(tI->getName());
             tabInstSqlItem->setData(0, Qt::UserRole, var);
+            tI->setSqlItem(tabInstSqlItem);
 
             // set the icon, add to the tree
             if(tI->instantiatedBecuaseOfRkReference())

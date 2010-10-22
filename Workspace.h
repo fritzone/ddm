@@ -8,6 +8,7 @@ class Project;
 class Version;
 class DatabaseEngine;
 class UserDataType;
+class Table;
 
 /**
  * The role of the Workspace class is to be a collection point for the "logical" elements of the
@@ -97,6 +98,11 @@ public:
      * Loads the default data types in the current solution
      */
     QVector<UserDataType*> loadDefaultDatatypesIntoCurrentSolution();
+
+    /**
+     * Pastes a table from the clipboard
+     */
+    Table* pasteTable();
 
 private:
 

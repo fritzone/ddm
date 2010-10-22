@@ -29,11 +29,7 @@ void Diagram::removeTable(const QString &tabName)
             idx = i;
             for(int j=0; j<m_fksOnStage.size(); j++)
             {
-                DraggableGraphicsViewItem* first = m_fksOnStage[j]->getFirst();
-                DraggableGraphicsViewItem* second = m_fksOnStage[j]->getSecond();
-                const Table* tab1 = first->getTable();
-                const Table* tab2 = second->getTable();
-                if(tab1->getName() == m_tableDescriptors[i]->getText() || tab2->getName() == m_tableDescriptors[i]->getText())
+                if(m_fksOnStage[j]->getTab1Name() == m_tableDescriptors[i]->getText() || m_fksOnStage[j]->getTab2Name() == m_tableDescriptors[i]->getText())
                 {
                     m_fksOnStage[j]->sentence();
                 }
@@ -41,14 +37,18 @@ void Diagram::removeTable(const QString &tabName)
             break;
         }
     }
-    if(idx != -1)
+    if(idx != -1 && m_onStage.size() > 0)
     {
         DraggableGraphicsViewItem* toDelete = m_onStage[idx];
         m_onStage.remove(idx);
+        //delete toDelete;
+    }
+
+    if(idx != -1 && m_tableDescriptors.size() > 0)
+    {
         DiagramObjectDescriptor* descToDel = m_tableDescriptors[idx];
         m_tableDescriptors.remove(idx);
-        delete toDelete;
-        delete descToDel;
+        //delete descToDel;
     }
 
     int i=0;

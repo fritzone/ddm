@@ -82,6 +82,16 @@ public:
 
     void renameColumn(const QString& oldName, const QString& newName);
 
+    void setSqlItem(ContextMenuEnabledTreeWidgetItem* sqlItem)
+    {
+        m_sqlItem = sqlItem;
+    }
+
+    void onDelete()
+    {
+        delete m_sqlItem;
+    }
+
 private:
 
     // the table of the table instance
@@ -102,6 +112,9 @@ private:
     QVector<TableInstance*> m_instantiatedTablesInstances;
 
     bool m_sentenced;
+
+    // the SQL item if this table instance
+    ContextMenuEnabledTreeWidgetItem* m_sqlItem;
 
 };
 

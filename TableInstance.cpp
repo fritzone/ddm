@@ -96,7 +96,7 @@ QVector<QString> TableInstance::removeColumn(const QString &colName)
     return result;
 }
 
-void    TableInstance::renameColumn(const QString& oldName, const QString& newName)
+void TableInstance::renameColumn(const QString& oldName, const QString& newName)
 {
     QVector<QString> tmp = removeColumn(oldName);
     m_values.insert(newName, tmp);
