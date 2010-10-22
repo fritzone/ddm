@@ -87,7 +87,7 @@ public slots:
     void onInstantiateTableFromPopup();
     void onDuplicateTableFromPopup();
     void onCopyTableFromPopup();
-
+    void onPasteTableFromPopup();
     void onDeleteInstanceFromPopup();
     void onRenameInstanceFromPopup();
 
@@ -114,6 +114,7 @@ private:
     void showButtonDialog();
     void freeGuiElements();
     void showProjectDetails();
+    ContextMenuEnabledTreeWidgetItem* createTableTreeEntry(Table*);
 
 private:
     Ui::MainWindow *m_ui;

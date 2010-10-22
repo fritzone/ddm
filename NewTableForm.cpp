@@ -1774,6 +1774,8 @@ void NewTableForm::onChangeDescription()
 void NewTableForm::onChangeName(QString a)
 {
     QVariant v(a);
+    if(!m_table) return;
+    if(!m_table->getLocation()) return;
     m_table->getLocation()->setData(0, Qt::UserRole, v);
     m_table->setName(a);
     m_table->getLocation()->setText(0, a);

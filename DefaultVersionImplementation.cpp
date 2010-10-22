@@ -216,6 +216,7 @@ void DefaultVersionImplementation::deleteTable(Table *tab)
         }
 
     }
+    if(tabIndex == -1) return;
     if(incomingForeignKeys.length() > 0)
     {
         QMessageBox::warning(0, QObject::tr("Foreign keys found"),
@@ -229,6 +230,23 @@ void DefaultVersionImplementation::deleteTable(Table *tab)
     {
         m_diagrams[i]->removeTable(tab->getName());
     }
+
+    // and now we should delete the table instances that were created absed on this table, and the SQLs too...
+    int i=0;
+    while(i<m_tableInstances.size())
+    {
+        if(m_tableInstances.at(i)->table()->getName() == tab->getName())
+        {
+            delete m_tableInstances.at(i)->getLocation();
+            m_tableInstances.at(i)->onDelete();
+            m_tableInstances.remove(i);
+        }
+        else
+        {
+            i++;
+        }
+    }
+
 
     delete m_tables[tabIndex]->getLocation();
     m_tables.remove(tabIndex);

@@ -93,6 +93,9 @@ public:
         tab2Name = dfks->getText2();
     }
 
+    QString getTab1Name() {return tab1Name; }
+    QString getTab2Name() {return tab2Name; }
+
 private:
 
     // finds the closes point to "to" from p1..4

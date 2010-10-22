@@ -35,6 +35,7 @@
 #include "Workspace.h"
 #include "VersionGuiElements.h"
 
+
 #include <QtGui>
 
 #ifdef Q_WS_X11
@@ -474,24 +475,11 @@ bool MainWindow::onUpdateTable(Table* tbl)
 
 bool MainWindow::onSaveNewTable(Table* tbl)
 {
-    // create the tree entry
-    ContextMenuEnabledTreeWidgetItem* newTblsItem = new ContextMenuEnabledTreeWidgetItem(m_workspace->workingVersion()->getGui()->getTablesItem(), QStringList(tbl->getName())) ;
-
-    QVariant var(tbl->getName());
-    newTblsItem->setData(0, Qt::UserRole, var);
-    newTblsItem->setPopupMenu(ContextMenuCollection::getInstance()->getTablePopupMenu());
-    // set the icon, add to the tree
-    newTblsItem->setIcon(0, IconFactory::getTablesIcon());
-    m_projectTree->addTopLevelItem(newTblsItem);
+    ContextMenuEnabledTreeWidgetItem*newTblsItem = createTableTreeEntry(tbl);
 
     // add to the project itself
     m_workspace->workingVersion()->addTable(tbl);
-
-    // set the link to the tree
-    tbl->setLocation(newTblsItem);
-
     return true;
-
 }
 
 bool MainWindow::onSaveNewDataType(const QString& name, const QString& type, const QString& sqlType, const QString& size, const QString& defaultValue, const QString& cp,
@@ -669,6 +657,7 @@ void MainWindow::connectActionsFromTablePopupMenu()
     }
     QObject::connect(ContextMenuCollection::getInstance()->getAction_DuplicateTable(), SIGNAL(activated()), this, SLOT(onDuplicateTableFromPopup()));
     QObject::connect(ContextMenuCollection::getInstance()->getAction_CopyTable(), SIGNAL(activated()), this, SLOT(onCopyTableFromPopup()));
+    QObject::connect(ContextMenuCollection::getInstance()->getAction_PasteTable(), SIGNAL(activated()), this, SLOT(onPasteTableFromPopup()));
 
     QObject::connect(ContextMenuCollection::getInstance()->getAction_DeleteDataType(), SIGNAL(activated()), this, SLOT(onDeleteDatatypeFromPopup()));
     QObject::connect(ContextMenuCollection::getInstance()->getAction_DuplicateDataType(), SIGNAL(activated()), this, SLOT(onDuplicateDatatypeFromPopup()));
@@ -882,6 +871,44 @@ void MainWindow::onCopyTableFromPopup()
     }
 }
 
+ContextMenuEnabledTreeWidgetItem* MainWindow::createTableTreeEntry(Table* tab)
+{
+    ContextMenuEnabledTreeWidgetItem* newTblsItem = new ContextMenuEnabledTreeWidgetItem(m_workspace->workingVersion()->getGui()->getTablesItem(), QStringList(tab->getName())) ;
+
+    QVariant var(tab->getName());
+    newTblsItem->setData(0, Qt::UserRole, var);
+    newTblsItem->setPopupMenu(ContextMenuCollection::getInstance()->getTablePopupMenu());
+    // set the icon, add to the tree
+    newTblsItem->setIcon(0, IconFactory::getTablesIcon());
+    m_projectTree->addTopLevelItem(newTblsItem);
+    // set the link to the tree
+    tab->setLocation(newTblsItem);
+    return newTblsItem;
+}
+
+void MainWindow::onPasteTableFromPopup()
+{
+    Table* tab = Workspace::getInstance()->pasteTable();
+    if(tab)
+    {
+        createTableTreeEntry(tab);
+        if(tab->getParent())
+        {
+            QTreeWidgetItem* p = tab->getLocation();
+            p->parent()->removeChild(p);
+            tab->getParent()->getLocation()->addChild(p);
+        }
+        // add the SQL item but only if it's not an oop project
+        if(!m_workspace->currentProjectIsOop())
+        {
+            ContextMenuEnabledTreeWidgetItem* sqlItm = new ContextMenuEnabledTreeWidgetItem(m_workspace->workingVersion()->getGui()->getFinalSqlItem(), QStringList(tab->getName() + ".sql"));
+            sqlItm->setIcon(0, IconFactory::getTablesIcon());
+            sqlItm->setData(0, Qt::UserRole, tab->getName());
+        }
+    }
+}
+
+
 void MainWindow::onDuplicateTableFromPopup()
 {
     Table* tab = getRightclickedTable();
@@ -901,7 +928,6 @@ void MainWindow::onDuplicateTableFromPopup()
             ContextMenuEnabledTreeWidgetItem* sqlItm = new ContextMenuEnabledTreeWidgetItem(m_workspace->workingVersion()->getGui()->getFinalSqlItem(), QStringList(dupped->getName() + ".sql"));
             sqlItm->setIcon(0, IconFactory::getTablesIcon());
             sqlItm->setData(0, Qt::UserRole, dupped->getName());
-
         }
     }
 }
@@ -975,6 +1001,7 @@ ContextMenuEnabledTreeWidgetItem* MainWindow::instantiateTable(const QString& ta
     ContextMenuEnabledTreeWidgetItem* sqlItm = new ContextMenuEnabledTreeWidgetItem(cVersion->getGui()->getFinalSqlItem(), QStringList(tinst->getName()));
     sqlItm->setIcon(0, IconFactory::getTabinstIcon());
     sqlItm->setData(0, Qt::UserRole, a);
+    tinst->setSqlItem(sqlItm);
     QSet<const Table*> referenced = cVersion->getTable(tabName)->getTablesReferencedByForeignKeys();
     QSetIterator<const Table*> i(referenced);
     while(i.hasNext())

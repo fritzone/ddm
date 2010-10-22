@@ -6,6 +6,9 @@
 #include "DatabaseEngine.h"
 #include "Version.h"
 #include "UserDataType.h"
+#include "ClipboardFactory.h"
+#include "NameGenerator.h"
+#include "Table.h"
 
 #include <QFile>
 #include <QApplication>
@@ -157,4 +160,17 @@ QVector<UserDataType*> Workspace::loadDefaultDatatypesIntoCurrentSolution()
     {
         return QVector<UserDataType*>();
     }
+}
+
+Table* Workspace::pasteTable()
+{
+    Table* tab = ClipboardFactory::pasteTable();
+    if(tab != 0)
+    {
+        tab->setName(NameGenerator::getNextTableNameFromVersion(currentSolution()->currentProject()->getWorkingVersion(), tab->getName()+"_copy"));
+        currentSolution()->currentProject()->getWorkingVersion()->addTable(tab);
+        return tab;
+    }
+
+    return 0;
 }
