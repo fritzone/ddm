@@ -41,7 +41,7 @@ ContextMenuCollection::ContextMenuCollection()
     m_tablePopupMenu->addSeparator();
     m_tablePopupMenu->addAction(action_InstantiateTable);
     m_tablePopupMenu->addSeparator();
-    //m_tablePopupMenu->addAction(action_CopyTable);
+    m_tablePopupMenu->addAction(action_CopyTable);
 
     // populate the table instances popup menu
     m_tableInstancePopupMenu->addAction(action_DeleteTableInstance);
@@ -57,6 +57,6 @@ ContextMenuCollection::ContextMenuCollection()
 
     //tables popup menu
     m_tablesPopupMenu->addAction(action_AddTable);
-    //m_tablesPopupMenu->addAction(action_PasteTable);
+    m_tablesPopupMenu->addAction(action_PasteTable);
 }
 

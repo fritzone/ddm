@@ -14,6 +14,7 @@ public:
 public:
 
     static Table* pasteTable();
+    static bool tableIsAvailableOnClipboard();
 };
 
 #endif // CLIPBOARDFACTORY_H

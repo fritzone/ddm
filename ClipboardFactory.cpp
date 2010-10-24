@@ -72,3 +72,18 @@ Table* ClipboardFactory::pasteTable()
 
     return tab;
 }
+
+bool ClipboardFactory::tableIsAvailableOnClipboard()
+{
+    QDomDocument a("ClipboardData");
+    QString err;
+    if(!a.setContent(QApplication::clipboard()->text(), &err))
+    {
+        return false;
+    }
+    QString node = a.documentElement().nodeName();
+    if(node != "CopiedTable")
+        return false;
+
+    return true;
+}
