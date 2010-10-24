@@ -979,6 +979,7 @@ ContextMenuEnabledTreeWidgetItem* MainWindow::instantiateTable(const QString& ta
     Version* cVersion = m_workspace->workingVersion();
     TableInstance* tinst = cVersion->instantiateTable(cVersion->getTable(tabName), ref);
     ContextMenuEnabledTreeWidgetItem* itm = new ContextMenuEnabledTreeWidgetItem(cVersion->getGui()->getTableInstancesItem(), QStringList(tinst->getName()));
+    tinst->setLocation(itm);
     itm->setPopupMenu(ContextMenuCollection::getInstance()->getTableInstancePopupMenu());
     if(!ref)
     {

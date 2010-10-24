@@ -1,7 +1,8 @@
 #include "ContextMenuEnabledTreeWidget.h"
+#include "ContextMenuCollection.h"
+#include "ClipboardFactory.h"
 
 #include <QMouseEvent>
-
 
 ContextMenuDelegate::ContextMenuDelegate(ContextMenuHandler *const contextMenu, ContextMenuEnabledTreeWidget *const parent ) : QItemDelegate(parent) , m_tree(parent), m_contextMenu(contextMenu)
 {
@@ -22,9 +23,13 @@ bool ContextMenuDelegate::editorEvent(QEvent * event, QAbstractItemModel * , con
             if(item)
             {
                 m_tree->setLastRightclickedItem(item);
+
+                // now a big ugly piece of code, disabling or enabling actions, regardless of the selected menu, depending on what's on the clipboard
+                ContextMenuCollection::getInstance()->getAction_PasteTable()->setEnabled(ClipboardFactory::tableIsAvailableOnClipboard());
+
+                // and finally show the table
                 m_contextMenu->showContextMenu(mouseEvent->globalPos(), index, item);
             }
-
             return true;
         }
     }
