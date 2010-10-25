@@ -66,6 +66,7 @@ void Diagram::removeTable(const QString &tabName)
             i++;
         }
     }
+
 }
 
 void Diagram::removeNote(int note)
