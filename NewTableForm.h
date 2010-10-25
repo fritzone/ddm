@@ -168,6 +168,8 @@ private:
     void doTheSave();
     void autoSave();
 
+    void finalizeColumnMovement();
+
 private:
     Ui::NewTableForm *m_ui;
     // the main window

@@ -549,23 +549,30 @@ void NewTableForm::onMoveColumnDown()
         }
 
         QModelIndex x = m_ui->lstColumns->currentIndex();
-        if(x.row() < m_ui->lstColumns->topLevelItemCount() - 1)
+        int rc = x.row();
+        if(rc < m_ui->lstColumns->topLevelItemCount() - 1)
         {
-            m_table->moveColumnDown(x.row());
-            QTreeWidgetItem* w = new QTreeWidgetItem(m_ui->lstColumns->currentItem()->type());  /*TODO: This might lose the context menu  !!! */
-            *w = *m_ui->lstColumns->currentItem();
+            m_table->moveColumnDown(rc);
+
+            Column* col = m_table->getColumn(m_ui->lstColumns->currentItem()->text(1));
+            ContextMenuEnabledTreeWidgetItem* item = createTWIForColumn(col);
+            col->setLocation(item);
             delete m_ui->lstColumns->currentItem();
-            m_ui->lstColumns->insertTopLevelItem(x.row() + 1, w);
-            m_ui->lstColumns->setCurrentItem(w);
-            populateColumnsForIndices();
-            // TODO: repatriate the columns from the exchanged one
-            backupDefaultValuesTable();
-            updateDefaultValuesTableHeader();
-            restoreDefaultValuesTable();
-            m_currentColumn->setLocation(reinterpret_cast<ContextMenuEnabledTreeWidgetItem*>(w));
-            autoSave();
+            m_ui->lstColumns->insertTopLevelItem(rc + 1, item);
+            m_ui->lstColumns->setCurrentItem(item);
+            finalizeColumnMovement();
         }
     }
+}
+
+void NewTableForm::finalizeColumnMovement()
+{
+    populateColumnsForIndices();
+    // TODO: repatriate the columns from the exchanged one
+    backupDefaultValuesTable();
+    updateDefaultValuesTableHeader();
+    restoreDefaultValuesTable();
+    autoSave();
 }
 
 void NewTableForm::onMoveColumnUp()
@@ -578,22 +585,18 @@ void NewTableForm::onMoveColumnUp()
             return;
         }
         QModelIndex x = m_ui->lstColumns->currentIndex();
-        if(x.row() > m_table->getTotalParentColumnCount())
+        int rc = x.row();
+        if(rc > m_table->getTotalParentColumnCount())
         {
-            m_table->moveColumnUp(x.row() - m_table->getTotalParentColumnCount());
+            m_table->moveColumnUp(rc - m_table->getTotalParentColumnCount());
 
-            QTreeWidgetItem* w = new QTreeWidgetItem(m_ui->lstColumns->currentItem()->type());
-            *w = *m_ui->lstColumns->currentItem();
+            Column* col = m_table->getColumn(m_ui->lstColumns->currentItem()->text(1));
+            ContextMenuEnabledTreeWidgetItem* item = createTWIForColumn(col);
+            col->setLocation(item);
             delete m_ui->lstColumns->currentItem();
-            m_ui->lstColumns->insertTopLevelItem(x.row() - 1, w);
-            m_ui->lstColumns->setCurrentItem(w);
-            populateColumnsForIndices();
-            // TODO: repatriate the columns from the exchanged one
-            backupDefaultValuesTable();
-            updateDefaultValuesTableHeader();
-            restoreDefaultValuesTable();
-            m_currentColumn->setLocation(reinterpret_cast<ContextMenuEnabledTreeWidgetItem*>(w));
-            autoSave();
+            m_ui->lstColumns->insertTopLevelItem(rc - 1, item);
+            m_ui->lstColumns->setCurrentItem(item);
+            finalizeColumnMovement();
         }
     }
 }
