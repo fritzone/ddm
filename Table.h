@@ -306,6 +306,11 @@ public:
 
     virtual void copy();
 
+    /**
+     * This should return the first foreign key the column is participating in, otherwise 0
+     */
+    QVector<ForeignKey*> columnParticipatesInForeignKey(const Column* col);
+
 private:
     // the name of the table
     QString m_name;

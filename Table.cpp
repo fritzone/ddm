@@ -585,3 +585,18 @@ void Table::copy()
 
     QApplication::clipboard()->setText(text);
 }
+
+
+QVector<ForeignKey*> Table::columnParticipatesInForeignKey(const Column* col)
+{
+    QVector<ForeignKey*> result;
+    for(int i=0; i<m_foreignKeys.size(); i++)
+    {
+        QVector<const Column*> localColumns = m_foreignKeys.at(i)->localColumns();
+        if(localColumns.contains(col))
+        {
+            result.append(m_foreignKeys.at(i));
+        }
+    }
+    return result;
+}

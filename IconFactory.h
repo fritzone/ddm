@@ -66,6 +66,12 @@ public:
         return icon;
     }
 
+    static const QIcon& getStringDataTypesIcon()
+    {
+        static const QIcon icon(strStringsFolder);
+        return icon;
+    }
+
     static const QIcon& getCodeIcon()
     {
         static const QIcon icon(strCodeIcon);

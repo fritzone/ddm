@@ -17,37 +17,42 @@ public:
     VersionGuiElements(QTreeWidget*,QTreeWidget*,Version*);
 
 
-    virtual ContextMenuEnabledTreeWidgetItem* getTablesItem() const
+    ContextMenuEnabledTreeWidgetItem* getTablesItem() const
     {
         return tablesItem;
     }
 
-    virtual ContextMenuEnabledTreeWidgetItem* getTableInstancesItem() const
+    ContextMenuEnabledTreeWidgetItem* getTableInstancesItem() const
     {
         return tableInstancesItem;
     }
 
 
-    virtual ContextMenuEnabledTreeWidgetItem* getFinalSqlItem() const
+    ContextMenuEnabledTreeWidgetItem* getFinalSqlItem() const
     {
         return finalSqlItem;
     }
 
 
-    virtual ContextMenuEnabledTreeWidgetItem* getVersionItem() const
+    ContextMenuEnabledTreeWidgetItem* getVersionItem() const
     {
         return versionItem;
     }
 
 
-    virtual ContextMenuEnabledTreeWidgetItem* getDiagramsItem() const
+    ContextMenuEnabledTreeWidgetItem* getDiagramsItem() const
     {
         return diagramsItem;
     }
 
-    virtual ContextMenuEnabledTreeWidgetItem* getDtsItem() const
+    ContextMenuEnabledTreeWidgetItem* getDtsItem() const
     {
         return dtsItem;
+    }
+
+    ContextMenuEnabledTreeWidgetItem* getStringDtsItem() const
+    {
+        return stringsDtItem;
     }
 
     void createGuiElements(ContextMenuEnabledTreeWidgetItem* projectItem);
@@ -77,6 +82,10 @@ private:
     QTreeWidget* m_tree;
 
     QTreeWidget* m_dtTree;
+
+    // the tree item containing the "Strings"
+    ContextMenuEnabledTreeWidgetItem* stringsDtItem;
+
 
     Version* m_version;
 };

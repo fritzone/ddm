@@ -345,3 +345,20 @@ void DefaultVersionImplementation::deleteDiagram(const QString& name)
     delete dgr->getLocation();
     delete dgr;
 }
+
+QVector<Table*> DefaultVersionImplementation::getTablesReferencingAColumnThroughForeignKeys(const Column* col)
+{
+    QVector<Table*> result;
+    for(int i=0; i<m_tables.size(); i++)
+    {
+        for(int j=0; j<m_tables.at(i)->getFks().size(); j++)
+        {
+            if(m_tables.at(i)->getFks().at(j)->foreignColumns().contains(col))
+            {
+                result.append(m_tables.at(i));
+                break;
+            }
+        }
+    }
+    return result;
+}

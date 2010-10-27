@@ -97,5 +97,6 @@
         <file>images/unaf.png</file>
         <file>images/small/mysql.png</file>
         <file>images/small/database_mysql.png</file>
+        <file>images/small/folder_red.png</file>
     </qresource>
 </RCC>

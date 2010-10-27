@@ -20,21 +20,9 @@ public:
         return m_instance;
     }
 
-    QAction* getAction_RenameDiagram() { return action_RenameDiagram; }
-
-    QAction * getAction_DuplicateTable() { return action_DuplicateTable; }
-
-    QAction * getAction_PasteTable() { return action_PasteTable; }
-
-    QAction * getAction_AddTable() { return action_AddTable; }
-
-    QAction * getAction_InstantiateTable() { return action_InstantiateTable; }
-
-    QAction * getAction_CopyTable() { return action_CopyTable; }
-
-    QAction* getAction_DuplicateDataType() { return action_DuplicateDataType; }
-
-    QAction* getAction_DeleteDiagram() { return action_DeleteDiagram; }
+    /*
+     * Popup menus
+     */
 
     QMenu* getTablePopupMenu() { return m_tablePopupMenu; }
 
@@ -46,17 +34,45 @@ public:
 
     QMenu* getDiagramPopupMenu() { return m_diagramPopupMenu; }
 
-    QAction * getAction_RemoveTable() { return action_RemoveTable; }
+    QMenu* getTableInstancesPopupMenu() { return m_tableInstancesPopupMenu; }
 
-    QAction * getAction_TableAddColumn() { return action_TableAddColumn; }
+    QMenu* getDiagramsPopupMenu() { return m_diagramsPopupMenu; }
 
-    QAction * getAction_SpecializeTable() { return action_SpecializeTable; }
+    /*
+     * Actions
+     */
 
-    QAction * getAction_DeleteTableInstance() { return action_DeleteTableInstance; }
+    QAction* getAction_RenameDiagram() { return action_RenameDiagram; }
 
-    QAction * getAction_RenameTableInstance() { return action_RenameTableInstance; }
+    QAction* getAction_DuplicateTable() { return action_DuplicateTable; }
+
+    QAction* getAction_PasteTable() { return action_PasteTable; }
+
+    QAction* getAction_AddTable() { return action_AddTable; }
+
+    QAction* getAction_AddTableInstance() { return action_AddTableInstance; }
+
+    QAction* getAction_InstantiateTable() { return action_InstantiateTable; }
+
+    QAction* getAction_CopyTable() { return action_CopyTable; }
+
+    QAction* getAction_DuplicateDataType() { return action_DuplicateDataType; }
+
+    QAction* getAction_DeleteDiagram() { return action_DeleteDiagram; }
+
+    QAction* getAction_RemoveTable() { return action_RemoveTable; }
+
+    QAction* getAction_TableAddColumn() { return action_TableAddColumn; }
+
+    QAction* getAction_SpecializeTable() { return action_SpecializeTable; }
+
+    QAction* getAction_DeleteTableInstance() { return action_DeleteTableInstance; }
+
+    QAction* getAction_RenameTableInstance() { return action_RenameTableInstance; }
 
     QAction* getAction_DeleteDataType() { return action_DeleteDataType; }
+
+    QAction* getAction_AddDiagram() { return action_AddDiagram; }
 
 private:
 
@@ -76,6 +92,12 @@ private:
 
     // popup menu for the list of tables
     QMenu* m_tablesPopupMenu;
+
+    // popup menu for the list of table instance
+    QMenu* m_tableInstancesPopupMenu;
+
+    // popup menu for the diagram list
+    QMenu* m_diagramsPopupMenu;
 
     // the actions in the table popup menu
     QAction* action_RemoveTable;
@@ -100,6 +122,12 @@ private:
     // the actions in the Tables popup menu
     QAction* action_AddTable;
     QAction* action_PasteTable;
+
+    // the actions for the Table instances popup menu
+    QAction* action_AddTableInstance;
+
+    // the actions for the Table instances popup menu
+    QAction* action_AddDiagram;
 
     // the instance of the popup menu collection
     static ContextMenuCollection* m_instance;

@@ -71,7 +71,7 @@ SOURCES += main.cpp \
     VersionGuiElements.cpp \
     DefaultVersionImplementation.cpp \
     ClipboardFactory.cpp
-HEADERS += MainWindow.h \
+HEADERS += mainwindow.h \
     MainWindowButtonDialog.h \
     newprojectdialog.h \
     newdatatypeform.h \
