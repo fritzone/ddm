@@ -60,7 +60,7 @@
          <enum>QTabWidget::Rounded</enum>
         </property>
         <property name="currentIndex">
-         <number>3</number>
+         <number>2</number>
         </property>
         <widget class="QWidget" name="tabWidgetPage1">
          <attribute name="title">
@@ -163,9 +163,6 @@
                  <property name="expandsOnDoubleClick">
                   <bool>false</bool>
                  </property>
-                 <attribute name="headerDefaultSectionSize">
-                  <number>150</number>
-                 </attribute>
                  <attribute name="headerDefaultSectionSize">
                   <number>150</number>
                  </attribute>
@@ -605,9 +602,6 @@ p, li { white-space: pre-wrap; }
                <attribute name="headerDefaultSectionSize">
                 <number>90</number>
                </attribute>
-               <attribute name="headerDefaultSectionSize">
-                <number>90</number>
-               </attribute>
                <column>
                 <property name="text">
                  <string>Name</string>
@@ -755,21 +749,6 @@ p, li { white-space: pre-wrap; }
                  </attribute>
                  <attribute name="headerShowSortIndicator" stdset="0">
                   <bool>false</bool>
-                 </attribute>
-                 <attribute name="headerCascadingSectionResizes">
-                  <bool>true</bool>
-                 </attribute>
-                 <attribute name="headerDefaultSectionSize">
-                  <number>200</number>
-                 </attribute>
-                 <attribute name="headerMinimumSectionSize">
-                  <number>150</number>
-                 </attribute>
-                 <attribute name="headerShowSortIndicator" stdset="0">
-                  <bool>false</bool>
-                 </attribute>
-                 <attribute name="headerHighlightSections">
-                  <bool>true</bool>
                  </attribute>
                  <column>
                   <property name="text">

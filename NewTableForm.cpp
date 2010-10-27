@@ -414,9 +414,42 @@ void NewTableForm::onAddColumn()
         return;
     }
 
+
+
     backupDefaultValuesTable();
     if(m_currentColumn)     // we are working on a column
     {
+        // check if we have changed the datatype... in this case check that:
+        if(m_ui->cmbNewColumnType->currentText() != m_currentColumn->getDataType()->getName())
+        {
+            // in affirmative case check that:
+            // 1. this column is not referencing any other columns in the DB through a foreign key
+            QVector<ForeignKey*> fks = m_table->columnParticipatesInForeignKey(m_currentColumn);
+            if(fks.size() > 0)
+            {
+                QString s = "";
+                for(int i=0; i<fks.size(); i++)
+                {
+                    s += "\n-" + fks.at(i)->getName();
+                }
+                QMessageBox::critical (this, tr("Error"), tr("Cannot change the type of the columns since it's participating in Foreign Key. Please change the following foreign keys and try again.")+ s, QMessageBox::Ok);
+                return;
+            }
+            // 2. no other column is referencing this column in the DB through a foreign key from all the tables in the version
+            QVector<Table*> otherTablesReferencingThiscolumn = Workspace::getInstance()->workingVersion()->getTablesReferencingAColumnThroughForeignKeys(m_currentColumn);
+            if(otherTablesReferencingThiscolumn.size() > 0)
+            {
+                QString s = "";
+                for(int i=0; i<otherTablesReferencingThiscolumn.size(); i++)
+                {
+                    s += "\n-" + otherTablesReferencingThiscolumn.at(i)->getName();
+                }
+                QMessageBox::critical (this, tr("Error"), tr("Cannot change the type of the columns since it's participating in Foreign Keys. Please change the following tables and try again.")+ s, QMessageBox::Ok);
+                return;
+            }
+        }
+
+
         if(m_currentColumn->getName() != m_ui->txtNewColumnName->text())
         {
             m_columnOperation = 3;
@@ -428,6 +461,7 @@ void NewTableForm::onAddColumn()
         m_currentColumn->setDescription(m_ui->txtColumnDescription->toPlainText());
         m_currentColumn->setPk(m_ui->chkPrimary->isChecked());
         m_currentColumn->setAutoIncrement(m_ui->chkAutoInc->isChecked());
+
         m_currentColumn->setDataType(m_project->getWorkingVersion()->getDataType(m_ui->cmbNewColumnType->currentText()));
 
         m_currentColumn->getLocation()->setText(1, m_currentColumn->getName());
@@ -1416,8 +1450,7 @@ void NewTableForm::resetFkGui()
     m_ui->txtForeignKeyName->clear();
     m_ui->cmbFkOnDelete->setCurrentIndex(-1);
     m_ui->cmbFkOnUpdate->setCurrentIndex(-1);
-    m_ui->btnAdd->setIcon(IconFactory::getAddIcon());
-
+    m_ui->btnAddForeignKey->setIcon(IconFactory::getAddIcon());
 }
 
 void NewTableForm::toggleFkFieldDisableness(bool a)

@@ -34,7 +34,7 @@
 #include "strings.h"
 #include "Workspace.h"
 #include "VersionGuiElements.h"
-
+#include "DataType.h" // TODO: this is simply bad design, Mainwindow should not know about datatypes ...
 
 #include <QtGui>
 
@@ -168,7 +168,11 @@ ContextMenuEnabledTreeWidgetItem* MainWindow::createDataTypeTreeEntry(UserDataTy
 {
     QStringList itm(udt->getName());
     itm << udt->sqlAsString();
-    ContextMenuEnabledTreeWidgetItem* newDTItem = new ContextMenuEnabledTreeWidgetItem(m_workspace->workingVersion()->getGui()->getDtsItem(), itm) ;
+    ContextMenuEnabledTreeWidgetItem* parent = m_workspace->workingVersion()->getGui()->getDtsItem();
+
+    if(udt->getType() == DataType::DT_STRING) parent = m_workspace->workingVersion()->getGui()->getStringDtsItem();
+
+    ContextMenuEnabledTreeWidgetItem* newDTItem = new ContextMenuEnabledTreeWidgetItem(parent, itm) ;
 
     QVariant var;
     var.setValue(*udt);
@@ -177,6 +181,7 @@ ContextMenuEnabledTreeWidgetItem* MainWindow::createDataTypeTreeEntry(UserDataTy
     newDTItem->setIcon(0, udt->getIcon());
     newDTItem->setPopupMenu(ContextMenuCollection::getInstance()->getDatatypePopupMenu());
     m_datatypesTree->insertTopLevelItem(0,newDTItem);
+    m_datatypesTree->header()->setResizeMode(QHeaderView::ResizeToContents);
 
     // set the link to the tree
     udt->setLocation(newDTItem);
@@ -264,19 +269,25 @@ void MainWindow::onDTTreeClicked()
             setCentralWidget(dtLst);
         }
         else
-        if(item->parent() && item->parent() == m_workspace->workingVersion()->getGui()->getDtsItem())
-        {   // the user clicked on a Data Type item. The UserDataType class is something that can be put in a user role TAG
-            QVariant qv = item->data(0, Qt::UserRole);
-            UserDataType* udt = static_cast<UserDataType*>(qv.data());
-            if(m_workspace->workingVersion()->hasDataType(udt->getName()))
+        {
+            if(item != m_workspace->workingVersion()->getGui()->getStringDtsItem())
             {
-                udt = m_workspace->workingVersion()->getDataType(udt->getName());
+                QVariant qv = item->data(0, Qt::UserRole);
+                UserDataType* udt = static_cast<UserDataType*>(qv.data());
+                if(m_workspace->workingVersion()->hasDataType(udt->getName()))
+                {
+                    udt = m_workspace->workingVersion()->getDataType(udt->getName());
+                }
+                NewDataTypeForm* frm = new NewDataTypeForm(m_workspace->currentProjectsEngine(), this);
+                frm->focusOnName();
+                frm->setMainWindow(this);
+                frm->setDataType(udt);
+                setCentralWidget(frm);
+
             }
-            NewDataTypeForm* frm = new NewDataTypeForm(m_workspace->currentProjectsEngine(), this);
-            frm->focusOnName();
-            frm->setMainWindow(this);
-            frm->setDataType(udt);
-            setCentralWidget(frm);
+//            if(item->parent() && item->parent() == m_workspace->workingVersion()->getGui()->getDtsItem())
+//            {   // the user clicked on a Data Type item. The UserDataType class is something that can be put in a user role TAG
+//            }
         }
     }
 }
@@ -649,6 +660,10 @@ void MainWindow::connectActionsFromTablePopupMenu()
         // now the table instance popup
         QObject::connect(ContextMenuCollection::getInstance()->getAction_DeleteTableInstance(), SIGNAL(activated()), this, SLOT(onDeleteInstanceFromPopup()));
         QObject::connect(ContextMenuCollection::getInstance()->getAction_RenameTableInstance(), SIGNAL(activated()), this, SLOT(onRenameInstanceFromPopup()));
+
+        // table instances popup
+        QObject::connect(ContextMenuCollection::getInstance()->getAction_AddTableInstance(), SIGNAL(activated()), this, SLOT(onNewTableInstance()));
+
     }
     else
     {
@@ -663,6 +678,8 @@ void MainWindow::connectActionsFromTablePopupMenu()
     QObject::connect(ContextMenuCollection::getInstance()->getAction_DuplicateDataType(), SIGNAL(activated()), this, SLOT(onDuplicateDatatypeFromPopup()));
     QObject::connect(ContextMenuCollection::getInstance()->getAction_DeleteDiagram(), SIGNAL(activated()), this, SLOT(onDeleteDiagramFromPopup()));
     QObject::connect(ContextMenuCollection::getInstance()->getAction_RenameDiagram(), SIGNAL(activated()), this, SLOT(onRenameDiagramFromPopup()));
+    QObject::connect(ContextMenuCollection::getInstance()->getAction_AddDiagram(), SIGNAL(activated()), this, SLOT(onNewDiagram()));
+
 }
 
 void MainWindow::onAbout()

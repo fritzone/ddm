@@ -79,6 +79,8 @@ public:
     {
         return version;
     }
+    virtual QVector<Table*> getTablesReferencingAColumnThroughForeignKeys(const Column*);
+
     void createTreeItems(QTreeWidget* tree = 0, QTreeWidget* dtTree = 0, ContextMenuEnabledTreeWidgetItem* projectIem = 0);
 
 protected:

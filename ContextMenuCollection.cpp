@@ -11,26 +11,30 @@ ContextMenuCollection::ContextMenuCollection()
     m_datatypePopupMenu = new QMenu();
     m_diagramPopupMenu = new QMenu();
     m_tablesPopupMenu = new QMenu();
+    m_tableInstancesPopupMenu = new QMenu();
+    m_diagramsPopupMenu = new QMenu();
 
     // actions
     action_RemoveTable = new QAction(QObject::tr("Delete table"), 0);
     action_RemoveTable->setIcon(IconFactory::getRemoveIcon());
-    action_DuplicateTable = new QAction(QObject::tr("Duplicate table"), 0);
+    action_DuplicateTable = new QAction(QObject::tr("Duplicate"), 0);
     action_TableAddColumn = new QAction(QObject::tr("Add column"), 0);
-    action_SpecializeTable = new QAction(QObject::tr("Specialize table"), 0);
-    action_InstantiateTable = new QAction(QObject::tr("Instantiate table"), 0);
-    action_DeleteTableInstance = new QAction(QObject::tr("Delete instance"), 0);
+    action_SpecializeTable = new QAction(QObject::tr("Specialize"), 0);
+    action_InstantiateTable = new QAction(QObject::tr("Instantiate"), 0);
+    action_DeleteTableInstance = new QAction(QObject::tr("Delete"), 0);
     action_DeleteTableInstance->setIcon(IconFactory::getRemoveIcon());
-    action_RenameTableInstance = new QAction(QObject::tr("Rename instance"), 0);
-    action_DeleteDataType = new QAction(QObject::tr("Delete datatype"), 0);
+    action_RenameTableInstance = new QAction(QObject::tr("Rename"), 0);
+    action_DeleteDataType = new QAction(QObject::tr("Delete"), 0);
     action_DeleteDataType->setIcon(IconFactory::getRemoveIcon());
-    action_DuplicateDataType = new QAction(QObject::tr("Duplicate datatype"), 0);
-    action_DeleteDiagram = new QAction(QObject::tr("Delete diagram"), 0);
+    action_DuplicateDataType = new QAction(QObject::tr("Duplicate"), 0);
+    action_DeleteDiagram = new QAction(QObject::tr("Delete"), 0);
     action_DeleteDiagram->setIcon(IconFactory::getRemoveIcon());
-    action_RenameDiagram = new QAction(QObject::tr("Rename diagram"), 0);
-    action_AddTable = new QAction(QObject::tr("Create table"), 0);
-    action_CopyTable = new QAction(QObject::tr("Copy ..."), 0);
+    action_RenameDiagram = new QAction(QObject::tr("Rename Diagram"), 0);
+    action_AddTable = new QAction(QObject::tr("New Table"), 0);
+    action_CopyTable = new QAction(QObject::tr("Copy"), 0);
     action_PasteTable = new QAction(QObject::tr("Paste table"), 0);
+    action_AddTableInstance = new QAction(QObject::tr("New Table Instance"), 0);
+    action_AddDiagram = new QAction(QObject::tr("New Diagram"), 0);
 
     // populate the table popup menu
     m_tablePopupMenu->addAction(action_TableAddColumn);
@@ -58,5 +62,11 @@ ContextMenuCollection::ContextMenuCollection()
     //tables popup menu
     m_tablesPopupMenu->addAction(action_AddTable);
     m_tablesPopupMenu->addAction(action_PasteTable);
+
+    // table instances
+    m_tableInstancesPopupMenu->addAction(action_AddTableInstance);
+
+    // diagrams
+    m_diagramsPopupMenu->addAction(action_AddDiagram);
 }
 

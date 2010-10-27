@@ -35,5 +35,6 @@ static const QString strCodeIcon = ":/images/actions/images/small/code.png";
 static const QString strSqlIcon = ":/images/actions/images/small/sql.png";
 static const QString strVersionIcon = ":/images/actions/images/small/version.PNG";
 static const QString strRemoveIcon = ":/images/actions/images/small/remove.png";
+static const QString strStringsFolder = ":/images/actions/images/small/folder_red.png";
 
 #endif // STRINGS_H

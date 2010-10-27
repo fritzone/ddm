@@ -13,6 +13,7 @@ class ContextMenuEnabledTreeWidgetItem;
 class TableInstance;
 class DatabaseEngine;
 class VersionGuiElements;
+class Column;
 
 /**
  * Basic class holding data related to versions
@@ -20,9 +21,9 @@ class VersionGuiElements;
 class Version : virtual public SerializableElement
 {
 public:
+
     Version() {};
     virtual ~Version() {};
-
 
     /**
      * Returns a constant reference to the data types of the version
@@ -92,7 +93,6 @@ public:
      */
     virtual Table* getTable(const QString& name) = 0;
 
-
     /**
      * Serializes this version
      */
@@ -109,10 +109,17 @@ public:
     virtual void removeForeignKeyFromDiagrams(ForeignKey*) = 0;
 
     /**
-     * Deletes a table from the system. Also resolves the FK dependencies: 1. deletes the table and the foreign table referencing this table 2. Deletes the FK reference from the foreign table
+     * Deletes a table from the system. Also resolves the FK dependencies:
+     * 1. deletes the table and the foreign table referencing this table
+     * 2. Deletes the FK reference from the foreign table
      */
     virtual void deleteTable(Table*) = 0;
 
+    /**
+     * Deletes the given table instance, and also all the other table instances
+     * that were instantiated due to foreign keys referencing this table instance
+     * when it was instantiated
+     */
     virtual void deleteTableInstance(TableInstance*) = 0;
 
     /**
@@ -140,18 +147,40 @@ public:
      */
     virtual TableInstance* getTableInstance(const QString& ) = 0;
 
-
+    /**
+     * Purges the table instances that were sentenced in a "delete table instance" procedure
+     */
     virtual void purgeSentencedTableInstances() = 0;
 
+    /**
+     * Deletes the given data type
+     */
     virtual void deleteDataType(const QString&) = 0;
 
+    /**
+     * Duplicates the given data type
+     */
     virtual UserDataType* duplicateDataType(const QString&) = 0;
 
+    /**
+     * Deletes a diagram from this version
+     */
     virtual void deleteDiagram(const QString&) = 0;
 
+    /**
+     * Returns the GUI elements (the Version tree widget item, and the otehrs) of this version
+     */
     virtual VersionGuiElements* getGui() = 0;
 
+    /**
+     * Returns the version as a human readable string
+     */
     virtual QString getVersionText() = 0;
+
+    /**
+     * Return a vector of tables that are referencing the given column through a foreign key
+     */
+    virtual QVector<Table*> getTablesReferencingAColumnThroughForeignKeys(const Column*) = 0;
 
 private:
 

@@ -199,6 +199,16 @@ QVector<const Column*> ForeignKey::foreignColumns() const
     return result;
 }
 
+QVector<const Column*> ForeignKey::localColumns() const
+{
+    QVector<const Column*> result;
+    for(int i=0; i<m_associations.size(); i++)
+    {
+        result.append(m_associations.at(i)->getLocalColumn());
+    }
+    return result;
+}
+
 void ForeignKey::onDelete()
 {
     for(int i=0; i<m_autoGenIndices.size(); i++)

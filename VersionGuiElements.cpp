@@ -32,10 +32,12 @@ void VersionGuiElements::createGuiElements(ContextMenuEnabledTreeWidgetItem* pro
     // make the views sub item coming from the version
     tableInstancesItem = new ContextMenuEnabledTreeWidgetItem(versionItem, QStringList(QObject::tr("Tables"))) ;
     tableInstancesItem->setIcon(0, IconFactory::getTabinstIcon());
+    tableInstancesItem->setPopupMenu(ContextMenuCollection::getInstance()->getTableInstancesPopupMenu());
     m_tree->addTopLevelItem(tableInstancesItem);
 
     diagramsItem = new ContextMenuEnabledTreeWidgetItem(versionItem, QStringList(QObject::tr("Diagrams"))) ;
     diagramsItem->setIcon(0, IconFactory::getDiagramIcon());
+    diagramsItem->setPopupMenu(ContextMenuCollection::getInstance()->getDiagramsPopupMenu());
     m_tree->addTopLevelItem(diagramsItem);
 
     // last one: SQLs
@@ -51,6 +53,13 @@ void VersionGuiElements::createGuiElements(ContextMenuEnabledTreeWidgetItem* pro
     dtsItem = new ContextMenuEnabledTreeWidgetItem((ContextMenuEnabledTreeWidgetItem*)0, QStringList(QObject::tr("Data Types"))) ;
     dtsItem->setIcon(0, IconFactory::getDataTypesIcon());
     m_dtTree->addTopLevelItem(dtsItem);
+
+    // now create the data types folders
+    // make the dts sub item coming from the project
+    stringsDtItem = new ContextMenuEnabledTreeWidgetItem(dtsItem, QStringList(QObject::tr("Strings"))) ;
+    stringsDtItem ->setIcon(0, IconFactory::getStringDataTypesIcon());
+    m_dtTree->addTopLevelItem(stringsDtItem);
+
 }
 
 void VersionGuiElements::populateTreeItems()
