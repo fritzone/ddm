@@ -19,6 +19,8 @@
 #include "InjectSqlDialog.h"
 #include "SqlNamesValidator.h"
 #include "Workspace.h"
+#include "ContextMenuCollection.h"
+#include "ClipboardFactory.h"
 
 #include <QMessageBox>
 #include <QHashIterator>
@@ -38,6 +40,28 @@ NewTableForm::NewTableForm(DatabaseEngine* db, Project* prj, QWidget *parent, bo
 {
     m_ui->setupUi(this);
 
+    // now set up the Column list and the context menus for the Column list
+    lstColumns = new ContextMenuEnabledTreeWidget();
+    lstColumns->setObjectName(QString::fromUtf8("lstColumns"));
+    lstColumns->setRootIsDecorated(false);
+    lstColumns->setItemsExpandable(false);
+    lstColumns->setAnimated(false);
+    lstColumns->setExpandsOnDoubleClick(false);
+    lstColumns->header()->setDefaultSectionSize(150);
+    m_ui->columnListLayout->addWidget(lstColumns);
+    QTreeWidgetItem *___qtreewidgetitem = lstColumns->headerItem();
+    ___qtreewidgetitem->setText(3, QApplication::translate("NewTableForm", "SQL Type", 0, QApplication::UnicodeUTF8));
+    ___qtreewidgetitem->setText(2, QApplication::translate("NewTableForm", "Type", 0, QApplication::UnicodeUTF8));
+    ___qtreewidgetitem->setText(1, QApplication::translate("NewTableForm", "Name", 0, QApplication::UnicodeUTF8));
+    ___qtreewidgetitem->setText(0, QApplication::translate("NewTableForm", "PK", 0, QApplication::UnicodeUTF8));
+    ContextMenuHandler* contextMenuHandler = new ContextMenuHandler();
+    lstColumns->setItemDelegate(new ContextMenuDelegate(contextMenuHandler,lstColumns));
+
+    // then connect the signals
+    QObject::connect(lstColumns, SIGNAL(itemClicked(QTreeWidgetItem*,int)), this, SLOT(onItemSelected(QTreeWidgetItem*,int)));
+    QObject::connect(ContextMenuCollection::getInstance()->getAction_CopyColumn(), SIGNAL(activated()), this, SLOT(onCopyColumn()));
+    QObject::connect(ContextMenuCollection::getInstance()->getAction_PasteColumn(), SIGNAL(activated()), this, SLOT(onPasteColumn()));
+
     highlighter = new SqlHighlighter(m_ui->txtSql->document());
 
     const QVector<UserDataType*>& dts = m_project->getWorkingVersion()->getDataTypes();
@@ -46,7 +70,7 @@ NewTableForm::NewTableForm(DatabaseEngine* db, Project* prj, QWidget *parent, bo
         m_ui->cmbNewColumnType->addItem(dts[i]->getIcon(), dts[i]->getName());
     }
 
-    m_ui->lstColumns->header()->resizeSection(0, 50);
+    lstColumns->header()->resizeSection(0, 50);
     m_ui->cmbNewColumnType->setCurrentIndex(-1);
 
     // fill in the storage engine types
@@ -215,6 +239,7 @@ ContextMenuEnabledTreeWidgetItem* NewTableForm::createTWIForColumn(const Column*
         item->setIcon(COL_POS_PK, IconFactory::getKeyIcon());
     }
     item->setIcon(COL_POS_DT, col->getDataType()->getIcon());
+    item->setPopupMenu(ContextMenuCollection::getInstance()->getColumnPopupMenu());
     return item;
 }
 
@@ -234,7 +259,7 @@ void NewTableForm::prepareColumnsListWithParentItems(const Table* ctable)
             static QBrush grayBrush(QColor(Qt::gray));
             ContextMenuEnabledTreeWidgetItem* item = createTWIForColumn(columns[i]);
             item->setBackground(0, grayBrush);
-            m_ui->lstColumns->addTopLevelItem(item);
+            lstColumns->addTopLevelItem(item);
             columns[i]->setLocation(item);
         }
     }
@@ -253,7 +278,7 @@ void NewTableForm::populateTable(const Table *table, bool parentTab)
     for(int i=0; i<columns.count(); i++)
     {
         ContextMenuEnabledTreeWidgetItem* item = createTWIForColumn(columns[i]);
-        m_ui->lstColumns->addTopLevelItem(item);
+        lstColumns->addTopLevelItem(item);
         columns[i]->setLocation(item);
         if(parentTab)
         {
@@ -264,10 +289,10 @@ void NewTableForm::populateTable(const Table *table, bool parentTab)
         }
     }
 
-    m_ui->lstColumns->resizeColumnToContents(0);
-    m_ui->lstColumns->resizeColumnToContents(1);
-    m_ui->lstColumns->resizeColumnToContents(2);
-    m_ui->lstColumns->resizeColumnToContents(3);
+    lstColumns->resizeColumnToContents(0);
+    lstColumns->resizeColumnToContents(1);
+    lstColumns->resizeColumnToContents(2);
+    lstColumns->resizeColumnToContents(3);
 
 
     // second step: set up the indices
@@ -495,7 +520,7 @@ void NewTableForm::onAddColumn()
         Column* col = new Column(m_ui->txtNewColumnName->text(), colsDt, m_ui->chkPrimary->isChecked(), m_ui->chkAutoInc->isChecked());
         col->setDescription(m_ui->txtColumnDescription->toPlainText());
         ContextMenuEnabledTreeWidgetItem* item = createTWIForColumn(col);
-        m_ui->lstColumns->addTopLevelItem(item);
+        lstColumns->addTopLevelItem(item);
 
         m_table->addColumn(col);
         // and update the table instances of the table, by adding a new table instance
@@ -533,7 +558,7 @@ void NewTableForm::onCancelColumnEditing()
 
 void NewTableForm::onDeleteColumn()
 {
-    QTreeWidgetItem* currentItem = m_ui->lstColumns->currentItem();
+    QTreeWidgetItem* currentItem = lstColumns->currentItem();
     if(currentItem == 0)
     {
         QMessageBox::critical (this, tr("Error"), tr("Please make sure you have a column selected for deletion."), QMessageBox::Ok);
@@ -560,7 +585,7 @@ void NewTableForm::onDeleteColumn()
         return;
     }
     backupDefaultValuesTable();
-    delete m_ui->lstColumns->currentItem();
+    delete lstColumns->currentItem();
     onCancelColumnEditing();
     m_table->removeColumn(const_cast<Column*>(currentColumn));
     m_table->tableInstancesRemoveColumn(const_cast<Column*>(currentColumn));
@@ -574,26 +599,26 @@ void NewTableForm::onDeleteColumn()
 
 void NewTableForm::onMoveColumnDown()
 {
-    if(m_ui->lstColumns->selectedItems().size() > 0)
+    if(lstColumns->selectedItems().size() > 0)
     {
-        if(!m_table->hasColumn(m_ui->lstColumns->currentItem()->text(1)))
+        if(!m_table->hasColumn(lstColumns->currentItem()->text(1)))
         {
             QMessageBox::critical (this, tr("Error"), tr("You cannot move the columns of a parent table from a sibling table. Go to the parent table to do this."), QMessageBox::Ok);
             return;
         }
 
-        QModelIndex x = m_ui->lstColumns->currentIndex();
+        QModelIndex x = lstColumns->currentIndex();
         int rc = x.row();
-        if(rc < m_ui->lstColumns->topLevelItemCount() - 1)
+        if(rc < lstColumns->topLevelItemCount() - 1)
         {
             m_table->moveColumnDown(rc);
 
-            Column* col = m_table->getColumn(m_ui->lstColumns->currentItem()->text(1));
+            Column* col = m_table->getColumn(lstColumns->currentItem()->text(1));
             ContextMenuEnabledTreeWidgetItem* item = createTWIForColumn(col);
             col->setLocation(item);
-            delete m_ui->lstColumns->currentItem();
-            m_ui->lstColumns->insertTopLevelItem(rc + 1, item);
-            m_ui->lstColumns->setCurrentItem(item);
+            delete lstColumns->currentItem();
+            lstColumns->insertTopLevelItem(rc + 1, item);
+            lstColumns->setCurrentItem(item);
             finalizeColumnMovement();
         }
     }
@@ -611,25 +636,25 @@ void NewTableForm::finalizeColumnMovement()
 
 void NewTableForm::onMoveColumnUp()
 {
-    if(m_ui->lstColumns->selectedItems().size() > 0)
+    if(lstColumns->selectedItems().size() > 0)
     {
-        if(!m_table->hasColumn(m_ui->lstColumns->currentItem()->text(1)))
+        if(!m_table->hasColumn(lstColumns->currentItem()->text(1)))
         {
             QMessageBox::critical (this, tr("Error"), tr("You cannot move the columns of a parent table from a sibling table. Go to the parent table to do this."), QMessageBox::Ok);
             return;
         }
-        QModelIndex x = m_ui->lstColumns->currentIndex();
+        QModelIndex x = lstColumns->currentIndex();
         int rc = x.row();
         if(rc > m_table->getTotalParentColumnCount())
         {
             m_table->moveColumnUp(rc - m_table->getTotalParentColumnCount());
 
-            Column* col = m_table->getColumn(m_ui->lstColumns->currentItem()->text(1));
+            Column* col = m_table->getColumn(lstColumns->currentItem()->text(1));
             ContextMenuEnabledTreeWidgetItem* item = createTWIForColumn(col);
             col->setLocation(item);
-            delete m_ui->lstColumns->currentItem();
-            m_ui->lstColumns->insertTopLevelItem(rc - 1, item);
-            m_ui->lstColumns->setCurrentItem(item);
+            delete lstColumns->currentItem();
+            lstColumns->insertTopLevelItem(rc - 1, item);
+            lstColumns->setCurrentItem(item);
             finalizeColumnMovement();
         }
     }
@@ -649,7 +674,7 @@ void NewTableForm::toggleColumnFieldDisableness(bool a)
  */
 void NewTableForm::onItemSelected(QTreeWidgetItem* current, int)
 {
-    QModelIndex x = m_ui->lstColumns->currentIndex();
+    QModelIndex x = lstColumns->currentIndex();
     m_currentColumn = m_table->getColumn(current->text(1));
 
     if(m_currentColumn == 0)
@@ -1856,3 +1881,38 @@ void NewTableForm::presentSql(Project *)
 
     m_ui->txtSql->setText(fs);
 }
+
+void NewTableForm::onCopyColumn()
+{
+    if(lstColumns->getLastRightclickedItem() != 0)
+    {
+        ContextMenuEnabledTreeWidgetItem* item = lstColumns->getLastRightclickedItem();
+        lstColumns->setLastRightclickedItem(0);
+
+        QVariant qv = item->data(0, Qt::UserRole);
+        QString cName = qv.toString();
+        Column* c = m_table->getColumn(cName);
+
+    }
+}
+
+void NewTableForm::onPasteColumn()
+{
+    Column* col = ClipboardFactory::pasteColumn();
+    if(!col) return;
+
+    // TODO: This is duplicate with stuff from the "onAddcolumn"
+    col->setName(col->getName() + "_copy");
+    // TODO: Rename the column to be valid!
+    ContextMenuEnabledTreeWidgetItem* item = createTWIForColumn(col);
+    lstColumns->addTopLevelItem(item);
+
+    m_table->addColumn(col);
+    // and update the table instances of the table, by adding a new table instance
+    m_table->tableInstancesAddColumn(col);
+
+    col->setLocation(item);
+    m_ui->txtNewColumnName->setFocus( );
+    // till here
+}
+

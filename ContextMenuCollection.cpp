@@ -13,6 +13,7 @@ ContextMenuCollection::ContextMenuCollection()
     m_tablesPopupMenu = new QMenu();
     m_tableInstancesPopupMenu = new QMenu();
     m_diagramsPopupMenu = new QMenu();
+    m_columnPopupMenu = new QMenu();
 
     // actions
     action_RemoveTable = new QAction(QObject::tr("Delete table"), 0);
@@ -35,6 +36,8 @@ ContextMenuCollection::ContextMenuCollection()
     action_PasteTable = new QAction(QObject::tr("Paste table"), 0);
     action_AddTableInstance = new QAction(QObject::tr("New Table Instance"), 0);
     action_AddDiagram = new QAction(QObject::tr("New Diagram"), 0);
+    action_CopyColumn = new QAction(QObject::tr("Copy"), 0);
+    action_PasteColumn = new QAction(QObject::tr("Paste"), 0);
 
     // populate the table popup menu
     m_tablePopupMenu->addAction(action_TableAddColumn);
@@ -68,5 +71,9 @@ ContextMenuCollection::ContextMenuCollection()
 
     // diagrams
     m_diagramsPopupMenu->addAction(action_AddDiagram);
+
+    // columns
+    m_columnPopupMenu->addAction(action_CopyColumn);
+    m_columnPopupMenu->addAction(action_PasteColumn);
 }
 

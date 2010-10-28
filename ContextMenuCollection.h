@@ -25,54 +25,36 @@ public:
      */
 
     QMenu* getTablePopupMenu() { return m_tablePopupMenu; }
-
     QMenu* getTablesPopupMenu() { return m_tablesPopupMenu; }
-
     QMenu* getDatatypePopupMenu() { return m_datatypePopupMenu; }
-
     QMenu* getTableInstancePopupMenu() { return m_tableInstancePopupMenu; }
-
     QMenu* getDiagramPopupMenu() { return m_diagramPopupMenu; }
-
     QMenu* getTableInstancesPopupMenu() { return m_tableInstancesPopupMenu; }
-
     QMenu* getDiagramsPopupMenu() { return m_diagramsPopupMenu; }
+    QMenu* getColumnPopupMenu() { return m_columnPopupMenu; }
 
     /*
      * Actions
      */
 
     QAction* getAction_RenameDiagram() { return action_RenameDiagram; }
-
     QAction* getAction_DuplicateTable() { return action_DuplicateTable; }
-
     QAction* getAction_PasteTable() { return action_PasteTable; }
-
     QAction* getAction_AddTable() { return action_AddTable; }
-
     QAction* getAction_AddTableInstance() { return action_AddTableInstance; }
-
     QAction* getAction_InstantiateTable() { return action_InstantiateTable; }
-
     QAction* getAction_CopyTable() { return action_CopyTable; }
-
     QAction* getAction_DuplicateDataType() { return action_DuplicateDataType; }
-
     QAction* getAction_DeleteDiagram() { return action_DeleteDiagram; }
-
     QAction* getAction_RemoveTable() { return action_RemoveTable; }
-
     QAction* getAction_TableAddColumn() { return action_TableAddColumn; }
-
     QAction* getAction_SpecializeTable() { return action_SpecializeTable; }
-
     QAction* getAction_DeleteTableInstance() { return action_DeleteTableInstance; }
-
     QAction* getAction_RenameTableInstance() { return action_RenameTableInstance; }
-
     QAction* getAction_DeleteDataType() { return action_DeleteDataType; }
-
     QAction* getAction_AddDiagram() { return action_AddDiagram; }
+    QAction* getAction_CopyColumn() { return action_CopyColumn; }
+    QAction* getAction_PasteColumn() { return action_PasteColumn; }
 
 private:
 
@@ -98,6 +80,9 @@ private:
 
     // popup menu for the diagram list
     QMenu* m_diagramsPopupMenu;
+
+    // popup menu for a column in a table
+    QMenu* m_columnPopupMenu;
 
     // the actions in the table popup menu
     QAction* action_RemoveTable;
@@ -128,6 +113,10 @@ private:
 
     // the actions for the Table instances popup menu
     QAction* action_AddDiagram;
+
+    // actions from the columns list (NewTableForm)
+    QAction* action_CopyColumn;
+    QAction* action_PasteColumn;
 
     // the instance of the popup menu collection
     static ContextMenuCollection* m_instance;

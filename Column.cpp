@@ -1,6 +1,8 @@
 #include "Column.h"
-
 #include "UserDataType.h"
+
+#include <QApplication>
+#include <QClipboard>
 
 Column::Column(const QString& name, const UserDataType* type, bool pk, bool autoInc) : m_name(name), m_type(type), m_pk(pk), m_autoIncrement(autoInc)
 {
@@ -77,3 +79,13 @@ void Column::setAutoIncrement(bool a)
     m_autoIncrement = a;
 }
 
+void Column::copy()
+{
+    QDomDocument doc("ClipboardData");
+    QDomElement root = doc.createElement("CopiedColumn");
+    serialize(doc, root);
+    doc.appendChild(root);
+    QString text = doc.toString();
+
+    QApplication::clipboard()->setText(text);
+}
