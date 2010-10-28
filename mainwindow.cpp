@@ -171,6 +171,12 @@ ContextMenuEnabledTreeWidgetItem* MainWindow::createDataTypeTreeEntry(UserDataTy
     ContextMenuEnabledTreeWidgetItem* parent = m_workspace->workingVersion()->getGui()->getDtsItem();
 
     if(udt->getType() == DataType::DT_STRING) parent = m_workspace->workingVersion()->getGui()->getStringDtsItem();
+    if(udt->getType() == DataType::DT_NUMERIC) parent = m_workspace->workingVersion()->getGui()->getIntsDtsItem();
+    if(udt->getType() == DataType::DT_DATETIME) parent = m_workspace->workingVersion()->getGui()->getDateDtsItem();
+    if(udt->getType() == DataType::DT_BLOB) parent = m_workspace->workingVersion()->getGui()->getBlobDtsItem();
+    if(udt->getType() == DataType::DT_BOOLEAN) parent = m_workspace->workingVersion()->getGui()->getBoolDtsItem();
+    if(udt->getType() == DataType::DT_MISC) parent = m_workspace->workingVersion()->getGui()->getMiscDtsItem();
+    if(udt->getType() == DataType::DT_SPATIAL) parent = m_workspace->workingVersion()->getGui()->getSpatialDtsItem();
 
     ContextMenuEnabledTreeWidgetItem* newDTItem = new ContextMenuEnabledTreeWidgetItem(parent, itm) ;
 
@@ -270,7 +276,14 @@ void MainWindow::onDTTreeClicked()
         }
         else
         {
-            if(item != m_workspace->workingVersion()->getGui()->getStringDtsItem())
+            if(   item != m_workspace->workingVersion()->getGui()->getStringDtsItem()
+               && item != m_workspace->workingVersion()->getGui()->getIntsDtsItem()
+               && item != m_workspace->workingVersion()->getGui()->getDateDtsItem()
+               && item != m_workspace->workingVersion()->getGui()->getBlobDtsItem()
+               && item != m_workspace->workingVersion()->getGui()->getBoolDtsItem()
+               && item != m_workspace->workingVersion()->getGui()->getMiscDtsItem()
+               && item != m_workspace->workingVersion()->getGui()->getSpatialDtsItem()
+              )
             {
                 QVariant qv = item->data(0, Qt::UserRole);
                 UserDataType* udt = static_cast<UserDataType*>(qv.data());

@@ -12,7 +12,15 @@
 #include <QVector>
 
 VersionGuiElements::VersionGuiElements(QTreeWidget* projTree, QTreeWidget* dtTree, Version* v) : tablesItem(0), tableInstancesItem(0), versionItem(0), diagramsItem(0), finalSqlItem(0), dtsItem(0),
-    m_tree(projTree), m_dtTree(dtTree), m_version(v)
+    m_tree(projTree), m_dtTree(dtTree), m_version(v),
+    stringsDtItem(0),
+    intsDtItem(0),
+    dateDtItem(0),
+    blobDtItem(0),
+    boolDtItem(0),
+    miscDtItem(0),
+    spatialDtItem(0)
+
 {
 }
 
@@ -54,11 +62,6 @@ void VersionGuiElements::createGuiElements(ContextMenuEnabledTreeWidgetItem* pro
     dtsItem->setIcon(0, IconFactory::getDataTypesIcon());
     m_dtTree->addTopLevelItem(dtsItem);
 
-    // now create the data types folders
-    // make the dts sub item coming from the project
-    stringsDtItem = new ContextMenuEnabledTreeWidgetItem(dtsItem, QStringList(QObject::tr("Strings"))) ;
-    stringsDtItem ->setIcon(0, IconFactory::getStringDataTypesIcon());
-    m_dtTree->addTopLevelItem(stringsDtItem);
 
 }
 
@@ -70,7 +73,17 @@ void VersionGuiElements::populateTreeItems()
     {
         QStringList a(dataTypes[i]->getName());
         a << dataTypes[i]->sqlAsString();
-        ContextMenuEnabledTreeWidgetItem* newDTItem = new ContextMenuEnabledTreeWidgetItem(getDtsItem(), a) ;
+
+        ContextMenuEnabledTreeWidgetItem* parent = getDtsItem();
+        if(dataTypes[i]->getType() == DataType::DT_STRING) parent = getStringDtsItem();
+        if(dataTypes[i]->getType() == DataType::DT_NUMERIC) parent = getIntsDtsItem();
+        if(dataTypes[i]->getType() == DataType::DT_DATETIME) parent = getDateDtsItem();
+        if(dataTypes[i]->getType() == DataType::DT_BLOB) parent = getBlobDtsItem();
+        if(dataTypes[i]->getType() == DataType::DT_BOOLEAN) parent = getBoolDtsItem();
+        if(dataTypes[i]->getType() == DataType::DT_MISC) parent = getMiscDtsItem();
+        if(dataTypes[i]->getType() == DataType::DT_SPATIAL) parent = getSpatialDtsItem();
+
+        ContextMenuEnabledTreeWidgetItem* newDTItem = new ContextMenuEnabledTreeWidgetItem(parent, a) ;
         QVariant var;
         var.setValue(*dataTypes[i]);
         newDTItem->setData(0, Qt::UserRole, var);

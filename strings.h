@@ -35,6 +35,12 @@ static const QString strCodeIcon = ":/images/actions/images/small/code.png";
 static const QString strSqlIcon = ":/images/actions/images/small/sql.png";
 static const QString strVersionIcon = ":/images/actions/images/small/version.PNG";
 static const QString strRemoveIcon = ":/images/actions/images/small/remove.png";
-static const QString strStringsFolder = ":/images/actions/images/small/folder_red.png";
+static const QString strStringsFolder = ":/images/actions/images/big/folder_red.png";
+static const QString strIntsFolder = ":/images/actions/images/big/folder_darkblue.png";
+static const QString strDateTimesFolder = ":/images/actions/images/big/folder_green.png";
+static const QString strBlobFolder = ":/images/actions/images/big/folder_cyan.png";
+static const QString strBoolFolder = ":/images/actions/images/big/folder_yellow.png";
+static const QString strMiscFolder = ":/images/actions/images/big/folder_brown.png";
+static const QString strSpatialFolder = ":/images/actions/images/big/folder_orange.png";
 
 #endif // STRINGS_H
