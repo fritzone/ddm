@@ -90,7 +90,4 @@ private:
     ContextMenuHandler *const m_contextMenu;
 };
 
-
-
-
 #endif // CONTEXTMENUENABLEDTREEWIDGET_H

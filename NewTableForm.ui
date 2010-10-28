@@ -60,7 +60,7 @@
          <enum>QTabWidget::Rounded</enum>
         </property>
         <property name="currentIndex">
-         <number>2</number>
+         <number>0</number>
         </property>
         <widget class="QWidget" name="tabWidgetPage1">
          <attribute name="title">
@@ -74,7 +74,7 @@
             </property>
             <layout class="QVBoxLayout" name="verticalLayout_5">
              <item>
-              <layout class="QHBoxLayout" name="horizontalLayout_2">
+              <layout class="QHBoxLayout" name="columnListLayout">
                <item>
                 <layout class="QGridLayout" name="gridLayout">
                  <item row="0" column="0">
@@ -148,45 +148,6 @@
                   </spacer>
                  </item>
                 </layout>
-               </item>
-               <item>
-                <widget class="QTreeWidget" name="lstColumns">
-                 <property name="rootIsDecorated">
-                  <bool>false</bool>
-                 </property>
-                 <property name="itemsExpandable">
-                  <bool>false</bool>
-                 </property>
-                 <property name="animated">
-                  <bool>false</bool>
-                 </property>
-                 <property name="expandsOnDoubleClick">
-                  <bool>false</bool>
-                 </property>
-                 <attribute name="headerDefaultSectionSize">
-                  <number>150</number>
-                 </attribute>
-                 <column>
-                  <property name="text">
-                   <string>PK</string>
-                  </property>
-                 </column>
-                 <column>
-                  <property name="text">
-                   <string>Name</string>
-                  </property>
-                 </column>
-                 <column>
-                  <property name="text">
-                   <string>Type</string>
-                  </property>
-                 </column>
-                 <column>
-                  <property name="text">
-                   <string>SQL Type</string>
-                  </property>
-                 </column>
-                </widget>
                </item>
               </layout>
              </item>
@@ -1382,7 +1343,6 @@ p, li { white-space: pre-wrap; }
   <tabstop>txtNewColumnName</tabstop>
   <tabstop>cmbNewColumnType</tabstop>
   <tabstop>txtColumnDescription</tabstop>
-  <tabstop>lstColumns</tabstop>
   <tabstop>btnUp</tabstop>
   <tabstop>btnRemove</tabstop>
   <tabstop>tabWidget</tabstop>
@@ -1419,22 +1379,6 @@ p, li { white-space: pre-wrap; }
     <hint type="sourcelabel">
      <x>243</x>
      <y>751</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>243</x>
-     <y>386</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>lstColumns</sender>
-   <signal>itemClicked(QTreeWidgetItem*,int)</signal>
-   <receiver>NewTableForm</receiver>
-   <slot>onItemSelected(QTreeWidgetItem*,int)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>228</x>
-     <y>246</y>
     </hint>
     <hint type="destinationlabel">
      <x>243</x>

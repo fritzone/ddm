@@ -24,6 +24,7 @@ class AbstractStorageEngine;
 class AbstractStorageEngineListProvider;
 class ContextMenuEnabledTreeWidgetItem;
 class SqlHighlighter;
+class ContextMenuEnabledTreeWidget;
 class SqlNamesValidator;
 
 class NewTableForm : public SourceCodePresenterWidget {
@@ -64,6 +65,8 @@ public slots:
     void onMoveColumnUp();
     void onCancelColumnEditing();
     void onItemSelected(QTreeWidgetItem*, int);             // when a column gets selected... sorry for bad naming
+    void onCopyColumn();
+    void onPasteColumn();
 
     // on the index page
     void onSelectIndex(QTreeWidgetItem*,int);
@@ -204,6 +207,7 @@ private:
     SqlHighlighter* highlighter;
     QStringList finalSql;
     SqlNamesValidator* m_nameValidator;
+    ContextMenuEnabledTreeWidget* lstColumns;
 };
 
 #endif // NEWTABLEFORM_H

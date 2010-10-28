@@ -3,6 +3,7 @@
 
 #include "TreeItem.h"
 #include "SerializableElement.h"
+#include "CopyableElement.h"
 
 #include <QString>
 
@@ -11,7 +12,7 @@ class UserDataType;
 /**
  * This class holds the necessary data to define a column
  */
-class Column : virtual public TreeItem, public SerializableElement
+class Column : virtual public TreeItem, virtual public SerializableElement, virtual public CopyableElement
 {
 public:
     Column(const QString& name, const UserDataType* type, bool, bool );
@@ -37,6 +38,8 @@ public:
     bool hasAutoIncrement() const;
 
     void setAutoIncrement(bool a);
+
+    virtual void copy();
 
 private:
     QString m_name;
