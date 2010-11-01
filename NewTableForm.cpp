@@ -240,7 +240,8 @@ ContextMenuEnabledTreeWidgetItem* NewTableForm::createTWIForColumn(const Column*
     }
     item->setIcon(COL_POS_DT, col->getDataType()->getIcon());
     item->setPopupMenu(ContextMenuCollection::getInstance()->getColumnPopupMenu());
-    item->setData();
+    QVariant var(col->getName());
+    item->setData(0, Qt::UserRole, var);
     return item;
 }
 
