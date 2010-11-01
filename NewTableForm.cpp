@@ -240,6 +240,7 @@ ContextMenuEnabledTreeWidgetItem* NewTableForm::createTWIForColumn(const Column*
     }
     item->setIcon(COL_POS_DT, col->getDataType()->getIcon());
     item->setPopupMenu(ContextMenuCollection::getInstance()->getColumnPopupMenu());
+    item->setData();
     return item;
 }
 
@@ -1892,6 +1893,8 @@ void NewTableForm::onCopyColumn()
         QVariant qv = item->data(0, Qt::UserRole);
         QString cName = qv.toString();
         Column* c = m_table->getColumn(cName);
+
+        c->copy();
 
     }
 }
