@@ -5,6 +5,7 @@
 #include "SerializableElement.h"
 #include "SqlSourceEntity.h"
 #include "CopyableElement.h"
+#include "NamedItem.h"
 
 #include <QString>
 #include <QVector>
@@ -23,7 +24,7 @@ class TableInstance;
  * The table class holds a database table defined by the user. It must be derived from the TreeItem since a table can be placed in
  * the tree, so the user of it must know how to update the visual part too.
  */
-class Table : virtual public TreeItem, virtual public SerializableElement, virtual public SqlSourceEntity, virtual public CopyableElement
+class Table : virtual public TreeItem, virtual public SerializableElement, virtual public SqlSourceEntity, virtual public CopyableElement, virtual public NamedItem
 {
 public:
 
@@ -83,23 +84,12 @@ public:
         return m_indices;
     }
 
-
     /**
      * Returns the foreign keys of this table for a read-only access
      */
     const QVector<ForeignKey*> & getFks() const
     {
         return m_foreignKeys;
-    }
-
-    const QString& getName() const
-    {
-        return m_name;
-    }
-
-    void setName(const QString& name)
-    {
-        m_name = name;
     }
 
     void setDescription(const QString& desc)
@@ -311,9 +301,9 @@ public:
      */
     QVector<ForeignKey*> columnParticipatesInForeignKey(const Column* col);
 
+    QString generateUniqueColumnName(const QString& in);
+
 private:
-    // the name of the table
-    QString m_name;
 
     // describes the table
     QString m_description;

@@ -83,6 +83,8 @@ public:
 
     void createTreeItems(QTreeWidget* tree = 0, QTreeWidget* dtTree = 0, ContextMenuEnabledTreeWidgetItem* projectIem = 0);
 
+    virtual void setupForeignKeyRelationshipsForATable(Table *tab);
+
 protected:
     // the version as a string representation. Major versions are always of form X.0
     QString version;

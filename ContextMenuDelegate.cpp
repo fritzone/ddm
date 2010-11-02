@@ -15,9 +15,6 @@ bool ContextMenuDelegate::editorEvent(QEvent * event, QAbstractItemModel * , con
         QMouseEvent *const mouseEvent = dynamic_cast<QMouseEvent*>(event);
         if(mouseEvent && (mouseEvent->button()==Qt::RightButton))
         {
-            // TODO: decide whether we should select the right clicked stuff
-            //m_tree->itemAt(mouseEvent->pos())->setSelected(true);
-
             ContextMenuEnabledTreeWidgetItem* item = m_tree->itemAt(mouseEvent->pos());
 
             if(item)
@@ -26,6 +23,7 @@ bool ContextMenuDelegate::editorEvent(QEvent * event, QAbstractItemModel * , con
 
                 // now a big ugly piece of code, disabling or enabling actions, regardless of the selected menu, depending on what's on the clipboard
                 ContextMenuCollection::getInstance()->getAction_PasteTable()->setEnabled(ClipboardFactory::tableIsAvailableOnClipboard());
+                ContextMenuCollection::getInstance()->getAction_PasteColumn()->setEnabled(ClipboardFactory::columnIsAvailableOnClipboard());
 
                 // and finally show the table
                 m_contextMenu->showContextMenu(mouseEvent->globalPos(), index, item);

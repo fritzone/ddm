@@ -104,5 +104,6 @@
         <file>images/big/folder_red.png</file>
         <file>images/big/folder_yellow.png</file>
         <file>images/big/folder_brown.png</file>
+        <file>images/small/database.png</file>
     </qresource>
 </RCC>

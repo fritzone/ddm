@@ -173,43 +173,7 @@ MajorVersion* DeserializationFactory::createMajorVersion(Project* p, DatabaseEng
     for(int i=0; i<result->getTables().size(); i++)
     {
         Table* tabI = result->getTables().at(i);
-        for(int j=0; j<tabI->getFks().size(); j++)
-        {
-            ForeignKey* fkJ = tabI->getFks()[j];
-            for(int k=0; k<fkJ->getAssociations().size(); k++)
-            {
-                ForeignKey::ColumnAssociation* assK = fkJ->getAssociation(k);
-                // first: set the tables
-                for(int l=0; l<result->getTables().size(); l++)
-                {
-                    if(result->getTables().at(l)->getName() == assK->getSForeignTable())
-                    {
-                        assK->setForeignTable(result->getTables().at(l));
-                    }
-                    if(result->getTables().at(l)->getName() == assK->getSLocalTable())
-                    {
-                        assK->setLocalTable(result->getTables().at(l));
-                    }
-                }
-                // then: set the columns of those tables
-                for(int l=0; l<assK->getLocalTable()->columns().size(); l++)
-                {
-                    Column* colL = assK->getLocalTable()->getColumns().at(l);
-                    if(colL->getName() == assK->getSLocalColumn())
-                    {
-                        assK->setLocalColumn(colL);
-                    }
-                }
-                for(int l=0; l<assK->getForeignTable()->columns().size(); l++)
-                {
-                    Column* colL = assK->getForeignTable()->getColumns().at(l);
-                    if(colL->getName() == assK->getSForeignColumn())
-                    {
-                        assK->setForeignColumn(colL);
-                    }
-                }
-            }
-        }
+        result->setupForeignKeyRelationshipsForATable(tabI);
     }
 
     // now update the foreign keys of the tables so that the auto generated indices get populated properly

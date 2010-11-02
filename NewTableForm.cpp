@@ -1875,7 +1875,9 @@ void NewTableForm::onSaveSql()
 void NewTableForm::presentSql(Project *)
 {
     QString fs = "";
-    finalSql = m_project->getEngine()->getSqlGenerator()->generateCreateTableSql(m_table, Configuration::instance().sqlGenerationOptions(), m_table->getName());
+    QHash<QString,QString> fo = Configuration::instance().sqlGenerationOptions();
+    fo["FKSposition"] = "OnlyInternal";
+    finalSql = m_project->getEngine()->getSqlGenerator()->generateCreateTableSql(m_table, fo, m_table->getName());
     for(int i=0; i< finalSql.size(); i++)
     {
         fs += finalSql[i];
@@ -1907,6 +1909,7 @@ void NewTableForm::onPasteColumn()
 
     // TODO: This is duplicate with stuff from the "onAddcolumn"
     col->setName(col->getName() + "_copy");
+    col->setName(m_table->generateUniqueColumnName(col->getName()));
     // TODO: Rename the column to be valid!
     ContextMenuEnabledTreeWidgetItem* item = createTWIForColumn(col);
     lstColumns->addTopLevelItem(item);
