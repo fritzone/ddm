@@ -19,10 +19,9 @@
 #include <QApplication>
 #include <QClipboard>
 
-Table::Table(Version* v) :  m_name(""), m_description(""), m_columns(), m_indices(), m_foreignKeys(), m_startupValues(),
+Table::Table(Version* v) :  NamedItem(NameGenerator::getNextTableNameFromVersion(v, "TAB")), m_description(""), m_columns(), m_indices(), m_foreignKeys(), m_startupValues(),
                             m_parent(0), m_persistent(false), m_temporary(false), m_storageEngine(0), m_diagramEntity(0), m_version(v)
 {
-    m_name = NameGenerator::getNextTableNameFromVersion(v, "TABLE");
 }
 
 void Table::addColumn(Column *column)
@@ -599,4 +598,17 @@ QVector<ForeignKey*> Table::columnParticipatesInForeignKey(const Column* col)
         }
     }
     return result;
+}
+
+QString Table::generateUniqueColumnName(const QString& in)
+{
+    int i = 1;
+    if(!hasColumn(in)) return in;
+    while(i<999999)
+    {
+        QString result2 = in + "_" + QString::number(i);
+        if(!hasColumn(result2)) return result2;
+        i++;
+    }
+    return in;
 }

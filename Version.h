@@ -128,9 +128,14 @@ public:
     virtual Table* duplicateTable(Table*) = 0;
 
     /**
-     * Sets up a parent child relationship
+     * Sets up a parent child relationship. Used in the factory methods of creating a version
      */
     virtual void setupTableParentChildRelationships() = 0;
+
+    /**
+     * Sets up the foreign key relationships. Used in the factory methods of creating a version
+     */
+    virtual void setupForeignKeyRelationshipsForATable(Table* tab) = 0;
 
     /**
      * Instantiates a table from the given table template

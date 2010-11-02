@@ -362,3 +362,44 @@ QVector<Table*> DefaultVersionImplementation::getTablesReferencingAColumnThrough
     }
     return result;
 }
+
+void DefaultVersionImplementation::setupForeignKeyRelationshipsForATable(Table* tab)
+{
+    for(int j=0; j<tab->getFks().size(); j++)
+    {
+        ForeignKey* fkJ = tab->getFks()[j];
+        for(int k=0; k<fkJ->getAssociations().size(); k++)
+        {
+            ForeignKey::ColumnAssociation* assK = fkJ->getAssociation(k);
+            // first: set the tables
+            for(int l=0; l<getTables().size(); l++)
+            {
+                if(getTables().at(l)->getName() == assK->getSForeignTable())
+                {
+                    assK->setForeignTable(getTables().at(l));
+                }
+                if(getTables().at(l)->getName() == assK->getSLocalTable())
+                {
+                    assK->setLocalTable(getTables().at(l));
+                }
+            }
+            // then: set the columns of those tables
+            for(int l=0; l<assK->getLocalTable()->columns().size(); l++)
+            {
+                Column* colL = assK->getLocalTable()->getColumns().at(l);
+                if(colL->getName() == assK->getSLocalColumn())
+                {
+                    assK->setLocalColumn(colL);
+                }
+            }
+            for(int l=0; l<assK->getForeignTable()->columns().size(); l++)
+            {
+                Column* colL = assK->getForeignTable()->getColumns().at(l);
+                if(colL->getName() == assK->getSForeignColumn())
+                {
+                    assK->setForeignColumn(colL);
+                }
+            }
+        }
+    }
+}

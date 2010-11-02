@@ -67,7 +67,7 @@
           </property>
           <property name="icon">
            <iconset resource="dbm.qrc">
-            <normaloff>:/images/actions/images/small/inject.png</normaloff>:/images/actions/images/small/inject.png</iconset>
+            <normaloff>:/images/actions/images/small/database.png</normaloff>:/images/actions/images/small/database.png</iconset>
           </property>
          </widget>
         </item>
