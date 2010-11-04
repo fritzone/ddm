@@ -64,6 +64,7 @@ void TableInstanceForm::createTableWithValues()
             qDebug() << v[j];
             ui->values->setItem(j, i, itm);
         }
+        ui->values->resizeColumnsToContents();
     }
     m_populated = true;
 }

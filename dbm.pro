@@ -170,4 +170,3 @@ FORMS += mainwindow.ui \
     PreferencesDialog.ui \
     SimpleTextInputDialog.ui
 RESOURCES += dbm.qrc
-QTPLUGIN += qsqlmysql

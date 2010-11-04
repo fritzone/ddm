@@ -23,10 +23,10 @@ void DataTypesListForm::changeEvent(QEvent *e)
     QWidget::changeEvent(e);
     switch (e->type()) {
     case QEvent::LanguageChange:
-	m_ui->retranslateUi(this);
-	break;
+        m_ui->retranslateUi(this);
+        break;
     default:
-	break;
+        break;
     }
 }
 
@@ -34,14 +34,14 @@ void DataTypesListForm::feedInDataTypes(const QVector<UserDataType*>& dataTypes)
 {
     for(int i=0; i<dataTypes.size(); i++)
     {
-	QStringList a(dataTypes[i]->getName());
-	a.append(dataTypes[i]->sqlAsString());
-	a.append(dataTypes[i]->typeAsString());
-	a.append(dataTypes[i]->sizeAsString());
+        QStringList a(dataTypes[i]->getName());
+        a.append(dataTypes[i]->sqlAsString());
+        a.append(dataTypes[i]->typeAsString());
+        a.append(dataTypes[i]->sizeAsString());
 
-	QTreeWidgetItem* item = new QTreeWidgetItem((QTreeWidget*)0, a);
-	item->setIcon(0, dataTypes[i]->getIcon());
-	m_ui->treeDataTypes->addTopLevelItem(item);
+        QTreeWidgetItem* item = new QTreeWidgetItem((QTreeWidget*)0, a);
+        item->setIcon(0, dataTypes[i]->getIcon());
+        m_ui->treeDataTypes->addTopLevelItem(item);
     }
 
     m_ui->treeDataTypes->resizeColumnToContents(0);
