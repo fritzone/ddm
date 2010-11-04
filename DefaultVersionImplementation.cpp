@@ -37,9 +37,17 @@ void DefaultVersionImplementation::createTreeItems(QTreeWidget* tree, QTreeWidge
     m_guiElements->createGuiElements(m_projectItem);
 }
 
-inline void DefaultVersionImplementation::addNewDataType(UserDataType* dt)
+void DefaultVersionImplementation::addNewDataType(UserDataType* dt)
 {
-    m_dataTypes.append(dt);
+    int i = 0;
+    while(i < m_dataTypes.size())
+    {
+        if(m_dataTypes.at(i)->getType() != dt->getType()) i++;
+        else break;
+    }
+
+    m_dataTypes.insert(i, dt);
+
 }
 
 bool DefaultVersionImplementation::hasDataType(const QString& name) const

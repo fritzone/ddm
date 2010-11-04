@@ -14,6 +14,7 @@ ContextMenuCollection::ContextMenuCollection()
     m_tableInstancesPopupMenu = new QMenu();
     m_diagramsPopupMenu = new QMenu();
     m_columnPopupMenu = new QMenu();
+    m_datatypesPopupMenu = new QMenu();
 
     // actions
     action_RemoveTable = new QAction(QObject::tr("Delete table"), 0);

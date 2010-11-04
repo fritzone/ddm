@@ -539,6 +539,11 @@ void NewTableForm::onAddColumn()
     m_ui->chkAutoInc->setChecked(false);
     m_ui->btnAdd->setIcon(IconFactory::getAddIcon());
 
+    lstColumns->resizeColumnToContents(0);
+    lstColumns->resizeColumnToContents(1);
+    lstColumns->resizeColumnToContents(2);
+    lstColumns->resizeColumnToContents(3);
+
     populateColumnsForIndices();
     updateDefaultValuesTableHeader();
     restoreDefaultValuesTable();

@@ -32,6 +32,7 @@ public:
     QMenu* getTableInstancesPopupMenu() { return m_tableInstancesPopupMenu; }
     QMenu* getDiagramsPopupMenu() { return m_diagramsPopupMenu; }
     QMenu* getColumnPopupMenu() { return m_columnPopupMenu; }
+    QMenu* getDatatypesPopupMenu() { return m_datatypesPopupMenu; }
 
     /*
      * Actions
@@ -60,29 +61,16 @@ private:
 
     ContextMenuCollection();
 
-    // popup menu for a table
-    QMenu* m_tablePopupMenu;
 
-    // popup menu for a table instance
-    QMenu* m_tableInstancePopupMenu;
-
-    // popup menu for a datatype
-    QMenu* m_datatypePopupMenu;
-
-    // popup menu for a diagram
-    QMenu* m_diagramPopupMenu;
-
-    // popup menu for the list of tables
-    QMenu* m_tablesPopupMenu;
-
-    // popup menu for the list of table instance
-    QMenu* m_tableInstancesPopupMenu;
-
-    // popup menu for the diagram list
-    QMenu* m_diagramsPopupMenu;
-
-    // popup menu for a column in a table
-    QMenu* m_columnPopupMenu;
+    QMenu* m_tablePopupMenu;                    // popup menu for a table
+    QMenu* m_tableInstancePopupMenu;            // popup menu for a table instance
+    QMenu* m_datatypePopupMenu;                 // popup menu for a datatype
+    QMenu* m_diagramPopupMenu;                  // popup menu for a diagram
+    QMenu* m_tablesPopupMenu;                   // popup menu for the list of tables
+    QMenu* m_tableInstancesPopupMenu;           // popup menu for the list of table instance
+    QMenu* m_diagramsPopupMenu;                 // popup menu for the diagram list
+    QMenu* m_columnPopupMenu;                   // popup menu for a column in a table
+    QMenu* m_datatypesPopupMenu;                // popup menu for the datatypes
 
     // the actions in the table popup menu
     QAction* action_RemoveTable;

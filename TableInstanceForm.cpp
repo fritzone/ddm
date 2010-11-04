@@ -39,7 +39,7 @@ void TableInstanceForm::changeEvent(QEvent *e)
 
 void TableInstanceForm::createTableWithValues()
 {
-    QList<QString> columns = m_tinst->columns();
+    QVector<QString> columns = m_tinst->columns();
     ui->values->setColumnCount(columns.size());
     bool rowcSet = false;
     // header
@@ -151,3 +151,9 @@ void TableInstanceForm::onHelp()
     ui->btnHelp->hide();
     ui->webView->setUrl(QApplication::applicationDirPath() + QString("/doc/tinst.html"));
 }
+
+void TableInstanceForm::onValuesDoubleClick()
+{
+    onAddNewRow();
+}
+

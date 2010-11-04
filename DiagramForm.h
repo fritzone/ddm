@@ -40,6 +40,8 @@ public slots:
     void printDiagram();
     void onHelp();
     void onNameChange(QString);
+    void onZoomOut();
+    void onZoomIn();
 
 protected:
     void changeEvent(QEvent *e);
