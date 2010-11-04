@@ -105,5 +105,7 @@
         <file>images/big/folder_yellow.png</file>
         <file>images/big/folder_brown.png</file>
         <file>images/small/database.png</file>
+        <file>images/small/zoom_out.png</file>
+        <file>images/small/zoom_in.png</file>
     </qresource>
 </RCC>

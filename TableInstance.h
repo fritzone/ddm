@@ -17,7 +17,7 @@ public:
 
     TableInstance(Table* tab, bool ref);
 
-    QList<QString> columns() const;
+    QVector<QString> columns() const;
 
     Table* table() const
     {

@@ -54,8 +54,8 @@ DiagramForm::DiagramForm(Version* v, Diagram* dgram, QWidget *parent) : QWidget(
 
     ui->txtDiagramName->setText(m_diagram->getName());
 
-    ui->verticalLayout_2->addWidget(lstTables);
-    ui->verticalLayout_2->addWidget(lstDiagramForms);
+    ui->contentLayout->addWidget(lstTables);
+    ui->contentLayout->addWidget(lstDiagramForms);
     ui->horizontalLayout->addWidget(graphicsView);
 
     prepareLists();
@@ -351,4 +351,14 @@ void DiagramForm::onNameChange(QString a)
         QVariant var(a);
         m_diagram->getLocation()->setData(0, Qt::UserRole, var);
     }
+}
+
+void DiagramForm::onZoomOut()
+{
+    graphicsView->scale(1/1.2, 1/1.2);
+}
+
+void DiagramForm::onZoomIn()
+{
+    graphicsView->scale(1.2, 1.2);
 }

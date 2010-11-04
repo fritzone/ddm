@@ -17,9 +17,13 @@ void TableInstance::addTableReferencingThis(Table* refTab)
     m_referencingTables.append(refTab);
 }
 
-QList<QString> TableInstance::columns() const
+QVector<QString> TableInstance::columns() const
 {
-    QList<QString> v = m_values.keys();
+    QVector<QString> v;
+    for(int i=0; i<m_table->fullColumns().size(); i++)
+    {
+        v.append(m_table->fullColumns()[i]);
+    }
     return v;
 }
 
@@ -55,7 +59,7 @@ void TableInstance::serialize(QDomDocument &doc, QDomElement &parent) const
     tableInstanceElement.setAttribute("InstantiatedTableInstances", instantiatedTablesInstances);
     }
 
-    QList <QString> cols = columns();
+    QVector<QString> cols = columns();
 
     for(int i=0; i<cols.size(); i++)
     {

@@ -41,14 +41,14 @@ void Diagram::removeTable(const QString &tabName)
     {
         DraggableGraphicsViewItem* toDelete = m_onStage[idx];
         m_onStage.remove(idx);
-        //delete toDelete;
+        delete toDelete;
     }
 
     if(idx != -1 && m_tableDescriptors.size() > 0)
     {
         DiagramObjectDescriptor* descToDel = m_tableDescriptors[idx];
         m_tableDescriptors.remove(idx);
-        //delete descToDel;
+        delete descToDel;
     }
 
     int i=0;
