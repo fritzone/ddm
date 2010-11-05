@@ -2,6 +2,7 @@
 #define INDEX_H
 
 #include "TreeItem.h"
+#include "NamedItem.h"
 #include "SerializableElement.h"
 
 #include <QVector>
@@ -10,7 +11,7 @@
 class Column;
 class Table;
 
-class Index : virtual public TreeItem, virtual public SerializableElement
+class Index : public TreeItem, public SerializableElement, public NamedItem
 {
 public:
     Index(Table*);
@@ -21,11 +22,7 @@ public:
 
     bool hasColumn(const Column*) const;
 
-    const QString& getName() const;
-
     const QString& getType() const;
-
-    void setName(const QString& name);
 
     void setType(const QString& type);
 
@@ -46,8 +43,6 @@ public:
 private:
 
     Table* m_owner;
-
-    QString m_name;
 
     QString m_type;
 

@@ -4,7 +4,7 @@
 #include <QApplication>
 #include <QClipboard>
 
-Column::Column(const QString& name, const UserDataType* type, bool pk, bool autoInc) : m_name(name), m_type(type), m_pk(pk), m_autoIncrement(autoInc)
+Column::Column(const QString& name, const UserDataType* type, bool pk, bool autoInc) : NamedItem(name), m_type(type), m_pk(pk), m_autoIncrement(autoInc)
 {
 
 }
@@ -29,11 +29,6 @@ void Column::serialize(QDomDocument &doc, QDomElement &parent) const
 
 }
 
-const QString& Column::getName() const
-{
-    return m_name;
-}
-
 const UserDataType* Column::getDataType() const
 {
     return m_type;
@@ -42,11 +37,6 @@ const UserDataType* Column::getDataType() const
 bool Column::isPk() const
 {
     return m_pk;
-}
-
-void Column::setName(const QString& name)
-{
-    m_name = name;
 }
 
 void Column::setDataType(const UserDataType* dt)

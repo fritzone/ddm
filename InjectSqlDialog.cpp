@@ -6,9 +6,17 @@
 #include <QSqlQuery>
 #include <QSqlError>
 
+QString InjectSqlDialog::previousHost="";
+QString InjectSqlDialog::previousUser="";
+
+
 InjectSqlDialog::InjectSqlDialog(QWidget *parent) : QDialog(parent), ui(new Ui::InjectSqlDialog)
 {
     ui->setupUi(this);
+    ui->buttonBox->button(QDialogButtonBox::Ok)->setDisabled(true);
+    ui->chkOnlyIfNotExist->hide();
+    ui->txtDatabaseHost->setText(previousHost);
+    ui->txtDatabaseUser->setText(previousUser);
 }
 
 InjectSqlDialog::~InjectSqlDialog()
@@ -54,6 +62,11 @@ void InjectSqlDialog::onConnect()
         ui->cmbDatabases->addItem(db);
     }
 
+    ui->cmbDatabases->setEnabled(true);
+    ui->buttonBox->button(QDialogButtonBox::Ok)->setDisabled(false);
+    ui->txtDatabaseHost->setText(previousHost);
+    ui->txtDatabaseUser->setText(previousUser);
+
 }
 
 QString InjectSqlDialog::getDatabase()
@@ -74,4 +87,14 @@ QString InjectSqlDialog::getPassword()
 QString InjectSqlDialog::getHost()
 {
     return ui->txtDatabaseHost->text();
+}
+
+bool InjectSqlDialog::getRollbackOnError()
+{
+    return ui->chkRollbackOnError->isChecked();
+}
+
+bool InjectSqlDialog::getCreateOnlyIfNotExist()
+{
+    return ui->chkOnlyIfNotExist->isChecked();
 }

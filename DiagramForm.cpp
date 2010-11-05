@@ -305,6 +305,7 @@ void DiagramForm::paintDiagram()
 {
     bool enableNotes = false;
     m_diagram->reset();
+    graphicsView->scene()->clear();
     // first step, put on all the notes
     for(int i=0; i<m_diagram->getNoteDescriptors().size(); i++)
     {

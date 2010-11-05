@@ -72,6 +72,7 @@ public:
     void addDescriptor(DraggableGraphicsViewItem* df);
 
     void reset(bool byButton = false);
+    void removeFromScene();
 
     void recreateFks(ERGraphicsScene*);
 
@@ -101,7 +102,7 @@ public:
         <Table name="TabName" x="TableX" y="TableY" />
      </Tables>
      <Notes>
-        <Note x+"X" y="Y" frame="1/0">
+        <Note x="X" y="Y" frame="1/0">
             <Text> CDATA </Text>
         </Note>
      </Notes>
@@ -141,6 +142,9 @@ private:
     bool m_saved;
 
     Version* m_version;
+
+    // the scope of this is to provide a workaround for the QT scene handling (destroying the scene whenever he wants) till I find a better solution
+    bool m_removed;
 };
 
 #endif // DIAGRAM_H

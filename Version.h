@@ -187,6 +187,8 @@ public:
      */
     virtual QVector<Table*> getTablesReferencingAColumnThroughForeignKeys(const Column*) = 0;
 
+    virtual QList<QString> getSqlScript() = 0;
+
 private:
 
 };

@@ -1,6 +1,8 @@
 #ifndef NEWDATATYPEFORM_H
 #define NEWDATATYPEFORM_H
 
+#include "DataType.h"
+
 #include <QtGui/QWidget>
 #include <QAbstractButton>
 #include <QKeyEvent>
@@ -24,7 +26,7 @@ public:
      * Constructor
      * @param dts - the database engine
      */
-    NewDataTypeForm(DatabaseEngine* dts, QWidget *parent = 0);
+    NewDataTypeForm(DataType::DT_TYPE t, DatabaseEngine* dts, QWidget *parent = 0);
 
     /**
      * Destructor.

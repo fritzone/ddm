@@ -168,8 +168,6 @@ public:
 
     QPointF m_ellipsePos;       // the place of the ellipse
 
-
-
 private:
     QPointF line1OtherPoint;    // the first point of the line is (0,0) this is the other point
     QPointF line1PosPoint;      // where the line is placed after created
@@ -184,12 +182,8 @@ private:
 
     QString fkName;
 
-
-
     // the second table name
     QString m_txt2;
-
-
 };
 
 #endif // DIAGRAMFKDESCRIPTOR_H

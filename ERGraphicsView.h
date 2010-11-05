@@ -23,6 +23,8 @@ public:
 
     ERGraphicsView(QWidget* parent, Version* v, Diagram* dgram, TableListWidget *tlst);
 
+    virtual ~ERGraphicsView();
+
     ERGraphicsScene* scene() const
     {
         return m_scene;

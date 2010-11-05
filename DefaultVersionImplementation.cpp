@@ -10,6 +10,9 @@
 #include "ForeignKey.h"
 #include "NameGenerator.h"
 #include "VersionGuiElements.h"
+#include "Workspace.h"
+#include "Configuration.h"
+#include "DatabaseEngine.h"
 
 #include <QtGui>
 
@@ -410,4 +413,58 @@ void DefaultVersionImplementation::setupForeignKeyRelationshipsForATable(Table* 
             }
         }
     }
+}
+
+QList<QString> DefaultVersionImplementation::getSqlScript()
+{
+    QList<QString> finalSql;
+    QHash<QString, QString> opts = Configuration::instance().sqlGenerationOptions();
+    bool upcase = opts.contains("Case") && opts["Case"] == "Upper";
+    opts["FKSposition"] = "OnlyInternal";
+
+    if(Workspace::getInstance()->currentProjectIsOop())   // list the table instances' SQL
+    {
+        for(int i=0; i<getTableInstances().size(); i++)
+        {
+            QStringList sql = getTableInstances().at(i)->generateSqlSource(m_project->getEngine()->getSqlGenerator(), opts);
+            finalSql << sql;
+        }
+
+        for(int i=0; i<getTableInstances().size(); i++)
+        {
+            for(int j=0; j<getTableInstances().at(i)->table()->getForeignKeyCommands().size(); j++)
+            {
+                QString f = upcase?"ALTER TABLE ":"alter table ";
+                f += getTableInstances().at(i)->getName();
+                f += upcase?" ADD ":" add ";
+                f += getTableInstances().at(i)->table()->getForeignKeyCommands().at(j);
+                f += ";\n";
+
+                finalSql << f;
+            }
+        }
+    }
+    else    // list table's SQL
+    {
+        for(int i=0; i<getTables().size(); i++)
+        {
+            QStringList sql = getTables().at(i)->generateSqlSource(m_project->getEngine()->getSqlGenerator(), opts);
+            finalSql << sql;
+        }
+
+        for(int i=0; i<getTables().size(); i++)
+        {
+            for(int j=0; j<getTables().at(i)->getForeignKeyCommands().size(); j++)
+            {
+                QString f = upcase?"ALTER TABLE ":"alter table ";
+                f += getTables().at(i)->getName();
+                f += upcase?" ADD ":" add ";
+                f += getTables().at(i)->getForeignKeyCommands().at(j);
+                f += ";\n";
+
+                finalSql << f;
+            }
+        }
+    }
+    return finalSql;
 }

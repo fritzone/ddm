@@ -22,6 +22,10 @@ public:
 
     QString getHost();
 
+    bool getRollbackOnError();
+
+    bool getCreateOnlyIfNotExist();
+
 public slots:
 
     void onConnect();
@@ -31,6 +35,11 @@ protected:
 
 private:
     Ui::InjectSqlDialog *ui;
+
+private:
+
+    static QString previousHost;
+    static QString previousUser;
 };
 
 #endif // INJECTSQLDIALOG_H

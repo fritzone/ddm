@@ -9,7 +9,7 @@
 #include "NameGenerator.h"
 
 Diagram::Diagram(Version* v) : TreeItem(), NamedItem(NameGenerator::generateUniqueDiagramName(v, QString("Diagram"))), m_onStage(), m_fksOnStage(), m_notes(),
-        m_noteDescriptors(0), m_tableDescriptors(), m_form(0), m_saved(false), m_version(v)
+        m_noteDescriptors(0), m_tableDescriptors(), m_form(0), m_saved(false), m_version(v), m_removed(false)
 {
 
 }
@@ -37,14 +37,16 @@ void Diagram::removeTable(const QString &tabName)
             break;
         }
     }
-    if(idx != -1 && m_onStage.size() > 0)
+    int ms = m_onStage.size();
+    if(idx != -1 && ms > 0)
     {
         DraggableGraphicsViewItem* toDelete = m_onStage[idx];
         m_onStage.remove(idx);
-        delete toDelete;
+        if(!m_removed) delete toDelete;
     }
 
-    if(idx != -1 && m_tableDescriptors.size() > 0)
+    int l = m_tableDescriptors.size();
+    if(idx != -1 && l > 0 )
     {
         DiagramObjectDescriptor* descToDel = m_tableDescriptors[idx];
         m_tableDescriptors.remove(idx);
@@ -57,16 +59,15 @@ void Diagram::removeTable(const QString &tabName)
         if(m_fksOnStage[i]->isSentenced())
         {
             FkRelationDescriptor* sentenced = m_fksOnStage[i];
-            sentenced->eliberate();
+            if(!m_removed) sentenced->eliberate();
             m_fksOnStage.remove(i);
-            delete sentenced;
+            if(!m_removed) delete sentenced;
         }
         else
         {
             i++;
         }
     }
-
 }
 
 void Diagram::removeNote(int note)
@@ -173,6 +174,13 @@ void Diagram::addNoteItem(DraggableGraphicsViewItemForText *itm)
 void Diagram::addTableItem(DraggableGraphicsViewItem *itm)
 {
     m_onStage.append(itm);
+    m_removed = false;
+}
+
+
+void Diagram::removeFromScene()
+{
+    m_removed = true;
 }
 
 void Diagram::reset(bool byButton )

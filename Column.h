@@ -4,6 +4,7 @@
 #include "TreeItem.h"
 #include "SerializableElement.h"
 #include "CopyableElement.h"
+#include "NamedItem.h"
 
 #include <QString>
 
@@ -12,18 +13,14 @@ class UserDataType;
 /**
  * This class holds the necessary data to define a column
  */
-class Column : virtual public TreeItem, virtual public SerializableElement, virtual public CopyableElement
+class Column : public TreeItem, public SerializableElement, public CopyableElement, public NamedItem
 {
 public:
     Column(const QString& name, const UserDataType* type, bool, bool );
 
-    const QString& getName() const;
-
     const UserDataType* getDataType() const;
 
     bool isPk() const;
-
-    void setName(const QString& name);
 
     void setDataType(const UserDataType* dt);
 
@@ -42,7 +39,6 @@ public:
     virtual void copy();
 
 private:
-    QString m_name;
     const UserDataType* m_type;
     bool m_pk;
     bool m_autoIncrement;

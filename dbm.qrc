@@ -107,5 +107,6 @@
         <file>images/small/database.png</file>
         <file>images/small/zoom_out.png</file>
         <file>images/small/zoom_in.png</file>
+        <file>images/actions/deploy.png</file>
     </qresource>
 </RCC>

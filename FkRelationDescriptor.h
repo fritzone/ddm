@@ -28,8 +28,15 @@ public:
         m_descriptor(), m_fk(0), tab1Name(""), tab2Name("")
     {}
 
+    ~FkRelationDescriptor()
+    {
+        m_ellipse= 0; m_arrowHead= 0; rel2Txt= 0; rel1Txt= 0;
+        m_fkitm= 0;m_tab1= 0; m_tab2= 0; m_sentenced = false; firstLine= 0; secondLine= 0;
+        m_descriptor = 0; m_fk= 0; tab1Name = ""; tab2Name = "";
+    }
+
     void updateContent(bool first = false);
-    
+
     DraggableGraphicsViewItemForForeignKey* getItem()
     {
         return m_fkitm;
@@ -44,17 +51,17 @@ public:
     {
         return m_tab2;
     }
-    
+
     void sentence()
     {
         m_sentenced = true;
     }
-    
+
     bool isSentenced() const
     {
         return m_sentenced;
     }
-    
+
     void eliberate(bool desc_too = true);
     void removeFromScene();
     void recreate(Diagram*);

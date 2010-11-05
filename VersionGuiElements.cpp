@@ -60,8 +60,8 @@ void VersionGuiElements::createGuiElements(ContextMenuEnabledTreeWidgetItem* pro
     // make the dts sub item coming from the project
     dtsItem = new ContextMenuEnabledTreeWidgetItem((ContextMenuEnabledTreeWidgetItem*)0, QStringList(QObject::tr("Data Types"))) ;
     dtsItem->setIcon(0, IconFactory::getDataTypesIcon());
+    dtsItem->setPopupMenu(ContextMenuCollection::getInstance()->getDatatypesPopupMenu());
     m_dtTree->addTopLevelItem(dtsItem);
-
 
 }
 

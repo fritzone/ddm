@@ -13,6 +13,11 @@ ERGraphicsScene::ERGraphicsScene(QWidget* parent, Version* v, Diagram* dgram, Ta
 {
 }
 
+ERGraphicsScene::~ERGraphicsScene()
+{
+    qDebug() << "scene  destructor" ;
+    m_diagram->removeFromScene();
+}
 
 void ERGraphicsScene::finalizeItem(int x, int y)
 {

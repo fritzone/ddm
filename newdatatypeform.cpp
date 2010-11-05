@@ -15,9 +15,7 @@
 #include <QListWidget>
 #include <QListWidgetItem>
 
-NewDataTypeForm::NewDataTypeForm(DatabaseEngine* dbe, QWidget *parent) :
-        QWidget(parent), m_ui(new Ui::NewDataTypeForm), m_mw(0),
-        m_dbEngine(dbe), m_udt(0)
+NewDataTypeForm::NewDataTypeForm(DataType::DT_TYPE t, DatabaseEngine* dbe, QWidget *parent) : QWidget(parent), m_ui(new Ui::NewDataTypeForm), m_mw(0), m_dbEngine(dbe), m_udt(0)
 {
     m_ui->setupUi(this);
 
@@ -40,6 +38,31 @@ NewDataTypeForm::NewDataTypeForm(DatabaseEngine* dbe, QWidget *parent) :
     resetContent();
 
     m_ui->grpHelp->setHidden(true);
+
+    switch(t)
+    {
+    case DataType::DT_STRING :
+        m_ui->cmbDTType->setCurrentIndex(0);
+        break;
+    case DataType::DT_NUMERIC :
+        m_ui->cmbDTType->setCurrentIndex(1);
+        break;
+    case DataType::DT_BOOLEAN :
+        m_ui->cmbDTType->setCurrentIndex(2);
+        break;
+    case DataType::DT_DATETIME :
+        m_ui->cmbDTType->setCurrentIndex(3);
+        break;
+    case DataType::DT_BLOB :
+        m_ui->cmbDTType->setCurrentIndex(4);
+        break;
+    case DataType::DT_MISC :
+        m_ui->cmbDTType->setCurrentIndex(5);
+        break;
+    case DataType::DT_SPATIAL :
+        m_ui->cmbDTType->setCurrentIndex(6);
+        break;
+    }
 }
 
 NewDataTypeForm::~NewDataTypeForm()
