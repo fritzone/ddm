@@ -21,6 +21,12 @@ ERGraphicsView::ERGraphicsView(QWidget* parent, Version* v, Diagram* dgram, Tabl
     setDragMode(QGraphicsView::ScrollHandDrag);
 }
 
+ERGraphicsView::~ERGraphicsView()
+{
+    qDebug() << "view destructor" ;
+
+}
+
 void ERGraphicsView::mouseMoveEvent(QMouseEvent *event)
 {
     if(m_scene->getJustDropped() != 0)

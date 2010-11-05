@@ -1857,9 +1857,10 @@ void NewTableForm::onInject()
     if(injectDialog->exec() == QDialog::Accepted)
     {
         QString tSql;
-        if(!m_dbEngine->injectSql(injectDialog->getHost(), injectDialog->getUser(), injectDialog->getPassword(), injectDialog->getDatabase(), finalSql, tSql))
+        if(!m_dbEngine->injectSql(injectDialog->getHost(), injectDialog->getUser(), injectDialog->getPassword(), injectDialog->getDatabase(), finalSql, tSql, injectDialog->getRollbackOnError(), injectDialog->getCreateOnlyIfNotExist()))
         {
-            QMessageBox::critical (this, tr("Error"), tr("Cannot execute a query ") + m_dbEngine->getLastError() + tr(". Query:") + tSql, QMessageBox::Ok);
+            QMessageBox::critical (this, tr("Error"), tr("<B>Cannot execute a query!</B><P>Reason: ") + m_dbEngine->getLastError() + tr(".<P>Query:<PRE>") + tSql+ "</PRE><P>" +
+                                   (injectDialog->getRollbackOnError()?tr("Transaction was rolled back."):tr("Transaction was <font color=red><B>NOT</B></font> rolled back, you might have partial data in your database.")), QMessageBox::Ok);
         }
     }
 }

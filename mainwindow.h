@@ -79,8 +79,6 @@ public slots:
     void projectTreeItemClicked ( QTreeWidgetItem * item, int column );
     void onNewTableInstance();
     void onNewTableInstanceHovered();
-
-    // when the user clicked the "Delete table" from the popups
     void onDeleteTableFromPopup();
     void onTableAddColumnFromPopup();
     void onSpecializeTableFromPopup();
@@ -90,13 +88,18 @@ public slots:
     void onPasteTableFromPopup();
     void onDeleteInstanceFromPopup();
     void onRenameInstanceFromPopup();
-
     void onDeleteDatatypeFromPopup();
     void onDuplicateDatatypeFromPopup();
-
     void onDeleteDiagramFromPopup();
     void onRenameDiagramFromPopup();
-
+    void onNewStringType();
+    void onNewNumericType();
+    void onNewBoolType();
+    void onNewDateTimeType();
+    void onNewBlobType();
+    void onNewMiscType();
+    void onNewSpatialType();
+    void onDeploy();
     void onPreferences();
 
 private:
@@ -115,6 +118,7 @@ private:
     void freeGuiElements();
     void showProjectDetails();
     ContextMenuEnabledTreeWidgetItem* createTableTreeEntry(Table*);
+    void showNewDataTypeWindow(int);
 
 private:
     Ui::MainWindow *m_ui;

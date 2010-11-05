@@ -34,12 +34,13 @@
 #include "strings.h"
 #include "Workspace.h"
 #include "VersionGuiElements.h"
+#include "InjectSqlDialog.h"
 #include "DataType.h" // TODO: this is simply bad design, Mainwindow should not know about datatypes ...
 
 #include <QtGui>
 
 #ifdef Q_WS_X11
-Q_IMPORT_PLUGIN(qsqlmysql)
+//Q_IMPORT_PLUGIN(qsqlmysql)
 #endif
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), m_ui(new Ui::MainWindow), m_projectTreeDock(0), m_datatypesTreeDock(0), m_projectTree(0),
@@ -53,6 +54,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), m_ui(new Ui::Main
     showButtonDialog();
 
     m_ui->action_NewTableInstance->setMenu(m_createTableInstancesPopup);
+    m_ui->action_NewDataType->setMenu(ContextMenuCollection::getInstance()->getDatatypesPopupMenu());
 
     Configuration::instance();
 
@@ -276,14 +278,7 @@ void MainWindow::onDTTreeClicked()
         }
         else
         {
-            if(   item != m_workspace->workingVersion()->getGui()->getStringDtsItem()
-               && item != m_workspace->workingVersion()->getGui()->getIntsDtsItem()
-               && item != m_workspace->workingVersion()->getGui()->getDateDtsItem()
-               && item != m_workspace->workingVersion()->getGui()->getBlobDtsItem()
-               && item != m_workspace->workingVersion()->getGui()->getBoolDtsItem()
-               && item != m_workspace->workingVersion()->getGui()->getMiscDtsItem()
-               && item != m_workspace->workingVersion()->getGui()->getSpatialDtsItem()
-              )
+            if(item->parent() != m_workspace->workingVersion()->getGui()->getDtsItem()) // this must be a data type
             {
                 QVariant qv = item->data(0, Qt::UserRole);
                 UserDataType* udt = static_cast<UserDataType*>(qv.data());
@@ -291,16 +286,13 @@ void MainWindow::onDTTreeClicked()
                 {
                     udt = m_workspace->workingVersion()->getDataType(udt->getName());
                 }
-                NewDataTypeForm* frm = new NewDataTypeForm(m_workspace->currentProjectsEngine(), this);
+                NewDataTypeForm* frm = new NewDataTypeForm(DataType::DT_INVALID, m_workspace->currentProjectsEngine(), this);
                 frm->focusOnName();
                 frm->setMainWindow(this);
                 frm->setDataType(udt);
                 setCentralWidget(frm);
 
             }
-//            if(item->parent() && item->parent() == m_workspace->workingVersion()->getGui()->getDtsItem())
-//            {   // the user clicked on a Data Type item. The UserDataType class is something that can be put in a user role TAG
-//            }
         }
     }
 }
@@ -347,7 +339,7 @@ void MainWindow::showDataType(const QString &name, bool focus)
         return;
     }
 
-    NewDataTypeForm* frm = new NewDataTypeForm(m_workspace->currentProjectsEngine(), this);
+    NewDataTypeForm* frm = new NewDataTypeForm(DataType::DT_INVALID, m_workspace->currentProjectsEngine(), this);
     frm->focusOnName();
     frm->setMainWindow(this);
     frm->setDataType(dt);
@@ -478,14 +470,18 @@ void MainWindow::onNewTable()
 }
 
 
-void MainWindow::onNewDataType()
+void MainWindow::showNewDataTypeWindow(int a)
 {
-    NewDataTypeForm* frm = new NewDataTypeForm(m_workspace->currentProjectsEngine(), this);
+    NewDataTypeForm* frm = new NewDataTypeForm((DataType::DT_TYPE)a, m_workspace->currentProjectsEngine(), this);
     frm->focusOnName();
     frm->setMainWindow(this);
     m_projectTree->setCurrentItem(0);
     setCentralWidget(frm);
+}
 
+void MainWindow::onNewDataType()
+{
+    showNewDataTypeWindow(DataType::DT_INVALID);
 }
 
 bool MainWindow::onUpdateTable(Table* tbl)
@@ -642,6 +638,7 @@ void MainWindow::enableActions()
     m_ui->action_NewDiagram->setEnabled(true);
     m_ui->action_Save->setEnabled(true);
     m_ui->action_SaveAs->setEnabled(true);
+    m_ui->action_Deploy->setEnabled(true);
     if(m_workspace->currentProjectIsOop())
     {
         m_ui->action_NewTableInstance->setEnabled(true);
@@ -686,12 +683,19 @@ void MainWindow::connectActionsFromTablePopupMenu()
     QObject::connect(ContextMenuCollection::getInstance()->getAction_DuplicateTable(), SIGNAL(activated()), this, SLOT(onDuplicateTableFromPopup()));
     QObject::connect(ContextMenuCollection::getInstance()->getAction_CopyTable(), SIGNAL(activated()), this, SLOT(onCopyTableFromPopup()));
     QObject::connect(ContextMenuCollection::getInstance()->getAction_PasteTable(), SIGNAL(activated()), this, SLOT(onPasteTableFromPopup()));
-
     QObject::connect(ContextMenuCollection::getInstance()->getAction_DeleteDataType(), SIGNAL(activated()), this, SLOT(onDeleteDatatypeFromPopup()));
     QObject::connect(ContextMenuCollection::getInstance()->getAction_DuplicateDataType(), SIGNAL(activated()), this, SLOT(onDuplicateDatatypeFromPopup()));
     QObject::connect(ContextMenuCollection::getInstance()->getAction_DeleteDiagram(), SIGNAL(activated()), this, SLOT(onDeleteDiagramFromPopup()));
     QObject::connect(ContextMenuCollection::getInstance()->getAction_RenameDiagram(), SIGNAL(activated()), this, SLOT(onRenameDiagramFromPopup()));
     QObject::connect(ContextMenuCollection::getInstance()->getAction_AddDiagram(), SIGNAL(activated()), this, SLOT(onNewDiagram()));
+
+    QObject::connect(ContextMenuCollection::getInstance()->getAction_AddString(), SIGNAL(activated()), this, SLOT(onNewStringType()));
+    QObject::connect(ContextMenuCollection::getInstance()->getAction_AddNumeric(), SIGNAL(activated()), this, SLOT(onNewNumericType()));
+    QObject::connect(ContextMenuCollection::getInstance()->getAction_AddBool(), SIGNAL(activated()), this, SLOT(onNewBoolType()));
+    QObject::connect(ContextMenuCollection::getInstance()->getAction_AddDateType(), SIGNAL(activated()), this, SLOT(onNewDateTimeType()));
+    QObject::connect(ContextMenuCollection::getInstance()->getAction_AddMisc(), SIGNAL(activated()), this, SLOT(onNewMiscType()));
+    QObject::connect(ContextMenuCollection::getInstance()->getAction_AddBlob(), SIGNAL(activated()), this, SLOT(onNewBlobType()));
+    QObject::connect(ContextMenuCollection::getInstance()->getAction_AddSpatial(), SIGNAL(activated()), this, SLOT(onNewSpatialType()));
 
 }
 
@@ -886,10 +890,16 @@ UserDataType* MainWindow::getRightclickedDatatype()
 void MainWindow::onDeleteTableFromPopup()
 {
     Table* tab = getRightclickedTable();
+    QWidget* w = centralWidget();
     if(tab)
     {
         m_workspace->workingVersion()->deleteTable(tab);
     }
+    if(dynamic_cast<DiagramForm*>(w))
+    {
+        dynamic_cast<DiagramForm*>(w)->paintDiagram();
+    }
+
 }
 
 void MainWindow::onCopyTableFromPopup()
@@ -1255,4 +1265,57 @@ void MainWindow::projectTreeItemClicked ( QTreeWidgetItem * item, int )
 void MainWindow::dtTreeItemClicked ( QTreeWidgetItem *, int)
 {
     onDTTreeClicked();
+}
+
+void MainWindow::onNewStringType()
+{
+    showNewDataTypeWindow(DataType::DT_STRING);
+}
+
+void MainWindow::onNewNumericType()
+{
+    showNewDataTypeWindow(DataType::DT_NUMERIC);
+}
+
+void MainWindow::onNewBoolType()
+{
+    showNewDataTypeWindow(DataType::DT_BOOLEAN);
+}
+
+void MainWindow::onNewDateTimeType()
+{
+    showNewDataTypeWindow(DataType::DT_DATETIME);
+}
+
+void MainWindow::onNewBlobType()
+{
+    showNewDataTypeWindow(DataType::DT_BLOB);
+}
+
+void MainWindow::onNewMiscType()
+{
+    showNewDataTypeWindow(DataType::DT_MISC);
+}
+
+void MainWindow::onNewSpatialType()
+{
+    showNewDataTypeWindow(DataType::DT_SPATIAL);
+}
+
+void MainWindow::onDeploy()
+{
+    InjectSqlDialog* injectDialog = new InjectSqlDialog(this);
+    injectDialog->setModal(true);
+    QStringList sqlList = m_workspace->workingVersion()->getSqlScript();
+    if(injectDialog->exec() == QDialog::Accepted)
+    {
+        QString tSql;
+        if(!m_workspace->currentProjectsEngine()->injectSql(injectDialog->getHost(), injectDialog->getUser(), injectDialog->getPassword(), injectDialog->getDatabase(), sqlList, tSql, injectDialog->getRollbackOnError(), injectDialog->getCreateOnlyIfNotExist()))
+        {
+            QMessageBox::critical (this, tr("Error"), tr("<B>Cannot execute a query!</B><P>Reason: ") + m_workspace->currentProjectsEngine()->getLastError() + tr(".<P>Query:<PRE>") + tSql+ "</PRE><P>" +
+                                   (injectDialog->getRollbackOnError()?tr("Transaction was rolled back."):tr("Transaction was <font color=red><B>NOT</B></font> rolled back, you might have partial data in your database.")), QMessageBox::Ok);
+            return;
+        }
+        QMessageBox::information(this, tr("Deployed"), tr("The solution was deployed to ") + injectDialog->getDatabase(), QMessageBox::Ok);
+    }
 }

@@ -52,9 +52,10 @@ void SqlForm::onInject()
     if(injectDialog->exec() == QDialog::Accepted)
     {
         QString tSql;
-        if(!m_engine->injectSql(injectDialog->getHost(), injectDialog->getUser(), injectDialog->getPassword(), injectDialog->getDatabase(), sqlList, tSql))
+        if(!m_engine->injectSql(injectDialog->getHost(), injectDialog->getUser(), injectDialog->getPassword(), injectDialog->getDatabase(), sqlList, tSql, injectDialog->getRollbackOnError(), injectDialog->getCreateOnlyIfNotExist()))
         {
-            QMessageBox::critical (this, tr("Error"), tr("Cannot execute a query: ") + m_engine->getLastError() + tr(". Query:") + tSql, QMessageBox::Ok);
+            QMessageBox::critical (this, tr("Error"), tr("<B>Cannot execute a query!</B><P>Reason: ") + m_engine->getLastError() + tr(".<P>Query:<PRE>") + tSql+ "</PRE><P>" +
+                                   (injectDialog->getRollbackOnError()?tr("Transaction was rolled back."):tr("Transaction was <font color=red><B>NOT</B></font> rolled back, you might have partial data in your database.")), QMessageBox::Ok);
         }
     }
 }
@@ -78,57 +79,7 @@ void SqlForm::presentSql(Project* p)
     // firstly only the tables and then the foreign keys. We'll see the other elements (triggers, functions) later
 
     Version *v = p->getWorkingVersion();
-    QStringList finalSql("-- Full SQL listing for project " + p->getName() + "\n");
-    if(Workspace::getInstance()->currentProjectIsOop())   // list the table instances' SQL
-    {
-        QHash<QString, QString> opts = Configuration::instance().sqlGenerationOptions();
-        bool upcase = opts.contains("Case") && opts["Case"] == "Upper";
-        opts["FKSposition"] = "OnlyInternal";
-        for(int i=0; i<v->getTableInstances().size(); i++)
-        {
-            QStringList sql = v->getTableInstances().at(i)->generateSqlSource(p->getEngine()->getSqlGenerator(), opts);
-            finalSql << sql;
-        }
-
-        for(int i=0; i<v->getTableInstances().size(); i++)
-        {
-            for(int j=0; j<v->getTableInstances().at(i)->table()->getForeignKeyCommands().size(); j++)
-            {
-                QString f = upcase?"ALTER TABLE ":"alter table ";
-                f += v->getTableInstances().at(i)->getName();
-                f += upcase?" ADD ":" add ";
-                f += v->getTableInstances().at(i)->table()->getForeignKeyCommands().at(j);
-                f += ";\n";
-
-                finalSql << f;
-            }
-        }
-    }
-    else    // list table's SQL
-    {
-        QHash<QString, QString> opts = Configuration::instance().sqlGenerationOptions();
-        bool upcase = opts.contains("Case") && opts["Case"] == "Upper";
-        opts["FKSposition"] = "OnlyInternal";
-        for(int i=0; i<v->getTables().size(); i++)
-        {
-            QStringList sql = v->getTables().at(i)->generateSqlSource(p->getEngine()->getSqlGenerator(), opts);
-            finalSql << sql;
-        }
-
-        for(int i=0; i<v->getTables().size(); i++)
-        {
-            for(int j=0; j<v->getTables().at(i)->getForeignKeyCommands().size(); j++)
-            {
-                QString f = upcase?"ALTER TABLE ":"alter table ";
-                f += v->getTables().at(i)->getName();
-                f += upcase?" ADD ":" add ";
-                f += v->getTables().at(i)->getForeignKeyCommands().at(j);
-                f += ";\n";
-
-                finalSql << f;
-            }
-        }
-    }
+    QStringList finalSql = v->getSqlScript();
 
     QString fs = "";
     for(int i=0; i< finalSql.size(); i++)

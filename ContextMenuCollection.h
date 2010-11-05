@@ -57,6 +57,14 @@ public:
     QAction* getAction_CopyColumn() { return action_CopyColumn; }
     QAction* getAction_PasteColumn() { return action_PasteColumn; }
 
+    QAction* getAction_AddString() { return action_addString; }
+    QAction* getAction_AddNumeric() { return action_addNumeric; }
+    QAction* getAction_AddDateType() { return action_addDateType; }
+    QAction* getAction_AddBool() { return action_addBool; }
+    QAction* getAction_AddMisc() { return action_addMisc; }
+    QAction* getAction_AddBlob() { return action_addBlob; }
+    QAction* getAction_AddSpatial() { return action_addSpatial; }
+
 private:
 
     ContextMenuCollection();
@@ -105,6 +113,14 @@ private:
     // actions from the columns list (NewTableForm)
     QAction* action_CopyColumn;
     QAction* action_PasteColumn;
+
+    QAction* action_addString;
+    QAction* action_addNumeric;
+    QAction* action_addDateType;
+    QAction* action_addBool;
+    QAction* action_addMisc;
+    QAction* action_addBlob;
+    QAction* action_addSpatial;
 
     // the instance of the popup menu collection
     static ContextMenuCollection* m_instance;

@@ -85,6 +85,8 @@ public:
 
     virtual void setupForeignKeyRelationshipsForATable(Table *tab);
 
+    virtual QList<QString> getSqlScript();
+
 protected:
     // the version as a string representation. Major versions are always of form X.0
     QString version;

@@ -60,7 +60,7 @@ public:
 
     virtual QString getDefaultDatatypesLocation() = 0;
 
-    virtual bool injectSql(const QString& host, const QString& user, const QString& pass, const QString& dbName, const QStringList& sqls, QString& lastSql) = 0;
+    virtual bool injectSql(const QString& host, const QString& user, const QString& pass, const QString& dbName, const QStringList& sqls, QString& lastSql, bool rollbackOnError, bool createTablesOnlyIfNotExist) = 0;
 
     QString getLastError() const
     {

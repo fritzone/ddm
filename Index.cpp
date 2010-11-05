@@ -1,11 +1,11 @@
 #include "Index.h"
 #include "Column.h"
 
-Index::Index(Table* tab) : m_owner(tab), m_name(""), m_type(""), m_columns()
+Index::Index(Table* tab) :  NamedItem(""), m_owner(tab), m_type(""), m_columns()
 {
 }
 
-Index::Index(const QString &name, const QString &type, Table* tab) : m_owner(tab), m_name(name), m_type(type), m_columns()
+Index::Index(const QString &name, const QString &type, Table* tab) : NamedItem(name), m_owner(tab), m_type(type), m_columns()
 {
 }
 
@@ -26,19 +26,9 @@ bool Index::hasColumn(const Column* column) const
     return false;
 }
 
-const QString& Index::getName() const
-{
-    return m_name;
-}
-
 const QString& Index::getType() const
 {
     return m_type;
-}
-
-void Index::setName(const QString &name)
-{
-    m_name = name;
 }
 
 void Index::setType(const QString &type)

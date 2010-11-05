@@ -27,7 +27,7 @@ public:
 
     ERGraphicsScene(QWidget* parent, Version* v, Diagram* dgram, TableListWidget *lstTables);
 
-    virtual ~ERGraphicsScene(){}
+    virtual ~ERGraphicsScene();
 
     void upadteFkrds();
 

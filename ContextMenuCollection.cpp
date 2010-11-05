@@ -40,6 +40,14 @@ ContextMenuCollection::ContextMenuCollection()
     action_CopyColumn = new QAction(QObject::tr("Copy"), 0);
     action_PasteColumn = new QAction(QObject::tr("Paste"), 0);
 
+    action_addString = new QAction(QObject::tr("New String Type"), 0);
+    action_addNumeric = new QAction(QObject::tr("New Numeric Type"), 0);
+    action_addDateType = new QAction(QObject::tr("New Date/Time Type"), 0);
+    action_addBool = new QAction(QObject::tr("New Boolean Type"), 0);
+    action_addMisc = new QAction(QObject::tr("New Misc Type"), 0);
+    action_addBlob = new QAction(QObject::tr("New Blob Type"), 0);
+    action_addSpatial = new QAction(QObject::tr("New Spatial Type"), 0);
+
     // populate the table popup menu
     m_tablePopupMenu->addAction(action_TableAddColumn);
     m_tablePopupMenu->addSeparator();
@@ -76,5 +84,15 @@ ContextMenuCollection::ContextMenuCollection()
     // columns
     m_columnPopupMenu->addAction(action_CopyColumn);
     m_columnPopupMenu->addAction(action_PasteColumn);
+
+    // data types
+    m_datatypesPopupMenu->addAction(action_addString);
+    m_datatypesPopupMenu->addAction(action_addNumeric);
+    m_datatypesPopupMenu->addAction(action_addBool);
+    m_datatypesPopupMenu->addAction(action_addDateType);
+    m_datatypesPopupMenu->addAction(action_addBlob);
+    m_datatypesPopupMenu->addAction(action_addMisc);
+    m_datatypesPopupMenu->addAction(action_addSpatial);
+
 }
 
