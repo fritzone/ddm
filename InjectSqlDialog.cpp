@@ -64,9 +64,8 @@ void InjectSqlDialog::onConnect()
 
     ui->cmbDatabases->setEnabled(true);
     ui->buttonBox->button(QDialogButtonBox::Ok)->setDisabled(false);
-    ui->txtDatabaseHost->setText(previousHost);
-    ui->txtDatabaseUser->setText(previousUser);
-
+    previousHost = ui->txtDatabaseHost->text();
+    previousUser = ui->txtDatabaseUser->text();
 }
 
 QString InjectSqlDialog::getDatabase()
