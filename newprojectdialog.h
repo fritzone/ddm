@@ -11,9 +11,14 @@ namespace Ui {
     class NewProjectDialog;
 }
 
-class NewProjectDialog : public QDialog {
+class NewProjectDialog : public QDialog
+{
     Q_OBJECT
 public:
+
+    static const int PRJ_DATAMODEL = 1;
+    static const int PRJ_REVERSEENGINEER = 2;
+
     NewProjectDialog(QWidget *parent = 0);
     ~NewProjectDialog();
 
@@ -37,6 +42,8 @@ public:
     bool inheritDefaultDatatypes() const;
 
     DatabaseEngine* getDatabaseEngine() const;
+
+    int getProjectType() const;
 
 protected:
     void changeEvent(QEvent *e);

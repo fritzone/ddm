@@ -33,9 +33,9 @@ void MajorVersion::serialize(QDomDocument &doc, QDomElement &parent) const
     // the data types
     {
     QDomElement dataTypesElement = doc.createElement("DataTypes");
-    for(int i=0; i< m_dataTypes.size(); i++)
+    for(int i=0; i< m_data.m_dataTypes.size(); i++)
     {
-        m_dataTypes[i]->serialize(doc, dataTypesElement);
+        m_data.m_dataTypes[i]->serialize(doc, dataTypesElement);
     }
     majorVersionElement.appendChild(dataTypesElement);
     }
@@ -43,9 +43,9 @@ void MajorVersion::serialize(QDomDocument &doc, QDomElement &parent) const
     // the tables
     {
     QDomElement tablesElement = doc.createElement("Tables");
-    for(int i=0; i< m_tables.size(); i++)
+    for(int i=0; i< m_data.m_tables.size(); i++)
     {
-        m_tables[i]->serialize(doc, tablesElement);
+        m_data.m_tables[i]->serialize(doc, tablesElement);
     }
     majorVersionElement.appendChild(tablesElement);
     }
@@ -53,9 +53,9 @@ void MajorVersion::serialize(QDomDocument &doc, QDomElement &parent) const
     // the diagrams
     {
     QDomElement diagramsElement = doc.createElement("Diagrams");
-    for(int i=0; i< m_diagrams.size(); i++)
+    for(int i=0; i< m_data.m_diagrams.size(); i++)
     {
-        m_diagrams[i]->serialize(doc, diagramsElement);
+        m_data.m_diagrams[i]->serialize(doc, diagramsElement);
     }
     majorVersionElement.appendChild(diagramsElement);
     }
@@ -63,9 +63,9 @@ void MajorVersion::serialize(QDomDocument &doc, QDomElement &parent) const
     // the table instances
     {
     QDomElement tableInstancesElement = doc.createElement("TableInstances");
-    for(int i=0; i< m_tableInstances.size(); i++)
+    for(int i=0; i< m_data.m_tableInstances.size(); i++)
     {
-        m_tableInstances[i]->serialize(doc, tableInstancesElement);
+        m_data.m_tableInstances[i]->serialize(doc, tableInstancesElement);
     }
     majorVersionElement.appendChild(tableInstancesElement);
     }

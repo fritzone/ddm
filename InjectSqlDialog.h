@@ -26,6 +26,8 @@ public:
 
     bool getCreateOnlyIfNotExist();
 
+    void setupForReverseEngineering();
+
 public slots:
 
     void onConnect();

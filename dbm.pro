@@ -150,7 +150,8 @@ HEADERS += mainwindow.h \
     VersionGuiElements.h \
     DefaultVersionImplementation.h \
     CopyableElement.h \
-    ClipboardFactory.h
+    ClipboardFactory.h \
+    VersionData.h
 FORMS += mainwindow.ui \
     mainwindowbuttondialog.ui \
     newprojectdialog.ui \

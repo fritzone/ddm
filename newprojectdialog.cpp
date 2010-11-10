@@ -73,6 +73,11 @@ bool NewProjectDialog::enableOOPFeatures() const
     return m_ui->chkAllowOOPModel->isChecked();
 }
 
+int NewProjectDialog::getProjectType() const
+{
+    return (m_ui->cmbProjectType->currentIndex() + 1);
+}
+
 void NewProjectDialog::onHelp()
 {
     resize(800, height());
