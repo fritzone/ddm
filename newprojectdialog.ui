@@ -162,6 +162,15 @@ p, li { white-space: pre-wrap; }
               <normaloff>:/images/actions/images/small/network_server_database.png</normaloff>:/images/actions/images/small/network_server_database.png</iconset>
             </property>
            </item>
+           <item>
+            <property name="text">
+             <string>Reverse engineer a database</string>
+            </property>
+            <property name="icon">
+             <iconset resource="dbm.qrc">
+              <normaloff>:/images/actions/images/small/face-devilish.png</normaloff>:/images/actions/images/small/face-devilish.png</iconset>
+            </property>
+           </item>
           </widget>
          </item>
          <item>

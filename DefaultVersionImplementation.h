@@ -2,6 +2,7 @@
 #define DEFAULTVERSIONIMPLEMENTATION_H
 
 #include "Version.h"
+#include "VersionData.h"
 
 class Project;
 
@@ -39,10 +40,7 @@ public:
 
     virtual const QVector<Table*>& getTables() const;
 
-    virtual const QVector<Diagram*>& getDiagrams() const
-    {
-        return m_diagrams;
-    }
+    virtual const QVector<Diagram*>& getDiagrams() const;
 
     virtual Diagram* getDiagram(const QString& name);
 
@@ -56,15 +54,9 @@ public:
 
     virtual TableInstance* getTableInstance(const QString& );
 
-    virtual void addTableInstance(TableInstance* inst)
-    {
-        m_tableInstances.append(inst);
-    }
+    virtual void addTableInstance(TableInstance* inst);
 
-    virtual const QVector<TableInstance*> & getTableInstances() const
-    {
-        return m_tableInstances;
-    }
+    virtual const QVector<TableInstance*> & getTableInstances() const;
 
     virtual UserDataType* duplicateDataType(const QString&);
 
@@ -91,15 +83,8 @@ protected:
     // the version as a string representation. Major versions are always of form X.0
     QString version;
 
-    // The vector of data types. The order in it is the one the user creates the data types
-    QVector<UserDataType*> m_dataTypes;
-
-    // the tables in the system
-    QVector<Table*> m_tables;
-
-    QVector<Diagram*> m_diagrams;
-
-    QVector<TableInstance*> m_tableInstances;
+    // the data of this version
+    VersionData m_data;
 
     // the project tree
     QTreeWidget* m_tree;

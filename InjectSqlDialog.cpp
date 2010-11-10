@@ -97,3 +97,8 @@ bool InjectSqlDialog::getCreateOnlyIfNotExist()
 {
     return ui->chkOnlyIfNotExist->isChecked();
 }
+
+void InjectSqlDialog::setupForReverseEngineering()
+{
+    ui->chkRollbackOnError->hide();
+}

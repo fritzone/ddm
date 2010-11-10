@@ -134,13 +134,12 @@ void MainWindow::setupGuiForNewSolution()
     m_datatypesTreeDock->setMaximumSize(400, 840);
 
     // set up the tree
+    ContextMenuHandler* contextMenuHandler = new ContextMenuHandler();
+
     m_projectTree = new ContextMenuEnabledTreeWidget();
     m_projectTree->setAllColumnsShowFocus(true);
     m_projectTree->setSelectionMode(QAbstractItemView::SingleSelection);
     m_projectTree->setSelectionBehavior(QAbstractItemView::SelectItems);
-
-    ContextMenuHandler* contextMenuHandler = new ContextMenuHandler();
-
     m_projectTree->setItemDelegate(new ContextMenuDelegate(contextMenuHandler,m_projectTree));
     m_projectTree->setColumnCount(1);
     m_projectTree->setHeaderHidden(true);
@@ -195,6 +194,10 @@ ContextMenuEnabledTreeWidgetItem* MainWindow::createDataTypeTreeEntry(UserDataTy
     udt->setLocation(newDTItem);
 
     return newDTItem;
+}
+
+void MainWindow::createDatamodelProject(NewProjectDialog* nprjdlg)
+{
 }
 
 void MainWindow::onNewSolution()
@@ -258,6 +261,21 @@ void MainWindow::onNewSolution()
         if(!m_workspace->currentProjectIsOop())
         {
             m_workspace->workingVersion()->getGui()->getTablesItem()->setText(0, tr("Tables"));
+        }
+
+        if(nprjdlg->getProjectType() == NewProjectDialog::PRJ_DATAMODEL)
+        {
+            createDatamodelProject(nprjdlg);
+        }
+        else
+        {
+            InjectSqlDialog* dlg = new InjectSqlDialog(this);
+            dlg->setupForReverseEngineering();
+            dlg->setModal(true);
+            if(dlg->exec() == QDialog::Accepted)
+            {
+                project->getEngine()->reverseEngineerDatabase(dlg->getHost(), dlg->getUser(), dlg->getPassword(), dlg->getDatabase(), project->getWorkingVersion());
+            }
         }
 
         enableActions();
@@ -639,6 +657,8 @@ void MainWindow::enableActions()
     m_ui->action_Save->setEnabled(true);
     m_ui->action_SaveAs->setEnabled(true);
     m_ui->action_Deploy->setEnabled(true);
+    m_ui->action_ProjectTree->setEnabled(true);
+    m_ui->action_ProjectTree->setChecked(true);
     if(m_workspace->currentProjectIsOop())
     {
         m_ui->action_NewTableInstance->setEnabled(true);
@@ -1318,4 +1338,18 @@ void MainWindow::onDeploy()
         }
         QMessageBox::information(this, tr("Deployed"), tr("The solution was deployed to ") + injectDialog->getDatabase(), QMessageBox::Ok);
     }
+}
+
+void MainWindow::onViewProjectTree()
+{
+    bool t = m_projectTreeDock->isVisible() ;
+    m_ui->action_ProjectTree->setChecked(!t);
+    m_projectTreeDock->setVisible(!t);
+}
+
+void MainWindow::onViewDatatypesTree()
+{
+    bool t = m_datatypesTreeDock->isVisible() ;
+    m_ui->action_ProjectTree->setChecked(!t);
+    m_projectTreeDock->setVisible(!t);
 }

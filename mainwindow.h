@@ -16,6 +16,7 @@ class Diagram;
 class ContextMenuEnabledTreeWidget;
 class ContextMenuEnabledTreeWidgetItem;
 class NewTableForm;
+class NewProjectDialog;
 class Solution;
 class Workspace;
 
@@ -101,6 +102,8 @@ public slots:
     void onNewSpatialType();
     void onDeploy();
     void onPreferences();
+    void onViewProjectTree();
+    void onViewDatatypesTree();
 
 private:
 
@@ -119,6 +122,7 @@ private:
     void showProjectDetails();
     ContextMenuEnabledTreeWidgetItem* createTableTreeEntry(Table*);
     void showNewDataTypeWindow(int);
+    void createDatamodelProject(NewProjectDialog*);
 
 private:
     Ui::MainWindow *m_ui;

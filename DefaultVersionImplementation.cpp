@@ -17,7 +17,7 @@
 #include <QtGui>
 
 DefaultVersionImplementation::DefaultVersionImplementation(QTreeWidget* tree, QTreeWidget* dttree, ContextMenuEnabledTreeWidgetItem* projectItem, Project* p)
-    : version(""), m_dataTypes(), m_tables(), m_diagrams(), m_tableInstances(), m_tree(tree), m_dtTree(dttree), m_projectItem(projectItem), m_project(p), m_guiElements(0)
+    : version(""), m_data(), m_tree(tree), m_dtTree(dttree), m_projectItem(projectItem), m_project(p), m_guiElements(0)
 {
 }
 
@@ -43,21 +43,21 @@ void DefaultVersionImplementation::createTreeItems(QTreeWidget* tree, QTreeWidge
 void DefaultVersionImplementation::addNewDataType(UserDataType* dt)
 {
     int i = 0;
-    while(i < m_dataTypes.size())
+    while(i < m_data.m_dataTypes.size())
     {
-        if(m_dataTypes.at(i)->getType() != dt->getType()) i++;
+        if(m_data.m_dataTypes.at(i)->getType() != dt->getType()) i++;
         else break;
     }
 
-    m_dataTypes.insert(i, dt);
+    m_data.m_dataTypes.insert(i, dt);
 
 }
 
 bool DefaultVersionImplementation::hasDataType(const QString& name) const
 {
-    for(int i=0; i < m_dataTypes.size(); i++)
+    for(int i=0; i < m_data.m_dataTypes.size(); i++)
     {
-        if(m_dataTypes.at(i)->getName() == name)
+        if(m_data.m_dataTypes.at(i)->getName() == name)
         {
             return true;
         }
@@ -67,11 +67,11 @@ bool DefaultVersionImplementation::hasDataType(const QString& name) const
 
 UserDataType* DefaultVersionImplementation::getDataType(const QString& name)
 {
-    for(int i=0; i< m_dataTypes.size(); i++)
+    for(int i=0; i< m_data.m_dataTypes.size(); i++)
     {
-        if(m_dataTypes.at(i)->getName() == name)
+        if(m_data.m_dataTypes.at(i)->getName() == name)
         {
-            return const_cast<UserDataType*>(m_dataTypes.at(i));  // yeah, this sucks
+            return const_cast<UserDataType*>(m_data.m_dataTypes.at(i));  // yeah, this sucks
         }
     }
     return 0;
@@ -79,9 +79,9 @@ UserDataType* DefaultVersionImplementation::getDataType(const QString& name)
 
 int DefaultVersionImplementation::getDataTypeIndex(const QString& name)
 {
-    for(int i=0; i < m_dataTypes.size(); i++)
+    for(int i=0; i < m_data.m_dataTypes.size(); i++)
     {
-        if(m_dataTypes.at(i)->getName() == name)
+        if(m_data.m_dataTypes.at(i)->getName() == name)
         {
             return i;
         }
@@ -91,24 +91,24 @@ int DefaultVersionImplementation::getDataTypeIndex(const QString& name)
 
 inline void DefaultVersionImplementation::addTable(Table *t)
 {
-    m_tables.append(t);
+    m_data.m_tables.append(t);
 }
 
 inline void DefaultVersionImplementation::addDiagram(Diagram* d)
 {
-    m_diagrams.append(d);
+    m_data.m_diagrams.append(d);
 }
 
 inline bool DefaultVersionImplementation::hasTable(Table *t)
 {
-    return m_tables.indexOf(t) >= 0;
+    return m_data.m_tables.indexOf(t) >= 0;
 }
 
 inline bool DefaultVersionImplementation::hasTable(const QString& tb)
 {
-    for(int i=0; i<m_tables.size(); i++)
+    for(int i=0; i<m_data.m_tables.size(); i++)
     {
-        if(QString::compare(m_tables[i]->getName(), tb, Qt::CaseInsensitive) == 0)
+        if(QString::compare(m_data.m_tables[i]->getName(), tb, Qt::CaseInsensitive) == 0)
         {
             return true;
         }
@@ -122,11 +122,11 @@ inline bool DefaultVersionImplementation::hasTable(const QString& tb)
 
 Table* DefaultVersionImplementation::getTable(const QString &name)
 {
-    for(int i=0; i< m_tables.size(); i++)
+    for(int i=0; i< m_data.m_tables.size(); i++)
     {
-        if(m_tables[i]->getName() == name)
+        if(m_data.m_tables[i]->getName() == name)
         {
-            return m_tables[i];
+            return m_data.m_tables[i];
         }
     }
     return 0;
@@ -134,11 +134,11 @@ Table* DefaultVersionImplementation::getTable(const QString &name)
 
 Diagram* DefaultVersionImplementation::getDiagram(const QString& name)
 {
-    for(int i=0; i<m_diagrams.size(); i++)
+    for(int i=0; i<m_data.m_diagrams.size(); i++)
     {
-        if(m_diagrams[i]->getName() == name)
+        if(m_data.m_diagrams[i]->getName() == name)
         {
-            return m_diagrams[i];
+            return m_data.m_diagrams[i];
         }
     }
 
@@ -147,23 +147,23 @@ Diagram* DefaultVersionImplementation::getDiagram(const QString& name)
 
 inline const QVector<UserDataType*>& DefaultVersionImplementation::getDataTypes() const
 {
-    return m_dataTypes;
+    return m_data.m_dataTypes;
 }
 
 inline const QVector<Table*>& DefaultVersionImplementation::getTables() const
 {
-    return m_tables;
+    return m_data.m_tables;
 }
 
 void DefaultVersionImplementation::purgeSentencedTableInstances()
 {
     int i=0;
-    while(i<m_tableInstances.size())
+    while(i<m_data.m_tableInstances.size())
     {
-        if(m_tableInstances.at(i)->sentenced())
+        if(m_data.m_tableInstances.at(i)->sentenced())
         {
-            TableInstance* tinst = m_tableInstances.at(i);
-            m_tableInstances.remove(i);
+            TableInstance* tinst = m_data.m_tableInstances.at(i);
+            m_data.m_tableInstances.remove(i);
             delete tinst;
         }
         else
@@ -182,13 +182,13 @@ void DefaultVersionImplementation::deleteTableInstance(TableInstance *tinst)
     {
         // except if there are other table instances that have it as instantiated
         bool someoneElseAlsoInstantiatedThis = false;
-        for(int j=0; j<m_tableInstances.size(); j++)
+        for(int j=0; j<m_data.m_tableInstances.size(); j++)
         {
-            if(tinst != m_tableInstances.at(j) )
+            if(tinst != m_data.m_tableInstances.at(j) )
             {
-                for(int k=0; k<m_tableInstances.at(j)->getInstantiatedTableInstances().size(); k++)
+                for(int k=0; k<m_data.m_tableInstances.at(j)->getInstantiatedTableInstances().size(); k++)
                 {
-                    if(m_tableInstances.at(j)->getInstantiatedTableInstances().at(k) == insted.at(i))
+                    if(m_data.m_tableInstances.at(j)->getInstantiatedTableInstances().at(k) == insted.at(i))
                     {
                         someoneElseAlsoInstantiatedThis = true;
                         break;
@@ -214,14 +214,14 @@ void DefaultVersionImplementation::deleteTable(Table *tab)
 {
     int tabIndex = -1;
     QString incomingForeignKeys = "";
-    for(int i=0; i<m_tables.size(); i++)
+    for(int i=0; i<m_data.m_tables.size(); i++)
     {
-        if(m_tables[i]->getForeignKeyToTable(tab->getName()) != 0)
+        if(m_data.m_tables[i]->getForeignKeyToTable(tab->getName()) != 0)
         {
-            incomingForeignKeys+= "\n - " + m_tables[i]->getName();
+            incomingForeignKeys+= "\n - " + m_data.m_tables[i]->getName();
         }
 
-        if(m_tables[i]->getName() == tab->getName())
+        if(m_data.m_tables[i]->getName() == tab->getName())
         {
             tabIndex = i;
         }
@@ -237,20 +237,20 @@ void DefaultVersionImplementation::deleteTable(Table *tab)
         return;
     }
 
-    for(int i=0; i<m_diagrams.size(); i++)
+    for(int i=0; i<m_data.m_diagrams.size(); i++)
     {
-        m_diagrams[i]->removeTable(tab->getName());
+        m_data.m_diagrams[i]->removeTable(tab->getName());
     }
 
     // and now we should delete the table instances that were created absed on this table, and the SQLs too...
     int i=0;
-    while(i<m_tableInstances.size())
+    while(i<m_data.m_tableInstances.size())
     {
-        if(m_tableInstances.at(i)->table()->getName() == tab->getName())
+        if(m_data.m_tableInstances.at(i)->table()->getName() == tab->getName())
         {
-            delete m_tableInstances.at(i)->getLocation();
-            m_tableInstances.at(i)->onDelete();
-            m_tableInstances.remove(i);
+            delete m_data.m_tableInstances.at(i)->getLocation();
+            m_data.m_tableInstances.at(i)->onDelete();
+            m_data.m_tableInstances.remove(i);
         }
         else
         {
@@ -259,17 +259,17 @@ void DefaultVersionImplementation::deleteTable(Table *tab)
     }
 
 
-    delete m_tables[tabIndex]->getLocation();
-    m_tables.remove(tabIndex);
+    delete m_data.m_tables[tabIndex]->getLocation();
+    m_data.m_tables.remove(tabIndex);
 }
 
 
 
 void DefaultVersionImplementation::removeForeignKeyFromDiagrams(ForeignKey* fkToRemove)
 {
-    for(int i=0; i<m_diagrams.size(); i++)
+    for(int i=0; i<m_data.m_diagrams.size(); i++)
     {
-        m_diagrams[i]->forcefullyRemoveForeignKey(fkToRemove);
+        m_data.m_diagrams[i]->forcefullyRemoveForeignKey(fkToRemove);
     }
 }
 
@@ -283,11 +283,11 @@ Table* DefaultVersionImplementation::duplicateTable(Table *src)
 
 void DefaultVersionImplementation::setupTableParentChildRelationships()
 {
-    for(int i=0; i<m_tables.size(); i++)
+    for(int i=0; i<m_data.m_tables.size(); i++)
     {
-        if(m_tables[i]->getTempTabName().length() > 0)
+        if(m_data.m_tables[i]->getTempTabName().length() > 0)
         {
-            m_tables[i]->setParent(getTable(m_tables[i]->getTempTabName()));
+            m_data.m_tables[i]->setParent(getTable(m_data.m_tables[i]->getTempTabName()));
         }
     }
 }
@@ -300,17 +300,17 @@ TableInstance* DefaultVersionImplementation::instantiateTable(Table* tab, bool r
     {
         tabInst->setName(NameGenerator::generateUniqueTableInstanceName(this, tabInst->getName()));
     }
-    m_tableInstances.append(tabInst);
+    m_data.m_tableInstances.append(tabInst);
     return tabInst;
 }
 
 TableInstance* DefaultVersionImplementation::getTableInstance(const QString& name)
 {
-    for(int i=0; i<m_tableInstances.size(); i++)
+    for(int i=0; i<m_data.m_tableInstances.size(); i++)
     {
-        if(m_tableInstances.at(i)->getName() == name)
+        if(m_data.m_tableInstances.at(i)->getName() == name)
         {
-            return m_tableInstances.at(i);
+            return m_data.m_tableInstances.at(i);
         }
     }
     return 0;
@@ -318,11 +318,11 @@ TableInstance* DefaultVersionImplementation::getTableInstance(const QString& nam
 
 void DefaultVersionImplementation::deleteDataType(const QString& dtName)
 {
-    for(int i=0; i<m_dataTypes.size(); i++)
+    for(int i=0; i<m_data.m_dataTypes.size(); i++)
     {
-        if(m_dataTypes.at(i)->getName() == dtName)
+        if(m_data.m_dataTypes.at(i)->getName() == dtName)
         {
-            m_dataTypes.remove(i);
+            m_data.m_dataTypes.remove(i);
             return;
         }
     }
@@ -331,11 +331,11 @@ void DefaultVersionImplementation::deleteDataType(const QString& dtName)
 UserDataType* DefaultVersionImplementation::duplicateDataType(const QString& name)
 {
     UserDataType* src = 0;
-    for(int i=0; i<m_dataTypes.size(); i++)
+    for(int i=0; i<m_data.m_dataTypes.size(); i++)
     {
-        if(m_dataTypes.at(i)->getName() == name)
+        if(m_data.m_dataTypes.at(i)->getName() == name)
         {
-            src = m_dataTypes.at(i);
+            src = m_data.m_dataTypes.at(i);
             break;
         }
     }
@@ -352,7 +352,7 @@ UserDataType* DefaultVersionImplementation::duplicateDataType(const QString& nam
 void DefaultVersionImplementation::deleteDiagram(const QString& name)
 {
     Diagram* dgr = getDiagram(name);
-    m_diagrams.remove(m_diagrams.indexOf(dgr));
+    m_data.m_diagrams.remove(m_data.m_diagrams.indexOf(dgr));
     delete dgr->getLocation();
     delete dgr;
 }
@@ -360,13 +360,13 @@ void DefaultVersionImplementation::deleteDiagram(const QString& name)
 QVector<Table*> DefaultVersionImplementation::getTablesReferencingAColumnThroughForeignKeys(const Column* col)
 {
     QVector<Table*> result;
-    for(int i=0; i<m_tables.size(); i++)
+    for(int i=0; i<m_data.m_tables.size(); i++)
     {
-        for(int j=0; j<m_tables.at(i)->getFks().size(); j++)
+        for(int j=0; j<m_data.m_tables.at(i)->getFks().size(); j++)
         {
-            if(m_tables.at(i)->getFks().at(j)->foreignColumns().contains(col))
+            if(m_data.m_tables.at(i)->getFks().at(j)->foreignColumns().contains(col))
             {
-                result.append(m_tables.at(i));
+                result.append(m_data.m_tables.at(i));
                 break;
             }
         }
@@ -467,4 +467,19 @@ QList<QString> DefaultVersionImplementation::getSqlScript()
         }
     }
     return finalSql;
+}
+
+const QVector<Diagram*>& DefaultVersionImplementation::getDiagrams() const
+{
+    return m_data.m_diagrams;
+}
+
+void DefaultVersionImplementation::addTableInstance(TableInstance* inst)
+{
+    m_data.m_tableInstances.append(inst);
+}
+
+const QVector<TableInstance*>& DefaultVersionImplementation::getTableInstances() const
+{
+    return m_data.m_tableInstances;
 }

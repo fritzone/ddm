@@ -9,6 +9,8 @@ class AbstractCodepageSupplier;
 class AbstractIndextypeProvider;
 class AbstractStorageEngineListProvider;
 class AbstractSqlGenerator;
+class Version;
+class Table;
 
 /**
  * This class is a kind of "wrapper" for the other classes that all deal
@@ -62,10 +64,17 @@ public:
 
     virtual bool injectSql(const QString& host, const QString& user, const QString& pass, const QString& dbName, const QStringList& sqls, QString& lastSql, bool rollbackOnError, bool createTablesOnlyIfNotExist) = 0;
 
+    /**
+     * Reverse engineers the given database and puts it in the v
+     */
+    virtual bool reverseEngineerDatabase(const QString& host, const QString& user, const QString& pass, const QString& dbName, Version* v) = 0;
+
     QString getLastError() const
     {
         return lastError;
     }
+
+    virtual Table* reverseEngineerTable(const QString& host, const QString& user, const QString& pass, const QString& dbName, const QString& tableName, Version* v) = 0;
 
 private:
 
