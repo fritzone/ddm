@@ -3,7 +3,10 @@
 
 #include <QDialog>
 
-namespace Ui {
+class DatabaseEngine;
+
+namespace Ui
+{
     class InjectSqlDialog;
 }
 
@@ -11,7 +14,7 @@ class InjectSqlDialog : public QDialog
 {
     Q_OBJECT
 public:
-    InjectSqlDialog(QWidget *parent = 0);
+    InjectSqlDialog(DatabaseEngine* engine, QWidget *parent = 0);
     ~InjectSqlDialog();
 
     QString getDatabase();
@@ -37,6 +40,7 @@ protected:
 
 private:
     Ui::InjectSqlDialog *ui;
+    DatabaseEngine* m_dbEngine;
 
 private:
 

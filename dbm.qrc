@@ -109,4 +109,8 @@
         <file>images/small/zoom_in.png</file>
         <file>images/actions/deploy.png</file>
     </qresource>
+    <qresource prefix="/bigger">
+        <file>images/unaf.png</file>
+        <file>images/big/icon.png</file>
+    </qresource>
 </RCC>

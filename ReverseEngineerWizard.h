@@ -1,0 +1,33 @@
+#ifndef REVERSEENGINEERWIZARD_H
+#define REVERSEENGINEERWIZARD_H
+
+#include <QWizard>
+
+class DatabaseEngine;
+class ReverseEngineerWizardWelcomeForm;
+class ReverseEngineerWizardDatabasesForm;
+class ReverseEngineerWizardTablesForm;
+
+class ReverseEngineerWizard : public QWizard
+{
+public:
+
+    ReverseEngineerWizard(DatabaseEngine* engine);
+
+    void gatherConnectionData();
+    bool connectAndRetrieveDatabases();
+
+private:
+
+    DatabaseEngine* m_engine;
+
+    ReverseEngineerWizardWelcomeForm* m_welcomePage;
+    ReverseEngineerWizardDatabasesForm* m_databasesPage;
+    ReverseEngineerWizardTablesForm* m_tablesPage;
+
+    QString m_host;
+    QString m_user;
+    QString m_pass;
+};
+
+#endif // REVERSEENGINEERWIZARD_H

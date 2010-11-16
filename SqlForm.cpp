@@ -47,7 +47,7 @@ void SqlForm::setSource(const QString &src)
 
 void SqlForm::onInject()
 {
-    InjectSqlDialog* injectDialog = new InjectSqlDialog(this);
+    InjectSqlDialog* injectDialog = new InjectSqlDialog(Workspace::getInstance()->currentProjectsEngine(), this);
     injectDialog->setModal(true);
     if(injectDialog->exec() == QDialog::Accepted)
     {

@@ -1,6 +1,8 @@
 #include "InjectSqlDialog.h"
 #include "ui_InjectSqlDialog.h"
 
+#include "DatabaseEngine.h"
+
 #include <QSqlDatabase>
 #include <QMessageBox>
 #include <QSqlQuery>
@@ -10,7 +12,7 @@ QString InjectSqlDialog::previousHost="";
 QString InjectSqlDialog::previousUser="";
 
 
-InjectSqlDialog::InjectSqlDialog(QWidget *parent) : QDialog(parent), ui(new Ui::InjectSqlDialog)
+InjectSqlDialog::InjectSqlDialog(DatabaseEngine* engine, QWidget *parent) : QDialog(parent), ui(new Ui::InjectSqlDialog), m_dbEngine(engine)
 {
     ui->setupUi(this);
     ui->buttonBox->button(QDialogButtonBox::Ok)->setDisabled(true);
@@ -38,30 +40,18 @@ void InjectSqlDialog::changeEvent(QEvent *e)
 
 void InjectSqlDialog::onConnect()
 {
-    QSqlDatabase db = QSqlDatabase::addDatabase("QMYSQL");
-    db.setHostName(ui->txtDatabaseHost->text());
-    db.setUserName(ui->txtDatabaseUser->text());
-    db.setPassword(ui->txtDatabasePassword->text());
 
-    bool ok = db.open();
-
-    if(!ok)
+    QVector<QString> databases = m_dbEngine->getAvailableDatabases(ui->txtDatabaseHost->text(), ui->txtDatabaseUser->text(), ui->txtDatabasePassword->text());
+    if(databases.size() == 0)
     {
-        QMessageBox::critical (this, tr("Error"), tr("Cannot connect to the database: ") + db.lastError().databaseText() + "/"
-                               + db.lastError().driverText(), QMessageBox::Ok);
+        QMessageBox::critical(this, tr("Error"), m_dbEngine->getLastError(), QMessageBox::Ok)        ;
         return;
     }
 
-    QSqlQuery query;
-
-    query.exec("show databases");
-
-    while(query.next())
+    for(int i=0; i<databases.size(); i++)
     {
-        QString db = query.value(0).toString();
-        ui->cmbDatabases->addItem(db);
+        ui->cmbDatabases->addItem(databases.at(i));
     }
-
     ui->cmbDatabases->setEnabled(true);
     ui->buttonBox->button(QDialogButtonBox::Ok)->setDisabled(false);
     previousHost = ui->txtDatabaseHost->text();

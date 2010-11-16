@@ -70,7 +70,11 @@ SOURCES += main.cpp \
     Workspace.cpp \
     VersionGuiElements.cpp \
     DefaultVersionImplementation.cpp \
-    ClipboardFactory.cpp
+    ClipboardFactory.cpp \
+    ReverseEngineerWizardWelcomeForm.cpp \
+    ReverseEngineerWizard.cpp \
+    ReverseEngineerWizardDatabasesForm.cpp \
+    ReverseEngineerWizardTablesForm.cpp
 HEADERS += mainwindow.h \
     MainWindowButtonDialog.h \
     newprojectdialog.h \
@@ -151,7 +155,11 @@ HEADERS += mainwindow.h \
     DefaultVersionImplementation.h \
     CopyableElement.h \
     ClipboardFactory.h \
-    VersionData.h
+    VersionData.h \
+    ReverseEngineerWizardWelcomeForm.h \
+    ReverseEngineerWizard.h \
+    ReverseEngineerWizardDatabasesForm.h \
+    ReverseEngineerWizardTablesForm.h
 FORMS += mainwindow.ui \
     mainwindowbuttondialog.ui \
     newprojectdialog.ui \
@@ -169,5 +177,8 @@ FORMS += mainwindow.ui \
     InjectSqlDialog.ui \
     TableInstancesListForm.ui \
     PreferencesDialog.ui \
-    SimpleTextInputDialog.ui
+    SimpleTextInputDialog.ui \
+    ReverseEngineerWizardWelcomeForm.ui \
+    ReverseEngineerWizardDatabasesForm.ui \
+    ReverseEngineerWizardTablesForm.ui
 RESOURCES += dbm.qrc

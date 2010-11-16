@@ -35,6 +35,7 @@
 #include "Workspace.h"
 #include "VersionGuiElements.h"
 #include "InjectSqlDialog.h"
+#include "ReverseEngineerWizard.h"
 #include "DataType.h" // TODO: this is simply bad design, Mainwindow should not know about datatypes ...
 
 #include <QtGui>
@@ -44,7 +45,7 @@
 #endif
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), m_ui(new Ui::MainWindow), m_projectTreeDock(0), m_datatypesTreeDock(0), m_projectTree(0),
-    m_datatypesTree(0), m_btndlg(0), m_newTableForm(0), m_createTableInstancesPopup(0), m_workspace(0)
+    m_datatypesTree(0), m_btndlg(0), m_newTableForm(0), m_createTableInstancesPopup(0), m_workspace(0), m_revEngWizard(0)
 {
     m_ui->setupUi(this);
 
@@ -269,13 +270,19 @@ void MainWindow::onNewSolution()
         }
         else
         {
-            InjectSqlDialog* dlg = new InjectSqlDialog(this);
+            m_revEngWizard = new ReverseEngineerWizard(nprjdlg->getDatabaseEngine());
+            m_revEngWizard->show();
+
+            QObject::connect(m_revEngWizard, SIGNAL(currentIdChanged(int)), this, SLOT(onReverseEngineerWizardNextPage(int)));
+            QObject::connect(m_revEngWizard, SIGNAL(accepted()), this, SLOT(onReverseEngineerWizardAccept()));
+
+            /*InjectSqlDialog* dlg = new InjectSqlDialog(nprjdlg->getDatabaseEngine(), this);
             dlg->setupForReverseEngineering();
             dlg->setModal(true);
             if(dlg->exec() == QDialog::Accepted)
             {
                 project->getEngine()->reverseEngineerDatabase(dlg->getHost(), dlg->getUser(), dlg->getPassword(), dlg->getDatabase(), project->getWorkingVersion());
-            }
+            }*/
         }
 
         enableActions();
@@ -1324,7 +1331,7 @@ void MainWindow::onNewSpatialType()
 
 void MainWindow::onDeploy()
 {
-    InjectSqlDialog* injectDialog = new InjectSqlDialog(this);
+    InjectSqlDialog* injectDialog = new InjectSqlDialog(m_workspace->getInstance()->currentProjectsEngine(), this);
     injectDialog->setModal(true);
     QStringList sqlList = m_workspace->workingVersion()->getSqlScript();
     if(injectDialog->exec() == QDialog::Accepted)
@@ -1352,4 +1359,24 @@ void MainWindow::onViewDatatypesTree()
     bool t = m_datatypesTreeDock->isVisible() ;
     m_ui->action_ProjectTree->setChecked(!t);
     m_projectTreeDock->setVisible(!t);
+}
+
+void MainWindow::onReverseEngineerWizardNextPage(int cpage)
+{
+    switch(cpage)
+    {
+    case 1: // user just filled in the connection stuff, tell the wizard to fetch the data and feed ti to the next page
+        m_revEngWizard->gatherConnectionData();
+
+        if(!m_revEngWizard->connectAndRetrieveDatabases())
+        {
+            m_revEngWizard->back();
+        }
+        break;
+    }
+}
+
+void MainWindow::onReverseEngineerWizardAccept()
+{
+
 }

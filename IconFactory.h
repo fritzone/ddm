@@ -48,6 +48,12 @@ public:
         return icon;
     }
 
+    static const QIcon& getDatabaseIcon()
+    {
+        static const QIcon icon(strDatabaseIcon);
+        return icon;
+    }
+
     static const QIcon& getTabinstIcon()
     {
         static const QIcon icon(strTableInstIcon);
