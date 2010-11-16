@@ -76,6 +76,8 @@ public:
 
     virtual Table* reverseEngineerTable(const QString& host, const QString& user, const QString& pass, const QString& dbName, const QString& tableName, Version* v) = 0;
 
+    virtual QVector<QString> getAvailableDatabases(const QString& host, const QString& user, const QString& pass) = 0;
+
 private:
 
     // the database on which this is running

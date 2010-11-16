@@ -144,3 +144,31 @@ QString MySQLDatabaseEngine::getDefaultDatatypesLocation()
 {
     return "mysql.defaults";
 }
+
+QVector<QString> MySQLDatabaseEngine::getAvailableDatabases(const QString& host, const QString& user, const QString& pass)
+{
+    QSqlDatabase db = QSqlDatabase::addDatabase("QMYSQL");
+    db.setHostName(host);
+    db.setUserName(user);
+    db.setPassword(pass);
+
+    bool ok = db.open();
+    QVector<QString> result;
+
+    if(!ok)
+    {
+        lastError = QObject::tr("Cannot connect to the database: ") + db.lastError().databaseText() + "/" + db.lastError().driverText();
+        return result;
+    }
+
+    QSqlQuery query;
+    query.exec("show databases");
+
+    while(query.next())
+    {
+        QString db = query.value(0).toString();
+        result.append(db);
+    }
+
+    return result;
+}

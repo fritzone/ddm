@@ -19,6 +19,7 @@ class NewTableForm;
 class NewProjectDialog;
 class Solution;
 class Workspace;
+class ReverseEngineerWizard;
 
 namespace Ui
 {
@@ -105,6 +106,9 @@ public slots:
     void onViewProjectTree();
     void onViewDatatypesTree();
 
+    void onReverseEngineerWizardNextPage(int);
+    void onReverseEngineerWizardAccept();
+
 private:
 
     void setupGuiForNewSolution();
@@ -150,6 +154,7 @@ private:
 
     Workspace* m_workspace;
 
+    ReverseEngineerWizard* m_revEngWizard;
 };
 
 #endif // MAINWINDOW_H
