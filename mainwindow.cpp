@@ -122,7 +122,7 @@ void MainWindow::setupGuiForNewSolution()
     m_projectTreeDock->setFeatures(QDockWidget::AllDockWidgetFeatures);
     m_projectTreeDock->setFloating(false);
     m_projectTreeDock->setMinimumSize(300, 340);
-    m_projectTreeDock->setMaximumSize(360, 840);
+    m_projectTreeDock->setMaximumSize(500, 840);
     m_projectTreeDock->setSizePolicy(QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed));
 
     m_projectTreeDock->resize(301,341);
@@ -132,7 +132,7 @@ void MainWindow::setupGuiForNewSolution()
     m_datatypesTreeDock->setFeatures(QDockWidget::AllDockWidgetFeatures);
     m_datatypesTreeDock->setFloating(false);
     m_datatypesTreeDock->setMinimumSize(300, 340);
-    m_datatypesTreeDock->setMaximumSize(400, 840);
+    m_datatypesTreeDock->setMaximumSize(500, 840);
 
     // set up the tree
     ContextMenuHandler* contextMenuHandler = new ContextMenuHandler();
@@ -168,33 +168,7 @@ void MainWindow::setupGuiForNewSolution()
 
 ContextMenuEnabledTreeWidgetItem* MainWindow::createDataTypeTreeEntry(UserDataType* udt)
 {
-    QStringList itm(udt->getName());
-    itm << udt->sqlAsString();
-    ContextMenuEnabledTreeWidgetItem* parent = m_workspace->workingVersion()->getGui()->getDtsItem();
-
-    if(udt->getType() == DataType::DT_STRING) parent = m_workspace->workingVersion()->getGui()->getStringDtsItem();
-    if(udt->getType() == DataType::DT_NUMERIC) parent = m_workspace->workingVersion()->getGui()->getIntsDtsItem();
-    if(udt->getType() == DataType::DT_DATETIME) parent = m_workspace->workingVersion()->getGui()->getDateDtsItem();
-    if(udt->getType() == DataType::DT_BLOB) parent = m_workspace->workingVersion()->getGui()->getBlobDtsItem();
-    if(udt->getType() == DataType::DT_BOOLEAN) parent = m_workspace->workingVersion()->getGui()->getBoolDtsItem();
-    if(udt->getType() == DataType::DT_MISC) parent = m_workspace->workingVersion()->getGui()->getMiscDtsItem();
-    if(udt->getType() == DataType::DT_SPATIAL) parent = m_workspace->workingVersion()->getGui()->getSpatialDtsItem();
-
-    ContextMenuEnabledTreeWidgetItem* newDTItem = new ContextMenuEnabledTreeWidgetItem(parent, itm) ;
-
-    QVariant var;
-    var.setValue(*udt);
-    newDTItem->setData(0, Qt::UserRole, var);
-    // set the icon, add to the tree
-    newDTItem->setIcon(0, udt->getIcon());
-    newDTItem->setPopupMenu(ContextMenuCollection::getInstance()->getDatatypePopupMenu());
-    m_datatypesTree->insertTopLevelItem(0,newDTItem);
-    m_datatypesTree->header()->setResizeMode(QHeaderView::ResizeToContents);
-
-    // set the link to the tree
-    udt->setLocation(newDTItem);
-
-    return newDTItem;
+    return m_workspace->workingVersion()->getGui()->createDataTypeTreeEntry(udt);
 }
 
 void MainWindow::createDatamodelProject(NewProjectDialog* nprjdlg)
@@ -1368,15 +1342,26 @@ void MainWindow::onReverseEngineerWizardNextPage(int cpage)
     case 1: // user just filled in the connection stuff, tell the wizard to fetch the data and feed ti to the next page
         m_revEngWizard->gatherConnectionData();
 
-        if(!m_revEngWizard->connectAndRetrieveDatabases())
+        if(!m_revEngWizard->connectAndRetrieveDatabases())  //failed?... don't go forward, there won't be databases
         {
             m_revEngWizard->back();
         }
+        break;
+
+    case 2: // user selected a database to reverse engineer
+        if(!m_revEngWizard->selectDatabase()) // did he?
+        {
+            QMessageBox::critical(this, tr("Error"), tr("Please select a database"), QMessageBox::Ok);
+            m_revEngWizard->back();
+        }
+
+        m_revEngWizard->connectAndRetrieveTables();
         break;
     }
 }
 
 void MainWindow::onReverseEngineerWizardAccept()
 {
-
+    QVector<QString> tabsToReverse = m_revEngWizard->getTablesToReverse();
+    m_workspace->currentProjectsEngine()->reverseEngineerDatabase(m_revEngWizard->getHost(), m_revEngWizard->getUser(), m_revEngWizard->getPasword(), m_revEngWizard->getDatabase(), tabsToReverse, m_workspace->workingVersion());
 }

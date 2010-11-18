@@ -59,3 +59,8 @@ AbstractSqlGenerator* DatabaseEngine::getSqlGenerator() const
 {
     return sqlGenerators.contains(database)?sqlGenerators[database]:0;
 }
+
+QString DatabaseEngine::getTypeStringForSqlType(const QString& sqlType)
+{
+    return getDTSupplier()->typeForSqlType(sqlType);
+}

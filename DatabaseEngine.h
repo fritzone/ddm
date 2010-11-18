@@ -65,9 +65,9 @@ public:
     virtual bool injectSql(const QString& host, const QString& user, const QString& pass, const QString& dbName, const QStringList& sqls, QString& lastSql, bool rollbackOnError, bool createTablesOnlyIfNotExist) = 0;
 
     /**
-     * Reverse engineers the given database and puts it in the v
+     * Reverse engineers the tables from the given database and puts the resulting structures in the v
      */
-    virtual bool reverseEngineerDatabase(const QString& host, const QString& user, const QString& pass, const QString& dbName, Version* v) = 0;
+    virtual bool reverseEngineerDatabase(const QString& host, const QString& user, const QString& pass, const QString& dbName, QVector<QString> tables, Version* v) = 0;
 
     QString getLastError() const
     {
@@ -77,6 +77,8 @@ public:
     virtual Table* reverseEngineerTable(const QString& host, const QString& user, const QString& pass, const QString& dbName, const QString& tableName, Version* v) = 0;
 
     virtual QVector<QString> getAvailableDatabases(const QString& host, const QString& user, const QString& pass) = 0;
+    virtual QVector<QString> getAvailableTables(const QString& host, const QString& user, const QString& pass, const QString& db) = 0;
+    QString getTypeStringForSqlType(const QString& sqlType);
 
 private:
 
@@ -96,7 +98,7 @@ private:
 
     static QMap<QString, AbstractSqlGenerator*> sqlGenerators;
 
-    // whether the map above was initialized or not
+    // whether the maps above were initialized or not
     static bool genericInit;
 
 protected:

@@ -3,9 +3,11 @@
 
 #include <QTreeWidget>
 
-class Version;
 #include "ContextMenuEnabledTreeWidget.h"
 #include "IconFactory.h"
+
+class Version;
+class UserDataType;
 
 /**
  * The scope of this class is to have a common collection point for the tree widget items of a version (DT, Sql, Table, etc...)
@@ -131,6 +133,9 @@ public:
     void createGuiElements(ContextMenuEnabledTreeWidgetItem* projectItem);
 
     void populateTreeItems();
+
+    ContextMenuEnabledTreeWidgetItem* createDataTypeTreeEntry(UserDataType*);
+
 
 private:
 

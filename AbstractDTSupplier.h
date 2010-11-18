@@ -81,6 +81,8 @@ public:
      */
     virtual QString defaultSqlForGenericType(const QString& genericType) = 0;
 
+    virtual QString typeForSqlType(const QString& sqlType) = 0;
+
     static QList<DataType> getDTList(AbstractDTSupplier* dts, DataType::DT_TYPE dt)
     {
         switch(dt)

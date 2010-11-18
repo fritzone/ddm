@@ -483,3 +483,44 @@ const QVector<TableInstance*>& DefaultVersionImplementation::getTableInstances()
 {
     return m_data.m_tableInstances;
 }
+
+UserDataType* DefaultVersionImplementation::provideDatatypeForSqlType(const QString& sql, const QString& nullable, const QString& defaultValue)
+{
+    QString type = sql;
+    QString size = "";
+    int stp = sql.indexOf('(') ;
+    if(stp != -1)
+    {
+        type = sql.left(stp);
+        size = sql.mid(stp + 1, sql.indexOf(')') - stp -1);
+    }
+
+    for(int i=0; i<m_data.m_dataTypes.size(); i++)
+    {
+        UserDataType* udt = m_data.m_dataTypes.at(i);
+        if(QString::compare(udt->getSqlType(), type, Qt::CaseInsensitive) == 0)
+        {
+            if(udt->getSize() == size)
+            {
+                if((udt->isNullable() && QString::compare(nullable, "YES", Qt::CaseInsensitive) == 0) || (!udt->isNullable() && QString::compare(nullable, "NO", Qt::CaseInsensitive) == 0))
+                {
+                    if(udt->getDefaultValue() == defaultValue)
+                    {
+                        return udt;
+                    }
+                }
+            }
+        }
+    }
+
+    // nothing found, we should create a new data type with some default values
+    UserDataType* newUdt = new UserDataType(type + (size.length()>0?"_"+ size:"") + (defaultValue.length() > 0? ("_" + defaultValue) : "") + (nullable=="NO"?"_NOT_NULL":""),
+                                            Workspace::getInstance()->currentProjectsEngine()->getTypeStringForSqlType(type),
+                                            type, size, "", "", QStringList(), false, type + " " + size,
+                                            QString::compare(nullable, "YES", Qt::CaseInsensitive) == 0, false);
+
+    addNewDataType(newUdt);
+    getGui()->createDataTypeTreeEntry(newUdt);
+
+    return newUdt;
+}

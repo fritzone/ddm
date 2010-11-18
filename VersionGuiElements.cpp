@@ -10,6 +10,7 @@
 #include "Workspace.h"
 
 #include <QVector>
+#include <QtGui>
 
 VersionGuiElements::VersionGuiElements(QTreeWidget* projTree, QTreeWidget* dtTree, Version* v) : tablesItem(0), tableInstancesItem(0), versionItem(0), diagramsItem(0), finalSqlItem(0), dtsItem(0),
     m_tree(projTree), m_dtTree(dtTree), m_version(v),
@@ -213,3 +214,34 @@ void VersionGuiElements::populateTreeItems()
     }
 }
 
+
+ContextMenuEnabledTreeWidgetItem* VersionGuiElements::createDataTypeTreeEntry(UserDataType* udt)
+{
+    QStringList itm(udt->getName());
+    itm << udt->sqlAsString();
+    ContextMenuEnabledTreeWidgetItem* parent = getDtsItem();
+
+    if(udt->getType() == DataType::DT_STRING) parent = getStringDtsItem();
+    if(udt->getType() == DataType::DT_NUMERIC) parent = getIntsDtsItem();
+    if(udt->getType() == DataType::DT_DATETIME) parent = getDateDtsItem();
+    if(udt->getType() == DataType::DT_BLOB) parent = getBlobDtsItem();
+    if(udt->getType() == DataType::DT_BOOLEAN) parent = getBoolDtsItem();
+    if(udt->getType() == DataType::DT_MISC) parent = getMiscDtsItem();
+    if(udt->getType() == DataType::DT_SPATIAL) parent = getSpatialDtsItem();
+
+    ContextMenuEnabledTreeWidgetItem* newDTItem = new ContextMenuEnabledTreeWidgetItem(parent, itm) ;
+
+    QVariant var;
+    var.setValue(*udt);
+    newDTItem->setData(0, Qt::UserRole, var);
+    // set the icon, add to the tree
+    newDTItem->setIcon(0, udt->getIcon());
+    newDTItem->setPopupMenu(ContextMenuCollection::getInstance()->getDatatypePopupMenu());
+    m_dtTree->insertTopLevelItem(0,newDTItem);
+    m_dtTree->header()->setResizeMode(QHeaderView::ResizeToContents);
+
+    // set the link to the tree
+    udt->setLocation(newDTItem);
+
+    return newDTItem;
+}
