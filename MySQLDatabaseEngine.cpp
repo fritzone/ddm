@@ -9,43 +9,54 @@
 #include <QMessageBox>
 
 #include "Table.h"
+#include "Version.h"
+#include "Column.h"
 
 MySQLDatabaseEngine::MySQLDatabaseEngine() : DatabaseEngine("MySQL")
 {
 }
 
-bool MySQLDatabaseEngine::reverseEngineerDatabase(const QString& host, const QString& user, const QString& pass, const QString& dbName, Version* v)
+bool MySQLDatabaseEngine::reverseEngineerDatabase(const QString& host, const QString& user, const QString& pass, const QString& dbName, QVector<QString> tables, Version* v)
 {
-    QSqlDatabase db = QSqlDatabase::addDatabase("QMYSQL");
+    for(int i=0; i<tables.size(); i++)
+    {
+        reverseEngineerTable(host, user, pass, dbName, tables.at(i), v);
+    }
+    return true;
+}
 
-    db.setHostName(host);
-    db.setUserName(user);
-    db.setPassword(pass);
-    db.setDatabaseName(dbName);
 
-    bool ok = db.open();
+QVector<QString> MySQLDatabaseEngine::getAvailableTables(const QString& host, const QString& user, const QString& pass, const QString& db)
+{
+    QSqlDatabase dbo = QSqlDatabase::addDatabase("QMYSQL");
+
+    dbo.setHostName(host);
+    dbo.setUserName(user);
+    dbo.setPassword(pass);
+    dbo.setDatabaseName(db);
+
+    QVector<QString> result;
+    bool ok = dbo.open();
 
     if(!ok)
     {
-        QMessageBox::critical(0, "Error", db.lastError().databaseText() + "/" + db.lastError().databaseText(), QMessageBox::Ok);
-        return false;
+        QMessageBox::critical(0, "Error", dbo.lastError().databaseText() + "/" + dbo.lastError().databaseText(), QMessageBox::Ok);
+        return result;
     }
 
     QSqlQuery query;
 
     query.exec("show tables");
-    QString res = "";
 
     while(query.next())
     {
-        QString db = query.value(0).toString();
-        res += db + "\n";
+        QString tab = query.value(0).toString();
+        result.append(tab);
     }
 
-    QMessageBox::information(0, "tables", res, QMessageBox::Ok);
-
-    return true;
+    return result;
 }
+
 
 Table* MySQLDatabaseEngine::reverseEngineerTable(const QString& host, const QString& user, const QString& pass, const QString& dbName, const QString& tableName, Version* v)
 {
@@ -67,6 +78,7 @@ Table* MySQLDatabaseEngine::reverseEngineerTable(const QString& host, const QStr
     QSqlQuery query;
 
     Table* tab = new Table(v);
+    tab->setName(tableName);
 
     query.exec("desc " + tableName);
 
@@ -81,15 +93,19 @@ Table* MySQLDatabaseEngine::reverseEngineerTable(const QString& host, const QStr
     while(query.next())
     {
         QString field_name = query.value(fieldNo).toString();
-        QString type = query.value(typeNo).toString();
+        QString type = query.value(typeNo).toString().toUpper();
         QString nullable = query.value(nulldNo).toString();
         QString keyness = query.value(keyNo).toString();
         QString defaultValue = query.value(defNo).toString();
         QString extra = query.value(extraNo).toString();
 
         // now fetch the data type for the given type from the version
-
+        UserDataType* udt = v->provideDatatypeForSqlType(type, nullable, defaultValue);
+        Column* col = new Column(field_name, udt, QString::compare(keyness, "PRI", Qt::CaseInsensitive) == 0, extra == "auto_increment");
+        tab->addColumn(col);
     }
+
+    v->addTable(tab);
 
     return tab;
 

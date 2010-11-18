@@ -28,3 +28,14 @@ void ReverseEngineerWizardDatabasesForm::addDatabase(const QString & name)
     QIcon b = QIcon(c.pixmap(16,16));
     lwi->setIcon(b);
 }
+
+QString ReverseEngineerWizardDatabasesForm::getSelectedDatabase() const
+{
+    if(ui->listWidget->selectedItems().size() > 0) return ui->listWidget->selectedItems().at(0)->text();
+    return "";
+}
+
+void ReverseEngineerWizardDatabasesForm::clearList()
+{
+    ui->listWidget->clear();
+}

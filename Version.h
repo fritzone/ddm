@@ -189,6 +189,13 @@ public:
 
     virtual QList<QString> getSqlScript() = 0;
 
+    /**
+     * Provides a data type for the given SQL type. Firstly checks if there are data types corresponding to the
+     * given name/size pair and and if found one, returns it. If did not find any, creates a new one, adds to the
+     * vector of data types and returns it.
+     */
+    virtual UserDataType* provideDatatypeForSqlType(const QString& sql, const QString& nullable, const QString& defaultValue) = 0;
+
 private:
 
 };

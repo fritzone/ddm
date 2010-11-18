@@ -16,6 +16,13 @@ public:
 
     void gatherConnectionData();
     bool connectAndRetrieveDatabases();
+    bool selectDatabase();
+    bool connectAndRetrieveTables();
+    QVector<QString> getTablesToReverse();
+    QString getHost() {return m_host; }
+    QString getUser() {return m_user; }
+    QString getPasword() {return m_pass; }
+    QString getDatabase() {return m_database; }
 
 private:
 
@@ -28,6 +35,7 @@ private:
     QString m_host;
     QString m_user;
     QString m_pass;
+    QString m_database;
 };
 
 #endif // REVERSEENGINEERWIZARD_H

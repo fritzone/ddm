@@ -15,6 +15,14 @@ public:
     explicit ReverseEngineerWizardTablesForm(QWidget *parent = 0);
     ~ReverseEngineerWizardTablesForm();
 
+    void addTable(const QString& tab);
+    void clearList();
+    QVector<QString> getSelectedTables();
+
+public slots:
+
+    void checkStateChanged(int);
+
 private:
     Ui::ReverseEngineerWizardTablesForm *ui;
 };

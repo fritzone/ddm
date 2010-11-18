@@ -15,7 +15,9 @@ public:
     explicit ReverseEngineerWizardDatabasesForm(QWidget *parent = 0);
     ~ReverseEngineerWizardDatabasesForm();
 
+    void clearList();
     void addDatabase(const QString&);
+    QString getSelectedDatabase() const;
 
 private:
     Ui::ReverseEngineerWizardDatabasesForm *ui;
