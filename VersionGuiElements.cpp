@@ -245,3 +245,29 @@ ContextMenuEnabledTreeWidgetItem* VersionGuiElements::createDataTypeTreeEntry(Us
 
     return newDTItem;
 }
+
+ContextMenuEnabledTreeWidgetItem* VersionGuiElements::createDiagramTreeEntry(Diagram* dgram)
+{
+    ContextMenuEnabledTreeWidgetItem* newDgramItem = new ContextMenuEnabledTreeWidgetItem(getDiagramsItem(), QStringList(dgram->getName())) ;
+    QVariant var(dgram->getName());
+    newDgramItem->setData(0, Qt::UserRole, var);
+    newDgramItem->setIcon(0, IconFactory::getDiagramIcon());
+    newDgramItem->setPopupMenu(ContextMenuCollection::getInstance()->getDiagramPopupMenu());
+    dgram->setLocation(newDgramItem);
+    dgram->setSaved(true);
+    m_tree->addTopLevelItem(newDgramItem);
+}
+
+ContextMenuEnabledTreeWidgetItem* VersionGuiElements::createTableTreeEntry(Table* tab)
+{
+    ContextMenuEnabledTreeWidgetItem* newTblsItem = new ContextMenuEnabledTreeWidgetItem(getTablesItem(), QStringList(tab->getName())) ;
+    QVariant var(tab->getName());
+    newTblsItem->setData(0, Qt::UserRole, var);
+    newTblsItem->setPopupMenu(ContextMenuCollection::getInstance()->getTablePopupMenu());
+    // set the icon, add to the tree
+    newTblsItem->setIcon(0, IconFactory::getTablesIcon());
+    m_tree->addTopLevelItem(newTblsItem);
+    // set the link to the tree
+    tab->setLocation(newTblsItem);
+    return newTblsItem;
+}

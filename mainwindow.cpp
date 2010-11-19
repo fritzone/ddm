@@ -494,9 +494,7 @@ bool MainWindow::onUpdateTable(Table* tbl)
 
 bool MainWindow::onSaveNewTable(Table* tbl)
 {
-    ContextMenuEnabledTreeWidgetItem*newTblsItem = createTableTreeEntry(tbl);
-
-    // add to the project itself
+    m_workspace->workingVersion()->getGui()->createTableTreeEntry(tbl);
     m_workspace->workingVersion()->addTable(tbl);
     return true;
 }
@@ -721,14 +719,7 @@ bool MainWindow::onSaveDiagram(Diagram* dgram)
 {
     if(!dgram->isSaved())
     {
-        ContextMenuEnabledTreeWidgetItem* newDgramItem = new ContextMenuEnabledTreeWidgetItem(m_workspace->workingVersion()->getGui()->getDiagramsItem(), QStringList(dgram->getName())) ;
-        QVariant var(dgram->getName());
-        newDgramItem->setData(0, Qt::UserRole, var);
-        newDgramItem->setIcon(0, IconFactory::getDiagramIcon());
-        newDgramItem->setPopupMenu(ContextMenuCollection::getInstance()->getDiagramPopupMenu());
-        dgram->setLocation(newDgramItem);
-        dgram->setSaved(true);
-        m_projectTree->addTopLevelItem(newDgramItem);
+        m_workspace->workingVersion()->getGui()->createDiagramTreeEntry(dgram);
     }
     else
     {
@@ -912,27 +903,12 @@ void MainWindow::onCopyTableFromPopup()
     }
 }
 
-ContextMenuEnabledTreeWidgetItem* MainWindow::createTableTreeEntry(Table* tab)
-{
-    ContextMenuEnabledTreeWidgetItem* newTblsItem = new ContextMenuEnabledTreeWidgetItem(m_workspace->workingVersion()->getGui()->getTablesItem(), QStringList(tab->getName())) ;
-
-    QVariant var(tab->getName());
-    newTblsItem->setData(0, Qt::UserRole, var);
-    newTblsItem->setPopupMenu(ContextMenuCollection::getInstance()->getTablePopupMenu());
-    // set the icon, add to the tree
-    newTblsItem->setIcon(0, IconFactory::getTablesIcon());
-    m_projectTree->addTopLevelItem(newTblsItem);
-    // set the link to the tree
-    tab->setLocation(newTblsItem);
-    return newTblsItem;
-}
-
 void MainWindow::onPasteTableFromPopup()
 {
     Table* tab = Workspace::getInstance()->pasteTable();
     if(tab)
     {
-        createTableTreeEntry(tab);
+        m_workspace->getInstance()->workingVersion()->getGui()->createTableTreeEntry(tab);
         if(tab->getParent())
         {
             QTreeWidgetItem* p = tab->getLocation();
@@ -1363,5 +1339,6 @@ void MainWindow::onReverseEngineerWizardNextPage(int cpage)
 void MainWindow::onReverseEngineerWizardAccept()
 {
     QVector<QString> tabsToReverse = m_revEngWizard->getTablesToReverse();
-    m_workspace->currentProjectsEngine()->reverseEngineerDatabase(m_revEngWizard->getHost(), m_revEngWizard->getUser(), m_revEngWizard->getPasword(), m_revEngWizard->getDatabase(), tabsToReverse, m_workspace->workingVersion());
+    m_workspace->currentProjectsEngine()->reverseEngineerDatabase(m_revEngWizard->getHost(), m_revEngWizard->getUser(), m_revEngWizard->getPasword(), m_revEngWizard->getDatabase(),
+                                                                  tabsToReverse, m_workspace->currentProject());
 }

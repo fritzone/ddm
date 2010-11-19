@@ -11,6 +11,8 @@ class AbstractStorageEngineListProvider;
 class AbstractSqlGenerator;
 class Version;
 class Table;
+class Project;
+
 
 /**
  * This class is a kind of "wrapper" for the other classes that all deal
@@ -67,14 +69,14 @@ public:
     /**
      * Reverse engineers the tables from the given database and puts the resulting structures in the v
      */
-    virtual bool reverseEngineerDatabase(const QString& host, const QString& user, const QString& pass, const QString& dbName, QVector<QString> tables, Version* v) = 0;
+    virtual bool reverseEngineerDatabase(const QString& host, const QString& user, const QString& pass, const QString& dbName, QVector<QString> tables, Project* p) = 0;
 
     QString getLastError() const
     {
         return lastError;
     }
 
-    virtual Table* reverseEngineerTable(const QString& host, const QString& user, const QString& pass, const QString& dbName, const QString& tableName, Version* v) = 0;
+    virtual Table* reverseEngineerTable(const QString& host, const QString& user, const QString& pass, const QString& dbName, const QString& tableName, Project* p) = 0;
 
     virtual QVector<QString> getAvailableDatabases(const QString& host, const QString& user, const QString& pass) = 0;
     virtual QVector<QString> getAvailableTables(const QString& host, const QString& user, const QString& pass, const QString& db) = 0;

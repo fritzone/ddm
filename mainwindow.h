@@ -124,7 +124,6 @@ private:
     void showButtonDialog();
     void freeGuiElements();
     void showProjectDetails();
-    ContextMenuEnabledTreeWidgetItem* createTableTreeEntry(Table*);
     void showNewDataTypeWindow(int);
     void createDatamodelProject(NewProjectDialog*);
 

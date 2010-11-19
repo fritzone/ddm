@@ -514,7 +514,7 @@ UserDataType* DefaultVersionImplementation::provideDatatypeForSqlType(const QStr
     }
 
     // nothing found, we should create a new data type with some default values
-    UserDataType* newUdt = new UserDataType(type + (size.length()>0?"_"+ size:"") + (defaultValue.length() > 0? ("_" + defaultValue) : "") + (nullable=="NO"?"_NOT_NULL":""),
+    UserDataType* newUdt = new UserDataType(type + (size.length()>0?"_"+ size:"") + (defaultValue.length() > 0? ("=" + defaultValue) : "") + (nullable=="NO"?"_NN":""),
                                             Workspace::getInstance()->currentProjectsEngine()->getTypeStringForSqlType(type),
                                             type, size, "", "", QStringList(), false, type + " " + size,
                                             QString::compare(nullable, "YES", Qt::CaseInsensitive) == 0, false);
