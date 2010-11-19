@@ -11,16 +11,22 @@
 #include "Table.h"
 #include "Version.h"
 #include "Column.h"
+#include "Project.h"
+#include "VersionGuiElements.h" // TODO: This is bad design. Find a way to remove this from here
 
 MySQLDatabaseEngine::MySQLDatabaseEngine() : DatabaseEngine("MySQL")
 {
 }
 
-bool MySQLDatabaseEngine::reverseEngineerDatabase(const QString& host, const QString& user, const QString& pass, const QString& dbName, QVector<QString> tables, Version* v)
+bool MySQLDatabaseEngine::reverseEngineerDatabase(const QString& host, const QString& user, const QString& pass, const QString& dbName, QVector<QString> tables, Project*p)
 {
+    Version* v = p->getWorkingVersion();
     for(int i=0; i<tables.size(); i++)
     {
-        reverseEngineerTable(host, user, pass, dbName, tables.at(i), v);
+        Table* tab = reverseEngineerTable(host, user, pass, dbName, tables.at(i), p);
+        v->addTable(tab);
+
+        v->getGui()->createTableTreeEntry(tab);
     }
     return true;
 }
@@ -58,8 +64,9 @@ QVector<QString> MySQLDatabaseEngine::getAvailableTables(const QString& host, co
 }
 
 
-Table* MySQLDatabaseEngine::reverseEngineerTable(const QString& host, const QString& user, const QString& pass, const QString& dbName, const QString& tableName, Version* v)
+Table* MySQLDatabaseEngine::reverseEngineerTable(const QString& host, const QString& user, const QString& pass, const QString& dbName, const QString& tableName, Project* p)
 {
+    Version* v = p->getWorkingVersion();
     QSqlDatabase db = QSqlDatabase::addDatabase("QMYSQL");
 
     db.setHostName(host);
@@ -105,10 +112,7 @@ Table* MySQLDatabaseEngine::reverseEngineerTable(const QString& host, const QStr
         tab->addColumn(col);
     }
 
-    v->addTable(tab);
-
     return tab;
-
 }
 
 bool MySQLDatabaseEngine::injectSql(const QString& host, const QString& user, const QString& pass, const QString& dbName, const QStringList& sqls, QString& lastSql, bool rollbackOnError, bool createTablesOnlyIfNotExist)
