@@ -13,20 +13,33 @@
 #include "Column.h"
 #include "Project.h"
 #include "VersionGuiElements.h" // TODO: This is bad design. Find a way to remove this from here
+#include "UserDataType.h"
 
-MySQLDatabaseEngine::MySQLDatabaseEngine() : DatabaseEngine("MySQL")
+MySQLDatabaseEngine::MySQLDatabaseEngine() : DatabaseEngine("MySQL"), m_revEngMappings(), m_oneTimeMappings()
 {
 }
 
 bool MySQLDatabaseEngine::reverseEngineerDatabase(const QString& host, const QString& user, const QString& pass, const QString& dbName, QVector<QString> tables, Project*p)
 {
     Version* v = p->getWorkingVersion();
+    m_revEngMappings.clear();
+    m_oneTimeMappings.clear();
     for(int i=0; i<tables.size(); i++)
     {
         Table* tab = reverseEngineerTable(host, user, pass, dbName, tables.at(i), p);
         v->addTable(tab);
-
         v->getGui()->createTableTreeEntry(tab);
+    }
+
+    // and now try to find some nice names for the user data types
+    QList <UserDataType*> rkeys = m_revEngMappings.keys();
+    for(int i=0; i<rkeys.size(); i++)
+    {
+        QList <Column*> colsOfUdt = m_revEngMappings.values(rkeys.at(i));
+        for(int j=0; j<colsOfUdt.size(); j++)
+        {
+            qDebug() << "DATATYPE " << rkeys.at(i)->getName() << " AS COLUMN " << colsOfUdt.at(j)->getName();
+        }
     }
     return true;
 }
@@ -106,9 +119,21 @@ Table* MySQLDatabaseEngine::reverseEngineerTable(const QString& host, const QStr
         QString defaultValue = query.value(defNo).toString();
         QString extra = query.value(extraNo).toString();
 
+        UserDataType* udt = 0;
+        QString oneTimeKey = field_name + type + nullable + defaultValue;
+        if(m_oneTimeMappings.contains(oneTimeKey))
+        {
+            udt = m_oneTimeMappings.value(oneTimeKey);
+        }
+        else
+        {
+            udt = v->provideDatatypeForSqlType(field_name, type, nullable, defaultValue);
+            m_oneTimeMappings.insert(oneTimeKey, udt);
+        }
         // now fetch the data type for the given type from the version
-        UserDataType* udt = v->provideDatatypeForSqlType(type, nullable, defaultValue);
+
         Column* col = new Column(field_name, udt, QString::compare(keyness, "PRI", Qt::CaseInsensitive) == 0, extra == "auto_increment");
+        m_revEngMappings.insert(udt, col);
         tab->addColumn(col);
     }
 

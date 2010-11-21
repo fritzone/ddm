@@ -484,10 +484,11 @@ const QVector<TableInstance*>& DefaultVersionImplementation::getTableInstances()
     return m_data.m_tableInstances;
 }
 
-UserDataType* DefaultVersionImplementation::provideDatatypeForSqlType(const QString& sql, const QString& nullable, const QString& defaultValue)
+UserDataType* DefaultVersionImplementation::provideDatatypeForSqlType(const QString& name, const QString& sql, const QString& nullable, const QString& defaultValue)
 {
     QString type = sql;
     QString size = "";
+    QString finalName = name + (defaultValue.length() > 0? (" (Def: " + defaultValue) + ")" : "") + (nullable=="NO"?" NN":"");
     int stp = sql.indexOf('(') ;
     if(stp != -1)
     {
@@ -506,7 +507,10 @@ UserDataType* DefaultVersionImplementation::provideDatatypeForSqlType(const QStr
                 {
                     if(udt->getDefaultValue() == defaultValue)
                     {
-                        return udt;
+                        if(udt->getName() == finalName)
+                        {
+                            return udt;
+                        }
                     }
                 }
             }
@@ -514,11 +518,13 @@ UserDataType* DefaultVersionImplementation::provideDatatypeForSqlType(const QStr
     }
 
     // nothing found, we should create a new data type with some default values
-    UserDataType* newUdt = new UserDataType(type + (size.length()>0?"_"+ size:"") + (defaultValue.length() > 0? ("=" + defaultValue) : "") + (nullable=="NO"?"_NN":""),
+    UserDataType* newUdt = new UserDataType(//type + (size.length()>0?" ("+ size+")":"") + (defaultValue.length() > 0? ("=" + defaultValue) : "") + (nullable=="NO"?"_NN":""),
+                                            finalName,
                                             Workspace::getInstance()->currentProjectsEngine()->getTypeStringForSqlType(type),
-                                            type, size, "", "", QStringList(), false, type + " " + size,
+                                            type, size, defaultValue, "", QStringList(), false, type + " " + size,
                                             QString::compare(nullable, "YES", Qt::CaseInsensitive) == 0, false);
 
+    newUdt->setName(NameGenerator::generateUniqueDatatypeName(this, newUdt->getName()));
     addNewDataType(newUdt);
     getGui()->createDataTypeTreeEntry(newUdt);
 

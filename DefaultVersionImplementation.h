@@ -79,7 +79,7 @@ public:
 
     virtual QList<QString> getSqlScript();
 
-    virtual UserDataType* provideDatatypeForSqlType(const QString& sql, const QString& nullable, const QString& defaultValue);
+    virtual UserDataType* provideDatatypeForSqlType(const QString& name, const QString& sql, const QString& nullable, const QString& defaultValue);
 
 protected:
     // the version as a string representation. Major versions are always of form X.0

@@ -16,7 +16,7 @@ QString NameGenerator::getNextTableNameFromVersion(Version* v, QString prefix)
     int i = 1;
     while(i < MAX_IT)
     {
-        QString result2 = prefix + "_" + QString::number(i);
+        QString result2 = prefix + " #" + QString::number(i);
         if(v->getTable(result2) == 0)
         {
             return result2;
@@ -26,7 +26,7 @@ QString NameGenerator::getNextTableNameFromVersion(Version* v, QString prefix)
     i = 1;
     while(i < MAX_IT)
     {
-        QString result2 = "_" + prefix + "_" + QString::number(i);
+        QString result2 = "_" + prefix + " #" + QString::number(i);
         if(v->getTable(result2) == 0)
         {
             return result2;
@@ -43,7 +43,7 @@ QString NameGenerator::generateUniqueTableInstanceName(Version* v, QString input
     int i = 1;
     while(i<MAX_IT)
     {
-        QString result2 = input + "_" + QString::number(i);
+        QString result2 = input + " #" + QString::number(i);
         if(v->getTableInstance(result2) == 0)
         {
             return result2;
@@ -53,7 +53,7 @@ QString NameGenerator::generateUniqueTableInstanceName(Version* v, QString input
     i = 1;
     while(i<MAX_IT)
     {
-        QString result2 = "_" + input + "_" + QString::number(i);
+        QString result2 = "_" + input + " #" + QString::number(i);
         if(v->getTableInstance(result2) == 0)
         {
             return result2;
@@ -68,7 +68,7 @@ QString NameGenerator::generateUniqueDiagramName(Version* v, QString input)
     int i = 1;
     while(i<MAX_IT)
     {
-        QString result2 = input + "_" + QString::number(i);
+        QString result2 = input + " #" + QString::number(i);
         if(v->getDiagram(result2) == 0)
         {
             return result2;
@@ -78,7 +78,7 @@ QString NameGenerator::generateUniqueDiagramName(Version* v, QString input)
     i = 1;
     while(i<MAX_IT)
     {
-        QString result2 = "_" + input + "_" + QString::number(i);
+        QString result2 = "_" + input + " #" + QString::number(i);
         if(v->getDiagram(result2) == 0)
         {
             return result2;
@@ -90,10 +90,11 @@ QString NameGenerator::generateUniqueDiagramName(Version* v, QString input)
 
 QString NameGenerator::generateUniqueDatatypeName(Version* v, QString input)
 {
+    if(v->getDataType(input) == 0) return input;
     int i = 1;
     while(i<MAX_IT)
     {
-        QString result2 = input + "_" + QString::number(i);
+        QString result2 = input + " #" + QString::number(i);
         if(v->getDataType(result2) == 0)
         {
             return result2;
@@ -103,7 +104,7 @@ QString NameGenerator::generateUniqueDatatypeName(Version* v, QString input)
     i = 1;
     while(i<MAX_IT)
     {
-        QString result2 = "_" + input + "_" + QString::number(i);
+        QString result2 = "_" + input + " #" + QString::number(i);
         if(v->getDataType(result2) == 0)
         {
             return result2;
