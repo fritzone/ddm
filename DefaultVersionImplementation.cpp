@@ -484,11 +484,13 @@ const QVector<TableInstance*>& DefaultVersionImplementation::getTableInstances()
     return m_data.m_tableInstances;
 }
 
-UserDataType* DefaultVersionImplementation::provideDatatypeForSqlType(const QString& name, const QString& sql, const QString& nullable, const QString& defaultValue)
+UserDataType* DefaultVersionImplementation::provideDatatypeForSqlType(const QString& name, const QString& sql, const QString& nullable, const QString& defaultValue, bool relaxed)
 {
     QString type = sql;
     QString size = "";
-    QString finalName = name + (defaultValue.length() > 0? (" (Def: " + defaultValue) + ")" : "") + (nullable=="NO"?" NN":"");
+    QString finalName = relaxed?
+                        type + (size.length()>0?" ("+ size+")":"") + (defaultValue.length() > 0? ("=" + defaultValue) : "") + (nullable=="NO"?"_NN":""):
+                        name + (defaultValue.length() > 0? (" (Def: " + defaultValue) + ")" : "") + (nullable=="NO"?" NN":"");
     int stp = sql.indexOf('(') ;
     if(stp != -1)
     {
@@ -507,7 +509,14 @@ UserDataType* DefaultVersionImplementation::provideDatatypeForSqlType(const QStr
                 {
                     if(udt->getDefaultValue() == defaultValue)
                     {
-                        if(udt->getName() == finalName)
+                        if(!relaxed)
+                        {
+                            if(udt->getName() == finalName)
+                            {
+                                return udt;
+                            }
+                        }
+                        else
                         {
                             return udt;
                         }

@@ -14,19 +14,20 @@
 #include "Project.h"
 #include "VersionGuiElements.h" // TODO: This is bad design. Find a way to remove this from here
 #include "UserDataType.h"
+#include "Index.h"
 
 MySQLDatabaseEngine::MySQLDatabaseEngine() : DatabaseEngine("MySQL"), m_revEngMappings(), m_oneTimeMappings()
 {
 }
 
-bool MySQLDatabaseEngine::reverseEngineerDatabase(const QString& host, const QString& user, const QString& pass, const QString& dbName, QVector<QString> tables, Project*p)
+bool MySQLDatabaseEngine::reverseEngineerDatabase(const QString& host, const QString& user, const QString& pass, const QString& dbName, QVector<QString> tables, Project*p, bool relaxed)
 {
     Version* v = p->getWorkingVersion();
     m_revEngMappings.clear();
     m_oneTimeMappings.clear();
     for(int i=0; i<tables.size(); i++)
     {
-        Table* tab = reverseEngineerTable(host, user, pass, dbName, tables.at(i), p);
+        Table* tab = reverseEngineerTable(host, user, pass, dbName, tables.at(i), p, relaxed);
         v->addTable(tab);
         v->getGui()->createTableTreeEntry(tab);
     }
@@ -77,7 +78,7 @@ QVector<QString> MySQLDatabaseEngine::getAvailableTables(const QString& host, co
 }
 
 
-Table* MySQLDatabaseEngine::reverseEngineerTable(const QString& host, const QString& user, const QString& pass, const QString& dbName, const QString& tableName, Project* p)
+Table* MySQLDatabaseEngine::reverseEngineerTable(const QString& host, const QString& user, const QString& pass, const QString& dbName, const QString& tableName, Project* p, bool relaxed)
 {
     Version* v = p->getWorkingVersion();
     QSqlDatabase db = QSqlDatabase::addDatabase("QMYSQL");
@@ -95,11 +96,12 @@ Table* MySQLDatabaseEngine::reverseEngineerTable(const QString& host, const QStr
         return 0;
     }
 
-    QSqlQuery query;
-
     Table* tab = new Table(v);
     tab->setName(tableName);
 
+    // fetch all the columns of the table
+    {
+    QSqlQuery query;
     query.exec("desc " + tableName);
 
     int fieldNo = query.record().indexOf("Field");
@@ -109,7 +111,6 @@ Table* MySQLDatabaseEngine::reverseEngineerTable(const QString& host, const QStr
     int defNo = query.record().indexOf("Default");
     int extraNo = query.record().indexOf("Extra");
 
-    // fetch all the columns of the table
     while(query.next())
     {
         QString field_name = query.value(fieldNo).toString();
@@ -127,14 +128,58 @@ Table* MySQLDatabaseEngine::reverseEngineerTable(const QString& host, const QStr
         }
         else
         {
-            udt = v->provideDatatypeForSqlType(field_name, type, nullable, defaultValue);
+            udt = v->provideDatatypeForSqlType(field_name, type, nullable, defaultValue, relaxed);
             m_oneTimeMappings.insert(oneTimeKey, udt);
         }
         // now fetch the data type for the given type from the version
 
         Column* col = new Column(field_name, udt, QString::compare(keyness, "PRI", Qt::CaseInsensitive) == 0, extra == "auto_increment");
+
+        // and add the column to the table
         m_revEngMappings.insert(udt, col);
         tab->addColumn(col);
+    }
+    }
+
+    // now populate the indices of the table
+    {
+
+    QSqlQuery query;
+    query.exec("show indexes from " + tableName);
+
+    int tableNo = query.record().indexOf("Table");
+    int nonuniqueNo = query.record().indexOf("Non_unique");
+    int keynameNo = query.record().indexOf("Key_name");
+    int seqinindexNo = query.record().indexOf("Seq_in_index");
+    int columnnameNo = query.record().indexOf("Column_name");
+    int collationNo = query.record().indexOf("Collation");
+    int cardinalityNo = query.record().indexOf("Cardinality");
+    int subpartNo = query.record().indexOf("Sub_part");
+    int packedNo = query.record().indexOf("Packed");
+    int nullNo = query.record().indexOf("Null");
+    int indextypeNo = query.record().indexOf("Index_type");
+    int commentNo = query.record().indexOf("Comment");
+
+    QVector<Index*> indexes;
+
+    while(query.next())
+    {
+        QString table = query.value(tableNo).toString();
+        QString nonunique = query.value(nonuniqueNo).toString();
+        QString keyname = query.value(keynameNo).toString();
+        QString seqinindex = query.value(seqinindexNo).toString();
+        QString columnname = query.value(columnnameNo).toString();
+        QString collation = query.value(collationNo).toString();
+        QString cardinality = query.value(cardinalityNo).toString();
+        QString subpart = query.value(subpartNo).toString();
+        QString packed = query.value(packedNo).toString();
+        QString nulld = query.value(nullNo).toString();
+        QString indextype = query.value(indextypeNo).toString();
+        QString comment = query.value(commentNo).toString();
+
+        Index* idx = new Index(keyname, indextype, tab);
+
+    }
     }
 
     return tab;

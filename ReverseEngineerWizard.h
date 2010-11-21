@@ -7,6 +7,7 @@ class DatabaseEngine;
 class ReverseEngineerWizardWelcomeForm;
 class ReverseEngineerWizardDatabasesForm;
 class ReverseEngineerWizardTablesForm;
+class ReverseEngineerWizardOptionsForm;
 
 class ReverseEngineerWizard : public QWizard
 {
@@ -23,6 +24,7 @@ public:
     QString getUser() {return m_user; }
     QString getPasword() {return m_pass; }
     QString getDatabase() {return m_database; }
+    bool createDataTypesForColumns();
 
 private:
 
@@ -31,6 +33,7 @@ private:
     ReverseEngineerWizardWelcomeForm* m_welcomePage;
     ReverseEngineerWizardDatabasesForm* m_databasesPage;
     ReverseEngineerWizardTablesForm* m_tablesPage;
+    ReverseEngineerWizardOptionsForm* m_optionsPage;
 
     QString m_host;
     QString m_user;

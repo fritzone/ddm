@@ -74,7 +74,8 @@ SOURCES += main.cpp \
     ReverseEngineerWizardWelcomeForm.cpp \
     ReverseEngineerWizard.cpp \
     ReverseEngineerWizardDatabasesForm.cpp \
-    ReverseEngineerWizardTablesForm.cpp
+    ReverseEngineerWizardTablesForm.cpp \
+    ReverseEngineerWizardOptionsForm.cpp
 HEADERS += mainwindow.h \
     MainWindowButtonDialog.h \
     newprojectdialog.h \
@@ -159,7 +160,8 @@ HEADERS += mainwindow.h \
     ReverseEngineerWizardWelcomeForm.h \
     ReverseEngineerWizard.h \
     ReverseEngineerWizardDatabasesForm.h \
-    ReverseEngineerWizardTablesForm.h
+    ReverseEngineerWizardTablesForm.h \
+    ReverseEngineerWizardOptionsForm.h
 FORMS += mainwindow.ui \
     mainwindowbuttondialog.ui \
     newprojectdialog.ui \
@@ -180,5 +182,6 @@ FORMS += mainwindow.ui \
     SimpleTextInputDialog.ui \
     ReverseEngineerWizardWelcomeForm.ui \
     ReverseEngineerWizardDatabasesForm.ui \
-    ReverseEngineerWizardTablesForm.ui
+    ReverseEngineerWizardTablesForm.ui \
+    ReverseEngineerWizardOptionsForm.ui
 RESOURCES += dbm.qrc

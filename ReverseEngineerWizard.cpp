@@ -2,16 +2,20 @@
 #include "ReverseEngineerWizardWelcomeForm.h"
 #include "ReverseEngineerWizardDatabasesForm.h"
 #include "ReverseEngineerWizardTablesForm.h"
+#include "ReverseEngineerWizardOptionsForm.h"
+
 #include "DatabaseEngine.h"
 
 #include <QMessageBox>
 
 ReverseEngineerWizard::ReverseEngineerWizard(DatabaseEngine* engine) : QWizard(), m_engine(engine), m_welcomePage(new ReverseEngineerWizardWelcomeForm),
-    m_databasesPage(new ReverseEngineerWizardDatabasesForm), m_tablesPage(new ReverseEngineerWizardTablesForm), m_host(""), m_user(""), m_pass(""), m_database("")
+    m_databasesPage(new ReverseEngineerWizardDatabasesForm), m_tablesPage(new ReverseEngineerWizardTablesForm), m_optionsPage(new ReverseEngineerWizardOptionsForm),
+    m_host(""), m_user(""), m_pass(""), m_database("")
 {
     addPage(m_welcomePage);
     addPage(m_databasesPage);
     addPage(m_tablesPage);
+    addPage(m_optionsPage);
     setWindowTitle(QObject::tr("Reverse Engineer a Database"));
 }
 
@@ -69,4 +73,9 @@ bool ReverseEngineerWizard::connectAndRetrieveTables()
 QVector<QString> ReverseEngineerWizard::getTablesToReverse()
 {
     return m_tablesPage->getSelectedTables();
+}
+
+bool ReverseEngineerWizard::createDataTypesForColumns()
+{
+    return m_optionsPage->createDataTypesForColumns();
 }
