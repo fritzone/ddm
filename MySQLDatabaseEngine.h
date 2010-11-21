@@ -3,6 +3,9 @@
 
 #include "DatabaseEngine.h"
 
+class UserDataType;
+class Column;
+
 class MySQLDatabaseEngine : public DatabaseEngine
 {
 public:
@@ -24,6 +27,12 @@ public:
     virtual Table* reverseEngineerTable(const QString& host, const QString& user, const QString& pass, const QString& dbName, const QString& tableName, Project* p);
     virtual QVector<QString> getAvailableDatabases(const QString& host, const QString& user, const QString& pass);
     virtual QVector<QString> getAvailableTables(const QString& host, const QString& user, const QString& pass, const QString& db);
+
+
+private:
+
+    QMultiMap <UserDataType*, Column*> m_revEngMappings;
+    QMap <QString, UserDataType*> m_oneTimeMappings;
 
 };
 
