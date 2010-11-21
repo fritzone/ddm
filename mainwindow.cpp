@@ -1340,5 +1340,5 @@ void MainWindow::onReverseEngineerWizardAccept()
 {
     QVector<QString> tabsToReverse = m_revEngWizard->getTablesToReverse();
     m_workspace->currentProjectsEngine()->reverseEngineerDatabase(m_revEngWizard->getHost(), m_revEngWizard->getUser(), m_revEngWizard->getPasword(), m_revEngWizard->getDatabase(),
-                                                                  tabsToReverse, m_workspace->currentProject());
+                                                                  tabsToReverse, m_workspace->currentProject(), !m_revEngWizard->createDataTypesForColumns());
 }

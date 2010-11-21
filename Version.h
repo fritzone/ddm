@@ -193,8 +193,11 @@ public:
      * Provides a data type for the given SQL type. Firstly checks if there are data types corresponding to the
      * given name/size pair and and if found one, returns it. If did not find any, creates a new one, adds to the
      * vector of data types and returns it.
+     * The scope of relaxed is that if it's false it tries to build data types based on the @param name (allowing
+     * each column to have its own datatype, thus enforcing more strict foreign key policies) otherwise
+     * it builds the data types from the SQL type, allowing more relaxed foreign keys.
      */
-    virtual UserDataType* provideDatatypeForSqlType(const QString& name, const QString& sql, const QString& nullable, const QString& defaultValue) = 0;
+    virtual UserDataType* provideDatatypeForSqlType(const QString& name, const QString& sql, const QString& nullable, const QString& defaultValue, bool relaxed) = 0;
 
 private:
 
