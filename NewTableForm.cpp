@@ -21,6 +21,8 @@
 #include "Workspace.h"
 #include "ContextMenuCollection.h"
 #include "ClipboardFactory.h"
+#include "Codepage.h"
+#include "AbstractCodepageSupplier.h"
 
 #include <QMessageBox>
 #include <QHashIterator>
@@ -135,7 +137,6 @@ NewTableForm::NewTableForm(DatabaseEngine* db, Project* prj, QWidget *parent, bo
     }
 
     m_ui->grpHelp->setHidden(true);
-    m_ui->cmbOptions->hide();
 
     m_ui->btnImportValues->hide();
 
@@ -151,7 +152,7 @@ NewTableForm::NewTableForm(DatabaseEngine* db, Project* prj, QWidget *parent, bo
         m_ui->txtTableName->setText(m_table->getName());
     }
 
-
+    populateCodepageCombo();
 
 }
 
@@ -159,6 +160,95 @@ NewTableForm::~NewTableForm()
 {
     delete m_ui;
 }
+
+
+
+void NewTableForm::populateCodepageCombo()
+{
+    QVector<Codepage*> cps = m_dbEngine->getCodepageSupplier()->getCodepages();
+    QListWidget* lw = new QListWidget(this);
+    for(int i=0; i<cps.size(); i++)
+    {
+        QString name = cps[i]->getName();
+        bool header = false;
+        if(cps[i]->getName().startsWith(QString("--")))
+        {
+            header = true;
+            name = name.right(name.length() - 2);
+        }
+        QString iconName = "";
+
+        if(!header)
+        {
+        // dig out the second string
+            QStringList ls = name.split("_");
+            if(ls.size() > 1)
+            {
+
+                if(ls[1] != "bin" && ls[1] != "unicode" && ls[1] != "general")
+                {
+                    iconName = ":/images/actions/images/small/flag_" + ls[1] + ".PNG";
+                }
+                else
+                {
+                    if(ls[0] == "greek")
+                    {
+                        iconName = ":/images/actions/images/small/flag_greek.PNG";
+                    }
+                    else
+                    if(ls[0] == "armscii8")
+                    {
+                        iconName = ":/images/actions/images/small/flag_armenia.PNG";
+                    }
+                    else
+                    if(ls[0] == "hebrew")
+                    {
+                        iconName = ":/images/actions/images/small/flag_israel.PNG";
+                    }
+                    else
+                    {
+                        iconName = ":/images/actions/images/small/flag_" + ls[1] + ".PNG";
+                    }
+                }
+
+                ls[1][0] = ls[1][0].toUpper();
+
+                name = ls[1] + " (" + ls[0];
+                if(ls.size() > 2)
+                {
+                    name += ", " + ls[2];
+                }
+                name += ")";
+            }
+        }
+
+        // create the lw object
+        QListWidgetItem* lwi = new QListWidgetItem(name);
+        QFont font = lwi->font();
+        if(iconName.length() > 0)
+        {
+            lwi->setIcon(QIcon(iconName));
+        }
+
+        if(header)
+        {
+            font.setBold(true);
+            font.setItalic(true);
+            font.setPointSize(font.pointSize() + 1);
+        }
+
+        lwi->setFont(font);
+        lwi->setData(Qt::UserRole, QVariant(cps[i]->getName()));
+
+        lw->addItem(lwi);
+    }
+
+    m_ui->cmbCharSetForSql->setModel(lw->model());
+    m_ui->cmbCharSetForSql->setView(lw);
+    m_ui->cmbCharSetForSql->setCurrentIndex(-1);
+
+}
+
 
 void NewTableForm::populateIndexTypesDependingOnStorageEngine()
 {
@@ -360,9 +450,9 @@ void NewTableForm::populateTable(const Table *table, bool parentTab)
     if(! Workspace::getInstance()->currentProjectIsOop())
     {
         updateDefaultValuesTableHeader();
-        for(int i=0; i<table->getStartupValues().size(); i++)
+        for(int i=0; i<table->getDefaultValues().size(); i++)
         {
-            const QVector<QString>& rowI = table->getStartupValues()[i];
+            const QVector<QString>& rowI = table->getDefaultValues()[i];
             m_ui->tableStartupValues->insertRow(i);
             for(int j=0; j<rowI.size(); j++)
             {
@@ -904,6 +994,7 @@ ContextMenuEnabledTreeWidgetItem* NewTableForm::createTWIForIndex(const Index* i
     a.append(columnsAsString);
 
     ContextMenuEnabledTreeWidgetItem* item = new ContextMenuEnabledTreeWidgetItem((ContextMenuEnabledTreeWidgetItem*)0, a);
+    item->setIcon(0, IconFactory::getIndexIcon());
     return item;
 }
 
@@ -1745,7 +1836,9 @@ void NewTableForm::onLoadStartupValuesFromCSV()
 
 void NewTableForm::updateSqlDueToChange()
 {
-    presentSql(m_project);
+    QString s = m_ui->cmbCharSetForSql->itemData(m_ui->cmbCharSetForSql->currentIndex()).toString();
+    s=s.left(s.indexOf('_'));
+    presentSql(m_project, s);
 }
 
 void NewTableForm::onStorageEngineChange(QString name)
@@ -1829,7 +1922,7 @@ void NewTableForm::onChangeTab(int idx)
     {
         if(m_ui->tabWidget->tabText(idx) == "SQL")
         {
-            presentSql(m_project);
+            presentSql(m_project, m_ui->cmbCharacterSets->currentText());
         }
     }
 }
@@ -1878,12 +1971,12 @@ void NewTableForm::onSaveSql()
     out << m_ui->txtSql->toPlainText() << "\n";
 }
 
-void NewTableForm::presentSql(Project *)
+void NewTableForm::presentSql(Project *, const QString& codepage)
 {
     QString fs = "";
     QHash<QString,QString> fo = Configuration::instance().sqlGenerationOptions();
     fo["FKSposition"] = "OnlyInternal";
-    finalSql = m_project->getEngine()->getSqlGenerator()->generateCreateTableSql(m_table, fo, m_table->getName());
+    finalSql = m_project->getEngine()->getSqlGenerator()->generateCreateTableSql(m_table, fo, m_table->getName(), codepage);
     for(int i=0; i< finalSql.size(); i++)
     {
         fs += finalSql[i];

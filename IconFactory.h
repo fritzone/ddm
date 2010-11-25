@@ -150,6 +150,13 @@ public:
         return icon;
     }
 
+
+    static const QIcon& getIndexIcon()
+    {
+        static const QIcon icon(strIndexIcon);
+        return icon;
+    }
+
 };
 
 #endif // ICONFACTORY_H

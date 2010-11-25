@@ -10,6 +10,7 @@ class Version;
 class UserDataType;
 class Diagram;
 class Table;
+class TableInstance;
 
 /**
  * The scope of this class is to have a common collection point for the tree widget items of a version (DT, Sql, Table, etc...)
@@ -139,6 +140,7 @@ public:
     ContextMenuEnabledTreeWidgetItem* createDataTypeTreeEntry(UserDataType*);
     ContextMenuEnabledTreeWidgetItem* createDiagramTreeEntry(Diagram*);
     ContextMenuEnabledTreeWidgetItem* createTableTreeEntry(Table* tab);
+    ContextMenuEnabledTreeWidgetItem* createTableInstanceTreeEntry(TableInstance* tab);
 
 
 

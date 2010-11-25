@@ -50,7 +50,7 @@ public:
 
     virtual void setupTableParentChildRelationships();
 
-    virtual TableInstance* instantiateTable(Table* tab, bool reason);
+    virtual TableInstance* instantiateTable(Table* tab, bool becauseOfReference);
 
     virtual TableInstance* getTableInstance(const QString& );
 
@@ -77,7 +77,7 @@ public:
 
     virtual void setupForeignKeyRelationshipsForATable(Table *tab);
 
-    virtual QList<QString> getSqlScript();
+    virtual QList<QString> getSqlScript(const QString& codepage);
 
     virtual UserDataType* provideDatatypeForSqlType(const QString& name, const QString& sql, const QString& nullable, const QString& defaultValue, bool relaxed);
 

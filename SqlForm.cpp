@@ -73,13 +73,13 @@ void SqlForm::onSave()
     out << ui->txtSql->toPlainText() << "\n";
 }
 
-void SqlForm::presentSql(Project* p)
+void SqlForm::presentSql(Project* p,const QString& codepage)
 {
     // here create the final SQL:
     // firstly only the tables and then the foreign keys. We'll see the other elements (triggers, functions) later
 
     Version *v = p->getWorkingVersion();
-    QStringList finalSql = v->getSqlScript();
+    QStringList finalSql = v->getSqlScript(codepage);
 
     QString fs = "";
     for(int i=0; i< finalSql.size(); i++)
@@ -90,10 +90,12 @@ void SqlForm::presentSql(Project* p)
     setSqlList(finalSql);
 }
 
-void SqlForm::presentSql(Project* p, SqlSourceEntity* ent)
+void SqlForm::presentSql(Project* p, SqlSourceEntity* ent,const QString& codepage)
 {
     QString fs = "";
-    QStringList finalSql = ent->generateSqlSource(p->getEngine()->getSqlGenerator(), Configuration::instance().sqlGenerationOptions());
+    QHash<QString, QString> opts = Configuration::instance().sqlGenerationOptions();
+    opts["FKSposition"] = "OnlyInternal";
+    QStringList finalSql = ent->generateSqlSource(p->getEngine()->getSqlGenerator(), opts, codepage);
     for(int i=0; i< finalSql.size(); i++)
     {
         fs += finalSql[i];

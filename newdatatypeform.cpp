@@ -34,7 +34,6 @@ NewDataTypeForm::NewDataTypeForm(DataType::DT_TYPE t, DatabaseEngine* dbe, QWidg
     m_ui->lblIncrement->hide();
     m_ui->chkAutoIncrement->hide();
 
-    populateCodepageCombo();
     resetContent();
 
     m_ui->grpHelp->setHidden(true);
@@ -203,90 +202,6 @@ void NewDataTypeForm::onReset()
     resetContent();
 }
 
-void NewDataTypeForm::populateCodepageCombo()
-{
-    QVector<Codepage*> cps = m_dbEngine->getCodepageSupplier()->getCodepages();
-    QListWidget* lw = new QListWidget(this);
-    for(int i=0; i<cps.size(); i++)
-    {
-        QString name = cps[i]->getName();
-        bool header = false;
-        if(cps[i]->getName().startsWith(QString("--")))
-        {
-            header = true;
-            name = name.right(name.length() - 2);
-        }
-        QString iconName = "";
-
-        if(!header)
-        {
-        // dig out the second string
-            QStringList ls = name.split("_");
-            if(ls.size() > 1)
-            {
-
-                if(ls[1] != "bin" && ls[1] != "unicode" && ls[1] != "general")
-                {
-                    iconName = ":/images/actions/images/small/flag_" + ls[1] + ".PNG";
-                }
-                else
-                {
-                    if(ls[0] == "greek")
-                    {
-                        iconName = ":/images/actions/images/small/flag_greek.PNG";
-                    }
-                    else
-                    if(ls[0] == "armscii8")
-                    {
-                        iconName = ":/images/actions/images/small/flag_armenia.PNG";
-                    }
-                    else
-                    if(ls[0] == "hebrew")
-                    {
-                        iconName = ":/images/actions/images/small/flag_israel.PNG";
-                    }
-                    else
-                    {
-                        iconName = ":/images/actions/images/small/flag_" + ls[1] + ".PNG";
-                    }
-                }
-
-                ls[1][0] = ls[1][0].toUpper();
-
-                name = ls[1] + " (" + ls[0];
-                if(ls.size() > 2)
-                {
-                    name += ", " + ls[2];
-                }
-                name += ")";
-            }
-        }
-
-        // create the lw object
-        QListWidgetItem* lwi = new QListWidgetItem(name);
-        QFont font = lwi->font();
-        if(iconName.length() > 0)
-        {
-            lwi->setIcon(QIcon(iconName));
-        }
-
-        if(header)
-        {
-            font.setBold(true);
-            font.setItalic(true);
-            font.setPointSize(font.pointSize() + 1);
-        }
-
-        lwi->setFont(font);
-
-        lw->addItem(lwi);
-    }
-
-    m_ui->cmbCharacterSets->setModel(lw->model());
-    m_ui->cmbCharacterSets->setView(lw);
-    m_ui->cmbCharacterSets->setCurrentIndex(-1);
-
-}
 
 void NewDataTypeForm::onSqlTypeSelected(QString selectedItem)
 {

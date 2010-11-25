@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>413</width>
-    <height>310</height>
+    <height>325</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -23,48 +23,48 @@
       <property name="fieldGrowthPolicy">
        <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
       </property>
-      <item row="2" column="0">
+      <item row="0" column="0">
        <widget class="QLabel" name="label">
         <property name="text">
          <string>Host</string>
         </property>
        </widget>
       </item>
-      <item row="2" column="1">
+      <item row="0" column="1">
        <widget class="QLineEdit" name="txtDatabaseHost"/>
       </item>
-      <item row="3" column="0">
+      <item row="1" column="0">
        <widget class="QLabel" name="label_4">
         <property name="text">
          <string>User</string>
         </property>
        </widget>
       </item>
-      <item row="3" column="1">
+      <item row="1" column="1">
        <widget class="QLineEdit" name="txtDatabaseUser"/>
       </item>
-      <item row="5" column="0">
+      <item row="2" column="0">
        <widget class="QLabel" name="label_5">
         <property name="text">
          <string>Password</string>
         </property>
        </widget>
       </item>
-      <item row="5" column="1">
+      <item row="2" column="1">
        <widget class="QLineEdit" name="txtDatabasePassword">
         <property name="echoMode">
          <enum>QLineEdit::Password</enum>
         </property>
        </widget>
       </item>
-      <item row="6" column="0">
+      <item row="3" column="0">
        <widget class="QPushButton" name="btnConnect">
         <property name="text">
          <string>Connect</string>
         </property>
        </widget>
       </item>
-      <item row="7" column="0">
+      <item row="4" column="0">
        <widget class="QLabel" name="lblDatabase">
         <property name="enabled">
          <bool>false</bool>
@@ -74,7 +74,7 @@
         </property>
        </widget>
       </item>
-      <item row="7" column="1">
+      <item row="4" column="1">
        <widget class="QComboBox" name="cmbDatabases">
         <property name="enabled">
          <bool>false</bool>
@@ -84,17 +84,27 @@
         </property>
        </widget>
       </item>
-      <item row="9" column="0" colspan="2">
+      <item row="6" column="0" colspan="2">
+       <widget class="QCheckBox" name="chkRollbackOnError">
+        <property name="text">
+         <string>Rollback on Error</string>
+        </property>
+       </widget>
+      </item>
+      <item row="7" column="0" colspan="2">
        <widget class="QCheckBox" name="chkOnlyIfNotExist">
         <property name="text">
          <string>Create table only if they don't exist</string>
         </property>
        </widget>
       </item>
-      <item row="8" column="0" colspan="2">
-       <widget class="QCheckBox" name="chkRollbackOnError">
+      <item row="5" column="1">
+       <widget class="QComboBox" name="cmbCharacterSets"/>
+      </item>
+      <item row="5" column="0">
+       <widget class="QLabel" name="label_2">
         <property name="text">
-         <string>Rollback on Error</string>
+         <string>Codepage</string>
         </property>
        </widget>
       </item>

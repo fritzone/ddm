@@ -25,7 +25,7 @@ public:
      *
      *
      */
-    virtual QStringList generateCreateTableSql(Table* table, const QHash<QString, QString>& options, QString tabName) const = 0;
+    virtual QStringList generateCreateTableSql(Table* table, const QHash<QString, QString>& options, const QString& tabName, const QString& codepage) const = 0;
 
     /**
      * Generates a list of "Insert Into" sqls for the given table instance, one for each row in the default values.

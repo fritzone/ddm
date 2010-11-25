@@ -1211,7 +1211,7 @@ p, li { white-space: pre-wrap; }
                </widget>
               </item>
               <item>
-               <widget class="QComboBox" name="cmbOptions">
+               <widget class="QComboBox" name="cmbCharSetForSql">
                 <property name="maximumSize">
                  <size>
                   <width>16777215</width>

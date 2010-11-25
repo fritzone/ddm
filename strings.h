@@ -45,6 +45,6 @@ static const QString strSpatialFolder = ":/images/actions/images/big/folder_oran
 static const QString strDatabaseIcon = ":/images/actions/images/small/database.png";
 static const QString strFroggieIcon = ":/bigger/images/unaf.png";
 static const QString strIcon = ":/bigger/images/big/icon.png";
-
+static const QString strIndexIcon = ":/images/actions/images/small/index.png";
 
 #endif // STRINGS_H

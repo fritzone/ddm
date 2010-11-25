@@ -20,6 +20,8 @@ public:
 
     void addColumn(const Column* column);
 
+    void addColumn(const Column* column, int pos);
+
     bool hasColumn(const Column*) const;
 
     const QString& getType() const;

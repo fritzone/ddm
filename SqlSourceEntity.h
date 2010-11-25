@@ -9,7 +9,7 @@ class AbstractSqlGenerator;
 class SqlSourceEntity
 {
 public:
-    virtual QStringList generateSqlSource(AbstractSqlGenerator*, QHash<QString,QString>) = 0;
+    virtual QStringList generateSqlSource(AbstractSqlGenerator*, QHash<QString,QString>, const QString& codepage) = 0;
 };
 
 #endif // SQLSOURCEENTITY_H

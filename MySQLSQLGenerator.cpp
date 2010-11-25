@@ -7,7 +7,7 @@
 #include "ForeignKey.h"
 #include "TableInstance.h"
 
-QStringList MySQLSQLGenerator::generateCreateTableSql(Table *table, const QHash<QString, QString> &options, QString tabName) const
+QStringList MySQLSQLGenerator::generateCreateTableSql(Table *table, const QHash<QString, QString> &options, const QString& tabName, const QString& codepage) const
 {
     bool upcase = options.contains("Case") && options["Case"] == "Upper";
     bool comments = options.contains("GenerateComments") && options["GenerateComments"] == "Yes";
@@ -135,10 +135,11 @@ QStringList MySQLSQLGenerator::generateCreateTableSql(Table *table, const QHash<
     }
 
     // are we having primary keys after columns?
-    if(pkpos == 1)
+    if(pkpos == 1 && primaryKeys.size() > 0)
     {
-        createTable += "\n, ";
+        createTable += "\n\t,";
         createTable += upcase?"PRIMARY KEY ":"primary key ";
+        createTable += "(";
         for(int i=0; i<primaryKeys.size(); i++)
         {
             createTable += primaryKeys[i];
@@ -147,6 +148,7 @@ QStringList MySQLSQLGenerator::generateCreateTableSql(Table *table, const QHash<
                 createTable += ", ";
             }
         }
+        createTable += ")";
     }
 
 
@@ -210,6 +212,16 @@ QStringList MySQLSQLGenerator::generateCreateTableSql(Table *table, const QHash<
     if(table->getStorageEngine()->name().length() > 0)
     {
         createTable += QString(upcase?"ENGINE = ":"engine = ") + table->getStorageEngine()->name();
+    }
+
+    // and the codepage
+    if(codepage.length() > 1)
+    {
+        createTable += " DEFAULT CHARACTER SET " + codepage;
+    }
+    else
+    {
+        createTable += " DEFAULT CHARACTER SET latin1" ;
     }
     createTable += ";\n\n";
     // and here we are done with the create table command
