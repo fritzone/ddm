@@ -14,6 +14,11 @@ void Index::addColumn(const Column* column)
     m_columns.append(column);
 }
 
+void Index::addColumn(const Column* column, int pos)
+{
+    m_columns.insert(pos - 1, column);
+}
+
 bool Index::hasColumn(const Column* column) const
 {
     for(int i=0; i<m_columns.size(); i++)

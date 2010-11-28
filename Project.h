@@ -74,6 +74,11 @@ public:
         return m_oopIsEnabled;
     }
 
+    QString getCodepage() const
+    {
+        return "latin1";
+    }
+
 private:
 
     // this is the tree from the main window of the application

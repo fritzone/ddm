@@ -292,12 +292,12 @@ void DefaultVersionImplementation::setupTableParentChildRelationships()
     }
 }
 
-TableInstance* DefaultVersionImplementation::instantiateTable(Table* tab, bool reason)
+TableInstance* DefaultVersionImplementation::instantiateTable(Table* tab, bool becauseOfReference)
 {
-    TableInstance* tabInst = new TableInstance(tab, reason);
-    TableInstance* other = getTableInstance(tabInst->getName());
+    TableInstance* tabInst = new TableInstance(tab, becauseOfReference);
+    TableInstance* other = getTableInstance(tabInst->getName());        // just to see that we have another instance of this table
     if(other && other != tabInst)
-    {
+    {   // and in this case generate a new name for the current one
         tabInst->setName(NameGenerator::generateUniqueTableInstanceName(this, tabInst->getName()));
     }
     m_data.m_tableInstances.append(tabInst);
@@ -415,7 +415,7 @@ void DefaultVersionImplementation::setupForeignKeyRelationshipsForATable(Table* 
     }
 }
 
-QList<QString> DefaultVersionImplementation::getSqlScript()
+QList<QString> DefaultVersionImplementation::getSqlScript(const QString& codepage)
 {
     QList<QString> finalSql;
     QHash<QString, QString> opts = Configuration::instance().sqlGenerationOptions();
@@ -426,7 +426,7 @@ QList<QString> DefaultVersionImplementation::getSqlScript()
     {
         for(int i=0; i<getTableInstances().size(); i++)
         {
-            QStringList sql = getTableInstances().at(i)->generateSqlSource(m_project->getEngine()->getSqlGenerator(), opts);
+            QStringList sql = getTableInstances().at(i)->generateSqlSource(m_project->getEngine()->getSqlGenerator(), opts, codepage);
             finalSql << sql;
         }
 
@@ -448,7 +448,7 @@ QList<QString> DefaultVersionImplementation::getSqlScript()
     {
         for(int i=0; i<getTables().size(); i++)
         {
-            QStringList sql = getTables().at(i)->generateSqlSource(m_project->getEngine()->getSqlGenerator(), opts);
+            QStringList sql = getTables().at(i)->generateSqlSource(m_project->getEngine()->getSqlGenerator(), opts, codepage);
             finalSql << sql;
         }
 
@@ -489,8 +489,8 @@ UserDataType* DefaultVersionImplementation::provideDatatypeForSqlType(const QStr
     QString type = sql;
     QString size = "";
     QString finalName = relaxed?
-                        type + (size.length()>0?" ("+ size+")":"") + (defaultValue.length() > 0? ("=" + defaultValue) : "") + (nullable=="NO"?"_NN":""):
-                        name + (defaultValue.length() > 0? (" (Def: " + defaultValue) + ")" : "") + (nullable=="NO"?" NN":"");
+                        type + (size.length()>0?" ("+ size+")":"") + (defaultValue.length() > 0? ("=" + defaultValue) : "") + (nullable=="NO"?" Not Null":""):
+                        name + (defaultValue.length() > 0? (" (Def: " + defaultValue) + ")" : "") + (nullable=="NO"?" Not Null":"");
     int stp = sql.indexOf('(') ;
     if(stp != -1)
     {

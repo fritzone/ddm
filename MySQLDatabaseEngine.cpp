@@ -15,6 +15,8 @@
 #include "VersionGuiElements.h" // TODO: This is bad design. Find a way to remove this from here
 #include "UserDataType.h"
 #include "Index.h"
+#include "TableInstance.h"
+#include "ForeignKey.h"
 
 MySQLDatabaseEngine::MySQLDatabaseEngine() : DatabaseEngine("MySQL"), m_revEngMappings(), m_oneTimeMappings()
 {
@@ -42,6 +44,55 @@ bool MySQLDatabaseEngine::reverseEngineerDatabase(const QString& host, const QSt
             qDebug() << "DATATYPE " << rkeys.at(i)->getName() << " AS COLUMN " << colsOfUdt.at(j)->getName();
         }
     }
+
+    // now populate the foreign keys
+    {
+        QSqlDatabase dbo = QSqlDatabase::addDatabase("QMYSQL");
+
+        dbo.setHostName(host);
+        dbo.setUserName(user);
+        dbo.setPassword(pass);
+        dbo.setDatabaseName(dbName);
+
+
+        bool ok = dbo.open();
+        QString s = "SELECT distinct CONCAT( table_name, '.', column_name, ':', referenced_table_name, '.', referenced_column_name ) AS list_of_fks "
+                "FROM information_schema.KEY_COLUMN_USAGE WHERE REFERENCED_TABLE_SCHEMA = '"
+                + dbName +
+                "' AND REFERENCED_TABLE_NAME is not null ORDER BY TABLE_NAME, COLUMN_NAME";
+        QSqlQuery query;
+        query.exec(s);
+        while(query.next())
+        {
+            QString val = query.value(0).toString();
+            QString referencee = val.left(val.indexOf(':'));
+            QString referenced = val.mid(val.indexOf(':') + 1);
+
+            QString referenceeTableName = referencee.left(referencee.indexOf('.'));
+            QString referenceeColumnName = referencee.mid(referencee.indexOf('.') + 1);
+
+            QString referencedTableName = referenced.left(referenced.indexOf('.'));
+            QString referencedColumnName = referenced.mid(referenced.indexOf('.') + 1);
+
+            Table* referenceeTable = v->getTable(referenceeTableName);
+            Table* referencedTable = v->getTable(referencedTableName);
+            Column* referenceeColumn = referenceeTable->getColumn(referenceeColumnName);
+            Column* referencedColumn = referencedTable->getColumn(referencedColumnName);
+            // now we should check that the columns have the same data type ...
+            if(referencedColumn->getDataType() != referenceeColumn->getDataType())
+            {
+                // TODO something
+            }
+
+            ForeignKey::ColumnAssociation* fkAssociation = new ForeignKey::ColumnAssociation(referencedTable, referencedColumn, referenceeTable, referenceeColumn);
+            ForeignKey* fk = new ForeignKey();
+            fk->addAssociation(fkAssociation);
+
+            referenceeTable->addForeignKey(fk);
+
+        }
+    }
+
     return true;
 }
 
@@ -160,7 +211,7 @@ Table* MySQLDatabaseEngine::reverseEngineerTable(const QString& host, const QStr
     int indextypeNo = query.record().indexOf("Index_type");
     int commentNo = query.record().indexOf("Comment");
 
-    QVector<Index*> indexes;
+    QMap<QString, Index*> createdIndexes;
 
     while(query.next())
     {
@@ -177,9 +228,93 @@ Table* MySQLDatabaseEngine::reverseEngineerTable(const QString& host, const QStr
         QString indextype = query.value(indextypeNo).toString();
         QString comment = query.value(commentNo).toString();
 
-        Index* idx = new Index(keyname, indextype, tab);
+        QString finalIndexName = QString("idx_") + keyname;
+        if(keyname == "PRIMARY") continue;
+
+        Index* idx = 0;
+        if(createdIndexes.keys().contains(keyname))
+        {
+            idx = createdIndexes[keyname];
+        }
+        else
+        {
+            idx = new Index(finalIndexName, indextype, tab);
+            createdIndexes.insert(keyname, idx);
+        }
+
+        idx->addColumn(tab->getColumn(columnname), seqinindex.toInt());
+        if(!tab->hasIndex(finalIndexName))
+        {
+            tab->addIndex(idx);
+        }
 
     }
+    }
+
+    // populate the startup values
+    {
+        QString s = "select ";
+        for(int i=0; i<tab->getColumnCount(); i++)
+        {
+            s += tab->getColumns().at(i)->getName();
+            if(i<tab->getColumnCount() -1) s+=", ";
+        }
+        s += " from ";
+        s += tab->getName();
+        QSqlQuery query;
+        query.exec(s);
+        QVector <QVector <QString> > defaultValues;
+        while(query.next())
+        {
+            QVector <QString> row;
+            for(int i=0; i<tab->getColumnCount(); i++)
+            {
+                QVariant atI = query.value(i);
+                if(atI.isNull())
+                {
+                    row.append("");
+                }
+                else
+                {
+                    row.append(atI.toString());
+                }
+            }
+
+            defaultValues.append(row);
+        }
+
+        if(! p->oopProject())
+        {
+            tab->setDefaultValues(defaultValues);
+        }
+        else
+        {
+            // convert the vector above to the required hash
+            QHash < QString, QVector<QString> > values;
+            for(int i=0; i<defaultValues.size(); i++)
+            {
+                QVector<QString> defVsI = defaultValues.at(i);
+                for(int j=0; j<defVsI.size(); j++)
+                {
+                    if(values.keys().contains(tab->getColumns().at(j)->getName()))
+                    {
+                        values[tab->getColumns().at(j)->getName()].append(defVsI.at(j));
+                    }
+                    else
+                    {
+                        QVector<QString> newValues;
+                        newValues.append(defVsI.at(j));
+                        values[tab->getColumns().at(j)->getName()] = newValues;
+                    }
+                }
+            }
+
+            // and create a table instance for it
+            TableInstance* inst = v->instantiateTable(tab, false);
+            inst->setValues(values);
+
+            v->getGui()->createTableInstanceTreeEntry(inst);
+        }
     }
 
     return tab;

@@ -504,10 +504,10 @@ void Table::prepareDiagramEntity()
     m_diagramEntity = grp;
 }
 
-QStringList Table::generateSqlSource(AbstractSqlGenerator *generator, QHash<QString,QString> opts)
+QStringList Table::generateSqlSource(AbstractSqlGenerator *generator, QHash<QString,QString> opts, const QString& codepage)
 {
     const_cast<Table*>(this)->restartSqlRendering();
-    return generator->generateCreateTableSql(const_cast<Table*>(this), opts, getName());
+    return generator->generateCreateTableSql(const_cast<Table*>(this), opts, getName(), codepage);
 }
 
 QSet<const Table*> Table::getTablesReferencedByForeignKeys()
