@@ -9,7 +9,7 @@ public:
 
     MySQLSQLGenerator(){}
 
-    virtual QStringList generateCreateTableSql(Table* table, const QHash<QString, QString>& options, QString tabName) const;
+    virtual QStringList generateCreateTableSql(Table* table, const QHash<QString, QString>& options, const QString& tabName, const QString& codepage) const;
 
     virtual QStringList generateDefaultValuesSql(TableInstance* tableInstance, const QHash<QString, QString>& options) const;
 

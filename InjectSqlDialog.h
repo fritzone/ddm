@@ -25,11 +25,17 @@ public:
 
     QString getHost();
 
+    QString getCodepage();
+
     bool getRollbackOnError();
 
     bool getCreateOnlyIfNotExist();
 
     void setupForReverseEngineering();
+
+
+    // loads the codepages from the codepages
+    void populateCodepageCombo();
 
 public slots:
 

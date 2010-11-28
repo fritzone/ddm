@@ -41,8 +41,8 @@ public:
 
     void selectTab(int);
 
-    virtual void presentSql(Project*);
-    virtual void presentSql(Project*, SqlSourceEntity*){};
+    virtual void presentSql(Project*,const QString& codepage);
+    virtual void presentSql(Project*, SqlSourceEntity*,const QString& codepage){};
 
 
 protected:
@@ -172,6 +172,8 @@ private:
     void autoSave();
 
     void finalizeColumnMovement();
+
+    void populateCodepageCombo();
 
 private:
     Ui::NewTableForm *m_ui;

@@ -375,7 +375,7 @@ void MainWindow::currentProjectTreeItemChanged(QTreeWidgetItem * current, QTreeW
         {
             SqlForm* frm = new SqlForm(m_workspace->currentProjectsEngine(), this);
             frm->setSqlSource(0);
-            frm->presentSql(m_workspace->currentProject());
+            frm->presentSql(m_workspace->currentProject(), m_workspace->currentProject()->getCodepage());
             setCentralWidget(frm);
         }
         else
@@ -435,7 +435,7 @@ void MainWindow::currentProjectTreeItemChanged(QTreeWidgetItem * current, QTreeW
                 }
 
                 frm->setSqlSource(ent);
-                frm->presentSql(m_workspace->currentProject(), ent);
+                frm->presentSql(m_workspace->currentProject(), ent, m_workspace->currentProject()->getCodepage());
                 setCentralWidget(frm);
 
             }
@@ -1051,7 +1051,7 @@ void MainWindow::onPreferences()
         SourceCodePresenterWidget* scw = dynamic_cast<SourceCodePresenterWidget*> (mainwidget);
         if(scw)
         {
-            scw->updateSql(m_workspace->currentProject());
+            scw->updateSql(m_workspace->currentProject(), m_workspace->currentProject()->getCodepage());
         }
     }
 }
@@ -1283,9 +1283,9 @@ void MainWindow::onDeploy()
 {
     InjectSqlDialog* injectDialog = new InjectSqlDialog(m_workspace->getInstance()->currentProjectsEngine(), this);
     injectDialog->setModal(true);
-    QStringList sqlList = m_workspace->workingVersion()->getSqlScript();
     if(injectDialog->exec() == QDialog::Accepted)
     {
+        QStringList sqlList = m_workspace->workingVersion()->getSqlScript(injectDialog->getCodepage());
         QString tSql;
         if(!m_workspace->currentProjectsEngine()->injectSql(injectDialog->getHost(), injectDialog->getUser(), injectDialog->getPassword(), injectDialog->getDatabase(), sqlList, tSql, injectDialog->getRollbackOnError(), injectDialog->getCreateOnlyIfNotExist()))
         {

@@ -140,7 +140,7 @@ public:
     /**
      * Instantiates a table from the given table template
      */
-    virtual TableInstance* instantiateTable(Table* tab, bool reason) = 0;
+    virtual TableInstance* instantiateTable(Table* tab, bool becauseOfReference) = 0;
 
     /**
      * Adds a new table instance to this version
@@ -187,7 +187,7 @@ public:
      */
     virtual QVector<Table*> getTablesReferencingAColumnThroughForeignKeys(const Column*) = 0;
 
-    virtual QList<QString> getSqlScript() = 0;
+    virtual QList<QString> getSqlScript(const QString& codepage) = 0;
 
     /**
      * Provides a data type for the given SQL type. Firstly checks if there are data types corresponding to the

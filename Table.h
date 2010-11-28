@@ -121,7 +121,7 @@ public:
 
     void setDefaultValues(QVector <QVector <QString> > &);
 
-    const QVector <QVector <QString> > & getStartupValues() const
+    const QVector <QVector <QString> > & getDefaultValues() const
     {
         return m_startupValues;
     }
@@ -271,7 +271,7 @@ public:
      */
     QSet<const Table*> getTablesReferencedByForeignKeys();
 
-    virtual QStringList generateSqlSource(AbstractSqlGenerator * generator, QHash<QString,QString>);
+    virtual QStringList generateSqlSource(AbstractSqlGenerator * generator, QHash<QString,QString>, const QString& codepage);
 
     /**
      * returns the first available index name

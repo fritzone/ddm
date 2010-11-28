@@ -48,7 +48,7 @@ public:
         m_instantiatedTablesInstances.append(tabInst);
     }
 
-    virtual QStringList generateSqlSource(AbstractSqlGenerator *generator,QHash<QString,QString>);
+    virtual QStringList generateSqlSource(AbstractSqlGenerator *generator,QHash<QString,QString>, const QString& codepage);
 
     QVector<TableInstance*>& getInstantiatedTableInstances()
     {
@@ -100,6 +100,8 @@ private:
     // a hash in which to the column name we have mapped a list of default values.
     // TODO: This might need to be changed to be a hash of <Column*,QVector<QString> > instead ... think about it
     // TODO: for later versions come up with a solution that the USerDataType has values that can be put here ...
+    // TODO: This "split" design for holding default values is simply horrible. Create a new class which holds default/startup values for the table and for the table
+    // instances
     QHash < QString, QVector<QString> > m_values;
 
     // true if this table instance was created because of a reference (ie. foreign key for ex.)

@@ -89,8 +89,6 @@ protected:
 
 private:
 
-    // loads the codepages from the codepages
-    void populateCodepageCombo();
 
     // hides some GUI elements
     void hideSpecialComponents();

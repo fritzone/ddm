@@ -8,6 +8,7 @@
 #include "Diagram.h"
 #include "TableInstance.h"
 #include "Workspace.h"
+#include "TableInstance.h"
 
 #include <QVector>
 #include <QtGui>
@@ -270,4 +271,19 @@ ContextMenuEnabledTreeWidgetItem* VersionGuiElements::createTableTreeEntry(Table
     // set the link to the tree
     tab->setLocation(newTblsItem);
     return newTblsItem;
+}
+
+ContextMenuEnabledTreeWidgetItem* VersionGuiElements::createTableInstanceTreeEntry(TableInstance* tinst)
+{
+    ContextMenuEnabledTreeWidgetItem* itm = new ContextMenuEnabledTreeWidgetItem(getTableInstancesItem(), QStringList(tinst->getName()));
+    tinst->setLocation(itm);
+    itm->setPopupMenu(ContextMenuCollection::getInstance()->getTableInstancePopupMenu());
+    itm->setIcon(0, IconFactory::getTabinstIcon());
+    QVariant a(tinst->getName());
+    itm->setData(0, Qt::UserRole, a);
+
+    ContextMenuEnabledTreeWidgetItem* sqlItm = new ContextMenuEnabledTreeWidgetItem(getFinalSqlItem(), QStringList(tinst->getName()));
+    sqlItm->setIcon(0, IconFactory::getTabinstIcon());
+    sqlItm->setData(0, Qt::UserRole, a);
+    tinst->setSqlItem(sqlItm);
 }
