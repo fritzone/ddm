@@ -292,6 +292,16 @@ QStringList MySQLSQLGenerator::generateCreateTableSql(Table *table, const QHash<
     return toReturn;
 }
 
+QString MySQLSQLGenerator::quotelessString(const QString& in) const
+{
+    QString result = "";
+    for(int i=0; i<in.length(); i++)
+    {
+        if(in.at(i) != '"') result += in.at(i);
+        else result += "\\\"";
+    }
+    return result;
+}
 
 QStringList MySQLSQLGenerator::generateDefaultValuesSql(TableInstance* tableInstance, const QHash<QString, QString>& options) const
 {
@@ -323,7 +333,7 @@ QStringList MySQLSQLGenerator::generateDefaultValuesSql(TableInstance* tableInst
         {
             QVector<QString> vals = tableInstance->values()[tableInstance->columns().at(j)];
             insert += "\"";
-            insert += vals.at(i);
+            insert += quotelessString(vals.at(i));
             insert += "\"";
             if(j< tableInstance->columns().size() - 1)
             {

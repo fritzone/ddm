@@ -13,6 +13,10 @@ public:
 
     virtual QStringList generateDefaultValuesSql(TableInstance* tableInstance, const QHash<QString, QString>& options) const;
 
+private:
+
+    QString quotelessString(const QString&) const;
+
 };
 
 #endif // MYSQLSQLGENERATOR_H
