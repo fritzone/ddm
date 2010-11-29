@@ -27,6 +27,9 @@
     <normaloff>:/images/actions/images/big/icon.png</normaloff>:/images/actions/images/big/icon.png</iconset>
   </property>
   <property name="documentMode">
+   <bool>false</bool>
+  </property>
+  <property name="dockNestingEnabled">
    <bool>true</bool>
   </property>
   <property name="unifiedTitleAndToolBarOnMac">
@@ -39,7 +42,7 @@
      <x>0</x>
      <y>0</y>
      <width>468</width>
-     <height>25</height>
+     <height>26</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">

@@ -245,6 +245,7 @@ void MainWindow::onNewSolution()
         else
         {
             m_revEngWizard = new ReverseEngineerWizard(nprjdlg->getDatabaseEngine());
+            m_revEngWizard->setWizardStyle(QWizard::ClassicStyle);
             m_revEngWizard->show();
 
             QObject::connect(m_revEngWizard, SIGNAL(currentIdChanged(int)), this, SLOT(onReverseEngineerWizardNextPage(int)));
