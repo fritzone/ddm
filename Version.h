@@ -199,6 +199,12 @@ public:
      */
     virtual UserDataType* provideDatatypeForSqlType(const QString& name, const QString& sql, const QString& nullable, const QString& defaultValue, bool relaxed) = 0;
 
+    /**
+     * Returns true if a newly introduced column destroys the normalization state of the database (ie: no duplication of
+     * vital data (chars, blobs, etcs), only indexes (ie. numbers) )
+     */
+    virtual bool newColumnDestroysDatabaseNormalization(const Column* inNewColumn, const Table* inTable, QString& uglyTable, QString& uglyColumn, int& reserved) = 0;
+
 private:
 
 };

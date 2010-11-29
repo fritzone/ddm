@@ -539,3 +539,43 @@ UserDataType* DefaultVersionImplementation::provideDatatypeForSqlType(const QStr
 
     return newUdt;
 }
+
+bool DefaultVersionImplementation::newColumnDestroysDatabaseNormalization(const Column* inNewColumn, const Table* inTable, QString& uglyTable, QString& uglyColumn, int& reserved)
+{
+    uglyTable = ""; uglyColumn = ""; reserved = 0;
+    // firstly we need to check that the newly introduced columns' datatype is used in any other table
+    for(int i=0; i<m_data.m_tables.size(); i++)
+    {
+        Table* tabI = m_data.m_tables.at(i);
+        if(tabI != inTable)
+        {
+            uglyTable = tabI->getName();
+            QStringList fullColumns = tabI->fullColumns();
+            for(int j=0; j<fullColumns.size(); j++)
+            {
+                uglyColumn = fullColumns.at(j);
+                const UserDataType* othersDataType = tabI->getDataTypeOfColumn(fullColumns.at(j));
+                if(inNewColumn->getDataType()->getName() == othersDataType->getName())
+                {
+                    // they share the same data type ... let's check if this data type is:
+                    // 1. numeric and 2. primary key in one of them
+                    if(othersDataType->getType() == DataType::DT_NUMERIC)
+                    {
+                        Column* otherColumn = tabI->getColumn(fullColumns.at(j));
+                        if(otherColumn == 0) otherColumn = tabI->getColumnFromParents(fullColumns.at(j));
+                        if(otherColumn == 0) return false;
+                        if(inNewColumn->isPk() || otherColumn->isPk())
+                        {
+                            reserved = 50;  // meaning: show a message that the user should create a foreign key to stuff below
+                            return false;   // This does not lead to duplication, one of them is a primary key
+                        }
+                    }
+                    return true; // this will definitely lead to data duplication
+                }
+            }
+        }
+    }
+
+    return false;
+}
+

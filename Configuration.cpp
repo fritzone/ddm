@@ -88,3 +88,10 @@ void Configuration::readFromFile()
     }
 
 }
+
+bool Configuration::operator [](const QString& option)
+{
+    if(option == "PermissiveNormalizationCheck") return true;
+
+    return false;
+}

@@ -81,6 +81,8 @@ public:
 
     virtual UserDataType* provideDatatypeForSqlType(const QString& name, const QString& sql, const QString& nullable, const QString& defaultValue, bool relaxed);
 
+    virtual bool newColumnDestroysDatabaseNormalization(const Column* inNewColumn, const Table* inTable, QString& uglyTable, QString& uglyColumn, int& reserved);
+
 protected:
     // the version as a string representation. Major versions are always of form X.0
     QString version;
