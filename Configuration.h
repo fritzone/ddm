@@ -61,6 +61,8 @@ public:
         return m_sqlOpts;
     }
 
+    bool operator[] (const QString&);
+
 private:
 
     // whether the "New Data Type" window should populate the default lengths

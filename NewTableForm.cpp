@@ -52,6 +52,7 @@ NewTableForm::NewTableForm(DatabaseEngine* db, Project* prj, QWidget *parent, bo
     lstColumns->header()->setDefaultSectionSize(150);
     m_ui->columnListLayout->addWidget(lstColumns);
     QTreeWidgetItem *___qtreewidgetitem = lstColumns->headerItem();
+    ___qtreewidgetitem->setText(4, QApplication::translate("NewTableForm", "Notes", 0, QApplication::UnicodeUTF8));
     ___qtreewidgetitem->setText(3, QApplication::translate("NewTableForm", "SQL Type", 0, QApplication::UnicodeUTF8));
     ___qtreewidgetitem->setText(2, QApplication::translate("NewTableForm", "Type", 0, QApplication::UnicodeUTF8));
     ___qtreewidgetitem->setText(1, QApplication::translate("NewTableForm", "Name", 0, QApplication::UnicodeUTF8));
@@ -73,6 +74,7 @@ NewTableForm::NewTableForm(DatabaseEngine* db, Project* prj, QWidget *parent, bo
     }
 
     lstColumns->header()->resizeSection(0, 50);
+    lstColumns->header()->hideSection(4);
     m_ui->cmbNewColumnType->setCurrentIndex(-1);
 
     // fill in the storage engine types
@@ -620,6 +622,24 @@ void NewTableForm::onAddColumn()
 
         col->setLocation(item);
         m_ui->txtNewColumnName->setFocus( );
+
+        QString dt, dc;
+        int x;
+        if(Workspace::getInstance()->workingVersion()->newColumnDestroysDatabaseNormalization(col, m_table, dt, dc, x))
+        {
+            QString s = "";
+            if(x != 50)
+            {
+                s = "This column might destroy the normalization of the database in relation with table: " + dt + " column: " + dc;
+            }
+            else
+            {
+                s = "This column might need a foreign key to table: " + dt + " column: " + dc;
+            }
+            lstColumns->header()->showSection(4);
+            item->setText(4, s);
+        }
+
     }
 
     m_ui->txtNewColumnName->setText("");
