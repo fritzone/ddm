@@ -150,10 +150,15 @@ public:
         return icon;
     }
 
-
     static const QIcon& getIndexIcon()
     {
         static const QIcon icon(strIndexIcon);
+        return icon;
+    }
+
+    static const QIcon& getWarningIcon()
+    {
+        static const QIcon icon(strWarningIcon);
         return icon;
     }
 

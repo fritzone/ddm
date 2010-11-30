@@ -109,6 +109,7 @@
         <file>images/small/zoom_in.png</file>
         <file>images/actions/deploy.png</file>
         <file>images/small/index.png</file>
+        <file>images/small/warning.png</file>
     </qresource>
     <qresource prefix="/bigger">
         <file>images/unaf.png</file>

@@ -46,5 +46,6 @@ static const QString strDatabaseIcon = ":/images/actions/images/small/database.p
 static const QString strFroggieIcon = ":/bigger/images/unaf.png";
 static const QString strIcon = ":/bigger/images/big/icon.png";
 static const QString strIndexIcon = ":/images/actions/images/small/index.png";
+static const QString strWarningIcon = ":/images/actions/images/small/warning.png";
 
 #endif // STRINGS_H
