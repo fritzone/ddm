@@ -630,14 +630,21 @@ void NewTableForm::onAddColumn()
             QString s = "";
             if(x != 50)
             {
-                s = "This column might destroy the normalization of the database in relation with table: " + dt + " column: " + dc;
+                s = QApplication::tr("This column might destroy the normalization of the database in relation with table: ")
+                        + dt
+                        + QApplication::tr(" column: ")
+                        + dc;
             }
             else
             {
-                s = "This column might need a foreign key to table: " + dt + " column: " + dc;
+                s = QApplication::tr("This column might need a foreign key to table: ")
+                        + dt
+                        + QApplication::tr(" column: ")
+                        + dc;
             }
             lstColumns->header()->showSection(4);
             item->setText(4, s);
+            item->setIcon(4, IconFactory::getWarningIcon());
         }
 
     }

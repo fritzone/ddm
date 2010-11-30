@@ -67,9 +67,9 @@ public:
 
     ContextMenuHandler() {}
 
-    bool showContextMenu(const QPoint& pos, const QModelIndex&, ContextMenuEnabledTreeWidgetItem* item) const
+    bool showContextMenu(const QPoint& pos, const QModelIndex& i, ContextMenuEnabledTreeWidgetItem* item) const
     {
-        qDebug() << "Context menu for " <<item->text(0);
+        qDebug() << "Context menu for " <<item->text(0) << " i=" << i.column();
         if(item->contextMenu())
         {
             item->contextMenu()->exec(pos);
