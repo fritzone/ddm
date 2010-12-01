@@ -23,6 +23,7 @@
 #include "ClipboardFactory.h"
 #include "Codepage.h"
 #include "AbstractCodepageSupplier.h"
+#include "IssueManager.h"
 
 #include <QMessageBox>
 #include <QHashIterator>
@@ -645,6 +646,8 @@ void NewTableForm::onAddColumn()
             lstColumns->header()->showSection(4);
             item->setText(4, s);
             item->setIcon(4, IconFactory::getWarningIcon());
+
+            Issue* issue = IssueManager::createIssue(col, s, Issue::WARNING);
         }
 
     }

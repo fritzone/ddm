@@ -5,20 +5,21 @@
 #include "IconFactory.h"
 #include "VersionGuiElements.h"
 
-Project::Project(const QString& _name, QTreeWidget* _tree, QTreeWidget* _dtTree, bool oopIsEnabled):
-        m_tree(_tree), m_dtTree(_dtTree), m_name(_name), m_engine(0), m_majorVersions(), m_oopIsEnabled(oopIsEnabled)
+Project::Project(const QString& _name, QTreeWidget* _tree, QTreeWidget* _dtTree, QTreeWidget* _issueTree, bool oopIsEnabled):
+        m_tree(_tree), m_dtTree(_dtTree), m_issueTree(_issueTree), m_name(_name), m_engine(0), m_majorVersions(), m_oopIsEnabled(oopIsEnabled)
 {
-    createTreeItem(m_tree, m_dtTree);
+    createTreeItem(m_tree, m_dtTree, m_issueTree);
 }
 
-Project::Project(const QString &_name, bool oop) : m_tree(0), m_name(_name), m_engine(0), m_majorVersions(), m_oopIsEnabled(oop)
+Project::Project(const QString &_name, bool oop) : m_tree(0), m_dtTree(0), m_issueTree(0), m_name(_name), m_engine(0), m_majorVersions(), m_oopIsEnabled(oop)
 {
 }
 
-void Project::createTreeItem(QTreeWidget* _tree, QTreeWidget* _dtt)
+void Project::createTreeItem(QTreeWidget* _tree, QTreeWidget* _dtt, QTreeWidget* _itt)
 {
     m_tree = _tree;
     m_dtTree = _dtt;
+    m_issueTree = _itt;
 
     ContextMenuEnabledTreeWidgetItem* projectItem = new ContextMenuEnabledTreeWidgetItem((ContextMenuEnabledTreeWidgetItem*)0, QStringList(m_name)) ;
     projectItem->setIcon(0, IconFactory::getProjectOpenIcon());
@@ -34,7 +35,7 @@ void Project::populateTreeItem()
 {
     for(int i=0; i<m_majorVersions.size(); i++)
     {
-        m_majorVersions[i]->createTreeItems(m_tree, m_dtTree, getLocation());
+        m_majorVersions[i]->createTreeItems(m_tree, m_dtTree, m_issueTree, getLocation());
         m_majorVersions[i]->getGui()->populateTreeItems();
     }
 }
@@ -46,7 +47,7 @@ void Project::setEngine(DatabaseEngine* eng)
 
 void Project::createMajorVersion()
 {
-    MajorVersion* mjw = new MajorVersion(m_tree, m_dtTree, getLocation(), 1, this);
+    MajorVersion* mjw = new MajorVersion(m_tree, m_dtTree, m_issueTree, getLocation(), 1, this);
     m_majorVersions.append(mjw);
 }
 

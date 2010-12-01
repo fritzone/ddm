@@ -4,16 +4,18 @@
 #include "TreeItem.h"
 #include "SerializableElement.h"
 #include "CopyableElement.h"
+#include "IssueOriginator.h"
 #include "NamedItem.h"
 
 #include <QString>
 
 class UserDataType;
+class Table;
 
 /**
  * This class holds the necessary data to define a column
  */
-class Column : public TreeItem, public SerializableElement, public CopyableElement, public NamedItem
+class Column : public TreeItem, public SerializableElement, public CopyableElement, virtual public IssueOriginator
 {
 public:
     Column(const QString& name, const UserDataType* type, bool, bool );
@@ -38,11 +40,19 @@ public:
 
     virtual void copy();
 
+    void setTable(Table* tab)
+    {
+        m_table = tab;
+    }
+
+    virtual QString getFullLocation() const;
+
 private:
     const UserDataType* m_type;
     bool m_pk;
     bool m_autoIncrement;
     QString m_description;
+    Table* m_table;
 };
 
 #endif // COLUMN_H

@@ -9,7 +9,7 @@ class Project;
 class DefaultVersionImplementation : public Version
 {
 public:
-    DefaultVersionImplementation(QTreeWidget* tree, QTreeWidget* dttree, ContextMenuEnabledTreeWidgetItem* projectItem, Project* p);
+    DefaultVersionImplementation(QTreeWidget* tree, QTreeWidget* dttree, QTreeWidget* itt, ContextMenuEnabledTreeWidgetItem* projectItem, Project* p);
 
     virtual void serialize(QDomDocument &doc, QDomElement &parent) const = 0;
 
@@ -73,7 +73,7 @@ public:
     }
     virtual QVector<Table*> getTablesReferencingAColumnThroughForeignKeys(const Column*);
 
-    void createTreeItems(QTreeWidget* tree = 0, QTreeWidget* dtTree = 0, ContextMenuEnabledTreeWidgetItem* projectIem = 0);
+    void createTreeItems(QTreeWidget* tree = 0, QTreeWidget* dtTree = 0, QTreeWidget* issueTree = 0, ContextMenuEnabledTreeWidgetItem* projectIem = 0);
 
     virtual void setupForeignKeyRelationshipsForATable(Table *tab);
 
@@ -82,6 +82,9 @@ public:
     virtual UserDataType* provideDatatypeForSqlType(const QString& name, const QString& sql, const QString& nullable, const QString& defaultValue, bool relaxed);
 
     virtual bool newColumnDestroysDatabaseNormalization(const Column* inNewColumn, const Table* inTable, QString& uglyTable, QString& uglyColumn, int& reserved);
+
+    virtual void addIssuse(Issue*);
+
 
 protected:
     // the version as a string representation. Major versions are always of form X.0
@@ -94,6 +97,7 @@ protected:
     QTreeWidget* m_tree;
     // the  data types tree
     QTreeWidget* m_dtTree;
+    QTreeWidget* m_issueTree;
 
     ContextMenuEnabledTreeWidgetItem* m_projectItem;
     Project* m_project;

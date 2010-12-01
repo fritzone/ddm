@@ -11,6 +11,7 @@ class UserDataType;
 class Diagram;
 class Table;
 class TableInstance;
+class Issue;
 
 /**
  * The scope of this class is to have a common collection point for the tree widget items of a version (DT, Sql, Table, etc...)
@@ -20,7 +21,7 @@ class VersionGuiElements
 {
 public:
 
-    VersionGuiElements(QTreeWidget*,QTreeWidget*,Version*);
+    VersionGuiElements(QTreeWidget*,QTreeWidget*,QTreeWidget*,Version*);
 
 
     ContextMenuEnabledTreeWidgetItem* getTablesItem() const
@@ -32,7 +33,6 @@ public:
     {
         return tableInstancesItem;
     }
-
 
     ContextMenuEnabledTreeWidgetItem* getFinalSqlItem() const
     {
@@ -141,6 +141,7 @@ public:
     ContextMenuEnabledTreeWidgetItem* createDiagramTreeEntry(Diagram*);
     ContextMenuEnabledTreeWidgetItem* createTableTreeEntry(Table* tab);
     ContextMenuEnabledTreeWidgetItem* createTableInstanceTreeEntry(TableInstance* tab);
+    ContextMenuEnabledTreeWidgetItem* createIssueTreeEntry(Issue* issue);
 
 
 
@@ -167,6 +168,9 @@ private:
     QTreeWidget* m_tree;
 
     QTreeWidget* m_dtTree;
+
+    QTreeWidget* m_issuesTree;
+
 
     // the tree item containing the various data types
     ContextMenuEnabledTreeWidgetItem* stringsDtItem;

@@ -16,12 +16,12 @@
 
 #include <QtGui>
 
-DefaultVersionImplementation::DefaultVersionImplementation(QTreeWidget* tree, QTreeWidget* dttree, ContextMenuEnabledTreeWidgetItem* projectItem, Project* p)
-    : version(""), m_data(), m_tree(tree), m_dtTree(dttree), m_projectItem(projectItem), m_project(p), m_guiElements(0)
+DefaultVersionImplementation::DefaultVersionImplementation(QTreeWidget* tree, QTreeWidget* dttree, QTreeWidget* itt, ContextMenuEnabledTreeWidgetItem* projectItem, Project* p)
+    : version(""), m_data(), m_tree(tree), m_dtTree(dttree), m_issueTree(itt), m_projectItem(projectItem), m_project(p), m_guiElements(0)
 {
 }
 
-void DefaultVersionImplementation::createTreeItems(QTreeWidget* tree, QTreeWidget* dtTree, ContextMenuEnabledTreeWidgetItem* projectIem)
+void DefaultVersionImplementation::createTreeItems(QTreeWidget* tree, QTreeWidget* dtTree, QTreeWidget* issueTree, ContextMenuEnabledTreeWidgetItem* projectIem)
 {
     if(tree)
     {
@@ -35,8 +35,12 @@ void DefaultVersionImplementation::createTreeItems(QTreeWidget* tree, QTreeWidge
     {
         m_projectItem = projectIem;
     }
+    if(issueTree)
+    {
+        m_issueTree = issueTree;
+    }
 
-    m_guiElements = new VersionGuiElements(m_tree, m_dtTree, this);
+    m_guiElements = new VersionGuiElements(m_tree, m_dtTree, m_issueTree, this);
     m_guiElements->createGuiElements(m_projectItem);
 }
 
@@ -579,3 +583,7 @@ bool DefaultVersionImplementation::newColumnDestroysDatabaseNormalization(const 
     return false;
 }
 
+void DefaultVersionImplementation::addIssuse(Issue* issue)
+{
+    m_data.m_issues.append(issue);
+}
