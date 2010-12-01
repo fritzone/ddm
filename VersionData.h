@@ -8,7 +8,7 @@ class Table;
 class ForeignKey;
 class Diagram;
 class TableInstance;
-
+class Issue;
 
 /**
  * The role of this class is to group together the actual data belonging to a version (tables, instances, etc...)
@@ -17,7 +17,7 @@ class VersionData
 {
 public:
 
-    VersionData() : m_dataTypes(), m_tables(), m_diagrams(), m_tableInstances()
+    VersionData() : m_dataTypes(), m_tables(), m_diagrams(), m_tableInstances(), m_issues()
     {}
 
 private:
@@ -34,6 +34,8 @@ private:
     QVector<Diagram*> m_diagrams;
 
     QVector<TableInstance*> m_tableInstances;
+
+    QVector<Issue*> m_issues;
 
 };
 

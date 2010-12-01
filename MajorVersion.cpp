@@ -4,8 +4,8 @@
 #include "Diagram.h"
 #include "TableInstance.h"
 
-MajorVersion::MajorVersion(QTreeWidget* tree, QTreeWidget* dttree, ContextMenuEnabledTreeWidgetItem* projectItem, int ver, Project* p)
-    : DefaultVersionImplementation(tree, dttree, projectItem, p)
+MajorVersion::MajorVersion(QTreeWidget* tree, QTreeWidget* dttree, QTreeWidget* issueTree, ContextMenuEnabledTreeWidgetItem* projectItem, int ver, Project* p)
+    : DefaultVersionImplementation(tree, dttree, issueTree, projectItem, p)
 {
     // make the dts sub item coming from the project
     QString v = QString::number(ver);
@@ -16,7 +16,7 @@ MajorVersion::MajorVersion(QTreeWidget* tree, QTreeWidget* dttree, ContextMenuEn
     createTreeItems();
 }
 
-MajorVersion::MajorVersion(QString verAsString, Project* p) : DefaultVersionImplementation(0,0,0,p)
+MajorVersion::MajorVersion(QString verAsString, Project* p) : DefaultVersionImplementation(0,0,0,0,p)
 {
     version = verAsString;
 }

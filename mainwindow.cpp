@@ -37,6 +37,7 @@
 #include "InjectSqlDialog.h"
 #include "ReverseEngineerWizard.h"
 #include "DataType.h" // TODO: this is simply bad design, Mainwindow should not know about datatypes ...
+#include "IssueManager.h"
 
 #include <QtGui>
 
@@ -44,8 +45,8 @@
 //Q_IMPORT_PLUGIN(qsqlmysql)
 #endif
 
-MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), m_ui(new Ui::MainWindow), m_projectTreeDock(0), m_datatypesTreeDock(0), m_projectTree(0),
-    m_datatypesTree(0), m_btndlg(0), m_newTableForm(0), m_createTableInstancesPopup(0), m_workspace(0), m_revEngWizard(0)
+MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), m_ui(new Ui::MainWindow), m_projectTreeDock(0), m_datatypesTreeDock(0), m_issuesTreeDock(0),
+    m_projectTree(0), m_datatypesTree(0), m_btndlg(0), m_newTableForm(0), m_createTableInstancesPopup(0), m_workspace(0), m_revEngWizard(0)
 {
     m_ui->setupUi(this);
 
@@ -94,6 +95,12 @@ void MainWindow::freeGuiElements()
         m_datatypesTree = 0;
     }
 
+    if(m_issuesTreeDock)
+    {
+        delete m_issuesTreeDock;
+        m_issuesTreeDock = 0;
+    }
+
     if(m_projectTreeDock)
     {
         delete m_projectTreeDock;
@@ -122,9 +129,8 @@ void MainWindow::setupGuiForNewSolution()
     m_projectTreeDock->setFeatures(QDockWidget::AllDockWidgetFeatures);
     m_projectTreeDock->setFloating(false);
     m_projectTreeDock->setMinimumSize(300, 340);
-    m_projectTreeDock->setMaximumSize(500, 840);
-    m_projectTreeDock->setSizePolicy(QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed));
-
+    m_projectTreeDock->setMaximumSize(500, 9999);
+    m_projectTreeDock->setSizePolicy(QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Maximum));
     m_projectTreeDock->resize(301,341);
 
     m_datatypesTreeDock = new QDockWidget(tr("DataTypes") , this);
@@ -132,7 +138,13 @@ void MainWindow::setupGuiForNewSolution()
     m_datatypesTreeDock->setFeatures(QDockWidget::AllDockWidgetFeatures);
     m_datatypesTreeDock->setFloating(false);
     m_datatypesTreeDock->setMinimumSize(300, 340);
-    m_datatypesTreeDock->setMaximumSize(500, 840);
+    m_datatypesTreeDock->setMaximumSize(500, 9999);
+
+    m_issuesTreeDock = new QDockWidget(tr("Issues"), this);
+    m_issuesTreeDock->setAllowedAreas(Qt::BottomDockWidgetArea);
+    m_issuesTreeDock->setFeatures(QDockWidget::AllDockWidgetFeatures);
+    m_issuesTreeDock->setFloating(false);
+    m_issuesTreeDock->setSizePolicy(QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Maximum));
 
     // set up the tree
     ContextMenuHandler* contextMenuHandler = new ContextMenuHandler();
@@ -158,10 +170,30 @@ void MainWindow::setupGuiForNewSolution()
     QObject::connect(m_datatypesTree, SIGNAL(itemSelectionChanged()), this, SLOT(onDTTreeClicked()));
     QObject::connect(m_datatypesTree, SIGNAL (itemClicked ( QTreeWidgetItem * , int ) ), this, SLOT(dtTreeItemClicked(QTreeWidgetItem*,int)));
 
+    m_issuesTree = new ContextMenuEnabledTreeWidget();
+    m_issuesTree->setObjectName(QString::fromUtf8("m_issuesTree"));
+    m_issuesTree->setRootIsDecorated(false);
+    m_issuesTree->setItemsExpandable(false);
+    m_issuesTree->setAnimated(false);
+    m_issuesTree->setExpandsOnDoubleClick(false);
+    m_issuesTree->header()->setDefaultSectionSize(150);
+    QTreeWidgetItem *___qtreewidgetitem = m_issuesTree->headerItem();
+    ___qtreewidgetitem->setText(0, QApplication::translate("MainWindow", "Id", 0, QApplication::UnicodeUTF8));
+    ___qtreewidgetitem->setText(1, QApplication::translate("MainWindow", "Type", 0, QApplication::UnicodeUTF8));
+    ___qtreewidgetitem->setText(2, QApplication::translate("MainWindow", "Location", 0, QApplication::UnicodeUTF8));
+    ___qtreewidgetitem->setText(3, QApplication::translate("MainWindow", "Description", 0, QApplication::UnicodeUTF8));
+    m_issuesContextMenuHandler = new ContextMenuHandler();
+    m_issuesTree->setItemDelegate(new ContextMenuDelegate(m_issuesContextMenuHandler, m_issuesTree));
+
     m_datatypesTreeDock->setWidget(m_datatypesTree);
     m_projectTreeDock->setWidget(m_projectTree);
+    m_issuesTreeDock->setWidget(m_issuesTree);
     addDockWidget(Qt::LeftDockWidgetArea, m_projectTreeDock);
-    addDockWidget(Qt::LeftDockWidgetArea, m_datatypesTreeDock);
+    addDockWidget(Qt::RightDockWidgetArea, m_datatypesTreeDock);
+    addDockWidget(Qt::BottomDockWidgetArea, m_issuesTreeDock);
+
+    m_issuesTreeDock->hide();
+    IssueManager::setIssuesDock(m_issuesTreeDock);
 
     showMaximized();
 }
@@ -205,7 +237,7 @@ void MainWindow::onNewSolution()
 
         setupGuiForNewSolution();
 
-        Project* project = new Project(nprjdlg->getProjectName().toUpper(), m_projectTree, m_datatypesTree, nprjdlg->enableOOPFeatures());
+        Project* project = new Project(nprjdlg->getProjectName().toUpper(), m_projectTree, m_datatypesTree, m_issuesTree, nprjdlg->enableOOPFeatures());
         project->setEngine(nprjdlg->getDatabaseEngine());
         project->createMajorVersion();
         m_workspace->addProjectToSolution(m_workspace->currentSolution(), project);
@@ -586,7 +618,7 @@ void MainWindow::populateTreeWithSolution(Solution* sol)
 {
     for(int i=0; i<sol->projects().size(); i++)
     {
-        sol->projects()[i]->createTreeItem(m_projectTree, m_datatypesTree);
+        sol->projects()[i]->createTreeItem(m_projectTree, m_datatypesTree, m_issuesTree);
         sol->projects()[i]->populateTreeItem();
     }
 }

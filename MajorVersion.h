@@ -24,7 +24,7 @@ public:
     /**
      * Constructor: Takes in the project Item and the current version
      */
-    MajorVersion(QTreeWidget* tree, QTreeWidget* dttree, ContextMenuEnabledTreeWidgetItem* projectItem, int ver, Project*);
+    MajorVersion(QTreeWidget* tree, QTreeWidget* dttree, QTreeWidget* issueTree, ContextMenuEnabledTreeWidgetItem* projectItem, int ver, Project*);
 
     /**
      * This constructos is used when deserializing. In this case the tree and projectItem are set later

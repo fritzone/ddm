@@ -28,6 +28,7 @@ void Table::addColumn(Column *column)
 {
     m_columns.append(column);
     prepareDiagramEntity();
+    column->setTable(this);
 }
 
 void Table::addIndex(Index *index)

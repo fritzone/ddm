@@ -20,6 +20,7 @@ class NewProjectDialog;
 class Solution;
 class Workspace;
 class ReverseEngineerWizard;
+class ContextMenuHandler;
 
 namespace Ui
 {
@@ -130,17 +131,15 @@ private:
 private:
     Ui::MainWindow *m_ui;
 
-    // the dock window in which the project tree is to be found
     QDockWidget* m_projectTreeDock;
-
-    // the dock widget for the data types
     QDockWidget* m_datatypesTreeDock;
+    QDockWidget* m_issuesTreeDock;
 
-    // the tree which contains everything related to the current project
     ContextMenuEnabledTreeWidget* m_projectTree;
-
-    // the tree containing the data types
     ContextMenuEnabledTreeWidget* m_datatypesTree;
+    ContextMenuEnabledTreeWidget* m_issuesTree;
+
+    ContextMenuHandler* m_issuesContextMenuHandler;
 
     // the initial three button dialog
     MainWindowButtonDialog* m_btndlg;

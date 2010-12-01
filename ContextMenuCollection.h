@@ -33,6 +33,7 @@ public:
     QMenu* getDiagramsPopupMenu() { return m_diagramsPopupMenu; }
     QMenu* getColumnPopupMenu() { return m_columnPopupMenu; }
     QMenu* getDatatypesPopupMenu() { return m_datatypesPopupMenu; }
+    QMenu* getIssuePopupMenu() { return m_issuePopupMenu; }
 
     /*
      * Actions
@@ -79,6 +80,7 @@ private:
     QMenu* m_diagramsPopupMenu;                 // popup menu for the diagram list
     QMenu* m_columnPopupMenu;                   // popup menu for a column in a table
     QMenu* m_datatypesPopupMenu;                // popup menu for the datatypes
+    QMenu* m_issuePopupMenu;                    // popup menu for an issue
 
     // the actions in the table popup menu
     QAction* action_RemoveTable;

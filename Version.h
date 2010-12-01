@@ -14,6 +14,7 @@ class TableInstance;
 class DatabaseEngine;
 class VersionGuiElements;
 class Column;
+class Issue;
 
 /**
  * Basic class holding data related to versions
@@ -204,6 +205,8 @@ public:
      * vital data (chars, blobs, etcs), only indexes (ie. numbers) )
      */
     virtual bool newColumnDestroysDatabaseNormalization(const Column* inNewColumn, const Table* inTable, QString& uglyTable, QString& uglyColumn, int& reserved) = 0;
+
+    virtual void addIssuse(Issue*) = 0;
 
 private:
 

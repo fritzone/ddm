@@ -75,7 +75,8 @@ SOURCES += main.cpp \
     ReverseEngineerWizard.cpp \
     ReverseEngineerWizardDatabasesForm.cpp \
     ReverseEngineerWizardTablesForm.cpp \
-    ReverseEngineerWizardOptionsForm.cpp
+    ReverseEngineerWizardOptionsForm.cpp \
+    IssueManager.cpp
 HEADERS += mainwindow.h \
     MainWindowButtonDialog.h \
     newprojectdialog.h \
@@ -161,7 +162,10 @@ HEADERS += mainwindow.h \
     ReverseEngineerWizard.h \
     ReverseEngineerWizardDatabasesForm.h \
     ReverseEngineerWizardTablesForm.h \
-    ReverseEngineerWizardOptionsForm.h
+    ReverseEngineerWizardOptionsForm.h \
+    IssueManager.h \
+    Issue.h \
+    IssueOriginator.h
 FORMS += mainwindow.ui \
     mainwindowbuttondialog.ui \
     newprojectdialog.ui \

@@ -1,10 +1,11 @@
 #include "Column.h"
 #include "UserDataType.h"
+#include "Table.h"
 
 #include <QApplication>
 #include <QClipboard>
 
-Column::Column(const QString& name, const UserDataType* type, bool pk, bool autoInc) : NamedItem(name), m_type(type), m_pk(pk), m_autoIncrement(autoInc)
+Column::Column(const QString& name, const UserDataType* type, bool pk, bool autoInc) : IssueOriginator(name), m_type(type), m_pk(pk), m_autoIncrement(autoInc)
 {
 
 }
@@ -78,4 +79,9 @@ void Column::copy()
     QString text = doc.toString();
 
     QApplication::clipboard()->setText(text);
+}
+
+QString Column::getFullLocation() const
+{
+    return m_table->getName() + "." + getName();
 }

@@ -9,12 +9,14 @@
 #include "TableInstance.h"
 #include "Workspace.h"
 #include "TableInstance.h"
+#include "Issue.h"
+#include "IssueOriginator.h"
 
 #include <QVector>
 #include <QtGui>
 
-VersionGuiElements::VersionGuiElements(QTreeWidget* projTree, QTreeWidget* dtTree, Version* v) : tablesItem(0), tableInstancesItem(0), versionItem(0), diagramsItem(0), finalSqlItem(0), dtsItem(0),
-    m_tree(projTree), m_dtTree(dtTree), m_version(v),
+VersionGuiElements::VersionGuiElements(QTreeWidget* projTree, QTreeWidget* dtTree, QTreeWidget* issueTree, Version* v) : tablesItem(0), tableInstancesItem(0), versionItem(0), diagramsItem(0), finalSqlItem(0), dtsItem(0),
+    m_tree(projTree), m_dtTree(dtTree), m_issuesTree(issueTree), m_version(v),
     stringsDtItem(0),
     intsDtItem(0),
     dateDtItem(0),
@@ -286,4 +288,20 @@ ContextMenuEnabledTreeWidgetItem* VersionGuiElements::createTableInstanceTreeEnt
     sqlItm->setIcon(0, IconFactory::getTabinstIcon());
     sqlItm->setData(0, Qt::UserRole, a);
     tinst->setSqlItem(sqlItm);
+}
+
+ContextMenuEnabledTreeWidgetItem* VersionGuiElements::createIssueTreeEntry(Issue* issue)
+{
+    QStringList a;
+    a << QString::number(issue->getId()) <<issue->typeAsString() << issue->getOriginator()->getFullLocation() << issue->getDescription();
+    ContextMenuEnabledTreeWidgetItem* itm = new ContextMenuEnabledTreeWidgetItem((ContextMenuEnabledTreeWidgetItem*)0, a);
+    issue->setLocation(itm);
+    itm->setPopupMenu(ContextMenuCollection::getInstance()->getIssuePopupMenu());
+    if(issue->getType() == Issue::WARNING)
+    {
+        itm->setIcon(0, IconFactory::getWarningIcon());
+    }
+    m_issuesTree->insertTopLevelItem(m_issuesTree->topLevelItemCount(), itm);
+    QVariant b(issue->getName());
+    itm->setData(0, Qt::UserRole, b);
 }
