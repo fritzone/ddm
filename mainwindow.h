@@ -21,6 +21,7 @@ class Solution;
 class Workspace;
 class ReverseEngineerWizard;
 class ContextMenuHandler;
+class Issue;
 
 namespace Ui
 {
@@ -110,6 +111,10 @@ public slots:
     void onReverseEngineerWizardNextPage(int);
     void onReverseEngineerWizardAccept();
 
+    void onGotoIssueLocation();
+    void onIgnoreIssue();
+    void onIgnoreIssuesOfATable();
+
 private:
 
     void setupGuiForNewSolution();
@@ -126,7 +131,6 @@ private:
     void freeGuiElements();
     void showProjectDetails();
     void showNewDataTypeWindow(int);
-    void createDatamodelProject(NewProjectDialog*);
 
 private:
     Ui::MainWindow *m_ui;

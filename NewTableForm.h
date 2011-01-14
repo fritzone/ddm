@@ -26,8 +26,10 @@ class ContextMenuEnabledTreeWidgetItem;
 class SqlHighlighter;
 class ContextMenuEnabledTreeWidget;
 class SqlNamesValidator;
+class Issue;
 
-class NewTableForm : public SourceCodePresenterWidget {
+class NewTableForm : public SourceCodePresenterWidget
+{
     Q_OBJECT
 public:
 
@@ -38,12 +40,18 @@ public:
     void focusOnNewColumnName();
 
     void setTable(Table* table);
+    QString getTableName() const;
 
     void selectTab(int);
+    void showColumn(const Column*);
+
+    void setCurrentColumn(Column* col)
+    {
+        m_currentColumn = col;
+    }
 
     virtual void presentSql(Project*,const QString& codepage);
     virtual void presentSql(Project*, SqlSourceEntity*,const QString& codepage){};
-
 
 protected:
 
@@ -109,6 +117,7 @@ public slots:
     void onSaveSql();
 
 protected:
+
     void changeEvent(QEvent *e);
 
 private:
@@ -174,6 +183,8 @@ private:
     void finalizeColumnMovement();
 
     void populateCodepageCombo();
+
+    void updateIssues();
 
 private:
     Ui::NewTableForm *m_ui;

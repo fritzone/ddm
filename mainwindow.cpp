@@ -172,15 +172,13 @@ void MainWindow::setupGuiForNewSolution()
 
     m_issuesTree = new ContextMenuEnabledTreeWidget();
     m_issuesTree->setObjectName(QString::fromUtf8("m_issuesTree"));
-    m_issuesTree->setRootIsDecorated(false);
-    m_issuesTree->setItemsExpandable(false);
     m_issuesTree->setAnimated(false);
-    m_issuesTree->setExpandsOnDoubleClick(false);
+    m_issuesTree->setExpandsOnDoubleClick(true);
     m_issuesTree->header()->setDefaultSectionSize(150);
     QTreeWidgetItem *___qtreewidgetitem = m_issuesTree->headerItem();
-    ___qtreewidgetitem->setText(0, QApplication::translate("MainWindow", "Id", 0, QApplication::UnicodeUTF8));
+    ___qtreewidgetitem->setText(0, QApplication::translate("MainWindow", "", 0, QApplication::UnicodeUTF8));
     ___qtreewidgetitem->setText(1, QApplication::translate("MainWindow", "Type", 0, QApplication::UnicodeUTF8));
-    ___qtreewidgetitem->setText(2, QApplication::translate("MainWindow", "Location", 0, QApplication::UnicodeUTF8));
+    ___qtreewidgetitem->setText(2, QApplication::translate("MainWindow", "Origin", 0, QApplication::UnicodeUTF8));
     ___qtreewidgetitem->setText(3, QApplication::translate("MainWindow", "Description", 0, QApplication::UnicodeUTF8));
     m_issuesContextMenuHandler = new ContextMenuHandler();
     m_issuesTree->setItemDelegate(new ContextMenuDelegate(m_issuesContextMenuHandler, m_issuesTree));
@@ -193,7 +191,7 @@ void MainWindow::setupGuiForNewSolution()
     addDockWidget(Qt::BottomDockWidgetArea, m_issuesTreeDock);
 
     m_issuesTreeDock->hide();
-    IssueManager::setIssuesDock(m_issuesTreeDock);
+    IssueManager::getInstance().setIssuesDock(m_issuesTreeDock);
 
     showMaximized();
 }
@@ -201,10 +199,6 @@ void MainWindow::setupGuiForNewSolution()
 ContextMenuEnabledTreeWidgetItem* MainWindow::createDataTypeTreeEntry(UserDataType* udt)
 {
     return m_workspace->workingVersion()->getGui()->createDataTypeTreeEntry(udt);
-}
-
-void MainWindow::createDatamodelProject(NewProjectDialog* nprjdlg)
-{
 }
 
 void MainWindow::onNewSolution()
@@ -270,11 +264,7 @@ void MainWindow::onNewSolution()
             m_workspace->workingVersion()->getGui()->getTablesItem()->setText(0, tr("Tables"));
         }
 
-        if(nprjdlg->getProjectType() == NewProjectDialog::PRJ_DATAMODEL)
-        {
-            createDatamodelProject(nprjdlg);
-        }
-        else
+        if(nprjdlg->getProjectType() != NewProjectDialog::PRJ_DATAMODEL)
         {
             m_revEngWizard = new ReverseEngineerWizard(nprjdlg->getDatabaseEngine());
             m_revEngWizard->setWizardStyle(QWizard::ClassicStyle);
@@ -282,14 +272,6 @@ void MainWindow::onNewSolution()
 
             QObject::connect(m_revEngWizard, SIGNAL(currentIdChanged(int)), this, SLOT(onReverseEngineerWizardNextPage(int)));
             QObject::connect(m_revEngWizard, SIGNAL(accepted()), this, SLOT(onReverseEngineerWizardAccept()));
-
-            /*InjectSqlDialog* dlg = new InjectSqlDialog(nprjdlg->getDatabaseEngine(), this);
-            dlg->setupForReverseEngineering();
-            dlg->setModal(true);
-            if(dlg->exec() == QDialog::Accepted)
-            {
-                project->getEngine()->reverseEngineerDatabase(dlg->getHost(), dlg->getUser(), dlg->getPassword(), dlg->getDatabase(), project->getWorkingVersion());
-            }*/
         }
 
         enableActions();
@@ -343,7 +325,10 @@ void MainWindow::showTable(const QString &tabName, bool focus)
 
     setCentralWidget(m_newTableForm);
 
-    if(focus) m_projectTree->setCurrentItem(table->getLocation());
+    if(focus)
+    {
+        m_projectTree->setCurrentItem(table->getLocation());
+    }
 }
 
 void MainWindow::showTableInstance(const QString &tabName, bool focus)
@@ -720,7 +705,6 @@ void MainWindow::connectActionsFromTablePopupMenu()
     QObject::connect(ContextMenuCollection::getInstance()->getAction_DeleteDiagram(), SIGNAL(activated()), this, SLOT(onDeleteDiagramFromPopup()));
     QObject::connect(ContextMenuCollection::getInstance()->getAction_RenameDiagram(), SIGNAL(activated()), this, SLOT(onRenameDiagramFromPopup()));
     QObject::connect(ContextMenuCollection::getInstance()->getAction_AddDiagram(), SIGNAL(activated()), this, SLOT(onNewDiagram()));
-
     QObject::connect(ContextMenuCollection::getInstance()->getAction_AddString(), SIGNAL(activated()), this, SLOT(onNewStringType()));
     QObject::connect(ContextMenuCollection::getInstance()->getAction_AddNumeric(), SIGNAL(activated()), this, SLOT(onNewNumericType()));
     QObject::connect(ContextMenuCollection::getInstance()->getAction_AddBool(), SIGNAL(activated()), this, SLOT(onNewBoolType()));
@@ -728,6 +712,9 @@ void MainWindow::connectActionsFromTablePopupMenu()
     QObject::connect(ContextMenuCollection::getInstance()->getAction_AddMisc(), SIGNAL(activated()), this, SLOT(onNewMiscType()));
     QObject::connect(ContextMenuCollection::getInstance()->getAction_AddBlob(), SIGNAL(activated()), this, SLOT(onNewBlobType()));
     QObject::connect(ContextMenuCollection::getInstance()->getAction_AddSpatial(), SIGNAL(activated()), this, SLOT(onNewSpatialType()));
+    QObject::connect(ContextMenuCollection::getInstance()->getAction_GotoIssueLocation(), SIGNAL(activated()), this, SLOT(onGotoIssueLocation()));
+    QObject::connect(ContextMenuCollection::getInstance()->getAction_IgnoreIssue(), SIGNAL(activated()), this, SLOT(onIgnoreIssue()));
+    QObject::connect(ContextMenuCollection::getInstance()->getAction_IgnoreIssuesFromThisTable(), SIGNAL(activated()), this, SLOT(onIgnoreIssuesOfATable()));
 
 }
 
@@ -796,32 +783,15 @@ void MainWindow::onSpecializeTableFromPopup()
         return;
     }
 
-    // TODO: Code duplication with some stuff from below (onDelete...)
-    ContextMenuEnabledTreeWidgetItem* item = m_projectTree->getLastRightclickedItem();
-    m_projectTree->setLastRightclickedItem(0);
-
-    QVariant qv = item->data(0, Qt::UserRole);
-    QString tabName = qv.toString();
-    Table* table =  m_workspace->workingVersion()->getTable(tabName);
-    if(table == 0)  // shouldn't be ...
-    {
-        return;
-    }
+    Table*table = getRightclickedTable();
+    if(table == 0) return;
 
     Table* tbl = new Table(m_workspace->workingVersion());
     tbl->setName(table->getName() + "_specialized");
     tbl->setParent(table);
     tbl->setStorageEngine(table->getStorageEngine());
 
-    // TODO: Code duplication from the "Save table"
-    ContextMenuEnabledTreeWidgetItem* newTblsItem = new ContextMenuEnabledTreeWidgetItem(item, QStringList(tbl->getName())) ;
-
-    QVariant var(tbl->getName());
-    newTblsItem->setData(0, Qt::UserRole, var);
-    newTblsItem->setPopupMenu(ContextMenuCollection::getInstance()->getTablePopupMenu());
-    // set the icon, add to the tree
-    newTblsItem->setIcon(0, IconFactory::getTablesIcon());
-    m_projectTree->insertTopLevelItem(0, newTblsItem);
+    ContextMenuEnabledTreeWidgetItem* newTblsItem = m_workspace->workingVersion()->getGui()->createTableTreeEntry(tbl, table->getLocation()) ;
 
     // add to the project itself
     m_workspace->workingVersion()->addTable(tbl);
@@ -915,16 +885,32 @@ UserDataType* MainWindow::getRightclickedDatatype()
 void MainWindow::onDeleteTableFromPopup()
 {
     Table* tab = getRightclickedTable();
-    QWidget* w = centralWidget();
     if(tab)
     {
-        m_workspace->workingVersion()->deleteTable(tab);
-    }
-    if(dynamic_cast<DiagramForm*>(w))
-    {
-        dynamic_cast<DiagramForm*>(w)->paintDiagram();
-    }
+        if(tab->hasSpecializedTables())
+        {
+            QMessageBox::warning(0, QObject::tr("Specialized tables were found"),
+                                 QObject::tr("Cannot delete this table since there are tables specialized from it. Firstly remove those tables and then delete this one."), QMessageBox::Ok);
+            return;
 
+        }
+        QString tabName = tab->getName();
+        QWidget* w = centralWidget();
+        if(m_workspace->workingVersion()->deleteTable(tab))
+        {
+            if(dynamic_cast<DiagramForm*>(w))
+            {
+                dynamic_cast<DiagramForm*>(w)->paintDiagram();
+            }
+            if(NewTableForm* ntf = dynamic_cast<NewTableForm*>(w))
+            {
+                if(ntf->getTableName() == tabName)
+                {
+                    setCentralWidget(new ProjectDetailsForm());
+                }
+            }
+        }
+    }
 }
 
 void MainWindow::onCopyTableFromPopup()
@@ -1310,6 +1296,52 @@ void MainWindow::onNewMiscType()
 void MainWindow::onNewSpatialType()
 {
     showNewDataTypeWindow(DataType::DT_SPATIAL);
+}
+
+void MainWindow::onGotoIssueLocation()
+{
+    Table* tab = 0;
+    if(!m_issuesTree->getLastRightclickedItem()) return;
+    QVariant a = m_issuesTree->getLastRightclickedItem()->data(0, Qt::UserRole);
+    QString issueName = a.toString();
+    Issue* selectedIssue = m_workspace->workingVersion()->getIssue(issueName);
+    IssueOriginator* source = selectedIssue->getOriginator();
+    Column* testCol = dynamic_cast<Column*>(source);
+    if(testCol)
+    {
+        tab = testCol->getTable();
+        showTable(tab->getName());
+        m_newTableForm->showColumn(testCol);
+        m_newTableForm->focusOnNewColumnName();
+        m_newTableForm->setCurrentColumn(testCol);
+    }
+}
+
+void MainWindow::onIgnoreIssuesOfATable()
+{
+    if(!m_issuesTree->getLastRightclickedItem()) return;
+    QVariant a = m_issuesTree->getLastRightclickedItem()->data(0, Qt::UserRole);
+    QString tabName = a.toString();
+    QVector<Issue*> issuesOfATable = IssueManager::getInstance().getIssuesOfTable(tabName);
+    for(int i=0; i<issuesOfATable.size(); i++)
+    {
+        m_workspace->workingVersion()->removeIssue(issuesOfATable.at(i)->getName());
+        IssueManager::getInstance().ignoringIssue(issuesOfATable.at(i));
+    }
+    m_workspace->workingVersion()->getGui()->cleanupOrphanedIssueTableItems();
+}
+
+void MainWindow::onIgnoreIssue()
+{
+    ContextMenuEnabledTreeWidgetItem* lastRclick = m_issuesTree->getLastRightclickedItem();
+    if(!lastRclick) return;
+    QVariant a = lastRclick->data(0, Qt::UserRole);
+    QString issueName = a.toString();
+    Issue* selectedIssue = m_workspace->workingVersion()->getIssue(issueName);
+    // do not change the order below.
+    m_workspace->workingVersion()->removeIssue(selectedIssue->getName());
+    IssueManager::getInstance().ignoringIssue(selectedIssue);
+    m_workspace->workingVersion()->getGui()->cleanupOrphanedIssueTableItems();
 }
 
 void MainWindow::onDeploy()

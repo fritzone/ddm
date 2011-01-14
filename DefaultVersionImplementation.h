@@ -30,7 +30,7 @@ public:
     virtual bool hasTable(Table*);
     virtual bool hasTable(const QString&);
 
-    virtual void deleteTable(Table*);
+    virtual bool deleteTable(Table*);
     virtual void deleteTableInstance(TableInstance*);
     virtual void purgeSentencedTableInstances();
 
@@ -81,10 +81,11 @@ public:
 
     virtual UserDataType* provideDatatypeForSqlType(const QString& name, const QString& sql, const QString& nullable, const QString& defaultValue, bool relaxed);
 
-    virtual bool newColumnDestroysDatabaseNormalization(const Column* inNewColumn, const Table* inTable, QString& uglyTable, QString& uglyColumn, int& reserved);
-
+    virtual QVector<Issue*> checkIssuesOfNewColumn(Column* inNewColumn, Table* inTable);
     virtual void addIssuse(Issue*);
-
+    virtual Issue* getIssue(const QString&);
+    virtual void removeIssue(const QString &);
+    virtual QVector<Issue*>& getIssues();
 
 protected:
     // the version as a string representation. Major versions are always of form X.0

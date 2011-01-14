@@ -16,6 +16,10 @@ public:
     ~ReverseEngineerWizardOptionsForm();
     bool createDataTypesForColumns();
 
+protected slots:
+
+    void onCheckChangee(bool);
+
 protected:
     void changeEvent(QEvent *e);
 

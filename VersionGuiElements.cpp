@@ -16,15 +16,15 @@
 #include <QtGui>
 
 VersionGuiElements::VersionGuiElements(QTreeWidget* projTree, QTreeWidget* dtTree, QTreeWidget* issueTree, Version* v) : tablesItem(0), tableInstancesItem(0), versionItem(0), diagramsItem(0), finalSqlItem(0), dtsItem(0),
-    m_tree(projTree), m_dtTree(dtTree), m_issuesTree(issueTree), m_version(v),
+    m_tree(projTree), m_dtTree(dtTree), m_issuesTree(issueTree),
     stringsDtItem(0),
     intsDtItem(0),
     dateDtItem(0),
     blobDtItem(0),
     boolDtItem(0),
     miscDtItem(0),
-    spatialDtItem(0)
-
+    spatialDtItem(0),
+    m_version(v)
 {
 }
 
@@ -259,6 +259,8 @@ ContextMenuEnabledTreeWidgetItem* VersionGuiElements::createDiagramTreeEntry(Dia
     dgram->setLocation(newDgramItem);
     dgram->setSaved(true);
     m_tree->addTopLevelItem(newDgramItem);
+
+    return newDgramItem;
 }
 
 ContextMenuEnabledTreeWidgetItem* VersionGuiElements::createTableTreeEntry(Table* tab)
@@ -275,6 +277,36 @@ ContextMenuEnabledTreeWidgetItem* VersionGuiElements::createTableTreeEntry(Table
     return newTblsItem;
 }
 
+ContextMenuEnabledTreeWidgetItem* VersionGuiElements::createTableTreeEntry(Table* tab, ContextMenuEnabledTreeWidgetItem* p)
+{
+    ContextMenuEnabledTreeWidgetItem* newTblsItem = new ContextMenuEnabledTreeWidgetItem(p, QStringList(tab->getName())) ;
+    QVariant var(tab->getName());
+    newTblsItem->setData(0, Qt::UserRole, var);
+    newTblsItem->setPopupMenu(ContextMenuCollection::getInstance()->getTablePopupMenu());
+    // set the icon, add to the tree
+    newTblsItem->setIcon(0, IconFactory::getTablesIcon());
+    m_tree->addTopLevelItem(newTblsItem);
+    // set the link to the tree
+    tab->setLocation(newTblsItem);
+    return newTblsItem;
+}
+
+
+ContextMenuEnabledTreeWidgetItem* VersionGuiElements::createTableTreeEntryForIssue(Table* tab)
+{
+    ContextMenuEnabledTreeWidgetItem* newTblsItem = new ContextMenuEnabledTreeWidgetItem((ContextMenuEnabledTreeWidgetItem*)0, QStringList(tab->getName())) ;
+    QVariant var(tab->getName());
+    newTblsItem->setData(0, Qt::UserRole, var);
+    newTblsItem->setPopupMenu(ContextMenuCollection::getInstance()->getIssuesOfATablePopupMenuPopupMenu());
+    // set the icon, add to the tree
+    newTblsItem->setIcon(0, IconFactory::getTablesIcon());
+    m_issuesTree->addTopLevelItem(newTblsItem);
+    // set the link to the tree
+    tab->setLocation(newTblsItem);
+    return newTblsItem;
+}
+
+
 ContextMenuEnabledTreeWidgetItem* VersionGuiElements::createTableInstanceTreeEntry(TableInstance* tinst)
 {
     ContextMenuEnabledTreeWidgetItem* itm = new ContextMenuEnabledTreeWidgetItem(getTableInstancesItem(), QStringList(tinst->getName()));
@@ -288,20 +320,51 @@ ContextMenuEnabledTreeWidgetItem* VersionGuiElements::createTableInstanceTreeEnt
     sqlItm->setIcon(0, IconFactory::getTabinstIcon());
     sqlItm->setData(0, Qt::UserRole, a);
     tinst->setSqlItem(sqlItm);
+
+    return itm;
 }
 
-ContextMenuEnabledTreeWidgetItem* VersionGuiElements::createIssueTreeEntry(Issue* issue)
+ContextMenuEnabledTreeWidgetItem* VersionGuiElements::createIssueTreeEntry(Issue* issue, ContextMenuEnabledTreeWidgetItem* p)
 {
     QStringList a;
-    a << QString::number(issue->getId()) <<issue->typeAsString() << issue->getOriginator()->getFullLocation() << issue->getDescription();
-    ContextMenuEnabledTreeWidgetItem* itm = new ContextMenuEnabledTreeWidgetItem((ContextMenuEnabledTreeWidgetItem*)0, a);
+    a << "" <<issue->typeAsString() << issue->getOriginator()->getFullLocation() << issue->getDescription();
+    ContextMenuEnabledTreeWidgetItem* itm = new ContextMenuEnabledTreeWidgetItem(p, a);
     issue->setLocation(itm);
     itm->setPopupMenu(ContextMenuCollection::getInstance()->getIssuePopupMenu());
     if(issue->getType() == Issue::WARNING)
     {
         itm->setIcon(0, IconFactory::getWarningIcon());
     }
+    if(issue->getType() == Issue::RECOMMENDATION)
+    {
+        itm->setIcon(0, IconFactory::getRecommendIcon());
+    }
     m_issuesTree->insertTopLevelItem(m_issuesTree->topLevelItemCount(), itm);
     QVariant b(issue->getName());
     itm->setData(0, Qt::UserRole, b);
+
+    return itm;
+}
+
+void VersionGuiElements::cleanupOrphanedIssueTableItems()
+{
+    QVector<int> toRemove;
+
+    for(int i=0; i<m_issuesTree->topLevelItemCount(); i++)
+    {
+        if(m_issuesTree->topLevelItem(i)->childCount() == 0)
+        {
+            toRemove.push_front(i);  // pushing to the front!
+        }
+    }
+
+    for(int i=0; i<toRemove.size(); i++)
+    {
+        m_issuesTree->takeTopLevelItem(i);
+    }
+
+    if(m_issuesTree->topLevelItemCount() == 0)
+    {
+        m_issuesTree->parentWidget()->hide();
+    }
 }

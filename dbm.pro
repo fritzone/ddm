@@ -76,7 +76,10 @@ SOURCES += main.cpp \
     ReverseEngineerWizardDatabasesForm.cpp \
     ReverseEngineerWizardTablesForm.cpp \
     ReverseEngineerWizardOptionsForm.cpp \
-    IssueManager.cpp
+    IssueManager.cpp \
+    IssueOriginator.cpp \
+    DatabaseNormalizationIssue.cpp \
+    ForeignKeyReccomendationIssue.cpp
 HEADERS += mainwindow.h \
     MainWindowButtonDialog.h \
     newprojectdialog.h \
@@ -165,7 +168,9 @@ HEADERS += mainwindow.h \
     ReverseEngineerWizardOptionsForm.h \
     IssueManager.h \
     Issue.h \
-    IssueOriginator.h
+    IssueOriginator.h \
+    DatabaseNormalizationIssue.h \
+    ForeignKeyReccomendationIssue.h
 FORMS += mainwindow.ui \
     mainwindowbuttondialog.ui \
     newprojectdialog.ui \

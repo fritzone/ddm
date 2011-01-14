@@ -23,8 +23,9 @@ class Version : virtual public SerializableElement
 {
 public:
 
-    Version() {};
-    virtual ~Version() {};
+    Version() {}
+
+    virtual ~Version() {}
 
     /**
      * Returns a constant reference to the data types of the version
@@ -110,11 +111,12 @@ public:
     virtual void removeForeignKeyFromDiagrams(ForeignKey*) = 0;
 
     /**
-     * Deletes a table from the system. Also resolves the FK dependencies:
-     * 1. deletes the table and the foreign table referencing this table
-     * 2. Deletes the FK reference from the foreign table
+     * Deletes a table from the system. Also deletes the instantiated tables,
+     * and resolves the Diagrams
+     * Does not delete the table if there are foreign keys referencing it.
+     * @return true if the table was succesfully deleted, false if not
      */
-    virtual void deleteTable(Table*) = 0;
+    virtual bool deleteTable(Table*) = 0;
 
     /**
      * Deletes the given table instance, and also all the other table instances
@@ -200,13 +202,12 @@ public:
      */
     virtual UserDataType* provideDatatypeForSqlType(const QString& name, const QString& sql, const QString& nullable, const QString& defaultValue, bool relaxed) = 0;
 
-    /**
-     * Returns true if a newly introduced column destroys the normalization state of the database (ie: no duplication of
-     * vital data (chars, blobs, etcs), only indexes (ie. numbers) )
-     */
-    virtual bool newColumnDestroysDatabaseNormalization(const Column* inNewColumn, const Table* inTable, QString& uglyTable, QString& uglyColumn, int& reserved) = 0;
-
+    virtual QVector<Issue*> checkIssuesOfNewColumn(Column* inNewColumn, Table* inTable) = 0;
     virtual void addIssuse(Issue*) = 0;
+    virtual Issue* getIssue(const QString&) = 0;
+    virtual void removeIssue(const QString&) = 0;
+    virtual QVector<Issue*>& getIssues() = 0;
+
 
 private:
 
