@@ -47,6 +47,16 @@ public:
 
     virtual QString getFullLocation() const;
 
+    virtual Table* getIssueTable() const
+    {
+        return getTable();
+    }
+
+    Table* getTable() const
+    {
+        return m_table;
+    }
+
 private:
     const UserDataType* m_type;
     bool m_pk;

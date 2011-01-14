@@ -16,6 +16,7 @@ ContextMenuCollection::ContextMenuCollection()
     m_columnPopupMenu = new QMenu();
     m_datatypesPopupMenu = new QMenu();
     m_issuePopupMenu = new QMenu();
+    m_issuesOfATablePopupMenu = new QMenu();
 
     // actions
     action_RemoveTable = new QAction(QObject::tr("Delete table"), 0);
@@ -40,7 +41,6 @@ ContextMenuCollection::ContextMenuCollection()
     action_AddDiagram = new QAction(QObject::tr("New Diagram"), 0);
     action_CopyColumn = new QAction(QObject::tr("Copy"), 0);
     action_PasteColumn = new QAction(QObject::tr("Paste"), 0);
-
     action_addString = new QAction(QObject::tr("New String Type"), 0);
     action_addNumeric = new QAction(QObject::tr("New Numeric Type"), 0);
     action_addDateType = new QAction(QObject::tr("New Date/Time Type"), 0);
@@ -48,6 +48,9 @@ ContextMenuCollection::ContextMenuCollection()
     action_addMisc = new QAction(QObject::tr("New Misc Type"), 0);
     action_addBlob = new QAction(QObject::tr("New Blob Type"), 0);
     action_addSpatial = new QAction(QObject::tr("New Spatial Type"), 0);
+    action_gotoIssueLocation = new QAction(QObject::tr("Goto Issue Origin"), 0);
+    action_ignoreIssue = new QAction(QObject::tr("Ignore this issue"), 0);
+    action_ignoreIssuesFromThisTable = new QAction(QObject::tr("Ignore issues"), 0);
 
     // populate the table popup menu
     m_tablePopupMenu->addAction(action_TableAddColumn);
@@ -95,5 +98,11 @@ ContextMenuCollection::ContextMenuCollection()
     m_datatypesPopupMenu->addAction(action_addMisc);
     m_datatypesPopupMenu->addAction(action_addSpatial);
 
+    // issues
+    m_issuePopupMenu->addAction(action_gotoIssueLocation);
+    m_issuePopupMenu->addAction(action_ignoreIssue);
+
+    // issues of a table
+    m_issuesOfATablePopupMenu->addAction(action_ignoreIssuesFromThisTable);
 }
 

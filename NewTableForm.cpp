@@ -24,12 +24,14 @@
 #include "Codepage.h"
 #include "AbstractCodepageSupplier.h"
 #include "IssueManager.h"
+#include "VersionGuiElements.h"
 
 #include <QMessageBox>
 #include <QHashIterator>
 #include <QHash>
 #include <QKeyEvent>
 #include <QtGui>
+#include <QList>
 
 // the positions of various items in the columns view, used for icon retrieval mostly
 const int COL_POS_PK = 0;
@@ -53,7 +55,6 @@ NewTableForm::NewTableForm(DatabaseEngine* db, Project* prj, QWidget *parent, bo
     lstColumns->header()->setDefaultSectionSize(150);
     m_ui->columnListLayout->addWidget(lstColumns);
     QTreeWidgetItem *___qtreewidgetitem = lstColumns->headerItem();
-    ___qtreewidgetitem->setText(4, QApplication::translate("NewTableForm", "Notes", 0, QApplication::UnicodeUTF8));
     ___qtreewidgetitem->setText(3, QApplication::translate("NewTableForm", "SQL Type", 0, QApplication::UnicodeUTF8));
     ___qtreewidgetitem->setText(2, QApplication::translate("NewTableForm", "Type", 0, QApplication::UnicodeUTF8));
     ___qtreewidgetitem->setText(1, QApplication::translate("NewTableForm", "Name", 0, QApplication::UnicodeUTF8));
@@ -75,7 +76,6 @@ NewTableForm::NewTableForm(DatabaseEngine* db, Project* prj, QWidget *parent, bo
     }
 
     lstColumns->header()->resizeSection(0, 50);
-    lstColumns->header()->hideSection(4);
     m_ui->cmbNewColumnType->setCurrentIndex(-1);
 
     // fill in the storage engine types
@@ -389,7 +389,6 @@ void NewTableForm::populateTable(const Table *table, bool parentTab)
     lstColumns->resizeColumnToContents(2);
     lstColumns->resizeColumnToContents(3);
 
-
     // second step: set up the indices
     const QVector<Index*>& indices = table->getIndices();
     for(int i=0; i<indices.count(); i++)
@@ -508,6 +507,11 @@ void NewTableForm::focusOnNewColumnName()
     m_ui->txtNewColumnName->setFocus();
 }
 
+QString NewTableForm::getTableName() const
+{
+    return m_ui->txtTableName->text();
+}
+
 void NewTableForm::changeEvent(QEvent *e)
 {
     QWidget::changeEvent(e);
@@ -517,6 +521,27 @@ void NewTableForm::changeEvent(QEvent *e)
         break;
     default:
         break;
+    }
+}
+
+void NewTableForm::updateIssues()
+{
+    QVector<Issue*>& allIssues = Workspace::getInstance()->workingVersion()->getIssues();
+    int i=0;
+    while(i<allIssues.size())
+    {
+        if(!allIssues.at(i)->stillValid())
+        {
+            QString issueIName = allIssues.at(i)->getName();
+            IssueOriginator* orig = allIssues.at(i)->getOriginator();
+            Workspace::getInstance()->workingVersion()->removeIssue(issueIName);
+            orig->removeIssueByName(issueIName);
+            Workspace::getInstance()->workingVersion()->getGui()->cleanupOrphanedIssueTableItems();
+        }
+        else
+        {
+            i++;
+        }
     }
 }
 
@@ -533,8 +558,6 @@ void NewTableForm::onAddColumn()
         QMessageBox::critical (this, tr("Error"), tr("Please specify a column name."), QMessageBox::Ok);
         return;
     }
-
-
 
     backupDefaultValuesTable();
     if(m_currentColumn)     // we are working on a column
@@ -595,6 +618,13 @@ void NewTableForm::onAddColumn()
         }
         m_currentColumn->getLocation()->setIcon(COL_POS_DT, m_currentColumn->getDataType()->getIcon());
         m_currentColumn->getLocation()->setText(COL_POS_DT, m_currentColumn->getDataType()->getName());
+
+        // see if the change has done anything to the issues
+        updateIssues();
+
+        // now see if the change has introduced any other new issues (they will be added automatically to the internals)
+        QVector<Issue*> newIssues = Workspace::getInstance()->workingVersion()->checkIssuesOfNewColumn(m_currentColumn, m_table);
+
         m_currentColumn = 0;
     }
     else                    // we are not working on a column, but adding a new one
@@ -622,33 +652,8 @@ void NewTableForm::onAddColumn()
         m_table->tableInstancesAddColumn(col);
 
         col->setLocation(item);
-        m_ui->txtNewColumnName->setFocus( );
-
-        QString dt, dc;
-        int x;
-        if(Workspace::getInstance()->workingVersion()->newColumnDestroysDatabaseNormalization(col, m_table, dt, dc, x))
-        {
-            QString s = "";
-            if(x != 50)
-            {
-                s = QApplication::tr("This column might destroy the normalization of the database in relation with table: ")
-                        + dt
-                        + QApplication::tr(" column: ")
-                        + dc;
-            }
-            else
-            {
-                s = QApplication::tr("This column might need a foreign key to table: ")
-                        + dt
-                        + QApplication::tr(" column: ")
-                        + dc;
-            }
-            lstColumns->header()->showSection(4);
-            item->setText(4, s);
-            item->setIcon(4, IconFactory::getWarningIcon());
-
-            Issue* issue = IssueManager::createIssue(col, s, Issue::WARNING);
-        }
+        m_ui->txtNewColumnName->setFocus();
+        Workspace::getInstance()->workingVersion()->checkIssuesOfNewColumn(col, m_table);
 
     }
 
@@ -685,7 +690,9 @@ void NewTableForm::onCancelColumnEditing()
 
 void NewTableForm::onDeleteColumn()
 {
-    QTreeWidgetItem* currentItem = lstColumns->currentItem();
+    QTreeWidgetItem* currentItem = lstColumns->currentItem() == 0?
+                m_currentColumn==0?0:m_currentColumn->getLocation():lstColumns->currentItem();
+
     if(currentItem == 0)
     {
         QMessageBox::critical (this, tr("Error"), tr("Please make sure you have a column selected for deletion."), QMessageBox::Ok);
@@ -698,28 +705,32 @@ void NewTableForm::onDeleteColumn()
         return;
     }
 
-    const Column* currentColumn = m_table->getColumn(currentItem->text(1));
+    Column* currentColumn = m_table->getColumn(currentItem->text(1));
     if(!currentColumn)
     {
         QMessageBox::critical (this, tr("Error"), tr("[Internal Error 001] The selected column cannot be found in the table."), QMessageBox::Ok);
         return;
     }
 
-    const Index* usedIn = m_table->isColumnUsedInIndex(currentColumn);
+    Index* usedIn = m_table->isColumnUsedInIndex(currentColumn);
     if(usedIn != 0)
     {
         QMessageBox::critical (this, tr("Error"), tr("This column cannot be deleted since it's used in an index. Delete this index first: ") + usedIn->getName(), QMessageBox::Ok);
         return;
     }
     backupDefaultValuesTable();
-    delete lstColumns->currentItem();
+    delete currentItem;
     onCancelColumnEditing();
-    m_table->removeColumn(const_cast<Column*>(currentColumn));
-    m_table->tableInstancesRemoveColumn(const_cast<Column*>(currentColumn));
+    m_table->removeColumn(currentColumn);
+    m_table->tableInstancesRemoveColumn(currentColumn);
+
+    Workspace::getInstance()->workingVersion()->getGui()->cleanupOrphanedIssueTableItems();
     m_currentColumn = 0;
     populateColumnsForIndices();
     updateDefaultValuesTableHeader();
     restoreDefaultValuesTable();
+
+    updateIssues();
 
     autoSave();
 }
@@ -796,6 +807,22 @@ void NewTableForm::toggleColumnFieldDisableness(bool a)
     m_ui->txtColumnDescription->setDisabled(a);
 }
 
+void NewTableForm::showColumn(const Column * c)
+{
+    if(!m_table->hasColumn(c->getName())) return;
+    m_ui->txtNewColumnName->setText(c->getName());
+    m_ui->cmbNewColumnType->setCurrentIndex(m_project->getWorkingVersion()->getDataTypeIndex(c->getDataType()->getName()));
+    m_ui->chkPrimary->setChecked(c->isPk());
+    m_ui->chkAutoInc->setChecked(c->hasAutoIncrement());
+    m_ui->txtColumnDescription->setText(c->getDescription());
+
+    m_ui->btnAdd->setIcon(IconFactory::getApplyIcon());
+    m_ui->btnCancelColumnEditing->show();
+
+    m_ui->grpColumnDetails->setTitle("Column details");
+
+}
+
 /**
  * Called when a column is selected. onColumnSelect onSelectColumn
  */
@@ -811,34 +838,15 @@ void NewTableForm::onItemSelected(QTreeWidgetItem* current, int)
         {
             return; // shouldn't happen
         }
-
-        // TODO: feels like code duplication with the section below... refactor
-
-        m_ui->txtNewColumnName->setText(colFromParent->getName());
-        m_ui->cmbNewColumnType->setCurrentIndex(m_project->getWorkingVersion()->getDataTypeIndex(colFromParent->getDataType()->getName()));
-        m_ui->chkPrimary->setChecked(colFromParent->isPk());
-        m_ui->chkAutoInc->setChecked(colFromParent->hasAutoIncrement());
-        m_ui->txtColumnDescription->setText(colFromParent->getDescription());
-
-        m_ui->btnAdd->setIcon(IconFactory::getApplyIcon());
-        m_ui->btnCancelColumnEditing->show();
-
+        showColumn(colFromParent);
         toggleColumnFieldDisableness(true);
-        return;
     }
-
-    m_ui->txtNewColumnName->setText(m_currentColumn->getName());
-    m_ui->cmbNewColumnType->setCurrentIndex(m_project->getWorkingVersion()->getDataTypeIndex(m_currentColumn->getDataType()->getName()));
-    m_ui->chkPrimary->setChecked(m_currentColumn->isPk());
-    m_ui->chkAutoInc->setChecked(m_currentColumn->hasAutoIncrement());
-    m_ui->txtColumnDescription->setText(m_currentColumn->getDescription());
-
-    m_ui->btnAdd->setIcon(IconFactory::getApplyIcon());
-    m_ui->btnCancelColumnEditing->show();
-    toggleColumnFieldDisableness(false);
-    m_ui->grpColumnDetails->setTitle("Column details");
+    else
+    {
+        showColumn(m_currentColumn);
+        toggleColumnFieldDisableness(false);
+    }
 }
-
 
 void NewTableForm::populateColumnsForIndices()
 {
@@ -2051,4 +2059,3 @@ void NewTableForm::onPasteColumn()
     m_ui->txtNewColumnName->setFocus( );
     // till here
 }
-

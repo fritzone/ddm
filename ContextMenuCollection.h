@@ -34,6 +34,7 @@ public:
     QMenu* getColumnPopupMenu() { return m_columnPopupMenu; }
     QMenu* getDatatypesPopupMenu() { return m_datatypesPopupMenu; }
     QMenu* getIssuePopupMenu() { return m_issuePopupMenu; }
+    QMenu* getIssuesOfATablePopupMenuPopupMenu() { return m_issuesOfATablePopupMenu; }
 
     /*
      * Actions
@@ -57,7 +58,6 @@ public:
     QAction* getAction_AddDiagram() { return action_AddDiagram; }
     QAction* getAction_CopyColumn() { return action_CopyColumn; }
     QAction* getAction_PasteColumn() { return action_PasteColumn; }
-
     QAction* getAction_AddString() { return action_addString; }
     QAction* getAction_AddNumeric() { return action_addNumeric; }
     QAction* getAction_AddDateType() { return action_addDateType; }
@@ -65,6 +65,9 @@ public:
     QAction* getAction_AddMisc() { return action_addMisc; }
     QAction* getAction_AddBlob() { return action_addBlob; }
     QAction* getAction_AddSpatial() { return action_addSpatial; }
+    QAction* getAction_GotoIssueLocation() { return action_gotoIssueLocation; }
+    QAction* getAction_IgnoreIssue() { return action_ignoreIssue; }
+    QAction* getAction_IgnoreIssuesFromThisTable() { return action_ignoreIssuesFromThisTable; }
 
 private:
 
@@ -81,6 +84,7 @@ private:
     QMenu* m_columnPopupMenu;                   // popup menu for a column in a table
     QMenu* m_datatypesPopupMenu;                // popup menu for the datatypes
     QMenu* m_issuePopupMenu;                    // popup menu for an issue
+    QMenu* m_issuesOfATablePopupMenu;           // popup menu for issues of a table
 
     // the actions in the table popup menu
     QAction* action_RemoveTable;
@@ -123,6 +127,13 @@ private:
     QAction* action_addMisc;
     QAction* action_addBlob;
     QAction* action_addSpatial;
+
+    // the issues popup menu's actions
+    QAction* action_gotoIssueLocation;
+    QAction* action_ignoreIssue;
+
+    // issues from a table actions
+    QAction* action_ignoreIssuesFromThisTable;
 
     // the instance of the popup menu collection
     static ContextMenuCollection* m_instance;

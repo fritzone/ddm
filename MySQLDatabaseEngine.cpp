@@ -7,6 +7,7 @@
 #include <QStringList>
 #include <QVariant>
 #include <QMessageBox>
+#include <QApplication>
 
 #include "Table.h"
 #include "Version.h"
@@ -16,6 +17,7 @@
 #include "UserDataType.h"
 #include "Index.h"
 #include "TableInstance.h"
+#include "AbstractStorageEngineListProvider.h"
 #include "ForeignKey.h"
 
 MySQLDatabaseEngine::MySQLDatabaseEngine() : DatabaseEngine("MySQL"), m_revEngMappings(), m_oneTimeMappings()
@@ -54,42 +56,51 @@ bool MySQLDatabaseEngine::reverseEngineerDatabase(const QString& host, const QSt
         dbo.setPassword(pass);
         dbo.setDatabaseName(dbName);
 
-
         bool ok = dbo.open();
-        QString s = "SELECT distinct CONCAT( table_name, '.', column_name, ':', referenced_table_name, '.', referenced_column_name ) AS list_of_fks "
-                "FROM information_schema.KEY_COLUMN_USAGE WHERE REFERENCED_TABLE_SCHEMA = '"
-                + dbName +
-                "' AND REFERENCED_TABLE_NAME is not null ORDER BY TABLE_NAME, COLUMN_NAME";
-        QSqlQuery query;
-        query.exec(s);
-        while(query.next())
+
+        if(ok)
         {
-            QString val = query.value(0).toString();
-            QString referencee = val.left(val.indexOf(':'));
-            QString referenced = val.mid(val.indexOf(':') + 1);
-
-            QString referenceeTableName = referencee.left(referencee.indexOf('.'));
-            QString referenceeColumnName = referencee.mid(referencee.indexOf('.') + 1);
-
-            QString referencedTableName = referenced.left(referenced.indexOf('.'));
-            QString referencedColumnName = referenced.mid(referenced.indexOf('.') + 1);
-
-            Table* referenceeTable = v->getTable(referenceeTableName);
-            Table* referencedTable = v->getTable(referencedTableName);
-            Column* referenceeColumn = referenceeTable->getColumn(referenceeColumnName);
-            Column* referencedColumn = referencedTable->getColumn(referencedColumnName);
-            // now we should check that the columns have the same data type ...
-            if(referencedColumn->getDataType() != referenceeColumn->getDataType())
+            QString s = "SELECT distinct CONCAT( table_name, '.', column_name, ':', referenced_table_name, '.', referenced_column_name ) AS list_of_fks "
+                    "FROM information_schema.KEY_COLUMN_USAGE WHERE REFERENCED_TABLE_SCHEMA = '"
+                    + dbName +
+                    "' AND REFERENCED_TABLE_NAME is not null ORDER BY TABLE_NAME, COLUMN_NAME";
+            QSqlQuery query;
+            query.exec(s);
+            bool foundAtLeastOneForeignKey = false;
+            while(query.next())
             {
-                // TODO something
+                QString val = query.value(0).toString();
+                QString referencee = val.left(val.indexOf(':'));
+                QString referenced = val.mid(val.indexOf(':') + 1);
+
+                QString referenceeTableName = referencee.left(referencee.indexOf('.'));
+                QString referenceeColumnName = referencee.mid(referencee.indexOf('.') + 1);
+
+                QString referencedTableName = referenced.left(referenced.indexOf('.'));
+                QString referencedColumnName = referenced.mid(referenced.indexOf('.') + 1);
+
+                Table* referenceeTable = v->getTable(referenceeTableName);
+                Table* referencedTable = v->getTable(referencedTableName);
+                Column* referenceeColumn = referenceeTable->getColumn(referenceeColumnName);
+                Column* referencedColumn = referencedTable->getColumn(referencedColumnName);
+                // now we should check that the columns have the same data type ...
+                if(referencedColumn->getDataType() != referenceeColumn->getDataType())
+                {
+                    // TODO initially here was nothing ...
+                    referencedColumn->setDataType(referenceeColumn->getDataType());
+                }
+
+                ForeignKey::ColumnAssociation* fkAssociation = new ForeignKey::ColumnAssociation(referencedTable, referencedColumn, referenceeTable, referenceeColumn);
+                ForeignKey* fk = new ForeignKey();
+                fk->addAssociation(fkAssociation);
+                referenceeTable->addForeignKey(fk);
+                foundAtLeastOneForeignKey = true;
             }
 
-            ForeignKey::ColumnAssociation* fkAssociation = new ForeignKey::ColumnAssociation(referencedTable, referencedColumn, referenceeTable, referenceeColumn);
-            ForeignKey* fk = new ForeignKey();
-            fk->addAssociation(fkAssociation);
-
-            referenceeTable->addForeignKey(fk);
-
+            if(!foundAtLeastOneForeignKey)
+            {
+                QMessageBox::information(0, QApplication::tr("Information"), QApplication::tr("This database does not contain foreign key definitions. You will need to set them up manually."), QMessageBox::Ok);
+            }
         }
     }
 
@@ -317,6 +328,28 @@ Table* MySQLDatabaseEngine::reverseEngineerTable(const QString& host, const QStr
         }
     }
 
+    // find the storage engine
+    {
+        QString s = "SELECT ENGINE FROM information_schema.TABLES WHERE TABLE_SCHEMA = '"+dbName+"' AND TABLE_NAME = '"+tab->getName()+"'";
+        QSqlQuery query;
+        query.exec(s);
+        QString eng = "";
+        while(query.next())
+        {
+            eng = query.value(0).toString();
+        }
+
+        AbstractStorageEngineListProvider* stlist = getStorageEngineListProviders();
+        QVector<AbstractStorageEngine*> stengines = stlist->getStorageEngines();
+        for(int i=0; i<stengines.size(); i++)
+        {
+            if(stengines.at(i)->name() == eng)
+            {
+                tab->setStorageEngine(stengines.at(i));
+                break;
+            }
+        }
+    }
     return tab;
 }
 

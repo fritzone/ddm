@@ -138,15 +138,7 @@ public:
 
     virtual void serialize(QDomDocument &doc, QDomElement &parent) const;
 
-    const Table* getParent() const
-    {
-        return m_parent;
-    }
-
-    void setParent(const Table* parent)
-    {
-        m_parent = parent;
-    }
+    void setParent(Table* parent);
 
     bool isPersistent() const
     {
@@ -251,17 +243,17 @@ public:
      */
     void addForeignKeyCommand(const QString& com)
     {
-        foreignKeyCommands << com;
+        m_foreignKeyCommands << com;
     }
 
     void restartSqlRendering()
     {
-        foreignKeyCommands.clear();
+        m_foreignKeyCommands.clear();
     }
 
     QStringList getForeignKeyCommands() const
     {
-        return foreignKeyCommands;
+        return m_foreignKeyCommands;
     }
 
     /**
@@ -285,7 +277,7 @@ public:
 
     void addInstance(TableInstance* tinst)
     {
-        tableInstances.append(tinst);
+        m_tableInstances.append(tinst);
     }
 
     void tableInstancesAddColumn(Column* col);
@@ -302,6 +294,14 @@ public:
     QVector<ForeignKey*> columnParticipatesInForeignKey(const Column* col);
 
     QString generateUniqueColumnName(const QString& in);
+
+    void addSpecializedTable(Table* childTable);
+
+    bool hasSpecializedTables() const;
+
+    void removeSpecializedTable(Table*);
+
+    Table* getParent() const;
 
 private:
 
@@ -321,7 +321,7 @@ private:
     QVector <QVector <QString> > m_startupValues;
 
     // tables can be built up in a OO hierarchy, each table inherits the parent table's properties (columns, indices, etc), and it can extend it
-    const Table* m_parent;
+    Table* m_parent;
 
     // if the table is marked as persistent the C++ (Java) code generator will generate some extra code which will load the table on instantiation
     bool m_persistent;
@@ -338,11 +338,13 @@ private:
 
     QString m_tempTabName;
 
-    mutable QStringList foreignKeyCommands;
+    mutable QStringList m_foreignKeyCommands;
 
     // all the table instances that were created from this table
-    QVector<TableInstance*> tableInstances;
+    QVector<TableInstance*> m_tableInstances;
 
+    // all the specialized tables that were created from this
+    QVector<Table*> m_children;
 
 private:
 

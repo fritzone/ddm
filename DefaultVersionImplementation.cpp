@@ -13,6 +13,8 @@
 #include "Workspace.h"
 #include "Configuration.h"
 #include "DatabaseEngine.h"
+#include "Issue.h"
+#include "IssueManager.h"
 
 #include <QtGui>
 
@@ -214,7 +216,7 @@ void DefaultVersionImplementation::deleteTableInstance(TableInstance *tinst)
     }
 }
 
-void DefaultVersionImplementation::deleteTable(Table *tab)
+bool DefaultVersionImplementation::deleteTable(Table *tab)
 {
     int tabIndex = -1;
     QString incomingForeignKeys = "";
@@ -231,14 +233,14 @@ void DefaultVersionImplementation::deleteTable(Table *tab)
         }
 
     }
-    if(tabIndex == -1) return;
+    if(tabIndex == -1) return false;
     if(incomingForeignKeys.length() > 0)
     {
         QMessageBox::warning(0, QObject::tr("Foreign keys found"),
                              QObject::tr("Cannot delete this table since the following tables are referencing it through a foreign key: ") +
                              incomingForeignKeys +
                              QObject::tr("\nFirstly remove the foreign keys, then delete the table."), QMessageBox::Ok);
-        return;
+        return false;
     }
 
     for(int i=0; i<m_data.m_diagrams.size(); i++)
@@ -262,9 +264,25 @@ void DefaultVersionImplementation::deleteTable(Table *tab)
         }
     }
 
+    // now delete all the issues this table is referenced in
+    QVector<Issue*> issuesOfTheTable = IssueManager::getInstance().getIssuesOfTable(tab->getName());
+    for(int i=0; i<issuesOfTheTable.size(); i++)
+    {
+        removeIssue(issuesOfTheTable.at(i)->getName());
+        IssueManager::getInstance().ignoringIssue(issuesOfTheTable.at(i));
+    }
+    getGui()->cleanupOrphanedIssueTableItems();
 
+    // remove from the parenttable
+    if(m_data.m_tables[tabIndex]->getParent())
+    {
+        m_data.m_tables[tabIndex]->getParent()->removeSpecializedTable(m_data.m_tables[tabIndex]);
+    }
+
+    m_data.m_tables[tabIndex]->getLocation()->parent()->removeChild(m_data.m_tables[tabIndex]->getLocation());
     delete m_data.m_tables[tabIndex]->getLocation();
     m_data.m_tables.remove(tabIndex);
+    return true;
 }
 
 
@@ -544,46 +562,87 @@ UserDataType* DefaultVersionImplementation::provideDatatypeForSqlType(const QStr
     return newUdt;
 }
 
-bool DefaultVersionImplementation::newColumnDestroysDatabaseNormalization(const Column* inNewColumn, const Table* inTable, QString& uglyTable, QString& uglyColumn, int& reserved)
+QVector<Issue*> DefaultVersionImplementation::checkIssuesOfNewColumn(Column* inNewColumn, Table* inTable)
 {
-    uglyTable = ""; uglyColumn = ""; reserved = 0;
+    QVector<Issue*> result;
     // firstly we need to check that the newly introduced columns' datatype is used in any other table
     for(int i=0; i<m_data.m_tables.size(); i++)
     {
         Table* tabI = m_data.m_tables.at(i);
         if(tabI != inTable)
         {
-            uglyTable = tabI->getName();
             QStringList fullColumns = tabI->fullColumns();
             for(int j=0; j<fullColumns.size(); j++)
             {
-                uglyColumn = fullColumns.at(j);
                 const UserDataType* othersDataType = tabI->getDataTypeOfColumn(fullColumns.at(j));
                 if(inNewColumn->getDataType()->getName() == othersDataType->getName())
                 {
+                    Column* otherColumn = tabI->getColumn(fullColumns.at(j));
+                    if(otherColumn == 0) otherColumn = tabI->getColumnFromParents(fullColumns.at(j));
+                    if(otherColumn == 0) continue;
+
                     // they share the same data type ... let's check if this data type is:
                     // 1. numeric and 2. primary key in one of them
                     if(othersDataType->getType() == DataType::DT_NUMERIC)
                     {
-                        Column* otherColumn = tabI->getColumn(fullColumns.at(j));
-                        if(otherColumn == 0) otherColumn = tabI->getColumnFromParents(fullColumns.at(j));
-                        if(otherColumn == 0) return false;
-                        if(inNewColumn->isPk() || otherColumn->isPk())
+                        if(inNewColumn->isPk() || otherColumn->isPk()) // but ONLY if there is no foreign key between these two. TODO: check this too
                         {
-                            reserved = 50;  // meaning: show a message that the user should create a foreign key to stuff below
-                            return false;   // This does not lead to duplication, one of them is a primary key
+                            Issue* issue = IssueManager::getInstance().
+                                    createForeignKeyReccomendedIssue(tabI, otherColumn, inTable, inNewColumn);
+                            if(issue)
+                            {
+                                result.append(issue);
+                            }
                         }
                     }
-                    return true; // this will definitely lead to data duplication
+                    else
+                    {
+                        Issue* issue = IssueManager::getInstance().
+                            createDatabaseNormalizationIssue(tabI, otherColumn, inTable, inNewColumn);
+                        if(issue)
+                        {
+                            result.append(issue);
+                        }
+                    }
                 }
             }
         }
     }
 
-    return false;
+    return result;
 }
 
 void DefaultVersionImplementation::addIssuse(Issue* issue)
 {
     m_data.m_issues.append(issue);
+}
+
+Issue* DefaultVersionImplementation::getIssue(const QString& name)
+{
+    for(int i=0; i< m_data.m_issues.size(); i++)
+    {
+        if(m_data.m_issues[i]->getName() == name)
+        {
+            return m_data.m_issues[i];
+        }
+    }
+    return 0;
+}
+
+void DefaultVersionImplementation::removeIssue(const QString& name)
+{
+    for(int i=0; i< m_data.m_issues.size(); i++)
+    {
+        if(m_data.m_issues[i]->getName() == name)
+        {
+            m_data.m_issues.remove(i);
+            qDebug() << "REmoving issue:" << name;
+            return;
+        }
+    }
+}
+
+QVector<Issue*>& DefaultVersionImplementation::getIssues()
+{
+    return m_data.m_issues;
 }

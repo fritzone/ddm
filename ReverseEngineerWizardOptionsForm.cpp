@@ -15,6 +15,8 @@ ReverseEngineerWizardOptionsForm::ReverseEngineerWizardOptionsForm(QWidget *pare
     setPixmap(QWizard::WatermarkPixmap, p->pixmap(150, 187));
     setPixmap(QWizard::LogoPixmap, p1->pixmap(32, 32));
 
+    ui->lblWarning->setVisible(false);
+
 }
 
 ReverseEngineerWizardOptionsForm::~ReverseEngineerWizardOptionsForm()
@@ -37,4 +39,9 @@ void ReverseEngineerWizardOptionsForm::changeEvent(QEvent *e)
 bool ReverseEngineerWizardOptionsForm::createDataTypesForColumns()
 {
     return ui->checkBox->isChecked();
+}
+
+void ReverseEngineerWizardOptionsForm::onCheckChangee(bool a)
+{
+    ui->lblWarning->setVisible(!a);
 }

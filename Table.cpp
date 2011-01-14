@@ -19,8 +19,10 @@
 #include <QApplication>
 #include <QClipboard>
 
-Table::Table(Version* v) :  NamedItem(NameGenerator::getNextTableNameFromVersion(v, "TAB")), m_description(""), m_columns(), m_indices(), m_foreignKeys(), m_startupValues(),
-                            m_parent(0), m_persistent(false), m_temporary(false), m_storageEngine(0), m_diagramEntity(0), m_version(v)
+Table::Table(Version* v) : NamedItem(NameGenerator::getNextTableNameFromVersion(v, "TAB")),
+    m_description(""), m_columns(), m_indices(), m_foreignKeys(), m_startupValues(),
+    m_parent(0), m_persistent(false), m_temporary(false), m_storageEngine(0),
+    m_diagramEntity(0), m_version(v), m_children()
 {
 }
 
@@ -552,26 +554,26 @@ Index* Table::createAutoIndex(QVector<const Column*> cols)
 
 void Table::tableInstancesAddColumn(Column* col)
 {
-    for(int i=0; i<tableInstances.size(); i++)
+    for(int i=0; i<m_tableInstances.size(); i++)
     {
-        tableInstances.at(i)->addColumn(col->getName());
+        m_tableInstances.at(i)->addColumn(col->getName());
     }
 }
 
 void Table::tableInstancesRenameColumn(const QString &oldName, const QString &newName)
 {
-    for(int i=0; i<tableInstances.size(); i++)
+    for(int i=0; i<m_tableInstances.size(); i++)
     {
-        tableInstances.at(i)->renameColumn(oldName, newName);
+        m_tableInstances.at(i)->renameColumn(oldName, newName);
     }
 }
 
 
 void Table::tableInstancesRemoveColumn(Column* col)
 {
-    for(int i=0; i<tableInstances.size(); i++)
+    for(int i=0; i<m_tableInstances.size(); i++)
     {
-        tableInstances.at(i)->removeColumn(col->getName());
+        m_tableInstances.at(i)->removeColumn(col->getName());
     }
 }
 
@@ -612,4 +614,30 @@ QString Table::generateUniqueColumnName(const QString& in)
         i++;
     }
     return in;
+}
+
+void Table::addSpecializedTable(Table* childTable)
+{
+    m_children.append(childTable);
+}
+
+bool Table::hasSpecializedTables() const
+{
+    return m_children.size() > 0;
+}
+
+void Table::removeSpecializedTable(Table* childTable)
+{
+    m_children.remove(m_children.indexOf(childTable));
+}
+
+void Table::setParent(Table* parent)
+{
+    m_parent = parent;
+    m_parent->addSpecializedTable(this);
+}
+
+Table* Table::getParent() const
+{
+    return m_parent;
 }

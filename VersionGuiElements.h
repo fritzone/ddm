@@ -137,13 +137,15 @@ public:
 
     void populateTreeItems();
 
+    void cleanupOrphanedIssueTableItems();
+
     ContextMenuEnabledTreeWidgetItem* createDataTypeTreeEntry(UserDataType*);
     ContextMenuEnabledTreeWidgetItem* createDiagramTreeEntry(Diagram*);
     ContextMenuEnabledTreeWidgetItem* createTableTreeEntry(Table* tab);
+    ContextMenuEnabledTreeWidgetItem* createTableTreeEntry(Table* tab, ContextMenuEnabledTreeWidgetItem* p);
     ContextMenuEnabledTreeWidgetItem* createTableInstanceTreeEntry(TableInstance* tab);
-    ContextMenuEnabledTreeWidgetItem* createIssueTreeEntry(Issue* issue);
-
-
+    ContextMenuEnabledTreeWidgetItem* createIssueTreeEntry(Issue* issue, ContextMenuEnabledTreeWidgetItem* p);
+    ContextMenuEnabledTreeWidgetItem* createTableTreeEntryForIssue(Table* tab);
 
 private:
 

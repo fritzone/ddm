@@ -61,6 +61,9 @@ NewDataTypeForm::NewDataTypeForm(DataType::DT_TYPE t, DatabaseEngine* dbe, QWidg
     case DataType::DT_SPATIAL :
         m_ui->cmbDTType->setCurrentIndex(6);
         break;
+    case DataType::DT_INVALID :
+        m_ui->cmbDTType->setCurrentIndex(-1);
+        break;
     }
 }
 

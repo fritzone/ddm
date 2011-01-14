@@ -15,7 +15,7 @@ class Issue : public NamedItem, public TreeItem
 {
 public:
 
-    enum IssueType
+    enum IssueSeverity
     {
         WARNING=0,
         CRITICAL=1,
@@ -23,9 +23,10 @@ public:
         RECOMMENDATION=3
     };
 
-    Issue(IssueOriginator* originator, const QString& description, IssueType type, int nr) : NamedItem("issue #" + QString::number(nr)),
-        m_originator(originator), m_description(description), m_type(type), m_id(nr)
-    {}
+    enum IssueType
+    {
+        RECOMMENDATION_SHOULD_CREATE_FOREIGN_KEY = 50
+    };
 
     int getId() const
     {
@@ -45,14 +46,16 @@ public:
         case RECOMMENDATION:
             return "Hint";
         }
+
+        return "N/A";
     }
 
-    IssueType getType() const
+    IssueSeverity getType() const
     {
         return m_type;
     }
 
-    const IssueOriginator * getOriginator() const
+    IssueOriginator * getOriginator() const
     {
         return m_originator;
     }
@@ -62,9 +65,18 @@ public:
         return m_description;
     }
 
-private:
+    Issue(IssueOriginator* originator, const QString& description, IssueSeverity type, int nr) : NamedItem("issue #" + QString::number(nr)),
+        m_description(description), m_type(type), m_originator(originator), m_id(nr)
+    {}
+
+    virtual bool isLike(Issue*) = 0;
+
+    virtual bool stillValid() = 0;
+
+protected:
     QString m_description;
-    IssueType m_type;
+
+    IssueSeverity m_type;
     IssueOriginator* m_originator;
     int m_id;
 };

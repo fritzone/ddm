@@ -162,6 +162,12 @@ public:
         return icon;
     }
 
+    static const QIcon& getRecommendIcon()
+    {
+        static const QIcon icon(strRecommendIcon);
+        return icon;
+    }
+
 };
 
 #endif // ICONFACTORY_H
