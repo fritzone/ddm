@@ -9,11 +9,19 @@ class Column;
 class DatabaseNormalizationIssue : public Issue
 {
 public:
+
+    /**
+     * @param newTable - the table that we are working on right now
+     * @param newColumn - the column on which we are working right now (the causing column)
+     * @param firstTable - the table, that was there in the system and conflicted with the new table
+     * @param firstColumn - the column which was there in the system and conflicted with the new column
+     */
     DatabaseNormalizationIssue(Table* newTable, Column* newColumn, Table* firstTable, Column* firstColumn);
 
 
     virtual bool stillValid();
     virtual bool isLike(Issue*);
+    virtual bool affects(Table *);
     Table* getNewTable() const { return m_newTable; }
     Table* getFirstTable() const { return m_firstTable; }
     Column* getNewColumn() const { return m_newColumn; }

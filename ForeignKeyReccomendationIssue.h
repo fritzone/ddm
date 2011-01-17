@@ -13,6 +13,7 @@ public:
 
     virtual bool stillValid();
     virtual bool isLike(Issue *);
+    virtual bool affects(Table *);
     Table* getNewTable() const { return m_newTable; }
     Table* getFirstTable() const { return m_firstTable; }
     Column* getNewColumn() const { return m_newColumn; }

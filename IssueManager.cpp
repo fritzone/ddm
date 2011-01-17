@@ -108,3 +108,23 @@ Issue* IssueManager::createForeignKeyReccomendedIssue( Table* newTab, Column* ne
     insertIssue(newIssue, firstCol, newIssue->getDescription(), newIssue->getType());
     return newIssue;
 }
+
+QVector<Issue*> IssueManager::getIssuesReferencingTable(const QString& tabName)
+{
+    QVector<Issue*> result;
+    for(int i=0; i<issuesOfTables.keys().size(); i++)
+    {
+        if(issuesOfTables.keys().at(i) != tabName)
+        {
+            QVector<Issue*>& tabsIssues = issuesOfTables[issuesOfTables.keys().at(i)];
+            for(int j=0; j<tabsIssues.size(); j++)
+            {
+                if(tabsIssues.at(j)->affects(Workspace::getInstance()->workingVersion()->getTable(tabName)))
+                {
+                    result.append(tabsIssues.at(j));
+                }
+            }
+        }
+    }
+    return result;
+}

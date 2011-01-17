@@ -301,8 +301,6 @@ ContextMenuEnabledTreeWidgetItem* VersionGuiElements::createTableTreeEntryForIss
     // set the icon, add to the tree
     newTblsItem->setIcon(0, IconFactory::getTablesIcon());
     m_issuesTree->addTopLevelItem(newTblsItem);
-    // set the link to the tree
-    tab->setLocation(newTblsItem);
     return newTblsItem;
 }
 
