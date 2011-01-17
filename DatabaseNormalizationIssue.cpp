@@ -41,3 +41,8 @@ bool DatabaseNormalizationIssue::isLike(Issue *other)
         return true;
     return false;
 }
+
+bool DatabaseNormalizationIssue::affects(Table *tab)
+{
+    return m_firstTable->getName() == tab->getName() || m_newTable->getName() == tab->getName();
+}

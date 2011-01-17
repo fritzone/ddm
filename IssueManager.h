@@ -23,6 +23,9 @@ public:
         dw = widget;
     }
 
+    /**
+     * Returns the all the issues that were created by the given table
+     */
     QVector<Issue*> getIssuesOfTable(const QString& tabName)
     {
         if(issuesOfTables.contains(tabName))
@@ -31,6 +34,13 @@ public:
         }
         return QVector<Issue*>();
     }
+
+    /**
+     * Returns all the issues that were created by other tables than
+     * the given one, but are referencing the given table
+     */
+    QVector<Issue*> getIssuesReferencingTable(const QString& tabName);
+
 
     void ignoringIssue(Issue*,bool alsoRemoveFromOriginator = true);
 

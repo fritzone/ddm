@@ -42,3 +42,8 @@ bool ForeignKeyReccomendationIssue::isLike(Issue* other)
         return true;
     return false;
 }
+
+bool ForeignKeyReccomendationIssue::affects(Table *tab)
+{
+    return m_firstTable->getName() == tab->getName() || m_newTable->getName() == tab->getName();
+}

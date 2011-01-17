@@ -7,6 +7,7 @@
 #include <QString>
 
 class IssueOriginator;
+class Table;
 
 /**
  * Class representing an identified issue
@@ -72,6 +73,11 @@ public:
     virtual bool isLike(Issue*) = 0;
 
     virtual bool stillValid() = 0;
+
+    /**
+     * Return true if this issue affects the given table
+     */
+    virtual bool affects(Table*) = 0;
 
 protected:
     QString m_description;

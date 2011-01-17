@@ -273,14 +273,23 @@ bool DefaultVersionImplementation::deleteTable(Table *tab)
     }
     getGui()->cleanupOrphanedIssueTableItems();
 
+    // and delete the issues of other tables, this table was referenced in
+    QVector<Issue*> issuesReferencingTheTable = IssueManager::getInstance().getIssuesReferencingTable(tab->getName());
+    for(int i=0; i<issuesReferencingTheTable.size(); i++)
+    {
+        removeIssue(issuesReferencingTheTable .at(i)->getName());
+        IssueManager::getInstance().ignoringIssue(issuesReferencingTheTable.at(i));
+    }
+    getGui()->cleanupOrphanedIssueTableItems();
+
     // remove from the parenttable
     if(m_data.m_tables[tabIndex]->getParent())
     {
         m_data.m_tables[tabIndex]->getParent()->removeSpecializedTable(m_data.m_tables[tabIndex]);
     }
 
-    m_data.m_tables[tabIndex]->getLocation()->parent()->removeChild(m_data.m_tables[tabIndex]->getLocation());
-    delete m_data.m_tables[tabIndex]->getLocation();
+    ContextMenuEnabledTreeWidgetItem* tabLoc = tab->getLocation();
+    delete tabLoc;
     m_data.m_tables.remove(tabIndex);
     return true;
 }
