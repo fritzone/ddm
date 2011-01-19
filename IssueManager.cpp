@@ -23,6 +23,7 @@ Issue* IssueManager::insertIssue(Issue* issue, IssueOriginator *originator, cons
             if(tableAlreadyHasIssues(originator->getIssueTable()))  // find and insert the new itm in there
             {
                 tabitm = originatorTables[originator->getIssueTable()->getName()];
+                issuesOfTables[originator->getIssueTable()->getName()].append(issue);
             }
             //issuesOfTables[originator->getIssueTable()->getName()].append(issue);
             else    // create a new location
@@ -82,7 +83,7 @@ void IssueManager::ignoringIssue(Issue* issue, bool alsoRemoveFromOriginator)
 Issue* IssueManager::createDatabaseNormalizationIssue( Table* newTab, Column* newCol, Table* firstTab, Column* firstCol)
 {
     DatabaseNormalizationIssue* newIssue = new DatabaseNormalizationIssue(newTab, newCol, firstTab, firstCol);
-    if(firstCol->hasIssueLike(newIssue))
+    if(firstCol->hasIssueLike(newIssue) || newCol->hasIssueLike(newIssue))
     {
         delete newIssue;
         return 0;
@@ -97,7 +98,7 @@ Issue* IssueManager::createDatabaseNormalizationIssue( Table* newTab, Column* ne
 Issue* IssueManager::createForeignKeyReccomendedIssue( Table* newTab, Column* newCol, Table* firstTab, Column* firstCol)
 {
     ForeignKeyReccomendationIssue* newIssue = new ForeignKeyReccomendationIssue(newTab, newCol, firstTab, firstCol);
-    if(firstCol->hasIssueLike(newIssue))
+    if(firstCol->hasIssueLike(newIssue) || newCol->hasIssueLike(newIssue))
     {
         delete newIssue;
         return 0;

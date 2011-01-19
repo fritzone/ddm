@@ -61,7 +61,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), m_ui(new Ui::Main
     Configuration::instance();
 
     m_workspace = Workspace::getInstance();
-
 }
 
 MainWindow::~MainWindow()
@@ -275,6 +274,9 @@ void MainWindow::onNewSolution()
         }
 
         enableActions();
+
+        m_workspace->workingVersion()->getGui()->setMainWindow(this);
+        m_workspace->workingVersion()->getGui()->createAdditionalForms();
     }
 }
 
@@ -379,9 +381,8 @@ void MainWindow::currentProjectTreeItemChanged(QTreeWidgetItem * current, QTreeW
         else
         if(current == m_workspace->workingVersion()->getGui()->getTableInstancesItem())
         {// we have clicked on the Table instances item (i.e.t. the list of table instances)
-            TableInstancesListForm* tblLst = new TableInstancesListForm(this);
-            tblLst->populateTableInstances(m_workspace->workingVersion()->getTableInstances());
-            setCentralWidget(tblLst);
+            m_workspace->workingVersion()->getGui()->getTableInstancesListForm()->populateTableInstances(m_workspace->workingVersion()->getTableInstances());
+            setCentralWidget(m_workspace->workingVersion()->getGui()->getTableInstancesListForm());
         }
         else
         if(current == m_workspace->currentProject()->getLocation())
