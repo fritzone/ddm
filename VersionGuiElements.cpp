@@ -11,20 +11,17 @@
 #include "TableInstance.h"
 #include "Issue.h"
 #include "IssueOriginator.h"
+#include "TablesListForm.h"
+#include "mainwindow.h"
+#include "TableInstancesListForm.h"
 
 #include <QVector>
 #include <QtGui>
 
 VersionGuiElements::VersionGuiElements(QTreeWidget* projTree, QTreeWidget* dtTree, QTreeWidget* issueTree, Version* v) : tablesItem(0), tableInstancesItem(0), versionItem(0), diagramsItem(0), finalSqlItem(0), dtsItem(0),
     m_tree(projTree), m_dtTree(dtTree), m_issuesTree(issueTree),
-    stringsDtItem(0),
-    intsDtItem(0),
-    dateDtItem(0),
-    blobDtItem(0),
-    boolDtItem(0),
-    miscDtItem(0),
-    spatialDtItem(0),
-    m_version(v)
+    stringsDtItem(0), intsDtItem(0), dateDtItem(0), blobDtItem(0),
+    boolDtItem(0), miscDtItem(0), spatialDtItem(0), m_version(v), m_tblInstancesListForm(0)
 {
 }
 
@@ -358,11 +355,21 @@ void VersionGuiElements::cleanupOrphanedIssueTableItems()
 
     for(int i=0; i<toRemove.size(); i++)
     {
-        m_issuesTree->takeTopLevelItem(i);
+        m_issuesTree->takeTopLevelItem(toRemove.at(i));
     }
 
     if(m_issuesTree->topLevelItemCount() == 0)
     {
         m_issuesTree->parentWidget()->hide();
     }
+}
+
+void VersionGuiElements::createAdditionalForms()
+{
+
+}
+
+TableInstancesListForm* VersionGuiElements::getTableInstancesListForm()
+{
+    return m_tblInstancesListForm = new TableInstancesListForm(m_mw);
 }

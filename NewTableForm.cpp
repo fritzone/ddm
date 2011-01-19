@@ -543,6 +543,15 @@ void NewTableForm::updateIssues()
             i++;
         }
     }
+
+    // now see if the change has introduced any other new issues (they will be added automatically to the internals)
+    for(int i=0; i<m_table->fullColumns().size(); i++)
+    {
+        Column* c = m_table->getColumn(m_table->fullColumns().at(i));
+        if(c == 0) c = m_table->getColumnFromParents(m_table->fullColumns().at(i));
+
+        Workspace::getInstance()->workingVersion()->checkIssuesOfNewColumn(c, m_table);
+    }
 }
 
 void NewTableForm::onAddColumn()
@@ -621,10 +630,6 @@ void NewTableForm::onAddColumn()
 
         // see if the change has done anything to the issues
         updateIssues();
-
-        // now see if the change has introduced any other new issues (they will be added automatically to the internals)
-        QVector<Issue*> newIssues = Workspace::getInstance()->workingVersion()->checkIssuesOfNewColumn(m_currentColumn, m_table);
-
         m_currentColumn = 0;
     }
     else                    // we are not working on a column, but adding a new one
@@ -653,7 +658,8 @@ void NewTableForm::onAddColumn()
 
         col->setLocation(item);
         m_ui->txtNewColumnName->setFocus();
-        Workspace::getInstance()->workingVersion()->checkIssuesOfNewColumn(col, m_table);
+        updateIssues();
+//        Workspace::getInstance()->workingVersion()->checkIssuesOfNewColumn(col, m_table);
 
     }
 
@@ -1974,11 +1980,14 @@ void NewTableForm::onChangeName(QString a)
 {
     QVariant v(a);
     if(!m_table) return;
+    QString prevName = m_table->getName();
     if(!m_table->getLocation()) return;
     m_table->getLocation()->setData(0, Qt::UserRole, v);
     m_table->setName(a);
     m_table->getLocation()->setText(0, a);
     updateSqlDueToChange();
+    // and see if this was due to a new table being focused ... weird check.
+    if(prevName != a) updateIssues();
 }
 
 void NewTableForm::onInject()

@@ -264,14 +264,6 @@ bool DefaultVersionImplementation::deleteTable(Table *tab)
         }
     }
 
-    // now delete all the issues this table is referenced in
-    QVector<Issue*> issuesOfTheTable = IssueManager::getInstance().getIssuesOfTable(tab->getName());
-    for(int i=0; i<issuesOfTheTable.size(); i++)
-    {
-        removeIssue(issuesOfTheTable.at(i)->getName());
-        IssueManager::getInstance().ignoringIssue(issuesOfTheTable.at(i));
-    }
-    getGui()->cleanupOrphanedIssueTableItems();
 
     // and delete the issues of other tables, this table was referenced in
     QVector<Issue*> issuesReferencingTheTable = IssueManager::getInstance().getIssuesReferencingTable(tab->getName());
@@ -279,6 +271,13 @@ bool DefaultVersionImplementation::deleteTable(Table *tab)
     {
         removeIssue(issuesReferencingTheTable .at(i)->getName());
         IssueManager::getInstance().ignoringIssue(issuesReferencingTheTable.at(i));
+    }
+    // now delete all the issues this table is referenced in
+    QVector<Issue*> issuesOfTheTable = IssueManager::getInstance().getIssuesOfTable(tab->getName());
+    for(int i=0; i<issuesOfTheTable.size(); i++)
+    {
+        removeIssue(issuesOfTheTable.at(i)->getName());
+        IssueManager::getInstance().ignoringIssue(issuesOfTheTable.at(i));
     }
     getGui()->cleanupOrphanedIssueTableItems();
 
@@ -596,8 +595,7 @@ QVector<Issue*> DefaultVersionImplementation::checkIssuesOfNewColumn(Column* inN
                     {
                         if(inNewColumn->isPk() || otherColumn->isPk()) // but ONLY if there is no foreign key between these two. TODO: check this too
                         {
-                            Issue* issue = IssueManager::getInstance().
-                                    createForeignKeyReccomendedIssue(tabI, otherColumn, inTable, inNewColumn);
+                            Issue* issue = IssueManager::getInstance().createForeignKeyReccomendedIssue(tabI, otherColumn, inTable, inNewColumn);
                             if(issue)
                             {
                                 result.append(issue);
@@ -606,8 +604,7 @@ QVector<Issue*> DefaultVersionImplementation::checkIssuesOfNewColumn(Column* inN
                     }
                     else
                     {
-                        Issue* issue = IssueManager::getInstance().
-                            createDatabaseNormalizationIssue(tabI, otherColumn, inTable, inNewColumn);
+                        Issue* issue = IssueManager::getInstance().createDatabaseNormalizationIssue(tabI, otherColumn, inTable, inNewColumn);
                         if(issue)
                         {
                             result.append(issue);

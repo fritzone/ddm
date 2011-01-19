@@ -12,6 +12,8 @@ class Diagram;
 class Table;
 class TableInstance;
 class Issue;
+class TableInstancesListForm;
+class MainWindow;
 
 /**
  * The scope of this class is to have a common collection point for the tree widget items of a version (DT, Sql, Table, etc...)
@@ -147,6 +149,15 @@ public:
     ContextMenuEnabledTreeWidgetItem* createIssueTreeEntry(Issue* issue, ContextMenuEnabledTreeWidgetItem* p);
     ContextMenuEnabledTreeWidgetItem* createTableTreeEntryForIssue(Table* tab);
 
+    void setMainWindow(MainWindow* mw)
+    {
+        m_mw = mw;
+    }
+
+    void createAdditionalForms();
+
+    TableInstancesListForm* getTableInstancesListForm();
+
 private:
 
     // the tree item containing the "Tables"
@@ -183,7 +194,9 @@ private:
     ContextMenuEnabledTreeWidgetItem* miscDtItem;
     ContextMenuEnabledTreeWidgetItem* spatialDtItem;
 
+    TableInstancesListForm* m_tblInstancesListForm;
     Version* m_version;
+    MainWindow* m_mw;
 };
 
 #endif // VERSIONGUIELEMENTS_H
