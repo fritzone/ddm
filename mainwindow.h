@@ -131,6 +131,7 @@ private:
     void freeGuiElements();
     void showProjectDetails();
     void showNewDataTypeWindow(int);
+    NewTableForm* showExistingTable(Table*);
 
 private:
     Ui::MainWindow *m_ui;
@@ -147,12 +148,6 @@ private:
 
     // the initial three button dialog
     MainWindowButtonDialog* m_btndlg;
-
-    // this is the table screen which is current
-    NewTableForm* m_newTableForm;
-
-    // this menu is popped up when the user clicked the create table instance button
-    QMenu* m_createTableInstancesPopup;
 
     Workspace* m_workspace;
 

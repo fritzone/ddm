@@ -46,18 +46,11 @@
 #endif
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), m_ui(new Ui::MainWindow), m_projectTreeDock(0), m_datatypesTreeDock(0), m_issuesTreeDock(0),
-    m_projectTree(0), m_datatypesTree(0), m_btndlg(0), m_newTableForm(0), m_createTableInstancesPopup(0), m_workspace(0), m_revEngWizard(0)
+    m_projectTree(0), m_datatypesTree(0), m_btndlg(0), m_workspace(0), m_revEngWizard(0)
 {
     m_ui->setupUi(this);
 
-    m_createTableInstancesPopup = new QMenu();
-    m_createTableInstancesPopup->clear();
-
     showButtonDialog();
-
-    m_ui->action_NewTableInstance->setMenu(m_createTableInstancesPopup);
-    m_ui->action_NewDataType->setMenu(ContextMenuCollection::getInstance()->getDatatypesPopupMenu());
-
     Configuration::instance();
 
     m_workspace = Workspace::getInstance();
@@ -276,7 +269,7 @@ void MainWindow::onNewSolution()
         enableActions();
 
         m_workspace->workingVersion()->getGui()->setMainWindow(this);
-        m_workspace->workingVersion()->getGui()->createAdditionalForms();
+
     }
 }
 
@@ -313,6 +306,15 @@ void MainWindow::onDTTreeClicked()
     }
 }
 
+NewTableForm* MainWindow::showExistingTable(Table *table)
+{
+    NewTableForm* frm = m_workspace->workingVersion()->getGui()->getTableFormForExistingTable();
+    frm->setTable(table);
+    frm->focusOnName();
+    setCentralWidget(frm);
+    return frm;
+}
+
 void MainWindow::showTable(const QString &tabName, bool focus)
 {
     Table* table =  m_workspace->workingVersion()->getTable(tabName);
@@ -320,13 +322,7 @@ void MainWindow::showTable(const QString &tabName, bool focus)
     {
         return;
     }
-
-    m_newTableForm = new NewTableForm(m_workspace->currentProjectsEngine(), m_workspace->currentProject(), this, false);
-    m_newTableForm->setTable(table);
-    m_newTableForm->focusOnName();
-
-    setCentralWidget(m_newTableForm);
-
+    showExistingTable(table);
     if(focus)
     {
         m_projectTree->setCurrentItem(table->getLocation());
@@ -372,17 +368,18 @@ void MainWindow::currentProjectTreeItemChanged(QTreeWidgetItem * current, QTreeW
     if(current)
     {
         if(current == m_workspace->workingVersion()->getGui()->getTablesItem())
-        {// we have clicked on the Tables item (i.e.t. the list of tables)
-            TablesListForm* tblLst = new TablesListForm(this);
+        {// we have clicked on the Tables item (i.e. the list of tables)
+            TablesListForm* tblLst = m_workspace->workingVersion()->getGui()->getTablesListForm();
             tblLst->populateTables(m_workspace->workingVersion()->getTables());
             tblLst->setOop(m_workspace->currentProjectIsOop());
             setCentralWidget(tblLst);
         }
         else
         if(current == m_workspace->workingVersion()->getGui()->getTableInstancesItem())
-        {// we have clicked on the Table instances item (i.e.t. the list of table instances)
-            m_workspace->workingVersion()->getGui()->getTableInstancesListForm()->populateTableInstances(m_workspace->workingVersion()->getTableInstances());
-            setCentralWidget(m_workspace->workingVersion()->getGui()->getTableInstancesListForm());
+        {// we have clicked on the Table instances item (i.e. the list of table instances)
+            TableInstancesListForm* frm = m_workspace->workingVersion()->getGui()->getTableInstancesListForm();
+            frm->populateTableInstances(m_workspace->workingVersion()->getTableInstances());
+            setCentralWidget(frm);
         }
         else
         if(current == m_workspace->currentProject()->getLocation())
@@ -392,7 +389,7 @@ void MainWindow::currentProjectTreeItemChanged(QTreeWidgetItem * current, QTreeW
         else
         if(current == m_workspace->workingVersion()->getGui()->getFinalSqlItem())
         {
-            SqlForm* frm = new SqlForm(m_workspace->currentProjectsEngine(), this);
+            SqlForm* frm = m_workspace->workingVersion()->getGui()->getSqlForm();
             frm->setSqlSource(0);
             frm->presentSql(m_workspace->currentProject(), m_workspace->currentProject()->getCodepage());
             setCentralWidget(frm);
@@ -467,12 +464,8 @@ void MainWindow::currentProjectTreeItemChanged(QTreeWidgetItem * current, QTreeW
                 {
                     return;
                 }
-                m_newTableForm = new NewTableForm(m_workspace->currentProjectsEngine(), m_workspace->currentProject(), this, false);
-                m_newTableForm->setTable(table);
-                m_newTableForm->focusOnName();
 
-                setCentralWidget(m_newTableForm);
-
+                showExistingTable(table);
             }
         }
     }
@@ -480,7 +473,7 @@ void MainWindow::currentProjectTreeItemChanged(QTreeWidgetItem * current, QTreeW
 
 void MainWindow::onNewTable()
 {
-    NewTableForm* frm = new NewTableForm(m_workspace->currentProjectsEngine(), m_workspace->currentProject(), this, true);
+    NewTableForm* frm = Workspace::getInstance()->workingVersion()->getGui()->getTableFormForNewTable();
     frm->focusOnName();
 
     m_projectTree->setCurrentItem(0);
@@ -593,6 +586,7 @@ void MainWindow::saveProject(bool saveAs)
     }
 
     m_workspace->saveCurrentSolution(fileName);
+    m_ui->statusBar->showMessage(tr("Saved"), 3000);
 }
 
 void MainWindow::onSaveProject()
@@ -670,8 +664,11 @@ void MainWindow::enableActions()
 
         ContextMenuEnabledTreeWidgetItem* item = m_workspace->workingVersion()->getGui()->getTableInstancesItem();
         item->setHidden(true);
-
     }
+
+    m_ui->action_NewTableInstance->setMenu(ContextMenuCollection::getInstance()->getCreateTableInstancesPopupMenu());
+    m_ui->action_NewDataType->setMenu(ContextMenuCollection::getInstance()->getDatatypesPopupMenu());
+
 }
 
 void MainWindow::connectActionsFromTablePopupMenu()
@@ -774,7 +771,9 @@ void MainWindow::onInstantiateTableFromPopup()
         return;
     }
 
+    m_workspace->workingVersion()->getGui()->updateForms();
     m_projectTree->setCurrentItem(instantiateTable(table->getName()));
+
 }
 
 void MainWindow::onSpecializeTableFromPopup()
@@ -787,40 +786,31 @@ void MainWindow::onSpecializeTableFromPopup()
     Table*table = getRightclickedTable();
     if(table == 0) return;
 
-    Table* tbl = new Table(m_workspace->workingVersion());
-    tbl->setName(table->getName() + "_specialized");
-    tbl->setParent(table);
-    tbl->setStorageEngine(table->getStorageEngine());
+    Table* specializedTable = new Table(m_workspace->workingVersion());
+    specializedTable->setName(table->getName() + "_specialized");
+    specializedTable->setParent(table);
+    specializedTable->setStorageEngine(table->getStorageEngine());
 
-    ContextMenuEnabledTreeWidgetItem* newTblsItem = m_workspace->workingVersion()->getGui()->createTableTreeEntry(tbl, table->getLocation()) ;
+    ContextMenuEnabledTreeWidgetItem* newTblsItem = m_workspace->workingVersion()->getGui()->createTableTreeEntry(specializedTable, table->getLocation()) ;
 
     // add to the project itself
-    m_workspace->workingVersion()->addTable(tbl);
+    m_workspace->workingVersion()->addTable(specializedTable);
 
     // set the link to the tree
-    tbl->setLocation(newTblsItem);
+    specializedTable->setLocation(newTblsItem);
 
     // now open the new table for to show this table
-    m_projectTree->setCurrentItem(newTblsItem);
-    m_projectTree->scrollToItem(newTblsItem);
-    if(m_newTableForm != 0)
-    {
-        m_newTableForm->selectTab(0);
-        m_newTableForm->focusOnNewColumnName();
-    }
+    showExistingTable(specializedTable);
 }
 
 void MainWindow::onTableAddColumnFromPopup()
 {
     if(m_projectTree->getLastRightclickedItem() != 0)
     {
-        m_projectTree->setCurrentItem(m_projectTree->getLastRightclickedItem(), 0);  // this is supposed to open the window "frm" too
-        if(m_newTableForm != 0)
-        {
-            m_newTableForm->selectTab(0);
-            m_newTableForm->focusOnNewColumnName();
-            m_projectTree->setLastRightclickedItem(0);
-        }
+        Table *table = getRightclickedTable();
+        NewTableForm* frm = showExistingTable(table);
+        frm->focusOnNewColumnName();
+        m_projectTree->setLastRightclickedItem(0);
     }
 }
 
@@ -911,6 +901,7 @@ void MainWindow::onDeleteTableFromPopup()
                 }
             }
         }
+        m_workspace->workingVersion()->getGui()->updateForms();
     }
 }
 
@@ -942,6 +933,8 @@ void MainWindow::onPasteTableFromPopup()
             sqlItm->setIcon(0, IconFactory::getTablesIcon());
             sqlItm->setData(0, Qt::UserRole, tab->getName());
         }
+
+        m_workspace->workingVersion()->getGui()->updateForms();
     }
 }
 
@@ -966,6 +959,8 @@ void MainWindow::onDuplicateTableFromPopup()
             sqlItm->setIcon(0, IconFactory::getTablesIcon());
             sqlItm->setData(0, Qt::UserRole, dupped->getName());
         }
+
+        m_workspace->workingVersion()->getGui()->updateForms();
     }
 }
 
@@ -984,16 +979,15 @@ void MainWindow::onNewTableInstance()
         {
             instantiateTable(items.at(i));
         }
+
+        m_workspace->workingVersion()->getGui()->updateForms();
     }
 }
 
 void MainWindow::onNewTableInstanceHovered()
 {
-    if(!m_createTableInstancesPopup)
-    {
-        return;
-    }
-    m_createTableInstancesPopup->clear();
+    QMenu* createTableInstancesPopup = ContextMenuCollection::getInstance()->getCreateTableInstancesPopupMenu();
+    createTableInstancesPopup->clear();
 
     if(m_workspace->currentSolution() && m_workspace->currentProject() && m_workspace->workingVersion())
     {
@@ -1004,7 +998,7 @@ void MainWindow::onNewTableInstanceHovered()
             QIcon icon(IconFactory::getTablesIcon());
             actionToAdd->setData(QVariant(m_workspace->workingVersion()->getTables()[i]->getName()));
             actionToAdd->setIcon(icon);
-            m_createTableInstancesPopup->addAction(actionToAdd);
+            createTableInstancesPopup->addAction(actionToAdd);
             QObject::connect(actionToAdd, SIGNAL(activated()),
                              new DynamicActionHandlerforMainWindow(m_workspace->workingVersion()->getTables()[i]->getName(), this), SLOT(called()));
         }
@@ -1110,6 +1104,8 @@ void MainWindow::onRenameDiagramFromPopup()
             dgr->getLocation()->setText(0, t);
             QVariant a(t);
             dgr->getLocation()->setData(0, Qt::UserRole, a);
+
+            m_workspace->workingVersion()->getGui()->updateForms();
         }
     }
 }
@@ -1165,8 +1161,8 @@ void MainWindow::onDeleteInstanceFromPopup()
         m_workspace->workingVersion()->purgeSentencedTableInstances();
 
         // and show a table instances list form
-        TableInstancesListForm* tblLst = new TableInstancesListForm(this);
-        tblLst->populateTableInstances(m_workspace->workingVersion()->getTableInstances());
+        TableInstancesListForm* tblLst = m_workspace->workingVersion()->getGui()->getTableInstancesListForm();
+        m_workspace->workingVersion()->getGui()->updateForms();
         setCentralWidget(tblLst);
     }
 }
@@ -1250,6 +1246,7 @@ void MainWindow::onDeleteDiagramFromPopup()
     if(dgr)
     {
         m_workspace->workingVersion()->deleteDiagram(dgr->getName());
+        m_workspace->workingVersion()->getGui()->updateForms();
     }
 }
 
@@ -1311,10 +1308,10 @@ void MainWindow::onGotoIssueLocation()
     if(testCol)
     {
         tab = testCol->getTable();
-        showTable(tab->getName());
-        m_newTableForm->showColumn(testCol);
-        m_newTableForm->focusOnNewColumnName();
-        m_newTableForm->setCurrentColumn(testCol);
+        NewTableForm*frm = showExistingTable(tab);
+        frm->showColumn(testCol);
+        frm->focusOnNewColumnName();
+        frm->setCurrentColumn(testCol);
     }
 }
 

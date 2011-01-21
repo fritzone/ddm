@@ -14,6 +14,9 @@ class TableInstance;
 class Issue;
 class TableInstancesListForm;
 class MainWindow;
+class TablesListForm;
+class SqlForm;
+class NewTableForm;
 
 /**
  * The scope of this class is to have a common collection point for the tree widget items of a version (DT, Sql, Table, etc...)
@@ -154,9 +157,13 @@ public:
         m_mw = mw;
     }
 
-    void createAdditionalForms();
+    void updateForms();
 
     TableInstancesListForm* getTableInstancesListForm();
+    TablesListForm* getTablesListForm();
+    SqlForm* getSqlForm();
+    NewTableForm* getTableFormForNewTable();
+    NewTableForm* getTableFormForExistingTable();
 
 private:
 
@@ -197,6 +204,10 @@ private:
     TableInstancesListForm* m_tblInstancesListForm;
     Version* m_version;
     MainWindow* m_mw;
+    TablesListForm* m_tblsListForm;
+    SqlForm* m_sqlForm;
+    NewTableForm* m_newTableForm;
+    NewTableForm* m_existingTableForm;
 };
 
 #endif // VERSIONGUIELEMENTS_H

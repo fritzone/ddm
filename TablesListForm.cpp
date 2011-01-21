@@ -18,6 +18,7 @@ TablesListForm::TablesListForm(QWidget *parent) : QWidget(parent), ui(new Ui::Ta
 TablesListForm::~TablesListForm()
 {
     delete ui;
+    ui = 0;
 }
 
 void TablesListForm::changeEvent(QEvent *e)
@@ -34,6 +35,7 @@ void TablesListForm::changeEvent(QEvent *e)
 
 void TablesListForm::populateTables(QVector<Table*>const & tables)
 {
+    ui->treeTables->clear();
     for(int i=0; i<tables.size(); i++)
     {
         QStringList a(tables[i]->getName());

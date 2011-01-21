@@ -51,7 +51,7 @@ p, li { white-space: pre-wrap; }
            <string/>
           </property>
           <property name="icon">
-           <iconset>
+           <iconset resource="dbm.qrc">
             <normaloff>:/images/actions/images/small/up.png</normaloff>:/images/actions/images/small/up.png</iconset>
           </property>
           <property name="popupMode">
@@ -71,7 +71,7 @@ p, li { white-space: pre-wrap; }
            <string/>
           </property>
           <property name="icon">
-           <iconset>
+           <iconset resource="dbm.qrc">
             <normaloff>:/images/actions/images/small/down.png</normaloff>:/images/actions/images/small/down.png</iconset>
           </property>
           <property name="popupMode">
@@ -91,7 +91,7 @@ p, li { white-space: pre-wrap; }
            <string/>
           </property>
           <property name="icon">
-           <iconset>
+           <iconset resource="dbm.qrc">
             <normaloff>:/images/actions/images/small/remove.png</normaloff>:/images/actions/images/small/remove.png</iconset>
           </property>
          </widget>
@@ -126,7 +126,7 @@ p, li { white-space: pre-wrap; }
          <bool>true</bool>
         </property>
         <property name="sortingEnabled">
-         <bool>true</bool>
+         <bool>false</bool>
         </property>
         <property name="animated">
          <bool>true</bool>
@@ -135,16 +135,7 @@ p, li { white-space: pre-wrap; }
          <number>150</number>
         </attribute>
         <attribute name="headerShowSortIndicator" stdset="0">
-         <bool>true</bool>
-        </attribute>
-        <attribute name="headerStretchLastSection">
-         <bool>true</bool>
-        </attribute>
-        <attribute name="headerDefaultSectionSize">
-         <number>150</number>
-        </attribute>
-        <attribute name="headerShowSortIndicator" stdset="0">
-         <bool>true</bool>
+         <bool>false</bool>
         </attribute>
         <attribute name="headerStretchLastSection">
          <bool>true</bool>
@@ -161,7 +152,9 @@ p, li { white-space: pre-wrap; }
    </item>
   </layout>
  </widget>
- <resources/>
+ <resources>
+  <include location="dbm.qrc"/>
+ </resources>
  <connections>
   <connection>
    <sender>treeTables</sender>
