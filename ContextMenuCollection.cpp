@@ -17,6 +17,7 @@ ContextMenuCollection::ContextMenuCollection()
     m_datatypesPopupMenu = new QMenu();
     m_issuePopupMenu = new QMenu();
     m_issuesOfATablePopupMenu = new QMenu();
+    m_createTableInstancesPopup = new QMenu();
 
     // actions
     action_RemoveTable = new QAction(QObject::tr("Delete table"), 0);
@@ -104,5 +105,8 @@ ContextMenuCollection::ContextMenuCollection()
 
     // issues of a table
     m_issuesOfATablePopupMenu->addAction(action_ignoreIssuesFromThisTable);
+
+    // popup menu for the table instances
+    m_createTableInstancesPopup->clear();
 }
 

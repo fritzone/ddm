@@ -35,6 +35,7 @@ public:
     QMenu* getDatatypesPopupMenu() { return m_datatypesPopupMenu; }
     QMenu* getIssuePopupMenu() { return m_issuePopupMenu; }
     QMenu* getIssuesOfATablePopupMenuPopupMenu() { return m_issuesOfATablePopupMenu; }
+    QMenu* getCreateTableInstancesPopupMenu() { return m_createTableInstancesPopup; }
 
     /*
      * Actions
@@ -85,6 +86,8 @@ private:
     QMenu* m_datatypesPopupMenu;                // popup menu for the datatypes
     QMenu* m_issuePopupMenu;                    // popup menu for an issue
     QMenu* m_issuesOfATablePopupMenu;           // popup menu for issues of a table
+    QMenu* m_createTableInstancesPopup;         // popup menu for the table instances selection
+
 
     // the actions in the table popup menu
     QAction* action_RemoveTable;

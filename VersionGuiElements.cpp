@@ -14,6 +14,10 @@
 #include "TablesListForm.h"
 #include "mainwindow.h"
 #include "TableInstancesListForm.h"
+#include "TablesListForm.h"
+#include "SqlForm.h"
+#include "Project.h"
+#include "NewTableForm.h"
 
 #include <QVector>
 #include <QtGui>
@@ -21,7 +25,8 @@
 VersionGuiElements::VersionGuiElements(QTreeWidget* projTree, QTreeWidget* dtTree, QTreeWidget* issueTree, Version* v) : tablesItem(0), tableInstancesItem(0), versionItem(0), diagramsItem(0), finalSqlItem(0), dtsItem(0),
     m_tree(projTree), m_dtTree(dtTree), m_issuesTree(issueTree),
     stringsDtItem(0), intsDtItem(0), dateDtItem(0), blobDtItem(0),
-    boolDtItem(0), miscDtItem(0), spatialDtItem(0), m_version(v), m_tblInstancesListForm(0)
+    boolDtItem(0), miscDtItem(0), spatialDtItem(0), m_version(v), m_tblInstancesListForm(0), m_tblsListForm(0),
+    m_newTableForm(0), m_existingTableForm(0)
 {
 }
 
@@ -364,12 +369,54 @@ void VersionGuiElements::cleanupOrphanedIssueTableItems()
     }
 }
 
-void VersionGuiElements::createAdditionalForms()
+void VersionGuiElements::updateForms()
 {
+    getTablesListForm();
+    m_tblsListForm->populateTables(m_version->getTables());
+    m_tblsListForm->setOop(Workspace::getInstance()->currentProjectIsOop());
+    if(dynamic_cast<TablesListForm*>(m_mw->centralWidget()))
+    {
+        m_mw->setCentralWidget(m_tblsListForm);
+    }
+
+    getTableInstancesListForm();
+    m_tblInstancesListForm->populateTableInstances(m_version->getTableInstances());
+    if(dynamic_cast<TableInstancesListForm*>(m_mw->centralWidget()))
+    {
+        m_mw->setCentralWidget(m_tblInstancesListForm);
+    }
+
+    getSqlForm();
+    m_sqlForm->setSqlSource(0);
+    m_sqlForm->presentSql(Workspace::getInstance()->currentProject(), Workspace::getInstance()->currentProject()->getCodepage());
+    if(dynamic_cast<SqlForm*>(m_mw->centralWidget()))
+    {
+        m_mw->setCentralWidget(m_sqlForm);
+    }
 
 }
 
 TableInstancesListForm* VersionGuiElements::getTableInstancesListForm()
 {
     return m_tblInstancesListForm = new TableInstancesListForm(m_mw);
+}
+
+TablesListForm* VersionGuiElements::getTablesListForm()
+{
+    return m_tblsListForm = new TablesListForm();
+}
+
+SqlForm* VersionGuiElements::getSqlForm()
+{
+    return m_sqlForm = new SqlForm(Workspace::getInstance()->currentProjectsEngine(), m_mw);
+}
+
+NewTableForm* VersionGuiElements::getTableFormForNewTable()
+{
+    return m_newTableForm = new NewTableForm(Workspace::getInstance()->currentProjectsEngine(), Workspace::getInstance()->currentProject(), m_mw, true);
+}
+
+NewTableForm* VersionGuiElements::getTableFormForExistingTable()
+{
+    return m_existingTableForm = new NewTableForm(Workspace::getInstance()->currentProjectsEngine(), Workspace::getInstance()->currentProject(), m_mw, false);
 }

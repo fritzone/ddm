@@ -35,6 +35,7 @@ void TableInstancesListForm::changeEvent(QEvent *e)
 
 void TableInstancesListForm::populateTableInstances(QVector<TableInstance*>const & tables)
 {
+    ui->treeTables->clear();
     for(int i=0; i<tables.size(); i++)
     {
         QStringList a(tables[i]->getName());
