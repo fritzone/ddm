@@ -878,6 +878,10 @@ void MainWindow::onDeleteTableFromPopup()
     Table* tab = getRightclickedTable();
     if(tab)
     {
+        if(QMessageBox::question(this, tr("Are you sure?"), tr("Really delete ") + tab->getName() + "?", QMessageBox::Yes | QMessageBox::No) !=  QMessageBox::Yes)
+        {
+            return;
+        }
         if(tab->hasSpecializedTables())
         {
             QMessageBox::warning(0, QObject::tr("Specialized tables were found"),
@@ -1115,6 +1119,10 @@ void MainWindow::onDeleteInstanceFromPopup()
     TableInstance* tinst = getRightclickedTableInstance();
     if(tinst)
     {
+        if(QMessageBox::question(this, tr("Are you sure?"), tr("Really delete ") + tinst->getName() + "?", QMessageBox::Yes | QMessageBox::No) !=  QMessageBox::Yes)
+        {
+            return;
+        }
         if(tinst->instantiatedBecuaseOfRkReference())
         {
             if(tinst->getReferencingTables().length() > 0)
@@ -1245,6 +1253,10 @@ void MainWindow::onDeleteDiagramFromPopup()
     Diagram* dgr = getRightclickedDiagram();
     if(dgr)
     {
+        if(QMessageBox::question(this, tr("Are you sure?"), tr("Really delete ") + dgr->getName()+ "?", QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
+        {
+            return;
+        }
         m_workspace->workingVersion()->deleteDiagram(dgr->getName());
         m_workspace->workingVersion()->getGui()->updateForms();
     }

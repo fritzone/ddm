@@ -25,7 +25,7 @@
 VersionGuiElements::VersionGuiElements(QTreeWidget* projTree, QTreeWidget* dtTree, QTreeWidget* issueTree, Version* v) : tablesItem(0), tableInstancesItem(0), versionItem(0), diagramsItem(0), finalSqlItem(0), dtsItem(0),
     m_tree(projTree), m_dtTree(dtTree), m_issuesTree(issueTree),
     stringsDtItem(0), intsDtItem(0), dateDtItem(0), blobDtItem(0),
-    boolDtItem(0), miscDtItem(0), spatialDtItem(0), m_version(v), m_tblInstancesListForm(0), m_tblsListForm(0),
+    boolDtItem(0), miscDtItem(0), spatialDtItem(0), m_tblInstancesListForm(0), m_version(v), m_tblsListForm(0),
     m_newTableForm(0), m_existingTableForm(0)
 {
 }
