@@ -19,7 +19,7 @@
 #include <QtGui>
 
 DefaultVersionImplementation::DefaultVersionImplementation(QTreeWidget* tree, QTreeWidget* dttree, QTreeWidget* itt, ContextMenuEnabledTreeWidgetItem* projectItem, Project* p)
-    : version(""), m_data(), m_tree(tree), m_dtTree(dttree), m_issueTree(itt), m_projectItem(projectItem), m_project(p), m_guiElements(0)
+    : version(""), m_data(), m_tree(tree), m_dtTree(dttree), m_issueTree(itt), m_projectItem(projectItem), m_project(p), m_guiElements(0), m_validationFlags(0)
 {
 }
 
@@ -451,6 +451,7 @@ QList<QString> DefaultVersionImplementation::getSqlScript(const QString& codepag
     QHash<QString, QString> opts = Configuration::instance().sqlGenerationOptions();
     bool upcase = opts.contains("Case") && opts["Case"] == "Upper";
     opts["FKSposition"] = "OnlyInternal";
+    opts["PKSposition"] = "AfterColumnsDeclaration";
 
     if(Workspace::getInstance()->currentProjectIsOop())   // list the table instances' SQL
     {
@@ -595,19 +596,28 @@ QVector<Issue*> DefaultVersionImplementation::checkIssuesOfNewColumn(Column* inN
                     {
                         if(inNewColumn->isPk() || otherColumn->isPk()) // but ONLY if there is no foreign key between these two. TODO: check this too
                         {
-                            Issue* issue = IssueManager::getInstance().createForeignKeyReccomendedIssue(tabI, otherColumn, inTable, inNewColumn);
-                            if(issue)
+                            if(m_validationFlags != 1)
                             {
-                                result.append(issue);
+                                Issue* issue = IssueManager::getInstance().createForeignKeyReccomendedIssue(tabI, otherColumn, inTable, inNewColumn);
+                                if(issue)
+                                {
+                                    result.append(issue);
+                                }
                             }
                         }
                     }
                     else
                     {
-                        Issue* issue = IssueManager::getInstance().createDatabaseNormalizationIssue(tabI, otherColumn, inTable, inNewColumn);
-                        if(issue)
+                        if(othersDataType->getType() != DataType::DT_DATETIME) // normalization does not matter for date/time
                         {
-                            result.append(issue);
+                            if(othersDataType->getSize().toInt() > 1)   // and for texts with at least 2 characters
+                            {
+                                Issue* issue = IssueManager::getInstance().createDatabaseNormalizationIssue(tabI, otherColumn, inTable, inNewColumn);
+                                if(issue)
+                                {
+                                    result.append(issue);
+                                }
+                            }
                         }
                     }
                 }
@@ -651,4 +661,40 @@ void DefaultVersionImplementation::removeIssue(const QString& name)
 QVector<Issue*>& DefaultVersionImplementation::getIssues()
 {
     return m_data.m_issues;
+}
+
+void DefaultVersionImplementation::validateVersion()
+{
+    QVector<Issue*>& allIssues = getIssues();
+    int i=0;
+    while(i<allIssues.size())
+    {
+        if(!allIssues.at(i)->stillValid())
+        {
+            QString issueIName = allIssues.at(i)->getName();
+            IssueOriginator* orig = allIssues.at(i)->getOriginator();
+            removeIssue(issueIName);
+            orig->removeIssueByName(issueIName);
+            getGui()->cleanupOrphanedIssueTableItems();
+        }
+        else
+        {
+            i++;
+        }
+    }
+
+    for(int tab_ctr = 0; tab_ctr<m_data.m_tables.size(); tab_ctr ++)
+    {
+        for(int i=0; i<m_data.m_tables.at(tab_ctr)->fullColumns().size(); i++)
+        {
+            Column* c = m_data.m_tables.at(tab_ctr)->getColumn(m_data.m_tables.at(tab_ctr)->fullColumns().at(i));
+            if(c == 0) c = m_data.m_tables.at(tab_ctr)->getColumnFromParents(m_data.m_tables.at(tab_ctr)->fullColumns().at(i));
+            checkIssuesOfNewColumn(c, m_data.m_tables.at(tab_ctr));
+        }
+    }
+}
+
+void DefaultVersionImplementation::setSpecialValidationFlags(int a)
+{
+    m_validationFlags = a;
 }

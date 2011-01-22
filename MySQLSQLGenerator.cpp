@@ -12,10 +12,10 @@ QStringList MySQLSQLGenerator::generateCreateTableSql(Table *table, const QHash<
     bool upcase = options.contains("Case") && options["Case"] == "Upper";
     bool comments = options.contains("GenerateComments") && options["GenerateComments"] == "Yes";
     bool backticks = options.contains("Backticks") && options["Backticks"] == "Yes";
-    // primary key pos = 0 if the primary key is specified in the column declaration (default)
+    // primary key pos = 0 if the primary key is specified in the column declaration
     // it is 1 if the primary key is defined in a PRIMARY KEY section in the table definition
     // it is 2 if the primary key is defined in an alter table section after the table definition
-    int pkpos = 0;
+    int pkpos = 1;
     if(options.contains("PKSposition"))
     {
         if(options["PKSposition"]=="ColumnDeclaration")
@@ -122,9 +122,10 @@ QStringList MySQLSQLGenerator::generateCreateTableSql(Table *table, const QHash<
         // do we have a default value for this columns' data type?
         if(dt->getDefaultValue().length() > 0)
         {
+            QString g = dt->getDefaultValue();
             createTable += QString(upcase?" DEFAULT ":" default ") +
-                      QString(dt->getType()==DataType::DT_STRING?"\"":"") + dt->getDefaultValue() +
-                      QString(dt->getType()==DataType::DT_STRING?"\"":"") ;
+                    QString(dt->getType()==DataType::DT_STRING||dt->getType()==DataType::DT_DATETIME && g.toUpper()!="CURRENT_TIMESTAMP" ?"\"":"") + dt->getDefaultValue() +
+                    QString(dt->getType()==DataType::DT_STRING||dt->getType()==DataType::DT_DATETIME && g.toUpper()!="CURRENT_TIMESTAMP"?"\"":"") ;
         }
 
         // do we have more columns after this?
@@ -332,9 +333,25 @@ QStringList MySQLSQLGenerator::generateDefaultValuesSql(TableInstance* tableInst
         for(int j=0; j<tableInstance->columns().size(); j++)
         {
             QVector<QString> vals = tableInstance->values()[tableInstance->columns().at(j)];
-            insert += "\"";
-            insert += quotelessString(vals.at(i));
-            insert += "\"";
+            QString val = vals.at(i);
+            if(val.toUpper() != "NULL")
+            {
+                if(val.length() > 1)
+                {
+                    insert += "\"";
+                    insert += quotelessString(vals.at(i));
+                    insert += "\"";
+                }
+                else
+                {
+                    // find the datatype, add the default value here
+                    //UserDataType* udt = tableInstance->table()->
+                }
+            }
+            else
+            {
+                insert += upcase?"NULL":"null";
+            }
             if(j< tableInstance->columns().size() - 1)
             {
                 insert += ", ";

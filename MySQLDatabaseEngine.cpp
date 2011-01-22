@@ -100,6 +100,7 @@ bool MySQLDatabaseEngine::reverseEngineerDatabase(const QString& host, const QSt
             if(!foundAtLeastOneForeignKey)
             {
                 QMessageBox::information(0, QApplication::tr("Information"), QApplication::tr("This database does not contain foreign key definitions. You will need to set them up manually."), QMessageBox::Ok);
+                v->setSpecialValidationFlags(1);
             }
         }
     }
@@ -283,7 +284,7 @@ Table* MySQLDatabaseEngine::reverseEngineerTable(const QString& host, const QStr
                 QVariant atI = query.value(i);
                 if(atI.isNull())
                 {
-                    row.append("");
+                    row.append("NULL");
                 }
                 else
                 {

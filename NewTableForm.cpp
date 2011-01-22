@@ -526,32 +526,7 @@ void NewTableForm::changeEvent(QEvent *e)
 
 void NewTableForm::updateIssues()
 {
-    QVector<Issue*>& allIssues = Workspace::getInstance()->workingVersion()->getIssues();
-    int i=0;
-    while(i<allIssues.size())
-    {
-        if(!allIssues.at(i)->stillValid())
-        {
-            QString issueIName = allIssues.at(i)->getName();
-            IssueOriginator* orig = allIssues.at(i)->getOriginator();
-            Workspace::getInstance()->workingVersion()->removeIssue(issueIName);
-            orig->removeIssueByName(issueIName);
-            Workspace::getInstance()->workingVersion()->getGui()->cleanupOrphanedIssueTableItems();
-        }
-        else
-        {
-            i++;
-        }
-    }
-
-    // now see if the change has introduced any other new issues (they will be added automatically to the internals)
-    for(int i=0; i<m_table->fullColumns().size(); i++)
-    {
-        Column* c = m_table->getColumn(m_table->fullColumns().at(i));
-        if(c == 0) c = m_table->getColumnFromParents(m_table->fullColumns().at(i));
-
-        Workspace::getInstance()->workingVersion()->checkIssuesOfNewColumn(c, m_table);
-    }
+    Workspace::getInstance()->workingVersion()->validateVersion();
 }
 
 void NewTableForm::onAddColumn()
