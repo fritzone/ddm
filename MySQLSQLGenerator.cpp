@@ -345,7 +345,12 @@ QStringList MySQLSQLGenerator::generateDefaultValuesSql(TableInstance* tableInst
                 else
                 {
                     // find the datatype, add the default value here
-                    //UserDataType* udt = tableInstance->table()->
+                    Column* pcol = tableInstance->table()->getColumn(tableInstance->columns().at(j));
+                    if(pcol == 0) pcol = tableInstance->table()->getColumnFromParents(tableInstance->columns().at(j));
+                    const UserDataType* udt = pcol->getDataType();
+                    insert += "\"";
+                    insert += udt->getDefaultValue();
+                    insert += "\"";
                 }
             }
             else
