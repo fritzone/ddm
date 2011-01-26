@@ -563,6 +563,9 @@ p, li { white-space: pre-wrap; }
                <attribute name="headerDefaultSectionSize">
                 <number>90</number>
                </attribute>
+               <attribute name="headerDefaultSectionSize">
+                <number>90</number>
+               </attribute>
                <column>
                 <property name="text">
                  <string>Name</string>
@@ -710,6 +713,21 @@ p, li { white-space: pre-wrap; }
                  </attribute>
                  <attribute name="headerShowSortIndicator" stdset="0">
                   <bool>false</bool>
+                 </attribute>
+                 <attribute name="headerCascadingSectionResizes">
+                  <bool>true</bool>
+                 </attribute>
+                 <attribute name="headerDefaultSectionSize">
+                  <number>200</number>
+                 </attribute>
+                 <attribute name="headerMinimumSectionSize">
+                  <number>150</number>
+                 </attribute>
+                 <attribute name="headerShowSortIndicator" stdset="0">
+                  <bool>false</bool>
+                 </attribute>
+                 <attribute name="headerHighlightSections">
+                  <bool>true</bool>
                  </attribute>
                  <column>
                   <property name="text">
@@ -1978,6 +1996,22 @@ p, li { white-space: pre-wrap; }
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>cmbCharSetForSql</sender>
+   <signal>activated(QString)</signal>
+   <receiver>NewTableForm</receiver>
+   <slot>onCodepageChange(QString)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>125</x>
+     <y>150</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>628</x>
+     <y>366</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <designerdata>
   <property name="gridDeltaX">
@@ -2037,5 +2071,6 @@ p, li { white-space: pre-wrap; }
   <slot>onChangeName(QString)</slot>
   <slot>onInject()</slot>
   <slot>onSaveSql()</slot>
+  <slot>onCodepageChange(QString)</slot>
  </slots>
 </ui>

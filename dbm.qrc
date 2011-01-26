@@ -111,6 +111,7 @@
         <file>images/small/index.png</file>
         <file>images/small/warning.png</file>
         <file>images/small/reccomend.png</file>
+        <file>images/actions/check.png</file>
     </qresource>
     <qresource prefix="/bigger">
         <file>images/unaf.png</file>

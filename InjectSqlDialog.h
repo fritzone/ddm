@@ -37,9 +37,12 @@ public:
     // loads the codepages from the codepages
     void populateCodepageCombo();
 
+    void selectCodePage(int);
+
 public slots:
 
     void onConnect();
+    void onCreateDatabase();
 
 protected:
     void changeEvent(QEvent *e);

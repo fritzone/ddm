@@ -510,7 +510,12 @@ void Table::prepareDiagramEntity()
 QStringList Table::generateSqlSource(AbstractSqlGenerator *generator, QHash<QString,QString> opts, const QString& codepage)
 {
     const_cast<Table*>(this)->restartSqlRendering();
-    return generator->generateCreateTableSql(const_cast<Table*>(this), opts, getName(), codepage);
+    QStringList createSql = generator->generateCreateTableSql(const_cast<Table*>(this), opts, getName(), codepage);
+    if(!Workspace::getInstance()->currentProjectIsOop())
+    {
+        createSql << generator->generateDefaultValuesSql(this, opts);
+    }
+    return createSql;
 }
 
 QSet<const Table*> Table::getTablesReferencedByForeignKeys()

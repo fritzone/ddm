@@ -7,11 +7,11 @@
     <x>0</x>
     <y>0</y>
     <width>413</width>
-    <height>325</height>
+    <height>332</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>Deploy</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
@@ -20,9 +20,6 @@
       <string> Connection settings </string>
      </property>
      <layout class="QFormLayout" name="formLayout">
-      <property name="fieldGrowthPolicy">
-       <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
-      </property>
       <item row="0" column="0">
        <widget class="QLabel" name="label">
         <property name="text">
@@ -64,25 +61,69 @@
         </property>
        </widget>
       </item>
-      <item row="4" column="0">
-       <widget class="QLabel" name="lblDatabase">
-        <property name="enabled">
-         <bool>false</bool>
+      <item row="4" column="0" colspan="2">
+       <layout class="QFormLayout" name="formLayout_2">
+        <property name="fieldGrowthPolicy">
+         <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
         </property>
+        <item row="0" column="0">
+         <widget class="QLabel" name="lblDatabase">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+          <property name="text">
+           <string>Database</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <layout class="QHBoxLayout" name="horizontalLayout_2">
+          <item>
+           <widget class="QComboBox" name="cmbDatabases">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
+            <property name="editable">
+             <bool>false</bool>
+            </property>
+            <property name="insertPolicy">
+             <enum>QComboBox::InsertAlphabetically</enum>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QToolButton" name="btnCreateDatabase">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
+            <property name="toolTip">
+             <string>Create a new database</string>
+            </property>
+            <property name="statusTip">
+             <string>Create a new database</string>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="icon">
+             <iconset>
+              <normaloff>:/images/actions/images/small/add.png</normaloff>:/images/actions/images/small/add.png</iconset>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </item>
+      <item row="5" column="0">
+       <widget class="QLabel" name="label_2">
         <property name="text">
-         <string>Database</string>
+         <string>Codepage</string>
         </property>
        </widget>
       </item>
-      <item row="4" column="1">
-       <widget class="QComboBox" name="cmbDatabases">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-        <property name="editable">
-         <bool>true</bool>
-        </property>
-       </widget>
+      <item row="5" column="1">
+       <widget class="QComboBox" name="cmbCharacterSets"/>
       </item>
       <item row="6" column="0" colspan="2">
        <widget class="QCheckBox" name="chkRollbackOnError">
@@ -95,16 +136,6 @@
        <widget class="QCheckBox" name="chkOnlyIfNotExist">
         <property name="text">
          <string>Create table only if they don't exist</string>
-        </property>
-       </widget>
-      </item>
-      <item row="5" column="1">
-       <widget class="QComboBox" name="cmbCharacterSets"/>
-      </item>
-      <item row="5" column="0">
-       <widget class="QLabel" name="label_2">
-        <property name="text">
-         <string>Codepage</string>
         </property>
        </widget>
       </item>
@@ -173,8 +204,25 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>btnCreateDatabase</sender>
+   <signal>clicked()</signal>
+   <receiver>InjectSqlDialog</receiver>
+   <slot>onCreateDatabase()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>378</x>
+     <y>176</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>206</x>
+     <y>165</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>onConnect()</slot>
+  <slot>onCreateDatabase()</slot>
  </slots>
 </ui>

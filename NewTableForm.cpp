@@ -1816,17 +1816,18 @@ void NewTableForm::onBtnUpdateTableWithDefaultValues()
                     c = m_table->getColumnFromParents(cName);
                 }
                 const UserDataType* dt = c->getDataType();
-                if(dt->isValid(m_ui->tableStartupValues->item(j,i)->text()))
+                QTableWidgetItem* itm = m_ui->tableStartupValues->item(i,j);
+                if(dt->isValid(itm->text()))
                 {
                     rowI.append(m_ui->tableStartupValues->item(i,j)->text());
-                    m_ui->tableStartupValues->item(j,i)->setBackgroundColor(Qt::white);
-                    m_ui->tableStartupValues->item(j,i)->setToolTip("");
+                    itm->setBackgroundColor(Qt::white);
+                    itm->setToolTip("");
                 }
                 else
                 {
-                    m_ui->tableStartupValues->item(j,i)->setBackgroundColor(Qt::red);
+                    itm->setBackgroundColor(Qt::red);
                     errorFound = true;
-                    m_ui->tableStartupValues->item(j,i)->setToolTip("This column type does not support this value");
+                    itm->setToolTip("This column type does not support this value");
                 }
             }
             else
@@ -1856,6 +1857,7 @@ void NewTableForm::onLoadStartupValuesFromCSV()
 void NewTableForm::updateSqlDueToChange()
 {
     QString s = m_ui->cmbCharSetForSql->itemData(m_ui->cmbCharSetForSql->currentIndex()).toString();
+    if(s.indexOf('_') == -1) s = "latin1";
     s=s.left(s.indexOf('_'));
     presentSql(m_project, s);
 }
@@ -1968,6 +1970,7 @@ void NewTableForm::onChangeName(QString a)
 void NewTableForm::onInject()
 {
     InjectSqlDialog* injectDialog = new InjectSqlDialog(Workspace::getInstance()->currentProjectsEngine(), this);
+    injectDialog->selectCodePage(m_ui->cmbCharSetForSql->currentIndex());
     injectDialog->setModal(true);
     if(injectDialog->exec() == QDialog::Accepted)
     {
@@ -1999,12 +2002,25 @@ void NewTableForm::presentSql(Project *, const QString& codepage)
     QHash<QString,QString> fo = Configuration::instance().sqlGenerationOptions();
     fo["FKSposition"] = "OnlyInternal";
     finalSql = m_project->getEngine()->getSqlGenerator()->generateCreateTableSql(m_table, fo, m_table->getName(), codepage);
+    if(!Workspace::getInstance()->currentProjectIsOop())
+    {
+        finalSql << m_project->getEngine()->getSqlGenerator()->generateDefaultValuesSql(m_table, fo);
+    }
+
     for(int i=0; i< finalSql.size(); i++)
     {
         fs += finalSql[i];
     }
 
     m_ui->txtSql->setText(fs);
+    if(m_table->getColumnCount() == 0 && m_table->getTotalParentColumnCount() == 0)
+    {
+        m_ui->btnInject->setEnabled(false);
+    }
+    else
+    {
+        m_ui->btnInject->setEnabled(true);
+    }
 }
 
 void NewTableForm::onCopyColumn()
@@ -2019,7 +2035,6 @@ void NewTableForm::onCopyColumn()
         Column* c = m_table->getColumn(cName);
 
         c->copy();
-
     }
 }
 
@@ -2042,4 +2057,13 @@ void NewTableForm::onPasteColumn()
     col->setLocation(item);
     m_ui->txtNewColumnName->setFocus( );
     // till here
+}
+
+void NewTableForm::onCodepageChange(QString a)
+{
+    updateSqlDueToChange();
+}
+
+void NewTableForm::presentSql(Project*, SqlSourceEntity*,const QString& codepage)
+{
 }

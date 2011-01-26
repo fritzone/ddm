@@ -51,7 +51,7 @@ public:
     }
 
     virtual void presentSql(Project*,const QString& codepage);
-    virtual void presentSql(Project*, SqlSourceEntity*,const QString& codepage){};
+    virtual void presentSql(Project*, SqlSourceEntity*,const QString& codepage);
 
 protected:
 
@@ -115,6 +115,7 @@ public slots:
     // SQL page
     void onInject();
     void onSaveSql();
+    void onCodepageChange(QString);
 
 protected:
 

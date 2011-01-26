@@ -651,6 +651,8 @@ void MainWindow::enableActions()
     m_ui->action_Deploy->setEnabled(true);
     m_ui->action_ProjectTree->setEnabled(true);
     m_ui->action_ProjectTree->setChecked(true);
+    m_ui->action_Validate->setEnabled(true);
+
     if(m_workspace->currentProjectIsOop())
     {
         m_ui->action_NewTableInstance->setEnabled(true);
@@ -1416,4 +1418,9 @@ void MainWindow::onReverseEngineerWizardAccept()
     QVector<QString> tabsToReverse = m_revEngWizard->getTablesToReverse();
     m_workspace->currentProjectsEngine()->reverseEngineerDatabase(m_revEngWizard->getHost(), m_revEngWizard->getUser(), m_revEngWizard->getPasword(), m_revEngWizard->getDatabase(),
                                                                   tabsToReverse, m_workspace->currentProject(), !m_revEngWizard->createDataTypesForColumns());
+}
+
+void MainWindow::onValidate()
+{
+    m_workspace->workingVersion()->validateVersion();
 }
