@@ -31,6 +31,12 @@ public:
      * Generates a list of "Insert Into" sqls for the given table instance, one for each row in the default values.
      */
     virtual QStringList generateDefaultValuesSql(TableInstance* tableInstance, const QHash<QString, QString>& options) const = 0;
+
+    /**
+     * Generates a list of "Insert Into" sqls for the given table, one for each row in the default values.
+     * This is used when the project is not OOP
+     */
+    virtual QStringList generateDefaultValuesSql(Table* table, const QHash<QString, QString>& options) const = 0;
 };
 
 #endif // ABSTRACTSQLGENERATOR_H

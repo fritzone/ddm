@@ -27,7 +27,7 @@ public:
     virtual Table* reverseEngineerTable(const QString& host, const QString& user, const QString& pass, const QString& dbName, const QString& tableName, Project* p, bool relaxed);
     virtual QVector<QString> getAvailableDatabases(const QString& host, const QString& user, const QString& pass);
     virtual QVector<QString> getAvailableTables(const QString& host, const QString& user, const QString& pass, const QString& db);
-
+    virtual bool createDatabase(const QString& host, const QString& user, const QString& pass, const QString&);
 
 private:
 

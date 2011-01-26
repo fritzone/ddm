@@ -4,12 +4,14 @@
 #include "Codepage.h"
 #include "AbstractCodepageSupplier.h"
 #include "DatabaseEngine.h"
+#include "SimpleTextInputDialog.h"
 
 #include <QSqlDatabase>
 #include <QMessageBox>
 #include <QSqlQuery>
 #include <QSqlError>
 #include <QListWidget>
+#include <QListWidgetItem>
 
 QString InjectSqlDialog::previousHost="";
 QString InjectSqlDialog::previousUser="";
@@ -59,6 +61,7 @@ void InjectSqlDialog::onConnect()
     }
     ui->cmbDatabases->setEnabled(true);
     ui->buttonBox->button(QDialogButtonBox::Ok)->setDisabled(false);
+    ui->btnCreateDatabase->setEnabled(true);
     previousHost = ui->txtDatabaseHost->text();
     previousUser = ui->txtDatabaseUser->text();
 }
@@ -96,6 +99,11 @@ bool InjectSqlDialog::getCreateOnlyIfNotExist()
 void InjectSqlDialog::setupForReverseEngineering()
 {
     ui->chkRollbackOnError->hide();
+}
+
+void InjectSqlDialog::selectCodePage(int i)
+{
+    ui->cmbCharacterSets->setCurrentIndex(i);
 }
 
 void InjectSqlDialog::populateCodepageCombo()
@@ -188,4 +196,25 @@ QString InjectSqlDialog::getCodepage()
     QString s = ui->cmbCharacterSets->itemData(ui->cmbCharacterSets->currentIndex()).toString();
     s=s.left(s.indexOf('_'));
     return s;
+}
+
+void InjectSqlDialog::onCreateDatabase()
+{
+    SimpleTextInputDialog* dlg = new SimpleTextInputDialog(this, tr("Enter the name of the new database"));
+    dlg->setModal(true);
+    dlg->setText(tr("database"));
+    if(dlg->exec() == QDialog::Accepted)
+    {
+        QString t = dlg->getText();
+        bool b = m_dbEngine->createDatabase(ui->txtDatabaseHost->text(), ui->txtDatabaseUser->text(), ui->txtDatabasePassword->text(), t);
+        if(!b)
+        {
+            QMessageBox::critical(this, tr("Error"), tr("Could not create a new database: ") + m_dbEngine->getLastError(), QMessageBox::Ok);
+        }
+        else
+        {
+            ui->cmbDatabases->addItem(t);
+            ui->cmbDatabases->setCurrentIndex(ui->cmbDatabases->findText(t));
+        }
+    }
 }

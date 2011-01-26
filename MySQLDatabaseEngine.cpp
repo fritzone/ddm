@@ -431,3 +431,27 @@ QVector<QString> MySQLDatabaseEngine::getAvailableDatabases(const QString& host,
 
     return result;
 }
+
+bool MySQLDatabaseEngine::createDatabase(const QString& host, const QString& user, const QString& pass, const QString& name)
+{
+    QSqlDatabase db = QSqlDatabase::addDatabase("QMYSQL");
+    db.setHostName(host);
+    db.setUserName(user);
+    db.setPassword(pass);
+
+    bool ok = db.open();
+    if(!ok)
+    {
+        lastError = QObject::tr("Cannot connect to the database: ") + db.lastError().databaseText() + "/" + db.lastError().driverText();
+        return false;
+    }
+
+    QSqlQuery query;
+    bool t = query.exec("create database "+ name);
+    if(!t)
+    {
+        lastError = QObject::tr("Cannot create a database: ") + db.lastError().databaseText() + "/" + db.lastError().driverText();
+        return false;
+    }
+    return true;
+}

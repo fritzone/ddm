@@ -218,11 +218,11 @@ QStringList MySQLSQLGenerator::generateCreateTableSql(Table *table, const QHash<
     // and the codepage
     if(codepage.length() > 1)
     {
-        createTable += " DEFAULT CHARACTER SET " + codepage;
+        createTable += upcase?" DEFAULT CHARACTER SET " + codepage:" default character set " +codepage;
     }
     else
     {
-        createTable += " DEFAULT CHARACTER SET latin1" ;
+        createTable += " DEFAULT CHARACTER SET=latin1" ;
     }
     createTable += ";\n\n";
     // and here we are done with the create table command
@@ -336,7 +336,7 @@ QStringList MySQLSQLGenerator::generateDefaultValuesSql(TableInstance* tableInst
             QString val = vals.at(i);
             if(val.toUpper() != "NULL")
             {
-                if(val.length() > 1)
+                if(val.length() > 0)
                 {
                     insert += "\"";
                     insert += quotelessString(vals.at(i));
@@ -364,6 +364,65 @@ QStringList MySQLSQLGenerator::generateDefaultValuesSql(TableInstance* tableInst
         }
         insert += ");\n\n";
         result << insert;
+    }
+    return result;
+}
+
+QStringList MySQLSQLGenerator::generateDefaultValuesSql(Table* table, const QHash<QString, QString>& options) const
+{
+    QStringList result;
+    const QVector <QVector <QString> >& sv = table->getDefaultValues();
+    bool upcase = options.contains("Case") && options["Case"] == "Upper";
+    for(int i=0; i<sv.size(); i++)
+    {
+        const QVector<QString> &rowI = sv[i];
+        QString insert = upcase?"INSERT INTO ":"insert into";
+        insert += table->getName();
+        insert += "(";
+        for(int j=0; j<rowI.size(); j++)
+        {
+            insert += table->getColumns().at(j)->getName();
+            if(j< rowI.size() - 1)
+            {
+                insert += ", ";
+            }
+        }
+        insert += upcase?" ) VALUES (" : ") values (";
+
+        for(int j=0; j<rowI.size(); j++)
+        {
+            QString val = rowI[j];
+            if(val.toUpper() != "NULL")
+            {
+                if(val.length() > 0)
+                {
+                    insert += "\"";
+                    insert += quotelessString(rowI[j]);
+                    insert += "\"";
+                }
+                else
+                {
+                    // find the datatype, add the default value here
+                    Column* pcol = table->getColumns().at(j);
+                    const UserDataType* udt = pcol->getDataType();
+                    insert += "\"";
+                    insert += udt->getDefaultValue();
+                    insert += "\"";
+                }
+            }
+            else
+            {
+                insert += upcase?"NULL":"null";
+            }
+            if(j< rowI.size() - 1)
+            {
+                insert += ", ";
+            }
+        }
+
+        insert += ");\n\n";
+        result << insert;
+
     }
     return result;
 }

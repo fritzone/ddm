@@ -13,6 +13,8 @@ public:
 
     virtual QStringList generateDefaultValuesSql(TableInstance* tableInstance, const QHash<QString, QString>& options) const;
 
+    virtual QStringList generateDefaultValuesSql(Table* table, const QHash<QString, QString>& options) const;
+
 private:
 
     QString quotelessString(const QString&) const;

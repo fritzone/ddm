@@ -333,11 +333,11 @@ ContextMenuEnabledTreeWidgetItem* VersionGuiElements::createIssueTreeEntry(Issue
     itm->setPopupMenu(ContextMenuCollection::getInstance()->getIssuePopupMenu());
     if(issue->getType() == Issue::WARNING)
     {
-        itm->setIcon(0, IconFactory::getWarningIcon());
+        itm->setIcon(1, IconFactory::getWarningIcon());
     }
     if(issue->getType() == Issue::RECOMMENDATION)
     {
-        itm->setIcon(0, IconFactory::getRecommendIcon());
+        itm->setIcon(1, IconFactory::getRecommendIcon());
     }
     m_issuesTree->insertTopLevelItem(m_issuesTree->topLevelItemCount(), itm);
     QVariant b(issue->getName());

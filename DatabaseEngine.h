@@ -80,6 +80,7 @@ public:
 
     virtual QVector<QString> getAvailableDatabases(const QString& host, const QString& user, const QString& pass) = 0;
     virtual QVector<QString> getAvailableTables(const QString& host, const QString& user, const QString& pass, const QString& db) = 0;
+    virtual bool createDatabase(const QString& host, const QString& user, const QString& pass, const QString&) = 0;
 
     QString getTypeStringForSqlType(const QString& sqlType);
 

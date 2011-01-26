@@ -115,6 +115,8 @@ public slots:
     void onIgnoreIssue();
     void onIgnoreIssuesOfATable();
 
+    void onValidate();
+
 private:
 
     void setupGuiForNewSolution();
