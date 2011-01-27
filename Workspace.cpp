@@ -8,14 +8,16 @@
 #include "UserDataType.h"
 #include "ClipboardFactory.h"
 #include "NameGenerator.h"
+#include "VersionGuiElements.h"
 #include "Table.h"
 
 #include <QFile>
 #include <QApplication>
+#include <QTreeWidget>
 
 Workspace* Workspace::m_instance = 0;
 
-Workspace::Workspace() : m_solutions(), m_currentSolution(0)
+Workspace::Workspace() : m_solutions(), m_currentSolution(0), m_saved(true)
 {}
 
 Workspace* Workspace::getInstance()
@@ -76,6 +78,8 @@ bool Workspace::saveCurrentSolution(const QString &fileName)
     f1.write(xml.toAscii());
     f1.close();
 
+    save();
+
     return true;
 }
 
@@ -88,6 +92,7 @@ bool Workspace::onCloseSolution()
 {
     m_solutions.clear();
     m_currentSolution = 0;
+    save();
 
     return true;
 }
@@ -173,4 +178,22 @@ Table* Workspace::pasteTable()
     }
 
     return 0;
+}
+
+bool Workspace::onUpdateTable(Table* tbl)
+{
+    QTreeWidgetItem* tblsItem = tbl->getLocation();
+    QVariant var(tbl->getName());
+    tblsItem->setData(0, Qt::UserRole, var);
+    tblsItem->setText(0, tbl->getName());
+    change();
+    return true;
+}
+
+bool Workspace::onSaveNewTable(Table* tbl)
+{
+    workingVersion()->getGui()->createTableTreeEntry(tbl);
+    workingVersion()->addTable(tbl);
+    change();
+    return true;
 }

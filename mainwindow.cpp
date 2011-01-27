@@ -495,21 +495,7 @@ void MainWindow::onNewDataType()
     showNewDataTypeWindow(DataType::DT_INVALID);
 }
 
-bool MainWindow::onUpdateTable(Table* tbl)
-{
-    QTreeWidgetItem* tblsItem = tbl->getLocation();
-    QVariant var(tbl->getName());
-    tblsItem->setData(0, Qt::UserRole, var);
-    tblsItem->setText(0, tbl->getName());
-    return true;
-}
 
-bool MainWindow::onSaveNewTable(Table* tbl)
-{
-    m_workspace->workingVersion()->getGui()->createTableTreeEntry(tbl);
-    m_workspace->workingVersion()->addTable(tbl);
-    return true;
-}
 
 bool MainWindow::onSaveNewDataType(const QString& name, const QString& type, const QString& sqlType, const QString& size, const QString& defaultValue, const QString& cp,
                              const QStringList& mvs, const QString& desc, bool unsi, bool canBeNull, bool autoInc,  UserDataType* pudt)
@@ -951,7 +937,7 @@ void MainWindow::onDuplicateTableFromPopup()
     if(tab)
     {
         Table* dupped = m_workspace->workingVersion()->duplicateTable(tab);
-        onSaveNewTable(dupped);
+        m_workspace->onSaveNewTable(dupped);
         if(tab->getParent())
         {
             QTreeWidgetItem* p = dupped->getLocation();
@@ -1422,5 +1408,7 @@ void MainWindow::onReverseEngineerWizardAccept()
 
 void MainWindow::onValidate()
 {
+    m_ui->statusBar->showMessage(tr("Validating"), 0);
     m_workspace->workingVersion()->validateVersion();
+    m_ui->statusBar->showMessage(tr("Validation finished"), 1000);
 }

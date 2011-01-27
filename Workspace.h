@@ -104,6 +104,33 @@ public:
      */
     Table* pasteTable();
 
+    /**
+     * This method gets called when a new table is saved
+     */
+    bool onSaveNewTable(Table* tbl);
+
+    /**
+     * This method gets called when a table is updated. The only thing this must do
+     * for now is to update the tree entry in the project tree and the associated tree widget
+     */
+    bool onUpdateTable(Table* tbl);
+
+
+    bool wasSaved() const
+    {
+        return m_saved;
+    }
+
+    void save()
+    {
+        m_saved = true;
+    }
+
+    void change()
+    {
+        m_saved = false;
+    }
+
 private:
 
     Workspace();
@@ -119,6 +146,9 @@ private:
 
     // we are working on this solution
     Solution* m_currentSolution;
+
+    // if the workspace was saved or not ...
+    bool m_saved;
 
 };
 

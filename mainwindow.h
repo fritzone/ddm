@@ -45,17 +45,6 @@ public:
                              const QStringList& mvs, const QString& desc,
                              bool unsi, bool canBeNull, bool autoInc, UserDataType* pudt);
 
-    /**
-     * This methid gets called when a new table is saved
-     */
-    bool onSaveNewTable(Table* tbl);
-
-    /**
-     * This method gets called when a table is updated. The only thing this must do
-     * for now is to update the tree entry in the project tree and the associated tree widget
-     */
-    bool onUpdateTable(Table* tbl);
-
     bool onSaveDiagram(Diagram*);
 
     ContextMenuEnabledTreeWidgetItem* instantiateTable(const QString& tabName, bool ref = false, Table* referencingTable = 0, TableInstance* becauseOfThis = 0);
