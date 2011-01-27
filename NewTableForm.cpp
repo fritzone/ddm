@@ -151,7 +151,7 @@ NewTableForm::NewTableForm(DatabaseEngine* db, Project* prj, QWidget *parent, bo
 
     if(newTable)
     {
-        m_mw->onSaveNewTable(m_table);
+        Workspace::getInstance()->onSaveNewTable(m_table);
         m_ui->txtTableName->setText(m_table->getName());
     }
 
@@ -163,8 +163,6 @@ NewTableForm::~NewTableForm()
 {
     delete m_ui;
 }
-
-
 
 void NewTableForm::populateCodepageCombo()
 {
@@ -251,7 +249,6 @@ void NewTableForm::populateCodepageCombo()
     m_ui->cmbCharSetForSql->setCurrentIndex(-1);
 
 }
-
 
 void NewTableForm::populateIndexTypesDependingOnStorageEngine()
 {
@@ -358,7 +355,6 @@ void NewTableForm::prepareColumnsListWithParentItems(const Table* ctable)
             columns[i]->setLocation(item);
         }
     }
-
 }
 
 void NewTableForm::selectTab(int i)
@@ -957,12 +953,12 @@ void NewTableForm::doTheSave()
     if(m_project->getWorkingVersion()->hasTable(m_table))
     {
         // update the data of the table, and the tree view
-        m_mw->onUpdateTable(m_table);
+        Workspace::getInstance()->onUpdateTable(m_table);
     }
     else
     {
         // create a new tree entry, add to the tree, update the m_table's tree item.
-        m_mw->onSaveNewTable(m_table);
+        Workspace::getInstance()->onSaveNewTable(m_table);
     }
 }
 
