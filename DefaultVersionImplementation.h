@@ -86,7 +86,7 @@ public:
     virtual Issue* getIssue(const QString&);
     virtual void removeIssue(const QString &);
     virtual QVector<Issue*>& getIssues();
-    virtual void validateVersion();
+    virtual void validateVersion(bool onRequest);
     virtual void setSpecialValidationFlags(int);
 protected:
     // the version as a string representation. Major versions are always of form X.0

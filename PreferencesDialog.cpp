@@ -19,8 +19,10 @@ PreferencesDialog::PreferencesDialog(QWidget *parent) :
 
     ui->cmbPkPos->setCurrentIndex( ui->cmbPkPos->findText(Configuration::instance().sqlGenerationOptions()["PKSposition"]) );
     ui->cmbFkPos->setCurrentIndex( ui->cmbFkPos->findText(Configuration::instance().sqlGenerationOptions()["FKSposition"]) );
+    ui->chkContinuousValidation->setCheckState(Configuration::instance().continuousValidation()?Qt::Checked:Qt::Unchecked);
 
     ui->tabWidget->setCurrentIndex(0);
+    ui->grpHelp->setVisible(false);
 }
 
 PreferencesDialog::~PreferencesDialog()
@@ -49,5 +51,11 @@ void PreferencesDialog::accept()
     Configuration::instance().sqlOpts()["Case"] = ui->chkUpcase->checkState() == Qt::Checked?"Upper":"Lower";
     Configuration::instance().sqlOpts()["Backticks"] = ui->chkBackticks->checkState() == Qt::Checked?"Yes":"No";
     Configuration::instance().sqlOpts()["GenerateComments"] = ui->chkComments->checkState() == Qt::Checked?"Yes":"No";
+    Configuration::instance().setContinuousValidation(ui->chkContinuousValidation->checkState() == Qt::Checked);
     close();
+}
+
+void PreferencesDialog::onHelp()
+{
+    ui->grpHelp->setVisible(true);
 }

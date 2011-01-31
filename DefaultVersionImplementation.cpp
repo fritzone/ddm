@@ -652,7 +652,6 @@ void DefaultVersionImplementation::removeIssue(const QString& name)
         if(m_data.m_issues[i]->getName() == name)
         {
             m_data.m_issues.remove(i);
-            qDebug() << "REmoving issue:" << name;
             return;
         }
     }
@@ -663,8 +662,9 @@ QVector<Issue*>& DefaultVersionImplementation::getIssues()
     return m_data.m_issues;
 }
 
-void DefaultVersionImplementation::validateVersion()
+void DefaultVersionImplementation::validateVersion(bool onRequest)
 {
+    if(!onRequest && !Configuration::instance().continuousValidation()) return;
     QVector<Issue*>& allIssues = getIssues();
     int i=0;
     while(i<allIssues.size())

@@ -20,6 +20,10 @@ public:
 protected:
     void changeEvent(QEvent *e);
 
+protected slots:
+
+    void onSelectAllChanged(int);
+
 private:
     Ui::CreateTableInstancesDialog *ui;
 };

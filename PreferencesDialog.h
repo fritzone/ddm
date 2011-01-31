@@ -16,6 +16,7 @@ public:
 protected slots:
 
     void accept();
+    void onHelp();
 
 protected:
     void changeEvent(QEvent *e);

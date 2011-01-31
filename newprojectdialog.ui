@@ -168,7 +168,7 @@ p, li { white-space: pre-wrap; }
             </property>
             <property name="icon">
              <iconset resource="dbm.qrc">
-              <normaloff>:/images/actions/images/small/face-devilish.png</normaloff>:/images/actions/images/small/face-devilish.png</iconset>
+              <normaloff>:/images/actions/images/small/exec.png</normaloff>:/images/actions/images/small/exec.png</iconset>
             </property>
            </item>
           </widget>

@@ -403,7 +403,7 @@ TableInstancesListForm* VersionGuiElements::getTableInstancesListForm()
 
 TablesListForm* VersionGuiElements::getTablesListForm()
 {
-    return m_tblsListForm = new TablesListForm();
+    return m_tblsListForm = new TablesListForm(m_mw);
 }
 
 SqlForm* VersionGuiElements::getSqlForm()

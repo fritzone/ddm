@@ -49,3 +49,13 @@ QStringList CreateTableInstancesDialog::getSelectedTables()
     }
     return res;
 }
+
+void CreateTableInstancesDialog::onSelectAllChanged(int a)
+{
+    if(a == Qt::Checked || a == Qt::Unchecked )
+    {
+        for(int i=0; i<ui->listWidget->count(); i++)
+        {
+            ui->listWidget->item(i)->setCheckState((Qt::CheckState)a);
+        }
+    }}
