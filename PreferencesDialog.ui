@@ -107,11 +107,6 @@ p, li { white-space: pre-wrap; }
               <string>AfterTable</string>
              </property>
             </item>
-            <item>
-             <property name="text">
-              <string>OnlyInternal</string>
-             </property>
-            </item>
            </widget>
           </item>
           <item row="0" column="0" colspan="2">
