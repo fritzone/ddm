@@ -760,7 +760,7 @@ void MainWindow::onInstantiateTableFromPopup()
     }
 
     m_workspace->workingVersion()->getGui()->updateForms();
-    m_projectTree->setCurrentItem(instantiateTable(table->getName()));
+    m_projectTree->setCurrentItem(instantiateTable(table->getName(), QStringList()));
 
 }
 
@@ -969,7 +969,7 @@ void MainWindow::onNewTableInstance()
         QStringList items = newDialog->getSelectedTables();
         for(int i=0; i<items.size(); i++)
         {
-            instantiateTable(items.at(i));
+            instantiateTable(items.at(i), items);
         }
 
         m_workspace->workingVersion()->getGui()->updateForms();
@@ -997,7 +997,7 @@ void MainWindow::onNewTableInstanceHovered()
     }
 }
 
-ContextMenuEnabledTreeWidgetItem* MainWindow::instantiateTable(const QString& tabName, bool ref, Table* referencingTable, TableInstance* becauseOfThis)
+ContextMenuEnabledTreeWidgetItem* MainWindow::instantiateTable(const QString& tabName, QStringList othersTablesBeingInstantiated, bool ref, Table* referencingTable, TableInstance* becauseOfThis)
 {
     Version* cVersion = m_workspace->workingVersion();
     TableInstance* tinst = cVersion->instantiateTable(cVersion->getTable(tabName), ref);
@@ -1034,7 +1034,9 @@ ContextMenuEnabledTreeWidgetItem* MainWindow::instantiateTable(const QString& ta
         // if this was not instantiated yet
         if(cVersion->getTableInstance(tbl->getName()) == 0)
         {
-            instantiateTable(tbl->getName(), true, tinst->table(), tinst);
+            now check that the tbl->getName()is NOT in the provided list, and only then instantiate it recursively
+
+            instantiateTable(tbl->getName(), othersTablesBeingInstantiated, true, tinst->table(), tinst);
         }
         else
         {
