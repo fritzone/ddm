@@ -47,7 +47,7 @@ public:
 
     bool onSaveDiagram(Diagram*);
 
-    ContextMenuEnabledTreeWidgetItem* instantiateTable(const QString& tabName, bool ref = false, Table* referencingTable = 0, TableInstance* becauseOfThis = 0);
+    ContextMenuEnabledTreeWidgetItem* instantiateTable(const QString& tabName, QStringList otherTablesBeingInstantiated, bool ref = false, Table* referencingTable = 0, TableInstance* becauseOfThis = 0);
 
     void showTable(const QString& tabName, bool focus = true);
     void showTableInstance(const QString& tabName, bool focus = true);

@@ -6,6 +6,6 @@ DynamicActionHandlerforMainWindow::DynamicActionHandlerforMainWindow(const QStri
 
 void DynamicActionHandlerforMainWindow::called()
 {
-    mainWindow->instantiateTable(actionName);
+    mainWindow->instantiateTable(actionName, QStringList());
 }
 
