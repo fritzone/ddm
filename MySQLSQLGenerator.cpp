@@ -9,6 +9,9 @@
 
 QStringList MySQLSQLGenerator::generateCreateTableSql(Table *table, const QHash<QString, QString> &options, const QString& tabName, const QString& codepage) const
 {
+    // do not generate any code for a table which has no columns
+    if(table->fullColumns().size() == 0) return QStringList();
+
     bool upcase = options.contains("Case") && options["Case"] == "Upper";
     bool comments = options.contains("GenerateComments") && options["GenerateComments"] == "Yes";
     bool backticks = options.contains("Backticks") && options["Backticks"] == "Yes";
@@ -67,12 +70,38 @@ QStringList MySQLSQLGenerator::generateCreateTableSql(Table *table, const QHash<
     QString createTable = upcase? "CREATE " : "create ";
     createTable += table->isTemporary()? upcase? "TEMPORARY ":"temporary ":"";
 
-    createTable += !upcase? "table ":" TABLE ";
+    createTable += !upcase? "table ":"TABLE ";
 
     // table name
     createTable += backticks?"`":"";
     createTable += tabName;
     createTable += backticks?"`":"";
+
+    for(int i=0; i<table->fullColumns().size(); i++)
+    {
+        Column *col = table->getColumn(table->fullColumns()[i]);
+        if(col == 0)
+        {
+            col = table->getColumnFromParents(table->fullColumns()[i]);
+            if(col == 0)
+            {
+                return QStringList("ERROR");
+            }
+        }
+
+        if(col->isPk())
+        {
+            primaryKeys.append(table->fullColumns()[i]);
+        }
+
+    }
+
+    int x = primaryKeys.size();
+    if(x > 1)
+    {
+        pkpos = 1;
+    }
+
 
     createTable += "\n(\n";
 
@@ -106,10 +135,6 @@ QStringList MySQLSQLGenerator::generateCreateTableSql(Table *table, const QHash<
             if(pkpos == 0)
             {
                 createTable += upcase?" PRIMARY KEY ":" primary key ";
-            }
-            else
-            {
-                primaryKeys.append(table->fullColumns()[i]);
             }
         }
 

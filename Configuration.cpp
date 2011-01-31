@@ -32,6 +32,7 @@ void Configuration::writeToFile()
     QDomElement behavior = doc.createElement("Behavior");
     behavior.setAttribute("AllowFkPropagation", m_allowForeignKeyPropagation);
     behavior.setAttribute("UseDefaultLengths", useDefaultLengths);
+    behavior.setAttribute("ContinuousValidation", m_continuousValidation);
     root.appendChild(behavior);
 
     QDomElement sqlGeneration = doc.createElement("SqlGeneration");
@@ -76,6 +77,7 @@ void Configuration::readFromFile()
         {
             useDefaultLengths = docElem.childNodes().at(i).toElement().attribute("UseDefaultLengths") == "1";
             m_allowForeignKeyPropagation = docElem.childNodes().at(i).toElement().attribute("AllowFkPropagation") == "1";
+            m_continuousValidation = docElem.childNodes().at(i).toElement().attribute("ContinuousValidation") == "1";
         }
         if(docElem.childNodes().at(i).nodeName() == "SqlGeneration")
         {
@@ -91,7 +93,5 @@ void Configuration::readFromFile()
 
 bool Configuration::operator [](const QString& option)
 {
-    if(option == "PermissiveNormalizationCheck") return true;
-
     return false;
 }

@@ -179,7 +179,7 @@ void MainWindow::setupGuiForNewSolution()
     m_projectTreeDock->setWidget(m_projectTree);
     m_issuesTreeDock->setWidget(m_issuesTree);
     addDockWidget(Qt::LeftDockWidgetArea, m_projectTreeDock);
-    addDockWidget(Qt::RightDockWidgetArea, m_datatypesTreeDock);
+    addDockWidget(Qt::LeftDockWidgetArea, m_datatypesTreeDock);
     addDockWidget(Qt::BottomDockWidgetArea, m_issuesTreeDock);
 
     m_issuesTreeDock->hide();
@@ -1344,6 +1344,32 @@ void MainWindow::onIgnoreIssue()
 
 void MainWindow::onDeploy()
 {
+    if(m_workspace->currentProjectIsOop())
+    {
+        if(m_workspace->workingVersion()->getTableInstances().size() == 0)
+        {
+            QMessageBox msgBox;
+            msgBox.setText("You have the OOP features enabled, however you don't have created any table instances. There is nothing to deploy right now. Would you like to create table instances?");
+            msgBox.setIcon(QMessageBox::Question);
+            msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+            msgBox.setDefaultButton(QMessageBox::Yes);
+            int ret = msgBox.exec();
+
+            if(ret == QMessageBox::Yes)
+            {
+                onNewTableInstance();
+            }
+            else
+            {
+                return;
+            }
+        }
+    }
+    if(m_workspace->currentProjectIsOop() && m_workspace->workingVersion()->getTableInstances().size() == 0)
+    {
+        QMessageBox::information(this, tr("Deploying"), tr("Nothing to deploy"), QMessageBox::Ok);
+        return;
+    }
     InjectSqlDialog* injectDialog = new InjectSqlDialog(m_workspace->getInstance()->currentProjectsEngine(), this);
     injectDialog->setModal(true);
     if(injectDialog->exec() == QDialog::Accepted)
@@ -1409,6 +1435,10 @@ void MainWindow::onReverseEngineerWizardAccept()
 void MainWindow::onValidate()
 {
     m_ui->statusBar->showMessage(tr("Validating"), 0);
-    m_workspace->workingVersion()->validateVersion();
+    m_workspace->workingVersion()->validateVersion(true);
     m_ui->statusBar->showMessage(tr("Validation finished"), 1000);
+    if(m_workspace->workingVersion()->getIssues().size() == 0)
+    {
+        QMessageBox::information(this, tr("Congratulations"), tr("DDM has run a full validation on your database and it seems there were no issues found. Good work."), QMessageBox::Ok);
+    }
 }

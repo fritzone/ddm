@@ -208,7 +208,7 @@ public:
     virtual void removeIssue(const QString&) = 0;
     virtual QVector<Issue*>& getIssues() = 0;
 
-    virtual void validateVersion() = 0;
+    virtual void validateVersion(bool onRequest) = 0;
     virtual void setSpecialValidationFlags(int) = 0;
 
 

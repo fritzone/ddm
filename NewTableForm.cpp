@@ -522,7 +522,7 @@ void NewTableForm::changeEvent(QEvent *e)
 
 void NewTableForm::updateIssues()
 {
-    Workspace::getInstance()->workingVersion()->validateVersion();
+    Workspace::getInstance()->workingVersion()->validateVersion(false);
 }
 
 void NewTableForm::onAddColumn()

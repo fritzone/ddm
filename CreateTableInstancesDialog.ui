@@ -15,6 +15,13 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
+    <widget class="QCheckBox" name="chkSelectAll">
+     <property name="text">
+      <string>Select All</string>
+     </property>
+    </widget>
+   </item>
+   <item>
     <widget class="QListWidget" name="listWidget"/>
    </item>
    <item>
@@ -63,5 +70,24 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>chkSelectAll</sender>
+   <signal>stateChanged(int)</signal>
+   <receiver>CreateTableInstancesDialog</receiver>
+   <slot>onSelectAllChanged(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>199</x>
+     <y>18</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>199</x>
+     <y>149</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
+ <slots>
+  <slot>onSelectAllChanged(int)</slot>
+ </slots>
 </ui>

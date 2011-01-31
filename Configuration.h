@@ -63,6 +63,16 @@ public:
 
     bool operator[] (const QString&);
 
+    bool continuousValidation() const
+    {
+        return m_continuousValidation;
+    }
+
+    void setContinuousValidation(bool a)
+    {
+        m_continuousValidation = a;
+    }
+
 private:
 
     // whether the "New Data Type" window should populate the default lengths
@@ -73,6 +83,9 @@ private:
 
     // if we want to draw the specific table types (persistent, temporary) with double/dashed line
     bool m_drawTableTypes;
+
+    // if we want to perform a validation when the user changes something in a column
+    bool m_continuousValidation;
 
     QHash<QString,QString> m_sqlOpts;
 };
