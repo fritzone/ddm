@@ -22,6 +22,7 @@ PreferencesDialog::PreferencesDialog(QWidget *parent) :
     ui->chkContinuousValidation->setCheckState(Configuration::instance().continuousValidation()?Qt::Checked:Qt::Unchecked);
 
     ui->tabWidget->setCurrentIndex(0);
+    ui->tabWidget->removeTab(1);
     ui->grpHelp->setVisible(false);
 }
 
@@ -58,4 +59,5 @@ void PreferencesDialog::accept()
 void PreferencesDialog::onHelp()
 {
     ui->grpHelp->setVisible(true);
+    ui->webView->setUrl(QString("doc/config.html"));
 }

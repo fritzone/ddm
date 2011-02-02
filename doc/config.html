@@ -48,7 +48,20 @@ There is one exception: in case the table contains more than one primary key, re
 <BR><BR>
 <I>Foreign Key Position</I>
 <BR>
-You can specify where to put the foreign keys in the generated SQL script.
+You can specify where to put the foreign keys in the generated SQL script.<BR>
+"InTable" will put the FOREIGN KEY in the CREATE TABLE command <BR>
+"AfterTable" will put the FOREIGN KEY in a separate ALTER TABLE command, outside the CREATE TABLE. 
+<BR>For the SQL prepared in the table details screen the foreign keys will not be shown, hoever they're present in the deployment SQL screen.
+<BR><BR>
+<strong><em>General</em></strong>
+<BR>
+<BR>
+<em>Allow foreign key propagation checkbox</em><BR>Tells the application that when the user is specializing a table it should also take over the foreign keys in the new table. By default this is turned off.
+<BR><BR>
+<em>Continuous validation</em><BR>
+Tells the application to perform validation in every possible situation which can create database validation errors. If unchecked the validation will be executed only by pressing teh validate button on
+<BR>
+
 </FONT></P>
 
 </BODY>
