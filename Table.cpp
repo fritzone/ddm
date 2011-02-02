@@ -639,7 +639,10 @@ void Table::removeSpecializedTable(Table* childTable)
 void Table::setParent(Table* parent)
 {
     m_parent = parent;
-    m_parent->addSpecializedTable(this);
+    if(parent)
+    {
+        m_parent->addSpecializedTable(this);
+    }
 }
 
 Table* Table::getParent() const

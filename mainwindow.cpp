@@ -625,6 +625,9 @@ void MainWindow::onOpenProject()
     connectActionsFromTablePopupMenu();
 
     enableActions();
+
+    m_workspace->workingVersion()->getGui()->setMainWindow(this);
+
 }
 
 void MainWindow::enableActions()
@@ -1034,9 +1037,11 @@ ContextMenuEnabledTreeWidgetItem* MainWindow::instantiateTable(const QString& ta
         // if this was not instantiated yet
         if(cVersion->getTableInstance(tbl->getName()) == 0)
         {
-            now check that the tbl->getName()is NOT in the provided list, and only then instantiate it recursively
-
-            instantiateTable(tbl->getName(), othersTablesBeingInstantiated, true, tinst->table(), tinst);
+            //now check that the tbl->getName()is NOT in the provided list, and only then instantiate it recursively
+            if(!othersTablesBeingInstantiated.contains(tbl->getName()))
+            {
+                instantiateTable(tbl->getName(), othersTablesBeingInstantiated, true, tinst->table(), tinst);
+            }
         }
         else
         {
