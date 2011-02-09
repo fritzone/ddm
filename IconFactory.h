@@ -144,6 +144,12 @@ public:
         return icon;
     }
 
+    static const QIcon& getViewsIcon()
+    {
+        static const QIcon icon(strViewsIcon);
+        return icon;
+    }
+
     static const QIcon& getDiagramIcon()
     {
         static const QIcon icon(strDiagramIcon);

@@ -54,6 +54,12 @@ void VersionGuiElements::createGuiElements(ContextMenuEnabledTreeWidgetItem* pro
     diagramsItem->setPopupMenu(ContextMenuCollection::getInstance()->getDiagramsPopupMenu());
     m_tree->addTopLevelItem(diagramsItem);
 
+    viewsItem = new ContextMenuEnabledTreeWidgetItem(versionItem, QStringList(QObject::tr("Views"))) ;
+    viewsItem->setIcon(0, IconFactory::getViewsIcon());
+    //viewsItem->setPopupMenu(ContextMenuCollection::getInstance()->getDiagramsPopupMenu());
+    m_tree->addTopLevelItem(viewsItem);
+
+
     // last one: SQLs
     ContextMenuEnabledTreeWidgetItem* codeItem= new ContextMenuEnabledTreeWidgetItem(versionItem, QStringList(QObject::tr("Code"))) ;
     codeItem->setIcon(0, IconFactory::getCodeIcon());
