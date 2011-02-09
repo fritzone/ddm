@@ -240,7 +240,7 @@ Table* MySQLDatabaseEngine::reverseEngineerTable(const QString& host, const QStr
         QString indextype = query.value(indextypeNo).toString();
         QString comment = query.value(commentNo).toString();
 
-        QString finalIndexName = QString("idx_") + keyname;
+        QString finalIndexName = keyname;
         if(keyname == "PRIMARY") continue;
 
         Index* idx = 0;

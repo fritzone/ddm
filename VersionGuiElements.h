@@ -185,6 +185,9 @@ private:
     // the tree item containing the "DataType"
     ContextMenuEnabledTreeWidgetItem* dtsItem;
 
+    // the tree item containing the "DataType"
+    ContextMenuEnabledTreeWidgetItem* viewsItem;
+
     QTreeWidget* m_tree;
 
     QTreeWidget* m_dtTree;

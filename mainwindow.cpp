@@ -38,6 +38,8 @@
 #include "ReverseEngineerWizard.h"
 #include "DataType.h" // TODO: this is simply bad design, Mainwindow should not know about datatypes ...
 #include "IssueManager.h"
+#include "NewViewForm.h"
+#include "SelectQuery.h"
 
 #include <QtGui>
 
@@ -641,6 +643,7 @@ void MainWindow::enableActions()
     m_ui->action_ProjectTree->setEnabled(true);
     m_ui->action_ProjectTree->setChecked(true);
     m_ui->action_Validate->setEnabled(true);
+    m_ui->action_NewView->setEnabled(true);
 
     if(m_workspace->currentProjectIsOop())
     {
@@ -1448,4 +1451,16 @@ void MainWindow::onValidate()
     {
         QMessageBox::information(this, tr("Congratulations"), tr("DDM has run a full validation on your database and it seems there were no issues found. Good work."), QMessageBox::Ok);
     }
+}
+
+void MainWindow::onNewView()
+{
+    SelectQuery* sq = new SelectQuery();
+    NewViewForm* nvf = new NewViewForm(this);
+    int x = 10;
+    int y = 10;
+    sq->getGraphicsItem()->render(x, y);
+    nvf->setGraphicsItem(sq->getGraphicsItem());
+
+    setCentralWidget(nvf);
 }

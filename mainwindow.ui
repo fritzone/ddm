@@ -66,6 +66,7 @@
     <addaction name="action_NewTable"/>
     <addaction name="action_NewDiagram"/>
     <addaction name="action_NewTableInstance"/>
+    <addaction name="action_NewView"/>
     <addaction name="separator"/>
     <addaction name="action_Validate"/>
    </widget>
@@ -128,6 +129,7 @@
    <addaction name="action_NewTable"/>
    <addaction name="action_NewTableInstance"/>
    <addaction name="action_NewDiagram"/>
+   <addaction name="action_NewView"/>
    <addaction name="separator"/>
    <addaction name="action_Validate"/>
    <addaction name="action_Deploy"/>
@@ -358,6 +360,24 @@
    </property>
    <property name="toolTip">
     <string>Validate the project</string>
+   </property>
+  </action>
+  <action name="action_NewView">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="dbm.qrc">
+     <normaloff>:/images/actions/images/actions/view.png</normaloff>:/images/actions/images/actions/view.png</iconset>
+   </property>
+   <property name="text">
+    <string>New View</string>
+   </property>
+   <property name="toolTip">
+    <string>Create a new view</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+V</string>
    </property>
   </action>
  </widget>
@@ -638,6 +658,22 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>action_NewView</sender>
+   <signal>activated()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>onNewView()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>233</x>
+     <y>67</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>onNewSolution()</slot>
@@ -656,5 +692,6 @@
   <slot>onViewProjectTree()</slot>
   <slot>onViewDatatypesTree()</slot>
   <slot>onValidate()</slot>
+  <slot>onNewView()</slot>
  </slots>
 </ui>

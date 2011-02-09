@@ -79,7 +79,18 @@ SOURCES += main.cpp \
     IssueManager.cpp \
     IssueOriginator.cpp \
     DatabaseNormalizationIssue.cpp \
-    ForeignKeyReccomendationIssue.cpp
+    ForeignKeyReccomendationIssue.cpp \
+    NewViewForm.cpp \
+    QueryGraphicsView.cpp \
+    QueryGraphicsScene.cpp \
+    Query.cpp \
+    QueryGraphicsItem.cpp \
+    SelectQuery.cpp \
+    SelectQueryGraphicsItem.cpp \
+    Cell.cpp \
+    TableGraphicsItem.cpp \
+    CellCommand.cpp \
+    CellTable.cpp
 HEADERS += mainwindow.h \
     MainWindowButtonDialog.h \
     newprojectdialog.h \
@@ -170,7 +181,18 @@ HEADERS += mainwindow.h \
     Issue.h \
     IssueOriginator.h \
     DatabaseNormalizationIssue.h \
-    ForeignKeyReccomendationIssue.h
+    ForeignKeyReccomendationIssue.h \
+    NewViewForm.h \
+    QueryGraphicsView.h \
+    QueryGraphicsScene.h \
+    Query.h \
+    QueryGraphicsItem.h \
+    SelectQuery.h \
+    SelectQueryGraphicsItem.h \
+    Cell.h \
+    TableGraphicsItem.h \
+    CellCommand.h \
+    CellTable.h
 FORMS += mainwindow.ui \
     mainwindowbuttondialog.ui \
     newprojectdialog.ui \
@@ -192,5 +214,6 @@ FORMS += mainwindow.ui \
     ReverseEngineerWizardWelcomeForm.ui \
     ReverseEngineerWizardDatabasesForm.ui \
     ReverseEngineerWizardTablesForm.ui \
-    ReverseEngineerWizardOptionsForm.ui
+    ReverseEngineerWizardOptionsForm.ui \
+    NewViewForm.ui
 RESOURCES += dbm.qrc

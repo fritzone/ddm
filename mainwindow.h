@@ -96,6 +96,7 @@ public slots:
     void onPreferences();
     void onViewProjectTree();
     void onViewDatatypesTree();
+    void onNewView();
 
     void onReverseEngineerWizardNextPage(int);
     void onReverseEngineerWizardAccept();
