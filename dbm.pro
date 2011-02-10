@@ -90,7 +90,8 @@ SOURCES += main.cpp \
     Cell.cpp \
     TableGraphicsItem.cpp \
     CellCommand.cpp \
-    CellTable.cpp
+    CellTable.cpp \
+    CellTypeChooser.cpp
 HEADERS += mainwindow.h \
     MainWindowButtonDialog.h \
     newprojectdialog.h \
@@ -192,7 +193,8 @@ HEADERS += mainwindow.h \
     Cell.h \
     TableGraphicsItem.h \
     CellCommand.h \
-    CellTable.h
+    CellTable.h \
+    CellTypeChooser.h
 FORMS += mainwindow.ui \
     mainwindowbuttondialog.ui \
     newprojectdialog.ui \

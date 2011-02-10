@@ -11,7 +11,8 @@ public:
 
     Cell();
 
-    virtual QGraphicsItemGroup* render(int& x, int& y) = 0;
+    virtual QGraphicsItemGroup* render(int& x, int& y, int& w, int &h) = 0;
+    virtual void updateWidth(int newWidth) = 0;
 
     void addChild(QueryGraphicsItem*);
 
