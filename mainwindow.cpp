@@ -1457,9 +1457,12 @@ void MainWindow::onNewView()
 {
     SelectQuery* sq = new SelectQuery();
     NewViewForm* nvf = new NewViewForm(this);
-    int x = 10;
-    int y = 10;
-    sq->getGraphicsItem()->render(x, y);
+    int x = 20;
+    int y = 20;
+    int w = 0;
+    int h = 0;
+    sq->getGraphicsItem()->render(x, y, w ,h);
+    sq->getGraphicsItem()->updateWidth(w);
     nvf->setGraphicsItem(sq->getGraphicsItem());
 
     setCentralWidget(nvf);

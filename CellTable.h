@@ -7,7 +7,8 @@ class CellTable : public Cell
 {
 public:
     CellTable(const QString& tabName);
-    virtual QGraphicsItemGroup* render(int& x, int& y);
+    virtual QGraphicsItemGroup* render(int& x, int& y, int& w, int &h);
+    virtual void updateWidth(int newWidth);
 private:
     QString m_tabName;
 };

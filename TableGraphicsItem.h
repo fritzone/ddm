@@ -10,8 +10,8 @@ class TableGraphicsItem : public QueryGraphicsItem
 {
 public:
     TableGraphicsItem(Table*);
-    virtual QGraphicsItemGroup* render(int& x, int& y);
-
+    virtual QGraphicsItemGroup* render(int& x, int& y, int& w, int &h);
+    virtual void updateWidth(int newWidth);
 private:
 
     Table* m_table;
