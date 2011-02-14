@@ -7,13 +7,14 @@
 
 #include <QVBoxLayout>
 
-NewViewForm::NewViewForm(QWidget *parent) :
+NewViewForm::NewViewForm(QueryComponents* c, QWidget *parent) :
     QWidget(parent),
-    ui(new Ui::NewViewForm)
+    ui(new Ui::NewViewForm),
+    m_comps(c)
 {
     ui->setupUi(this);
 
-    m_qgs = new QueryGraphicsScene();
+    m_qgs = new QueryGraphicsScene(c, this);
 
     m_qgv = new QueryGraphicsView(this);
     m_qgv->setObjectName(QString::fromUtf8("queryGraphicsView"));

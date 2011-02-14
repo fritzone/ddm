@@ -1,6 +1,6 @@
 #include "SelectQuery.h"
 
-SelectQuery::SelectQuery() : m_gitm(new SelectQueryGraphicsItem())
+SelectQuery::SelectQuery(QueryComponents* comps) : m_gitm(new SelectQueryGraphicsItem(comps)), m_components(comps)
 {
     m_gitm->test();
 }

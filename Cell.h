@@ -5,9 +5,12 @@
 #include <QList>
 #include "QueryGraphicsItem.h"
 
-class Cell
+class Cell : public QueryGraphicsItem
 {
 public:
+
+    static const int CHILDREN_ALIGNMENT = 15;
+    static const int CELL_SIZE = 20;
 
     Cell();
 

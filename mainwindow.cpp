@@ -1455,8 +1455,9 @@ void MainWindow::onValidate()
 
 void MainWindow::onNewView()
 {
-    SelectQuery* sq = new SelectQuery();
-    NewViewForm* nvf = new NewViewForm(this);
+    QueryComponents* c = new QueryComponents();
+    SelectQuery* sq = new SelectQuery(c);
+    NewViewForm* nvf = new NewViewForm(c, this);
     int x = 20;
     int y = 20;
     int w = 0;

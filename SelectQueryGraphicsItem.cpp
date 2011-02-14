@@ -7,8 +7,9 @@
 
 #include <QPen>
 
-SelectQueryGraphicsItem::SelectQueryGraphicsItem() : m_select(new CellCommand(CellCommand::CELL_SELECT)),
-    m_from(new CellCommand(CellCommand::CELL_FROM)), m_where(new CellCommand(CellCommand::CELL_WHERE))
+SelectQueryGraphicsItem::SelectQueryGraphicsItem(QueryComponents* c) : m_select(new CellCommand(CellCommand::CELL_SELECT, c)),
+    m_from(new CellCommand(CellCommand::CELL_FROM, c)), m_where(new CellCommand(CellCommand::CELL_WHERE, c)),
+    m_frameRect(0), m_comps(c)
 {
 }
 
@@ -35,10 +36,10 @@ QGraphicsItemGroup* SelectQueryGraphicsItem::render(int& x, int& y, int& w, int 
 
 void SelectQueryGraphicsItem::test()
 {
-    m_from->addChild(new TableGraphicsItem(Workspace::getInstance()->workingVersion()->getTables().at(0)));
-    m_from->addChild(new TableGraphicsItem(Workspace::getInstance()->workingVersion()->getTables().at(0)));
-    m_from->addChild(new SelectQueryGraphicsItem());
-    m_from->addChild(new TableGraphicsItem(Workspace::getInstance()->workingVersion()->getTables().at(0)));
+    m_from->addChild(new TableGraphicsItem(Workspace::getInstance()->workingVersion()->getTables().at(0), m_comps));
+    m_from->addChild(new TableGraphicsItem(Workspace::getInstance()->workingVersion()->getTables().at(0), m_comps));
+    m_from->addChild(new SelectQueryGraphicsItem(m_comps));
+    m_from->addChild(new TableGraphicsItem(Workspace::getInstance()->workingVersion()->getTables().at(0), m_comps));
 
 }
 

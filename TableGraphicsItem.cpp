@@ -3,9 +3,9 @@
 #include "Cell.h"
 #include "CellTable.h"
 
-TableGraphicsItem::TableGraphicsItem(Table* tab):m_table(tab), m_tableCell(0)
+TableGraphicsItem::TableGraphicsItem(Table* tab, QueryComponents* c):m_table(tab), m_tableCell(0), m_comps(c)
 {
-    m_tableCell = new CellTable(tab->getName());
+    m_tableCell = new CellTable(tab->getName(), c);
 }
 
 QGraphicsItemGroup* TableGraphicsItem::render(int &x, int &y, int& w, int &h)

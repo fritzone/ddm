@@ -2,6 +2,7 @@
 #define NEWVIEWFORM_H
 
 #include <QWidget>
+#include "QueryComponents.h"
 
 class QueryGraphicsView;
 class QueryGraphicsScene;
@@ -14,7 +15,7 @@ namespace Ui {
 class NewViewForm : public QWidget {
     Q_OBJECT
 public:
-    NewViewForm(QWidget *parent = 0);
+    NewViewForm(QueryComponents*c, QWidget *parent = 0);
     ~NewViewForm();
     void setGraphicsItem(QueryGraphicsItem*);
 
@@ -25,6 +26,7 @@ private:
     Ui::NewViewForm *ui;
     QueryGraphicsView* m_qgv;
     QueryGraphicsScene* m_qgs;
+    QueryComponents* m_comps;
 };
 
 #endif // NEWVIEWFORM_H
