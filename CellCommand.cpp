@@ -3,7 +3,7 @@
 #include <QBrush>
 #include <QPen>
 
-CellCommand::CellCommand(CellType type): m_type(type)
+CellCommand::CellCommand(CellType type, QueryComponents *c): m_type(type), m_comps(c)
 {
     switch(m_type)
     {
@@ -45,36 +45,27 @@ QGraphicsItemGroup* CellCommand::render(int& x, int& y, int& w, int &h)
     tPen.setColor(Qt::black);
     txt->setZValue(1);
     m_rctCommandFrame->setPen(tPen);
-    QPen thick;
-    thick.setWidth(2);
-
     y = m_rctCommandFrame->boundingRect().bottom() + 2;
     for(int i = 0; i<m_children.count(); i++)
     {
-        x += 15;
+        x += CHILDREN_ALIGNMENT;
         int oldy = y-2;
         int neww = w;
         grp->addToGroup(m_children.at(i)->render(x, y, neww, h));
         int halfway = (oldy + y) / 2 ;
-        if(w<neww) {w = neww + 15; lmw = neww + 15;}
+        if(w<neww) {w = neww + CHILDREN_ALIGNMENT; lmw = neww + CHILDREN_ALIGNMENT;}
 
-        QGraphicsLineItem* l1 = new QGraphicsLineItem(x +5+2-15 , oldy+1, x + 5+2-15, halfway , grp);
-        QGraphicsLineItem* l2 = new QGraphicsLineItem(x +5+2-15 , halfway, x + 5+2-15, y, grp);
-        QGraphicsLineItem* l3 = new QGraphicsLineItem(x +5+2-15 , halfway, x, halfway, grp);
-        //l1->setPen(thick);
-        //l2->setPen(thick);
-        //l3->setPen(thick);
-
-        x -= 15;
+        QGraphicsLineItem* l1 = new QGraphicsLineItem(x +5+2-CHILDREN_ALIGNMENT , oldy+1, x + 5+2-CHILDREN_ALIGNMENT, halfway , grp);
+        QGraphicsLineItem* l2 = new QGraphicsLineItem(x +5+2-CHILDREN_ALIGNMENT , halfway, x + 5+2-CHILDREN_ALIGNMENT, y, grp);
+        QGraphicsLineItem* l3 = new QGraphicsLineItem(x +5+2-CHILDREN_ALIGNMENT , halfway, x, halfway, grp);
+        x -= CHILDREN_ALIGNMENT;
     }
 
     // the small open box
     QGraphicsLineItem* l1 = new QGraphicsLineItem(x + 5 +2 , y-1, x + 5 + 2, y + 20, grp);
     QGraphicsRectItem* box = new QGraphicsRectItem(x + 2, y+10, 10, 10, grp);
     QGraphicsLineItem* l2 = new QGraphicsLineItem(x +2, y + 15, x + 10 + 2, y + 15, grp);
-    //box->setPen(thick);
-    //l1->setPen(thick);
-    //l2->setPen(thick);
+
     y = box->boundingRect().bottom() + 5 ;
 
     // the bigger box rounding the stuff

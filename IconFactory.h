@@ -174,6 +174,12 @@ public:
         return icon;
     }
 
+    static const QIcon& getCloseIcon()
+    {
+        static const QIcon icon(strCloseIcon);
+        return icon;
+    }
+
 };
 
 #endif // ICONFACTORY_H

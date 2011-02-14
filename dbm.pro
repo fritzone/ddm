@@ -91,7 +91,11 @@ SOURCES += main.cpp \
     TableGraphicsItem.cpp \
     CellCommand.cpp \
     CellTable.cpp \
-    CellTypeChooser.cpp
+    CellTypeChooser.cpp \
+    CellClose.cpp \
+    CellTableChooser.cpp \
+    QueryComponents.cpp \
+    QueryItemListDialog.cpp
 HEADERS += mainwindow.h \
     MainWindowButtonDialog.h \
     newprojectdialog.h \
@@ -194,7 +198,11 @@ HEADERS += mainwindow.h \
     TableGraphicsItem.h \
     CellCommand.h \
     CellTable.h \
-    CellTypeChooser.h
+    CellTypeChooser.h \
+    CellClose.h \
+    CellTableChooser.h \
+    QueryComponents.h \
+    QueryItemListDialog.h
 FORMS += mainwindow.ui \
     mainwindowbuttondialog.ui \
     newprojectdialog.ui \
@@ -217,5 +225,6 @@ FORMS += mainwindow.ui \
     ReverseEngineerWizardDatabasesForm.ui \
     ReverseEngineerWizardTablesForm.ui \
     ReverseEngineerWizardOptionsForm.ui \
-    NewViewForm.ui
+    NewViewForm.ui \
+    QueryItemListDialog.ui
 RESOURCES += dbm.qrc
