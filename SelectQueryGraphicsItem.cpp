@@ -30,6 +30,11 @@ QGraphicsItemGroup* SelectQueryGraphicsItem::render(int& x, int& y, int& w, int 
     thick.setWidth(1);
     thick.setColor(Qt::gray);
     m_frameRect->setPen(thick);
+    m_close = new CellClose(m_comps);
+    m_close->setX(br.left() + br.width());
+    m_close->setY(br.top());
+    m_close->setZValue(2);
+    addToGroup(m_close);
     return this;
 }
 
@@ -50,4 +55,6 @@ void SelectQueryGraphicsItem::updateWidth(int newWidth)
     m_where->updateWidth(newWidth);
     QRect newRect(m_frameRect->boundingRect().left(), m_frameRect->boundingRect().top(), newWidth + 2, m_frameRect->boundingRect().height()-1);
     m_frameRect->setRect(newRect);
+    m_close->setX(0);
+    m_close->setY(0);
 }

@@ -17,6 +17,7 @@ private:
     QString m_name;
     QGraphicsRectItem* m_frame;
     QueryComponents* m_comps;
+    QGraphicsTextItem* m_txt;
 };
 
 #endif // CELLTABLECHOOSER_H

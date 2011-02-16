@@ -1,11 +1,12 @@
 #include "CellTableChooser.h"
 #include "Cell.h"
-#include "QueryItemListDialog.h"
 #include "QueryGraphicsScene.h"
 
 #include <QBrush>
 #include <QFont>
 #include <QPen>
+#include <QGraphicsView>
+#include <QGraphicsScene>
 
 #include <QDebug>
 
@@ -18,15 +19,14 @@ QGraphicsItemGroup* CellTableChooser::render(int &x, int &y, int &w, int &h)
 {
     int lx = x;
     int ly = y;
-    QGraphicsTextItem* txt = new QGraphicsTextItem(m_name, this);
-    txt->setPos(lx + Cell::CELL_SIZE + 5, ly);
-
-    QRect rct(lx + Cell::CELL_SIZE + 3, ly, txt->boundingRect().width(), 30);
+    m_txt = new QGraphicsTextItem(m_name, this);
+    m_txt->setPos(lx + Cell::CELL_SIZE + 5, ly);
+    QRect rct(lx + Cell::CELL_SIZE + 3, ly, m_txt->boundingRect().width(), 30);
     m_frame = new QGraphicsRectItem(rct, this);
     m_frame->setBrush(QBrush(Qt::white));
-    txt->setZValue(1);
+    m_txt->setZValue(1);
     m_frame->setZValue(0);
-    txt->setFont(QFont("Arial", 14, 2));
+    m_txt->setFont(QFont("Arial", 14, 2));
     return this;
 }
 
@@ -40,11 +40,9 @@ void CellTableChooser::updateWidth(int newWidth)
 
 void CellTableChooser::mousePress(int x, int y)
 {
-    QueryItemListDialog* dlg = new QueryItemListDialog((QWidget*)this->scene()->parent());
-    dlg->setWindowFlags(Qt::FramelessWindowHint);
-    dlg->move(x, y);
-    dlg->setModal(true);
-    dlg->show();
+    QPoint a = scene()->views().at(0)->mapToGlobal((m_frame->mapToScene(m_frame->boundingRect().bottomLeft().toPoint())).toPoint() );
+    m_name = m_comps->presentList(a.x() + 2, a.y(), QueryComponents::LIST_TABLES);
+    m_txt->setPlainText(m_name);
 }
 
 void CellTableChooser::mouseMove(int x, int y)

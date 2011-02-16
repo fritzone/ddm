@@ -19,7 +19,7 @@ void QueryGraphicsScene::mousePressEvent(QGraphicsSceneMouseEvent * event)
     QueryGraphicsItem* qgi = m_comps->clicked(event->scenePos().x(), event->scenePos().y());
     if(qgi)
     {
-        qgi->mousePress(event->scenePos().x(), event->scenePos().y());
+        qgi->mousePress(event->screenPos().x(), event->screenPos().y());
     }
 }
 

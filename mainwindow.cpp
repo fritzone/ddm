@@ -1465,6 +1465,7 @@ void MainWindow::onNewView()
     sq->getGraphicsItem()->render(x, y, w ,h);
     sq->getGraphicsItem()->updateWidth(w);
     nvf->setGraphicsItem(sq->getGraphicsItem());
+    c->setScene(nvf->getScene());
 
     setCentralWidget(nvf);
 }

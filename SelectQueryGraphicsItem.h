@@ -3,6 +3,7 @@
 
 #include "QueryGraphicsItem.h"
 #include "QueryComponents.h"
+#include "CellClose.h"
 
 class Cell;
 
@@ -24,6 +25,7 @@ private:
     Cell* m_where;
     QGraphicsRectItem* m_frameRect;
     QueryComponents* m_comps;
+    CellClose* m_close;
 };
 
 #endif // SELECTQUERYGRAPHICSITEM_H
