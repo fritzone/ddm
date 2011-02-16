@@ -18,6 +18,10 @@ public:
     NewViewForm(QueryComponents*c, QWidget *parent = 0);
     ~NewViewForm();
     void setGraphicsItem(QueryGraphicsItem*);
+    QueryGraphicsScene* getScene()
+    {
+        return m_qgs;
+    }
 
 protected:
     void changeEvent(QEvent *e);
