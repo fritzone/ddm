@@ -28,11 +28,11 @@ QGraphicsItemGroup* CellTable::render(int &x, int &y, int& w, int &h)
     QSet<CellTypeChooser::CellTypeChooserType> allowedTypes;
     allowedTypes.insert(CellTypeChooser::CELLTYPE_TABLE);
 
-    CellTypeChooser* chooser = new CellTypeChooser(CellTypeChooser::CELLTYPE_TABLE, allowedTypes, m_comps);
+    CellTypeChooser* chooser = new CellTypeChooser(CellTypeChooser::CELLTYPE_TABLE, allowedTypes, m_comps, this);
     chooser->render(lx, ly, w, h);
     grp->addToGroup(chooser);
 
-    m_closer = new CellClose(m_comps);
+    m_closer = new CellClose(m_comps, this);
     int p = m_chooser->boundingRect().width() + CELL_SIZE + 10;
     m_closer->render(p, ly, w, h);
     grp->addToGroup(m_closer);
