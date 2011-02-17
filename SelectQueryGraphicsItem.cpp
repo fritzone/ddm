@@ -7,9 +7,9 @@
 
 #include <QPen>
 
-SelectQueryGraphicsItem::SelectQueryGraphicsItem(QueryComponents* c) : m_select(new CellCommand(CellCommand::CELL_SELECT, c)),
-    m_from(new CellCommand(CellCommand::CELL_FROM, c)), m_where(new CellCommand(CellCommand::CELL_WHERE, c)),
-    m_frameRect(0), m_comps(c)
+SelectQueryGraphicsItem::SelectQueryGraphicsItem(QueryComponents* c, int level) : m_select(new CellCommand(CellCommand::CELL_SELECT, c, level)),
+    m_from(new CellCommand(CellCommand::CELL_FROM, c, level)), m_where(new CellCommand(CellCommand::CELL_WHERE, c, level)),
+    m_frameRect(0), m_comps(c), m_level(level)
 {
 }
 
@@ -30,11 +30,6 @@ QGraphicsItemGroup* SelectQueryGraphicsItem::render(int& x, int& y, int& w, int 
     thick.setWidth(1);
     thick.setColor(Qt::gray);
     m_frameRect->setPen(thick);
-    m_close = new CellClose(m_comps);
-    m_close->setX(br.left() + br.width());
-    m_close->setY(br.top());
-    m_close->setZValue(2);
-    addToGroup(m_close);
     return this;
 }
 
@@ -43,7 +38,9 @@ void SelectQueryGraphicsItem::test()
 {
     m_from->addChild(new TableGraphicsItem(Workspace::getInstance()->workingVersion()->getTables().at(0), m_comps));
     m_from->addChild(new TableGraphicsItem(Workspace::getInstance()->workingVersion()->getTables().at(0), m_comps));
-    m_from->addChild(new SelectQueryGraphicsItem(m_comps));
+    SelectQueryGraphicsItem* c1 = new SelectQueryGraphicsItem(m_comps, 1);
+    m_from->addChild(c1);
+    c1->getFrom()->addChild(new TableGraphicsItem(Workspace::getInstance()->workingVersion()->getTables().at(0), m_comps));
     m_from->addChild(new TableGraphicsItem(Workspace::getInstance()->workingVersion()->getTables().at(0), m_comps));
 
 }
@@ -53,8 +50,6 @@ void SelectQueryGraphicsItem::updateWidth(int newWidth)
     m_select->updateWidth(newWidth);
     m_from->updateWidth(newWidth);
     m_where->updateWidth(newWidth);
-    QRect newRect(m_frameRect->boundingRect().left(), m_frameRect->boundingRect().top(), newWidth + 2, m_frameRect->boundingRect().height()-1);
+    QRect newRect(m_frameRect->boundingRect().left() + m_level * Cell::CHILDREN_ALIGNMENT, m_frameRect->boundingRect().top(), newWidth + 2, m_frameRect->boundingRect().height()-1);
     m_frameRect->setRect(newRect);
-    m_close->setX(0);
-    m_close->setY(0);
 }

@@ -3,7 +3,7 @@
 #include <QBrush>
 #include <QPen>
 
-CellCommand::CellCommand(CellType type, QueryComponents *c): m_type(type), m_comps(c)
+CellCommand::CellCommand(CellType type, QueryComponents *c, int level): m_type(type), m_comps(c), m_close(0), m_level(level)
 {
     switch(m_type)
     {
@@ -26,9 +26,9 @@ QGraphicsItemGroup* CellCommand::render(int& x, int& y, int& w, int &h)
     int lx = x;
     int ly = y;
     int lmw = w; // local max width
+    QGraphicsItemGroup* grp = new QGraphicsItemGroup();
 
     // the text
-    QGraphicsItemGroup* grp = new QGraphicsItemGroup();
     QGraphicsTextItem* txt = new QGraphicsTextItem(m_command, grp);
     QFont theFont("Arial", 14, QFont::Bold);
     txt->setFont(theFont);
@@ -85,6 +85,19 @@ QGraphicsItemGroup* CellCommand::render(int& x, int& y, int& w, int &h)
         m_colorRect->setBrush(QBrush(QColor(196, 217, 196)));
     }
     m_colorRect->setZValue(-1);
+
+    if(m_type == CellCommand::CELL_WHERE || m_type == CellCommand::CELL_SELECT)
+    {
+        m_close = new CellClose(m_comps, this);
+        int sx = x, sy = y, sw = w, sh = h;
+        int cx = 20;
+        int cy = ly + 2;
+        m_close->render(cx, cy, w, h);
+        grp->addToGroup(m_close);
+        m_close->setZValue(2);
+        x = sx; y = sy; w = sw; h = sh;
+    }
+
     w = w<lmw?lmw:w;
     return grp;
 }
@@ -98,11 +111,17 @@ void CellCommand::updateWidth(int newWidth)
     {
         m_children.at(i)->updateWidth(newWidth);
     }
+
     }
 
     {
     QRect newRect(m_colorRect->boundingRect().left(), m_colorRect->boundingRect().top(), newWidth, m_colorRect->boundingRect().height());
     m_colorRect->setRect(newRect);
+    if(m_close)
+    {
+        QPointF t = mapFromParent(mapFromScene(newWidth - 2, 0));
+        m_close->updateWidth(t.x() + m_level * CHILDREN_ALIGNMENT);
+    }
     }
 
 }
