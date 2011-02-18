@@ -2,10 +2,13 @@
 #include "CellTypeChooser.h"
 #include "CellClose.h"
 #include "CellTableChooser.h"
+#include "QueryGraphicsScene.h"
+#include "QueryComponents.h"
 
 #include <QPen>
 
-CellTable::CellTable(const QString& tabName, QueryComponents* c):m_tabName(tabName), m_comps(c)
+CellTable::CellTable(const QString& tabName, QueryGraphicsHelper* c, QueryGraphicsItem* parent, QueryComponent* owner):QueryGraphicsItem(parent, c, owner)
+        , m_tabName(tabName)
 {
 }
 
@@ -18,7 +21,7 @@ QGraphicsItemGroup* CellTable::render(int &x, int &y, int& w, int &h)
     int ly = y;
     QGraphicsItemGroup* grp = new QGraphicsItemGroup();
 
-    m_chooser = new CellTableChooser(m_tabName, m_comps);
+    m_chooser = new CellTableChooser(m_tabName, m_helper, this, m_owner);
     m_chooser->render(lx, ly ,w, h);
     grp->addToGroup(m_chooser);
 
@@ -28,11 +31,11 @@ QGraphicsItemGroup* CellTable::render(int &x, int &y, int& w, int &h)
     QSet<CellTypeChooser::CellTypeChooserType> allowedTypes;
     allowedTypes.insert(CellTypeChooser::CELLTYPE_TABLE);
 
-    CellTypeChooser* chooser = new CellTypeChooser(CellTypeChooser::CELLTYPE_TABLE, allowedTypes, m_comps, this);
+    CellTypeChooser* chooser = new CellTypeChooser(CellTypeChooser::CELLTYPE_TABLE, allowedTypes, m_helper, this, m_owner);
     chooser->render(lx, ly, w, h);
     grp->addToGroup(chooser);
 
-    m_closer = new CellClose(m_comps, this);
+    m_closer = new CellClose(m_helper, this, m_owner);
     int p = m_chooser->boundingRect().width() + CELL_SIZE + 10;
     m_closer->render(p, ly, w, h);
     grp->addToGroup(m_closer);
@@ -46,7 +49,12 @@ void CellTable::updateWidth(int newWidth)
     QRect newRect(m_frame->boundingRect().left(), m_frame->boundingRect().top(), newWidth - CHILDREN_ALIGNMENT - 2, m_frame->boundingRect().height());
     m_frame->setRect(newRect);
     int x = m_frame->boundingRect().right();
-    m_closer->updateWidth(x - 10  - Cell::CELL_SIZE);
-    m_chooser->updateWidth(newWidth - CHILDREN_ALIGNMENT - 10  - 2 * Cell::CELL_SIZE);
+    m_closer->updateWidth(x - 10  - CELL_SIZE);
+    m_chooser->updateWidth(newWidth - CHILDREN_ALIGNMENT - 10  - 2 * CELL_SIZE);
 }
 
+void CellTable::onClose()
+{
+    m_parent->getOwner()->getParent()->removeChild(m_parent->getOwner()); // first is the table entry, second is the from
+    m_helper->triggerReRender();
+}

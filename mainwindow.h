@@ -22,6 +22,8 @@ class Workspace;
 class ReverseEngineerWizard;
 class ContextMenuHandler;
 class Issue;
+class Query;
+class NewViewForm;
 
 namespace Ui
 {
@@ -52,6 +54,8 @@ public:
     void showTable(const QString& tabName, bool focus = true);
     void showTableInstance(const QString& tabName, bool focus = true);
     void showDataType(const QString &name, bool focus = true);
+
+    void rerenderQuery(Query*c);
 
 public slots:
 
@@ -144,6 +148,8 @@ private:
     Workspace* m_workspace;
 
     ReverseEngineerWizard* m_revEngWizard;
+
+    NewViewForm* nvf;
 };
 
 #endif // MAINWINDOW_H

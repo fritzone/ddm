@@ -3,7 +3,13 @@
 #include <QBrush>
 #include <QPen>
 
-CellCommand::CellCommand(CellType type, QueryComponents *c, int level): m_type(type), m_comps(c), m_close(0), m_level(level)
+QBrush CellCommand::fromBrush = QBrush(QColor(180, 212, 217));
+QBrush CellCommand::selectBrush = QBrush(QColor(217, 188, 175));
+QBrush CellCommand::whereBrush = QBrush(QColor(196, 217, 196));
+
+CellCommand::CellCommand(CellType type, QueryGraphicsHelper *c, int level, QueryGraphicsItem* parent, QueryComponent* owner):
+        QueryGraphicsItem(parent, c, owner),
+        m_type(type), m_close(0), m_level(level)
 {
     switch(m_type)
     {
@@ -35,12 +41,12 @@ QGraphicsItemGroup* CellCommand::render(int& x, int& y, int& w, int &h)
     txt->setPos(lx + 5, ly + 5);
     int bottom = txt->boundingRect().height() + 2;
     // the background for the command
-    w = w<100?100:w;
+    w = w<txt->boundingRect().width()?txt->boundingRect().width():w;
     lmw = w + lx + 2;
     QRectF rect(lx + 2, ly + 2, w, bottom);
 
     m_rctCommandFrame = new QGraphicsRectItem(rect, grp);
-    m_rctCommandFrame->setBrush(Qt::lightGray);
+    m_rctCommandFrame->setBrush(getCellBrush());
     QPen tPen;
     tPen.setColor(Qt::black);
     txt->setZValue(1);
@@ -69,26 +75,15 @@ QGraphicsItemGroup* CellCommand::render(int& x, int& y, int& w, int &h)
     y = box->boundingRect().bottom() + 5 ;
 
     // the bigger box rounding the stuff
-    w = lx + w;
+    //w = lx + w;
     QRect rect2(lx, ly, w, y - ly);
     m_colorRect = new QGraphicsRectItem(rect2, grp);
-    if(m_type == CellCommand::CELL_FROM)
-    {
-        m_colorRect->setBrush(QBrush(QColor(180, 212, 217)));
-    }
-    if(m_type == CellCommand::CELL_SELECT)
-    {
-        m_colorRect->setBrush(QBrush(QColor(217, 188, 175)));
-    }
-    if(m_type == CellCommand::CELL_WHERE)
-    {
-        m_colorRect->setBrush(QBrush(QColor(196, 217, 196)));
-    }
+    m_colorRect->setBrush(getCellBrush());
     m_colorRect->setZValue(-1);
 
     if(m_type == CellCommand::CELL_WHERE || m_type == CellCommand::CELL_SELECT)
     {
-        m_close = new CellClose(m_comps, this);
+        m_close = new CellClose(m_helper, this, m_owner);
         int sx = x, sy = y, sw = w, sh = h;
         int cx = 20;
         int cy = ly + 2;
@@ -123,5 +118,25 @@ void CellCommand::updateWidth(int newWidth)
         m_close->updateWidth(t.x() + m_level * CHILDREN_ALIGNMENT);
     }
     }
+}
+
+QBrush CellCommand::getCellBrush()
+{
+    if(m_type == CellCommand::CELL_FROM)
+    {
+       return (fromBrush);
+    }
+    if(m_type == CellCommand::CELL_SELECT)
+    {
+        return (selectBrush);
+    }
+    if(m_type == CellCommand::CELL_WHERE)
+    {
+        return (whereBrush);
+    }
+}
+
+void CellCommand::onClose()
+{
 
 }

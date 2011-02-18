@@ -4,7 +4,7 @@
 #include <QDialog>
 #include <QListWidgetItem>
 
-#include "QueryComponents.h"
+#include "QueryGraphicsHelper.h"
 
 namespace Ui {
     class QueryItemListDialog;
@@ -15,7 +15,7 @@ class QueryItemListDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit QueryItemListDialog(QueryComponents::ListType t, QWidget *parent = 0);
+    explicit QueryItemListDialog(QueryGraphicsHelper::ListType t, QWidget *parent = 0);
     ~QueryItemListDialog();
     QString getSelection() const
     {

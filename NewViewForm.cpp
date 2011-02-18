@@ -7,7 +7,7 @@
 
 #include <QVBoxLayout>
 
-NewViewForm::NewViewForm(QueryComponents* c, QWidget *parent) :
+NewViewForm::NewViewForm(QueryGraphicsHelper* c, QWidget *parent) :
     QWidget(parent),
     ui(new Ui::NewViewForm),
     m_comps(c)

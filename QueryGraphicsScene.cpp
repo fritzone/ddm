@@ -5,7 +5,7 @@
 #include <QGraphicsItem>
 #include <QDebug>
 
-QueryGraphicsScene::QueryGraphicsScene(QueryComponents* c, QWidget* parent):QGraphicsScene((QObject*)parent), m_comps(c), m_prevHovered(0)
+QueryGraphicsScene::QueryGraphicsScene(QueryGraphicsHelper* c, QWidget* parent):QGraphicsScene((QObject*)parent), m_comps(c), m_prevHovered(0)
 {
 }
 
@@ -33,7 +33,6 @@ void QueryGraphicsScene::mouseMoveEvent(QGraphicsSceneMouseEvent * event)
         qgi->mouseMove(event->scenePos().x(), event->scenePos().y());
         return;
     }
-    if(!m_prevHovered) return;
-    m_prevHovered->mouseLeft(event->scenePos().x(), event->scenePos().y());
+    m_comps->resetHighlightedItem();
     m_prevHovered = 0;
 }

@@ -9,7 +9,7 @@
 
 #include <QListWidget>
 
-QueryItemListDialog::QueryItemListDialog(QueryComponents::ListType t, QWidget *parent) :
+QueryItemListDialog::QueryItemListDialog(QueryGraphicsHelper::ListType t, QWidget *parent) :
     QDialog(parent),
     ui(new Ui::QueryItemListDialog), m_selected()
 {
@@ -17,7 +17,7 @@ QueryItemListDialog::QueryItemListDialog(QueryComponents::ListType t, QWidget *p
 
     switch(t)
     {
-    case QueryComponents::LIST_TABLES:
+    case QueryGraphicsHelper::LIST_TABLES:
         if(Workspace::getInstance()->currentProjectIsOop())
         {
             for(int i=0; i<Workspace::getInstance()->workingVersion()->getTableInstances().size(); i++)
@@ -38,7 +38,6 @@ QueryItemListDialog::QueryItemListDialog(QueryComponents::ListType t, QWidget *p
                 lwi->setFont(QFont("Arial", 14, 2));
                 lwi->setIcon(IconFactory::getTablesIcon());
                 ui->lstValues->addItem(lwi);
-
             }
 
         }

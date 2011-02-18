@@ -48,7 +48,7 @@
 #endif
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), m_ui(new Ui::MainWindow), m_projectTreeDock(0), m_datatypesTreeDock(0), m_issuesTreeDock(0),
-    m_projectTree(0), m_datatypesTree(0), m_btndlg(0), m_workspace(0), m_revEngWizard(0)
+    m_projectTree(0), m_datatypesTree(0), m_btndlg(0), m_workspace(0), m_revEngWizard(0), nvf(0)
 {
     m_ui->setupUi(this);
 
@@ -1453,19 +1453,37 @@ void MainWindow::onValidate()
     }
 }
 
+
 void MainWindow::onNewView()
 {
-    QueryComponents* c = new QueryComponents();
+    QueryGraphicsHelper* c = new QueryGraphicsHelper();
     SelectQuery* sq = new SelectQuery(c);
-    NewViewForm* nvf = new NewViewForm(c, this);
+    sq->newFromComponent();
+        sq->newFromComponent();
+            sq->newFromComponent();
+                sq->newFromComponent();
+                    sq->newFromComponent();
+
+    c->setQuery(sq);
+    c->setForm(this);
+    rerenderQuery(sq);
+
+}
+
+void MainWindow::rerenderQuery(Query* q)
+{
     int x = 20;
     int y = 20;
     int w = 0;
     int h = 0;
-    sq->getGraphicsItem()->render(x, y, w ,h);
-    sq->getGraphicsItem()->updateWidth(w);
-    nvf->setGraphicsItem(sq->getGraphicsItem());
-    c->setScene(nvf->getScene());
 
+    q->createGraphicsItem();
+    q->getGraphicsItem()->render(x, y, w ,h);
+    q->getGraphicsItem()->updateWidth(w);
+
+    nvf = new NewViewForm(q->getHelper(), this);
+
+    nvf->setGraphicsItem(q->getGraphicsItem());
+    q->getHelper()->setScene(nvf->getScene());
     setCentralWidget(nvf);
 }
