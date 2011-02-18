@@ -426,6 +426,22 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>lstValues</sender>
+   <signal>itemClicked(QListWidgetItem*)</signal>
+   <receiver>QueryItemListDialog</receiver>
+   <slot>onDblClickItem(QListWidgetItem*)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>199</x>
+     <y>149</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>199</x>
+     <y>149</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>onDblClickItem(QListWidgetItem*)</slot>

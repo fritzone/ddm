@@ -3,19 +3,23 @@
 
 #include "Query.h"
 #include "SelectQueryGraphicsItem.h"
-#include "QueryComponents.h"
+#include "QueryGraphicsHelper.h"
+
+class QueryComponent;
+class SelectQuerySelectComponent;
+class SelectQueryFromComponent;
 
 class SelectQuery : public Query
 {
 public:
-    SelectQuery(QueryComponents*);
-
-    virtual QueryGraphicsItem* getGraphicsItem();
+    SelectQuery(QueryGraphicsHelper*);
+    virtual bool createGraphicsItem();
+    void newFromComponent();
 
 private:
-
-    SelectQueryGraphicsItem* m_gitm;
-    QueryComponents* m_components;
+    SelectQuerySelectComponent* m_select;
+    SelectQueryFromComponent* m_from;
+    //QueryComponent* m_where;
 };
 
 #endif // SELECTQUERY_H

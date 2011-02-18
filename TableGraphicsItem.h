@@ -2,26 +2,25 @@
 #define TABLEGRAPHICSITEM_H
 
 #include "QueryGraphicsItem.h"
-#include "QueryComponents.h"
+#include "QueryGraphicsHelper.h"
 
 class Table;
-class Cell;
+class QueryComponent;
 
 class TableGraphicsItem : public QueryGraphicsItem
 {
 public:
 
-    TableGraphicsItem(Table*, QueryComponents* c);
+    TableGraphicsItem(Table*, QueryGraphicsHelper* c, QueryGraphicsItem* parent, QueryComponent* owner);
     virtual QGraphicsItemGroup* render(int& x, int& y, int& w, int &h);
     virtual void updateWidth(int newWidth);
-    virtual void mousePress(int x, int y){};
-    virtual void mouseMove(int x, int y){};
-    virtual void mouseLeft(int x, int y){};
+    virtual void mousePress(int x, int y){}
+    virtual void mouseMove(int x, int y){}
+    virtual void mouseLeft(int x, int y){}
+    virtual void onClose(){}
 private:
-
     Table* m_table;
-    Cell* m_tableCell;
-    QueryComponents* m_comps;
+    QueryGraphicsItem* m_tableCell;
 };
 
 #endif // TABLEGRAPHICSITEM_H

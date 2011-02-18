@@ -3,12 +3,29 @@
 
 #include "QueryGraphicsItem.h"
 
+class QueryGraphicsHelper;
+
 class Query
 {
 public:
-    Query();
+    Query(QueryGraphicsHelper*);
 
-    virtual QueryGraphicsItem* getGraphicsItem() = 0;
+    QueryGraphicsItem* getGraphicsItem()
+    {
+        return m_graphicsItem;
+    }
+
+    virtual bool createGraphicsItem() = 0;
+
+    QueryGraphicsHelper* getHelper()
+    {
+        return m_helper;
+    }
+
+
+protected:
+    QueryGraphicsHelper* m_helper;
+    QueryGraphicsItem* m_graphicsItem;
 };
 
 #endif // QUERY_H

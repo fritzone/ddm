@@ -87,7 +87,6 @@ SOURCES += main.cpp \
     QueryGraphicsItem.cpp \
     SelectQuery.cpp \
     SelectQueryGraphicsItem.cpp \
-    Cell.cpp \
     TableGraphicsItem.cpp \
     CellCommand.cpp \
     CellTable.cpp \
@@ -95,7 +94,11 @@ SOURCES += main.cpp \
     CellClose.cpp \
     CellTableChooser.cpp \
     QueryComponents.cpp \
-    QueryItemListDialog.cpp
+    QueryItemListDialog.cpp \
+    QueryGraphicsHelper.cpp \
+    TableQueryComponent.cpp \
+    SelectQuerySelectComponent.cpp \
+    SelectQueryFromComponent.cpp
 HEADERS += mainwindow.h \
     MainWindowButtonDialog.h \
     newprojectdialog.h \
@@ -194,7 +197,6 @@ HEADERS += mainwindow.h \
     QueryGraphicsItem.h \
     SelectQuery.h \
     SelectQueryGraphicsItem.h \
-    Cell.h \
     TableGraphicsItem.h \
     CellCommand.h \
     CellTable.h \
@@ -202,7 +204,11 @@ HEADERS += mainwindow.h \
     CellClose.h \
     CellTableChooser.h \
     QueryComponents.h \
-    QueryItemListDialog.h
+    QueryItemListDialog.h \
+    "QueryGraphicsHelper.h" \
+    TableQueryComponent.h \
+    SelectQuerySelectComponent.h \
+    SelectQueryFromComponent.h
 FORMS += mainwindow.ui \
     mainwindowbuttondialog.ui \
     newprojectdialog.ui \

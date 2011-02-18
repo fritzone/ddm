@@ -2,19 +2,19 @@
 #include "Workspace.h"
 #include "Version.h"
 #include "IconFactory.h"
-#include "Cell.h"
 
 #include <QPen>
 
-CellTypeChooser::CellTypeChooser(CellTypeChooserType defaultType, QSet<CellTypeChooserType> allowedTypes, QueryComponents *c, QueryGraphicsItem* parent):
-        m_defaultType(defaultType), m_allowedTypes(allowedTypes), m_currentType(defaultType), m_comps(c), m_rect(0), m_parent(parent)
+CellTypeChooser::CellTypeChooser(CellTypeChooserType defaultType, QSet<CellTypeChooserType> allowedTypes, QueryGraphicsHelper *c, QueryGraphicsItem* parent, QueryComponent* owner):
+        QueryGraphicsItem(parent, c, owner),
+        m_defaultType(defaultType), m_allowedTypes(allowedTypes), m_currentType(defaultType), m_rect(0)
 {
 }
 
 QGraphicsItemGroup* CellTypeChooser::render(int& x, int& y, int& w, int &h)
 {
-    QRect r(x, y, Cell::CELL_SIZE, Cell::CELL_SIZE);
-    m_comps->addNewHotCell(this, r);
+    QRect r(x, y, CELL_SIZE, CELL_SIZE);
+    m_helper->addNewHotCell(this, r);
     addToGroup(m_rect = new QGraphicsRectItem(r));
     QGraphicsPixmapItem* typeIcon = 0;
 

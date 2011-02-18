@@ -1,34 +1,30 @@
 #ifndef QUERYCOMPONENTS_H
 #define QUERYCOMPONENTS_H
 
-#include <QRect>
-#include <QMap>
+#include <QString>
+#include <QList>
 
-class QueryItemListDialog;
 class QueryGraphicsItem;
-class QueryGraphicsScene;
+class QueryGraphicsHelper;
 
-class QueryComponents
+/**
+ * The logic behind a query
+ */
+class QueryComponent
 {
 public:
-
-    enum ListType
-    {
-        LIST_TABLES = 1
-    };
-
-    QueryComponents(QueryGraphicsScene*);
-    QueryComponents();
-    void addNewHotCell(QueryGraphicsItem*, QRect);
-    QueryGraphicsItem* clicked(int x, int y);
-    QString presentList(int,int,ListType);
-    void setScene(QueryGraphicsScene*sc) ;
+    QueryComponent(QueryComponent* parent) : m_parent(parent) {}
+    virtual QString get() = 0;
+    virtual QueryGraphicsItem* createGraphicsItem(QueryGraphicsHelper*, QueryGraphicsItem*) = 0;
+    void addChild(QueryComponent* c) {m_children.append(c);}
+    QList<QueryComponent*>& getChildren() {return m_children;}
+    void removeChild(QueryComponent* c);
+    QueryComponent* getParent() {return m_parent; }
 
 private:
-
-    QMap<QueryGraphicsItem*, QRect> hotCells;
-    QueryItemListDialog* m_lstDlg;
-    QueryGraphicsScene* m_scene;
+    QList<QueryComponent*> m_children;
+    QueryComponent* m_parent;
 };
 
 #endif // QUERYCOMPONENTS_H
+
