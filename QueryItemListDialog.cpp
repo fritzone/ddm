@@ -45,6 +45,22 @@ QueryItemListDialog::QueryItemListDialog(QueryGraphicsHelper::ListType t, QWidge
     }
 }
 
+QueryItemListDialog::QueryItemListDialog(QStringList lst, QList<QIcon> icons, QWidget *parent) :
+        QDialog(parent),
+        ui(new Ui::QueryItemListDialog), m_selected()
+{
+    ui->setupUi(this);
+    resize(200,10 * (lst.size()));
+    ui->lstValues->resize(200,10 * (lst.size()));
+    for(int i=0; i<lst.size(); i++)
+    {
+        QListWidgetItem* lwi = new QListWidgetItem(lst.at(i));
+        lwi->setFont(QFont("Arial", 10, 2));
+        lwi->setIcon(icons.at(i));
+        ui->lstValues->addItem(lwi);
+    }
+}
+
 QueryItemListDialog::~QueryItemListDialog()
 {
     delete ui;

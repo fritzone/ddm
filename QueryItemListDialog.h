@@ -16,6 +16,8 @@ class QueryItemListDialog : public QDialog
 
 public:
     explicit QueryItemListDialog(QueryGraphicsHelper::ListType t, QWidget *parent = 0);
+    explicit QueryItemListDialog(QStringList lst, QList<QIcon> icons, QWidget *parent = 0);
+
     ~QueryItemListDialog();
     QString getSelection() const
     {

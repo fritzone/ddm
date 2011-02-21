@@ -5,28 +5,10 @@
 #include <QBrush>
 #include <QPen>
 
-QBrush CellCommand::fromBrush = QBrush(QColor(180, 212, 217));
-QBrush CellCommand::selectBrush = QBrush(QColor(217, 188, 175));
-QBrush CellCommand::whereBrush = QBrush(QColor(196, 217, 196));
-
-CellCommand::CellCommand(CellType type, QueryGraphicsHelper *c, int level, QueryGraphicsItem* parent, QueryComponent* owner):
+CellCommand::CellCommand(QueryGraphicsHelper *c, int level, QueryGraphicsItem* parent, QueryComponent* owner):
         QueryGraphicsItem(parent, c, owner),
-        m_type(type), m_close(0), m_level(level)
+        m_close(0), m_level(level)
 {
-    switch(m_type)
-    {
-    case CellCommand::CELL_SELECT:
-        m_command = "SELECT";
-        break;
-
-    case CellCommand::CELL_FROM:
-        m_command = "FROM";
-        break;
-    case CellCommand::CELL_WHERE:
-        m_command = "WHERE";
-        break;
-    }
-
 }
 
 QGraphicsItemGroup* CellCommand::render(int& x, int& y, int& w, int &h)
@@ -37,7 +19,7 @@ QGraphicsItemGroup* CellCommand::render(int& x, int& y, int& w, int &h)
     QGraphicsItemGroup* grp = new QGraphicsItemGroup();
 
     // the text
-    QGraphicsTextItem* txt = new QGraphicsTextItem(m_command, grp);
+    QGraphicsTextItem* txt = new QGraphicsTextItem(getCommand(), grp);
     QFont theFont("Arial", 14, QFont::Bold);
     txt->setFont(theFont);
     txt->setPos(lx + 5, ly + 5);
@@ -63,28 +45,35 @@ QGraphicsItemGroup* CellCommand::render(int& x, int& y, int& w, int &h)
         QGraphicsLineItem* l1 = new QGraphicsLineItem(x +5+2-CHILDREN_ALIGNMENT , oldy+1, x + 5+2-CHILDREN_ALIGNMENT, halfway , grp); // top
         QGraphicsLineItem* l2 = new QGraphicsLineItem(x +5+2-CHILDREN_ALIGNMENT , halfway +10, x + 5+2-CHILDREN_ALIGNMENT, y, grp);   // botton
         QGraphicsLineItem* l3 = new QGraphicsLineItem(x +5+2-CHILDREN_ALIGNMENT +5 , halfway+5, x, halfway+5, grp);                   // to right
+
         QSet<CellQuerySmallOptionsBox::OptionsType> t; t.insert(CellQuerySmallOptionsBox::OPTIONS_DUPLICATE);
         CellQuerySmallOptionsBox* smb = new CellQuerySmallOptionsBox(t, m_helper, m_level, m_parent, m_owner);
         int tx = x-15 + 2; int ty = halfway; int tw = w; int th = h;
         grp->addToGroup(smb->render(tx, ty, tw, th));
+
         x -= CHILDREN_ALIGNMENT;
     }
 
-    // the small open box
+    // the small command box (provided by the child classes)
     QGraphicsLineItem* l1 = new QGraphicsLineItem(x + 5 +2 , y-1, x + 5 + 2, y + 20, grp);
     QGraphicsRectItem* box = new QGraphicsRectItem(x + 2, y+10, 10, 10, grp);
     QGraphicsLineItem* l2 = new QGraphicsLineItem(x +2, y + 15, x + 10 + 2, y + 15, grp);
-
+    CellQuerySmallOptionsBox* smb = provideOptionsBox(m_helper, m_level, m_parent, m_owner);
+    if(smb)
+    {
+        int tx = x + 2; int ty = y + 10; int tw = w; int th = h;
+        grp->addToGroup(smb->render(tx, ty, tw, th));
+    }
     y = box->boundingRect().bottom() + 5 ;
 
     // the bigger box rounding the stuff
-    //w = lx + w;
     QRect rect2(lx, ly, w, y - ly);
     m_colorRect = new QGraphicsRectItem(rect2, grp);
     m_colorRect->setBrush(getCellBrush());
     m_colorRect->setZValue(-1);
 
-    if(m_type == CellCommand::CELL_WHERE || m_type == CellCommand::CELL_SELECT)
+    // is this having a close button?
+    if(hasClose())
     {
         m_close = new CellClose(m_helper, this, m_owner);
         int sx = x, sy = y, sw = w, sh = h;
@@ -120,22 +109,6 @@ void CellCommand::updateWidth(int newWidth)
         QPointF t = mapFromParent(mapFromScene(newWidth - 2, 0));
         m_close->updateWidth(t.x() + m_level * CHILDREN_ALIGNMENT);
     }
-    }
-}
-
-QBrush CellCommand::getCellBrush()
-{
-    if(m_type == CellCommand::CELL_FROM)
-    {
-       return (fromBrush);
-    }
-    if(m_type == CellCommand::CELL_SELECT)
-    {
-        return (selectBrush);
-    }
-    if(m_type == CellCommand::CELL_WHERE)
-    {
-        return (whereBrush);
     }
 }
 

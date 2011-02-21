@@ -2,26 +2,35 @@
 #define QUERY_H
 
 #include "QueryGraphicsItem.h"
+#include "QueryComponents.h"
 
 class QueryGraphicsHelper;
 
-class Query
+
+class Query : public QueryComponent
 {
 public:
+
     Query(QueryGraphicsHelper*);
+    virtual ~Query() {}
 
     QueryGraphicsItem* getGraphicsItem()
     {
         return m_graphicsItem;
     }
 
-    virtual bool createGraphicsItem() = 0;
+    virtual bool initializeGraphicsItem() = 0;
+    virtual QueryGraphicsItem* createGraphicsItem(QueryGraphicsHelper*, QueryGraphicsItem*) = 0;
 
     QueryGraphicsHelper* getHelper()
     {
         return m_helper;
     }
 
+    virtual QString get()
+    {
+        return "CREATE THE SQL";
+    }
 
 protected:
     QueryGraphicsHelper* m_helper;

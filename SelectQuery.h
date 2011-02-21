@@ -8,18 +8,21 @@
 class QueryComponent;
 class SelectQuerySelectComponent;
 class SelectQueryFromComponent;
+class SelectQueryWhereComponent;
 
 class SelectQuery : public Query
 {
 public:
     SelectQuery(QueryGraphicsHelper*);
-    virtual bool createGraphicsItem();
-    void newFromComponent();
+    virtual bool initializeGraphicsItem();
+    virtual QueryGraphicsItem* createGraphicsItem(QueryGraphicsHelper*, QueryGraphicsItem*);
+    void newFromTableComponent();
+    virtual void handleAction(const QString& action){}
 
 private:
     SelectQuerySelectComponent* m_select;
     SelectQueryFromComponent* m_from;
-    //QueryComponent* m_where;
+    SelectQueryWhereComponent* m_where;
 };
 
 #endif // SELECTQUERY_H

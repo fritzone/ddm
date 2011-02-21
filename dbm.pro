@@ -99,7 +99,11 @@ SOURCES += main.cpp \
     TableQueryComponent.cpp \
     SelectQuerySelectComponent.cpp \
     SelectQueryFromComponent.cpp \
-    CellQuerySmallOptionsBox.cpp
+    CellQuerySmallOptionsBox.cpp \
+    SelectQueryWhereComponent.cpp \
+    CellSelectCommand.cpp \
+    CellFromCommand.cpp \
+    CellWhereCommand.cpp
 HEADERS += mainwindow.h \
     MainWindowButtonDialog.h \
     newprojectdialog.h \
@@ -210,7 +214,11 @@ HEADERS += mainwindow.h \
     TableQueryComponent.h \
     SelectQuerySelectComponent.h \
     SelectQueryFromComponent.h \
-    CellQuerySmallOptionsBox.h
+    CellQuerySmallOptionsBox.h \
+    SelectQueryWhereComponent.h \
+    CellSelectCommand.h \
+    CellFromCommand.h \
+    CellWhereCommand.h
 FORMS += mainwindow.ui \
     mainwindowbuttondialog.ui \
     newprojectdialog.ui \

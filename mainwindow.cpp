@@ -1458,11 +1458,6 @@ void MainWindow::onNewView()
 {
     QueryGraphicsHelper* c = new QueryGraphicsHelper();
     SelectQuery* sq = new SelectQuery(c);
-    sq->newFromComponent();
-        sq->newFromComponent();
-            sq->newFromComponent();
-                sq->newFromComponent();
-                    sq->newFromComponent();
 
     c->setQuery(sq);
     c->setForm(this);
@@ -1477,7 +1472,7 @@ void MainWindow::rerenderQuery(Query* q)
     int w = 0;
     int h = 0;
 
-    q->createGraphicsItem();
+    q->initializeGraphicsItem();
     q->getGraphicsItem()->render(x, y, w ,h);
     q->getGraphicsItem()->updateWidth(w);
 

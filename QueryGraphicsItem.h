@@ -15,6 +15,8 @@ public:
     static const int CHILDREN_ALIGNMENT = 15;
     static const int CELL_SIZE = 20;
     QueryGraphicsItem(QueryGraphicsItem* parent, QueryGraphicsHelper* comps, QueryComponent* owner);
+    virtual ~QueryGraphicsItem() {}
+
     virtual QGraphicsItemGroup* render(int& x, int& y, int& w, int &h) = 0;
     virtual void updateWidth(int newWidth) = 0;
     virtual void mousePress(int x, int y) = 0;
