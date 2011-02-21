@@ -98,7 +98,8 @@ SOURCES += main.cpp \
     QueryGraphicsHelper.cpp \
     TableQueryComponent.cpp \
     SelectQuerySelectComponent.cpp \
-    SelectQueryFromComponent.cpp
+    SelectQueryFromComponent.cpp \
+    CellQuerySmallOptionsBox.cpp
 HEADERS += mainwindow.h \
     MainWindowButtonDialog.h \
     newprojectdialog.h \
@@ -208,7 +209,8 @@ HEADERS += mainwindow.h \
     "QueryGraphicsHelper.h" \
     TableQueryComponent.h \
     SelectQuerySelectComponent.h \
-    SelectQueryFromComponent.h
+    SelectQueryFromComponent.h \
+    CellQuerySmallOptionsBox.h
 FORMS += mainwindow.ui \
     mainwindowbuttondialog.ui \
     newprojectdialog.ui \
