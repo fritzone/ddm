@@ -1,4 +1,6 @@
 #include "CellCommand.h"
+#include "CellQuerySmallOptionsBox.h"
+
 #include <QFont>
 #include <QBrush>
 #include <QPen>
@@ -47,10 +49,7 @@ QGraphicsItemGroup* CellCommand::render(int& x, int& y, int& w, int &h)
 
     m_rctCommandFrame = new QGraphicsRectItem(rect, grp);
     m_rctCommandFrame->setBrush(getCellBrush());
-    QPen tPen;
-    tPen.setColor(Qt::black);
     txt->setZValue(1);
-    m_rctCommandFrame->setPen(tPen);
     y = m_rctCommandFrame->boundingRect().bottom() + 2;
     for(int i = 0; i<m_children.count(); i++)
     {
@@ -58,12 +57,16 @@ QGraphicsItemGroup* CellCommand::render(int& x, int& y, int& w, int &h)
         int oldy = y-2;
         int neww = w;
         grp->addToGroup(m_children.at(i)->render(x, y, neww, h));
-        int halfway = (oldy + y) / 2 ;
+        int halfway = (oldy + y) / 2 - 5;
         if(w<neww) {w = neww + CHILDREN_ALIGNMENT; lmw = neww + CHILDREN_ALIGNMENT;}
 
-        QGraphicsLineItem* l1 = new QGraphicsLineItem(x +5+2-CHILDREN_ALIGNMENT , oldy+1, x + 5+2-CHILDREN_ALIGNMENT, halfway , grp);
-        QGraphicsLineItem* l2 = new QGraphicsLineItem(x +5+2-CHILDREN_ALIGNMENT , halfway, x + 5+2-CHILDREN_ALIGNMENT, y, grp);
-        QGraphicsLineItem* l3 = new QGraphicsLineItem(x +5+2-CHILDREN_ALIGNMENT , halfway, x, halfway, grp);
+        QGraphicsLineItem* l1 = new QGraphicsLineItem(x +5+2-CHILDREN_ALIGNMENT , oldy+1, x + 5+2-CHILDREN_ALIGNMENT, halfway , grp); // top
+        QGraphicsLineItem* l2 = new QGraphicsLineItem(x +5+2-CHILDREN_ALIGNMENT , halfway +10, x + 5+2-CHILDREN_ALIGNMENT, y, grp);   // botton
+        QGraphicsLineItem* l3 = new QGraphicsLineItem(x +5+2-CHILDREN_ALIGNMENT +5 , halfway+5, x, halfway+5, grp);                   // to right
+        QSet<CellQuerySmallOptionsBox::OptionsType> t; t.insert(CellQuerySmallOptionsBox::OPTIONS_DUPLICATE);
+        CellQuerySmallOptionsBox* smb = new CellQuerySmallOptionsBox(t, m_helper, m_level, m_parent, m_owner);
+        int tx = x-15 + 2; int ty = halfway; int tw = w; int th = h;
+        grp->addToGroup(smb->render(tx, ty, tw, th));
         x -= CHILDREN_ALIGNMENT;
     }
 

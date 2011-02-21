@@ -1,6 +1,7 @@
 #ifndef CELLCOMMAND_H
 #define CELLCOMMAND_H
 
+#include "QueryGraphicsItem.h"
 #include "QueryGraphicsHelper.h"
 #include "CellClose.h"
 
