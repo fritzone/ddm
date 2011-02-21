@@ -8,8 +8,8 @@ class SelectQueryFromComponent : public QueryComponent
 public:
     SelectQueryFromComponent(QueryComponent*);
     virtual QString get(){return "FROM"; }
-
     virtual QueryGraphicsItem* createGraphicsItem(QueryGraphicsHelper*, QueryGraphicsItem*){return 0;}
+    virtual void handleAction(const QString& action);
 };
 
 #endif // SELECTQUERYFROMCOMPONENT_H

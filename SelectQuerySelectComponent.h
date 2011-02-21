@@ -8,7 +8,7 @@ class SelectQuerySelectComponent : public QueryComponent
 public:
     SelectQuerySelectComponent(QueryComponent*);
     virtual QString get(){return "SELECT"; }
-
+    virtual void handleAction(const QString& action){}
     virtual QueryGraphicsItem* createGraphicsItem(QueryGraphicsHelper*, QueryGraphicsItem*){return 0;}
 };
 

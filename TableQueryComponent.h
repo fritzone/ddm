@@ -12,6 +12,7 @@ public:
     virtual QString get();
     virtual QueryGraphicsItem* createGraphicsItem(QueryGraphicsHelper*, QueryGraphicsItem*);
     void setTable(const QString& tab);
+    virtual void handleAction(const QString& action){}
 private:
     Table* m_table;
 };

@@ -7,33 +7,30 @@
 
 #include <QBrush>
 
+class CellQuerySmallOptionsBox;
+
 class CellCommand : public QueryGraphicsItem
 {
 public:
-
-    enum CellType
-    {
-        CELL_SELECT = 1,
-        CELL_FROM = 2,
-        CELL_WHERE = 3
-    } ;
 
     static QBrush fromBrush;
     static QBrush selectBrush;
     static QBrush whereBrush;
 
-    CellCommand(CellType type, QueryGraphicsHelper* c, int level, QueryGraphicsItem* parent, QueryComponent* owner);
+    CellCommand(QueryGraphicsHelper* c, int level, QueryGraphicsItem* parent, QueryComponent* owner);
     virtual QGraphicsItemGroup* render(int& x, int& y, int& w, int &h);
     virtual void updateWidth(int newWidth);
     virtual void mousePress(int x, int y){}
     virtual void mouseMove(int x, int y){}
     virtual void mouseLeft(int x, int y){}
     virtual void onClose();
-private:
-    QBrush getCellBrush();
-private:
-    CellType m_type;
-    QString m_command;
+
+    virtual QBrush getCellBrush() = 0;
+    virtual QString getCommand() = 0;
+    virtual bool hasClose() = 0;
+    virtual CellQuerySmallOptionsBox* provideOptionsBox(QueryGraphicsHelper* c, int level, QueryGraphicsItem* parent, QueryComponent* owner) = 0;
+
+protected:
     QGraphicsRectItem* m_rctCommandFrame;
     QGraphicsRectItem* m_colorRect;
     CellClose* m_close;

@@ -1,8 +1,9 @@
 #ifndef QUERYGRAPHICSHELPER_H
 #define QUERYGRAPHICSHELPER_H
 
-
+#include <QStringList>
 #include <QRect>
+#include <QIcon>
 #include <QMap>
 
 class QueryItemListDialog;
@@ -25,6 +26,7 @@ public:
     void addNewHotCell(QueryGraphicsItem*, QRect);
     QueryGraphicsItem* clicked(int x, int y);
     QString presentList(int, int, ListType);
+    QString presentList(int, int, QStringList, QList<QIcon>);
     void setScene(QueryGraphicsScene* sc) ;
     void setQuery(Query* q) ;
     void setForm(MainWindow*);

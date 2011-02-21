@@ -5,6 +5,10 @@
 #include "QueryGraphicsHelper.h"
 #include "CellClose.h"
 
+class CellSelectCommand;
+class CellFromCommand;
+class CellWhereCommand;
+
 class SelectQueryGraphicsItem : public QueryGraphicsItem
 {
 public:
@@ -16,20 +20,24 @@ public:
     virtual void mouseMove(int x, int y){}
     virtual void mouseLeft(int x, int y){}
     virtual void onClose(){}
-    QueryGraphicsItem* getSelect()
+    CellSelectCommand* getSelect()
     {
         return m_select;
     }
-    QueryGraphicsItem* getFrom()
+    CellFromCommand* getFrom()
     {
         return m_from;
     }
     void addFromGraphicsItem(QueryGraphicsItem*);
 
+    void createSelectCell(QueryComponent*);
+    void createFromCell(QueryComponent*);
+    void createWhereCell(QueryComponent*);
+
 private:
-    QueryGraphicsItem* m_select;
-    QueryGraphicsItem* m_from;
-    QueryGraphicsItem* m_where;
+    CellSelectCommand* m_select;
+    CellFromCommand* m_from;
+    CellWhereCommand* m_where;
     QGraphicsRectItem* m_frameRect;
     int m_level;
 };
