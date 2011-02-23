@@ -17,10 +17,7 @@ public:
         if(m_level == 0) return false;
         return true;
     }
-    virtual CellQuerySmallOptionsBox* provideOptionsBox(QueryGraphicsHelper* c, int level, QueryGraphicsItem* parent, QueryComponent* owner)
-    {
-        return 0;
-    }
+    virtual CellQuerySmallOptionsBox* provideOptionsBox(QueryGraphicsHelper* c, int level, QueryGraphicsItem* parent, QueryComponent* owner);
 };
 
 #endif // CELLSELECTCOMMAND_H

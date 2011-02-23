@@ -17,7 +17,7 @@ public:
     virtual bool initializeGraphicsItem();
     virtual QueryGraphicsItem* createGraphicsItem(QueryGraphicsHelper*, QueryGraphicsItem*);
     void newFromTableComponent();
-    virtual void handleAction(const QString& action){}
+    virtual void handleAction(const QString& action);
 
 private:
     SelectQuerySelectComponent* m_select;
