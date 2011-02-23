@@ -32,7 +32,7 @@ QGraphicsItemGroup* SelectQueryGraphicsItem::render(int& x, int& y, int& w, int 
     int lx = x;
     int ly = y;
     addToGroup(m_select->render(x, y, w, h));
-    addToGroup(m_from->render(x, y, w, h));
+    if(m_from) addToGroup(m_from->render(x, y, w, h));
     if(m_where) addToGroup(m_where->render(x, y, w, h));
     y += 2;
     QRectF br = boundingRect();
@@ -47,25 +47,10 @@ QGraphicsItemGroup* SelectQueryGraphicsItem::render(int& x, int& y, int& w, int 
     return this;
 }
 
-
-//void SelectQueryGraphicsItem::test()
-//{
-//    m_from->addChild(new TableGraphicsItem(Workspace::getInstance()->workingVersion()->getTables().at(0), m_comps, this));
-//    m_from->addChild(new TableGraphicsItem(Workspace::getInstance()->workingVersion()->getTables().at(0), m_comps, this));
-//    SelectQueryGraphicsItem* c1 = new SelectQueryGraphicsItem(m_comps, 1, this);
-//    m_from->addChild(c1);
-//    c1->getFrom()->addChild(new TableGraphicsItem(Workspace::getInstance()->workingVersion()->getTables().at(0), m_comps, this));
-//    m_from->addChild(new TableGraphicsItem(Workspace::getInstance()->workingVersion()->getTables().at(0), m_comps, this));
-//    SelectQueryGraphicsItem* c2 = new SelectQueryGraphicsItem(m_comps, 2, this);
-
-//    c1->getFrom()->addChild(c2);
-
-//}
-
 void SelectQueryGraphicsItem::updateWidth(int newWidth)
 {
     m_select->updateWidth(newWidth);
-    m_from->updateWidth(newWidth);
+    if(m_from) m_from->updateWidth(newWidth);
     if(m_where) m_where->updateWidth(newWidth);
     QRect newRect(m_frameRect->boundingRect().left() + m_level * CHILDREN_ALIGNMENT, m_frameRect->boundingRect().top(), newWidth + 2, m_frameRect->boundingRect().height()-1);
     m_frameRect->setRect(newRect);
@@ -73,5 +58,5 @@ void SelectQueryGraphicsItem::updateWidth(int newWidth)
 
 void SelectQueryGraphicsItem::addFromGraphicsItem(QueryGraphicsItem* fromsChild)
 {
-    m_from->addChild(fromsChild);
+    if(m_from) m_from->addChild(fromsChild);
 }

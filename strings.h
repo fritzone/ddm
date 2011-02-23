@@ -53,6 +53,7 @@ static const QString strCloseIcon = ":/images/actions/images/actions/application
 static const QString strWandIcon = ":/images/actions/images/small/wand.png";    // used for the distinct selection
 
 static const QString NEW_TABLE = "New table reference";
+static const QString ADD_FROM = "New table reference";
 static const QString NEW_SUBQUERY = "New subquery";
 
 #endif // STRINGS_H

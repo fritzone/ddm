@@ -49,6 +49,11 @@ void CellQuerySmallOptionsBox::mousePress(int x, int y)
         text.append(NEW_TABLE);
         icons.append(IconFactory::getTabinstIcon());
     }
+    if(m_types.contains(OPTIONS_ADD_FROM))
+    {
+        text.append(ADD_FROM);
+        icons.append(IconFactory::getEmptyIcon());
+    }
 
     QueryGraphicsScene* sc = dynamic_cast<QueryGraphicsScene*>(m_box->scene());
     QPoint a = sc->views().at(0)->mapToGlobal((m_box->mapToScene(m_box->boundingRect().bottomLeft().toPoint())).toPoint() );

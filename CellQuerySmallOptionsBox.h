@@ -15,7 +15,8 @@ public:
         OPTIONS_DUPLICATE = 0,
         OPTIONS_NEW_TABLE = 1,
         OPTIONS_NEW_SUBQUERY = 2,
-
+        OPTIONS_ADD_FROM = 3,
+        OPTIONS_ADD_WHERE = 4
     };
 
     CellQuerySmallOptionsBox(QSet<OptionsType> types, QueryGraphicsHelper* c, int level, QueryGraphicsItem* parent, QueryComponent* owner);
