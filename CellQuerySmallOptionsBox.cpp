@@ -17,6 +17,9 @@ QGraphicsItemGroup* CellQuerySmallOptionsBox::render(int& x, int& y, int& w, int
     QGraphicsItemGroup* grp = new QGraphicsItemGroup();
 
     m_box = new QGraphicsRectItem(x, y, 10, 10, grp);
+    new QGraphicsLineItem(x, y + 5, x + 10, y+5, grp);
+    new QGraphicsLineItem(x + 5, y, x + 5, y+10, grp);
+
     m_helper->addNewHotCell(this, m_box->rect().toRect());
     return grp;
 }
@@ -52,6 +55,12 @@ void CellQuerySmallOptionsBox::mousePress(int x, int y)
     if(m_types.contains(OPTIONS_ADD_FROM))
     {
         text.append(ADD_FROM);
+        icons.append(IconFactory::getEmptyIcon());
+    }
+
+    if(m_types.contains(OPTIONS_ADD_WHERE))
+    {
+        text.append(ADD_WHERE);
         icons.append(IconFactory::getEmptyIcon());
     }
 

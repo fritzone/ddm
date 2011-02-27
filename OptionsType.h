@@ -1,0 +1,13 @@
+#ifndef OPTIONSTYPE_H
+#define OPTIONSTYPE_H
+
+enum OptionsType
+{
+    OPTIONS_DUPLICATE = 0,
+    OPTIONS_NEW_TABLE = 1,
+    OPTIONS_NEW_SUBQUERY = 2,
+    OPTIONS_ADD_FROM = 3,
+    OPTIONS_ADD_WHERE = 4
+};
+
+#endif // OPTIONSTYPE_H

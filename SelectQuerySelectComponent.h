@@ -10,6 +10,7 @@ public:
     virtual QString get(){return "SELECT"; }
     virtual void handleAction(const QString& action){}
     virtual QueryGraphicsItem* createGraphicsItem(QueryGraphicsHelper*, QueryGraphicsItem*){return 0;}
+    virtual QSet<OptionsType> provideOptions();
 };
 
 #endif // SELECTQUERYSELECTCOMPONENT_H

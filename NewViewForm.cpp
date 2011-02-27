@@ -26,7 +26,8 @@ NewViewForm::NewViewForm(QueryGraphicsHelper* c, QWidget *parent) :
     m_qgv->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
     m_qgv->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
 
-    ui->verticalLayout->insertWidget(0, m_qgv);
+    ui->verticalLayout->insertWidget(1, m_qgv);
+    ui->grpHelp->hide();
 }
 
 

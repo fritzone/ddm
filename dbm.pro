@@ -218,7 +218,8 @@ HEADERS += mainwindow.h \
     SelectQueryWhereComponent.h \
     CellSelectCommand.h \
     CellFromCommand.h \
-    CellWhereCommand.h
+    CellWhereCommand.h \
+    OptionsType.h
 FORMS += mainwindow.ui \
     mainwindowbuttondialog.ui \
     newprojectdialog.ui \

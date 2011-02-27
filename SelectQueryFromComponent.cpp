@@ -17,3 +17,9 @@ void SelectQueryFromComponent::handleAction(const QString &action)
         }
     }
 }
+
+QSet<OptionsType> SelectQueryFromComponent::provideOptions()
+{
+    QSet<OptionsType> t;
+    return t;
+}

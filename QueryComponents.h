@@ -1,8 +1,11 @@
 #ifndef QUERYCOMPONENTS_H
 #define QUERYCOMPONENTS_H
 
+#include <OptionsType.h>
+
 #include <QString>
 #include <QList>
+#include <QSet>
 
 class QueryGraphicsItem;
 class QueryGraphicsHelper;
@@ -22,6 +25,7 @@ public:
     void removeChild(QueryComponent* c);
     QueryComponent* getParent() {return m_parent; }
     virtual void handleAction(const QString& action) = 0;
+    virtual QSet<OptionsType> provideOptions() = 0;
     void setParent(QueryComponent* p) {m_parent = p;}
 protected:
     QList<QueryComponent*> m_children;
