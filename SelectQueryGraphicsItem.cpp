@@ -44,6 +44,15 @@ QGraphicsItemGroup* SelectQueryGraphicsItem::render(int& x, int& y, int& w, int 
     thick.setWidth(1);
     thick.setColor(Qt::gray);
     m_frameRect->setPen(thick);
+
+    CellQuerySmallOptionsBox* smb = new CellQuerySmallOptionsBox(m_owner->provideOptions(), m_helper, m_level, m_parent, m_owner);
+    int tx = x + 5 + 2; int ty = y-1; int tw = w; int th = h;
+    addToGroup(new QGraphicsLineItem(tx, ty, tx , ty + 5, this));
+    y = ty + 5 + 1;
+    tx -= 5;
+    addToGroup(smb->render(tx, y, tw, th));
+
+
     return this;
 }
 

@@ -14,9 +14,6 @@ QBrush CellSelectCommand::getCellBrush()
 
 CellQuerySmallOptionsBox* CellSelectCommand::provideOptionsBox(QueryGraphicsHelper* c, int level, QueryGraphicsItem* parent, QueryComponent* owner)
 {
-    QSet<CellQuerySmallOptionsBox::OptionsType> t;
-    t.insert(CellQuerySmallOptionsBox::OPTIONS_ADD_FROM);
-    t.insert(CellQuerySmallOptionsBox::OPTIONS_ADD_WHERE);
-    CellQuerySmallOptionsBox* smb = new CellQuerySmallOptionsBox(t, m_helper, m_level, m_parent, m_owner);
+    CellQuerySmallOptionsBox* smb = new CellQuerySmallOptionsBox(m_owner->provideOptions(), m_helper, m_level, m_parent, m_owner);
     return smb;
 }

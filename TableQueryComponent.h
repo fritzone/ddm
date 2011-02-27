@@ -13,6 +13,7 @@ public:
     virtual QueryGraphicsItem* createGraphicsItem(QueryGraphicsHelper*, QueryGraphicsItem*);
     void setTable(const QString& tab);
     virtual void handleAction(const QString& action){}
+    virtual QSet<OptionsType> provideOptions(){};
 private:
     Table* m_table;
 };
