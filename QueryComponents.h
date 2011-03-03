@@ -16,7 +16,7 @@ class QueryGraphicsHelper;
 class QueryComponent
 {
 public:
-    QueryComponent(QueryComponent* parent) : m_parent(parent) {}
+    QueryComponent(QueryComponent* parent, int level) : m_parent(parent), m_level(level) {}
     virtual ~QueryComponent(){}
     virtual QString get() = 0;
     virtual QueryGraphicsItem* createGraphicsItem(QueryGraphicsHelper*, QueryGraphicsItem*) = 0;
@@ -30,6 +30,7 @@ public:
 protected:
     QList<QueryComponent*> m_children;
     QueryComponent* m_parent;
+    int m_level;
 };
 
 #endif // QUERYCOMPONENTS_H

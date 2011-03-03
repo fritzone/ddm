@@ -1457,7 +1457,7 @@ void MainWindow::onValidate()
 void MainWindow::onNewView()
 {
     QueryGraphicsHelper* c = new QueryGraphicsHelper();
-    SelectQuery* sq = new SelectQuery(c);
+    SelectQuery* sq = new SelectQuery(c, 0);
 
     c->setQuery(sq);
     c->setForm(this);

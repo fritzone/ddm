@@ -57,10 +57,14 @@ void CellQuerySmallOptionsBox::mousePress(int x, int y)
         text.append(ADD_FROM);
         icons.append(IconFactory::getEmptyIcon());
     }
-
     if(m_types.contains(OPTIONS_ADD_WHERE))
     {
         text.append(ADD_WHERE);
+        icons.append(IconFactory::getEmptyIcon());
+    }
+    if(m_types.contains(OPTIONS_NEW_SUBQUERY))
+    {
+        text.append(NEW_SUBQUERY);
         icons.append(IconFactory::getEmptyIcon());
     }
 

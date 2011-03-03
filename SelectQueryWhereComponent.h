@@ -6,9 +6,11 @@
 class SelectQueryWhereComponent : public QueryComponent
 {
 public:
-    SelectQueryWhereComponent(QueryComponent*);
+    SelectQueryWhereComponent(QueryComponent*, int);
     virtual QString get(){return "WHERE"; }
     virtual QueryGraphicsItem* createGraphicsItem(QueryGraphicsHelper*, QueryGraphicsItem*){return 0;}
+    virtual void handleAction(const QString& action);
+    virtual QSet<OptionsType> provideOptions();
 };
 
 #endif // SELECTQUERYWHERECOMPONENT_H

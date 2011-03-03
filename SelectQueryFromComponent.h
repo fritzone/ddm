@@ -6,7 +6,7 @@
 class SelectQueryFromComponent : public QueryComponent
 {
 public:
-    SelectQueryFromComponent(QueryComponent*);
+    SelectQueryFromComponent(QueryComponent*,int);
     virtual QString get(){return "FROM"; }
     virtual QueryGraphicsItem* createGraphicsItem(QueryGraphicsHelper*, QueryGraphicsItem*){return 0;}
     virtual void handleAction(const QString& action);

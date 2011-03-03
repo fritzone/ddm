@@ -13,13 +13,14 @@ class SelectQueryWhereComponent;
 class SelectQuery : public Query
 {
 public:
-    SelectQuery(QueryGraphicsHelper*);
+    SelectQuery(QueryGraphicsHelper*, int);
     virtual bool initializeGraphicsItem();
     virtual QueryGraphicsItem* createGraphicsItem(QueryGraphicsHelper*, QueryGraphicsItem*);
-    void newFromTableComponent();
     virtual void handleAction(const QString& action);
     virtual QSet<OptionsType> provideOptions();
 
+    void newFromTableComponent();
+    void newFromSelectQueryComponent();
 private:
     SelectQuerySelectComponent* m_select;
     SelectQueryFromComponent* m_from;

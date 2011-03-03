@@ -16,7 +16,6 @@ CellTableChooser::CellTableChooser(const QString& name, QueryGraphicsHelper*c, Q
 {
 }
 
-
 QGraphicsItemGroup* CellTableChooser::render(int &x, int &y, int &w, int &h)
 {
     int lx = x;
@@ -29,7 +28,8 @@ QGraphicsItemGroup* CellTableChooser::render(int &x, int &y, int &w, int &h)
     m_txt->setZValue(1);
     m_frame->setZValue(0);
     m_txt->setFont(QFont("Arial", 14, 2));
-    w = w<m_txt->boundingRect().width()?m_txt->boundingRect().width():w;
+    int tw = m_txt->boundingRect().width() + CHILDREN_ALIGNMENT + 10  + 2 * CELL_SIZE;
+    w = w<tw?tw:w;
     return this;
 }
 
@@ -52,6 +52,7 @@ void CellTableChooser::mousePress(int x, int y)
     if(tc != 0)
     {
         tc->setTable(m_name);
+        m_helper->triggerReRender();
     }
 }
 

@@ -9,14 +9,14 @@
 #include "Workspace.h"
 #include "Version.h"
 
-SelectQuery::SelectQuery(QueryGraphicsHelper* helper) : Query(helper), m_from(0), m_select(0), m_where(0)
+SelectQuery::SelectQuery(QueryGraphicsHelper* helper, int level) : Query(helper, level), m_from(0), m_select(0), m_where(0)
 {
-    m_select = new SelectQuerySelectComponent(this);
+    m_select = new SelectQuerySelectComponent(this, level);
 }
 
 QueryGraphicsItem* SelectQuery::createGraphicsItem(QueryGraphicsHelper*, QueryGraphicsItem*)
 {
-    SelectQueryGraphicsItem* gi = new SelectQueryGraphicsItem(m_helper, 0, 0, this);
+    SelectQueryGraphicsItem* gi = new SelectQueryGraphicsItem(m_helper, m_level, 0, this);
     if(m_from) gi->createFromCell(m_from);
     if(m_select) gi->createSelectCell(m_select);
     if(m_where) gi->createWhereCell(m_where);
@@ -45,10 +45,20 @@ void SelectQuery::newFromTableComponent()
 {
     if(m_from)
     {
-        m_from->addChild(new TableQueryComponent(Workspace::getInstance()->workingVersion()->getTables().at(0), m_from));
+        m_from->addChild(new TableQueryComponent(Workspace::getInstance()->workingVersion()->getTables().at(0), m_from, m_level));
         m_helper->triggerReRender();
     }
 }
+
+void SelectQuery::newFromSelectQueryComponent()
+{
+    if(m_from)
+    {
+        m_from->addChild(new SelectQuery(m_helper, m_level + 1));
+        m_helper->triggerReRender();
+    }
+}
+
 
 void SelectQuery::handleAction(const QString &action)
 {
@@ -56,7 +66,15 @@ void SelectQuery::handleAction(const QString &action)
     {
         if(!m_from)
         {
-            m_from = new SelectQueryFromComponent(this);
+            m_from = new SelectQueryFromComponent(this, m_level);
+            m_helper->triggerReRender();
+        }
+    }
+    if(action == ADD_WHERE)
+    {
+        if(!m_where)
+        {
+            m_where = new SelectQueryWhereComponent(this, m_level);
             m_helper->triggerReRender();
         }
     }
@@ -66,6 +84,6 @@ QSet<OptionsType> SelectQuery::provideOptions()
 {
     QSet<OptionsType> t;
     if(!m_from) t.insert(OPTIONS_ADD_FROM);
-    if(!m_where) t.insert(OPTIONS_ADD_WHERE);
+    if(!m_where && m_from) t.insert(OPTIONS_ADD_WHERE);
     return t;
 }
