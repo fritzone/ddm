@@ -52,7 +52,7 @@ QGraphicsItemGroup* SelectQueryGraphicsItem::render(int& x, int& y, int& w, int 
     m_frameRect->setZValue(-2);
     QPen thick;
     thick.setWidth(1);
-    thick.setColor(Qt::red);
+    thick.setColor(Qt::black);
     m_frameRect->setPen(thick);
     m_frameRect->setBrush(m_select->getCellBrush());
 
