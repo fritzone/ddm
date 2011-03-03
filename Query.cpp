@@ -1,5 +1,5 @@
 #include "Query.h"
 
-Query::Query(QueryGraphicsHelper* components): QueryComponent(this), m_helper(components), m_graphicsItem(0)
+Query::Query(QueryGraphicsHelper* components, int level): QueryComponent(this, level), m_helper(components), m_graphicsItem(0)
 {
 }

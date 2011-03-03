@@ -11,7 +11,7 @@ class Query : public QueryComponent
 {
 public:
 
-    Query(QueryGraphicsHelper*);
+    Query(QueryGraphicsHelper*,int);
     virtual ~Query() {}
 
     QueryGraphicsItem* getGraphicsItem()

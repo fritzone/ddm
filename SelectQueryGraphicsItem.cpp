@@ -35,15 +35,6 @@ QGraphicsItemGroup* SelectQueryGraphicsItem::render(int& x, int& y, int& w, int 
     if(m_from) addToGroup(m_from->render(x, y, w, h));
     if(m_where) addToGroup(m_where->render(x, y, w, h));
     y += 2;
-    QRectF br = boundingRect();
-    br.setWidth(br.width() + 2);
-    br.setHeight(br.height() + 2);
-    m_frameRect = new QGraphicsRectItem(br, this);
-    m_frameRect->setZValue(-2);
-    QPen thick;
-    thick.setWidth(1);
-    thick.setColor(Qt::gray);
-    m_frameRect->setPen(thick);
 
     CellQuerySmallOptionsBox* smb = new CellQuerySmallOptionsBox(m_owner->provideOptions(), m_helper, m_level, m_parent, m_owner);
     int tx = x + 5 + 2; int ty = y-1; int tw = w; int th = h;
@@ -52,6 +43,20 @@ QGraphicsItemGroup* SelectQueryGraphicsItem::render(int& x, int& y, int& w, int 
     tx -= 5;
     addToGroup(smb->render(tx, y, tw, th));
 
+    QRectF br = boundingRect();
+    br.setWidth(br.width() - 4);
+    br.setHeight(br.height() + 4);
+    br.setLeft(br.left() + 1 + m_level * CHILDREN_ALIGNMENT);
+    br.setTop(br.top() + 1);
+    m_frameRect = new QGraphicsRectItem(br, this);
+    m_frameRect->setZValue(-2);
+    QPen thick;
+    thick.setWidth(1);
+    thick.setColor(Qt::red);
+    m_frameRect->setPen(thick);
+    m_frameRect->setBrush(m_select->getCellBrush());
+
+    y = br.bottom() + 2;
 
     return this;
 }
@@ -61,7 +66,7 @@ void SelectQueryGraphicsItem::updateWidth(int newWidth)
     m_select->updateWidth(newWidth);
     if(m_from) m_from->updateWidth(newWidth);
     if(m_where) m_where->updateWidth(newWidth);
-    QRect newRect(m_frameRect->boundingRect().left() + m_level * CHILDREN_ALIGNMENT, m_frameRect->boundingRect().top(), newWidth + 2, m_frameRect->boundingRect().height()-1);
+    QRect newRect(m_frameRect->boundingRect().left(), m_frameRect->boundingRect().top(), newWidth, m_frameRect->boundingRect().height()-1);
     m_frameRect->setRect(newRect);
 }
 

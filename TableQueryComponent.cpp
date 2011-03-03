@@ -4,7 +4,7 @@
 #include "Workspace.h"
 #include "Version.h"
 
-TableQueryComponent::TableQueryComponent(Table* tab,QueryComponent* p):QueryComponent(p), m_table(tab)
+TableQueryComponent::TableQueryComponent(Table* tab,QueryComponent* p, int level):QueryComponent(p, level), m_table(tab)
 {
 }
 

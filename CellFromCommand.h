@@ -15,7 +15,7 @@ public:
     }
     virtual bool hasClose()
     {
-        return false;
+        return true;
     }
     virtual CellQuerySmallOptionsBox* provideOptionsBox(QueryGraphicsHelper* c, int level, QueryGraphicsItem* parent, QueryComponent* owner);
 };
