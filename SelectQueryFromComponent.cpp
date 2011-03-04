@@ -1,6 +1,8 @@
 #include "SelectQueryFromComponent.h"
 #include "strings.h"
 #include "SelectQuery.h"
+#include "Workspace.h"
+#include "Version.h"
 
 SelectQueryFromComponent::SelectQueryFromComponent(QueryComponent* p, int l):QueryComponent(p,l)
 {
@@ -29,7 +31,15 @@ void SelectQueryFromComponent::handleAction(const QString &action)
 QSet<OptionsType> SelectQueryFromComponent::provideOptions()
 {
     QSet<OptionsType> t;
-    t.insert(OPTIONS_NEW_TABLE);
+    if(Workspace::getInstance()->currentProjectIsOop())
+    {
+        if(Workspace::getInstance()->workingVersion()->getTableInstances().size() > 0) t.insert(OPTIONS_NEW_TABLE);
+    }
+    else
+    {
+        if(Workspace::getInstance()->workingVersion()->getTables().size() > 0) t.insert(OPTIONS_NEW_TABLE);
+    }
+
     t.insert(OPTIONS_NEW_SUBQUERY);
 
     return t;

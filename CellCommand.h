@@ -23,7 +23,7 @@ public:
     virtual void mousePress(int x, int y){}
     virtual void mouseMove(int x, int y){}
     virtual void mouseLeft(int x, int y){}
-    virtual void onClose();
+    virtual void onClose() = 0;
 
     virtual QBrush getCellBrush() = 0;
     virtual QString getCommand() = 0;

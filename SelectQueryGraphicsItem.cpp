@@ -74,3 +74,8 @@ void SelectQueryGraphicsItem::addFromGraphicsItem(QueryGraphicsItem* fromsChild)
 {
     if(m_from) m_from->addChild(fromsChild);
 }
+
+void SelectQueryGraphicsItem::onClose()
+{
+
+}

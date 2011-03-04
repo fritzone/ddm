@@ -18,15 +18,19 @@ class QueryComponent
 public:
     QueryComponent(QueryComponent* parent, int level) : m_parent(parent), m_level(level) {}
     virtual ~QueryComponent(){}
+
     virtual QString get() = 0;
     virtual QueryGraphicsItem* createGraphicsItem(QueryGraphicsHelper*, QueryGraphicsItem*) = 0;
+    virtual void handleAction(const QString& action) = 0;
+    virtual QSet<OptionsType> provideOptions() = 0;
+    virtual void onClose() = 0;
+
     void addChild(QueryComponent* c) {m_children.append(c);}
     QList<QueryComponent*>& getChildren() {return m_children;}
     void removeChild(QueryComponent* c);
     QueryComponent* getParent() {return m_parent; }
-    virtual void handleAction(const QString& action) = 0;
-    virtual QSet<OptionsType> provideOptions() = 0;
     void setParent(QueryComponent* p) {m_parent = p;}
+
 protected:
     QList<QueryComponent*> m_children;
     QueryComponent* m_parent;

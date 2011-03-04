@@ -111,8 +111,3 @@ void CellCommand::updateWidth(int newWidth)
     }
     }
 }
-
-void CellCommand::onClose()
-{
-
-}
