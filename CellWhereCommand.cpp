@@ -13,3 +13,8 @@ QBrush CellWhereCommand::getCellBrush()
 
     return whereBrush;
 }
+
+void CellWhereCommand::onClose()
+{
+
+}

@@ -17,3 +17,8 @@ CellQuerySmallOptionsBox* CellSelectCommand::provideOptionsBox(QueryGraphicsHelp
     CellQuerySmallOptionsBox* smb = new CellQuerySmallOptionsBox(m_owner->provideOptions(), m_helper, m_level, m_parent, m_owner);
     return smb;
 }
+
+void CellSelectCommand::onClose()
+{
+    m_owner->onClose();
+}

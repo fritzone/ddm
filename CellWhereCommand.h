@@ -19,6 +19,7 @@ public:
     {
         return 0;
     }
+    virtual void onClose();
 };
 
 #endif // CELLWHERECOMMAND_H

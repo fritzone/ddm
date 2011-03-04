@@ -14,6 +14,7 @@ public:
     void setTable(const QString& tab);
     virtual void handleAction(const QString& action){}
     virtual QSet<OptionsType> provideOptions(){};
+    virtual void onClose(){}
 private:
     Table* m_table;
 };

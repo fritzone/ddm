@@ -18,6 +18,7 @@ public:
     virtual QueryGraphicsItem* createGraphicsItem(QueryGraphicsHelper*, QueryGraphicsItem*);
     virtual void handleAction(const QString& action);
     virtual QSet<OptionsType> provideOptions();
+    virtual void onClose();
 
     void newFromTableComponent();
     void newFromSelectQueryComponent();
