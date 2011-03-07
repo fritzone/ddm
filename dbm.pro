@@ -103,7 +103,11 @@ SOURCES += main.cpp \
     SelectQueryWhereComponent.cpp \
     CellSelectCommand.cpp \
     CellFromCommand.cpp \
-    CellWhereCommand.cpp
+    CellWhereCommand.cpp \
+    CellGroupByCommand.cpp \
+    SelectQueryGroupByComponent.cpp \
+    SelectQueryAsComponent.cpp \
+    CellAsCommand.cpp
 HEADERS += mainwindow.h \
     MainWindowButtonDialog.h \
     newprojectdialog.h \
@@ -219,7 +223,11 @@ HEADERS += mainwindow.h \
     CellSelectCommand.h \
     CellFromCommand.h \
     CellWhereCommand.h \
-    OptionsType.h
+    OptionsType.h \
+    CellGroupByCommand.h \
+    SelectQueryGroupByComponent.h \
+    SelectQueryAsComponent.h \
+    CellAsCommand.h
 FORMS += mainwindow.ui \
     mainwindowbuttondialog.ui \
     newprojectdialog.ui \

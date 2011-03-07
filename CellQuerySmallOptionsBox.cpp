@@ -68,6 +68,19 @@ void CellQuerySmallOptionsBox::mousePress(int x, int y)
         icons.append(IconFactory::getEmptyIcon());
     }
 
+    if(m_types.contains(OPTIONS_ADD_GROUPBY))
+    {
+        text.append(ADD_GROUPBY);
+        icons.append(IconFactory::getEmptyIcon());
+    }
+
+
+    if(m_types.contains(OPTIONS_ADD_HAVING))
+    {
+        text.append(ADD_HAVING);
+        icons.append(IconFactory::getEmptyIcon());
+    }
+
     QueryGraphicsScene* sc = dynamic_cast<QueryGraphicsScene*>(m_box->scene());
     QPoint a = sc->views().at(0)->mapToGlobal((m_box->mapToScene(m_box->boundingRect().bottomLeft().toPoint())).toPoint() );
     QString selected = m_helper->presentList(a.x() + 2, a.y() + 2, text, icons);

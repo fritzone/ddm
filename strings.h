@@ -56,5 +56,7 @@ static const QString NEW_TABLE = "New table reference";
 static const QString ADD_FROM = "FROM...";
 static const QString ADD_WHERE = "WHERE...";
 static const QString NEW_SUBQUERY = "New subquery";
+static const QString ADD_GROUPBY = "GROUP BY...";
+static const QString ADD_HAVING = "HAVING...";
 
 #endif // STRINGS_H

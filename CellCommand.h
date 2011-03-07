@@ -35,6 +35,7 @@ protected:
     QGraphicsRectItem* m_colorRect;
     CellClose* m_close;
     int m_level;
+    QGraphicsTextItem* m_txt;
 };
 
 #endif // CELLCOMMAND_H
