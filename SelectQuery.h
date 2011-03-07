@@ -9,6 +9,8 @@ class QueryComponent;
 class SelectQuerySelectComponent;
 class SelectQueryFromComponent;
 class SelectQueryWhereComponent;
+class SelectQueryGroupByComponent;
+class SelectQueryAsComponent;
 
 class SelectQuery : public Query
 {
@@ -22,10 +24,20 @@ public:
 
     void newFromTableComponent();
     void newFromSelectQueryComponent();
+
+    void removeFrom();
+    bool hasWhere();
+    bool hasGroupBy();
+
+    bool hasGroupByFunctions();
+
 private:
     SelectQuerySelectComponent* m_select;
     SelectQueryFromComponent* m_from;
     SelectQueryWhereComponent* m_where;
+    SelectQueryGroupByComponent* m_groupby;
+    SelectQueryWhereComponent* m_having;
+    SelectQueryAsComponent* m_as;
 };
 
 #endif // SELECTQUERY_H

@@ -1,6 +1,6 @@
 #include "SelectQueryWhereComponent.h"
 
-SelectQueryWhereComponent::SelectQueryWhereComponent(QueryComponent* p, int l):QueryComponent(p,l)
+SelectQueryWhereComponent::SelectQueryWhereComponent(QueryComponent* p, int l, bool w):QueryComponent(p,l), m_trueWhere(w)
 {
 }
 

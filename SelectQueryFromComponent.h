@@ -11,7 +11,9 @@ public:
     virtual QueryGraphicsItem* createGraphicsItem(QueryGraphicsHelper*, QueryGraphicsItem*){return 0;}
     virtual void handleAction(const QString& action);
     virtual QSet<OptionsType> provideOptions();
-    virtual void onClose(){}
+    virtual void onClose();
+
+    bool allowCloseButton();
 };
 
 #endif // SELECTQUERYFROMCOMPONENT_H

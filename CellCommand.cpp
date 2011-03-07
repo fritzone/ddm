@@ -7,7 +7,7 @@
 
 CellCommand::CellCommand(QueryGraphicsHelper *c, int level, QueryGraphicsItem* parent, QueryComponent* owner):
         QueryGraphicsItem(parent, c, owner),
-        m_close(0), m_level(level)
+        m_close(0), m_level(level), m_txt(0)
 {
 }
 
@@ -19,19 +19,19 @@ QGraphicsItemGroup* CellCommand::render(int& x, int& y, int& w, int &h)
     QGraphicsItemGroup* grp = new QGraphicsItemGroup();
 
     // the text
-    QGraphicsTextItem* txt = new QGraphicsTextItem(getCommand(), grp);
+    m_txt = new QGraphicsTextItem(getCommand(), grp);
     QFont theFont("Arial", 14, QFont::Bold);
-    txt->setFont(theFont);
-    txt->setPos(lx + 5, ly + 5);
-    int bottom = txt->boundingRect().height() + 2;
+    m_txt->setFont(theFont);
+    m_txt->setPos(lx + 5, ly + 5);
+    int bottom = m_txt->boundingRect().height() + 2;
     // the background for the command
-    w = w<txt->boundingRect().width()?txt->boundingRect().width():w;
+    w = w<m_txt->boundingRect().width()?m_txt->boundingRect().width():w;
     lmw = w + lx + 2;
     QRectF rect(lx + 2, ly + 2, w, bottom);
 
     m_rctCommandFrame = new QGraphicsRectItem(rect, grp);
     m_rctCommandFrame->setBrush(getCellBrush());
-    txt->setZValue(1);
+    m_txt->setZValue(1);
     y = m_rctCommandFrame->boundingRect().bottom() + 2;
     for(int i = 0; i<m_children.count(); i++)
     {
@@ -55,16 +55,18 @@ QGraphicsItemGroup* CellCommand::render(int& x, int& y, int& w, int &h)
     }
 
     // the small command box (provided by the child classes)
-    QGraphicsLineItem* l1 = new QGraphicsLineItem(x + 5 +2 , y-1, x + 5 + 2, y + 20, grp);
-    QGraphicsRectItem* box = new QGraphicsRectItem(x + 2, y+10, 10, 10, grp);
-    QGraphicsLineItem* l2 = new QGraphicsLineItem(x +2, y + 15, x + 10 + 2, y + 15, grp);
     CellQuerySmallOptionsBox* smb = provideOptionsBox(m_helper, m_level, m_parent, m_owner);
     if(smb)
     {
+        QGraphicsLineItem* l1 = new QGraphicsLineItem(x + 5 +2 , y-1, x + 5 + 2, y + 20, grp);
+        QGraphicsRectItem* box = new QGraphicsRectItem(x + 2, y+10, 10, 10, grp);
+        QGraphicsLineItem* l2 = new QGraphicsLineItem(x +2, y + 15, x + 10 + 2, y + 15, grp);
+
         int tx = x + 2; int ty = y + 10; int tw = w; int th = h;
         grp->addToGroup(smb->render(tx, ty, tw, th));
+        y = box->boundingRect().bottom() + 5 ;
     }
-    y = box->boundingRect().bottom() + 5 ;
+
 
     // the bigger box rounding the stuff
     QRect rect2(lx, ly, w, y - ly);

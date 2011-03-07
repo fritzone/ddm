@@ -8,6 +8,8 @@
 class CellSelectCommand;
 class CellFromCommand;
 class CellWhereCommand;
+class CellGroupByCommand;
+class CellAsCommand;
 
 class SelectQueryGraphicsItem : public QueryGraphicsItem
 {
@@ -33,11 +35,18 @@ public:
     void createSelectCell(QueryComponent*);
     void createFromCell(QueryComponent*);
     void createWhereCell(QueryComponent*);
+    void createGroupByCell(QueryComponent*);
+    void createHavingCell(QueryComponent*);
+    void createAsCell(QueryComponent*);
 
 private:
     CellSelectCommand* m_select;
     CellFromCommand* m_from;
     CellWhereCommand* m_where;
+    CellGroupByCommand* m_groupby;
+    CellWhereCommand* m_having;
+    CellAsCommand* m_as;
+
     QGraphicsRectItem* m_frameRect;
     int m_level;
 };

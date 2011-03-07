@@ -1,4 +1,5 @@
 #include "CellFromCommand.h"
+#include "SelectQueryFromComponent.h"
 
 CellFromCommand::CellFromCommand(QueryGraphicsHelper* c, int level, QueryGraphicsItem* parent, QueryComponent* owner) :
         CellCommand(c, level, parent, owner)
@@ -19,5 +20,15 @@ CellQuerySmallOptionsBox* CellFromCommand::provideOptionsBox(QueryGraphicsHelper
 
 void CellFromCommand::onClose()
 {
+    m_owner->onClose();
+}
 
+bool CellFromCommand::hasClose()
+{
+    SelectQueryFromComponent* sqf = dynamic_cast<SelectQueryFromComponent*>(m_owner);
+    if(m_owner)
+    {
+        return sqf->allowCloseButton();
+    }
+    return false;
 }

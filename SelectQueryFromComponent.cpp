@@ -44,3 +44,28 @@ QSet<OptionsType> SelectQueryFromComponent::provideOptions()
 
     return t;
 }
+
+void SelectQueryFromComponent::onClose()
+{
+    if(m_parent)
+    {
+        SelectQuery* sq = dynamic_cast<SelectQuery*>(m_parent);
+        if(sq)
+        {
+            sq->removeFrom();
+        }
+    }
+}
+
+bool SelectQueryFromComponent::allowCloseButton()
+{
+    if(m_parent)
+    {
+        SelectQuery* sq = dynamic_cast<SelectQuery*>(m_parent);
+        if(sq)
+        {
+            return ! sq->hasWhere() && !sq->hasGroupBy();
+        }
+    }
+    return false;
+}
