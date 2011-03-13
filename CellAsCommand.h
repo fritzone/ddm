@@ -17,8 +17,11 @@ public:
         return false;
     }
     virtual void onClose();
+    virtual void updateWidth(int newWidth);
     QGraphicsItemGroup* render(int& x, int& y, int& w, int &h);
     virtual CellQuerySmallOptionsBox* provideOptionsBox(QueryGraphicsHelper* c, int level, QueryGraphicsItem* parent, QueryComponent* owner);
+private:
+    QGraphicsRectItem* m_textInputRect;
 };
 
 #endif // CELLASCOMMAND_H
