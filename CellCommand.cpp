@@ -26,7 +26,7 @@ QGraphicsItemGroup* CellCommand::render(int& x, int& y, int& w, int &h)
     int bottom = m_txt->boundingRect().height() + 2;
     // the background for the command
     w = w<m_txt->boundingRect().width()?m_txt->boundingRect().width():w;
-    lmw = w + lx + 2;
+    lmw = w + 2 + 20;
     QRectF rect(lx + 2, ly + 2, w, bottom);
 
     m_rctCommandFrame = new QGraphicsRectItem(rect, grp);
@@ -37,10 +37,10 @@ QGraphicsItemGroup* CellCommand::render(int& x, int& y, int& w, int &h)
     {
         x += CHILDREN_ALIGNMENT;
         int oldy = y-2;
-        int neww = w;
+        int neww = lmw - (m_level + 1)* 20;
         grp->addToGroup(m_children.at(i)->render(x, y, neww, h));
         int halfway = (oldy + y) / 2 - 5;
-        if(w<neww) {w = neww + CHILDREN_ALIGNMENT; lmw = neww + CHILDREN_ALIGNMENT;}
+        if(w<neww-20) {w = neww - 20; lmw = neww - 20;}
 
         QGraphicsLineItem* l1 = new QGraphicsLineItem(x +5+2-CHILDREN_ALIGNMENT , oldy+1, x + 5+2-CHILDREN_ALIGNMENT, halfway , grp); // top
         QGraphicsLineItem* l2 = new QGraphicsLineItem(x +5+2-CHILDREN_ALIGNMENT , halfway +10, x + 5+2-CHILDREN_ALIGNMENT, y, grp);   // botton

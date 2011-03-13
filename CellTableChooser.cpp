@@ -28,7 +28,7 @@ QGraphicsItemGroup* CellTableChooser::render(int &x, int &y, int &w, int &h)
     m_txt->setZValue(1);
     m_frame->setZValue(0);
     m_txt->setFont(QFont("Arial", 14, 2));
-    int tw = m_txt->boundingRect().width() + CHILDREN_ALIGNMENT + 10  + 2 * CELL_SIZE;
+    int tw = m_txt->boundingRect().width() + CHILDREN_ALIGNMENT + 10  + 2 * CELL_SIZE + 20;
     w = w<tw?tw:w;
     return this;
 }

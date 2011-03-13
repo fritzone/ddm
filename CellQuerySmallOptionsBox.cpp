@@ -83,7 +83,7 @@ void CellQuerySmallOptionsBox::mousePress(int x, int y)
 
     QueryGraphicsScene* sc = dynamic_cast<QueryGraphicsScene*>(m_box->scene());
     QPoint a = sc->views().at(0)->mapToGlobal((m_box->mapToScene(m_box->boundingRect().bottomLeft().toPoint())).toPoint() );
-    QString selected = m_helper->presentList(a.x() + 2, a.y() + 2, text, icons);
+    QString selected = m_helper->presentList(x, y, text, icons);
     if(selected.length() == 0) return;
     m_owner->handleAction(selected);
 }
