@@ -1,5 +1,8 @@
 #include "CellAsCommand.h"
 #include "CellQuerySmallOptionsBox.h"
+#include "QueryTextInputItem.h"
+
+#include <QPen>
 
 CellAsCommand::CellAsCommand(QueryGraphicsHelper* c, int level, QueryGraphicsItem* parent, QueryComponent* owner) :
         CellCommand(c, level, parent, owner)
@@ -33,6 +36,12 @@ QGraphicsItemGroup* CellAsCommand::render(int& x, int& y, int& w, int &h)
     m_textInputRect = new QGraphicsRectItem(t);
     m_textInputRect->setBrush(QBrush(QColor(Qt::white)));
     grp->addToGroup(m_textInputRect);
+
+    m_textItem = new QueryTextInputItem();
+    grp->addToGroup(m_textItem);
+    m_textItem->setPos(x +tw + 2, ly + 5);
+    m_textItem->setHtml("A");
+    m_textItem->setTextInteractionFlags(Qt::TextEditorInteraction);
     return grp;
 }
 
@@ -44,4 +53,25 @@ void CellAsCommand::updateWidth(int newWidth)
                   newWidth - m_textInputRect->boundingRect().left(), m_textInputRect->boundingRect().height());
     m_textInputRect->setRect(newRect);
 
+    m_helper->addNewHotCell(this, newRect);
+
+}
+
+void CellAsCommand::mouseMove(int x, int y)
+{
+    QPen thick;
+    thick.setWidth(2);
+    m_textInputRect->setPen(thick);
+}
+
+void CellAsCommand::mouseLeft(int x, int y)
+{
+    QPen normal;
+    normal.setWidth(1);
+    m_textInputRect->setPen(normal);
+}
+
+void CellAsCommand::mousePress(int x, int y)
+{
+    m_textItem->setTextInteractionFlags(Qt::TextEditorInteraction);
 }

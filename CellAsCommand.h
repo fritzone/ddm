@@ -3,6 +3,8 @@
 
 #include "CellCommand.h"
 
+class QueryTextInputItem;
+
 class CellAsCommand : public CellCommand
 {
 public:
@@ -16,12 +18,16 @@ public:
     {
         return false;
     }
+    virtual void mousePress(int x, int y);
+    virtual void mouseMove(int x, int y);
+    virtual void mouseLeft(int x, int y);
     virtual void onClose();
     virtual void updateWidth(int newWidth);
     QGraphicsItemGroup* render(int& x, int& y, int& w, int &h);
     virtual CellQuerySmallOptionsBox* provideOptionsBox(QueryGraphicsHelper* c, int level, QueryGraphicsItem* parent, QueryComponent* owner);
 private:
     QGraphicsRectItem* m_textInputRect;
+    QueryTextInputItem* m_textItem;
 };
 
 #endif // CELLASCOMMAND_H
