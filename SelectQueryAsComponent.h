@@ -12,6 +12,19 @@ public:
     virtual void handleAction(const QString& action);
     virtual QSet<OptionsType> provideOptions();
     virtual void onClose(){}
+    void setAs(const QString& as)
+    {
+        m_as = as;
+    }
+
+    QString getAs() const
+    {
+        return m_as;
+    }
+
+private:
+
+    QString m_as;
 };
 
 #endif // SELECTQUERYASCOMPONENT_H

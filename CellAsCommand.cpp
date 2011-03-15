@@ -1,12 +1,22 @@
 #include "CellAsCommand.h"
 #include "CellQuerySmallOptionsBox.h"
 #include "QueryTextInputItem.h"
+#include "QueryGraphicsScene.h"
+#include "QueryGraphicsView.h"
+#include "SelectQueryAsComponent.h"
 
 #include <QPen>
+#include <QFont>
+#include <QScrollBar>
 
 CellAsCommand::CellAsCommand(QueryGraphicsHelper* c, int level, QueryGraphicsItem* parent, QueryComponent* owner) :
-        CellCommand(c, level, parent, owner)
+        CellCommand(c, level, parent, owner), m_strText("A")
 {
+    SelectQueryAsComponent* own = dynamic_cast<SelectQueryAsComponent*>(owner);
+    if(own)
+    {
+        m_strText = own->getAs();
+    }
 }
 
 QBrush CellAsCommand::getCellBrush()
@@ -40,8 +50,9 @@ QGraphicsItemGroup* CellAsCommand::render(int& x, int& y, int& w, int &h)
     m_textItem = new QueryTextInputItem();
     grp->addToGroup(m_textItem);
     m_textItem->setPos(x +tw + 2, ly + 5);
-    m_textItem->setHtml("A");
+    m_textItem->setHtml(m_strText);
     m_textItem->setTextInteractionFlags(Qt::TextEditorInteraction);
+    m_textItem->setFont(QFont("Arial", 14, 2));
     return grp;
 }
 
@@ -73,5 +84,40 @@ void CellAsCommand::mouseLeft(int x, int y)
 
 void CellAsCommand::mousePress(int x, int y)
 {
-    m_textItem->setTextInteractionFlags(Qt::TextEditorInteraction);
+    QString selected = "";
+    QGraphicsScene* sc = m_textInputRect->scene();
+    QList <QGraphicsView*> views =  sc->views();
+    if(views.size() > 0)
+    {
+        QGraphicsView* v = views.at(0);
+        if(v)
+        {
+            QPoint a = v->mapToGlobal((m_textInputRect->mapToScene(m_textInputRect->boundingRect().bottomLeft().toPoint())).toPoint() ) ;
+            selected = m_helper->presentList(a.x() + 2 - v->horizontalScrollBar()->sliderPosition(),
+                                             a.y() - v->verticalScrollBar()->sliderPosition(), QueryGraphicsHelper::INPUT_TEXT);
+        }
+        else
+        {
+            selected = m_helper->presentList(x, y, QueryGraphicsHelper::INPUT_TEXT);
+        }
+    }
+    else
+    {
+        selected = m_helper->presentList(x, y, QueryGraphicsHelper::INPUT_TEXT);
+    }
+
+    if(selected.length() == 0) return;
+
+    bool trigger = false;
+    if(m_strText.length() < selected.length()) trigger = true;
+    m_strText = selected;
+    m_textItem->setHtml(m_strText);
+    SelectQueryAsComponent* own = dynamic_cast<SelectQueryAsComponent*>(getOwner());
+    if(own)
+    {
+        own->setAs(m_strText);
+    }
+
+    if(trigger) m_helper->triggerReRender();
+
 }

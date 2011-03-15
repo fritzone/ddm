@@ -27,6 +27,7 @@ public:
 public slots:
 
     void onDblClickItem(QListWidgetItem*);
+    void onTxtInputKeyPress();
 
 private:
     Ui::QueryItemListDialog *ui;
