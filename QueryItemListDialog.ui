@@ -9,8 +9,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>300</height>
+    <width>256</width>
+    <height>214</height>
    </rect>
   </property>
   <property name="palette">
@@ -380,6 +380,9 @@
   <property name="windowOpacity">
    <double>1.000000000000000</double>
   </property>
+  <property name="sizeGripEnabled">
+   <bool>true</bool>
+  </property>
   <property name="modal">
    <bool>true</bool>
   </property>
@@ -390,6 +393,16 @@
    <property name="margin">
     <number>0</number>
    </property>
+   <item>
+    <widget class="QLineEdit" name="txtInput">
+     <property name="font">
+      <font>
+       <family>Arial</family>
+       <pointsize>14</pointsize>
+      </font>
+     </property>
+    </widget>
+   </item>
    <item>
     <widget class="QListWidget" name="lstValues">
      <property name="frameShape">
@@ -442,8 +455,25 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>txtInput</sender>
+   <signal>editingFinished()</signal>
+   <receiver>QueryItemListDialog</receiver>
+   <slot>onTxtInputKeyPress()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>127</x>
+     <y>15</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>127</x>
+     <y>106</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>onDblClickItem(QListWidgetItem*)</slot>
+  <slot>onTxtInputKeyPress()</slot>
  </slots>
 </ui>

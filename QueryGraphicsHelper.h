@@ -19,7 +19,8 @@ public:
 
     enum ListType
     {
-        LIST_TABLES = 1
+        LIST_TABLES = 1,
+        INPUT_TEXT = 2
     };
 
     QueryGraphicsHelper();

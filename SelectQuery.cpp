@@ -26,7 +26,7 @@ QueryGraphicsItem* SelectQuery::createGraphicsItem(QueryGraphicsHelper*, QueryGr
     if(m_where) gi->createWhereCell(m_where);
     if(m_groupby) gi->createGroupByCell(m_groupby);
     if(m_having) gi->createHavingCell(m_having);
-    if(m_as) gi->createAsCell(m_having);
+    if(m_as) gi->createAsCell(m_as);
 
     if(m_from)
     {

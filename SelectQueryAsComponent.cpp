@@ -1,6 +1,6 @@
 #include "SelectQueryAsComponent.h"
 
-SelectQueryAsComponent::SelectQueryAsComponent(QueryComponent* p, int l):QueryComponent(p,l)
+SelectQueryAsComponent::SelectQueryAsComponent(QueryComponent* p, int l):QueryComponent(p,l), m_as("A")
 {
 }
 

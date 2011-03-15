@@ -28,6 +28,7 @@ public:
 private:
     QGraphicsRectItem* m_textInputRect;
     QueryTextInputItem* m_textItem;
+    QString m_strText;
 };
 
 #endif // CELLASCOMMAND_H

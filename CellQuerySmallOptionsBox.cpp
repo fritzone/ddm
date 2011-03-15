@@ -5,6 +5,7 @@
 #include <QPen>
 #include <QGraphicsScene>
 #include <QGraphicsView>
+#include <QScrollBar>
 
 CellQuerySmallOptionsBox::CellQuerySmallOptionsBox(QSet<OptionsType> types, QueryGraphicsHelper* c, int level, QueryGraphicsItem* parent, QueryComponent* owner):
         QueryGraphicsItem(parent, c, owner), m_types(types)
@@ -81,9 +82,32 @@ void CellQuerySmallOptionsBox::mousePress(int x, int y)
         icons.append(IconFactory::getEmptyIcon());
     }
 
-    QueryGraphicsScene* sc = dynamic_cast<QueryGraphicsScene*>(m_box->scene());
-    QPoint a = sc->views().at(0)->mapToGlobal((m_box->mapToScene(m_box->boundingRect().bottomLeft().toPoint())).toPoint() );
-    QString selected = m_helper->presentList(x, y, text, icons);
+//    QueryGraphicsScene* sc = dynamic_cast<QueryGraphicsSce*>(m_box->scene());
+//    QPoint a = sc->views().at(0)->mapToGlobal((m_box->mapToScene(m_box->boundingRect().bottomLeft().toPoint())).toPoint() );
+//    QString selected = m_helper->presentList(x, y, text, icons);
+
+    QString selected = "";
+    QGraphicsScene* sc = m_box->scene();
+    QList <QGraphicsView*> views =  sc->views();
+    if(views.size() > 0)
+    {
+        QGraphicsView* v = views.at(0);
+        if(v)
+        {
+            QPoint a = v->mapToGlobal((m_box->mapToScene(m_box->boundingRect().bottomLeft().toPoint())).toPoint() ) ;
+            selected = m_helper->presentList(a.x() + 2 - v->horizontalScrollBar()->sliderPosition(), a.y() - v->verticalScrollBar()->sliderPosition(), text, icons);
+        }
+        else
+        {
+            selected = m_helper->presentList(x, y, text, icons);
+        }
+    }
+    else
+    {
+        selected = m_helper->presentList(x, y, text, icons);
+    }
+
+
     if(selected.length() == 0) return;
     m_owner->handleAction(selected);
 }

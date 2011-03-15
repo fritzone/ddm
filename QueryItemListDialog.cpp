@@ -15,9 +15,12 @@ QueryItemListDialog::QueryItemListDialog(QueryGraphicsHelper::ListType t, QWidge
 {
     ui->setupUi(this);
 
+    ui->txtInput->hide();
+
     switch(t)
     {
     case QueryGraphicsHelper::LIST_TABLES:
+
         if(Workspace::getInstance()->currentProjectIsOop())
         {
             for(int i=0; i<Workspace::getInstance()->workingVersion()->getTableInstances().size(); i++)
@@ -41,6 +44,12 @@ QueryItemListDialog::QueryItemListDialog(QueryGraphicsHelper::ListType t, QWidge
             }
 
         }
+
+        break;
+    case QueryGraphicsHelper::INPUT_TEXT:
+        ui->lstValues->hide();
+        ui->txtInput->show();
+        resize(ui->txtInput->width(), ui->txtInput->height());
         break;
     }
 }
@@ -50,6 +59,7 @@ QueryItemListDialog::QueryItemListDialog(QStringList lst, QList<QIcon> icons, QW
         ui(new Ui::QueryItemListDialog), m_selected()
 {
     ui->setupUi(this);
+    ui->txtInput->hide();
     resize(200,10 * (lst.size()));
     ui->lstValues->resize(200,10 * (lst.size()));
     for(int i=0; i<lst.size(); i++)
@@ -70,5 +80,11 @@ QueryItemListDialog::~QueryItemListDialog()
 void QueryItemListDialog::onDblClickItem(QListWidgetItem* itm)
 {
     m_selected = itm->text();
+    close();
+}
+
+void QueryItemListDialog::onTxtInputKeyPress()
+{
+    m_selected = ui->txtInput->text();
     close();
 }
