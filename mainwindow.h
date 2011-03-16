@@ -55,7 +55,7 @@ public:
     void showTableInstance(const QString& tabName, bool focus = true);
     void showDataType(const QString &name, bool focus = true);
 
-    void rerenderQuery(Query*c);
+    void rerenderQuery(Query*, int, int);
 
 public slots:
 

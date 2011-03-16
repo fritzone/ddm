@@ -80,9 +80,9 @@ void QueryGraphicsHelper::resetHighlightedItem()
     }
 }
 
-void QueryGraphicsHelper::triggerReRender()
+void QueryGraphicsHelper::triggerReRender(int h, int v)
 {
     hotCells.clear();
-    m_form->rerenderQuery(m_query);
+    m_form->rerenderQuery(m_query, h, v);
 }
 

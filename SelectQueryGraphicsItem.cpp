@@ -5,11 +5,12 @@
 #include "CellGroupByCommand.h"
 #include "TableGraphicsItem.h"
 #include "CellAsCommand.h"
+#include "CellOrderByCommand.h"
 
 #include <QPen>
 
 SelectQueryGraphicsItem::SelectQueryGraphicsItem(QueryGraphicsHelper* c, int level, QueryGraphicsItem* parent, QueryComponent* owner) :
-    QueryGraphicsItem(parent, c, owner), m_select(0), m_from(0), m_where(0), m_groupby(0), m_having(0), m_as(0),
+    QueryGraphicsItem(parent, c, owner), m_select(0), m_from(0), m_where(0), m_groupby(0), m_having(0), m_as(0),m_orderBy(0),
     m_frameRect(0), m_level(level)
 {
 }
@@ -44,6 +45,12 @@ void SelectQueryGraphicsItem::createAsCell(QueryComponent* owner)
     m_as = new CellAsCommand(m_helper, m_level, this, owner);
 }
 
+void SelectQueryGraphicsItem::createOrderByCell(QueryComponent* owner)
+{
+    m_orderBy = new CellOrderByCommand(m_helper, m_level, this, owner);
+}
+
+
 QGraphicsItemGroup* SelectQueryGraphicsItem::render(int& x, int& y, int& w, int &h)
 {
     int lx = x;
@@ -54,6 +61,7 @@ QGraphicsItemGroup* SelectQueryGraphicsItem::render(int& x, int& y, int& w, int 
     if(m_groupby) addToGroup(m_groupby->render(x, y, w, h));
     if(m_having) addToGroup(m_having->render(x, y, w, h));
     if(m_as)addToGroup(m_as->render(x, y, w, h));
+    if(m_orderBy)addToGroup(m_orderBy->render(x, y, w, h));
 
     y += 2;
 
@@ -90,6 +98,7 @@ void SelectQueryGraphicsItem::updateWidth(int newWidth)
     if(m_groupby) m_groupby->updateWidth(newWidth);
     if(m_having) m_having->updateWidth(newWidth);
     if(m_as) m_as->updateWidth(newWidth);
+    if(m_orderBy) m_orderBy->updateWidth(newWidth);
 
     QRect newRect(m_frameRect->boundingRect().left(), m_frameRect->boundingRect().top(), newWidth, m_frameRect->boundingRect().height()-1);
     m_frameRect->setRect(newRect);

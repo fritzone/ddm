@@ -17,3 +17,9 @@ void SelectQuerySelectComponent::onClose()
         m_parent->onClose();
     }
 }
+
+QueryComponent* SelectQuerySelectComponent::duplicate()
+{
+    SelectQuerySelectComponent* newc = new SelectQuerySelectComponent(m_parent, m_level);
+    return newc;
+}

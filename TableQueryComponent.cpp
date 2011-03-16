@@ -4,7 +4,7 @@
 #include "Workspace.h"
 #include "Version.h"
 
-TableQueryComponent::TableQueryComponent(Table* tab,QueryComponent* p, int level):QueryComponent(p, level), m_table(tab)
+TableQueryComponent::TableQueryComponent(Table* tab, QueryComponent* p, int level):QueryComponent(p, level), m_table(tab)
 {
 }
 
@@ -21,4 +21,15 @@ QueryGraphicsItem* TableQueryComponent::createGraphicsItem(QueryGraphicsHelper* 
 void TableQueryComponent::setTable(const QString &tab)
 {
     m_table = Workspace::getInstance()->workingVersion()->getTable(tab);
+}
+
+void TableQueryComponent::handleAction(const QString &action, QueryComponent *referringObject)
+{
+    m_parent->handleAction(action, this);
+}
+
+QueryComponent* TableQueryComponent::duplicate()
+{
+    TableQueryComponent* newc = new TableQueryComponent(m_table, m_parent, m_level);
+    return newc;
 }

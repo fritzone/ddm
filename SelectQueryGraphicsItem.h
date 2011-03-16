@@ -10,6 +10,7 @@ class CellFromCommand;
 class CellWhereCommand;
 class CellGroupByCommand;
 class CellAsCommand;
+class CellOrderByCommand;
 
 class SelectQueryGraphicsItem : public QueryGraphicsItem
 {
@@ -38,6 +39,7 @@ public:
     void createGroupByCell(QueryComponent*);
     void createHavingCell(QueryComponent*);
     void createAsCell(QueryComponent*);
+    void createOrderByCell(QueryComponent*);
 
 private:
     CellSelectCommand* m_select;
@@ -46,6 +48,7 @@ private:
     CellGroupByCommand* m_groupby;
     CellWhereCommand* m_having;
     CellAsCommand* m_as;
+    CellOrderByCommand* m_orderBy;
 
     QGraphicsRectItem* m_frameRect;
     int m_level;
