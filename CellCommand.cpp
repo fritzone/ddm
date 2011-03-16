@@ -46,7 +46,10 @@ QGraphicsItemGroup* CellCommand::render(int& x, int& y, int& w, int &h)
         QGraphicsLineItem* l2 = new QGraphicsLineItem(x +5+2-CHILDREN_ALIGNMENT , halfway +10, x + 5+2-CHILDREN_ALIGNMENT, y, grp);   // botton
         QGraphicsLineItem* l3 = new QGraphicsLineItem(x +5+2-CHILDREN_ALIGNMENT +5 , halfway+5, x, halfway+5, grp);                   // to right
 
-        QSet<OptionsType> t; t.insert(OPTIONS_DUPLICATE);
+        // this will be the small options box before the items
+        QSet<OptionsType> t;
+        t.insert(OPTIONS_DUPLICATE);
+
         CellQuerySmallOptionsBox* smb = new CellQuerySmallOptionsBox(t, m_helper, m_level, m_parent, m_children.at(i)->getOwner());
         int tx = x-15 + 2; int ty = halfway; int tw = w; int th = h;
         grp->addToGroup(smb->render(tx, ty, tw, th));

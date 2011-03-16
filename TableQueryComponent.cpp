@@ -33,3 +33,10 @@ QueryComponent* TableQueryComponent::duplicate()
     TableQueryComponent* newc = new TableQueryComponent(m_table, m_parent, m_level);
     return newc;
 }
+
+QSet<OptionsType> TableQueryComponent::provideOptions()
+{
+    QSet<OptionsType> result;
+    result.insert(OPTIONS_DUPLICATE);
+    return result;
+}

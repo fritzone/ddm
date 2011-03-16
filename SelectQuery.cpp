@@ -179,6 +179,7 @@ bool SelectQuery::hasGroupByFunctions()
 QSet<OptionsType> SelectQuery::provideOptions()
 {
     QSet<OptionsType> t;
+
     if(!m_from) t.insert(OPTIONS_ADD_FROM);
     if(!m_where && m_from) t.insert(OPTIONS_ADD_WHERE);
     if(m_from && hasGroupByFunctions() && !m_groupby) t.insert(OPTIONS_ADD_GROUPBY);
