@@ -21,11 +21,13 @@ public:
 
     virtual QString get() = 0;
     virtual QueryGraphicsItem* createGraphicsItem(QueryGraphicsHelper*, QueryGraphicsItem*) = 0;
-    virtual void handleAction(const QString& action) = 0;
+    virtual void handleAction(const QString& action, QueryComponent* referringObject) = 0;
     virtual QSet<OptionsType> provideOptions() = 0;
     virtual void onClose() = 0;
+    virtual QueryComponent* duplicate() = 0;
 
     void addChild(QueryComponent* c) {m_children.append(c);}
+
     QList<QueryComponent*>& getChildren() {return m_children;}
     void removeChild(QueryComponent* c);
     QueryComponent* getParent() {return m_parent; }

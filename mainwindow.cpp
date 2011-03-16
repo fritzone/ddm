@@ -1461,11 +1461,11 @@ void MainWindow::onNewView()
 
     c->setQuery(sq);
     c->setForm(this);
-    rerenderQuery(sq);
+    rerenderQuery(sq, 0, 0);
 
 }
 
-void MainWindow::rerenderQuery(Query* q)
+void MainWindow::rerenderQuery(Query* q, int horScroll, int verScroll)
 {
     int x = 20;
     int y = 20;
@@ -1481,4 +1481,5 @@ void MainWindow::rerenderQuery(Query* q)
     nvf->setGraphicsItem(q->getGraphicsItem());
     q->getHelper()->setScene(nvf->getScene());
     setCentralWidget(nvf);
+    nvf->scrollTo(horScroll, verScroll);
 }

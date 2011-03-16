@@ -9,9 +9,11 @@ public:
     SelectQueryWhereComponent(QueryComponent*, int, bool);
     virtual QString get(){return m_trueWhere?"WHERE":"HAVING";}
     virtual QueryGraphicsItem* createGraphicsItem(QueryGraphicsHelper*, QueryGraphicsItem*){return 0;}
-    virtual void handleAction(const QString& action);
+    virtual void handleAction(const QString& action, QueryComponent* referringObject);
     virtual QSet<OptionsType> provideOptions();
     virtual void onClose(){}
+    virtual QueryComponent* duplicate();
+
 private:
     bool m_trueWhere;
 };

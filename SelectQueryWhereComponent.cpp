@@ -5,7 +5,7 @@ SelectQueryWhereComponent::SelectQueryWhereComponent(QueryComponent* p, int l, b
 }
 
 
-void SelectQueryWhereComponent::handleAction(const QString &action)
+void SelectQueryWhereComponent::handleAction(const QString &action, QueryComponent* referringObject)
 {
 }
 
@@ -13,4 +13,10 @@ QSet<OptionsType> SelectQueryWhereComponent::provideOptions()
 {
     QSet<OptionsType> t;
     return t;
+}
+
+QueryComponent* SelectQueryWhereComponent::duplicate()
+{
+    SelectQueryWhereComponent* newc = new SelectQueryWhereComponent(m_parent, m_level, m_trueWhere);
+    return newc;
 }

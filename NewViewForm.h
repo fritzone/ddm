@@ -23,6 +23,8 @@ public:
         return m_qgs;
     }
 
+    void scrollTo(int hor, int ver);
+
 protected:
     void changeEvent(QEvent *e);
 

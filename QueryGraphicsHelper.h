@@ -32,7 +32,7 @@ public:
     void setQuery(Query* q) ;
     void setForm(MainWindow*);
     void resetHighlightedItem();
-    void triggerReRender();
+    void triggerReRender(int, int);
     QueryGraphicsScene* getScene()
     {
         return m_scene;

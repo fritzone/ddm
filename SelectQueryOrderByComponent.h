@@ -1,20 +1,18 @@
-#ifndef SELECTQUERYFROMCOMPONENT_H
-#define SELECTQUERYFROMCOMPONENT_H
+#ifndef SELECTQUERYORDERBYCOMPONENT_H
+#define SELECTQUERYORDERBYCOMPONENT_H
 
 #include "QueryComponents.h"
 
-class SelectQueryFromComponent : public QueryComponent
+class SelectQueryOrderByComponent : public QueryComponent
 {
 public:
-    SelectQueryFromComponent(QueryComponent*,int);
-    virtual QString get(){return "FROM"; }
+    SelectQueryOrderByComponent(QueryComponent*, int);
+    virtual QString get(){return "ORDER BY"; }
     virtual QueryGraphicsItem* createGraphicsItem(QueryGraphicsHelper*, QueryGraphicsItem*){return 0;}
     virtual void handleAction(const QString& action, QueryComponent* referringObject);
     virtual QSet<OptionsType> provideOptions();
-    virtual void onClose();
+    virtual void onClose(){}
     virtual QueryComponent* duplicate();
-
-    bool allowCloseButton();
 };
 
-#endif // SELECTQUERYFROMCOMPONENT_H
+#endif // SELECTQUERYORDERBYCOMPONENT_H

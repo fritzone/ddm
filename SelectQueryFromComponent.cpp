@@ -8,7 +8,7 @@ SelectQueryFromComponent::SelectQueryFromComponent(QueryComponent* p, int l):Que
 {
 }
 
-void SelectQueryFromComponent::handleAction(const QString &action)
+void SelectQueryFromComponent::handleAction(const QString &action, QueryComponent* referringObject)
 {
     if(action == NEW_TABLE)
     {
@@ -24,6 +24,14 @@ void SelectQueryFromComponent::handleAction(const QString &action)
         if(sq)
         {
             sq->newFromSelectQueryComponent();
+        }
+    }
+    if(action == DUPLICATE)
+    {
+        SelectQuery* sq = dynamic_cast<SelectQuery*>(m_parent);
+        if(sq)
+        {
+            sq->duplicateFromsChild(referringObject);
         }
     }
 }
@@ -68,4 +76,10 @@ bool SelectQueryFromComponent::allowCloseButton()
         }
     }
     return false;
+}
+
+QueryComponent* SelectQueryFromComponent::duplicate()
+{
+    SelectQueryFromComponent* newc = new SelectQueryFromComponent(m_parent, m_level);
+    return newc;
 }

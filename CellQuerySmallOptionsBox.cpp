@@ -53,6 +53,13 @@ void CellQuerySmallOptionsBox::mousePress(int x, int y)
         text.append(NEW_TABLE);
         icons.append(IconFactory::getTabinstIcon());
     }
+
+    if(m_types.contains(OPTIONS_DUPLICATE))
+    {
+        text.append(DUPLICATE);
+        icons.append(IconFactory::getTabinstIcon());
+    }
+
     if(m_types.contains(OPTIONS_ADD_FROM))
     {
         text.append(ADD_FROM);
@@ -75,10 +82,15 @@ void CellQuerySmallOptionsBox::mousePress(int x, int y)
         icons.append(IconFactory::getEmptyIcon());
     }
 
-
     if(m_types.contains(OPTIONS_ADD_HAVING))
     {
         text.append(ADD_HAVING);
+        icons.append(IconFactory::getEmptyIcon());
+    }
+
+    if(m_types.contains(OPTIONS_ADD_ORDERBY))
+    {
+        text.append(ADD_ORDERBY);
         icons.append(IconFactory::getEmptyIcon());
     }
 
@@ -109,5 +121,8 @@ void CellQuerySmallOptionsBox::mousePress(int x, int y)
 
 
     if(selected.length() == 0) return;
-    m_owner->handleAction(selected);
+    QueryComponent* referring = 0;
+    if(m_parent) referring = m_parent->getOwner();
+
+    m_owner->handleAction(selected, referring);
 }

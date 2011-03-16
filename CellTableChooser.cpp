@@ -54,7 +54,10 @@ void CellTableChooser::mousePress(int x, int y)
     if(tc != 0)
     {
         tc->setTable(m_name);
-        m_helper->triggerReRender();
+        int h = m_frame->scene()->views().at(0)->horizontalScrollBar()->sliderPosition();
+        int v = m_frame->scene()->views().at(0)->verticalScrollBar()->sliderPosition();
+
+        m_helper->triggerReRender(h, v);
     }
 }
 

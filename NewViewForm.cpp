@@ -5,7 +5,10 @@
 #include "QueryGraphicsScene.h"
 #include "QueryGraphicsItem.h"
 
+#include <QScrollBar>
 #include <QVBoxLayout>
+
+#include <QDebug>
 
 NewViewForm::NewViewForm(QueryGraphicsHelper* c, QWidget *parent) :
     QWidget(parent),
@@ -23,14 +26,12 @@ NewViewForm::NewViewForm(QueryGraphicsHelper* c, QWidget *parent) :
     m_qgv->setScene(m_qgs);
 
     m_qgv->setSceneRect(0,0, 10000, 10000);
-    m_qgv->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
-    m_qgv->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+    m_qgv->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
+    m_qgv->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
 
     ui->verticalLayout->insertWidget(1, m_qgv);
     ui->grpHelp->hide();
 }
-
-
 
 NewViewForm::~NewViewForm()
 {
@@ -52,4 +53,10 @@ void NewViewForm::changeEvent(QEvent *e)
 void NewViewForm::setGraphicsItem(QueryGraphicsItem * itm)
 {
     m_qgs->addItem(itm);
+}
+
+void NewViewForm::scrollTo(int hor, int ver)
+{
+    m_qgv->horizontalScrollBar()->setValue(hor);
+    m_qgv->verticalScrollBar()->setValue(ver);
 }

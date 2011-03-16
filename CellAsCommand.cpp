@@ -87,14 +87,15 @@ void CellAsCommand::mousePress(int x, int y)
     QString selected = "";
     QGraphicsScene* sc = m_textInputRect->scene();
     QList <QGraphicsView*> views =  sc->views();
+    int h = 0, vv = 0;
     if(views.size() > 0)
     {
         QGraphicsView* v = views.at(0);
         if(v)
         {
             QPoint a = v->mapToGlobal((m_textInputRect->mapToScene(m_textInputRect->boundingRect().bottomLeft().toPoint())).toPoint() ) ;
-            selected = m_helper->presentList(a.x() + 2 - v->horizontalScrollBar()->sliderPosition(),
-                                             a.y() - v->verticalScrollBar()->sliderPosition(), QueryGraphicsHelper::INPUT_TEXT);
+            selected = m_helper->presentList(a.x() + 2 - (h = v->horizontalScrollBar()->sliderPosition()),
+                                             a.y() - (vv = v->verticalScrollBar()->sliderPosition()), QueryGraphicsHelper::INPUT_TEXT);
         }
         else
         {
@@ -118,6 +119,6 @@ void CellAsCommand::mousePress(int x, int y)
         own->setAs(m_strText);
     }
 
-    if(trigger) m_helper->triggerReRender();
+    if(trigger) m_helper->triggerReRender(h, vv);
 
 }

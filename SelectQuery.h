@@ -11,6 +11,7 @@ class SelectQueryFromComponent;
 class SelectQueryWhereComponent;
 class SelectQueryGroupByComponent;
 class SelectQueryAsComponent;
+class SelectQueryOrderByComponent;
 
 class SelectQuery : public Query
 {
@@ -18,12 +19,14 @@ public:
     SelectQuery(QueryGraphicsHelper*, int);
     virtual bool initializeGraphicsItem();
     virtual QueryGraphicsItem* createGraphicsItem(QueryGraphicsHelper*, QueryGraphicsItem*);
-    virtual void handleAction(const QString& action);
+    virtual void handleAction(const QString& action, QueryComponent* referringObject);
     virtual QSet<OptionsType> provideOptions();
     virtual void onClose();
+    virtual QueryComponent* duplicate();
 
     void newFromTableComponent();
     void newFromSelectQueryComponent();
+    void duplicateFromsChild(QueryComponent*);
 
     void removeFrom();
     bool hasWhere();
@@ -38,6 +41,7 @@ private:
     SelectQueryGroupByComponent* m_groupby;
     SelectQueryWhereComponent* m_having;
     SelectQueryAsComponent* m_as;
+    SelectQueryOrderByComponent* m_orderBy;
 };
 
 #endif // SELECTQUERY_H

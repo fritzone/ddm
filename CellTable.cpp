@@ -6,6 +6,9 @@
 #include "QueryComponents.h"
 
 #include <QPen>
+#include <QGraphicsScene>
+#include <QGraphicsView>
+#include <QScrollBar>
 
 CellTable::CellTable(const QString& tabName, QueryGraphicsHelper* c, QueryGraphicsItem* parent, QueryComponent* owner):QueryGraphicsItem(parent, c, owner)
         , m_tabName(tabName)
@@ -56,5 +59,8 @@ void CellTable::updateWidth(int newWidth)
 void CellTable::onClose()
 {
     m_parent->getOwner()->getParent()->removeChild(m_parent->getOwner()); // first is the table entry, second is the from
-    m_helper->triggerReRender();
+    int h = m_frame->scene()->views().at(0)->horizontalScrollBar()->sliderPosition();
+    int v = m_frame->scene()->views().at(0)->verticalScrollBar()->sliderPosition();
+
+    m_helper->triggerReRender(h, v);
 }

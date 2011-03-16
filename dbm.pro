@@ -108,7 +108,9 @@ SOURCES += main.cpp \
     SelectQueryGroupByComponent.cpp \
     SelectQueryAsComponent.cpp \
     CellAsCommand.cpp \
-    QueryTextInputItem.cpp
+    QueryTextInputItem.cpp \
+    SelectQueryOrderByComponent.cpp \
+    CellOrderByCommand.cpp
 HEADERS += mainwindow.h \
     MainWindowButtonDialog.h \
     newprojectdialog.h \
@@ -229,7 +231,9 @@ HEADERS += mainwindow.h \
     SelectQueryGroupByComponent.h \
     SelectQueryAsComponent.h \
     CellAsCommand.h \
-    QueryTextInputItem.h
+    QueryTextInputItem.h \
+    SelectQueryOrderByComponent.h \
+    CellOrderByCommand.h
 FORMS += mainwindow.ui \
     mainwindowbuttondialog.ui \
     newprojectdialog.ui \

@@ -5,7 +5,7 @@ SelectQueryGroupByComponent::SelectQueryGroupByComponent(QueryComponent* p, int 
 }
 
 
-void SelectQueryGroupByComponent::handleAction(const QString &action)
+void SelectQueryGroupByComponent::handleAction(const QString &action, QueryComponent* referringObject)
 {
 }
 
@@ -15,3 +15,8 @@ QSet<OptionsType> SelectQueryGroupByComponent::provideOptions()
     return t;
 }
 
+QueryComponent* SelectQueryGroupByComponent::duplicate()
+{
+    SelectQueryGroupByComponent *newc = new SelectQueryGroupByComponent(m_parent, m_level);
+    return newc;
+}
