@@ -24,6 +24,8 @@ public:
         return m_selected;
     }
 
+    void setText(const QString& a);
+
 public slots:
 
     void onDblClickItem(QListWidgetItem*);
