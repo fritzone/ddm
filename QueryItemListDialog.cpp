@@ -54,6 +54,11 @@ QueryItemListDialog::QueryItemListDialog(QueryGraphicsHelper::ListType t, QWidge
     }
 }
 
+void QueryItemListDialog::setText(const QString &a)
+{
+    ui->txtInput->setText(a);
+}
+
 QueryItemListDialog::QueryItemListDialog(QStringList lst, QList<QIcon> icons, QWidget *parent) :
         QDialog(parent),
         ui(new Ui::QueryItemListDialog), m_selected()
