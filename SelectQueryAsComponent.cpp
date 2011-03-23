@@ -1,7 +1,9 @@
 #include "SelectQueryAsComponent.h"
+#include "QueryAsGenerator.h"
 
-SelectQueryAsComponent::SelectQueryAsComponent(QueryComponent* p, int l):QueryComponent(p,l), m_as("A")
+SelectQueryAsComponent::SelectQueryAsComponent(QueryComponent* p, int l):QueryComponent(p,l)
 {
+    m_as = QueryAsGenerator::instance().getNextValidAs();
 }
 
 

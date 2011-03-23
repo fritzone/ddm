@@ -39,6 +39,7 @@
 #include "DataType.h" // TODO: this is simply bad design, Mainwindow should not know about datatypes ...
 #include "IssueManager.h"
 #include "NewViewForm.h"
+#include "QueryAsGenerator.h"
 #include "SelectQuery.h"
 
 #include <QtGui>
@@ -1458,11 +1459,11 @@ void MainWindow::onNewView()
 {
     QueryGraphicsHelper* c = new QueryGraphicsHelper();
     SelectQuery* sq = new SelectQuery(c, 0);
+    QueryAsGenerator::instance().initNewQuery(sq);
 
     c->setQuery(sq);
     c->setForm(this);
     rerenderQuery(sq, 0, 0);
-
 }
 
 void MainWindow::rerenderQuery(Query* q, int horScroll, int verScroll)

@@ -4,6 +4,7 @@
 #include "QueryComponents.h"
 
 class Table;
+class SelectQueryAsComponent;
 
 class TableQueryComponent : public QueryComponent
 {
@@ -18,6 +19,7 @@ public:
     virtual QueryComponent* duplicate();
 private:
     Table* m_table;
+    SelectQueryAsComponent* m_as;
 };
 
 #endif // TABLEQUERYCOMPONENT_H

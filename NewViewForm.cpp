@@ -58,5 +58,5 @@ void NewViewForm::setGraphicsItem(QueryGraphicsItem * itm)
 void NewViewForm::scrollTo(int hor, int ver)
 {
     m_qgv->horizontalScrollBar()->setValue(hor);
-    m_qgv->verticalScrollBar()->setValue(ver);
+    m_qgv->verticalScrollBar()->setSliderPosition(ver);
 }

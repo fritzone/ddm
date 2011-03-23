@@ -56,6 +56,12 @@ void CellTable::updateWidth(int newWidth)
     m_chooser->updateWidth(newWidth - CHILDREN_ALIGNMENT - 10  - 2 * CELL_SIZE);
 }
 
+void CellTable::updateHeight(int newHeight)
+{
+    QRect newRect(m_frame->boundingRect().left(), m_frame->boundingRect().top(), m_frame->boundingRect().width(),  m_frame->boundingRect().height() + newHeight);
+    m_frame->setRect(newRect);
+}
+
 void CellTable::onClose()
 {
     m_parent->getOwner()->getParent()->removeChild(m_parent->getOwner()); // first is the table entry, second is the from

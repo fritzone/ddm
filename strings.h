@@ -60,5 +60,7 @@ static const QString NEW_SUBQUERY = "New subquery";
 static const QString ADD_GROUPBY = "GROUP BY...";
 static const QString ADD_HAVING = "HAVING...";
 static const QString ADD_ORDERBY = "ORDER BY...";
+static const QString ADD_JOIN = "LEFT JOIN";
+static const QString ADD_ALIAS = "AS...";
 
 #endif // STRINGS_H

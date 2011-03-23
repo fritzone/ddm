@@ -6,6 +6,7 @@
 
 class Table;
 class QueryComponent;
+class CellAsCommand;
 
 class TableGraphicsItem : public QueryGraphicsItem
 {
@@ -18,9 +19,12 @@ public:
     virtual void mouseMove(int x, int y){}
     virtual void mouseLeft(int x, int y){}
     virtual void onClose(){}
+    void setAs(CellAsCommand* as);
+
 private:
     Table* m_table;
     QueryGraphicsItem* m_tableCell;
+    CellAsCommand* m_as;
 };
 
 #endif // TABLEGRAPHICSITEM_H

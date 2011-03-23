@@ -77,13 +77,14 @@ QGraphicsItemGroup* SelectQueryGraphicsItem::render(int& x, int& y, int& w, int 
     br.setHeight(br.height() + 4);
     br.setLeft(br.left() + 1 + m_level * CHILDREN_ALIGNMENT);
     br.setTop(br.top() + 1);
-    m_frameRect = new QGraphicsRectItem(br, this);
-    m_frameRect->setZValue(-2);
-    QPen thick;
-    thick.setWidth(1);
-    thick.setColor(Qt::black);
-    m_frameRect->setPen(thick);
-    m_frameRect->setBrush(QBrush(QColor(255,255,255)));
+
+//    m_frameRect = new QGraphicsRectItem(br, this);
+//    m_frameRect->setZValue(-2);
+//    QPen thick;
+//    thick.setWidth(1);
+//    thick.setColor(Qt::black);
+//    m_frameRect->setPen(thick);
+//    m_frameRect->setBrush(QBrush(QColor(255,255,255)));
 
     y = br.bottom() + 2;
 
@@ -100,8 +101,8 @@ void SelectQueryGraphicsItem::updateWidth(int newWidth)
     if(m_as) m_as->updateWidth(newWidth);
     if(m_orderBy) m_orderBy->updateWidth(newWidth);
 
-    QRect newRect(m_frameRect->boundingRect().left(), m_frameRect->boundingRect().top(), newWidth, m_frameRect->boundingRect().height()-1);
-    m_frameRect->setRect(newRect);
+    //QRect newRect(m_frameRect->boundingRect().left(), m_frameRect->boundingRect().top(), newWidth, m_frameRect->boundingRect().height()-1);
+    //m_frameRect->setRect(newRect);
 }
 
 void SelectQueryGraphicsItem::addFromGraphicsItem(QueryGraphicsItem* fromsChild)

@@ -39,7 +39,7 @@ QGraphicsItemGroup* CellCommand::render(int& x, int& y, int& w, int &h)
         int oldy = y-2;
         int neww = lmw - (m_level + 1)* 20;
         grp->addToGroup(m_children.at(i)->render(x, y, neww, h));
-        int halfway = (oldy + y) / 2 - 5;
+        int halfway = (oldy + y) / 2 - 7;
         if(w<neww-20) {w = neww - 20; lmw = neww - 20;}
 
         QGraphicsLineItem* l1 = new QGraphicsLineItem(x +5+2-CHILDREN_ALIGNMENT , oldy+1, x + 5+2-CHILDREN_ALIGNMENT, halfway , grp); // top
@@ -49,6 +49,9 @@ QGraphicsItemGroup* CellCommand::render(int& x, int& y, int& w, int &h)
         // this will be the small options box before the items
         QSet<OptionsType> t;
         t.insert(OPTIONS_DUPLICATE);
+
+        QSet<OptionsType> more = m_children.at(i)->getOwner()->provideOptions();
+        t.unite(more);
 
         CellQuerySmallOptionsBox* smb = new CellQuerySmallOptionsBox(t, m_helper, m_level, m_parent, m_children.at(i)->getOwner());
         int tx = x-15 + 2; int ty = halfway; int tw = w; int th = h;

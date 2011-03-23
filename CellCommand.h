@@ -30,6 +30,8 @@ public:
     virtual bool hasClose() = 0;
     virtual CellQuerySmallOptionsBox* provideOptionsBox(QueryGraphicsHelper* c, int level, QueryGraphicsItem* parent, QueryComponent* owner) = 0;
 
+    int getLevel() const { return m_level; }
+
 protected:
     QGraphicsRectItem* m_rctCommandFrame;
     QGraphicsRectItem* m_colorRect;

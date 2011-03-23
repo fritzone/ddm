@@ -4,10 +4,7 @@
 #include "UserDataType.h"
 #include "StartupValuesHelper.h"
 #include "Column.h"
-
-template <class T> const T& max ( const T& a, const T& b ) {
-  return (b<a)?a:b;
-}
+#include "utils.h"
 
 TableInstanceForm::TableInstanceForm(QWidget *parent) :
     QWidget(parent),

@@ -17,6 +17,9 @@ public:
     virtual void mouseMove(int x, int y){}
     virtual void mouseLeft(int x, int y){}
     virtual void onClose();
+
+    void updateHeight(int newHeight);
+
 private:
     QString m_tabName;
     CellClose* m_closer;
