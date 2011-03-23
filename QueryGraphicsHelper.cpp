@@ -56,6 +56,23 @@ QString QueryGraphicsHelper::presentList(int x, int y, ListType lt)
     return m_lstDlg->getSelection();
 }
 
+QString QueryGraphicsHelper::presentList(int x, int y, const QString& input)
+{
+    if(m_lstDlg != 0)
+    {
+        m_lstDlg->close();
+        m_lstDlg = 0;
+    }
+    m_lstDlg = new QueryItemListDialog(INPUT_TEXT, 0);
+    m_lstDlg->setWindowFlags(Qt::FramelessWindowHint);
+    m_lstDlg->move(x, y);
+    m_lstDlg->setText(input);
+    m_lstDlg->setModal(true);
+    m_lstDlg->exec();
+    return m_lstDlg->getSelection();
+}
+
+
 QString QueryGraphicsHelper::presentList(int x, int y, QStringList lst, QList<QIcon> icons)
 {
     if(m_lstDlg != 0)
