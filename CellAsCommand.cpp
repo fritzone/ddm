@@ -97,16 +97,16 @@ void CellAsCommand::mousePress(int x, int y)
         {
             QPoint a = v->mapToGlobal((m_textInputRect->mapToScene(m_textInputRect->boundingRect().bottomLeft().toPoint())).toPoint() ) ;
             selected = m_helper->presentList(a.x() + 2 - (h = v->horizontalScrollBar()->sliderPosition()),
-                                             a.y() - (vv = v->verticalScrollBar()->sliderPosition()), QueryGraphicsHelper::INPUT_TEXT);
+                                             a.y() - (vv = v->verticalScrollBar()->sliderPosition()), m_strText);
         }
         else
         {
-            selected = m_helper->presentList(x, y, QueryGraphicsHelper::INPUT_TEXT);
+            selected = m_helper->presentList(x, y, m_strText);
         }
     }
     else
     {
-        selected = m_helper->presentList(x, y, QueryGraphicsHelper::INPUT_TEXT);
+        selected = m_helper->presentList(x, y, m_strText);
     }
 
     if(selected.length() == 0) return;
