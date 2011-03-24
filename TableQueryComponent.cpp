@@ -7,6 +7,9 @@
 #include "SelectQueryAsComponent.h"
 #include "CellAsCommand.h"
 
+#include <QGraphicsScene>
+#include <QGraphicsView>
+
 TableQueryComponent::TableQueryComponent(Table* tab, QueryComponent* p, int level):QueryComponent(p, level), m_table(tab), m_as(0)
 {
 }
@@ -18,12 +21,13 @@ QString TableQueryComponent::get()
 
 QueryGraphicsItem* TableQueryComponent::createGraphicsItem(QueryGraphicsHelper* helper, QueryGraphicsItem* parent)
 {
-    TableGraphicsItem* tgitm = new TableGraphicsItem(m_table, helper, parent, this);
+    m_helper = helper;
+    m_tgitm = new TableGraphicsItem(m_table, helper, parent, this);
     if(m_as)
     {
-        tgitm->setAs(new CellAsCommand(helper, m_level + 1, tgitm, m_as));
+        m_tgitm->setAs(new CellAsCommand(helper, m_level + 1, m_tgitm, m_as));
     }
-    return tgitm;
+    return m_tgitm;
 }
 
 void TableQueryComponent::setTable(const QString &tab)
@@ -39,6 +43,12 @@ void TableQueryComponent::handleAction(const QString &action, QueryComponent *re
         {
             m_as = new SelectQueryAsComponent(this, m_level + 1);
             addChild(m_as);
+
+            QPointF centerb = m_tgitm->scene()->views().at(0)->mapToScene(m_tgitm->scene()->views().at(0)->viewport()->rect().center());
+            int h = centerb.x();
+            int v = centerb.y();
+
+            m_helper->triggerReRender(h,v);
         }
         return;
     }
@@ -56,7 +66,7 @@ QueryComponent* TableQueryComponent::duplicate()
 QSet<OptionsType> TableQueryComponent::provideOptions()
 {
     QSet<OptionsType> result;
-    result.insert(OPTIONS_ADD_JOIN);
+//    result.insert(OPTIONS_ADD_JOIN);
     result.insert(OPTIONS_AS);
     return result;
 }

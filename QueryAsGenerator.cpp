@@ -22,3 +22,13 @@ QString QueryAsGenerator::getNextValidAs()
     m_workingSet.insert(res);
     return res;
 }
+
+bool QueryAsGenerator::hasAs(const QString &as)
+{
+    return m_workingSet.contains(as);
+}
+
+void QueryAsGenerator::addAs(const QString &as)
+{
+    m_workingSet.insert(as);
+}

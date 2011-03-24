@@ -66,8 +66,10 @@ void SelectQuery::newFromTableComponent()
             m_from->addChild(new TableQueryComponent(Workspace::getInstance()->workingVersion()->getTables().at(0), m_from, m_level));
         }
 
-        int h = m_graphicsItem->scene()->views().at(0)->horizontalScrollBar()->sliderPosition();
-        int v = m_graphicsItem->scene()->views().at(0)->verticalScrollBar()->sliderPosition();
+
+        QPointF centerb = m_graphicsItem->scene()->views().at(0)->mapToScene(m_graphicsItem->scene()->views().at(0)->viewport()->rect().center());
+        int h = centerb.x();
+        int v = centerb.y();
 
         m_helper->triggerReRender(h, v);
     }
@@ -80,8 +82,9 @@ void SelectQuery::duplicateFromsChild(QueryComponent *c)
         QueryComponent* copy = c->duplicate();
         m_from->getChildren().insert(m_from->getChildren().indexOf(c), copy);
 
-        int h = m_graphicsItem->scene()->views().at(0)->horizontalScrollBar()->sliderPosition();
-        int v = m_graphicsItem->scene()->views().at(0)->verticalScrollBar()->sliderPosition();
+        QPointF centerb = m_graphicsItem->scene()->views().at(0)->mapToScene(m_graphicsItem->scene()->views().at(0)->viewport()->rect().center());
+        int h = centerb.x();
+        int v = centerb.y();
 
         m_helper->triggerReRender(h, v);
     }
@@ -95,8 +98,9 @@ void SelectQuery::newFromSelectQueryComponent()
         SelectQuery* nq = new SelectQuery(m_helper, m_level + 1);
         m_from->addChild(nq);
         nq->setParent(m_from);
-        int h = m_graphicsItem->scene()->views().at(0)->horizontalScrollBar()->sliderPosition();
-        int v = m_graphicsItem->scene()->views().at(0)->verticalScrollBar()->sliderPosition();
+        QPointF centerb = m_graphicsItem->scene()->views().at(0)->mapToScene(m_graphicsItem->scene()->views().at(0)->viewport()->rect().center());
+        int h = centerb.x();
+        int v = centerb.y();
 
         m_helper->triggerReRender(h, v);
     }
@@ -110,8 +114,9 @@ void SelectQuery::handleAction(const QString &action, QueryComponent* referringO
         if(!m_from)
         {
             m_from = new SelectQueryFromComponent(this, m_level);
-            int h = m_graphicsItem->scene()->views().at(0)->horizontalScrollBar()->sliderPosition();
-            int v = m_graphicsItem->scene()->views().at(0)->verticalScrollBar()->sliderPosition();
+            QPointF centerb = m_graphicsItem->scene()->views().at(0)->mapToScene(m_graphicsItem->scene()->views().at(0)->viewport()->rect().center());
+            int h = centerb.x();
+            int v = centerb.y();
 
             m_helper->triggerReRender(h,v);
         }
@@ -121,8 +126,9 @@ void SelectQuery::handleAction(const QString &action, QueryComponent* referringO
         if(!m_where)
         {
             m_where = new SelectQueryWhereComponent(this, m_level, true);
-            int h = m_graphicsItem->scene()->views().at(0)->horizontalScrollBar()->sliderPosition();
-            int v = m_graphicsItem->scene()->views().at(0)->verticalScrollBar()->sliderPosition();
+            QPointF centerb = m_graphicsItem->scene()->views().at(0)->mapToScene(m_graphicsItem->scene()->views().at(0)->viewport()->rect().center());
+            int h = centerb.x();
+            int v = centerb.y();
 
             m_helper->triggerReRender(h,v);
         }
@@ -132,8 +138,9 @@ void SelectQuery::handleAction(const QString &action, QueryComponent* referringO
         if(!m_groupby)
         {
             m_groupby = new SelectQueryGroupByComponent(this, m_level);
-            int h = m_graphicsItem->scene()->views().at(0)->horizontalScrollBar()->sliderPosition();
-            int v = m_graphicsItem->scene()->views().at(0)->verticalScrollBar()->sliderPosition();
+            QPointF centerb = m_graphicsItem->scene()->views().at(0)->mapToScene(m_graphicsItem->scene()->views().at(0)->viewport()->rect().center());
+            int h = centerb.x();
+            int v = centerb.y();
 
             m_helper->triggerReRender(h,v);
         }
@@ -143,8 +150,9 @@ void SelectQuery::handleAction(const QString &action, QueryComponent* referringO
         if(!m_having)
         {
             m_having = new SelectQueryWhereComponent(this, m_level, false);
-            int h = m_graphicsItem->scene()->views().at(0)->horizontalScrollBar()->sliderPosition();
-            int v = m_graphicsItem->scene()->views().at(0)->verticalScrollBar()->sliderPosition();
+            QPointF centerb = m_graphicsItem->scene()->views().at(0)->mapToScene(m_graphicsItem->scene()->views().at(0)->viewport()->rect().center());
+            int h = centerb.x();
+            int v = centerb.y();
 
             m_helper->triggerReRender(h,v);
         }
@@ -155,8 +163,9 @@ void SelectQuery::handleAction(const QString &action, QueryComponent* referringO
         {
             m_orderBy = new SelectQueryOrderByComponent(this, m_level);
 
-            int h = m_graphicsItem->scene()->views().at(0)->horizontalScrollBar()->sliderPosition();
-            int v = m_graphicsItem->scene()->views().at(0)->verticalScrollBar()->sliderPosition();
+            QPointF centerb = m_graphicsItem->scene()->views().at(0)->mapToScene(m_graphicsItem->scene()->views().at(0)->viewport()->rect().center());
+            int h = centerb.x();
+            int v = centerb.y();
 
             m_helper->triggerReRender(h,v);
         }
@@ -193,8 +202,9 @@ void SelectQuery::onClose()
 {
     if(m_parent)
     {
-        int h = m_graphicsItem->scene()->views().at(0)->horizontalScrollBar()->sliderPosition();
-        int v = m_graphicsItem->scene()->views().at(0)->verticalScrollBar()->sliderPosition();
+        QPointF centerb = m_graphicsItem->scene()->views().at(0)->mapToScene(m_graphicsItem->scene()->views().at(0)->viewport()->rect().center());
+        int h = centerb.x();
+        int v = centerb.y();
 
         m_parent->removeChild(this);
         m_helper->triggerReRender(h, v);
@@ -205,8 +215,9 @@ void SelectQuery::removeFrom()
 {
     if(m_from)
     {
-        int h = m_graphicsItem->scene()->views().at(0)->horizontalScrollBar()->sliderPosition();
-        int v = m_graphicsItem->scene()->views().at(0)->verticalScrollBar()->sliderPosition();
+        QPointF centerb = m_graphicsItem->scene()->views().at(0)->mapToScene(m_graphicsItem->scene()->views().at(0)->viewport()->rect().center());
+        int h = centerb.x();
+        int v = centerb.y();
 
         delete m_from;
         m_from = 0;

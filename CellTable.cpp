@@ -65,8 +65,13 @@ void CellTable::updateHeight(int newHeight)
 void CellTable::onClose()
 {
     m_parent->getOwner()->getParent()->removeChild(m_parent->getOwner()); // first is the table entry, second is the from
-    int h = m_frame->scene()->views().at(0)->horizontalScrollBar()->sliderPosition();
-    int v = m_frame->scene()->views().at(0)->verticalScrollBar()->sliderPosition();
+    //int h = m_frame->scene()->views().at(0)->horizontalScrollBar()->sliderPosition();
+    //int v = m_frame->scene()->views().at(0)->verticalScrollBar()->sliderPosition();
+
+    QPointF centerb = m_frame->scene()->views().at(0)->mapToScene(m_frame->scene()->views().at(0)->viewport()->rect().center());
+    int h = centerb.x();
+    int v = centerb.y();
+
 
     m_helper->triggerReRender(h, v);
 }

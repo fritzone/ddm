@@ -13,11 +13,7 @@ public:
     virtual QSet<OptionsType> provideOptions();
     virtual void onClose(){}
     virtual QueryComponent* duplicate();
-    void setAs(const QString& as)
-    {
-        m_as = as;
-    }
-
+    bool setAs(const QString& as);
     QString getAs() const
     {
         return m_as;
