@@ -11,6 +11,9 @@ class QueryAsGenerator
 {
 public:
     QString getNextValidAs();
+    bool hasAs(const QString& as);
+    void addAs(const QString& as);
+
     void initNewQuery(QueryComponent* forThis)
     {
         if(m_asList.contains(forThis))

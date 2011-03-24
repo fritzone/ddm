@@ -401,6 +401,9 @@
        <pointsize>14</pointsize>
       </font>
      </property>
+     <property name="maxLength">
+      <number>5</number>
+     </property>
     </widget>
    </item>
    <item>

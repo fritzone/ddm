@@ -5,6 +5,7 @@
 
 class Table;
 class SelectQueryAsComponent;
+class TableGraphicsItem;
 
 class TableQueryComponent : public QueryComponent
 {
@@ -20,6 +21,8 @@ public:
 private:
     Table* m_table;
     SelectQueryAsComponent* m_as;
+    QueryGraphicsHelper* m_helper;
+    TableGraphicsItem* m_tgitm;
 };
 
 #endif // TABLEQUERYCOMPONENT_H

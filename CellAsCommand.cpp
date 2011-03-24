@@ -10,6 +10,8 @@
 #include <QFont>
 #include <QScrollBar>
 
+#include <QDebug>
+
 CellAsCommand::CellAsCommand(QueryGraphicsHelper* c, int level, QueryGraphicsItem* parent, QueryComponent* owner) :
         CellCommand(c, level, parent, owner), m_strText("A")
 {
@@ -43,7 +45,7 @@ QGraphicsItemGroup* CellAsCommand::render(int& x, int& y, int& w, int &h)
     grp->addToGroup(CellCommand::render(x,y,w,h));
     int tw = m_txt->boundingRect().width();
     QRect t (x +tw + 2, ly + 5, 100, m_txt->boundingRect().height() - 5);
-    //if(w<100) w = 100;
+    if(w<100) w = tw + 2;
     m_textInputRect = new QGraphicsRectItem(t);
     m_textInputRect->setBrush(QBrush(QColor(Qt::white)));
     grp->addToGroup(m_textInputRect);
@@ -59,11 +61,13 @@ QGraphicsItemGroup* CellAsCommand::render(int& x, int& y, int& w, int &h)
 
 void CellAsCommand::updateWidth(int newWidth)
 {
-    int nw = max((int)m_txt->boundingRect().width(), newWidth - ( (m_level + 1) * 20) );
-    CellCommand::updateWidth(nw + 4);
+    //int nw = max((int)m_txt->boundingRect().width() + 10, newWidth - ( (m_level + 1) * CHILDREN_ALIGNMENT) );
+    CellCommand::updateWidth(newWidth);
     QRect t = m_textInputRect->boundingRect().toRect();
     QRect newRect(m_textInputRect->boundingRect().left(), m_textInputRect->boundingRect().top(),
-                  m_txt->boundingRect().width() + 2, m_textInputRect->boundingRect().height());
+                  newWidth - m_textInputRect->boundingRect().left(),
+                  //m_txt->boundingRect().width() + 10,
+                  m_textInputRect->boundingRect().height());
     m_textInputRect->setRect(newRect);
 
     m_helper->addNewHotCell(this, newRect);
@@ -98,6 +102,12 @@ void CellAsCommand::mousePress(int x, int y)
             QPoint a = v->mapToGlobal((m_textInputRect->mapToScene(m_textInputRect->boundingRect().bottomLeft().toPoint())).toPoint() ) ;
             selected = m_helper->presentList(a.x() + 2 - (h = v->horizontalScrollBar()->sliderPosition()),
                                              a.y() - (vv = v->verticalScrollBar()->sliderPosition()), m_strText);
+
+
+            QPointF centerb = v->mapToScene(v->viewport()->rect().center());
+            h = centerb.x();
+            vv = centerb.y();
+
         }
         else
         {
@@ -113,13 +123,17 @@ void CellAsCommand::mousePress(int x, int y)
 
     bool trigger = false;
     if(m_strText.length() < selected.length()) trigger = true;
-    m_strText = selected;
-    m_textItem->setHtml(m_strText);
     SelectQueryAsComponent* own = dynamic_cast<SelectQueryAsComponent*>(getOwner());
     if(own)
     {
-        own->setAs(m_strText);
+        if(!own->setAs(selected)) return;
     }
+    else
+    {
+        return;
+    }
+    m_strText = selected;
+    m_textItem->setHtml(m_strText);
 
     if(trigger) m_helper->triggerReRender(h, vv);
 

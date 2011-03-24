@@ -23,3 +23,11 @@ QueryComponent* SelectQueryAsComponent::duplicate()
     newc->m_as = m_as;
     return newc;
 }
+
+bool SelectQueryAsComponent::setAs(const QString& as)
+{
+    if(QueryAsGenerator::instance().hasAs(as)) return false;
+    m_as = as;
+    QueryAsGenerator::instance().addAs(as);
+    return true;
+}
