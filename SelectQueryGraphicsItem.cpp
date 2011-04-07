@@ -65,9 +65,11 @@ QGraphicsItemGroup* SelectQueryGraphicsItem::render(int& x, int& y, int& w, int 
 
     y += 2;
 
-    CellQuerySmallOptionsBox* smb = new CellQuerySmallOptionsBox(m_owner->provideOptions(), m_helper, m_level, m_parent, m_owner);
+    CellQuerySmallOptionsBox* smb = new CellQuerySmallOptionsBox(m_owner->provideOptions(), m_helper, m_level, m_parent, m_owner, CellQuerySmallOptionsBox::SHAPE_CIRCLE);
     int tx = x + 5 + 2; int ty = y-1; int tw = w; int th = h;
-    addToGroup(new QGraphicsLineItem(tx, ty, tx , ty + 5, this));
+    QGraphicsLineItem* lineUp = new QGraphicsLineItem(tx, ty-5, tx , ty + 5, this);
+    lineUp->setZValue(-5);
+    addToGroup(lineUp);
     y = ty + 5 + 1;
     tx -= 5;
     addToGroup(smb->render(tx, y, tw, th));
@@ -86,7 +88,7 @@ QGraphicsItemGroup* SelectQueryGraphicsItem::render(int& x, int& y, int& w, int 
 //    m_frameRect->setPen(thick);
 //    m_frameRect->setBrush(QBrush(QColor(255,255,255)));
 
-    y = br.bottom() + 2;
+    y = br.bottom() + 2 + 1;
 
     return this;
 }

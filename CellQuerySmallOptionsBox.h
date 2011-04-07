@@ -12,7 +12,13 @@ class CellQuerySmallOptionsBox : public QueryGraphicsItem
 {
 public:
 
-    CellQuerySmallOptionsBox(QSet<OptionsType> types, QueryGraphicsHelper* c, int level, QueryGraphicsItem* parent, QueryComponent* owner);
+    enum OptionsBoxShape
+    {
+        SHAPE_RECT,
+        SHAPE_CIRCLE
+    };
+
+    CellQuerySmallOptionsBox(QSet<OptionsType> types, QueryGraphicsHelper* c, int level, QueryGraphicsItem* parent, QueryComponent* owner, OptionsBoxShape shape);
     virtual QGraphicsItemGroup* render(int& x, int& y, int& w, int &h);
     virtual void updateWidth(int newWidth){}
     virtual void mousePress(int x, int y);
@@ -21,7 +27,9 @@ public:
     virtual void onClose(){}
 private:
     QGraphicsRectItem* m_box;
+    QGraphicsEllipseItem* m_ellipse;
     QSet<OptionsType> m_types;
+    OptionsBoxShape m_shape;
 };
 
 #endif // CELLQUERYSMALLOPTIONSBOX_H

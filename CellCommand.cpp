@@ -39,12 +39,12 @@ QGraphicsItemGroup* CellCommand::render(int& x, int& y, int& w, int &h)
         int oldy = y-2;
         int neww = lmw - (m_level + 1)* 20;
         grp->addToGroup(m_children.at(i)->render(x, y, neww, h));
-        int halfway = (oldy + y) / 2 - 7;
+        int halfway = oldy + 17; //(oldy + y) / 2 - 7;
         if(w<neww-20) {w = neww - 20; lmw = neww - 20;}
 
         QGraphicsLineItem* l1 = new QGraphicsLineItem(x +5+2-CHILDREN_ALIGNMENT , oldy+1, x + 5+2-CHILDREN_ALIGNMENT, halfway , grp); // top
         QGraphicsLineItem* l2 = new QGraphicsLineItem(x +5+2-CHILDREN_ALIGNMENT , halfway +10, x + 5+2-CHILDREN_ALIGNMENT, y, grp);   // botton
-        QGraphicsLineItem* l3 = new QGraphicsLineItem(x +5+2-CHILDREN_ALIGNMENT +5 , halfway+5, x, halfway+5, grp);                   // to right
+        QGraphicsLineItem* l3 = new QGraphicsLineItem(x +5+2-CHILDREN_ALIGNMENT +5 , halfway+5, x + 1, halfway+5, grp);                   // to right
 
         // this will be the small options box before the items
         QSet<OptionsType> t;
@@ -53,7 +53,7 @@ QGraphicsItemGroup* CellCommand::render(int& x, int& y, int& w, int &h)
         QSet<OptionsType> more = m_children.at(i)->getOwner()->provideOptions();
         t.unite(more);
 
-        CellQuerySmallOptionsBox* smb = new CellQuerySmallOptionsBox(t, m_helper, m_level, m_parent, m_children.at(i)->getOwner());
+        CellQuerySmallOptionsBox* smb = new CellQuerySmallOptionsBox(t, m_helper, m_level, m_parent, m_children.at(i)->getOwner(), CellQuerySmallOptionsBox::SHAPE_RECT);
         int tx = x-15 + 2; int ty = halfway; int tw = w; int th = h;
         grp->addToGroup(smb->render(tx, ty, tw, th));
 
@@ -77,7 +77,11 @@ QGraphicsItemGroup* CellCommand::render(int& x, int& y, int& w, int &h)
     // the bigger box rounding the stuff
     QRect rect2(lx, ly, w, y - ly);
     m_colorRect = new QGraphicsRectItem(rect2, grp);
-    m_colorRect->setBrush(getCellBrush());
+    //m_colorRect->setBrush(getCellBrush());
+    QPen t;
+    t.setWidth(0);
+    t.setColor(Qt::transparent);
+    m_colorRect->setPen(t);
     m_colorRect->setZValue(-1);
 
     // is this having a close button?
