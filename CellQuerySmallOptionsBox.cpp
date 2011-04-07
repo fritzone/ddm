@@ -7,8 +7,8 @@
 #include <QGraphicsView>
 #include <QScrollBar>
 
-CellQuerySmallOptionsBox::CellQuerySmallOptionsBox(QSet<OptionsType> types, QueryGraphicsHelper* c, int level, QueryGraphicsItem* parent, QueryComponent* owner):
-        QueryGraphicsItem(parent, c, owner), m_types(types)
+CellQuerySmallOptionsBox::CellQuerySmallOptionsBox(QSet<OptionsType> types, QueryGraphicsHelper* c, int level, QueryGraphicsItem* parent, QueryComponent* owner, OptionsBoxShape shape):
+        QueryGraphicsItem(parent, c, owner), m_types(types), m_shape(shape), m_box(0), m_ellipse(0)
 
 {
 }
@@ -17,11 +17,23 @@ QGraphicsItemGroup* CellQuerySmallOptionsBox::render(int& x, int& y, int& w, int
 {
     QGraphicsItemGroup* grp = new QGraphicsItemGroup();
 
-    m_box = new QGraphicsRectItem(x, y, 10, 10, grp);
+    if(m_shape == SHAPE_RECT)
+    {
+        m_box = new QGraphicsRectItem(x, y, 10, 10, grp);
+        m_helper->addNewHotCell(this, m_box->rect().toRect());
+    }
+    else
+    {
+        m_ellipse = new QGraphicsEllipseItem(x, y, 10, 10, grp);
+        m_helper->addNewHotCell(this, m_ellipse->rect().toRect());
+    }
     new QGraphicsLineItem(x, y + 5, x + 10, y+5, grp);
     new QGraphicsLineItem(x + 5, y, x + 5, y+10, grp);
+    if(m_shape == SHAPE_RECT)
+    {
+        new QGraphicsLineItem(x + 5, y + 5, x + 5, y+16, grp);  // bottom one
+    }
 
-    m_helper->addNewHotCell(this, m_box->rect().toRect());
     return grp;
 }
 
@@ -29,21 +41,24 @@ void CellQuerySmallOptionsBox::mouseMove(int x, int y)
 {
     QPen thick;
     thick.setWidth(2);
-    m_box->setPen(thick);
+    if(m_shape == SHAPE_RECT) m_box->setPen(thick);
+    else m_ellipse->setPen(thick);
 }
 
 void CellQuerySmallOptionsBox::mouseLeft(int x, int y)
 {
     QPen normal;
     normal.setWidth(1);
-    m_box->setPen(normal);
+    if(m_shape == SHAPE_RECT) m_box->setPen(normal);
+    else m_ellipse->setPen(normal);
 }
 
 void CellQuerySmallOptionsBox::mousePress(int x, int y)
 {
     QPen normal;
     normal.setWidth(1);
-    m_box->setPen(normal);
+    if(m_shape == SHAPE_RECT) m_box->setPen(normal);
+    else m_ellipse->setPen(normal);
 
     QStringList text;
     QList<QIcon> icons;
@@ -107,14 +122,17 @@ void CellQuerySmallOptionsBox::mousePress(int x, int y)
     }
 
     QString selected = "";
-    QGraphicsScene* sc = m_box->scene();
+    QAbstractGraphicsShapeItem* item = 0;
+    if(m_shape == SHAPE_RECT)item = m_box; else item = m_ellipse;
+
+    QGraphicsScene* sc = item->scene();
     QList <QGraphicsView*> views =  sc->views();
     if(views.size() > 0)
     {
         QGraphicsView* v = views.at(0);
         if(v)
         {
-            QPoint a = v->mapToGlobal((m_box->mapToScene(m_box->boundingRect().bottomLeft().toPoint())).toPoint() ) ;
+            QPoint a = v->mapToGlobal((item->mapToScene(item->boundingRect().bottomLeft().toPoint())).toPoint() ) ;
             selected = m_helper->presentList(a.x() + 2 - v->horizontalScrollBar()->sliderPosition(), a.y() - v->verticalScrollBar()->sliderPosition(), text, icons);
         }
         else
