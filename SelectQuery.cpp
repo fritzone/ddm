@@ -11,6 +11,7 @@
 #include "strings.h"
 #include "Workspace.h"
 #include "Version.h"
+#include "QueryAsGenerator.h"
 
 #include <QGraphicsScene>
 #include <QGraphicsView>
@@ -244,6 +245,10 @@ QueryComponent* SelectQuery::duplicate()
     newQuery->m_groupby = m_groupby?dynamic_cast<SelectQueryGroupByComponent*>(m_groupby->duplicate()):0;
     newQuery->m_having = m_having?dynamic_cast<SelectQueryWhereComponent*>(m_having->duplicate()):0;
     newQuery->m_as = m_as?dynamic_cast<SelectQueryAsComponent*>(m_as->duplicate()):0;
+    if(newQuery->m_as)
+    {
+        newQuery->m_as->setAs(QueryAsGenerator::instance().getNextValidAs());
+    }
     newQuery->m_orderBy = m_orderBy?dynamic_cast<SelectQueryOrderByComponent*>(m_orderBy->duplicate()):0;
     return newQuery;
 }
