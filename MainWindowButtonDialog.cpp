@@ -1,6 +1,6 @@
-#include "mainwindowbuttondialog.h"
-#include "ui_mainwindowbuttondialog.h"
-#include "mainwindow.h"
+#include "MainWindowButtonDialog.h"
+#include "ui_MainWindowButtonDialog.h"
+#include "MainWindow.h"
 
 MainWindowButtonDialog::MainWindowButtonDialog(QWidget *parent) :
     QDialog(parent),
