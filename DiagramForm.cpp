@@ -9,7 +9,7 @@
 #include "DraggableGraphicsItemForText.h"
 #include "TableListWidget.h"
 #include "Diagram.h"
-#include "mainwindow.h"
+#include "MainWindow.h"
 
 #include <QListWidgetItem>
 #include <QGraphicsView>

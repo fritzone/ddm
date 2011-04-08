@@ -10,7 +10,7 @@ TARGET = dbm
 TEMPLATE = app
 SOURCES += main.cpp \
     MainWindowButtonDialog.cpp \
-    datatypeslistform.cpp \
+    DataTypesListForm.cpp \
     AbstractDTSupplier.cpp \
     DataType.cpp \
     MySQLDTSupplier.cpp \
@@ -110,13 +110,13 @@ SOURCES += main.cpp \
     CellOrderByCommand.cpp \
     QueryAsGenerator.cpp \
     MainWindow.cpp \
-    NewDatatypeForm.cpp \
+    NewDataTypeForm.cpp \
     NewProjectDialog.cpp
-HEADERS += mainwindow.h \
+HEADERS += MainWindow.h \
     MainWindowButtonDialog.h \
-    newprojectdialog.h \
-    newdatatypeform.h \
-    datatypeslistform.h \
+    NewProjectDialog.h \
+    NewDataTypeForm.h \
+    DataTypesListForm.h \
     AbstractDTSupplier.h \
     DataType.h \
     MySQLDTSupplier.h \
@@ -218,7 +218,7 @@ HEADERS += mainwindow.h \
     CellTableChooser.h \
     QueryComponents.h \
     QueryItemListDialog.h \
-    "QueryGraphicsHelper.h" \
+    QueryGraphicsHelper.h \
     TableQueryComponent.h \
     SelectQuerySelectComponent.h \
     SelectQueryFromComponent.h \
@@ -237,11 +237,11 @@ HEADERS += mainwindow.h \
     CellOrderByCommand.h \
     utils.h \
     QueryAsGenerator.h
-FORMS += mainwindow.ui \
-    mainwindowbuttondialog.ui \
-    newprojectdialog.ui \
-    newdatatypeform.ui \
-    datatypeslistform.ui \
+FORMS += MainWindow.ui \
+    MainWindowButtonDialog.ui \
+    NewProjectDialog.ui \
+    NewDataTypeForm.ui \
+    DataTypesListForm.ui \
     TablesListForm.ui \
     NewTableForm.ui \
     ProjectDetailsForm.ui \

@@ -12,7 +12,7 @@
 #include "Issue.h"
 #include "IssueOriginator.h"
 #include "TablesListForm.h"
-#include "mainwindow.h"
+#include "MainWindow.h"
 #include "TableInstancesListForm.h"
 #include "TablesListForm.h"
 #include "SqlForm.h"

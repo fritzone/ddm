@@ -1,7 +1,7 @@
 #include "TableInstancesListForm.h"
 #include "ui_TableInstancesListForm.h"
 
-#include "mainwindow.h"
+#include "MainWindow.h"
 #include "TableInstance.h"
 #include "IconFactory.h"
 

@@ -1,7 +1,7 @@
 #include "TablesListForm.h"
 #include "IconFactory.h"
 #include "Table.h"
-#include "mainwindow.h"
+#include "MainWindow.h"
 #include "Project.h"
 #include "Version.h"
 

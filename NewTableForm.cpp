@@ -9,7 +9,7 @@
 #include "Column.h"
 #include "Index.h"
 #include "Table.h"
-#include "mainwindow.h"
+#include "MainWindow.h"
 #include "AbstractIndextypeProvider.h"
 #include "AbstractStorageEngineListProvider.h"
 #include "ForeignKey.h"

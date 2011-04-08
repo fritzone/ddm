@@ -3,7 +3,7 @@
 #include "QueryGraphicsScene.h"
 #include "QueryGraphicsItem.h"
 #include "Query.h"
-#include "mainwindow.h"
+#include "MainWindow.h"
 
 QueryGraphicsHelper::QueryGraphicsHelper() : hotCells(), m_lstDlg(0), m_scene(0), m_form(0)
 {
