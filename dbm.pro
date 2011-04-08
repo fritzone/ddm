@@ -9,10 +9,7 @@ QT += network \
 TARGET = dbm
 TEMPLATE = app
 SOURCES += main.cpp \
-    mainwindow.cpp \
     MainWindowButtonDialog.cpp \
-    newprojectdialog.cpp \
-    newdatatypeform.cpp \
     datatypeslistform.cpp \
     AbstractDTSupplier.cpp \
     DataType.cpp \
@@ -111,7 +108,10 @@ SOURCES += main.cpp \
     QueryTextInputItem.cpp \
     SelectQueryOrderByComponent.cpp \
     CellOrderByCommand.cpp \
-    QueryAsGenerator.cpp
+    QueryAsGenerator.cpp \
+    MainWindow.cpp \
+    NewDatatypeForm.cpp \
+    NewProjectDialog.cpp
 HEADERS += mainwindow.h \
     MainWindowButtonDialog.h \
     newprojectdialog.h \
