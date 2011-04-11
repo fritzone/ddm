@@ -52,7 +52,8 @@ void CellQuerySmallOptionsBox::mouseMove(int x, int y)
     QPen thick;
     thick.setWidth(2);
     if(m_shape == SHAPE_RECT) m_box->setPen(thick);
-    else m_ellipse->setPen(thick);
+    else if(m_shape == SHAPE_CIRCLE) m_ellipse->setPen(thick);
+    else m_diamond->setPen(thick);
 }
 
 void CellQuerySmallOptionsBox::mouseLeft(int x, int y)
@@ -60,7 +61,8 @@ void CellQuerySmallOptionsBox::mouseLeft(int x, int y)
     QPen normal;
     normal.setWidth(1);
     if(m_shape == SHAPE_RECT) m_box->setPen(normal);
-    else m_ellipse->setPen(normal);
+    else if(m_shape == SHAPE_CIRCLE) m_ellipse->setPen(normal);
+    else m_diamond->setPen(normal);
 }
 
 void CellQuerySmallOptionsBox::mousePress(int x, int y)
@@ -68,7 +70,8 @@ void CellQuerySmallOptionsBox::mousePress(int x, int y)
     QPen normal;
     normal.setWidth(1);
     if(m_shape == SHAPE_RECT) m_box->setPen(normal);
-    else m_ellipse->setPen(normal);
+    else if(m_shape == SHAPE_CIRCLE) m_ellipse->setPen(normal);
+    else m_diamond->setPen(normal);
 
     QStringList text;
     QList<QIcon> icons;
@@ -133,7 +136,7 @@ void CellQuerySmallOptionsBox::mousePress(int x, int y)
 
     QString selected = "";
     QAbstractGraphicsShapeItem* item = 0;
-    if(m_shape == SHAPE_RECT)item = m_box; else item = m_ellipse;
+    if(m_shape == SHAPE_RECT)item = m_box; else if(m_shape == SHAPE_CIRCLE) item = m_ellipse; else item = m_diamond;
 
     QGraphicsScene* sc = item->scene();
     QList <QGraphicsView*> views =  sc->views();
