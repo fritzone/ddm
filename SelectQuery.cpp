@@ -239,16 +239,13 @@ bool SelectQuery::hasGroupBy()
 QueryComponent* SelectQuery::duplicate()
 {
     SelectQuery* newQuery = new SelectQuery(m_helper, m_level);
+    newQuery->setParent(getParent());
     newQuery->m_select = m_select?dynamic_cast<SelectQuerySelectComponent*> (m_select->duplicate()):0;
     newQuery->m_from = m_from?dynamic_cast<SelectQueryFromComponent*>(m_from->duplicate()):0;
     newQuery->m_where = m_where?dynamic_cast<SelectQueryWhereComponent*>(m_where->duplicate()):0;
     newQuery->m_groupby = m_groupby?dynamic_cast<SelectQueryGroupByComponent*>(m_groupby->duplicate()):0;
     newQuery->m_having = m_having?dynamic_cast<SelectQueryWhereComponent*>(m_having->duplicate()):0;
     newQuery->m_as = m_as?dynamic_cast<SelectQueryAsComponent*>(m_as->duplicate()):0;
-    if(newQuery->m_as)
-    {
-        newQuery->m_as->setAs(QueryAsGenerator::instance().getNextValidAs());
-    }
     newQuery->m_orderBy = m_orderBy?dynamic_cast<SelectQueryOrderByComponent*>(m_orderBy->duplicate()):0;
     return newQuery;
 }
