@@ -20,7 +20,7 @@ QSet<OptionsType> SelectQueryAsComponent::provideOptions()
 QueryComponent* SelectQueryAsComponent::duplicate()
 {
     SelectQueryAsComponent* newc = new SelectQueryAsComponent(m_parent, m_level);
-    newc->m_as = m_as;
+    newc->m_as = (QueryAsGenerator::instance().getNextValidAs());
     return newc;
 }
 

@@ -8,7 +8,7 @@
 #include <QScrollBar>
 
 CellQuerySmallOptionsBox::CellQuerySmallOptionsBox(QSet<OptionsType> types, QueryGraphicsHelper* c, int level, QueryGraphicsItem* parent, QueryComponent* owner, OptionsBoxShape shape):
-        QueryGraphicsItem(parent, c, owner), m_types(types), m_shape(shape), m_box(0), m_ellipse(0)
+        QueryGraphicsItem(parent, c, owner), m_types(types), m_shape(shape), m_box(0), m_ellipse(0), m_diamond(0)
 
 {
 }
@@ -23,10 +23,20 @@ QGraphicsItemGroup* CellQuerySmallOptionsBox::render(int& x, int& y, int& w, int
         m_helper->addNewHotCell(this, m_box->rect().toRect());
     }
     else
+    if(m_shape == SHAPE_CIRCLE)
     {
         m_ellipse = new QGraphicsEllipseItem(x, y, 10, 10, grp);
         m_helper->addNewHotCell(this, m_ellipse->rect().toRect());
     }
+    else
+    {
+        QPointF p1(x, y+5); QPointF p2(x+5, y + 10); QPointF p3(x+10, y+5); QPointF p4(x+5, y);
+        QVector <QPointF> v; v << p1 << p2 << p3 << p4;
+        QPolygonF po(v);
+        m_diamond = new QGraphicsPolygonItem(po, grp);
+        m_helper->addNewHotCell(this, (new QGraphicsRectItem(x, y, 10, 10))->rect().toRect());
+    }
+
     new QGraphicsLineItem(x, y + 5, x + 10, y+5, grp);
     new QGraphicsLineItem(x + 5, y, x + 5, y+10, grp);
     if(m_shape == SHAPE_RECT)

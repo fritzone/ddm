@@ -14,8 +14,9 @@ public:
 
     enum OptionsBoxShape
     {
-        SHAPE_RECT,
-        SHAPE_CIRCLE
+        SHAPE_RECT    = 1,
+        SHAPE_CIRCLE  = 2,
+        SHAPE_DIAMOND = 3
     };
 
     CellQuerySmallOptionsBox(QSet<OptionsType> types, QueryGraphicsHelper* c, int level, QueryGraphicsItem* parent, QueryComponent* owner, OptionsBoxShape shape);
@@ -28,6 +29,7 @@ public:
 private:
     QGraphicsRectItem* m_box;
     QGraphicsEllipseItem* m_ellipse;
+    QGraphicsPolygonItem* m_diamond;
     QSet<OptionsType> m_types;
     OptionsBoxShape m_shape;
 };

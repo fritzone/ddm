@@ -53,7 +53,7 @@ QGraphicsItemGroup* CellCommand::render(int& x, int& y, int& w, int &h)
         QSet<OptionsType> more = m_children.at(i)->getOwner()->provideOptions();
         t.unite(more);
 
-        CellQuerySmallOptionsBox* smb = new CellQuerySmallOptionsBox(t, m_helper, m_level, m_parent, m_children.at(i)->getOwner(), CellQuerySmallOptionsBox::SHAPE_RECT);
+        CellQuerySmallOptionsBox* smb = new CellQuerySmallOptionsBox(t, m_helper, m_level, m_parent, m_children.at(i)->getOwner(), CellQuerySmallOptionsBox::SHAPE_DIAMOND);
         int tx = x-15 + 2; int ty = halfway; int tw = w; int th = h;
         grp->addToGroup(smb->render(tx, ty, tw, th));
 
