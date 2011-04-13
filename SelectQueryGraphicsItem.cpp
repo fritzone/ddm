@@ -42,7 +42,7 @@ void SelectQueryGraphicsItem::createHavingCell(QueryComponent* owner)
 
 void SelectQueryGraphicsItem::createAsCell(QueryComponent* owner)
 {
-    m_as = new CellAsCommand(m_helper, m_level, this, owner);
+    m_as = new CellAsCommand(m_helper, m_level, this, owner, false);
 }
 
 void SelectQueryGraphicsItem::createOrderByCell(QueryComponent* owner)

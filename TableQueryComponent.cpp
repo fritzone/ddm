@@ -25,7 +25,7 @@ QueryGraphicsItem* TableQueryComponent::createGraphicsItem(QueryGraphicsHelper* 
     m_tgitm = new TableGraphicsItem(m_table, helper, parent, this);
     if(m_as)
     {
-        m_tgitm->setAs(new CellAsCommand(helper, m_level + 1, m_tgitm, m_as));
+        m_tgitm->setAs(new CellAsCommand(helper, m_level + 1, m_tgitm, m_as, true));
     }
     return m_tgitm;
 }
