@@ -12,8 +12,8 @@
 
 #include <QDebug>
 
-CellAsCommand::CellAsCommand(QueryGraphicsHelper* c, int level, QueryGraphicsItem* parent, QueryComponent* owner) :
-        CellCommand(c, level, parent, owner), m_strText("A")
+CellAsCommand::CellAsCommand(QueryGraphicsHelper* c, int level, QueryGraphicsItem* parent, QueryComponent* owner, bool closable) :
+        CellCommand(c, level, parent, owner), m_strText("A"), m_closable(closable)
 {
     SelectQueryAsComponent* own = dynamic_cast<SelectQueryAsComponent*>(owner);
     if(own)

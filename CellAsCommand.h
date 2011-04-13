@@ -8,7 +8,7 @@ class QueryTextInputItem;
 class CellAsCommand : public CellCommand
 {
 public:
-    CellAsCommand(QueryGraphicsHelper* c, int level, QueryGraphicsItem* parent, QueryComponent* owner);
+    CellAsCommand(QueryGraphicsHelper* c, int level, QueryGraphicsItem* parent, QueryComponent* owner, bool closable);
     virtual QBrush getCellBrush();
     virtual QString getCommand()
     {
@@ -16,7 +16,7 @@ public:
     }
     virtual bool hasClose()
     {
-        return false;
+        return m_closable;
     }
     virtual void mousePress(int x, int y);
     virtual void mouseMove(int x, int y);
@@ -29,6 +29,7 @@ private:
     QGraphicsRectItem* m_textInputRect;
     QueryTextInputItem* m_textItem;
     QString m_strText;
+    bool m_closable;
 };
 
 #endif // CELLASCOMMAND_H
