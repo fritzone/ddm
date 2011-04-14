@@ -31,3 +31,8 @@ bool SelectQueryAsComponent::setAs(const QString& as)
     QueryAsGenerator::instance().addAs(as);
     return true;
 }
+
+void SelectQueryAsComponent::onClose()
+{
+    m_parent->onClose();
+}

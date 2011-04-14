@@ -30,6 +30,9 @@ QGraphicsItemGroup* CellTable::render(int &x, int &y, int& w, int &h)
 
     QRect rct(lx, ly, m_chooser->boundingRect().width() + 2 * CELL_SIZE + 10, 32);
     m_frame = new QGraphicsRectItem(rct, grp);
+    QColor bg(167, 186, 255);
+    m_frame->setBrush(QBrush(bg));
+    m_frame->setZValue(-4);
 
     QSet<CellTypeChooser::CellTypeChooserType> allowedTypes;
     allowedTypes.insert(CellTypeChooser::CELLTYPE_TABLE);

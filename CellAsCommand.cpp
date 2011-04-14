@@ -44,7 +44,7 @@ QGraphicsItemGroup* CellAsCommand::render(int& x, int& y, int& w, int &h)
     QGraphicsItemGroup* grp = new QGraphicsItemGroup();
     grp->addToGroup(CellCommand::render(x,y,w,h));
     int tw = m_txt->boundingRect().width();
-    QRect t (x +tw + 2, ly + 5, 100, m_txt->boundingRect().height() - 5);
+    QRect t (x +tw + 2, ly + 5, tw, m_txt->boundingRect().height() - 5);
     if(w<100) w = tw + 2;
     m_textInputRect = new QGraphicsRectItem(t);
     m_textInputRect->setBrush(QBrush(QColor(Qt::white)));
@@ -61,17 +61,20 @@ QGraphicsItemGroup* CellAsCommand::render(int& x, int& y, int& w, int &h)
 
 void CellAsCommand::updateWidth(int newWidth)
 {
-    //int nw = max((int)m_txt->boundingRect().width() + 10, newWidth - ( (m_level + 1) * CHILDREN_ALIGNMENT) );
-    CellCommand::updateWidth(newWidth);
-    QRect t = m_textInputRect->boundingRect().toRect();
     QRect newRect(m_textInputRect->boundingRect().left(), m_textInputRect->boundingRect().top(),
-                  newWidth - m_textInputRect->boundingRect().left(),
-                  //m_txt->boundingRect().width() + 10,
+                  max(m_textItem->boundingRect().width(), newWidth - m_textInputRect->boundingRect().left()),
                   m_textInputRect->boundingRect().height());
     m_textInputRect->setRect(newRect);
 
-    m_helper->addNewHotCell(this, newRect);
+    int nw = max((int)m_textInputRect->boundingRect().width() + 10, newWidth - ( (m_level) * CHILDREN_ALIGNMENT) );
+    CellCommand::updateWidth(newRect.width() + newRect.left() - CELL_SIZE);
 
+    if(hasClose())
+    {
+        m_close->updateWidth(newRect.left() + newRect.width() + 8);
+    }
+
+    m_helper->addNewHotCell(this, m_textInputRect->boundingRect().toRect());
 }
 
 void CellAsCommand::mouseMove(int x, int y)
