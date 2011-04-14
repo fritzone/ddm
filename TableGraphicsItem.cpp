@@ -25,16 +25,16 @@ QGraphicsItemGroup* TableGraphicsItem::render(int &x, int &y, int& w, int &h)
         int halfway = (oldy + y) / 2 - 5;
         if(w<neww-20) {w = neww - 20; lmw = neww - 20;}
 
-        QGraphicsLineItem* l1 = new QGraphicsLineItem(x +5+2-CHILDREN_ALIGNMENT , oldy+1, x + 5+2-CHILDREN_ALIGNMENT, halfway , this); // top
+        QGraphicsLineItem* l1 = new QGraphicsLineItem(x +5+2-CHILDREN_ALIGNMENT , oldy+1, x + 5+2-CHILDREN_ALIGNMENT, halfway , this);  // top
         //QGraphicsLineItem* l2 = new QGraphicsLineItem(x +5+2-CHILDREN_ALIGNMENT , halfway +10, x + 5+2-CHILDREN_ALIGNMENT, y, this);   // botton
-        QGraphicsLineItem* l3 = new QGraphicsLineItem(x +5+2-CHILDREN_ALIGNMENT +5 , halfway+5, x, halfway+5, this);                   // to right
+        QGraphicsLineItem* l3 = new QGraphicsLineItem(x +5+2-CHILDREN_ALIGNMENT +5 , halfway+5, x, halfway+5, this);                    // to right
 
         // this will be the small options box before the items
         QSet<OptionsType> t;
         QSet<OptionsType> more = m_as->getOwner()->provideOptions();
         t.unite(more);
 
-        CellQuerySmallOptionsBox* smb = new CellQuerySmallOptionsBox(t, m_helper, m_as->getLevel(), m_parent, m_as->getOwner(), CellQuerySmallOptionsBox::SHAPE_RECT);
+        CellQuerySmallOptionsBox* smb = new CellQuerySmallOptionsBox(t, m_helper, m_as->getLevel(), m_parent, m_as->getOwner(), CellQuerySmallOptionsBox::SHAPE_DIAMOND);
         int tx = x-15 + 2; int ty = halfway; int tw = w; int th = h;
         addToGroup(smb->render(tx, ty, tw, th));
 
@@ -53,7 +53,6 @@ void TableGraphicsItem::updateWidth(int newWidth)
     if(m_as)
     {
         m_as->updateWidth(newWidth);
-        //dynamic_cast<CellTable*>(m_tableCell)->updateHeight(0);
     }
 }
 

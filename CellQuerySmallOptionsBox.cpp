@@ -49,6 +49,12 @@ QGraphicsItemGroup* CellQuerySmallOptionsBox::render(int& x, int& y, int& w, int
 
 void CellQuerySmallOptionsBox::mouseMove(int x, int y)
 {
+    CellQuerySmallOptionsBox::OptionsList op = prepareOptions();
+    if(op.text.size() == 0)
+    {
+        return;
+    }
+
     QPen thick;
     thick.setWidth(2);
     if(m_shape == SHAPE_RECT) m_box->setPen(thick);
@@ -65,14 +71,8 @@ void CellQuerySmallOptionsBox::mouseLeft(int x, int y)
     else m_diamond->setPen(normal);
 }
 
-void CellQuerySmallOptionsBox::mousePress(int x, int y)
+CellQuerySmallOptionsBox::OptionsList CellQuerySmallOptionsBox::prepareOptions()
 {
-    QPen normal;
-    normal.setWidth(1);
-    if(m_shape == SHAPE_RECT) m_box->setPen(normal);
-    else if(m_shape == SHAPE_CIRCLE) m_ellipse->setPen(normal);
-    else m_diamond->setPen(normal);
-
     QStringList text;
     QList<QIcon> icons;
 
@@ -134,6 +134,28 @@ void CellQuerySmallOptionsBox::mousePress(int x, int y)
         icons.append(IconFactory::getEmptyIcon());
     }
 
+    CellQuerySmallOptionsBox::OptionsList op;
+    op.text = text;
+    op.icons = icons;
+
+    return op;
+
+}
+
+void CellQuerySmallOptionsBox::mousePress(int x, int y)
+{
+    QPen normal;
+    normal.setWidth(1);
+    if(m_shape == SHAPE_RECT) m_box->setPen(normal);
+    else if(m_shape == SHAPE_CIRCLE) m_ellipse->setPen(normal);
+    else m_diamond->setPen(normal);
+
+    CellQuerySmallOptionsBox::OptionsList op = prepareOptions();
+    if(op.text.size() == 0)
+    {
+        return;
+    }
+
     QString selected = "";
     QAbstractGraphicsShapeItem* item = 0;
     if(m_shape == SHAPE_RECT)item = m_box; else if(m_shape == SHAPE_CIRCLE) item = m_ellipse; else item = m_diamond;
@@ -146,16 +168,16 @@ void CellQuerySmallOptionsBox::mousePress(int x, int y)
         if(v)
         {
             QPoint a = v->mapToGlobal((item->mapToScene(item->boundingRect().bottomLeft().toPoint())).toPoint() ) ;
-            selected = m_helper->presentList(a.x() + 2 - v->horizontalScrollBar()->sliderPosition(), a.y() - v->verticalScrollBar()->sliderPosition(), text, icons);
+            selected = m_helper->presentList(a.x() + 2 - v->horizontalScrollBar()->sliderPosition(), a.y() - v->verticalScrollBar()->sliderPosition(), op.text, op.icons);
         }
         else
         {
-            selected = m_helper->presentList(x, y, text, icons);
+            selected = m_helper->presentList(x, y, op.text, op.icons);
         }
     }
     else
     {
-        selected = m_helper->presentList(x, y, text, icons);
+        selected = m_helper->presentList(x, y, op.text, op.icons);
     }
 
 

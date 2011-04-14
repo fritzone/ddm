@@ -58,7 +58,7 @@ void TableQueryComponent::handleAction(const QString &action, QueryComponent *re
 QueryComponent* TableQueryComponent::duplicate()
 {
     TableQueryComponent* newc = new TableQueryComponent(m_table, m_parent, m_level);
-    newc->m_as = m_as;
+    newc->m_as = m_as?dynamic_cast<SelectQueryAsComponent*>(m_as->duplicate()):0;
 
     return newc;
 }

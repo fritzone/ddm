@@ -12,6 +12,12 @@ class CellQuerySmallOptionsBox : public QueryGraphicsItem
 {
 public:
 
+    struct OptionsList
+    {
+        QStringList text;
+        QList<QIcon> icons;
+    };
+
     enum OptionsBoxShape
     {
         SHAPE_RECT    = 1,
@@ -26,6 +32,11 @@ public:
     virtual void mouseMove(int x, int y);
     virtual void mouseLeft(int x, int y);
     virtual void onClose(){}
+
+private:
+
+    OptionsList prepareOptions();
+
 private:
     QGraphicsRectItem* m_box;
     QGraphicsEllipseItem* m_ellipse;

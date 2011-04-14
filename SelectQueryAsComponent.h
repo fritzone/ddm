@@ -11,7 +11,7 @@ public:
     virtual QueryGraphicsItem* createGraphicsItem(QueryGraphicsHelper*, QueryGraphicsItem*){return 0;}
     virtual void handleAction(const QString& action, QueryComponent* referringObject);
     virtual QSet<OptionsType> provideOptions();
-    virtual void onClose(){}
+    virtual void onClose();
     virtual QueryComponent* duplicate();
     bool setAs(const QString& as);
     QString getAs() const
