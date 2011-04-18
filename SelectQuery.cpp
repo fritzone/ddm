@@ -7,7 +7,6 @@
 #include "SelectQueryAsComponent.h"
 #include "SelectQueryGroupByComponent.h"
 #include "SelectQueryOrderByComponent.h"
-#include "TableInstance.h"
 #include "strings.h"
 #include "Workspace.h"
 #include "Version.h"
@@ -58,32 +57,8 @@ void SelectQuery::newFromTableComponent()
 {
     if(m_from)
     {
-        TableQueryComponent* tccp = 0;
-        if(Workspace::getInstance()->currentProjectIsOop())
-        {
-            if(Workspace::getInstance()->workingVersion()->getTableInstances().size() > 0)
-            {
-                tccp = new TableQueryComponent(Workspace::getInstance()->workingVersion()->getTableInstances().at(0)->table(), m_from, m_level);
-            }
-            else
-            {
-                return;
-            }
-
-        }
-        else
-        {
-            if(Workspace::getInstance()->workingVersion()->getTables().size() > 0)
-            {
-                tccp = new TableQueryComponent(Workspace::getInstance()->workingVersion()->getTables().at(0), m_from, m_level);
-            }
-            else
-            {
-                return;
-            }
-
-        }
-
+        TableQueryComponent* tccp = TableQueryComponent::provideFirstTableIfAny(m_from, m_level);
+        if(!tccp) return;
         m_from->addChild(tccp);
         m_helper->triggerReRender();
     }
@@ -125,7 +100,7 @@ void SelectQuery::handleAction(const QString &action, QueryComponent* referringO
     {
         if(!m_where)
         {
-            m_where = new SelectQueryWhereComponent(this, m_level, true);
+            m_where = new SelectQueryWhereComponent(this, m_level, SelectQueryWhereComponent::WHERETYPE_WHERE);
             m_helper->triggerReRender();
         }
     }
@@ -141,7 +116,7 @@ void SelectQuery::handleAction(const QString &action, QueryComponent* referringO
     {
         if(!m_having)
         {
-            m_having = new SelectQueryWhereComponent(this, m_level, false);
+            m_having = new SelectQueryWhereComponent(this, m_level, SelectQueryWhereComponent::WHERETYPE_HAVING);
             m_helper->triggerReRender();
         }
     }

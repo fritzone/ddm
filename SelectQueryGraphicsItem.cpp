@@ -32,12 +32,12 @@ void SelectQueryGraphicsItem::createFromCell(QueryComponent* owner)
 
 void SelectQueryGraphicsItem::createWhereCell(QueryComponent* owner)
 {
-    m_where = new CellWhereCommand(m_helper, m_level, this, owner, true);
+    m_where = new CellWhereCommand(m_helper, m_level, this, owner, SelectQueryWhereComponent::WHERETYPE_WHERE);
 }
 
 void SelectQueryGraphicsItem::createHavingCell(QueryComponent* owner)
 {
-    m_having = new CellWhereCommand(m_helper, m_level, this, owner, false);
+    m_having = new CellWhereCommand(m_helper, m_level, this, owner, SelectQueryWhereComponent::WHERETYPE_HAVING);
 }
 
 void SelectQueryGraphicsItem::createAsCell(QueryComponent* owner)

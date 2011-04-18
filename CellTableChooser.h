@@ -7,7 +7,7 @@
 class CellTableChooser : public QueryGraphicsItem
 {
 public:
-    CellTableChooser(const QString& name, QueryGraphicsHelper*,QueryGraphicsItem*, QueryComponent* owner);
+    CellTableChooser(const QString& name, int level, QueryGraphicsHelper*,QueryGraphicsItem*, QueryComponent* owner);
     virtual QGraphicsItemGroup* render(int& x, int& y, int& w, int &h);
     virtual void updateWidth(int newWidth);
     virtual void mousePress(int x, int y);

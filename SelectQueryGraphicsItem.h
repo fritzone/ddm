@@ -16,6 +16,7 @@ class SelectQueryGraphicsItem : public QueryGraphicsItem
 {
 public:
     SelectQueryGraphicsItem(QueryGraphicsHelper* c, int level, QueryGraphicsItem* parent, QueryComponent* owner);
+    ~SelectQueryGraphicsItem() {}
 
     virtual QGraphicsItemGroup* render(int& x, int& y, int& w, int &h);
     virtual void updateWidth(int newWidth);

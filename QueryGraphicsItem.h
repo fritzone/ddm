@@ -37,6 +37,7 @@ protected:
     QueryGraphicsItem* m_parent;
     QueryGraphicsHelper* m_helper;
     QueryComponent* m_owner;
+    int m_level;
 };
 
 #endif // QUERYGRAPHICSITEM_H

@@ -66,7 +66,6 @@ void CellAsCommand::updateWidth(int newWidth)
                   m_textInputRect->boundingRect().height());
     m_textInputRect->setRect(newRect);
 
-    int nw = max((int)m_textInputRect->boundingRect().width() + 10, newWidth - ( (m_level) * CHILDREN_ALIGNMENT) );
     CellCommand::updateWidth(newRect.width() + newRect.left() - CELL_SIZE);
 
     if(hasClose())

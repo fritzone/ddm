@@ -1,6 +1,6 @@
 #include "SelectQueryWhereComponent.h"
 
-SelectQueryWhereComponent::SelectQueryWhereComponent(QueryComponent* p, int l, bool w):QueryComponent(p,l), m_trueWhere(w)
+SelectQueryWhereComponent::SelectQueryWhereComponent(QueryComponent* p, int l, WhereType w):QueryComponent(p,l), m_whereType(w)
 {
 }
 
@@ -17,6 +17,6 @@ QSet<OptionsType> SelectQueryWhereComponent::provideOptions()
 
 QueryComponent* SelectQueryWhereComponent::duplicate()
 {
-    SelectQueryWhereComponent* newc = new SelectQueryWhereComponent(m_parent, m_level, m_trueWhere);
+    SelectQueryWhereComponent* newc = new SelectQueryWhereComponent(m_parent, m_level, m_whereType);
     return newc;
 }

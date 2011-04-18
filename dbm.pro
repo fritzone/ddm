@@ -111,7 +111,9 @@ SOURCES += main.cpp \
     QueryAsGenerator.cpp \
     MainWindow.cpp \
     NewDataTypeForm.cpp \
-    NewProjectDialog.cpp
+    NewProjectDialog.cpp \
+    SelectQueryJoinComponent.cpp \
+    CellJoinCommand.cpp
 HEADERS += MainWindow.h \
     MainWindowButtonDialog.h \
     NewProjectDialog.h \
@@ -236,7 +238,9 @@ HEADERS += MainWindow.h \
     SelectQueryOrderByComponent.h \
     CellOrderByCommand.h \
     utils.h \
-    QueryAsGenerator.h
+    QueryAsGenerator.h \
+    SelectQueryJoinComponent.h \
+    CellJoinCommand.h
 FORMS += MainWindow.ui \
     MainWindowButtonDialog.ui \
     NewProjectDialog.ui \

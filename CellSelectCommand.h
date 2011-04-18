@@ -17,6 +17,7 @@ public:
         if(m_level == 0) return false;
         return true;
     }
+    virtual bool hasTypeChooser() {return false;}
     virtual void onClose();
     virtual CellQuerySmallOptionsBox* provideOptionsBox(QueryGraphicsHelper* c, int level, QueryGraphicsItem* parent, QueryComponent* owner);
 };
