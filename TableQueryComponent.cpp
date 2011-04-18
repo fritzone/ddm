@@ -10,6 +10,7 @@
 #include "CellAsCommand.h"
 #include "CellJoinCommand.h"
 #include "CellWhereCommand.h"
+#include "Column.h"
 
 #include <QGraphicsScene>
 #include <QGraphicsView>
@@ -130,4 +131,25 @@ TableQueryComponent* TableQueryComponent::provideFirstTableIfAny(QueryComponent*
         }
     }
     return tccp;
+}
+
+QVector<const Column*> TableQueryComponent::provideColumns()
+{
+    QStringList cs = m_table->fullColumns();
+    QVector<const Column*> result;
+
+    for(int i=0; i<cs.size(); i++)
+    {
+        const Column* c = m_table->getColumn(cs.at(i));
+        if(c == 0)
+        {
+            c = m_table->getColumnFromParents(cs.at(i));
+            if(c == 0)
+            {
+                return QVector<const Column*>();
+            }
+        }
+        result.push_back(c);
+    }
+    return result;
 }

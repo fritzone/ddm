@@ -240,7 +240,8 @@ HEADERS += MainWindow.h \
     utils.h \
     QueryAsGenerator.h \
     SelectQueryJoinComponent.h \
-    CellJoinCommand.h
+    CellJoinCommand.h \
+    ColumnProviderForQuery.h
 FORMS += MainWindow.ui \
     MainWindowButtonDialog.ui \
     NewProjectDialog.ui \
