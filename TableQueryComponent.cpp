@@ -43,12 +43,7 @@ void TableQueryComponent::handleAction(const QString &action, QueryComponent *re
         {
             m_as = new SelectQueryAsComponent(this, m_level + 1);
             addChild(m_as);
-
-            QPointF centerb = m_tgitm->scene()->views().at(0)->mapToScene(m_tgitm->scene()->views().at(0)->viewport()->rect().center());
-            int h = centerb.x();
-            int v = centerb.y();
-
-            m_helper->triggerReRender(h,v);
+            m_helper->triggerReRender();
         }
         return;
     }
@@ -69,4 +64,10 @@ QSet<OptionsType> TableQueryComponent::provideOptions()
 //    result.insert(OPTIONS_ADD_JOIN);
     result.insert(OPTIONS_AS);
     return result;
+}
+
+void TableQueryComponent::removeAs()
+{
+    m_as = 0;
+    m_helper->triggerReRender();
 }

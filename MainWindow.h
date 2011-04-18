@@ -55,7 +55,7 @@ public:
     void showTableInstance(const QString& tabName, bool focus = true);
     void showDataType(const QString &name, bool focus = true);
 
-    void rerenderQuery(Query*, int, int);
+    void rerenderQuery(Query*);
 
 public slots:
 
@@ -149,7 +149,7 @@ private:
 
     ReverseEngineerWizard* m_revEngWizard;
 
-    NewViewForm* nvf;
+    NewViewForm* m_nvf;
 };
 
 #endif // MAINWINDOW_H

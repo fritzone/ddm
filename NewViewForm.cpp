@@ -61,3 +61,10 @@ void NewViewForm::scrollTo(int hor, int ver)
     //m_qgv->verticalScrollBar()->setSliderPosition(ver);
     m_qgv->centerOn(hor, ver);
 }
+
+
+void NewViewForm::getCenter(int &x, int &y)
+{
+    x = m_qgv->mapToScene(m_qgv->viewport()->rect().center()).x();
+    y = m_qgv->mapToScene(m_qgv->viewport()->rect().center()).y();
+}

@@ -18,6 +18,7 @@ public:
         QList<QIcon> icons;
     };
 
+    // TODO: This is a nice example of how not to implement something, it would be a perfect "a la carte" polymorphism example
     enum OptionsBoxShape
     {
         SHAPE_RECT    = 1,

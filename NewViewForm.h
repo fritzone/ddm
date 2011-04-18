@@ -24,6 +24,7 @@ public:
     }
 
     void scrollTo(int hor, int ver);
+    void getCenter(int& x, int& y);
 
 protected:
     void changeEvent(QEvent *e);

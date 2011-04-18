@@ -1,5 +1,6 @@
 #include "SelectQueryAsComponent.h"
 #include "QueryAsGenerator.h"
+#include "TableQueryComponent.h"
 
 SelectQueryAsComponent::SelectQueryAsComponent(QueryComponent* p, int l):QueryComponent(p,l)
 {
@@ -34,5 +35,9 @@ bool SelectQueryAsComponent::setAs(const QString& as)
 
 void SelectQueryAsComponent::onClose()
 {
-    m_parent->onClose();
+    TableQueryComponent* parent = dynamic_cast<TableQueryComponent*>(m_parent);
+    if(parent)
+    {
+        parent->removeAs();
+    }
 }

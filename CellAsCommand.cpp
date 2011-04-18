@@ -44,7 +44,7 @@ QGraphicsItemGroup* CellAsCommand::render(int& x, int& y, int& w, int &h)
     QGraphicsItemGroup* grp = new QGraphicsItemGroup();
     grp->addToGroup(CellCommand::render(x,y,w,h));
     int tw = m_txt->boundingRect().width();
-    QRect t (x +tw + 2, ly + 5, tw, m_txt->boundingRect().height() - 5);
+    QRect t (x +tw + 2, ly + 4, tw, m_txt->boundingRect().height() - 5);
     if(w<100) w = tw + 2;
     m_textInputRect = new QGraphicsRectItem(t);
     m_textInputRect->setBrush(QBrush(QColor(Qt::white)));
@@ -96,21 +96,14 @@ void CellAsCommand::mousePress(int x, int y)
     QString selected = "";
     QGraphicsScene* sc = m_textInputRect->scene();
     QList <QGraphicsView*> views =  sc->views();
-    int h = 0, vv = 0;
     if(views.size() > 0)
     {
         QGraphicsView* v = views.at(0);
         if(v)
         {
             QPoint a = v->mapToGlobal((m_textInputRect->mapToScene(m_textInputRect->boundingRect().bottomLeft().toPoint())).toPoint() ) ;
-            selected = m_helper->presentList(a.x() + 2 - (h = v->horizontalScrollBar()->sliderPosition()),
-                                             a.y() - (vv = v->verticalScrollBar()->sliderPosition()), m_strText);
-
-
-            QPointF centerb = v->mapToScene(v->viewport()->rect().center());
-            h = centerb.x();
-            vv = centerb.y();
-
+            selected = m_helper->presentList(a.x() + 2 - v->horizontalScrollBar()->sliderPosition(),
+                                             a.y() - v->verticalScrollBar()->sliderPosition(), m_strText);
         }
         else
         {
@@ -138,6 +131,6 @@ void CellAsCommand::mousePress(int x, int y)
     m_strText = selected;
     m_textItem->setHtml(m_strText);
 
-    if(trigger) m_helper->triggerReRender(h, vv);
+    if(trigger) m_helper->triggerReRender();
 
 }

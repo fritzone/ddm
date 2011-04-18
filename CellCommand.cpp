@@ -40,7 +40,7 @@ QGraphicsItemGroup* CellCommand::render(int& x, int& y, int& w, int &h)
         int neww = lmw - (m_level + 1)* 20;
         grp->addToGroup(m_children.at(i)->render(x, y, neww, h));
         int halfway = oldy + 17; //(oldy + y) / 2 - 7;
-        if(w<neww-20) {w = neww - 20; lmw = neww - 20;}
+        //if(w<neww-20) {w = neww - 20; lmw = neww - 20;}
 
         QGraphicsLineItem* l1 = new QGraphicsLineItem(x +5+2-CHILDREN_ALIGNMENT , oldy+1, x + 5+2-CHILDREN_ALIGNMENT, halfway , grp); // top
         QGraphicsLineItem* l2 = new QGraphicsLineItem(x +5+2-CHILDREN_ALIGNMENT , halfway +10, x + 5+2-CHILDREN_ALIGNMENT, y, grp);   // botton

@@ -22,8 +22,8 @@ QGraphicsItemGroup* CellTableChooser::render(int &x, int &y, int &w, int &h)
     int lx = x;
     int ly = y;
     m_txt = new QGraphicsTextItem(m_name, this);
-    m_txt->setPos(lx + CELL_SIZE + 5, ly);
-    QRect rct(lx + CELL_SIZE + 3, ly, m_txt->boundingRect().width(), 30);
+    m_txt->setPos(lx + CELL_SIZE + 3, ly);
+    QRect rct(lx + CELL_SIZE + 3, ly, m_txt->boundingRect().width() + 3, 30);
     m_frame = new QGraphicsRectItem(rct, this);
     m_frame->setBrush(QBrush(Qt::white));
     m_txt->setZValue(1);
@@ -54,11 +54,7 @@ void CellTableChooser::mousePress(int x, int y)
     if(tc != 0)
     {
         tc->setTable(m_name);
-        QPointF centerb = m_frame->scene()->views().at(0)->mapToScene(m_frame->scene()->views().at(0)->viewport()->rect().center());
-        int h = centerb.x();
-        int v = centerb.y();
-
-        m_helper->triggerReRender(h, v);
+        m_helper->triggerReRender();
     }
 }
 
