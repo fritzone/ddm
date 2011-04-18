@@ -2,27 +2,45 @@
 #define CELLWHERECOMMAND_H
 
 #include "CellCommand.h"
+#include "SelectQueryWhereComponent.h"
+
 class CellWhereCommand : public CellCommand
 {
 public:
-    CellWhereCommand(QueryGraphicsHelper* c, int level, QueryGraphicsItem* parent, QueryComponent* owner, bool trueWhere);
+    CellWhereCommand(QueryGraphicsHelper* c, int level, QueryGraphicsItem* parent, QueryComponent* owner, SelectQueryWhereComponent::WhereType);
     virtual QBrush getCellBrush();
     virtual QString getCommand()
     {
-        return m_trueWhere?"WHERE":"HAVING";
+        switch(m_whereType)
+        {
+        case SelectQueryWhereComponent::WHERETYPE_WHERE:
+            return "WHERE";
+        case SelectQueryWhereComponent::WHERETYPE_HAVING:
+            return "HAVING";
+        case SelectQueryWhereComponent::WHERETYPE_ON:
+            return "ON";
+        }
     }
     virtual bool hasClose()
     {
-        return true;
+        switch(m_whereType)
+        {
+        case SelectQueryWhereComponent::WHERETYPE_WHERE:
+        case SelectQueryWhereComponent::WHERETYPE_HAVING:
+            return true;
+        case SelectQueryWhereComponent::WHERETYPE_ON:
+            return false;
+        }
     }
     virtual CellQuerySmallOptionsBox* provideOptionsBox(QueryGraphicsHelper* c, int level, QueryGraphicsItem* parent, QueryComponent* owner)
     {
         return 0;
     }
     virtual void onClose();
+    virtual bool hasTypeChooser() {return false;}
 
 private:
-    bool m_trueWhere;
+    SelectQueryWhereComponent::WhereType m_whereType;
 };
 
 #endif // CELLWHERECOMMAND_H

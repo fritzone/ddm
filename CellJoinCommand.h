@@ -1,37 +1,33 @@
-#ifndef CELLASCOMMAND_H
-#define CELLASCOMMAND_H
+#ifndef CELLJOINCOMMAND_H
+#define CELLJOINCOMMAND_H
 
 #include "CellCommand.h"
 
-class QueryTextInputItem;
+class CellTypeChooser;
 
-class CellAsCommand : public CellCommand
+class CellJoinCommand : public CellCommand
 {
 public:
-    CellAsCommand(QueryGraphicsHelper* c, int level, QueryGraphicsItem* parent, QueryComponent* owner, bool closable);
+    CellJoinCommand(QueryGraphicsHelper* c, int level, QueryGraphicsItem* parent, QueryComponent* owner);
     virtual QBrush getCellBrush();
     virtual QString getCommand()
     {
-        return "AS";
+        return "JOIN";
     }
     virtual bool hasClose()
     {
-        return m_closable;
+        return true;
     }
     virtual void mousePress(int x, int y);
     virtual void mouseMove(int x, int y);
     virtual void mouseLeft(int x, int y);
     virtual void onClose();
     virtual void updateWidth(int newWidth);
-    virtual bool hasTypeChooser() {return false;}
-
+    virtual bool hasTypeChooser() {return true;}
     QGraphicsItemGroup* render(int& x, int& y, int& w, int &h);
     virtual CellQuerySmallOptionsBox* provideOptionsBox(QueryGraphicsHelper* c, int level, QueryGraphicsItem* parent, QueryComponent* owner);
 private:
-    QGraphicsRectItem* m_textInputRect;
-    QueryTextInputItem* m_textItem;
-    QString m_strText;
-    bool m_closable;
+    CellTypeChooser* m_chooser;
 };
 
-#endif // CELLASCOMMAND_H
+#endif // CELLJOINCOMMAND_H

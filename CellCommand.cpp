@@ -1,5 +1,6 @@
 #include "CellCommand.h"
 #include "CellQuerySmallOptionsBox.h"
+#include "CellJoinCommand.h"
 
 #include <QFont>
 #include <QBrush>
@@ -7,8 +8,9 @@
 
 CellCommand::CellCommand(QueryGraphicsHelper *c, int level, QueryGraphicsItem* parent, QueryComponent* owner):
         QueryGraphicsItem(parent, c, owner),
-        m_close(0), m_level(level), m_txt(0)
+        m_close(0), m_txt(0)
 {
+    m_level = level;
 }
 
 QGraphicsItemGroup* CellCommand::render(int& x, int& y, int& w, int &h)
@@ -27,6 +29,11 @@ QGraphicsItemGroup* CellCommand::render(int& x, int& y, int& w, int &h)
     // the background for the command
     w = w<m_txt->boundingRect().width()?m_txt->boundingRect().width():w;
     lmw = w + 2 + 20;
+    if(hasTypeChooser())
+    {
+        lmw += CELL_SIZE;
+        w += CELL_SIZE;
+    }
     QRectF rect(lx + 2, ly + 2, w, bottom);
 
     m_rctCommandFrame = new QGraphicsRectItem(rect, grp);
@@ -40,10 +47,20 @@ QGraphicsItemGroup* CellCommand::render(int& x, int& y, int& w, int &h)
         int neww = lmw - (m_level + 1)* 20;
         grp->addToGroup(m_children.at(i)->render(x, y, neww, h));
         int halfway = oldy + 17; //(oldy + y) / 2 - 7;
-        //if(w<neww-20) {w = neww - 20; lmw = neww - 20;}
+        if(w<neww-20) {w = neww; lmw = neww;}
 
         QGraphicsLineItem* l1 = new QGraphicsLineItem(x +5+2-CHILDREN_ALIGNMENT , oldy+1, x + 5+2-CHILDREN_ALIGNMENT, halfway , grp); // top
-        QGraphicsLineItem* l2 = new QGraphicsLineItem(x +5+2-CHILDREN_ALIGNMENT , halfway +10, x + 5+2-CHILDREN_ALIGNMENT, y, grp);   // botton
+        if(dynamic_cast<CellJoinCommand*>(this))
+        {
+            if(i<m_children.count() - 1)
+            {
+                QGraphicsLineItem* l2 = new QGraphicsLineItem(x +5+2-CHILDREN_ALIGNMENT , halfway +10, x + 5+2-CHILDREN_ALIGNMENT, y, grp);   // botton
+            }
+        }
+        else
+        {
+            QGraphicsLineItem* l2 = new QGraphicsLineItem(x +5+2-CHILDREN_ALIGNMENT , halfway +10, x + 5+2-CHILDREN_ALIGNMENT, y, grp);   // botton
+        }
         QGraphicsLineItem* l3 = new QGraphicsLineItem(x +5+2-CHILDREN_ALIGNMENT +5 , halfway+5, x + 1, halfway+5, grp);                   // to right
 
         // this will be the small options box before the items
@@ -52,6 +69,11 @@ QGraphicsItemGroup* CellCommand::render(int& x, int& y, int& w, int &h)
 
         QSet<OptionsType> more = m_children.at(i)->getOwner()->provideOptions();
         t.unite(more);
+
+        if(dynamic_cast<CellJoinCommand*>(this)) // the children of the joins don't have options
+        {
+            t.clear();
+        }
 
         CellQuerySmallOptionsBox* smb = new CellQuerySmallOptionsBox(t, m_helper, m_level, m_parent, m_children.at(i)->getOwner(), CellQuerySmallOptionsBox::SHAPE_DIAMOND);
         int tx = x-15 + 2; int ty = halfway; int tw = w; int th = h;

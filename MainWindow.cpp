@@ -1457,6 +1457,7 @@ void MainWindow::onValidate()
 
 void MainWindow::onNewView()
 {
+    m_nvf = 0;
     QueryGraphicsHelper* c = new QueryGraphicsHelper();
     SelectQuery* sq = new SelectQuery(c, 0);
     QueryAsGenerator::instance().initNewQuery(sq);

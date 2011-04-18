@@ -10,9 +10,10 @@
 #include <QGraphicsView>
 #include <QScrollBar>
 
-CellTable::CellTable(const QString& tabName, QueryGraphicsHelper* c, QueryGraphicsItem* parent, QueryComponent* owner):QueryGraphicsItem(parent, c, owner)
+CellTable::CellTable(const QString& tabName, int level, QueryGraphicsHelper* c, QueryGraphicsItem* parent, QueryComponent* owner):QueryGraphicsItem(parent, c, owner)
         , m_tabName(tabName)
 {
+    m_level = level;
 }
 
 // a box at the beginning to change the type
@@ -24,7 +25,7 @@ QGraphicsItemGroup* CellTable::render(int &x, int &y, int& w, int &h)
     int ly = y;
     QGraphicsItemGroup* grp = new QGraphicsItemGroup();
 
-    m_chooser = new CellTableChooser(m_tabName, m_helper, this, m_owner);
+    m_chooser = new CellTableChooser(m_tabName, m_level, m_helper, this, m_owner);
     m_chooser->render(lx, ly ,w, h);
     grp->addToGroup(m_chooser);
 
