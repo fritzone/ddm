@@ -33,7 +33,7 @@ public:
     void setQuery(Query* q) ;
     void setForm(MainWindow*);
     void resetHighlightedItem();
-    void triggerReRender(int, int);
+    void triggerReRender();
     QueryGraphicsScene* getScene()
     {
         return m_scene;

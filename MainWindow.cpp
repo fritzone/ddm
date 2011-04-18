@@ -49,7 +49,7 @@
 #endif
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), m_ui(new Ui::MainWindow), m_projectTreeDock(0), m_datatypesTreeDock(0), m_issuesTreeDock(0),
-    m_projectTree(0), m_datatypesTree(0), m_btndlg(0), m_workspace(0), m_revEngWizard(0), nvf(0)
+    m_projectTree(0), m_datatypesTree(0), m_btndlg(0), m_workspace(0), m_revEngWizard(0), m_nvf(0)
 {
     m_ui->setupUi(this);
 
@@ -1463,10 +1463,10 @@ void MainWindow::onNewView()
 
     c->setQuery(sq);
     c->setForm(this);
-    rerenderQuery(sq, 0, 0);
+    rerenderQuery(sq);
 }
 
-void MainWindow::rerenderQuery(Query* q, int horScroll, int verScroll)
+void MainWindow::rerenderQuery(Query* q)
 {
     int x = 20;
     int y = 20;
@@ -1477,10 +1477,19 @@ void MainWindow::rerenderQuery(Query* q, int horScroll, int verScroll)
     q->getGraphicsItem()->render(x, y, w ,h);
     q->getGraphicsItem()->updateWidth(w);
 
-    nvf = new NewViewForm(q->getHelper(), this);
+    // centerpoints
+    int cx = 0;
+    int cy = 0;
 
-    nvf->setGraphicsItem(q->getGraphicsItem());
-    q->getHelper()->setScene(nvf->getScene());
-    setCentralWidget(nvf);
-    nvf->scrollTo(horScroll, verScroll);
+    if(m_nvf != 0)
+    {
+        m_nvf->getCenter(cx, cy);
+    }
+
+    m_nvf = new NewViewForm(q->getHelper(), this);
+
+    m_nvf->setGraphicsItem(q->getGraphicsItem());
+    q->getHelper()->setScene(m_nvf->getScene());
+    setCentralWidget(m_nvf);
+    m_nvf->scrollTo(cx, cy);
 }

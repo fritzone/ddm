@@ -17,6 +17,7 @@ public:
     virtual void handleAction(const QString& action, QueryComponent* referringObject);
     virtual QSet<OptionsType> provideOptions();
     virtual void onClose(){}
+    void removeAs();
     virtual QueryComponent* duplicate();
 private:
     Table* m_table;

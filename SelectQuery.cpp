@@ -58,21 +58,34 @@ void SelectQuery::newFromTableComponent()
 {
     if(m_from)
     {
+        TableQueryComponent* tccp = 0;
         if(Workspace::getInstance()->currentProjectIsOop())
         {
-            m_from->addChild(new TableQueryComponent(Workspace::getInstance()->workingVersion()->getTableInstances().at(0)->table(), m_from, m_level));
+            if(Workspace::getInstance()->workingVersion()->getTableInstances().size() > 0)
+            {
+                tccp = new TableQueryComponent(Workspace::getInstance()->workingVersion()->getTableInstances().at(0)->table(), m_from, m_level);
+            }
+            else
+            {
+                return;
+            }
+
         }
         else
         {
-            m_from->addChild(new TableQueryComponent(Workspace::getInstance()->workingVersion()->getTables().at(0), m_from, m_level));
+            if(Workspace::getInstance()->workingVersion()->getTables().size() > 0)
+            {
+                tccp = new TableQueryComponent(Workspace::getInstance()->workingVersion()->getTables().at(0), m_from, m_level);
+            }
+            else
+            {
+                return;
+            }
+
         }
 
-
-        QPointF centerb = m_graphicsItem->scene()->views().at(0)->mapToScene(m_graphicsItem->scene()->views().at(0)->viewport()->rect().center());
-        int h = centerb.x();
-        int v = centerb.y();
-
-        m_helper->triggerReRender(h, v);
+        m_from->addChild(tccp);
+        m_helper->triggerReRender();
     }
 }
 
@@ -82,14 +95,8 @@ void SelectQuery::duplicateFromsChild(QueryComponent *c)
     {
         QueryComponent* copy = c->duplicate();
         m_from->getChildren().insert(m_from->getChildren().indexOf(c), copy);
-
-        QPointF centerb = m_graphicsItem->scene()->views().at(0)->mapToScene(m_graphicsItem->scene()->views().at(0)->viewport()->rect().center());
-        int h = centerb.x();
-        int v = centerb.y();
-
-        m_helper->triggerReRender(h, v);
+        m_helper->triggerReRender();
     }
-    //m_children.insert(m_children.indexOf(c), c);
 }
 
 void SelectQuery::newFromSelectQueryComponent()
@@ -99,11 +106,7 @@ void SelectQuery::newFromSelectQueryComponent()
         SelectQuery* nq = new SelectQuery(m_helper, m_level + 1);
         m_from->addChild(nq);
         nq->setParent(m_from);
-        QPointF centerb = m_graphicsItem->scene()->views().at(0)->mapToScene(m_graphicsItem->scene()->views().at(0)->viewport()->rect().center());
-        int h = centerb.x();
-        int v = centerb.y();
-
-        m_helper->triggerReRender(h, v);
+        m_helper->triggerReRender();
     }
 }
 
@@ -115,11 +118,7 @@ void SelectQuery::handleAction(const QString &action, QueryComponent* referringO
         if(!m_from)
         {
             m_from = new SelectQueryFromComponent(this, m_level);
-            QPointF centerb = m_graphicsItem->scene()->views().at(0)->mapToScene(m_graphicsItem->scene()->views().at(0)->viewport()->rect().center());
-            int h = centerb.x();
-            int v = centerb.y();
-
-            m_helper->triggerReRender(h,v);
+            m_helper->triggerReRender();
         }
     }
     if(action == ADD_WHERE)
@@ -127,11 +126,7 @@ void SelectQuery::handleAction(const QString &action, QueryComponent* referringO
         if(!m_where)
         {
             m_where = new SelectQueryWhereComponent(this, m_level, true);
-            QPointF centerb = m_graphicsItem->scene()->views().at(0)->mapToScene(m_graphicsItem->scene()->views().at(0)->viewport()->rect().center());
-            int h = centerb.x();
-            int v = centerb.y();
-
-            m_helper->triggerReRender(h,v);
+            m_helper->triggerReRender();
         }
     }
     if(action == ADD_GROUPBY)
@@ -139,11 +134,7 @@ void SelectQuery::handleAction(const QString &action, QueryComponent* referringO
         if(!m_groupby)
         {
             m_groupby = new SelectQueryGroupByComponent(this, m_level);
-            QPointF centerb = m_graphicsItem->scene()->views().at(0)->mapToScene(m_graphicsItem->scene()->views().at(0)->viewport()->rect().center());
-            int h = centerb.x();
-            int v = centerb.y();
-
-            m_helper->triggerReRender(h,v);
+            m_helper->triggerReRender();
         }
     }
     if(action == ADD_HAVING)
@@ -151,11 +142,7 @@ void SelectQuery::handleAction(const QString &action, QueryComponent* referringO
         if(!m_having)
         {
             m_having = new SelectQueryWhereComponent(this, m_level, false);
-            QPointF centerb = m_graphicsItem->scene()->views().at(0)->mapToScene(m_graphicsItem->scene()->views().at(0)->viewport()->rect().center());
-            int h = centerb.x();
-            int v = centerb.y();
-
-            m_helper->triggerReRender(h,v);
+            m_helper->triggerReRender();
         }
     }
     if(action == ADD_ORDERBY)
@@ -163,12 +150,7 @@ void SelectQuery::handleAction(const QString &action, QueryComponent* referringO
         if(!m_orderBy)
         {
             m_orderBy = new SelectQueryOrderByComponent(this, m_level);
-
-            QPointF centerb = m_graphicsItem->scene()->views().at(0)->mapToScene(m_graphicsItem->scene()->views().at(0)->viewport()->rect().center());
-            int h = centerb.x();
-            int v = centerb.y();
-
-            m_helper->triggerReRender(h,v);
+            m_helper->triggerReRender();
         }
     }
     if(action==DUPLICATE)
@@ -178,7 +160,6 @@ void SelectQuery::handleAction(const QString &action, QueryComponent* referringO
             m_parent->handleAction(DUPLICATE, this);
         }
     }
-
 }
 
 bool SelectQuery::hasGroupByFunctions()
@@ -203,12 +184,8 @@ void SelectQuery::onClose()
 {
     if(m_parent)
     {
-        QPointF centerb = m_graphicsItem->scene()->views().at(0)->mapToScene(m_graphicsItem->scene()->views().at(0)->viewport()->rect().center());
-        int h = centerb.x();
-        int v = centerb.y();
-
         m_parent->removeChild(this);
-        m_helper->triggerReRender(h, v);
+        m_helper->triggerReRender();
     }
 }
 
@@ -216,13 +193,9 @@ void SelectQuery::removeFrom()
 {
     if(m_from)
     {
-        QPointF centerb = m_graphicsItem->scene()->views().at(0)->mapToScene(m_graphicsItem->scene()->views().at(0)->viewport()->rect().center());
-        int h = centerb.x();
-        int v = centerb.y();
-
         delete m_from;
         m_from = 0;
-        m_helper->triggerReRender(h, v);
+        m_helper->triggerReRender();
     }
 }
 

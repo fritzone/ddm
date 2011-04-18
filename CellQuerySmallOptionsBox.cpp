@@ -1,6 +1,8 @@
 #include "CellQuerySmallOptionsBox.h"
 #include "IconFactory.h"
 #include "QueryGraphicsScene.h"
+#include "Workspace.h"
+#include "Version.h"
 
 #include <QPen>
 #include <QGraphicsScene>
@@ -78,6 +80,16 @@ CellQuerySmallOptionsBox::OptionsList CellQuerySmallOptionsBox::prepareOptions()
 
     if(m_types.contains(OPTIONS_NEW_TABLE))
     {
+        bool canGo = false;
+        if(Workspace::getInstance()->currentProjectIsOop())
+        {
+            canGo = Workspace::getInstance()->workingVersion()->getTableInstances().size() > 0;
+        }
+        else
+        {
+            canGo = Workspace::getInstance()->workingVersion()->getTables().size() > 0;
+        }
+
         text.append(NEW_TABLE);
         icons.append(IconFactory::getTabinstIcon());
     }
