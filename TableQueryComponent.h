@@ -2,13 +2,14 @@
 #define TABLEQUERYCOMPONENT_H
 
 #include "QueryComponents.h"
+#include "ColumnProviderForQuery.h"
 
 class Table;
 class SelectQueryAsComponent;
 class TableGraphicsItem;
 class SelectQueryJoinComponent;
 
-class TableQueryComponent : public QueryComponent
+class TableQueryComponent : public QueryComponent, ColumnProviderForQuery
 {
 public:
 
@@ -24,9 +25,13 @@ public:
     virtual void onClose(){}
     virtual QueryComponent* duplicate();
 
+    virtual QVector<const Column*> provideColumns();
+
     void removeAs();
     void removeJoin();
     void setTable(const QString& tab);
+
+
 
 private:
     Table* m_table;

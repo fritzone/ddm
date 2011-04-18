@@ -80,7 +80,7 @@ QGraphicsItemGroup* TableGraphicsItem::render(int &x, int &y, int& w, int &h)
         // now render the ON // TODO: UGLY UGLY CODE
         {
         int lmw = lw;
-        int neww = lmw - (m_on->getLevel() + 1)* 20;
+        int neww = lmw - (m_on->getLevel())* 20;
         x += CHILDREN_ALIGNMENT;
         int oldy = y-2;
 
@@ -123,7 +123,7 @@ void TableGraphicsItem::updateWidth(int newWidth)
     if(m_join)
     {
         m_join->updateWidth(newWidth);
-        m_on->updateWidth(newWidth);
+        m_on->updateWidth(newWidth - 20);
     }
 }
 

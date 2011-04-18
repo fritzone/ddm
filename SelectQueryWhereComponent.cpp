@@ -12,6 +12,7 @@ void SelectQueryWhereComponent::handleAction(const QString &action, QueryCompone
 QSet<OptionsType> SelectQueryWhereComponent::provideOptions()
 {
     QSet<OptionsType> t;
+itt folytatodik a mese, csinaljuk meg mar vegre a column search commandot :)
     return t;
 }
 
