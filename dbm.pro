@@ -241,7 +241,8 @@ HEADERS += MainWindow.h \
     QueryAsGenerator.h \
     SelectQueryJoinComponent.h \
     CellJoinCommand.h \
-    ColumnProviderForQuery.h
+    ColumnProviderForQuery.h \
+    WhereExpressionQueryComponent.h
 FORMS += MainWindow.ui \
     MainWindowButtonDialog.ui \
     NewProjectDialog.ui \

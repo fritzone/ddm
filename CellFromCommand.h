@@ -2,7 +2,8 @@
 #define CELLFROMCOMMAND_H
 
 #include "CellCommand.h"
-#include "CellQuerySmallOptionsBox.h"
+
+class CellQuerySmallOptionsBox;
 
 class CellFromCommand : public CellCommand
 {

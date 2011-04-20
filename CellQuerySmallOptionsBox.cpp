@@ -146,6 +146,12 @@ CellQuerySmallOptionsBox::OptionsList CellQuerySmallOptionsBox::prepareOptions()
         icons.append(IconFactory::getEmptyIcon());
     }
 
+    if(m_types.contains(OPTIONS_NEW_WHERE_EXPR))
+    {
+        text.append(ADD_WHERE_EXPRESSION);
+        icons.append(IconFactory::getEmptyIcon());
+    }
+
     CellQuerySmallOptionsBox::OptionsList op;
     op.text = text;
     op.icons = icons;

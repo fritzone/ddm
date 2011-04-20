@@ -32,10 +32,7 @@ public:
             return false;
         }
     }
-    virtual CellQuerySmallOptionsBox* provideOptionsBox(QueryGraphicsHelper* c, int level, QueryGraphicsItem* parent, QueryComponent* owner)
-    {
-        return 0;
-    }
+    virtual CellQuerySmallOptionsBox* provideOptionsBox(QueryGraphicsHelper* c, int level, QueryGraphicsItem* parent, QueryComponent* owner);
     virtual void onClose();
     virtual bool hasTypeChooser() {return false;}
 

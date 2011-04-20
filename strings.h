@@ -62,5 +62,6 @@ static const QString ADD_HAVING = "HAVING...";
 static const QString ADD_ORDERBY = "ORDER BY...";
 static const QString ADD_JOIN = "JOIN ...";
 static const QString ADD_ALIAS = "AS...";
+static const QString ADD_WHERE_EXPRESSION = "New expression";
 
 #endif // STRINGS_H

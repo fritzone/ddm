@@ -1,4 +1,6 @@
 #include "SelectQueryWhereComponent.h"
+#include "OptionsType.h"
+#include "strings.h"
 
 SelectQueryWhereComponent::SelectQueryWhereComponent(QueryComponent* p, int l, WhereType w):QueryComponent(p,l), m_whereType(w)
 {
@@ -7,12 +9,16 @@ SelectQueryWhereComponent::SelectQueryWhereComponent(QueryComponent* p, int l, W
 
 void SelectQueryWhereComponent::handleAction(const QString &action, QueryComponent* referringObject)
 {
+    if(action == ADD_WHERE_EXPRESSION)
+    {
+
+    }
 }
 
 QSet<OptionsType> SelectQueryWhereComponent::provideOptions()
 {
     QSet<OptionsType> t;
-itt folytatodik a mese, csinaljuk meg mar vegre a column search commandot :)
+    t.insert(OPTIONS_NEW_WHERE_EXPR);
     return t;
 }
 

@@ -6,6 +6,7 @@
 #include "TableGraphicsItem.h"
 #include "CellAsCommand.h"
 #include "CellOrderByCommand.h"
+#include "CellQuerySmallOptionsBox.h"
 
 #include <QPen>
 

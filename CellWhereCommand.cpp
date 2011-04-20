@@ -1,5 +1,5 @@
 #include "CellWhereCommand.h"
-
+#include "CellQuerySmallOptionsBox.h"
 
 CellWhereCommand::CellWhereCommand(QueryGraphicsHelper* c, int level, QueryGraphicsItem* parent, QueryComponent* owner, SelectQueryWhereComponent::WhereType w) :
         CellCommand(c, level, parent, owner), m_whereType(w)
@@ -22,7 +22,15 @@ QBrush CellWhereCommand::getCellBrush()
     }
 }
 
+CellQuerySmallOptionsBox* CellWhereCommand::provideOptionsBox(QueryGraphicsHelper* c, int level, QueryGraphicsItem* parent, QueryComponent* owner)
+{
+    CellQuerySmallOptionsBox* smb = new CellQuerySmallOptionsBox(m_owner->provideOptions(), m_helper, m_level, m_parent, m_owner, CellQuerySmallOptionsBox::SHAPE_RECT);
+    return smb;
+}
+
 void CellWhereCommand::onClose()
 {
 
 }
+
+
