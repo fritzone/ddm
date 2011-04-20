@@ -1,5 +1,6 @@
 #include "CellFromCommand.h"
 #include "SelectQueryFromComponent.h"
+#include "CellQuerySmallOptionsBox.h"
 
 CellFromCommand::CellFromCommand(QueryGraphicsHelper* c, int level, QueryGraphicsItem* parent, QueryComponent* owner) :
         CellCommand(c, level, parent, owner)

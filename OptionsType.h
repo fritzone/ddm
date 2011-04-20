@@ -12,7 +12,10 @@ enum OptionsType
     OPTIONS_ADD_HAVING = 6,
     OPTIONS_ADD_ORDERBY = 7,
     OPTIONS_ADD_JOIN = 8,
-    OPTIONS_AS = 9
+    OPTIONS_AS = 9,
+    OPTIONS_NEW_WHERE_EXPR = 10,
+
+    OPTIONS_LAST
 };
 
 #endif // OPTIONSTYPE_H
