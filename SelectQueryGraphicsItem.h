@@ -33,6 +33,7 @@ public:
         return m_from;
     }
     void addFromGraphicsItem(QueryGraphicsItem*);
+    void addWhereGraphicsItem(QueryGraphicsItem*);
 
     void createSelectCell(QueryComponent*);
     void createFromCell(QueryComponent*);

@@ -10,6 +10,7 @@
 #include "strings.h"
 #include "Workspace.h"
 #include "Version.h"
+#include "BinaryWhereExpressionQueryComponent.h"
 #include "QueryAsGenerator.h"
 
 #include <QGraphicsScene>
@@ -42,6 +43,15 @@ QueryGraphicsItem* SelectQuery::createGraphicsItem(QueryGraphicsHelper*, QueryGr
         }
     }
 
+    if(m_where)
+    {
+        for(int i=0; i<m_where->getChildren().size(); i++)
+        {
+            QueryGraphicsItem* gritmI = m_where->getChildren().at(i)->createGraphicsItem(m_helper, (QueryGraphicsItem*)gi->getFrom());
+            gi->addWhereGraphicsItem(gritmI);
+        }
+    }
+
     m_graphicsItem = gi;
     return gi;
 }
@@ -52,6 +62,17 @@ bool SelectQuery::initializeGraphicsItem()
     return true;
 }
 
+void SelectQuery::newWhereExpression()
+{
+    if(m_where)
+    {
+        // for the beginning here create a Binary Expression, with both of the cells as being removable (this is the usually most used way of a where)
+        // in case the user removes one of them, the expression will be translated to a UnaryExpression
+        WhereExpressionQueryComponent* c = new BinaryWhereExpressionQueryComponent(m_where, m_level);
+        m_where->addChild(c);
+        m_helper->triggerReRender();
+    }
+}
 
 void SelectQuery::newFromTableComponent()
 {

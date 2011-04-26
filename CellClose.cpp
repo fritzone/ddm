@@ -15,7 +15,7 @@ QGraphicsItemGroup* CellClose::render(int &x, int &y, int &w, int &h)
     m_rect = new QGraphicsRectItem(r);
     addToGroup(m_rect);
     QGraphicsPixmapItem* typeIcon = 0;
-    typeIcon = new QGraphicsPixmapItem(IconFactory::getCloseIcon().pixmap(CELL_SIZE,CELL_SIZE), this);
+    typeIcon = new QGraphicsPixmapItem(IconFactory::getCloseIcon().pixmap(CELL_SIZE+1,CELL_SIZE+1), this);
     typeIcon->setX(x);
     typeIcon->setY(y);
     placedAtX = x;

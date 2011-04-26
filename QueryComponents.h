@@ -32,6 +32,7 @@ public:
     void removeChild(QueryComponent* c);
     QueryComponent* getParent() {return m_parent; }
     void setParent(QueryComponent* p) {m_parent = p;}
+    int getLevel() const {return m_level;}
 
 protected:
     QList<QueryComponent*> m_children;

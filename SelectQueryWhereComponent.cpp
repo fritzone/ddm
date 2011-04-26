@@ -1,6 +1,9 @@
 #include "SelectQueryWhereComponent.h"
 #include "OptionsType.h"
+#include "SelectQuery.h"
+
 #include "strings.h"
+
 
 SelectQueryWhereComponent::SelectQueryWhereComponent(QueryComponent* p, int l, WhereType w):QueryComponent(p,l), m_whereType(w)
 {
@@ -11,7 +14,11 @@ void SelectQueryWhereComponent::handleAction(const QString &action, QueryCompone
 {
     if(action == ADD_WHERE_EXPRESSION)
     {
-
+        SelectQuery* sq = dynamic_cast<SelectQuery*>(m_parent);
+        if(sq)
+        {
+            sq->newWhereExpression();
+        }
     }
 }
 

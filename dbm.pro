@@ -113,7 +113,9 @@ SOURCES += main.cpp \
     NewDataTypeForm.cpp \
     NewProjectDialog.cpp \
     SelectQueryJoinComponent.cpp \
-    CellJoinCommand.cpp
+    CellJoinCommand.cpp \
+    BinaryWhereExpressionQueryComponent.cpp \
+    UnaryWhereExpressionQueryComponent.cpp
 HEADERS += MainWindow.h \
     MainWindowButtonDialog.h \
     NewProjectDialog.h \
@@ -242,7 +244,9 @@ HEADERS += MainWindow.h \
     SelectQueryJoinComponent.h \
     CellJoinCommand.h \
     ColumnProviderForQuery.h \
-    WhereExpressionQueryComponent.h
+    WhereExpressionQueryComponent.h \
+    BinaryWhereExpressionQueryComponent.h \
+    UnaryWhereExpressionQueryComponent.h
 FORMS += MainWindow.ui \
     MainWindowButtonDialog.ui \
     NewProjectDialog.ui \
