@@ -24,6 +24,7 @@ QBrush CellWhereCommand::getCellBrush()
 
 CellQuerySmallOptionsBox* CellWhereCommand::provideOptionsBox(QueryGraphicsHelper* c, int level, QueryGraphicsItem* parent, QueryComponent* owner)
 {
+    if(m_whereType == SelectQueryWhereComponent::WHERETYPE_ON) return 0;
     CellQuerySmallOptionsBox* smb = new CellQuerySmallOptionsBox(m_owner->provideOptions(), m_helper, m_level, m_parent, m_owner, CellQuerySmallOptionsBox::SHAPE_RECT);
     return smb;
 }

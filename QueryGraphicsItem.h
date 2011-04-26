@@ -13,7 +13,11 @@ class QueryGraphicsItem : public QGraphicsItemGroup
 {
 public:
     static const int CHILDREN_ALIGNMENT = 15;
-    static const int CELL_SIZE = 20;
+    static const int CELL_SIZE = 12;
+    static const int TEXT_MOVE_X = 5;
+    static const int TEXT_MOVE_Y = 5;
+    static const int SMALL_DEPL = 2;
+
     QueryGraphicsItem(QueryGraphicsItem* parent, QueryGraphicsHelper* comps, QueryComponent* owner);
     virtual ~QueryGraphicsItem() {}
 
