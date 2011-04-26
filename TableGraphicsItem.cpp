@@ -94,8 +94,7 @@ QGraphicsItemGroup* TableGraphicsItem::render(int &x, int &y, int& w, int &h)
 
         // this will be the small options box before the items
         QSet<OptionsType> t;
-        QSet<OptionsType> more = m_on->getOwner()->provideOptions();
-        t.unite(more);
+        t.insert(OPTIONS_NEW_WHERE_EXPR);
 
         CellQuerySmallOptionsBox* smb = new CellQuerySmallOptionsBox(t, m_helper, m_on->getLevel(), m_parent, m_on->getOwner(), CellQuerySmallOptionsBox::SHAPE_DIAMOND);
         int tx = x-15 + 2; int ty = halfway; int tw = w; int th = h;
@@ -123,7 +122,7 @@ void TableGraphicsItem::updateWidth(int newWidth)
     if(m_join)
     {
         m_join->updateWidth(newWidth);
-        m_on->updateWidth(newWidth - 20);
+        m_on->updateWidth(newWidth - 2*CELL_SIZE - 6);
     }
 }
 

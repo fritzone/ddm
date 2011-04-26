@@ -23,19 +23,19 @@ QGraphicsItemGroup* CellTypeChooser::render(int& x, int& y, int& w, int &h)
     case CELLTYPE_TABLE:
         if(Workspace::getInstance()->currentProjectIsOop())
         {
-            typeIcon = new QGraphicsPixmapItem(IconFactory::getTabinstIcon().pixmap(16,16), this);
+            typeIcon = new QGraphicsPixmapItem(IconFactory::getTabinstIcon().pixmap(CELL_SIZE,CELL_SIZE), this);
         }
         else
         {
-            typeIcon = new QGraphicsPixmapItem(IconFactory::getTablesIcon().pixmap(16,16), this);
+            typeIcon = new QGraphicsPixmapItem(IconFactory::getTablesIcon().pixmap(CELL_SIZE,CELL_SIZE), this);
         }
         break;
     }
 
     if(typeIcon)
     {
-        typeIcon->setX(x + 2);
-        typeIcon->setY(y + 2);
+        typeIcon->setX(x);
+        typeIcon->setY(y);
     }
 
     return this;

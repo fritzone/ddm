@@ -24,7 +24,7 @@ QGraphicsItemGroup* CellCommand::render(int& x, int& y, int& w, int &h)
     m_txt = new QGraphicsTextItem(getCommand(), grp);
     QFont theFont("Arial", 14, QFont::Bold);
     m_txt->setFont(theFont);
-    m_txt->setPos(lx + 5, ly + 5);
+    m_txt->setPos(lx + TEXT_MOVE_X, ly + TEXT_MOVE_Y);
     int bottom = m_txt->boundingRect().height() + 2;
     // the background for the command
     w = w<m_txt->boundingRect().width()?m_txt->boundingRect().width():w;

@@ -41,9 +41,10 @@ QGraphicsItemGroup* CellJoinCommand::render(int& x, int& y, int& w, int &h)
 
     QGraphicsItemGroup* grp = new QGraphicsItemGroup();
     grp->addToGroup(CellCommand::render(x,y,w,h));
-    int tw = m_txt->boundingRect().width();
     m_txt->setX(m_txt->x() + CELL_SIZE);
-    if(w<tw + 2) w = tw + 2;
+
+    int tw = m_txt->boundingRect().width() + CELL_SIZE * 2;
+    if(w<tw) w = tw ;
 
     QSet<CellTypeChooser::CellTypeChooserType> allowedTypes;
     allowedTypes.insert(CellTypeChooser::CELLTYPE_TABLE);
@@ -57,20 +58,9 @@ QGraphicsItemGroup* CellJoinCommand::render(int& x, int& y, int& w, int &h)
 
 void CellJoinCommand::updateWidth(int newWidth)
 {
-    //CellCommand::updateWidth(newWidth + CELL_SIZE * 3);
-    QRect newRect(m_txt->boundingRect().left(), m_txt->boundingRect().top(),
-                  max(m_txt->boundingRect().width(), newWidth - m_txt->boundingRect().left()),
-                  m_txt->boundingRect().height());
-
-
-    CellCommand::updateWidth(newRect.width() + newRect.left() - CELL_SIZE);
-
-    if(hasClose())
-    {
-        m_close->updateWidth(newRect.left() + newRect.width() + 8);
-    }
-
-    //m_helper->addNewHotCell(this, m_txt->boundingRect().toRect());
+    m_level ++;
+    CellCommand::updateWidth(newWidth - CELL_SIZE*5/2);
+    m_level --;
 }
 
 void CellJoinCommand::mouseMove(int x, int y)

@@ -15,9 +15,9 @@ QGraphicsItemGroup* CellClose::render(int &x, int &y, int &w, int &h)
     m_rect = new QGraphicsRectItem(r);
     addToGroup(m_rect);
     QGraphicsPixmapItem* typeIcon = 0;
-    typeIcon = new QGraphicsPixmapItem(IconFactory::getCloseIcon().pixmap(16,16), this);
-    typeIcon->setX(x+2);
-    typeIcon->setY(y+2);
+    typeIcon = new QGraphicsPixmapItem(IconFactory::getCloseIcon().pixmap(CELL_SIZE,CELL_SIZE), this);
+    typeIcon->setX(x);
+    typeIcon->setY(y);
     placedAtX = x;
     placedAtY = y;
     return this;
@@ -27,10 +27,9 @@ void CellClose::updateWidth(int newWidth)
 {
     QRect br = boundingRect().toRect();
     placedAtX = newWidth - CELL_SIZE;
-    int depl = 10;
+    int depl = 8;
     if(dynamic_cast<CellCommand*>(m_parent))
     {
-        depl = 0;
         setX(placedAtX);
     }
     else
