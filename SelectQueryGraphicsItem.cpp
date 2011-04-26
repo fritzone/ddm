@@ -113,6 +113,12 @@ void SelectQueryGraphicsItem::addFromGraphicsItem(QueryGraphicsItem* fromsChild)
     if(m_from) m_from->addChild(fromsChild);
 }
 
+void SelectQueryGraphicsItem::addWhereGraphicsItem(QueryGraphicsItem* wheresChild)
+{
+    if(m_where) m_where->addChild(wheresChild);
+}
+
+
 void SelectQueryGraphicsItem::onClose()
 {
 

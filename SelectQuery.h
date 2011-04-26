@@ -28,6 +28,8 @@ public:
     void newFromSelectQueryComponent();
     void duplicateFromsChild(QueryComponent*);
 
+    void newWhereExpression();
+
     void removeFrom();
     bool hasWhere();
     bool hasGroupBy();
