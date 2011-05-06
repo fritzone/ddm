@@ -3,6 +3,9 @@
 
 #include "WhereExpressionQueryComponent.h"
 
+class CellForBinaryWhereExpression;
+class QueryGraphicsHelper;
+
 /**
  * Class, representing a binary where expression
  */
@@ -25,6 +28,11 @@ private:
     // initially, these two below are unary components. Unary components can be transformed into binary
     WhereExpressionQueryComponent* m_left;
     WhereExpressionQueryComponent* m_right;
+
+    // the graphics item for the component
+    CellForBinaryWhereExpression* m_gritm;
+
+    QueryGraphicsHelper* m_helper;
 
 };
 #endif // BINARYWHEREEXPRESSIONQUERYCOMPONENT_H
