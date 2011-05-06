@@ -1,14 +1,18 @@
 #include "BinaryWhereExpressionQueryComponent.h"
 #include "UnaryWhereExpressionQueryComponent.h"
+#include "CellForBinaryWhereExpression.h"
 
 BinaryWhereExpressionQueryComponent::BinaryWhereExpressionQueryComponent(QueryComponent* p, int l): WhereExpressionQueryComponent(p,l),
     m_left(0), m_right(0)
 {
 }
 
-QueryGraphicsItem* BinaryWhereExpressionQueryComponent::createGraphicsItem(QueryGraphicsHelper *, QueryGraphicsItem *)
+QueryGraphicsItem* BinaryWhereExpressionQueryComponent::createGraphicsItem(QueryGraphicsHelper *helper, QueryGraphicsItem *parent)
 {
-    return 0;
+    m_helper = helper;
+    m_gritm = new CellForBinaryWhereExpression(getLevel() + 1, helper, parent, this);
+
+    return m_gritm;
 }
 
 QString BinaryWhereExpressionQueryComponent::get()
