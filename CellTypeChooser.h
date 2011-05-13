@@ -14,7 +14,13 @@ public:
         CELLTYPE_TABLE = 0
     };
 
-    CellTypeChooser(CellTypeChooserType defaultType, QSet<CellTypeChooserType> allowedTypes, QueryGraphicsHelper*, QueryGraphicsItem*, QueryComponent* owner);
+    enum CellTypeChooserSize
+    {
+        CELLTYPECHOOSER_BIG = 0,
+        CELLTYPECHOOSER_REGULAR = 1
+    };
+
+    CellTypeChooser(CellTypeChooserSize size, CellTypeChooserType defaultType, QSet<CellTypeChooserType> allowedTypes, QueryGraphicsHelper*, QueryGraphicsItem*, QueryComponent* owner);
     virtual QGraphicsItemGroup* render(int& x, int& y, int& w, int &h);
     virtual void updateWidth(int newWidth);
     virtual void mousePress(int x, int y){};
@@ -26,6 +32,7 @@ private:
     QSet<CellTypeChooserType> m_allowedTypes;
     CellTypeChooserType m_currentType;
     QGraphicsRectItem* m_rect;
+    CellTypeChooserSize m_size;
 };
 
 #endif // CELLTYPECHOOSER_H

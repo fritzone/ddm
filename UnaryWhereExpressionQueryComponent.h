@@ -3,6 +3,8 @@
 
 #include "WhereExpressionQueryComponent.h"
 
+class CellForUnaryWhereExpression;
+
 /**
  * Class, representing a binary where expression
  */
@@ -16,6 +18,8 @@ public:
     virtual QSet<OptionsType> provideOptions();
     virtual void onClose(){};
     virtual QueryComponent* duplicate();
+private:
+    CellForUnaryWhereExpression* m_gritm;
 
 };
 

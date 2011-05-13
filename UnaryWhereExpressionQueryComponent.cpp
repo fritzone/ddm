@@ -1,12 +1,16 @@
 #include "UnaryWhereExpressionQueryComponent.h"
+#include "CellForUnaryWhereExpression.h"
 
 UnaryWhereExpressionQueryComponent::UnaryWhereExpressionQueryComponent(QueryComponent* p, int l): WhereExpressionQueryComponent(p,l)
 {
 }
 
-QueryGraphicsItem* UnaryWhereExpressionQueryComponent::createGraphicsItem(QueryGraphicsHelper *, QueryGraphicsItem *)
+QueryGraphicsItem* UnaryWhereExpressionQueryComponent::createGraphicsItem(QueryGraphicsHelper * helper, QueryGraphicsItem * parent)
 {
-    return 0;
+    m_helper = helper;
+    m_gritm = new CellForUnaryWhereExpression(getLevel() + 1, helper, parent, this);
+
+    return m_gritm;
 }
 
 QString UnaryWhereExpressionQueryComponent::get()

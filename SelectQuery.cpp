@@ -69,6 +69,7 @@ void SelectQuery::newWhereExpression()
         // for the beginning here create a Binary Expression, with both of the cells as being removable (this is the usually most used way of a where)
         // in case the user removes one of them, the expression will be translated to a UnaryExpression
         WhereExpressionQueryComponent* c = new BinaryWhereExpressionQueryComponent(m_where, m_level);
+        dynamic_cast<BinaryWhereExpressionQueryComponent*>(c)->createSides();
         m_where->addChild(c);
         m_helper->triggerReRender();
     }

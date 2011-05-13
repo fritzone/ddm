@@ -38,7 +38,7 @@ QGraphicsItemGroup* CellTable::render(int &x, int &y, int& w, int &h)
     QSet<CellTypeChooser::CellTypeChooserType> allowedTypes;
     allowedTypes.insert(CellTypeChooser::CELLTYPE_TABLE);
 
-    CellTypeChooser* chooser = new CellTypeChooser(CellTypeChooser::CELLTYPE_TABLE, allowedTypes, m_helper, this, m_owner);
+    CellTypeChooser* chooser = new CellTypeChooser(CellTypeChooser::CELLTYPECHOOSER_REGULAR, CellTypeChooser::CELLTYPE_TABLE, allowedTypes, m_helper, this, m_owner);
     chooser->render(lx, ly, w, h);
     grp->addToGroup(chooser);
 
