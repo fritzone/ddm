@@ -4,6 +4,8 @@
 #include "QueryGraphicsHelper.h"
 #include "QueryGraphicsItem.h"
 
+class CellForUnaryWhereExpression;
+
 class CellForBinaryWhereExpression : public QueryGraphicsItem
 {
 
@@ -20,6 +22,9 @@ public:
 
 private:
     QGraphicsRectItem* m_frame;
+
+    QueryGraphicsItem* m_left;
+    QueryGraphicsItem* m_right;
 };
 
 #endif // CELLFORBINARYWHEREEXPRESSION_H

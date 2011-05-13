@@ -5,15 +5,16 @@
 
 #include <QPen>
 
-CellTypeChooser::CellTypeChooser(CellTypeChooserType defaultType, QSet<CellTypeChooserType> allowedTypes, QueryGraphicsHelper *c, QueryGraphicsItem* parent, QueryComponent* owner):
+CellTypeChooser::CellTypeChooser(CellTypeChooserSize size, CellTypeChooserType defaultType, QSet<CellTypeChooserType> allowedTypes, QueryGraphicsHelper *c, QueryGraphicsItem* parent, QueryComponent* owner):
         QueryGraphicsItem(parent, c, owner),
-        m_defaultType(defaultType), m_allowedTypes(allowedTypes), m_currentType(defaultType), m_rect(0)
+        m_defaultType(defaultType), m_allowedTypes(allowedTypes), m_currentType(defaultType), m_rect(0), m_size (size)
 {
 }
 
 QGraphicsItemGroup* CellTypeChooser::render(int& x, int& y, int& w, int &h)
 {
-    QRect r(x, y, CELL_SIZE, CELL_SIZE);
+    int size = m_size == CELLTYPECHOOSER_REGULAR?CELL_SIZE+1:CELL_SIZE*2+1;
+    QRect r(x, y, size-1, size-1);
     m_helper->addNewHotCell(this, r);
     addToGroup(m_rect = new QGraphicsRectItem(r));
     QGraphicsPixmapItem* typeIcon = 0;
@@ -23,11 +24,11 @@ QGraphicsItemGroup* CellTypeChooser::render(int& x, int& y, int& w, int &h)
     case CELLTYPE_TABLE:
         if(Workspace::getInstance()->currentProjectIsOop())
         {
-            typeIcon = new QGraphicsPixmapItem(IconFactory::getTabinstIcon().pixmap(CELL_SIZE+1,CELL_SIZE+1), this);
+            typeIcon = new QGraphicsPixmapItem(IconFactory::getTabinstIcon().pixmap(size,size), this);
         }
         else
         {
-            typeIcon = new QGraphicsPixmapItem(IconFactory::getTablesIcon().pixmap(CELL_SIZE+1,CELL_SIZE+1), this);
+            typeIcon = new QGraphicsPixmapItem(IconFactory::getTablesIcon().pixmap(size,size), this);
         }
         break;
     }

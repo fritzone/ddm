@@ -20,7 +20,7 @@ public:
     virtual ~QueryComponent(){}
 
     virtual QString get() = 0;
-    virtual QueryGraphicsItem* createGraphicsItem(QueryGraphicsHelper*, QueryGraphicsItem*) = 0;
+    virtual QueryGraphicsItem* createGraphicsItem(QueryGraphicsHelper* helper, QueryGraphicsItem* parent) = 0;
     virtual void handleAction(const QString& action, QueryComponent* referringObject) = 0;
     virtual QSet<OptionsType> provideOptions() = 0;
     virtual void onClose() = 0;

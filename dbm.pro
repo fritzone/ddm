@@ -116,7 +116,8 @@ SOURCES += main.cpp \
     CellJoinCommand.cpp \
     BinaryWhereExpressionQueryComponent.cpp \
     UnaryWhereExpressionQueryComponent.cpp \
-    CellForBinaryWhereExpression.cpp
+    CellForBinaryWhereExpression.cpp \
+    CellForUnaryWhereExpression.cpp
 HEADERS += MainWindow.h \
     MainWindowButtonDialog.h \
     NewProjectDialog.h \

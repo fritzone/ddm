@@ -22,6 +22,9 @@ public:
 
     /** creates the left and the right side, so that it does not fall into infinite recursion */
     void createSides();
+    WhereExpressionQueryComponent* left() {return m_left;}
+    WhereExpressionQueryComponent* right() {return m_right;}
+
 
 private:
 
@@ -32,7 +35,6 @@ private:
     // the graphics item for the component
     CellForBinaryWhereExpression* m_gritm;
 
-    QueryGraphicsHelper* m_helper;
 
 };
 #endif // BINARYWHEREEXPRESSIONQUERYCOMPONENT_H
