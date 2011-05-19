@@ -5,8 +5,8 @@
 
 #include <QPen>
 
-CellTypeChooser::CellTypeChooser(CellTypeChooserSize size, CellTypeChooserType defaultType, QSet<CellTypeChooserType> allowedTypes, QueryGraphicsHelper *c, QueryGraphicsItem* parent, QueryComponent* owner):
-        QueryGraphicsItem(parent, c, owner),
+CellTypeChooser::CellTypeChooser(int level, CellTypeChooserSize size, CellTypeChooserType defaultType, QSet<CellTypeChooserType> allowedTypes, QueryGraphicsHelper *c, QueryGraphicsItem* parent, QueryComponent* owner):
+        QueryGraphicsItem(level, parent, c, owner),
         m_defaultType(defaultType), m_allowedTypes(allowedTypes), m_currentType(defaultType), m_rect(0), m_size (size)
 {
 }
@@ -31,6 +31,17 @@ QGraphicsItemGroup* CellTypeChooser::render(int& x, int& y, int& w, int &h)
             typeIcon = new QGraphicsPixmapItem(IconFactory::getTablesIcon().pixmap(size,size), this);
         }
         break;
+
+    case CELLTYPE_NOTHING:
+        typeIcon = new QGraphicsPixmapItem(IconFactory::getEmptyIcon().pixmap(size,size), this);
+        break;
+    case CELLTYPE_NOT:
+        typeIcon = new QGraphicsPixmapItem(IconFactory::getNotIcon().pixmap(size,size), this);
+        break;
+    case CELLTYPE_NEGATE:
+        typeIcon = new QGraphicsPixmapItem(IconFactory::getNegIcon().pixmap(size,size), this);
+        break;
+
     }
 
     if(typeIcon)

@@ -11,8 +11,8 @@
 #include <QPen>
 
 SelectQueryGraphicsItem::SelectQueryGraphicsItem(QueryGraphicsHelper* c, int level, QueryGraphicsItem* parent, QueryComponent* owner) :
-    QueryGraphicsItem(parent, c, owner), m_select(0), m_from(0), m_where(0), m_groupby(0), m_having(0), m_as(0),m_orderBy(0),
-    m_frameRect(0), m_level(level)
+    QueryGraphicsItem(level, parent, c, owner), m_select(0), m_from(0), m_where(0), m_groupby(0), m_having(0), m_as(0),m_orderBy(0),
+    m_frameRect(0)
 {
 }
 

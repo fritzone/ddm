@@ -3,8 +3,8 @@
 #include "QueryGraphicsScene.h"
 #include "CellCommand.h"
 
-CellClose::CellClose(QueryGraphicsHelper* c, QueryGraphicsItem* parent, QueryComponent* owner):
-        QueryGraphicsItem(parent, c, owner),
+CellClose::CellClose(int level, QueryGraphicsHelper* c, QueryGraphicsItem* parent, QueryComponent* owner):
+        QueryGraphicsItem(level, parent, c, owner),
         m_rect(0)
 {
 }

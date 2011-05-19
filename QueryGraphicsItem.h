@@ -18,7 +18,7 @@ public:
     static const int TEXT_MOVE_Y = 5;
     static const int SMALL_DEPL = 2;
 
-    QueryGraphicsItem(QueryGraphicsItem* parent, QueryGraphicsHelper* comps, QueryComponent* owner);
+    QueryGraphicsItem(int level, QueryGraphicsItem* parent, QueryGraphicsHelper* comps, QueryComponent* owner);
     virtual ~QueryGraphicsItem() {}
 
     virtual QGraphicsItemGroup* render(int& x, int& y, int& w, int &h) = 0;

@@ -3,7 +3,7 @@
 #include "BinaryWhereExpressionQueryComponent.h"
 
 CellForBinaryWhereExpression::CellForBinaryWhereExpression (int level, QueryGraphicsHelper *c, QueryGraphicsItem *parent, QueryComponent *owner):
-    QueryGraphicsItem(parent, c, owner)
+    QueryGraphicsItem(level, parent, c, owner)
 {
 }
 
