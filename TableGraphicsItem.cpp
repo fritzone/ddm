@@ -7,7 +7,7 @@
 #include "CellJoinCommand.h"
 
 TableGraphicsItem::TableGraphicsItem(Table* tab, int level, QueryGraphicsHelper* c, QueryGraphicsItem* parent, QueryComponent* owner):
-        QueryGraphicsItem(parent, c, owner),
+        QueryGraphicsItem(level, parent, c, owner),
         m_table(tab), m_tableCell(0), m_as(0), m_join(0)
 {
     m_tableCell = new CellTable(tab->getName(), level, c, this, owner);

@@ -8,7 +8,7 @@ class CellClose : public QueryGraphicsItem
 {
 
 public:
-    CellClose(QueryGraphicsHelper*, QueryGraphicsItem*, QueryComponent* owner);
+    CellClose(int level, QueryGraphicsHelper*, QueryGraphicsItem*, QueryComponent* owner);
     virtual QGraphicsItemGroup* render(int& x, int& y, int& w, int &h);
     virtual void updateWidth(int newWidth);
     virtual void mousePress(int x, int y);

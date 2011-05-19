@@ -10,7 +10,7 @@
 #include <QScrollBar>
 
 CellQuerySmallOptionsBox::CellQuerySmallOptionsBox(QSet<OptionsType> types, QueryGraphicsHelper* c, int level, QueryGraphicsItem* parent, QueryComponent* owner, OptionsBoxShape shape):
-        QueryGraphicsItem(parent, c, owner), m_types(types), m_shape(shape), m_box(0), m_ellipse(0), m_diamond(0)
+        QueryGraphicsItem(level, parent, c, owner), m_types(types), m_shape(shape), m_box(0), m_ellipse(0), m_diamond(0)
 
 {
 }

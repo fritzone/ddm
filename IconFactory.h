@@ -48,6 +48,19 @@ public:
         return icon;
     }
 
+    static const QIcon& getNotIcon()
+    {
+        static const QIcon icon(strNotIcon);
+        return icon;
+    }
+
+    static const QIcon& getNegIcon()
+    {
+        static const QIcon icon(strNegIcon);
+        return icon;
+    }
+
+
     static const QIcon& getDatabaseIcon()
     {
         static const QIcon icon(strDatabaseIcon);

@@ -12,7 +12,7 @@
 #include <QDebug>
 
 CellTableChooser::CellTableChooser(const QString& name, int level, QueryGraphicsHelper*c, QueryGraphicsItem* parent, QueryComponent* owner) :
-        QueryGraphicsItem(parent, c, owner),
+        QueryGraphicsItem(level, parent, c, owner),
         m_name(name)
 {
     m_level = level;

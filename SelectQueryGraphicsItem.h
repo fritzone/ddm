@@ -53,7 +53,6 @@ private:
     CellOrderByCommand* m_orderBy;
 
     QGraphicsRectItem* m_frameRect;
-    int m_level;
 };
 
 #endif // SELECTQUERYGRAPHICSITEM_H

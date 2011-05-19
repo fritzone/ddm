@@ -10,10 +10,9 @@
 #include <QGraphicsView>
 #include <QScrollBar>
 
-CellTable::CellTable(const QString& tabName, int level, QueryGraphicsHelper* c, QueryGraphicsItem* parent, QueryComponent* owner):QueryGraphicsItem(parent, c, owner)
-        , m_tabName(tabName)
+CellTable::CellTable(const QString& tabName, int level, QueryGraphicsHelper* c, QueryGraphicsItem* parent, QueryComponent* owner):
+    QueryGraphicsItem(level, parent, c, owner), m_tabName(tabName)
 {
-    m_level = level;
 }
 
 // a box at the beginning to change the type
@@ -38,11 +37,11 @@ QGraphicsItemGroup* CellTable::render(int &x, int &y, int& w, int &h)
     QSet<CellTypeChooser::CellTypeChooserType> allowedTypes;
     allowedTypes.insert(CellTypeChooser::CELLTYPE_TABLE);
 
-    CellTypeChooser* chooser = new CellTypeChooser(CellTypeChooser::CELLTYPECHOOSER_REGULAR, CellTypeChooser::CELLTYPE_TABLE, allowedTypes, m_helper, this, m_owner);
+    CellTypeChooser* chooser = new CellTypeChooser(m_level, CellTypeChooser::CELLTYPECHOOSER_REGULAR, CellTypeChooser::CELLTYPE_TABLE, allowedTypes, m_helper, this, m_owner);
     chooser->render(lx, ly, w, h);
     grp->addToGroup(chooser);
 
-    m_closer = new CellClose(m_helper, this, m_owner);
+    m_closer = new CellClose(m_level, m_helper, this, m_owner);
     int p = m_chooser->boundingRect().width() + CELL_SIZE + 10;
     m_closer->render(p, ly, w, h);
     grp->addToGroup(m_closer);

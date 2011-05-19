@@ -5,6 +5,7 @@
 #include "QueryGraphicsItem.h"
 
 class CellClose;
+class CellTypeChooser;
 
 class CellForUnaryWhereExpression : public QueryGraphicsItem
 {
@@ -21,6 +22,8 @@ public:
 private:
     QGraphicsRectItem* m_frame;
     CellClose* m_close;
+    CellTypeChooser* m_smallTypeModifier;
+    CellTypeChooser* m_bigTypeModifier;
 };
 
 #endif // CELLFORUNARYWHEREEXPRESSION_H

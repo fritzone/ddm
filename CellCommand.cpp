@@ -7,7 +7,7 @@
 #include <QPen>
 
 CellCommand::CellCommand(QueryGraphicsHelper *c, int level, QueryGraphicsItem* parent, QueryComponent* owner):
-        QueryGraphicsItem(parent, c, owner),
+        QueryGraphicsItem(level, parent, c, owner),
         m_close(0), m_txt(0)
 {
     m_level = level;
@@ -109,7 +109,7 @@ QGraphicsItemGroup* CellCommand::render(int& x, int& y, int& w, int &h)
     // is this having a close button?
     if(hasClose())
     {
-        m_close = new CellClose(m_helper, this, m_owner);
+        m_close = new CellClose(m_level, m_helper, this, m_owner);
         int sx = x, sy = y, sw = w, sh = h;
         int cx = 20;
         int cy = ly + 2;

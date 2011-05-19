@@ -115,6 +115,8 @@
         <file>images/small/exec.png</file>
         <file>images/actions/view.png</file>
         <file>images/small/wand.png</file>
+        <file>images/small/not.png</file>
+        <file>images/small/neg.png</file>
     </qresource>
     <qresource prefix="/bigger">
         <file>images/unaf.png</file>
