@@ -5,6 +5,7 @@
 #include <QRect>
 #include <QIcon>
 #include <QMap>
+#include "OptionsType.h"
 
 class QueryItemListDialog;
 class QueryGraphicsItem;
@@ -20,7 +21,7 @@ public:
     enum ListType
     {
         LIST_TABLES = 1,
-        INPUT_TEXT = 2
+        INPUT_TEXT = 2,
     };
 
     QueryGraphicsHelper();
@@ -29,6 +30,7 @@ public:
     QString presentList(int, int, ListType);
     QString presentList(int, int, const QString&);
     QString presentList(int, int, QStringList, QList<QIcon>);
+    QString presentList(int, int, QSet<CellTypeChooserType>);
     void setScene(QueryGraphicsScene* sc) ;
     void setQuery(Query* q) ;
     void setForm(MainWindow*);

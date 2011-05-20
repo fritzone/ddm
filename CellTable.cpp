@@ -34,10 +34,10 @@ QGraphicsItemGroup* CellTable::render(int &x, int &y, int& w, int &h)
     m_frame->setBrush(QBrush(bg));
     m_frame->setZValue(-4);
 
-    QSet<CellTypeChooser::CellTypeChooserType> allowedTypes;
-    allowedTypes.insert(CellTypeChooser::CELLTYPE_TABLE);
+    QSet<CellTypeChooserType> allowedTypes;
+    allowedTypes.insert(CELLTYPE_TABLE);
 
-    CellTypeChooser* chooser = new CellTypeChooser(m_level, CellTypeChooser::CELLTYPECHOOSER_REGULAR, CellTypeChooser::CELLTYPE_TABLE, allowedTypes, m_helper, this, m_owner);
+    CellTypeChooser* chooser = new CellTypeChooser(m_level, CellTypeChooser::CELLTYPECHOOSER_REGULAR, CELLTYPE_TABLE, allowedTypes, m_helper, this, m_owner);
     chooser->render(lx, ly, w, h);
     grp->addToGroup(chooser);
 

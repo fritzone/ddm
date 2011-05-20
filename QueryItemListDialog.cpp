@@ -59,7 +59,7 @@ void QueryItemListDialog::setText(const QString &a)
     ui->txtInput->setText(a);
 }
 
-QueryItemListDialog::QueryItemListDialog(QStringList lst, QList<QIcon> icons, QWidget *parent) :
+QueryItemListDialog::QueryItemListDialog(QStringList lst, QList<QIcon> icons, bool checks, QWidget *parent) :
         QDialog(parent),
         ui(new Ui::QueryItemListDialog), m_selected()
 {
@@ -72,6 +72,13 @@ QueryItemListDialog::QueryItemListDialog(QStringList lst, QList<QIcon> icons, QW
         QListWidgetItem* lwi = new QListWidgetItem(lst.at(i));
         lwi->setFont(QFont("Arial", 10, 2));
         lwi->setIcon(icons.at(i));
+        if(checks)
+        {
+            QFlags <Qt::ItemFlag> t = lwi->flags();
+            t |= Qt::ItemIsUserCheckable;
+            lwi->setFlags(t);
+            lwi->setCheckState(Qt::Unchecked);
+        }
         ui->lstValues->addItem(lwi);
     }
 }

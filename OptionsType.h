@@ -18,4 +18,32 @@ enum OptionsType
     OPTIONS_LAST
 };
 
+
+enum CellTypeChooserType
+{
+    // * small type choosers
+
+    // ** used in a from query
+    CELLTYPE_TABLE = 0,
+
+    // ** used in a where condition
+    CELLTYPE_NOT = 1,           // !
+    CELLTYPE_MINUS = 2,         // -
+    CELLTYPE_NEGATE = 3,        // ~
+    CELLTYPE_PLUS = 4,          // +
+    CELLTYPE_BINARY = 5,        // BINARY (!!) This is MySQL specific?
+    CELLTYPE_EXISTS = 6,
+
+    // * big type choosers
+    // ** used in a wher condition
+    CELLTYPE_COLUMN = 7,
+    CELLTYPE_FUNCTION = 8,
+    CELLTYPE_LITERAL = 9,
+    CELLTYPE_QUERY = 10,
+
+    CELLTYPE_NOTHING = 11
+
+};
+
+
 #endif // OPTIONSTYPE_H

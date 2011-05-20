@@ -4,6 +4,10 @@
 #include "IconFactory.h"
 
 #include <QPen>
+#include <QGraphicsView>
+#include <QGraphicsScene>
+#include <QScrollBar>
+#include <QueryComponents.h>
 
 CellTypeChooser::CellTypeChooser(int level, CellTypeChooserSize size, CellTypeChooserType defaultType, QSet<CellTypeChooserType> allowedTypes, QueryGraphicsHelper *c, QueryGraphicsItem* parent, QueryComponent* owner):
         QueryGraphicsItem(level, parent, c, owner),
@@ -69,4 +73,13 @@ void CellTypeChooser::mouseLeft(int x, int y)
     QPen normal;
     normal.setWidth(1);
     m_rect->setPen(normal);
+}
+
+void CellTypeChooser::mousePress(int x, int y)
+{
+    QPoint a = scene()->views().at(0)->mapToGlobal((m_rect->mapToScene(m_rect->boundingRect().bottomLeft().toPoint())).toPoint() ) ;
+    QString selected = m_helper->presentList(a.x() + 2-scene()->views().at(0)->horizontalScrollBar()->sliderPosition()
+                                             , a.y() - scene()->views().at(0)->verticalScrollBar()->sliderPosition(), m_allowedTypes);
+    if(selected.length() == 0) return;
+    m_owner->handleAction(selected, 0);
 }
