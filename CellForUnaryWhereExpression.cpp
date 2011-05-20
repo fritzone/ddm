@@ -1,6 +1,7 @@
 #include "CellClose.h"
 #include "CellForUnaryWhereExpression.h"
 #include "CellTypeChooser.h"
+#include "OptionsType.h"
 
 CellForUnaryWhereExpression::CellForUnaryWhereExpression (int level, QueryGraphicsHelper *c, QueryGraphicsItem *parent, QueryComponent *owner):
     QueryGraphicsItem(level, parent, c, owner), m_frame(0), m_close(0), m_smallTypeModifier(0), m_bigTypeModifier(0)
@@ -26,10 +27,12 @@ QGraphicsItemGroup* CellForUnaryWhereExpression::render(int &x, int &y, int &w, 
     grp->addToGroup(m_close);
     m_close->setZValue(2);
 
-    QSet<CellTypeChooser::CellTypeChooserType> allowedTypes;
-    allowedTypes.insert(CellTypeChooser::CELLTYPE_NOTHING);
+    QSet<CellTypeChooserType> allowedTypes;
+    allowedTypes.insert(CELLTYPE_NOTHING);
+    allowedTypes.insert(CELLTYPE_NOT);
+    allowedTypes.insert(CELLTYPE_NEGATE);
 
-    m_smallTypeModifier = new CellTypeChooser(m_level, CellTypeChooser::CELLTYPECHOOSER_REGULAR, CellTypeChooser::CELLTYPE_NOTHING, allowedTypes, m_helper, this, m_owner);
+    m_smallTypeModifier = new CellTypeChooser(m_level, CellTypeChooser::CELLTYPECHOOSER_REGULAR, CELLTYPE_NOTHING, allowedTypes, m_helper, this, m_owner);
     m_smallTypeModifier ->render(sx, cy, w, h);
     grp->addToGroup(m_smallTypeModifier );
     x = sx; y = sy; w = sw; h = sh;

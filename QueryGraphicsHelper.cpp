@@ -4,6 +4,8 @@
 #include "QueryGraphicsItem.h"
 #include "Query.h"
 #include "MainWindow.h"
+#include "IconFactory.h"
+#include "Workspace.h"
 
 QueryGraphicsHelper::QueryGraphicsHelper() : hotCells(), m_lstDlg(0), m_scene(0), m_form(0)
 {
@@ -80,7 +82,7 @@ QString QueryGraphicsHelper::presentList(int x, int y, QStringList lst, QList<QI
         m_lstDlg->close();
         m_lstDlg = 0;
     }
-    m_lstDlg = new QueryItemListDialog(lst, icons, 0);
+    m_lstDlg = new QueryItemListDialog(lst, icons, false, 0);
     m_lstDlg->setWindowFlags(Qt::FramelessWindowHint);
     m_lstDlg->move(x, y);
     m_lstDlg->setModal(true);
@@ -103,3 +105,49 @@ void QueryGraphicsHelper::triggerReRender()
     m_form->rerenderQuery(m_query);
 }
 
+
+QString QueryGraphicsHelper::presentList(int x, int y, QSet<CellTypeChooserType> options)
+{
+    QStringList lst;
+    QList<QIcon> icons;
+
+    int size = 16;
+
+    if(options.contains(CELLTYPE_TABLE))
+    {
+        lst.append("Table");
+        if(Workspace::getInstance()->currentProjectIsOop())
+        {
+            icons.append(IconFactory::getTabinstIcon().pixmap(size,size));
+        }
+        else
+        {
+            icons.append(IconFactory::getTablesIcon().pixmap(size,size));
+        }
+    }
+
+    if(options.contains(CELLTYPE_NOT))
+    {
+        lst.append("NOT");
+        icons.append(IconFactory::getNotIcon().pixmap(size,size));
+    }
+
+    if(options.contains(CELLTYPE_NEGATE))
+    {
+        lst.append("NEG");
+        icons.append(IconFactory::getNegIcon().pixmap(size,size));
+    }
+
+    if(m_lstDlg != 0)
+    {
+        m_lstDlg->close();
+        m_lstDlg = 0;
+    }
+    m_lstDlg = new QueryItemListDialog(lst, icons, true , 0);
+    m_lstDlg->setWindowFlags(Qt::FramelessWindowHint);
+    m_lstDlg->move(x, y);
+    m_lstDlg->setModal(true);
+    m_lstDlg->exec();
+    return m_lstDlg->getSelection();
+
+}

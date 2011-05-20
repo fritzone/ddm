@@ -46,10 +46,10 @@ QGraphicsItemGroup* CellJoinCommand::render(int& x, int& y, int& w, int &h)
     int tw = m_txt->boundingRect().width() + CELL_SIZE * 2;
     if(w<tw) w = tw ;
 
-    QSet<CellTypeChooser::CellTypeChooserType> allowedTypes;
-    allowedTypes.insert(CellTypeChooser::CELLTYPE_TABLE);
+    QSet<CellTypeChooserType> allowedTypes;
+    allowedTypes.insert(CELLTYPE_TABLE);
 
-    m_chooser = new CellTypeChooser(m_level, CellTypeChooser::CELLTYPECHOOSER_REGULAR, CellTypeChooser::CELLTYPE_TABLE, allowedTypes, m_helper, this, m_owner);
+    m_chooser = new CellTypeChooser(m_level, CellTypeChooser::CELLTYPECHOOSER_REGULAR, CELLTYPE_TABLE, allowedTypes, m_helper, this, m_owner);
     m_chooser->render(lx, ly, w, h);
     grp->addToGroup(m_chooser);
 

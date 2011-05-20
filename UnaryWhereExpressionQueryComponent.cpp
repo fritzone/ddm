@@ -29,3 +29,18 @@ QueryComponent* UnaryWhereExpressionQueryComponent::duplicate()
     UnaryWhereExpressionQueryComponent* newc = new UnaryWhereExpressionQueryComponent(m_parent, m_level);
     return newc;
 }
+
+void UnaryWhereExpressionQueryComponent::handleAction(const QString& action, QueryComponent* referringObject)
+{
+    if(action == "NOT")
+    {
+        if(m_smallTypes.contains(CELLTYPE_NOT))
+        {
+            m_smallTypes.remove(CELLTYPE_NOT);
+        }
+        else
+        {
+            m_smallTypes.insert(CELLTYPE_NOT);
+        }
+    }
+}
