@@ -4,6 +4,8 @@
 #include "Version.h"
 #include "VersionData.h"
 
+#include <QTreeWidgetItem>
+
 class Project;
 
 class DefaultVersionImplementation : public Version

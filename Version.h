@@ -3,8 +3,6 @@
 
 #include "SerializableElement.h"
 
-#include <QTreeWidgetItem>
-
 class UserDataType;
 class Table;
 class ForeignKey;
@@ -202,18 +200,41 @@ public:
      */
     virtual UserDataType* provideDatatypeForSqlType(const QString& name, const QString& sql, const QString& nullable, const QString& defaultValue, bool relaxed) = 0;
 
+    /**
+     * Method called when a new column was created in this version, for the given table. It will report
+     * issues that the new column introduces (such as normalization, or foreign key suggestion..)
+     */
     virtual QVector<Issue*> checkIssuesOfNewColumn(Column* inNewColumn, Table* inTable) = 0;
+
+    /**
+     * Adds an issue to the version
+     */
     virtual void addIssuse(Issue*) = 0;
+
+    /**
+     * Retrieves the issue with the given name, or 0 if there is none
+     */
     virtual Issue* getIssue(const QString&) = 0;
+
+    /**
+     * Removes the issue from the version
+     */
     virtual void removeIssue(const QString&) = 0;
+
+    /**
+     * Retrieves the versions' issues
+     */
     virtual QVector<Issue*>& getIssues() = 0;
 
+    /**
+     * Validates the version. The flag tells if it's an automatic or on request validation
+     */
     virtual void validateVersion(bool onRequest) = 0;
+
+    /**
+     * Sets the valiadtion flags for the next validation
+     */
     virtual void setSpecialValidationFlags(int) = 0;
-
-
-private:
-
 };
 
 #endif // VERSION_H

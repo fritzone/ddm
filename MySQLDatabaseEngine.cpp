@@ -354,7 +354,7 @@ Table* MySQLDatabaseEngine::reverseEngineerTable(const QString& host, const QStr
     return tab;
 }
 
-bool MySQLDatabaseEngine::injectSql(const QString& host, const QString& user, const QString& pass, const QString& dbName, const QStringList& sqls, QString& lastSql, bool rollbackOnError, bool createTablesOnlyIfNotExist)
+bool MySQLDatabaseEngine::injectSql(const QString& host, const QString& user, const QString& pass, const QString& dbName, const QStringList& sqls, QString& lastSql, bool rollbackOnError, bool)
 {
     QSqlDatabase db = QSqlDatabase::addDatabase("QMYSQL");
 

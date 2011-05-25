@@ -2055,11 +2055,11 @@ void NewTableForm::onPasteColumn()
     // till here
 }
 
-void NewTableForm::onCodepageChange(QString a)
+void NewTableForm::onCodepageChange(QString)
 {
     updateSqlDueToChange();
 }
 
-void NewTableForm::presentSql(Project*, SqlSourceEntity*,const QString& codepage)
+void NewTableForm::presentSql(Project*, SqlSourceEntity*,const QString&)
 {
 }
