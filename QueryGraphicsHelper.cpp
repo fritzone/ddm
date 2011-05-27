@@ -143,7 +143,7 @@ QString QueryGraphicsHelper::presentList(int x, int y, QSet<CellTypeChooserType>
         m_lstDlg->close();
         m_lstDlg = 0;
     }
-    m_lstDlg = new QueryItemListDialog(lst, icons, true , 0);
+    m_lstDlg = new QueryItemListDialog(lst, icons, false , 0);
     m_lstDlg->setWindowFlags(Qt::FramelessWindowHint);
     m_lstDlg->move(x, y);
     m_lstDlg->setModal(true);

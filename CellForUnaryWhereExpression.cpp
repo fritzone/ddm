@@ -2,6 +2,7 @@
 #include "CellForUnaryWhereExpression.h"
 #include "CellTypeChooser.h"
 #include "OptionsType.h"
+#include "UnaryWhereExpressionQueryComponent.h"
 
 #include <QBrush>
 
@@ -28,12 +29,7 @@ QGraphicsItemGroup* CellForUnaryWhereExpression::render(int &x, int &y, int &w, 
     grp->addToGroup(m_close);
     m_close->setZValue(2);
 
-    QSet<CellTypeChooserType> allowedTypes;
-    allowedTypes.insert(CELLTYPE_NOTHING);
-    allowedTypes.insert(CELLTYPE_NOT);
-    allowedTypes.insert(CELLTYPE_NEGATE);
-
-    m_smallTypeModifier = new CellTypeChooser(m_level, CellTypeChooser::CELLTYPECHOOSER_REGULAR, CELLTYPE_NOTHING, allowedTypes, m_helper, this, m_owner);
+    m_smallTypeModifier = new CellTypeChooser(m_level, CellTypeChooser::CELLTYPECHOOSER_REGULAR, CELLTYPE_NOTHING, m_owner->getTypeset(), m_helper, this, m_owner);
     m_smallTypeModifier ->render(sx, cy, w, h);
     grp->addToGroup(m_smallTypeModifier );
 
@@ -44,7 +40,7 @@ QGraphicsItemGroup* CellForUnaryWhereExpression::render(int &x, int &y, int &w, 
     m_bigTypeModifier = new CellTypeChooser(m_level, CellTypeChooser::CELLTYPECHOOSER_BIG, CELLTYPE_NOTHING, allowedTypesforBigOne, m_helper, this, m_owner);
     int tx = sx + CELL_SIZE + 5;
     int ty = cy + 2;
-    m_bigTypeModifier ->render(tx, ty, w, h);
+    m_bigTypeModifier->render(tx, ty, w, h);
     grp->addToGroup(m_bigTypeModifier );
 
     x = sx; w = sw; h = sh;
