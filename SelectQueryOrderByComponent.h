@@ -13,6 +13,11 @@ public:
     virtual QSet<OptionsType> provideOptions();
     virtual void onClose(){}
     virtual QueryComponent* duplicate();
+    virtual QSet<CellTypeChooserType>  getTypeset() const
+    {
+        return QSet<CellTypeChooserType> ();
+    }
+
 };
 
 #endif // SELECTQUERYORDERBYCOMPONENT_H

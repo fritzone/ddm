@@ -18,6 +18,10 @@ public:
     {
         return m_as;
     }
+    virtual QSet<CellTypeChooserType>  getTypeset() const
+    {
+        return QSet<CellTypeChooserType> ();
+    }
 
 private:
 
