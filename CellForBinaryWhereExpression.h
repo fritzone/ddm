@@ -5,6 +5,7 @@
 #include "QueryGraphicsItem.h"
 
 class CellForUnaryWhereExpression;
+class CellTypeChooser;
 
 class CellForBinaryWhereExpression : public QueryGraphicsItem
 {
@@ -25,6 +26,8 @@ private:
 
     QueryGraphicsItem* m_left;
     QueryGraphicsItem* m_right;
+
+    CellTypeChooser* m_operationType;
 };
 
 #endif // CELLFORBINARYWHEREEXPRESSION_H

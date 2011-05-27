@@ -30,8 +30,7 @@ private:
     QSet<CellTypeChooserType> m_smallTypes;
 
     // the big type chooser (function, column, etc)
-    CellTypeChooserType m_bigType;
-
+    CellTypeChooserType m_currentBigType;
 };
 
 #endif // UNARYWHEREEXPRESSIONQUERYCOMPONENT_H

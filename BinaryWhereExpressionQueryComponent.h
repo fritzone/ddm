@@ -28,7 +28,10 @@ public:
     void createSides();
     WhereExpressionQueryComponent* left() {return m_left;}
     WhereExpressionQueryComponent* right() {return m_right;}
-
+    CellTypeChooserType getOperation()
+    {
+        return m_operation;
+    }
 
 private:
 
@@ -38,6 +41,7 @@ private:
 
     // the graphics item for the component
     CellForBinaryWhereExpression* m_gritm;
+    CellTypeChooserType m_operation;
 
 
 };

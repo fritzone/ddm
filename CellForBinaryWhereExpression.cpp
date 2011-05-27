@@ -1,6 +1,7 @@
 #include "CellForBinaryWhereExpression.h"
 #include "CellForUnaryWhereExpression.h"
 #include "BinaryWhereExpressionQueryComponent.h"
+#include "CellTypeChooser.h"
 
 CellForBinaryWhereExpression::CellForBinaryWhereExpression (int level, QueryGraphicsHelper *c, QueryGraphicsItem *parent, QueryComponent *owner):
     QueryGraphicsItem(level, parent, c, owner)
@@ -19,7 +20,18 @@ QGraphicsItemGroup* CellForBinaryWhereExpression::render(int &x, int &y, int &w,
         m_left = l->createGraphicsItem(owner->getHelper(), this);
         QGraphicsItemGroup* grpLeft = m_left->render(x, y, w, h);
 
-        y += CELL_SIZE * 2;
+        CellTypeChooserType operation = owner->getOperation();
+
+        QSet<CellTypeChooserType> allowedTypesforBigOne;
+        allowedTypesforBigOne.insert(CELLTYPE_FUNCTION);
+        allowedTypesforBigOne.insert(CELLTYPE_LITERAL);
+        allowedTypesforBigOne.insert(CELLTYPE_COLUMN);
+        m_operationType = new CellTypeChooser(m_level, CellTypeChooser::CELLTYPECHOOSER_BIG, CELLTYPE_NOTHING, allowedTypesforBigOne, m_helper, this, m_owner);
+
+        m_operationType->render(x, y, w, h);
+        grp->addToGroup(m_operationType );
+
+        y += CELL_SIZE * 2 + 2;
 
         m_right = owner->right()->createGraphicsItem(owner->getHelper(), this);
         QGraphicsItemGroup* grpRight = m_right->render(x, y, w, h);
@@ -27,7 +39,7 @@ QGraphicsItemGroup* CellForBinaryWhereExpression::render(int &x, int &y, int &w,
         grp->addToGroup(grpLeft);
         grp->addToGroup(grpRight);
 
-        QRectF rect(x, ly , 10, y - ly);
+        QRectF rect(x, ly , 10, y - ly - 2);
 
         m_frame = new QGraphicsRectItem(rect, grp);
     }

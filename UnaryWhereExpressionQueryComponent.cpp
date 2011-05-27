@@ -3,6 +3,13 @@
 
 UnaryWhereExpressionQueryComponent::UnaryWhereExpressionQueryComponent(QueryComponent* p, int l): WhereExpressionQueryComponent(p,l)
 {
+
+    QSet<CellTypeChooserType> allowedTypes;
+    allowedTypes.insert(CELLTYPE_NOTHING);
+    allowedTypes.insert(CELLTYPE_NOT);
+    allowedTypes.insert(CELLTYPE_NEGATE);
+
+    m_smallTypes = allowedTypes;
 }
 
 QueryGraphicsItem* UnaryWhereExpressionQueryComponent::createGraphicsItem(QueryGraphicsHelper * helper, QueryGraphicsItem * parent)
@@ -11,6 +18,7 @@ QueryGraphicsItem* UnaryWhereExpressionQueryComponent::createGraphicsItem(QueryG
     m_gritm = new CellForUnaryWhereExpression(getLevel() + 1, helper, parent, this);
 
     return m_gritm;
+
 }
 
 QString UnaryWhereExpressionQueryComponent::get()
