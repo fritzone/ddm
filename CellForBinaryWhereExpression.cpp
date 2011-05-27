@@ -19,6 +19,8 @@ QGraphicsItemGroup* CellForBinaryWhereExpression::render(int &x, int &y, int &w,
         m_left = l->createGraphicsItem(owner->getHelper(), this);
         QGraphicsItemGroup* grpLeft = m_left->render(x, y, w, h);
 
+        y += CELL_SIZE * 2;
+
         m_right = owner->right()->createGraphicsItem(owner->getHelper(), this);
         QGraphicsItemGroup* grpRight = m_right->render(x, y, w, h);
 
@@ -29,8 +31,6 @@ QGraphicsItemGroup* CellForBinaryWhereExpression::render(int &x, int &y, int &w,
 
         m_frame = new QGraphicsRectItem(rect, grp);
     }
-
-
     return grp;
 }
 

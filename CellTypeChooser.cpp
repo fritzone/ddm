@@ -17,7 +17,7 @@ CellTypeChooser::CellTypeChooser(int level, CellTypeChooserSize size, CellTypeCh
 
 QGraphicsItemGroup* CellTypeChooser::render(int& x, int& y, int& w, int &h)
 {
-    int size = m_size == CELLTYPECHOOSER_REGULAR?CELL_SIZE+1:CELL_SIZE*2+1;
+    int size = (m_size == CELLTYPECHOOSER_REGULAR)?(CELL_SIZE+1):(CELL_SIZE*2+1);
     QRect r(x, y, size-1, size-1);
     m_helper->addNewHotCell(this, r);
     addToGroup(m_rect = new QGraphicsRectItem(r));

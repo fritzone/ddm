@@ -33,6 +33,10 @@ public:
     virtual QSet<OptionsType> provideOptions();
     virtual void onClose(){}
     virtual QueryComponent* duplicate();
+    virtual QSet<CellTypeChooserType>  getTypeset() const
+    {
+        return QSet<CellTypeChooserType> ();
+    }
 
 private:
     WhereType m_whereType;
