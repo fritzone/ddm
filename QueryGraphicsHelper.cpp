@@ -6,6 +6,8 @@
 #include "MainWindow.h"
 #include "IconFactory.h"
 #include "Workspace.h"
+#include "DatabaseEngine.h"
+#include "DatabaseBuiltinFunction.h"
 
 QueryGraphicsHelper::QueryGraphicsHelper() : hotCells(), m_lstDlg(0), m_scene(0), m_form(0)
 {
@@ -138,6 +140,34 @@ QString QueryGraphicsHelper::presentList(int x, int y, QSet<CellTypeChooserType>
         icons.append(IconFactory::getNegIcon().pixmap(size,size));
     }
 
+    if(options.contains(CELLTYPE_MINUS))
+    {
+        lst.append("MINUS");
+        icons.append(IconFactory::getMinusIcon().pixmap(size,size));
+    }
+
+    if(options.contains(CELLTYPE_REMOVE_THIS))
+    {
+        lst.append("REMOVE");
+        icons.append(IconFactory::getCloseIcon().pixmap(size,size));
+    }
+
+    if(options.contains(CELLTYPE_FUNCTION))
+    {
+        lst.append("Function");
+        icons.append(IconFactory::getFunctionIcon().pixmap(size,size));
+    }
+
+
+    if(options.contains(CELLTYPE_FUNCTION_EXPAND))
+    {
+        QVector<DatabaseBuiltinFunction> functions = Workspace::getInstance()->currentProjectsEngine()->getBuiltinFunctions();
+        for(int i=0; i<functions.size(); i++)
+        {
+            lst.append(functions.at(i).getName().toUpper());
+            icons.append(IconFactory::getFunctionIcon().pixmap(size,size));
+        }
+    }
     if(m_lstDlg != 0)
     {
         m_lstDlg->close();

@@ -38,6 +38,7 @@ public slots:
 private:
     Ui::QueryItemListDialog *ui;
     QString m_selected;
+    QMap<QString, QString> m_beforeAfter;
 };
 
 #endif // QUERYITEMLISTDIALOG_H

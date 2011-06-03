@@ -6,6 +6,7 @@
 #include <QString>
 #include <QList>
 #include <QSet>
+#include <QVector>
 
 class QueryGraphicsItem;
 class QueryGraphicsHelper;
@@ -28,12 +29,6 @@ public:
      * the query. These should not be messed up with the types...
      */
     virtual QSet<OptionsType> provideOptions() = 0;
-
-    /**
-     * If the query component has any types supported, this will give them back...
-     */
-    virtual QSet<CellTypeChooserType>  getTypeset() const = 0;
-
     virtual void onClose() = 0;
     virtual QueryComponent* duplicate() = 0;
 

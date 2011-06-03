@@ -7,7 +7,7 @@
 #include <QBrush>
 
 CellForUnaryWhereExpression::CellForUnaryWhereExpression (int level, QueryGraphicsHelper *c, QueryGraphicsItem *parent, QueryComponent *owner):
-    QueryGraphicsItem(level, parent, c, owner), m_frame(0), m_close(0), m_smallTypeModifier(0), m_bigTypeModifier(0)
+    QueryGraphicsItem(level, parent, c, owner), m_frame(0), m_close(0), m_smallTypeModifier(0), m_bigTypeModifiers()
 {
 }
 
@@ -29,19 +29,43 @@ QGraphicsItemGroup* CellForUnaryWhereExpression::render(int &x, int &y, int &w, 
     grp->addToGroup(m_close);
     m_close->setZValue(2);
 
-    m_smallTypeModifier = new CellTypeChooser(m_level, CellTypeChooser::CELLTYPECHOOSER_REGULAR, CELLTYPE_NOTHING, m_owner->getTypeset(), m_helper, this, m_owner);
-    m_smallTypeModifier ->render(sx, cy, w, h);
-    grp->addToGroup(m_smallTypeModifier );
 
-    QSet<CellTypeChooserType> allowedTypesforBigOne;
-    allowedTypesforBigOne.insert(CELLTYPE_FUNCTION);
-    allowedTypesforBigOne.insert(CELLTYPE_LITERAL);
-    allowedTypesforBigOne.insert(CELLTYPE_COLUMN);
-    m_bigTypeModifier = new CellTypeChooser(m_level, CellTypeChooser::CELLTYPECHOOSER_BIG, CELLTYPE_NOTHING, allowedTypesforBigOne, m_helper, this, m_owner);
-    int tx = sx + CELL_SIZE + 5;
-    int ty = cy + 2;
-    m_bigTypeModifier->render(tx, ty, w, h);
-    grp->addToGroup(m_bigTypeModifier );
+    UnaryWhereExpressionQueryComponent* owner = dynamic_cast<UnaryWhereExpressionQueryComponent*>(m_owner);
+    if(owner)
+    {
+
+        QSet<CellTypeChooserType> allowedTypes;
+        QVector<CellTypeChooserType> choosableTypes = owner->getChoosableTypes();
+
+        for(int i=0; i<choosableTypes.size(); i++)
+        {
+            allowedTypes.insert(choosableTypes.at(i));
+        }
+
+        m_smallTypeModifier = new CellTypeChooser(m_level, CellTypeChooser::CELLTYPECHOOSER_REGULAR, CELLTYPE_NOTHING, allowedTypes, m_helper, this, m_owner);
+        m_smallTypeModifier ->render(sx, cy, w, h);
+        grp->addToGroup(m_smallTypeModifier );
+
+        QVector<CellTypeChooserType> types = owner->getTypeset();
+        for(int i=0; i<types.size(); i++)
+        {
+            QSet<CellTypeChooserType> allowedTypesforBigOne;
+            allowedTypesforBigOne.insert(CELLTYPE_REMOVE_THIS);
+            if(types.at(i) == CELLTYPE_FUNCTION)
+            {
+                allowedTypesforBigOne.insert(CELLTYPE_FUNCTION_EXPAND);
+            }
+            CellTypeChooser* bigTypeModifier = new CellTypeChooser(m_level, CellTypeChooser::CELLTYPECHOOSER_BIG, types.at(i), allowedTypesforBigOne, m_helper, this, m_owner, i);
+            int tx = sx+((CELL_SIZE+1) *2)*(i+1)+2;
+            if(tx > sw - CELL_SIZE) sw += ((CELL_SIZE+1) *2) +2;
+            int ty = cy+2;
+            bigTypeModifier->render(tx,ty,w,h);
+            grp->addToGroup(bigTypeModifier);
+            m_bigTypeModifiers.append(bigTypeModifier);
+        }
+    }
+
+    sw += 16;
 
     x = sx; w = sw; h = sh;
 

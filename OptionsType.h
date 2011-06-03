@@ -41,9 +41,31 @@ enum CellTypeChooserType
     CELLTYPE_LITERAL = 9,
     CELLTYPE_QUERY = 10,
 
-    CELLTYPE_NOTHING = 11
+    CELLTYPE_NOTHING = 11,
+    CELLTYPE_REMOVE_THIS = 12,      // plain close button :)
+    CELLTYPE_FUNCTION_EXPAND = 13   // when the QueryGraphicsHelper sees this it asks for the DB engine to provide a list of functions supported
 
 };
 
+enum FunctionType
+{
+    FT_CONTROLFLOW = 0,
+    FT_STRING = 1,
+    FT_NUMERIC = 2,
+    FT_DATETIME = 3,
+    FT_FULLTEXTSEARCH = 4,
+    FT_CAST = 5,
+    FT_BIT = 6,
+    FT_CRYPT = 7,
+    FT_INFO = 8,
+    FT_MISC = 9
+};
+
+enum FunctionReturnType
+{
+    FRT_STRING,
+    FRT_NUMERIC,
+    FRT_DATETIME
+};
 
 #endif // OPTIONSTYPE_H

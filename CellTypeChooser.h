@@ -3,6 +3,7 @@
 
 #include "QueryGraphicsItem.h"
 #include "QueryGraphicsHelper.h"
+#include "DatabaseBuiltinFunction.h"
 
 #include <QSet>
 
@@ -17,6 +18,8 @@ public:
     };
 
     CellTypeChooser(int level, CellTypeChooserSize size, CellTypeChooserType defaultType, QSet<CellTypeChooserType> allowedTypes, QueryGraphicsHelper*, QueryGraphicsItem*, QueryComponent* owner);
+    CellTypeChooser(int level, CellTypeChooserSize size, CellTypeChooserType defaultType, QSet<CellTypeChooserType> allowedTypes, QueryGraphicsHelper*, QueryGraphicsItem*, QueryComponent* owner, int index);
+
     virtual QGraphicsItemGroup* render(int& x, int& y, int& w, int &h);
     virtual void updateWidth(int newWidth);
     virtual void mousePress(int x, int y);
@@ -29,6 +32,8 @@ private:
     CellTypeChooserType m_currentType;
     QGraphicsRectItem* m_rect;
     CellTypeChooserSize m_size;
+    int m_index;
+    DatabaseBuiltinFunction* m_functionSupport;
 };
 
 #endif // CELLTYPECHOOSER_H

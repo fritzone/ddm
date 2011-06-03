@@ -1,15 +1,8 @@
 #include "UnaryWhereExpressionQueryComponent.h"
 #include "CellForUnaryWhereExpression.h"
 
-UnaryWhereExpressionQueryComponent::UnaryWhereExpressionQueryComponent(QueryComponent* p, int l): WhereExpressionQueryComponent(p,l)
+UnaryWhereExpressionQueryComponent::UnaryWhereExpressionQueryComponent(QueryComponent* p, int l): WhereExpressionQueryComponent(p,l), m_smallTypes()
 {
-
-    QSet<CellTypeChooserType> allowedTypes;
-    allowedTypes.insert(CELLTYPE_NOTHING);
-    allowedTypes.insert(CELLTYPE_NOT);
-    allowedTypes.insert(CELLTYPE_NEGATE);
-
-    m_smallTypes = allowedTypes;
 }
 
 QueryGraphicsItem* UnaryWhereExpressionQueryComponent::createGraphicsItem(QueryGraphicsHelper * helper, QueryGraphicsItem * parent)
@@ -42,13 +35,50 @@ void UnaryWhereExpressionQueryComponent::handleAction(const QString& action, Que
 {
     if(action == "NOT")
     {
-        if(m_smallTypes.contains(CELLTYPE_NOT))
-        {
-            m_smallTypes.remove(CELLTYPE_NOT);
-        }
-        else
-        {
-            m_smallTypes.insert(CELLTYPE_NOT);
-        }
+        m_smallTypes.insert(0, CELLTYPE_NOT);
+        m_helper->triggerReRender();
+        return;
     }
+    if(action == "NEG")
+    {
+        m_smallTypes.insert(0, CELLTYPE_NEGATE);
+        m_helper->triggerReRender();
+        return;
+    }
+    if(action == "MINUS")
+    {
+        m_smallTypes.insert(0, CELLTYPE_MINUS);
+        m_helper->triggerReRender();
+        return;
+    }
+    if(action.startsWith("REMOVE"))
+    {
+        int idx = action.right(action.length() - 6).toInt();
+        m_smallTypes.remove(idx);
+        m_helper->triggerReRender();
+        return;
+    }
+    if(action == "Function")
+    {
+        m_smallTypes.insert(0, CELLTYPE_FUNCTION);
+        m_helper->triggerReRender();
+        return;
+    }
+
+    if(action.startsWith("@"))
+    {
+        // this is a function...
+    }
+}
+
+QVector<CellTypeChooserType> UnaryWhereExpressionQueryComponent::getChoosableTypes() const
+{
+    QVector<CellTypeChooserType> allowedTypes;
+    allowedTypes.append(CELLTYPE_NOTHING);
+    allowedTypes.append(CELLTYPE_NEGATE);
+    allowedTypes.append(CELLTYPE_MINUS);
+    allowedTypes.append(CELLTYPE_NOT);
+    allowedTypes.append(CELLTYPE_FUNCTION);
+
+    return allowedTypes;
 }

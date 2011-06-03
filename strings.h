@@ -53,6 +53,11 @@ static const QString strCloseIcon = ":/images/actions/images/actions/application
 static const QString strWandIcon = ":/images/actions/images/small/wand.png";    // used for the distinct selection
 static const QString strNotIcon = ":/images/actions/images/small/not.png";
 static const QString strNegIcon = ":/images/actions/images/small/neg.png";
+static const QString strMinusIcon = ":/images/actions/images/small/minus.png";
+static const QString strFunctionIcon = ":/images/actions/images/small/function.png";
+static const QString strBigNotIcon = ":/images/actions/images/big/big_not_icon.png";
+static const QString strBigNegIcon = ":/images/actions/images/big/big_neg_icon.png";
+static const QString strBigMinusIcon = ":/images/actions/images/big/big_minus_icon.png";
 
 static const QString NEW_TABLE = "New table reference";
 static const QString DUPLICATE = "Duplicate";

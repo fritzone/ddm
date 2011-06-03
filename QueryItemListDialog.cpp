@@ -69,7 +69,15 @@ QueryItemListDialog::QueryItemListDialog(QStringList lst, QList<QIcon> icons, bo
     ui->lstValues->resize(200,10 * (lst.size()));
     for(int i=0; i<lst.size(); i++)
     {
-        QListWidgetItem* lwi = new QListWidgetItem(lst.at(i));
+        QString str = lst.at(i);
+        if(str.startsWith("@"))
+        {
+            str = str.right(str.length() - 1);
+            m_beforeAfter[str] = lst.at(i);
+        }
+
+
+        QListWidgetItem* lwi = new QListWidgetItem(str);
         lwi->setFont(QFont("Arial", 10, 2));
         lwi->setIcon(icons.at(i));
         if(checks)
@@ -91,7 +99,14 @@ QueryItemListDialog::~QueryItemListDialog()
 
 void QueryItemListDialog::onDblClickItem(QListWidgetItem* itm)
 {
-    m_selected = itm->text();
+    if(m_beforeAfter.contains(itm->text()))
+    {
+        m_selected = m_beforeAfter[itm->text()];
+    }
+    else
+    {
+        m_selected = itm->text();
+    }
     close();
 }
 

@@ -19,9 +19,9 @@ public:
     virtual QSet<OptionsType> provideOptions();
     virtual void onClose(){};
     virtual QueryComponent* duplicate();
-    virtual QSet<CellTypeChooserType>  getTypeset() const
+    virtual QVector<CellTypeChooserType>  getTypeset() const
     {
-        return QSet<CellTypeChooserType> ();
+        return QVector<CellTypeChooserType> ();
     }
 
     /** creates the left and the right side, so that it does not fall into infinite recursion */
