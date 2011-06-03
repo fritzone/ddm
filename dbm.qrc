@@ -117,6 +117,11 @@
         <file>images/small/wand.png</file>
         <file>images/small/not.png</file>
         <file>images/small/neg.png</file>
+        <file>images/big/big_not_icon.png</file>
+        <file>images/big/big_neg_icon.png</file>
+        <file>images/small/minus.png</file>
+        <file>images/big/big_minus_icon.png</file>
+        <file>images/small/function.png</file>
     </qresource>
     <qresource prefix="/bigger">
         <file>images/unaf.png</file>

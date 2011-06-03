@@ -23,7 +23,7 @@ private:
     QGraphicsRectItem* m_frame;
     CellClose* m_close;
     CellTypeChooser* m_smallTypeModifier;
-    CellTypeChooser* m_bigTypeModifier;
+    QVector<CellTypeChooser*> m_bigTypeModifiers;
 };
 
 #endif // CELLFORUNARYWHEREEXPRESSION_H

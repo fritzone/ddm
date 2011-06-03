@@ -24,9 +24,9 @@ public:
     virtual QSet<OptionsType> provideOptions();
     virtual void onClose(){}
     virtual QueryComponent* duplicate();
-    virtual QSet<CellTypeChooserType>  getTypeset() const
+    virtual QVector<CellTypeChooserType>  getTypeset() const
     {
-        return QSet<CellTypeChooserType> ();
+        return QVector<CellTypeChooserType> ();
     }
 
     virtual QVector<const Column*> provideColumns();

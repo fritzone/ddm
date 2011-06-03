@@ -54,12 +54,41 @@ public:
         return icon;
     }
 
+    static const QIcon& getBigNotIcon()
+    {
+        static const QIcon icon(strBigNotIcon);
+        return icon;
+    }
+
     static const QIcon& getNegIcon()
     {
         static const QIcon icon(strNegIcon);
         return icon;
     }
 
+    static const QIcon& getMinusIcon()
+    {
+        static const QIcon icon(strMinusIcon);
+        return icon;
+    }
+
+    static const QIcon& getFunctionIcon()
+    {
+        static const QIcon icon(strFunctionIcon);
+        return icon;
+    }
+
+    static const QIcon& getBigMinusIcon()
+    {
+        static const QIcon icon(strBigMinusIcon);
+        return icon;
+    }
+
+    static const QIcon& getBigNegIcon()
+    {
+        static const QIcon icon(strBigNegIcon);
+        return icon;
+    }
 
     static const QIcon& getDatabaseIcon()
     {

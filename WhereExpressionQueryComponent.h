@@ -11,8 +11,9 @@
  *    - FUNCTION CALL - this is a function call
  *    - ALPHANUMERIC - this is typed in text or numbers
  *    - QUERY - this will create a query as a child of this... uhh...
+ *    - -, +, IS NOT NUL, !, ~
  *    These above will be accessible in a "big" type chooser, just after the regular type chooser
- *    and the operators: !, -, IS NOT NULL will be acceessible from a classical type chooser.
+ *    and adding an extra operator: !, -, IS NOT NULL, FUCTION, etc ... will be acceessible from a classical type chooser.
  *
  * - Binary Expression (Unary OPERATOR Unary, where OPERATOR is Either + - or LIKE (NOT Like))
  * - Ternary Expression (Something BETWEEN A AND B)
@@ -28,6 +29,13 @@ public:
     virtual QSet<OptionsType> provideOptions() = 0;
     virtual void onClose() = 0;
     virtual QueryComponent* duplicate() = 0;
+
+    /**
+     * If the query component has any types supported, this will give them back...
+     * Basically this is a vector of flags, as we build up the expression so that we can have:
+     * ! func ( ~ anotherfunc (- table.col) ) )
+     */
+    virtual QVector<CellTypeChooserType>  getTypeset() const = 0;
 
     QueryGraphicsHelper* getHelper() {return m_helper;}
 

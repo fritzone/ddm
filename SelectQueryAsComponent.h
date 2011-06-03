@@ -18,9 +18,9 @@ public:
     {
         return m_as;
     }
-    virtual QSet<CellTypeChooserType>  getTypeset() const
+    virtual QVector<CellTypeChooserType>  getTypeset() const
     {
-        return QSet<CellTypeChooserType> ();
+        return QVector<CellTypeChooserType> ();
     }
 
 private:

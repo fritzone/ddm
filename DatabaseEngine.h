@@ -12,7 +12,7 @@ class AbstractSqlGenerator;
 class Version;
 class Table;
 class Project;
-
+class DatabaseBuiltinFunction;
 
 /**
  * This class is a kind of "wrapper" for the other classes that all deal
@@ -81,6 +81,8 @@ public:
     virtual QVector<QString> getAvailableDatabases(const QString& host, const QString& user, const QString& pass) = 0;
     virtual QVector<QString> getAvailableTables(const QString& host, const QString& user, const QString& pass, const QString& db) = 0;
     virtual bool createDatabase(const QString& host, const QString& user, const QString& pass, const QString&) = 0;
+
+    virtual QVector<DatabaseBuiltinFunction> getBuiltinFunctions() = 0;
 
     QString getTypeStringForSqlType(const QString& sqlType);
 

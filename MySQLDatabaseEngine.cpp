@@ -19,6 +19,7 @@
 #include "TableInstance.h"
 #include "AbstractStorageEngineListProvider.h"
 #include "ForeignKey.h"
+#include "DatabaseBuiltinFunction.h"
 
 MySQLDatabaseEngine::MySQLDatabaseEngine() : DatabaseEngine("MySQL"), m_revEngMappings(), m_oneTimeMappings()
 {
@@ -454,4 +455,12 @@ bool MySQLDatabaseEngine::createDatabase(const QString& host, const QString& use
         return false;
     }
     return true;
+}
+
+QVector<DatabaseBuiltinFunction> MySQLDatabaseEngine::getBuiltinFunctions()
+{
+    QVector<DatabaseBuiltinFunction> result;
+    QString X = QString("X");
+    result.append(DatabaseBuiltinFunction(QString("@abs"), FT_NUMERIC, FRT_NUMERIC, DatabaseBuiltinFunctionsParameter(X, FRT_NUMERIC, true)));
+    return result;
 }

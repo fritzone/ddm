@@ -250,7 +250,9 @@ HEADERS += MainWindow.h \
     BinaryWhereExpressionQueryComponent.h \
     UnaryWhereExpressionQueryComponent.h \
     CellForBinaryWhereExpression.h \
-    CellForUnaryWhereExpression.h
+    CellForUnaryWhereExpression.h \
+    DatabaseBuiltinFunction.h \
+    DatabaseBuiltinFunctionsParameter.h
 FORMS += MainWindow.ui \
     MainWindowButtonDialog.ui \
     NewProjectDialog.ui \
