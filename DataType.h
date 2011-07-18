@@ -9,7 +9,7 @@
 /**
  * This is a base class representing a data type
  */
-class DataType
+class   DataType
 {
 public:
     enum DT_TYPE

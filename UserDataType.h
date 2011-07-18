@@ -20,6 +20,11 @@ public:
     unsignedDT(false), description(""), canBeNull(true), autoIncrement(false)
     {}
 
+    UserDataType(const QString& name, DT_TYPE type):DataType(name, type), sqlType(""),
+    icon(0), size(""), defaultValue(""), miscStuff(), codePage(""),
+    unsignedDT(false), description(""), canBeNull(true), autoIncrement(false)
+    {}
+
     UserDataType(const UserDataType& other):DataType(other.name, other.type),
     sqlType(other.sqlType), icon(other.icon), size(other.size),
     defaultValue(other.defaultValue), miscStuff(other.miscStuff),

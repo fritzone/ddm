@@ -35,6 +35,12 @@ public:
         return m_name;
     }
 
+    QString getNiceName() const
+    {
+        QString a = m_name.mid(1).toUpper();
+        return a;
+    }
+
     void setName(const QString& name)
     {
         m_name = name;

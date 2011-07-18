@@ -19,7 +19,7 @@ public:
     virtual QSet<OptionsType> provideOptions();
     virtual void onClose(){};
     virtual QueryComponent* duplicate();
-    virtual QVector<CellTypeChooserType>  getTypeset() const
+    virtual QVector<CellTypeChooserType>  getFunctionsAndOperators() const
     {
         return QVector<CellTypeChooserType> ();
     }

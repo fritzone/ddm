@@ -43,7 +43,12 @@ enum CellTypeChooserType
 
     CELLTYPE_NOTHING = 11,
     CELLTYPE_REMOVE_THIS = 12,      // plain close button :)
-    CELLTYPE_FUNCTION_EXPAND = 13   // when the QueryGraphicsHelper sees this it asks for the DB engine to provide a list of functions supported
+    CELLTYPE_FUNCTION_EXPAND = 13,  // when the QueryGraphicsHelper sees this it asks for the DB engine to provide a list of functions supported
+
+    CELLTYPE_CURSOR = 14,           // this is always placed after the last cell type chooser in the unary expression
+
+
+    CELLTYPE_LAST
 
 };
 
@@ -58,14 +63,8 @@ enum FunctionType
     FT_BIT = 6,
     FT_CRYPT = 7,
     FT_INFO = 8,
-    FT_MISC = 9
-};
-
-enum FunctionReturnType
-{
-    FRT_STRING,
-    FRT_NUMERIC,
-    FRT_DATETIME
+    FT_MISC = 9,
+    FT_INVALID = 10
 };
 
 #endif // OPTIONSTYPE_H

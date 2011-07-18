@@ -46,8 +46,12 @@ QGraphicsItemGroup* CellForUnaryWhereExpression::render(int &x, int &y, int &w, 
         m_smallTypeModifier ->render(sx, cy, w, h);
         grp->addToGroup(m_smallTypeModifier );
 
-        QVector<CellTypeChooserType> types = owner->getTypeset();
-        for(int i=0; i<types.size(); i++)
+        int localXDepl = 0;
+        int tx = 0; // this holds where we are putting the next cell type chooser
+        int ty = cy+2;
+        int i=0;
+        QVector<CellTypeChooserType> types = owner->getFunctionsAndOperators();
+        for(i; i<types.size(); i++)
         {
             QSet<CellTypeChooserType> allowedTypesforBigOne;
             allowedTypesforBigOne.insert(CELLTYPE_REMOVE_THIS);
@@ -56,13 +60,25 @@ QGraphicsItemGroup* CellForUnaryWhereExpression::render(int &x, int &y, int &w, 
                 allowedTypesforBigOne.insert(CELLTYPE_FUNCTION_EXPAND);
             }
             CellTypeChooser* bigTypeModifier = new CellTypeChooser(m_level, CellTypeChooser::CELLTYPECHOOSER_BIG, types.at(i), allowedTypesforBigOne, m_helper, this, m_owner, i);
-            int tx = sx+((CELL_SIZE+1) *2)*(i+1)+2;
+            if(owner->hasFunctionAtIndex(i))
+            {
+                bigTypeModifier->setFunction(owner->getFunctionAt(i));
+            }
+            tx = sx+((CELL_SIZE+1) *2)*(i+1)+2 + localXDepl;
+            int localW = w;
+            bigTypeModifier->render(tx,ty,localW,h);
+            if(localW != w) localXDepl += localW - w + 2;
             if(tx > sw - CELL_SIZE) sw += ((CELL_SIZE+1) *2) +2;
-            int ty = cy+2;
-            bigTypeModifier->render(tx,ty,w,h);
+            if(tx + localXDepl > sw - CELL_SIZE) sw += ((CELL_SIZE+1) *2) +2;
+
             grp->addToGroup(bigTypeModifier);
             m_bigTypeModifiers.append(bigTypeModifier);
         }
+
+        CellTypeChooser* cursor = new CellTypeChooser(m_level, CellTypeChooser::CELLTYPECHOOSER_BIG, CELLTYPE_CURSOR, m_helper, this, m_owner);
+        tx = sx+((CELL_SIZE+1) *2)*(i+1)+2 + localXDepl;
+        cursor->render(tx,ty,w,h);
+        grp->addToGroup(cursor);
     }
 
     sw += 16;

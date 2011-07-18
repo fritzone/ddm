@@ -35,7 +35,7 @@ public:
      * Basically this is a vector of flags, as we build up the expression so that we can have:
      * ! func ( ~ anotherfunc (- table.col) ) )
      */
-    virtual QVector<CellTypeChooserType>  getTypeset() const = 0;
+    virtual QVector<CellTypeChooserType>  getFunctionsAndOperators() const = 0;
 
     QueryGraphicsHelper* getHelper() {return m_helper;}
 

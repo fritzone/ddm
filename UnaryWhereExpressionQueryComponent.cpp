@@ -1,7 +1,11 @@
 #include "UnaryWhereExpressionQueryComponent.h"
 #include "CellForUnaryWhereExpression.h"
+#include "Workspace.h"
+#include "DatabaseEngine.h"
 
-UnaryWhereExpressionQueryComponent::UnaryWhereExpressionQueryComponent(QueryComponent* p, int l): WhereExpressionQueryComponent(p,l), m_smallTypes()
+#include <QDebug>
+
+UnaryWhereExpressionQueryComponent::UnaryWhereExpressionQueryComponent(QueryComponent* p, int l): WhereExpressionQueryComponent(p,l), m_functionsAndOperators()
 {
 }
 
@@ -31,36 +35,49 @@ QueryComponent* UnaryWhereExpressionQueryComponent::duplicate()
     return newc;
 }
 
+void UnaryWhereExpressionQueryComponent::shiftFunctionsToTheLeft(int after)
+{
+    for(int i=after+1; i<m_functionsAndOperators.size(); i++)
+    {
+        if(m_functionsAtGivenPosition.contains(i))
+        {
+            m_functionsAtGivenPosition.insert(i-1, m_functionsAtGivenPosition.value(i));
+            m_functionsAtGivenPosition.remove(i);
+        }
+    }
+}
+
 void UnaryWhereExpressionQueryComponent::handleAction(const QString& action, QueryComponent* referringObject)
 {
     if(action == "NOT")
     {
-        m_smallTypes.insert(0, CELLTYPE_NOT);
+        m_functionsAndOperators.append(CELLTYPE_NOT);
         m_helper->triggerReRender();
         return;
     }
     if(action == "NEG")
     {
-        m_smallTypes.insert(0, CELLTYPE_NEGATE);
+        m_functionsAndOperators.append(CELLTYPE_NEGATE);
         m_helper->triggerReRender();
         return;
     }
     if(action == "MINUS")
     {
-        m_smallTypes.insert(0, CELLTYPE_MINUS);
+        m_functionsAndOperators.append(CELLTYPE_MINUS);
         m_helper->triggerReRender();
         return;
     }
     if(action.startsWith("REMOVE"))
     {
-        int idx = action.right(action.length() - 6).toInt();
-        m_smallTypes.remove(idx);
+        int idx = action.right(action.length() - 7).toInt(); // because actually REMOVE_xxx comes in
+        m_functionsAndOperators.remove(idx);
+        shiftFunctionsToTheLeft(idx);
         m_helper->triggerReRender();
         return;
     }
     if(action == "Function")
     {
-        m_smallTypes.insert(0, CELLTYPE_FUNCTION);
+        m_functionsAndOperators.append(CELLTYPE_FUNCTION);
         m_helper->triggerReRender();
         return;
     }
@@ -68,7 +85,24 @@ void UnaryWhereExpressionQueryComponent::handleAction(const QString& action, Que
     if(action.startsWith("@"))
     {
         // this is a function...
+        qDebug() << "Function: "<< action;
+        QString fName = action.mid(1, action.indexOf('_') - 1);
+        int index = action.section('_', 1).toInt();
+        if(m_functionsAtGivenPosition.find(index) == m_functionsAtGivenPosition.end())
+        {
+            m_functionsAtGivenPosition.insert(index,Workspace::getInstance()->currentProjectsEngine()->getBuiltinFunction(fName));
+        }
+        else
+        {
+            m_functionsAtGivenPosition[index] = Workspace::getInstance()->currentProjectsEngine()->getBuiltinFunction(fName);
+        }
+        m_helper->triggerReRender();
     }
+}
+
+bool UnaryWhereExpressionQueryComponent::hasFunctionAtIndex(int i)
+{
+    return m_functionsAtGivenPosition.find(i) != m_functionsAtGivenPosition.end();
 }
 
 QVector<CellTypeChooserType> UnaryWhereExpressionQueryComponent::getChoosableTypes() const

@@ -4,6 +4,7 @@
 #include <Qt>
 
 #include "OptionsType.h"
+#include "UserDataType.h"
 
 /**
  * This class describes a parameter that goes into a DatabaseBuiltinFunction,
@@ -13,12 +14,11 @@
 class DatabaseBuiltinFunctionsParameter
 {
 public:
-    DatabaseBuiltinFunctionsParameter(QString name, FunctionReturnType type, bool mandatory) : m_name(name), m_type(type), m_mandatory(mandatory) {}
-    DatabaseBuiltinFunctionsParameter() {}
-
+    explicit DatabaseBuiltinFunctionsParameter(QString name, const UserDataType& type, bool mandatory) : m_name(name), m_type(type), m_mandatory(mandatory) {}
+    DatabaseBuiltinFunctionsParameter() : m_name("invalid"), m_type(), m_mandatory(false) {}
 private:
     QString m_name;
-    FunctionReturnType m_type;
+    UserDataType m_type;
     bool m_mandatory;
 };
 

@@ -3,6 +3,8 @@
 
 #include "OptionsType.h"
 #include "DatabaseBuiltinFunctionsParameter.h"
+#include "NamedItem.h"
+#include "UserDataType.h"
 
 #include <QVector>
 
@@ -10,26 +12,20 @@
  * This class holds the descriptive information of a function that is built in the database, such as name
  * parameters and their type, return type, etc...
  */
-class DatabaseBuiltinFunction
+class DatabaseBuiltinFunction : public NamedItem
 {
 public:
-    DatabaseBuiltinFunction(QString name, FunctionType type, FunctionReturnType frt, DatabaseBuiltinFunctionsParameter p1) :
-        m_name(name), m_type(type), m_frt(frt), m_parameters()
+    explicit DatabaseBuiltinFunction(QString name, FunctionType type, const UserDataType& returnType, DatabaseBuiltinFunctionsParameter p1) : NamedItem(name),
+        m_type(type), m_returnType(returnType), m_parameters()
     {
         m_parameters << p1;
     }
 
-    DatabaseBuiltinFunction(){}
-
-    const QString& getName() const
-    {
-        return m_name;
-    }
+    DatabaseBuiltinFunction() : m_type(FT_INVALID), m_returnType(), m_parameters() {}
 
 private:
-    QString m_name;
     FunctionType m_type;
-    FunctionReturnType m_frt;
+    UserDataType m_returnType;
     QVector<DatabaseBuiltinFunctionsParameter> m_parameters;
 };
 
