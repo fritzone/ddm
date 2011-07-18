@@ -21,6 +21,8 @@
 #include "ForeignKey.h"
 #include "DatabaseBuiltinFunction.h"
 
+QVector<DatabaseBuiltinFunction> MySQLDatabaseEngine::s_builtinFunctions = MySQLDatabaseEngine::buildFunctions();
+
 MySQLDatabaseEngine::MySQLDatabaseEngine() : DatabaseEngine("MySQL"), m_revEngMappings(), m_oneTimeMappings()
 {
 }
@@ -459,8 +461,27 @@ bool MySQLDatabaseEngine::createDatabase(const QString& host, const QString& use
 
 QVector<DatabaseBuiltinFunction> MySQLDatabaseEngine::getBuiltinFunctions()
 {
-    QVector<DatabaseBuiltinFunction> result;
+    return s_builtinFunctions;
+}
+
+
+QVector<DatabaseBuiltinFunction> MySQLDatabaseEngine::buildFunctions()
+{
+    static QVector<DatabaseBuiltinFunction> result;
     QString X = QString("X");
-    result.append(DatabaseBuiltinFunction(QString("@abs"), FT_NUMERIC, FRT_NUMERIC, DatabaseBuiltinFunctionsParameter(X, FRT_NUMERIC, true)));
+    result.append(DatabaseBuiltinFunction(QString("@abs"), FT_NUMERIC, UserDataType("return", DataType::DT_NUMERIC), DatabaseBuiltinFunctionsParameter(X, UserDataType(X, DataType::DT_NUMERIC), true)));
     return result;
+}
+
+
+const DatabaseBuiltinFunction& MySQLDatabaseEngine::getBuiltinFunction(const QString& name)
+{
+    for(int i=0; i<s_builtinFunctions.size(); i++)
+    {
+        if(s_builtinFunctions.at(i).getName().mid(1).toUpper() == name.toUpper())   // remove the leading @
+        {
+            return s_builtinFunctions.at(i);
+        }
+    }
+    return DatabaseBuiltinFunction();
 }

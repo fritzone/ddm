@@ -29,11 +29,18 @@ public:
     virtual QVector<QString> getAvailableTables(const QString& host, const QString& user, const QString& pass, const QString& db);
     virtual bool createDatabase(const QString& host, const QString& user, const QString& pass, const QString&);
     virtual QVector<DatabaseBuiltinFunction> getBuiltinFunctions();
+    const DatabaseBuiltinFunction& getBuiltinFunction(const QString& name);
+
+private:
+
+    static QVector<DatabaseBuiltinFunction> buildFunctions();
 
 private:
 
     QMultiMap <UserDataType*, Column*> m_revEngMappings;
     QMap <QString, UserDataType*> m_oneTimeMappings;
+
+    static QVector<DatabaseBuiltinFunction> s_builtinFunctions;
 
 };
 

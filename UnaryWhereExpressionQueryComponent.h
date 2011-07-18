@@ -2,8 +2,10 @@
 #define UNARYWHEREEXPRESSIONQUERYCOMPONENT_H
 
 #include "WhereExpressionQueryComponent.h"
+#include "DatabaseBuiltinFunction.h"
 
 class CellForUnaryWhereExpression;
+class CellTypeChooser;
 
 /**
  * Class, representing a unary where expression.
@@ -20,20 +22,28 @@ public:
     virtual void onClose(){};
     virtual QueryComponent* duplicate();
 
-    virtual QVector<CellTypeChooserType>  getTypeset() const
+    virtual QVector<CellTypeChooserType>  getFunctionsAndOperators() const
     {
-        return m_smallTypes;
+        return m_functionsAndOperators;
     }
 
     QVector<CellTypeChooserType> getChoosableTypes() const;
 
+    bool hasFunctionAtIndex(int);
+    DatabaseBuiltinFunction* getFunctionAt(int i)
+    {
+        return &m_functionsAtGivenPosition[i];
+    }
+    void shiftFunctionsToTheLeft(int after);
+
 private:
     CellForUnaryWhereExpression* m_gritm;
     // the set of types that were activated with the corner cell type chooser (NOT, NEG, etc...)
-    QVector<CellTypeChooserType> m_smallTypes;
+    QVector<CellTypeChooserType> m_functionsAndOperators;
 
-    // the big type chooser (function, column, etc)
-    CellTypeChooserType m_currentBigType;
+    QMap<int, DatabaseBuiltinFunction> m_functionsAtGivenPosition;
+
+
 };
 
 #endif // UNARYWHEREEXPRESSIONQUERYCOMPONENT_H

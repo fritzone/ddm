@@ -17,6 +17,7 @@ public:
         CELLTYPECHOOSER_REGULAR = 1
     };
 
+    CellTypeChooser(int level, CellTypeChooserSize size, CellTypeChooserType defaultType, QueryGraphicsHelper*, QueryGraphicsItem*, QueryComponent* owner );
     CellTypeChooser(int level, CellTypeChooserSize size, CellTypeChooserType defaultType, QSet<CellTypeChooserType> allowedTypes, QueryGraphicsHelper*, QueryGraphicsItem*, QueryComponent* owner);
     CellTypeChooser(int level, CellTypeChooserSize size, CellTypeChooserType defaultType, QSet<CellTypeChooserType> allowedTypes, QueryGraphicsHelper*, QueryGraphicsItem*, QueryComponent* owner, int index);
 
@@ -26,6 +27,12 @@ public:
     virtual void mouseMove(int x, int y);
     virtual void mouseLeft(int x, int y);
     virtual void onClose(){}
+
+    void setFunction(DatabaseBuiltinFunction* f)
+    {
+        m_functionSupport = f;
+    }
+
 private:
     CellTypeChooserType m_defaultType;
     QSet<CellTypeChooserType> m_allowedTypes;
@@ -33,7 +40,9 @@ private:
     QGraphicsRectItem* m_rect;
     CellTypeChooserSize m_size;
     int m_index;
+
     DatabaseBuiltinFunction* m_functionSupport;
+    QGraphicsTextItem* m_funcText;
 };
 
 #endif // CELLTYPECHOOSER_H
