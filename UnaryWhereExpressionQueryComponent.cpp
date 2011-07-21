@@ -113,6 +113,7 @@ QVector<CellTypeChooserType> UnaryWhereExpressionQueryComponent::getChoosableTyp
     allowedTypes.append(CELLTYPE_MINUS);
     allowedTypes.append(CELLTYPE_NOT);
     allowedTypes.append(CELLTYPE_FUNCTION);
+    allowedTypes.append(CELLTYPE_LITERAL);
 
     return allowedTypes;
 }

@@ -56,6 +56,10 @@ QString QueryGraphicsHelper::presentList(int x, int y, ListType lt)
     m_lstDlg->setWindowFlags(Qt::FramelessWindowHint);
     m_lstDlg->move(x, y);
     m_lstDlg->setModal(true);
+    if(lt == INPUT_SYMBOLS)
+    {
+        m_lstDlg->showSymbolPanel();
+    }
     m_lstDlg->exec();
     return m_lstDlg->getSelection();
 }
@@ -140,12 +144,6 @@ QString QueryGraphicsHelper::presentList(int x, int y, QSet<CellTypeChooserType>
         icons.append(IconFactory::getNegIcon().pixmap(size,size));
     }
 
-    if(options.contains(CELLTYPE_MINUS))
-    {
-        lst.append("MINUS");
-        icons.append(IconFactory::getMinusIcon().pixmap(size,size));
-    }
-
     if(options.contains(CELLTYPE_REMOVE_THIS))
     {
         lst.append("REMOVE");
@@ -156,6 +154,12 @@ QString QueryGraphicsHelper::presentList(int x, int y, QSet<CellTypeChooserType>
     {
         lst.append("Function");
         icons.append(IconFactory::getFunctionIcon().pixmap(size,size));
+    }
+
+    if(options.contains(CELLTYPE_LITERAL))
+    {
+        lst.append("Literal");
+        icons.append(IconFactory::getEmptyIcon().pixmap(size,size));
     }
 
 

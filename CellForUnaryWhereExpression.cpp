@@ -75,7 +75,7 @@ QGraphicsItemGroup* CellForUnaryWhereExpression::render(int &x, int &y, int &w, 
             m_bigTypeModifiers.append(bigTypeModifier);
         }
 
-        CellTypeChooser* cursor = new CellTypeChooser(m_level, CellTypeChooser::CELLTYPECHOOSER_BIG, CELLTYPE_CURSOR, m_helper, this, m_owner);
+        CellTypeChooser* cursor = new CellTypeChooser(m_level, CellTypeChooser::CELLTYPECHOOSER_BIG, CELLTYPE_CURSOR, allowedTypes, m_helper, this, m_owner);
         tx = sx+((CELL_SIZE+1) *2)*(i+1)+2 + localXDepl;
         cursor->render(tx,ty,w,h);
         grp->addToGroup(cursor);

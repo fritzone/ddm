@@ -122,6 +122,7 @@
         <file>images/small/minus.png</file>
         <file>images/big/big_minus_icon.png</file>
         <file>images/small/function.png</file>
+        <file>images/small/plus_minus.png</file>
     </qresource>
     <qresource prefix="/bigger">
         <file>images/unaf.png</file>

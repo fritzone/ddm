@@ -109,7 +109,6 @@ void CellTypeChooser::mouseMove(int x, int y)
     thick.setWidth(2);
     if(m_currentType == CELLTYPE_CURSOR)
     {
-        thick.setWidth(1);
         thick.setStyle(Qt::DashLine);
     }
     m_rect->setPen(thick);
@@ -130,11 +129,21 @@ void CellTypeChooser::mouseLeft(int x, int y)
 
 void CellTypeChooser::mousePress(int x, int y)
 {
-    if(m_currentType == CELLTYPE_CURSOR) return;    // Do nothing for a cursor cell
 
+    QString selected = "";
     QPoint a = scene()->views().at(0)->mapToGlobal((m_rect->mapToScene(m_rect->boundingRect().bottomLeft().toPoint())).toPoint() ) ;
-    QString selected = m_helper->presentList(a.x() + 2-scene()->views().at(0)->horizontalScrollBar()->sliderPosition()
+    if(m_currentType == CELLTYPE_CURSOR)
+    {
+        selected = m_helper->presentList(a.x() + 2-scene()->views().at(0)->horizontalScrollBar()->sliderPosition()
+                                                 , a.y() - scene()->views().at(0)->verticalScrollBar()->sliderPosition(), QueryGraphicsHelper::INPUT_SYMBOLS);
+        if(selected == "REMOVE") return;
+    }
+    else
+    {
+        selected = m_helper->presentList(a.x() + 2-scene()->views().at(0)->horizontalScrollBar()->sliderPosition()
                                              , a.y() - scene()->views().at(0)->verticalScrollBar()->sliderPosition(), m_allowedTypes);
+    }
+
     if(selected.length() == 0) return;
 
     if(m_index == -1)
