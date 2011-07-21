@@ -8,6 +8,7 @@
 #include "TableInstance.h"
 
 #include <QListWidget>
+#include <QMessageBox>
 
 QueryItemListDialog::QueryItemListDialog(QueryGraphicsHelper::ListType t, QWidget *parent) :
     QDialog(parent),
@@ -16,6 +17,7 @@ QueryItemListDialog::QueryItemListDialog(QueryGraphicsHelper::ListType t, QWidge
     ui->setupUi(this);
 
     ui->txtInput->hide();
+    ui->grpExpressionButtons->hide();
 
     switch(t)
     {
@@ -54,9 +56,41 @@ QueryItemListDialog::QueryItemListDialog(QueryGraphicsHelper::ListType t, QWidge
     }
 }
 
+void QueryItemListDialog::showSymbolPanel()
+{
+    ui->txtInput->hide();
+    ui->lstValues->hide();
+    ui->grpExpressionButtons->show();
+
+    m_mathMenu = new QMenu(this);
+    m_mathMenu->addAction(IconFactory::getMinusIcon(), "MINUS");
+
+    m_mathMenu->connect(m_mathMenu,  SIGNAL(triggered(QAction*)), this, SLOT(actionTriggered(QAction*)));
+
+    resize(200, 50);
+
+    ui->btnMath->setMenu(m_mathMenu);
+    ui->grpExpressionButtons->setCurrentIndex(-1);
+}
+
+void QueryItemListDialog::pageRequested(int a)
+{
+    if(a == 1)
+    {
+        m_selected = QString("REMOVE");
+        close();
+    }
+}
+
 void QueryItemListDialog::setText(const QString &a)
 {
     ui->txtInput->setText(a);
+}
+
+void QueryItemListDialog::actionTriggered(QAction* a)
+{
+    m_selected = a->text();
+    close();
 }
 
 QueryItemListDialog::QueryItemListDialog(QStringList lst, QList<QIcon> icons, bool checks, QWidget *parent) :
@@ -65,8 +99,8 @@ QueryItemListDialog::QueryItemListDialog(QStringList lst, QList<QIcon> icons, bo
 {
     ui->setupUi(this);
     ui->txtInput->hide();
-    resize(200,10 * (lst.size()));
-    ui->lstValues->resize(200,10 * (lst.size()));
+    ui->grpExpressionButtons->hide();
+
     for(int i=0; i<lst.size(); i++)
     {
         QString str = lst.at(i);
@@ -89,6 +123,9 @@ QueryItemListDialog::QueryItemListDialog(QStringList lst, QList<QIcon> icons, bo
         }
         ui->lstValues->addItem(lwi);
     }
+    resize(200, 20 * (lst.size()));
+    ui->lstValues->resize(200, 20 * (lst.size()));
+
 }
 
 QueryItemListDialog::~QueryItemListDialog()

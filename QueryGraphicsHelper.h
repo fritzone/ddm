@@ -22,6 +22,7 @@ public:
     {
         LIST_TABLES = 1,
         INPUT_TEXT = 2,
+        INPUT_SYMBOLS = 3
     };
 
     QueryGraphicsHelper();

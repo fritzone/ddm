@@ -29,16 +29,21 @@ public:
     }
 
     void setText(const QString& a);
+    void showSymbolPanel();
 
 public slots:
 
     void onDblClickItem(QListWidgetItem*);
     void onTxtInputKeyPress();
+    void actionTriggered(QAction*);
+    void pageRequested(int);
 
 private:
     Ui::QueryItemListDialog *ui;
     QString m_selected;
     QMap<QString, QString> m_beforeAfter;
+
+    QMenu* m_mathMenu;
 };
 
 #endif // QUERYITEMLISTDIALOG_H
