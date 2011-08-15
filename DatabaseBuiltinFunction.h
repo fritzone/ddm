@@ -23,6 +23,11 @@ public:
 
     DatabaseBuiltinFunction() : m_type(FT_INVALID), m_returnType(), m_parameters() {}
 
+    int getParameterCount()
+    {
+        return m_parameters.size();
+    }
+
 private:
     FunctionType m_type;
     UserDataType m_returnType;

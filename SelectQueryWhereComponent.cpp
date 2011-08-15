@@ -20,11 +20,31 @@ void SelectQueryWhereComponent::handleAction(const QString &action, QueryCompone
             sq->newWhereExpression();
         }
     }
+
+    if(action == ADD_WHERE_EXPRESSION_OR)
+    {
+        SelectQuery* sq = dynamic_cast<SelectQuery*>(m_parent);
+        if(sq)
+        {
+            sq->newWhereExpression();
+        }
+    }
+
+    if(action == ADD_WHERE_EXPRESSION_AND)
+    {
+        SelectQuery* sq = dynamic_cast<SelectQuery*>(m_parent);
+        if(sq)
+        {
+            sq->newWhereExpression();
+        }
+    }
 }
 
 QSet<OptionsType> SelectQueryWhereComponent::provideOptions()
 {
     QSet<OptionsType> t;
+    t.insert(OPTIONS_NEW_WHERE_EXPR_OR);
+    t.insert(OPTIONS_NEW_WHERE_EXPR_AND);
     t.insert(OPTIONS_NEW_WHERE_EXPR);
     return t;
 }

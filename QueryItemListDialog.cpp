@@ -6,6 +6,8 @@
 #include "Table.h"
 #include "IconFactory.h"
 #include "TableInstance.h"
+#include "DatabaseEngine.h"
+#include "DatabaseBuiltinFunction.h"
 
 #include <QListWidget>
 #include <QMessageBox>
@@ -63,13 +65,31 @@ void QueryItemListDialog::showSymbolPanel()
     ui->grpExpressionButtons->show();
 
     m_mathMenu = new QMenu(this);
+    m_bitMenu = new QMenu(this);
+    m_functionsMenu = new QMenu(this);
+
     m_mathMenu->addAction(IconFactory::getMinusIcon(), "MINUS");
 
+    m_bitMenu->addAction(IconFactory::getNotIcon(), "NOT");
+    m_bitMenu->addAction(IconFactory::getNegIcon(), "NEG");
+
+    QVector<DatabaseBuiltinFunction> functions = Workspace::getInstance()->currentProjectsEngine()->getBuiltinFunctions();
+    for(int i=0; i<functions.size(); i++)
+    {
+        m_functionsMenu->addAction(IconFactory::getFunctionIcon(), functions.at(i).getNiceName().toUpper())->setData(functions.at(i).getName().toUpper());
+    }
+
+
     m_mathMenu->connect(m_mathMenu,  SIGNAL(triggered(QAction*)), this, SLOT(actionTriggered(QAction*)));
+    m_bitMenu->connect(m_bitMenu,  SIGNAL(triggered(QAction*)), this, SLOT(actionTriggered(QAction*)));
+    m_functionsMenu->connect(m_functionsMenu,  SIGNAL(triggered(QAction*)), this, SLOT(actionTriggered(QAction*)));
 
     resize(200, 50);
 
     ui->btnMath->setMenu(m_mathMenu);
+    ui->btnBitwise->setMenu(m_bitMenu);
+    ui->btnFunctions->setMenu(m_functionsMenu);
+
     ui->grpExpressionButtons->setCurrentIndex(-1);
 }
 
@@ -90,6 +110,10 @@ void QueryItemListDialog::setText(const QString &a)
 void QueryItemListDialog::actionTriggered(QAction* a)
 {
     m_selected = a->text();
+    if(a->data().canConvert<QString>())
+    {
+        m_selected = a->data().toString();
+    }
     close();
 }
 

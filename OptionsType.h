@@ -13,7 +13,9 @@ enum OptionsType
     OPTIONS_ADD_ORDERBY = 7,
     OPTIONS_ADD_JOIN = 8,
     OPTIONS_AS = 9,
-    OPTIONS_NEW_WHERE_EXPR = 10,
+    OPTIONS_NEW_WHERE_EXPR_OR = 10,
+    OPTIONS_NEW_WHERE_EXPR_AND = 11,
+    OPTIONS_NEW_WHERE_EXPR = 12,
 
     OPTIONS_LAST
 };
@@ -45,8 +47,10 @@ enum CellTypeChooserType
     CELLTYPE_REMOVE_THIS = 12,      // plain close button :)
     CELLTYPE_FUNCTION_EXPAND = 13,  // when the QueryGraphicsHelper sees this it asks for the DB engine to provide a list of functions supported
 
-    CELLTYPE_CURSOR = 14,           // this is always placed after the last cell type chooser in the unary expression
-
+    CELLTYPE_CURSOR = 14,           // this is always placed after the last cell type chooser in the unary expression or where the functions place their parameters
+    CELLTYPE_OPEN_PARANTHESES = 15,
+    CELLTYPE_CLOSE_PARANTHESES = 16,
+    CELLTYPE_COMMA = 17,
 
     CELLTYPE_LAST
 

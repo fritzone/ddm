@@ -22,8 +22,6 @@ public:
     virtual void onClose(){}
 
 private:
-    QGraphicsRectItem* m_frame;
-
     QueryGraphicsItem* m_left;
     QueryGraphicsItem* m_right;
 

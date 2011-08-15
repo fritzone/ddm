@@ -40,7 +40,6 @@ private:
     QGraphicsRectItem* m_rect;
     CellTypeChooserSize m_size;
     int m_index;
-
     DatabaseBuiltinFunction* m_functionSupport;
     QGraphicsTextItem* m_funcText;
 };

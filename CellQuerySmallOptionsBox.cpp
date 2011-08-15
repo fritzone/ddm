@@ -148,7 +148,18 @@ CellQuerySmallOptionsBox::OptionsList CellQuerySmallOptionsBox::prepareOptions()
 
     if(m_types.contains(OPTIONS_NEW_WHERE_EXPR))
     {
-        text.append(ADD_WHERE_EXPRESSION);
+        text.append(ADD_WHERE_EXPRESSION
+                    );
+        icons.append(IconFactory::getEmptyIcon());
+    }
+    if(m_types.contains(OPTIONS_NEW_WHERE_EXPR_OR))
+    {
+        text.append(ADD_WHERE_EXPRESSION_OR);
+        icons.append(IconFactory::getEmptyIcon());
+    }
+    if(m_types.contains(OPTIONS_NEW_WHERE_EXPR_AND))
+    {
+        text.append(ADD_WHERE_EXPRESSION_AND);
         icons.append(IconFactory::getEmptyIcon());
     }
 
