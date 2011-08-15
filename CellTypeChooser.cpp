@@ -63,6 +63,15 @@ QGraphicsItemGroup* CellTypeChooser::render(int& x, int& y, int& w, int &h)
         if(m_size == CELLTYPECHOOSER_REGULAR)typeIcon = new QGraphicsPixmapItem(IconFactory::getMinusIcon().pixmap(size,size), this);
         else typeIcon = new QGraphicsPixmapItem(IconFactory::getBigMinusIcon().pixmap(size,size), this);
         break;
+
+    case CELLTYPE_OPEN_PARANTHESES:
+        typeIcon = new QGraphicsPixmapItem(IconFactory::getOpenParanthesesIcon().pixmap(size,size), this);
+        break;
+
+    case CELLTYPE_CLOSE_PARANTHESES:
+        typeIcon = new QGraphicsPixmapItem(IconFactory::getCloseParanthesesIcon().pixmap(size,size), this);
+        break;
+
     case CELLTYPE_FUNCTION:
         typeIcon = new QGraphicsPixmapItem(IconFactory::getFunctionIcon().pixmap(CELL_SIZE+1,CELL_SIZE+1), this);
         if(m_functionSupport)

@@ -44,6 +44,8 @@ private:
     QMap<QString, QString> m_beforeAfter;
 
     QMenu* m_mathMenu;
+    QMenu* m_bitMenu;
+    QMenu* m_functionsMenu;
 };
 
 #endif // QUERYITEMLISTDIALOG_H

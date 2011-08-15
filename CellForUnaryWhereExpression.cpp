@@ -50,38 +50,65 @@ QGraphicsItemGroup* CellForUnaryWhereExpression::render(int &x, int &y, int &w, 
         int tx = 0; // this holds where we are putting the next cell type chooser
         int ty = cy+2;
         int i=0;
-        QVector<CellTypeChooserType> types = owner->getFunctionsAndOperators();
-        for(i; i<types.size(); i++)
+        int extraCounter = 0;
+        QVector<CellTypeChooserType> funcsAndOperators = owner->getFunctionsAndOperators();
+        for(i; i<funcsAndOperators.size(); i++)
         {
             QSet<CellTypeChooserType> allowedTypesforBigOne;
             allowedTypesforBigOne.insert(CELLTYPE_REMOVE_THIS);
-            if(types.at(i) == CELLTYPE_FUNCTION)
-            {
-                allowedTypesforBigOne.insert(CELLTYPE_FUNCTION_EXPAND);
-            }
-            CellTypeChooser* bigTypeModifier = new CellTypeChooser(m_level, CellTypeChooser::CELLTYPECHOOSER_BIG, types.at(i), allowedTypesforBigOne, m_helper, this, m_owner, i);
+
+            CellTypeChooser* bigTypeModifier = new CellTypeChooser(m_level, CellTypeChooser::CELLTYPECHOOSER_BIG, funcsAndOperators.at(i), allowedTypesforBigOne, m_helper, this, m_owner, i);
             if(owner->hasFunctionAtIndex(i))
             {
-                bigTypeModifier->setFunction(owner->getFunctionAt(i));
+                DatabaseBuiltinFunction* func = owner->getFunctionAt(i);
+                bigTypeModifier->setFunction(func);
             }
-            tx = sx+((CELL_SIZE+1) *2)*(i+1)+2 + localXDepl;
+            tx = sx+((CELL_SIZE+1) *2)*(extraCounter + i+1)+2 + localXDepl;
             int localW = w;
             bigTypeModifier->render(tx,ty,localW,h);
             if(localW != w) localXDepl += localW - w + 2;
-            if(tx > sw - CELL_SIZE) sw += ((CELL_SIZE+1) *2) +2;
-            if(tx + localXDepl > sw - CELL_SIZE) sw += ((CELL_SIZE+1) *2) +2;
+            if(tx > sw - CELL_SIZE) sw += ((CELL_SIZE+1) *3) +2;
+            if(tx + localXDepl > sw - CELL_SIZE) sw += ((CELL_SIZE+1) *3) +2;
+
+            if(owner->hasFunctionAtIndex(i))
+            {
+                DatabaseBuiltinFunction* func = owner->getFunctionAt(i);
+
+                extraCounter += 1;  // For the first paranthesis
+                CellTypeChooser* op_par = new CellTypeChooser(m_level, CellTypeChooser::CELLTYPECHOOSER_BIG, CELLTYPE_OPEN_PARANTHESES, allowedTypes, m_helper, this, m_owner);
+                tx = sx+((CELL_SIZE+1) *2)*(extraCounter+ i+1)+2 + localXDepl;
+                op_par->render(tx,ty,w,h);
+                grp->addToGroup(op_par);
+
+                extraCounter += 1;  // For the second paranthesis
+
+                for(int j=0; j<func->getParameterCount(); j++)
+                {
+                    CellTypeChooser* cursor = new CellTypeChooser(m_level, CellTypeChooser::CELLTYPECHOOSER_BIG, CELLTYPE_CURSOR, allowedTypes, m_helper, this, m_owner);
+                    tx = sx+((CELL_SIZE+1) *2)*(extraCounter+ i+1)+2 + localXDepl;
+                    cursor->render(tx,ty,w,h);
+                    grp->addToGroup(cursor);
+
+                     extraCounter ++;
+                }
+
+                CellTypeChooser* cl_par = new CellTypeChooser(m_level, CellTypeChooser::CELLTYPECHOOSER_BIG, CELLTYPE_CLOSE_PARANTHESES, allowedTypes, m_helper, this, m_owner);
+                tx = sx+((CELL_SIZE+1) *2)*(extraCounter+ i+1)+2 + localXDepl;
+                cl_par->render(tx,ty,w,h);
+                grp->addToGroup(cl_par);
+            }
 
             grp->addToGroup(bigTypeModifier);
             m_bigTypeModifiers.append(bigTypeModifier);
         }
 
         CellTypeChooser* cursor = new CellTypeChooser(m_level, CellTypeChooser::CELLTYPECHOOSER_BIG, CELLTYPE_CURSOR, allowedTypes, m_helper, this, m_owner);
-        tx = sx+((CELL_SIZE+1) *2)*(i+1)+2 + localXDepl;
+        tx = sx+((CELL_SIZE+1) *2)*(extraCounter+ i+1)+2 + localXDepl;
         cursor->render(tx,ty,w,h);
         grp->addToGroup(cursor);
     }
 
-    sw += 16;
+    sw += 64;
 
     x = sx; w = sw; h = sh;
 

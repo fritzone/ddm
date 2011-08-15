@@ -485,7 +485,15 @@
      <property name="tabSpacing">
       <number>0</number>
      </property>
-     <widget class="QWidget" name="grpExpressionButtonsPage1" native="true">
+     <widget class="QWidget" name="grpExpressionButtonsPage1">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>304</width>
+        <height>57</height>
+       </rect>
+      </property>
       <attribute name="label">
        <string>Choose ...</string>
       </attribute>
@@ -541,7 +549,7 @@
         </widget>
        </item>
        <item row="0" column="1">
-        <widget class="QToolButton" name="toolButton_4">
+        <widget class="QToolButton" name="btnFunctions">
          <property name="focusPolicy">
           <enum>Qt::ClickFocus</enum>
          </property>
@@ -576,7 +584,7 @@
         </widget>
        </item>
        <item row="1" column="0">
-        <widget class="QToolButton" name="toolButton_5">
+        <widget class="QToolButton" name="btnBitwise">
          <property name="focusPolicy">
           <enum>Qt::ClickFocus</enum>
          </property>
@@ -584,7 +592,7 @@
           <enum>Qt::CustomContextMenu</enum>
          </property>
          <property name="toolTip">
-          <string>Logical operations such as AND, OR, NOT</string>
+          <string>Bitwise/Logical operations such as AND, OR, NOT</string>
          </property>
          <property name="autoFillBackground">
           <bool>true</bool>
@@ -613,6 +621,14 @@
       </layout>
      </widget>
      <widget class="QWidget" name="page">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>304</width>
+        <height>57</height>
+       </rect>
+      </property>
       <attribute name="icon">
        <iconset resource="dbm.qrc">
         <normaloff>:/images/actions/images/actions/application_exit.png</normaloff>:/images/actions/images/actions/application_exit.png</iconset>

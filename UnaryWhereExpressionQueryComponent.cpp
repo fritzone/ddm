@@ -88,6 +88,7 @@ void UnaryWhereExpressionQueryComponent::handleAction(const QString& action, Que
         qDebug() << "Function: "<< action;
         QString fName = action.mid(1, action.indexOf('_') - 1);
         int index = action.section('_', 1).toInt();
+         m_functionsAndOperators.append(CELLTYPE_FUNCTION);
         if(m_functionsAtGivenPosition.find(index) == m_functionsAtGivenPosition.end())
         {
             m_functionsAtGivenPosition.insert(index,Workspace::getInstance()->currentProjectsEngine()->getBuiltinFunction(fName));
@@ -108,12 +109,12 @@ bool UnaryWhereExpressionQueryComponent::hasFunctionAtIndex(int i)
 QVector<CellTypeChooserType> UnaryWhereExpressionQueryComponent::getChoosableTypes() const
 {
     QVector<CellTypeChooserType> allowedTypes;
-    allowedTypes.append(CELLTYPE_NOTHING);
-    allowedTypes.append(CELLTYPE_NEGATE);
-    allowedTypes.append(CELLTYPE_MINUS);
-    allowedTypes.append(CELLTYPE_NOT);
-    allowedTypes.append(CELLTYPE_FUNCTION);
-    allowedTypes.append(CELLTYPE_LITERAL);
+//    allowedTypes.append(CELLTYPE_NOTHING);
+//    allowedTypes.append(CELLTYPE_NEGATE);
+//    allowedTypes.append(CELLTYPE_MINUS);
+//    allowedTypes.append(CELLTYPE_NOT);
+//    allowedTypes.append(CELLTYPE_FUNCTION);
+//    allowedTypes.append(CELLTYPE_LITERAL);
 
     return allowedTypes;
 }

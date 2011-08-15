@@ -72,6 +72,18 @@ public:
         return icon;
     }
 
+    static const QIcon& getOpenParanthesesIcon()
+    {
+        static const QIcon icon(strMinusIcon);  ////
+        return icon;
+    }
+
+    static const QIcon& getCloseParanthesesIcon()
+    {
+        static const QIcon icon(strMinusIcon);   ////
+        return icon;
+    }
+
     static const QIcon& getFunctionIcon()
     {
         static const QIcon icon(strFunctionIcon);
