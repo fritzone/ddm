@@ -9,13 +9,15 @@
 /**
  * This class describes a parameter that goes into a DatabaseBuiltinFunction,
  * such as type, mandatoriness, etc...
- * Also, this is used for storing the value of it, populated from the query
+ * When we are building a query the class DatabaseFunctionInstantiationComponent holds
+ * the values in forms of SingleExpressionQueryComponents ...
  */
 class DatabaseBuiltinFunctionsParameter
 {
 public:
     explicit DatabaseBuiltinFunctionsParameter(QString name, const UserDataType& type, bool mandatory) : m_name(name), m_type(type), m_mandatory(mandatory) {}
     DatabaseBuiltinFunctionsParameter() : m_name("invalid"), m_type(), m_mandatory(false) {}
+
 private:
     QString m_name;
     UserDataType m_type;

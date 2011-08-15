@@ -115,9 +115,10 @@ SOURCES += main.cpp \
     SelectQueryJoinComponent.cpp \
     CellJoinCommand.cpp \
     BinaryWhereExpressionQueryComponent.cpp \
-    UnaryWhereExpressionQueryComponent.cpp \
     CellForBinaryWhereExpression.cpp \
-    CellForUnaryWhereExpression.cpp
+    CellForUnaryWhereExpression.cpp \
+    qbr_SingleExpressionQueryComponent.cpp \
+    qbr_DatabaseFunctionInstantiationComponent.cpp
 HEADERS += MainWindow.h \
     MainWindowButtonDialog.h \
     NewProjectDialog.h \
@@ -246,13 +247,14 @@ HEADERS += MainWindow.h \
     SelectQueryJoinComponent.h \
     CellJoinCommand.h \
     ColumnProviderForQuery.h \
-    WhereExpressionQueryComponent.h \
     BinaryWhereExpressionQueryComponent.h \
-    UnaryWhereExpressionQueryComponent.h \
     CellForBinaryWhereExpression.h \
     CellForUnaryWhereExpression.h \
     DatabaseBuiltinFunction.h \
-    DatabaseBuiltinFunctionsParameter.h
+    DatabaseBuiltinFunctionsParameter.h \
+    qbr_SingleExpressionQueryComponent.h \
+    qbr_WhereExpressionQueryComponent.h \
+    qbr_DatabaseFunctionInstantiationComponent.h
 FORMS += MainWindow.ui \
     MainWindowButtonDialog.ui \
     NewProjectDialog.ui \

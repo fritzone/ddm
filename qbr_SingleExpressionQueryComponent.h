@@ -1,7 +1,7 @@
 #ifndef UNARYWHEREEXPRESSIONQUERYCOMPONENT_H
 #define UNARYWHEREEXPRESSIONQUERYCOMPONENT_H
 
-#include "WhereExpressionQueryComponent.h"
+#include "qbr_WhereExpressionQueryComponent.h"
 #include "DatabaseBuiltinFunction.h"
 
 class CellForUnaryWhereExpression;
@@ -11,18 +11,19 @@ class CellTypeChooser;
  * Class, representing a unary where expression.
  * On an initial startup the Unary query component is a simple column chooser
  */
-class UnaryWhereExpressionQueryComponent : public WhereExpressionQueryComponent
+class SingleExpressionQueryComponent : public WhereExpressionQueryComponent
 {
 public:
-    UnaryWhereExpressionQueryComponent(QueryComponent*,int);
+    SingleExpressionQueryComponent(QueryComponent*,int);
     virtual QString get();
     virtual QueryGraphicsItem* createGraphicsItem(QueryGraphicsHelper*, QueryGraphicsItem*);
     virtual void handleAction(const QString& action, QueryComponent* referringObject);
     virtual QSet<OptionsType> provideOptions();
-    virtual void onClose(){};
+    virtual void onClose(){}
+
     virtual QueryComponent* duplicate();
 
-    virtual QVector<CellTypeChooserType>  getFunctionsAndOperators() const
+    virtual QVector<CellTypeChooserType> getFunctionsAndOperators() const
     {
         return m_functionsAndOperators;
     }
