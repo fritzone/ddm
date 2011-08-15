@@ -3,6 +3,7 @@
 
 #include "qbr_WhereExpressionQueryComponent.h"
 #include "DatabaseBuiltinFunction.h"
+#include "qbr_DatabaseFunctionInstantiationComponent.h"
 
 class CellForUnaryWhereExpression;
 class CellTypeChooser;
@@ -43,6 +44,7 @@ private:
     QVector<CellTypeChooserType> m_functionsAndOperators;
 
     QMap<int, DatabaseBuiltinFunction> m_functionsAtGivenPosition;
+    QMap<int, DatabaseFunctionInstantiationComponent> m_functionInstantiationAtGivenPosition;
 
 
 };
