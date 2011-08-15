@@ -2,7 +2,7 @@
 #include "CellForUnaryWhereExpression.h"
 #include "CellTypeChooser.h"
 #include "OptionsType.h"
-#include "UnaryWhereExpressionQueryComponent.h"
+#include "qbr_SingleExpressionQueryComponent.h"
 
 #include <QBrush>
 
@@ -19,7 +19,7 @@ QGraphicsItemGroup* CellForUnaryWhereExpression::render(int &x, int &y, int &w, 
     QRectF rect(x, y , 10, CELL_SIZE*2+4);
 
     m_frame = new QGraphicsRectItem(rect, grp);
-    m_frame->setBrush(QBrush(Qt::red));
+    m_frame->setBrush(QBrush(Qt::white));
 
     m_close = new CellClose(m_level, m_helper, this, m_owner);
     int sx = x, sw = w, sh = h;
@@ -28,9 +28,9 @@ QGraphicsItemGroup* CellForUnaryWhereExpression::render(int &x, int &y, int &w, 
     m_close->render(cx, cy, w, h);
     grp->addToGroup(m_close);
     m_close->setZValue(2);
+    int extraCounter = 0;   // counts how many extra ct choosers were added ... (such as paranthese, commas, etc)
 
-
-    UnaryWhereExpressionQueryComponent* owner = dynamic_cast<UnaryWhereExpressionQueryComponent*>(m_owner);
+    SingleExpressionQueryComponent* owner = dynamic_cast<SingleExpressionQueryComponent*>(m_owner);
     if(owner)
     {
 
@@ -50,9 +50,8 @@ QGraphicsItemGroup* CellForUnaryWhereExpression::render(int &x, int &y, int &w, 
         int tx = 0; // this holds where we are putting the next cell type chooser
         int ty = cy+2;
         int i=0;
-        int extraCounter = 0;
         QVector<CellTypeChooserType> funcsAndOperators = owner->getFunctionsAndOperators();
-        for(i; i<funcsAndOperators.size(); i++)
+        for(i = 0; i<funcsAndOperators.size(); i++)
         {
             QSet<CellTypeChooserType> allowedTypesforBigOne;
             allowedTypesforBigOne.insert(CELLTYPE_REMOVE_THIS);
@@ -89,7 +88,7 @@ QGraphicsItemGroup* CellForUnaryWhereExpression::render(int &x, int &y, int &w, 
                     cursor->render(tx,ty,w,h);
                     grp->addToGroup(cursor);
 
-                     extraCounter ++;
+                    extraCounter ++;
                 }
 
                 CellTypeChooser* cl_par = new CellTypeChooser(m_level, CellTypeChooser::CELLTYPECHOOSER_BIG, CELLTYPE_CLOSE_PARANTHESES, allowedTypes, m_helper, this, m_owner);
@@ -108,7 +107,7 @@ QGraphicsItemGroup* CellForUnaryWhereExpression::render(int &x, int &y, int &w, 
         grp->addToGroup(cursor);
     }
 
-    sw += 64;
+    sw += 64 + extraCounter * CELL_SIZE;
 
     x = sx; w = sw; h = sh;
 

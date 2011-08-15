@@ -1,15 +1,15 @@
-#include "UnaryWhereExpressionQueryComponent.h"
+#include "qbr_SingleExpressionQueryComponent.h"
 #include "CellForUnaryWhereExpression.h"
 #include "Workspace.h"
 #include "DatabaseEngine.h"
 
 #include <QDebug>
 
-UnaryWhereExpressionQueryComponent::UnaryWhereExpressionQueryComponent(QueryComponent* p, int l): WhereExpressionQueryComponent(p,l), m_functionsAndOperators()
+SingleExpressionQueryComponent::SingleExpressionQueryComponent(QueryComponent* p, int l): WhereExpressionQueryComponent(p,l), m_functionsAndOperators()
 {
 }
 
-QueryGraphicsItem* UnaryWhereExpressionQueryComponent::createGraphicsItem(QueryGraphicsHelper * helper, QueryGraphicsItem * parent)
+QueryGraphicsItem* SingleExpressionQueryComponent::createGraphicsItem(QueryGraphicsHelper * helper, QueryGraphicsItem * parent)
 {
     m_helper = helper;
     m_gritm = new CellForUnaryWhereExpression(getLevel() + 1, helper, parent, this);
@@ -18,24 +18,24 @@ QueryGraphicsItem* UnaryWhereExpressionQueryComponent::createGraphicsItem(QueryG
 
 }
 
-QString UnaryWhereExpressionQueryComponent::get()
+QString SingleExpressionQueryComponent::get()
 {
     return "Implement this";
 }
 
-QSet<OptionsType> UnaryWhereExpressionQueryComponent::provideOptions()
+QSet<OptionsType> SingleExpressionQueryComponent::provideOptions()
 {
     QSet<OptionsType> t;
     return t;
 }
 
-QueryComponent* UnaryWhereExpressionQueryComponent::duplicate()
+QueryComponent* SingleExpressionQueryComponent::duplicate()
 {
-    UnaryWhereExpressionQueryComponent* newc = new UnaryWhereExpressionQueryComponent(m_parent, m_level);
+    SingleExpressionQueryComponent* newc = new SingleExpressionQueryComponent(m_parent, m_level);
     return newc;
 }
 
-void UnaryWhereExpressionQueryComponent::shiftFunctionsToTheLeft(int after)
+void SingleExpressionQueryComponent::shiftFunctionsToTheLeft(int after)
 {
     for(int i=after+1; i<m_functionsAndOperators.size(); i++)
     {
@@ -47,7 +47,7 @@ void UnaryWhereExpressionQueryComponent::shiftFunctionsToTheLeft(int after)
     }
 }
 
-void UnaryWhereExpressionQueryComponent::handleAction(const QString& action, QueryComponent* referringObject)
+void SingleExpressionQueryComponent::handleAction(const QString& action, QueryComponent* referringObject)
 {
     if(action == "NOT")
     {
@@ -91,7 +91,7 @@ void UnaryWhereExpressionQueryComponent::handleAction(const QString& action, Que
          m_functionsAndOperators.append(CELLTYPE_FUNCTION);
         if(m_functionsAtGivenPosition.find(index) == m_functionsAtGivenPosition.end())
         {
-            m_functionsAtGivenPosition.insert(index,Workspace::getInstance()->currentProjectsEngine()->getBuiltinFunction(fName));
+            m_functionsAtGivenPosition.insert(index, Workspace::getInstance()->currentProjectsEngine()->getBuiltinFunction(fName));
         }
         else
         {
@@ -101,12 +101,12 @@ void UnaryWhereExpressionQueryComponent::handleAction(const QString& action, Que
     }
 }
 
-bool UnaryWhereExpressionQueryComponent::hasFunctionAtIndex(int i)
+bool SingleExpressionQueryComponent::hasFunctionAtIndex(int i)
 {
     return m_functionsAtGivenPosition.find(i) != m_functionsAtGivenPosition.end();
 }
 
-QVector<CellTypeChooserType> UnaryWhereExpressionQueryComponent::getChoosableTypes() const
+QVector<CellTypeChooserType> SingleExpressionQueryComponent::getChoosableTypes() const
 {
     QVector<CellTypeChooserType> allowedTypes;
 //    allowedTypes.append(CELLTYPE_NOTHING);

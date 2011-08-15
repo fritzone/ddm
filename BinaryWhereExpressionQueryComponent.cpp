@@ -1,5 +1,5 @@
 #include "BinaryWhereExpressionQueryComponent.h"
-#include "UnaryWhereExpressionQueryComponent.h"
+#include "qbr_SingleExpressionQueryComponent.h"
 #include "CellForBinaryWhereExpression.h"
 
 BinaryWhereExpressionQueryComponent::BinaryWhereExpressionQueryComponent(QueryComponent* p, int l): WhereExpressionQueryComponent(p,l),
@@ -34,7 +34,7 @@ QueryComponent* BinaryWhereExpressionQueryComponent::duplicate()
 
 void BinaryWhereExpressionQueryComponent::createSides()
 {
-    m_left = new UnaryWhereExpressionQueryComponent(m_parent, m_level);
-    m_right = new UnaryWhereExpressionQueryComponent(m_parent, m_level);
+    m_left = new SingleExpressionQueryComponent(m_parent, m_level);
+    m_right = new SingleExpressionQueryComponent(m_parent, m_level);
 }
 

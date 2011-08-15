@@ -58,6 +58,8 @@ static const QString strFunctionIcon = ":/images/actions/images/small/function.p
 static const QString strBigNotIcon = ":/images/actions/images/big/big_not_icon.png";
 static const QString strBigNegIcon = ":/images/actions/images/big/big_neg_icon.png";
 static const QString strBigMinusIcon = ":/images/actions/images/big/big_minus_icon.png";
+static const QString strParanthesesOpenIcon = ":/images/actions/images/big/parantheses_open.png";
+static const QString strParanthesesCloseIcon = ":/images/actions/images/big/parantheses_close.png";
 
 static const QString NEW_TABLE = "New table reference";
 static const QString DUPLICATE = "Duplicate";

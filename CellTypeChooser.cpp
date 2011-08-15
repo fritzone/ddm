@@ -2,7 +2,7 @@
 #include "Workspace.h"
 #include "Version.h"
 #include "IconFactory.h"
-#include "UnaryWhereExpressionQueryComponent.h"
+#include "qbr_SingleExpressionQueryComponent.h"
 #include "DatabaseBuiltinFunction.h"
 
 #include <QPen>
@@ -161,7 +161,7 @@ void CellTypeChooser::mousePress(int x, int y)
     }
     else
     {
-        UnaryWhereExpressionQueryComponent* owner = dynamic_cast<UnaryWhereExpressionQueryComponent*>(m_owner);
+        SingleExpressionQueryComponent* owner = dynamic_cast<SingleExpressionQueryComponent*>(m_owner);
 
         m_owner->handleAction(selected + "_" + (m_index>=0?QString::number(m_index):""), m_owner);
     }

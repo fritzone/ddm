@@ -1,7 +1,7 @@
 #ifndef BINARYWHEREEXPRESSIONQUERYCOMPONENT_H
 #define BINARYWHEREEXPRESSIONQUERYCOMPONENT_H
 
-#include "WhereExpressionQueryComponent.h"
+#include "qbr_WhereExpressionQueryComponent.h"
 
 class CellForBinaryWhereExpression;
 class QueryGraphicsHelper;

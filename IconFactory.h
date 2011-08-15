@@ -74,13 +74,13 @@ public:
 
     static const QIcon& getOpenParanthesesIcon()
     {
-        static const QIcon icon(strMinusIcon);  ////
+        static const QIcon icon(strParanthesesOpenIcon);  ////
         return icon;
     }
 
     static const QIcon& getCloseParanthesesIcon()
     {
-        static const QIcon icon(strMinusIcon);   ////
+        static const QIcon icon(strParanthesesCloseIcon);   ////
         return icon;
     }
 
