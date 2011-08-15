@@ -24,6 +24,7 @@ private:
     CellClose* m_close;
     CellTypeChooser* m_smallTypeModifier;
     QVector<CellTypeChooser*> m_bigTypeModifiers;
+    int m_saveW;
 };
 
 #endif // CELLFORUNARYWHEREEXPRESSION_H

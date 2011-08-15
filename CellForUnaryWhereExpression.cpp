@@ -13,6 +13,7 @@ CellForUnaryWhereExpression::CellForUnaryWhereExpression (int level, QueryGraphi
 
 QGraphicsItemGroup* CellForUnaryWhereExpression::render(int &x, int &y, int &w, int &h)
 {
+    int saveW = w;
     int ly = y;
     QGraphicsItemGroup* grp = new QGraphicsItemGroup();
 
@@ -66,8 +67,8 @@ QGraphicsItemGroup* CellForUnaryWhereExpression::render(int &x, int &y, int &w, 
             int localW = w;
             bigTypeModifier->render(tx,ty,localW,h);
             if(localW != w) localXDepl += localW - w + 2;
-            if(tx > sw - CELL_SIZE) sw += ((CELL_SIZE+1) *3) +2;
-            if(tx + localXDepl > sw - CELL_SIZE) sw += ((CELL_SIZE+1) *3) +2;
+            if(tx > sw - CELL_SIZE) sw += ((CELL_SIZE+1) *2) +2;
+            if(tx + localXDepl > sw - CELL_SIZE) sw += ((CELL_SIZE+1) *2) +2;
 
             if(owner->hasFunctionAtIndex(i))
             {
@@ -83,6 +84,7 @@ QGraphicsItemGroup* CellForUnaryWhereExpression::render(int &x, int &y, int &w, 
 
                 for(int j=0; j<func->getParameterCount(); j++)
                 {
+                    if()
                     CellTypeChooser* cursor = new CellTypeChooser(m_level, CellTypeChooser::CELLTYPECHOOSER_BIG, CELLTYPE_CURSOR, allowedTypes, m_helper, this, m_owner);
                     tx = sx+((CELL_SIZE+1) *2)*(extraCounter+ i+1)+2 + localXDepl;
                     cursor->render(tx,ty,w,h);
@@ -116,14 +118,16 @@ QGraphicsItemGroup* CellForUnaryWhereExpression::render(int &x, int &y, int &w, 
     y+=2;
     h += y - cy;
 
+    m_saveW = w;
+    w = saveW;
     return grp;
 }
 
 void CellForUnaryWhereExpression::updateWidth(int newWidth)
 {
     QRect t1 = m_frame->rect().toRect();
-    t1.setWidth(newWidth);
+    t1.setWidth(m_saveW);
     m_frame->setRect(t1);
 
-    m_close->updateWidth(newWidth + (m_level)*CELL_SIZE + 3);//m_frame->boundingRect().right() - (m_level+1)*CELL_SIZE);
+    m_close->updateWidth(m_saveW + (m_level)*CELL_SIZE + 3);//m_frame->boundingRect().right() - (m_level+1)*CELL_SIZE);
 }

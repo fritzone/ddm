@@ -2,6 +2,7 @@
 #define QBR_DATABASEFUNCTIONINSTANTIATION_H
 
 #include "DatabaseBuiltinFunction.h"
+#include "qbr_SingleExpressionQueryComponent.h"
 
 /**
  * This class holds a reference to a database builtin function, and data about the
@@ -14,6 +15,7 @@ public:
 
 private:
     const DatabaseBuiltinFunction& m_func;
+    QVector<SingleExpressionQueryComponent*> m_parameters;
 };
 
 #endif // QBR_DATABASEFUNCTIONINSTANTIATION_H
