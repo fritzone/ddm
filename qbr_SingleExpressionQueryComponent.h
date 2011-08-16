@@ -2,11 +2,13 @@
 #define UNARYWHEREEXPRESSIONQUERYCOMPONENT_H
 
 #include "qbr_WhereExpressionQueryComponent.h"
-#include "DatabaseBuiltinFunction.h"
-#include "qbr_DatabaseFunctionInstantiationComponent.h"
 
-class CellForUnaryWhereExpression;
+#include <QMap>
+
+class CellForSingleExpression;
 class CellTypeChooser;
+class DatabaseFunctionInstantiationComponent;
+class DatabaseBuiltinFunction;
 
 /**
  * Class, representing a unary where expression.
@@ -32,19 +34,18 @@ public:
     QVector<CellTypeChooserType> getChoosableTypes() const;
 
     bool hasFunctionAtIndex(int);
-    DatabaseBuiltinFunction* getFunctionAt(int i)
-    {
-        return &m_functionsAtGivenPosition[i];
-    }
+    const DatabaseBuiltinFunction* getFunctionAt(int i);
     void shiftFunctionsToTheLeft(int after);
 
+    DatabaseFunctionInstantiationComponent* getFunctionInstantiationAt(int);
+
 private:
-    CellForUnaryWhereExpression* m_gritm;
+    CellForSingleExpression* m_gritm;
     // the set of types that were activated with the corner cell type chooser (NOT, NEG, etc...)
     QVector<CellTypeChooserType> m_functionsAndOperators;
 
-    QMap<int, DatabaseBuiltinFunction> m_functionsAtGivenPosition;
-    QMap<int, DatabaseFunctionInstantiationComponent> m_functionInstantiationAtGivenPosition;
+    QMap<int, const DatabaseBuiltinFunction*> m_functionsAtGivenPosition;
+    QMap<int, DatabaseFunctionInstantiationComponent*> m_functionInstantiationAtGivenPosition;
 
 
 };

@@ -1,7 +1,7 @@
 #ifndef DATABASEBUILTINFUNCTION_H
 #define DATABASEBUILTINFUNCTION_H
 
-#include "OptionsType.h"
+#include "qbr_OptionTypes.h"
 #include "DatabaseBuiltinFunctionsParameter.h"
 #include "NamedItem.h"
 #include "UserDataType.h"
@@ -23,7 +23,7 @@ public:
 
     DatabaseBuiltinFunction() : m_type(FT_INVALID), m_returnType(), m_parameters() {}
 
-    int getParameterCount()
+    int getParameterCount() const
     {
         return m_parameters.size();
     }

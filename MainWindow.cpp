@@ -39,8 +39,8 @@
 #include "DataType.h" // TODO: this is simply bad design, Mainwindow should not know about datatypes ...
 #include "IssueManager.h"
 #include "NewViewForm.h"
-#include "QueryAsGenerator.h"
-#include "SelectQuery.h"
+#include "qbr_QueryAsGenerator.h"
+#include "qbr_SelectQuery.h"
 
 #include <QtGui>
 
