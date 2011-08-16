@@ -1,9 +1,9 @@
 #include "NewViewForm.h"
 #include "ui_NewViewForm.h"
 
-#include "QueryGraphicsView.h"
-#include "QueryGraphicsScene.h"
-#include "QueryGraphicsItem.h"
+#include "qbr_QueryGraphicsView.h"
+#include "qbr_QueryGraphicsScene.h"
+#include "qbr_QueryGraphicsItem.h"
 
 #include <QScrollBar>
 #include <QVBoxLayout>

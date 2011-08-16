@@ -78,47 +78,47 @@ SOURCES += main.cpp \
     DatabaseNormalizationIssue.cpp \
     ForeignKeyReccomendationIssue.cpp \
     NewViewForm.cpp \
-    QueryGraphicsView.cpp \
-    QueryGraphicsScene.cpp \
-    Query.cpp \
-    QueryGraphicsItem.cpp \
-    SelectQuery.cpp \
-    SelectQueryGraphicsItem.cpp \
     TableGraphicsItem.cpp \
-    CellCommand.cpp \
-    CellTable.cpp \
-    CellTypeChooser.cpp \
-    CellClose.cpp \
-    CellTableChooser.cpp \
-    QueryComponents.cpp \
-    QueryItemListDialog.cpp \
-    QueryGraphicsHelper.cpp \
     TableQueryComponent.cpp \
-    SelectQuerySelectComponent.cpp \
-    SelectQueryFromComponent.cpp \
-    CellQuerySmallOptionsBox.cpp \
-    SelectQueryWhereComponent.cpp \
-    CellSelectCommand.cpp \
-    CellFromCommand.cpp \
-    CellWhereCommand.cpp \
-    CellGroupByCommand.cpp \
-    SelectQueryGroupByComponent.cpp \
-    SelectQueryAsComponent.cpp \
-    CellAsCommand.cpp \
-    QueryTextInputItem.cpp \
-    SelectQueryOrderByComponent.cpp \
-    CellOrderByCommand.cpp \
-    QueryAsGenerator.cpp \
     MainWindow.cpp \
     NewDataTypeForm.cpp \
     NewProjectDialog.cpp \
-    SelectQueryJoinComponent.cpp \
-    CellJoinCommand.cpp \
-    BinaryWhereExpressionQueryComponent.cpp \
-    CellForBinaryWhereExpression.cpp \
-    CellForUnaryWhereExpression.cpp \
     qbr_SingleExpressionQueryComponent.cpp \
-    qbr_DatabaseFunctionInstantiationComponent.cpp
+    qbr_DatabaseFunctionInstantiationComponent.cpp \
+    qbr_CellForSingleExpression.cpp \
+    qbr_CellAsCommand.cpp \
+    qbr_CellClose.cpp \
+    qbr_CellCommand.cpp \
+    qbr_BinaryWhereExpressionQueryComponent.cpp \
+    qbr_CellForBinaryWhereExpression.cpp \
+    qbr_CellFromCommand.cpp \
+    qbr_CellGroupByCommand.cpp \
+    qbr_CellJoinCommand.cpp \
+    qbr_CellOrderByCommand.cpp \
+    qbr_CellQuerySmallOptionsBox.cpp \
+    qbr_CellSelectCommand.cpp \
+    qbr_CellTable.cpp \
+    qbr_CellTableChooser.cpp \
+    qbr_CellTypeChooser.cpp \
+    qbr_CellWhereCommand.cpp \
+    qbr_SelectQuery.cpp \
+    qbr_SelectQueryAsComponent.cpp \
+    qbr_SelectQueryFromComponent.cpp \
+    qbr_SelectQueryGraphicsItem.cpp \
+    qbr_SelectQueryGroupByComponent.cpp \
+    qbr_SelectQueryJoinComponent.cpp \
+    qbr_SelectQueryOrderByComponent.cpp \
+    qbr_SelectQuerySelectComponent.cpp \
+    qbr_SelectQueryWhereComponent.cpp \
+    qbr_Query.cpp \
+    qbr_QueryAsGenerator.cpp \
+    qbr_QueryComponents.cpp \
+    qbr_QueryGraphicsHelper.cpp \
+    qbr_QueryGraphicsItem.cpp \
+    qbr_QueryGraphicsScene.cpp \
+    qbr_QueryGraphicsView.cpp \
+    qbr_QueryItemListDialog.cpp \
+    qbr_QueryTextInputItem.cpp
 HEADERS += MainWindow.h \
     MainWindowButtonDialog.h \
     NewProjectDialog.h \
@@ -211,50 +211,50 @@ HEADERS += MainWindow.h \
     DatabaseNormalizationIssue.h \
     ForeignKeyReccomendationIssue.h \
     NewViewForm.h \
-    QueryGraphicsView.h \
-    QueryGraphicsScene.h \
-    Query.h \
-    QueryGraphicsItem.h \
-    SelectQuery.h \
-    SelectQueryGraphicsItem.h \
     TableGraphicsItem.h \
-    CellCommand.h \
-    CellTable.h \
-    CellTypeChooser.h \
-    CellClose.h \
-    CellTableChooser.h \
-    QueryComponents.h \
-    QueryItemListDialog.h \
-    QueryGraphicsHelper.h \
     TableQueryComponent.h \
-    SelectQuerySelectComponent.h \
-    SelectQueryFromComponent.h \
-    CellQuerySmallOptionsBox.h \
-    SelectQueryWhereComponent.h \
-    CellSelectCommand.h \
-    CellFromCommand.h \
-    CellWhereCommand.h \
-    OptionsType.h \
-    CellGroupByCommand.h \
-    SelectQueryGroupByComponent.h \
-    SelectQueryAsComponent.h \
-    CellAsCommand.h \
-    QueryTextInputItem.h \
-    SelectQueryOrderByComponent.h \
-    CellOrderByCommand.h \
     utils.h \
-    QueryAsGenerator.h \
-    SelectQueryJoinComponent.h \
-    CellJoinCommand.h \
     ColumnProviderForQuery.h \
-    BinaryWhereExpressionQueryComponent.h \
-    CellForBinaryWhereExpression.h \
-    CellForUnaryWhereExpression.h \
     DatabaseBuiltinFunction.h \
     DatabaseBuiltinFunctionsParameter.h \
     qbr_SingleExpressionQueryComponent.h \
     qbr_WhereExpressionQueryComponent.h \
-    qbr_DatabaseFunctionInstantiationComponent.h
+    qbr_DatabaseFunctionInstantiationComponent.h \
+    qbr_CellForSingleExpression.h \
+    qbr_qbr_CellAsCommand.h \
+    qbr_qbr_CellClose.h \
+    qbr_qbr_CellCommand.h \
+    qbr_BinaryWhereExpressionQueryComponent.h \
+    qbr_CellForBinaryWhereExpression.h \
+    qbr_CellFromCommand.h \
+    qbr_CellGroupByCommand.h \
+    qbr_CellJoinCommand.h \
+    qbr_CellOrderByCommand.h \
+    qbr_CellQuerySmallOptionsBox.h \
+    qbr_CellSelectCommand.h \
+    qbr_CellTable.h \
+    qbr_CellTableChooser.h \
+    qbr_CellTypeChooser.h \
+    qbr_CellWhereCommand.h \
+    qbr_SelectQuery.h \
+    qbr_SelectQueryAsComponent.h \
+    qbr_SelectQueryFromComponent.h \
+    qbr_SelectQueryGraphicsItem.h \
+    qbr_SelectQueryGroupByComponent.h \
+    qbr_SelectQueryJoinComponent.h \
+    qbr_SelectQueryOrderByComponent.h \
+    qbr_SelectQuerySelectComponent.h \
+    qbr_SelectQueryWhereComponent.h \
+    qbr_OptionTypes.h \
+    qbr_Query.h \
+    qbr_QueryAsGenerator.h \
+    qbr_QueryComponents.h \
+    qbr_QueryGraphicsHelper.h \
+    qbr_QueryGraphicsItem.h \
+    qbr_QueryGraphicsScene.h \
+    qbr_QueryGraphicsView.h \
+    qbr_QueryItemListDialog.h \
+    qbr_QueryTextInputItem.h
 FORMS += MainWindow.ui \
     MainWindowButtonDialog.ui \
     NewProjectDialog.ui \

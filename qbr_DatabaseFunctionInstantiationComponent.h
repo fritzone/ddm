@@ -4,6 +4,8 @@
 #include "DatabaseBuiltinFunction.h"
 #include "qbr_SingleExpressionQueryComponent.h"
 
+class SingleExpressionQueryComponent;
+
 /**
  * This class holds a reference to a database builtin function, and data about the
  * parametrization of that function, ie. how the stuff was populated in the query builder.
@@ -12,6 +14,7 @@ class DatabaseFunctionInstantiationComponent
 {
 public:
     DatabaseFunctionInstantiationComponent(const DatabaseBuiltinFunction& f);
+    SingleExpressionQueryComponent* getInstantiatedParameter(int i);
 
 private:
     const DatabaseBuiltinFunction& m_func;

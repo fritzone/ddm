@@ -473,6 +473,7 @@ QVector<DatabaseBuiltinFunction> MySQLDatabaseEngine::buildFunctions()
     return result;
 }
 
+static DatabaseBuiltinFunction no_function;
 
 const DatabaseBuiltinFunction& MySQLDatabaseEngine::getBuiltinFunction(const QString& name)
 {
@@ -483,5 +484,5 @@ const DatabaseBuiltinFunction& MySQLDatabaseEngine::getBuiltinFunction(const QSt
             return s_builtinFunctions.at(i);
         }
     }
-    return DatabaseBuiltinFunction();
+    return no_function;
 }

@@ -1,10 +1,10 @@
 #include "TableGraphicsItem.h"
 #include "Table.h"
-#include "CellTable.h"
-#include "CellQuerySmallOptionsBox.h"
-#include "CellAsCommand.h"
-#include "CellWhereCommand.h"
-#include "CellJoinCommand.h"
+#include "qbr_CellTable.h"
+#include "qbr_CellQuerySmallOptionsBox.h"
+#include "qbr_CellAsCommand.h"
+#include "qbr_CellWhereCommand.h"
+#include "qbr_CellJoinCommand.h"
 
 TableGraphicsItem::TableGraphicsItem(Table* tab, int level, QueryGraphicsHelper* c, QueryGraphicsItem* parent, QueryComponent* owner):
         QueryGraphicsItem(level, parent, c, owner),

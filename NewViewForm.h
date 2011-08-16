@@ -2,8 +2,8 @@
 #define NEWVIEWFORM_H
 
 #include <QWidget>
-#include "QueryGraphicsHelper.h"
 
+class QueryGraphicsHelper;
 class QueryGraphicsView;
 class QueryGraphicsScene;
 class QueryGraphicsItem;

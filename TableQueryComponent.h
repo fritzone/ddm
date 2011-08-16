@@ -1,7 +1,7 @@
 #ifndef TABLEQUERYCOMPONENT_H
 #define TABLEQUERYCOMPONENT_H
 
-#include "QueryComponents.h"
+#include "qbr_QueryComponents.h"
 #include "ColumnProviderForQuery.h"
 
 class Table;

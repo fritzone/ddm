@@ -5,11 +5,11 @@
 #include "Workspace.h"
 #include "Version.h"
 #include "strings.h"
-#include "SelectQueryAsComponent.h"
-#include "SelectQueryJoinComponent.h"
-#include "CellAsCommand.h"
-#include "CellJoinCommand.h"
-#include "CellWhereCommand.h"
+#include "qbr_SelectQueryAsComponent.h"
+#include "qbr_SelectQueryJoinComponent.h"
+#include "qbr_CellAsCommand.h"
+#include "qbr_CellJoinCommand.h"
+#include "qbr_CellWhereCommand.h"
 #include "Column.h"
 
 #include <QGraphicsScene>

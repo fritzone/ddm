@@ -1,7 +1,7 @@
 #ifndef WHEREEXPRESSIONQUERYCOMPONENT_H
 #define WHEREEXPRESSIONQUERYCOMPONENT_H
 
-#include "QueryComponents.h"
+#include "qbr_QueryComponents.h"
 
 /**
  * Base class for a where expression. This according to the MySQL documentation, can be something like:

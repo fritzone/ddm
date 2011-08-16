@@ -1,7 +1,9 @@
 #include "qbr_SingleExpressionQueryComponent.h"
-#include "CellForUnaryWhereExpression.h"
+#include "qbr_CellForSingleExpression.h"
 #include "Workspace.h"
 #include "DatabaseEngine.h"
+#include "DatabaseBuiltinFunction.h"
+#include "qbr_DatabaseFunctionInstantiationComponent.h"
 
 #include <QDebug>
 
@@ -12,7 +14,7 @@ SingleExpressionQueryComponent::SingleExpressionQueryComponent(QueryComponent* p
 QueryGraphicsItem* SingleExpressionQueryComponent::createGraphicsItem(QueryGraphicsHelper * helper, QueryGraphicsItem * parent)
 {
     m_helper = helper;
-    m_gritm = new CellForUnaryWhereExpression(getLevel() + 1, helper, parent, this);
+    m_gritm = new CellForSingleExpression(getLevel() + 1, helper, parent, this);
 
     return m_gritm;
 
@@ -45,6 +47,19 @@ void SingleExpressionQueryComponent::shiftFunctionsToTheLeft(int after)
             m_functionsAtGivenPosition.remove(i);
         }
     }
+}
+
+const DatabaseBuiltinFunction* SingleExpressionQueryComponent::getFunctionAt(int i)
+{
+    if(m_functionsAtGivenPosition.contains(i)) return m_functionsAtGivenPosition[i];
+    return 0;
+}
+
+
+DatabaseFunctionInstantiationComponent* SingleExpressionQueryComponent::getFunctionInstantiationAt(int pos)
+{
+    if(m_functionInstantiationAtGivenPosition.contains(pos)) return m_functionInstantiationAtGivenPosition[pos];
+    return 0;
 }
 
 void SingleExpressionQueryComponent::handleAction(const QString& action, QueryComponent* referringObject)
@@ -88,14 +103,16 @@ void SingleExpressionQueryComponent::handleAction(const QString& action, QueryCo
         qDebug() << "Function: "<< action;
         QString fName = action.mid(1, action.indexOf('_') - 1);
         int index = action.section('_', 1).toInt();
-         m_functionsAndOperators.append(CELLTYPE_FUNCTION);
+        m_functionsAndOperators.append(CELLTYPE_FUNCTION);
         if(m_functionsAtGivenPosition.find(index) == m_functionsAtGivenPosition.end())
         {
-            m_functionsAtGivenPosition.insert(index, Workspace::getInstance()->currentProjectsEngine()->getBuiltinFunction(fName));
+            m_functionsAtGivenPosition.insert(index, &Workspace::getInstance()->currentProjectsEngine()->getBuiltinFunction(fName));
+            m_functionInstantiationAtGivenPosition.insert(index, new DatabaseFunctionInstantiationComponent(Workspace::getInstance()->currentProjectsEngine()->getBuiltinFunction(fName)));
         }
         else
         {
-            m_functionsAtGivenPosition[index] = Workspace::getInstance()->currentProjectsEngine()->getBuiltinFunction(fName);
+            m_functionsAtGivenPosition[index] = &Workspace::getInstance()->currentProjectsEngine()->getBuiltinFunction(fName);
+            m_functionInstantiationAtGivenPosition[index] = new DatabaseFunctionInstantiationComponent(Workspace::getInstance()->currentProjectsEngine()->getBuiltinFunction(fName));
         }
         m_helper->triggerReRender();
     }

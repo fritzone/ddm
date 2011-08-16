@@ -3,7 +3,7 @@
 
 #include <Qt>
 
-#include "OptionsType.h"
+#include "qbr_OptionTypes.h"
 #include "UserDataType.h"
 
 /**

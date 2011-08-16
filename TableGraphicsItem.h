@@ -1,8 +1,8 @@
 #ifndef TABLEGRAPHICSITEM_H
 #define TABLEGRAPHICSITEM_H
 
-#include "QueryGraphicsItem.h"
-#include "QueryGraphicsHelper.h"
+#include "qbr_QueryGraphicsItem.h"
+#include "qbr_QueryGraphicsHelper.h"
 
 class Table;
 class QueryComponent;
