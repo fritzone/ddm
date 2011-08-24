@@ -17,42 +17,32 @@ QGraphicsItemGroup* CellForSingleExpression::render(int &x, int &y, int &w, int 
 {
     int saveW = w;
     int ly = y;
-    QGraphicsItemGroup* grp = new QGraphicsItemGroup();
-
-    QRectF rect(x, y , 10, CELL_SIZE*2+4);
-
-    m_frame = new QGraphicsRectItem(rect, grp);
-    m_frame->setBrush(QBrush(Qt::white));
-
-    m_close = new CellClose(m_level, m_helper, this, m_owner);
-    int sx = x, sw = w, sh = h;
+    const int sx = x, sh = h;// these are saving the input values
+    int sw = w;
     int cx = 20;
-    int cy = ly;
-    m_close->render(cx, cy, w, h);
-    grp->addToGroup(m_close);
-    m_close->setZValue(2);
+    int cy = ly + 2;        // two pixels below the top, this is used only for rendering, it's not modified
     int extraCounter = 0;   // counts how many extra ct choosers were added ... (such as paranthese, commas, etc)
     int i=0;
     int localXDepl = 0;
 
-    SingleExpressionQueryComponent* owner = dynamic_cast<SingleExpressionQueryComponent*>(m_owner);
-    if(owner)
+    QGraphicsItemGroup* grp = new QGraphicsItemGroup();
+
+    if(m_level != -2)
     {
+        QRectF rect(x, y , 10, CELL_SIZE*2+4);
+        m_frame = new QGraphicsRectItem(rect, grp);
+        m_frame->setBrush(QBrush(Qt::white));
 
-        QSet<CellTypeChooserType> allowedTypes;
-        QVector<CellTypeChooserType> choosableTypes = owner->getChoosableTypes();
+        m_close = new CellClose(m_level, m_helper, this, m_owner);
+        m_close->render(cx, cy, w, h);
+        grp->addToGroup(m_close);
+        m_close->setZValue(2);
+    }
 
-        for(int k=0; k<choosableTypes.size(); k++)
-        {
-            allowedTypes.insert(choosableTypes.at(k));
-        }
-
-        m_smallTypeModifier = new CellTypeChooser(m_level, CellTypeChooser::CELLTYPECHOOSER_REGULAR, CELLTYPE_NOTHING, allowedTypes, m_helper, this, m_owner);
-        m_smallTypeModifier ->render(sx, cy, w, h);
-        grp->addToGroup(m_smallTypeModifier );
-
-        int tx = 0; // this holds where we are putting the next cell type chooser
-        int ty = cy+2;
+    if(SingleExpressionQueryComponent* owner = dynamic_cast<SingleExpressionQueryComponent*>(m_owner))
+    {
+        int tx = x; // this holds where we are putting the next cell type chooser
+        int localW = w;
         QVector<CellTypeChooserType> funcsAndOperators = owner->getFunctionsAndOperators();
         for(i = 0; i<funcsAndOperators.size(); i++)
         {
@@ -60,52 +50,35 @@ QGraphicsItemGroup* CellForSingleExpression::render(int &x, int &y, int &w, int 
             allowedTypesforBigOne.insert(CELLTYPE_REMOVE_THIS);
 
             CellTypeChooser* bigTypeModifier = new CellTypeChooser(m_level, CellTypeChooser::CELLTYPECHOOSER_BIG, funcsAndOperators.at(i), allowedTypesforBigOne, m_helper, this, m_owner, i);
-            if(owner->hasFunctionAtIndex(i))
+            bigTypeModifier->setFunction(owner->getFunctionAt(i));
+
+            bigTypeModifier->render(tx, cy, localW, h);
+            tx += bigTypeModifier->boundingRect().width();
+            if(tx > sw - CELL_SIZE) sw = tx;
+
+            if(const DatabaseBuiltinFunction* func = bigTypeModifier->getFunction())
             {
-                const DatabaseBuiltinFunction* func = owner->getFunctionAt(i);
-                bigTypeModifier->setFunction(func);
-            }
-            tx = sx+((CELL_SIZE+1) *2)*(extraCounter + i+1)+2 + localXDepl;
-            int localW = w;
-            bigTypeModifier->render(tx,ty,localW,h);
-            if(localW != w) localXDepl += localW - w + 2;
-            if(tx > sw - CELL_SIZE) sw += ((CELL_SIZE+1) *2) +2;
-            if(tx + localXDepl > sw - CELL_SIZE) sw += ((CELL_SIZE+1) *2) +2;
-
-            if(owner->hasFunctionAtIndex(i))
-            {
-                const DatabaseBuiltinFunction* func = owner->getFunctionAt(i);
-
-                extraCounter += 1;  // For the first paranthesis
-                CellTypeChooser* op_par = new CellTypeChooser(m_level, CellTypeChooser::CELLTYPECHOOSER_BIG, CELLTYPE_OPEN_PARANTHESES_FOR_FUNCTION_CALL, allowedTypes, m_helper, this, m_owner);
-                tx = sx+((CELL_SIZE+1) *2)*(extraCounter+ i+1)+2 + localXDepl;
-                op_par->render(tx,ty,w,h);
-                grp->addToGroup(op_par);
-
-                extraCounter += 1;  // For the second paranthesis
+                CellTypeChooser* op_par = new CellTypeChooser(m_level, CellTypeChooser::CELLTYPECHOOSER_BIG, CELLTYPE_OPEN_PARANTHESES_FOR_FUNCTION_CALL, QSet<CellTypeChooserType>(), m_helper, this, m_owner);
+                grp->addToGroup(op_par->render(tx, cy, localW, h));
+                tx += op_par->boundingRect().width();
+                if(tx > sw - CELL_SIZE) sw = tx;
 
                 DatabaseFunctionInstantiationComponent* finstant = owner->getFunctionInstantiationAt(i);
                 for(int j=0; j<func->getParameterCount(); j++)
                 {
                     SingleExpressionQueryComponent* instParJ = finstant->getInstantiatedParameter(j);
                     QueryGraphicsItem* tItem = instParJ->createGraphicsItem(m_helper, this);
-                    tx = sx+((CELL_SIZE+1) *2)*(extraCounter+ i+1)+2 + localXDepl;
-                    int tempW, tempH;
-                    tItem->render(tx, y, tempW, tempH);
-
-//                    CellTypeChooser* cursor = new CellTypeChooser(m_level, CellTypeChooser::CELLTYPECHOOSER_BIG, CELLTYPE_CURSOR, allowedTypes, m_helper, this, m_owner);
-//                    tx = sx+((CELL_SIZE+1) *2)*(extraCounter+ i+1)+2 + localXDepl;
-//                    cursor->render(tx,ty,w,h);
-//                    grp->addToGroup(cursor);
-
-                    extraCounter ++;
+                    grp->addToGroup(tItem->render(tx, y, localW, h));
+                    tx += tItem->boundingRect().width();
+                    if(tx > sw - CELL_SIZE) sw = tx;
                 }
 
                 // the closing paranthesis
-                CellTypeChooser* cl_par = new CellTypeChooser(m_level, CellTypeChooser::CELLTYPECHOOSER_BIG, CELLTYPE_CLOSE_PARANTHESES_FOR_FUNCTION_CALL, allowedTypes, m_helper, this, m_owner);
-                tx = sx+((CELL_SIZE+1) *2)*(extraCounter+ i+1)+2 + localXDepl;
-                cl_par->render(tx,ty,w,h);
-                grp->addToGroup(cl_par);
+                CellTypeChooser* cl_par = new CellTypeChooser(m_level, CellTypeChooser::CELLTYPECHOOSER_BIG, CELLTYPE_CLOSE_PARANTHESES_FOR_FUNCTION_CALL, QSet<CellTypeChooserType>(), m_helper, this, m_owner);
+
+                cl_par->render(tx, cy, localW, h);
+                tx += cl_par->boundingRect().width();
+                if(tx > sw - CELL_SIZE) sw = tx;
             }
 
             grp->addToGroup(bigTypeModifier);
@@ -113,10 +86,8 @@ QGraphicsItemGroup* CellForSingleExpression::render(int &x, int &y, int &w, int 
         }
 
         // the cursor after the expression
-        CellTypeChooser* cursor = new CellTypeChooser(m_level, CellTypeChooser::CELLTYPECHOOSER_BIG, CELLTYPE_CURSOR, allowedTypes, m_helper, this, m_owner, i);
-        tx = sx+((CELL_SIZE+1) *2)*(extraCounter+ i+1)+2 + localXDepl;
-        cursor->render(tx,ty,w,h);
-        grp->addToGroup(cursor);
+        CellTypeChooser* cursor = new CellTypeChooser(m_level, CellTypeChooser::CELLTYPECHOOSER_BIG, CELLTYPE_CURSOR, QSet<CellTypeChooserType>(), m_helper, this, m_owner, i);
+        grp->addToGroup(cursor->render(tx, cy, w, h));
     }
 
     sw += 64 + (extraCounter + i + 1) * CELL_SIZE + localXDepl;
@@ -126,7 +97,7 @@ QGraphicsItemGroup* CellForSingleExpression::render(int &x, int &y, int &w, int 
     y += CELL_SIZE*2+4;
 
     y+=2;
-    h += y - cy;
+    h += y - cy - 2;
 
     m_saveW = w;
     w = saveW;
@@ -135,9 +106,15 @@ QGraphicsItemGroup* CellForSingleExpression::render(int &x, int &y, int &w, int 
 
 void CellForSingleExpression::updateWidth(int newWidth)
 {
-    QRect t1 = m_frame->rect().toRect();
-    t1.setWidth(m_saveW);
-    m_frame->setRect(t1);
+    if(m_frame)
+    {
+        QRect t1 = m_frame->rect().toRect();
+        t1.setWidth(m_saveW);
+        m_frame->setRect(t1);
+    }
 
-    m_close->updateWidth(m_saveW + (m_level)*CELL_SIZE + 3);//m_frame->boundingRect().right() - (m_level+1)*CELL_SIZE);
+    if(m_close)
+    {
+        m_close->updateWidth(m_saveW + (m_level)*CELL_SIZE + 3);//m_frame->boundingRect().right() - (m_level+1)*CELL_SIZE);
+    }
 }

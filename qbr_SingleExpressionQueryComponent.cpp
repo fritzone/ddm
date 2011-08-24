@@ -14,7 +14,10 @@ SingleExpressionQueryComponent::SingleExpressionQueryComponent(QueryComponent* p
 QueryGraphicsItem* SingleExpressionQueryComponent::createGraphicsItem(QueryGraphicsHelper * helper, QueryGraphicsItem * parent)
 {
     m_helper = helper;
-    m_gritm = new CellForSingleExpression(getLevel() + 1, helper, parent, this);
+    int l = getLevel();
+    int adder = 1;
+    if(l == -2) adder = 0;
+    m_gritm = new CellForSingleExpression(l + adder, helper, parent, this);
 
     return m_gritm;
 
@@ -107,12 +110,12 @@ void SingleExpressionQueryComponent::handleAction(const QString& action, QueryCo
         if(m_functionsAtGivenPosition.find(index) == m_functionsAtGivenPosition.end())
         {
             m_functionsAtGivenPosition.insert(index, &Workspace::getInstance()->currentProjectsEngine()->getBuiltinFunction(fName));
-            m_functionInstantiationAtGivenPosition.insert(index, new DatabaseFunctionInstantiationComponent(Workspace::getInstance()->currentProjectsEngine()->getBuiltinFunction(fName)));
+            m_functionInstantiationAtGivenPosition.insert(index, new DatabaseFunctionInstantiationComponent(new SingleExpressionQueryComponent(this, m_level + 1), Workspace::getInstance()->currentProjectsEngine()->getBuiltinFunction(fName)));
         }
         else
         {
             m_functionsAtGivenPosition[index] = &Workspace::getInstance()->currentProjectsEngine()->getBuiltinFunction(fName);
-            m_functionInstantiationAtGivenPosition[index] = new DatabaseFunctionInstantiationComponent(Workspace::getInstance()->currentProjectsEngine()->getBuiltinFunction(fName));
+            m_functionInstantiationAtGivenPosition[index] = new DatabaseFunctionInstantiationComponent(new SingleExpressionQueryComponent(this, m_level + 1), Workspace::getInstance()->currentProjectsEngine()->getBuiltinFunction(fName));
         }
         m_helper->triggerReRender();
     }
