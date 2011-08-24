@@ -33,6 +33,11 @@ public:
         m_functionSupport = f;
     }
 
+    const DatabaseBuiltinFunction* getFunction()
+    {
+        return m_functionSupport;
+    }
+
 private:
     CellTypeChooserType m_defaultType;
     QSet<CellTypeChooserType> m_allowedTypes;

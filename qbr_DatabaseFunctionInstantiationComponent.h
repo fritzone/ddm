@@ -3,6 +3,7 @@
 
 #include "DatabaseBuiltinFunction.h"
 #include "qbr_SingleExpressionQueryComponent.h"
+#include "qbr_QueryComponents.h"
 
 class SingleExpressionQueryComponent;
 
@@ -13,10 +14,11 @@ class SingleExpressionQueryComponent;
 class DatabaseFunctionInstantiationComponent
 {
 public:
-    DatabaseFunctionInstantiationComponent(const DatabaseBuiltinFunction& f);
+    DatabaseFunctionInstantiationComponent(QueryComponent* parent, const DatabaseBuiltinFunction& f);
     SingleExpressionQueryComponent* getInstantiatedParameter(int i);
 
 private:
+    QueryComponent* m_parent;
     const DatabaseBuiltinFunction& m_func;
     QVector<SingleExpressionQueryComponent*> m_parameters;
 };
