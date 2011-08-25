@@ -68,10 +68,10 @@ void QueryItemListDialog::showSymbolPanel()
     m_bitMenu = new QMenu(this);
     m_functionsMenu = new QMenu(this);
 
-    m_mathMenu->addAction(IconFactory::getMinusIcon(), "MINUS");
+    m_mathMenu->addAction(IconFactory::getMinusIcon(), strMathMinus);
 
-    m_bitMenu->addAction(IconFactory::getNotIcon(), "NOT");
-    m_bitMenu->addAction(IconFactory::getNegIcon(), "NEG");
+    m_bitMenu->addAction(IconFactory::getNotIcon(), strLogNot);
+    m_bitMenu->addAction(IconFactory::getNegIcon(), strLogNeg);
 
     QVector<DatabaseBuiltinFunction> functions = Workspace::getInstance()->currentProjectsEngine()->getBuiltinFunctions();
     for(int i=0; i<functions.size(); i++)

@@ -75,4 +75,12 @@ static const QString ADD_WHERE_EXPRESSION_OR = "OR";
 static const QString ADD_WHERE_EXPRESSION_AND = "AND";
 static const QString ADD_WHERE_EXPRESSION = "New expression ...";
 
+static const QString strMathMinus = "MINUS";
+static const QString strMathPlus = "PLUS";
+static const QString strMathMultiply = "MULTPILY";
+static const QString strMathDivide = "DIVIDE";
+
+static const QString strLogNot = "NOT";
+static const QString strLogNeg = "NEG";
+
 #endif // STRINGS_H

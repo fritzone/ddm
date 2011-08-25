@@ -67,24 +67,30 @@ DatabaseFunctionInstantiationComponent* SingleExpressionQueryComponent::getFunct
 
 void SingleExpressionQueryComponent::handleAction(const QString& action, QueryComponent* referringObject)
 {
-    if(action == "NOT")
+    QMap<QString,CellTypeChooserType> mappings;
+    mappings[strMathMinus] = CELLTYPE_MINUS;
+    mappings[strLogNeg] = CELLTYPE_NEGATE;
+    mappings[strLogNot] = CELLTYPE_NOT;
+
+    if(action.indexOf('_')&& !action.startsWith("REMOVE")&&!action.startsWith("@"))
     {
-        m_functionsAndOperators.append(CELLTYPE_NOT);
+        QString pureAction = action.left(action.indexOf('_'));
+        if(mappings.contains(pureAction))
+        {
+            int indx = action.section('_', 1).toInt();
+            if(indx < m_functionsAndOperators.size())
+            {
+                m_functionsAndOperators[indx] = mappings[pureAction];
+            }
+            else
+            {
+                m_functionsAndOperators.append(mappings[pureAction]);
+            }
+        }
         m_helper->triggerReRender();
         return;
     }
-    if(action == "NEG")
-    {
-        m_functionsAndOperators.append(CELLTYPE_NEGATE);
-        m_helper->triggerReRender();
-        return;
-    }
-    if(action == "MINUS")
-    {
-        m_functionsAndOperators.append(CELLTYPE_MINUS);
-        m_helper->triggerReRender();
-        return;
-    }
+
     if(action.startsWith("REMOVE"))
     {
         int idx = action.right(action.length() - 7).toInt(); // because actually REMOVE_xxx comes in
