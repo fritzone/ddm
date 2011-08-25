@@ -29,28 +29,40 @@ enum CellTypeChooserType
     CELLTYPE_TABLE = 0,
 
     // ** used in a where condition
-    CELLTYPE_NOT = 1,           // !
-    CELLTYPE_MINUS = 2,         // -
-    CELLTYPE_NEGATE = 3,        // ~
-    CELLTYPE_PLUS = 4,          // +
-    CELLTYPE_BINARY = 5,        // BINARY (!!) This is MySQL specific?
-    CELLTYPE_EXISTS = 6,
+    CELLTYPE_NOT,           // !
+    CELLTYPE_NEGATE,        // ~
+    CELLTYPE_XOR,           // ^
+    CELLTYPE_LSHIFT,        // <<
+    CELLTYPE_RSHIFT,        // >>
+    CELLTYPE_OR,            // |
+    CELLTYPE_AND,           // &
 
-    // * big type choosers
-    // ** used in a wher condition
-    CELLTYPE_COLUMN = 7,
-    CELLTYPE_FUNCTION = 8,
-    CELLTYPE_LITERAL = 9,
-    CELLTYPE_QUERY = 10,
+    CELLTYPE_PLUS,          // +
+    CELLTYPE_MINUS,         // -
+    CELLTYPE_MULTIPLY,      // *
+    CELLTYPE_DIVIDE,        // /
+    CELLTYPE_DIV,           // DIV
+    CELLTYPE_MOD,           // %
 
-    CELLTYPE_NOTHING = 11,
-    CELLTYPE_REMOVE_THIS = 12,      // plain close button :)
-    CELLTYPE_FUNCTION_EXPAND = 13,  // when the QueryGraphicsHelper sees this it asks for the DB engine to provide a list of functions supported
+    CELLTYPE_BINARY,        // BINARY (!!) This is MySQL specific?
+    CELLTYPE_EXISTS,
+    CELLTYPE_IS,
+    CELLTYPE_LIKE,
+    CELLTYPE_IN,
 
-    CELLTYPE_CURSOR = 14,           // this is always placed after the last cell type chooser in the unary expression or where the functions place their parameters
-    CELLTYPE_OPEN_PARANTHESES_FOR_FUNCTION_CALL = 15,
-    CELLTYPE_CLOSE_PARANTHESES_FOR_FUNCTION_CALL = 16,
-    CELLTYPE_COMMA = 17,
+    CELLTYPE_COLUMN,
+    CELLTYPE_FUNCTION,
+    CELLTYPE_LITERAL,
+    CELLTYPE_QUERY,
+
+    CELLTYPE_NOTHING,
+    CELLTYPE_REMOVE_THIS,      // plain close button :)
+    CELLTYPE_FUNCTION_EXPAND,  // when the QueryGraphicsHelper sees this it asks for the DB engine to provide a list of functions supported
+
+    CELLTYPE_CURSOR,           // this is always placed after the last cell type chooser in the unary expression or where the functions place their parameters
+    CELLTYPE_OPEN_PARANTHESES_FOR_FUNCTION_CALL,
+    CELLTYPE_CLOSE_PARANTHESES_FOR_FUNCTION_CALL,
+    CELLTYPE_COMMA,
 
     CELLTYPE_LAST
 

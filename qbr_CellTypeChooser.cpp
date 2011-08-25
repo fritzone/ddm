@@ -33,6 +33,13 @@ QGraphicsItemGroup* CellTypeChooser::render(int& x, int& y, int& w, int &h)
 {
     int width = (m_size == CELLTYPECHOOSER_REGULAR)?(CELL_SIZE+1):(CELL_SIZE*2+1);
     int size = width;
+    w = size;
+    if(m_currentType == CELLTYPE_CURSOR)
+    {
+        w /= 2;
+        width = w;
+    }
+
     QGraphicsPixmapItem* typeIcon = 0;
 
     switch(m_currentType)
@@ -80,7 +87,7 @@ QGraphicsItemGroup* CellTypeChooser::render(int& x, int& y, int& w, int &h)
             QFont theFont("Arial", 14, QFont::Bold);
             m_funcText->setFont(theFont);
             m_funcText->setX(x + CELL_SIZE + 1);
-            m_funcText->setY(y);
+            m_funcText->setY(y - 4);
             addToGroup(m_funcText);
             width += m_funcText->boundingRect().width();
             w += m_funcText->boundingRect().width();
