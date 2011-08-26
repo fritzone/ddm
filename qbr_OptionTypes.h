@@ -29,6 +29,8 @@ enum CellTypeChooserType
     CELLTYPE_TABLE = 0,
 
     // ** used in a where condition
+
+    /* Logical operations  -- all these below one button */
     CELLTYPE_NOT,           // !
     CELLTYPE_NEGATE,        // ~
     CELLTYPE_XOR,           // ^
@@ -37,6 +39,7 @@ enum CellTypeChooserType
     CELLTYPE_OR,            // |
     CELLTYPE_AND,           // &
 
+    /* Mathematical operations  -- all these below one button */
     CELLTYPE_PLUS,          // +
     CELLTYPE_MINUS,         // -
     CELLTYPE_MULTIPLY,      // *
@@ -44,18 +47,32 @@ enum CellTypeChooserType
     CELLTYPE_DIV,           // DIV
     CELLTYPE_MOD,           // %
 
+    /* Comparison operators -- they have their own button too*/
+    CELLTYPE_EQUAL,
+    CELLTYPE_NOTEQUAL,
+    CELLTYPE_LESS,
+    CELLTYPE_GREATER,
+    CELLTYPE_LESS_OR_EQUAL,
+    CELLTYPE_GREATER_OR_EQUAL,
+
+    /* The LIKE keyword will get its own button */
+    CELLTYPE_LIKE,          // The LIKE keyword
+
+    /* Special keywords - all these go below a button*/
     CELLTYPE_BINARY,        // BINARY (!!) This is MySQL specific?
-    CELLTYPE_EXISTS,
-    CELLTYPE_IS,
-    CELLTYPE_LIKE,
-    CELLTYPE_IN,
+    CELLTYPE_EXISTS,        // The EXISTS keyword
+    CELLTYPE_IS,            // The IS keyword
+    CELLTYPE_IN,            // The IN keyword
 
-    CELLTYPE_COLUMN,
-    CELLTYPE_FUNCTION,
-    CELLTYPE_LITERAL,
-    CELLTYPE_QUERY,
+    /* The functions from the database, they will have one button. Maybe the menu will be broken up like: most frequently used, mathematical, string, etc...*/
+    CELLTYPE_FUNCTION,      // a function call
 
-    CELLTYPE_NOTHING,
+    /* The columns will get a button too - If in a where query these can be got only from the FROM query*/
+    CELLTYPE_COLUMN,        // A Column from a table
+
+    CELLTYPE_LITERAL,       // A typed in value
+    CELLTYPE_QUERY,         // A query ... huhh
+
     CELLTYPE_REMOVE_THIS,      // plain close button :)
     CELLTYPE_FUNCTION_EXPAND,  // when the QueryGraphicsHelper sees this it asks for the DB engine to provide a list of functions supported
 

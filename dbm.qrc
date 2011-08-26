@@ -125,6 +125,24 @@
         <file>images/small/plus_minus.png</file>
         <file>images/big/parantheses_close.png</file>
         <file>images/big/parantheses_open.png</file>
+        <file>images/big/big_modulo.png</file>
+        <file>images/big/big_divide.png</file>
+        <file>images/big/big_multiply.png</file>
+        <file>images/big/big_plus.png</file>
+        <file>images/big/big_binary_and.png</file>
+        <file>images/big/big_binary_or.png</file>
+        <file>images/big/big_rightshift.png</file>
+        <file>images/big/big_leftshift.png</file>
+        <file>images/big/big_xor.png</file>
+        <file>images/big/big_noteq_nullsafe.png</file>
+        <file>images/big/big_noteq.png</file>
+        <file>images/big/big_noteq_1.png</file>
+        <file>images/big/big_less.png</file>
+        <file>images/big/big_greater.png</file>
+        <file>images/big/big_less_or_equal.png</file>
+        <file>images/big/big_greater_or_equal.png</file>
+        <file>images/big/big_equal.png</file>
+        <file>images/small/not_eq.png</file>
     </qresource>
     <qresource prefix="/bigger">
         <file>images/unaf.png</file>

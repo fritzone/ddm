@@ -67,11 +67,28 @@ void QueryItemListDialog::showSymbolPanel()
     m_mathMenu = new QMenu(this);
     m_bitMenu = new QMenu(this);
     m_functionsMenu = new QMenu(this);
+    m_comparisonMenu = new QMenu(this);
 
+    m_mathMenu->addAction(IconFactory::getPlusIcon(), strMathPlus);
     m_mathMenu->addAction(IconFactory::getMinusIcon(), strMathMinus);
+    m_mathMenu->addAction(IconFactory::getMultiplyIcon(), strMathMultiply);
+    m_mathMenu->addAction(IconFactory::getDivideIcon(), strMathDivide);
+    m_mathMenu->addAction(IconFactory::getModuloIcon(), strMathMod);
 
     m_bitMenu->addAction(IconFactory::getNotIcon(), strLogNot);
+    m_bitMenu->addAction(IconFactory::getBinaryOrIcon(), strLogOr);
+    m_bitMenu->addAction(IconFactory::getBinaryAndIcon(), strLogAnd);
     m_bitMenu->addAction(IconFactory::getNegIcon(), strLogNeg);
+    m_bitMenu->addAction(IconFactory::getXorIcon(), strLogXor);
+    m_bitMenu->addAction(IconFactory::getLeftShiftIcon(), strLogLShift);
+    m_bitMenu->addAction(IconFactory::getRightShiftIcon(), strLogRShift);
+
+    m_comparisonMenu->addAction(IconFactory::getEqualIcon(), strCmpEqual);
+    m_comparisonMenu->addAction(IconFactory::getNotEqIcon(), strCmpNotEqual);
+    m_comparisonMenu->addAction(IconFactory::getLessIcon(), strCmpLess);
+    m_comparisonMenu->addAction(IconFactory::getGreaterIcon(), strCmpGreater);
+    m_comparisonMenu->addAction(IconFactory::getLessOrEqualIcon(), strCmpLessOrEqual);
+    m_comparisonMenu->addAction(IconFactory::getGreaterOrEqualIcon(), strCmpGreaterOrEqual);
 
     QVector<DatabaseBuiltinFunction> functions = Workspace::getInstance()->currentProjectsEngine()->getBuiltinFunctions();
     for(int i=0; i<functions.size(); i++)
@@ -83,12 +100,14 @@ void QueryItemListDialog::showSymbolPanel()
     m_mathMenu->connect(m_mathMenu,  SIGNAL(triggered(QAction*)), this, SLOT(actionTriggered(QAction*)));
     m_bitMenu->connect(m_bitMenu,  SIGNAL(triggered(QAction*)), this, SLOT(actionTriggered(QAction*)));
     m_functionsMenu->connect(m_functionsMenu,  SIGNAL(triggered(QAction*)), this, SLOT(actionTriggered(QAction*)));
+    m_comparisonMenu->connect(m_comparisonMenu,  SIGNAL(triggered(QAction*)), this, SLOT(actionTriggered(QAction*)));
 
     resize(200, 50);
 
     ui->btnMath->setMenu(m_mathMenu);
     ui->btnBitwise->setMenu(m_bitMenu);
     ui->btnFunctions->setMenu(m_functionsMenu);
+    ui->btnComparison->setMenu(m_comparisonMenu);
 
     ui->grpExpressionButtons->setCurrentIndex(-1);
 }
