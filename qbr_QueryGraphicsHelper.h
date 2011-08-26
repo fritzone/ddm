@@ -32,7 +32,6 @@ public:
     QString presentList(int, int, ListType);
     QString presentList(int, int, const QString&);
     QString presentList(int, int, QStringList, QList<QIcon>);
-    QString presentList(int, int, QSet<CellTypeChooserType>);
     void setScene(QueryGraphicsScene* sc) ;
     void setQuery(Query* q) ;
     void setForm(MainWindow*);

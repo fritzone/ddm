@@ -42,10 +42,7 @@ QGraphicsItemGroup* CellForSingleExpression::render(int &x, int &y, int &w, int 
         QVector<CellTypeChooserType> funcsAndOperators = owner->getFunctionsAndOperators();
         for(int i = 0; i<funcsAndOperators.size(); i++)
         {
-            QSet<CellTypeChooserType> allowedTypesforBigOne;
-            allowedTypesforBigOne.insert(CELLTYPE_REMOVE_THIS);
-
-            CellTypeChooser* bigTypeModifier = new CellTypeChooser(m_level, CellTypeChooser::CELLTYPECHOOSER_BIG, funcsAndOperators.at(i), allowedTypesforBigOne, m_helper, this, m_owner, i);
+            CellTypeChooser* bigTypeModifier = new CellTypeChooser(m_level, CellTypeChooser::CELLTYPECHOOSER_BIG, funcsAndOperators.at(i), QSet<CellTypeChooserType>(), m_helper, this, m_owner, i);
             bigTypeModifier->setFunction(owner->getFunctionAt(i));
 
             {

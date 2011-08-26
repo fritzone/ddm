@@ -42,6 +42,37 @@ QGraphicsItemGroup* CellTypeChooser::render(int& x, int& y, int& w, int &h)
 
     QGraphicsPixmapItem* typeIcon = 0;
 
+    QMap<CellTypeChooserType,QIcon> mappings;
+
+    mappings[CELLTYPE_NOT] = IconFactory::getBigNotIcon();
+    mappings[CELLTYPE_XOR] = IconFactory::getXorIcon();
+    mappings[CELLTYPE_LSHIFT] = IconFactory::getLeftShiftIcon();
+    mappings[CELLTYPE_RSHIFT] = IconFactory::getRightShiftIcon();
+    mappings[CELLTYPE_OR] = IconFactory::getBinaryOrIcon();
+    mappings[CELLTYPE_AND] = IconFactory::getBinaryAndIcon();
+    mappings[CELLTYPE_NEGATE] = IconFactory::getBigNegIcon();
+
+    mappings[CELLTYPE_MINUS] = IconFactory::getBigMinusIcon();
+    mappings[CELLTYPE_PLUS] = IconFactory::getPlusIcon();
+    mappings[CELLTYPE_DIVIDE] = IconFactory::getDivideIcon();
+    mappings[CELLTYPE_MULTIPLY] = IconFactory::getMultiplyIcon();
+    mappings[CELLTYPE_MOD] = IconFactory::getModuloIcon();
+
+    mappings[CELLTYPE_EQUAL] = IconFactory::getEqualIcon();
+    mappings[CELLTYPE_NOTEQUAL] = IconFactory::getNotEqIcon();
+    mappings[CELLTYPE_LESS] = IconFactory::getLessIcon();
+    mappings[CELLTYPE_GREATER] = IconFactory::getGreaterIcon();
+    mappings[CELLTYPE_LESS_OR_EQUAL] = IconFactory::getLessOrEqualIcon();
+    mappings[CELLTYPE_GREATER_OR_EQUAL] = IconFactory::getGreaterOrEqualIcon();
+
+    mappings[CELLTYPE_OPEN_PARANTHESES_FOR_FUNCTION_CALL] = IconFactory::getOpenParanthesesIcon();
+    mappings[CELLTYPE_CLOSE_PARANTHESES_FOR_FUNCTION_CALL] = IconFactory::getCloseParanthesesIcon();
+
+    if(mappings.contains(m_currentType))
+    {
+        typeIcon = new QGraphicsPixmapItem(mappings[m_currentType].pixmap(size, size), this);
+    }
+    else
     switch(m_currentType)
     {
     case CELLTYPE_TABLE:
@@ -53,30 +84,6 @@ QGraphicsItemGroup* CellTypeChooser::render(int& x, int& y, int& w, int &h)
         {
             typeIcon = new QGraphicsPixmapItem(IconFactory::getTablesIcon().pixmap(size,size), this);
         }
-        break;
-
-    case CELLTYPE_NOTHING:
-        typeIcon = new QGraphicsPixmapItem(IconFactory::getEmptyIcon().pixmap(size,size), this);
-        break;
-    case CELLTYPE_NOT:
-        if(m_size == CELLTYPECHOOSER_REGULAR)typeIcon = new QGraphicsPixmapItem(IconFactory::getNotIcon().pixmap(size,size), this);
-        else typeIcon = new QGraphicsPixmapItem(IconFactory::getBigNotIcon().pixmap(size,size), this);
-        break;
-    case CELLTYPE_NEGATE:
-        if(m_size == CELLTYPECHOOSER_REGULAR)typeIcon = new QGraphicsPixmapItem(IconFactory::getNegIcon().pixmap(size,size), this);
-        else typeIcon = new QGraphicsPixmapItem(IconFactory::getBigNegIcon().pixmap(size,size), this);
-        break;
-    case CELLTYPE_MINUS:
-        if(m_size == CELLTYPECHOOSER_REGULAR)typeIcon = new QGraphicsPixmapItem(IconFactory::getMinusIcon().pixmap(size,size), this);
-        else typeIcon = new QGraphicsPixmapItem(IconFactory::getBigMinusIcon().pixmap(size,size), this);
-        break;
-
-    case CELLTYPE_OPEN_PARANTHESES_FOR_FUNCTION_CALL:
-        typeIcon = new QGraphicsPixmapItem(IconFactory::getOpenParanthesesIcon().pixmap(size,size), this);
-        break;
-
-    case CELLTYPE_CLOSE_PARANTHESES_FOR_FUNCTION_CALL:
-        typeIcon = new QGraphicsPixmapItem(IconFactory::getCloseParanthesesIcon().pixmap(size,size), this);
         break;
 
     case CELLTYPE_FUNCTION:
@@ -151,17 +158,7 @@ void CellTypeChooser::mousePress(int x, int y)
 
     QString selected = "";
     QPoint a = scene()->views().at(0)->mapToGlobal((m_rect->mapToScene(m_rect->boundingRect().bottomLeft().toPoint())).toPoint() ) ;
-    if(m_currentType == CELLTYPE_CURSOR)
-    {
-        selected = m_helper->presentList(a.x() + 2-scene()->views().at(0)->horizontalScrollBar()->sliderPosition()
-                                                 , a.y() - scene()->views().at(0)->verticalScrollBar()->sliderPosition(), QueryGraphicsHelper::INPUT_SYMBOLS);
-        if(selected == "REMOVE") return;
-    }
-    else
-    {
-        selected = m_helper->presentList(a.x() + 2-scene()->views().at(0)->horizontalScrollBar()->sliderPosition()
-                                             , a.y() - scene()->views().at(0)->verticalScrollBar()->sliderPosition(), m_allowedTypes);
-    }
+    selected = m_helper->presentList(a.x() + 2-scene()->views().at(0)->horizontalScrollBar()->sliderPosition(), a.y() - scene()->views().at(0)->verticalScrollBar()->sliderPosition(), QueryGraphicsHelper::INPUT_SYMBOLS);
 
     if(selected.length() == 0) return;
 

@@ -74,13 +74,13 @@ public:
 
     static const QIcon& getOpenParanthesesIcon()
     {
-        static const QIcon icon(strParanthesesOpenIcon);  ////
+        static const QIcon icon(strParanthesesOpenIcon);
         return icon;
     }
 
     static const QIcon& getCloseParanthesesIcon()
     {
-        static const QIcon icon(strParanthesesCloseIcon);   ////
+        static const QIcon icon(strParanthesesCloseIcon);
         return icon;
     }
 
@@ -233,6 +233,110 @@ public:
         static const QIcon icon(strCloseIcon);
         return icon;
     }
+
+    static const QIcon& getXorIcon()
+    {
+        static const QIcon icon(strXorIcon);
+        return icon;
+    }
+
+    static const QIcon& getBinaryOrIcon()
+    {
+        static const QIcon icon(strBinaryOrIcon);
+        return icon;
+    }
+
+    static const QIcon& getLeftShiftIcon()
+    {
+        static const QIcon icon(strLeftShiftIcon);
+        return icon;
+    }
+
+    static const QIcon& getRightShiftIcon()
+    {
+        static const QIcon icon(strRightShiftIcon);
+        return icon;
+    }
+
+    static const QIcon& getBinaryAndIcon()
+    {
+        static const QIcon icon(strBinaryAndIcon);
+        return icon;
+    }
+
+    static const QIcon& getPlusIcon()
+    {
+        static const QIcon icon(strPlusIcon);
+        return icon;
+    }
+
+    static const QIcon& getDivideIcon()
+    {
+        static const QIcon icon(strDivideIcon);
+        return icon;
+    }
+
+    static const QIcon& getModuloIcon()
+    {
+        static const QIcon icon(strModuloIcon);
+        return icon;
+    }
+
+    static const QIcon& getMultiplyIcon()
+    {
+        static const QIcon icon(strMultiplyIcon);
+        return icon;
+    }
+
+    static const QIcon& getNotEqNullSafeIcon()
+    {
+        static const QIcon icon(strNotEqNullSafeIcon);
+        return icon;
+    }
+
+    static const QIcon& getNotEq1Icon()
+    {
+        static const QIcon icon(strNotEq1Icon);
+        return icon;
+    }
+
+    static const QIcon& getNotEqIcon()
+    {
+        static const QIcon icon(strNotEqIcon);
+        return icon;
+    }
+
+    static const QIcon& getLessIcon()
+    {
+        static const QIcon icon(strLessIcon);
+        return icon;
+    }
+
+    static const QIcon& getGreaterIcon()
+    {
+        static const QIcon icon(strGreaterIcon);
+        return icon;
+    }
+
+    static const QIcon& getLessOrEqualIcon()
+    {
+        static const QIcon icon(strLessOrEqualIcon);
+        return icon;
+    }
+
+    static const QIcon& getGreaterOrEqualIcon()
+    {
+        static const QIcon icon(strGreaterOrEqualIcon);
+        return icon;
+    }
+
+    static const QIcon& getEqualIcon()
+    {
+        static const QIcon icon(strEqualIcon);
+        return icon;
+    }
+
+
 
 };
 

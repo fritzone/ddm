@@ -46,6 +46,7 @@ private:
     QMenu* m_mathMenu;
     QMenu* m_bitMenu;
     QMenu* m_functionsMenu;
+    QMenu* m_comparisonMenu;
 };
 
 #endif // QUERYITEMLISTDIALOG_H

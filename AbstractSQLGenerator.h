@@ -37,6 +37,8 @@ public:
      * This is used when the project is not OOP
      */
     virtual QStringList generateDefaultValuesSql(Table* table, const QHash<QString, QString>& options) const = 0;
+
+    ~AbstractSqlGenerator() {}
 };
 
 #endif // ABSTRACTSQLGENERATOR_H

@@ -60,6 +60,23 @@ static const QString strBigNegIcon = ":/images/actions/images/big/big_neg_icon.p
 static const QString strBigMinusIcon = ":/images/actions/images/big/big_minus_icon.png";
 static const QString strParanthesesOpenIcon = ":/images/actions/images/big/parantheses_open.png";
 static const QString strParanthesesCloseIcon = ":/images/actions/images/big/parantheses_close.png";
+static const QString strXorIcon = ":/images/actions/images/big/big_xor.png";
+static const QString strLeftShiftIcon = ":/images/actions/images/big/big_leftshift.png";
+static const QString strRightShiftIcon = ":/images/actions/images/big/big_rightshift.png";
+static const QString strBinaryOrIcon = ":/images/actions/images/big/big_binary_or.png";
+static const QString strBinaryAndIcon = ":/images/actions/images/big/big_binary_and.png";
+static const QString strPlusIcon = ":/images/actions/images/big/big_plus.png";
+static const QString strDivideIcon = ":/images/actions/images/big/big_divide.png";
+static const QString strModuloIcon = ":/images/actions/images/big/big_modulo.png";
+static const QString strMultiplyIcon = ":/images/actions/images/big/big_multiply.png";
+static const QString strEqualIcon = ":/images/actions/images/big/big_equal.png";
+static const QString strGreaterOrEqualIcon = ":/images/actions/images/big/big_greater_or_equal.png";
+static const QString strLessOrEqualIcon = ":/images/actions/images/big/big_less_or_equal.png";
+static const QString strGreaterIcon = ":/images/actions/images/big/big_greater.png";
+static const QString strLessIcon = ":/images/actions/images/big/big_less.png";
+static const QString strNotEqIcon = ":/images/actions/images/big/big_noteq.png";
+static const QString strNotEq1Icon = ":/images/actions/images/big/big_noteq_1.png";
+static const QString strNotEqNullSafeIcon = ":/images/actions/images/big/big_noteq_nullsafe.png";
 
 static const QString NEW_TABLE = "New table reference";
 static const QString DUPLICATE = "Duplicate";
@@ -79,8 +96,22 @@ static const QString strMathMinus = "MINUS";
 static const QString strMathPlus = "PLUS";
 static const QString strMathMultiply = "MULTPILY";
 static const QString strMathDivide = "DIVIDE";
+static const QString strMathMod = "MOD";
+static const QString strMathDiv = "DIV";
 
 static const QString strLogNot = "NOT";
 static const QString strLogNeg = "NEG";
+static const QString strLogXor = "XOR";
+static const QString strLogLShift = "Left Shift";
+static const QString strLogRShift = "Right Shift";
+static const QString strLogOr = "OR";
+static const QString strLogAnd = "AND";
+
+static const QString strCmpEqual = "Equal";
+static const QString strCmpNotEqual = "Not Equal";
+static const QString strCmpLess = "Less";
+static const QString strCmpGreater = "Greater";
+static const QString strCmpLessOrEqual = "Less or Equal";
+static const QString strCmpGreaterOrEqual = "Greater or Equal";
 
 #endif // STRINGS_H

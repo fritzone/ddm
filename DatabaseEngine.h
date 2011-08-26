@@ -86,7 +86,10 @@ public:
 
     QString getTypeStringForSqlType(const QString& sqlType);
 
-
+    virtual ~DatabaseEngine()
+    {
+        //TODO: Add some deinitialization code here ...
+    }
 
 private:
 

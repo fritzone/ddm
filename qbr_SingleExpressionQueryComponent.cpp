@@ -69,8 +69,25 @@ void SingleExpressionQueryComponent::handleAction(const QString& action, QueryCo
 {
     QMap<QString,CellTypeChooserType> mappings;
     mappings[strMathMinus] = CELLTYPE_MINUS;
+    mappings[strMathPlus] = CELLTYPE_PLUS;
+    mappings[strMathDivide] = CELLTYPE_DIVIDE;
+    mappings[strMathMultiply] = CELLTYPE_MULTIPLY;
+    mappings[strMathMod] = CELLTYPE_MOD;
+
     mappings[strLogNeg] = CELLTYPE_NEGATE;
     mappings[strLogNot] = CELLTYPE_NOT;
+    mappings[strLogOr] = CELLTYPE_OR;
+    mappings[strLogAnd] = CELLTYPE_AND;
+    mappings[strLogXor] = CELLTYPE_XOR;
+    mappings[strLogLShift] = CELLTYPE_LSHIFT;
+    mappings[strLogRShift] = CELLTYPE_RSHIFT;
+
+    mappings[strCmpEqual] = CELLTYPE_EQUAL;
+    mappings[strCmpNotEqual] = CELLTYPE_NOTEQUAL;
+    mappings[strCmpLess] = CELLTYPE_LESS;
+    mappings[strCmpGreater] = CELLTYPE_GREATER;
+    mappings[strCmpLessOrEqual] = CELLTYPE_LESS_OR_EQUAL;
+    mappings[strCmpGreaterOrEqual] = CELLTYPE_GREATER_OR_EQUAL;
 
     if(action.indexOf('_')&& !action.startsWith("REMOVE")&&!action.startsWith("@"))
     {

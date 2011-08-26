@@ -7,8 +7,8 @@
 class CopyableElement
 {
 public:
-
     virtual void copy() = 0;
+    virtual ~CopyableElement(){}
 };
 
 #endif // COPYABLEELEMENT_H
