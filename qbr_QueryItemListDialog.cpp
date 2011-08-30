@@ -8,13 +8,14 @@
 #include "TableInstance.h"
 #include "DatabaseEngine.h"
 #include "DatabaseBuiltinFunction.h"
+#include "qbr_Query.h"
+#include "Column.h"
+#include "DataType.h"
 
 #include <QListWidget>
 #include <QMessageBox>
 
-QueryItemListDialog::QueryItemListDialog(QueryGraphicsHelper::ListType t, QWidget *parent) :
-    QDialog(parent),
-    ui(new Ui::QueryItemListDialog), m_selected()
+QueryItemListDialog::QueryItemListDialog(QueryGraphicsHelper* helper, QueryGraphicsHelper::ListType t, QWidget *parent) : QDialog(parent), ui(new Ui::QueryItemListDialog), m_selected(), m_helper(helper)
 {
     ui->setupUi(this);
 
@@ -58,87 +59,7 @@ QueryItemListDialog::QueryItemListDialog(QueryGraphicsHelper::ListType t, QWidge
     }
 }
 
-void QueryItemListDialog::showSymbolPanel()
-{
-    ui->txtInput->hide();
-    ui->lstValues->hide();
-    ui->grpExpressionButtons->show();
-
-    m_mathMenu = new QMenu(this);
-    m_bitMenu = new QMenu(this);
-    m_functionsMenu = new QMenu(this);
-    m_comparisonMenu = new QMenu(this);
-
-    m_mathMenu->addAction(IconFactory::getPlusIcon(), strMathPlus);
-    m_mathMenu->addAction(IconFactory::getMinusIcon(), strMathMinus);
-    m_mathMenu->addAction(IconFactory::getMultiplyIcon(), strMathMultiply);
-    m_mathMenu->addAction(IconFactory::getDivideIcon(), strMathDivide);
-    m_mathMenu->addAction(IconFactory::getModuloIcon(), strMathMod);
-
-    m_bitMenu->addAction(IconFactory::getNotIcon(), strLogNot);
-    m_bitMenu->addAction(IconFactory::getBinaryOrIcon(), strLogOr);
-    m_bitMenu->addAction(IconFactory::getBinaryAndIcon(), strLogAnd);
-    m_bitMenu->addAction(IconFactory::getNegIcon(), strLogNeg);
-    m_bitMenu->addAction(IconFactory::getXorIcon(), strLogXor);
-    m_bitMenu->addAction(IconFactory::getLeftShiftIcon(), strLogLShift);
-    m_bitMenu->addAction(IconFactory::getRightShiftIcon(), strLogRShift);
-
-    m_comparisonMenu->addAction(IconFactory::getEqualIcon(), strCmpEqual);
-    m_comparisonMenu->addAction(IconFactory::getNotEqIcon(), strCmpNotEqual);
-    m_comparisonMenu->addAction(IconFactory::getLessIcon(), strCmpLess);
-    m_comparisonMenu->addAction(IconFactory::getGreaterIcon(), strCmpGreater);
-    m_comparisonMenu->addAction(IconFactory::getLessOrEqualIcon(), strCmpLessOrEqual);
-    m_comparisonMenu->addAction(IconFactory::getGreaterOrEqualIcon(), strCmpGreaterOrEqual);
-
-    QVector<DatabaseBuiltinFunction> functions = Workspace::getInstance()->currentProjectsEngine()->getBuiltinFunctions();
-    for(int i=0; i<functions.size(); i++)
-    {
-        m_functionsMenu->addAction(IconFactory::getFunctionIcon(), functions.at(i).getNiceName().toUpper())->setData(functions.at(i).getName().toUpper());
-    }
-
-
-    m_mathMenu->connect(m_mathMenu,  SIGNAL(triggered(QAction*)), this, SLOT(actionTriggered(QAction*)));
-    m_bitMenu->connect(m_bitMenu,  SIGNAL(triggered(QAction*)), this, SLOT(actionTriggered(QAction*)));
-    m_functionsMenu->connect(m_functionsMenu,  SIGNAL(triggered(QAction*)), this, SLOT(actionTriggered(QAction*)));
-    m_comparisonMenu->connect(m_comparisonMenu,  SIGNAL(triggered(QAction*)), this, SLOT(actionTriggered(QAction*)));
-
-    resize(200, 50);
-
-    ui->btnMath->setMenu(m_mathMenu);
-    ui->btnBitwise->setMenu(m_bitMenu);
-    ui->btnFunctions->setMenu(m_functionsMenu);
-    ui->btnComparison->setMenu(m_comparisonMenu);
-
-    ui->grpExpressionButtons->setCurrentIndex(-1);
-}
-
-void QueryItemListDialog::pageRequested(int a)
-{
-    if(a == 1)
-    {
-        m_selected = QString("REMOVE");
-        close();
-    }
-}
-
-void QueryItemListDialog::setText(const QString &a)
-{
-    ui->txtInput->setText(a);
-}
-
-void QueryItemListDialog::actionTriggered(QAction* a)
-{
-    m_selected = a->text();
-    if(a->data().canConvert<QString>())
-    {
-        m_selected = a->data().toString();
-    }
-    close();
-}
-
-QueryItemListDialog::QueryItemListDialog(QStringList lst, QList<QIcon> icons, bool checks, QWidget *parent) :
-        QDialog(parent),
-        ui(new Ui::QueryItemListDialog), m_selected()
+QueryItemListDialog::QueryItemListDialog(QueryGraphicsHelper* helper, QStringList lst, QList<QIcon> icons, bool checks, QWidget *parent) : QDialog(parent), ui(new Ui::QueryItemListDialog), m_selected(), m_helper(helper)
 {
     ui->setupUi(this);
     ui->txtInput->hide();
@@ -169,6 +90,110 @@ QueryItemListDialog::QueryItemListDialog(QStringList lst, QList<QIcon> icons, bo
     resize(200, 20 * (lst.size()));
     ui->lstValues->resize(200, 20 * (lst.size()));
 
+}
+
+void QueryItemListDialog::showSymbolPanel()
+{
+    ui->txtInput->hide();
+    ui->lstValues->hide();
+    ui->grpExpressionButtons->show();
+
+    m_mathMenu = new QMenu(this);
+    m_bitMenu = new QMenu(this);
+    m_functionsMenu = new QMenu(this);
+    m_comparisonMenu = new QMenu(this);
+    m_tablesMenu = new QMenu(this);
+
+    m_mathMenu->addAction(IconFactory::getPlusIcon(), strMathPlus);
+    m_mathMenu->addAction(IconFactory::getMinusIcon(), strMathMinus);
+    m_mathMenu->addAction(IconFactory::getMultiplyIcon(), strMathMultiply);
+    m_mathMenu->addAction(IconFactory::getDivideIcon(), strMathDivide);
+    m_mathMenu->addAction(IconFactory::getModuloIcon(), strMathMod);
+
+    m_bitMenu->addAction(IconFactory::getNotIcon(), strLogNot);
+    m_bitMenu->addAction(IconFactory::getBinaryOrIcon(), strLogOr);
+    m_bitMenu->addAction(IconFactory::getBinaryAndIcon(), strLogAnd);
+    m_bitMenu->addAction(IconFactory::getNegIcon(), strLogNeg);
+    m_bitMenu->addAction(IconFactory::getXorIcon(), strLogXor);
+    m_bitMenu->addAction(IconFactory::getLeftShiftIcon(), strLogLShift);
+    m_bitMenu->addAction(IconFactory::getRightShiftIcon(), strLogRShift);
+
+    m_comparisonMenu->addAction(IconFactory::getEqualIcon(), strCmpEqual);
+    m_comparisonMenu->addAction(IconFactory::getNotEqIcon(), strCmpNotEqual);
+    m_comparisonMenu->addAction(IconFactory::getLessIcon(), strCmpLess);
+    m_comparisonMenu->addAction(IconFactory::getGreaterIcon(), strCmpGreater);
+    m_comparisonMenu->addAction(IconFactory::getLessOrEqualIcon(), strCmpLessOrEqual);
+    m_comparisonMenu->addAction(IconFactory::getGreaterOrEqualIcon(), strCmpGreaterOrEqual);
+
+    QVector<DatabaseBuiltinFunction> functions = Workspace::getInstance()->currentProjectsEngine()->getBuiltinFunctions();
+    for(int i=0; i<functions.size(); i++)
+    {
+        QAction* tempAction = new QAction(IconFactory::getFunctionIcon(), functions.at(i).getNiceName().toUpper(), this);
+        tempAction->setData(functions.at(i).getName().toUpper());
+        tempAction->setStatusTip(functions.at(i).getDescription());
+        m_functionsMenu->addAction(tempAction);
+    }
+
+    /* Now building the menu system for the columns */
+    Query* q = m_helper->getQuery();
+    QVector<const Table*> tables = q->getTables();
+    for(int i=0; i<tables.size(); i++)
+    {
+        QAction* tempAction = new QAction(IconFactory::getTablesIcon(), tables.at(i)->getName(), this);
+        m_tablesMenu->addAction(tempAction);
+        QMenu* colMenu = new QMenu();
+        QStringList cols = tables.at(i)->fullColumns();
+        for(int j=0; j<cols.size(); j++)
+        {
+            Column* c = tables.at(i)->getColumn(cols.at(j));
+            if(c==0) c = tables.at(i)->getColumnFromParents(cols.at(j));
+            if(c==0) continue;
+            QAction* colAction = new QAction(c->getDataType()->getIcon(), c->getName(), this);
+            colAction->setData(QString("#") + tables.at(i)->getName()+QString("+")+c->getName());
+            colMenu->addAction(colAction);
+        }
+        tempAction->setMenu(colMenu);
+    }
+
+    m_mathMenu->connect(m_mathMenu, SIGNAL(triggered(QAction*)), this, SLOT(actionTriggered(QAction*)));
+    m_bitMenu->connect(m_bitMenu, SIGNAL(triggered(QAction*)), this, SLOT(actionTriggered(QAction*)));
+    m_functionsMenu->connect(m_functionsMenu, SIGNAL(triggered(QAction*)), this, SLOT(actionTriggered(QAction*)));
+    m_comparisonMenu->connect(m_comparisonMenu, SIGNAL(triggered(QAction*)), this, SLOT(actionTriggered(QAction*)));
+    m_tablesMenu->connect(m_tablesMenu, SIGNAL(triggered(QAction*)), this, SLOT(actionTriggered(QAction*)));
+
+    resize(300, 200);
+
+    ui->btnMath->setMenu(m_mathMenu);
+    ui->btnBitwise->setMenu(m_bitMenu);
+    ui->btnFunctions->setMenu(m_functionsMenu);
+    ui->btnComparison->setMenu(m_comparisonMenu);
+    ui->btnColumn->setMenu(m_tablesMenu);
+
+    ui->grpExpressionButtons->setCurrentIndex(-1);
+}
+
+void QueryItemListDialog::pageRequested(int a)
+{
+    if(a == 1)
+    {
+        m_selected = QString(strRemove);
+        close();
+    }
+}
+
+void QueryItemListDialog::setText(const QString &a)
+{
+    ui->txtInput->setText(a);
+}
+
+void QueryItemListDialog::actionTriggered(QAction* a)
+{
+    m_selected = a->text();
+    if(a->data().canConvert<QString>())
+    {
+        m_selected = a->data().toString();
+    }
+    close();
 }
 
 QueryItemListDialog::~QueryItemListDialog()

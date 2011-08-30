@@ -9,6 +9,7 @@ class CellForSingleExpression;
 class CellTypeChooser;
 class DatabaseFunctionInstantiationComponent;
 class DatabaseBuiltinFunction;
+class Column;
 
 /**
  * Class, representing a unary where expression.
@@ -28,7 +29,7 @@ public:
 
     virtual QVector<CellTypeChooserType> getFunctionsAndOperators() const
     {
-        return m_functionsAndOperators;
+        return m_elements;
     }
 
     QVector<CellTypeChooserType> getChoosableTypes() const;
@@ -42,8 +43,8 @@ public:
 private:
     CellForSingleExpression* m_gritm;
     // the set of types that were activated with the corner cell type chooser (NOT, NEG, etc...)
-    QVector<CellTypeChooserType> m_functionsAndOperators;
-
+    QVector<CellTypeChooserType> m_elements;
+    QMap<int, const Column*> m_columnsAtGivenPosition;
     QMap<int, const DatabaseBuiltinFunction*> m_functionsAtGivenPosition;
     QMap<int, DatabaseFunctionInstantiationComponent*> m_functionInstantiationAtGivenPosition;
 

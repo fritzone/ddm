@@ -19,8 +19,8 @@ class QueryItemListDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit QueryItemListDialog(QueryGraphicsHelper::ListType t, QWidget *parent = 0);
-    explicit QueryItemListDialog(QStringList lst, QList<QIcon> icons, bool checks, QWidget *parent = 0);
+    explicit QueryItemListDialog(QueryGraphicsHelper* helper, QueryGraphicsHelper::ListType t, QWidget *parent = 0);
+    explicit QueryItemListDialog(QueryGraphicsHelper* helper, QStringList lst, QList<QIcon> icons, bool checks, QWidget *parent = 0);
 
     ~QueryItemListDialog();
     QString getSelection() const
@@ -42,11 +42,13 @@ private:
     Ui::QueryItemListDialog *ui;
     QString m_selected;
     QMap<QString, QString> m_beforeAfter;
-
     QMenu* m_mathMenu;
     QMenu* m_bitMenu;
     QMenu* m_functionsMenu;
     QMenu* m_comparisonMenu;
+    QMenu* m_tablesMenu;
+
+    QueryGraphicsHelper* m_helper;
 };
 
 #endif // QUERYITEMLISTDIALOG_H

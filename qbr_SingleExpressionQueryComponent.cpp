@@ -7,7 +7,8 @@
 
 #include <QDebug>
 
-SingleExpressionQueryComponent::SingleExpressionQueryComponent(QueryComponent* p, int l): WhereExpressionQueryComponent(p,l), m_functionsAndOperators()
+SingleExpressionQueryComponent::SingleExpressionQueryComponent(QueryComponent* p, int l): WhereExpressionQueryComponent(p,l),
+    m_gritm(0), m_elements(), m_columnsAtGivenPosition(), m_functionsAtGivenPosition(), m_functionInstantiationAtGivenPosition()
 {
 }
 
@@ -42,12 +43,18 @@ QueryComponent* SingleExpressionQueryComponent::duplicate()
 
 void SingleExpressionQueryComponent::shiftFunctionsToTheLeft(int after)
 {
-    for(int i=after+1; i<m_functionsAndOperators.size(); i++)
+    for(int i=after+1; i<m_elements.size(); i++)
     {
         if(m_functionsAtGivenPosition.contains(i))
         {
             m_functionsAtGivenPosition.insert(i-1, m_functionsAtGivenPosition.value(i));
             m_functionsAtGivenPosition.remove(i);
+        }
+
+        if(m_functionInstantiationAtGivenPosition.contains(i))
+        {
+            m_functionInstantiationAtGivenPosition.insert(i-1, m_functionInstantiationAtGivenPosition.value(i));
+            m_functionInstantiationAtGivenPosition.remove(i);
         }
     }
 }
@@ -89,47 +96,45 @@ void SingleExpressionQueryComponent::handleAction(const QString& action, QueryCo
     mappings[strCmpLessOrEqual] = CELLTYPE_LESS_OR_EQUAL;
     mappings[strCmpGreaterOrEqual] = CELLTYPE_GREATER_OR_EQUAL;
 
-    if(action.indexOf('_')&& !action.startsWith("REMOVE")&&!action.startsWith("@"))
+    if(action.indexOf(strActionIndexSeparator)&& !action.startsWith(strRemove)&&!action.startsWith("@"))
     {
-        QString pureAction = action.left(action.indexOf('_'));
+        QString pureAction = action.left(action.indexOf(strActionIndexSeparator));
         if(mappings.contains(pureAction))
         {
-            int indx = action.section('_', 1).toInt();
-            if(indx < m_functionsAndOperators.size())
+            int indx = action.section(strActionIndexSeparator, 1).toInt();
+            if(indx < m_elements.size())
             {
-                m_functionsAndOperators[indx] = mappings[pureAction];
+                m_elements[indx] = mappings[pureAction];
+                if(m_functionsAtGivenPosition.find(indx) != m_functionsAtGivenPosition.end())
+                {
+                    m_functionInstantiationAtGivenPosition.remove(indx);
+                    m_functionsAtGivenPosition.remove(indx);
+                }
             }
             else
             {
-                m_functionsAndOperators.append(mappings[pureAction]);
+                m_elements.append(mappings[pureAction]);
             }
         }
         m_helper->triggerReRender();
         return;
     }
 
-    if(action.startsWith("REMOVE"))
+    if(action.startsWith(strRemove) && !m_elements.isEmpty())
     {
-        int idx = action.right(action.length() - 7).toInt(); // because actually REMOVE_xxx comes in
-        m_functionsAndOperators.remove(idx);
+        int idx = action.right(action.length() - 7).toInt(); // because actually REMOVE^xxx comes in
+        m_elements.remove(idx);
         shiftFunctionsToTheLeft(idx);
         m_helper->triggerReRender();
         return;
     }
-    if(action == "Function")
-    {
-        m_functionsAndOperators.append(CELLTYPE_FUNCTION);
-        m_helper->triggerReRender();
-        return;
-    }
 
-    if(action.startsWith("@"))
+    if(action.startsWith("@"))          // this is a function...
     {
-        // this is a function...
         qDebug() << "Function: "<< action;
-        QString fName = action.mid(1, action.indexOf('_') - 1);
-        int index = action.section('_', 1).toInt();
-        m_functionsAndOperators.append(CELLTYPE_FUNCTION);
+        QString fName = action.mid(1, action.indexOf(strActionIndexSeparator) - 1);
+        int index = action.section(strActionIndexSeparator, 1).toInt();
+        m_elements.append(CELLTYPE_FUNCTION);
         if(m_functionsAtGivenPosition.find(index) == m_functionsAtGivenPosition.end())
         {
             m_functionsAtGivenPosition.insert(index, &Workspace::getInstance()->currentProjectsEngine()->getBuiltinFunction(fName));
@@ -141,6 +146,11 @@ void SingleExpressionQueryComponent::handleAction(const QString& action, QueryCo
             m_functionInstantiationAtGivenPosition[index] = new DatabaseFunctionInstantiationComponent(new SingleExpressionQueryComponent(this, m_level + 1), Workspace::getInstance()->currentProjectsEngine()->getBuiltinFunction(fName));
         }
         m_helper->triggerReRender();
+    }
+
+    if(action.startsWith("#"))  // This is a table->column at given position
+    {
+
     }
 }
 

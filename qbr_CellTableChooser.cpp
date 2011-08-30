@@ -24,14 +24,15 @@ QGraphicsItemGroup* CellTableChooser::render(int &x, int &y, int &w, int &h)
     int ly = y;
     m_txt = new QGraphicsTextItem(m_name, this);
     m_txt->setPos(lx + CELL_SIZE + 3, ly);
-    QRect rct(lx + CELL_SIZE + 3, ly, m_txt->boundingRect().width() + 3 + 5, 30);
+    QRect rct(lx + CELL_SIZE + 3, ly, m_txt->boundingRect().width() + 3 + 15, 30);
     m_frame = new QGraphicsRectItem(rct, this);
     m_frame->setBrush(QBrush(Qt::white));
     m_txt->setZValue(1);
     m_frame->setZValue(0);
     m_txt->setFont(QFont("Arial", 14, 2));
-    int tw = m_txt->boundingRect().width() + CHILDREN_ALIGNMENT * (m_level+1) + m_txt->boundingRect().left() + 10  + 2 * CELL_SIZE + 20;
+    int tw = m_txt->boundingRect().width() + CHILDREN_ALIGNMENT * (m_level+1) + m_txt->boundingRect().left() + 2 * CELL_SIZE;
     w = w<tw?tw:w;
+
     return this;
 }
 

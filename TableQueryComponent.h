@@ -34,8 +34,10 @@ public:
     void removeAs();
     void removeJoin();
     void setTable(const QString& tab);
-
-
+    const Table* getTable() const
+    {
+        return m_table;
+    }
 
 private:
     Table* m_table;

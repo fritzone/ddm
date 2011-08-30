@@ -15,23 +15,34 @@
 class DatabaseBuiltinFunction : public NamedItem
 {
 public:
-    explicit DatabaseBuiltinFunction(QString name, FunctionType type, const UserDataType& returnType, DatabaseBuiltinFunctionsParameter p1) : NamedItem(name),
-        m_type(type), m_returnType(returnType), m_parameters()
+    explicit DatabaseBuiltinFunction(QString name, FunctionType type, const UserDataType& returnType, DatabaseBuiltinFunctionsParameter p1, const QString& desc) : NamedItem(name),
+        m_type(type), m_returnType(returnType), m_parameters(), m_description(desc)
     {
         m_parameters << p1;
     }
 
-    DatabaseBuiltinFunction() : m_type(FT_INVALID), m_returnType(), m_parameters() {}
+    DatabaseBuiltinFunction() : m_type(FT_INVALID), m_returnType(), m_parameters(), m_description() {}
 
     int getParameterCount() const
     {
         return m_parameters.size();
     }
 
+    const QString& getDescription() const
+    {
+        return m_description;
+    }
+
+    FunctionType getType() const
+    {
+        return m_type;
+    }
+
 private:
     FunctionType m_type;
     UserDataType m_returnType;
     QVector<DatabaseBuiltinFunctionsParameter> m_parameters;
+    QString m_description;
 };
 
 #endif // DATABASEBUILTINFUNCTION_H

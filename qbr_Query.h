@@ -5,7 +5,7 @@
 #include "qbr_QueryComponents.h"
 
 class QueryGraphicsHelper;
-
+class Table;
 
 class Query : public QueryComponent
 {
@@ -21,6 +21,7 @@ public:
 
     virtual bool initializeGraphicsItem() = 0;
     virtual QueryGraphicsItem* createGraphicsItem(QueryGraphicsHelper*, QueryGraphicsItem*) = 0;
+    virtual QVector<const Table*> getTables() const = 0;
 
     QueryGraphicsHelper* getHelper()
     {
