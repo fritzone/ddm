@@ -3,6 +3,8 @@
 
 #include "qbr_QueryComponents.h"
 
+class Table;
+
 class SelectQueryFromComponent : public QueryComponent
 {
 public:
@@ -19,6 +21,8 @@ public:
     }
 
     bool allowCloseButton();
+
+    QVector<const Table*> getTables() const;
 };
 
 #endif // SELECTQUERYFROMCOMPONENT_H

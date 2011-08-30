@@ -91,7 +91,7 @@ static const QString ADD_ALIAS = "AS...";
 static const QString ADD_WHERE_EXPRESSION_OR = "OR";
 static const QString ADD_WHERE_EXPRESSION_AND = "AND";
 static const QString ADD_WHERE_EXPRESSION = "New expression ...";
-
+static const QString strRemove = "REMOVE";
 static const QString strMathMinus = "MINUS";
 static const QString strMathPlus = "PLUS";
 static const QString strMathMultiply = "MULTPILY";
@@ -113,5 +113,7 @@ static const QString strCmpLess = "Less";
 static const QString strCmpGreater = "Greater";
 static const QString strCmpLessOrEqual = "Less or Equal";
 static const QString strCmpGreaterOrEqual = "Greater or Equal";
+
+static const QString strActionIndexSeparator = "^";
 
 #endif // STRINGS_H

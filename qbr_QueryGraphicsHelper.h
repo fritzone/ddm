@@ -37,9 +37,15 @@ public:
     void setForm(MainWindow*);
     void resetHighlightedItem();
     void triggerReRender();
-    QueryGraphicsScene* getScene()
+
+    QueryGraphicsScene* getScene() const
     {
         return m_scene;
+    }
+
+    Query* getQuery() const
+    {
+        return m_query;
     }
 
 private:

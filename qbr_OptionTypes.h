@@ -55,6 +55,9 @@ enum CellTypeChooserType
     CELLTYPE_LESS_OR_EQUAL,
     CELLTYPE_GREATER_OR_EQUAL,
 
+    /* BETWEEN keyword will get own button*/
+    CELLTYPE_BETWEEN,       // BETWEEN keyword
+
     /* The LIKE keyword will get its own button */
     CELLTYPE_LIKE,          // The LIKE keyword
 
@@ -72,9 +75,6 @@ enum CellTypeChooserType
 
     CELLTYPE_LITERAL,       // A typed in value
     CELLTYPE_QUERY,         // A query ... huhh
-
-    CELLTYPE_REMOVE_THIS,      // plain close button :)
-    CELLTYPE_FUNCTION_EXPAND,  // when the QueryGraphicsHelper sees this it asks for the DB engine to provide a list of functions supported
 
     CELLTYPE_CURSOR,           // this is always placed after the last cell type chooser in the unary expression or where the functions place their parameters
     CELLTYPE_OPEN_PARANTHESES_FOR_FUNCTION_CALL,

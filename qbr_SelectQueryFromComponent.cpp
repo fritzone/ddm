@@ -3,6 +3,8 @@
 #include "qbr_SelectQuery.h"
 #include "Workspace.h"
 #include "Version.h"
+#include "Table.h"
+#include "TableQueryComponent.h"
 
 SelectQueryFromComponent::SelectQueryFromComponent(QueryComponent* p, int l):QueryComponent(p,l)
 {
@@ -82,4 +84,18 @@ QueryComponent* SelectQueryFromComponent::duplicate()
 {
     SelectQueryFromComponent* newc = new SelectQueryFromComponent(m_parent, m_level);
     return newc;
+}
+
+QVector<const Table*> SelectQueryFromComponent::getTables() const
+{
+    QVector<const Table*>  result;
+    for(int i=0; i<m_children.size(); i++)
+    {
+        TableQueryComponent* tc = dynamic_cast<TableQueryComponent*>(m_children.at(i));
+        if(tc)
+        {
+            result.push_back(tc->getTable());
+        }
+    }
+    return result;
 }

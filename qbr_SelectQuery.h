@@ -27,6 +27,7 @@ public:
     {
         return QVector<CellTypeChooserType> ();
     }
+    virtual QVector<const Table*> getTables() const;
 
     void newFromTableComponent();
     void newFromSelectQueryComponent();

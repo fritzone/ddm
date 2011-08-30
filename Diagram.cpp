@@ -75,7 +75,7 @@ void Diagram::removeNote(int note)
     int i=0;
     while(i<m_notes.size())
     {
-        if(m_notes.at(i)->index() == note)
+        if(m_notes.at(i)->getIndex() == note)
         {
             m_notes.at(i)->removeFromScene();
             m_notes.remove(i);
@@ -117,8 +117,8 @@ DraggableGraphicsViewItemForText* Diagram::getNote(int noteIdx)
     int i=0;
     while(i<m_notes.size())
     {
-        qDebug() << "Note " << i << m_notes.at(i)->index();
-        if(m_notes.at(i)->index() == noteIdx)
+        qDebug() << "Note " << i << m_notes.at(i)->getIndex();
+        if(m_notes.at(i)->getIndex() == noteIdx)
         {
             return m_notes.at(i);
         }

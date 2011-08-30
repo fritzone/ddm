@@ -34,6 +34,7 @@ QGraphicsItemGroup* CellTypeChooser::render(int& x, int& y, int& w, int &h)
     int width = (m_size == CELLTYPECHOOSER_REGULAR)?(CELL_SIZE+1):(CELL_SIZE*2+1);
     int size = width;
     w = size;
+    bool needsFrame = true;
     if(m_currentType == CELLTYPE_CURSOR)
     {
         w /= 2;
@@ -71,6 +72,7 @@ QGraphicsItemGroup* CellTypeChooser::render(int& x, int& y, int& w, int &h)
     if(mappings.contains(m_currentType))
     {
         typeIcon = new QGraphicsPixmapItem(mappings[m_currentType].pixmap(size, size), this);
+        needsFrame = false;
     }
     else
     switch(m_currentType)
@@ -119,6 +121,12 @@ QGraphicsItemGroup* CellTypeChooser::render(int& x, int& y, int& w, int &h)
     {
         QPen dashed(Qt::DashLine);
         m_rect->setPen(dashed);
+    }
+    if(!needsFrame)
+    {
+        QPen pen;
+        pen.setColor(Qt::white);
+        m_rect->setPen(pen);
     }
     return this;
 }
@@ -170,7 +178,7 @@ void CellTypeChooser::mousePress(int x, int y)
     {
         SingleExpressionQueryComponent* owner = dynamic_cast<SingleExpressionQueryComponent*>(m_owner);
 
-        m_owner->handleAction(selected + "_" + (m_index>=0?QString::number(m_index):""), m_owner);
+        m_owner->handleAction(selected + strActionIndexSeparator + (m_index>=0?QString::number(m_index):""), m_owner);
     }
 
 }

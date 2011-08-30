@@ -469,7 +469,8 @@ QVector<DatabaseBuiltinFunction> MySQLDatabaseEngine::buildFunctions()
 {
     static QVector<DatabaseBuiltinFunction> result;
     QString X = QString("X");
-    result.append(DatabaseBuiltinFunction(QString("@abs"), FT_NUMERIC, UserDataType("return", DataType::DT_NUMERIC), DatabaseBuiltinFunctionsParameter(X, UserDataType(X, DataType::DT_NUMERIC), true)));
+    result.append(DatabaseBuiltinFunction(QString("@abs"), FT_NUMERIC, UserDataType("return", DataType::DT_NUMERIC), DatabaseBuiltinFunctionsParameter(X, UserDataType(X, DataType::DT_NUMERIC), true), "ABS(X) - Returns the absolute value of X"));
+    result.append(DatabaseBuiltinFunction(QString("@acos"), FT_NUMERIC, UserDataType("return", DataType::DT_NUMERIC), DatabaseBuiltinFunctionsParameter(X, UserDataType(X, DataType::DT_NUMERIC), true), "ACOS(X) - Returns the arc cosine of X, that is, the value whose cosine is X. Returns NULL if X is not in the range -1 to 1. "));
     return result;
 }
 

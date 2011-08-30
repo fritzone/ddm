@@ -34,15 +34,8 @@ QGraphicsItemGroup* CellTable::render(int &x, int &y, int& w, int &h)
     m_frame->setBrush(QBrush(bg));
     m_frame->setZValue(-4);
 
-    QSet<CellTypeChooserType> allowedTypes;
-    allowedTypes.insert(CELLTYPE_TABLE);
-
-    CellTypeChooser* chooser = new CellTypeChooser(m_level, CellTypeChooser::CELLTYPECHOOSER_REGULAR, CELLTYPE_TABLE, allowedTypes, m_helper, this, m_owner);
-    chooser->render(lx, ly, w, h);
-    grp->addToGroup(chooser);
-
     m_closer = new CellClose(m_level, m_helper, this, m_owner);
-    int p = m_chooser->boundingRect().width() + CELL_SIZE + 10;
+    int p = m_chooser->boundingRect().width() + CELL_SIZE;
     m_closer->render(p, ly, w, h);
     grp->addToGroup(m_closer);
 
@@ -52,11 +45,11 @@ QGraphicsItemGroup* CellTable::render(int &x, int &y, int& w, int &h)
 
 void CellTable::updateWidth(int newWidth)
 {
-    QRect newRect(m_frame->boundingRect().left(), m_frame->boundingRect().top(), newWidth - CHILDREN_ALIGNMENT - 2, m_frame->boundingRect().height());
+    QRect newRect(m_frame->boundingRect().left(), m_frame->boundingRect().top(), newWidth, m_frame->boundingRect().height());
     m_frame->setRect(newRect);
     int x = m_frame->boundingRect().right();
-    m_closer->updateWidth(x - 10  - CELL_SIZE);
-    m_chooser->updateWidth(newWidth - CHILDREN_ALIGNMENT - 10  - 2 * CELL_SIZE);
+    m_closer->updateWidth(x - CELL_SIZE);
+    m_chooser->updateWidth(newWidth - CHILDREN_ALIGNMENT - 2 * CELL_SIZE);
 }
 
 void CellTable::updateHeight(int newHeight)

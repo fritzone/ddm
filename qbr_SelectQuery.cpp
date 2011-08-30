@@ -219,3 +219,8 @@ QueryComponent* SelectQuery::duplicate()
     newQuery->m_orderBy = m_orderBy?dynamic_cast<SelectQueryOrderByComponent*>(m_orderBy->duplicate()):0;
     return newQuery;
 }
+
+QVector<const Table*> SelectQuery::getTables() const
+{
+    return m_from->getTables();
+}

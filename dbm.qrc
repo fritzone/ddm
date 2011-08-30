@@ -143,6 +143,7 @@
         <file>images/big/big_greater_or_equal.png</file>
         <file>images/big/big_equal.png</file>
         <file>images/small/not_eq.png</file>
+        <file>images/small/table-select-column-icon.png</file>
     </qresource>
     <qresource prefix="/bigger">
         <file>images/unaf.png</file>

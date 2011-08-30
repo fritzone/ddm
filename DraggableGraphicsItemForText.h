@@ -38,7 +38,7 @@ public:
 
     QString getText() const;
 
-    int index() const
+    int getIndex() const
     {
         return m_index;
     }
