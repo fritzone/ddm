@@ -77,6 +77,7 @@ static const QString strLessIcon = ":/images/actions/images/big/big_less.png";
 static const QString strNotEqIcon = ":/images/actions/images/big/big_noteq.png";
 static const QString strNotEq1Icon = ":/images/actions/images/big/big_noteq_1.png";
 static const QString strNotEqNullSafeIcon = ":/images/actions/images/big/big_noteq_nullsafe.png";
+static const QString strColumnIcon = ":/images/actions/images/small/table-select-column-icon.png";
 
 static const QString NEW_TABLE = "New table reference";
 static const QString DUPLICATE = "Duplicate";

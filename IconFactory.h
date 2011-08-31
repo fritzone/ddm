@@ -336,7 +336,11 @@ public:
         return icon;
     }
 
-
+    static const QIcon& getColumnIcon()
+    {
+        static const QIcon icon(strColumnIcon);
+        return icon;
+    }
 
 };
 
