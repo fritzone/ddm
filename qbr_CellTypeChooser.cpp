@@ -102,6 +102,11 @@ QGraphicsItemGroup* CellTypeChooser::render(int& x, int& y, int& w, int &h)
             w += m_funcText->boundingRect().width();
         }
         break;
+
+    case CELLTYPE_COLUMN:
+        typeIcon = new QGraphicsPixmapItem(IconFactory::getColumnIcon().pixmap(CELL_SIZE+1,CELL_SIZE+1), this);
+
+        break;
     }
 
     if(typeIcon)

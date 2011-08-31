@@ -96,7 +96,7 @@ void SingleExpressionQueryComponent::handleAction(const QString& action, QueryCo
     mappings[strCmpLessOrEqual] = CELLTYPE_LESS_OR_EQUAL;
     mappings[strCmpGreaterOrEqual] = CELLTYPE_GREATER_OR_EQUAL;
 
-    if(action.indexOf(strActionIndexSeparator)&& !action.startsWith(strRemove)&&!action.startsWith("@"))
+    if(action.indexOf(strActionIndexSeparator)&& !action.startsWith(strRemove)&&!action.startsWith("@")&&!action.startsWith("#"))
     {
         QString pureAction = action.left(action.indexOf(strActionIndexSeparator));
         if(mappings.contains(pureAction))
@@ -105,10 +105,14 @@ void SingleExpressionQueryComponent::handleAction(const QString& action, QueryCo
             if(indx < m_elements.size())
             {
                 m_elements[indx] = mappings[pureAction];
-                if(m_functionsAtGivenPosition.find(indx) != m_functionsAtGivenPosition.end())
+                if(m_functionsAtGivenPosition.find(indx) != m_functionsAtGivenPosition.end())   // check if we overwrote a function
                 {
                     m_functionInstantiationAtGivenPosition.remove(indx);
                     m_functionsAtGivenPosition.remove(indx);
+                }
+                if(m_columnsAtGivenPosition.find(indx) != m_columnsAtGivenPosition.end())   // check if we overwrote a column
+                {
+                    m_columnsAtGivenPosition.remove(indx);
                 }
             }
             else
@@ -131,10 +135,17 @@ void SingleExpressionQueryComponent::handleAction(const QString& action, QueryCo
 
     if(action.startsWith("@"))          // this is a function...
     {
-        qDebug() << "Function: "<< action;
         QString fName = action.mid(1, action.indexOf(strActionIndexSeparator) - 1);
         int index = action.section(strActionIndexSeparator, 1).toInt();
-        m_elements.append(CELLTYPE_FUNCTION);
+        if(index < m_elements.size())   // let's see if we overwrote something
+        {
+            m_elements[index] = CELLTYPE_FUNCTION;
+        }
+        else
+        {
+            m_elements.append(CELLTYPE_FUNCTION);
+        }
+
         if(m_functionsAtGivenPosition.find(index) == m_functionsAtGivenPosition.end())
         {
             m_functionsAtGivenPosition.insert(index, &Workspace::getInstance()->currentProjectsEngine()->getBuiltinFunction(fName));
@@ -148,9 +159,17 @@ void SingleExpressionQueryComponent::handleAction(const QString& action, QueryCo
         m_helper->triggerReRender();
     }
 
-    if(action.startsWith("#"))  // This is a table->column at given position
+    if(action.startsWith("#"))  // This is a table->column at given position: "#PERSON+NAME^0"
     {
-
+        m_elements.append(CELLTYPE_COLUMN);
+        QStringList t = action.split('+');
+        QString t1 = t.at(0);
+        QString tabName = t1.right(t1.length() - 1);
+        t1 = t.at(1);
+        QStringList t2 = t1.split('^');
+        QString colName = t2.at(0);
+        int index = t2.at(1).toInt();
+        m_helper->triggerReRender();
     }
 }
 

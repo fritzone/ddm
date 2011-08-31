@@ -161,7 +161,7 @@ void QueryItemListDialog::showSymbolPanel()
     m_comparisonMenu->connect(m_comparisonMenu, SIGNAL(triggered(QAction*)), this, SLOT(actionTriggered(QAction*)));
     m_tablesMenu->connect(m_tablesMenu, SIGNAL(triggered(QAction*)), this, SLOT(actionTriggered(QAction*)));
 
-    resize(300, 200);
+    resize(400, 250);
 
     ui->btnMath->setMenu(m_mathMenu);
     ui->btnBitwise->setMenu(m_bitMenu);
