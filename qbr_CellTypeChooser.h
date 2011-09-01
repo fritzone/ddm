@@ -7,6 +7,8 @@
 
 #include <QSet>
 
+class Column;
+
 class CellTypeChooser : public QueryGraphicsItem
 {
 public:
@@ -38,6 +40,8 @@ public:
         return m_functionSupport;
     }
 
+    void setColumn(const Column* c);
+
 private:
     CellTypeChooserType m_defaultType;
     QSet<CellTypeChooserType> m_allowedTypes;
@@ -46,7 +50,9 @@ private:
     CellTypeChooserSize m_size;
     int m_index;
     const DatabaseBuiltinFunction* m_functionSupport;
-    QGraphicsTextItem* m_funcText;
+    QGraphicsTextItem* m_text;
+    const Column* m_column;
+    bool m_needsFrame;
 };
 
 #endif // CELLTYPECHOOSER_H
