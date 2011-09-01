@@ -9,7 +9,7 @@
 #include <QBrush>
 
 CellForSingleExpression::CellForSingleExpression (int level, QueryGraphicsHelper *c, QueryGraphicsItem *parent, QueryComponent *owner):
-    QueryGraphicsItem(level, parent, c, owner), m_frame(0), m_close(0), m_smallTypeModifier(0), m_bigTypeModifiers()
+    QueryGraphicsItem(level, parent, c, owner), m_frame(0), m_close(0), m_smallTypeModifier(0)
 {
 }
 
@@ -37,13 +37,14 @@ QGraphicsItemGroup* CellForSingleExpression::render(int &x, int &y, int &w, int 
 
     if(SingleExpressionQueryComponent* owner = dynamic_cast<SingleExpressionQueryComponent*>(m_owner))
     {
-        int tx = x; // this holds where we are putting the next cell type chooser
+        int tx = x + 2; // this holds where we are putting the next cell type chooser
 
         QVector<CellTypeChooserType> funcsAndOperators = owner->getFunctionsAndOperators();
         for(int i = 0; i<funcsAndOperators.size(); i++)
         {
             CellTypeChooser* bigTypeModifier = new CellTypeChooser(m_level, CellTypeChooser::CELLTYPECHOOSER_BIG, funcsAndOperators.at(i), QSet<CellTypeChooserType>(), m_helper, this, m_owner, i);
-            bigTypeModifier->setFunction(owner->getFunctionAt(i));
+            bigTypeModifier->setFunction(owner->getFunctionAt(i));  // these two might or might not set
+            bigTypeModifier->setColumn(owner->getColumnAt(i));
 
             {
             int localW = 0;
@@ -51,7 +52,7 @@ QGraphicsItemGroup* CellForSingleExpression::render(int &x, int &y, int &w, int 
             tx += localW; //bigTypeModifier->boundingRect().width();
             }
 
-            if(const DatabaseBuiltinFunction* func = bigTypeModifier->getFunction())
+            if(const DatabaseBuiltinFunction* func = bigTypeModifier->getFunction())    // let's see if we have function here and in this case render the parameters of the function
             {
                 CellTypeChooser* op_par = new CellTypeChooser(m_level, CellTypeChooser::CELLTYPECHOOSER_BIG, CELLTYPE_OPEN_PARANTHESES_FOR_FUNCTION_CALL, QSet<CellTypeChooserType>(), m_helper, this, m_owner);
                 {
@@ -82,7 +83,6 @@ QGraphicsItemGroup* CellForSingleExpression::render(int &x, int &y, int &w, int 
             }
 
             grp->addToGroup(bigTypeModifier);
-            m_bigTypeModifiers.append(bigTypeModifier);
         }
 
         // the cursor after the expression

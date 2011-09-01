@@ -5,6 +5,8 @@
 #include "qbr_SingleExpressionQueryComponent.h"
 #include "DatabaseBuiltinFunction.h"
 #include "qbr_QueryComponents.h"
+#include "Column.h"
+#include "Table.h"
 
 #include <QPen>
 #include <QGraphicsView>
@@ -13,19 +15,19 @@
 
 CellTypeChooser::CellTypeChooser(int level, CellTypeChooserSize size, CellTypeChooserType defaultType, QSet<CellTypeChooserType> allowedTypes, QueryGraphicsHelper *c, QueryGraphicsItem* parent, QueryComponent* owner):
         QueryGraphicsItem(level, parent, c, owner),
-        m_defaultType(defaultType), m_allowedTypes(allowedTypes), m_currentType(defaultType), m_rect(0), m_size (size), m_index(-1), m_functionSupport(0), m_funcText(0)
+        m_defaultType(defaultType), m_allowedTypes(allowedTypes), m_currentType(defaultType), m_rect(0), m_size (size), m_index(-1), m_functionSupport(0), m_text(0)
 {
 }
 
 CellTypeChooser::CellTypeChooser(int level, CellTypeChooserSize size, CellTypeChooserType defaultType, QSet<CellTypeChooserType> allowedTypes, QueryGraphicsHelper *c, QueryGraphicsItem* parent, QueryComponent* owner, int index):
         QueryGraphicsItem(level, parent, c, owner),
-        m_defaultType(defaultType), m_allowedTypes(allowedTypes), m_currentType(defaultType), m_rect(0), m_size (size), m_index(index),m_functionSupport(0), m_funcText(0)
+        m_defaultType(defaultType), m_allowedTypes(allowedTypes), m_currentType(defaultType), m_rect(0), m_size (size), m_index(index),m_functionSupport(0), m_text(0)
 {
 }
 
 CellTypeChooser::CellTypeChooser(int level, CellTypeChooserSize size, CellTypeChooserType defaultType, QueryGraphicsHelper* helper, QueryGraphicsItem* parent, QueryComponent* owner ):
         QueryGraphicsItem(level, parent, helper, owner),
-        m_defaultType(defaultType), m_allowedTypes(QSet<CellTypeChooserType>()), m_currentType(defaultType), m_rect(0), m_size (size), m_index(-1),m_functionSupport(0), m_funcText(0)
+        m_defaultType(defaultType), m_allowedTypes(QSet<CellTypeChooserType>()), m_currentType(defaultType), m_rect(0), m_size (size), m_index(-1),m_functionSupport(0), m_text(0)
 {
 }
 
@@ -34,7 +36,7 @@ QGraphicsItemGroup* CellTypeChooser::render(int& x, int& y, int& w, int &h)
     int width = (m_size == CELLTYPECHOOSER_REGULAR)?(CELL_SIZE+1):(CELL_SIZE*2+1);
     int size = width;
     w = size;
-    bool needsFrame = true;
+    m_needsFrame = true;
     if(m_currentType == CELLTYPE_CURSOR)
     {
         w /= 2;
@@ -42,7 +44,7 @@ QGraphicsItemGroup* CellTypeChooser::render(int& x, int& y, int& w, int &h)
     }
 
     QGraphicsPixmapItem* typeIcon = 0;
-
+    QFont theFont("Arial", 14, QFont::Bold);
     QMap<CellTypeChooserType,QIcon> mappings;
 
     mappings[CELLTYPE_NOT] = IconFactory::getBigNotIcon();
@@ -72,7 +74,7 @@ QGraphicsItemGroup* CellTypeChooser::render(int& x, int& y, int& w, int &h)
     if(mappings.contains(m_currentType))
     {
         typeIcon = new QGraphicsPixmapItem(mappings[m_currentType].pixmap(size, size), this);
-        needsFrame = false;
+        m_needsFrame = false;
     }
     else
     switch(m_currentType)
@@ -92,20 +94,27 @@ QGraphicsItemGroup* CellTypeChooser::render(int& x, int& y, int& w, int &h)
         typeIcon = new QGraphicsPixmapItem(IconFactory::getFunctionIcon().pixmap(CELL_SIZE+1,CELL_SIZE+1), this);
         if(m_functionSupport)
         {
-            m_funcText = new QGraphicsTextItem(m_functionSupport->getNiceName(), this);
-            QFont theFont("Arial", 14, QFont::Bold);
-            m_funcText->setFont(theFont);
-            m_funcText->setX(x + CELL_SIZE + 1);
-            m_funcText->setY(y - 4);
-            addToGroup(m_funcText);
-            width += m_funcText->boundingRect().width();
-            w += m_funcText->boundingRect().width();
+            m_text = new QGraphicsTextItem(m_functionSupport->getNiceName(), this);
+
+            m_text->setFont(theFont);
+            m_text->setX(x + CELL_SIZE + 1);
+            m_text->setY(y - 4);
+            addToGroup(m_text);
+            width += m_text->boundingRect().width();
+            w += m_text->boundingRect().width();
         }
         break;
 
     case CELLTYPE_COLUMN:
         typeIcon = new QGraphicsPixmapItem(IconFactory::getColumnIcon().pixmap(CELL_SIZE+1,CELL_SIZE+1), this);
-
+        if(!m_column) break;
+        m_text = new QGraphicsTextItem(m_column->getTable()->getName() + "." + m_column->getName());// TODO: Code below is duplication with code from above...
+        m_text->setFont(theFont);
+        m_text->setX(x + CELL_SIZE + 1);
+        m_text->setY(y - 4);
+        addToGroup(m_text);
+        width += m_text->boundingRect().width();
+        w += m_text->boundingRect().width();
         break;
     }
 
@@ -127,13 +136,18 @@ QGraphicsItemGroup* CellTypeChooser::render(int& x, int& y, int& w, int &h)
         QPen dashed(Qt::DashLine);
         m_rect->setPen(dashed);
     }
-    if(!needsFrame)
+    if(!m_needsFrame)
     {
         QPen pen;
         pen.setColor(Qt::white);
         m_rect->setPen(pen);
     }
     return this;
+}
+
+void CellTypeChooser::setColumn(const Column *c)
+{
+    m_column = c;
 }
 
 void CellTypeChooser::updateWidth(int newWidth)
@@ -143,6 +157,7 @@ void CellTypeChooser::updateWidth(int newWidth)
 void CellTypeChooser::mouseMove(int x, int y)
 {
     if(m_currentType == CELLTYPE_CLOSE_PARANTHESES_FOR_FUNCTION_CALL || m_currentType == CELLTYPE_OPEN_PARANTHESES_FOR_FUNCTION_CALL) return;
+    if(!m_needsFrame) return;
 
     QPen thick;
     thick.setWidth(2);
@@ -156,6 +171,7 @@ void CellTypeChooser::mouseMove(int x, int y)
 
 void CellTypeChooser::mouseLeft(int x, int y)
 {
+    if(!m_needsFrame) return;
     QPen normal;
     normal.setWidth(1);
     if(m_currentType == CELLTYPE_CURSOR)
@@ -168,7 +184,6 @@ void CellTypeChooser::mouseLeft(int x, int y)
 
 void CellTypeChooser::mousePress(int x, int y)
 {
-
     QString selected = "";
     QPoint a = scene()->views().at(0)->mapToGlobal((m_rect->mapToScene(m_rect->boundingRect().bottomLeft().toPoint())).toPoint() ) ;
     selected = m_helper->presentList(a.x() + 2-scene()->views().at(0)->horizontalScrollBar()->sliderPosition(), a.y() - scene()->views().at(0)->verticalScrollBar()->sliderPosition(), QueryGraphicsHelper::INPUT_SYMBOLS);
@@ -185,5 +200,4 @@ void CellTypeChooser::mousePress(int x, int y)
 
         m_owner->handleAction(selected + strActionIndexSeparator + (m_index>=0?QString::number(m_index):""), m_owner);
     }
-
 }

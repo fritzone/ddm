@@ -37,6 +37,7 @@ public:
     bool hasFunctionAtIndex(int);
     const DatabaseBuiltinFunction* getFunctionAt(int i);
     void shiftFunctionsToTheLeft(int after);
+    const Column* getColumnAt(int i);
 
     DatabaseFunctionInstantiationComponent* getFunctionInstantiationAt(int);
 

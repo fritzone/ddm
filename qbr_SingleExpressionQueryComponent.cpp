@@ -4,6 +4,9 @@
 #include "DatabaseEngine.h"
 #include "DatabaseBuiltinFunction.h"
 #include "qbr_DatabaseFunctionInstantiationComponent.h"
+#include "Table.h"
+#include "Column.h"
+#include "Version.h"
 
 #include <QDebug>
 
@@ -56,12 +59,24 @@ void SingleExpressionQueryComponent::shiftFunctionsToTheLeft(int after)
             m_functionInstantiationAtGivenPosition.insert(i-1, m_functionInstantiationAtGivenPosition.value(i));
             m_functionInstantiationAtGivenPosition.remove(i);
         }
+
+        if(m_columnsAtGivenPosition.contains(i))
+        {
+            m_columnsAtGivenPosition.insert(i-1, m_columnsAtGivenPosition.value(i));
+            m_columnsAtGivenPosition.remove(i);
+        }
     }
 }
 
 const DatabaseBuiltinFunction* SingleExpressionQueryComponent::getFunctionAt(int i)
 {
     if(m_functionsAtGivenPosition.contains(i)) return m_functionsAtGivenPosition[i];
+    return 0;
+}
+
+const Column* SingleExpressionQueryComponent::getColumnAt(int i)
+{
+    if(m_columnsAtGivenPosition.contains(i)) return m_columnsAtGivenPosition[i];
     return 0;
 }
 
@@ -156,12 +171,17 @@ void SingleExpressionQueryComponent::handleAction(const QString& action, QueryCo
             m_functionsAtGivenPosition[index] = &Workspace::getInstance()->currentProjectsEngine()->getBuiltinFunction(fName);
             m_functionInstantiationAtGivenPosition[index] = new DatabaseFunctionInstantiationComponent(new SingleExpressionQueryComponent(this, m_level + 1), Workspace::getInstance()->currentProjectsEngine()->getBuiltinFunction(fName));
         }
+
+        // let's see if we overwrote a column
+        if(m_columnsAtGivenPosition.contains(index))
+        {
+            m_columnsAtGivenPosition.remove(index);
+        }
         m_helper->triggerReRender();
     }
 
     if(action.startsWith("#"))  // This is a table->column at given position: "#PERSON+NAME^0"
     {
-        m_elements.append(CELLTYPE_COLUMN);
         QStringList t = action.split('+');
         QString t1 = t.at(0);
         QString tabName = t1.right(t1.length() - 1);
@@ -169,6 +189,28 @@ void SingleExpressionQueryComponent::handleAction(const QString& action, QueryCo
         QStringList t2 = t1.split('^');
         QString colName = t2.at(0);
         int index = t2.at(1).toInt();
+        Table* tab = Workspace::getInstance()->workingVersion()->getTable(tabName);
+        if(tab == 0) { qDebug() << "No table???"; return; }
+        Column* c = tab->getColumn(colName);
+        if(c == 0) c = tab->getColumnFromParents(colName);
+        if(c == 0) { qDebug() << "No column???"; return; }
+        m_columnsAtGivenPosition[index] = c;
+
+        if(index < m_elements.size())   // let's see if we overwrote something
+        {
+            m_elements[index] = CELLTYPE_COLUMN;
+        }
+        else
+        {
+            m_elements.append(CELLTYPE_COLUMN);
+        }
+
+        if(m_functionsAtGivenPosition.find(index) != m_functionsAtGivenPosition.end())  // we had a function at this position
+        {
+            m_functionsAtGivenPosition.remove(index);
+            m_functionInstantiationAtGivenPosition.remove(index);
+        }
+
         m_helper->triggerReRender();
     }
 }
