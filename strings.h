@@ -115,6 +115,13 @@ static const QString strCmpGreater = "Greater";
 static const QString strCmpLessOrEqual = "Less or Equal";
 static const QString strCmpGreaterOrEqual = "Greater or Equal";
 
+static const QString strLike = "LIKE";
+static const QString strIn = "IN";
+static const QString strIs = "IS";
+static const QString strExists = "EXISTS";
+static const QString strBetween = "BETWEEN";
+static const QString strNotText = "NOT_TEXT";
+
 static const QString strActionIndexSeparator = "^";
 
 #endif // STRINGS_H

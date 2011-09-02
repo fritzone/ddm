@@ -496,7 +496,7 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>452</width>
+        <width>467</width>
         <height>162</height>
        </rect>
       </property>
@@ -955,10 +955,10 @@ p, li { white-space: pre-wrap; }
            </widget>
           </item>
           <item>
-           <widget class="QLineEdit" name="lineEdit"/>
+           <widget class="QLineEdit" name="txtQueryText"/>
           </item>
           <item>
-           <widget class="QToolButton" name="btnOk">
+           <widget class="QToolButton" name="btnAcceptText">
             <property name="focusPolicy">
              <enum>Qt::ClickFocus</enum>
             </property>
@@ -1086,10 +1086,129 @@ p, li { white-space: pre-wrap; }
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>btnLike</sender>
+   <signal>clicked()</signal>
+   <receiver>QueryItemListDialog</receiver>
+   <slot>btnLikeClicked()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>187</x>
+     <y>310</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>234</x>
+     <y>232</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnBetween</sender>
+   <signal>clicked()</signal>
+   <receiver>QueryItemListDialog</receiver>
+   <slot>btnBetweenClicked()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>380</x>
+     <y>310</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>234</x>
+     <y>232</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnExists</sender>
+   <signal>clicked()</signal>
+   <receiver>QueryItemListDialog</receiver>
+   <slot>btnExistsClicked()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>274</x>
+     <y>348</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>234</x>
+     <y>232</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnNot</sender>
+   <signal>clicked()</signal>
+   <receiver>QueryItemListDialog</receiver>
+   <slot>btnNotClicked()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>360</x>
+     <y>348</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>234</x>
+     <y>232</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnIn</sender>
+   <signal>clicked()</signal>
+   <receiver>QueryItemListDialog</receiver>
+   <slot>btnInClicked()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>256</x>
+     <y>310</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>234</x>
+     <y>232</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnIs</sender>
+   <signal>clicked()</signal>
+   <receiver>QueryItemListDialog</receiver>
+   <slot>btnIsClicked()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>178</x>
+     <y>348</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>234</x>
+     <y>232</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnAcceptText</sender>
+   <signal>clicked()</signal>
+   <receiver>QueryItemListDialog</receiver>
+   <slot>btnAcceptText()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>434</x>
+     <y>404</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>234</x>
+     <y>232</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>onDblClickItem(QListWidgetItem*)</slot>
   <slot>onTxtInputKeyPress()</slot>
   <slot>pageRequested(int)</slot>
+  <slot>btnLikeClicked()</slot>
+  <slot>btnIsClicked()</slot>
+  <slot>btnExistsClicked()</slot>
+  <slot>btnInClicked()</slot>
+  <slot>btnBetweenClicked()</slot>
+  <slot>btnNotClicked()</slot>
+  <slot>btnAcceptText()</slot>
  </slots>
 </ui>

@@ -15,19 +15,19 @@
 
 CellTypeChooser::CellTypeChooser(int level, CellTypeChooserSize size, CellTypeChooserType defaultType, QSet<CellTypeChooserType> allowedTypes, QueryGraphicsHelper *c, QueryGraphicsItem* parent, QueryComponent* owner):
         QueryGraphicsItem(level, parent, c, owner),
-        m_defaultType(defaultType), m_allowedTypes(allowedTypes), m_currentType(defaultType), m_rect(0), m_size (size), m_index(-1), m_functionSupport(0), m_text(0)
+        m_defaultType(defaultType), m_allowedTypes(allowedTypes), m_currentType(defaultType), m_rect(0), m_size (size), m_index(-1), m_functionSupport(0), m_text(0), m_literal()
 {
 }
 
 CellTypeChooser::CellTypeChooser(int level, CellTypeChooserSize size, CellTypeChooserType defaultType, QSet<CellTypeChooserType> allowedTypes, QueryGraphicsHelper *c, QueryGraphicsItem* parent, QueryComponent* owner, int index):
         QueryGraphicsItem(level, parent, c, owner),
-        m_defaultType(defaultType), m_allowedTypes(allowedTypes), m_currentType(defaultType), m_rect(0), m_size (size), m_index(index),m_functionSupport(0), m_text(0)
+        m_defaultType(defaultType), m_allowedTypes(allowedTypes), m_currentType(defaultType), m_rect(0), m_size (size), m_index(index),m_functionSupport(0), m_text(0), m_literal()
 {
 }
 
 CellTypeChooser::CellTypeChooser(int level, CellTypeChooserSize size, CellTypeChooserType defaultType, QueryGraphicsHelper* helper, QueryGraphicsItem* parent, QueryComponent* owner ):
         QueryGraphicsItem(level, parent, helper, owner),
-        m_defaultType(defaultType), m_allowedTypes(QSet<CellTypeChooserType>()), m_currentType(defaultType), m_rect(0), m_size (size), m_index(-1),m_functionSupport(0), m_text(0)
+        m_defaultType(defaultType), m_allowedTypes(QSet<CellTypeChooserType>()), m_currentType(defaultType), m_rect(0), m_size (size), m_index(-1),m_functionSupport(0), m_text(0), m_literal()
 {
 }
 
@@ -45,36 +45,55 @@ QGraphicsItemGroup* CellTypeChooser::render(int& x, int& y, int& w, int &h)
 
     QGraphicsPixmapItem* typeIcon = 0;
     QFont theFont("Arial", 14, QFont::Bold);
-    QMap<CellTypeChooserType,QIcon> mappings;
+    QMap<CellTypeChooserType,QIcon> iconMappings;
 
-    mappings[CELLTYPE_NOT] = IconFactory::getBigNotIcon();
-    mappings[CELLTYPE_XOR] = IconFactory::getXorIcon();
-    mappings[CELLTYPE_LSHIFT] = IconFactory::getLeftShiftIcon();
-    mappings[CELLTYPE_RSHIFT] = IconFactory::getRightShiftIcon();
-    mappings[CELLTYPE_OR] = IconFactory::getBinaryOrIcon();
-    mappings[CELLTYPE_AND] = IconFactory::getBinaryAndIcon();
-    mappings[CELLTYPE_NEGATE] = IconFactory::getBigNegIcon();
+    iconMappings[CELLTYPE_NOT] = IconFactory::getBigNotIcon();
+    iconMappings[CELLTYPE_XOR] = IconFactory::getXorIcon();
+    iconMappings[CELLTYPE_LSHIFT] = IconFactory::getLeftShiftIcon();
+    iconMappings[CELLTYPE_RSHIFT] = IconFactory::getRightShiftIcon();
+    iconMappings[CELLTYPE_OR] = IconFactory::getBinaryOrIcon();
+    iconMappings[CELLTYPE_AND] = IconFactory::getBinaryAndIcon();
+    iconMappings[CELLTYPE_NEGATE] = IconFactory::getBigNegIcon();
 
-    mappings[CELLTYPE_MINUS] = IconFactory::getBigMinusIcon();
-    mappings[CELLTYPE_PLUS] = IconFactory::getPlusIcon();
-    mappings[CELLTYPE_DIVIDE] = IconFactory::getDivideIcon();
-    mappings[CELLTYPE_MULTIPLY] = IconFactory::getMultiplyIcon();
-    mappings[CELLTYPE_MOD] = IconFactory::getModuloIcon();
+    iconMappings[CELLTYPE_MINUS] = IconFactory::getBigMinusIcon();
+    iconMappings[CELLTYPE_PLUS] = IconFactory::getPlusIcon();
+    iconMappings[CELLTYPE_DIVIDE] = IconFactory::getDivideIcon();
+    iconMappings[CELLTYPE_MULTIPLY] = IconFactory::getMultiplyIcon();
+    iconMappings[CELLTYPE_MOD] = IconFactory::getModuloIcon();
 
-    mappings[CELLTYPE_EQUAL] = IconFactory::getEqualIcon();
-    mappings[CELLTYPE_NOTEQUAL] = IconFactory::getNotEqIcon();
-    mappings[CELLTYPE_LESS] = IconFactory::getLessIcon();
-    mappings[CELLTYPE_GREATER] = IconFactory::getGreaterIcon();
-    mappings[CELLTYPE_LESS_OR_EQUAL] = IconFactory::getLessOrEqualIcon();
-    mappings[CELLTYPE_GREATER_OR_EQUAL] = IconFactory::getGreaterOrEqualIcon();
+    iconMappings[CELLTYPE_EQUAL] = IconFactory::getEqualIcon();
+    iconMappings[CELLTYPE_NOTEQUAL] = IconFactory::getNotEqIcon();
+    iconMappings[CELLTYPE_LESS] = IconFactory::getLessIcon();
+    iconMappings[CELLTYPE_GREATER] = IconFactory::getGreaterIcon();
+    iconMappings[CELLTYPE_LESS_OR_EQUAL] = IconFactory::getLessOrEqualIcon();
+    iconMappings[CELLTYPE_GREATER_OR_EQUAL] = IconFactory::getGreaterOrEqualIcon();
 
-    mappings[CELLTYPE_OPEN_PARANTHESES_FOR_FUNCTION_CALL] = IconFactory::getOpenParanthesesIcon();
-    mappings[CELLTYPE_CLOSE_PARANTHESES_FOR_FUNCTION_CALL] = IconFactory::getCloseParanthesesIcon();
+    iconMappings[CELLTYPE_OPEN_PARANTHESES_FOR_FUNCTION_CALL] = IconFactory::getOpenParanthesesIcon();
+    iconMappings[CELLTYPE_CLOSE_PARANTHESES_FOR_FUNCTION_CALL] = IconFactory::getCloseParanthesesIcon();
 
-    if(mappings.contains(m_currentType))
+    QMap<CellTypeChooserType,QString> textMappings;
+    textMappings[CELLTYPE_NOT_TEXT] = strNotText;
+    textMappings[CELLTYPE_LIKE] = strLike;
+    textMappings[CELLTYPE_IN] = strIn;
+    textMappings[CELLTYPE_IS] = strIs;
+    textMappings[CELLTYPE_BETWEEN] = strBetween;
+    textMappings[CELLTYPE_EXISTS] = strExists;
+
+    if(iconMappings.contains(m_currentType))
     {
-        typeIcon = new QGraphicsPixmapItem(mappings[m_currentType].pixmap(size, size), this);
+        typeIcon = new QGraphicsPixmapItem(iconMappings[m_currentType].pixmap(size, size), this);
         m_needsFrame = false;
+    }
+    else
+    if(textMappings.contains(m_currentType))
+    {
+        m_text = new QGraphicsTextItem(textMappings[m_currentType], this);
+        m_text->setFont(theFont);
+        m_text->setX(x + CELL_SIZE + 1);
+        m_text->setY(y - 4);
+        addToGroup(m_text);
+        width += m_text->boundingRect().width();
+        w += m_text->boundingRect().width();
     }
     else
     switch(m_currentType)
@@ -95,7 +114,6 @@ QGraphicsItemGroup* CellTypeChooser::render(int& x, int& y, int& w, int &h)
         if(m_functionSupport)
         {
             m_text = new QGraphicsTextItem(m_functionSupport->getNiceName(), this);
-
             m_text->setFont(theFont);
             m_text->setX(x + CELL_SIZE + 1);
             m_text->setY(y - 4);
@@ -109,6 +127,16 @@ QGraphicsItemGroup* CellTypeChooser::render(int& x, int& y, int& w, int &h)
         typeIcon = new QGraphicsPixmapItem(IconFactory::getColumnIcon().pixmap(CELL_SIZE+1,CELL_SIZE+1), this);
         if(!m_column) break;
         m_text = new QGraphicsTextItem(m_column->getTable()->getName() + "." + m_column->getName());// TODO: Code below is duplication with code from above...
+        m_text->setFont(theFont);
+        m_text->setX(x + CELL_SIZE + 1);
+        m_text->setY(y - 4);
+        addToGroup(m_text);
+        width += m_text->boundingRect().width();
+        w += m_text->boundingRect().width();
+        break;
+
+    case CELLTYPE_LITERAL:
+        m_text = new QGraphicsTextItem(m_literal, this);
         m_text->setFont(theFont);
         m_text->setX(x + CELL_SIZE + 1);
         m_text->setY(y - 4);
@@ -196,8 +224,6 @@ void CellTypeChooser::mousePress(int x, int y)
     }
     else
     {
-        SingleExpressionQueryComponent* owner = dynamic_cast<SingleExpressionQueryComponent*>(m_owner);
-
         m_owner->handleAction(selected + strActionIndexSeparator + (m_index>=0?QString::number(m_index):""), m_owner);
     }
 }

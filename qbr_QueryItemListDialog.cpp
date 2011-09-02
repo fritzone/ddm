@@ -220,3 +220,45 @@ void QueryItemListDialog::onTxtInputKeyPress()
     m_selected = ui->txtInput->text();
     close();
 }
+
+void QueryItemListDialog::btnLikeClicked()
+{
+    m_selected = strLike;
+    close();
+}
+
+void QueryItemListDialog::btnIsClicked()
+{
+    m_selected = strIs;
+    close();
+}
+
+void QueryItemListDialog::btnInClicked()
+{
+    m_selected = strIn;
+    close();
+}
+
+void QueryItemListDialog::btnBetweenClicked()
+{
+    m_selected = strBetween;
+    close();
+}
+
+void QueryItemListDialog::btnExistsClicked()
+{
+    m_selected = strExists;
+    close();
+}
+
+void QueryItemListDialog::btnNotClicked()
+{
+    m_selected = strNotText;
+    close();
+}
+
+void QueryItemListDialog::btnAcceptText()
+{
+    m_selected = QString("$") + ui->txtQueryText->text();
+    close();
+}

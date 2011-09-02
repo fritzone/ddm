@@ -42,6 +42,11 @@ public:
 
     void setColumn(const Column* c);
 
+    void setLiteral(const QString& s)
+    {
+        m_literal = s;
+    }
+
 private:
     CellTypeChooserType m_defaultType;
     QSet<CellTypeChooserType> m_allowedTypes;
@@ -53,6 +58,7 @@ private:
     QGraphicsTextItem* m_text;
     const Column* m_column;
     bool m_needsFrame;
+    QString m_literal;
 };
 
 #endif // CELLTYPECHOOSER_H

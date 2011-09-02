@@ -61,11 +61,12 @@ enum CellTypeChooserType
     /* The LIKE keyword will get its own button */
     CELLTYPE_LIKE,          // The LIKE keyword
 
-    /* Special keywords - all these go below a button*/
+    /* Special keywords - all these go to their own button*/
     CELLTYPE_BINARY,        // BINARY (!!) This is MySQL specific?
     CELLTYPE_EXISTS,        // The EXISTS keyword
     CELLTYPE_IS,            // The IS keyword
     CELLTYPE_IN,            // The IN keyword
+    CELLTYPE_NOT_TEXT,      // The NOT keyword
 
     /* The functions from the database, they will have one button. Maybe the menu will be broken up like: most frequently used, mathematical, string, etc...*/
     CELLTYPE_FUNCTION,      // a function call
