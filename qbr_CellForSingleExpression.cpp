@@ -43,8 +43,9 @@ QGraphicsItemGroup* CellForSingleExpression::render(int &x, int &y, int &w, int 
         for(int i = 0; i<funcsAndOperators.size(); i++)
         {
             CellTypeChooser* bigTypeModifier = new CellTypeChooser(m_level, CellTypeChooser::CELLTYPECHOOSER_BIG, funcsAndOperators.at(i), QSet<CellTypeChooserType>(), m_helper, this, m_owner, i);
-            bigTypeModifier->setFunction(owner->getFunctionAt(i));  // these two might or might not set
+            bigTypeModifier->setFunction(owner->getFunctionAt(i));  // these might or might not set
             bigTypeModifier->setColumn(owner->getColumnAt(i));
+            bigTypeModifier->setLiteral(owner->getTypedInValueAt(i));
 
             {
             int localW = 0;
@@ -83,6 +84,7 @@ QGraphicsItemGroup* CellForSingleExpression::render(int &x, int &y, int &w, int 
             }
 
             grp->addToGroup(bigTypeModifier);
+            tx ++;
         }
 
         // the cursor after the expression

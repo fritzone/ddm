@@ -11,7 +11,7 @@
 #include <QDebug>
 
 SingleExpressionQueryComponent::SingleExpressionQueryComponent(QueryComponent* p, int l): WhereExpressionQueryComponent(p,l),
-    m_gritm(0), m_elements(), m_columnsAtGivenPosition(), m_functionsAtGivenPosition(), m_functionInstantiationAtGivenPosition()
+    m_gritm(0), m_elements(), m_columnsAtGivenPosition(), m_functionsAtGivenPosition(), m_functionInstantiationAtGivenPosition(), m_typedValuesAtGivenPosition()
 {
 }
 
@@ -44,7 +44,7 @@ QueryComponent* SingleExpressionQueryComponent::duplicate()
     return newc;
 }
 
-void SingleExpressionQueryComponent::shiftFunctionsToTheLeft(int after)
+void SingleExpressionQueryComponent::shiftElementsToTheLeft(int after)
 {
     for(int i=after+1; i<m_elements.size(); i++)
     {
@@ -65,6 +65,12 @@ void SingleExpressionQueryComponent::shiftFunctionsToTheLeft(int after)
             m_columnsAtGivenPosition.insert(i-1, m_columnsAtGivenPosition.value(i));
             m_columnsAtGivenPosition.remove(i);
         }
+
+        if(m_typedValuesAtGivenPosition.contains(i))
+        {
+            m_typedValuesAtGivenPosition.insert(i-1, m_typedValuesAtGivenPosition.value(i));
+            m_typedValuesAtGivenPosition.remove(i);
+        }
     }
 }
 
@@ -80,6 +86,11 @@ const Column* SingleExpressionQueryComponent::getColumnAt(int i)
     return 0;
 }
 
+const QString& SingleExpressionQueryComponent::getTypedInValueAt(int i)
+{
+    if(m_typedValuesAtGivenPosition.contains(i)) return m_typedValuesAtGivenPosition[i];
+    return "";
+}
 
 DatabaseFunctionInstantiationComponent* SingleExpressionQueryComponent::getFunctionInstantiationAt(int pos)
 {
@@ -111,7 +122,14 @@ void SingleExpressionQueryComponent::handleAction(const QString& action, QueryCo
     mappings[strCmpLessOrEqual] = CELLTYPE_LESS_OR_EQUAL;
     mappings[strCmpGreaterOrEqual] = CELLTYPE_GREATER_OR_EQUAL;
 
-    if(action.indexOf(strActionIndexSeparator)&& !action.startsWith(strRemove)&&!action.startsWith("@")&&!action.startsWith("#"))
+    mappings[strNotText] = CELLTYPE_NOT_TEXT;
+    mappings[strLike] = CELLTYPE_LIKE;
+    mappings[strIn] = CELLTYPE_IN;
+    mappings[strIs] = CELLTYPE_IS;
+    mappings[strBetween] = CELLTYPE_BETWEEN;
+    mappings[strExists] = CELLTYPE_EXISTS;
+
+    if(action.indexOf(strActionIndexSeparator)&& !action.startsWith(strRemove)&&!action.startsWith("@")&&!action.startsWith("#")&&!action.startsWith("$"))
     {
         QString pureAction = action.left(action.indexOf(strActionIndexSeparator));
         if(mappings.contains(pureAction))
@@ -129,6 +147,11 @@ void SingleExpressionQueryComponent::handleAction(const QString& action, QueryCo
                 {
                     m_columnsAtGivenPosition.remove(indx);
                 }
+
+                if(m_typedValuesAtGivenPosition.contains(indx)) // check if we overwrote a typed in value
+                {
+                    m_typedValuesAtGivenPosition.remove(indx);
+                }
             }
             else
             {
@@ -143,7 +166,7 @@ void SingleExpressionQueryComponent::handleAction(const QString& action, QueryCo
     {
         int idx = action.right(action.length() - 7).toInt(); // because actually REMOVE^xxx comes in
         m_elements.remove(idx);
-        shiftFunctionsToTheLeft(idx);
+        shiftElementsToTheLeft(idx);
         m_helper->triggerReRender();
         return;
     }
@@ -176,6 +199,12 @@ void SingleExpressionQueryComponent::handleAction(const QString& action, QueryCo
         if(m_columnsAtGivenPosition.contains(index))
         {
             m_columnsAtGivenPosition.remove(index);
+        }
+
+        // or a typed in value
+        if(m_typedValuesAtGivenPosition.contains(index))
+        {
+            m_typedValuesAtGivenPosition.remove(index);
         }
         m_helper->triggerReRender();
     }
@@ -210,8 +239,41 @@ void SingleExpressionQueryComponent::handleAction(const QString& action, QueryCo
             m_functionsAtGivenPosition.remove(index);
             m_functionInstantiationAtGivenPosition.remove(index);
         }
-
+        // or a typed in value
+        if(m_typedValuesAtGivenPosition.contains(index))
+        {
+            m_typedValuesAtGivenPosition.remove(index);
+        }
         m_helper->triggerReRender();
+    }
+
+    if(action.startsWith("$"))  // this is a typed in value
+    {
+        int t = action.lastIndexOf(strActionIndexSeparator);
+        QString typedText = action.mid(1, t-1);
+        QString sIdx = action.right(action.length() - t - 1);
+        int index = sIdx.toInt();
+        m_typedValuesAtGivenPosition[index] = typedText;
+        if(index < m_elements.size())   // let's see if we overwrote something
+        {
+            m_elements[index] = CELLTYPE_LITERAL;
+        }
+        else
+        {
+            m_elements.append(CELLTYPE_LITERAL);
+        }
+        if(m_functionsAtGivenPosition.find(index) != m_functionsAtGivenPosition.end())  // we had a function at this position
+        {
+            m_functionsAtGivenPosition.remove(index);
+            m_functionInstantiationAtGivenPosition.remove(index);
+        }
+        // let's see if we overwrote a column
+        if(m_columnsAtGivenPosition.contains(index))
+        {
+            m_columnsAtGivenPosition.remove(index);
+        }
+        m_helper->triggerReRender();
+
     }
 }
 
@@ -222,13 +284,5 @@ bool SingleExpressionQueryComponent::hasFunctionAtIndex(int i)
 
 QVector<CellTypeChooserType> SingleExpressionQueryComponent::getChoosableTypes() const
 {
-    QVector<CellTypeChooserType> allowedTypes;
-//    allowedTypes.append(CELLTYPE_NOTHING);
-//    allowedTypes.append(CELLTYPE_NEGATE);
-//    allowedTypes.append(CELLTYPE_MINUS);
-//    allowedTypes.append(CELLTYPE_NOT);
-//    allowedTypes.append(CELLTYPE_FUNCTION);
-//    allowedTypes.append(CELLTYPE_LITERAL);
-
-    return allowedTypes;
+    return QVector<CellTypeChooserType> ();
 }

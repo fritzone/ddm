@@ -36,19 +36,31 @@ public:
 
     bool hasFunctionAtIndex(int);
     const DatabaseBuiltinFunction* getFunctionAt(int i);
-    void shiftFunctionsToTheLeft(int after);
+    void shiftElementsToTheLeft(int after);
     const Column* getColumnAt(int i);
+    const QString& getTypedInValueAt(int i);
 
     DatabaseFunctionInstantiationComponent* getFunctionInstantiationAt(int);
 
 private:
+
+    // the graphic element
     CellForSingleExpression* m_gritm;
-    // the set of types that were activated with the corner cell type chooser (NOT, NEG, etc...)
+
+    // the list of elements that are in the expression
     QVector<CellTypeChooserType> m_elements;
+
+    // if at a given position there is a column, it is put in this map
     QMap<int, const Column*> m_columnsAtGivenPosition;
+
+    // if at a given position there is a function it is put in this map
     QMap<int, const DatabaseBuiltinFunction*> m_functionsAtGivenPosition;
+
+    // if at a given position there is a function then at the given position must be a function instantiation too
     QMap<int, DatabaseFunctionInstantiationComponent*> m_functionInstantiationAtGivenPosition;
 
+    // if at a given position there is a typed in value it is put in this map
+    QMap<int, QString> m_typedValuesAtGivenPosition;
 
 };
 

@@ -37,6 +37,13 @@ public slots:
     void onTxtInputKeyPress();
     void actionTriggered(QAction*);
     void pageRequested(int);
+    void btnLikeClicked();
+    void btnIsClicked();
+    void btnInClicked();
+    void btnBetweenClicked();
+    void btnExistsClicked();
+    void btnNotClicked();
+    void btnAcceptText();
 
 private:
     Ui::QueryItemListDialog *ui;
