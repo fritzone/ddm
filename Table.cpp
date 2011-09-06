@@ -418,9 +418,9 @@ void Table::prepareDiagramEntity()
     QGraphicsTextItem* txtName = new QGraphicsTextItem(getName(), grp);
     txtName->setPos(0,0);
     txtName->setToolTip(m_name);
-    int py = txtName->boundingRect().height();
-    int headerHeight = py;
-    int maxX = txtName->boundingRect().right();
+    qreal py = txtName->boundingRect().height();
+    qreal headerHeight = py;
+    qreal maxX = txtName->boundingRect().right();
     QStringList fullC = fullColumns();
     for(int i=0; i<fullC.size(); i++)
     {
@@ -454,7 +454,7 @@ void Table::prepareDiagramEntity()
     }
 
     maxX += 30;
-    int finMaxX = maxX;
+    qreal finMaxX = maxX;
     py = headerHeight;
 
     for(int i=0; i<fullC.size(); i++)

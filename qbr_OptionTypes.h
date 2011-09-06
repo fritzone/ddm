@@ -82,6 +82,9 @@ enum CellTypeChooserType
     CELLTYPE_CLOSE_PARANTHESES_FOR_FUNCTION_CALL,
     CELLTYPE_COMMA,
 
+    CELLTYPE_QUERY_OR,      // this goes in between queries: tab.col like 'asd' OR tab.col like 'bsd'
+    CELLTYPE_QUERY_AND,
+
     CELLTYPE_LAST
 
 };

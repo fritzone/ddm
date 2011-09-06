@@ -26,7 +26,7 @@ void SelectQueryWhereComponent::handleAction(const QString &action, QueryCompone
         SelectQuery* sq = dynamic_cast<SelectQuery*>(m_parent);
         if(sq)
         {
-            sq->newWhereExpression();
+            sq->newWhereExpression(SelectQuery::OR_NEW_WHERE_EXPRESSION);
         }
     }
 
@@ -35,7 +35,7 @@ void SelectQueryWhereComponent::handleAction(const QString &action, QueryCompone
         SelectQuery* sq = dynamic_cast<SelectQuery*>(m_parent);
         if(sq)
         {
-            sq->newWhereExpression();
+            sq->newWhereExpression(SelectQuery::AND_NEW_WHERE_EXPRESSION);
         }
     }
 }

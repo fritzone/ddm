@@ -16,6 +16,14 @@ class SelectQueryOrderByComponent;
 class SelectQuery : public Query
 {
 public:
+
+    enum NewWhereExpressionType
+    {
+        PLAIN_NEW_WHERE_EXPRESSION = 0,
+        OR_NEW_WHERE_EXPRESSION = 1,
+        AND_NEW_WHERE_EXPRESSION = 2
+    } ;
+
     SelectQuery(QueryGraphicsHelper*, int);
     virtual bool initializeGraphicsItem();
     virtual QueryGraphicsItem* createGraphicsItem(QueryGraphicsHelper*, QueryGraphicsItem*);
@@ -33,7 +41,7 @@ public:
     void newFromSelectQueryComponent();
     void duplicateFromsChild(QueryComponent*);
 
-    void newWhereExpression();
+    void newWhereExpression(SelectQuery::NewWhereExpressionType t = PLAIN_NEW_WHERE_EXPRESSION);
 
     void removeFrom();
     bool hasWhere();

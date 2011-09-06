@@ -144,6 +144,31 @@ QGraphicsItemGroup* CellTypeChooser::render(int& x, int& y, int& w, int &h)
         width += m_text->boundingRect().width();
         w += m_text->boundingRect().width();
         break;
+
+    case CELLTYPE_QUERY_OR:
+        m_text = new QGraphicsTextItem("OR", this);
+        theFont.setBold(true);
+        m_text->setFont(theFont);
+        m_text->setX(x + CELL_SIZE + 1);
+        m_text->setY(y - 4);
+        addToGroup(m_text);
+        width += m_text->boundingRect().width();
+        w += m_text->boundingRect().width();
+        m_needsFrame = false;
+        break;
+
+    case CELLTYPE_QUERY_AND:
+        m_text = new QGraphicsTextItem("AND", this);
+        theFont.setBold(true);
+        m_text->setFont(theFont);
+        m_text->setX(x + CELL_SIZE + 1);
+        m_text->setY(y - 4);
+        addToGroup(m_text);
+        width += m_text->boundingRect().width();
+        w += m_text->boundingRect().width();
+        m_needsFrame = false;
+        break;
+
     }
 
     if(typeIcon)
@@ -153,7 +178,7 @@ QGraphicsItemGroup* CellTypeChooser::render(int& x, int& y, int& w, int &h)
     }
 
     // parantheses do not take any user input... unless the user wants them
-    if(m_currentType == CELLTYPE_CLOSE_PARANTHESES_FOR_FUNCTION_CALL || m_currentType == CELLTYPE_OPEN_PARANTHESES_FOR_FUNCTION_CALL) return this;
+    if(m_currentType == CELLTYPE_CLOSE_PARANTHESES_FOR_FUNCTION_CALL || m_currentType == CELLTYPE_OPEN_PARANTHESES_FOR_FUNCTION_CALL || m_currentType == CELLTYPE_QUERY_AND || m_currentType == CELLTYPE_QUERY_OR ) return this;
 
     QRect r(x, y, width-1, size-1);
     m_helper->addNewHotCell(this, r);

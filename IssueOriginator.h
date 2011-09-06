@@ -16,6 +16,8 @@ class IssueOriginator : public NamedItem
 public:
     IssueOriginator(const QString& name) : NamedItem(name) {}
 
+    virtual ~IssueOriginator() {}
+
     virtual QString getFullLocation() const = 0;
 
     virtual Table* getIssueTable() const = 0;

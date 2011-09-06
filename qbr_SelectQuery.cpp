@@ -10,7 +10,7 @@
 #include "strings.h"
 #include "Workspace.h"
 #include "Version.h"
-#include "qbr_BinaryWhereExpressionQueryComponent.h"
+#include "qbr_SingleExpressionQueryComponent.h"
 #include "qbr_QueryAsGenerator.h"
 
 #include <QGraphicsScene>
@@ -62,15 +62,30 @@ bool SelectQuery::initializeGraphicsItem()
     return true;
 }
 
-void SelectQuery::newWhereExpression()
+void SelectQuery::newWhereExpression(SelectQuery::NewWhereExpressionType t)
 {
     if(m_where)
     {
         // for the beginning here create a Binary Expression, with both of the cells as being removable (this is the usually most used way of a where)
         // in case the user removes one of them, the expression will be translated to a UnaryExpression
-        WhereExpressionQueryComponent* c = new BinaryWhereExpressionQueryComponent(m_where, m_level);
-        dynamic_cast<BinaryWhereExpressionQueryComponent*>(c)->createSides();
-        m_where->addChild(c);
+        if(t == PLAIN_NEW_WHERE_EXPRESSION)
+        {
+            WhereExpressionQueryComponent* c = new SingleExpressionQueryComponent(m_where, m_level);
+            m_where->addChild(c);
+        }
+        if(t == OR_NEW_WHERE_EXPRESSION)
+        {
+            WhereExpressionQueryComponent* orc = new SingleExpressionQueryComponent(m_where, m_level);
+            dynamic_cast<SingleExpressionQueryComponent*>(orc)->setForcedType(SingleExpressionQueryComponent::FORCED_OR);
+            m_where->addChild(orc);
+        }
+        if(t == AND_NEW_WHERE_EXPRESSION)
+        {
+            WhereExpressionQueryComponent* andc = new SingleExpressionQueryComponent(m_where, m_level);
+            dynamic_cast<SingleExpressionQueryComponent*>(andc)->setForcedType(SingleExpressionQueryComponent::FORCED_AND);
+            m_where->addChild(andc);
+        }
+
         m_helper->triggerReRender();
     }
 }

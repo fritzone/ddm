@@ -11,7 +11,7 @@
 /**
  * Class representing a data type
  */
-class UserDataType : public DataType, virtual public TreeItem, public SerializableElement
+class UserDataType : virtual public TreeItem, public SerializableElement, public DataType
 {
 public:
 
@@ -25,7 +25,7 @@ public:
     unsignedDT(false), description(""), canBeNull(true), autoIncrement(false)
     {}
 
-    UserDataType(const UserDataType& other):DataType(other.name, other.type),
+    UserDataType(const UserDataType& other): TreeItem(), SerializableElement(), DataType(other.name, other.type),
     sqlType(other.sqlType), icon(other.icon), size(other.size),
     defaultValue(other.defaultValue), miscStuff(other.miscStuff),
     codePage(other.codePage),unsignedDT(other.unsignedDT),

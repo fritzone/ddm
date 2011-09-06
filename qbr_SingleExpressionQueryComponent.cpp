@@ -286,3 +286,16 @@ QVector<CellTypeChooserType> SingleExpressionQueryComponent::getChoosableTypes()
 {
     return QVector<CellTypeChooserType> ();
 }
+
+void SingleExpressionQueryComponent::setForcedType(ForcedSingleExpressionQueryComponent t)
+{
+    m_forcedType = t;
+    if(m_forcedType == FORCED_OR)
+    {
+        m_elements.append(CELLTYPE_QUERY_OR);
+    }
+    if(m_forcedType == FORCED_AND)
+    {
+        m_elements.append(CELLTYPE_QUERY_AND);
+    }
+}

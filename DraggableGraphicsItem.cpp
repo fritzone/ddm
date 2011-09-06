@@ -9,7 +9,7 @@
 QPixmap DraggableGraphicsViewItem::getDragImage()
 {
 
-    QPixmap result(boundingRect().width(), boundingRect().height());
+    QPixmap result((int) boundingRect().width(), (int) boundingRect().height());
     result.fill(Qt::blue);
 
     return result;
@@ -44,7 +44,7 @@ void DraggableGraphicsViewItem:: mousePressEvent ( QGraphicsSceneMouseEvent * ev
         }
     }
     dynamic_cast<ERGraphicsScene*>(this->scene())->setDraggedItem(this);
-    dynamic_cast<ERGraphicsScene*>(this->scene())->setStartDragPos(event->pos().x(), event->pos().y());
+    dynamic_cast<ERGraphicsScene*>(this->scene())->setStartDragPos((int) event->pos().x(), (int) event->pos().y());
     event->accept();
 }
 

@@ -18,6 +18,13 @@ class Column;
 class SingleExpressionQueryComponent : public WhereExpressionQueryComponent
 {
 public:
+
+    enum ForcedSingleExpressionQueryComponent
+    {
+        FORCED_OR = 0,
+        FORCED_AND = 1
+    };
+
     SingleExpressionQueryComponent(QueryComponent*,int);
     virtual QString get();
     virtual QueryGraphicsItem* createGraphicsItem(QueryGraphicsHelper*, QueryGraphicsItem*);
@@ -27,7 +34,7 @@ public:
 
     virtual QueryComponent* duplicate();
 
-    virtual QVector<CellTypeChooserType> getFunctionsAndOperators() const
+    virtual QVector<CellTypeChooserType> getElements() const
     {
         return m_elements;
     }
@@ -41,6 +48,7 @@ public:
     const QString& getTypedInValueAt(int i);
 
     DatabaseFunctionInstantiationComponent* getFunctionInstantiationAt(int);
+    void setForcedType(ForcedSingleExpressionQueryComponent);
 
 private:
 
@@ -61,6 +69,8 @@ private:
 
     // if at a given position there is a typed in value it is put in this map
     QMap<int, QString> m_typedValuesAtGivenPosition;
+
+    ForcedSingleExpressionQueryComponent m_forcedType;
 
 };
 

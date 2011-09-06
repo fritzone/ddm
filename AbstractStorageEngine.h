@@ -8,6 +8,8 @@ class AbstractStorageEngine
 public:
     AbstractStorageEngine();
 
+    virtual ~AbstractStorageEngine() {}
+
     virtual bool supportsGeospatialDataType() = 0;
 
     virtual bool supportsIndexOnGeospatialDataType() = 0;

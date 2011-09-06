@@ -89,8 +89,6 @@ SOURCES += main.cpp \
     qbr_CellAsCommand.cpp \
     qbr_CellClose.cpp \
     qbr_CellCommand.cpp \
-    qbr_BinaryWhereExpressionQueryComponent.cpp \
-    qbr_CellForBinaryWhereExpression.cpp \
     qbr_CellFromCommand.cpp \
     qbr_CellGroupByCommand.cpp \
     qbr_CellJoinCommand.cpp \
@@ -221,11 +219,9 @@ HEADERS += MainWindow.h \
     qbr_WhereExpressionQueryComponent.h \
     qbr_DatabaseFunctionInstantiationComponent.h \
     qbr_CellForSingleExpression.h \
-    qbr_qbr_CellAsCommand.h \
-    qbr_qbr_CellClose.h \
-    qbr_qbr_CellCommand.h \
-    qbr_BinaryWhereExpressionQueryComponent.h \
-    qbr_CellForBinaryWhereExpression.h \
+    qbr_CellAsCommand.h \
+    qbr_CellClose.h \
+    qbr_CellCommand.h \
     qbr_CellFromCommand.h \
     qbr_CellGroupByCommand.h \
     qbr_CellJoinCommand.h \

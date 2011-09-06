@@ -28,12 +28,12 @@ QGraphicsItemGroup* TableGraphicsItem::render(int &x, int &y, int& w, int &h)
         int halfway = (oldy + y) / 2 - 5;
         if(w<neww-20) {w = neww - 20; lmw = neww - 20;}
 
-        QGraphicsLineItem* l1 = new QGraphicsLineItem(x +5+2-CHILDREN_ALIGNMENT , oldy+1, x + 5+2-CHILDREN_ALIGNMENT, halfway , this);  // top
+        new QGraphicsLineItem(x +5+2-CHILDREN_ALIGNMENT , oldy+1, x + 5+2-CHILDREN_ALIGNMENT, halfway , this);  // top
         if(m_join)
         {
-            QGraphicsLineItem* l2 = new QGraphicsLineItem(x +5+2-CHILDREN_ALIGNMENT , halfway +10, x + 5+2-CHILDREN_ALIGNMENT, y, this);   // botton
+            new QGraphicsLineItem(x +5+2-CHILDREN_ALIGNMENT , halfway +10, x + 5+2-CHILDREN_ALIGNMENT, y, this);   // botton
         }
-        QGraphicsLineItem* l3 = new QGraphicsLineItem(x +5+2-CHILDREN_ALIGNMENT +5 , halfway+5, x + 1, halfway+5, this);                    // to right
+        new QGraphicsLineItem(x +5+2-CHILDREN_ALIGNMENT +5 , halfway+5, x + 1, halfway+5, this);                    // to right
 
         // this will be the small options box before the items
         QSet<OptionsType> t;
@@ -61,8 +61,8 @@ QGraphicsItemGroup* TableGraphicsItem::render(int &x, int &y, int& w, int &h)
         int halfway = (oldy + 17);
         if(w<neww-20) {w = neww - 20; lmw = neww - 20;}
 
-        QGraphicsLineItem* l1 = new QGraphicsLineItem(x +5+2-CHILDREN_ALIGNMENT , oldy+1, x + 5+2-CHILDREN_ALIGNMENT, halfway , this);  // top
-        QGraphicsLineItem* l3 = new QGraphicsLineItem(x +5+2-CHILDREN_ALIGNMENT +5 , halfway+5, x + 1, halfway+5, this);                    // to right
+        new QGraphicsLineItem(x +5+2-CHILDREN_ALIGNMENT , oldy+1, x + 5+2-CHILDREN_ALIGNMENT, halfway , this);  // top
+        new QGraphicsLineItem(x +5+2-CHILDREN_ALIGNMENT +5 , halfway+5, x + 1, halfway+5, this);                    // to right
 
         // this will be the small options box before the items
         QSet<OptionsType> t;
@@ -72,7 +72,7 @@ QGraphicsItemGroup* TableGraphicsItem::render(int &x, int &y, int& w, int &h)
         CellQuerySmallOptionsBox* smb = new CellQuerySmallOptionsBox(t, m_helper, m_join->getLevel(), m_parent, m_join->getOwner(), CellQuerySmallOptionsBox::SHAPE_DIAMOND);
         int tx = x-15 + 2; int ty = halfway; int tw = w; int th = h;
         addToGroup(smb->render(tx, ty, tw, th));
-        QGraphicsLineItem* l2 = new QGraphicsLineItem(x +5+2-CHILDREN_ALIGNMENT , halfway +10, x + 5+2-CHILDREN_ALIGNMENT, y, this);   // botton
+        new QGraphicsLineItem(x +5+2-CHILDREN_ALIGNMENT , halfway +10, x + 5+2-CHILDREN_ALIGNMENT, y, this);   // botton
 
         x -= CHILDREN_ALIGNMENT;
         w = w<lmw?lmw:w;
@@ -89,8 +89,8 @@ QGraphicsItemGroup* TableGraphicsItem::render(int &x, int &y, int& w, int &h)
         int halfway = (oldy + 17);
         if(w<neww-20) {w = neww - 20; lmw = neww - 20;}
 
-        QGraphicsLineItem* l1 = new QGraphicsLineItem(x +5+2-CHILDREN_ALIGNMENT , oldy+1, x + 5+2-CHILDREN_ALIGNMENT, halfway , this);  // top
-        QGraphicsLineItem* l3 = new QGraphicsLineItem(x +5+2-CHILDREN_ALIGNMENT +5 , halfway+5, x + 1, halfway+5, this);                    // to right
+        new QGraphicsLineItem(x +5+2-CHILDREN_ALIGNMENT , oldy+1, x + 5+2-CHILDREN_ALIGNMENT, halfway , this);  // top
+        new QGraphicsLineItem(x +5+2-CHILDREN_ALIGNMENT +5 , halfway+5, x + 1, halfway+5, this);                    // to right
 
         // this will be the small options box before the items
         QSet<OptionsType> t;
