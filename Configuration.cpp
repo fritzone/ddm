@@ -91,7 +91,7 @@ void Configuration::readFromFile()
 
 }
 
-bool Configuration::operator [](const QString& option)
+bool Configuration::operator [](const QString&)
 {
     return false;
 }

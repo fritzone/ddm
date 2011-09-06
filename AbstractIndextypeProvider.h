@@ -10,6 +10,7 @@ class AbstractIndextypeProvider
 {
 public:
     AbstractIndextypeProvider();
+    virtual ~AbstractIndextypeProvider(){}
     virtual QStringList getIndexTypes() = 0;
     virtual QString getDefaultIndextype() = 0;
 

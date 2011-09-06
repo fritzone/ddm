@@ -38,11 +38,11 @@ QGraphicsItemGroup* CellForSingleExpression::render(int &x, int &y, int &w, int 
     if(SingleExpressionQueryComponent* owner = dynamic_cast<SingleExpressionQueryComponent*>(m_owner))
     {
         int tx = x + 2; // this holds where we are putting the next cell type chooser
-
-        QVector<CellTypeChooserType> funcsAndOperators = owner->getFunctionsAndOperators();
-        for(int i = 0; i<funcsAndOperators.size(); i++)
+        int i = 0;
+        QVector<CellTypeChooserType> elements = owner->getElements();
+        for(i = 0; i<elements.size(); i++)
         {
-            CellTypeChooser* bigTypeModifier = new CellTypeChooser(m_level, CellTypeChooser::CELLTYPECHOOSER_BIG, funcsAndOperators.at(i), QSet<CellTypeChooserType>(), m_helper, this, m_owner, i);
+            CellTypeChooser* bigTypeModifier = new CellTypeChooser(m_level, CellTypeChooser::CELLTYPECHOOSER_BIG, elements.at(i), QSet<CellTypeChooserType>(), m_helper, this, m_owner, i);
             bigTypeModifier->setFunction(owner->getFunctionAt(i));  // these might or might not set
             bigTypeModifier->setColumn(owner->getColumnAt(i));
             bigTypeModifier->setLiteral(owner->getTypedInValueAt(i));
@@ -87,21 +87,22 @@ QGraphicsItemGroup* CellForSingleExpression::render(int &x, int &y, int &w, int 
             tx ++;
         }
 
-        // the cursor after the expression
-        CellTypeChooser* cursor = new CellTypeChooser(m_level, CellTypeChooser::CELLTYPECHOOSER_BIG, CELLTYPE_CURSOR, QSet<CellTypeChooserType>(), m_helper, this, m_owner, funcsAndOperators.size());
+        // the cursor after the expression, but only if the last element is not a QUERY OR aor a QUERY AND
+        if(elements.size() == 0 || (elements.at(i-1) != CELLTYPE_QUERY_OR && elements.at(i-1) != CELLTYPE_QUERY_AND))
         {
-        int localW = 0;
-        grp->addToGroup(cursor->render(tx, cy, localW, h));
-        tx += localW;
+            CellTypeChooser* cursor = new CellTypeChooser(m_level, CellTypeChooser::CELLTYPECHOOSER_BIG, CELLTYPE_CURSOR, QSet<CellTypeChooserType>(), m_helper, this, m_owner, elements.size());
+            {
+            int localW = 0;
+            grp->addToGroup(cursor->render(tx, cy, localW, h));
+            tx += localW;
+            }
+            sw += tx - x;
         }
-        sw += tx - x;
 
     }
 
     w = sw;
-    if(m_level != -2) y += CELL_SIZE*2;
-    h += y - cy - 2;
-
+    if(m_level != -2) y += m_frame->boundingRect().height() + 4;
     m_saveW = w;
     w = saveW>0?saveW:w;
     return grp;

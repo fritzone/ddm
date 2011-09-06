@@ -8,6 +8,7 @@ class AbstractStorageEngineListProvider
 {
 public:
     AbstractStorageEngineListProvider();
+    virtual ~AbstractStorageEngineListProvider(){}
 
     virtual QVector<AbstractStorageEngine*> getStorageEngines() = 0;
 };
