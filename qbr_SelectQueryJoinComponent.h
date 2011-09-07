@@ -4,6 +4,8 @@
 #include "qbr_QueryComponents.h"
 #include "qbr_QueryGraphicsHelper.h"
 
+class WhereExpressionQueryComponent;
+
 class SelectQueryJoinComponent : public QueryComponent
 {
 public:
@@ -22,6 +24,7 @@ public:
     void setHelper(QueryGraphicsHelper* h) {m_helper = h;}
 private:
     QueryGraphicsHelper* m_helper;
+    QVector<WhereExpressionQueryComponent*> m_joinExpressions;
 };
 
 #endif // SELECTQUERYJOINCOMPONENT_H

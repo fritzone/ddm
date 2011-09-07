@@ -79,7 +79,6 @@ SOURCES += main.cpp \
     ForeignKeyReccomendationIssue.cpp \
     NewViewForm.cpp \
     TableGraphicsItem.cpp \
-    TableQueryComponent.cpp \
     MainWindow.cpp \
     NewDataTypeForm.cpp \
     NewProjectDialog.cpp \
@@ -116,7 +115,8 @@ SOURCES += main.cpp \
     qbr_QueryGraphicsScene.cpp \
     qbr_QueryGraphicsView.cpp \
     qbr_QueryItemListDialog.cpp \
-    qbr_QueryTextInputItem.cpp
+    qbr_QueryTextInputItem.cpp \
+    qbr_TableQueryComponent.cpp
 HEADERS += MainWindow.h \
     MainWindowButtonDialog.h \
     NewProjectDialog.h \
@@ -210,7 +210,6 @@ HEADERS += MainWindow.h \
     ForeignKeyReccomendationIssue.h \
     NewViewForm.h \
     TableGraphicsItem.h \
-    TableQueryComponent.h \
     utils.h \
     ColumnProviderForQuery.h \
     DatabaseBuiltinFunction.h \
@@ -250,7 +249,8 @@ HEADERS += MainWindow.h \
     qbr_QueryGraphicsScene.h \
     qbr_QueryGraphicsView.h \
     qbr_QueryItemListDialog.h \
-    qbr_QueryTextInputItem.h
+    qbr_QueryTextInputItem.h \
+    qbr_TableQueryComponent.h
 FORMS += MainWindow.ui \
     MainWindowButtonDialog.ui \
     NewProjectDialog.ui \
