@@ -32,7 +32,7 @@ public:
     virtual QVector<const Column*> provideColumns();
 
     void removeAs();
-    void removeJoin();
+    void removeJoin(SelectQueryJoinComponent*);
     void setTable(const QString& tab);
     const Table* getTable() const
     {
