@@ -23,6 +23,24 @@ void SelectQueryJoinComponent::handleAction(const QString& action, QueryComponen
     {
         WhereExpressionQueryComponent* c = new SingleExpressionQueryComponent(this, m_level);
         m_joinExpressions.append(c);
+        m_helper->triggerReRender();
+        return;
+    }
+    if(action == ADD_WHERE_EXPRESSION_AND)
+    {
+        WhereExpressionQueryComponent* c = new SingleExpressionQueryComponent(this, m_level);
+        dynamic_cast<SingleExpressionQueryComponent*>(c)->setForcedType(SingleExpressionQueryComponent::FORCED_AND);
+        m_joinExpressions.append(c);
+        m_helper->triggerReRender();
+        return;
+    }
+    if(action == ADD_WHERE_EXPRESSION_OR)
+    {
+        WhereExpressionQueryComponent* c = new SingleExpressionQueryComponent(this, m_level);
+        dynamic_cast<SingleExpressionQueryComponent*>(c)->setForcedType(SingleExpressionQueryComponent::FORCED_OR);
+        m_joinExpressions.append(c);
+        m_helper->triggerReRender();
+        return;
     }
 
 }
@@ -47,6 +65,14 @@ void SelectQueryJoinComponent::onClose()
 QueryComponent* SelectQueryJoinComponent::duplicate()
 {
     SelectQueryJoinComponent* newc = new SelectQueryJoinComponent(m_parent, m_level);
-    // TODO: Duplicate the join expressions vector
+    for(int i=0; i<m_joinExpressions.size(); i++)
+    {
+        newc->m_joinExpressions.append(dynamic_cast<WhereExpressionQueryComponent*>(m_joinExpressions.at(i)->duplicate()));
+    }
     return newc;
+}
+
+void SelectQueryJoinComponent::removeExpression(WhereExpressionQueryComponent *w)
+{
+    m_joinExpressions.remove(m_joinExpressions.indexOf(w));
 }

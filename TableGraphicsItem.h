@@ -25,14 +25,14 @@ public:
 
     virtual void onClose(){}
     void setAs(CellAsCommand* as);
-    void setJoin(CellJoinCommand* join, CellWhereCommand* on);
+    void addJoin(CellJoinCommand* join, CellWhereCommand* on);
 
 private:
     Table* m_table;
     CellTable* m_tableCell;
     CellAsCommand* m_as;
-    CellJoinCommand* m_join;
-    CellWhereCommand* m_on;
+    QVector<CellJoinCommand*> m_joins;
+    QVector<CellWhereCommand*> m_ons;
 };
 
 #endif // TABLEGRAPHICSITEM_H

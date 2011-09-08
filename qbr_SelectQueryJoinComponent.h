@@ -16,12 +16,20 @@ public:
     virtual QSet<OptionsType> provideOptions();
     virtual void onClose();
     virtual QueryComponent* duplicate();
+
     virtual QVector<CellTypeChooserType>  getTypeset() const
     {
         return QVector<CellTypeChooserType> ();
     }
 
+    const QVector<WhereExpressionQueryComponent*>& getJoinExpresions() const
+    {
+        return m_joinExpressions;
+    }
+
     void setHelper(QueryGraphicsHelper* h) {m_helper = h;}
+    void removeExpression(WhereExpressionQueryComponent*);
+
 private:
     QueryGraphicsHelper* m_helper;
     QVector<WhereExpressionQueryComponent*> m_joinExpressions;

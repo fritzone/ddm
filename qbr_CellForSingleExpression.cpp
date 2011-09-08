@@ -30,7 +30,7 @@ QGraphicsItemGroup* CellForSingleExpression::render(int &x, int &y, int &w, int 
         m_frame->setBrush(QBrush(Qt::white));
 
         m_close = new CellClose(m_level, m_helper, this, m_owner);
-        m_close->render(cx, cy, w, h);
+        m_close->render(cx, y, w, h);
         grp->addToGroup(m_close);
         m_close->setZValue(2);
     }
@@ -119,6 +119,11 @@ void CellForSingleExpression::updateWidth(int newWidth)
 
     if(m_close)
     {
-        m_close->updateWidth(m_saveW + (m_level)*CELL_SIZE + 3);//m_frame->boundingRect().right() - (m_level+1)*CELL_SIZE);
+        m_close->updateWidth(m_frame->rect().right() - 20); //m_saveW + (m_level)*CELL_SIZE + 3);
     }
+}
+
+void CellForSingleExpression::onClose()
+{
+    m_owner->onClose();
 }

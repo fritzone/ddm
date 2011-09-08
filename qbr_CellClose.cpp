@@ -2,6 +2,7 @@
 #include "IconFactory.h"
 #include "qbr_QueryGraphicsScene.h"
 #include "qbr_CellCommand.h"
+#include "qbr_CellForSingleExpression.h"
 
 CellClose::CellClose(int level, QueryGraphicsHelper* c, QueryGraphicsItem* parent, QueryComponent* owner):
         QueryGraphicsItem(level, parent, c, owner),
@@ -28,17 +29,19 @@ void CellClose::updateWidth(int newWidth)
     QRect br = boundingRect().toRect();
     placedAtX = newWidth - CELL_SIZE;
     int depl = 8;
-    if(dynamic_cast<CellCommand*>(m_parent))
+    if(dynamic_cast<CellCommand*>(m_parent) || dynamic_cast<CellForSingleExpression*>(m_parent))
     {
         setX(placedAtX);
+        QRect newLocation(placedAtX + CELL_SIZE + depl, placedAtY, CELL_SIZE, CELL_SIZE);    // why the + ???
+        m_helper->addNewHotCell(this, newLocation);
     }
     else
     {
         setX(placedAtX);
+        QRect newLocation(placedAtX + CELL_SIZE , placedAtY, CELL_SIZE, CELL_SIZE);    // why the + ???
+        m_helper->addNewHotCell(this, newLocation);
     }
     QRect br2 = boundingRect().toRect();
-    QRect newLocation(placedAtX + CELL_SIZE + depl, placedAtY, CELL_SIZE, CELL_SIZE);    // why the + ???
-    m_helper->addNewHotCell(this, newLocation);
 }
 
 void CellClose::mouseMove(int x, int y)
