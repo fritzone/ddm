@@ -10,12 +10,14 @@
 #include "qbr_CellAsCommand.h"
 #include "qbr_CellJoinCommand.h"
 #include "qbr_CellWhereCommand.h"
+#include "qbr_WhereExpressionQueryComponent.h"
 #include "Column.h"
+#include "qbr_SingleExpressionQueryComponent.h"
 
 #include <QGraphicsScene>
 #include <QGraphicsView>
 
-TableQueryComponent::TableQueryComponent(Table* tab, QueryComponent* p, int level):QueryComponent(p, level), m_table(tab), m_as(0), m_join(0)
+TableQueryComponent::TableQueryComponent(Table* tab, QueryComponent* p, int level):QueryComponent(p, level), m_table(tab), m_as(0), m_joins()
 {
 }
 
@@ -32,16 +34,22 @@ QueryGraphicsItem* TableQueryComponent::createGraphicsItem(QueryGraphicsHelper* 
     {
         m_tgitm->setAs(new CellAsCommand(helper, m_level + 1, m_tgitm, m_as, true));
     }
-    if(m_join)
+    for(int i=0; i<m_joins.size(); i++)
     {
-        CellJoinCommand* joinCommand = new CellJoinCommand(helper, m_level + 1, m_tgitm, m_join);
-        CellWhereCommand* on = new CellWhereCommand(helper, m_level + 1, m_tgitm, m_join, SelectQueryWhereComponent::WHERETYPE_ON);
-        for(int i=0; i<m_join->getChildren().size(); i++)
+        CellJoinCommand* joinCommand = new CellJoinCommand(helper, m_level + 1, m_tgitm, m_joins.at(i));
+        CellWhereCommand* on = new CellWhereCommand(helper, m_level + 1, m_tgitm, m_joins.at(i), SelectQueryWhereComponent::WHERETYPE_ON);
+        for(int j=0; j<m_joins.at(i)->getChildren().size(); j++)
         {
-            QueryGraphicsItem* gritm = m_join->getChildren().at(i)->createGraphicsItem(helper, joinCommand);
+            QueryGraphicsItem* gritm = m_joins.at(i)->getChildren().at(j)->createGraphicsItem(helper, joinCommand);
             joinCommand->addChild(gritm);
         }
-        m_tgitm->setJoin(joinCommand, on);
+        for(int j=0; j<m_joins.at(i)->getJoinExpresions().size(); j++)
+        {
+            QueryGraphicsItem* gritm = m_joins.at(i)->getJoinExpresions().at(j)->createGraphicsItem(helper, on);
+            dynamic_cast<SingleExpressionQueryComponent*> (m_joins.at(i)->getJoinExpresions().at(j))->setOwnedByOn(m_joins.at(i), m_joins.at(i)->getJoinExpresions().at(j));
+            on->addChild(gritm);
+        }
+        m_tgitm->addJoin(joinCommand, on);
     }
     return m_tgitm;
 }
@@ -63,18 +71,15 @@ void TableQueryComponent::handleAction(const QString &action, QueryComponent *re
         }
         return;
     }
-    // TODO: add support for multiple joins and also join expressions ...
-    intentionally does not compile so that I know from where to continue
 
     if(action == ADD_JOIN)
     {
-        if(m_join == 0)
-        {
-            m_join = new SelectQueryJoinComponent(this, m_level + 1);
-            m_join->setHelper(m_helper);
-            addChild(m_join);
-            m_helper->triggerReRender();
-        }
+        SelectQueryJoinComponent* join = new SelectQueryJoinComponent(this, m_level + 1);
+        join->setHelper(m_helper);
+        addChild(join);
+        m_joins.append(join);
+        m_helper->triggerReRender();
+
         return;
     }
     m_parent->handleAction(action, this);
@@ -84,6 +89,12 @@ QueryComponent* TableQueryComponent::duplicate()
 {
     TableQueryComponent* newc = new TableQueryComponent(m_table, m_parent, m_level);
     newc->m_as = m_as?dynamic_cast<SelectQueryAsComponent*>(m_as->duplicate()):0;
+    // Joins do not duplicate for now
+    //for(int i=0; i<m_joins.size(); i++)
+    //{
+    //    SelectQueryJoinComponent* jI = dynamic_cast<SelectQueryJoinComponent*>(m_joins.at(i)->duplicate());
+    //    newc->m_joins.append(jI);
+    //}
 
     return newc;
 }
@@ -102,9 +113,10 @@ void TableQueryComponent::removeAs()
     m_helper->triggerReRender();
 }
 
-void TableQueryComponent::removeJoin(SelectQueryJoinComponent*)
+void TableQueryComponent::removeJoin(SelectQueryJoinComponent* j)
 {
-    m_join = 0;
+    int idx = m_joins.indexOf(j);
+    m_joins.remove(idx);
     m_helper->triggerReRender();
 }
 

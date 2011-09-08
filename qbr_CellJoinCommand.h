@@ -26,8 +26,6 @@ public:
     virtual bool hasTypeChooser() {return true;}
     QGraphicsItemGroup* render(int& x, int& y, int& w, int &h);
     virtual CellQuerySmallOptionsBox* provideOptionsBox(QueryGraphicsHelper* c, int level, QueryGraphicsItem* parent, QueryComponent* owner);
-private:
-    CellTypeChooser* m_chooser;
 };
 
 #endif // CELLJOINCOMMAND_H

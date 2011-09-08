@@ -44,7 +44,7 @@ private:
     SelectQueryAsComponent* m_as;
     QueryGraphicsHelper* m_helper;
     TableGraphicsItem* m_tgitm;
-    SelectQueryJoinComponent* m_join;
+    QVector<SelectQueryJoinComponent*> m_joins;
 };
 
 #endif // TABLEQUERYCOMPONENT_H

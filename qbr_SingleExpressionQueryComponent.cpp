@@ -7,6 +7,8 @@
 #include "Table.h"
 #include "Column.h"
 #include "Version.h"
+#include "qbr_SelectQueryJoinComponent.h"
+#include "qbr_WhereExpressionQueryComponent.h"
 
 #include <QDebug>
 
@@ -298,4 +300,19 @@ void SingleExpressionQueryComponent::setForcedType(ForcedSingleExpressionQueryCo
     {
         m_elements.append(CELLTYPE_QUERY_AND);
     }
+}
+
+void SingleExpressionQueryComponent::removeFromOn()
+{
+    m_onOwner->removeExpression(m_onComponent);
+}
+
+void SingleExpressionQueryComponent::onClose()
+{
+    m_parent->removeChild(this);
+    if(m_ownedByOn)
+    {
+        removeFromOn();
+    }
+    m_helper->triggerReRender();
 }

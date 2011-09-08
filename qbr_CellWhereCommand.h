@@ -35,6 +35,10 @@ public:
     virtual CellQuerySmallOptionsBox* provideOptionsBox(QueryGraphicsHelper* c, int level, QueryGraphicsItem* parent, QueryComponent* owner);
     virtual void onClose();
     virtual bool hasTypeChooser() {return false;}
+    SelectQueryWhereComponent::WhereType getType() const
+    {
+        return m_whereType;
+    }
 
 private:
     SelectQueryWhereComponent::WhereType m_whereType;

@@ -17,7 +17,7 @@ public:
     virtual void mousePress(int x, int y){}
     virtual void mouseMove(int x, int y){}
     virtual void mouseLeft(int x, int y){}
-    virtual void onClose(){}
+    virtual void onClose();
 private:
     void newElement();
 private:

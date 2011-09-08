@@ -10,6 +10,7 @@ class CellTypeChooser;
 class DatabaseFunctionInstantiationComponent;
 class DatabaseBuiltinFunction;
 class Column;
+class SelectQueryJoinComponent;
 
 /**
  * Class, representing a unary where expression.
@@ -30,7 +31,7 @@ public:
     virtual QueryGraphicsItem* createGraphicsItem(QueryGraphicsHelper*, QueryGraphicsItem*);
     virtual void handleAction(const QString& action, QueryComponent* referringObject);
     virtual QSet<OptionsType> provideOptions();
-    virtual void onClose(){}
+    virtual void onClose();
 
     virtual QueryComponent* duplicate();
 
@@ -49,6 +50,15 @@ public:
 
     DatabaseFunctionInstantiationComponent* getFunctionInstantiationAt(int);
     void setForcedType(ForcedSingleExpressionQueryComponent);
+
+    void setOwnedByOn(SelectQueryJoinComponent* onOwner, WhereExpressionQueryComponent* onComponent)
+    {
+        m_ownedByOn = true;
+        m_onOwner = onOwner;
+        m_onComponent = onComponent;
+    }
+
+    void removeFromOn();
 
 private:
 
@@ -71,6 +81,11 @@ private:
     QMap<int, QString> m_typedValuesAtGivenPosition;
 
     ForcedSingleExpressionQueryComponent m_forcedType;
+
+    // true if this is owned by an ON query component, in this case
+    bool m_ownedByOn;
+    SelectQueryJoinComponent* m_onOwner;
+    WhereExpressionQueryComponent* m_onComponent;
 
 };
 

@@ -1,6 +1,6 @@
 #include "qbr_SelectQuery.h"
 #include "qbr_QueryComponents.h"
-#include "TableQueryComponent.h"
+#include "qbr_TableQueryComponent.h"
 #include "qbr_SelectQueryFromComponent.h"
 #include "qbr_SelectQuerySelectComponent.h"
 #include "qbr_SelectQueryWhereComponent.h"
