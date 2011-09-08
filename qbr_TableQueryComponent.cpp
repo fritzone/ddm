@@ -1,7 +1,7 @@
 #include "qbr_TableQueryComponent.h"
 #include "Table.h"
 #include "TableInstance.h"
-#include "TableGraphicsItem.h"
+#include "qbr_TableGraphicsItem.h"
 #include "Workspace.h"
 #include "Version.h"
 #include "strings.h"

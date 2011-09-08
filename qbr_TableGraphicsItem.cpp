@@ -1,4 +1,4 @@
-#include "TableGraphicsItem.h"
+#include "qbr_TableGraphicsItem.h"
 #include "Table.h"
 #include "qbr_CellTable.h"
 #include "qbr_CellQuerySmallOptionsBox.h"
