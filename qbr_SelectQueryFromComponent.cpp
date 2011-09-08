@@ -4,7 +4,7 @@
 #include "Workspace.h"
 #include "Version.h"
 #include "Table.h"
-#include "TableQueryComponent.h"
+#include "qbr_TableQueryComponent.h"
 
 SelectQueryFromComponent::SelectQueryFromComponent(QueryComponent* p, int l):QueryComponent(p,l)
 {

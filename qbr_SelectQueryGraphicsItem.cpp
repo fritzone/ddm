@@ -3,7 +3,7 @@
 #include "qbr_CellWhereCommand.h"
 #include "qbr_CellFromCommand.h"
 #include "qbr_CellGroupByCommand.h"
-#include "TableGraphicsItem.h"
+#include "qbr_TableGraphicsItem.h"
 #include "qbr_CellAsCommand.h"
 #include "qbr_CellOrderByCommand.h"
 #include "qbr_CellQuerySmallOptionsBox.h"

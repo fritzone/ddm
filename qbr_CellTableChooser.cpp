@@ -1,6 +1,6 @@
 #include "qbr_CellTableChooser.h"
 #include "qbr_QueryGraphicsScene.h"
-#include "TableQueryComponent.h"
+#include "qbr_TableQueryComponent.h"
 
 #include <QBrush>
 #include <QFont>

@@ -1,6 +1,6 @@
 #include "qbr_SelectQueryAsComponent.h"
 #include "qbr_QueryAsGenerator.h"
-#include "TableQueryComponent.h"
+#include "qbr_TableQueryComponent.h"
 
 SelectQueryAsComponent::SelectQueryAsComponent(QueryComponent* p, int l):QueryComponent(p,l)
 {
