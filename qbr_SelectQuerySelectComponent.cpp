@@ -7,6 +7,7 @@ SelectQuerySelectComponent::SelectQuerySelectComponent(QueryComponent* p, int l)
 QSet<OptionsType> SelectQuerySelectComponent::provideOptions()
 {
     QSet<OptionsType> t;
+    t.insert(OPTIONS_NEW_WHERE_EXPR);
     return t;
 }
 
@@ -22,4 +23,9 @@ QueryComponent* SelectQuerySelectComponent::duplicate()
 {
     SelectQuerySelectComponent* newc = new SelectQuerySelectComponent(m_parent, m_level);
     return newc;
+}
+
+void SelectQuerySelectComponent::handleAction(const QString& action, QueryComponent* referringObject)
+{
+
 }
