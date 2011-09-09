@@ -20,7 +20,7 @@ QueryItemListDialog::QueryItemListDialog(QueryGraphicsHelper* helper, QueryGraph
     ui->setupUi(this);
 
     ui->txtInput->hide();
-    ui->grpExpressionButtons->hide();
+    ui->frameButtonBox->hide();
 
     switch(t)
     {
@@ -63,7 +63,7 @@ QueryItemListDialog::QueryItemListDialog(QueryGraphicsHelper* helper, QStringLis
 {
     ui->setupUi(this);
     ui->txtInput->hide();
-    ui->grpExpressionButtons->hide();
+    ui->frameButtonBox->hide();
 
     for(int i=0; i<lst.size(); i++)
     {
@@ -96,7 +96,7 @@ void QueryItemListDialog::showSymbolPanel()
 {
     ui->txtInput->hide();
     ui->lstValues->hide();
-    ui->grpExpressionButtons->show();
+    ui->frameButtonBox->show();
 
     m_mathMenu = new QMenu(this);
     m_bitMenu = new QMenu(this);
