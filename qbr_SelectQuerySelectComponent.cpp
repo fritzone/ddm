@@ -1,4 +1,6 @@
 #include "qbr_SelectQuerySelectComponent.h"
+#include "qbr_SelectQuery.h"
+#include "strings.h"
 
 SelectQuerySelectComponent::SelectQuerySelectComponent(QueryComponent* p, int l) : QueryComponent(p,l)
 {
@@ -27,5 +29,13 @@ QueryComponent* SelectQuerySelectComponent::duplicate()
 
 void SelectQuerySelectComponent::handleAction(const QString& action, QueryComponent* referringObject)
 {
+    if(action == ADD_WHERE_EXPRESSION)
+    {
+        SelectQuery* sq = dynamic_cast<SelectQuery*>(m_parent);
+        if(sq)
+        {
+            sq->newSelectExpression();
+        }
+    }
 
 }

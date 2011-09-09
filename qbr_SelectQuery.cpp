@@ -34,6 +34,15 @@ QueryGraphicsItem* SelectQuery::createGraphicsItem(QueryGraphicsHelper*, QueryGr
     if(m_as) gi->createAsCell(m_as);
     if(m_orderBy) gi->createOrderByCell(m_orderBy);
 
+    if(m_select)
+    {
+        for(int i=0; i<m_select->getChildren().size(); i++)
+        {
+            QueryGraphicsItem* gritmI = m_select->getChildren().at(i)->createGraphicsItem(m_helper, (QueryGraphicsItem*)gi->getSelect());
+            gi->addSelectGraphicsItem(gritmI);
+        }
+    }
+
     if(m_from)
     {
         for(int i=0; i<m_from->getChildren().size(); i++)
@@ -60,6 +69,16 @@ bool SelectQuery::initializeGraphicsItem()
 {
     createGraphicsItem(0,0);
     return true;
+}
+
+void SelectQuery::newSelectExpression()
+{
+    if(m_select)
+    {
+        SingleExpressionQueryComponent* c = new SingleExpressionQueryComponent(m_select, m_level);
+        m_select->addChild(c);
+        m_helper->triggerReRender();
+    }
 }
 
 void SelectQuery::newWhereExpression(SelectQuery::NewWhereExpressionType t)
@@ -237,5 +256,6 @@ QueryComponent* SelectQuery::duplicate()
 
 QVector<const Table*> SelectQuery::getTables() const
 {
-    return m_from->getTables();
+    if(m_from) return m_from->getTables();
+    else return QVector<const Table*> ();
 }
