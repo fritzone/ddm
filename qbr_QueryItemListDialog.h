@@ -38,6 +38,8 @@ public slots:
     void actionTriggered(QAction*);
     void pageRequested(int);
     void btnLikeClicked();
+    void btnDistinctClicked();
+    void btnStarClicked();
     void btnIsClicked();
     void btnInClicked();
     void btnBetweenClicked();
@@ -54,6 +56,8 @@ private:
     QMenu* m_functionsMenu;
     QMenu* m_comparisonMenu;
     QMenu* m_tablesMenu;
+    QMenu* m_functionsMathMenu;
+    QMenu* m_functionsAggregateMenu;
 
     QueryGraphicsHelper* m_helper;
 };

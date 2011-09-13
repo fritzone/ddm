@@ -21,7 +21,8 @@ public:
         DT_BLOB,
         DT_MISC,
         DT_SPATIAL,
-        DT_INVALID
+        DT_INVALID,
+        DT_GENERIC,
     } ;
 
     /**

@@ -12,6 +12,7 @@ void SelectQueryGroupByComponent::handleAction(const QString &action, QueryCompo
 QSet<OptionsType> SelectQueryGroupByComponent::provideOptions()
 {
     QSet<OptionsType> t;
+    t.insert(OPTIONS_NEW_COLUMN);
     return t;
 }
 

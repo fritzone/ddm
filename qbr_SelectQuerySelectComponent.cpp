@@ -1,5 +1,6 @@
 #include "qbr_SelectQuerySelectComponent.h"
 #include "qbr_SelectQuery.h"
+#include "qbr_SingleExpressionQueryComponent.h"
 #include "strings.h"
 
 SelectQuerySelectComponent::SelectQuerySelectComponent(QueryComponent* p, int l) : QueryComponent(p,l)
@@ -37,5 +38,30 @@ void SelectQuerySelectComponent::handleAction(const QString& action, QueryCompon
             sq->newSelectExpression();
         }
     }
+}
 
+bool SelectQuerySelectComponent::hasGroupByFunctions()
+{
+    for(int i=0; i<m_children.size(); i++)
+    {
+        SingleExpressionQueryComponent* seq = dynamic_cast<SingleExpressionQueryComponent*>(m_children.at(i));
+        if(seq)
+        {
+            if(seq->hasGroupByFunctions()) return true;
+        }
+    }
+    return false;
+}
+
+bool SelectQuerySelectComponent::hasAtLeastOneColumnSelected()
+{
+    for(int i=0; i<m_children.size(); i++)
+    {
+        SingleExpressionQueryComponent* seq = dynamic_cast<SingleExpressionQueryComponent*>(m_children.at(i));
+        if(seq)
+        {
+            if(seq->hasAtLeastOneColumnSelected()) return true;
+        }
+    }
+    return false;
 }
