@@ -12,6 +12,7 @@ class SelectQueryWhereComponent;
 class SelectQueryGroupByComponent;
 class SelectQueryAsComponent;
 class SelectQueryOrderByComponent;
+class Column;
 
 class SelectQuery : public Query
 {
@@ -43,6 +44,7 @@ public:
 
     void newWhereExpression(SelectQuery::NewWhereExpressionType t = PLAIN_NEW_WHERE_EXPRESSION);
     void newSelectExpression();
+    void newGroupByExpression();
 
     void removeFrom();
     bool hasWhere();
@@ -50,6 +52,7 @@ public:
 
     bool hasGroupByFunctions();
     bool hasAtLeastOneColumnSelected();
+    QVector<const Column*> getSelectedColumns();    // used only for group by stuff, not for the SQL writer ...
 
 private:
     SelectQuerySelectComponent* m_select;

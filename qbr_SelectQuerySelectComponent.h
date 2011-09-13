@@ -3,6 +3,8 @@
 
 #include "qbr_QueryComponents.h"
 
+class Column;
+
 class SelectQuerySelectComponent : public QueryComponent
 {
 public:
@@ -19,6 +21,7 @@ public:
     }
     bool hasGroupByFunctions();
     bool hasAtLeastOneColumnSelected();
+    QVector<const Column*> getSelectedColumns();
 };
 
 #endif // SELECTQUERYSELECTCOMPONENT_H

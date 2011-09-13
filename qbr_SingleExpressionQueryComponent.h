@@ -62,6 +62,8 @@ public:
     bool hasGroupByFunctions();
     bool hasAtLeastOneColumnSelected();
 
+    QVector<const Column*> getColumns();
+
 private:
 
     // the graphic element

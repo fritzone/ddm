@@ -1,4 +1,6 @@
 #include "qbr_SelectQueryGroupByComponent.h"
+#include "qbr_SelectQuery.h"
+#include "strings.h"
 
 SelectQueryGroupByComponent::SelectQueryGroupByComponent(QueryComponent* p, int l):QueryComponent(p,l)
 {
@@ -7,6 +9,14 @@ SelectQueryGroupByComponent::SelectQueryGroupByComponent(QueryComponent* p, int 
 
 void SelectQueryGroupByComponent::handleAction(const QString &action, QueryComponent* referringObject)
 {
+    if(action == NEW_COLUMN)
+    {
+        SelectQuery* sq = dynamic_cast<SelectQuery*>(m_parent);
+        if(sq)
+        {
+            sq->newGroupByExpression();
+        }
+    }
 }
 
 QSet<OptionsType> SelectQueryGroupByComponent::provideOptions()

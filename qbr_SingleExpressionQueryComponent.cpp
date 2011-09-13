@@ -321,14 +321,14 @@ void SingleExpressionQueryComponent::onClose()
 
 bool SingleExpressionQueryComponent::hasGroupByFunctions()
 {
-    QMap<int, const DatabaseBuiltinFunction*>::const_iterator i = m_functionsAtGivenPosition.constBegin();
-    while (i != m_functionsAtGivenPosition.constEnd())
+    QMap<int, const DatabaseBuiltinFunction*>::const_iterator it = m_functionsAtGivenPosition.constBegin();
+    while (it != m_functionsAtGivenPosition.constEnd())
     {
-        if(i.value()->getType() == FT_AGGREGATE)
+        if(it.value()->getType() == FT_AGGREGATE)
         {
             return true;
         }
-        ++i;
+        ++it;
     }
     return false;
 }
@@ -340,4 +340,14 @@ bool SingleExpressionQueryComponent::hasAtLeastOneColumnSelected()
         if(m_elements.at(i) == CELLTYPE_COLUMN) return true;
     }
     return false;
+}
+
+QVector<const Column*> SingleExpressionQueryComponent::getColumns()
+{
+    QVector<const Column*> result;
+    QMap<int, const Column*>::const_iterator it = m_columnsAtGivenPosition.begin();
+    while(it != m_columnsAtGivenPosition.end())
+    {
+        result.push_back(it.value());
+    }
 }

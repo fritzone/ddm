@@ -65,3 +65,22 @@ bool SelectQuerySelectComponent::hasAtLeastOneColumnSelected()
     }
     return false;
 }
+
+QVector<const Column*> SelectQuerySelectComponent::getSelectedColumns()
+{
+    QVector<const Column*> result;
+    for(int i=0; i<m_children.size(); i++)
+    {
+        QVector<const Column*> localResult;
+        SingleExpressionQueryComponent* seq = dynamic_cast<SingleExpressionQueryComponent*>(m_children.at(i));
+        if(seq)
+        {
+            if(seq->hasAtLeastOneColumnSelected())
+            {
+                localResult = seq->getColumns();
+                result += localResult;
+            }
+        }
+    }
+    return result;
+}

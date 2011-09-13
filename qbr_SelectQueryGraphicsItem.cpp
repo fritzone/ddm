@@ -123,6 +123,10 @@ void SelectQueryGraphicsItem::addWhereGraphicsItem(QueryGraphicsItem* wheresChil
     if(m_where) m_where->addChild(wheresChild);
 }
 
+void SelectQueryGraphicsItem::addGroupByGraphicsItem(QueryGraphicsItem* groupByChild)
+{
+    if(m_groupby) m_groupby->addChild(groupByChild);
+}
 
 void SelectQueryGraphicsItem::onClose()
 {

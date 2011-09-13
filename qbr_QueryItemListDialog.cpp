@@ -92,6 +92,26 @@ QueryItemListDialog::QueryItemListDialog(QueryGraphicsHelper* helper, QStringLis
 
 }
 
+void QueryItemListDialog::setColumnMode()
+{
+    ui->txtInput->hide();
+    ui->lstValues->hide();
+    ui->frameButtonBox->show();
+    ui->btnAcceptText->hide();
+    ui->btnBetween->hide();
+    ui->btnBitwise->hide();
+    ui->btnComparison->hide();
+    ui->btnDistinct->hide();
+    ui->btnExists->hide();
+    ui->btnFunctions->hide();
+    ui->btnIn->hide();
+    ui->btnIs->hide();
+    ui->btnLike->hide();
+    ui->btnMath->hide();
+    ui->btnNot->hide();
+    ui->btnStar->hide();
+}
+
 void QueryItemListDialog::showSymbolPanel()
 {
     ui->txtInput->hide();
