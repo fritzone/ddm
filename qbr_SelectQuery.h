@@ -49,6 +49,7 @@ public:
     bool hasGroupBy();
 
     bool hasGroupByFunctions();
+    bool hasAtLeastOneColumnSelected();
 
 private:
     SelectQuerySelectComponent* m_select;

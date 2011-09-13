@@ -78,8 +78,10 @@ static const QString strNotEqIcon = ":/images/actions/images/big/big_noteq.png";
 static const QString strNotEq1Icon = ":/images/actions/images/big/big_noteq_1.png";
 static const QString strNotEqNullSafeIcon = ":/images/actions/images/big/big_noteq_nullsafe.png";
 static const QString strColumnIcon = ":/images/actions/images/small/table-select-column-icon.png";
+static const QString strTypeHereIcon = ":/images/actions/images/small/type_here.png";
 
 static const QString NEW_TABLE = "New table reference";
+static const QString NEW_COLUMN = "New column";
 static const QString DUPLICATE = "Duplicate";
 static const QString ADD_FROM = "FROM...";
 static const QString ADD_WHERE = "WHERE...";
@@ -121,6 +123,8 @@ static const QString strIs = "IS";
 static const QString strExists = "EXISTS";
 static const QString strBetween = "BETWEEN";
 static const QString strNotText = "NOT_TEXT";
+static const QString strDistinct = "DISTINCT";
+static const QString strStar = "*";
 
 static const QString strActionIndexSeparator = "^";
 

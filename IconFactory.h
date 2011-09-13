@@ -114,6 +114,12 @@ public:
         return icon;
     }
 
+    static const QIcon& getLiteralIcon()
+    {
+        static const QIcon icon(strTypeHereIcon);
+        return icon;
+    }
+
     static const QIcon& getTabinstLockIcon()
     {
         static const QIcon icon(strTableInstLockIcon);

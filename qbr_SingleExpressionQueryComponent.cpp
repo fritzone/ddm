@@ -130,6 +130,8 @@ void SingleExpressionQueryComponent::handleAction(const QString& action, QueryCo
     mappings[strIs] = CELLTYPE_IS;
     mappings[strBetween] = CELLTYPE_BETWEEN;
     mappings[strExists] = CELLTYPE_EXISTS;
+    mappings[strDistinct] = CELLTYPE_DISTINCT;
+    mappings[strStar] = CELLTYPE_STAR;
 
     if(action.indexOf(strActionIndexSeparator)&& !action.startsWith(strRemove)&&!action.startsWith("@")&&!action.startsWith("#")&&!action.startsWith("$"))
     {
@@ -315,4 +317,27 @@ void SingleExpressionQueryComponent::onClose()
         removeFromOn();
     }
     m_helper->triggerReRender();
+}
+
+bool SingleExpressionQueryComponent::hasGroupByFunctions()
+{
+    QMap<int, const DatabaseBuiltinFunction*>::const_iterator i = m_functionsAtGivenPosition.constBegin();
+    while (i != m_functionsAtGivenPosition.constEnd())
+    {
+        if(i.value()->getType() == FT_AGGREGATE)
+        {
+            return true;
+        }
+        ++i;
+    }
+    return false;
+}
+
+bool SingleExpressionQueryComponent::hasAtLeastOneColumnSelected()
+{
+    for(int i=0; i<m_elements.size(); i++)
+    {
+        if(m_elements.at(i) == CELLTYPE_COLUMN) return true;
+    }
+    return false;
 }

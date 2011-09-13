@@ -103,6 +103,10 @@ void QueryItemListDialog::showSymbolPanel()
     m_functionsMenu = new QMenu(this);
     m_comparisonMenu = new QMenu(this);
     m_tablesMenu = new QMenu(this);
+    m_functionsMathMenu = new QMenu(m_functionsMenu);
+    m_functionsMathMenu->setTitle("Math");
+    m_functionsAggregateMenu = new QMenu(m_functionsMenu);
+    m_functionsAggregateMenu->setTitle("Aggregate");
 
     m_mathMenu->addAction(IconFactory::getPlusIcon(), strMathPlus);
     m_mathMenu->addAction(IconFactory::getMinusIcon(), strMathMinus);
@@ -131,8 +135,19 @@ void QueryItemListDialog::showSymbolPanel()
         QAction* tempAction = new QAction(IconFactory::getFunctionIcon(), functions.at(i).getNiceName().toUpper(), this);
         tempAction->setData(functions.at(i).getName().toUpper());
         tempAction->setStatusTip(functions.at(i).getDescription());
-        m_functionsMenu->addAction(tempAction);
+
+        if(functions.at(i).getType() == FT_NUMERIC)
+        {
+            m_functionsMathMenu->addAction(tempAction);
+        }
+        if(functions.at(i).getType() == FT_AGGREGATE)
+        {
+            m_functionsAggregateMenu->addAction(tempAction);
+        }
     }
+
+    m_functionsMenu->addMenu(m_functionsMathMenu);
+    m_functionsMenu->addMenu(m_functionsAggregateMenu);
 
     /* Now building the menu system for the columns */
     Query* q = m_helper->getQuery();
@@ -218,6 +233,18 @@ void QueryItemListDialog::onDblClickItem(QListWidgetItem* itm)
 void QueryItemListDialog::onTxtInputKeyPress()
 {
     m_selected = ui->txtInput->text();
+    close();
+}
+
+void QueryItemListDialog::btnDistinctClicked()
+{
+    m_selected = strDistinct;
+    close();
+}
+
+void QueryItemListDialog::btnStarClicked()
+{
+    m_selected = strStar;
     close();
 }
 

@@ -4,18 +4,19 @@
 enum OptionsType
 {
     OPTIONS_DUPLICATE = 0,
-    OPTIONS_NEW_TABLE = 1,
-    OPTIONS_NEW_SUBQUERY = 2,
-    OPTIONS_ADD_FROM = 3,
-    OPTIONS_ADD_WHERE = 4,
-    OPTIONS_ADD_GROUPBY = 5,
-    OPTIONS_ADD_HAVING = 6,
-    OPTIONS_ADD_ORDERBY = 7,
-    OPTIONS_ADD_JOIN = 8,
-    OPTIONS_AS = 9,
-    OPTIONS_NEW_WHERE_EXPR_OR = 10,
-    OPTIONS_NEW_WHERE_EXPR_AND = 11,
-    OPTIONS_NEW_WHERE_EXPR = 12,
+    OPTIONS_NEW_TABLE,
+    OPTIONS_NEW_SUBQUERY,
+    OPTIONS_ADD_FROM,
+    OPTIONS_ADD_WHERE,
+    OPTIONS_ADD_GROUPBY,
+    OPTIONS_ADD_HAVING,
+    OPTIONS_ADD_ORDERBY,
+    OPTIONS_ADD_JOIN,
+    OPTIONS_AS,
+    OPTIONS_NEW_WHERE_EXPR_OR,
+    OPTIONS_NEW_WHERE_EXPR_AND,
+    OPTIONS_NEW_WHERE_EXPR,
+    OPTIONS_NEW_COLUMN,
 
     OPTIONS_LAST
 };
@@ -61,6 +62,12 @@ enum CellTypeChooserType
     /* The LIKE keyword will get its own button */
     CELLTYPE_LIKE,          // The LIKE keyword
 
+    /*The Distinct keyword will get its own button too*/
+    CELLTYPE_DISTINCT,
+
+    /* The '*' is widely used in the queries, he will get its own button */
+    CELLTYPE_STAR,
+
     /* Special keywords - all these go to their own button*/
     CELLTYPE_BINARY,        // BINARY (!!) This is MySQL specific?
     CELLTYPE_EXISTS,        // The EXISTS keyword
@@ -92,16 +99,17 @@ enum CellTypeChooserType
 enum FunctionType
 {
     FT_CONTROLFLOW = 0,
-    FT_STRING = 1,
-    FT_NUMERIC = 2,
-    FT_DATETIME = 3,
-    FT_FULLTEXTSEARCH = 4,
-    FT_CAST = 5,
-    FT_BIT = 6,
-    FT_CRYPT = 7,
-    FT_INFO = 8,
-    FT_MISC = 9,
-    FT_INVALID = 10
+    FT_STRING,
+    FT_NUMERIC,
+    FT_DATETIME,
+    FT_FULLTEXTSEARCH,
+    FT_CAST,
+    FT_BIT,
+    FT_CRYPT,
+    FT_INFO,
+    FT_MISC,
+    FT_AGGREGATE,
+    FT_INVALID
 };
 
 #endif // OPTIONSTYPE_H

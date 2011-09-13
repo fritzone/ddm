@@ -17,6 +17,8 @@ public:
     {
         return QVector<CellTypeChooserType> ();
     }
+    bool hasGroupByFunctions();
+    bool hasAtLeastOneColumnSelected();
 };
 
 #endif // SELECTQUERYSELECTCOMPONENT_H

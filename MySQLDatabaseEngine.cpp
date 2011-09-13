@@ -471,6 +471,12 @@ QVector<DatabaseBuiltinFunction> MySQLDatabaseEngine::buildFunctions()
     QString X = QString("X");
     result.append(DatabaseBuiltinFunction(QString("@abs"), FT_NUMERIC, UserDataType("return", DataType::DT_NUMERIC), DatabaseBuiltinFunctionsParameter(X, UserDataType(X, DataType::DT_NUMERIC), true), "ABS(X) - Returns the absolute value of X"));
     result.append(DatabaseBuiltinFunction(QString("@acos"), FT_NUMERIC, UserDataType("return", DataType::DT_NUMERIC), DatabaseBuiltinFunctionsParameter(X, UserDataType(X, DataType::DT_NUMERIC), true), "ACOS(X) - Returns the arc cosine of X, that is, the value whose cosine is X. Returns NULL if X is not in the range -1 to 1. "));
+
+    result.append(DatabaseBuiltinFunction(QString("@avg"), FT_AGGREGATE, UserDataType("return", DataType::DT_NUMERIC), DatabaseBuiltinFunctionsParameter(X, UserDataType(X, DataType::DT_NUMERIC), true), "AVG([DISTINCT] X) Returns the average value of expr. The DISTINCT option can be used as of MySQL 5.0.3 to return the average of the distinct values of expr. Returns NULL if there were no matching rows. "));
+    result.append(DatabaseBuiltinFunction(QString("@bit_and"), FT_AGGREGATE, UserDataType("return", DataType::DT_NUMERIC), DatabaseBuiltinFunctionsParameter(X, UserDataType(X, DataType::DT_NUMERIC), true), "BIT_AND(X) Returns the bitwise AND of all bits in expr. The calculation is performed with 64-bit (BIGINT) precision. "));
+    result.append(DatabaseBuiltinFunction(QString("@bit_or"), FT_AGGREGATE, UserDataType("return", DataType::DT_NUMERIC), DatabaseBuiltinFunctionsParameter(X, UserDataType(X, DataType::DT_NUMERIC), true), "BIT_XOR(X) Returns the bitwise OR of all bits in expr. The calculation is performed with 64-bit (BIGINT) precision. "));
+    result.append(DatabaseBuiltinFunction(QString("@bit_xor"), FT_AGGREGATE, UserDataType("return", DataType::DT_NUMERIC), DatabaseBuiltinFunctionsParameter(X, UserDataType(X, DataType::DT_NUMERIC), true), "BIT_XOR(X) Returns the bitwise XOR of all bits in expr. The calculation is performed with 64-bit (BIGINT) precision. "));
+    result.append(DatabaseBuiltinFunction(QString("@count"), FT_AGGREGATE, UserDataType("return", DataType::DT_NUMERIC), DatabaseBuiltinFunctionsParameter(X, UserDataType(X, DataType::DT_GENERIC), true), "Returns a count of the number of non-NULL values of expr in the rows retrieved by a SELECT statement. The result is a BIGINT value."));
     return result;
 }
 

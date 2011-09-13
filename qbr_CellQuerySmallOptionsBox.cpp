@@ -90,8 +90,17 @@ CellQuerySmallOptionsBox::OptionsList CellQuerySmallOptionsBox::prepareOptions()
             canGo = Workspace::getInstance()->workingVersion()->getTables().size() > 0;
         }
 
-        text.append(NEW_TABLE);
-        icons.append(IconFactory::getTabinstIcon());
+        if(canGo)
+        {
+            text.append(NEW_TABLE);
+            icons.append(IconFactory::getTabinstIcon());
+        }
+    }
+
+    if(m_types.contains(OPTIONS_NEW_COLUMN))
+    {
+        text.append(NEW_COLUMN);
+        icons.append(QIcon(IconFactory::getColumnIcon().pixmap(16, 16)));   // TODO: It is really time to get a nice set of dedicated icons :)
     }
 
     if(m_types.contains(OPTIONS_DUPLICATE))

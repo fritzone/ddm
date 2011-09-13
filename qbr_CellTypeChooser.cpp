@@ -74,10 +74,12 @@ QGraphicsItemGroup* CellTypeChooser::render(int& x, int& y, int& w, int &h)
     QMap<CellTypeChooserType,QString> textMappings;
     textMappings[CELLTYPE_NOT_TEXT] = strNotText;
     textMappings[CELLTYPE_LIKE] = strLike;
+    textMappings[CELLTYPE_DISTINCT] = strDistinct;
     textMappings[CELLTYPE_IN] = strIn;
     textMappings[CELLTYPE_IS] = strIs;
     textMappings[CELLTYPE_BETWEEN] = strBetween;
     textMappings[CELLTYPE_EXISTS] = strExists;
+    textMappings[CELLTYPE_STAR] = strStar;
 
     if(iconMappings.contains(m_currentType))
     {
@@ -88,6 +90,11 @@ QGraphicsItemGroup* CellTypeChooser::render(int& x, int& y, int& w, int &h)
     if(textMappings.contains(m_currentType))
     {
         m_text = new QGraphicsTextItem(textMappings[m_currentType], this);
+        if(m_currentType == CELLTYPE_STAR)
+        {
+            theFont.setBold(true);
+            theFont.setPixelSize(28);
+        }
         m_text->setFont(theFont);
         m_text->setX(x + CELL_SIZE + 1);
         m_text->setY(y - 4);
@@ -143,6 +150,7 @@ QGraphicsItemGroup* CellTypeChooser::render(int& x, int& y, int& w, int &h)
         addToGroup(m_text);
         width += m_text->boundingRect().width();
         w += m_text->boundingRect().width();
+        typeIcon = new QGraphicsPixmapItem(IconFactory::getLiteralIcon().pixmap(size,size), this);
         break;
 
     case CELLTYPE_QUERY_OR:
@@ -241,7 +249,11 @@ void CellTypeChooser::mousePress(int x, int y)
     QPoint a = scene()->views().at(0)->mapToGlobal((m_rect->mapToScene(m_rect->boundingRect().bottomLeft().toPoint())).toPoint() ) ;
     selected = m_helper->presentList(a.x() + 2-scene()->views().at(0)->horizontalScrollBar()->sliderPosition(), a.y() - scene()->views().at(0)->verticalScrollBar()->sliderPosition(), QueryGraphicsHelper::INPUT_SYMBOLS);
 
-    if(selected.length() == 0) return;
+    if(selected.length() == 0)
+    {
+        m_helper->triggerReRender();
+        return;
+    }
 
     if(m_index == -1)
     {

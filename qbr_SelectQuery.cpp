@@ -195,7 +195,12 @@ void SelectQuery::handleAction(const QString &action, QueryComponent* referringO
 
 bool SelectQuery::hasGroupByFunctions()
 {
-    return true;
+    return m_select->hasGroupByFunctions();
+}
+
+bool SelectQuery::hasAtLeastOneColumnSelected()
+{
+    return m_select->hasAtLeastOneColumnSelected();
 }
 
 QSet<OptionsType> SelectQuery::provideOptions()
@@ -204,7 +209,7 @@ QSet<OptionsType> SelectQuery::provideOptions()
 
     if(!m_from) t.insert(OPTIONS_ADD_FROM);
     if(!m_where && m_from) t.insert(OPTIONS_ADD_WHERE);
-    if(m_from && hasGroupByFunctions() && !m_groupby) t.insert(OPTIONS_ADD_GROUPBY);
+    if(m_from && hasGroupByFunctions() && hasAtLeastOneColumnSelected() && !m_groupby) t.insert(OPTIONS_ADD_GROUPBY);
     if(m_from && hasGroupByFunctions() && m_groupby && !m_having) t.insert(OPTIONS_ADD_HAVING);
     if(!m_orderBy) t.insert(OPTIONS_ADD_ORDERBY);
 

@@ -59,6 +59,8 @@ public:
     }
 
     void removeFromOn();
+    bool hasGroupByFunctions();
+    bool hasAtLeastOneColumnSelected();
 
 private:
 
