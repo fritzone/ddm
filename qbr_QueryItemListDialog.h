@@ -30,6 +30,7 @@ public:
 
     void setText(const QString& a);
     void showSymbolPanel();
+    void setColumnMode();
 
 public slots:
 

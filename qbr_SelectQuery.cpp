@@ -56,10 +56,20 @@ QueryGraphicsItem* SelectQuery::createGraphicsItem(QueryGraphicsHelper*, QueryGr
     {
         for(int i=0; i<m_where->getChildren().size(); i++)
         {
-            QueryGraphicsItem* gritmI = m_where->getChildren().at(i)->createGraphicsItem(m_helper, (QueryGraphicsItem*)gi->getFrom());
+            QueryGraphicsItem* gritmI = m_where->getChildren().at(i)->createGraphicsItem(m_helper, (QueryGraphicsItem*)gi->getWhere());
             gi->addWhereGraphicsItem(gritmI);
         }
     }
+
+    if(m_groupby)
+    {
+        for(int i=0; i<m_groupby->getChildren().size(); i++)
+        {
+            QueryGraphicsItem* gritmI = m_groupby->getChildren().at(i)->createGraphicsItem(m_helper, (QueryGraphicsItem*)gi->getGroupBy());
+            gi->addGroupByGraphicsItem(gritmI);
+        }
+    }
+
 
     m_graphicsItem = gi;
     return gi;
@@ -81,12 +91,20 @@ void SelectQuery::newSelectExpression()
     }
 }
 
+void SelectQuery::newGroupByExpression()
+{
+    if(m_groupby)
+    {
+        SingleExpressionQueryComponent* c = new SingleExpressionQueryComponent(m_groupby, m_level);
+        m_groupby->addChild(c);
+        m_helper->triggerReRender();
+    }
+}
+
 void SelectQuery::newWhereExpression(SelectQuery::NewWhereExpressionType t)
 {
     if(m_where)
     {
-        // for the beginning here create a Binary Expression, with both of the cells as being removable (this is the usually most used way of a where)
-        // in case the user removes one of them, the expression will be translated to a UnaryExpression
         if(t == PLAIN_NEW_WHERE_EXPRESSION)
         {
             WhereExpressionQueryComponent* c = new SingleExpressionQueryComponent(m_where, m_level);
@@ -263,4 +281,9 @@ QVector<const Table*> SelectQuery::getTables() const
 {
     if(m_from) return m_from->getTables();
     else return QVector<const Table*> ();
+}
+
+QVector<const Column*> SelectQuery::getSelectedColumns()
+{
+    return m_select->getSelectedColumns();
 }

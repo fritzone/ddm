@@ -24,17 +24,26 @@ public:
     virtual void mouseMove(int x, int y){}
     virtual void mouseLeft(int x, int y){}
     virtual void onClose();
-    CellSelectCommand* getSelect()
+    CellSelectCommand* getSelect() const
     {
         return m_select;
     }
-    CellFromCommand* getFrom()
+    CellFromCommand* getFrom() const
     {
         return m_from;
+    }
+    CellWhereCommand* getWhere() const
+    {
+        return m_where;
+    }
+    CellGroupByCommand* getGroupBy() const
+    {
+        return m_groupby;
     }
     void addFromGraphicsItem(QueryGraphicsItem*);
     void addSelectGraphicsItem(QueryGraphicsItem*);
     void addWhereGraphicsItem(QueryGraphicsItem*);
+    void addGroupByGraphicsItem(QueryGraphicsItem*);
 
     void createSelectCell(QueryComponent*);
     void createFromCell(QueryComponent*);
