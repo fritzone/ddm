@@ -1,5 +1,6 @@
 #include "DataType.h"
 #include "strings.h"
+#include "IconFactory.h"
 
 #include <QString>
 
@@ -46,8 +47,9 @@ const QIcon& DataType::getIcon(DT_TYPE dt)
     case DT_BLOB: return blobIcon;
     case DT_DATETIME: return datetimeIcon;
     case DT_MISC: return miscIcon;
-    case DT_INVALID: return emptyIcon;
     case DT_SPATIAL: return spatialIcon;
+    case DT_INVALID:
+    case DT_GENERIC: return IconFactory::getEmptyIcon();
     }
 
     return emptyIcon;
@@ -64,6 +66,7 @@ QString DataType::typeAsString() const
     case DT_DATETIME: return strDateTime;
     case DT_MISC: return strMisc;
     case DT_SPATIAL: return strSpatial;
+    case DT_GENERIC:
     case DT_INVALID: return strNA;
     }
     return QString("");

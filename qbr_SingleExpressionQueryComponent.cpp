@@ -88,7 +88,7 @@ const Column* SingleExpressionQueryComponent::getColumnAt(int i)
     return 0;
 }
 
-const QString& SingleExpressionQueryComponent::getTypedInValueAt(int i)
+const QString SingleExpressionQueryComponent::getTypedInValueAt(int i)
 {
     if(m_typedValuesAtGivenPosition.contains(i)) return m_typedValuesAtGivenPosition[i];
     return "";

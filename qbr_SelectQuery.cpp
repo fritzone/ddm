@@ -17,7 +17,7 @@
 #include <QGraphicsView>
 #include <QScrollBar>
 
-SelectQuery::SelectQuery(QueryGraphicsHelper* helper, int level) : Query(helper, level), m_from(0), m_select(0), m_where(0), m_groupby(0), m_having(0), m_as(0), m_orderBy(0)
+SelectQuery::SelectQuery(QueryGraphicsHelper* helper, int level) : Query(helper, level), m_select(0),  m_from(0), m_where(0), m_groupby(0), m_having(0), m_as(0), m_orderBy(0)
 {
     m_select = new SelectQuerySelectComponent(this, level);
     if(m_level > 0) m_as = new SelectQueryAsComponent(this, level);

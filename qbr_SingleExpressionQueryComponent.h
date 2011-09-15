@@ -46,7 +46,7 @@ public:
     const DatabaseBuiltinFunction* getFunctionAt(int i);
     void shiftElementsToTheLeft(int after);
     const Column* getColumnAt(int i);
-    const QString& getTypedInValueAt(int i);
+    const QString getTypedInValueAt(int i);
 
     DatabaseFunctionInstantiationComponent* getFunctionInstantiationAt(int);
     void setForcedType(ForcedSingleExpressionQueryComponent);
