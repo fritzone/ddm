@@ -128,6 +128,11 @@ void SelectQueryGraphicsItem::addGroupByGraphicsItem(QueryGraphicsItem* groupByC
     if(m_groupby) m_groupby->addChild(groupByChild);
 }
 
+void SelectQueryGraphicsItem::addHavingGraphicsItem(QueryGraphicsItem* havingChild)
+{
+    if(m_having) m_having->addChild(havingChild);
+}
+
 void SelectQueryGraphicsItem::onClose()
 {
 

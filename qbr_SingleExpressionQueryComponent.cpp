@@ -132,12 +132,24 @@ void SingleExpressionQueryComponent::handleAction(const QString& action, QueryCo
     mappings[strExists] = CELLTYPE_EXISTS;
     mappings[strDistinct] = CELLTYPE_DISTINCT;
     mappings[strStar] = CELLTYPE_STAR;
+    mappings[strRollup] = CELLTYPE_ROLLUP;
 
     if(action.indexOf(strActionIndexSeparator)&& !action.startsWith(strRemove)&&!action.startsWith("@")&&!action.startsWith("#")&&!action.startsWith("$"))
     {
         QString pureAction = action.left(action.indexOf(strActionIndexSeparator));
         if(mappings.contains(pureAction))
         {
+            // let's check if this is ROLLUP. There can be only one
+            if(mappings[pureAction] == CELLTYPE_ROLLUP)
+            {
+                for(int i=0; i<m_elements.size(); i++)
+                {
+                    if(m_elements.at(i) == CELLTYPE_ROLLUP) // only one ROLLUP enabled
+                    {
+                        return;
+                    }
+                }
+            }
             int indx = action.section(strActionIndexSeparator, 1).toInt();
             if(indx < m_elements.size())
             {
@@ -349,5 +361,7 @@ QVector<const Column*> SingleExpressionQueryComponent::getColumns()
     while(it != m_columnsAtGivenPosition.end())
     {
         result.push_back(it.value());
+        ++ it;
     }
+    return result;
 }

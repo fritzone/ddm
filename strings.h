@@ -125,6 +125,7 @@ static const QString strBetween = "BETWEEN";
 static const QString strNotText = "NOT_TEXT";
 static const QString strDistinct = "DISTINCT";
 static const QString strStar = "*";
+static const QString strRollup = "ROLLUP";
 
 static const QString strActionIndexSeparator = "^";
 

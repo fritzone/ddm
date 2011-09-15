@@ -43,6 +43,7 @@ public:
     void duplicateFromsChild(QueryComponent*);
 
     void newWhereExpression(SelectQuery::NewWhereExpressionType t = PLAIN_NEW_WHERE_EXPRESSION);
+    void newHavingExpression(SelectQuery::NewWhereExpressionType t = PLAIN_NEW_WHERE_EXPRESSION);
     void newSelectExpression();
     void newGroupByExpression();
 

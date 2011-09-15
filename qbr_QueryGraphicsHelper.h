@@ -14,6 +14,7 @@ class QueryGraphicsScene;
 class Query;
 class NewViewForm;
 class MainWindow;
+class Column;
 
 class QueryGraphicsHelper
 {
@@ -22,8 +23,9 @@ public:
     enum ListType
     {
         LIST_TABLES = 1,
-        INPUT_TEXT = 2,
-        INPUT_SYMBOLS = 3
+        INPUT_TEXT,
+        INPUT_SYMBOLS,
+        INPUT_COLUMNS
     };
 
     QueryGraphicsHelper();
@@ -48,6 +50,11 @@ public:
         return m_query;
     }
 
+    void setColumns(QVector<const Column*> c)
+    {
+        m_columnsToShow = c;
+    }
+
 private:
 
     QMap<QueryGraphicsItem*, QRect> hotCells;
@@ -55,6 +62,7 @@ private:
     QueryGraphicsScene* m_scene;
     Query* m_query;
     MainWindow* m_form;
+    QVector<const Column*> m_columnsToShow;
 
 };
 

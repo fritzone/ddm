@@ -68,6 +68,9 @@ enum CellTypeChooserType
     /* The '*' is widely used in the queries, he will get its own button */
     CELLTYPE_STAR,
 
+    /* Rollup keyword */
+    CELLTYPE_ROLLUP,
+
     /* Special keywords - all these go to their own button*/
     CELLTYPE_BINARY,        // BINARY (!!) This is MySQL specific?
     CELLTYPE_EXISTS,        // The EXISTS keyword

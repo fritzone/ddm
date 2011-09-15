@@ -17,7 +17,14 @@ void SelectQueryWhereComponent::handleAction(const QString &action, QueryCompone
         SelectQuery* sq = dynamic_cast<SelectQuery*>(m_parent);
         if(sq)
         {
-            sq->newWhereExpression();
+            if(m_whereType == WHERETYPE_HAVING)
+            {
+                sq->newHavingExpression();
+            }
+            else
+            {
+                sq->newWhereExpression();
+            }
         }
     }
 
@@ -26,7 +33,14 @@ void SelectQueryWhereComponent::handleAction(const QString &action, QueryCompone
         SelectQuery* sq = dynamic_cast<SelectQuery*>(m_parent);
         if(sq)
         {
-            sq->newWhereExpression(SelectQuery::OR_NEW_WHERE_EXPRESSION);
+            if(m_whereType == WHERETYPE_HAVING)
+            {
+                sq->newHavingExpression(SelectQuery::OR_NEW_WHERE_EXPRESSION);
+            }
+            else
+            {
+                sq->newWhereExpression(SelectQuery::OR_NEW_WHERE_EXPRESSION);
+            }
         }
     }
 
@@ -35,7 +49,14 @@ void SelectQueryWhereComponent::handleAction(const QString &action, QueryCompone
         SelectQuery* sq = dynamic_cast<SelectQuery*>(m_parent);
         if(sq)
         {
-            sq->newWhereExpression(SelectQuery::AND_NEW_WHERE_EXPRESSION);
+            if(m_whereType == WHERETYPE_HAVING)
+            {
+                sq->newHavingExpression(SelectQuery::OR_NEW_WHERE_EXPRESSION);
+            }
+            else
+            {
+                sq->newWhereExpression(SelectQuery::AND_NEW_WHERE_EXPRESSION);
+            }
         }
     }
 }

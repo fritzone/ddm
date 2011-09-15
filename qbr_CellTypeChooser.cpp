@@ -7,6 +7,8 @@
 #include "qbr_QueryComponents.h"
 #include "Column.h"
 #include "Table.h"
+#include "qbr_SelectQueryGroupByComponent.h"
+#include "qbr_SelectQuery.h"
 
 #include <QPen>
 #include <QGraphicsView>
@@ -80,6 +82,7 @@ QGraphicsItemGroup* CellTypeChooser::render(int& x, int& y, int& w, int &h)
     textMappings[CELLTYPE_BETWEEN] = strBetween;
     textMappings[CELLTYPE_EXISTS] = strExists;
     textMappings[CELLTYPE_STAR] = strStar;
+    textMappings[CELLTYPE_ROLLUP] = strRollup;
 
     if(iconMappings.contains(m_currentType))
     {
@@ -89,7 +92,12 @@ QGraphicsItemGroup* CellTypeChooser::render(int& x, int& y, int& w, int &h)
     else
     if(textMappings.contains(m_currentType))
     {
-        m_text = new QGraphicsTextItem(textMappings[m_currentType], this);
+        QString t = textMappings[m_currentType];
+        if(t == strNotText)
+        {
+            t = "NOT";
+        }
+        m_text = new QGraphicsTextItem(t, this);
         if(m_currentType == CELLTYPE_STAR)
         {
             theFont.setBold(true);
@@ -246,8 +254,26 @@ void CellTypeChooser::mouseLeft(int x, int y)
 void CellTypeChooser::mousePress(int x, int y)
 {
     QString selected = "";
+    QueryGraphicsHelper::ListType listType = QueryGraphicsHelper::INPUT_SYMBOLS;
+    SingleExpressionQueryComponent* seq = dynamic_cast<SingleExpressionQueryComponent*>(m_parent->getOwner());
+    QVector<const Column*> columns;
+
+    if(seq)
+    {
+        SelectQueryGroupByComponent* gby = dynamic_cast<SelectQueryGroupByComponent*>(seq->getParent());
+        if(gby)
+        {
+            listType = QueryGraphicsHelper::INPUT_COLUMNS;
+            SelectQuery* sq = dynamic_cast<SelectQuery*>(gby->getParent());
+            if(sq)
+            {
+                columns = sq->getSelectedColumns();
+            }
+        }
+    }
+    m_helper->setColumns(columns);
     QPoint a = scene()->views().at(0)->mapToGlobal((m_rect->mapToScene(m_rect->boundingRect().bottomLeft().toPoint())).toPoint() ) ;
-    selected = m_helper->presentList(a.x() + 2-scene()->views().at(0)->horizontalScrollBar()->sliderPosition(), a.y() - scene()->views().at(0)->verticalScrollBar()->sliderPosition(), QueryGraphicsHelper::INPUT_SYMBOLS);
+    selected = m_helper->presentList(a.x() + 2-scene()->views().at(0)->horizontalScrollBar()->sliderPosition(), a.y() - scene()->views().at(0)->verticalScrollBar()->sliderPosition(), listType);
 
     if(selected.length() == 0)
     {
