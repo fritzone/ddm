@@ -31,6 +31,10 @@ public:
     void setText(const QString& a);
     void showSymbolPanel();
     void setColumnMode();
+    void setColumns(QVector<const Column*> c)
+    {
+        m_columnsToShow = c;
+    }
 
 public slots:
 
@@ -47,6 +51,7 @@ public slots:
     void btnExistsClicked();
     void btnNotClicked();
     void btnAcceptText();
+    void btnRollupClicked();
 
 private:
     Ui::QueryItemListDialog *ui;
@@ -61,6 +66,7 @@ private:
     QMenu* m_functionsAggregateMenu;
 
     QueryGraphicsHelper* m_helper;
+    QVector<const Column*> m_columnsToShow;
 };
 
 #endif // QUERYITEMLISTDIALOG_H

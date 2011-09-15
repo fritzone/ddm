@@ -40,10 +40,15 @@ public:
     {
         return m_groupby;
     }
+    CellWhereCommand* getHaving() const
+    {
+        return m_having;
+    }
     void addFromGraphicsItem(QueryGraphicsItem*);
     void addSelectGraphicsItem(QueryGraphicsItem*);
     void addWhereGraphicsItem(QueryGraphicsItem*);
     void addGroupByGraphicsItem(QueryGraphicsItem*);
+    void addHavingGraphicsItem(QueryGraphicsItem*);
 
     void createSelectCell(QueryComponent*);
     void createFromCell(QueryComponent*);

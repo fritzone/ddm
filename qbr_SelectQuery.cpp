@@ -70,6 +70,14 @@ QueryGraphicsItem* SelectQuery::createGraphicsItem(QueryGraphicsHelper*, QueryGr
         }
     }
 
+    if(m_having)
+    {
+        for(int i=0; i<m_having->getChildren().size(); i++)
+        {
+            QueryGraphicsItem* gritmI = m_having->getChildren().at(i)->createGraphicsItem(m_helper, (QueryGraphicsItem*)gi->getHaving());
+            gi->addHavingGraphicsItem(gritmI);
+        }
+    }
 
     m_graphicsItem = gi;
     return gi;
@@ -121,6 +129,32 @@ void SelectQuery::newWhereExpression(SelectQuery::NewWhereExpressionType t)
             WhereExpressionQueryComponent* andc = new SingleExpressionQueryComponent(m_where, m_level);
             dynamic_cast<SingleExpressionQueryComponent*>(andc)->setForcedType(SingleExpressionQueryComponent::FORCED_AND);
             m_where->addChild(andc);
+        }
+
+        m_helper->triggerReRender();
+    }
+}
+
+void SelectQuery::newHavingExpression(SelectQuery::NewWhereExpressionType t)
+{
+    if(m_having)
+    {
+        if(t == PLAIN_NEW_WHERE_EXPRESSION)
+        {
+            WhereExpressionQueryComponent* c = new SingleExpressionQueryComponent(m_having, m_level);
+            m_having->addChild(c);
+        }
+        if(t == OR_NEW_WHERE_EXPRESSION)
+        {
+            WhereExpressionQueryComponent* orc = new SingleExpressionQueryComponent(m_having, m_level);
+            dynamic_cast<SingleExpressionQueryComponent*>(orc)->setForcedType(SingleExpressionQueryComponent::FORCED_OR);
+            m_having->addChild(orc);
+        }
+        if(t == AND_NEW_WHERE_EXPRESSION)
+        {
+            WhereExpressionQueryComponent* andc = new SingleExpressionQueryComponent(m_having, m_level);
+            dynamic_cast<SingleExpressionQueryComponent*>(andc)->setForcedType(SingleExpressionQueryComponent::FORCED_AND);
+            m_having->addChild(andc);
         }
 
         m_helper->triggerReRender();

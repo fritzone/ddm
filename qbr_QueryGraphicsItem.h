@@ -34,7 +34,6 @@ public:
     }
     void removeChild(QueryGraphicsItem* child);
     QueryComponent* getOwner() {return m_owner; }
-
 protected:
 
     QList<QueryGraphicsItem*> m_children;
@@ -42,6 +41,7 @@ protected:
     QueryGraphicsHelper* m_helper;
     QueryComponent* m_owner;
     int m_level;
+
 };
 
 #endif // QUERYGRAPHICSITEM_H

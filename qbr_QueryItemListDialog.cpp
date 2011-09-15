@@ -110,6 +110,12 @@ void QueryItemListDialog::setColumnMode()
     ui->btnMath->hide();
     ui->btnNot->hide();
     ui->btnStar->hide();
+    ui->txtQueryText->hide();
+    ui->label->hide();
+    ui->frame_2->hide();
+    ui->frame_3->hide();
+    ui->btnRollup->show();
+    resize(200, 100);
 }
 
 void QueryItemListDialog::showSymbolPanel()
@@ -183,9 +189,30 @@ void QueryItemListDialog::showSymbolPanel()
             Column* c = tables.at(i)->getColumn(cols.at(j));
             if(c==0) c = tables.at(i)->getColumnFromParents(cols.at(j));
             if(c==0) continue;
-            QAction* colAction = new QAction(c->getDataType()->getIcon(), c->getName(), this);
-            colAction->setData(QString("#") + tables.at(i)->getName()+QString("+")+c->getName());
-            colMenu->addAction(colAction);
+            bool canGo = false;
+            if(m_columnsToShow.isEmpty())
+            {
+                canGo = true;
+            }
+            else
+            {
+                // search if the found column is in the m_columnsToShow vector
+                for(int k=0; k<m_columnsToShow.size(); k++)
+                {
+                    if(m_columnsToShow.at(k)->getName() == c->getName() && m_columnsToShow.at(k)->getTable()->getName() == tables.at(i)->getName())
+                    {
+                        canGo = true;
+                    }
+                }
+            }
+
+            if(canGo)
+            {
+                QAction* colAction = new QAction(c->getDataType()->getIcon(), c->getName(), this);
+                colAction->setData(QString("#") + tables.at(i)->getName()+QString("+")+c->getName());
+                colMenu->addAction(colAction);
+            }
+
         }
         tempAction->setMenu(colMenu);
     }
@@ -203,6 +230,7 @@ void QueryItemListDialog::showSymbolPanel()
     ui->btnFunctions->setMenu(m_functionsMenu);
     ui->btnComparison->setMenu(m_comparisonMenu);
     ui->btnColumn->setMenu(m_tablesMenu);
+    ui->btnRollup->hide();
 
     ui->grpExpressionButtons->setCurrentIndex(-1);
 }
@@ -307,5 +335,11 @@ void QueryItemListDialog::btnNotClicked()
 void QueryItemListDialog::btnAcceptText()
 {
     m_selected = QString("$") + ui->txtQueryText->text();
+    close();
+}
+
+void QueryItemListDialog::btnRollupClicked()
+{
+    m_selected = strRollup;
     close();
 }
