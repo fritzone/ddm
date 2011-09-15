@@ -184,7 +184,9 @@ QGraphicsItemGroup* CellTypeChooser::render(int& x, int& y, int& w, int &h)
         w += m_text->boundingRect().width();
         m_needsFrame = false;
         break;
-
+    default:
+        // this is something wrong
+        return 0;
     }
 
     if(typeIcon)

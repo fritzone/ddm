@@ -511,8 +511,8 @@
           <rect>
            <x>0</x>
            <y>0</y>
-           <width>461</width>
-           <height>192</height>
+           <width>460</width>
+           <height>193</height>
           </rect>
          </property>
          <attribute name="label">
@@ -651,14 +651,8 @@
                </property>
               </widget>
              </item>
-             <item row="5" column="3">
-              <widget class="QToolButton" name="btnIs">
-               <property name="font">
-                <font>
-                 <weight>75</weight>
-                 <bold>true</bold>
-                </font>
-               </property>
+             <item row="1" column="4">
+              <widget class="QToolButton" name="btnComparison">
                <property name="focusPolicy">
                 <enum>Qt::ClickFocus</enum>
                </property>
@@ -666,48 +660,17 @@
                 <enum>Qt::CustomContextMenu</enum>
                </property>
                <property name="toolTip">
-                <string>The IS keyword</string>
+                <string>Comparison (=, !=, ...) operations</string>
                </property>
                <property name="autoFillBackground">
                 <bool>true</bool>
                </property>
                <property name="text">
-                <string>IS</string>
-               </property>
-               <property name="popupMode">
-                <enum>QToolButton::InstantPopup</enum>
-               </property>
-               <property name="toolButtonStyle">
-                <enum>Qt::ToolButtonIconOnly</enum>
-               </property>
-               <property name="autoRaise">
-                <bool>true</bool>
-               </property>
-               <property name="arrowType">
-                <enum>Qt::NoArrow</enum>
-               </property>
-              </widget>
-             </item>
-             <item row="5" column="4">
-              <widget class="QToolButton" name="btnBitwise">
-               <property name="focusPolicy">
-                <enum>Qt::ClickFocus</enum>
-               </property>
-               <property name="contextMenuPolicy">
-                <enum>Qt::CustomContextMenu</enum>
-               </property>
-               <property name="toolTip">
-                <string>Bitwise/Logical operations such as AND, OR, NOT</string>
-               </property>
-               <property name="autoFillBackground">
-                <bool>true</bool>
-               </property>
-               <property name="text">
-                <string>Logic</string>
+                <string>Comp</string>
                </property>
                <property name="icon">
                 <iconset resource="dbm.qrc">
-                 <normaloff>:/images/actions/images/small/neg.png</normaloff>:/images/actions/images/small/neg.png</iconset>
+                 <normaloff>:/images/actions/images/small/not_eq.png</normaloff>:/images/actions/images/small/not_eq.png</iconset>
                </property>
                <property name="popupMode">
                 <enum>QToolButton::InstantPopup</enum>
@@ -723,12 +686,51 @@
                </property>
               </widget>
              </item>
-             <item row="5" column="1">
+             <item row="1" column="6">
+              <widget class="QToolButton" name="btnRollup">
+               <property name="font">
+                <font>
+                 <weight>50</weight>
+                 <italic>true</italic>
+                 <bold>false</bold>
+                </font>
+               </property>
+               <property name="focusPolicy">
+                <enum>Qt::ClickFocus</enum>
+               </property>
+               <property name="contextMenuPolicy">
+                <enum>Qt::CustomContextMenu</enum>
+               </property>
+               <property name="toolTip">
+                <string>The ROLLUP keyword</string>
+               </property>
+               <property name="autoFillBackground">
+                <bool>true</bool>
+               </property>
+               <property name="text">
+                <string>ROLLUP</string>
+               </property>
+               <property name="popupMode">
+                <enum>QToolButton::InstantPopup</enum>
+               </property>
+               <property name="toolButtonStyle">
+                <enum>Qt::ToolButtonIconOnly</enum>
+               </property>
+               <property name="autoRaise">
+                <bool>true</bool>
+               </property>
+               <property name="arrowType">
+                <enum>Qt::NoArrow</enum>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="3">
               <widget class="QToolButton" name="btnLike">
                <property name="font">
                 <font>
-                 <weight>75</weight>
-                 <bold>true</bold>
+                 <weight>50</weight>
+                 <italic>true</italic>
+                 <bold>false</bold>
                 </font>
                </property>
                <property name="focusPolicy">
@@ -760,7 +762,44 @@
                </property>
               </widget>
              </item>
-             <item row="5" column="0">
+             <item row="2" column="1">
+              <widget class="QToolButton" name="btnNull">
+               <property name="font">
+                <font>
+                 <weight>75</weight>
+                 <bold>true</bold>
+                </font>
+               </property>
+               <property name="focusPolicy">
+                <enum>Qt::ClickFocus</enum>
+               </property>
+               <property name="contextMenuPolicy">
+                <enum>Qt::CustomContextMenu</enum>
+               </property>
+               <property name="toolTip">
+                <string>The NOT keyword</string>
+               </property>
+               <property name="autoFillBackground">
+                <bool>true</bool>
+               </property>
+               <property name="text">
+                <string>NULL</string>
+               </property>
+               <property name="popupMode">
+                <enum>QToolButton::InstantPopup</enum>
+               </property>
+               <property name="toolButtonStyle">
+                <enum>Qt::ToolButtonIconOnly</enum>
+               </property>
+               <property name="autoRaise">
+                <bool>true</bool>
+               </property>
+               <property name="arrowType">
+                <enum>Qt::NoArrow</enum>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="0">
               <widget class="QToolButton" name="btnStar">
                <property name="maximumSize">
                 <size>
@@ -804,8 +843,8 @@
                </property>
               </widget>
              </item>
-             <item row="1" column="4">
-              <widget class="QToolButton" name="btnComparison">
+             <item row="2" column="4">
+              <widget class="QToolButton" name="btnBitwise">
                <property name="focusPolicy">
                 <enum>Qt::ClickFocus</enum>
                </property>
@@ -813,60 +852,23 @@
                 <enum>Qt::CustomContextMenu</enum>
                </property>
                <property name="toolTip">
-                <string>Comparison (=, !=, ...) operations</string>
+                <string>Bitwise/Logical operations such as AND, OR, NOT</string>
                </property>
                <property name="autoFillBackground">
                 <bool>true</bool>
                </property>
                <property name="text">
-                <string>Comp</string>
+                <string>Logic</string>
                </property>
                <property name="icon">
                 <iconset resource="dbm.qrc">
-                 <normaloff>:/images/actions/images/small/not_eq.png</normaloff>:/images/actions/images/small/not_eq.png</iconset>
+                 <normaloff>:/images/actions/images/small/neg.png</normaloff>:/images/actions/images/small/neg.png</iconset>
                </property>
                <property name="popupMode">
                 <enum>QToolButton::InstantPopup</enum>
                </property>
                <property name="toolButtonStyle">
                 <enum>Qt::ToolButtonTextBesideIcon</enum>
-               </property>
-               <property name="autoRaise">
-                <bool>true</bool>
-               </property>
-               <property name="arrowType">
-                <enum>Qt::NoArrow</enum>
-               </property>
-              </widget>
-             </item>
-             <item row="1" column="6">
-              <widget class="QToolButton" name="btnRollup">
-               <property name="font">
-                <font>
-                 <weight>50</weight>
-                 <bold>false</bold>
-                </font>
-               </property>
-               <property name="focusPolicy">
-                <enum>Qt::ClickFocus</enum>
-               </property>
-               <property name="contextMenuPolicy">
-                <enum>Qt::CustomContextMenu</enum>
-               </property>
-               <property name="toolTip">
-                <string>The ROLLUP keyword</string>
-               </property>
-               <property name="autoFillBackground">
-                <bool>true</bool>
-               </property>
-               <property name="text">
-                <string>ROLLUP</string>
-               </property>
-               <property name="popupMode">
-                <enum>QToolButton::InstantPopup</enum>
-               </property>
-               <property name="toolButtonStyle">
-                <enum>Qt::ToolButtonIconOnly</enum>
                </property>
                <property name="autoRaise">
                 <bool>true</bool>
@@ -889,10 +891,49 @@
             </property>
             <layout class="QHBoxLayout" name="horizontalLayout">
              <item>
+              <widget class="QToolButton" name="btnIs">
+               <property name="font">
+                <font>
+                 <weight>50</weight>
+                 <italic>true</italic>
+                 <bold>false</bold>
+                </font>
+               </property>
+               <property name="focusPolicy">
+                <enum>Qt::ClickFocus</enum>
+               </property>
+               <property name="contextMenuPolicy">
+                <enum>Qt::CustomContextMenu</enum>
+               </property>
+               <property name="toolTip">
+                <string>The IS keyword</string>
+               </property>
+               <property name="autoFillBackground">
+                <bool>true</bool>
+               </property>
+               <property name="text">
+                <string>IS</string>
+               </property>
+               <property name="popupMode">
+                <enum>QToolButton::InstantPopup</enum>
+               </property>
+               <property name="toolButtonStyle">
+                <enum>Qt::ToolButtonIconOnly</enum>
+               </property>
+               <property name="autoRaise">
+                <bool>true</bool>
+               </property>
+               <property name="arrowType">
+                <enum>Qt::NoArrow</enum>
+               </property>
+              </widget>
+             </item>
+             <item>
               <widget class="QToolButton" name="btnNot">
                <property name="font">
                 <font>
                  <weight>50</weight>
+                 <italic>true</italic>
                  <bold>false</bold>
                 </font>
                </property>
@@ -930,6 +971,7 @@
                <property name="font">
                 <font>
                  <weight>50</weight>
+                 <italic>true</italic>
                  <bold>false</bold>
                 </font>
                </property>
@@ -967,6 +1009,7 @@
                <property name="font">
                 <font>
                  <weight>50</weight>
+                 <italic>true</italic>
                  <bold>false</bold>
                 </font>
                </property>
@@ -1004,6 +1047,7 @@
                <property name="font">
                 <font>
                  <weight>50</weight>
+                 <italic>true</italic>
                  <bold>false</bold>
                 </font>
                </property>
@@ -1041,6 +1085,7 @@
                <property name="font">
                 <font>
                  <weight>50</weight>
+                 <italic>true</italic>
                  <bold>false</bold>
                 </font>
                </property>
@@ -1153,8 +1198,8 @@ p, li { white-space: pre-wrap; }
           <rect>
            <x>0</x>
            <y>0</y>
-           <width>461</width>
-           <height>192</height>
+           <width>460</width>
+           <height>193</height>
           </rect>
          </property>
          <attribute name="icon">
