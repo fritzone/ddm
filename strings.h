@@ -126,6 +126,10 @@ static const QString strNotText = "NOT_TEXT";
 static const QString strDistinct = "DISTINCT";
 static const QString strStar = "*";
 static const QString strRollup = "ROLLUP";
+static const QString strNull = "NULL";
+
+static const QString strOpenParantheses = "(";
+static const QString strCloseParantheses = ")";
 
 static const QString strActionIndexSeparator = "^";
 

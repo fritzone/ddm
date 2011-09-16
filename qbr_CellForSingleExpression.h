@@ -6,6 +6,7 @@
 
 class CellClose;
 class CellTypeChooser;
+class CellAsCommand;
 
 class CellForSingleExpression : public QueryGraphicsItem
 {
@@ -18,6 +19,11 @@ public:
     virtual void mouseMove(int x, int y){}
     virtual void mouseLeft(int x, int y){}
     virtual void onClose();
+    void setAs(CellAsCommand* as)
+    {
+        m_as = as;
+    }
+
 private:
     void newElement();
 private:
@@ -25,6 +31,7 @@ private:
     CellClose* m_close;
     CellTypeChooser* m_smallTypeModifier;
     int m_saveW;
+    CellAsCommand* m_as;
 };
 
 #endif // CELLFORUNARYWHEREEXPRESSION_H

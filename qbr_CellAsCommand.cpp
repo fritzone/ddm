@@ -68,11 +68,6 @@ void CellAsCommand::updateWidth(int newWidth)
 
     CellCommand::updateWidth(newRect.width() + newRect.left() - CELL_SIZE);
 
-    //if(hasClose())
-    //{
-    //    m_close->updateWidth(newRect.left() + newRect.width() + CELL_SIZE + 6);
-    //}
-
     m_helper->addNewHotCell(this, m_textInputRect->boundingRect().toRect());
 }
 

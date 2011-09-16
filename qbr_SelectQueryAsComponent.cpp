@@ -1,6 +1,7 @@
 #include "qbr_SelectQueryAsComponent.h"
 #include "qbr_QueryAsGenerator.h"
 #include "qbr_TableQueryComponent.h"
+#include "qbr_SingleExpressionQueryComponent.h"
 
 SelectQueryAsComponent::SelectQueryAsComponent(QueryComponent* p, int l):QueryComponent(p,l)
 {
@@ -35,9 +36,20 @@ bool SelectQueryAsComponent::setAs(const QString& as)
 
 void SelectQueryAsComponent::onClose()
 {
+    {
     TableQueryComponent* parent = dynamic_cast<TableQueryComponent*>(m_parent);
     if(parent)
     {
         parent->removeAs();
     }
+    }
+
+    {
+    SingleExpressionQueryComponent* parent = dynamic_cast<SingleExpressionQueryComponent*>(m_parent);
+    if(parent)
+    {
+        parent->removeAs();
+    }
+    }
+
 }

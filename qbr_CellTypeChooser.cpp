@@ -83,6 +83,9 @@ QGraphicsItemGroup* CellTypeChooser::render(int& x, int& y, int& w, int &h)
     textMappings[CELLTYPE_EXISTS] = strExists;
     textMappings[CELLTYPE_STAR] = strStar;
     textMappings[CELLTYPE_ROLLUP] = strRollup;
+    textMappings[CELLTYPE_NULL] = strNull;
+    textMappings[CELLTYPE_OPEN_PARANTHESES] = strOpenParantheses;
+    textMappings[CELLTYPE_CLOSE_PARANTHESES] = strCloseParantheses;
 
     if(iconMappings.contains(m_currentType))
     {
@@ -105,7 +108,7 @@ QGraphicsItemGroup* CellTypeChooser::render(int& x, int& y, int& w, int &h)
         }
         m_text->setFont(theFont);
         m_text->setX(x + CELL_SIZE + 1);
-        m_text->setY(y - 4);
+        m_text->setY(y - 8);
         addToGroup(m_text);
         width += m_text->boundingRect().width();
         w += m_text->boundingRect().width();
@@ -184,9 +187,10 @@ QGraphicsItemGroup* CellTypeChooser::render(int& x, int& y, int& w, int &h)
         w += m_text->boundingRect().width();
         m_needsFrame = false;
         break;
+
     default:
+        break;
         // this is something wrong
-        return 0;
     }
 
     if(typeIcon)
