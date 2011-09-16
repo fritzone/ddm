@@ -11,6 +11,7 @@ class DatabaseFunctionInstantiationComponent;
 class DatabaseBuiltinFunction;
 class Column;
 class SelectQueryJoinComponent;
+class SelectQueryAsComponent;
 
 /**
  * Class, representing a unary where expression.
@@ -63,6 +64,7 @@ public:
     bool hasAtLeastOneColumnSelected();
 
     QVector<const Column*> getColumns();
+    void removeAs();
 
 private:
 
@@ -91,6 +93,8 @@ private:
     SelectQueryJoinComponent* m_onOwner;
     WhereExpressionQueryComponent* m_onComponent;
 
+    // in case this has an ALIAS
+    SelectQueryAsComponent* m_as;
 };
 
 #endif // UNARYWHEREEXPRESSIONQUERYCOMPONENT_H

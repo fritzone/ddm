@@ -56,6 +56,10 @@ enum CellTypeChooserType
     CELLTYPE_LESS_OR_EQUAL,
     CELLTYPE_GREATER_OR_EQUAL,
 
+    /* parantheses for building*/
+    CELLTYPE_OPEN_PARANTHESES,
+    CELLTYPE_CLOSE_PARANTHESES,
+
     /* BETWEEN keyword will get own button*/
     CELLTYPE_BETWEEN,       // BETWEEN keyword
 
@@ -70,6 +74,9 @@ enum CellTypeChooserType
 
     /* Rollup keyword */
     CELLTYPE_ROLLUP,
+
+    /* The NULL keyword */
+    CELLTYPE_NULL,
 
     /* Special keywords - all these go to their own button*/
     CELLTYPE_BINARY,        // BINARY (!!) This is MySQL specific?

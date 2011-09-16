@@ -5,11 +5,13 @@
 #include "qbr_SingleExpressionQueryComponent.h"
 #include "qbr_DatabaseFunctionInstantiationComponent.h"
 #include "qbr_QueryGraphicsItem.h"
+#include "qbr_CellAsCommand.h"
+#include "qbr_CellQuerySmallOptionsBox.h"
 
 #include <QBrush>
 
 CellForSingleExpression::CellForSingleExpression (int level, QueryGraphicsHelper *c, QueryGraphicsItem *parent, QueryComponent *owner):
-    QueryGraphicsItem(level, parent, c, owner), m_frame(0), m_close(0), m_smallTypeModifier(0)
+    QueryGraphicsItem(level, parent, c, owner), m_frame(0), m_close(0), m_smallTypeModifier(0), m_as(0)
 {
 }
 
@@ -107,6 +109,40 @@ QGraphicsItemGroup* CellForSingleExpression::render(int &x, int &y, int &w, int 
     if(m_level != -2) y += m_frame->boundingRect().height() + 4;
     m_saveW = w;
     w = saveW>0?saveW:w;
+
+    if(m_as)
+    {
+        int lmw = sw;
+        x += CHILDREN_ALIGNMENT;
+        int oldy = y-2;
+        int neww = lmw - (m_as->getLevel() + 1)* 20;
+        grp->addToGroup(m_as->render(x, y, neww, h));
+        int halfway = (oldy + y) / 2 - 5;
+        if(w<neww-20) {w = neww - 20; lmw = neww - 20;}
+
+        grp->addToGroup(new QGraphicsLineItem(x +5+2-CHILDREN_ALIGNMENT , oldy - 1, x + 5+2-CHILDREN_ALIGNMENT, halfway , this));  // top
+        //if(!m_joins.isEmpty())
+        //{
+        //grp->addToGroup(    new QGraphicsLineItem(x +5+2-CHILDREN_ALIGNMENT , halfway +10, x + 5+2-CHILDREN_ALIGNMENT, y, this));   // botton
+        //}
+        grp->addToGroup(new QGraphicsLineItem(x +5+2-CHILDREN_ALIGNMENT +5 , halfway+5, x + 1, halfway+5, this));                    // to right
+
+        // this will be the small options box before the AS
+        QSet<OptionsType> t;
+        QSet<OptionsType> more = m_as->getOwner()->provideOptions();
+        t.unite(more);
+
+        CellQuerySmallOptionsBox* smb = new CellQuerySmallOptionsBox(t, m_helper, m_as->getLevel(), m_parent, m_as->getOwner(), CellQuerySmallOptionsBox::SHAPE_DIAMOND);
+        int tx = x-15 + 2; int ty = halfway; int tw = w; int th = h;
+        grp->addToGroup(smb->render(tx, ty, tw, th));
+
+        x -= CHILDREN_ALIGNMENT;
+        w = w<lmw?lmw:w;
+
+        y+=2;
+
+    }
+
     return grp;
 }
 
@@ -122,6 +158,11 @@ void CellForSingleExpression::updateWidth(int newWidth)
     if(m_close)
     {
         m_close->updateWidth(m_frame->rect().right() - 20); //m_saveW + (m_level)*CELL_SIZE + 3);
+    }
+
+    if(m_as)
+    {
+        m_as->updateWidth(newWidth);
     }
 }
 

@@ -52,6 +52,9 @@ public slots:
     void btnNotClicked();
     void btnAcceptText();
     void btnRollupClicked();
+    void btnNullClicked();
+    void btnOpenParanthesisClicked();
+    void btnCloseParanthesisClicked();
 
 private:
     Ui::QueryItemListDialog *ui;

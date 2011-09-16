@@ -223,7 +223,7 @@ void QueryItemListDialog::showSymbolPanel()
     m_comparisonMenu->connect(m_comparisonMenu, SIGNAL(triggered(QAction*)), this, SLOT(actionTriggered(QAction*)));
     m_tablesMenu->connect(m_tablesMenu, SIGNAL(triggered(QAction*)), this, SLOT(actionTriggered(QAction*)));
 
-    resize(400, 250);
+    resize(410, 250);
 
     ui->btnMath->setMenu(m_mathMenu);
     ui->btnBitwise->setMenu(m_bitMenu);
@@ -341,5 +341,23 @@ void QueryItemListDialog::btnAcceptText()
 void QueryItemListDialog::btnRollupClicked()
 {
     m_selected = strRollup;
+    close();
+}
+
+void QueryItemListDialog::btnNullClicked()
+{
+    m_selected = strNull;
+    close();
+}
+
+void QueryItemListDialog::btnCloseParanthesisClicked()
+{
+    m_selected = strCloseParantheses;
+    close();
+}
+
+void QueryItemListDialog::btnOpenParanthesisClicked()
+{
+    m_selected = strOpenParantheses;
     close();
 }

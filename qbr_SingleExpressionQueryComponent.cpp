@@ -9,11 +9,14 @@
 #include "Version.h"
 #include "qbr_SelectQueryJoinComponent.h"
 #include "qbr_WhereExpressionQueryComponent.h"
+#include "qbr_SelectQuerySelectComponent.h"
+#include "qbr_CellAsCommand.h"
+#include "qbr_SelectQueryAsComponent.h"
 
 #include <QDebug>
 
 SingleExpressionQueryComponent::SingleExpressionQueryComponent(QueryComponent* p, int l): WhereExpressionQueryComponent(p,l),
-    m_gritm(0), m_elements(), m_columnsAtGivenPosition(), m_functionsAtGivenPosition(), m_functionInstantiationAtGivenPosition(), m_typedValuesAtGivenPosition()
+    m_gritm(0), m_elements(), m_columnsAtGivenPosition(), m_functionsAtGivenPosition(), m_functionInstantiationAtGivenPosition(), m_typedValuesAtGivenPosition(), m_as(0)
 {
 }
 
@@ -24,6 +27,10 @@ QueryGraphicsItem* SingleExpressionQueryComponent::createGraphicsItem(QueryGraph
     int adder = 1;
     if(l == -2) adder = 0;
     m_gritm = new CellForSingleExpression(l + adder, helper, parent, this);
+    if(m_as)
+    {
+        m_gritm->setAs(new CellAsCommand(helper, m_level + 1, m_gritm, m_as, true));
+    }
 
     return m_gritm;
 
@@ -37,6 +44,10 @@ QString SingleExpressionQueryComponent::get()
 QSet<OptionsType> SingleExpressionQueryComponent::provideOptions()
 {
     QSet<OptionsType> t;
+    if(dynamic_cast<SelectQuerySelectComponent*>(m_parent))
+    {
+        t.insert(OPTIONS_AS);
+    }
     return t;
 }
 
@@ -133,6 +144,9 @@ void SingleExpressionQueryComponent::handleAction(const QString& action, QueryCo
     mappings[strDistinct] = CELLTYPE_DISTINCT;
     mappings[strStar] = CELLTYPE_STAR;
     mappings[strRollup] = CELLTYPE_ROLLUP;
+    mappings[strNull] = CELLTYPE_NULL;
+    mappings[strOpenParantheses] = CELLTYPE_OPEN_PARANTHESES;
+    mappings[strCloseParantheses] = CELLTYPE_CLOSE_PARANTHESES;
 
     if(action.indexOf(strActionIndexSeparator)&& !action.startsWith(strRemove)&&!action.startsWith("@")&&!action.startsWith("#")&&!action.startsWith("$"))
     {
@@ -173,6 +187,13 @@ void SingleExpressionQueryComponent::handleAction(const QString& action, QueryCo
             {
                 m_elements.append(mappings[pureAction]);
             }
+        }
+        else
+        if(action == ADD_ALIAS)
+        {
+            m_as = new SelectQueryAsComponent(this, m_level + 1);
+            addChild(m_as);
+            m_helper->triggerReRender();
         }
         m_helper->triggerReRender();
         return;
@@ -364,4 +385,10 @@ QVector<const Column*> SingleExpressionQueryComponent::getColumns()
         ++ it;
     }
     return result;
+}
+
+void SingleExpressionQueryComponent::removeAs()
+{
+    m_as = 0;
+    m_helper->triggerReRender();
 }
