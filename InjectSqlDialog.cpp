@@ -130,27 +130,27 @@ void InjectSqlDialog::populateCodepageCombo()
 
                 if(ls[1] != "bin" && ls[1] != "unicode" && ls[1] != "general")
                 {
-                    iconName = ":/images/actions/images/small/flag_" + ls[1] + ".PNG";
+                    iconName = ":/images/actions/images/small/flag_" + ls[1] + ".png";
                 }
                 else
                 {
                     if(ls[0] == "greek")
                     {
-                        iconName = ":/images/actions/images/small/flag_greek.PNG";
+                        iconName = ":/images/actions/images/small/flag_greek.png";
                     }
                     else
                     if(ls[0] == "armscii8")
                     {
-                        iconName = ":/images/actions/images/small/flag_armenia.PNG";
+                        iconName = ":/images/actions/images/small/flag_armenia.png";
                     }
                     else
                     if(ls[0] == "hebrew")
                     {
-                        iconName = ":/images/actions/images/small/flag_israel.PNG";
+                        iconName = ":/images/actions/images/small/flag_israel.png";
                     }
                     else
                     {
-                        iconName = ":/images/actions/images/small/flag_" + ls[1] + ".PNG";
+                        iconName = ":/images/actions/images/small/flag_" + ls[1] + ".pmg";
                     }
                 }
 

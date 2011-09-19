@@ -79,7 +79,7 @@
              </property>
              <property name="icon">
               <iconset resource="dbm.qrc">
-               <normaloff>:/images/actions/images/small/datatypes_text.PNG</normaloff>:/images/actions/images/small/datatypes_text.PNG</iconset>
+               <normaloff>:/images/actions/images/small/datatypes_text.png</normaloff>:/images/actions/images/small/datatypes_text.png</iconset>
              </property>
             </item>
             <item>
@@ -88,7 +88,7 @@
              </property>
              <property name="icon">
               <iconset resource="dbm.qrc">
-               <normaloff>:/images/actions/images/small/datatypes_numeric.PNG</normaloff>:/images/actions/images/small/datatypes_numeric.PNG</iconset>
+               <normaloff>:/images/actions/images/small/datatypes_numeric.png</normaloff>:/images/actions/images/small/datatypes_numeric.png</iconset>
              </property>
             </item>
             <item>
@@ -97,7 +97,7 @@
              </property>
              <property name="icon">
               <iconset resource="dbm.qrc">
-               <normaloff>:/images/actions/images/small/datatypes_bool.PNG</normaloff>:/images/actions/images/small/datatypes_bool.PNG</iconset>
+               <normaloff>:/images/actions/images/small/datatypes_bool.png</normaloff>:/images/actions/images/small/datatypes_bool.png</iconset>
              </property>
             </item>
             <item>
@@ -106,7 +106,7 @@
              </property>
              <property name="icon">
               <iconset resource="dbm.qrc">
-               <normaloff>:/images/actions/images/small/datatypes_datetime.PNG</normaloff>:/images/actions/images/small/datatypes_datetime.PNG</iconset>
+               <normaloff>:/images/actions/images/small/datatypes_datetime.png</normaloff>:/images/actions/images/small/datatypes_datetime.png</iconset>
              </property>
             </item>
             <item>
@@ -115,7 +115,7 @@
              </property>
              <property name="icon">
               <iconset resource="dbm.qrc">
-               <normaloff>:/images/actions/images/small/datatypes_blob.PNG</normaloff>:/images/actions/images/small/datatypes_blob.PNG</iconset>
+               <normaloff>:/images/actions/images/small/datatypes_blob.png</normaloff>:/images/actions/images/small/datatypes_blob.png</iconset>
              </property>
             </item>
             <item>
@@ -124,7 +124,7 @@
              </property>
              <property name="icon">
               <iconset resource="dbm.qrc">
-               <normaloff>:/images/actions/images/small/datatypes_misc.PNG</normaloff>:/images/actions/images/small/datatypes_misc.PNG</iconset>
+               <normaloff>:/images/actions/images/small/datatypes_misc.png</normaloff>:/images/actions/images/small/datatypes_misc.png</iconset>
              </property>
             </item>
             <item>
@@ -133,7 +133,7 @@
              </property>
              <property name="icon">
               <iconset resource="dbm.qrc">
-               <normaloff>:/images/actions/images/small/datatypes_spatial.PNG</normaloff>:/images/actions/images/small/datatypes_spatial.PNG</iconset>
+               <normaloff>:/images/actions/images/small/datatypes_spatial.png</normaloff>:/images/actions/images/small/datatypes_spatial.png</iconset>
              </property>
             </item>
            </widget>
