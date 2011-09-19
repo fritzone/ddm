@@ -12,13 +12,13 @@ static const QString strMisc = "Misc";
 static const QString strSpatial = "Spatial";
 static const QString strNA = "N/A";
 
-static const QString strDtTextIcon = ":/images/actions/images/small/datatypes_text.PNG";
-static const QString strDtNumericIcon = ":/images/actions/images/small/datatypes_numeric.PNG";
-static const QString strDtMiscIcon = ":/images/actions/images/small/datatypes_misc.PNG";
-static const QString strDtDateTimeIcon = ":/images/actions/images/small/datatypes_datetime.PNG";
-static const QString strDtBoolIcon = ":/images/actions/images/small/datatypes_bool.PNG";
-static const QString strDtBlobIcon = ":/images/actions/images/small/datatypes_blob.PNG";
-static const QString strDtSpatialIcon = ":/images/actions/images/small/datatypes_spatial.PNG";
+static const QString strDtTextIcon = ":/images/actions/images/small/datatypes_text.png";
+static const QString strDtNumericIcon = ":/images/actions/images/small/datatypes_numeric.png";
+static const QString strDtMiscIcon = ":/images/actions/images/small/datatypes_misc.png";
+static const QString strDtDateTimeIcon = ":/images/actions/images/small/datatypes_datetime.png";
+static const QString strDtBoolIcon = ":/images/actions/images/small/datatypes_bool.png";
+static const QString strDtBlobIcon = ":/images/actions/images/small/datatypes_blob.png";
+static const QString strDtSpatialIcon = ":/images/actions/images/small/datatypes_spatial.png";
 
 static const QString strKeyIcon = ":/images/actions/images/small/key.png";
 static const QString strSaveIcon = ":/images/actions/images/actions/filesave.png";
