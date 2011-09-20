@@ -46,6 +46,7 @@ public:
     void newHavingExpression(SelectQuery::NewWhereExpressionType t = PLAIN_NEW_WHERE_EXPRESSION);
     void newSelectExpression();
     void newGroupByExpression();
+    void newOrderByExpression();
 
     void removeFrom();
     bool hasWhere();
@@ -54,6 +55,15 @@ public:
     bool hasGroupByFunctions();
     bool hasAtLeastOneColumnSelected();
     QVector<const Column*> getSelectedColumns();    // used only for group by stuff, not for the SQL writer ...
+
+    /**
+     *  Returns a list of strings that can be used in an order by command. The format of the strings is: $COLUMN ^ALIAS #nr
+     *  Based on the following rules:
+     *   1. if the item has an alias, it is used its name
+     *   2. if the item is a column, but has no alias it is used
+     *   3. if the item is an expression and has no alias its order is used.
+     */
+    QStringList getOrderByElements();
 
 private:
     SelectQuerySelectComponent* m_select;

@@ -44,11 +44,16 @@ public:
     {
         return m_having;
     }
+    CellOrderByCommand* getOrderBy() const
+    {
+        return m_orderBy;
+    }
     void addFromGraphicsItem(QueryGraphicsItem*);
     void addSelectGraphicsItem(QueryGraphicsItem*);
     void addWhereGraphicsItem(QueryGraphicsItem*);
     void addGroupByGraphicsItem(QueryGraphicsItem*);
     void addHavingGraphicsItem(QueryGraphicsItem*);
+    void addOrderByGraphicsItem(QueryGraphicsItem*);
 
     void createSelectCell(QueryComponent*);
     void createFromCell(QueryComponent*);

@@ -22,10 +22,11 @@ public:
 
     enum ListType
     {
-        LIST_TABLES = 1,
+        LIST_TABLES = 0,
         INPUT_TEXT,
         INPUT_SYMBOLS,
-        INPUT_COLUMNS
+        INPUT_COLUMNS,
+        INPUT_ORDERBY
     };
 
     QueryGraphicsHelper();
@@ -55,6 +56,11 @@ public:
         m_columnsToShow = c;
     }
 
+    void setOrderBy(QStringList oby)
+    {
+        m_orderByElements = oby ;
+    }
+
 private:
 
     QMap<QueryGraphicsItem*, QRect> hotCells;
@@ -63,7 +69,7 @@ private:
     Query* m_query;
     MainWindow* m_form;
     QVector<const Column*> m_columnsToShow;
-
+    QStringList m_orderByElements;
 };
 
 #endif // QUERYGRAPHICSHELPER_H

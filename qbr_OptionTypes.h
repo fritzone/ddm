@@ -17,6 +17,8 @@ enum OptionsType
     OPTIONS_NEW_WHERE_EXPR_AND,
     OPTIONS_NEW_WHERE_EXPR,
     OPTIONS_NEW_COLUMN,
+    OPTIONS_NEW_COLUMN_ORDER,
+    OPTIONS_NEW_ALIAS,          // use in the order by
 
     OPTIONS_LAST
 };

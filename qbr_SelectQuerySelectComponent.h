@@ -22,6 +22,7 @@ public:
     bool hasGroupByFunctions();
     bool hasAtLeastOneColumnSelected();
     QVector<const Column*> getSelectedColumns();
+    QStringList getOrderByElements();
 };
 
 #endif // SELECTQUERYSELECTCOMPONENT_H
