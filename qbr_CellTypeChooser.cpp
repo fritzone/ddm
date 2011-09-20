@@ -263,6 +263,7 @@ void CellTypeChooser::mousePress(int x, int y)
     QueryGraphicsHelper::ListType listType = QueryGraphicsHelper::INPUT_SYMBOLS;
     SingleExpressionQueryComponent* seq = dynamic_cast<SingleExpressionQueryComponent*>(m_parent->getOwner());
     QVector<const Column*> columns;
+    QStringList orderBy;
 
     if(seq)
     {
@@ -276,8 +277,12 @@ void CellTypeChooser::mousePress(int x, int y)
                 columns = sq->getSelectedColumns();
             }
         }
+
+
     }
     m_helper->setColumns(columns);
+    m_helper->setOrderBy(orderBy);
+
     QPoint a = scene()->views().at(0)->mapToGlobal((m_rect->mapToScene(m_rect->boundingRect().bottomLeft().toPoint())).toPoint() ) ;
     selected = m_helper->presentList(a.x() + 2-scene()->views().at(0)->horizontalScrollBar()->sliderPosition(), a.y() - scene()->views().at(0)->verticalScrollBar()->sliderPosition(), listType);
 

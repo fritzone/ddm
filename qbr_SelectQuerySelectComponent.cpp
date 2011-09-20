@@ -1,6 +1,8 @@
 #include "qbr_SelectQuerySelectComponent.h"
 #include "qbr_SelectQuery.h"
 #include "qbr_SingleExpressionQueryComponent.h"
+#include "qbr_SelectQueryAsComponent.h"
+#include "Column.h"
 #include "strings.h"
 
 SelectQuerySelectComponent::SelectQuerySelectComponent(QueryComponent* p, int l) : QueryComponent(p,l)
@@ -82,5 +84,43 @@ QVector<const Column*> SelectQuerySelectComponent::getSelectedColumns()
             }
         }
     }
+    return result;
+}
+
+QStringList SelectQuerySelectComponent::getOrderByElements()
+{
+    QStringList result;
+    for(int i=0; i<m_children.size(); i++)
+    {
+        bool added = false;
+        QVector<const Column*> columns;
+        SingleExpressionQueryComponent* seq = dynamic_cast<SingleExpressionQueryComponent*>(m_children.at(i));
+        if(seq)
+        {
+            if(seq->hasAtLeastOneColumnSelected())
+            {
+                columns = seq->getColumns();
+            }
+
+            for(int j=0; j<columns.size(); j++)
+            {
+                result.push_back(QString("$") + columns.at(j)->getName());  // add the columns
+            }
+
+            if(const SelectQueryAsComponent* as = seq->hasAs())             // and the last one is added as the alias
+            {
+                result.push_back(QString("^") + as->getAs());
+                added = true;
+            }
+        }
+
+        if(!added)
+        {
+            QString n;n.setNum(i);
+            result.push_back(QString("#") + n);
+        }
+
+    }
+
     return result;
 }

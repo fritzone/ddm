@@ -133,6 +133,11 @@ void SelectQueryGraphicsItem::addHavingGraphicsItem(QueryGraphicsItem* havingChi
     if(m_having) m_having->addChild(havingChild);
 }
 
+void SelectQueryGraphicsItem::addOrderByGraphicsItem(QueryGraphicsItem* orderByChild)
+{
+    if(m_orderBy) m_orderBy->addChild(orderByChild);
+}
+
 void SelectQueryGraphicsItem::onClose()
 {
 

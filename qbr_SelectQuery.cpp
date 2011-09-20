@@ -79,6 +79,16 @@ QueryGraphicsItem* SelectQuery::createGraphicsItem(QueryGraphicsHelper*, QueryGr
         }
     }
 
+    if(m_orderBy)
+    {
+        for(int i=0; i<m_orderBy->getChildren().size(); i++)
+        {
+            QueryGraphicsItem* gritmI = m_orderBy->getChildren().at(i)->createGraphicsItem(m_helper, (QueryGraphicsItem*)gi->getOrderBy());
+            gi->addOrderByGraphicsItem(gritmI);
+        }
+    }
+
+
     m_graphicsItem = gi;
     return gi;
 }
@@ -105,6 +115,16 @@ void SelectQuery::newGroupByExpression()
     {
         SingleExpressionQueryComponent* c = new SingleExpressionQueryComponent(m_groupby, m_level);
         m_groupby->addChild(c);
+        m_helper->triggerReRender();
+    }
+}
+
+void SelectQuery::newOrderByExpression()
+{
+    if(m_orderBy)
+    {
+        SingleExpressionQueryComponent* c = new SingleExpressionQueryComponent(m_orderBy, m_level);
+        m_orderBy->addChild(c);
         m_helper->triggerReRender();
     }
 }
@@ -320,4 +340,9 @@ QVector<const Table*> SelectQuery::getTables() const
 QVector<const Column*> SelectQuery::getSelectedColumns()
 {
     return m_select->getSelectedColumns();
+}
+
+QStringList SelectQuery::getOrderByElements()
+{
+    return m_select->getOrderByElements();
 }

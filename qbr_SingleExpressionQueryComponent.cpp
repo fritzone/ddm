@@ -392,3 +392,8 @@ void SingleExpressionQueryComponent::removeAs()
     m_as = 0;
     m_helper->triggerReRender();
 }
+
+const SelectQueryAsComponent* SingleExpressionQueryComponent::hasAs()
+{
+    return m_as;
+}
