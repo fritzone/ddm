@@ -7,6 +7,7 @@ class QueryGraphicsHelper;
 class QueryGraphicsView;
 class QueryGraphicsScene;
 class QueryGraphicsItem;
+class SqlHighlighter;
 
 namespace Ui {
     class NewViewForm;
@@ -25,6 +26,7 @@ public:
 
     void scrollTo(int hor, int ver);
     void getCenter(int& x, int& y);
+    void setSql(const QString& sql);
 
 protected:
     void changeEvent(QEvent *e);
@@ -34,6 +36,8 @@ private:
     QueryGraphicsView* m_qgv;
     QueryGraphicsScene* m_qgs;
     QueryGraphicsHelper* m_comps;
+    QString m_sql;
+    SqlHighlighter* m_highlighter;
 };
 
 #endif // NEWVIEWFORM_H

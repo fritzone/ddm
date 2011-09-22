@@ -7,7 +7,7 @@ class SelectQueryOrderByComponent : public QueryComponent
 {
 public:
     SelectQueryOrderByComponent(QueryComponent*, int);
-    virtual QString get(){return "ORDER BY"; }
+    virtual QString get() const;
     virtual QueryGraphicsItem* createGraphicsItem(QueryGraphicsHelper*, QueryGraphicsItem*){return 0;}
     virtual void handleAction(const QString& action, QueryComponent* referringObject);
     virtual QSet<OptionsType> provideOptions();

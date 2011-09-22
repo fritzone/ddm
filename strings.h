@@ -79,6 +79,8 @@ static const QString strNotEq1Icon = ":/images/actions/images/big/big_noteq_1.pn
 static const QString strNotEqNullSafeIcon = ":/images/actions/images/big/big_noteq_nullsafe.png";
 static const QString strColumnIcon = ":/images/actions/images/small/table-select-column-icon.png";
 static const QString strTypeHereIcon = ":/images/actions/images/small/type_here.png";
+static const QString strAliasIcon = ":/images/actions/images/small/alias.png";
+static const QString strOrderIcon = ":/images/actions/images/small/edit_list_order.png";
 
 static const QString NEW_TABLE = "New table reference";
 static const QString NEW_COLUMN = "New column";
@@ -127,6 +129,26 @@ static const QString strDistinct = "DISTINCT";
 static const QString strStar = "*";
 static const QString strRollup = "ROLLUP";
 static const QString strNull = "NULL";
+
+static const QString strLShiftOp = "<<";
+static const QString strRShiftOp = ">>";
+static const QString strOrOp = "|";
+static const QString strAndOp = "&";
+static const QString strNegOp = "~";
+static const QString strXorOp = "^";
+static const QString strMinusOp = "-";
+static const QString strPlusOp = "+";
+static const QString strMulOp = "*";
+static const QString strDivOp = "/";
+static const QString strModOp = "%";
+static const QString strDivTOp = "DIV";
+static const QString strEqOp = "=";
+static const QString strNEqOp = "!=";
+static const QString strLessOp = "<";
+static const QString strGrOp = ">";
+static const QString strLEOp = "<=";
+static const QString strGEOp = ">=";
+static const QString strNotOp = "!";
 
 static const QString strOpenParantheses = "(";
 static const QString strCloseParantheses = ")";

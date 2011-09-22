@@ -342,6 +342,18 @@ public:
         return icon;
     }
 
+    static const QIcon& getAliasIcon()
+    {
+        static const QIcon icon(strAliasIcon);
+        return icon;
+    }
+
+    static const QIcon& getOrderIcon()
+    {
+        static const QIcon icon(strOrderIcon);
+        return icon;
+    }
+
     static const QIcon& getColumnIcon()
     {
         static const QIcon icon(strColumnIcon);

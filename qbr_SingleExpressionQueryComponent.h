@@ -28,7 +28,7 @@ public:
     };
 
     SingleExpressionQueryComponent(QueryComponent*,int);
-    virtual QString get();
+    virtual QString get() const;
     virtual QueryGraphicsItem* createGraphicsItem(QueryGraphicsHelper*, QueryGraphicsItem*);
     virtual void handleAction(const QString& action, QueryComponent* referringObject);
     virtual QSet<OptionsType> provideOptions();

@@ -1491,6 +1491,7 @@ void MainWindow::rerenderQuery(Query* q)
 
     m_nvf->setGraphicsItem(q->getGraphicsItem());
     q->getHelper()->setScene(m_nvf->getScene());
+    m_nvf->setSql(q->get());
     setCentralWidget(m_nvf);
     m_nvf->scrollTo(cx, cy);
 }

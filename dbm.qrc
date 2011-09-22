@@ -144,8 +144,8 @@
         <file>images/small/flag_ukrainian.png</file>
         <file>images/small/flag_unicode.png</file>
         <file>images/big/bigdatatypes.png</file>
-        <file>images/small/alias.png</file>
         <file>images/small/edit_list_order.png</file>
+        <file>images/small/alias.png</file>
     </qresource>
     <qresource prefix="/bigger">
         <file>images/unaf.png</file>

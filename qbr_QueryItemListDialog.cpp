@@ -114,8 +114,28 @@ void QueryItemListDialog::setColumnMode()
     ui->label->hide();
     ui->frame_2->hide();
     ui->frame_3->hide();
+    ui->btnCloseParanthesis->hide();
+    ui->btnOpenParanthesis->hide();
+    ui->btnNull->hide();
     ui->btnRollup->show();
     resize(200, 100);
+}
+
+void QueryItemListDialog::setOrderByMode()
+{
+    m_tablesMenu->clear();
+    for(int i=0; i<m_orderBy.size(); i++)
+    {
+        QIcon icon = IconFactory::getEmptyIcon();
+        if(m_orderBy.at(i).startsWith("$")) icon = IconFactory::getColumnIcon();
+        if(m_orderBy.at(i).startsWith("~")) icon = IconFactory::getAliasIcon();
+        if(m_orderBy.at(i).startsWith("#")) icon = IconFactory::getOrderIcon();
+        QAction* tempAction = new QAction(icon, m_orderBy.at(i).mid(1), this);
+        tempAction->setData(QString("*") + m_orderBy.at(i));
+        m_tablesMenu->addAction(tempAction);
+    }
+
+    ui->btnRollup->hide();
 }
 
 void QueryItemListDialog::showSymbolPanel()

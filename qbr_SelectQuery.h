@@ -37,6 +37,7 @@ public:
         return QVector<CellTypeChooserType> ();
     }
     virtual QVector<const Table*> getTables() const;
+    virtual QString get() const;
 
     void newFromTableComponent();
     void newFromSelectQueryComponent();

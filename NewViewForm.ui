@@ -26,6 +26,9 @@
       <string/>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout">
+      <property name="sizeConstraint">
+       <enum>QLayout::SetMaximumSize</enum>
+      </property>
       <item>
        <layout class="QFormLayout" name="formLayout">
         <property name="fieldGrowthPolicy">
@@ -92,7 +95,14 @@
          </layout>
         </item>
         <item>
-         <widget class="QTextEdit" name="textEdit"/>
+         <widget class="QTextEdit" name="txtSql">
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>200</height>
+           </size>
+          </property>
+         </widget>
         </item>
         <item>
          <widget class="QGroupBox" name="groupBox_2">

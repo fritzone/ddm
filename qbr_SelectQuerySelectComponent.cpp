@@ -3,6 +3,8 @@
 #include "qbr_SingleExpressionQueryComponent.h"
 #include "qbr_SelectQueryAsComponent.h"
 #include "Column.h"
+#include "Table.h"
+
 #include "strings.h"
 
 SelectQuerySelectComponent::SelectQuerySelectComponent(QueryComponent* p, int l) : QueryComponent(p,l)
@@ -104,12 +106,13 @@ QStringList SelectQuerySelectComponent::getOrderByElements()
 
             for(int j=0; j<columns.size(); j++)
             {
-                result.push_back(QString("$") + columns.at(j)->getName());  // add the columns
+                result.push_back(QString("$") + columns.at(j)->getTable()->getName() + "." + columns.at(j)->getName());  // add the columns
+                added = true;
             }
 
             if(const SelectQueryAsComponent* as = seq->hasAs())             // and the last one is added as the alias
             {
-                result.push_back(QString("^") + as->getAs());
+                result.push_back(QString("~") + as->getAs());
                 added = true;
             }
         }
@@ -122,5 +125,17 @@ QStringList SelectQuerySelectComponent::getOrderByElements()
 
     }
 
+    return result;
+}
+
+QString SelectQuerySelectComponent::get() const
+{
+    QString result = "SELECT";
+    if(m_children.size()) result += "\n";
+    for(int i=0; i<m_children.size(); i++)
+    {
+        result += "\t";
+        result+= m_children.at(i)->get();
+    }
     return result;
 }
