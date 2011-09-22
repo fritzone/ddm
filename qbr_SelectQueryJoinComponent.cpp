@@ -76,3 +76,20 @@ void SelectQueryJoinComponent::removeExpression(WhereExpressionQueryComponent *w
 {
     m_joinExpressions.remove(m_joinExpressions.indexOf(w));
 }
+
+QString SelectQueryJoinComponent::get() const
+{
+    QString result = "JOIN";
+    for(int i=0; i<m_children.size(); i++)
+    {
+        result += "\t";
+        result+= m_children.at(i)->get();
+    }
+    result += "\nON\n";
+    for(int i=0; i<m_joinExpressions.size(); i++)
+    {
+        result += "\n";
+        result += m_joinExpressions.at(i)->get();
+    }
+    return result;
+}

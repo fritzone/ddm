@@ -331,6 +331,48 @@ QueryComponent* SelectQuery::duplicate()
     return newQuery;
 }
 
+QString SelectQuery::get() const
+{
+    QString result = "";
+    if(m_select)
+    {
+        result += m_select->get();
+        result += "\n";
+    }
+    if(m_from)
+    {
+        result += m_from->get();
+        result += "\n";
+    }
+    if(m_where)
+    {
+        result += m_where->get();
+        result += "\n";
+    }
+    if(m_groupby)
+    {
+        result += m_groupby->get();
+        result += "\n";
+    }
+    if(m_having)
+    {
+        result += m_having->get();
+        result += "\n";
+    }
+    if(m_orderBy)
+    {
+        result += m_orderBy->get();
+        result += "\n";
+    }
+    if(m_as)
+    {
+        result += m_as->get();
+        result += "\n";
+    }
+
+    return result;
+}
+
 QVector<const Table*> SelectQuery::getTables() const
 {
     if(m_from) return m_from->getTables();

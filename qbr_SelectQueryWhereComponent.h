@@ -16,18 +16,7 @@ public:
     };
 
     SelectQueryWhereComponent(QueryComponent*, int, WhereType);
-    virtual QString get()
-    {
-        switch(m_whereType)
-        {
-        case WHERETYPE_WHERE:
-            return "WHERE";
-        case WHERETYPE_HAVING:
-            return "HAVING";
-        case WHERETYPE_ON:
-            return "ON";
-        }
-    }
+    virtual QString get() const;
     virtual QueryGraphicsItem* createGraphicsItem(QueryGraphicsHelper*, QueryGraphicsItem*){return 0;}
     virtual void handleAction(const QString& action, QueryComponent* referringObject);
     virtual QSet<OptionsType> provideOptions();

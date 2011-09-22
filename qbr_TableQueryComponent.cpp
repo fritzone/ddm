@@ -21,9 +21,19 @@ TableQueryComponent::TableQueryComponent(Table* tab, QueryComponent* p, int leve
 {
 }
 
-QString TableQueryComponent::get()
+QString TableQueryComponent::get() const
 {
-    return m_table->getName();
+    QString result = m_table->getName();
+    if(!m_joins.isEmpty())
+    {
+        for(int i=0; i<m_joins.size(); i++)
+        {
+            result += "\n\t";
+            result += m_joins.at(i)->get();
+        }
+    }
+
+    return result;
 }
 
 QueryGraphicsItem* TableQueryComponent::createGraphicsItem(QueryGraphicsHelper* helper, QueryGraphicsItem* parent)

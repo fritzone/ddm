@@ -35,6 +35,11 @@ public:
     {
         m_columnsToShow = c;
     }
+    void setOrderBy(QStringList oby)
+    {
+        m_orderBy = oby;
+    }
+    void setOrderByMode();
 
 public slots:
 
@@ -70,6 +75,7 @@ private:
 
     QueryGraphicsHelper* m_helper;
     QVector<const Column*> m_columnsToShow;
+    QStringList m_orderBy;
 };
 
 #endif // QUERYITEMLISTDIALOG_H

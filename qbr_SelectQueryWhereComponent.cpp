@@ -75,3 +75,28 @@ QueryComponent* SelectQueryWhereComponent::duplicate()
     SelectQueryWhereComponent* newc = new SelectQueryWhereComponent(m_parent, m_level, m_whereType);
     return newc;
 }
+
+QString SelectQueryWhereComponent::get() const
+{
+    QString result = "";
+    switch(m_whereType)
+    {
+    case WHERETYPE_WHERE:
+        result = "WHERE";
+        break;
+    case WHERETYPE_HAVING:
+        result = "HAVING";
+        break;
+    case WHERETYPE_ON:
+        result = "ON";
+        break;
+    }
+
+    if(m_children.size()) result += "\n";
+    for(int i=0; i<m_children.size(); i++)
+    {
+        result += "\t";
+        result+= m_children.at(i)->get();
+    }
+    return result;
+}

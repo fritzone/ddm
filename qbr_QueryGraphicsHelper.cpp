@@ -54,16 +54,22 @@ QString QueryGraphicsHelper::presentList(int x, int y, ListType lt)
     }
     m_lstDlg = new QueryItemListDialog(this, lt, 0);
     m_lstDlg->setColumns(m_columnsToShow);  // TODO: this is a little bit ugly ...
+    m_lstDlg->setOrderBy(m_orderByElements);
 
     m_lstDlg->setWindowFlags(Qt::FramelessWindowHint);
     m_lstDlg->move(x, y);
     m_lstDlg->setModal(true);
-    if(lt == INPUT_SYMBOLS || lt == INPUT_COLUMNS)
+    if(lt == INPUT_SYMBOLS || lt == INPUT_COLUMNS || lt == INPUT_ORDERBY)
     {
         m_lstDlg->showSymbolPanel();
         if(lt == INPUT_COLUMNS)
         {
             m_lstDlg->setColumnMode();
+        }
+        if(lt == INPUT_ORDERBY)
+        {
+            m_lstDlg->setColumnMode();
+            m_lstDlg->setOrderByMode();
         }
     }
     m_lstDlg->exec();

@@ -23,7 +23,7 @@ class WhereExpressionQueryComponent : public QueryComponent
 {
 public:
     WhereExpressionQueryComponent(QueryComponent* p, int l):QueryComponent(p,l){}
-    virtual QString get() = 0;
+    virtual QString get() const = 0;
     virtual QueryGraphicsItem* createGraphicsItem(QueryGraphicsHelper*, QueryGraphicsItem*) = 0;
     virtual void handleAction(const QString& action, QueryComponent* referringObject) = 0;
     virtual QSet<OptionsType> provideOptions() = 0;

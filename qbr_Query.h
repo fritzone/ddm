@@ -28,10 +28,7 @@ public:
         return m_helper;
     }
 
-    virtual QString get()
-    {
-        return "CREATE THE SQL";
-    }
+    virtual QString get() const = 0;
 
 protected:
     QueryGraphicsHelper* m_helper;

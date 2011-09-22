@@ -36,9 +36,68 @@ QueryGraphicsItem* SingleExpressionQueryComponent::createGraphicsItem(QueryGraph
 
 }
 
-QString SingleExpressionQueryComponent::get()
+QString SingleExpressionQueryComponent::get() const
 {
-    return "Implement this";
+    QMap<CellTypeChooserType,QString> textMappings;
+    textMappings[CELLTYPE_NOT_TEXT] = strLogNot;
+    textMappings[CELLTYPE_LIKE] = strLike;
+    textMappings[CELLTYPE_DISTINCT] = strDistinct;
+    textMappings[CELLTYPE_IN] = strIn;
+    textMappings[CELLTYPE_IS] = strIs;
+    textMappings[CELLTYPE_BETWEEN] = strBetween;
+    textMappings[CELLTYPE_EXISTS] = strExists;
+    textMappings[CELLTYPE_STAR] = strStar;
+    textMappings[CELLTYPE_ROLLUP] = strRollup;
+    textMappings[CELLTYPE_NULL] = strNull;
+    textMappings[CELLTYPE_OPEN_PARANTHESES] = strOpenParantheses;
+    textMappings[CELLTYPE_CLOSE_PARANTHESES] = strCloseParantheses;
+    textMappings[CELLTYPE_NOT] = strNotOp;
+    textMappings[CELLTYPE_XOR] = strXorOp;
+    textMappings[CELLTYPE_LSHIFT] = strLShiftOp;
+    textMappings[CELLTYPE_RSHIFT] = strRShiftOp;
+    textMappings[CELLTYPE_OR] = strOrOp;
+    textMappings[CELLTYPE_AND] = strAndOp;
+    textMappings[CELLTYPE_NEGATE] = strNegOp;
+    textMappings[CELLTYPE_MINUS] = strMinusOp;
+    textMappings[CELLTYPE_PLUS] = strPlusOp;
+    textMappings[CELLTYPE_DIVIDE] = strDivOp;
+    textMappings[CELLTYPE_MULTIPLY] = strMulOp;
+    textMappings[CELLTYPE_MOD] = strModOp;
+    textMappings[CELLTYPE_EQUAL] = strEqOp;
+    textMappings[CELLTYPE_NOTEQUAL] = strNEqOp;
+    textMappings[CELLTYPE_LESS] = strLessOp;
+    textMappings[CELLTYPE_GREATER] = strGrOp;
+    textMappings[CELLTYPE_LESS_OR_EQUAL] = strLEOp;
+    textMappings[CELLTYPE_GREATER_OR_EQUAL] = strGEOp;
+    textMappings[CELLTYPE_OPEN_PARANTHESES_FOR_FUNCTION_CALL] = strOpenParantheses;
+    textMappings[CELLTYPE_CLOSE_PARANTHESES_FOR_FUNCTION_CALL] = strCloseParantheses;
+    textMappings[CELLTYPE_ROLLUP] = strRollup;
+
+    QString result = "";
+    for(int i=0; i<m_elements.size(); i++)
+    {
+        result += " ";
+        if(textMappings.contains(m_elements.at(i)))
+        {
+            result += textMappings[m_elements.at(i)];
+        }
+        else
+        {
+            switch(m_elements.at(i))
+            {
+            case CELLTYPE_COLUMN:
+                result += m_columnsAtGivenPosition[i]->getFullLocation();
+                break;
+            case CELLTYPE_FUNCTION:
+                result += "<<FUNCTION STUFF>>";
+                break;
+            case CELLTYPE_LITERAL:
+                result += m_typedValuesAtGivenPosition[i];
+                break;
+            }
+        }
+    }
+    return result;
 }
 
 QSet<OptionsType> SingleExpressionQueryComponent::provideOptions()
@@ -113,6 +172,8 @@ DatabaseFunctionInstantiationComponent* SingleExpressionQueryComponent::getFunct
 
 void SingleExpressionQueryComponent::handleAction(const QString& action, QueryComponent* referringObject)
 {
+    QString localAction = action;
+
     QMap<QString,CellTypeChooserType> mappings;
     mappings[strMathMinus] = CELLTYPE_MINUS;
     mappings[strMathPlus] = CELLTYPE_PLUS;
@@ -148,9 +209,31 @@ void SingleExpressionQueryComponent::handleAction(const QString& action, QueryCo
     mappings[strOpenParantheses] = CELLTYPE_OPEN_PARANTHESES;
     mappings[strCloseParantheses] = CELLTYPE_CLOSE_PARANTHESES;
 
-    if(action.indexOf(strActionIndexSeparator)&& !action.startsWith(strRemove)&&!action.startsWith("@")&&!action.startsWith("#")&&!action.startsWith("$"))
+    if(localAction.startsWith("*") && localAction.length()>1 && localAction[1] != '^')  // this comes from the order by ... let's just re-map to something more familiar
     {
-        QString pureAction = action.left(action.indexOf(strActionIndexSeparator));
+        QString starLess = localAction.mid(1);
+        if(starLess.startsWith("#"))    // this will be transformed to a typed in value
+        {
+            QString typedIn = starLess.mid(1);
+            localAction = QString("$") + typedIn;
+        }
+        else
+        if(starLess.startsWith("$"))    // this is a column... will be mapped to a ... column
+        {
+            QString chosen = starLess.mid(1);
+            QStringList t = chosen.split('.');
+            localAction = QString("#") + t.at(0) + "+" + t.at(1);
+        }
+        else
+        if(starLess.startsWith("~"))    // this is a plain alias. Will be mapped to a typed in value, with the leading ~ which will be mapped out at a later stage in CellTypeChooser
+        {
+            localAction = QString("$") + starLess;
+        }
+    }
+
+    if(localAction.indexOf(strActionIndexSeparator)&& !localAction.startsWith(strRemove)&&!localAction.startsWith("@")&&!localAction.startsWith("#")&&!localAction.startsWith("$"))
+    {
+        QString pureAction = localAction.left(localAction.indexOf(strActionIndexSeparator));
         if(mappings.contains(pureAction))
         {
             // let's check if this is ROLLUP. There can be only one
@@ -164,7 +247,7 @@ void SingleExpressionQueryComponent::handleAction(const QString& action, QueryCo
                     }
                 }
             }
-            int indx = action.section(strActionIndexSeparator, 1).toInt();
+            int indx = localAction.section(strActionIndexSeparator, 1).toInt();
             if(indx < m_elements.size())
             {
                 m_elements[indx] = mappings[pureAction];
@@ -189,7 +272,7 @@ void SingleExpressionQueryComponent::handleAction(const QString& action, QueryCo
             }
         }
         else
-        if(action == ADD_ALIAS)
+        if(localAction == ADD_ALIAS)
         {
             m_as = new SelectQueryAsComponent(this, m_level + 1);
             addChild(m_as);
@@ -199,19 +282,19 @@ void SingleExpressionQueryComponent::handleAction(const QString& action, QueryCo
         return;
     }
 
-    if(action.startsWith(strRemove) && !m_elements.isEmpty())
+    if(localAction.startsWith(strRemove) && !m_elements.isEmpty())
     {
-        int idx = action.right(action.length() - 7).toInt(); // because actually REMOVE^xxx comes in
+        int idx = localAction.right(localAction.length() - 7).toInt(); // because actually REMOVE^xxx comes in
         m_elements.remove(idx);
         shiftElementsToTheLeft(idx);
         m_helper->triggerReRender();
         return;
     }
 
-    if(action.startsWith("@"))          // this is a function...
+    if(localAction.startsWith("@"))          // this is a function...
     {
-        QString fName = action.mid(1, action.indexOf(strActionIndexSeparator) - 1);
-        int index = action.section(strActionIndexSeparator, 1).toInt();
+        QString fName = localAction.mid(1, localAction.indexOf(strActionIndexSeparator) - 1);
+        int index = localAction.section(strActionIndexSeparator, 1).toInt();
         if(index < m_elements.size())   // let's see if we overwrote something
         {
             m_elements[index] = CELLTYPE_FUNCTION;
@@ -246,9 +329,9 @@ void SingleExpressionQueryComponent::handleAction(const QString& action, QueryCo
         m_helper->triggerReRender();
     }
 
-    if(action.startsWith("#"))  // This is a table->column at given position: "#PERSON+NAME^0"
+    if(localAction.startsWith("#"))  // This is a table->column at given position: "#PERSON+NAME^0"
     {
-        QStringList t = action.split('+');
+        QStringList t = localAction.split('+');
         QString t1 = t.at(0);
         QString tabName = t1.right(t1.length() - 1);
         t1 = t.at(1);
@@ -284,11 +367,11 @@ void SingleExpressionQueryComponent::handleAction(const QString& action, QueryCo
         m_helper->triggerReRender();
     }
 
-    if(action.startsWith("$"))  // this is a typed in value
+    if(localAction.startsWith("$"))  // this is a typed in value
     {
-        int t = action.lastIndexOf(strActionIndexSeparator);
-        QString typedText = action.mid(1, t-1);
-        QString sIdx = action.right(action.length() - t - 1);
+        int t = localAction.lastIndexOf(strActionIndexSeparator);
+        QString typedText = localAction.mid(1, t-1);
+        QString sIdx = localAction.right(localAction.length() - t - 1);
         int index = sIdx.toInt();
         m_typedValuesAtGivenPosition[index] = typedText;
         if(index < m_elements.size())   // let's see if we overwrote something
@@ -310,7 +393,6 @@ void SingleExpressionQueryComponent::handleAction(const QString& action, QueryCo
             m_columnsAtGivenPosition.remove(index);
         }
         m_helper->triggerReRender();
-
     }
 }
 

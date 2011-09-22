@@ -9,6 +9,7 @@
 #include "Table.h"
 #include "qbr_SelectQueryGroupByComponent.h"
 #include "qbr_SelectQuery.h"
+#include "qbr_SelectQueryOrderByComponent.h"
 
 #include <QPen>
 #include <QGraphicsView>
@@ -154,6 +155,13 @@ QGraphicsItemGroup* CellTypeChooser::render(int& x, int& y, int& w, int &h)
         break;
 
     case CELLTYPE_LITERAL:
+        {
+        bool alias = false;
+        if(m_literal.startsWith("~"))
+        {
+            m_literal = m_literal.mid(1);
+            alias = true;
+        }
         m_text = new QGraphicsTextItem(m_literal, this);
         m_text->setFont(theFont);
         m_text->setX(x + CELL_SIZE + 1);
@@ -162,8 +170,9 @@ QGraphicsItemGroup* CellTypeChooser::render(int& x, int& y, int& w, int &h)
         width += m_text->boundingRect().width();
         w += m_text->boundingRect().width();
         typeIcon = new QGraphicsPixmapItem(IconFactory::getLiteralIcon().pixmap(size,size), this);
+        if(alias) typeIcon = new QGraphicsPixmapItem(IconFactory::getAliasIcon().pixmap(16,16), this);
         break;
-
+        }
     case CELLTYPE_QUERY_OR:
         m_text = new QGraphicsTextItem("OR", this);
         theFont.setBold(true);
@@ -278,7 +287,16 @@ void CellTypeChooser::mousePress(int x, int y)
             }
         }
 
-
+        SelectQueryOrderByComponent* oby = dynamic_cast<SelectQueryOrderByComponent*>(seq->getParent());
+        if(oby)
+        {
+            listType = QueryGraphicsHelper::INPUT_ORDERBY;
+            SelectQuery* sq = dynamic_cast<SelectQuery*>(oby->getParent());
+            if(sq)
+            {
+                orderBy = sq->getOrderByElements();
+            }
+        }
     }
     m_helper->setColumns(columns);
     m_helper->setOrderBy(orderBy);

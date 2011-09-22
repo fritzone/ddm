@@ -20,7 +20,7 @@ public:
     QueryComponent(QueryComponent* parent, int level) : m_parent(parent), m_level(level) {}
     virtual ~QueryComponent(){}
 
-    virtual QString get() = 0;
+    virtual QString get() const = 0;
     virtual QueryGraphicsItem* createGraphicsItem(QueryGraphicsHelper* helper, QueryGraphicsItem* parent) = 0;
     virtual void handleAction(const QString& action, QueryComponent* referringObject) = 0;
 

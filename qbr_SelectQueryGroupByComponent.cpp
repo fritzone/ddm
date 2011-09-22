@@ -31,3 +31,15 @@ QueryComponent* SelectQueryGroupByComponent::duplicate()
     SelectQueryGroupByComponent *newc = new SelectQueryGroupByComponent(m_parent, m_level);
     return newc;
 }
+
+QString SelectQueryGroupByComponent::get() const
+{
+    QString result = "GROUP BY";
+    if(m_children.size()) result += "\n";
+    for(int i=0; i<m_children.size(); i++)
+    {
+        result += "\t";
+        result+= m_children.at(i)->get();
+    }
+    return result;
+}

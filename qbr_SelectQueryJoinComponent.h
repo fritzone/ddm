@@ -10,7 +10,7 @@ class SelectQueryJoinComponent : public QueryComponent
 {
 public:
     SelectQueryJoinComponent(QueryComponent*, int);
-    virtual QString get(){return "JOIN"; }
+    virtual QString get() const;
     virtual QueryGraphicsItem* createGraphicsItem(QueryGraphicsHelper*, QueryGraphicsItem*){return 0;}
     virtual void handleAction(const QString& action, QueryComponent* referringObject);
     virtual QSet<OptionsType> provideOptions();
