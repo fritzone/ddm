@@ -7,6 +7,7 @@
 #include "Table.h"
 #include "Column.h"
 #include "Version.h"
+#include "Configuration.h"
 #include "qbr_SelectQueryJoinComponent.h"
 #include "qbr_WhereExpressionQueryComponent.h"
 #include "qbr_SelectQuerySelectComponent.h"
@@ -76,7 +77,7 @@ QString SingleExpressionQueryComponent::get() const
     QString result = "";
     for(int i=0; i<m_elements.size(); i++)
     {
-        result += " ";
+        result +=getSpacesForLevel();
         if(textMappings.contains(m_elements.at(i)))
         {
             result += textMappings[m_elements.at(i)];
@@ -95,6 +96,11 @@ QString SingleExpressionQueryComponent::get() const
                 result += m_typedValuesAtGivenPosition[i];
                 break;
             }
+        }
+        QHash<QString, QString> opts = Configuration::instance().sqlGenerationOptions();
+        if(opts[strNewLineBetweenSelectExpressionsInSqlGeneration] == strYes)
+        {
+            result += "\n";
         }
     }
     return result;

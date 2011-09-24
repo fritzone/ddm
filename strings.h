@@ -155,4 +155,8 @@ static const QString strCloseParantheses = ")";
 
 static const QString strActionIndexSeparator = "^";
 
+static const QString strYes = "Yes";
+
+static const QString strNewLineBetweenSelectExpressionsInSqlGeneration = "NewLineBetweenSelectExpressionsInSqlGeneration";
+
 #endif // STRINGS_H

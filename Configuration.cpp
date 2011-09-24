@@ -1,4 +1,5 @@
 #include "Configuration.h"
+#include "strings.h"
 
 #include <QDomDocument>
 #include <QFile>
@@ -10,6 +11,7 @@ Configuration::Configuration() : useDefaultLengths(true), m_allowForeignKeyPropa
     m_sqlOpts["GenerateComments"] = "Yes";
     m_sqlOpts["PKSposition"] = "ColumnDeclaration";
     m_sqlOpts["FKSposition"] = "InTable";
+    m_sqlOpts[strNewLineBetweenSelectExpressionsInSqlGeneration] = "No";
 
     readFromFile();
 }
@@ -41,6 +43,7 @@ void Configuration::writeToFile()
     sqlGeneration.setAttribute("GenerateComments", m_sqlOpts["GenerateComments"]);
     sqlGeneration.setAttribute("PKSposition", m_sqlOpts["PKSposition"]);
     sqlGeneration.setAttribute("FKSposition", m_sqlOpts["FKSposition"]);
+    sqlGeneration.setAttribute(strNewLineBetweenSelectExpressionsInSqlGeneration, m_sqlOpts[strNewLineBetweenSelectExpressionsInSqlGeneration]);
     root.appendChild(sqlGeneration);
 
     doc.appendChild(root);
