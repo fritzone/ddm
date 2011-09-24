@@ -39,6 +39,15 @@ public:
     QueryComponent* getParent() {return m_parent; }
     void setParent(QueryComponent* p) {m_parent = p;}
     int getLevel() const {return m_level;}
+    QString getSpacesForLevel() const
+    {
+        QString r = "";
+        for(int i=0; i<=m_level; i++)
+        {
+            r += "  ";
+        }
+        return r;
+    }
 
 protected:
     QList<QueryComponent*> m_children;

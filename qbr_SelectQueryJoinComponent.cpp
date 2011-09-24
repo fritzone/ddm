@@ -79,16 +79,16 @@ void SelectQueryJoinComponent::removeExpression(WhereExpressionQueryComponent *w
 
 QString SelectQueryJoinComponent::get() const
 {
-    QString result = "JOIN";
+    QString result = getSpacesForLevel() + "JOIN";
     for(int i=0; i<m_children.size(); i++)
     {
-        result += "\t";
+        result += getSpacesForLevel();
         result+= m_children.at(i)->get();
     }
-    result += "\nON\n";
+    result += getSpacesForLevel() + "\nON\n";
     for(int i=0; i<m_joinExpressions.size(); i++)
     {
-        result += "\n";
+        result += "\n" + getSpacesForLevel();
         result += m_joinExpressions.at(i)->get();
     }
     return result;
