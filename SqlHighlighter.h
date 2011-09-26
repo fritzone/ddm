@@ -8,6 +8,7 @@ class SqlHighlighter : public QSyntaxHighlighter
 public:
 
     SqlHighlighter(QTextDocument* parent = 0);
+    ~SqlHighlighter(){}
 
 protected:
     void highlightBlock(const QString &text);
@@ -26,6 +27,7 @@ private:
     QTextCharFormat typesFormat;
     QTextCharFormat singleLineCommentFormat;
     QTextCharFormat stringFormat;
+    QTextCharFormat questionMarksFormat;
 
 };
 

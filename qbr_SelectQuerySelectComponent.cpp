@@ -134,8 +134,9 @@ QString SelectQuerySelectComponent::get() const
     if(m_children.size()) result += "\n";
     for(int i=0; i<m_children.size(); i++)
     {
-        result += getSpacesForLevel();  // TODO: spaces
+        result += getSpacesForLevel();
         result+= m_children.at(i)->get();
+        if(i<m_children.size() - 1) result += ",\n";
     }
     return result;
 }

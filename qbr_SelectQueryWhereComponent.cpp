@@ -97,6 +97,7 @@ QString SelectQueryWhereComponent::get() const
     {
         result += getSpacesForLevel();
         result+= m_children.at(i)->get();
+        result += "\n";
     }
     return result;
 }

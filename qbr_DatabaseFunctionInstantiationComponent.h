@@ -16,6 +16,7 @@ class DatabaseFunctionInstantiationComponent
 public:
     DatabaseFunctionInstantiationComponent(QueryComponent* parent, const DatabaseBuiltinFunction& f);
     SingleExpressionQueryComponent* getInstantiatedParameter(int i);
+    QString get();
 
 private:
     QueryComponent* m_parent;
