@@ -108,6 +108,7 @@ QString SelectQueryFromComponent::get() const
     {
         result += getSpacesForLevel();
         result+= m_children.at(i)->get();
+        if(i<m_children.size() - 1) result += ",\n";
     }
     if(m_children.size()) result += "\n";
     return result;

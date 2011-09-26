@@ -28,9 +28,14 @@ QString TableQueryComponent::get() const
     {
         for(int i=0; i<m_joins.size(); i++)
         {
-            result += "\n\t";
+            result += "\n";
+            result += getSpacesForLevel();
             result += m_joins.at(i)->get();
         }
+    }
+    if(m_as)
+    {
+        result += m_as->get();
     }
 
     return result;

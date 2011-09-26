@@ -293,9 +293,13 @@ SqlHighlighter::SqlHighlighter(QTextDocument *parent) : QSyntaxHighlighter(paren
     rule.pattern = QRegExp("--[^\n]*");
     rule.format = singleLineCommentFormat;
     highlightingRules.append(rule);
+
+    questionMarksFormat.setForeground(Qt::red);
+    questionMarksFormat.setFontWeight(QFont::Bold);
+    rule.pattern = QRegExp("(?:\\s|^)\\(\\?\\?\\)(?:\\s|$)"); /*QRegExp("\\B\\(\\?\\?\\)\\B");*/
+    rule.format = questionMarksFormat;
+    highlightingRules.append(rule);
 }
-
-
 
 void SqlHighlighter::highlightBlock(const QString &text)
 {

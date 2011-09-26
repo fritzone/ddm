@@ -13,3 +13,16 @@ SingleExpressionQueryComponent* DatabaseFunctionInstantiationComponent::getInsta
     if(i >= m_parameters.size()) return 0;
     return m_parameters.at(i);
 }
+
+QString DatabaseFunctionInstantiationComponent::get()
+{
+    QString result = m_func.getNiceName();
+    result += "(";
+    for(int i=0; i<m_parameters.size(); i++)
+    {
+        result += m_parameters.at(i)->get();
+        if(i < m_parameters.size() - 1) result += ", ";
+    }
+    result += ")";
+    return result;
+}

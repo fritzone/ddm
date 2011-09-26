@@ -73,6 +73,10 @@ QString SingleExpressionQueryComponent::get() const
     textMappings[CELLTYPE_OPEN_PARANTHESES_FOR_FUNCTION_CALL] = strOpenParantheses;
     textMappings[CELLTYPE_CLOSE_PARANTHESES_FOR_FUNCTION_CALL] = strCloseParantheses;
     textMappings[CELLTYPE_ROLLUP] = strRollup;
+    textMappings[CELLTYPE_QUERY_OR] = strLogOr;
+    textMappings[CELLTYPE_QUERY_AND] = strLogAnd;
+
+    bool errorFound = false;
 
     QString result = "";
     for(int i=0; i<m_elements.size(); i++)
@@ -90,19 +94,23 @@ QString SingleExpressionQueryComponent::get() const
                 result += m_columnsAtGivenPosition[i]->getFullLocation();
                 break;
             case CELLTYPE_FUNCTION:
-                result += "<<FUNCTION STUFF>>";
+                result += m_functionInstantiationAtGivenPosition[i]->get();
                 break;
             case CELLTYPE_LITERAL:
                 result += m_typedValuesAtGivenPosition[i];
                 break;
             }
         }
-        QHash<QString, QString> opts = Configuration::instance().sqlGenerationOptions();
-        if(opts[strNewLineBetweenSelectExpressionsInSqlGeneration] == strYes)
-        {
-            result += "\n";
-        }
     }
+
+    if(errorFound) result += "(??)";
+
+    QHash<QString, QString> opts = Configuration::instance().sqlGenerationOptions();
+    if(opts[strNewLineBetweenSelectExpressionsInSqlGeneration] == strYes)
+    {
+        result += "\n";
+    }
+
     return result;
 }
 
