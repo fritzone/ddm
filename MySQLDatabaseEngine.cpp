@@ -477,6 +477,15 @@ QVector<DatabaseBuiltinFunction> MySQLDatabaseEngine::buildFunctions()
     result.append(DatabaseBuiltinFunction(QString("@bit_or"), FT_AGGREGATE, UserDataType("return", DataType::DT_NUMERIC), DatabaseBuiltinFunctionsParameter(X, UserDataType(X, DataType::DT_NUMERIC), true), "BIT_XOR(X) Returns the bitwise OR of all bits in expr. The calculation is performed with 64-bit (BIGINT) precision. "));
     result.append(DatabaseBuiltinFunction(QString("@bit_xor"), FT_AGGREGATE, UserDataType("return", DataType::DT_NUMERIC), DatabaseBuiltinFunctionsParameter(X, UserDataType(X, DataType::DT_NUMERIC), true), "BIT_XOR(X) Returns the bitwise XOR of all bits in expr. The calculation is performed with 64-bit (BIGINT) precision. "));
     result.append(DatabaseBuiltinFunction(QString("@count"), FT_AGGREGATE, UserDataType("return", DataType::DT_NUMERIC), DatabaseBuiltinFunctionsParameter(X, UserDataType(X, DataType::DT_GENERIC), true), "Returns a count of the number of non-NULL values of expr in the rows retrieved by a SELECT statement. The result is a BIGINT value."));
+
+    result.append(DatabaseBuiltinFunction(QString("@ascii"), FT_STRING, UserDataType("return", DataType::DT_NUMERIC), DatabaseBuiltinFunctionsParameter(X, UserDataType(X, DataType::DT_STRING), true), "Returns the numeric value of the leftmost character of the string str. Returns 0 if str is the empty string. Returns NULL if str is NULL. ASCII() works for 8-bit characters."));
+    result.append(DatabaseBuiltinFunction(QString("@bin"), FT_STRING, UserDataType("return", DataType::DT_STRING), DatabaseBuiltinFunctionsParameter(X, UserDataType(X, DataType::DT_NUMERIC), true), "Returns a string representation of the binary value of N, where N is a longlong (BIGINT) number. This is equivalent to CONV(N,10,2). Returns NULL if N is NULL."));
+    result.append(DatabaseBuiltinFunction(QString("@bit_length"), FT_STRING, UserDataType("return", DataType::DT_NUMERIC), DatabaseBuiltinFunctionsParameter(X, UserDataType(X, DataType::DT_NUMERIC), true), "Returns the length of the string str in bits."));
+    result.append(DatabaseBuiltinFunction(QString("@char"), FT_STRING, UserDataType("return", DataType::DT_STRING), DatabaseBuiltinFunctionsParameter(X, UserDataType(X, DataType::DT_NUMERIC), true), "CHAR() interprets each argument N as an integer and returns a string consisting of the characters given by the code values of those integers. NULL values are skipped."));
+    result.append(DatabaseBuiltinFunction(QString("@char_length"), FT_STRING, UserDataType("return", DataType::DT_NUMERIC), DatabaseBuiltinFunctionsParameter(X, UserDataType(X, DataType::DT_NUMERIC), true), "Returns the length of the string str, measured in characters. A multi-byte character counts as a single character."));
+    result.append(DatabaseBuiltinFunction(QString("@concat"), FT_STRING, UserDataType("return", DataType::DT_STRING), DatabaseBuiltinFunctionsParameter(X, UserDataType(X, DataType::DT_NUMERIC), true), "Returns the string that results from concatenating the arguments. May have one or more arguments"));
+
+
     return result;
 }
 
