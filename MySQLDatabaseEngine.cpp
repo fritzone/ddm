@@ -484,8 +484,25 @@ QVector<DatabaseBuiltinFunction> MySQLDatabaseEngine::buildFunctions()
 #define FUNC result.append(DatabaseBuiltinFunction(QString
 
 
-    result.append(DatabaseBuiltinFunction(QString("@abs"), FT_NUMERIC, UserDataType("return", DataType::DT_NUMERIC), DatabaseBuiltinFunctionsParameter(X, UserDataType(X, DataType::DT_NUMERIC), true), "ABS(X) - Returns the absolute value of X"));
-    result.append(DatabaseBuiltinFunction(QString("@acos"), FT_NUMERIC, UserDataType("return", DataType::DT_NUMERIC), DatabaseBuiltinFunctionsParameter(X, UserDataType(X, DataType::DT_NUMERIC), true), "ACOS(X) - Returns the arc cosine of X, that is, the value whose cosine is X. Returns NULL if X is not in the range -1 to 1. "));
+    FUNC("@abs"),          FT_NUMERIC,   RET_NUMERIC, PAR_NUMERIC, "ABS(X) Returns the absolute value of X"));
+    FUNC("@acos"),         FT_NUMERIC,   RET_NUMERIC, PAR_NUMERIC, "ACOS(X) Returns the arc cosine of X, that is, the value whose cosine is X. Returns NULL if X is not in the range -1 to 1. "));
+    FUNC("@asin"),         FT_NUMERIC,   RET_NUMERIC, PAR_NUMERIC, "ASIN(X) Returns the arc sine of X, that is, the value whose sine is X. Returns NULL if X is not in the range -1 to 1. "));
+    FUNC("@atan"),         FT_NUMERIC,   RET_NUMERIC, PAR_NUMERIC, "ATAN(X) Returns the arc tangent of X, that is, the value whose tangent is X."));
+    FUNC("@ceiling"),      FT_NUMERIC,   RET_NUMERIC, PAR_NUMERIC, "CEILING(X) Returns the smallest integer value not less than X."));
+    FUNC("@conv"),         FT_NUMERIC,   RET_STRING,  PAR_STRING, PAR_NUMERIC, PAR_NUMERIC, "CONV(X,from_base,to_base) Converts numbers between different number bases. Returns a string representation of the number N, converted from base from_base to base to_base."));
+    FUNC("@cos"),          FT_NUMERIC,   RET_NUMERIC, PAR_NUMERIC, "COS(X) Returns the cosine of X, where X is given in radians. "));
+    FUNC("@cot"),          FT_NUMERIC,   RET_NUMERIC, PAR_NUMERIC, "COT(X) Returns the cotangent of X."));
+    FUNC("@crc32"),        FT_NUMERIC,   RET_NUMERIC, PAR_STRING,  "CRC32(str) Computes a cyclic redundancy check value and returns a 32-bit unsigned value."));
+    FUNC("@degrees"),      FT_NUMERIC,   RET_NUMERIC, PAR_NUMERIC, "DEGREES(X) Returns the argument X, converted from radians to degrees. "));
+    FUNC("@exp"),          FT_NUMERIC,   RET_NUMERIC, PAR_NUMERIC, "EXP(X) Returns the value of e (the base of natural logarithms) raised to the power of X."));
+    FUNC("@floor"),        FT_NUMERIC,   RET_NUMERIC, PAR_NUMERIC, "FLOOR(X) Returns the largest integer value not greater than X."));
+    FUNC("@ln"),           FT_NUMERIC,   RET_NUMERIC, PAR_NUMERIC, "LN(X) Returns the natural logarithm of X; that is, the base-e logarithm of X."));
+    FUNC("@log"),          FT_NUMERIC,   RET_NUMERIC, PAR_NUMERIC, PAR_NUMERIC, "LOG(B,X) Returns the logarithm of X to the base B"));
+    FUNC("@log2"),         FT_NUMERIC,   RET_NUMERIC, PAR_NUMERIC, "LOG2(X) Returns the 2-base logarithm of X"));
+    FUNC("@log10"),        FT_NUMERIC,   RET_NUMERIC, PAR_NUMERIC, "LOG10(X) Returns the 10-base logarithm of X"));
+    FUNC("@pi"),           FT_NUMERIC,   RET_NUMERIC, "PI() Returns the value of p (pi)."));
+
+
 
     result.append(DatabaseBuiltinFunction(QString("@avg"), FT_AGGREGATE, UserDataType("return", DataType::DT_NUMERIC), DatabaseBuiltinFunctionsParameter(X, UserDataType(X, DataType::DT_NUMERIC), true), "AVG(X) Returns the average value of expr."));
     result.append(DatabaseBuiltinFunction(QString("@bit_and"), FT_AGGREGATE, UserDataType("return", DataType::DT_NUMERIC), DatabaseBuiltinFunctionsParameter(X, UserDataType(X, DataType::DT_NUMERIC), true), "BIT_AND(X) Returns the bitwise AND of all bits in expr. The calculation is performed with 64-bit (BIGINT) precision. "));
