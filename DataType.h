@@ -23,6 +23,7 @@ public:
         DT_SPATIAL,
         DT_INVALID,
         DT_GENERIC,
+        DT_VARIABLE
     } ;
 
     /**
