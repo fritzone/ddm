@@ -15,6 +15,13 @@
 class DatabaseBuiltinFunction : public NamedItem
 {
 public:
+    explicit DatabaseBuiltinFunction(QString name, FunctionType type, const UserDataType& returnType, const QString& desc) :
+            NamedItem(name), m_type(type), m_returnType(returnType), m_parameters(), m_description(desc)
+    {
+    }
+
+
+
     explicit DatabaseBuiltinFunction(QString name, FunctionType type, const UserDataType& returnType, DatabaseBuiltinFunctionsParameter p1, const QString& desc) :
             NamedItem(name), m_type(type), m_returnType(returnType), m_parameters(), m_description(desc)
     {
