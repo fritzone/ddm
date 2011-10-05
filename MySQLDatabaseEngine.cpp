@@ -501,14 +501,40 @@ QVector<DatabaseBuiltinFunction> MySQLDatabaseEngine::buildFunctions()
     FUNC("@log2"),         FT_NUMERIC,   RET_NUMERIC, PAR_NUMERIC, "LOG2(X) Returns the 2-base logarithm of X"));
     FUNC("@log10"),        FT_NUMERIC,   RET_NUMERIC, PAR_NUMERIC, "LOG10(X) Returns the 10-base logarithm of X"));
     FUNC("@pi"),           FT_NUMERIC,   RET_NUMERIC, "PI() Returns the value of p (pi)."));
+    FUNC("@pow"),          FT_NUMERIC,   RET_NUMERIC, PAR_NUMERIC, PAR_NUMERIC, "POW(X,Y) Returns the value of X raised to the power of Y."));
+    FUNC("@radians"),      FT_NUMERIC,   RET_NUMERIC, PAR_NUMERIC, "RADIANS(X) Returns the argument X, converted from degrees to radians. (Note that π radians equals 180 degrees.)"));
+    FUNC("@rand"),         FT_NUMERIC,   RET_NUMERIC, OPAR_NUMERIC, "RAND([N]) Returns a random floating-point value v in the range 0 <= v < 1.0. If a constant integer argument N is specified, it is used as the seed value."));
+    FUNC("@round"),        FT_NUMERIC,   RET_NUMERIC, PAR_NUMERIC, OPAR_NUMERIC, "ROUND(X,D) Rounds the argument X to D decimal places."));
+    FUNC("@sign"),         FT_NUMERIC,   RET_NUMERIC, PAR_NUMERIC, "SIGN(X) Returns the sign of the argument as -1, 0, or 1, depending on whether X is negative, zero, or positive."));
+    FUNC("@sin"),          FT_NUMERIC,   RET_NUMERIC, PAR_NUMERIC, "SIN(X) Returns the sine of X, where X is given in radians."));
+    FUNC("@sqrt"),         FT_NUMERIC,   RET_NUMERIC, PAR_NUMERIC, "SQRT(X) Returns the square root of a nonnegative number X."));
+    FUNC("@tan"),          FT_NUMERIC,   RET_NUMERIC, PAR_NUMERIC, "TAN(X) Returns the tangent of X, where X is given in radians."));
+    FUNC("@truncate"),     FT_NUMERIC,   RET_NUMERIC, PAR_NUMERIC, OPAR_NUMERIC, "TRUNCATE(X,D) Returns the number X, truncated to D decimal places."));
+
+    FUNC("@adddate"),      FT_DATETIME,  RET_STRING, PAR_STRING, PAR_NUMERIC, "ADDDATE(expr,days) Adds the given days to the date."));
+    FUNC("@addtime"),      FT_DATETIME,  RET_STRING, PAR_STRING, PAR_STRING, "ADDTIME(expr1,expr2) Adds expr2 to expr1 and returns the result. expr1 is a time or datetime expression, and expr2 is a time expression."));
+    FUNC("@addtime"),      FT_DATETIME,  RET_STRING, PAR_STRING, PAR_STRING, PAR_STRING, "CONVERT_TZ(dt,from_tz,to_tz) CONVERT_TZ() converts a datetime value dt from the time zone given by from_tz to the time zone given by to_tz and returns the resulting value."));
+    FUNC("@curdate"),      FT_DATETIME,  RET_STRING, "CURDATE() Returns the current date as a value in 'YYYY-MM-DD' or YYYYMMDD format, depending on whether the function is used in a string or numeric context."));
+    FUNC("@curtime"),      FT_DATETIME,  RET_STRING, "CURTIME() Returns the current time as a value in 'HH:MM:SS' or HHMMSS.uuuuuu format, depending on whether the function is used in a string or numeric context. The value is expressed in the current time zone."));
+    FUNC("@date"),         FT_DATETIME,  RET_STRING, PAR_STRING, "DATE(expr) Extracts the date part of the date or datetime expression expr."));
+    FUNC("@datediff"),     FT_DATETIME,  RET_STRING, PAR_STRING, PAR_STRING, "DATEDIFF(expr1,expr2) Returns expr1 – expr2 expressed as a value in days from one date to the other. expr1 and expr2 are date or date-and-time expressions. Only the date parts of the values are used in the calculation. "));
+    FUNC("@date_add"),     FT_DATETIME,  RET_STRING, PAR_STRING, PAR_STRING, "DATE_ADD(date,INTERVAL expr unit) Performs date arithmetic. The date argument specifies the starting date or datetime value. expr is an expression specifying the interval value to be added or subtracted from the starting date."));
+    FUNC("@date_sub"),     FT_DATETIME,  RET_STRING, PAR_STRING, PAR_STRING, "DATE_SUB(date,INTERVAL expr unit) Performs date arithmetic. The date argument specifies the starting date or datetime value. expr is an expression specifying the interval value to be added or subtracted from the starting date."));
+    FUNC("@date_format"),  FT_DATETIME,  RET_STRING, PAR_STRING, PAR_STRING, "DATE_FORMAT(date,expr) Formats the date value according to the format string."));
+    FUNC("@dayname"),      FT_DATETIME,  RET_STRING, PAR_STRING, "DAYNAME(date) Returns the name of the weekday for date."));
+    FUNC("@dayofmonth"),   FT_DATETIME,  RET_STRING, PAR_STRING, "DAYOFMONTH(date) Returns the day of the month for date, in the range 1 to 31, or 0 for dates such as '0000-00-00' or '2008-00-00' that have a zero day part."));
+    FUNC("@dayofweek"),    FT_DATETIME,  RET_STRING, PAR_STRING, "DAYOFWEEK(date) Returns the weekday index for date (1 = Sunday, 2 = Monday, ... , 7 = Saturday)."));
+    FUNC("@dayofyear"),    FT_DATETIME,  RET_STRING, PAR_STRING, "DAYOFYEAR(date) Returns the day of the year for date, in the range 1 to 366."));
+    FUNC("@extract"),      FT_DATETIME,  RET_STRING, PAR_STRING, "EXTRACT(unit FROM date) The EXTRACT() function uses the same kinds of unit specifiers as DATE_ADD() or DATE_SUB(), but extracts parts from the date rather than performing date arithmetic."));
+    FUNC("@from_days"),    FT_DATETIME,  RET_STRING, PAR_STRING, "FROM_DAYS(N) Given a day number N, returns a DATE value. "));
+    FUNC("@from_unixtime"),FT_DATETIME,  RET_STRING, PAR_NUMERIC, OPAR_STRING, "FROM_UNIXTIME(N,[FORMAT]) Returns a representation of the unix_timestamp argument as a value in 'YYYY-MM-DD HH:MM:SS' or YYYYMMDDHHMMSS.uuuuuu format, depending on whether the function is used in a string or numeric context. If format is given, the result is formatted according to the format string."));
 
 
-
-    result.append(DatabaseBuiltinFunction(QString("@avg"), FT_AGGREGATE, UserDataType("return", DataType::DT_NUMERIC), DatabaseBuiltinFunctionsParameter(X, UserDataType(X, DataType::DT_NUMERIC), true), "AVG(X) Returns the average value of expr."));
-    result.append(DatabaseBuiltinFunction(QString("@bit_and"), FT_AGGREGATE, UserDataType("return", DataType::DT_NUMERIC), DatabaseBuiltinFunctionsParameter(X, UserDataType(X, DataType::DT_NUMERIC), true), "BIT_AND(X) Returns the bitwise AND of all bits in expr. The calculation is performed with 64-bit (BIGINT) precision. "));
-    result.append(DatabaseBuiltinFunction(QString("@bit_or"), FT_AGGREGATE, UserDataType("return", DataType::DT_NUMERIC), DatabaseBuiltinFunctionsParameter(X, UserDataType(X, DataType::DT_NUMERIC), true), "BIT_XOR(X) Returns the bitwise OR of all bits in expr. The calculation is performed with 64-bit (BIGINT) precision. "));
-    result.append(DatabaseBuiltinFunction(QString("@bit_xor"), FT_AGGREGATE, UserDataType("return", DataType::DT_NUMERIC), DatabaseBuiltinFunctionsParameter(X, UserDataType(X, DataType::DT_NUMERIC), true), "BIT_XOR(X) Returns the bitwise XOR of all bits in expr. The calculation is performed with 64-bit (BIGINT) precision. "));
-    result.append(DatabaseBuiltinFunction(QString("@count"), FT_AGGREGATE, UserDataType("return", DataType::DT_NUMERIC), DatabaseBuiltinFunctionsParameter(X, UserDataType(X, DataType::DT_GENERIC), true), "Returns a count of the number of non-NULL values of expr in the rows retrieved by a SELECT statement. The result is a BIGINT value."));
+    FUNC("@avg"),          FT_AGGREGATE, RET_NUMERIC, PAR_NUMERIC, "AVG(X) Returns the average value of expr."));
+    FUNC("@bit_and"),      FT_AGGREGATE, RET_NUMERIC, PAR_NUMERIC, "BIT_AND(X) Returns the bitwise AND of all bits in expr. The calculation is performed with 64-bit (BIGINT) precision. "));
+    FUNC("@bit_or"),       FT_AGGREGATE, RET_NUMERIC, PAR_NUMERIC, "BIT_XOR(X) Returns the bitwise OR of all bits in expr. The calculation is performed with 64-bit (BIGINT) precision. "));
+    FUNC("@bit_xor"),      FT_AGGREGATE, RET_NUMERIC, PAR_NUMERIC, "BIT_XOR(X) Returns the bitwise XOR of all bits in expr. The calculation is performed with 64-bit (BIGINT) precision. "));
+    FUNC("@count"),        FT_AGGREGATE, RET_NUMERIC, PAR_GENERIC, "Returns a count of the number of non-NULL values of expr in the rows retrieved by a SELECT statement. The result is a BIGINT value."));
 
     FUNC("@ascii"),        FT_STRING,   RET_NUMERIC,  PAR_STRING, "ASCII(str) Returns the numeric value of the leftmost character of the string str. Returns 0 if str is the empty string. Returns NULL if str is NULL. ASCII() works for 8-bit characters."));
     FUNC("@bin"),          FT_STRING,   RET_STRING,   PAR_NUMERIC, "BIN(N) Returns a string representation of the binary value of N, where N is a longlong (BIGINT) number. This is equivalent to CONV(N,10,2). Returns NULL if N is NULL."));
