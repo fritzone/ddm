@@ -534,7 +534,7 @@ QVector<DatabaseBuiltinFunction> MySQLDatabaseEngine::buildFunctions()
     FUNC("@bit_and"),      FT_AGGREGATE, RET_NUMERIC, PAR_NUMERIC, "BIT_AND(X) Returns the bitwise AND of all bits in expr. The calculation is performed with 64-bit (BIGINT) precision. "));
     FUNC("@bit_or"),       FT_AGGREGATE, RET_NUMERIC, PAR_NUMERIC, "BIT_XOR(X) Returns the bitwise OR of all bits in expr. The calculation is performed with 64-bit (BIGINT) precision. "));
     FUNC("@bit_xor"),      FT_AGGREGATE, RET_NUMERIC, PAR_NUMERIC, "BIT_XOR(X) Returns the bitwise XOR of all bits in expr. The calculation is performed with 64-bit (BIGINT) precision. "));
-    FUNC("@count"),        FT_AGGREGATE, RET_NUMERIC, PAR_GENERIC, "Returns a count of the number of non-NULL values of expr in the rows retrieved by a SELECT statement. The result is a BIGINT value."));
+    FUNC("@count"),        FT_AGGREGATE, RET_NUMERIC, PAR_VARIABLE, "Returns a count of the number of non-NULL values of expr in the rows retrieved by a SELECT statement. The result is a BIGINT value."));
 
     FUNC("@ascii"),        FT_STRING,   RET_NUMERIC,  PAR_STRING, "ASCII(str) Returns the numeric value of the leftmost character of the string str. Returns 0 if str is the empty string. Returns NULL if str is NULL. ASCII() works for 8-bit characters."));
     FUNC("@bin"),          FT_STRING,   RET_STRING,   PAR_NUMERIC, "BIN(N) Returns a string representation of the binary value of N, where N is a longlong (BIGINT) number. This is equivalent to CONV(N,10,2). Returns NULL if N is NULL."));
