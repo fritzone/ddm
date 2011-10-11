@@ -110,17 +110,17 @@ enum CellTypeChooserType
 
 enum FunctionType
 {
-    FT_CONTROLFLOW = 0,
-    FT_STRING,
-    FT_NUMERIC,
-    FT_DATETIME,
-    FT_FULLTEXTSEARCH,
+    FT_CONTROLFLOW = 0,                     // CASE will not be supported in 0.1f ... too complex.
+    FT_STRING,                              // DONE
+    FT_NUMERIC,                             // DONE
+    FT_DATETIME,                            // DONE
+    FT_FULLTEXTSEARCH,                      // WILL NOT BE SUPPORTED IN RELEASE 0.1f
     FT_CAST,
     FT_BIT,
     FT_CRYPT,
     FT_INFO,
     FT_MISC,
-    FT_AGGREGATE,
+    FT_AGGREGATE,                           // DONE
     FT_INVALID
 };
 
