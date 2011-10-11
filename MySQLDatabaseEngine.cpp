@@ -472,6 +472,7 @@ QVector<DatabaseBuiltinFunction> MySQLDatabaseEngine::buildFunctions()
 
 
 #define RET_NUMERIC     UserDataType("return", DataType::DT_NUMERIC)
+#define RET_DATETIME    UserDataType("return", DataType::DT_DATETIME)
 #define RET_STRING      UserDataType("return", DataType::DT_STRING)
 
 #define PAR_STRING      DatabaseBuiltinFunctionsParameter(X, UserDataType(X, DataType::DT_STRING), true)
@@ -483,6 +484,9 @@ QVector<DatabaseBuiltinFunction> MySQLDatabaseEngine::buildFunctions()
 
 #define FUNC result.append(DatabaseBuiltinFunction(QString
 
+    FUNC("@if"),           FT_CONTROLFLOW,  RET_STRING, PAR_STRING, PAR_STRING, PAR_STRING, "IF(expr1,expr2,expr3) If expr1 is TRUE (expr1 <> 0 and expr1 <> NULL) then IF() returns expr2; otherwise it returns expr3. IF() returns a numeric or string value, depending on the context in which it is used."));
+    FUNC("@ifnull"),       FT_CONTROLFLOW,  RET_STRING, PAR_STRING, PAR_STRING, "IFNULL(expr1,expr2) If expr1 is not NULL, IFNULL() returns expr1; otherwise it returns expr2. IFNULL() returns a numeric or string value, depending on the context in which it is used."));
+    FUNC("@nullif"),       FT_CONTROLFLOW,  RET_STRING, PAR_STRING, PAR_STRING, "NULLIF(expr1,expr2) Returns NULL if expr1 = expr2 is true, otherwise returns expr1."));
 
     FUNC("@abs"),          FT_NUMERIC,   RET_NUMERIC, PAR_NUMERIC, "ABS(X) Returns the absolute value of X"));
     FUNC("@acos"),         FT_NUMERIC,   RET_NUMERIC, PAR_NUMERIC, "ACOS(X) Returns the arc cosine of X, that is, the value whose cosine is X. Returns NULL if X is not in the range -1 to 1. "));
@@ -528,13 +532,61 @@ QVector<DatabaseBuiltinFunction> MySQLDatabaseEngine::buildFunctions()
     FUNC("@extract"),      FT_DATETIME,  RET_STRING, PAR_STRING, "EXTRACT(unit FROM date) The EXTRACT() function uses the same kinds of unit specifiers as DATE_ADD() or DATE_SUB(), but extracts parts from the date rather than performing date arithmetic."));
     FUNC("@from_days"),    FT_DATETIME,  RET_STRING, PAR_STRING, "FROM_DAYS(N) Given a day number N, returns a DATE value. "));
     FUNC("@from_unixtime"),FT_DATETIME,  RET_STRING, PAR_NUMERIC, OPAR_STRING, "FROM_UNIXTIME(N,[FORMAT]) Returns a representation of the unix_timestamp argument as a value in 'YYYY-MM-DD HH:MM:SS' or YYYYMMDDHHMMSS.uuuuuu format, depending on whether the function is used in a string or numeric context. If format is given, the result is formatted according to the format string."));
+    FUNC("@get_format"),   FT_DATETIME,  RET_STRING, PAR_STRING, PAR_STRING, "GET_FORMAT({DATE|TIME|DATETIME}, {'EUR'|'USA'|'JIS'|'ISO'|'INTERNAL'}) Returns a format string. This function is useful in combination with the DATE_FORMAT() and the STR_TO_DATE() functions."));
+    FUNC("@hour"),         FT_DATETIME,  RET_NUMERIC, PAR_STRING, "HOUR(time) Returns the hour for time."));
+    FUNC("@last_day"),     FT_DATETIME,  RET_STRING, PAR_STRING, "LAST_DAY(date) Takes a date or datetime value and returns the corresponding value for the last day of the month."));
+    FUNC("@makedate"),     FT_DATETIME,  RET_STRING, PAR_STRING, PAR_STRING, "MAKEDATE(year,dayofyear) Returns a date, given year and day-of-year values. dayofyear must be greater than 0 or the result is NULL."));
+    FUNC("@maketime"),     FT_DATETIME,  RET_STRING, PAR_NUMERIC, PAR_NUMERIC, PAR_NUMERIC, "MAKETIME(hour,min,second) Returns a time value calculated from the hour, minute, and second arguments."));
+    FUNC("@microsecond"),  FT_DATETIME,  RET_NUMERIC, PAR_STRING, "MICROSECOND(expr) Returns the microseconds from the time or datetime expression expr as a number in the range from 0 to 999999."));
+    FUNC("@minute"),       FT_DATETIME,  RET_NUMERIC, PAR_STRING, "MINUTE(time) Returns the minute for time."));
+    FUNC("@month"),        FT_DATETIME,  RET_NUMERIC, PAR_STRING, "MONTH(date) Returns the month for date, in the range 1 to 12 for January to December, or 0 for dates such as '0000-00-00' or '2008-00-00' that have a zero month part."));
+    FUNC("@monthname"),    FT_DATETIME,  RET_STRING, PAR_STRING, "MONTHNAME(date) Returns the full name of the month for date."));
+    FUNC("@now"),          FT_DATETIME,  RET_STRING, "Returns the current date and time as a value in 'YYYY-MM-DD HH:MM:SS' or YYYYMMDDHHMMSS.uuuuuu format"));
+    FUNC("@period_add"),   FT_DATETIME,  RET_STRING, PAR_STRING, PAR_NUMERIC, "PERIOD_ADD(P,N) Adds N months to period P (in the format YYMM or YYYYMM). Returns a value in the format YYYYMM. Note that the period argument P is not a date value."));
+    FUNC("@period_diff"),  FT_DATETIME,  RET_STRING, PAR_STRING, PAR_STRING, "PERIOD_DIFF(P1,P2) Returns the number of months between periods P1 and P2. P1 and P2 should be in the format YYMM or YYYYMM. Note that the period arguments P1 and P2 are not date values."));
+    FUNC("@quarter"),      FT_DATETIME,  RET_STRING, PAR_STRING, "QUARTER(date) Returns the quarter of the year for date, in the range 1 to 4."));
+    FUNC("@second"),       FT_DATETIME,  RET_NUMERIC, PAR_STRING, "SECOND(time) Returns the second of the time in range 0 to 59."));
+    FUNC("@sec_to_time"),  FT_DATETIME,  RET_STRING, PAR_STRING, "SEC_TO_TIME(seconds) Returns the seconds argument, converted to hours, minutes, and seconds, as a TIME value."));
+    FUNC("@str_to_date"),  FT_DATETIME,  RET_DATETIME, PAR_STRING, PAR_STRING, "STR_TO_DATE(str,format) Returns a DATETIME value if the format string contains both date and time parts, or a DATE or TIME value if the string contains only date or time parts."));
+    FUNC("@subdate"),      FT_DATETIME,  RET_DATETIME, PAR_STRING, PAR_NUMERIC, "SUBDATE(expr,days) Returns the date value obtained by substracting days from expr."));
+    FUNC("@subtime"),      FT_DATETIME,  RET_DATETIME, PAR_STRING, PAR_STRING, "SUBTIME(expr1,expr2) Returns expr1 – expr2 expressed as a value in the same format as expr1. expr1 is a time or datetime expression, and expr2 is a time expression."));
+    FUNC("@sysdate"),      FT_DATETIME,  RET_STRING, "Returns the current date and time as a value in 'YYYY-MM-DD HH:MM:SS' or YYYYMMDDHHMMSS.uuuuuu format, depending on whether the function is used in a string or numeric context."));
+    FUNC("@time"),         FT_DATETIME,  RET_NUMERIC, PAR_STRING, "TIME(expr) Extracts the time part of the time or datetime expression expr and returns it as a string."));
+    FUNC("@timediff"),     FT_DATETIME,  RET_DATETIME, PAR_STRING, PAR_STRING, "TIMEDIFF(expr1,expr2) Returns expr1 – expr2 expressed as a time value. expr1 and expr2 are time or date-and-time expressions, but both must be of the same type."));
+    FUNC("@timestamp"),    FT_DATETIME,  RET_DATETIME, PAR_STRING, PAR_STRING, "TIMESTAMP(expr1,expr2) It adds the time expression expr2 to the date or datetime expression expr1 and returns the result as a datetime value."));
+    FUNC("@timestamp"),    FT_DATETIME,  RET_DATETIME, PAR_STRING, "TIMESTAMP(expr) Returns the date or datetime expression expr as a datetime value."));
+    FUNC("@timestampadd"), FT_DATETIME,  RET_DATETIME, PAR_STRING, PAR_NUMERIC, PAR_STRING, "TIMESTAMPADD(unit,interval,datetime_expr) Adds the integer expression interval to the date or datetime expression datetime_expr. The unit for interval is given by the unit argument, which should be one of the following values: FRAC_SECOND (microseconds), SECOND, MINUTE, HOUR, DAY, WEEK, MONTH, QUARTER, or YEAR."));
+    FUNC("@timestampdiff"),FT_DATETIME,  RET_DATETIME, PAR_STRING, PAR_STRING, PAR_STRING, "TIMESTAMPDIFF(unit,datetime_expr1,datetime_expr2) Returns datetime_expr2 – datetime_expr1, where datetime_expr1 and datetime_expr2 are date or datetime expressions."));
+    FUNC("@time_format"),  FT_DATETIME,  RET_STRING, PAR_STRING, PAR_STRING, "TIME_FORMAT(time,expr) Formats the time value according to the format string."));
+    FUNC("@time_to_sec"),  FT_DATETIME,  RET_NUMERIC, PAR_STRING, "TIME_TO_SEC(time) Returns the time argument, converted to seconds."));
+    FUNC("@to_days"),      FT_DATETIME,  RET_NUMERIC, PAR_STRING, "TO_DAYS(date) Given a date date, returns a day number (the number of days since year 0)."));
+    FUNC("@unix_timestamp"),FT_DATETIME,  RET_NUMERIC, "UNIX_TIMESTAMP() Returns a Unix timestamp (seconds since '1970-01-01 00:00:00' UTC) as an unsigned integer"));
+    FUNC("@unix_timestamp"),FT_DATETIME,  RET_NUMERIC, PAR_STRING, "UNIX_TIMESTAMP(date) Returns returns the value of the argument seconds since '1970-01-01 00:00:00' UTC as an unsigned integer"));
+    FUNC("@utc_date"),     FT_DATETIME,  RET_STRING, "UTC_DATE() Returns the current UTC date as a value in 'YYYY-MM-DD' or YYYYMMDD format, depending on whether the function is used in a string or numeric context."));
+    FUNC("@utc_time"),     FT_DATETIME,  RET_STRING, "UTC_TIME() Returns the current UTC time as a value in 'HH:MM:SS' or HHMMSS.uuuuuu format, depending on whether the function is used in a string or numeric context."));
+    FUNC("@utc_timestamp"),FT_DATETIME,  RET_STRING, "UTC_TIMESTAMP() Returns the current UTC date and time as a value in 'YYYY-MM-DD HH:MM:SS' or YYYYMMDDHHMMSS.uuuuuu format, depending on whether the function is used in a string or numeric context."));
+    FUNC("@week"),         FT_DATETIME,  RET_NUMERIC, PAR_STRING,  "WEEK(date) This function returns the week number for date."));
+    FUNC("@weekday"),      FT_DATETIME,  RET_NUMERIC, PAR_STRING,  "WEEKDAY(date) This function returns the weekday index for date."));
+    FUNC("@weekofyear"),   FT_DATETIME,  RET_NUMERIC, PAR_STRING,  "WEEKOFYEAR(date) Returns the calendar week of the date as a number in the range from 1 to 53."));
+    FUNC("@year"),         FT_DATETIME,  RET_NUMERIC, PAR_STRING,  "YEAR(date) Returns the year for date, in the range 1000 to 9999, or 0 for the “zero” date."));
+    FUNC("@yearweek"),     FT_DATETIME,  RET_NUMERIC, PAR_STRING,  "YEARWEEK(date) Returns year and week for a date."));
 
+    FUNC("@avg"),          FT_AGGREGATE, RET_NUMERIC, PAR_NUMERIC,  "AVG(expr) Returns the average value of expr."));
+    FUNC("@bit_and"),      FT_AGGREGATE, RET_NUMERIC, PAR_NUMERIC,  "BIT_AND(X) Returns the bitwise AND of all bits in expr. The calculation is performed with 64-bit (BIGINT) precision. "));
+    FUNC("@bit_or"),       FT_AGGREGATE, RET_NUMERIC, PAR_NUMERIC,  "BIT_XOR(X) Returns the bitwise OR of all bits in expr. The calculation is performed with 64-bit (BIGINT) precision. "));
+    FUNC("@bit_xor"),      FT_AGGREGATE, RET_NUMERIC, PAR_NUMERIC,  "BIT_XOR(X) Returns the bitwise XOR of all bits in expr. The calculation is performed with 64-bit (BIGINT) precision. "));
+    FUNC("@count"),        FT_AGGREGATE, RET_NUMERIC, PAR_VARIABLE, "COUNT([DISTINCT]expr) Returns a count of the number of non-NULL values of expr in the rows retrieved by a SELECT statement. The result is a BIGINT value."));
+    FUNC("@group_concat"), FT_AGGREGATE, RET_STRING,  PAR_VARIABLE, "GROUP_CONCAT(expr) Returns a string result with the concatenated non-NULL values from a group. It returns NULL if there are no non-NULL values. "));
+    FUNC("@max"),          FT_AGGREGATE, RET_NUMERIC, PAR_NUMERIC,  "MAX(expr) Returns the max value of expr."));
+    FUNC("@min"),          FT_AGGREGATE, RET_NUMERIC, PAR_NUMERIC,  "MIN(expr) Returns the min value of expr."));
+    FUNC("@std"),          FT_AGGREGATE, RET_NUMERIC, PAR_NUMERIC,  "STD(expr) Returns the population standard deviation of expr."));
+    FUNC("@stddev"),       FT_AGGREGATE, RET_NUMERIC, PAR_NUMERIC,  "STDDEV(expr) Returns the population standard deviation of expr."));
+    FUNC("@stddev_pop"),   FT_AGGREGATE, RET_NUMERIC, PAR_NUMERIC,  "STDDEV_POP(expr) Returns the population standard deviation of expr."));
+    FUNC("@stddev_samp"),  FT_AGGREGATE, RET_NUMERIC, PAR_NUMERIC,  "STDDEV_SAMP(expr) Returns the sample standard deviation of expr."));
+    FUNC("@umd"),          FT_AGGREGATE, RET_NUMERIC, PAR_NUMERIC,  "SUM(expr) Returns the sum of expr."));
+    FUNC("@var_pop"),      FT_AGGREGATE, RET_NUMERIC, PAR_NUMERIC,  "VAR_POP(expr) Returns the population standard variance of expr."));
+    FUNC("@var_samp"),     FT_AGGREGATE, RET_NUMERIC, PAR_NUMERIC,  "VAR_SAMP(expr) Returns the sample variance of expr."));
 
-    FUNC("@avg"),          FT_AGGREGATE, RET_NUMERIC, PAR_NUMERIC, "AVG(X) Returns the average value of expr."));
-    FUNC("@bit_and"),      FT_AGGREGATE, RET_NUMERIC, PAR_NUMERIC, "BIT_AND(X) Returns the bitwise AND of all bits in expr. The calculation is performed with 64-bit (BIGINT) precision. "));
-    FUNC("@bit_or"),       FT_AGGREGATE, RET_NUMERIC, PAR_NUMERIC, "BIT_XOR(X) Returns the bitwise OR of all bits in expr. The calculation is performed with 64-bit (BIGINT) precision. "));
-    FUNC("@bit_xor"),      FT_AGGREGATE, RET_NUMERIC, PAR_NUMERIC, "BIT_XOR(X) Returns the bitwise XOR of all bits in expr. The calculation is performed with 64-bit (BIGINT) precision. "));
-    FUNC("@count"),        FT_AGGREGATE, RET_NUMERIC, PAR_VARIABLE, "Returns a count of the number of non-NULL values of expr in the rows retrieved by a SELECT statement. The result is a BIGINT value."));
 
     FUNC("@ascii"),        FT_STRING,   RET_NUMERIC,  PAR_STRING, "ASCII(str) Returns the numeric value of the leftmost character of the string str. Returns 0 if str is the empty string. Returns NULL if str is NULL. ASCII() works for 8-bit characters."));
     FUNC("@bin"),          FT_STRING,   RET_STRING,   PAR_NUMERIC, "BIN(N) Returns a string representation of the binary value of N, where N is a longlong (BIGINT) number. This is equivalent to CONV(N,10,2). Returns NULL if N is NULL."));
@@ -574,11 +626,12 @@ QVector<DatabaseBuiltinFunction> MySQLDatabaseEngine::buildFunctions()
     FUNC("@soundex"),      FT_STRING,   RET_STRING,   PAR_STRING, "SOUNDEX(str) Returns a soundex string from str. Two strings that sound almost the same should have identical soundex strings. A standard soundex string is four characters long, but the SOUNDEX() function returns an arbitrarily long string."));
     FUNC("@space"),        FT_STRING,   RET_STRING,   PAR_NUMERIC, "SPACE(N) Returns a string consisting of N space characters."));
     FUNC("@substring"),    FT_STRING,   RET_STRING,   PAR_STRING, PAR_NUMERIC, OPAR_NUMERIC, "SUBSTRING(str,pos,len) Return a substring len characters long from string str, starting at position pos."));
-    FUNC("@substring_index"), FT_STRING,RET_STRING,   PAR_STRING, PAR_STRING, PAR_NUMERIC, "SUBSTRING_INDEX(str,delim,count) Returns the substring from string str before count occurrences of the delimiter delim."));
+    FUNC("@substring_index"),FT_STRING,RET_STRING,   PAR_STRING, PAR_STRING, PAR_NUMERIC, "SUBSTRING_INDEX(str,delim,count) Returns the substring from string str before count occurrences of the delimiter delim."));
     FUNC("@trim"),         FT_STRING,   RET_STRING,   OPAR_STRING, PAR_STRING, "TRIM([remstr FROM] str) Returns the string str with all remstr prefixes or suffixes removed."));
     FUNC("@unhex"),        FT_STRING,   RET_STRING,   PAR_STRING, "UNHEX(str) For a string argument str, UNHEX(str) performs the inverse operation of HEX(str)."));
     FUNC("@upper"),        FT_STRING,   RET_STRING,   PAR_STRING, "UPPER(str) Returns the string str with all characters changed to uppercase according to the current character set mapping."));
 
+    FUNC("@convert"),      FT_CAST,     RET_STRING,   PAR_STRING, PAR_STRING, "CONVERT(expr,type) The CONVERT() function takes a value of one type and produces a value of another type. See the online help for more info."));
 
 
     return result;
