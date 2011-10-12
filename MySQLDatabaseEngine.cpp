@@ -633,6 +633,18 @@ QVector<DatabaseBuiltinFunction> MySQLDatabaseEngine::buildFunctions()
 
     FUNC("@convert"),      FT_CAST,     RET_STRING,   PAR_STRING, PAR_STRING, "CONVERT(expr,type) The CONVERT() function takes a value of one type and produces a value of another type. See the online help for more info."));
 
+    FUNC("@bit_count"),    FT_BIT,      RET_NUMERIC,  PAR_NUMERIC, "BIT_COUNT(N) Returns the number of bits that are set in the argument N. "));
+
+    FUNC("@aes_decrypt"),  FT_CRYPT,    RET_STRING,   PAR_STRING, PAR_STRING, "AES_DECRYPT(crypt_str,key_str) This function decrypts data using the official AES (Advanced Encryption Standard) algorithm."));
+    FUNC("@aes_encrypt"),  FT_CRYPT,    RET_STRING,   PAR_STRING, PAR_STRING, "AES_ENCRYPT(str,key_str) This function encrypts a string and returns a binary string using the official AES (Advanced Encryption Standard) algorithm."));
+    FUNC("@compress"),     FT_CRYPT,    RET_STRING,   PAR_STRING, "COMPRESS(str) Compresses a string and returns the result as a binary string."));
+    FUNC("@decode"),       FT_CRYPT,    RET_STRING,   PAR_STRING, PAR_STRING, "DECODE(crypt_str,pass_str) Decrypts the encrypted string crypt_str using pass_str as the password. crypt_str should be a string returned from ENCODE()."));
+    FUNC("@des_decrypt"),  FT_CRYPT,    RET_STRING,   PAR_STRING, OPAR_STRING, "DES_DECRYPT(crypt_str,pass_str) Decrypts a string encrypted with DES_ENCRYPT()."));
+    FUNC("@des_encrypt"),  FT_CRYPT,    RET_STRING,   PAR_STRING, OPAR_STRING, "DES_ENCRYPT(str,[key]) Encrypts the string with the given key using the Triple-DES algorithm."));
+    FUNC("@encode"),       FT_CRYPT,    RET_STRING,   PAR_STRING, PAR_STRING, "ENCODE(str,pass_str) Encrypt str using pass_str as the password. To decrypt the result, use DECODE()."));
+    FUNC("@encrypt"),      FT_CRYPT,    RET_STRING,   PAR_STRING, OPAR_STRING, "ENCRYPT(str,[salt]) Encrypts str using the Unix crypt() system call and returns a binary string."));
+    FUNC("@md5"),          FT_CRYPT,    RET_STRING,   PAR_STRING, "MD5(str) Calculates an MD5 128-bit checksum for the string. The value is returned as a binary string of 32 hex digits, or NULL if the argument was NULL."));
+
 
     return result;
 }
