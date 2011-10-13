@@ -644,7 +644,40 @@ QVector<DatabaseBuiltinFunction> MySQLDatabaseEngine::buildFunctions()
     FUNC("@encode"),       FT_CRYPT,    RET_STRING,   PAR_STRING, PAR_STRING, "ENCODE(str,pass_str) Encrypt str using pass_str as the password. To decrypt the result, use DECODE()."));
     FUNC("@encrypt"),      FT_CRYPT,    RET_STRING,   PAR_STRING, OPAR_STRING, "ENCRYPT(str,[salt]) Encrypts str using the Unix crypt() system call and returns a binary string."));
     FUNC("@md5"),          FT_CRYPT,    RET_STRING,   PAR_STRING, "MD5(str) Calculates an MD5 128-bit checksum for the string. The value is returned as a binary string of 32 hex digits, or NULL if the argument was NULL."));
+    FUNC("@old_password"), FT_CRYPT,    RET_STRING,   PAR_STRING, "OLD_PASSWORD(str) Returns the value of the pre-4.1 implementation of PASSWORD() as a binary string, and is intended to permit you to reset passwords for any pre-4.1 clients that need to connect to your version 5.0 MySQL server without locking them out."));
+    FUNC("@password"),     FT_CRYPT,    RET_STRING,   PAR_STRING, "PASSWORD(str) Calculates and returns a password string from the plaintext password str and returns a binary string, or NULL if the argument was NULL."));
+    FUNC("@sha"),          FT_CRYPT,    RET_STRING,   PAR_STRING, "SHA(str) Calculates an SHA-1 160-bit checksum for the string, as described in RFC 3174 (Secure Hash Algorithm). The value is returned as a binary string of 40 hex digits, or NULL if the argument was NULL."));
+    FUNC("@uncompress"),   FT_CRYPT,    RET_STRING,   PAR_STRING, "UNCOMPRESS(str) Uncompresses a string compressed by the COMPRESS() function."));
+    FUNC("@uncompressed_length"),FT_CRYPT,    RET_NUMERIC,   PAR_STRING, "UNCOMPRESSED:LENGTH(str) Returns the length that the compressed string had before being compressed."));
 
+    FUNC("@benchmark"),    FT_INFO,    RET_NUMERIC,   PAR_NUMERIC, PAR_STRING, "BENCHMARK(count,expr) The BENCHMARK() function executes the expression expr repeatedly count times. It may be used to time how quickly MySQL processes the expression. The result value is always 0."));
+    FUNC("@charset"),      FT_INFO,    RET_STRING,    PAR_STRING, "CHARSET(str) Returns the character set of the string argument."));
+    FUNC("@coercibilty"),  FT_INFO,    RET_STRING,    PAR_STRING, "COERCIBILITY(str) Returns the collation coercibility value of the string argument."));
+    FUNC("@collation"),    FT_INFO,    RET_STRING,    PAR_STRING, "COLLATION(str) Returns the collation of the string argument."));
+    FUNC("@connection_id"),FT_INFO,    RET_NUMERIC,               "CONNECTION_ID() Returns the connection ID (thread ID) for the connection. Every connection has an ID that is unique among the set of currently connected clients. "));
+    FUNC("@current_user"), FT_INFO,    RET_STRING,                "CURRENT_USER() Returns the user name and host name combination for the MySQL account that the server used to authenticate the current client."));
+    FUNC("@database"),     FT_INFO,    RET_STRING,                "DATABASE() Returns the default (current) database name as a string in the utf8 character set. If there is no default database, DATABASE() returns NULL."));
+    FUNC("@found_rows"),   FT_INFO,    RET_NUMERIC,               "FOUND_ROWS() To obtain how many rows the statement would have returned without the LIMIT, include a SQL_CALC_FOUND_ROWS option in the SELECT statement, and then invoke FOUND_ROWS()."));
+    FUNC("@last_insert_id"),FT_INFO,   RET_NUMERIC,               "LAST_INSERT_ID() Returns the first automatically generated value that was set for an AUTO_INCREMENT column by the most recently executed INSERT statement to affect such a column."));
+    FUNC("@row_count"),    FT_INFO,    RET_NUMERIC,               "ROW_COUNT() Returns the number of rows changed, deleted, or inserted by the last statement if it was an UPDATE, DELETE, or INSERT."));
+    FUNC("@schema"),       FT_INFO,    RET_STRING,                "SCHEMA() is a synonym for DATABASE()."));
+    FUNC("@session_user"), FT_INFO,    RET_STRING,                "SESSION_USER() is a synonym for USER()."));
+    FUNC("@system_user"),  FT_INFO,    RET_STRING,                "SYSTEM_USER() is a synonym for USER()."));
+    FUNC("@user"),         FT_INFO,    RET_STRING,                "USER() Returns the current MySQL user name and host name as a string in the utf8 character set."));
+    FUNC("@version"),      FT_INFO,    RET_STRING,                "VERSION() Returns a string that indicates the MySQL server version."));
+
+    FUNC("@default"),      FT_MISC,    RET_STRING,    PAR_STRING, "DEFAULT(col_name) Returns the default value for a table column."));
+    FUNC("@format"),       FT_MISC,    RET_STRING,    PAR_NUMERIC, PAR_STRING, "FORMAT(X,D) Formats the number X to a format like '#,###,###.##', rounded to D decimal places, and returns the result as a string."));
+    FUNC("@get_lock"),     FT_MISC,    RET_NUMERIC,   PAR_STRING,  PAR_NUMERIC, "GET_LOCK(str,timeout) Tries to obtain a lock with a name given by the string str, using a timeout of timeout seconds. Returns 1 if the lock was obtained successfully, 0 if the attempt timed out."));
+    FUNC("@inet_aton"),    FT_MISC,    RET_NUMERIC,   PAR_STRING,  "INET_ATON(expr) Given the dotted-quad representation of an IPv4 network address as a string, returns an integer that represents the numeric value of the address in network byte order (big endian)."));
+    FUNC("@inet_ntoa"),    FT_MISC,    RET_STRING,    PAR_SNUMERIC,"INET_NTOA(expr) Given a numeric IPv4 network address in network byte order, returns the dotted-quad representation of the address as a binary string."));
+    FUNC("@is_free_lock"), FT_MISC,    RET_NUMERIC,   PAR_STRING,  "IS_FREE_LOCK(str) Checks whether the lock named str is free to use (that is, not locked)."));
+    FUNC("@is_used_lock"), FT_MISC,    RET_NUMERIC,   PAR_STRING,  "IS_USED_LOCK(str) Checks whether the lock named str is in use (that is, locked)."));
+    FUNC("@master_pos_wait"), FT_MISC, RET_NUMERIC,   PAR_STRING, PAR_NUMERIC, OPAR_NUMERIC, "MASTER_POS_WAIT(log_name,log_pos[,timeout]) This function is useful for control of master/slave synchronization. It blocks until the slave has read and applied all updates up to the specified position in the master log. The return value is the number of log events the slave had to wait for to advance to the specified position."));
+    FUNC("@name_const"),   FT_MISC,    RET_NUMERIC,   PAR_STRING,  PAR_STRING, "NAME_CONST(name,value) Returns the given value. When used to produce a result set column, NAME_CONST() causes the column to have the given name. The arguments should be constants."));
+    FUNC("@release_lock"), FT_MISC,    RET_NUMERIC,   PAR_STRING,  "RELEASE_LOCK(str) Releases the lock named by the string str that was obtained with GET_LOCK()."));
+    FUNC("@sleep"),        FT_MISC,    RET_NUMERIC,   PAR_NUMERIC, "SLEEP(duration) Sleeps (pauses) for the number of seconds given by the duration argument, then returns 0. If SLEEP() is interrupted, it returns 1."));
+    FUNC("@uuid"),         FT_MISC,    RET_STRING,                "UUID()Returns a Universal Unique Identifier (UUID) generated according to “DCE 1.1: Remote Procedure Call” (Appendix A) CAE (Common Applications Environment) Specifications published by The Open Group in October 1997 (Document Number C706, http://www.opengroup.org/public/pubs/catalog/c706.htm). "));
 
     return result;
 }
