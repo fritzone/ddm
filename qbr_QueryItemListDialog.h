@@ -72,6 +72,14 @@ private:
     QMenu* m_tablesMenu;
     QMenu* m_functionsMathMenu;
     QMenu* m_functionsAggregateMenu;
+    QMenu* m_functionsStringMenu;
+    QMenu* m_functionsDateTimeMenu;
+    QMenu* m_functionsCryptMenu;
+    QMenu* m_functionsMiscMenu;
+    QMenu* m_functionsCastMenu;
+    QMenu* m_functionsBitMenu;
+    QMenu* m_functionsControlFlowMenu;
+    QMenu* m_functionsInfoMenu;
 
     QueryGraphicsHelper* m_helper;
     QVector<const Column*> m_columnsToShow;
