@@ -149,10 +149,36 @@ void QueryItemListDialog::showSymbolPanel()
     m_functionsMenu = new QMenu(this);
     m_comparisonMenu = new QMenu(this);
     m_tablesMenu = new QMenu(this);
+
     m_functionsMathMenu = new QMenu(m_functionsMenu);
-    m_functionsMathMenu->setTitle("Math");
+    m_functionsMathMenu->setTitle(tr("Math"));
+
     m_functionsAggregateMenu = new QMenu(m_functionsMenu);
-    m_functionsAggregateMenu->setTitle("Aggregate");
+    m_functionsAggregateMenu->setTitle(tr("Aggregate"));
+
+    m_functionsStringMenu = new QMenu(m_functionsMenu);
+    m_functionsStringMenu->setTitle(tr("Math"));
+
+    m_functionsCryptMenu = new QMenu(m_functionsMenu);
+    m_functionsCryptMenu->setTitle(tr("Crypt"));
+
+    m_functionsControlFlowMenu= new QMenu(m_functionsMenu);
+    m_functionsControlFlowMenu->setTitle(tr("Flow"));
+
+    m_functionsDateTimeMenu = new QMenu(m_functionsMenu);
+    m_functionsDateTimeMenu->setTitle(tr("Date/Time"));
+
+    m_functionsInfoMenu = new QMenu(m_functionsMenu);
+    m_functionsInfoMenu->setTitle(tr("Info"));
+
+    m_functionsMiscMenu = new QMenu(m_functionsMenu);
+    m_functionsMiscMenu->setTitle(tr("Misc"));
+
+    m_functionsCastMenu = new QMenu(m_functionsMenu);
+    m_functionsCastMenu->setTitle(tr("Cast"));
+
+    m_functionsBitMenu = new QMenu(m_functionsMenu);
+    m_functionsBitMenu->setTitle(tr("Bit"));
 
     m_mathMenu->addAction(IconFactory::getPlusIcon(), strMathPlus);
     m_mathMenu->addAction(IconFactory::getMinusIcon(), strMathMinus);
@@ -175,25 +201,38 @@ void QueryItemListDialog::showSymbolPanel()
     m_comparisonMenu->addAction(IconFactory::getLessOrEqualIcon(), strCmpLessOrEqual);
     m_comparisonMenu->addAction(IconFactory::getGreaterOrEqualIcon(), strCmpGreaterOrEqual);
 
+    QMap<FunctionType, QMenu*> menus;
+    menus[FT_NUMERIC] = m_functionsMathMenu;
+    menus[FT_AGGREGATE] = m_functionsAggregateMenu;
+    menus[FT_MISC] = m_functionsMiscMenu;
+    menus[FT_DATETIME] = m_functionsDateTimeMenu;
+    menus[FT_CRYPT] = m_functionsCryptMenu;
+    menus[FT_CAST] = m_functionsCastMenu;
+    menus[FT_STRING] = m_functionsStringMenu;
+    menus[FT_BIT] = m_functionsBitMenu;
+    menus[FT_CONTROLFLOW] = m_functionsControlFlowMenu;
+    menus[FT_INFO] = m_functionsInfoMenu;
+
     QVector<DatabaseBuiltinFunction> functions = Workspace::getInstance()->currentProjectsEngine()->getBuiltinFunctions();
     for(int i=0; i<functions.size(); i++)
     {
         QAction* tempAction = new QAction(IconFactory::getFunctionIcon(), functions.at(i).getNiceName().toUpper(), this);
         tempAction->setData(functions.at(i).getName().toUpper());
         tempAction->setStatusTip(functions.at(i).getDescription());
-
-        if(functions.at(i).getType() == FT_NUMERIC)
-        {
-            m_functionsMathMenu->addAction(tempAction);
-        }
-        if(functions.at(i).getType() == FT_AGGREGATE)
-        {
-            m_functionsAggregateMenu->addAction(tempAction);
-        }
+        menus[functions.at(i).getType()]->addAction(tempAction);
     }
 
     m_functionsMenu->addMenu(m_functionsMathMenu);
+    m_functionsMenu->addMenu(m_functionsStringMenu);
     m_functionsMenu->addMenu(m_functionsAggregateMenu);
+    m_functionsMenu->addMenu(m_functionsDateTimeMenu);
+    m_functionsMenu->addMenu(m_functionsCryptMenu);
+    m_functionsMenu->addMenu(m_functionsCastMenu);
+    m_functionsMenu->addMenu(m_functionsBitMenu);
+    m_functionsMenu->addMenu(m_functionsControlFlowMenu);
+    m_functionsMenu->addMenu(m_functionsMiscMenu);
+    m_functionsMenu->addMenu(m_functionsInfoMenu);
+
 
     /* Now building the menu system for the columns */
     Query* q = m_helper->getQuery();

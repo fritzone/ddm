@@ -560,8 +560,8 @@ QVector<DatabaseBuiltinFunction> MySQLDatabaseEngine::buildFunctions()
     FUNC("@time_format"),  FT_DATETIME,  RET_STRING, PAR_STRING, PAR_STRING, "TIME_FORMAT(time,expr) Formats the time value according to the format string."));
     FUNC("@time_to_sec"),  FT_DATETIME,  RET_NUMERIC, PAR_STRING, "TIME_TO_SEC(time) Returns the time argument, converted to seconds."));
     FUNC("@to_days"),      FT_DATETIME,  RET_NUMERIC, PAR_STRING, "TO_DAYS(date) Given a date date, returns a day number (the number of days since year 0)."));
-    FUNC("@unix_timestamp"),FT_DATETIME,  RET_NUMERIC, "UNIX_TIMESTAMP() Returns a Unix timestamp (seconds since '1970-01-01 00:00:00' UTC) as an unsigned integer"));
-    FUNC("@unix_timestamp"),FT_DATETIME,  RET_NUMERIC, PAR_STRING, "UNIX_TIMESTAMP(date) Returns returns the value of the argument seconds since '1970-01-01 00:00:00' UTC as an unsigned integer"));
+    FUNC("@unix_timestamp"),FT_DATETIME, RET_NUMERIC, "UNIX_TIMESTAMP() Returns a Unix timestamp (seconds since '1970-01-01 00:00:00' UTC) as an unsigned integer"));
+    FUNC("@unix_timestamp"),FT_DATETIME, RET_NUMERIC, PAR_STRING, "UNIX_TIMESTAMP(date) Returns returns the value of the argument seconds since '1970-01-01 00:00:00' UTC as an unsigned integer"));
     FUNC("@utc_date"),     FT_DATETIME,  RET_STRING, "UTC_DATE() Returns the current UTC date as a value in 'YYYY-MM-DD' or YYYYMMDD format, depending on whether the function is used in a string or numeric context."));
     FUNC("@utc_time"),     FT_DATETIME,  RET_STRING, "UTC_TIME() Returns the current UTC time as a value in 'HH:MM:SS' or HHMMSS.uuuuuu format, depending on whether the function is used in a string or numeric context."));
     FUNC("@utc_timestamp"),FT_DATETIME,  RET_STRING, "UTC_TIMESTAMP() Returns the current UTC date and time as a value in 'YYYY-MM-DD HH:MM:SS' or YYYYMMDDHHMMSS.uuuuuu format, depending on whether the function is used in a string or numeric context."));
@@ -670,14 +670,15 @@ QVector<DatabaseBuiltinFunction> MySQLDatabaseEngine::buildFunctions()
     FUNC("@format"),       FT_MISC,    RET_STRING,    PAR_NUMERIC, PAR_STRING, "FORMAT(X,D) Formats the number X to a format like '#,###,###.##', rounded to D decimal places, and returns the result as a string."));
     FUNC("@get_lock"),     FT_MISC,    RET_NUMERIC,   PAR_STRING,  PAR_NUMERIC, "GET_LOCK(str,timeout) Tries to obtain a lock with a name given by the string str, using a timeout of timeout seconds. Returns 1 if the lock was obtained successfully, 0 if the attempt timed out."));
     FUNC("@inet_aton"),    FT_MISC,    RET_NUMERIC,   PAR_STRING,  "INET_ATON(expr) Given the dotted-quad representation of an IPv4 network address as a string, returns an integer that represents the numeric value of the address in network byte order (big endian)."));
-    FUNC("@inet_ntoa"),    FT_MISC,    RET_STRING,    PAR_SNUMERIC,"INET_NTOA(expr) Given a numeric IPv4 network address in network byte order, returns the dotted-quad representation of the address as a binary string."));
+    FUNC("@inet_ntoa"),    FT_MISC,    RET_STRING,    PAR_NUMERIC,"INET_NTOA(expr) Given a numeric IPv4 network address in network byte order, returns the dotted-quad representation of the address as a binary string."));
     FUNC("@is_free_lock"), FT_MISC,    RET_NUMERIC,   PAR_STRING,  "IS_FREE_LOCK(str) Checks whether the lock named str is free to use (that is, not locked)."));
     FUNC("@is_used_lock"), FT_MISC,    RET_NUMERIC,   PAR_STRING,  "IS_USED_LOCK(str) Checks whether the lock named str is in use (that is, locked)."));
     FUNC("@master_pos_wait"), FT_MISC, RET_NUMERIC,   PAR_STRING, PAR_NUMERIC, OPAR_NUMERIC, "MASTER_POS_WAIT(log_name,log_pos[,timeout]) This function is useful for control of master/slave synchronization. It blocks until the slave has read and applied all updates up to the specified position in the master log. The return value is the number of log events the slave had to wait for to advance to the specified position."));
     FUNC("@name_const"),   FT_MISC,    RET_NUMERIC,   PAR_STRING,  PAR_STRING, "NAME_CONST(name,value) Returns the given value. When used to produce a result set column, NAME_CONST() causes the column to have the given name. The arguments should be constants."));
     FUNC("@release_lock"), FT_MISC,    RET_NUMERIC,   PAR_STRING,  "RELEASE_LOCK(str) Releases the lock named by the string str that was obtained with GET_LOCK()."));
     FUNC("@sleep"),        FT_MISC,    RET_NUMERIC,   PAR_NUMERIC, "SLEEP(duration) Sleeps (pauses) for the number of seconds given by the duration argument, then returns 0. If SLEEP() is interrupted, it returns 1."));
-    FUNC("@uuid"),         FT_MISC,    RET_STRING,                "UUID()Returns a Universal Unique Identifier (UUID) generated according to “DCE 1.1: Remote Procedure Call” (Appendix A) CAE (Common Applications Environment) Specifications published by The Open Group in October 1997 (Document Number C706, http://www.opengroup.org/public/pubs/catalog/c706.htm). "));
+    FUNC("@uuid"),         FT_MISC,    RET_STRING,                 "UUID()Returns a Universal Unique Identifier (UUID) generated according to “DCE 1.1: Remote Procedure Call” (Appendix A) CAE (Common Applications Environment) Specifications published by The Open Group in October 1997 (Document Number C706, http://www.opengroup.org/public/pubs/catalog/c706.htm). "));
+
 
     return result;
 }
