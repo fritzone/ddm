@@ -1,11 +1,11 @@
 #include "DatabaseEngine.h"
 #include "AbstractCodepageSupplier.h"
-#include "MySQLDTSupplier.h"
-#include "MysqlCodepageSupplier.h"
-#include "MySQLIndextypeProvider.h"
-#include "MySQLDatabaseEngine.h"
-#include "MySQLStorageEngineListProvider.h"
-#include "MySQLSQLGenerator.h"
+#include "dbmysql_MySQLDTSupplier.h"
+#include "dbmysql_MysqlCodepageSupplier.h"
+#include "dbmysql_MySQLIndextypeProvider.h"
+#include "dbmysql_MySQLDatabaseEngine.h"
+#include "dbmysql_MySQLStorageEngineListProvider.h"
+#include "dbmysql_MySQLSQLGenerator.h"
 
 QMap<QString, AbstractDTSupplier*> DatabaseEngine::dtsuppliers;
 QMap<QString, AbstractCodepageSupplier*> DatabaseEngine::cpsuppliers;

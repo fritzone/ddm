@@ -13,12 +13,10 @@ SOURCES += main.cpp \
     DataTypesListForm.cpp \
     AbstractDTSupplier.cpp \
     DataType.cpp \
-    MySQLDTSupplier.cpp \
     UserDataType.cpp \
     Project.cpp \
     MajorVersion.cpp \
     AbstractCodepageSupplier.cpp \
-    MySQLCodepageSupplier.cpp \
     Codepage.cpp \
     DatabaseEngine.cpp \
     Configuration.cpp \
@@ -31,10 +29,8 @@ SOURCES += main.cpp \
     DeserializationFactory.cpp \
     ProjectDetailsForm.cpp \
     Solution.cpp \
-    MySQLDatabaseEngine.cpp \
     AbstractStorageEngine.cpp \
     AbstractStorageEngineListProvider.cpp \
-    MySQLStorageEngineListProvider.cpp \
     AboutBoxDialog.cpp \
     DiagramForm.cpp \
     DraggableGraphicsItem.cpp \
@@ -54,7 +50,6 @@ SOURCES += main.cpp \
     TableInstanceForm.cpp \
     StartupValuesHelper.cpp \
     DynamicActionHandlerforMainWindow.cpp \
-    MySQLSQLGenerator.cpp \
     SqlHighlighter.cpp \
     SqlForm.cpp \
     InjectSqlDialog.cpp \
@@ -116,7 +111,12 @@ SOURCES += main.cpp \
     qbr_QueryItemListDialog.cpp \
     qbr_QueryTextInputItem.cpp \
     qbr_TableQueryComponent.cpp \
-    qbr_TableGraphicsItem.cpp
+    qbr_TableGraphicsItem.cpp \
+    dbmysql_MySQLCodepageSupplier.cpp \
+    dbmysql_MySQLDatabaseEngine.cpp \
+    dbmysql_MySQLDTSupplier.cpp \
+    dbmysql_MySQLSQLGenerator.cpp \
+    dbmysql_MySQLStorageEngineListProvider.cpp
 HEADERS += MainWindow.h \
     MainWindowButtonDialog.h \
     NewProjectDialog.h \
@@ -124,14 +124,12 @@ HEADERS += MainWindow.h \
     DataTypesListForm.h \
     AbstractDTSupplier.h \
     DataType.h \
-    MySQLDTSupplier.h \
     UserDataType.h \
     strings.h \
     Project.h \
     MajorVersion.h \
     Version.h \
     AbstractCodepageSupplier.h \
-    MySQLCodepageSupplier.h \
     Codepage.h \
     DatabaseEngine.h \
     Configuration.h \
@@ -142,7 +140,6 @@ HEADERS += MainWindow.h \
     TreeItem.h \
     Column.h \
     AbstractIndextypeProvider.h \
-    MySQLIndextypeProvider.h \
     Index.h \
     SerializableElement.h \
     NamedItem.h \
@@ -150,14 +147,8 @@ HEADERS += MainWindow.h \
     ProjectDetailsForm.h \
     ForeignKey.h \
     Solution.h \
-    MySQLDatabaseEngine.h \
     AbstractStorageEngine.h \
     AbstractStorageEngineListProvider.h \
-    MySQLStorageEngineListProvider.h \
-    MySQLMyISAMStorageEngine.h \
-    MySQLInnoDBStorageEngine.h \
-    MySQLMemoryStorageEngine.h \
-    MySQLArchiveStorageEngine.h \
     AboutBoxDialog.h \
     DiagramForm.h \
     DraggableGraphicsItem.h \
@@ -180,7 +171,6 @@ HEADERS += MainWindow.h \
     StartupValuesHelper.h \
     DynamicActionHandlerForMainWindow.h \
     AbstractSQLGenerator.h \
-    MySQLSQLGenerator.h \
     SqlHighlighter.h \
     SqlForm.h \
     SqlSourceEntity.h \
@@ -250,7 +240,17 @@ HEADERS += MainWindow.h \
     qbr_QueryItemListDialog.h \
     qbr_QueryTextInputItem.h \
     qbr_TableQueryComponent.h \
-    qbr_TableGraphicsItem.h
+    qbr_TableGraphicsItem.h \
+    dbmysql_MySQLArchiveStorageEngine.h \
+    dbmysql_MySQLCodepageSupplier.h \
+    dbmysql_MySQLDTSupplier.h \
+    dbmysql_MySQLIndextypeProvider.h \
+    dbmysql_MySQLInnoDBStorageEngine.h \
+    dbmysql_MySQLMemoryStorageEngine.h \
+    dbmysql_MySQLMyISAMStorageEngine.h \
+    dbmysql_MySQLSQLGenerator.h \
+    dbmysql_MySQLStorageEngineListProvider.h \
+    dbmysql_MySQLDatabaseEngine.h
 FORMS += MainWindow.ui \
     MainWindowButtonDialog.ui \
     NewProjectDialog.ui \
@@ -276,3 +276,35 @@ FORMS += MainWindow.ui \
     NewViewForm.ui \
     QueryItemListDialog.ui
 RESOURCES += dbm.qrc
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
