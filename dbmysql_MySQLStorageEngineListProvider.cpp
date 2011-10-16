@@ -1,9 +1,9 @@
-#include "MySQLStorageEngineListProvider.h"
+#include "dbmysql_MySQLStorageEngineListProvider.h"
 
-#include "MySQLMyISAMStorageEngine.h"
-#include "MySQLInnoDBStorageEngine.h"
-#include "MySQLMemoryStorageEngine.h"
-#include "MySQLArchiveStorageEngine.h"
+#include "dbmysql_MySQLMyISAMStorageEngine.h"
+#include "dbmysql_MySQLInnoDBStorageEngine.h"
+#include "dbmysql_MySQLMemoryStorageEngine.h"
+#include "dbmysql_MySQLArchiveStorageEngine.h"
 
 MySQLStorageEngineListProvider::MySQLStorageEngineListProvider():m_stEngines()
 {

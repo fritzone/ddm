@@ -1,4 +1,4 @@
-#include "MysqlCodepageSupplier.h"
+#include "dbmysql_MysqlCodepageSupplier.h"
 #include "Codepage.h"
 
 #include <QFile>
