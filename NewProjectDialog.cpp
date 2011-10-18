@@ -1,6 +1,6 @@
 #include "NewProjectDialog.h"
 #include "ui_NewProjectDialog.h"
-#include "DatabaseEngine.h"
+#include "db_DatabaseEngine.h"
 
 #include <QMessageBox>
 

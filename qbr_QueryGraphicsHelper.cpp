@@ -6,8 +6,8 @@
 #include "MainWindow.h"
 #include "IconFactory.h"
 #include "Workspace.h"
-#include "DatabaseEngine.h"
-#include "DatabaseBuiltinFunction.h"
+#include "db_DatabaseEngine.h"
+#include "db_DatabaseBuiltinFunction.h"
 
 QueryGraphicsHelper::QueryGraphicsHelper() : hotCells(), m_lstDlg(0), m_scene(0), m_form(0)
 {

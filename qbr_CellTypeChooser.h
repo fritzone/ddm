@@ -3,7 +3,7 @@
 
 #include "qbr_QueryGraphicsItem.h"
 #include "qbr_QueryGraphicsHelper.h"
-#include "DatabaseBuiltinFunction.h"
+#include "db_DatabaseBuiltinFunction.h"
 
 #include <QSet>
 

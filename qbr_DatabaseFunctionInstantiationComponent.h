@@ -1,7 +1,7 @@
 #ifndef QBR_DATABASEFUNCTIONINSTANTIATION_H
 #define QBR_DATABASEFUNCTIONINSTANTIATION_H
 
-#include "DatabaseBuiltinFunction.h"
+#include "db_DatabaseBuiltinFunction.h"
 #include "qbr_SingleExpressionQueryComponent.h"
 #include "qbr_QueryComponents.h"
 

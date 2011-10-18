@@ -2,7 +2,7 @@
 #define DATABASEBUILTINFUNCTION_H
 
 #include "qbr_OptionTypes.h"
-#include "DatabaseBuiltinFunctionsParameter.h"
+#include "db_DatabaseBuiltinFunctionsParameter.h"
 #include "NamedItem.h"
 #include "UserDataType.h"
 

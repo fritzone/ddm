@@ -3,7 +3,7 @@
 
 #include "Codepage.h"
 #include "db_AbstractCodepageSupplier.h"
-#include "DatabaseEngine.h"
+#include "db_DatabaseEngine.h"
 #include "SimpleTextInputDialog.h"
 
 #include <QSqlDatabase>
