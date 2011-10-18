@@ -15,7 +15,9 @@ class UserDataType;
 class AbstractDTSupplier
 {
 public:
-    AbstractDTSupplier();
+    AbstractDTSupplier(){}
+    virtual ~AbstractDTSupplier() {}
+
 
     /**
      * Method which will supply the supported text types of the database
@@ -69,8 +71,6 @@ public:
      * Checks if the supplied User data type is valid for this DT supplier
      */
     virtual bool isValid(const UserDataType* udt) = 0;
-
-    virtual ~AbstractDTSupplier() {}
 
 /*
   Later we will move the SQL type combo box in the "Advanced" section of

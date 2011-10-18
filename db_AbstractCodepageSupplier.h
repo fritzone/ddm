@@ -11,9 +11,10 @@ class Codepage;
 class AbstractCodepageSupplier
 {
 public:
-    AbstractCodepageSupplier();
-    virtual QVector<Codepage*> getCodepages() = 0;
+    AbstractCodepageSupplier(){}
     virtual ~AbstractCodepageSupplier() {}
+
+    virtual QVector<Codepage*> getCodepages() = 0;
 };
 
 #endif // ABSTRACTCODEPAGESUPPLIER_H

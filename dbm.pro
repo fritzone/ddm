@@ -11,12 +11,10 @@ TEMPLATE = app
 SOURCES += main.cpp \
     MainWindowButtonDialog.cpp \
     DataTypesListForm.cpp \
-    AbstractDTSupplier.cpp \
     DataType.cpp \
     UserDataType.cpp \
     Project.cpp \
     MajorVersion.cpp \
-    AbstractCodepageSupplier.cpp \
     Codepage.cpp \
     DatabaseEngine.cpp \
     Configuration.cpp \
@@ -24,13 +22,10 @@ SOURCES += main.cpp \
     TablesListForm.cpp \
     NewTableForm.cpp \
     Column.cpp \
-    AbstractIndextypeProvider.cpp \
     Index.cpp \
     DeserializationFactory.cpp \
     ProjectDetailsForm.cpp \
     Solution.cpp \
-    AbstractStorageEngine.cpp \
-    AbstractStorageEngineListProvider.cpp \
     AboutBoxDialog.cpp \
     DiagramForm.cpp \
     DraggableGraphicsItem.cpp \
@@ -122,14 +117,12 @@ HEADERS += MainWindow.h \
     NewProjectDialog.h \
     NewDataTypeForm.h \
     DataTypesListForm.h \
-    AbstractDTSupplier.h \
     DataType.h \
     UserDataType.h \
     strings.h \
     Project.h \
     MajorVersion.h \
     Version.h \
-    AbstractCodepageSupplier.h \
     Codepage.h \
     DatabaseEngine.h \
     Configuration.h \
@@ -139,7 +132,6 @@ HEADERS += MainWindow.h \
     IconFactory.h \
     TreeItem.h \
     Column.h \
-    AbstractIndextypeProvider.h \
     Index.h \
     SerializableElement.h \
     NamedItem.h \
@@ -147,8 +139,6 @@ HEADERS += MainWindow.h \
     ProjectDetailsForm.h \
     ForeignKey.h \
     Solution.h \
-    AbstractStorageEngine.h \
-    AbstractStorageEngineListProvider.h \
     AboutBoxDialog.h \
     DiagramForm.h \
     DraggableGraphicsItem.h \
@@ -170,7 +160,6 @@ HEADERS += MainWindow.h \
     TableInstanceForm.h \
     StartupValuesHelper.h \
     DynamicActionHandlerForMainWindow.h \
-    AbstractSQLGenerator.h \
     SqlHighlighter.h \
     SqlForm.h \
     SqlSourceEntity.h \
@@ -250,7 +239,13 @@ HEADERS += MainWindow.h \
     dbmysql_MySQLMyISAMStorageEngine.h \
     dbmysql_MySQLSQLGenerator.h \
     dbmysql_MySQLStorageEngineListProvider.h \
-    dbmysql_MySQLDatabaseEngine.h
+    dbmysql_MySQLDatabaseEngine.h \
+    db_AbstractCodepageSupplier.h \
+    db_AbstractDTSupplier.h \
+    db_AbstractIndextypeProvider.h \
+    db_AbstractSQLGenerator.h \
+    db_AbstractStorageEngine.h \
+    db_AbstractStorageEngineListProvider.h
 FORMS += MainWindow.ui \
     MainWindowButtonDialog.ui \
     NewProjectDialog.ui \
@@ -276,6 +271,24 @@ FORMS += MainWindow.ui \
     NewViewForm.ui \
     QueryItemListDialog.ui
 RESOURCES += dbm.qrc
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

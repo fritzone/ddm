@@ -1,7 +1,7 @@
 #ifndef MYSQLINNODBSTORAGEENGINE_H
 #define MYSQLINNODBSTORAGEENGINE_H
 
-#include "AbstractStorageEngine.h"
+#include "db_AbstractStorageEngine.h"
 
 class MySQLInnoDBStorageEngine : public AbstractStorageEngine
 {

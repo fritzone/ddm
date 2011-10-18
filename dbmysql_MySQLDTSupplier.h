@@ -1,7 +1,7 @@
 #ifndef MYSQLDTSUPPLIER_H
 #define MYSQLDTSUPPLIER_H
 
-#include "AbstractDTSupplier.h"
+#include "db_AbstractDTSupplier.h"
 
 class MySQLDTSupplier : public AbstractDTSupplier
 {

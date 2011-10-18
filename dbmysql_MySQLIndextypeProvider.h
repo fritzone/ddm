@@ -1,7 +1,7 @@
 #ifndef MYSQLINDEXTYPEPROVIDER_H
 #define MYSQLINDEXTYPEPROVIDER_H
 
-#include "AbstractIndextypeProvider.h"
+#include "db_AbstractIndextypeProvider.h"
 
 class MySQLIndexTypeProvider : public AbstractIndextypeProvider
 {

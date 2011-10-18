@@ -1,7 +1,7 @@
 #ifndef MYSQLCODEPAGESUPPLIER_H
 #define MYSQLCODEPAGESUPPLIER_H
 
-#include "AbstractCodepageSupplier.h"
+#include "db_AbstractCodepageSupplier.h"
 
 /**
  * Class supplying code pages for MySQL
