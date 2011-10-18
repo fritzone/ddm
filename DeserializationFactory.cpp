@@ -5,7 +5,7 @@
 #include "Column.h"
 #include "MajorVersion.h"
 #include "Solution.h"
-#include "DatabaseEngine.h"
+#include "db_DatabaseEngine.h"
 #include "ForeignKey.h"
 #include "db_AbstractStorageEngineListProvider.h"
 #include "db_AbstractStorageEngine.h"

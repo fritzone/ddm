@@ -1,7 +1,7 @@
 #include "NewTableForm.h"
 #include "ui_NewTableForm.h"
 #include "IconFactory.h"
-#include "DatabaseEngine.h"
+#include "db_DatabaseEngine.h"
 #include "Project.h"
 #include "Version.h"
 #include "Configuration.h"

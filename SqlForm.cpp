@@ -2,7 +2,7 @@
 #include "ui_SqlForm.h"
 #include "SqlHighlighter.h"
 #include "InjectSqlDialog.h"
-#include "DatabaseEngine.h"
+#include "db_DatabaseEngine.h"
 #include "Version.h"
 #include "Configuration.h"
 #include "TableInstance.h"

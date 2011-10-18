@@ -16,7 +16,6 @@ SOURCES += main.cpp \
     Project.cpp \
     MajorVersion.cpp \
     Codepage.cpp \
-    DatabaseEngine.cpp \
     Configuration.cpp \
     Table.cpp \
     TablesListForm.cpp \
@@ -65,7 +64,6 @@ SOURCES += main.cpp \
     ReverseEngineerWizardOptionsForm.cpp \
     IssueManager.cpp \
     IssueOriginator.cpp \
-    DatabaseNormalizationIssue.cpp \
     ForeignKeyReccomendationIssue.cpp \
     NewViewForm.cpp \
     MainWindow.cpp \
@@ -111,7 +109,9 @@ SOURCES += main.cpp \
     dbmysql_MySQLDatabaseEngine.cpp \
     dbmysql_MySQLDTSupplier.cpp \
     dbmysql_MySQLSQLGenerator.cpp \
-    dbmysql_MySQLStorageEngineListProvider.cpp
+    dbmysql_MySQLStorageEngineListProvider.cpp \
+    db_DatabaseEngine.cpp \
+    db_DatabaseNormalizationIssue.cpp
 HEADERS += MainWindow.h \
     MainWindowButtonDialog.h \
     NewProjectDialog.h \
@@ -124,7 +124,6 @@ HEADERS += MainWindow.h \
     MajorVersion.h \
     Version.h \
     Codepage.h \
-    DatabaseEngine.h \
     Configuration.h \
     Table.h \
     TablesListForm.h \
@@ -185,13 +184,10 @@ HEADERS += MainWindow.h \
     IssueManager.h \
     Issue.h \
     IssueOriginator.h \
-    DatabaseNormalizationIssue.h \
     ForeignKeyReccomendationIssue.h \
     NewViewForm.h \
     utils.h \
     ColumnProviderForQuery.h \
-    DatabaseBuiltinFunction.h \
-    DatabaseBuiltinFunctionsParameter.h \
     qbr_SingleExpressionQueryComponent.h \
     qbr_WhereExpressionQueryComponent.h \
     qbr_DatabaseFunctionInstantiationComponent.h \
@@ -245,7 +241,11 @@ HEADERS += MainWindow.h \
     db_AbstractIndextypeProvider.h \
     db_AbstractSQLGenerator.h \
     db_AbstractStorageEngine.h \
-    db_AbstractStorageEngineListProvider.h
+    db_AbstractStorageEngineListProvider.h \
+    db_DatabaseBuiltinFunction.h \
+    db_DatabaseBuiltinFunctionsParameter.h \
+    db_DatabaseEngine.h \
+    db_DatabaseNormalizationIssue.h
 FORMS += MainWindow.ui \
     MainWindowButtonDialog.ui \
     NewProjectDialog.ui \
@@ -271,53 +271,3 @@ FORMS += MainWindow.ui \
     NewViewForm.ui \
     QueryItemListDialog.ui
 RESOURCES += dbm.qrc
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

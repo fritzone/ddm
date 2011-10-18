@@ -3,7 +3,7 @@
 #include "Version.h"
 #include "IconFactory.h"
 #include "qbr_SingleExpressionQueryComponent.h"
-#include "DatabaseBuiltinFunction.h"
+#include "db_DatabaseBuiltinFunction.h"
 #include "qbr_QueryComponents.h"
 #include "Column.h"
 #include "Table.h"

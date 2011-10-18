@@ -19,7 +19,7 @@
 #include "TableInstance.h"
 #include "db_AbstractStorageEngineListProvider.h"
 #include "ForeignKey.h"
-#include "DatabaseBuiltinFunction.h"
+#include "db_DatabaseBuiltinFunction.h"
 
 QVector<DatabaseBuiltinFunction> MySQLDatabaseEngine::s_builtinFunctions = MySQLDatabaseEngine::buildFunctions();
 

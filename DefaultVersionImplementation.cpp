@@ -12,7 +12,7 @@
 #include "VersionGuiElements.h"
 #include "Workspace.h"
 #include "Configuration.h"
-#include "DatabaseEngine.h"
+#include "db_DatabaseEngine.h"
 #include "Issue.h"
 #include "IssueManager.h"
 
