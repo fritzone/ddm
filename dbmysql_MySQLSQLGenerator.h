@@ -1,7 +1,7 @@
 #ifndef MYSQLSQLGENERATOR_H
 #define MYSQLSQLGENERATOR_H
 
-#include "AbstractSQLGenerator.h"
+#include "db_AbstractSQLGenerator.h"
 
 class MySQLSQLGenerator : public AbstractSqlGenerator
 {

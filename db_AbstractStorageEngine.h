@@ -6,7 +6,7 @@
 class AbstractStorageEngine
 {
 public:
-    AbstractStorageEngine();
+    AbstractStorageEngine(){}
 
     virtual ~AbstractStorageEngine() {}
 

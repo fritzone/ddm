@@ -17,7 +17,7 @@
 #include "UserDataType.h"
 #include "Index.h"
 #include "TableInstance.h"
-#include "AbstractStorageEngineListProvider.h"
+#include "db_AbstractStorageEngineListProvider.h"
 #include "ForeignKey.h"
 #include "DatabaseBuiltinFunction.h"
 

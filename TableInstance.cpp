@@ -1,5 +1,5 @@
 #include "TableInstance.h"
-#include "AbstractSQLGenerator.h"
+#include "db_AbstractSQLGenerator.h"
 #include "Table.h"
 #include "Configuration.h"
 

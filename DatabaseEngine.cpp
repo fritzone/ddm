@@ -1,5 +1,5 @@
 #include "DatabaseEngine.h"
-#include "AbstractCodepageSupplier.h"
+#include "db_AbstractCodepageSupplier.h"
 #include "dbmysql_MySQLDTSupplier.h"
 #include "dbmysql_MysqlCodepageSupplier.h"
 #include "dbmysql_MySQLIndextypeProvider.h"

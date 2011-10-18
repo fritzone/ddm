@@ -1,7 +1,7 @@
 #ifndef MYSQLARCHIVESTORAGEENGINE_H
 #define MYSQLARCHIVESTORAGEENGINE_H
 
-#include "AbstractStorageEngine.h"
+#include "db_AbstractStorageEngine.h"
 
 class MySQLArchiveStorageEngine : public AbstractStorageEngine
 {
