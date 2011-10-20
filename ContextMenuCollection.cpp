@@ -18,6 +18,7 @@ ContextMenuCollection::ContextMenuCollection()
     m_issuePopupMenu = new QMenu();
     m_issuesOfATablePopupMenu = new QMenu();
     m_createTableInstancesPopup = new QMenu();
+    m_createNewViewPopupMenu = new QMenu();
 
     // actions
     action_RemoveTable = new QAction(QObject::tr("Delete table"), 0);
@@ -52,6 +53,8 @@ ContextMenuCollection::ContextMenuCollection()
     action_gotoIssueLocation = new QAction(QObject::tr("Goto Issue Origin"), 0);
     action_ignoreIssue = new QAction(QObject::tr("Ignore this issue"), 0);
     action_ignoreIssuesFromThisTable = new QAction(QObject::tr("Ignore issues"), 0);
+    action_createViewUsingQueryBuilder = new QAction(QObject::tr("Using QueryBuilder"), 0);
+    action_createViewUsingSql = new QAction(QObject::tr("SQL"), 0);
 
     // populate the table popup menu
     m_tablePopupMenu->addAction(action_TableAddColumn);
@@ -98,6 +101,10 @@ ContextMenuCollection::ContextMenuCollection()
     m_datatypesPopupMenu->addAction(action_addBlob);
     m_datatypesPopupMenu->addAction(action_addMisc);
     m_datatypesPopupMenu->addAction(action_addSpatial);
+
+    // new view popup
+    m_createNewViewPopupMenu->addAction(action_createViewUsingQueryBuilder);
+    m_createNewViewPopupMenu->addAction(action_createViewUsingSql);
 
     // issues
     m_issuePopupMenu->addAction(action_gotoIssueLocation);

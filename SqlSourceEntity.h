@@ -1,6 +1,8 @@
 #ifndef SQLSOURCEENTITY_H
 #define SQLSOURCEENTITY_H
 
+#include <QStringList>
+
 class AbstractSqlGenerator;
 
 /**

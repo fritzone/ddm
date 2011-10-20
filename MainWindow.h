@@ -101,6 +101,7 @@ public slots:
     void onViewProjectTree();
     void onViewDatatypesTree();
     void onNewView();
+    void onNewViewWithSql();
 
     void onReverseEngineerWizardNextPage(int);
     void onReverseEngineerWizardAccept();

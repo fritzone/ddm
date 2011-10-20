@@ -663,7 +663,7 @@ void MainWindow::enableActions()
 
     m_ui->action_NewTableInstance->setMenu(ContextMenuCollection::getInstance()->getCreateTableInstancesPopupMenu());
     m_ui->action_NewDataType->setMenu(ContextMenuCollection::getInstance()->getDatatypesPopupMenu());
-
+    m_ui->action_NewView->setMenu(ContextMenuCollection::getInstance()->getCreateNewViewPopupMenu());
 }
 
 void MainWindow::connectActionsFromTablePopupMenu()
@@ -708,7 +708,8 @@ void MainWindow::connectActionsFromTablePopupMenu()
     QObject::connect(ContextMenuCollection::getInstance()->getAction_GotoIssueLocation(), SIGNAL(activated()), this, SLOT(onGotoIssueLocation()));
     QObject::connect(ContextMenuCollection::getInstance()->getAction_IgnoreIssue(), SIGNAL(activated()), this, SLOT(onIgnoreIssue()));
     QObject::connect(ContextMenuCollection::getInstance()->getAction_IgnoreIssuesFromThisTable(), SIGNAL(activated()), this, SLOT(onIgnoreIssuesOfATable()));
-
+    QObject::connect(ContextMenuCollection::getInstance()->getAction_CreateViewUsingQueryBuilder(), SIGNAL(activated()), this, SLOT(onNewView()));
+    QObject::connect(ContextMenuCollection::getInstance()->getAction_CreateViewUsingSql(), SIGNAL(activated()), this, SLOT(onNewViewWithSql()));
 }
 
 void MainWindow::onAbout()
@@ -1455,6 +1456,13 @@ void MainWindow::onValidate()
 }
 
 
+void MainWindow::onNewViewWithSql()
+{
+    m_nvf = new NewViewForm(false, 0, this);
+    m_nvf->setSql("SELECT");
+    setCentralWidget(m_nvf);
+}
+
 void MainWindow::onNewView()
 {
     m_nvf = 0;
@@ -1487,7 +1495,7 @@ void MainWindow::rerenderQuery(Query* q)
         m_nvf->getCenter(cx, cy);
     }
 
-    m_nvf = new NewViewForm(q->getHelper(), this);
+    m_nvf = new NewViewForm(true, q->getHelper(), this);
 
     m_nvf->setGraphicsItem(q->getGraphicsItem());
     q->getHelper()->setScene(m_nvf->getScene());

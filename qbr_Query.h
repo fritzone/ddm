@@ -27,7 +27,7 @@ public:
     {
         return m_helper;
     }
-
+    /** get returns the sql statement(s) of this query*/
     virtual QString get() const = 0;
 
 protected:

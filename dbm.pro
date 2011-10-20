@@ -245,7 +245,8 @@ HEADERS += MainWindow.h \
     db_DatabaseBuiltinFunction.h \
     db_DatabaseBuiltinFunctionsParameter.h \
     db_DatabaseEngine.h \
-    db_DatabaseNormalizationIssue.h
+    db_DatabaseNormalizationIssue.h \
+    core_View.h
 FORMS += MainWindow.ui \
     MainWindowButtonDialog.ui \
     NewProjectDialog.ui \

@@ -11,27 +11,32 @@
 
 #include <QDebug>
 
-NewViewForm::NewViewForm(QueryGraphicsHelper* c, QWidget *parent) :
-    QWidget(parent),
+NewViewForm::NewViewForm(bool queryBuilder, QueryGraphicsHelper* c, QWidget *parent) :
+    SourceCodePresenterWidget(parent),
     ui(new Ui::NewViewForm),
-    m_comps(c)
+    m_comps(c),
+    m_queryBuilder(queryBuilder)
 {
     ui->setupUi(this);
     m_highlighter = new SqlHighlighter(ui->txtSql->document());
 
-    m_qgs = new QueryGraphicsScene(c, this);
+    if(m_queryBuilder)
+    {
+        m_qgs = new QueryGraphicsScene(c, this);
 
-    m_qgv = new QueryGraphicsView(this);
-    m_qgv->setObjectName(QString::fromUtf8("queryGraphicsView"));
-    m_qgv->setDragMode(QGraphicsView::RubberBandDrag);
-    m_qgv->setAcceptDrops(true);
-    m_qgv->setScene(m_qgs);
+        m_qgv = new QueryGraphicsView(this);
+        m_qgv->setObjectName(QString::fromUtf8("queryGraphicsView"));
+        m_qgv->setDragMode(QGraphicsView::RubberBandDrag);
+        m_qgv->setAcceptDrops(true);
+        m_qgv->setScene(m_qgs);
 
-    m_qgv->setSceneRect(0,0, 10000, 10000);
-    m_qgv->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
-    m_qgv->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
+        m_qgv->setSceneRect(0,0, 10000, 10000);
+        m_qgv->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
+        m_qgv->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
 
-    ui->verticalLayout->insertWidget(1, m_qgv);
+        ui->verticalLayout->insertWidget(1, m_qgv);
+    }
+
     ui->grpHelp->hide();
 }
 
@@ -54,25 +59,37 @@ void NewViewForm::changeEvent(QEvent *e)
 
 void NewViewForm::setGraphicsItem(QueryGraphicsItem * itm)
 {
-    m_qgs->addItem(itm);
+    if(m_queryBuilder) m_qgs->addItem(itm);
 }
 
 void NewViewForm::scrollTo(int hor, int ver)
 {
-    //m_qgv->horizontalScrollBar()->setSliderPosition(hor);
-    //m_qgv->verticalScrollBar()->setSliderPosition(ver);
-    m_qgv->centerOn(hor, ver);
+    if(m_queryBuilder) m_qgv->centerOn(hor, ver);
 }
 
 
 void NewViewForm::getCenter(int &x, int &y)
 {
-    x = m_qgv->mapToScene(m_qgv->viewport()->rect().center()).x();
-    y = m_qgv->mapToScene(m_qgv->viewport()->rect().center()).y();
+    if(m_queryBuilder)
+    {
+        x = m_qgv->mapToScene(m_qgv->viewport()->rect().center()).x();
+        y = m_qgv->mapToScene(m_qgv->viewport()->rect().center()).y();
+    }
 }
 
 void NewViewForm::setSql(const QString &sql)
 {
     m_sql = sql;
+}
+
+
+void NewViewForm::presentSql(Project*, const QString& codepage)
+{
+    // TODO: this is still not right, it's here just to work.
+    ui->txtSql->setText(m_sql);
+}
+
+void NewViewForm::presentSql(Project*, SqlSourceEntity*, const QString& codepage)
+{
     ui->txtSql->setText(m_sql);
 }

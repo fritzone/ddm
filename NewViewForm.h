@@ -1,6 +1,8 @@
 #ifndef NEWVIEWFORM_H
 #define NEWVIEWFORM_H
 
+#include "SourceCodePresenterWidget.h"
+
 #include <QWidget>
 
 class QueryGraphicsHelper;
@@ -13,10 +15,11 @@ namespace Ui {
     class NewViewForm;
 }
 
-class NewViewForm : public QWidget {
+class NewViewForm : public SourceCodePresenterWidget
+{
     Q_OBJECT
 public:
-    NewViewForm(QueryGraphicsHelper*c, QWidget *parent = 0);
+    NewViewForm(bool queryBuilder, QueryGraphicsHelper*c, QWidget *parent = 0);
     ~NewViewForm();
     void setGraphicsItem(QueryGraphicsItem*);
     QueryGraphicsScene* getScene()
@@ -28,6 +31,9 @@ public:
     void getCenter(int& x, int& y);
     void setSql(const QString& sql);
 
+    virtual void presentSql(Project*, const QString& codepage);
+    virtual void presentSql(Project*, SqlSourceEntity*, const QString& codepage);
+
 protected:
     void changeEvent(QEvent *e);
 
@@ -38,6 +44,7 @@ private:
     QueryGraphicsHelper* m_comps;
     QString m_sql;
     SqlHighlighter* m_highlighter;
+    bool m_queryBuilder;
 };
 
 #endif // NEWVIEWFORM_H
