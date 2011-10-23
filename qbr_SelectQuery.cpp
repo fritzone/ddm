@@ -17,7 +17,7 @@
 #include <QGraphicsView>
 #include <QScrollBar>
 
-SelectQuery::SelectQuery(QueryGraphicsHelper* helper, int level) : Query(helper, level), m_select(0),  m_from(0), m_where(0), m_groupby(0), m_having(0), m_as(0), m_orderBy(0)
+SelectQuery::SelectQuery(QueryGraphicsHelper* helper, int level, SqlSourceEntity* se) : Query(helper, level, se), m_select(0),  m_from(0), m_where(0), m_groupby(0), m_having(0), m_as(0), m_orderBy(0)
 {
     m_select = new SelectQuerySelectComponent(this, level);
     if(m_level > 0) m_as = new SelectQueryAsComponent(this, level);
@@ -206,7 +206,7 @@ void SelectQuery::newFromSelectQueryComponent()
 {
     if(m_from)
     {
-        SelectQuery* nq = new SelectQuery(m_helper, m_level + 1);
+        SelectQuery* nq = new SelectQuery(m_helper, m_level + 1, m_sqlSource);
         m_from->addChild(nq);
         nq->setParent(m_from);
         m_helper->triggerReRender();
@@ -319,7 +319,7 @@ bool SelectQuery::hasGroupBy()
 
 QueryComponent* SelectQuery::duplicate()
 {
-    SelectQuery* newQuery = new SelectQuery(m_helper, m_level);
+    SelectQuery* newQuery = new SelectQuery(m_helper, m_level, m_sqlSource);
     newQuery->setParent(getParent());
     newQuery->m_select = m_select?dynamic_cast<SelectQuerySelectComponent*> (m_select->duplicate()):0;
     newQuery->m_from = m_from?dynamic_cast<SelectQueryFromComponent*>(m_from->duplicate()):0;

@@ -94,7 +94,6 @@ SOURCES += main.cpp \
     qbr_SelectQueryOrderByComponent.cpp \
     qbr_SelectQuerySelectComponent.cpp \
     qbr_SelectQueryWhereComponent.cpp \
-    qbr_Query.cpp \
     qbr_QueryAsGenerator.cpp \
     qbr_QueryComponents.cpp \
     qbr_QueryGraphicsHelper.cpp \
@@ -111,7 +110,8 @@ SOURCES += main.cpp \
     dbmysql_MySQLSQLGenerator.cpp \
     dbmysql_MySQLStorageEngineListProvider.cpp \
     db_DatabaseEngine.cpp \
-    db_DatabaseNormalizationIssue.cpp
+    db_DatabaseNormalizationIssue.cpp \
+    core_View.cpp
 HEADERS += MainWindow.h \
     MainWindowButtonDialog.h \
     NewProjectDialog.h \
@@ -272,3 +272,5 @@ FORMS += MainWindow.ui \
     NewViewForm.ui \
     QueryItemListDialog.ui
 RESOURCES += dbm.qrc
+
+

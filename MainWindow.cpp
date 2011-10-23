@@ -39,8 +39,8 @@
 #include "DataType.h" // TODO: this is simply bad design, Mainwindow should not know about datatypes ...
 #include "IssueManager.h"
 #include "NewViewForm.h"
-#include "qbr_QueryAsGenerator.h"
 #include "qbr_SelectQuery.h"
+#include "core_View.h"
 
 #include <QtGui>
 
@@ -1465,14 +1465,10 @@ void MainWindow::onNewViewWithSql()
 
 void MainWindow::onNewView()
 {
+    View* v = new View();
     m_nvf = 0;
-    QueryGraphicsHelper* c = new QueryGraphicsHelper();
-    SelectQuery* sq = new SelectQuery(c, 0);
-    QueryAsGenerator::instance().initNewQuery(sq);
-
-    c->setQuery(sq);
-    c->setForm(this);
-    rerenderQuery(sq);
+    v->getHelper()->setForm(this);
+    rerenderQuery(v->getQuery());
 }
 
 void MainWindow::rerenderQuery(Query* q)
@@ -1496,10 +1492,10 @@ void MainWindow::rerenderQuery(Query* q)
     }
 
     m_nvf = new NewViewForm(true, q->getHelper(), this);
-
+    m_nvf->setSqlSource(q->getSourceEntity());
     m_nvf->setGraphicsItem(q->getGraphicsItem());
     q->getHelper()->setScene(m_nvf->getScene());
-    m_nvf->setSql(q->get());
+    m_nvf->presentSql(Workspace::getInstance()->currentProject(), QString("latin1"));
     setCentralWidget(m_nvf);
     m_nvf->scrollTo(cx, cy);
 }

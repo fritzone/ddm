@@ -1,10 +1,13 @@
 #include "NewViewForm.h"
 #include "ui_NewViewForm.h"
-
-#include"SqlHighlighter.h"
+#include "db_DatabaseEngine.h"
+#include "SqlHighlighter.h"
 #include "qbr_QueryGraphicsView.h"
 #include "qbr_QueryGraphicsScene.h"
 #include "qbr_QueryGraphicsItem.h"
+#include "SqlSourceEntity.h"
+#include "Project.h"
+#include "Configuration.h"
 
 #include <QScrollBar>
 #include <QVBoxLayout>
@@ -83,9 +86,11 @@ void NewViewForm::setSql(const QString &sql)
 }
 
 
-void NewViewForm::presentSql(Project*, const QString& codepage)
+void NewViewForm::presentSql(Project* p, const QString& codepage)
 {
     // TODO: this is still not right, it's here just to work.
+    QHash<QString, QString> opts = Configuration::instance().sqlGenerationOptions();
+    m_sql = getSqlSourceEntity()->generateSqlSource(p->getEngine()->getSqlGenerator(), opts, codepage).at(0); // the VIEW generateso only 1 line for now... TODO: Fix
     ui->txtSql->setText(m_sql);
 }
 

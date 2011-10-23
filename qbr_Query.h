@@ -6,12 +6,13 @@
 
 class QueryGraphicsHelper;
 class Table;
+class SqlSourceEntity;
 
 class Query : public QueryComponent
 {
 public:
 
-    Query(QueryGraphicsHelper*,int);
+    Query(QueryGraphicsHelper* components, int level, SqlSourceEntity* se) : QueryComponent(this, level), m_helper(components), m_graphicsItem(0), m_sqlSource(se) {}
     virtual ~Query() {}
 
     QueryGraphicsItem* getGraphicsItem()
@@ -27,12 +28,18 @@ public:
     {
         return m_helper;
     }
+    SqlSourceEntity* getSourceEntity()
+    {
+        return m_sqlSource;
+    }
+
     /** get returns the sql statement(s) of this query*/
     virtual QString get() const = 0;
 
 protected:
     QueryGraphicsHelper* m_helper;
     QueryGraphicsItem* m_graphicsItem;
+    SqlSourceEntity* m_sqlSource;
 };
 
 #endif // QUERY_H

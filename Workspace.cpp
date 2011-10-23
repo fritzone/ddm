@@ -172,7 +172,7 @@ Table* Workspace::pasteTable()
     Table* tab = ClipboardFactory::pasteTable();
     if(tab != 0)
     {
-        tab->setName(NameGenerator::getNextTableNameFromVersion(currentSolution()->currentProject()->getWorkingVersion(), tab->getName()+"_copy"));
+        tab->setName(NameGenerator::getUniqueName(currentSolution()->currentProject()->getWorkingVersion(),  (NameGenerator::itemGetter)&Version::getTable, tab->getName()+"_copy"));
         currentSolution()->currentProject()->getWorkingVersion()->addTable(tab);
         return tab;
     }

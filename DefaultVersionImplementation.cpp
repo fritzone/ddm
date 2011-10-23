@@ -306,7 +306,7 @@ void DefaultVersionImplementation::removeForeignKeyFromDiagrams(ForeignKey* fkTo
 Table* DefaultVersionImplementation::duplicateTable(Table *src)
 {
     Table* dup = new Table(*src);
-    dup->setName(NameGenerator::getNextTableNameFromVersion(this, src->getName()+"_copy"));
+    dup->setName(NameGenerator::getUniqueName(this,  (NameGenerator::itemGetter)&Version::getTable, src->getName()+"_copy"));
     addTable(dup);
     return dup;
 }
@@ -328,7 +328,7 @@ TableInstance* DefaultVersionImplementation::instantiateTable(Table* tab, bool b
     TableInstance* other = getTableInstance(tabInst->getName());        // just to see that we have another instance of this table
     if(other && other != tabInst)
     {   // and in this case generate a new name for the current one
-        tabInst->setName(NameGenerator::generateUniqueTableInstanceName(this, tabInst->getName()));
+        tabInst->setName(NameGenerator::getUniqueName(this,  (NameGenerator::itemGetter)&Version::getTableInstance, tabInst->getName()));
     }
     m_data.m_tableInstances.append(tabInst);
     return tabInst;
@@ -374,7 +374,7 @@ UserDataType* DefaultVersionImplementation::duplicateDataType(const QString& nam
         return 0;
     }
     UserDataType* dt = new UserDataType(*src);
-    dt->setName(NameGenerator::generateUniqueDatatypeName(this, dt->getName()));
+    dt->setName(NameGenerator::getUniqueName(this,  (NameGenerator::itemGetter)&Version::getDataType, dt->getName()));
     addNewDataType(dt);
     return dt;
 }
@@ -564,7 +564,7 @@ UserDataType* DefaultVersionImplementation::provideDatatypeForSqlType(const QStr
                                             type, size, defaultValue, "", QStringList(), false, type + " " + size,
                                             QString::compare(nullable, "YES", Qt::CaseInsensitive) == 0, false);
 
-    newUdt->setName(NameGenerator::generateUniqueDatatypeName(this, newUdt->getName()));
+    newUdt->setName(NameGenerator::getUniqueName(this, (NameGenerator::itemGetter)&Version::getDataType, newUdt->getName()));
     addNewDataType(newUdt);
     getGui()->createDataTypeTreeEntry(newUdt);
 

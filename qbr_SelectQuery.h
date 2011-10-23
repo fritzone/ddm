@@ -25,7 +25,7 @@ public:
         AND_NEW_WHERE_EXPRESSION = 2
     } ;
 
-    SelectQuery(QueryGraphicsHelper*, int);
+    SelectQuery(QueryGraphicsHelper*, int, SqlSourceEntity*);
     virtual bool initializeGraphicsItem();
     virtual QueryGraphicsItem* createGraphicsItem(QueryGraphicsHelper*, QueryGraphicsItem*);
     virtual void handleAction(const QString& action, QueryComponent* referringObject);
