@@ -8,7 +8,7 @@
 #include "Version.h"
 #include "NameGenerator.h"
 
-Diagram::Diagram(Version* v) : TreeItem(), NamedItem(NameGenerator::generateUniqueDiagramName(v, QString("Diagram"))), m_onStage(), m_fksOnStage(), m_notes(),
+Diagram::Diagram(Version* v) : TreeItem(), NamedItem(NameGenerator::getUniqueName(v, (NameGenerator::itemGetter)&Version::getDiagram, QString("Diagram"))), m_onStage(), m_fksOnStage(), m_notes(),
         m_noteDescriptors(0), m_tableDescriptors(), m_form(0), m_saved(false), m_version(v), m_removed(false)
 {
 

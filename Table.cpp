@@ -19,7 +19,7 @@
 #include <QApplication>
 #include <QClipboard>
 
-Table::Table(Version* v) : NamedItem(NameGenerator::getNextTableNameFromVersion(v, "TAB")),
+Table::Table(Version* v) : NamedItem(NameGenerator::getUniqueName(v, (NameGenerator::itemGetter)&Version::getTable, QString("TAB"))),
     m_description(""), m_columns(), m_indices(), m_foreignKeys(), m_startupValues(),
     m_parent(0), m_persistent(false), m_temporary(false), m_storageEngine(0),
     m_diagramEntity(0), m_version(v), m_children()
