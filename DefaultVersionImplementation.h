@@ -90,6 +90,8 @@ public:
     virtual QVector<Issue*>& getIssues();
     virtual void validateVersion(bool onRequest);
     virtual void setSpecialValidationFlags(int);
+    virtual View* getView(const QString &viewName);
+    virtual void addView(View* v);
 protected:
     // the version as a string representation. Major versions are always of form X.0
     QString version;

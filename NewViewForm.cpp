@@ -8,6 +8,7 @@
 #include "SqlSourceEntity.h"
 #include "Project.h"
 #include "Configuration.h"
+#include "core_View.h"
 
 #include <QScrollBar>
 #include <QVBoxLayout>
@@ -80,21 +81,20 @@ void NewViewForm::getCenter(int &x, int &y)
     }
 }
 
-void NewViewForm::setSql(const QString &sql)
-{
-    m_sql = sql;
-}
-
-
 void NewViewForm::presentSql(Project* p, const QString& codepage)
 {
     // TODO: this is still not right, it's here just to work.
     QHash<QString, QString> opts = Configuration::instance().sqlGenerationOptions();
-    m_sql = getSqlSourceEntity()->generateSqlSource(p->getEngine()->getSqlGenerator(), opts, codepage).at(0); // the VIEW generateso only 1 line for now... TODO: Fix
-    ui->txtSql->setText(m_sql);
+    QString sql = getSqlSourceEntity()->generateSqlSource(p->getEngine()->getSqlGenerator(), opts, codepage).at(0); // the VIEW generateso only 1 line for now... TODO: Fix
+    ui->txtSql->setText(sql);
 }
 
 void NewViewForm::presentSql(Project*, SqlSourceEntity*, const QString& codepage)
 {
-    ui->txtSql->setText(m_sql);
+}
+
+void NewViewForm::setView(View *v)
+{
+    m_view = v;
+    ui->txtViewName->setText(v->getName());
 }

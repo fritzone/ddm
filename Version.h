@@ -13,6 +13,7 @@ class DatabaseEngine;
 class VersionGuiElements;
 class Column;
 class Issue;
+class View;
 
 /**
  * Basic class holding data related to versions
@@ -235,6 +236,16 @@ public:
      * Sets the valiadtion flags for the next validation
      */
     virtual void setSpecialValidationFlags(int) = 0;
+
+    /**
+     * Returns the given view
+     */
+    virtual View* getView(const QString& viewName) = 0;
+
+    /**
+     * Adds a view in the system
+     */
+    virtual void addView(View* v) = 0;
 };
 
 #endif // VERSION_H

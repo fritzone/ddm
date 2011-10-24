@@ -18,6 +18,7 @@
 #include "SqlForm.h"
 #include "Project.h"
 #include "NewTableForm.h"
+#include "core_View.h"
 
 #include <QVector>
 #include <QtGui>
@@ -299,6 +300,19 @@ ContextMenuEnabledTreeWidgetItem* VersionGuiElements::createTableTreeEntry(Table
     return newTblsItem;
 }
 
+ContextMenuEnabledTreeWidgetItem* VersionGuiElements::createViewTreeEntry(View* view)
+{
+    ContextMenuEnabledTreeWidgetItem* newViewItem = new ContextMenuEnabledTreeWidgetItem(viewsItem, QStringList(view->getName())) ;
+    QVariant var(view->getName());
+    newViewItem->setData(0, Qt::UserRole, var);
+    //newViewItem->setPopupMenu(ContextMenuCollection::getInstance()->getTablePopupMenu());
+    // set the icon, add to the tree
+    newViewItem->setIcon(0, IconFactory::getViewIcon());
+    m_tree->addTopLevelItem(newViewItem);
+    // set the link to the tree
+    view->setLocation(newViewItem);
+    return newViewItem;
+}
 
 ContextMenuEnabledTreeWidgetItem* VersionGuiElements::createTableTreeEntryForIssue(Table* tab)
 {
