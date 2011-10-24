@@ -360,6 +360,13 @@ public:
         return icon;
     }
 
+    static const QIcon& getViewIcon()
+    {
+        static const QIcon icon(strViewsIcon);
+        return icon;
+    }
+
+
 };
 
 #endif // ICONFACTORY_H

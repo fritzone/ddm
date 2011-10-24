@@ -3,11 +3,12 @@
 
 #include "NamedItem.h"
 #include "SqlSourceEntity.h"
+#include "TreeItem.h"
 
 class SelectQuery;
 class QueryGraphicsHelper;
 
-class View : virtual public SqlSourceEntity, virtual public NamedItem
+class View : virtual public SqlSourceEntity, virtual public NamedItem, virtual public TreeItem
 {
 public:
     View();

@@ -1459,7 +1459,11 @@ void MainWindow::onValidate()
 void MainWindow::onNewViewWithSql()
 {
     m_nvf = new NewViewForm(false, 0, this);
-    m_nvf->setSql("SELECT");
+    View* v = new View();
+    Workspace::getInstance()->workingVersion()->addView(v);
+    Workspace::getInstance()->workingVersion()->getGui()->createViewTreeEntry(v);
+
+    m_nvf->setView(v);
     setCentralWidget(m_nvf);
 }
 
@@ -1468,6 +1472,12 @@ void MainWindow::onNewView()
     View* v = new View();
     m_nvf = 0;
     v->getHelper()->setForm(this);
+    Workspace::getInstance()->workingVersion()->addView(v);
+    Workspace::getInstance()->workingVersion()->getGui()->createViewTreeEntry(v);
+    m_nvf->setView(v);
+    m_nvf->setSqlSource(v);
+    m_nvf->presentSql(Workspace::getInstance()->currentProject(), QString("latin1"));
+
     rerenderQuery(v->getQuery());
 }
 
@@ -1492,6 +1502,7 @@ void MainWindow::rerenderQuery(Query* q)
     }
 
     m_nvf = new NewViewForm(true, q->getHelper(), this);
+    m_nvf->setView(dynamic_cast<View*>(q->getSourceEntity()));
     m_nvf->setSqlSource(q->getSourceEntity());
     m_nvf->setGraphicsItem(q->getGraphicsItem());
     q->getHelper()->setScene(m_nvf->getScene());

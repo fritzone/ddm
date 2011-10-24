@@ -17,6 +17,7 @@ class MainWindow;
 class TablesListForm;
 class SqlForm;
 class NewTableForm;
+class View;
 
 /**
  * The scope of this class is to have a common collection point for the tree widget items of a version (DT, Sql, Table, etc...)
@@ -151,6 +152,7 @@ public:
     ContextMenuEnabledTreeWidgetItem* createTableInstanceTreeEntry(TableInstance* tab);
     ContextMenuEnabledTreeWidgetItem* createIssueTreeEntry(Issue* issue, ContextMenuEnabledTreeWidgetItem* p);
     ContextMenuEnabledTreeWidgetItem* createTableTreeEntryForIssue(Table* tab);
+    ContextMenuEnabledTreeWidgetItem* createViewTreeEntry(View* view);
 
     void setMainWindow(MainWindow* mw)
     {

@@ -15,6 +15,7 @@
 #include "db_DatabaseEngine.h"
 #include "Issue.h"
 #include "IssueManager.h"
+#include "core_View.h"
 
 #include <QtGui>
 
@@ -697,4 +698,21 @@ void DefaultVersionImplementation::validateVersion(bool onRequest)
 void DefaultVersionImplementation::setSpecialValidationFlags(int a)
 {
     m_validationFlags = a;
+}
+
+View* DefaultVersionImplementation::getView(const QString &viewName)
+{
+    for(int i=0; i< m_data.m_views.size(); i++)
+    {
+        if(m_data.m_views[i]->getName() == viewName)
+        {
+            return m_data.m_views[i];
+        }
+    }
+    return 0;
+}
+
+void DefaultVersionImplementation::addView(View* v)
+{
+    m_data.m_views.append(v);
 }
