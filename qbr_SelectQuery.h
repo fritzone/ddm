@@ -65,6 +65,7 @@ public:
      *   3. if the item is an expression and has no alias its order is used.
      */
     QStringList getOrderByElements();
+    QVector<const QueryComponent*> getSelectedComponents();
 
 private:
     SelectQuerySelectComponent* m_select;

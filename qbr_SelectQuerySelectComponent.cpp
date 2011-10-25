@@ -89,6 +89,21 @@ QVector<const Column*> SelectQuerySelectComponent::getSelectedColumns()
     return result;
 }
 
+QVector<const QueryComponent*> SelectQuerySelectComponent::getSelectedComponents()
+{
+    QVector<const QueryComponent*> result;
+    for(int i=0; i<m_children.size(); i++)
+    {
+        SingleExpressionQueryComponent* seq = dynamic_cast<SingleExpressionQueryComponent*>(m_children.at(i));
+        if(seq)
+        {
+            result.append(seq);
+        }
+    }
+    return result;
+}
+
+
 QStringList SelectQuerySelectComponent::getOrderByElements()
 {
     QStringList result;

@@ -23,6 +23,11 @@ public:
     bool hasAtLeastOneColumnSelected();
     QVector<const Column*> getSelectedColumns();
     QStringList getOrderByElements();
+
+    /**
+     * This should return a vector of the components that are in the "SELECT" branch of the query
+     */
+    QVector<const QueryComponent*> getSelectedComponents();
 };
 
 #endif // SELECTQUERYSELECTCOMPONENT_H
