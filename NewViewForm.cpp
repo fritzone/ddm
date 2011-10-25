@@ -9,6 +9,7 @@
 #include "Project.h"
 #include "Configuration.h"
 #include "core_View.h"
+#include "qbr_SelectQuery.h"
 
 #include <QScrollBar>
 #include <QVBoxLayout>
@@ -97,4 +98,16 @@ void NewViewForm::setView(View *v)
 {
     m_view = v;
     ui->txtViewName->setText(v->getName());
+    SelectQuery* sq = dynamic_cast<SelectQuery*>(m_comps->getQuery());
+    if(sq)
+    {
+        QVector<const QueryComponent*> sel = sq->getSelectedComponents();
+        for(int i=0; i<sel.size(); i++)
+        {
+            QStringList a; a.append("COL"); a.append(sel.at(i)->get());
+            QTreeWidgetItem* w = new QTreeWidgetItem(a);
+            ui->lstColumnsForView->addTopLevelItem(w);
+        }
+    }
+
 }

@@ -5,7 +5,7 @@
 #include "Version.h"
 #include "NameGenerator.h"
 
-View::View() : SqlSourceEntity(), NamedItem(NameGenerator::getUniqueName(Workspace::getInstance()->workingVersion(), (NameGenerator::itemGetter)&Version::getView, QString("VIEW")))
+View::View() : SqlSourceEntity(), NamedItem(NameGenerator::getUniqueName(Workspace::getInstance()->workingVersion(), (NameGenerator::itemGetter)&Version::getView, QString("v")))
 {
     c = new QueryGraphicsHelper();
     sq = new SelectQuery(c, 0, this);

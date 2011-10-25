@@ -388,3 +388,8 @@ QStringList SelectQuery::getOrderByElements()
 {
     return m_select->getOrderByElements();
 }
+
+QVector<const QueryComponent*> SelectQuery::getSelectedComponents()
+{
+    return m_select->getSelectedComponents();
+}

@@ -1464,6 +1464,9 @@ void MainWindow::onNewViewWithSql()
     Workspace::getInstance()->workingVersion()->getGui()->createViewTreeEntry(v);
 
     m_nvf->setView(v);
+    m_nvf->setSqlSource(v);
+    m_nvf->presentSql(Workspace::getInstance()->currentProject(), QString("latin1"));
+
     setCentralWidget(m_nvf);
 }
 
@@ -1474,9 +1477,6 @@ void MainWindow::onNewView()
     v->getHelper()->setForm(this);
     Workspace::getInstance()->workingVersion()->addView(v);
     Workspace::getInstance()->workingVersion()->getGui()->createViewTreeEntry(v);
-    m_nvf->setView(v);
-    m_nvf->setSqlSource(v);
-    m_nvf->presentSql(Workspace::getInstance()->currentProject(), QString("latin1"));
 
     rerenderQuery(v->getQuery());
 }
