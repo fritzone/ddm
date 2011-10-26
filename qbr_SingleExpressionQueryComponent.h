@@ -66,6 +66,7 @@ public:
     QVector<const Column*> getColumns();
     void removeAs();
     const SelectQueryAsComponent* hasAs();
+    bool hasStar();
 
 private:
 

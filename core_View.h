@@ -11,22 +11,48 @@ class QueryGraphicsHelper;
 class View : virtual public SqlSourceEntity, virtual public NamedItem, virtual public TreeItem
 {
 public:
-    View();
+    View(bool manual);
+
     virtual QStringList generateSqlSource(AbstractSqlGenerator*, QHash<QString,QString>, const QString& codepage);
 
     QueryGraphicsHelper* getHelper() const
     {
-        return c;
+        return m_helper;
     }
 
     SelectQuery* getQuery() const
     {
-        return sq;
+        return m_selectQuery;
+    }
+
+    void setColumnNames(const QStringList& list)
+    {
+        m_columNames = list;
+    }
+
+    void setReplace(bool b)
+    {
+        m_canReplace = b;
+    }
+
+    bool getReplace() const
+    {
+        return m_canReplace;
+    }
+
+    bool getManual() const
+    {
+        return m_manual;
     }
 
 private:
-    SelectQuery* sq;
-    QueryGraphicsHelper* c;
+    SelectQuery* m_selectQuery;
+    QueryGraphicsHelper* m_helper;
+    QStringList m_columNames;
+    bool m_canReplace;
+    QString algorithm;
+    // whether SQL for the view was manually typed in or the query builder was used
+    bool m_manual;
 };
 
 #endif // CORE_VIEW_H

@@ -10,6 +10,11 @@
 #include "Configuration.h"
 #include "core_View.h"
 #include "qbr_SelectQuery.h"
+#include "qbr_SingleExpressionQueryComponent.h"
+#include "qbr_SelectQueryAsComponent.h"
+#include "Column.h"
+#include "Workspace.h"
+#include "Version.h"
 
 #include <QScrollBar>
 #include <QVBoxLayout>
@@ -40,6 +45,10 @@ NewViewForm::NewViewForm(bool queryBuilder, QueryGraphicsHelper* c, QWidget *par
         m_qgv->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
 
         ui->verticalLayout->insertWidget(1, m_qgv);
+    }
+    else
+    {
+        ui->tabWidget_4->hide();
     }
 
     ui->grpHelp->hide();
@@ -86,7 +95,12 @@ void NewViewForm::presentSql(Project* p, const QString& codepage)
 {
     // TODO: this is still not right, it's here just to work.
     QHash<QString, QString> opts = Configuration::instance().sqlGenerationOptions();
-    QString sql = getSqlSourceEntity()->generateSqlSource(p->getEngine()->getSqlGenerator(), opts, codepage).at(0); // the VIEW generateso only 1 line for now... TODO: Fix
+    QStringList sqls = getSqlSourceEntity()->generateSqlSource(p->getEngine()->getSqlGenerator(), opts, codepage);
+    QString sql = "";
+    for(int i=0; i<sqls.size(); i++)
+    {
+        sql += sqls.at(i);
+    }
     ui->txtSql->setText(sql);
 }
 
@@ -97,17 +111,75 @@ void NewViewForm::presentSql(Project*, SqlSourceEntity*, const QString& codepage
 void NewViewForm::setView(View *v)
 {
     m_view = v;
+    ui->chkCanReplace->setChecked(v->getReplace());
     ui->txtViewName->setText(v->getName());
-    SelectQuery* sq = dynamic_cast<SelectQuery*>(m_comps->getQuery());
-    if(sq)
+    if(m_comps) // do this only if w are buildingteh query with the query builder
     {
-        QVector<const QueryComponent*> sel = sq->getSelectedComponents();
-        for(int i=0; i<sel.size(); i++)
+        SelectQuery* sq = dynamic_cast<SelectQuery*>(m_comps->getQuery());
+        QStringList columnNamesForView;
+        if(sq)
         {
-            QStringList a; a.append("COL"); a.append(sel.at(i)->get());
-            QTreeWidgetItem* w = new QTreeWidgetItem(a);
-            ui->lstColumnsForView->addTopLevelItem(w);
+            QVector<const QueryComponent*> sel = sq->getSelectedComponents();
+            for(int i=0; i<sel.size(); i++)
+            {
+                bool added = false;
+                QVector<const Column*> columns;
+                SingleExpressionQueryComponent* seq = dynamic_cast<SingleExpressionQueryComponent*>(const_cast<QueryComponent*>(sel.at(i)));
+                if(seq->hasStar())
+                {
+                    columnNamesForView.clear();
+                    break;
+                }
+                if(seq)
+                {
+                    if(seq->hasAtLeastOneColumnSelected())
+                    {
+                        columns = seq->getColumns();
+                    }
+
+                    for(int j=0; j<columns.size(); j++)
+                    {
+                        QStringList a; a.append(columns.at(j)->getName()); a.append(columns.at(j)->getName());
+                        columnNamesForView.append(columns.at(j)->getName());
+                        QTreeWidgetItem* w = new QTreeWidgetItem(a);
+                        ui->lstColumnsForView->addTopLevelItem(w);
+                        added = true;
+                    }
+
+                    if(const SelectQueryAsComponent* as = seq->hasAs())             // and the last one is added as the alias
+                    {
+                        QStringList a; a.append(as->getAs()); a.append(sel.at(i)->get());
+                        columnNamesForView.append(as->getAs());
+                        QTreeWidgetItem* w = new QTreeWidgetItem(a);
+                        ui->lstColumnsForView->addTopLevelItem(w);
+                        added = true;
+                    }
+                    // check if this is a plain * and in that case reset the list, we don't want that
+                }
+
+                if(!added)
+                {
+                    QString n;n.setNum(i);
+                    QStringList a; a.append(QString("COL")+n); a.append(sel.at(i)->get());
+                    columnNamesForView.append(QString("COL")+n);
+                    QTreeWidgetItem* w = new QTreeWidgetItem(a);
+                    ui->lstColumnsForView->addTopLevelItem(w);
+                }
+            }
+            v->setColumnNames(columnNamesForView);
         }
     }
+}
 
+void NewViewForm::onChkCanReplaceToggle(bool st)
+{
+    m_view->setReplace(st);
+    presentSql(Workspace::getInstance()->currentProject(), QString("latin1"));
+}
+
+void NewViewForm::onNameChange(QString a)
+{
+    m_view->setName(a);
+    m_view->getLocation()->setText(0, a);
+    presentSql(Workspace::getInstance()->currentProject(), QString("latin1"));
 }
