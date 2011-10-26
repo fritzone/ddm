@@ -436,6 +436,34 @@ void MainWindow::currentProjectTreeItemChanged(QTreeWidgetItem * current, QTreeW
 
             }
             else
+            if(current->parent() && current->parent() == m_workspace->workingVersion()->getGui()->getViewsItem())
+            {
+                // user clicked on a view
+                QVariant qv = current->data(0, Qt::UserRole);
+                QString viewName = qv.toString();
+                View* v = m_workspace->workingVersion()->getView(viewName);
+                if(v)
+                {
+                    if(v->getManual())
+                    {
+                        m_nvf = new NewViewForm(false, 0, this);
+
+                        m_nvf->setView(v);
+                        m_nvf->setSqlSource(v);
+                        m_nvf->presentSql(Workspace::getInstance()->currentProject(), QString("latin1"));
+
+                        setCentralWidget(m_nvf);
+                    }
+                    else
+                    {
+                        m_nvf = 0;
+                        v->getHelper()->setForm(this);
+                        rerenderQuery(v->getQuery());
+                    }
+                }
+
+            }
+            else
             if(current->parent() && current->parent() == m_workspace->workingVersion()->getGui()->getFinalSqlItem())
             {
                 // user clicked on a SQL item
@@ -1459,7 +1487,7 @@ void MainWindow::onValidate()
 void MainWindow::onNewViewWithSql()
 {
     m_nvf = new NewViewForm(false, 0, this);
-    View* v = new View();
+    View* v = new View(true);
     Workspace::getInstance()->workingVersion()->addView(v);
     Workspace::getInstance()->workingVersion()->getGui()->createViewTreeEntry(v);
 
@@ -1472,7 +1500,7 @@ void MainWindow::onNewViewWithSql()
 
 void MainWindow::onNewView()
 {
-    View* v = new View();
+    View* v = new View(false);
     m_nvf = 0;
     v->getHelper()->setForm(this);
     Workspace::getInstance()->workingVersion()->addView(v);
@@ -1502,8 +1530,9 @@ void MainWindow::rerenderQuery(Query* q)
     }
 
     m_nvf = new NewViewForm(true, q->getHelper(), this);
-    m_nvf->setView(dynamic_cast<View*>(q->getSourceEntity()));
     m_nvf->setSqlSource(q->getSourceEntity());
+    m_nvf->setView(dynamic_cast<View*>(q->getSourceEntity()));
+
     m_nvf->setGraphicsItem(q->getGraphicsItem());
     q->getHelper()->setScene(m_nvf->getScene());
     m_nvf->presentSql(Workspace::getInstance()->currentProject(), QString("latin1"));

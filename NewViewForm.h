@@ -35,6 +35,10 @@ public:
     virtual void presentSql(Project*, SqlSourceEntity*, const QString& codepage);
     void setView(View* );
 
+public slots:
+    void onChkCanReplaceToggle(bool);
+    void onNameChange(QString);
+
 protected:
     void changeEvent(QEvent *e);
 

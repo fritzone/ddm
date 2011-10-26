@@ -493,3 +493,12 @@ const SelectQueryAsComponent* SingleExpressionQueryComponent::hasAs()
 {
     return m_as;
 }
+
+bool SingleExpressionQueryComponent::hasStar()
+{
+    for(int i=0; i<m_elements.size(); i++)
+    {
+        if(m_elements.at(i) == CELLTYPE_STAR) return true;
+    }
+    return false;
+}

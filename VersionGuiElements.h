@@ -57,6 +57,11 @@ public:
         return diagramsItem;
     }
 
+    ContextMenuEnabledTreeWidgetItem* getViewsItem() const
+    {
+        return viewsItem;
+    }
+
     ContextMenuEnabledTreeWidgetItem* getDtsItem() const
     {
         return dtsItem;
