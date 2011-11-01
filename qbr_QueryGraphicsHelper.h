@@ -40,6 +40,10 @@ public:
     void setForm(MainWindow*);
     void resetHighlightedItem();
     void triggerReRender();
+    void resetContent()
+    {
+        hotCells.clear();
+    }
 
     QueryGraphicsScene* getScene() const
     {

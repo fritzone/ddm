@@ -46,6 +46,11 @@ public:
         return m_manual;
     }
 
+    void setSql(const QString& sql)
+    {
+        m_sql = sql;
+    }
+
     virtual void serialize(QDomDocument& doc, QDomElement& parent) const;
 
 private:
@@ -53,9 +58,10 @@ private:
     QueryGraphicsHelper* m_helper;
     QStringList m_columNames;
     bool m_canReplace;
-    QString algorithm;
     // whether SQL for the view was manually typed in or the query builder was used
     bool m_manual;
+    // if this is a manual query the m_sql is the SQL query
+    QString m_sql;
 };
 
 #endif // CORE_VIEW_H
