@@ -183,3 +183,11 @@ void NewViewForm::onNameChange(QString a)
     m_view->getLocation()->setText(0, a);
     presentSql(Workspace::getInstance()->currentProject(), QString("latin1"));
 }
+
+void NewViewForm::onSqlChange()
+{
+    if(!m_queryBuilder)
+    {
+        m_view->setSql(ui->txtSql->toPlainText());
+    }
+}

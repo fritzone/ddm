@@ -38,6 +38,7 @@ public:
 public slots:
     void onChkCanReplaceToggle(bool);
     void onNameChange(QString);
+    void onSqlChange();
 
 protected:
     void changeEvent(QEvent *e);

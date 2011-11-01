@@ -448,8 +448,8 @@ void MainWindow::currentProjectTreeItemChanged(QTreeWidgetItem * current, QTreeW
                     {
                         m_nvf = new NewViewForm(false, 0, this);
 
-                        m_nvf->setView(v);
                         m_nvf->setSqlSource(v);
+                        m_nvf->setView(v);
                         m_nvf->presentSql(Workspace::getInstance()->currentProject(), QString("latin1"));
 
                         setCentralWidget(m_nvf);
@@ -457,6 +457,7 @@ void MainWindow::currentProjectTreeItemChanged(QTreeWidgetItem * current, QTreeW
                     else
                     {
                         m_nvf = 0;
+                        v->getHelper()->resetContent();
                         v->getHelper()->setForm(this);
                         rerenderQuery(v->getQuery());
                     }
@@ -1491,8 +1492,9 @@ void MainWindow::onNewViewWithSql()
     Workspace::getInstance()->workingVersion()->addView(v);
     Workspace::getInstance()->workingVersion()->getGui()->createViewTreeEntry(v);
 
-    m_nvf->setView(v);
+
     m_nvf->setSqlSource(v);
+    m_nvf->setView(v);
     m_nvf->presentSql(Workspace::getInstance()->currentProject(), QString("latin1"));
 
     setCentralWidget(m_nvf);

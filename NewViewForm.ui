@@ -312,9 +312,26 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>txtSql</sender>
+   <signal>textChanged()</signal>
+   <receiver>NewViewForm</receiver>
+   <slot>onSqlChange()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>224</x>
+     <y>326</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>576</x>
+     <y>313</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>onChkCanReplaceToggle(bool)</slot>
   <slot>onNameChange(QString)</slot>
+  <slot>onSqlChange()</slot>
  </slots>
 </ui>

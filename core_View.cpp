@@ -6,7 +6,7 @@
 #include "NameGenerator.h"
 
 View::View(bool manual) : SqlSourceEntity(), NamedItem(NameGenerator::getUniqueName(Workspace::getInstance()->workingVersion(), (NameGenerator::itemGetter)&Version::getView, QString("v"))),
-                m_columNames(), m_canReplace(false), algorithm(), m_manual(manual)
+                m_columNames(), m_canReplace(false), m_manual(manual)
 {
     m_helper = new QueryGraphicsHelper();
     m_selectQuery = new SelectQuery(m_helper, 0, this);
@@ -16,29 +16,38 @@ View::View(bool manual) : SqlSourceEntity(), NamedItem(NameGenerator::getUniqueN
 
 QStringList View::generateSqlSource(AbstractSqlGenerator *, QHash<QString, QString>, const QString &codepage)
 {
-    QStringList res;
-    res.append("CREATE ");
-    if(m_canReplace)
+    if(m_manual)
     {
-        res.append("OR REPLACE ");
+        QStringList res;
+        res.append(m_sql);
+        return res;
     }
-    res.append(QString("VIEW ") + getName());
-    if(m_columNames.size() > 0)
+    else
     {
-        res.append(" (");
-        QString c = "";
-        for(int i=0; i<m_columNames.size(); i++)
+        QStringList res;
+        res.append("CREATE ");
+        if(m_canReplace)
         {
-            c += m_columNames.at(i);
-            if(i<m_columNames.size() - 1) c += ", ";
+            res.append("OR REPLACE ");
         }
-        res.append(c);
-        res.append(")");
+        res.append(QString("VIEW ") + getName());
+        if(m_columNames.size() > 0)
+        {
+            res.append(" (");
+            QString c = "";
+            for(int i=0; i<m_columNames.size(); i++)
+            {
+                c += m_columNames.at(i);
+                if(i<m_columNames.size() - 1) c += ", ";
+            }
+            res.append(c);
+            res.append(")");
+        }
+        res.append("\n");
+        res.append("AS\n");
+        res.append(m_selectQuery->get());
+        return res;
     }
-    res.append("\n");
-    res.append("AS\n");
-    res.append(m_selectQuery->get());
-    return res;
 }
 
 void View::serialize(QDomDocument& doc, QDomElement& parent) const
@@ -49,11 +58,24 @@ void View::serialize(QDomDocument& doc, QDomElement& parent) const
 
     if(m_manual)
     {
-
+        QDomElement textElement = doc.createElement("Sql");
+        QDomCDATASection cdata = doc.createCDATASection(m_sql);
+        textElement.appendChild(cdata);
+        viewElement.appendChild(textElement);
     }
     else
     {
-
+        viewElement.setAttribute("CanReplace", m_canReplace);
+        QDomElement columns = doc.createElement("Columns");
+        for(int i=0; i<m_columNames.size(); i++)
+        {
+            QDomElement column = doc.createElement("Column");
+            column.setAttribute("Name", m_columNames.at(i));
+            columns.appendChild(column);
+        }
+        viewElement.appendChild(columns);
+        // and now render the query
+        //m_selectQuery->render(doc, viewElement);
     }
 
     parent.appendChild(viewElement);
