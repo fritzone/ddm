@@ -4,11 +4,12 @@
 #include "NamedItem.h"
 #include "SqlSourceEntity.h"
 #include "TreeItem.h"
+#include "SerializableElement.h"
 
 class SelectQuery;
 class QueryGraphicsHelper;
 
-class View : virtual public SqlSourceEntity, virtual public NamedItem, virtual public TreeItem
+class View : virtual public SqlSourceEntity, virtual public NamedItem, virtual public TreeItem, virtual public SerializableElement
 {
 public:
     View(bool manual);
@@ -44,6 +45,8 @@ public:
     {
         return m_manual;
     }
+
+    virtual void serialize(QDomDocument& doc, QDomElement& parent) const;
 
 private:
     SelectQuery* m_selectQuery;

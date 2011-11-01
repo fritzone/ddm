@@ -40,3 +40,21 @@ QStringList View::generateSqlSource(AbstractSqlGenerator *, QHash<QString, QStri
     res.append(m_selectQuery->get());
     return res;
 }
+
+void View::serialize(QDomDocument& doc, QDomElement& parent) const
+{
+    QDomElement viewElement = doc.createElement("View");
+    viewElement.setAttribute("Name", m_name);
+    viewElement.setAttribute("Manual", m_manual);
+
+    if(m_manual)
+    {
+
+    }
+    else
+    {
+
+    }
+
+    parent.appendChild(viewElement);
+}
