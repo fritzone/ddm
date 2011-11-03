@@ -8,6 +8,7 @@ class SelectQueryAsComponent : public QueryComponent
 public:
     SelectQueryAsComponent(QueryComponent*, int);
     virtual QString get() const {return getSpacesForLevel() + "AS " + m_as; }
+    virtual QString getClass() const {return "SelectQueryAsComponent";}
     virtual QueryGraphicsItem* createGraphicsItem(QueryGraphicsHelper*, QueryGraphicsItem*){return 0;}
     virtual void handleAction(const QString& action, QueryComponent* referringObject);
     virtual QSet<OptionsType> provideOptions();
@@ -22,6 +23,7 @@ public:
     {
         return QVector<CellTypeChooserType> ();
     }
+    virtual void serialize(QDomDocument& doc, QDomElement& parent) const;
 
 private:
 

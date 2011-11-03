@@ -75,7 +75,7 @@ void View::serialize(QDomDocument& doc, QDomElement& parent) const
         }
         viewElement.appendChild(columns);
         // and now render the query
-        //m_selectQuery->render(doc, viewElement);
+        m_selectQuery->serialize(doc, viewElement);
     }
 
     parent.appendChild(viewElement);

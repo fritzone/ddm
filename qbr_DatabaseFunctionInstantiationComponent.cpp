@@ -26,3 +26,18 @@ QString DatabaseFunctionInstantiationComponent::get()
     result += ")";
     return result;
 }
+
+void DatabaseFunctionInstantiationComponent::serialize(QDomDocument &doc, QDomElement &parent) const
+{
+    QDomElement funcInstElement = doc.createElement("Function");
+    funcInstElement.setAttribute("Name", m_func.getName());
+    QDomElement parametersElement = doc.createElement("Parameters");
+    for(int i=0; i<m_parameters.size(); i++)
+    {
+        QDomElement parameterElement = doc.createElement("Parameter");
+        m_parameters.at(i)->serialize(doc, parameterElement);
+        parametersElement.appendChild(parameterElement);
+    }
+    funcInstElement.appendChild(parametersElement);
+    parent.appendChild(funcInstElement);
+}

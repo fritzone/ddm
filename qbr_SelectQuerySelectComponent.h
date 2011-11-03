@@ -10,6 +10,7 @@ class SelectQuerySelectComponent : public QueryComponent
 public:
     SelectQuerySelectComponent(QueryComponent*,int);
     virtual QString get() const;
+    virtual QString getClass() const {return "SelectQuerySelectComponent";}
     virtual void handleAction(const QString& action, QueryComponent* referringObject);
     virtual QueryGraphicsItem* createGraphicsItem(QueryGraphicsHelper*, QueryGraphicsItem*){return 0;}
     virtual QSet<OptionsType> provideOptions();
@@ -28,6 +29,7 @@ public:
      * This should return a vector of the components that are in the "SELECT" branch of the query
      */
     QVector<const QueryComponent*> getSelectedComponents();
+    virtual void serialize(QDomDocument& doc, QDomElement& parent) const;
 };
 
 #endif // SELECTQUERYSELECTCOMPONENT_H

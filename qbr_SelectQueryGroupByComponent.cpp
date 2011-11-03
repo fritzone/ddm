@@ -43,3 +43,11 @@ QString SelectQueryGroupByComponent::get() const
     }
     return result;
 }
+
+void SelectQueryGroupByComponent::serialize(QDomDocument &doc, QDomElement &parent) const
+{
+    QDomElement groupBy = doc.createElement("GroupBy");
+    QueryComponent::serialize(doc, groupBy);
+    parent.appendChild(groupBy);
+}
+

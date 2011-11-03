@@ -93,3 +93,19 @@ QString SelectQueryJoinComponent::get() const
     }
     return result;
 }
+
+void SelectQueryJoinComponent::serialize(QDomDocument &doc, QDomElement &parent) const
+{
+    QDomElement joinElement = doc.createElement("Join");
+    QueryComponent::serialize(doc, joinElement);    // this has put the children
+    QDomElement onElement = doc.createElement("On");
+    for(int i=0; i<m_joinExpressions.size(); i++)
+    {
+        QDomElement joinExpression = doc.createElement("JoinExpression");
+        joinExpression.setAttribute("idx", i);
+        m_joinExpressions.at(i)->serialize(doc, joinExpression);
+        onElement.appendChild(joinExpression);
+    }
+    joinElement.appendChild(onElement);
+    parent.appendChild(joinElement);
+}

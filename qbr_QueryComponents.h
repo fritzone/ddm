@@ -2,6 +2,7 @@
 #define QUERYCOMPONENTS_H
 
 #include "qbr_OptionTypes.h"
+#include "SerializableElement.h"
 
 #include <QString>
 #include <QList>
@@ -14,13 +15,14 @@ class QueryGraphicsHelper;
 /**
  * The logic behind a query
  */
-class QueryComponent
+class QueryComponent : public SerializableElement
 {
 public:
     QueryComponent(QueryComponent* parent, int level) : m_parent(parent), m_level(level) {}
     virtual ~QueryComponent(){}
 
     virtual QString get() const = 0;
+    virtual QString getClass() const = 0;   // just for tracking in the serialization
     virtual QueryGraphicsItem* createGraphicsItem(QueryGraphicsHelper* helper, QueryGraphicsItem* parent) = 0;
     virtual void handleAction(const QString& action, QueryComponent* referringObject) = 0;
 
@@ -48,6 +50,7 @@ public:
         }
         return r;
     }
+    virtual void serialize(QDomDocument& doc, QDomElement& parent) const;
 
 protected:
     QList<QueryComponent*> m_children;

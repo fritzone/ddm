@@ -38,7 +38,7 @@ public:
     }
     virtual QVector<const Table*> getTables() const;
     virtual QString get() const;
-
+    virtual QString getClass() const {return "SelectQuery";}
     void newFromTableComponent();
     void newFromSelectQueryComponent();
     void duplicateFromsChild(QueryComponent*);
@@ -66,6 +66,7 @@ public:
      */
     QStringList getOrderByElements();
     QVector<const QueryComponent*> getSelectedComponents();
+    virtual void serialize(QDomDocument& doc, QDomElement& parent) const;
 
 private:
     SelectQuerySelectComponent* m_select;
