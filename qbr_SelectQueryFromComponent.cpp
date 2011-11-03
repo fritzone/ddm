@@ -113,3 +113,10 @@ QString SelectQueryFromComponent::get() const
     if(m_children.size()) result += "\n";
     return result;
 }
+
+void SelectQueryFromComponent::serialize(QDomDocument& doc, QDomElement& parent) const
+{
+    QDomElement fromElement = doc.createElement("From");
+    QueryComponent::serialize(doc, fromElement);
+    parent.appendChild(fromElement);
+}

@@ -38,6 +38,7 @@ public:
     virtual QVector<CellTypeChooserType>  getElements() const = 0;
 
     QueryGraphicsHelper* getHelper() {return m_helper;}
+    virtual void serialize(QDomDocument& doc, QDomElement& parent) const = 0;
 
 protected:
     QueryGraphicsHelper* m_helper;

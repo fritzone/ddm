@@ -37,7 +37,7 @@ QueryGraphicsItem* SingleExpressionQueryComponent::createGraphicsItem(QueryGraph
 
 }
 
-QString SingleExpressionQueryComponent::get() const
+QMap<CellTypeChooserType,QString> SingleExpressionQueryComponent::prepareMappings() const
 {
     QMap<CellTypeChooserType,QString> textMappings;
     textMappings[CELLTYPE_NOT_TEXT] = strLogNot;
@@ -76,6 +76,13 @@ QString SingleExpressionQueryComponent::get() const
     textMappings[CELLTYPE_QUERY_OR] = strLogOr;
     textMappings[CELLTYPE_QUERY_AND] = strLogAnd;
 
+    return textMappings;
+
+}
+
+QString SingleExpressionQueryComponent::get() const
+{
+    QMap<CellTypeChooserType,QString> textMappings = prepareMappings();
     bool errorFound = false;
 
     QString result = "";
@@ -103,7 +110,7 @@ QString SingleExpressionQueryComponent::get() const
         }
     }
 
-    if(errorFound) result += "(??)";
+    if(errorFound) result += "( ?? )";
 
     QHash<QString, QString> opts = Configuration::instance().sqlGenerationOptions();
     if(opts[strNewLineBetweenSelectExpressionsInSqlGeneration] == strYes)
@@ -113,6 +120,37 @@ QString SingleExpressionQueryComponent::get() const
 
     return result;
 }
+
+void SingleExpressionQueryComponent::serialize(QDomDocument& doc, QDomElement& parent) const
+{
+    QMap<CellTypeChooserType,QString> textMappings = prepareMappings();
+    QDomElement expressionElement = doc.createElement("Expression");
+    for(int i=0; i<m_elements.size(); i++)
+    {
+        QDomElement element = doc.createElement("Element");
+        element.setAttribute("Type", m_elements.at(i));
+        element.setAttribute("idx", i);
+        if(m_elements.at(i) == CELLTYPE_COLUMN)
+        {
+            element.setAttribute("Table", m_columnsAtGivenPosition[i]->getTable()->getName());
+            element.setAttribute("Column", m_columnsAtGivenPosition[i]->getName());
+        }
+        if(m_elements.at(i) == CELLTYPE_LITERAL)
+        {
+            element.setAttribute("InputString", m_typedValuesAtGivenPosition[i]);
+        }
+        if(m_elements.at(i) == CELLTYPE_FUNCTION)
+        {
+             QDomElement functionElement = doc.createElement("FunctionInstantiation");
+             m_functionInstantiationAtGivenPosition[i]->serialize(doc, functionElement);
+             element.appendChild(functionElement);
+        }
+        expressionElement.appendChild(element);
+    }
+    QueryComponent::serialize(doc, expressionElement);
+    parent.appendChild(expressionElement);
+}
+
 
 QSet<OptionsType> SingleExpressionQueryComponent::provideOptions()
 {
@@ -502,3 +540,4 @@ bool SingleExpressionQueryComponent::hasStar()
     }
     return false;
 }
+

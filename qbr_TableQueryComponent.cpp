@@ -21,26 +21,6 @@ TableQueryComponent::TableQueryComponent(Table* tab, QueryComponent* p, int leve
 {
 }
 
-QString TableQueryComponent::get() const
-{
-    QString result = m_table->getName();
-    if(!m_joins.isEmpty())
-    {
-        for(int i=0; i<m_joins.size(); i++)
-        {
-            result += "\n";
-            result += getSpacesForLevel();
-            result += m_joins.at(i)->get();
-        }
-    }
-    if(m_as)
-    {
-        result += m_as->get();
-    }
-
-    return result;
-}
-
 QueryGraphicsItem* TableQueryComponent::createGraphicsItem(QueryGraphicsHelper* helper, QueryGraphicsItem* parent)
 {
     m_helper = helper;
@@ -182,4 +162,44 @@ QVector<const Column*> TableQueryComponent::provideColumns()
         result.push_back(c);
     }
     return result;
+}
+
+QString TableQueryComponent::get() const
+{
+    QString result = m_table->getName();
+    if(!m_joins.isEmpty())
+    {
+        for(int i=0; i<m_joins.size(); i++)
+        {
+            result += "\n";
+            result += getSpacesForLevel();
+            result += m_joins.at(i)->get();
+        }
+    }
+    if(m_as)
+    {
+        result += m_as->get();
+    }
+
+    return result;
+}
+void TableQueryComponent::serialize(QDomDocument &doc, QDomElement &parent) const
+{
+    QDomElement tableElement = doc.createElement("Table");
+    tableElement.setAttribute("Name", m_table->getName());
+    if(m_as)
+    {
+        tableElement.setAttribute("As", m_as->getAs());
+    }
+    if(!m_joins.empty())
+    {
+        QDomElement joinsElement = doc.createElement("Joins");
+        for(int i=0; i< m_joins.size(); i++)
+        {
+            m_joins.at(i)->serialize(doc, joinsElement);
+        }
+        tableElement.appendChild(joinsElement);
+    }
+    QueryComponent::serialize(doc, tableElement);
+    parent.appendChild(tableElement);
 }

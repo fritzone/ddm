@@ -11,6 +11,7 @@ class SelectQueryJoinComponent : public QueryComponent
 public:
     SelectQueryJoinComponent(QueryComponent*, int);
     virtual QString get() const;
+    virtual QString getClass() const {return "SelectQueryJoinComponent";}
     virtual QueryGraphicsItem* createGraphicsItem(QueryGraphicsHelper*, QueryGraphicsItem*){return 0;}
     virtual void handleAction(const QString& action, QueryComponent* referringObject);
     virtual QSet<OptionsType> provideOptions();
@@ -29,6 +30,7 @@ public:
 
     void setHelper(QueryGraphicsHelper* h) {m_helper = h;}
     void removeExpression(WhereExpressionQueryComponent*);
+    virtual void serialize(QDomDocument& doc, QDomElement& parent) const;
 
 private:
     QueryGraphicsHelper* m_helper;

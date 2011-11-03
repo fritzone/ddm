@@ -393,3 +393,83 @@ QVector<const QueryComponent*> SelectQuery::getSelectedComponents()
 {
     return m_select->getSelectedComponents();
 }
+
+
+void SelectQuery::serialize(QDomDocument &doc, QDomElement &parent) const
+{
+    QDomElement queryElement = doc.createElement("Query");
+    queryElement.setAttribute("Type", "Select");
+
+    if(m_select)
+    {
+        queryElement.setAttribute("HasSelect", 1);
+        m_select->serialize(doc, queryElement);
+    }
+    else
+    {
+        queryElement.setAttribute("HasSelect", 0);
+    }
+
+    if(m_from)
+    {
+        queryElement.setAttribute("HasFrom", 1);
+        m_from->serialize(doc, queryElement);
+    }
+    else
+    {
+        queryElement.setAttribute("HasFrom", 0);
+    }
+
+    if(m_where)
+    {
+        queryElement.setAttribute("HasWhere", 1);
+        m_where->serialize(doc, queryElement);
+    }
+    else
+    {
+        queryElement.setAttribute("HasWhere", 0);
+    }
+
+    if(m_groupby)
+    {
+        queryElement.setAttribute("HasGroupBy", 1);
+        m_groupby->serialize(doc, queryElement);
+    }
+    else
+    {
+        queryElement.setAttribute("HasGroupBy", 0);
+    }
+
+    if(m_having)
+    {
+        queryElement.setAttribute("HasHaving", 1);
+        m_having->serialize(doc, queryElement);
+    }
+    else
+    {
+        queryElement.setAttribute("HasHaving", 0);
+    }
+
+    if(m_orderBy)
+    {
+        queryElement.setAttribute("HasOrderBy", 1);
+        m_orderBy->serialize(doc, queryElement);
+    }
+    else
+    {
+        queryElement.setAttribute("HasOrderBy", 0);
+    }
+
+    if(m_as)
+    {
+        queryElement.setAttribute("HasAs", 1);
+        m_as->serialize(doc, queryElement);
+    }
+    else
+    {
+        queryElement.setAttribute("HasAs", 0);
+    }
+
+    parent.appendChild(queryElement);
+
+}

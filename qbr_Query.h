@@ -4,6 +4,8 @@
 #include "qbr_QueryGraphicsItem.h"
 #include "qbr_QueryComponents.h"
 
+#include <Qt>
+
 class QueryGraphicsHelper;
 class Table;
 class SqlSourceEntity;
@@ -35,6 +37,7 @@ public:
 
     /** get returns the sql statement(s) of this query*/
     virtual QString get() const = 0;
+    virtual void serialize(QDomDocument& doc, QDomElement& parent) const = 0;
 
 protected:
     QueryGraphicsHelper* m_helper;

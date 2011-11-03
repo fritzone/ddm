@@ -4,6 +4,8 @@
 #include "db_DatabaseBuiltinFunction.h"
 #include "qbr_SingleExpressionQueryComponent.h"
 #include "qbr_QueryComponents.h"
+#include "SerializableElement.h"
+
 
 class SingleExpressionQueryComponent;
 
@@ -11,13 +13,13 @@ class SingleExpressionQueryComponent;
  * This class holds a reference to a database builtin function, and data about the
  * parametrization of that function, ie. how the stuff was populated in the query builder.
  */
-class DatabaseFunctionInstantiationComponent
+class DatabaseFunctionInstantiationComponent : public SerializableElement
 {
 public:
     DatabaseFunctionInstantiationComponent(QueryComponent* parent, const DatabaseBuiltinFunction& f);
     SingleExpressionQueryComponent* getInstantiatedParameter(int i);
     QString get();
-
+    virtual void serialize(QDomDocument& doc, QDomElement& parent) const;
 private:
     QueryComponent* m_parent;
     const DatabaseBuiltinFunction& m_func;

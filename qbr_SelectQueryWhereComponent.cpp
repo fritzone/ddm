@@ -101,3 +101,13 @@ QString SelectQueryWhereComponent::get() const
     }
     return result;
 }
+
+void SelectQueryWhereComponent::serialize(QDomDocument &doc, QDomElement &parent) const
+{
+    QDomElement whereElement = doc.createElement("WhereComponent");
+    whereElement.setAttribute("Type", m_whereType);
+
+    QueryComponent::serialize(doc, whereElement);
+    parent.appendChild(whereElement);
+
+}

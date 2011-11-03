@@ -155,3 +155,10 @@ QString SelectQuerySelectComponent::get() const
     }
     return result;
 }
+
+void SelectQuerySelectComponent::serialize(QDomDocument& doc, QDomElement& parent) const
+{
+    QDomElement selectElement = doc.createElement("Select");
+    QueryComponent::serialize(doc, selectElement);
+    parent.appendChild(selectElement);
+}

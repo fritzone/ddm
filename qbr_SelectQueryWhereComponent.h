@@ -17,6 +17,7 @@ public:
 
     SelectQueryWhereComponent(QueryComponent*, int, WhereType);
     virtual QString get() const;
+    virtual QString getClass() const {return "SelectQueryWhereComponent";}
     virtual QueryGraphicsItem* createGraphicsItem(QueryGraphicsHelper*, QueryGraphicsItem*){return 0;}
     virtual void handleAction(const QString& action, QueryComponent* referringObject);
     virtual QSet<OptionsType> provideOptions();
@@ -26,7 +27,7 @@ public:
     {
         return QVector<CellTypeChooserType> ();
     }
-
+    virtual void serialize(QDomDocument& doc, QDomElement& parent) const;
 private:
     WhereType m_whereType;
 };

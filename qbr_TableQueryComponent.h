@@ -19,6 +19,7 @@ public:
     TableQueryComponent(Table*,QueryComponent*,int);
 
     virtual QString get() const;
+    virtual QString getClass() const {return "TableQueryComponent";}
     virtual QueryGraphicsItem* createGraphicsItem(QueryGraphicsHelper*, QueryGraphicsItem*);
     virtual void handleAction(const QString& action, QueryComponent* referringObject);
     virtual QSet<OptionsType> provideOptions();
@@ -38,6 +39,7 @@ public:
     {
         return m_table;
     }
+    virtual void serialize(QDomDocument& doc, QDomElement& parent) const;
 
 private:
     Table* m_table;

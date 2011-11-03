@@ -29,6 +29,7 @@ public:
 
     SingleExpressionQueryComponent(QueryComponent*,int);
     virtual QString get() const;
+    virtual QString getClass() const {return "SingleExpressionQueryComponent";}
     virtual QueryGraphicsItem* createGraphicsItem(QueryGraphicsHelper*, QueryGraphicsItem*);
     virtual void handleAction(const QString& action, QueryComponent* referringObject);
     virtual QSet<OptionsType> provideOptions();
@@ -67,6 +68,11 @@ public:
     void removeAs();
     const SelectQueryAsComponent* hasAs();
     bool hasStar();
+    virtual void serialize(QDomDocument& doc, QDomElement& parent) const;
+
+private:
+
+    QMap<CellTypeChooserType,QString> prepareMappings() const;
 
 private:
 

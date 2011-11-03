@@ -47,3 +47,10 @@ QString SelectQueryOrderByComponent::get() const
     }
     return result;
 }
+
+void SelectQueryOrderByComponent::serialize(QDomDocument &doc, QDomElement &parent) const
+{
+    QDomElement orderByElement = doc.createElement("OrderBy");
+    QueryComponent::serialize(doc, orderByElement);
+    parent.appendChild(orderByElement);
+}
