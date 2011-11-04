@@ -14,6 +14,7 @@
 #include "DiagramFKDescriptor.h"
 #include "Diagram.h"
 #include "TableInstance.h"
+#include "core_View.h"
 
 #include <QStringList>
 
@@ -203,7 +204,7 @@ MajorVersion* DeserializationFactory::createMajorVersion(Project* p, DatabaseEng
     // getting the table instances
     for(int i=0; i<element.childNodes().count(); i++)
     {
-        if(element.childNodes().at(i).nodeName() == "TableInstances")   // in a well formatted result, the Diagrams child node is always after the tables
+        if(element.childNodes().at(i).nodeName() == "TableInstances")
         {
             for(int j=0; j<element.childNodes().at(i).childNodes().count(); j++)
             {
@@ -218,7 +219,35 @@ MajorVersion* DeserializationFactory::createMajorVersion(Project* p, DatabaseEng
             }
         }
     }
+
+    // getting the views
+    for(int i=0; i<element.childNodes().count(); i++)
+    {
+        if(element.childNodes().at(i).nodeName() == "Views")
+        {
+            for(int j=0; j<element.childNodes().at(i).childNodes().count(); j++)
+            {
+                View* view = createView(result, doc, element.childNodes().at(i).childNodes().at(j).toElement());
+                result->addView(view);
+            }
+        }
+    }
+
     return result;
+}
+
+View* DeserializationFactory::createView(Version* v, const QDomDocument& doc, const QDomElement& element)
+{
+    bool manual = element.attribute("Manual") == "1";
+    View* view = new View(manual);
+    QString name = element.attribute("Name");
+    view->setName(name);
+    if(manual)
+    {
+        //QDomElement e =
+    }
+
+    return view;
 }
 
 Column* DeserializationFactory::createColumn(Version* ver, const QDomDocument &, const QDomElement &element)
