@@ -239,12 +239,14 @@ MajorVersion* DeserializationFactory::createMajorVersion(Project* p, DatabaseEng
 View* DeserializationFactory::createView(Version* v, const QDomDocument& doc, const QDomElement& element)
 {
     bool manual = element.attribute("Manual") == "1";
-    View* view = new View(manual);
+    View* view = new View(v, manual);
     QString name = element.attribute("Name");
     view->setName(name);
     if(manual)
     {
-        //QDomElement e =
+        QDomElement sqlElement = element.firstChild().toElement();
+        QDomCDATASection cdata = sqlElement.firstChild().toCDATASection();
+        view->setSql(cdata.toText().data());
     }
 
     return view;

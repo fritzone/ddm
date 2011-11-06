@@ -506,6 +506,11 @@ const QVector<Diagram*>& DefaultVersionImplementation::getDiagrams() const
     return m_data.m_diagrams;
 }
 
+const QVector<View*>& DefaultVersionImplementation::getViews()
+{
+    return m_data.m_views;
+}
+
 void DefaultVersionImplementation::addTableInstance(TableInstance* inst)
 {
     m_data.m_tableInstances.append(inst);
