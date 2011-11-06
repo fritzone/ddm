@@ -8,11 +8,13 @@
 
 class SelectQuery;
 class QueryGraphicsHelper;
+class Version;
 
 class View : virtual public SqlSourceEntity, virtual public NamedItem, virtual public TreeItem, virtual public SerializableElement
 {
 public:
     View(bool manual);
+    View(Version* v, bool manual); // used by the deserialization engine
 
     virtual QStringList generateSqlSource(AbstractSqlGenerator*, QHash<QString,QString>, const QString& codepage);
 

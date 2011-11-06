@@ -246,6 +246,12 @@ public:
      * Adds a view in the system
      */
     virtual void addView(View* v) = 0;
+
+    /**
+     * Return the views of the version
+     */
+   virtual const QVector<View*>& getViews() = 0;
+
 };
 
 #endif // VERSION_H

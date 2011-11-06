@@ -23,6 +23,8 @@
 #include <QVector>
 #include <QtGui>
 
+// TODO: This file looks funny. See why it seems we have a lot of duplicate code
+
 VersionGuiElements::VersionGuiElements(QTreeWidget* projTree, QTreeWidget* dtTree, QTreeWidget* issueTree, Version* v) : tablesItem(0), tableInstancesItem(0), versionItem(0), diagramsItem(0), finalSqlItem(0), dtsItem(0),
     m_tree(projTree), m_dtTree(dtTree), m_issuesTree(issueTree),
     stringsDtItem(0), intsDtItem(0), dateDtItem(0), blobDtItem(0),
@@ -223,6 +225,13 @@ void VersionGuiElements::populateTreeItems()
             newTblsItem->setIcon(0, IconFactory::getTablesIcon());
             m_tree->insertTopLevelItem(0, newTblsItem);
         }
+    }
+
+    // add the views
+    const QVector<View*> views = m_version->getViews();
+    for(int i=0; i<views.size(); i++)
+    {
+        createViewTreeEntry(views.at(i));
     }
 }
 

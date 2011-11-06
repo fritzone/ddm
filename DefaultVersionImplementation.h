@@ -92,6 +92,7 @@ public:
     virtual void setSpecialValidationFlags(int);
     virtual View* getView(const QString &viewName);
     virtual void addView(View* v);
+    virtual const QVector<View*>& getViews();
 protected:
     // the version as a string representation. Major versions are always of form X.0
     QString version;
