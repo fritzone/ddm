@@ -18,12 +18,12 @@ View::View(Version*v, bool manual) : SqlSourceEntity(), NamedItem(NameGenerator:
                 m_columNames(), m_canReplace(false), m_manual(manual)
 {
     m_helper = new QueryGraphicsHelper();
-    m_selectQuery = new SelectQuery(m_helper, 0, this);
-    QueryAsGenerator::instance().initNewQuery(m_selectQuery);
-    m_helper->setQuery(m_selectQuery);
 }
 
-
+void View::finalizeViewDeserialization()
+{
+    QueryAsGenerator::instance().initNewQuery(m_selectQuery);
+}
 
 QStringList View::generateSqlSource(AbstractSqlGenerator *, QHash<QString, QString>, const QString &codepage)
 {

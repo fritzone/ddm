@@ -15,6 +15,9 @@
 #include "Diagram.h"
 #include "TableInstance.h"
 #include "core_View.h"
+#include "qbr_SelectQuerySelectComponent.h"
+#include "qbr_SelectQuery.h"
+#include "qbr_QueryComponents.h"
 
 #include <QStringList>
 
@@ -236,6 +239,22 @@ MajorVersion* DeserializationFactory::createMajorVersion(Project* p, DatabaseEng
     return result;
 }
 
+QueryComponent* DeserializationFactory::createComponent(QueryComponent* parent, const QDomDocument &doc, const QDomElement &element)
+{
+    //TODO: Based on attribute("class") of element decide what kind of the component to create and create it, and then populate the children of it with a recursive call
+    //to this method
+
+//    QueryComponent* result = new QueryComponent(parent, element.attribute("level").toInt());
+
+//    for(int i=0; i<element.childNodes().count(); i++)
+//    {
+//        QueryComponent* child = createComponent(result, doc, element.childNodes().at(i).toElement());
+//    }
+
+//    return result;
+      return 0;
+}
+
 View* DeserializationFactory::createView(Version* v, const QDomDocument& doc, const QDomElement& element)
 {
     bool manual = element.attribute("Manual") == "1";
@@ -247,6 +266,40 @@ View* DeserializationFactory::createView(Version* v, const QDomDocument& doc, co
         QDomElement sqlElement = element.firstChild().toElement();
         QDomCDATASection cdata = sqlElement.firstChild().toCDATASection();
         view->setSql(cdata.toText().data());
+    }
+    else
+    {
+        for(int i=0; i<element.childNodes().count(); i++)
+        {
+            if(element.childNodes().at(i).nodeName() == "Columns")
+            {
+                QDomElement columnsNode = element.childNodes().at(i).toElement();
+                QStringList columnNames;
+                for(int j=0; j< columnsNode.childNodes().count(); j++)
+                {
+                    QString colName = columnsNode.childNodes().at(j).firstChild().nodeValue();
+                    columnNames.append(colName);
+                }
+                view->setColumnNames(columnNames);
+            }
+            if(element.childNodes().at(i).nodeName() == "Query")
+            {
+                QDomElement queryNode = element.childNodes().at(i).toElement();
+                SelectQuery* q = new SelectQuery(view->getHelper(), view);
+                view->setQuery(q);
+                view->getHelper()->setQuery(q);
+
+                for(int j=0; j< queryNode.childNodes().count(); j++)
+                {
+                    QDomElement childNode = queryNode.childNodes().at(j).toElement();
+                    if(childNode.nodeName() == "Select")
+                    {
+                        //SelectQuerySelectComponent* sqsc = createComponent(q, doc, childNode.firstChild().toElement());
+                        //q->setSelect(sqsc);
+                    }
+                }
+            }
+        }
     }
 
     return view;
