@@ -23,6 +23,10 @@ SelectQuery::SelectQuery(QueryGraphicsHelper* helper, int level, SqlSourceEntity
     if(m_level > 0) m_as = new SelectQueryAsComponent(this, level);
 }
 
+SelectQuery::SelectQuery(QueryGraphicsHelper* helper, SqlSourceEntity* se) : Query(helper, -4, se), m_select(0),  m_from(0), m_where(0), m_groupby(0), m_having(0), m_as(0), m_orderBy(0)
+{
+}
+
 QueryGraphicsItem* SelectQuery::createGraphicsItem(QueryGraphicsHelper*, QueryGraphicsItem*)
 {
     SelectQueryGraphicsItem* gi = new SelectQueryGraphicsItem(m_helper, m_level, 0, this);

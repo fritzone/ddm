@@ -26,6 +26,8 @@ public:
     } ;
 
     SelectQuery(QueryGraphicsHelper*, int, SqlSourceEntity*);
+    SelectQuery(QueryGraphicsHelper*, SqlSourceEntity*);    // called by the deserialization
+
     virtual bool initializeGraphicsItem();
     virtual QueryGraphicsItem* createGraphicsItem(QueryGraphicsHelper*, QueryGraphicsItem*);
     virtual void handleAction(const QString& action, QueryComponent* referringObject);
@@ -52,6 +54,11 @@ public:
     void removeFrom();
     bool hasWhere();
     bool hasGroupBy();
+
+    void setSelect(SelectQuerySelectComponent* s)   // called by the deserialization
+    {
+        m_select = s;
+    }
 
     bool hasGroupByFunctions();
     bool hasAtLeastOneColumnSelected();

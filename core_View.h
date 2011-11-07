@@ -28,6 +28,11 @@ public:
         return m_selectQuery;
     }
 
+    void setQuery(SelectQuery* q)
+    {
+        m_selectQuery = q;
+    }
+
     void setColumnNames(const QStringList& list)
     {
         m_columNames = list;
@@ -52,6 +57,8 @@ public:
     {
         m_sql = sql;
     }
+
+    void finalizeViewDeserialization();
 
     virtual void serialize(QDomDocument& doc, QDomElement& parent) const;
 

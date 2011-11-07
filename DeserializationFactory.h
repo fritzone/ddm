@@ -20,6 +20,7 @@ class Diagram;
 class Version;
 class TableInstance;
 class View;
+class QueryComponent;
 
 class DeserializationFactory
 {
@@ -39,6 +40,7 @@ public:
     static Diagram* createDiagram(Version* v, const QDomDocument& doc, const QDomElement& element);
     static TableInstance* createTableInstance(Version* v, const QDomDocument& doc, const QDomElement& element, bool secondStep = false);
     static View* createView(Version* v, const QDomDocument& doc, const QDomElement& element);
+    static QueryComponent* createComponent(QueryComponent* parent, const QDomDocument& doc, const QDomElement& element);
 
 private:
     DeserializationFactory();
