@@ -35,6 +35,7 @@ public:
     virtual QueryComponent* duplicate() = 0;
 
     void addChild(QueryComponent* c) {m_children.append(c);}
+    void setChild(QueryComponent* c, int i) {m_children.insert(i,c);}
 
     QList<QueryComponent*>& getChildren() {return m_children;}
     void removeChild(QueryComponent* c);

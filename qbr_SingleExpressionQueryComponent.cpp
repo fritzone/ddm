@@ -123,8 +123,8 @@ QString SingleExpressionQueryComponent::get() const
 
 void SingleExpressionQueryComponent::serialize(QDomDocument& doc, QDomElement& parent) const
 {
-    QMap<CellTypeChooserType,QString> textMappings = prepareMappings();
     QDomElement expressionElement = doc.createElement("Expression");
+    expressionElement.setAttribute("elements", m_elements.size());
     for(int i=0; i<m_elements.size(); i++)
     {
         QDomElement element = doc.createElement("Element");

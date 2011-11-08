@@ -16,8 +16,12 @@
 #include "TableInstance.h"
 #include "core_View.h"
 #include "qbr_SelectQuerySelectComponent.h"
+#include "qbr_SelectQueryFromComponent.h"
+#include "qbr_SelectQueryWhereComponent.h"
+#include "qbr_TableQueryComponent.h"
 #include "qbr_SelectQuery.h"
 #include "qbr_QueryComponents.h"
+#include "qbr_SingleExpressionQueryComponent.h"
 
 #include <QStringList>
 
@@ -239,20 +243,82 @@ MajorVersion* DeserializationFactory::createMajorVersion(Project* p, DatabaseEng
     return result;
 }
 
-QueryComponent* DeserializationFactory::createComponent(QueryComponent* parent, const QDomDocument &doc, const QDomElement &element)
+QueryComponent* DeserializationFactory::createComponent(QueryComponent* parent, Version* v, const QDomDocument &doc, const QDomElement &element)
 {
-    //TODO: Based on attribute("class") of element decide what kind of the component to create and create it, and then populate the children of it with a recursive call
-    //to this method
+    QueryComponent* c = 0;
 
-//    QueryComponent* result = new QueryComponent(parent, element.attribute("level").toInt());
+    QString strClass = element.attribute("class");
 
-//    for(int i=0; i<element.childNodes().count(); i++)
-//    {
-//        QueryComponent* child = createComponent(result, doc, element.childNodes().at(i).toElement());
-//    }
+    if(strClass == "SelectQuerySelectComponent")    // god, this is soo lame ... TODO: Find a more appropriate way to implement this mechanism
+    {
+        c = new SelectQuerySelectComponent(parent, element.attribute("level").toInt());
+    }
 
-//    return result;
-      return 0;
+    if(strClass == "SelectQueryFromComponent")
+    {
+        c = new SelectQueryFromComponent(parent, element.attribute("level").toInt());
+    }
+
+    if(strClass == "SelectQueryWhereComponent")
+    {
+        c = new SelectQueryWhereComponent(parent, element.attribute("level").toInt(), static_cast<SelectQueryWhereComponent::WhereType>(element.attribute("Type").toInt()));
+    }
+
+    if(strClass == "SingleExpressionQueryComponent")
+    {
+         c = new SingleExpressionQueryComponent(parent, element.attribute("level").toInt());    // This is <Expression>
+         for(int i=0; i<element.childNodes().count(); i++)
+         {
+             QDomElement e = element.childNodes().at(i).toElement(); // this is <Element>
+             int idx =  e.attribute("idx").toInt();
+             int type = e.attribute("Type").toInt();
+             dynamic_cast<SingleExpressionQueryComponent*>(c)->addElement(static_cast<CellTypeChooserType>(type));
+             if(type == CELLTYPE_COLUMN)
+             {
+                 QString col = e.attribute("Column");
+                 QString tab = e.attribute("Table");
+                 Table* t = v->getTable(tab);
+                 if(!t)
+                 {
+                     return 0;
+                 }
+                 Column* tcol = t->getColumn(col);
+                 if(tcol == 0) tcol = t->getColumnFromParents(col);
+                 if(tcol == 0) return 0;
+                 dynamic_cast<SingleExpressionQueryComponent*>(c)->setColumnAtGivenPosition(idx, tcol);
+             }
+             if(type == CELLTYPE_LITERAL)
+             {
+                 QString str = e.attribute("InputString");
+                 dynamic_cast<SingleExpressionQueryComponent*>(c)->setTextAtGivenPosition(idx, str);
+             }
+             if(type == CELLTYPE_FUNCTION)
+             {
+                // TODO: implement
+             }
+         }
+    }
+
+    if(strClass == "TableQueryComponent")
+    {
+        Table* t = v->getTable(element.attribute("Name"));
+        if(t == 0) return 0;
+
+        c = new TableQueryComponent(t, parent, element.attribute("level").toInt());
+    }
+
+    if(element.firstChild().nodeName() == "Children")
+    {
+        for(int i=0; i<element.firstChild().childNodes().count(); i++)
+        {
+            QDomElement e = element.firstChild().childNodes().at(i).toElement();    // This is <Child idx="12">
+            int idx = e.attribute("idx").toInt();
+            QueryComponent* child = createComponent(c, v, doc, e.firstChild().toElement()); // This is "Expression"
+            c->setChild(child, idx);
+        }
+    }
+
+    return c;
 }
 
 View* DeserializationFactory::createView(Version* v, const QDomDocument& doc, const QDomElement& element)
@@ -294,8 +360,18 @@ View* DeserializationFactory::createView(Version* v, const QDomDocument& doc, co
                     QDomElement childNode = queryNode.childNodes().at(j).toElement();
                     if(childNode.nodeName() == "Select")
                     {
-                        //SelectQuerySelectComponent* sqsc = createComponent(q, doc, childNode.firstChild().toElement());
-                        //q->setSelect(sqsc);
+                        SelectQuerySelectComponent* sqsc = dynamic_cast<SelectQuerySelectComponent*> (createComponent(q, v, doc, childNode));
+                        q->setSelect(sqsc);
+                    }
+                    if(childNode.nodeName() == "From")
+                    {
+                        SelectQueryFromComponent* sqfc = dynamic_cast<SelectQueryFromComponent*> (createComponent(q, v, doc, childNode));
+                        q->setFrom(sqfc);
+                    }
+                    if(childNode.nodeName() == "WhereComponent")
+                    {
+                        SelectQueryWhereComponent* sqwc = dynamic_cast<SelectQueryWhereComponent*> (createComponent(q, v, doc, childNode));
+                        q->setWhere(sqwc);
                     }
                 }
             }

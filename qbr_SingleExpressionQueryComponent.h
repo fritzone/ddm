@@ -69,6 +69,19 @@ public:
     const SelectQueryAsComponent* hasAs();
     bool hasStar();
     virtual void serialize(QDomDocument& doc, QDomElement& parent) const;
+    void setColumnAtGivenPosition(int pos, Column* col)
+    {
+        m_columnsAtGivenPosition[pos] = col;
+    }
+
+    void setTextAtGivenPosition(int pos, const QString& s)
+    {
+        m_typedValuesAtGivenPosition[pos] = s;
+    }
+    void addElement(CellTypeChooserType a)
+    {
+        m_elements.push_back(a);
+    }
 
 private:
 

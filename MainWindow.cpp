@@ -152,7 +152,7 @@ void MainWindow::setupGuiForNewSolution()
     m_projectTree->setColumnCount(1);
     m_projectTree->setHeaderHidden(true);
     QObject::connect(m_projectTree, SIGNAL (currentItemChanged ( QTreeWidgetItem*, QTreeWidgetItem*)), this, SLOT(currentProjectTreeItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)));
-    QObject::connect(m_projectTree, SIGNAL (itemClicked ( QTreeWidgetItem * , int ) ), this, SLOT(projectTreeItemClicked (QTreeWidgetItem*,int)));
+    //QObject::connect(m_projectTree, SIGNAL (itemClicked ( QTreeWidgetItem * , int ) ), this, SLOT(projectTreeItemClicked (QTreeWidgetItem*,int)));
 
     m_datatypesTree = new ContextMenuEnabledTreeWidget();
     m_datatypesTree ->setColumnCount(2);
@@ -1291,9 +1291,9 @@ void MainWindow::onDeleteDiagramFromPopup()
     }
 }
 
+
 void MainWindow::projectTreeItemClicked ( QTreeWidgetItem * item, int )
 {
-    currentProjectTreeItemChanged(item, 0);
 }
 
 

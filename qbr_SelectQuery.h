@@ -59,6 +59,15 @@ public:
     {
         m_select = s;
     }
+    void setFrom(SelectQueryFromComponent* s)   // called by the deserialization
+    {
+        m_from = s;
+    }
+    void setWhere(SelectQueryWhereComponent* s)   // called by the deserialization
+    {
+        m_where = s;
+    }
+
 
     bool hasGroupByFunctions();
     bool hasAtLeastOneColumnSelected();
