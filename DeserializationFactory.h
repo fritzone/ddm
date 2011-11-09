@@ -39,8 +39,8 @@ public:
     static DiagramFKDescriptor* createDiagramFKDescriptor(const QDomDocument& doc, const QDomElement& element);
     static Diagram* createDiagram(Version* v, const QDomDocument& doc, const QDomElement& element);
     static TableInstance* createTableInstance(Version* v, const QDomDocument& doc, const QDomElement& element, bool secondStep = false);
-    static View* createView(Version* v, const QDomDocument& doc, const QDomElement& element);
-    static QueryComponent* createComponent(QueryComponent* parent, Version* v, const QDomDocument& doc, const QDomElement& element);
+    static View* createView(Project* p, Version* v, const QDomDocument& doc, const QDomElement& element);
+    static QueryComponent* createComponent(QueryComponent* parent, Project* p, Version* v, const QDomDocument& doc, const QDomElement& element);
 
 private:
     DeserializationFactory();

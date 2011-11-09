@@ -67,6 +67,14 @@ public:
     {
         m_where = s;
     }
+    void setGroupBy(SelectQueryGroupByComponent* s)  // called by the deserialization and noone else
+    {
+        m_groupby = s;
+    }
+    void setOrderBy(SelectQueryOrderByComponent* s)  // called by the deserialization and noone else
+    {
+        m_orderBy = s;
+    }
 
 
     bool hasGroupByFunctions();

@@ -39,6 +39,11 @@ public:
     {
         return m_table;
     }
+    void setAs(SelectQueryAsComponent* as)
+    {
+        m_as = as;
+    }
+
     virtual void serialize(QDomDocument& doc, QDomElement& parent) const;
 
 private:

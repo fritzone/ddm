@@ -56,7 +56,7 @@ void SelectQueryAsComponent::onClose()
 
 void SelectQueryAsComponent::serialize(QDomDocument& doc, QDomElement& parent) const
 {
-    QDomElement asElement = doc.createElement("As");
-    QueryComponent::serialize(doc, asElement);
-    parent.appendChild(asElement);
+//    QDomElement asElement = doc.createElement("As");
+//    QueryComponent::serialize(doc, asElement);
+//    parent.appendChild(asElement);
 }

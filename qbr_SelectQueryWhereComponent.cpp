@@ -104,9 +104,21 @@ QString SelectQueryWhereComponent::get() const
 
 void SelectQueryWhereComponent::serialize(QDomDocument &doc, QDomElement &parent) const
 {
-    QDomElement whereElement = doc.createElement("WhereComponent");
+    QString nodeName = "";
+    switch(m_whereType)
+    {
+    case WHERETYPE_WHERE:
+        nodeName = "WhereComponent";
+        break;
+    case WHERETYPE_HAVING:
+        nodeName = "HavingComponent";
+        break;
+    case WHERETYPE_ON:
+        nodeName = "OnComponent";
+        break;
+    }
+    QDomElement whereElement = doc.createElement(nodeName);
     whereElement.setAttribute("Type", m_whereType);
-
     QueryComponent::serialize(doc, whereElement);
     parent.appendChild(whereElement);
 
