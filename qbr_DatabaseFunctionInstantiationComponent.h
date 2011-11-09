@@ -16,9 +16,14 @@ class SingleExpressionQueryComponent;
 class DatabaseFunctionInstantiationComponent : public SerializableElement
 {
 public:
-    DatabaseFunctionInstantiationComponent(QueryComponent* parent, const DatabaseBuiltinFunction& f);
+    DatabaseFunctionInstantiationComponent(QueryComponent* parent, const DatabaseBuiltinFunction& f, bool deserialized = false);
     SingleExpressionQueryComponent* getInstantiatedParameter(int i);
     QString get();
+    void addParameter(SingleExpressionQueryComponent* p)
+    {
+        m_parameters.append(p);
+    }
+
     virtual void serialize(QDomDocument& doc, QDomElement& parent) const;
 private:
     QueryComponent* m_parent;

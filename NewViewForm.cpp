@@ -191,3 +191,10 @@ void NewViewForm::onSqlChange()
         m_view->setSql(ui->txtSql->toPlainText());
     }
 }
+
+void NewViewForm::onHelp()
+{
+    ui->grpHelp->setHidden(false);
+    ui->btnHelp->setHidden(true);
+    ui->webView->setUrl(QApplication::applicationDirPath() + QString("/doc/view.html"));
+}

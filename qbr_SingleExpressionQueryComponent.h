@@ -69,6 +69,7 @@ public:
     const SelectQueryAsComponent* hasAs();
     bool hasStar();
     virtual void serialize(QDomDocument& doc, QDomElement& parent) const;
+
     void setColumnAtGivenPosition(int pos, Column* col)
     {
         m_columnsAtGivenPosition[pos] = col;
@@ -78,9 +79,21 @@ public:
     {
         m_typedValuesAtGivenPosition[pos] = s;
     }
+
     void addElement(CellTypeChooserType a)
     {
         m_elements.push_back(a);
+    }
+
+    void setFunctionInstantiationAtGivenPosition(int p, DatabaseFunctionInstantiationComponent* c, const DatabaseBuiltinFunction* f)
+    {
+        m_functionInstantiationAtGivenPosition[p] = c;
+        m_functionsAtGivenPosition[p] = f;
+    }
+
+    void setAs(SelectQueryAsComponent* as)
+    {
+        m_as = as;
     }
 
 private:

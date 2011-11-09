@@ -104,7 +104,7 @@ QString SingleExpressionQueryComponent::get() const
                 result += m_functionInstantiationAtGivenPosition[i]->get();
                 break;
             case CELLTYPE_LITERAL:
-                result += m_typedValuesAtGivenPosition[i];
+                result += m_typedValuesAtGivenPosition[i].startsWith("~")?m_typedValuesAtGivenPosition[i].mid(1):m_typedValuesAtGivenPosition[i];
                 break;
             }
         }
@@ -125,6 +125,10 @@ void SingleExpressionQueryComponent::serialize(QDomDocument& doc, QDomElement& p
 {
     QDomElement expressionElement = doc.createElement("Expression");
     expressionElement.setAttribute("elements", m_elements.size());
+    if(m_as)
+    {
+        expressionElement.setAttribute("alias", m_as->getAs());
+    }
     for(int i=0; i<m_elements.size(); i++)
     {
         QDomElement element = doc.createElement("Element");

@@ -17,7 +17,16 @@ public:
 
     SelectQueryWhereComponent(QueryComponent*, int, WhereType);
     virtual QString get() const;
-    virtual QString getClass() const {return "SelectQueryWhereComponent";}
+    virtual QString getClass() const
+    {
+        switch(m_whereType)
+        {
+        case WHERETYPE_WHERE: return "SelectQueryWhereComponent";
+        case WHERETYPE_HAVING: return "SelectQueryHavingComponent";
+        case WHERETYPE_ON: return "SelectQueryOnComponent";
+        default:return "ImpossibleComponent";
+        }
+    }
     virtual QueryGraphicsItem* createGraphicsItem(QueryGraphicsHelper*, QueryGraphicsItem*){return 0;}
     virtual void handleAction(const QString& action, QueryComponent* referringObject);
     virtual QSet<OptionsType> provideOptions();

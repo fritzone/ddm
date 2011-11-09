@@ -134,7 +134,7 @@ QStringList SelectQuerySelectComponent::getOrderByElements()
 
         if(!added)
         {
-            QString n;n.setNum(i);
+            QString n;n.setNum(i + 1);
             result.push_back(QString("#") + n);
         }
 

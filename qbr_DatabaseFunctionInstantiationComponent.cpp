@@ -1,10 +1,13 @@
 #include "qbr_DatabaseFunctionInstantiationComponent.h"
 
-DatabaseFunctionInstantiationComponent::DatabaseFunctionInstantiationComponent(QueryComponent* parent, const DatabaseBuiltinFunction &f) : m_parent(parent), m_func(f)
+DatabaseFunctionInstantiationComponent::DatabaseFunctionInstantiationComponent(QueryComponent* parent, const DatabaseBuiltinFunction &f, bool deserialized) : m_parent(parent), m_func(f)
 {
-    for(int i=0; i<f.getParameterCount(); i++)
+    if(!deserialized)
     {
-        m_parameters.append(new SingleExpressionQueryComponent(m_parent, -2));
+        for(int i=0; i<f.getParameterCount(); i++)
+        {
+            m_parameters.append(new SingleExpressionQueryComponent(m_parent, -2));
+        }
     }
 }
 
@@ -35,6 +38,7 @@ void DatabaseFunctionInstantiationComponent::serialize(QDomDocument &doc, QDomEl
     for(int i=0; i<m_parameters.size(); i++)
     {
         QDomElement parameterElement = doc.createElement("Parameter");
+        parameterElement.setAttribute("idx", i);
         m_parameters.at(i)->serialize(doc, parameterElement);
         parametersElement.appendChild(parameterElement);
     }
