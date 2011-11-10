@@ -5,6 +5,7 @@
 #include <QListWidgetItem>
 
 #include "qbr_QueryGraphicsHelper.h"
+class Table;
 
 namespace Ui {
     class QueryItemListDialog;
@@ -39,7 +40,12 @@ public:
     {
         m_orderBy = oby;
     }
+    void setJoin(const SelectQueryJoinComponent* j)
+    {
+        m_join = j;
+    }
     void setOrderByMode();
+    void populateTablesAndColumns(QVector<const Table*>);
 
 public slots:
 
@@ -83,6 +89,7 @@ private:
 
     QueryGraphicsHelper* m_helper;
     QVector<const Column*> m_columnsToShow;
+    const SelectQueryJoinComponent* m_join;
     QStringList m_orderBy;
 };
 

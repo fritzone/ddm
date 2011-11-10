@@ -10,6 +10,7 @@
 #include "qbr_SelectQueryGroupByComponent.h"
 #include "qbr_SelectQuery.h"
 #include "qbr_SelectQueryOrderByComponent.h"
+#include "qbr_SelectQueryJoinComponent.h"
 
 #include <QPen>
 #include <QGraphicsView>
@@ -273,6 +274,7 @@ void CellTypeChooser::mousePress(int x, int y)
     SingleExpressionQueryComponent* seq = dynamic_cast<SingleExpressionQueryComponent*>(m_parent->getOwner());
     QVector<const Column*> columns;
     QStringList orderBy;
+    SelectQueryJoinComponent* join = 0;
 
     if(seq)
     {
@@ -297,9 +299,12 @@ void CellTypeChooser::mousePress(int x, int y)
                 orderBy = sq->getOrderByElements();
             }
         }
+        if(seq->getParent()) // ohh this is ugly
+            join = dynamic_cast<SelectQueryJoinComponent*>(seq->getParent());
     }
     m_helper->setColumns(columns);
     m_helper->setOrderBy(orderBy);
+    m_helper->setJoin(join);
 
     QPoint a = scene()->views().at(0)->mapToGlobal((m_rect->mapToScene(m_rect->boundingRect().bottomLeft().toPoint())).toPoint() ) ;
     selected = m_helper->presentList(a.x() + 2-scene()->views().at(0)->horizontalScrollBar()->sliderPosition(), a.y() - scene()->views().at(0)->verticalScrollBar()->sliderPosition(), listType);

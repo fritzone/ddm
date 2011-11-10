@@ -189,7 +189,6 @@ HEADERS += MainWindow.h \
     utils.h \
     ColumnProviderForQuery.h \
     qbr_SingleExpressionQueryComponent.h \
-    qbr_WhereExpressionQueryComponent.h \
     qbr_DatabaseFunctionInstantiationComponent.h \
     qbr_CellForSingleExpression.h \
     qbr_CellAsCommand.h \
@@ -272,5 +271,3 @@ FORMS += MainWindow.ui \
     NewViewForm.ui \
     QueryItemListDialog.ui
 RESOURCES += dbm.qrc
-
-

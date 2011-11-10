@@ -10,7 +10,6 @@
 #include "qbr_CellAsCommand.h"
 #include "qbr_CellJoinCommand.h"
 #include "qbr_CellWhereCommand.h"
-#include "qbr_WhereExpressionQueryComponent.h"
 #include "Column.h"
 #include "qbr_SingleExpressionQueryComponent.h"
 
@@ -54,7 +53,7 @@ void TableQueryComponent::setTable(const QString &tab)
     m_table = Workspace::getInstance()->workingVersion()->getTable(tab);
 }
 
-void TableQueryComponent::handleAction(const QString &action, QueryComponent *referringObject)
+void TableQueryComponent::handleAction(const QString &action, QueryComponent *)
 {
     if(action == ADD_ALIAS)
     {
@@ -71,7 +70,7 @@ void TableQueryComponent::handleAction(const QString &action, QueryComponent *re
     {
         SelectQueryJoinComponent* join = new SelectQueryJoinComponent(this, m_level + 1);
         join->setHelper(m_helper);
-        addChild(join);
+        //addChild(join);   // TODO: Check if this still works ...
         m_joins.append(join);
         m_helper->triggerReRender();
 

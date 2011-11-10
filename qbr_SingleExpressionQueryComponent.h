@@ -1,7 +1,7 @@
 #ifndef UNARYWHEREEXPRESSIONQUERYCOMPONENT_H
 #define UNARYWHEREEXPRESSIONQUERYCOMPONENT_H
 
-#include "qbr_WhereExpressionQueryComponent.h"
+#include "qbr_QueryComponents.h"
 
 #include <QMap>
 
@@ -17,7 +17,7 @@ class SelectQueryAsComponent;
  * Class, representing a unary where expression.
  * On an initial startup the Unary query component is a simple column chooser
  */
-class SingleExpressionQueryComponent : public WhereExpressionQueryComponent
+class SingleExpressionQueryComponent : public QueryComponent
 {
 public:
 
@@ -53,7 +53,7 @@ public:
     DatabaseFunctionInstantiationComponent* getFunctionInstantiationAt(int);
     void setForcedType(ForcedSingleExpressionQueryComponent);
 
-    void setOwnedByOn(SelectQueryJoinComponent* onOwner, WhereExpressionQueryComponent* onComponent)
+    void setOwnedByOn(SelectQueryJoinComponent* onOwner, SingleExpressionQueryComponent* onComponent)
     {
         m_ownedByOn = true;
         m_onOwner = onOwner;
@@ -101,7 +101,7 @@ private:
     QMap<CellTypeChooserType,QString> prepareMappings() const;
 
 private:
-
+    QueryGraphicsHelper* m_helper;
     // the graphic element
     CellForSingleExpression* m_gritm;
 
@@ -125,7 +125,7 @@ private:
     // true if this is owned by an ON query component, in this case
     bool m_ownedByOn;
     SelectQueryJoinComponent* m_onOwner;
-    WhereExpressionQueryComponent* m_onComponent;
+    SingleExpressionQueryComponent* m_onComponent;
 
     // in case this has an ALIAS
     SelectQueryAsComponent* m_as;

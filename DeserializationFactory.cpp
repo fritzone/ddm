@@ -17,6 +17,7 @@
 #include "core_View.h"
 #include "qbr_SelectQuerySelectComponent.h"
 #include "qbr_SelectQueryFromComponent.h"
+#include "qbr_SelectQueryJoinComponent.h"
 #include "qbr_SelectQueryWhereComponent.h"
 #include "qbr_SelectQueryGroupByComponent.h"
 #include "qbr_SelectQueryAsComponent.h"
@@ -279,6 +280,11 @@ QueryComponent* DeserializationFactory::createComponent(QueryComponent* parent, 
         c = new SelectQueryOrderByComponent(parent, componentNode.attribute("level").toInt());
     }
 
+    if(strClass == "SelectQueryJoinComponent")
+    {
+        c = new SelectQueryJoinComponent(parent, componentNode.attribute("level").toInt());
+    }
+
     if(strClass == "SingleExpressionQueryComponent")
     {
          c = new SingleExpressionQueryComponent(parent, componentNode.attribute("level").toInt());    // This is <Expression>
@@ -348,17 +354,45 @@ QueryComponent* DeserializationFactory::createComponent(QueryComponent* parent, 
             dynamic_cast<TableQueryComponent*>(c)->setAs(sqas);
         }
 
+        if(componentNode.hasChildNodes())   // see if we have a joins
+        {
+            for(int i=0; i<componentNode.childNodes().count(); i++)
+            {
+                if(componentNode.childNodes().at(i).nodeName() == "Joins")
+                {
+                    for(int j=0; j<componentNode.childNodes().at(i).childNodes().count(); j++)
+                    {
+                        SelectQueryJoinComponent* sqjc = dynamic_cast<SelectQueryJoinComponent*> (createComponent(c, p, v, doc, componentNode.childNodes().at(i).childNodes().at(j).toElement()));
+                        dynamic_cast<TableQueryComponent*>(c)->addJoin(sqjc);
+                    }
+                }
+            }
+        }
     }
 
-    if(componentNode.firstChild().nodeName() == "Children")
+    for(int k=0; k<componentNode.childNodes().count(); k++)
     {
-        for(int i=0; i<componentNode.firstChild().childNodes().count(); i++)
+        if(componentNode.childNodes().at(k).nodeName() == "Children")
         {
-            QDomElement e = componentNode.firstChild().childNodes().at(i).toElement();    // This is <Child idx="12">
-            int idx = e.attribute("idx").toInt();
-            QueryComponent* child = createComponent(c, p, v, doc, e.firstChild().toElement()); // This is "Expression"
-            c->setChild(child, idx);
+            for(int i=0; i<componentNode.childNodes().at(k).childNodes().count(); i++)
+            {
+                QDomElement e = componentNode.childNodes().at(k).childNodes().at(i).toElement();    // This is <Child idx="12">
+                int idx = e.attribute("idx").toInt();
+                QueryComponent* child = createComponent(c, p, v, doc, e.firstChild().toElement()); // This is "Expression"
+                c->setChild(child, idx);
+            }
         }
+        if(componentNode.childNodes().at(k).nodeName() == "On" && strClass == "SelectQueryJoinComponent")
+        {
+            for(int i=0; i<componentNode.childNodes().at(k).childNodes().count(); i++)
+            {
+                QDomElement e = componentNode.childNodes().at(k).childNodes().at(i).toElement();    // This is <JoinExpression idx="12">
+                int idx = e.attribute("idx").toInt();
+                QueryComponent* child = createComponent(c, p, v, doc, e.firstChild().toElement()); // This is "Expression"
+                dynamic_cast<SelectQueryJoinComponent*>(c)->addJoinExpression(dynamic_cast<SingleExpressionQueryComponent*>(child));
+            }
+        }
+
     }
 
     return c;

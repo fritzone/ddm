@@ -59,6 +59,7 @@ QString QueryGraphicsHelper::presentList(int x, int y, ListType lt)
     m_lstDlg->setWindowFlags(Qt::FramelessWindowHint);
     m_lstDlg->move(x, y);
     m_lstDlg->setModal(true);
+    m_lstDlg->setJoin(m_join);
     if(lt == INPUT_SYMBOLS || lt == INPUT_COLUMNS || lt == INPUT_ORDERBY)
     {
         m_lstDlg->showSymbolPanel();
