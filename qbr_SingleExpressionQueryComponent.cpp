@@ -9,14 +9,13 @@
 #include "Version.h"
 #include "Configuration.h"
 #include "qbr_SelectQueryJoinComponent.h"
-#include "qbr_WhereExpressionQueryComponent.h"
 #include "qbr_SelectQuerySelectComponent.h"
 #include "qbr_CellAsCommand.h"
 #include "qbr_SelectQueryAsComponent.h"
 
 #include <QDebug>
 
-SingleExpressionQueryComponent::SingleExpressionQueryComponent(QueryComponent* p, int l): WhereExpressionQueryComponent(p,l),
+SingleExpressionQueryComponent::SingleExpressionQueryComponent(QueryComponent* p, int l): QueryComponent(p,l),
     m_gritm(0), m_elements(), m_columnsAtGivenPosition(), m_functionsAtGivenPosition(), m_functionInstantiationAtGivenPosition(), m_typedValuesAtGivenPosition(), m_as(0)
 {
 }

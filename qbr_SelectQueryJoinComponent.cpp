@@ -1,6 +1,5 @@
 #include "qbr_SelectQueryJoinComponent.h"
 #include "qbr_TableQueryComponent.h"
-#include "qbr_WhereExpressionQueryComponent.h"
 #include "qbr_SingleExpressionQueryComponent.h"
 
 #include "strings.h"
@@ -21,14 +20,14 @@ void SelectQueryJoinComponent::handleAction(const QString& action, QueryComponen
     }
     if(action == ADD_WHERE_EXPRESSION)  // we get here when the user clicked the New join expr...
     {
-        WhereExpressionQueryComponent* c = new SingleExpressionQueryComponent(this, m_level);
+        SingleExpressionQueryComponent* c = new SingleExpressionQueryComponent(this, m_level);
         m_joinExpressions.append(c);
         m_helper->triggerReRender();
         return;
     }
     if(action == ADD_WHERE_EXPRESSION_AND)
     {
-        WhereExpressionQueryComponent* c = new SingleExpressionQueryComponent(this, m_level);
+        SingleExpressionQueryComponent* c = new SingleExpressionQueryComponent(this, m_level);
         dynamic_cast<SingleExpressionQueryComponent*>(c)->setForcedType(SingleExpressionQueryComponent::FORCED_AND);
         m_joinExpressions.append(c);
         m_helper->triggerReRender();
@@ -36,7 +35,7 @@ void SelectQueryJoinComponent::handleAction(const QString& action, QueryComponen
     }
     if(action == ADD_WHERE_EXPRESSION_OR)
     {
-        WhereExpressionQueryComponent* c = new SingleExpressionQueryComponent(this, m_level);
+        SingleExpressionQueryComponent* c = new SingleExpressionQueryComponent(this, m_level);
         dynamic_cast<SingleExpressionQueryComponent*>(c)->setForcedType(SingleExpressionQueryComponent::FORCED_OR);
         m_joinExpressions.append(c);
         m_helper->triggerReRender();
@@ -67,12 +66,12 @@ QueryComponent* SelectQueryJoinComponent::duplicate()
     SelectQueryJoinComponent* newc = new SelectQueryJoinComponent(m_parent, m_level);
     for(int i=0; i<m_joinExpressions.size(); i++)
     {
-        newc->m_joinExpressions.append(dynamic_cast<WhereExpressionQueryComponent*>(m_joinExpressions.at(i)->duplicate()));
+        newc->m_joinExpressions.append(dynamic_cast<SingleExpressionQueryComponent*>(m_joinExpressions.at(i)->duplicate()));
     }
     return newc;
 }
 
-void SelectQueryJoinComponent::removeExpression(WhereExpressionQueryComponent *w)
+void SelectQueryJoinComponent::removeExpression(SingleExpressionQueryComponent *w)
 {
     m_joinExpressions.remove(m_joinExpressions.indexOf(w));
 }
@@ -108,4 +107,18 @@ void SelectQueryJoinComponent::serialize(QDomDocument &doc, QDomElement &parent)
     }
     joinElement.appendChild(onElement);
     parent.appendChild(joinElement);
+}
+
+QVector<const Table*> SelectQueryJoinComponent::getJoinedTables() const
+{
+    QVector<const Table*> result;
+    for(int i=0; i<m_children.size(); i++)
+    {
+        TableQueryComponent* tc = dynamic_cast<TableQueryComponent*>(m_children.at(i));
+        if(tc)
+        {
+            result.push_back(tc->getTable());
+        }
+    }
+    return result;
 }

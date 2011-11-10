@@ -21,7 +21,7 @@ public:
     virtual QString get() const;
     virtual QString getClass() const {return "TableQueryComponent";}
     virtual QueryGraphicsItem* createGraphicsItem(QueryGraphicsHelper*, QueryGraphicsItem*);
-    virtual void handleAction(const QString& action, QueryComponent* referringObject);
+    virtual void handleAction(const QString& action, QueryComponent* );
     virtual QSet<OptionsType> provideOptions();
     virtual void onClose(){}
     virtual QueryComponent* duplicate();
@@ -42,6 +42,10 @@ public:
     void setAs(SelectQueryAsComponent* as)
     {
         m_as = as;
+    }
+    void addJoin(SelectQueryJoinComponent* j)
+    {
+        m_joins.append(j);
     }
 
     virtual void serialize(QDomDocument& doc, QDomElement& parent) const;

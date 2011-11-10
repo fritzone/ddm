@@ -15,6 +15,7 @@ class Query;
 class NewViewForm;
 class MainWindow;
 class Column;
+class SelectQueryJoinComponent;
 
 class QueryGraphicsHelper
 {
@@ -65,6 +66,11 @@ public:
         m_orderByElements = oby ;
     }
 
+    void setJoin(const SelectQueryJoinComponent* j)
+    {
+        m_join = j;
+    }
+
 private:
 
     QMap<QueryGraphicsItem*, QRect> hotCells;
@@ -74,6 +80,7 @@ private:
     MainWindow* m_form;
     QVector<const Column*> m_columnsToShow;
     QStringList m_orderByElements;
+    const SelectQueryJoinComponent* m_join;
 };
 
 #endif // QUERYGRAPHICSHELPER_H

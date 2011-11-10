@@ -139,18 +139,18 @@ void SelectQuery::newWhereExpression(SelectQuery::NewWhereExpressionType t)
     {
         if(t == PLAIN_NEW_WHERE_EXPRESSION)
         {
-            WhereExpressionQueryComponent* c = new SingleExpressionQueryComponent(m_where, m_level);
+            SingleExpressionQueryComponent* c = new SingleExpressionQueryComponent(m_where, m_level);
             m_where->addChild(c);
         }
         if(t == OR_NEW_WHERE_EXPRESSION)
         {
-            WhereExpressionQueryComponent* orc = new SingleExpressionQueryComponent(m_where, m_level);
+            SingleExpressionQueryComponent* orc = new SingleExpressionQueryComponent(m_where, m_level);
             dynamic_cast<SingleExpressionQueryComponent*>(orc)->setForcedType(SingleExpressionQueryComponent::FORCED_OR);
             m_where->addChild(orc);
         }
         if(t == AND_NEW_WHERE_EXPRESSION)
         {
-            WhereExpressionQueryComponent* andc = new SingleExpressionQueryComponent(m_where, m_level);
+            SingleExpressionQueryComponent* andc = new SingleExpressionQueryComponent(m_where, m_level);
             dynamic_cast<SingleExpressionQueryComponent*>(andc)->setForcedType(SingleExpressionQueryComponent::FORCED_AND);
             m_where->addChild(andc);
         }
@@ -165,18 +165,18 @@ void SelectQuery::newHavingExpression(SelectQuery::NewWhereExpressionType t)
     {
         if(t == PLAIN_NEW_WHERE_EXPRESSION)
         {
-            WhereExpressionQueryComponent* c = new SingleExpressionQueryComponent(m_having, m_level);
+            SingleExpressionQueryComponent* c = new SingleExpressionQueryComponent(m_having, m_level);
             m_having->addChild(c);
         }
         if(t == OR_NEW_WHERE_EXPRESSION)
         {
-            WhereExpressionQueryComponent* orc = new SingleExpressionQueryComponent(m_having, m_level);
+            SingleExpressionQueryComponent* orc = new SingleExpressionQueryComponent(m_having, m_level);
             dynamic_cast<SingleExpressionQueryComponent*>(orc)->setForcedType(SingleExpressionQueryComponent::FORCED_OR);
             m_having->addChild(orc);
         }
         if(t == AND_NEW_WHERE_EXPRESSION)
         {
-            WhereExpressionQueryComponent* andc = new SingleExpressionQueryComponent(m_having, m_level);
+            SingleExpressionQueryComponent* andc = new SingleExpressionQueryComponent(m_having, m_level);
             dynamic_cast<SingleExpressionQueryComponent*>(andc)->setForcedType(SingleExpressionQueryComponent::FORCED_AND);
             m_having->addChild(andc);
         }

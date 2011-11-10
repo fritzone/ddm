@@ -11,6 +11,7 @@
 #include "qbr_Query.h"
 #include "Column.h"
 #include "DataType.h"
+#include "qbr_SelectQueryJoinComponent.h"
 
 #include <QListWidget>
 #include <QMessageBox>
@@ -237,6 +238,33 @@ void QueryItemListDialog::showSymbolPanel()
     /* Now building the menu system for the columns */
     Query* q = m_helper->getQuery();
     QVector<const Table*> tables = q->getTables();
+    populateTablesAndColumns(tables);
+    if(m_join)
+    {
+        QVector<const Table*> joinTables = m_join->getJoinedTables();
+        populateTablesAndColumns(joinTables);
+    }
+
+    m_mathMenu->connect(m_mathMenu, SIGNAL(triggered(QAction*)), this, SLOT(actionTriggered(QAction*)));
+    m_bitMenu->connect(m_bitMenu, SIGNAL(triggered(QAction*)), this, SLOT(actionTriggered(QAction*)));
+    m_functionsMenu->connect(m_functionsMenu, SIGNAL(triggered(QAction*)), this, SLOT(actionTriggered(QAction*)));
+    m_comparisonMenu->connect(m_comparisonMenu, SIGNAL(triggered(QAction*)), this, SLOT(actionTriggered(QAction*)));
+    m_tablesMenu->connect(m_tablesMenu, SIGNAL(triggered(QAction*)), this, SLOT(actionTriggered(QAction*)));
+
+    resize(410, 250);
+
+    ui->btnMath->setMenu(m_mathMenu);
+    ui->btnBitwise->setMenu(m_bitMenu);
+    ui->btnFunctions->setMenu(m_functionsMenu);
+    ui->btnComparison->setMenu(m_comparisonMenu);
+    ui->btnColumn->setMenu(m_tablesMenu);
+    ui->btnRollup->hide();
+
+    ui->grpExpressionButtons->setCurrentIndex(-1);
+}
+
+void QueryItemListDialog::populateTablesAndColumns(QVector<const Table*> tables)
+{
     for(int i=0; i<tables.size(); i++)
     {
         QAction* tempAction = new QAction(IconFactory::getTablesIcon(), tables.at(i)->getName(), this);
@@ -276,22 +304,6 @@ void QueryItemListDialog::showSymbolPanel()
         tempAction->setMenu(colMenu);
     }
 
-    m_mathMenu->connect(m_mathMenu, SIGNAL(triggered(QAction*)), this, SLOT(actionTriggered(QAction*)));
-    m_bitMenu->connect(m_bitMenu, SIGNAL(triggered(QAction*)), this, SLOT(actionTriggered(QAction*)));
-    m_functionsMenu->connect(m_functionsMenu, SIGNAL(triggered(QAction*)), this, SLOT(actionTriggered(QAction*)));
-    m_comparisonMenu->connect(m_comparisonMenu, SIGNAL(triggered(QAction*)), this, SLOT(actionTriggered(QAction*)));
-    m_tablesMenu->connect(m_tablesMenu, SIGNAL(triggered(QAction*)), this, SLOT(actionTriggered(QAction*)));
-
-    resize(410, 250);
-
-    ui->btnMath->setMenu(m_mathMenu);
-    ui->btnBitwise->setMenu(m_bitMenu);
-    ui->btnFunctions->setMenu(m_functionsMenu);
-    ui->btnComparison->setMenu(m_comparisonMenu);
-    ui->btnColumn->setMenu(m_tablesMenu);
-    ui->btnRollup->hide();
-
-    ui->grpExpressionButtons->setCurrentIndex(-1);
 }
 
 void QueryItemListDialog::pageRequested(int a)

@@ -50,7 +50,9 @@ QSet<OptionsType> SelectQueryFromComponent::provideOptions()
         if(Workspace::getInstance()->workingVersion()->getTables().size() > 0) t.insert(OPTIONS_NEW_TABLE);
     }
 
-    t.insert(OPTIONS_NEW_SUBQUERY);
+    // TODO: MySQL does not support subquerys in view creation. For now just disable it
+    // t.insert(OPTIONS_NEW_SUBQUERY);
+
 
     return t;
 }
