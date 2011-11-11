@@ -498,6 +498,22 @@ QList<QString> DefaultVersionImplementation::getSqlScript(const QString& codepag
             }
         }
     }
+
+    // and the views
+    finalSql.append("\n");
+    finalSql << "-- Creating the views\n";
+    finalSql.append("\n");
+    for(int i=0; i<m_data.m_views.size(); i++)
+    {
+        QStringList t = m_data.m_views.at(i)->generateSqlSource(m_project->getEngine()->getSqlGenerator(), opts, codepage);
+        QString s = "";
+        for(int j=0; j<t.size(); j++)
+        {
+            s += t.at(j) + " ";
+        }
+        s += ";\n\n";
+        finalSql << s;
+    }
     return finalSql;
 }
 

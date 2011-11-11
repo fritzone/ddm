@@ -227,11 +227,24 @@ void VersionGuiElements::populateTreeItems()
         }
     }
 
-    // add the views
+    // add the views to the main tree
     const QVector<View*> views = m_version->getViews();
     for(int i=0; i<views.size(); i++)
     {
         createViewTreeEntry(views.at(i));
+    }
+
+    // add the views to the SQL code items
+    for(int i=0; i<views.size(); i++)
+    {
+        ContextMenuEnabledTreeWidgetItem* newViewItemForSql = new ContextMenuEnabledTreeWidgetItem(getFinalSqlItem(), QStringList(views.at(i)->getName()+".sql")) ;
+
+        QVariant var(views.at(i)->getName());
+        newViewItemForSql->setData(0, Qt::UserRole, var);
+        //newViewItemForSql->setPopupMenu(ContextMenuCollection::getInstance()->getTablePopupMenu());
+        // set the icon, add to the tree
+        newViewItemForSql->setIcon(0, IconFactory::getViewIcon());
+        m_tree->insertTopLevelItem(0, newViewItemForSql);
     }
 }
 

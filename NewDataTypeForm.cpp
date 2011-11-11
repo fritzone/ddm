@@ -9,6 +9,11 @@
 #include "UserDataType.h"
 #include "strings.h"
 #include "Configuration.h"
+#include "Workspace.h"
+#include "Version.h"
+#include "VersionGuiElements.h"
+#include "gui_HelpWindow.h"
+#include "MainWindow.h"
 
 #include <QMessageBox>
 #include <QComboBox>
@@ -35,8 +40,6 @@ NewDataTypeForm::NewDataTypeForm(DataType::DT_TYPE t, DatabaseEngine* dbe, QWidg
     m_ui->chkAutoIncrement->hide();
 
     resetContent();
-
-    m_ui->grpHelp->setHidden(true);
 
     switch(t)
     {
@@ -414,7 +417,9 @@ void NewDataTypeForm::keyPressEvent(QKeyEvent *evt)
 
 void NewDataTypeForm::onHelp()
 {
-    m_ui->grpHelp->setHidden(false);
-    m_ui->btnHelp->setHidden(true);
-    m_ui->webView->setUrl(QApplication::applicationDirPath() + QString("/doc/dtyp.html"));
+    HelpWindow* hw = HelpWindow::instance();
+    hw->showHelp(QString("/doc/dtyp.html"));
+    hw->show();
+    Workspace::getInstance()->workingVersion()->getGui()->getMainWindow()->addDockWidget(Qt::RightDockWidgetArea, hw);
+
 }

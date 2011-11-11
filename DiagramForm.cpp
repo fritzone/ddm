@@ -10,6 +10,11 @@
 #include "TableListWidget.h"
 #include "Diagram.h"
 #include "MainWindow.h"
+#include "Workspace.h"
+#include "Version.h"
+#include "VersionGuiElements.h"
+#include "MainWindow.h"
+#include "gui_HelpWindow.h"
 
 #include <QListWidgetItem>
 #include <QGraphicsView>
@@ -60,8 +65,6 @@ DiagramForm::DiagramForm(Version* v, Diagram* dgram, QWidget *parent) : QWidget(
 
     prepareLists();
     ui->cmbDgramNotation->hide();
-    ui->grpHelp->hide();
-
 }
 
 void DiagramForm::prepareLists()
@@ -338,9 +341,11 @@ void DiagramForm::paintDiagram()
 
 void DiagramForm::onHelp()
 {
-    ui->grpHelp->show();
-    ui->btnHelp->setHidden(true);
-    ui->webView->setUrl(QApplication::applicationDirPath() + QString("/doc/dgram.html"));
+    HelpWindow* hw = HelpWindow::instance();
+    hw->showHelp(QString("/doc/dgram.html"));
+    hw->show();
+    Workspace::getInstance()->workingVersion()->getGui()->getMainWindow()->addDockWidget(Qt::RightDockWidgetArea, hw);
+
 }
 
 void DiagramForm::onNameChange(QString a)

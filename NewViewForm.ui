@@ -59,14 +59,18 @@
          <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
         </property>
         <item row="0" column="0">
-         <widget class="QLabel" name="label">
+         <widget class="QLabel" name="labelName">
           <property name="text">
            <string>Name</string>
           </property>
          </widget>
         </item>
         <item row="0" column="1">
-         <widget class="QLineEdit" name="txtViewName"/>
+         <widget class="QLineEdit" name="txtViewName">
+          <property name="toolTip">
+           <string>The name of the View</string>
+          </property>
+         </widget>
         </item>
        </layout>
       </item>
@@ -179,6 +183,12 @@
             <height>200</height>
            </size>
           </property>
+          <property name="font">
+           <font>
+            <family>Courier 10 Pitch</family>
+            <pointsize>11</pointsize>
+           </font>
+          </property>
          </widget>
         </item>
         <item>
@@ -282,39 +292,8 @@
      </item>
     </layout>
    </item>
-   <item>
-    <widget class="QGroupBox" name="grpHelp">
-     <property name="title">
-      <string/>
-     </property>
-     <layout class="QVBoxLayout" name="verticalLayout_6">
-      <item>
-       <widget class="QWebView" name="webView">
-        <property name="minimumSize">
-         <size>
-          <width>300</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="url">
-         <url>
-          <string>about:blank</string>
-         </url>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </widget>
-   </item>
   </layout>
  </widget>
- <customwidgets>
-  <customwidget>
-   <class>QWebView</class>
-   <extends>QWidget</extends>
-   <header>QtWebKit/QWebView</header>
-  </customwidget>
- </customwidgets>
  <resources>
   <include location="dbm.qrc"/>
  </resources>
@@ -337,7 +316,7 @@
   </connection>
   <connection>
    <sender>txtViewName</sender>
-   <signal>textChanged(QString)</signal>
+   <signal>textEdited(QString)</signal>
    <receiver>NewViewForm</receiver>
    <slot>onNameChange(QString)</slot>
    <hints>

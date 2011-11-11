@@ -351,7 +351,6 @@ QString SelectQuery::get() const
     if(m_where)
     {
         result += m_where->get();
-        result += "\n";
     }
     if(m_groupby)
     {

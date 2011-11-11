@@ -164,6 +164,11 @@ public:
         m_mw = mw;
     }
 
+    MainWindow* getMainWindow()
+    {
+        return m_mw;
+    }
+
     void updateForms();
 
     TableInstancesListForm* getTableInstancesListForm();

@@ -30,6 +30,7 @@ QueryGraphicsItem* TableQueryComponent::createGraphicsItem(QueryGraphicsHelper* 
     }
     for(int i=0; i<m_joins.size(); i++)
     {
+        m_joins.at(i)->setHelper(m_helper);
         CellJoinCommand* joinCommand = new CellJoinCommand(helper, m_level + 1, m_tgitm, m_joins.at(i));
         CellWhereCommand* on = new CellWhereCommand(helper, m_level + 1, m_tgitm, m_joins.at(i), SelectQueryWhereComponent::WHERETYPE_ON);
         for(int j=0; j<m_joins.at(i)->getChildren().size(); j++)
