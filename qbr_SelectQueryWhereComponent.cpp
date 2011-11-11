@@ -1,14 +1,13 @@
 #include "qbr_SelectQueryWhereComponent.h"
 #include "qbr_OptionTypes.h"
 #include "qbr_SelectQuery.h"
+#include "qbr_SingleExpressionQueryComponent.h"
 
 #include "strings.h"
-
 
 SelectQueryWhereComponent::SelectQueryWhereComponent(QueryComponent* p, int l, WhereType w):QueryComponent(p,l), m_whereType(w)
 {
 }
-
 
 void SelectQueryWhereComponent::handleAction(const QString &action, QueryComponent* referringObject)
 {
@@ -97,6 +96,25 @@ QString SelectQueryWhereComponent::get() const
     {
         result += getSpacesForLevel();
         result+= m_children.at(i)->get();
+        SingleExpressionQueryComponent* cI = dynamic_cast<SingleExpressionQueryComponent*>(m_children.at(i));
+        if(cI)
+        {
+            if((i == 0 || i == m_children.size()-1) && cI->hasForcedType())
+            {
+                result += " (??)"; // first/last should not be AND or OR
+            }
+            if(i>0)
+            {
+                // if this is NOT a forced type before this there should be
+                if(!cI->hasForcedType())
+                {
+                    if(! (dynamic_cast<SingleExpressionQueryComponent*>(m_children.at(i-1))->hasForcedType()))
+                    {
+                        result += " (??)";
+                    }
+                }
+            }
+        }
         result += "\n";
     }
     return result;
@@ -121,5 +139,4 @@ void SelectQueryWhereComponent::serialize(QDomDocument &doc, QDomElement &parent
     whereElement.setAttribute("Type", m_whereType);
     QueryComponent::serialize(doc, whereElement);
     parent.appendChild(whereElement);
-
 }

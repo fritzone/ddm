@@ -25,6 +25,7 @@
 #include "db_AbstractCodepageSupplier.h"
 #include "IssueManager.h"
 #include "VersionGuiElements.h"
+#include "gui_HelpWindow.h"
 
 #include <QMessageBox>
 #include <QHashIterator>
@@ -138,8 +139,6 @@ NewTableForm::NewTableForm(DatabaseEngine* db, Project* prj, QWidget *parent, bo
     {
         m_ui->tabWidget->removeTab(3);
     }
-
-    m_ui->grpHelp->setHidden(true);
 
     m_ui->btnImportValues->hide();
 
@@ -1928,9 +1927,10 @@ void NewTableForm::onDeleteDefaultRow()
 
 void NewTableForm::onHelp()
 {
-    m_ui->grpHelp->setHidden(false);
-    m_ui->btnHelp->setHidden(true);
-    m_ui->webView->setUrl(QApplication::applicationDirPath() + QString("/doc/tabl.html"));
+    HelpWindow* hw = HelpWindow::instance();
+    hw->showHelp(QString("/doc/tabl.html"));
+    hw->show();
+    Workspace::getInstance()->workingVersion()->getGui()->getMainWindow()->addDockWidget(Qt::RightDockWidgetArea, hw);
 }
 
 void NewTableForm::onChangeTab(int idx)

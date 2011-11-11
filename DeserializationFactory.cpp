@@ -288,6 +288,8 @@ QueryComponent* DeserializationFactory::createComponent(QueryComponent* parent, 
     if(strClass == "SingleExpressionQueryComponent")
     {
          c = new SingleExpressionQueryComponent(parent, componentNode.attribute("level").toInt());    // This is <Expression>
+         dynamic_cast<SingleExpressionQueryComponent*>(c)->setForcedType((SingleExpressionQueryComponent::ForcedSingleExpressionQueryComponent)componentNode.attribute("forced").toInt(), true);
+
          if(componentNode.hasAttribute("alias"))
          {
              QString a = componentNode.attribute("alias");
@@ -420,7 +422,7 @@ View* DeserializationFactory::createView(Project* p, Version* v, const QDomDocum
                 QStringList columnNames;
                 for(int j=0; j< columnsNode.childNodes().count(); j++)
                 {
-                    QString colName = columnsNode.childNodes().at(j).firstChild().nodeValue();
+                    QString colName = columnsNode.childNodes().at(j).toElement().attribute("Name");
                     columnNames.append(colName);
                 }
                 view->setColumnNames(columnNames);

@@ -63,13 +63,13 @@
      <x>80</x>
      <y>10</y>
      <width>441</width>
-     <height>171</height>
+     <height>241</height>
     </rect>
    </property>
    <property name="text">
     <string>DDM - The Database Deployment Manager
 
-(c) 2009 - 2010 - The Unauthorized Frog project
+(c) 2009 - 2011 - The Unauthorized Frog project
 
 Programming - fritzone@gmail.com
 
@@ -78,7 +78,9 @@ Testing - Althaf Hameez, elancer2010
 Icons - Fugue © Yusuke Kamiyamane, Oxygen Project, 
 Free Application Icon Pack by Aha-Soft Team 
 
-The unauthorized frog is from a mug.</string>
+The unauthorized frog is from a mug.
+
+Contact: project.ddm@gmail.com</string>
    </property>
    <property name="textFormat">
     <enum>Qt::PlainText</enum>

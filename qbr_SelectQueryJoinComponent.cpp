@@ -4,7 +4,7 @@
 
 #include "strings.h"
 
-SelectQueryJoinComponent::SelectQueryJoinComponent(QueryComponent* p, int l):QueryComponent(p,l), m_joinExpressions()
+SelectQueryJoinComponent::SelectQueryJoinComponent(QueryComponent* p, int l):QueryComponent(p,l),  m_helper(0), m_joinExpressions()
 {
 }
 
@@ -41,7 +41,11 @@ void SelectQueryJoinComponent::handleAction(const QString& action, QueryComponen
         m_helper->triggerReRender();
         return;
     }
+}
 
+QueryGraphicsItem* SelectQueryJoinComponent::createGraphicsItem(QueryGraphicsHelper* helper, QueryGraphicsItem*)
+{
+    m_helper = helper;
 }
 
 QSet<OptionsType> SelectQueryJoinComponent::provideOptions()
@@ -84,7 +88,7 @@ QString SelectQueryJoinComponent::get() const
         result += getSpacesForLevel();
         result+= m_children.at(i)->get();
     }
-    result += getSpacesForLevel() + "\nON\n";
+    result += "\n" + getSpacesForLevel() + " ON";
     for(int i=0; i<m_joinExpressions.size(); i++)
     {
         result += "\n" + getSpacesForLevel();

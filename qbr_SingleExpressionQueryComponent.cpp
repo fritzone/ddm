@@ -16,7 +16,7 @@
 #include <QDebug>
 
 SingleExpressionQueryComponent::SingleExpressionQueryComponent(QueryComponent* p, int l): QueryComponent(p,l),
-    m_gritm(0), m_elements(), m_columnsAtGivenPosition(), m_functionsAtGivenPosition(), m_functionInstantiationAtGivenPosition(), m_typedValuesAtGivenPosition(), m_as(0)
+    m_gritm(0), m_elements(), m_columnsAtGivenPosition(), m_functionsAtGivenPosition(), m_functionInstantiationAtGivenPosition(), m_typedValuesAtGivenPosition(), m_as(0), m_hasForcedType(false), m_forcedType(NOT_FORCED)
 {
 }
 
@@ -109,13 +109,10 @@ QString SingleExpressionQueryComponent::get() const
         }
     }
 
-    if(errorFound) result += "( ?? )";
+    if(errorFound) result += "(??)";
+    if(result.trimmed().length() == 0) result = "(??)";
 
     QHash<QString, QString> opts = Configuration::instance().sqlGenerationOptions();
-    if(opts[strNewLineBetweenSelectExpressionsInSqlGeneration] == strYes)
-    {
-        result += "\n";
-    }
 
     return result;
 }
@@ -124,6 +121,7 @@ void SingleExpressionQueryComponent::serialize(QDomDocument& doc, QDomElement& p
 {
     QDomElement expressionElement = doc.createElement("Expression");
     expressionElement.setAttribute("elements", m_elements.size());
+    expressionElement.setAttribute("forced", m_forcedType);
     if(m_as)
     {
         expressionElement.setAttribute("alias", m_as->getAs());
@@ -461,9 +459,14 @@ QVector<CellTypeChooserType> SingleExpressionQueryComponent::getChoosableTypes()
     return QVector<CellTypeChooserType> ();
 }
 
-void SingleExpressionQueryComponent::setForcedType(ForcedSingleExpressionQueryComponent t)
+void SingleExpressionQueryComponent::setForcedType(ForcedSingleExpressionQueryComponent t, bool fromDeserialization)
 {
     m_forcedType = t;
+    m_hasForcedType = true;
+    if(fromDeserialization)
+    {
+        return;
+    }
     if(m_forcedType == FORCED_OR)
     {
         m_elements.append(CELLTYPE_QUERY_OR);
@@ -472,6 +475,7 @@ void SingleExpressionQueryComponent::setForcedType(ForcedSingleExpressionQueryCo
     {
         m_elements.append(CELLTYPE_QUERY_AND);
     }
+
 }
 
 void SingleExpressionQueryComponent::removeFromOn()

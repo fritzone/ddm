@@ -8,6 +8,10 @@
 #include "TableInstance.h"
 #include "Workspace.h"
 #include "Project.h"
+#include "Version.h"
+#include "VersionGuiElements.h"
+#include "MainWindow.h"
+#include "gui_HelpWindow.h"
 
 #include <QFileDialog>
 #include <QMessageBox>
@@ -20,7 +24,6 @@ SqlForm::SqlForm(DatabaseEngine* engine, QWidget *parent) : SourceCodePresenterW
     ui->setupUi(this);
     highlighter = new SqlHighlighter(ui->txtSql->document());
     ui->cmbOptions->hide();
-    ui->grpHelp->hide();
 }
 
 SqlForm::~SqlForm()
@@ -47,6 +50,7 @@ void SqlForm::setSource(const QString &src)
 
 void SqlForm::onInject()
 {
+    ui->labelDeploymentStatus->setText("");
     InjectSqlDialog* injectDialog = new InjectSqlDialog(Workspace::getInstance()->currentProjectsEngine(), this);
     injectDialog->setModal(true);
     if(injectDialog->exec() == QDialog::Accepted)
@@ -56,8 +60,11 @@ void SqlForm::onInject()
         {
             QMessageBox::critical (this, tr("Error"), tr("<B>Cannot execute a query!</B><P>Reason: ") + m_engine->getLastError() + tr(".<P>Query:<PRE>") + tSql+ "</PRE><P>" +
                                    (injectDialog->getRollbackOnError()?tr("Transaction was rolled back."):tr("Transaction was <font color=red><B>NOT</B></font> rolled back, you might have partial data in your database.")), QMessageBox::Ok);
+            ui->labelDeploymentStatus->setText("Unsuccesful deployment");
+            return;
         }
     }
+    ui->labelDeploymentStatus->setText("Succesful deployment");
 }
 
 void SqlForm::onSave()
@@ -106,7 +113,8 @@ void SqlForm::presentSql(Project* p, SqlSourceEntity* ent,const QString& codepag
 
 void SqlForm::onHelp()
 {
-    ui->grpHelp->show();
-    ui->btnHelp->hide();
-    ui->webView->setUrl(QApplication::applicationDirPath() + QString("/doc/sqls.html"));
+    HelpWindow* hw = HelpWindow::instance();
+    hw->showHelp(QString("/doc/sqls.html"));
+    hw->show();
+    Workspace::getInstance()->workingVersion()->getGui()->getMainWindow()->addDockWidget(Qt::RightDockWidgetArea, hw);
 }

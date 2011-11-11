@@ -40,6 +40,7 @@ QString SelectQueryGroupByComponent::get() const
     {
         result += getSpacesForLevel();
         result+= m_children.at(i)->get();
+        if(i<m_children.size() - 1) result += ",";
     }
     return result;
 }

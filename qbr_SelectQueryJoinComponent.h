@@ -13,7 +13,7 @@ public:
     SelectQueryJoinComponent(QueryComponent*, int);
     virtual QString get() const;
     virtual QString getClass() const {return "SelectQueryJoinComponent";}
-    virtual QueryGraphicsItem* createGraphicsItem(QueryGraphicsHelper*, QueryGraphicsItem*){return 0;}
+    virtual QueryGraphicsItem* createGraphicsItem(QueryGraphicsHelper*, QueryGraphicsItem*);
     virtual void handleAction(const QString& action, QueryComponent* referringObject);
     virtual QSet<OptionsType> provideOptions();
     virtual void onClose();

@@ -41,6 +41,7 @@
 #include "NewViewForm.h"
 #include "qbr_SelectQuery.h"
 #include "core_View.h"
+#include "gui_HelpWindow.h"
 
 #include <QtGui>
 
@@ -303,9 +304,10 @@ void MainWindow::onDTTreeClicked()
                 frm->setMainWindow(this);
                 frm->setDataType(udt);
                 setCentralWidget(frm);
-
             }
         }
+        HelpWindow* hw = HelpWindow::instance();
+        hw->showHelp(QString("/doc/dtyp.html"));
     }
 }
 
@@ -315,6 +317,8 @@ NewTableForm* MainWindow::showExistingTable(Table *table)
     frm->setTable(table);
     frm->focusOnName();
     setCentralWidget(frm);
+    HelpWindow* hw = HelpWindow::instance();
+    hw->showHelp(QString("/doc/tabl.html"));
     return frm;
 }
 
@@ -346,6 +350,9 @@ void MainWindow::showTableInstance(const QString &tabName, bool focus)
     frmTinst->createTableWithValues();
     setCentralWidget(frmTinst);
 
+    HelpWindow* hw = HelpWindow::instance();
+    hw->showHelp(QString("/doc/tinst.html"));
+
     if(focus) m_projectTree->setCurrentItem(table->getLocation());
 }
 
@@ -364,6 +371,9 @@ void MainWindow::showDataType(const QString &name, bool focus)
     setCentralWidget(frm);
 
     if(focus) m_datatypesTree->setCurrentItem(dt->getLocation());
+
+    HelpWindow* hw = HelpWindow::instance();
+    hw->showHelp(QString("/doc/dtyp.html"));
 }
 
 void MainWindow::currentProjectTreeItemChanged(QTreeWidgetItem * current, QTreeWidgetItem*)
@@ -421,6 +431,9 @@ void MainWindow::currentProjectTreeItemChanged(QTreeWidgetItem * current, QTreeW
                 dgram->setForm(df);
                 setCentralWidget(dgram->getDiagramForm());
                 df->paintDiagram();
+
+                HelpWindow* hw = HelpWindow::instance();
+                hw->showHelp(QString("/doc/dgram.html"));
             }
             else
             if(current->parent() && current->parent() == m_workspace->workingVersion()->getGui()->getTableInstancesItem())
@@ -433,6 +446,9 @@ void MainWindow::currentProjectTreeItemChanged(QTreeWidgetItem * current, QTreeW
                 frm->setTableInstance(m_workspace->workingVersion()->getTableInstance(instanceName));
                 frm->createTableWithValues();
                 setCentralWidget(frm);
+
+                HelpWindow* hw = HelpWindow::instance();
+                hw->showHelp(QString("/doc/tinst.html"));
 
             }
             else
@@ -461,6 +477,9 @@ void MainWindow::currentProjectTreeItemChanged(QTreeWidgetItem * current, QTreeW
                         v->getHelper()->setForm(this);
                         rerenderQuery(v->getQuery());
                     }
+
+                    HelpWindow* hw = HelpWindow::instance();
+                    hw->showHelp(QString("/doc/view.html"));
                 }
 
             }
@@ -482,9 +501,23 @@ void MainWindow::currentProjectTreeItemChanged(QTreeWidgetItem * current, QTreeW
                     ent = m_workspace->workingVersion()->getTable(name);
                 }
 
+                if(ent == 0)
+                {
+                    ent = m_workspace->workingVersion()->getView(name);
+                }
+
+                if(ent == 0)
+                {
+                    // hm.. this shouldn't be
+                    return;
+                }
+
                 frm->setSqlSource(ent);
                 frm->presentSql(m_workspace->currentProject(), ent, m_workspace->currentProject()->getCodepage());
                 setCentralWidget(frm);
+
+                HelpWindow* hw = HelpWindow::instance();
+                hw->showHelp(QString("/doc/sqls.html"));
 
             }
             else    // user possibly clicked on a table which had a parent a table ...
@@ -510,6 +543,9 @@ void MainWindow::onNewTable()
 
     m_projectTree->setCurrentItem(0);
     setCentralWidget(frm);
+
+    HelpWindow* hw = HelpWindow::instance();
+    hw->showHelp(QString("/doc/tabl.html"));
 }
 
 
@@ -520,6 +556,9 @@ void MainWindow::showNewDataTypeWindow(int a)
     frm->setMainWindow(this);
     m_projectTree->setCurrentItem(0);
     setCentralWidget(frm);
+
+    HelpWindow* hw = HelpWindow::instance();
+    hw->showHelp(QString("/doc/dtyp.html"));
 }
 
 void MainWindow::onNewDataType()

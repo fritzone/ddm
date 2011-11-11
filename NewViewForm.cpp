@@ -15,6 +15,9 @@
 #include "Column.h"
 #include "Workspace.h"
 #include "Version.h"
+#include "VersionGuiElements.h"
+#include "gui_HelpWindow.h"
+#include "MainWindow.h"
 
 #include <QScrollBar>
 #include <QVBoxLayout>
@@ -49,9 +52,16 @@ NewViewForm::NewViewForm(bool queryBuilder, QueryGraphicsHelper* c, QWidget *par
     else
     {
         ui->tabWidget_4->hide();
-    }
 
-    ui->grpHelp->hide();
+        delete ui->txtViewName;
+        delete ui->labelName;
+
+        ui->txtViewName = new QLineEdit(ui->groupBox_3);
+        ui->txtViewName->setObjectName(QString::fromUtf8("txtViewName"));
+        ui->txtViewName->setToolTip(QApplication::translate("NewViewForm", "The name of the View", 0, QApplication::UnicodeUTF8));
+        ui->groupBox->hide();
+        ui->verticalLayout_4->insertWidget(0, ui->txtViewName);
+    }
 }
 
 NewViewForm::~NewViewForm()
@@ -194,7 +204,8 @@ void NewViewForm::onSqlChange()
 
 void NewViewForm::onHelp()
 {
-    ui->grpHelp->setHidden(false);
-    ui->btnHelp->setHidden(true);
-    ui->webView->setUrl(QApplication::applicationDirPath() + QString("/doc/view.html"));
+    HelpWindow* hw = HelpWindow::instance();
+    hw->showHelp(QString("/doc/view.html"));
+    hw->show();
+    Workspace::getInstance()->workingVersion()->getGui()->getMainWindow()->addDockWidget(Qt::RightDockWidgetArea, hw);
 }

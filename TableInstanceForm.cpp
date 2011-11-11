@@ -5,6 +5,11 @@
 #include "StartupValuesHelper.h"
 #include "Column.h"
 #include "utils.h"
+#include "Workspace.h"
+#include "Version.h"
+#include "VersionGuiElements.h"
+#include "MainWindow.h"
+#include "gui_HelpWindow.h"
 
 TableInstanceForm::TableInstanceForm(QWidget *parent) :
     QWidget(parent),
@@ -12,9 +17,6 @@ TableInstanceForm::TableInstanceForm(QWidget *parent) :
 {
     ui->setupUi(this);
     ui->btnImportValues->hide();
-
-    ui->grpHelp->hide();
-
 }
 
 TableInstanceForm::~TableInstanceForm()
@@ -145,9 +147,11 @@ void TableInstanceForm::onCellChange(int,int)
 
 void TableInstanceForm::onHelp()
 {
-    ui->grpHelp->show();
-    ui->btnHelp->hide();
-    ui->webView->setUrl(QApplication::applicationDirPath() + QString("/doc/tinst.html"));
+
+    HelpWindow* hw = HelpWindow::instance();
+    hw->showHelp(QString("/doc/tinst.html"));
+    hw->show();
+    Workspace::getInstance()->workingVersion()->getGui()->getMainWindow()->addDockWidget(Qt::RightDockWidgetArea, hw);
 }
 
 void TableInstanceForm::onValuesDoubleClick()

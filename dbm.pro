@@ -111,7 +111,8 @@ SOURCES += main.cpp \
     dbmysql_MySQLStorageEngineListProvider.cpp \
     db_DatabaseEngine.cpp \
     db_DatabaseNormalizationIssue.cpp \
-    core_View.cpp
+    core_View.cpp \
+    gui_HelpWindow.cpp
 HEADERS += MainWindow.h \
     MainWindowButtonDialog.h \
     NewProjectDialog.h \
@@ -245,7 +246,8 @@ HEADERS += MainWindow.h \
     db_DatabaseBuiltinFunctionsParameter.h \
     db_DatabaseEngine.h \
     db_DatabaseNormalizationIssue.h \
-    core_View.h
+    core_View.h \
+    gui_HelpWindow.h
 FORMS += MainWindow.ui \
     MainWindowButtonDialog.ui \
     NewProjectDialog.ui \
@@ -269,5 +271,6 @@ FORMS += MainWindow.ui \
     ReverseEngineerWizardTablesForm.ui \
     ReverseEngineerWizardOptionsForm.ui \
     NewViewForm.ui \
-    QueryItemListDialog.ui
+    QueryItemListDialog.ui \
+    HelpWindow.ui
 RESOURCES += dbm.qrc

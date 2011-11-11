@@ -24,7 +24,8 @@ public:
     enum ForcedSingleExpressionQueryComponent
     {
         FORCED_OR = 0,
-        FORCED_AND = 1
+        FORCED_AND = 1,
+        NOT_FORCED = 2
     };
 
     SingleExpressionQueryComponent(QueryComponent*,int);
@@ -51,7 +52,11 @@ public:
     const QString getTypedInValueAt(int i);
 
     DatabaseFunctionInstantiationComponent* getFunctionInstantiationAt(int);
-    void setForcedType(ForcedSingleExpressionQueryComponent);
+    void setForcedType(ForcedSingleExpressionQueryComponent, bool fromDeserialization=false);
+    bool hasForcedType() const
+    {
+        return m_forcedType == FORCED_AND || m_forcedType == FORCED_OR;
+    }
 
     void setOwnedByOn(SelectQueryJoinComponent* onOwner, SingleExpressionQueryComponent* onComponent)
     {
@@ -129,6 +134,7 @@ private:
 
     // in case this has an ALIAS
     SelectQueryAsComponent* m_as;
+    bool m_hasForcedType;
 };
 
 #endif // UNARYWHEREEXPRESSIONQUERYCOMPONENT_H
