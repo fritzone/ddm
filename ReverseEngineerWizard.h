@@ -19,7 +19,11 @@ public:
     bool connectAndRetrieveDatabases();
     bool selectDatabase();
     bool connectAndRetrieveTables();
+    bool connectAndRetrieveViews();
+
     QVector<QString> getTablesToReverse();
+    QVector<QString> getViewsToReverse();
+
     QString getHost() {return m_host; }
     QString getUser() {return m_user; }
     QString getPasword() {return m_pass; }
@@ -33,6 +37,7 @@ private:
     ReverseEngineerWizardWelcomeForm* m_welcomePage;
     ReverseEngineerWizardDatabasesForm* m_databasesPage;
     ReverseEngineerWizardTablesForm* m_tablesPage;
+    ReverseEngineerWizardTablesForm* m_viewsPage;
     ReverseEngineerWizardOptionsForm* m_optionsPage;
 
     QString m_host;

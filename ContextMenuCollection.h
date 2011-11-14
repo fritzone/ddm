@@ -37,6 +37,7 @@ public:
     QMenu* getIssuesOfATablePopupMenuPopupMenu() { return m_issuesOfATablePopupMenu; }
     QMenu* getCreateTableInstancesPopupMenu() { return m_createTableInstancesPopup; }
     QMenu* getCreateNewViewPopupMenu() {return m_createNewViewPopupMenu; }
+    QMenu* getConnectionsPopupMenu() { return m_connectionPopupMenu; }
 
     /*
      * Actions
@@ -72,6 +73,7 @@ public:
     QAction* getAction_IgnoreIssuesFromThisTable() { return action_ignoreIssuesFromThisTable; }
     QAction* getAction_CreateViewUsingQueryBuilder() { return action_createViewUsingQueryBuilder; }
     QAction* getAction_CreateViewUsingSql() { return action_createViewUsingSql; }
+    QAction* getAction_ConnectionConnect() {return action_connectionConnect; }
 
 private:
 
@@ -89,6 +91,7 @@ private:
     QMenu* m_datatypesPopupMenu;                // popup menu for the datatypes
     QMenu* m_issuePopupMenu;                    // popup menu for an issue
     QMenu* m_issuesOfATablePopupMenu;           // popup menu for issues of a table
+    QMenu* m_connectionPopupMenu;               // popup menu for a connection
     QMenu* m_createTableInstancesPopup;         // popup menu for the table instances selection
     QMenu* m_createNewViewPopupMenu;            // popup for the create new view command.
 
@@ -144,6 +147,8 @@ private:
 
     QAction* action_createViewUsingQueryBuilder;
     QAction* action_createViewUsingSql;
+
+    QAction* action_connectionConnect;
 
     // the instance of the popup menu collection
     static ContextMenuCollection* m_instance;

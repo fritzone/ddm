@@ -8,8 +8,8 @@ ReverseEngineerWizardOptionsForm::ReverseEngineerWizardOptionsForm(QWidget *pare
 {
     ui->setupUi(this);
 
-    setTitle(tr("Select Tables"));
-    setSubTitle(tr("Please select the tables you want to reverse engineer."));
+    setTitle(tr("Options"));
+    setSubTitle(tr("Please specify the reverse engineering options."));
     QIcon*p = new QIcon(strFroggieIcon);
     QIcon*p1 = new QIcon(strIcon);
     setPixmap(QWizard::WatermarkPixmap, p->pixmap(150, 187));

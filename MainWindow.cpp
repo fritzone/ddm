@@ -42,6 +42,8 @@
 #include "qbr_SelectQuery.h"
 #include "core_View.h"
 #include "gui_HelpWindow.h"
+#include "core_Connection.h"
+#include "core_ConnectionManager.h"
 
 #include <QtGui>
 
@@ -49,19 +51,24 @@
 //Q_IMPORT_PLUGIN(qsqlmysql)
 #endif
 
-MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), m_ui(new Ui::MainWindow), m_projectTreeDock(0), m_datatypesTreeDock(0), m_issuesTreeDock(0),
-    m_projectTree(0), m_datatypesTree(0), m_btndlg(0), m_workspace(0), m_revEngWizard(0), m_nvf(0)
+MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), m_ui(new Ui::MainWindow), m_projectTreeDock(0), m_datatypesTreeDock(0), m_issuesTreeDock(0), m_connectionsTreeDock(0),
+    m_projectTree(0), m_datatypesTree(0), m_issuesTree(0), m_connectionsTree(0), m_btndlg(0), m_workspace(0), m_revEngWizard(0), m_nvf(0), m_contextMenuHandler(0)
 {
     m_ui->setupUi(this);
 
     showButtonDialog();
     Configuration::instance();
+    ConnectionManager::instance();
 
+    // set up the tree
+    m_contextMenuHandler = new ContextMenuHandler();
     m_workspace = Workspace::getInstance();
+
 }
 
 MainWindow::~MainWindow()
 {
+    ConnectionManager::instance()->shutDown();
     delete m_ui;
 }
 
@@ -117,6 +124,61 @@ void MainWindow::showProjectDetails()
     setCentralWidget(prjDetailsForm);
 }
 
+void MainWindow::showConnections()
+{
+    // create the dock window
+    m_connectionsTreeDock = new QDockWidget(tr("Connections"), this);
+    m_connectionsTreeDock->setAllowedAreas(Qt::AllDockWidgetAreas);
+    m_connectionsTreeDock->setFeatures(QDockWidget::AllDockWidgetFeatures);
+    m_connectionsTreeDock->setFloating(false);
+    m_connectionsTreeDock->setMinimumSize(300, 340);
+    m_connectionsTreeDock->setMaximumSize(500, 9999);
+    m_connectionsTreeDock->setSizePolicy(QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Maximum));
+    m_connectionsTreeDock->resize(301,341);
+
+    m_connectionsTree = new ContextMenuEnabledTreeWidget();
+    m_connectionsTree->setAllColumnsShowFocus(true);
+    m_connectionsTree->setSelectionMode(QAbstractItemView::SingleSelection);
+    m_connectionsTree->setSelectionBehavior(QAbstractItemView::SelectItems);
+    m_connectionsTree->setItemDelegate(new ContextMenuDelegate(m_contextMenuHandler,m_projectTree));
+    m_connectionsTree->setColumnCount(2);
+    m_connectionsTree->setHeaderHidden(false);
+    QObject::connect(m_projectTree, SIGNAL (currentItemChanged ( QTreeWidgetItem*, QTreeWidgetItem*)), this, SLOT(currentProjectTreeItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)));
+
+    QTreeWidgetItem *___qtreewidgetitem = m_connectionsTree->headerItem();
+    ___qtreewidgetitem->setText(0, QApplication::translate("MainWindow", "Name", 0, QApplication::UnicodeUTF8));
+    ___qtreewidgetitem->setText(1, QApplication::translate("MainWindow", "Host", 0, QApplication::UnicodeUTF8));
+    m_connectionsTree->header()->setDefaultSectionSize(150);
+
+    m_connectionsContextMenuHandler = new ContextMenuHandler();
+    m_connectionsTree->setItemDelegate(new ContextMenuDelegate(m_connectionsContextMenuHandler, m_connectionsTree));
+    m_connectionsTreeDock->setWidget(m_connectionsTree);
+    addDockWidget(Qt::RightDockWidgetArea, m_connectionsTreeDock);
+
+    m_ui->action_NewDatabaseConnection->setEnabled(true);
+    const QVector<Connection*>& cons = ConnectionManager::instance()->connections();
+    for(int i=0; i<cons.size(); i++)
+    {
+        Connection* c = cons.at(i);
+        createConnectionTreeEntry(c);
+    }
+    QObject::connect(ContextMenuCollection::getInstance()->getAction_ConnectionConnect(), SIGNAL(activated()), this, SLOT(onConnectConnection()));
+
+}
+
+ContextMenuEnabledTreeWidgetItem* MainWindow::createConnectionTreeEntry(Connection* c)
+{
+    ContextMenuEnabledTreeWidgetItem* newConnectionItem = new ContextMenuEnabledTreeWidgetItem((ContextMenuEnabledTreeWidgetItem*)0, QStringList(c->getName())) ;
+    newConnectionItem->setText(1, c->getDb()+"@"+c->getHost());
+    QVariant var(c->getName());
+    newConnectionItem->setData(0, Qt::UserRole, var);
+    newConnectionItem->setIcon(0, IconFactory::getDatabaseIcon());
+    m_connectionsTree->addTopLevelItem(newConnectionItem);
+    newConnectionItem->setPopupMenu(ContextMenuCollection::getInstance()->getConnectionsPopupMenu());
+    c->setLocation(newConnectionItem);
+
+}
+
 void MainWindow::setupGuiForNewSolution()
 {
     // create the dock window
@@ -142,14 +204,12 @@ void MainWindow::setupGuiForNewSolution()
     m_issuesTreeDock->setFloating(false);
     m_issuesTreeDock->setSizePolicy(QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Maximum));
 
-    // set up the tree
-    ContextMenuHandler* contextMenuHandler = new ContextMenuHandler();
 
     m_projectTree = new ContextMenuEnabledTreeWidget();
     m_projectTree->setAllColumnsShowFocus(true);
     m_projectTree->setSelectionMode(QAbstractItemView::SingleSelection);
     m_projectTree->setSelectionBehavior(QAbstractItemView::SelectItems);
-    m_projectTree->setItemDelegate(new ContextMenuDelegate(contextMenuHandler,m_projectTree));
+    m_projectTree->setItemDelegate(new ContextMenuDelegate(m_contextMenuHandler,m_projectTree));
     m_projectTree->setColumnCount(1);
     m_projectTree->setHeaderHidden(true);
     QObject::connect(m_projectTree, SIGNAL (currentItemChanged ( QTreeWidgetItem*, QTreeWidgetItem*)), this, SLOT(currentProjectTreeItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)));
@@ -161,7 +221,7 @@ void MainWindow::setupGuiForNewSolution()
     hdr->setText(0, tr("Type"));
     hdr->setText(1, tr("SQL"));
     m_datatypesTree->header()->setDefaultSectionSize(200);
-    m_datatypesTree->setItemDelegate(new ContextMenuDelegate(contextMenuHandler,m_datatypesTree));
+    m_datatypesTree->setItemDelegate(new ContextMenuDelegate(m_contextMenuHandler,m_datatypesTree));
     m_datatypesTree ->setHeaderHidden(false);
     QObject::connect(m_datatypesTree, SIGNAL(itemSelectionChanged()), this, SLOT(onDTTreeClicked()));
     QObject::connect(m_datatypesTree, SIGNAL (itemClicked ( QTreeWidgetItem * , int ) ), this, SLOT(dtTreeItemClicked(QTreeWidgetItem*,int)));
@@ -713,6 +773,7 @@ void MainWindow::enableActions()
     m_ui->action_ProjectTree->setChecked(true);
     m_ui->action_Validate->setEnabled(true);
     m_ui->action_NewView->setEnabled(true);
+    m_ui->action_NewDatabaseConnection->setEnabled(true);
 
     if(m_workspace->currentProjectIsOop())
     {
@@ -778,7 +839,10 @@ void MainWindow::connectActionsFromTablePopupMenu()
     QObject::connect(ContextMenuCollection::getInstance()->getAction_IgnoreIssuesFromThisTable(), SIGNAL(activated()), this, SLOT(onIgnoreIssuesOfATable()));
     QObject::connect(ContextMenuCollection::getInstance()->getAction_CreateViewUsingQueryBuilder(), SIGNAL(activated()), this, SLOT(onNewView()));
     QObject::connect(ContextMenuCollection::getInstance()->getAction_CreateViewUsingSql(), SIGNAL(activated()), this, SLOT(onNewViewWithSql()));
+    QObject::connect(ContextMenuCollection::getInstance()->getAction_ConnectionConnect(), SIGNAL(activated()), this, SLOT(onConnectConnection()));
+
 }
+
 
 void MainWindow::onAbout()
 {
@@ -936,6 +1000,22 @@ UserDataType* MainWindow::getRightclickedDatatype()
     }
     return 0;
 }
+
+Connection* MainWindow::getRightclickedConnection()
+{
+    if(m_connectionsTree->getLastRightclickedItem() != 0)
+    {
+        ContextMenuEnabledTreeWidgetItem* item = m_connectionsTree->getLastRightclickedItem();
+        m_connectionsTree->setLastRightclickedItem(0);
+
+        QVariant qv = item->data(0, Qt::UserRole);
+        QString n = qv.toString();
+        Connection* c = ConnectionManager::instance()->getConnection(n);
+        return c;
+    }
+    return 0;
+}
+
 
 void MainWindow::onDeleteTableFromPopup()
 {
@@ -1298,6 +1378,16 @@ void MainWindow::onDeleteDatatypeFromPopup()
     }
 }
 
+void MainWindow::onConnectConnection()
+{
+    Connection* c = getRightclickedConnection();
+    if(c)
+    {
+        c->connect();
+        c->getLocation()->setIcon(0, IconFactory::getConnectedDatabaseIcon());
+    }
+}
+
 void MainWindow::onDuplicateDatatypeFromPopup()
 {
     UserDataType* udt = getRightclickedDatatype();
@@ -1502,14 +1592,42 @@ void MainWindow::onReverseEngineerWizardNextPage(int cpage)
 
         m_revEngWizard->connectAndRetrieveTables();
         break;
+    case 3: // user selected the tables, advanced to the views
+        if(!m_revEngWizard->selectDatabase()) // did he select a database?
+        {
+            QMessageBox::critical(this, tr("Error"), tr("Please select a database"), QMessageBox::Ok);
+            m_revEngWizard->back();
+        }
+
+        m_revEngWizard->connectAndRetrieveViews();
+
     }
 }
 
 void MainWindow::onReverseEngineerWizardAccept()
 {
     QVector<QString> tabsToReverse = m_revEngWizard->getTablesToReverse();
+    QVector<QString> viewsToReverse = m_revEngWizard->getViewsToReverse();
     m_workspace->currentProjectsEngine()->reverseEngineerDatabase(m_revEngWizard->getHost(), m_revEngWizard->getUser(), m_revEngWizard->getPasword(), m_revEngWizard->getDatabase(),
-                                                                  tabsToReverse, m_workspace->currentProject(), !m_revEngWizard->createDataTypesForColumns());
+                                                                  tabsToReverse, viewsToReverse, m_workspace->currentProject(), !m_revEngWizard->createDataTypesForColumns());
+}
+
+void MainWindow::onNewConnection()
+{
+    InjectSqlDialog* injectDialog = new InjectSqlDialog(0);
+    injectDialog->setModal(true);
+    if(injectDialog->exec() == QDialog::Accepted)
+    {
+        QString host = injectDialog->getHost();
+        QString user = injectDialog->getUser();
+        QString password = injectDialog->getPassword();
+        QString db = injectDialog->getDatabase();
+        QString name = injectDialog->getName();
+        Connection* c = new Connection(name, host, user, password, db, true, injectDialog->getAutoConnect());
+        ConnectionManager::instance()->addConnection(c);
+        createConnectionTreeEntry(c);
+        //return newConnectionItem;
+    }
 }
 
 void MainWindow::onValidate()

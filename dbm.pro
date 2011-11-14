@@ -112,7 +112,9 @@ SOURCES += main.cpp \
     db_DatabaseEngine.cpp \
     db_DatabaseNormalizationIssue.cpp \
     core_View.cpp \
-    gui_HelpWindow.cpp
+    gui_HelpWindow.cpp \
+    core_Connection.cpp \
+    core_ConnectionManager.cpp
 HEADERS += MainWindow.h \
     MainWindowButtonDialog.h \
     NewProjectDialog.h \
@@ -247,7 +249,9 @@ HEADERS += MainWindow.h \
     db_DatabaseEngine.h \
     db_DatabaseNormalizationIssue.h \
     core_View.h \
-    gui_HelpWindow.h
+    gui_HelpWindow.h \
+    core_Connection.h \
+    core_ConnectionManager.h
 FORMS += MainWindow.ui \
     MainWindowButtonDialog.ui \
     NewProjectDialog.ui \

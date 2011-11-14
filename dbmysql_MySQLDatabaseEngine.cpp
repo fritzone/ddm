@@ -20,6 +20,7 @@
 #include "db_AbstractStorageEngineListProvider.h"
 #include "ForeignKey.h"
 #include "db_DatabaseBuiltinFunction.h"
+#include "core_View.h"
 
 QVector<DatabaseBuiltinFunction> MySQLDatabaseEngine::s_builtinFunctions = MySQLDatabaseEngine::buildFunctions();
 
@@ -27,7 +28,7 @@ MySQLDatabaseEngine::MySQLDatabaseEngine() : DatabaseEngine("MySQL"), m_revEngMa
 {
 }
 
-bool MySQLDatabaseEngine::reverseEngineerDatabase(const QString& host, const QString& user, const QString& pass, const QString& dbName, QVector<QString> tables, Project*p, bool relaxed)
+bool MySQLDatabaseEngine::reverseEngineerDatabase(const QString& host, const QString& user, const QString& pass, const QString& dbName, QVector<QString> tables, QVector<QString> views, Project*p, bool relaxed)
 {
     Version* v = p->getWorkingVersion();
     m_revEngMappings.clear();
@@ -37,6 +38,13 @@ bool MySQLDatabaseEngine::reverseEngineerDatabase(const QString& host, const QSt
         Table* tab = reverseEngineerTable(host, user, pass, dbName, tables.at(i), p, relaxed);
         v->addTable(tab);
         v->getGui()->createTableTreeEntry(tab);
+    }
+
+    for(int i=0; i<views.size(); i++)
+    {
+        View* view = reverseEngineerView(host, user, pass, dbName, views.at(i), p);
+        v->addView(view);
+        v->getGui()->createViewTreeEntry(view);
     }
 
     // and now try to find some nice names for the user data types
@@ -111,6 +119,36 @@ bool MySQLDatabaseEngine::reverseEngineerDatabase(const QString& host, const QSt
     return true;
 }
 
+QVector<QString> MySQLDatabaseEngine::getAvailableViews(const QString& host, const QString& user, const QString& pass, const QString& db)
+{
+    QSqlDatabase dbo = QSqlDatabase::addDatabase("QMYSQL");
+
+    dbo.setHostName(host);
+    dbo.setUserName(user);
+    dbo.setPassword(pass);
+    dbo.setDatabaseName(db);
+
+    QVector<QString> result;
+    bool ok = dbo.open();
+
+    if(!ok)
+    {
+        QMessageBox::critical(0, "Error", dbo.lastError().databaseText() + "/" + dbo.lastError().databaseText(), QMessageBox::Ok);
+        return result;
+    }
+
+    QSqlQuery query;
+
+    query.exec("select table_name from information_schema.tables where table_schema='"+db+"' and table_type='VIEW'");
+
+    while(query.next())
+    {
+        QString tab = query.value(0).toString();
+        result.append(tab);
+    }
+
+    return result;
+}
 
 QVector<QString> MySQLDatabaseEngine::getAvailableTables(const QString& host, const QString& user, const QString& pass, const QString& db)
 {
@@ -132,7 +170,7 @@ QVector<QString> MySQLDatabaseEngine::getAvailableTables(const QString& host, co
 
     QSqlQuery query;
 
-    query.exec("show tables");
+    query.exec("select table_name from information_schema.tables where table_schema='"+db+"' and table_type='BASE TABLE'");
 
     while(query.next())
     {
@@ -143,6 +181,41 @@ QVector<QString> MySQLDatabaseEngine::getAvailableTables(const QString& host, co
     return result;
 }
 
+View* MySQLDatabaseEngine::reverseEngineerView(const QString& host, const QString& user, const QString& pass, const QString& dbName, const QString& viewName, Project* p)
+{
+    QSqlDatabase dbo = QSqlDatabase::addDatabase("QMYSQL");
+
+    dbo.setHostName(host);
+    dbo.setUserName(user);
+    dbo.setPassword(pass);
+    dbo.setDatabaseName(dbName);
+
+    View* view = 0;
+    bool ok = dbo.open();
+
+    if(!ok)
+    {
+        QMessageBox::critical(0, "Error", dbo.lastError().databaseText() + "/" + dbo.lastError().databaseText(), QMessageBox::Ok);
+        return view;
+    }
+
+    {
+    QSqlQuery query;
+    query.exec("SET sql_mode = 'ANSI'");
+    }
+
+    QSqlQuery query;
+    QString t = "show create view "+dbName+"."+viewName;
+    query.exec(t);
+    while(query.next())
+    {
+        QString sql = query.value(1).toString();
+        view = new View(true);
+        view->setSql(sql);
+    }
+
+    return view;
+}
 
 Table* MySQLDatabaseEngine::reverseEngineerTable(const QString& host, const QString& user, const QString& pass, const QString& dbName, const QString& tableName, Project* p, bool relaxed)
 {

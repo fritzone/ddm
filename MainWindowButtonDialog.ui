@@ -137,6 +137,54 @@
         </property>
        </widget>
       </item>
+      <item>
+       <widget class="QPushButton" name="btnConnections">
+        <property name="minimumSize">
+         <size>
+          <width>128</width>
+          <height>92</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>128</width>
+          <height>92</height>
+         </size>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset resource="dbm.qrc">
+          <normaloff>:/images/actions/images/actions/database-conn.png</normaloff>:/images/actions/images/actions/database-conn.png</iconset>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>64</width>
+          <height>64</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="label_5">
+        <property name="font">
+         <font>
+          <family>Sans Serif</family>
+          <pointsize>12</pointsize>
+         </font>
+        </property>
+        <property name="text">
+         <string>Connections</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+        </property>
+        <property name="buddy">
+         <cstring>btnOpen</cstring>
+        </property>
+       </widget>
+      </item>
      </layout>
     </widget>
    </item>
@@ -254,10 +302,27 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>btnConnections</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindowButtonDialog</receiver>
+   <slot>onShowConnections()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>89</x>
+     <y>367</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>325</x>
+     <y>239</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>onNewProject()</slot>
   <slot>onCloseWindow()</slot>
   <slot>onOpenProject()</slot>
+  <slot>onShowConnections()</slot>
  </slots>
 </ui>

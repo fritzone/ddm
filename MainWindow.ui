@@ -125,6 +125,8 @@
    <addaction name="action_Save"/>
    <addaction name="action_SaveAs"/>
    <addaction name="separator"/>
+   <addaction name="action_NewDatabaseConnection"/>
+   <addaction name="separator"/>
    <addaction name="action_NewDataType"/>
    <addaction name="action_NewTable"/>
    <addaction name="action_NewTableInstance"/>
@@ -378,6 +380,18 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+Shift+V</string>
+   </property>
+  </action>
+  <action name="action_NewDatabaseConnection">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="dbm.qrc">
+     <normaloff>:/images/actions/images/actions/new_dbconn.png</normaloff>:/images/actions/images/actions/new_dbconn.png</iconset>
+   </property>
+   <property name="text">
+    <string>New Database Connection</string>
    </property>
   </action>
  </widget>
@@ -674,6 +688,22 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>action_NewDatabaseConnection</sender>
+   <signal>activated()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>onNewConnection()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>233</x>
+     <y>67</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>onNewSolution()</slot>
@@ -693,5 +723,6 @@
   <slot>onViewDatatypesTree()</slot>
   <slot>onValidate()</slot>
   <slot>onNewView()</slot>
+  <slot>onNewConnection()</slot>
  </slots>
 </ui>

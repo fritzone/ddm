@@ -9,12 +9,14 @@
 #include <QMessageBox>
 
 ReverseEngineerWizard::ReverseEngineerWizard(DatabaseEngine* engine) : QWizard(), m_engine(engine), m_welcomePage(new ReverseEngineerWizardWelcomeForm),
-    m_databasesPage(new ReverseEngineerWizardDatabasesForm), m_tablesPage(new ReverseEngineerWizardTablesForm), m_optionsPage(new ReverseEngineerWizardOptionsForm),
+    m_databasesPage(new ReverseEngineerWizardDatabasesForm), m_tablesPage(new ReverseEngineerWizardTablesForm),
+    m_viewsPage(new ReverseEngineerWizardTablesForm(0, ReverseEngineerWizardTablesForm::REVERSE_ENGINEER_VIEWS)), m_optionsPage(new ReverseEngineerWizardOptionsForm),
     m_host(""), m_user(""), m_pass(""), m_database("")
 {
     addPage(m_welcomePage);
     addPage(m_databasesPage);
     addPage(m_tablesPage);
+    addPage(m_viewsPage);
     addPage(m_optionsPage);
     setWindowTitle(QObject::tr("Reverse Engineer a Database"));
 }
@@ -44,7 +46,6 @@ bool ReverseEngineerWizard::connectAndRetrieveDatabases()
     return true;
 }
 
-
 bool ReverseEngineerWizard::selectDatabase()
 {
     m_database = m_databasesPage->getSelectedDatabase();
@@ -52,15 +53,19 @@ bool ReverseEngineerWizard::selectDatabase()
     return false;
 }
 
+bool ReverseEngineerWizard::connectAndRetrieveViews()
+{
+    QVector<QString> views = m_engine->getAvailableViews(m_host, m_user, m_pass, m_database);
+    m_viewsPage->clearList();
+    for(int i=0; i<views.size(); i++)
+    {
+        m_viewsPage->addTable(views.at(i));
+    }
+}
+
 bool ReverseEngineerWizard::connectAndRetrieveTables()
 {
     QVector<QString> tables = m_engine->getAvailableTables(m_host, m_user, m_pass, m_database);
-    if(tables.size() == 0)
-    {
-        QMessageBox::critical(this, tr("Error"), QObject::tr("Seems there are no tables in the given database.\n") + m_engine->getLastError(), QMessageBox::Ok)        ;
-        return false;
-    }
-
     m_tablesPage->clearList();
     for(int i=0; i<tables.size(); i++)
     {
@@ -72,7 +77,12 @@ bool ReverseEngineerWizard::connectAndRetrieveTables()
 
 QVector<QString> ReverseEngineerWizard::getTablesToReverse()
 {
-    return m_tablesPage->getSelectedTables();
+    return m_tablesPage->getSelectedItems();
+}
+
+QVector<QString> ReverseEngineerWizard::getViewsToReverse()
+{
+    return m_viewsPage->getSelectedItems();
 }
 
 bool ReverseEngineerWizard::createDataTypesForColumns()

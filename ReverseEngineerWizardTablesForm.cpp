@@ -2,14 +2,23 @@
 #include "ui_ReverseEngineerWizardTablesForm.h"
 #include "IconFactory.h"
 
-ReverseEngineerWizardTablesForm::ReverseEngineerWizardTablesForm(QWidget *parent) :
-    QWizardPage(parent),
+ReverseEngineerWizardTablesForm::ReverseEngineerWizardTablesForm(QWidget *parent, Mode t) :
+    QWizardPage(parent), m_mode(t),
     ui(new Ui::ReverseEngineerWizardTablesForm)
 {
     ui->setupUi(this);
 
-    setTitle(tr("Select Tables"));
-    setSubTitle(tr("Please select the tables you want to reverse engineer."));
+    switch(m_mode)
+    {
+    case REVERSE_ENGINEER_TABLES:
+        setTitle(tr("Select Tables"));
+        setSubTitle(tr("Please select the tables you want to reverse engineer."));
+        break;
+    case REVERSE_ENGINEER_VIEWS:
+        setTitle(tr("Select Views"));
+        setSubTitle(tr("Please select the views you want to reverse engineer."));
+        break;
+    }
     QIcon*p = new QIcon(strFroggieIcon);
     QIcon*p1 = new QIcon(strIcon);
     setPixmap(QWizard::WatermarkPixmap, p->pixmap(150, 187));
@@ -25,6 +34,7 @@ void ReverseEngineerWizardTablesForm::addTable(const QString & tab)
 {
     QListWidgetItem* lwi = new QListWidgetItem(tab, ui->listWidget);
     QIcon c = IconFactory::getTablesIcon();
+    if(m_mode == REVERSE_ENGINEER_VIEWS) c = IconFactory::getViewsIcon();
     QIcon b = QIcon(c.pixmap(16,16));
     lwi->setIcon(b);
     lwi->setFlags(Qt::ItemIsUserCheckable | Qt::ItemIsEnabled);
@@ -42,7 +52,7 @@ void ReverseEngineerWizardTablesForm::checkStateChanged(int state)
     }
 }
 
-QVector<QString> ReverseEngineerWizardTablesForm::getSelectedTables()
+QVector<QString> ReverseEngineerWizardTablesForm::getSelectedItems()
 {
     QVector<QString> result;
     for(int i=0; i<ui->listWidget->count(); i++)
