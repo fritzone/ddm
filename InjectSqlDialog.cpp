@@ -5,6 +5,7 @@
 #include "db_AbstractCodepageSupplier.h"
 #include "db_DatabaseEngine.h"
 #include "SimpleTextInputDialog.h"
+#include "dbmysql_MySQLDatabaseEngine.h"
 
 #include <QSqlDatabase>
 #include <QMessageBox>
@@ -24,8 +25,18 @@ InjectSqlDialog::InjectSqlDialog(DatabaseEngine* engine, QWidget *parent) : QDia
     ui->chkOnlyIfNotExist->hide();
     ui->txtDatabaseHost->setText(previousHost);
     ui->txtDatabaseUser->setText(previousUser);
+    ui->chkSavePassword->hide();
+    ui->chkAutoConnect->hide();
 
-    populateCodepageCombo();
+    if(engine)
+    {
+        populateCodepageCombo();
+    }
+    else
+    {
+        setupForConnectionStorage();
+        m_dbEngine = new MySQLDatabaseEngine(); // TODO: For now ...
+    }
 }
 
 InjectSqlDialog::~InjectSqlDialog()
@@ -66,34 +77,56 @@ void InjectSqlDialog::onConnect()
     previousUser = ui->txtDatabaseUser->text();
 }
 
-QString InjectSqlDialog::getDatabase()
+QString InjectSqlDialog::getDatabase() const
 {
     return ui->cmbDatabases->currentText();
 }
 
-QString InjectSqlDialog::getUser()
+QString InjectSqlDialog::getUser() const
 {
     return ui->txtDatabaseUser->text();
 }
 
-QString InjectSqlDialog::getPassword()
+QString InjectSqlDialog::getPassword() const
 {
     return ui->txtDatabasePassword->text();
 }
 
-QString InjectSqlDialog::getHost()
+QString InjectSqlDialog::getHost() const
 {
     return ui->txtDatabaseHost->text();
 }
 
-bool InjectSqlDialog::getRollbackOnError()
+QString InjectSqlDialog::getName() const
+{
+    return ui->txtConnectionName->text();
+}
+
+bool InjectSqlDialog::getRollbackOnError() const
 {
     return ui->chkRollbackOnError->isChecked();
 }
 
-bool InjectSqlDialog::getCreateOnlyIfNotExist()
+bool InjectSqlDialog::getCreateOnlyIfNotExist() const
 {
     return ui->chkOnlyIfNotExist->isChecked();
+}
+
+bool InjectSqlDialog::getAutoConnect() const
+{
+    return ui->chkAutoConnect->isChecked();
+}
+
+void InjectSqlDialog::setupForConnectionStorage()
+{
+    setupForReverseEngineering();
+    ui->cmbCharacterSets->hide();
+    ui->label_2->hide();
+    ui->chkOnlyIfNotExist->hide();
+    ui->lblConnectionName->show();
+    ui->txtConnectionName->show();
+    ui->chkSavePassword->show();
+    ui->chkAutoConnect->show();
 }
 
 void InjectSqlDialog::setupForReverseEngineering()
@@ -191,7 +224,7 @@ void InjectSqlDialog::populateCodepageCombo()
 
 }
 
-QString InjectSqlDialog::getCodepage()
+QString InjectSqlDialog::getCodepage() const
 {
     QString s = ui->cmbCharacterSets->itemData(ui->cmbCharacterSets->currentIndex()).toString();
     s=s.left(s.indexOf('_'));

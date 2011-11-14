@@ -13,6 +13,7 @@ class Version;
 class Table;
 class Project;
 class DatabaseBuiltinFunction;
+class View;
 
 /**
  * This class is a kind of "wrapper" for the other classes that all deal
@@ -69,7 +70,9 @@ public:
     /**
      * Reverse engineers the tables from the given database and puts the resulting structures in the v
      */
-    virtual bool reverseEngineerDatabase(const QString& host, const QString& user, const QString& pass, const QString& dbName, QVector<QString> tables, Project* p, bool relaxed) = 0;
+    virtual bool reverseEngineerDatabase(const QString& host, const QString& user, const QString& pass, const QString& dbName,
+                                         QVector<QString> tables, QVector<QString> views,
+                                         Project* p, bool relaxed) = 0;
 
     QString getLastError() const
     {
@@ -80,9 +83,11 @@ public:
 
     virtual QVector<QString> getAvailableDatabases(const QString& host, const QString& user, const QString& pass) = 0;
     virtual QVector<QString> getAvailableTables(const QString& host, const QString& user, const QString& pass, const QString& db) = 0;
+    virtual QVector<QString> getAvailableViews(const QString& host, const QString& user, const QString& pass, const QString& db) = 0;
     virtual bool createDatabase(const QString& host, const QString& user, const QString& pass, const QString&) = 0;
     virtual QVector<DatabaseBuiltinFunction> getBuiltinFunctions() = 0;
     virtual const DatabaseBuiltinFunction& getBuiltinFunction(const QString& name) = 0;
+    virtual View* reverseEngineerView(const QString& host, const QString& user, const QString& pass, const QString& dbName, const QString& viewName, Project* p) = 0;
 
     QString getTypeStringForSqlType(const QString& sqlType);
 

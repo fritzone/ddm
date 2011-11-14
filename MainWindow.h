@@ -24,6 +24,7 @@ class ContextMenuHandler;
 class Issue;
 class Query;
 class NewViewForm;
+class Connection;
 
 namespace Ui
 {
@@ -56,6 +57,7 @@ public:
     void showDataType(const QString &name, bool focus = true);
 
     void rerenderQuery(Query*);
+    void showConnections();
 
 public slots:
 
@@ -111,6 +113,8 @@ public slots:
     void onIgnoreIssuesOfATable();
 
     void onValidate();
+    void onNewConnection();
+    void onConnectConnection();
 
 private:
 
@@ -122,8 +126,10 @@ private:
     Table* getRightclickedTable();
     TableInstance* getRightclickedTableInstance();
     UserDataType* getRightclickedDatatype();
+    Connection* getRightclickedConnection();
     Diagram* getRightclickedDiagram();
     ContextMenuEnabledTreeWidgetItem* createDataTypeTreeEntry(UserDataType*);
+    ContextMenuEnabledTreeWidgetItem* createConnectionTreeEntry(Connection*);
     void showButtonDialog();
     void freeGuiElements();
     void showProjectDetails();
@@ -136,12 +142,15 @@ private:
     QDockWidget* m_projectTreeDock;
     QDockWidget* m_datatypesTreeDock;
     QDockWidget* m_issuesTreeDock;
+    QDockWidget* m_connectionsTreeDock;
 
     ContextMenuEnabledTreeWidget* m_projectTree;
     ContextMenuEnabledTreeWidget* m_datatypesTree;
     ContextMenuEnabledTreeWidget* m_issuesTree;
+    ContextMenuEnabledTreeWidget* m_connectionsTree;
 
     ContextMenuHandler* m_issuesContextMenuHandler;
+    ContextMenuHandler* m_connectionsContextMenuHandler;
 
     // the initial three button dialog
     MainWindowButtonDialog* m_btndlg;
@@ -151,6 +160,7 @@ private:
     ReverseEngineerWizard* m_revEngWizard;
 
     NewViewForm* m_nvf;
+    ContextMenuHandler* m_contextMenuHandler;
 };
 
 #endif // MAINWINDOW_H

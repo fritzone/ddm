@@ -146,6 +146,9 @@
         <file>images/big/bigdatatypes.png</file>
         <file>images/small/edit_list_order.png</file>
         <file>images/small/alias.png</file>
+        <file>images/actions/database-conn.png</file>
+        <file>images/actions/new_dbconn.png</file>
+        <file>images/small/database_connected.png</file>
     </qresource>
     <qresource prefix="/bigger">
         <file>images/unaf.png</file>

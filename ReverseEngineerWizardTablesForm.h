@@ -12,12 +12,19 @@ class ReverseEngineerWizardTablesForm :public QWizardPage
     Q_OBJECT
 
 public:
-    explicit ReverseEngineerWizardTablesForm(QWidget *parent = 0);
+
+    enum Mode
+    {
+        REVERSE_ENGINEER_TABLES = 0,
+        REVERSE_ENGINEER_VIEWS = 1
+    } ;
+
+    explicit ReverseEngineerWizardTablesForm(QWidget *parent = 0, Mode t = REVERSE_ENGINEER_TABLES);
     ~ReverseEngineerWizardTablesForm();
 
     void addTable(const QString& tab);
     void clearList();
-    QVector<QString> getSelectedTables();
+    QVector<QString> getSelectedItems();
 
 public slots:
 
@@ -25,6 +32,7 @@ public slots:
 
 private:
     Ui::ReverseEngineerWizardTablesForm *ui;
+    Mode m_mode;
 };
 
 #endif // REVERSEENGINEERWIZARDTABLESFORM_H

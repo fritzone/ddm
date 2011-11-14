@@ -22,6 +22,7 @@ public slots:
     void onNewProject();
     void onCloseWindow();
     void onOpenProject();
+    void onShowConnections();
 
 
 protected:

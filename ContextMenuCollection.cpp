@@ -19,6 +19,7 @@ ContextMenuCollection::ContextMenuCollection()
     m_issuesOfATablePopupMenu = new QMenu();
     m_createTableInstancesPopup = new QMenu();
     m_createNewViewPopupMenu = new QMenu();
+    m_connectionPopupMenu = new QMenu();
 
     // actions
     action_RemoveTable = new QAction(QObject::tr("Delete table"), 0);
@@ -55,6 +56,7 @@ ContextMenuCollection::ContextMenuCollection()
     action_ignoreIssuesFromThisTable = new QAction(QObject::tr("Ignore issues"), 0);
     action_createViewUsingQueryBuilder = new QAction(QObject::tr("Using QueryBuilder"), 0);
     action_createViewUsingSql = new QAction(QObject::tr("SQL"), 0);
+    action_connectionConnect = new QAction(QObject::tr("Connect"), 0);
 
     // populate the table popup menu
     m_tablePopupMenu->addAction(action_TableAddColumn);
@@ -112,6 +114,9 @@ ContextMenuCollection::ContextMenuCollection()
 
     // issues of a table
     m_issuesOfATablePopupMenu->addAction(action_ignoreIssuesFromThisTable);
+
+    // connections
+    m_connectionPopupMenu->addAction(action_connectionConnect);
 
     // popup menu for the table instances
     m_createTableInstancesPopup->clear();

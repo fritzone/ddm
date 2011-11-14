@@ -17,22 +17,17 @@ public:
     InjectSqlDialog(DatabaseEngine* engine, QWidget *parent = 0);
     ~InjectSqlDialog();
 
-    QString getDatabase();
-
-    QString getUser();
-
-    QString getPassword();
-
-    QString getHost();
-
-    QString getCodepage();
-
-    bool getRollbackOnError();
-
-    bool getCreateOnlyIfNotExist();
-
+    QString getDatabase() const;
+    QString getUser() const;
+    QString getPassword() const;
+    QString getHost() const;
+    QString getName() const;
+    QString getCodepage() const;
+    bool getRollbackOnError() const;
+    bool getAutoConnect() const;
+    bool getCreateOnlyIfNotExist() const;
     void setupForReverseEngineering();
-
+    void setupForConnectionStorage();
 
     // loads the codepages from the codepages
     void populateCodepageCombo();
