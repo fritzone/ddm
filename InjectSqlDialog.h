@@ -2,8 +2,11 @@
 #define INJECTSQLDIALOG_H
 
 #include <QDialog>
+#include <QListWidgetItem>
 
 class DatabaseEngine;
+class Connection;
+
 
 namespace Ui
 {
@@ -22,7 +25,9 @@ public:
     QString getPassword() const;
     QString getHost() const;
     QString getName() const;
-    QString getCodepage() const;
+    QStringList getSelectedConnections() const;
+
+    //QString getCodepage() const;
     bool getRollbackOnError() const;
     bool getAutoConnect() const;
     bool getCreateOnlyIfNotExist() const;
@@ -33,14 +38,21 @@ public:
     void populateCodepageCombo();
 
     void selectCodePage(int);
+    void populateConnectionDetails(Connection* c);
+    void clearConnectionDetails();
 
 public slots:
 
     void onConnect();
     void onCreateDatabase();
+    void onSelectConnection(QListWidgetItem*);
 
 protected:
     void changeEvent(QEvent *e);
+
+private:
+
+    void populateConnections();
 
 private:
     Ui::InjectSqlDialog *ui;

@@ -57,6 +57,7 @@ ContextMenuCollection::ContextMenuCollection()
     action_createViewUsingQueryBuilder = new QAction(QObject::tr("Using QueryBuilder"), 0);
     action_createViewUsingSql = new QAction(QObject::tr("SQL"), 0);
     action_connectionConnect = new QAction(QObject::tr("Connect"), 0);
+    action_connectionDelete = new QAction(QObject::tr("Delete"), 0);
 
     // populate the table popup menu
     m_tablePopupMenu->addAction(action_TableAddColumn);
@@ -117,6 +118,7 @@ ContextMenuCollection::ContextMenuCollection()
 
     // connections
     m_connectionPopupMenu->addAction(action_connectionConnect);
+    m_connectionPopupMenu->addAction(action_connectionDelete);
 
     // popup menu for the table instances
     m_createTableInstancesPopup->clear();

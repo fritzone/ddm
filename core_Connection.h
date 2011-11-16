@@ -7,9 +7,19 @@
 
 #include <QString>
 
+class DatabaseEngine;
+
 class Connection : virtual public SerializableElement, virtual public NamedItem, virtual public TreeItem
 {
 public:
+
+    enum ConnectionState
+    {
+        CONNECTED=1,
+        FAILED=2,
+        DID_NOT_TRY=3
+    };
+
     Connection(const QString& name, const QString& host, const QString& user, const QString& pass, const QString& db, bool savePw, bool autoConnect);
     virtual void serialize(QDomDocument& doc, QDomElement& parent) const;
     QString getHost() const
@@ -20,9 +30,19 @@ public:
     {
         return m_db;
     }
-    void connect()
-    {
 
+    bool tryConnect();
+    ConnectionState getState() const
+    {
+        return m_state;
+    }
+    QString getUser() const
+    {
+        return m_user;
+    }
+    QString getPassword() const
+    {
+        return m_pass;
     }
 
 private:
@@ -34,6 +54,8 @@ private:
     QString m_dbType;
     bool m_savePw;
     bool m_autoConnect;
+    DatabaseEngine* m_engine;
+    ConnectionState m_state;
 };
 
 #endif // CORE_CONNECTION_H

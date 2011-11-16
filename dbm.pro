@@ -114,7 +114,8 @@ SOURCES += main.cpp \
     core_View.cpp \
     gui_HelpWindow.cpp \
     core_Connection.cpp \
-    core_ConnectionManager.cpp
+    core_ConnectionManager.cpp \
+    core_DeployerThread.cpp
 HEADERS += MainWindow.h \
     MainWindowButtonDialog.h \
     NewProjectDialog.h \
@@ -251,7 +252,8 @@ HEADERS += MainWindow.h \
     core_View.h \
     gui_HelpWindow.h \
     core_Connection.h \
-    core_ConnectionManager.h
+    core_ConnectionManager.h \
+    core_DeployerThread.h
 FORMS += MainWindow.ui \
     MainWindowButtonDialog.ui \
     NewProjectDialog.ui \

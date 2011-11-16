@@ -51,6 +51,11 @@ void ConnectionManager::loadConnections()
 
             Connection* c = new Connection(name, host, user, pass, db, true, ac=="1");
             m_connections.append(c);
+
+            if(ac=="1")
+            {
+                c->tryConnect();
+            }
         }
     }
 }
@@ -87,4 +92,13 @@ Connection* ConnectionManager::getConnection(const QString& name) const
         }
     }
     return 0;
+}
+
+bool ConnectionManager::deleteConnection(const QString& name)
+{
+    Connection* c = getConnection(name);
+    if(c)
+    {
+        m_connections.remove(m_connections.indexOf(c));
+    }
 }

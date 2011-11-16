@@ -1,11 +1,14 @@
 #include "InjectSqlDialog.h"
 #include "ui_InjectSqlDialog.h"
 
+#include "IconFactory.h"
 #include "Codepage.h"
 #include "db_AbstractCodepageSupplier.h"
 #include "db_DatabaseEngine.h"
 #include "SimpleTextInputDialog.h"
 #include "dbmysql_MySQLDatabaseEngine.h"
+#include "core_ConnectionManager.h"
+#include "core_Connection.h"
 
 #include <QSqlDatabase>
 #include <QMessageBox>
@@ -27,16 +30,23 @@ InjectSqlDialog::InjectSqlDialog(DatabaseEngine* engine, QWidget *parent) : QDia
     ui->txtDatabaseUser->setText(previousUser);
     ui->chkSavePassword->hide();
     ui->chkAutoConnect->hide();
+    ui->cmbDatabases->hide();
+    ui->btnConnect->hide();
+    ui->btnCreateDatabase->hide();
+    ui->grpConnectionDetails->hide();
 
     if(engine)
     {
         populateCodepageCombo();
+        populateConnections();
     }
     else
     {
         setupForConnectionStorage();
         m_dbEngine = new MySQLDatabaseEngine(); // TODO: For now ...
     }
+
+    clearConnectionDetails();
 }
 
 InjectSqlDialog::~InjectSqlDialog()
@@ -120,13 +130,23 @@ bool InjectSqlDialog::getAutoConnect() const
 void InjectSqlDialog::setupForConnectionStorage()
 {
     setupForReverseEngineering();
+    ui->grpConnectionDetails->show();
     ui->cmbCharacterSets->hide();
-    ui->label_2->hide();
+    ui->lblCodepage->hide();
     ui->chkOnlyIfNotExist->hide();
     ui->lblConnectionName->show();
     ui->txtConnectionName->show();
+    ui->btnConnect->show();
+    ui->lblDatabase->setEnabled(false);
+    ui->btnCreateDatabase->show();
     ui->chkSavePassword->show();
     ui->chkAutoConnect->show();
+    ui->grpConnections->hide();
+    ui->txtDatabaseName->hide();
+    ui->cmbDatabases->show();
+
+    setWindowTitle(QObject::tr("New Connection"));
+    resize(450, 400);
 }
 
 void InjectSqlDialog::setupForReverseEngineering()
@@ -137,6 +157,28 @@ void InjectSqlDialog::setupForReverseEngineering()
 void InjectSqlDialog::selectCodePage(int i)
 {
     ui->cmbCharacterSets->setCurrentIndex(i);
+}
+
+void InjectSqlDialog::populateConnections()
+{
+    const QVector<Connection*>& connections = ConnectionManager::instance()->connections();
+    for(int i=0; i<connections.size(); i++)
+    {
+        QListWidgetItem* lwi = new QListWidgetItem(ui->lstAllConnections);
+        lwi->setText(connections.at(i)->getName() + " ("+ connections.at(i)->getDb()+"@"+ connections.at(i)->getHost() + ")");   // TODO: This should be done with setData but I'm lasy now
+        switch(connections.at(i)->getState())
+        {
+        case Connection::DID_NOT_TRY:
+            lwi->setIcon(IconFactory::getDatabaseIcon());
+            break;
+        case Connection::FAILED:
+            lwi->setIcon(IconFactory::getUnConnectedDatabaseIcon());
+            break;
+        case Connection::CONNECTED:
+            lwi->setIcon(IconFactory::getConnectedDatabaseIcon());
+            break;
+        }
+    }
 }
 
 void InjectSqlDialog::populateCodepageCombo()
@@ -224,12 +266,12 @@ void InjectSqlDialog::populateCodepageCombo()
 
 }
 
-QString InjectSqlDialog::getCodepage() const
-{
-    QString s = ui->cmbCharacterSets->itemData(ui->cmbCharacterSets->currentIndex()).toString();
-    s=s.left(s.indexOf('_'));
-    return s;
-}
+//QString InjectSqlDialog::getCodepage() const
+//{
+//    QString s = ui->cmbCharacterSets->itemData(ui->cmbCharacterSets->currentIndex()).toString();
+//    s=s.left(s.indexOf('_'));
+//    return s;
+//}
 
 void InjectSqlDialog::onCreateDatabase()
 {
@@ -250,4 +292,51 @@ void InjectSqlDialog::onCreateDatabase()
             ui->cmbDatabases->setCurrentIndex(ui->cmbDatabases->findText(t));
         }
     }
+}
+
+void InjectSqlDialog::onSelectConnection(QListWidgetItem* item)
+{
+    QString connectionName =item->text();
+    if(ui->lstAllConnections->selectedItems().size())
+    {
+        ui->buttonBox->button(QDialogButtonBox::Ok)->setDisabled(false);
+    }
+    else
+    {
+        ui->buttonBox->button(QDialogButtonBox::Ok)->setDisabled(true);
+    }
+    connectionName = connectionName.left(connectionName.indexOf("(")).trimmed();
+    Connection* c = ConnectionManager::instance()->getConnection(connectionName);
+    if(c)
+    {
+        populateConnectionDetails(c);
+    }
+}
+
+void InjectSqlDialog::populateConnectionDetails(Connection* c)
+{
+    ui->txtConnectionName->setText(c->getName());
+    ui->txtDatabaseHost->setText(c->getHost());
+    ui->txtDatabaseUser->setText(c->getUser());
+    ui->txtDatabasePassword->setText(c->getPassword());
+    ui->txtDatabaseName->setText(c->getDb());
+}
+
+void InjectSqlDialog::clearConnectionDetails()
+{
+    ui->txtConnectionName->clear();
+    ui->txtDatabaseHost->clear();;
+    ui->txtDatabaseUser->clear();
+    ui->txtDatabasePassword->clear();
+    ui->txtDatabaseName->clear();
+}
+
+QStringList InjectSqlDialog::getSelectedConnections() const
+{
+    QStringList result;
+    for(int i=0; i<ui->lstAllConnections->selectedItems().size(); i++)
+    {
+        result.append( ui->lstAllConnections->selectedItems().at(i)->text().left(ui->lstAllConnections->selectedItems().at(i)->text().indexOf("(")).trimmed() );
+    }
+    return result;
 }

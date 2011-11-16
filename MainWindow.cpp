@@ -44,6 +44,7 @@
 #include "gui_HelpWindow.h"
 #include "core_Connection.h"
 #include "core_ConnectionManager.h"
+#include "core_DeployerThread.h"
 
 #include <QtGui>
 
@@ -126,6 +127,11 @@ void MainWindow::showProjectDetails()
 
 void MainWindow::showConnections()
 {
+    if(m_connectionsTreeDock)
+    {
+        onViewConnectionsTree();
+        return;
+    }
     // create the dock window
     m_connectionsTreeDock = new QDockWidget(tr("Connections"), this);
     m_connectionsTreeDock->setAllowedAreas(Qt::AllDockWidgetAreas);
@@ -163,7 +169,9 @@ void MainWindow::showConnections()
         createConnectionTreeEntry(c);
     }
     QObject::connect(ContextMenuCollection::getInstance()->getAction_ConnectionConnect(), SIGNAL(activated()), this, SLOT(onConnectConnection()));
+    QObject::connect(ContextMenuCollection::getInstance()->getAction_ConnectionDelete(), SIGNAL(activated()), this, SLOT(onDeleteConnection()));
 
+    m_ui->action_ConnectionsTree->setChecked(true);
 }
 
 ContextMenuEnabledTreeWidgetItem* MainWindow::createConnectionTreeEntry(Connection* c)
@@ -172,7 +180,20 @@ ContextMenuEnabledTreeWidgetItem* MainWindow::createConnectionTreeEntry(Connecti
     newConnectionItem->setText(1, c->getDb()+"@"+c->getHost());
     QVariant var(c->getName());
     newConnectionItem->setData(0, Qt::UserRole, var);
-    newConnectionItem->setIcon(0, IconFactory::getDatabaseIcon());
+    switch(c->getState())
+    {
+    case Connection::DID_NOT_TRY:
+        newConnectionItem->setIcon(0, IconFactory::getDatabaseIcon());
+        break;
+    case Connection::FAILED:
+        newConnectionItem->setIcon(0, IconFactory::getUnConnectedDatabaseIcon());
+        break;
+    case Connection::CONNECTED:
+        newConnectionItem->setIcon(0, IconFactory::getConnectedDatabaseIcon());
+        break;
+    }
+
+
     m_connectionsTree->addTopLevelItem(newConnectionItem);
     newConnectionItem->setPopupMenu(ContextMenuCollection::getInstance()->getConnectionsPopupMenu());
     c->setLocation(newConnectionItem);
@@ -213,7 +234,6 @@ void MainWindow::setupGuiForNewSolution()
     m_projectTree->setColumnCount(1);
     m_projectTree->setHeaderHidden(true);
     QObject::connect(m_projectTree, SIGNAL (currentItemChanged ( QTreeWidgetItem*, QTreeWidgetItem*)), this, SLOT(currentProjectTreeItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)));
-    //QObject::connect(m_projectTree, SIGNAL (itemClicked ( QTreeWidgetItem * , int ) ), this, SLOT(projectTreeItemClicked (QTreeWidgetItem*,int)));
 
     m_datatypesTree = new ContextMenuEnabledTreeWidget();
     m_datatypesTree ->setColumnCount(2);
@@ -771,6 +791,10 @@ void MainWindow::enableActions()
     m_ui->action_Deploy->setEnabled(true);
     m_ui->action_ProjectTree->setEnabled(true);
     m_ui->action_ProjectTree->setChecked(true);
+    m_ui->action_Datatypes_Tree->setChecked(true);
+    m_ui->action_Datatypes_Tree->setEnabled(true);
+    m_ui->action_ConnectionsTree->setEnabled(true);
+    m_ui->action_ConnectionsTree->setChecked(m_connectionsTreeDock?m_connectionsTreeDock->isVisible():false);
     m_ui->action_Validate->setEnabled(true);
     m_ui->action_NewView->setEnabled(true);
     m_ui->action_NewDatabaseConnection->setEnabled(true);
@@ -1378,13 +1402,30 @@ void MainWindow::onDeleteDatatypeFromPopup()
     }
 }
 
+void MainWindow::onDeleteConnection()
+{
+    Connection* c = getRightclickedConnection();
+    if(c)
+    {
+        ConnectionManager::instance()->deleteConnection(c->getName());
+        delete c->getLocation();
+        delete c;
+    }
+}
+
 void MainWindow::onConnectConnection()
 {
     Connection* c = getRightclickedConnection();
     if(c)
     {
-        c->connect();
-        c->getLocation()->setIcon(0, IconFactory::getConnectedDatabaseIcon());
+        if(c->tryConnect())
+        {
+            c->getLocation()->setIcon(0, IconFactory::getConnectedDatabaseIcon());
+        }
+        else
+        {
+            c->getLocation()->setIcon(0, IconFactory::getUnConnectedDatabaseIcon());
+        }
     }
 }
 
@@ -1419,12 +1460,6 @@ void MainWindow::onDeleteDiagramFromPopup()
         m_workspace->workingVersion()->getGui()->updateForms();
     }
 }
-
-
-void MainWindow::projectTreeItemClicked ( QTreeWidgetItem * item, int )
-{
-}
-
 
 void MainWindow::dtTreeItemClicked ( QTreeWidgetItem *, int)
 {
@@ -1544,15 +1579,15 @@ void MainWindow::onDeploy()
     injectDialog->setModal(true);
     if(injectDialog->exec() == QDialog::Accepted)
     {
-        QStringList sqlList = m_workspace->workingVersion()->getSqlScript(injectDialog->getCodepage());
-        QString tSql;
-        if(!m_workspace->currentProjectsEngine()->injectSql(injectDialog->getHost(), injectDialog->getUser(), injectDialog->getPassword(), injectDialog->getDatabase(), sqlList, tSql, injectDialog->getRollbackOnError(), injectDialog->getCreateOnlyIfNotExist()))
+        QStringList sqlList = m_workspace->workingVersion()->getSqlScript(/*injectDialog->getCodepage()*/ "latin1");
+        QStringList connectionNames = injectDialog->getSelectedConnections();
+        QVector<DeployerThread*> threads;
+        for(int i=0; i<connectionNames.size(); i++)
         {
-            QMessageBox::critical (this, tr("Error"), tr("<B>Cannot execute a query!</B><P>Reason: ") + m_workspace->currentProjectsEngine()->getLastError() + tr(".<P>Query:<PRE>") + tSql+ "</PRE><P>" +
-                                   (injectDialog->getRollbackOnError()?tr("Transaction was rolled back."):tr("Transaction was <font color=red><B>NOT</B></font> rolled back, you might have partial data in your database.")), QMessageBox::Ok);
-            return;
+            DeployerThread* thread = new DeployerThread(m_workspace->currentProjectsEngine(), ConnectionManager::instance()->getConnection(connectionNames.at(i)), sqlList);
+            threads.append(thread);
+            thread->run();
         }
-        QMessageBox::information(this, tr("Deployed"), tr("The solution was deployed to ") + injectDialog->getDatabase(), QMessageBox::Ok);
     }
 }
 
@@ -1563,11 +1598,25 @@ void MainWindow::onViewProjectTree()
     m_projectTreeDock->setVisible(!t);
 }
 
+void MainWindow::onViewConnectionsTree()
+{
+    if(m_connectionsTreeDock)
+    {
+        bool t = m_connectionsTreeDock->isVisible() ;
+        m_ui->action_ConnectionsTree->setChecked(!t);
+        m_connectionsTreeDock->setVisible(!t);
+    }
+    else
+    {
+        showConnections();
+    }
+}
+
 void MainWindow::onViewDatatypesTree()
 {
     bool t = m_datatypesTreeDock->isVisible() ;
-    m_ui->action_ProjectTree->setChecked(!t);
-    m_projectTreeDock->setVisible(!t);
+    m_ui->action_Datatypes_Tree->setChecked(!t);
+    m_datatypesTreeDock->setVisible(!t);
 }
 
 void MainWindow::onReverseEngineerWizardNextPage(int cpage)
@@ -1618,6 +1667,10 @@ void MainWindow::onNewConnection()
     injectDialog->setModal(true);
     if(injectDialog->exec() == QDialog::Accepted)
     {
+        if(!m_connectionsTreeDock)
+        {
+            showConnections();
+        }
         QString host = injectDialog->getHost();
         QString user = injectDialog->getUser();
         QString password = injectDialog->getPassword();

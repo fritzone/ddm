@@ -88,6 +88,7 @@
     </property>
     <addaction name="action_ProjectTree"/>
     <addaction name="action_Datatypes_Tree"/>
+    <addaction name="action_ConnectionsTree"/>
    </widget>
    <addaction name="menu_File"/>
    <addaction name="menu_Edit"/>
@@ -342,6 +343,9 @@
    <property name="checkable">
     <bool>true</bool>
    </property>
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>&amp;Datatypes Tree</string>
    </property>
@@ -384,7 +388,7 @@
   </action>
   <action name="action_NewDatabaseConnection">
    <property name="enabled">
-    <bool>false</bool>
+    <bool>true</bool>
    </property>
    <property name="icon">
     <iconset resource="dbm.qrc">
@@ -392,6 +396,17 @@
    </property>
    <property name="text">
     <string>New Database Connection</string>
+   </property>
+  </action>
+  <action name="action_ConnectionsTree">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Connections Tree</string>
    </property>
   </action>
  </widget>
@@ -704,6 +719,22 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>action_ConnectionsTree</sender>
+   <signal>activated()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>onViewConnectionsTree()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>233</x>
+     <y>67</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>onNewSolution()</slot>
@@ -724,5 +755,6 @@
   <slot>onValidate()</slot>
   <slot>onNewView()</slot>
   <slot>onNewConnection()</slot>
+  <slot>onViewConnectionsTree()</slot>
  </slots>
 </ui>

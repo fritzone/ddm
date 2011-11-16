@@ -32,6 +32,8 @@ public:
     virtual bool createDatabase(const QString& host, const QString& user, const QString& pass, const QString&);
     virtual QVector<DatabaseBuiltinFunction> getBuiltinFunctions();
     const DatabaseBuiltinFunction& getBuiltinFunction(const QString& name);
+    virtual bool tryConnect(const QString& host, const QString& user, const QString& pass, const QString& dbName);
+
 
 private:
 

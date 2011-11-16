@@ -43,8 +43,6 @@ void MainWindowButtonDialog::onShowConnections()
     if(m_mw)
     {
         m_mw->showConnections();
-        m_ui->label_5->hide();
-        m_ui->btnConnections->hide();
     }
 }
 

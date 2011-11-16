@@ -30,6 +30,14 @@ public:
     DatabaseEngine(const QString& db);
 
     /**
+     * Destructor
+     */
+    virtual ~DatabaseEngine()
+    {
+        //TODO: Add some deinitialization code here ...
+    }
+
+    /**
      * Returns the DataTypeSupplier of the specific DB
      */
     AbstractDTSupplier* getDTSupplier() const;
@@ -90,11 +98,7 @@ public:
     virtual View* reverseEngineerView(const QString& host, const QString& user, const QString& pass, const QString& dbName, const QString& viewName, Project* p) = 0;
 
     QString getTypeStringForSqlType(const QString& sqlType);
-
-    virtual ~DatabaseEngine()
-    {
-        //TODO: Add some deinitialization code here ...
-    }
+    virtual bool tryConnect(const QString& host, const QString& user, const QString& pass, const QString& dbName) = 0;
 
 private:
 

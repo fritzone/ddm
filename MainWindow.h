@@ -75,7 +75,6 @@ public slots:
     void currentProjectTreeItemChanged(QTreeWidgetItem * current, QTreeWidgetItem*);
 
     void dtTreeItemClicked ( QTreeWidgetItem * item, int column );
-    void projectTreeItemClicked ( QTreeWidgetItem * item, int column );
     void onNewTableInstance();
     void onNewTableInstanceHovered();
     void onDeleteTableFromPopup();
@@ -101,6 +100,7 @@ public slots:
     void onDeploy();
     void onPreferences();
     void onViewProjectTree();
+    void onViewConnectionsTree();
     void onViewDatatypesTree();
     void onNewView();
     void onNewViewWithSql();
@@ -115,6 +115,8 @@ public slots:
     void onValidate();
     void onNewConnection();
     void onConnectConnection();
+    void onDeleteConnection();
+
 
 private:
 
