@@ -51,7 +51,7 @@ AbstractStorageEngineListProvider* DatabaseEngine::getStorageEngineListProviders
 
 DatabaseEngine* DatabaseEngine::createEngine(const QString &db)
 {
-    if(db == "MySQL") return new MySQLDatabaseEngine();
+    if(db.toUpper() == "MYSQL") return new MySQLDatabaseEngine();
     return 0;
 }
 

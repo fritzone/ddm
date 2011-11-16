@@ -38,6 +38,8 @@ public:
     QMenu* getCreateTableInstancesPopupMenu() { return m_createTableInstancesPopup; }
     QMenu* getCreateNewViewPopupMenu() {return m_createNewViewPopupMenu; }
     QMenu* getConnectionsPopupMenu() { return m_connectionPopupMenu; }
+    QMenu* getDeployPopupMenu() { return m_deployPopupMenu; }
+
 
     /*
      * Actions
@@ -74,6 +76,7 @@ public:
     QAction* getAction_CreateViewUsingQueryBuilder() { return action_createViewUsingQueryBuilder; }
     QAction* getAction_CreateViewUsingSql() { return action_createViewUsingSql; }
     QAction* getAction_ConnectionConnect() {return action_connectionConnect; }
+    QAction* getAction_ConnectionDelete() {return action_connectionDelete; }
 
 private:
 
@@ -94,6 +97,7 @@ private:
     QMenu* m_connectionPopupMenu;               // popup menu for a connection
     QMenu* m_createTableInstancesPopup;         // popup menu for the table instances selection
     QMenu* m_createNewViewPopupMenu;            // popup for the create new view command.
+    QMenu* m_deployPopupMenu;                   // popup menu for the deployment, will contain the list of connections
 
 
     // the actions in the table popup menu
@@ -149,6 +153,7 @@ private:
     QAction* action_createViewUsingSql;
 
     QAction* action_connectionConnect;
+    QAction* action_connectionDelete;
 
     // the instance of the popup menu collection
     static ContextMenuCollection* m_instance;

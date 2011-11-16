@@ -26,6 +26,7 @@ public:
     }
 
     Connection* getConnection(const QString& name) const;
+    bool deleteConnection(const QString& name);
 
 private:
     ConnectionManager();

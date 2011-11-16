@@ -444,7 +444,7 @@ bool MySQLDatabaseEngine::injectSql(const QString& host, const QString& user, co
 
     if(!ok)
     {
-        lastError = db.lastError().databaseText() + "/" + db.lastError().databaseText();
+        lastError = db.lastError().driverText() + "/" + db.lastError().databaseText();
         return false;
     }
 
@@ -458,7 +458,7 @@ bool MySQLDatabaseEngine::injectSql(const QString& host, const QString& user, co
         {
             if(!query.exec(lastSql))
             {
-                lastError = query.lastError().databaseText() + "/" + query.lastError().databaseText();
+                lastError = query.lastError().driverText() + "/" + query.lastError().databaseText();
                 if(transactionSucces && rollbackOnError)
                 {
                     db.rollback();
@@ -768,4 +768,24 @@ const DatabaseBuiltinFunction& MySQLDatabaseEngine::getBuiltinFunction(const QSt
         }
     }
     return no_function;
+}
+
+bool MySQLDatabaseEngine::tryConnect(const QString& host, const QString& user, const QString& pass, const QString& dbName)
+{
+    QSqlDatabase dbo = QSqlDatabase::addDatabase("QMYSQL");
+
+    dbo.setHostName(host);
+    dbo.setUserName(user);
+    dbo.setPassword(pass);
+    dbo.setDatabaseName(dbName);
+
+    bool ok = dbo.open();
+
+    if(!ok)
+    {
+        lastError = dbo.lastError().driverText() + "/" + dbo.lastError().databaseText();
+        return false;
+    }
+    return true;
+
 }

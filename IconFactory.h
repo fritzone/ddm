@@ -372,6 +372,12 @@ public:
         return icon;
     }
 
+    static const QIcon& getUnConnectedDatabaseIcon()
+    {
+        static const QIcon icon(strUnConnectedDatabaseIcon);
+        return icon;
+    }
+
 
 };
 
