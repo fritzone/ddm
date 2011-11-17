@@ -3,6 +3,9 @@
 
 #include "db_DatabaseEngine.h"
 
+#include <QSqlDatabase>
+#include <QMutex>
+
 class UserDataType;
 class Column;
 
@@ -38,6 +41,7 @@ public:
 private:
 
     static QVector<DatabaseBuiltinFunction> buildFunctions();
+    static QString provideConnectionName(const QString&);
 
 private:
 
@@ -45,6 +49,9 @@ private:
     QMap <QString, UserDataType*> m_oneTimeMappings;
 
     static QVector<DatabaseBuiltinFunction> s_builtinFunctions;
+    static QSqlDatabase m_defaultMysqlDb;
+    static int m_connectionCounter;
+    static QMutex m_connectionMutex;
 
 };
 

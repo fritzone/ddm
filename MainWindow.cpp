@@ -44,7 +44,7 @@
 #include "gui_HelpWindow.h"
 #include "core_Connection.h"
 #include "core_ConnectionManager.h"
-#include "core_DeployerThread.h"
+#include "core_Deployer.h"
 
 #include <QtGui>
 
@@ -1581,13 +1581,18 @@ void MainWindow::onDeploy()
     {
         QStringList sqlList = m_workspace->workingVersion()->getSqlScript(/*injectDialog->getCodepage()*/ "latin1");
         QStringList connectionNames = injectDialog->getSelectedConnections();
-        QVector<DeployerThread*> threads;
-        for(int i=0; i<connectionNames.size(); i++)
-        {
-            DeployerThread* thread = new DeployerThread(m_workspace->currentProjectsEngine(), ConnectionManager::instance()->getConnection(connectionNames.at(i)), sqlList);
-            threads.append(thread);
-            thread->run();
-        }
+        Deployer* deployer = new Deployer(connectionNames, sqlList, this);
+        m_deployers.append(deployer);
+        connect(deployer, SIGNAL(done(Deployer*)), this, SLOT(onDeploymentFinished(Deployer*)));
+        deployer->deploy();
+    }
+}
+
+void MainWindow::onDeploymentFinished(Deployer *d)
+{
+    if(d->hadErrors())
+    {
+        QMap<QString, QString> errors = d->getErrors();
     }
 }
 
