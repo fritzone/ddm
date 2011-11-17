@@ -25,6 +25,7 @@ class Issue;
 class Query;
 class NewViewForm;
 class Connection;
+class Deployer;
 
 namespace Ui
 {
@@ -116,7 +117,7 @@ public slots:
     void onNewConnection();
     void onConnectConnection();
     void onDeleteConnection();
-
+    void onDeploymentFinished(Deployer*);
 
 private:
 
@@ -163,6 +164,7 @@ private:
 
     NewViewForm* m_nvf;
     ContextMenuHandler* m_contextMenuHandler;
+    QVector<Deployer*> m_deployers;
 };
 
 #endif // MAINWINDOW_H
