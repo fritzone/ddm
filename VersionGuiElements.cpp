@@ -385,6 +385,10 @@ ContextMenuEnabledTreeWidgetItem* VersionGuiElements::createIssueTreeEntry(Issue
     {
         itm->setIcon(1, IconFactory::getUnConnectedDatabaseIcon());
     }
+    QTime now = QTime::currentTime();
+    QDate nowd = QDate::currentDate();
+    QString t = nowd.toString() + " - " + now.toString();
+    itm->setText(0, t);
     m_issuesTree->insertTopLevelItem(m_issuesTree->topLevelItemCount(), itm);
     QVariant b(issue->getName());
     itm->setData(0, Qt::UserRole, b);

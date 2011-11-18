@@ -1,8 +1,9 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <QtGui/QMainWindow>
-#include <QtGui/QTreeWidget>
+#include <QMainWindow>
+#include <QTreeWidget>
+#include <QLabel>
 
 class Project;
 class MainWindowButtonDialog;
@@ -168,6 +169,7 @@ private:
     NewViewForm* m_nvf;
     ContextMenuHandler* m_contextMenuHandler;
     QVector<Deployer*> m_deployers;
+    QLabel* lblStatus;
 };
 
 #endif // MAINWINDOW_H

@@ -54,7 +54,7 @@
 #endif
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), m_ui(new Ui::MainWindow), m_projectTreeDock(0), m_datatypesTreeDock(0), m_issuesTreeDock(0), m_connectionsTreeDock(0),
-    m_projectTree(0), m_datatypesTree(0), m_issuesTree(0), m_connectionsTree(0), m_btndlg(0), m_workspace(0), m_revEngWizard(0), m_nvf(0), m_contextMenuHandler(0)
+    m_projectTree(0), m_datatypesTree(0), m_issuesTree(0), m_connectionsTree(0), m_btndlg(0), m_workspace(0), m_revEngWizard(0), m_nvf(0), m_contextMenuHandler(0), lblStatus(0)
 {
     m_ui->setupUi(this);
 
@@ -65,7 +65,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), m_ui(new Ui::Main
     // set up the tree
     m_contextMenuHandler = new ContextMenuHandler();
     m_workspace = Workspace::getInstance();
-
 }
 
 MainWindow::~MainWindow()
@@ -627,7 +626,6 @@ void MainWindow::onNewTable()
     hw->showHelp(QString("/doc/tabl.html"));
 }
 
-
 void MainWindow::showNewDataTypeWindow(int a)
 {
     NewDataTypeForm* frm = new NewDataTypeForm((DataType::DT_TYPE)a, m_workspace->currentProjectsEngine(), this);
@@ -644,8 +642,6 @@ void MainWindow::onNewDataType()
 {
     showNewDataTypeWindow(DataType::DT_INVALID);
 }
-
-
 
 bool MainWindow::onSaveNewDataType(const QString& name, const QString& type, const QString& sqlType, const QString& size, const QString& defaultValue, const QString& cp,
                              const QStringList& mvs, const QString& desc, bool unsi, bool canBeNull, bool autoInc,  UserDataType* pudt)
@@ -697,10 +693,8 @@ bool MainWindow::onSaveNewDataType(const QString& name, const QString& type, con
         // set the link to the tree
         m_datatypesTree->expandItem(newDtItem);
         m_datatypesTree->scrollToItem(newDtItem);
-
         return true;
     }
-
     return false;
 }
 
@@ -1620,6 +1614,22 @@ void MainWindow::onDeploy()
     injectDialog->setModal(true);
     if(injectDialog->exec() == QDialog::Accepted)
     {
+        if(lblStatus) delete lblStatus;
+
+        lblStatus = new QLabel(m_ui->statusBar);
+        lblStatus->setObjectName(QString::fromUtf8("lblStatus"));
+        lblStatus->setGeometry(QRect(160, 10, 131, 21));
+        QFont font;
+        font.setFamily(QString::fromUtf8("Nimbus Sans L"));
+        font.setBold(true);
+        font.setWeight(75);
+        lblStatus->setFont(font);
+        lblStatus->setAutoFillBackground(true);
+        lblStatus->setFrameShape(QFrame::WinPanel);
+        lblStatus->setFrameShadow(QFrame::Sunken);
+        m_ui->statusBar->addWidget(lblStatus);
+        lblStatus->setText(QApplication::translate("MainWindow", "Deploying", 0, QApplication::UnicodeUTF8));
+
         QStringList connectionNames = injectDialog->getSelectedConnections();
         InjectSqlGenerator* injectSqlGen = new InjectSqlGenerator(m_workspace->workingVersion(), connectionNames, this);
         connect(injectSqlGen, SIGNAL(done(InjectSqlGenerator*)), this, SLOT(onSqlGenerationFinished(InjectSqlGenerator*)));
@@ -1646,8 +1656,24 @@ void MainWindow::onDeploymentFinished(Deployer *d)
         for(QMap<QString, QString>::iterator it = errors.begin(); it != errors.end(); it++)
         {
             IssueManager::getInstance().createConnectionIssue(ConnectionManager::instance()->getConnection(it.key()), it.value());
+            lblStatus->setStyleSheet("QLabel { background-color : red; color : white; }");
+            QString t = QApplication::translate("MainWindow", "Deployment failed at ", 0, QApplication::UnicodeUTF8);
+            QTime now = QTime::currentTime();
+            QDate nowd = QDate::currentDate();
+            t += nowd.toString() + " - " + now.toString();
+            lblStatus->setText(t);
         }
     }
+    else
+    {
+        QString t = QApplication::translate("MainWindow", "Deployment succeeded at ", 0, QApplication::UnicodeUTF8);
+        QTime now = QTime::currentTime();
+        QDate nowd = QDate::currentDate();
+        t += nowd.toString() + " - " + now.toString();
+        lblStatus->setText(t);
+        lblStatus->setStyleSheet("QLabel { background-color : green; color : white; }");
+    }
+
 }
 
 void MainWindow::onViewProjectTree()
