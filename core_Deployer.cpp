@@ -12,13 +12,15 @@ void Deployer::deploy()
     for(int i=0; i<m_connections.size(); i++)
     {
         DeployerThread* thread = new DeployerThread(Workspace::getInstance()->currentProjectsEngine(), ConnectionManager::instance()->getConnection(m_connections.at(i)), m_sqls, i);
+        QThread *a = new QThread(this);
+        thread->moveToThread(a);
+        connect(this, SIGNAL(startWork()), thread, SLOT(doWork()));
         connect(thread, SIGNAL(done(int)), this, SLOT(onDeployerThreadIsDone(int)));
         m_deployerThreads.append(thread);
+        a->start();
     }
-    for(int i=0; i<m_deployerThreads.size(); i++)
-    {
-        m_deployerThreads.at(i)->run();
-    }
+
+    emit startWork();
 }
 
 void Deployer::onDeployerThreadIsDone(int idx)

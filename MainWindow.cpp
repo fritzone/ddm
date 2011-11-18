@@ -45,6 +45,7 @@
 #include "core_Connection.h"
 #include "core_ConnectionManager.h"
 #include "core_Deployer.h"
+#include "core_InjectSqlGenerator.h"
 
 #include <QtGui>
 
@@ -170,6 +171,7 @@ void MainWindow::showConnections()
     }
     QObject::connect(ContextMenuCollection::getInstance()->getAction_ConnectionConnect(), SIGNAL(activated()), this, SLOT(onConnectConnection()));
     QObject::connect(ContextMenuCollection::getInstance()->getAction_ConnectionDelete(), SIGNAL(activated()), this, SLOT(onDeleteConnection()));
+    QObject::connect(ContextMenuCollection::getInstance()->getAction_ConnectionEdit(), SIGNAL(activated()), this, SLOT(onEditConnection()));
 
     m_ui->action_ConnectionsTree->setChecked(true);
 }
@@ -192,12 +194,9 @@ ContextMenuEnabledTreeWidgetItem* MainWindow::createConnectionTreeEntry(Connecti
         newConnectionItem->setIcon(0, IconFactory::getConnectedDatabaseIcon());
         break;
     }
-
-
     m_connectionsTree->addTopLevelItem(newConnectionItem);
     newConnectionItem->setPopupMenu(ContextMenuCollection::getInstance()->getConnectionsPopupMenu());
     c->setLocation(newConnectionItem);
-
 }
 
 void MainWindow::setupGuiForNewSolution()
@@ -1402,6 +1401,37 @@ void MainWindow::onDeleteDatatypeFromPopup()
     }
 }
 
+void MainWindow::onEditConnection()
+{
+    Connection* c = getRightclickedConnection();
+    if(c)
+    {
+        InjectSqlDialog* ij = new InjectSqlDialog(0);
+        ij->setModal(true);
+        ij->populateConnectionDetails(c);
+        if(ij->exec()  == QDialog::Accepted)
+        {
+            c->resetTo(ij->getName(), ij->getHost(), ij->getUser(), ij->getPassword(), ij->getDatabase(), true, ij->getAutoConnect());
+            c->getLocation()->setText(0, c->getName());
+            c->getLocation()->setText(1, c->getDb()+"@"+c->getHost());
+            QVariant var(c->getName());
+            c->getLocation()->setData(0, Qt::UserRole, var);
+            switch(c->getState())
+            {
+            case Connection::DID_NOT_TRY:
+                c->getLocation()->setIcon(0, IconFactory::getDatabaseIcon());
+                break;
+            case Connection::FAILED:
+                c->getLocation()->setIcon(0, IconFactory::getUnConnectedDatabaseIcon());
+                break;
+            case Connection::CONNECTED:
+                c->getLocation()->setIcon(0, IconFactory::getConnectedDatabaseIcon());
+                break;
+            }
+        }
+    }
+}
+
 void MainWindow::onDeleteConnection()
 {
     Connection* c = getRightclickedConnection();
@@ -1518,6 +1548,17 @@ void MainWindow::onGotoIssueLocation()
         frm->focusOnNewColumnName();
         frm->setCurrentColumn(testCol);
     }
+    Connection* c = dynamic_cast<Connection*>(source);
+    if(c)
+    {
+        InjectSqlDialog* ij = new InjectSqlDialog(0);
+        ij->setModal(true);
+        ij->populateConnectionDetails(c);
+        if(ij->exec()  == QDialog::Accepted)
+        {
+            c->resetTo(ij->getName(), ij->getHost(), ij->getUser(), ij->getPassword(), ij->getDatabase(), true, ij->getAutoConnect());
+        }
+    }
 }
 
 void MainWindow::onIgnoreIssuesOfATable()
@@ -1579,13 +1620,21 @@ void MainWindow::onDeploy()
     injectDialog->setModal(true);
     if(injectDialog->exec() == QDialog::Accepted)
     {
-        QStringList sqlList = m_workspace->workingVersion()->getSqlScript(/*injectDialog->getCodepage()*/ "latin1");
         QStringList connectionNames = injectDialog->getSelectedConnections();
-        Deployer* deployer = new Deployer(connectionNames, sqlList, this);
-        m_deployers.append(deployer);
-        connect(deployer, SIGNAL(done(Deployer*)), this, SLOT(onDeploymentFinished(Deployer*)));
-        deployer->deploy();
+        InjectSqlGenerator* injectSqlGen = new InjectSqlGenerator(m_workspace->workingVersion(), connectionNames, this);
+        connect(injectSqlGen, SIGNAL(done(InjectSqlGenerator*)), this, SLOT(onSqlGenerationFinished(InjectSqlGenerator*)));
+        injectSqlGen->generate();
     }
+}
+
+void MainWindow::onSqlGenerationFinished(InjectSqlGenerator *generator)
+{
+    QStringList sqlList = generator->getSqls();
+    QStringList connectionNames = generator->getConnectionNames();
+    Deployer* deployer = new Deployer(connectionNames, sqlList, this);
+    m_deployers.append(deployer);
+    connect(deployer, SIGNAL(done(Deployer*)), this, SLOT(onDeploymentFinished(Deployer*)));
+    deployer->deploy();
 }
 
 void MainWindow::onDeploymentFinished(Deployer *d)
@@ -1593,6 +1642,11 @@ void MainWindow::onDeploymentFinished(Deployer *d)
     if(d->hadErrors())
     {
         QMap<QString, QString> errors = d->getErrors();
+        m_issuesTreeDock->show();
+        for(QMap<QString, QString>::iterator it = errors.begin(); it != errors.end(); it++)
+        {
+            IssueManager::getInstance().createConnectionIssue(ConnectionManager::instance()->getConnection(it.key()), it.value());
+        }
     }
 }
 

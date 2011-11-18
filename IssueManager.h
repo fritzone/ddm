@@ -7,6 +7,7 @@
 
 class Table;
 class Column;
+class Connection;
 
 class IssueManager
 {
@@ -46,6 +47,7 @@ public:
 
     Issue* createDatabaseNormalizationIssue( Table* newTab, Column* newCol, Table* firstTab, Column* firstCol);
     Issue* createForeignKeyReccomendedIssue( Table* newTab, Column* newCol, Table* firstTab, Column* firstCol);
+    Issue* createConnectionIssue(Connection* c, QString why);
 
     int nextCounter()
     {

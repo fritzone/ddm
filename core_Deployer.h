@@ -18,6 +18,7 @@ public:
 
 signals:
     void done(Deployer*);
+    void startWork();
 
 public slots:
      void onDeployerThreadIsDone(int);

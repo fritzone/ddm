@@ -97,7 +97,7 @@ QString SingleExpressionQueryComponent::get() const
             switch(m_elements.at(i))
             {
             case CELLTYPE_COLUMN:
-                result += m_columnsAtGivenPosition[i]->getFullLocation();
+                result += m_columnsAtGivenPosition[i]->getFullLocation();   // this goes into IssueOriginator! Beware!
                 break;
             case CELLTYPE_FUNCTION:
                 result += m_functionInstantiationAtGivenPosition[i]->get();

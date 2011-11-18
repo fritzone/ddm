@@ -4,12 +4,14 @@
 #include "SerializableElement.h"
 #include "NamedItem.h"
 #include "TreeItem.h"
+#include "IssueOriginator.h"
 
 #include <QString>
 
 class DatabaseEngine;
+class Table;
 
-class Connection : virtual public SerializableElement, virtual public NamedItem, virtual public TreeItem
+class Connection : virtual public SerializableElement, virtual public TreeItem, virtual public IssueOriginator
 {
 public:
 
@@ -22,6 +24,15 @@ public:
 
     Connection(const QString& name, const QString& host, const QString& user, const QString& pass, const QString& db, bool savePw, bool autoConnect);
     virtual void serialize(QDomDocument& doc, QDomElement& parent) const;
+    virtual Table* getIssueTable() const
+    {
+        return 0;
+    }
+    virtual QString getFullLocation() const
+    {
+        return m_db+"@"+m_host;
+    }
+
     QString getHost() const
     {
         return m_host;
@@ -44,6 +55,7 @@ public:
     {
         return m_pass;
     }
+    void resetTo(const QString& name, const QString& host, const QString& user, const QString& pass, const QString& db, bool savePw, bool autoConnect);
 
 private:
 

@@ -19,7 +19,7 @@ public:
     enum IssueSeverity
     {
         WARNING=0,
-        CRITICAL=1,
+        CRITICAL=1,         // Critical used only for the connection issues
         INFO=2,
         RECOMMENDATION=3
     };

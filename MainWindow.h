@@ -26,6 +26,7 @@ class Query;
 class NewViewForm;
 class Connection;
 class Deployer;
+class InjectSqlGenerator;
 
 namespace Ui
 {
@@ -117,7 +118,9 @@ public slots:
     void onNewConnection();
     void onConnectConnection();
     void onDeleteConnection();
+    void onEditConnection();
     void onDeploymentFinished(Deployer*);
+    void onSqlGenerationFinished(InjectSqlGenerator*);
 
 private:
 

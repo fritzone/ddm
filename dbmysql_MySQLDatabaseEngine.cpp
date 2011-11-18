@@ -800,7 +800,6 @@ const DatabaseBuiltinFunction& MySQLDatabaseEngine::getBuiltinFunction(const QSt
 
 bool MySQLDatabaseEngine::tryConnect(const QString& host, const QString& user, const QString& pass, const QString& dbName)
 {
-    qDebug() << "Trying to connect";
     QString connectConnectionName = provideConnectionName("connect");
     QSqlDatabase dbo = QSqlDatabase::cloneDatabase(m_defaultMysqlDb, connectConnectionName);
 
@@ -817,8 +816,6 @@ bool MySQLDatabaseEngine::tryConnect(const QString& host, const QString& user, c
         return false;
     }
     dbo.close();
-
-    qDebug() << "done connecting, closed too";
     return true;
 
 }

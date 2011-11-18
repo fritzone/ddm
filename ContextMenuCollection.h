@@ -77,6 +77,7 @@ public:
     QAction* getAction_CreateViewUsingSql() { return action_createViewUsingSql; }
     QAction* getAction_ConnectionConnect() {return action_connectionConnect; }
     QAction* getAction_ConnectionDelete() {return action_connectionDelete; }
+    QAction* getAction_ConnectionEdit() {return action_connectionEdit; }
 
 private:
 
@@ -154,6 +155,7 @@ private:
 
     QAction* action_connectionConnect;
     QAction* action_connectionDelete;
+    QAction* action_connectionEdit;
 
     // the instance of the popup menu collection
     static ContextMenuCollection* m_instance;

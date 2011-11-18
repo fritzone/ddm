@@ -144,8 +144,9 @@ void InjectSqlDialog::setupForConnectionStorage()
     ui->grpConnections->hide();
     ui->txtDatabaseName->hide();
     ui->cmbDatabases->show();
+    ui->btnDetails->hide();
 
-    setWindowTitle(QObject::tr("New Connection"));
+    setWindowTitle(QObject::tr("Connection Details"));
     resize(450, 400);
 }
 
