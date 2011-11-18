@@ -7,12 +7,11 @@
 class Connection;
 class DatabaseEngine;
 
-class DeployerThread : public QThread
+class DeployerThread : public QObject
 {
     Q_OBJECT
 public:
     explicit DeployerThread(DatabaseEngine* e, Connection* c, const QStringList& sqls, int i, QObject *parent = 0);
-    void run();
     bool wasFaulted() const
     {
         return !m_success;
@@ -25,6 +24,8 @@ public:
     {
         return m_lastError;
     }
+public slots:
+    void doWork();
 
 signals:
     void done(int);

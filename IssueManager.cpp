@@ -8,6 +8,7 @@
 #include "ContextMenuEnabledTreeWidget.h"
 #include "db_DatabaseNormalizationIssue.h"
 #include "ForeignKeyReccomendationIssue.h"
+#include "core_ConnectionIssue.h"
 
 #include <QApplication>
 
@@ -93,6 +94,14 @@ Issue* IssueManager::createDatabaseNormalizationIssue( Table* newTab, Column* ne
 
     insertIssue(newIssue, firstCol, newIssue->getDescription(), newIssue->getType());
     return newIssue;
+}
+
+Issue* IssueManager::createConnectionIssue(Connection *c, QString why)
+{
+    ConnectionIssue* ciss = new ConnectionIssue(c, why);
+    Workspace::getInstance()->workingVersion()->addIssuse(ciss);
+    Workspace::getInstance()->workingVersion()->getGui()->createIssueTreeEntry(ciss, 0);
+    return ciss;
 }
 
 Issue* IssueManager::createForeignKeyReccomendedIssue( Table* newTab, Column* newCol, Table* firstTab, Column* firstCol)

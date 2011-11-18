@@ -381,6 +381,10 @@ ContextMenuEnabledTreeWidgetItem* VersionGuiElements::createIssueTreeEntry(Issue
     {
         itm->setIcon(1, IconFactory::getRecommendIcon());
     }
+    if(issue->getType() == Issue::CRITICAL) // used only for the connection stuff
+    {
+        itm->setIcon(1, IconFactory::getUnConnectedDatabaseIcon());
+    }
     m_issuesTree->insertTopLevelItem(m_issuesTree->topLevelItemCount(), itm);
     QVariant b(issue->getName());
     itm->setData(0, Qt::UserRole, b);
