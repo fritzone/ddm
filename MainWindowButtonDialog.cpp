@@ -9,7 +9,14 @@ MainWindowButtonDialog::MainWindowButtonDialog(QWidget *parent) :
 {
     m_ui->setupUi(this);
     QString g = QApplication::applicationDirPath() + "/doc/main.html";
-    m_ui->webView->load(QUrl(g));
+
+    QPalette thePalette = this->palette();
+    QLinearGradient gradient(0, 0, 0, 50);
+    gradient.setColorAt(0, Qt::darkGreen);
+    gradient.setColorAt(1, Qt::white);
+    QBrush brush(gradient);
+    thePalette.setBrush(QPalette::Window, brush);
+    setPalette(thePalette);
 }
 
 MainWindowButtonDialog::~MainWindowButtonDialog()
