@@ -150,6 +150,7 @@
         <file>images/actions/new_dbconn.png</file>
         <file>images/small/database_connected.png</file>
         <file>images/small/database_cannot_connect.png</file>
+        <file>images/small/help.png</file>
     </qresource>
     <qresource prefix="/bigger">
         <file>images/unaf.png</file>

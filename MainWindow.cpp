@@ -77,12 +77,14 @@ void MainWindow::showButtonDialog()
 {
     m_btndlg = new MainWindowButtonDialog();
     m_btndlg->setMainWindow(this);
-
-    setCentralWidget(m_btndlg);
+    m_btndlg->setModal(false);
+    m_btndlg->setWindowFlags(Qt::SplashScreen | Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint);
 
     setWindowTitle(tr("DDM - [No Solution]"));
-    resize(800, 600);
-    showNormal();
+    showConnections();
+    showMaximized();
+    m_btndlg->move(this->width() / 2 - m_btndlg->width() / 2, this->height() / 2 - m_btndlg->height() / 2);
+    m_btndlg->show();
 }
 
 void MainWindow::freeGuiElements()
@@ -196,6 +198,7 @@ ContextMenuEnabledTreeWidgetItem* MainWindow::createConnectionTreeEntry(Connecti
     m_connectionsTree->addTopLevelItem(newConnectionItem);
     newConnectionItem->setPopupMenu(ContextMenuCollection::getInstance()->getConnectionsPopupMenu());
     c->setLocation(newConnectionItem);
+    return newConnectionItem ;
 }
 
 void MainWindow::setupGuiForNewSolution()
@@ -277,6 +280,9 @@ ContextMenuEnabledTreeWidgetItem* MainWindow::createDataTypeTreeEntry(UserDataTy
 
 void MainWindow::onNewSolution()
 {
+    Qt::WindowFlags flags = m_btndlg->windowFlags();
+    m_btndlg->setWindowFlags(flags ^ (Qt::SplashScreen |Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint));
+
     NewProjectDialog* nprjdlg = new NewProjectDialog();
     nprjdlg->setModal(true);
     nprjdlg->focusOnEditField();
@@ -291,6 +297,8 @@ void MainWindow::onNewSolution()
             if(!m_workspace->createCurrentSolution(nprjdlg->getSolutionName()))
             {
                 QMessageBox::critical (this, tr("Error"), tr("Cannot create a solution. Not enough memory?"), QMessageBox::Ok);
+                m_btndlg->setWindowFlags(flags | Qt::SplashScreen |Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint);
+                m_btndlg->show();
                 return;
             }
         }
@@ -299,6 +307,8 @@ void MainWindow::onNewSolution()
             if(!m_workspace->createSolution(nprjdlg->getSolutionName()))
             {
                 QMessageBox::critical (this, tr("Error"), tr("Cannot create a solution. Not enough memory?"), QMessageBox::Ok);
+                m_btndlg->setWindowFlags(flags | Qt::SplashScreen |Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint);
+                m_btndlg->show();
                 return;
             }
         }
@@ -351,7 +361,12 @@ void MainWindow::onNewSolution()
         enableActions();
 
         m_workspace->workingVersion()->getGui()->setMainWindow(this);
-
+        delete m_btndlg;
+    }
+    else
+    {
+        m_btndlg->setWindowFlags(flags | Qt::SplashScreen |Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint);
+        m_btndlg->show();
     }
 }
 
@@ -735,15 +750,23 @@ void MainWindow::populateTreeWithSolution(Solution* sol)
 
 void MainWindow::onOpenProject()
 {
+    Qt::WindowFlags flags = m_btndlg->windowFlags();
+    m_btndlg->setWindowFlags(flags ^ (Qt::SplashScreen |Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint));
+
     QString fileName = QFileDialog::getOpenFileName(this,  tr("Open solution"), "", tr("DDM solution files (*.dmx);;All files (*.*)"));
     if(fileName.length() == 0)
     {
+        m_btndlg->setWindowFlags(flags |Qt::SplashScreen | Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint);
+        m_btndlg->show();
         return;
     }
 
     if(!m_workspace->loadSolution(fileName))
     {
         QMessageBox::critical (this, tr("Error"), tr("Cannot load the solution."), QMessageBox::Ok);
+        m_btndlg->setWindowFlags(flags | Qt::SplashScreen |Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint);
+        m_btndlg->show();
+
         return;
     }
 
@@ -771,6 +794,7 @@ void MainWindow::onOpenProject()
     enableActions();
 
     m_workspace->workingVersion()->getGui()->setMainWindow(this);
+    delete m_btndlg;
 
 }
 
