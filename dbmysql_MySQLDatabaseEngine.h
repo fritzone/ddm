@@ -28,7 +28,7 @@ public:
     virtual QString getDefaultDatatypesLocation();
     virtual bool reverseEngineerDatabase(const QString& host, const QString& user, const QString& pass, const QString& dbName, QVector<QString> tables, QVector<QString> views, Project* p, bool relaxed);
     virtual Table* reverseEngineerTable(const QString& host, const QString& user, const QString& pass, const QString& dbName, const QString& tableName, Project* p, bool relaxed);
-    virtual View* reverseEngineerView(const QString& host, const QString& user, const QString& pass, const QString& dbName, const QString& viewName, Project* p);
+    virtual View* reverseEngineerView(const QString& host, const QString& user, const QString& pass, const QString& dbName, const QString& viewName);
     virtual QVector<QString> getAvailableDatabases(const QString& host, const QString& user, const QString& pass);
     virtual QVector<QString> getAvailableTables(const QString& host, const QString& user, const QString& pass, const QString& db);
     virtual QVector<QString> getAvailableViews(const QString& host, const QString& user, const QString& pass, const QString& db);

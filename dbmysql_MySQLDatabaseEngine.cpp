@@ -13,7 +13,6 @@
 #include "Version.h"
 #include "Column.h"
 #include "Project.h"
-#include "VersionGuiElements.h" // TODO: This is bad design. Find a way to remove this from here
 #include "UserDataType.h"
 #include "Index.h"
 #include "TableInstance.h"
@@ -49,14 +48,13 @@ bool MySQLDatabaseEngine::reverseEngineerDatabase(const QString& host, const QSt
     {
         Table* tab = reverseEngineerTable(host, user, pass, dbName, tables.at(i), p, relaxed);
         v->addTable(tab);
-        v->getGui()->createTableTreeEntry(tab);
     }
 
     for(int i=0; i<views.size(); i++)
     {
-        View* view = reverseEngineerView(host, user, pass, dbName, views.at(i), p);
+        View* view = reverseEngineerView(host, user, pass, dbName, views.at(i));
         v->addView(view);
-        v->getGui()->createViewTreeEntry(view);
+        //v->getGui()->createViewTreeEntry(view);
     }
 
     // and now try to find some nice names for the user data types
@@ -130,7 +128,7 @@ bool MySQLDatabaseEngine::reverseEngineerDatabase(const QString& host, const QSt
             dbo.close();
         }
     }
-
+    qDebug() << "bye bye";
     return true;
 }
 
@@ -198,7 +196,7 @@ QVector<QString> MySQLDatabaseEngine::getAvailableTables(const QString& host, co
     return result;
 }
 
-View* MySQLDatabaseEngine::reverseEngineerView(const QString& host, const QString& user, const QString& pass, const QString& dbName, const QString& viewName, Project* p)
+View* MySQLDatabaseEngine::reverseEngineerView(const QString& host, const QString& user, const QString& pass, const QString& dbName, const QString& viewName)
 {
     QString viewConnectionName = provideConnectionName("getView");
     QSqlDatabase dbo = QSqlDatabase::cloneDatabase(m_defaultMysqlDb, viewConnectionName);
@@ -420,7 +418,7 @@ Table* MySQLDatabaseEngine::reverseEngineerTable(const QString& host, const QStr
             TableInstance* inst = v->instantiateTable(tab, false);
             inst->setValues(values);
 
-            v->getGui()->createTableInstanceTreeEntry(inst);
+            //v->getGui()->createTableInstanceTreeEntry(inst);
         }
     }
 

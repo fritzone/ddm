@@ -12,6 +12,7 @@
 #include "VersionGuiElements.h"
 #include "MainWindow.h"
 #include "gui_HelpWindow.h"
+#include "core_ConnectionManager.h"
 
 #include <QFileDialog>
 #include <QMessageBox>
@@ -56,13 +57,27 @@ void SqlForm::onInject()
     if(injectDialog->exec() == QDialog::Accepted)
     {
         QString tSql;
-        if(!m_engine->injectSql(injectDialog->getHost(), injectDialog->getUser(), injectDialog->getPassword(), injectDialog->getDatabase(), sqlList, tSql, injectDialog->getRollbackOnError(), injectDialog->getCreateOnlyIfNotExist()))
+        QStringList connectionNames = injectDialog->getSelectedConnections();
+        bool error;
+        for(int i=0; i< connectionNames.size(); i++)
         {
-            QMessageBox::critical (this, tr("Error"), tr("<B>Cannot execute a query!</B><P>Reason: ") + m_engine->getLastError() + tr(".<P>Query:<PRE>") + tSql+ "</PRE><P>" +
-                                   (injectDialog->getRollbackOnError()?tr("Transaction was rolled back."):tr("Transaction was <font color=red><B>NOT</B></font> rolled back, you might have partial data in your database.")), QMessageBox::Ok);
-            ui->labelDeploymentStatus->setText("Unsuccesful deployment");
-            return;
+            Connection* c = ConnectionManager::instance()->getConnection(connectionNames.at(i));
+            if(c)
+            {
+                QString host = c->getHost();
+                QString user = c->getUser();
+                QString pass = c->getPassword();
+                QString db = c->getDb();
+                if(!m_engine->injectSql(host, user, pass, db, sqlList, tSql, injectDialog->getRollbackOnError(), injectDialog->getCreateOnlyIfNotExist()))
+                {
+                    QMessageBox::critical (this, tr("Error"), tr("<B>Cannot execute a query!</B><P>Reason: ") + m_engine->getLastError() + tr(".<P>Query:<PRE>") + tSql+ "</PRE><P>" +
+                                           (injectDialog->getRollbackOnError()?tr("Transaction was rolled back."):tr("Transaction was <font color=red><B>NOT</B></font> rolled back, you might have partial data in your database.")), QMessageBox::Ok);
+                    error = true;
+                }
+            }
         }
+        MainWindow::instance()->setStatus(QString("SQL injection ") + (error?" failed":" succeeded"), error);
+
     }
     ui->labelDeploymentStatus->setText("Succesful deployment");
 }

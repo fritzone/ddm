@@ -1,6 +1,7 @@
 #include "MainWindowButtonDialog.h"
 #include "ui_MainWindowButtonDialog.h"
 #include "MainWindow.h"
+#include "gui_HelpWindow.h"
 
 MainWindowButtonDialog::MainWindowButtonDialog(QWidget *parent) :
     QDialog(parent),
@@ -8,8 +9,6 @@ MainWindowButtonDialog::MainWindowButtonDialog(QWidget *parent) :
     m_mw(0)
 {
     m_ui->setupUi(this);
-    QString g = QApplication::applicationDirPath() + "/doc/main.html";
-
     QPalette thePalette = this->palette();
     QLinearGradient gradient(0, 0, 0, 50);
     gradient.setColorAt(0, Qt::darkGreen);
@@ -45,11 +44,11 @@ void MainWindowButtonDialog::onOpenProject()
     }
 }
 
-void MainWindowButtonDialog::onShowConnections()
+void MainWindowButtonDialog::onNewConnection()
 {
     if(m_mw)
     {
-        m_mw->showConnections();
+        m_mw->onNewConnection();
     }
 }
 
@@ -69,4 +68,11 @@ void MainWindowButtonDialog::changeEvent(QEvent *e)
     default:
         break;
     }
+}
+
+void MainWindowButtonDialog::onHelp()
+{
+    HelpWindow* hw = HelpWindow::instance();
+    hw->showHelp(QString("/doc/main.html"));
+    hw->show();
 }

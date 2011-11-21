@@ -38,8 +38,8 @@ public:
     QMenu* getCreateTableInstancesPopupMenu() { return m_createTableInstancesPopup; }
     QMenu* getCreateNewViewPopupMenu() {return m_createNewViewPopupMenu; }
     QMenu* getConnectionsPopupMenu() { return m_connectionPopupMenu; }
-    QMenu* getDeployPopupMenu() { return m_deployPopupMenu; }
-
+    QMenu* getDeployPopupMenu();
+    QMenu* getViewsPopupMenu() { return m_viewsPopupMenu; }
 
     /*
      * Actions
@@ -99,6 +99,7 @@ private:
     QMenu* m_createTableInstancesPopup;         // popup menu for the table instances selection
     QMenu* m_createNewViewPopupMenu;            // popup for the create new view command.
     QMenu* m_deployPopupMenu;                   // popup menu for the deployment, will contain the list of connections
+    QMenu* m_viewsPopupMenu;                    // popup menu for the views tree element
 
 
     // the actions in the table popup menu
