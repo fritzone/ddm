@@ -28,6 +28,7 @@ class NewViewForm;
 class Connection;
 class Deployer;
 class InjectSqlGenerator;
+class ReverseEngineerer;
 
 namespace Ui
 {
@@ -39,6 +40,9 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
+
+    typedef bool (MainWindow::*dynamicAction)(QString);
+
     MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
@@ -53,6 +57,7 @@ public:
 
     bool onSaveDiagram(Diagram*);
 
+    void instantiateTableCallback(const QString& tabName);
     ContextMenuEnabledTreeWidgetItem* instantiateTable(const QString& tabName, QStringList otherTablesBeingInstantiated, bool ref = false, Table* referencingTable = 0, TableInstance* becauseOfThis = 0);
 
     void showTable(const QString& tabName, bool focus = true);
@@ -61,6 +66,10 @@ public:
 
     void rerenderQuery(Query*);
     void showConnections();
+    static MainWindow* instance()
+    {
+        return m_instance;
+    }
 
 public slots:
 
@@ -122,7 +131,12 @@ public slots:
     void onEditConnection();
     void onDeploymentFinished(Deployer*);
     void onSqlGenerationFinished(InjectSqlGenerator*);
+    void onReverseEngineeringFinished(ReverseEngineerer*);
+    void onDeployHovered();
 
+public:
+    void createStatusLabel();
+    void setStatus(const QString& s, bool err);
 private:
 
     void setupGuiForNewSolution();
@@ -170,6 +184,7 @@ private:
     ContextMenuHandler* m_contextMenuHandler;
     QVector<Deployer*> m_deployers;
     QLabel* lblStatus;
+    static MainWindow* m_instance;
 };
 
 #endif // MAINWINDOW_H

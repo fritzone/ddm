@@ -26,6 +26,7 @@
 #include "IssueManager.h"
 #include "VersionGuiElements.h"
 #include "gui_HelpWindow.h"
+#include "core_ConnectionManager.h"
 
 #include <QMessageBox>
 #include <QHashIterator>
@@ -1968,14 +1969,29 @@ void NewTableForm::onInject()
     InjectSqlDialog* injectDialog = new InjectSqlDialog(Workspace::getInstance()->currentProjectsEngine(), this);
     injectDialog->selectCodePage(m_ui->cmbCharSetForSql->currentIndex());
     injectDialog->setModal(true);
+    bool error = false;
     if(injectDialog->exec() == QDialog::Accepted)
     {
         QString tSql;
-        if(!m_dbEngine->injectSql(injectDialog->getHost(), injectDialog->getUser(), injectDialog->getPassword(), injectDialog->getDatabase(), finalSql, tSql, injectDialog->getRollbackOnError(), injectDialog->getCreateOnlyIfNotExist()))
+        QStringList connectionNames = injectDialog->getSelectedConnections();
+        for(int i=0; i< connectionNames.size(); i++)
         {
-            QMessageBox::critical (this, tr("Error"), tr("<B>Cannot execute a query!</B><P>Reason: ") + m_dbEngine->getLastError() + tr(".<P>Query:<PRE>") + tSql+ "</PRE><P>" +
-                                   (injectDialog->getRollbackOnError()?tr("Transaction was rolled back."):tr("Transaction was <font color=red><B>NOT</B></font> rolled back, you might have partial data in your database.")), QMessageBox::Ok);
+            Connection* c = ConnectionManager::instance()->getConnection(connectionNames.at(i));
+            if(c)
+            {
+                QString host = c->getHost();
+                QString user = c->getUser();
+                QString pass = c->getPassword();
+                QString db = c->getDb();
+                if(!m_dbEngine->injectSql(host, user, pass, db, finalSql, tSql, injectDialog->getRollbackOnError(), injectDialog->getCreateOnlyIfNotExist()))
+                {
+                    QMessageBox::critical (this, tr("Error"), tr("<B>Cannot execute a query!</B><P>Reason: ") + m_dbEngine->getLastError() + tr(".<P>Query:<PRE>") + tSql+ "</PRE><P>" +
+                                           (injectDialog->getRollbackOnError()?tr("Transaction was rolled back."):tr("Transaction was <font color=red><B>NOT</B></font> rolled back, you might have partial data in your database.")), QMessageBox::Ok);
+                    error = true;
+                }
+            }
         }
+        MainWindow::instance()->setStatus(QString("Creating table ") + m_table->getName() + (error?" Failed":" Succeeded"), error);
     }
 }
 

@@ -46,15 +46,17 @@
 #include "core_ConnectionManager.h"
 #include "core_Deployer.h"
 #include "core_InjectSqlGenerator.h"
+#include "core_ReverseEngineerer.h"
 
 #include <QtGui>
 
 #ifdef Q_WS_X11
 //Q_IMPORT_PLUGIN(qsqlmysql)
 #endif
+MainWindow* MainWindow::m_instance = 0;
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), m_ui(new Ui::MainWindow), m_projectTreeDock(0), m_datatypesTreeDock(0), m_issuesTreeDock(0), m_connectionsTreeDock(0),
-    m_projectTree(0), m_datatypesTree(0), m_issuesTree(0), m_connectionsTree(0), m_btndlg(0), m_workspace(0), m_revEngWizard(0), m_nvf(0), m_contextMenuHandler(0), lblStatus(0)
+        m_projectTree(0), m_datatypesTree(0), m_issuesTree(0), m_connectionsTree(0), m_btndlg(0), m_workspace(0), m_revEngWizard(0), m_nvf(0), m_contextMenuHandler(0), lblStatus(0)
 {
     m_ui->setupUi(this);
 
@@ -65,6 +67,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), m_ui(new Ui::Main
     // set up the tree
     m_contextMenuHandler = new ContextMenuHandler();
     m_workspace = Workspace::getInstance();
+    m_instance = this;
 }
 
 MainWindow::~MainWindow()
@@ -78,13 +81,18 @@ void MainWindow::showButtonDialog()
     m_btndlg = new MainWindowButtonDialog();
     m_btndlg->setMainWindow(this);
     m_btndlg->setModal(false);
-    m_btndlg->setWindowFlags(Qt::SplashScreen | Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint);
+    m_btndlg->setWindowFlags(Qt::SplashScreen | Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint | Qt::X11BypassWindowManagerHint);
 
     setWindowTitle(tr("DDM - [No Solution]"));
     showConnections();
     showMaximized();
-    m_btndlg->move(this->width() / 2 - m_btndlg->width() / 2, this->height() / 2 - m_btndlg->height() / 2);
+    QDesktopWidget *d = QApplication::desktop();
+
+    QRect t = d->availableGeometry(this);
+    qDebug() << d->geometry() << " " << t << mapToGlobal(this->geometry().topLeft());
+    m_btndlg->move(mapToGlobal(this->geometry().topLeft()).x() + t.center().x() - m_btndlg->width() / 2, t.center().y()- m_btndlg->height() / 2);
     m_btndlg->show();
+
 }
 
 void MainWindow::freeGuiElements()
@@ -1173,6 +1181,11 @@ void MainWindow::onNewTableInstance()
     }
 }
 
+void MainWindow::onDeployHovered()
+{
+
+}
+
 void MainWindow::onNewTableInstanceHovered()
 {
     QMenu* createTableInstancesPopup = ContextMenuCollection::getInstance()->getCreateTableInstancesPopupMenu();
@@ -1189,9 +1202,14 @@ void MainWindow::onNewTableInstanceHovered()
             actionToAdd->setIcon(icon);
             createTableInstancesPopup->addAction(actionToAdd);
             QObject::connect(actionToAdd, SIGNAL(activated()),
-                             new DynamicActionHandlerforMainWindow(m_workspace->workingVersion()->getTables()[i]->getName(), this), SLOT(called()));
+                             new DynamicActionHandlerforMainWindow(m_workspace->workingVersion()->getTables()[i]->getName(), this, (MainWindow::dynamicAction)&MainWindow::instantiateTableCallback), SLOT(called()));
         }
     }
+}
+
+void MainWindow::instantiateTableCallback(const QString &tabName)
+{
+    instantiateTable(tabName, QStringList());
 }
 
 ContextMenuEnabledTreeWidgetItem* MainWindow::instantiateTable(const QString& tabName, QStringList othersTablesBeingInstantiated, bool ref, Table* referencingTable, TableInstance* becauseOfThis)
@@ -1606,6 +1624,26 @@ void MainWindow::onIgnoreIssue()
     m_workspace->workingVersion()->getGui()->cleanupOrphanedIssueTableItems();
 }
 
+void MainWindow::createStatusLabel()
+{
+    if(lblStatus) delete lblStatus;
+
+    lblStatus = new QLabel(m_ui->statusBar);
+    lblStatus->setObjectName(QString::fromUtf8("lblStatus"));
+    lblStatus->setGeometry(QRect(160, 10, 131, 21));
+    QFont font;
+    font.setFamily(QString::fromUtf8("Nimbus Sans L"));
+    font.setBold(true);
+    font.setWeight(75);
+    lblStatus->setFont(font);
+    lblStatus->setAutoFillBackground(true);
+    lblStatus->setFrameShape(QFrame::WinPanel);
+    lblStatus->setFrameShadow(QFrame::Sunken);
+    m_ui->statusBar->addWidget(lblStatus);
+    lblStatus->setText(QApplication::translate("MainWindow", "Deploying", 0, QApplication::UnicodeUTF8));
+
+}
+
 void MainWindow::onDeploy()
 {
     if(m_workspace->currentProjectIsOop())
@@ -1638,26 +1676,30 @@ void MainWindow::onDeploy()
     injectDialog->setModal(true);
     if(injectDialog->exec() == QDialog::Accepted)
     {
-        if(lblStatus) delete lblStatus;
-
-        lblStatus = new QLabel(m_ui->statusBar);
-        lblStatus->setObjectName(QString::fromUtf8("lblStatus"));
-        lblStatus->setGeometry(QRect(160, 10, 131, 21));
-        QFont font;
-        font.setFamily(QString::fromUtf8("Nimbus Sans L"));
-        font.setBold(true);
-        font.setWeight(75);
-        lblStatus->setFont(font);
-        lblStatus->setAutoFillBackground(true);
-        lblStatus->setFrameShape(QFrame::WinPanel);
-        lblStatus->setFrameShadow(QFrame::Sunken);
-        m_ui->statusBar->addWidget(lblStatus);
-        lblStatus->setText(QApplication::translate("MainWindow", "Deploying", 0, QApplication::UnicodeUTF8));
-
+        createStatusLabel();
         QStringList connectionNames = injectDialog->getSelectedConnections();
         InjectSqlGenerator* injectSqlGen = new InjectSqlGenerator(m_workspace->workingVersion(), connectionNames, this);
         connect(injectSqlGen, SIGNAL(done(InjectSqlGenerator*)), this, SLOT(onSqlGenerationFinished(InjectSqlGenerator*)));
         injectSqlGen->generate();
+    }
+}
+
+void MainWindow::setStatus(const QString& s, bool err)
+{
+    if(!lblStatus) createStatusLabel();
+    QString t = s;
+    QTime now = QTime::currentTime();
+    QDate nowd = QDate::currentDate();
+    t += nowd.toString() + " - " + now.toString();
+    lblStatus->setText(t);
+    if(err)
+    {
+        lblStatus->setStyleSheet("QLabel { background-color : red; color : white; }");
+    }
+    else
+    {
+        lblStatus->setStyleSheet("QLabel { background-color : green; color : white; }");
+
     }
 }
 
@@ -1758,7 +1800,6 @@ void MainWindow::onReverseEngineerWizardNextPage(int cpage)
         }
 
         m_revEngWizard->connectAndRetrieveViews();
-
     }
 }
 
@@ -1766,8 +1807,46 @@ void MainWindow::onReverseEngineerWizardAccept()
 {
     QVector<QString> tabsToReverse = m_revEngWizard->getTablesToReverse();
     QVector<QString> viewsToReverse = m_revEngWizard->getViewsToReverse();
-    m_workspace->currentProjectsEngine()->reverseEngineerDatabase(m_revEngWizard->getHost(), m_revEngWizard->getUser(), m_revEngWizard->getPasword(), m_revEngWizard->getDatabase(),
-                                                                  tabsToReverse, viewsToReverse, m_workspace->currentProject(), !m_revEngWizard->createDataTypesForColumns());
+    QString host = m_revEngWizard->getHost();
+    QString user = m_revEngWizard->getUser();
+    QString pass = m_revEngWizard->getPasword();
+    QString db = m_revEngWizard->getDatabase();
+    Project* p = m_workspace->currentProject();
+    bool c = !m_revEngWizard->createDataTypesForColumns();
+    DatabaseEngine* engine = m_workspace->currentProjectsEngine();
+
+    createStatusLabel();
+    lblStatus->setText(QApplication::translate("MainWindow", "Reverse engineering started", 0, QApplication::UnicodeUTF8));
+
+    ReverseEngineerer* revEng = new ReverseEngineerer(c, engine, p, host, user, pass, db, tabsToReverse, viewsToReverse, this);
+    connect(revEng, SIGNAL(done(ReverseEngineerer*)), this, SLOT(onReverseEngineeringFinished(ReverseEngineerer*)));
+    revEng->reverseEngineer();
+}
+
+void MainWindow::onReverseEngineeringFinished(ReverseEngineerer*)
+{
+    lblStatus->setText(QApplication::translate("MainWindow", "Reverse engineering finished", 0, QApplication::UnicodeUTF8));
+    {
+    const QVector<Table*> tables = m_workspace->workingVersion()->getTables();
+    for(int i=0; i<tables.size(); i++)
+    {
+        m_workspace->workingVersion()->getGui()->createTableTreeEntry(tables.at(i));
+    }
+    }
+    {
+    const QVector<View*> views = m_workspace->workingVersion()->getViews();
+    for(int i=0; i<views.size(); i++)
+    {
+        m_workspace->workingVersion()->getGui()->createViewTreeEntry(views.at(i));
+    }
+    }
+    {
+    const QVector<TableInstance*> tableInstances = m_workspace->workingVersion()->getTableInstances();
+    for(int i=0; i<tableInstances.size(); i++)
+    {
+        m_workspace->workingVersion()->getGui()->createTableInstanceTreeEntry(tableInstances.at(i));
+    }
+    }
 }
 
 void MainWindow::onNewConnection()
@@ -1788,7 +1867,6 @@ void MainWindow::onNewConnection()
         Connection* c = new Connection(name, host, user, password, db, true, injectDialog->getAutoConnect());
         ConnectionManager::instance()->addConnection(c);
         createConnectionTreeEntry(c);
-        //return newConnectionItem;
     }
 }
 
@@ -1810,7 +1888,6 @@ void MainWindow::onNewViewWithSql()
     View* v = new View(true);
     Workspace::getInstance()->workingVersion()->addView(v);
     Workspace::getInstance()->workingVersion()->getGui()->createViewTreeEntry(v);
-
 
     m_nvf->setSqlSource(v);
     m_nvf->setView(v);

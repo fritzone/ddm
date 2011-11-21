@@ -735,6 +735,22 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>action_Deploy</sender>
+   <signal>hovered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>onDeployHovered()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>454</x>
+     <y>67</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>onNewSolution()</slot>
@@ -756,5 +772,6 @@
   <slot>onNewView()</slot>
   <slot>onNewConnection()</slot>
   <slot>onViewConnectionsTree()</slot>
+  <slot>onDeployHovered()</slot>
  </slots>
 </ui>

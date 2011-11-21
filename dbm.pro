@@ -119,7 +119,9 @@ SOURCES += main.cpp \
     core_Deployer.cpp \
     core_ConnectionIssue.cpp \
     core_InjectSqlGenerator.cpp \
-    core_InjectSqlGeneratorThread.cpp
+    core_InjectSqlGeneratorThread.cpp \
+    core_ReverseEngineerer.cpp \
+    core_ReverseEngineererThread.cpp
 HEADERS += MainWindow.h \
     MainWindowButtonDialog.h \
     NewProjectDialog.h \
@@ -261,7 +263,9 @@ HEADERS += MainWindow.h \
     core_Deployer.h \
     core_ConnectionIssue.h \
     core_InjectSqlGenerator.h \
-    core_InjectSqlGeneratorThread.h
+    core_InjectSqlGeneratorThread.h \
+    core_ReverseEngineerer.h \
+    core_ReverseEngineererThread.h
 FORMS += MainWindow.ui \
     MainWindowButtonDialog.ui \
     NewProjectDialog.ui \

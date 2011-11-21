@@ -95,7 +95,7 @@ public:
     virtual bool createDatabase(const QString& host, const QString& user, const QString& pass, const QString&) = 0;
     virtual QVector<DatabaseBuiltinFunction> getBuiltinFunctions() = 0;
     virtual const DatabaseBuiltinFunction& getBuiltinFunction(const QString& name) = 0;
-    virtual View* reverseEngineerView(const QString& host, const QString& user, const QString& pass, const QString& dbName, const QString& viewName, Project* p) = 0;
+    virtual View* reverseEngineerView(const QString& host, const QString& user, const QString& pass, const QString& dbName, const QString& viewName) = 0;
 
     QString getTypeStringForSqlType(const QString& sqlType);
     virtual bool tryConnect(const QString& host, const QString& user, const QString& pass, const QString& dbName) = 0;

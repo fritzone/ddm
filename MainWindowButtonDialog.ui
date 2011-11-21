@@ -138,7 +138,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QCommandLinkButton" name="commandLinkButton_3">
+         <widget class="QCommandLinkButton" name="btnNewConnection">
           <property name="font">
            <font>
             <family>Segoe UI</family>
@@ -197,7 +197,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QCommandLinkButton" name="btnOpen_2">
+         <widget class="QCommandLinkButton" name="btnHelp">
           <property name="font">
            <font>
             <family>Segoe UI</family>
@@ -303,11 +303,44 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>btnNewConnection</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindowButtonDialog</receiver>
+   <slot>onNewConnection()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>298</x>
+     <y>123</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>297</x>
+     <y>170</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnHelp</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindowButtonDialog</receiver>
+   <slot>onHelp()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>484</x>
+     <y>77</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>297</x>
+     <y>170</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>onNewProject()</slot>
   <slot>onCloseWindow()</slot>
   <slot>onOpenProject()</slot>
-  <slot>onShowConnections()</slot>
+  <slot>onNewConnection()</slot>
+  <slot>onHelp()</slot>
  </slots>
 </ui>

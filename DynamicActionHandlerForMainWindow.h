@@ -4,7 +4,7 @@
 #include <QObject>
 #include <QAction>
 
-class MainWindow;
+#include "MainWindow.h"
 
 class DynamicActionHandlerforMainWindow : public QObject
 {
@@ -12,7 +12,7 @@ class DynamicActionHandlerforMainWindow : public QObject
 
 public:
 
-    DynamicActionHandlerforMainWindow(const QString& a, MainWindow* w);
+    DynamicActionHandlerforMainWindow(const QString& a, MainWindow* w, MainWindow::dynamicAction);
 
 
 public slots:
@@ -23,6 +23,7 @@ private:
 
     QString actionName;
     MainWindow* mainWindow;
+    MainWindow::dynamicAction callMe;
 
 };
 

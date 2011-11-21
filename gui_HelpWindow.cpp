@@ -11,7 +11,7 @@ HelpWindow* HelpWindow::instance()
 {
     if(m_instance == 0)
     {
-        m_instance = new HelpWindow(Workspace::getInstance()->workingVersion()->getGui()->getMainWindow());
+        m_instance = new HelpWindow(MainWindow::instance());
     }
     return m_instance;
 }
@@ -21,12 +21,6 @@ HelpWindow::HelpWindow(QWidget *parent) :
     ui(new Ui::HelpWindow)
 {
     ui->setupUi(this);
-    setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
-    setFeatures(QDockWidget::AllDockWidgetFeatures);
-    setFloating(false);
-    setMinimumSize(300, 340);
-    setMaximumSize(500, 9999);
-    setSizePolicy(QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Maximum));
     resize(400,600);
 }
 
