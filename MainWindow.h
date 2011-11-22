@@ -58,6 +58,8 @@ public:
     bool onSaveDiagram(Diagram*);
 
     void instantiateTableCallback(const QString& tabName);
+    void specificDeploymentCallback(const QString& connName);
+
     ContextMenuEnabledTreeWidgetItem* instantiateTable(const QString& tabName, QStringList otherTablesBeingInstantiated, bool ref = false, Table* referencingTable = 0, TableInstance* becauseOfThis = 0);
 
     void showTable(const QString& tabName, bool focus = true);
@@ -156,6 +158,7 @@ private:
     void showProjectDetails();
     void showNewDataTypeWindow(int);
     NewTableForm* showExistingTable(Table*);
+    void doDeployment(const QString& codePage, QStringList connectionNames);
 
 private:
     Ui::MainWindow *m_ui;

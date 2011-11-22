@@ -3,12 +3,12 @@
 
 #include <QDebug>
 
-InjectSqlGeneratorThread::InjectSqlGeneratorThread(Version* v, QObject *parent) : QObject(parent), m_version(v)
+InjectSqlGeneratorThread::InjectSqlGeneratorThread(const QString& codePage, Version* v, QObject *parent) : QObject(parent), m_version(v), m_codePage(codePage)
 {
 }
 
 void InjectSqlGeneratorThread::doWork()
 {
-    m_sqls = m_version->getSqlScript(/*injectDialog->getCodepage()*/ "latin1");
+    m_sqls = m_version->getSqlScript(m_codePage);
     emit done(this);
 }

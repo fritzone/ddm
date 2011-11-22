@@ -89,7 +89,6 @@ void MainWindow::showButtonDialog()
     QDesktopWidget *d = QApplication::desktop();
 
     QRect t = d->availableGeometry(this);
-    qDebug() << d->geometry() << " " << t << mapToGlobal(this->geometry().topLeft());
     m_btndlg->move(mapToGlobal(this->geometry().topLeft()).x() + t.center().x() - m_btndlg->width() / 2, t.center().y()- m_btndlg->height() / 2);
     m_btndlg->show();
 
@@ -159,7 +158,6 @@ void MainWindow::showConnections()
     m_connectionsTree->setItemDelegate(new ContextMenuDelegate(m_contextMenuHandler,m_projectTree));
     m_connectionsTree->setColumnCount(2);
     m_connectionsTree->setHeaderHidden(false);
-    QObject::connect(m_projectTree, SIGNAL (currentItemChanged ( QTreeWidgetItem*, QTreeWidgetItem*)), this, SLOT(currentProjectTreeItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)));
 
     QTreeWidgetItem *___qtreewidgetitem = m_connectionsTree->headerItem();
     ___qtreewidgetitem->setText(0, QApplication::translate("MainWindow", "Name", 0, QApplication::UnicodeUTF8));
@@ -842,6 +840,7 @@ void MainWindow::enableActions()
     m_ui->action_NewTableInstance->setMenu(ContextMenuCollection::getInstance()->getCreateTableInstancesPopupMenu());
     m_ui->action_NewDataType->setMenu(ContextMenuCollection::getInstance()->getDatatypesPopupMenu());
     m_ui->action_NewView->setMenu(ContextMenuCollection::getInstance()->getCreateNewViewPopupMenu());
+    m_ui->action_Deploy->setMenu(ContextMenuCollection::getInstance()->getDeployPopupMenu());
 }
 
 void MainWindow::connectActionsFromTablePopupMenu()
@@ -895,9 +894,25 @@ void MainWindow::connectActionsFromTablePopupMenu()
 
 void MainWindow::onAbout()
 {
+    bool wasBtndlg = false;
+    if(m_btndlg && m_btndlg->isVisible())
+    {
+        Qt::WindowFlags flags = m_btndlg->windowFlags();
+        m_btndlg->setWindowFlags(flags ^ (Qt::SplashScreen |Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint));
+        wasBtndlg = true;
+    }
+
     AboutBoxDialog* about = new AboutBoxDialog(this);
     about->setModal(true);
     about->exec();
+
+    if(m_btndlg && wasBtndlg)
+    {
+        Qt::WindowFlags flags = m_btndlg->windowFlags();
+        m_btndlg->setWindowFlags(flags | Qt::SplashScreen |Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint);
+        m_btndlg->show();
+    }
+
 }
 
 void MainWindow::onNewDiagram()
@@ -1181,10 +1196,42 @@ void MainWindow::onNewTableInstance()
     }
 }
 
+void MainWindow::specificDeploymentCallback(const QString &connName)
+{
+    QStringList t;
+    t << connName;
+    doDeployment(QString("latin1"), t);
+}
+
 void MainWindow::onDeployHovered()
 {
-
+    QMenu* deployPopupMenu = ContextMenuCollection::getInstance()->getDeployPopupMenu();
+    deployPopupMenu->clear();
+    const QVector<Connection*> cons = ConnectionManager::instance()->connections();
+    for(int i=0; i< cons.size(); i++)
+    {
+        QAction* act = new QAction(this);
+        act->setText(cons.at(i)->getName() + " - " + cons.at(i)->getDb()+"@"+cons.at(i)->getHost());
+        act->setData(cons.at(i)->getName());
+        switch(cons.at(i)->getState())
+        {
+        case Connection::DID_NOT_TRY:
+            act->setIcon(IconFactory::getDatabaseIcon());
+            break;
+        case Connection::FAILED:
+            act->setIcon(IconFactory::getUnConnectedDatabaseIcon());
+            break;
+        case Connection::CONNECTED:
+            act->setIcon(IconFactory::getConnectedDatabaseIcon());
+            break;
+        }
+        deployPopupMenu->addAction(act);
+        QObject::connect(act, SIGNAL(activated()),
+                new DynamicActionHandlerforMainWindow(cons.at(i)->getName(), this, (MainWindow::dynamicAction)&MainWindow::specificDeploymentCallback),
+                SLOT(called()));
+    }
 }
+
 
 void MainWindow::onNewTableInstanceHovered()
 {
@@ -1651,7 +1698,7 @@ void MainWindow::onDeploy()
         if(m_workspace->workingVersion()->getTableInstances().size() == 0)
         {
             QMessageBox msgBox;
-            msgBox.setText("You have the OOP features enabled, however you don't have created any table instances. There is nothing to deploy right now. Would you like to create table instances?");
+            msgBox.setText(tr("You have the OOP features enabled, however you don't have created any table instances. There is nothing to deploy right now. Would you like to create table instances?"));
             msgBox.setIcon(QMessageBox::Question);
             msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
             msgBox.setDefaultButton(QMessageBox::Yes);
@@ -1676,12 +1723,18 @@ void MainWindow::onDeploy()
     injectDialog->setModal(true);
     if(injectDialog->exec() == QDialog::Accepted)
     {
-        createStatusLabel();
         QStringList connectionNames = injectDialog->getSelectedConnections();
-        InjectSqlGenerator* injectSqlGen = new InjectSqlGenerator(m_workspace->workingVersion(), connectionNames, this);
-        connect(injectSqlGen, SIGNAL(done(InjectSqlGenerator*)), this, SLOT(onSqlGenerationFinished(InjectSqlGenerator*)));
-        injectSqlGen->generate();
+        QString codePage = injectDialog->getCodepage();
+        doDeployment(codePage, connectionNames);
     }
+}
+
+void MainWindow::doDeployment(const QString& codePage, QStringList connectionNames)
+{
+    createStatusLabel();
+    InjectSqlGenerator* injectSqlGen = new InjectSqlGenerator(codePage, m_workspace->workingVersion(), connectionNames, this);
+    connect(injectSqlGen, SIGNAL(done(InjectSqlGenerator*)), this, SLOT(onSqlGenerationFinished(InjectSqlGenerator*)));
+    injectSqlGen->generate();
 }
 
 void MainWindow::setStatus(const QString& s, bool err)
@@ -1851,6 +1904,12 @@ void MainWindow::onReverseEngineeringFinished(ReverseEngineerer*)
 
 void MainWindow::onNewConnection()
 {
+    bool wasVisible = false;
+    if(m_btndlg && m_btndlg->isVisible())
+    {
+        m_btndlg->hide();
+        wasVisible = true;
+    }
     InjectSqlDialog* injectDialog = new InjectSqlDialog(0);
     injectDialog->setModal(true);
     if(injectDialog->exec() == QDialog::Accepted)
@@ -1868,6 +1927,7 @@ void MainWindow::onNewConnection()
         ConnectionManager::instance()->addConnection(c);
         createConnectionTreeEntry(c);
     }
+    if(wasVisible) m_btndlg->show();
 }
 
 void MainWindow::onValidate()

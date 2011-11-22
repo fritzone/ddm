@@ -267,12 +267,12 @@ void InjectSqlDialog::populateCodepageCombo()
 
 }
 
-//QString InjectSqlDialog::getCodepage() const
-//{
-//    QString s = ui->cmbCharacterSets->itemData(ui->cmbCharacterSets->currentIndex()).toString();
-//    s=s.left(s.indexOf('_'));
-//    return s;
-//}
+QString InjectSqlDialog::getCodepage() const
+{
+    QString s = ui->cmbCharacterSets->itemData(ui->cmbCharacterSets->currentIndex()).toString();
+    s=s.left(s.indexOf('_'));
+    return s;
+}
 
 void InjectSqlDialog::onCreateDatabase()
 {

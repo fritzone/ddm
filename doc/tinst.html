@@ -11,9 +11,18 @@
 <P ALIGN=CENTER STYLE="margin-bottom: 0in; background: white; border: none; padding: 0in; font-style: normal; line-height: 115%; text-decoration: none">
 <FONT COLOR="#000000" FACE="Arial" SIZE=3><B>Table instances</B></FONT></P>
 <P STYLE="margin-bottom: 0in; background: white; font-style: normal; font-weight: normal; line-height: 115%; text-decoration: none">
-<FONT COLOR="#000000" FACE="Arial" SIZE=2 STYLE="font-size: 11pt">When working in an object orineted modelling project the table instances are being created from a table template (in the project tree right click on the table template, choose Instantiate). This screen can be used to create the startup values of the tables (ie, values that will be inserted in the tables right after the creation. Warning! This screen is quite experimental in this version, so be careful when using it. There is the possibilty to import values from CSV files, and also you can save the values for further reference into CSV files. These values will be appended in the table generation SQL script in form of INSERT INTO ... lines of code. <BR><BR>
-With the  <img src="add.png" alt="add" width="16" height="16"> button you insert a new row in the table, with the <img src="remove.png" alt="remove" width="16" height="16"> button you remove the currently selected row from the table. When you are done with inserting the data press the  <img src="apply.png" alt="apply" width="16" height="16"> button to validate the data that was entered by you, and pressthe "Save" button to save the data. Basic validation is done at this, there are some basic error checkings, such as do not enter a string value for a numeric field, but the more complex validations are reserverd for future releases of the application.
-</FONT></P>
+<FONT COLOR="#000000" FACE="Arial" SIZE=2 STYLE="font-size: 11pt">When working in an object oriented modelling project, the table instances are being created from a table template:<br>
+- 
+in the project tree right click on the table template, choose Instantiate, or<br>
+- Click the &quot;New Table Instance&quot; tool button and in the new dialog box check all the table instance you need<br>
+- or Long click the &quot;New Table Instance&quot; button and from the popup select one table instance.<br>
+<br>
+The table instance screen can be used to create the startup values of the tables (ie, values that will be inserted in the tables right after the creation. There is the possibilty to import values from CSV files, and also you can save the values for further reference into CSV files. These values will be appended in the table generation SQL script in form of INSERT INTO ... lines of code. <BR>
+<BR>
+With the  <img src="add.png" alt="add" width="16" height="16"> button you insert a new row in the table, with the <img src="remove.png" alt="remove" width="16" height="16"> button you remove the currently selected row from the table. When you are done with inserting the data press the  <img src="apply.png" alt="apply" width="16" height="16"> button to validate the data that was entered by you, and pressthe "Save" button to save the data. Basic validation is done at this, there are some basic error checkings, such as do not enter a string value for a numeric field, but the more complex validations are reserverd for future releases of the application. <br>
+<br>
+ When you are instantiating a table that has a foreign key reference to another table the other table will be instantiated also (I call this phenomenon: one table pulled in another table in the instantiation), and in the project tree it will get a specific marking: <img src="tabinstlock.png" width="16" height="16"> ie. the icon of the table instance (<img src="tabinst.png" width="16" height="16">) with a small black dot. When you delete a table instance which pulled in other tables being instantiated will also delete the pulled in tables, and you cannot delete a pulled in table without deleting the table which pulled it in.</FONT><br>
+</P>
 
 </BODY>
 </HTML>
