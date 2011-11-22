@@ -1,6 +1,6 @@
 #include "PreferencesDialog.h"
 #include "Configuration.h"
-
+#include "gui_HelpWindow.h"
 #include "ui_PreferencesDialog.h"
 
 #include<QMessageBox>
@@ -23,7 +23,6 @@ PreferencesDialog::PreferencesDialog(QWidget *parent) :
 
     ui->tabWidget->setCurrentIndex(0);
     ui->tabWidget->removeTab(1);
-    ui->grpHelp->setVisible(false);
 }
 
 PreferencesDialog::~PreferencesDialog()
@@ -58,6 +57,7 @@ void PreferencesDialog::accept()
 
 void PreferencesDialog::onHelp()
 {
-    ui->grpHelp->setVisible(true);
-    ui->webView->setUrl(QString("doc/config.html"));
+    HelpWindow* hw = HelpWindow::instance();
+    hw->showHelp(QString("/doc/config.html"));
+    hw->show();
 }

@@ -292,6 +292,9 @@
    </property>
   </action>
   <action name="action_Preferences">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Preferences</string>
    </property>

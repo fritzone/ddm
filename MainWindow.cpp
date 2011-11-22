@@ -853,6 +853,7 @@ void MainWindow::enableActions()
     m_ui->action_Validate->setEnabled(true);
     m_ui->action_NewView->setEnabled(true);
     m_ui->action_NewDatabaseConnection->setEnabled(true);
+    m_ui->action_Preferences->setEnabled(true);
 
     if(m_workspace->currentProjectIsOop())
     {
