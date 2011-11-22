@@ -11,7 +11,9 @@ MainWindowButtonDialog::MainWindowButtonDialog(QWidget *parent) :
     m_ui->setupUi(this);
     QPalette thePalette = this->palette();
     QLinearGradient gradient(0, 0, 0, 50);
-    gradient.setColorAt(0, Qt::darkGreen);
+    gradient.setColorAt(0, QColor(227,177,27));
+    gradient.setColorAt(0.25, QColor(170,177,167));
+
     gradient.setColorAt(1, Qt::white);
     QBrush brush(gradient);
     thePalette.setBrush(QPalette::Window, brush);
