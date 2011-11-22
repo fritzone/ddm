@@ -286,8 +286,13 @@ ContextMenuEnabledTreeWidgetItem* MainWindow::createDataTypeTreeEntry(UserDataTy
 
 void MainWindow::onNewSolution()
 {
-    Qt::WindowFlags flags = m_btndlg->windowFlags();
-    m_btndlg->setWindowFlags(flags ^ (Qt::SplashScreen |Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint));
+    bool w = false;
+    if(m_btndlg && m_btndlg->isVisible())
+    {
+        Qt::WindowFlags flags = m_btndlg->windowFlags();
+        m_btndlg->setWindowFlags(flags ^ (Qt::SplashScreen |Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint));
+        w = true;
+    }
 
     NewProjectDialog* nprjdlg = new NewProjectDialog();
     nprjdlg->setModal(true);
@@ -303,8 +308,12 @@ void MainWindow::onNewSolution()
             if(!m_workspace->createCurrentSolution(nprjdlg->getSolutionName()))
             {
                 QMessageBox::critical (this, tr("Error"), tr("Cannot create a solution. Not enough memory?"), QMessageBox::Ok);
-                m_btndlg->setWindowFlags(flags | Qt::SplashScreen |Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint);
-                m_btndlg->show();
+                if(m_btndlg && m_btndlg->isVisible() && w)
+                {
+                    Qt::WindowFlags flags = m_btndlg->windowFlags();
+                    m_btndlg->setWindowFlags(flags | Qt::SplashScreen |Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint);
+                    m_btndlg->show();
+                }
                 return;
             }
         }
@@ -313,8 +322,12 @@ void MainWindow::onNewSolution()
             if(!m_workspace->createSolution(nprjdlg->getSolutionName()))
             {
                 QMessageBox::critical (this, tr("Error"), tr("Cannot create a solution. Not enough memory?"), QMessageBox::Ok);
-                m_btndlg->setWindowFlags(flags | Qt::SplashScreen |Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint);
-                m_btndlg->show();
+                if(m_btndlg && m_btndlg->isVisible() && w)
+                {
+                    Qt::WindowFlags flags = m_btndlg->windowFlags();
+                    m_btndlg->setWindowFlags(flags | Qt::SplashScreen |Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint);
+                    m_btndlg->show();
+                }
                 return;
             }
         }
@@ -368,11 +381,16 @@ void MainWindow::onNewSolution()
 
         m_workspace->workingVersion()->getGui()->setMainWindow(this);
         delete m_btndlg;
+        m_btndlg = 0;
     }
     else
     {
-        m_btndlg->setWindowFlags(flags | Qt::SplashScreen |Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint);
-        m_btndlg->show();
+        if(m_btndlg && m_btndlg->isVisible() && w)
+        {
+            Qt::WindowFlags flags = m_btndlg->windowFlags();
+            m_btndlg->setWindowFlags(flags | Qt::SplashScreen |Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint);
+            m_btndlg->show();
+        }
     }
 }
 
@@ -756,22 +774,35 @@ void MainWindow::populateTreeWithSolution(Solution* sol)
 
 void MainWindow::onOpenProject()
 {
-    Qt::WindowFlags flags = m_btndlg->windowFlags();
-    m_btndlg->setWindowFlags(flags ^ (Qt::SplashScreen |Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint));
+    bool w = false;
+    if(m_btndlg && m_btndlg->isVisible())
+    {
+        Qt::WindowFlags flags = m_btndlg->windowFlags();
+        m_btndlg->setWindowFlags(flags ^ (Qt::SplashScreen |Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint));
+        w = true;
+    }
 
     QString fileName = QFileDialog::getOpenFileName(this,  tr("Open solution"), "", tr("DDM solution files (*.dmx);;All files (*.*)"));
     if(fileName.length() == 0)
     {
-        m_btndlg->setWindowFlags(flags |Qt::SplashScreen | Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint);
-        m_btndlg->show();
+        if(w)
+        {
+            Qt::WindowFlags flags = m_btndlg->windowFlags();
+            m_btndlg->setWindowFlags(flags |Qt::SplashScreen | Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint);
+            m_btndlg->show();
+        }
         return;
     }
 
     if(!m_workspace->loadSolution(fileName))
     {
         QMessageBox::critical (this, tr("Error"), tr("Cannot load the solution."), QMessageBox::Ok);
-        m_btndlg->setWindowFlags(flags | Qt::SplashScreen |Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint);
-        m_btndlg->show();
+        if(w)
+        {
+            Qt::WindowFlags flags = m_btndlg->windowFlags();
+            m_btndlg->setWindowFlags(flags | Qt::SplashScreen |Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint);
+            m_btndlg->show();
+        }
 
         return;
     }
@@ -801,6 +832,7 @@ void MainWindow::onOpenProject()
 
     m_workspace->workingVersion()->getGui()->setMainWindow(this);
     delete m_btndlg;
+    m_btndlg = 0;
 
 }
 
