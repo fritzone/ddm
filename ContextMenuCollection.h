@@ -38,7 +38,7 @@ public:
     QMenu* getCreateTableInstancesPopupMenu() { return m_createTableInstancesPopup; }
     QMenu* getCreateNewViewPopupMenu() {return m_createNewViewPopupMenu; }
     QMenu* getConnectionsPopupMenu() { return m_connectionPopupMenu; }
-    QMenu* getDeployPopupMenu();
+    QMenu* getDeployPopupMenu() {return m_deployPopupMenu; }
     QMenu* getViewsPopupMenu() { return m_viewsPopupMenu; }
 
     /*

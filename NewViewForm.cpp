@@ -18,9 +18,12 @@
 #include "VersionGuiElements.h"
 #include "gui_HelpWindow.h"
 #include "MainWindow.h"
+#include "InjectSqlDialog.h"
+#include "core_ConnectionManager.h"
 
 #include <QScrollBar>
 #include <QVBoxLayout>
+#include <QtGui>
 
 #include <QDebug>
 
@@ -208,4 +211,50 @@ void NewViewForm::onHelp()
     hw->showHelp(QString("/doc/view.html"));
     hw->show();
     Workspace::getInstance()->workingVersion()->getGui()->getMainWindow()->addDockWidget(Qt::RightDockWidgetArea, hw);
+}
+
+void NewViewForm::onSaveSql()
+{
+    QString name = QFileDialog::getSaveFileName(this, tr("Save sql"), "", tr("SQL files (*.sql)"));
+    QFile file(name);
+
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
+    {
+        return;
+    }
+    QTextStream out(&file);
+    out << ui->txtSql->toPlainText() << "\n";
+}
+
+void NewViewForm::onInject()
+{
+    InjectSqlDialog* injectDialog = new InjectSqlDialog(Workspace::getInstance()->currentProjectsEngine(), this);
+    //injectDialog->selectCodePage(ui->cmbCharSetForSql->currentIndex());
+    injectDialog->setModal(true);
+    bool error = false;
+    if(injectDialog->exec() == QDialog::Accepted)
+    {
+        QString tSql;
+        QStringList connectionNames = injectDialog->getSelectedConnections();
+        for(int i=0; i< connectionNames.size(); i++)
+        {
+            Connection* c = ConnectionManager::instance()->getConnection(connectionNames.at(i));
+            if(c)
+            {
+                QString host = c->getHost();
+                QString user = c->getUser();
+                QString pass = c->getPassword();
+                QString db = c->getDb();
+                QString sql = ui->txtSql->toPlainText();
+                QStringList sqls; sqls << sql;
+                if(!Workspace::getInstance()->currentProjectsEngine()->injectSql(host, user, pass, db, sqls, tSql, injectDialog->getRollbackOnError(), injectDialog->getCreateOnlyIfNotExist()))
+                {
+                    QMessageBox::critical (this, tr("Error"), tr("<B>Cannot execute a query!</B><P>Reason: ") + Workspace::getInstance()->currentProjectsEngine()->getLastError() + tr(".<P>Query:<PRE>") + tSql+ "</PRE><P>" +
+                                           (injectDialog->getRollbackOnError()?tr("Transaction was rolled back."):tr("Transaction was <font color=red><B>NOT</B></font> rolled back, you might have partial data in your database.")), QMessageBox::Ok);
+                    error = true;
+                }
+            }
+        }
+        MainWindow::instance()->setStatus(QString("Creating view ") + ui->txtViewName->text() + (error?" Failed ":" Succeeded "), error);
+    }
 }

@@ -127,28 +127,3 @@ ContextMenuCollection::ContextMenuCollection()
     // popup menu for the table instances
     m_createTableInstancesPopup->clear();
 }
-
-QMenu* ContextMenuCollection::getDeployPopupMenu()
-{
-    m_deployPopupMenu->clear();
-    const QVector<Connection*> cons = ConnectionManager::instance()->connections();
-    for(int i=0; i< cons.size(); i++)
-    {
-        QAction* act = new QAction(cons.at(i)->getName(), m_deployPopupMenu);
-        act->setData(cons.at(i)->getName());
-        switch(cons.at(i)->getState())
-        {
-        case Connection::DID_NOT_TRY:
-            act->setIcon(IconFactory::getDatabaseIcon());
-            break;
-        case Connection::FAILED:
-            act->setIcon(IconFactory::getUnConnectedDatabaseIcon());
-            break;
-        case Connection::CONNECTED:
-            act->setIcon(IconFactory::getConnectedDatabaseIcon());
-            break;
-        }
-        m_deployPopupMenu->addAction(act);
-    }
-}
-

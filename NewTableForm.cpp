@@ -1991,7 +1991,7 @@ void NewTableForm::onInject()
                 }
             }
         }
-        MainWindow::instance()->setStatus(QString("Creating table ") + m_table->getName() + (error?" Failed":" Succeeded"), error);
+        MainWindow::instance()->setStatus(QString("Creating table ") + m_table->getName() + (error?" Failed ":" Succeeded "), error);
     }
 }
 

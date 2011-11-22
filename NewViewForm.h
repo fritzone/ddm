@@ -40,6 +40,8 @@ public slots:
     void onNameChange(QString);
     void onSqlChange();
     void onHelp();
+    void onSaveSql();
+    void onInject();
 
 protected:
     void changeEvent(QEvent *e);

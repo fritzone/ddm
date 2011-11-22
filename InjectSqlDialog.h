@@ -27,7 +27,7 @@ public:
     QString getName() const;
     QStringList getSelectedConnections() const;
 
-    //QString getCodepage() const;
+    QString getCodepage() const;
     bool getRollbackOnError() const;
     bool getAutoConnect() const;
     bool getCreateOnlyIfNotExist() const;
