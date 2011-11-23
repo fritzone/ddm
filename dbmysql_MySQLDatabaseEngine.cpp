@@ -782,10 +782,9 @@ QVector<DatabaseBuiltinFunction> MySQLDatabaseEngine::buildFunctions()
     return result;
 }
 
-static DatabaseBuiltinFunction no_function;
-
 const DatabaseBuiltinFunction& MySQLDatabaseEngine::getBuiltinFunction(const QString& name)
 {
+    static DatabaseBuiltinFunction no_function;
     for(int i=0; i<s_builtinFunctions.size(); i++)
     {
         if(s_builtinFunctions.at(i).getName().mid(1).toUpper() == name.toUpper())   // remove the leading @
