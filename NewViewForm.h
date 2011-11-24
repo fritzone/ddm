@@ -4,6 +4,7 @@
 #include "SourceCodePresenterWidget.h"
 
 #include <QWidget>
+#include <QTextEdit>
 
 class QueryGraphicsHelper;
 class QueryGraphicsView;
@@ -11,6 +12,7 @@ class QueryGraphicsScene;
 class QueryGraphicsItem;
 class SqlHighlighter;
 class View;
+class QTextEditWithCodeCompletion;
 
 namespace Ui {
     class NewViewForm;
@@ -54,6 +56,10 @@ private:
     SqlHighlighter* m_highlighter;
     bool m_queryBuilder;
     View* m_view;
+    //QTextEditWithCodeCompletion *txtSql;
+    QTextEdit*txtSql;
+
+
 };
 
 #endif // NEWVIEWFORM_H
