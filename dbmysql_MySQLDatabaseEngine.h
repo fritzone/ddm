@@ -48,10 +48,10 @@ private:
     QMultiMap <UserDataType*, Column*> m_revEngMappings;
     QMap <QString, UserDataType*> m_oneTimeMappings;
 
-    static QVector<DatabaseBuiltinFunction> s_builtinFunctions;
-    static QSqlDatabase m_defaultMysqlDb;
+    static QVector<DatabaseBuiltinFunction>* s_builtinFunctions;
+    static QSqlDatabase* m_defaultMysqlDb;
     static int m_connectionCounter;
-    static QMutex m_connectionMutex;
+    static QMutex* m_connectionMutex;
 
 };
 
