@@ -28,6 +28,8 @@ private:
     QTextCharFormat singleLineCommentFormat;
     QTextCharFormat stringFormat;
     QTextCharFormat questionMarksFormat;
+    QTextCharFormat tableNamesFormat;
+    QTextCharFormat columnNamesFormat;
 
 };
 

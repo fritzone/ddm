@@ -1,4 +1,8 @@
 #include "SqlHighlighter.h"
+#include "Workspace.h"
+#include "Version.h"
+#include "Table.h"
+#include "Column.h"
 
 SqlHighlighter::SqlHighlighter(QTextDocument *parent) : QSyntaxHighlighter(parent)
 {
@@ -235,6 +239,7 @@ SqlHighlighter::SqlHighlighter(QTextDocument *parent) : QSyntaxHighlighter(paren
             <<"\\bOUT\\b"                               <<"\\bout\\b"
             <<"\\bREPEAT\\b"                            <<"\\brepeat\\b"
             <<"\\bSCHEMAS\\b"                           <<"\\bschemas\\b"
+            <<"\\bVIEW\\b"                              <<"\\bview\\b"
             <<"\\bSQL\\b"                               <<"\\bsql\\b"
             <<"\\bSQLWARNING\\b"                	<<"\\bsqlwarning\\b"
             <<"\\bUPGRADE\\b"                           <<"\\bupgrade\\b";
@@ -281,6 +286,7 @@ SqlHighlighter::SqlHighlighter(QTextDocument *parent) : QSyntaxHighlighter(paren
             <<"\\bVARCHARACTER\\b"  <<"\\bvarcharacter\\b"
             <<"\\bNUMERIC\\b"	    <<"\\bnumeric\\b";
 
+    // the keywords
     foreach (const QString &pattern, typesPatterns)
     {
         rule.pattern = QRegExp(pattern);
@@ -288,17 +294,47 @@ SqlHighlighter::SqlHighlighter(QTextDocument *parent) : QSyntaxHighlighter(paren
         highlightingRules.append(rule);
     }
 
+    // the one line comment
     singleLineCommentFormat.setForeground(Qt::darkGreen);
     singleLineCommentFormat.setFontItalic(true);
     rule.pattern = QRegExp("--[^\n]*");
     rule.format = singleLineCommentFormat;
     highlightingRules.append(rule);
 
+    // the funny (??) question mark
     questionMarksFormat.setForeground(Qt::red);
     questionMarksFormat.setFontWeight(QFont::Bold);
     rule.pattern = QRegExp("(?:\\s|^)\\(\\?\\?\\)(?:\\s|$)"); /*QRegExp("\\B\\(\\?\\?\\)\\B");*/
     rule.format = questionMarksFormat;
     highlightingRules.append(rule);
+
+    // the table names
+    tableNamesFormat.setForeground(Qt::darkGray);
+    tableNamesFormat.setFontWeight(QFont::Bold);
+    QVector<Table*> tables = Workspace::getInstance()->workingVersion()->getTables();
+    for(int i=0; i< tables.size(); i++)
+    {
+        QString p = "\\b" + tables.at(i)->getName() + "\\b";
+        rule.pattern = QRegExp(p);
+        rule.format = tableNamesFormat;
+        highlightingRules.append(rule);
+    }
+
+    // the column names
+    columnNamesFormat.setForeground(QColor(87,17,6));
+    columnNamesFormat.setFontWeight(QFont::Bold);
+    for(int i=0; i< tables.size(); i++)
+    {
+        for(int j=0; j<tables.at(i)->fullColumns().size(); j++)
+        {
+            QString p = "\\b" + tables.at(i)->fullColumns().at(j) + "\\b";
+            rule.pattern = QRegExp(p);
+            rule.format = columnNamesFormat;
+            highlightingRules.append(rule);
+        }
+    }
+
+    // TODO: Add the columns from the views too, with the same format as above
 }
 
 void SqlHighlighter::highlightBlock(const QString &text)

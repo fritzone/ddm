@@ -34,7 +34,17 @@ NewViewForm::NewViewForm(bool queryBuilder, QueryGraphicsHelper* c, QWidget *par
     m_queryBuilder(queryBuilder)
 {
     ui->setupUi(this);
-    m_highlighter = new SqlHighlighter(ui->txtSql->document());
+    txtSql = new QTextEdit(ui->groupBox_3);
+    txtSql->setObjectName(QString::fromUtf8("txtSql"));
+    txtSql->setMinimumSize(QSize(0, 200));
+    QFont font;
+    font.setFamily(QString::fromUtf8("Courier 10 Pitch"));
+    font.setPointSize(11);
+    txtSql->setFont(font);
+
+    ui->verticalLayout_4->addWidget(txtSql);
+    QObject::connect(txtSql, SIGNAL(textChanged()), this, SLOT(onSqlChange()));
+    m_highlighter = new SqlHighlighter(txtSql->document());
 
     if(m_queryBuilder)
     {
@@ -114,7 +124,7 @@ void NewViewForm::presentSql(Project* p, const QString& codepage)
     {
         sql += sqls.at(i);
     }
-    ui->txtSql->setText(sql);
+    txtSql->setText(sql);
 }
 
 void NewViewForm::presentSql(Project*, SqlSourceEntity*, const QString& codepage)
@@ -201,7 +211,7 @@ void NewViewForm::onSqlChange()
 {
     if(!m_queryBuilder)
     {
-        m_view->setSql(ui->txtSql->toPlainText());
+        m_view->setSql(txtSql->toPlainText());
     }
 }
 
@@ -223,7 +233,7 @@ void NewViewForm::onSaveSql()
         return;
     }
     QTextStream out(&file);
-    out << ui->txtSql->toPlainText() << "\n";
+    out << txtSql->toPlainText() << "\n";
 }
 
 void NewViewForm::onInject()
@@ -245,7 +255,7 @@ void NewViewForm::onInject()
                 QString user = c->getUser();
                 QString pass = c->getPassword();
                 QString db = c->getDb();
-                QString sql = ui->txtSql->toPlainText();
+                QString sql = txtSql->toPlainText();
                 QStringList sqls; sqls << sql;
                 if(!Workspace::getInstance()->currentProjectsEngine()->injectSql(host, user, pass, db, sqls, tSql, injectDialog->getRollbackOnError(), injectDialog->getCreateOnlyIfNotExist()))
                 {
