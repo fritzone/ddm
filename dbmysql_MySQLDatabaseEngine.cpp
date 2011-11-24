@@ -22,19 +22,24 @@
 #include "core_View.h"
 #include <QMutexLocker>
 
-QVector<DatabaseBuiltinFunction> MySQLDatabaseEngine::s_builtinFunctions = MySQLDatabaseEngine::buildFunctions();
-QSqlDatabase MySQLDatabaseEngine::m_defaultMysqlDb = QSqlDatabase::addDatabase("QMYSQL");
+QVector<DatabaseBuiltinFunction>* MySQLDatabaseEngine::s_builtinFunctions = 0;
+QSqlDatabase* MySQLDatabaseEngine::m_defaultMysqlDb = 0;
 int MySQLDatabaseEngine::m_connectionCounter = 1;
-QMutex MySQLDatabaseEngine::m_connectionMutex;
+QMutex* MySQLDatabaseEngine::m_connectionMutex = 0;
 
 MySQLDatabaseEngine::MySQLDatabaseEngine() : DatabaseEngine("MySQL"), m_revEngMappings(), m_oneTimeMappings()
 {
+    static QSqlDatabase t = QSqlDatabase::addDatabase("QMYSQL");
+    m_defaultMysqlDb = &t;
+    static QVector<DatabaseBuiltinFunction> v = MySQLDatabaseEngine::buildFunctions();
+    s_builtinFunctions = &v;
+    m_connectionMutex = new QMutex();
 }
 
 // this should be thread safe
 QString MySQLDatabaseEngine::provideConnectionName(const QString& prefix)
 {
-    QMutexLocker lock(&m_connectionMutex);
+    QMutexLocker lock(m_connectionMutex);
     QString t = prefix + QString::number(m_connectionCounter++);
     return t;
 }
@@ -71,7 +76,7 @@ bool MySQLDatabaseEngine::reverseEngineerDatabase(const QString& host, const QSt
     // now populate the foreign keys
     {
         QString fk = provideConnectionName("fkDbConnection");
-        QSqlDatabase dbo = QSqlDatabase::cloneDatabase(m_defaultMysqlDb, fk);
+        QSqlDatabase dbo = QSqlDatabase::cloneDatabase(*m_defaultMysqlDb, fk);
 
         dbo.setHostName(host);
         dbo.setUserName(user);
@@ -135,7 +140,7 @@ bool MySQLDatabaseEngine::reverseEngineerDatabase(const QString& host, const QSt
 QVector<QString> MySQLDatabaseEngine::getAvailableViews(const QString& host, const QString& user, const QString& pass, const QString& db)
 {
     QString viewsConnectionName = provideConnectionName("getViews");
-    QSqlDatabase dbo = QSqlDatabase::cloneDatabase(m_defaultMysqlDb, viewsConnectionName);
+    QSqlDatabase dbo = QSqlDatabase::cloneDatabase(*m_defaultMysqlDb, viewsConnectionName);
 
     dbo.setHostName(host);
     dbo.setUserName(user);
@@ -167,7 +172,7 @@ QVector<QString> MySQLDatabaseEngine::getAvailableViews(const QString& host, con
 QVector<QString> MySQLDatabaseEngine::getAvailableTables(const QString& host, const QString& user, const QString& pass, const QString& db)
 {
     QString tabsConnectionName = provideConnectionName("getTables");
-    QSqlDatabase dbo = QSqlDatabase::cloneDatabase(m_defaultMysqlDb, tabsConnectionName);
+    QSqlDatabase dbo = QSqlDatabase::cloneDatabase(*m_defaultMysqlDb, tabsConnectionName);
 
     dbo.setHostName(host);
     dbo.setUserName(user);
@@ -199,7 +204,7 @@ QVector<QString> MySQLDatabaseEngine::getAvailableTables(const QString& host, co
 View* MySQLDatabaseEngine::reverseEngineerView(const QString& host, const QString& user, const QString& pass, const QString& dbName, const QString& viewName)
 {
     QString viewConnectionName = provideConnectionName("getView");
-    QSqlDatabase dbo = QSqlDatabase::cloneDatabase(m_defaultMysqlDb, viewConnectionName);
+    QSqlDatabase dbo = QSqlDatabase::cloneDatabase(*m_defaultMysqlDb, viewConnectionName);
 
     dbo.setHostName(host);
     dbo.setUserName(user);
@@ -237,7 +242,7 @@ Table* MySQLDatabaseEngine::reverseEngineerTable(const QString& host, const QStr
 {
     Version* v = p->getWorkingVersion();
     QString tableConnectionName = provideConnectionName("getTable");
-    QSqlDatabase db = QSqlDatabase::cloneDatabase(m_defaultMysqlDb, tableConnectionName);
+    QSqlDatabase db = QSqlDatabase::cloneDatabase(*m_defaultMysqlDb, tableConnectionName);
 
     db.setHostName(host);
     db.setUserName(user);
@@ -451,7 +456,7 @@ Table* MySQLDatabaseEngine::reverseEngineerTable(const QString& host, const QStr
 bool MySQLDatabaseEngine::injectSql(const QString& host, const QString& user, const QString& pass, const QString& dbName, const QStringList& sqls, QString& lastSql, bool rollbackOnError, bool)
 {
     QString injectConenctionName = provideConnectionName("inject");
-    QSqlDatabase db = QSqlDatabase::cloneDatabase(m_defaultMysqlDb, injectConenctionName);
+    QSqlDatabase db = QSqlDatabase::cloneDatabase(*m_defaultMysqlDb, injectConenctionName);
 
     db.setHostName(host);
     db.setUserName(user);
@@ -505,7 +510,7 @@ QString MySQLDatabaseEngine::getDefaultDatatypesLocation()
 QVector<QString> MySQLDatabaseEngine::getAvailableDatabases(const QString& host, const QString& user, const QString& pass)
 {
     QString getDatabases = provideConnectionName("getDbs");
-    QSqlDatabase db = QSqlDatabase::cloneDatabase(m_defaultMysqlDb, getDatabases);
+    QSqlDatabase db = QSqlDatabase::cloneDatabase(*m_defaultMysqlDb, getDatabases);
     db.setHostName(host);
     db.setUserName(user);
     db.setPassword(pass);
@@ -535,7 +540,7 @@ QVector<QString> MySQLDatabaseEngine::getAvailableDatabases(const QString& host,
 bool MySQLDatabaseEngine::createDatabase(const QString& host, const QString& user, const QString& pass, const QString& name)
 {
     QString createDbConnection = provideConnectionName("createDb");
-    QSqlDatabase db = QSqlDatabase::cloneDatabase(m_defaultMysqlDb, createDbConnection);
+    QSqlDatabase db = QSqlDatabase::cloneDatabase(*m_defaultMysqlDb, createDbConnection);
     db.setHostName(host);
     db.setUserName(user);
     db.setPassword(pass);
@@ -560,7 +565,7 @@ bool MySQLDatabaseEngine::createDatabase(const QString& host, const QString& use
 
 QVector<DatabaseBuiltinFunction> MySQLDatabaseEngine::getBuiltinFunctions()
 {
-    return s_builtinFunctions;
+    return *s_builtinFunctions;
 }
 
 
@@ -785,11 +790,11 @@ QVector<DatabaseBuiltinFunction> MySQLDatabaseEngine::buildFunctions()
 const DatabaseBuiltinFunction& MySQLDatabaseEngine::getBuiltinFunction(const QString& name)
 {
     static DatabaseBuiltinFunction no_function;
-    for(int i=0; i<s_builtinFunctions.size(); i++)
+    for(int i=0; i<(*s_builtinFunctions).size(); i++)
     {
-        if(s_builtinFunctions.at(i).getName().mid(1).toUpper() == name.toUpper())   // remove the leading @
+        if((*s_builtinFunctions).at(i).getName().mid(1).toUpper() == name.toUpper())   // remove the leading @
         {
-            return s_builtinFunctions.at(i);
+            return (*s_builtinFunctions).at(i);
         }
     }
     return no_function;
@@ -798,7 +803,7 @@ const DatabaseBuiltinFunction& MySQLDatabaseEngine::getBuiltinFunction(const QSt
 bool MySQLDatabaseEngine::tryConnect(const QString& host, const QString& user, const QString& pass, const QString& dbName)
 {
     QString connectConnectionName = provideConnectionName("connect");
-    QSqlDatabase dbo = QSqlDatabase::cloneDatabase(m_defaultMysqlDb, connectConnectionName);
+    QSqlDatabase dbo = QSqlDatabase::cloneDatabase(*m_defaultMysqlDb, connectConnectionName);
 
     dbo.setHostName(host);
     dbo.setUserName(user);
