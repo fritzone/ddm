@@ -4,7 +4,7 @@
 #include "SourceCodePresenterWidget.h"
 
 #include <QWidget>
-#include <QTextEdit>
+#include "QTextEditWithCodeCompletion.h"
 
 class QueryGraphicsHelper;
 class QueryGraphicsView;
@@ -56,8 +56,7 @@ private:
     SqlHighlighter* m_highlighter;
     bool m_queryBuilder;
     View* m_view;
-    //QTextEditWithCodeCompletion *txtSql;
-    QTextEdit*txtSql;
+    QTextEditWithCodeCompletion*txtSql;
 
 
 };
