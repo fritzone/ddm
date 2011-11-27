@@ -176,22 +176,6 @@
          </layout>
         </item>
         <item>
-         <widget class="QTextEditWithCodeCompletion" name="txtSql">
-          <property name="minimumSize">
-           <size>
-            <width>0</width>
-            <height>200</height>
-           </size>
-          </property>
-          <property name="font">
-           <font>
-            <family>Courier 10 Pitch</family>
-            <pointsize>11</pointsize>
-           </font>
-          </property>
-         </widget>
-        </item>
-        <item>
          <widget class="QTabWidget" name="tabWidget_4">
           <property name="currentIndex">
            <number>0</number>
@@ -294,13 +278,6 @@
    </item>
   </layout>
  </widget>
- <customwidgets>
-  <customwidget>
-   <class>QTextEditWithCodeCompletion</class>
-   <extends>QTextEdit</extends>
-   <header location="global">QTextEditWithCodeCompletion.h</header>
-  </customwidget>
- </customwidgets>
  <resources>
   <include location="dbm.qrc"/>
  </resources>
@@ -330,22 +307,6 @@
     <hint type="sourcelabel">
      <x>434</x>
      <y>48</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>576</x>
-     <y>313</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>txtSql</sender>
-   <signal>textChanged()</signal>
-   <receiver>NewViewForm</receiver>
-   <slot>onSqlChange()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>224</x>
-     <y>326</y>
     </hint>
     <hint type="destinationlabel">
      <x>576</x>

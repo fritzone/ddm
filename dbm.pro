@@ -121,7 +121,8 @@ SOURCES += main.cpp \
     core_InjectSqlGenerator.cpp \
     core_InjectSqlGeneratorThread.cpp \
     core_ReverseEngineerer.cpp \
-    core_ReverseEngineererThread.cpp
+    core_ReverseEngineererThread.cpp \
+    QTextEditWithCodeCompletion.cpp
 HEADERS += MainWindow.h \
     MainWindowButtonDialog.h \
     NewProjectDialog.h \
@@ -265,7 +266,8 @@ HEADERS += MainWindow.h \
     core_InjectSqlGenerator.h \
     core_InjectSqlGeneratorThread.h \
     core_ReverseEngineerer.h \
-    core_ReverseEngineererThread.h
+    core_ReverseEngineererThread.h \
+    QTextEditWithCodeCompletion.h
 FORMS += MainWindow.ui \
     MainWindowButtonDialog.ui \
     NewProjectDialog.ui \
@@ -292,3 +294,5 @@ FORMS += MainWindow.ui \
     QueryItemListDialog.ui \
     HelpWindow.ui
 RESOURCES += dbm.qrc
+
+
