@@ -19,11 +19,6 @@ public:
         return true;
     }
 
-    virtual QString dbname()
-    {
-        return "MySQL";
-    }
-
     virtual bool injectSql(const QString& host, const QString& user, const QString& pass, const QString& dbName, const QStringList& sqls, QString& lastSql, bool rollbackOnError, bool createTablesOnlyIfNotExist);
     virtual QString getDefaultDatatypesLocation();
     virtual bool reverseEngineerDatabase(const QString& host, const QString& user, const QString& pass, const QString& dbName, QVector<QString> tables, QVector<QString> views, Project* p, bool relaxed);
@@ -36,7 +31,7 @@ public:
     virtual QVector<DatabaseBuiltinFunction> getBuiltinFunctions();
     const DatabaseBuiltinFunction& getBuiltinFunction(const QString& name);
     virtual bool tryConnect(const QString& host, const QString& user, const QString& pass, const QString& dbName);
-
+    virtual QStringList getKeywords() const;
 
 private:
 

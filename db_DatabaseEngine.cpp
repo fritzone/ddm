@@ -64,3 +64,8 @@ QString DatabaseEngine::getTypeStringForSqlType(const QString& sqlType)
 {
     return getDTSupplier()->typeForSqlType(sqlType);
 }
+
+const QString& DatabaseEngine::getDatabase() const
+{
+    return database;
+}

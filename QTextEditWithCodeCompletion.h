@@ -3,19 +3,27 @@
 
 #include <QTextEdit>
 #include <QListWidget>
+#include <QTimer>
+#include <QObject>
 
 class QTextEditWithCodeCompletion : public QTextEdit
 {
+    Q_OBJECT
+
 public:
 
-    QTextEditWithCodeCompletion(QWidget *p) : QTextEdit(p), m_lst(0)
-    {}
-
+    QTextEditWithCodeCompletion(QWidget *p);
     void keyPressEvent ( QKeyEvent * e );
 
-private:
+private slots:
+    void onTimer();
 
+private:
+    void populateCodeCompletionListbox();
+
+private:
     QListWidget* m_lst;
+    QTimer m_timer;
 };
 
 #endif // QTEXTEDITWITHCODECOMPLETION_H

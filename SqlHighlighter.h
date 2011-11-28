@@ -2,6 +2,8 @@
 #define SQLHIGHLIGHTER_H
 
 #include <QSyntaxHighlighter>
+#include <QList>
+#include <DataType.h>
 
 class SqlHighlighter : public QSyntaxHighlighter
 {
@@ -12,6 +14,10 @@ public:
 
 protected:
     void highlightBlock(const QString &text);
+
+private:
+
+    void appendTypePattern(QStringList&, const QList<DataType>&);
 
 private:
     struct HighlightingRule

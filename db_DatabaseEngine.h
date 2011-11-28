@@ -52,6 +52,10 @@ public:
      */
     AbstractIndextypeProvider* getIndextypeProvider() const;
 
+    /**
+     * If the database supports storage engines, such as InnoDB for
+     * MySQL this method returns an object that provides the Storage Engines to the outside world
+     */
     AbstractStorageEngineListProvider* getStorageEngineListProviders() const;
 
     /**
@@ -59,19 +63,18 @@ public:
      */
     AbstractSqlGenerator* getSqlGenerator() const;
 
-    const QString& getDatabase() const
-    {
-        return database;
-    }
-
-    static DatabaseEngine* createEngine(const QString& db);
+    /**
+     * Returns the database name
+     */
+    const QString& getDatabase() const;
 
     // anyone deriving from this class (such as MysqlDatabaseEngine) should provide this method to see if we show the combo box in the GUI
     virtual bool supportsEngines() = 0;
 
-    virtual QString dbname() = 0;
-
     virtual QString getDefaultDatatypesLocation() = 0;
+
+    virtual QStringList getKeywords() const = 0;
+
 
     virtual bool injectSql(const QString& host, const QString& user, const QString& pass, const QString& dbName, const QStringList& sqls, QString& lastSql, bool rollbackOnError, bool createTablesOnlyIfNotExist) = 0;
 
@@ -99,6 +102,14 @@ public:
 
     QString getTypeStringForSqlType(const QString& sqlType);
     virtual bool tryConnect(const QString& host, const QString& user, const QString& pass, const QString& dbName) = 0;
+
+public:
+
+    /**
+     * Creates a database engine for the given name. Right now "MySQL" is supported
+     */
+    static DatabaseEngine* createEngine(const QString& db);
+
 
 private:
 
