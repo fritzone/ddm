@@ -96,6 +96,10 @@ void QTextEditWithCodeCompletion::populateCodeCompletionListbox()
                 if(!c) return;
                 QListWidgetItem *lwi = new QListWidgetItem(m_lst);
                 lwi->setText(c->getName());
+                QFont f = lwi->font();
+                f.setBold(true);
+                lwi->setFont(f);
+                lwi->setForeground(QBrush(QColor(87,17,6))); // TODO: move all these colors in a header file, customizable :)
                 lwi->setIcon(QIcon(IconFactory::getColumnIcon().pixmap(16,16)));
             }
         }
