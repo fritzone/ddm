@@ -6,6 +6,8 @@
 #include <QTimer>
 #include <QObject>
 
+#include "QListWidgetForCodeCompletion.h"
+
 class QTextEditWithCodeCompletion : public QTextEdit
 {
     Q_OBJECT
@@ -17,12 +19,15 @@ public:
 
 private slots:
     void onTimer();
+    void onListItemDoubleClicked(QModelIndex);
 
 private:
     void populateCodeCompletionListbox();
+    void populateCodeCompletionListboxWithTablesOfVersion();
+    void populateCodeCompletionListboxWithColumnsOfTable(const QString&);
 
 private:
-    QListWidget* m_lst;
+    QListWidgetForCodeCompletion* m_lst;
     QTimer m_timer;
 };
 
