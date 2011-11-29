@@ -6,6 +6,7 @@
 #include "db_DatabaseEngine.h"
 #include "DataType.h"
 #include "db_AbstractDTSupplier.h"
+#include "gui_colors.h"
 
 SqlHighlighter::SqlHighlighter(QTextDocument *parent) : QSyntaxHighlighter(parent)
 {
@@ -72,7 +73,7 @@ SqlHighlighter::SqlHighlighter(QTextDocument *parent) : QSyntaxHighlighter(paren
     }
 
     // the column names
-    columnNamesFormat.setForeground(QColor(87,17,6));
+    columnNamesFormat.setForeground(columnColor);
     columnNamesFormat.setFontWeight(QFont::Bold);
     for(int i=0; i< tables.size(); i++)
     {
