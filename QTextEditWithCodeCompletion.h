@@ -16,6 +16,7 @@ public:
 
     QTextEditWithCodeCompletion(QWidget *p);
     void keyPressEvent ( QKeyEvent * e );
+    void insertText(const QString&);
 
 private slots:
     void onTimer();
