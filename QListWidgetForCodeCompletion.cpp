@@ -5,21 +5,27 @@
 
 void QListWidgetForCodeCompletion::keyPressEvent(QKeyEvent *event)
 {
-    if(event->key() != Qt::Key_Up && event->key() != Qt::Key_Down && event->key() != Qt::Key_Enter)
+    int t = event->key();
+    if(t != Qt::Key_Up && t != Qt::Key_Down && t != Qt::Key_Enter && t != Qt::Key_Return)
     {
         qobject_cast<QTextEditWithCodeCompletion*>(parent())->keyPressEvent(event);
         return;
     }
 
-    if(event->key() == Qt::Key_Enter)
+    if(t == Qt::Key_Return || t == Qt::Key_Enter)
     {
+        QString g = item(0)->text();
+        if(selectedItems().length())
+        {
+            g = selectedItems().at(0)->text();
+        }
         hide();
+        parentWidget()->setFocus(Qt::OtherFocusReason);
+        qobject_cast<QTextEditWithCodeCompletion*>(parent())->insertText(g);
     }
-    QListWidget::keyPressEvent(event);
-
-}
-
-void QListWidgetForCodeCompletion::selectNext()
-{
+    else
+    {
+        QListWidget::keyPressEvent(event);
+    }
 
 }

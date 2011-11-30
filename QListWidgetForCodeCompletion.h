@@ -17,7 +17,6 @@ public:
     }
 
     void keyPressEvent(QKeyEvent *event);
-    void selectNext();
 };
 
 #endif // QLISTWIDGETFORCODECOMPLETION_H
