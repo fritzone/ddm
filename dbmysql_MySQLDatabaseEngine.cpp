@@ -843,6 +843,7 @@ QStringList MySQLDatabaseEngine::getKeywords() const
             <<"CASE"
             <<"CHANGE"
             <<"CHECK"
+            <<"CHARACTER"
             <<"COLLATE"
             <<"COLUMN"
             <<"CONDITION"
@@ -1054,6 +1055,7 @@ QStringList MySQLDatabaseEngine::getKeywords() const
             <<"REPEAT"
             <<"SCHEMAS"
             <<"VIEW"
+            <<"SORT"
             <<"SQL"
             <<"SQLWARNING"
             <<"UPGRADE";

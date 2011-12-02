@@ -61,7 +61,7 @@ SqlHighlighter::SqlHighlighter(QTextDocument *parent) : QSyntaxHighlighter(paren
     highlightingRules.append(rule);
 
     // the table names
-    tableNamesFormat.setForeground(Qt::darkGray);
+    tableNamesFormat.setForeground(Qt::black);
     tableNamesFormat.setFontWeight(QFont::Bold);
     QVector<Table*> tables = Workspace::getInstance()->workingVersion()->getTables();
     for(int i=0; i< tables.size(); i++)

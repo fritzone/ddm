@@ -22,6 +22,7 @@ void QListWidgetForCodeCompletion::keyPressEvent(QKeyEvent *event)
         hide();
         parentWidget()->setFocus(Qt::OtherFocusReason);
         qobject_cast<QTextEditWithCodeCompletion*>(parent())->insertText(g);
+        qobject_cast<QTextEditWithCodeCompletion*>(parent())->resetBackgrounds();
     }
     else
     {
