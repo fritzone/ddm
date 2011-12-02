@@ -12,11 +12,24 @@ class QTextEditWithCodeCompletion : public QTextEdit
 {
     Q_OBJECT
 
+
+private:
+
+    struct TablePositionInText
+    {
+        int b;
+        int e;
+        QColor c;
+        static QColor nextColor();
+        static int colorCounter;
+    };
+
 public:
 
     QTextEditWithCodeCompletion(QWidget *p);
     void keyPressEvent ( QKeyEvent * e );
     void insertText(const QString&);
+    void resetBackgrounds();
 
 private slots:
     void onTimer();
@@ -26,10 +39,13 @@ private:
     void populateCodeCompletionListbox();
     void populateCodeCompletionListboxWithTablesOfVersion();
     void populateCodeCompletionListboxWithColumnsOfTable(const QString&);
+    QStringList getTablesFromQuery();
 
 private:
     QListWidgetForCodeCompletion* m_lst;
     QTimer m_timer;
+    QColor m_currentBgColor;
+    QVector<TablePositionInText> m_lastTablePositions;
 };
 
 #endif // QTEXTEDITWITHCODECOMPLETION_H
