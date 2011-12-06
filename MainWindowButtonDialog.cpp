@@ -18,6 +18,12 @@ MainWindowButtonDialog::MainWindowButtonDialog(QWidget *parent) :
     QBrush brush(gradient);
     thePalette.setBrush(QPalette::Window, brush);
     setPalette(thePalette);
+
+    m_ui->btnQuick1->hide();
+    m_ui->btnQuick2->hide();
+    m_ui->btnQuick3->hide();
+    m_ui->btnQuick4->hide();
+    m_ui->btnQuick5->hide();
 }
 
 MainWindowButtonDialog::~MainWindowButtonDialog()

@@ -7,6 +7,7 @@
 #include "IconFactory.h"
 #include "gui_colors.h"
 #include "db_DatabaseEngine.h"
+#include "db_DatabaseBuiltinFunction.h"
 
 #include <QKeyEvent>
 #include <QMessageBox>
@@ -49,6 +50,25 @@ void QTextEditWithCodeCompletion::onListItemDoubleClicked(QModelIndex idx)
     m_lst->hide();
     resetBackgrounds();
     insertText(g);
+    QVariant v = item->data(Qt::UserRole);
+    if(v.isValid())
+    {
+        QString n = v.toString();
+        if(n.at(0) == '@')
+        {
+            insertFunctionParantheses();
+        }
+    }
+
+}
+
+void QTextEditWithCodeCompletion::insertFunctionParantheses()
+{
+    insertText("()");
+    QTextCursor t = textCursor();
+    t.setPosition(t.position() - 1);
+    setTextCursor(t);
+
 }
 
 void QTextEditWithCodeCompletion::keyPressEvent(QKeyEvent *e)
@@ -98,23 +118,27 @@ void QTextEditWithCodeCompletion::keyPressEvent(QKeyEvent *e)
     QTextEdit::keyPressEvent(e);
 }
 
-void QTextEditWithCodeCompletion::populateCodeCompletionListboxWithTablesOfVersion()
+void QTextEditWithCodeCompletion::populateCodeCompletionListboxWithTablesOfVersion(const QString& tabPrefix)
 {
     // WARNING!!! For easier code writing this is not (yet) following the OOP principles. For true OOP we would need to load only the table instances!
     const QVector<Table*> tabs = Workspace::getInstance()->workingVersion()->getTables();
     for(int i=0; i<tabs.size(); i++)
     {
-        QListWidgetItem *lwi = new QListWidgetItem(m_lst);
-        lwi->setText(tabs.at(i)->getName());
-        QFont f = lwi->font();
-        f.setBold(true);
-        lwi->setFont(f);
-        lwi->setForeground(QBrush(Qt::black)); // TODO: move all these colors in a header file, customizable :)
-        lwi->setIcon(QIcon(IconFactory::getTablesIcon().pixmap(16,16)));
+        QString tabName = tabs.at(i)->getName();
+        if(tabName.startsWith(tabPrefix) || tabName.indexOf(tabPrefix)!= -1)
+        {
+            QListWidgetItem *lwi = new QListWidgetItem(m_lst);
+            lwi->setText(tabName);
+            QFont f = lwi->font();
+            f.setBold(true);
+            lwi->setFont(f);
+            lwi->setForeground(QBrush(Qt::black)); // TODO: move all these colors in a header file, customizable :)
+            lwi->setIcon(QIcon(IconFactory::getTablesIcon().pixmap(16,16)));
+        }
     }
 }
 
-void QTextEditWithCodeCompletion::populateCodeCompletionListboxWithColumnsOfTable(const QString& tabName)
+void QTextEditWithCodeCompletion::populateCodeCompletionListboxWithColumnsOfTable(const QString& tabName, const QString& prefix)
 {
     Table* t = Workspace::getInstance()->workingVersion()->getTable(tabName);
     QStringList tcs = t->fullColumns();
@@ -123,6 +147,7 @@ void QTextEditWithCodeCompletion::populateCodeCompletionListboxWithColumnsOfTabl
         Column* c = t->getColumn(tcs.at(i));
         if(!c) c = t->getColumnFromParents(tcs.at(i));
         if(!c) return;
+        if(!c->getName().startsWith(prefix)) continue;
         QListWidgetItem *lwi = new QListWidgetItem(m_lst);
         lwi->setText(c->getName());
         QFont f = lwi->font();
@@ -187,7 +212,7 @@ void QTextEditWithCodeCompletion::populateCodeCompletionListbox()
     }
 
     // and find the word
-    while(cp > -1 && g.at(cp) != ' ' && g.at(cp) != '=' && g.at(cp) != ')' && g.at(cp) != '(' )
+    while(cp > -1 && g.at(cp) != ' ' && g.at(cp) != '=' && g.at(cp) != ')' && g.at(cp) != '(' && g.at(cp) != ',')
     {
         wordBeforeCursor.prepend(g.at(cp--));
     }
@@ -226,7 +251,8 @@ void QTextEditWithCodeCompletion::populateCodeCompletionListbox()
         // But I'm jus curious to see it work
         if(Workspace::getInstance()->workingVersion()->hasTable(wordBeforeCursor))
         {
-            populateCodeCompletionListboxWithColumnsOfTable(wordBeforeCursor);
+            QString empty("");
+            populateCodeCompletionListboxWithColumnsOfTable(wordBeforeCursor, empty);
             m_lst->setFocus();
             return;
         }
@@ -269,7 +295,7 @@ void QTextEditWithCodeCompletion::populateCodeCompletionListbox()
     {
         if(keywordBeforeCursor.toUpper() == "FROM")
         {
-            populateCodeCompletionListboxWithTablesOfVersion();
+            populateCodeCompletionListboxWithTablesOfVersion(wordBeforeCursor);
             m_lst->setFocus();
             return;
         }
@@ -300,7 +326,9 @@ void QTextEditWithCodeCompletion::populateCodeCompletionListbox()
             {
 
                 // TODO: Mask the columns from different tables with different backgrounds, also try the same thing in the text edit, ie. change the background of the tables
-                populateCodeCompletionListboxWithColumnsOfTable(tables.at(i));
+                QString prefix = wordBeforeCursor;
+                if(wordBeforeCursor.trimmed().toUpper() == keywordBeforeCursor.trimmed().toUpper()) prefix = "";
+                populateCodeCompletionListboxWithColumnsOfTable(tables.at(i), prefix);
                 QTextCursor origCursor = textCursor();
                 QTextCursor copyCursor = origCursor;
 
@@ -313,78 +341,30 @@ void QTextEditWithCodeCompletion::populateCodeCompletionListbox()
                 m_currentBgColor = m_lastTablePositions.at(i).c;
 
             }
+
+            // now add the functions but only if we have started typing something
+            QVector<DatabaseBuiltinFunction> funcs = Workspace::getInstance()->currentProjectsEngine()->getBuiltinFunctions();
+            for(int i=0; i<funcs.size(); i++)
+            {
+                QString prefix = wordBeforeCursor;
+                if(wordBeforeCursor.trimmed().toUpper() == keywordBeforeCursor.trimmed().toUpper()) prefix = "";
+                if(! (funcs.at(i).getName().mid(1).toUpper().startsWith(prefix))) continue;
+                QListWidgetItem *lwi = new QListWidgetItem(m_lst);
+                lwi->setText(funcs.at(i).getName().mid(1));
+                QFont f = lwi->font();
+                lwi->setData(Qt::UserRole, QVariant(funcs.at(i).getName()));
+
+                f.setItalic(true);
+                lwi->setFont(f);
+                lwi->setBackgroundColor(Qt::white);
+                lwi->setForeground(Qt::black); // TODO: move all these colors in a header file, customizable :)
+                lwi->setIcon(QIcon(IconFactory::getFunctionIcon().pixmap(16,16)));
+            }
             m_lst->setFocus();
             return;
         }
 
-        if(keywordBeforeCursor.toUpper() == "BY")
-        {   // now see what are the things we can "BY" ...
-            bool foundKeywordBeforeBy = false;
-            QString keywordBeforeBy = "";
-            while(!foundKeywordBeforeBy)
-            {
-                QString temp = "";
-                while(cp>-1 && g.at(cp) == ' ') { cp--; }
-                if(!cp) break;
-                while(cp > -1 && g.at(cp) != ' ')
-                {
-                    temp.prepend(g.at(cp--));
-                }
-                if(dbKeywords.contains(temp.toUpper(), Qt::CaseInsensitive))
-                {
-                    foundKeywordBeforeBy = true;
-                    keywordBeforeBy = temp;
-                }
-            }
-
-            if(keywordBeforeBy.toUpper() == "ORDER")    // we can "order by" not only using the "from" stuff, but also all the columns from the selected tables if we have a *
-            {
-                qDebug() << keywordBeforeBy;
-                // fins the position of the "select" of this query (beware, of multiple queries, don't start from the beginning
-                saveCp = cp;
-                bool foundSelect = false;
-                // go back till we find the "select"
-                while(cp > 0 && !foundSelect)
-                {
-                    if(cp > 6)
-                    {
-                        QString tmp = QString(g.at(cp-6)) + g.at(cp-5)+ g.at(cp-4)+ g.at(cp-3)+ g.at(cp-2)+ g.at(cp-1)+ g.at(cp);
-                        if(tmp.toUpper() == "SELECT")
-                        {
-                            foundSelect = true;
-                        }
-                    }
-                    cp --;
-                }
-                int firstCp = cp;
-                QStringList expressions;
-                // now go forward till the "from" and gather all the possible tables and expressions
-                if(foundSelect)
-                {
-                    bool foundFrom = false;
-                    QString currentExpression = "";
-                    while(!foundFrom && cp < saveCp)
-                    {
-                        if(cp < saveCp - 4)
-                        {
-                            QString tmp = g.at(cp) + g.at(cp + 1) + g.at(cp + 2) + g.at(cp + 3);
-                            if(tmp.toUpper() == "FROM")
-                            {
-                                foundFrom = true;
-                            }
-                        }
-
-                        if(!foundFrom)
-                        {
-                            currentExpression = "";
-                            while(cp < g.length() && skippableSinceWhitespace(g.at(cp))) cp ++; // skip the spaces after the "SELECT" or the next expressions
-                            continue from here
-
-                        }
-                    }
-                }
-            }
-        }
+        if(keywordBeforeCursor.toUpper() == "BY"); // anything before a by will be ignored. It'd too complicated for the user
     }
 }
 
@@ -403,6 +383,7 @@ QStringList QTextEditWithCodeCompletion::getTablesFromQuery()
     {
         i += 4; // skip the from
         bool stillCanGo = true;
+        QTextEditWithCodeCompletion::TablePositionInText::colorCounter = 0;
         while(i < g.length() && stillCanGo)
         {
             if(i < g.length() - 4)

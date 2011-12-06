@@ -159,6 +159,7 @@ private:
     void showNewDataTypeWindow(int);
     NewTableForm* showExistingTable(Table*);
     void doDeployment(const QString& codePage, QStringList connectionNames);
+    void doLoadProject(const QString& fileName, bool splashVisible);
 
 private:
     Ui::MainWindow *m_ui;

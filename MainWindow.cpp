@@ -772,32 +772,12 @@ void MainWindow::populateTreeWithSolution(Solution* sol)
     }
 }
 
-void MainWindow::onOpenProject()
+void MainWindow::doLoadProject(const QString& fileName, bool splashVisible)
 {
-    bool w = false;
-    if(m_btndlg && m_btndlg->isVisible())
-    {
-        Qt::WindowFlags flags = m_btndlg->windowFlags();
-        m_btndlg->setWindowFlags(flags ^ (Qt::SplashScreen |Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint));
-        w = true;
-    }
-
-    QString fileName = QFileDialog::getOpenFileName(this,  tr("Open solution"), "", tr("DDM solution files (*.dmx);;All files (*.*)"));
-    if(fileName.length() == 0)
-    {
-        if(w)
-        {
-            Qt::WindowFlags flags = m_btndlg->windowFlags();
-            m_btndlg->setWindowFlags(flags |Qt::SplashScreen | Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint);
-            m_btndlg->show();
-        }
-        return;
-    }
-
     if(!m_workspace->loadSolution(fileName))
     {
         QMessageBox::critical (this, tr("Error"), tr("Cannot load the solution."), QMessageBox::Ok);
-        if(w)
+        if(splashVisible)
         {
             Qt::WindowFlags flags = m_btndlg->windowFlags();
             m_btndlg->setWindowFlags(flags | Qt::SplashScreen |Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint);
@@ -833,7 +813,31 @@ void MainWindow::onOpenProject()
     m_workspace->workingVersion()->getGui()->setMainWindow(this);
     delete m_btndlg;
     m_btndlg = 0;
+}
 
+void MainWindow::onOpenProject()
+{
+    bool splashVisible = false;
+    if(m_btndlg && m_btndlg->isVisible())
+    {
+        Qt::WindowFlags flags = m_btndlg->windowFlags();
+        m_btndlg->setWindowFlags(flags ^ (Qt::SplashScreen |Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint));
+        splashVisible = true;
+    }
+
+    QString fileName = QFileDialog::getOpenFileName(this,  tr("Open solution"), "", tr("DDM solution files (*.dmx);;All files (*.*)"));
+    if(fileName.length() == 0)
+    {
+        if(splashVisible)
+        {
+            Qt::WindowFlags flags = m_btndlg->windowFlags();
+            m_btndlg->setWindowFlags(flags |Qt::SplashScreen | Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint);
+            m_btndlg->show();
+        }
+        return;
+    }
+
+    doLoadProject(fileName, splashVisible);
 }
 
 void MainWindow::enableActions()

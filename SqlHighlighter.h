@@ -36,6 +36,7 @@ private:
     QTextCharFormat questionMarksFormat;
     QTextCharFormat tableNamesFormat;
     QTextCharFormat columnNamesFormat;
+    QTextCharFormat functionFormat;
 
 };
 
