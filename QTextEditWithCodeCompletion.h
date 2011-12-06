@@ -30,6 +30,7 @@ public:
     void keyPressEvent ( QKeyEvent * e );
     void insertText(const QString&);
     void resetBackgrounds();
+    void insertFunctionParantheses();
 
 private slots:
     void onTimer();
@@ -37,8 +38,8 @@ private slots:
 
 private:
     void populateCodeCompletionListbox();
-    void populateCodeCompletionListboxWithTablesOfVersion();
-    void populateCodeCompletionListboxWithColumnsOfTable(const QString&);
+    void populateCodeCompletionListboxWithTablesOfVersion(const QString& tabPrefix);
+    void populateCodeCompletionListboxWithColumnsOfTable(const QString& tabName, const QString& prefix);
     QStringList getTablesFromQuery();
 
 private:

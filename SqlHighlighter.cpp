@@ -6,6 +6,7 @@
 #include "db_DatabaseEngine.h"
 #include "DataType.h"
 #include "db_AbstractDTSupplier.h"
+#include "db_DatabaseBuiltinFunction.h"
 #include "gui_colors.h"
 
 SqlHighlighter::SqlHighlighter(QTextDocument *parent) : QSyntaxHighlighter(parent)
@@ -92,6 +93,18 @@ SqlHighlighter::SqlHighlighter(QTextDocument *parent) : QSyntaxHighlighter(paren
     rule.pattern = QRegExp("--[^\n]*");
     rule.format = singleLineCommentFormat;
     highlightingRules.append(rule);
+
+    // the functions of the database
+    functionFormat.setFontItalic(true);
+    functionFormat.setForeground(Qt::blue);
+    QVector<DatabaseBuiltinFunction> funcs = Workspace::getInstance()->currentProjectsEngine()->getBuiltinFunctions();
+    for(int i=0; i<funcs.size(); i++)
+    {
+        QString p = "\\b" + funcs.at(i).getName() + ".";
+        rule.pattern = QRegExp(p);
+        rule.format = functionFormat;
+        highlightingRules.append(rule);
+    }
 
     // TODO: Add the columns from the views too, with the same format as above
 }
