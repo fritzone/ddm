@@ -2,6 +2,7 @@
 #define MAINWINDOWBUTTONDIALOG_H
 
 #include <QtGui/QDialog>
+#include <QCommandLinkButton>
 
 class MainWindow;
 
@@ -25,9 +26,21 @@ public slots:
     void onNewConnection();
     void onHelp();
 
+private slots:
+    void onQuick1();
+    void onQuick2();
+    void onQuick3();
+    void onQuick4();
+    void onQuick5();
+    void onBtnClose();
 
 protected:
     void changeEvent(QEvent *e);
+
+private:
+
+    void onQuick(const QString&);
+    void fixButton(QCommandLinkButton*, const QString&);
 
 private:
     Ui::MainWindowButtonDialog *m_ui;

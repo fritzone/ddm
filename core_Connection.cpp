@@ -49,3 +49,8 @@ void Connection::resetTo(const QString &name, const QString &host, const QString
     m_autoConnect = autoConnect;
     tryConnect();
 }
+
+QSqlDatabase Connection::getQSqlDatabase()
+{
+    return m_engine->getQSqlDatabaseForConnection(this);
+}

@@ -470,7 +470,7 @@
    <sender>action_Save</sender>
    <signal>activated()</signal>
    <receiver>MainWindow</receiver>
-   <slot>onSaveProject()</slot>
+   <slot>onSaveSolution()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>-1</x>
@@ -486,7 +486,7 @@
    <sender>action_Open</sender>
    <signal>activated()</signal>
    <receiver>MainWindow</receiver>
-   <slot>onOpenProject()</slot>
+   <slot>onOpenSolution()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>-1</x>
@@ -759,8 +759,8 @@
   <slot>onNewSolution()</slot>
   <slot>onNewDataType()</slot>
   <slot>onNewTable()</slot>
-  <slot>onSaveProject()</slot>
-  <slot>onOpenProject()</slot>
+  <slot>onSaveSolution()</slot>
+  <slot>onOpenSolution()</slot>
   <slot>onAbout()</slot>
   <slot>onNewDiagram()</slot>
   <slot>onSaveAs()</slot>

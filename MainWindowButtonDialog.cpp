@@ -2,6 +2,7 @@
 #include "ui_MainWindowButtonDialog.h"
 #include "MainWindow.h"
 #include "gui_HelpWindow.h"
+#include "helper_MostRecentlyUsedFiles.h"
 
 MainWindowButtonDialog::MainWindowButtonDialog(QWidget *parent) :
     QDialog(parent),
@@ -24,6 +25,24 @@ MainWindowButtonDialog::MainWindowButtonDialog(QWidget *parent) :
     m_ui->btnQuick3->hide();
     m_ui->btnQuick4->hide();
     m_ui->btnQuick5->hide();
+    m_ui->grpRecent->hide();
+
+    QVector<QString> mru = MostRecentlyUsedFiles::instance().getFiles();
+    if(mru.size()>1 && mru[0].length() > 0) {fixButton(m_ui->btnQuick1, mru[0]);}
+    if(mru.size()>2 && mru[1].length() > 0) {fixButton(m_ui->btnQuick2, mru[1]);}
+    if(mru.size()>3 && mru[2].length() > 0) {fixButton(m_ui->btnQuick3, mru[2]);}
+    if(mru.size()>4 && mru[3].length() > 0) {fixButton(m_ui->btnQuick4, mru[3]);}
+    if(mru.size()>5 && mru[4].length() > 0) {fixButton(m_ui->btnQuick5, mru[4]);}
+
+}
+
+void MainWindowButtonDialog::fixButton(QCommandLinkButton *b, const QString &s)
+{
+    QString s1 = s.mid(s.lastIndexOf('/') + 1);
+    b->setText(s1);
+    b->show();
+    b->setToolTip(s);
+    m_ui->grpRecent->show();
 }
 
 MainWindowButtonDialog::~MainWindowButtonDialog()
@@ -48,7 +67,7 @@ void MainWindowButtonDialog::onOpenProject()
 {
     if(m_mw)
     {
-        m_mw->onOpenProject();
+        m_mw->onOpenSolution();
     }
 }
 
@@ -83,4 +102,56 @@ void MainWindowButtonDialog::onHelp()
     HelpWindow* hw = HelpWindow::instance();
     hw->showHelp(QString("/doc/main.html"));
     hw->show();
+}
+
+void MainWindowButtonDialog::onQuick1()
+{
+    QString v = m_ui->btnQuick1->toolTip();
+    onQuick(v);
+}
+
+void MainWindowButtonDialog::onQuick2()
+{
+    QString v = m_ui->btnQuick2->toolTip();
+    onQuick(v);
+}
+
+void MainWindowButtonDialog::onQuick3()
+{
+    QString v = m_ui->btnQuick3->toolTip();
+    onQuick(v);
+}
+
+void MainWindowButtonDialog::onQuick4()
+{
+    QString v = m_ui->btnQuick4->toolTip();
+    onQuick(v);
+}
+
+void MainWindowButtonDialog::onQuick5()
+{
+    QString v = m_ui->btnQuick5->toolTip();
+    onQuick(v);
+
+}
+
+void MainWindowButtonDialog::onQuick(const QString &f)
+{
+    if(m_mw)
+    {
+        Qt::WindowFlags flags = windowFlags();
+        setWindowFlags(flags ^ (Qt::SplashScreen |Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint));
+        hide();
+        m_mw->doLoadSolution(f, true);
+    }
+}
+
+void MainWindowButtonDialog::onBtnClose()
+{
+    if(m_mw)
+    {
+        Qt::WindowFlags flags = windowFlags();
+        setWindowFlags(flags ^ (Qt::SplashScreen |Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint));
+        hide();
+    }
 }

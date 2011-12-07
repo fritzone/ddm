@@ -7,6 +7,7 @@
 #include "IssueOriginator.h"
 
 #include <QString>
+#include <QSqlDatabase>
 
 class DatabaseEngine;
 class Table;
@@ -43,6 +44,8 @@ public:
     }
 
     bool tryConnect();
+    bool browse();
+
     ConnectionState getState() const
     {
         return m_state;
@@ -56,6 +59,11 @@ public:
         return m_pass;
     }
     void resetTo(const QString& name, const QString& host, const QString& user, const QString& pass, const QString& db, bool savePw, bool autoConnect);
+    DatabaseEngine* getEngine() const
+    {
+        return m_engine;
+    }
+    QSqlDatabase getQSqlDatabase();
 
 private:
 

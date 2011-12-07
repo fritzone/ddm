@@ -3,6 +3,7 @@
 
 #include <QMap>
 #include <QString>
+#include <QSqlDatabase>
 
 class AbstractDTSupplier;
 class AbstractCodepageSupplier;
@@ -14,6 +15,11 @@ class Table;
 class Project;
 class DatabaseBuiltinFunction;
 class View;
+class Connection;
+
+// BIG TODO: when a new database engine will be introduced which actually can work on databases
+// redesign this interfece so that it takes in a Connection object instead of the host/user/pass
+// combination since not every database has this feature. Sqlite for example
 
 /**
  * This class is a kind of "wrapper" for the other classes that all deal
@@ -102,6 +108,7 @@ public:
 
     QString getTypeStringForSqlType(const QString& sqlType);
     virtual bool tryConnect(const QString& host, const QString& user, const QString& pass, const QString& dbName) = 0;
+    virtual QSqlDatabase getQSqlDatabaseForConnection(Connection *c) = 0;
 
 public:
 
