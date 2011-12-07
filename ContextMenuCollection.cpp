@@ -22,6 +22,7 @@ ContextMenuCollection::ContextMenuCollection()
     m_createNewViewPopupMenu = new QMenu();
     m_connectionPopupMenu = new QMenu();
     m_deployPopupMenu = new QMenu();
+    m_browsedTablePopupMenu = new QMenu();
 
     // actions
     action_RemoveTable = new QAction(QObject::tr("Delete table"), 0);
@@ -61,6 +62,10 @@ ContextMenuCollection::ContextMenuCollection()
     action_connectionConnect = new QAction(QObject::tr("Connect"), 0);
     action_connectionDelete = new QAction(QObject::tr("Delete"), 0);
     action_connectionEdit = new QAction(QObject::tr("Edit"), 0);
+    action_connectionBrowse = new QAction(QObject::tr("Browse"), 0);
+    action_browsedTableInjectIntoSolution = new QAction(QObject::tr("Add to current solution"), 0);
+    action_browsedTableBrowse = new QAction(QObject::tr("Browse table data"), 0);
+    action_browsedTableView = new QAction(QObject::tr("View table details"), 0);
 
     // populate the table popup menu
     m_tablePopupMenu->addAction(action_TableAddColumn);
@@ -123,6 +128,12 @@ ContextMenuCollection::ContextMenuCollection()
     m_connectionPopupMenu->addAction(action_connectionConnect);
     m_connectionPopupMenu->addAction(action_connectionDelete);
     m_connectionPopupMenu->addAction(action_connectionEdit);
+    m_connectionPopupMenu->addAction(action_connectionBrowse);
+
+    // browsed table
+    m_browsedTablePopupMenu->addAction(action_browsedTableInjectIntoSolution);
+    m_browsedTablePopupMenu->addAction(action_browsedTableBrowse);
+    m_browsedTablePopupMenu->addAction(action_browsedTableView);
 
     // popup menu for the table instances
     m_createTableInstancesPopup->clear();

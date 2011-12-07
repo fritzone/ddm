@@ -40,6 +40,8 @@ public:
     QMenu* getConnectionsPopupMenu() { return m_connectionPopupMenu; }
     QMenu* getDeployPopupMenu() {return m_deployPopupMenu; }
     QMenu* getViewsPopupMenu() { return m_viewsPopupMenu; }
+    QMenu* getTableFromBrowsePopupMenu() { return m_browsedTablePopupMenu; }
+
 
     /*
      * Actions
@@ -78,11 +80,12 @@ public:
     QAction* getAction_ConnectionConnect() {return action_connectionConnect; }
     QAction* getAction_ConnectionDelete() {return action_connectionDelete; }
     QAction* getAction_ConnectionEdit() {return action_connectionEdit; }
+    QAction* getAction_ConnectionBrowse() {return action_connectionBrowse; }
+    QAction* getAction_BrowsedTableInject() {return action_browsedTableInjectIntoSolution; }
 
 private:
 
     ContextMenuCollection();
-
 
     QMenu* m_tablePopupMenu;                    // popup menu for a table
     QMenu* m_tableInstancePopupMenu;            // popup menu for a table instance
@@ -100,7 +103,7 @@ private:
     QMenu* m_createNewViewPopupMenu;            // popup for the create new view command.
     QMenu* m_deployPopupMenu;                   // popup menu for the deployment, will contain the list of connections
     QMenu* m_viewsPopupMenu;                    // popup menu for the views tree element
-
+    QMenu* m_browsedTablePopupMenu;             // popup menu for a table which was retrieved from the browse connection
 
     // the actions in the table popup menu
     QAction* action_RemoveTable;
@@ -151,12 +154,21 @@ private:
     // issues from a table actions
     QAction* action_ignoreIssuesFromThisTable;
 
+    // the view popup menu
     QAction* action_createViewUsingQueryBuilder;
     QAction* action_createViewUsingSql;
 
+    // a connections popup menu
     QAction* action_connectionConnect;
     QAction* action_connectionDelete;
     QAction* action_connectionEdit;
+    QAction* action_connectionBrowse;
+
+    // a browsed table popup menu
+    QAction* action_browsedTableInjectIntoSolution;
+    QAction* action_browsedTableCopyToConnection;
+    QAction* action_browsedTableBrowse; // see the data of the table
+    QAction* action_browsedTableView;   // see the details of the table
 
     // the instance of the popup menu collection
     static ContextMenuCollection* m_instance;

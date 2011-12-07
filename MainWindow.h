@@ -72,6 +72,7 @@ public:
     {
         return m_instance;
     }
+    void doLoadSolution(const QString& fileName, bool splashVisible);
 
 public slots:
 
@@ -79,8 +80,8 @@ public slots:
     //void onProjectTreeClicked();
     void onNewDataType();
     void onNewTable();
-    void onSaveProject();
-    void onOpenProject();
+    void onSaveSolution();
+    void onOpenSolution();
     void onAbout();
     void onDTTreeClicked();
     void onNewDiagram();
@@ -129,12 +130,14 @@ public slots:
     void onValidate();
     void onNewConnection();
     void onConnectConnection();
+    void onBrowseConnection();
     void onDeleteConnection();
     void onEditConnection();
     void onDeploymentFinished(Deployer*);
     void onSqlGenerationFinished(InjectSqlGenerator*);
     void onReverseEngineeringFinished(ReverseEngineerer*);
     void onDeployHovered();
+    void onConnectionItemDoubleClicked(QTreeWidgetItem*,int);
 
 public:
     void createStatusLabel();
@@ -159,7 +162,6 @@ private:
     void showNewDataTypeWindow(int);
     NewTableForm* showExistingTable(Table*);
     void doDeployment(const QString& codePage, QStringList connectionNames);
-    void doLoadProject(const QString& fileName, bool splashVisible);
 
 private:
     Ui::MainWindow *m_ui;

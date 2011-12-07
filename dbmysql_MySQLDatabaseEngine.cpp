@@ -20,6 +20,7 @@
 #include "ForeignKey.h"
 #include "db_DatabaseBuiltinFunction.h"
 #include "core_View.h"
+#include "core_Connection.h"
 #include <QMutexLocker>
 
 QVector<DatabaseBuiltinFunction>* MySQLDatabaseEngine::s_builtinFunctions = 0;
@@ -136,6 +137,20 @@ bool MySQLDatabaseEngine::reverseEngineerDatabase(const QString& host, const QSt
     qDebug() << "bye bye";
     return true;
 }
+
+QSqlDatabase MySQLDatabaseEngine::getQSqlDatabaseForConnection(Connection *c)
+{
+    QString newConnName = provideConnectionName("getConenction");
+    QSqlDatabase dbo = QSqlDatabase::cloneDatabase(*m_defaultMysqlDb, newConnName);
+
+    dbo.setHostName(c->getHost());
+    dbo.setUserName(c->getUser());
+    dbo.setPassword(c->getPassword());
+    dbo.setDatabaseName(c->getDb());
+    dbo.open();
+    return dbo;
+}
+
 
 QVector<QString> MySQLDatabaseEngine::getAvailableViews(const QString& host, const QString& user, const QString& pass, const QString& db)
 {

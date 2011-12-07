@@ -47,12 +47,14 @@
 #include "core_Deployer.h"
 #include "core_InjectSqlGenerator.h"
 #include "core_ReverseEngineerer.h"
+#include "helper_MostRecentlyUsedFiles.h"
+#include "BrowseTableForm.h"
 
 #include <QtGui>
+#include <QSqlTableModel>
+#include <QSqlDriver>
+#include <QSqlError>
 
-#ifdef Q_WS_X11
-//Q_IMPORT_PLUGIN(qsqlmysql)
-#endif
 MainWindow* MainWindow::m_instance = 0;
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), m_ui(new Ui::MainWindow), m_projectTreeDock(0), m_datatypesTreeDock(0), m_issuesTreeDock(0), m_connectionsTreeDock(0),
@@ -156,12 +158,11 @@ void MainWindow::showConnections()
     m_connectionsTree->setSelectionMode(QAbstractItemView::SingleSelection);
     m_connectionsTree->setSelectionBehavior(QAbstractItemView::SelectItems);
     m_connectionsTree->setItemDelegate(new ContextMenuDelegate(m_contextMenuHandler,m_projectTree));
-    m_connectionsTree->setColumnCount(2);
+    m_connectionsTree->setColumnCount(1);
     m_connectionsTree->setHeaderHidden(false);
 
     QTreeWidgetItem *___qtreewidgetitem = m_connectionsTree->headerItem();
-    ___qtreewidgetitem->setText(0, QApplication::translate("MainWindow", "Name", 0, QApplication::UnicodeUTF8));
-    ___qtreewidgetitem->setText(1, QApplication::translate("MainWindow", "Host", 0, QApplication::UnicodeUTF8));
+    ___qtreewidgetitem->setText(0, QApplication::translate("MainWindow", "Connection", 0, QApplication::UnicodeUTF8));
     m_connectionsTree->header()->setDefaultSectionSize(150);
 
     m_connectionsContextMenuHandler = new ContextMenuHandler();
@@ -177,16 +178,18 @@ void MainWindow::showConnections()
         createConnectionTreeEntry(c);
     }
     QObject::connect(ContextMenuCollection::getInstance()->getAction_ConnectionConnect(), SIGNAL(activated()), this, SLOT(onConnectConnection()));
+    QObject::connect(ContextMenuCollection::getInstance()->getAction_ConnectionBrowse(), SIGNAL(activated()), this, SLOT(onBrowseConnection()));
     QObject::connect(ContextMenuCollection::getInstance()->getAction_ConnectionDelete(), SIGNAL(activated()), this, SLOT(onDeleteConnection()));
     QObject::connect(ContextMenuCollection::getInstance()->getAction_ConnectionEdit(), SIGNAL(activated()), this, SLOT(onEditConnection()));
+    connect(m_connectionsTree, SIGNAL(itemDoubleClicked(QTreeWidgetItem*,int)), this, SLOT(onConnectionItemDoubleClicked(QTreeWidgetItem*,int)));
+
 
     m_ui->action_ConnectionsTree->setChecked(true);
 }
 
 ContextMenuEnabledTreeWidgetItem* MainWindow::createConnectionTreeEntry(Connection* c)
 {
-    ContextMenuEnabledTreeWidgetItem* newConnectionItem = new ContextMenuEnabledTreeWidgetItem((ContextMenuEnabledTreeWidgetItem*)0, QStringList(c->getName())) ;
-    newConnectionItem->setText(1, c->getDb()+"@"+c->getHost());
+    ContextMenuEnabledTreeWidgetItem* newConnectionItem = new ContextMenuEnabledTreeWidgetItem((ContextMenuEnabledTreeWidgetItem*)0, QStringList(c->getName() + "(" + c->getDb()+"@"+c->getHost() + ")")) ;
     QVariant var(c->getName());
     newConnectionItem->setData(0, Qt::UserRole, var);
     switch(c->getState())
@@ -758,7 +761,7 @@ void MainWindow::saveProject(bool saveAs)
     m_ui->statusBar->showMessage(tr("Saved"), 3000);
 }
 
-void MainWindow::onSaveProject()
+void MainWindow::onSaveSolution()
 {
     saveProject(false);
 }
@@ -772,7 +775,7 @@ void MainWindow::populateTreeWithSolution(Solution* sol)
     }
 }
 
-void MainWindow::doLoadProject(const QString& fileName, bool splashVisible)
+void MainWindow::doLoadSolution(const QString& fileName, bool splashVisible)
 {
     if(!m_workspace->loadSolution(fileName))
     {
@@ -815,7 +818,7 @@ void MainWindow::doLoadProject(const QString& fileName, bool splashVisible)
     m_btndlg = 0;
 }
 
-void MainWindow::onOpenProject()
+void MainWindow::onOpenSolution()
 {
     bool splashVisible = false;
     if(m_btndlg && m_btndlg->isVisible())
@@ -837,7 +840,9 @@ void MainWindow::onOpenProject()
         return;
     }
 
-    doLoadProject(fileName, splashVisible);
+    MostRecentlyUsedFiles::instance().addFile(fileName);
+
+    doLoadSolution(fileName, splashVisible);
 }
 
 void MainWindow::enableActions()
@@ -1560,6 +1565,96 @@ void MainWindow::onDeleteConnection()
         ConnectionManager::instance()->deleteConnection(c->getName());
         delete c->getLocation();
         delete c;
+    }
+}
+
+void MainWindow::onBrowseConnection()
+{
+    Connection* c = getRightclickedConnection();
+    if(c)
+    {
+        if(c->getState() == Connection::CONNECTED)
+        {
+            ContextMenuEnabledTreeWidgetItem* connTablesItem = new ContextMenuEnabledTreeWidgetItem(c->getLocation(), QStringList(tr("Tables")));
+            m_connectionsTree->addTopLevelItem(connTablesItem);
+            connTablesItem->setIcon(0, IconFactory::getTabinstIcon());
+
+            // Now do the browsing
+            QVector<QString> dbTables = c->getEngine()->getAvailableTables(c->getHost(), c->getUser(), c->getPassword(), c->getDb());
+            for(int i=0; i<dbTables.size(); i++)
+            {
+                ContextMenuEnabledTreeWidgetItem* newTblsItem = new ContextMenuEnabledTreeWidgetItem(connTablesItem, QStringList(dbTables.at(i)));
+                QVariant var(QString("B:") + dbTables.at(i) + "?" + c->getName());
+                newTblsItem->setData(0, Qt::UserRole, var);
+                newTblsItem->setPopupMenu(ContextMenuCollection::getInstance()->getTableFromBrowsePopupMenu());
+                newTblsItem->setIcon(0, IconFactory::getTabinstIcon());
+                m_connectionsTree->addTopLevelItem(newTblsItem);
+            }
+        }
+    }
+}
+
+void MainWindow::onConnectionItemDoubleClicked(QTreeWidgetItem* item,int)
+{
+    QVariant v = item->data(0, Qt::UserRole);
+    if(v.isValid())
+    {
+        QString s = v.toString();
+        qDebug() << s;
+        if(s.startsWith("B:"))
+        {
+            if(m_btndlg && m_btndlg->isVisible())
+            {
+                Qt::WindowFlags flags = m_btndlg->windowFlags();
+                m_btndlg->setWindowFlags(flags ^ (Qt::SplashScreen |Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint));
+                m_btndlg->hide();
+            }
+
+            QString cname = s.mid(s.indexOf("?") + 1);
+            Connection *c = ConnectionManager::instance()->getConnection(cname);
+            QString tab = s.left(s.indexOf("?")).mid(2);
+            BrowseTableForm* frm = new BrowseTableForm();
+            setCentralWidget(frm);
+            QSqlDatabase sqldb = c->getQSqlDatabase();
+            QSqlTableModel *model = new QSqlTableModel(frm->getTable(), sqldb);
+            model->setTable(tab);
+            model->select();
+
+            if (model->lastError().type() != QSqlError::NoError)
+            {
+                qDebug() << "nope" << cname << " " << model->lastError().text();
+                return;
+            }
+
+            frm->getTable()->setModel(model);
+            frm->getTable()->setEditTriggers(QAbstractItemView::DoubleClicked|QAbstractItemView::EditKeyPressed);
+        }
+        Connection* c = ConnectionManager::instance()->getConnection(s);
+        if(c)
+        {
+            if(c->tryConnect())
+            {
+                c->getLocation()->setIcon(0, IconFactory::getConnectedDatabaseIcon());
+
+// TODO: This is pure duplication with onBrowseConnection();
+                ContextMenuEnabledTreeWidgetItem* connTablesItem = new ContextMenuEnabledTreeWidgetItem(c->getLocation(), QStringList(tr("Tables")));
+                m_connectionsTree->addTopLevelItem(connTablesItem);
+                connTablesItem->setIcon(0, IconFactory::getTabinstIcon());
+
+                // Now do the browsing
+                QVector<QString> dbTables = c->getEngine()->getAvailableTables(c->getHost(), c->getUser(), c->getPassword(), c->getDb());
+                for(int i=0; i<dbTables.size(); i++)
+                {
+                    ContextMenuEnabledTreeWidgetItem* newTblsItem = new ContextMenuEnabledTreeWidgetItem(connTablesItem, QStringList(dbTables.at(i)));
+                    QVariant var(QString("B:") + dbTables.at(i) + "?" + c->getName());
+                    newTblsItem->setData(0, Qt::UserRole, var);
+                    newTblsItem->setPopupMenu(ContextMenuCollection::getInstance()->getTableFromBrowsePopupMenu());
+                    newTblsItem->setIcon(0, IconFactory::getTabinstIcon());
+                    m_connectionsTree->addTopLevelItem(newTblsItem);
+                }
+
+            }
+        }
     }
 }
 

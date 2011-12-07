@@ -123,7 +123,9 @@ SOURCES += main.cpp \
     core_ReverseEngineerer.cpp \
     core_ReverseEngineererThread.cpp \
     QTextEditWithCodeCompletion.cpp \
-    QListWidgetForCodeCompletion.cpp
+    QListWidgetForCodeCompletion.cpp \
+    helper_MostRecentlyUsedFiles.cpp \
+    BrowseTableForm.cpp
 HEADERS += MainWindow.h \
     MainWindowButtonDialog.h \
     NewProjectDialog.h \
@@ -270,7 +272,9 @@ HEADERS += MainWindow.h \
     core_ReverseEngineererThread.h \
     QTextEditWithCodeCompletion.h \
     gui_colors.h \
-    QListWidgetForCodeCompletion.h
+    QListWidgetForCodeCompletion.h \
+    helper_MostRecentlyUsedFiles.h \
+    BrowseTableForm.h
 FORMS += MainWindow.ui \
     MainWindowButtonDialog.ui \
     NewProjectDialog.ui \
@@ -295,5 +299,6 @@ FORMS += MainWindow.ui \
     ReverseEngineerWizardOptionsForm.ui \
     NewViewForm.ui \
     QueryItemListDialog.ui \
-    HelpWindow.ui
+    HelpWindow.ui \
+    BrowseTableForm.ui
 RESOURCES += dbm.qrc
