@@ -53,7 +53,6 @@ private:
     QueryGraphicsView* m_qgv;
     QueryGraphicsScene* m_qgs;
     QueryGraphicsHelper* m_comps;
-    SqlHighlighter* m_highlighter;
     bool m_queryBuilder;
     View* m_view;
     QTextEditWithCodeCompletion*txtSql;

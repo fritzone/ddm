@@ -13,6 +13,7 @@
 #include "MainWindow.h"
 #include "gui_HelpWindow.h"
 #include "core_ConnectionManager.h"
+#include "db_AbstractDTSupplier.h"
 
 #include <QFileDialog>
 #include <QMessageBox>
@@ -23,7 +24,14 @@
 SqlForm::SqlForm(DatabaseEngine* engine, QWidget *parent) : SourceCodePresenterWidget(parent), ui(new Ui::SqlForm), m_engine(engine)
 {
     ui->setupUi(this);
-    highlighter = new SqlHighlighter(ui->txtSql->document());
+    highlighter = new SqlHighlighter(ui->txtSql->document(),Workspace::getInstance()->currentProjectsEngine()->getKeywords(),
+                                     Workspace::getInstance()->currentProjectsEngine()->getDTSupplier()->numericTypes(),
+                                     Workspace::getInstance()->currentProjectsEngine()->getDTSupplier()->booleanTypes(),
+                                     Workspace::getInstance()->currentProjectsEngine()->getDTSupplier()->textTypes(),
+                                     Workspace::getInstance()->currentProjectsEngine()->getDTSupplier()->blobTypes(),
+                                     Workspace::getInstance()->currentProjectsEngine()->getDTSupplier()->dateTimeTypes(),
+                                     Workspace::getInstance()->currentProjectsEngine()->getDTSupplier()->miscTypes(),
+                                     Workspace::getInstance()->workingVersion()->getTables());
     ui->cmbOptions->hide();
 }
 

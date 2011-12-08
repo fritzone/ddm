@@ -23,6 +23,7 @@
 #include "ClipboardFactory.h"
 #include "Codepage.h"
 #include "db_AbstractCodepageSupplier.h"
+#include "db_AbstractDTSupplier.h"
 #include "IssueManager.h"
 #include "VersionGuiElements.h"
 #include "gui_HelpWindow.h"
@@ -69,7 +70,15 @@ NewTableForm::NewTableForm(DatabaseEngine* db, Project* prj, QWidget *parent, bo
     QObject::connect(ContextMenuCollection::getInstance()->getAction_CopyColumn(), SIGNAL(activated()), this, SLOT(onCopyColumn()));
     QObject::connect(ContextMenuCollection::getInstance()->getAction_PasteColumn(), SIGNAL(activated()), this, SLOT(onPasteColumn()));
 
-    highlighter = new SqlHighlighter(m_ui->txtSql->document());
+    highlighter = new SqlHighlighter(m_ui->txtSql->document(),
+                                     Workspace::getInstance()->currentProjectsEngine()->getKeywords(),
+                                     Workspace::getInstance()->currentProjectsEngine()->getDTSupplier()->numericTypes(),
+                                     Workspace::getInstance()->currentProjectsEngine()->getDTSupplier()->booleanTypes(),
+                                     Workspace::getInstance()->currentProjectsEngine()->getDTSupplier()->textTypes(),
+                                     Workspace::getInstance()->currentProjectsEngine()->getDTSupplier()->blobTypes(),
+                                     Workspace::getInstance()->currentProjectsEngine()->getDTSupplier()->dateTimeTypes(),
+                                     Workspace::getInstance()->currentProjectsEngine()->getDTSupplier()->miscTypes(),
+                                     Workspace::getInstance()->workingVersion()->getTables());
 
     const QVector<UserDataType*>& dts = m_project->getWorkingVersion()->getDataTypes();
     for(int i=0; i<dts.size(); i++)

@@ -8,13 +8,14 @@ namespace Ui {
 }
 
 class QTableView;
+class Connection;
 
 class BrowseTableForm : public QWidget
 {
     Q_OBJECT
 
 public:
-    explicit BrowseTableForm(QWidget *parent = 0);
+    explicit BrowseTableForm(QWidget *parent, Connection* c);
     ~BrowseTableForm();
     QTableView* getTable();
 

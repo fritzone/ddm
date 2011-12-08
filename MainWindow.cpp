@@ -1575,21 +1575,7 @@ void MainWindow::onBrowseConnection()
     {
         if(c->getState() == Connection::CONNECTED)
         {
-            ContextMenuEnabledTreeWidgetItem* connTablesItem = new ContextMenuEnabledTreeWidgetItem(c->getLocation(), QStringList(tr("Tables")));
-            m_connectionsTree->addTopLevelItem(connTablesItem);
-            connTablesItem->setIcon(0, IconFactory::getTabinstIcon());
-
-            // Now do the browsing
-            QVector<QString> dbTables = c->getEngine()->getAvailableTables(c->getHost(), c->getUser(), c->getPassword(), c->getDb());
-            for(int i=0; i<dbTables.size(); i++)
-            {
-                ContextMenuEnabledTreeWidgetItem* newTblsItem = new ContextMenuEnabledTreeWidgetItem(connTablesItem, QStringList(dbTables.at(i)));
-                QVariant var(QString("B:") + dbTables.at(i) + "?" + c->getName());
-                newTblsItem->setData(0, Qt::UserRole, var);
-                newTblsItem->setPopupMenu(ContextMenuCollection::getInstance()->getTableFromBrowsePopupMenu());
-                newTblsItem->setIcon(0, IconFactory::getTabinstIcon());
-                m_connectionsTree->addTopLevelItem(newTblsItem);
-            }
+            createConnectionTreeEntryForTables(c);
         }
     }
 }
@@ -1613,7 +1599,7 @@ void MainWindow::onConnectionItemDoubleClicked(QTreeWidgetItem* item,int)
             QString cname = s.mid(s.indexOf("?") + 1);
             Connection *c = ConnectionManager::instance()->getConnection(cname);
             QString tab = s.left(s.indexOf("?")).mid(2);
-            BrowseTableForm* frm = new BrowseTableForm();
+            BrowseTableForm* frm = new BrowseTableForm(this, c);
             setCentralWidget(frm);
             QSqlDatabase sqldb = c->getQSqlDatabase();
             QSqlTableModel *model = new QSqlTableModel(frm->getTable(), sqldb);
@@ -1628,6 +1614,9 @@ void MainWindow::onConnectionItemDoubleClicked(QTreeWidgetItem* item,int)
 
             frm->getTable()->setModel(model);
             frm->getTable()->setEditTriggers(QAbstractItemView::DoubleClicked|QAbstractItemView::EditKeyPressed);
+
+            qDebug() << frm->getTable()->horizontalHeader()->count();
+            return;
         }
         Connection* c = ConnectionManager::instance()->getConnection(s);
         if(c)
@@ -1635,27 +1624,33 @@ void MainWindow::onConnectionItemDoubleClicked(QTreeWidgetItem* item,int)
             if(c->tryConnect())
             {
                 c->getLocation()->setIcon(0, IconFactory::getConnectedDatabaseIcon());
-
-// TODO: This is pure duplication with onBrowseConnection();
-                ContextMenuEnabledTreeWidgetItem* connTablesItem = new ContextMenuEnabledTreeWidgetItem(c->getLocation(), QStringList(tr("Tables")));
-                m_connectionsTree->addTopLevelItem(connTablesItem);
-                connTablesItem->setIcon(0, IconFactory::getTabinstIcon());
-
-                // Now do the browsing
-                QVector<QString> dbTables = c->getEngine()->getAvailableTables(c->getHost(), c->getUser(), c->getPassword(), c->getDb());
-                for(int i=0; i<dbTables.size(); i++)
-                {
-                    ContextMenuEnabledTreeWidgetItem* newTblsItem = new ContextMenuEnabledTreeWidgetItem(connTablesItem, QStringList(dbTables.at(i)));
-                    QVariant var(QString("B:") + dbTables.at(i) + "?" + c->getName());
-                    newTblsItem->setData(0, Qt::UserRole, var);
-                    newTblsItem->setPopupMenu(ContextMenuCollection::getInstance()->getTableFromBrowsePopupMenu());
-                    newTblsItem->setIcon(0, IconFactory::getTabinstIcon());
-                    m_connectionsTree->addTopLevelItem(newTblsItem);
-                }
-
+                createConnectionTreeEntryForTables(c);
             }
         }
     }
+}
+
+void MainWindow::createConnectionTreeEntryForTables(Connection *c)
+{
+    ContextMenuEnabledTreeWidgetItem* connTablesItem = new ContextMenuEnabledTreeWidgetItem(c->getLocation(), QStringList(tr("Tables")));
+    m_connectionsTree->addTopLevelItem(connTablesItem);
+    connTablesItem->setIcon(0, IconFactory::getTabinstIcon());
+
+    // Now do the browsing
+    QVector<QString> dbTables = c->getEngine()->getAvailableTables(c->getHost(), c->getUser(), c->getPassword(), c->getDb());
+    for(int i=0; i<dbTables.size(); i++)
+    {
+        ContextMenuEnabledTreeWidgetItem* newTblsItem = new ContextMenuEnabledTreeWidgetItem(connTablesItem, QStringList(dbTables.at(i)));
+        QVariant var(QString("B:") + dbTables.at(i) + "?" + c->getName());
+        newTblsItem->setData(0, Qt::UserRole, var);
+        newTblsItem->setPopupMenu(ContextMenuCollection::getInstance()->getTableFromBrowsePopupMenu());
+        newTblsItem->setIcon(0, IconFactory::getTabinstIcon());
+        m_connectionsTree->addTopLevelItem(newTblsItem);
+    }
+
+    // TODO: now come up with a mechanism that feeds continuously the reverse engineered tables into an object that feeds it in somewhere which
+    // is used by the code completion enabled text edit when editing a table. Highly possible the destination will be the Connection object
+    // since everyone has access to it.
 }
 
 void MainWindow::onConnectConnection()

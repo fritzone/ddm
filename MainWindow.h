@@ -162,6 +162,7 @@ private:
     void showNewDataTypeWindow(int);
     NewTableForm* showExistingTable(Table*);
     void doDeployment(const QString& codePage, QStringList connectionNames);
+    void createConnectionTreeEntryForTables(Connection *c);
 
 private:
     Ui::MainWindow *m_ui;
