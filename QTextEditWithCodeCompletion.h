@@ -5,13 +5,18 @@
 #include <QListWidget>
 #include <QTimer>
 #include <QObject>
+#include <QVector>
 
+#include "db_DatabaseBuiltinFunction.h"
 #include "QListWidgetForCodeCompletion.h"
+
+class SqlHighlighter;
+class Connection;
+class Table;
 
 class QTextEditWithCodeCompletion : public QTextEdit
 {
     Q_OBJECT
-
 
 private:
 
@@ -26,7 +31,7 @@ private:
 
 public:
 
-    QTextEditWithCodeCompletion(QWidget *p);
+    QTextEditWithCodeCompletion(QWidget *p = 0, Connection* c = 0);
     void keyPressEvent ( QKeyEvent * e );
     void insertText(const QString&);
     void resetBackgrounds();
@@ -47,6 +52,10 @@ private:
     QTimer m_timer;
     QColor m_currentBgColor;
     QVector<TablePositionInText> m_lastTablePositions;
+    SqlHighlighter* m_highlighter;
+    QStringList dbKeywords;
+    QVector<DatabaseBuiltinFunction> funcs;
+    QVector<Table*> tabs;
 };
 
 #endif // QTEXTEDITWITHCODECOMPLETION_H

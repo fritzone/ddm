@@ -1,6 +1,4 @@
 #include "SqlHighlighter.h"
-#include "Workspace.h"
-#include "Version.h"
 #include "Table.h"
 #include "Column.h"
 #include "db_DatabaseEngine.h"
@@ -9,7 +7,9 @@
 #include "db_DatabaseBuiltinFunction.h"
 #include "gui_colors.h"
 
-SqlHighlighter::SqlHighlighter(QTextDocument *parent) : QSyntaxHighlighter(parent)
+SqlHighlighter::SqlHighlighter(QTextDocument *parent, QStringList keywords, QList<DataType> numericTypes, QList<DataType> booleanTypes,
+                               QList<DataType> textTypes, QList<DataType> blobTypes, QList<DataType> dateTimeTypes, QList<DataType> miscTypes,
+                               QVector<Table*> tables) : QSyntaxHighlighter(parent)
 {
     HighlightingRule rule;  // this is sort of reused
 
@@ -18,7 +18,7 @@ SqlHighlighter::SqlHighlighter(QTextDocument *parent) : QSyntaxHighlighter(paren
 
     // feeding in the keywords of the database engine
     QStringList keywordPatterns;
-    QStringList keywords = Workspace::getInstance()->currentProjectsEngine()->getKeywords();
+
     for(int i=0; i<keywords.size(); i++)
     {
         QString t = QString("\\b") + keywords.at(i).toUpper() + QString("\\b");
@@ -40,12 +40,12 @@ SqlHighlighter::SqlHighlighter(QTextDocument *parent) : QSyntaxHighlighter(paren
     typesFormat.setFontWeight(QFont::Bold);
 
     QStringList typesPatterns;
-    appendTypePattern(typesPatterns, Workspace::getInstance()->currentProjectsEngine()->getDTSupplier()->numericTypes());
-    appendTypePattern(typesPatterns, Workspace::getInstance()->currentProjectsEngine()->getDTSupplier()->booleanTypes());
-    appendTypePattern(typesPatterns, Workspace::getInstance()->currentProjectsEngine()->getDTSupplier()->textTypes());
-    appendTypePattern(typesPatterns, Workspace::getInstance()->currentProjectsEngine()->getDTSupplier()->booleanTypes());
-    appendTypePattern(typesPatterns, Workspace::getInstance()->currentProjectsEngine()->getDTSupplier()->dateTimeTypes());
-    appendTypePattern(typesPatterns, Workspace::getInstance()->currentProjectsEngine()->getDTSupplier()->miscTypes());
+    appendTypePattern(typesPatterns, numericTypes);
+    appendTypePattern(typesPatterns, booleanTypes);
+    appendTypePattern(typesPatterns, textTypes);
+    appendTypePattern(typesPatterns, blobTypes);
+    appendTypePattern(typesPatterns, dateTimeTypes);
+    appendTypePattern(typesPatterns, miscTypes);
 
     foreach (const QString &pattern, typesPatterns)
     {
@@ -64,7 +64,6 @@ SqlHighlighter::SqlHighlighter(QTextDocument *parent) : QSyntaxHighlighter(paren
     // the table names
     tableNamesFormat.setForeground(Qt::black);
     tableNamesFormat.setFontWeight(QFont::Bold);
-    QVector<Table*> tables = Workspace::getInstance()->workingVersion()->getTables();
     for(int i=0; i< tables.size(); i++)
     {
         QString p = "\\b" + tables.at(i)->getName() + "\\b";
@@ -93,18 +92,6 @@ SqlHighlighter::SqlHighlighter(QTextDocument *parent) : QSyntaxHighlighter(paren
     rule.pattern = QRegExp("--[^\n]*");
     rule.format = singleLineCommentFormat;
     highlightingRules.append(rule);
-
-    // the functions of the database
-    functionFormat.setFontItalic(true);
-    functionFormat.setForeground(Qt::blue);
-    QVector<DatabaseBuiltinFunction> funcs = Workspace::getInstance()->currentProjectsEngine()->getBuiltinFunctions();
-    for(int i=0; i<funcs.size(); i++)
-    {
-        QString p = "\\b" + funcs.at(i).getName() + ".";
-        rule.pattern = QRegExp(p);
-        rule.format = functionFormat;
-        highlightingRules.append(rule);
-    }
 
     // TODO: Add the columns from the views too, with the same format as above
 }

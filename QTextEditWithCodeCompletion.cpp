@@ -1,5 +1,4 @@
 #include "QTextEditWithCodeCompletion.h"
-
 #include "Workspace.h"
 #include "Version.h"
 #include "Table.h"
@@ -8,6 +7,9 @@
 #include "gui_colors.h"
 #include "db_DatabaseEngine.h"
 #include "db_DatabaseBuiltinFunction.h"
+#include "SqlHighlighter.h"
+#include "db_AbstractDTSupplier.h"
+#include "core_Connection.h"
 
 #include <QKeyEvent>
 #include <QMessageBox>
@@ -20,7 +22,7 @@ static bool skippableSinceWhitespace(QChar c)
     return c == ' ' || c == '\t' || c == '\r' || c == '\n';
 }
 
-QTextEditWithCodeCompletion::QTextEditWithCodeCompletion(QWidget* p) : QTextEdit(p), m_lst(0), m_timer(), m_currentBgColor(Qt::white)
+QTextEditWithCodeCompletion::QTextEditWithCodeCompletion(QWidget* p, Connection* c) : QTextEdit(p), m_lst(0), m_timer(), m_currentBgColor(Qt::white), m_highlighter(0), dbKeywords(), funcs(), tabs()
 {
     m_lst = new QListWidgetForCodeCompletion(this);
     m_lst->setSelectionMode(QAbstractItemView::SingleSelection);
@@ -28,6 +30,42 @@ QTextEditWithCodeCompletion::QTextEditWithCodeCompletion(QWidget* p) : QTextEdit
     m_timer.setInterval(300);
     QObject::connect(&m_timer, SIGNAL(timeout()), this, SLOT(onTimer()));
     QObject::connect(m_lst, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(onListItemDoubleClicked(QModelIndex)));
+
+    QFont font;
+    font.setFamily(QString::fromUtf8("Courier"));
+    font.setPointSize(11);
+    setFont(font);
+
+    if(Workspace::getInstance()->hasCurrentSolution())
+    {
+        m_highlighter = new SqlHighlighter(document(),
+                                       Workspace::getInstance()->currentProjectsEngine()->getKeywords(),
+                                       Workspace::getInstance()->currentProjectsEngine()->getDTSupplier()->numericTypes(),
+                                       Workspace::getInstance()->currentProjectsEngine()->getDTSupplier()->booleanTypes(),
+                                       Workspace::getInstance()->currentProjectsEngine()->getDTSupplier()->textTypes(),
+                                       Workspace::getInstance()->currentProjectsEngine()->getDTSupplier()->blobTypes(),
+                                       Workspace::getInstance()->currentProjectsEngine()->getDTSupplier()->dateTimeTypes(),
+                                       Workspace::getInstance()->currentProjectsEngine()->getDTSupplier()->miscTypes(),
+                                       Workspace::getInstance()->workingVersion()->getTables());
+        dbKeywords = Workspace::getInstance()->currentProjectsEngine()->getKeywords();
+        funcs = Workspace::getInstance()->currentProjectsEngine()->getBuiltinFunctions();
+        tabs = Workspace::getInstance()->workingVersion()->getTables();
+    }
+    else
+    if(c)
+    {
+        m_highlighter = new SqlHighlighter(document(),
+                                       c->getEngine()->getKeywords(),
+                                       c->getEngine()->getDTSupplier()->numericTypes(),
+                                       c->getEngine()->getDTSupplier()->booleanTypes(),
+                                       c->getEngine()->getDTSupplier()->textTypes(),
+                                       c->getEngine()->getDTSupplier()->blobTypes(),
+                                       c->getEngine()->getDTSupplier()->dateTimeTypes(),
+                                       c->getEngine()->getDTSupplier()->miscTypes(),
+                                       QVector<Table*>());
+        dbKeywords = c->getEngine()->getKeywords();
+        funcs = c->getEngine()->getBuiltinFunctions();
+    }
 }
 
 void QTextEditWithCodeCompletion::onTimer()
@@ -121,7 +159,7 @@ void QTextEditWithCodeCompletion::keyPressEvent(QKeyEvent *e)
 void QTextEditWithCodeCompletion::populateCodeCompletionListboxWithTablesOfVersion(const QString& tabPrefix)
 {
     // WARNING!!! For easier code writing this is not (yet) following the OOP principles. For true OOP we would need to load only the table instances!
-    const QVector<Table*> tabs = Workspace::getInstance()->workingVersion()->getTables();
+
     for(int i=0; i<tabs.size(); i++)
     {
         QString tabName = tabs.at(i)->getName();
@@ -140,6 +178,8 @@ void QTextEditWithCodeCompletion::populateCodeCompletionListboxWithTablesOfVersi
 
 void QTextEditWithCodeCompletion::populateCodeCompletionListboxWithColumnsOfTable(const QString& tabName, const QString& prefix)
 {
+    if(!Workspace::getInstance()->hasCurrentSolution()) return;
+
     Table* t = Workspace::getInstance()->workingVersion()->getTable(tabName);
     QStringList tcs = t->fullColumns();
     for(int i=0; i<tcs.size(); i++)
@@ -221,7 +261,7 @@ void QTextEditWithCodeCompletion::populateCodeCompletionListbox()
 
     // 2. Find the last keyword which was before the cursor
     bool foundKeyword = false;
-    QStringList dbKeywords = Workspace::getInstance()->currentProjectsEngine()->getKeywords();
+
     if(dbKeywords.contains(wordBeforeCursor.toUpper(), Qt::CaseInsensitive))
     {
         foundKeyword = true;
@@ -249,12 +289,19 @@ void QTextEditWithCodeCompletion::populateCodeCompletionListbox()
         wordBeforeCursor.remove(wordBeforeCursor.length() - 1,1);
         // WARNING!!! For easier code writing this is not (yet) following the OOP principles. For true OOP we would need to load only the table instances!
         // But I'm jus curious to see it work
-        if(Workspace::getInstance()->workingVersion()->hasTable(wordBeforeCursor))
+        if(Workspace::getInstance()->hasCurrentSolution())
         {
-            QString empty("");
-            populateCodeCompletionListboxWithColumnsOfTable(wordBeforeCursor, empty);
-            m_lst->setFocus();
-            return;
+            if(Workspace::getInstance()->workingVersion()->hasTable(wordBeforeCursor))
+            {
+                QString empty("");
+                populateCodeCompletionListboxWithColumnsOfTable(wordBeforeCursor, empty);
+                m_lst->setFocus();
+                return;
+            }
+        }
+        else
+        {
+            // TODO: check the table from the vector we have
         }
     }
 
@@ -267,24 +314,31 @@ void QTextEditWithCodeCompletion::populateCodeCompletionListbox()
         QString beforeDot = wordBeforeCursor.mid(0, wordBeforeCursor.indexOf("."));
         QString afterDot = wordBeforeCursor.mid(wordBeforeCursor.indexOf(".") + 1);
         // qDebug() << beforeDot << " " << afterDot;
-        if(Workspace::getInstance()->workingVersion()->hasTable(beforeDot))  // see if there is a table for this
+        if(Workspace::getInstance()->hasCurrentSolution())
         {
-            Table* t = Workspace::getInstance()->workingVersion()->getTable(beforeDot);
-            QStringList tcs = t->fullColumns();
-            for(int i=0; i<tcs.size(); i++)
+            if(Workspace::getInstance()->workingVersion()->hasTable(beforeDot))  // see if there is a table for this
             {
-                Column* c = t->getColumn(tcs.at(i));
-                if(!c) c = t->getColumnFromParents(tcs.at(i));
-                if(!c) return;
-                if(!c->getName().startsWith(afterDot)) continue;    // This is an extra line
-                QListWidgetItem *lwi = new QListWidgetItem(m_lst);
-                lwi->setText(c->getName());
-                QFont f = lwi->font();
-                f.setBold(true);
-                lwi->setFont(f);
-                lwi->setForeground(QBrush(columnColor)); // TODO: move all these colors in a header file, customizable :)
-                lwi->setIcon(QIcon(IconFactory::getColumnIcon().pixmap(16,16)));
+                Table* t = Workspace::getInstance()->workingVersion()->getTable(beforeDot);
+                QStringList tcs = t->fullColumns();
+                for(int i=0; i<tcs.size(); i++)
+                {
+                    Column* c = t->getColumn(tcs.at(i));
+                    if(!c) c = t->getColumnFromParents(tcs.at(i));
+                    if(!c) return;
+                    if(!c->getName().startsWith(afterDot)) continue;    // This is an extra line
+                    QListWidgetItem *lwi = new QListWidgetItem(m_lst);
+                    lwi->setText(c->getName());
+                    QFont f = lwi->font();
+                    f.setBold(true);
+                    lwi->setFont(f);
+                    lwi->setForeground(QBrush(columnColor)); // TODO: move all these colors in a header file, customizable :)
+                    lwi->setIcon(QIcon(IconFactory::getColumnIcon().pixmap(16,16)));
+                }
             }
+        }
+        else
+        {
+            // TODO: check the table from the vector
         }
         m_lst->setFocus();
         return;
@@ -343,7 +397,7 @@ void QTextEditWithCodeCompletion::populateCodeCompletionListbox()
             }
 
             // now add the functions but only if we have started typing something
-            QVector<DatabaseBuiltinFunction> funcs = Workspace::getInstance()->currentProjectsEngine()->getBuiltinFunctions();
+
             for(int i=0; i<funcs.size(); i++)
             {
                 QString prefix = wordBeforeCursor;

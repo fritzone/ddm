@@ -37,14 +37,9 @@ NewViewForm::NewViewForm(bool queryBuilder, QueryGraphicsHelper* c, QWidget *par
     txtSql = new QTextEditWithCodeCompletion(ui->groupBox_3);
     txtSql->setObjectName(QString::fromUtf8("txtSql"));
     txtSql->setMinimumSize(QSize(0, 200));
-    QFont font;
-    font.setFamily(QString::fromUtf8("Courier"));
-    font.setPointSize(11);
-    txtSql->setFont(font);
 
     ui->verticalLayout_4->addWidget(txtSql);
     QObject::connect(txtSql, SIGNAL(textChanged()), this, SLOT(onSqlChange()));
-    m_highlighter = new SqlHighlighter(txtSql->document());
 
     if(m_queryBuilder)
     {
