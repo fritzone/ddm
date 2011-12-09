@@ -1,21 +1,38 @@
 #include "BrowseTableForm.h"
 #include "ui_BrowseTableForm.h"
-#include "QTextEditWithCodeCompletion.h"
+#include "core_Connection.h"
 
-BrowseTableForm::BrowseTableForm(QWidget *parent, Connection* c) :
+#include <QSqlTableModel>
+#include <QSqlDriver>
+#include <QSqlError>
+#include <QSqlQuery>
+
+BrowseTableForm::BrowseTableForm(QWidget *parent, Connection* c, const QString& tab) :
     QWidget(parent),
-    ui(new Ui::BrowseTableForm)
+    ui(new Ui::BrowseTableForm), m_connection(c), m_tab(tab)
 {
     ui->setupUi(this);
 
     ui->table->horizontalHeader()->setHighlightSections(true);
     ui->table->horizontalHeader()->setResizeMode(QHeaderView::Interactive);
 
-    QTextEditWithCodeCompletion *textEdit;
-    textEdit = new QTextEditWithCodeCompletion(ui->groupBox, c);
+    textEdit = new QTextEditWithCodeCompletion(this, c);
     textEdit->setObjectName(QString::fromUtf8("textEdit"));
-
+    textEdit->setBrowseForm(this);
     ui->verticalLayout_2->addWidget(textEdit);
+
+    QSqlDatabase sqldb = c->getQSqlDatabase();
+    QSqlTableModel *model = new QSqlTableModel(ui->table, sqldb);
+    model->setTable(tab);
+    model->select();
+
+    if (model->lastError().type() != QSqlError::NoError)
+    {
+        return;
+    }
+
+    ui->table->setModel(model);
+    ui->table->setEditTriggers(QAbstractItemView::DoubleClicked|QAbstractItemView::EditKeyPressed);
 }
 
 BrowseTableForm::~BrowseTableForm()
@@ -38,4 +55,11 @@ void BrowseTableForm::changeEvent(QEvent *e)
 QTableView* BrowseTableForm::getTable()
 {
     return ui->table;
+}
+
+void BrowseTableForm::onRunQuery()
+{
+    QSqlQueryModel *model = new QSqlQueryModel(ui->table);
+    model->setQuery(QSqlQuery(textEdit->toPlainText(), m_connection->getQSqlDatabase()));
+    ui->table->setModel(model);
 }

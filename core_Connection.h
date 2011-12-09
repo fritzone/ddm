@@ -64,6 +64,15 @@ public:
         return m_engine;
     }
     QSqlDatabase getQSqlDatabase();
+    QStringList getTables()
+    {
+        return m_tables;
+    }
+
+    void addTable(const QString& tabName)
+    {
+        m_tables.append(tabName);
+    }
 
 private:
 
@@ -76,6 +85,7 @@ private:
     bool m_autoConnect;
     DatabaseEngine* m_engine;
     ConnectionState m_state;
+    QStringList m_tables;
 };
 
 #endif // CORE_CONNECTION_H

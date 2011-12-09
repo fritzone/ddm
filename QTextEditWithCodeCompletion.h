@@ -13,6 +13,7 @@
 class SqlHighlighter;
 class Connection;
 class Table;
+class BrowseTableForm;
 
 class QTextEditWithCodeCompletion : public QTextEdit
 {
@@ -36,6 +37,10 @@ public:
     void insertText(const QString&);
     void resetBackgrounds();
     void insertFunctionParantheses();
+    void setBrowseForm(BrowseTableForm* f)
+    {
+        m_browseForm = f;
+    }
 
 private slots:
     void onTimer();
@@ -55,7 +60,9 @@ private:
     SqlHighlighter* m_highlighter;
     QStringList dbKeywords;
     QVector<DatabaseBuiltinFunction> funcs;
-    QVector<Table*> tabs;
+    QStringList m_tabs;
+    Connection* m_connection;
+    BrowseTableForm* m_browseForm;
 };
 
 #endif // QTEXTEDITWITHCODECOMPLETION_H
