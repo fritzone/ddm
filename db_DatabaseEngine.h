@@ -109,6 +109,7 @@ public:
     QString getTypeStringForSqlType(const QString& sqlType);
     virtual bool tryConnect(const QString& host, const QString& user, const QString& pass, const QString& dbName) = 0;
     virtual QSqlDatabase getQSqlDatabaseForConnection(Connection *c) = 0;
+    virtual QStringList getColumnsOfTable(const QString& host, const QString& user, const QString& pass, const QString& dbName, const QString& tableName) = 0;
 
 public:
 

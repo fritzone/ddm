@@ -51,9 +51,6 @@
 #include "BrowseTableForm.h"
 
 #include <QtGui>
-#include <QSqlTableModel>
-#include <QSqlDriver>
-#include <QSqlError>
 
 MainWindow* MainWindow::m_instance = 0;
 
@@ -1599,23 +1596,8 @@ void MainWindow::onConnectionItemDoubleClicked(QTreeWidgetItem* item,int)
             QString cname = s.mid(s.indexOf("?") + 1);
             Connection *c = ConnectionManager::instance()->getConnection(cname);
             QString tab = s.left(s.indexOf("?")).mid(2);
-            BrowseTableForm* frm = new BrowseTableForm(this, c);
+            BrowseTableForm* frm = new BrowseTableForm(this, c, tab);
             setCentralWidget(frm);
-            QSqlDatabase sqldb = c->getQSqlDatabase();
-            QSqlTableModel *model = new QSqlTableModel(frm->getTable(), sqldb);
-            model->setTable(tab);
-            model->select();
-
-            if (model->lastError().type() != QSqlError::NoError)
-            {
-                qDebug() << "nope" << cname << " " << model->lastError().text();
-                return;
-            }
-
-            frm->getTable()->setModel(model);
-            frm->getTable()->setEditTriggers(QAbstractItemView::DoubleClicked|QAbstractItemView::EditKeyPressed);
-
-            qDebug() << frm->getTable()->horizontalHeader()->count();
             return;
         }
         Connection* c = ConnectionManager::instance()->getConnection(s);
@@ -1646,6 +1628,7 @@ void MainWindow::createConnectionTreeEntryForTables(Connection *c)
         newTblsItem->setPopupMenu(ContextMenuCollection::getInstance()->getTableFromBrowsePopupMenu());
         newTblsItem->setIcon(0, IconFactory::getTabinstIcon());
         m_connectionsTree->addTopLevelItem(newTblsItem);
+        c->addTable(dbTables.at(i));
     }
 
     // TODO: now come up with a mechanism that feeds continuously the reverse engineered tables into an object that feeds it in somewhere which

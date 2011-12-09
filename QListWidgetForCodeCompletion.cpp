@@ -14,6 +14,12 @@ void QListWidgetForCodeCompletion::keyPressEvent(QKeyEvent *event)
 
     if(t == Qt::Key_Return || t == Qt::Key_Enter)
     {
+        if(count() == 0)
+        {
+            hide();
+            return;
+        }
+
         QString g = item(0)->text();
         QListWidgetItem* itm = 0;
         QVariant v;
@@ -25,8 +31,8 @@ void QListWidgetForCodeCompletion::keyPressEvent(QKeyEvent *event)
         }
         hide();
         parentWidget()->setFocus(Qt::OtherFocusReason);
-        qobject_cast<QTextEditWithCodeCompletion*>(parent())->insertText(g);
         qobject_cast<QTextEditWithCodeCompletion*>(parent())->resetBackgrounds();
+        qobject_cast<QTextEditWithCodeCompletion*>(parent())->insertText(g);        
 
         if(v.isValid())
         {

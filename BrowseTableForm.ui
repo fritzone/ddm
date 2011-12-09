@@ -13,7 +13,7 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout">
+  <layout class="QVBoxLayout" name="verticalLayout_3">
    <item>
     <widget class="QTableView" name="table">
      <property name="sizePolicy">
@@ -43,6 +43,21 @@
     </widget>
    </item>
    <item>
+    <layout class="QVBoxLayout" name="verticalLayout">
+     <item>
+      <widget class="QToolButton" name="btnExecuteQuery">
+       <property name="text">
+        <string>...</string>
+       </property>
+       <property name="icon">
+        <iconset resource="dbm.qrc">
+         <normaloff>:/images/actions/images/actions/button_play_green.png</normaloff>:/images/actions/images/actions/button_play_green.png</iconset>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
     <widget class="QGroupBox" name="groupBox">
      <property name="title">
       <string>Quick Query</string>
@@ -52,6 +67,28 @@
    </item>
   </layout>
  </widget>
- <resources/>
- <connections/>
+ <resources>
+  <include location="dbm.qrc"/>
+ </resources>
+ <connections>
+  <connection>
+   <sender>btnExecuteQuery</sender>
+   <signal>clicked()</signal>
+   <receiver>BrowseTableForm</receiver>
+   <slot>onRunQuery()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>24</x>
+     <y>231</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>199</x>
+     <y>149</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>onRunQuery()</slot>
+ </slots>
 </ui>

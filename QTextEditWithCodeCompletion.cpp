@@ -10,6 +10,7 @@
 #include "SqlHighlighter.h"
 #include "db_AbstractDTSupplier.h"
 #include "core_Connection.h"
+#include "BrowseTableForm.h"
 
 #include <QKeyEvent>
 #include <QMessageBox>
@@ -22,7 +23,8 @@ static bool skippableSinceWhitespace(QChar c)
     return c == ' ' || c == '\t' || c == '\r' || c == '\n';
 }
 
-QTextEditWithCodeCompletion::QTextEditWithCodeCompletion(QWidget* p, Connection* c) : QTextEdit(p), m_lst(0), m_timer(), m_currentBgColor(Qt::white), m_highlighter(0), dbKeywords(), funcs(), tabs()
+QTextEditWithCodeCompletion::QTextEditWithCodeCompletion(QWidget* p, Connection* c) : QTextEdit(p),
+    m_lst(0), m_timer(), m_currentBgColor(Qt::white), m_highlighter(0), dbKeywords(), funcs(), m_tabs(), m_connection(c), m_browseForm(0)
 {
     m_lst = new QListWidgetForCodeCompletion(this);
     m_lst->setSelectionMode(QAbstractItemView::SingleSelection);
@@ -49,7 +51,11 @@ QTextEditWithCodeCompletion::QTextEditWithCodeCompletion(QWidget* p, Connection*
                                        Workspace::getInstance()->workingVersion()->getTables());
         dbKeywords = Workspace::getInstance()->currentProjectsEngine()->getKeywords();
         funcs = Workspace::getInstance()->currentProjectsEngine()->getBuiltinFunctions();
-        tabs = Workspace::getInstance()->workingVersion()->getTables();
+        QVector<Table*> t = Workspace::getInstance()->workingVersion()->getTables();
+        for(int i=0; i<t.size(); i++)
+        {
+            m_tabs.append(t.at(i)->getName());
+        }
     }
     else
     if(c)
@@ -65,6 +71,7 @@ QTextEditWithCodeCompletion::QTextEditWithCodeCompletion(QWidget* p, Connection*
                                        QVector<Table*>());
         dbKeywords = c->getEngine()->getKeywords();
         funcs = c->getEngine()->getBuiltinFunctions();
+        m_tabs = c->getTables();
     }
 }
 
@@ -126,14 +133,28 @@ void QTextEditWithCodeCompletion::keyPressEvent(QKeyEvent *e)
 
     if(m.testFlag(Qt::ControlModifier))
     {
+        int t = e->key();
+
+        qDebug() << "key=" << e->key() << "enter = " << Qt::Key_Enter << " return = " << Qt::Key_Return;
+
         if(e->key() == Qt::Key_Space)
         {
             QPoint p = cursorRect().bottomRight();
-            // qDebug() << p;
             m_lst->move(p);
             m_lst->show();
             populateCodeCompletionListbox();
             return;
+        }
+
+        if(t == Qt::Key_Enter ||t == Qt::Key_Return) // Ctrl + Enter is supposed to run the query if we have a connection
+        {
+            if(m_connection)
+            {
+                if(m_browseForm)
+                {
+                    m_browseForm->onRunQuery();
+                }
+            }
         }
     }
 
@@ -160,9 +181,9 @@ void QTextEditWithCodeCompletion::populateCodeCompletionListboxWithTablesOfVersi
 {
     // WARNING!!! For easier code writing this is not (yet) following the OOP principles. For true OOP we would need to load only the table instances!
 
-    for(int i=0; i<tabs.size(); i++)
+    for(int i=0; i<m_tabs.size(); i++)
     {
-        QString tabName = tabs.at(i)->getName();
+        QString tabName = m_tabs.at(i);
         if(tabName.startsWith(tabPrefix) || tabName.indexOf(tabPrefix)!= -1)
         {
             QListWidgetItem *lwi = new QListWidgetItem(m_lst);
@@ -178,18 +199,42 @@ void QTextEditWithCodeCompletion::populateCodeCompletionListboxWithTablesOfVersi
 
 void QTextEditWithCodeCompletion::populateCodeCompletionListboxWithColumnsOfTable(const QString& tabName, const QString& prefix)
 {
-    if(!Workspace::getInstance()->hasCurrentSolution()) return;
+    QStringList tcs;
 
-    Table* t = Workspace::getInstance()->workingVersion()->getTable(tabName);
-    QStringList tcs = t->fullColumns();
+    if(!Workspace::getInstance()->hasCurrentSolution())
+    {
+        tcs  = m_connection->getEngine()->getColumnsOfTable(m_connection->getHost(), m_connection->getUser(), m_connection->getPassword(), m_connection->getDb(), tabName);
+    }
+    else
+    {
+        Table* t = Workspace::getInstance()->workingVersion()->getTable(tabName);
+        tcs = t->fullColumns();
+    }
+
     for(int i=0; i<tcs.size(); i++)
     {
-        Column* c = t->getColumn(tcs.at(i));
-        if(!c) c = t->getColumnFromParents(tcs.at(i));
-        if(!c) return;
-        if(!c->getName().startsWith(prefix)) continue;
+        if(!tcs.at(i).startsWith(prefix)) continue;
+        QString t = tcs.at(i);
+        QList<QListWidgetItem*>  old = m_lst->findItems(t, Qt::MatchFixedString);
+        QVariant v;
+        v.setValue(tabName);
+        if(old.size() > 0)
+        {
+            t = tabName + "." + t;
+            for(int j=0; j<old.size(); j++)
+            {
+                QVariant v1 = old.at(j)->data(Qt::UserRole);
+                if(v1.isValid())
+                {
+                    QString n = old.at(j)->text();
+                    n = v1.toString() + "." + n;
+                    old.at(j)->setText(n);
+                }
+            }
+        }
         QListWidgetItem *lwi = new QListWidgetItem(m_lst);
-        lwi->setText(c->getName());
+        lwi->setText(t);
+        lwi->setData(Qt::UserRole, v);
         QFont f = lwi->font();
         f.setBold(true);
         lwi->setFont(f);
@@ -197,6 +242,7 @@ void QTextEditWithCodeCompletion::populateCodeCompletionListboxWithColumnsOfTabl
         lwi->setForeground(QBrush(columnColor)); // TODO: move all these colors in a header file, customizable :)
         lwi->setIcon(QIcon(IconFactory::getColumnIcon().pixmap(16,16)));
     }
+
 }
 
 void QTextEditWithCodeCompletion::resetBackgrounds()
@@ -246,7 +292,7 @@ void QTextEditWithCodeCompletion::populateCodeCompletionListbox()
     QString wordBeforeCursor = "";
     QString keywordBeforeCursor = "";
     // remove all the spaces that are between the cursor and the last word to left
-    while(cp && g.at(cp) == ' ')
+    while(cp > 0 && g.at(cp) == ' ')
     {
         cp--;
     }
@@ -268,11 +314,11 @@ void QTextEditWithCodeCompletion::populateCodeCompletionListbox()
         keywordBeforeCursor = wordBeforeCursor;
     }
 
-    while(!foundKeyword)
+    while(!foundKeyword && cp > -1)
     {
         QString temp = "";
-        while(cp && skippableSinceWhitespace(g.at(cp))) { cp--; }
-        if(!cp) break;
+        while(cp > -1 && skippableSinceWhitespace(g.at(cp))) { cp--; }
+        if(cp == 0 || cp == -1) break;
         while(cp > -1 && ! skippableSinceWhitespace(g.at(cp)))
         {
             temp.prepend(g.at(cp--));
@@ -349,7 +395,9 @@ void QTextEditWithCodeCompletion::populateCodeCompletionListbox()
     {
         if(keywordBeforeCursor.toUpper() == "FROM")
         {
-            populateCodeCompletionListboxWithTablesOfVersion(wordBeforeCursor);
+            QString prefix = wordBeforeCursor;
+            if(wordBeforeCursor.trimmed().toUpper() == keywordBeforeCursor.trimmed().toUpper()) prefix = "";
+            populateCodeCompletionListboxWithTablesOfVersion(prefix);
             m_lst->setFocus();
             return;
         }

@@ -2,6 +2,7 @@
 #define BROWSETABLEFORM_H
 
 #include <QWidget>
+#include "QTextEditWithCodeCompletion.h"
 
 namespace Ui {
     class BrowseTableForm;
@@ -15,15 +16,21 @@ class BrowseTableForm : public QWidget
     Q_OBJECT
 
 public:
-    explicit BrowseTableForm(QWidget *parent, Connection* c);
+    explicit BrowseTableForm(QWidget *parent, Connection* c, const QString& tab);
     ~BrowseTableForm();
     QTableView* getTable();
 
 protected:
     void changeEvent(QEvent *e);
 
+public slots:
+    void onRunQuery();
+
 private:
     Ui::BrowseTableForm *ui;
+    QTextEditWithCodeCompletion *textEdit;
+    Connection* m_connection;
+    QString m_tab;
 };
 
 #endif // BROWSETABLEFORM_H

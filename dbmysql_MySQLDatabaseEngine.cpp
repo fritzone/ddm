@@ -253,6 +253,39 @@ View* MySQLDatabaseEngine::reverseEngineerView(const QString& host, const QStrin
     return view;
 }
 
+QStringList MySQLDatabaseEngine::getColumnsOfTable(const QString &host, const QString &user, const QString &pass, const QString &dbName, const QString &tableName)
+{
+    QString tableConnectionName = provideConnectionName("getTable");
+    QSqlDatabase db = QSqlDatabase::cloneDatabase(*m_defaultMysqlDb, tableConnectionName);
+    QStringList result;
+
+    db.setHostName(host);
+    db.setUserName(user);
+    db.setPassword(pass);
+    db.setDatabaseName(dbName);
+
+    bool ok = db.open();
+
+    if(!ok)
+    {
+        return result;
+    }
+
+    QSqlQuery query(db);
+    query.exec("desc " + tableName);
+
+    int fieldNo = query.record().indexOf("Field");
+
+    while(query.next())
+    {
+        QString field_name = query.value(fieldNo).toString();
+        result.append(field_name);
+    }
+
+    return result;
+
+}
+
 Table* MySQLDatabaseEngine::reverseEngineerTable(const QString& host, const QString& user, const QString& pass, const QString& dbName, const QString& tableName, Project* p, bool relaxed)
 {
     Version* v = p->getWorkingVersion();
