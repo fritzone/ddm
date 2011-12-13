@@ -27,8 +27,14 @@ public slots:
     void onRunQuery();
 
 private:
+
+    QString retrieveCurrentQuery();
+
+private:
     Ui::BrowseTableForm *ui;
-    QTextEditWithCodeCompletion *textEdit;
+    static QTextEditWithCodeCompletion *m_textEdit;
+    static int m_firstP;
+    static int m_lastP;
     Connection* m_connection;
     QString m_tab;
 };

@@ -5,11 +5,11 @@
 
 static QColor columnColor(87,17,6);
 static QColor anotherColumnBackgroundColor(228,228,228);
-static QColor color1(128,228,228);
-static QColor color2(228,128,228);
-static QColor color3(228,228,128);
-static QColor color4(228,128,128);
-static QColor color5(128,128,228);
+static QColor color1(123,104,128);
+static QColor color2(199,112,88);
+static QColor color3(111,129,208);
+static QColor color4(157,208,122);
+static QColor color5(244,96,160);
 static QColor color6(228,28,228);
 static QColor color7(128,228,28);
 static QColor color8(28,28,128);

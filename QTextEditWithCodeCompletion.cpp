@@ -208,6 +208,7 @@ void QTextEditWithCodeCompletion::populateCodeCompletionListboxWithColumnsOfTabl
     else
     {
         Table* t = Workspace::getInstance()->workingVersion()->getTable(tabName);
+        if(!t) return;
         tcs = t->fullColumns();
     }
 

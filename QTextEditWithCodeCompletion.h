@@ -6,6 +6,7 @@
 #include <QTimer>
 #include <QObject>
 #include <QVector>
+#include <QFrame>
 
 #include "db_DatabaseBuiltinFunction.h"
 #include "QListWidgetForCodeCompletion.h"
@@ -63,6 +64,7 @@ private:
     QStringList m_tabs;
     Connection* m_connection;
     BrowseTableForm* m_browseForm;
+    QFrame *m_frameForLineNumbers;
 };
 
 #endif // QTEXTEDITWITHCODECOMPLETION_H
