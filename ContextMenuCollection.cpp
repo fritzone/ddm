@@ -133,7 +133,9 @@ ContextMenuCollection::ContextMenuCollection()
     // browsed table
     m_browsedTablePopupMenu->addAction(action_browsedTableInjectIntoSolution);
     m_browsedTablePopupMenu->addAction(action_browsedTableBrowse);
-    m_browsedTablePopupMenu->addAction(action_browsedTableView);
+    //m_browsedTablePopupMenu->addAction(action_browsedTableView);
+    action_browsedTableInjectIntoSolution->setVisible(false);
+    action_browsedTableView->setEnabled(false);
 
     // popup menu for the table instances
     m_createTableInstancesPopup->clear();

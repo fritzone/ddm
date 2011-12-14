@@ -82,6 +82,8 @@ public:
     QAction* getAction_ConnectionEdit() {return action_connectionEdit; }
     QAction* getAction_ConnectionBrowse() {return action_connectionBrowse; }
     QAction* getAction_BrowsedTableInject() {return action_browsedTableInjectIntoSolution; }
+    QAction* getAction_BrowsedTableView() {return action_browsedTableView; }
+    QAction* getAction_BrowsedTableBrowse() {return action_browsedTableBrowse; }
 
 private:
 

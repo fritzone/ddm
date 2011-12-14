@@ -280,6 +280,11 @@ public:
         m_tableInstances.append(tinst);
     }
 
+    const QVector<TableInstance*>& getTableInstances() const
+    {
+        return m_tableInstances;
+    }
+
     void tableInstancesAddColumn(Column* col);
 
     void tableInstancesRemoveColumn(Column* col);
