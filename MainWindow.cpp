@@ -179,7 +179,8 @@ void MainWindow::showConnections()
     QObject::connect(ContextMenuCollection::getInstance()->getAction_ConnectionDelete(), SIGNAL(activated()), this, SLOT(onDeleteConnection()));
     QObject::connect(ContextMenuCollection::getInstance()->getAction_ConnectionEdit(), SIGNAL(activated()), this, SLOT(onEditConnection()));
     connect(m_connectionsTree, SIGNAL(itemDoubleClicked(QTreeWidgetItem*,int)), this, SLOT(onConnectionItemDoubleClicked(QTreeWidgetItem*,int)));
-
+    QObject::connect(ContextMenuCollection::getInstance()->getAction_BrowsedTableInject(), SIGNAL(activated()), this, SLOT(onInjectBrowsedTable()));
+    QObject::connect(ContextMenuCollection::getInstance()->getAction_BrowsedTableBrowse(), SIGNAL(activated()), this, SLOT(onBrowseBrowsedTable()));
 
     m_ui->action_ConnectionsTree->setChecked(true);
 }
@@ -378,7 +379,6 @@ void MainWindow::onNewSolution()
         }
 
         enableActions();
-
         m_workspace->workingVersion()->getGui()->setMainWindow(this);
         delete m_btndlg;
         m_btndlg = 0;
@@ -927,6 +927,8 @@ void MainWindow::connectActionsFromTablePopupMenu()
     QObject::connect(ContextMenuCollection::getInstance()->getAction_CreateViewUsingQueryBuilder(), SIGNAL(activated()), this, SLOT(onNewView()));
     QObject::connect(ContextMenuCollection::getInstance()->getAction_CreateViewUsingSql(), SIGNAL(activated()), this, SLOT(onNewViewWithSql()));
     QObject::connect(ContextMenuCollection::getInstance()->getAction_ConnectionConnect(), SIGNAL(activated()), this, SLOT(onConnectConnection()));
+    ContextMenuCollection::getInstance()->getAction_BrowsedTableInject()->setVisible(true);
+
 
 }
 
@@ -1523,6 +1525,60 @@ void MainWindow::onDeleteDatatypeFromPopup()
     }
 }
 
+void MainWindow::onInjectBrowsedTable()
+{
+    if(m_connectionsTree->getLastRightclickedItem() == 0)
+    {
+        return;
+    }
+
+    if(!Workspace::getInstance()->hasCurrentSolution())
+    {
+        if(QMessageBox::question(this, tr("Question"), tr("There is no current solution. Would you like to create one?"), QMessageBox::Yes, QMessageBox::No) == QMessageBox::Yes)
+        {
+            onNewSolution();
+        }
+    }
+
+    QVariant v = m_connectionsTree->getLastRightclickedItem()->data(0, Qt::UserRole);
+    if(v.isValid())
+    {
+        QString s = v.toString();
+        qDebug() << s;
+        if(s.startsWith("B:"))
+        {
+            QString cname = s.mid(s.indexOf("?") + 1);
+            Connection *c = ConnectionManager::instance()->getConnection(cname);
+            if(!c) return;
+            QString tab = s.left(s.indexOf("?")).mid(2);
+            Table* t = Workspace::getInstance()->currentProjectsEngine()->reverseEngineerTable(c->getHost(), c->getUser(), c->getPassword(), c->getDb(), tab, Workspace::getInstance()->currentProject(), true);
+            Workspace::getInstance()->currentProject()->getWorkingVersion()->addTable(t);
+            m_workspace->workingVersion()->getGui()->createTableTreeEntry(t, m_workspace->workingVersion()->getGui()->getTablesItem());
+            showTable(tab);
+            QVector<TableInstance*> r = t->getTableInstances();
+            for(int i=0; i<r.size(); i++)
+            {
+                m_workspace->workingVersion()->getGui()->createTableInstanceTreeEntry(r.at(i));
+            }
+        }
+    }
+
+
+}
+
+void MainWindow::onBrowseBrowsedTable()
+{
+    if(m_connectionsTree->getLastRightclickedItem() == 0)
+    {
+        return;
+    }
+
+    m_connectionsTree->clearSelection();
+    m_connectionsTree->getLastRightclickedItem()->setSelected(true);
+    onConnectionItemDoubleClicked(m_connectionsTree->getLastRightclickedItem(), 0);
+}
+
+
 void MainWindow::onEditConnection()
 {
     Connection* c = getRightclickedConnection();
@@ -1595,6 +1651,7 @@ void MainWindow::onConnectionItemDoubleClicked(QTreeWidgetItem* item,int)
 
             QString cname = s.mid(s.indexOf("?") + 1);
             Connection *c = ConnectionManager::instance()->getConnection(cname);
+            if(!c) return;
             QString tab = s.left(s.indexOf("?")).mid(2);
             BrowseTableForm* frm = new BrowseTableForm(this, c, tab);
             setCentralWidget(frm);

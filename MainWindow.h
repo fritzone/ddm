@@ -138,6 +138,8 @@ public slots:
     void onReverseEngineeringFinished(ReverseEngineerer*);
     void onDeployHovered();
     void onConnectionItemDoubleClicked(QTreeWidgetItem*,int);
+    void onInjectBrowsedTable();
+    void onBrowseBrowsedTable();
 
 public:
     void createStatusLabel();
