@@ -39,6 +39,10 @@ BrowseTableForm::BrowseTableForm(QWidget *parent, Connection* c, const QString& 
     ui->table->setModel(model);
     ui->table->setEditTriggers(QAbstractItemView::DoubleClicked|QAbstractItemView::EditKeyPressed);
     if(m_textEdit == 0) m_textEdit = textEdit;
+
+    m_textEdit->resetToConnection(c);
+
+    ui->txtConnection->setText(c->getFullLocation());
 }
 
 BrowseTableForm::~BrowseTableForm()

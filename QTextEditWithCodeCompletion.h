@@ -42,6 +42,7 @@ public:
     {
         m_browseForm = f;
     }
+    void resetToConnection(Connection* c);
 
 private slots:
     void onTimer();
