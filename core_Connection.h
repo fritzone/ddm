@@ -44,7 +44,6 @@ public:
     }
 
     bool tryConnect();
-    bool browse();
 
     ConnectionState getState() const
     {
@@ -74,6 +73,7 @@ public:
         m_tables.append(tabName);
     }
 
+
 private:
 
     QString m_host;
@@ -86,6 +86,7 @@ private:
     DatabaseEngine* m_engine;
     ConnectionState m_state;
     QStringList m_tables;
+
 };
 
 #endif // CORE_CONNECTION_H

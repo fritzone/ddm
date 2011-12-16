@@ -57,10 +57,12 @@ QTextEditWithCodeCompletion::QTextEditWithCodeCompletion(QWidget* p, Connection*
             m_tabs.append(t.at(i)->getName());
         }
     }
-    else
+
     if(c)
     {
-        m_highlighter = new SqlHighlighter(document(),
+        if(m_highlighter == 0)
+        {
+            m_highlighter = new SqlHighlighter(document(),
                                        c->getEngine()->getKeywords(),
                                        c->getEngine()->getDTSupplier()->numericTypes(),
                                        c->getEngine()->getDTSupplier()->booleanTypes(),
@@ -69,9 +71,14 @@ QTextEditWithCodeCompletion::QTextEditWithCodeCompletion(QWidget* p, Connection*
                                        c->getEngine()->getDTSupplier()->dateTimeTypes(),
                                        c->getEngine()->getDTSupplier()->miscTypes(),
                                        QVector<Table*>());
-        dbKeywords = c->getEngine()->getKeywords();
-        funcs = c->getEngine()->getBuiltinFunctions();
-        m_tabs = c->getTables();
+            dbKeywords = c->getEngine()->getKeywords();
+            funcs = c->getEngine()->getBuiltinFunctions();
+            m_tabs = c->getTables();
+        }
+        else
+        {
+            m_tabs.append(c->getTables());
+        }
     }
 }
 
@@ -523,4 +530,10 @@ QColor QTextEditWithCodeCompletion::TablePositionInText::nextColor()
     colors << color1 << color2 << color3<< color4<< color5<< color6<< color7<< color8<< color9<< color10<< color11<< color12<< color13<< color14<< color15;
 
     return colors[++ colorCounter % colors.size()];
+}
+
+void QTextEditWithCodeCompletion::resetToConnection(Connection* c)
+{
+    m_connection = c;
+    m_tabs= m_connection->getTables();
 }

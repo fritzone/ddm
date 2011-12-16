@@ -1671,6 +1671,8 @@ void MainWindow::onConnectionItemDoubleClicked(QTreeWidgetItem* item,int)
 
 void MainWindow::createConnectionTreeEntryForTables(Connection *c)
 {
+    c->getLocation()->removeChild(c->getLocation()->child(0));
+
     ContextMenuEnabledTreeWidgetItem* connTablesItem = new ContextMenuEnabledTreeWidgetItem(c->getLocation(), QStringList(tr("Tables")));
     m_connectionsTree->addTopLevelItem(connTablesItem);
     connTablesItem->setIcon(0, IconFactory::getTabinstIcon());
@@ -1698,6 +1700,7 @@ void MainWindow::onConnectConnection()
     Connection* c = getRightclickedConnection();
     if(c)
     {
+        if(c->getState() == Connection::CONNECTED) return;
         if(c->tryConnect())
         {
             c->getLocation()->setIcon(0, IconFactory::getConnectedDatabaseIcon());
