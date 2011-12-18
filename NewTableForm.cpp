@@ -357,7 +357,7 @@ void NewTableForm::prepareColumnsListWithParentItems(const Table* ctable)
         const QVector<Column*>& columns = ctable->getColumns();
         for(int i=0; i<columns.count(); i++)
         {
-            static QBrush grayBrush(QColor(Qt::gray));
+            static QBrush grayBrush((QColor(Qt::gray)));
             ContextMenuEnabledTreeWidgetItem* item = createTWIForColumn(columns[i]);
             item->setBackground(0, grayBrush);
             lstColumns->addTopLevelItem(item);

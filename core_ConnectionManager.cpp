@@ -100,5 +100,7 @@ bool ConnectionManager::deleteConnection(const QString& name)
     if(c)
     {
         m_connections.remove(m_connections.indexOf(c));
+        return true;
     }
+    return false;
 }
