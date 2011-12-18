@@ -61,6 +61,7 @@ bool ReverseEngineerWizard::connectAndRetrieveViews()
     {
         m_viewsPage->addTable(views.at(i));
     }
+    return true;
 }
 
 bool ReverseEngineerWizard::connectAndRetrieveTables()
