@@ -46,6 +46,7 @@ void SelectQueryJoinComponent::handleAction(const QString& action, QueryComponen
 QueryGraphicsItem* SelectQueryJoinComponent::createGraphicsItem(QueryGraphicsHelper* helper, QueryGraphicsItem*)
 {
     m_helper = helper;
+    return 0;
 }
 
 QSet<OptionsType> SelectQueryJoinComponent::provideOptions()
