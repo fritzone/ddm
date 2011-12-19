@@ -1,0 +1,131 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+	<TITLE>Views</TITLE><STYLE TYPE="text/css">
+	<!--
+		P { border: 1px solid #000000; padding: 0.02in }
+.style1 {font-family: Arial, Helvetica, sans-serif}
+.style3 {font-size: xx-large}
+.style4 {font-family: "Courier New", Courier, monospace}
+.style6 {color: #0000FF}
+.style7 {color: #0000FF; font-family: "Courier New", Courier, monospace; }
+	-->
+	</STYLE>
+</HEAD>
+<BODY LANG="en-US" BGCOLOR="white" DIR="LTR">
+<P ALIGN=CENTER class="style1" STYLE="margin-bottom: 0in; background: white; border: none; padding: 0in; font-style: normal; line-height: 115%; text-decoration: none">
+  <FONT COLOR="#000000" SIZE=3><B>The DDM Query Builder</B></FONT></P>
+<P class="style1" STYLE="margin-bottom: 0in; background: white; line-height: 115%">
+  <FONT SIZE=2 STYLE="font-size: 11pt">
+<BR>
+ The DDM Query Builder allows you to easily build complex SQL</FONT> queries effortlessly. However, please note that as of the current release the query builder is still in experimental stage, so if you find a bug please report it to <a href="mailto:project.ddm@gmail.com">project.ddm@gmail.com</a>. Thank you.<br>
+ <br>
+ <em><strong>The Query builder</strong></em><br>
+ <br>
+As a very first step, if you are trying to make the first steps in the query builder, please load the example database (addressbook.dmx) which is provided within the installation script, should be in the sirectory of DDM. Otherwise, just create a few tables you can experiment with. <br>
+<br>
+When you first start the query builder you will get the following on your screen (except the arrows which are there for explanation):<br>
+<br>
+<img src="queryb_1.png" alt="Query Builder - First" width="363" height="114"><br>
+<br>
+This is the initial state of the query, it has a &quot;Cell&quot; (the brown thingie) which says &quot;SELECT&quot; in it, a rectangular &quot;hot-spot&quot; and a circular &quot;hot-spot&quot; (they are called action invoker in the image above). These two are clickable by the user, clicking them invokes specific actions on the component they are refering to. The
+rectangular hot-spot (Command Cell Action Invoker) always refers the Command Cell which precedes it (in this very simple case the SELECT command cell) and the circular hot-spot always refers the entire query. <br>
+<br>
+Since a single SELECT statement does not make a very good query in itself, let's click the circular action invoker:<br>
+<br>
+<img src="queryb_2.png" alt="Query Builder - Step 2" width="230" height="187"><br>
+So, a menu appeared with two options, easily recognizeable as being SQL keywords. I want to expand my query with a FROM keyword, so let's click the FROM. <br>
+<br>
+<img src="queryb_3.png" alt="Query Builder - From introduced" width="164" height="168"><br>
+As expected the query was expanded with another command cell, the FROM command cell. Also, please note the small red close button <img src="exit.png" width="14" height="14"> which hints that this command cell can be removed from the query. And also note a new rectangular action invoker below the FROM. Now you already know, that this will invoke actions relative to the FROM part of the SQL query we are building. Let's invoke it:<br>
+<img src="queryb_4.png" width="222" height="225"><br>
+A new menu appeared, which tells you &quot;New table reference&quot; with the meaning that you can add a new table to the FROM section of the query. If there are no tables in your project, you won't be able to click the action invoker. Let's click it and see what happens:<br>
+<img src="queryb_5.png" width="171" height="200"><br>
+Now the query has a table component. Also, please note a diamond shaped action invoker in front of the &quot;PERSON&quot; table component. Click it will give you options related to this specific element (clicking the rectangular action invoker below the person still refers to the FROM component).<br>
+<br>
+It is time that we actually tell the query builder what to SELECT ... so let's click on the rectangular action invoker below the SELECT cell:<br>
+<img src="queryb_6.png" width="221" height="200"><br>
+The new menu allwos you to insert a new SELECT expression in the query, so let's click it:<br>
+<img src="queryb_7.png" width="171" height="227"><br>
+So, just as you have thought, now you have an empty SELECT expression. Please note the area with the dashed line inside the component (which with lots of imagination was named a &quot;cursor&quot;), that area is where you can click and add new elements to the expression, such as columns from the tables that are in the FROM section of the query, or mathematical operators or function calls (DDM 01.f has coverage of almost all mysql functions except some control flow functions, but for next release they are planned too). So let's click on the &quot;cursor&quot;:<br>
+<img src="queryb_8.png" width="447" height="331"><br>
+<br>
+<em><strong>The Expression builder window</strong></em><br>
+<br>
+A whole new window of possibilities is shown, let's take them step by step:<br>
+<br>
+<em>Column<br>
+<br>
+</em>This allows you to select from the column(s) of the table(s) that are in the FROM section of the query. Note: This does not contain the columns from the tables you have in the project, but just from the FROM section of the query!!! So:<br>
+<img src="queryb_9.png" width="410" height="250"><br>
+<br>
+<em>Func</em><br>
+<br>
+This contains the available functions ofthe currently selected database (right now ... MySQL).<br>
+<img src="queryb_10.png" width="429" height="465"><br>
+<br>
+<em>Math</em><br>
+<br>
+Here you can select various mathematical operators to embed in the expression:<br>
+<br>
+<img src="queryb_11.png" width="410" height="250"><br>
+<br>
+<em>Comp</em><br>
+<br>
+This is the home of the comparison operators:<br>
+<br>
+<img src="queryb_12.png" width="468" height="250"><br>
+<br>
+Logic<br>
+<br>
+This is where the logical operators reside:<br>
+<br>
+<img src="queryb_13.png" width="451" height="259"><br>
+<br>
+<span class="style3">*</span> <br>
+Is the classical * operator (meaning everything) from the SQL queries<br>
+<br>
+<span class="style3">(</span> and <span class="style3">)</span><br>
+<br>
+They are just regular parantheses if you will ever need them<br>
+<br>
+<strong>NULL</strong><em><br>
+<br>
+</em>This is the NULL value.<br>
+<em><br>
+LIKE<br>
+IS<br>
+NOT<br>
+DISTINCT<br>
+IN<br>
+BETWEEN<br>
+EXISTS<br>
+</em><br>
+Just a few of the SQL keywords for easy access.<br>
+<br>
+<em>Text</em><br>
+<br>
+In this textfield you can enter free text.<br>
+<br>
+<em><img src="remove.png" width="16" height="16">Remove</em><br>
+<br>
+Clicking the Remove button will remove the currently present element from the query.<br>
+<br>
+<em><strong>Continuing building the query</strong></em><br>
+<br>
+So, we are back to the query builder, let's select the name of the person from the columns:<br>
+<img src="queryb_14.png" width="244" height="223"><br>
+So, the query was updated with a new component, namely the column PERSON.NAME. So, right now you should have an SQL query like:<br>
+<span class="style4"><br>
+<span class="style6">SELECT</span> <br>
+PERSON.NAME<br>
+</span><span class="style7">FROM</span><span class="style4"><br>
+PERSON</span><br>
+<br>
+This introduction should start you right away for using the query builder, feel free to experiment with it.<br>
+<br>
+<em><strong>Beta</strong></em><br>
+<br>
+The query builder right now is still in alpha stage sinceit allows you to create invalid SQL queries, however we are working hard on fixing these issues. Please contact us if you feel you have discovered a bug or you have some suggestion.</P>
+</BODY>
+</HTML>
