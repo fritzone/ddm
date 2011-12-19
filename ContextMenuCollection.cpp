@@ -63,6 +63,7 @@ ContextMenuCollection::ContextMenuCollection()
     action_connectionDelete = new QAction(QObject::tr("Delete"), 0);
     action_connectionEdit = new QAction(QObject::tr("Edit"), 0);
     action_connectionBrowse = new QAction(QObject::tr("Browse"), 0);
+    action_connectionDrop = new QAction(QObject::tr("Drop"), 0);
     action_browsedTableInjectIntoSolution = new QAction(QObject::tr("Add to current solution"), 0);
     action_browsedTableBrowse = new QAction(QObject::tr("Browse table data"), 0);
     action_browsedTableView = new QAction(QObject::tr("View table details"), 0);
@@ -129,6 +130,7 @@ ContextMenuCollection::ContextMenuCollection()
     m_connectionPopupMenu->addAction(action_connectionDelete);
     m_connectionPopupMenu->addAction(action_connectionEdit);
     m_connectionPopupMenu->addAction(action_connectionBrowse);
+    m_connectionPopupMenu->addAction(action_connectionDrop);
 
     // browsed table
     m_browsedTablePopupMenu->addAction(action_browsedTableInjectIntoSolution);

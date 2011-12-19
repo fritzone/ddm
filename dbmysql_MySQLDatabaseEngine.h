@@ -34,6 +34,7 @@ public:
     virtual QStringList getKeywords() const;
     virtual QSqlDatabase getQSqlDatabaseForConnection(Connection *c);
     virtual QStringList getColumnsOfTable(const QString& host, const QString& user, const QString& pass, const QString& dbName, const QString& tableName);
+    virtual bool dropDatabase(const QString& host, const QString& user, const QString& pass, const QString&db);
 
 private:
 

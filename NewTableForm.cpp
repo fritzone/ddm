@@ -671,7 +671,7 @@ void NewTableForm::onCancelColumnEditing()
     m_ui->chkAutoInc->setChecked(false);
     m_ui->btnAdd->setIcon(IconFactory::getAddIcon());
     toggleColumnFieldDisableness(false);
-    m_ui->grpColumnDetails->setTitle("New column");
+    m_ui->grpColumnDetails->setTitle(tr("New column"));
 }
 
 void NewTableForm::onDeleteColumn()
@@ -1109,8 +1109,6 @@ void NewTableForm::onAddIndex()
     }
     resetIndexGui();
 
-    m_currentIndex = 0;
-
     autoSave();
 }
 
@@ -1121,6 +1119,7 @@ void NewTableForm::resetIndexGui()
     m_ui->cmbIndexType->setCurrentIndex(0);
     m_ui->txtNewIndexName->setText("");
     m_ui->btnAddIndex->setIcon(IconFactory::getAddIcon());
+    m_currentIndex = 0;
 
     toggleIndexFieldDisableness(false);
 }
@@ -2087,4 +2086,96 @@ void NewTableForm::onCodepageChange(QString)
 
 void NewTableForm::presentSql(Project*, SqlSourceEntity*,const QString&)
 {
+}
+
+void NewTableForm::onDescriptionChange()
+{
+    if(m_currentColumn)
+    {
+        m_currentColumn->setDescription(m_ui->txtColumnDescription->toPlainText());
+        autoSave();
+    }
+}
+
+void NewTableForm::onColumnNameChange(QString)
+{
+    if(m_currentColumn)
+    {
+        if(m_ui->txtNewColumnName->text().length() == 0) return;
+        m_currentColumn->setName(m_ui->txtNewColumnName->text());
+        m_currentColumn->getLocation()->setText(1, m_currentColumn->getName());
+        autoSave();
+    }
+}
+
+void NewTableForm::onDatatypeComboChange(QString)
+{
+    if(m_currentColumn)
+    {
+        // TODO: This is dupliation with code from onAddColumn
+        if(m_ui->cmbNewColumnType->currentText() != m_currentColumn->getDataType()->getName())
+        {
+            // in affirmative case check that:
+            // 1. this column is not referencing any other columns in the DB through a foreign key
+            QVector<ForeignKey*> fks = m_table->columnParticipatesInForeignKey(m_currentColumn);
+            if(fks.size() > 0)
+            {
+                QString s = "";
+                for(int i=0; i<fks.size(); i++)
+                {
+                    s += "\n-" + fks.at(i)->getName();
+                }
+                QMessageBox::critical (this, tr("Error"), tr("Cannot change the type of the columns since it's participating in Foreign Key. Please change the following foreign keys and try again.")+ s, QMessageBox::Ok);
+                return;
+            }
+            // 2. no other column is referencing this column in the DB through a foreign key from all the tables in the version
+            QVector<Table*> otherTablesReferencingThiscolumn = Workspace::getInstance()->workingVersion()->getTablesReferencingAColumnThroughForeignKeys(m_currentColumn);
+            if(otherTablesReferencingThiscolumn.size() > 0)
+            {
+                QString s = "";
+                for(int i=0; i<otherTablesReferencingThiscolumn.size(); i++)
+                {
+                    s += "\n-" + otherTablesReferencingThiscolumn.at(i)->getName();
+                }
+                QMessageBox::critical (this, tr("Error"), tr("Cannot change the type of the columns since it's participating in Foreign Keys. Please change the following tables and try again.")+ s, QMessageBox::Ok);
+                return;
+            }
+        }
+
+        m_currentColumn->setDataType(m_project->getWorkingVersion()->getDataType(m_ui->cmbNewColumnType->currentText()));
+        m_currentColumn->getLocation()->setIcon(COL_POS_DT, m_currentColumn->getDataType()->getIcon());
+        m_currentColumn->getLocation()->setText(COL_POS_DT, m_currentColumn->getDataType()->getName());
+
+        autoSave();
+    }
+}
+
+void NewTableForm::onPrimaryChange(bool)
+{
+    if(m_currentColumn)
+    {
+        m_currentColumn->setPk(m_ui->chkPrimary->isChecked());
+        if(m_ui->chkPrimary->isChecked())
+        {
+            m_currentColumn->getLocation()->setIcon(COL_POS_PK, IconFactory::getKeyIcon());
+        }
+        else
+        {
+            m_currentColumn->getLocation()->setIcon(COL_POS_PK, IconFactory::getEmptyIcon());
+        }
+
+        autoSave();
+    }
+}
+
+void NewTableForm::onIndexNameChange(QString)
+{
+    if(m_currentIndex)
+    {
+        if(m_ui->txtNewIndexName->text().length() == 0) return;
+
+        m_currentIndex->setName(m_ui->txtNewIndexName->text());
+        m_currentIndex->getLocation()->setText(0, m_currentIndex->getName());
+        autoSave();
+    }
 }

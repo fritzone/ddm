@@ -131,6 +131,7 @@ public slots:
     void onNewConnection();
     void onConnectConnection();
     void onBrowseConnection();
+    void onDropConnection();
     void onDeleteConnection();
     void onEditConnection();
     void onDeploymentFinished(Deployer*);

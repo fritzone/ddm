@@ -81,6 +81,7 @@ public:
     QAction* getAction_ConnectionDelete() {return action_connectionDelete; }
     QAction* getAction_ConnectionEdit() {return action_connectionEdit; }
     QAction* getAction_ConnectionBrowse() {return action_connectionBrowse; }
+    QAction* getAction_ConnectionDrop() {return action_connectionDrop; }
     QAction* getAction_BrowsedTableInject() {return action_browsedTableInjectIntoSolution; }
     QAction* getAction_BrowsedTableView() {return action_browsedTableView; }
     QAction* getAction_BrowsedTableBrowse() {return action_browsedTableBrowse; }
@@ -165,6 +166,7 @@ private:
     QAction* action_connectionDelete;
     QAction* action_connectionEdit;
     QAction* action_connectionBrowse;
+    QAction* action_connectionDrop;
 
     // a browsed table popup menu
     QAction* action_browsedTableInjectIntoSolution;

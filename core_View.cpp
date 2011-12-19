@@ -57,6 +57,13 @@ QStringList View::generateSqlSource(AbstractSqlGenerator *, QHash<QString, QStri
         res.append("\n");
         res.append("AS\n");
         res.append(m_selectQuery->get());
+        QString g;
+        for(int i=0; i< res.size(); i++)
+        {
+            g += res.at(i) + " ";
+        }
+        res.clear();
+        res.append(g);
         return res;
     }
 }

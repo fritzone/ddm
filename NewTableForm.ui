@@ -1551,7 +1551,7 @@ p, li { white-space: pre-wrap; }
    <sender>btnMoveIndexColumnDown</sender>
    <signal>clicked()</signal>
    <receiver>NewTableForm</receiver>
-   <slot>onMoveSelectedIndexColumnUp()</slot>
+   <slot>onMoveSelectedIndexColumnDown()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>481</x>
@@ -1963,6 +1963,86 @@ p, li { white-space: pre-wrap; }
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>txtColumnDescription</sender>
+   <signal>textChanged()</signal>
+   <receiver>NewTableForm</receiver>
+   <slot>onDescriptionChange()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>691</x>
+     <y>503</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>628</x>
+     <y>366</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>txtNewColumnName</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>NewTableForm</receiver>
+   <slot>onColumnNameChange(QString)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>691</x>
+     <y>345</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>628</x>
+     <y>366</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>cmbNewColumnType</sender>
+   <signal>currentIndexChanged(QString)</signal>
+   <receiver>NewTableForm</receiver>
+   <slot>onDatatypeComboChange(QString)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>691</x>
+     <y>378</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>628</x>
+     <y>366</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>chkPrimary</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>NewTableForm</receiver>
+   <slot>onPrimaryChange(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>106</x>
+     <y>408</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>628</x>
+     <y>366</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>txtNewIndexName</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>NewTableForm</receiver>
+   <slot>onIndexNameChange(QString)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>594</x>
+     <y>391</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>628</x>
+     <y>366</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <designerdata>
   <property name="gridDeltaX">
@@ -2023,5 +2103,10 @@ p, li { white-space: pre-wrap; }
   <slot>onInject()</slot>
   <slot>onSaveSql()</slot>
   <slot>onCodepageChange(QString)</slot>
+  <slot>onDescriptionChange()</slot>
+  <slot>onColumnNameChange(QString)</slot>
+  <slot>onDatatypeComboChange(QString)</slot>
+  <slot>onPrimaryChange(bool)</slot>
+  <slot>onIndexNameChange(QString)</slot>
  </slots>
 </ui>

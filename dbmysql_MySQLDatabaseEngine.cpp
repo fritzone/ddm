@@ -585,6 +585,32 @@ QVector<QString> MySQLDatabaseEngine::getAvailableDatabases(const QString& host,
     return result;
 }
 
+bool MySQLDatabaseEngine::dropDatabase(const QString& host, const QString& user, const QString& pass, const QString& name)
+{
+    QString createDbConnection = provideConnectionName("dropDb");
+    QSqlDatabase db = QSqlDatabase::cloneDatabase(*m_defaultMysqlDb, createDbConnection);
+    db.setHostName(host);
+    db.setUserName(user);
+    db.setPassword(pass);
+
+    bool ok = db.open();
+    if(!ok)
+    {
+        lastError = QObject::tr("Cannot connect to the database: ") + db.lastError().databaseText() + "/" + db.lastError().driverText();
+        return false;
+    }
+
+    QSqlQuery query(db);
+    bool t = query.exec("drop database "+ name);
+    if(!t)
+    {
+        lastError = QObject::tr("Cannot drop a database: ") + db.lastError().databaseText() + "/" + db.lastError().driverText();
+        return false;
+    }
+    db.close();
+    return true;
+}
+
 bool MySQLDatabaseEngine::createDatabase(const QString& host, const QString& user, const QString& pass, const QString& name)
 {
     QString createDbConnection = provideConnectionName("createDb");

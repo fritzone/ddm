@@ -103,6 +103,7 @@ public:
     virtual QVector<QString> getAvailableViews(const QString& host, const QString& user, const QString& pass, const QString& db) = 0;
     virtual bool createDatabase(const QString& host, const QString& user, const QString& pass, const QString&) = 0;
     virtual QVector<DatabaseBuiltinFunction> getBuiltinFunctions() = 0;
+    virtual bool dropDatabase(const QString& host, const QString& user, const QString& pass, const QString&db) = 0;
     virtual const DatabaseBuiltinFunction& getBuiltinFunction(const QString& name) = 0;
     virtual View* reverseEngineerView(const QString& host, const QString& user, const QString& pass, const QString& dbName, const QString& viewName) = 0;
 

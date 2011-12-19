@@ -55,6 +55,7 @@ public:
 
 protected:
 
+    void changeEvent(QEvent *e);
     virtual void keyPressEvent(QKeyEvent *);
 
 public slots:
@@ -75,6 +76,10 @@ public slots:
     void onItemSelected(QTreeWidgetItem*, int);             // when a column gets selected... sorry for bad naming
     void onCopyColumn();
     void onPasteColumn();
+    void onDescriptionChange();
+    void onColumnNameChange(QString);
+    void onDatatypeComboChange(QString);
+    void onPrimaryChange(bool);
 
     // on the index page
     void onSelectIndex(QTreeWidgetItem*,int);
@@ -86,6 +91,7 @@ public slots:
     void onMoveSelectedIndexColumnUp();
     void onMoveSelectedIndexColumnDown();
     void onDoubleClickColumnForIndex(QListWidgetItem*);
+    void onIndexNameChange(QString);
 
     // foreign columns page
     void onForeignTableComboChange(QString);
@@ -117,10 +123,6 @@ public slots:
     void onSaveSql();
     void onCodepageChange(QString);
 
-protected:
-
-    void changeEvent(QEvent *e);
-
 private:
 
     /*
@@ -137,6 +139,7 @@ private:
     void onSave();
     void onReset();
 
+    void autoSave();
     void resetIndexGui();
 
     /*
@@ -179,7 +182,6 @@ private:
     void prepareValuesToBeSaved();
 
     void doTheSave();
-    void autoSave();
 
     void finalizeColumnMovement();
 

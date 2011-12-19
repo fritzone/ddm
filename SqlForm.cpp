@@ -85,9 +85,8 @@ void SqlForm::onInject()
             }
         }
         MainWindow::instance()->setStatus(QString("SQL injection ") + (error?" failed":" succeeded"), error);
-
+        if(!error) ui->labelDeploymentStatus->setText("Succesful deployment");
     }
-    ui->labelDeploymentStatus->setText("Succesful deployment");
 }
 
 void SqlForm::onSave()

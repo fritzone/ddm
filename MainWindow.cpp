@@ -176,6 +176,7 @@ void MainWindow::showConnections()
     }
     QObject::connect(ContextMenuCollection::getInstance()->getAction_ConnectionConnect(), SIGNAL(activated()), this, SLOT(onConnectConnection()));
     QObject::connect(ContextMenuCollection::getInstance()->getAction_ConnectionBrowse(), SIGNAL(activated()), this, SLOT(onBrowseConnection()));
+    QObject::connect(ContextMenuCollection::getInstance()->getAction_ConnectionDrop(), SIGNAL(activated()), this, SLOT(onDropConnection()));
     QObject::connect(ContextMenuCollection::getInstance()->getAction_ConnectionDelete(), SIGNAL(activated()), this, SLOT(onDeleteConnection()));
     QObject::connect(ContextMenuCollection::getInstance()->getAction_ConnectionEdit(), SIGNAL(activated()), this, SLOT(onEditConnection()));
     connect(m_connectionsTree, SIGNAL(itemDoubleClicked(QTreeWidgetItem*,int)), this, SLOT(onConnectionItemDoubleClicked(QTreeWidgetItem*,int)));
@@ -1629,6 +1630,36 @@ void MainWindow::onBrowseConnection()
         if(c->getState() == Connection::CONNECTED)
         {
             createConnectionTreeEntryForTables(c);
+        }
+    }
+}
+
+void MainWindow::onDropConnection()
+{
+    Connection* c = getRightclickedConnection();
+    if(c)
+    {
+        bool w = false;
+        if(m_btndlg && m_btndlg->isVisible())
+        {
+            Qt::WindowFlags flags = m_btndlg->windowFlags();
+            m_btndlg->setWindowFlags(flags ^ (Qt::SplashScreen |Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint));
+            w = true;
+        }
+
+        if(QMessageBox::question(this, tr("Drop?"), tr("Do you really want to drop ") + c->getName() + tr("? This is irreversible"), QMessageBox::Yes, QMessageBox::No) == QMessageBox::Yes)
+        {
+            c->getEngine()->dropDatabase(c->getHost(), c->getUser(), c->getPassword(), c->getDb());
+            ConnectionManager::instance()->deleteConnection(c->getName());
+            delete c->getLocation();
+            delete c;
+        }
+
+        if(m_btndlg && w)
+        {
+            Qt::WindowFlags flags = m_btndlg->windowFlags();
+            m_btndlg->setWindowFlags(flags | Qt::SplashScreen |Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint);
+            m_btndlg->show();
         }
     }
 }
