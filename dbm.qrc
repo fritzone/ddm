@@ -152,6 +152,7 @@
         <file>images/small/database_cannot_connect.png</file>
         <file>images/small/help.png</file>
         <file>images/actions/button_play_green.png</file>
+        <file>images/small/foreign_key.png</file>
     </qresource>
     <qresource prefix="/bigger">
         <file>images/unaf.png</file>

@@ -60,9 +60,13 @@
          <enum>QTabWidget::Rounded</enum>
         </property>
         <property name="currentIndex">
-         <number>1</number>
+         <number>6</number>
         </property>
         <widget class="QWidget" name="tabWidgetPage1">
+         <attribute name="icon">
+          <iconset resource="dbm.qrc">
+           <normaloff>:/images/actions/images/small/table-select-column-icon.png</normaloff>:/images/actions/images/small/table-select-column-icon.png</iconset>
+         </attribute>
          <attribute name="title">
           <string>Columns</string>
          </attribute>
@@ -269,6 +273,10 @@
          </layout>
         </widget>
         <widget class="QWidget" name="tabWidgetPage2">
+         <attribute name="icon">
+          <iconset resource="dbm.qrc">
+           <normaloff>:/images/actions/images/small/index.png</normaloff>:/images/actions/images/small/index.png</iconset>
+         </attribute>
          <attribute name="title">
           <string>Indices</string>
          </attribute>
@@ -511,6 +519,10 @@
          </layout>
         </widget>
         <widget class="QWidget" name="tabWidgetPage3">
+         <attribute name="icon">
+          <iconset resource="dbm.qrc">
+           <normaloff>:/images/actions/images/small/foreign_key.png</normaloff>:/images/actions/images/small/foreign_key.png</iconset>
+         </attribute>
          <attribute name="title">
           <string>Foreign keys</string>
          </attribute>
@@ -866,6 +878,10 @@ p, li { white-space: pre-wrap; }
          </layout>
         </widget>
         <widget class="QWidget" name="tab">
+         <attribute name="icon">
+          <iconset resource="dbm.qrc">
+           <normaloff>:/images/actions/images/small/tabinst.png</normaloff>:/images/actions/images/small/tabinst.png</iconset>
+         </attribute>
          <attribute name="title">
           <string>Startup values</string>
          </attribute>
@@ -1107,6 +1123,10 @@ p, li { white-space: pre-wrap; }
          </layout>
         </widget>
         <widget class="QWidget" name="tabWidgetPage5">
+         <attribute name="icon">
+          <iconset resource="dbm.qrc">
+           <normaloff>:/images/actions/images/actions/note.png</normaloff>:/images/actions/images/actions/note.png</iconset>
+         </attribute>
          <attribute name="title">
           <string>Description</string>
          </attribute>
@@ -1124,12 +1144,16 @@ p, li { white-space: pre-wrap; }
          </layout>
         </widget>
         <widget class="QWidget" name="tab_2">
+         <attribute name="icon">
+          <iconset resource="dbm.qrc">
+           <normaloff>:/images/actions/images/small/sql.png</normaloff>:/images/actions/images/small/sql.png</iconset>
+         </attribute>
          <attribute name="title">
           <string>SQL</string>
          </attribute>
          <layout class="QVBoxLayout" name="verticalLayout_16">
           <item>
-           <widget class="QGroupBox" name="groupBox_9">
+           <widget class="QFrame" name="frame_9">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
               <horstretch>0</horstretch>
@@ -1147,9 +1171,6 @@ p, li { white-space: pre-wrap; }
               <width>16777215</width>
               <height>36</height>
              </size>
-            </property>
-            <property name="title">
-             <string/>
             </property>
             <widget class="QWidget" name="horizontalLayoutWidget">
              <property name="geometry">
@@ -1255,10 +1276,7 @@ p, li { white-space: pre-wrap; }
        </widget>
       </item>
       <item>
-       <widget class="QGroupBox" name="groupBox_6">
-        <property name="title">
-         <string/>
-        </property>
+       <widget class="QFrame" name="frame_6">
         <layout class="QHBoxLayout" name="horizontalLayout">
          <item>
           <widget class="QDialogButtonBox" name="buttons">
@@ -1339,22 +1357,6 @@ p, li { white-space: pre-wrap; }
   <include location="dbm.qrc"/>
  </resources>
  <connections>
-  <connection>
-   <sender>buttons</sender>
-   <signal>clicked(QAbstractButton*)</signal>
-   <receiver>NewTableForm</receiver>
-   <slot>onButtonsClicked(QAbstractButton*)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>243</x>
-     <y>751</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>243</x>
-     <y>386</y>
-    </hint>
-   </hints>
-  </connection>
   <connection>
    <sender>btnUp</sender>
    <signal>clicked()</signal>
@@ -1852,22 +1854,6 @@ p, li { white-space: pre-wrap; }
    </hints>
   </connection>
   <connection>
-   <sender>btnHelp</sender>
-   <signal>clicked()</signal>
-   <receiver>NewTableForm</receiver>
-   <slot>onHelp()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>844</x>
-     <y>681</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>628</x>
-     <y>365</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
    <sender>tabWidget</sender>
    <signal>currentChanged(int)</signal>
    <receiver>NewTableForm</receiver>
@@ -1908,54 +1894,6 @@ p, li { white-space: pre-wrap; }
     <hint type="sourcelabel">
      <x>434</x>
      <y>47</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>628</x>
-     <y>366</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>btnInject</sender>
-   <signal>clicked()</signal>
-   <receiver>NewTableForm</receiver>
-   <slot>onInject()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>73</x>
-     <y>150</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>628</x>
-     <y>366</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>btnSaveSql</sender>
-   <signal>clicked()</signal>
-   <receiver>NewTableForm</receiver>
-   <slot>onSaveSql()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>49</x>
-     <y>150</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>628</x>
-     <y>366</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>cmbCharSetForSql</sender>
-   <signal>activated(QString)</signal>
-   <receiver>NewTableForm</receiver>
-   <slot>onCodepageChange(QString)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>125</x>
-     <y>150</y>
     </hint>
     <hint type="destinationlabel">
      <x>628</x>
@@ -2036,6 +1974,70 @@ p, li { white-space: pre-wrap; }
     <hint type="sourcelabel">
      <x>594</x>
      <y>391</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>628</x>
+     <y>366</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnHelp</sender>
+   <signal>clicked()</signal>
+   <receiver>NewTableForm</receiver>
+   <slot>onHelp()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>1187</x>
+     <y>691</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>628</x>
+     <y>366</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnInject</sender>
+   <signal>clicked()</signal>
+   <receiver>NewTableForm</receiver>
+   <slot>onInject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>73</x>
+     <y>154</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>628</x>
+     <y>366</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnSaveSql</sender>
+   <signal>clicked()</signal>
+   <receiver>NewTableForm</receiver>
+   <slot>onSaveSql()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>49</x>
+     <y>154</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>628</x>
+     <y>366</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>cmbCharSetForSql</sender>
+   <signal>activated(QString)</signal>
+   <receiver>NewTableForm</receiver>
+   <slot>onCodepageChange(QString)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>128</x>
+     <y>154</y>
     </hint>
     <hint type="destinationlabel">
      <x>628</x>

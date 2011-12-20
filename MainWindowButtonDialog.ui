@@ -39,13 +39,7 @@
     <number>0</number>
    </property>
    <item>
-    <widget class="QGroupBox" name="groupBox">
-     <property name="title">
-      <string/>
-     </property>
-     <property name="flat">
-      <bool>false</bool>
-     </property>
+    <widget class="QFrame" name="frame">
      <layout class="QHBoxLayout" name="horizontalLayout">
       <property name="margin">
        <number>0</number>
@@ -55,6 +49,22 @@
         <property name="spacing">
          <number>6</number>
         </property>
+        <item>
+         <spacer name="verticalSpacer_6">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeType">
+           <enum>QSizePolicy::Fixed</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>9</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
         <item>
          <widget class="QLabel" name="label_2">
           <property name="font">
@@ -296,6 +306,22 @@
          <number>0</number>
         </property>
         <item>
+         <spacer name="verticalSpacer_7">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeType">
+           <enum>QSizePolicy::Fixed</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>9</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
          <widget class="QLabel" name="label_6">
           <property name="font">
            <font>
@@ -379,6 +405,22 @@
         <property name="spacing">
          <number>0</number>
         </property>
+        <item>
+         <spacer name="verticalSpacer_8">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeType">
+           <enum>QSizePolicy::Fixed</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>9</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
         <item>
          <widget class="QLabel" name="label_3">
           <property name="font">
@@ -465,6 +507,9 @@
         <iconset resource="dbm.qrc">
          <normaloff>:/images/actions/images/actions/application_exit.png</normaloff>:/images/actions/images/actions/application_exit.png</iconset>
        </property>
+       <property name="autoRaise">
+        <bool>true</bool>
+       </property>
       </widget>
      </item>
      <item>
@@ -505,70 +550,6 @@
    </hints>
   </connection>
   <connection>
-   <sender>btnOpen</sender>
-   <signal>clicked()</signal>
-   <receiver>MainWindowButtonDialog</receiver>
-   <slot>onOpenProject()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>178</x>
-     <y>65</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>444</x>
-     <y>295</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>btnNew</sender>
-   <signal>clicked()</signal>
-   <receiver>MainWindowButtonDialog</receiver>
-   <slot>onNewProject()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>300</x>
-     <y>66</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>297</x>
-     <y>170</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>btnNewConnection</sender>
-   <signal>clicked()</signal>
-   <receiver>MainWindowButtonDialog</receiver>
-   <slot>onNewConnection()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>298</x>
-     <y>123</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>297</x>
-     <y>170</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>btnHelp</sender>
-   <signal>clicked()</signal>
-   <receiver>MainWindowButtonDialog</receiver>
-   <slot>onHelp()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>484</x>
-     <y>77</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>297</x>
-     <y>170</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
    <sender>btnClose</sender>
    <signal>clicked()</signal>
    <receiver>MainWindowButtonDialog</receiver>
@@ -591,8 +572,8 @@
    <slot>onQuick1()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>102</x>
-     <y>132</y>
+     <x>96</x>
+     <y>116</y>
     </hint>
     <hint type="destinationlabel">
      <x>299</x>
@@ -607,8 +588,8 @@
    <slot>onQuick2()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>102</x>
-     <y>174</y>
+     <x>96</x>
+     <y>158</y>
     </hint>
     <hint type="destinationlabel">
      <x>299</x>
@@ -623,8 +604,8 @@
    <slot>onQuick3()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>102</x>
-     <y>216</y>
+     <x>96</x>
+     <y>200</y>
     </hint>
     <hint type="destinationlabel">
      <x>299</x>
@@ -639,8 +620,8 @@
    <slot>onQuick4()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>102</x>
-     <y>258</y>
+     <x>96</x>
+     <y>242</y>
     </hint>
     <hint type="destinationlabel">
      <x>299</x>
@@ -655,8 +636,72 @@
    <slot>onQuick5()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>102</x>
-     <y>300</y>
+     <x>96</x>
+     <y>284</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>299</x>
+     <y>179</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnOpen</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindowButtonDialog</receiver>
+   <slot>onOpenProject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>96</x>
+     <y>43</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>299</x>
+     <y>179</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnNew</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindowButtonDialog</receiver>
+   <slot>onNewProject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>285</x>
+     <y>37</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>299</x>
+     <y>179</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnNewConnection</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindowButtonDialog</receiver>
+   <slot>onNewConnection()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>285</x>
+     <y>77</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>299</x>
+     <y>179</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnHelp</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindowButtonDialog</receiver>
+   <slot>onHelp()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>474</x>
+     <y>37</y>
     </hint>
     <hint type="destinationlabel">
      <x>299</x>

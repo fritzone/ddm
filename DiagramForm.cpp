@@ -224,18 +224,6 @@ void DiagramForm::saveToImageFile()
     saveToFile(name, transparent, mode);
 }
 
-void DiagramForm::onButtonBoxClicked(QAbstractButton* btn)
-{
-    if(btn == ui->buttonBox->buttons().at(0)) // Seems very strange, but works like this... Save is the First, after Reset
-    {
-        onSave();
-    }
-    else
-    {
-        onReset();
-    }
-}
-
 void DiagramForm::onSave()
 {
     m_diagram->setName(ui->txtDiagramName->text());
@@ -279,7 +267,6 @@ void DiagramForm::setCurrentWorkNoteOnDiagram(int noteIndex)
     m_noteToRemove = noteIndex;
 }
 
-
 void DiagramForm::onAddNote()
 {
 }
@@ -288,7 +275,6 @@ void DiagramForm::doneNote()
 {
     lstDiagramForms->setEnabled(true);
 }
-
 
 void DiagramForm::editorLostFocus(DiagramTextItem *)
 {

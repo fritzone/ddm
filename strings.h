@@ -83,6 +83,7 @@ static const QString strColumnIcon = ":/images/actions/images/small/table-select
 static const QString strTypeHereIcon = ":/images/actions/images/small/type_here.png";
 static const QString strAliasIcon = ":/images/actions/images/small/alias.png";
 static const QString strOrderIcon = ":/images/actions/images/small/edit_list_order.png";
+static const QString strForeignKeyIcon = ":/images/actions/images/small/foreign_key.png";
 
 static const QString NEW_TABLE = "New table reference";
 static const QString NEW_COLUMN = "New column";
