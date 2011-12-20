@@ -49,6 +49,7 @@
 #include "core_ReverseEngineerer.h"
 #include "helper_MostRecentlyUsedFiles.h"
 #include "BrowseTableForm.h"
+#include "NameGenerator.h"
 
 #include <QtGui>
 
@@ -1553,6 +1554,7 @@ void MainWindow::onInjectBrowsedTable()
             if(!c) return;
             QString tab = s.left(s.indexOf("?")).mid(2);
             Table* t = Workspace::getInstance()->currentProjectsEngine()->reverseEngineerTable(c->getHost(), c->getUser(), c->getPassword(), c->getDb(), tab, Workspace::getInstance()->currentProject(), true);
+            t->setName(NameGenerator::getUniqueName(Workspace::getInstance()->currentProject()->getWorkingVersion(), (NameGenerator::itemGetter)&Version::getTable, tab));
             Workspace::getInstance()->currentProject()->getWorkingVersion()->addTable(t);
             m_workspace->workingVersion()->getGui()->createTableTreeEntry(t, m_workspace->workingVersion()->getGui()->getTablesItem());
             showTable(tab);
