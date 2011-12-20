@@ -374,6 +374,7 @@ void NewTableForm::onDatatypeSelectedForColumnInList(const QString& b)
         if(dts.at(i)->getName() == cmb->currentText()) break;
     }
     c->setDataType(dts.at(i));
+    c->getLocation()->setText(3, c->getDataType()->sqlAsString());
 
     if(m_currentColumn)
     {
