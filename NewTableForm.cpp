@@ -166,6 +166,8 @@ NewTableForm::NewTableForm(DatabaseEngine* db, Project* prj, QWidget *parent, bo
 
     populateCodepageCombo();
 
+    m_signalMapperForCombosInColumns = new QSignalMapper(this);
+
 }
 
 NewTableForm::~NewTableForm()
@@ -322,7 +324,62 @@ ContextMenuEnabledTreeWidgetItem* NewTableForm::createTWIForForeignKey(const For
     a.append(fk->getOnDelete());
 
     ContextMenuEnabledTreeWidgetItem* item = new ContextMenuEnabledTreeWidgetItem((ContextMenuEnabledTreeWidgetItem*)0, a);
+    item->setIcon(0, IconFactory::getForeignKeyIcon());
     return item;
+}
+
+void NewTableForm::setTypeComboBoxForColumnItem(ContextMenuEnabledTreeWidgetItem *item, Column* c)
+{
+    QComboBox* cmbColumnType = new QComboBox(0);
+    cmbColumnType->setAutoFillBackground(true);
+    const QVector<UserDataType*>& dts = m_project->getWorkingVersion()->getDataTypes();
+    int s = -1;
+    if(item->backgroundColor(0) == Qt::lightGray)
+    {
+        cmbColumnType->addItem(c->getDataType()->getIcon(),c->getDataType()->getName());
+        lstColumns->setItemWidget(item, 2, cmbColumnType);
+        return;
+    }
+    for(int i=0; i<dts.size(); i++)
+    {
+        cmbColumnType->addItem(dts[i]->getIcon(), dts[i]->getName(), QVariant(c->getName()));
+        if(dts[i]->getName() == c->getDataType()->getName()) s = i;
+    }
+    lstColumns->setItemWidget(item, 2, cmbColumnType);
+    cmbColumnType->setCurrentIndex(s);
+    connect(cmbColumnType, SIGNAL(activated(QString)), m_signalMapperForCombosInColumns, SLOT(map()));
+    m_signalMapperForCombosInColumns->setMapping(cmbColumnType, c->getName());
+    // TODO: This is pretty ugly, it will call the slot several times. find a better location for this in the code
+    connect(m_signalMapperForCombosInColumns, SIGNAL(mapped(const QString&)), this, SLOT(onDatatypeSelectedForColumnInList(const QString&)));
+}
+
+void NewTableForm::onDatatypeSelectedForColumnInList(const QString& b)
+{
+    // find the column, the name is b
+    Column* c = m_table->getColumn(b);
+    if(!c)
+    {
+        return;
+    }
+    QComboBox* cmb = static_cast<QComboBox*>(lstColumns->itemWidget(c->getLocation(), 2));
+
+    if(!cmb)
+    {
+        return;
+    }
+    const QVector<UserDataType*>& dts = m_project->getWorkingVersion()->getDataTypes();
+    int i;
+    for(i=0; i<dts.size(); i++)
+    {
+        if(dts.at(i)->getName() == cmb->currentText()) break;
+    }
+    c->setDataType(dts.at(i));
+
+    if(m_currentColumn)
+    {
+        m_ui->cmbNewColumnType->setCurrentIndex(i);
+    }
+
 }
 
 ContextMenuEnabledTreeWidgetItem* NewTableForm::createTWIForColumn(const Column* col, ContextMenuEnabledTreeWidgetItem* parent )
@@ -337,34 +394,35 @@ ContextMenuEnabledTreeWidgetItem* NewTableForm::createTWIForColumn(const Column*
     {
         item->setIcon(COL_POS_PK, IconFactory::getKeyIcon());
     }
-    item->setIcon(COL_POS_DT, col->getDataType()->getIcon());
+    //item->setIcon(COL_POS_DT, col->getDataType()->getIcon());
     item->setPopupMenu(ContextMenuCollection::getInstance()->getColumnPopupMenu());
     QVariant var(col->getName());
     item->setData(0, Qt::UserRole, var);
     return item;
 }
 
-void NewTableForm::prepareColumnsListWithParentItems(const Table* ctable)
-{
-    // first step: go back upwards, recursively
-    if(ctable->getParent())
-    {
-        prepareColumnsListWithParentItems(ctable->getParent());
-    }
-    // then create the column list
-    if(ctable)
-    {
-        const QVector<Column*>& columns = ctable->getColumns();
-        for(int i=0; i<columns.count(); i++)
-        {
-            static QBrush grayBrush((QColor(Qt::gray)));
-            ContextMenuEnabledTreeWidgetItem* item = createTWIForColumn(columns[i]);
-            item->setBackground(0, grayBrush);
-            lstColumns->addTopLevelItem(item);
-            columns[i]->setLocation(item);
-        }
-    }
-}
+//void NewTableForm::prepareColumnsListWithParentItems(const Table* ctable)
+//{
+//    // first step: go back upwards, recursively
+//    if(ctable->getParent())
+//    {
+//        prepareColumnsListWithParentItems(ctable->getParent());
+//    }
+//    // then create the column list
+//    if(ctable)
+//    {
+//        const QVector<Column*>& columns = ctable->getColumns();
+//        for(int i=0; i<columns.count(); i++)
+//        {
+//            static QBrush grayBrush((QColor(Qt::gray)));
+//            ContextMenuEnabledTreeWidgetItem* item = createTWIForColumn(columns[i]);
+//            item->setBackground(0, grayBrush);
+//            lstColumns->addTopLevelItem(item);
+//            columns[i]->setLocation(item);
+//            setTypeComboBoxForColumnItem(item, columns[i]);
+//        }
+//    }
+//}
 
 void NewTableForm::selectTab(int i)
 {
@@ -387,6 +445,8 @@ void NewTableForm::populateTable(const Table *table, bool parentTab)
             item->setBackground(2, QBrush(Qt::lightGray));
             item->setBackground(3, QBrush(Qt::lightGray));
         }
+        setTypeComboBoxForColumnItem(item, columns[i]);
+
     }
 
     lstColumns->resizeColumnToContents(0);
@@ -545,6 +605,7 @@ void NewTableForm::onAddColumn()
     if(m_ui->txtNewColumnName->text().length() == 0)
     {
         QMessageBox::critical (this, tr("Error"), tr("Please specify a column name."), QMessageBox::Ok);
+        m_ui->txtNewColumnName->setFocus();
         return;
     }
 
@@ -605,7 +666,7 @@ void NewTableForm::onAddColumn()
         {
             m_currentColumn->getLocation()->setIcon(COL_POS_PK, IconFactory::getEmptyIcon());
         }
-        m_currentColumn->getLocation()->setIcon(COL_POS_DT, m_currentColumn->getDataType()->getIcon());
+        //m_currentColumn->getLocation()->setIcon(COL_POS_DT, m_currentColumn->getDataType()->getIcon());
         m_currentColumn->getLocation()->setText(COL_POS_DT, m_currentColumn->getDataType()->getName());
 
         // see if the change has done anything to the issues
@@ -631,7 +692,7 @@ void NewTableForm::onAddColumn()
         col->setDescription(m_ui->txtColumnDescription->toPlainText());
         ContextMenuEnabledTreeWidgetItem* item = createTWIForColumn(col);
         lstColumns->addTopLevelItem(item);
-
+        setTypeComboBoxForColumnItem(item, col);
         m_table->addColumn(col);
         // and update the table instances of the table, by adding a new table instance
         m_table->tableInstancesAddColumn(col);
@@ -664,14 +725,15 @@ void NewTableForm::onAddColumn()
 
 void NewTableForm::onCancelColumnEditing()
 {
+    m_currentColumn = 0;
     m_ui->txtNewColumnName->clear();
     m_ui->cmbNewColumnType->setCurrentIndex(-1);
-    m_currentColumn = 0;
     m_ui->chkPrimary->setChecked(false);
     m_ui->chkAutoInc->setChecked(false);
     m_ui->btnAdd->setIcon(IconFactory::getAddIcon());
     toggleColumnFieldDisableness(false);
-    m_ui->grpColumnDetails->setTitle(tr("New column"));
+    m_ui->grpColumnDetails->setTitle(tr(" New column "));
+    m_ui->txtColumnDescription->setText("");
 }
 
 void NewTableForm::onDeleteColumn()
@@ -743,6 +805,7 @@ void NewTableForm::onMoveColumnDown()
             delete lstColumns->currentItem();
             lstColumns->insertTopLevelItem(rc + 1, item);
             lstColumns->setCurrentItem(item);
+            setTypeComboBoxForColumnItem(item, col);
             finalizeColumnMovement();
         }
     }
@@ -779,6 +842,7 @@ void NewTableForm::onMoveColumnUp()
             delete lstColumns->currentItem();
             lstColumns->insertTopLevelItem(rc - 1, item);
             lstColumns->setCurrentItem(item);
+            setTypeComboBoxForColumnItem(item, col);
             finalizeColumnMovement();
         }
     }
@@ -2069,7 +2133,7 @@ void NewTableForm::onPasteColumn()
     // TODO: Rename the column to be valid!
     ContextMenuEnabledTreeWidgetItem* item = createTWIForColumn(col);
     lstColumns->addTopLevelItem(item);
-
+    setTypeComboBoxForColumnItem(item, col);
     m_table->addColumn(col);
     // and update the table instances of the table, by adding a new table instance
     m_table->tableInstancesAddColumn(col);
@@ -2143,7 +2207,7 @@ void NewTableForm::onDatatypeComboChange(QString)
         }
 
         m_currentColumn->setDataType(m_project->getWorkingVersion()->getDataType(m_ui->cmbNewColumnType->currentText()));
-        m_currentColumn->getLocation()->setIcon(COL_POS_DT, m_currentColumn->getDataType()->getIcon());
+        //m_currentColumn->getLocation()->setIcon(COL_POS_DT, m_currentColumn->getDataType()->getIcon());
         m_currentColumn->getLocation()->setText(COL_POS_DT, m_currentColumn->getDataType()->getName());
 
         autoSave();

@@ -31,7 +31,6 @@ public:
 public slots:
 
     void saveToImageFile();
-    void onButtonBoxClicked(QAbstractButton*);
     void removeFromDiagram();
     void removeNoteFromDiagram();
     void onAddNote();

@@ -378,6 +378,12 @@ public:
         return icon;
     }
 
+    static const QIcon& getForeignKeyIcon()
+    {
+        static const QIcon icon(strForeignKeyIcon);
+        return icon;
+    }
+
 
 };
 

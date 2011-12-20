@@ -1,6 +1,9 @@
 #include <QtGui/QApplication>
 #include<QWindowsStyle>
+#include<QMacStyle>
 #include <QStyle>
+#include <QCleanlooksStyle>
+#include <QPlastiqueStyle>
 
 #include "MainWindow.h"
 

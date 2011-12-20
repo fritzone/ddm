@@ -45,7 +45,7 @@
        </layout>
       </item>
       <item>
-       <widget class="QGroupBox" name="groupBox_2">
+       <widget class="QFrame" name="frame_2">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
           <horstretch>0</horstretch>
@@ -63,9 +63,6 @@
           <width>16777215</width>
           <height>36</height>
          </size>
-        </property>
-        <property name="title">
-         <string/>
         </property>
         <widget class="QWidget" name="horizontalLayoutWidget">
          <property name="geometry">
@@ -236,30 +233,14 @@
        </layout>
       </item>
       <item>
-       <widget class="QGroupBox" name="groupBox_3">
+       <widget class="QFrame" name="frame_3">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
         </property>
-        <property name="title">
-         <string/>
-        </property>
         <layout class="QHBoxLayout" name="horizontalLayout_6">
-         <item>
-          <widget class="QDialogButtonBox" name="buttonBox">
-           <property name="orientation">
-            <enum>Qt::Vertical</enum>
-           </property>
-           <property name="standardButtons">
-            <set>QDialogButtonBox::Save</set>
-           </property>
-           <property name="centerButtons">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
          <item>
           <spacer name="horizontalSpacer_2">
            <property name="orientation">
@@ -293,70 +274,6 @@
  </resources>
  <connections>
   <connection>
-   <sender>btnSaveToImageFile</sender>
-   <signal>clicked()</signal>
-   <receiver>DiagramForm</receiver>
-   <slot>saveToImageFile()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>21</x>
-     <y>196</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>280</x>
-     <y>217</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>buttonBox</sender>
-   <signal>clicked(QAbstractButton*)</signal>
-   <receiver>DiagramForm</receiver>
-   <slot>onButtonBoxClicked(QAbstractButton*)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>280</x>
-     <y>413</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>280</x>
-     <y>217</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>btnPrint</sender>
-   <signal>clicked()</signal>
-   <receiver>DiagramForm</receiver>
-   <slot>printDiagram()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>47</x>
-     <y>195</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>280</x>
-     <y>217</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>btnHelp</sender>
-   <signal>clicked()</signal>
-   <receiver>DiagramForm</receiver>
-   <slot>onHelp()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>188</x>
-     <y>366</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>451</x>
-     <y>319</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
    <sender>txtDiagramName</sender>
    <signal>textChanged(QString)</signal>
    <receiver>DiagramForm</receiver>
@@ -373,13 +290,45 @@
    </hints>
   </connection>
   <connection>
-   <sender>btnZoomOut</sender>
+   <sender>btnHelp</sender>
    <signal>clicked()</signal>
    <receiver>DiagramForm</receiver>
-   <slot>onZoomOut()</slot>
+   <slot>onHelp()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>86</x>
+     <x>834</x>
+     <y>491</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>451</x>
+     <y>319</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnSaveToImageFile</sender>
+   <signal>clicked()</signal>
+   <receiver>DiagramForm</receiver>
+   <slot>saveToImageFile()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>38</x>
+     <y>78</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>451</x>
+     <y>319</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnPrint</sender>
+   <signal>clicked()</signal>
+   <receiver>DiagramForm</receiver>
+   <slot>printDiagram()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>62</x>
      <y>78</y>
     </hint>
     <hint type="destinationlabel">
@@ -404,10 +353,25 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>btnZoomOut</sender>
+   <signal>clicked()</signal>
+   <receiver>DiagramForm</receiver>
+   <slot>onZoomOut()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>86</x>
+     <y>78</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>451</x>
+     <y>319</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>saveToImageFile()</slot>
-  <slot>onButtonBoxClicked(QAbstractButton*)</slot>
   <slot>removeFromDiagram()</slot>
   <slot>onAddNote()</slot>
   <slot>printDiagram()</slot>

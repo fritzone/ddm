@@ -7,6 +7,7 @@
 #include <QTreeWidgetItem>
 #include <QAbstractButton>
 #include <QListWidgetItem>
+#include <QSignalMapper>
 
 namespace Ui
 {
@@ -80,6 +81,7 @@ public slots:
     void onColumnNameChange(QString);
     void onDatatypeComboChange(QString);
     void onPrimaryChange(bool);
+    void onDatatypeSelectedForColumnInList(const QString&);
 
     // on the index page
     void onSelectIndex(QTreeWidgetItem*,int);
@@ -134,7 +136,7 @@ private:
     /*
      * Prepares the list of "grayed" items that represent the columns of the parent tables
      */
-    void prepareColumnsListWithParentItems(const Table*);
+    //void prepareColumnsListWithParentItems(const Table*);
 
     void onSave();
     void onReset();
@@ -189,6 +191,8 @@ private:
 
     void updateIssues();
 
+    void setTypeComboBoxForColumnItem(ContextMenuEnabledTreeWidgetItem*, Column*);
+
 private:
     Ui::NewTableForm *m_ui;
     // the main window
@@ -224,6 +228,7 @@ private:
     QStringList finalSql;
     SqlNamesValidator* m_nameValidator;
     ContextMenuEnabledTreeWidget* lstColumns;
+    QSignalMapper* m_signalMapperForCombosInColumns;
 };
 
 #endif // NEWTABLEFORM_H
