@@ -302,3 +302,4 @@ FORMS += MainWindow.ui \
     HelpWindow.ui \
     BrowseTableForm.ui
 RESOURCES += dbm.qrc
+ RC_FILE = dbm.rc
