@@ -5,8 +5,8 @@
 
 [Setup]
 AppName=Database Deployment Manager
-AppVersion=0.1f
-AppVerName=Database Deployment Manager Version 0.1f
+AppVersion=0.1g
+AppVerName=Database Deployment Manager Version 0.1g
 AppPublisher=The Unauthorized Frog Project
 DefaultDirName={pf}\Database Deployment Manager
 DefaultGroupName=Database Deployment Manager
@@ -20,7 +20,7 @@ WizardImageStretch=no
 WizardSmallImageFile=icon.bmp
 WizardImageBackColor=clWhite
 VersionInfoVersion=0.1.0.0
-VersionInfoTextVersion=0.1f
+VersionInfoTextVersion=0.1g
 ShowLanguageDialog=no
 LicenseFile=lgpl.txt
 FlatComponentsList=no  
@@ -60,3 +60,10 @@ CreateDesktopIcon=Create a &desktop icon
 
 [Tasks]
 Name: desktopicon; Description: "{cm:CreateDesktopIcon}"
+
+[Run]
+Filename: {app}\ddm.exe; Description: {cm:LaunchProgram, {cm:AppName}}; Flags: nowait postinstall skipifsilent
+
+[CustomMessages]
+AppName=Database Deployment Manager
+LaunchProgram=Start Database Deployment Manager after finishing installation
