@@ -210,7 +210,7 @@ void QTextEditWithCodeCompletion::populateCodeCompletionListboxWithColumnsOfTabl
 
     if(!Workspace::getInstance()->hasCurrentSolution())
     {
-        tcs  = m_connection->getEngine()->getColumnsOfTable(m_connection->getHost(), m_connection->getUser(), m_connection->getPassword(), m_connection->getDb(), tabName);
+        tcs  = m_connection->getEngine()->getColumnsOfTable(m_connection, tabName);
     }
     else
     {

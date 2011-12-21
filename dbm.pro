@@ -242,7 +242,6 @@ HEADERS += MainWindow.h \
     dbmysql_MySQLArchiveStorageEngine.h \
     dbmysql_MySQLCodepageSupplier.h \
     dbmysql_MySQLDTSupplier.h \
-    dbmysql_MySQLIndextypeProvider.h \
     dbmysql_MySQLInnoDBStorageEngine.h \
     dbmysql_MySQLMemoryStorageEngine.h \
     dbmysql_MySQLMyISAMStorageEngine.h \
@@ -302,4 +301,4 @@ FORMS += MainWindow.ui \
     HelpWindow.ui \
     BrowseTableForm.ui
 RESOURCES += dbm.qrc
- RC_FILE = dbm.rc
+RC_FILE = dbm.rc

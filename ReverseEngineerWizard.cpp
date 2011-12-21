@@ -3,7 +3,7 @@
 #include "ReverseEngineerWizardDatabasesForm.h"
 #include "ReverseEngineerWizardTablesForm.h"
 #include "ReverseEngineerWizardOptionsForm.h"
-
+#include "core_Connection.h"
 #include "db_DatabaseEngine.h"
 
 #include <QMessageBox>
@@ -30,7 +30,7 @@ void ReverseEngineerWizard::gatherConnectionData()
 
 bool ReverseEngineerWizard::connectAndRetrieveDatabases()
 {
-    QVector<QString> databases = m_engine->getAvailableDatabases(m_host, m_user, m_pass);
+    QStringList databases = m_engine->getAvailableDatabases(m_host, m_user, m_pass);
     if(databases.size() == 0)
     {
         QMessageBox::critical(this, tr("Error"), QObject::tr("Seems there are no databases at the given location.\n") + m_engine->getLastError(), QMessageBox::Ok)        ;
@@ -55,33 +55,38 @@ bool ReverseEngineerWizard::selectDatabase()
 
 bool ReverseEngineerWizard::connectAndRetrieveViews()
 {
-    QVector<QString> views = m_engine->getAvailableViews(m_host, m_user, m_pass, m_database);
+    Connection* c = new Connection("temp", m_host, m_user, m_pass, m_database, false, false);
+
+    QStringList views = m_engine->getAvailableViews(c);
     m_viewsPage->clearList();
     for(int i=0; i<views.size(); i++)
     {
         m_viewsPage->addTable(views.at(i));
     }
+    delete c;
     return true;
 }
 
 bool ReverseEngineerWizard::connectAndRetrieveTables()
 {
-    QVector<QString> tables = m_engine->getAvailableTables(m_host, m_user, m_pass, m_database);
+    Connection* c = new Connection("temp", m_host, m_user, m_pass, m_database, false, false);
+    QStringList tables = m_engine->getAvailableTables(c);
     m_tablesPage->clearList();
     for(int i=0; i<tables.size(); i++)
     {
         m_tablesPage->addTable(tables.at(i));
     }
 
+    delete c;
     return true;
 }
 
-QVector<QString> ReverseEngineerWizard::getTablesToReverse()
+QStringList ReverseEngineerWizard::getTablesToReverse()
 {
     return m_tablesPage->getSelectedItems();
 }
 
-QVector<QString> ReverseEngineerWizard::getViewsToReverse()
+QStringList ReverseEngineerWizard::getViewsToReverse()
 {
     return m_viewsPage->getSelectedItems();
 }

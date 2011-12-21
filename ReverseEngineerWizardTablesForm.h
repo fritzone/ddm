@@ -24,7 +24,7 @@ public:
 
     void addTable(const QString& tab);
     void clearList();
-    QVector<QString> getSelectedItems();
+    QStringList getSelectedItems();
 
 public slots:
 

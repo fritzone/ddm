@@ -106,7 +106,7 @@ void NewDataTypeForm::basicDTselected(QString newSelection)
     hideSpecialComponents();
 
     DataType::DT_TYPE type = DataType::getDT_TYPE(newSelection);
-    QList<DataType> types = AbstractDTSupplier::getDTList(m_dbEngine->getDTSupplier(), type);
+    QList<DataType> types = m_dbEngine->getDTSupplier()->getDTList(type);
 
     for(int i=0; i< types.size(); i++)
     {

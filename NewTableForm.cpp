@@ -263,7 +263,7 @@ void NewTableForm::populateCodepageCombo()
 
 void NewTableForm::populateIndexTypesDependingOnStorageEngine()
 {
-    const QStringList& indexTypes = m_dbEngine->getIndextypeProvider()->getIndexTypes();
+    const QStringList& indexTypes = m_dbEngine->getIndexTypes();
     QStringList::const_iterator it = indexTypes.constBegin();
 
     m_ui->cmbIndexType->clear();
@@ -1222,7 +1222,7 @@ void NewTableForm::populateIndexGui(Index* idx)
     }
 
     // select the required combo box item
-    const QStringList& indexTypes = m_dbEngine->getIndextypeProvider()->getIndexTypes();
+    const QStringList& indexTypes = m_dbEngine->getIndexTypes();
     QStringList::const_iterator it = indexTypes.constBegin();
     int indx = 0;
     while(it != indexTypes.constEnd())
@@ -2052,11 +2052,7 @@ void NewTableForm::onInject()
             Connection* c = ConnectionManager::instance()->getConnection(connectionNames.at(i));
             if(c)
             {
-                QString host = c->getHost();
-                QString user = c->getUser();
-                QString pass = c->getPassword();
-                QString db = c->getDb();
-                if(!m_dbEngine->injectSql(host, user, pass, db, finalSql, tSql, injectDialog->getRollbackOnError(), injectDialog->getCreateOnlyIfNotExist()))
+                if(!m_dbEngine->executeSql(c, finalSql, tSql, injectDialog->getRollbackOnError()))
                 {
                     QMessageBox::critical (this, tr("Error"), tr("<B>Cannot execute a query!</B><P>Reason: ") + m_dbEngine->getLastError() + tr(".<P>Query:<PRE>") + tSql+ "</PRE><P>" +
                                            (injectDialog->getRollbackOnError()?tr("Transaction was rolled back."):tr("Transaction was <font color=red><B>NOT</B></font> rolled back, you might have partial data in your database.")), QMessageBox::Ok);

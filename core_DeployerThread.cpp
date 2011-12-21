@@ -9,7 +9,7 @@ DeployerThread::DeployerThread(DatabaseEngine* e, Connection* c, const QStringLi
 
 void DeployerThread::doWork()
 {
-    m_success = m_engine->injectSql(m_connection->getHost(), m_connection->getUser(), m_connection->getPassword(), m_connection->getDb(), m_sqls, m_lastSql, true, false);
+    m_success = m_engine->executeSql(m_connection, m_sqls, m_lastSql, true);
     if(!m_success)
     {
         m_lastError = m_engine->getLastError();

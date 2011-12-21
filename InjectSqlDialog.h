@@ -30,7 +30,7 @@ public:
     QString getCodepage() const;
     bool getRollbackOnError() const;
     bool getAutoConnect() const;
-    bool getCreateOnlyIfNotExist() const;
+
     void setupForReverseEngineering();
     void setupForConnectionStorage();
 
