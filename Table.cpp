@@ -548,7 +548,7 @@ QString Table::getAvailableIndexName(const QString& prefix)
 Index* Table::createAutoIndex(QVector<const Column*> cols)
 {
     QString idxName = getAvailableIndexName("autoidx");
-    Index* idx = new Index(idxName, Workspace::getInstance()->currentProjectsEngine()->getIndextypeProvider()->getDefaultIndextype(), this);
+    Index* idx = new Index(idxName, Workspace::getInstance()->currentProjectsEngine()->getDefaultIndextype(), this);
     for(int i=0; i<cols.size(); i++)
     {
         idx->addColumn(cols.at(i));

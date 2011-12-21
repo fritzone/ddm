@@ -25,7 +25,7 @@ InjectSqlDialog::InjectSqlDialog(DatabaseEngine* engine, QWidget *parent) : QDia
 {
     ui->setupUi(this);
     ui->buttonBox->button(QDialogButtonBox::Ok)->setDisabled(true);
-    ui->chkOnlyIfNotExist->hide();
+
     ui->txtDatabaseHost->setText(previousHost);
     ui->txtDatabaseUser->setText(previousUser);
     ui->chkSavePassword->hide();
@@ -69,7 +69,7 @@ void InjectSqlDialog::changeEvent(QEvent *e)
 void InjectSqlDialog::onConnect()
 {
 
-    QVector<QString> databases = m_dbEngine->getAvailableDatabases(ui->txtDatabaseHost->text(), ui->txtDatabaseUser->text(), ui->txtDatabasePassword->text());
+    QStringList databases = m_dbEngine->getAvailableDatabases(ui->txtDatabaseHost->text(), ui->txtDatabaseUser->text(), ui->txtDatabasePassword->text());
     if(databases.size() == 0)
     {
         QMessageBox::critical(this, tr("Error"), m_dbEngine->getLastError(), QMessageBox::Ok)        ;
@@ -117,11 +117,6 @@ bool InjectSqlDialog::getRollbackOnError() const
     return ui->chkRollbackOnError->isChecked();
 }
 
-bool InjectSqlDialog::getCreateOnlyIfNotExist() const
-{
-    return ui->chkOnlyIfNotExist->isChecked();
-}
-
 bool InjectSqlDialog::getAutoConnect() const
 {
     return ui->chkAutoConnect->isChecked();
@@ -133,7 +128,7 @@ void InjectSqlDialog::setupForConnectionStorage()
     ui->grpConnectionDetails->show();
     ui->cmbCharacterSets->hide();
     ui->lblCodepage->hide();
-    ui->chkOnlyIfNotExist->hide();
+
     ui->lblConnectionName->show();
     ui->txtConnectionName->show();
     ui->btnConnect->show();
@@ -282,7 +277,9 @@ void InjectSqlDialog::onCreateDatabase()
     if(dlg->exec() == QDialog::Accepted)
     {
         QString t = dlg->getText();
-        bool b = m_dbEngine->createDatabase(ui->txtDatabaseHost->text(), ui->txtDatabaseUser->text(), ui->txtDatabasePassword->text(), t);
+        Connection* c = new Connection("temp", ui->txtDatabaseHost->text(), ui->txtDatabaseUser->text(),  ui->txtDatabasePassword->text(), dlg->getText(), false, false);
+
+        bool b = m_dbEngine->createDatabase(c);
         if(!b)
         {
             QMessageBox::critical(this, tr("Error"), tr("Could not create a new database: ") + m_dbEngine->getLastError(), QMessageBox::Ok);
@@ -292,6 +289,8 @@ void InjectSqlDialog::onCreateDatabase()
             ui->cmbDatabases->addItem(t);
             ui->cmbDatabases->setCurrentIndex(ui->cmbDatabases->findText(t));
         }
+
+        delete c;
     }
 }
 

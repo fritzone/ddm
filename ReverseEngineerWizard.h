@@ -21,8 +21,8 @@ public:
     bool connectAndRetrieveTables();
     bool connectAndRetrieveViews();
 
-    QVector<QString> getTablesToReverse();
-    QVector<QString> getViewsToReverse();
+    QStringList getTablesToReverse();
+    QStringList getViewsToReverse();
 
     QString getHost() {return m_host; }
     QString getUser() {return m_user; }

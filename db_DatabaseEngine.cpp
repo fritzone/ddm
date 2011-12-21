@@ -2,14 +2,12 @@
 #include "db_AbstractCodepageSupplier.h"
 #include "dbmysql_MySQLDTSupplier.h"
 #include "dbmysql_MySQLCodepageSupplier.h"
-#include "dbmysql_MySQLIndextypeProvider.h"
 #include "dbmysql_MySQLDatabaseEngine.h"
 #include "dbmysql_MySQLStorageEngineListProvider.h"
 #include "dbmysql_MySQLSQLGenerator.h"
 
 QMap<QString, AbstractDTSupplier*> DatabaseEngine::dtsuppliers;
 QMap<QString, AbstractCodepageSupplier*> DatabaseEngine::cpsuppliers;
-QMap<QString, AbstractIndextypeProvider*> DatabaseEngine::indextypeProviders;
 QMap<QString, AbstractStorageEngineListProvider*> DatabaseEngine::storageEngineProviders;
 QMap<QString, AbstractSqlGenerator*> DatabaseEngine::sqlGenerators;
 
@@ -23,10 +21,13 @@ DatabaseEngine::DatabaseEngine(const QString& db):database(db)
         // initialize the DT suppliers
         dtsuppliers.insert(db, new MySQLDTSupplier());
         cpsuppliers.insert(db, new MySQLCodepageSupplier());
-        indextypeProviders.insert(db, new MySQLIndexTypeProvider());
         storageEngineProviders.insert(db, new MySQLStorageEngineListProvider());
         sqlGenerators.insert(db, new MySQLSQLGenerator());
     }
+}
+
+DatabaseEngine::~DatabaseEngine()
+{
 }
 
 AbstractDTSupplier* DatabaseEngine::getDTSupplier() const
@@ -39,10 +40,6 @@ AbstractCodepageSupplier* DatabaseEngine::getCodepageSupplier() const
     return cpsuppliers.contains(database)?cpsuppliers[database]:0;
 }
 
-AbstractIndextypeProvider* DatabaseEngine::getIndextypeProvider() const
-{
-    return indextypeProviders.contains(database)?indextypeProviders[database]:0;
-}
 
 AbstractStorageEngineListProvider* DatabaseEngine::getStorageEngineListProviders() const
 {
@@ -65,7 +62,12 @@ QString DatabaseEngine::getTypeStringForSqlType(const QString& sqlType)
     return getDTSupplier()->typeForSqlType(sqlType);
 }
 
-const QString& DatabaseEngine::getDatabase() const
+const QString& DatabaseEngine::getDatabaseEngineName() const
 {
     return database;
+}
+
+QString DatabaseEngine::getLastError() const
+{
+    return lastError;
 }

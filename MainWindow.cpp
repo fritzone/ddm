@@ -1553,7 +1553,7 @@ void MainWindow::onInjectBrowsedTable()
             Connection *c = ConnectionManager::instance()->getConnection(cname);
             if(!c) return;
             QString tab = s.left(s.indexOf("?")).mid(2);
-            Table* t = Workspace::getInstance()->currentProjectsEngine()->reverseEngineerTable(c->getHost(), c->getUser(), c->getPassword(), c->getDb(), tab, Workspace::getInstance()->currentProject(), true);
+            Table* t = Workspace::getInstance()->currentProjectsEngine()->reverseEngineerTable(c, tab, Workspace::getInstance()->currentProject(), true);
             t->setName(NameGenerator::getUniqueName(Workspace::getInstance()->currentProject()->getWorkingVersion(), (NameGenerator::itemGetter)&Version::getTable, tab));
             Workspace::getInstance()->currentProject()->getWorkingVersion()->addTable(t);
             m_workspace->workingVersion()->getGui()->createTableTreeEntry(t, m_workspace->workingVersion()->getGui()->getTablesItem());
@@ -1651,7 +1651,7 @@ void MainWindow::onDropConnection()
 
         if(QMessageBox::question(this, tr("Drop?"), tr("Do you really want to drop ") + c->getName() + tr("? This is irreversible"), QMessageBox::Yes, QMessageBox::No) == QMessageBox::Yes)
         {
-            c->getEngine()->dropDatabase(c->getHost(), c->getUser(), c->getPassword(), c->getDb());
+            c->getEngine()->dropDatabase(c);
             ConnectionManager::instance()->deleteConnection(c->getName());
             delete c->getLocation();
             delete c;
@@ -1711,7 +1711,7 @@ void MainWindow::createConnectionTreeEntryForTables(Connection *c)
     connTablesItem->setIcon(0, IconFactory::getTabinstIcon());
 
     // Now do the browsing
-    QVector<QString> dbTables = c->getEngine()->getAvailableTables(c->getHost(), c->getUser(), c->getPassword(), c->getDb());
+    QStringList dbTables = c->getEngine()->getAvailableTables(c);
     for(int i=0; i<dbTables.size(); i++)
     {
         ContextMenuEnabledTreeWidgetItem* newTblsItem = new ContextMenuEnabledTreeWidgetItem(connTablesItem, QStringList(dbTables.at(i)));
@@ -2061,8 +2061,6 @@ void MainWindow::onReverseEngineerWizardNextPage(int cpage)
 
 void MainWindow::onReverseEngineerWizardAccept()
 {
-    QVector<QString> tabsToReverse = m_revEngWizard->getTablesToReverse();
-    QVector<QString> viewsToReverse = m_revEngWizard->getViewsToReverse();
     QString host = m_revEngWizard->getHost();
     QString user = m_revEngWizard->getUser();
     QString pass = m_revEngWizard->getPasword();
@@ -2074,7 +2072,7 @@ void MainWindow::onReverseEngineerWizardAccept()
     createStatusLabel();
     lblStatus->setText(QApplication::translate("MainWindow", "Reverse engineering started", 0, QApplication::UnicodeUTF8));
 
-    ReverseEngineerer* revEng = new ReverseEngineerer(c, engine, p, host, user, pass, db, tabsToReverse, viewsToReverse, this);
+    ReverseEngineerer* revEng = new ReverseEngineerer(c, engine, p, host, user, pass, db, m_revEngWizard->getTablesToReverse(), m_revEngWizard->getViewsToReverse(), this);
     connect(revEng, SIGNAL(done(ReverseEngineerer*)), this, SLOT(onReverseEngineeringFinished(ReverseEngineerer*)));
     revEng->reverseEngineer();
 }

@@ -52,9 +52,9 @@ void ReverseEngineerWizardTablesForm::checkStateChanged(int state)
     }
 }
 
-QVector<QString> ReverseEngineerWizardTablesForm::getSelectedItems()
+QStringList ReverseEngineerWizardTablesForm::getSelectedItems()
 {
-    QVector<QString> result;
+    QStringList result;
     for(int i=0; i<ui->listWidget->count(); i++)
     {
         if(ui->listWidget->item(i)->checkState() == Qt::Checked)

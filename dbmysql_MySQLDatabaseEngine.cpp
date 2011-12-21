@@ -35,6 +35,8 @@ MySQLDatabaseEngine::MySQLDatabaseEngine() : DatabaseEngine("MySQL"), m_revEngMa
     static QVector<DatabaseBuiltinFunction> v = MySQLDatabaseEngine::buildFunctions();
     s_builtinFunctions = &v;
     m_connectionMutex = new QMutex();
+    m_indexTypes << "BTREE" << "HASH" << "RTREE";
+    m_defaultIndexType = "BTREE";
 }
 
 // this should be thread safe
@@ -45,20 +47,20 @@ QString MySQLDatabaseEngine::provideConnectionName(const QString& prefix)
     return t;
 }
 
-bool MySQLDatabaseEngine::reverseEngineerDatabase(const QString& host, const QString& user, const QString& pass, const QString& dbName, QVector<QString> tables, QVector<QString> views, Project*p, bool relaxed)
+bool MySQLDatabaseEngine::reverseEngineerDatabase(Connection *c, const QStringList& tables, const QStringList& views, Project*p, bool relaxed)
 {
     Version* v = p->getWorkingVersion();
     m_revEngMappings.clear();
     m_oneTimeMappings.clear();
     for(int i=0; i<tables.size(); i++)
     {
-        Table* tab = reverseEngineerTable(host, user, pass, dbName, tables.at(i), p, relaxed);
+        Table* tab = reverseEngineerTable(c, tables.at(i), p, relaxed);
         v->addTable(tab);
     }
 
     for(int i=0; i<views.size(); i++)
     {
-        View* view = reverseEngineerView(host, user, pass, dbName, views.at(i));
+        View* view = reverseEngineerView(c, views.at(i));
         v->addView(view);
         //v->getGui()->createViewTreeEntry(view);
     }
@@ -79,10 +81,10 @@ bool MySQLDatabaseEngine::reverseEngineerDatabase(const QString& host, const QSt
         QString fk = provideConnectionName("fkDbConnection");
         QSqlDatabase dbo = QSqlDatabase::cloneDatabase(*m_defaultMysqlDb, fk);
 
-        dbo.setHostName(host);
-        dbo.setUserName(user);
-        dbo.setPassword(pass);
-        dbo.setDatabaseName(dbName);
+        dbo.setHostName(c->getHost());
+        dbo.setUserName(c->getUser());
+        dbo.setPassword(c->getPassword());
+        dbo.setDatabaseName(c->getDb());
 
         bool ok = dbo.open();
 
@@ -90,7 +92,7 @@ bool MySQLDatabaseEngine::reverseEngineerDatabase(const QString& host, const QSt
         {
             QString s = "SELECT distinct CONCAT( table_name, '.', column_name, ':', referenced_table_name, '.', referenced_column_name ) AS list_of_fks "
                     "FROM information_schema.KEY_COLUMN_USAGE WHERE REFERENCED_TABLE_SCHEMA = '"
-                    + dbName +
+                    + c->getDb() +
                     "' AND REFERENCED_TABLE_NAME is not null ORDER BY TABLE_NAME, COLUMN_NAME";
             QSqlQuery query(dbo);
             query.exec(s);
@@ -152,17 +154,17 @@ QSqlDatabase MySQLDatabaseEngine::getQSqlDatabaseForConnection(Connection *c)
 }
 
 
-QVector<QString> MySQLDatabaseEngine::getAvailableViews(const QString& host, const QString& user, const QString& pass, const QString& db)
+QStringList MySQLDatabaseEngine::getAvailableViews(Connection* c)
 {
     QString viewsConnectionName = provideConnectionName("getViews");
     QSqlDatabase dbo = QSqlDatabase::cloneDatabase(*m_defaultMysqlDb, viewsConnectionName);
 
-    dbo.setHostName(host);
-    dbo.setUserName(user);
-    dbo.setPassword(pass);
-    dbo.setDatabaseName(db);
+    dbo.setHostName(c->getHost());
+    dbo.setUserName(c->getUser());
+    dbo.setPassword(c->getPassword());
+    dbo.setDatabaseName(c->getDb());
 
-    QVector<QString> result;
+    QStringList result;
     bool ok = dbo.open();
 
     if(!ok)
@@ -173,7 +175,7 @@ QVector<QString> MySQLDatabaseEngine::getAvailableViews(const QString& host, con
 
     QSqlQuery query (dbo);
 
-    query.exec("select table_name from information_schema.tables where table_schema='"+db+"' and table_type='VIEW'");
+    query.exec("select table_name from information_schema.tables where table_schema='"+c->getDb()+"' and table_type='VIEW'");
 
     while(query.next())
     {
@@ -184,17 +186,17 @@ QVector<QString> MySQLDatabaseEngine::getAvailableViews(const QString& host, con
     return result;
 }
 
-QVector<QString> MySQLDatabaseEngine::getAvailableTables(const QString& host, const QString& user, const QString& pass, const QString& db)
+QStringList MySQLDatabaseEngine::getAvailableTables(Connection* c)
 {
     QString tabsConnectionName = provideConnectionName("getTables");
     QSqlDatabase dbo = QSqlDatabase::cloneDatabase(*m_defaultMysqlDb, tabsConnectionName);
 
-    dbo.setHostName(host);
-    dbo.setUserName(user);
-    dbo.setPassword(pass);
-    dbo.setDatabaseName(db);
+    dbo.setHostName(c->getHost());
+    dbo.setUserName(c->getUser());
+    dbo.setPassword(c->getPassword());
+    dbo.setDatabaseName(c->getDb());
 
-    QVector<QString> result;
+    QStringList result;
     bool ok = dbo.open();
 
     if(!ok)
@@ -205,7 +207,7 @@ QVector<QString> MySQLDatabaseEngine::getAvailableTables(const QString& host, co
 
     QSqlQuery query(dbo);
 
-    query.exec("select table_name from information_schema.tables where table_schema='"+db+"' and table_type='BASE TABLE'");
+    query.exec("select table_name from information_schema.tables where table_schema='"+c->getDb()+"' and table_type='BASE TABLE'");
 
     while(query.next())
     {
@@ -216,15 +218,15 @@ QVector<QString> MySQLDatabaseEngine::getAvailableTables(const QString& host, co
     return result;
 }
 
-View* MySQLDatabaseEngine::reverseEngineerView(const QString& host, const QString& user, const QString& pass, const QString& dbName, const QString& viewName)
+View* MySQLDatabaseEngine::reverseEngineerView(Connection* c, const QString& viewName)
 {
     QString viewConnectionName = provideConnectionName("getView");
     QSqlDatabase dbo = QSqlDatabase::cloneDatabase(*m_defaultMysqlDb, viewConnectionName);
 
-    dbo.setHostName(host);
-    dbo.setUserName(user);
-    dbo.setPassword(pass);
-    dbo.setDatabaseName(dbName);
+    dbo.setHostName(c->getHost());
+    dbo.setUserName(c->getUser());
+    dbo.setPassword(c->getPassword());
+    dbo.setDatabaseName(c->getDb());
 
     View* view = 0;
     bool ok = dbo.open();
@@ -241,7 +243,7 @@ View* MySQLDatabaseEngine::reverseEngineerView(const QString& host, const QStrin
     }
 
     QSqlQuery query(dbo);
-    QString t = "show create view "+dbName+"."+viewName;
+    QString t = "show create view "+c->getDb()+"."+viewName;
     query.exec(t);
     while(query.next())
     {
@@ -253,16 +255,17 @@ View* MySQLDatabaseEngine::reverseEngineerView(const QString& host, const QStrin
     return view;
 }
 
-QStringList MySQLDatabaseEngine::getColumnsOfTable(const QString &host, const QString &user, const QString &pass, const QString &dbName, const QString &tableName)
+QStringList MySQLDatabaseEngine::getColumnsOfTable(Connection *c, const QString &tableName)
 {
     QString tableConnectionName = provideConnectionName("getTable");
     QSqlDatabase db = QSqlDatabase::cloneDatabase(*m_defaultMysqlDb, tableConnectionName);
     QStringList result;
 
-    db.setHostName(host);
-    db.setUserName(user);
-    db.setPassword(pass);
-    db.setDatabaseName(dbName);
+    db.setHostName(c->getHost());
+    db.setUserName(c->getUser());
+    db.setPassword(c->getPassword());
+    db.setDatabaseName(c->getDb());
+
 
     bool ok = db.open();
 
@@ -286,16 +289,16 @@ QStringList MySQLDatabaseEngine::getColumnsOfTable(const QString &host, const QS
 
 }
 
-Table* MySQLDatabaseEngine::reverseEngineerTable(const QString& host, const QString& user, const QString& pass, const QString& dbName, const QString& tableName, Project* p, bool relaxed)
+Table* MySQLDatabaseEngine::reverseEngineerTable(Connection *c, const QString& tableName, Project* p, bool relaxed)
 {
     Version* v = p->getWorkingVersion();
     QString tableConnectionName = provideConnectionName("getTable");
     QSqlDatabase db = QSqlDatabase::cloneDatabase(*m_defaultMysqlDb, tableConnectionName);
 
-    db.setHostName(host);
-    db.setUserName(user);
-    db.setPassword(pass);
-    db.setDatabaseName(dbName);
+    db.setHostName(c->getHost());
+    db.setUserName(c->getUser());
+    db.setPassword(c->getPassword());
+    db.setDatabaseName(c->getDb());
 
     bool ok = db.open();
 
@@ -477,7 +480,7 @@ Table* MySQLDatabaseEngine::reverseEngineerTable(const QString& host, const QStr
 
     // find the storage engine
     {
-        QString s = "SELECT ENGINE FROM information_schema.TABLES WHERE TABLE_SCHEMA = '"+dbName+"' AND TABLE_NAME = '"+tab->getName()+"'";
+        QString s = "SELECT ENGINE FROM information_schema.TABLES WHERE TABLE_SCHEMA = '"+c->getDb()+"' AND TABLE_NAME = '"+tab->getName()+"'";
         QSqlQuery query (db);
         query.exec(s);
         QString eng = "";
@@ -501,15 +504,15 @@ Table* MySQLDatabaseEngine::reverseEngineerTable(const QString& host, const QStr
     return tab;
 }
 
-bool MySQLDatabaseEngine::injectSql(const QString& host, const QString& user, const QString& pass, const QString& dbName, const QStringList& sqls, QString& lastSql, bool rollbackOnError, bool)
+bool MySQLDatabaseEngine::executeSql(Connection* conn, const QStringList& sqls, QString& lastSql, bool rollbackOnError)
 {
     QString injectConenctionName = provideConnectionName("inject");
     QSqlDatabase db = QSqlDatabase::cloneDatabase(*m_defaultMysqlDb, injectConenctionName);
 
-    db.setHostName(host);
-    db.setUserName(user);
-    db.setPassword(pass);
-    db.setDatabaseName(dbName);
+    db.setHostName(conn->getHost());
+    db.setUserName(conn->getUser());
+    db.setPassword(conn->getPassword());
+    db.setDatabaseName(conn->getDb());
 
     bool ok = db.open();
 
@@ -555,7 +558,7 @@ QString MySQLDatabaseEngine::getDefaultDatatypesLocation()
     return "mysql.defaults";
 }
 
-QVector<QString> MySQLDatabaseEngine::getAvailableDatabases(const QString& host, const QString& user, const QString& pass)
+QStringList MySQLDatabaseEngine::getAvailableDatabases(const QString& host, const QString& user, const QString& pass)
 {
     QString getDatabases = provideConnectionName("getDbs");
     QSqlDatabase db = QSqlDatabase::cloneDatabase(*m_defaultMysqlDb, getDatabases);
@@ -564,7 +567,7 @@ QVector<QString> MySQLDatabaseEngine::getAvailableDatabases(const QString& host,
     db.setPassword(pass);
 
     bool ok = db.open();
-    QVector<QString> result;
+    QStringList result;
 
     if(!ok)
     {
@@ -585,13 +588,15 @@ QVector<QString> MySQLDatabaseEngine::getAvailableDatabases(const QString& host,
     return result;
 }
 
-bool MySQLDatabaseEngine::dropDatabase(const QString& host, const QString& user, const QString& pass, const QString& name)
+bool MySQLDatabaseEngine::dropDatabase(Connection* c)
 {
     QString createDbConnection = provideConnectionName("dropDb");
     QSqlDatabase db = QSqlDatabase::cloneDatabase(*m_defaultMysqlDb, createDbConnection);
-    db.setHostName(host);
-    db.setUserName(user);
-    db.setPassword(pass);
+
+    db.setHostName(c->getHost());
+    db.setUserName(c->getUser());
+    db.setPassword(c->getPassword());
+    db.setDatabaseName(c->getDb());
 
     bool ok = db.open();
     if(!ok)
@@ -601,7 +606,7 @@ bool MySQLDatabaseEngine::dropDatabase(const QString& host, const QString& user,
     }
 
     QSqlQuery query(db);
-    bool t = query.exec("drop database "+ name);
+    bool t = query.exec("drop database "+ c->getDb());
     if(!t)
     {
         lastError = QObject::tr("Cannot drop a database: ") + db.lastError().databaseText() + "/" + db.lastError().driverText();
@@ -611,14 +616,15 @@ bool MySQLDatabaseEngine::dropDatabase(const QString& host, const QString& user,
     return true;
 }
 
-bool MySQLDatabaseEngine::createDatabase(const QString& host, const QString& user, const QString& pass, const QString& name)
+bool MySQLDatabaseEngine::createDatabase(Connection* c)
 {
     QString createDbConnection = provideConnectionName("createDb");
     QSqlDatabase db = QSqlDatabase::cloneDatabase(*m_defaultMysqlDb, createDbConnection);
-    db.setHostName(host);
-    db.setUserName(user);
-    db.setPassword(pass);
 
+    db.setHostName(c->getHost());
+    db.setUserName(c->getUser());
+    db.setPassword(c->getPassword());
+    db.setDatabaseName(c->getDb());
     bool ok = db.open();
     if(!ok)
     {
@@ -627,7 +633,7 @@ bool MySQLDatabaseEngine::createDatabase(const QString& host, const QString& use
     }
 
     QSqlQuery query(db);
-    bool t = query.exec("create database "+ name);
+    bool t = query.exec("create database "+ c->getDb());
     if(!t)
     {
         lastError = QObject::tr("Cannot create a database: ") + db.lastError().databaseText() + "/" + db.lastError().driverText();
@@ -1134,4 +1140,15 @@ QStringList MySQLDatabaseEngine::getKeywords() const
             <<"SQLWARNING"
             <<"UPGRADE";
     return keywordPatterns;
+}
+
+
+QStringList MySQLDatabaseEngine::getIndexTypes()
+{
+    return m_indexTypes;
+}
+
+QString MySQLDatabaseEngine::getDefaultIndextype()
+{
+    return m_defaultIndexType;
 }

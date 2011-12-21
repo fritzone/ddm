@@ -77,7 +77,7 @@ void Project::serialize(QDomDocument& doc, QDomElement& parent) const
 
     projectElement.setAttribute("Name", m_name);
     projectElement.setAttribute("OOP", m_oopIsEnabled);
-    projectElement.setAttribute("DB", m_engine->getDatabase());
+    projectElement.setAttribute("DB", m_engine->getDatabaseEngineName());
 
     {
     QDomElement descElement = doc.createElement("Description");  // description

@@ -5,6 +5,7 @@
 
 #include <QSqlDatabase>
 #include <QMutex>
+#include <QStringList>
 
 class UserDataType;
 class Column;
@@ -19,22 +20,24 @@ public:
         return true;
     }
 
-    virtual bool injectSql(const QString& host, const QString& user, const QString& pass, const QString& dbName, const QStringList& sqls, QString& lastSql, bool rollbackOnError, bool createTablesOnlyIfNotExist);
+    virtual bool executeSql(Connection* conn, const QStringList& sqls, QString& lastSql, bool rollbackOnError);
     virtual QString getDefaultDatatypesLocation();
-    virtual bool reverseEngineerDatabase(const QString& host, const QString& user, const QString& pass, const QString& dbName, QVector<QString> tables, QVector<QString> views, Project* p, bool relaxed);
-    virtual Table* reverseEngineerTable(const QString& host, const QString& user, const QString& pass, const QString& dbName, const QString& tableName, Project* p, bool relaxed);
-    virtual View* reverseEngineerView(const QString& host, const QString& user, const QString& pass, const QString& dbName, const QString& viewName);
-    virtual QVector<QString> getAvailableDatabases(const QString& host, const QString& user, const QString& pass);
-    virtual QVector<QString> getAvailableTables(const QString& host, const QString& user, const QString& pass, const QString& db);
-    virtual QVector<QString> getAvailableViews(const QString& host, const QString& user, const QString& pass, const QString& db);
-    virtual bool createDatabase(const QString& host, const QString& user, const QString& pass, const QString&);
+    virtual bool reverseEngineerDatabase(Connection *c, const QStringList& tables, const QStringList& views, Project* p, bool relaxed);
+    virtual Table* reverseEngineerTable(Connection *c, const QString& tableName, Project* p, bool relaxed);
+    virtual View* reverseEngineerView(Connection *c, const QString& viewName);
+    virtual QStringList getAvailableDatabases(const QString& host, const QString& user, const QString& pass);
+    virtual QStringList getAvailableTables(Connection* c);
+    virtual QStringList getAvailableViews(Connection* c);
+    virtual bool createDatabase(Connection* c);
     virtual QVector<DatabaseBuiltinFunction> getBuiltinFunctions();
     const DatabaseBuiltinFunction& getBuiltinFunction(const QString& name);
     virtual bool tryConnect(const QString& host, const QString& user, const QString& pass, const QString& dbName);
     virtual QStringList getKeywords() const;
     virtual QSqlDatabase getQSqlDatabaseForConnection(Connection *c);
-    virtual QStringList getColumnsOfTable(const QString& host, const QString& user, const QString& pass, const QString& dbName, const QString& tableName);
-    virtual bool dropDatabase(const QString& host, const QString& user, const QString& pass, const QString&db);
+    virtual QStringList getColumnsOfTable(Connection* c, const QString& tableName);
+    virtual bool dropDatabase(Connection* c);
+    virtual QStringList getIndexTypes();
+    virtual QString getDefaultIndextype();
 
 private:
 
@@ -50,6 +53,8 @@ private:
     static QSqlDatabase* m_defaultMysqlDb;
     static int m_connectionCounter;
     static QMutex* m_connectionMutex;
+    QStringList m_indexTypes;
+    QString m_defaultIndexType;
 
 };
 
