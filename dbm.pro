@@ -6,7 +6,7 @@ QT += network \
     xml \
     webkit \
     svg
-TARGET = dbm
+TARGET = ddm
 TEMPLATE = app
 SOURCES += main.cpp \
     MainWindowButtonDialog.cpp \
@@ -302,3 +302,12 @@ FORMS += MainWindow.ui \
     BrowseTableForm.ui
 RESOURCES += dbm.qrc
 RC_FILE = dbm.rc
+installfiles_base.files += ddm codepages.mysql.dat
+installfiles_base.path = /usr/local/ddm
+INSTALLS += installfiles_base
+installfiles_doc.files += doc/*
+installfiles_doc.path = /usr/local/ddm/doc
+INSTALLS += installfiles_doc
+installfiles_rs.files += rsrc/mysql.defaults
+installfiles_rs.path = /usr/local/ddm/rsrc
+INSTALLS += installfiles_rs
