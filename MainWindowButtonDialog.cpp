@@ -26,6 +26,7 @@ MainWindowButtonDialog::MainWindowButtonDialog(QWidget *parent) :
     m_ui->btnQuick4->hide();
     m_ui->btnQuick5->hide();
     m_ui->grpRecent->hide();
+    m_ui->lblRecent->hide();
 
     QVector<QString> mru = MostRecentlyUsedFiles::instance().getFiles();
     if(mru.size()>1 && mru[0].length() > 0) {fixButton(m_ui->btnQuick1, mru[0]);}
@@ -43,6 +44,7 @@ void MainWindowButtonDialog::fixButton(QCommandLinkButton *b, const QString &s)
     b->show();
     b->setToolTip(s);
     m_ui->grpRecent->show();
+    m_ui->lblRecent->show();
 }
 
 MainWindowButtonDialog::~MainWindowButtonDialog()
