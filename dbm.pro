@@ -302,7 +302,7 @@ FORMS += MainWindow.ui \
     BrowseTableForm.ui
 RESOURCES += dbm.qrc
 RC_FILE = dbm.rc
-installfiles_base.files += ddm codepages.mysql.dat
+installfiles_base.files += ddm codepages/codepages.mysql.dat
 installfiles_base.path = /usr/local/ddm
 INSTALLS += installfiles_base
 installfiles_doc.files += doc/*
