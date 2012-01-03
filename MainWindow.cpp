@@ -50,13 +50,16 @@
 #include "helper_MostRecentlyUsedFiles.h"
 #include "BrowseTableForm.h"
 #include "NameGenerator.h"
+#include "DiagramsListForm.h"
+#include "ViewsListForm.h"
 
 #include <QtGui>
 
 MainWindow* MainWindow::m_instance = 0;
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), m_ui(new Ui::MainWindow), m_projectTreeDock(0), m_datatypesTreeDock(0), m_issuesTreeDock(0), m_connectionsTreeDock(0),
-        m_projectTree(0), m_datatypesTree(0), m_issuesTree(0), m_connectionsTree(0), m_btndlg(0), m_workspace(0), m_revEngWizard(0), m_nvf(0), m_contextMenuHandler(0), lblStatus(0)
+        m_projectTree(0), m_datatypesTree(0), m_issuesTree(0), m_connectionsTree(0), m_btndlg(0), m_workspace(0), m_revEngWizard(0), m_nvf(0), m_contextMenuHandler(0), lblStatus(0),
+        m_splashWasVisible(false)
 {
     m_ui->setupUi(this);
 
@@ -495,6 +498,51 @@ void MainWindow::showDataType(const QString &name, bool focus)
     hw->showHelp(QString("/doc/dtyp.html"));
 }
 
+void MainWindow::showDiagram(const QString &name)
+{
+    Diagram* dgram = m_workspace->workingVersion()->getDiagram(name);
+    if(dgram == 0)
+    {
+        return;
+    }
+    DiagramForm* df = new DiagramForm(m_workspace->workingVersion(), dgram, this);
+    dgram->setForm(df);
+    setCentralWidget(dgram->getDiagramForm());
+    df->paintDiagram();
+
+    HelpWindow* hw = HelpWindow::instance();
+    hw->showHelp(QString("/doc/dgram.html"));
+}
+
+void MainWindow::showView(const QString& viewName)
+{
+    View* v = m_workspace->workingVersion()->getView(viewName);
+    if(v)
+    {
+        if(v->getManual())
+        {
+            m_nvf = new NewViewForm(false, 0, this);
+
+            m_nvf->setSqlSource(v);
+            m_nvf->setView(v);
+            m_nvf->presentSql(Workspace::getInstance()->currentProject(), QString("latin1"));
+
+            setCentralWidget(m_nvf);
+        }
+        else
+        {
+            m_nvf = 0;
+            v->getHelper()->resetContent();
+            v->getHelper()->setForm(this);
+            rerenderQuery(v->getQuery());
+        }
+
+        HelpWindow* hw = HelpWindow::instance();
+        hw->showHelp(QString("/doc/view.html"));
+    }
+
+}
+
 void MainWindow::currentProjectTreeItemChanged(QTreeWidgetItem * current, QTreeWidgetItem*)
 {
     if(current)
@@ -520,11 +568,25 @@ void MainWindow::currentProjectTreeItemChanged(QTreeWidgetItem * current, QTreeW
         }
         else
         if(current == m_workspace->workingVersion()->getGui()->getFinalSqlItem())
-        {
+        {// user clicked on the final SQL item
             SqlForm* frm = m_workspace->workingVersion()->getGui()->getSqlForm();
             frm->setSqlSource(0);
             frm->presentSql(m_workspace->currentProject(), m_workspace->currentProject()->getCodepage());
             setCentralWidget(frm);
+        }
+        else
+        if(current == m_workspace->workingVersion()->getGui()->getDiagramsItem())
+        {// we have clicked on the Diagrams item (i.e. the list of diagrams)
+            DiagramsListForm* dgrLst = m_workspace->workingVersion()->getGui()->getDiagramsListForm();
+            dgrLst->populateDiagrams(m_workspace->workingVersion()->getDiagrams());
+            setCentralWidget(dgrLst);
+        }
+        else
+        if(current == m_workspace->workingVersion()->getGui()->getViewsItem())
+        {// we have clicked on the Views item (i.e. the list of views)
+            ViewsListForm* viewLst = m_workspace->workingVersion()->getGui()->getViewsListForm();
+            viewLst->populateViews(m_workspace->workingVersion()->getViews());
+            setCentralWidget(viewLst);
         }
         else
         {
@@ -541,18 +603,7 @@ void MainWindow::currentProjectTreeItemChanged(QTreeWidgetItem * current, QTreeW
                 // the user clicked on a diagram
                 QVariant qv = current->data(0, Qt::UserRole);
                 QString diagramName = qv.toString();
-                Diagram* dgram = m_workspace->workingVersion()->getDiagram(diagramName);
-                if(dgram == 0)
-                {
-                    return;
-                }
-                DiagramForm* df = new DiagramForm(m_workspace->workingVersion(), dgram, this);
-                dgram->setForm(df);
-                setCentralWidget(dgram->getDiagramForm());
-                df->paintDiagram();
-
-                HelpWindow* hw = HelpWindow::instance();
-                hw->showHelp(QString("/doc/dgram.html"));
+                showDiagram(diagramName);
             }
             else
             if(current->parent() && current->parent() == m_workspace->workingVersion()->getGui()->getTableInstancesItem())
@@ -576,31 +627,7 @@ void MainWindow::currentProjectTreeItemChanged(QTreeWidgetItem * current, QTreeW
                 // user clicked on a view
                 QVariant qv = current->data(0, Qt::UserRole);
                 QString viewName = qv.toString();
-                View* v = m_workspace->workingVersion()->getView(viewName);
-                if(v)
-                {
-                    if(v->getManual())
-                    {
-                        m_nvf = new NewViewForm(false, 0, this);
-
-                        m_nvf->setSqlSource(v);
-                        m_nvf->setView(v);
-                        m_nvf->presentSql(Workspace::getInstance()->currentProject(), QString("latin1"));
-
-                        setCentralWidget(m_nvf);
-                    }
-                    else
-                    {
-                        m_nvf = 0;
-                        v->getHelper()->resetContent();
-                        v->getHelper()->setForm(this);
-                        rerenderQuery(v->getQuery());
-                    }
-
-                    HelpWindow* hw = HelpWindow::instance();
-                    hw->showHelp(QString("/doc/view.html"));
-                }
-
+                showView(viewName);
             }
             else
             if(current->parent() && current->parent() == m_workspace->workingVersion()->getGui()->getFinalSqlItem())
@@ -1150,9 +1177,14 @@ void MainWindow::onDeleteTableFromPopup()
             }
             if(NewTableForm* ntf = dynamic_cast<NewTableForm*>(w))
             {
-                if(ntf->getTableName() == tabName)
+                if(ntf->getTableName() == tabName)  // show the list of tables if we deleted the current table
                 {
-                    setCentralWidget(new ProjectDetailsForm());
+                    TablesListForm* tblLst = m_workspace->workingVersion()->getGui()->getTablesListForm();
+                    tblLst->populateTables(m_workspace->workingVersion()->getTables());
+                    tblLst->setOop(m_workspace->currentProjectIsOop());
+                    setCentralWidget(tblLst);
+                    m_workspace->workingVersion()->getGui()->getTablesItem()->treeWidget()->clearSelection();
+                    m_workspace->workingVersion()->getGui()->getTablesItem()->setSelected(true);
                 }
             }
         }
@@ -1467,8 +1499,13 @@ void MainWindow::onDeleteInstanceFromPopup()
 
         // and show a table instances list form
         TableInstancesListForm* tblLst = m_workspace->workingVersion()->getGui()->getTableInstancesListForm();
+        tblLst->populateTableInstances(m_workspace->workingVersion()->getTableInstances());
         m_workspace->workingVersion()->getGui()->updateForms();
         setCentralWidget(tblLst);
+
+        m_workspace->workingVersion()->getGui()->getDiagramsItem()->treeWidget()->clearSelection();
+        m_workspace->workingVersion()->getGui()->getTableInstancesItem()->setSelected(true);
+
     }
 }
 
@@ -1565,8 +1602,6 @@ void MainWindow::onInjectBrowsedTable()
             }
         }
     }
-
-
 }
 
 void MainWindow::onBrowseBrowsedTable()
@@ -1774,6 +1809,14 @@ void MainWindow::onDeleteDiagramFromPopup()
         }
         m_workspace->workingVersion()->deleteDiagram(dgr->getName());
         m_workspace->workingVersion()->getGui()->updateForms();
+
+        DiagramsListForm* dgrLst = m_workspace->workingVersion()->getGui()->getDiagramsListForm();
+        dgrLst->populateDiagrams(m_workspace->workingVersion()->getDiagrams());
+        setCentralWidget(dgrLst);
+
+        m_workspace->workingVersion()->getGui()->getDiagramsItem()->treeWidget()->clearSelection();
+        m_workspace->workingVersion()->getGui()->getDiagramsItem()->setSelected(true);
+
     }
 }
 
@@ -2197,4 +2240,27 @@ void MainWindow::rerenderQuery(Query* q)
     m_nvf->presentSql(Workspace::getInstance()->currentProject(), QString("latin1"));
     setCentralWidget(m_nvf);
     m_nvf->scrollTo(cx, cy);
+}
+
+void MainWindow::changeEvent(QEvent *e)
+{
+    if( e->type() == QEvent::WindowStateChange )
+    {
+        if( isMinimized() )
+        {
+            if(m_btndlg && m_btndlg->isVisible())
+            {
+                m_btndlg->hide();
+                m_splashWasVisible = true;
+            }
+        }
+        else
+        {
+            if(m_splashWasVisible)
+            {
+                m_btndlg->show();
+                m_splashWasVisible = false;
+            }
+        }
+    }
 }

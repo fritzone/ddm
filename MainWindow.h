@@ -65,6 +65,8 @@ public:
     void showTable(const QString& tabName, bool focus = true);
     void showTableInstance(const QString& tabName, bool focus = true);
     void showDataType(const QString &name, bool focus = true);
+    void showDiagram(const QString& name);
+    void showView(const QString& viewName);
 
     void rerenderQuery(Query*);
     void showConnections();
@@ -73,6 +75,9 @@ public:
         return m_instance;
     }
     void doLoadSolution(const QString& fileName, bool splashVisible);
+protected:
+
+    void changeEvent(QEvent *e);
 
 public slots:
 
@@ -164,6 +169,7 @@ private:
     void showProjectDetails();
     void showNewDataTypeWindow(int);
     NewTableForm* showExistingTable(Table*);
+
     void doDeployment(const QString& codePage, QStringList connectionNames);
     void createConnectionTreeEntryForTables(Connection *c);
 
@@ -195,6 +201,7 @@ private:
     QVector<Deployer*> m_deployers;
     QLabel* lblStatus;
     static MainWindow* m_instance;
+    bool m_splashWasVisible;
 };
 
 #endif // MAINWINDOW_H

@@ -159,7 +159,36 @@ static const QString strCloseParantheses = ")";
 static const QString strActionIndexSeparator = "^";
 
 static const QString strYes = "Yes";
+static const QString strNo = "No";
 
 static const QString strNewLineBetweenSelectExpressionsInSqlGeneration = "NewLineBetweenSelectExpressionsInSqlGeneration";
+static const QString strUnauthorizedFrog = "The Unauthorized Frog";
+static const QString strDDM = "Database Deployment Manager";
+static const QString strDrawTableTypes = "DrawTableTypes";
+static const QString strAllowFkPropagation = "AllowFkPropagation";
+static const QString strUseDefaultLengths = "UseDefaultLengths";
+static const QString strContinuousValidation = "ContinuousValidation";
+static const QString strCase = "Case";
+static const QString strBackticks = "Backticks";
+static const QString strGenerateComments = "GenerateComments";
+static const QString strPKSposition = "PKSposition";
+static const QString strFKSposition = "FKSposition";
+static const QString strLower = "Lower";
+static const QString strColumnDeclaration = "ColumnDeclaration";
+static const QString strInTable = "InTable";
+static const QString strConnectionsCount = "ConnectionsCount";
+static const QString strName = "Name";
+static const QString strHost = "Host";
+static const QString strPass = "Pass";
+static const QString strUser = "User";
+static const QString strDB = "DB";
+static const QString strAutoConnect = "AutoConnect";
+static const QString strDbType = "DbType";
+
+static const QString strMru1 = "mru1";
+static const QString strMru2 = "mru2";
+static const QString strMru3 = "mru3";
+static const QString strMru4 = "mru4";
+static const QString strMru5 = "mru5";
 
 #endif // STRINGS_H

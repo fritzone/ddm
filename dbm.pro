@@ -125,7 +125,9 @@ SOURCES += main.cpp \
     QTextEditWithCodeCompletion.cpp \
     QListWidgetForCodeCompletion.cpp \
     helper_MostRecentlyUsedFiles.cpp \
-    BrowseTableForm.cpp
+    BrowseTableForm.cpp \
+    DiagramsListForm.cpp \
+    ViewsListForm.cpp
 HEADERS += MainWindow.h \
     MainWindowButtonDialog.h \
     NewProjectDialog.h \
@@ -273,7 +275,9 @@ HEADERS += MainWindow.h \
     gui_colors.h \
     QListWidgetForCodeCompletion.h \
     helper_MostRecentlyUsedFiles.h \
-    BrowseTableForm.h
+    BrowseTableForm.h \
+    DiagramsListForm.h \
+    ViewsListForm.h
 FORMS += MainWindow.ui \
     MainWindowButtonDialog.ui \
     NewProjectDialog.ui \
@@ -299,7 +303,9 @@ FORMS += MainWindow.ui \
     NewViewForm.ui \
     QueryItemListDialog.ui \
     HelpWindow.ui \
-    BrowseTableForm.ui
+    BrowseTableForm.ui \
+    DiagramsListForm.ui \
+    ViewsListForm.ui
 RESOURCES += dbm.qrc
 RC_FILE = dbm.rc
 installfiles_base.files += ddm codepages/codepages.mysql.dat

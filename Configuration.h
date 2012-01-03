@@ -28,7 +28,7 @@ public:
 
     bool defaultLengths() const
     {
-        return useDefaultLengths;
+        return m_useDefaultLengths;
     }
 
     bool allowForeignKeyPropagation() const
@@ -61,8 +61,6 @@ public:
         return m_sqlOpts;
     }
 
-    bool operator[] (const QString&);
-
     bool continuousValidation() const
     {
         return m_continuousValidation;
@@ -76,7 +74,7 @@ public:
 private:
 
     // whether the "New Data Type" window should populate the default lengths
-    bool useDefaultLengths;
+    bool m_useDefaultLengths;
 
     // if the application allows that the foreign keys are being propagated to the "child" tables
     bool m_allowForeignKeyPropagation;
