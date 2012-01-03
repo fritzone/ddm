@@ -73,6 +73,15 @@ public:
         m_tables.append(tabName);
     }
 
+    QString getDbType() const
+    {
+        return m_dbType;
+    }
+
+    bool getAC() const
+    {
+        return m_autoConnect;
+    }
 
 private:
 

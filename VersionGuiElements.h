@@ -18,6 +18,8 @@ class TablesListForm;
 class SqlForm;
 class NewTableForm;
 class View;
+class DiagramsListForm;
+class ViewsListForm;
 
 /**
  * The scope of this class is to have a common collection point for the tree widget items of a version (DT, Sql, Table, etc...)
@@ -173,6 +175,8 @@ public:
 
     TableInstancesListForm* getTableInstancesListForm();
     TablesListForm* getTablesListForm();
+    DiagramsListForm* getDiagramsListForm();
+    ViewsListForm* getViewsListForm();
     SqlForm* getSqlForm();
     NewTableForm* getTableFormForNewTable();
     NewTableForm* getTableFormForExistingTable();
@@ -220,6 +224,8 @@ private:
     Version* m_version;
     MainWindow* m_mw;
     TablesListForm* m_tblsListForm;
+    DiagramsListForm* m_diagramsListForm;
+    ViewsListForm* m_viewsListForm;
     SqlForm* m_sqlForm;
     NewTableForm* m_newTableForm;
     NewTableForm* m_existingTableForm;

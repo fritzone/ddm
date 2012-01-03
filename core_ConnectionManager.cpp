@@ -1,6 +1,7 @@
 #include "core_ConnectionManager.h"
-#include <QDomDocument>
-#include <QFile>
+#include "strings.h"
+
+#include <QSettings>
 
 ConnectionManager* ConnectionManager::m_instance = 0;
 
@@ -26,60 +27,55 @@ ConnectionManager::ConnectionManager()
 
 void ConnectionManager::loadConnections()
 {
-    m_connections.clear();
-    QDomDocument doc ("DDM-CONNECTIONS");
-    QFile file ("ddm_connections.cfx");
-    if (!file.open(QIODevice::ReadOnly)) return;
-    if (!doc.setContent(&file))
+    QSettings s(strUnauthorizedFrog, strDDM);
+    int l = s.value(strConnectionsCount, QVariant(-1)).toInt();
+    if(l == -1) return;
+
+    for(int i=0; i<l; i++)
     {
-        file.close();
-        return;
-    }
-    file.close();
-    QDomElement docElem = doc.documentElement();
-    for(int i=0; i<docElem.childNodes().size(); i++)
-    {
-        if(docElem.childNodes().at(i).nodeName() == "Connection")
+        QString connI = QString("Connection");
+        connI.append(QString::number(i));
+        s.beginGroup(connI);
+        QString name = s.value(strName).toString();
+        QString host = s.value(strHost).toString();
+        QString pass = s.value(strPass).toString();
+        QString user = s.value(strUser).toString();
+        QString db = s.value(strDB).toString();
+        bool ac = s.value(strAutoConnect).toBool();
+        QString dbt = s.value(strDbType).toString();
+        s.endGroup();
+
+        Connection* c = new Connection(name, host, user, pass, db, true, ac);
+        m_connections.append(c);
+
+        if(ac)
         {
-            QString name = docElem.childNodes().at(i).toElement().attribute("Name");
-            QString host = docElem.childNodes().at(i).toElement().attribute("Host");
-            QString pass = docElem.childNodes().at(i).toElement().attribute("Pass");
-            QString user = docElem.childNodes().at(i).toElement().attribute("User");
-            QString db = docElem.childNodes().at(i).toElement().attribute("DB");
-            QString dbType = docElem.childNodes().at(i).toElement().attribute("DbType");
-            QString ac = docElem.childNodes().at(i).toElement().attribute("AutoConnect");
-
-            Connection* c = new Connection(name, host, user, pass, db, true, ac=="1");
-            m_connections.append(c);
-
-            if(ac=="1")
-            {
-                c->tryConnect();
-            }
+            c->tryConnect();
         }
     }
 }
 
 void ConnectionManager::saveConnections()
 {
-    QDomDocument doc("DDM-CONNECTIONS");
-    QDomElement root = doc.createElement("Connections");
+    QSettings s(strUnauthorizedFrog, strDDM);
+    s.setValue(strConnectionsCount, m_connections.size());
 
     for(int i=0; i<m_connections.size(); i++)
     {
-        m_connections.at(i)->serialize(doc, root);
+        QString connI = QString("Connection");
+        connI.append(QString::number(i));
+        s.beginGroup(connI);
+        s.setValue(strName, m_connections.at(i)->getName());
+        s.setValue(strHost, m_connections.at(i)->getHost());
+        s.setValue(strPass, m_connections.at(i)->getPassword());
+        s.setValue(strUser, m_connections.at(i)->getUser());
+        s.setValue(strDB, m_connections.at(i)->getDb());
+        s.setValue(strAutoConnect, m_connections.at(i)->getAC());
+        s.setValue(strDbType, m_connections.at(i)->getDbType());
+        s.endGroup();
     }
 
-    doc.appendChild(root);
-
-    QString xml = doc.toString();
-    QFile f1("ddm_connections.cfx");
-    if (!f1.open(QIODevice::WriteOnly | QIODevice::Text))
-    {
-        return;
-    }
-    f1.write(xml.toAscii());
-    f1.close();
+    s.sync();
 }
 
 Connection* ConnectionManager::getConnection(const QString& name) const

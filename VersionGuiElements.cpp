@@ -12,6 +12,7 @@
 #include "Issue.h"
 #include "IssueOriginator.h"
 #include "TablesListForm.h"
+#include "DiagramsListForm.h"
 #include "MainWindow.h"
 #include "TableInstancesListForm.h"
 #include "TablesListForm.h"
@@ -19,6 +20,7 @@
 #include "Project.h"
 #include "NewTableForm.h"
 #include "core_View.h"
+#include "ViewsListForm.h"
 
 #include <QVector>
 #include <QtGui>
@@ -449,6 +451,16 @@ void VersionGuiElements::updateForms()
 TableInstancesListForm* VersionGuiElements::getTableInstancesListForm()
 {
     return m_tblInstancesListForm = new TableInstancesListForm(m_mw);
+}
+
+DiagramsListForm* VersionGuiElements::getDiagramsListForm()
+{
+    return m_diagramsListForm = new DiagramsListForm(m_mw);
+}
+
+ViewsListForm* VersionGuiElements::getViewsListForm()
+{
+    return m_viewsListForm = new ViewsListForm(m_mw);
 }
 
 TablesListForm* VersionGuiElements::getTablesListForm()
