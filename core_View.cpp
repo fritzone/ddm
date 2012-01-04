@@ -25,7 +25,7 @@ void View::finalizeViewDeserialization()
     QueryAsGenerator::instance().initNewQuery(m_selectQuery);
 }
 
-QStringList View::generateSqlSource(AbstractSqlGenerator *, QHash<QString, QString>, const QString &codepage)
+QStringList View::generateSqlSource(AbstractSqlGenerator *, QHash<QString, QString>, const QString &/*codepage*/)
 {
     if(m_manual)
     {

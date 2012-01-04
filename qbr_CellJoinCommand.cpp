@@ -24,11 +24,6 @@ QBrush CellJoinCommand::getCellBrush()
     return selectBrush;
 }
 
-CellQuerySmallOptionsBox* CellJoinCommand::provideOptionsBox(QueryGraphicsHelper* c, int level, QueryGraphicsItem* parent, QueryComponent* owner)
-{
-    return 0;
-}
-
 void CellJoinCommand::onClose()
 {
     m_owner->onClose();
@@ -36,9 +31,6 @@ void CellJoinCommand::onClose()
 
 QGraphicsItemGroup* CellJoinCommand::render(int& x, int& y, int& w, int &h)
 {
-    int lx = x + 2;
-    int ly = y + 2;
-
     QGraphicsItemGroup* grp = new QGraphicsItemGroup();
     grp->addToGroup(CellCommand::render(x,y,w,h));
     m_txt->setX(m_txt->x() + CELL_SIZE);
@@ -56,15 +48,15 @@ void CellJoinCommand::updateWidth(int newWidth)
     m_level --;
 }
 
-void CellJoinCommand::mouseMove(int x, int y)
+void CellJoinCommand::mouseMove(int /*x*/, int /*y*/)
 {
 }
 
-void CellJoinCommand::mouseLeft(int x, int y)
+void CellJoinCommand::mouseLeft(int /*x*/, int /*y*/)
 {
 }
 
-void CellJoinCommand::mousePress(int x, int y)
+void CellJoinCommand::mousePress(int /*x*/, int /*y*/)
 {
 }
 

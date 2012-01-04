@@ -13,7 +13,7 @@ QBrush CellOrderByCommand::getCellBrush()
     return fromBrush;
 }
 
-CellQuerySmallOptionsBox* CellOrderByCommand::provideOptionsBox(QueryGraphicsHelper* c, int level, QueryGraphicsItem* parent, QueryComponent* owner)
+CellQuerySmallOptionsBox* CellOrderByCommand::provideOptionsBox(QueryGraphicsHelper* /*c*/, int /*level*/, QueryGraphicsItem* /*parent*/, QueryComponent* /*owner*/)
 {
     CellQuerySmallOptionsBox* smb = new CellQuerySmallOptionsBox(m_owner->provideOptions(), m_helper, m_level, m_parent, m_owner, CellQuerySmallOptionsBox::SHAPE_RECT);
     return smb;

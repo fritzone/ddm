@@ -9,7 +9,7 @@ SelectQueryAsComponent::SelectQueryAsComponent(QueryComponent* p, int l):QueryCo
 }
 
 
-void SelectQueryAsComponent::handleAction(const QString &action, QueryComponent* referringObject)
+void SelectQueryAsComponent::handleAction(const QString &/*action*/, QueryComponent* /*referringObject*/)
 {
 }
 
@@ -54,7 +54,7 @@ void SelectQueryAsComponent::onClose()
 
 }
 
-void SelectQueryAsComponent::serialize(QDomDocument& doc, QDomElement& parent) const
+void SelectQueryAsComponent::serialize(QDomDocument& /*doc*/, QDomElement& /*parent*/) const
 {
 //    QDomElement asElement = doc.createElement("As");
 //    QueryComponent::serialize(doc, asElement);

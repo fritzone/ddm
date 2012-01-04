@@ -8,7 +8,7 @@ SelectQueryJoinComponent::SelectQueryJoinComponent(QueryComponent* p, int l):Que
 {
 }
 
-void SelectQueryJoinComponent::handleAction(const QString& action, QueryComponent* referringObject)
+void SelectQueryJoinComponent::handleAction(const QString& action, QueryComponent* /*referringObject*/)
 {
     if(action == NEW_TABLE)
     {

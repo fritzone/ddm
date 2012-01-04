@@ -54,8 +54,6 @@ void SelectQueryGraphicsItem::createOrderByCell(QueryComponent* owner)
 
 QGraphicsItemGroup* SelectQueryGraphicsItem::render(int& x, int& y, int& w, int &h)
 {
-    int lx = x;
-    int ly = y;
     addToGroup(m_select->render(x, y, w, h));
     if(m_from) addToGroup(m_from->render(x, y, w, h));
     if(m_where) addToGroup(m_where->render(x, y, w, h));

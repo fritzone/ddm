@@ -293,7 +293,6 @@ void QTextEditWithCodeCompletion::populateCodeCompletionListbox()
     m_lst->clear();
 
     int cp = textCursor().position() - 1;
-    int saveCp = cp;
 
     // 1. find the word which was before the cursor
     QString g = toPlainText();
@@ -474,14 +473,13 @@ void QTextEditWithCodeCompletion::populateCodeCompletionListbox()
             return;
         }
 
-        if(keywordBeforeCursor.toUpper() == "BY"); // anything before a by will be ignored. It'd too complicated for the user
+        if(keywordBeforeCursor.toUpper() == "BY") {} // anything before a by will be ignored. It'd too complicated for the user
     }
 }
 
 QStringList QTextEditWithCodeCompletion::getTablesFromQuery()
 {
     QString g = toPlainText();
-    int l = g.length();
     int i = g.toUpper().indexOf("FROM");
     QStringList tables;
     m_lastTablePositions.clear();

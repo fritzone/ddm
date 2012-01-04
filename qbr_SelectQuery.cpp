@@ -218,7 +218,7 @@ void SelectQuery::newFromSelectQueryComponent()
 }
 
 
-void SelectQuery::handleAction(const QString &action, QueryComponent* referringObject)
+void SelectQuery::handleAction(const QString &action, QueryComponent* /*referringObject*/)
 {
     if(action == ADD_FROM)
     {

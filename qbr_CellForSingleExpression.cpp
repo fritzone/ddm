@@ -93,7 +93,6 @@ QGraphicsItemGroup* CellForSingleExpression::render(int &x, int &y, int &w, int 
         if(elements.size() == 0 || (elements.at(i-1) != CELLTYPE_QUERY_OR && elements.at(i-1) != CELLTYPE_QUERY_AND))
         {
             CellTypeChooser* cursor = new CellTypeChooser(m_level, CellTypeChooser::CELLTYPECHOOSER_BIG, CELLTYPE_CURSOR, QSet<CellTypeChooserType>(), m_helper, this, m_owner, elements.size());
-            int oldTx = tx;
             {
             int localW = 0;
             grp->addToGroup(cursor->render(tx, cy, localW, h));

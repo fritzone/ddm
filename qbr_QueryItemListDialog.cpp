@@ -57,6 +57,8 @@ QueryItemListDialog::QueryItemListDialog(QueryGraphicsHelper* helper, QueryGraph
         ui->txtInput->show();
         resize(ui->txtInput->width(), ui->txtInput->height());
         break;
+    default:
+        void(0);
     }
 }
 

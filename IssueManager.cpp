@@ -12,7 +12,7 @@
 
 #include <QApplication>
 
-Issue* IssueManager::insertIssue(Issue* issue, IssueOriginator *originator, const QString &description, Issue::IssueSeverity type)
+Issue* IssueManager::insertIssue(Issue* issue, IssueOriginator *originator, const QString &, Issue::IssueSeverity)
 {
     if(dw)
     {
