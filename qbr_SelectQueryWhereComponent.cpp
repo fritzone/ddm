@@ -9,7 +9,7 @@ SelectQueryWhereComponent::SelectQueryWhereComponent(QueryComponent* p, int l, W
 {
 }
 
-void SelectQueryWhereComponent::handleAction(const QString &action, QueryComponent* referringObject)
+void SelectQueryWhereComponent::handleAction(const QString &action, QueryComponent* /*referringObject*/)
 {
     if(action == ADD_WHERE_EXPRESSION)
     {
@@ -101,7 +101,7 @@ QString SelectQueryWhereComponent::get() const
         {
             if((i == 0 || i == m_children.size()-1) && cI->hasForcedType())
             {
-                result += " (??)"; // first/last should not be AND or OR
+                result += QString(" (") + QString("?") + QString("?") + QString(")"); // first/last should not be AND or OR
             }
             if(i>0)
             {
@@ -110,7 +110,7 @@ QString SelectQueryWhereComponent::get() const
                 {
                     if(! (dynamic_cast<SingleExpressionQueryComponent*>(m_children.at(i-1))->hasForcedType()))
                     {
-                        result += " (??)";
+                        result += QString(" (") + QString("?") + QString("?") + QString(")");
                     }
                 }
             }

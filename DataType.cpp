@@ -37,7 +37,6 @@ const QIcon& DataType::getIcon(DT_TYPE dt)
     static QIcon datetimeIcon(DataType::getIconString(DT_DATETIME));
     static QIcon miscIcon(DataType::getIconString(DT_MISC));
     static QIcon spatialIcon(DataType::getIconString(DT_SPATIAL));
-    static QIcon emptyIcon ("");
 
     switch(dt)
     {
@@ -49,10 +48,12 @@ const QIcon& DataType::getIcon(DT_TYPE dt)
     case DT_MISC: return miscIcon;
     case DT_SPATIAL: return spatialIcon;
     case DT_INVALID:
-    case DT_GENERIC: return IconFactory::getEmptyIcon();
+    case DT_GENERIC:
+    default:
+        return IconFactory::getEmptyIcon();
     }
 
-    return emptyIcon;
+    return IconFactory::getEmptyIcon();
 }
 
 QString DataType::typeAsString() const
@@ -67,7 +68,9 @@ QString DataType::typeAsString() const
     case DT_MISC: return strMisc;
     case DT_SPATIAL: return strSpatial;
     case DT_GENERIC:
-    case DT_INVALID: return strNA;
+    case DT_INVALID:
+    default:
+        return strNA;
     }
     return QString("");
 }

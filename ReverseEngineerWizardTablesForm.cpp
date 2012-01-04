@@ -3,8 +3,8 @@
 #include "IconFactory.h"
 
 ReverseEngineerWizardTablesForm::ReverseEngineerWizardTablesForm(QWidget *parent, Mode t) :
-    QWizardPage(parent), m_mode(t),
-    ui(new Ui::ReverseEngineerWizardTablesForm)
+    QWizardPage(parent),
+    ui(new Ui::ReverseEngineerWizardTablesForm),  m_mode(t)
 {
     ui->setupUi(this);
 

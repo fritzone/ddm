@@ -20,6 +20,8 @@ public:
         case SelectQueryWhereComponent::WHERETYPE_ON:
             return "ON";
         }
+
+        return "?";
     }
     virtual bool hasClose()
     {
@@ -31,7 +33,10 @@ public:
         case SelectQueryWhereComponent::WHERETYPE_ON:
             return false;
         }
+
+        return false;
     }
+
     virtual CellQuerySmallOptionsBox* provideOptionsBox(QueryGraphicsHelper* c, int level, QueryGraphicsItem* parent, QueryComponent* owner);
     virtual void onClose();
     virtual bool hasTypeChooser() {return false;}

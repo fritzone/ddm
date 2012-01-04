@@ -389,7 +389,6 @@ QueryComponent* DeserializationFactory::createComponent(QueryComponent* parent, 
             for(int i=0; i<componentNode.childNodes().at(k).childNodes().count(); i++)
             {
                 QDomElement e = componentNode.childNodes().at(k).childNodes().at(i).toElement();    // This is <JoinExpression idx="12">
-                int idx = e.attribute("idx").toInt();
                 QueryComponent* child = createComponent(c, p, v, doc, e.firstChild().toElement()); // This is "Expression"
                 dynamic_cast<SelectQueryJoinComponent*>(c)->addJoinExpression(dynamic_cast<SingleExpressionQueryComponent*>(child));
             }

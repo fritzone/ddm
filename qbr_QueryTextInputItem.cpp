@@ -31,7 +31,7 @@ void QueryTextInputItem::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
 }
 
 
-void QueryTextInputItem::keyPressEvent(QKeyEvent *event)
+void QueryTextInputItem::keyPressEvent(QKeyEvent */*event*/)
 {
     int a = 1;
     if(a==1)

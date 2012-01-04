@@ -10,12 +10,12 @@
 #include <QScrollBar>
 
 CellQuerySmallOptionsBox::CellQuerySmallOptionsBox(QSet<OptionsType> types, QueryGraphicsHelper* c, int level, QueryGraphicsItem* parent, QueryComponent* owner, OptionsBoxShape shape):
-        QueryGraphicsItem(level, parent, c, owner), m_types(types), m_shape(shape), m_box(0), m_ellipse(0), m_diamond(0)
+        QueryGraphicsItem(level, parent, c, owner), m_box(0), m_ellipse(0), m_diamond(0), m_types(types), m_shape(shape)
 
 {
 }
 
-QGraphicsItemGroup* CellQuerySmallOptionsBox::render(int& x, int& y, int& w, int &h)
+QGraphicsItemGroup* CellQuerySmallOptionsBox::render(int& x, int& y, int& /*w*/, int &/*h*/)
 {
     QGraphicsItemGroup* grp = new QGraphicsItemGroup();
 
@@ -49,7 +49,7 @@ QGraphicsItemGroup* CellQuerySmallOptionsBox::render(int& x, int& y, int& w, int
     return grp;
 }
 
-void CellQuerySmallOptionsBox::mouseMove(int x, int y)
+void CellQuerySmallOptionsBox::mouseMove(int /*x*/, int /*y*/)
 {
     CellQuerySmallOptionsBox::OptionsList op = prepareOptions();
     if(op.text.size() == 0)
@@ -64,7 +64,7 @@ void CellQuerySmallOptionsBox::mouseMove(int x, int y)
     else m_diamond->setPen(thick);
 }
 
-void CellQuerySmallOptionsBox::mouseLeft(int x, int y)
+void CellQuerySmallOptionsBox::mouseLeft(int /*x*/, int /*y*/)
 {
     QPen normal;
     normal.setWidth(1);

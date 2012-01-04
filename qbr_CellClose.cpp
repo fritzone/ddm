@@ -10,7 +10,7 @@ CellClose::CellClose(int level, QueryGraphicsHelper* c, QueryGraphicsItem* paren
 {
 }
 
-QGraphicsItemGroup* CellClose::render(int &x, int &y, int &w, int &h)
+QGraphicsItemGroup* CellClose::render(int &x, int &y, int &/*w*/, int &/*h*/)
 {
     QRect r(x, y, CELL_SIZE, CELL_SIZE);
     m_rect = new QGraphicsRectItem(r);
@@ -44,21 +44,21 @@ void CellClose::updateWidth(int newWidth)
     QRect br2 = boundingRect().toRect();
 }
 
-void CellClose::mouseMove(int x, int y)
+void CellClose::mouseMove(int /*x*/, int /*y*/)
 {
     QPen thick;
     thick.setWidth(2);
     m_rect->setPen(thick);
 }
 
-void CellClose::mouseLeft(int x, int y)
+void CellClose::mouseLeft(int /*x*/, int /*y*/)
 {
     QPen normal;
     normal.setWidth(1);
     m_rect->setPen(normal);
 }
 
-void CellClose::mousePress(int x, int y)
+void CellClose::mousePress(int /*x*/, int /*y*/)
 {
     getParent()->onClose();
 }

@@ -91,9 +91,9 @@ QGraphicsItemGroup* CellCommand::render(int& x, int& y, int& w, int &h)
     CellQuerySmallOptionsBox* smb = provideOptionsBox(m_helper, m_level, m_parent, m_owner);
     if(smb)
     {
-        QGraphicsLineItem* l1 = new QGraphicsLineItem(x + 5 +2 , y-1, x + 5 + 2, y + 20, grp);
+        new QGraphicsLineItem(x + 5 +2 , y-1, x + 5 + 2, y + 20, grp);
         QGraphicsRectItem* box = new QGraphicsRectItem(x + 2, y+10, 10, 10, grp);
-        QGraphicsLineItem* l2 = new QGraphicsLineItem(x +2, y + 15, x + 10 + 2, y + 15, grp);
+        new QGraphicsLineItem(x +2, y + 15, x + 10 + 2, y + 15, grp);
 
         int tx = x + 2; int ty = y + 10; int tw = w; int th = h;
         grp->addToGroup(smb->render(tx, ty, tw, th));

@@ -35,7 +35,7 @@ CellTypeChooser::CellTypeChooser(int level, CellTypeChooserSize size, CellTypeCh
 {
 }
 
-QGraphicsItemGroup* CellTypeChooser::render(int& x, int& y, int& w, int &h)
+QGraphicsItemGroup* CellTypeChooser::render(int& x, int& y, int& w, int &/*h*/)
 {
     int width = (m_size == CELLTYPECHOOSER_REGULAR)?(CELL_SIZE+1):(CELL_SIZE*2+1);
     int size = width;
@@ -235,11 +235,11 @@ void CellTypeChooser::setColumn(const Column *c)
     m_column = c;
 }
 
-void CellTypeChooser::updateWidth(int newWidth)
+void CellTypeChooser::updateWidth(int /*newWidth*/)
 {
 }
 
-void CellTypeChooser::mouseMove(int x, int y)
+void CellTypeChooser::mouseMove(int /*x*/, int /*y*/)
 {
     if(m_currentType == CELLTYPE_CLOSE_PARANTHESES_FOR_FUNCTION_CALL || m_currentType == CELLTYPE_OPEN_PARANTHESES_FOR_FUNCTION_CALL) return;
     if(!m_needsFrame) return;
@@ -254,7 +254,7 @@ void CellTypeChooser::mouseMove(int x, int y)
 
 }
 
-void CellTypeChooser::mouseLeft(int x, int y)
+void CellTypeChooser::mouseLeft(int /*x*/, int /*y*/)
 {
     if(!m_needsFrame) return;
     QPen normal;
@@ -267,7 +267,7 @@ void CellTypeChooser::mouseLeft(int x, int y)
 
 }
 
-void CellTypeChooser::mousePress(int x, int y)
+void CellTypeChooser::mousePress(int /*x*/, int /*y*/)
 {
     QString selected = "";
     QueryGraphicsHelper::ListType listType = QueryGraphicsHelper::INPUT_SYMBOLS;

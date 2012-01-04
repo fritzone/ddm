@@ -18,7 +18,7 @@ CellTableChooser::CellTableChooser(const QString& name, int level, QueryGraphics
     m_level = level;
 }
 
-QGraphicsItemGroup* CellTableChooser::render(int &x, int &y, int &w, int &h)
+QGraphicsItemGroup* CellTableChooser::render(int &x, int &y, int &w, int &/*h*/)
 {
     int lx = x;
     int ly = y;
@@ -44,7 +44,7 @@ void CellTableChooser::updateWidth(int newWidth)
 
 }
 
-void CellTableChooser::mousePress(int x, int y)
+void CellTableChooser::mousePress(int /*x*/, int /*y*/)
 {
     QPoint a = scene()->views().at(0)->mapToGlobal((m_frame->mapToScene(m_frame->boundingRect().bottomLeft().toPoint())).toPoint() ) ;
     QString selected = m_helper->presentList(a.x() + 2-scene()->views().at(0)->horizontalScrollBar()->sliderPosition()
@@ -60,14 +60,14 @@ void CellTableChooser::mousePress(int x, int y)
     }
 }
 
-void CellTableChooser::mouseMove(int x, int y)
+void CellTableChooser::mouseMove(int /*x*/, int /*y*/)
 {
     QPen thick;
     thick.setWidth(2);
     m_frame->setPen(thick);
 }
 
-void CellTableChooser::mouseLeft(int x, int y)
+void CellTableChooser::mouseLeft(int /*x*/, int /*y*/)
 {
     QPen normal;
     normal.setWidth(1);

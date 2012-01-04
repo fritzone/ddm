@@ -16,7 +16,8 @@
 #include <QDebug>
 
 SingleExpressionQueryComponent::SingleExpressionQueryComponent(QueryComponent* p, int l): QueryComponent(p,l),
-    m_gritm(0), m_elements(), m_columnsAtGivenPosition(), m_functionsAtGivenPosition(), m_functionInstantiationAtGivenPosition(), m_typedValuesAtGivenPosition(), m_as(0), m_hasForcedType(false), m_forcedType(NOT_FORCED)
+    m_helper(0), m_gritm(0), m_elements(), m_columnsAtGivenPosition(), m_functionsAtGivenPosition(), m_functionInstantiationAtGivenPosition(), m_typedValuesAtGivenPosition(), m_forcedType(NOT_FORCED),
+    m_ownedByOn(false), m_onOwner(0), m_onComponent(0), m_as(0), m_hasForcedType(false)
 {
 }
 
@@ -105,15 +106,14 @@ QString SingleExpressionQueryComponent::get() const
             case CELLTYPE_LITERAL:
                 result += m_typedValuesAtGivenPosition[i].startsWith("~")?m_typedValuesAtGivenPosition[i].mid(1):m_typedValuesAtGivenPosition[i];
                 break;
+            default:
+                void (0);
             }
         }
     }
 
-    if(errorFound) result += "(??)";
-    if(result.trimmed().length() == 0) result = "(??)";
-
-    QHash<QString, QString> opts = Configuration::instance().sqlGenerationOptions();
-
+    if(errorFound) result += QString("(") + QString("?") + QString("?") + QString(")");
+    if(result.trimmed().length() == 0) result = QString("(") + QString("?") + QString("?") + QString(")");
     return result;
 }
 
@@ -223,7 +223,7 @@ DatabaseFunctionInstantiationComponent* SingleExpressionQueryComponent::getFunct
     return 0;
 }
 
-void SingleExpressionQueryComponent::handleAction(const QString& action, QueryComponent* referringObject)
+void SingleExpressionQueryComponent::handleAction(const QString& action, QueryComponent* /*referringObject*/)
 {
     QString localAction = action;
 

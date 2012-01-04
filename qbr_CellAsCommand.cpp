@@ -28,7 +28,7 @@ QBrush CellAsCommand::getCellBrush()
     return selectBrush;
 }
 
-CellQuerySmallOptionsBox* CellAsCommand::provideOptionsBox(QueryGraphicsHelper* c, int level, QueryGraphicsItem* parent, QueryComponent* owner)
+CellQuerySmallOptionsBox* CellAsCommand::provideOptionsBox(QueryGraphicsHelper* /*c*/, int /*level*/, QueryGraphicsItem* /*parent*/, QueryComponent* /*owner*/)
 {
     return 0;
 }
@@ -71,14 +71,14 @@ void CellAsCommand::updateWidth(int newWidth)
     m_helper->addNewHotCell(this, m_textInputRect->boundingRect().toRect());
 }
 
-void CellAsCommand::mouseMove(int x, int y)
+void CellAsCommand::mouseMove(int /*x*/, int /*y*/)
 {
     QPen thick;
     thick.setWidth(2);
     m_textInputRect->setPen(thick);
 }
 
-void CellAsCommand::mouseLeft(int x, int y)
+void CellAsCommand::mouseLeft(int /*x*/, int /*y*/)
 {
     QPen normal;
     normal.setWidth(1);

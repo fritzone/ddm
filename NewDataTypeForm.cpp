@@ -65,6 +65,8 @@ NewDataTypeForm::NewDataTypeForm(DataType::DT_TYPE t, DatabaseEngine* dbe, QWidg
         m_ui->cmbDTType->setCurrentIndex(6);
         break;
     case DataType::DT_INVALID :
+    case DataType::DT_GENERIC:
+    default:
         m_ui->cmbDTType->setCurrentIndex(-1);
         break;
     }

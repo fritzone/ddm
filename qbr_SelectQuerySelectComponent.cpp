@@ -32,7 +32,7 @@ QueryComponent* SelectQuerySelectComponent::duplicate()
     return newc;
 }
 
-void SelectQuerySelectComponent::handleAction(const QString& action, QueryComponent* referringObject)
+void SelectQuerySelectComponent::handleAction(const QString& action, QueryComponent* /*referringObject*/)
 {
     if(action == ADD_WHERE_EXPRESSION)
     {

@@ -7,7 +7,7 @@ SelectQueryGroupByComponent::SelectQueryGroupByComponent(QueryComponent* p, int 
 }
 
 
-void SelectQueryGroupByComponent::handleAction(const QString &action, QueryComponent* referringObject)
+void SelectQueryGroupByComponent::handleAction(const QString &action, QueryComponent* /*referringObject*/)
 {
     if(action == NEW_COLUMN)
     {
