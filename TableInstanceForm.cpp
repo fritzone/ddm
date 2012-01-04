@@ -95,6 +95,21 @@ void TableInstanceForm::onValidateData()
 {
     QHash < QString, QVector<QString> > v;
     bool errorFound = false;
+
+    // 0. reset
+    for(int i=0; i<ui->values->columnCount(); i++)
+    {
+        for(int j=0; j<ui->values->rowCount(); j++)
+        {
+            if(ui->values->item(j,i))
+            {
+                ui->values->item(j,i)->setBackgroundColor(Qt::white);
+                ui->values->item(j,i)->setToolTip("");
+            }
+        }
+    }
+
+    // 1. check the type
     for(int i=0; i<ui->values->columnCount(); i++)
     {
         QVector<QString> a ;
@@ -107,6 +122,7 @@ void TableInstanceForm::onValidateData()
                 if(c == 0)
                 {
                     c = m_tinst->table()->getColumnFromParents(cName);
+                    if(c == 0) return;
                 }
                 const UserDataType* dt = c->getDataType();
                 if(dt->isValid(ui->values->item(j,i)->text()))
@@ -119,7 +135,7 @@ void TableInstanceForm::onValidateData()
                 {
                     ui->values->item(j,i)->setBackgroundColor(Qt::red);
                     errorFound = true;
-                    ui->values->item(j,i)->setToolTip("This column type does not support this value");
+                    ui->values->item(j,i)->setToolTip(tr("This column type does not support this value"));
                 }
             }
             else
@@ -128,6 +144,62 @@ void TableInstanceForm::onValidateData()
             }
         }
         v[ui->values->horizontalHeaderItem(i)->text()] = a;
+    }
+
+    // 2. check the primary keys
+    // 2.1. build a vector of primary key columns
+    QVector<QString> pkcols;
+    QStringList allColumns = m_tinst->table()->fullColumns();
+    for(int i=0; i<allColumns.size(); i++)
+    {
+        Column *c = m_tinst->table()->getColumn(allColumns.at(i));
+        if(c == 0)
+        {
+            c = m_tinst->table()->getColumnFromParents(allColumns.at(i));
+            if(c == 0) return;
+        }
+        if(c->isPk())
+        {
+            pkcols.append(c->getName());
+        }
+    }
+
+    // 2.2. gather all the PKs
+    QVector<QString> containedPks;
+    for(int i=0; i<ui->values->rowCount(); i++)
+    {
+        QString cpk = "";
+        for(int j=0; j<ui->values->columnCount(); j++)
+        {
+            if(ui->values->item(i,j))
+            {
+                QString cName = ui->values->horizontalHeaderItem(j)->text();
+                if(pkcols.contains(cName))
+                {
+                    cpk += ui->values->item(i,j)->text();
+                }
+            }
+        }
+        if(containedPks.contains(cpk))
+        {
+            for(int j=0; j<ui->values->columnCount(); j++)
+            {
+                if(ui->values->item(i,j))
+                {
+                    QString cName = ui->values->horizontalHeaderItem(j)->text();
+                    if(pkcols.contains(cName))
+                    {
+                        ui->values->item(i,j)->setBackgroundColor(Qt::red);
+                        errorFound = true;
+                        ui->values->item(i,j)->setToolTip(tr("Duplicate Primary Key"));
+                    }
+                }
+            }
+        }
+        else
+        {
+            containedPks.append(cpk);
+        }
     }
 
     if(!errorFound)
