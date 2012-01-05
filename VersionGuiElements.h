@@ -20,6 +20,7 @@ class NewTableForm;
 class View;
 class DiagramsListForm;
 class ViewsListForm;
+class ProcedureForm;
 
 /**
  * The scope of this class is to have a common collection point for the tree widget items of a version (DT, Sql, Table, etc...)
@@ -180,6 +181,7 @@ public:
     SqlForm* getSqlForm();
     NewTableForm* getTableFormForNewTable();
     NewTableForm* getTableFormForExistingTable();
+    ProcedureForm* getProcedureForm();
 
 private:
 
@@ -194,6 +196,9 @@ private:
 
     // the tree item holding the version
     ContextMenuEnabledTreeWidgetItem* diagramsItem;
+
+    // the tree item holding the procedures
+    ContextMenuEnabledTreeWidgetItem* proceduresItem;
 
     // the tree item holding the version
     ContextMenuEnabledTreeWidgetItem* finalSqlItem;
@@ -229,6 +234,7 @@ private:
     SqlForm* m_sqlForm;
     NewTableForm* m_newTableForm;
     NewTableForm* m_existingTableForm;
+    ProcedureForm* m_procedureForm;
 };
 
 #endif // VERSIONGUIELEMENTS_H

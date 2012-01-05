@@ -67,6 +67,7 @@
     <addaction name="action_NewDiagram"/>
     <addaction name="action_NewTableInstance"/>
     <addaction name="action_NewView"/>
+    <addaction name="action_NewProcedure"/>
     <addaction name="separator"/>
     <addaction name="action_Validate"/>
    </widget>
@@ -133,6 +134,7 @@
    <addaction name="action_NewTableInstance"/>
    <addaction name="action_NewDiagram"/>
    <addaction name="action_NewView"/>
+   <addaction name="action_NewProcedure"/>
    <addaction name="separator"/>
    <addaction name="action_Validate"/>
    <addaction name="action_Deploy"/>
@@ -377,7 +379,7 @@
    </property>
    <property name="icon">
     <iconset resource="dbm.qrc">
-     <normaloff>:/images/actions/images/actions/view.png</normaloff>:/images/actions/images/actions/view.png</iconset>
+     <normaloff>:/images/actions/images/actions/newview.png</normaloff>:/images/actions/images/actions/newview.png</iconset>
    </property>
    <property name="text">
     <string>New View</string>
@@ -410,6 +412,24 @@
    </property>
    <property name="text">
     <string>Connections Tree</string>
+   </property>
+  </action>
+  <action name="action_NewProcedure">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="dbm.qrc">
+     <normaloff>:/images/actions/images/actions/newprocedure.png</normaloff>:/images/actions/images/actions/newprocedure.png</iconset>
+   </property>
+   <property name="text">
+    <string>New Procedure</string>
+   </property>
+   <property name="toolTip">
+    <string>Create a new procedure</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+P</string>
    </property>
   </action>
  </widget>
@@ -754,6 +774,22 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>action_NewProcedure</sender>
+   <signal>activated()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>onNewProcedure()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>454</x>
+     <y>67</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>onNewSolution()</slot>
@@ -776,5 +812,6 @@
   <slot>onNewConnection()</slot>
   <slot>onViewConnectionsTree()</slot>
   <slot>onDeployHovered()</slot>
+  <slot>onNewProcedure()</slot>
  </slots>
 </ui>

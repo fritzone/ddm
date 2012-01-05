@@ -52,6 +52,7 @@
 #include "NameGenerator.h"
 #include "DiagramsListForm.h"
 #include "ViewsListForm.h"
+#include "ProcedureForm.h"
 
 #include <QtGui>
 
@@ -889,6 +890,7 @@ void MainWindow::enableActions()
     m_ui->action_NewView->setEnabled(true);
     m_ui->action_NewDatabaseConnection->setEnabled(true);
     m_ui->action_Preferences->setEnabled(true);
+    m_ui->action_NewProcedure->setEnabled(true);
 
     if(m_workspace->currentProjectIsOop())
     {
@@ -2209,6 +2211,17 @@ void MainWindow::onNewView()
     Workspace::getInstance()->workingVersion()->getGui()->createViewTreeEntry(v);
 
     rerenderQuery(v->getQuery());
+}
+
+void MainWindow::onNewProcedure()
+{
+    ProcedureForm* frm = Workspace::getInstance()->workingVersion()->getGui()->getProcedureForm();
+
+    m_projectTree->setCurrentItem(0);
+    setCentralWidget(frm);
+
+    //HelpWindow* hw = HelpWindow::instance();
+    //hw->showHelp(QString("/doc/tabl.html"));
 }
 
 void MainWindow::rerenderQuery(Query* q)

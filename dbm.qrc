@@ -153,6 +153,11 @@
         <file>images/small/help.png</file>
         <file>images/actions/button_play_green.png</file>
         <file>images/small/foreign_key.png</file>
+        <file>images/actions/newview.png</file>
+        <file>images/small/arrow-000-medium.png</file>
+        <file>images/small/arrow-branch.png</file>
+        <file>images/actions/newprocedure.png</file>
+        <file>images/actions/procedure.png</file>
     </qresource>
     <qresource prefix="/bigger">
         <file>images/unaf.png</file>
