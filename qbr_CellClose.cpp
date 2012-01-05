@@ -26,7 +26,6 @@ QGraphicsItemGroup* CellClose::render(int &x, int &y, int &/*w*/, int &/*h*/)
 
 void CellClose::updateWidth(int newWidth)
 {
-    QRect br = boundingRect().toRect();
     placedAtX = newWidth - CELL_SIZE;
     int depl = 8;
     if(dynamic_cast<CellCommand*>(m_parent) || dynamic_cast<CellForSingleExpression*>(m_parent))
@@ -41,7 +40,6 @@ void CellClose::updateWidth(int newWidth)
         QRect newLocation(placedAtX + CELL_SIZE , placedAtY, CELL_SIZE, CELL_SIZE);    // why the + ???
         m_helper->addNewHotCell(this, newLocation);
     }
-    QRect br2 = boundingRect().toRect();
 }
 
 void CellClose::mouseMove(int /*x*/, int /*y*/)

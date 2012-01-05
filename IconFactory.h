@@ -384,6 +384,11 @@ public:
         return icon;
     }
 
+    static const QIcon& getProcedureIcon()
+    {
+        static const QIcon icon(strProcedureIcon);
+        return icon;
+    }
 
 };
 

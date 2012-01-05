@@ -164,7 +164,7 @@ void TableInstanceForm::onValidateData()
         }
     }
 
-    // 2.2. gather all the PKs
+    // 2.2. gather all the PKs and check
     QVector<QString> containedPks;
     for(int i=0; i<ui->values->rowCount(); i++)
     {
@@ -201,6 +201,8 @@ void TableInstanceForm::onValidateData()
             containedPks.append(cpk);
         }
     }
+
+    // 3. Check that the foreign keys of this table actually refer to existing foreign keys in other table instances
 
     if(!errorFound)
     {

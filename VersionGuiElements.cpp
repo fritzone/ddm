@@ -21,17 +21,19 @@
 #include "NewTableForm.h"
 #include "core_View.h"
 #include "ViewsListForm.h"
+#include "ProcedureForm.h"
 
 #include <QVector>
 #include <QtGui>
 
 // TODO: This file looks funny. See why it seems we have a lot of duplicate code
 
-VersionGuiElements::VersionGuiElements(QTreeWidget* projTree, QTreeWidget* dtTree, QTreeWidget* issueTree, Version* v) : tablesItem(0), tableInstancesItem(0), versionItem(0), diagramsItem(0), finalSqlItem(0), dtsItem(0),
+VersionGuiElements::VersionGuiElements(QTreeWidget* projTree, QTreeWidget* dtTree, QTreeWidget* issueTree, Version* v) : tablesItem(0), tableInstancesItem(0),
+    versionItem(0), diagramsItem(0), proceduresItem(0), finalSqlItem(0), dtsItem(0),
     m_tree(projTree), m_dtTree(dtTree), m_issuesTree(issueTree),
     stringsDtItem(0), intsDtItem(0), dateDtItem(0), blobDtItem(0),
     boolDtItem(0), miscDtItem(0), spatialDtItem(0), m_tblInstancesListForm(0), m_version(v), m_tblsListForm(0),
-    m_newTableForm(0), m_existingTableForm(0)
+    m_newTableForm(0), m_existingTableForm(0), m_procedureForm(0)
 {
 }
 
@@ -58,6 +60,12 @@ void VersionGuiElements::createGuiElements(ContextMenuEnabledTreeWidgetItem* pro
     diagramsItem->setIcon(0, IconFactory::getDiagramIcon());
     diagramsItem->setPopupMenu(ContextMenuCollection::getInstance()->getDiagramsPopupMenu());
     m_tree->addTopLevelItem(diagramsItem);
+
+
+    proceduresItem = new ContextMenuEnabledTreeWidgetItem(versionItem, QStringList(QObject::tr("Procedures"))) ;
+    proceduresItem->setIcon(0, IconFactory::getProcedureIcon());
+    //proceduresItem->setPopupMenu(ContextMenuCollection::getInstance()->getDiagramsPopupMenu());
+    m_tree->addTopLevelItem(proceduresItem);
 
     viewsItem = new ContextMenuEnabledTreeWidgetItem(versionItem, QStringList(QObject::tr("Views"))) ;
     viewsItem->setIcon(0, IconFactory::getViewsIcon());
@@ -481,4 +489,9 @@ NewTableForm* VersionGuiElements::getTableFormForNewTable()
 NewTableForm* VersionGuiElements::getTableFormForExistingTable()
 {
     return m_existingTableForm = new NewTableForm(Workspace::getInstance()->currentProjectsEngine(), Workspace::getInstance()->currentProject(), m_mw, false);
+}
+
+ProcedureForm* VersionGuiElements::getProcedureForm()
+{
+    return m_procedureForm = new ProcedureForm(m_mw);
 }

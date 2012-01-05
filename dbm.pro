@@ -127,7 +127,8 @@ SOURCES += main.cpp \
     helper_MostRecentlyUsedFiles.cpp \
     BrowseTableForm.cpp \
     DiagramsListForm.cpp \
-    ViewsListForm.cpp
+    ViewsListForm.cpp \
+    ProcedureForm.cpp
 HEADERS += MainWindow.h \
     MainWindowButtonDialog.h \
     NewProjectDialog.h \
@@ -277,7 +278,8 @@ HEADERS += MainWindow.h \
     helper_MostRecentlyUsedFiles.h \
     BrowseTableForm.h \
     DiagramsListForm.h \
-    ViewsListForm.h
+    ViewsListForm.h \
+    ProcedureForm.h
 FORMS += MainWindow.ui \
     MainWindowButtonDialog.ui \
     NewProjectDialog.ui \
@@ -305,7 +307,8 @@ FORMS += MainWindow.ui \
     HelpWindow.ui \
     BrowseTableForm.ui \
     DiagramsListForm.ui \
-    ViewsListForm.ui
+    ViewsListForm.ui \
+    ProcedureForm.ui
 RESOURCES += dbm.qrc
 RC_FILE = dbm.rc
 installfiles_base.files += ddm codepages/codepages.mysql.dat

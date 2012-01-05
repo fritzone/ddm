@@ -57,14 +57,13 @@ NewTableForm::NewTableForm(DatabaseEngine* db, Project* prj, QWidget *parent, bo
     lstColumns->setExpandsOnDoubleClick(false);
     lstColumns->header()->setDefaultSectionSize(150);
     m_ui->columnListLayout->addWidget(lstColumns);
-    QTreeWidgetItem *___qtreewidgetitem = lstColumns->headerItem();
-    ___qtreewidgetitem->setText(3, QApplication::translate("NewTableForm", "SQL Type", 0, QApplication::UnicodeUTF8));
-    ___qtreewidgetitem->setText(2, QApplication::translate("NewTableForm", "Type", 0, QApplication::UnicodeUTF8));
-    ___qtreewidgetitem->setText(1, QApplication::translate("NewTableForm", "Name", 0, QApplication::UnicodeUTF8));
-    ___qtreewidgetitem->setText(0, QApplication::translate("NewTableForm", "PK", 0, QApplication::UnicodeUTF8));
+    QTreeWidgetItem *header = lstColumns->headerItem();
+    header->setText(3, tr("SQL Type"));
+    header->setText(2, tr("Type"));
+    header->setText(1, tr("Name"));
+    header->setText(0, tr("PK"));
     ContextMenuHandler* contextMenuHandler = new ContextMenuHandler();
     lstColumns->setItemDelegate(new ContextMenuDelegate(contextMenuHandler,lstColumns));
-
     // then connect the signals
     QObject::connect(lstColumns, SIGNAL(itemClicked(QTreeWidgetItem*,int)), this, SLOT(onItemSelected(QTreeWidgetItem*,int)));
     QObject::connect(ContextMenuCollection::getInstance()->getAction_CopyColumn(), SIGNAL(activated()), this, SLOT(onCopyColumn()));
@@ -2124,10 +2123,11 @@ void NewTableForm::onPasteColumn()
     Column* col = ClipboardFactory::pasteColumn();
     if(!col) return;
 
+    backupDefaultValuesTable();
+
     // TODO: This is duplicate with stuff from the "onAddcolumn"
     col->setName(col->getName() + "_copy");
     col->setName(m_table->generateUniqueColumnName(col->getName()));
-    // TODO: Rename the column to be valid!
     ContextMenuEnabledTreeWidgetItem* item = createTWIForColumn(col);
     lstColumns->addTopLevelItem(item);
     setTypeComboBoxForColumnItem(item, col);
@@ -2138,6 +2138,17 @@ void NewTableForm::onPasteColumn()
     col->setLocation(item);
     m_ui->txtNewColumnName->setFocus( );
     // till here
+
+    lstColumns->resizeColumnToContents(0);
+    lstColumns->resizeColumnToContents(1);
+    lstColumns->resizeColumnToContents(2);
+    lstColumns->resizeColumnToContents(3);
+
+    populateColumnsForIndices();
+    updateDefaultValuesTableHeader();
+    restoreDefaultValuesTable();
+
+    autoSave();
 }
 
 void NewTableForm::onCodepageChange(QString)
