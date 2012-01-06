@@ -1,7 +1,7 @@
 #ifndef QTEXTEDITWITHCODECOMPLETION_H
 #define QTEXTEDITWITHCODECOMPLETION_H
 
-#include <QTextEdit>
+#include <QPlainTextEdit>
 #include <QListWidget>
 #include <QTimer>
 #include <QObject>
@@ -15,8 +15,9 @@ class SqlHighlighter;
 class Connection;
 class Table;
 class BrowseTableForm;
+class FrameForLineNumbers;
 
-class QTextEditWithCodeCompletion : public QTextEdit
+class QTextEditWithCodeCompletion : public QPlainTextEdit
 {
     Q_OBJECT
 
@@ -43,6 +44,10 @@ public:
         m_browseForm = f;
     }
     void resetToConnection(Connection* c);
+    void setLineNumberFrame(FrameForLineNumbers* f)
+    {
+        m_frameForLineNumbers = f;
+    }
 
 private slots:
     void onTimer();
@@ -65,7 +70,7 @@ private:
     QStringList m_tabs;
     Connection* m_connection;
     BrowseTableForm* m_browseForm;
-    QFrame *m_frameForLineNumbers;
+    FrameForLineNumbers *m_frameForLineNumbers;
 };
 
 #endif // QTEXTEDITWITHCODECOMPLETION_H

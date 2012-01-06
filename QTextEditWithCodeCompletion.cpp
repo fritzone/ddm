@@ -11,10 +11,13 @@
 #include "db_AbstractDTSupplier.h"
 #include "core_Connection.h"
 #include "BrowseTableForm.h"
+#include "FrameForLineNumbers.h"
 
 #include <QKeyEvent>
 #include <QMessageBox>
 #include <QDebug>
+#include <QApplication>
+#include <QEvent>
 
 int QTextEditWithCodeCompletion::TablePositionInText::colorCounter = -1;
 
@@ -23,8 +26,8 @@ static bool skippableSinceWhitespace(QChar c)
     return c == ' ' || c == '\t' || c == '\r' || c == '\n';
 }
 
-QTextEditWithCodeCompletion::QTextEditWithCodeCompletion(QWidget* p, Connection* c) : QTextEdit(p),
-    m_lst(0), m_timer(), m_currentBgColor(Qt::white), m_highlighter(0), dbKeywords(), funcs(), m_tabs(), m_connection(c), m_browseForm(0)
+QTextEditWithCodeCompletion::QTextEditWithCodeCompletion(QWidget* p, Connection* c) : QPlainTextEdit(p),
+    m_lst(0), m_timer(), m_currentBgColor(Qt::white), m_highlighter(0), dbKeywords(), funcs(), m_tabs(), m_connection(c), m_browseForm(0), m_frameForLineNumbers(0)
 {
     m_lst = new QListWidgetForCodeCompletion(this);
     m_lst->setSelectionMode(QAbstractItemView::SingleSelection);
@@ -35,8 +38,10 @@ QTextEditWithCodeCompletion::QTextEditWithCodeCompletion(QWidget* p, Connection*
 
     QFont font;
     font.setFamily(QString::fromUtf8("Courier"));
-    font.setPointSize(11);
+    font.setPixelSize(16);
     setFont(font);
+
+    setLineWrapMode(QPlainTextEdit::NoWrap);
 
     if(Workspace::getInstance()->hasCurrentSolution())
     {
@@ -176,12 +181,28 @@ void QTextEditWithCodeCompletion::keyPressEvent(QKeyEvent *e)
 
     if(m_lst->isVisible())
     {
-        QTextEdit::keyPressEvent(e);
+        QPlainTextEdit::keyPressEvent(e);
         populateCodeCompletionListbox();
         return;
     }
 
-    QTextEdit::keyPressEvent(e);
+    if(m_frameForLineNumbers)
+    {
+        QTextDocument *pDoc = document();
+
+        for(QTextBlock block=pDoc->begin(); block!= pDoc->end(); block = block.next())
+        {
+            QRectF f = blockBoundingGeometry(block);
+        }
+
+        // do this:
+        // for each (visible) block jump in the line number frame and draw the index at the top line using blockGeometry
+        // QRectF QPlainTextEdit::blockBoundingGeometry ( const QTextBlock & block ) const
+        //QRectF =
+        m_frameForLineNumbers->setNumber(document()->blockCount(), firstVisibleBlock().firstLineNumber());
+    }
+
+    QPlainTextEdit::keyPressEvent(e);
 }
 
 void QTextEditWithCodeCompletion::populateCodeCompletionListboxWithTablesOfVersion(const QString& tabPrefix)

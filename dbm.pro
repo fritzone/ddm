@@ -128,7 +128,8 @@ SOURCES += main.cpp \
     BrowseTableForm.cpp \
     DiagramsListForm.cpp \
     ViewsListForm.cpp \
-    ProcedureForm.cpp
+    ProcedureForm.cpp \
+    FrameForLineNumbers.cpp
 HEADERS += MainWindow.h \
     MainWindowButtonDialog.h \
     NewProjectDialog.h \
@@ -279,7 +280,8 @@ HEADERS += MainWindow.h \
     BrowseTableForm.h \
     DiagramsListForm.h \
     ViewsListForm.h \
-    ProcedureForm.h
+    ProcedureForm.h \
+    FrameForLineNumbers.h
 FORMS += MainWindow.ui \
     MainWindowButtonDialog.ui \
     NewProjectDialog.ui \
