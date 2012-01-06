@@ -3,6 +3,9 @@
 
 #include <QWidget>
 
+class QTextEditWithCodeCompletion;
+class FrameForLineNumbers;
+
 namespace Ui {
     class ProcedureForm;
 }
@@ -20,6 +23,8 @@ protected:
 
 private:
     Ui::ProcedureForm *ui;
+    QTextEditWithCodeCompletion* m_textEdit;
+    FrameForLineNumbers* m_frameForLineNumbers;
 };
 
 #endif // PROCEDUREFORM_H
