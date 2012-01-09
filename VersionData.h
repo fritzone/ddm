@@ -10,6 +10,7 @@ class Diagram;
 class TableInstance;
 class Issue;
 class View;
+class Procedure;
 
 /**
  * The role of this class is to group together the actual data belonging to a version (tables, instances, etc...)
@@ -18,7 +19,7 @@ class VersionData
 {
 public:
 
-    VersionData() : m_dataTypes(), m_tables(), m_diagrams(), m_tableInstances(), m_issues(), m_views()
+    VersionData() : m_dataTypes(), m_tables(), m_diagrams(), m_tableInstances(), m_issues(), m_views(), m_procedures()
     {}
 
 private:
@@ -42,6 +43,8 @@ private:
     QVector<Issue*> m_issues;
 
     QVector<View*> m_views;
+
+    QVector<Procedure*> m_procedures;
 };
 
 #endif // VERSIONDATA_H

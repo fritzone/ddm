@@ -14,6 +14,7 @@ class VersionGuiElements;
 class Column;
 class Issue;
 class View;
+class Procedure;
 
 /**
  * Basic class holding data related to versions
@@ -251,6 +252,16 @@ public:
      * Return the views of the version
      */
    virtual const QVector<View*>& getViews() = 0;
+
+   /**
+    * Returns the given procedure
+    */
+   virtual Procedure* getProcedure(const QString& procName) = 0;
+
+   /**
+    * Adds a procedure in the system
+    */
+   virtual void addProcedure(Procedure* p) = 0;
 
 };
 

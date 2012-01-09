@@ -1138,7 +1138,10 @@ QStringList MySQLDatabaseEngine::getKeywords() const
             <<"SORT"
             <<"SQL"
             <<"SQLWARNING"
-            <<"UPGRADE";
+            <<"UPGRADE"
+            <<"DELIMITER"
+            <<"BEGIN"
+            <<"END";
     return keywordPatterns;
 }
 

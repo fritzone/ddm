@@ -18,6 +18,7 @@
 #include <QDebug>
 #include <QApplication>
 #include <QEvent>
+#include <QScrollBar>
 
 int QTextEditWithCodeCompletion::TablePositionInText::colorCounter = -1;
 
@@ -35,6 +36,7 @@ QTextEditWithCodeCompletion::QTextEditWithCodeCompletion(QWidget* p, Connection*
     m_timer.setInterval(300);
     QObject::connect(&m_timer, SIGNAL(timeout()), this, SLOT(onTimer()));
     QObject::connect(m_lst, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(onListItemDoubleClicked(QModelIndex)));
+    QObject::connect(verticalScrollBar(), SIGNAL(valueChanged(int)), this, SLOT(onVScroll(int)));
 
     QFont font;
     font.setFamily(QString::fromUtf8("Courier"));
@@ -128,6 +130,31 @@ void QTextEditWithCodeCompletion::insertFunctionParantheses()
 
 }
 
+void QTextEditWithCodeCompletion::updateLineNumbers()
+{
+    if(m_frameForLineNumbers)
+    {
+        QTextDocument *pDoc = document();
+        m_frameForLineNumbers->beginLineNumbers();
+
+        int i = 1;
+        for(QTextBlock block=pDoc->begin(); block!= pDoc->end(); block = block.next())
+        {
+            QRectF f = blockBoundingGeometry(block);
+            QPointF p = contentOffset();
+            m_frameForLineNumbers->addLineNumber(i, f.top() + p.y());
+            i++;
+        }
+
+        m_frameForLineNumbers->endLineNumbers();
+    }
+}
+
+void QTextEditWithCodeCompletion::onVScroll(int)
+{
+    updateLineNumbers();
+}
+
 void QTextEditWithCodeCompletion::keyPressEvent(QKeyEvent *e)
 {
     Qt::KeyboardModifiers m = e->modifiers();
@@ -147,14 +174,13 @@ void QTextEditWithCodeCompletion::keyPressEvent(QKeyEvent *e)
     {
         int t = e->key();
 
-        qDebug() << "key=" << e->key() << "enter = " << Qt::Key_Enter << " return = " << Qt::Key_Return;
-
         if(e->key() == Qt::Key_Space)
         {
             QPoint p = cursorRect().bottomRight();
             m_lst->move(p);
             m_lst->show();
             populateCodeCompletionListbox();
+            updateLineNumbers();
             return;
         }
 
@@ -183,26 +209,12 @@ void QTextEditWithCodeCompletion::keyPressEvent(QKeyEvent *e)
     {
         QPlainTextEdit::keyPressEvent(e);
         populateCodeCompletionListbox();
+        updateLineNumbers();
         return;
     }
 
-    if(m_frameForLineNumbers)
-    {
-        QTextDocument *pDoc = document();
-
-        for(QTextBlock block=pDoc->begin(); block!= pDoc->end(); block = block.next())
-        {
-            QRectF f = blockBoundingGeometry(block);
-        }
-
-        // do this:
-        // for each (visible) block jump in the line number frame and draw the index at the top line using blockGeometry
-        // QRectF QPlainTextEdit::blockBoundingGeometry ( const QTextBlock & block ) const
-        //QRectF =
-        m_frameForLineNumbers->setNumber(document()->blockCount(), firstVisibleBlock().firstLineNumber());
-    }
-
     QPlainTextEdit::keyPressEvent(e);
+    updateLineNumbers();
 }
 
 void QTextEditWithCodeCompletion::populateCodeCompletionListboxWithTablesOfVersion(const QString& tabPrefix)

@@ -1,6 +1,7 @@
 #include "BrowseTableForm.h"
 #include "ui_BrowseTableForm.h"
 #include "core_Connection.h"
+#include "FrameForLineNumbers.h"
 
 #include <QSqlTableModel>
 #include <QSqlDriver>
@@ -9,6 +10,7 @@
 #include <QMessageBox>
 
 QTextEditWithCodeCompletion *BrowseTableForm::m_textEdit = 0;
+FrameForLineNumbers* BrowseTableForm::m_frameForLineNumbers = 0;
 int BrowseTableForm::m_firstP = 0;
 int BrowseTableForm::m_lastP = 0;
 
@@ -22,9 +24,22 @@ BrowseTableForm::BrowseTableForm(QWidget *parent, Connection* c, const QString& 
     ui->table->horizontalHeader()->setHighlightSections(true);
     ui->table->horizontalHeader()->setResizeMode(QHeaderView::Interactive);
 
+    static FrameForLineNumbers* frameForLineNumbers = new FrameForLineNumbers(this);
+    QSizePolicy sizePolicy(QSizePolicy::Fixed, QSizePolicy::Preferred);
+    sizePolicy.setHorizontalStretch(0);
+    sizePolicy.setVerticalStretch(0);
+    sizePolicy.setHeightForWidth(frameForLineNumbers->sizePolicy().hasHeightForWidth());
+    frameForLineNumbers->setSizePolicy(sizePolicy);
+    frameForLineNumbers->setMinimumSize(QSize(48, 0));
+    frameForLineNumbers->setMaximumSize(QSize(48, 16777215));
+    frameForLineNumbers->setFrameShape(QFrame::StyledPanel);
+    frameForLineNumbers->setFrameShadow(QFrame::Raised);
+    ui->horizontalLayout_5->addWidget(frameForLineNumbers);
+
+
     textEdit->setObjectName(QString::fromUtf8("textEdit"));
     textEdit->setBrowseForm(this);
-    ui->verticalLayout_2->addWidget(textEdit);
+    ui->horizontalLayout_5->addWidget(textEdit);
 
     QSqlDatabase sqldb = c->getQSqlDatabase();
     QSqlTableModel *model = new QSqlTableModel(ui->table, sqldb);
@@ -39,6 +54,7 @@ BrowseTableForm::BrowseTableForm(QWidget *parent, Connection* c, const QString& 
     ui->table->setModel(model);
     ui->table->setEditTriggers(QAbstractItemView::DoubleClicked|QAbstractItemView::EditKeyPressed);
     if(m_textEdit == 0) m_textEdit = textEdit;
+    if(m_frameForLineNumbers == 0) m_frameForLineNumbers = frameForLineNumbers;
 
     m_textEdit->resetToConnection(c);
 

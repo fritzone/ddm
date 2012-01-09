@@ -1877,7 +1877,7 @@ void NewTableForm::onBtnUpdateTableWithDefaultValues()
         {
             if(m_ui->tableStartupValues->item(i,j))
             {
-                QString cName = m_ui->tableStartupValues->horizontalHeaderItem(i)->text();
+                QString cName = m_ui->tableStartupValues->horizontalHeaderItem(j)->text();
                 Column *c =m_table->getColumn(cName);
                 if(c == 0)
                 {

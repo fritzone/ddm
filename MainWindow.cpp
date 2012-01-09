@@ -36,7 +36,6 @@
 #include "VersionGuiElements.h"
 #include "InjectSqlDialog.h"
 #include "ReverseEngineerWizard.h"
-#include "DataType.h" // TODO: this is simply bad design, Mainwindow should not know about datatypes ...
 #include "IssueManager.h"
 #include "NewViewForm.h"
 #include "qbr_SelectQuery.h"
@@ -53,6 +52,7 @@
 #include "DiagramsListForm.h"
 #include "ViewsListForm.h"
 #include "ProcedureForm.h"
+#include "core_Procedure.h"
 
 #include <QtGui>
 
@@ -2216,6 +2216,11 @@ void MainWindow::onNewView()
 void MainWindow::onNewProcedure()
 {
     ProcedureForm* frm = Workspace::getInstance()->workingVersion()->getGui()->getProcedureForm();
+    Procedure* p = new Procedure();
+    frm->setProcedure(p);
+    frm->initSql();
+    Workspace::getInstance()->workingVersion()->addProcedure(p);
+    Workspace::getInstance()->workingVersion()->getGui()->createProcedureTreeEntry(p);
 
     m_projectTree->setCurrentItem(0);
     setCentralWidget(frm);

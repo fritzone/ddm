@@ -11,6 +11,8 @@
 #include "MainWindow.h"
 #include "gui_HelpWindow.h"
 
+#include <QLineEdit>
+
 TableInstanceForm::TableInstanceForm(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::TableInstanceForm), m_populated(false)
@@ -83,6 +85,31 @@ void TableInstanceForm::onSaveValuesToCSV()
 void TableInstanceForm::onAddNewRow()
 {
     addNewRowToTable(ui->values, m_tinst->table());
+
+    // now see that if we have a cell with Auto Increment the next value gets inserted there
+    for(int i=0; i<ui->values->columnCount(); i++)
+    {
+        QString cName = ui->values->horizontalHeaderItem(i)->text();
+        Column *c = m_tinst->table()->getColumn(cName);
+        if(c == 0)
+        {
+            c = m_tinst->table()->getColumnFromParents(cName);
+            if(c == 0) return;
+        }
+
+        if(c->hasAutoIncrement())
+        {
+            int lastR = ui->values->rowCount() - 1; // number of preceeding rows, the last one is empty
+            int lastV = -1;
+            if(lastR != 0)
+            {
+                lastV = ui->values->item(lastR-1,i)->text().toInt();
+            }
+            lastV ++;
+            QTableWidgetItem* twi = new QTableWidgetItem(QString::number(lastV));
+            ui->values->setItem(lastR, i, twi);
+        }
+    }
 }
 
 void TableInstanceForm::onDeleteRow()

@@ -48,10 +48,12 @@ public:
     {
         m_frameForLineNumbers = f;
     }
+    void updateLineNumbers();
 
 private slots:
     void onTimer();
     void onListItemDoubleClicked(QModelIndex);
+    void onVScroll(int);
 
 private:
     void populateCodeCompletionListbox();

@@ -22,6 +22,7 @@
 #include "core_View.h"
 #include "ViewsListForm.h"
 #include "ProcedureForm.h"
+#include "core_Procedure.h"
 
 #include <QVector>
 #include <QtGui>
@@ -344,6 +345,19 @@ ContextMenuEnabledTreeWidgetItem* VersionGuiElements::createViewTreeEntry(View* 
     // set the link to the tree
     view->setLocation(newViewItem);
     return newViewItem;
+}
+
+ContextMenuEnabledTreeWidgetItem* VersionGuiElements::createProcedureTreeEntry(Procedure* proc)
+{
+    ContextMenuEnabledTreeWidgetItem* newProcItem = new ContextMenuEnabledTreeWidgetItem(viewsItem, QStringList(proc->getName())) ;
+    QVariant var(proc->getName());
+    newProcItem->setData(0, Qt::UserRole, var);
+    // set the icon, add to the tree
+    newProcItem->setIcon(0, IconFactory::getProcedureIcon());
+    m_tree->addTopLevelItem(newProcItem);
+    // set the link to the tree
+    proc->setLocation(newProcItem);
+    return newProcItem;
 }
 
 ContextMenuEnabledTreeWidgetItem* VersionGuiElements::createTableTreeEntryForIssue(Table* tab)
