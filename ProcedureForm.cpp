@@ -2,10 +2,11 @@
 #include "ui_ProcedureForm.h"
 #include "QTextEditWithCodeCompletion.h"
 #include "FrameForLineNumbers.h"
+#include "core_Procedure.h"
 
 ProcedureForm::ProcedureForm(QWidget *parent) :
     QWidget(parent),
-    ui(new Ui::ProcedureForm)
+    ui(new Ui::ProcedureForm), m_textEdit(0), m_frameForLineNumbers(0), m_proc(0)
 {
     ui->setupUi(this);
 
@@ -19,12 +20,14 @@ ProcedureForm::ProcedureForm(QWidget *parent) :
     m_frameForLineNumbers->setMaximumSize(QSize(48, 16777215));
     m_frameForLineNumbers->setFrameShape(QFrame::StyledPanel);
     m_frameForLineNumbers->setFrameShadow(QFrame::Raised);
-
     ui->horizontalLayout->addWidget(m_frameForLineNumbers);
+
     m_textEdit = new QTextEditWithCodeCompletion(this);
     m_textEdit->setLineNumberFrame(m_frameForLineNumbers);
     ui->horizontalLayout->addWidget(m_textEdit);
     m_textEdit->setFocus();
+
+    connect(m_textEdit, SIGNAL(textChanged()), this, SLOT(textChanged()));
 
 }
 
@@ -43,4 +46,20 @@ void ProcedureForm::changeEvent(QEvent *e)
     default:
         break;
     }
+}
+
+void ProcedureForm::textChanged()
+{
+    m_proc->setSql(m_textEdit->toPlainText());
+}
+
+void ProcedureForm::initSql()
+{
+    QString sql = "delimiter //\n\nCREATE PROCEDURE " + m_proc->getName();
+    sql += "()\nBEGIN\n\nEND\n\ndelimiter ;";
+    m_textEdit->setPlainText(sql);
+    m_textEdit->keyPressEvent(new QKeyEvent(QEvent::KeyPress, Qt::Key_Down, Qt::NoModifier));
+    m_textEdit->keyPressEvent(new QKeyEvent(QEvent::KeyPress, Qt::Key_Down, Qt::NoModifier));
+    m_textEdit->keyPressEvent(new QKeyEvent(QEvent::KeyPress, Qt::Key_Down, Qt::NoModifier));
+    m_textEdit->keyPressEvent(new QKeyEvent(QEvent::KeyPress, Qt::Key_Down, Qt::NoModifier));
 }

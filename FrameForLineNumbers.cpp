@@ -3,19 +3,26 @@
 #include <QDebug>
 #include <QFont>
 
-FrameForLineNumbers::FrameForLineNumbers(QWidget *parent) : QFrame(parent), m_nr(0), m_firstv(0)
+FrameForLineNumbers::FrameForLineNumbers(QWidget *parent) : QFrame(parent), m_nrs()
 {
     setUpdatesEnabled(true);
 }
 
-void FrameForLineNumbers::setNumber(int i, int firstv)
+void FrameForLineNumbers::beginLineNumbers()
 {
-    m_nr = i;
-    m_firstv = firstv;
-    qDebug() << "bbb" << i << " fff: "<< firstv;
+    m_nrs.clear();
+}
 
+void FrameForLineNumbers::addLineNumber(int nr, int y)
+{
+
+    NumberPosition np(nr, y);
+    m_nrs.append(np);
+}
+
+void FrameForLineNumbers::endLineNumbers()
+{
     update();
-
 }
 
 void FrameForLineNumbers::paintEvent(QPaintEvent *)
@@ -25,15 +32,22 @@ void FrameForLineNumbers::paintEvent(QPaintEvent *)
     QFont f;
     f.setFamily("Courier");
     f.setBold(true);
-    f.setPixelSize(16);
+    int TSIZE= 16;
+    f.setPixelSize(TSIZE);
     a.setFont(f);
-    int y = 16;
-    for(int i=m_firstv; i<m_nr; i++)
+
+    for(int i=0; i<m_nrs.size(); i++)
     {
-        QString s = QString::number(i + 1);
-        a.drawText(10, y, s);
-        y += 19;
-    }
-    qDebug() << "aaa";
+        QString s = QString::number(m_nrs.at(i).nr);
+        if(m_nrs.at(i).nr < 10) s = "000" + s;
+        else
+        if(m_nrs.at(i).nr < 100) s = "00" + s;
+        else
+        if(m_nrs.at(i).nr < 1000) s = "0" + s;
+
+        QRect r(0, m_nrs.at(i).y, this->rect().width(), TSIZE);
+        a.drawText(r, s);
+   }
+
     a.end();
 }

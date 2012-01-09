@@ -33,6 +33,7 @@ private:
 private:
     Ui::BrowseTableForm *ui;
     static QTextEditWithCodeCompletion *m_textEdit;
+    static FrameForLineNumbers* m_frameForLineNumbers;
     static int m_firstP;
     static int m_lastP;
     Connection* m_connection;

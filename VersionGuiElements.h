@@ -21,6 +21,7 @@ class View;
 class DiagramsListForm;
 class ViewsListForm;
 class ProcedureForm;
+class Procedure;
 
 /**
  * The scope of this class is to have a common collection point for the tree widget items of a version (DT, Sql, Table, etc...)
@@ -161,6 +162,7 @@ public:
     ContextMenuEnabledTreeWidgetItem* createIssueTreeEntry(Issue* issue, ContextMenuEnabledTreeWidgetItem* p);
     ContextMenuEnabledTreeWidgetItem* createTableTreeEntryForIssue(Table* tab);
     ContextMenuEnabledTreeWidgetItem* createViewTreeEntry(View* view);
+    ContextMenuEnabledTreeWidgetItem* createProcedureTreeEntry(Procedure* proc);
 
     void setMainWindow(MainWindow* mw)
     {

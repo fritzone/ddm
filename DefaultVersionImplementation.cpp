@@ -16,6 +16,7 @@
 #include "Issue.h"
 #include "IssueManager.h"
 #include "core_View.h"
+#include "core_Procedure.h"
 
 #include <QtGui>
 
@@ -736,4 +737,21 @@ View* DefaultVersionImplementation::getView(const QString &viewName)
 void DefaultVersionImplementation::addView(View* v)
 {
     m_data.m_views.append(v);
+}
+
+Procedure* DefaultVersionImplementation::getProcedure(const QString &procedureName)
+{
+    for(int i=0; i< m_data.m_procedures.size(); i++)
+    {
+        if(m_data.m_procedures[i]->getName() == procedureName)
+        {
+            return m_data.m_procedures[i];
+        }
+    }
+    return 0;
+}
+
+void DefaultVersionImplementation::addProcedure(Procedure* p)
+{
+    m_data.m_procedures.append(p);
 }
