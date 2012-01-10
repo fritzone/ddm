@@ -4,7 +4,7 @@
 #include <QStringList>
 
 class AbstractSqlGenerator;
-class ContextMenuEnabledTreeWidgetItem;
+#include "ContextMenuEnabledTreeWidget.h"
 
 /**
  * This is a very stupid name for a class which can generate SQLs (ie. a Table or a Trigger).
