@@ -249,6 +249,11 @@ public:
     virtual void addView(View* v) = 0;
 
     /**
+     * Deletes the view from the system
+     */
+    virtual void deleteView(const QString& v) = 0;
+
+    /**
      * Return the views of the version
      */
    virtual const QVector<View*>& getViews() = 0;

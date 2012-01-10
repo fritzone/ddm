@@ -66,6 +66,11 @@ public:
         return viewsItem;
     }
 
+    ContextMenuEnabledTreeWidgetItem* getProcsItem() const
+    {
+        return proceduresItem;
+    }
+
     ContextMenuEnabledTreeWidgetItem* getDtsItem() const
     {
         return dtsItem;

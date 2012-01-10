@@ -29,6 +29,7 @@ class Connection;
 class Deployer;
 class InjectSqlGenerator;
 class ReverseEngineerer;
+class View;
 
 namespace Ui
 {
@@ -67,6 +68,7 @@ public:
     void showDataType(const QString &name, bool focus = true);
     void showDiagram(const QString& name);
     void showView(const QString& viewName);
+    void showProc(const QString& procName);
 
     void rerenderQuery(Query*);
     void showConnections();
@@ -147,6 +149,7 @@ public slots:
     void onConnectionItemDoubleClicked(QTreeWidgetItem*,int);
     void onInjectBrowsedTable();
     void onBrowseBrowsedTable();
+    void onDeleteView();
 
 public:
     void createStatusLabel();
@@ -157,7 +160,7 @@ private:
     void populateTreeWithSolution(Solution* sol);
     void saveProject(bool saveAs = false);
     void enableActions();
-    void connectActionsFromTablePopupMenu();
+    void connectActionsFromPopupMenus();
     Table* getRightclickedTable();
     TableInstance* getRightclickedTableInstance();
     UserDataType* getRightclickedDatatype();
@@ -170,6 +173,7 @@ private:
     void showProjectDetails();
     void showNewDataTypeWindow(int);
     NewTableForm* showExistingTable(Table*);
+    View* getRightclickedView();
 
     void doDeployment(const QString& codePage, QStringList connectionNames);
     void createConnectionTreeEntryForTables(Connection *c);

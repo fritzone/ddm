@@ -368,7 +368,7 @@ void MainWindow::onNewSolution()
 
         setWindowTitle(tr("DDM - [") + m_workspace->currentSolution()->name() + tr("]"));
 
-        connectActionsFromTablePopupMenu();
+        connectActionsFromPopupMenus();
         if(!m_workspace->currentProjectIsOop())
         {
             m_workspace->workingVersion()->getGui()->getTablesItem()->setText(0, tr("Tables"));
@@ -515,6 +515,19 @@ void MainWindow::showDiagram(const QString &name)
     hw->showHelp(QString("/doc/dgram.html"));
 }
 
+void MainWindow::showProc(const QString &procName)
+
+{
+    Procedure* p = m_workspace->workingVersion()->getProcedure(procName);
+    if(p)
+    {
+        ProcedureForm* pf = m_workspace->workingVersion()->getGui()->getProcedureForm();
+        pf->setProcedure(p);
+        setCentralWidget(pf);
+        pf->showSql();
+    }
+}
+
 void MainWindow::showView(const QString& viewName)
 {
     View* v = m_workspace->workingVersion()->getView(viewName);
@@ -631,6 +644,14 @@ void MainWindow::currentProjectTreeItemChanged(QTreeWidgetItem * current, QTreeW
                 showView(viewName);
             }
             else
+            if(current->parent() && current->parent() == m_workspace->workingVersion()->getGui()->getProcsItem())
+            {
+                // user clicked on a view
+                QVariant qv = current->data(0, Qt::UserRole);
+                QString viewName = qv.toString();
+                showProc(viewName);
+            }
+            else
             if(current->parent() && current->parent() == m_workspace->workingVersion()->getGui()->getFinalSqlItem())
             {
                 // user clicked on a SQL item
@@ -651,6 +672,11 @@ void MainWindow::currentProjectTreeItemChanged(QTreeWidgetItem * current, QTreeW
                 if(ent == 0)
                 {
                     ent = m_workspace->workingVersion()->getView(name);
+                }
+
+                if(ent == 0)
+                {
+                    ent = m_workspace->workingVersion()->getProcedure(name);
                 }
 
                 if(ent == 0)
@@ -836,7 +862,7 @@ void MainWindow::doLoadSolution(const QString& fileName, bool splashVisible)
 
     setWindowTitle(tr("DDM - [") + m_workspace->currentSolution()->name() + tr("]"));
 
-    connectActionsFromTablePopupMenu();
+    connectActionsFromPopupMenus();
 
     enableActions();
 
@@ -913,7 +939,7 @@ void MainWindow::enableActions()
     m_ui->action_Deploy->setMenu(ContextMenuCollection::getInstance()->getDeployPopupMenu());
 }
 
-void MainWindow::connectActionsFromTablePopupMenu()
+void MainWindow::connectActionsFromPopupMenus()
 {
     QObject::connect(ContextMenuCollection::getInstance()->getAction_RemoveTable(), SIGNAL(activated()), this, SLOT(onDeleteTableFromPopup()));
     QObject::connect(ContextMenuCollection::getInstance()->getAction_AddTable(), SIGNAL(activated()), this, SLOT(onNewTable()));
@@ -959,10 +985,30 @@ void MainWindow::connectActionsFromTablePopupMenu()
     QObject::connect(ContextMenuCollection::getInstance()->getAction_CreateViewUsingSql(), SIGNAL(activated()), this, SLOT(onNewViewWithSql()));
     QObject::connect(ContextMenuCollection::getInstance()->getAction_ConnectionConnect(), SIGNAL(activated()), this, SLOT(onConnectConnection()));
     ContextMenuCollection::getInstance()->getAction_BrowsedTableInject()->setVisible(true);
-
-
+    QObject::connect(ContextMenuCollection::getInstance()->getAction_DeleteView(), SIGNAL(activated()), this, SLOT(onDeleteView()));
 }
 
+void MainWindow::onDeleteView()
+{
+    View* v = getRightclickedView();
+    if(v)
+    {
+        if(QMessageBox::question(this, tr("Are you sure?"), tr("Really delete ") + v->getName()+ "?", QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
+        {
+            return;
+        }
+        m_workspace->workingVersion()->deleteView(v->getName());
+        m_workspace->workingVersion()->getGui()->updateForms();
+
+        ViewsListForm* vLst = m_workspace->workingVersion()->getGui()->getViewsListForm();
+        vLst->populateViews(m_workspace->workingVersion()->getViews());
+        setCentralWidget(vLst);
+
+        m_workspace->workingVersion()->getGui()->getViewsItem()->treeWidget()->clearSelection();
+        m_workspace->workingVersion()->getGui()->getViewsItem()->setSelected(true);
+
+    }
+}
 
 void MainWindow::onAbout()
 {
@@ -1104,6 +1150,21 @@ TableInstance* MainWindow::getRightclickedTableInstance()
         QString tabName = qv.toString();
         TableInstance* table =  m_workspace->workingVersion()->getTableInstance(tabName);
         return table;
+    }
+    return 0;
+}
+
+View* MainWindow::getRightclickedView()
+{
+    if(m_projectTree->getLastRightclickedItem() != 0)
+    {
+        ContextMenuEnabledTreeWidgetItem* item = m_projectTree->getLastRightclickedItem();
+        m_projectTree->setLastRightclickedItem(0);
+
+        QVariant qv = item->data(0, Qt::UserRole);
+        QString dgrName = qv.toString();
+        View* v =  m_workspace->workingVersion()->getView(dgrName);
+        return v;
     }
     return 0;
 }
@@ -2222,7 +2283,7 @@ void MainWindow::onNewProcedure()
     Workspace::getInstance()->workingVersion()->addProcedure(p);
     Workspace::getInstance()->workingVersion()->getGui()->createProcedureTreeEntry(p);
 
-    m_projectTree->setCurrentItem(0);
+    m_projectTree->setCurrentItem(p->getLocation());
     setCentralWidget(frm);
 
     //HelpWindow* hw = HelpWindow::instance();
