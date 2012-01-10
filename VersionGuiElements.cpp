@@ -244,19 +244,6 @@ void VersionGuiElements::populateTreeItems()
     {
         createViewTreeEntry(views.at(i));
     }
-
-    // add the views to the SQL code items
-    for(int i=0; i<views.size(); i++)
-    {
-        ContextMenuEnabledTreeWidgetItem* newViewItemForSql = new ContextMenuEnabledTreeWidgetItem(getFinalSqlItem(), QStringList(views.at(i)->getName()+".sql")) ;
-
-        QVariant var(views.at(i)->getName());
-        newViewItemForSql->setData(0, Qt::UserRole, var);
-        //newViewItemForSql->setPopupMenu(ContextMenuCollection::getInstance()->getTablePopupMenu());
-        // set the icon, add to the tree
-        newViewItemForSql->setIcon(0, IconFactory::getViewIcon());
-        m_tree->insertTopLevelItem(0, newViewItemForSql);
-    }
 }
 
 
@@ -338,18 +325,24 @@ ContextMenuEnabledTreeWidgetItem* VersionGuiElements::createViewTreeEntry(View* 
     ContextMenuEnabledTreeWidgetItem* newViewItem = new ContextMenuEnabledTreeWidgetItem(viewsItem, QStringList(view->getName())) ;
     QVariant var(view->getName());
     newViewItem->setData(0, Qt::UserRole, var);
-    //newViewItem->setPopupMenu(ContextMenuCollection::getInstance()->getTablePopupMenu());
+    newViewItem->setPopupMenu(ContextMenuCollection::getInstance()->getViewPopupMenu());
     // set the icon, add to the tree
     newViewItem->setIcon(0, IconFactory::getViewIcon());
     m_tree->addTopLevelItem(newViewItem);
     // set the link to the tree
     view->setLocation(newViewItem);
+
+    ContextMenuEnabledTreeWidgetItem* sqlItm = new ContextMenuEnabledTreeWidgetItem(getFinalSqlItem(), QStringList(view->getName()+".sql"));
+    sqlItm->setIcon(0, IconFactory::getViewIcon());
+    sqlItm->setData(0, Qt::UserRole, var);
+    view->setSqlItem(sqlItm);
+
     return newViewItem;
 }
 
 ContextMenuEnabledTreeWidgetItem* VersionGuiElements::createProcedureTreeEntry(Procedure* proc)
 {
-    ContextMenuEnabledTreeWidgetItem* newProcItem = new ContextMenuEnabledTreeWidgetItem(viewsItem, QStringList(proc->getName())) ;
+    ContextMenuEnabledTreeWidgetItem* newProcItem = new ContextMenuEnabledTreeWidgetItem(proceduresItem, QStringList(proc->getName())) ;
     QVariant var(proc->getName());
     newProcItem->setData(0, Qt::UserRole, var);
     // set the icon, add to the tree
@@ -357,6 +350,12 @@ ContextMenuEnabledTreeWidgetItem* VersionGuiElements::createProcedureTreeEntry(P
     m_tree->addTopLevelItem(newProcItem);
     // set the link to the tree
     proc->setLocation(newProcItem);
+
+    ContextMenuEnabledTreeWidgetItem* sqlItm = new ContextMenuEnabledTreeWidgetItem(getFinalSqlItem(), QStringList(proc->getName()));
+    sqlItm->setIcon(0, IconFactory::getProcedureIcon());
+    sqlItm->setData(0, Qt::UserRole, var);
+    proc->setSqlItem(sqlItm);
+
     return newProcItem;
 }
 

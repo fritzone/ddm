@@ -14,6 +14,10 @@ public:
     virtual void serialize(QDomDocument& doc, QDomElement& parent) const {}
     void setSql(const QString&);
     void rename(const QString&);
+    QString getSql() const
+    {
+        return m_sql;
+    }
 
 private:
     QString m_sql;

@@ -381,6 +381,16 @@ UserDataType* DefaultVersionImplementation::duplicateDataType(const QString& nam
     return dt;
 }
 
+void DefaultVersionImplementation::deleteView(const QString &name)
+{
+    View* v = getView(name);
+    m_data.m_views.remove(m_data.m_views.indexOf(v));
+    delete v->getLocation();
+    delete v->getSqlLocation();
+    delete v;
+}
+
+
 void DefaultVersionImplementation::deleteDiagram(const QString& name)
 {
     Diagram* dgr = getDiagram(name);

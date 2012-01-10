@@ -63,3 +63,8 @@ void ProcedureForm::initSql()
     m_textEdit->keyPressEvent(new QKeyEvent(QEvent::KeyPress, Qt::Key_Down, Qt::NoModifier));
     m_textEdit->keyPressEvent(new QKeyEvent(QEvent::KeyPress, Qt::Key_Down, Qt::NoModifier));
 }
+
+void ProcedureForm::showSql()
+{
+    m_textEdit->setPlainText(m_proc->getSql());
+}

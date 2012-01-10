@@ -23,6 +23,7 @@ public:
         m_proc = p;
     }
     void initSql();
+    void showSql();
 
 protected:
     void changeEvent(QEvent *e);
