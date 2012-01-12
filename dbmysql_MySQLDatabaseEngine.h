@@ -31,7 +31,7 @@ public:
     virtual bool createDatabase(Connection* c);
     virtual QVector<DatabaseBuiltinFunction> getBuiltinFunctions();
     const DatabaseBuiltinFunction& getBuiltinFunction(const QString& name);
-    virtual bool tryConnect(const QString& host, const QString& user, const QString& pass, const QString& dbName);
+    virtual bool tryConnect(Connection* c);
     virtual QStringList getKeywords() const;
     virtual QSqlDatabase getQSqlDatabaseForConnection(Connection *c);
     virtual QStringList getColumnsOfTable(Connection* c, const QString& tableName);

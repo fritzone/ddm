@@ -273,6 +273,11 @@ public:
     */
    virtual const QVector<Procedure*>& getProcedures() = 0;
 
+   /**
+    * Deletes all the unused data types
+    */
+   virtual void cleanupDataTypes() = 0;
+
 };
 
 #endif // VERSION_H

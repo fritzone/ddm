@@ -40,6 +40,8 @@ BrowseTableForm::BrowseTableForm(QWidget *parent, Connection* c, const QString& 
     textEdit->setObjectName(QString::fromUtf8("textEdit"));
     textEdit->setBrowseForm(this);
     ui->horizontalLayout_5->addWidget(textEdit);
+    textEdit->setLineNumberFrame(frameForLineNumbers);
+    textEdit->updateLineNumbers();
 
     QSqlDatabase sqldb = c->getQSqlDatabase();
     QSqlTableModel *model = new QSqlTableModel(ui->table, sqldb);

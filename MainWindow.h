@@ -150,6 +150,7 @@ public slots:
     void onInjectBrowsedTable();
     void onBrowseBrowsedTable();
     void onDeleteView();
+    void onDeleteUnusedDatatypes();
 
 public:
     void createStatusLabel();

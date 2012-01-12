@@ -12,7 +12,7 @@ Procedure::Procedure(const QString &pname) : SqlSourceEntity(), NamedItem(pname)
 
 }
 
-QStringList Procedure::generateSqlSource(AbstractSqlGenerator *, QHash<QString, QString>, const QString &codepage)
+QStringList Procedure::generateSqlSource(AbstractSqlGenerator *, QHash<QString, QString>, const QString &/*codepage*/)
 {
     QStringList r;
     r.append(m_sql);

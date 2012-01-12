@@ -880,15 +880,15 @@ const DatabaseBuiltinFunction& MySQLDatabaseEngine::getBuiltinFunction(const QSt
     return no_function;
 }
 
-bool MySQLDatabaseEngine::tryConnect(const QString& host, const QString& user, const QString& pass, const QString& dbName)
+bool MySQLDatabaseEngine::tryConnect(Connection* c)
 {
     QString connectConnectionName = provideConnectionName("connect");
     QSqlDatabase dbo = QSqlDatabase::cloneDatabase(*m_defaultMysqlDb, connectConnectionName);
 
-    dbo.setHostName(host);
-    dbo.setUserName(user);
-    dbo.setPassword(pass);
-    dbo.setDatabaseName(dbName);
+    dbo.setHostName(c->getHost());
+    dbo.setUserName(c->getUser());
+    dbo.setPassword(c->getPassword());
+    dbo.setDatabaseName(c->getDb());
 
     bool ok = dbo.open();
 

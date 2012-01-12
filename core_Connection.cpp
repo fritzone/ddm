@@ -24,7 +24,7 @@ void Connection::serialize(QDomDocument& doc, QDomElement& parent) const
 
 bool Connection::tryConnect()
 {
-    if(!m_engine->tryConnect(m_host, m_user, m_pass, m_db))
+    if(!m_engine->tryConnect(this))
     {
         m_state = FAILED;
         if(getLocation())

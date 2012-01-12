@@ -166,17 +166,78 @@ public:
      */
     virtual QStringList getAvailableDatabases(const QString& host, const QString& user, const QString& pass) = 0;
 
+    /**
+     * Returnd a list of the tables that are in the database represented by the given connection
+     * @param c - the connection to the database
+     * @return the list of the tables in this connection
+     */
     virtual QStringList getAvailableTables(Connection* c) = 0;
+
+    /**
+     * Returns a list of the available views that are in the database represented by the given connection
+     * @param c - the connection to the database
+     * @return the list of views
+     */
     virtual QStringList getAvailableViews(Connection* c) = 0;
+
+    /**
+     * Executes a script which creates the database represented by the connection. The database engine must support the notion
+     * of separated databases.
+     * @param c - the connection that represents a database
+     * @return true in case of success, false otherwise
+     */
     virtual bool createDatabase(Connection* c) = 0;
+
+    /**
+     * Returns a list of @see DatabaseBuiltingFunction objects that are representing the functions supported by the database
+     * @return a list of teh functions of the database
+     */
     virtual QVector<DatabaseBuiltinFunction> getBuiltinFunctions() = 0;
+
+    /**
+     * Executes a script which drops the database represented by the connection. The database engine must support the notion
+     * of separated databases.
+     * @param c - the connection that represents a database
+     * @return true in case of success, false otherwise
+     */
     virtual bool dropDatabase(Connection* c) = 0;
+
+    /**
+     * Returns the representation of the database function called @name
+     * @param name - the name of the function
+     * @return the function, or if it does not exist a function with name "N/A" and type FT_INVALID
+     */
     virtual const DatabaseBuiltinFunction& getBuiltinFunction(const QString& name) = 0;
+
+    /**
+     * Reverse engineers the view which is to be found in the database represented by the connection object.
+     * The resulting view object will always have the manual flag turned on, so there is no SQL query builder for it.
+     * @param c - the connection
+     * @param viewName - the view to be reverse engineered
+     * @return the View object representing the database view, or 0 in case there is no view.
+     */
     virtual View* reverseEngineerView(Connection *c, const QString& viewName) = 0;
 
+    /**
+     * Tries to connect to the database represented by the connection
+     * @param c - the connection
+     * @return true in case of success, false otherwise
+     */
+    virtual bool tryConnect(Connection* c) = 0;
 
-    virtual bool tryConnect(const QString& host, const QString& user, const QString& pass, const QString& dbName) = 0;
+    /**
+     * Returns a QSqlDatabase object for the given connection, which can be used to execute own queries
+     * @param c - the conenction
+     * @return a QSqlDatabase obejct for the given connection
+     */
     virtual QSqlDatabase getQSqlDatabaseForConnection(Connection *c) = 0;
+
+    /**
+     * Returns the columns of the given table as a list of strings
+     * @param c - the connection
+     * @param  tableName - the name of the table
+     * @return the list of the columns of the table
+     */
     virtual QStringList getColumnsOfTable(Connection* c, const QString& tableName) = 0;
 
 public:

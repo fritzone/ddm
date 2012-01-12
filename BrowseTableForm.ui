@@ -13,114 +13,98 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <widget class="QFrame" name="frame">
-   <property name="geometry">
-    <rect>
-     <x>9</x>
-     <y>9</y>
-     <width>65</width>
-     <height>44</height>
-    </rect>
-   </property>
-   <property name="frameShape">
-    <enum>QFrame::Box</enum>
-   </property>
-   <property name="frameShadow">
-    <enum>QFrame::Plain</enum>
-   </property>
-   <layout class="QFormLayout" name="formLayout">
-    <property name="leftMargin">
-     <number>6</number>
-    </property>
-    <item row="0" column="0">
-     <widget class="QLabel" name="label">
-      <property name="text">
-       <string/>
+  <layout class="QVBoxLayout" name="verticalLayout_3">
+   <item>
+    <widget class="QFrame" name="frame">
+     <property name="frameShape">
+      <enum>QFrame::Box</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Plain</enum>
+     </property>
+     <layout class="QFormLayout" name="formLayout">
+      <property name="leftMargin">
+       <number>6</number>
       </property>
-      <property name="pixmap">
-       <pixmap resource="dbm.qrc">:/images/actions/images/small/database_connected.png</pixmap>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="1">
-     <widget class="QLabel" name="txtConnection">
-      <property name="text">
-       <string>DB</string>
-      </property>
-     </widget>
-    </item>
-   </layout>
-  </widget>
-  <widget class="QTableView" name="table">
-   <property name="geometry">
-    <rect>
-     <x>9</x>
-     <y>59</y>
-     <width>382</width>
-     <height>150</height>
-    </rect>
-   </property>
-   <property name="sizePolicy">
-    <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-     <horstretch>2</horstretch>
-     <verstretch>0</verstretch>
-    </sizepolicy>
-   </property>
-   <property name="contextMenuPolicy">
-    <enum>Qt::ActionsContextMenu</enum>
-   </property>
-   <property name="alternatingRowColors">
-    <bool>true</bool>
-   </property>
-   <property name="selectionMode">
-    <enum>QAbstractItemView::SingleSelection</enum>
-   </property>
-   <property name="selectionBehavior">
-    <enum>QAbstractItemView::SelectItems</enum>
-   </property>
-   <property name="sortingEnabled">
-    <bool>true</bool>
-   </property>
-   <attribute name="verticalHeaderShowSortIndicator" stdset="0">
-    <bool>false</bool>
-   </attribute>
-  </widget>
-  <widget class="QGroupBox" name="groupBox">
-   <property name="geometry">
-    <rect>
-     <x>9</x>
-     <y>255</y>
-     <width>251</width>
-     <height>91</height>
-    </rect>
-   </property>
-   <property name="title">
-    <string>Quick Query</string>
-   </property>
-   <layout class="QVBoxLayout" name="verticalLayout_2">
-    <item>
-     <layout class="QVBoxLayout" name="verticalLayout">
-      <item>
-       <widget class="QToolButton" name="btnExecuteQuery">
-        <property name="toolTip">
-         <string>Run the query</string>
-        </property>
+      <item row="0" column="0">
+       <widget class="QLabel" name="label">
         <property name="text">
-         <string>...</string>
+         <string/>
         </property>
-        <property name="icon">
-         <iconset resource="dbm.qrc">
-          <normaloff>:/images/actions/images/actions/button_play_green.png</normaloff>:/images/actions/images/actions/button_play_green.png</iconset>
+        <property name="pixmap">
+         <pixmap resource="dbm.qrc">:/images/actions/images/small/database_connected.png</pixmap>
         </property>
        </widget>
       </item>
-      <item>
-       <layout class="QHBoxLayout" name="horizontalLayout_5"/>
+      <item row="0" column="1">
+       <widget class="QLabel" name="txtConnection">
+        <property name="text">
+         <string>DB</string>
+        </property>
+       </widget>
       </item>
      </layout>
-    </item>
-   </layout>
-  </widget>
+    </widget>
+   </item>
+   <item>
+    <widget class="QTableView" name="table">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+       <horstretch>2</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="contextMenuPolicy">
+      <enum>Qt::ActionsContextMenu</enum>
+     </property>
+     <property name="alternatingRowColors">
+      <bool>true</bool>
+     </property>
+     <property name="selectionMode">
+      <enum>QAbstractItemView::SingleSelection</enum>
+     </property>
+     <property name="selectionBehavior">
+      <enum>QAbstractItemView::SelectItems</enum>
+     </property>
+     <property name="sortingEnabled">
+      <bool>true</bool>
+     </property>
+     <attribute name="verticalHeaderShowSortIndicator" stdset="0">
+      <bool>false</bool>
+     </attribute>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="groupBox">
+     <property name="title">
+      <string>Quick Query</string>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_2">
+      <item>
+       <layout class="QVBoxLayout" name="verticalLayout">
+        <item>
+         <widget class="QToolButton" name="btnExecuteQuery">
+          <property name="toolTip">
+           <string>Run the query</string>
+          </property>
+          <property name="text">
+           <string>...</string>
+          </property>
+          <property name="icon">
+           <iconset resource="dbm.qrc">
+            <normaloff>:/images/actions/images/actions/button_play_green.png</normaloff>:/images/actions/images/actions/button_play_green.png</iconset>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_5"/>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </widget>
+   </item>
+  </layout>
  </widget>
  <resources>
   <include location="dbm.qrc"/>
