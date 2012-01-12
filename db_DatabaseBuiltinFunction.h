@@ -90,7 +90,7 @@ public:
 
 
 
-    DatabaseBuiltinFunction() : m_type(FT_INVALID), m_returnType(), m_parameters(), m_description() {}
+    DatabaseBuiltinFunction() : NamedItem("N/A"), m_type(FT_INVALID), m_returnType(), m_parameters(), m_description() {}
 
     int getParameterCount() const
     {

@@ -917,6 +917,7 @@ void MainWindow::enableActions()
     m_ui->action_NewDatabaseConnection->setEnabled(true);
     m_ui->action_Preferences->setEnabled(true);
     m_ui->action_NewProcedure->setEnabled(true);
+    m_ui->action_DeleteUnusuedDatatypes->setEnabled(true);
 
     if(m_workspace->currentProjectIsOop())
     {
@@ -2342,4 +2343,9 @@ void MainWindow::changeEvent(QEvent *e)
             }
         }
     }
+}
+
+void MainWindow::onDeleteUnusedDatatypes()
+{
+    m_workspace->workingVersion()->cleanupDataTypes();
 }

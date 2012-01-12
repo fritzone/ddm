@@ -525,6 +525,23 @@ QList<QString> DefaultVersionImplementation::getSqlScript(const QString& codepag
         s += ";\n\n";
         finalSql << s;
     }
+
+    // and the procedures
+    finalSql.append("\n");
+    finalSql << "-- Creating the procedures\n";
+    finalSql.append("\n");
+    for(int i=0; i<m_data.m_procedures.size(); i++)
+    {
+        QStringList t = m_data.m_procedures.at(i)->generateSqlSource(m_project->getEngine()->getSqlGenerator(), opts, codepage);
+        QString s = "";
+        for(int j=0; j<t.size(); j++)
+        {
+            s += t.at(j) + " ";
+        }
+        s += "\n";
+        finalSql << s;
+    }
+
     return finalSql;
 }
 
@@ -769,4 +786,40 @@ void DefaultVersionImplementation::addProcedure(Procedure* p)
 const QVector<Procedure*>& DefaultVersionImplementation::getProcedures()
 {
     return m_data.m_procedures;
+}
+
+void DefaultVersionImplementation::cleanupDataTypes()
+{
+    QVector<int> sentencedIndices;
+    for(int k=0; k<m_data.m_dataTypes.size(); k++)
+    {
+        QString dtName = m_data.m_dataTypes.at(k)->getName();
+        const QVector<Table*>& allTables = getTables();
+        QString usage = "";
+        for(int i=0; i<allTables.size(); i++)
+        {
+            const QVector<Column*> & tablesColumns = allTables.at(i)->getColumns();
+            for(int j=0; j<tablesColumns.size(); j++)
+            {
+                QString cn = tablesColumns.at(j)->getDataType()->getName();
+                if(cn == dtName)
+                {
+                    usage += "Y";
+                }
+            }
+        }
+
+        if(usage.length() == 0)
+        {
+            sentencedIndices.prepend(k);
+        }
+    }
+
+    for(int i=0; i<sentencedIndices.size(); i++)
+    {
+        QString dtName = m_data.m_dataTypes.at(sentencedIndices.at(i))->getName();
+        delete m_data.m_dataTypes.at(sentencedIndices.at(i))->getLocation();
+        deleteDataType(dtName);
+
+    }
 }
