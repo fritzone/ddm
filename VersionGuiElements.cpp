@@ -244,6 +244,13 @@ void VersionGuiElements::populateTreeItems()
     {
         createViewTreeEntry(views.at(i));
     }
+
+    // add the procedures to the main tree
+    const QVector<Procedure*> procs = m_version->getProcedures();
+    for(int i=0; i<procs.size(); i++)
+    {
+        createProcedureTreeEntry(procs.at(i));
+    }
 }
 
 

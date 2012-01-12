@@ -4,6 +4,7 @@
 #include "Diagram.h"
 #include "TableInstance.h"
 #include "core_View.h"
+#include "core_Procedure.h"
 
 MajorVersion::MajorVersion(QTreeWidget* tree, QTreeWidget* dttree, QTreeWidget* issueTree, ContextMenuEnabledTreeWidgetItem* projectItem, int ver, Project* p)
     : DefaultVersionImplementation(tree, dttree, issueTree, projectItem, p)
@@ -79,6 +80,16 @@ void MajorVersion::serialize(QDomDocument &doc, QDomElement &parent) const
         m_data.m_views[i]->serialize(doc, viewsElement);
     }
     majorVersionElement.appendChild(viewsElement);
+    }
+
+    // the procedures
+    {
+    QDomElement procElement = doc.createElement("Procedures");
+    for(int i=0; i< m_data.m_procedures.size(); i++)
+    {
+        m_data.m_procedures[i]->serialize(doc, procElement);
+    }
+    majorVersionElement.appendChild(procElement);
     }
 
     parent.appendChild(majorVersionElement);

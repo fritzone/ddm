@@ -10,8 +10,9 @@ class Procedure : virtual public SqlSourceEntity, virtual public NamedItem, virt
 {
 public:
     Procedure();
+    Procedure(const QString& pname);
     virtual QStringList generateSqlSource(AbstractSqlGenerator*, QHash<QString,QString>, const QString& codepage);
-    virtual void serialize(QDomDocument& doc, QDomElement& parent) const {}
+    virtual void serialize(QDomDocument& doc, QDomElement& parent) const;
     void setSql(const QString&);
     void rename(const QString&);
     QString getSql() const

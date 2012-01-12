@@ -28,6 +28,7 @@
 #include "qbr_SingleExpressionQueryComponent.h"
 #include "qbr_DatabaseFunctionInstantiationComponent.h"
 #include "Workspace.h"
+#include "core_Procedure.h"
 
 #include <QStringList>
 
@@ -246,6 +247,18 @@ MajorVersion* DeserializationFactory::createMajorVersion(Project* p, DatabaseEng
         }
     }
 
+    // getting the procedures
+    for(int i=0; i<element.childNodes().count(); i++)
+    {
+        if(element.childNodes().at(i).nodeName() == "Procedures")
+        {
+            for(int j=0; j<element.childNodes().at(i).childNodes().count(); j++)
+            {
+                Procedure* proc = createProcedure(p, result, doc, element.childNodes().at(i).childNodes().at(j).toElement());
+                result->addProcedure(proc);
+            }
+        }
+    }
     return result;
 }
 
@@ -749,4 +762,14 @@ TableInstance* DeserializationFactory::createTableInstance(Version* v, const QDo
         result->setName(name);
         return result;
     }
+}
+
+Procedure* DeserializationFactory::createProcedure(Project*, Version*,  const QDomDocument&, const QDomElement& element)
+{
+    QString name = element.attribute("Name");
+    Procedure* p = new Procedure(name);
+    QDomElement sqlElement = element.firstChild().toElement();
+    QDomCDATASection cdata = sqlElement.firstChild().toCDATASection();
+    p->setSql(cdata.toText().data());
+    return p;
 }

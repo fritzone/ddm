@@ -21,6 +21,7 @@ class Version;
 class TableInstance;
 class View;
 class QueryComponent;
+class Procedure;
 
 class DeserializationFactory
 {
@@ -41,6 +42,7 @@ public:
     static TableInstance* createTableInstance(Version* v, const QDomDocument& doc, const QDomElement& element, bool secondStep = false);
     static View* createView(Project* p, Version* v, const QDomDocument& doc, const QDomElement& element);
     static QueryComponent* createComponent(QueryComponent* parent, Project* p, Version* v, const QDomDocument& doc, const QDomElement& element);
+    static Procedure* createProcedure(Project* p, Version* v, const QDomDocument& doc, const QDomElement& element);
 
 private:
     DeserializationFactory();
