@@ -96,6 +96,7 @@ public:
     virtual const QVector<View*>& getViews();
     virtual Procedure* getProcedure(const QString &name);
     virtual void addProcedure(Procedure* p);
+    virtual const QVector<Procedure*>& getProcedures();
 protected:
     // the version as a string representation. Major versions are always of form X.0
     QString version;

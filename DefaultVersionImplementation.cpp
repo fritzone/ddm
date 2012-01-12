@@ -765,3 +765,8 @@ void DefaultVersionImplementation::addProcedure(Procedure* p)
 {
     m_data.m_procedures.append(p);
 }
+
+const QVector<Procedure*>& DefaultVersionImplementation::getProcedures()
+{
+    return m_data.m_procedures;
+}

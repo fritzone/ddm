@@ -20,6 +20,7 @@
 #include "MainWindow.h"
 #include "InjectSqlDialog.h"
 #include "core_ConnectionManager.h"
+#include "FrameForLineNumbers.h"
 
 #include <QScrollBar>
 #include <QVBoxLayout>
@@ -31,18 +32,19 @@ NewViewForm::NewViewForm(bool queryBuilder, QueryGraphicsHelper* c, QWidget *par
     SourceCodePresenterWidget(parent),
     ui(new Ui::NewViewForm),
     m_comps(c),
-    m_queryBuilder(queryBuilder)
+    m_queryBuilder(queryBuilder), m_updateSqlAfterNameChange(true), m_autoChange(false)
 {
     ui->setupUi(this);
     txtSql = new QTextEditWithCodeCompletion(ui->groupBox_3);
     txtSql->setObjectName(QString::fromUtf8("txtSql"));
     txtSql->setMinimumSize(QSize(0, 200));
 
-    ui->verticalLayout_4->addWidget(txtSql);
     QObject::connect(txtSql, SIGNAL(textChanged()), this, SLOT(onSqlChange()));
 
     if(m_queryBuilder)
     {
+        ui->horizontalLayout_4->addWidget(txtSql);
+
         m_qgs = new QueryGraphicsScene(c, this);
 
         m_qgv = new QueryGraphicsView(this);
@@ -56,6 +58,8 @@ NewViewForm::NewViewForm(bool queryBuilder, QueryGraphicsHelper* c, QWidget *par
         m_qgv->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
 
         ui->verticalLayout->insertWidget(1, m_qgv);
+
+        txtSql->setReadOnly(true);
     }
     else
     {
@@ -69,6 +73,23 @@ NewViewForm::NewViewForm(bool queryBuilder, QueryGraphicsHelper* c, QWidget *par
         ui->txtViewName->setToolTip(QApplication::translate("NewViewForm", "The name of the View", 0, QApplication::UnicodeUTF8));
         ui->groupBox->hide();
         ui->verticalLayout_4->insertWidget(0, ui->txtViewName);
+        connect(ui->txtViewName, SIGNAL(textChanged(QString)), this, SLOT(onNameChange(QString)));
+
+        FrameForLineNumbers* m_frameForLineNumbers = new FrameForLineNumbers(this);
+        QSizePolicy sizePolicy(QSizePolicy::Fixed, QSizePolicy::Preferred);
+        sizePolicy.setHorizontalStretch(0);
+        sizePolicy.setVerticalStretch(0);
+        sizePolicy.setHeightForWidth(m_frameForLineNumbers->sizePolicy().hasHeightForWidth());
+        m_frameForLineNumbers->setSizePolicy(sizePolicy);
+        m_frameForLineNumbers->setMinimumSize(QSize(48, 0));
+        m_frameForLineNumbers->setMaximumSize(QSize(48, 16777215));
+        m_frameForLineNumbers->setFrameShape(QFrame::StyledPanel);
+        m_frameForLineNumbers->setFrameShadow(QFrame::Raised);
+        ui->horizontalLayout_4->addWidget(m_frameForLineNumbers);
+        ui->horizontalLayout_4->addWidget(txtSql);
+        txtSql->setLineNumberFrame(m_frameForLineNumbers);
+        txtSql->updateLineNumbers();
+        txtSql->setFocus();
     }
 }
 
@@ -199,7 +220,15 @@ void NewViewForm::onNameChange(QString a)
 {
     m_view->setName(a);
     m_view->getLocation()->setText(0, a);
-    presentSql(Workspace::getInstance()->currentProject(), QString("latin1"));
+    QVariant v;
+    v.setValue(a);
+    m_view->getLocation()->setData(0, Qt::UserRole, v);
+    if(m_updateSqlAfterNameChange)
+    {
+        m_autoChange = true;
+        presentSql(Workspace::getInstance()->currentProject(), QString("latin1"));
+        m_autoChange = false;
+    }
 }
 
 void NewViewForm::onSqlChange()
@@ -207,7 +236,39 @@ void NewViewForm::onSqlChange()
     if(!m_queryBuilder)
     {
         m_view->setSql(txtSql->toPlainText());
+        if(!m_autoChange) getViewNameFromSql();
     }
+}
+
+QString NewViewForm::getViewNameFromSql()
+{
+    QString t = txtSql->toPlainText();
+    int i = t.indexOf(QString("VIEW"), 0, Qt::CaseInsensitive);
+    if(i != -1)
+    {
+        i += 4;
+        while(i<t.length() && t.at(i).isSpace())
+        {
+            i++;
+        }
+        QString n = "";
+        while(i<t.length() && !t.at(i).isSpace())
+        {
+            n += t.at(i);
+            i++;
+        }
+        m_updateSqlAfterNameChange = false;
+        ui->txtViewName->setText(n);
+        m_view->getLocation()->setText(0, n);
+        m_view->setName(n);
+        QVariant v;
+        v.setValue(n);
+        m_view->getLocation()->setData(0, Qt::UserRole, v);
+        m_updateSqlAfterNameChange = true;
+        return n;
+    }
+
+    return "";
 }
 
 void NewViewForm::onHelp()

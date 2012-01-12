@@ -268,6 +268,11 @@ public:
     */
    virtual void addProcedure(Procedure* p) = 0;
 
+   /**
+    *  Returns all the procedures of the system
+    */
+   virtual const QVector<Procedure*>& getProcedures() = 0;
+
 };
 
 #endif // VERSION_H

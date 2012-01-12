@@ -7,6 +7,11 @@ Procedure::Procedure() : SqlSourceEntity(), NamedItem(NameGenerator::getUniqueNa
 {
 }
 
+Procedure::Procedure(const QString &pname) : SqlSourceEntity(), NamedItem(pname)
+{
+
+}
+
 QStringList Procedure::generateSqlSource(AbstractSqlGenerator *, QHash<QString, QString>, const QString &codepage)
 {
     QStringList r;
@@ -23,4 +28,15 @@ void Procedure::rename(const QString &n)
 {
     setName(n);
     getLocation()->setText(0, n);
+}
+
+void Procedure::serialize(QDomDocument &doc, QDomElement &parent) const
+{
+    QDomElement procElement = doc.createElement("Procedure");
+    procElement.setAttribute("Name", m_name);
+    QDomElement textElement = doc.createElement("Sql");
+    QDomCDATASection cdata = doc.createCDATASection(m_sql);
+    textElement.appendChild(cdata);
+    procElement.appendChild(textElement);
+    parent.appendChild(procElement);
 }

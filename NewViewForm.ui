@@ -94,12 +94,6 @@
         <string/>
        </property>
        <layout class="QVBoxLayout" name="verticalLayout_4">
-        <property name="spacing">
-         <number>6</number>
-        </property>
-        <property name="margin">
-         <number>0</number>
-        </property>
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout">
           <item>
@@ -174,6 +168,9 @@
            </spacer>
           </item>
          </layout>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_4"/>
         </item>
         <item>
          <widget class="QTabWidget" name="tabWidget_4">

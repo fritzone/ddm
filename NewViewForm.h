@@ -49,6 +49,10 @@ protected:
     void changeEvent(QEvent *e);
 
 private:
+
+    QString getViewNameFromSql();
+
+private:
     Ui::NewViewForm *ui;
     QueryGraphicsView* m_qgv;
     QueryGraphicsScene* m_qgs;
@@ -56,8 +60,8 @@ private:
     bool m_queryBuilder;
     View* m_view;
     QTextEditWithCodeCompletion*txtSql;
-
-
+    bool m_updateSqlAfterNameChange;
+    bool m_autoChange;
 };
 
 #endif // NEWVIEWFORM_H
