@@ -48,9 +48,45 @@ void ProcedureForm::changeEvent(QEvent *e)
     }
 }
 
+QString ProcedureForm::getProcNameFromSql()
+{
+    QString t = m_textEdit->toPlainText();
+    QString c = "PROCEDURE";
+    int i = t.indexOf(c, 0, Qt::CaseInsensitive);
+    if(i == -1)
+    {
+        c = "FUNCTION";
+        i = t.indexOf(c, 0, Qt::CaseInsensitive);
+    }
+
+    if(i != -1)
+    {
+        i += c.length();
+        while(i<t.length() && t.at(i).isSpace())
+        {
+            i++;
+        }
+        QString n = "";
+        while(i<t.length() && t.at(i) != '(')
+        {
+            n += ((t.at(i).isSpace())?(QString("")):(t.at(i)));
+            i++;
+        }
+        m_proc->getLocation()->setText(0, n);
+        m_proc->setName(n);
+        QVariant v;
+        v.setValue(n);
+        m_proc->getLocation()->setData(0, Qt::UserRole, v);
+        return n;
+    }
+
+    return "";
+}
+
 void ProcedureForm::textChanged()
 {
     m_proc->setSql(m_textEdit->toPlainText());
+    getProcNameFromSql();
 }
 
 void ProcedureForm::initSql()

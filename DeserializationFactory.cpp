@@ -490,6 +490,8 @@ Column* DeserializationFactory::createColumn(Version* ver, const QDomDocument &,
     UserDataType* udt = ver->getDataType(type);
 
     Column* col = new Column(name, udt, pk == "1", element.attribute("AutoIncrement")=="1");
+    QString g = element.firstChild().firstChild().nodeValue();
+    col->setDescription(g);
     return col;
 }
 
@@ -518,11 +520,13 @@ Table* DeserializationFactory::createTable(DatabaseEngine* engine, Version* ver,
 
     for(int i=0; i<element.childNodes().count(); i++)
     {
-        if(element.childNodes().at(i).nodeName() == "Description")
+        QString nodeN = element.childNodes().at(i).nodeName();
+        if(nodeN == "Description")
         {
-            result->setDescription(element.childNodes().at(i).firstChild().nodeValue());
+            QString d = element.childNodes().at(i).firstChild().nodeValue();
+            result->setDescription(d);
         }
-        if(element.childNodes().at(i).nodeName() == "Columns")
+        if(nodeN == "Columns")
         {
             for(int j=0; j<element.childNodes().at(i).childNodes().count(); j++)
             {
@@ -530,7 +534,7 @@ Table* DeserializationFactory::createTable(DatabaseEngine* engine, Version* ver,
                 result->addColumn(col);
             }
         }
-        if(element.childNodes().at(i).nodeName() == "Indices")
+        if(nodeN == "Indices")
         {
             for(int j=0; j<element.childNodes().at(i).childNodes().count(); j++)
             {
@@ -538,7 +542,7 @@ Table* DeserializationFactory::createTable(DatabaseEngine* engine, Version* ver,
                 result->addIndex(idx);
             }
         }
-        if(element.childNodes().at(i).nodeName() == "ForeignKeys")
+        if(nodeN == "ForeignKeys")
         {
             for(int j=0; j<element.childNodes().at(i).childNodes().count(); j++)
             {
@@ -546,7 +550,7 @@ Table* DeserializationFactory::createTable(DatabaseEngine* engine, Version* ver,
                 result->addForeignKey(fk);
             }
         }
-        if(element.childNodes().at(i).nodeName() == "StartupValues")
+        if(nodeN == "StartupValues")
         {
             QVector <QVector <QString> > values;
             for(int j=0; j<element.childNodes().at(i).childNodes().count(); j++)    // willl count the rows

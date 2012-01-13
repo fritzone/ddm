@@ -92,10 +92,18 @@
     <addaction name="action_Datatypes_Tree"/>
     <addaction name="action_ConnectionsTree"/>
    </widget>
+   <widget class="QMenu" name="menuDeployment">
+    <property name="title">
+     <string>Deployment</string>
+    </property>
+    <addaction name="action_Deploy"/>
+    <addaction name="action_DeploymentScript"/>
+   </widget>
    <addaction name="menu_File"/>
    <addaction name="menu_Edit"/>
    <addaction name="menu_View"/>
    <addaction name="menu_Solution"/>
+   <addaction name="menuDeployment"/>
    <addaction name="menu_Help"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
@@ -319,7 +327,7 @@
      <normaloff>:/images/actions/images/actions/deploy.png</normaloff>:/images/actions/images/actions/deploy.png</iconset>
    </property>
    <property name="text">
-    <string>deploy</string>
+    <string>Deploy</string>
    </property>
    <property name="toolTip">
     <string>Deploy the solution</string>
@@ -439,6 +447,17 @@
    </property>
    <property name="text">
     <string>Delete Unusued Datatypes</string>
+   </property>
+  </action>
+  <action name="action_DeploymentScript">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Deployment Script</string>
+   </property>
+   <property name="toolTip">
+    <string>Create a deployment script</string>
    </property>
   </action>
  </widget>
