@@ -32,6 +32,9 @@ private slots:
     void textChanged();
 
 private:
+    QString getProcNameFromSql();
+
+private:
     Ui::ProcedureForm *ui;
     QTextEditWithCodeCompletion* m_textEdit;
     FrameForLineNumbers* m_frameForLineNumbers;

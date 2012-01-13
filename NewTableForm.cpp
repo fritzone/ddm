@@ -552,6 +552,7 @@ void NewTableForm::setTable(Table *table)
     m_ui->txtTableName->setText(table->getName());
     m_ui->chkPersistent->setChecked(table->isPersistent());
     m_ui->chkTemporary->setChecked(table->isTemporary());
+    m_ui->txtDescription->setText(table->getDescription());
 
     m_currentStorageEngine = table->getStorageEngine();
     if(table->getStorageEngine())
