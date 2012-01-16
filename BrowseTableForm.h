@@ -2,6 +2,8 @@
 #define BROWSETABLEFORM_H
 
 #include <QWidget>
+#include <QSplitter>
+
 #include "QTextEditWithCodeCompletion.h"
 
 namespace Ui {
@@ -22,6 +24,7 @@ public:
 
 protected:
     void changeEvent(QEvent *e);
+    void resizeEvent(QResizeEvent *);
 
 public slots:
     void onRunQuery();
@@ -40,6 +43,7 @@ private:
     static int m_lastP;
     Connection* m_connection;
     QString m_tab;
+    QSplitter* spl;
 };
 
 #endif // BROWSETABLEFORM_H
