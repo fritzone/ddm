@@ -5,13 +5,16 @@
 #include "VersionGuiElements.h"
 #include "MainWindow.h"
 
+#include <QDesktopWidget>
+
 HelpWindow* HelpWindow::m_instance = 0;
 
 HelpWindow* HelpWindow::instance()
 {
     if(m_instance == 0)
     {
-        m_instance = new HelpWindow(MainWindow::instance());
+        QDesktopWidget* w = new QDesktopWidget();
+        m_instance = new HelpWindow(w->screen());
     }
     return m_instance;
 }
