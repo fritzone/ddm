@@ -430,7 +430,7 @@ void MainWindow::onDTTreeClicked()
             }
         }
         HelpWindow* hw = HelpWindow::instance();
-        hw->showHelp(QString("/doc/dtyp.html"));
+        if(hw->isVisible()) hw->showHelp(QString("/doc/dtyp.html"));
     }
 }
 
@@ -441,7 +441,7 @@ NewTableForm* MainWindow::showExistingTable(Table *table)
     frm->focusOnName();
     setCentralWidget(frm);
     HelpWindow* hw = HelpWindow::instance();
-    hw->showHelp(QString("/doc/tabl.html"));
+    if(hw->isVisible()) hw->showHelp(QString("/doc/tabl.html"));
     return frm;
 }
 
@@ -474,7 +474,7 @@ void MainWindow::showTableInstance(const QString &tabName, bool focus)
     setCentralWidget(frmTinst);
 
     HelpWindow* hw = HelpWindow::instance();
-    hw->showHelp(QString("/doc/tinst.html"));
+    if(hw->isVisible()) hw->showHelp(QString("/doc/tinst.html"));
 
     if(focus) m_projectTree->setCurrentItem(table->getLocation());
 }
@@ -496,7 +496,7 @@ void MainWindow::showDataType(const QString &name, bool focus)
     if(focus) m_datatypesTree->setCurrentItem(dt->getLocation());
 
     HelpWindow* hw = HelpWindow::instance();
-    hw->showHelp(QString("/doc/dtyp.html"));
+    if(hw->isVisible()) hw->showHelp(QString("/doc/dtyp.html"));
 }
 
 void MainWindow::showDiagram(const QString &name)
@@ -512,7 +512,7 @@ void MainWindow::showDiagram(const QString &name)
     df->paintDiagram();
 
     HelpWindow* hw = HelpWindow::instance();
-    hw->showHelp(QString("/doc/dgram.html"));
+    if(hw->isVisible()) hw->showHelp(QString("/doc/dgram.html"));
 }
 
 void MainWindow::showProc(const QString &procName)
@@ -552,7 +552,7 @@ void MainWindow::showView(const QString& viewName)
         }
 
         HelpWindow* hw = HelpWindow::instance();
-        hw->showHelp(QString("/doc/view.html"));
+        if(hw->isVisible()) hw->showHelp(QString("/doc/view.html"));
     }
 
 }
@@ -632,7 +632,7 @@ void MainWindow::currentProjectTreeItemChanged(QTreeWidgetItem * current, QTreeW
                 setCentralWidget(frm);
 
                 HelpWindow* hw = HelpWindow::instance();
-                hw->showHelp(QString("/doc/tinst.html"));
+                if(hw->isVisible()) hw->showHelp(QString("/doc/tinst.html"));
 
             }
             else
@@ -690,7 +690,7 @@ void MainWindow::currentProjectTreeItemChanged(QTreeWidgetItem * current, QTreeW
                 setCentralWidget(frm);
 
                 HelpWindow* hw = HelpWindow::instance();
-                hw->showHelp(QString("/doc/sqls.html"));
+                if(hw->isVisible()) hw->showHelp(QString("/doc/sqls.html"));
 
             }
             else    // user possibly clicked on a table which had a parent a table ...

@@ -30,6 +30,7 @@ public slots:
     void onRunQuery();
     void onSaveQuery();
     void onLoadQuery();
+    void textChanged();
 
 private:
 
@@ -37,13 +38,14 @@ private:
 
 private:
     Ui::BrowseTableForm *ui;
-    static QTextEditWithCodeCompletion *m_textEdit;
-    static FrameForLineNumbers* m_frameForLineNumbers;
+    QTextEditWithCodeCompletion *m_textEdit;
+    FrameForLineNumbers* m_frameForLineNumbers;
     static int m_firstP;
     static int m_lastP;
     Connection* m_connection;
     QString m_tab;
     QSplitter* spl;
+    static QString browseString ;
 };
 
 #endif // BROWSETABLEFORM_H

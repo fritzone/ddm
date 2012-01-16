@@ -11,39 +11,37 @@
 #include <QMessageBox>
 #include <QFileDialog>
 
-QTextEditWithCodeCompletion *BrowseTableForm::m_textEdit = 0;
-FrameForLineNumbers* BrowseTableForm::m_frameForLineNumbers = 0;
+QString BrowseTableForm::browseString = "";
 int BrowseTableForm::m_firstP = 0;
 int BrowseTableForm::m_lastP = 0;
 
 BrowseTableForm::BrowseTableForm(QWidget *parent, Connection* c, const QString& tab) :
     QWidget(parent),
-    ui(new Ui::BrowseTableForm), m_connection(c), m_tab(tab)
+    ui(new Ui::BrowseTableForm), m_frameForLineNumbers(0), m_connection(c), m_tab(tab)
 {
     ui->setupUi(this);
 
-    static QTextEditWithCodeCompletion *textEdit = new QTextEditWithCodeCompletion(this, c);
+    m_textEdit = new QTextEditWithCodeCompletion(this, c);
     ui->table->horizontalHeader()->setHighlightSections(true);
     ui->table->horizontalHeader()->setResizeMode(QHeaderView::Interactive);
 
-    static FrameForLineNumbers* frameForLineNumbers = new FrameForLineNumbers(this);
+    m_frameForLineNumbers = new FrameForLineNumbers(this);
     QSizePolicy sizePolicy(QSizePolicy::Fixed, QSizePolicy::Preferred);
     sizePolicy.setHorizontalStretch(0);
     sizePolicy.setVerticalStretch(0);
-    sizePolicy.setHeightForWidth(frameForLineNumbers->sizePolicy().hasHeightForWidth());
-    frameForLineNumbers->setSizePolicy(sizePolicy);
-    frameForLineNumbers->setMinimumSize(QSize(48, 0));
-    frameForLineNumbers->setMaximumSize(QSize(48, 16777215));
-    frameForLineNumbers->setFrameShape(QFrame::StyledPanel);
-    frameForLineNumbers->setFrameShadow(QFrame::Raised);
-    ui->horizontalLayout_5->addWidget(frameForLineNumbers);
+    m_frameForLineNumbers->setSizePolicy(sizePolicy);
+    m_frameForLineNumbers->setMinimumSize(QSize(48, 0));
+    m_frameForLineNumbers->setMaximumSize(QSize(48, 16777215));
+    m_frameForLineNumbers->setFrameShape(QFrame::StyledPanel);
+    m_frameForLineNumbers->setFrameShadow(QFrame::Raised);
+    ui->horizontalLayout_5->addWidget(m_frameForLineNumbers);
 
 
-    textEdit->setObjectName(QString::fromUtf8("textEdit"));
-    textEdit->setBrowseForm(this);
-    ui->horizontalLayout_5->addWidget(textEdit);
-    textEdit->setLineNumberFrame(frameForLineNumbers);
-    textEdit->updateLineNumbers();
+    m_textEdit->setObjectName(QString::fromUtf8("textEdit"));
+    m_textEdit->setBrowseForm(this);
+    ui->horizontalLayout_5->addWidget(m_textEdit);
+    m_textEdit->setLineNumberFrame(m_frameForLineNumbers);
+    m_textEdit->updateLineNumbers();
 
     QSqlDatabase sqldb = c->getQSqlDatabase();
     QSqlTableModel *model = new QSqlTableModel(ui->table, sqldb);
@@ -57,9 +55,6 @@ BrowseTableForm::BrowseTableForm(QWidget *parent, Connection* c, const QString& 
 
     ui->table->setModel(model);
     ui->table->setEditTriggers(QAbstractItemView::DoubleClicked|QAbstractItemView::EditKeyPressed);
-    if(m_textEdit == 0) m_textEdit = textEdit;
-    if(m_frameForLineNumbers == 0) m_frameForLineNumbers = frameForLineNumbers;
-
     m_textEdit->resetToConnection(c);
 
     ui->txtConnection->setText(c->getFullLocation());
@@ -69,7 +64,8 @@ BrowseTableForm::BrowseTableForm(QWidget *parent, Connection* c, const QString& 
     spl->addWidget(ui->groupBox);
 
     spl->resize( size() );
-
+    m_textEdit->setPlainText(browseString);
+    connect(m_textEdit, SIGNAL(textChanged()), this, SLOT(textChanged()));
 }
 
 BrowseTableForm::~BrowseTableForm()
@@ -198,4 +194,9 @@ void BrowseTableForm::onSaveQuery()
 void BrowseTableForm::resizeEvent(QResizeEvent *e)
 {
     spl->resize(e->size());
+}
+
+void BrowseTableForm::textChanged()
+{
+    browseString = m_textEdit->toPlainText();
 }
