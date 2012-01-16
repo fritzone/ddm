@@ -3,6 +3,7 @@
 #include "core_Connection.h"
 #include "FrameForLineNumbers.h"
 
+#include <QtGui>
 #include <QSqlTableModel>
 #include <QSqlDriver>
 #include <QSqlError>
@@ -62,6 +63,13 @@ BrowseTableForm::BrowseTableForm(QWidget *parent, Connection* c, const QString& 
     m_textEdit->resetToConnection(c);
 
     ui->txtConnection->setText(c->getFullLocation());
+    ui->frame->hide();
+    spl = new QSplitter(Qt::Vertical, this);
+    spl->addWidget(ui->table);
+    spl->addWidget(ui->groupBox);
+
+    spl->resize( size() );
+
 }
 
 BrowseTableForm::~BrowseTableForm()
@@ -185,4 +193,9 @@ void BrowseTableForm::onSaveQuery()
     }
     QTextStream out(&file);
     out << m_textEdit->toPlainText() << "\n";
+}
+
+void BrowseTableForm::resizeEvent(QResizeEvent *e)
+{
+    spl->resize(e->size());
 }
