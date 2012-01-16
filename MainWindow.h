@@ -178,6 +178,7 @@ private:
 
     void doDeployment(const QString& codePage, QStringList connectionNames);
     void createConnectionTreeEntryForTables(Connection *c);
+    void createConnectionTreeEntryForViews(Connection *c);
 
 private:
     Ui::MainWindow *m_ui;

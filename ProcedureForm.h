@@ -39,6 +39,7 @@ private:
     QTextEditWithCodeCompletion* m_textEdit;
     FrameForLineNumbers* m_frameForLineNumbers;
     Procedure* m_proc;
+    bool m_forcedChange;
 };
 
 #endif // PROCEDUREFORM_H
