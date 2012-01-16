@@ -8,6 +8,7 @@
 #include <QSqlError>
 #include <QSqlQuery>
 #include <QMessageBox>
+#include <QFileDialog>
 
 QTextEditWithCodeCompletion *BrowseTableForm::m_textEdit = 0;
 FrameForLineNumbers* BrowseTableForm::m_frameForLineNumbers = 0;
@@ -157,4 +158,31 @@ QString BrowseTableForm::retrieveCurrentQuery()
 
 
     return before + after;
+}
+
+void BrowseTableForm::onLoadQuery()
+{
+    QString fileName = QFileDialog::getOpenFileName(this, tr("Open SQL Script"), ".", tr("SQL Script (*.sql)"));
+    QFile f(fileName);
+    if(!f.open(QIODevice::ReadOnly | QIODevice::Text)) return;
+    QByteArray ba = f.readAll();
+    QString g(ba);
+    m_textEdit->appendPlainText("-- Loaded " + fileName.right(-1 + fileName.length() - fileName.lastIndexOf(QDir::separator())) + " on " + QDate::currentDate().toString() + " - " + QTime::currentTime().toString());
+    m_textEdit->appendPlainText(g);
+    m_textEdit->updateLineNumbers();
+}
+
+
+void BrowseTableForm::onSaveQuery()
+{
+    // TODO: This is a pure duplicate from the SqlForm.cpp ... find a better way to admiister these things
+    QString name = QFileDialog::getSaveFileName(this, tr("Save SQL Script"), "", tr("SQL files (*.sql)"));
+    QFile file(name);
+
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
+    {
+        return;
+    }
+    QTextStream out(&file);
+    out << m_textEdit->toPlainText() << "\n";
 }

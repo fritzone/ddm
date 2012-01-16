@@ -25,6 +25,8 @@ protected:
 
 public slots:
     void onRunQuery();
+    void onSaveQuery();
+    void onLoadQuery();
 
 private:
 
