@@ -192,4 +192,7 @@ static const QString strMru3 = "mru3";
 static const QString strMru4 = "mru4";
 static const QString strMru5 = "mru5";
 
+static const QString browsedTablePrefix = "B:";
+static const QString browsedViewPrefix = "V:";
+
 #endif // STRINGS_H

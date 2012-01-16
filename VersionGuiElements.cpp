@@ -451,6 +451,13 @@ void VersionGuiElements::cleanupOrphanedIssueTableItems()
 
 void VersionGuiElements::updateForms()
 {
+    //see if we have already created a new table form. Must not be central
+    if(dynamic_cast<NewTableForm*>(m_mw->centralWidget()))
+    {
+        // yes, reset the foreign tables combo
+        dynamic_cast<NewTableForm*>(m_mw->centralWidget())->resetForeignTablesCombo();
+    }
+
     getTablesListForm();
     m_tblsListForm->populateTables(m_version->getTables());
     m_tblsListForm->setOop(Workspace::getInstance()->currentProjectIsOop());

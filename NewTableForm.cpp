@@ -114,16 +114,7 @@ NewTableForm::NewTableForm(DatabaseEngine* db, Project* prj, QWidget *parent, bo
     m_table->setStorageEngine(m_currentStorageEngine);
 
     // create the foreign keys screen
-    const QVector<Table*>& tables = m_project->getWorkingVersion()->getTables();
-    for(int i=0; i<tables.size(); i++)
-    {
-        if(tables[i]->getName() != m_table->getName())
-        {
-            // at this stage we can put in all the tables, this is supposed to be a new table
-            m_ui->cmbForeignTables->addItem(tables[i]->getName());
-        }
-    }
-    m_ui->cmbForeignTables->setCurrentIndex(-1);
+    resetForeignTablesCombo();
 
     m_ui->btnAdvanced->hide();
 
@@ -173,6 +164,30 @@ NewTableForm::~NewTableForm()
 {
     delete m_ui;
 }
+
+void NewTableForm::resetForeignTablesCombo()
+{
+    m_ui->cmbForeignTables->clear();
+
+    // create the foreign keys screen
+    const QVector<Table*>& tables = m_project->getWorkingVersion()->getTables();
+    for(int i=0; i<tables.size(); i++)
+    {
+        if(tables[i]->getName() != m_table->getName())
+        {
+            // at this stage we can put in all the tables, this is supposed to be a new table
+            m_ui->cmbForeignTables->addItem(tables[i]->getName());
+        }
+    }
+    m_ui->cmbForeignTables->setCurrentIndex(-1);
+
+    m_ui->lstForeignKeyAssociations->clear();
+    m_ui->lstForeignTablesColumns->clear();
+    m_ui->lstLocalColumn->clear();
+    m_ui->txtForeignKeyName->clear();
+
+}
+
 
 void NewTableForm::populateCodepageCombo()
 {

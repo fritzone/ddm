@@ -711,6 +711,7 @@ void MainWindow::currentProjectTreeItemChanged(QTreeWidgetItem * current, QTreeW
 
 void MainWindow::onNewTable()
 {
+    m_ui->action_NewTable->setDisabled(true);
     NewTableForm* frm = Workspace::getInstance()->workingVersion()->getGui()->getTableFormForNewTable();
     frm->focusOnName();
 
@@ -718,7 +719,8 @@ void MainWindow::onNewTable()
     setCentralWidget(frm);
 
     HelpWindow* hw = HelpWindow::instance();
-    hw->showHelp(QString("/doc/tabl.html"));
+    if(hw->isVisible()) hw->showHelp(QString("/doc/tabl.html"));
+    m_ui->action_NewTable->setDisabled(false);
 }
 
 void MainWindow::showNewDataTypeWindow(int a)
@@ -730,7 +732,7 @@ void MainWindow::showNewDataTypeWindow(int a)
     setCentralWidget(frm);
 
     HelpWindow* hw = HelpWindow::instance();
-    hw->showHelp(QString("/doc/dtyp.html"));
+    if(hw->isVisible()) hw->showHelp(QString("/doc/dtyp.html"));
 }
 
 void MainWindow::onNewDataType()
@@ -1377,7 +1379,7 @@ void MainWindow::onNewTableInstanceHovered()
     QMenu* createTableInstancesPopup = ContextMenuCollection::getInstance()->getCreateTableInstancesPopupMenu();
     createTableInstancesPopup->clear();
 
-    if(m_workspace->currentSolution() && m_workspace->currentProject() && m_workspace->workingVersion())
+    if(m_workspace && m_workspace->currentSolution() && m_workspace->currentProject() && m_workspace->workingVersion())
     {
         for(int i=0; i<m_workspace->workingVersion()->getTables().size(); i++)
         {
@@ -1648,7 +1650,7 @@ void MainWindow::onInjectBrowsedTable()
     {
         QString s = v.toString();
         qDebug() << s;
-        if(s.startsWith("B:"))
+        if(s.startsWith(browsedTablePrefix))
         {
             QString cname = s.mid(s.indexOf("?") + 1);
             Connection *c = ConnectionManager::instance()->getConnection(cname);
@@ -1772,7 +1774,7 @@ void MainWindow::onConnectionItemDoubleClicked(QTreeWidgetItem* item,int)
     {
         QString s = v.toString();
         qDebug() << s;
-        if(s.startsWith("B:"))
+        if(s.startsWith(browsedTablePrefix))
         {
             if(m_btndlg && m_btndlg->isVisible())
             {
@@ -1796,9 +1798,36 @@ void MainWindow::onConnectionItemDoubleClicked(QTreeWidgetItem* item,int)
             {
                 c->getLocation()->setIcon(0, IconFactory::getConnectedDatabaseIcon());
                 createConnectionTreeEntryForTables(c);
+                // TODO: for future releases take the view too
+                //createConnectionTreeEntryForViews(c);
             }
         }
     }
+}
+
+void MainWindow::createConnectionTreeEntryForViews(Connection *c)
+{
+    c->getLocation()->removeChild(c->getLocation()->child(1));
+
+    ContextMenuEnabledTreeWidgetItem* connViewsItem = new ContextMenuEnabledTreeWidgetItem(c->getLocation(), QStringList(tr("Views")));
+    m_connectionsTree->addTopLevelItem(connViewsItem);
+    connViewsItem->setIcon(0, IconFactory::getViewsIcon());
+
+    // Now do the browsing
+    QStringList dbViews = c->getEngine()->getAvailableViews(c);
+    for(int i=0; i<dbViews.size(); i++)
+    {
+        ContextMenuEnabledTreeWidgetItem* newViewItem = new ContextMenuEnabledTreeWidgetItem(connViewsItem, QStringList(dbViews.at(i)));
+        QVariant var(browsedViewPrefix + dbViews.at(i) + "?" + c->getName());
+        newViewItem->setData(0, Qt::UserRole, var);
+        //newViewItem->setPopupMenu(ContextMenuCollection::getInstance()->getTableFromBrowsePopupMenu());
+        newViewItem->setIcon(0, IconFactory::getViewIcon());
+        m_connectionsTree->addTopLevelItem(newViewItem);
+    }
+
+    // TODO: now come up with a mechanism that feeds continuously the reverse engineered tables into an object that feeds it in somewhere which
+    // is used by the code completion enabled text edit when editing a table. Highly possible the destination will be the Connection object
+    // since everyone has access to it.
 }
 
 void MainWindow::createConnectionTreeEntryForTables(Connection *c)
@@ -1814,7 +1843,7 @@ void MainWindow::createConnectionTreeEntryForTables(Connection *c)
     for(int i=0; i<dbTables.size(); i++)
     {
         ContextMenuEnabledTreeWidgetItem* newTblsItem = new ContextMenuEnabledTreeWidgetItem(connTablesItem, QStringList(dbTables.at(i)));
-        QVariant var(QString("B:") + dbTables.at(i) + "?" + c->getName());
+        QVariant var(browsedTablePrefix + dbTables.at(i) + "?" + c->getName());
         newTblsItem->setData(0, Qt::UserRole, var);
         newTblsItem->setPopupMenu(ContextMenuCollection::getInstance()->getTableFromBrowsePopupMenu());
         newTblsItem->setIcon(0, IconFactory::getTabinstIcon());

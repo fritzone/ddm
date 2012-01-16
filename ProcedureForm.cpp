@@ -6,7 +6,7 @@
 
 ProcedureForm::ProcedureForm(QWidget *parent) :
     QWidget(parent),
-    ui(new Ui::ProcedureForm), m_textEdit(0), m_frameForLineNumbers(0), m_proc(0)
+    ui(new Ui::ProcedureForm), m_textEdit(0), m_frameForLineNumbers(0), m_proc(0), m_forcedChange(false)
 {
     ui->setupUi(this);
 
@@ -86,18 +86,20 @@ QString ProcedureForm::getProcNameFromSql()
 void ProcedureForm::textChanged()
 {
     m_proc->setSql(m_textEdit->toPlainText());
-    getProcNameFromSql();
+    if(!m_forcedChange) getProcNameFromSql();
 }
 
 void ProcedureForm::initSql()
 {
     QString sql = "delimiter //\n\nCREATE PROCEDURE " + m_proc->getName();
     sql += "()\nBEGIN\n\nEND\n\ndelimiter ;";
+    m_forcedChange = true;
     m_textEdit->setPlainText(sql);
     m_textEdit->keyPressEvent(new QKeyEvent(QEvent::KeyPress, Qt::Key_Down, Qt::NoModifier));
     m_textEdit->keyPressEvent(new QKeyEvent(QEvent::KeyPress, Qt::Key_Down, Qt::NoModifier));
     m_textEdit->keyPressEvent(new QKeyEvent(QEvent::KeyPress, Qt::Key_Down, Qt::NoModifier));
     m_textEdit->keyPressEvent(new QKeyEvent(QEvent::KeyPress, Qt::Key_Down, Qt::NoModifier));
+    m_forcedChange = false;
 }
 
 void ProcedureForm::showSql()

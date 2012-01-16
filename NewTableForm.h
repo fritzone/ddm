@@ -50,6 +50,7 @@ public:
     {
         m_currentColumn = col;
     }
+    void resetForeignTablesCombo();
 
     virtual void presentSql(Project*,const QString& codepage);
     virtual void presentSql(Project*, SqlSourceEntity*,const QString& codepage);
