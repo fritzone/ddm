@@ -920,6 +920,7 @@ void MainWindow::enableActions()
     m_ui->action_Preferences->setEnabled(true);
     m_ui->action_NewProcedure->setEnabled(true);
     m_ui->action_DeleteUnusuedDatatypes->setEnabled(true);
+    m_ui->action_DeploymentScript->setVisible(false);
 
     if(m_workspace->currentProjectIsOop())
     {
