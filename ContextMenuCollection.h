@@ -42,6 +42,7 @@ public:
     QMenu* getViewsPopupMenu() { return m_viewsPopupMenu; }
     QMenu* getTableFromBrowsePopupMenu() { return m_browsedTablePopupMenu; }
     QMenu* getViewPopupMenu() { return m_viewPopupMenu; }
+    QMenu* getProcedurePopupMenu() { return m_procedurePopupMenu; }
 
 
     /*
@@ -87,6 +88,7 @@ public:
     QAction* getAction_BrowsedTableView() {return action_browsedTableView; }
     QAction* getAction_BrowsedTableBrowse() {return action_browsedTableBrowse; }
     QAction* getAction_DeleteView() {return action_deleteView; }
+    QAction* getAction_DeleteProcedure() {return action_deleteProcedure; }
 
 private:
 
@@ -110,6 +112,7 @@ private:
     QMenu* m_viewsPopupMenu;                    // popup menu for the views tree element
     QMenu* m_viewPopupMenu;                     // popup menu for one view tree element
     QMenu* m_browsedTablePopupMenu;             // popup menu for a table which was retrieved from the browse connection
+    QMenu* m_procedurePopupMenu;                // popup menu for one procedure tree element
 
     // the actions in the table popup menu
     QAction* action_RemoveTable;
@@ -178,6 +181,8 @@ private:
     QAction* action_browsedTableView;   // see the details of the table
 
     QAction* action_deleteView;
+
+    QAction* action_deleteProcedure;
 
     // the instance of the popup menu collection
     static ContextMenuCollection* m_instance;

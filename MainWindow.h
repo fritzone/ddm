@@ -30,6 +30,7 @@ class Deployer;
 class InjectSqlGenerator;
 class ReverseEngineerer;
 class View;
+class Procedure;
 
 namespace Ui
 {
@@ -151,6 +152,7 @@ public slots:
     void onBrowseBrowsedTable();
     void onDeleteView();
     void onDeleteUnusedDatatypes();
+    void onDeleteProcedure();
 
 public:
     void createStatusLabel();
@@ -175,6 +177,7 @@ private:
     void showNewDataTypeWindow(int);
     NewTableForm* showExistingTable(Table*);
     View* getRightclickedView();
+    Procedure* getRightclickedProcedure();
 
     void doDeployment(const QString& codePage, QStringList connectionNames);
     void createConnectionTreeEntryForTables(Connection *c);

@@ -644,7 +644,7 @@ void MainWindow::currentProjectTreeItemChanged(QTreeWidgetItem * current, QTreeW
                 showView(viewName);
             }
             else
-            if(current->parent() && current->parent() == m_workspace->workingVersion()->getGui()->getProcsItem())
+            if(current->parent() && current->parent() == m_workspace->workingVersion()->getGui()->getProceduresItem())
             {
                 // user clicked on a view
                 QVariant qv = current->data(0, Qt::UserRole);
@@ -990,7 +990,31 @@ void MainWindow::connectActionsFromPopupMenus()
     QObject::connect(ContextMenuCollection::getInstance()->getAction_ConnectionConnect(), SIGNAL(activated()), this, SLOT(onConnectConnection()));
     ContextMenuCollection::getInstance()->getAction_BrowsedTableInject()->setVisible(true);
     QObject::connect(ContextMenuCollection::getInstance()->getAction_DeleteView(), SIGNAL(activated()), this, SLOT(onDeleteView()));
+    QObject::connect(ContextMenuCollection::getInstance()->getAction_DeleteProcedure(), SIGNAL(activated()), this, SLOT(onDeleteProcedure()));
 }
+
+void MainWindow::onDeleteProcedure()
+{
+    Procedure* v = getRightclickedProcedure();
+    if(v)
+    {
+        if(QMessageBox::question(this, tr("Are you sure?"), tr("Really delete ") + v->getName()+ "?", QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
+        {
+            return;
+        }
+        m_workspace->workingVersion()->deleteProcedure(v->getName());
+        m_workspace->workingVersion()->getGui()->updateForms();
+
+//        ProceduresListForm* vLst = m_workspace->workingVersion()->getGui()->getProceduresListForm();
+//        vLst->populateProcedures(m_workspace->workingVersion()->getProcedures());
+//        setCentralWidget(vLst);
+
+        m_workspace->workingVersion()->getGui()->getProceduresItem()->treeWidget()->clearSelection();
+        m_workspace->workingVersion()->getGui()->getProceduresItem()->setSelected(true);
+
+    }
+}
+
 
 void MainWindow::onDeleteView()
 {
@@ -1172,6 +1196,22 @@ View* MainWindow::getRightclickedView()
     }
     return 0;
 }
+
+Procedure* MainWindow::getRightclickedProcedure()
+{
+    if(m_projectTree->getLastRightclickedItem() != 0)
+    {
+        ContextMenuEnabledTreeWidgetItem* item = m_projectTree->getLastRightclickedItem();
+        m_projectTree->setLastRightclickedItem(0);
+
+        QVariant qv = item->data(0, Qt::UserRole);
+        QString dgrName = qv.toString();
+        Procedure* v =  m_workspace->workingVersion()->getProcedure(dgrName);
+        return v;
+    }
+    return 0;
+}
+
 
 Diagram* MainWindow::getRightclickedDiagram()
 {
@@ -2359,6 +2399,26 @@ void MainWindow::changeEvent(QEvent *e)
         if( isMinimized() )
         {
             if(m_btndlg && m_btndlg->isVisible())
+            {
+                m_btndlg->hide();
+                m_splashWasVisible = true;
+            }
+        }
+        else
+        {
+            if(m_splashWasVisible)
+            {
+                m_btndlg->show();
+                m_splashWasVisible = false;
+            }
+        }
+    }
+
+    if(e->type() == QEvent::ActivationChange)
+    {
+        if(!isActiveWindow())
+        {
+            if(m_btndlg && m_btndlg->isVisible() && !m_btndlg->isActiveWindow())
             {
                 m_btndlg->hide();
                 m_splashWasVisible = true;

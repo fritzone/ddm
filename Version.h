@@ -274,6 +274,11 @@ public:
    virtual const QVector<Procedure*>& getProcedures() = 0;
 
    /**
+    * Delete the given procedure
+    */
+   virtual void deleteProcedure(const QString& p) = 0;
+
+   /**
     * Deletes all the unused data types
     */
    virtual void cleanupDataTypes() = 0;

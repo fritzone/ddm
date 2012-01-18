@@ -58,10 +58,9 @@ BrowseTableForm::BrowseTableForm(QWidget *parent, Connection* c, const QString& 
     m_textEdit->resetToConnection(c);
 
     ui->txtConnection->setText(c->getFullLocation());
-    ui->frame->hide();
     spl = new QSplitter(Qt::Vertical, this);
-    spl->addWidget(ui->table);
-    spl->addWidget(ui->groupBox);
+    spl->addWidget(ui->frame_2);
+    spl->addWidget(ui->frame_q);
 
     spl->resize( size() );
     m_textEdit->setPlainText(browseString);
