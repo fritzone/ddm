@@ -390,6 +390,14 @@ void DefaultVersionImplementation::deleteView(const QString &name)
     delete v;
 }
 
+void DefaultVersionImplementation::deleteProcedure(const QString& p)
+{
+    Procedure* v = getProcedure(p);
+    m_data.m_procedures.remove(m_data.m_procedures.indexOf(v));
+    delete v->getLocation();
+    delete v->getSqlLocation();
+    delete v;
+}
 
 void DefaultVersionImplementation::deleteDiagram(const QString& name)
 {

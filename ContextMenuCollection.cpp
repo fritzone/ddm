@@ -25,6 +25,7 @@ ContextMenuCollection::ContextMenuCollection()
     m_browsedTablePopupMenu = new QMenu();
     m_viewsPopupMenu = new QMenu();
     m_viewPopupMenu = new QMenu();
+    m_procedurePopupMenu = new QMenu();
 
     // actions
     action_RemoveTable = new QAction(QObject::tr("Delete table"), 0);
@@ -71,6 +72,8 @@ ContextMenuCollection::ContextMenuCollection()
     action_browsedTableView = new QAction(QObject::tr("View table details"), 0);
     action_deleteView = new QAction(QObject::tr("Delete view"), 0);
     action_deleteView ->setIcon(IconFactory::getRemoveIcon());
+    action_deleteProcedure = new QAction(QObject::tr("Delete procedure"), 0);
+    action_deleteProcedure->setIcon(IconFactory::getRemoveIcon());
 
     // populate the table popup menu
     m_tablePopupMenu->addAction(action_TableAddColumn);
@@ -148,4 +151,6 @@ ContextMenuCollection::ContextMenuCollection()
 
     // one views popup menu
     m_viewPopupMenu->addAction(action_deleteView);
+
+    m_procedurePopupMenu->addAction(action_deleteProcedure);
 }

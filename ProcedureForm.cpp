@@ -91,15 +91,12 @@ void ProcedureForm::textChanged()
 
 void ProcedureForm::initSql()
 {
-    QString sql = "delimiter //\n\nCREATE PROCEDURE " + m_proc->getName();
-    sql += "()\nBEGIN\n\nEND\n\ndelimiter ;";
+    QString sql = "CREATE PROCEDURE " + m_proc->getName();
+    sql += "()\nBEGIN\n\nEND";
     m_forcedChange = true;
     m_textEdit->setPlainText(sql);
-    m_textEdit->keyPressEvent(new QKeyEvent(QEvent::KeyPress, Qt::Key_Down, Qt::NoModifier));
-    m_textEdit->keyPressEvent(new QKeyEvent(QEvent::KeyPress, Qt::Key_Down, Qt::NoModifier));
-    m_textEdit->keyPressEvent(new QKeyEvent(QEvent::KeyPress, Qt::Key_Down, Qt::NoModifier));
-    m_textEdit->keyPressEvent(new QKeyEvent(QEvent::KeyPress, Qt::Key_Down, Qt::NoModifier));
     m_forcedChange = false;
+    m_textEdit->updateLineNumbers();
 }
 
 void ProcedureForm::showSql()
