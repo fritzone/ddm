@@ -1521,10 +1521,17 @@ void MainWindow::onRenameInstanceFromPopup()
         if(dlg->exec() == QDialog::Accepted)
         {
             QString t = dlg->getText();
+            if(m_workspace->getInstance()->workingVersion()->getTableInstance(t))
+            {
+                QMessageBox::critical(this, tr("Error"), tr("You can have only one table instance called ") + t, QMessageBox::Ok);
+                return;
+            }
             tinst->setName(t);
             tinst->getLocation()->setText(0, t);
             QVariant a(t);
             tinst->getLocation()->setData(0, Qt::UserRole, a);
+            tinst->getSqlLocation()->setText(0, t);
+            tinst->getSqlLocation()->setData(0, Qt::UserRole, a);
         }
     }
 }

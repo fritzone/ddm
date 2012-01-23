@@ -540,13 +540,14 @@ QList<QString> DefaultVersionImplementation::getSqlScript(const QString& codepag
     finalSql.append("\n");
     for(int i=0; i<m_data.m_procedures.size(); i++)
     {
+        QString s = "-- Procedure " + m_data.m_procedures.at(i)->getName() + strNewline;
+        //s += m_project->getEngine()->getDelimiterKeyword() +  strSpace + Configuration::instance().sqlOpts()[strSqlDelimiterText] + strNewline;
         QStringList t = m_data.m_procedures.at(i)->generateSqlSource(m_project->getEngine()->getSqlGenerator(), opts, codepage);
-        QString s = "";
         for(int j=0; j<t.size(); j++)
         {
             s += t.at(j) + " ";
         }
-        s += "\n";
+        //s += strNewline + m_project->getEngine()->getDelimiterKeyword() + strSpace + strSemicolon + strNewline;
         finalSql << s;
     }
 

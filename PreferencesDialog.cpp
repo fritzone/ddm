@@ -2,6 +2,7 @@
 #include "Configuration.h"
 #include "gui_HelpWindow.h"
 #include "ui_PreferencesDialog.h"
+#include "strings.h"
 
 #include<QMessageBox>
 
@@ -11,14 +12,14 @@ PreferencesDialog::PreferencesDialog(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    ui->chkUpcase->setCheckState(Configuration::instance().sqlGenerationOptions()["Case"] == "Upper"?Qt::Checked:Qt::Unchecked);
-    ui->chkBackticks->setCheckState(Configuration::instance().sqlGenerationOptions()["Backticks"] == "Yes"?Qt::Checked:Qt::Unchecked);
-    ui->chkComments->setCheckState(Configuration::instance().sqlGenerationOptions()["GenerateComments"] == "Yes"?Qt::Checked:Qt::Unchecked);
+    ui->chkUpcase->setCheckState(Configuration::instance().sqlGenerationOptions()[strCase] == strUpper?Qt::Checked:Qt::Unchecked);
+    ui->chkBackticks->setCheckState(Configuration::instance().sqlGenerationOptions()[strBackticks] == strYes?Qt::Checked:Qt::Unchecked);
+    ui->chkComments->setCheckState(Configuration::instance().sqlGenerationOptions()[strGenerateComments] == strYes?Qt::Checked:Qt::Unchecked);
     ui->chkDrawTableTypes->setCheckState(Configuration::instance().drawTableTypes()?Qt::Checked:Qt::Unchecked);
     ui->chkAllowFkPropagation->setCheckState(Configuration::instance().allowForeignKeyPropagation()?Qt::Checked:Qt::Unchecked);
 
-    ui->cmbPkPos->setCurrentIndex( ui->cmbPkPos->findText(Configuration::instance().sqlGenerationOptions()["PKSposition"]) );
-    ui->cmbFkPos->setCurrentIndex( ui->cmbFkPos->findText(Configuration::instance().sqlGenerationOptions()["FKSposition"]) );
+    ui->cmbPkPos->setCurrentIndex( ui->cmbPkPos->findText(Configuration::instance().sqlGenerationOptions()[strPKSposition]) );
+    ui->cmbFkPos->setCurrentIndex( ui->cmbFkPos->findText(Configuration::instance().sqlGenerationOptions()[strFKSposition]) );
     ui->chkContinuousValidation->setCheckState(Configuration::instance().continuousValidation()?Qt::Checked:Qt::Unchecked);
 
     ui->tabWidget->setCurrentIndex(0);
@@ -46,11 +47,11 @@ void PreferencesDialog::accept()
 {
     Configuration::instance().setDrawTabletypes(ui->chkDrawTableTypes->checkState() == Qt::Checked);
     Configuration::instance().setAllowForeignKeyPropagation(ui->chkAllowFkPropagation->checkState() == Qt::Checked);
-    Configuration::instance().sqlOpts()["PKSposition"] = ui->cmbPkPos->currentText();
-    Configuration::instance().sqlOpts()["FKSposition"] = ui->cmbFkPos->currentText();
-    Configuration::instance().sqlOpts()["Case"] = ui->chkUpcase->checkState() == Qt::Checked?"Upper":"Lower";
-    Configuration::instance().sqlOpts()["Backticks"] = ui->chkBackticks->checkState() == Qt::Checked?"Yes":"No";
-    Configuration::instance().sqlOpts()["GenerateComments"] = ui->chkComments->checkState() == Qt::Checked?"Yes":"No";
+    Configuration::instance().sqlOpts()[strPKSposition] = ui->cmbPkPos->currentText();
+    Configuration::instance().sqlOpts()[strFKSposition] = ui->cmbFkPos->currentText();
+    Configuration::instance().sqlOpts()[strCase] = ui->chkUpcase->checkState() == Qt::Checked?strUpper:strLower;
+    Configuration::instance().sqlOpts()[strBackticks] = ui->chkBackticks->checkState() == Qt::Checked?strYes:strNo;
+    Configuration::instance().sqlOpts()[strGenerateComments] = ui->chkComments->checkState() == Qt::Checked?strYes:strNo;
     Configuration::instance().setContinuousValidation(ui->chkContinuousValidation->checkState() == Qt::Checked);
     close();
 }

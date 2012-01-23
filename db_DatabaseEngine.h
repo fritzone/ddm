@@ -69,7 +69,7 @@ public:
      * Returns the database name for textual identification.
      * @return the name of the database (MySQL, Oracle, etc...)
      */
-    const QString& getDatabaseEngineName() const;
+    QString getDatabaseEngineName() const;
 
     /**
      * Tells the name of the class of the DDM data type which provides access to this SQL type.
@@ -240,10 +240,18 @@ public:
      */
     virtual QStringList getColumnsOfTable(Connection* c, const QString& tableName) = 0;
 
+    /**
+     * Returns the delimiter keyword used in the function declaration
+     * @return the delimiter keyword
+     */
+    virtual QString getDelimiterKeyword() = 0;
+
 public:
 
     /**
-     * Creates a database engine for the given name. Right now "MySQL" is supported
+     * Creates a database engine for the given name. Right now "MySQL" is supported.
+     * @param db - the name of the database to create
+     * @return the database engine that was created for the given database
      */
     static DatabaseEngine* createEngine(const QString& db);
 

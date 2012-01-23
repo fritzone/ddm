@@ -204,7 +204,7 @@ public:
 
     void removeForeignKey(ForeignKey* toRemove);
 
-    Version* version() const
+    Version* getVersion() const
     {
         return m_version;
     }

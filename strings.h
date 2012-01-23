@@ -174,7 +174,10 @@ static const QString strBackticks = "Backticks";
 static const QString strGenerateComments = "GenerateComments";
 static const QString strPKSposition = "PKSposition";
 static const QString strFKSposition = "FKSposition";
+static const QString strSqlDelimiterText = "Delimiter";
+static const QString strSqlDelimiter = "//";
 static const QString strLower = "Lower";
+static const QString strUpper = "Upper";
 static const QString strColumnDeclaration = "ColumnDeclaration";
 static const QString strInTable = "InTable";
 static const QString strConnectionsCount = "ConnectionsCount";
@@ -194,5 +197,7 @@ static const QString strMru5 = "mru5";
 
 static const QString browsedTablePrefix = "B:";
 static const QString browsedViewPrefix = "V:";
-
+static const QString strSpace = " ";
+static const QString strNewline = "\n";
+static const QString strSemicolon = ";";
 #endif // STRINGS_H

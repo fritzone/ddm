@@ -62,7 +62,7 @@ QString DatabaseEngine::getTypeStringForSqlType(const QString& sqlType)
     return getDTSupplier()->typeForSqlType(sqlType);
 }
 
-const QString& DatabaseEngine::getDatabaseEngineName() const
+QString DatabaseEngine::getDatabaseEngineName() const
 {
     return database;
 }

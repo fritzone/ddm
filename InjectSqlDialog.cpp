@@ -76,6 +76,7 @@ void InjectSqlDialog::onConnect()
         return;
     }
 
+    ui->cmbDatabases->clear();
     for(int i=0; i<databases.size(); i++)
     {
         ui->cmbDatabases->addItem(databases.at(i));
