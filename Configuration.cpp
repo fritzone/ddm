@@ -28,6 +28,7 @@ void Configuration::writeToFile()
     s.setValue(strPKSposition, m_sqlOpts[strPKSposition]);
     s.setValue(strFKSposition, m_sqlOpts[strFKSposition]);
     s.setValue(strNewLineBetweenSelectExpressionsInSqlGeneration, m_sqlOpts[strNewLineBetweenSelectExpressionsInSqlGeneration]);
+    s.setValue(strSqlDelimiterText, m_sqlOpts[strSqlDelimiterText]);
 
     s.sync();
 }
@@ -46,5 +47,6 @@ void Configuration::readFromFile()
     m_sqlOpts[strPKSposition] = s.value(strPKSposition, QVariant(strColumnDeclaration)).toString();
     m_sqlOpts[strFKSposition] = s.value(strFKSposition, QVariant(strInTable)).toString();
     m_sqlOpts[strNewLineBetweenSelectExpressionsInSqlGeneration] = s.value(strNewLineBetweenSelectExpressionsInSqlGeneration, QVariant(strNo)).toString();
+    m_sqlOpts[strSqlDelimiterText] = s.value(strSqlDelimiterText, QVariant(strSqlDelimiter)).toString();
 
 }

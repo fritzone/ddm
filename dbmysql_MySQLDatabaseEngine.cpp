@@ -596,7 +596,6 @@ bool MySQLDatabaseEngine::dropDatabase(Connection* c)
     db.setHostName(c->getHost());
     db.setUserName(c->getUser());
     db.setPassword(c->getPassword());
-    db.setDatabaseName(c->getDb());
 
     bool ok = db.open();
     if(!ok)
@@ -624,7 +623,7 @@ bool MySQLDatabaseEngine::createDatabase(Connection* c)
     db.setHostName(c->getHost());
     db.setUserName(c->getUser());
     db.setPassword(c->getPassword());
-    db.setDatabaseName(c->getDb());
+
     bool ok = db.open();
     if(!ok)
     {
@@ -1154,4 +1153,9 @@ QStringList MySQLDatabaseEngine::getIndexTypes()
 QString MySQLDatabaseEngine::getDefaultIndextype()
 {
     return m_defaultIndexType;
+}
+
+QString MySQLDatabaseEngine::getDelimiterKeyword()
+{
+    return "delimiter";
 }

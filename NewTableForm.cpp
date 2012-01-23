@@ -992,7 +992,7 @@ void NewTableForm::onSave()
         return;
     }
 
-    Table* other = m_table->version()->getTable(m_ui->txtTableName->text());
+    Table* other = m_table->getVersion()->getTable(m_ui->txtTableName->text());
     if(other &&  other != m_table )
     {
         QMessageBox::critical(this, "Error", "Only one table with the name " + m_ui->txtTableName->text() + " is allowed in the database.", QMessageBox::Ok);
@@ -1988,7 +1988,7 @@ void NewTableForm::onBtnRemoveForeignKey()
     }
     m_currentForeignKey->onDelete();
     m_table->removeForeignKey(m_currentForeignKey);
-    m_table->version()->removeForeignKeyFromDiagrams(m_currentForeignKey);
+    m_table->getVersion()->removeForeignKeyFromDiagrams(m_currentForeignKey);
     delete m_currentForeignKey->getLocation();
     m_currentForeignKey = 0;
     resetFkGui();
@@ -2040,16 +2040,33 @@ void NewTableForm::onChangeDescription()
 
 void NewTableForm::onChangeName(QString a)
 {
-    QVariant v(a);
+
     if(!m_table) return;
+    Table* another = m_table->getVersion()->getTable(a);
     QString prevName = m_table->getName();
     if(!m_table->getLocation()) return;
-    m_table->getLocation()->setData(0, Qt::UserRole, v);
-    m_table->setName(a);
-    m_table->getLocation()->setText(0, a);
-    updateSqlDueToChange();
-    // and see if this was due to a new table being focused ... weird check.
-    if(prevName != a) updateIssues();
+
+    QPalette pal;
+    pal.setColor(QPalette::Text, Qt::black);
+    m_ui->txtTableName->setPalette(pal);
+
+    // and see if there is a table with this name already
+    if(m_table->getVersion()->hasTable(a) && another && another != m_table)
+    {
+        QPalette pal;
+        pal.setColor(QPalette::Text, Qt::red);
+        m_ui->txtTableName->setPalette(pal);
+    }
+    else
+    {
+        QVariant v(a);
+        m_table->getLocation()->setData(0, Qt::UserRole, v);
+        m_table->setName(a);
+        m_table->getLocation()->setText(0, a);
+        updateSqlDueToChange();
+        // and see if this was due to a new table being focused ... weird check.
+        if(prevName != a) updateIssues();
+    }
 }
 
 void NewTableForm::onInject()

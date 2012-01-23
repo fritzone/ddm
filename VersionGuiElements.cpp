@@ -203,7 +203,7 @@ void VersionGuiElements::populateTreeItems()
         for(int i=0; i<tableInstances.size(); i++)
         {
             TableInstance* tI = tableInstances[i];
-            ContextMenuEnabledTreeWidgetItem* tabInstSqlItem = new ContextMenuEnabledTreeWidgetItem(getFinalSqlItem(), QStringList(tI->getName()+".sql")) ;
+            ContextMenuEnabledTreeWidgetItem* tabInstSqlItem = new ContextMenuEnabledTreeWidgetItem(getFinalSqlItem(), QStringList(tI->getName())) ;
 
             QVariant var(tI->getName());
             tabInstSqlItem->setData(0, Qt::UserRole, var);
@@ -227,7 +227,7 @@ void VersionGuiElements::populateTreeItems()
         for(int i=0; i<tables.size(); i++)
         {
             Table* tbl = tables.at(i);
-            ContextMenuEnabledTreeWidgetItem* newTblsItem = new ContextMenuEnabledTreeWidgetItem(getFinalSqlItem(), QStringList(tbl->getName()+".sql")) ;
+            ContextMenuEnabledTreeWidgetItem* newTblsItem = new ContextMenuEnabledTreeWidgetItem(getFinalSqlItem(), QStringList(tbl->getName())) ;
 
             QVariant var(tbl->getName());
             newTblsItem->setData(0, Qt::UserRole, var);
@@ -337,7 +337,7 @@ ContextMenuEnabledTreeWidgetItem* VersionGuiElements::createViewTreeEntry(View* 
     m_tree->addTopLevelItem(newViewItem);
     view->setLocation(newViewItem);
 
-    ContextMenuEnabledTreeWidgetItem* sqlItm = new ContextMenuEnabledTreeWidgetItem(getFinalSqlItem(), QStringList(view->getName()+".sql"));
+    ContextMenuEnabledTreeWidgetItem* sqlItm = new ContextMenuEnabledTreeWidgetItem(getFinalSqlItem(), QStringList(view->getName()));
     sqlItm->setIcon(0, IconFactory::getViewIcon());
     sqlItm->setData(0, Qt::UserRole, var);
     view->setSqlItem(sqlItm);

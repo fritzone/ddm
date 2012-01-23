@@ -38,6 +38,7 @@ public:
     virtual bool dropDatabase(Connection* c);
     virtual QStringList getIndexTypes();
     virtual QString getDefaultIndextype();
+    virtual QString getDelimiterKeyword();
 
 private:
 
