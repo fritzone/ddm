@@ -23,6 +23,7 @@
 #include "ViewsListForm.h"
 #include "ProcedureForm.h"
 #include "core_Procedure.h"
+#include "ProceduresListForm.h"
 
 #include <QVector>
 #include <QtGui>
@@ -489,6 +490,12 @@ DiagramsListForm* VersionGuiElements::getDiagramsListForm()
 {
     return m_diagramsListForm = new DiagramsListForm(m_mw);
 }
+
+ProceduresListForm* VersionGuiElements::getProceduresListForm()
+{
+    return m_proceduresListForm = new ProceduresListForm(m_mw);
+}
+
 
 ViewsListForm* VersionGuiElements::getViewsListForm()
 {

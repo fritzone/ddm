@@ -67,6 +67,7 @@ ContextMenuCollection::ContextMenuCollection()
     action_connectionEdit = new QAction(QObject::tr("Edit"), 0);
     action_connectionBrowse = new QAction(QObject::tr("Browse"), 0);
     action_connectionDrop = new QAction(QObject::tr("Drop"), 0);
+    action_connectionDrop->setIcon(IconFactory::getDropDatabaseIcon());
     action_browsedTableInjectIntoSolution = new QAction(QObject::tr("Add to current solution"), 0);
     action_browsedTableBrowse = new QAction(QObject::tr("Browse table data"), 0);
     action_browsedTableView = new QAction(QObject::tr("View table details"), 0);

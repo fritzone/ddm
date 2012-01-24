@@ -175,7 +175,56 @@
  <resources>
   <include location="dbm.qrc"/>
  </resources>
- <connections/>
+ <connections>
+  <connection>
+   <sender>btnOpenQuery</sender>
+   <signal>clicked()</signal>
+   <receiver>BrowseTableForm</receiver>
+   <slot>onLoadQuery()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>70</x>
+     <y>627</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>336</x>
+     <y>335</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnExecuteQuery</sender>
+   <signal>clicked()</signal>
+   <receiver>BrowseTableForm</receiver>
+   <slot>onRunQuery()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>34</x>
+     <y>627</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>336</x>
+     <y>335</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnSaveQuery</sender>
+   <signal>clicked()</signal>
+   <receiver>BrowseTableForm</receiver>
+   <slot>onSaveQuery()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>106</x>
+     <y>627</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>336</x>
+     <y>335</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
  <slots>
   <slot>onRunQuery()</slot>
   <slot>onSaveQuery()</slot>

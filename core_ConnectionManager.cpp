@@ -43,9 +43,11 @@ void ConnectionManager::loadConnections()
         QString db = s.value(strDB).toString();
         bool ac = s.value(strAutoConnect).toBool();
         QString dbt = s.value(strDbType).toString();
+        int lastState = s.value("LastState").toInt();
         s.endGroup();
 
         Connection* c = new Connection(name, host, user, pass, db, true, ac);
+        c->setState((Connection::ConnectionState)(lastState));
         m_connections.append(c);
 
         if(ac)

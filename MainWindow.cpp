@@ -53,7 +53,7 @@
 #include "ViewsListForm.h"
 #include "ProcedureForm.h"
 #include "core_Procedure.h"
-
+#include "ProceduresListForm.h"
 #include <QtGui>
 
 MainWindow* MainWindow::m_instance = 0;
@@ -199,6 +199,7 @@ ContextMenuEnabledTreeWidgetItem* MainWindow::createConnectionTreeEntry(Connecti
     switch(c->getState())
     {
     case Connection::DID_NOT_TRY:
+    case Connection::UNDEFINED:
         newConnectionItem->setIcon(0, IconFactory::getDatabaseIcon());
         break;
     case Connection::FAILED:
@@ -206,6 +207,9 @@ ContextMenuEnabledTreeWidgetItem* MainWindow::createConnectionTreeEntry(Connecti
         break;
     case Connection::CONNECTED:
         newConnectionItem->setIcon(0, IconFactory::getConnectedDatabaseIcon());
+        break;
+    case Connection::DROPPED:
+        newConnectionItem->setIcon(0, IconFactory::getDroppedDatabaseIcon());
         break;
     }
     m_connectionsTree->addTopLevelItem(newConnectionItem);
@@ -515,7 +519,7 @@ void MainWindow::showDiagram(const QString &name)
     if(hw->isVisible()) hw->showHelp(QString("/doc/dgram.html"));
 }
 
-void MainWindow::showProc(const QString &procName)
+void MainWindow::showProcedure(const QString &procName)
 
 {
     Procedure* p = m_workspace->workingVersion()->getProcedure(procName);
@@ -603,6 +607,13 @@ void MainWindow::currentProjectTreeItemChanged(QTreeWidgetItem * current, QTreeW
             setCentralWidget(viewLst);
         }
         else
+        if(current == m_workspace->workingVersion()->getGui()->getProceduresItem())
+        {// we have clicked on the Procedures item (i.e. the list of procedures)
+            ProceduresListForm* procedureLst = m_workspace->workingVersion()->getGui()->getProceduresListForm();
+            procedureLst->populateProcedures(m_workspace->workingVersion()->getProcedures());
+            setCentralWidget(procedureLst);
+        }
+        else
         {
             if(current->parent() && current->parent() == m_workspace->workingVersion()->getGui()->getTablesItem())
             {
@@ -646,10 +657,10 @@ void MainWindow::currentProjectTreeItemChanged(QTreeWidgetItem * current, QTreeW
             else
             if(current->parent() && current->parent() == m_workspace->workingVersion()->getGui()->getProceduresItem())
             {
-                // user clicked on a view
+                // user clicked on a procedure
                 QVariant qv = current->data(0, Qt::UserRole);
-                QString viewName = qv.toString();
-                showProc(viewName);
+                QString procName = qv.toString();
+                showProcedure(procName);
             }
             else
             if(current->parent() && current->parent() == m_workspace->workingVersion()->getGui()->getFinalSqlItem())
@@ -1005,13 +1016,12 @@ void MainWindow::onDeleteProcedure()
         m_workspace->workingVersion()->deleteProcedure(v->getName());
         m_workspace->workingVersion()->getGui()->updateForms();
 
-//        ProceduresListForm* vLst = m_workspace->workingVersion()->getGui()->getProceduresListForm();
-//        vLst->populateProcedures(m_workspace->workingVersion()->getProcedures());
-//        setCentralWidget(vLst);
+        ProceduresListForm* procedureList = m_workspace->workingVersion()->getGui()->getProceduresListForm();
+        procedureList->populateProcedures(m_workspace->workingVersion()->getProcedures());
+        setCentralWidget(procedureList);
 
         m_workspace->workingVersion()->getGui()->getProceduresItem()->treeWidget()->clearSelection();
         m_workspace->workingVersion()->getGui()->getProceduresItem()->setSelected(true);
-
     }
 }
 
@@ -1398,6 +1408,7 @@ void MainWindow::onDeployHovered()
         switch(cons.at(i)->getState())
         {
         case Connection::DID_NOT_TRY:
+        case Connection::UNDEFINED:
             act->setIcon(IconFactory::getDatabaseIcon());
             break;
         case Connection::FAILED:
@@ -1405,6 +1416,9 @@ void MainWindow::onDeployHovered()
             break;
         case Connection::CONNECTED:
             act->setIcon(IconFactory::getConnectedDatabaseIcon());
+            break;
+        case Connection::DROPPED:
+            act->setIcon(IconFactory::getDroppedDatabaseIcon());
             break;
         }
         deployPopupMenu->addAction(act);
@@ -1749,6 +1763,7 @@ void MainWindow::onEditConnection()
             switch(c->getState())
             {
             case Connection::DID_NOT_TRY:
+            case Connection::UNDEFINED:
                 c->getLocation()->setIcon(0, IconFactory::getDatabaseIcon());
                 break;
             case Connection::FAILED:
@@ -1756,6 +1771,9 @@ void MainWindow::onEditConnection()
                 break;
             case Connection::CONNECTED:
                 c->getLocation()->setIcon(0, IconFactory::getConnectedDatabaseIcon());
+                break;
+            case Connection::DROPPED:
+                c->getLocation()->setIcon(0, IconFactory::getDroppedDatabaseIcon());
                 break;
             }
         }
@@ -1803,7 +1821,7 @@ void MainWindow::onDropConnection()
             c->getEngine()->dropDatabase(c);
             ConnectionManager::instance()->deleteConnection(c->getName());
             delete c->getLocation();
-            delete c;
+            c->setState(Connection::DROPPED);
         }
 
         if(m_btndlg && w)

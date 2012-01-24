@@ -35,7 +35,7 @@ NewViewForm::NewViewForm(bool queryBuilder, QueryGraphicsHelper* c, QWidget *par
     m_queryBuilder(queryBuilder), m_updateSqlAfterNameChange(true), m_autoChange(false)
 {
     ui->setupUi(this);
-    txtSql = new QTextEditWithCodeCompletion(ui->groupBox_3);
+    txtSql = new TextEditWithCodeCompletion(ui->groupBox_3);
     txtSql->setObjectName(QString::fromUtf8("txtSql"));
     txtSql->setMinimumSize(QSize(0, 200));
 

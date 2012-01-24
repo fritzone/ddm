@@ -4,7 +4,7 @@
 #include "SourceCodePresenterWidget.h"
 
 #include <QWidget>
-#include "QTextEditWithCodeCompletion.h"
+#include "TextEditWithCodeCompletion.h"
 
 class QueryGraphicsHelper;
 class QueryGraphicsView;
@@ -12,7 +12,7 @@ class QueryGraphicsScene;
 class QueryGraphicsItem;
 class SqlHighlighter;
 class View;
-class QTextEditWithCodeCompletion;
+class TextEditWithCodeCompletion;
 
 namespace Ui {
     class NewViewForm;
@@ -59,7 +59,7 @@ private:
     QueryGraphicsHelper* m_comps;
     bool m_queryBuilder;
     View* m_view;
-    QTextEditWithCodeCompletion*txtSql;
+    TextEditWithCodeCompletion*txtSql;
     bool m_updateSqlAfterNameChange;
     bool m_autoChange;
 };

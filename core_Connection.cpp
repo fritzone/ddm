@@ -19,6 +19,7 @@ void Connection::serialize(QDomDocument& doc, QDomElement& parent) const
     connectionElement.setAttribute("User", m_user);
     connectionElement.setAttribute("DbType", m_dbType);
     connectionElement.setAttribute("AutoConnect", m_autoConnect);
+    connectionElement.setAttribute("LastState", m_state);
     parent.appendChild(connectionElement);
 }
 

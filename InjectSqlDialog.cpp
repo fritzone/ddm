@@ -166,6 +166,7 @@ void InjectSqlDialog::populateConnections()
         switch(connections.at(i)->getState())
         {
         case Connection::DID_NOT_TRY:
+        case Connection::UNDEFINED:
             lwi->setIcon(IconFactory::getDatabaseIcon());
             break;
         case Connection::FAILED:
@@ -174,6 +175,10 @@ void InjectSqlDialog::populateConnections()
         case Connection::CONNECTED:
             lwi->setIcon(IconFactory::getConnectedDatabaseIcon());
             break;
+        case Connection::DROPPED:
+            lwi->setIcon(IconFactory::getConnectedDatabaseIcon());
+            break;
+
         }
     }
 }
