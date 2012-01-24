@@ -21,7 +21,7 @@ BrowseTableForm::BrowseTableForm(QWidget *parent, Connection* c, const QString& 
 {
     ui->setupUi(this);
 
-    m_textEdit = new QTextEditWithCodeCompletion(this, c);
+    m_textEdit = new TextEditWithCodeCompletion(this, c);
     ui->table->horizontalHeader()->setHighlightSections(true);
     ui->table->horizontalHeader()->setResizeMode(QHeaderView::Interactive);
 
@@ -91,6 +91,11 @@ QTableView* BrowseTableForm::getTable()
 
 void BrowseTableForm::onRunQuery()
 {
+    if(m_connection->getState() == Connection::DROPPED)
+    {
+        QMessageBox::critical(this, tr("Error"), tr("Cannot execute query on a dropped database"), QMessageBox::Ok);
+        return;
+    }
     QSqlQueryModel *model = new QSqlQueryModel(ui->table);
     model->setQuery(QSqlQuery(retrieveCurrentQuery(), m_connection->getQSqlDatabase()));
     if(model->lastError().type() != QSqlError::NoError)

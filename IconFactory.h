@@ -372,6 +372,18 @@ public:
         return icon;
     }
 
+    static const QIcon& getDroppedDatabaseIcon()
+    {
+        static const QIcon icon(strDroppedDatabaseIcon);
+        return icon;
+    }
+
+    static const QIcon& getDropDatabaseIcon()
+    {
+        static const QIcon icon(strDropDatabaseIcon);
+        return icon;
+    }
+
     static const QIcon& getUnConnectedDatabaseIcon()
     {
         static const QIcon icon(strUnConnectedDatabaseIcon);

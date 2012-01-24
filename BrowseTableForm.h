@@ -4,7 +4,7 @@
 #include <QWidget>
 #include <QSplitter>
 
-#include "QTextEditWithCodeCompletion.h"
+#include "TextEditWithCodeCompletion.h"
 
 namespace Ui {
     class BrowseTableForm;
@@ -38,7 +38,7 @@ private:
 
 private:
     Ui::BrowseTableForm *ui;
-    QTextEditWithCodeCompletion *m_textEdit;
+    TextEditWithCodeCompletion *m_textEdit;
     FrameForLineNumbers* m_frameForLineNumbers;
     static int m_firstP;
     static int m_lastP;

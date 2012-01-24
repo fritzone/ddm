@@ -3,7 +3,7 @@
 
 #include <QWidget>
 
-class QTextEditWithCodeCompletion;
+class TextEditWithCodeCompletion;
 class FrameForLineNumbers;
 class Procedure;
 
@@ -36,7 +36,7 @@ private:
 
 private:
     Ui::ProcedureForm *ui;
-    QTextEditWithCodeCompletion* m_textEdit;
+    TextEditWithCodeCompletion* m_textEdit;
     FrameForLineNumbers* m_frameForLineNumbers;
     Procedure* m_proc;
     bool m_forcedChange;

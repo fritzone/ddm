@@ -6,8 +6,7 @@
 #include <QSqlRecord>
 #include <QStringList>
 #include <QVariant>
-#include <QMessageBox>
-#include <QApplication>
+#include <QMutexLocker>
 
 #include "Table.h"
 #include "Version.h"
@@ -21,7 +20,6 @@
 #include "db_DatabaseBuiltinFunction.h"
 #include "core_View.h"
 #include "core_Connection.h"
-#include <QMutexLocker>
 
 QVector<DatabaseBuiltinFunction>* MySQLDatabaseEngine::s_builtinFunctions = 0;
 QSqlDatabase* MySQLDatabaseEngine::m_defaultMysqlDb = 0;
@@ -129,14 +127,12 @@ bool MySQLDatabaseEngine::reverseEngineerDatabase(Connection *c, const QStringLi
 
             if(!foundAtLeastOneForeignKey)
             {
-                QMessageBox::information(0, QApplication::tr("Information"), QApplication::tr("This database does not contain foreign key definitions. You will need to set them up manually."), QMessageBox::Ok);
                 v->setSpecialValidationFlags(1);
             }
 
             dbo.close();
         }
     }
-    qDebug() << "bye bye";
     return true;
 }
 
@@ -169,7 +165,7 @@ QStringList MySQLDatabaseEngine::getAvailableViews(Connection* c)
 
     if(!ok)
     {
-        QMessageBox::critical(0, "Error", dbo.lastError().databaseText() + "/" + dbo.lastError().databaseText(), QMessageBox::Ok);
+        lastError = dbo.lastError().databaseText() + "/" + dbo.lastError().databaseText();
         return result;
     }
 
@@ -201,7 +197,7 @@ QStringList MySQLDatabaseEngine::getAvailableTables(Connection* c)
 
     if(!ok)
     {
-        QMessageBox::critical(0, "Error", dbo.lastError().databaseText() + "/" + dbo.lastError().databaseText(), QMessageBox::Ok);
+        lastError = dbo.lastError().databaseText() + "/" + dbo.lastError().databaseText();
         return result;
     }
 
@@ -233,7 +229,7 @@ View* MySQLDatabaseEngine::reverseEngineerView(Connection* c, const QString& vie
 
     if(!ok)
     {
-        QMessageBox::critical(0, "Error", dbo.lastError().databaseText() + "/" + dbo.lastError().databaseText(), QMessageBox::Ok);
+        lastError = dbo.lastError().databaseText() + "/" + dbo.lastError().databaseText();
         return view;
     }
 
@@ -293,18 +289,18 @@ Table* MySQLDatabaseEngine::reverseEngineerTable(Connection *c, const QString& t
 {
     Version* v = p->getWorkingVersion();
     QString tableConnectionName = provideConnectionName("getTable");
-    QSqlDatabase db = QSqlDatabase::cloneDatabase(*m_defaultMysqlDb, tableConnectionName);
+    QSqlDatabase dbo = QSqlDatabase::cloneDatabase(*m_defaultMysqlDb, tableConnectionName);
 
-    db.setHostName(c->getHost());
-    db.setUserName(c->getUser());
-    db.setPassword(c->getPassword());
-    db.setDatabaseName(c->getDb());
+    dbo.setHostName(c->getHost());
+    dbo.setUserName(c->getUser());
+    dbo.setPassword(c->getPassword());
+    dbo.setDatabaseName(c->getDb());
 
-    bool ok = db.open();
+    bool ok = dbo.open();
 
     if(!ok)
     {
-        QMessageBox::critical(0, "Error", db.lastError().databaseText() + "/" + db.lastError().databaseText(), QMessageBox::Ok);
+        lastError = dbo.lastError().databaseText() + "/" + dbo.lastError().databaseText();
         return 0;
     }
 
@@ -313,7 +309,7 @@ Table* MySQLDatabaseEngine::reverseEngineerTable(Connection *c, const QString& t
 
     // fetch all the columns of the table
     {
-    QSqlQuery query(db);
+    QSqlQuery query(dbo);
     query.exec("desc " + tableName);
 
     int fieldNo = query.record().indexOf("Field");
@@ -356,7 +352,7 @@ Table* MySQLDatabaseEngine::reverseEngineerTable(Connection *c, const QString& t
     // now populate the indices of the table
     {
 
-    QSqlQuery query(db);
+    QSqlQuery query(dbo);
     query.exec("show indexes from " + tableName);
 
     int tableNo = query.record().indexOf("Table");
@@ -422,7 +418,7 @@ Table* MySQLDatabaseEngine::reverseEngineerTable(Connection *c, const QString& t
         }
         s += " from ";
         s += tab->getName();
-        QSqlQuery query (db);
+        QSqlQuery query (dbo);
         query.exec(s);
         QVector <QVector <QString> > defaultValues;
         while(query.next())
@@ -481,7 +477,7 @@ Table* MySQLDatabaseEngine::reverseEngineerTable(Connection *c, const QString& t
     // find the storage engine
     {
         QString s = "SELECT ENGINE FROM information_schema.TABLES WHERE TABLE_SCHEMA = '"+c->getDb()+"' AND TABLE_NAME = '"+tab->getName()+"'";
-        QSqlQuery query (db);
+        QSqlQuery query (dbo);
         query.exec(s);
         QString eng = "";
         while(query.next())
@@ -500,7 +496,7 @@ Table* MySQLDatabaseEngine::reverseEngineerTable(Connection *c, const QString& t
             }
         }
     }
-    db.close();
+    dbo.close();
     return tab;
 }
 
@@ -612,6 +608,7 @@ bool MySQLDatabaseEngine::dropDatabase(Connection* c)
         return false;
     }
     db.close();
+    c->setState(Connection::DROPPED);
     return true;
 }
 

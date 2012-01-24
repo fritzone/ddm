@@ -1,6 +1,6 @@
 #include "ProcedureForm.h"
 #include "ui_ProcedureForm.h"
-#include "QTextEditWithCodeCompletion.h"
+#include "TextEditWithCodeCompletion.h"
 #include "FrameForLineNumbers.h"
 #include "core_Procedure.h"
 
@@ -22,7 +22,7 @@ ProcedureForm::ProcedureForm(QWidget *parent) :
     m_frameForLineNumbers->setFrameShadow(QFrame::Raised);
     ui->horizontalLayout->addWidget(m_frameForLineNumbers);
 
-    m_textEdit = new QTextEditWithCodeCompletion(this);
+    m_textEdit = new TextEditWithCodeCompletion(this);
     m_textEdit->setLineNumberFrame(m_frameForLineNumbers);
     ui->horizontalLayout->addWidget(m_textEdit);
     m_textEdit->setFocus();
@@ -102,4 +102,5 @@ void ProcedureForm::initSql()
 void ProcedureForm::showSql()
 {
     m_textEdit->setPlainText(m_proc->getSql());
+    m_textEdit->updateLineNumbers();
 }

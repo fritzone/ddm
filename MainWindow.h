@@ -69,7 +69,7 @@ public:
     void showDataType(const QString &name, bool focus = true);
     void showDiagram(const QString& name);
     void showView(const QString& viewName);
-    void showProc(const QString& procName);
+    void showProcedure(const QString& procName);
 
     void rerenderQuery(Query*);
     void showConnections();

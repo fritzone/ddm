@@ -22,6 +22,7 @@ class DiagramsListForm;
 class ViewsListForm;
 class ProcedureForm;
 class Procedure;
+class ProceduresListForm;
 
 /**
  * The scope of this class is to have a common collection point for the tree widget items of a version (DT, Sql, Table, etc...)
@@ -189,6 +190,7 @@ public:
     NewTableForm* getTableFormForNewTable();
     NewTableForm* getTableFormForExistingTable();
     ProcedureForm* getProcedureForm();
+    ProceduresListForm* getProceduresListForm();
 
 private:
 
@@ -242,6 +244,7 @@ private:
     NewTableForm* m_newTableForm;
     NewTableForm* m_existingTableForm;
     ProcedureForm* m_procedureForm;
+    ProceduresListForm* m_proceduresListForm;
 };
 
 #endif // VERSIONGUIELEMENTS_H
