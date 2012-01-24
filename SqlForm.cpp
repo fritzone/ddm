@@ -66,7 +66,7 @@ void SqlForm::onInject()
     {
         QString tSql;
         QStringList connectionNames = injectDialog->getSelectedConnections();
-        bool error;
+        bool error = false;
         for(int i=0; i< connectionNames.size(); i++)
         {
             Connection* c = ConnectionManager::instance()->getConnection(connectionNames.at(i));
