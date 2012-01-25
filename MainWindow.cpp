@@ -179,14 +179,14 @@ void MainWindow::showConnections()
         Connection* c = cons.at(i);
         createConnectionTreeEntry(c);
     }
-    QObject::connect(ContextMenuCollection::getInstance()->getAction_ConnectionConnect(), SIGNAL(activated()), this, SLOT(onConnectConnection()));
-    QObject::connect(ContextMenuCollection::getInstance()->getAction_ConnectionBrowse(), SIGNAL(activated()), this, SLOT(onBrowseConnection()));
-    QObject::connect(ContextMenuCollection::getInstance()->getAction_ConnectionDrop(), SIGNAL(activated()), this, SLOT(onDropConnection()));
-    QObject::connect(ContextMenuCollection::getInstance()->getAction_ConnectionDelete(), SIGNAL(activated()), this, SLOT(onDeleteConnection()));
-    QObject::connect(ContextMenuCollection::getInstance()->getAction_ConnectionEdit(), SIGNAL(activated()), this, SLOT(onEditConnection()));
+    QObject::connect(ContextMenuCollection::getInstance()->getAction_ConnectionConnect(), SIGNAL(triggered()), this, SLOT(onConnectConnection()));
+    QObject::connect(ContextMenuCollection::getInstance()->getAction_ConnectionBrowse(), SIGNAL(triggered()), this, SLOT(onBrowseConnection()));
+    QObject::connect(ContextMenuCollection::getInstance()->getAction_ConnectionDrop(), SIGNAL(triggered()), this, SLOT(onDropConnection()));
+    QObject::connect(ContextMenuCollection::getInstance()->getAction_ConnectionDelete(), SIGNAL(triggered()), this, SLOT(onDeleteConnection()));
+    QObject::connect(ContextMenuCollection::getInstance()->getAction_ConnectionEdit(), SIGNAL(triggered()), this, SLOT(onEditConnection()));
     connect(m_connectionsTree, SIGNAL(itemDoubleClicked(QTreeWidgetItem*,int)), this, SLOT(onConnectionItemDoubleClicked(QTreeWidgetItem*,int)));
-    QObject::connect(ContextMenuCollection::getInstance()->getAction_BrowsedTableInject(), SIGNAL(activated()), this, SLOT(onInjectBrowsedTable()));
-    QObject::connect(ContextMenuCollection::getInstance()->getAction_BrowsedTableBrowse(), SIGNAL(activated()), this, SLOT(onBrowseBrowsedTable()));
+    QObject::connect(ContextMenuCollection::getInstance()->getAction_BrowsedTableInject(), SIGNAL(triggered()), this, SLOT(onInjectBrowsedTable()));
+    QObject::connect(ContextMenuCollection::getInstance()->getAction_BrowsedTableBrowse(), SIGNAL(triggered()), this, SLOT(onBrowseBrowsedTable()));
 
     m_ui->action_ConnectionsTree->setChecked(true);
 }
