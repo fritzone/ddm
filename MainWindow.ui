@@ -468,7 +468,7 @@
  <connections>
   <connection>
    <sender>action_New</sender>
-   <signal>activated()</signal>
+   <signal>triggered()</signal>
    <receiver>MainWindow</receiver>
    <slot>onNewSolution()</slot>
    <hints>
@@ -484,7 +484,7 @@
   </connection>
   <connection>
    <sender>action_NewDataType</sender>
-   <signal>activated()</signal>
+   <signal>triggered()</signal>
    <receiver>MainWindow</receiver>
    <slot>onNewDataType()</slot>
    <hints>
@@ -500,7 +500,7 @@
   </connection>
   <connection>
    <sender>action_NewTable</sender>
-   <signal>activated()</signal>
+   <signal>triggered()</signal>
    <receiver>MainWindow</receiver>
    <slot>onNewTable()</slot>
    <hints>
@@ -516,7 +516,7 @@
   </connection>
   <connection>
    <sender>action_Save</sender>
-   <signal>activated()</signal>
+   <signal>triggered()</signal>
    <receiver>MainWindow</receiver>
    <slot>onSaveSolution()</slot>
    <hints>
@@ -532,7 +532,7 @@
   </connection>
   <connection>
    <sender>action_Open</sender>
-   <signal>activated()</signal>
+   <signal>triggered()</signal>
    <receiver>MainWindow</receiver>
    <slot>onOpenSolution()</slot>
    <hints>
@@ -548,7 +548,7 @@
   </connection>
   <connection>
    <sender>action_About</sender>
-   <signal>activated()</signal>
+   <signal>triggered()</signal>
    <receiver>MainWindow</receiver>
    <slot>onAbout()</slot>
    <hints>
@@ -564,7 +564,7 @@
   </connection>
   <connection>
    <sender>action_NewDiagram</sender>
-   <signal>activated()</signal>
+   <signal>triggered()</signal>
    <receiver>MainWindow</receiver>
    <slot>onNewDiagram()</slot>
    <hints>
@@ -580,7 +580,7 @@
   </connection>
   <connection>
    <sender>action_SaveAs</sender>
-   <signal>activated()</signal>
+   <signal>triggered()</signal>
    <receiver>MainWindow</receiver>
    <slot>onSaveAs()</slot>
    <hints>
@@ -596,7 +596,7 @@
   </connection>
   <connection>
    <sender>actionQuit</sender>
-   <signal>activated()</signal>
+   <signal>triggered()</signal>
    <receiver>MainWindow</receiver>
    <slot>close()</slot>
    <hints>
@@ -612,7 +612,7 @@
   </connection>
   <connection>
    <sender>action_NewTableInstance</sender>
-   <signal>activated()</signal>
+   <signal>triggered()</signal>
    <receiver>MainWindow</receiver>
    <slot>onNewTableInstance()</slot>
    <hints>
@@ -644,7 +644,7 @@
   </connection>
   <connection>
    <sender>action_Preferences</sender>
-   <signal>activated()</signal>
+   <signal>triggered()</signal>
    <receiver>MainWindow</receiver>
    <slot>onPreferences()</slot>
    <hints>
@@ -660,7 +660,7 @@
   </connection>
   <connection>
    <sender>action_Close</sender>
-   <signal>activated()</signal>
+   <signal>triggered()</signal>
    <receiver>MainWindow</receiver>
    <slot>onCloseSolution()</slot>
    <hints>
@@ -676,7 +676,7 @@
   </connection>
   <connection>
    <sender>action_Deploy</sender>
-   <signal>activated()</signal>
+   <signal>triggered()</signal>
    <receiver>MainWindow</receiver>
    <slot>onDeploy()</slot>
    <hints>
@@ -692,7 +692,7 @@
   </connection>
   <connection>
    <sender>action_ProjectTree</sender>
-   <signal>activated()</signal>
+   <signal>triggered()</signal>
    <receiver>MainWindow</receiver>
    <slot>onViewProjectTree()</slot>
    <hints>
@@ -708,7 +708,7 @@
   </connection>
   <connection>
    <sender>action_Datatypes_Tree</sender>
-   <signal>activated()</signal>
+   <signal>triggered()</signal>
    <receiver>MainWindow</receiver>
    <slot>onViewDatatypesTree()</slot>
    <hints>
@@ -724,7 +724,7 @@
   </connection>
   <connection>
    <sender>action_Validate</sender>
-   <signal>activated()</signal>
+   <signal>triggered()</signal>
    <receiver>MainWindow</receiver>
    <slot>onValidate()</slot>
    <hints>
@@ -740,7 +740,7 @@
   </connection>
   <connection>
    <sender>action_NewView</sender>
-   <signal>activated()</signal>
+   <signal>triggered()</signal>
    <receiver>MainWindow</receiver>
    <slot>onNewView()</slot>
    <hints>
@@ -756,7 +756,7 @@
   </connection>
   <connection>
    <sender>action_NewDatabaseConnection</sender>
-   <signal>activated()</signal>
+   <signal>triggered()</signal>
    <receiver>MainWindow</receiver>
    <slot>onNewConnection()</slot>
    <hints>
@@ -772,7 +772,7 @@
   </connection>
   <connection>
    <sender>action_ConnectionsTree</sender>
-   <signal>activated()</signal>
+   <signal>triggered()</signal>
    <receiver>MainWindow</receiver>
    <slot>onViewConnectionsTree()</slot>
    <hints>
@@ -804,7 +804,7 @@
   </connection>
   <connection>
    <sender>action_NewProcedure</sender>
-   <signal>activated()</signal>
+   <signal>triggered()</signal>
    <receiver>MainWindow</receiver>
    <slot>onNewProcedure()</slot>
    <hints>
@@ -820,7 +820,7 @@
   </connection>
   <connection>
    <sender>action_DeleteUnusuedDatatypes</sender>
-   <signal>activated()</signal>
+   <signal>triggered()</signal>
    <receiver>MainWindow</receiver>
    <slot>onDeleteUnusedDatatypes()</slot>
    <hints>
