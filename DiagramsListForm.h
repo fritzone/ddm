@@ -9,7 +9,6 @@ namespace Ui {
 }
 
 class Diagram;
-class MainWindow;
 
 class DiagramsListForm : public QWidget
 {
@@ -28,7 +27,6 @@ protected:
 
 private:
     Ui::DiagramsListForm *ui;
-    MainWindow* mw;
 };
 
 #endif // DIAGRAMSLISTFORM_H

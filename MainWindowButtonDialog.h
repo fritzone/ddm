@@ -4,8 +4,6 @@
 #include <QtGui/QDialog>
 #include <QCommandLinkButton>
 
-class MainWindow;
-
 namespace Ui {
     class MainWindowButtonDialog;
 }
@@ -15,7 +13,6 @@ class MainWindowButtonDialog : public QDialog {
 public:
     MainWindowButtonDialog(QWidget *parent = 0);
     ~MainWindowButtonDialog();
-    void setMainWindow(MainWindow*);
 
 public slots:
 
@@ -44,8 +41,6 @@ private:
 
 private:
     Ui::MainWindowButtonDialog *m_ui;
-    MainWindow* m_mw;
-
 };
 
 #endif // MAINWINDOWBUTTONDIALOG_H

@@ -6,7 +6,7 @@
 #include "TreeItem.h"
 #include "SerializableElement.h"
 
-class Procedure : virtual public SqlSourceEntity, virtual public NamedItem, virtual public TreeItem, virtual public SerializableElement
+class Procedure : public SqlSourceEntity, public NamedItem, public TreeItem, public SerializableElement
 {
 public:
     Procedure();

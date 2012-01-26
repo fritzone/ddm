@@ -7,7 +7,7 @@
 
 #include <QTreeWidgetItem>
 
-TableInstancesListForm::TableInstancesListForm(QWidget *parent) : QWidget(parent), ui(new Ui::TableInstancesListForm), mw(reinterpret_cast<MainWindow*>(parent))
+TableInstancesListForm::TableInstancesListForm(QWidget *parent) : QWidget(parent), ui(new Ui::TableInstancesListForm)
 {
     ui->setupUi(this);
 
@@ -50,5 +50,5 @@ void TableInstancesListForm::populateTableInstances(QVector<TableInstance*>const
 void TableInstancesListForm::doubleClickTree(QTreeWidgetItem* item, int)
 {
     QString tabName = item->text(0);
-    mw->showTableInstance(tabName, true);
+    MainWindow::instance()->showTableInstance(tabName, true);
 }

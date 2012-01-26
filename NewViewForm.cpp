@@ -276,7 +276,7 @@ void NewViewForm::onHelp()
     HelpWindow* hw = HelpWindow::instance();
     hw->showHelp(QString("/doc/view.html"));
     hw->show();
-    Workspace::getInstance()->workingVersion()->getGui()->getMainWindow()->addDockWidget(Qt::RightDockWidgetArea, hw);
+    MainWindow::instance()->addDockWidget(Qt::RightDockWidgetArea, hw);
 }
 
 void NewViewForm::onSaveSql()

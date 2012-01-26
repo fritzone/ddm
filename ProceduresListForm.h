@@ -9,7 +9,6 @@ namespace Ui {
 }
 
 class Procedure;
-class MainWindow;
 
 class ProceduresListForm : public QWidget
 {
@@ -26,7 +25,6 @@ protected:
 
 private:
     Ui::ProceduresListForm *ui;
-    MainWindow* mw;
 };
 
 #endif // ProceduresLISTFORM_H

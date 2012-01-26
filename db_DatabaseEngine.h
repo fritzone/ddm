@@ -15,10 +15,7 @@ class Project;
 class DatabaseBuiltinFunction;
 class View;
 class Connection;
-
-// BIG TODO: when a new database engine will be introduced which actually can work on databases
-// redesign this interfece so that it takes in a Connection object instead of the host/user/pass
-// combination since not every database has this feature. Sqlite for example
+class Codepage;
 
 /**
  * This class is a kind of "wrapper" for the other classes that all deal
@@ -245,6 +242,12 @@ public:
      * @return the delimiter keyword
      */
     virtual QString getDelimiterKeyword() = 0;
+
+    /**
+     * Returns the codepages supported by the database engine
+     * @return the codepages supported by the database engine
+     */
+    virtual QVector<Codepage*> getCodepages() = 0;
 
 public:
 

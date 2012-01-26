@@ -5,7 +5,6 @@
 #include <QTreeWidgetItem>
 
 class Table;
-class MainWindow;
 
 namespace Ui
 {
@@ -31,8 +30,6 @@ protected:
 
 private:
     Ui::TablesListForm *ui;
-
-    MainWindow* mw;
 };
 
 #endif // TABLESLISTFORM_H

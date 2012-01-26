@@ -9,7 +9,6 @@ namespace Ui {
 }
 
 class View;
-class MainWindow;
 
 class ViewsListForm : public QWidget
 {
@@ -26,7 +25,7 @@ protected:
 
 private:
     Ui::ViewsListForm *ui;
-    MainWindow* mw;
+
 };
 
 #endif // VIEWSLISTFORM_H

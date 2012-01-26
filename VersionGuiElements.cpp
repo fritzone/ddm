@@ -450,79 +450,79 @@ void VersionGuiElements::cleanupOrphanedIssueTableItems()
 void VersionGuiElements::updateForms()
 {
     //see if we have already created a new table form. Must not be central
-    if(dynamic_cast<NewTableForm*>(m_mw->centralWidget()))
+    if(dynamic_cast<NewTableForm*>(MainWindow::instance()->centralWidget()))
     {
         // yes, reset the foreign tables combo
-        dynamic_cast<NewTableForm*>(m_mw->centralWidget())->resetForeignTablesCombo();
+        dynamic_cast<NewTableForm*>(MainWindow::instance()->centralWidget())->resetForeignTablesCombo();
     }
 
     getTablesListForm();
     m_tblsListForm->populateTables(m_version->getTables());
     m_tblsListForm->setOop(Workspace::getInstance()->currentProjectIsOop());
-    if(dynamic_cast<TablesListForm*>(m_mw->centralWidget()))
+    if(dynamic_cast<TablesListForm*>(MainWindow::instance()->centralWidget()))
     {
-        m_mw->setCentralWidget(m_tblsListForm);
+        MainWindow::instance()->setCentralWidget(m_tblsListForm);
     }
 
     getTableInstancesListForm();
     m_tblInstancesListForm->populateTableInstances(m_version->getTableInstances());
-    if(dynamic_cast<TableInstancesListForm*>(m_mw->centralWidget()))
+    if(dynamic_cast<TableInstancesListForm*>(MainWindow::instance()->centralWidget()))
     {
-        m_mw->setCentralWidget(m_tblInstancesListForm);
+        MainWindow::instance()->setCentralWidget(m_tblInstancesListForm);
     }
 
     getSqlForm();
     m_sqlForm->setSqlSource(0);
     m_sqlForm->presentSql(Workspace::getInstance()->currentProject(), Workspace::getInstance()->currentProject()->getCodepage());
-    if(dynamic_cast<SqlForm*>(m_mw->centralWidget()))
+    if(dynamic_cast<SqlForm*>(MainWindow::instance()->centralWidget()))
     {
-        m_mw->setCentralWidget(m_sqlForm);
+        MainWindow::instance()->setCentralWidget(m_sqlForm);
     }
 
 }
 
 TableInstancesListForm* VersionGuiElements::getTableInstancesListForm()
 {
-    return m_tblInstancesListForm = new TableInstancesListForm(m_mw);
+    return m_tblInstancesListForm = new TableInstancesListForm(MainWindow::instance());
 }
 
 DiagramsListForm* VersionGuiElements::getDiagramsListForm()
 {
-    return m_diagramsListForm = new DiagramsListForm(m_mw);
+    return m_diagramsListForm = new DiagramsListForm(MainWindow::instance());
 }
 
 ProceduresListForm* VersionGuiElements::getProceduresListForm()
 {
-    return m_proceduresListForm = new ProceduresListForm(m_mw);
+    return m_proceduresListForm = new ProceduresListForm(MainWindow::instance());
 }
 
 
 ViewsListForm* VersionGuiElements::getViewsListForm()
 {
-    return m_viewsListForm = new ViewsListForm(m_mw);
+    return m_viewsListForm = new ViewsListForm(MainWindow::instance());
 }
 
 TablesListForm* VersionGuiElements::getTablesListForm()
 {
-    return m_tblsListForm = new TablesListForm(m_mw);
+    return m_tblsListForm = new TablesListForm(MainWindow::instance());
 }
 
 SqlForm* VersionGuiElements::getSqlForm()
 {
-    return m_sqlForm = new SqlForm(Workspace::getInstance()->currentProjectsEngine(), m_mw);
+    return m_sqlForm = new SqlForm(Workspace::getInstance()->currentProjectsEngine(), MainWindow::instance());
 }
 
 NewTableForm* VersionGuiElements::getTableFormForNewTable()
 {
-    return m_newTableForm = new NewTableForm(Workspace::getInstance()->currentProjectsEngine(), Workspace::getInstance()->currentProject(), m_mw, true);
+    return m_newTableForm = new NewTableForm(Workspace::getInstance()->currentProjectsEngine(), Workspace::getInstance()->currentProject(), MainWindow::instance(), true);
 }
 
 NewTableForm* VersionGuiElements::getTableFormForExistingTable()
 {
-    return m_existingTableForm = new NewTableForm(Workspace::getInstance()->currentProjectsEngine(), Workspace::getInstance()->currentProject(), m_mw, false);
+    return m_existingTableForm = new NewTableForm(Workspace::getInstance()->currentProjectsEngine(), Workspace::getInstance()->currentProject(), MainWindow::instance(), false);
 }
 
 ProcedureForm* VersionGuiElements::getProcedureForm()
 {
-    return m_procedureForm = new ProcedureForm(m_mw);
+    return m_procedureForm = new ProcedureForm(MainWindow::instance());
 }

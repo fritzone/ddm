@@ -4,7 +4,7 @@
 #include "MainWindow.h"
 
 DataTypesListForm::DataTypesListForm(QWidget *parent) :
-    QWidget(parent), m_ui(new Ui::DataTypesListForm), mw(reinterpret_cast<MainWindow*>(parent))
+    QWidget(parent), m_ui(new Ui::DataTypesListForm)
 {
     m_ui->setupUi(this);
 
@@ -53,5 +53,5 @@ void DataTypesListForm::feedInDataTypes(const QVector<UserDataType*>& dataTypes)
 void DataTypesListForm::doubleClickTree(QTreeWidgetItem* item,int)
 {
     QString dtName = item->text(0);
-    mw->showDataType(dtName, true);
+    MainWindow::instance()->showDataType(dtName, true);
 }

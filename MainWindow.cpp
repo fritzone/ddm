@@ -83,7 +83,6 @@ MainWindow::~MainWindow()
 void MainWindow::showButtonDialog()
 {
     m_btndlg = new MainWindowButtonDialog();
-    m_btndlg->setMainWindow(this);
     m_btndlg->setModal(false);
     m_btndlg->setWindowFlags(Qt::SplashScreen | Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint | Qt::X11BypassWindowManagerHint);
 
@@ -163,8 +162,8 @@ void MainWindow::showConnections()
     m_connectionsTree->setColumnCount(1);
     m_connectionsTree->setHeaderHidden(false);
 
-    QTreeWidgetItem *___qtreewidgetitem = m_connectionsTree->headerItem();
-    ___qtreewidgetitem->setText(0, QApplication::translate("MainWindow", "Connection", 0, QApplication::UnicodeUTF8));
+    QTreeWidgetItem *headerItm = m_connectionsTree->headerItem();
+    headerItm->setText(0, QApplication::translate("MainWindow", "Connection", 0, QApplication::UnicodeUTF8));
     m_connectionsTree->header()->setDefaultSectionSize(150);
 
     m_connectionsContextMenuHandler = new ContextMenuHandler();
@@ -179,14 +178,14 @@ void MainWindow::showConnections()
         Connection* c = cons.at(i);
         createConnectionTreeEntry(c);
     }
-    QObject::connect(ContextMenuCollection::getInstance()->getAction_ConnectionConnect(), SIGNAL(triggered()), this, SLOT(onConnectConnection()));
-    QObject::connect(ContextMenuCollection::getInstance()->getAction_ConnectionBrowse(), SIGNAL(triggered()), this, SLOT(onBrowseConnection()));
-    QObject::connect(ContextMenuCollection::getInstance()->getAction_ConnectionDrop(), SIGNAL(triggered()), this, SLOT(onDropConnection()));
-    QObject::connect(ContextMenuCollection::getInstance()->getAction_ConnectionDelete(), SIGNAL(triggered()), this, SLOT(onDeleteConnection()));
-    QObject::connect(ContextMenuCollection::getInstance()->getAction_ConnectionEdit(), SIGNAL(triggered()), this, SLOT(onEditConnection()));
+    connect(ContextMenuCollection::getInstance()->getAction_ConnectionConnect(), SIGNAL(triggered()), this, SLOT(onConnectConnection()));
+    connect(ContextMenuCollection::getInstance()->getAction_ConnectionBrowse(), SIGNAL(triggered()), this, SLOT(onBrowseConnection()));
+    connect(ContextMenuCollection::getInstance()->getAction_ConnectionDrop(), SIGNAL(triggered()), this, SLOT(onDropConnection()));
+    connect(ContextMenuCollection::getInstance()->getAction_ConnectionDelete(), SIGNAL(triggered()), this, SLOT(onDeleteConnection()));
+    connect(ContextMenuCollection::getInstance()->getAction_ConnectionEdit(), SIGNAL(triggered()), this, SLOT(onEditConnection()));
     connect(m_connectionsTree, SIGNAL(itemDoubleClicked(QTreeWidgetItem*,int)), this, SLOT(onConnectionItemDoubleClicked(QTreeWidgetItem*,int)));
-    QObject::connect(ContextMenuCollection::getInstance()->getAction_BrowsedTableInject(), SIGNAL(triggered()), this, SLOT(onInjectBrowsedTable()));
-    QObject::connect(ContextMenuCollection::getInstance()->getAction_BrowsedTableBrowse(), SIGNAL(triggered()), this, SLOT(onBrowseBrowsedTable()));
+    connect(ContextMenuCollection::getInstance()->getAction_BrowsedTableInject(), SIGNAL(triggered()), this, SLOT(onInjectBrowsedTable()));
+    connect(ContextMenuCollection::getInstance()->getAction_BrowsedTableBrowse(), SIGNAL(triggered()), this, SLOT(onBrowseBrowsedTable()));
 
     m_ui->action_ConnectionsTree->setChecked(true);
 }
@@ -290,11 +289,6 @@ void MainWindow::setupGuiForNewSolution()
     showMaximized();
 }
 
-ContextMenuEnabledTreeWidgetItem* MainWindow::createDataTypeTreeEntry(UserDataType* udt)
-{
-    return m_workspace->workingVersion()->getGui()->createDataTypeTreeEntry(udt);
-}
-
 void MainWindow::onNewSolution()
 {
     bool w = false;
@@ -357,7 +351,7 @@ void MainWindow::onNewSolution()
 
             for(int i=0; i<dts.size(); i++)
             {
-                createDataTypeTreeEntry(dts.at(i));
+                m_workspace->workingVersion()->getGui()->createDataTypeTreeEntry(dts.at(i));
             }
 
             m_datatypesTree->scrollToItem(m_workspace->workingVersion()->getGui()->getDtsItem());
@@ -389,7 +383,6 @@ void MainWindow::onNewSolution()
         }
 
         enableActions();
-        m_workspace->workingVersion()->getGui()->setMainWindow(this);
         delete m_btndlg;
         m_btndlg = 0;
     }
@@ -428,7 +421,6 @@ void MainWindow::onDTTreeClicked()
                 }
                 NewDataTypeForm* frm = new NewDataTypeForm(DataType::DT_INVALID, m_workspace->currentProjectsEngine(), this);
                 frm->focusOnName();
-                frm->setMainWindow(this);
                 frm->setDataType(udt);
                 setCentralWidget(frm);
             }
@@ -493,7 +485,6 @@ void MainWindow::showDataType(const QString &name, bool focus)
 
     NewDataTypeForm* frm = new NewDataTypeForm(DataType::DT_INVALID, m_workspace->currentProjectsEngine(), this);
     frm->focusOnName();
-    frm->setMainWindow(this);
     frm->setDataType(dt);
     setCentralWidget(frm);
 
@@ -738,7 +729,6 @@ void MainWindow::showNewDataTypeWindow(int a)
 {
     NewDataTypeForm* frm = new NewDataTypeForm((DataType::DT_TYPE)a, m_workspace->currentProjectsEngine(), this);
     frm->focusOnName();
-    frm->setMainWindow(this);
     m_projectTree->setCurrentItem(0);
     setCentralWidget(frm);
 
@@ -796,7 +786,7 @@ bool MainWindow::onSaveNewDataType(const QString& name, const QString& type, con
         m_workspace->workingVersion()->addNewDataType(udt);
 
         // create the tree entry
-        ContextMenuEnabledTreeWidgetItem* newDtItem = createDataTypeTreeEntry(udt);
+        ContextMenuEnabledTreeWidgetItem* newDtItem = m_workspace->workingVersion()->getGui()->createDataTypeTreeEntry(udt);
 
         // set the link to the tree
         m_datatypesTree->expandItem(newDtItem);
@@ -879,7 +869,6 @@ void MainWindow::doLoadSolution(const QString& fileName, bool splashVisible)
 
     enableActions();
 
-    m_workspace->workingVersion()->getGui()->setMainWindow(this);
     delete m_btndlg;
     m_btndlg = 0;
 }
@@ -1006,14 +995,14 @@ void MainWindow::connectActionsFromPopupMenus()
 
 void MainWindow::onDeleteProcedure()
 {
-    Procedure* v = getRightclickedProcedure();
-    if(v)
+    Procedure* p = getRightClickedObject<Procedure>((itemGetter)&Version::getProcedure);
+    if(p)
     {
-        if(QMessageBox::question(this, tr("Are you sure?"), tr("Really delete ") + v->getName()+ "?", QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
+        if(QMessageBox::question(this, tr("Are you sure?"), tr("Really delete ") + p->getName()+ "?", QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
         {
             return;
         }
-        m_workspace->workingVersion()->deleteProcedure(v->getName());
+        m_workspace->workingVersion()->deleteProcedure(p->getName());
         m_workspace->workingVersion()->getGui()->updateForms();
 
         ProceduresListForm* procedureList = m_workspace->workingVersion()->getGui()->getProceduresListForm();
@@ -1028,7 +1017,7 @@ void MainWindow::onDeleteProcedure()
 
 void MainWindow::onDeleteView()
 {
-    View* v = getRightclickedView();
+    View* v = getRightClickedObject<View>((itemGetter)&Version::getView);
     if(v)
     {
         if(QMessageBox::question(this, tr("Are you sure?"), tr("Really delete ") + v->getName()+ "?", QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
@@ -1131,7 +1120,7 @@ void MainWindow::onSpecializeTableFromPopup()
         return;
     }
 
-    Table*table = getRightclickedTable();
+    Table* table = getRightClickedObject<Table>((itemGetter)&Version::getTable);
     if(table == 0) return;
 
     Table* specializedTable = new Table(m_workspace->workingVersion());
@@ -1155,14 +1144,16 @@ void MainWindow::onTableAddColumnFromPopup()
 {
     if(m_projectTree->getLastRightclickedItem() != 0)
     {
-        Table *table = getRightclickedTable();
+        Table *table = getRightClickedObject<Table>((itemGetter)&Version::getTable);
+        if(table == 0) return;
         NewTableForm* frm = showExistingTable(table);
         frm->focusOnNewColumnName();
         m_projectTree->setLastRightclickedItem(0);
     }
 }
 
-Table* MainWindow::getRightclickedTable()
+template <class T>
+T* MainWindow::getRightClickedObject(itemGetter g)
 {
     if(m_projectTree->getLastRightclickedItem() != 0)
     {
@@ -1170,75 +1161,14 @@ Table* MainWindow::getRightclickedTable()
         m_projectTree->setLastRightclickedItem(0);
 
         QVariant qv = item->data(0, Qt::UserRole);
-        QString tabName = qv.toString();
-        Table* table =  m_workspace->workingVersion()->getTable(tabName);
-        return table;
+        QString name = qv.toString();
+        T* t =  reinterpret_cast<T*>((m_workspace->getInstance()->workingVersion()->*g)(name));
+        return t;
     }
     return 0;
 }
 
-TableInstance* MainWindow::getRightclickedTableInstance()
-{
-    if(m_projectTree->getLastRightclickedItem() != 0)
-    {
-        ContextMenuEnabledTreeWidgetItem* item = m_projectTree->getLastRightclickedItem();
-        m_projectTree->setLastRightclickedItem(0);
-
-        QVariant qv = item->data(0, Qt::UserRole);
-        QString tabName = qv.toString();
-        TableInstance* table =  m_workspace->workingVersion()->getTableInstance(tabName);
-        return table;
-    }
-    return 0;
-}
-
-View* MainWindow::getRightclickedView()
-{
-    if(m_projectTree->getLastRightclickedItem() != 0)
-    {
-        ContextMenuEnabledTreeWidgetItem* item = m_projectTree->getLastRightclickedItem();
-        m_projectTree->setLastRightclickedItem(0);
-
-        QVariant qv = item->data(0, Qt::UserRole);
-        QString dgrName = qv.toString();
-        View* v =  m_workspace->workingVersion()->getView(dgrName);
-        return v;
-    }
-    return 0;
-}
-
-Procedure* MainWindow::getRightclickedProcedure()
-{
-    if(m_projectTree->getLastRightclickedItem() != 0)
-    {
-        ContextMenuEnabledTreeWidgetItem* item = m_projectTree->getLastRightclickedItem();
-        m_projectTree->setLastRightclickedItem(0);
-
-        QVariant qv = item->data(0, Qt::UserRole);
-        QString dgrName = qv.toString();
-        Procedure* v =  m_workspace->workingVersion()->getProcedure(dgrName);
-        return v;
-    }
-    return 0;
-}
-
-
-Diagram* MainWindow::getRightclickedDiagram()
-{
-    if(m_projectTree->getLastRightclickedItem() != 0)
-    {
-        ContextMenuEnabledTreeWidgetItem* item = m_projectTree->getLastRightclickedItem();
-        m_projectTree->setLastRightclickedItem(0);
-
-        QVariant qv = item->data(0, Qt::UserRole);
-        QString dgrName = qv.toString();
-        Diagram* dgr =  m_workspace->workingVersion()->getDiagram(dgrName);
-        return dgr;
-    }
-    return 0;
-}
-
-UserDataType* MainWindow::getRightclickedDatatype()
+UserDataType* MainWindow::getRightClickedDatatype()
 {
     if(m_datatypesTree->getLastRightclickedItem() != 0)
     {
@@ -1252,7 +1182,7 @@ UserDataType* MainWindow::getRightclickedDatatype()
     return 0;
 }
 
-Connection* MainWindow::getRightclickedConnection()
+Connection* MainWindow::getRightClickedConnection()
 {
     if(m_connectionsTree->getLastRightclickedItem() != 0)
     {
@@ -1267,10 +1197,9 @@ Connection* MainWindow::getRightclickedConnection()
     return 0;
 }
 
-
 void MainWindow::onDeleteTableFromPopup()
 {
-    Table* tab = getRightclickedTable();
+    Table* tab = getRightClickedObject<Table>((itemGetter)&Version::getTable);
     if(tab)
     {
         if(QMessageBox::question(this, tr("Are you sure?"), tr("Really delete ") + tab->getName() + "?", QMessageBox::Yes | QMessageBox::No) !=  QMessageBox::Yes)
@@ -1311,7 +1240,7 @@ void MainWindow::onDeleteTableFromPopup()
 
 void MainWindow::onCopyTableFromPopup()
 {
-    Table* tab = getRightclickedTable();
+    Table* tab = getRightClickedObject<Table>((itemGetter)&Version::getTable);
     if(tab)
     {
         tab->copy();
@@ -1345,7 +1274,7 @@ void MainWindow::onPasteTableFromPopup()
 
 void MainWindow::onDuplicateTableFromPopup()
 {
-    Table* tab = getRightclickedTable();
+    Table* tab = getRightClickedObject<Table>((itemGetter)&Version::getTable);
     if(tab)
     {
         Table* dupped = m_workspace->workingVersion()->duplicateTable(tab);
@@ -1526,7 +1455,7 @@ void MainWindow::onPreferences()
 
 void MainWindow::onRenameInstanceFromPopup()
 {
-    TableInstance* tinst = getRightclickedTableInstance();
+    TableInstance* tinst = getRightClickedObject<TableInstance>((itemGetter)&Version::getTableInstance);
     if(tinst)
     {
         SimpleTextInputDialog* dlg = new SimpleTextInputDialog(this, tr("Enter the new name"));
@@ -1552,7 +1481,7 @@ void MainWindow::onRenameInstanceFromPopup()
 
 void MainWindow::onRenameDiagramFromPopup()
 {
-    Diagram* dgr = getRightclickedDiagram();
+    Diagram* dgr = getRightClickedObject<Diagram>((itemGetter)&Version::getDiagram);
     if(dgr)
     {
         SimpleTextInputDialog* dlg = new SimpleTextInputDialog(this, tr("Enter the new name"));
@@ -1573,7 +1502,7 @@ void MainWindow::onRenameDiagramFromPopup()
 
 void MainWindow::onDeleteInstanceFromPopup()
 {
-    TableInstance* tinst = getRightclickedTableInstance();
+    TableInstance* tinst = getRightClickedObject<TableInstance>((itemGetter)&Version::getTableInstance);
     if(tinst)
     {
         if(QMessageBox::question(this, tr("Are you sure?"), tr("Really delete ") + tinst->getName() + "?", QMessageBox::Yes | QMessageBox::No) !=  QMessageBox::Yes)
@@ -1658,7 +1587,7 @@ void MainWindow::onDeleteDatatypeFromPopup()
     {
         return;
     }
-    UserDataType* udt = getRightclickedDatatype();
+    UserDataType* udt = getRightClickedDatatype();
     if(udt)
     {
         QString dtName = udt->getName();
@@ -1719,7 +1648,7 @@ void MainWindow::onInjectBrowsedTable()
             if(!c) return;
             QString tab = s.left(s.indexOf("?")).mid(2);
             Table* t = Workspace::getInstance()->currentProjectsEngine()->reverseEngineerTable(c, tab, Workspace::getInstance()->currentProject(), true);
-            t->setName(NameGenerator::getUniqueName(Workspace::getInstance()->currentProject()->getWorkingVersion(), (NameGenerator::itemGetter)&Version::getTable, tab));
+            t->setName(NameGenerator::getUniqueName(Workspace::getInstance()->currentProject()->getWorkingVersion(), (itemGetter)&Version::getTable, tab));
             Workspace::getInstance()->currentProject()->getWorkingVersion()->addTable(t);
             m_workspace->workingVersion()->getGui()->createTableTreeEntry(t, m_workspace->workingVersion()->getGui()->getTablesItem());
             showTable(tab);
@@ -1747,7 +1676,7 @@ void MainWindow::onBrowseBrowsedTable()
 
 void MainWindow::onEditConnection()
 {
-    Connection* c = getRightclickedConnection();
+    Connection* c = getRightClickedConnection();
     if(c)
     {
         InjectSqlDialog* ij = new InjectSqlDialog(0);
@@ -1782,7 +1711,7 @@ void MainWindow::onEditConnection()
 
 void MainWindow::onDeleteConnection()
 {
-    Connection* c = getRightclickedConnection();
+    Connection* c = getRightClickedConnection();
     if(c)
     {
         ConnectionManager::instance()->deleteConnection(c->getName());
@@ -1793,7 +1722,7 @@ void MainWindow::onDeleteConnection()
 
 void MainWindow::onBrowseConnection()
 {
-    Connection* c = getRightclickedConnection();
+    Connection* c = getRightClickedConnection();
     if(c)
     {
         if(c->getState() == Connection::CONNECTED)
@@ -1805,7 +1734,7 @@ void MainWindow::onBrowseConnection()
 
 void MainWindow::onDropConnection()
 {
-    Connection* c = getRightclickedConnection();
+    Connection* c = getRightClickedConnection();
     if(c)
     {
         bool w = false;
@@ -1924,7 +1853,7 @@ void MainWindow::createConnectionTreeEntryForTables(Connection *c)
 
 void MainWindow::onConnectConnection()
 {
-    Connection* c = getRightclickedConnection();
+    Connection* c = getRightClickedConnection();
     if(c)
     {
         if(c->getState() == Connection::CONNECTED) return;
@@ -1941,12 +1870,12 @@ void MainWindow::onConnectConnection()
 
 void MainWindow::onDuplicateDatatypeFromPopup()
 {
-    UserDataType* udt = getRightclickedDatatype();
+    UserDataType* udt = getRightClickedDatatype();
     if(udt)
     {
         UserDataType* dup = m_workspace->workingVersion()->duplicateDataType(udt->getName());
 
-        ContextMenuEnabledTreeWidgetItem* newDTItem = createDataTypeTreeEntry(dup);
+        ContextMenuEnabledTreeWidgetItem* newDTItem = m_workspace->workingVersion()->getGui()->createDataTypeTreeEntry(dup);
 
         m_datatypesTree->expandItem(newDTItem);
         m_datatypesTree->scrollToItem(newDTItem);
@@ -1959,7 +1888,7 @@ void MainWindow::onDuplicateDatatypeFromPopup()
 
 void MainWindow::onDeleteDiagramFromPopup()
 {
-    Diagram* dgr = getRightclickedDiagram();
+    Diagram* dgr = getRightClickedObject<Diagram>((itemGetter)&Version::getDiagram);
     if(dgr)
     {
         if(QMessageBox::question(this, tr("Are you sure?"), tr("Really delete ") + dgr->getName()+ "?", QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)

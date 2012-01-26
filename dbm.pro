@@ -285,7 +285,8 @@ HEADERS += MainWindow.h \
     core_Procedure.h \
     ProceduresListForm.h \
     TextEditWithCodeCompletion.h \
-    ListWidgetForCodeCompletion.h
+    ListWidgetForCodeCompletion.h \
+    commons.h
 FORMS += MainWindow.ui \
     MainWindowButtonDialog.ui \
     NewProjectDialog.ui \
@@ -327,6 +328,7 @@ INSTALLS += installfiles_doc
 installfiles_rs.files += rsrc/mysql.defaults
 installfiles_rs.path =  /home/ferenc/rpmbuild/BUILDROOT/usr/local/ddm/rsrc
 INSTALLS += installfiles_rs
+
 
 
 

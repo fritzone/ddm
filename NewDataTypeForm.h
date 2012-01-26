@@ -13,7 +13,6 @@ namespace Ui {
     class NewDataTypeForm;
 }
 
-class MainWindow;
 class UserDataType;
 
 /**
@@ -37,12 +36,6 @@ public:
      * Sets the focus on the name edit
      */
     void focusOnName();
-
-    /**
-     * Sets the main window of this window (so that the calls go upwards when
-     * the user has pressed the "Save" button.
-     */
-    void setMainWindow(MainWindow* mw);
 
     /**
      * Sets the datatype that will be displayed in this window.
@@ -98,7 +91,6 @@ private:
 
 private:
     Ui::NewDataTypeForm *m_ui;
-    MainWindow* m_mw;
     DatabaseEngine* m_dbEngine;
     UserDataType* m_udt;
 };

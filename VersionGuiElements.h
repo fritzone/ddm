@@ -13,7 +13,6 @@ class Table;
 class TableInstance;
 class Issue;
 class TableInstancesListForm;
-class MainWindow;
 class TablesListForm;
 class SqlForm;
 class NewTableForm;
@@ -170,16 +169,6 @@ public:
     ContextMenuEnabledTreeWidgetItem* createViewTreeEntry(View* view);
     ContextMenuEnabledTreeWidgetItem* createProcedureTreeEntry(Procedure* proc);
 
-    void setMainWindow(MainWindow* mw)
-    {
-        m_mw = mw;
-    }
-
-    MainWindow* getMainWindow()
-    {
-        return m_mw;
-    }
-
     void updateForms();
 
     TableInstancesListForm* getTableInstancesListForm();
@@ -236,7 +225,6 @@ private:
 
     TableInstancesListForm* m_tblInstancesListForm;
     Version* m_version;
-    MainWindow* m_mw;
     TablesListForm* m_tblsListForm;
     DiagramsListForm* m_diagramsListForm;
     ViewsListForm* m_viewsListForm;

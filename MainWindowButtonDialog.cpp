@@ -6,8 +6,7 @@
 
 MainWindowButtonDialog::MainWindowButtonDialog(QWidget *parent) :
     QDialog(parent),
-    m_ui(new Ui::MainWindowButtonDialog),
-    m_mw(0)
+    m_ui(new Ui::MainWindowButtonDialog)
 {
     m_ui->setupUi(this);
     QPalette thePalette = this->palette();
@@ -52,33 +51,19 @@ MainWindowButtonDialog::~MainWindowButtonDialog()
     delete m_ui;
 }
 
-void MainWindowButtonDialog::setMainWindow(MainWindow* mw)
-{
-    m_mw = mw;
-}
-
 void MainWindowButtonDialog::onNewProject()
 {
-    if(m_mw)
-    {
-        m_mw->onNewSolution();
-    }
+    MainWindow::instance()->onNewSolution();
 }
 
 void MainWindowButtonDialog::onOpenProject()
 {
-    if(m_mw)
-    {
-        m_mw->onOpenSolution();
-    }
+    MainWindow::instance()->onOpenSolution();
 }
 
 void MainWindowButtonDialog::onNewConnection()
 {
-    if(m_mw)
-    {
-        m_mw->onNewConnection();
-    }
+    MainWindow::instance()->onNewConnection();
 }
 
 
@@ -139,21 +124,15 @@ void MainWindowButtonDialog::onQuick5()
 
 void MainWindowButtonDialog::onQuick(const QString &f)
 {
-    if(m_mw)
-    {
-        Qt::WindowFlags flags = windowFlags();
-        setWindowFlags(flags ^ (Qt::SplashScreen |Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint));
-        hide();
-        m_mw->doLoadSolution(f, true);
-    }
+    Qt::WindowFlags flags = windowFlags();
+    setWindowFlags(flags ^ (Qt::SplashScreen |Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint));
+    hide();
+    MainWindow::instance()->doLoadSolution(f, true);
 }
 
 void MainWindowButtonDialog::onBtnClose()
 {
-    if(m_mw)
-    {
-        Qt::WindowFlags flags = windowFlags();
-        setWindowFlags(flags ^ (Qt::SplashScreen |Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint));
-        hide();
-    }
+    Qt::WindowFlags flags = windowFlags();
+    setWindowFlags(flags ^ (Qt::SplashScreen |Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint));
+    hide();
 }

@@ -3,7 +3,7 @@
 #include "Version.h"
 #include "NameGenerator.h"
 
-Procedure::Procedure() : SqlSourceEntity(), NamedItem(NameGenerator::getUniqueName(Workspace::getInstance()->workingVersion(), (NameGenerator::itemGetter)&Version::getProcedure, QString("proc")))
+Procedure::Procedure() : SqlSourceEntity(), NamedItem(NameGenerator::getUniqueName(Workspace::getInstance()->workingVersion(), (itemGetter)&Version::getProcedure, QString("proc")))
 {
 }
 

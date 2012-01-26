@@ -252,7 +252,7 @@ void TableInstanceForm::onHelp()
     HelpWindow* hw = HelpWindow::instance();
     hw->showHelp(QString("/doc/tinst.html"));
     hw->show();
-    Workspace::getInstance()->workingVersion()->getGui()->getMainWindow()->addDockWidget(Qt::RightDockWidgetArea, hw);
+    MainWindow::instance()->addDockWidget(Qt::RightDockWidgetArea, hw);
 }
 
 void TableInstanceForm::onValuesDoubleClick()

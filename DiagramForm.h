@@ -8,7 +8,6 @@ class ERGraphicsView;
 class Version;
 class TableListWidget;
 class Diagram;
-class MainWindow;
 class DiagramTextItem;
 
 namespace Ui
@@ -57,7 +56,6 @@ private:
     ERGraphicsView *graphicsView;
     TableListWidget *lstTables, *lstDiagramForms;
     Diagram* m_diagram;
-    MainWindow* m_mw;
     QString m_tabToRemove;
     int m_noteToRemove;
 };

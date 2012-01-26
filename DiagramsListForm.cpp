@@ -6,7 +6,7 @@
 
 DiagramsListForm::DiagramsListForm(QWidget *parent) :
     QWidget(parent),
-    ui(new Ui::DiagramsListForm), mw(reinterpret_cast<MainWindow*>(parent))
+    ui(new Ui::DiagramsListForm)
 {
     ui->setupUi(this);
     ui->btnUp->hide();
@@ -48,5 +48,5 @@ void DiagramsListForm::populateDiagrams(const QVector<Diagram *> dgrs)
 void DiagramsListForm::doubleClickTree(QTreeWidgetItem* item, int)
 {
     QString name = item->text(0);
-    mw->showDiagram(name);
+    MainWindow::instance()->showDiagram(name);
 }
