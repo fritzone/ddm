@@ -6,7 +6,7 @@
 
 ProceduresListForm::ProceduresListForm(QWidget *parent) :
     QWidget(parent),
-    ui(new Ui::ProceduresListForm), mw(reinterpret_cast<MainWindow*>(parent))
+    ui(new Ui::ProceduresListForm)
 {
     ui->setupUi(this);
     ui->btnUp->hide();
@@ -48,5 +48,5 @@ void ProceduresListForm::populateProcedures(const QVector<Procedure *> views)
 void ProceduresListForm::doubleClickTree(QTreeWidgetItem* item, int)
 {
     QString name = item->text(0);
-    mw->showProcedure(name);
+    MainWindow::instance()->showProcedure(name);
 }

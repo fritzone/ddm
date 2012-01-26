@@ -202,4 +202,7 @@ static const QString browsedViewPrefix = "V:";
 static const QString strSpace = " ";
 static const QString strNewline = "\n";
 static const QString strSemicolon = ";";
+static const QString strUnderline = "_";
+static const QString strAutoIdx = "autoidx";
+
 #endif // STRINGS_H

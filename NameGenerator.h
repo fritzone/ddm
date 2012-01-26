@@ -5,12 +5,11 @@
 
 #include "Version.h"
 #include "NamedItem.h"
+#include "commons.h"
 
 class NameGenerator
 {
 public:
-
-    typedef NamedItem* (Version::*itemGetter)(const QString&);
 
     static QString getUniqueName(Version* v, itemGetter fun, const QString& prefix);
 

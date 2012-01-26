@@ -20,7 +20,7 @@
 #include <QListWidget>
 #include <QListWidgetItem>
 
-NewDataTypeForm::NewDataTypeForm(DataType::DT_TYPE t, DatabaseEngine* dbe, QWidget *parent) : QWidget(parent), m_ui(new Ui::NewDataTypeForm), m_mw(0), m_dbEngine(dbe), m_udt(0)
+NewDataTypeForm::NewDataTypeForm(DataType::DT_TYPE t, DatabaseEngine* dbe, QWidget *parent) : QWidget(parent), m_ui(new Ui::NewDataTypeForm), m_dbEngine(dbe), m_udt(0)
 {
     m_ui->setupUi(this);
 
@@ -94,10 +94,6 @@ void NewDataTypeForm::focusOnName()
     m_ui->txtDTName->setFocus();
 
 }
-void NewDataTypeForm::setMainWindow(MainWindow* mw)
-{
-    m_mw = mw;
-}
 
 void NewDataTypeForm::basicDTselected(QString newSelection)
 {
@@ -170,38 +166,35 @@ void NewDataTypeForm::onSave()
         m_ui->tabWidget->setCurrentIndex(1);
         return;
     }
-    if(m_mw != 0)
+    QString cp = m_ui->cmbCharacterSets->currentIndex() > 0 ? m_dbEngine->getCodepageSupplier()->getCodepages()[m_ui->cmbCharacterSets->currentIndex()]->getName() : "";
+    QStringList mv;
+    for(int i=0; i<m_ui->lstEnumValues->count(); i++)
     {
-        QString cp = m_ui->cmbCharacterSets->currentIndex() > 0 ? m_dbEngine->getCodepageSupplier()->getCodepages()[m_ui->cmbCharacterSets->currentIndex()]->getName() : "";
-        QStringList mv;
-        for(int i=0; i<m_ui->lstEnumValues->count(); i++)
-        {
-            mv.append(m_ui->lstEnumValues->item(i)->text());
-        }
+        mv.append(m_ui->lstEnumValues->item(i)->text());
+    }
 
-        QString defaultValue = m_ui->txtDefaultValue->text();
-        if( DataType::getDT_TYPE(m_ui->cmbDTType->currentText()) == 5)  // MISC type (Enum or Set)
-        {
-            defaultValue = m_ui->cmbEnumItems->currentText();
-        }
+    QString defaultValue = m_ui->txtDefaultValue->text();
+    if( DataType::getDT_TYPE(m_ui->cmbDTType->currentText()) == 5)  // MISC type (Enum or Set)
+    {
+        defaultValue = m_ui->cmbEnumItems->currentText();
+    }
 
-        if(m_ui->chkNullIsDefault->isChecked())
-        {
-            defaultValue = "null";
-        }
+    if(m_ui->chkNullIsDefault->isChecked())
+    {
+        defaultValue = "null";
+    }
 
-        if(m_mw->onSaveNewDataType(m_ui->txtDTName->text(),
-                                   m_ui->cmbDTType->currentText(),
-                                   m_ui->cmbDTSQLType->currentText(),
-                                   m_ui->txtWidth->text(),
-                                   defaultValue,
-                                   cp, mv, m_ui->txtDescription->toPlainText(),
-                                   m_ui->chkUnsigned->isChecked(),
-                                   m_ui->chkCanBeNull->isChecked(),
-                                   m_ui->chkAutoIncrement->isChecked(), m_udt))
-        {
-            resetContent();
-        }
+    if(MainWindow::instance()->onSaveNewDataType(m_ui->txtDTName->text(),
+                               m_ui->cmbDTType->currentText(),
+                               m_ui->cmbDTSQLType->currentText(),
+                               m_ui->txtWidth->text(),
+                               defaultValue,
+                               cp, mv, m_ui->txtDescription->toPlainText(),
+                               m_ui->chkUnsigned->isChecked(),
+                               m_ui->chkCanBeNull->isChecked(),
+                               m_ui->chkAutoIncrement->isChecked(), m_udt))
+    {
+        resetContent();
     }
 }
 
@@ -422,6 +415,6 @@ void NewDataTypeForm::onHelp()
     HelpWindow* hw = HelpWindow::instance();
     hw->showHelp(QString("/doc/dtyp.html"));
     hw->show();
-    Workspace::getInstance()->workingVersion()->getGui()->getMainWindow()->addDockWidget(Qt::RightDockWidgetArea, hw);
+    MainWindow::instance()->addDockWidget(Qt::RightDockWidgetArea, hw);
 
 }

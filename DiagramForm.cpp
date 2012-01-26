@@ -28,7 +28,7 @@
 #include <qdebug.h>
 
 DiagramForm::DiagramForm(Version* v, Diagram* dgram, QWidget *parent) : QWidget(parent),
-        ui(new Ui::DiagramForm), ver(v), m_diagram(dgram), m_mw(dynamic_cast<MainWindow*>(parent)), m_tabToRemove(""), m_noteToRemove(-1)
+        ui(new Ui::DiagramForm), ver(v), m_diagram(dgram), m_tabToRemove(""), m_noteToRemove(-1)
 {
 
     ui->setupUi(this);
@@ -231,7 +231,7 @@ void DiagramForm::onSave()
     {
         ver->addDiagram(m_diagram);
     }
-    m_mw->onSaveDiagram(m_diagram);
+    MainWindow::instance()->onSaveDiagram(m_diagram);
 }
 
 void DiagramForm::onReset()
@@ -330,7 +330,7 @@ void DiagramForm::onHelp()
     HelpWindow* hw = HelpWindow::instance();
     hw->showHelp(QString("/doc/dgram.html"));
     hw->show();
-    Workspace::getInstance()->workingVersion()->getGui()->getMainWindow()->addDockWidget(Qt::RightDockWidgetArea, hw);
+    MainWindow::instance()->addDockWidget(Qt::RightDockWidgetArea, hw);
 
 }
 

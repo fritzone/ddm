@@ -14,7 +14,6 @@ namespace Ui
     class NewTableForm;
 }
 
-class MainWindow;
 class DatabaseEngine;
 class Project;
 class Table;
@@ -196,8 +195,6 @@ private:
 
 private:
     Ui::NewTableForm *m_ui;
-    // the main window
-    MainWindow* m_mw;
     // the DB engine
     DatabaseEngine* m_dbEngine;
     // the project we are working on

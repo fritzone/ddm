@@ -7,7 +7,7 @@
 
 #include "ui_TablesListForm.h"
 
-TablesListForm::TablesListForm(QWidget *parent) : QWidget(parent), ui(new Ui::TablesListForm), mw(reinterpret_cast<MainWindow*>(parent))
+TablesListForm::TablesListForm(QWidget *parent) : QWidget(parent), ui(new Ui::TablesListForm)
 {
     ui->setupUi(this);
     ui->btnUp->hide();
@@ -46,11 +46,10 @@ void TablesListForm::populateTables(QVector<Table*>const & tables)
     }
 }
 
-
 void TablesListForm::doubleClickTree(QTreeWidgetItem* item, int)
 {
     QString tabName = item->text(0);
-    mw->showTable(tabName, true);
+    MainWindow::instance()->showTable(tabName, true);
 }
 
 void TablesListForm::setOop(bool a)

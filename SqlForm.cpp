@@ -134,5 +134,5 @@ void SqlForm::onHelp()
     HelpWindow* hw = HelpWindow::instance();
     hw->showHelp(QString("/doc/sqls.html"));
     hw->show();
-    Workspace::getInstance()->workingVersion()->getGui()->getMainWindow()->addDockWidget(Qt::RightDockWidgetArea, hw);
+    MainWindow::instance()->addDockWidget(Qt::RightDockWidgetArea, hw);
 }

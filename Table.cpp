@@ -14,12 +14,13 @@
 #include "NameGenerator.h"
 #include "TableInstance.h"
 #include "Workspace.h"
+#include "commons.h"
 
 #include <QPen>
 #include <QApplication>
 #include <QClipboard>
 
-Table::Table(Version* v) : NamedItem(NameGenerator::getUniqueName(v, (NameGenerator::itemGetter)&Version::getTable, QString("TAB"))),
+Table::Table(Version* v) : NamedItem(NameGenerator::getUniqueName(v, (itemGetter)&Version::getTable, QString("TAB"))),
     m_description(""), m_columns(), m_indices(), m_foreignKeys(), m_startupValues(),
     m_parent(0), m_persistent(false), m_temporary(false), m_storageEngine(0),
     m_diagramEntity(0), m_version(v), m_children()
@@ -547,7 +548,7 @@ QString Table::getAvailableIndexName(const QString& prefix)
 
 Index* Table::createAutoIndex(QVector<const Column*> cols)
 {
-    QString idxName = getAvailableIndexName("autoidx");
+    QString idxName = getAvailableIndexName(strAutoIdx + strUnderline + getName());
     Index* idx = new Index(idxName, Workspace::getInstance()->currentProjectsEngine()->getDefaultIndextype(), this);
     for(int i=0; i<cols.size(); i++)
     {

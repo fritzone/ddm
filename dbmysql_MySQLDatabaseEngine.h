@@ -39,6 +39,7 @@ public:
     virtual QStringList getIndexTypes();
     virtual QString getDefaultIndextype();
     virtual QString getDelimiterKeyword();
+    virtual QVector<Codepage*> getCodepages();
 
 private:
 

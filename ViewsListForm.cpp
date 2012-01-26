@@ -6,7 +6,7 @@
 
 ViewsListForm::ViewsListForm(QWidget *parent) :
     QWidget(parent),
-    ui(new Ui::ViewsListForm), mw(reinterpret_cast<MainWindow*>(parent))
+    ui(new Ui::ViewsListForm)
 {
     ui->setupUi(this);
     ui->btnUp->hide();
@@ -48,5 +48,4 @@ void ViewsListForm::populateViews(const QVector<View *> views)
 void ViewsListForm::doubleClickTree(QTreeWidgetItem* item, int)
 {
     QString name = item->text(0);
-    mw->showView(name);
 }

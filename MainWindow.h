@@ -5,6 +5,8 @@
 #include <QTreeWidget>
 #include <QLabel>
 
+#include "commons.h"
+
 class Project;
 class MainWindowButtonDialog;
 class DataTypesListForm;
@@ -164,20 +166,17 @@ private:
     void saveProject(bool saveAs = false);
     void enableActions();
     void connectActionsFromPopupMenus();
-    Table* getRightclickedTable();
-    TableInstance* getRightclickedTableInstance();
-    UserDataType* getRightclickedDatatype();
-    Connection* getRightclickedConnection();
-    Diagram* getRightclickedDiagram();
-    ContextMenuEnabledTreeWidgetItem* createDataTypeTreeEntry(UserDataType*);
     ContextMenuEnabledTreeWidgetItem* createConnectionTreeEntry(Connection*);
     void showButtonDialog();
     void freeGuiElements();
     void showProjectDetails();
     void showNewDataTypeWindow(int);
     NewTableForm* showExistingTable(Table*);
-    View* getRightclickedView();
-    Procedure* getRightclickedProcedure();
+
+    template <class T>
+    T* getRightClickedObject(itemGetter);
+    UserDataType* getRightClickedDatatype();
+    Connection* getRightClickedConnection();
 
     void doDeployment(const QString& codePage, QStringList connectionNames);
     void createConnectionTreeEntryForTables(Connection *c);

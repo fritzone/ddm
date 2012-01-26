@@ -4,8 +4,6 @@
 #include <QtGui/QWidget>
 #include <QTreeWidgetItem>
 
-class MainWindow;
-
 namespace Ui
 {
     class DataTypesListForm;
@@ -30,7 +28,6 @@ protected:
 
 private:
     Ui::DataTypesListForm *m_ui;
-    MainWindow* mw;
 };
 
 #endif // DATATYPESLISTFORM_H

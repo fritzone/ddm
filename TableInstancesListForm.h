@@ -5,7 +5,6 @@
 #include <QTreeWidgetItem>
 
 class TableInstance;
-class MainWindow;
 
 namespace Ui
 {
@@ -28,7 +27,6 @@ public slots:
 
 private:
     Ui::TableInstancesListForm *ui;
-    MainWindow* mw;
 };
 
 #endif // TABLEINSTANCESLISTFORM_H

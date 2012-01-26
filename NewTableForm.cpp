@@ -42,7 +42,7 @@ const int COL_POS_NM = 1;
 const int COL_POS_DT = 2;
 
 NewTableForm::NewTableForm(DatabaseEngine* db, Project* prj, QWidget *parent, bool newTable) : SourceCodePresenterWidget(parent), m_ui(new Ui::NewTableForm),
-    m_mw(dynamic_cast<MainWindow*>(parent)), m_dbEngine(db), m_project(prj), m_table(new Table(prj->getWorkingVersion())),
+    m_dbEngine(db), m_project(prj), m_table(new Table(prj->getWorkingVersion())),
     m_currentColumn(0), m_currentIndex(0), m_foreignTable(0), m_currentForeignKey(0), m_foreignKeySelected(false),
     m_currentStorageEngine(0), m_engineProviders(0)
 {
@@ -484,7 +484,7 @@ void NewTableForm::populateTable(const Table *table, bool parentTab)
             item->setBackground(3, QBrush(Qt::lightGray));
         }
 
-        if(indices[i]->getName().startsWith("autoidx"))
+        if(indices[i]->getName().startsWith(strAutoIdx))
         {
             item->setBackground(0, QBrush(Qt::gray));
             item->setBackground(1, QBrush(Qt::gray));
@@ -1308,7 +1308,7 @@ void NewTableForm::onBtnRemoveIndex()
         return;
     }
 
-    if(m_ui->lstIndices->currentItem()->text(0).startsWith("autoidx"))
+    if(m_ui->lstIndices->currentItem()->text(0).startsWith(strAutoIdx))
     {
         QMessageBox::critical (this, tr("Error"), tr("You cannot delete an automatically generated index. Highly possibly the column is used in a foreign key."), QMessageBox::Ok);
         return;
@@ -2019,7 +2019,7 @@ void NewTableForm::onHelp()
     HelpWindow* hw = HelpWindow::instance();
     hw->showHelp(QString("/doc/tabl.html"));
     hw->show();
-    Workspace::getInstance()->workingVersion()->getGui()->getMainWindow()->addDockWidget(Qt::RightDockWidgetArea, hw);
+    MainWindow::instance()->addDockWidget(Qt::RightDockWidgetArea, hw);
 }
 
 void NewTableForm::onChangeTab(int idx)

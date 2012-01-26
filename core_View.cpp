@@ -5,7 +5,7 @@
 #include "Version.h"
 #include "NameGenerator.h"
 
-View::View(bool manual) : SqlSourceEntity(), NamedItem(NameGenerator::getUniqueName(Workspace::getInstance()->workingVersion(), (NameGenerator::itemGetter)&Version::getView, QString("v"))),
+View::View(bool manual) : SqlSourceEntity(), NamedItem(NameGenerator::getUniqueName(Workspace::getInstance()->workingVersion(), (itemGetter)&Version::getView, QString("v"))),
                 m_columNames(), m_canReplace(false), m_manual(manual)
 {
     m_helper = new QueryGraphicsHelper();
@@ -14,7 +14,7 @@ View::View(bool manual) : SqlSourceEntity(), NamedItem(NameGenerator::getUniqueN
     m_helper->setQuery(m_selectQuery);
 }
 
-View::View(Version*v, bool manual) : SqlSourceEntity(), NamedItem(NameGenerator::getUniqueName(v, (NameGenerator::itemGetter)&Version::getView, QString("v"))),
+View::View(Version*v, bool manual) : SqlSourceEntity(), NamedItem(NameGenerator::getUniqueName(v, (itemGetter)&Version::getView, QString("v"))),
                 m_columNames(), m_canReplace(false), m_manual(manual)
 {
     m_helper = new QueryGraphicsHelper();
