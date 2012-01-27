@@ -13,6 +13,7 @@
 #include "InjectSqlDialog.h"
 #include "MainWindow.h"
 #include "core_ConnectionManager.h"
+#include "ConnectionGuiElements.h"
 
 #include <QFile>
 #include <QApplication>
@@ -208,9 +209,9 @@ void Workspace::createNewConnection()
     injectDialog->setModal(true);
     if(injectDialog->exec() == QDialog::Accepted)
     {
-        if(MainWindow::instance()->getConnectionsTreeDock())
+        if(MainWindow::instance()->getConnectionGuiElements())
         {
-            if(!MainWindow::instance()->getConnectionsTreeDock()->isVisible())
+            if(!MainWindow::instance()->getConnectionGuiElements()->getConnectionsTreeDock()->isVisible())
             {
                 MainWindow::instance()->showConnections();
             }
@@ -226,6 +227,6 @@ void Workspace::createNewConnection()
         QString name = injectDialog->getName();
         Connection* c = new Connection(name, host, user, password, db, true, injectDialog->getAutoConnect());
         ConnectionManager::instance()->addConnection(c);
-        MainWindow::instance()->createConnectionTreeEntry(c);
+        MainWindow::instance()->getConnectionGuiElements()->createConnectionTreeEntry(c);
     }
 }

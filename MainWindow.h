@@ -34,6 +34,7 @@ class ReverseEngineerer;
 class View;
 class Procedure;
 class GuiElements;
+class ConnectionGuiElements;
 
 namespace Ui
 {
@@ -67,7 +68,6 @@ public:
     void specificDeploymentCallback(const QString& connName);
 
     ContextMenuEnabledTreeWidgetItem* instantiateTable(const QString& tabName, QStringList otherTablesBeingInstantiated, bool ref = false, Table* referencingTable = 0, TableInstance* becauseOfThis = 0);
-    ContextMenuEnabledTreeWidgetItem* createConnectionTreeEntry(Connection*);
 
     void showTable(const QString& tabName, bool focus = true);
     void showTableInstance(const QString& tabName, bool focus = true);
@@ -85,9 +85,9 @@ public:
     void doLoadSolution(const QString& fileName, bool splashVisible);
     void createStatusLabel();
     void setStatus(const QString& s, bool err);
-    QDockWidget* getConnectionsTreeDock()
+    ConnectionGuiElements* getConnectionGuiElements() const
     {
-        return m_connectionsTreeDock;
+        return m_connectionGuiElements;
     }
 
 protected:
@@ -192,14 +192,6 @@ private:
 
 private:
     Ui::MainWindow *m_ui;
-
-    QDockWidget* m_connectionsTreeDock;
-
-    ContextMenuEnabledTreeWidget* m_connectionsTree;
-
-    ContextMenuHandler* m_connectionsContextMenuHandler;
-
-    // the initial three button dialog
     MainWindowButtonDialog* m_btndlg;
 
     Workspace* m_workspace;
@@ -212,6 +204,7 @@ private:
     static MainWindow* m_instance;
     bool m_splashWasVisible;
     GuiElements* m_guiElements;
+    ConnectionGuiElements* m_connectionGuiElements;
 };
 
 #endif // MAINWINDOW_H
