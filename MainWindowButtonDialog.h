@@ -13,6 +13,7 @@ class MainWindowButtonDialog : public QDialog {
 public:
     MainWindowButtonDialog(QWidget *parent = 0);
     ~MainWindowButtonDialog();
+    void showMe();
 
 public slots:
 

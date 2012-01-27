@@ -8,6 +8,7 @@
 
 #include <QString>
 #include <QSqlDatabase>
+#include <QIcon>
 
 class DatabaseEngine;
 class Table;
@@ -89,6 +90,8 @@ public:
     {
         return m_autoConnect;
     }
+
+    QIcon provideIcon();
 
 private:
 

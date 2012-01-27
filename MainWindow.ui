@@ -94,7 +94,7 @@
    </widget>
    <widget class="QMenu" name="menuDeployment">
     <property name="title">
-     <string>Deployment</string>
+     <string>&amp;Deployment</string>
     </property>
     <addaction name="action_Deploy"/>
     <addaction name="action_DeploymentScript"/>

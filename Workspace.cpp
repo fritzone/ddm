@@ -10,10 +10,14 @@
 #include "NameGenerator.h"
 #include "VersionGuiElements.h"
 #include "Table.h"
+#include "InjectSqlDialog.h"
+#include "MainWindow.h"
+#include "core_ConnectionManager.h"
 
 #include <QFile>
 #include <QApplication>
 #include <QTreeWidget>
+#include <QDockWidget>
 
 Workspace* Workspace::m_instance = 0;
 
@@ -196,4 +200,32 @@ bool Workspace::onSaveNewTable(Table* tbl)
     workingVersion()->addTable(tbl);
     change();
     return true;
+}
+
+void Workspace::createNewConnection()
+{
+    InjectSqlDialog* injectDialog = new InjectSqlDialog(0);
+    injectDialog->setModal(true);
+    if(injectDialog->exec() == QDialog::Accepted)
+    {
+        if(MainWindow::instance()->getConnectionsTreeDock())
+        {
+            if(!MainWindow::instance()->getConnectionsTreeDock()->isVisible())
+            {
+                MainWindow::instance()->showConnections();
+            }
+        }
+        else
+        {
+            MainWindow::instance()->showConnections();
+        }
+        QString host = injectDialog->getHost();
+        QString user = injectDialog->getUser();
+        QString password = injectDialog->getPassword();
+        QString db = injectDialog->getDatabase();
+        QString name = injectDialog->getName();
+        Connection* c = new Connection(name, host, user, password, db, true, injectDialog->getAutoConnect());
+        ConnectionManager::instance()->addConnection(c);
+        MainWindow::instance()->createConnectionTreeEntry(c);
+    }
 }
