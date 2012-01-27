@@ -4,6 +4,9 @@
 #include "gui_HelpWindow.h"
 #include "helper_MostRecentlyUsedFiles.h"
 
+#include <QApplication>
+#include <QDesktopWidget>
+
 MainWindowButtonDialog::MainWindowButtonDialog(QWidget *parent) :
     QDialog(parent),
     m_ui(new Ui::MainWindowButtonDialog)
@@ -33,7 +36,6 @@ MainWindowButtonDialog::MainWindowButtonDialog(QWidget *parent) :
     if(mru.size()>3 && mru[2].length() > 0) {fixButton(m_ui->btnQuick3, mru[2]);}
     if(mru.size()>4 && mru[3].length() > 0) {fixButton(m_ui->btnQuick4, mru[3]);}
     if(mru.size()>5 && mru[4].length() > 0) {fixButton(m_ui->btnQuick5, mru[4]);}
-
 }
 
 void MainWindowButtonDialog::fixButton(QCommandLinkButton *b, const QString &s)
@@ -135,4 +137,16 @@ void MainWindowButtonDialog::onBtnClose()
     Qt::WindowFlags flags = windowFlags();
     setWindowFlags(flags ^ (Qt::SplashScreen |Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint));
     hide();
+}
+
+void MainWindowButtonDialog::showMe()
+{
+    setModal(false);
+    setWindowFlags(Qt::SplashScreen | Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint | Qt::X11BypassWindowManagerHint);
+
+    QDesktopWidget *d = QApplication::desktop();
+
+    QRect t = d->availableGeometry(this);
+    move(mapToGlobal(this->geometry().topLeft()).x() + t.center().x() - width() / 2, t.center().y()- height() / 2);
+    show();
 }

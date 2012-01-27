@@ -65,6 +65,7 @@ public:
     void specificDeploymentCallback(const QString& connName);
 
     ContextMenuEnabledTreeWidgetItem* instantiateTable(const QString& tabName, QStringList otherTablesBeingInstantiated, bool ref = false, Table* referencingTable = 0, TableInstance* becauseOfThis = 0);
+    ContextMenuEnabledTreeWidgetItem* createConnectionTreeEntry(Connection*);
 
     void showTable(const QString& tabName, bool focus = true);
     void showTableInstance(const QString& tabName, bool focus = true);
@@ -80,6 +81,13 @@ public:
         return m_instance;
     }
     void doLoadSolution(const QString& fileName, bool splashVisible);
+    void createStatusLabel();
+    void setStatus(const QString& s, bool err);
+    QDockWidget* getConnectionsTreeDock()
+    {
+        return m_connectionsTreeDock;
+    }
+
 protected:
 
     void changeEvent(QEvent *e);
@@ -156,9 +164,6 @@ public slots:
     void onDeleteUnusedDatatypes();
     void onDeleteProcedure();
 
-public:
-    void createStatusLabel();
-    void setStatus(const QString& s, bool err);
 private:
 
     void setupGuiForNewSolution();
@@ -166,8 +171,6 @@ private:
     void saveProject(bool saveAs = false);
     void enableActions();
     void connectActionsFromPopupMenus();
-    ContextMenuEnabledTreeWidgetItem* createConnectionTreeEntry(Connection*);
-    void showButtonDialog();
     void freeGuiElements();
     void showProjectDetails();
     void showNewDataTypeWindow(int);
@@ -181,6 +184,7 @@ private:
     void doDeployment(const QString& codePage, QStringList connectionNames);
     void createConnectionTreeEntryForTables(Connection *c);
     void createConnectionTreeEntryForViews(Connection *c);
+
 
 private:
     Ui::MainWindow *m_ui;

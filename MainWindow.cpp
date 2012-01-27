@@ -58,43 +58,30 @@
 
 MainWindow* MainWindow::m_instance = 0;
 
-MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), m_ui(new Ui::MainWindow), m_projectTreeDock(0), m_datatypesTreeDock(0), m_issuesTreeDock(0), m_connectionsTreeDock(0),
-        m_projectTree(0), m_datatypesTree(0), m_issuesTree(0), m_connectionsTree(0), m_btndlg(0), m_workspace(0), m_revEngWizard(0), m_nvf(0), m_contextMenuHandler(0), lblStatus(0),
-        m_splashWasVisible(false)
+MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), m_ui(new Ui::MainWindow), m_projectTreeDock(0),
+        m_datatypesTreeDock(0), m_issuesTreeDock(0), m_connectionsTreeDock(0),
+        m_projectTree(0), m_datatypesTree(0), m_issuesTree(0), m_connectionsTree(0),
+        m_btndlg(0), m_workspace(Workspace::getInstance()), m_revEngWizard(0), m_nvf(0),
+        m_contextMenuHandler(new ContextMenuHandler), lblStatus(0), m_splashWasVisible(false)
 {
     m_ui->setupUi(this);
-
-    showButtonDialog();
     Configuration::instance();
     ConnectionManager::instance();
 
-    // set up the tree
-    m_contextMenuHandler = new ContextMenuHandler();
-    m_workspace = Workspace::getInstance();
+    showConnections();
+    showMaximized();
+    setWindowTitle(tr("DDM - [No Solution]"));
+
     m_instance = this;
+
+    m_btndlg = new MainWindowButtonDialog();
+    m_btndlg->showMe();
 }
 
 MainWindow::~MainWindow()
 {
     ConnectionManager::instance()->shutDown();
     delete m_ui;
-}
-
-void MainWindow::showButtonDialog()
-{
-    m_btndlg = new MainWindowButtonDialog();
-    m_btndlg->setModal(false);
-    m_btndlg->setWindowFlags(Qt::SplashScreen | Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint | Qt::X11BypassWindowManagerHint);
-
-    setWindowTitle(tr("DDM - [No Solution]"));
-    showConnections();
-    showMaximized();
-    QDesktopWidget *d = QApplication::desktop();
-
-    QRect t = d->availableGeometry(this);
-    m_btndlg->move(mapToGlobal(this->geometry().topLeft()).x() + t.center().x() - m_btndlg->width() / 2, t.center().y()- m_btndlg->height() / 2);
-    m_btndlg->show();
-
 }
 
 void MainWindow::freeGuiElements()
@@ -128,6 +115,10 @@ void MainWindow::freeGuiElements()
         delete m_datatypesTreeDock;
         m_datatypesTreeDock = 0;
     }
+
+    QWidget* centralWidget = new QWidget(this);
+    centralWidget->setObjectName(QString::fromUtf8("centralWidget"));
+    setCentralWidget(centralWidget);
 }
 
 void MainWindow::showProjectDetails()
@@ -195,22 +186,7 @@ ContextMenuEnabledTreeWidgetItem* MainWindow::createConnectionTreeEntry(Connecti
     ContextMenuEnabledTreeWidgetItem* newConnectionItem = new ContextMenuEnabledTreeWidgetItem((ContextMenuEnabledTreeWidgetItem*)0, QStringList(c->getName() + "(" + c->getDb()+"@"+c->getHost() + ")")) ;
     QVariant var(c->getName());
     newConnectionItem->setData(0, Qt::UserRole, var);
-    switch(c->getState())
-    {
-    case Connection::DID_NOT_TRY:
-    case Connection::UNDEFINED:
-        newConnectionItem->setIcon(0, IconFactory::getDatabaseIcon());
-        break;
-    case Connection::FAILED:
-        newConnectionItem->setIcon(0, IconFactory::getUnConnectedDatabaseIcon());
-        break;
-    case Connection::CONNECTED:
-        newConnectionItem->setIcon(0, IconFactory::getConnectedDatabaseIcon());
-        break;
-    case Connection::DROPPED:
-        newConnectionItem->setIcon(0, IconFactory::getDroppedDatabaseIcon());
-        break;
-    }
+    newConnectionItem->setIcon(0, c->provideIcon());
     m_connectionsTree->addTopLevelItem(newConnectionItem);
     newConnectionItem->setPopupMenu(ContextMenuCollection::getInstance()->getConnectionsPopupMenu());
     c->setLocation(newConnectionItem);
@@ -268,11 +244,11 @@ void MainWindow::setupGuiForNewSolution()
     m_issuesTree->setAnimated(false);
     m_issuesTree->setExpandsOnDoubleClick(true);
     m_issuesTree->header()->setDefaultSectionSize(150);
-    QTreeWidgetItem *___qtreewidgetitem = m_issuesTree->headerItem();
-    ___qtreewidgetitem->setText(0, QApplication::translate("MainWindow", "", 0, QApplication::UnicodeUTF8));
-    ___qtreewidgetitem->setText(1, QApplication::translate("MainWindow", "Type", 0, QApplication::UnicodeUTF8));
-    ___qtreewidgetitem->setText(2, QApplication::translate("MainWindow", "Origin", 0, QApplication::UnicodeUTF8));
-    ___qtreewidgetitem->setText(3, QApplication::translate("MainWindow", "Description", 0, QApplication::UnicodeUTF8));
+    QTreeWidgetItem *headerItem = m_issuesTree->headerItem();
+    headerItem->setText(0, QApplication::translate("MainWindow", "", 0, QApplication::UnicodeUTF8));
+    headerItem->setText(1, QApplication::translate("MainWindow", "Type", 0, QApplication::UnicodeUTF8));
+    headerItem->setText(2, QApplication::translate("MainWindow", "Origin", 0, QApplication::UnicodeUTF8));
+    headerItem->setText(3, QApplication::translate("MainWindow", "Description", 0, QApplication::UnicodeUTF8));
     m_issuesContextMenuHandler = new ContextMenuHandler();
     m_issuesTree->setItemDelegate(new ContextMenuDelegate(m_issuesContextMenuHandler, m_issuesTree));
 
@@ -1334,22 +1310,7 @@ void MainWindow::onDeployHovered()
         QAction* act = new QAction(this);
         act->setText(cons.at(i)->getName() + " - " + cons.at(i)->getDb()+"@"+cons.at(i)->getHost());
         act->setData(cons.at(i)->getName());
-        switch(cons.at(i)->getState())
-        {
-        case Connection::DID_NOT_TRY:
-        case Connection::UNDEFINED:
-            act->setIcon(IconFactory::getDatabaseIcon());
-            break;
-        case Connection::FAILED:
-            act->setIcon(IconFactory::getUnConnectedDatabaseIcon());
-            break;
-        case Connection::CONNECTED:
-            act->setIcon(IconFactory::getConnectedDatabaseIcon());
-            break;
-        case Connection::DROPPED:
-            act->setIcon(IconFactory::getDroppedDatabaseIcon());
-            break;
-        }
+        act->setIcon(cons.at(i)->provideIcon());
         deployPopupMenu->addAction(act);
         QObject::connect(act, SIGNAL(activated()),
                 new DynamicActionHandlerforMainWindow(cons.at(i)->getName(), this, (MainWindow::dynamicAction)&MainWindow::specificDeploymentCallback),
@@ -1576,8 +1537,13 @@ void MainWindow::onCloseSolution()
     m_workspace->onCloseSolution();
 
     freeGuiElements();
+    m_ui->action_ConnectionsTree->setChecked(true);
+    delete m_connectionsTreeDock;
+    m_connectionsTreeDock = 0;
+    showConnections();
 
-    showButtonDialog();
+    m_btndlg = new MainWindowButtonDialog();
+    m_btndlg->showMe();
 }
 
 void MainWindow::onDeleteDatatypeFromPopup()
@@ -1689,22 +1655,7 @@ void MainWindow::onEditConnection()
             c->getLocation()->setText(1, c->getDb()+"@"+c->getHost());
             QVariant var(c->getName());
             c->getLocation()->setData(0, Qt::UserRole, var);
-            switch(c->getState())
-            {
-            case Connection::DID_NOT_TRY:
-            case Connection::UNDEFINED:
-                c->getLocation()->setIcon(0, IconFactory::getDatabaseIcon());
-                break;
-            case Connection::FAILED:
-                c->getLocation()->setIcon(0, IconFactory::getUnConnectedDatabaseIcon());
-                break;
-            case Connection::CONNECTED:
-                c->getLocation()->setIcon(0, IconFactory::getConnectedDatabaseIcon());
-                break;
-            case Connection::DROPPED:
-                c->getLocation()->setIcon(0, IconFactory::getDroppedDatabaseIcon());
-                break;
-            }
+            c->getLocation()->setIcon(0, c->provideIcon());
         }
     }
 }
@@ -2242,23 +2193,7 @@ void MainWindow::onNewConnection()
         m_btndlg->hide();
         wasVisible = true;
     }
-    InjectSqlDialog* injectDialog = new InjectSqlDialog(0);
-    injectDialog->setModal(true);
-    if(injectDialog->exec() == QDialog::Accepted)
-    {
-        if(!m_connectionsTreeDock)
-        {
-            showConnections();
-        }
-        QString host = injectDialog->getHost();
-        QString user = injectDialog->getUser();
-        QString password = injectDialog->getPassword();
-        QString db = injectDialog->getDatabase();
-        QString name = injectDialog->getName();
-        Connection* c = new Connection(name, host, user, password, db, true, injectDialog->getAutoConnect());
-        ConnectionManager::instance()->addConnection(c);
-        createConnectionTreeEntry(c);
-    }
+    m_workspace->createNewConnection();
     if(wasVisible) m_btndlg->show();
 }
 
@@ -2272,7 +2207,6 @@ void MainWindow::onValidate()
         QMessageBox::information(this, tr("Congratulations"), tr("DDM has run a full validation on your database and it seems there were no issues found. Good work."), QMessageBox::Ok);
     }
 }
-
 
 void MainWindow::onNewViewWithSql()
 {

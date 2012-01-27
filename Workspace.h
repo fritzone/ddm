@@ -131,6 +131,8 @@ public:
         m_saved = false;
     }
 
+    void createNewConnection();
+
 private:
 
     Workspace();
