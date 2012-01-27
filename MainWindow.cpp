@@ -54,15 +54,18 @@
 #include "ProcedureForm.h"
 #include "core_Procedure.h"
 #include "ProceduresListForm.h"
+#include "GuiElements.h"
+
 #include <QtGui>
 
 MainWindow* MainWindow::m_instance = 0;
 
-MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), m_ui(new Ui::MainWindow), m_projectTreeDock(0),
-        m_datatypesTreeDock(0), m_issuesTreeDock(0), m_connectionsTreeDock(0),
-        m_projectTree(0), m_datatypesTree(0), m_issuesTree(0), m_connectionsTree(0),
-        m_btndlg(0), m_workspace(Workspace::getInstance()), m_revEngWizard(0), m_nvf(0),
-        m_contextMenuHandler(new ContextMenuHandler), lblStatus(0), m_splashWasVisible(false)
+MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), m_ui(new Ui::MainWindow),
+    m_connectionsTreeDock(0),
+    m_connectionsTree(0),
+    m_btndlg(0), m_workspace(Workspace::getInstance()), m_revEngWizard(0), m_nvf(0),
+    lblStatus(0), m_splashWasVisible(false),
+    m_guiElements(0)
 {
     m_ui->setupUi(this);
     Configuration::instance();
@@ -86,36 +89,6 @@ MainWindow::~MainWindow()
 
 void MainWindow::freeGuiElements()
 {
-    if(m_projectTree)
-    {
-        delete m_projectTree;
-        m_projectTree = 0;
-    }
-
-    if(m_datatypesTree)
-    {
-        delete m_datatypesTree;
-        m_datatypesTree = 0;
-    }
-
-    if(m_issuesTreeDock)
-    {
-        delete m_issuesTreeDock;
-        m_issuesTreeDock = 0;
-    }
-
-    if(m_projectTreeDock)
-    {
-        delete m_projectTreeDock;
-        m_projectTreeDock = 0;
-    }
-
-    if(m_datatypesTreeDock)
-    {
-        delete m_datatypesTreeDock;
-        m_datatypesTreeDock = 0;
-    }
-
     QWidget* centralWidget = new QWidget(this);
     centralWidget->setObjectName(QString::fromUtf8("centralWidget"));
     setCentralWidget(centralWidget);
@@ -149,7 +122,6 @@ void MainWindow::showConnections()
     m_connectionsTree->setAllColumnsShowFocus(true);
     m_connectionsTree->setSelectionMode(QAbstractItemView::SingleSelection);
     m_connectionsTree->setSelectionBehavior(QAbstractItemView::SelectItems);
-    m_connectionsTree->setItemDelegate(new ContextMenuDelegate(m_contextMenuHandler,m_projectTree));
     m_connectionsTree->setColumnCount(1);
     m_connectionsTree->setHeaderHidden(false);
 
@@ -195,72 +167,15 @@ ContextMenuEnabledTreeWidgetItem* MainWindow::createConnectionTreeEntry(Connecti
 
 void MainWindow::setupGuiForNewSolution()
 {
-    // create the dock window
-    m_projectTreeDock = new QDockWidget(tr("Solution - ") + m_workspace->currentSolution()->name(), this);
-    m_projectTreeDock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
-    m_projectTreeDock->setFeatures(QDockWidget::AllDockWidgetFeatures);
-    m_projectTreeDock->setFloating(false);
-    m_projectTreeDock->setMinimumSize(300, 340);
-    m_projectTreeDock->setMaximumSize(500, 9999);
-    m_projectTreeDock->setSizePolicy(QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Maximum));
-    m_projectTreeDock->resize(301,341);
 
-    m_datatypesTreeDock = new QDockWidget(tr("DataTypes") , this);
-    m_datatypesTreeDock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
-    m_datatypesTreeDock->setFeatures(QDockWidget::AllDockWidgetFeatures);
-    m_datatypesTreeDock->setFloating(false);
-    m_datatypesTreeDock->setMinimumSize(300, 340);
-    m_datatypesTreeDock->setMaximumSize(500, 9999);
+    m_guiElements = new GuiElements();
+    m_guiElements->createGuiElements();
 
-    m_issuesTreeDock = new QDockWidget(tr("Issues"), this);
-    m_issuesTreeDock->setAllowedAreas(Qt::BottomDockWidgetArea);
-    m_issuesTreeDock->setFeatures(QDockWidget::AllDockWidgetFeatures);
-    m_issuesTreeDock->setFloating(false);
-    m_issuesTreeDock->setSizePolicy(QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Maximum));
+    addDockWidget(Qt::LeftDockWidgetArea, m_guiElements->getProjectDock());
+    addDockWidget(Qt::LeftDockWidgetArea, m_guiElements->getDatatypesDock());
+    addDockWidget(Qt::BottomDockWidgetArea, m_guiElements->getIssuesDock());
 
-
-    m_projectTree = new ContextMenuEnabledTreeWidget();
-    m_projectTree->setAllColumnsShowFocus(true);
-    m_projectTree->setSelectionMode(QAbstractItemView::SingleSelection);
-    m_projectTree->setSelectionBehavior(QAbstractItemView::SelectItems);
-    m_projectTree->setItemDelegate(new ContextMenuDelegate(m_contextMenuHandler,m_projectTree));
-    m_projectTree->setColumnCount(1);
-    m_projectTree->setHeaderHidden(true);
-    QObject::connect(m_projectTree, SIGNAL (currentItemChanged ( QTreeWidgetItem*, QTreeWidgetItem*)), this, SLOT(currentProjectTreeItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)));
-
-    m_datatypesTree = new ContextMenuEnabledTreeWidget();
-    m_datatypesTree ->setColumnCount(2);
-    QTreeWidgetItem *hdr = m_datatypesTree->headerItem();
-    hdr->setText(0, tr("Type"));
-    hdr->setText(1, tr("SQL"));
-    m_datatypesTree->header()->setDefaultSectionSize(200);
-    m_datatypesTree->setItemDelegate(new ContextMenuDelegate(m_contextMenuHandler,m_datatypesTree));
-    m_datatypesTree ->setHeaderHidden(false);
-    QObject::connect(m_datatypesTree, SIGNAL(itemSelectionChanged()), this, SLOT(onDTTreeClicked()));
-    QObject::connect(m_datatypesTree, SIGNAL (itemClicked ( QTreeWidgetItem * , int ) ), this, SLOT(dtTreeItemClicked(QTreeWidgetItem*,int)));
-
-    m_issuesTree = new ContextMenuEnabledTreeWidget();
-    m_issuesTree->setObjectName(QString::fromUtf8("m_issuesTree"));
-    m_issuesTree->setAnimated(false);
-    m_issuesTree->setExpandsOnDoubleClick(true);
-    m_issuesTree->header()->setDefaultSectionSize(150);
-    QTreeWidgetItem *headerItem = m_issuesTree->headerItem();
-    headerItem->setText(0, QApplication::translate("MainWindow", "", 0, QApplication::UnicodeUTF8));
-    headerItem->setText(1, QApplication::translate("MainWindow", "Type", 0, QApplication::UnicodeUTF8));
-    headerItem->setText(2, QApplication::translate("MainWindow", "Origin", 0, QApplication::UnicodeUTF8));
-    headerItem->setText(3, QApplication::translate("MainWindow", "Description", 0, QApplication::UnicodeUTF8));
-    m_issuesContextMenuHandler = new ContextMenuHandler();
-    m_issuesTree->setItemDelegate(new ContextMenuDelegate(m_issuesContextMenuHandler, m_issuesTree));
-
-    m_datatypesTreeDock->setWidget(m_datatypesTree);
-    m_projectTreeDock->setWidget(m_projectTree);
-    m_issuesTreeDock->setWidget(m_issuesTree);
-    addDockWidget(Qt::LeftDockWidgetArea, m_projectTreeDock);
-    addDockWidget(Qt::LeftDockWidgetArea, m_datatypesTreeDock);
-    addDockWidget(Qt::BottomDockWidgetArea, m_issuesTreeDock);
-
-    m_issuesTreeDock->hide();
-    IssueManager::getInstance().setIssuesDock(m_issuesTreeDock);
+    IssueManager::getInstance().setIssuesDock(m_guiElements->getIssuesDock());
 
     showMaximized();
 }
@@ -315,7 +230,7 @@ void MainWindow::onNewSolution()
 
         setupGuiForNewSolution();
 
-        Project* project = new Project(nprjdlg->getProjectName().toUpper(), m_projectTree, m_datatypesTree, m_issuesTree, nprjdlg->enableOOPFeatures());
+        Project* project = new Project(nprjdlg->getProjectName().toUpper(), m_guiElements->getProjectTree(), m_guiElements->getDataTypesTree(), m_guiElements->getIssuesTree(), nprjdlg->enableOOPFeatures());
         project->setEngine(nprjdlg->getDatabaseEngine());
         project->createMajorVersion();
         m_workspace->addProjectToSolution(m_workspace->currentSolution(), project);
@@ -330,12 +245,12 @@ void MainWindow::onNewSolution()
                 m_workspace->workingVersion()->getGui()->createDataTypeTreeEntry(dts.at(i));
             }
 
-            m_datatypesTree->scrollToItem(m_workspace->workingVersion()->getGui()->getDtsItem());
-            m_datatypesTree->expandAll();
+            m_guiElements->getDataTypesTree()->scrollToItem(m_workspace->workingVersion()->getGui()->getDtsItem());
+            m_guiElements->getDataTypesTree()->expandAll();
         }
 
         // expand the tree
-        m_projectTree->expandAll();
+        m_guiElements->getProjectTree()->expandAll();
 
         // show the project properties window
         showProjectDetails();
@@ -375,7 +290,7 @@ void MainWindow::onNewSolution()
 
 void MainWindow::onDTTreeClicked()
 {
-    QList<QTreeWidgetItem*> selectedItems = m_datatypesTree->selectedItems();
+    QList<QTreeWidgetItem*> selectedItems = m_guiElements->getDataTypesTree()->selectedItems();
     if(selectedItems.length() == 1)
     {
         QTreeWidgetItem* item = selectedItems[0];
@@ -408,6 +323,7 @@ void MainWindow::onDTTreeClicked()
 
 NewTableForm* MainWindow::showExistingTable(Table *table)
 {
+    if(table == 0) return 0;
     NewTableForm* frm = m_workspace->workingVersion()->getGui()->getTableFormForExistingTable();
     frm->setTable(table);
     frm->focusOnName();
@@ -427,7 +343,7 @@ void MainWindow::showTable(const QString &tabName, bool focus)
     showExistingTable(table);
     if(focus)
     {
-        m_projectTree->setCurrentItem(table->getLocation());
+        m_guiElements->getProjectTree()->setCurrentItem(table->getLocation());
     }
 }
 
@@ -448,7 +364,7 @@ void MainWindow::showTableInstance(const QString &tabName, bool focus)
     HelpWindow* hw = HelpWindow::instance();
     if(hw->isVisible()) hw->showHelp(QString("/doc/tinst.html"));
 
-    if(focus) m_projectTree->setCurrentItem(table->getLocation());
+    if(focus) m_guiElements->getProjectTree()->setCurrentItem(table->getLocation());
 }
 
 void MainWindow::showDataType(const QString &name, bool focus)
@@ -464,13 +380,13 @@ void MainWindow::showDataType(const QString &name, bool focus)
     frm->setDataType(dt);
     setCentralWidget(frm);
 
-    if(focus) m_datatypesTree->setCurrentItem(dt->getLocation());
+    if(focus) m_guiElements->getDataTypesTree()->setCurrentItem(dt->getLocation());
 
     HelpWindow* hw = HelpWindow::instance();
     if(hw->isVisible()) hw->showHelp(QString("/doc/dtyp.html"));
 }
 
-void MainWindow::showDiagram(const QString &name)
+void MainWindow::showDiagram(const QString &name, bool /*focus*/)
 {
     Diagram* dgram = m_workspace->workingVersion()->getDiagram(name);
     if(dgram == 0)
@@ -486,7 +402,7 @@ void MainWindow::showDiagram(const QString &name)
     if(hw->isVisible()) hw->showHelp(QString("/doc/dgram.html"));
 }
 
-void MainWindow::showProcedure(const QString &procName)
+void MainWindow::showProcedure(const QString &procName, bool /*focus*/)
 
 {
     Procedure* p = m_workspace->workingVersion()->getProcedure(procName);
@@ -499,7 +415,7 @@ void MainWindow::showProcedure(const QString &procName)
     }
 }
 
-void MainWindow::showView(const QString& viewName)
+void MainWindow::showView(const QString& viewName, bool /*focus*/)
 {
     View* v = m_workspace->workingVersion()->getView(viewName);
     if(v)
@@ -525,7 +441,13 @@ void MainWindow::showView(const QString& viewName)
         HelpWindow* hw = HelpWindow::instance();
         if(hw->isVisible()) hw->showHelp(QString("/doc/view.html"));
     }
+}
 
+void MainWindow::showNamedObject(QTreeWidgetItem* current, showSomething s, bool f)
+{
+    QVariant qv = current->data(0, Qt::UserRole);
+    QString n = qv.toString();
+    (this->*s)(n,f);
 }
 
 void MainWindow::currentProjectTreeItemChanged(QTreeWidgetItem * current, QTreeWidgetItem*)
@@ -585,49 +507,31 @@ void MainWindow::currentProjectTreeItemChanged(QTreeWidgetItem * current, QTreeW
             if(current->parent() && current->parent() == m_workspace->workingVersion()->getGui()->getTablesItem())
             {
                 // the user clicked on a table, the name of the table is a tag
-                QVariant qv = current->data(0, Qt::UserRole);
-                QString tabName = qv.toString();
-                showTable(tabName, false);
+                showNamedObject(current, (showSomething)&MainWindow::showTable, false);
             }
             else
             if(current->parent() && current->parent() == m_workspace->workingVersion()->getGui()->getDiagramsItem())
             {
                 // the user clicked on a diagram
-                QVariant qv = current->data(0, Qt::UserRole);
-                QString diagramName = qv.toString();
-                showDiagram(diagramName);
+                showNamedObject(current, (showSomething)&MainWindow::showDiagram, false);
             }
             else
             if(current->parent() && current->parent() == m_workspace->workingVersion()->getGui()->getTableInstancesItem())
             {
                 // user clicked on a table instance
-                TableInstanceForm* frm = new TableInstanceForm(this);
-                QVariant qv = current->data(0, Qt::UserRole);
-                QString instanceName = qv.toString();
-
-                frm->setTableInstance(m_workspace->workingVersion()->getTableInstance(instanceName));
-                frm->createTableWithValues();
-                setCentralWidget(frm);
-
-                HelpWindow* hw = HelpWindow::instance();
-                if(hw->isVisible()) hw->showHelp(QString("/doc/tinst.html"));
-
+                showNamedObject(current, (showSomething)&MainWindow::showTableInstance, false);
             }
             else
             if(current->parent() && current->parent() == m_workspace->workingVersion()->getGui()->getViewsItem())
             {
                 // user clicked on a view
-                QVariant qv = current->data(0, Qt::UserRole);
-                QString viewName = qv.toString();
-                showView(viewName);
+                showNamedObject(current, (showSomething)&MainWindow::showView, false);
             }
             else
             if(current->parent() && current->parent() == m_workspace->workingVersion()->getGui()->getProceduresItem())
             {
                 // user clicked on a procedure
-                QVariant qv = current->data(0, Qt::UserRole);
-                QString procName = qv.toString();
-                showProcedure(procName);
+                showNamedObject(current, (showSomething)&MainWindow::showProcedure, false);
             }
             else
             if(current->parent() && current->parent() == m_workspace->workingVersion()->getGui()->getFinalSqlItem())
@@ -672,16 +576,8 @@ void MainWindow::currentProjectTreeItemChanged(QTreeWidgetItem * current, QTreeW
 
             }
             else    // user possibly clicked on a table which had a parent a table ...
-            {   // TODO: Code duplication with the "table" stuff above
-                QVariant qv = current->data(0, Qt::UserRole);
-                QString tabName = qv.toString();
-                Table* table =  m_workspace->workingVersion()->getTable(tabName);
-                if(table == 0)  // shouldn't be ...
-                {
-                    return;
-                }
-
-                showExistingTable(table);
+            {
+                showExistingTable(getNamedObject<Table>(current, (itemGetter)&Version::getTable));
             }
         }
     }
@@ -693,7 +589,7 @@ void MainWindow::onNewTable()
     NewTableForm* frm = Workspace::getInstance()->workingVersion()->getGui()->getTableFormForNewTable();
     frm->focusOnName();
 
-    m_projectTree->setCurrentItem(0);
+    m_guiElements->getProjectTree()->setCurrentItem(0);
     setCentralWidget(frm);
 
     HelpWindow* hw = HelpWindow::instance();
@@ -705,7 +601,7 @@ void MainWindow::showNewDataTypeWindow(int a)
 {
     NewDataTypeForm* frm = new NewDataTypeForm((DataType::DT_TYPE)a, m_workspace->currentProjectsEngine(), this);
     frm->focusOnName();
-    m_projectTree->setCurrentItem(0);
+    m_guiElements->getProjectTree()->setCurrentItem(0);
     setCentralWidget(frm);
 
     HelpWindow* hw = HelpWindow::instance();
@@ -765,8 +661,8 @@ bool MainWindow::onSaveNewDataType(const QString& name, const QString& type, con
         ContextMenuEnabledTreeWidgetItem* newDtItem = m_workspace->workingVersion()->getGui()->createDataTypeTreeEntry(udt);
 
         // set the link to the tree
-        m_datatypesTree->expandItem(newDtItem);
-        m_datatypesTree->scrollToItem(newDtItem);
+        m_guiElements->getDataTypesTree()->expandItem(newDtItem);
+        m_guiElements->getDataTypesTree()->scrollToItem(newDtItem);
         return true;
     }
     return false;
@@ -802,7 +698,7 @@ void MainWindow::populateTreeWithSolution(Solution* sol)
 {
     for(int i=0; i<sol->projects().size(); i++)
     {
-        sol->projects()[i]->createTreeItem(m_projectTree, m_datatypesTree, m_issuesTree);
+        sol->projects()[i]->createTreeItem(m_guiElements->getProjectTree(), m_guiElements->getDataTypesTree(), m_guiElements->getIssuesTree());
         sol->projects()[i]->populateTreeItem();
     }
 }
@@ -833,7 +729,7 @@ void MainWindow::doLoadSolution(const QString& fileName, bool splashVisible)
         m_workspace->workingVersion()->getGui()->getTablesItem()->setText(0, tr("Tables"));
     }
 
-    m_projectTree->expandAll();
+    m_guiElements->getProjectTree()->expandAll();
 
     ProjectDetailsForm* prjDetailsForm = new ProjectDetailsForm(this);
     prjDetailsForm->setProject(m_workspace->currentSolution()->currentProject());
@@ -1067,14 +963,14 @@ void MainWindow::onSaveAs()
 
 void MainWindow::onInstantiateTableFromPopup()
 {
-    if(m_projectTree->getLastRightclickedItem() == 0)
+    if(m_guiElements->getProjectTree()->getLastRightclickedItem() == 0)
     {
         return;
     }
 
     // TODO: Code duplication with some stuff from below (onDelete...)
-    ContextMenuEnabledTreeWidgetItem* item = m_projectTree->getLastRightclickedItem();
-    m_projectTree->setLastRightclickedItem(0);
+    ContextMenuEnabledTreeWidgetItem* item = m_guiElements->getProjectTree()->getLastRightclickedItem();
+    m_guiElements->getProjectTree()->setLastRightclickedItem(0);
 
     QVariant qv = item->data(0, Qt::UserRole);
     QString tabName = qv.toString();
@@ -1085,13 +981,13 @@ void MainWindow::onInstantiateTableFromPopup()
     }
 
     m_workspace->workingVersion()->getGui()->updateForms();
-    m_projectTree->setCurrentItem(instantiateTable(table->getName(), QStringList()));
+    m_guiElements->getProjectTree()->setCurrentItem(instantiateTable(table->getName(), QStringList()));
 
 }
 
 void MainWindow::onSpecializeTableFromPopup()
 {
-    if(m_projectTree->getLastRightclickedItem() == 0)
+    if(m_guiElements->getProjectTree()->getLastRightclickedItem() == 0)
     {
         return;
     }
@@ -1118,38 +1014,44 @@ void MainWindow::onSpecializeTableFromPopup()
 
 void MainWindow::onTableAddColumnFromPopup()
 {
-    if(m_projectTree->getLastRightclickedItem() != 0)
+    if(m_guiElements->getProjectTree()->getLastRightclickedItem() != 0)
     {
         Table *table = getRightClickedObject<Table>((itemGetter)&Version::getTable);
         if(table == 0) return;
         NewTableForm* frm = showExistingTable(table);
         frm->focusOnNewColumnName();
-        m_projectTree->setLastRightclickedItem(0);
+        m_guiElements->getProjectTree()->setLastRightclickedItem(0);
     }
+}
+
+template <class T>
+T* MainWindow::getNamedObject(QTreeWidgetItem* itm, itemGetter g)
+{
+    QVariant qv = itm->data(0, Qt::UserRole);
+    QString name = qv.toString();
+    T* t =  reinterpret_cast<T*>((m_workspace->getInstance()->workingVersion()->*g)(name));
+    return t;
 }
 
 template <class T>
 T* MainWindow::getRightClickedObject(itemGetter g)
 {
-    if(m_projectTree->getLastRightclickedItem() != 0)
+    if(m_guiElements->getProjectTree()->getLastRightclickedItem() != 0)
     {
-        ContextMenuEnabledTreeWidgetItem* item = m_projectTree->getLastRightclickedItem();
-        m_projectTree->setLastRightclickedItem(0);
+        ContextMenuEnabledTreeWidgetItem* item = m_guiElements->getProjectTree()->getLastRightclickedItem();
+        m_guiElements->getProjectTree()->setLastRightclickedItem(0);
 
-        QVariant qv = item->data(0, Qt::UserRole);
-        QString name = qv.toString();
-        T* t =  reinterpret_cast<T*>((m_workspace->getInstance()->workingVersion()->*g)(name));
-        return t;
+        return getNamedObject<T>(item, g);
     }
     return 0;
 }
 
 UserDataType* MainWindow::getRightClickedDatatype()
 {
-    if(m_datatypesTree->getLastRightclickedItem() != 0)
+    if(m_guiElements->getDataTypesTree()->getLastRightclickedItem() != 0)
     {
-        ContextMenuEnabledTreeWidgetItem* item = m_datatypesTree->getLastRightclickedItem();
-        m_datatypesTree->setLastRightclickedItem(0);
+        ContextMenuEnabledTreeWidgetItem* item = m_guiElements->getDataTypesTree()->getLastRightclickedItem();
+        m_guiElements->getDataTypesTree()->setLastRightclickedItem(0);
 
         QVariant qv = item->data(0, Qt::UserRole);
         UserDataType* udt = static_cast<UserDataType*>(qv.data());
@@ -1475,7 +1377,7 @@ void MainWindow::onDeleteInstanceFromPopup()
             if(tinst->getReferencingTables().length() > 0)
             {
                 QMessageBox::critical(this, tr("Error"), tr("Cannot delete this table instance since it was auto-instantiated because another table has a foreign key to it. Deleting the following tables will remove this table too:\n") + tinst->getReferencingTables(), QMessageBox::Ok);
-                m_projectTree->setLastRightclickedItem(0);
+                m_guiElements->getProjectTree()->setLastRightclickedItem(0);
                 return;
             }
         }
@@ -1548,7 +1450,7 @@ void MainWindow::onCloseSolution()
 
 void MainWindow::onDeleteDatatypeFromPopup()
 {
-    ContextMenuEnabledTreeWidgetItem* itm = m_datatypesTree->getLastRightclickedItem();
+    ContextMenuEnabledTreeWidgetItem* itm = m_guiElements->getDataTypesTree()->getLastRightclickedItem();
     if(!itm)
     {
         return;
@@ -1667,7 +1569,19 @@ void MainWindow::onDeleteConnection()
     {
         ConnectionManager::instance()->deleteConnection(c->getName());
         delete c->getLocation();
-        delete c;
+        c->setState(Connection::DELETED);
+    }
+}
+
+void MainWindow::tryBrowseConnection(Connection *c)
+{
+    if(c->tryConnect())
+    {
+        // clear the tree
+        while(c->getLocation()->childCount()) c->getLocation()->removeChild(c->getLocation()->child(0));
+        c->getLocation()->setIcon(0, IconFactory::getConnectedDatabaseIcon());
+        createConnectionTreeEntryForTables(c);
+        createConnectionTreeEntryForViews(c);
     }
 }
 
@@ -1679,6 +1593,11 @@ void MainWindow::onBrowseConnection()
         if(c->getState() == Connection::CONNECTED)
         {
             createConnectionTreeEntryForTables(c);
+        }
+        else
+        {
+            tryBrowseConnection(c);
+            c->getLocation()->setExpanded(true);
         }
     }
 }
@@ -1713,21 +1632,25 @@ void MainWindow::onDropConnection()
     }
 }
 
+void MainWindow::hideSplashwindow()
+{
+    if(m_btndlg && m_btndlg->isVisible())
+    {
+        Qt::WindowFlags flags = m_btndlg->windowFlags();
+        m_btndlg->setWindowFlags(flags ^ (Qt::SplashScreen |Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint));
+        m_btndlg->hide();
+    }
+}
+
 void MainWindow::onConnectionItemDoubleClicked(QTreeWidgetItem* item,int)
 {
     QVariant v = item->data(0, Qt::UserRole);
     if(v.isValid())
     {
         QString s = v.toString();
-        qDebug() << s;
-        if(s.startsWith(browsedTablePrefix))
+        if(s.startsWith(browsedTablePrefix) || s.startsWith(browsedViewPrefix))
         {
-            if(m_btndlg && m_btndlg->isVisible())
-            {
-                Qt::WindowFlags flags = m_btndlg->windowFlags();
-                m_btndlg->setWindowFlags(flags ^ (Qt::SplashScreen |Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint));
-                m_btndlg->hide();
-            }
+            hideSplashwindow();
 
             QString cname = s.mid(s.indexOf("?") + 1);
             Connection *c = ConnectionManager::instance()->getConnection(cname);
@@ -1737,24 +1660,14 @@ void MainWindow::onConnectionItemDoubleClicked(QTreeWidgetItem* item,int)
             setCentralWidget(frm);
             return;
         }
+
         Connection* c = ConnectionManager::instance()->getConnection(s);
-        if(c)
-        {
-            if(c->tryConnect())
-            {
-                c->getLocation()->setIcon(0, IconFactory::getConnectedDatabaseIcon());
-                createConnectionTreeEntryForTables(c);
-                // TODO: for future releases take the view too
-                //createConnectionTreeEntryForViews(c);
-            }
-        }
+        if(c) tryBrowseConnection(c);
     }
 }
 
 void MainWindow::createConnectionTreeEntryForViews(Connection *c)
 {
-    c->getLocation()->removeChild(c->getLocation()->child(1));
-
     ContextMenuEnabledTreeWidgetItem* connViewsItem = new ContextMenuEnabledTreeWidgetItem(c->getLocation(), QStringList(tr("Views")));
     m_connectionsTree->addTopLevelItem(connViewsItem);
     connViewsItem->setIcon(0, IconFactory::getViewsIcon());
@@ -1778,8 +1691,6 @@ void MainWindow::createConnectionTreeEntryForViews(Connection *c)
 
 void MainWindow::createConnectionTreeEntryForTables(Connection *c)
 {
-    c->getLocation()->removeChild(c->getLocation()->child(0));
-
     ContextMenuEnabledTreeWidgetItem* connTablesItem = new ContextMenuEnabledTreeWidgetItem(c->getLocation(), QStringList(tr("Tables")));
     m_connectionsTree->addTopLevelItem(connTablesItem);
     connTablesItem->setIcon(0, IconFactory::getTabinstIcon());
@@ -1828,12 +1739,12 @@ void MainWindow::onDuplicateDatatypeFromPopup()
 
         ContextMenuEnabledTreeWidgetItem* newDTItem = m_workspace->workingVersion()->getGui()->createDataTypeTreeEntry(dup);
 
-        m_datatypesTree->expandItem(newDTItem);
-        m_datatypesTree->scrollToItem(newDTItem);
+        m_guiElements->getDataTypesTree()->expandItem(newDTItem);
+        m_guiElements->getDataTypesTree()->scrollToItem(newDTItem);
 
         // resize to look better
-        m_datatypesTree->resizeColumnToContents(0);
-        m_datatypesTree->resizeColumnToContents(1);
+        m_guiElements->getDataTypesTree()->resizeColumnToContents(0);
+        m_guiElements->getDataTypesTree()->resizeColumnToContents(1);
     }
 }
 
@@ -1902,8 +1813,8 @@ void MainWindow::onNewSpatialType()
 void MainWindow::onGotoIssueLocation()
 {
     Table* tab = 0;
-    if(!m_issuesTree->getLastRightclickedItem()) return;
-    QVariant a = m_issuesTree->getLastRightclickedItem()->data(0, Qt::UserRole);
+    if(!m_guiElements->getIssuesTree()->getLastRightclickedItem()) return;
+    QVariant a = m_guiElements->getIssuesTree()->getLastRightclickedItem()->data(0, Qt::UserRole);
     QString issueName = a.toString();
     Issue* selectedIssue = m_workspace->workingVersion()->getIssue(issueName);
     IssueOriginator* source = selectedIssue->getOriginator();
@@ -1931,8 +1842,8 @@ void MainWindow::onGotoIssueLocation()
 
 void MainWindow::onIgnoreIssuesOfATable()
 {
-    if(!m_issuesTree->getLastRightclickedItem()) return;
-    QVariant a = m_issuesTree->getLastRightclickedItem()->data(0, Qt::UserRole);
+    if(!m_guiElements->getIssuesTree()->getLastRightclickedItem()) return;
+    QVariant a = m_guiElements->getIssuesTree()->getLastRightclickedItem()->data(0, Qt::UserRole);
     QString tabName = a.toString();
     QVector<Issue*> issuesOfATable = IssueManager::getInstance().getIssuesOfTable(tabName);
     for(int i=0; i<issuesOfATable.size(); i++)
@@ -1945,7 +1856,7 @@ void MainWindow::onIgnoreIssuesOfATable()
 
 void MainWindow::onIgnoreIssue()
 {
-    ContextMenuEnabledTreeWidgetItem* lastRclick = m_issuesTree->getLastRightclickedItem();
+    ContextMenuEnabledTreeWidgetItem* lastRclick = m_guiElements->getIssuesTree()->getLastRightclickedItem();
     if(!lastRclick) return;
     QVariant a = lastRclick->data(0, Qt::UserRole);
     QString issueName = a.toString();
@@ -2056,7 +1967,7 @@ void MainWindow::onDeploymentFinished(Deployer *d)
     if(d->hadErrors())
     {
         QMap<QString, QString> errors = d->getErrors();
-        m_issuesTreeDock->show();
+        m_guiElements->getIssuesDock()->show();
         for(QMap<QString, QString>::iterator it = errors.begin(); it != errors.end(); it++)
         {
             IssueManager::getInstance().createConnectionIssue(ConnectionManager::instance()->getConnection(it.key()), it.value());
@@ -2082,9 +1993,9 @@ void MainWindow::onDeploymentFinished(Deployer *d)
 
 void MainWindow::onViewProjectTree()
 {
-    bool t = m_projectTreeDock->isVisible() ;
+    bool t = m_guiElements->getProjectDock()->isVisible() ;
     m_ui->action_ProjectTree->setChecked(!t);
-    m_projectTreeDock->setVisible(!t);
+    m_guiElements->getProjectDock()->setVisible(!t);
 }
 
 void MainWindow::onViewConnectionsTree()
@@ -2103,9 +2014,9 @@ void MainWindow::onViewConnectionsTree()
 
 void MainWindow::onViewDatatypesTree()
 {
-    bool t = m_datatypesTreeDock->isVisible() ;
+    bool t = m_guiElements->getDataTypesTree()->isVisible() ;
     m_ui->action_Datatypes_Tree->setChecked(!t);
-    m_datatypesTreeDock->setVisible(!t);
+    m_guiElements->getDataTypesTree()->setVisible(!t);
 }
 
 void MainWindow::onReverseEngineerWizardNextPage(int cpage)
@@ -2242,7 +2153,7 @@ void MainWindow::onNewProcedure()
     Workspace::getInstance()->workingVersion()->addProcedure(p);
     Workspace::getInstance()->workingVersion()->getGui()->createProcedureTreeEntry(p);
 
-    m_projectTree->setCurrentItem(p->getLocation());
+    m_guiElements->getProjectTree()->setCurrentItem(p->getLocation());
     setCentralWidget(frm);
 
     //HelpWindow* hw = HelpWindow::instance();

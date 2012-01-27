@@ -131,7 +131,8 @@ SOURCES += main.cpp \
     core_Procedure.cpp \
     ProceduresListForm.cpp \
     TextEditWithCodeCompletion.cpp \
-    ListWidgetForCodeCompletion.cpp
+    ListWidgetForCodeCompletion.cpp \
+    GuiElements.cpp
 HEADERS += MainWindow.h \
     MainWindowButtonDialog.h \
     NewProjectDialog.h \
@@ -286,7 +287,8 @@ HEADERS += MainWindow.h \
     ProceduresListForm.h \
     TextEditWithCodeCompletion.h \
     ListWidgetForCodeCompletion.h \
-    commons.h
+    commons.h \
+    GuiElements.h
 FORMS += MainWindow.ui \
     MainWindowButtonDialog.ui \
     NewProjectDialog.ui \
@@ -328,6 +330,8 @@ INSTALLS += installfiles_doc
 installfiles_rs.files += rsrc/mysql.defaults
 installfiles_rs.path =  /home/ferenc/rpmbuild/BUILDROOT/usr/local/ddm/rsrc
 INSTALLS += installfiles_rs
+
+
 
 
 
