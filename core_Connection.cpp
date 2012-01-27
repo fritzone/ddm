@@ -71,7 +71,9 @@ QIcon Connection::provideIcon()
         return (IconFactory::getConnectedDatabaseIcon());
         break;
     case Connection::DROPPED:
+    case Connection::DELETED:
         return (IconFactory::getDroppedDatabaseIcon());
         break;
     }
+    return IconFactory::getEmptyIcon();
 }

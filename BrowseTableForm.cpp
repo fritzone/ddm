@@ -91,9 +91,9 @@ QTableView* BrowseTableForm::getTable()
 
 void BrowseTableForm::onRunQuery()
 {
-    if(m_connection->getState() == Connection::DROPPED)
+    if(m_connection->getState() == Connection::DROPPED || m_connection->getState() == Connection::DELETED)
     {
-        QMessageBox::critical(this, tr("Error"), tr("Cannot execute query on a dropped database"), QMessageBox::Ok);
+        QMessageBox::critical(this, tr("Error"), tr("Cannot execute query on a dropped or deleted database"), QMessageBox::Ok);
         return;
     }
     QSqlQueryModel *model = new QSqlQueryModel(ui->table);

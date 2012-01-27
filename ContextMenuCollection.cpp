@@ -64,6 +64,7 @@ ContextMenuCollection::ContextMenuCollection()
     action_createViewUsingSql = new QAction(QObject::tr("SQL"), 0);
     action_connectionConnect = new QAction(QObject::tr("Connect"), 0);
     action_connectionDelete = new QAction(QObject::tr("Delete"), 0);
+    action_connectionDelete->setIcon(IconFactory::getRemoveIcon());
     action_connectionEdit = new QAction(QObject::tr("Edit"), 0);
     action_connectionBrowse = new QAction(QObject::tr("Browse"), 0);
     action_connectionDrop = new QAction(QObject::tr("Drop"), 0);

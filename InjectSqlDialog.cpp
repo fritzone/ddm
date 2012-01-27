@@ -163,23 +163,7 @@ void InjectSqlDialog::populateConnections()
     {
         QListWidgetItem* lwi = new QListWidgetItem(ui->lstAllConnections);
         lwi->setText(connections.at(i)->getName() + " ("+ connections.at(i)->getDb()+"@"+ connections.at(i)->getHost() + ")");   // TODO: This should be done with setData but I'm lasy now
-        switch(connections.at(i)->getState())
-        {
-        case Connection::DID_NOT_TRY:
-        case Connection::UNDEFINED:
-            lwi->setIcon(IconFactory::getDatabaseIcon());
-            break;
-        case Connection::FAILED:
-            lwi->setIcon(IconFactory::getUnConnectedDatabaseIcon());
-            break;
-        case Connection::CONNECTED:
-            lwi->setIcon(IconFactory::getConnectedDatabaseIcon());
-            break;
-        case Connection::DROPPED:
-            lwi->setIcon(IconFactory::getConnectedDatabaseIcon());
-            break;
-
-        }
+        lwi->setIcon(connections.at(i)->provideIcon());
     }
 }
 

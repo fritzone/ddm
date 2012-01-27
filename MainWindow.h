@@ -33,6 +33,7 @@ class InjectSqlGenerator;
 class ReverseEngineerer;
 class View;
 class Procedure;
+class GuiElements;
 
 namespace Ui
 {
@@ -46,6 +47,7 @@ class MainWindow : public QMainWindow
 public:
 
     typedef bool (MainWindow::*dynamicAction)(QString);
+    typedef void (MainWindow::*showSomething)(const QString&, bool);
 
     MainWindow(QWidget *parent = 0);
     ~MainWindow();
@@ -70,9 +72,9 @@ public:
     void showTable(const QString& tabName, bool focus = true);
     void showTableInstance(const QString& tabName, bool focus = true);
     void showDataType(const QString &name, bool focus = true);
-    void showDiagram(const QString& name);
-    void showView(const QString& viewName);
-    void showProcedure(const QString& procName);
+    void showDiagram(const QString& name, bool focus = true);
+    void showView(const QString& viewName, bool focus = true);
+    void showProcedure(const QString& procName, bool focus = true);
 
     void rerenderQuery(Query*);
     void showConnections();
@@ -175,31 +177,26 @@ private:
     void showProjectDetails();
     void showNewDataTypeWindow(int);
     NewTableForm* showExistingTable(Table*);
-
-    template <class T>
-    T* getRightClickedObject(itemGetter);
     UserDataType* getRightClickedDatatype();
     Connection* getRightClickedConnection();
+
+    template <class T> T* getRightClickedObject(itemGetter);
+    template <class T> T* getNamedObject(QTreeWidgetItem*, itemGetter);
 
     void doDeployment(const QString& codePage, QStringList connectionNames);
     void createConnectionTreeEntryForTables(Connection *c);
     void createConnectionTreeEntryForViews(Connection *c);
-
+    void hideSplashwindow();
+    void tryBrowseConnection(Connection* c);
+    void showNamedObject(QTreeWidgetItem* current, showSomething s, bool focus=true);
 
 private:
     Ui::MainWindow *m_ui;
 
-    QDockWidget* m_projectTreeDock;
-    QDockWidget* m_datatypesTreeDock;
-    QDockWidget* m_issuesTreeDock;
     QDockWidget* m_connectionsTreeDock;
 
-    ContextMenuEnabledTreeWidget* m_projectTree;
-    ContextMenuEnabledTreeWidget* m_datatypesTree;
-    ContextMenuEnabledTreeWidget* m_issuesTree;
     ContextMenuEnabledTreeWidget* m_connectionsTree;
 
-    ContextMenuHandler* m_issuesContextMenuHandler;
     ContextMenuHandler* m_connectionsContextMenuHandler;
 
     // the initial three button dialog
@@ -210,11 +207,11 @@ private:
     ReverseEngineerWizard* m_revEngWizard;
 
     NewViewForm* m_nvf;
-    ContextMenuHandler* m_contextMenuHandler;
     QVector<Deployer*> m_deployers;
     QLabel* lblStatus;
     static MainWindow* m_instance;
     bool m_splashWasVisible;
+    GuiElements* m_guiElements;
 };
 
 #endif // MAINWINDOW_H

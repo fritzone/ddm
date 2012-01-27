@@ -23,7 +23,8 @@ public:
         CONNECTED=1,
         FAILED=2,
         DID_NOT_TRY=3,
-        DROPPED = 4
+        DROPPED = 4,
+        DELETED = 5
     };
 
     Connection(const QString& name, const QString& host, const QString& user, const QString& pass, const QString& db, bool savePw, bool autoConnect);
