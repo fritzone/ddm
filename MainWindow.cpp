@@ -55,27 +55,31 @@
 #include "core_Procedure.h"
 #include "ProceduresListForm.h"
 #include "GuiElements.h"
+#include "ConnectionGuiElements.h"
 
 #include <QtGui>
 
 MainWindow* MainWindow::m_instance = 0;
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), m_ui(new Ui::MainWindow),
-    m_connectionsTreeDock(0),
-    m_connectionsTree(0),
     m_btndlg(0), m_workspace(Workspace::getInstance()), m_revEngWizard(0), m_nvf(0),
     lblStatus(0), m_splashWasVisible(false),
-    m_guiElements(0)
+    m_guiElements(0), m_connectionGuiElements(0)
 {
     m_ui->setupUi(this);
+    m_instance = this;
     Configuration::instance();
     ConnectionManager::instance();
 
+    m_connectionGuiElements = new ConnectionGuiElements();
+    m_connectionGuiElements->createGuiElements();
     showConnections();
+
+    m_ui->action_NewDatabaseConnection->setEnabled(true);
     showMaximized();
     setWindowTitle(tr("DDM - [No Solution]"));
 
-    m_instance = this;
+
 
     m_btndlg = new MainWindowButtonDialog();
     m_btndlg->showMe();
@@ -103,66 +107,7 @@ void MainWindow::showProjectDetails()
 
 void MainWindow::showConnections()
 {
-    if(m_connectionsTreeDock)
-    {
-        onViewConnectionsTree();
-        return;
-    }
-    // create the dock window
-    m_connectionsTreeDock = new QDockWidget(tr("Connections"), this);
-    m_connectionsTreeDock->setAllowedAreas(Qt::AllDockWidgetAreas);
-    m_connectionsTreeDock->setFeatures(QDockWidget::AllDockWidgetFeatures);
-    m_connectionsTreeDock->setFloating(false);
-    m_connectionsTreeDock->setMinimumSize(300, 340);
-    m_connectionsTreeDock->setMaximumSize(500, 9999);
-    m_connectionsTreeDock->setSizePolicy(QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Maximum));
-    m_connectionsTreeDock->resize(301,341);
-
-    m_connectionsTree = new ContextMenuEnabledTreeWidget();
-    m_connectionsTree->setAllColumnsShowFocus(true);
-    m_connectionsTree->setSelectionMode(QAbstractItemView::SingleSelection);
-    m_connectionsTree->setSelectionBehavior(QAbstractItemView::SelectItems);
-    m_connectionsTree->setColumnCount(1);
-    m_connectionsTree->setHeaderHidden(false);
-
-    QTreeWidgetItem *headerItm = m_connectionsTree->headerItem();
-    headerItm->setText(0, QApplication::translate("MainWindow", "Connection", 0, QApplication::UnicodeUTF8));
-    m_connectionsTree->header()->setDefaultSectionSize(150);
-
-    m_connectionsContextMenuHandler = new ContextMenuHandler();
-    m_connectionsTree->setItemDelegate(new ContextMenuDelegate(m_connectionsContextMenuHandler, m_connectionsTree));
-    m_connectionsTreeDock->setWidget(m_connectionsTree);
-    addDockWidget(Qt::RightDockWidgetArea, m_connectionsTreeDock);
-
-    m_ui->action_NewDatabaseConnection->setEnabled(true);
-    const QVector<Connection*>& cons = ConnectionManager::instance()->connections();
-    for(int i=0; i<cons.size(); i++)
-    {
-        Connection* c = cons.at(i);
-        createConnectionTreeEntry(c);
-    }
-    connect(ContextMenuCollection::getInstance()->getAction_ConnectionConnect(), SIGNAL(triggered()), this, SLOT(onConnectConnection()));
-    connect(ContextMenuCollection::getInstance()->getAction_ConnectionBrowse(), SIGNAL(triggered()), this, SLOT(onBrowseConnection()));
-    connect(ContextMenuCollection::getInstance()->getAction_ConnectionDrop(), SIGNAL(triggered()), this, SLOT(onDropConnection()));
-    connect(ContextMenuCollection::getInstance()->getAction_ConnectionDelete(), SIGNAL(triggered()), this, SLOT(onDeleteConnection()));
-    connect(ContextMenuCollection::getInstance()->getAction_ConnectionEdit(), SIGNAL(triggered()), this, SLOT(onEditConnection()));
-    connect(m_connectionsTree, SIGNAL(itemDoubleClicked(QTreeWidgetItem*,int)), this, SLOT(onConnectionItemDoubleClicked(QTreeWidgetItem*,int)));
-    connect(ContextMenuCollection::getInstance()->getAction_BrowsedTableInject(), SIGNAL(triggered()), this, SLOT(onInjectBrowsedTable()));
-    connect(ContextMenuCollection::getInstance()->getAction_BrowsedTableBrowse(), SIGNAL(triggered()), this, SLOT(onBrowseBrowsedTable()));
-
-    m_ui->action_ConnectionsTree->setChecked(true);
-}
-
-ContextMenuEnabledTreeWidgetItem* MainWindow::createConnectionTreeEntry(Connection* c)
-{
-    ContextMenuEnabledTreeWidgetItem* newConnectionItem = new ContextMenuEnabledTreeWidgetItem((ContextMenuEnabledTreeWidgetItem*)0, QStringList(c->getName() + "(" + c->getDb()+"@"+c->getHost() + ")")) ;
-    QVariant var(c->getName());
-    newConnectionItem->setData(0, Qt::UserRole, var);
-    newConnectionItem->setIcon(0, c->provideIcon());
-    m_connectionsTree->addTopLevelItem(newConnectionItem);
-    newConnectionItem->setPopupMenu(ContextMenuCollection::getInstance()->getConnectionsPopupMenu());
-    c->setLocation(newConnectionItem);
-    return newConnectionItem ;
+    addDockWidget(Qt::RightDockWidgetArea, m_connectionGuiElements->getConnectionsTreeDock());
 }
 
 void MainWindow::setupGuiForNewSolution()
@@ -785,7 +730,7 @@ void MainWindow::enableActions()
     m_ui->action_Datatypes_Tree->setChecked(true);
     m_ui->action_Datatypes_Tree->setEnabled(true);
     m_ui->action_ConnectionsTree->setEnabled(true);
-    m_ui->action_ConnectionsTree->setChecked(m_connectionsTreeDock?m_connectionsTreeDock->isVisible():false);
+    m_ui->action_ConnectionsTree->setCheckable(false);
     m_ui->action_Validate->setEnabled(true);
     m_ui->action_NewView->setEnabled(true);
     m_ui->action_NewDatabaseConnection->setEnabled(true);
@@ -1062,10 +1007,10 @@ UserDataType* MainWindow::getRightClickedDatatype()
 
 Connection* MainWindow::getRightClickedConnection()
 {
-    if(m_connectionsTree->getLastRightclickedItem() != 0)
+    if(m_connectionGuiElements->getConnectionsTree()->getLastRightclickedItem() != 0)
     {
-        ContextMenuEnabledTreeWidgetItem* item = m_connectionsTree->getLastRightclickedItem();
-        m_connectionsTree->setLastRightclickedItem(0);
+        ContextMenuEnabledTreeWidgetItem* item = m_connectionGuiElements->getConnectionsTree()->getLastRightclickedItem();
+        m_connectionGuiElements->getConnectionsTree()->setLastRightclickedItem(0);
 
         QVariant qv = item->data(0, Qt::UserRole);
         QString n = qv.toString();
@@ -1439,9 +1384,6 @@ void MainWindow::onCloseSolution()
     m_workspace->onCloseSolution();
 
     freeGuiElements();
-    m_ui->action_ConnectionsTree->setChecked(true);
-    delete m_connectionsTreeDock;
-    m_connectionsTreeDock = 0;
     showConnections();
 
     m_btndlg = new MainWindowButtonDialog();
@@ -1491,7 +1433,7 @@ void MainWindow::onDeleteDatatypeFromPopup()
 
 void MainWindow::onInjectBrowsedTable()
 {
-    if(m_connectionsTree->getLastRightclickedItem() == 0)
+    if(m_connectionGuiElements->getConnectionsTree()->getLastRightclickedItem() == 0)
     {
         return;
     }
@@ -1504,7 +1446,7 @@ void MainWindow::onInjectBrowsedTable()
         }
     }
 
-    QVariant v = m_connectionsTree->getLastRightclickedItem()->data(0, Qt::UserRole);
+    QVariant v = m_connectionGuiElements->getConnectionsTree()->getLastRightclickedItem()->data(0, Qt::UserRole);
     if(v.isValid())
     {
         QString s = v.toString();
@@ -1531,14 +1473,14 @@ void MainWindow::onInjectBrowsedTable()
 
 void MainWindow::onBrowseBrowsedTable()
 {
-    if(m_connectionsTree->getLastRightclickedItem() == 0)
+    if(m_connectionGuiElements->getConnectionsTree()->getLastRightclickedItem() == 0)
     {
         return;
     }
 
-    m_connectionsTree->clearSelection();
-    m_connectionsTree->getLastRightclickedItem()->setSelected(true);
-    onConnectionItemDoubleClicked(m_connectionsTree->getLastRightclickedItem(), 0);
+    m_connectionGuiElements->getConnectionsTree()->clearSelection();
+    m_connectionGuiElements->getConnectionsTree()->getLastRightclickedItem()->setSelected(true);
+    onConnectionItemDoubleClicked(m_connectionGuiElements->getConnectionsTree()->getLastRightclickedItem(), 0);
 }
 
 
@@ -1669,7 +1611,7 @@ void MainWindow::onConnectionItemDoubleClicked(QTreeWidgetItem* item,int)
 void MainWindow::createConnectionTreeEntryForViews(Connection *c)
 {
     ContextMenuEnabledTreeWidgetItem* connViewsItem = new ContextMenuEnabledTreeWidgetItem(c->getLocation(), QStringList(tr("Views")));
-    m_connectionsTree->addTopLevelItem(connViewsItem);
+    m_connectionGuiElements->getConnectionsTree()->addTopLevelItem(connViewsItem);
     connViewsItem->setIcon(0, IconFactory::getViewsIcon());
 
     // Now do the browsing
@@ -1681,7 +1623,7 @@ void MainWindow::createConnectionTreeEntryForViews(Connection *c)
         newViewItem->setData(0, Qt::UserRole, var);
         //newViewItem->setPopupMenu(ContextMenuCollection::getInstance()->getTableFromBrowsePopupMenu());
         newViewItem->setIcon(0, IconFactory::getViewIcon());
-        m_connectionsTree->addTopLevelItem(newViewItem);
+        m_connectionGuiElements->getConnectionsTree()->addTopLevelItem(newViewItem);
     }
 
     // TODO: now come up with a mechanism that feeds continuously the reverse engineered tables into an object that feeds it in somewhere which
@@ -1692,7 +1634,7 @@ void MainWindow::createConnectionTreeEntryForViews(Connection *c)
 void MainWindow::createConnectionTreeEntryForTables(Connection *c)
 {
     ContextMenuEnabledTreeWidgetItem* connTablesItem = new ContextMenuEnabledTreeWidgetItem(c->getLocation(), QStringList(tr("Tables")));
-    m_connectionsTree->addTopLevelItem(connTablesItem);
+    m_connectionGuiElements->getConnectionsTree()->addTopLevelItem(connTablesItem);
     connTablesItem->setIcon(0, IconFactory::getTabinstIcon());
 
     // Now do the browsing
@@ -1704,7 +1646,7 @@ void MainWindow::createConnectionTreeEntryForTables(Connection *c)
         newTblsItem->setData(0, Qt::UserRole, var);
         newTblsItem->setPopupMenu(ContextMenuCollection::getInstance()->getTableFromBrowsePopupMenu());
         newTblsItem->setIcon(0, IconFactory::getTabinstIcon());
-        m_connectionsTree->addTopLevelItem(newTblsItem);
+        m_connectionGuiElements->getConnectionsTree()->addTopLevelItem(newTblsItem);
         c->addTable(dbTables.at(i));
     }
 
@@ -2000,16 +1942,7 @@ void MainWindow::onViewProjectTree()
 
 void MainWindow::onViewConnectionsTree()
 {
-    if(m_connectionsTreeDock)
-    {
-        bool t = m_connectionsTreeDock->isVisible() ;
-        m_ui->action_ConnectionsTree->setChecked(!t);
-        m_connectionsTreeDock->setVisible(!t);
-    }
-    else
-    {
-        showConnections();
-    }
+    showConnections();
 }
 
 void MainWindow::onViewDatatypesTree()
