@@ -3,7 +3,6 @@
 
 #include "IconFactory.h"
 #include "Codepage.h"
-#include "db_AbstractCodepageSupplier.h"
 #include "db_DatabaseEngine.h"
 #include "SimpleTextInputDialog.h"
 #include "dbmysql_MySQLDatabaseEngine.h"
@@ -169,7 +168,7 @@ void InjectSqlDialog::populateConnections()
 
 void InjectSqlDialog::populateCodepageCombo()
 {
-    QVector<Codepage*> cps = m_dbEngine->getCodepageSupplier()->getCodepages();
+    const QVector<Codepage*> &cps = m_dbEngine->getCodepages();
     QListWidget* lw = new QListWidget(this);
     for(int i=0; i<cps.size(); i++)
     {

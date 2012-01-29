@@ -6,7 +6,6 @@
 #include <QSqlDatabase>
 
 class AbstractDTSupplier;
-class AbstractCodepageSupplier;
 class AbstractStorageEngineListProvider;
 class AbstractSqlGenerator;
 class Version;
@@ -41,12 +40,6 @@ public:
      * @return the data supplier of this database engine
      */
     AbstractDTSupplier* getDTSupplier() const;
-
-    /**
-     * Returns the Codepage supplier of the engine
-     * @return the code page supplier of this database engine
-     */
-    AbstractCodepageSupplier* getCodepageSupplier() const;
 
     /**
      * If the database supports storage engines, such as InnoDB for
@@ -266,9 +259,6 @@ private:
 
     // the list of data type suppliers supported
     static QMap<QString, AbstractDTSupplier*> dtsuppliers;
-
-    // map of the Codepage suppliers supported
-    static QMap<QString, AbstractCodepageSupplier*> cpsuppliers;
 
     static QMap<QString, AbstractStorageEngineListProvider*> storageEngineProviders;
 

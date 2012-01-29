@@ -22,7 +22,6 @@
 #include "ContextMenuCollection.h"
 #include "ClipboardFactory.h"
 #include "Codepage.h"
-#include "db_AbstractCodepageSupplier.h"
 #include "db_AbstractDTSupplier.h"
 #include "IssueManager.h"
 #include "VersionGuiElements.h"
@@ -191,7 +190,7 @@ void NewTableForm::resetForeignTablesCombo()
 
 void NewTableForm::populateCodepageCombo()
 {
-    QVector<Codepage*> cps = m_dbEngine->getCodepageSupplier()->getCodepages();
+    const QVector<Codepage*> &cps = m_dbEngine->getCodepages();
     QListWidget* lw = new QListWidget(this);
     for(int i=0; i<cps.size(); i++)
     {

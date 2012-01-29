@@ -1,13 +1,10 @@
 #include "db_DatabaseEngine.h"
-#include "db_AbstractCodepageSupplier.h"
 #include "dbmysql_MySQLDTSupplier.h"
-#include "dbmysql_MySQLCodepageSupplier.h"
 #include "dbmysql_MySQLDatabaseEngine.h"
 #include "dbmysql_MySQLStorageEngineListProvider.h"
 #include "dbmysql_MySQLSQLGenerator.h"
 
 QMap<QString, AbstractDTSupplier*> DatabaseEngine::dtsuppliers;
-QMap<QString, AbstractCodepageSupplier*> DatabaseEngine::cpsuppliers;
 QMap<QString, AbstractStorageEngineListProvider*> DatabaseEngine::storageEngineProviders;
 QMap<QString, AbstractSqlGenerator*> DatabaseEngine::sqlGenerators;
 
@@ -20,7 +17,6 @@ DatabaseEngine::DatabaseEngine(const QString& db):database(db)
         genericInit = true;
         // initialize the DT suppliers
         dtsuppliers.insert(db, new MySQLDTSupplier());
-        cpsuppliers.insert(db, new MySQLCodepageSupplier());
         storageEngineProviders.insert(db, new MySQLStorageEngineListProvider());
         sqlGenerators.insert(db, new MySQLSQLGenerator());
     }
@@ -34,12 +30,6 @@ AbstractDTSupplier* DatabaseEngine::getDTSupplier() const
 {
     return dtsuppliers.contains(database)?dtsuppliers[database]:0;
 }
-
-AbstractCodepageSupplier* DatabaseEngine::getCodepageSupplier() const
-{
-    return cpsuppliers.contains(database)?cpsuppliers[database]:0;
-}
-
 
 AbstractStorageEngineListProvider* DatabaseEngine::getStorageEngineListProviders() const
 {

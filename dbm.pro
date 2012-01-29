@@ -104,7 +104,6 @@ SOURCES += main.cpp \
     qbr_QueryTextInputItem.cpp \
     qbr_TableQueryComponent.cpp \
     qbr_TableGraphicsItem.cpp \
-    dbmysql_MySQLCodepageSupplier.cpp \
     dbmysql_MySQLDatabaseEngine.cpp \
     dbmysql_MySQLDTSupplier.cpp \
     dbmysql_MySQLSQLGenerator.cpp \
@@ -248,7 +247,6 @@ HEADERS += MainWindow.h \
     qbr_TableQueryComponent.h \
     qbr_TableGraphicsItem.h \
     dbmysql_MySQLArchiveStorageEngine.h \
-    dbmysql_MySQLCodepageSupplier.h \
     dbmysql_MySQLDTSupplier.h \
     dbmysql_MySQLInnoDBStorageEngine.h \
     dbmysql_MySQLMemoryStorageEngine.h \
@@ -256,7 +254,6 @@ HEADERS += MainWindow.h \
     dbmysql_MySQLSQLGenerator.h \
     dbmysql_MySQLStorageEngineListProvider.h \
     dbmysql_MySQLDatabaseEngine.h \
-    db_AbstractCodepageSupplier.h \
     db_AbstractDTSupplier.h \
     db_AbstractIndextypeProvider.h \
     db_AbstractSQLGenerator.h \
