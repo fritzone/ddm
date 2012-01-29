@@ -4,7 +4,6 @@
 #include "db_DatabaseEngine.h"
 #include "DataType.h"
 #include "db_AbstractDTSupplier.h"
-#include "db_AbstractCodepageSupplier.h"
 #include "Codepage.h"
 #include "UserDataType.h"
 #include "strings.h"
@@ -166,7 +165,7 @@ void NewDataTypeForm::onSave()
         m_ui->tabWidget->setCurrentIndex(1);
         return;
     }
-    QString cp = m_ui->cmbCharacterSets->currentIndex() > 0 ? m_dbEngine->getCodepageSupplier()->getCodepages()[m_ui->cmbCharacterSets->currentIndex()]->getName() : "";
+    QString cp = m_ui->cmbCharacterSets->currentIndex() > 0 ? m_dbEngine->getCodepages()[m_ui->cmbCharacterSets->currentIndex()]->getName() : "";
     QStringList mv;
     for(int i=0; i<m_ui->lstEnumValues->count(); i++)
     {
@@ -251,7 +250,7 @@ void NewDataTypeForm::onSqlTypeSelected(QString selectedItem)
 
 void NewDataTypeForm::onCharacterSetCmbChanged(int i)
 {
-    QVector<Codepage*> cps = m_dbEngine->getCodepageSupplier()->getCodepages();
+    const QVector<Codepage*> &cps = m_dbEngine->getCodepages();
     if(cps[i]->getName()[0] == '-')
     {
         m_ui->cmbCharacterSets->setCurrentIndex(i + 1);
@@ -319,7 +318,7 @@ void NewDataTypeForm::setDataType(UserDataType* udt)
     m_ui->txtDefaultValue->setText(udt->getDefaultValue());
 
     // find the codepage
-    QVector<Codepage*> cps = m_dbEngine->getCodepageSupplier()->getCodepages();
+    QVector<Codepage*> cps = m_dbEngine->getCodepages();
     int idx = -1;
     for(int i=0; i< cps.size(); i++)
     {
