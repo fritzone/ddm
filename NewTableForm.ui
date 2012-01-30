@@ -21,12 +21,18 @@
    <string>Form</string>
   </property>
   <layout class="QHBoxLayout" name="horizontalLayout_14">
+   <property name="margin">
+    <number>0</number>
+   </property>
    <item>
     <widget class="QGroupBox" name="groupBox_5">
      <property name="title">
       <string/>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout">
+      <property name="margin">
+       <number>0</number>
+      </property>
       <item>
        <layout class="QFormLayout" name="formLayout_4">
         <property name="fieldGrowthPolicy">
@@ -60,7 +66,7 @@
          <enum>QTabWidget::Rounded</enum>
         </property>
         <property name="currentIndex">
-         <number>5</number>
+         <number>0</number>
         </property>
         <widget class="QWidget" name="tabWidgetPage1">
          <attribute name="icon">
@@ -1334,22 +1340,6 @@ p, li { white-space: pre-wrap; }
  </resources>
  <connections>
   <connection>
-   <sender>btnUp</sender>
-   <signal>clicked()</signal>
-   <receiver>NewTableForm</receiver>
-   <slot>onMoveColumnUp()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>481</x>
-     <y>174</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>243</x>
-     <y>386</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
    <sender>btnDown</sender>
    <signal>clicked()</signal>
    <receiver>NewTableForm</receiver>
@@ -1358,6 +1348,22 @@ p, li { white-space: pre-wrap; }
     <hint type="sourcelabel">
      <x>481</x>
      <y>248</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>243</x>
+     <y>386</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnUp</sender>
+   <signal>clicked()</signal>
+   <receiver>NewTableForm</receiver>
+   <slot>onMoveColumnUp()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>481</x>
+     <y>174</y>
     </hint>
     <hint type="destinationlabel">
      <x>243</x>
@@ -1414,14 +1420,14 @@ p, li { white-space: pre-wrap; }
    </hints>
   </connection>
   <connection>
-   <sender>btnMoveColumnToLeft</sender>
+   <sender>btnAddIndex</sender>
    <signal>clicked()</signal>
    <receiver>NewTableForm</receiver>
-   <slot>onMoveColumnToLeft()</slot>
+   <slot>onAddIndex()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>282</x>
-     <y>532</y>
+     <x>482</x>
+     <y>698</y>
     </hint>
     <hint type="destinationlabel">
      <x>243</x>
@@ -1446,14 +1452,30 @@ p, li { white-space: pre-wrap; }
    </hints>
   </connection>
   <connection>
-   <sender>btnAddIndex</sender>
+   <sender>btnMoveColumnToLeft</sender>
    <signal>clicked()</signal>
    <receiver>NewTableForm</receiver>
-   <slot>onAddIndex()</slot>
+   <slot>onMoveColumnToLeft()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>482</x>
-     <y>698</y>
+     <x>282</x>
+     <y>532</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>243</x>
+     <y>386</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnRemoveIndex</sender>
+   <signal>clicked()</signal>
+   <receiver>NewTableForm</receiver>
+   <slot>onBtnRemoveIndex()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>483</x>
+     <y>255</y>
     </hint>
     <hint type="destinationlabel">
      <x>243</x>
@@ -1486,22 +1508,6 @@ p, li { white-space: pre-wrap; }
     <hint type="sourcelabel">
      <x>448</x>
      <y>698</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>243</x>
-     <y>386</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>btnRemoveIndex</sender>
-   <signal>clicked()</signal>
-   <receiver>NewTableForm</receiver>
-   <slot>onBtnRemoveIndex()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>483</x>
-     <y>255</y>
     </hint>
     <hint type="destinationlabel">
      <x>243</x>
@@ -1558,6 +1564,22 @@ p, li { white-space: pre-wrap; }
    </hints>
   </connection>
   <connection>
+   <sender>btnAddForeignKey</sender>
+   <signal>clicked()</signal>
+   <receiver>NewTableForm</receiver>
+   <slot>onBtnAddForeignKey()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>468</x>
+     <y>661</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>260</x>
+     <y>386</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
    <sender>lstForeignTablesColumns</sender>
    <signal>itemSelectionChanged()</signal>
    <receiver>NewTableForm</receiver>
@@ -1590,22 +1612,6 @@ p, li { white-space: pre-wrap; }
    </hints>
   </connection>
   <connection>
-   <sender>lstForeignKeyAssociations</sender>
-   <signal>itemClicked(QTreeWidgetItem*,int)</signal>
-   <receiver>NewTableForm</receiver>
-   <slot>onSelectAssociation(QTreeWidgetItem*,int)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>276</x>
-     <y>560</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>243</x>
-     <y>386</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
    <sender>btnRemoveAssociation</sender>
    <signal>clicked()</signal>
    <receiver>NewTableForm</receiver>
@@ -1622,14 +1628,14 @@ p, li { white-space: pre-wrap; }
    </hints>
   </connection>
   <connection>
-   <sender>btnAddForeignKey</sender>
+   <sender>btnAddNewDefaultRow</sender>
    <signal>clicked()</signal>
    <receiver>NewTableForm</receiver>
-   <slot>onBtnAddForeignKey()</slot>
+   <slot>onAddNewDefaultRow()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>468</x>
-     <y>661</y>
+     <x>174</x>
+     <y>697</y>
     </hint>
     <hint type="destinationlabel">
      <x>260</x>
@@ -1654,14 +1660,46 @@ p, li { white-space: pre-wrap; }
    </hints>
   </connection>
   <connection>
-   <sender>btnAddNewDefaultRow</sender>
-   <signal>clicked()</signal>
+   <sender>lstForeignKeyAssociations</sender>
+   <signal>itemClicked(QTreeWidgetItem*,int)</signal>
    <receiver>NewTableForm</receiver>
-   <slot>onAddNewDefaultRow()</slot>
+   <slot>onSelectAssociation(QTreeWidgetItem*,int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>174</x>
-     <y>697</y>
+     <x>276</x>
+     <y>560</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>243</x>
+     <y>386</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>cmbStorageEngine</sender>
+   <signal>activated(QString)</signal>
+   <receiver>NewTableForm</receiver>
+   <slot>onStorageEngineChange(QString)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>309</x>
+     <y>53</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>260</x>
+     <y>386</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnSaveStartupValues</sender>
+   <signal>clicked()</signal>
+   <receiver>NewTableForm</receiver>
+   <slot>onSaveStartupValuestoCSV()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>108</x>
+     <y>97</y>
     </hint>
     <hint type="destinationlabel">
      <x>260</x>
@@ -1702,17 +1740,17 @@ p, li { white-space: pre-wrap; }
    </hints>
   </connection>
   <connection>
-   <sender>btnSaveStartupValues</sender>
+   <sender>btnCancelForeignKeyEditing</sender>
    <signal>clicked()</signal>
    <receiver>NewTableForm</receiver>
-   <slot>onSaveStartupValuestoCSV()</slot>
+   <slot>onBtnCancelForeignKeyEditing()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>108</x>
-     <y>97</y>
+     <x>52</x>
+     <y>676</y>
     </hint>
     <hint type="destinationlabel">
-     <x>260</x>
+     <x>368</x>
      <y>386</y>
     </hint>
    </hints>
@@ -1734,38 +1772,6 @@ p, li { white-space: pre-wrap; }
    </hints>
   </connection>
   <connection>
-   <sender>cmbStorageEngine</sender>
-   <signal>activated(QString)</signal>
-   <receiver>NewTableForm</receiver>
-   <slot>onStorageEngineChange(QString)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>309</x>
-     <y>53</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>260</x>
-     <y>386</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>btnCancelForeignKeyEditing</sender>
-   <signal>clicked()</signal>
-   <receiver>NewTableForm</receiver>
-   <slot>onBtnCancelForeignKeyEditing()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>52</x>
-     <y>676</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>368</x>
-     <y>386</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
    <sender>btnRemoveForeignKey</sender>
    <signal>clicked()</signal>
    <receiver>NewTableForm</receiver>
@@ -1774,22 +1780,6 @@ p, li { white-space: pre-wrap; }
     <hint type="sourcelabel">
      <x>693</x>
      <y>209</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>368</x>
-     <y>386</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>chkPersistent</sender>
-   <signal>stateChanged(int)</signal>
-   <receiver>NewTableForm</receiver>
-   <slot>onPersistentChange(int)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>80</x>
-     <y>160</y>
     </hint>
     <hint type="destinationlabel">
      <x>368</x>
@@ -1814,17 +1804,17 @@ p, li { white-space: pre-wrap; }
    </hints>
   </connection>
   <connection>
-   <sender>btnDeleteDefaultRow</sender>
-   <signal>clicked()</signal>
+   <sender>chkPersistent</sender>
+   <signal>stateChanged(int)</signal>
    <receiver>NewTableForm</receiver>
-   <slot>onDeleteDefaultRow()</slot>
+   <slot>onPersistentChange(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>69</x>
-     <y>703</y>
+     <x>80</x>
+     <y>160</y>
     </hint>
     <hint type="destinationlabel">
-     <x>450</x>
+     <x>368</x>
      <y>386</y>
     </hint>
    </hints>
@@ -1846,22 +1836,6 @@ p, li { white-space: pre-wrap; }
    </hints>
   </connection>
   <connection>
-   <sender>txtDescription</sender>
-   <signal>textChanged()</signal>
-   <receiver>NewTableForm</receiver>
-   <slot>onChangeDescription()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>422</x>
-     <y>233</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>628</x>
-     <y>366</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
    <sender>txtTableName</sender>
    <signal>textChanged(QString)</signal>
    <receiver>NewTableForm</receiver>
@@ -1870,6 +1844,38 @@ p, li { white-space: pre-wrap; }
     <hint type="sourcelabel">
      <x>434</x>
      <y>47</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>628</x>
+     <y>366</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnDeleteDefaultRow</sender>
+   <signal>clicked()</signal>
+   <receiver>NewTableForm</receiver>
+   <slot>onDeleteDefaultRow()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>69</x>
+     <y>703</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>450</x>
+     <y>386</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>txtDescription</sender>
+   <signal>textChanged()</signal>
+   <receiver>NewTableForm</receiver>
+   <slot>onChangeDescription()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>422</x>
+     <y>233</y>
     </hint>
     <hint type="destinationlabel">
      <x>628</x>
@@ -1910,22 +1916,6 @@ p, li { white-space: pre-wrap; }
    </hints>
   </connection>
   <connection>
-   <sender>cmbNewColumnType</sender>
-   <signal>currentIndexChanged(QString)</signal>
-   <receiver>NewTableForm</receiver>
-   <slot>onDatatypeComboChange(QString)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>691</x>
-     <y>378</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>628</x>
-     <y>366</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
    <sender>chkPrimary</sender>
    <signal>clicked(bool)</signal>
    <receiver>NewTableForm</receiver>
@@ -1934,22 +1924,6 @@ p, li { white-space: pre-wrap; }
     <hint type="sourcelabel">
      <x>106</x>
      <y>408</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>628</x>
-     <y>366</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>txtNewIndexName</sender>
-   <signal>textChanged(QString)</signal>
-   <receiver>NewTableForm</receiver>
-   <slot>onIndexNameChange(QString)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>594</x>
-     <y>391</y>
     </hint>
     <hint type="destinationlabel">
      <x>628</x>
@@ -1974,6 +1948,22 @@ p, li { white-space: pre-wrap; }
    </hints>
   </connection>
   <connection>
+   <sender>cmbNewColumnType</sender>
+   <signal>currentIndexChanged(QString)</signal>
+   <receiver>NewTableForm</receiver>
+   <slot>onDatatypeComboChange(QString)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>691</x>
+     <y>378</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>628</x>
+     <y>366</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
    <sender>btnInject</sender>
    <signal>clicked()</signal>
    <receiver>NewTableForm</receiver>
@@ -1990,14 +1980,14 @@ p, li { white-space: pre-wrap; }
    </hints>
   </connection>
   <connection>
-   <sender>btnSaveSql</sender>
-   <signal>clicked()</signal>
+   <sender>txtNewIndexName</sender>
+   <signal>textChanged(QString)</signal>
    <receiver>NewTableForm</receiver>
-   <slot>onSaveSql()</slot>
+   <slot>onIndexNameChange(QString)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>49</x>
-     <y>154</y>
+     <x>594</x>
+     <y>391</y>
     </hint>
     <hint type="destinationlabel">
      <x>628</x>
@@ -2013,6 +2003,22 @@ p, li { white-space: pre-wrap; }
    <hints>
     <hint type="sourcelabel">
      <x>128</x>
+     <y>154</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>628</x>
+     <y>366</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnSaveSql</sender>
+   <signal>clicked()</signal>
+   <receiver>NewTableForm</receiver>
+   <slot>onSaveSql()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>49</x>
      <y>154</y>
     </hint>
     <hint type="destinationlabel">

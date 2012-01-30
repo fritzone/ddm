@@ -2,6 +2,8 @@
 #include "Workspace.h"
 #include "Version.h"
 #include "NameGenerator.h"
+#include "db_AbstractSQLGenerator.h"
+#include "Configuration.h"
 
 Procedure::Procedure() : SqlSourceEntity(), NamedItem(NameGenerator::getUniqueName(Workspace::getInstance()->workingVersion(), (itemGetter)&Version::getProcedure, QString("proc")))
 {
@@ -12,10 +14,11 @@ Procedure::Procedure(const QString &pname) : SqlSourceEntity(), NamedItem(pname)
 
 }
 
-QStringList Procedure::generateSqlSource(AbstractSqlGenerator *, QHash<QString, QString>, const QString &/*codepage*/)
+QStringList Procedure::generateSqlSource(AbstractSqlGenerator * gen, QHash<QString, QString> /*opts*/, const QString& /*codepage*/)
 {
+
     QStringList r;
-    r.append(m_sql);
+    r.append(gen->generateCreateProcedureSql(this, Configuration::instance().sqlOpts()));
     return r;
 }
 

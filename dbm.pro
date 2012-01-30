@@ -71,10 +71,6 @@ SOURCES += main.cpp \
     MainWindow.cpp \
     NewDataTypeForm.cpp \
     NewProjectDialog.cpp \
-    dbmysql_MySQLDatabaseEngine.cpp \
-    dbmysql_MySQLDTSupplier.cpp \
-    dbmysql_MySQLSQLGenerator.cpp \
-    dbmysql_MySQLStorageEngineListProvider.cpp \
     db_DatabaseEngine.cpp \
     db_DatabaseNormalizationIssue.cpp \
     core_View.cpp \
@@ -99,7 +95,8 @@ SOURCES += main.cpp \
     TextEditWithCodeCompletion.cpp \
     ListWidgetForCodeCompletion.cpp \
     GuiElements.cpp \
-    ConnectionGuiElements.cpp
+    ConnectionGuiElements.cpp \
+    dbmysql/TriggerForm.cpp
 HEADERS += MainWindow.h \
     MainWindowButtonDialog.h \
     NewProjectDialog.h \
@@ -176,16 +173,7 @@ HEADERS += MainWindow.h \
     NewViewForm.h \
     utils.h \
     ColumnProviderForQuery.h \
-    dbmysql_MySQLArchiveStorageEngine.h \
-    dbmysql_MySQLDTSupplier.h \
-    dbmysql_MySQLInnoDBStorageEngine.h \
-    dbmysql_MySQLMemoryStorageEngine.h \
-    dbmysql_MySQLMyISAMStorageEngine.h \
-    dbmysql_MySQLSQLGenerator.h \
-    dbmysql_MySQLStorageEngineListProvider.h \
-    dbmysql_MySQLDatabaseEngine.h \
     db_AbstractDTSupplier.h \
-    db_AbstractIndextypeProvider.h \
     db_AbstractSQLGenerator.h \
     db_AbstractStorageEngine.h \
     db_AbstractStorageEngineListProvider.h \
@@ -217,7 +205,8 @@ HEADERS += MainWindow.h \
     ListWidgetForCodeCompletion.h \
     commons.h \
     GuiElements.h \
-    ConnectionGuiElements.h
+    ConnectionGuiElements.h \
+    dbmysql/TriggerForm.h
 FORMS += MainWindow.ui \
     MainWindowButtonDialog.ui \
     NewProjectDialog.ui \
@@ -247,9 +236,12 @@ FORMS += MainWindow.ui \
     DiagramsListForm.ui \
     ViewsListForm.ui \
     ProcedureForm.ui \
-    ProceduresListForm.ui
+    ProceduresListForm.ui \
+    dbmysql/TriggerForm.ui
 include (query_builder/query_builder.pri)
 INCLUDEPATH += query_builder
+include (dbmysql/dbmysql.pri)
+INCLUDEPATH += dbmysql
 RESOURCES += dbm.qrc
 RC_FILE = dbm.rc
 installfiles_base.files += ddm codepages/codepages.mysql.dat
@@ -261,6 +253,10 @@ INSTALLS += installfiles_doc
 installfiles_rs.files += rsrc/mysql.defaults
 installfiles_rs.path =  /home/ferenc/rpmbuild/BUILDROOT/usr/local/ddm/rsrc
 INSTALLS += installfiles_rs
+
+
+
+
 
 
 

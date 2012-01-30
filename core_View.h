@@ -62,6 +62,16 @@ public:
 
     virtual void serialize(QDomDocument& doc, QDomElement& parent) const;
 
+    QString getManualSql() const
+    {
+        return m_sql;
+    }
+
+    QStringList getColumnNames() const
+    {
+        return m_columNames;
+    }
+
 private:
     SelectQuery* m_selectQuery;
     QueryGraphicsHelper* m_helper;

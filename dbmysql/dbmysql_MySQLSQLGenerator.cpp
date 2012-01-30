@@ -6,6 +6,9 @@
 #include "Index.h"
 #include "ForeignKey.h"
 #include "TableInstance.h"
+#include "core_View.h"
+#include "qbr_SelectQuery.h"
+#include "core_Procedure.h"
 
 QStringList MySQLSQLGenerator::generateCreateTableSql(Table *table, const QHash<QString, QString> &options, const QString& tabName, const QString& codepage) const
 {
@@ -63,8 +66,20 @@ QStringList MySQLSQLGenerator::generateCreateTableSql(Table *table, const QHash<
 
     if(comments)
     {
-        QString comment = "-- ";
-        comment += (table->getDescription().length()>0?table->getDescription():" Create table " + tabName) + "\n";
+        QString comment;
+        QString desc = table->getDescription();
+        QStringList lines = desc.split("\n");
+        if(lines.size())
+        {
+            for(int i=0; i< lines.size(); i++)
+            {
+                comment += QString("-- ") +  lines.at(i) + strNewline;
+            }
+        }
+        else
+        {
+            comment = QString("-- ") +  (desc.length()>0?desc:" Create table " + tabName) + "\n";
+        }
         toReturn << comment;
     }
     QString createTable = upcase? "CREATE " : "create ";
@@ -450,4 +465,72 @@ QStringList MySQLSQLGenerator::generateDefaultValuesSql(Table* table, const QHas
 
     }
     return result;
+}
+
+QStringList MySQLSQLGenerator::generateCreateViewSql(View *v, const QHash<QString, QString> &options) const
+{
+    if(v->getManual())
+    {
+        QStringList res;
+        res.append(v->getManualSql());
+        return res;
+    }
+    else
+    {
+        QStringList res;
+        bool upcase = options.contains("Case") && options["Case"] == "Upper";
+        res.append(upcase?"CREATE ":"create ");
+        if(v->getReplace())
+        {
+            res.append(upcase?"OR REPLACE ":"or replace ");
+        }
+        res.append(QString(upcase?"VIEW ":"view ") + v->getName());
+        if(v->getColumnNames().size() > 0)
+        {
+            res.append(" (");
+            QString c = "";
+            for(int i=0; i<v->getColumnNames().size(); i++)
+            {
+                c += v->getColumnNames().at(i);
+                if(i<v->getColumnNames().size() - 1) c += ", ";
+            }
+            res.append(c);
+            res.append(")");
+        }
+        res.append("\n");
+        res.append(upcase?"AS\n":"as\n");
+        res.append(v->getQuery()->get());
+        QString g;
+        for(int i=0; i< res.size(); i++)
+        {
+            g += res.at(i) + " ";
+        }
+        res.clear();
+        res.append(g);
+        return res;
+    }
+}
+
+QStringList MySQLSQLGenerator::generateAlterTableForForeignKeys(Table *t, const QHash<QString, QString> &options) const
+{
+    QStringList finalSql;
+    bool upcase = options.contains("Case") && options["Case"] == "Upper";
+    for(int j=0; j<t->getForeignKeyCommands().size(); j++)
+    {
+        QString f = upcase?"ALTER TABLE ":"alter table ";
+        f += t->getName();
+        f += upcase?" ADD ":" add ";
+        f += t->getForeignKeyCommands().at(j);
+        f += strSemicolon + strNewline;
+
+        finalSql << f;
+    }
+    return finalSql;
+}
+
+QStringList MySQLSQLGenerator::generateCreateProcedureSql(Procedure *p, const QHash<QString, QString>& /*options*/) const
+{
+    QStringList t;
+    t.append(p->getSql());
+    return t;
 }

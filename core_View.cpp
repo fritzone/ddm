@@ -4,6 +4,7 @@
 #include "Workspace.h"
 #include "Version.h"
 #include "NameGenerator.h"
+#include "db_AbstractSQLGenerator.h"
 
 View::View(bool manual) : SqlSourceEntity(), NamedItem(NameGenerator::getUniqueName(Workspace::getInstance()->workingVersion(), (itemGetter)&Version::getView, QString("v"))),
                 m_columNames(), m_canReplace(false), m_manual(manual)
@@ -25,47 +26,10 @@ void View::finalizeViewDeserialization()
     QueryAsGenerator::instance().initNewQuery(m_selectQuery);
 }
 
-QStringList View::generateSqlSource(AbstractSqlGenerator *, QHash<QString, QString>, const QString &/*codepage*/)
+QStringList View::generateSqlSource(AbstractSqlGenerator * gen, QHash<QString, QString> opts, const QString& /*codepage*/)
 {
-    if(m_manual)
-    {
-        QStringList res;
-        res.append(m_sql);
-        return res;
-    }
-    else
-    {
-        QStringList res;
-        res.append("CREATE ");
-        if(m_canReplace)
-        {
-            res.append("OR REPLACE ");
-        }
-        res.append(QString("VIEW ") + getName());
-        if(m_columNames.size() > 0)
-        {
-            res.append(" (");
-            QString c = "";
-            for(int i=0; i<m_columNames.size(); i++)
-            {
-                c += m_columNames.at(i);
-                if(i<m_columNames.size() - 1) c += ", ";
-            }
-            res.append(c);
-            res.append(")");
-        }
-        res.append("\n");
-        res.append("AS\n");
-        res.append(m_selectQuery->get());
-        QString g;
-        for(int i=0; i< res.size(); i++)
-        {
-            g += res.at(i) + " ";
-        }
-        res.clear();
-        res.append(g);
-        return res;
-    }
+    QStringList createSql = gen->generateCreateViewSql(this, opts);
+    return createSql;
 }
 
 void View::serialize(QDomDocument& doc, QDomElement& parent) const
