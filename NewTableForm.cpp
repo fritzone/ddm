@@ -10,7 +10,6 @@
 #include "Index.h"
 #include "Table.h"
 #include "MainWindow.h"
-#include "db_AbstractIndextypeProvider.h"
 #include "db_AbstractStorageEngineListProvider.h"
 #include "ForeignKey.h"
 #include "StartupValuesHelper.h"
@@ -64,7 +63,8 @@ NewTableForm::NewTableForm(DatabaseEngine* db, Project* prj, QWidget *parent, bo
     ContextMenuHandler* contextMenuHandler = new ContextMenuHandler();
     lstColumns->setItemDelegate(new ContextMenuDelegate(contextMenuHandler,lstColumns));
     // then connect the signals
-    QObject::connect(lstColumns, SIGNAL(itemClicked(QTreeWidgetItem*,int)), this, SLOT(onItemSelected(QTreeWidgetItem*,int)));
+    QObject::connect(lstColumns, SIGNAL(itemClicked(QTreeWidgetItem*,int)), this, SLOT(onSelectColumn(QTreeWidgetItem*,int)));
+    QObject::connect(lstColumns, SIGNAL(currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)), this, SLOT(onChangeColumnSelection(QTreeWidgetItem*,QTreeWidgetItem*)));
     QObject::connect(ContextMenuCollection::getInstance()->getAction_CopyColumn(), SIGNAL(activated()), this, SLOT(onCopyColumn()));
     QObject::connect(ContextMenuCollection::getInstance()->getAction_PasteColumn(), SIGNAL(activated()), this, SLOT(onPasteColumn()));
 
@@ -888,10 +888,15 @@ void NewTableForm::showColumn(const Column * c)
 
 }
 
+void NewTableForm::onChangeColumnSelection(QTreeWidgetItem * c, QTreeWidgetItem *)
+{
+    onSelectColumn(c, 0);
+}
+
 /**
  * Called when a column is selected. onColumnSelect onSelectColumn
  */
-void NewTableForm::onItemSelected(QTreeWidgetItem* current, int)
+void NewTableForm::onSelectColumn(QTreeWidgetItem* current, int)
 {
     QModelIndex x = lstColumns->currentIndex();
     m_currentColumn = m_table->getColumn(current->text(1));

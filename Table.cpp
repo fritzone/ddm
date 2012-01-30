@@ -10,7 +10,6 @@
 #include "db_AbstractSQLGenerator.h"
 #include "DraggableGraphicsItem.h"
 #include "IconFactory.h"
-#include "db_AbstractIndextypeProvider.h"
 #include "NameGenerator.h"
 #include "TableInstance.h"
 #include "Workspace.h"

@@ -74,7 +74,8 @@ public slots:
     void onMoveColumnDown();
     void onMoveColumnUp();
     void onCancelColumnEditing();
-    void onItemSelected(QTreeWidgetItem*, int);             // when a column gets selected... sorry for bad naming
+    void onSelectColumn(QTreeWidgetItem*, int);
+    void onChangeColumnSelection(QTreeWidgetItem*, QTreeWidgetItem*);
     void onCopyColumn();
     void onPasteColumn();
     void onDescriptionChange();

@@ -144,6 +144,7 @@
    <addaction name="action_NewDiagram"/>
    <addaction name="action_NewView"/>
    <addaction name="action_NewProcedure"/>
+   <addaction name="action_NewTrigger"/>
    <addaction name="separator"/>
    <addaction name="action_Validate"/>
    <addaction name="action_Deploy"/>
@@ -458,6 +459,15 @@
    </property>
    <property name="toolTip">
     <string>Create a deployment script</string>
+   </property>
+  </action>
+  <action name="action_NewTrigger">
+   <property name="icon">
+    <iconset resource="dbm.qrc">
+     <normaloff>:/images/actions/images/actions/trigger_new.png</normaloff>:/images/actions/images/actions/trigger_new.png</iconset>
+   </property>
+   <property name="text">
+    <string>New Trigger</string>
    </property>
   </action>
  </widget>

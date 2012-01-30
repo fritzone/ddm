@@ -17,6 +17,7 @@
 #include "IssueManager.h"
 #include "core_View.h"
 #include "core_Procedure.h"
+#include "db_AbstractSQLGenerator.h"
 
 #include <QtGui>
 
@@ -469,7 +470,6 @@ QList<QString> DefaultVersionImplementation::getSqlScript(const QString& codepag
 {
     QList<QString> finalSql;
     QHash<QString, QString> opts = Configuration::instance().sqlGenerationOptions();
-    bool upcase = opts.contains("Case") && opts["Case"] == "Upper";
     opts["FKSposition"] = "OnlyInternal";
     opts["PKSposition"] = "AfterColumnsDeclaration";
 
@@ -483,16 +483,8 @@ QList<QString> DefaultVersionImplementation::getSqlScript(const QString& codepag
 
         for(int i=0; i<getTableInstances().size(); i++)
         {
-            for(int j=0; j<getTableInstances().at(i)->table()->getForeignKeyCommands().size(); j++)
-            {
-                QString f = upcase?"ALTER TABLE ":"alter table ";
-                f += getTableInstances().at(i)->getName();
-                f += upcase?" ADD ":" add ";
-                f += getTableInstances().at(i)->table()->getForeignKeyCommands().at(j);
-                f += ";\n";
-
-                finalSql << f;
-            }
+            QStringList foreignKeyCommands = m_project->getEngine()->getSqlGenerator()->generateAlterTableForForeignKeys(getTableInstances().at(i)->table(), opts);
+            finalSql << foreignKeyCommands;
         }
     }
     else    // list table's SQL
@@ -505,16 +497,8 @@ QList<QString> DefaultVersionImplementation::getSqlScript(const QString& codepag
 
         for(int i=0; i<getTables().size(); i++)
         {
-            for(int j=0; j<getTables().at(i)->getForeignKeyCommands().size(); j++)
-            {
-                QString f = upcase?"ALTER TABLE ":"alter table ";
-                f += getTables().at(i)->getName();
-                f += upcase?" ADD ":" add ";
-                f += getTables().at(i)->getForeignKeyCommands().at(j);
-                f += ";\n";
-
-                finalSql << f;
-            }
+            QStringList foreignKeyCommands = m_project->getEngine()->getSqlGenerator()->generateAlterTableForForeignKeys(getTables().at(i), opts);
+            finalSql << foreignKeyCommands;
         }
     }
 
