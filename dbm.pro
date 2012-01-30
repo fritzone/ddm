@@ -96,7 +96,7 @@ SOURCES += main.cpp \
     ListWidgetForCodeCompletion.cpp \
     GuiElements.cpp \
     ConnectionGuiElements.cpp \
-    dbmysql/TriggerForm.cpp
+    TriggerForm.cpp
 HEADERS += MainWindow.h \
     MainWindowButtonDialog.h \
     NewProjectDialog.h \
@@ -206,7 +206,7 @@ HEADERS += MainWindow.h \
     commons.h \
     GuiElements.h \
     ConnectionGuiElements.h \
-    dbmysql/TriggerForm.h
+    TriggerForm.h
 FORMS += MainWindow.ui \
     MainWindowButtonDialog.ui \
     NewProjectDialog.ui \
@@ -237,7 +237,7 @@ FORMS += MainWindow.ui \
     ViewsListForm.ui \
     ProcedureForm.ui \
     ProceduresListForm.ui \
-    dbmysql/TriggerForm.ui
+    TriggerForm.ui
 include (query_builder/query_builder.pri)
 INCLUDEPATH += query_builder
 include (dbmysql/dbmysql.pri)
