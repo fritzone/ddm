@@ -18,6 +18,7 @@
 #include "core_View.h"
 #include "core_Procedure.h"
 #include "db_AbstractSQLGenerator.h"
+#include "core_Trigger.h"
 
 #include <QtGui>
 
@@ -762,9 +763,21 @@ void DefaultVersionImplementation::addView(View* v)
     m_data.m_views.append(v);
 }
 
+Trigger* DefaultVersionImplementation::getTrigger(const QString &triggerName)
+{
+    for(int i=0; i< m_data.m_triggers.size(); i++)
+    {
+        if(m_data.m_triggers[i]->getName() == triggerName)
+        {
+            return m_data.m_triggers[i];
+        }
+    }
+    return 0;
+}
+
+
 Procedure* DefaultVersionImplementation::getProcedure(const QString &procedureName)
 {
-    qDebug() << procedureName;
     for(int i=0; i< m_data.m_procedures.size(); i++)
     {
         if(m_data.m_procedures[i]->getName() == procedureName)
@@ -778,6 +791,11 @@ Procedure* DefaultVersionImplementation::getProcedure(const QString &procedureNa
 void DefaultVersionImplementation::addProcedure(Procedure* p)
 {
     m_data.m_procedures.append(p);
+}
+
+void DefaultVersionImplementation::addTrigger(Trigger* t)
+{
+    m_data.m_triggers.append(t);
 }
 
 const QVector<Procedure*>& DefaultVersionImplementation::getProcedures()

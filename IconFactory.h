@@ -48,6 +48,12 @@ public:
         return icon;
     }
 
+    static const QIcon& getTableIcon()
+    {
+        static const QIcon icon(strTableIcon);
+        return icon;
+    }
+
     static const QIcon& getNotIcon()
     {
         static const QIcon icon(strNotIcon);
@@ -207,6 +213,18 @@ public:
     static const QIcon& getViewsIcon()
     {
         static const QIcon icon(strViewsIcon);
+        return icon;
+    }
+
+    static const QIcon& getTriggersIcon()
+    {
+        static const QIcon icon(strTriggersIcon);
+        return icon;
+    }
+
+    static const QIcon& getTriggerIcon()
+    {
+        static const QIcon icon(strTriggerIcon);
         return icon;
     }
 

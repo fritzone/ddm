@@ -22,6 +22,8 @@ class ViewsListForm;
 class ProcedureForm;
 class Procedure;
 class ProceduresListForm;
+class TriggerForm;
+class Trigger;
 
 /**
  * The scope of this class is to have a common collection point for the tree widget items of a version (DT, Sql, Table, etc...)
@@ -168,6 +170,7 @@ public:
     ContextMenuEnabledTreeWidgetItem* createTableTreeEntryForIssue(Table* tab);
     ContextMenuEnabledTreeWidgetItem* createViewTreeEntry(View* view);
     ContextMenuEnabledTreeWidgetItem* createProcedureTreeEntry(Procedure* proc);
+    ContextMenuEnabledTreeWidgetItem* createTriggerTreeEntry(Trigger* trg);
 
     void updateForms();
 
@@ -180,6 +183,7 @@ public:
     NewTableForm* getTableFormForExistingTable();
     ProcedureForm* getProcedureForm();
     ProceduresListForm* getProceduresListForm();
+    TriggerForm* getTriggerForm();
 
 private:
 
@@ -207,6 +211,8 @@ private:
     // the tree item containing the "DataType"
     ContextMenuEnabledTreeWidgetItem* viewsItem;
 
+    ContextMenuEnabledTreeWidgetItem* triggersItem;
+
     QTreeWidget* m_tree;
 
     QTreeWidget* m_dtTree;
@@ -233,6 +239,7 @@ private:
     NewTableForm* m_existingTableForm;
     ProcedureForm* m_procedureForm;
     ProceduresListForm* m_proceduresListForm;
+    TriggerForm* m_triggerForm;
 };
 
 #endif // VERSIONGUIELEMENTS_H

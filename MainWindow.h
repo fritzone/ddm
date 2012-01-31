@@ -140,6 +140,7 @@ public slots:
     void onNewView();
     void onNewViewWithSql();
     void onNewProcedure();
+    void onNewTrigger();
 
     void onReverseEngineerWizardNextPage(int);
     void onReverseEngineerWizardAccept();

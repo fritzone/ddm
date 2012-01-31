@@ -11,6 +11,7 @@ class TableInstance;
 class Issue;
 class View;
 class Procedure;
+class Trigger;
 
 /**
  * The role of this class is to group together the actual data belonging to a version (tables, instances, etc...)
@@ -19,7 +20,7 @@ class VersionData
 {
 public:
 
-    VersionData() : m_dataTypes(), m_tables(), m_diagrams(), m_tableInstances(), m_issues(), m_views(), m_procedures()
+    VersionData() : m_dataTypes(), m_tables(), m_diagrams(), m_tableInstances(), m_issues(), m_views(), m_procedures(), m_triggers()
     {}
 
 private:
@@ -45,6 +46,8 @@ private:
     QVector<View*> m_views;
 
     QVector<Procedure*> m_procedures;
+
+    QVector<Trigger*> m_triggers;
 };
 
 #endif // VERSIONDATA_H

@@ -6,6 +6,16 @@
 FrameForLineNumbers::FrameForLineNumbers(QWidget *parent) : QFrame(parent), m_nrs()
 {
     setUpdatesEnabled(true);
+
+    QSizePolicy sizePolicy(QSizePolicy::Fixed, QSizePolicy::Preferred);
+    sizePolicy.setHorizontalStretch(0);
+    sizePolicy.setVerticalStretch(0);
+    sizePolicy.setHeightForWidth(sizePolicy.hasHeightForWidth());
+    setSizePolicy(sizePolicy);
+    setMinimumSize(QSize(48, 0));
+    setMaximumSize(QSize(48, 16777215));
+    setFrameShape(QFrame::StyledPanel);
+    setFrameShadow(QFrame::Raised);
 }
 
 void FrameForLineNumbers::beginLineNumbers()
