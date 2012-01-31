@@ -162,6 +162,11 @@
         <file>images/small/database_dropped.png</file>
         <file>images/small/trigger.png</file>
         <file>images/actions/trigger_new.png</file>
+        <file>images/small/after.png</file>
+        <file>images/small/before.png</file>
+        <file>images/small/trigger_update.png</file>
+        <file>images/small/delete_table_row.png</file>
+        <file>images/small/insert_table_row.png</file>
     </qresource>
     <qresource prefix="/bigger">
         <file>images/unaf.png</file>

@@ -24,14 +24,17 @@
 #include "ProcedureForm.h"
 #include "core_Procedure.h"
 #include "ProceduresListForm.h"
+#include "TriggerForm.h"
+#include "core_Trigger.h"
 
 #include <QVector>
 #include <QtGui>
 
 // TODO: This file looks funny. See why it seems we have a lot of duplicate code
 
-VersionGuiElements::VersionGuiElements(QTreeWidget* projTree, QTreeWidget* dtTree, QTreeWidget* issueTree, Version* v) : tablesItem(0), tableInstancesItem(0),
-    versionItem(0), diagramsItem(0), proceduresItem(0), finalSqlItem(0), dtsItem(0),
+VersionGuiElements::VersionGuiElements(QTreeWidget* projTree, QTreeWidget* dtTree, QTreeWidget* issueTree, Version* v) :
+    tablesItem(0), tableInstancesItem(0),
+    versionItem(0), diagramsItem(0), proceduresItem(0), finalSqlItem(0), dtsItem(0), viewsItem(0), triggersItem(0),
     m_tree(projTree), m_dtTree(dtTree), m_issuesTree(issueTree),
     stringsDtItem(0), intsDtItem(0), dateDtItem(0), blobDtItem(0),
     boolDtItem(0), miscDtItem(0), spatialDtItem(0), m_tblInstancesListForm(0), m_version(v), m_tblsListForm(0),
@@ -74,6 +77,10 @@ void VersionGuiElements::createGuiElements(ContextMenuEnabledTreeWidgetItem* pro
     //viewsItem->setPopupMenu(ContextMenuCollection::getInstance()->getDiagramsPopupMenu());
     m_tree->addTopLevelItem(viewsItem);
 
+    triggersItem = new ContextMenuEnabledTreeWidgetItem(versionItem, QStringList(QObject::tr("Triggers"))) ;
+    triggersItem->setIcon(0, IconFactory::getTriggersIcon());
+    //viewsItem->setPopupMenu(ContextMenuCollection::getInstance()->getDiagramsPopupMenu());
+    m_tree->addTopLevelItem(triggersItem);
 
     // last one: SQLs
     ContextMenuEnabledTreeWidgetItem* codeItem= new ContextMenuEnabledTreeWidgetItem(versionItem, QStringList(QObject::tr("Code"))) ;
@@ -364,6 +371,25 @@ ContextMenuEnabledTreeWidgetItem* VersionGuiElements::createProcedureTreeEntry(P
     return newProcItem;
 }
 
+ContextMenuEnabledTreeWidgetItem* VersionGuiElements::createTriggerTreeEntry(Trigger* trg)
+{
+    ContextMenuEnabledTreeWidgetItem* newTriggerItem = new ContextMenuEnabledTreeWidgetItem(triggersItem, QStringList(trg->getName())) ;
+    QVariant var(trg->getName());
+    newTriggerItem->setData(0, Qt::UserRole, var);
+    newTriggerItem->setIcon(0, IconFactory::getTriggerIcon());
+    //newTriggerItem->setPopupMenu(ContextMenuCollection::getInstance()->getTriggerPopupMenu());
+    m_tree->addTopLevelItem(newTriggerItem);
+    trg->setLocation(newTriggerItem);
+
+    ContextMenuEnabledTreeWidgetItem* sqlItm = new ContextMenuEnabledTreeWidgetItem(getFinalSqlItem(), QStringList(trg->getName()));
+    sqlItm->setIcon(0, IconFactory::getTriggerIcon());
+    sqlItm->setData(0, Qt::UserRole, var);
+    trg->setSqlItem(sqlItm);
+
+    return newTriggerItem;
+}
+
+
 ContextMenuEnabledTreeWidgetItem* VersionGuiElements::createTableTreeEntryForIssue(Table* tab)
 {
     ContextMenuEnabledTreeWidgetItem* newTblsItem = new ContextMenuEnabledTreeWidgetItem((ContextMenuEnabledTreeWidgetItem*)0, QStringList(tab->getName())) ;
@@ -525,4 +551,9 @@ NewTableForm* VersionGuiElements::getTableFormForExistingTable()
 ProcedureForm* VersionGuiElements::getProcedureForm()
 {
     return m_procedureForm = new ProcedureForm(MainWindow::instance());
+}
+
+TriggerForm* VersionGuiElements::getTriggerForm()
+{
+    return m_triggerForm = new TriggerForm(MainWindow::instance());
 }

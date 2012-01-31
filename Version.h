@@ -15,6 +15,7 @@ class Column;
 class Issue;
 class View;
 class Procedure;
+class Trigger;
 
 /**
  * Basic class holding data related to versions
@@ -256,32 +257,35 @@ public:
     /**
      * Return the views of the version
      */
-   virtual const QVector<View*>& getViews() = 0;
+    virtual const QVector<View*>& getViews() = 0;
 
-   /**
+    /**
     * Returns the given procedure
     */
-   virtual Procedure* getProcedure(const QString& procName) = 0;
+    virtual Procedure* getProcedure(const QString& procName) = 0;
 
-   /**
+    /**
     * Adds a procedure in the system
     */
-   virtual void addProcedure(Procedure* p) = 0;
+    virtual void addProcedure(Procedure* p) = 0;
 
-   /**
+    /**
     *  Returns all the procedures of the system
     */
-   virtual const QVector<Procedure*>& getProcedures() = 0;
+    virtual const QVector<Procedure*>& getProcedures() = 0;
 
-   /**
+    /**
     * Delete the given procedure
     */
-   virtual void deleteProcedure(const QString& p) = 0;
+    virtual void deleteProcedure(const QString& p) = 0;
 
-   /**
+    /**
     * Deletes all the unused data types
     */
-   virtual void cleanupDataTypes() = 0;
+    virtual void cleanupDataTypes() = 0;
+
+    virtual void addTrigger(Trigger*) = 0;
+    virtual Trigger* getTrigger(const QString&) = 0;
 
 };
 

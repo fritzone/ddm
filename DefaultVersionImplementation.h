@@ -99,6 +99,9 @@ public:
     virtual const QVector<Procedure*>& getProcedures();
     virtual void deleteProcedure(const QString& p);
     virtual void cleanupDataTypes();
+    virtual void addTrigger(Trigger *);
+    virtual Trigger* getTrigger(const QString &name);
+
 protected:
     // the version as a string representation. Major versions are always of form X.0
     QString version;

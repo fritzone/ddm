@@ -29,9 +29,6 @@
       <property name="margin">
        <number>9</number>
       </property>
-      <item row="0" column="0" colspan="2">
-       <widget class="QLineEdit" name="lineEdit"/>
-      </item>
       <item row="1" column="0">
        <widget class="QLabel" name="label">
         <property name="text">
@@ -55,12 +52,34 @@
           <number>3</number>
          </property>
          <item>
-          <widget class="QComboBox" name="comboBox_2"/>
+          <widget class="QComboBox" name="cmbTime">
+           <item>
+            <property name="text">
+             <string>BEFORE</string>
+            </property>
+            <property name="icon">
+             <iconset resource="dbm.qrc">
+              <normaloff>:/images/actions/images/small/before.png</normaloff>:/images/actions/images/small/before.png</iconset>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>AFTER</string>
+            </property>
+            <property name="icon">
+             <iconset resource="dbm.qrc">
+              <normaloff>:/images/actions/images/small/after.png</normaloff>:/images/actions/images/small/after.png</iconset>
+            </property>
+           </item>
+          </widget>
          </item>
          <item>
           <spacer name="horizontalSpacer">
            <property name="orientation">
             <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeType">
+            <enum>QSizePolicy::MinimumExpanding</enum>
            </property>
            <property name="sizeHint" stdset="0">
             <size>
@@ -96,7 +115,7 @@
           <number>3</number>
          </property>
          <item>
-          <widget class="QComboBox" name="comboBox_3"/>
+          <widget class="QComboBox" name="cmbTables"/>
          </item>
          <item>
           <spacer name="horizontalSpacer_2">
@@ -137,7 +156,35 @@
           <number>3</number>
          </property>
          <item>
-          <widget class="QComboBox" name="comboBox_4"/>
+          <widget class="QComboBox" name="cmbEvent">
+           <item>
+            <property name="text">
+             <string>INSERT</string>
+            </property>
+            <property name="icon">
+             <iconset resource="dbm.qrc">
+              <normaloff>:/images/actions/images/small/insert_table_row.png</normaloff>:/images/actions/images/small/insert_table_row.png</iconset>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>UPDATE</string>
+            </property>
+            <property name="icon">
+             <iconset resource="dbm.qrc">
+              <normaloff>:/images/actions/images/small/trigger_update.png</normaloff>:/images/actions/images/small/trigger_update.png</iconset>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>DELETE</string>
+            </property>
+            <property name="icon">
+             <iconset resource="dbm.qrc">
+              <normaloff>:/images/actions/images/small/delete_table_row.png</normaloff>:/images/actions/images/small/delete_table_row.png</iconset>
+            </property>
+           </item>
+          </widget>
          </item>
          <item>
           <spacer name="horizontalSpacer_3">
@@ -162,11 +209,28 @@
         </property>
        </widget>
       </item>
+      <item row="4" column="1">
+       <widget class="QFrame" name="frame_2">
+        <layout class="QHBoxLayout" name="horizontalLayout_4"/>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QLineEdit" name="txtTriggerName"/>
+      </item>
+      <item row="0" column="0">
+       <widget class="QLabel" name="label_5">
+        <property name="text">
+         <string>Name</string>
+        </property>
+       </widget>
+      </item>
      </layout>
     </widget>
    </item>
   </layout>
  </widget>
- <resources/>
+ <resources>
+  <include location="dbm.qrc"/>
+ </resources>
  <connections/>
 </ui>

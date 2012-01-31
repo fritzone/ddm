@@ -96,7 +96,8 @@ SOURCES += main.cpp \
     ListWidgetForCodeCompletion.cpp \
     GuiElements.cpp \
     ConnectionGuiElements.cpp \
-    TriggerForm.cpp
+    TriggerForm.cpp \
+    core_Trigger.cpp
 HEADERS += MainWindow.h \
     MainWindowButtonDialog.h \
     NewProjectDialog.h \
@@ -206,7 +207,8 @@ HEADERS += MainWindow.h \
     commons.h \
     GuiElements.h \
     ConnectionGuiElements.h \
-    TriggerForm.h
+    TriggerForm.h \
+    core_Trigger.h
 FORMS += MainWindow.ui \
     MainWindowButtonDialog.ui \
     NewProjectDialog.ui \
@@ -253,6 +255,8 @@ INSTALLS += installfiles_doc
 installfiles_rs.files += rsrc/mysql.defaults
 installfiles_rs.path =  /home/ferenc/rpmbuild/BUILDROOT/usr/local/ddm/rsrc
 INSTALLS += installfiles_rs
+
+
 
 
 

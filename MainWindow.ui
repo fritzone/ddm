@@ -462,6 +462,9 @@
    </property>
   </action>
   <action name="action_NewTrigger">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="icon">
     <iconset resource="dbm.qrc">
      <normaloff>:/images/actions/images/actions/trigger_new.png</normaloff>:/images/actions/images/actions/trigger_new.png</iconset>
@@ -844,6 +847,22 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>action_NewTrigger</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>onNewTrigger()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>454</x>
+     <y>67</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>onNewSolution()</slot>
@@ -868,5 +887,6 @@
   <slot>onDeployHovered()</slot>
   <slot>onNewProcedure()</slot>
   <slot>onDeleteUnusedDatatypes()</slot>
+  <slot>onNewTrigger()</slot>
  </slots>
 </ui>

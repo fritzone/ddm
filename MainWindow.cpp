@@ -56,6 +56,8 @@
 #include "ProceduresListForm.h"
 #include "GuiElements.h"
 #include "ConnectionGuiElements.h"
+#include "TriggerForm.h"
+#include "core_Trigger.h"
 
 #include <QtGui>
 
@@ -738,6 +740,7 @@ void MainWindow::enableActions()
     m_ui->action_NewProcedure->setEnabled(true);
     m_ui->action_DeleteUnusuedDatatypes->setEnabled(true);
     m_ui->action_DeploymentScript->setVisible(false);
+    m_ui->action_NewTrigger->setEnabled(true);
 
     if(m_workspace->currentProjectIsOop())
     {
@@ -1667,6 +1670,7 @@ void MainWindow::onConnectConnection()
         }
         else
         {
+
             c->getLocation()->setIcon(0, IconFactory::getUnConnectedDatabaseIcon());
         }
     }
@@ -2088,9 +2092,22 @@ void MainWindow::onNewProcedure()
 
     m_guiElements->getProjectTree()->setCurrentItem(p->getLocation());
     setCentralWidget(frm);
+}
 
-    //HelpWindow* hw = HelpWindow::instance();
-    //hw->showHelp(QString("/doc/tabl.html"));
+void MainWindow::onNewTrigger()
+{
+    TriggerForm* frm = Workspace::getInstance()->workingVersion()->getGui()->getTriggerForm();
+    Trigger* trigger = new Trigger();
+    frm->setTrigger(trigger);
+    frm->initSql();
+    const QVector<Table*>& allTables = Workspace::getInstance()->workingVersion()->getTables();
+    frm->feedInTables(allTables);
+    Workspace::getInstance()->workingVersion()->addTrigger(trigger);
+    Workspace::getInstance()->workingVersion()->getGui()->createTriggerTreeEntry(trigger);
+
+    m_guiElements->getProjectTree()->setCurrentItem(trigger->getLocation());
+    setCentralWidget(frm);
+
 }
 
 void MainWindow::rerenderQuery(Query* q)
