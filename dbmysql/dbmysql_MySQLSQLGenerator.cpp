@@ -9,6 +9,7 @@
 #include "core_View.h"
 #include "qbr_SelectQuery.h"
 #include "core_Procedure.h"
+#include "core_Trigger.h"
 
 QStringList MySQLSQLGenerator::generateCreateTableSql(Table *table, const QHash<QString, QString> &options, const QString& tabName, const QString& codepage) const
 {
@@ -533,4 +534,20 @@ QStringList MySQLSQLGenerator::generateCreateProcedureSql(Procedure *p, const QH
     QStringList t;
     t.append(p->getSql());
     return t;
+}
+
+QStringList MySQLSQLGenerator::generateTriggerSql(Trigger* t, const QHash<QString, QString>& options) const
+{
+    QStringList result;
+    bool upcase = options.contains("Case") && options["Case"] == "Upper";
+    QString s = upcase?  "CREATE TRIGGER ": "create trigger ";
+    s += t->getName(); s+= strSpace;
+    s += t->getTime(); s+= strSpace;
+    s += t->getEvent(); s+= strSpace;
+    s += upcase? "ON ":"on ";
+    s += t->getTable()->getName(); s+= strSpace;
+    s += upcase? "FOR EACH ROW ":"for each row ";
+    s += strNewline + t->getSql() + strSemicolon + strNewline;
+    result << s;
+    return result;
 }

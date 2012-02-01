@@ -9,7 +9,12 @@ class Table;
 class TableInstance;
 class View;
 class Procedure;
+class Trigger;
 
+/**
+ * Interface towards the Database Engine responsible for generating the SQLs for the given database
+ * objects.
+ */
 class AbstractSqlGenerator
 {
 public:
@@ -89,6 +94,17 @@ public:
      * @return the statements for creating the procedure
      */
     virtual QStringList generateCreateProcedureSql(Procedure* p, const QHash<QString, QString>& options) const = 0;
+
+    /**
+     * Generate and SQL script for the given trigger. The body of the trigger is written by the database developer
+     * but the rest is generated
+     *
+     * @param t - the trigger to generate the SQL for
+     * @param options - the SQL generation options
+     *
+     * @return a list of SQL commands for generating this trigger
+     */
+    virtual QStringList generateTriggerSql(Trigger* t, const QHash<QString, QString>& options) const = 0;
 
     virtual ~AbstractSqlGenerator() {}
 };

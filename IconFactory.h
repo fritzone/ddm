@@ -420,6 +420,36 @@ public:
         return icon;
     }
 
+    static const QIcon& getTriggerUpdateIcon()
+    {
+        static const QIcon icon(strTriggerUpdateIcon);
+        return icon;
+    }
+
+    static const QIcon& getTriggerDeleteIcon()
+    {
+        static const QIcon icon(strTriggerDeleteIcon);
+        return icon;
+    }
+
+    static const QIcon& getTriggerInsertIcon()
+    {
+        static const QIcon icon(strTriggerInsertIcon);
+        return icon;
+    }
+
+    static const QIcon& getTriggerAfterIcon()
+    {
+        static const QIcon icon(strTriggerAfterIcon);
+        return icon;
+    }
+
+    static const QIcon& getTriggerBeforeIcon()
+    {
+        static const QIcon icon(strTriggerBeforeIcon);
+        return icon;
+    }
+
 };
 
 #endif // ICONFACTORY_H

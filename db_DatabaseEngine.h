@@ -242,6 +242,9 @@ public:
      */
     virtual QVector<Codepage*> getCodepages() = 0;
 
+    virtual QStringList getTriggerEvents() = 0;
+    virtual QStringList getTriggerTimings() = 0;
+
 public:
 
     /**

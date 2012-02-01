@@ -16,6 +16,7 @@ public:
     virtual QStringList generateCreateViewSql(View *v, const QHash<QString, QString> &options) const;
     virtual QStringList generateAlterTableForForeignKeys(Table* t, const QHash<QString, QString>& options) const;
     virtual QStringList generateCreateProcedureSql(Procedure* p, const QHash<QString, QString>& options) const;
+    virtual QStringList generateTriggerSql(Trigger* t, const QHash<QString, QString>& options) const;
 
 private:
 

@@ -75,6 +75,7 @@ public:
     void showDiagram(const QString& name, bool focus = true);
     void showView(const QString& viewName, bool focus = true);
     void showProcedure(const QString& procName, bool focus = true);
+    void showTrigger(const QString& procName, bool focus = true);
 
     void rerenderQuery(Query*);
     void showConnections();

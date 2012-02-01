@@ -90,6 +90,11 @@ static const QString strTypeHereIcon = ":/images/actions/images/small/type_here.
 static const QString strAliasIcon = ":/images/actions/images/small/alias.png";
 static const QString strOrderIcon = ":/images/actions/images/small/edit_list_order.png";
 static const QString strForeignKeyIcon = ":/images/actions/images/small/foreign_key.png";
+static const QString strTriggerUpdateIcon = ":/images/actions/images/small/trigger_update.png";
+static const QString strTriggerDeleteIcon = ":/images/actions/images/small/delete_table_row.png";
+static const QString strTriggerInsertIcon = ":/images/actions/images/small/insert_table_row.png";
+static const QString strTriggerBeforeIcon = ":/images/actions/images/small/before.png";
+static const QString strTriggerAfterIcon = ":/images/actions/images/small/after.png";
 
 static const QString NEW_TABLE = "New table reference";
 static const QString NEW_COLUMN = "New column";

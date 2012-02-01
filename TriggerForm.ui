@@ -100,7 +100,7 @@
        </widget>
       </item>
       <item row="1" column="1">
-       <widget class="QFrame" name="frame_2">
+       <widget class="QFrame" name="frame_tab">
         <property name="frameShape">
          <enum>QFrame::StyledPanel</enum>
         </property>
@@ -232,5 +232,76 @@
  <resources>
   <include location="dbm.qrc"/>
  </resources>
- <connections/>
+ <connections>
+  <connection>
+   <sender>txtTriggerName</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>TriggerForm</receiver>
+   <slot>nameChanged(QString)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>328</x>
+     <y>38</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>302</x>
+     <y>209</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>cmbEvent</sender>
+   <signal>currentIndexChanged(QString)</signal>
+   <receiver>TriggerForm</receiver>
+   <slot>eventChanged(QString)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>113</x>
+     <y>157</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>302</x>
+     <y>209</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>cmbTime</sender>
+   <signal>currentIndexChanged(QString)</signal>
+   <receiver>TriggerForm</receiver>
+   <slot>whenChanged(QString)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>113</x>
+     <y>116</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>302</x>
+     <y>209</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>cmbTables</sender>
+   <signal>currentIndexChanged(QString)</signal>
+   <receiver>TriggerForm</receiver>
+   <slot>tableChanged(QString)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>113</x>
+     <y>75</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>302</x>
+     <y>209</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>nameChanged(QString)</slot>
+  <slot>eventChanged(QString)</slot>
+  <slot>whenChanged(QString)</slot>
+  <slot>tableChanged(QString)</slot>
+ </slots>
 </ui>

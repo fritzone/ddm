@@ -73,6 +73,11 @@ public:
         return proceduresItem;
     }
 
+    ContextMenuEnabledTreeWidgetItem* getTriggersItem() const
+    {
+        return triggersItem;
+    }
+
     ContextMenuEnabledTreeWidgetItem* getDtsItem() const
     {
         return dtsItem;
