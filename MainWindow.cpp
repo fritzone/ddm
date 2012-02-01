@@ -350,7 +350,6 @@ void MainWindow::showDiagram(const QString &name, bool /*focus*/)
 }
 
 void MainWindow::showProcedure(const QString &procName, bool /*focus*/)
-
 {
     Procedure* p = m_workspace->workingVersion()->getProcedure(procName);
     if(p)
@@ -361,6 +360,23 @@ void MainWindow::showProcedure(const QString &procName, bool /*focus*/)
         pf->showSql();
     }
 }
+
+void MainWindow::showTrigger(const QString &triggerName, bool /*focus*/)
+{
+    Trigger* p = m_workspace->workingVersion()->getTrigger(triggerName);
+    if(p)
+    {
+        TriggerForm* pf = m_workspace->workingVersion()->getGui()->getTriggerForm();
+        const QVector<Table*>& allTables = Workspace::getInstance()->workingVersion()->getTables();
+        pf->feedInTables(allTables);
+        pf->feedInTriggerEvents(Workspace::getInstance()->currentProjectsEngine()->getTriggerEvents());
+        pf->feedInTriggerTimes(Workspace::getInstance()->currentProjectsEngine()->getTriggerTimings());
+        pf->setTrigger(p);
+        setCentralWidget(pf);
+        pf->showSql();
+    }
+}
+
 
 void MainWindow::showView(const QString& viewName, bool /*focus*/)
 {
@@ -481,6 +497,12 @@ void MainWindow::currentProjectTreeItemChanged(QTreeWidgetItem * current, QTreeW
                 showNamedObject(current, (showSomething)&MainWindow::showProcedure, false);
             }
             else
+            if(current->parent() && current->parent() == m_workspace->workingVersion()->getGui()->getTriggersItem())
+            {
+                // user clicked on a procedure
+                showNamedObject(current, (showSomething)&MainWindow::showTrigger, false);
+            }
+            else
             if(current->parent() && current->parent() == m_workspace->workingVersion()->getGui()->getFinalSqlItem())
             {
                 // user clicked on a SQL item
@@ -506,6 +528,11 @@ void MainWindow::currentProjectTreeItemChanged(QTreeWidgetItem * current, QTreeW
                 if(ent == 0)
                 {
                     ent = m_workspace->workingVersion()->getProcedure(name);
+                }
+
+                if(ent == 0)
+                {
+                    ent = m_workspace->workingVersion()->getTrigger(name);
                 }
 
                 if(ent == 0)
@@ -2090,7 +2117,7 @@ void MainWindow::onNewProcedure()
     Workspace::getInstance()->workingVersion()->addProcedure(p);
     Workspace::getInstance()->workingVersion()->getGui()->createProcedureTreeEntry(p);
 
-    m_guiElements->getProjectTree()->setCurrentItem(p->getLocation());
+    //m_guiElements->getProjectTree()->setCurrentItem(p->getLocation());
     setCentralWidget(frm);
 }
 
@@ -2102,10 +2129,12 @@ void MainWindow::onNewTrigger()
     frm->initSql();
     const QVector<Table*>& allTables = Workspace::getInstance()->workingVersion()->getTables();
     frm->feedInTables(allTables);
+    frm->feedInTriggerEvents(Workspace::getInstance()->currentProjectsEngine()->getTriggerEvents());
+    frm->feedInTriggerTimes(Workspace::getInstance()->currentProjectsEngine()->getTriggerTimings());
     Workspace::getInstance()->workingVersion()->addTrigger(trigger);
     Workspace::getInstance()->workingVersion()->getGui()->createTriggerTreeEntry(trigger);
 
-    m_guiElements->getProjectTree()->setCurrentItem(trigger->getLocation());
+    //m_guiElements->getProjectTree()->setCurrentItem(trigger->getLocation());
     setCentralWidget(frm);
 
 }

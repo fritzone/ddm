@@ -473,6 +473,7 @@ QList<QString> DefaultVersionImplementation::getSqlScript(const QString& codepag
     QHash<QString, QString> opts = Configuration::instance().sqlGenerationOptions();
     opts["FKSposition"] = "OnlyInternal";
     opts["PKSposition"] = "AfterColumnsDeclaration";
+    bool comments =  opts.contains("Comments") && opts["Comments"] == "Yes";
 
     if(Workspace::getInstance()->currentProjectIsOop())   // list the table instances' SQL
     {
@@ -505,8 +506,10 @@ QList<QString> DefaultVersionImplementation::getSqlScript(const QString& codepag
 
     // and the views
     finalSql.append("\n");
-    finalSql << "-- Creating the views\n";
-    finalSql.append("\n");
+    if(comments)
+    {   finalSql << "-- Creating the views\n";
+        finalSql.append("\n");
+    }
     for(int i=0; i<m_data.m_views.size(); i++)
     {
         QStringList t = m_data.m_views.at(i)->generateSqlSource(m_project->getEngine()->getSqlGenerator(), opts, codepage);
@@ -522,7 +525,7 @@ QList<QString> DefaultVersionImplementation::getSqlScript(const QString& codepag
     // and the procedures
     finalSql.append("\n");
 
-    if(m_data.m_procedures.size())
+    if(m_data.m_procedures.size() && comments)
     {
         finalSql << "-- Creating the procedures\n";
         finalSql.append("\n");
@@ -530,8 +533,31 @@ QList<QString> DefaultVersionImplementation::getSqlScript(const QString& codepag
 
     for(int i=0; i<m_data.m_procedures.size(); i++)
     {
-        QString s = "-- Procedure " + m_data.m_procedures.at(i)->getName() + strNewline;
+        QString s = "";
+        if (comments) s = "-- Procedure " + m_data.m_procedures.at(i)->getName() + strNewline;
         QStringList t = m_data.m_procedures.at(i)->generateSqlSource(m_project->getEngine()->getSqlGenerator(), opts, codepage);
+        for(int j=0; j<t.size(); j++)
+        {
+            s += t.at(j) + " ";
+        }
+        s += strSemicolon;
+        finalSql << s;
+    }
+
+    // and the triggers
+    finalSql.append("\n");
+
+    if(m_data.m_triggers.size() && comments)
+    {
+        finalSql << "-- Creating the triggers\n";
+        finalSql.append("\n");
+    }
+
+    for(int i=0; i<m_data.m_triggers.size(); i++)
+    {
+        QString s = "";
+        if (comments) s = "-- Trigger " + m_data.m_triggers.at(i)->getName() + strNewline;
+        QStringList t = m_data.m_triggers.at(i)->generateSqlSource(m_project->getEngine()->getSqlGenerator(), opts, codepage);
         for(int j=0; j<t.size(); j++)
         {
             s += t.at(j) + " ";

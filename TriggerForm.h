@@ -23,9 +23,17 @@ public:
     void setTrigger(Trigger* t);
     void initSql();
     void feedInTables(const QVector<Table*>& tables);
+    void feedInTriggerEvents(const QStringList&);
+    void feedInTriggerTimes(const QStringList&);
+    void showSql();
 
 protected slots:
     void textChanged();
+    void nameChanged(QString);
+    void whenChanged(QString);
+    void eventChanged(QString);
+    void tableChanged(QString);
+
 protected:
     void changeEvent(QEvent *e);
 

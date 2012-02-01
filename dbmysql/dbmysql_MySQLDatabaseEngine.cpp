@@ -1298,3 +1298,17 @@ QVector<Codepage*> MySQLDatabaseEngine::getCodepages()
 
     return result;
 }
+
+QStringList MySQLDatabaseEngine::getTriggerEvents()
+{
+    QStringList result;
+    result << "INSERT" << "UPDATE" << "DELETE";
+    return result;
+}
+
+QStringList MySQLDatabaseEngine::getTriggerTimings()
+{
+    QStringList result;
+    result << "BEFORE" << "AFTER";
+    return result;
+}

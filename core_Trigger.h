@@ -6,22 +6,11 @@
 #include "TreeItem.h"
 #include "SerializableElement.h"
 
+class Table;
+
 class Trigger : virtual public SqlSourceEntity, virtual public NamedItem, virtual public TreeItem, virtual public SerializableElement
 {
 public:
-
-    enum TriggerEvent
-    {
-        TRIGGER_INSERT,
-        TRIGGER_UPDATE,
-        TRIGGER_DELETE
-    };
-
-    enum TriggerTime
-    {
-        TRIGGER_BEFORE,
-        TRIGGER_AFTER
-    };
 
     Trigger();
 
@@ -33,15 +22,47 @@ public:
         m_body = s;
     }
 
-    void setEvent(const QString&);
-    void setTime(const QString&);
+    QString getSql() const
+    {
+        return m_body;
+    }
+
+    const Table* getTable() const
+    {
+        return m_table;
+    }
+
+    QString getEvent() const
+    {
+        return m_event;
+    }
+
+    QString getTime() const
+    {
+        return m_ttime;
+    }
+
+    void setEvent(const QString& e)
+    {
+        m_event = e;
+    }
+
+    void setTime(const QString& t)
+    {
+        m_ttime = t;
+    }
+
+    void setTable(Table* t)
+    {
+        m_table = t;
+    }
 
 private:
 
     QString m_body;
-    TriggerEvent m_event;
-    TriggerTime m_ttime;
-
+    QString m_event;
+    QString m_ttime;
+    const Table* m_table;
 };
 
 #endif // CORE_TRIGGER_H

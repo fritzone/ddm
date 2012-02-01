@@ -40,7 +40,8 @@ public:
     virtual QString getDefaultIndextype();
     virtual QString getDelimiterKeyword();
     virtual QVector<Codepage*> getCodepages();
-
+    virtual QStringList getTriggerEvents();
+    virtual QStringList getTriggerTimings();
 private:
 
     static QVector<DatabaseBuiltinFunction> buildFunctions();
