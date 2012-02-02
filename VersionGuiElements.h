@@ -12,16 +12,11 @@ class Diagram;
 class Table;
 class TableInstance;
 class Issue;
-class TableInstancesListForm;
-class TablesListForm;
 class SqlForm;
 class NewTableForm;
 class View;
-class DiagramsListForm;
-class ViewsListForm;
 class ProcedureForm;
 class Procedure;
-class ProceduresListForm;
 class TriggerForm;
 class Trigger;
 
@@ -179,15 +174,10 @@ public:
 
     void updateForms();
 
-    TableInstancesListForm* getTableInstancesListForm();
-    TablesListForm* getTablesListForm();
-    DiagramsListForm* getDiagramsListForm();
-    ViewsListForm* getViewsListForm();
     SqlForm* getSqlForm();
     NewTableForm* getTableFormForNewTable();
     NewTableForm* getTableFormForExistingTable();
     ProcedureForm* getProcedureForm();
-    ProceduresListForm* getProceduresListForm();
     TriggerForm* getTriggerForm();
 
 private:
@@ -234,17 +224,13 @@ private:
     ContextMenuEnabledTreeWidgetItem* miscDtItem;
     ContextMenuEnabledTreeWidgetItem* spatialDtItem;
 
-    TableInstancesListForm* m_tblInstancesListForm;
     Version* m_version;
-    TablesListForm* m_tblsListForm;
-    DiagramsListForm* m_diagramsListForm;
-    ViewsListForm* m_viewsListForm;
     SqlForm* m_sqlForm;
     NewTableForm* m_newTableForm;
     NewTableForm* m_existingTableForm;
     ProcedureForm* m_procedureForm;
-    ProceduresListForm* m_proceduresListForm;
     TriggerForm* m_triggerForm;
+
 };
 
 #endif // VERSIONGUIELEMENTS_H

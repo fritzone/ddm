@@ -14,7 +14,6 @@
 #include "Column.h"
 #include "IconFactory.h"
 #include "Configuration.h"
-#include "TablesListForm.h"
 #include "ProjectDetailsForm.h"
 #include "Solution.h"
 #include "DeserializationFactory.h"
@@ -27,7 +26,6 @@
 #include "DynamicActionHandlerForMainWindow.h"
 #include "SqlForm.h"
 #include "TableInstance.h"
-#include "TableInstancesListForm.h"
 #include "PreferencesDialog.h"
 #include "SimpleTextInputDialog.h"
 #include "ContextMenuCollection.h"
@@ -49,15 +47,13 @@
 #include "helper_MostRecentlyUsedFiles.h"
 #include "BrowseTableForm.h"
 #include "NameGenerator.h"
-#include "DiagramsListForm.h"
-#include "ViewsListForm.h"
 #include "ProcedureForm.h"
 #include "core_Procedure.h"
-#include "ProceduresListForm.h"
 #include "GuiElements.h"
 #include "ConnectionGuiElements.h"
 #include "TriggerForm.h"
 #include "core_Trigger.h"
+#include "NamedObjectListingForm.h"
 
 #include <QtGui>
 
@@ -80,8 +76,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), m_ui(new Ui::Main
     m_ui->action_NewDatabaseConnection->setEnabled(true);
     showMaximized();
     setWindowTitle(tr("DDM - [No Solution]"));
-
-
 
     m_btndlg = new MainWindowButtonDialog();
     m_btndlg->showMe();
@@ -419,17 +413,14 @@ void MainWindow::currentProjectTreeItemChanged(QTreeWidgetItem * current, QTreeW
     {
         if(current == m_workspace->workingVersion()->getGui()->getTablesItem())
         {// we have clicked on the Tables item (i.e. the list of tables)
-            TablesListForm* tblLst = m_workspace->workingVersion()->getGui()->getTablesListForm();
-            tblLst->populateTables(m_workspace->workingVersion()->getTables());
-            tblLst->setOop(m_workspace->currentProjectIsOop());
-            setCentralWidget(tblLst);
+            showNamedObjectList(&MainWindow::showTable, m_workspace->workingVersion()->getTables(),
+                                Workspace::getInstance()->currentProjectIsOop()?IconFactory::getTabinstIcon():IconFactory::getTableIcon(),
+                                Workspace::getInstance()->currentProjectIsOop()?"Table Templates":"Tables");
         }
         else
         if(current == m_workspace->workingVersion()->getGui()->getTableInstancesItem())
         {// we have clicked on the Table instances item (i.e. the list of table instances)
-            TableInstancesListForm* frm = m_workspace->workingVersion()->getGui()->getTableInstancesListForm();
-            frm->populateTableInstances(m_workspace->workingVersion()->getTableInstances());
-            setCentralWidget(frm);
+            showNamedObjectList(&MainWindow::showTableInstance, m_workspace->workingVersion()->getTableInstances(), IconFactory::getTabinstIcon(), "Tables");
         }
         else
         if(current == m_workspace->currentProject()->getLocation())
@@ -447,23 +438,22 @@ void MainWindow::currentProjectTreeItemChanged(QTreeWidgetItem * current, QTreeW
         else
         if(current == m_workspace->workingVersion()->getGui()->getDiagramsItem())
         {// we have clicked on the Diagrams item (i.e. the list of diagrams)
-            DiagramsListForm* dgrLst = m_workspace->workingVersion()->getGui()->getDiagramsListForm();
-            dgrLst->populateDiagrams(m_workspace->workingVersion()->getDiagrams());
-            setCentralWidget(dgrLst);
+            showNamedObjectList(&MainWindow::showDiagram, m_workspace->workingVersion()->getDiagrams(), IconFactory::getDiagramIcon(), "Diagrams");
         }
         else
         if(current == m_workspace->workingVersion()->getGui()->getViewsItem())
         {// we have clicked on the Views item (i.e. the list of views)
-            ViewsListForm* viewLst = m_workspace->workingVersion()->getGui()->getViewsListForm();
-            viewLst->populateViews(m_workspace->workingVersion()->getViews());
-            setCentralWidget(viewLst);
+            showNamedObjectList(&MainWindow::showView, m_workspace->workingVersion()->getViews(), IconFactory::getViewIcon(), "Views");
         }
         else
         if(current == m_workspace->workingVersion()->getGui()->getProceduresItem())
         {// we have clicked on the Procedures item (i.e. the list of procedures)
-            ProceduresListForm* procedureLst = m_workspace->workingVersion()->getGui()->getProceduresListForm();
-            procedureLst->populateProcedures(m_workspace->workingVersion()->getProcedures());
-            setCentralWidget(procedureLst);
+            showNamedObjectList(&MainWindow::showProcedure, m_workspace->workingVersion()->getProcedures(), IconFactory::getProcedureIcon(), "Procedures");
+        }
+        else
+        if(current == m_workspace->workingVersion()->getGui()->getTriggersItem())
+        {// we have clicked on the Triggers item (i.e. the list of triggers)
+            showNamedObjectList(&MainWindow::showTrigger, m_workspace->workingVersion()->getTriggers(), IconFactory::getTriggerIcon(), "Triggers");
         }
         else
         {
@@ -509,45 +499,14 @@ void MainWindow::currentProjectTreeItemChanged(QTreeWidgetItem * current, QTreeW
                 SqlForm* frm = new SqlForm(m_workspace->currentProjectsEngine(), this);
                 QVariant qv = current->data(0, Qt::UserRole);
                 QString name = qv.toString();
-                SqlSourceEntity* ent = NULL;
-
-                if(m_workspace->currentProjectIsOop())
-                {
-                    ent = m_workspace->workingVersion()->getTableInstance(name);
-                }
-                else
-                {
-                    ent = m_workspace->workingVersion()->getTable(name);
-                }
-
+                SqlSourceEntity* ent = Workspace::getInstance()->currentProject()->getWorkingVersion()->getSqlSourceEntityNamed(name);
                 if(ent == 0)
-                {
-                    ent = m_workspace->workingVersion()->getView(name);
-                }
-
-                if(ent == 0)
-                {
-                    ent = m_workspace->workingVersion()->getProcedure(name);
-                }
-
-                if(ent == 0)
-                {
-                    ent = m_workspace->workingVersion()->getTrigger(name);
-                }
-
-                if(ent == 0)
-                {
-                    // hm.. this shouldn't be
+                {   // hm.. this shouldn't be
                     return;
                 }
-
                 frm->setSqlSource(ent);
                 frm->presentSql(m_workspace->currentProject(), ent, m_workspace->currentProject()->getCodepage());
                 setCentralWidget(frm);
-
-                HelpWindow* hw = HelpWindow::instance();
-                if(hw->isVisible()) hw->showHelp(QString("/doc/sqls.html"));
-
             }
             else    // user possibly clicked on a table which had a parent a table ...
             {
@@ -840,6 +799,14 @@ void MainWindow::connectActionsFromPopupMenus()
     QObject::connect(ContextMenuCollection::getInstance()->getAction_DeleteProcedure(), SIGNAL(activated()), this, SLOT(onDeleteProcedure()));
 }
 
+template <class T>
+void MainWindow::showNamedObjectList(showSomething s, const QVector<T*> items, const QIcon& icon, const QString& title)
+{
+    NamedObjectListingForm* lstForm = new NamedObjectListingForm(this, s, icon, title);
+    lstForm->populateObjects(items);
+    setCentralWidget(lstForm);
+}
+
 void MainWindow::onDeleteProcedure()
 {
     Procedure* p = getRightClickedObject<Procedure>((itemGetter)&Version::getProcedure);
@@ -852,9 +819,7 @@ void MainWindow::onDeleteProcedure()
         m_workspace->workingVersion()->deleteProcedure(p->getName());
         m_workspace->workingVersion()->getGui()->updateForms();
 
-        ProceduresListForm* procedureList = m_workspace->workingVersion()->getGui()->getProceduresListForm();
-        procedureList->populateProcedures(m_workspace->workingVersion()->getProcedures());
-        setCentralWidget(procedureList);
+        showNamedObjectList(&MainWindow::showProcedure, m_workspace->workingVersion()->getProcedures(), IconFactory::getProcedureIcon(), "Procedures");
 
         m_workspace->workingVersion()->getGui()->getProceduresItem()->treeWidget()->clearSelection();
         m_workspace->workingVersion()->getGui()->getProceduresItem()->setSelected(true);
@@ -874,9 +839,7 @@ void MainWindow::onDeleteView()
         m_workspace->workingVersion()->deleteView(v->getName());
         m_workspace->workingVersion()->getGui()->updateForms();
 
-        ViewsListForm* vLst = m_workspace->workingVersion()->getGui()->getViewsListForm();
-        vLst->populateViews(m_workspace->workingVersion()->getViews());
-        setCentralWidget(vLst);
+        showNamedObjectList(&MainWindow::showView, m_workspace->workingVersion()->getViews(), IconFactory::getViewsIcon(), "Views");
 
         m_workspace->workingVersion()->getGui()->getViewsItem()->treeWidget()->clearSelection();
         m_workspace->workingVersion()->getGui()->getViewsItem()->setSelected(true);
@@ -1078,10 +1041,9 @@ void MainWindow::onDeleteTableFromPopup()
             {
                 if(ntf->getTableName() == tabName)  // show the list of tables if we deleted the current table
                 {
-                    TablesListForm* tblLst = m_workspace->workingVersion()->getGui()->getTablesListForm();
-                    tblLst->populateTables(m_workspace->workingVersion()->getTables());
-                    tblLst->setOop(m_workspace->currentProjectIsOop());
-                    setCentralWidget(tblLst);
+                    showNamedObjectList(&MainWindow::showTable, m_workspace->workingVersion()->getTables(),
+                                        Workspace::getInstance()->currentProjectIsOop()?IconFactory::getTabinstIcon():IconFactory::getTableIcon(),
+                                        Workspace::getInstance()->currentProjectIsOop()?"Table Templates":"Tables");
                     m_workspace->workingVersion()->getGui()->getTablesItem()->treeWidget()->clearSelection();
                     m_workspace->workingVersion()->getGui()->getTablesItem()->setSelected(true);
                 }
@@ -1393,10 +1355,9 @@ void MainWindow::onDeleteInstanceFromPopup()
         m_workspace->workingVersion()->purgeSentencedTableInstances();
 
         // and show a table instances list form
-        TableInstancesListForm* tblLst = m_workspace->workingVersion()->getGui()->getTableInstancesListForm();
-        tblLst->populateTableInstances(m_workspace->workingVersion()->getTableInstances());
-        m_workspace->workingVersion()->getGui()->updateForms();
-        setCentralWidget(tblLst);
+        showNamedObjectList(&MainWindow::showTable, m_workspace->workingVersion()->getTables(),
+                            Workspace::getInstance()->currentProjectIsOop()?IconFactory::getTabinstIcon():IconFactory::getTableIcon(),
+                            Workspace::getInstance()->currentProjectIsOop()?"Table Templates":"Tables");
 
         m_workspace->workingVersion()->getGui()->getDiagramsItem()->treeWidget()->clearSelection();
         m_workspace->workingVersion()->getGui()->getTableInstancesItem()->setSelected(true);
@@ -1733,10 +1694,7 @@ void MainWindow::onDeleteDiagramFromPopup()
         m_workspace->workingVersion()->deleteDiagram(dgr->getName());
         m_workspace->workingVersion()->getGui()->updateForms();
 
-        DiagramsListForm* dgrLst = m_workspace->workingVersion()->getGui()->getDiagramsListForm();
-        dgrLst->populateDiagrams(m_workspace->workingVersion()->getDiagrams());
-        setCentralWidget(dgrLst);
-
+        showNamedObjectList(&MainWindow::showTable, m_workspace->workingVersion()->getTables(), IconFactory::getDiagramIcon(), "Diagrams");
         m_workspace->workingVersion()->getGui()->getDiagramsItem()->treeWidget()->clearSelection();
         m_workspace->workingVersion()->getGui()->getDiagramsItem()->setSelected(true);
 

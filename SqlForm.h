@@ -29,7 +29,7 @@ public:
     }
 
     virtual void presentSql(Project* p,const QString& codepage);
-    virtual void presentSql(Project*,SqlSourceEntity*,const QString& codepage);
+    virtual void presentSql(Project*, SqlSourceEntity*,const QString& codepage);
 
 public slots:
 

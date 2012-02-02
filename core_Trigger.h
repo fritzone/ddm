@@ -13,6 +13,7 @@ class Trigger : virtual public SqlSourceEntity, virtual public NamedItem, virtua
 public:
 
     Trigger();
+    Trigger(const QString&);
 
     virtual QStringList generateSqlSource(AbstractSqlGenerator*, QHash<QString,QString>, const QString& codepage);
     virtual void serialize(QDomDocument& doc, QDomElement& parent) const;

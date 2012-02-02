@@ -75,10 +75,13 @@ public:
 
 public:
 
-    /*
-     *
-     * Pure virtual function declarations below
-     *
+    /**
+     * @group
+     * Pure virtual functions
+     */
+
+    /**
+     * @group Generic database related functions such as connection, run an SQL, etc...
      */
 
     /**
@@ -98,12 +101,6 @@ public:
     virtual QString getDefaultDatatypesLocation() = 0;
 
     /**
-     * Returns a list of specific keywords for this database
-     * @return the keywords of the database
-     */
-    virtual QStringList getKeywords() const = 0;
-
-    /**
      * Executes the given SQL on the database represented by the connection object. On error sets the lasSql to be the last executed SQL.
      * @param conn - the connection into which the given SQLs will be inserted
      * @param sql - a list of SQLs that will be inserted
@@ -114,16 +111,54 @@ public:
     virtual bool executeSql(Connection* conn, const QStringList& sqls, QString& lastSql, bool rollbackOnError) = 0;
 
     /**
-     * Reverse engineers the tables and the views from the given connection and puts the resulting structures in the project passed in as a parameter
-     * @param c - the connection representing the database
-     * @param tables - the tables that should be reverse engineered
-     * @param views - the views to reverse engineer
-     * @param p - the project which will contain the reverse egnineered structures
-     * @param relaxedDtCreation - instructs the engine on how to create data types for the column types. If it's false it tries to build data types
-     * based on the name ofthe columns (allowing each column to have its own datatype, thus enforcing more strict foreign key policies) otherwise
-     * it builds the data types from the SQL type, allowing more relaxed foreign keys.
+     * Tries to connect to the database represented by the connection
+     * @param c - the connection
+     * @return true in case of success, false otherwise
      */
-    virtual bool reverseEngineerDatabase(Connection *c, const QStringList& tables, const QStringList& views, Project* p, bool relaxedDtCreation) = 0;
+    virtual bool tryConnect(Connection* c) = 0;
+
+    /**
+     * Returns a QSqlDatabase object for the given connection, which can be used to execute own queries
+     * @param c - the conenction
+     * @return a QSqlDatabase obejct for the given connection
+     */
+    virtual QSqlDatabase getQSqlDatabaseForConnection(Connection *c) = 0;
+
+    /**
+     * @group Database syntax related functions
+     */
+
+    /**
+     * Returns a list of specific keywords for this database
+     * @return the keywords of the database
+     */
+    virtual QStringList getKeywords() const = 0;
+
+    /**
+     * Returns the delimiter keyword used in the function declaration
+     * @return the delimiter keyword
+     */
+    virtual QString getDelimiterKeyword() = 0;
+
+    /**
+     * Returns the codepages supported by the database engine
+     * @return the codepages supported by the database engine
+     */
+    virtual QVector<Codepage*> getCodepages() = 0;
+
+    /**
+     * Returns the Events of the triggers that are supported by this DB engine
+     *
+     * @return the Events of the triggers that are supported by this DB engine
+     */
+    virtual QStringList getTriggerEvents() = 0;
+
+    /**
+     * Returns the Times of the triggers that are supported by this DB engine
+     *
+     * @return the Times of the triggers that are supported by this DB engine
+     */
+    virtual QStringList getTriggerTimings() = 0;
 
     /**
      * Retrieves the list of index types that are supported on this specific database
@@ -138,14 +173,14 @@ public:
     virtual QString getDefaultIndextype() = 0;
 
     /**
-     * Reverse engineer a table.
-     * @param c - the connection representing the database
-     * @param tableName - the table to be reversed
-     * @param p - the project which will get the new table (specifically its working version)
-     * @param relaxedDtCreation - @see reverseEngineerDatabase
-     * @return the reverse engineered table
+     * Returns a list of @see DatabaseBuiltingFunction objects that are representing the functions supported by the database
+     * @return a list of teh functions of the database
      */
-    virtual Table* reverseEngineerTable(Connection *c, const QString& tableName, Project* p, bool relaxedDtCreation) = 0;
+    virtual QVector<DatabaseBuiltinFunction> getBuiltinFunctions() = 0;
+
+    /**
+     * @group Database structure retrieval and reverse engineering functions
+     */
 
     /**
      * Returns the databases which are availale on the given host, when connecting with the given credentials
@@ -171,18 +206,22 @@ public:
     virtual QStringList getAvailableViews(Connection* c) = 0;
 
     /**
+     * Reverse engineer a table.
+     * @param c - the connection representing the database
+     * @param tableName - the table to be reversed
+     * @param p - the project which will get the new table (specifically its working version)
+     * @param relaxedDtCreation - @see reverseEngineerDatabase
+     * @return the reverse engineered table
+     */
+    virtual Table* reverseEngineerTable(Connection *c, const QString& tableName, Project* p, bool relaxedDtCreation) = 0;
+
+    /**
      * Executes a script which creates the database represented by the connection. The database engine must support the notion
      * of separated databases.
      * @param c - the connection that represents a database
      * @return true in case of success, false otherwise
      */
     virtual bool createDatabase(Connection* c) = 0;
-
-    /**
-     * Returns a list of @see DatabaseBuiltingFunction objects that are representing the functions supported by the database
-     * @return a list of teh functions of the database
-     */
-    virtual QVector<DatabaseBuiltinFunction> getBuiltinFunctions() = 0;
 
     /**
      * Executes a script which drops the database represented by the connection. The database engine must support the notion
@@ -209,20 +248,6 @@ public:
     virtual View* reverseEngineerView(Connection *c, const QString& viewName) = 0;
 
     /**
-     * Tries to connect to the database represented by the connection
-     * @param c - the connection
-     * @return true in case of success, false otherwise
-     */
-    virtual bool tryConnect(Connection* c) = 0;
-
-    /**
-     * Returns a QSqlDatabase object for the given connection, which can be used to execute own queries
-     * @param c - the conenction
-     * @return a QSqlDatabase obejct for the given connection
-     */
-    virtual QSqlDatabase getQSqlDatabaseForConnection(Connection *c) = 0;
-
-    /**
      * Returns the columns of the given table as a list of strings
      * @param c - the connection
      * @param  tableName - the name of the table
@@ -231,19 +256,16 @@ public:
     virtual QStringList getColumnsOfTable(Connection* c, const QString& tableName) = 0;
 
     /**
-     * Returns the delimiter keyword used in the function declaration
-     * @return the delimiter keyword
+     * Reverse engineers the tables and the views from the given connection and puts the resulting structures in the project passed in as a parameter
+     * @param c - the connection representing the database
+     * @param tables - the tables that should be reverse engineered
+     * @param views - the views to reverse engineer
+     * @param p - the project which will contain the reverse egnineered structures
+     * @param relaxedDtCreation - instructs the engine on how to create data types for the column types. If it's false it tries to build data types
+     * based on the name ofthe columns (allowing each column to have its own datatype, thus enforcing more strict foreign key policies) otherwise
+     * it builds the data types from the SQL type, allowing more relaxed foreign keys.
      */
-    virtual QString getDelimiterKeyword() = 0;
-
-    /**
-     * Returns the codepages supported by the database engine
-     * @return the codepages supported by the database engine
-     */
-    virtual QVector<Codepage*> getCodepages() = 0;
-
-    virtual QStringList getTriggerEvents() = 0;
-    virtual QStringList getTriggerTimings() = 0;
+    virtual bool reverseEngineerDatabase(Connection *c, const QStringList& tables, const QStringList& views, Project* p, bool relaxedDtCreation) = 0;
 
 public:
 

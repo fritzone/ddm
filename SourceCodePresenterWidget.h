@@ -40,7 +40,7 @@ public:
         entity = ent;
     }
 
-    SqlSourceEntity* getSqlSourceEntity()
+    SqlSourceEntity* getSqlSourceEntity() const
     {
         return entity;
     }

@@ -16,6 +16,7 @@ class Issue;
 class View;
 class Procedure;
 class Trigger;
+class SqlSourceEntity;
 
 /**
  * Basic class holding data related to versions
@@ -94,7 +95,7 @@ public:
     /**
      * Return the table with the given name for r/w access
      */
-    virtual Table* getTable(const QString& name) = 0;
+    virtual Table* getTable(const QString& name) const = 0;
 
     /**
      * Serializes this version
@@ -154,7 +155,7 @@ public:
     /**
      * Returns a table instance
      */
-    virtual TableInstance* getTableInstance(const QString& ) = 0;
+    virtual TableInstance* getTableInstance(const QString& ) const = 0;
 
     /**
      * Purges the table instances that were sentenced in a "delete table instance" procedure
@@ -242,7 +243,7 @@ public:
     /**
      * Returns the given view
      */
-    virtual View* getView(const QString& viewName) = 0;
+    virtual View* getView(const QString& viewName) const = 0;
 
     /**
      * Adds a view in the system
@@ -262,7 +263,7 @@ public:
     /**
     * Returns the given procedure
     */
-    virtual Procedure* getProcedure(const QString& procName) = 0;
+    virtual Procedure* getProcedure(const QString& procName) const = 0;
 
     /**
     * Adds a procedure in the system
@@ -285,7 +286,10 @@ public:
     virtual void cleanupDataTypes() = 0;
 
     virtual void addTrigger(Trigger*) = 0;
-    virtual Trigger* getTrigger(const QString&) = 0;
+    virtual Trigger* getTrigger(const QString&) const = 0;
+    virtual const QVector<Trigger*>& getTriggers() = 0;
+
+    virtual SqlSourceEntity* getSqlSourceEntityNamed(const QString& name) const = 0;
 
 };
 

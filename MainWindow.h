@@ -184,6 +184,7 @@ private:
 
     template <class T> T* getRightClickedObject(itemGetter);
     template <class T> T* getNamedObject(QTreeWidgetItem*, itemGetter);
+    template <class T> void showNamedObjectList(showSomething s, const QVector<T*> items, const QIcon& icon, const QString& title);
 
     void doDeployment(const QString& codePage, QStringList connectionNames);
     void createConnectionTreeEntryForTables(Connection *c);
@@ -191,6 +192,7 @@ private:
     void hideSplashwindow();
     void tryBrowseConnection(Connection* c);
     void showNamedObject(QTreeWidgetItem* current, showSomething s, bool focus=true);
+
 
 private:
     Ui::MainWindow *m_ui;
