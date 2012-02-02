@@ -12,7 +12,7 @@ DatabaseNormalizationIssue::DatabaseNormalizationIssue(Table* newTable, Column* 
     Issue(firstColumn, QApplication::tr("This column might destroy the normalization of the database in relation with table: ")
         + newTable->getName()
         + QApplication::tr(" column: ")
-        + newColumn->getName(),
+        + newColumn->getName() + QApplication::tr(". Both of them are: ") + newColumn->getDataType()->getName(),
         Issue::WARNING, IssueManager::getInstance().nextCounter()),
     m_newTable(newTable), m_firstTable(firstTable), m_newColumn(newColumn), m_firstColumn(firstColumn),
     m_newTableName(newTable->getName()), m_firstTableName(firstTable->getName()),

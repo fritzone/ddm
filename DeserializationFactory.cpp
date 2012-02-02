@@ -29,6 +29,7 @@
 #include "qbr_DatabaseFunctionInstantiationComponent.h"
 #include "Workspace.h"
 #include "core_Procedure.h"
+#include "core_Trigger.h"
 
 #include <QStringList>
 
@@ -259,6 +260,20 @@ MajorVersion* DeserializationFactory::createMajorVersion(Project* p, DatabaseEng
             }
         }
     }
+
+    // getting the triggers
+    for(int i=0; i<element.childNodes().count(); i++)
+    {
+        if(element.childNodes().at(i).nodeName() == "Triggers")
+        {
+            for(int j=0; j<element.childNodes().at(i).childNodes().count(); j++)
+            {
+                Trigger* trig = createTrigger(p, result, doc, element.childNodes().at(i).childNodes().at(j).toElement());
+                result->addTrigger(trig);
+            }
+        }
+    }
+
     return result;
 }
 
@@ -776,4 +791,19 @@ Procedure* DeserializationFactory::createProcedure(Project*, Version*,  const QD
     QDomCDATASection cdata = sqlElement.firstChild().toCDATASection();
     p->setSql(cdata.toText().data());
     return p;
+}
+
+Trigger* DeserializationFactory::createTrigger(Project*, Version* v,  const QDomDocument&, const QDomElement& element)
+{
+    Table* tab = v->getTable(element.attribute("Table"));
+    if(tab == 0) return 0;
+    QString name = element.attribute("Name");
+    Trigger* trigg = new Trigger(name);
+    QDomElement sqlElement = element.firstChild().toElement();
+    QDomCDATASection cdata = sqlElement.firstChild().toCDATASection();
+    trigg->setSql(cdata.toText().data());
+    trigg->setTime(element.attribute("Time"));
+    trigg->setEvent(element.attribute("Event"));
+    trigg->setTable(tab);
+    return trigg;
 }

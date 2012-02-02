@@ -20,7 +20,6 @@ SOURCES += main.cpp \
     Codepage.cpp \
     Configuration.cpp \
     Table.cpp \
-    TablesListForm.cpp \
     NewTableForm.cpp \
     Column.cpp \
     Index.cpp \
@@ -49,7 +48,6 @@ SOURCES += main.cpp \
     SqlHighlighter.cpp \
     SqlForm.cpp \
     InjectSqlDialog.cpp \
-    TableInstancesListForm.cpp \
     PreferencesDialog.cpp \
     SqlNamesValidator.cpp \
     NameGenerator.cpp \
@@ -86,18 +84,16 @@ SOURCES += main.cpp \
     core_ReverseEngineererThread.cpp \
     helper_MostRecentlyUsedFiles.cpp \
     BrowseTableForm.cpp \
-    DiagramsListForm.cpp \
-    ViewsListForm.cpp \
     ProcedureForm.cpp \
     FrameForLineNumbers.cpp \
     core_Procedure.cpp \
-    ProceduresListForm.cpp \
     TextEditWithCodeCompletion.cpp \
     ListWidgetForCodeCompletion.cpp \
     GuiElements.cpp \
     ConnectionGuiElements.cpp \
     TriggerForm.cpp \
-    core_Trigger.cpp
+    core_Trigger.cpp \
+    NamedObjectListingForm.cpp
 HEADERS += MainWindow.h \
     MainWindowButtonDialog.h \
     NewProjectDialog.h \
@@ -112,7 +108,6 @@ HEADERS += MainWindow.h \
     Codepage.h \
     Configuration.h \
     Table.h \
-    TablesListForm.h \
     NewTableForm.h \
     IconFactory.h \
     TreeItem.h \
@@ -149,7 +144,6 @@ HEADERS += MainWindow.h \
     SqlForm.h \
     SqlSourceEntity.h \
     InjectSqlDialog.h \
-    TableInstancesListForm.h \
     PreferencesDialog.h \
     SqlNamesValidator.h \
     NameGenerator.h \
@@ -196,25 +190,22 @@ HEADERS += MainWindow.h \
     gui_colors.h \
     helper_MostRecentlyUsedFiles.h \
     BrowseTableForm.h \
-    DiagramsListForm.h \
-    ViewsListForm.h \
     ProcedureForm.h \
     FrameForLineNumbers.h \
     core_Procedure.h \
-    ProceduresListForm.h \
     TextEditWithCodeCompletion.h \
     ListWidgetForCodeCompletion.h \
     commons.h \
     GuiElements.h \
     ConnectionGuiElements.h \
     TriggerForm.h \
-    core_Trigger.h
+    core_Trigger.h \
+    NamedObjectListingForm.h
 FORMS += MainWindow.ui \
     MainWindowButtonDialog.ui \
     NewProjectDialog.ui \
     NewDataTypeForm.ui \
     DataTypesListForm.ui \
-    TablesListForm.ui \
     NewTableForm.ui \
     ProjectDetailsForm.ui \
     AboutBoxDialog.ui \
@@ -224,7 +215,6 @@ FORMS += MainWindow.ui \
     TableInstanceForm.ui \
     SqlForm.ui \
     InjectSqlDialog.ui \
-    TableInstancesListForm.ui \
     PreferencesDialog.ui \
     SimpleTextInputDialog.ui \
     ReverseEngineerWizardWelcomeForm.ui \
@@ -235,11 +225,9 @@ FORMS += MainWindow.ui \
     QueryItemListDialog.ui \
     HelpWindow.ui \
     BrowseTableForm.ui \
-    DiagramsListForm.ui \
-    ViewsListForm.ui \
     ProcedureForm.ui \
-    ProceduresListForm.ui \
-    TriggerForm.ui
+    TriggerForm.ui \
+    NamedObjectListingForm.ui
 include (query_builder/query_builder.pri)
 INCLUDEPATH += query_builder
 include (dbmysql/dbmysql.pri)
@@ -255,6 +243,24 @@ INSTALLS += installfiles_doc
 installfiles_rs.files += rsrc/mysql.defaults
 installfiles_rs.path =  /home/ferenc/rpmbuild/BUILDROOT/usr/local/ddm/rsrc
 INSTALLS += installfiles_rs
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

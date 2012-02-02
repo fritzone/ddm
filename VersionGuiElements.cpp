@@ -11,19 +11,13 @@
 #include "TableInstance.h"
 #include "Issue.h"
 #include "IssueOriginator.h"
-#include "TablesListForm.h"
-#include "DiagramsListForm.h"
 #include "MainWindow.h"
-#include "TableInstancesListForm.h"
-#include "TablesListForm.h"
 #include "SqlForm.h"
 #include "Project.h"
 #include "NewTableForm.h"
 #include "core_View.h"
-#include "ViewsListForm.h"
 #include "ProcedureForm.h"
 #include "core_Procedure.h"
-#include "ProceduresListForm.h"
 #include "TriggerForm.h"
 #include "core_Trigger.h"
 
@@ -37,7 +31,7 @@ VersionGuiElements::VersionGuiElements(QTreeWidget* projTree, QTreeWidget* dtTre
     versionItem(0), diagramsItem(0), proceduresItem(0), finalSqlItem(0), dtsItem(0), viewsItem(0), triggersItem(0),
     m_tree(projTree), m_dtTree(dtTree), m_issuesTree(issueTree),
     stringsDtItem(0), intsDtItem(0), dateDtItem(0), blobDtItem(0),
-    boolDtItem(0), miscDtItem(0), spatialDtItem(0), m_tblInstancesListForm(0), m_version(v), m_tblsListForm(0),
+    boolDtItem(0), miscDtItem(0), spatialDtItem(0), m_version(v),
     m_newTableForm(0), m_existingTableForm(0), m_procedureForm(0)
 {
 }
@@ -258,6 +252,13 @@ void VersionGuiElements::populateTreeItems()
     for(int i=0; i<procs.size(); i++)
     {
         createProcedureTreeEntry(procs.at(i));
+    }
+
+    // add the triggers to the main tree
+    const QVector<Trigger*> triggers = m_version->getTriggers();
+    for(int i=0; i<triggers.size(); i++)
+    {
+        createTriggerTreeEntry(triggers.at(i));
     }
 }
 
@@ -482,21 +483,6 @@ void VersionGuiElements::updateForms()
         dynamic_cast<NewTableForm*>(MainWindow::instance()->centralWidget())->resetForeignTablesCombo();
     }
 
-    getTablesListForm();
-    m_tblsListForm->populateTables(m_version->getTables());
-    m_tblsListForm->setOop(Workspace::getInstance()->currentProjectIsOop());
-    if(dynamic_cast<TablesListForm*>(MainWindow::instance()->centralWidget()))
-    {
-        MainWindow::instance()->setCentralWidget(m_tblsListForm);
-    }
-
-    getTableInstancesListForm();
-    m_tblInstancesListForm->populateTableInstances(m_version->getTableInstances());
-    if(dynamic_cast<TableInstancesListForm*>(MainWindow::instance()->centralWidget()))
-    {
-        MainWindow::instance()->setCentralWidget(m_tblInstancesListForm);
-    }
-
     getSqlForm();
     m_sqlForm->setSqlSource(0);
     m_sqlForm->presentSql(Workspace::getInstance()->currentProject(), Workspace::getInstance()->currentProject()->getCodepage());
@@ -505,32 +491,6 @@ void VersionGuiElements::updateForms()
         MainWindow::instance()->setCentralWidget(m_sqlForm);
     }
 
-}
-
-TableInstancesListForm* VersionGuiElements::getTableInstancesListForm()
-{
-    return m_tblInstancesListForm = new TableInstancesListForm(MainWindow::instance());
-}
-
-DiagramsListForm* VersionGuiElements::getDiagramsListForm()
-{
-    return m_diagramsListForm = new DiagramsListForm(MainWindow::instance());
-}
-
-ProceduresListForm* VersionGuiElements::getProceduresListForm()
-{
-    return m_proceduresListForm = new ProceduresListForm(MainWindow::instance());
-}
-
-
-ViewsListForm* VersionGuiElements::getViewsListForm()
-{
-    return m_viewsListForm = new ViewsListForm(MainWindow::instance());
-}
-
-TablesListForm* VersionGuiElements::getTablesListForm()
-{
-    return m_tblsListForm = new TablesListForm(MainWindow::instance());
 }
 
 SqlForm* VersionGuiElements::getSqlForm()

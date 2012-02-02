@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>TablesListForm</class>
- <widget class="QWidget" name="TablesListForm">
+ <class>NamedObjectListingForm</class>
+ <widget class="QWidget" name="NamedObjectListingForm">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>591</width>
-    <height>456</height>
+    <width>400</width>
+    <height>300</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -24,7 +24,7 @@ p, li { white-space: pre-wrap; }
 &lt;table border=&quot;0&quot; style=&quot;-qt-table-type: root; margin-top:4px; margin-bottom:4px; margin-left:4px; margin-right:4px;&quot;&gt;
 &lt;tr&gt;
 &lt;td style=&quot;border: none;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;Tables&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;Objects&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
     </widget>
    </item>
@@ -112,7 +112,7 @@ p, li { white-space: pre-wrap; }
        </layout>
       </item>
       <item>
-       <widget class="QTreeWidget" name="treeTables">
+       <widget class="QTreeWidget" name="treeItems">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
           <horstretch>0</horstretch>
@@ -155,25 +155,5 @@ p, li { white-space: pre-wrap; }
  <resources>
   <include location="dbm.qrc"/>
  </resources>
- <connections>
-  <connection>
-   <sender>treeTables</sender>
-   <signal>itemDoubleClicked(QTreeWidgetItem*,int)</signal>
-   <receiver>TablesListForm</receiver>
-   <slot>doubleClickTree(QTreeWidgetItem*,int)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>199</x>
-     <y>149</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>199</x>
-     <y>149</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
- <slots>
-  <slot>doubleClickTree(QTreeWidgetItem*,int)</slot>
- </slots>
+ <connections/>
 </ui>

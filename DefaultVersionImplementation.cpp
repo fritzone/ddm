@@ -130,7 +130,7 @@ inline bool DefaultVersionImplementation::hasTable(const QString& tb)
 // TODO: 1. Make the Table class to come from the named item
 //       2. the two methods below could be very easily templated after this
 
-Table* DefaultVersionImplementation::getTable(const QString &name)
+Table* DefaultVersionImplementation::getTable(const QString &name) const
 {
     for(int i=0; i< m_data.m_tables.size(); i++)
     {
@@ -338,7 +338,7 @@ TableInstance* DefaultVersionImplementation::instantiateTable(Table* tab, bool b
     return tabInst;
 }
 
-TableInstance* DefaultVersionImplementation::getTableInstance(const QString& name)
+TableInstance* DefaultVersionImplementation::getTableInstance(const QString& name) const
 {
     for(int i=0; i<m_data.m_tableInstances.size(); i++)
     {
@@ -772,7 +772,7 @@ void DefaultVersionImplementation::setSpecialValidationFlags(int a)
     m_validationFlags = a;
 }
 
-View* DefaultVersionImplementation::getView(const QString &viewName)
+View* DefaultVersionImplementation::getView(const QString &viewName) const
 {
     for(int i=0; i< m_data.m_views.size(); i++)
     {
@@ -789,7 +789,7 @@ void DefaultVersionImplementation::addView(View* v)
     m_data.m_views.append(v);
 }
 
-Trigger* DefaultVersionImplementation::getTrigger(const QString &triggerName)
+Trigger* DefaultVersionImplementation::getTrigger(const QString &triggerName) const
 {
     for(int i=0; i< m_data.m_triggers.size(); i++)
     {
@@ -802,7 +802,7 @@ Trigger* DefaultVersionImplementation::getTrigger(const QString &triggerName)
 }
 
 
-Procedure* DefaultVersionImplementation::getProcedure(const QString &procedureName)
+Procedure* DefaultVersionImplementation::getProcedure(const QString &procedureName) const
 {
     for(int i=0; i< m_data.m_procedures.size(); i++)
     {
@@ -827,6 +827,11 @@ void DefaultVersionImplementation::addTrigger(Trigger* t)
 const QVector<Procedure*>& DefaultVersionImplementation::getProcedures()
 {
     return m_data.m_procedures;
+}
+
+const QVector<Trigger*>& DefaultVersionImplementation::getTriggers()
+{
+    return m_data.m_triggers;
 }
 
 void DefaultVersionImplementation::cleanupDataTypes()
@@ -863,4 +868,43 @@ void DefaultVersionImplementation::cleanupDataTypes()
         deleteDataType(dtName);
 
     }
+}
+
+VersionGuiElements* DefaultVersionImplementation::getGui()
+{
+    return m_guiElements;
+}
+
+QString DefaultVersionImplementation::getVersionText()
+{
+    return version;
+}
+
+SqlSourceEntity* DefaultVersionImplementation::getSqlSourceEntityNamed(const QString &name) const
+{
+    SqlSourceEntity* ent = 0;
+    if(m_project->oopProject())
+    {
+        ent = getTableInstance(name);
+    }
+    else
+    {
+        ent = getTable(name);
+    }
+
+    if(ent == 0)
+    {
+        ent = getView(name);
+    }
+
+    if(ent == 0)
+    {
+        ent = getProcedure(name);
+    }
+
+    if(ent == 0)
+    {
+        ent = getTrigger(name);
+    }
+    return ent;
 }

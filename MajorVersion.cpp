@@ -5,6 +5,7 @@
 #include "TableInstance.h"
 #include "core_View.h"
 #include "core_Procedure.h"
+#include "core_Trigger.h"
 
 MajorVersion::MajorVersion(QTreeWidget* tree, QTreeWidget* dttree, QTreeWidget* issueTree, ContextMenuEnabledTreeWidgetItem* projectItem, int ver, Project* p)
     : DefaultVersionImplementation(tree, dttree, issueTree, projectItem, p)
@@ -90,6 +91,16 @@ void MajorVersion::serialize(QDomDocument &doc, QDomElement &parent) const
         m_data.m_procedures[i]->serialize(doc, procElement);
     }
     majorVersionElement.appendChild(procElement);
+    }
+
+    // the triggers
+    {
+    QDomElement triggerElement = doc.createElement("Triggers");
+    for(int i=0; i< m_data.m_triggers.size(); i++)
+    {
+        m_data.m_triggers[i]->serialize(doc, triggerElement);
+    }
+    majorVersionElement.appendChild(triggerElement);
     }
 
     parent.appendChild(majorVersionElement);
