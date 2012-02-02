@@ -161,7 +161,6 @@ HEADERS += MainWindow.h \
     ReverseEngineerWizardWelcomeForm.h \
     ReverseEngineerWizard.h \
     ReverseEngineerWizardDatabasesForm.h \
-    ReverseEngineerWizardTablesForm.h \
     ReverseEngineerWizardOptionsForm.h \
     IssueManager.h \
     Issue.h \
@@ -205,7 +204,8 @@ HEADERS += MainWindow.h \
     NamedObjectListingForm.h \
     core_Function.h \
     enums.h \
-    core_StoredMethod.h
+    core_StoredMethod.h \
+    ReverseEngineerWizardObjectListForm.h
 FORMS += MainWindow.ui \
     MainWindowButtonDialog.ui \
     NewProjectDialog.ui \
@@ -224,7 +224,6 @@ FORMS += MainWindow.ui \
     SimpleTextInputDialog.ui \
     ReverseEngineerWizardWelcomeForm.ui \
     ReverseEngineerWizardDatabasesForm.ui \
-    ReverseEngineerWizardTablesForm.ui \
     ReverseEngineerWizardOptionsForm.ui \
     NewViewForm.ui \
     QueryItemListDialog.ui \
@@ -232,7 +231,8 @@ FORMS += MainWindow.ui \
     BrowseTableForm.ui \
     ProcedureForm.ui \
     TriggerForm.ui \
-    NamedObjectListingForm.ui
+    NamedObjectListingForm.ui \
+    ReverseEngineerWizardObjectListForm.ui
 include (query_builder/query_builder.pri)
 INCLUDEPATH += query_builder
 include (dbmysql/dbmysql.pri)
@@ -248,6 +248,10 @@ INSTALLS += installfiles_doc
 installfiles_rs.files += rsrc/mysql.defaults
 installfiles_rs.path =  /home/ferenc/rpmbuild/BUILDROOT/usr/local/ddm/rsrc
 INSTALLS += installfiles_rs
+
+
+
+
 
 
 

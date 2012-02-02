@@ -1,8 +1,8 @@
-#include "ReverseEngineerWizardTablesForm.h"
+#include "ReverseEngineerWizardObjectListForm.h"
 #include "ui_ReverseEngineerWizardTablesForm.h"
 #include "IconFactory.h"
 
-ReverseEngineerWizardTablesForm::ReverseEngineerWizardTablesForm(QWidget *parent, Mode t) :
+ReverseEngineerWizardObjectListForm::ReverseEngineerWizardObjectListForm(QWidget *parent, Mode t) :
     QWizardPage(parent),
     ui(new Ui::ReverseEngineerWizardTablesForm),  m_mode(t)
 {
@@ -18,6 +18,10 @@ ReverseEngineerWizardTablesForm::ReverseEngineerWizardTablesForm(QWidget *parent
         setTitle(tr("Select Views"));
         setSubTitle(tr("Please select the views you want to reverse engineer."));
         break;
+    case REVERSE_ENGINEER_PROCS:
+        setTitle(tr("Select Procedures"));
+        setSubTitle(tr("Please select the procedures you want to reverse engineer."));
+        break;
     }
     QIcon*p = new QIcon(strFroggieIcon);
     QIcon*p1 = new QIcon(strIcon);
@@ -25,23 +29,25 @@ ReverseEngineerWizardTablesForm::ReverseEngineerWizardTablesForm(QWidget *parent
     setPixmap(QWizard::LogoPixmap, p1->pixmap(32, 32));
 }
 
-ReverseEngineerWizardTablesForm::~ReverseEngineerWizardTablesForm()
+ReverseEngineerWizardObjectListForm::~ReverseEngineerWizardObjectListForm()
 {
     delete ui;
 }
 
-void ReverseEngineerWizardTablesForm::addTable(const QString & tab)
+void ReverseEngineerWizardObjectListForm::addTable(const QString & tab)
 {
     QListWidgetItem* lwi = new QListWidgetItem(tab, ui->listWidget);
     QIcon c = IconFactory::getTablesIcon();
     if(m_mode == REVERSE_ENGINEER_VIEWS) c = IconFactory::getViewsIcon();
+    if(m_mode == REVERSE_ENGINEER_PROCS) c = IconFactory::getProcedureIcon();
+
     QIcon b = QIcon(c.pixmap(16,16));
     lwi->setIcon(b);
     lwi->setFlags(Qt::ItemIsUserCheckable | Qt::ItemIsEnabled);
     lwi->setCheckState(Qt::Unchecked);
 }
 
-void ReverseEngineerWizardTablesForm::checkStateChanged(int state)
+void ReverseEngineerWizardObjectListForm::checkStateChanged(int state)
 {
     if(state == Qt::Checked || state == Qt::Unchecked )
     {
@@ -52,7 +58,7 @@ void ReverseEngineerWizardTablesForm::checkStateChanged(int state)
     }
 }
 
-QStringList ReverseEngineerWizardTablesForm::getSelectedItems()
+QStringList ReverseEngineerWizardObjectListForm::getSelectedItems()
 {
     QStringList result;
     for(int i=0; i<ui->listWidget->count(); i++)
@@ -65,7 +71,7 @@ QStringList ReverseEngineerWizardTablesForm::getSelectedItems()
     return result;
 }
 
-void ReverseEngineerWizardTablesForm::clearList()
+void ReverseEngineerWizardObjectListForm::clearList()
 {
     ui->listWidget->clear();
 }

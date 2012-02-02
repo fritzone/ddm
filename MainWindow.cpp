@@ -1994,8 +1994,16 @@ void MainWindow::onReverseEngineerWizardNextPage(int cpage)
             QMessageBox::critical(this, tr("Error"), tr("Please select a database"), QMessageBox::Ok);
             m_revEngWizard->back();
         }
-
         m_revEngWizard->connectAndRetrieveViews();
+        break;
+    case 4:
+        if(!m_revEngWizard->selectDatabase()) // did he select a database?
+        {
+            QMessageBox::critical(this, tr("Error"), tr("Please select a database"), QMessageBox::Ok);
+            m_revEngWizard->back();
+        }
+        m_revEngWizard->connectAndRetrieveProcedures();
+        break;
     }
 }
 
@@ -2012,7 +2020,9 @@ void MainWindow::onReverseEngineerWizardAccept()
     createStatusLabel();
     lblStatus->setText(QApplication::translate("MainWindow", "Reverse engineering started", 0, QApplication::UnicodeUTF8));
 
-    ReverseEngineerer* revEng = new ReverseEngineerer(c, engine, p, host, user, pass, db, m_revEngWizard->getTablesToReverse(), m_revEngWizard->getViewsToReverse(), this);
+    ReverseEngineerer* revEng = new ReverseEngineerer(c, engine, p, host, user, pass, db,
+                                                      m_revEngWizard->getTablesToReverse(), m_revEngWizard->getViewsToReverse(), m_revEngWizard->getProceduresToReverse(),
+                                                      this);
     connect(revEng, SIGNAL(done(ReverseEngineerer*)), this, SLOT(onReverseEngineeringFinished(ReverseEngineerer*)));
     revEng->reverseEngineer();
 }

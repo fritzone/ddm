@@ -6,7 +6,7 @@
 class DatabaseEngine;
 class ReverseEngineerWizardWelcomeForm;
 class ReverseEngineerWizardDatabasesForm;
-class ReverseEngineerWizardTablesForm;
+class ReverseEngineerWizardObjectListForm;
 class ReverseEngineerWizardOptionsForm;
 
 class ReverseEngineerWizard : public QWizard
@@ -20,9 +20,12 @@ public:
     bool selectDatabase();
     bool connectAndRetrieveTables();
     bool connectAndRetrieveViews();
+    bool connectAndRetrieveProcedures();
 
     QStringList getTablesToReverse();
     QStringList getViewsToReverse();
+    QStringList getProceduresToReverse();
+
 
     QString getHost() {return m_host; }
     QString getUser() {return m_user; }
@@ -36,8 +39,9 @@ private:
 
     ReverseEngineerWizardWelcomeForm* m_welcomePage;
     ReverseEngineerWizardDatabasesForm* m_databasesPage;
-    ReverseEngineerWizardTablesForm* m_tablesPage;
-    ReverseEngineerWizardTablesForm* m_viewsPage;
+    ReverseEngineerWizardObjectListForm* m_tablesPage;
+    ReverseEngineerWizardObjectListForm* m_viewsPage;
+    ReverseEngineerWizardObjectListForm* m_proceduresPage;
     ReverseEngineerWizardOptionsForm* m_optionsPage;
 
     QString m_host;
