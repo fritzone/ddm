@@ -7,7 +7,7 @@ namespace Ui {
     class ReverseEngineerWizardTablesForm;
 }
 
-class ReverseEngineerWizardTablesForm :public QWizardPage
+class ReverseEngineerWizardObjectListForm :public QWizardPage
 {
     Q_OBJECT
 
@@ -16,11 +16,12 @@ public:
     enum Mode
     {
         REVERSE_ENGINEER_TABLES = 0,
-        REVERSE_ENGINEER_VIEWS = 1
+        REVERSE_ENGINEER_VIEWS = 1,
+        REVERSE_ENGINEER_PROCS = 2
     } ;
 
-    explicit ReverseEngineerWizardTablesForm(QWidget *parent = 0, Mode t = REVERSE_ENGINEER_TABLES);
-    ~ReverseEngineerWizardTablesForm();
+    explicit ReverseEngineerWizardObjectListForm(QWidget *parent = 0, Mode t = REVERSE_ENGINEER_TABLES);
+    ~ReverseEngineerWizardObjectListForm();
 
     void addTable(const QString& tab);
     void clearList();

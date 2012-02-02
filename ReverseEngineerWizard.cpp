@@ -1,7 +1,7 @@
 #include "ReverseEngineerWizard.h"
 #include "ReverseEngineerWizardWelcomeForm.h"
 #include "ReverseEngineerWizardDatabasesForm.h"
-#include "ReverseEngineerWizardTablesForm.h"
+#include "ReverseEngineerWizardObjectListForm.h"
 #include "ReverseEngineerWizardOptionsForm.h"
 #include "core_Connection.h"
 #include "db_DatabaseEngine.h"
@@ -9,14 +9,17 @@
 #include <QMessageBox>
 
 ReverseEngineerWizard::ReverseEngineerWizard(DatabaseEngine* engine) : QWizard(), m_engine(engine), m_welcomePage(new ReverseEngineerWizardWelcomeForm),
-    m_databasesPage(new ReverseEngineerWizardDatabasesForm), m_tablesPage(new ReverseEngineerWizardTablesForm),
-    m_viewsPage(new ReverseEngineerWizardTablesForm(0, ReverseEngineerWizardTablesForm::REVERSE_ENGINEER_VIEWS)), m_optionsPage(new ReverseEngineerWizardOptionsForm),
+    m_databasesPage(new ReverseEngineerWizardDatabasesForm), m_tablesPage(new ReverseEngineerWizardObjectListForm),
+    m_viewsPage(new ReverseEngineerWizardObjectListForm(0, ReverseEngineerWizardObjectListForm::REVERSE_ENGINEER_VIEWS)),
+    m_proceduresPage(new ReverseEngineerWizardObjectListForm(0, ReverseEngineerWizardObjectListForm::REVERSE_ENGINEER_PROCS)),
+    m_optionsPage(new ReverseEngineerWizardOptionsForm),
     m_host(""), m_user(""), m_pass(""), m_database("")
 {
     addPage(m_welcomePage);
     addPage(m_databasesPage);
     addPage(m_tablesPage);
     addPage(m_viewsPage);
+    addPage(m_proceduresPage);
     addPage(m_optionsPage);
     setWindowTitle(QObject::tr("Reverse Engineer a Database"));
 }
@@ -67,6 +70,20 @@ bool ReverseEngineerWizard::connectAndRetrieveViews()
     return true;
 }
 
+bool ReverseEngineerWizard::connectAndRetrieveProcedures()
+{
+    Connection* c = new Connection("temp", m_host, m_user, m_pass, m_database, false, false);
+
+    QStringList views = m_engine->getAvailableProcedures(c);
+    m_proceduresPage->clearList();
+    for(int i=0; i<views.size(); i++)
+    {
+        m_proceduresPage->addTable(views.at(i));
+    }
+    delete c;
+    return true;
+}
+
 bool ReverseEngineerWizard::connectAndRetrieveTables()
 {
     Connection* c = new Connection("temp", m_host, m_user, m_pass, m_database, false, false);
@@ -91,7 +108,13 @@ QStringList ReverseEngineerWizard::getViewsToReverse()
     return m_viewsPage->getSelectedItems();
 }
 
+QStringList ReverseEngineerWizard::getProceduresToReverse()
+{
+    return m_proceduresPage->getSelectedItems();
+}
+
 bool ReverseEngineerWizard::createDataTypesForColumns()
 {
     return m_optionsPage->createDataTypesForColumns();
 }
+
