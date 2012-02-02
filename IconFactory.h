@@ -420,6 +420,12 @@ public:
         return icon;
     }
 
+    static const QIcon& getFunctionTreeIcon()
+    {
+        static const QIcon icon(strFunctionTreeIcon);
+        return icon;
+    }
+
     static const QIcon& getTriggerUpdateIcon()
     {
         static const QIcon icon(strTriggerUpdateIcon);

@@ -59,6 +59,7 @@ public:
     virtual void deleteView(const QString &v);
     virtual const QVector<View*>& getViews();
     virtual Procedure* getProcedure(const QString &name) const;
+    virtual Function* getFunction(const QString &name) const;
     virtual void addProcedure(Procedure* p);
     virtual const QVector<Procedure*>& getProcedures();
     virtual void deleteProcedure(const QString& p);
@@ -67,6 +68,8 @@ public:
     virtual Trigger* getTrigger(const QString &name) const;
     virtual const QVector<Trigger*>& getTriggers();
     virtual SqlSourceEntity* getSqlSourceEntityNamed(const QString& name) const;
+    virtual void addFunction(Function* p);
+    virtual const QVector<Function*>& getFunctions();
 
     void createTreeItems(QTreeWidget* tree = 0, QTreeWidget* dtTree = 0, QTreeWidget* issueTree = 0, ContextMenuEnabledTreeWidgetItem* projectIem = 0);
 

@@ -28,9 +28,10 @@ public:
     virtual QStringList getAvailableDatabases(const QString& host, const QString& user, const QString& pass);
     virtual QStringList getAvailableTables(Connection* c);
     virtual QStringList getAvailableViews(Connection* c);
+    virtual QStringList getAvailableProcedures(Connection* c);
     virtual bool createDatabase(Connection* c);
     virtual QVector<DatabaseBuiltinFunction> getBuiltinFunctions();
-    const DatabaseBuiltinFunction& getBuiltinFunction(const QString& name);
+    virtual const DatabaseBuiltinFunction& getBuiltinFunction(const QString& name);
     virtual bool tryConnect(Connection* c);
      virtual QStringList getKeywords() const;
     virtual QSqlDatabase getQSqlDatabaseForConnection(Connection *c);

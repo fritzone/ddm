@@ -1,21 +1,21 @@
-#include "core_Procedure.h"
+#include "core_Function.h"
 #include "Workspace.h"
 #include "Version.h"
 #include "NameGenerator.h"
 #include "db_AbstractSQLGenerator.h"
 #include "Configuration.h"
 
-Procedure::Procedure() : StoredMethod(NameGenerator::getUniqueName(Workspace::getInstance()->workingVersion(), (itemGetter)&Version::getProcedure, QString("proc")))
+Function::Function() : StoredMethod(NameGenerator::getUniqueName(Workspace::getInstance()->workingVersion(), (itemGetter)&Version::getFunction, QString("func")))
 {
 }
 
-Procedure::Procedure(const QString &pname) : StoredMethod(pname)
+Function::Function(const QString &pname) : StoredMethod(pname)
 {
 }
 
-void Procedure::serialize(QDomDocument &doc, QDomElement &parent) const
+void Function::serialize(QDomDocument &doc, QDomElement &parent) const
 {
-    QDomElement procElement = doc.createElement("Procedure");
+    QDomElement procElement = doc.createElement("Function");
     procElement.setAttribute("Name", m_name);
     QDomElement textElement = doc.createElement("Sql");
     QDomCDATASection cdata = doc.createCDATASection(m_sql);
@@ -23,3 +23,4 @@ void Procedure::serialize(QDomDocument &doc, QDomElement &parent) const
     procElement.appendChild(textElement);
     parent.appendChild(procElement);
 }
+

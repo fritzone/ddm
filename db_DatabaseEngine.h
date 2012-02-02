@@ -206,6 +206,13 @@ public:
     virtual QStringList getAvailableViews(Connection* c) = 0;
 
     /**
+     * Returns a list of the available procedures that are in the database represented by the given connection
+     * @param c - the connection to the database
+     * @return the list of procedure names
+     */
+    virtual QStringList getAvailableProcedures(Connection* c) = 0;
+
+    /**
      * Reverse engineer a table.
      * @param c - the connection representing the database
      * @param tableName - the table to be reversed

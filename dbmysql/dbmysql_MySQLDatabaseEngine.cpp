@@ -183,6 +183,39 @@ QStringList MySQLDatabaseEngine::getAvailableViews(Connection* c)
     return result;
 }
 
+QStringList MySQLDatabaseEngine::getAvailableProcedures(Connection* c)
+{
+    QString viewsConnectionName = provideConnectionName("getProcedures");
+    QSqlDatabase dbo = QSqlDatabase::cloneDatabase(*m_defaultMysqlDb, viewsConnectionName);
+
+    dbo.setHostName(c->getHost());
+    dbo.setUserName(c->getUser());
+    dbo.setPassword(c->getPassword());
+    dbo.setDatabaseName(c->getDb());
+
+    QStringList result;
+    bool ok = dbo.open();
+
+    if(!ok)
+    {
+        lastError = dbo.lastError().databaseText() + "/" + dbo.lastError().databaseText();
+        return result;
+    }
+
+    QSqlQuery query (dbo);
+
+    query.exec("show procedure status where Db='"+c->getDb()+"'");
+
+    while(query.next())
+    {
+        QString proc = query.value(0).toString();
+        result.append(proc);
+    }
+    dbo.close();
+    return result;
+}
+
+
 QStringList MySQLDatabaseEngine::getAvailableTables(Connection* c)
 {
     QString tabsConnectionName = provideConnectionName("getTables");

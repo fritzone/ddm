@@ -19,6 +19,7 @@
 #include "core_Procedure.h"
 #include "db_AbstractSQLGenerator.h"
 #include "core_Trigger.h"
+#include "core_Function.h"
 
 #include <QtGui>
 
@@ -801,6 +802,17 @@ Trigger* DefaultVersionImplementation::getTrigger(const QString &triggerName) co
     return 0;
 }
 
+Function* DefaultVersionImplementation::getFunction(const QString &name) const
+{
+    for(int i=0; i< m_data.m_functions.size(); i++)
+    {
+        if(m_data.m_functions[i]->getName() == name)
+        {
+            return m_data.m_functions[i];
+        }
+    }
+    return 0;
+}
 
 Procedure* DefaultVersionImplementation::getProcedure(const QString &procedureName) const
 {
@@ -819,6 +831,11 @@ void DefaultVersionImplementation::addProcedure(Procedure* p)
     m_data.m_procedures.append(p);
 }
 
+void DefaultVersionImplementation::addFunction(Function* p)
+{
+    m_data.m_functions.append(p);
+}
+
 void DefaultVersionImplementation::addTrigger(Trigger* t)
 {
     m_data.m_triggers.append(t);
@@ -827,6 +844,11 @@ void DefaultVersionImplementation::addTrigger(Trigger* t)
 const QVector<Procedure*>& DefaultVersionImplementation::getProcedures()
 {
     return m_data.m_procedures;
+}
+
+const QVector<Function*>& DefaultVersionImplementation::getFunctions()
+{
+    return m_data.m_functions;
 }
 
 const QVector<Trigger*>& DefaultVersionImplementation::getTriggers()
@@ -906,5 +928,11 @@ SqlSourceEntity* DefaultVersionImplementation::getSqlSourceEntityNamed(const QSt
     {
         ent = getTrigger(name);
     }
+
+    if(ent == 0)
+    {
+        ent = getFunction(name);
+    }
+
     return ent;
 }

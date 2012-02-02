@@ -17,6 +17,7 @@ class View;
 class Procedure;
 class Trigger;
 class SqlSourceEntity;
+class Function;
 
 /**
  * Basic class holding data related to versions
@@ -291,6 +292,9 @@ public:
 
     virtual SqlSourceEntity* getSqlSourceEntityNamed(const QString& name) const = 0;
 
+    virtual void addFunction(Function* p) = 0;
+    virtual Function* getFunction(const QString& procName) const = 0;
+    virtual const QVector<Function*>& getFunctions() = 0;
 };
 
 #endif // VERSION_H

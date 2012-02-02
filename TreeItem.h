@@ -29,6 +29,11 @@ public:
         return m_location;
     }
 
+    virtual void rename(const QString& newText)
+    {
+        m_location->setText(0, newText);
+    }
+
 protected:
     // where the object is to be found
     ContextMenuEnabledTreeWidgetItem* m_location;

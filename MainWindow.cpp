@@ -54,6 +54,7 @@
 #include "TriggerForm.h"
 #include "core_Trigger.h"
 #include "NamedObjectListingForm.h"
+#include "core_Function.h"
 
 #include <QtGui>
 
@@ -348,7 +349,19 @@ void MainWindow::showProcedure(const QString &procName, bool /*focus*/)
     Procedure* p = m_workspace->workingVersion()->getProcedure(procName);
     if(p)
     {
-        ProcedureForm* pf = m_workspace->workingVersion()->getGui()->getProcedureForm();
+        ProcedureForm* pf = m_workspace->workingVersion()->getGui()->getProcedureForm(MODE_PROCEDURE);
+        pf->setProcedure(p);
+        setCentralWidget(pf);
+        pf->showSql();
+    }
+}
+
+void MainWindow::showFunction(const QString &funcName, bool /*focus*/)
+{
+    Function* p = m_workspace->workingVersion()->getFunction(funcName);
+    if(p)
+    {
+        ProcedureForm* pf = m_workspace->workingVersion()->getGui()->getProcedureForm(MODE_FUNCTION);
         pf->setProcedure(p);
         setCentralWidget(pf);
         pf->showSql();
@@ -451,6 +464,11 @@ void MainWindow::currentProjectTreeItemChanged(QTreeWidgetItem * current, QTreeW
             showNamedObjectList(&MainWindow::showProcedure, m_workspace->workingVersion()->getProcedures(), IconFactory::getProcedureIcon(), "Procedures");
         }
         else
+        if(current == m_workspace->workingVersion()->getGui()->getFunctionsItem())
+        {// we have clicked on the Procedures item (i.e. the list of procedures)
+            showNamedObjectList(&MainWindow::showFunction, m_workspace->workingVersion()->getFunctions(), IconFactory::getFunctionTreeIcon(), "Functions");
+        }
+        else
         if(current == m_workspace->workingVersion()->getGui()->getTriggersItem())
         {// we have clicked on the Triggers item (i.e. the list of triggers)
             showNamedObjectList(&MainWindow::showTrigger, m_workspace->workingVersion()->getTriggers(), IconFactory::getTriggerIcon(), "Triggers");
@@ -485,6 +503,12 @@ void MainWindow::currentProjectTreeItemChanged(QTreeWidgetItem * current, QTreeW
             {
                 // user clicked on a procedure
                 showNamedObject(current, (showSomething)&MainWindow::showProcedure, false);
+            }
+            else
+            if(current->parent() && current->parent() == m_workspace->workingVersion()->getGui()->getFunctionsItem())
+            {
+                // user clicked on a function
+                showNamedObject(current, (showSomething)&MainWindow::showFunction, false);
             }
             else
             if(current->parent() && current->parent() == m_workspace->workingVersion()->getGui()->getTriggersItem())
@@ -727,6 +751,7 @@ void MainWindow::enableActions()
     m_ui->action_DeleteUnusuedDatatypes->setEnabled(true);
     m_ui->action_DeploymentScript->setVisible(false);
     m_ui->action_NewTrigger->setEnabled(true);
+    m_ui->action_NewFunction->setEnabled(true);
 
     if(m_workspace->currentProjectIsOop())
     {
@@ -2068,12 +2093,25 @@ void MainWindow::onNewView()
 
 void MainWindow::onNewProcedure()
 {
-    ProcedureForm* frm = Workspace::getInstance()->workingVersion()->getGui()->getProcedureForm();
+    ProcedureForm* frm = Workspace::getInstance()->workingVersion()->getGui()->getProcedureForm(MODE_PROCEDURE);
     Procedure* p = new Procedure();
     frm->setProcedure(p);
     frm->initSql();
     Workspace::getInstance()->workingVersion()->addProcedure(p);
     Workspace::getInstance()->workingVersion()->getGui()->createProcedureTreeEntry(p);
+
+    //m_guiElements->getProjectTree()->setCurrentItem(p->getLocation());
+    setCentralWidget(frm);
+}
+
+void MainWindow::onNewFunction()
+{
+    ProcedureForm* frm = Workspace::getInstance()->workingVersion()->getGui()->getProcedureForm(MODE_FUNCTION);
+    Function* func = new Function();
+    frm->setProcedure(func);
+    frm->initSql();
+    Workspace::getInstance()->workingVersion()->addFunction(func);
+    Workspace::getInstance()->workingVersion()->getGui()->createFunctionTreeEntry(func);
 
     //m_guiElements->getProjectTree()->setCurrentItem(p->getLocation());
     setCentralWidget(frm);

@@ -1,24 +1,28 @@
 #ifndef PROCEDUREFORM_H
 #define PROCEDUREFORM_H
 
-#include <QWidget>
+#include "enums.h"
+#include "core_StoredMethod.h"
 
-class TextEditWithCodeCompletion;
-class FrameForLineNumbers;
-class Procedure;
+#include <QWidget>
 
 namespace Ui {
     class ProcedureForm;
 }
+
+class TextEditWithCodeCompletion;
+class FrameForLineNumbers;
+class Procedure;
 
 class ProcedureForm : public QWidget
 {
     Q_OBJECT
 
 public:
-    explicit ProcedureForm(QWidget *parent = 0);
+
+    explicit ProcedureForm(ProcedureFormMode m, QWidget *parent = 0);
     ~ProcedureForm();
-    void setProcedure(Procedure* p)
+    void setProcedure(StoredMethod* p)
     {
         m_proc = p;
     }
@@ -38,8 +42,9 @@ private:
     Ui::ProcedureForm *ui;
     TextEditWithCodeCompletion* m_textEdit;
     FrameForLineNumbers* m_frameForLineNumbers;
-    Procedure* m_proc;
+    StoredMethod* m_proc;
     bool m_forcedChange;
+    ProcedureFormMode m_mode;
 };
 
 #endif // PROCEDUREFORM_H

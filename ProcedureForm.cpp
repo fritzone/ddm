@@ -4,9 +4,9 @@
 #include "FrameForLineNumbers.h"
 #include "core_Procedure.h"
 
-ProcedureForm::ProcedureForm(QWidget *parent) :
+ProcedureForm::ProcedureForm(ProcedureFormMode m, QWidget *parent) :
     QWidget(parent),
-    ui(new Ui::ProcedureForm), m_textEdit(0), m_frameForLineNumbers(0), m_proc(0), m_forcedChange(false)
+    ui(new Ui::ProcedureForm), m_textEdit(0), m_frameForLineNumbers(0), m_proc(0), m_forcedChange(false), m_mode(m)
 {
     ui->setupUi(this);
 
@@ -42,13 +42,8 @@ void ProcedureForm::changeEvent(QEvent *e)
 QString ProcedureForm::getProcNameFromSql()
 {
     QString t = m_textEdit->toPlainText();
-    QString c = "PROCEDURE";
+    QString c = m_mode == MODE_PROCEDURE?"PROCEDURE":"FUNCTION";
     int i = t.indexOf(c, 0, Qt::CaseInsensitive);
-    if(i == -1)
-    {
-        c = "FUNCTION";
-        i = t.indexOf(c, 0, Qt::CaseInsensitive);
-    }
 
     if(i != -1)
     {
@@ -82,8 +77,10 @@ void ProcedureForm::textChanged()
 
 void ProcedureForm::initSql()
 {
-    QString sql = "CREATE PROCEDURE " + m_proc->getName();
-    sql += "()\nBEGIN\n\nEND";
+    QString sql = QString("CREATE ") + (m_mode == MODE_PROCEDURE?"PROCEDURE ":"FUNCTION ") + m_proc->getName();
+    sql += "()";
+    if(m_mode == MODE_FUNCTION) sql += " RETURNS ";
+    sql += "\nBEGIN\n\nEND";
     m_forcedChange = true;
     m_textEdit->setPlainText(sql);
     m_forcedChange = false;

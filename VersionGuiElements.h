@@ -5,6 +5,7 @@
 
 #include "ContextMenuEnabledTreeWidget.h"
 #include "IconFactory.h"
+#include "enums.h"
 
 class Version;
 class UserDataType;
@@ -19,6 +20,7 @@ class ProcedureForm;
 class Procedure;
 class TriggerForm;
 class Trigger;
+class Function;
 
 /**
  * The scope of this class is to have a common collection point for the tree widget items of a version (DT, Sql, Table, etc...)
@@ -66,6 +68,11 @@ public:
     ContextMenuEnabledTreeWidgetItem* getProceduresItem() const
     {
         return proceduresItem;
+    }
+
+    ContextMenuEnabledTreeWidgetItem* getFunctionsItem() const
+    {
+        return functionsItem;
     }
 
     ContextMenuEnabledTreeWidgetItem* getTriggersItem() const
@@ -170,6 +177,7 @@ public:
     ContextMenuEnabledTreeWidgetItem* createTableTreeEntryForIssue(Table* tab);
     ContextMenuEnabledTreeWidgetItem* createViewTreeEntry(View* view);
     ContextMenuEnabledTreeWidgetItem* createProcedureTreeEntry(Procedure* proc);
+    ContextMenuEnabledTreeWidgetItem* createFunctionTreeEntry(Function* proc);
     ContextMenuEnabledTreeWidgetItem* createTriggerTreeEntry(Trigger* trg);
 
     void updateForms();
@@ -177,7 +185,7 @@ public:
     SqlForm* getSqlForm();
     NewTableForm* getTableFormForNewTable();
     NewTableForm* getTableFormForExistingTable();
-    ProcedureForm* getProcedureForm();
+    ProcedureForm* getProcedureForm(ProcedureFormMode);
     TriggerForm* getTriggerForm();
 
 private:
@@ -196,6 +204,9 @@ private:
 
     // the tree item holding the procedures
     ContextMenuEnabledTreeWidgetItem* proceduresItem;
+
+    // the tree item holding the functions
+    ContextMenuEnabledTreeWidgetItem* functionsItem;
 
     // the tree item holding the version
     ContextMenuEnabledTreeWidgetItem* finalSqlItem;

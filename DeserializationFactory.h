@@ -23,6 +23,7 @@ class View;
 class QueryComponent;
 class Procedure;
 class Trigger;
+class Function;
 
 class DeserializationFactory
 {
@@ -45,6 +46,7 @@ public:
     static QueryComponent* createComponent(QueryComponent* parent, Project* p, Version* v, const QDomDocument& doc, const QDomElement& element);
     static Procedure* createProcedure(Project* p, Version* v, const QDomDocument& doc, const QDomElement& element);
     static Trigger* createTrigger(Project* p, Version* v, const QDomDocument& doc, const QDomElement& element);
+    static Function* createFunction(Project*, Version*,  const QDomDocument&, const QDomElement& element);
 
 private:
     DeserializationFactory();

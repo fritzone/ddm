@@ -8,7 +8,7 @@
 class Table;
 class TableInstance;
 class View;
-class Procedure;
+class StoredMethod;
 class Trigger;
 
 /**
@@ -93,7 +93,7 @@ public:
      *
      * @return the statements for creating the procedure
      */
-    virtual QStringList generateCreateProcedureSql(Procedure* p, const QHash<QString, QString>& options) const = 0;
+    virtual QStringList generateCreateStoredMethodSql(StoredMethod* p, const QHash<QString, QString>& options) const = 0;
 
     /**
      * Generate and SQL script for the given trigger. The body of the trigger is written by the database developer
