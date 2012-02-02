@@ -8,7 +8,7 @@
 #include "TableInstance.h"
 #include "core_View.h"
 #include "qbr_SelectQuery.h"
-#include "core_Procedure.h"
+#include "core_StoredMethod.h"
 #include "core_Trigger.h"
 
 QStringList MySQLSQLGenerator::generateCreateTableSql(Table *table, const QHash<QString, QString> &options, const QString& tabName, const QString& codepage) const
@@ -529,7 +529,7 @@ QStringList MySQLSQLGenerator::generateAlterTableForForeignKeys(Table *t, const 
     return finalSql;
 }
 
-QStringList MySQLSQLGenerator::generateCreateProcedureSql(Procedure *p, const QHash<QString, QString>& /*options*/) const
+QStringList MySQLSQLGenerator::generateCreateStoredMethodSql(StoredMethod *p, const QHash<QString, QString>& /*options*/) const
 {
     QStringList t;
     t.append(p->getSql());

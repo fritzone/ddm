@@ -30,6 +30,7 @@
 #include "Workspace.h"
 #include "core_Procedure.h"
 #include "core_Trigger.h"
+#include "core_Function.h"
 
 #include <QStringList>
 
@@ -257,6 +258,19 @@ MajorVersion* DeserializationFactory::createMajorVersion(Project* p, DatabaseEng
             {
                 Procedure* proc = createProcedure(p, result, doc, element.childNodes().at(i).childNodes().at(j).toElement());
                 result->addProcedure(proc);
+            }
+        }
+    }
+
+    // getting the functions
+    for(int i=0; i<element.childNodes().count(); i++)
+    {
+        if(element.childNodes().at(i).nodeName() == "Functions")
+        {
+            for(int j=0; j<element.childNodes().at(i).childNodes().count(); j++)
+            {
+                Function* func= createFunction(p, result, doc, element.childNodes().at(i).childNodes().at(j).toElement());
+                result->addFunction(func);
             }
         }
     }
@@ -787,6 +801,16 @@ Procedure* DeserializationFactory::createProcedure(Project*, Version*,  const QD
 {
     QString name = element.attribute("Name");
     Procedure* p = new Procedure(name);
+    QDomElement sqlElement = element.firstChild().toElement();
+    QDomCDATASection cdata = sqlElement.firstChild().toCDATASection();
+    p->setSql(cdata.toText().data());
+    return p;
+}
+
+Function* DeserializationFactory::createFunction(Project*, Version*,  const QDomDocument&, const QDomElement& element)
+{
+    QString name = element.attribute("Name");
+    Function* p = new Function(name);
     QDomElement sqlElement = element.firstChild().toElement();
     QDomCDATASection cdata = sqlElement.firstChild().toCDATASection();
     p->setSql(cdata.toText().data());

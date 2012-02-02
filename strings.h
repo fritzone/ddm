@@ -36,6 +36,7 @@ static const QString strCodeIcon = ":/images/actions/images/small/code.png";
 static const QString strSqlIcon = ":/images/actions/images/small/sql.png";
 static const QString strVersionIcon = ":/images/actions/images/small/arrow-000-medium.png";
 static const QString strProcedureIcon = ":/images/actions/images/actions/procedure.png";
+static const QString strFunctionTreeIcon = ":/images/actions/images/actions/function_icon.png";
 static const QString strRemoveIcon = ":/images/actions/images/small/remove.png";
 static const QString strStringsFolder = ":/images/actions/images/big/folder_red.png";
 static const QString strIntsFolder = ":/images/actions/images/big/folder_darkblue.png";

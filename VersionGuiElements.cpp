@@ -20,6 +20,7 @@
 #include "core_Procedure.h"
 #include "TriggerForm.h"
 #include "core_Trigger.h"
+#include "core_Function.h"
 
 #include <QVector>
 #include <QtGui>
@@ -28,8 +29,8 @@
 
 VersionGuiElements::VersionGuiElements(QTreeWidget* projTree, QTreeWidget* dtTree, QTreeWidget* issueTree, Version* v) :
     tablesItem(0), tableInstancesItem(0),
-    versionItem(0), diagramsItem(0), proceduresItem(0), finalSqlItem(0), dtsItem(0), viewsItem(0), triggersItem(0),
-    m_tree(projTree), m_dtTree(dtTree), m_issuesTree(issueTree),
+    versionItem(0), diagramsItem(0), proceduresItem(0), functionsItem(0), finalSqlItem(0), dtsItem(0), viewsItem(0),
+    triggersItem(0), m_tree(projTree), m_dtTree(dtTree), m_issuesTree(issueTree),
     stringsDtItem(0), intsDtItem(0), dateDtItem(0), blobDtItem(0),
     boolDtItem(0), miscDtItem(0), spatialDtItem(0), m_version(v),
     m_newTableForm(0), m_existingTableForm(0), m_procedureForm(0)
@@ -65,6 +66,11 @@ void VersionGuiElements::createGuiElements(ContextMenuEnabledTreeWidgetItem* pro
     proceduresItem->setIcon(0, IconFactory::getProcedureIcon());
     //proceduresItem->setPopupMenu(ContextMenuCollection::getInstance()->getDiagramsPopupMenu());
     m_tree->addTopLevelItem(proceduresItem);
+
+    functionsItem = new ContextMenuEnabledTreeWidgetItem(versionItem, QStringList(QObject::tr("Functions"))) ;
+    functionsItem->setIcon(0, IconFactory::getFunctionTreeIcon());
+    //functionsItem->setPopupMenu(ContextMenuCollection::getInstance()->getDiagramsPopupMenu());
+    m_tree->addTopLevelItem(functionsItem);
 
     viewsItem = new ContextMenuEnabledTreeWidgetItem(versionItem, QStringList(QObject::tr("Views"))) ;
     viewsItem->setIcon(0, IconFactory::getViewsIcon());
@@ -254,6 +260,13 @@ void VersionGuiElements::populateTreeItems()
         createProcedureTreeEntry(procs.at(i));
     }
 
+    // add the functions to the main tree
+    const QVector<Function*> funcs = m_version->getFunctions();
+    for(int i=0; i<funcs.size(); i++)
+    {
+        createFunctionTreeEntry(funcs.at(i));
+    }
+
     // add the triggers to the main tree
     const QVector<Trigger*> triggers = m_version->getTriggers();
     for(int i=0; i<triggers.size(); i++)
@@ -370,6 +383,24 @@ ContextMenuEnabledTreeWidgetItem* VersionGuiElements::createProcedureTreeEntry(P
     proc->setSqlItem(sqlItm);
 
     return newProcItem;
+}
+
+ContextMenuEnabledTreeWidgetItem* VersionGuiElements::createFunctionTreeEntry(Function* proc)
+{
+    ContextMenuEnabledTreeWidgetItem* newFuncItem = new ContextMenuEnabledTreeWidgetItem(functionsItem, QStringList(proc->getName())) ;
+    QVariant var(proc->getName());
+    newFuncItem->setData(0, Qt::UserRole, var);
+    newFuncItem->setIcon(0, IconFactory::getFunctionTreeIcon());
+    //newFuncItem->setPopupMenu(ContextMenuCollection::getInstance()->getProcedurePopupMenu());
+    m_tree->addTopLevelItem(newFuncItem);
+    proc->setLocation(newFuncItem);
+
+    ContextMenuEnabledTreeWidgetItem* sqlItm = new ContextMenuEnabledTreeWidgetItem(getFinalSqlItem(), QStringList(proc->getName()));
+    sqlItm->setIcon(0, IconFactory::getFunctionTreeIcon());
+    sqlItm->setData(0, Qt::UserRole, var);
+    proc->setSqlItem(sqlItm);
+
+    return newFuncItem;
 }
 
 ContextMenuEnabledTreeWidgetItem* VersionGuiElements::createTriggerTreeEntry(Trigger* trg)
@@ -508,9 +539,9 @@ NewTableForm* VersionGuiElements::getTableFormForExistingTable()
     return m_existingTableForm = new NewTableForm(Workspace::getInstance()->currentProjectsEngine(), Workspace::getInstance()->currentProject(), MainWindow::instance(), false);
 }
 
-ProcedureForm* VersionGuiElements::getProcedureForm()
+ProcedureForm* VersionGuiElements::getProcedureForm(ProcedureFormMode m)
 {
-    return m_procedureForm = new ProcedureForm(MainWindow::instance());
+    return m_procedureForm = new ProcedureForm(m, MainWindow::instance());
 }
 
 TriggerForm* VersionGuiElements::getTriggerForm()

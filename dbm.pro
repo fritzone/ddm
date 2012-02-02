@@ -93,7 +93,9 @@ SOURCES += main.cpp \
     ConnectionGuiElements.cpp \
     TriggerForm.cpp \
     core_Trigger.cpp \
-    NamedObjectListingForm.cpp
+    NamedObjectListingForm.cpp \
+    core_Function.cpp \
+    core_StoredMethod.cpp
 HEADERS += MainWindow.h \
     MainWindowButtonDialog.h \
     NewProjectDialog.h \
@@ -200,7 +202,10 @@ HEADERS += MainWindow.h \
     ConnectionGuiElements.h \
     TriggerForm.h \
     core_Trigger.h \
-    NamedObjectListingForm.h
+    NamedObjectListingForm.h \
+    core_Function.h \
+    enums.h \
+    core_StoredMethod.h
 FORMS += MainWindow.ui \
     MainWindowButtonDialog.ui \
     NewProjectDialog.ui \
@@ -243,6 +248,11 @@ INSTALLS += installfiles_doc
 installfiles_rs.files += rsrc/mysql.defaults
 installfiles_rs.path =  /home/ferenc/rpmbuild/BUILDROOT/usr/local/ddm/rsrc
 INSTALLS += installfiles_rs
+
+
+
+
+
 
 
 

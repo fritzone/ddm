@@ -144,6 +144,7 @@
    <addaction name="action_NewDiagram"/>
    <addaction name="action_NewView"/>
    <addaction name="action_NewProcedure"/>
+   <addaction name="action_NewFunction"/>
    <addaction name="action_NewTrigger"/>
    <addaction name="separator"/>
    <addaction name="action_Validate"/>
@@ -471,6 +472,21 @@
    </property>
    <property name="text">
     <string>New Trigger</string>
+   </property>
+  </action>
+  <action name="action_NewFunction">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="dbm.qrc">
+     <normaloff>:/images/actions/images/actions/newfunction.png</normaloff>:/images/actions/images/actions/newfunction.png</iconset>
+   </property>
+   <property name="text">
+    <string>New Function</string>
+   </property>
+   <property name="toolTip">
+    <string>Create a new function</string>
    </property>
   </action>
  </widget>
@@ -863,6 +879,22 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>action_NewFunction</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>onNewFunction()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>454</x>
+     <y>67</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>onNewSolution()</slot>
@@ -888,5 +920,6 @@
   <slot>onNewProcedure()</slot>
   <slot>onDeleteUnusedDatatypes()</slot>
   <slot>onNewTrigger()</slot>
+  <slot>onNewFunction()</slot>
  </slots>
 </ui>

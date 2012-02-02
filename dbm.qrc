@@ -167,6 +167,8 @@
         <file>images/small/trigger_update.png</file>
         <file>images/small/delete_table_row.png</file>
         <file>images/small/insert_table_row.png</file>
+        <file>images/actions/function_icon.png</file>
+        <file>images/actions/newfunction.png</file>
     </qresource>
     <qresource prefix="/bigger">
         <file>images/unaf.png</file>
