@@ -2,6 +2,8 @@
 #include "ui_ReverseEngineerWizardTablesForm.h"
 #include "IconFactory.h"
 
+#include <QDebug>
+
 ReverseEngineerWizardObjectListForm::ReverseEngineerWizardObjectListForm(QWidget *parent, Mode t) :
     QWizardPage(parent),
     ui(new Ui::ReverseEngineerWizardTablesForm),  m_mode(t)
@@ -65,7 +67,9 @@ QStringList ReverseEngineerWizardObjectListForm::getSelectedItems()
     {
         if(ui->listWidget->item(i)->checkState() == Qt::Checked)
         {
-            result.append(ui->listWidget->item(i)->text());
+            QString s = ui->listWidget->item(i)->text();
+            result.append(s);
+            qDebug() << s;
         }
     }
     return result;

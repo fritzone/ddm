@@ -20,7 +20,10 @@
 #include "db_DatabaseBuiltinFunction.h"
 #include "core_View.h"
 #include "core_Connection.h"
+#include "core_Procedure.h"
 #include "Codepage.h"
+
+#include <pthread.h>
 
 QVector<DatabaseBuiltinFunction>* MySQLDatabaseEngine::s_builtinFunctions = 0;
 QSqlDatabase* MySQLDatabaseEngine::m_defaultMysqlDb = 0;
@@ -43,36 +46,91 @@ QString MySQLDatabaseEngine::provideConnectionName(const QString& prefix)
 {
     QMutexLocker lock(m_connectionMutex);
     QString t = prefix + QString::number(m_connectionCounter++);
+    lock.unlock();
     return t;
 }
 
-bool MySQLDatabaseEngine::reverseEngineerDatabase(Connection *c, const QStringList& tables, const QStringList& views, Project*p, bool relaxed)
+Procedure* MySQLDatabaseEngine::reverseEngineerProcedure(Connection *c, const QString &procName)
+{
+    QSqlDatabase dbo = c->getQSqlDatabase();
+
+    qDebug() << c->getHost() << "<- HOST  USER->" << c->getUser() << " PASS=" << c->getPassword() << " DB =" << c->getDb() << "PROC="<<procName << " TID= " << pthread_self();
+
+    if(dbo.isOpen())
+    {
+        lastError = dbo.lastError().databaseText() + "/" + dbo.lastError().databaseText();
+        qDebug() << lastError;
+        return 0;
+    }
+
+    QSqlQuery query(dbo);
+    QString t = "show create procedure "+procName;
+    query.exec(t);
+    Procedure* proc= 0;
+    while(query.next())
+    {
+        QString sql = query.value(2).toString();
+        proc = new Procedure(procName);
+        proc->setSql(sql);
+    }
+    qDebug() << "still here...";
+    dbo.close();
+    return proc;
+}
+
+bool MySQLDatabaseEngine::reverseEngineerDatabase(Connection *c, const QStringList& tables, const QStringList& views, const QStringList& procs, Project*p, bool relaxed)
 {
     Version* v = p->getWorkingVersion();
     m_revEngMappings.clear();
     m_oneTimeMappings.clear();
+
+    // TODO: If I leave the code with the procedure call from below the dbo.conenct throws a SIGTRAP.
+    // the ugly for loop here solves this problem
+    // Check out why this happens.
+    for(int i=0; i<procs.size(); i++)
+    {
+        QSqlDatabase dbo = c->getQSqlDatabase();
+        if(!dbo.isOpen())
+        {
+            qDebug() << "first is not open";
+        }
+        else
+        {
+            qDebug() << "firs is open";
+        }
+        QSqlQuery query(dbo);
+        QString t = "show create procedure " + procs.at(i);
+        if(!query.exec(t)) qDebug() << "query was not executed"; else qDebug() << "query exec ok";
+        Procedure* proc= 0;
+        while(query.next())
+        {
+            QString sql = query.value(2).toString();
+            proc = new Procedure(procs.at(i));
+            proc->setSql(sql);
+            qDebug() << sql;
+        }
+        qDebug() << "still here...";
+        if(proc) v->addProcedure(proc);
+        dbo.close();
+    }
+
+//    for(int i=0; i<procs.size(); i++)
+//    {
+//        qDebug() << c->getHost() << "<- HOST  USER->" << c->getUser() << " PASS=" << c->getPassword() << " DB =" << c->getDb() << "PROC="<<procs.at(i) << " TID= " << pthread_self();
+//        Procedure* proc = reverseEngineerProcedure(c, procs.at(i));
+//        if(proc) v->addProcedure(proc);
+//    }
+
     for(int i=0; i<tables.size(); i++)
     {
         Table* tab = reverseEngineerTable(c, tables.at(i), p, relaxed);
-        v->addTable(tab);
+        if(tab) v->addTable(tab);
     }
 
     for(int i=0; i<views.size(); i++)
     {
         View* view = reverseEngineerView(c, views.at(i));
-        v->addView(view);
-        //v->getGui()->createViewTreeEntry(view);
-    }
-
-    // and now try to find some nice names for the user data types
-    QList <UserDataType*> rkeys = m_revEngMappings.keys();
-    for(int i=0; i<rkeys.size(); i++)
-    {
-        QList <Column*> colsOfUdt = m_revEngMappings.values(rkeys.at(i));
-        for(int j=0; j<colsOfUdt.size(); j++)
-        {
-            qDebug() << "DATATYPE " << rkeys.at(i)->getName() << " AS COLUMN " << colsOfUdt.at(j)->getName();
-        }
+        if(view) v->addView(view);
     }
 
     // now populate the foreign keys
@@ -143,13 +201,12 @@ QSqlDatabase MySQLDatabaseEngine::getQSqlDatabaseForConnection(Connection *c)
     QSqlDatabase dbo = QSqlDatabase::cloneDatabase(*m_defaultMysqlDb, newConnName);
 
     dbo.setHostName(c->getHost());
-    dbo.setUserName(c->getUser());
-    dbo.setPassword(c->getPassword());
     dbo.setDatabaseName(c->getDb());
-    dbo.open();
+    dbo.open(c->getUser(), c->getPassword());
+    qDebug() << c->getHost() << "<- HOST  USER->" << c->getUser() << " PASS=" << c->getPassword() << " DB =" << c->getDb() << "TID= " << pthread_self();
+
     return dbo;
 }
-
 
 QStringList MySQLDatabaseEngine::getAvailableViews(Connection* c)
 {
@@ -185,30 +242,23 @@ QStringList MySQLDatabaseEngine::getAvailableViews(Connection* c)
 
 QStringList MySQLDatabaseEngine::getAvailableProcedures(Connection* c)
 {
-    QString viewsConnectionName = provideConnectionName("getProcedures");
-    QSqlDatabase dbo = QSqlDatabase::cloneDatabase(*m_defaultMysqlDb, viewsConnectionName);
+    QSqlDatabase dbo = c->getQSqlDatabase();
 
-    dbo.setHostName(c->getHost());
-    dbo.setUserName(c->getUser());
-    dbo.setPassword(c->getPassword());
-    dbo.setDatabaseName(c->getDb());
-
-    QStringList result;
-    bool ok = dbo.open();
+    bool ok = dbo.isOpen();
 
     if(!ok)
     {
         lastError = dbo.lastError().databaseText() + "/" + dbo.lastError().databaseText();
-        return result;
+        return QStringList();
     }
 
     QSqlQuery query (dbo);
-
     query.exec("show procedure status where Db='"+c->getDb()+"'");
+    QStringList result;
 
     while(query.next())
     {
-        QString proc = query.value(0).toString();
+        QString proc = query.value(1).toString();
         result.append(proc);
     }
     dbo.close();
@@ -314,23 +364,15 @@ QStringList MySQLDatabaseEngine::getColumnsOfTable(Connection *c, const QString 
         QString field_name = query.value(fieldNo).toString();
         result.append(field_name);
     }
-
     return result;
-
 }
 
 Table* MySQLDatabaseEngine::reverseEngineerTable(Connection *c, const QString& tableName, Project* p, bool relaxed)
 {
     Version* v = p->getWorkingVersion();
-    QString tableConnectionName = provideConnectionName("getTable");
-    QSqlDatabase dbo = QSqlDatabase::cloneDatabase(*m_defaultMysqlDb, tableConnectionName);
+    QSqlDatabase dbo = c->getQSqlDatabase();
 
-    dbo.setHostName(c->getHost());
-    dbo.setUserName(c->getUser());
-    dbo.setPassword(c->getPassword());
-    dbo.setDatabaseName(c->getDb());
-
-    bool ok = dbo.open();
+    bool ok = dbo.isOpen();
 
     if(!ok)
     {
@@ -364,21 +406,24 @@ Table* MySQLDatabaseEngine::reverseEngineerTable(Connection *c, const QString& t
 
         UserDataType* udt = 0;
         QString oneTimeKey = field_name + type + nullable + defaultValue;
+        qDebug () << "ONE TIME KEY=" << oneTimeKey;
+        bool found = false;
         if(m_oneTimeMappings.contains(oneTimeKey))
         {
+            found = true;
             udt = m_oneTimeMappings.value(oneTimeKey);
+            qDebug() << "contained as " << udt->getName();
         }
         else
         {
             udt = v->provideDatatypeForSqlType(field_name, type, nullable, defaultValue, relaxed);
             m_oneTimeMappings.insert(oneTimeKey, udt);
+            qDebug() << "added as " << udt->getName();
         }
-        // now fetch the data type for the given type from the version
-
         Column* col = new Column(field_name, udt, QString::compare(keyness, "PRI", Qt::CaseInsensitive) == 0, extra == "auto_increment");
 
         // and add the column to the table
-        m_revEngMappings.insert(udt, col);
+        if(!found) m_revEngMappings.insert(udt, col);
         tab->addColumn(col);
     }
     }
@@ -499,12 +544,9 @@ Table* MySQLDatabaseEngine::reverseEngineerTable(Connection *c, const QString& t
                     }
                 }
             }
-
             // and create a table instance for it
             TableInstance* inst = v->instantiateTable(tab, false);
             inst->setValues(values);
-
-            //v->getGui()->createTableInstanceTreeEntry(inst);
         }
     }
 

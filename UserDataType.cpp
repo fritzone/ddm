@@ -9,10 +9,9 @@ UserDataType::UserDataType(const QString& name, const QString& typeString,
                            bool nullable, bool autoInc) :
         DataType(name, DataType::getDT_TYPE(typeString)),
         sqlType(_sqlType),
-        icon(& DataType::getIcon(DataType::getDT_TYPE(typeString))),
         size(_s), defaultValue(_defaultValue), miscStuff(_mvs), codePage(_cp),
         unsignedDT(unsi), description(desc), canBeNull(nullable), autoIncrement(autoInc)
-{
+{    
 }
 
 UserDataType& UserDataType::operator = (const UserDataType& other)
@@ -29,7 +28,6 @@ UserDataType& UserDataType::operator = (const UserDataType& other)
         unsignedDT = other.unsignedDT;
         description = other.description;
         canBeNull = other.canBeNull;
-        icon = other.icon;
         autoIncrement = other.autoIncrement;
     }
 
@@ -106,4 +104,10 @@ bool UserDataType::isValid(const QString& v) const
         }
     }
     return true;
+}
+
+// returns the icon
+QIcon UserDataType::getIcon() const
+{
+    return DataType::getIcon(getType());
 }

@@ -15,6 +15,7 @@ class DatabaseBuiltinFunction;
 class View;
 class Connection;
 class Codepage;
+class Procedure;
 
 /**
  * This class is a kind of "wrapper" for the other classes that all deal
@@ -255,6 +256,14 @@ public:
     virtual View* reverseEngineerView(Connection *c, const QString& viewName) = 0;
 
     /**
+     * Reverse engineers the procedure which is to be found in the database represented by the connection object.
+     * @param c - the connection
+     * @param procName - the view to be reverse engineered
+     * @return the Procedure object representing the procedure in the database 0 in case there is no procedure called like that
+     */
+    virtual Procedure* reverseEngineerProcedure(Connection *c, const QString& procName) = 0;
+
+    /**
      * Returns the columns of the given table as a list of strings
      * @param c - the connection
      * @param  tableName - the name of the table
@@ -271,8 +280,10 @@ public:
      * @param relaxedDtCreation - instructs the engine on how to create data types for the column types. If it's false it tries to build data types
      * based on the name ofthe columns (allowing each column to have its own datatype, thus enforcing more strict foreign key policies) otherwise
      * it builds the data types from the SQL type, allowing more relaxed foreign keys.
+     *
+     * @return true in case of success, false if an error occured. You can call @see lastError to see the error
      */
-    virtual bool reverseEngineerDatabase(Connection *c, const QStringList& tables, const QStringList& views, Project* p, bool relaxedDtCreation) = 0;
+    virtual bool reverseEngineerDatabase(Connection *c, const QStringList& tables, const QStringList& views, const QStringList& procs, Project* p, bool relaxedDtCreation) = 0;
 
 public:
 

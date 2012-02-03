@@ -632,15 +632,13 @@ UserDataType* DefaultVersionImplementation::provideDatatypeForSqlType(const QStr
     }
 
     // nothing found, we should create a new data type with some default values
-    UserDataType* newUdt = new UserDataType(//type + (size.length()>0?" ("+ size+")":"") + (defaultValue.length() > 0? ("=" + defaultValue) : "") + (nullable=="NO"?"_NN":""),
-                                            finalName,
+    UserDataType* newUdt = new UserDataType(finalName,
                                             Workspace::getInstance()->currentProjectsEngine()->getTypeStringForSqlType(type),
                                             type, size, defaultValue, "", QStringList(), false, type + " " + size,
                                             QString::compare(nullable, "YES", Qt::CaseInsensitive) == 0, false);
 
     newUdt->setName(NameGenerator::getUniqueName(this, (itemGetter)&Version::getDataType, newUdt->getName()));
     addNewDataType(newUdt);
-    getGui()->createDataTypeTreeEntry(newUdt);
 
     return newUdt;
 }
@@ -828,6 +826,7 @@ Procedure* DefaultVersionImplementation::getProcedure(const QString &procedureNa
 
 void DefaultVersionImplementation::addProcedure(Procedure* p)
 {
+    qDebug() << "added a procedure: "<< p->getName();
     m_data.m_procedures.append(p);
 }
 

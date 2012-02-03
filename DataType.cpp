@@ -28,25 +28,17 @@ DataType::DT_TYPE DataType::getDT_TYPE(const QString& typeString)
     return DT_INVALID;
 }
 
-const QIcon& DataType::getIcon(DT_TYPE dt)
+QIcon DataType::getIcon(DT_TYPE dt)
 {
-    static QIcon stringIcon(DataType::getIconString(DT_STRING));
-    static QIcon numericIcon(DataType::getIconString(DT_NUMERIC));
-    static QIcon boolIcon(DataType::getIconString(DT_BOOLEAN));
-    static QIcon blobIcon(DataType::getIconString(DT_BLOB));
-    static QIcon datetimeIcon(DataType::getIconString(DT_DATETIME));
-    static QIcon miscIcon(DataType::getIconString(DT_MISC));
-    static QIcon spatialIcon(DataType::getIconString(DT_SPATIAL));
-
     switch(dt)
     {
-    case DT_STRING: return stringIcon;
-    case DT_NUMERIC: return numericIcon;
-    case DT_BOOLEAN: return boolIcon;
-    case DT_BLOB: return blobIcon;
-    case DT_DATETIME: return datetimeIcon;
-    case DT_MISC: return miscIcon;
-    case DT_SPATIAL: return spatialIcon;
+    case DT_STRING: return IconFactory::getStringDataTypeIcon();
+    case DT_NUMERIC: return IconFactory::getIntDataTypeIcon();
+    case DT_BOOLEAN: return IconFactory::getBoolDataTypeIcon();
+    case DT_BLOB: return IconFactory::getBlobDataTypeIcon();
+    case DT_DATETIME: return IconFactory::getDateTimeDataTypeIcon();
+    case DT_MISC: return IconFactory::getMiscDataTypeIcon();
+    case DT_SPATIAL: return IconFactory::getSpatialDataTypeIcon();
     case DT_INVALID:
     case DT_GENERIC:
     default:

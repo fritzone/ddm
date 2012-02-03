@@ -7,7 +7,7 @@
 #include "DataType.h"
 #include "TreeItem.h"
 #include "SerializableElement.h"
-
+#include "IconFactory.h"
 /**
  * Class representing a data type
  */
@@ -16,17 +16,17 @@ class UserDataType : virtual public TreeItem, public SerializableElement, public
 public:
 
     UserDataType():DataType("", DataType::DT_INVALID), sqlType(""),
-    icon(0), size(""), defaultValue(""), miscStuff(), codePage(""),
+    size(""), defaultValue(""), miscStuff(), codePage(""),
     unsignedDT(false), description(""), canBeNull(true), autoIncrement(false)
     {}
 
     UserDataType(const QString& name, DT_TYPE type):DataType(name, type), sqlType(""),
-    icon(0), size(""), defaultValue(""), miscStuff(), codePage(""),
+    size(""), defaultValue(""), miscStuff(), codePage(""),
     unsignedDT(false), description(""), canBeNull(true), autoIncrement(false)
     {}
 
     UserDataType(const UserDataType& other): TreeItem(), SerializableElement(), DataType(other.name, other.type),
-    sqlType(other.sqlType), icon(other.icon), size(other.size),
+    sqlType(other.sqlType), size(other.size),
     defaultValue(other.defaultValue), miscStuff(other.miscStuff),
     codePage(other.codePage),unsignedDT(other.unsignedDT),
     description(other.description), canBeNull(other.canBeNull), autoIncrement(other.autoIncrement)
@@ -44,11 +44,7 @@ public:
     UserDataType& operator = (const UserDataType& other);
 
     // returns the icon
-    const QIcon& getIcon() const
-    {
-        //assert(icon);
-        return *icon;
-    }
+    QIcon getIcon() const;
 
     // the size of this user defiend data type as a nice string
     QString sizeAsString() const;
@@ -124,9 +120,6 @@ private:
 
     // the SQL type of this Data Type
     QString sqlType;
-
-    // the icon of this data type
-    const QIcon* icon;
 
     // the size of this Data Type
     QString size;
