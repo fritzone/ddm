@@ -144,9 +144,21 @@ public:
         return icon;
     }
 
+    static const QIcon& getStringDataTypeIcon()
+    {
+        static const QIcon icon(strDtTextIcon);
+        return icon;
+    }
+
     static const QIcon& getIntDataTypesIcon()
     {
         static const QIcon icon(strIntsFolder);
+        return icon;
+    }
+
+    static const QIcon& getIntDataTypeIcon()
+    {
+        static const QIcon icon(strDtNumericIcon);
         return icon;
     }
 
@@ -156,9 +168,21 @@ public:
         return icon;
     }
 
+    static const QIcon& getBlobDataTypeIcon()
+    {
+        static const QIcon icon(strDtBlobIcon);
+        return icon;
+    }
+
     static const QIcon& getBoolDataTypesIcon()
     {
         static const QIcon icon(strBoolFolder);
+        return icon;
+    }
+
+    static const QIcon& getBoolDataTypeIcon()
+    {
+        static const QIcon icon(strDtBoolIcon);
         return icon;
     }
 
@@ -168,15 +192,33 @@ public:
         return icon;
     }
 
+    static const QIcon& getMiscDataTypeIcon()
+    {
+        static const QIcon icon(strDtMiscIcon);
+        return icon;
+    }
+
     static const QIcon& getSpatialDataTypesIcon()
     {
         static const QIcon icon(strSpatialFolder);
         return icon;
     }
 
+    static const QIcon& getSpatialDataTypeIcon()
+    {
+        static const QIcon icon(strDtSpatialIcon);
+        return icon;
+    }
+
     static const QIcon& getDateTimeDataTypesIcon()
     {
         static const QIcon icon(strDateTimesFolder);
+        return icon;
+    }
+
+    static const QIcon& getDateTimeDataTypeIcon()
+    {
+        static const QIcon icon(strDtDateTimeIcon);
         return icon;
     }
 

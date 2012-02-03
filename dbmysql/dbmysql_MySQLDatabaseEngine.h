@@ -22,9 +22,10 @@ public:
 
     virtual bool executeSql(Connection* conn, const QStringList& sqls, QString& lastSql, bool rollbackOnError);
     virtual QString getDefaultDatatypesLocation();
-    virtual bool reverseEngineerDatabase(Connection *c, const QStringList& tables, const QStringList& views, Project* p, bool relaxed);
+    virtual bool reverseEngineerDatabase(Connection *c, const QStringList& tables, const QStringList& views, const QStringList& procs, Project* p, bool relaxed);
     virtual Table* reverseEngineerTable(Connection *c, const QString& tableName, Project* p, bool relaxed);
     virtual View* reverseEngineerView(Connection *c, const QString& viewName);
+    virtual Procedure* reverseEngineerProcedure(Connection *c, const QString& procName);
     virtual QStringList getAvailableDatabases(const QString& host, const QString& user, const QString& pass);
     virtual QStringList getAvailableTables(Connection* c);
     virtual QStringList getAvailableViews(Connection* c);

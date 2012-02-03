@@ -53,22 +53,7 @@ public:
 
     static DT_TYPE getDT_TYPE(const QString& typeString);
 
-    static QString getIconString(DT_TYPE dt)
-    {
-        switch(dt)
-        {
-            case DT_STRING: return strDtTextIcon;
-            case DT_NUMERIC: return strDtNumericIcon;
-            case DT_BOOLEAN: return strDtBoolIcon;
-            case DT_BLOB: return strDtBlobIcon;
-            case DT_DATETIME: return strDtDateTimeIcon;
-            case DT_MISC: return strDtMiscIcon;
-            case DT_SPATIAL: return strDtSpatialIcon;
-            default: return "";
-        }
-    }
-
-    static const QIcon& getIcon(DT_TYPE dt);
+    static QIcon getIcon(DT_TYPE dt);
 
     void setName(const QString& s)
     {

@@ -107,8 +107,7 @@ void NewDataTypeForm::basicDTselected(QString newSelection)
 
     for(int i=0; i< types.size(); i++)
     {
-        m_ui->cmbDTSQLType->addItem(QIcon(DataType::getIconString(type)),
-                                    types[i].getName());
+        m_ui->cmbDTSQLType->addItem(DataType::getIcon(type), types[i].getName());
     }
     if(newSelection == strNumeric)
     {

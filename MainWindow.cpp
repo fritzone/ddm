@@ -2030,27 +2030,8 @@ void MainWindow::onReverseEngineerWizardAccept()
 void MainWindow::onReverseEngineeringFinished(ReverseEngineerer*)
 {
     lblStatus->setText(QApplication::translate("MainWindow", "Reverse engineering finished", 0, QApplication::UnicodeUTF8));
-    {
-    const QVector<Table*> tables = m_workspace->workingVersion()->getTables();
-    for(int i=0; i<tables.size(); i++)
-    {
-        m_workspace->workingVersion()->getGui()->createTableTreeEntry(tables.at(i));
-    }
-    }
-    {
-    const QVector<View*> views = m_workspace->workingVersion()->getViews();
-    for(int i=0; i<views.size(); i++)
-    {
-        m_workspace->workingVersion()->getGui()->createViewTreeEntry(views.at(i));
-    }
-    }
-    {
-    const QVector<TableInstance*> tableInstances = m_workspace->workingVersion()->getTableInstances();
-    for(int i=0; i<tableInstances.size(); i++)
-    {
-        m_workspace->workingVersion()->getGui()->createTableInstanceTreeEntry(tableInstances.at(i));
-    }
-    }
+    m_workspace->workingVersion()->getGui()->populateTreeItems();
+
 }
 
 void MainWindow::onNewConnection()
