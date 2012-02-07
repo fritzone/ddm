@@ -4,12 +4,12 @@
 #include "TreeItem.h"
 #include "SerializableElement.h"
 #include "Column.h"
-#include "DraggableGraphicsItemForForeignKey.h"
+#include "NamedItem.h"
 #include "Table.h"
 
 class Version;
 
-class ForeignKey : public TreeItem, public SerializableElement
+class ForeignKey : public TreeItem, public SerializableElement, public NamedItem
 {
 
 public:
@@ -69,7 +69,7 @@ public:
 
 public:
 
-    ForeignKey():tempautogenIndices() {}
+    ForeignKey();
 
     void addAssociation(ColumnAssociation* assoc)
     {
@@ -84,16 +84,6 @@ public:
     const QVector<ColumnAssociation*>& getAssociations() const
     {
         return m_associations;
-    }
-
-    const QString& getName() const
-    {
-        return m_name;
-    }
-
-    void setName(const QString& name)
-    {
-        m_name = name;
     }
 
     const QString& getOnUpdate() const
@@ -121,16 +111,6 @@ public:
     bool hasAssociation(const QString& fcName, const QString& lcName);
 
     virtual void serialize(QDomDocument &doc, QDomElement &parent) const;
-
-    /**                                            /\
-     *                                            /  \
-     * This should prepare a graphics like: __ __/name\__ ____
-     *                                           \    /
-     *                                            \  /
-     *                                             \/
-     * and the two lines after and before the space should be movable so that they move when the user moves the tables
-     */
-    DraggableGraphicsViewItemForForeignKey* getItem() const;
 
     QString getDescriptiveText() const;
 
@@ -175,8 +155,6 @@ private:
     QVector<Index*> m_autoGenIndices;
 
     QVector<TableIndexTempStructure> tempautogenIndices;
-
-    QString m_name;
 
     QString m_onUpdate;
 

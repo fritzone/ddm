@@ -47,7 +47,7 @@ void TableInstanceForm::createTableWithValues()
     for(int i=0; i<columns.size(); i++)
     {
         QTableWidgetItem *columnHeaderItem = new QTableWidgetItem(columns[i]);
-        columnHeaderItem->setIcon(m_tinst->table()->getDataTypeOfColumn(columns[i])->getIcon());
+        columnHeaderItem->setIcon(IconFactory::getIconForDataType(m_tinst->table()->getDataTypeOfColumn(columns[i])->getType()));
         columnHeaderItem->setTextAlignment(Qt::AlignVCenter);
 
         QVector <QString> v = m_tinst->values()[columns[i]];

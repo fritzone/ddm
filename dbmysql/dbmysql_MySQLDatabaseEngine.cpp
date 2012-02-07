@@ -121,11 +121,13 @@ bool MySQLDatabaseEngine::reverseEngineerDatabase(Connection *c, const QStringLi
 //        if(proc) v->addProcedure(proc);
 //    }
 
+    qDebug() << "Tables " << pthread_self();
     for(int i=0; i<tables.size(); i++)
     {
         Table* tab = reverseEngineerTable(c, tables.at(i), p, relaxed);
         if(tab) v->addTable(tab);
     }
+    qDebug() << "Views " << pthread_self();
 
     for(int i=0; i<views.size(); i++)
     {
@@ -147,7 +149,7 @@ bool MySQLDatabaseEngine::reverseEngineerDatabase(Connection *c, const QStringLi
 
         if(ok)
         {
-            QString s = "SELECT distinct CONCAT( table_name, '.', column_name, ':', referenced_table_name, '.', referenced_column_name ) AS list_of_fks "
+            QString s = "SELECT distinct CONCAT( table_name, '.', column_name, ':', referenced_table_name, '.', referenced_column_name ) AS list_of_fks, constraint_name "
                     "FROM information_schema.KEY_COLUMN_USAGE WHERE REFERENCED_TABLE_SCHEMA = '"
                     + c->getDb() +
                     "' AND REFERENCED_TABLE_NAME is not null ORDER BY TABLE_NAME, COLUMN_NAME";
@@ -157,6 +159,7 @@ bool MySQLDatabaseEngine::reverseEngineerDatabase(Connection *c, const QStringLi
             while(query.next())
             {
                 QString val = query.value(0).toString();
+                QString name = query.value(1).toString();
                 QString referencee = val.left(val.indexOf(':'));
                 QString referenced = val.mid(val.indexOf(':') + 1);
 
@@ -179,6 +182,7 @@ bool MySQLDatabaseEngine::reverseEngineerDatabase(Connection *c, const QStringLi
 
                 ForeignKey::ColumnAssociation* fkAssociation = new ForeignKey::ColumnAssociation(referencedTable, referencedColumn, referenceeTable, referenceeColumn);
                 ForeignKey* fk = new ForeignKey();
+                fk->setName(name);
                 fk->addAssociation(fkAssociation);
                 referenceeTable->addForeignKey(fk);
                 foundAtLeastOneForeignKey = true;
@@ -727,16 +731,16 @@ QVector<DatabaseBuiltinFunction> MySQLDatabaseEngine::buildFunctions()
     QString X = QString("X");
 
 
-#define RET_NUMERIC     UserDataType("return", DataType::DT_NUMERIC)
-#define RET_DATETIME    UserDataType("return", DataType::DT_DATETIME)
-#define RET_STRING      UserDataType("return", DataType::DT_STRING)
+#define RET_NUMERIC     UserDataType("return", DT_NUMERIC)
+#define RET_DATETIME    UserDataType("return", DT_DATETIME)
+#define RET_STRING      UserDataType("return", DT_STRING)
 
-#define PAR_STRING      DatabaseBuiltinFunctionsParameter(X, UserDataType(X, DataType::DT_STRING), true)
-#define PAR_NUMERIC     DatabaseBuiltinFunctionsParameter(X, UserDataType(X, DataType::DT_NUMERIC), true)
-#define PAR_VARIABLE    DatabaseBuiltinFunctionsParameter(X, UserDataType(X, DataType::DT_VARIABLE), true)
+#define PAR_STRING      DatabaseBuiltinFunctionsParameter(X, UserDataType(X, DT_STRING), true)
+#define PAR_NUMERIC     DatabaseBuiltinFunctionsParameter(X, UserDataType(X, DT_NUMERIC), true)
+#define PAR_VARIABLE    DatabaseBuiltinFunctionsParameter(X, UserDataType(X, DT_VARIABLE), true)
 
-#define OPAR_STRING      DatabaseBuiltinFunctionsParameter(X, UserDataType(X, DataType::DT_STRING), false)
-#define OPAR_NUMERIC     DatabaseBuiltinFunctionsParameter(X, UserDataType(X, DataType::DT_NUMERIC), false)
+#define OPAR_STRING      DatabaseBuiltinFunctionsParameter(X, UserDataType(X, DT_STRING), false)
+#define OPAR_NUMERIC     DatabaseBuiltinFunctionsParameter(X, UserDataType(X, DT_NUMERIC), false)
 
 #define FUNC result.append(DatabaseBuiltinFunction(QString
 

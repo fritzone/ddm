@@ -7,6 +7,7 @@
 #include "ForeignKey.h"
 #include "Version.h"
 #include "NameGenerator.h"
+#include "DiagramItemFactory.h"
 
 Diagram::Diagram(Version* v) : TreeItem(), NamedItem(NameGenerator::getUniqueName(v, (itemGetter)&Version::getDiagram, QString("Diagram"))), m_onStage(), m_fksOnStage(), m_notes(),
         m_noteDescriptors(0), m_tableDescriptors(), m_form(0), m_saved(false), m_version(v), m_removed(false)
@@ -147,7 +148,7 @@ DraggableGraphicsViewItemForText* Diagram::clone(DiagramNoteDescriptor* src)
 
 DraggableGraphicsViewItem* Diagram::clone(DiagramObjectDescriptor* src)
 {
-    DraggableGraphicsViewItem* result= m_version->getTable(src->getText())->getDiagramEntity() ;
+    DraggableGraphicsViewItem* result= DiagramItemFactory::getDiagramEntityForTable(m_version->getTable(src->getText()));
     result->pSetX(src->getX());
     result->pSetY(src->getY());
     return result;

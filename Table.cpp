@@ -8,28 +8,25 @@
 #include "UserDataType.h"
 #include "db_AbstractStorageEngine.h"
 #include "db_AbstractSQLGenerator.h"
-#include "DraggableGraphicsItem.h"
 #include "IconFactory.h"
 #include "NameGenerator.h"
 #include "TableInstance.h"
 #include "Workspace.h"
 #include "commons.h"
 
-#include <QPen>
 #include <QApplication>
 #include <QClipboard>
 
 Table::Table(Version* v) : NamedItem(NameGenerator::getUniqueName(v, (itemGetter)&Version::getTable, QString("TAB"))),
     m_description(""), m_columns(), m_indices(), m_foreignKeys(), m_startupValues(),
     m_parent(0), m_persistent(false), m_temporary(false), m_storageEngine(0),
-    m_diagramEntity(0), m_version(v), m_children()
+    m_version(v), m_children()
 {
 }
 
 void Table::addColumn(Column *column)
 {
     m_columns.append(column);
-    prepareDiagramEntity();
     column->setTable(this);
 }
 
@@ -45,7 +42,6 @@ void Table::moveColumnDown(int c)
         Column* tc = m_columns[c];
         m_columns[c] = m_columns[c+1];
         m_columns[c+1] = tc;
-        prepareDiagramEntity();
     }
 }
 
@@ -56,7 +52,6 @@ void Table::moveColumnUp(int c)
         Column* tc = m_columns[c];
         m_columns[c] = m_columns[c-1];
         m_columns[c-1] = tc;
-        prepareDiagramEntity();
     }
 }
 
@@ -232,7 +227,6 @@ void Table::removeColumn(Column* toRemove)
     if(idx != -1)
     {
         m_columns.remove(idx);
-        prepareDiagramEntity();
     }
 }
 
@@ -409,102 +403,6 @@ const UserDataType* Table::getDataTypeOfColumn(const QString& cname) const
         }
     }
     return col->getDataType();
-}
-
-void Table::prepareDiagramEntity()
-{
-    DraggableGraphicsViewItem* grp = new DraggableGraphicsViewItem(this);
-
-    QGraphicsTextItem* txtName = new QGraphicsTextItem(getName(), grp);
-    txtName->setPos(0,0);
-    txtName->setToolTip(m_name);
-    qreal py = txtName->boundingRect().height();
-    qreal headerHeight = py;
-    qreal maxX = txtName->boundingRect().right();
-    QStringList fullC = fullColumns();
-    for(int i=0; i<fullC.size(); i++)
-    {
-        Column* col = getColumn(fullC[i]);
-        if(!col)
-        {
-            col = getColumnFromParents(fullC[i]);
-            if(!col)
-            {
-                return; // Shouldn't ever happen
-            }
-        }
-
-
-        QGraphicsTextItem* txtColName = new QGraphicsTextItem(fullC[i], grp);
-        txtColName->setY(py);
-
-        QGraphicsPixmapItem* icon = new QGraphicsPixmapItem(col->getDataType()->getIcon().pixmap(16,16), grp);
-        if(col->isPk())
-        {
-            QGraphicsPixmapItem* keyicon = new QGraphicsPixmapItem(IconFactory::getKeyIcon().pixmap(16,16), grp);
-            keyicon->setY(py + 2);
-            keyicon->setX(2);
-        }
-
-        txtColName->setX(36);
-        icon->setY(py + 2);
-        icon->setX(20);
-        py+=txtColName->boundingRect().height();
-        maxX = txtColName->boundingRect().right() + 20 > maxX ? txtColName->boundingRect().right() + 20:maxX;
-    }
-
-    maxX += 30;
-    qreal finMaxX = maxX;
-    py = headerHeight;
-
-    for(int i=0; i<fullC.size(); i++)
-    {
-        Column* col = getColumn(fullC[i]);
-        if(!col)
-        {
-            col = getColumnFromParents(fullC[i]);
-            if(!col)
-            {
-                return; // Shouldn't ever happen
-            }
-        }
-
-        QGraphicsTextItem* txtColName = new QGraphicsTextItem(col->getDataType()->sqlAsString(), grp);
-        txtColName->setY(py);
-        txtColName->setX(maxX);
-        py += txtColName->boundingRect().height();
-        finMaxX = txtColName->boundingRect().width() + maxX > finMaxX?txtColName->boundingRect().width() + maxX:finMaxX;
-    }
-
-    maxX = finMaxX;
-
-    QGraphicsRectItem* rect = new QGraphicsRectItem(0,0, maxX, py, grp);
-    QPen tPen;
-
-    if(m_temporary)
-    {
-        tPen.setStyle(Qt::DashLine);
-    }
-
-    if(m_persistent)
-    {
-        tPen.setWidth(2);
-    }
-    if(Configuration::instance().drawTableTypes()) rect->setPen(tPen);
-
-    grp->setLastX(maxX);
-    grp->setLastY(py);
-    QGraphicsRectItem* recta = new QGraphicsRectItem(0,0, maxX, headerHeight, grp);
-    if(Configuration::instance().drawTableTypes()) recta->setPen(tPen);
-    QBrush brush (Qt::lightGray);
-    QBrush wbrush (Qt::white);
-    recta->setBrush(brush);
-    rect->setBrush(wbrush);
-    rect->setZValue(-1);
-    recta->setZValue(0.5);
-    txtName->setZValue(1);
-    grp->setToolTip(m_description);
-    m_diagramEntity = grp;
 }
 
 QStringList Table::generateSqlSource(AbstractSqlGenerator *generator, QHash<QString,QString> opts, const QString& codepage)

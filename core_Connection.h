@@ -13,7 +13,7 @@
 class DatabaseEngine;
 class Table;
 
-class Connection : virtual public SerializableElement, virtual public TreeItem, virtual public IssueOriginator
+class Connection : public TreeItem, public SerializableElement,  public IssueOriginator, public NamedItem
 {
 public:
 

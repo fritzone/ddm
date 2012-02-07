@@ -109,21 +109,21 @@ void VersionGuiElements::populateTreeItems()
         a << dataTypes[i]->sqlAsString();
 
         ContextMenuEnabledTreeWidgetItem* parent = getDtsItem();
-        if(dataTypes[i]->getType() == DataType::DT_STRING) parent = getStringDtsItem();
-        if(dataTypes[i]->getType() == DataType::DT_NUMERIC) parent = getIntsDtsItem();
-        if(dataTypes[i]->getType() == DataType::DT_DATETIME) parent = getDateDtsItem();
-        if(dataTypes[i]->getType() == DataType::DT_BLOB) parent = getBlobDtsItem();
-        if(dataTypes[i]->getType() == DataType::DT_BOOLEAN) parent = getBoolDtsItem();
-        if(dataTypes[i]->getType() == DataType::DT_MISC) parent = getMiscDtsItem();
-        if(dataTypes[i]->getType() == DataType::DT_SPATIAL) parent = getSpatialDtsItem();
+        if(dataTypes[i]->getType() == DT_STRING) parent = getStringDtsItem();
+        if(dataTypes[i]->getType() == DT_NUMERIC) parent = getIntsDtsItem();
+        if(dataTypes[i]->getType() == DT_DATETIME) parent = getDateDtsItem();
+        if(dataTypes[i]->getType() == DT_BLOB) parent = getBlobDtsItem();
+        if(dataTypes[i]->getType() == DT_BOOLEAN) parent = getBoolDtsItem();
+        if(dataTypes[i]->getType() == DT_MISC) parent = getMiscDtsItem();
+        if(dataTypes[i]->getType() == DT_SPATIAL) parent = getSpatialDtsItem();
 
         ContextMenuEnabledTreeWidgetItem* newDTItem = new ContextMenuEnabledTreeWidgetItem(parent, a) ;
         QVariant var;
-        var.setValue(*dataTypes[i]);
+        var.setValue(dataTypes[i]->getName());
         newDTItem->setData(0, Qt::UserRole, var);
         newDTItem->setPopupMenu(ContextMenuCollection::getInstance()->getDatatypePopupMenu());
         // set the icon, add to the tree
-        newDTItem->setIcon(0, dataTypes[i]->getIcon());
+        newDTItem->setIcon(0, IconFactory::getIconForDataType(dataTypes.at(i)->getType()));
         m_dtTree->insertTopLevelItem(0, newDTItem);
         dataTypes[i]->setLocation(newDTItem);
     }
@@ -282,21 +282,21 @@ ContextMenuEnabledTreeWidgetItem* VersionGuiElements::createDataTypeTreeEntry(Us
     itm << udt->sqlAsString();
     ContextMenuEnabledTreeWidgetItem* parent = getDtsItem();
 
-    if(udt->getType() == DataType::DT_STRING) parent = getStringDtsItem();
-    if(udt->getType() == DataType::DT_NUMERIC) parent = getIntsDtsItem();
-    if(udt->getType() == DataType::DT_DATETIME) parent = getDateDtsItem();
-    if(udt->getType() == DataType::DT_BLOB) parent = getBlobDtsItem();
-    if(udt->getType() == DataType::DT_BOOLEAN) parent = getBoolDtsItem();
-    if(udt->getType() == DataType::DT_MISC) parent = getMiscDtsItem();
-    if(udt->getType() == DataType::DT_SPATIAL) parent = getSpatialDtsItem();
+    if(udt->getType() == DT_STRING) parent = getStringDtsItem();
+    if(udt->getType() == DT_NUMERIC) parent = getIntsDtsItem();
+    if(udt->getType() == DT_DATETIME) parent = getDateDtsItem();
+    if(udt->getType() == DT_BLOB) parent = getBlobDtsItem();
+    if(udt->getType() == DT_BOOLEAN) parent = getBoolDtsItem();
+    if(udt->getType() == DT_MISC) parent = getMiscDtsItem();
+    if(udt->getType() == DT_SPATIAL) parent = getSpatialDtsItem();
 
     ContextMenuEnabledTreeWidgetItem* newDTItem = new ContextMenuEnabledTreeWidgetItem(parent, itm) ;
 
     QVariant var;
-    var.setValue(*udt);
+    var.setValue(udt->getName());
     newDTItem->setData(0, Qt::UserRole, var);
     // set the icon, add to the tree
-    newDTItem->setIcon(0, udt->getIcon());
+    newDTItem->setIcon(0, IconFactory::getIconForDataType(udt->getType()));
     newDTItem->setPopupMenu(ContextMenuCollection::getInstance()->getDatatypePopupMenu());
     m_dtTree->insertTopLevelItem(0,newDTItem);
     m_dtTree->header()->setResizeMode(QHeaderView::ResizeToContents);

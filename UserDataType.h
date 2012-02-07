@@ -1,7 +1,6 @@
 #ifndef USERDATATYPE_H
 #define USERDATATYPE_H
 
-#include <QMetaType>
 #include <QtXml>
 
 #include "DataType.h"
@@ -15,7 +14,7 @@ class UserDataType : virtual public TreeItem, public SerializableElement, public
 {
 public:
 
-    UserDataType():DataType("", DataType::DT_INVALID), sqlType(""),
+    UserDataType():DataType("", DT_INVALID), sqlType(""),
     size(""), defaultValue(""), miscStuff(), codePage(""),
     unsignedDT(false), description(""), canBeNull(true), autoIncrement(false)
     {}
@@ -42,9 +41,6 @@ public:
                  bool nullable, bool autoInc);
 
     UserDataType& operator = (const UserDataType& other);
-
-    // returns the icon
-    QIcon getIcon() const;
 
     // the size of this user defiend data type as a nice string
     QString sizeAsString() const;
@@ -144,7 +140,5 @@ private:
     bool autoIncrement;
 
 };
-
-Q_DECLARE_METATYPE(UserDataType)
 
 #endif // USERDATATYPE_H

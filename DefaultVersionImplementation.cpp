@@ -591,6 +591,7 @@ const QVector<TableInstance*>& DefaultVersionImplementation::getTableInstances()
 
 UserDataType* DefaultVersionImplementation::provideDatatypeForSqlType(const QString& name, const QString& sql, const QString& nullable, const QString& defaultValue, bool relaxed)
 {
+    qDebug() << "provide " << pthread_self();
     QString type = sql;
     QString size = "";
     QString finalName = relaxed?
@@ -631,6 +632,7 @@ UserDataType* DefaultVersionImplementation::provideDatatypeForSqlType(const QStr
         }
     }
 
+    qDebug() << "more provide " << pthread_self();
     // nothing found, we should create a new data type with some default values
     UserDataType* newUdt = new UserDataType(finalName,
                                             Workspace::getInstance()->currentProjectsEngine()->getTypeStringForSqlType(type),
@@ -639,7 +641,7 @@ UserDataType* DefaultVersionImplementation::provideDatatypeForSqlType(const QStr
 
     newUdt->setName(NameGenerator::getUniqueName(this, (itemGetter)&Version::getDataType, newUdt->getName()));
     addNewDataType(newUdt);
-
+    qDebug() << "bye provide " << pthread_self();
     return newUdt;
 }
 
@@ -664,7 +666,7 @@ QVector<Issue*> DefaultVersionImplementation::checkIssuesOfNewColumn(Column* inN
 
                     // they share the same data type ... let's check if this data type is:
                     // 1. numeric and 2. primary key in one of them
-                    if(othersDataType->getType() == DataType::DT_NUMERIC)
+                    if(othersDataType->getType() == DT_NUMERIC)
                     {
                         if(inNewColumn->isPk() || otherColumn->isPk()) // but ONLY if there is no foreign key between these two. TODO: check this too
                         {
@@ -680,7 +682,7 @@ QVector<Issue*> DefaultVersionImplementation::checkIssuesOfNewColumn(Column* inN
                     }
                     else
                     {
-                        if(othersDataType->getType() != DataType::DT_DATETIME) // normalization does not matter for date/time
+                        if(othersDataType->getType() != DT_DATETIME) // normalization does not matter for date/time
                         {
                             if(othersDataType->getSize().toInt() > 1)   // and for texts with at least 2 characters
                             {

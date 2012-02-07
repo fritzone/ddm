@@ -2,19 +2,20 @@
 #define ISSUEORIGINATOR_H
 
 #include "NamedItem.h"
-#include "Issue.h"
 
 #include <QVector>
 
 class Table;
+class Issue;
 
 /**
  * Basic abstract class for all the classes that can originate issues...
  */
-class IssueOriginator : public NamedItem
+class IssueOriginator
 {
 public:
-    IssueOriginator(const QString& name) : NamedItem(name) {}
+
+    IssueOriginator();
 
     virtual ~IssueOriginator() {}
 

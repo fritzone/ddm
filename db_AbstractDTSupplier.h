@@ -85,17 +85,17 @@ public:
 
     virtual QString typeForSqlType(const QString& sqlType) = 0;
 
-    QList<DataType> getDTList(DataType::DT_TYPE dt)
+    QList<DataType> getDTList(DT_TYPE dt)
     {
         switch(dt)
         {
-        case DataType::DT_STRING: return textTypes();
-        case DataType::DT_NUMERIC: return numericTypes();
-        case DataType::DT_BOOLEAN: return booleanTypes();
-        case DataType::DT_BLOB: return blobTypes();
-        case DataType::DT_DATETIME: return dateTimeTypes();
-        case DataType::DT_MISC: return miscTypes();
-        case DataType::DT_SPATIAL: return spatialTypes();
+        case DT_STRING: return textTypes();
+        case DT_NUMERIC: return numericTypes();
+        case DT_BOOLEAN: return booleanTypes();
+        case DT_BLOB: return blobTypes();
+        case DT_DATETIME: return dateTimeTypes();
+        case DT_MISC: return miscTypes();
+        case DT_SPATIAL: return spatialTypes();
         default: return QList<DataType>();
         }
     }

@@ -29,7 +29,7 @@ bool ForeignKeyReccomendationIssue::stillValid()
     Table* newTable = Workspace::getInstance()->workingVersion()->getTable(m_newTableName);
     if(!newTable->hasColumn(m_newColumnName)) return false; // column name was changed
     return m_firstColumn->getDataType()->getName() == m_newColumn->getDataType()->getName()
-            && m_newColumn->getDataType()->getType() == DataType::DT_NUMERIC;
+            && m_newColumn->getDataType()->getType() == DT_NUMERIC;
 }
 
 bool ForeignKeyReccomendationIssue::isLike(Issue* other)

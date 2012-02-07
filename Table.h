@@ -9,13 +9,11 @@
 
 #include <QString>
 #include <QVector>
-#include <QGraphicsItemGroup>
 
 class Column;
 class Index;
 class ForeignKey;
 class AbstractStorageEngine;
-class DraggableGraphicsViewItem ;
 class Version;
 class UserDataType;
 class TableInstance;
@@ -24,7 +22,7 @@ class TableInstance;
  * The table class holds a database table defined by the user. It must be derived from the TreeItem since a table can be placed in
  * the tree, so the user of it must know how to update the visual part too.
  */
-class Table : virtual public TreeItem, virtual public SerializableElement, virtual public SqlSourceEntity, virtual public CopyableElement, virtual public NamedItem
+class Table : public TreeItem, public SerializableElement, public SqlSourceEntity, public CopyableElement, public NamedItem
 {
 public:
 
@@ -169,15 +167,6 @@ public:
     {
         return m_storageEngine;
     }
-
-    DraggableGraphicsViewItem* getDiagramEntity()
-    {
-        prepareDiagramEntity(); // this is sort of stupid ... and might leak some memory, but otherwise it breaks the underlying QT architecture
-        // TODO: remvoe the above call from everywhere it's used
-        return m_diagramEntity;
-    }
-
-    void prepareDiagramEntity();
 
     const Table* parent() const
     {
@@ -335,9 +324,6 @@ private:
     bool m_temporary;
 
     AbstractStorageEngine* m_storageEngine;
-
-    // will be shown on the diagrams
-    DraggableGraphicsViewItem* m_diagramEntity;
 
     Version* m_version;
 

@@ -2,6 +2,11 @@
 #include "IssueManager.h"
 #include "Workspace.h"
 #include "Version.h"
+#include "Issue.h"
+
+IssueOriginator::IssueOriginator() : m_issues(), m_ignoredIssues()
+{
+}
 
 void IssueOriginator::removeIssueByName(const QString& name, bool removeFromManagerToo)
 {
@@ -28,3 +33,4 @@ bool IssueOriginator::hasIssueLike(Issue *issue)
     }
     return false;
 }
+

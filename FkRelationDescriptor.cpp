@@ -1,6 +1,7 @@
 #include "FkRelationDescriptor.h"
 #include "DraggableGraphicsItem.h"
 #include "DraggableGraphicsItemForForeignKey.h"
+#include "DiagramItemFactory.h"
 #include "ForeignKey.h"
 #include "ERGraphicsScene.h"
 #include "Diagram.h"
@@ -233,7 +234,7 @@ void FkRelationDescriptor::recreate(Diagram* dgr)
         m_fk = dgr->getVesion()->getTable(m_descriptor->getText2())->getForeignKeyToTable(m_descriptor->getText());
     }
 
-    m_fkitm = m_fk->getItem();
+    m_fkitm = DiagramItemFactory::getDiagramEntityForForeignKey(m_fk);
     m_fkitm->setX(m_descriptor->getX());
     m_fkitm->setY(m_descriptor->getY());
 
