@@ -297,7 +297,7 @@ void QueryItemListDialog::populateTablesAndColumns(QVector<const Table*> tables)
 
             if(canGo)
             {
-                QAction* colAction = new QAction(c->getDataType()->getIcon(), c->getName(), this);
+                QAction* colAction = new QAction(IconFactory::getIconForDataType(c->getDataType()->getType()), c->getName(), this);
                 colAction->setData(QString("#") + tables.at(i)->getName()+QString("+")+c->getName());
                 colMenu->addAction(colAction);
             }

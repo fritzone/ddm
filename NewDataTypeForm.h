@@ -25,7 +25,7 @@ public:
      * Constructor
      * @param dts - the database engine
      */
-    NewDataTypeForm(DataType::DT_TYPE t, DatabaseEngine* dts, QWidget *parent = 0);
+    NewDataTypeForm(DT_TYPE t, DatabaseEngine* dts, QWidget *parent = 0);
 
     /**
      * Destructor.

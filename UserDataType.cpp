@@ -105,9 +105,3 @@ bool UserDataType::isValid(const QString& v) const
     }
     return true;
 }
-
-// returns the icon
-QIcon UserDataType::getIcon() const
-{
-    return DataType::getIcon(getType());
-}

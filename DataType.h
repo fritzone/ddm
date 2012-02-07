@@ -2,29 +2,14 @@
 #define DATATYPE_H
 
 #include <QString>
-#include <QIcon>
 
-#include "strings.h"
-
+#include "enums.h"
 /**
  * This is a base class representing a data type
  */
-class   DataType
+class DataType
 {
 public:
-    enum DT_TYPE
-    {
-        DT_STRING = 0,
-        DT_NUMERIC,
-        DT_BOOLEAN,
-        DT_DATETIME,
-        DT_BLOB,
-        DT_MISC,
-        DT_SPATIAL,
-        DT_INVALID,
-        DT_GENERIC,
-        DT_VARIABLE
-    } ;
 
     /**
      * Constructor
@@ -53,12 +38,12 @@ public:
 
     static DT_TYPE getDT_TYPE(const QString& typeString);
 
-    static QIcon getIcon(DT_TYPE dt);
-
     void setName(const QString& s)
     {
         name = s;
     }
+
+    bool supportsAutoIncrement() const;
 
 protected:
     // the name of the data type

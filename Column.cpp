@@ -5,7 +5,9 @@
 #include <QApplication>
 #include <QClipboard>
 
-Column::Column(const QString& name, const UserDataType* type, bool pk, bool autoInc) : IssueOriginator(name), m_type(type), m_pk(pk), m_autoIncrement(autoInc)
+Column::Column(const QString& name, const UserDataType* type, bool pk, bool autoInc) :
+    TreeItem(), SerializableElement(), CopyableElement(), IssueOriginator(), NamedItem(name),
+    m_type(type), m_pk(pk), m_autoIncrement(autoInc)
 {
 
 }

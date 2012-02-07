@@ -40,7 +40,7 @@ void DataTypesListForm::feedInDataTypes(const QVector<UserDataType*>& dataTypes)
         a.append(dataTypes[i]->sizeAsString());
 
         QTreeWidgetItem* item = new QTreeWidgetItem((QTreeWidget*)0, a);
-        item->setIcon(0, dataTypes[i]->getIcon());
+        item->setIcon(0, IconFactory::getIconForDataType(dataTypes[i]->getType()));
         m_ui->treeDataTypes->addTopLevelItem(item);
     }
 

@@ -15,10 +15,10 @@ class Table;
 /**
  * This class holds the necessary data to define a column
  */
-class Column : public TreeItem, public SerializableElement, public CopyableElement, virtual public IssueOriginator
+class Column : public TreeItem, public SerializableElement, public CopyableElement, public IssueOriginator, public NamedItem
 {
 public:
-    Column(const QString& name, const UserDataType* type, bool, bool );
+    Column(const QString& name, const UserDataType* type, bool pk, bool autoInc);
 
     const UserDataType* getDataType() const;
 

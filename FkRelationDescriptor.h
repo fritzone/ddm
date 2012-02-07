@@ -119,7 +119,7 @@ private:
     QGraphicsLineItem* firstLine;
     QGraphicsLineItem* secondLine;
     DiagramFKDescriptor* m_descriptor;
-    const ForeignKey* m_fk;
+    ForeignKey* m_fk;
     QString tab1Name;
     QString tab2Name;
 

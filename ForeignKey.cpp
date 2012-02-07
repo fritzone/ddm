@@ -2,6 +2,11 @@
 #include "Index.h"
 #include "Version.h"
 
+ForeignKey::ForeignKey() : TreeItem(), SerializableElement(), NamedItem(),
+    m_associations(), m_autoGenIndices(), tempautogenIndices(), m_onUpdate(), m_onDelete()
+{
+}
+
 void ForeignKey::removeAssociation(const QString& fcName, const QString& lcName)
 {
     for(int i=0; i<m_associations.size(); i++)
@@ -66,49 +71,6 @@ void ForeignKey::serialize(QDomDocument &doc, QDomElement &parent) const
     fkElement.appendChild(autoGenIndices);
     parent.appendChild(fkElement);
 }
-
-/**                                            /\
- *                                            /  \
- * This should prepare a graphics like: __ __/name\__ ____
- *                                           \    /
- *                                            \  /
- *                                             \/
- * and the two lines after and before the space should be movable so that they move when the user moves the tables
- */
-DraggableGraphicsViewItemForForeignKey* ForeignKey::getItem() const
-{
-    DraggableGraphicsViewItemForForeignKey* grp = new DraggableGraphicsViewItemForForeignKey();
-    QGraphicsTextItem* txtName = new QGraphicsTextItem(getName(), grp);
-    QRectF boundingForName = txtName->boundingRect();
-    int rombX1 = boundingForName.left() - 5;
-    int rombY1 = (boundingForName.bottom() + boundingForName.top()) / 2;
-    int rombX2 = (boundingForName.right() + boundingForName.left()) / 2;
-    int rombY2 = boundingForName.top() - (boundingForName.right() + boundingForName.left()) / 2;
-    int rombX3 = boundingForName.right() + 5;
-    int rombY3 = (boundingForName.bottom() + boundingForName.top()) / 2;
-    int rombX4 = (boundingForName.right() + boundingForName.left()) / 2;
-    int rombY4 = boundingForName.bottom() + (boundingForName.right() + boundingForName.left()) / 2;
-    QGraphicsLineItem* line1 = new QGraphicsLineItem(rombX1, rombY1, rombX2, rombY2, grp);
-    QGraphicsLineItem* line2 = new QGraphicsLineItem(rombX2, rombY2, rombX3, rombY3, grp);
-    QGraphicsLineItem* line3 = new QGraphicsLineItem(rombX3, rombY3, rombX4, rombY4, grp);
-    QGraphicsLineItem* line4 = new QGraphicsLineItem(rombX4, rombY4, rombX1, rombY1, grp);
-
-
-    grp->setLeftPoint(QPointF(rombX1, rombY1));
-    grp->setTopPoint(QPointF(rombX2, rombY2));
-    grp->setRightPoint(QPointF(rombX3, rombY3));
-    grp->setBottomPoint(QPointF(rombX4, rombY4));
-
-    grp->setToolTip(getDescriptiveText());
-    txtName->setToolTip(getDescriptiveText());
-    line1->setToolTip(getDescriptiveText());
-    line2->setToolTip(getDescriptiveText());
-    line3->setToolTip(getDescriptiveText());
-    line4->setToolTip(getDescriptiveText());
-
-    return grp;
-}
-
 
 const Table* ForeignKey::getForeignTable() const
 {

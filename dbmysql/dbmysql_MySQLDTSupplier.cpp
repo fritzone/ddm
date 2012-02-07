@@ -8,12 +8,12 @@ MySQLDTSupplier::MySQLDTSupplier()
 
 QList<DataType> MySQLDTSupplier::textTypes()
 {
-    static DataType mysql_dt_char("CHAR", DataType::DT_STRING);
-    static DataType mysql_dt_varchar("VARCHAR", DataType::DT_STRING);
-    static DataType mysql_dt_tinytext("TINYTEXT", DataType::DT_STRING);
-    static DataType mysql_dt_text("TEXT", DataType::DT_STRING);
-    static DataType mysql_dt_mediumtext("MEDIUMTEXT", DataType::DT_STRING);
-    static DataType mysql_dt_longtext("LONGTEXT", DataType::DT_STRING);
+    static DataType mysql_dt_char("CHAR", DT_STRING);
+    static DataType mysql_dt_varchar("VARCHAR", DT_STRING);
+    static DataType mysql_dt_tinytext("TINYTEXT", DT_STRING);
+    static DataType mysql_dt_text("TEXT", DT_STRING);
+    static DataType mysql_dt_mediumtext("MEDIUMTEXT", DT_STRING);
+    static DataType mysql_dt_longtext("LONGTEXT", DT_STRING);
 
     static QList<DataType> result;
 
@@ -30,18 +30,18 @@ QList<DataType> MySQLDTSupplier::textTypes()
 
 QList<DataType> MySQLDTSupplier::numericTypes()
 {
-    static DataType mysql_dt_int("INT", DataType::DT_NUMERIC);
-    static DataType mysql_dt_integer("INTEGER", DataType::DT_NUMERIC);
-    static DataType mysql_dt_tinyint("TINYINT", DataType::DT_NUMERIC);
-    static DataType mysql_dt_smallint("SMALLINT", DataType::DT_NUMERIC);
-    static DataType mysql_dt_mediumint("MEDIUMINT", DataType::DT_NUMERIC);
-    static DataType mysql_dt_bigint("BIGINT", DataType::DT_NUMERIC);
-    static DataType mysql_dt_decimal("DECIMAL", DataType::DT_NUMERIC);
-    static DataType mysql_dt_numeric("NUMERIC", DataType::DT_NUMERIC);
-    static DataType mysql_dt_float("FLOAT", DataType::DT_NUMERIC);
-    static DataType mysql_dt_real("REAL", DataType::DT_NUMERIC);
-    static DataType mysql_dt_double_precision("DOUBLE PRECISION", DataType::DT_NUMERIC);
-    static DataType mysql_dt_bit("BIT", DataType::DT_NUMERIC);
+    static DataType mysql_dt_int("INT", DT_NUMERIC);
+    static DataType mysql_dt_integer("INTEGER", DT_NUMERIC);
+    static DataType mysql_dt_tinyint("TINYINT", DT_NUMERIC);
+    static DataType mysql_dt_smallint("SMALLINT", DT_NUMERIC);
+    static DataType mysql_dt_mediumint("MEDIUMINT", DT_NUMERIC);
+    static DataType mysql_dt_bigint("BIGINT", DT_NUMERIC);
+    static DataType mysql_dt_decimal("DECIMAL", DT_NUMERIC);
+    static DataType mysql_dt_numeric("NUMERIC", DT_NUMERIC);
+    static DataType mysql_dt_float("FLOAT", DT_NUMERIC);
+    static DataType mysql_dt_real("REAL", DT_NUMERIC);
+    static DataType mysql_dt_double_precision("DOUBLE PRECISION", DT_NUMERIC);
+    static DataType mysql_dt_bit("BIT", DT_NUMERIC);
 
     static QList<DataType> result;
 
@@ -63,7 +63,7 @@ QList<DataType> MySQLDTSupplier::numericTypes()
 
 QList<DataType> MySQLDTSupplier::booleanTypes()
 {
-    static DataType mysql_dt_bool("BOOL", DataType::DT_BOOLEAN);
+    static DataType mysql_dt_bool("BOOL", DT_BOOLEAN);
 
     static QList<DataType> result;
 
@@ -75,11 +75,11 @@ QList<DataType> MySQLDTSupplier::booleanTypes()
 QList<DataType> MySQLDTSupplier::dateTimeTypes()
 {
 
-    static DataType mysql_dt_date("DATE", DataType::DT_DATETIME);
-    static DataType mysql_dt_datetime("DATETIME", DataType::DT_DATETIME);
-    static DataType mysql_dt_timestamp("TIMESTAMP", DataType::DT_DATETIME);
-    static DataType mysql_dt_time("TIME", DataType::DT_DATETIME);
-    static DataType mysql_dt_year("YEAR", DataType::DT_DATETIME);
+    static DataType mysql_dt_date("DATE", DT_DATETIME);
+    static DataType mysql_dt_datetime("DATETIME", DT_DATETIME);
+    static DataType mysql_dt_timestamp("TIMESTAMP", DT_DATETIME);
+    static DataType mysql_dt_time("TIME", DT_DATETIME);
+    static DataType mysql_dt_year("YEAR", DT_DATETIME);
 
     static QList<DataType> result;
 
@@ -94,12 +94,12 @@ QList<DataType> MySQLDTSupplier::dateTimeTypes()
 
 QList<DataType> MySQLDTSupplier::blobTypes()
 {
-    static DataType mysql_dt_binary("BINARY", DataType::DT_BLOB);
-    static DataType mysql_dt_varbinary("VARBINARY", DataType::DT_BLOB);
-    static DataType mysql_dt_tinyblob("TINYBLOB", DataType::DT_BLOB);
-    static DataType mysql_dt_blob("BLOB", DataType::DT_BLOB);
-    static DataType mysql_dt_mediumblob("MEDIUMBLOB", DataType::DT_BLOB);
-    static DataType mysql_dt_longblob("LONGBLOB", DataType::DT_BLOB);
+    static DataType mysql_dt_binary("BINARY", DT_BLOB);
+    static DataType mysql_dt_varbinary("VARBINARY", DT_BLOB);
+    static DataType mysql_dt_tinyblob("TINYBLOB", DT_BLOB);
+    static DataType mysql_dt_blob("BLOB", DT_BLOB);
+    static DataType mysql_dt_mediumblob("MEDIUMBLOB", DT_BLOB);
+    static DataType mysql_dt_longblob("LONGBLOB", DT_BLOB);
 
     static QList<DataType> result;
 
@@ -115,8 +115,8 @@ QList<DataType> MySQLDTSupplier::blobTypes()
 
 QList<DataType> MySQLDTSupplier::miscTypes()
 {
-    static DataType mysql_dt_enum("ENUM", DataType::DT_MISC);
-    static DataType mysql_dt_set("SET", DataType::DT_MISC);
+    static DataType mysql_dt_enum("ENUM", DT_MISC);
+    static DataType mysql_dt_set("SET", DT_MISC);
 
     static QList<DataType> result;
 
@@ -128,14 +128,14 @@ QList<DataType> MySQLDTSupplier::miscTypes()
 
 QList<DataType> MySQLDTSupplier::spatialTypes()
 {
-    static DataType mysql_dt_geometry("GEOMETRY", DataType::DT_SPATIAL);
-    static DataType mysql_dt_point("POINT", DataType::DT_SPATIAL);
-    static DataType mysql_dt_linestring("LINESTRING", DataType::DT_SPATIAL);
-    static DataType mysql_dt_polygon("POLYGON", DataType::DT_SPATIAL);
-    static DataType mysql_dt_multipolygon("MULTIPOLYGON", DataType::DT_SPATIAL);
-    static DataType mysql_dt_multipoint("MULTIPOINT", DataType::DT_SPATIAL);
-    static DataType mysql_dt_multilinestring("MULTILINESTRING", DataType::DT_SPATIAL);
-    static DataType mysql_dt_geometrycollection("GEOMETRYCOLLECTION", DataType::DT_SPATIAL);
+    static DataType mysql_dt_geometry("GEOMETRY", DT_SPATIAL);
+    static DataType mysql_dt_point("POINT", DT_SPATIAL);
+    static DataType mysql_dt_linestring("LINESTRING", DT_SPATIAL);
+    static DataType mysql_dt_polygon("POLYGON", DT_SPATIAL);
+    static DataType mysql_dt_multipolygon("MULTIPOLYGON", DT_SPATIAL);
+    static DataType mysql_dt_multipoint("MULTIPOINT", DT_SPATIAL);
+    static DataType mysql_dt_multilinestring("MULTILINESTRING", DT_SPATIAL);
+    static DataType mysql_dt_geometrycollection("GEOMETRYCOLLECTION", DT_SPATIAL);
 
     static QList<DataType> result;
 

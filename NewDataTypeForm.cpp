@@ -19,7 +19,7 @@
 #include <QListWidget>
 #include <QListWidgetItem>
 
-NewDataTypeForm::NewDataTypeForm(DataType::DT_TYPE t, DatabaseEngine* dbe, QWidget *parent) : QWidget(parent), m_ui(new Ui::NewDataTypeForm), m_dbEngine(dbe), m_udt(0)
+NewDataTypeForm::NewDataTypeForm(DT_TYPE t, DatabaseEngine* dbe, QWidget *parent) : QWidget(parent), m_ui(new Ui::NewDataTypeForm), m_dbEngine(dbe), m_udt(0)
 {
     m_ui->setupUi(this);
 
@@ -42,29 +42,29 @@ NewDataTypeForm::NewDataTypeForm(DataType::DT_TYPE t, DatabaseEngine* dbe, QWidg
 
     switch(t)
     {
-    case DataType::DT_STRING :
+    case DT_STRING :
         m_ui->cmbDTType->setCurrentIndex(0);
         break;
-    case DataType::DT_NUMERIC :
+    case DT_NUMERIC :
         m_ui->cmbDTType->setCurrentIndex(1);
         break;
-    case DataType::DT_BOOLEAN :
+    case DT_BOOLEAN :
         m_ui->cmbDTType->setCurrentIndex(2);
         break;
-    case DataType::DT_DATETIME :
+    case DT_DATETIME :
         m_ui->cmbDTType->setCurrentIndex(3);
         break;
-    case DataType::DT_BLOB :
+    case DT_BLOB :
         m_ui->cmbDTType->setCurrentIndex(4);
         break;
-    case DataType::DT_MISC :
+    case DT_MISC :
         m_ui->cmbDTType->setCurrentIndex(5);
         break;
-    case DataType::DT_SPATIAL :
+    case DT_SPATIAL :
         m_ui->cmbDTType->setCurrentIndex(6);
         break;
-    case DataType::DT_INVALID :
-    case DataType::DT_GENERIC:
+    case DT_INVALID :
+    case DT_GENERIC:
     default:
         m_ui->cmbDTType->setCurrentIndex(-1);
         break;
@@ -102,12 +102,12 @@ void NewDataTypeForm::basicDTselected(QString newSelection)
 
     hideSpecialComponents();
 
-    DataType::DT_TYPE type = DataType::getDT_TYPE(newSelection);
+    DT_TYPE type = DataType::getDT_TYPE(newSelection);
     QList<DataType> types = m_dbEngine->getDTSupplier()->getDTList(type);
 
     for(int i=0; i< types.size(); i++)
     {
-        m_ui->cmbDTSQLType->addItem(DataType::getIcon(type), types[i].getName());
+        m_ui->cmbDTSQLType->addItem(IconFactory::getIconForDataType(type), types[i].getName());
     }
     if(newSelection == strNumeric)
     {

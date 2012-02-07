@@ -5,6 +5,8 @@
 #include "EnterNoteTextDialog.h"
 #include "DiagramForm.h"
 #include "DraggableGraphicsItemForText.h"
+#include "DiagramItemFactory.h"
+
 #include <qdebug.h>
 
 ERGraphicsScene::ERGraphicsScene(QWidget* parent, Version* v, Diagram* dgram, TableListWidget *lstTables) :  QGraphicsScene(LEFT, TOP, WIDTH, HEIGHT, parent),
@@ -83,7 +85,7 @@ void ERGraphicsScene::finalizeItem(int x, int y)
                             DraggableGraphicsViewItem* itmForOtherTable = getItemForTable(allTables.at(i)->getName());  // this returns a table only if the table is in the scene already
                             if(itmForOtherTable != 0)
                             {
-                                DraggableGraphicsViewItemForForeignKey* difks = fksI.at(j)->getItem();
+                                DraggableGraphicsViewItemForForeignKey* difks = DiagramItemFactory::getDiagramEntityForForeignKey(fksI.at(j));
                                 FkRelationDescriptor* fkrd = new FkRelationDescriptor(fksI.at(j), difks, itm, itmForOtherTable);
                                 addItem(difks);
                                 addForeignKey(fkrd);
@@ -107,7 +109,7 @@ void ERGraphicsScene::finalizeItem(int x, int y)
                     DraggableGraphicsViewItem* itmForOtherTable = getItemForTable(assocs.at(j)->getForeignTable()->getName());
                     if(itmForOtherTable != 0)
                     {
-                        DraggableGraphicsViewItemForForeignKey* difks = cfks.at(i)->getItem();
+                        DraggableGraphicsViewItemForForeignKey* difks = DiagramItemFactory::getDiagramEntityForForeignKey(cfks.at(i));
                         FkRelationDescriptor* fkrd = new FkRelationDescriptor(cfks.at(i), difks, itmForOtherTable, itm);
                         addItem(difks);
                         addForeignKey(fkrd);
@@ -156,7 +158,7 @@ void ERGraphicsScene::dropEvent(QGraphicsSceneDragDropEvent * event)
     {
         Table* tab = m_version->getTable(tabName);
         if(!tab) return;
-        itm = tab->getDiagramEntity();
+        itm = DiagramItemFactory::getDiagramEntityForTable(tab);
         if(!itm)
         {
             return;

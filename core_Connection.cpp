@@ -3,8 +3,8 @@
 #include "IconFactory.h"
 
 Connection::Connection(const QString& name, const QString& host, const QString& user, const QString& pass, const QString& db, bool savePw, bool autoConnect):
-        SerializableElement(), TreeItem(), IssueOriginator(name),
-        m_host(host), m_user(user), m_pass(pass), m_db(db), m_dbType("MySQL"), m_savePw(savePw), m_autoConnect(autoConnect), m_engine(0), m_state(DID_NOT_TRY)
+    TreeItem(), SerializableElement(), IssueOriginator(), NamedItem(name),
+    m_host(host), m_user(user), m_pass(pass), m_db(db), m_dbType("MySQL"), m_savePw(savePw), m_autoConnect(autoConnect), m_engine(0), m_state(DID_NOT_TRY)
 {
     m_engine = DatabaseEngine::createEngine(m_dbType);
 }

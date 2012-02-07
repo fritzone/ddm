@@ -247,12 +247,13 @@ void MainWindow::onDTTreeClicked()
             if(item->parent() != m_workspace->workingVersion()->getGui()->getDtsItem()) // this must be a data type
             {
                 QVariant qv = item->data(0, Qt::UserRole);
-                UserDataType* udt = static_cast<UserDataType*>(qv.data());
-                if(m_workspace->workingVersion()->hasDataType(udt->getName()))
+                QString n = qv.toString();
+                UserDataType* udt = 0;
+                if(m_workspace->workingVersion()->hasDataType(n))
                 {
-                    udt = m_workspace->workingVersion()->getDataType(udt->getName());
+                    udt = m_workspace->workingVersion()->getDataType(n);
                 }
-                NewDataTypeForm* frm = new NewDataTypeForm(DataType::DT_INVALID, m_workspace->currentProjectsEngine(), this);
+                NewDataTypeForm* frm = new NewDataTypeForm(DT_INVALID, m_workspace->currentProjectsEngine(), this);
                 frm->focusOnName();
                 frm->setDataType(udt);
                 setCentralWidget(frm);
@@ -317,7 +318,7 @@ void MainWindow::showDataType(const QString &name, bool focus)
         return;
     }
 
-    NewDataTypeForm* frm = new NewDataTypeForm(DataType::DT_INVALID, m_workspace->currentProjectsEngine(), this);
+    NewDataTypeForm* frm = new NewDataTypeForm(DT_INVALID, m_workspace->currentProjectsEngine(), this);
     frm->focusOnName();
     frm->setDataType(dt);
     setCentralWidget(frm);
@@ -556,7 +557,7 @@ void MainWindow::onNewTable()
 
 void MainWindow::showNewDataTypeWindow(int a)
 {
-    NewDataTypeForm* frm = new NewDataTypeForm((DataType::DT_TYPE)a, m_workspace->currentProjectsEngine(), this);
+    NewDataTypeForm* frm = new NewDataTypeForm((DT_TYPE)a, m_workspace->currentProjectsEngine(), this);
     frm->focusOnName();
     m_guiElements->getProjectTree()->setCurrentItem(0);
     setCentralWidget(frm);
@@ -567,7 +568,7 @@ void MainWindow::showNewDataTypeWindow(int a)
 
 void MainWindow::onNewDataType()
 {
-    showNewDataTypeWindow(DataType::DT_INVALID);
+    showNewDataTypeWindow(DT_INVALID);
 }
 
 bool MainWindow::onSaveNewDataType(const QString& name, const QString& type, const QString& sqlType, const QString& size, const QString& defaultValue, const QString& cp,
@@ -600,13 +601,13 @@ bool MainWindow::onSaveNewDataType(const QString& name, const QString& type, con
     if(pudt)    // saving
     {
         *pudt = *udt;
-        pudt->getLocation()->setIcon(0, pudt->getIcon());
+        pudt->getLocation()->setIcon(0, IconFactory::getIconForDataType(pudt->getType()));
         pudt->getLocation()->setText(0, name);
         pudt->getLocation()->setText(1, pudt->sqlAsString());
 
         // updating the "data" of the tree item
         QVariant var;
-        var.setValue(*udt);
+        var.setValue(udt->getName());
         pudt->getLocation()->setData(0, Qt::UserRole, var);
     }
     else        // new stuff
@@ -1733,37 +1734,37 @@ void MainWindow::dtTreeItemClicked ( QTreeWidgetItem *, int)
 
 void MainWindow::onNewStringType()
 {
-    showNewDataTypeWindow(DataType::DT_STRING);
+    showNewDataTypeWindow(DT_STRING);
 }
 
 void MainWindow::onNewNumericType()
 {
-    showNewDataTypeWindow(DataType::DT_NUMERIC);
+    showNewDataTypeWindow(DT_NUMERIC);
 }
 
 void MainWindow::onNewBoolType()
 {
-    showNewDataTypeWindow(DataType::DT_BOOLEAN);
+    showNewDataTypeWindow(DT_BOOLEAN);
 }
 
 void MainWindow::onNewDateTimeType()
 {
-    showNewDataTypeWindow(DataType::DT_DATETIME);
+    showNewDataTypeWindow(DT_DATETIME);
 }
 
 void MainWindow::onNewBlobType()
 {
-    showNewDataTypeWindow(DataType::DT_BLOB);
+    showNewDataTypeWindow(DT_BLOB);
 }
 
 void MainWindow::onNewMiscType()
 {
-    showNewDataTypeWindow(DataType::DT_MISC);
+    showNewDataTypeWindow(DT_MISC);
 }
 
 void MainWindow::onNewSpatialType()
 {
-    showNewDataTypeWindow(DataType::DT_SPATIAL);
+    showNewDataTypeWindow(DT_SPATIAL);
 }
 
 void MainWindow::onGotoIssueLocation()
@@ -2030,6 +2031,7 @@ void MainWindow::onReverseEngineerWizardAccept()
 void MainWindow::onReverseEngineeringFinished(ReverseEngineerer*)
 {
     lblStatus->setText(QApplication::translate("MainWindow", "Reverse engineering finished", 0, QApplication::UnicodeUTF8));
+    qDebug() << "Reverse Engineering finished " << pthread_self();
     m_workspace->workingVersion()->getGui()->populateTreeItems();
 
 }

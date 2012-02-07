@@ -81,7 +81,7 @@ NewTableForm::NewTableForm(DatabaseEngine* db, Project* prj, QWidget *parent, bo
     const QVector<UserDataType*>& dts = m_project->getWorkingVersion()->getDataTypes();
     for(int i=0; i<dts.size(); i++)
     {
-        m_ui->cmbNewColumnType->addItem(dts[i]->getIcon(), dts[i]->getName());
+        m_ui->cmbNewColumnType->addItem(IconFactory::getIconForDataType(dts[i]->getType()), dts[i]->getName());
     }
 
     lstColumns->header()->resizeSection(0, 50);
@@ -349,13 +349,13 @@ void NewTableForm::setTypeComboBoxForColumnItem(ContextMenuEnabledTreeWidgetItem
     int s = -1;
     if(item->backgroundColor(0) == Qt::lightGray)
     {
-        cmbColumnType->addItem(c->getDataType()->getIcon(),c->getDataType()->getName());
+        cmbColumnType->addItem(IconFactory::getIconForDataType(c->getDataType()->getType()),c->getDataType()->getName());
         lstColumns->setItemWidget(item, 2, cmbColumnType);
         return;
     }
     for(int i=0; i<dts.size(); i++)
     {
-        cmbColumnType->addItem(dts[i]->getIcon(), dts[i]->getName(), QVariant(c->getName()));
+        cmbColumnType->addItem(IconFactory::getIconForDataType(dts[i]->getType()), dts[i]->getName(), QVariant(c->getName()));
         if(dts[i]->getName() == c->getDataType()->getName()) s = i;
     }
     lstColumns->setItemWidget(item, 2, cmbColumnType);
@@ -929,14 +929,14 @@ void NewTableForm::populateColumnsForIndices()
             Column* col = m_table->getColumn(m_table->fullColumns()[i]);
             if(col)
             {
-                qlwi->setIcon(col->getDataType()->getIcon());
+                qlwi->setIcon(IconFactory::getIconForDataType(col->getDataType()->getType()));
             }
             else
             {
                 col = m_table->getColumnFromParents(m_table->fullColumns()[i]);
                 if(col)
                 {
-                    qlwi->setIcon(col->getDataType()->getIcon());
+                    qlwi->setIcon(IconFactory::getIconForDataType(col->getDataType()->getType()));
                 }
             }
         }
@@ -951,14 +951,14 @@ void NewTableForm::populateColumnsForIndices()
                     Column* col = m_table->getColumn(m_table->fullColumns()[i]);
                     if(col)
                     {
-                        qlwi->setIcon(col->getDataType()->getIcon());
+                        qlwi->setIcon(IconFactory::getIconForDataType(col->getDataType()->getType()));
                     }
                     else
                     {
                         col = m_table->getColumnFromParents(m_table->fullColumns()[i]);
                         if(col)
                         {
-                            qlwi->setIcon(col->getDataType()->getIcon());
+                            qlwi->setIcon(IconFactory::getIconForDataType(col->getDataType()->getType()));
                         }
                     }
                 }
@@ -1058,7 +1058,7 @@ void NewTableForm::doTheSave()
 void NewTableForm::prepareValuesToBeSaved()
 {
     m_table->setName(m_ui->txtTableName->text());
-    m_table->prepareDiagramEntity();
+
     m_table->setPersistent(m_ui->chkPersistent->isChecked());
     m_table->setTemporary(m_ui->chkTemporary->isChecked());
     m_table->setDescription(m_ui->txtDescription->toPlainText());
@@ -1380,14 +1380,14 @@ void NewTableForm::onForeignTableComboChange(QString selected)
         Column* col = table->getColumn(foreignColumns[i]);
         if(col)
         {
-            qlwi->setIcon(col->getDataType()->getIcon());
+            qlwi->setIcon(IconFactory::getIconForDataType(col->getDataType()->getType()));
         }
         else
         {
             col = table->getColumnFromParents(foreignColumns[i]);
             if(col)
             {
-                qlwi->setIcon(col->getDataType()->getIcon());
+                qlwi->setIcon(IconFactory::getIconForDataType(col->getDataType()->getType()));
             }
         }
     }
@@ -1423,7 +1423,7 @@ void NewTableForm::onForeignTableColumnChange()
                 {
                     //qDebug() << col->getName() << " is " << col->getDataType()->getName() << " >> " << foreignColumn->getName() << " is " << foreignColumn->getDataType()->getName();
                     QListWidgetItem* qlwj = new QListWidgetItem(parentColumns[j], m_ui->lstLocalColumn);
-                    qlwj->setIcon(col->getDataType()->getIcon());
+                    qlwj->setIcon(IconFactory::getIconForDataType(col->getDataType()->getType()));
                 }
             }
             else
@@ -1434,7 +1434,7 @@ void NewTableForm::onForeignTableColumnChange()
                     if(col->getDataType()->getName() == foreignColumn->getDataType()->getName())
                     {
                         QListWidgetItem* qlwj = new QListWidgetItem(parentColumns[j], m_ui->lstLocalColumn);
-                        qlwj->setIcon(col->getDataType()->getIcon());
+                        qlwj->setIcon(IconFactory::getIconForDataType(col->getDataType()->getType()));
                     }
                 }
             }
@@ -1512,8 +1512,8 @@ void NewTableForm::onAddForeignKeyAssociation()
     QVariant var(m_foreignTable->getName());
     item->setData(0, Qt::UserRole, var);
 
-    item->setIcon(0, cforeignColumn->getDataType()->getIcon());
-    item->setIcon(1, clocalColumn->getDataType()->getIcon());
+    item->setIcon(0, IconFactory::getIconForDataType(cforeignColumn->getDataType()->getType()));
+    item->setIcon(1, IconFactory::getIconForDataType(clocalColumn->getDataType()->getType()));
 
     m_ui->lstForeignKeyAssociations->addTopLevelItem(item);
 
@@ -1556,7 +1556,7 @@ void NewTableForm::onSelectAssociation(QTreeWidgetItem* current, int)
     for(int i=0; i<foreignColumns.size(); i++)
     {
         QListWidgetItem* qlwi = new QListWidgetItem(m_foreignTable->getColumns()[i]->getName(), m_ui->lstForeignTablesColumns);
-        qlwi->setIcon(m_foreignTable->getColumns()[i]->getDataType()->getIcon());
+        qlwi->setIcon(IconFactory::getIconForDataType(m_foreignTable->getColumns()[i]->getDataType()->getType()));
     }
 
     int foundIndex = m_ui->cmbForeignTables->findText(tabName);
@@ -1719,8 +1719,8 @@ void NewTableForm::populateFKGui(ForeignKey * fk)
         QVariant var(assocs[i]->getForeignTable()->getName());
         item->setData(0, Qt::UserRole, var);
 
-        item->setIcon(0, assocs[i]->getForeignColumn()->getDataType()->getIcon());
-        item->setIcon(1, assocs[i]->getLocalColumn()->getDataType()->getIcon());
+        item->setIcon(0, IconFactory::getIconForDataType(assocs[i]->getForeignColumn()->getDataType()->getType()));
+        item->setIcon(1, IconFactory::getIconForDataType(assocs[i]->getLocalColumn()->getDataType()->getType()));
 
         m_ui->lstForeignKeyAssociations->addTopLevelItem(item);
     }
@@ -1747,14 +1747,14 @@ void NewTableForm::populateFKGui(ForeignKey * fk)
         Column* col = table->getColumn(foreignColumns[i]);
         if(col)
         {
-            qlwi->setIcon(col->getDataType()->getIcon());
+            qlwi->setIcon(IconFactory::getIconForDataType(col->getDataType()->getType()));
         }
         else
         {
             col = table->getColumnFromParents(foreignColumns[i]);
             if(col)
             {
-                qlwi->setIcon(col->getDataType()->getIcon());
+                qlwi->setIcon(IconFactory::getIconForDataType(col->getDataType()->getType()));
             }
         }
     }
@@ -1794,7 +1794,7 @@ void NewTableForm::updateDefaultValuesTableHeader()
     for(int i=0; i<m_table->getColumns().count(); i++)
     {
         QTableWidgetItem *columnHeaderItem = new QTableWidgetItem(m_table->getColumns()[i]->getName());
-        columnHeaderItem->setIcon(m_table->getColumns()[i]->getDataType()->getIcon());
+        columnHeaderItem->setIcon(IconFactory::getIconForDataType(m_table->getColumns()[i]->getDataType()->getType()));
         columnHeaderItem->setTextAlignment(Qt::AlignVCenter);
 
         m_ui->tableStartupValues->setHorizontalHeaderItem(i, columnHeaderItem);
@@ -2002,13 +2002,11 @@ void NewTableForm::onBtnRemoveForeignKey()
 void NewTableForm::onPersistentChange(int a)
 {
     m_table->setPersistent(a == Qt::Checked);
-    m_table->prepareDiagramEntity();
 }
 
 void NewTableForm::onTemporaryChange(int a)
 {
     m_table->setTemporary(a == Qt::Checked);
-    m_table->prepareDiagramEntity();
 }
 
 void NewTableForm::onDeleteDefaultRow()
@@ -2219,6 +2217,15 @@ void NewTableForm::onColumnNameChange(QString)
 
 void NewTableForm::onDatatypeComboChange(QString)
 {
+    m_ui->chkAutoInc->setEnabled(true);
+
+    UserDataType* udt = m_project->getWorkingVersion()->getDataType(m_ui->cmbNewColumnType->currentText());
+    if(udt && !udt->supportsAutoIncrement())
+    {
+        m_ui->chkAutoInc->setChecked(false);
+        m_ui->chkAutoInc->setEnabled(false);
+    }
+
     if(m_currentColumn)
     {
         // TODO: This is dupliation with code from onAddColumn

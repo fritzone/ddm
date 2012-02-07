@@ -15,7 +15,7 @@ type(_type)
 /**
  * Returns the DT_TYPE for the given string (taken from the combo box)
  */
-DataType::DT_TYPE DataType::getDT_TYPE(const QString& typeString)
+DT_TYPE DataType::getDT_TYPE(const QString& typeString)
 {
     if(typeString == strTextString) return DT_STRING;
     if(typeString == strNumeric) return DT_NUMERIC;
@@ -26,26 +26,6 @@ DataType::DT_TYPE DataType::getDT_TYPE(const QString& typeString)
     if(typeString == strSpatial) return DT_SPATIAL;
 
     return DT_INVALID;
-}
-
-QIcon DataType::getIcon(DT_TYPE dt)
-{
-    switch(dt)
-    {
-    case DT_STRING: return IconFactory::getStringDataTypeIcon();
-    case DT_NUMERIC: return IconFactory::getIntDataTypeIcon();
-    case DT_BOOLEAN: return IconFactory::getBoolDataTypeIcon();
-    case DT_BLOB: return IconFactory::getBlobDataTypeIcon();
-    case DT_DATETIME: return IconFactory::getDateTimeDataTypeIcon();
-    case DT_MISC: return IconFactory::getMiscDataTypeIcon();
-    case DT_SPATIAL: return IconFactory::getSpatialDataTypeIcon();
-    case DT_INVALID:
-    case DT_GENERIC:
-    default:
-        return IconFactory::getEmptyIcon();
-    }
-
-    return IconFactory::getEmptyIcon();
 }
 
 QString DataType::typeAsString() const
@@ -67,3 +47,9 @@ QString DataType::typeAsString() const
     return QString("");
 }
 
+
+bool DataType::supportsAutoIncrement() const
+{
+    if(type == DT_NUMERIC) return true;
+    return false;
+}

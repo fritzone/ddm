@@ -165,8 +165,8 @@ QStringList MySQLSQLGenerator::generateCreateTableSql(Table *table, const QHash<
         {
             QString g = dt->getDefaultValue();
             createTable += QString(upcase?" DEFAULT ":" default ") +
-                    QString( (dt->getType()==DataType::DT_STRING) || (dt->getType()==DataType::DT_DATETIME && g.toUpper()!="CURRENT_TIMESTAMP") ? "\"" : "") + dt->getDefaultValue() +
-                    QString( (dt->getType()==DataType::DT_STRING) || (dt->getType()==DataType::DT_DATETIME && g.toUpper()!="CURRENT_TIMESTAMP") ? "\"" : "") ;
+                    QString( (dt->getType()==DT_STRING) || (dt->getType()==DT_DATETIME && g.toUpper()!="CURRENT_TIMESTAMP") ? "\"" : "") + dt->getDefaultValue() +
+                    QString( (dt->getType()==DT_STRING) || (dt->getType()==DT_DATETIME && g.toUpper()!="CURRENT_TIMESTAMP") ? "\"" : "") ;
         }
 
         // do we have more columns after this?

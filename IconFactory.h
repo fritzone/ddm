@@ -2,6 +2,7 @@
 #define ICONFACTORY_H
 
 #include "strings.h"
+#include "enums.h"
 
 #include <QIcon>
 
@@ -496,6 +497,26 @@ public:
     {
         static const QIcon icon(strTriggerBeforeIcon);
         return icon;
+    }
+
+    static QIcon getIconForDataType(DT_TYPE dt)
+    {
+        switch(dt)
+        {
+        case DT_STRING: return getStringDataTypeIcon();
+        case DT_NUMERIC: return getIntDataTypeIcon();
+        case DT_BOOLEAN: return getBoolDataTypeIcon();
+        case DT_BLOB: return getBlobDataTypeIcon();
+        case DT_DATETIME: return getDateTimeDataTypeIcon();
+        case DT_MISC: return getMiscDataTypeIcon();
+        case DT_SPATIAL: return getSpatialDataTypeIcon();
+        case DT_INVALID:
+        case DT_GENERIC:
+        default:
+            return getEmptyIcon();
+        }
+
+        return getEmptyIcon();
     }
 
 };
