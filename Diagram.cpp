@@ -114,11 +114,9 @@ QVector<const Table*> Diagram::getTables() const
 
 DraggableGraphicsViewItemForText* Diagram::getNote(int noteIdx)
 {
-    qDebug() << "Note: "<< noteIdx;
     int i=0;
     while(i<m_notes.size())
     {
-        qDebug() << "Note " << i << m_notes.at(i)->getIndex();
         if(m_notes.at(i)->getIndex() == noteIdx)
         {
             return m_notes.at(i);

@@ -17,7 +17,6 @@ QPixmap DraggableGraphicsViewItem::getDragImage()
 
 void DraggableGraphicsViewItem:: mousePressEvent ( QGraphicsSceneMouseEvent * event )
 {
-    qDebug() << "mousepress : X=" << event->pos().x() << " Y=" << event->pos().y();
     if (event->button() != Qt::LeftButton)
     {
         if(event->button() == Qt::RightButton)
@@ -50,7 +49,6 @@ void DraggableGraphicsViewItem:: mousePressEvent ( QGraphicsSceneMouseEvent * ev
 
 void DraggableGraphicsViewItem::mouseReleaseEvent ( QGraphicsSceneMouseEvent * event )
 {
-    qDebug() << "mouserelease : X=" << event->pos().x() << " Y=" << event->pos().y();
     event->accept();
     dynamic_cast<ERGraphicsScene*>(this->scene())->setDraggedItem(0);
 }

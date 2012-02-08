@@ -12,7 +12,6 @@ SelectQueryOrderByComponent::SelectQueryOrderByComponent(QueryComponent* p, int 
 
 void SelectQueryOrderByComponent::handleAction(const QString &action, QueryComponent* /*referringObject*/)
 {
-    qDebug() << action;
     if(action == NEW_COLUMN)
     {
         SelectQuery* sq = dynamic_cast<SelectQuery*>(m_parent);

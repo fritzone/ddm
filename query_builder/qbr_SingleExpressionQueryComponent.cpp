@@ -392,10 +392,16 @@ void SingleExpressionQueryComponent::handleAction(const QString& action, QueryCo
         QString colName = t2.at(0);
         int index = t2.at(1).toInt();
         Table* tab = Workspace::getInstance()->workingVersion()->getTable(tabName);
-        if(tab == 0) { qDebug() << "No table???"; return; }
+        if(tab == 0)
+        {
+            return;
+        }
         Column* c = tab->getColumn(colName);
         if(c == 0) c = tab->getColumnFromParents(colName);
-        if(c == 0) { qDebug() << "No column???"; return; }
+        if(c == 0)
+        {
+            return;
+        }
         m_columnsAtGivenPosition[index] = c;
 
         if(index < m_elements.size())   // let's see if we overwrote something

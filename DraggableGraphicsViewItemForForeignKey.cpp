@@ -7,7 +7,6 @@
 
 void DraggableGraphicsViewItemForForeignKey::mousePressEvent ( QGraphicsSceneMouseEvent * event )
 {
-    qDebug() << "fk mousepress : X=" << event->pos().x() << " Y=" << event->pos().y();
     if (event->button() != Qt::LeftButton)
     {
         event->ignore();
@@ -19,7 +18,6 @@ void DraggableGraphicsViewItemForForeignKey::mousePressEvent ( QGraphicsSceneMou
 
 void DraggableGraphicsViewItemForForeignKey::mouseReleaseEvent ( QGraphicsSceneMouseEvent * event )
 {
-    qDebug() << "fk mouserelease : X=" << event->pos().x() << " Y=" << event->pos().y();
     event->accept();
     dynamic_cast<ERGraphicsScene*>(this->scene())->setDraggedItem(0);
 }

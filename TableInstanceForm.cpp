@@ -62,7 +62,6 @@ void TableInstanceForm::createTableWithValues()
         for(int j=0; j<v.size(); j++)
         {
             QTableWidgetItem* itm = new QTableWidgetItem(v[j]);
-            qDebug() << v[j];
             ui->values->setItem(j, i, itm);
         }
         ui->values->resizeColumnsToContents();

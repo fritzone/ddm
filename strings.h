@@ -208,6 +208,7 @@ static const QString strMru5 = "mru5";
 
 static const QString browsedTablePrefix = "B:";
 static const QString browsedViewPrefix = "V:";
+static const QString browsedProcPrefix = "P:";
 static const QString strSpace = " ";
 static const QString strNewline = "\n";
 static const QString strSemicolon = ";";

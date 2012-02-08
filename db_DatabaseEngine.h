@@ -109,7 +109,7 @@ public:
      * @param rollbackOnError - in case of an error the code will try to execute a rollback if this is true.
      * @return true in case of success, false in case of error
      */
-    virtual bool executeSql(Connection* conn, const QStringList& sqls, QString& lastSql, bool rollbackOnError) = 0;
+    virtual bool executeSql(Connection* c, const QStringList& sqls, QString& lastSql, bool rollbackOnError) = 0;
 
     /**
      * Tries to connect to the database represented by the connection
@@ -261,7 +261,7 @@ public:
      * @param procName - the view to be reverse engineered
      * @return the Procedure object representing the procedure in the database 0 in case there is no procedure called like that
      */
-    virtual Procedure* reverseEngineerProcedure(Connection *c, const QString& procName) = 0;
+    virtual Procedure* reverseEngineerProc(Connection *c, const QString& procName) = 0;
 
     /**
      * Returns the columns of the given table as a list of strings

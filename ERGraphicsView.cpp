@@ -23,15 +23,12 @@ ERGraphicsView::ERGraphicsView(QWidget* parent, Version* v, Diagram* dgram, Tabl
 
 ERGraphicsView::~ERGraphicsView()
 {
-    qDebug() << "view destructor" ;
-
 }
 
 void ERGraphicsView::mouseMoveEvent(QMouseEvent *event)
 {
     if(m_scene->getJustDropped() != 0)
     {
-        qDebug() << "just dropped in move" ;
         QPointF scpos = mapToScene(event->pos().x(), event->pos().y());
         m_scene->finalizeItem(scpos.x(), scpos.y());
         return;
@@ -69,7 +66,6 @@ void ERGraphicsView::mousePressEvent(QMouseEvent *mouseEvent)
 
         for(int i=0; i<m_scene->m_diagram->m_notes.size(); i++)
         {
-            qDebug() << "checking: " << m_scene->m_diagram->m_notes[i]->boundingRect();
             if(m_scene->m_diagram->m_notes[i]->isUnderMouse())
             {
                 QGraphicsSceneMouseEvent* gsme = new QGraphicsSceneMouseEvent(mouseEvent->type());

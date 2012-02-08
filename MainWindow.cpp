@@ -1467,7 +1467,6 @@ void MainWindow::onInjectBrowsedTable()
     if(v.isValid())
     {
         QString s = v.toString();
-        qDebug() << s;
         if(s.startsWith(browsedTablePrefix))
         {
             QString cname = s.mid(s.indexOf("?") + 1);
@@ -1541,6 +1540,7 @@ void MainWindow::tryBrowseConnection(Connection *c)
         c->getLocation()->setIcon(0, IconFactory::getConnectedDatabaseIcon());
         createConnectionTreeEntryForTables(c);
         createConnectionTreeEntryForViews(c);
+        createConnectionTreeEntryForProcs(c);
     }
 }
 
@@ -1620,6 +1620,24 @@ void MainWindow::onConnectionItemDoubleClicked(QTreeWidgetItem* item,int)
             return;
         }
 
+        if(s.startsWith(browsedProcPrefix))
+        {
+            QString cname = s.mid(s.indexOf("?") + 1);
+            Connection *c = ConnectionManager::instance()->getConnection(cname);
+            if(!c) return;
+            QString tab = s.left(s.indexOf("?")).mid(2);
+            Procedure* p = c->getEngine()->reverseEngineerProc(c, tab);
+            if(p)
+            {
+                ProcedureForm* pf = new ProcedureForm(MODE_PROCEDURE, true, c);
+                pf->setProcedure(p);
+                setCentralWidget(pf);
+                pf->showSql();
+            }
+            return;
+        }
+
+
         Connection* c = ConnectionManager::instance()->getConnection(s);
         if(c) tryBrowseConnection(c);
     }
@@ -1641,6 +1659,29 @@ void MainWindow::createConnectionTreeEntryForViews(Connection *c)
         //newViewItem->setPopupMenu(ContextMenuCollection::getInstance()->getTableFromBrowsePopupMenu());
         newViewItem->setIcon(0, IconFactory::getViewIcon());
         m_connectionGuiElements->getConnectionsTree()->addTopLevelItem(newViewItem);
+    }
+
+    // TODO: now come up with a mechanism that feeds continuously the reverse engineered tables into an object that feeds it in somewhere which
+    // is used by the code completion enabled text edit when editing a table. Highly possible the destination will be the Connection object
+    // since everyone has access to it.
+}
+
+void MainWindow::createConnectionTreeEntryForProcs(Connection *c)
+{
+    ContextMenuEnabledTreeWidgetItem* connProcsItem = new ContextMenuEnabledTreeWidgetItem(c->getLocation(), QStringList(tr("Procedures")));
+    m_connectionGuiElements->getConnectionsTree()->addTopLevelItem(connProcsItem);
+    connProcsItem->setIcon(0, IconFactory::getProceduresIcon());
+
+    // Now do the browsing
+    QStringList dbProcs = c->getEngine()->getAvailableProcedures(c);
+    for(int i=0; i<dbProcs.size(); i++)
+    {
+        ContextMenuEnabledTreeWidgetItem* newProcItem = new ContextMenuEnabledTreeWidgetItem(connProcsItem, QStringList(dbProcs.at(i)));
+        QVariant var(browsedProcPrefix + dbProcs.at(i) + "?" + c->getName());
+        newProcItem->setData(0, Qt::UserRole, var);
+        //newViewItem->setPopupMenu(ContextMenuCollection::getInstance()->getTableFromBrowsePopupMenu());
+        newProcItem->setIcon(0, IconFactory::getProcedureIcon());
+        m_connectionGuiElements->getConnectionsTree()->addTopLevelItem(newProcItem);
     }
 
     // TODO: now come up with a mechanism that feeds continuously the reverse engineered tables into an object that feeds it in somewhere which
@@ -2031,7 +2072,6 @@ void MainWindow::onReverseEngineerWizardAccept()
 void MainWindow::onReverseEngineeringFinished(ReverseEngineerer*)
 {
     lblStatus->setText(QApplication::translate("MainWindow", "Reverse engineering finished", 0, QApplication::UnicodeUTF8));
-    qDebug() << "Reverse Engineering finished " << pthread_self();
     m_workspace->workingVersion()->getGui()->populateTreeItems();
 
 }

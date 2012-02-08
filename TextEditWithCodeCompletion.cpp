@@ -94,7 +94,6 @@ void TextEditWithCodeCompletion::onTimer()
     if(!m_lst->isVisible())
     {
         QPoint p = cursorRect().bottomRight();
-        //qDebug() << p;
         m_lst->move(p);
         m_lst->show();
         m_timer.stop();
@@ -343,8 +342,6 @@ void TextEditWithCodeCompletion::populateCodeCompletionListbox()
         wordBeforeCursor.prepend(g.at(cp--));
     }
 
-    //qDebug() << wordBeforeCursor;
-
     // 2. Find the last keyword which was before the cursor
     bool foundKeyword = false;
 
@@ -399,7 +396,6 @@ void TextEditWithCodeCompletion::populateCodeCompletionListbox()
         }
         QString beforeDot = wordBeforeCursor.mid(0, wordBeforeCursor.indexOf("."));
         QString afterDot = wordBeforeCursor.mid(wordBeforeCursor.indexOf(".") + 1);
-        // qDebug() << beforeDot << " " << afterDot;
         if(Workspace::getInstance()->hasCurrentSolution())
         {
             if(Workspace::getInstance()->workingVersion()->hasTable(beforeDot))  // see if there is a table for this

@@ -2,18 +2,18 @@
 #include "ui_ProcedureForm.h"
 #include "TextEditWithCodeCompletion.h"
 #include "FrameForLineNumbers.h"
-#include "core_Procedure.h"
+#include "core_Connection.h"
 
-ProcedureForm::ProcedureForm(ProcedureFormMode m, QWidget *parent) :
+ProcedureForm::ProcedureForm(ProcedureFormMode m, bool forced, Connection *c, QWidget *parent) :
     QWidget(parent),
-    ui(new Ui::ProcedureForm), m_textEdit(0), m_frameForLineNumbers(0), m_proc(0), m_forcedChange(false), m_mode(m)
+    ui(new Ui::ProcedureForm), m_textEdit(0), m_frameForLineNumbers(0), m_proc(0), m_forcedChange(forced), m_mode(m)
 {
     ui->setupUi(this);
 
     m_frameForLineNumbers = new FrameForLineNumbers(this);
     ui->horizontalLayout->addWidget(m_frameForLineNumbers);
 
-    m_textEdit = new TextEditWithCodeCompletion(this);
+    m_textEdit = new TextEditWithCodeCompletion(this, c);
     m_textEdit->setLineNumberFrame(m_frameForLineNumbers);
     ui->horizontalLayout->addWidget(m_textEdit);
     m_textEdit->setFocus();
