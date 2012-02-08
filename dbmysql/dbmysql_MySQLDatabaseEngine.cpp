@@ -23,17 +23,12 @@
 #include "core_Procedure.h"
 #include "Codepage.h"
 
-#include <pthread.h>
-
 QVector<DatabaseBuiltinFunction>* MySQLDatabaseEngine::s_builtinFunctions = 0;
-QSqlDatabase* MySQLDatabaseEngine::m_defaultMysqlDb = 0;
 int MySQLDatabaseEngine::m_connectionCounter = 1;
 QMutex* MySQLDatabaseEngine::m_connectionMutex = 0;
 
 MySQLDatabaseEngine::MySQLDatabaseEngine() : DatabaseEngine("MySQL"), m_revEngMappings(), m_oneTimeMappings()
 {
-    static QSqlDatabase t = QSqlDatabase::addDatabase("QMYSQL");
-    m_defaultMysqlDb = &t;
     static QVector<DatabaseBuiltinFunction> v = MySQLDatabaseEngine::buildFunctions();
     s_builtinFunctions = &v;
     m_connectionMutex = new QMutex();
@@ -50,84 +45,23 @@ QString MySQLDatabaseEngine::provideConnectionName(const QString& prefix)
     return t;
 }
 
-Procedure* MySQLDatabaseEngine::reverseEngineerProcedure(Connection *c, const QString &procName)
-{
-    QSqlDatabase dbo = c->getQSqlDatabase();
-
-    qDebug() << c->getHost() << "<- HOST  USER->" << c->getUser() << " PASS=" << c->getPassword() << " DB =" << c->getDb() << "PROC="<<procName << " TID= " << pthread_self();
-
-    if(dbo.isOpen())
-    {
-        lastError = dbo.lastError().databaseText() + "/" + dbo.lastError().databaseText();
-        qDebug() << lastError;
-        return 0;
-    }
-
-    QSqlQuery query(dbo);
-    QString t = "show create procedure "+procName;
-    query.exec(t);
-    Procedure* proc= 0;
-    while(query.next())
-    {
-        QString sql = query.value(2).toString();
-        proc = new Procedure(procName);
-        proc->setSql(sql);
-    }
-    qDebug() << "still here...";
-    dbo.close();
-    return proc;
-}
-
 bool MySQLDatabaseEngine::reverseEngineerDatabase(Connection *c, const QStringList& tables, const QStringList& views, const QStringList& procs, Project*p, bool relaxed)
 {
     Version* v = p->getWorkingVersion();
     m_revEngMappings.clear();
     m_oneTimeMappings.clear();
 
-    // TODO: If I leave the code with the procedure call from below the dbo.conenct throws a SIGTRAP.
-    // the ugly for loop here solves this problem
-    // Check out why this happens.
     for(int i=0; i<procs.size(); i++)
     {
-        QSqlDatabase dbo = c->getQSqlDatabase();
-        if(!dbo.isOpen())
-        {
-            qDebug() << "first is not open";
-        }
-        else
-        {
-            qDebug() << "firs is open";
-        }
-        QSqlQuery query(dbo);
-        QString t = "show create procedure " + procs.at(i);
-        if(!query.exec(t)) qDebug() << "query was not executed"; else qDebug() << "query exec ok";
-        Procedure* proc= 0;
-        while(query.next())
-        {
-            QString sql = query.value(2).toString();
-            proc = new Procedure(procs.at(i));
-            proc->setSql(sql);
-            qDebug() << sql;
-        }
-        qDebug() << "still here...";
+        Procedure* proc = reverseEngineerProc(c, procs.at(i));
         if(proc) v->addProcedure(proc);
-        dbo.close();
     }
 
-//    for(int i=0; i<procs.size(); i++)
-//    {
-//        qDebug() << c->getHost() << "<- HOST  USER->" << c->getUser() << " PASS=" << c->getPassword() << " DB =" << c->getDb() << "PROC="<<procs.at(i) << " TID= " << pthread_self();
-//        Procedure* proc = reverseEngineerProcedure(c, procs.at(i));
-//        if(proc) v->addProcedure(proc);
-//    }
-
-    qDebug() << "Tables " << pthread_self();
     for(int i=0; i<tables.size(); i++)
     {
         Table* tab = reverseEngineerTable(c, tables.at(i), p, relaxed);
         if(tab) v->addTable(tab);
     }
-    qDebug() << "Views " << pthread_self();
 
     for(int i=0; i<views.size(); i++)
     {
@@ -137,15 +71,9 @@ bool MySQLDatabaseEngine::reverseEngineerDatabase(Connection *c, const QStringLi
 
     // now populate the foreign keys
     {
-        QString fk = provideConnectionName("fkDbConnection");
-        QSqlDatabase dbo = QSqlDatabase::cloneDatabase(*m_defaultMysqlDb, fk);
+        QSqlDatabase dbo = getQSqlDatabaseForConnection(c);
 
-        dbo.setHostName(c->getHost());
-        dbo.setUserName(c->getUser());
-        dbo.setPassword(c->getPassword());
-        dbo.setDatabaseName(c->getDb());
-
-        bool ok = dbo.open();
+        bool ok = dbo.isOpen();
 
         if(ok)
         {
@@ -201,29 +129,22 @@ bool MySQLDatabaseEngine::reverseEngineerDatabase(Connection *c, const QStringLi
 
 QSqlDatabase MySQLDatabaseEngine::getQSqlDatabaseForConnection(Connection *c)
 {
-    QString newConnName = provideConnectionName("getConenction");
-    QSqlDatabase dbo = QSqlDatabase::cloneDatabase(*m_defaultMysqlDb, newConnName);
+    QString newConnName = provideConnectionName("getConnection");
+    QSqlDatabase dbo = QSqlDatabase::addDatabase("QMYSQL", newConnName);
 
     dbo.setHostName(c->getHost());
     dbo.setDatabaseName(c->getDb());
     dbo.open(c->getUser(), c->getPassword());
-    qDebug() << c->getHost() << "<- HOST  USER->" << c->getUser() << " PASS=" << c->getPassword() << " DB =" << c->getDb() << "TID= " << pthread_self();
 
     return dbo;
 }
 
 QStringList MySQLDatabaseEngine::getAvailableViews(Connection* c)
 {
-    QString viewsConnectionName = provideConnectionName("getViews");
-    QSqlDatabase dbo = QSqlDatabase::cloneDatabase(*m_defaultMysqlDb, viewsConnectionName);
+    QSqlDatabase dbo = getQSqlDatabaseForConnection(c);
 
-    dbo.setHostName(c->getHost());
-    dbo.setUserName(c->getUser());
-    dbo.setPassword(c->getPassword());
-    dbo.setDatabaseName(c->getDb());
-
+    bool ok = dbo.isOpen();
     QStringList result;
-    bool ok = dbo.open();
 
     if(!ok)
     {
@@ -272,16 +193,9 @@ QStringList MySQLDatabaseEngine::getAvailableProcedures(Connection* c)
 
 QStringList MySQLDatabaseEngine::getAvailableTables(Connection* c)
 {
-    QString tabsConnectionName = provideConnectionName("getTables");
-    QSqlDatabase dbo = QSqlDatabase::cloneDatabase(*m_defaultMysqlDb, tabsConnectionName);
-
-    dbo.setHostName(c->getHost());
-    dbo.setUserName(c->getUser());
-    dbo.setPassword(c->getPassword());
-    dbo.setDatabaseName(c->getDb());
-
+    QSqlDatabase dbo = getQSqlDatabaseForConnection(c);
+    bool ok = dbo.isOpen();
     QStringList result;
-    bool ok = dbo.open();
 
     if(!ok)
     {
@@ -302,23 +216,42 @@ QStringList MySQLDatabaseEngine::getAvailableTables(Connection* c)
     return result;
 }
 
+Procedure* MySQLDatabaseEngine::reverseEngineerProc(Connection *c, const QString &procName)
+{
+    QSqlDatabase db = getQSqlDatabaseForConnection(c);
+
+    if(!db.isOpen())
+    {
+        return 0;
+    }
+
+    QSqlQuery query(db);
+    QString t = "show create procedure " + procName;
+    query.exec(t);
+    Procedure* proc= 0;
+    while(query.next())
+    {
+        QString sql = query.value(2).toString();
+        proc = new Procedure(procName);
+        proc->setSql(sql);
+    }
+
+    db.close();
+
+    return proc;
+}
+
 View* MySQLDatabaseEngine::reverseEngineerView(Connection* c, const QString& viewName)
 {
-    QString viewConnectionName = provideConnectionName("getView");
-    QSqlDatabase dbo = QSqlDatabase::cloneDatabase(*m_defaultMysqlDb, viewConnectionName);
+    QSqlDatabase dbo = getQSqlDatabaseForConnection(c);
 
-    dbo.setHostName(c->getHost());
-    dbo.setUserName(c->getUser());
-    dbo.setPassword(c->getPassword());
-    dbo.setDatabaseName(c->getDb());
 
-    View* view = 0;
     bool ok = dbo.open();
 
     if(!ok)
     {
         lastError = dbo.lastError().databaseText() + "/" + dbo.lastError().databaseText();
-        return view;
+        return 0;
     }
 
     {
@@ -326,6 +259,7 @@ View* MySQLDatabaseEngine::reverseEngineerView(Connection* c, const QString& vie
     query.exec("SET sql_mode = 'ANSI'");
     }
 
+    View* view = 0;
     QSqlQuery query(dbo);
     QString t = "show create view "+c->getDb()+"."+viewName;
     query.exec(t);
@@ -341,17 +275,10 @@ View* MySQLDatabaseEngine::reverseEngineerView(Connection* c, const QString& vie
 
 QStringList MySQLDatabaseEngine::getColumnsOfTable(Connection *c, const QString &tableName)
 {
-    QString tableConnectionName = provideConnectionName("getTable");
-    QSqlDatabase db = QSqlDatabase::cloneDatabase(*m_defaultMysqlDb, tableConnectionName);
+    QSqlDatabase db = getQSqlDatabaseForConnection(c);
     QStringList result;
 
-    db.setHostName(c->getHost());
-    db.setUserName(c->getUser());
-    db.setPassword(c->getPassword());
-    db.setDatabaseName(c->getDb());
-
-
-    bool ok = db.open();
+    bool ok = db.isOpen();
 
     if(!ok)
     {
@@ -373,9 +300,8 @@ QStringList MySQLDatabaseEngine::getColumnsOfTable(Connection *c, const QString 
 
 Table* MySQLDatabaseEngine::reverseEngineerTable(Connection *c, const QString& tableName, Project* p, bool relaxed)
 {
-    Version* v = p->getWorkingVersion();
     QSqlDatabase dbo = c->getQSqlDatabase();
-
+    Version* v = p->getWorkingVersion();
     bool ok = dbo.isOpen();
 
     if(!ok)
@@ -416,13 +342,11 @@ Table* MySQLDatabaseEngine::reverseEngineerTable(Connection *c, const QString& t
         {
             found = true;
             udt = m_oneTimeMappings.value(oneTimeKey);
-            qDebug() << "contained as " << udt->getName();
         }
         else
         {
             udt = v->provideDatatypeForSqlType(field_name, type, nullable, defaultValue, relaxed);
             m_oneTimeMappings.insert(oneTimeKey, udt);
-            qDebug() << "added as " << udt->getName();
         }
         Column* col = new Column(field_name, udt, QString::compare(keyness, "PRI", Qt::CaseInsensitive) == 0, extra == "auto_increment");
 
@@ -580,22 +504,12 @@ Table* MySQLDatabaseEngine::reverseEngineerTable(Connection *c, const QString& t
     return tab;
 }
 
-bool MySQLDatabaseEngine::executeSql(Connection* conn, const QStringList& sqls, QString& lastSql, bool rollbackOnError)
+bool MySQLDatabaseEngine::executeSql(Connection* c, const QStringList& sqls, QString& lastSql, bool rollbackOnError)
 {
-    QString injectConenctionName = provideConnectionName("inject");
-    QSqlDatabase db = QSqlDatabase::cloneDatabase(*m_defaultMysqlDb, injectConenctionName);
-
-    db.setHostName(conn->getHost());
-    db.setUserName(conn->getUser());
-    db.setPassword(conn->getPassword());
-    db.setDatabaseName(conn->getDb());
-
-    bool ok = db.open();
-
-
+    QSqlDatabase db = getQSqlDatabaseForConnection(c);
+    bool ok = db.isOpen();
     if(!ok)
     {
-        qDebug() << "Cannot open: " << injectConenctionName;
         lastError = db.lastError().driverText() + "/" + db.lastError().databaseText();
         return false;
     }
@@ -636,13 +550,9 @@ QString MySQLDatabaseEngine::getDefaultDatatypesLocation()
 
 QStringList MySQLDatabaseEngine::getAvailableDatabases(const QString& host, const QString& user, const QString& pass)
 {
-    QString getDatabases = provideConnectionName("getDbs");
-    QSqlDatabase db = QSqlDatabase::cloneDatabase(*m_defaultMysqlDb, getDatabases);
-    db.setHostName(host);
-    db.setUserName(user);
-    db.setPassword(pass);
-
-    bool ok = db.open();
+    Connection *c = new Connection("temp", host, user, pass, "", false, false);
+    QSqlDatabase db = getQSqlDatabaseForConnection(c);
+    bool ok = db.isOpen();
     QStringList result;
 
     if(!ok)
@@ -666,14 +576,8 @@ QStringList MySQLDatabaseEngine::getAvailableDatabases(const QString& host, cons
 
 bool MySQLDatabaseEngine::dropDatabase(Connection* c)
 {
-    QString createDbConnection = provideConnectionName("dropDb");
-    QSqlDatabase db = QSqlDatabase::cloneDatabase(*m_defaultMysqlDb, createDbConnection);
-
-    db.setHostName(c->getHost());
-    db.setUserName(c->getUser());
-    db.setPassword(c->getPassword());
-
-    bool ok = db.open();
+    QSqlDatabase db = getQSqlDatabaseForConnection(c);
+    bool ok = db.isOpen();
     if(!ok)
     {
         lastError = QObject::tr("Cannot connect to the database: ") + db.lastError().databaseText() + "/" + db.lastError().driverText();
@@ -694,14 +598,9 @@ bool MySQLDatabaseEngine::dropDatabase(Connection* c)
 
 bool MySQLDatabaseEngine::createDatabase(Connection* c)
 {
-    QString createDbConnection = provideConnectionName("createDb");
-    QSqlDatabase db = QSqlDatabase::cloneDatabase(*m_defaultMysqlDb, createDbConnection);
+    QSqlDatabase db = getQSqlDatabaseForConnection(c);
 
-    db.setHostName(c->getHost());
-    db.setUserName(c->getUser());
-    db.setPassword(c->getPassword());
-
-    bool ok = db.open();
+    bool ok = db.isOpen();
     if(!ok)
     {
         lastError = QObject::tr("Cannot connect to the database: ") + db.lastError().databaseText() + "/" + db.lastError().driverText();
@@ -958,15 +857,8 @@ const DatabaseBuiltinFunction& MySQLDatabaseEngine::getBuiltinFunction(const QSt
 
 bool MySQLDatabaseEngine::tryConnect(Connection* c)
 {
-    QString connectConnectionName = provideConnectionName("connect");
-    QSqlDatabase dbo = QSqlDatabase::cloneDatabase(*m_defaultMysqlDb, connectConnectionName);
-
-    dbo.setHostName(c->getHost());
-    dbo.setUserName(c->getUser());
-    dbo.setPassword(c->getPassword());
-    dbo.setDatabaseName(c->getDb());
-
-    bool ok = dbo.open();
+    QSqlDatabase dbo = getQSqlDatabaseForConnection(c);
+    bool ok = dbo.isOpen();
 
     if(!ok)
     {

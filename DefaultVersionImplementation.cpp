@@ -591,7 +591,6 @@ const QVector<TableInstance*>& DefaultVersionImplementation::getTableInstances()
 
 UserDataType* DefaultVersionImplementation::provideDatatypeForSqlType(const QString& name, const QString& sql, const QString& nullable, const QString& defaultValue, bool relaxed)
 {
-    qDebug() << "provide " << pthread_self();
     QString type = sql;
     QString size = "";
     QString finalName = relaxed?
@@ -632,7 +631,6 @@ UserDataType* DefaultVersionImplementation::provideDatatypeForSqlType(const QStr
         }
     }
 
-    qDebug() << "more provide " << pthread_self();
     // nothing found, we should create a new data type with some default values
     UserDataType* newUdt = new UserDataType(finalName,
                                             Workspace::getInstance()->currentProjectsEngine()->getTypeStringForSqlType(type),
@@ -641,7 +639,6 @@ UserDataType* DefaultVersionImplementation::provideDatatypeForSqlType(const QStr
 
     newUdt->setName(NameGenerator::getUniqueName(this, (itemGetter)&Version::getDataType, newUdt->getName()));
     addNewDataType(newUdt);
-    qDebug() << "bye provide " << pthread_self();
     return newUdt;
 }
 
@@ -828,7 +825,6 @@ Procedure* DefaultVersionImplementation::getProcedure(const QString &procedureNa
 
 void DefaultVersionImplementation::addProcedure(Procedure* p)
 {
-    qDebug() << "added a procedure: "<< p->getName();
     m_data.m_procedures.append(p);
 }
 

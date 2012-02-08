@@ -191,6 +191,7 @@ private:
     void doDeployment(const QString& codePage, QStringList connectionNames);
     void createConnectionTreeEntryForTables(Connection *c);
     void createConnectionTreeEntryForViews(Connection *c);
+    void createConnectionTreeEntryForProcs(Connection *c);
     void hideSplashwindow();
     void tryBrowseConnection(Connection* c);
     void showNamedObject(QTreeWidgetItem* current, showSomething s, bool focus=true);

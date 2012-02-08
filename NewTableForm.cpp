@@ -1421,7 +1421,6 @@ void NewTableForm::onForeignTableColumnChange()
             {
                 if(col->getDataType()->getName() == foreignColumn->getDataType()->getName())
                 {
-                    //qDebug() << col->getName() << " is " << col->getDataType()->getName() << " >> " << foreignColumn->getName() << " is " << foreignColumn->getDataType()->getName();
                     QListWidgetItem* qlwj = new QListWidgetItem(parentColumns[j], m_ui->lstLocalColumn);
                     qlwj->setIcon(IconFactory::getIconForDataType(col->getDataType()->getType()));
                 }

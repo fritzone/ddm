@@ -463,6 +463,12 @@ public:
         return icon;
     }
 
+    static const QIcon& getProceduresIcon()
+    {
+        static const QIcon icon(strProcedureIcon);
+        return icon;
+    }
+
     static const QIcon& getFunctionTreeIcon()
     {
         static const QIcon icon(strFunctionTreeIcon);

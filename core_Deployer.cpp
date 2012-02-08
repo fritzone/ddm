@@ -25,7 +25,6 @@ void Deployer::deploy()
 
 void Deployer::onDeployerThreadIsDone(int idx)
 {
-    qDebug() << idx;
     m_finishedThreads.append(idx);
     if(m_finishedThreads.size() == m_connections.size()) emit done(this);
 }

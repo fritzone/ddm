@@ -299,7 +299,6 @@ void DiagramForm::paintDiagram()
     for(int i=0; i<m_diagram->getNoteDescriptors().size(); i++)
     {
         DiagramNoteDescriptor* noteItem = m_diagram->getNoteDescriptors()[i];
-        qDebug() << noteItem->isFramed();
         DraggableGraphicsViewItemForText* toAdd = m_diagram->clone(noteItem);
         graphicsView->scene()->addItem(toAdd);
         toAdd->place();

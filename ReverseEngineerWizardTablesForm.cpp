@@ -69,7 +69,6 @@ QStringList ReverseEngineerWizardObjectListForm::getSelectedItems()
         {
             QString s = ui->listWidget->item(i)->text();
             result.append(s);
-            qDebug() << s;
         }
     }
     return result;

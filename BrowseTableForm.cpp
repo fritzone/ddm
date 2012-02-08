@@ -145,7 +145,6 @@ QString BrowseTableForm::retrieveCurrentQuery()
     while(i < t.length() && t.at(i) != ';')
     {
         after.append(t.at(i));
-        qDebug() << after;
         i++;
         if(i< t.length())
         {

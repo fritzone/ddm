@@ -13,6 +13,7 @@ namespace Ui {
 class TextEditWithCodeCompletion;
 class FrameForLineNumbers;
 class Procedure;
+class Connection;
 
 class ProcedureForm : public QWidget
 {
@@ -20,7 +21,7 @@ class ProcedureForm : public QWidget
 
 public:
 
-    explicit ProcedureForm(ProcedureFormMode m, QWidget *parent = 0);
+    explicit ProcedureForm(ProcedureFormMode m, bool forced = false, Connection* c = 0, QWidget *parent = 0);
     ~ProcedureForm();
     void setProcedure(StoredMethod* p)
     {

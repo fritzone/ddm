@@ -11,7 +11,6 @@ int DraggableGraphicsViewItemForText::indexCounter = 0;
 
 void DraggableGraphicsViewItemForText::mousePressEvent ( QGraphicsSceneMouseEvent * event )
 {
-    qDebug() << "note mousepress : X=" << event->pos().x() << " Y=" << event->pos().y();
     if (event->button() != Qt::LeftButton)
     {
         if(event->button() == Qt::RightButton)
@@ -49,7 +48,6 @@ void DraggableGraphicsViewItemForText::mousePressEvent ( QGraphicsSceneMouseEven
 
 void DraggableGraphicsViewItemForText::mouseReleaseEvent ( QGraphicsSceneMouseEvent * event )
 {
-    qDebug() << "note mouserelease : X=" << event->pos().x() << " Y=" << event->pos().y();
     event->accept();
     dynamic_cast<ERGraphicsScene*>(this->scene())->setDraggedItem(0);
 }
