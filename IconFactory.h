@@ -433,6 +433,24 @@ public:
         return icon;
     }
 
+    static const QIcon& getConnectConnectionIcon()
+    {
+        static const QIcon icon(strConnectConnectionIcon);
+        return icon;
+    }
+
+    static const QIcon& getBrowseConnectionIcon()
+    {
+        static const QIcon icon(strBrowseConnectionIcon);
+        return icon;
+    }
+
+    static const QIcon& getEditConnectionIcon()
+    {
+        static const QIcon icon(strEditConnectionIcon);
+        return icon;
+    }
+
     static const QIcon& getDroppedDatabaseIcon()
     {
         static const QIcon icon(strDroppedDatabaseIcon);
@@ -469,7 +487,19 @@ public:
         return icon;
     }
 
+    static const QIcon& getRecreateDatabaseIcon()
+    {
+        static const QIcon icon(strRecreateDatabaseIcon);
+        return icon;
+    }
+
     static const QIcon& getFunctionTreeIcon()
+    {
+        static const QIcon icon(strFunctionTreeIcon);
+        return icon;
+    }
+
+    static const QIcon& getFunctionsTreeIcon()
     {
         static const QIcon icon(strFunctionTreeIcon);
         return icon;
@@ -524,6 +554,29 @@ public:
 
         return getEmptyIcon();
     }
+
+    static QIcon getConnectionStateIcon(ConnectionState c)
+    {
+        switch(c)
+        {
+        case DID_NOT_TRY:
+        case UNDEFINED:
+            return (getDatabaseIcon());
+            break;
+        case FAILED:
+            return (getUnConnectedDatabaseIcon());
+            break;
+        case CONNECTED:
+            return (getConnectedDatabaseIcon());
+            break;
+        case DROPPED:
+        case DELETED:
+            return (getDroppedDatabaseIcon());
+            break;
+        }
+        return getEmptyIcon();
+    }
+
 
 };
 

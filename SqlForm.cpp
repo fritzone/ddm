@@ -21,7 +21,7 @@
 #include <QString>
 #include <QTextStream>
 
-SqlForm::SqlForm(DatabaseEngine* engine, QWidget *parent) : SourceCodePresenterWidget(parent), ui(new Ui::SqlForm), m_engine(engine)
+SqlForm::SqlForm(DatabaseEngine* engine, QWidget *parent) : SourceCodePresenterWidget(parent), ui(new Ui::SqlForm), m_engine(engine), m_codepage("latin1")
 {
     ui->setupUi(this);
     highlighter = new SqlHighlighter(ui->txtSql->document(),Workspace::getInstance()->currentProjectsEngine()->getKeywords(),
@@ -72,7 +72,8 @@ void SqlForm::onInject()
             Connection* c = ConnectionManager::instance()->getConnection(connectionNames.at(i));
             if(c)
             {
-                if(!m_engine->executeSql(c, sqlList, tSql, injectDialog->getRollbackOnError()))
+                QStringList tempSqlList = Workspace::getInstance()->workingVersion()->getSqlScript(m_codepage, false);
+                if(!m_engine->executeSql(c, tempSqlList, tSql, injectDialog->getRollbackOnError()))
                 {
                     QMessageBox::critical (this, tr("Error"), tr("<B>Cannot execute a query!</B><P>Reason: ") + m_engine->getLastError() + tr(".<P>Query:<PRE>") + tSql+ "</PRE><P>" +
                                            (injectDialog->getRollbackOnError()?tr("Transaction was rolled back."):tr("Transaction was <font color=red><B>NOT</B></font> rolled back, you might have partial data in your database.")), QMessageBox::Ok);
@@ -104,7 +105,8 @@ void SqlForm::presentSql(Project* p,const QString& codepage)
     // firstly only the tables and then the foreign keys. We'll see the other elements (triggers, functions) later
 
     Version *v = p->getWorkingVersion();
-    QStringList finalSql = v->getSqlScript(codepage);
+    QStringList finalSql = v->getSqlScript(codepage, true);
+    m_codepage = codepage;
 
     QString fs = "";
     for(int i=0; i< finalSql.size(); i++)

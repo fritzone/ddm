@@ -60,7 +60,6 @@ SOURCES += main.cpp \
     ReverseEngineerWizardWelcomeForm.cpp \
     ReverseEngineerWizard.cpp \
     ReverseEngineerWizardDatabasesForm.cpp \
-    ReverseEngineerWizardTablesForm.cpp \
     ReverseEngineerWizardOptionsForm.cpp \
     IssueManager.cpp \
     IssueOriginator.cpp \
@@ -96,7 +95,8 @@ SOURCES += main.cpp \
     NamedObjectListingForm.cpp \
     core_Function.cpp \
     core_StoredMethod.cpp \
-    DiagramItemFactory.cpp
+    DiagramItemFactory.cpp \
+    ReverseEngineerWizardObjectListForm.cpp
 HEADERS += MainWindow.h \
     MainWindowButtonDialog.h \
     NewProjectDialog.h \
@@ -250,6 +250,8 @@ INSTALLS += installfiles_doc
 installfiles_rs.files += rsrc/mysql.defaults
 installfiles_rs.path =  /home/ferenc/rpmbuild/BUILDROOT/usr/local/ddm/rsrc
 INSTALLS += installfiles_rs
+
+
 
 
 

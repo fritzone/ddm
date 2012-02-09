@@ -5,10 +5,10 @@
 #include "NamedItem.h"
 #include "TreeItem.h"
 #include "IssueOriginator.h"
+#include "enums.h"
 
 #include <QString>
 #include <QSqlDatabase>
-#include <QIcon>
 
 class DatabaseEngine;
 class Table;
@@ -16,16 +16,6 @@ class Table;
 class Connection : public TreeItem, public SerializableElement,  public IssueOriginator, public NamedItem
 {
 public:
-
-    enum ConnectionState
-    {
-        UNDEFINED=0,
-        CONNECTED=1,
-        FAILED=2,
-        DID_NOT_TRY=3,
-        DROPPED = 4,
-        DELETED = 5
-    };
 
     Connection(const QString& name, const QString& host, const QString& user, const QString& pass, const QString& db, bool savePw, bool autoConnect);
     virtual void serialize(QDomDocument& doc, QDomElement& parent) const;
@@ -91,8 +81,6 @@ public:
     {
         return m_autoConnect;
     }
-
-    QIcon provideIcon();
 
 private:
 

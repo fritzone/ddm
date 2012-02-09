@@ -24,6 +24,10 @@ ReverseEngineerWizardObjectListForm::ReverseEngineerWizardObjectListForm(QWidget
         setTitle(tr("Select Procedures"));
         setSubTitle(tr("Please select the procedures you want to reverse engineer."));
         break;
+    case REVERSE_ENGINEER_FUNCS:
+        setTitle(tr("Select Functions"));
+        setSubTitle(tr("Please select the functions you want to reverse engineer."));
+        break;
     }
     QIcon*p = new QIcon(strFroggieIcon);
     QIcon*p1 = new QIcon(strIcon);
@@ -36,12 +40,13 @@ ReverseEngineerWizardObjectListForm::~ReverseEngineerWizardObjectListForm()
     delete ui;
 }
 
-void ReverseEngineerWizardObjectListForm::addTable(const QString & tab)
+void ReverseEngineerWizardObjectListForm::addObject(const QString & tab)
 {
     QListWidgetItem* lwi = new QListWidgetItem(tab, ui->listWidget);
     QIcon c = IconFactory::getTablesIcon();
     if(m_mode == REVERSE_ENGINEER_VIEWS) c = IconFactory::getViewsIcon();
     if(m_mode == REVERSE_ENGINEER_PROCS) c = IconFactory::getProcedureIcon();
+    if(m_mode == REVERSE_ENGINEER_FUNCS) c = IconFactory::getFunctionTreeIcon();
 
     QIcon b = QIcon(c.pixmap(16,16));
     lwi->setIcon(b);

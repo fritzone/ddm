@@ -56,24 +56,3 @@ QSqlDatabase Connection::getQSqlDatabase()
     return m_engine->getQSqlDatabaseForConnection(this);
 }
 
-QIcon Connection::provideIcon()
-{
-    switch(getState())
-    {
-    case Connection::DID_NOT_TRY:
-    case Connection::UNDEFINED:
-        return (IconFactory::getDatabaseIcon());
-        break;
-    case Connection::FAILED:
-        return (IconFactory::getUnConnectedDatabaseIcon());
-        break;
-    case Connection::CONNECTED:
-        return (IconFactory::getConnectedDatabaseIcon());
-        break;
-    case Connection::DROPPED:
-    case Connection::DELETED:
-        return (IconFactory::getDroppedDatabaseIcon());
-        break;
-    }
-    return IconFactory::getEmptyIcon();
-}

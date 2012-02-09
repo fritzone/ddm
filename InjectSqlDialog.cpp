@@ -162,7 +162,7 @@ void InjectSqlDialog::populateConnections()
     {
         QListWidgetItem* lwi = new QListWidgetItem(ui->lstAllConnections);
         lwi->setText(connections.at(i)->getName() + " ("+ connections.at(i)->getDb()+"@"+ connections.at(i)->getHost() + ")");   // TODO: This should be done with setData but I'm lasy now
-        lwi->setIcon(connections.at(i)->provideIcon());
+        lwi->setIcon(IconFactory::getConnectionStateIcon(connections.at(i)->getState()));
     }
 }
 

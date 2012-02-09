@@ -4,11 +4,11 @@
 
 ReverseEngineerer::ReverseEngineerer(bool c, DatabaseEngine* engine, Project* p,
                                      const QString &host, const QString &user, const QString &pass, const QString &db,
-                                     const QStringList& tabsToReverse, const QStringList& viewsToReverse, const QStringList& procsToReverse,
+                                     const QStringList& tabsToReverse, const QStringList& viewsToReverse, const QStringList& procsToReverse, const QStringList& funcsToReverse,
                                      QObject *parent):
-        QObject(parent), m_host(host), m_user(user), m_pass(pass), m_db(db),
-        m_tabsToReverse(tabsToReverse), m_viewsToReverse(viewsToReverse), m_procsToReverse(procsToReverse),
-        m_engine(engine), m_project(p), m_createDataTypesForColumns(c)
+    QObject(parent), m_host(host), m_user(user), m_pass(pass), m_db(db),
+    m_tabsToReverse(tabsToReverse), m_viewsToReverse(viewsToReverse), m_procsToReverse(procsToReverse), m_funcsToReverse(funcsToReverse),
+    m_engine(engine), m_project(p), m_createDataTypesForColumns(c)
 {
 
 }
@@ -16,7 +16,7 @@ ReverseEngineerer::ReverseEngineerer(bool c, DatabaseEngine* engine, Project* p,
 void ReverseEngineerer::reverseEngineer()
 {
     ReverseEngineererThread* genThread = new ReverseEngineererThread(m_createDataTypesForColumns, m_engine, m_project,
-                                                                     m_host, m_user, m_pass, m_db, m_tabsToReverse, m_viewsToReverse, m_procsToReverse);
+                                                                     m_host, m_user, m_pass, m_db, m_tabsToReverse, m_viewsToReverse, m_procsToReverse, m_funcsToReverse);
     QThread* a = new QThread(this);
     genThread->moveToThread(a);
     connect(this, SIGNAL(startWork()), genThread, SLOT(doWork()));

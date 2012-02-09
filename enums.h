@@ -21,4 +21,14 @@ enum DT_TYPE
     DT_VARIABLE
 } ;
 
+enum ConnectionState
+{
+    UNDEFINED=0,
+    CONNECTED=1,
+    FAILED=2,
+    DID_NOT_TRY=3,
+    DROPPED = 4,
+    DELETED = 5
+};
+
 #endif // ENUMS_H

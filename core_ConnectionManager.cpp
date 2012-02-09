@@ -47,7 +47,7 @@ void ConnectionManager::loadConnections()
         s.endGroup();
 
         Connection* c = new Connection(name, host, user, pass, db, true, ac);
-        c->setState((Connection::ConnectionState)(lastState));
+        c->setState((ConnectionState)(lastState));
         m_connections.append(c);
 
         if(ac)

@@ -12,6 +12,7 @@ ReverseEngineerWizard::ReverseEngineerWizard(DatabaseEngine* engine) : QWizard()
     m_databasesPage(new ReverseEngineerWizardDatabasesForm), m_tablesPage(new ReverseEngineerWizardObjectListForm),
     m_viewsPage(new ReverseEngineerWizardObjectListForm(0, ReverseEngineerWizardObjectListForm::REVERSE_ENGINEER_VIEWS)),
     m_proceduresPage(new ReverseEngineerWizardObjectListForm(0, ReverseEngineerWizardObjectListForm::REVERSE_ENGINEER_PROCS)),
+    m_functionsPage(new ReverseEngineerWizardObjectListForm(0, ReverseEngineerWizardObjectListForm::REVERSE_ENGINEER_FUNCS)),
     m_optionsPage(new ReverseEngineerWizardOptionsForm),
     m_host(""), m_user(""), m_pass(""), m_database("")
 {
@@ -20,6 +21,7 @@ ReverseEngineerWizard::ReverseEngineerWizard(DatabaseEngine* engine) : QWizard()
     addPage(m_tablesPage);
     addPage(m_viewsPage);
     addPage(m_proceduresPage);
+    addPage(m_functionsPage);
     addPage(m_optionsPage);
     setWindowTitle(QObject::tr("Reverse Engineer a Database"));
 }
@@ -64,7 +66,21 @@ bool ReverseEngineerWizard::connectAndRetrieveViews()
     m_viewsPage->clearList();
     for(int i=0; i<views.size(); i++)
     {
-        m_viewsPage->addTable(views.at(i));
+        m_viewsPage->addObject(views.at(i));
+    }
+    delete c;
+    return true;
+}
+
+bool ReverseEngineerWizard::connectAndRetrieveFunctions()
+{
+    Connection* c = new Connection("temp", m_host, m_user, m_pass, m_database, false, false);
+
+    QStringList funcs = m_engine->getAvailableStoredFunctions(c);
+    m_functionsPage->clearList();
+    for(int i=0; i<funcs.size(); i++)
+    {
+        m_functionsPage->addObject(funcs.at(i));
     }
     delete c;
     return true;
@@ -74,11 +90,11 @@ bool ReverseEngineerWizard::connectAndRetrieveProcedures()
 {
     Connection* c = new Connection("temp", m_host, m_user, m_pass, m_database, false, false);
 
-    QStringList views = m_engine->getAvailableProcedures(c);
+    QStringList procs = m_engine->getAvailableStoredProcedures(c);
     m_proceduresPage->clearList();
-    for(int i=0; i<views.size(); i++)
+    for(int i=0; i<procs.size(); i++)
     {
-        m_proceduresPage->addTable(views.at(i));
+        m_proceduresPage->addObject(procs.at(i));
     }
     delete c;
     return true;
@@ -91,7 +107,7 @@ bool ReverseEngineerWizard::connectAndRetrieveTables()
     m_tablesPage->clearList();
     for(int i=0; i<tables.size(); i++)
     {
-        m_tablesPage->addTable(tables.at(i));
+        m_tablesPage->addObject(tables.at(i));
     }
 
     delete c;
@@ -111,6 +127,11 @@ QStringList ReverseEngineerWizard::getViewsToReverse()
 QStringList ReverseEngineerWizard::getProceduresToReverse()
 {
     return m_proceduresPage->getSelectedItems();
+}
+
+QStringList ReverseEngineerWizard::getFunctionsToReverse()
+{
+    return m_functionsPage->getSelectedItems();
 }
 
 bool ReverseEngineerWizard::createDataTypesForColumns()

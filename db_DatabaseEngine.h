@@ -16,6 +16,7 @@ class View;
 class Connection;
 class Codepage;
 class Procedure;
+class Function;
 
 /**
  * This class is a kind of "wrapper" for the other classes that all deal
@@ -211,7 +212,14 @@ public:
      * @param c - the connection to the database
      * @return the list of procedure names
      */
-    virtual QStringList getAvailableProcedures(Connection* c) = 0;
+    virtual QStringList getAvailableStoredProcedures(Connection* c) = 0;
+
+    /**
+     * Returns a list of the available functions that are in the database represented by the given connection
+     * @param c - the connection to the database
+     * @return the list of function names
+     */
+    virtual QStringList getAvailableStoredFunctions(Connection* c) = 0;
 
     /**
      * Reverse engineer a table.
@@ -256,9 +264,17 @@ public:
     virtual View* reverseEngineerView(Connection *c, const QString& viewName) = 0;
 
     /**
+     * Reverse engineers the functions which is to be found in the database represented by the connection object.
+     * @param c - the connection
+     * @param procName - the function to be reverse engineered
+     * @return the Function object representing the function in the database 0 in case there is no function called like that
+     */
+    virtual Function* reverseEngineerFunc(Connection *c, const QString& funcName) = 0;
+
+    /**
      * Reverse engineers the procedure which is to be found in the database represented by the connection object.
      * @param c - the connection
-     * @param procName - the view to be reverse engineered
+     * @param procName - the procedure to be reverse engineered
      * @return the Procedure object representing the procedure in the database 0 in case there is no procedure called like that
      */
     virtual Procedure* reverseEngineerProc(Connection *c, const QString& procName) = 0;
@@ -283,7 +299,7 @@ public:
      *
      * @return true in case of success, false if an error occured. You can call @see lastError to see the error
      */
-    virtual bool reverseEngineerDatabase(Connection *c, const QStringList& tables, const QStringList& views, const QStringList& procs, Project* p, bool relaxedDtCreation) = 0;
+    virtual bool reverseEngineerDatabase(Connection *c, const QStringList& tables, const QStringList& views, const QStringList& procs, const QStringList& funcs, Project* p, bool relaxedDtCreation) = 0;
 
 public:
 

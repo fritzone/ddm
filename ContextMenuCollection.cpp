@@ -63,12 +63,17 @@ ContextMenuCollection::ContextMenuCollection()
     action_createViewUsingQueryBuilder = new QAction(QObject::tr("Using QueryBuilder"), 0);
     action_createViewUsingSql = new QAction(QObject::tr("SQL"), 0);
     action_connectionConnect = new QAction(QObject::tr("Connect"), 0);
+    action_connectionConnect->setIcon(IconFactory::getConnectConnectionIcon());
     action_connectionDelete = new QAction(QObject::tr("Delete"), 0);
     action_connectionDelete->setIcon(IconFactory::getRemoveIcon());
     action_connectionEdit = new QAction(QObject::tr("Edit"), 0);
+    action_connectionEdit->setIcon(IconFactory::getEditConnectionIcon());
     action_connectionBrowse = new QAction(QObject::tr("Browse"), 0);
+    action_connectionBrowse->setIcon(IconFactory::getBrowseConnectionIcon());
     action_connectionDrop = new QAction(QObject::tr("Drop"), 0);
     action_connectionDrop->setIcon(IconFactory::getDropDatabaseIcon());
+    action_connectionRecreate = new QAction(QObject::tr("Recreate"), 0);
+    action_connectionRecreate->setIcon(IconFactory::getRecreateDatabaseIcon());
     action_browsedTableInjectIntoSolution = new QAction(QObject::tr("Add to current solution"), 0);
     action_browsedTableBrowse = new QAction(QObject::tr("Browse table data"), 0);
     action_browsedTableView = new QAction(QObject::tr("View table details"), 0);
@@ -136,10 +141,12 @@ ContextMenuCollection::ContextMenuCollection()
 
     // connections
     m_connectionPopupMenu->addAction(action_connectionConnect);
-    m_connectionPopupMenu->addAction(action_connectionDelete);
-    m_connectionPopupMenu->addAction(action_connectionEdit);
     m_connectionPopupMenu->addAction(action_connectionBrowse);
+    m_connectionPopupMenu->addAction(action_connectionEdit);
+    m_connectionPopupMenu->addAction(action_connectionRecreate);
+    m_connectionPopupMenu->addAction(action_connectionDelete);
     m_connectionPopupMenu->addAction(action_connectionDrop);
+
 
     // browsed table
     m_browsedTablePopupMenu->addAction(action_browsedTableInjectIntoSolution);

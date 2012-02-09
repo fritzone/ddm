@@ -1175,7 +1175,7 @@ void MainWindow::onDeployHovered()
         QAction* act = new QAction(this);
         act->setText(cons.at(i)->getName() + " - " + cons.at(i)->getDb()+"@"+cons.at(i)->getHost());
         act->setData(cons.at(i)->getName());
-        act->setIcon(cons.at(i)->provideIcon());
+        act->setIcon(IconFactory::getConnectionStateIcon(cons.at(i)->getState()));
         deployPopupMenu->addAction(act);
         QObject::connect(act, SIGNAL(activated()),
                 new DynamicActionHandlerforMainWindow(cons.at(i)->getName(), this, (MainWindow::dynamicAction)&MainWindow::specificDeploymentCallback),
@@ -1499,6 +1499,20 @@ void MainWindow::onBrowseBrowsedTable()
     onConnectionItemDoubleClicked(m_connectionGuiElements->getConnectionsTree()->getLastRightclickedItem(), 0);
 }
 
+void MainWindow::onRecreateConnection()
+{
+    Connection* c = getRightClickedConnection();
+    if(c)
+    {
+        // clear the tree
+        while(c->getLocation()->childCount()) c->getLocation()->removeChild(c->getLocation()->child(0));
+        // drop and create the DB
+        c->getEngine()->dropDatabase(c);
+        c->getEngine()->createDatabase(c);
+        c->setState(DID_NOT_TRY);
+        c->getLocation()->setIcon(0, IconFactory::getConnectionStateIcon(c->getState()));
+    }
+}
 
 void MainWindow::onEditConnection()
 {
@@ -1515,7 +1529,7 @@ void MainWindow::onEditConnection()
             c->getLocation()->setText(1, c->getDb()+"@"+c->getHost());
             QVariant var(c->getName());
             c->getLocation()->setData(0, Qt::UserRole, var);
-            c->getLocation()->setIcon(0, c->provideIcon());
+            c->getLocation()->setIcon(0, IconFactory::getConnectionStateIcon(c->getState()));
         }
     }
 }
@@ -1527,7 +1541,7 @@ void MainWindow::onDeleteConnection()
     {
         ConnectionManager::instance()->deleteConnection(c->getName());
         delete c->getLocation();
-        c->setState(Connection::DELETED);
+        c->setState(DELETED);
     }
 }
 
@@ -1541,6 +1555,7 @@ void MainWindow::tryBrowseConnection(Connection *c)
         createConnectionTreeEntryForTables(c);
         createConnectionTreeEntryForViews(c);
         createConnectionTreeEntryForProcs(c);
+        createConnectionTreeEntryForFuncs(c);
     }
 }
 
@@ -1549,7 +1564,7 @@ void MainWindow::onBrowseConnection()
     Connection* c = getRightClickedConnection();
     if(c)
     {
-        if(c->getState() == Connection::CONNECTED)
+        if(c->getState() == CONNECTED)
         {
             createConnectionTreeEntryForTables(c);
         }
@@ -1579,7 +1594,7 @@ void MainWindow::onDropConnection()
             c->getEngine()->dropDatabase(c);
             ConnectionManager::instance()->deleteConnection(c->getName());
             delete c->getLocation();
-            c->setState(Connection::DROPPED);
+            c->setState(DROPPED);
         }
 
         if(m_btndlg && w)
@@ -1607,26 +1622,26 @@ void MainWindow::onConnectionItemDoubleClicked(QTreeWidgetItem* item,int)
     if(v.isValid())
     {
         QString s = v.toString();
+        QString cname = s.mid(s.indexOf("?") + 1);
+        Connection *c = ConnectionManager::instance()->getConnection(cname);
+        if(!c) return;
+        QString refObj = s.left(s.indexOf("?")).mid(2);
+
         if(s.startsWith(browsedTablePrefix) || s.startsWith(browsedViewPrefix))
         {
             hideSplashwindow();
 
-            QString cname = s.mid(s.indexOf("?") + 1);
-            Connection *c = ConnectionManager::instance()->getConnection(cname);
-            if(!c) return;
-            QString tab = s.left(s.indexOf("?")).mid(2);
-            BrowseTableForm* frm = new BrowseTableForm(this, c, tab);
+
+            BrowseTableForm* frm = new BrowseTableForm(this, c, refObj);
             setCentralWidget(frm);
             return;
         }
 
         if(s.startsWith(browsedProcPrefix))
         {
-            QString cname = s.mid(s.indexOf("?") + 1);
-            Connection *c = ConnectionManager::instance()->getConnection(cname);
-            if(!c) return;
-            QString tab = s.left(s.indexOf("?")).mid(2);
-            Procedure* p = c->getEngine()->reverseEngineerProc(c, tab);
+            hideSplashwindow();
+
+            Procedure* p = c->getEngine()->reverseEngineerProc(c, refObj);
             if(p)
             {
                 ProcedureForm* pf = new ProcedureForm(MODE_PROCEDURE, true, c);
@@ -1637,8 +1652,22 @@ void MainWindow::onConnectionItemDoubleClicked(QTreeWidgetItem* item,int)
             return;
         }
 
+        if(s.startsWith(browsedFuncPrefix))
+        {
+            hideSplashwindow();
 
-        Connection* c = ConnectionManager::instance()->getConnection(s);
+            Function* p = c->getEngine()->reverseEngineerFunc(c, refObj);
+            if(p)
+            {
+                ProcedureForm* pf = new ProcedureForm(MODE_FUNCTION, true, c);
+                pf->setProcedure(p);
+                setCentralWidget(pf);
+                pf->showSql();
+            }
+            return;
+        }
+
+        c = ConnectionManager::instance()->getConnection(s);
         if(c) tryBrowseConnection(c);
     }
 }
@@ -1673,7 +1702,7 @@ void MainWindow::createConnectionTreeEntryForProcs(Connection *c)
     connProcsItem->setIcon(0, IconFactory::getProceduresIcon());
 
     // Now do the browsing
-    QStringList dbProcs = c->getEngine()->getAvailableProcedures(c);
+    QStringList dbProcs = c->getEngine()->getAvailableStoredProcedures(c);
     for(int i=0; i<dbProcs.size(); i++)
     {
         ContextMenuEnabledTreeWidgetItem* newProcItem = new ContextMenuEnabledTreeWidgetItem(connProcsItem, QStringList(dbProcs.at(i)));
@@ -1682,6 +1711,30 @@ void MainWindow::createConnectionTreeEntryForProcs(Connection *c)
         //newViewItem->setPopupMenu(ContextMenuCollection::getInstance()->getTableFromBrowsePopupMenu());
         newProcItem->setIcon(0, IconFactory::getProcedureIcon());
         m_connectionGuiElements->getConnectionsTree()->addTopLevelItem(newProcItem);
+    }
+
+    // TODO: now come up with a mechanism that feeds continuously the reverse engineered tables into an object that feeds it in somewhere which
+    // is used by the code completion enabled text edit when editing a table. Highly possible the destination will be the Connection object
+    // since everyone has access to it.
+}
+
+
+void MainWindow::createConnectionTreeEntryForFuncs(Connection *c)
+{
+    ContextMenuEnabledTreeWidgetItem* connFuncsItem = new ContextMenuEnabledTreeWidgetItem(c->getLocation(), QStringList(tr("Functions")));
+    m_connectionGuiElements->getConnectionsTree()->addTopLevelItem(connFuncsItem);
+    connFuncsItem->setIcon(0, IconFactory::getFunctionsTreeIcon());
+
+    // Now do the browsing
+    QStringList dbFuncs = c->getEngine()->getAvailableStoredFunctions(c);
+    for(int i=0; i<dbFuncs.size(); i++)
+    {
+        ContextMenuEnabledTreeWidgetItem* newFuncItem = new ContextMenuEnabledTreeWidgetItem(connFuncsItem, QStringList(dbFuncs.at(i)));
+        QVariant var(browsedFuncPrefix + dbFuncs.at(i) + "?" + c->getName());
+        newFuncItem->setData(0, Qt::UserRole, var);
+        //newViewItem->setPopupMenu(ContextMenuCollection::getInstance()->getTableFromBrowsePopupMenu());
+        newFuncItem->setIcon(0, IconFactory::getFunctionTreeIcon());
+        m_connectionGuiElements->getConnectionsTree()->addTopLevelItem(newFuncItem);
     }
 
     // TODO: now come up with a mechanism that feeds continuously the reverse engineered tables into an object that feeds it in somewhere which
@@ -1718,7 +1771,7 @@ void MainWindow::onConnectConnection()
     Connection* c = getRightClickedConnection();
     if(c)
     {
-        if(c->getState() == Connection::CONNECTED) return;
+        if(c->getState() == CONNECTED) return;
         if(c->tryConnect())
         {
             c->getLocation()->setIcon(0, IconFactory::getConnectedDatabaseIcon());
@@ -2038,13 +2091,21 @@ void MainWindow::onReverseEngineerWizardNextPage(int cpage)
         }
         m_revEngWizard->connectAndRetrieveViews();
         break;
-    case 4:
+    case 4: // procedures
         if(!m_revEngWizard->selectDatabase()) // did he select a database?
         {
             QMessageBox::critical(this, tr("Error"), tr("Please select a database"), QMessageBox::Ok);
             m_revEngWizard->back();
         }
         m_revEngWizard->connectAndRetrieveProcedures();
+        break;
+    case 5: // functions
+        if(!m_revEngWizard->selectDatabase()) // did he select a database?
+        {
+            QMessageBox::critical(this, tr("Error"), tr("Please select a database"), QMessageBox::Ok);
+            m_revEngWizard->back();
+        }
+        m_revEngWizard->connectAndRetrieveFunctions();
         break;
     }
 }
@@ -2063,7 +2124,7 @@ void MainWindow::onReverseEngineerWizardAccept()
     lblStatus->setText(QApplication::translate("MainWindow", "Reverse engineering started", 0, QApplication::UnicodeUTF8));
 
     ReverseEngineerer* revEng = new ReverseEngineerer(c, engine, p, host, user, pass, db,
-                                                      m_revEngWizard->getTablesToReverse(), m_revEngWizard->getViewsToReverse(), m_revEngWizard->getProceduresToReverse(),
+                                                      m_revEngWizard->getTablesToReverse(), m_revEngWizard->getViewsToReverse(), m_revEngWizard->getProceduresToReverse(), m_revEngWizard->getFunctionsToReverse(),
                                                       this);
     connect(revEng, SIGNAL(done(ReverseEngineerer*)), this, SLOT(onReverseEngineeringFinished(ReverseEngineerer*)));
     revEng->reverseEngineer();
