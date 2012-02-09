@@ -21,6 +21,7 @@
 #include "core_View.h"
 #include "core_Connection.h"
 #include "core_Procedure.h"
+#include "core_Function.h"
 #include "Codepage.h"
 
 QVector<DatabaseBuiltinFunction>* MySQLDatabaseEngine::s_builtinFunctions = 0;
@@ -45,7 +46,7 @@ QString MySQLDatabaseEngine::provideConnectionName(const QString& prefix)
     return t;
 }
 
-bool MySQLDatabaseEngine::reverseEngineerDatabase(Connection *c, const QStringList& tables, const QStringList& views, const QStringList& procs, Project*p, bool relaxed)
+bool MySQLDatabaseEngine::reverseEngineerDatabase(Connection *c, const QStringList& tables, const QStringList& views, const QStringList& procs, const QStringList& funcs, Project*p, bool relaxed)
 {
     Version* v = p->getWorkingVersion();
     m_revEngMappings.clear();
@@ -55,6 +56,12 @@ bool MySQLDatabaseEngine::reverseEngineerDatabase(Connection *c, const QStringLi
     {
         Procedure* proc = reverseEngineerProc(c, procs.at(i));
         if(proc) v->addProcedure(proc);
+    }
+
+    for(int i=0; i<funcs.size(); i++)
+    {
+        Function* func = reverseEngineerFunc(c, funcs.at(i));
+        if(func) v->addFunction(func);
     }
 
     for(int i=0; i<tables.size(); i++)
@@ -165,7 +172,7 @@ QStringList MySQLDatabaseEngine::getAvailableViews(Connection* c)
     return result;
 }
 
-QStringList MySQLDatabaseEngine::getAvailableProcedures(Connection* c)
+QStringList MySQLDatabaseEngine::getAvailableStoredProcedures(Connection* c)
 {
     QSqlDatabase dbo = c->getQSqlDatabase();
 
@@ -190,6 +197,30 @@ QStringList MySQLDatabaseEngine::getAvailableProcedures(Connection* c)
     return result;
 }
 
+QStringList MySQLDatabaseEngine::getAvailableStoredFunctions(Connection* c)
+{
+    QSqlDatabase dbo = c->getQSqlDatabase();
+
+    bool ok = dbo.isOpen();
+
+    if(!ok)
+    {
+        lastError = dbo.lastError().databaseText() + "/" + dbo.lastError().databaseText();
+        return QStringList();
+    }
+
+    QSqlQuery query (dbo);
+    query.exec("show function status where Db='"+c->getDb()+"'");
+    QStringList result;
+
+    while(query.next())
+    {
+        QString proc = query.value(1).toString();
+        result.append(proc);
+    }
+    dbo.close();
+    return result;
+}
 
 QStringList MySQLDatabaseEngine::getAvailableTables(Connection* c)
 {
@@ -239,6 +270,31 @@ Procedure* MySQLDatabaseEngine::reverseEngineerProc(Connection *c, const QString
     db.close();
 
     return proc;
+}
+
+Function* MySQLDatabaseEngine::reverseEngineerFunc(Connection *c, const QString &funcName)
+{
+    QSqlDatabase db = getQSqlDatabaseForConnection(c);
+
+    if(!db.isOpen())
+    {
+        return 0;
+    }
+
+    QSqlQuery query(db);
+    QString t = "show create function " + funcName;
+    query.exec(t);
+    Function* func= 0;
+    while(query.next())
+    {
+        QString sql = query.value(2).toString();
+        func = new Function(funcName);
+        func->setSql(sql);
+    }
+
+    db.close();
+
+    return func;
 }
 
 View* MySQLDatabaseEngine::reverseEngineerView(Connection* c, const QString& viewName)
@@ -592,29 +648,33 @@ bool MySQLDatabaseEngine::dropDatabase(Connection* c)
         return false;
     }
     db.close();
-    c->setState(Connection::DROPPED);
+    c->setState(DROPPED);
     return true;
 }
 
 bool MySQLDatabaseEngine::createDatabase(Connection* c)
 {
-    QSqlDatabase db = getQSqlDatabaseForConnection(c);
+    QString newConnName = provideConnectionName("getConnection");
+    QSqlDatabase dbo = QSqlDatabase::addDatabase("QMYSQL", newConnName);
 
-    bool ok = db.isOpen();
+    dbo.setHostName(c->getHost());
+    dbo.open(c->getUser(), c->getPassword());
+
+    bool ok = dbo.isOpen();
     if(!ok)
     {
-        lastError = QObject::tr("Cannot connect to the database: ") + db.lastError().databaseText() + "/" + db.lastError().driverText();
+        lastError = QObject::tr("Cannot connect to the database: ") + dbo.lastError().databaseText() + "/" + dbo.lastError().driverText();
         return false;
     }
 
-    QSqlQuery query(db);
+    QSqlQuery query(dbo);
     bool t = query.exec("create database "+ c->getDb());
     if(!t)
     {
-        lastError = QObject::tr("Cannot create a database: ") + db.lastError().databaseText() + "/" + db.lastError().driverText();
+        lastError = QObject::tr("Cannot create a database: ") + dbo.lastError().databaseText() + "/" + dbo.lastError().driverText();
         return false;
     }
-    db.close();
+    dbo.close();
     return true;
 }
 

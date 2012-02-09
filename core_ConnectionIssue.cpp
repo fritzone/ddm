@@ -9,6 +9,6 @@ ConnectionIssue::ConnectionIssue(Connection* connection, QString reason) : Issue
 bool ConnectionIssue::stillValid()
 {
     m_connection->tryConnect();
-    if(m_connection->getState() == Connection::FAILED) return true;
+    if(m_connection->getState() == FAILED) return true;
     return false;
 }

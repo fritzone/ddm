@@ -46,6 +46,7 @@ private:
     SqlHighlighter* highlighter;
     DatabaseEngine* m_engine;
     QStringList sqlList;
+    QString m_codepage;
 };
 
 #endif // SQLFORM_H

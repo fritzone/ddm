@@ -541,7 +541,7 @@ NewTableForm* VersionGuiElements::getTableFormForExistingTable()
 
 ProcedureForm* VersionGuiElements::getProcedureForm(ProcedureFormMode m)
 {
-    return m_procedureForm = new ProcedureForm(m, MainWindow::instance());
+    return m_procedureForm = new ProcedureForm(m, false, 0, MainWindow::instance());
 }
 
 TriggerForm* VersionGuiElements::getTriggerForm()

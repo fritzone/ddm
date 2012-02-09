@@ -17,13 +17,14 @@ public:
     {
         REVERSE_ENGINEER_TABLES = 0,
         REVERSE_ENGINEER_VIEWS = 1,
-        REVERSE_ENGINEER_PROCS = 2
+        REVERSE_ENGINEER_PROCS = 2,
+        REVERSE_ENGINEER_FUNCS = 3
     } ;
 
     explicit ReverseEngineerWizardObjectListForm(QWidget *parent = 0, Mode t = REVERSE_ENGINEER_TABLES);
     ~ReverseEngineerWizardObjectListForm();
 
-    void addTable(const QString& tab);
+    void addObject(const QString& tab);
     void clearList();
     QStringList getSelectedItems();
 

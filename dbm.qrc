@@ -169,6 +169,10 @@
         <file>images/small/insert_table_row.png</file>
         <file>images/actions/function_icon.png</file>
         <file>images/actions/newfunction.png</file>
+        <file>images/small/agt_reload.png</file>
+        <file>images/small/connect.png</file>
+        <file>images/small/folder_explore.png</file>
+        <file>images/small/pencil3.png</file>
     </qresource>
     <qresource prefix="/bigger">
         <file>images/unaf.png</file>

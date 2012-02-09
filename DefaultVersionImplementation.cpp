@@ -468,7 +468,7 @@ void DefaultVersionImplementation::setupForeignKeyRelationshipsForATable(Table* 
     }
 }
 
-QList<QString> DefaultVersionImplementation::getSqlScript(const QString& codepage)
+QList<QString> DefaultVersionImplementation::getSqlScript(const QString& codepage, bool generateDelimiters)
 {
     QList<QString> finalSql;
     QHash<QString, QString> opts = Configuration::instance().sqlGenerationOptions();
@@ -532,6 +532,11 @@ QList<QString> DefaultVersionImplementation::getSqlScript(const QString& codepag
         finalSql.append("\n");
     }
 
+    if(m_data.m_procedures.size() && generateDelimiters)
+    {
+        finalSql << m_project->getEngine()->getDelimiterKeyword() + strSpace + Configuration::instance().sqlOpts()[strSqlDelimiterText] + strNewline;
+    }
+
     for(int i=0; i<m_data.m_procedures.size(); i++)
     {
         QString s = "";
@@ -541,8 +546,59 @@ QList<QString> DefaultVersionImplementation::getSqlScript(const QString& codepag
         {
             s += t.at(j) + " ";
         }
-        s += strSemicolon;
+        if(generateDelimiters)
+        {
+            s += Configuration::instance().sqlOpts()[strSqlDelimiterText] + strNewline;
+        }
+        else
+        {
+            s += strSemicolon + strNewline;
+        }
         finalSql << s;
+    }
+
+
+    if(m_data.m_procedures.size() && generateDelimiters)
+    {
+        finalSql << m_project->getEngine()->getDelimiterKeyword() + strSpace + strSemicolon + strNewline;
+    }
+
+    // and the functions
+    finalSql.append("\n");
+    if(m_data.m_functions.size() && generateDelimiters)
+    {
+        finalSql << m_project->getEngine()->getDelimiterKeyword() + strSpace + Configuration::instance().sqlOpts()[strSqlDelimiterText] + strNewline;
+    }
+
+    if(m_data.m_functions.size() && comments)
+    {
+        finalSql << "-- Creating the functions";
+        finalSql.append("\n");
+    }
+
+    for(int i=0; i<m_data.m_functions.size(); i++)
+    {
+        QString s = "";
+        if (comments) s = "-- Function " + m_data.m_functions.at(i)->getName() + strNewline;
+        QStringList t = m_data.m_functions.at(i)->generateSqlSource(m_project->getEngine()->getSqlGenerator(), opts, codepage);
+        for(int j=0; j<t.size(); j++)
+        {
+            s += t.at(j) + " ";
+        }
+        if(generateDelimiters)
+        {
+            s += Configuration::instance().sqlOpts()[strSqlDelimiterText] + strNewline;
+        }
+        else
+        {
+            s += strSemicolon + strNewline;
+        }
+        finalSql << s;
+    }
+
+    if(m_data.m_functions.size() && generateDelimiters)
+    {
+        finalSql << m_project->getEngine()->getDelimiterKeyword() + strSpace + strSemicolon + strNewline;
     }
 
     // and the triggers

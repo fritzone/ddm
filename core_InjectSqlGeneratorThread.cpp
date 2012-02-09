@@ -9,6 +9,6 @@ InjectSqlGeneratorThread::InjectSqlGeneratorThread(const QString& codePage, Vers
 
 void InjectSqlGeneratorThread::doWork()
 {
-    m_sqls = m_version->getSqlScript(m_codePage);
+    m_sqls = m_version->getSqlScript(m_codePage, false);
     emit done(this);
 }

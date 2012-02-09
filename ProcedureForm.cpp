@@ -72,7 +72,10 @@ QString ProcedureForm::getProcNameFromSql()
 void ProcedureForm::textChanged()
 {
     m_proc->setSql(m_textEdit->toPlainText());
-    if(!m_forcedChange) getProcNameFromSql();
+    if(!m_forcedChange)
+    {
+        getProcNameFromSql();
+    }
 }
 
 void ProcedureForm::initSql()
