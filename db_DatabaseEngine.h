@@ -17,6 +17,7 @@ class Connection;
 class Codepage;
 class Procedure;
 class Function;
+class Trigger;
 
 /**
  * This class is a kind of "wrapper" for the other classes that all deal
@@ -222,6 +223,13 @@ public:
     virtual QStringList getAvailableStoredFunctions(Connection* c) = 0;
 
     /**
+     * Returns a list of the available triggers that are in the database represented by the given connection
+     * @param c - the connection to the database
+     * @return the list of trigger names
+     */
+    virtual QStringList getAvailableTriggers(Connection* c) = 0;
+
+    /**
      * Reverse engineer a table.
      * @param c - the connection representing the database
      * @param tableName - the table to be reversed
@@ -280,6 +288,14 @@ public:
     virtual Procedure* reverseEngineerProc(Connection *c, const QString& procName) = 0;
 
     /**
+     * Reverse engineers the trigger which is to be found in the database represented by the connection object.
+     * @param c - the connection
+     * @param procName - the trigger to be reverse engineered
+     * @return the Procedure object representing the procedure in the database 0 in case there is no procedure called like that
+     */
+    virtual Trigger* reverseEngineerTrigger(Connection *c, const QString& procName) = 0;
+
+    /**
      * Returns the columns of the given table as a list of strings
      * @param c - the connection
      * @param  tableName - the name of the table
@@ -299,7 +315,9 @@ public:
      *
      * @return true in case of success, false if an error occured. You can call @see lastError to see the error
      */
-    virtual bool reverseEngineerDatabase(Connection *c, const QStringList& tables, const QStringList& views, const QStringList& procs, const QStringList& funcs, Project* p, bool relaxedDtCreation) = 0;
+    virtual bool reverseEngineerDatabase(Connection *c,
+                                         const QStringList& tables, const QStringList& views, const QStringList& procs, const QStringList& funcs, const QStringList& triggers,
+                                         Project* p, bool relaxedDtCreation) = 0;
 
 public:
 

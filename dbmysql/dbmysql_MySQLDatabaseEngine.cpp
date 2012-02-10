@@ -23,6 +23,7 @@
 #include "core_Procedure.h"
 #include "core_Function.h"
 #include "Codepage.h"
+#include "core_Trigger.h"
 
 QVector<DatabaseBuiltinFunction>* MySQLDatabaseEngine::s_builtinFunctions = 0;
 int MySQLDatabaseEngine::m_connectionCounter = 1;
@@ -46,7 +47,8 @@ QString MySQLDatabaseEngine::provideConnectionName(const QString& prefix)
     return t;
 }
 
-bool MySQLDatabaseEngine::reverseEngineerDatabase(Connection *c, const QStringList& tables, const QStringList& views, const QStringList& procs, const QStringList& funcs, Project*p, bool relaxed)
+bool MySQLDatabaseEngine::reverseEngineerDatabase(Connection *c, const QStringList& tables, const QStringList& views, const QStringList& procs,
+                                                  const QStringList& funcs, const QStringList& triggers, Project*p, bool relaxed)
 {
     Version* v = p->getWorkingVersion();
     m_revEngMappings.clear();
@@ -74,6 +76,12 @@ bool MySQLDatabaseEngine::reverseEngineerDatabase(Connection *c, const QStringLi
     {
         View* view = reverseEngineerView(c, views.at(i));
         if(view) v->addView(view);
+    }
+
+    for(int i=0; i<triggers.size(); i++)
+    {
+        Trigger* t= reverseEngineerTrigger(c, triggers.at(i));
+        if(t) v->addTrigger(t);
     }
 
     // now populate the foreign keys
@@ -171,6 +179,33 @@ QStringList MySQLDatabaseEngine::getAvailableViews(Connection* c)
     dbo.close();
     return result;
 }
+
+QStringList MySQLDatabaseEngine::getAvailableTriggers(Connection* c)
+{
+    QSqlDatabase dbo = getQSqlDatabaseForConnection(c);
+
+    bool ok = dbo.isOpen();
+    QStringList result;
+
+    if(!ok)
+    {
+        lastError = dbo.lastError().databaseText() + "/" + dbo.lastError().databaseText();
+        return result;
+    }
+
+    QSqlQuery query (dbo);
+
+    query.exec("show triggers");
+
+    while(query.next())
+    {
+        QString tab = query.value(0).toString();
+        result.append(tab);
+    }
+    dbo.close();
+    return result;
+}
+
 
 QStringList MySQLDatabaseEngine::getAvailableStoredProcedures(Connection* c)
 {
@@ -1341,5 +1376,42 @@ QStringList MySQLDatabaseEngine::getTriggerTimings()
 {
     QStringList result;
     result << "BEFORE" << "AFTER";
+    return result;
+}
+
+Trigger* MySQLDatabaseEngine::reverseEngineerTrigger(Connection *c, const QString& procName)
+{
+    QSqlDatabase dbo = getQSqlDatabaseForConnection(c);
+
+    bool ok = dbo.isOpen();
+
+    if(!ok)
+    {
+        lastError = dbo.lastError().databaseText() + "/" + dbo.lastError().databaseText();
+        return 0;
+    }
+
+    QSqlQuery query (dbo);
+
+    query.exec("show triggers");
+
+    Trigger *result = 0;
+    while(query.next())
+    {
+        QString trigName = query.value(0).toString();
+        if(trigName == procName)
+        {
+            QString event = query.value(1).toString();
+            QString table =  query.value(2).toString();
+            QString stmt =  query.value(3).toString();
+            QString timing =  query.value(4).toString();
+            result = new Trigger(trigName);
+            result->setEvent(event);
+            result->setTable(table);
+            result->setSql(stmt);
+            result->setTime(timing);
+        }
+    }
+    dbo.close();
     return result;
 }

@@ -79,6 +79,7 @@ public:
     QAction* getAction_IgnoreIssuesFromThisTable() { return action_ignoreIssuesFromThisTable; }
     QAction* getAction_CreateViewUsingQueryBuilder() { return action_createViewUsingQueryBuilder; }
     QAction* getAction_CreateViewUsingSql() { return action_createViewUsingSql; }
+    QAction* getAction_ConnectionSqlQuery() {return action_connectionSqlQuery; }
     QAction* getAction_ConnectionConnect() {return action_connectionConnect; }
     QAction* getAction_ConnectionDelete() {return action_connectionDelete; }
     QAction* getAction_ConnectionEdit() {return action_connectionEdit; }
@@ -175,7 +176,7 @@ private:
     QAction* action_connectionBrowse;
     QAction* action_connectionDrop;
     QAction* action_connectionRecreate;
-
+    QAction* action_connectionSqlQuery;
 
     // a browsed table popup menu
     QAction* action_browsedTableInjectIntoSolution;

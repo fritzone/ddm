@@ -27,7 +27,7 @@ void Trigger::serialize(QDomDocument &doc, QDomElement &parent) const
     triggerElement.setAttribute("Name", m_name);
     triggerElement.setAttribute("Event", m_event);
     triggerElement.setAttribute("Time", m_ttime);
-    triggerElement.setAttribute("Table", m_table->getName());
+    triggerElement.setAttribute("Table", getName());
 
     QDomElement textElement = doc.createElement("Body");
     QDomCDATASection cdata = doc.createCDATASection(m_body);

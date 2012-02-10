@@ -62,6 +62,8 @@ ContextMenuCollection::ContextMenuCollection()
     action_ignoreIssuesFromThisTable = new QAction(QObject::tr("Ignore issues"), 0);
     action_createViewUsingQueryBuilder = new QAction(QObject::tr("Using QueryBuilder"), 0);
     action_createViewUsingSql = new QAction(QObject::tr("SQL"), 0);
+    action_connectionSqlQuery = new QAction(QObject::tr("Run Script"), 0);
+    action_connectionSqlQuery->setIcon(IconFactory::getSqlIcon());
     action_connectionConnect = new QAction(QObject::tr("Connect"), 0);
     action_connectionConnect->setIcon(IconFactory::getConnectConnectionIcon());
     action_connectionDelete = new QAction(QObject::tr("Delete"), 0);
@@ -81,6 +83,7 @@ ContextMenuCollection::ContextMenuCollection()
     action_deleteView ->setIcon(IconFactory::getRemoveIcon());
     action_deleteProcedure = new QAction(QObject::tr("Delete procedure"), 0);
     action_deleteProcedure->setIcon(IconFactory::getRemoveIcon());
+
 
     // populate the table popup menu
     m_tablePopupMenu->addAction(action_TableAddColumn);
@@ -140,13 +143,13 @@ ContextMenuCollection::ContextMenuCollection()
     m_issuesOfATablePopupMenu->addAction(action_ignoreIssuesFromThisTable);
 
     // connections
+    m_connectionPopupMenu->addAction(action_connectionSqlQuery);
     m_connectionPopupMenu->addAction(action_connectionConnect);
     m_connectionPopupMenu->addAction(action_connectionBrowse);
     m_connectionPopupMenu->addAction(action_connectionEdit);
     m_connectionPopupMenu->addAction(action_connectionRecreate);
     m_connectionPopupMenu->addAction(action_connectionDelete);
     m_connectionPopupMenu->addAction(action_connectionDrop);
-
 
     // browsed table
     m_browsedTablePopupMenu->addAction(action_browsedTableInjectIntoSolution);

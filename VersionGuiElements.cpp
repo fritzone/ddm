@@ -546,5 +546,5 @@ ProcedureForm* VersionGuiElements::getProcedureForm(ProcedureFormMode m)
 
 TriggerForm* VersionGuiElements::getTriggerForm()
 {
-    return m_triggerForm = new TriggerForm(MainWindow::instance());
+    return m_triggerForm = new TriggerForm(false, false, MainWindow::instance());
 }

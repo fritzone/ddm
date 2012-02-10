@@ -21,6 +21,7 @@ public:
     explicit BrowseTableForm(QWidget *parent, Connection* c, const QString& tab);
     ~BrowseTableForm();
     QTableView* getTable();
+    void focusOnTextEdit();
 
 protected:
     void changeEvent(QEvent *e);

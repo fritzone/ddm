@@ -22,11 +22,13 @@ public:
     bool connectAndRetrieveViews();
     bool connectAndRetrieveProcedures();
     bool connectAndRetrieveFunctions();
+    bool connectAndRetrieveTriggers();
 
     QStringList getTablesToReverse();
     QStringList getViewsToReverse();
     QStringList getProceduresToReverse();
     QStringList getFunctionsToReverse();
+    QStringList getTriggersToReverse();
 
     QString getHost() {return m_host; }
     QString getUser() {return m_user; }
@@ -44,6 +46,7 @@ private:
     ReverseEngineerWizardObjectListForm* m_viewsPage;
     ReverseEngineerWizardObjectListForm* m_proceduresPage;
     ReverseEngineerWizardObjectListForm* m_functionsPage;
+    ReverseEngineerWizardObjectListForm* m_triggersPage;
     ReverseEngineerWizardOptionsForm* m_optionsPage;
 
     QString m_host;

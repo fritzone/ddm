@@ -828,6 +828,6 @@ Trigger* DeserializationFactory::createTrigger(Project*, Version* v,  const QDom
     trigg->setSql(cdata.toText().data());
     trigg->setTime(element.attribute("Time"));
     trigg->setEvent(element.attribute("Event"));
-    trigg->setTable(tab);
+    trigg->setTable(tab->getName());
     return trigg;
 }

@@ -1556,6 +1556,7 @@ void MainWindow::tryBrowseConnection(Connection *c)
         createConnectionTreeEntryForViews(c);
         createConnectionTreeEntryForProcs(c);
         createConnectionTreeEntryForFuncs(c);
+        createConnectionTreeEntryForTriggers(c);
     }
 }
 
@@ -1667,6 +1668,22 @@ void MainWindow::onConnectionItemDoubleClicked(QTreeWidgetItem* item,int)
             return;
         }
 
+        if(s.startsWith(browsedTriggerPrefix))
+        {
+            hideSplashwindow();
+
+            Trigger* t = c->getEngine()->reverseEngineerTrigger(c, refObj);
+            if(t)
+            {
+                TriggerForm* pf = new TriggerForm(true, true, this);
+                pf->feedInTables(QStringList(t->getTable()));
+                pf->setTrigger(t);
+                setCentralWidget(pf);
+                pf->showSql();
+            }
+            return;
+        }
+
         c = ConnectionManager::instance()->getConnection(s);
         if(c) tryBrowseConnection(c);
     }
@@ -1741,6 +1758,30 @@ void MainWindow::createConnectionTreeEntryForFuncs(Connection *c)
     // is used by the code completion enabled text edit when editing a table. Highly possible the destination will be the Connection object
     // since everyone has access to it.
 }
+
+void MainWindow::createConnectionTreeEntryForTriggers(Connection *c)
+{
+    ContextMenuEnabledTreeWidgetItem* connTriggerssItem = new ContextMenuEnabledTreeWidgetItem(c->getLocation(), QStringList(tr("Triggers")));
+    m_connectionGuiElements->getConnectionsTree()->addTopLevelItem(connTriggerssItem);
+    connTriggerssItem->setIcon(0, IconFactory::getTriggersIcon());
+
+    // Now do the browsing
+    QStringList dbTriggers = c->getEngine()->getAvailableTriggers(c);
+    for(int i=0; i<dbTriggers.size(); i++)
+    {
+        ContextMenuEnabledTreeWidgetItem* newTriggerItem = new ContextMenuEnabledTreeWidgetItem(connTriggerssItem, QStringList(dbTriggers.at(i)));
+        QVariant var(browsedTriggerPrefix + dbTriggers.at(i) + "?" + c->getName());
+        newTriggerItem->setData(0, Qt::UserRole, var);
+        //newViewItem->setPopupMenu(ContextMenuCollection::getInstance()->getTableFromBrowsePopupMenu());
+        newTriggerItem->setIcon(0, IconFactory::getTriggerIcon());
+        m_connectionGuiElements->getConnectionsTree()->addTopLevelItem(newTriggerItem);
+    }
+
+    // TODO: now come up with a mechanism that feeds continuously the reverse engineered tables into an object that feeds it in somewhere which
+    // is used by the code completion enabled text edit when editing a table. Highly possible the destination will be the Connection object
+    // since everyone has access to it.
+}
+
 
 void MainWindow::createConnectionTreeEntryForTables(Connection *c)
 {
@@ -2107,6 +2148,14 @@ void MainWindow::onReverseEngineerWizardNextPage(int cpage)
         }
         m_revEngWizard->connectAndRetrieveFunctions();
         break;
+    case 6: // triggers
+        if(!m_revEngWizard->selectDatabase()) // did he select a database?
+        {
+            QMessageBox::critical(this, tr("Error"), tr("Please select a database"), QMessageBox::Ok);
+            m_revEngWizard->back();
+        }
+        m_revEngWizard->connectAndRetrieveTriggers();
+        break;
     }
 }
 
@@ -2306,4 +2355,18 @@ void MainWindow::changeEvent(QEvent *e)
 void MainWindow::onDeleteUnusedDatatypes()
 {
     m_workspace->workingVersion()->cleanupDataTypes();
+}
+
+void MainWindow::onSqlQueryInConnection()
+{
+    Connection* c = getRightClickedConnection();
+    if(c)
+    {
+        hideSplashwindow();
+        tryBrowseConnection(c);
+        c->getLocation()->setExpanded(true);
+        BrowseTableForm* frm = new BrowseTableForm(this, c, "");
+        setCentralWidget(frm);
+        frm->focusOnTextEdit();
+    }
 }

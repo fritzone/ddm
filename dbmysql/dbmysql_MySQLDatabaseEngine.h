@@ -22,7 +22,7 @@ public:
 
     virtual bool executeSql(Connection* c, const QStringList& sqls, QString& lastSql, bool rollbackOnError);
     virtual QString getDefaultDatatypesLocation();
-    virtual bool reverseEngineerDatabase(Connection *c, const QStringList& tables, const QStringList& views, const QStringList& procs, const QStringList& funcs, Project* p, bool relaxed);
+    virtual bool reverseEngineerDatabase(Connection *c, const QStringList& tables, const QStringList& views, const QStringList& procs, const QStringList& funcs, const QStringList& triggers, Project* p, bool relaxed);
     virtual Table* reverseEngineerTable(Connection *c, const QString& tableName, Project* p, bool relaxed);
     virtual View* reverseEngineerView(Connection *c, const QString& viewName);
     virtual QStringList getAvailableDatabases(const QString& host, const QString& user, const QString& pass);
@@ -30,6 +30,7 @@ public:
     virtual QStringList getAvailableViews(Connection* c);
     virtual QStringList getAvailableStoredProcedures(Connection* c);
     virtual QStringList getAvailableStoredFunctions(Connection* c);
+    virtual QStringList getAvailableTriggers(Connection* c);
     virtual bool createDatabase(Connection* c);
     virtual QVector<DatabaseBuiltinFunction> getBuiltinFunctions();
     virtual const DatabaseBuiltinFunction& getBuiltinFunction(const QString& name);
@@ -46,6 +47,7 @@ public:
     virtual QStringList getTriggerTimings();
     virtual Procedure* reverseEngineerProc(Connection *c, const QString& procName);
     virtual Function* reverseEngineerFunc(Connection *c, const QString& funcName);
+    virtual Trigger* reverseEngineerTrigger(Connection *c, const QString& procName);
 
 private:
 

@@ -13,6 +13,7 @@ ReverseEngineerWizard::ReverseEngineerWizard(DatabaseEngine* engine) : QWizard()
     m_viewsPage(new ReverseEngineerWizardObjectListForm(0, ReverseEngineerWizardObjectListForm::REVERSE_ENGINEER_VIEWS)),
     m_proceduresPage(new ReverseEngineerWizardObjectListForm(0, ReverseEngineerWizardObjectListForm::REVERSE_ENGINEER_PROCS)),
     m_functionsPage(new ReverseEngineerWizardObjectListForm(0, ReverseEngineerWizardObjectListForm::REVERSE_ENGINEER_FUNCS)),
+    m_triggersPage(new ReverseEngineerWizardObjectListForm(0, ReverseEngineerWizardObjectListForm::REVERSE_ENGINEER_TRIGGERS)),
     m_optionsPage(new ReverseEngineerWizardOptionsForm),
     m_host(""), m_user(""), m_pass(""), m_database("")
 {
@@ -22,6 +23,7 @@ ReverseEngineerWizard::ReverseEngineerWizard(DatabaseEngine* engine) : QWizard()
     addPage(m_viewsPage);
     addPage(m_proceduresPage);
     addPage(m_functionsPage);
+    addPage(m_triggersPage);
     addPage(m_optionsPage);
     setWindowTitle(QObject::tr("Reverse Engineer a Database"));
 }
@@ -100,6 +102,20 @@ bool ReverseEngineerWizard::connectAndRetrieveProcedures()
     return true;
 }
 
+bool ReverseEngineerWizard::connectAndRetrieveTriggers()
+{
+    Connection* c = new Connection("temp", m_host, m_user, m_pass, m_database, false, false);
+
+    QStringList triggers = m_engine->getAvailableTriggers(c);
+    m_triggersPage->clearList();
+    for(int i=0; i<triggers.size(); i++)
+    {
+        m_triggersPage->addObject(triggers.at(i));
+    }
+    delete c;
+    return true;
+}
+
 bool ReverseEngineerWizard::connectAndRetrieveTables()
 {
     Connection* c = new Connection("temp", m_host, m_user, m_pass, m_database, false, false);
@@ -132,6 +148,11 @@ QStringList ReverseEngineerWizard::getProceduresToReverse()
 QStringList ReverseEngineerWizard::getFunctionsToReverse()
 {
     return m_functionsPage->getSelectedItems();
+}
+
+QStringList ReverseEngineerWizard::getTriggersToReverse()
+{
+    return m_triggersPage->getSelectedItems();
 }
 
 bool ReverseEngineerWizard::createDataTypesForColumns()
