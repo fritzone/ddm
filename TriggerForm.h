@@ -18,11 +18,12 @@ class TriggerForm : public QWidget
     Q_OBJECT
 
 public:
-    explicit TriggerForm(QWidget *parent = 0);
+    explicit TriggerForm(bool reverseSource, bool fc, QWidget *parent = 0);
     ~TriggerForm();
     void setTrigger(Trigger* t);
     void initSql();
     void feedInTables(const QVector<Table*>& tables);
+    void feedInTables(const QStringList& tables);
     void feedInTriggerEvents(const QStringList&);
     void feedInTriggerTimes(const QStringList&);
     void showSql();
@@ -43,7 +44,7 @@ private:
     TextEditWithCodeCompletion* m_textEdit;
     FrameForLineNumbers* m_frameForLineNumbers;
     bool m_forcedChange;
-
+    bool m_reverseSource;
 };
 
 #endif // TRIGGERFORM_H

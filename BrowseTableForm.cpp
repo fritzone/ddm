@@ -43,18 +43,21 @@ BrowseTableForm::BrowseTableForm(QWidget *parent, Connection* c, const QString& 
     m_textEdit->setLineNumberFrame(m_frameForLineNumbers);
     m_textEdit->updateLineNumbers();
 
-    QSqlDatabase sqldb = c->getQSqlDatabase();
-    QSqlTableModel *model = new QSqlTableModel(ui->table, sqldb);
-    model->setTable(tab);
-    model->select();
-
-    if (model->lastError().type() != QSqlError::NoError)
+    if(tab.length() > 0)
     {
-        return;
-    }
+        QSqlDatabase sqldb = c->getQSqlDatabase();
+        QSqlTableModel *model = new QSqlTableModel(ui->table, sqldb);
+        model->setTable(tab);
+        model->select();
 
-    ui->table->setModel(model);
-    ui->table->setEditTriggers(QAbstractItemView::DoubleClicked|QAbstractItemView::EditKeyPressed);
+        if (model->lastError().type() != QSqlError::NoError)
+        {
+            return;
+        }
+
+        ui->table->setModel(model);
+        ui->table->setEditTriggers(QAbstractItemView::DoubleClicked|QAbstractItemView::EditKeyPressed);
+    }
     m_textEdit->resetToConnection(c);
 
     ui->txtConnection->setText(c->getFullLocation());
@@ -202,4 +205,9 @@ void BrowseTableForm::resizeEvent(QResizeEvent *e)
 void BrowseTableForm::textChanged()
 {
     browseString = m_textEdit->toPlainText();
+}
+
+void BrowseTableForm::focusOnTextEdit()
+{
+    m_textEdit->setFocus();
 }

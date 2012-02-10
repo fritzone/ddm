@@ -41,6 +41,7 @@ void ConnectionGuiElements::createGuiElements()
         Connection* c = cons.at(i);
         createConnectionTreeEntry(c);
     }
+    QObject::connect(ContextMenuCollection::getInstance()->getAction_ConnectionSqlQuery(), SIGNAL(triggered()), MainWindow::instance(), SLOT(onSqlQueryInConnection()));
     QObject::connect(ContextMenuCollection::getInstance()->getAction_ConnectionConnect(), SIGNAL(triggered()), MainWindow::instance(), SLOT(onConnectConnection()));
     QObject::connect(ContextMenuCollection::getInstance()->getAction_ConnectionBrowse(), SIGNAL(triggered()), MainWindow::instance(), SLOT(onBrowseConnection()));
     QObject::connect(ContextMenuCollection::getInstance()->getAction_ConnectionDrop(), SIGNAL(triggered()), MainWindow::instance(), SLOT(onDropConnection()));

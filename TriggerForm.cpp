@@ -8,9 +8,9 @@
 #include "Workspace.h"
 #include "Version.h"
 
-TriggerForm::TriggerForm(QWidget *parent) :
+TriggerForm::TriggerForm(bool reverseSource, bool fc, QWidget *parent) :
     QWidget(parent),
-    ui(new Ui::TriggerForm), m_trigger(0), m_forcedChange(false)
+    ui(new Ui::TriggerForm), m_trigger(0), m_forcedChange(fc), m_reverseSource(reverseSource)
 {
     ui->setupUi(this);
 
@@ -30,6 +30,7 @@ TriggerForm::TriggerForm(QWidget *parent) :
 
 void TriggerForm::textChanged()
 {
+    if(m_reverseSource) return;
     m_trigger->setSql(m_textEdit->toPlainText());
 }
 
@@ -54,10 +55,7 @@ void TriggerForm::setTrigger(Trigger *t)
 {
     m_trigger = t;
     ui->txtTriggerName->setText(t->getName());
-    if(t->getTable())
-    {
-        ui->cmbTables->setCurrentIndex(ui->cmbTables->findText(t->getTable()->getName()));
-    }
+    ui->cmbTables->setCurrentIndex(ui->cmbTables->findText(t->getTable()));
 }
 
 void TriggerForm::initSql()
@@ -75,6 +73,15 @@ void TriggerForm::feedInTables(const QVector<Table *> &tables)
     for(int i=0; i<tables.size(); i++)
     {
         ui->cmbTables->addItem(IconFactory::getTableIcon(), tables.at(i)->getName());
+    }
+}
+
+void TriggerForm::feedInTables(const QStringList &tables)
+{
+    ui->cmbTables->clear();
+    for(int i=0; i<tables.size(); i++)
+    {
+        ui->cmbTables->addItem(IconFactory::getTableIcon(), tables.at(i));
     }
 }
 
@@ -111,6 +118,7 @@ void TriggerForm::showSql()
 
 void TriggerForm::nameChanged(QString a)
 {
+    if(m_reverseSource) return;
     if(!m_trigger) return;
     m_trigger->setName(a);
     if(m_trigger->getLocation())
@@ -121,19 +129,22 @@ void TriggerForm::nameChanged(QString a)
 
 void TriggerForm::eventChanged(QString a)
 {
+    if(m_reverseSource) return;
     if(m_trigger) m_trigger->setEvent(a);
 }
 
 void TriggerForm::whenChanged(QString a)
 {
+    if(m_reverseSource) return;
     if(m_trigger) m_trigger->setTime(a);
 }
 
 void TriggerForm::tableChanged(QString a)
 {
+    if(m_reverseSource) return;
     Table* t = Workspace::getInstance()->workingVersion()->getTable(a);
     if(t && m_trigger)
     {
-        m_trigger->setTable(t);
+        m_trigger->setTable(t->getName());
     }
 }

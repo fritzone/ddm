@@ -28,7 +28,7 @@ public:
         return m_body;
     }
 
-    const Table* getTable() const
+    QString getTable() const
     {
         return m_table;
     }
@@ -53,7 +53,7 @@ public:
         m_ttime = t;
     }
 
-    void setTable(Table* t)
+    void setTable(const QString& t)
     {
         m_table = t;
     }
@@ -63,7 +63,7 @@ private:
     QString m_body;
     QString m_event;
     QString m_ttime;
-    const Table* m_table;
+    QString m_table;
 };
 
 #endif // CORE_TRIGGER_H

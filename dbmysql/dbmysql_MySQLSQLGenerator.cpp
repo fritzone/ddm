@@ -545,7 +545,7 @@ QStringList MySQLSQLGenerator::generateTriggerSql(Trigger* t, const QHash<QStrin
     s += t->getTime(); s+= strSpace;
     s += t->getEvent(); s+= strSpace;
     s += upcase? "ON ":"on ";
-    s += t->getTable()->getName(); s+= strSpace;
+    s += t->getName(); s+= strSpace;
     s += upcase? "FOR EACH ROW ":"for each row ";
     s += strNewline + t->getSql() + strSemicolon + strNewline;
     result << s;

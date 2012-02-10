@@ -155,6 +155,7 @@ public slots:
     void onValidate();
     void onNewConnection();
     void onConnectConnection();
+    void onSqlQueryInConnection();
     void onBrowseConnection();
     void onDropConnection();
     void onDeleteConnection();
@@ -194,6 +195,7 @@ private:
     void createConnectionTreeEntryForViews(Connection *c);
     void createConnectionTreeEntryForProcs(Connection *c);
     void createConnectionTreeEntryForFuncs(Connection *c);
+    void createConnectionTreeEntryForTriggers(Connection *c);
     void hideSplashwindow();
     void tryBrowseConnection(Connection* c);
     void showNamedObject(QTreeWidgetItem* current, showSomething s, bool focus=true);
