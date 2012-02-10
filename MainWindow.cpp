@@ -2173,7 +2173,11 @@ void MainWindow::onReverseEngineerWizardAccept()
     lblStatus->setText(QApplication::translate("MainWindow", "Reverse engineering started", 0, QApplication::UnicodeUTF8));
 
     ReverseEngineerer* revEng = new ReverseEngineerer(c, engine, p, host, user, pass, db,
-                                                      m_revEngWizard->getTablesToReverse(), m_revEngWizard->getViewsToReverse(), m_revEngWizard->getProceduresToReverse(), m_revEngWizard->getFunctionsToReverse(),
+                                                      m_revEngWizard->getTablesToReverse(),
+                                                      m_revEngWizard->getViewsToReverse(),
+                                                      m_revEngWizard->getProceduresToReverse(),
+                                                      m_revEngWizard->getFunctionsToReverse(),
+                                                      m_revEngWizard->getTriggersToReverse(),
                                                       this);
     connect(revEng, SIGNAL(done(ReverseEngineerer*)), this, SLOT(onReverseEngineeringFinished(ReverseEngineerer*)));
     revEng->reverseEngineer();

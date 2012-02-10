@@ -8,7 +8,7 @@ QT += network \
     svg
 TARGET = ddm
 TEMPLATE = app
-QMAKE_CXXFLAGS_WARN_ON += -Wall -Wextra
+unix:QMAKE_CXXFLAGS_WARN_ON += -Wall -Wextra
 
 SOURCES += main.cpp \
     MainWindowButtonDialog.cpp \

@@ -7,12 +7,12 @@
 
 Trigger::Trigger() : SqlSourceEntity(),
     NamedItem(NameGenerator::getUniqueName(Workspace::getInstance()->workingVersion(), (itemGetter)&Version::getTrigger, QString("trig"))),
-    m_body(), m_event(), m_ttime(), m_table(0)
+    m_body(), m_event(), m_ttime(), m_table()
 {
 }
 
 Trigger::Trigger(const QString& name) : SqlSourceEntity(),
-    NamedItem(name), m_body(), m_event(), m_ttime(), m_table(0)
+    NamedItem(name), m_body(), m_event(), m_ttime(), m_table()
 {
 }
 
