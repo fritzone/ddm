@@ -329,8 +329,6 @@ void DiagramForm::onHelp()
     HelpWindow* hw = HelpWindow::instance();
     hw->showHelp(QString("/doc/dgram.html"));
     hw->show();
-    MainWindow::instance()->addDockWidget(Qt::RightDockWidgetArea, hw);
-
 }
 
 void DiagramForm::onNameChange(QString a)

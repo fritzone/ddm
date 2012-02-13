@@ -4,7 +4,7 @@
 #include <QWizardPage>
 
 namespace Ui {
-    class ReverseEngineerWizardTablesForm;
+    class ReverseEngineerWizardObjectListForm;
 }
 
 class ReverseEngineerWizardObjectListForm :public QWizardPage
@@ -34,7 +34,7 @@ public slots:
     void checkStateChanged(int);
 
 private:
-    Ui::ReverseEngineerWizardTablesForm *ui;
+    Ui::ReverseEngineerWizardObjectListForm *ui;
     Mode m_mode;
 };
 

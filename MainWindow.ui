@@ -895,6 +895,22 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>MainWindow</sender>
+   <signal>destroyed()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>onDestroyed()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>454</x>
+     <y>67</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>454</x>
+     <y>67</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>onNewSolution()</slot>
@@ -921,5 +937,6 @@
   <slot>onDeleteUnusedDatatypes()</slot>
   <slot>onNewTrigger()</slot>
   <slot>onNewFunction()</slot>
+  <slot>onDestroyed()</slot>
  </slots>
 </ui>

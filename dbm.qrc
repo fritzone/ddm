@@ -173,6 +173,8 @@
         <file>images/small/connect.png</file>
         <file>images/small/folder_explore.png</file>
         <file>images/small/pencil3.png</file>
+        <file>images/actions/back.png</file>
+        <file>images/actions/forward.png</file>
     </qresource>
     <qresource prefix="/bigger">
         <file>images/unaf.png</file>

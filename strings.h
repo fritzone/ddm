@@ -101,6 +101,8 @@ static const QString strConnectConnectionIcon = ":/images/actions/images/small/c
 static const QString strBrowseConnectionIcon = ":/images/actions/images/small/folder_explore.png";
 static const QString strEditConnectionIcon = ":/images/actions/images/small/pencil3.png";
 
+static const QString strHelpConfig = ":/help/help.config";
+
 static const QString NEW_TABLE = "New table reference";
 static const QString NEW_COLUMN = "New column";
 static const QString DUPLICATE = "Duplicate";

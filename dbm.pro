@@ -239,7 +239,8 @@ include (query_builder/query_builder.pri)
 INCLUDEPATH += query_builder
 include (dbmysql/dbmysql.pri)
 INCLUDEPATH += dbmysql
-RESOURCES += dbm.qrc
+RESOURCES += dbm.qrc \
+    help_resources.qrc
 RC_FILE = dbm.rc
 installfiles_base.files += ddm codepages/codepages.mysql.dat
 installfiles_base.path =  /home/ferenc/rpmbuild/BUILDROOT/usr/local/ddm
@@ -250,6 +251,7 @@ INSTALLS += installfiles_doc
 installfiles_rs.files += rsrc/mysql.defaults
 installfiles_rs.path =  /home/ferenc/rpmbuild/BUILDROOT/usr/local/ddm/rsrc
 INSTALLS += installfiles_rs
+
 
 
 

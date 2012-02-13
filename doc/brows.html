@@ -21,9 +21,45 @@ P {
   1. Right click the connection in the connection tree and select &quot;Connect&quot; then Right click again and select &quot;Browse&quot; (you only can browse a connected connection)<br>
 2. Double click the connection in the connection tree, this will automatically connect the connection and starts browsing it.<br>
 <br>
-After these steps now you are able to see the tables of the connection. If you don't have a solution you just can see the data stored in the table. For this, just double click the table (or right click and choose &quot;Browse table data&quot;). <br>
+After these steps now you are able to see the tables, views, stored methods and triggers of the database represented by the selected connection. If you don't have a solution you just can see the data stored in the table. For this, just double click the table (or right click and choose &quot;Browse table data&quot;). <br>
 <br>
-If you have a solution you can import a table from the database into your solution, without the need to do a full reverse engineering of the database and you also have the possibilty to add tables from different databases to your solution, and deploy them later.</span><br>
+If you have a solution you can import a table from the database into your solution, without the need to do a full reverse engineering of the database and you also have the possibilty to add tables from different databases to your solution, and deploy them later.<br>
+<br>
+<strong>Other options regarding connections</strong><br>
+<br>
+When you right click a connection you will get a menu where
+the followings are the options you can use:<br>
+<br>
+<em>Run Script</em><br>
+<br>
+By selecting this option an SQL editor window bound to the database specified in this connection will open. In this window you can type in SQL queries and execute them using Ctrl + Enter. Selecting this option automatically connects the database, starts browsing it and shows the content of the database.<br>
+<br>
+<em>Connect</em><br>
+<br>
+Selecting this option verifies whether the connection to the database is possible or not. This option does not start browsing the connection. If the database connection is possible the icon is updated with a green signaller, otherwise it gets updated with a red one.<br>
+<br>
+<em>Browse</em><br>
+<br>
+Selecting this option will try to connect to the database represented by the connection object. Depending on the results of the operation it changes the icon of the connection. In case of success the database objects are displayed in the tree of the connection item.<br>
+<br>
+<em>Edit</em><br>
+<br>
+Will open the window to modify the properties of the connection.<br>
+<br>
+<em>Recreate</em><br>
+<br>
+Choosing this option will execute a &quot;DROP DATABASE&quot; and &quot;CREATE DATABASE&quot; script for the database represented by the given connection.<br>
+<br>
+<em>Delete</em><br>
+<br>
+Choosing this option will remove the connection from the list of available connections, this does not affect the physical database.<br>
+<br>
+<em>Drop</em><br>
+<br>
+Choosing this option will execute a &quot;DROP DATABASE&quot; on the given connection.<br>
+</span><br>
+<br>
+<br>
     <br>
 </P>
 </BODY>

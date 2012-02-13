@@ -427,7 +427,6 @@ Table* MySQLDatabaseEngine::reverseEngineerTable(Connection *c, const QString& t
 
         UserDataType* udt = 0;
         QString oneTimeKey = field_name + type + nullable + defaultValue;
-        qDebug () << "ONE TIME KEY=" << oneTimeKey;
         bool found = false;
         if(m_oneTimeMappings.contains(oneTimeKey))
         {

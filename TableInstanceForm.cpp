@@ -247,11 +247,9 @@ void TableInstanceForm::onCellChange(int,int)
 
 void TableInstanceForm::onHelp()
 {
-
     HelpWindow* hw = HelpWindow::instance();
     hw->showHelp(QString("/doc/tinst.html"));
     hw->show();
-    MainWindow::instance()->addDockWidget(Qt::RightDockWidgetArea, hw);
 }
 
 void TableInstanceForm::onValuesDoubleClick()
