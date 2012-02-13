@@ -259,8 +259,6 @@ void MainWindow::onDTTreeClicked()
                 setCentralWidget(frm);
             }
         }
-        HelpWindow* hw = HelpWindow::instance();
-        if(hw->isVisible()) hw->showHelp(QString("/doc/dtyp.html"));
     }
 }
 
@@ -271,8 +269,6 @@ NewTableForm* MainWindow::showExistingTable(Table *table)
     frm->setTable(table);
     frm->focusOnName();
     setCentralWidget(frm);
-    HelpWindow* hw = HelpWindow::instance();
-    if(hw->isVisible()) hw->showHelp(QString("/doc/tabl.html"));
     return frm;
 }
 
@@ -304,9 +300,6 @@ void MainWindow::showTableInstance(const QString &tabName, bool focus)
     frmTinst->createTableWithValues();
     setCentralWidget(frmTinst);
 
-    HelpWindow* hw = HelpWindow::instance();
-    if(hw->isVisible()) hw->showHelp(QString("/doc/tinst.html"));
-
     if(focus) m_guiElements->getProjectTree()->setCurrentItem(table->getLocation());
 }
 
@@ -324,9 +317,6 @@ void MainWindow::showDataType(const QString &name, bool focus)
     setCentralWidget(frm);
 
     if(focus) m_guiElements->getDataTypesTree()->setCurrentItem(dt->getLocation());
-
-    HelpWindow* hw = HelpWindow::instance();
-    if(hw->isVisible()) hw->showHelp(QString("/doc/dtyp.html"));
 }
 
 void MainWindow::showDiagram(const QString &name, bool /*focus*/)
@@ -340,9 +330,6 @@ void MainWindow::showDiagram(const QString &name, bool /*focus*/)
     dgram->setForm(df);
     setCentralWidget(dgram->getDiagramForm());
     df->paintDiagram();
-
-    HelpWindow* hw = HelpWindow::instance();
-    if(hw->isVisible()) hw->showHelp(QString("/doc/dgram.html"));
 }
 
 void MainWindow::showProcedure(const QString &procName, bool /*focus*/)
@@ -408,9 +395,6 @@ void MainWindow::showView(const QString& viewName, bool /*focus*/)
             v->getHelper()->setForm(this);
             rerenderQuery(v->getQuery());
         }
-
-        HelpWindow* hw = HelpWindow::instance();
-        if(hw->isVisible()) hw->showHelp(QString("/doc/view.html"));
     }
 }
 
@@ -549,9 +533,6 @@ void MainWindow::onNewTable()
 
     m_guiElements->getProjectTree()->setCurrentItem(0);
     setCentralWidget(frm);
-
-    HelpWindow* hw = HelpWindow::instance();
-    if(hw->isVisible()) hw->showHelp(QString("/doc/tabl.html"));
     m_ui->action_NewTable->setDisabled(false);
 }
 
@@ -561,9 +542,6 @@ void MainWindow::showNewDataTypeWindow(int a)
     frm->focusOnName();
     m_guiElements->getProjectTree()->setCurrentItem(0);
     setCentralWidget(frm);
-
-    HelpWindow* hw = HelpWindow::instance();
-    if(hw->isVisible()) hw->showHelp(QString("/doc/dtyp.html"));
 }
 
 void MainWindow::onNewDataType()
@@ -1391,6 +1369,11 @@ void MainWindow::onDeleteInstanceFromPopup()
     }
 }
 
+void MainWindow::onDestroyed()
+{
+    QApplication::exit();
+}
+
 void MainWindow::onCloseSolution()
 {
     if(!m_workspace->hasCurrentSolution())
@@ -1477,7 +1460,7 @@ void MainWindow::onInjectBrowsedTable()
             t->setName(NameGenerator::getUniqueName(Workspace::getInstance()->currentProject()->getWorkingVersion(), (itemGetter)&Version::getTable, tab));
             Workspace::getInstance()->currentProject()->getWorkingVersion()->addTable(t);
             m_workspace->workingVersion()->getGui()->createTableTreeEntry(t, m_workspace->workingVersion()->getGui()->getTablesItem());
-            showTable(tab);
+            showTable(t->getName());
             QVector<TableInstance*> r = t->getTableInstances();
             for(int i=0; i<r.size(); i++)
             {
@@ -2311,6 +2294,11 @@ void MainWindow::rerenderQuery(Query* q)
     m_nvf->presentSql(Workspace::getInstance()->currentProject(), QString("latin1"));
     setCentralWidget(m_nvf);
     m_nvf->scrollTo(cx, cy);
+}
+
+void MainWindow::closeEvent( QCloseEvent * )
+{
+    QApplication::exit();
 }
 
 void MainWindow::changeEvent(QEvent *e)

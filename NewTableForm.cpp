@@ -2020,7 +2020,6 @@ void NewTableForm::onHelp()
     HelpWindow* hw = HelpWindow::instance();
     hw->showHelp(QString("/doc/tabl.html"));
     hw->show();
-    MainWindow::instance()->addDockWidget(Qt::RightDockWidgetArea, hw);
 }
 
 void NewTableForm::onChangeTab(int idx)

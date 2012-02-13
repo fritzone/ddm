@@ -93,8 +93,8 @@ public:
     }
 
 protected:
-
-    void changeEvent(QEvent *e);
+    virtual void closeEvent( QCloseEvent * event );
+    virtual void changeEvent(QEvent *e);
 
 public slots:
 
@@ -109,6 +109,7 @@ public slots:
     void onNewDiagram();
     void onSaveAs();
     void onCloseSolution();
+    void onDestroyed();
     void currentProjectTreeItemChanged(QTreeWidgetItem * current, QTreeWidgetItem*);
 
     void dtTreeItemClicked ( QTreeWidgetItem * item, int column );

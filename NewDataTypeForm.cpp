@@ -413,6 +413,4 @@ void NewDataTypeForm::onHelp()
     HelpWindow* hw = HelpWindow::instance();
     hw->showHelp(QString("/doc/dtyp.html"));
     hw->show();
-    MainWindow::instance()->addDockWidget(Qt::RightDockWidgetArea, hw);
-
 }

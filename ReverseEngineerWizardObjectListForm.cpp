@@ -1,12 +1,12 @@
 #include "ReverseEngineerWizardObjectListForm.h"
-#include "ui_ReverseEngineerWizardTablesForm.h"
+#include "ui_ReverseEngineerWizardObjectListForm.h"
 #include "IconFactory.h"
 
 #include <QDebug>
 
 ReverseEngineerWizardObjectListForm::ReverseEngineerWizardObjectListForm(QWidget *parent, Mode t) :
     QWizardPage(parent),
-    ui(new Ui::ReverseEngineerWizardTablesForm),  m_mode(t)
+    ui(new Ui::ReverseEngineerWizardObjectListForm),  m_mode(t)
 {
     ui->setupUi(this);
 
