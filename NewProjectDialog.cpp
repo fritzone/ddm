@@ -1,6 +1,7 @@
 #include "NewProjectDialog.h"
 #include "ui_NewProjectDialog.h"
 #include "db_DatabaseEngine.h"
+#include "gui_HelpWindow.h"
 
 #include <QMessageBox>
 
@@ -9,9 +10,6 @@ NewProjectDialog::NewProjectDialog(QWidget *parent) :
     m_ui(new Ui::NewProjectDialog)
 {
     m_ui->setupUi(this);
-
-    m_ui->grpWebView->setHidden(true);
-
 }
 
 NewProjectDialog::~NewProjectDialog()
@@ -26,13 +24,6 @@ void NewProjectDialog::focusOnEditField() const
 
 void NewProjectDialog::accept()
 {
-
-    if(!m_ui->groupBox->isChecked())
-    {
-        QMessageBox::critical (this, tr("Error"), tr("This version does not allow creating new solutions without a default project. Please create a project."), QMessageBox::Ok);
-        return;
-    }
-
     if(m_ui->txtProjectName->text().size() > 0 && m_ui->txtSolutionName->text().size() > 0)
     {
         projectName = m_ui->txtProjectName->text();
@@ -75,15 +66,16 @@ bool NewProjectDialog::enableOOPFeatures() const
 
 int NewProjectDialog::getProjectType() const
 {
-    return (m_ui->cmbProjectType->currentIndex() + 1);
+    return 1;
+    //return (m_ui->cmbProjectType->currentIndex() + 1);
 }
 
 void NewProjectDialog::onHelp()
 {
-    resize(800, height());
-    m_ui->grpWebView->setHidden(false);
-    m_ui->btnHelp->setHidden(true);
-    m_ui->webView->setUrl(QApplication::applicationDirPath() + QString("/doc/newp.html"));
+    HelpWindow* hw = HelpWindow::instance();
+    hw->showHelp(QString("/doc/newp.html"));
+    hw->show();
+    setModal(false);
 }
 
 bool NewProjectDialog::inheritDefaultDatatypes() const
