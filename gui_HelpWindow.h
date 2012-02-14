@@ -3,6 +3,8 @@
 
 #include <QWidget>
 #include <QSplitter>
+#include <QUrl>
+#include <QTreeWidgetItem>
 
 namespace Ui {
     class HelpWindow;
@@ -17,12 +19,13 @@ public:
     ~HelpWindow();
     void showHelp(const QString&);
 
-public slots:
+protected slots:
 
     void onDestroyed();
     void onBack();
     void onForward();
-
+    void onNavigate(QUrl);
+    void treeItemChanged(QTreeWidgetItem*,QTreeWidgetItem*);
 protected:
     void changeEvent(QEvent *e);
     void resizeEvent(QResizeEvent *);
@@ -31,9 +34,10 @@ private:
     explicit HelpWindow(QWidget *parent = 0);
     static HelpWindow* m_instance;
     Ui::HelpWindow *ui;
-    QStringList m_links;
-    int m_cindex;
+    static QStringList m_links;
+    static int m_cindex;
     QSplitter* spl;
+    static bool m_buttonNavigate;
 };
 
 #endif // GUI_HELPWINDOW_H

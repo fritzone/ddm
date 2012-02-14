@@ -9,6 +9,9 @@
 #include <QFile>
 
 HelpWindow* HelpWindow::m_instance = 0;
+QStringList HelpWindow::m_links;
+int HelpWindow::m_cindex = -1;
+bool HelpWindow::m_buttonNavigate = false;
 
 HelpWindow* HelpWindow::instance()
 {
@@ -22,7 +25,7 @@ HelpWindow* HelpWindow::instance()
 
 HelpWindow::HelpWindow(QWidget *parent) :
     QWidget(parent),
-    ui(new Ui::HelpWindow), m_links(), m_cindex(-1)
+    ui(new Ui::HelpWindow)
 {
     ui->setupUi(this);
     resize(600,600);
@@ -44,12 +47,14 @@ HelpWindow::HelpWindow(QWidget *parent) :
         QString l = f.readLine();
         l = l.trimmed();
         QString title = l.left(l.indexOf(";"));
-        QString html = l.mid(l.indexOf(";"));
+        QString html = l.mid(l.indexOf(";") + 1);
         QTreeWidgetItem* itm = new QTreeWidgetItem(QStringList(title));
         ui->treeWidget->addTopLevelItem(itm);
         itm->setData(0, Qt::UserRole, QVariant(html));
-        itm->setIcon(0, IconFactory::getIndexIcon());
+        itm->setIcon(0, IconFactory::getHelpIcon());
     }
+
+    setWindowIcon(IconFactory::getHelpIcon());
 }
 
 HelpWindow::~HelpWindow()
@@ -72,6 +77,7 @@ void HelpWindow::changeEvent(QEvent *e)
 void HelpWindow::showHelp(const QString &h)
 {
     m_cindex ++;
+    m_buttonNavigate = true;
     ui->webView->setUrl(QApplication::applicationDirPath() + h);
     m_links.erase(m_links.begin() + m_cindex, m_links.end());
     m_links.append(QApplication::applicationDirPath() + h);
@@ -88,6 +94,7 @@ void HelpWindow::onBack()
     if(m_cindex > 0)
     {
         m_cindex --;
+        m_buttonNavigate = true;
         ui->webView->setUrl(m_links.at(m_cindex));
     }
 }
@@ -96,13 +103,37 @@ void HelpWindow::onForward()
 {
     if(m_cindex < m_links.size() - 1)
     {
-        ui->webView->setUrl(m_links.at(m_cindex));
-        m_cindex ++;
+        m_buttonNavigate = true;
+        ui->webView->setUrl(m_links.at(++m_cindex));
     }
-
 }
 
 void HelpWindow::resizeEvent(QResizeEvent *e)
 {
     spl->resize(e->size());
+}
+
+void HelpWindow::onNavigate(QUrl a)
+{
+    if(m_buttonNavigate)
+    {
+        m_buttonNavigate = false;
+        return;
+    }
+
+    if(m_cindex >= 0 && ((m_links.begin() + m_cindex+1) < m_links.end()))
+    {
+        m_links.erase(m_links.begin() + m_cindex+1, m_links.end());
+    }
+
+    m_cindex ++;
+    m_links.append(a.toString());
+    m_buttonNavigate = false;
+}
+
+void HelpWindow::treeItemChanged(QTreeWidgetItem* c, QTreeWidgetItem*)
+{
+    QVariant a = c->data(0, Qt::UserRole);
+    QString l = a.toString();
+    showHelp(QString("/doc/") + l);
 }

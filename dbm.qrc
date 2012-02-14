@@ -175,6 +175,7 @@
         <file>images/small/pencil3.png</file>
         <file>images/actions/back.png</file>
         <file>images/actions/forward.png</file>
+        <file>images/small/help_book_3d.png</file>
     </qresource>
     <qresource prefix="/bigger">
         <file>images/unaf.png</file>

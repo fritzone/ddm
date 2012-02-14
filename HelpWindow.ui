@@ -200,10 +200,44 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>webView</sender>
+   <signal>urlChanged(QUrl)</signal>
+   <receiver>HelpWindow</receiver>
+   <slot>onNavigate(QUrl)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>506</x>
+     <y>239</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>393</x>
+     <y>239</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>treeWidget</sender>
+   <signal>currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)</signal>
+   <receiver>HelpWindow</receiver>
+   <slot>treeItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>118</x>
+     <y>254</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>393</x>
+     <y>239</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>onDestroyed()</slot>
   <slot>onBack()</slot>
   <slot>onForward()</slot>
+  <slot>onNavigate(QUrl)</slot>
+  <slot>treeItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)</slot>
  </slots>
 </ui>

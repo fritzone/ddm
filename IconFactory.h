@@ -283,6 +283,12 @@ public:
         return icon;
     }
 
+    static const QIcon& getHelpIcon()
+    {
+        static const QIcon icon(strHelpIcon);
+        return icon;
+    }
+
     static const QIcon& getWarningIcon()
     {
         static const QIcon icon(strWarningIcon);
