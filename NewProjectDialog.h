@@ -4,6 +4,7 @@
 #include <QtGui/QDialog>
 #include <QString>
 #include <QMap>
+#include <QAbstractButton>
 
 class DatabaseEngine;
 
@@ -47,11 +48,12 @@ public:
 
 protected:
     void changeEvent(QEvent *e);
-    void accept();
 
 public slots:
 
     void onHelp();
+    void onAccept();
+    void onReject();
 
 private:
     Ui::NewProjectDialog *m_ui;
