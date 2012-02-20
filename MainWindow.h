@@ -192,11 +192,6 @@ private:
     template <class T> void showNamedObjectList(showSomething s, const QVector<T*> items, const QIcon& icon, const QString& title);
 
     void doDeployment(const QString& codePage, QStringList connectionNames);
-    void createConnectionTreeEntryForTables(Connection *c);
-    void createConnectionTreeEntryForViews(Connection *c);
-    void createConnectionTreeEntryForProcs(Connection *c);
-    void createConnectionTreeEntryForFuncs(Connection *c);
-    void createConnectionTreeEntryForTriggers(Connection *c);
     void hideSplashwindow();
     void tryBrowseConnection(Connection* c);
     void showNamedObject(QTreeWidgetItem* current, showSomething s, bool focus=true);

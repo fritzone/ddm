@@ -22,6 +22,9 @@
         <string>Where to</string>
        </property>
        <layout class="QVBoxLayout" name="verticalLayout_3">
+        <property name="rightMargin">
+         <number>0</number>
+        </property>
         <item>
          <widget class="QListWidget" name="lstAllConnections">
           <property name="selectionMode">
@@ -61,6 +64,9 @@
      </item>
      <item>
       <layout class="QVBoxLayout" name="verticalLayout">
+       <property name="spacing">
+        <number>0</number>
+       </property>
        <item>
         <spacer name="verticalSpacer_2">
          <property name="orientation">
@@ -115,16 +121,6 @@
         <property name="fieldGrowthPolicy">
          <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
         </property>
-        <item row="0" column="0">
-         <widget class="QLabel" name="lblConnectionName">
-          <property name="text">
-           <string>Name</string>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="1">
-         <widget class="QLineEdit" name="txtConnectionName"/>
-        </item>
         <item row="2" column="0">
          <widget class="QLabel" name="lblDatabaseType">
           <property name="text">
@@ -153,7 +149,11 @@
          </widget>
         </item>
         <item row="3" column="1">
-         <widget class="QLineEdit" name="txtDatabaseHost"/>
+         <widget class="QLineEdit" name="txtDatabaseHost">
+          <property name="text">
+           <string>localhost</string>
+          </property>
+         </widget>
         </item>
         <item row="4" column="0">
          <widget class="QLabel" name="label_4">
@@ -179,14 +179,14 @@
           </property>
          </widget>
         </item>
-        <item row="12" column="0">
+        <item row="13" column="0">
          <widget class="QCheckBox" name="chkAutoConnect">
           <property name="text">
            <string>Auto Connect</string>
           </property>
          </widget>
         </item>
-        <item row="13" column="0">
+        <item row="14" column="0">
          <widget class="QCheckBox" name="chkSavePassword">
           <property name="enabled">
            <bool>false</bool>
@@ -263,6 +263,27 @@
           </property>
          </widget>
         </item>
+        <item row="11" column="0">
+         <widget class="QLabel" name="lblConnectionName">
+          <property name="text">
+           <string>Name</string>
+          </property>
+         </widget>
+        </item>
+        <item row="11" column="1">
+         <widget class="QLineEdit" name="txtConnectionName">
+          <property name="text">
+           <string>localhost</string>
+          </property>
+         </widget>
+        </item>
+        <item row="9" column="0" colspan="2">
+         <widget class="Line" name="line">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+         </widget>
+        </item>
        </layout>
       </widget>
      </item>
@@ -281,7 +302,6 @@
   </layout>
  </widget>
  <tabstops>
-  <tabstop>txtConnectionName</tabstop>
   <tabstop>cmbDatabase</tabstop>
   <tabstop>txtDatabaseHost</tabstop>
   <tabstop>txtDatabaseUser</tabstop>
@@ -392,10 +412,44 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>txtDatabaseHost</sender>
+   <signal>textEdited(QString)</signal>
+   <receiver>InjectSqlDialog</receiver>
+   <slot>onHostChange(QString)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>572</x>
+     <y>93</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>358</x>
+     <y>244</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>txtDatabaseUser</sender>
+   <signal>textEdited(QString)</signal>
+   <receiver>InjectSqlDialog</receiver>
+   <slot>onUserChange(QString)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>572</x>
+     <y>126</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>358</x>
+     <y>244</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>onConnect()</slot>
   <slot>onCreateDatabase()</slot>
   <slot>onSelectConnection(QListWidgetItem*)</slot>
+  <slot>onHostChange(QString)</slot>
+  <slot>onUserChange(QString)</slot>
  </slots>
 </ui>

@@ -46,6 +46,8 @@ public slots:
     void onConnect();
     void onCreateDatabase();
     void onSelectConnection(QListWidgetItem*);
+    void onHostChange(QString);
+    void onUserChange(QString);
 
 protected:
     void changeEvent(QEvent *e);
@@ -57,6 +59,7 @@ private:
 private:
     Ui::InjectSqlDialog *ui;
     DatabaseEngine* m_dbEngine;
+    bool m_nameWasChanged;
 
 private:
 
