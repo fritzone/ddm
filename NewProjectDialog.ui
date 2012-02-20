@@ -128,7 +128,7 @@ p, li { white-space: pre-wrap; }
            <string>The name of the solution</string>
           </property>
           <property name="text">
-           <string>&lt;Enter Name&gt;</string>
+           <string/>
           </property>
          </widget>
         </item>

@@ -24,7 +24,14 @@ public:
     }
 
     ContextMenuEnabledTreeWidgetItem* createConnectionTreeEntry(Connection* c);
+    void resetConnectionTreeForConnection(Connection *c);
+    void populateConnectionTreeForConnection(Connection *c);
 
+    void createConnectionTreeEntryForViews(Connection *c);
+    void createConnectionTreeEntryForTables(Connection *c);
+    void createConnectionTreeEntryForProcs(Connection *c);
+    void createConnectionTreeEntryForFuncs(Connection *c);
+    void createConnectionTreeEntryForTriggers(Connection *c);
 
 private:
 

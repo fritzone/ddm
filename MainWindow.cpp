@@ -1532,14 +1532,8 @@ void MainWindow::tryBrowseConnection(Connection *c)
 {
     if(c->tryConnect())
     {
-        // clear the tree
-        while(c->getLocation()->childCount()) c->getLocation()->removeChild(c->getLocation()->child(0));
-        c->getLocation()->setIcon(0, IconFactory::getConnectedDatabaseIcon());
-        createConnectionTreeEntryForTables(c);
-        createConnectionTreeEntryForViews(c);
-        createConnectionTreeEntryForProcs(c);
-        createConnectionTreeEntryForFuncs(c);
-        createConnectionTreeEntryForTriggers(c);
+        m_connectionGuiElements->resetConnectionTreeForConnection(c);
+        m_connectionGuiElements->populateConnectionTreeForConnection(c);
     }
 }
 
@@ -1550,13 +1544,13 @@ void MainWindow::onBrowseConnection()
     {
         if(c->getState() == CONNECTED)
         {
-            createConnectionTreeEntryForTables(c);
+            m_connectionGuiElements->populateConnectionTreeForConnection(c);
         }
         else
         {
             tryBrowseConnection(c);
-            c->getLocation()->setExpanded(true);
         }
+        c->getLocation()->setExpanded(true);
     }
 }
 
@@ -1616,7 +1610,7 @@ void MainWindow::onConnectionItemDoubleClicked(QTreeWidgetItem* item,int)
             hideSplashwindow();
 
 
-            BrowseTableForm* frm = new BrowseTableForm(this, c, refObj);
+            BrowseTableForm* frm = BrowseTableForm::instance(this, c, refObj);
             setCentralWidget(frm);
             return;
         }
@@ -1670,124 +1664,6 @@ void MainWindow::onConnectionItemDoubleClicked(QTreeWidgetItem* item,int)
         c = ConnectionManager::instance()->getConnection(s);
         if(c) tryBrowseConnection(c);
     }
-}
-
-void MainWindow::createConnectionTreeEntryForViews(Connection *c)
-{
-    ContextMenuEnabledTreeWidgetItem* connViewsItem = new ContextMenuEnabledTreeWidgetItem(c->getLocation(), QStringList(tr("Views")));
-    m_connectionGuiElements->getConnectionsTree()->addTopLevelItem(connViewsItem);
-    connViewsItem->setIcon(0, IconFactory::getViewsIcon());
-
-    // Now do the browsing
-    QStringList dbViews = c->getEngine()->getAvailableViews(c);
-    for(int i=0; i<dbViews.size(); i++)
-    {
-        ContextMenuEnabledTreeWidgetItem* newViewItem = new ContextMenuEnabledTreeWidgetItem(connViewsItem, QStringList(dbViews.at(i)));
-        QVariant var(browsedViewPrefix + dbViews.at(i) + "?" + c->getName());
-        newViewItem->setData(0, Qt::UserRole, var);
-        //newViewItem->setPopupMenu(ContextMenuCollection::getInstance()->getTableFromBrowsePopupMenu());
-        newViewItem->setIcon(0, IconFactory::getViewIcon());
-        m_connectionGuiElements->getConnectionsTree()->addTopLevelItem(newViewItem);
-    }
-
-    // TODO: now come up with a mechanism that feeds continuously the reverse engineered tables into an object that feeds it in somewhere which
-    // is used by the code completion enabled text edit when editing a table. Highly possible the destination will be the Connection object
-    // since everyone has access to it.
-}
-
-void MainWindow::createConnectionTreeEntryForProcs(Connection *c)
-{
-    ContextMenuEnabledTreeWidgetItem* connProcsItem = new ContextMenuEnabledTreeWidgetItem(c->getLocation(), QStringList(tr("Procedures")));
-    m_connectionGuiElements->getConnectionsTree()->addTopLevelItem(connProcsItem);
-    connProcsItem->setIcon(0, IconFactory::getProceduresIcon());
-
-    // Now do the browsing
-    QStringList dbProcs = c->getEngine()->getAvailableStoredProcedures(c);
-    for(int i=0; i<dbProcs.size(); i++)
-    {
-        ContextMenuEnabledTreeWidgetItem* newProcItem = new ContextMenuEnabledTreeWidgetItem(connProcsItem, QStringList(dbProcs.at(i)));
-        QVariant var(browsedProcPrefix + dbProcs.at(i) + "?" + c->getName());
-        newProcItem->setData(0, Qt::UserRole, var);
-        //newViewItem->setPopupMenu(ContextMenuCollection::getInstance()->getTableFromBrowsePopupMenu());
-        newProcItem->setIcon(0, IconFactory::getProcedureIcon());
-        m_connectionGuiElements->getConnectionsTree()->addTopLevelItem(newProcItem);
-    }
-
-    // TODO: now come up with a mechanism that feeds continuously the reverse engineered tables into an object that feeds it in somewhere which
-    // is used by the code completion enabled text edit when editing a table. Highly possible the destination will be the Connection object
-    // since everyone has access to it.
-}
-
-
-void MainWindow::createConnectionTreeEntryForFuncs(Connection *c)
-{
-    ContextMenuEnabledTreeWidgetItem* connFuncsItem = new ContextMenuEnabledTreeWidgetItem(c->getLocation(), QStringList(tr("Functions")));
-    m_connectionGuiElements->getConnectionsTree()->addTopLevelItem(connFuncsItem);
-    connFuncsItem->setIcon(0, IconFactory::getFunctionsTreeIcon());
-
-    // Now do the browsing
-    QStringList dbFuncs = c->getEngine()->getAvailableStoredFunctions(c);
-    for(int i=0; i<dbFuncs.size(); i++)
-    {
-        ContextMenuEnabledTreeWidgetItem* newFuncItem = new ContextMenuEnabledTreeWidgetItem(connFuncsItem, QStringList(dbFuncs.at(i)));
-        QVariant var(browsedFuncPrefix + dbFuncs.at(i) + "?" + c->getName());
-        newFuncItem->setData(0, Qt::UserRole, var);
-        //newViewItem->setPopupMenu(ContextMenuCollection::getInstance()->getTableFromBrowsePopupMenu());
-        newFuncItem->setIcon(0, IconFactory::getFunctionTreeIcon());
-        m_connectionGuiElements->getConnectionsTree()->addTopLevelItem(newFuncItem);
-    }
-
-    // TODO: now come up with a mechanism that feeds continuously the reverse engineered tables into an object that feeds it in somewhere which
-    // is used by the code completion enabled text edit when editing a table. Highly possible the destination will be the Connection object
-    // since everyone has access to it.
-}
-
-void MainWindow::createConnectionTreeEntryForTriggers(Connection *c)
-{
-    ContextMenuEnabledTreeWidgetItem* connTriggerssItem = new ContextMenuEnabledTreeWidgetItem(c->getLocation(), QStringList(tr("Triggers")));
-    m_connectionGuiElements->getConnectionsTree()->addTopLevelItem(connTriggerssItem);
-    connTriggerssItem->setIcon(0, IconFactory::getTriggersIcon());
-
-    // Now do the browsing
-    QStringList dbTriggers = c->getEngine()->getAvailableTriggers(c);
-    for(int i=0; i<dbTriggers.size(); i++)
-    {
-        ContextMenuEnabledTreeWidgetItem* newTriggerItem = new ContextMenuEnabledTreeWidgetItem(connTriggerssItem, QStringList(dbTriggers.at(i)));
-        QVariant var(browsedTriggerPrefix + dbTriggers.at(i) + "?" + c->getName());
-        newTriggerItem->setData(0, Qt::UserRole, var);
-        //newViewItem->setPopupMenu(ContextMenuCollection::getInstance()->getTableFromBrowsePopupMenu());
-        newTriggerItem->setIcon(0, IconFactory::getTriggerIcon());
-        m_connectionGuiElements->getConnectionsTree()->addTopLevelItem(newTriggerItem);
-    }
-
-    // TODO: now come up with a mechanism that feeds continuously the reverse engineered tables into an object that feeds it in somewhere which
-    // is used by the code completion enabled text edit when editing a table. Highly possible the destination will be the Connection object
-    // since everyone has access to it.
-}
-
-
-void MainWindow::createConnectionTreeEntryForTables(Connection *c)
-{
-    ContextMenuEnabledTreeWidgetItem* connTablesItem = new ContextMenuEnabledTreeWidgetItem(c->getLocation(), QStringList(tr("Tables")));
-    m_connectionGuiElements->getConnectionsTree()->addTopLevelItem(connTablesItem);
-    connTablesItem->setIcon(0, IconFactory::getTabinstIcon());
-
-    // Now do the browsing
-    QStringList dbTables = c->getEngine()->getAvailableTables(c);
-    for(int i=0; i<dbTables.size(); i++)
-    {
-        ContextMenuEnabledTreeWidgetItem* newTblsItem = new ContextMenuEnabledTreeWidgetItem(connTablesItem, QStringList(dbTables.at(i)));
-        QVariant var(browsedTablePrefix + dbTables.at(i) + "?" + c->getName());
-        newTblsItem->setData(0, Qt::UserRole, var);
-        newTblsItem->setPopupMenu(ContextMenuCollection::getInstance()->getTableFromBrowsePopupMenu());
-        newTblsItem->setIcon(0, IconFactory::getTabinstIcon());
-        m_connectionGuiElements->getConnectionsTree()->addTopLevelItem(newTblsItem);
-        c->addTable(dbTables.at(i));
-    }
-
-    // TODO: now come up with a mechanism that feeds continuously the reverse engineered tables into an object that feeds it in somewhere which
-    // is used by the code completion enabled text edit when editing a table. Highly possible the destination will be the Connection object
-    // since everyone has access to it.
 }
 
 void MainWindow::onConnectConnection()
@@ -2357,7 +2233,7 @@ void MainWindow::onSqlQueryInConnection()
         hideSplashwindow();
         tryBrowseConnection(c);
         c->getLocation()->setExpanded(true);
-        BrowseTableForm* frm = new BrowseTableForm(this, c, "");
+        BrowseTableForm* frm = BrowseTableForm::instance(this, c, "");
         setCentralWidget(frm);
         frm->focusOnTextEdit();
     }

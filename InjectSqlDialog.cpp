@@ -20,12 +20,12 @@ QString InjectSqlDialog::previousHost="";
 QString InjectSqlDialog::previousUser="";
 
 
-InjectSqlDialog::InjectSqlDialog(DatabaseEngine* engine, QWidget *parent) : QDialog(parent), ui(new Ui::InjectSqlDialog), m_dbEngine(engine)
+InjectSqlDialog::InjectSqlDialog(DatabaseEngine* engine, QWidget *parent) : QDialog(parent), ui(new Ui::InjectSqlDialog), m_dbEngine(engine), m_nameWasChanged(false)
 {
     ui->setupUi(this);
     ui->buttonBox->button(QDialogButtonBox::Ok)->setDisabled(true);
 
-    ui->txtDatabaseHost->setText(previousHost);
+    ui->txtDatabaseHost->setText(previousHost.length()?previousHost:"localhost");
     ui->txtDatabaseUser->setText(previousUser);
     ui->chkSavePassword->hide();
     ui->chkAutoConnect->hide();
@@ -313,8 +313,8 @@ void InjectSqlDialog::populateConnectionDetails(Connection* c)
 
 void InjectSqlDialog::clearConnectionDetails()
 {
-    ui->txtConnectionName->clear();
-    ui->txtDatabaseHost->clear();;
+    ui->txtConnectionName->setText("localhost");
+    ui->txtDatabaseHost->setText("localhost");
     ui->txtDatabaseUser->clear();
     ui->txtDatabasePassword->clear();
     ui->txtDatabaseName->clear();
@@ -328,4 +328,26 @@ QStringList InjectSqlDialog::getSelectedConnections() const
         result.append( ui->lstAllConnections->selectedItems().at(i)->text().left(ui->lstAllConnections->selectedItems().at(i)->text().indexOf("(")).trimmed() );
     }
     return result;
+}
+
+void InjectSqlDialog::onHostChange(QString newText)
+{
+    if(!m_nameWasChanged)
+    {
+        QString user = ui->txtDatabaseUser->text();
+        QString finalName = user.length()?user + "@" +
+                                          ((newText.length()>0)?newText:"localhost")
+                                          :((newText.length()>0)?newText:"localhost");
+        ui->txtConnectionName->setText(finalName);
+    }
+}
+
+void InjectSqlDialog::onUserChange(QString newText)
+{
+    if(!m_nameWasChanged)
+    {
+        QString db = ui->txtDatabaseHost->text();
+        QString finalName = newText.length()?newText + "@" + (db.length()?db:"localhost"):(db.length()?db:"localhost");
+        ui->txtConnectionName->setText(finalName);
+    }
 }
