@@ -23,12 +23,18 @@ enum DT_TYPE
 
 enum ConnectionState
 {
-    UNDEFINED=0,
-    CONNECTED=1,
-    FAILED=2,
-    DID_NOT_TRY=3,
+    UNDEFINED = 0,
+    CONNECTED = 1,
+    FAILED = 2,
+    DID_NOT_TRY = 3,
     DROPPED = 4,
     DELETED = 5
+};
+
+enum BrowsedTableLayout
+{
+    BROWSE_TABLE = 0,
+    BROWSE_SCRIPT = 1
 };
 
 #endif // ENUMS_H

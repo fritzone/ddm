@@ -72,6 +72,11 @@ public:
         m_tables.append(tabName);
     }
 
+    void clearTables()
+    {
+        m_tables.clear();
+    }
+
     QString getDbType() const
     {
         return m_dbType;

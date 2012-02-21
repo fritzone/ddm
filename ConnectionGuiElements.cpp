@@ -173,6 +173,7 @@ void ConnectionGuiElements::createConnectionTreeEntryForTables(Connection *c)
 
     // Now do the browsing
     QStringList dbTables = c->getEngine()->getAvailableTables(c);
+    c->clearTables();
     for(int i=0; i<dbTables.size(); i++)
     {
         ContextMenuEnabledTreeWidgetItem* newTblsItem = new ContextMenuEnabledTreeWidgetItem(connTablesItem, QStringList(dbTables.at(i)));

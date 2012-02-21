@@ -1,6 +1,9 @@
 #ifndef BROWSETABLEFORM_H
 #define BROWSETABLEFORM_H
 
+#include "TextEditWithCodeCompletion.h"
+#include "enums.h"
+
 #include <QWidget>
 #include <QSplitter>
 #include <QtCore/QVariant>
@@ -17,7 +20,6 @@
 #include <QtGui/QVBoxLayout>
 #include <QtGui/QWidget>
 
-#include "TextEditWithCodeCompletion.h"
 
 namespace Ui {
     class BrowseTableForm;
@@ -32,9 +34,8 @@ class BrowseTableForm : public QWidget
 
 public:
 
-    static BrowseTableForm* instance(QWidget *parent, Connection* c, const QString& tab);
+    static BrowseTableForm* instance(QWidget *parent, Connection* c, const QString& tab, BrowsedTableLayout layout);
     ~BrowseTableForm();
-    QTableView* getTable();
     void focusOnTextEdit();
 
 protected:
@@ -43,48 +44,54 @@ protected:
 
 public slots:
     void onRunQuery();
+
+private slots:
     void onSaveQuery();
     void onLoadQuery();
-    void textChanged();
+    void onTabCloseRequested(int);
 
 private:
 
     explicit BrowseTableForm(QWidget *parent, Connection* c, const QString& tab);
     QString retrieveCurrentQuery();
-    void newPage(Connection*c, const QString& tab);
+    void newPage(Connection*c, const QString& tab, BrowsedTableLayout layout);
     void firstTimeSetup(Connection*c);
+    void retranslateUi();
+    QTableView* createTable(QWidget* p);
+
+private:
+    static QVector<Connection*> connectionsForTabs;
+    static BrowseTableForm* m_instance;
 
 private:
     TextEditWithCodeCompletion *m_textEdit;
     FrameForLineNumbers* m_frameForLineNumbers;
-    static int m_firstP;
-    static int m_lastP;
+    int m_firstP;
+    int m_lastP;
     Connection* m_connection;
     QString m_tab;
     QSplitter* spl;
-    static QString browseString ;
     QTabWidget* mainTab;
-    static QVector<Connection*> connectionsForTabs;
-    static BrowseTableForm* m_instance;
-
     QVBoxLayout *mainFormsVerticalLayout;
-
     QWidget *mainTabPageWidget;
     QVBoxLayout *mainTabPageWidgetsLayout;
     QTabWidget *tabWidget;
     QWidget *dataTab;
     QVBoxLayout *dataTabsLayout;
-    QTableView *table;
+    QVBoxLayout *columnTabsLayout;
+    QTableView *tableForTableData;
+    QTableView *tableForTableColumns;
+    QTableView *tableForScriptResult;
     QWidget *columnsTab;
-    QFrame *frame_q;
-    QHBoxLayout *horizontalLayout_3;
-    QVBoxLayout *verticalLayout;
-    QHBoxLayout *horizontalLayout_2;
+    QFrame *queryFrame;
+    QHBoxLayout *queryFramesMainHorizontalLayout;
+    QVBoxLayout *queryFramesMainVerticalLayout;
+    QHBoxLayout *horizontalLayoutForButtons;
     QToolButton *btnExecuteQuery;
     QToolButton *btnOpenQuery;
     QToolButton *btnSaveQuery;
     QSpacerItem *horizontalSpacer;
-    QHBoxLayout *horizontalLayout_5;
+    QHBoxLayout *horizontalLayoutForLineNumbersAndTextEdit;
 };
 
 #endif // BROWSETABLEFORM_H

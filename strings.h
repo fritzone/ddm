@@ -101,6 +101,8 @@ static const QString strRecreateDatabaseIcon = ":/images/actions/images/small/ag
 static const QString strConnectConnectionIcon = ":/images/actions/images/small/connect.png";
 static const QString strBrowseConnectionIcon = ":/images/actions/images/small/folder_explore.png";
 static const QString strEditConnectionIcon = ":/images/actions/images/small/pencil3.png";
+static const QString strOpenFileIcon = ":/images/actions/images/actions/fileopen.png";
+static const QString strRunQueryIcon = ":/images/actions/images/actions/button_play_green.png";
 
 static const QString strHelpConfig = ":/help/help.config";
 
