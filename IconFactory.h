@@ -541,6 +541,18 @@ public:
         return icon;
     }
 
+    static const QIcon& getOpenFileIcon()
+    {
+        static const QIcon icon(strOpenFileIcon);
+        return icon;
+    }
+
+    static const QIcon& getRunQueryIcon()
+    {
+        static const QIcon icon(strRunQueryIcon);
+        return icon;
+    }
+
     static QIcon getIconForDataType(DT_TYPE dt)
     {
         switch(dt)

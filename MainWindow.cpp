@@ -1609,8 +1609,7 @@ void MainWindow::onConnectionItemDoubleClicked(QTreeWidgetItem* item,int)
         {
             hideSplashwindow();
 
-
-            BrowseTableForm* frm = BrowseTableForm::instance(this, c, refObj);
+            BrowseTableForm* frm = BrowseTableForm::instance(this, c, refObj, BROWSE_TABLE);
             setCentralWidget(frm);
             return;
         }
@@ -2233,7 +2232,7 @@ void MainWindow::onSqlQueryInConnection()
         hideSplashwindow();
         tryBrowseConnection(c);
         c->getLocation()->setExpanded(true);
-        BrowseTableForm* frm = BrowseTableForm::instance(this, c, "");
+        BrowseTableForm* frm = BrowseTableForm::instance(this, c, "", BROWSE_SCRIPT);
         setCentralWidget(frm);
         frm->focusOnTextEdit();
     }
