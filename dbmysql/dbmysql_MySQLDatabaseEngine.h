@@ -48,6 +48,9 @@ public:
     virtual Procedure* reverseEngineerProc(Connection *c, const QString& procName);
     virtual Function* reverseEngineerFunc(Connection *c, const QString& funcName);
     virtual Trigger* reverseEngineerTrigger(Connection *c, const QString& procName);
+    virtual QString getTableDescriptionScript(const QString& tabName);
+    virtual QStringList getAvailableIndexes(Connection* c);
+    virtual QString getTableCreationScript(Connection* c, const QString& tabName);
 
 private:
 

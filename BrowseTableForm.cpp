@@ -2,6 +2,11 @@
 #include "ui_BrowseTableForm.h"
 #include "core_Connection.h"
 #include "FrameForLineNumbers.h"
+#include "db_DatabaseEngine.h"
+#include "core_Procedure.h"
+#include "core_Function.h"
+#include "core_Trigger.h"
+#include "TriggerForm.h"
 
 #include <QtGui>
 #include <QSqlTableModel>
@@ -12,7 +17,7 @@
 #include <QFileDialog>
 #include <QTabWidget>
 
-QVector<Connection*> BrowseTableForm::connectionsForTabs;
+QVector<BrowseTableForm::BrowsedObjectAndConnection*> BrowseTableForm::connectionsForTabs;
 BrowseTableForm* BrowseTableForm::m_instance = 0;
 
 BrowseTableForm* BrowseTableForm::instance(QWidget *parent, Connection *c, const QString &tab, BrowsedTableLayout layout)
@@ -77,7 +82,7 @@ void BrowseTableForm::changeEvent(QEvent *e)
 void BrowseTableForm::onRunQuery()
 {
     if(!tableForScriptResult) return;
-    m_connection = connectionsForTabs[mainTab->currentIndex()];
+    m_connection = connectionsForTabs[mainTab->currentIndex()]->conn;
     if(m_connection->getState() == DROPPED || m_connection->getState() == DELETED)
     {
         QMessageBox::critical(this, tr("Error"), tr("Cannot execute query on a dropped or deleted database"), QMessageBox::Ok);
@@ -223,15 +228,104 @@ QTableView* BrowseTableForm::createTable(QWidget *p)
 
 void BrowseTableForm::newPage(Connection *c, const QString &tab, BrowsedTableLayout layout)
 {
-    connectionsForTabs.append(c);
+    BrowseTableForm::BrowsedObjectAndConnection *x = new BrowseTableForm::BrowsedObjectAndConnection();
+    x->conn= c;
+    x->object = tab;
+    connectionsForTabs.append(x);
 
     mainTabPageWidget = new QWidget();
     mainTabPageWidgetsLayout = new QVBoxLayout(mainTabPageWidget);
     mainTabPageWidgetsLayout->setContentsMargins(0, 0, 0, 0);
 
-    if(layout == BROWSE_TABLE)
+    if(layout == BROWSE_PROCEDURE || layout == BROWSE_FUNCTION)
     {
+        queryFrame = new QFrame(this);
+        queryFrame->setObjectName(QString::fromUtf8("frame_q"));
+        queryFramesMainHorizontalLayout = new QHBoxLayout(queryFrame);
+        queryFramesMainVerticalLayout = new QVBoxLayout();
+        horizontalLayoutForButtons = new QHBoxLayout();
+        btnSaveQuery = new QToolButton(queryFrame);
+        btnSaveQuery->setIcon(IconFactory::getSaveIcon());
+        horizontalSpacer = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+        horizontalLayoutForButtons->addWidget(btnSaveQuery);
+        horizontalLayoutForButtons->addItem(horizontalSpacer);
+        queryFramesMainVerticalLayout->addLayout(horizontalLayoutForButtons);
+        horizontalLayoutForLineNumbersAndTextEdit = new QHBoxLayout();
+        queryFramesMainVerticalLayout->addLayout(horizontalLayoutForLineNumbersAndTextEdit);
+        queryFramesMainHorizontalLayout->addLayout(queryFramesMainVerticalLayout);
 
+        mainTabPageWidgetsLayout->addWidget(queryFrame);
+
+        m_textEdit = new TextEditWithCodeCompletion(this, c);
+
+        m_frameForLineNumbers = new FrameForLineNumbers(this);
+        horizontalLayoutForLineNumbersAndTextEdit->addWidget(m_frameForLineNumbers);
+
+        m_textEdit->setBrowseForm(this);
+        horizontalLayoutForLineNumbersAndTextEdit->addWidget(m_textEdit);
+        m_textEdit->setLineNumberFrame(m_frameForLineNumbers);
+        m_textEdit->updateLineNumbers();
+        m_textEdit->resetToConnection(c);
+
+        QObject::connect(btnSaveQuery, SIGNAL(clicked()), this, SLOT(onSaveQuery()));
+
+        if(layout == BROWSE_PROCEDURE)
+        {
+            Procedure* p = c->getEngine()->reverseEngineerProc(c, tab);
+            if(p)
+            {
+                m_textEdit->setPlainText(p->getSql());
+            }
+
+            mainTab->addTab(queryFrame, IconFactory::getProcedureIcon(), tab + "@" + c->getDb());
+        }
+        else
+        {
+            Function* p = c->getEngine()->reverseEngineerFunc(c, tab);
+            if(p)
+            {
+                m_textEdit->setPlainText(p->getSql());
+            }
+
+            mainTab->addTab(queryFrame, IconFactory::getFunctionTreeIcon(), tab + "@" + c->getDb());
+
+        }
+    }
+
+    if(layout == BROWSE_TRIGGER)
+    {
+        queryFrame = new QFrame(this);
+        queryFrame->setObjectName(QString::fromUtf8("frame_q"));
+        queryFramesMainHorizontalLayout = new QHBoxLayout(queryFrame);
+        queryFramesMainVerticalLayout = new QVBoxLayout();
+        horizontalLayoutForButtons = new QHBoxLayout();
+        btnSaveQuery = new QToolButton(queryFrame);
+        btnSaveQuery->setIcon(IconFactory::getSaveIcon());
+        horizontalSpacer = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+        horizontalLayoutForButtons->addWidget(btnSaveQuery);
+        horizontalLayoutForButtons->addItem(horizontalSpacer);
+        queryFramesMainVerticalLayout->addLayout(horizontalLayoutForButtons);
+        horizontalLayoutForLineNumbersAndTextEdit = new QHBoxLayout();
+        queryFramesMainVerticalLayout->addLayout(horizontalLayoutForLineNumbersAndTextEdit);
+        queryFramesMainHorizontalLayout->addLayout(queryFramesMainVerticalLayout);
+
+
+        Trigger* t = c->getEngine()->reverseEngineerTrigger(c, tab);
+        if(t)
+        {
+            TriggerForm* pf = new TriggerForm(true, true, this);
+            pf->feedInTables(QStringList(t->getTable()));
+            pf->setTrigger(t);
+            pf->showSql();
+
+            horizontalLayoutForLineNumbersAndTextEdit->addWidget(pf);
+            mainTab->addTab(queryFrame, IconFactory::getTriggerIcon(), tab + "@" + c->getDb());
+        }
+        return;
+    }
+
+    if(layout == BROWSE_TABLE || layout == BROWSE_VIEW)
+    {
         tabWidget = new QTabWidget(mainTabPageWidget);
 
         {
@@ -245,6 +339,7 @@ void BrowseTableForm::newPage(Connection *c, const QString &tab, BrowsedTableLay
 
         // and fill in the data for the "data" tab
         QSqlDatabase sqldb = c->getQSqlDatabase();
+        qDebug() << sqldb;
         QSqlTableModel *model = new QSqlTableModel(tableForTableData, sqldb);
         model->setTable(tab);
         model->select();
@@ -265,7 +360,7 @@ void BrowseTableForm::newPage(Connection *c, const QString &tab, BrowsedTableLay
         tabWidget->addTab(columnsTab, QString("Columns"));
 
         QSqlQueryModel *model = new QSqlQueryModel(tableForTableColumns);
-        model->setQuery(QSqlQuery("desc " + tab, m_connection->getQSqlDatabase()));
+        model->setQuery(QSqlQuery(c->getEngine()->getTableDescriptionScript(tab), c->getQSqlDatabase()));
         if(model->lastError().type() != QSqlError::NoError)
         {
             QMessageBox::critical(this, tr("Error"), model->lastError().text(), QMessageBox::Ok);
@@ -274,15 +369,49 @@ void BrowseTableForm::newPage(Connection *c, const QString &tab, BrowsedTableLay
         tableForTableColumns->setModel(model);
         }
 
+        // create the Script tab
+        {
+            queryFrame = new QFrame(this);
+            queryFramesMainHorizontalLayout = new QHBoxLayout(queryFrame);
+            queryFramesMainVerticalLayout = new QVBoxLayout();
+            horizontalLayoutForButtons = new QHBoxLayout();
+            btnSaveQuery = new QToolButton(queryFrame);
+            btnSaveQuery->setIcon(IconFactory::getSaveIcon());
+            horizontalSpacer = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+            horizontalLayoutForButtons->addWidget(btnSaveQuery);
+            horizontalLayoutForButtons->addItem(horizontalSpacer);
+            queryFramesMainVerticalLayout->addLayout(horizontalLayoutForButtons);
+            horizontalLayoutForLineNumbersAndTextEdit = new QHBoxLayout();
+            queryFramesMainVerticalLayout->addLayout(horizontalLayoutForLineNumbersAndTextEdit);
+            queryFramesMainHorizontalLayout->addLayout(queryFramesMainVerticalLayout);
+
+            mainTabPageWidgetsLayout->addWidget(queryFrame);
+
+            m_textEdit = new TextEditWithCodeCompletion(this, c);
+
+            m_frameForLineNumbers = new FrameForLineNumbers(this);
+            horizontalLayoutForLineNumbersAndTextEdit->addWidget(m_frameForLineNumbers);
+
+            m_textEdit->setBrowseForm(this);
+            horizontalLayoutForLineNumbersAndTextEdit->addWidget(m_textEdit);
+            m_textEdit->setLineNumberFrame(m_frameForLineNumbers);
+            m_textEdit->updateLineNumbers();
+
+            QObject::connect(btnSaveQuery, SIGNAL(clicked()), this, SLOT(onSaveQuery()));
+
+            tabWidget->addTab(queryFrame, tr("Script"));
+
+        }
+
         mainTabPageWidgetsLayout->addWidget(tabWidget);
 
         tabWidget->setCurrentIndex(0);
 
-        mainTab->addTab(tabWidget, IconFactory::getTabinstIcon(), c->getDb() + "." + tab);
+        mainTab->addTab(tabWidget, layout == BROWSE_TABLE?IconFactory::getTabinstIcon():IconFactory::getViewIcon(), c->getDb() + "." + tab);
     }
 
     // create the frame for the query ... if this is a query
-    if(layout == BROWSE_SCRIPT)
+    if(layout == CREATE_SCRIPT)
     {
         queryFrame = new QFrame(this);
         queryFrame->setObjectName(QString::fromUtf8("frame_q"));

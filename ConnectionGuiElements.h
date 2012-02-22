@@ -32,7 +32,7 @@ public:
     void createConnectionTreeEntryForProcs(Connection *c);
     void createConnectionTreeEntryForFuncs(Connection *c);
     void createConnectionTreeEntryForTriggers(Connection *c);
-
+    void createConnectionTreeEntryForIndexes(Connection *c);
 private:
 
     QDockWidget* m_connectionsTreeDock;

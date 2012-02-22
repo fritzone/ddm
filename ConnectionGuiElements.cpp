@@ -164,6 +164,29 @@ void ConnectionGuiElements::createConnectionTreeEntryForTriggers(Connection *c)
     // since everyone has access to it.
 }
 
+void ConnectionGuiElements::createConnectionTreeEntryForIndexes(Connection *c)
+{
+    ContextMenuEnabledTreeWidgetItem* connTriggerssItem = new ContextMenuEnabledTreeWidgetItem(c->getLocation(), QStringList(QObject::tr("Indexes")));
+    getConnectionsTree()->addTopLevelItem(connTriggerssItem);
+    connTriggerssItem->setIcon(0, IconFactory::getIndexIcon());
+
+    // Now do the browsing
+    QStringList dbIndexes = c->getEngine()->getAvailableIndexes(c);
+    for(int i=0; i<dbIndexes.size(); i++)
+    {
+        ContextMenuEnabledTreeWidgetItem* newIndexItem = new ContextMenuEnabledTreeWidgetItem(connTriggerssItem, QStringList(dbIndexes.at(i)));
+        QVariant var(browsedIndexPrefix + dbIndexes.at(i) + "?" + c->getName());
+        newIndexItem->setData(0, Qt::UserRole, var);
+        //newViewItem->setPopupMenu(ContextMenuCollection::getInstance()->getTableFromBrowsePopupMenu());
+        newIndexItem->setIcon(0, IconFactory::getIndexIcon());
+        getConnectionsTree()->addTopLevelItem(newIndexItem);
+    }
+
+    // TODO: now come up with a mechanism that feeds continuously the reverse engineered tables into an object that feeds it in somewhere which
+    // is used by the code completion enabled text edit when editing a table. Highly possible the destination will be the Connection object
+    // since everyone has access to it.
+}
+
 
 void ConnectionGuiElements::createConnectionTreeEntryForTables(Connection *c)
 {
@@ -197,6 +220,7 @@ void ConnectionGuiElements::populateConnectionTreeForConnection(Connection *c)
     createConnectionTreeEntryForProcs(c);
     createConnectionTreeEntryForFuncs(c);
     createConnectionTreeEntryForTriggers(c);
+    createConnectionTreeEntryForIndexes(c);
 }
 
 void ConnectionGuiElements::resetConnectionTreeForConnection(Connection *c)

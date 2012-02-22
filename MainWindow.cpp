@@ -88,6 +88,16 @@ MainWindow::~MainWindow()
     delete m_ui;
 }
 
+void MainWindow::setCentralWidget(QWidget *widget)
+{
+    QWidget* savedWidget = centralWidget();
+    if(dynamic_cast<BrowseTableForm*>(savedWidget))
+    {
+        savedWidget->setParent(0);
+    }
+    QMainWindow::setCentralWidget(widget);
+}
+
 void MainWindow::freeGuiElements()
 {
     QWidget* centralWidget = new QWidget(this);
@@ -1609,7 +1619,7 @@ void MainWindow::onConnectionItemDoubleClicked(QTreeWidgetItem* item,int)
         {
             hideSplashwindow();
 
-            BrowseTableForm* frm = BrowseTableForm::instance(this, c, refObj, BROWSE_TABLE);
+            BrowseTableForm* frm = BrowseTableForm::instance(this, c, refObj, s.startsWith(browsedTablePrefix)?BROWSE_TABLE:BROWSE_VIEW);
             setCentralWidget(frm);
             return;
         }
@@ -1618,14 +1628,8 @@ void MainWindow::onConnectionItemDoubleClicked(QTreeWidgetItem* item,int)
         {
             hideSplashwindow();
 
-            Procedure* p = c->getEngine()->reverseEngineerProc(c, refObj);
-            if(p)
-            {
-                ProcedureForm* pf = new ProcedureForm(MODE_PROCEDURE, true, c);
-                pf->setProcedure(p);
-                setCentralWidget(pf);
-                pf->showSql();
-            }
+            BrowseTableForm* frm = BrowseTableForm::instance(this, c, refObj, BROWSE_PROCEDURE);
+            setCentralWidget(frm);
             return;
         }
 
@@ -1633,14 +1637,8 @@ void MainWindow::onConnectionItemDoubleClicked(QTreeWidgetItem* item,int)
         {
             hideSplashwindow();
 
-            Function* p = c->getEngine()->reverseEngineerFunc(c, refObj);
-            if(p)
-            {
-                ProcedureForm* pf = new ProcedureForm(MODE_FUNCTION, true, c);
-                pf->setProcedure(p);
-                setCentralWidget(pf);
-                pf->showSql();
-            }
+            BrowseTableForm* frm = BrowseTableForm::instance(this, c, refObj, BROWSE_FUNCTION);
+            setCentralWidget(frm);
             return;
         }
 
@@ -1648,15 +1646,8 @@ void MainWindow::onConnectionItemDoubleClicked(QTreeWidgetItem* item,int)
         {
             hideSplashwindow();
 
-            Trigger* t = c->getEngine()->reverseEngineerTrigger(c, refObj);
-            if(t)
-            {
-                TriggerForm* pf = new TriggerForm(true, true, this);
-                pf->feedInTables(QStringList(t->getTable()));
-                pf->setTrigger(t);
-                setCentralWidget(pf);
-                pf->showSql();
-            }
+            BrowseTableForm* frm = BrowseTableForm::instance(this, c, refObj, BROWSE_TRIGGER);
+            setCentralWidget(frm);
             return;
         }
 
@@ -2232,7 +2223,7 @@ void MainWindow::onSqlQueryInConnection()
         hideSplashwindow();
         tryBrowseConnection(c);
         c->getLocation()->setExpanded(true);
-        BrowseTableForm* frm = BrowseTableForm::instance(this, c, "", BROWSE_SCRIPT);
+        BrowseTableForm* frm = BrowseTableForm::instance(this, c, "", CREATE_SCRIPT);
         setCentralWidget(frm);
         frm->focusOnTextEdit();
     }
