@@ -230,6 +230,13 @@ public:
     virtual QStringList getAvailableTriggers(Connection* c) = 0;
 
     /**
+     * Returns a list of the available indexes that are in the database represented by the given connection
+     * @param c - the connection to the database
+     * @return the list of index names
+     */
+    virtual QStringList getAvailableIndexes(Connection* c) = 0;
+
+    /**
      * Reverse engineer a table.
      * @param c - the connection representing the database
      * @param tableName - the table to be reversed
@@ -318,6 +325,21 @@ public:
     virtual bool reverseEngineerDatabase(Connection *c,
                                          const QStringList& tables, const QStringList& views, const QStringList& procs, const QStringList& funcs, const QStringList& triggers,
                                          Project* p, bool relaxedDtCreation) = 0;
+
+    /**
+     * Returns an SQL script for getting the properties of the given table.
+     * @param tabName - the table to get the description for
+     * @return an SQL script for getting the properties of the given table.
+     */
+    virtual QString getTableDescriptionScript(const QString& tabName) = 0;
+
+    /**
+     * Returns an SQL script for getting the creation script of the given table.
+     * @param c - the connection which holds the table
+     * @param tabName - the table to get the description for
+     * @return an SQL script how to create the given table.
+     */
+    virtual QString getTableCreationScript(Connection* c, const QString& tabName) = 0;
 
 public:
 

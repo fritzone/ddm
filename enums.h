@@ -34,7 +34,11 @@ enum ConnectionState
 enum BrowsedTableLayout
 {
     BROWSE_TABLE = 0,
-    BROWSE_SCRIPT = 1
+    CREATE_SCRIPT = 1,
+    BROWSE_VIEW = 2,
+    BROWSE_PROCEDURE = 3,
+    BROWSE_FUNCTION = 4,
+    BROWSE_TRIGGER = 5
 };
 
 #endif // ENUMS_H

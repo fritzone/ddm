@@ -32,6 +32,12 @@ class BrowseTableForm : public QWidget
 {
     Q_OBJECT
 
+    struct BrowsedObjectAndConnection
+    {
+        Connection* conn;
+        QString object;
+    };
+
 public:
 
     static BrowseTableForm* instance(QWidget *parent, Connection* c, const QString& tab, BrowsedTableLayout layout);
@@ -60,7 +66,7 @@ private:
     QTableView* createTable(QWidget* p);
 
 private:
-    static QVector<Connection*> connectionsForTabs;
+    static QVector<BrowsedObjectAndConnection*> connectionsForTabs;
     static BrowseTableForm* m_instance;
 
 private:

@@ -977,6 +977,8 @@ QStringList MySQLDatabaseEngine::getKeywords() const
             <<"ASC"
             <<"ASENSITIVE"
             <<"BEFORE"
+            <<"BEGIN"
+            <<"END"
             <<"BETWEEN"
             <<"BOTH"
             <<"BY"
@@ -1413,4 +1415,42 @@ Trigger* MySQLDatabaseEngine::reverseEngineerTrigger(Connection *c, const QStrin
     }
     dbo.close();
     return result;
+}
+
+QString MySQLDatabaseEngine::getTableDescriptionScript(const QString& tabName)
+{
+    QString result = "desc " + tabName;
+    return result;
+}
+
+QStringList MySQLDatabaseEngine::getAvailableIndexes(Connection* c)
+{
+    QSqlDatabase db = getQSqlDatabaseForConnection(c);
+    QStringList result;
+
+    bool ok = db.isOpen();
+
+    if(!ok)
+    {
+        return result;
+    }
+
+    QSqlQuery query(db);
+    query.exec("SELECT DISTINCT TABLE_NAME, INDEX_NAME FROM INFORMATION_SCHEMA.STATISTICS WHERE TABLE_SCHEMA = '" + c->getDb() + "'");
+
+    int tabNameIdx = query.record().indexOf("TABLE_NAME");
+    int indexNameIdx = query.record().indexOf("INDEX_NAME");
+
+    while(query.next())
+    {
+        QString tabName = query.value(tabNameIdx).toString();
+        QString indexName = query.value(indexNameIdx).toString();
+        result.append(tabName + "." + indexName);
+    }
+    return result;
+}
+
+QString MySQLDatabaseEngine::getTableCreationScript(Connection* c, const QString& tabName)
+{
+    return "";
 }

@@ -92,6 +92,8 @@ public:
         return m_connectionGuiElements;
     }
 
+    virtual void setCentralWidget(QWidget *widget);
+
 protected:
     virtual void closeEvent( QCloseEvent * event );
     virtual void changeEvent(QEvent *e);
