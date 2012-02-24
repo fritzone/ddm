@@ -28,17 +28,10 @@ SOURCES += main.cpp \
     Solution.cpp \
     AboutBoxDialog.cpp \
     DiagramForm.cpp \
-    DraggableGraphicsItem.cpp \
-    ERGraphicsView.cpp \
-    ERGraphicsScene.cpp \
-    DraggableGraphicsViewItemForForeignKey.cpp \
     FkRelationDescriptor.cpp \
     Diagram.cpp \
-    DraggableGraphicsViewItemForText.cpp \
     EnterNoteTextDialog.cpp \
     ForeignKey.cpp \
-    DiagramTableDescriptor.cpp \
-    DiagramNoteDescriptor.cpp \
     ContextMenuDelegate.cpp \
     CreateTableInstancesDialog.cpp \
     TableInstance.cpp \
@@ -57,10 +50,6 @@ SOURCES += main.cpp \
     VersionGuiElements.cpp \
     DefaultVersionImplementation.cpp \
     ClipboardFactory.cpp \
-    ReverseEngineerWizardWelcomeForm.cpp \
-    ReverseEngineerWizard.cpp \
-    ReverseEngineerWizardDatabasesForm.cpp \
-    ReverseEngineerWizardOptionsForm.cpp \
     IssueManager.cpp \
     IssueOriginator.cpp \
     ForeignKeyReccomendationIssue.cpp \
@@ -79,8 +68,6 @@ SOURCES += main.cpp \
     core_ConnectionIssue.cpp \
     core_InjectSqlGenerator.cpp \
     core_InjectSqlGeneratorThread.cpp \
-    core_ReverseEngineerer.cpp \
-    core_ReverseEngineererThread.cpp \
     helper_MostRecentlyUsedFiles.cpp \
     BrowseTableForm.cpp \
     ProcedureForm.cpp \
@@ -94,9 +81,8 @@ SOURCES += main.cpp \
     core_Trigger.cpp \
     NamedObjectListingForm.cpp \
     core_Function.cpp \
-    core_StoredMethod.cpp \
-    DiagramItemFactory.cpp \
-    ReverseEngineerWizardObjectListForm.cpp
+    core_StoredMethod.cpp
+
 HEADERS += MainWindow.h \
     MainWindowButtonDialog.h \
     NewProjectDialog.h \
@@ -124,19 +110,10 @@ HEADERS += MainWindow.h \
     Solution.h \
     AboutBoxDialog.h \
     DiagramForm.h \
-    DraggableGraphicsItem.h \
-    ERGraphicsScene.h \
-    ERGraphicsView.h \
     TableListWidget.h \
-    DraggableGraphicsItemForForeignKey.h \
     FkRelationDescriptor.h \
     Diagram.h \
-    DraggableGraphicsItemForText.h \
     EnterNoteTextDialog.h \
-    DiagramNoteDescriptor.h \
-    DiagramObjectDescriptor.h \
-    DiagramFKDescriptor.h \
-    DiagramTableDescriptor.h \
     ContextMenuEnabledTreeWidget.h \
     CreateTableInstancesDialog.h \
     TableInstance.h \
@@ -159,10 +136,6 @@ HEADERS += MainWindow.h \
     CopyableElement.h \
     ClipboardFactory.h \
     VersionData.h \
-    ReverseEngineerWizardWelcomeForm.h \
-    ReverseEngineerWizard.h \
-    ReverseEngineerWizardDatabasesForm.h \
-    ReverseEngineerWizardOptionsForm.h \
     IssueManager.h \
     Issue.h \
     IssueOriginator.h \
@@ -187,8 +160,6 @@ HEADERS += MainWindow.h \
     core_ConnectionIssue.h \
     core_InjectSqlGenerator.h \
     core_InjectSqlGeneratorThread.h \
-    core_ReverseEngineerer.h \
-    core_ReverseEngineererThread.h \
     gui_colors.h \
     helper_MostRecentlyUsedFiles.h \
     BrowseTableForm.h \
@@ -205,9 +176,8 @@ HEADERS += MainWindow.h \
     NamedObjectListingForm.h \
     core_Function.h \
     enums.h \
-    core_StoredMethod.h \
-    ReverseEngineerWizardObjectListForm.h \
-    DiagramItemFactory.h
+    core_StoredMethod.h
+
 FORMS += MainWindow.ui \
     MainWindowButtonDialog.ui \
     NewProjectDialog.ui \
@@ -224,21 +194,26 @@ FORMS += MainWindow.ui \
     InjectSqlDialog.ui \
     PreferencesDialog.ui \
     SimpleTextInputDialog.ui \
-    ReverseEngineerWizardWelcomeForm.ui \
-    ReverseEngineerWizardDatabasesForm.ui \
-    ReverseEngineerWizardOptionsForm.ui \
     NewViewForm.ui \
     QueryItemListDialog.ui \
     HelpWindow.ui \
     BrowseTableForm.ui \
     ProcedureForm.ui \
     TriggerForm.ui \
-    NamedObjectListingForm.ui \
-    ReverseEngineerWizardObjectListForm.ui
+    NamedObjectListingForm.ui
+
 include (query_builder/query_builder.pri)
 INCLUDEPATH += query_builder
+
 include (dbmysql/dbmysql.pri)
 INCLUDEPATH += dbmysql
+
+include (diagram/diagram.pri)
+INCLUDEPATH += diagram
+
+include (reverse_eng/reverse_eng.pri)
+INCLUDEPATH += reverse_eng
+
 RESOURCES += dbm.qrc \
     help_resources.qrc
 RC_FILE = dbm.rc
