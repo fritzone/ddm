@@ -77,7 +77,7 @@ ContextMenuCollection::ContextMenuCollection()
     action_connectionRecreate = new QAction(QObject::tr("Recreate"), 0);
     action_connectionRecreate->setIcon(IconFactory::getRecreateDatabaseIcon());
     action_browsedTableInjectIntoSolution = new QAction(QObject::tr("Add to current solution"), 0);
-    action_browsedTableBrowse = new QAction(QObject::tr("Browse table data"), 0);
+    action_browsedTableBrowse = new QAction(QObject::tr("Browse table"), 0);
     action_browsedTableView = new QAction(QObject::tr("View table details"), 0);
     action_deleteView = new QAction(QObject::tr("Delete view"), 0);
     action_deleteView ->setIcon(IconFactory::getRemoveIcon());
