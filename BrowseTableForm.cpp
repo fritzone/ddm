@@ -395,12 +395,15 @@ void BrowseTableForm::newPage(Connection *c, const QString &tab, BrowsedTableLay
             m_textEdit->setBrowseForm(this);
             horizontalLayoutForLineNumbersAndTextEdit->addWidget(m_textEdit);
             m_textEdit->setLineNumberFrame(m_frameForLineNumbers);
+
+            QString s = c->getEngine()->getTableCreationScript(c, tab);
+            m_textEdit->setPlainText(s);
             m_textEdit->updateLineNumbers();
-
+            QKeyEvent* keyEvent = new QKeyEvent(QEvent::KeyPress, Qt::Key_Return, Qt::NoModifier);
+            m_textEdit->updateLineNumbers();
+            m_textEdit->keyPressEvent(keyEvent);
             QObject::connect(btnSaveQuery, SIGNAL(clicked()), this, SLOT(onSaveQuery()));
-
             tabWidget->addTab(queryFrame, tr("Script"));
-
         }
 
         mainTabPageWidgetsLayout->addWidget(tabWidget);

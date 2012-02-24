@@ -1436,21 +1436,46 @@ QStringList MySQLDatabaseEngine::getAvailableIndexes(Connection* c)
     }
 
     QSqlQuery query(db);
-    query.exec("SELECT DISTINCT TABLE_NAME, INDEX_NAME FROM INFORMATION_SCHEMA.STATISTICS WHERE TABLE_SCHEMA = '" + c->getDb() + "'");
+    query.exec("SELECT DISTINCT TABLE_NAME, INDEX_NAME, COLUMN_NAME FROM INFORMATION_SCHEMA.STATISTICS WHERE TABLE_SCHEMA = '" + c->getDb() + "'");
 
     int tabNameIdx = query.record().indexOf("TABLE_NAME");
     int indexNameIdx = query.record().indexOf("INDEX_NAME");
+    int columnNameIdx = query.record().indexOf("COLUMN_NAME");
 
     while(query.next())
     {
         QString tabName = query.value(tabNameIdx).toString();
         QString indexName = query.value(indexNameIdx).toString();
-        result.append(tabName + "." + indexName);
+        QString columnName = query.value(columnNameIdx).toString();
+
+        result.append(tabName + "." + indexName + " (" + columnName +")");
     }
     return result;
 }
 
 QString MySQLDatabaseEngine::getTableCreationScript(Connection* c, const QString& tabName)
 {
-    return "";
+    QSqlDatabase db = getQSqlDatabaseForConnection(c);
+    QString result;
+
+    bool ok = db.isOpen();
+
+    if(!ok)
+    {
+        return result;
+    }
+
+    {
+    QSqlQuery query(db);
+    query.exec("SET sql_mode = 'ANSI'");
+    }
+
+    QSqlQuery query(db);
+    query.exec("show create table " + tabName);
+
+    while(query.next())
+    {
+        result = query.value(1).toString();
+    }
+    return result;
 }
