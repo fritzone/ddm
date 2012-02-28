@@ -39,10 +39,13 @@ VersionGuiElements::VersionGuiElements(QTreeWidget* projTree, QTreeWidget* dtTre
 
 void VersionGuiElements::createGuiElements(ContextMenuEnabledTreeWidgetItem* projectItem)
 {
-
     versionItem = new ContextMenuEnabledTreeWidgetItem(projectItem, QStringList(QString("Ver: ") + m_version->getVersionText())) ;
     versionItem->setIcon(0, IconFactory::getVersionIcon());
+    versionItem->setPopupMenu(ContextMenuCollection::getInstance()->getMajorVersionPopupMenu());
     m_tree->addTopLevelItem(versionItem);
+    QVariant a;
+    a.setValue(m_version->getVersionText());
+    versionItem->setData(0, Qt::UserRole, a);
 
     // make the tables sub item coming from the version
     tablesItem = new ContextMenuEnabledTreeWidgetItem(versionItem, QStringList(QObject::tr("Table templates"))) ;

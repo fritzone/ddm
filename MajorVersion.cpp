@@ -8,19 +8,18 @@
 #include "core_Trigger.h"
 #include "core_Function.h"
 
-MajorVersion::MajorVersion(QTreeWidget* tree, QTreeWidget* dttree, QTreeWidget* issueTree, ContextMenuEnabledTreeWidgetItem* projectItem, int ver, Project* p)
-    : DefaultVersionImplementation(tree, dttree, issueTree, projectItem, p)
+MajorVersion::MajorVersion(QTreeWidget* tree, QTreeWidget* dttree, QTreeWidget* issueTree, ContextMenuEnabledTreeWidgetItem* projectItem, int major, int minor, Project* p)
+    : DefaultVersionImplementation(tree, dttree, issueTree, projectItem, p, major, minor)
 {
     // make the dts sub item coming from the project
-    QString v = QString::number(ver);
-    version = v + ".0";
-    v = QString("Ver: ") + v;
-    v = v + ".0";
+    QString v = QString::number(major);
+    QString v1 = QString::number(minor);
+    version = v + "." + v1;
 
     createTreeItems();
 }
 
-MajorVersion::MajorVersion(QString verAsString, Project* p) : DefaultVersionImplementation(0,0,0,0,p)
+MajorVersion::MajorVersion(QString verAsString, Project* p) : DefaultVersionImplementation(0, 0, 0, 0, p, 0, 0)
 {
     version = verAsString;
 }
@@ -28,6 +27,9 @@ MajorVersion::MajorVersion(QString verAsString, Project* p) : DefaultVersionImpl
 void MajorVersion::serialize(QDomDocument &doc, QDomElement &parent) const
 {
     QDomElement majorVersionElement = doc.createElement("MajorVersion");      // will hold the data in this element
+
+    majorVersionElement.setAttribute("major", m_major);
+    majorVersionElement.setAttribute("minor", m_minor);
 
     QDomElement versionElement = doc.createElement("Version");        // the version node
     QDomText versionNode = doc.createTextNode(version);
@@ -116,3 +118,4 @@ void MajorVersion::serialize(QDomDocument &doc, QDomElement &parent) const
     parent.appendChild(majorVersionElement);
 
 }
+

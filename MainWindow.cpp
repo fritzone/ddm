@@ -55,6 +55,7 @@
 #include "core_Trigger.h"
 #include "NamedObjectListingForm.h"
 #include "core_Function.h"
+#include "MajorVersion.h"
 
 #include <QtGui>
 
@@ -184,7 +185,7 @@ void MainWindow::onNewSolution()
 
         Project* project = new Project(nprjdlg->getProjectName().toUpper(), m_guiElements->getProjectTree(), m_guiElements->getDataTypesTree(), m_guiElements->getIssuesTree(), nprjdlg->enableOOPFeatures());
         project->setEngine(nprjdlg->getDatabaseEngine());
-        project->createMajorVersion();
+        project->createMajorVersion(1, 0);
         m_workspace->addProjectToSolution(m_workspace->currentSolution(), project);
 
         // are we supposed to inherit the default data types?
@@ -270,6 +271,11 @@ void MainWindow::onDTTreeClicked()
             }
         }
     }
+}
+
+void MainWindow::showNothing(const QString &, bool )
+{
+
 }
 
 NewTableForm* MainWindow::showExistingTable(Table *table)
@@ -524,7 +530,7 @@ void MainWindow::currentProjectTreeItemChanged(QTreeWidgetItem * current, QTreeW
                     return;
                 }
                 frm->setSqlSource(ent);
-                frm->presentSql(m_workspace->currentProject(), ent, m_workspace->currentProject()->getCodepage());
+                frm->presentSql(m_workspace->currentProject(), ent, m_workspace->currentProject()->getCodepage(), (MainWindow::showSomething)&MainWindow::showNothing);
                 setCentralWidget(frm);
             }
             else    // user possibly clicked on a table which had a parent a table ...
@@ -534,6 +540,8 @@ void MainWindow::currentProjectTreeItemChanged(QTreeWidgetItem * current, QTreeW
         }
     }
 }
+
+
 
 void MainWindow::onNewTable()
 {
@@ -811,6 +819,7 @@ void MainWindow::connectActionsFromPopupMenus()
     ContextMenuCollection::getInstance()->getAction_BrowsedTableInject()->setVisible(true);
     QObject::connect(ContextMenuCollection::getInstance()->getAction_DeleteView(), SIGNAL(activated()), this, SLOT(onDeleteView()));
     QObject::connect(ContextMenuCollection::getInstance()->getAction_DeleteProcedure(), SIGNAL(activated()), this, SLOT(onDeleteProcedure()));
+    QObject::connect(ContextMenuCollection::getInstance()->getAction_ReleaseMajorVersion(), SIGNAL(activated()), this, SLOT(onReleaseMajorVersion()));
 }
 
 template <class T>
@@ -819,6 +828,27 @@ void MainWindow::showNamedObjectList(showSomething s, const QVector<T*> items, c
     NamedObjectListingForm* lstForm = new NamedObjectListingForm(this, s, icon, title);
     lstForm->populateObjects(items);
     setCentralWidget(lstForm);
+}
+
+void MainWindow::onReleaseMajorVersion()
+{
+    MajorVersion * m = 0;
+    if(m_guiElements->getProjectTree()->getLastRightclickedItem() != 0)
+    {
+        ContextMenuEnabledTreeWidgetItem* item = m_guiElements->getProjectTree()->getLastRightclickedItem();
+        m_guiElements->getProjectTree()->setLastRightclickedItem(0);
+        QVariant qv = item->data(0, Qt::UserRole);
+        QString name = qv.toString();
+        Version* v = Workspace::getInstance()->currentProject()->getVersionNamed(name)        ;
+        if(v)
+        {
+            m = dynamic_cast<MajorVersion*>(v);
+            if(m)
+            {
+                Workspace::getInstance()->currentProject()->releaseMajorVersion();
+            }
+        }
+    }
 }
 
 void MainWindow::onDeleteProcedure()
@@ -947,10 +977,11 @@ void MainWindow::onSpecializeTableFromPopup()
     Table* table = getRightClickedObject<Table>((itemGetter)&Version::getTable);
     if(table == 0) return;
 
-    Table* specializedTable = new Table(m_workspace->workingVersion());
+    Table* specializedTable = new Table(m_workspace->workingVersion(), QUuid::createUuid().toString());
     specializedTable->setName(table->getName() + "_specialized");
     specializedTable->setParent(table);
     specializedTable->setStorageEngine(table->getStorageEngine());
+    specializedTable->setParentUid(table->getObjectUid());
 
     ContextMenuEnabledTreeWidgetItem* newTblsItem = m_workspace->workingVersion()->getGui()->createTableTreeEntry(specializedTable, table->getLocation()) ;
 

@@ -11,6 +11,7 @@
 #include "qbr_SelectQuery.h"
 #include "qbr_SelectQueryOrderByComponent.h"
 #include "qbr_SelectQueryJoinComponent.h"
+#include "strings.h"
 
 #include <QPen>
 #include <QGraphicsView>

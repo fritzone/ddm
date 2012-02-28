@@ -12,6 +12,7 @@
 #include "qbr_SelectQuerySelectComponent.h"
 #include "qbr_CellAsCommand.h"
 #include "qbr_SelectQueryAsComponent.h"
+#include "strings.h"
 
 #include <QDebug>
 

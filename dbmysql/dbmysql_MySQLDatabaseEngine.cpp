@@ -401,7 +401,7 @@ Table* MySQLDatabaseEngine::reverseEngineerTable(Connection *c, const QString& t
         return 0;
     }
 
-    Table* tab = new Table(v);
+    Table* tab = new Table(v, QUuid::createUuid().toString());
     tab->setName(tableName);
 
     // fetch all the columns of the table

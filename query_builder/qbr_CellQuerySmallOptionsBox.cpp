@@ -3,6 +3,7 @@
 #include "qbr_QueryGraphicsScene.h"
 #include "Workspace.h"
 #include "Version.h"
+#include "strings.h"
 
 #include <QPen>
 #include <QGraphicsScene>

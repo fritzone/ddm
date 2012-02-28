@@ -1,6 +1,7 @@
 #include "dbmysql_MySQLDTSupplier.h"
 #include "DataType.h"
 #include "UserDataType.h"
+#include "strings.h"
 
 MySQLDTSupplier::MySQLDTSupplier()
 {

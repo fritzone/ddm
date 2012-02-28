@@ -29,13 +29,14 @@ public:
     }
 
     virtual void presentSql(Project* p,const QString& codepage);
-    virtual void presentSql(Project*, SqlSourceEntity*,const QString& codepage);
+    virtual void presentSql(Project*, SqlSourceEntity*,const QString& codepage, MainWindow::showSomething s);
 
 public slots:
 
     void onInject();
     void onSave();
     void onHelp();
+    void onGoToOriginator();
 
 protected:
     void changeEvent(QEvent *e);
@@ -47,6 +48,7 @@ private:
     DatabaseEngine* m_engine;
     QStringList sqlList;
     QString m_codepage;
+    SqlSourceEntity* m_sourceEntity;
 };
 
 #endif // SQLFORM_H

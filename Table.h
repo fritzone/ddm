@@ -6,6 +6,8 @@
 #include "SqlSourceEntity.h"
 #include "CopyableElement.h"
 #include "NamedItem.h"
+#include "core_ObjectWithUid.h"
+#include "uids.h"
 
 #include <QString>
 #include <QVector>
@@ -22,14 +24,14 @@ class TableInstance;
  * The table class holds a database table defined by the user. It must be derived from the TreeItem since a table can be placed in
  * the tree, so the user of it must know how to update the visual part too.
  */
-class Table : public TreeItem, public SerializableElement, public SqlSourceEntity, public CopyableElement, public NamedItem
+class Table : public TreeItem, public SerializableElement, public SqlSourceEntity, public CopyableElement, public NamedItem, public ObjectWithUid
 {
 public:
 
     /**
      * Constructor, creates a new object
      */
-    Table(Version* v);
+    Table(Version* v, QString uid/* = nullUid*/);
 
     virtual ~Table() {}
 
@@ -297,6 +299,10 @@ public:
 
     Table* getParent() const;
 
+    virtual QUuid getClassUid() const;
+
+    void setParentUid(const QString&);
+
 private:
 
     // describes the table
@@ -336,6 +342,8 @@ private:
 
     // all the specialized tables that were created from this
     QVector<Table*> m_children;
+
+    QString m_parentUid;
 
 private:
 

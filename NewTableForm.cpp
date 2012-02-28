@@ -26,6 +26,7 @@
 #include "VersionGuiElements.h"
 #include "gui_HelpWindow.h"
 #include "core_ConnectionManager.h"
+#include "strings.h"
 
 #include <QMessageBox>
 #include <QHashIterator>
@@ -40,11 +41,12 @@ const int COL_POS_NM = 1;
 const int COL_POS_DT = 2;
 
 NewTableForm::NewTableForm(DatabaseEngine* db, Project* prj, QWidget *parent, bool newTable) : SourceCodePresenterWidget(parent), m_ui(new Ui::NewTableForm),
-    m_dbEngine(db), m_project(prj), m_table(new Table(prj->getWorkingVersion())),
+    m_dbEngine(db), m_project(prj), m_table(0),
     m_currentColumn(0), m_currentIndex(0), m_foreignTable(0), m_currentForeignKey(0), m_foreignKeySelected(false),
     m_currentStorageEngine(0), m_engineProviders(0)
 {
     m_ui->setupUi(this);
+
 
     // now set up the Column list and the context menus for the Column list
     lstColumns = new ContextMenuEnabledTreeWidget();
@@ -110,7 +112,6 @@ NewTableForm::NewTableForm(DatabaseEngine* db, Project* prj, QWidget *parent, bo
     // fill in the index types combo box depending on the storage engine if applicable
     populateIndexTypesDependingOnStorageEngine();
     enableForeignKeysDependingOnStorageEngine();
-    m_table->setStorageEngine(m_currentStorageEngine);
 
     // create the foreign keys screen
     resetForeignTablesCombo();
@@ -149,6 +150,9 @@ NewTableForm::NewTableForm(DatabaseEngine* db, Project* prj, QWidget *parent, bo
 
     if(newTable)
     {
+        m_table = new Table(prj->getWorkingVersion(), QUuid::createUuid().toString());
+        m_table->setStorageEngine(m_currentStorageEngine);
+
         Workspace::getInstance()->onSaveNewTable(m_table);
         m_ui->txtTableName->setText(m_table->getName());
     }
@@ -184,9 +188,7 @@ void NewTableForm::resetForeignTablesCombo()
     m_ui->lstForeignTablesColumns->clear();
     m_ui->lstLocalColumn->clear();
     m_ui->txtForeignKeyName->clear();
-
 }
-
 
 void NewTableForm::populateCodepageCombo()
 {
@@ -2189,7 +2191,7 @@ void NewTableForm::onCodepageChange(QString)
     updateSqlDueToChange();
 }
 
-void NewTableForm::presentSql(Project*, SqlSourceEntity*,const QString&)
+void NewTableForm::presentSql(Project*, SqlSourceEntity*,const QString&, MainWindow::showSomething)
 {
 }
 

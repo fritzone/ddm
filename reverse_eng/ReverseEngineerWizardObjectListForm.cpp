@@ -33,8 +33,8 @@ ReverseEngineerWizardObjectListForm::ReverseEngineerWizardObjectListForm(QWidget
         setSubTitle(tr("Please select the triggers you want to reverse engineer."));
         break;
     }
-    QIcon*p = new QIcon(strFroggieIcon);
-    QIcon*p1 = new QIcon(strIcon);
+    QIcon*p = new QIcon(icons::strFroggieIcon);
+    QIcon*p1 = new QIcon(icons::strIcon);
     setPixmap(QWizard::WatermarkPixmap, p->pixmap(150, 187));
     setPixmap(QWizard::LogoPixmap, p1->pixmap(32, 32));
 }

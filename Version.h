@@ -26,7 +26,8 @@ class Version : virtual public SerializableElement
 {
 public:
 
-    Version() {}
+    Version(int major, int minor) : m_major(major), m_minor(minor)
+    {}
 
     virtual ~Version() {}
 
@@ -295,6 +296,26 @@ public:
     virtual void addFunction(Function* p) = 0;
     virtual Function* getFunction(const QString& procName) const = 0;
     virtual const QVector<Function*>& getFunctions() = 0;
+
+    void setVersionNumbers(int major, int minor)
+    {
+        m_major = major;
+        m_minor = minor;
+    }
+
+    int getMajor() const
+    {
+        return m_major;
+    }
+
+    int getMinor() const
+    {
+        return m_minor;
+    }
+
+protected:
+    int m_major;
+    int m_minor;
 };
 
 #endif // VERSION_H
