@@ -20,11 +20,13 @@
 #include "db_AbstractSQLGenerator.h"
 #include "core_Trigger.h"
 #include "core_Function.h"
+#include "strings.h"
 
 #include <QtGui>
 
-DefaultVersionImplementation::DefaultVersionImplementation(QTreeWidget* tree, QTreeWidget* dttree, QTreeWidget* itt, ContextMenuEnabledTreeWidgetItem* projectItem, Project* p)
-    : version(""), m_data(), m_tree(tree), m_dtTree(dttree), m_issueTree(itt), m_projectItem(projectItem), m_project(p), m_guiElements(0), m_validationFlags(0)
+DefaultVersionImplementation::DefaultVersionImplementation(QTreeWidget* tree, QTreeWidget* dttree, QTreeWidget* itt, ContextMenuEnabledTreeWidgetItem* projectItem, Project* p, int major, int minor)
+    : Version(major, minor),
+      version(""), m_data(), m_tree(tree), m_dtTree(dttree), m_issueTree(itt), m_projectItem(projectItem), m_project(p), m_guiElements(0), m_validationFlags(0)
 {
 }
 

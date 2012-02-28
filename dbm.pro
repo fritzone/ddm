@@ -81,7 +81,9 @@ SOURCES += main.cpp \
     core_Trigger.cpp \
     NamedObjectListingForm.cpp \
     core_Function.cpp \
-    core_StoredMethod.cpp
+    core_StoredMethod.cpp \
+    UidWarehouse.cpp \
+    core_ObjectWithUid.cpp
 
 HEADERS += MainWindow.h \
     MainWindowButtonDialog.h \
@@ -176,7 +178,11 @@ HEADERS += MainWindow.h \
     NamedObjectListingForm.h \
     core_Function.h \
     enums.h \
-    core_StoredMethod.h
+    core_StoredMethod.h \
+    mw_helper.h \
+    uids.h \
+    core_ObjectWithUid.h \
+    UidWarehouse.h
 
 FORMS += MainWindow.ui \
     MainWindowButtonDialog.ui \
@@ -226,6 +232,12 @@ INSTALLS += installfiles_doc
 installfiles_rs.files += rsrc/mysql.defaults
 installfiles_rs.path =  /home/ferenc/rpmbuild/BUILDROOT/usr/local/ddm/rsrc
 INSTALLS += installfiles_rs
+
+
+
+
+
+
 
 
 

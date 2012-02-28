@@ -1,6 +1,6 @@
 #include "ReverseEngineerWizardWelcomeForm.h"
 #include "ui_ReverseEngineerWizardWelcomeForm.h"
-#include "strings.h"
+#include "IconFactory.h"
 
 ReverseEngineerWizardWelcomeForm::ReverseEngineerWizardWelcomeForm(QWidget *parent) :
     QWizardPage(parent),
@@ -9,8 +9,8 @@ ReverseEngineerWizardWelcomeForm::ReverseEngineerWizardWelcomeForm(QWidget *pare
     ui->setupUi(this);
     setTitle(tr("Connection"));
     setSubTitle(tr("Please specify the connection settings for the database you want to reverse engineer"));
-    QIcon*p = new QIcon(strFroggieIcon);
-    QIcon*p1 = new QIcon(strIcon);
+    QIcon*p = new QIcon(icons::strFroggieIcon);
+    QIcon*p1 = new QIcon(icons::strIcon);
     setPixmap(QWizard::WatermarkPixmap, p->pixmap(150, 187));
     setPixmap(QWizard::LogoPixmap, p1->pixmap(32, 32));
 }

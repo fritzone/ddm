@@ -58,6 +58,7 @@ void PreferencesDialog::accept()
 
 void PreferencesDialog::onHelp()
 {
+    setModal(false);
     HelpWindow* hw = HelpWindow::instance();
     hw->showHelp(QString("/doc/config.html"));
     hw->show();

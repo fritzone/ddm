@@ -143,7 +143,7 @@ void NewViewForm::presentSql(Project* p, const QString& codepage)
     txtSql->setPlainText(sql);
 }
 
-void NewViewForm::presentSql(Project*, SqlSourceEntity*, const QString&)
+void NewViewForm::presentSql(Project*, SqlSourceEntity*, const QString&,MainWindow::showSomething)
 {
 }
 

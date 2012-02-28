@@ -21,7 +21,7 @@
 #include <QString>
 #include <QTextStream>
 
-SqlForm::SqlForm(DatabaseEngine* engine, QWidget *parent) : SourceCodePresenterWidget(parent), ui(new Ui::SqlForm), m_engine(engine), m_codepage("latin1")
+SqlForm::SqlForm(DatabaseEngine* engine, QWidget *parent) : SourceCodePresenterWidget(parent), ui(new Ui::SqlForm), m_engine(engine), m_codepage("latin1"), m_sourceEntity(0)
 {
     ui->setupUi(this);
     highlighter = new SqlHighlighter(ui->txtSql->document(),Workspace::getInstance()->currentProjectsEngine()->getKeywords(),
@@ -117,7 +117,7 @@ void SqlForm::presentSql(Project* p,const QString& codepage)
     setSqlList(finalSql);
 }
 
-void SqlForm::presentSql(Project* p, SqlSourceEntity* ent,const QString& codepage)
+void SqlForm::presentSql(Project* p, SqlSourceEntity* ent,const QString& codepage, MainWindow::showSomething)
 {
     QString fs = "";
     QHash<QString, QString> opts = Configuration::instance().sqlGenerationOptions();
@@ -129,6 +129,7 @@ void SqlForm::presentSql(Project* p, SqlSourceEntity* ent,const QString& codepag
     }
     setSource(fs);
     setSqlList(finalSql);
+    m_sourceEntity = ent;
 }
 
 void SqlForm::onHelp()
@@ -136,4 +137,12 @@ void SqlForm::onHelp()
     HelpWindow* hw = HelpWindow::instance();
     hw->showHelp(QString("/doc/sqls.html"));
     hw->show();
+}
+
+void SqlForm::onGoToOriginator()
+{
+    if(m_sourceEntity)
+    {
+
+    }
 }

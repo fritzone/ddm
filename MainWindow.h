@@ -77,6 +77,7 @@ public:
     void showProcedure(const QString& procName, bool focus = true);
     void showFunction(const QString& funcName, bool focus = true);
     void showTrigger(const QString& triggerName, bool focus = true);
+    void showNothing(const QString& , bool focus = true);
 
     void rerenderQuery(Query*);
     void showConnections();
@@ -174,6 +175,7 @@ public slots:
     void onDeleteView();
     void onDeleteUnusedDatatypes();
     void onDeleteProcedure();
+    void onReleaseMajorVersion();
 
 private:
 
@@ -197,7 +199,6 @@ private:
     void hideSplashwindow();
     void tryBrowseConnection(Connection* c);
     void showNamedObject(QTreeWidgetItem* current, showSomething s, bool focus=true);
-
 
 private:
     Ui::MainWindow *m_ui;

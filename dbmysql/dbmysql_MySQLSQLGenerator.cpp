@@ -10,6 +10,7 @@
 #include "qbr_SelectQuery.h"
 #include "core_StoredMethod.h"
 #include "core_Trigger.h"
+#include "strings.h"
 
 QStringList MySQLSQLGenerator::generateCreateTableSql(Table *table, const QHash<QString, QString> &options, const QString& tabName, const QString& codepage) const
 {

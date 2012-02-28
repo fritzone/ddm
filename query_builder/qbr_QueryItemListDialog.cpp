@@ -12,6 +12,7 @@
 #include "Column.h"
 #include "DataType.h"
 #include "qbr_SelectQueryJoinComponent.h"
+#include "strings.h"
 
 #include <QListWidget>
 #include <QMessageBox>

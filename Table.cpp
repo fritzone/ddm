@@ -13,11 +13,14 @@
 #include "TableInstance.h"
 #include "Workspace.h"
 #include "commons.h"
-
+#include "uids.h"
+#include "UidWarehouse.h"
+#include "strings.h"
 #include <QApplication>
 #include <QClipboard>
 
-Table::Table(Version* v) : NamedItem(NameGenerator::getUniqueName(v, (itemGetter)&Version::getTable, QString("TAB"))),
+Table::Table(Version* v, QString uid) : NamedItem(NameGenerator::getUniqueName(v, (itemGetter)&Version::getTable, QString("TAB"))),
+    ObjectWithUid(uid),
     m_description(""), m_columns(), m_indices(), m_foreignKeys(), m_startupValues(),
     m_parent(0), m_persistent(false), m_temporary(false), m_storageEngine(0),
     m_version(v), m_children()
@@ -311,6 +314,10 @@ QStringList Table::fullIndices() const
     return result;
 }
 
+void Table::setParentUid(const QString & s)
+{
+    m_parentUid = s;
+}
 
 void Table::serialize(QDomDocument &doc, QDomElement &parent) const
 {
@@ -318,8 +325,11 @@ void Table::serialize(QDomDocument &doc, QDomElement &parent) const
     tableElement.setAttribute("Name", m_name);
     tableElement.setAttribute("Persistent", m_persistent);
     tableElement.setAttribute("Temporary", m_temporary);
-    tableElement.setAttribute("Parent",m_parent?m_parent->getName():"N/A");
-    tableElement.setAttribute("StorageEngine", m_storageEngine?m_storageEngine->name():"");
+    tableElement.setAttribute("Parent",m_parent?m_parent->getName():strNA);
+    tableElement.setAttribute("StorageEngine", m_storageEngine?m_storageEngine->name():strNA);
+    tableElement.setAttribute("uid", getObjectUid());
+    tableElement.setAttribute("class-uid", getClassUid().toString());
+    tableElement.setAttribute("parent-uid", m_parent?m_parent->getObjectUid().toString():strNA);
 
     if(m_parent !=0)
     {
@@ -546,4 +556,9 @@ void Table::setParent(Table* parent)
 Table* Table::getParent() const
 {
     return m_parent;
+}
+
+QUuid Table::getClassUid() const
+{
+    return QUuid(uidTable);
 }

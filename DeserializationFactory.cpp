@@ -31,6 +31,7 @@
 #include "core_Procedure.h"
 #include "core_Trigger.h"
 #include "core_Function.h"
+#include "uids.h"
 
 #include <QStringList>
 
@@ -147,6 +148,9 @@ MajorVersion* DeserializationFactory::createMajorVersion(Project* p, DatabaseEng
 {
     QString name = "";
 
+    int major = element.attribute("major").toInt();
+    int minor = element.attribute("minor").toInt();
+
     for(int i=0; i<element.childNodes().count(); i++)
     {
         if(element.childNodes().at(i).nodeName() == "Version")
@@ -156,6 +160,7 @@ MajorVersion* DeserializationFactory::createMajorVersion(Project* p, DatabaseEng
     }
 
     MajorVersion* result = new MajorVersion(name, p);
+    result->setVersionNumbers(major, minor);
 
     // getting the data types
     for(int i=0; i<element.childNodes().count(); i++)
@@ -526,8 +531,26 @@ Column* DeserializationFactory::createColumn(Version* ver, const QDomDocument &,
 
 Table* DeserializationFactory::createTable(DatabaseEngine* engine, Version* ver, const QDomDocument &doc, const QDomElement &element)
 {
-    Table* result = new Table(ver);
     QString name = element.attribute("Name");
+    QString uid = element.attribute("uid");
+    QString class_uid = element.attribute("class-uid");
+
+    if(class_uid != uidTable)
+    {
+        qDebug() << "possibly error.";
+    }
+
+    if(uid.length() == 0)
+    {
+        qDebug() << "possibly older version was loaded";
+        uid = QUuid::createUuid();
+    }
+
+    QString parent_uid = element.attribute("parent-uid");
+
+    Table* result = new Table(ver, uid);
+
+    result->setParentUid(parent_uid);
     result->setName(name);
     result->setPersistent(element.attribute("Persistent")=="1");
     result->setTemporary(element.attribute("Temporary")=="1");

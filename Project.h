@@ -5,7 +5,6 @@
 #include "TreeItem.h"
 
 #include <QTreeWidget>
-#include <QTreeWidgetItem>
 #include <QVector>
 
 class AbstractDTSupplier;
@@ -27,7 +26,7 @@ public:
     Project(const QString& _name, bool);
 
     // creates a version, updates the GUI
-    void createMajorVersion();
+    void createMajorVersion(int major, int  minor);
 
     // creates a major version, does not update the gui, it must be done at a later stage
     void addMajorVersion(MajorVersion*);
@@ -36,6 +35,8 @@ public:
     void setEngine(DatabaseEngine* eng);
 
     Version* getWorkingVersion() const;
+
+    Version* getVersionNamed(const QString&) const;
 
     DatabaseEngine* getEngine() const;
 
@@ -79,6 +80,12 @@ public:
         return "latin1";
     }
 
+    /**
+     * Releases the current working version, creates the next one, copies over all the objects, and locks the current version.
+     */
+    void releaseMajorVersion();
+
+
 private:
 
     // this is the tree from the main window of the application
@@ -100,6 +107,8 @@ private:
 
     // if this project supports OOP features
     bool m_oopIsEnabled;
+
+    int m_workingVersionIndex;
 
 };
 

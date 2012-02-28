@@ -10,8 +10,8 @@ ReverseEngineerWizardOptionsForm::ReverseEngineerWizardOptionsForm(QWidget *pare
 
     setTitle(tr("Options"));
     setSubTitle(tr("Please specify the reverse engineering options."));
-    QIcon*p = new QIcon(strFroggieIcon);
-    QIcon*p1 = new QIcon(strIcon);
+    QIcon*p = new QIcon(icons::strFroggieIcon);
+    QIcon*p1 = new QIcon(icons::strIcon);
     setPixmap(QWizard::WatermarkPixmap, p->pixmap(150, 187));
     setPixmap(QWizard::LogoPixmap, p1->pixmap(32, 32));
 

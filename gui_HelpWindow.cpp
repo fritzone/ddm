@@ -4,6 +4,7 @@
 #include "Version.h"
 #include "VersionGuiElements.h"
 #include "MainWindow.h"
+#include "strings.h"
 
 #include <QDesktopWidget>
 #include <QFile>

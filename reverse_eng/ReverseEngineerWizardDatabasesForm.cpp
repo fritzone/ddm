@@ -10,8 +10,8 @@ ReverseEngineerWizardDatabasesForm::ReverseEngineerWizardDatabasesForm(QWidget *
 
     setTitle(tr("Select Database"));
     setSubTitle(tr("Please select the database you want to reverse engineer."));
-    QIcon*p = new QIcon(strFroggieIcon);
-    QIcon*p1 = new QIcon(strIcon);
+    QIcon*p = new QIcon(icons::strFroggieIcon);
+    QIcon*p1 = new QIcon(icons::strIcon);
     setPixmap(QWizard::WatermarkPixmap, p->pixmap(150, 187));
     setPixmap(QWizard::LogoPixmap, p1->pixmap(32, 32));
 }
