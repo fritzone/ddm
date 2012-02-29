@@ -141,7 +141,7 @@ void VersionGuiElements::populateTreeItems()
         Table* tbl = tables.at(i);
         ContextMenuEnabledTreeWidgetItem* newTblsItem = new ContextMenuEnabledTreeWidgetItem(getTablesItem(), QStringList(tbl->getName())) ;
 
-        QVariant var(tbl->getName());
+        QVariant var(tbl->getObjectUid());
         newTblsItem->setData(0, Qt::UserRole, var);
         newTblsItem->setPopupMenu(ContextMenuCollection::getInstance()->getTablePopupMenu());
         // set the icon, add to the tree
@@ -170,7 +170,7 @@ void VersionGuiElements::populateTreeItems()
         Diagram* dI = diagrams.at(i);
         ContextMenuEnabledTreeWidgetItem* newDgramItem = new ContextMenuEnabledTreeWidgetItem(getDiagramsItem(), QStringList(dI->getName())) ;
 
-        QVariant var(dI->getName());
+        QVariant var(dI->getObjectUid());
         newDgramItem->setData(0, Qt::UserRole, var);
         // set the icon, add to the tree
         newDgramItem->setIcon(0, IconFactory::getDiagramIcon());
@@ -188,7 +188,7 @@ void VersionGuiElements::populateTreeItems()
         TableInstance* tI = tableInstances.at(i);
         ContextMenuEnabledTreeWidgetItem* newTabInstItem = new ContextMenuEnabledTreeWidgetItem(getTableInstancesItem(), QStringList(tI->getName())) ;
 
-        QVariant var(tI->getName());
+        QVariant var(tI->getObjectUid());
         newTabInstItem->setData(0, Qt::UserRole, var);
         newTabInstItem->setPopupMenu(ContextMenuCollection::getInstance()->getTableInstancePopupMenu());
 
@@ -313,7 +313,7 @@ ContextMenuEnabledTreeWidgetItem* VersionGuiElements::createDataTypeTreeEntry(Us
 ContextMenuEnabledTreeWidgetItem* VersionGuiElements::createDiagramTreeEntry(Diagram* dgram)
 {
     ContextMenuEnabledTreeWidgetItem* newDgramItem = new ContextMenuEnabledTreeWidgetItem(getDiagramsItem(), QStringList(dgram->getName())) ;
-    QVariant var(dgram->getName());
+    QVariant var(dgram->getObjectUid());
     newDgramItem->setData(0, Qt::UserRole, var);
     newDgramItem->setIcon(0, IconFactory::getDiagramIcon());
     newDgramItem->setPopupMenu(ContextMenuCollection::getInstance()->getDiagramPopupMenu());
@@ -327,7 +327,9 @@ ContextMenuEnabledTreeWidgetItem* VersionGuiElements::createDiagramTreeEntry(Dia
 ContextMenuEnabledTreeWidgetItem* VersionGuiElements::createTableTreeEntry(Table* tab)
 {
     ContextMenuEnabledTreeWidgetItem* newTblsItem = new ContextMenuEnabledTreeWidgetItem(getTablesItem(), QStringList(tab->getName())) ;
-    QVariant var(tab->getName());
+    QString guid = tab->getObjectUid();
+    QVariant var(guid);
+    qDebug() << guid;
     newTblsItem->setData(0, Qt::UserRole, var);
     newTblsItem->setPopupMenu(ContextMenuCollection::getInstance()->getTablePopupMenu());
     // set the icon, add to the tree
@@ -341,7 +343,7 @@ ContextMenuEnabledTreeWidgetItem* VersionGuiElements::createTableTreeEntry(Table
 ContextMenuEnabledTreeWidgetItem* VersionGuiElements::createTableTreeEntry(Table* tab, ContextMenuEnabledTreeWidgetItem* p)
 {
     ContextMenuEnabledTreeWidgetItem* newTblsItem = new ContextMenuEnabledTreeWidgetItem(p, QStringList(tab->getName())) ;
-    QVariant var(tab->getName());
+    QVariant var(tab->getObjectUid());
     newTblsItem->setData(0, Qt::UserRole, var);
     newTblsItem->setPopupMenu(ContextMenuCollection::getInstance()->getTablePopupMenu());
     // set the icon, add to the tree
@@ -355,7 +357,7 @@ ContextMenuEnabledTreeWidgetItem* VersionGuiElements::createTableTreeEntry(Table
 ContextMenuEnabledTreeWidgetItem* VersionGuiElements::createViewTreeEntry(View* view)
 {
     ContextMenuEnabledTreeWidgetItem* newViewItem = new ContextMenuEnabledTreeWidgetItem(viewsItem, QStringList(view->getName())) ;
-    QVariant var(view->getName());
+    QVariant var(view->getObjectUid());
     newViewItem->setData(0, Qt::UserRole, var);
     newViewItem->setPopupMenu(ContextMenuCollection::getInstance()->getViewPopupMenu());
     newViewItem->setIcon(0, IconFactory::getViewIcon());
@@ -444,7 +446,7 @@ ContextMenuEnabledTreeWidgetItem* VersionGuiElements::createTableInstanceTreeEnt
     tinst->setLocation(itm);
     itm->setPopupMenu(ContextMenuCollection::getInstance()->getTableInstancePopupMenu());
     itm->setIcon(0, IconFactory::getTabinstIcon());
-    QVariant a(tinst->getName());
+    QVariant a(tinst->getObjectUid());
     itm->setData(0, Qt::UserRole, a);
 
     ContextMenuEnabledTreeWidgetItem* sqlItm = new ContextMenuEnabledTreeWidgetItem(getFinalSqlItem(), QStringList(tinst->getName()));

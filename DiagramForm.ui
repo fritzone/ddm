@@ -275,7 +275,7 @@
  <connections>
   <connection>
    <sender>txtDiagramName</sender>
-   <signal>textChanged(QString)</signal>
+   <signal>textEdited(QString)</signal>
    <receiver>DiagramForm</receiver>
    <slot>onNameChange(QString)</slot>
    <hints>

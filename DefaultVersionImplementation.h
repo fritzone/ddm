@@ -11,7 +11,7 @@ class Project;
 class DefaultVersionImplementation : public Version
 {
 public:
-    DefaultVersionImplementation(QTreeWidget* tree, QTreeWidget* dttree, QTreeWidget* itt, ContextMenuEnabledTreeWidgetItem* projectItem, Project* p, int, int);
+    DefaultVersionImplementation(ContextMenuEnabledTreeWidgetItem* projectItem, Project* p, int, int);
 
     virtual void serialize(QDomDocument &doc, QDomElement &parent) const = 0;
 
@@ -79,13 +79,6 @@ protected:
 
     // the data of this version
     VersionData m_data;
-
-    // the project tree
-    QTreeWidget* m_tree;
-    // the  data types tree
-    QTreeWidget* m_dtTree;
-    QTreeWidget* m_issueTree;
-
     ContextMenuEnabledTreeWidgetItem* m_projectItem;
     Project* m_project;
 

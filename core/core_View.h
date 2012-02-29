@@ -5,16 +5,17 @@
 #include "SqlSourceEntity.h"
 #include "TreeItem.h"
 #include "SerializableElement.h"
+#include "core_ObjectWithUid.h"
 
 class SelectQuery;
 class QueryGraphicsHelper;
 class Version;
 
-class View : virtual public SqlSourceEntity, virtual public NamedItem, virtual public TreeItem, virtual public SerializableElement
+class View : virtual public SqlSourceEntity, virtual public NamedItem, virtual public TreeItem, virtual public SerializableElement, virtual public ObjectWithUid
 {
 public:
-    View(bool manual);
-    View(Version* v, bool manual); // used by the deserialization engine
+    View(bool manual, QString uid);
+    View(Version* v, bool manual, QString uid); // used by the deserialization engine
 
     virtual QStringList generateSqlSource(AbstractSqlGenerator*, QHash<QString,QString>, const QString& codepage);
 
@@ -71,6 +72,8 @@ public:
     {
         return m_columNames;
     }
+
+    virtual QUuid getClassUid() const;
 
 private:
     SelectQuery* m_selectQuery;

@@ -113,9 +113,6 @@ NewTableForm::NewTableForm(DatabaseEngine* db, Project* prj, QWidget *parent, bo
     populateIndexTypesDependingOnStorageEngine();
     enableForeignKeysDependingOnStorageEngine();
 
-    // create the foreign keys screen
-    resetForeignTablesCombo();
-
     m_ui->btnAdvanced->hide();
 
     m_ui->lblCharacterSet->hide();
@@ -155,6 +152,8 @@ NewTableForm::NewTableForm(DatabaseEngine* db, Project* prj, QWidget *parent, bo
 
         Workspace::getInstance()->onSaveNewTable(m_table);
         m_ui->txtTableName->setText(m_table->getName());
+
+        resetForeignTablesCombo();
     }
 
     populateCodepageCombo();
@@ -174,6 +173,7 @@ void NewTableForm::resetForeignTablesCombo()
 
     // create the foreign keys screen
     const QVector<Table*>& tables = m_project->getWorkingVersion()->getTables();
+    qDebug() << tables.size() << "  " << tables << " aa " << m_table;
     for(int i=0; i<tables.size(); i++)
     {
         if(tables[i]->getName() != m_table->getName())
@@ -577,6 +577,8 @@ void NewTableForm::setTable(Table *table)
     }
     populateIndexTypesDependingOnStorageEngine();
     enableForeignKeysDependingOnStorageEngine();
+    if(m_table) resetForeignTablesCombo();
+
 }
 
 void NewTableForm::focusOnName()
@@ -2062,7 +2064,6 @@ void NewTableForm::onChangeName(QString a)
     else
     {
         QVariant v(a);
-        m_table->getLocation()->setData(0, Qt::UserRole, v);
         m_table->setName(a);
         m_table->getLocation()->setText(0, a);
         updateSqlDueToChange();

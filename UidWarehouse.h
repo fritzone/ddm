@@ -22,6 +22,7 @@ class UidWarehouse
 public:
 
     void addElement(ObjectWithUid* o);
+    ObjectWithUid* getElement(const QString&);
 
 public:
 
@@ -36,7 +37,7 @@ private:
 
 private:
 
-    QMap<Solution*, QVector<WarehouseEntry*> > m_items;
+    QMap<Solution*, QMap<QString, WarehouseEntry*> > m_items;
 };
 
 #endif // UIDWAREHOUSE_H

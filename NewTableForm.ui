@@ -1837,7 +1837,7 @@ p, li { white-space: pre-wrap; }
   </connection>
   <connection>
    <sender>txtTableName</sender>
-   <signal>textChanged(QString)</signal>
+   <signal>textEdited(QString)</signal>
    <receiver>NewTableForm</receiver>
    <slot>onChangeName(QString)</slot>
    <hints>
@@ -1901,7 +1901,7 @@ p, li { white-space: pre-wrap; }
   </connection>
   <connection>
    <sender>txtNewColumnName</sender>
-   <signal>textChanged(QString)</signal>
+   <signal>textEdited(QString)</signal>
    <receiver>NewTableForm</receiver>
    <slot>onColumnNameChange(QString)</slot>
    <hints>
@@ -1981,7 +1981,7 @@ p, li { white-space: pre-wrap; }
   </connection>
   <connection>
    <sender>txtNewIndexName</sender>
-   <signal>textChanged(QString)</signal>
+   <signal>textEdited(QString)</signal>
    <receiver>NewTableForm</receiver>
    <slot>onIndexNameChange(QString)</slot>
    <hints>

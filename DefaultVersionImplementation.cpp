@@ -24,33 +24,16 @@
 
 #include <QtGui>
 
-DefaultVersionImplementation::DefaultVersionImplementation(QTreeWidget* tree, QTreeWidget* dttree, QTreeWidget* itt, ContextMenuEnabledTreeWidgetItem* projectItem, Project* p, int major, int minor)
+DefaultVersionImplementation::DefaultVersionImplementation(ContextMenuEnabledTreeWidgetItem* projectItem, Project* p, int major, int minor)
     : Version(major, minor),
-      version(""), m_data(), m_tree(tree), m_dtTree(dttree), m_issueTree(itt), m_projectItem(projectItem), m_project(p), m_guiElements(0), m_validationFlags(0)
+      version(""), m_data(), m_projectItem(projectItem), m_project(p), m_guiElements(0), m_validationFlags(0)
 {
 }
 
 void DefaultVersionImplementation::createTreeItems(QTreeWidget* tree, QTreeWidget* dtTree, QTreeWidget* issueTree, ContextMenuEnabledTreeWidgetItem* projectIem)
 {
-    if(tree)
-    {
-        m_tree = tree;
-    }
-    if(dtTree)
-    {
-        m_dtTree = dtTree;
-    }
-    if(projectIem)
-    {
-        m_projectItem = projectIem;
-    }
-    if(issueTree)
-    {
-        m_issueTree = issueTree;
-    }
-
-    m_guiElements = new VersionGuiElements(m_tree, m_dtTree, m_issueTree, this);
-    m_guiElements->createGuiElements(m_projectItem);
+    m_guiElements = new VersionGuiElements(tree, dtTree, issueTree, this);
+    m_guiElements->createGuiElements(projectIem);
 }
 
 void DefaultVersionImplementation::addNewDataType(UserDataType* dt)
@@ -331,7 +314,7 @@ void DefaultVersionImplementation::setupTableParentChildRelationships()
 
 TableInstance* DefaultVersionImplementation::instantiateTable(Table* tab, bool becauseOfReference)
 {
-    TableInstance* tabInst = new TableInstance(tab, becauseOfReference);
+    TableInstance* tabInst = new TableInstance(tab, becauseOfReference, QUuid::createUuid().toString());
     TableInstance* other = getTableInstance(tabInst->getName());        // just to see that we have another instance of this table
     if(other && other != tabInst)
     {   // and in this case generate a new name for the current one

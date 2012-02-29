@@ -7,6 +7,7 @@
 #include "DiagramTableDescriptor.h"
 #include "DiagramFKDescriptor.h"
 #include "SerializableElement.h"
+#include "core_ObjectWithUid.h"
 
 class Table;
 class ERGraphicsScene;
@@ -21,13 +22,13 @@ class ForeignKey;
 /**
  * Class responsible for managing the diagrams of a project
  */
-class Diagram : public TreeItem, public NamedItem, public SerializableElement
+class Diagram : virtual public TreeItem, virtual public NamedItem, virtual public SerializableElement, virtual public ObjectWithUid
 {
 public:
 
-    Diagram(Version*);
+    Diagram(Version* v, const QString& uid);
 
-    Diagram(Version*, const QString&);
+    Diagram(Version* v, const QString& name, const QString& uid);
 
     void setForm(DiagramForm* form)
     {
@@ -112,6 +113,8 @@ public:
      </Diagram>
      */
     virtual void serialize(QDomDocument &doc, QDomElement &parent) const;
+
+    virtual QUuid getClassUid() const;
 
 public:
 

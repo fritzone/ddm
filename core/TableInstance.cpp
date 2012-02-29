@@ -3,7 +3,9 @@
 #include "Table.h"
 #include "Configuration.h"
 
-TableInstance::TableInstance(Table *tab, bool ref) : TreeItem(), NamedItem(tab->getName()), m_table(tab), m_values(), m_becauseOfReference(ref), m_referencingTables(0), m_instantiatedTablesInstances(), m_sentenced(false)
+TableInstance::TableInstance(Table *tab, bool ref, const QString& uid) : TreeItem(),
+    NamedItem(tab->getName()), ObjectWithUid(uid),
+    m_table(tab), m_values(), m_becauseOfReference(ref), m_referencingTables(0), m_instantiatedTablesInstances(), m_sentenced(false)
 {
     for(int i=0; i<m_table->fullColumns().size(); i++)
     {
@@ -33,6 +35,9 @@ void TableInstance::serialize(QDomDocument &doc, QDomElement &parent) const
     tableInstanceElement.setAttribute("Name", getName());
     tableInstanceElement.setAttribute("Table", m_table->getName());
     tableInstanceElement.setAttribute("Ref", instantiatedBecuaseOfRkReference());
+    tableInstanceElement.setAttribute("uid", getObjectUid());
+    tableInstanceElement.setAttribute("class-uid", getClassUid());
+
     {
     QString refTables = "";
     for(int i=0; i<m_referencingTables.size(); i++)
@@ -104,4 +109,9 @@ void TableInstance::renameColumn(const QString& oldName, const QString& newName)
 {
     QVector<QString> tmp = removeColumn(oldName);
     m_values.insert(newName, tmp);
+}
+
+QUuid TableInstance::getClassUid() const
+{
+    return QUuid(uidTableInstance);
 }

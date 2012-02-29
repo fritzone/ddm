@@ -449,9 +449,20 @@ QueryComponent* DeserializationFactory::createComponent(QueryComponent* parent, 
 View* DeserializationFactory::createView(Project* p, Version* v, const QDomDocument& doc, const QDomElement& element)
 {
     bool manual = element.attribute("Manual") == "1";
-    View* view = new View(v, manual);
+    QString uid = element.attribute("uid");
+    QString class_uid = element.attribute("class-uid");
     QString name = element.attribute("Name");
+
+    if(uid.length() == 0)
+    {
+        uid = QUuid::createUuid().toString();
+    }
+    if(class_uid != uidView)
+    {
+    }
+    View* view = new View(v, manual, uid);
     view->setName(name);
+
     if(manual)
     {
         QDomElement sqlElement = element.firstChild().toElement();
@@ -537,12 +548,10 @@ Table* DeserializationFactory::createTable(DatabaseEngine* engine, Version* ver,
 
     if(class_uid != uidTable)
     {
-        qDebug() << "possibly error.";
     }
 
     if(uid.length() == 0)
     {
-        qDebug() << "possibly older version was loaded";
         uid = QUuid::createUuid();
     }
 
@@ -735,7 +744,19 @@ DiagramFKDescriptor* DeserializationFactory::createDiagramFKDescriptor(const QDo
 Diagram* DeserializationFactory::createDiagram(Version* v, const QDomDocument &doc, const QDomElement &element)
 {
     QString name = element.attribute("Name");
-    Diagram* result = new Diagram(v, name);
+    QString uid = element.attribute("uid");
+    QString class_uid = element.attribute("class-uid");
+
+    if(uid.length() == 0)
+    {
+        uid = QUuid::createUuid().toString();
+    }
+
+    if(class_uid != uidDiagram)
+    {
+    }
+
+    Diagram* result = new Diagram(v, name, uid);
 
     for(int i=0; i<element.childNodes().count(); i++)
     {
@@ -779,6 +800,12 @@ TableInstance* DeserializationFactory::createTableInstance(Version* v, const QDo
     bool refed = element.attribute("Ref") == "1";
     QString refTables = element.attribute("ReferencingTables");
     QString instantiatedTableInstances = element.attribute("InstantiatedTableInstances");
+    QString uid = element.attribute("uid");
+    QString class_uid = element.attribute("class-uid");
+    if(uid.length() == 0)
+    {
+        uid = QUuid::createUuid().toString();
+    }
 
     QHash <QString, QVector<QString> > data;
     for(int i=0; i<element.childNodes().count(); i++)
@@ -805,7 +832,7 @@ TableInstance* DeserializationFactory::createTableInstance(Version* v, const QDo
     }
     else
     {
-        TableInstance* result = new TableInstance(v->getTable(tabName), refed);
+        TableInstance* result = new TableInstance(v->getTable(tabName), refed, uid);
 
         QStringList lst = refTables.split(QChar(','), QString::SkipEmptyParts);
         for(int i=0; i<lst.size(); i++)
@@ -845,7 +872,14 @@ Trigger* DeserializationFactory::createTrigger(Project*, Version* v,  const QDom
     Table* tab = v->getTable(element.attribute("Table"));
     if(tab == 0) return 0;
     QString name = element.attribute("Name");
-    Trigger* trigg = new Trigger(name);
+    QString uid = element.attribute("uid");
+    if(uid.length() == 0)
+    {
+        uid = QUuid::createUuid().toString();
+    }
+    QString class_uid = element.attribute("class-uid");
+
+    Trigger* trigg = new Trigger(name, uid);
     QDomElement sqlElement = element.firstChild().toElement();
     QDomCDATASection cdata = sqlElement.firstChild().toCDATASection();
     trigg->setSql(cdata.toText().data());

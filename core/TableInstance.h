@@ -6,16 +6,17 @@
 #include "NamedItem.h"
 #include "SerializableElement.h"
 #include "SqlSourceEntity.h"
+#include "core_ObjectWithUid.h"
 
 #include <QHash>
 #include <QList>
 #include <QString>
 
-class TableInstance : public TreeItem, public NamedItem, public SerializableElement, public SqlSourceEntity
+class TableInstance : virtual public TreeItem, virtual public NamedItem, virtual public SerializableElement, virtual public SqlSourceEntity, virtual public ObjectWithUid
 {
 public:
 
-    TableInstance(Table* tab, bool ref);
+    TableInstance(Table* tab, bool ref, const QString& uid);
 
     QVector<QString> columns() const;
 
@@ -81,7 +82,7 @@ public:
     QVector<QString> removeColumn(const QString& colName);
 
     void renameColumn(const QString& oldName, const QString& newName);
-
+    virtual QUuid getClassUid() const;
 
 
 private:

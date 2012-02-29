@@ -220,9 +220,7 @@ void NewViewForm::onNameChange(QString a)
 {
     m_view->setName(a);
     m_view->getLocation()->setText(0, a);
-    QVariant v;
-    v.setValue(a);
-    m_view->getLocation()->setData(0, Qt::UserRole, v);
+
     if(m_updateSqlAfterNameChange)
     {
         m_autoChange = true;
@@ -261,9 +259,7 @@ QString NewViewForm::getViewNameFromSql()
         ui->txtViewName->setText(n);
         m_view->getLocation()->setText(0, n);
         m_view->setName(n);
-        QVariant v;
-        v.setValue(n);
-        m_view->getLocation()->setData(0, Qt::UserRole, v);
+
         m_updateSqlAfterNameChange = true;
         return n;
     }

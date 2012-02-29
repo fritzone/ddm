@@ -8,8 +8,8 @@
 #include "core_Trigger.h"
 #include "core_Function.h"
 
-MajorVersion::MajorVersion(QTreeWidget* tree, QTreeWidget* dttree, QTreeWidget* issueTree, ContextMenuEnabledTreeWidgetItem* projectItem, int major, int minor, Project* p)
-    : DefaultVersionImplementation(tree, dttree, issueTree, projectItem, p, major, minor)
+MajorVersion::MajorVersion(ContextMenuEnabledTreeWidgetItem* projectItem, int major, int minor, Project* p)
+    : DefaultVersionImplementation(projectItem, p, major, minor)
 {
     // make the dts sub item coming from the project
     QString v = QString::number(major);
@@ -19,7 +19,7 @@ MajorVersion::MajorVersion(QTreeWidget* tree, QTreeWidget* dttree, QTreeWidget* 
     createTreeItems();
 }
 
-MajorVersion::MajorVersion(QString verAsString, Project* p) : DefaultVersionImplementation(0, 0, 0, 0, p, 0, 0)
+MajorVersion::MajorVersion(QString verAsString, Project* p) : DefaultVersionImplementation(0, p, 0, 0)
 {
     version = verAsString;
 }

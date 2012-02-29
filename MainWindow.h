@@ -79,6 +79,12 @@ public:
     void showTrigger(const QString& triggerName, bool focus = true);
     void showNothing(const QString& , bool focus = true);
 
+    void showTableWithGuid(const QString& guid, bool focus = true);
+    void showViewWithGuid(const QString& guid, bool focus = true);
+    void showDiagramWithGuid(const QString& guid, bool focus = true);
+    void showTableInstanceWithGuid(const QString& guid, bool focus = true);
+
+
     void rerenderQuery(Query*);
     void showConnections();
     static MainWindow* instance()
@@ -199,6 +205,7 @@ private:
     void hideSplashwindow();
     void tryBrowseConnection(Connection* c);
     void showNamedObject(QTreeWidgetItem* current, showSomething s, bool focus=true);
+    void showObjectwithGuid(QTreeWidgetItem* current, showSomething s, bool focus=true);
 
 private:
     Ui::MainWindow *m_ui;
