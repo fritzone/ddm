@@ -56,6 +56,7 @@
 #include "NamedObjectListingForm.h"
 #include "core_Function.h"
 #include "MajorVersion.h"
+#include "UidWarehouse.h"
 
 #include <QtGui>
 
@@ -302,9 +303,41 @@ void MainWindow::showTable(const QString &tabName, bool focus)
     }
 }
 
+void MainWindow::showTableWithGuid(const QString &guid, bool focus)
+{
+    qDebug() << "guid=" << guid;
+    Table* table =  dynamic_cast<Table*>(UidWarehouse::instance().getElement(guid));
+    if(table == 0)  // shouldn't be ...
+    {
+        return;
+    }
+    showExistingTable(table);
+    if(focus)
+    {
+        m_guiElements->getProjectTree()->setCurrentItem(table->getLocation());
+    }
+}
+
 void MainWindow::showTableInstance(const QString &tabName, bool focus)
 {
     TableInstance* table =  m_workspace->workingVersion()->getTableInstance(tabName);
+    if(table == 0)  // shouldn't be ...
+    {
+        return;
+    }
+
+    TableInstanceForm* frmTinst = new TableInstanceForm(this);
+
+    frmTinst->setTableInstance(table);
+    frmTinst->createTableWithValues();
+    setCentralWidget(frmTinst);
+
+    if(focus) m_guiElements->getProjectTree()->setCurrentItem(table->getLocation());
+}
+
+void MainWindow::showTableInstanceWithGuid(const QString &guid, bool focus)
+{
+    TableInstance* table =  dynamic_cast<TableInstance*>(UidWarehouse::instance().getElement(guid));
     if(table == 0)  // shouldn't be ...
     {
         return;
@@ -338,6 +371,19 @@ void MainWindow::showDataType(const QString &name, bool focus)
 void MainWindow::showDiagram(const QString &name, bool /*focus*/)
 {
     Diagram* dgram = m_workspace->workingVersion()->getDiagram(name);
+    if(dgram == 0)
+    {
+        return;
+    }
+    DiagramForm* df = new DiagramForm(m_workspace->workingVersion(), dgram, this);
+    dgram->setForm(df);
+    setCentralWidget(dgram->getDiagramForm());
+    df->paintDiagram();
+}
+
+void MainWindow::showDiagramWithGuid(const QString &guid, bool /*focus*/)
+{
+    Diagram* dgram = dynamic_cast<Diagram*>(UidWarehouse::instance().getElement(guid));
     if(dgram == 0)
     {
         return;
@@ -414,11 +460,45 @@ void MainWindow::showView(const QString& viewName, bool /*focus*/)
     }
 }
 
+void MainWindow::showViewWithGuid(const QString& guid, bool /*focus*/)
+{
+    View* v = dynamic_cast<View*>(UidWarehouse::instance().getElement(guid));
+    if(v)
+    {
+        if(v->getManual())
+        {
+            m_nvf = new NewViewForm(false, 0, this);
+
+            m_nvf->setSqlSource(v);
+            m_nvf->setView(v);
+            m_nvf->presentSql(Workspace::getInstance()->currentProject(), QString("latin1"));
+
+            setCentralWidget(m_nvf);
+        }
+        else
+        {
+            m_nvf = 0;
+            v->getHelper()->resetContent();
+            v->getHelper()->setForm(this);
+            rerenderQuery(v->getQuery());
+        }
+    }
+}
+
+
 void MainWindow::showNamedObject(QTreeWidgetItem* current, showSomething s, bool f)
 {
     QVariant qv = current->data(0, Qt::UserRole);
     QString n = qv.toString();
     (this->*s)(n,f);
+}
+
+void MainWindow::showObjectwithGuid(QTreeWidgetItem* current, showSomething s, bool f)
+{
+    QVariant qv = current->data(0, Qt::UserRole);
+    QString uid = qv.toString();
+    qDebug() << "aaa=" << uid;
+    (this->*s)(uid,f);
 }
 
 void MainWindow::currentProjectTreeItemChanged(QTreeWidgetItem * current, QTreeWidgetItem*)
@@ -479,25 +559,25 @@ void MainWindow::currentProjectTreeItemChanged(QTreeWidgetItem * current, QTreeW
             if(current->parent() && current->parent() == m_workspace->workingVersion()->getGui()->getTablesItem())
             {
                 // the user clicked on a table, the name of the table is a tag
-                showNamedObject(current, (showSomething)&MainWindow::showTable, false);
+                showObjectwithGuid(current, (showSomething)&MainWindow::showTableWithGuid, false);
             }
             else
             if(current->parent() && current->parent() == m_workspace->workingVersion()->getGui()->getDiagramsItem())
             {
                 // the user clicked on a diagram
-                showNamedObject(current, (showSomething)&MainWindow::showDiagram, false);
+                showObjectwithGuid(current, (showSomething)&MainWindow::showDiagramWithGuid, false);
             }
             else
             if(current->parent() && current->parent() == m_workspace->workingVersion()->getGui()->getTableInstancesItem())
             {
                 // user clicked on a table instance
-                showNamedObject(current, (showSomething)&MainWindow::showTableInstance, false);
+                showObjectwithGuid(current, (showSomething)&MainWindow::showTableInstanceWithGuid, false);
             }
             else
             if(current->parent() && current->parent() == m_workspace->workingVersion()->getGui()->getViewsItem())
             {
                 // user clicked on a view
-                showNamedObject(current, (showSomething)&MainWindow::showView, false);
+                showObjectwithGuid(current, (showSomething)&MainWindow::showViewWithGuid, false);
             }
             else
             if(current->parent() && current->parent() == m_workspace->workingVersion()->getGui()->getProceduresItem())
@@ -916,7 +996,7 @@ void MainWindow::onAbout()
 
 void MainWindow::onNewDiagram()
 {
-    Diagram* dgram = new Diagram(m_workspace->workingVersion());
+    Diagram* dgram = new Diagram(m_workspace->workingVersion(), QUuid::createUuid().toString());
     DiagramForm* df = new DiagramForm(m_workspace->workingVersion(), dgram, this);
     m_workspace->workingVersion()->addDiagram(dgram);
     setCentralWidget(df);
@@ -2096,7 +2176,7 @@ void MainWindow::onValidate()
 void MainWindow::onNewViewWithSql()
 {
     m_nvf = new NewViewForm(false, 0, this);
-    View* v = new View(true);
+    View* v = new View(true, QUuid::createUuid().toString());
     Workspace::getInstance()->workingVersion()->addView(v);
     Workspace::getInstance()->workingVersion()->getGui()->createViewTreeEntry(v);
 
@@ -2109,7 +2189,7 @@ void MainWindow::onNewViewWithSql()
 
 void MainWindow::onNewView()
 {
-    View* v = new View(false);
+    View* v = new View(false, QUuid::createUuid().toString());
     m_nvf = 0;
     v->getHelper()->setForm(this);
     Workspace::getInstance()->workingVersion()->addView(v);
@@ -2147,7 +2227,7 @@ void MainWindow::onNewFunction()
 void MainWindow::onNewTrigger()
 {
     TriggerForm* frm = Workspace::getInstance()->workingVersion()->getGui()->getTriggerForm();
-    Trigger* trigger = new Trigger();
+    Trigger* trigger = new Trigger(NameGenerator::getUniqueName(Workspace::getInstance()->workingVersion(), (itemGetter)&Version::getTrigger, QString("trig")), QUuid::createUuid().toString());
     frm->setTrigger(trigger);
     frm->initSql();
     const QVector<Table*>& allTables = Workspace::getInstance()->workingVersion()->getTables();

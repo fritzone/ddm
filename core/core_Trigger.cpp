@@ -5,14 +5,9 @@
 #include "db_AbstractSQLGenerator.h"
 #include "Table.h"
 
-Trigger::Trigger() : SqlSourceEntity(),
-    NamedItem(NameGenerator::getUniqueName(Workspace::getInstance()->workingVersion(), (itemGetter)&Version::getTrigger, QString("trig"))),
+Trigger::Trigger(const QString& name, const QString& uid) : SqlSourceEntity(),
+    NamedItem(name), ObjectWithUid(uid),
     m_body(), m_event(), m_ttime(), m_table()
-{
-}
-
-Trigger::Trigger(const QString& name) : SqlSourceEntity(),
-    NamedItem(name), m_body(), m_event(), m_ttime(), m_table()
 {
 }
 
@@ -28,10 +23,17 @@ void Trigger::serialize(QDomDocument &doc, QDomElement &parent) const
     triggerElement.setAttribute("Event", m_event);
     triggerElement.setAttribute("Time", m_ttime);
     triggerElement.setAttribute("Table", m_table);
+    triggerElement.setAttribute("uid", getObjectUid());
+    triggerElement.setAttribute("class-uid", getClassUid());
 
     QDomElement textElement = doc.createElement("Body");
     QDomCDATASection cdata = doc.createCDATASection(m_body);
     textElement.appendChild(cdata);
     triggerElement.appendChild(textElement);
     parent.appendChild(triggerElement);
+}
+
+QUuid Trigger::getClassUid() const
+{
+    return QUuid(uidTrigger);
 }

@@ -357,7 +357,7 @@ View* MySQLDatabaseEngine::reverseEngineerView(Connection* c, const QString& vie
     while(query.next())
     {
         QString sql = query.value(1).toString();
-        view = new View(true);
+        view = new View(true, QUuid::createUuid().toString());
         view->setSql(sql);
     }
     dbo.close();
@@ -1406,7 +1406,7 @@ Trigger* MySQLDatabaseEngine::reverseEngineerTrigger(Connection *c, const QStrin
             QString table =  query.value(2).toString();
             QString stmt =  query.value(3).toString();
             QString timing =  query.value(4).toString();
-            result = new Trigger(trigName);
+            result = new Trigger(trigName, QUuid::createUuid().toString());
             result->setEvent(event);
             result->setTable(table);
             result->setSql(stmt);

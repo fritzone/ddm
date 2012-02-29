@@ -8,14 +8,21 @@
 #include "Version.h"
 #include "NameGenerator.h"
 #include "DiagramItemFactory.h"
+#include "uids.h"
 
-Diagram::Diagram(Version* v) : TreeItem(), NamedItem(NameGenerator::getUniqueName(v, (itemGetter)&Version::getDiagram, QString("Diagram"))), m_onStage(), m_fksOnStage(), m_notes(),
-        m_noteDescriptors(0), m_tableDescriptors(), m_form(0), m_saved(false), m_version(v), m_removed(false)
+Diagram::Diagram(Version* v, const QString& uid) : TreeItem(),
+    NamedItem(NameGenerator::getUniqueName(v, (itemGetter)&Version::getDiagram, QString("Diagram"))), m_onStage(), m_fksOnStage(), m_notes(),
+    ObjectWithUid(uid),
+    m_noteDescriptors(0), m_tableDescriptors(), m_form(0), m_saved(false), m_version(v), m_removed(false)
 {
 
 }
 
-Diagram::Diagram(Version* v, const QString & name) : TreeItem(), NamedItem(name), m_onStage(), m_fksOnStage(), m_notes(), m_form(0), m_saved(false), m_version(v)
+Diagram::Diagram(Version* v, const QString & name, const QString& uid) :
+    TreeItem(),
+    NamedItem(name),
+    ObjectWithUid(uid),
+    m_onStage(), m_fksOnStage(), m_notes(), m_form(0), m_saved(false), m_version(v)
 {
 
 }
@@ -236,6 +243,8 @@ void Diagram::serialize(QDomDocument &doc, QDomElement &parent) const
 {
     QDomElement diagramElement = doc.createElement("Diagram");      // will hold the data in this element
     diagramElement.setAttribute("Name", m_name);
+    diagramElement.setAttribute("uid", getObjectUid());
+    diagramElement.setAttribute("class-uid", getClassUid());
 
     // save the tables
     {
@@ -286,4 +295,9 @@ void Diagram::addFKDescriptor(DiagramFKDescriptor* nd)
     FkRelationDescriptor* fkrd = new FkRelationDescriptor();
     fkrd->setDescriptor(nd);
     m_fksOnStage.append(fkrd);
+}
+
+QUuid Diagram::getClassUid() const
+{
+    return QUuid(uidDiagram);
 }

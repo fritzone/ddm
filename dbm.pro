@@ -19,7 +19,6 @@ SOURCES += main.cpp \
     MajorVersion.cpp \
     Codepage.cpp \
     Configuration.cpp \
-    Table.cpp \
     NewTableForm.cpp \
     Column.cpp \
     Index.cpp \
@@ -29,12 +28,10 @@ SOURCES += main.cpp \
     AboutBoxDialog.cpp \
     DiagramForm.cpp \
     FkRelationDescriptor.cpp \
-    Diagram.cpp \
     EnterNoteTextDialog.cpp \
     ForeignKey.cpp \
     ContextMenuDelegate.cpp \
     CreateTableInstancesDialog.cpp \
-    TableInstance.cpp \
     TableInstanceForm.cpp \
     StartupValuesHelper.cpp \
     DynamicActionHandlerforMainWindow.cpp \
@@ -59,7 +56,6 @@ SOURCES += main.cpp \
     NewProjectDialog.cpp \
     db_DatabaseEngine.cpp \
     db_DatabaseNormalizationIssue.cpp \
-    core_View.cpp \
     gui_HelpWindow.cpp \
     core_Connection.cpp \
     core_ConnectionManager.cpp \
@@ -78,7 +74,6 @@ SOURCES += main.cpp \
     GuiElements.cpp \
     ConnectionGuiElements.cpp \
     TriggerForm.cpp \
-    core_Trigger.cpp \
     NamedObjectListingForm.cpp \
     core_Function.cpp \
     core_StoredMethod.cpp \
@@ -98,7 +93,6 @@ HEADERS += MainWindow.h \
     Version.h \
     Codepage.h \
     Configuration.h \
-    Table.h \
     NewTableForm.h \
     IconFactory.h \
     TreeItem.h \
@@ -114,11 +108,9 @@ HEADERS += MainWindow.h \
     DiagramForm.h \
     TableListWidget.h \
     FkRelationDescriptor.h \
-    Diagram.h \
     EnterNoteTextDialog.h \
     ContextMenuEnabledTreeWidget.h \
     CreateTableInstancesDialog.h \
-    TableInstance.h \
     TableInstanceForm.h \
     StartupValuesHelper.h \
     DynamicActionHandlerForMainWindow.h \
@@ -153,7 +145,6 @@ HEADERS += MainWindow.h \
     db_DatabaseBuiltinFunctionsParameter.h \
     db_DatabaseEngine.h \
     db_DatabaseNormalizationIssue.h \
-    core_View.h \
     gui_HelpWindow.h \
     core_Connection.h \
     core_ConnectionManager.h \
@@ -174,7 +165,6 @@ HEADERS += MainWindow.h \
     GuiElements.h \
     ConnectionGuiElements.h \
     TriggerForm.h \
-    core_Trigger.h \
     NamedObjectListingForm.h \
     core_Function.h \
     enums.h \
@@ -216,6 +206,9 @@ INCLUDEPATH += dbmysql
 
 include (diagram/diagram.pri)
 INCLUDEPATH += diagram
+
+include (core/core.pri)
+INCLUDEPATH += core
 
 include (reverse_eng/reverse_eng.pri)
 INCLUDEPATH += reverse_eng

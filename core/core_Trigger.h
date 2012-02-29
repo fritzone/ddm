@@ -5,15 +5,15 @@
 #include "SqlSourceEntity.h"
 #include "TreeItem.h"
 #include "SerializableElement.h"
+#include "core_ObjectWithUid.h"
 
 class Table;
 
-class Trigger : virtual public SqlSourceEntity, virtual public NamedItem, virtual public TreeItem, virtual public SerializableElement
+class Trigger : virtual public SqlSourceEntity, virtual public NamedItem, virtual public TreeItem, virtual public SerializableElement, virtual public ObjectWithUid
 {
 public:
 
-    Trigger();
-    Trigger(const QString&);
+    Trigger(const QString& name, const QString& uid);
 
     virtual QStringList generateSqlSource(AbstractSqlGenerator*, QHash<QString,QString>, const QString& codepage);
     virtual void serialize(QDomDocument& doc, QDomElement& parent) const;
@@ -57,6 +57,8 @@ public:
     {
         m_table = t;
     }
+
+    virtual QUuid getClassUid() const;
 
 private:
 

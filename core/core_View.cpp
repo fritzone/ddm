@@ -5,9 +5,11 @@
 #include "Version.h"
 #include "NameGenerator.h"
 #include "db_AbstractSQLGenerator.h"
+#include "uids.h"
 
-View::View(bool manual) : SqlSourceEntity(), NamedItem(NameGenerator::getUniqueName(Workspace::getInstance()->workingVersion(), (itemGetter)&Version::getView, QString("v"))),
-                m_columNames(), m_canReplace(false), m_manual(manual)
+View::View(bool manual, QString uid) : SqlSourceEntity(), NamedItem(NameGenerator::getUniqueName(Workspace::getInstance()->workingVersion(), (itemGetter)&Version::getView, QString("v"))),
+    ObjectWithUid(uid),
+    m_columNames(), m_canReplace(false), m_manual(manual)
 {
     m_helper = new QueryGraphicsHelper();
     m_selectQuery = new SelectQuery(m_helper, 0, this);
@@ -15,8 +17,8 @@ View::View(bool manual) : SqlSourceEntity(), NamedItem(NameGenerator::getUniqueN
     m_helper->setQuery(m_selectQuery);
 }
 
-View::View(Version*v, bool manual) : SqlSourceEntity(), NamedItem(NameGenerator::getUniqueName(v, (itemGetter)&Version::getView, QString("v"))),
-                m_columNames(), m_canReplace(false), m_manual(manual)
+View::View(Version*v, bool manual, QString uid) : SqlSourceEntity(), NamedItem(NameGenerator::getUniqueName(v, (itemGetter)&Version::getView, QString("v"))), ObjectWithUid(uid),
+    m_columNames(), m_canReplace(false), m_manual(manual)
 {
     m_helper = new QueryGraphicsHelper();
 }
@@ -37,6 +39,8 @@ void View::serialize(QDomDocument& doc, QDomElement& parent) const
     QDomElement viewElement = doc.createElement("View");
     viewElement.setAttribute("Name", m_name);
     viewElement.setAttribute("Manual", m_manual);
+    viewElement.setAttribute("uid", getObjectUid());
+    viewElement.setAttribute("class-uid", getClassUid());
 
     if(m_manual)
     {
@@ -61,4 +65,9 @@ void View::serialize(QDomDocument& doc, QDomElement& parent) const
     }
 
     parent.appendChild(viewElement);
+}
+
+QUuid View::getClassUid() const
+{
+    return QUuid(uidView);
 }

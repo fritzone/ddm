@@ -47,7 +47,7 @@ void Project::setEngine(DatabaseEngine* eng)
 
 void Project::createMajorVersion(int major, int minor)
 {
-    MajorVersion* mjw = new MajorVersion(m_tree, m_dtTree, m_issueTree, getLocation(), major, minor, this);
+    MajorVersion* mjw = new MajorVersion(getLocation(), major, minor, this);
     m_majorVersions.append(mjw);
 }
 
@@ -67,7 +67,7 @@ Version* Project::getWorkingVersion() const
     {
         return m_majorVersions[m_workingVersionIndex];
     }
-
+    qDebug() << "No version ...";
     return 0;
 }
 
@@ -120,4 +120,5 @@ void Project::releaseMajorVersion()
 {
     Version* cv = getWorkingVersion();
     createMajorVersion(cv->getMajor() + 1, 0);
+    m_workingVersionIndex ++;
 }
