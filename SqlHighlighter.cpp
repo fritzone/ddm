@@ -2,13 +2,13 @@
 #include "Table.h"
 #include "Column.h"
 #include "db_DatabaseEngine.h"
-#include "DataType.h"
+#include "UserDataType.h"
 #include "db_AbstractDTSupplier.h"
 #include "db_DatabaseBuiltinFunction.h"
 #include "gui_colors.h"
 
-SqlHighlighter::SqlHighlighter(QTextDocument *parent, QStringList keywords, QList<DataType> numericTypes, QList<DataType> booleanTypes,
-                               QList<DataType> textTypes, QList<DataType> blobTypes, QList<DataType> dateTimeTypes, QList<DataType> miscTypes,
+SqlHighlighter::SqlHighlighter(QTextDocument *parent, QStringList keywords, QList<UserDataType> numericTypes, QList<UserDataType> booleanTypes,
+                               QList<UserDataType> textTypes, QList<UserDataType> blobTypes, QList<UserDataType> dateTimeTypes, QList<UserDataType> miscTypes,
                                QVector<Table*> tables) : QSyntaxHighlighter(parent)
 {
     HighlightingRule rule;  // this is sort of reused
@@ -96,7 +96,7 @@ SqlHighlighter::SqlHighlighter(QTextDocument *parent, QStringList keywords, QLis
     // TODO: Add the columns from the views too, with the same format as above
 }
 
-void SqlHighlighter::appendTypePattern(QStringList &ls, const QList<DataType> & tp)
+void SqlHighlighter::appendTypePattern(QStringList &ls, const QList<UserDataType> & tp)
 {
     for(int i=0; i<tp.size(); i++)
     {

@@ -3,7 +3,7 @@
 
 #include <QList>
 
-#include "DataType.h"
+#include "UserDataType.h"
 
 class UserDataType;
 
@@ -23,39 +23,39 @@ public:
      * Method which will supply the supported text types of the database
      * engine.
      */
-    virtual QList<DataType> textTypes() = 0;
+    virtual QList<UserDataType> textTypes() = 0;
 
     /**
      * Method which will supply the supported numeric types for the specific
      * database engine
      */
-    virtual QList<DataType> numericTypes() = 0;
+    virtual QList<UserDataType> numericTypes() = 0;
 
     /**
      * Method which will supply the supported boolean types of the DB
      */
-    virtual QList<DataType> booleanTypes() = 0;
+    virtual QList<UserDataType> booleanTypes() = 0;
 
     /**
      * Method which will supply the date/time types of the DB engine
      */
-    virtual QList<DataType> dateTimeTypes() = 0;
+    virtual QList<UserDataType> dateTimeTypes() = 0;
 
     /**
      * Method which will supply the supported blob types
      */
-    virtual QList<DataType> blobTypes() = 0;
+    virtual QList<UserDataType> blobTypes() = 0;
 
     /**
      * Method which will supply the supported misc types. This includes
      * for example the ENUM mysql type
      */
-    virtual QList<DataType> miscTypes() = 0;
+    virtual QList<UserDataType> miscTypes() = 0;
 
     /**
      * Method which will supply the supported Spatial types.
      */
-    virtual QList<DataType> spatialTypes() = 0;
+    virtual QList<UserDataType> spatialTypes() = 0;
 
     /**
      * This functions pecifies if the given SQL type has the "SIZE" allowed,
@@ -85,7 +85,7 @@ public:
 
     virtual QString typeForSqlType(const QString& sqlType) = 0;
 
-    QList<DataType> getDTList(DT_TYPE dt)
+    QList<UserDataType> getDTList(DT_TYPE dt)
     {
         switch(dt)
         {
@@ -96,7 +96,7 @@ public:
         case DT_DATETIME: return dateTimeTypes();
         case DT_MISC: return miscTypes();
         case DT_SPATIAL: return spatialTypes();
-        default: return QList<DataType>();
+        default: return QList<UserDataType>();
         }
     }
 };

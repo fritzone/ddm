@@ -10,7 +10,7 @@
 #include "db_DatabaseBuiltinFunction.h"
 #include "qbr_Query.h"
 #include "Column.h"
-#include "DataType.h"
+#include "UserDataType.h"
 #include "qbr_SelectQueryJoinComponent.h"
 #include "strings.h"
 

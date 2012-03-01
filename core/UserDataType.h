@@ -3,7 +3,6 @@
 
 #include <QtXml>
 
-#include "DataType.h"
 #include "TreeItem.h"
 #include "SerializableElement.h"
 #include "IconFactory.h"
@@ -16,24 +15,13 @@ class UserDataType : virtual public NamedItem, virtual public TreeItem, virtual 
 {
 public:
 
-    UserDataType():NamedItem(""), sqlType(""),
-        size(""), defaultValue(""), miscStuff(), codePage(""),
-        unsignedDT(false), description(""), canBeNull(true), autoIncrement(false), m_type(DT_INVALID)
-    {}
-
-    UserDataType(const QString& name, DT_TYPE type):NamedItem(name), sqlType(""),
+    UserDataType(const QString& name, DT_TYPE type) : NamedItem(name), sqlType(""),
         size(""), defaultValue(""), miscStuff(), codePage(""),
         unsignedDT(false), description(""), canBeNull(true), autoIncrement(false), m_type(type)
     {}
 
-    UserDataType(const UserDataType& other): NamedItem(other.getName()), TreeItem(), SerializableElement(), DataType(other.name, other.type),
-    sqlType(other.sqlType), size(other.size),
-    defaultValue(other.defaultValue), miscStuff(other.miscStuff),
-    codePage(other.codePage),unsignedDT(other.unsignedDT),
-    description(other.description), canBeNull(other.canBeNull), autoIncrement(other.autoIncrement)
-    {}
 
-    ~UserDataType()
+    virtual ~UserDataType()
     {}
 
     UserDataType(const QString& name, const QString& typeString,
@@ -121,7 +109,7 @@ public:
 
     DT_TYPE getType() const
     {
-        return type;
+        return m_type;
     }
 
     static DT_TYPE getDT_TYPE(const QString& typeString);

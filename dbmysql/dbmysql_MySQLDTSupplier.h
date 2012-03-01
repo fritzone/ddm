@@ -8,13 +8,13 @@ class MySQLDTSupplier : public AbstractDTSupplier
 public:
     MySQLDTSupplier();
 
-    virtual QList<DataType> textTypes();
-    virtual QList<DataType> numericTypes();
-    virtual QList<DataType> booleanTypes();
-    virtual QList<DataType> dateTimeTypes();
-    virtual QList<DataType> blobTypes();
-    virtual QList<DataType> miscTypes();
-    virtual QList<DataType> spatialTypes();
+    virtual QList<UserDataType> textTypes();
+    virtual QList<UserDataType> numericTypes();
+    virtual QList<UserDataType> booleanTypes();
+    virtual QList<UserDataType> dateTimeTypes();
+    virtual QList<UserDataType> blobTypes();
+    virtual QList<UserDataType> miscTypes();
+    virtual QList<UserDataType> spatialTypes();
 
     /**
      * This functions pecifies if the given SQL type has the "SIZE" allowed,

@@ -15,6 +15,8 @@
 class DatabaseBuiltinFunction : public NamedItem
 {
 public:
+    explicit DatabaseBuiltinFunction() : NamedItem("invalid"), m_type(FT_INVALID), m_returnType("return", DT_INVALID), m_parameters(), m_description("") {}
+
     explicit DatabaseBuiltinFunction(QString name, FunctionType type, const UserDataType& returnType, const QString& desc) :
             NamedItem(name), m_type(type), m_returnType(returnType), m_parameters(), m_description(desc)
     {
@@ -87,10 +89,6 @@ public:
         m_parameters << p5;
         m_parameters << p6;
     }
-
-
-
-    DatabaseBuiltinFunction() : NamedItem("N/A"), m_type(FT_INVALID), m_returnType(), m_parameters(), m_description() {}
 
     int getParameterCount() const
     {
