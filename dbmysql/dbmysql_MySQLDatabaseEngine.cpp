@@ -298,7 +298,7 @@ Procedure* MySQLDatabaseEngine::reverseEngineerProc(Connection *c, const QString
     while(query.next())
     {
         QString sql = query.value(2).toString();
-        proc = new Procedure(procName);
+        proc = new Procedure(procName, QUuid::createUuid().toString());
         proc->setSql(sql);
     }
 
@@ -323,7 +323,7 @@ Function* MySQLDatabaseEngine::reverseEngineerFunc(Connection *c, const QString 
     while(query.next())
     {
         QString sql = query.value(2).toString();
-        func = new Function(funcName);
+        func = new Function(funcName, QUuid::createUuid().toString());
         func->setSql(sql);
     }
 

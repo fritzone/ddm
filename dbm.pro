@@ -13,8 +13,6 @@ unix:QMAKE_CXXFLAGS_WARN_ON += -Wall -Wextra
 SOURCES += main.cpp \
     MainWindowButtonDialog.cpp \
     DataTypesListForm.cpp \
-    DataType.cpp \
-    UserDataType.cpp \
     Project.cpp \
     MajorVersion.cpp \
     Codepage.cpp \
@@ -68,14 +66,12 @@ SOURCES += main.cpp \
     BrowseTableForm.cpp \
     ProcedureForm.cpp \
     FrameForLineNumbers.cpp \
-    core_Procedure.cpp \
     TextEditWithCodeCompletion.cpp \
     ListWidgetForCodeCompletion.cpp \
     GuiElements.cpp \
     ConnectionGuiElements.cpp \
     TriggerForm.cpp \
     NamedObjectListingForm.cpp \
-    core_Function.cpp \
     core_StoredMethod.cpp \
     UidWarehouse.cpp \
     core_ObjectWithUid.cpp
@@ -85,8 +81,6 @@ HEADERS += MainWindow.h \
     NewProjectDialog.h \
     NewDataTypeForm.h \
     DataTypesListForm.h \
-    DataType.h \
-    UserDataType.h \
     strings.h \
     Project.h \
     MajorVersion.h \
@@ -158,7 +152,6 @@ HEADERS += MainWindow.h \
     BrowseTableForm.h \
     ProcedureForm.h \
     FrameForLineNumbers.h \
-    core_Procedure.h \
     TextEditWithCodeCompletion.h \
     ListWidgetForCodeCompletion.h \
     commons.h \
@@ -166,7 +159,6 @@ HEADERS += MainWindow.h \
     ConnectionGuiElements.h \
     TriggerForm.h \
     NamedObjectListingForm.h \
-    core_Function.h \
     enums.h \
     core_StoredMethod.h \
     mw_helper.h \

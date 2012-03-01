@@ -2,7 +2,7 @@
 
 #include <QComboBox>
 
-UserDataType::UserDataType(const QString& name, const QString& typeString,
+UserDataType::UserDa    taType(const QString& name, const QString& typeString,
                            const QString& _sqlType, const QString& _s,
                            const QString& _defaultValue, const QString& _cp,
                            const QStringList& _mvs, bool unsi, const QString& desc,
@@ -105,3 +105,46 @@ bool UserDataType::isValid(const QString& v) const
     }
     return true;
 }
+
+QString UserDataType::typeAsString() const
+{
+    switch(type)
+    {
+    case DT_STRING: return strTextString;
+    case DT_NUMERIC: return strNumeric;
+    case DT_BOOLEAN: return strBoolean;
+    case DT_BLOB: return strBlob;
+    case DT_DATETIME: return strDateTime;
+    case DT_MISC: return strMisc;
+    case DT_SPATIAL: return strSpatial;
+    case DT_GENERIC:
+    case DT_INVALID:
+    default:
+        return strNA;
+    }
+    return QString("");
+}
+
+bool UserDataType::supportsAutoIncrement() const
+{
+    if(type == DT_NUMERIC) return true;
+    return false;
+}
+
+
+/**
+ * Returns the DT_TYPE for the given string (taken from the combo box)
+ */
+DT_TYPE UserDataType::getDT_TYPE(const QString& typeString)
+{
+    if(typeString == strTextString) return DT_STRING;
+    if(typeString == strNumeric) return DT_NUMERIC;
+    if(typeString == strBlob) return DT_BLOB;
+    if(typeString == strBoolean) return DT_BOOLEAN;
+    if(typeString == strMisc) return DT_MISC;
+    if(typeString == strDateTime) return DT_DATETIME;
+    if(typeString == strSpatial) return DT_SPATIAL;
+
+    return DT_INVALID;
+}
+

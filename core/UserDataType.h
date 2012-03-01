@@ -7,24 +7,26 @@
 #include "TreeItem.h"
 #include "SerializableElement.h"
 #include "IconFactory.h"
+#include "NamedItem.h"
+
 /**
  * Class representing a data type
  */
-class UserDataType : virtual public TreeItem, public SerializableElement, public DataType
+class UserDataType : virtual public NamedItem, virtual public TreeItem, virtual public SerializableElement
 {
 public:
 
-    UserDataType():DataType("", DT_INVALID), sqlType(""),
-    size(""), defaultValue(""), miscStuff(), codePage(""),
-    unsignedDT(false), description(""), canBeNull(true), autoIncrement(false)
+    UserDataType():NamedItem(""), sqlType(""),
+        size(""), defaultValue(""), miscStuff(), codePage(""),
+        unsignedDT(false), description(""), canBeNull(true), autoIncrement(false), m_type(DT_INVALID)
     {}
 
-    UserDataType(const QString& name, DT_TYPE type):DataType(name, type), sqlType(""),
-    size(""), defaultValue(""), miscStuff(), codePage(""),
-    unsignedDT(false), description(""), canBeNull(true), autoIncrement(false)
+    UserDataType(const QString& name, DT_TYPE type):NamedItem(name), sqlType(""),
+        size(""), defaultValue(""), miscStuff(), codePage(""),
+        unsignedDT(false), description(""), canBeNull(true), autoIncrement(false), m_type(type)
     {}
 
-    UserDataType(const UserDataType& other): TreeItem(), SerializableElement(), DataType(other.name, other.type),
+    UserDataType(const UserDataType& other): NamedItem(other.getName()), TreeItem(), SerializableElement(), DataType(other.name, other.type),
     sqlType(other.sqlType), size(other.size),
     defaultValue(other.defaultValue), miscStuff(other.miscStuff),
     codePage(other.codePage),unsignedDT(other.unsignedDT),
@@ -112,6 +114,18 @@ public:
     bool isValid(const QString&) const;
 
 
+    QString typeAsString() const;
+
+    bool supportsAutoIncrement() const;
+
+
+    DT_TYPE getType() const
+    {
+        return type;
+    }
+
+    static DT_TYPE getDT_TYPE(const QString& typeString);
+
 private:
 
     // the SQL type of this Data Type
@@ -138,6 +152,9 @@ private:
 
     // if the data type is numeric it can be auto increment or not ...
     bool autoIncrement;
+
+    DT_TYPE m_type;
+
 
 };
 

@@ -850,7 +850,19 @@ TableInstance* DeserializationFactory::createTableInstance(Version* v, const QDo
 Procedure* DeserializationFactory::createProcedure(Project*, Version*,  const QDomDocument&, const QDomElement& element)
 {
     QString name = element.attribute("Name");
-    Procedure* p = new Procedure(name);
+    QString uid = element.attribute("uid");
+    QString class_uid = element.attribute("class-uid");
+
+    if(uid.length() == 0)
+    {
+        uid = QUuid::createUuid().toString();
+    }
+    if(class_uid != uidProcedure)
+    {
+
+    }
+    Procedure* p = new Procedure(name, uid);
+
     QDomElement sqlElement = element.firstChild().toElement();
     QDomCDATASection cdata = sqlElement.firstChild().toCDATASection();
     p->setSql(cdata.toText().data());
@@ -860,7 +872,18 @@ Procedure* DeserializationFactory::createProcedure(Project*, Version*,  const QD
 Function* DeserializationFactory::createFunction(Project*, Version*,  const QDomDocument&, const QDomElement& element)
 {
     QString name = element.attribute("Name");
-    Function* p = new Function(name);
+    QString uid = element.attribute("uid");
+    QString class_uid = element.attribute("class-uid");
+    if(uid.length() == 0)
+    {
+        uid = QUuid::createUuid().toString();
+    }
+    if(class_uid != uidFunction)
+    {
+
+    }
+    Function* p = new Function(name, uid);
+
     QDomElement sqlElement = element.firstChild().toElement();
     QDomCDATASection cdata = sqlElement.firstChild().toCDATASection();
     p->setSql(cdata.toText().data());
