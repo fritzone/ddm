@@ -3,7 +3,7 @@
 
 #include <QSyntaxHighlighter>
 #include <QList>
-#include <DataType.h>
+#include <UserDataType.h>
 #include <QVector>
 
 class Table;
@@ -12,8 +12,8 @@ class SqlHighlighter : public QSyntaxHighlighter
 {
 public:
 
-    SqlHighlighter(QTextDocument *parent, QStringList keywords, QList<DataType> numericTypes, QList<DataType> booleanTypes,
-                   QList<DataType> textTypes, QList<DataType> blobTypes, QList<DataType> dateTimeTypes, QList<DataType> miscTypes,
+    SqlHighlighter(QTextDocument *parent, QStringList keywords, QList<UserDataType> numericTypes, QList<UserDataType> booleanTypes,
+                   QList<UserDataType> textTypes, QList<UserDataType> blobTypes, QList<UserDataType> dateTimeTypes, QList<UserDataType> miscTypes,
                    QVector<Table*> tables);
     ~SqlHighlighter(){}
 
@@ -22,7 +22,7 @@ protected:
 
 private:
 
-    void appendTypePattern(QStringList&, const QList<DataType>&);
+    void appendTypePattern(QStringList&, const QList<UserDataType>&);
 
 private:
     struct HighlightingRule

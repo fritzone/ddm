@@ -2,7 +2,7 @@
 #include "ui_NewDataTypeForm.h"
 #include "MainWindow.h"
 #include "db_DatabaseEngine.h"
-#include "DataType.h"
+#include "UserDataType.h"
 #include "db_AbstractDTSupplier.h"
 #include "Codepage.h"
 #include "UserDataType.h"
@@ -102,8 +102,8 @@ void NewDataTypeForm::basicDTselected(QString newSelection)
 
     hideSpecialComponents();
 
-    DT_TYPE type = DataType::getDT_TYPE(newSelection);
-    QList<DataType> types = m_dbEngine->getDTSupplier()->getDTList(type);
+    DT_TYPE type = UserDataType::getDT_TYPE(newSelection);
+    QList<UserDataType> types = m_dbEngine->getDTSupplier()->getDTList(type);
 
     for(int i=0; i< types.size(); i++)
     {
@@ -172,7 +172,7 @@ void NewDataTypeForm::onSave()
     }
 
     QString defaultValue = m_ui->txtDefaultValue->text();
-    if( DataType::getDT_TYPE(m_ui->cmbDTType->currentText()) == 5)  // MISC type (Enum or Set)
+    if( UserDataType::getDT_TYPE(m_ui->cmbDTType->currentText()) == 5)  // MISC type (Enum or Set)
     {
         defaultValue = m_ui->cmbEnumItems->currentText();
     }

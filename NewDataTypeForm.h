@@ -1,7 +1,7 @@
 #ifndef NEWDATATYPEFORM_H
 #define NEWDATATYPEFORM_H
 
-#include "DataType.h"
+#include "UserDataType.h"
 
 #include <QtGui/QWidget>
 #include <QAbstractButton>

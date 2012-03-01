@@ -1,16 +1,17 @@
 #include "UserDataType.h"
+#include "strings.h"
 
 #include <QComboBox>
 
-UserDataType::UserDa    taType(const QString& name, const QString& typeString,
+UserDataType::UserDataType(const QString& name, const QString& typeString,
                            const QString& _sqlType, const QString& _s,
                            const QString& _defaultValue, const QString& _cp,
                            const QStringList& _mvs, bool unsi, const QString& desc,
                            bool nullable, bool autoInc) :
-        DataType(name, DataType::getDT_TYPE(typeString)),
+        NamedItem(name),
         sqlType(_sqlType),
         size(_s), defaultValue(_defaultValue), miscStuff(_mvs), codePage(_cp),
-        unsignedDT(unsi), description(desc), canBeNull(nullable), autoIncrement(autoInc)
+        unsignedDT(unsi), description(desc), canBeNull(nullable), autoIncrement(autoInc), m_type(getDT_TYPE(typeString))
 {    
 }
 
@@ -18,8 +19,8 @@ UserDataType& UserDataType::operator = (const UserDataType& other)
 {
     if(this != &other)
     {
-        name = other.name;
-        type = other.type;
+        setName(other.getName());
+        m_type = other.m_type;
         sqlType = other.sqlType;
         size = other.size;
         defaultValue = other.defaultValue;
@@ -43,7 +44,7 @@ void UserDataType::serialize(QDomDocument& doc, QDomElement& parent) const
 {
     QDomElement dtElement = doc.createElement("DataType");      // will hold the data in this element
 
-    dtElement.setAttribute("Name", name);
+    dtElement.setAttribute("Name", getName());
     dtElement.setAttribute("Type", typeAsString());
     dtElement.setAttribute("SqlType", getSqlType());
     dtElement.setAttribute("Size", getSize());
@@ -92,7 +93,7 @@ QWidget* UserDataType::getDefaultsTableWidget() const
 
 bool UserDataType::isValid(const QString& v) const
 {
-    if(type == DT_NUMERIC)
+    if(m_type == DT_NUMERIC)
     {
         for(int i=0; i<v.length(); i++)
         {
@@ -108,7 +109,7 @@ bool UserDataType::isValid(const QString& v) const
 
 QString UserDataType::typeAsString() const
 {
-    switch(type)
+    switch(m_type)
     {
     case DT_STRING: return strTextString;
     case DT_NUMERIC: return strNumeric;
@@ -127,7 +128,7 @@ QString UserDataType::typeAsString() const
 
 bool UserDataType::supportsAutoIncrement() const
 {
-    if(type == DT_NUMERIC) return true;
+    if(m_type == DT_NUMERIC) return true;
     return false;
 }
 
