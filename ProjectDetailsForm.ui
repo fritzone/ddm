@@ -138,9 +138,26 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>txtProjectName</sender>
+   <signal>textEdited(QString)</signal>
+   <receiver>ProjectDetailsForm</receiver>
+   <slot>onNameChanged(QString)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>258</x>
+     <y>47</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>199</x>
+     <y>149</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>onBtnUpdate()</slot>
   <slot>onOopCheckChange(int)</slot>
+  <slot>onNameChanged(QString)</slot>
  </slots>
 </ui>

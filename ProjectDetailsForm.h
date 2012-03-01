@@ -21,6 +21,7 @@ public:
 public slots:
     void onBtnUpdate();
     void onOopCheckChange(int);
+    void onNameChanged(QString);
 
 protected:
     void changeEvent(QEvent *e);

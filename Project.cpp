@@ -4,38 +4,27 @@
 #include "db_DatabaseEngine.h"
 #include "IconFactory.h"
 #include "VersionGuiElements.h"
+#include "GuiElements.h"
 
-Project::Project(const QString& _name, QTreeWidget* _tree, QTreeWidget* _dtTree, QTreeWidget* _issueTree, bool oopIsEnabled):
-    m_tree(_tree), m_dtTree(_dtTree), m_issueTree(_issueTree), m_name(_name), m_engine(0), m_majorVersions(), m_oopIsEnabled(oopIsEnabled), m_workingVersionIndex(0)
-{
-    createTreeItem(m_tree, m_dtTree, m_issueTree);
-}
-
-Project::Project(const QString &_name, bool oop) : m_tree(0), m_dtTree(0), m_issueTree(0), m_name(_name), m_engine(0), m_majorVersions(), m_oopIsEnabled(oop)
+Project::Project(const QString &_name, bool oop) : NamedItem(_name), m_engine(0), m_majorVersions(), m_oopIsEnabled(oop), m_workingVersionIndex(0)
 {
 }
 
-void Project::createTreeItem(QTreeWidget* _tree, QTreeWidget* _dtt, QTreeWidget* _itt)
+void Project::createTreeItem(GuiElements* gui)
 {
-    m_tree = _tree;
-    m_dtTree = _dtt;
-    m_issueTree = _itt;
-
     ContextMenuEnabledTreeWidgetItem* projectItem = new ContextMenuEnabledTreeWidgetItem((ContextMenuEnabledTreeWidgetItem*)0, QStringList(m_name)) ;
     projectItem->setIcon(0, IconFactory::getProjectOpenIcon());
-
-    QList<QTreeWidgetItem *> items;
-    items.append(projectItem);
-    m_tree->insertTopLevelItems(0, items);
-
+    gui->getProjectTree()->insertTopLevelItem(0, projectItem);
     setLocation(projectItem);
+    qDebug() << projectItem;
 }
 
-void Project::populateTreeItem()
+void Project::populateTreeItem(GuiElements* gui)
 {
     for(int i=0; i<m_majorVersions.size(); i++)
     {
-        m_majorVersions[i]->createTreeItems(m_tree, m_dtTree, m_issueTree, getLocation());
+        qDebug() << getLocation();
+        m_majorVersions[i]->createTreeItems(gui, getLocation());
         m_majorVersions[i]->getGui()->populateTreeItems();
     }
 }
@@ -47,7 +36,7 @@ void Project::setEngine(DatabaseEngine* eng)
 
 void Project::createMajorVersion(int major, int minor)
 {
-    MajorVersion* mjw = new MajorVersion(getLocation(), major, minor, this);
+    MajorVersion* mjw = new MajorVersion(major, minor, this);
     m_majorVersions.append(mjw);
 }
 

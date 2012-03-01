@@ -8,18 +8,15 @@
 #include "core_Trigger.h"
 #include "core_Function.h"
 
-MajorVersion::MajorVersion(ContextMenuEnabledTreeWidgetItem* projectItem, int major, int minor, Project* p)
-    : DefaultVersionImplementation(projectItem, p, major, minor)
+MajorVersion::MajorVersion(int major, int minor, Project* p) : DefaultVersionImplementation(p, major, minor)
 {
     // make the dts sub item coming from the project
     QString v = QString::number(major);
     QString v1 = QString::number(minor);
     version = v + "." + v1;
-
-    createTreeItems();
 }
 
-MajorVersion::MajorVersion(QString verAsString, Project* p) : DefaultVersionImplementation(0, p, 0, 0)
+MajorVersion::MajorVersion(QString verAsString, Project* p) : DefaultVersionImplementation(p, 0, 0)
 {
     version = verAsString;
 }

@@ -123,7 +123,7 @@ void TriggerForm::nameChanged(QString a)
     m_trigger->setName(a);
     if(m_trigger->getLocation())
     {
-        m_trigger->getLocation()->setText(0, a);
+        m_trigger->setDisplayText(a);
     }
 }
 

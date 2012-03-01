@@ -21,6 +21,7 @@ class Procedure;
 class TriggerForm;
 class Trigger;
 class Function;
+class GuiElements;
 
 /**
  * The scope of this class is to have a common collection point for the tree widget items of a version (DT, Sql, Table, etc...)
@@ -30,7 +31,7 @@ class VersionGuiElements
 {
 public:
 
-    VersionGuiElements(QTreeWidget*,QTreeWidget*,QTreeWidget*,Version*);
+    VersionGuiElements(GuiElements*, Version*);
 
 
     ContextMenuEnabledTreeWidgetItem* getTablesItem() const

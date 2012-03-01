@@ -184,10 +184,13 @@ void MainWindow::onNewSolution()
 
         setupGuiForNewSolution();
 
-        Project* project = new Project(nprjdlg->getProjectName().toUpper(), m_guiElements->getProjectTree(), m_guiElements->getDataTypesTree(), m_guiElements->getIssuesTree(), nprjdlg->enableOOPFeatures());
-        project->setEngine(nprjdlg->getDatabaseEngine());
-        project->createMajorVersion(1, 0);
+        Project* project = new Project(nprjdlg->getProjectName().toUpper(), nprjdlg->enableOOPFeatures());
         m_workspace->addProjectToSolution(m_workspace->currentSolution(), project);
+        project->setEngine(nprjdlg->getDatabaseEngine());
+
+        project->createMajorVersion(1, 0);
+        project->createTreeItem(m_guiElements);
+        project->populateTreeItem(m_guiElements);
 
         // are we supposed to inherit the default data types?
         if(nprjdlg->inheritDefaultDatatypes())
@@ -600,7 +603,7 @@ bool MainWindow::onSaveNewDataType(const QString& name, const QString& type, con
     {
         *pudt = *udt;
         pudt->getLocation()->setIcon(0, IconFactory::getIconForDataType(pudt->getType()));
-        pudt->getLocation()->setText(0, name);
+        pudt->setDisplayText(name);
         pudt->getLocation()->setText(1, pudt->sqlAsString());
 
         // updating the "data" of the tree item
@@ -654,8 +657,8 @@ void MainWindow::populateTreeWithSolution(Solution* sol)
 {
     for(int i=0; i<sol->projects().size(); i++)
     {
-        sol->projects()[i]->createTreeItem(m_guiElements->getProjectTree(), m_guiElements->getDataTypesTree(), m_guiElements->getIssuesTree());
-        sol->projects()[i]->populateTreeItem();
+        sol->projects()[i]->createTreeItem(m_guiElements);
+        sol->projects()[i]->populateTreeItem(m_guiElements);
     }
 }
 
@@ -934,7 +937,7 @@ bool MainWindow::onSaveDiagram(Diagram* dgram)
     }
     else
     {
-        dgram->getLocation()->setText(0, dgram->getName());
+        dgram->setDisplayText(dgram->getName());
     }
 
     return true;
@@ -1317,7 +1320,7 @@ void MainWindow::onRenameInstanceFromPopup()
                 return;
             }
             tinst->setName(t);
-            tinst->getLocation()->setText(0, t);
+            tinst->setDisplayText(t);
             QVariant a(t);
             tinst->getLocation()->setData(0, Qt::UserRole, a);
             tinst->getSqlLocation()->setText(0, t);
@@ -1338,7 +1341,7 @@ void MainWindow::onRenameDiagramFromPopup()
         {
             QString t = dlg->getText();
             dgr->setName(t);
-            dgr->getLocation()->setText(0, t);
+            dgr->setDisplayText(t);
             QVariant a(t);
             dgr->getLocation()->setData(0, Qt::UserRole, a);
 
@@ -1551,7 +1554,7 @@ void MainWindow::onEditConnection()
         if(ij->exec()  == QDialog::Accepted)
         {
             c->resetTo(ij->getName(), ij->getHost(), ij->getUser(), ij->getPassword(), ij->getDatabase(), true, ij->getAutoConnect());
-            c->getLocation()->setText(0, c->getName());
+            c->setDisplayText(c->getName());
             c->getLocation()->setText(1, c->getDb()+"@"+c->getHost());
             QVariant var(c->getName());
             c->getLocation()->setData(0, Qt::UserRole, var);

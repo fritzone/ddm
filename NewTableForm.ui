@@ -236,7 +236,7 @@
                <item row="4" column="0">
                 <layout class="QHBoxLayout" name="horizontalLayout_3">
                  <item>
-                  <widget class="QToolButton" name="btnAdd">
+                  <widget class="QToolButton" name="btnAddColumn">
                    <property name="toolTip">
                     <string>Add/Update the column</string>
                    </property>
@@ -1372,7 +1372,7 @@ p, li { white-space: pre-wrap; }
    </hints>
   </connection>
   <connection>
-   <sender>btnAdd</sender>
+   <sender>btnAddColumn</sender>
    <signal>clicked()</signal>
    <receiver>NewTableForm</receiver>
    <slot>onAddColumn()</slot>

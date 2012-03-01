@@ -187,7 +187,7 @@ Table* Workspace::pasteTable()
 bool Workspace::onUpdateTable(Table* tbl)
 {
     QTreeWidgetItem* tblsItem = tbl->getLocation();
-    QVariant var(tbl->getName());
+    QVariant var(tbl->getObjectUid());
     tblsItem->setData(0, Qt::UserRole, var);
     tblsItem->setText(0, tbl->getName());
     change();

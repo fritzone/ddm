@@ -219,7 +219,7 @@ void NewViewForm::onChkCanReplaceToggle(bool st)
 void NewViewForm::onNameChange(QString a)
 {
     m_view->setName(a);
-    m_view->getLocation()->setText(0, a);
+    m_view->setDisplayText(a);
 
     if(m_updateSqlAfterNameChange)
     {
@@ -257,7 +257,7 @@ QString NewViewForm::getViewNameFromSql()
         }
         m_updateSqlAfterNameChange = false;
         ui->txtViewName->setText(n);
-        m_view->getLocation()->setText(0, n);
+        m_view->setDisplayText(n);
         m_view->setName(n);
 
         m_updateSqlAfterNameChange = true;
