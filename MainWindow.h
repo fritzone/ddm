@@ -69,21 +69,16 @@ public:
 
     ContextMenuEnabledTreeWidgetItem* instantiateTable(const QString& tabName, QStringList otherTablesBeingInstantiated, bool ref = false, Table* referencingTable = 0, TableInstance* becauseOfThis = 0);
 
-    void showTable(const QString& tabName, bool focus = true);
-    void showTableInstance(const QString& tabName, bool focus = true);
-    void showDataType(const QString &name, bool focus = true);
-    void showDiagram(const QString& name, bool focus = true);
-    void showView(const QString& viewName, bool focus = true);
-    void showProcedure(const QString& procName, bool focus = true);
-    void showFunction(const QString& funcName, bool focus = true);
-    void showTrigger(const QString& triggerName, bool focus = true);
     void showNothing(const QString& , bool focus = true);
+    void showDataType(const QString &name, bool focus = true);
 
     void showTableWithGuid(const QString& guid, bool focus = true);
-    void showViewWithGuid(const QString& guid, bool focus = true);
-    void showDiagramWithGuid(const QString& guid, bool focus = true);
     void showTableInstanceWithGuid(const QString& guid, bool focus = true);
-
+    void showDiagramWithGuid(const QString& guid, bool focus = true);
+    void showViewWithGuid(const QString& guid, bool focus = true);
+    void showProcedureWithGuid(const QString& guid, bool focus = true);
+    void showFunctionWithGuid(const QString& guid, bool focus = true);
+    void showTriggerWithGuid(const QString& guid, bool focus = true);
 
     void rerenderQuery(Query*);
     void showConnections();
@@ -204,7 +199,6 @@ private:
     void doDeployment(const QString& codePage, QStringList connectionNames);
     void hideSplashwindow();
     void tryBrowseConnection(Connection* c);
-    void showNamedObject(QTreeWidgetItem* current, showSomething s, bool focus=true);
     void showObjectwithGuid(QTreeWidgetItem* current, showSomething s, bool focus=true);
 
 private:

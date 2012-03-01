@@ -289,20 +289,6 @@ NewTableForm* MainWindow::showExistingTable(Table *table)
     return frm;
 }
 
-void MainWindow::showTable(const QString &tabName, bool focus)
-{
-    Table* table =  m_workspace->workingVersion()->getTable(tabName);
-    if(table == 0)  // shouldn't be ...
-    {
-        return;
-    }
-    showExistingTable(table);
-    if(focus)
-    {
-        m_guiElements->getProjectTree()->setCurrentItem(table->getLocation());
-    }
-}
-
 void MainWindow::showTableWithGuid(const QString &guid, bool focus)
 {
     qDebug() << "guid=" << guid;
@@ -316,23 +302,6 @@ void MainWindow::showTableWithGuid(const QString &guid, bool focus)
     {
         m_guiElements->getProjectTree()->setCurrentItem(table->getLocation());
     }
-}
-
-void MainWindow::showTableInstance(const QString &tabName, bool focus)
-{
-    TableInstance* table =  m_workspace->workingVersion()->getTableInstance(tabName);
-    if(table == 0)  // shouldn't be ...
-    {
-        return;
-    }
-
-    TableInstanceForm* frmTinst = new TableInstanceForm(this);
-
-    frmTinst->setTableInstance(table);
-    frmTinst->createTableWithValues();
-    setCentralWidget(frmTinst);
-
-    if(focus) m_guiElements->getProjectTree()->setCurrentItem(table->getLocation());
 }
 
 void MainWindow::showTableInstanceWithGuid(const QString &guid, bool focus)
@@ -368,19 +337,6 @@ void MainWindow::showDataType(const QString &name, bool focus)
     if(focus) m_guiElements->getDataTypesTree()->setCurrentItem(dt->getLocation());
 }
 
-void MainWindow::showDiagram(const QString &name, bool /*focus*/)
-{
-    Diagram* dgram = m_workspace->workingVersion()->getDiagram(name);
-    if(dgram == 0)
-    {
-        return;
-    }
-    DiagramForm* df = new DiagramForm(m_workspace->workingVersion(), dgram, this);
-    dgram->setForm(df);
-    setCentralWidget(dgram->getDiagramForm());
-    df->paintDiagram();
-}
-
 void MainWindow::showDiagramWithGuid(const QString &guid, bool /*focus*/)
 {
     Diagram* dgram = dynamic_cast<Diagram*>(UidWarehouse::instance().getElement(guid));
@@ -394,9 +350,9 @@ void MainWindow::showDiagramWithGuid(const QString &guid, bool /*focus*/)
     df->paintDiagram();
 }
 
-void MainWindow::showProcedure(const QString &procName, bool /*focus*/)
+void MainWindow::showProcedureWithGuid(const QString &guid, bool /*focus*/)
 {
-    Procedure* p = m_workspace->workingVersion()->getProcedure(procName);
+    Procedure* p = dynamic_cast<Procedure*>(UidWarehouse::instance().getElement(guid));
     if(p)
     {
         ProcedureForm* pf = m_workspace->workingVersion()->getGui()->getProcedureForm(MODE_PROCEDURE);
@@ -406,9 +362,9 @@ void MainWindow::showProcedure(const QString &procName, bool /*focus*/)
     }
 }
 
-void MainWindow::showFunction(const QString &funcName, bool /*focus*/)
+void MainWindow::showFunctionWithGuid(const QString &guid, bool /*focus*/)
 {
-    Function* p = m_workspace->workingVersion()->getFunction(funcName);
+    Function* p = dynamic_cast<Function*>(UidWarehouse::instance().getElement(guid));
     if(p)
     {
         ProcedureForm* pf = m_workspace->workingVersion()->getGui()->getProcedureForm(MODE_FUNCTION);
@@ -418,9 +374,9 @@ void MainWindow::showFunction(const QString &funcName, bool /*focus*/)
     }
 }
 
-void MainWindow::showTrigger(const QString &triggerName, bool /*focus*/)
+void MainWindow::showTriggerWithGuid(const QString &guid, bool /*focus*/)
 {
-    Trigger* p = m_workspace->workingVersion()->getTrigger(triggerName);
+    Trigger* p = dynamic_cast<Trigger*>(UidWarehouse::instance().getElement(guid));
     if(p)
     {
         TriggerForm* pf = m_workspace->workingVersion()->getGui()->getTriggerForm();
@@ -431,32 +387,6 @@ void MainWindow::showTrigger(const QString &triggerName, bool /*focus*/)
         pf->setTrigger(p);
         setCentralWidget(pf);
         pf->showSql();
-    }
-}
-
-
-void MainWindow::showView(const QString& viewName, bool /*focus*/)
-{
-    View* v = m_workspace->workingVersion()->getView(viewName);
-    if(v)
-    {
-        if(v->getManual())
-        {
-            m_nvf = new NewViewForm(false, 0, this);
-
-            m_nvf->setSqlSource(v);
-            m_nvf->setView(v);
-            m_nvf->presentSql(Workspace::getInstance()->currentProject(), QString("latin1"));
-
-            setCentralWidget(m_nvf);
-        }
-        else
-        {
-            m_nvf = 0;
-            v->getHelper()->resetContent();
-            v->getHelper()->setForm(this);
-            rerenderQuery(v->getQuery());
-        }
     }
 }
 
@@ -485,14 +415,6 @@ void MainWindow::showViewWithGuid(const QString& guid, bool /*focus*/)
     }
 }
 
-
-void MainWindow::showNamedObject(QTreeWidgetItem* current, showSomething s, bool f)
-{
-    QVariant qv = current->data(0, Qt::UserRole);
-    QString n = qv.toString();
-    (this->*s)(n,f);
-}
-
 void MainWindow::showObjectwithGuid(QTreeWidgetItem* current, showSomething s, bool f)
 {
     QVariant qv = current->data(0, Qt::UserRole);
@@ -507,14 +429,14 @@ void MainWindow::currentProjectTreeItemChanged(QTreeWidgetItem * current, QTreeW
     {
         if(current == m_workspace->workingVersion()->getGui()->getTablesItem())
         {// we have clicked on the Tables item (i.e. the list of tables)
-            showNamedObjectList(&MainWindow::showTable, m_workspace->workingVersion()->getTables(),
+            showNamedObjectList(&MainWindow::showTableWithGuid, m_workspace->workingVersion()->getTables(),
                                 Workspace::getInstance()->currentProjectIsOop()?IconFactory::getTabinstIcon():IconFactory::getTableIcon(),
                                 Workspace::getInstance()->currentProjectIsOop()?"Table Templates":"Tables");
         }
         else
         if(current == m_workspace->workingVersion()->getGui()->getTableInstancesItem())
         {// we have clicked on the Table instances item (i.e. the list of table instances)
-            showNamedObjectList(&MainWindow::showTableInstance, m_workspace->workingVersion()->getTableInstances(), IconFactory::getTabinstIcon(), "Tables");
+            showNamedObjectList(&MainWindow::showTableInstanceWithGuid, m_workspace->workingVersion()->getTableInstances(), IconFactory::getTabinstIcon(), "Tables");
         }
         else
         if(current == m_workspace->currentProject()->getLocation())
@@ -532,27 +454,27 @@ void MainWindow::currentProjectTreeItemChanged(QTreeWidgetItem * current, QTreeW
         else
         if(current == m_workspace->workingVersion()->getGui()->getDiagramsItem())
         {// we have clicked on the Diagrams item (i.e. the list of diagrams)
-            showNamedObjectList(&MainWindow::showDiagram, m_workspace->workingVersion()->getDiagrams(), IconFactory::getDiagramIcon(), "Diagrams");
+            showNamedObjectList(&MainWindow::showDiagramWithGuid, m_workspace->workingVersion()->getDiagrams(), IconFactory::getDiagramIcon(), "Diagrams");
         }
         else
         if(current == m_workspace->workingVersion()->getGui()->getViewsItem())
         {// we have clicked on the Views item (i.e. the list of views)
-            showNamedObjectList(&MainWindow::showView, m_workspace->workingVersion()->getViews(), IconFactory::getViewIcon(), "Views");
+            showNamedObjectList(&MainWindow::showViewWithGuid, m_workspace->workingVersion()->getViews(), IconFactory::getViewIcon(), "Views");
         }
         else
         if(current == m_workspace->workingVersion()->getGui()->getProceduresItem())
         {// we have clicked on the Procedures item (i.e. the list of procedures)
-            showNamedObjectList(&MainWindow::showProcedure, m_workspace->workingVersion()->getProcedures(), IconFactory::getProcedureIcon(), "Procedures");
+            showNamedObjectList(&MainWindow::showProcedureWithGuid, m_workspace->workingVersion()->getProcedures(), IconFactory::getProcedureIcon(), "Procedures");
         }
         else
         if(current == m_workspace->workingVersion()->getGui()->getFunctionsItem())
         {// we have clicked on the Procedures item (i.e. the list of procedures)
-            showNamedObjectList(&MainWindow::showFunction, m_workspace->workingVersion()->getFunctions(), IconFactory::getFunctionTreeIcon(), "Functions");
+            showNamedObjectList(&MainWindow::showFunctionWithGuid, m_workspace->workingVersion()->getFunctions(), IconFactory::getFunctionTreeIcon(), "Functions");
         }
         else
         if(current == m_workspace->workingVersion()->getGui()->getTriggersItem())
         {// we have clicked on the Triggers item (i.e. the list of triggers)
-            showNamedObjectList(&MainWindow::showTrigger, m_workspace->workingVersion()->getTriggers(), IconFactory::getTriggerIcon(), "Triggers");
+            showNamedObjectList(&MainWindow::showTriggerWithGuid, m_workspace->workingVersion()->getTriggers(), IconFactory::getTriggerIcon(), "Triggers");
         }
         else
         {
@@ -583,19 +505,19 @@ void MainWindow::currentProjectTreeItemChanged(QTreeWidgetItem * current, QTreeW
             if(current->parent() && current->parent() == m_workspace->workingVersion()->getGui()->getProceduresItem())
             {
                 // user clicked on a procedure
-                showNamedObject(current, (showSomething)&MainWindow::showProcedure, false);
+                showObjectwithGuid(current, (showSomething)&MainWindow::showProcedureWithGuid, false);
             }
             else
             if(current->parent() && current->parent() == m_workspace->workingVersion()->getGui()->getFunctionsItem())
             {
                 // user clicked on a function
-                showNamedObject(current, (showSomething)&MainWindow::showFunction, false);
+                showObjectwithGuid(current, (showSomething)&MainWindow::showFunctionWithGuid, false);
             }
             else
             if(current->parent() && current->parent() == m_workspace->workingVersion()->getGui()->getTriggersItem())
             {
                 // user clicked on a procedure
-                showNamedObject(current, (showSomething)&MainWindow::showTrigger, false);
+                showObjectwithGuid(current, (showSomething)&MainWindow::showTriggerWithGuid, false);
             }
             else
             if(current->parent() && current->parent() == m_workspace->workingVersion()->getGui()->getFinalSqlItem())
@@ -943,7 +865,7 @@ void MainWindow::onDeleteProcedure()
         m_workspace->workingVersion()->deleteProcedure(p->getName());
         m_workspace->workingVersion()->getGui()->updateForms();
 
-        showNamedObjectList(&MainWindow::showProcedure, m_workspace->workingVersion()->getProcedures(), IconFactory::getProcedureIcon(), "Procedures");
+        showNamedObjectList(&MainWindow::showProcedureWithGuid, m_workspace->workingVersion()->getProcedures(), IconFactory::getProcedureIcon(), "Procedures");
 
         m_workspace->workingVersion()->getGui()->getProceduresItem()->treeWidget()->clearSelection();
         m_workspace->workingVersion()->getGui()->getProceduresItem()->setSelected(true);
@@ -963,7 +885,7 @@ void MainWindow::onDeleteView()
         m_workspace->workingVersion()->deleteView(v->getName());
         m_workspace->workingVersion()->getGui()->updateForms();
 
-        showNamedObjectList(&MainWindow::showView, m_workspace->workingVersion()->getViews(), IconFactory::getViewsIcon(), "Views");
+        showNamedObjectList(&MainWindow::showViewWithGuid, m_workspace->workingVersion()->getViews(), IconFactory::getViewsIcon(), "Views");
 
         m_workspace->workingVersion()->getGui()->getViewsItem()->treeWidget()->clearSelection();
         m_workspace->workingVersion()->getGui()->getViewsItem()->setSelected(true);
@@ -1166,7 +1088,7 @@ void MainWindow::onDeleteTableFromPopup()
             {
                 if(ntf->getTableName() == tabName)  // show the list of tables if we deleted the current table
                 {
-                    showNamedObjectList(&MainWindow::showTable, m_workspace->workingVersion()->getTables(),
+                    showNamedObjectList(&MainWindow::showTableWithGuid, m_workspace->workingVersion()->getTables(),
                                         Workspace::getInstance()->currentProjectIsOop()?IconFactory::getTabinstIcon():IconFactory::getTableIcon(),
                                         Workspace::getInstance()->currentProjectIsOop()?"Table Templates":"Tables");
                     m_workspace->workingVersion()->getGui()->getTablesItem()->treeWidget()->clearSelection();
@@ -1480,7 +1402,7 @@ void MainWindow::onDeleteInstanceFromPopup()
         m_workspace->workingVersion()->purgeSentencedTableInstances();
 
         // and show a table instances list form
-        showNamedObjectList(&MainWindow::showTable, m_workspace->workingVersion()->getTables(),
+        showNamedObjectList(&MainWindow::showTableWithGuid, m_workspace->workingVersion()->getTables(),
                             Workspace::getInstance()->currentProjectIsOop()?IconFactory::getTabinstIcon():IconFactory::getTableIcon(),
                             Workspace::getInstance()->currentProjectIsOop()?"Table Templates":"Tables");
 
@@ -1581,7 +1503,7 @@ void MainWindow::onInjectBrowsedTable()
             t->setName(NameGenerator::getUniqueName(Workspace::getInstance()->currentProject()->getWorkingVersion(), (itemGetter)&Version::getTable, tab));
             Workspace::getInstance()->currentProject()->getWorkingVersion()->addTable(t);
             m_workspace->workingVersion()->getGui()->createTableTreeEntry(t, m_workspace->workingVersion()->getGui()->getTablesItem());
-            showTable(t->getName());
+            showTableWithGuid(t->getObjectUid());
             QVector<TableInstance*> r = t->getTableInstances();
             for(int i=0; i<r.size(); i++)
             {
@@ -1815,7 +1737,7 @@ void MainWindow::onDeleteDiagramFromPopup()
         m_workspace->workingVersion()->deleteDiagram(dgr->getName());
         m_workspace->workingVersion()->getGui()->updateForms();
 
-        showNamedObjectList(&MainWindow::showTable, m_workspace->workingVersion()->getTables(), IconFactory::getDiagramIcon(), "Diagrams");
+        showNamedObjectList(&MainWindow::showDiagramWithGuid, m_workspace->workingVersion()->getTables(), IconFactory::getDiagramIcon(), "Diagrams");
         m_workspace->workingVersion()->getGui()->getDiagramsItem()->treeWidget()->clearSelection();
         m_workspace->workingVersion()->getGui()->getDiagramsItem()->setSelected(true);
 
@@ -2201,7 +2123,7 @@ void MainWindow::onNewView()
 void MainWindow::onNewProcedure()
 {
     ProcedureForm* frm = Workspace::getInstance()->workingVersion()->getGui()->getProcedureForm(MODE_PROCEDURE);
-    Procedure* p = new Procedure();
+    Procedure* p = new Procedure(NameGenerator::getUniqueName(Workspace::getInstance()->workingVersion(), (itemGetter)&Version::getProcedure, QString("proc")), QUuid::createUuid().toString());
     frm->setProcedure(p);
     frm->initSql();
     Workspace::getInstance()->workingVersion()->addProcedure(p);
@@ -2214,7 +2136,7 @@ void MainWindow::onNewProcedure()
 void MainWindow::onNewFunction()
 {
     ProcedureForm* frm = Workspace::getInstance()->workingVersion()->getGui()->getProcedureForm(MODE_FUNCTION);
-    Function* func = new Function();
+    Function* func = new Function(NameGenerator::getUniqueName(Workspace::getInstance()->workingVersion(), (itemGetter)&Version::getFunction, QString("func")), QUuid::createUuid().toString());
     frm->setProcedure(func);
     frm->initSql();
     Workspace::getInstance()->workingVersion()->addFunction(func);

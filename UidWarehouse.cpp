@@ -26,7 +26,6 @@ void UidWarehouse::addElement(ObjectWithUid *o)
     whe->obj = o;
     whe->objectId = o->getObjectUid();
     Solution* s = 0;
-    qDebug() << "adding: " <<o->getObjectUid().toString();
     if(m_items.keys().contains(s))
     {
         m_items[s].insert(o->getObjectUid().toString(), whe);
@@ -50,7 +49,6 @@ ObjectWithUid* UidWarehouse::getElement(const QString &uid)
     else
     {
         const QMap<QString, WarehouseEntry*>& m = m_items[s];
-        qDebug() << m << " looking for " << uid ;
         if(m.contains(uid))
         {
             WarehouseEntry* whe = m[uid];
@@ -60,6 +58,5 @@ ObjectWithUid* UidWarehouse::getElement(const QString &uid)
             }
         }
     }
-    qDebug() << "something's wrong";
     return 0;
 }

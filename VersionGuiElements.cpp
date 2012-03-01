@@ -375,7 +375,7 @@ ContextMenuEnabledTreeWidgetItem* VersionGuiElements::createViewTreeEntry(View* 
 ContextMenuEnabledTreeWidgetItem* VersionGuiElements::createProcedureTreeEntry(Procedure* proc)
 {
     ContextMenuEnabledTreeWidgetItem* newProcItem = new ContextMenuEnabledTreeWidgetItem(proceduresItem, QStringList(proc->getName())) ;
-    QVariant var(proc->getName());
+    QVariant var(proc->getObjectUid());
     newProcItem->setData(0, Qt::UserRole, var);
     newProcItem->setIcon(0, IconFactory::getProcedureIcon());
     newProcItem->setPopupMenu(ContextMenuCollection::getInstance()->getProcedurePopupMenu());
@@ -393,7 +393,7 @@ ContextMenuEnabledTreeWidgetItem* VersionGuiElements::createProcedureTreeEntry(P
 ContextMenuEnabledTreeWidgetItem* VersionGuiElements::createFunctionTreeEntry(Function* proc)
 {
     ContextMenuEnabledTreeWidgetItem* newFuncItem = new ContextMenuEnabledTreeWidgetItem(functionsItem, QStringList(proc->getName())) ;
-    QVariant var(proc->getName());
+    QVariant var(proc->getObjectUid());
     newFuncItem->setData(0, Qt::UserRole, var);
     newFuncItem->setIcon(0, IconFactory::getFunctionTreeIcon());
     //newFuncItem->setPopupMenu(ContextMenuCollection::getInstance()->getProcedurePopupMenu());
@@ -411,7 +411,7 @@ ContextMenuEnabledTreeWidgetItem* VersionGuiElements::createFunctionTreeEntry(Fu
 ContextMenuEnabledTreeWidgetItem* VersionGuiElements::createTriggerTreeEntry(Trigger* trg)
 {
     ContextMenuEnabledTreeWidgetItem* newTriggerItem = new ContextMenuEnabledTreeWidgetItem(triggersItem, QStringList(trg->getName())) ;
-    QVariant var(trg->getName());
+    QVariant var(trg->getObjectUid());
     newTriggerItem->setData(0, Qt::UserRole, var);
     newTriggerItem->setIcon(0, IconFactory::getTriggerIcon());
     //newTriggerItem->setPopupMenu(ContextMenuCollection::getInstance()->getTriggerPopupMenu());

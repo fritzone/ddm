@@ -23,8 +23,8 @@ public:
         for(int i=0; i<items.size(); i++)
         {
             QStringList a(items.at(i)->getName());
-
             QTreeWidgetItem* item = new QTreeWidgetItem((QTreeWidget*)0, a);
+            item->setData(0, Qt::UserRole, QVariant(items.at(i)->getObjectUid()));
             item->setIcon(0, m_icon);
             ui->treeItems->addTopLevelItem(item);
         }

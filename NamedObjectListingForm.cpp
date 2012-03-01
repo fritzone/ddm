@@ -1,6 +1,8 @@
 #include "NamedObjectListingForm.h"
 #include "NamedItem.h"
 
+#include <QDebug>
+
 NamedObjectListingForm::NamedObjectListingForm(QWidget *parent, MainWindow::showSomething shower, const QIcon& icon, const QString& title) :
     QWidget(parent),
     ui(new Ui::NamedObjectListingForm), m_objectShower(shower), m_icon(icon), m_title(title)
@@ -35,6 +37,7 @@ void NamedObjectListingForm::changeEvent(QEvent *e)
 
 void NamedObjectListingForm::doubleClickTree(QTreeWidgetItem* item, int)
 {
-    QString name = item->text(0);
-    (MainWindow::instance()->*m_objectShower)(name, true);
+    QString guid = item->data(0, Qt::UserRole).toString();
+    qDebug() << guid;
+    (MainWindow::instance()->*m_objectShower)(guid, true);
 }

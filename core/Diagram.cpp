@@ -11,8 +11,8 @@
 #include "uids.h"
 
 Diagram::Diagram(Version* v, const QString& uid) : TreeItem(),
-    NamedItem(NameGenerator::getUniqueName(v, (itemGetter)&Version::getDiagram, QString("Diagram"))), m_onStage(), m_fksOnStage(), m_notes(),
-    ObjectWithUid(uid),
+    NamedItem(NameGenerator::getUniqueName(v, (itemGetter)&Version::getDiagram, QString("Diagram"))),
+    ObjectWithUid(uid), m_onStage(), m_fksOnStage(), m_notes(),
     m_noteDescriptors(0), m_tableDescriptors(), m_form(0), m_saved(false), m_version(v), m_removed(false)
 {
 
