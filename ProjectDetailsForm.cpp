@@ -45,3 +45,9 @@ void ProjectDetailsForm::onOopCheckChange(int)
 {
     ui->checkBox->setCheckState(m_project->oopProject()?Qt::Checked:Qt::Unchecked);
 }
+
+void ProjectDetailsForm::onNameChanged(QString a)
+{
+    m_project->setName(ui->txtProjectName->text());
+    m_project->setDisplayText(a);
+}

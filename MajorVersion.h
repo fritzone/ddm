@@ -24,7 +24,7 @@ public:
     /**
      * Constructor: Takes in the project Item and the current version
      */
-    MajorVersion(ContextMenuEnabledTreeWidgetItem* projectItem, int major, int minor, Project*);
+    MajorVersion(int major, int minor, Project*);
 
     /**
      * This constructos is used when deserializing. In this case the tree and projectItem are set later

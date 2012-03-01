@@ -64,7 +64,6 @@ public slots:
     // main page
     void onStorageEngineChange(QString);
     void onChangeTab(int);
-    void onButtonsClicked(QAbstractButton*);
     void onHelp();
     void onChangeName(QString);
 
@@ -140,7 +139,6 @@ private:
     //void prepareColumnsListWithParentItems(const Table*);
 
     void onSave();
-    void onReset();
 
     void autoSave();
     void resetIndexGui();

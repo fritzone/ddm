@@ -26,6 +26,11 @@ public:
         return m_popupMenu;
     }
 
+    virtual void setData(int column, int role, const QVariant &value)
+    {
+        QTreeWidgetItem::setData(column, role, value);
+    }
+
 private:
 
     QMenu* m_popupMenu;

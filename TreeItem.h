@@ -34,6 +34,11 @@ public:
         m_location->setText(0, newText);
     }
 
+    void setDisplayText(const QString& newText)
+    {
+        rename(newText);
+    }
+
 protected:
     // where the object is to be found
     ContextMenuEnabledTreeWidgetItem* m_location;

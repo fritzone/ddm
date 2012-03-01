@@ -58,7 +58,7 @@ QString ProcedureForm::getProcNameFromSql()
             n += ((t.at(i).isSpace())?(QString("")):(t.at(i)));
             i++;
         }
-        m_proc->getLocation()->setText(0, n);
+        m_proc->setDisplayText(n);
         m_proc->setName(n);
         QVariant v;
         v.setValue(n);

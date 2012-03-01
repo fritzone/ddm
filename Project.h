@@ -3,27 +3,26 @@
 
 #include "SerializableElement.h"
 #include "TreeItem.h"
+#include "NamedItem.h"
 
-#include <QTreeWidget>
 #include <QVector>
 
 class AbstractDTSupplier;
 class MajorVersion;
 class Version;
 class DatabaseEngine;
+class GuiElements;
 
 /**
  * Holds the data of a project.
  * TODO: I don't like that the clas is knowing a QTreeWidget item. When there's new time, find a way to detach it from this class.
  */
-class Project : public SerializableElement, public TreeItem
+class Project : virtual public NamedItem, virtual public SerializableElement, virtual public TreeItem
 {
 public:
 
     // constructor
-    Project(const QString& _name, QTreeWidget* _tree, QTreeWidget* _dtTree, QTreeWidget* _issueTree, bool oopIsEnabled);
-
-    Project(const QString& _name, bool);
+    Project(const QString& _name, bool oop);
 
     // creates a version, updates the GUI
     void createMajorVersion(int major, int  minor);
@@ -42,23 +41,12 @@ public:
 
     virtual void serialize(QDomDocument& doc, QDomElement& parent) const;
 
-    void createTreeItem(QTreeWidget* _tree, QTreeWidget* _dtt, QTreeWidget* _itt);
+    void createTreeItem(GuiElements*);
 
     /**
      * This should be called only by the deserialization method.
      */
-    void populateTreeItem();
-
-    const QString& getName() const
-    {
-        return m_name;
-    }
-
-    void setName(const QString& nm)
-    {
-        m_name = nm;
-        m_location->setText(0, nm);
-    }
+    void populateTreeItem(GuiElements*);
 
     const QString& getDescription() const
     {
@@ -87,14 +75,6 @@ public:
 
 
 private:
-
-    // this is the tree from the main window of the application
-    QTreeWidget* m_tree;
-    QTreeWidget* m_dtTree;
-    QTreeWidget* m_issueTree;
-
-    // the name of the project
-    QString m_name;
 
     // the description of the project
     QString m_description;

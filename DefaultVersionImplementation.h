@@ -6,12 +6,13 @@
 
 #include <QTreeWidgetItem>
 
+class GuiElements;
 class Project;
 
 class DefaultVersionImplementation : public Version
 {
 public:
-    DefaultVersionImplementation(ContextMenuEnabledTreeWidgetItem* projectItem, Project* p, int, int);
+    DefaultVersionImplementation(Project* p, int, int);
 
     virtual void serialize(QDomDocument &doc, QDomElement &parent) const = 0;
 
@@ -71,7 +72,7 @@ public:
     virtual void addFunction(Function* p);
     virtual const QVector<Function*>& getFunctions();
 
-    void createTreeItems(QTreeWidget* tree = 0, QTreeWidget* dtTree = 0, QTreeWidget* issueTree = 0, ContextMenuEnabledTreeWidgetItem* projectIem = 0);
+    void createTreeItems(GuiElements* gui, ContextMenuEnabledTreeWidgetItem* projectItem);
 
 protected:
     // the version as a string representation. Major versions are always of form X.0
@@ -79,7 +80,6 @@ protected:
 
     // the data of this version
     VersionData m_data;
-    ContextMenuEnabledTreeWidgetItem* m_projectItem;
     Project* m_project;
 
     VersionGuiElements* m_guiElements;

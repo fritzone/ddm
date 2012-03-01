@@ -21,16 +21,17 @@
 #include "TriggerForm.h"
 #include "core_Trigger.h"
 #include "core_Function.h"
+#include "GuiElements.h"
 
 #include <QVector>
 #include <QtGui>
 
 // TODO: This file looks funny. See why it seems we have a lot of duplicate code
 
-VersionGuiElements::VersionGuiElements(QTreeWidget* projTree, QTreeWidget* dtTree, QTreeWidget* issueTree, Version* v) :
+VersionGuiElements::VersionGuiElements(GuiElements* guiElements, Version* v) :
     tablesItem(0), tableInstancesItem(0),
     versionItem(0), diagramsItem(0), proceduresItem(0), functionsItem(0), finalSqlItem(0), dtsItem(0), viewsItem(0),
-    triggersItem(0), m_tree(projTree), m_dtTree(dtTree), m_issuesTree(issueTree),
+    triggersItem(0), m_tree(guiElements->getProjectTree()), m_dtTree(guiElements->getDataTypesTree()), m_issuesTree(guiElements->getIssuesTree()),
     stringsDtItem(0), intsDtItem(0), dateDtItem(0), blobDtItem(0),
     boolDtItem(0), miscDtItem(0), spatialDtItem(0), m_version(v),
     m_newTableForm(0), m_existingTableForm(0), m_procedureForm(0)

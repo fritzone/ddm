@@ -24,16 +24,16 @@
 
 #include <QtGui>
 
-DefaultVersionImplementation::DefaultVersionImplementation(ContextMenuEnabledTreeWidgetItem* projectItem, Project* p, int major, int minor)
+DefaultVersionImplementation::DefaultVersionImplementation(Project* p, int major, int minor)
     : Version(major, minor),
-      version(""), m_data(), m_projectItem(projectItem), m_project(p), m_guiElements(0), m_validationFlags(0)
+      version(""), m_data(), m_project(p), m_guiElements(0), m_validationFlags(0)
 {
 }
 
-void DefaultVersionImplementation::createTreeItems(QTreeWidget* tree, QTreeWidget* dtTree, QTreeWidget* issueTree, ContextMenuEnabledTreeWidgetItem* projectIem)
+void DefaultVersionImplementation::createTreeItems(GuiElements* gui, ContextMenuEnabledTreeWidgetItem* projectItem)
 {
-    m_guiElements = new VersionGuiElements(tree, dtTree, issueTree, this);
-    m_guiElements->createGuiElements(projectIem);
+    m_guiElements = new VersionGuiElements(gui, this);
+    m_guiElements->createGuiElements(projectItem);
 }
 
 void DefaultVersionImplementation::addNewDataType(UserDataType* dt)

@@ -159,6 +159,7 @@ NewTableForm::NewTableForm(DatabaseEngine* db, Project* prj, QWidget *parent, bo
     populateCodepageCombo();
 
     m_signalMapperForCombosInColumns = new QSignalMapper(this);
+    m_ui->buttons->hide();
 
 }
 
@@ -690,6 +691,7 @@ void NewTableForm::onAddColumn()
 
         // see if the change has done anything to the issues
         updateIssues();
+        autoSave();
         m_currentColumn = 0;
     }
     else                    // we are not working on a column, but adding a new one
@@ -719,6 +721,7 @@ void NewTableForm::onAddColumn()
         col->setLocation(item);
         m_ui->txtNewColumnName->setFocus();
         updateIssues();
+        autoSave();
 //        Workspace::getInstance()->workingVersion()->checkIssuesOfNewColumn(col, m_table);
 
     }
@@ -728,7 +731,7 @@ void NewTableForm::onAddColumn()
     m_ui->txtColumnDescription->setText("");
     m_ui->chkPrimary->setChecked(false);
     m_ui->chkAutoInc->setChecked(false);
-    m_ui->btnAdd->setIcon(IconFactory::getAddIcon());
+    m_ui->btnAddColumn->setIcon(IconFactory::getAddIcon());
 
     lstColumns->resizeColumnToContents(0);
     lstColumns->resizeColumnToContents(1);
@@ -749,7 +752,7 @@ void NewTableForm::onCancelColumnEditing()
     m_ui->cmbNewColumnType->setCurrentIndex(-1);
     m_ui->chkPrimary->setChecked(false);
     m_ui->chkAutoInc->setChecked(false);
-    m_ui->btnAdd->setIcon(IconFactory::getAddIcon());
+    m_ui->btnAddColumn->setIcon(IconFactory::getAddIcon());
     toggleColumnFieldDisableness(false);
     m_ui->grpColumnDetails->setTitle(tr(" New column "));
     m_ui->txtColumnDescription->setText("");
@@ -885,7 +888,7 @@ void NewTableForm::showColumn(const Column * c)
     m_ui->chkAutoInc->setChecked(c->hasAutoIncrement());
     m_ui->txtColumnDescription->setText(c->getDescription());
 
-    m_ui->btnAdd->setIcon(IconFactory::getApplyIcon());
+    m_ui->btnAddColumn->setIcon(IconFactory::getApplyIcon());
     m_ui->btnCancelColumnEditing->show();
 
     m_ui->grpColumnDetails->setTitle("Column details");
@@ -971,18 +974,6 @@ void NewTableForm::populateColumnsForIndices()
     }
 }
 
-void NewTableForm::onButtonsClicked(QAbstractButton* btn)
-{
-    if(btn == m_ui->buttons->buttons().at(0)) // Seems very strange, but works like this... Save is the First, after Reset
-    {
-        onSave();
-    }
-    else
-    {
-        onReset();
-    }
-}
-
 void NewTableForm::onSave()
 {
     if(m_ui->txtTableName->text().length() == 0)
@@ -1039,10 +1030,6 @@ void NewTableForm::autoSave()
 {
     prepareValuesToBeSaved();
     doTheSave();
-}
-
-void NewTableForm::onReset()
-{
 }
 
 void NewTableForm::doTheSave()
@@ -2065,7 +2052,7 @@ void NewTableForm::onChangeName(QString a)
     {
         QVariant v(a);
         m_table->setName(a);
-        m_table->getLocation()->setText(0, a);
+        m_table->setDisplayText(a);
         updateSqlDueToChange();
         // and see if this was due to a new table being focused ... weird check.
         if(prevName != a) updateIssues();
@@ -2292,7 +2279,7 @@ void NewTableForm::onIndexNameChange(QString)
         if(m_ui->txtNewIndexName->text().length() == 0) return;
 
         m_currentIndex->setName(m_ui->txtNewIndexName->text());
-        m_currentIndex->getLocation()->setText(0, m_currentIndex->getName());
+        m_currentIndex->setDisplayText(m_currentIndex->getName());
         autoSave();
     }
 }
