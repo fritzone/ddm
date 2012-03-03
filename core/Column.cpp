@@ -1,12 +1,13 @@
 #include "Column.h"
 #include "UserDataType.h"
 #include "Table.h"
+#include "uids.h"
 
 #include <QApplication>
 #include <QClipboard>
 
-Column::Column(const QString& name, const UserDataType* type, bool pk, bool autoInc) :
-    TreeItem(), SerializableElement(), CopyableElement(), IssueOriginator(), NamedItem(name),
+Column::Column(const QString& uid, const QString& name, const UserDataType* type, bool pk, bool autoInc) :
+    TreeItem(), SerializableElement(), CopyableElement(), IssueOriginator(), NamedItem(name), ItemWithDescription(), ObjectWithUid(uid),
     m_type(type), m_pk(pk), m_autoIncrement(autoInc)
 {
 
@@ -20,10 +21,12 @@ void Column::serialize(QDomDocument &doc, QDomElement &parent) const
     columnElement.setAttribute("PK", m_pk);
     columnElement.setAttribute("Type", m_type->getName());
     columnElement.setAttribute("AutoIncrement", m_autoIncrement);
+    columnElement.setAttribute("uid", getObjectUid());
+    columnElement.setAttribute("class-uid", getClassUid());
 
     {
     QDomElement descElement = doc.createElement("Description");  // description
-    QDomText descNode = doc.createTextNode(m_description);
+    QDomText descNode = doc.createTextNode(getDescription());
     descElement.appendChild(descNode);
     columnElement.appendChild(descElement);
     }
@@ -52,16 +55,6 @@ void Column::setPk(bool pk)
     m_pk = pk;
 }
 
-void Column::setDescription(const QString& desc)
-{
-    m_description = desc;
-}
-
-QString Column::getDescription() const
-{
-    return m_description;
-}
-
 bool Column::hasAutoIncrement() const
 {
     return m_autoIncrement;
@@ -86,4 +79,9 @@ void Column::copy()
 QString Column::getFullLocation() const
 {
     return m_table->getName() + "." + getName();
+}
+
+QUuid Column::getClassUid() const
+{
+    return uidColumn;
 }

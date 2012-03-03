@@ -533,8 +533,18 @@ Column* DeserializationFactory::createColumn(Version* ver, const QDomDocument &,
     QString pk = element.attribute("PK");
     QString type = element.attribute("Type");
     UserDataType* udt = ver->getDataType(type);
+    QString uid = element.attribute("uid");
+    QString class_uid = element.attribute("class-uid");
+    if(uid.length() == 0)
+    {
+        uid = QUuid::createUuid().toString();
+    }
+    if(class_uid != uidColumn)
+    {
 
-    Column* col = new Column(name, udt, pk == "1", element.attribute("AutoIncrement")=="1");
+    }
+
+    Column* col = new Column(uid, name, udt, pk == "1", element.attribute("AutoIncrement")=="1");
     QString g = element.firstChild().firstChild().nodeValue();
     col->setDescription(g);
     return col;

@@ -18,7 +18,6 @@ SOURCES += main.cpp \
     Codepage.cpp \
     Configuration.cpp \
     NewTableForm.cpp \
-    Column.cpp \
     Index.cpp \
     DeserializationFactory.cpp \
     ProjectDetailsForm.cpp \
@@ -90,7 +89,6 @@ HEADERS += MainWindow.h \
     NewTableForm.h \
     IconFactory.h \
     TreeItem.h \
-    Column.h \
     Index.h \
     SerializableElement.h \
     NamedItem.h \

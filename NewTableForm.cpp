@@ -709,7 +709,7 @@ void NewTableForm::onAddColumn()
         }
 
         UserDataType* colsDt = m_project->getWorkingVersion()->getDataType(m_ui->cmbNewColumnType->currentText());
-        Column* col = new Column(m_ui->txtNewColumnName->text(), colsDt, m_ui->chkPrimary->isChecked(), m_ui->chkAutoInc->isChecked());
+        Column* col = new Column(QUuid::createUuid().toString(), m_ui->txtNewColumnName->text(), colsDt, m_ui->chkPrimary->isChecked(), m_ui->chkAutoInc->isChecked());
         col->setDescription(m_ui->txtColumnDescription->toPlainText());
         ContextMenuEnabledTreeWidgetItem* item = createTWIForColumn(col);
         lstColumns->addTopLevelItem(item);
@@ -1935,6 +1935,7 @@ void NewTableForm::onLoadStartupValuesFromCSV()
 void NewTableForm::updateSqlDueToChange()
 {
     QString s = m_ui->cmbCharSetForSql->itemData(m_ui->cmbCharSetForSql->currentIndex()).toString();
+    qDebug() << s;
     if(s.indexOf('_') == -1) s = "latin1";
     s=s.left(s.indexOf('_'));
     presentSql(m_project, s);
