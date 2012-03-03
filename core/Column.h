@@ -6,6 +6,8 @@
 #include "CopyableElement.h"
 #include "IssueOriginator.h"
 #include "NamedItem.h"
+#include "core_ItemWithDescription.h"
+#include "core_ObjectWithUid.h"
 
 #include <QString>
 
@@ -15,10 +17,12 @@ class Table;
 /**
  * This class holds the necessary data to define a column
  */
-class Column : public TreeItem, public SerializableElement, public CopyableElement, public IssueOriginator, public NamedItem
+class Column : virtual public TreeItem, virtual public SerializableElement, virtual public CopyableElement,
+        virtual public IssueOriginator, virtual public NamedItem, virtual public ItemWithDescription,
+        virtual public ObjectWithUid
 {
 public:
-    Column(const QString& name, const UserDataType* type, bool pk, bool autoInc);
+    Column(const QString& uid, const QString& name, const UserDataType* type, bool pk, bool autoInc);
 
     const UserDataType* getDataType() const;
 
@@ -27,10 +31,6 @@ public:
     void setDataType(const UserDataType* dt);
 
     void setPk(bool pk);
-
-    void setDescription(const QString& desc);
-
-    QString getDescription() const;
 
     virtual void serialize(QDomDocument &doc, QDomElement &parent) const;
 
@@ -57,11 +57,12 @@ public:
         return m_table;
     }
 
+    virtual QUuid getClassUid() const;
+
 private:
     const UserDataType* m_type;
     bool m_pk;
     bool m_autoIncrement;
-    QString m_description;
     Table* m_table;
 };
 

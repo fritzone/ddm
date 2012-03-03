@@ -438,7 +438,7 @@ Table* MySQLDatabaseEngine::reverseEngineerTable(Connection *c, const QString& t
             udt = v->provideDatatypeForSqlType(field_name, type, nullable, defaultValue, relaxed);
             m_oneTimeMappings.insert(oneTimeKey, udt);
         }
-        Column* col = new Column(field_name, udt, QString::compare(keyness, "PRI", Qt::CaseInsensitive) == 0, extra == "auto_increment");
+        Column* col = new Column(QUuid::createUuid().toString(), field_name, udt, QString::compare(keyness, "PRI", Qt::CaseInsensitive) == 0, extra == "auto_increment");
 
         // and add the column to the table
         if(!found) m_revEngMappings.insert(udt, col);
