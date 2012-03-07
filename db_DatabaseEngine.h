@@ -18,6 +18,7 @@ class Codepage;
 class Procedure;
 class Function;
 class Trigger;
+class Sp;
 
 /**
  * This class is a kind of "wrapper" for the other classes that all deal
@@ -340,6 +341,12 @@ public:
      * @return an SQL script how to create the given table.
      */
     virtual QString getTableCreationScript(Connection* c, const QString& tabName) = 0;
+
+    /**
+     * Returns a vector of Database Specific properties this database provides.
+     * @return a vector of Database Specific properties this database provides.
+     */
+    virtual QVector<Sp*> getDatabaseSpecificProperties() = 0;
 
 public:
 
