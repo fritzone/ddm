@@ -73,7 +73,10 @@ SOURCES += main.cpp \
     NamedObjectListingForm.cpp \
     core_StoredMethod.cpp \
     UidWarehouse.cpp \
-    core_ObjectWithUid.cpp
+    core_ObjectWithUid.cpp \
+    db_SP.cpp \
+    WidgetForSpecificProperties.cpp \
+    TrueFalseSp.cpp
 
 HEADERS += MainWindow.h \
     MainWindowButtonDialog.h \
@@ -162,7 +165,14 @@ HEADERS += MainWindow.h \
     mw_helper.h \
     uids.h \
     core_ObjectWithUid.h \
-    UidWarehouse.h
+    UidWarehouse.h \
+    db_SP.h \
+    db_SpCollection.h \
+    WidgetForSpecificProperties.h \
+    TrueFalseSp.h \
+    ObjectWithSpInstances.h \
+    SpInstance.h \
+    TrueFalseSpInstance.h
 
 FORMS += MainWindow.ui \
     MainWindowButtonDialog.ui \
@@ -186,7 +196,8 @@ FORMS += MainWindow.ui \
     BrowseTableForm.ui \
     ProcedureForm.ui \
     TriggerForm.ui \
-    NamedObjectListingForm.ui
+    NamedObjectListingForm.ui \
+    WidgetForSpecificProperties.ui
 
 include (query_builder/query_builder.pri)
 INCLUDEPATH += query_builder
@@ -215,6 +226,19 @@ INSTALLS += installfiles_doc
 installfiles_rs.files += rsrc/mysql.defaults
 installfiles_rs.path =  /home/ferenc/rpmbuild/BUILDROOT/usr/local/ddm/rsrc
 INSTALLS += installfiles_rs
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

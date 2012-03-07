@@ -24,6 +24,7 @@
 #include "core_Function.h"
 #include "Codepage.h"
 #include "core_Trigger.h"
+#include "TrueFalseSp.h"
 
 QVector<DatabaseBuiltinFunction>* MySQLDatabaseEngine::s_builtinFunctions = 0;
 int MySQLDatabaseEngine::m_connectionCounter = 1;
@@ -1477,5 +1478,13 @@ QString MySQLDatabaseEngine::getTableCreationScript(Connection* c, const QString
     {
         result = query.value(1).toString();
     }
+    return result;
+}
+
+QVector<Sp*> MySQLDatabaseEngine::getDatabaseSpecificProperties()
+{
+    QVector<Sp*> result;
+    result.push_back(new TrueFalseSp(uidTrueFalseObj, uidSqlTableProperty, QString("Temporary"), QString("Temporary table")));
+
     return result;
 }

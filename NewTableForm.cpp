@@ -27,6 +27,7 @@
 #include "gui_HelpWindow.h"
 #include "core_ConnectionManager.h"
 #include "strings.h"
+#include "WidgetForSpecificProperties.h"
 
 #include <QMessageBox>
 #include <QHashIterator>
@@ -115,9 +116,6 @@ NewTableForm::NewTableForm(DatabaseEngine* db, Project* prj, QWidget *parent, bo
 
     m_ui->btnAdvanced->hide();
 
-    m_ui->lblCharacterSet->hide();
-    m_ui->cmbCharacterSets->hide();
-
     if(!db->supportsEngines())
     {
         m_ui->lblStorageEngine->hide();
@@ -131,7 +129,6 @@ NewTableForm::NewTableForm(DatabaseEngine* db, Project* prj, QWidget *parent, bo
     m_ui->tabWidget->setCurrentIndex(0);
 
     // next two: don't change the order. This way the remove is done from the end
-    m_ui->tabWidget->removeTab(4);
     if(prj->oopProject())
     {
         m_ui->tabWidget->removeTab(3);
@@ -160,6 +157,12 @@ NewTableForm::NewTableForm(DatabaseEngine* db, Project* prj, QWidget *parent, bo
 
     m_signalMapperForCombosInColumns = new QSignalMapper(this);
     m_ui->buttons->hide();
+
+    // and now create the tab widgets for the SPs
+    WidgetForSpecificProperties* wsp = new WidgetForSpecificProperties(this);
+    QVector<Sp*> allSps = db->getDatabaseSpecificProperties();
+    wsp->feedInSpecificProperties(allSps, uidSqlTableProperty);
+    m_ui->tabWidget->insertTab(4, wsp, IconFactory::getMySqlIcon(), "MySql");
 
 }
 
@@ -567,8 +570,6 @@ void NewTableForm::setTable(Table *table)
     populateTable(table, false);
 
     m_ui->txtTableName->setText(table->getName());
-    m_ui->chkPersistent->setChecked(table->isPersistent());
-    m_ui->chkTemporary->setChecked(table->isTemporary());
     m_ui->txtDescription->setText(table->getDescription());
 
     m_currentStorageEngine = table->getStorageEngine();
@@ -1050,8 +1051,6 @@ void NewTableForm::prepareValuesToBeSaved()
 {
     m_table->setName(m_ui->txtTableName->text());
 
-    m_table->setPersistent(m_ui->chkPersistent->isChecked());
-    m_table->setTemporary(m_ui->chkTemporary->isChecked());
     m_table->setDescription(m_ui->txtDescription->toPlainText());
     m_table->setStorageEngine(m_currentStorageEngine);
 }
@@ -2020,7 +2019,7 @@ void NewTableForm::onChangeTab(int idx)
     {
         if(m_ui->tabWidget->tabText(idx) == "SQL")
         {
-            presentSql(m_project, m_ui->cmbCharacterSets->currentText());
+            presentSql(m_project, "latin1");
         }
     }
 }

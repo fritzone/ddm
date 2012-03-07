@@ -66,7 +66,7 @@
          <enum>QTabWidget::Rounded</enum>
         </property>
         <property name="currentIndex">
-         <number>0</number>
+         <number>4</number>
         </property>
         <widget class="QWidget" name="tabWidgetPage1">
          <attribute name="icon">
@@ -1058,59 +1058,6 @@ p, li { white-space: pre-wrap; }
           </item>
          </layout>
         </widget>
-        <widget class="QWidget" name="tabWidgetPage4">
-         <attribute name="title">
-          <string>Advanced</string>
-         </attribute>
-         <layout class="QFormLayout" name="formLayout_2">
-          <property name="fieldGrowthPolicy">
-           <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
-          </property>
-          <item row="0" column="0">
-           <widget class="QLabel" name="lblCharacterSet">
-            <property name="text">
-             <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Sans'; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;table border=&quot;0&quot; style=&quot;-qt-table-type: root; margin-top:4px; margin-bottom:4px; margin-left:4px; margin-right:4px;&quot;&gt;
-&lt;tr&gt;
-&lt;td style=&quot;border: none;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Sans Serif';&quot;&gt;Character Set&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/body&gt;&lt;/html&gt;</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1">
-           <widget class="QComboBox" name="cmbCharacterSets"/>
-          </item>
-          <item row="1" column="0">
-           <widget class="QCheckBox" name="chkPersistent">
-            <property name="statusTip">
-             <string>This table is not updated when the application runs.</string>
-            </property>
-            <property name="whatsThis">
-             <string>This table is not updated when the application runs. This allows the code generator to generate code which loads the content of this table at startup for faster usage</string>
-            </property>
-            <property name="text">
-             <string>Persistent table</string>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="0">
-           <widget class="QCheckBox" name="chkTemporary">
-            <property name="statusTip">
-             <string>This is a temporary table.</string>
-            </property>
-            <property name="whatsThis">
-             <string>This is a temporary table.</string>
-            </property>
-            <property name="text">
-             <string>Temporary table</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
         <widget class="QWidget" name="tabWidgetPage5">
          <attribute name="icon">
           <iconset resource="dbm.qrc">
@@ -1329,7 +1276,6 @@ p, li { white-space: pre-wrap; }
   <tabstop>lstForeignKeyAssociations</tabstop>
   <tabstop>btnRemoveAssociation</tabstop>
   <tabstop>btnCancelForeignKeyEditing</tabstop>
-  <tabstop>cmbCharacterSets</tabstop>
   <tabstop>txtDescription</tabstop>
   <tabstop>lstForeignKeys</tabstop>
   <tabstop>tableStartupValues</tabstop>
@@ -1780,38 +1726,6 @@ p, li { white-space: pre-wrap; }
     <hint type="sourcelabel">
      <x>693</x>
      <y>209</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>368</x>
-     <y>386</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>chkTemporary</sender>
-   <signal>stateChanged(int)</signal>
-   <receiver>NewTableForm</receiver>
-   <slot>onTemporaryChange(int)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>82</x>
-     <y>186</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>368</x>
-     <y>386</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>chkPersistent</sender>
-   <signal>stateChanged(int)</signal>
-   <receiver>NewTableForm</receiver>
-   <slot>onPersistentChange(int)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>80</x>
-     <y>160</y>
     </hint>
     <hint type="destinationlabel">
      <x>368</x>

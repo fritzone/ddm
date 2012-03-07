@@ -16,4 +16,8 @@ static const QString uidIndex           =             "{10000001-0000-0000-0000-
 static const QString uidForeignKey      =             "{10000001-0000-0000-0000-000000000009}";
 static const QString uidDiagram         =             "{10000001-0000-0000-0000-00000000000A}";
 
+static const QString uidTrueFalseObj    =             "{10000002-0000-0000-0000-000000000001}";
+
+static const QString uidSqlTableProperty=             "{10000003-0000-0000-0000-000000000001}";
+
 #endif // UIDS_H
