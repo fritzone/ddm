@@ -2,8 +2,9 @@
 
 #include <QDebug>
 
-Sp::Sp(const QString &sqlPropertyUid, const QString &dbObjectUid, const QString& propertyName, const QString& propertyGuiText) :
+Sp::Sp(const QString &sqlRoleUid, const QString &guiClassUid, const QString& referringObjectClassUid, const QString& propertyName, const QString& propertyGuiText) :
     ObjectWithUid(QUuid::createUuid().toString()), NamedItem(propertyName),
-    m_sqlPropertyUid(sqlPropertyUid), m_destinationUid(dbObjectUid), m_propertyGuiText(propertyGuiText)
+    m_sqlRoleUid(sqlRoleUid), m_guiClassUid(guiClassUid), m_referredObjectClasUid(referringObjectClassUid),
+    m_propertyGuiText(propertyGuiText)
 {
 }

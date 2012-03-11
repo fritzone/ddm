@@ -1,8 +1,8 @@
 #include "TrueFalseSp.h"
 #include "uids.h"
 
-TrueFalseSp::TrueFalseSp(const QString& sqlPrUid, const QString& dbObjectUid, const QString &name, const QString& propertyGuiText) :
-    Sp(sqlPrUid, dbObjectUid, name, propertyGuiText)
+TrueFalseSp::TrueFalseSp(const QString& sqlPrUid, const QString& dbObjectUid, const QString& referringObjectClassUid, const QString &name, const QString& propertyGuiText) :
+    Sp(sqlPrUid, dbObjectUid, referringObjectClassUid, name, propertyGuiText)
 {}
 
 QUuid TrueFalseSp::getClassUid() const
@@ -12,5 +12,5 @@ QUuid TrueFalseSp::getClassUid() const
 
 SpInstance* TrueFalseSp::instantiate()
 {
-
+    return 0;
 }

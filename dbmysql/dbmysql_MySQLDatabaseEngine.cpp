@@ -1484,7 +1484,7 @@ QString MySQLDatabaseEngine::getTableCreationScript(Connection* c, const QString
 QVector<Sp*> MySQLDatabaseEngine::getDatabaseSpecificProperties()
 {
     QVector<Sp*> result;
-    result.push_back(new TrueFalseSp(uidTrueFalseObj, uidSqlTableProperty, QString("Temporary"), QString("Temporary table")));
+    result.push_back(new TrueFalseSp(uidTrueFalseObj, uidSqlTableProperty, uidTable, QString("Temporary"), QString("Temporary table")));
 
     return result;
 }

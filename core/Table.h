@@ -7,6 +7,7 @@
 #include "CopyableElement.h"
 #include "NamedItem.h"
 #include "core_ObjectWithUid.h"
+#include "ObjectWithSpInstances.h"
 #include "uids.h"
 
 #include <QString>
