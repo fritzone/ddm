@@ -41,7 +41,8 @@ const int COL_POS_PK = 0;
 const int COL_POS_NM = 1;
 const int COL_POS_DT = 2;
 
-NewTableForm::NewTableForm(DatabaseEngine* db, Project* prj, QWidget *parent, bool newTable) : SourceCodePresenterWidget(parent), m_ui(new Ui::NewTableForm),
+NewTableForm::NewTableForm(DatabaseEngine* db, Project* prj, QWidget *parent, bool newTable) : SourceCodePresenterWidget(parent),
+    m_ui(new Ui::NewTableForm),
     m_dbEngine(db), m_project(prj), m_table(0),
     m_currentColumn(0), m_currentIndex(0), m_foreignTable(0), m_currentForeignKey(0), m_foreignKeySelected(false),
     m_currentStorageEngine(0), m_engineProviders(0)
@@ -144,26 +145,21 @@ NewTableForm::NewTableForm(DatabaseEngine* db, Project* prj, QWidget *parent, bo
 
     if(newTable)
     {
-        m_table = new Table(prj->getWorkingVersion(), QUuid::createUuid().toString());
+        m_table = new Table(prj->getWorkingVersion(), QUuid::createUuid().toString(), 0);
         m_table->setStorageEngine(m_currentStorageEngine);
+        m_table->initializeFor(db, QUuid(uidTable));
 
         Workspace::getInstance()->onSaveNewTable(m_table);
         m_ui->txtTableName->setText(m_table->getName());
 
         resetForeignTablesCombo();
+        prepareSpsTabs();
     }
 
     populateCodepageCombo();
 
     m_signalMapperForCombosInColumns = new QSignalMapper(this);
     m_ui->buttons->hide();
-
-    // and now create the tab widgets for the SPs
-    WidgetForSpecificProperties* wsp = new WidgetForSpecificProperties(this);
-    QVector<Sp*> allSps = db->getDatabaseSpecificProperties();
-    wsp->feedInSpecificProperties(allSps, uidSqlTableProperty);
-    m_ui->tabWidget->insertTab(4, wsp, IconFactory::getMySqlIcon(), "MySql");
-
 }
 
 NewTableForm::~NewTableForm()
@@ -580,6 +576,7 @@ void NewTableForm::setTable(Table *table)
     populateIndexTypesDependingOnStorageEngine();
     enableForeignKeysDependingOnStorageEngine();
     if(m_table) resetForeignTablesCombo();
+    prepareSpsTabs();
 
 }
 
@@ -2281,5 +2278,17 @@ void NewTableForm::onIndexNameChange(QString)
         m_currentIndex->setName(m_ui->txtNewIndexName->text());
         m_currentIndex->setDisplayText(m_currentIndex->getName());
         autoSave();
+    }
+}
+
+void NewTableForm::prepareSpsTabs()
+{
+    if(m_table)
+    {
+        // and now create the tab widgets for the SPs
+        WidgetForSpecificProperties* wsp = new WidgetForSpecificProperties(this);
+        QVector<SpInstance*> allSps = m_table->getSpInstances(m_dbEngine);
+        wsp->feedInSpecificProperties(allSps, uidTable);
+        m_ui->tabWidget->insertTab(4, wsp, IconFactory::getMySqlIcon(), "MySql");
     }
 }

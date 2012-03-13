@@ -11,7 +11,7 @@ class SelectQuery;
 class QueryGraphicsHelper;
 class Version;
 
-class View : virtual public SqlSourceEntity, virtual public NamedItem, virtual public TreeItem, virtual public SerializableElement, virtual public ObjectWithUid
+class View : public SqlSourceEntity, public NamedItem, public TreeItem, public SerializableElement, public ObjectWithUid
 {
 public:
     View(bool manual, QString uid);

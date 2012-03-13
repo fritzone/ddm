@@ -25,14 +25,20 @@ class TableInstance;
  * The table class holds a database table defined by the user. It must be derived from the TreeItem since a table can be placed in
  * the tree, so the user of it must know how to update the visual part too.
  */
-class Table : virtual public TreeItem, virtual public SerializableElement, virtual public SqlSourceEntity, virtual public CopyableElement, virtual public NamedItem, virtual public ObjectWithUid
+class Table : public TreeItem,
+        public SerializableElement,
+        public SqlSourceEntity,
+        public CopyableElement,
+        public NamedItem,
+        public ObjectWithUid,
+        public ObjectWithSpInstances
 {
 public:
 
     /**
      * Constructor, creates a new object
      */
-    Table(Version* v, QString uid);
+    Table(Version* v, QString uid, int dummy);
 
     virtual ~Table() {}
 

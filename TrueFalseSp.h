@@ -10,9 +10,9 @@ class TrueFalseSp : public Sp
 {
 public:
 
-    TrueFalseSp(const QString& sqlPrUid, const QString& dbObjectUid, const QString& referringObjectClassUid, const QString& name, const QString& propertyGuiText);
+    TrueFalseSp(const QString& sqlPrUid, const QString& referringObjectClassUid, const QString& name, const QString& propertyGuiText);
     virtual QUuid getClassUid() const;
-    virtual SpInstance* instantiate();
+    virtual SpInstance* instantiate(const Sp*);
 };
 
 #endif // TRUEFALSESP_H

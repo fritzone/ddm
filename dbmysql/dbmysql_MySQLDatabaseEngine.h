@@ -51,7 +51,7 @@ public:
     virtual QString getTableDescriptionScript(const QString& tabName);
     virtual QStringList getAvailableIndexes(Connection* c);
     virtual QString getTableCreationScript(Connection* c, const QString& tabName);
-    virtual QVector<Sp*> getDatabaseSpecificProperties();
+    virtual QVector<Sp*> getDatabaseSpecificProperties() const;
 
 private:
 

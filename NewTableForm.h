@@ -192,6 +192,8 @@ private:
 
     void setTypeComboBoxForColumnItem(ContextMenuEnabledTreeWidgetItem*, Column*);
 
+    void prepareSpsTabs();
+
 private:
     Ui::NewTableForm *m_ui;
     // the DB engine

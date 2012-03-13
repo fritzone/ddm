@@ -19,8 +19,9 @@
 #include <QApplication>
 #include <QClipboard>
 
-Table::Table(Version* v, QString uid) : NamedItem(NameGenerator::getUniqueName(v, (itemGetter)&Version::getTable, QString("TAB"))),
-    ObjectWithUid(uid),
+Table::Table(Version* v, QString uid, int dummy) : TreeItem(), SerializableElement(), SqlSourceEntity(), CopyableElement(),
+    NamedItem(NameGenerator::getUniqueName(v, (itemGetter)&Version::getTable, QString("TAB"))),
+    ObjectWithUid(uid), ObjectWithSpInstances(),
     m_description(""), m_columns(), m_indices(), m_foreignKeys(), m_startupValues(),
     m_parent(0), m_persistent(false), m_temporary(false), m_storageEngine(0),
     m_version(v), m_children()
@@ -393,6 +394,12 @@ void Table::serialize(QDomDocument &doc, QDomElement &parent) const
 
     }
 
+    // save the sps
+    {
+    QDomElement spsElement = doc.createElement("SpInstances");
+    serialize_spinstances(doc, spsElement);
+    tableElement.appendChild(spsElement);
+    }
     parent.appendChild(tableElement);
 }
 

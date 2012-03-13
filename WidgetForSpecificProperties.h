@@ -1,7 +1,7 @@
 #ifndef WIDGETFORSPECIFICPROPERTIES_H
 #define WIDGETFORSPECIFICPROPERTIES_H
 
-#include "db_SP.h"
+class SpInstance;
 
 #include <QWidget>
 #include <QVector>
@@ -24,7 +24,7 @@ public:
     explicit WidgetForSpecificProperties(QWidget *parent = 0);
     ~WidgetForSpecificProperties();
 
-    void feedInSpecificProperties(const QVector<Sp*> & sps, const QString& dbDestinationUid);
+    void feedInSpecificProperties(const QVector<SpInstance*> & sps, const QString& dbDestinationUid);
 
 protected:
     void changeEvent(QEvent *e);

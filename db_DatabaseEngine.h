@@ -346,7 +346,7 @@ public:
      * Returns a vector of Database Specific properties this database provides.
      * @return a vector of Database Specific properties this database provides.
      */
-    virtual QVector<Sp*> getDatabaseSpecificProperties() = 0;
+    virtual QVector<Sp*> getDatabaseSpecificProperties() const = 0;
 
 public:
 

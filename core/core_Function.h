@@ -4,7 +4,7 @@
 #include "core_StoredMethod.h"
 #include "core_ObjectWithUid.h"
 
-class Function : virtual public StoredMethod, virtual public ObjectWithUid
+class Function : public StoredMethod, public ObjectWithUid
 {
 public:
     Function(const QString& pname, const QString& guid);

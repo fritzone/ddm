@@ -3,6 +3,7 @@
 
 #include "core_ObjectWithUid.h"
 #include "NamedItem.h"
+#include "SerializableElement.h"
 
 #include <QString>
 #include <QUuid>
@@ -16,16 +17,17 @@ class SpInstance;
  * of the SPs for the given object.
  * Each Sp object has a property specifying where to put it in the query.
  */
-class Sp : public ObjectWithUid, public NamedItem
+class Sp : public ObjectWithUid, public NamedItem, public SerializableElement
 {
 public:
 
-    Sp(const QString& sqlRoleUid, const QString& guiClassUid, const QString& referringObjectClassUid, const QString& propertyName, const QString& propertyGuiText);
-
-    QString getDbObjectUid() const
-    {
-        return m_guiClassUid;
-    }
+    /**
+     * @param sqlRoleUid - the exact uid of the property, such as uidMysqlTemporaryTable represents the TEMPORARY property of the mysql table.
+     * @param referringObjectClassUid - the uid of the "class" this Sp is referring to. Such as "Table" -> uidTable
+     * @param propertyName - the name of the property
+     * @param propertyGuiText - the text that will be shown on the GUI for this property
+     */
+    Sp(const QString& sqlRoleUid, const QString& referringObjectClassUid, const QString& propertyName, const QString& propertyGuiText);
 
     QString getSqlRoleUid() const
     {
@@ -37,7 +39,16 @@ public:
         return m_propertyGuiText;
     }
 
-    virtual SpInstance* instantiate() = 0;
+    /**
+     * This UID is the same uid as the object this SP refers to. For example this should return Table UID
+     * for properties referring to a table.
+     */
+    QUuid getReferredObjectClassUid() const
+    {
+        return m_referredObjectClasUid;
+    }
+
+    virtual SpInstance* instantiate(const Sp*) = 0;
 
     /**
      * Returns the class UID of this. The class UID is NOT the one identifying the object in the GUI.
@@ -45,23 +56,13 @@ public:
      */
     virtual QUuid getClassUid() const = 0;
 
-    /**
-     * This UID is the same uid as the object this SP refers to. For example this should return Table UID
-     * for properties referring to a table.
-     */
-    virtual QUuid getReferredObjectClassUid() const
-    {
-        return m_referredObjectClasUid;
-    }
+
+    virtual void serialize(QDomDocument& doc, QDomElement& parent) const;
 
 private:
 
     // this tells the sql query generator where to insert this property in the SQL query
     QUuid m_sqlRoleUid;
-
-    // this tells the app where to put this object in the GUI, ie. to which component this is referring
-    QUuid m_guiClassUid;
-
     // this is the class UID of the "class" this SP ois referring to. For example: Table -> uidTable
     QUuid m_referredObjectClasUid;
 
