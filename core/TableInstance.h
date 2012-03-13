@@ -12,7 +12,7 @@
 #include <QList>
 #include <QString>
 
-class TableInstance : virtual public TreeItem, virtual public NamedItem, virtual public SerializableElement, virtual public SqlSourceEntity, virtual public ObjectWithUid
+class TableInstance : public TreeItem, public NamedItem, public SerializableElement, public SqlSourceEntity, public ObjectWithUid
 {
 public:
 

@@ -76,7 +76,9 @@ SOURCES += main.cpp \
     core_ObjectWithUid.cpp \
     db_SP.cpp \
     WidgetForSpecificProperties.cpp \
-    TrueFalseSp.cpp
+    TrueFalseSp.cpp \
+    ObjectWithSpInstances.cpp \
+    TrueFalseSpInstance.cpp
 
 HEADERS += MainWindow.h \
     MainWindowButtonDialog.h \
@@ -226,6 +228,8 @@ INSTALLS += installfiles_doc
 installfiles_rs.files += rsrc/mysql.defaults
 installfiles_rs.path =  /home/ferenc/rpmbuild/BUILDROOT/usr/local/ddm/rsrc
 INSTALLS += installfiles_rs
+
+
 
 
 

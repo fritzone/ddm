@@ -17,7 +17,7 @@ class GuiElements;
  * Holds the data of a project.
  * TODO: I don't like that the clas is knowing a QTreeWidget item. When there's new time, find a way to detach it from this class.
  */
-class Project : virtual public NamedItem, virtual public SerializableElement, virtual public TreeItem
+class Project : public NamedItem, public SerializableElement, public TreeItem
 {
 public:
 

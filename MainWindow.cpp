@@ -982,7 +982,9 @@ void MainWindow::onSpecializeTableFromPopup()
     Table* table = getRightClickedObject<Table>((itemGetter)&Version::getTable);
     if(table == 0) return;
 
-    Table* specializedTable = new Table(m_workspace->workingVersion(), QUuid::createUuid().toString());
+    Table* specializedTable = new Table(m_workspace->workingVersion(), QUuid::createUuid().toString(), 0);
+    specializedTable->initializeFor(Workspace::getInstance()->currentProjectsEngine(), QUuid(uidTable));
+
     specializedTable->setName(table->getName() + "_specialized");
     specializedTable->setParent(table);
     specializedTable->setStorageEngine(table->getStorageEngine());

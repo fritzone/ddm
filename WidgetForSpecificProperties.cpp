@@ -1,6 +1,8 @@
 #include "WidgetForSpecificProperties.h"
 #include "ui_WidgetForSpecificProperties.h"
 #include "uids.h"
+#include "db_SP.h"
+#include "SpInstance.h"
 
 #include <QLabel>
 #include <QCheckBox>
@@ -30,28 +32,23 @@ void WidgetForSpecificProperties::changeEvent(QEvent *e)
     }
 }
 
-void WidgetForSpecificProperties::feedInSpecificProperties(const QVector<Sp*>& sps, const QString& dbDestinationUid)
+void WidgetForSpecificProperties::feedInSpecificProperties(const QVector<SpInstance*>& sps, const QString& dbDestinationUid)
 {
     for(int i=0; i<sps.size(); i++)
     {
-        qDebug() << sps.at(i)->getName();
-
-        if(sps.at(i)->getDbObjectUid() == dbDestinationUid)
+        if(sps.at(i)->getClass()->getReferredObjectClassUid() == dbDestinationUid)
         {
             QLabel* label = new QLabel(this);
-            label->setText(sps.at(i)->getPropertyGuiText());
+            label->setText(sps.at(i)->getClass()->getPropertyGuiText());
             ui->formLayout->setWidget(i, QFormLayout::LabelRole, label);
 
-            if(sps.at(i)->getClassUid().toString() == uidTrueFalseObj)   // create a check box
+            if(sps.at(i)->getClass()->getClassUid().toString() == uidTrueFalseObj)   // create a check box
             {
                 QCheckBox* checkBox = new QCheckBox(this);
-                qDebug() << "bbb" << sps.at(i)->getName() << "aaaaa ";
-                checkBox->setText(sps.at(i)->getName());
-
+                checkBox->setText(sps.at(i)->getClass()->getName());
                 ui->formLayout->setWidget(i, QFormLayout::FieldRole, checkBox);
-
                 UidToWidget* uiw = new UidToWidget();
-                uiw->objectUid = sps.at(i)->getObjectUid();
+                uiw->objectUid = sps.at(i)->getClass()->getObjectUid();
                 uiw->w = checkBox;
                 m_mappings.append(uiw);
             }

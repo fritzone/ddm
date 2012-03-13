@@ -9,7 +9,7 @@
 
 class Table;
 
-class Trigger : virtual public SqlSourceEntity, virtual public NamedItem, virtual public TreeItem, virtual public SerializableElement, virtual public ObjectWithUid
+class Trigger : public SqlSourceEntity, public NamedItem, public TreeItem, public SerializableElement, public ObjectWithUid
 {
 public:
 

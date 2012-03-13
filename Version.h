@@ -22,7 +22,7 @@ class Function;
 /**
  * Basic class holding data related to versions
  */
-class Version : virtual public SerializableElement
+class Version : public SerializableElement
 {
 public:
 

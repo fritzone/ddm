@@ -402,7 +402,8 @@ Table* MySQLDatabaseEngine::reverseEngineerTable(Connection *c, const QString& t
         return 0;
     }
 
-    Table* tab = new Table(v, QUuid::createUuid().toString());
+    Table* tab = new Table(v, QUuid::createUuid().toString(), 0);
+    tab->initializeFor(this, QUuid(uidTable));
     tab->setName(tableName);
 
     // fetch all the columns of the table
@@ -1481,10 +1482,11 @@ QString MySQLDatabaseEngine::getTableCreationScript(Connection* c, const QString
     return result;
 }
 
-QVector<Sp*> MySQLDatabaseEngine::getDatabaseSpecificProperties()
+// TODO: find a way to not to create this vector all the time
+QVector<Sp*> MySQLDatabaseEngine::getDatabaseSpecificProperties() const
 {
     QVector<Sp*> result;
-    result.push_back(new TrueFalseSp(uidTrueFalseObj, uidSqlTableProperty, uidTable, QString("Temporary"), QString("Temporary table")));
+    result.push_back(new TrueFalseSp(uidMysqlTemporaryTable, uidTable, QString("Temporary"), QString("Temporary table")));
 
     return result;
 }

@@ -11,7 +11,7 @@
 /**
  * Class representing a data type
  */
-class UserDataType : virtual public NamedItem, virtual public TreeItem, virtual public SerializableElement
+class UserDataType : public NamedItem, public TreeItem, public SerializableElement
 {
 public:
 

@@ -17,9 +17,9 @@ class Table;
 /**
  * This class holds the necessary data to define a column
  */
-class Column : virtual public TreeItem, virtual public SerializableElement, virtual public CopyableElement,
-        virtual public IssueOriginator, virtual public NamedItem, virtual public ItemWithDescription,
-        virtual public ObjectWithUid
+class Column : public TreeItem, public SerializableElement, public CopyableElement,
+        public IssueOriginator, public NamedItem, public ItemWithDescription,
+        public ObjectWithUid
 {
 public:
     Column(const QString& uid, const QString& name, const UserDataType* type, bool pk, bool autoInc);

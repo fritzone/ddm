@@ -567,7 +567,8 @@ Table* DeserializationFactory::createTable(DatabaseEngine* engine, Version* ver,
 
     QString parent_uid = element.attribute("parent-uid");
 
-    Table* result = new Table(ver, uid);
+    Table* result = new Table(ver, uid, 0);
+    result->initializeFor(engine, QUuid(uidTable));
 
     result->setParentUid(parent_uid);
     result->setName(name);
@@ -635,6 +636,32 @@ Table* DeserializationFactory::createTable(DatabaseEngine* engine, Version* ver,
                 values.append(rowJ);
             }
             result->setDefaultValues(values);
+        }
+
+        if(nodeN == "SpInstances")
+        {
+            QDomElement dbEnginesSps = element.childNodes().at(i).firstChild().toElement();
+            for(int j=0; j<dbEnginesSps.childNodes().count(); j++)
+            {
+                QDomElement dbEngineSp = dbEnginesSps.childNodes().at(j).toElement();
+                if(dbEngineSp.attribute("Name") == engine->getDatabaseEngineName())
+                {
+                    for(int k=0; k<dbEngineSp.childNodes().count(); k++)
+                    {
+                        QDomElement spi = dbEngineSp.childNodes().at(k).toElement();
+                        QString value = spi.attribute("Value");
+
+                        QDomElement sp = spi.firstChild().toElement();
+                        QString sql_role_uid = sp.attribute("sql-role-uid");
+                        QString class_uid = sp.attribute("class-uid");
+                        QString uid = sp.attribute("uid");
+                        QString name = sp.attribute("Name");
+                        QString referred_object_class_uid = sp.attribute("referred-object-class-uid");
+
+                        qDebug() << uid;
+                    }
+                }
+            }
         }
     }
 
