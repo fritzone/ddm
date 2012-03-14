@@ -12,7 +12,8 @@ public:
 
     TrueFalseSp(const QString& sqlPrUid, const QString& referringObjectClassUid, const QString& name, const QString& propertyGuiText);
     virtual QUuid getClassUid() const;
-    virtual SpInstance* instantiate(const Sp*);
+    virtual SpInstance* instantiate();
+    virtual SpInstance* createSpecifiedInstance(const QString& spi_uid);
 };
 
 #endif // TRUEFALSESP_H

@@ -32,6 +32,8 @@
 #include "core_Trigger.h"
 #include "core_Function.h"
 #include "uids.h"
+#include "TrueFalseSp.h"
+#include "SpInstance.h"
 
 #include <QStringList>
 
@@ -648,24 +650,40 @@ Table* DeserializationFactory::createTable(DatabaseEngine* engine, Version* ver,
                 {
                     for(int k=0; k<dbEngineSp.childNodes().count(); k++)
                     {
-                        QDomElement spi = dbEngineSp.childNodes().at(k).toElement();
-                        QString value = spi.attribute("Value");
+                        QDomElement spiElement = dbEngineSp.childNodes().at(k).toElement();
+                        QString spi_value = spiElement.attribute("Value");
+                        QString spi_uid = spiElement.attribute("uid");
+                        QString spi_class_uid = spiElement.attribute("class-uid");
 
-                        QDomElement sp = spi.firstChild().toElement();
-                        QString sql_role_uid = sp.attribute("sql-role-uid");
-                        QString class_uid = sp.attribute("class-uid");
-                        QString uid = sp.attribute("uid");
-                        QString name = sp.attribute("Name");
-                        QString referred_object_class_uid = sp.attribute("referred-object-class-uid");
+                        QDomElement sp = spiElement.firstChild().toElement();
+                        QString sp_sql_role_uid = sp.attribute("sql-role-uid");
+                        QString sp_class_uid = sp.attribute("class-uid");
+                        QString sp_uid = sp.attribute("uid");
+                        QString sp_name = sp.attribute("Name");
+                        QString sp_referred_object_class_uid = sp.attribute("referred-object-class-uid");
 
-                        qDebug() << uid;
+                        SpInstance* spi = createSpInstance(engine, sp_sql_role_uid, spi_uid);
+                        if(spi)
+                        {
+                            spi->set(spi_value);
+                        }
                     }
                 }
             }
         }
     }
-
     return result;
+}
+
+SpInstance* DeserializationFactory::createSpInstance(DatabaseEngine* engine, const QString &sql_role_uid, const QString& spi_uid)
+{
+    Sp* sp = engine->getSpForSqlRole(sql_role_uid);
+    if(sp)
+    {
+        SpInstance* spi = sp->createSpecifiedInstance(spi_uid);
+        return spi;
+    }
+    return 0;
 }
 
 Project* DeserializationFactory::createProject(const QDomDocument &doc, const QDomElement &element)

@@ -24,6 +24,7 @@ class QueryComponent;
 class Procedure;
 class Trigger;
 class Function;
+class SpInstance;
 
 class DeserializationFactory
 {
@@ -47,6 +48,7 @@ public:
     static Procedure* createProcedure(Project* p, Version* v, const QDomDocument& doc, const QDomElement& element);
     static Trigger* createTrigger(Project* p, Version* v, const QDomDocument& doc, const QDomElement& element);
     static Function* createFunction(Project*, Version*,  const QDomDocument&, const QDomElement& element);
+    static SpInstance* createSpInstance(DatabaseEngine* engine, const QString& sql_role_uid, const QString& spi_uid);
 
 private:
     DeserializationFactory();

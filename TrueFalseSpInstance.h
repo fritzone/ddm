@@ -7,13 +7,15 @@
 class TrueFalseSpInstance : public SpInstance
 {
 public:
-    TrueFalseSpInstance(const Sp* theClass) : SpInstance(theClass){}
+    TrueFalseSpInstance(const Sp* theClass) : SpInstance(theClass), m_value(false) {}
+    TrueFalseSpInstance(const Sp* theClass, const QString& uid) : SpInstance(theClass){}
 
-    virtual QString get() const
-    {
-        return "TRUE";
-    }
+    virtual QString get() const;
+    virtual void set(const QString& v);
     virtual void serialize(QDomDocument& doc, QDomElement& parent) const;
+
+private:
+    bool m_value;
 };
 
 #endif // TRUEFALSESPINSTANCE_H
