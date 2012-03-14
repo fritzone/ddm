@@ -348,6 +348,13 @@ public:
      */
     virtual QVector<Sp*> getDatabaseSpecificProperties() const = 0;
 
+    /**
+     * Returns the SP of the given database which has the given SQL role uid.
+     * @param uid - the uid
+     * @return the SP for the uid
+     */
+    virtual Sp* getSpForSqlRole(const QString& uid) const = 0;
+
 public:
 
     /**

@@ -48,7 +48,17 @@ public:
         return m_referredObjectClasUid;
     }
 
-    virtual SpInstance* instantiate(const Sp*) = 0;
+    /**
+     * Creates a new instance of this SpecialProperty.
+     * @return the new instance of this SP
+     */
+    virtual SpInstance* instantiate() = 0;
+
+    /**
+     * Creates an instance of the SP with the specified data.
+     * The SP obejct alread should have the sql role, name, referred object uid and also the uid should be there somewhere for it.
+     */
+    virtual SpInstance* createSpecifiedInstance(const QString& spi_uid) = 0;
 
     /**
      * Returns the class UID of this. The class UID is NOT the one identifying the object in the GUI.

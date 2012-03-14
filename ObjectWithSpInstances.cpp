@@ -20,7 +20,7 @@ void ObjectWithSpInstances::initializeFor(const DatabaseEngine* engine, const QU
     {
         if(allSps.at(i)->getReferredObjectClassUid() == uid)
         {
-            m_spInstances[engine].append(allSps.at(i)->instantiate(allSps.at(i)));
+            m_spInstances[engine].append(allSps.at(i)->instantiate());
         }
     }
 }

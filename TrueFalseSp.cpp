@@ -11,7 +11,13 @@ QUuid TrueFalseSp::getClassUid() const
     return QUuid(uidTrueFalseObj);
 }
 
-SpInstance* TrueFalseSp::instantiate(const Sp* theClass)
+SpInstance* TrueFalseSp::instantiate()
 {
-    return new TrueFalseSpInstance(theClass);
+    return new TrueFalseSpInstance(this);
+}
+
+SpInstance* TrueFalseSp::createSpecifiedInstance(const QString& spi_uid)
+{
+    TrueFalseSpInstance* spi = new TrueFalseSpInstance(this, spi_uid);
+    return spi;
 }

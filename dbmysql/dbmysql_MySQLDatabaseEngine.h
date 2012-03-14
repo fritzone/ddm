@@ -13,13 +13,11 @@ class Column;
 class MySQLDatabaseEngine : public DatabaseEngine
 {
 public:
+
     MySQLDatabaseEngine();
+    virtual ~MySQLDatabaseEngine();
 
-    virtual bool supportsEngines()
-    {
-        return true;
-    }
-
+    virtual bool supportsEngines();
     virtual bool executeSql(Connection* c, const QStringList& sqls, QString& lastSql, bool rollbackOnError);
     virtual QString getDefaultDatatypesLocation();
     virtual bool reverseEngineerDatabase(Connection *c, const QStringList& tables, const QStringList& views, const QStringList& procs, const QStringList& funcs, const QStringList& triggers, Project* p, bool relaxed);
@@ -35,7 +33,7 @@ public:
     virtual QVector<DatabaseBuiltinFunction> getBuiltinFunctions();
     virtual const DatabaseBuiltinFunction& getBuiltinFunction(const QString& name);
     virtual bool tryConnect(Connection* c);
-     virtual QStringList getKeywords() const;
+    virtual QStringList getKeywords() const;
     virtual QSqlDatabase getQSqlDatabaseForConnection(Connection *c);
     virtual QStringList getColumnsOfTable(Connection* c, const QString& tableName);
     virtual bool dropDatabase(Connection* c);
@@ -52,22 +50,27 @@ public:
     virtual QStringList getAvailableIndexes(Connection* c);
     virtual QString getTableCreationScript(Connection* c, const QString& tabName);
     virtual QVector<Sp*> getDatabaseSpecificProperties() const;
+    virtual Sp* getSpForSqlRole(const QString& uid) const;
 
 private:
 
     static QVector<DatabaseBuiltinFunction> buildFunctions();
+    static QVector<Sp*> buildSps();
     static QString provideConnectionName(const QString&);
 
 private:
 
     QMultiMap <UserDataType*, Column*> m_revEngMappings;
     QMap <QString, UserDataType*> m_oneTimeMappings;
-
-    static QVector<DatabaseBuiltinFunction>* s_builtinFunctions;
-    static int m_connectionCounter;
-    static QMutex* m_connectionMutex;
     QStringList m_indexTypes;
     QString m_defaultIndexType;
+
+private:
+
+    static QVector<DatabaseBuiltinFunction>* s_builtinFunctions;
+    static QVector<Sp*>* s_mysqlSpecificProperties;
+    static int m_connectionCounter;
+    static QMutex* m_connectionMutex;
 
 };
 

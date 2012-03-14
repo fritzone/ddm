@@ -6,6 +6,7 @@
 #include <QSqlRecord>
 #include <QStringList>
 #include <QVariant>
+#include <QVector>
 #include <QMutexLocker>
 
 #include "Table.h"
@@ -27,16 +28,22 @@
 #include "TrueFalseSp.h"
 
 QVector<DatabaseBuiltinFunction>* MySQLDatabaseEngine::s_builtinFunctions = 0;
+QVector<Sp*>* MySQLDatabaseEngine::s_mysqlSpecificProperties = 0;
 int MySQLDatabaseEngine::m_connectionCounter = 1;
 QMutex* MySQLDatabaseEngine::m_connectionMutex = 0;
 
-MySQLDatabaseEngine::MySQLDatabaseEngine() : DatabaseEngine("MySQL"), m_revEngMappings(), m_oneTimeMappings()
+MySQLDatabaseEngine::MySQLDatabaseEngine() : DatabaseEngine("MySQL"), m_revEngMappings(), m_oneTimeMappings(), m_indexTypes(), m_defaultIndexType("BTREE")
 {
-    static QVector<DatabaseBuiltinFunction> v = MySQLDatabaseEngine::buildFunctions();
+    static QVector<DatabaseBuiltinFunction> v = buildFunctions();
+    static QVector<Sp*> t = buildSps();
+    s_mysqlSpecificProperties = &t;
     s_builtinFunctions = &v;
     m_connectionMutex = new QMutex();
     m_indexTypes << "BTREE" << "HASH" << "RTREE";
-    m_defaultIndexType = "BTREE";
+}
+
+MySQLDatabaseEngine::~MySQLDatabaseEngine()
+{
 }
 
 // this should be thread safe
@@ -1485,8 +1492,31 @@ QString MySQLDatabaseEngine::getTableCreationScript(Connection* c, const QString
 // TODO: find a way to not to create this vector all the time
 QVector<Sp*> MySQLDatabaseEngine::getDatabaseSpecificProperties() const
 {
+    return *s_mysqlSpecificProperties;
+}
+
+bool MySQLDatabaseEngine::supportsEngines()
+{
+    return true;
+}
+
+QVector<Sp*> MySQLDatabaseEngine::buildSps()
+{
     QVector<Sp*> result;
     result.push_back(new TrueFalseSp(uidMysqlTemporaryTable, uidTable, QString("Temporary"), QString("Temporary table")));
 
     return result;
+}
+
+Sp* MySQLDatabaseEngine::getSpForSqlRole(const QString& uid) const
+{
+    const QVector<Sp*>& allsps = getDatabaseSpecificProperties();
+    for(int i=0; i<allsps.size(); i++)
+    {
+        if(allsps.at(i)->getSqlRoleUid() == uid)
+        {
+            return allsps.at(i);
+        }
+    }
+    return 0;
 }
