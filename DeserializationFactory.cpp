@@ -669,10 +669,11 @@ Table* DeserializationFactory::createTable(DatabaseEngine* engine, Version* ver,
                     }
                 }
             }
-
-            result->initializeRemainingSps(engine, QUuid(uidTable));
         }
     }
+
+    result->initializeRemainingSps(engine, QUuid(uidTable));
+
     return result;
 }
 

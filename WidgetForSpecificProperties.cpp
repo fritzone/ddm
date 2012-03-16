@@ -4,6 +4,7 @@
 #include "db_SP.h"
 #include "SpInstance.h"
 #include "ObjectWithSpInstances.h"
+#include "SpsTooltipProviderForUid.h"
 
 #include <QLabel>
 #include <QCheckBox>
@@ -48,6 +49,7 @@ void WidgetForSpecificProperties::feedInSpecificProperties(const QVector<SpInsta
             {
                 QCheckBox* checkBox = new QCheckBox(this);
                 checkBox->setText(spInstances.at(i)->getClass()->getPropertyGuiText());
+                checkBox->setToolTip(SpsTooltipProviderForUid::provideTooltipForUid(spInstances.at(i)->getClass()->getSqlRoleUid()));
                 ui->formLayout->setWidget(i, QFormLayout::FieldRole, checkBox);
                 UidToWidget* uiw = new UidToWidget();
                 uiw->objectUid = spInstances.at(i)->getObjectUid();
