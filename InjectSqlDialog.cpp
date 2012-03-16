@@ -42,7 +42,7 @@ InjectSqlDialog::InjectSqlDialog(DatabaseEngine* engine, QWidget *parent) : QDia
     else
     {
         setupForConnectionStorage();
-        m_dbEngine = new MySQLDatabaseEngine(); // TODO: For now ...
+        m_dbEngine = MySQLDatabaseEngine::instance(); // TODO: For now ...
     }
 
     clearConnectionDetails();

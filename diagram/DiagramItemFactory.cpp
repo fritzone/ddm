@@ -84,11 +84,6 @@ DraggableGraphicsViewItem* DiagramItemFactory::getDiagramEntityForTable(Table *t
     QGraphicsRectItem* rect = new QGraphicsRectItem(0,0, maxX, py, grp);
     QPen tPen;
 
-    if(t->isTemporary())
-    {
-        tPen.setStyle(Qt::DashLine);
-    }
-
     if(t->isPersistent())
     {
         tPen.setWidth(2);

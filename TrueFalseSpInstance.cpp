@@ -19,6 +19,7 @@ QString TrueFalseSpInstance::get() const
 
 void TrueFalseSpInstance::set(const QString &v)
 {
+    qDebug() << "SET:" << v <<" " << getObjectUid();
     if(v.toUpper() == "TRUE") m_value = true;
     else
     if(v.toUpper() == "FALSE") m_value = false;

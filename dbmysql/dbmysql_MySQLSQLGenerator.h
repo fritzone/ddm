@@ -1,13 +1,21 @@
 #ifndef MYSQLSQLGENERATOR_H
 #define MYSQLSQLGENERATOR_H
 
+#include <QDebug>
+
 #include "db_AbstractSQLGenerator.h"
+
+class DatabaseEngine;
 
 class MySQLSQLGenerator : public AbstractSqlGenerator
 {
 public:
 
-    MySQLSQLGenerator(){}
+    MySQLSQLGenerator(DatabaseEngine* engine) : m_engine(engine)
+    {
+        qDebug() << "new engine = " << engine;
+    }
+
     ~MySQLSQLGenerator() {}
 
     virtual QStringList generateCreateTableSql(Table* table, const QHash<QString, QString>& options, const QString& tabName, const QString& codepage) const;
@@ -21,6 +29,10 @@ public:
 private:
 
     QString quotelessString(const QString&) const;
+
+private:
+
+    DatabaseEngine* m_engine;
 
 };
 

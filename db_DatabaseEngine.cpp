@@ -18,7 +18,7 @@ DatabaseEngine::DatabaseEngine(const QString& db):database(db)
         // initialize the DT suppliers
         dtsuppliers.insert(db, new MySQLDTSupplier());
         storageEngineProviders.insert(db, new MySQLStorageEngineListProvider());
-        sqlGenerators.insert(db, new MySQLSQLGenerator());
+        sqlGenerators.insert(db, new MySQLSQLGenerator(this));
     }
 }
 
@@ -36,9 +36,10 @@ AbstractStorageEngineListProvider* DatabaseEngine::getStorageEngineListProviders
     return storageEngineProviders.contains(database)?storageEngineProviders[database]:0;
 }
 
-DatabaseEngine* DatabaseEngine::createEngine(const QString &db)
+DatabaseEngine* DatabaseEngine::provideEngineFor(const QString &db)
 {
-    if(db.toUpper() == "MYSQL") return new MySQLDatabaseEngine();
+    qDebug() << "provide engine for:" << db;
+    if(db.toUpper() == "MYSQL") return MySQLDatabaseEngine::instance();
     return 0;
 }
 

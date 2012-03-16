@@ -31,6 +31,17 @@ QVector<DatabaseBuiltinFunction>* MySQLDatabaseEngine::s_builtinFunctions = 0;
 QVector<Sp*>* MySQLDatabaseEngine::s_mysqlSpecificProperties = 0;
 int MySQLDatabaseEngine::m_connectionCounter = 1;
 QMutex* MySQLDatabaseEngine::m_connectionMutex = 0;
+MySQLDatabaseEngine* MySQLDatabaseEngine::s_instance = 0;
+
+MySQLDatabaseEngine* MySQLDatabaseEngine::instance()
+{
+    if(s_instance == 0)
+    {
+        s_instance = new MySQLDatabaseEngine();
+    }
+
+    return s_instance;
+}
 
 MySQLDatabaseEngine::MySQLDatabaseEngine() : DatabaseEngine("MySQL"), m_revEngMappings(), m_oneTimeMappings(), m_indexTypes(), m_defaultIndexType("BTREE")
 {
@@ -1145,6 +1156,7 @@ QStringList MySQLDatabaseEngine::getKeywords() const
             <<"STARTING"
             <<"STRAIGHT_JOIN"
             <<"TABLE"
+            <<"TEMPORARY"
             <<"TERMINATED"
             <<"THEN"
             <<"TO"
@@ -1504,7 +1516,7 @@ QVector<Sp*> MySQLDatabaseEngine::buildSps()
 {
     QVector<Sp*> result;
     result.push_back(new TrueFalseSp(uidMysqlTemporaryTable, uidTable, QString("Temporary"), QString("Temporary table")));
-
+    result.push_back(new TrueFalseSp(uidMysqlIfNotExistsTable, uidTable, QString("IfNotExists"), QString("Create only if not exists")));
     return result;
 }
 
