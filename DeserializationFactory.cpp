@@ -570,12 +570,10 @@ Table* DeserializationFactory::createTable(DatabaseEngine* engine, Version* ver,
     QString parent_uid = element.attribute("parent-uid");
 
     Table* result = new Table(ver, uid, 0);
-    result->initializeFor(engine, QUuid(uidTable));
 
     result->setParentUid(parent_uid);
     result->setName(name);
     result->setPersistent(element.attribute("Persistent")=="1");
-    result->setTemporary(element.attribute("Temporary")=="1");
     result->setTempTabName(element.attribute("Parent"));
 
     QString stEngineName = element.attribute("StorageEngine");
@@ -666,10 +664,13 @@ Table* DeserializationFactory::createTable(DatabaseEngine* engine, Version* ver,
                         if(spi)
                         {
                             spi->set(spi_value);
+                            result->addSpInstance(engine, spi);
                         }
                     }
                 }
             }
+
+            result->initializeRemainingSps(engine, QUuid(uidTable));
         }
     }
     return result;
@@ -689,7 +690,7 @@ SpInstance* DeserializationFactory::createSpInstance(DatabaseEngine* engine, con
 Project* DeserializationFactory::createProject(const QDomDocument &doc, const QDomElement &element)
 {
     Project* prj = new Project(element.attribute("Name"), element.attribute("OOP")=="1");
-    DatabaseEngine* engine = DatabaseEngine::createEngine(element.attribute("DB"));
+    DatabaseEngine* engine = DatabaseEngine::provideEngineFor(element.attribute("DB"));
     prj->setEngine(engine);
 
     for(int i=0; i<element.childNodes().count(); i++)

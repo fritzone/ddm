@@ -23,7 +23,7 @@ Table::Table(Version* v, QString uid, int dummy) : TreeItem(), SerializableEleme
     NamedItem(NameGenerator::getUniqueName(v, (itemGetter)&Version::getTable, QString("TAB"))),
     ObjectWithUid(uid), ObjectWithSpInstances(),
     m_description(""), m_columns(), m_indices(), m_foreignKeys(), m_startupValues(),
-    m_parent(0), m_persistent(false), m_temporary(false), m_storageEngine(0),
+    m_parent(0), m_persistent(false), m_storageEngine(0),
     m_version(v), m_children()
 {
 }
@@ -325,7 +325,6 @@ void Table::serialize(QDomDocument &doc, QDomElement &parent) const
     QDomElement tableElement = doc.createElement("Table");      // will hold the data in this element
     tableElement.setAttribute("Name", m_name);
     tableElement.setAttribute("Persistent", m_persistent);
-    tableElement.setAttribute("Temporary", m_temporary);
     tableElement.setAttribute("Parent",m_parent?m_parent->getName():strNA);
     tableElement.setAttribute("StorageEngine", m_storageEngine?m_storageEngine->name():strNA);
     tableElement.setAttribute("uid", getObjectUid());

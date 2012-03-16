@@ -14,7 +14,10 @@ class MySQLDatabaseEngine : public DatabaseEngine
 {
 public:
 
-    MySQLDatabaseEngine();
+    static MySQLDatabaseEngine* instance();
+
+public:
+
     virtual ~MySQLDatabaseEngine();
 
     virtual bool supportsEngines();
@@ -53,6 +56,7 @@ public:
     virtual Sp* getSpForSqlRole(const QString& uid) const;
 
 private:
+    MySQLDatabaseEngine();
 
     static QVector<DatabaseBuiltinFunction> buildFunctions();
     static QVector<Sp*> buildSps();
@@ -67,6 +71,7 @@ private:
 
 private:
 
+    static MySQLDatabaseEngine* s_instance;
     static QVector<DatabaseBuiltinFunction>* s_builtinFunctions;
     static QVector<Sp*>* s_mysqlSpecificProperties;
     static int m_connectionCounter;

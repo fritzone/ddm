@@ -1991,11 +1991,6 @@ void NewTableForm::onPersistentChange(int a)
     m_table->setPersistent(a == Qt::Checked);
 }
 
-void NewTableForm::onTemporaryChange(int a)
-{
-    m_table->setTemporary(a == Qt::Checked);
-}
-
 void NewTableForm::onDeleteDefaultRow()
 {
     m_ui->tableStartupValues->removeRow(m_ui->tableStartupValues->currentRow());
@@ -2286,7 +2281,7 @@ void NewTableForm::prepareSpsTabs()
     if(m_table)
     {
         // and now create the tab widgets for the SPs
-        WidgetForSpecificProperties* wsp = new WidgetForSpecificProperties(this);
+        WidgetForSpecificProperties* wsp = new WidgetForSpecificProperties(m_dbEngine, m_table, this);
         QVector<SpInstance*> allSps = m_table->getSpInstances(m_dbEngine);
         wsp->feedInSpecificProperties(allSps, uidTable);
         m_ui->tabWidget->insertTab(4, wsp, IconFactory::getMySqlIcon(), "MySql");

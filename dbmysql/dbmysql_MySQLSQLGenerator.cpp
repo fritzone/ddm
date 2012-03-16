@@ -11,6 +11,7 @@
 #include "core_StoredMethod.h"
 #include "core_Trigger.h"
 #include "strings.h"
+#include "SpInstance.h"
 
 QStringList MySQLSQLGenerator::generateCreateTableSql(Table *table, const QHash<QString, QString> &options, const QString& tabName, const QString& codepage) const
 {
@@ -85,7 +86,17 @@ QStringList MySQLSQLGenerator::generateCreateTableSql(Table *table, const QHash<
         toReturn << comment;
     }
     QString createTable = upcase? "CREATE " : "create ";
-    createTable += table->isTemporary()? upcase? "TEMPORARY ":"temporary ":"";
+
+    // see if this is a temporary table
+    SpInstance* spi = table->getInstanceForSqlRoleUid(m_engine, uidMysqlTemporaryTable);
+    if(spi)
+    {
+        QString temporary = spi->get();
+        if(temporary == "TRUE")
+        {
+            createTable += upcase? "TEMPORARY ":"temporary ";
+        }
+    }
 
     createTable += !upcase? "table ":"TABLE ";
 
@@ -118,7 +129,6 @@ QStringList MySQLSQLGenerator::generateCreateTableSql(Table *table, const QHash<
     {
         pkpos = 1;
     }
-
 
     createTable += "\n(\n";
 

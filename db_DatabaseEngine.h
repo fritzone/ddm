@@ -362,7 +362,7 @@ public:
      * @param db - the name of the database to create
      * @return the database engine that was created for the given database
      */
-    static DatabaseEngine* createEngine(const QString& db);
+    static DatabaseEngine* provideEngineFor(const QString& db);
 
 
 private:

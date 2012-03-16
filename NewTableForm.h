@@ -115,7 +115,6 @@ public slots:
 
     // the advanced page
     void onPersistentChange(int);
-    void onTemporaryChange(int);
 
     // description page
     void onChangeDescription();

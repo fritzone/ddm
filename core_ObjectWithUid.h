@@ -30,6 +30,11 @@ public:
         return m_uid;
     }
 
+    void setForcedUid(const QString& uid)
+    {
+        m_uid = QUuid(uid);
+    }
+
 private:
 
     QUuid m_uid;
