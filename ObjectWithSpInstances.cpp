@@ -39,6 +39,7 @@ void ObjectWithSpInstances::initializeRemainingSps(const DatabaseEngine* engine,
         {
             if(allSps.at(i)->getReferredObjectClassUid() == uid)
             {
+
                 SpInstance* spi = allSps.at(i)->instantiate();
                 m_spInstances[engine->getDatabaseEngineName()].append(spi);
             }

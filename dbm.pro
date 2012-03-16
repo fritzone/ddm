@@ -78,7 +78,8 @@ SOURCES += main.cpp \
     WidgetForSpecificProperties.cpp \
     TrueFalseSp.cpp \
     ObjectWithSpInstances.cpp \
-    TrueFalseSpInstance.cpp
+    TrueFalseSpInstance.cpp \
+    SpsTooltipProviderForUid.cpp
 
 HEADERS += MainWindow.h \
     MainWindowButtonDialog.h \
@@ -174,7 +175,8 @@ HEADERS += MainWindow.h \
     TrueFalseSp.h \
     ObjectWithSpInstances.h \
     SpInstance.h \
-    TrueFalseSpInstance.h
+    TrueFalseSpInstance.h \
+    SpsTooltipProviderForUid.h
 
 FORMS += MainWindow.ui \
     MainWindowButtonDialog.ui \
@@ -228,6 +230,8 @@ INSTALLS += installfiles_doc
 installfiles_rs.files += rsrc/mysql.defaults
 installfiles_rs.path =  /home/ferenc/rpmbuild/BUILDROOT/usr/local/ddm/rsrc
 INSTALLS += installfiles_rs
+
+
 
 
 
