@@ -7,6 +7,9 @@ class SpInstance;
 #include <QVector>
 #include <QSignalMapper>
 #include <QCheckBox>
+#include <QFormLayout>
+#include <QToolBox>
+#include <QMap>
 
 namespace Ui {
     class WidgetForSpecificProperties;
@@ -37,9 +40,12 @@ protected:
 private slots:
 
     void checkBoxToggled(QString);
+    void comboBoxSelected(int);
 
 private:
     QCheckBox* getCheckBoxForObjectUid(const QString&);
+    QWidget* getToolboxPageForText(const QString&);
+    QString getObjectUidForWidget(const QWidget* w);
 
 private:
     Ui::WidgetForSpecificProperties *ui;
@@ -47,6 +53,10 @@ private:
     QSignalMapper* m_signalMapper;
     ObjectWithSpInstances* m_osp;
     const DatabaseEngine* m_dbEngine;
+    QMap<QString,int> m_GroupToIndex;
+    QFormLayout* formLayout;
+    QToolBox *toolBox;
+
 };
 
 #endif // WIDGETFORSPECIFICPROPERTIES_H

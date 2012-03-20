@@ -26,6 +26,7 @@
 #include "Codepage.h"
 #include "core_Trigger.h"
 #include "TrueFalseSp.h"
+#include "ValueListSp.h"
 
 QVector<DatabaseBuiltinFunction>* MySQLDatabaseEngine::s_builtinFunctions = 0;
 QVector<Sp*>* MySQLDatabaseEngine::s_mysqlSpecificProperties = 0;
@@ -1515,8 +1516,13 @@ bool MySQLDatabaseEngine::supportsEngines()
 QVector<Sp*> MySQLDatabaseEngine::buildSps()
 {
     QVector<Sp*> result;
-    result.push_back(new TrueFalseSp(uidMysqlTemporaryTable, uidTable, QString("Temporary"), QString("Temporary table")));
-    result.push_back(new TrueFalseSp(uidMysqlIfNotExistsTable, uidTable, QString("IfNotExists"), QString("Create only if not exists")));
+    result.push_back(new TrueFalseSp(uidMysqlTemporaryTable, uidTable, QString("Temporary"), QString("Temporary table"), QString("General")));
+    result.push_back(new TrueFalseSp(uidMysqlIfNotExistsTable, uidTable, QString("IfNotExists"), QString("Create only if not exists"), QString("General")));
+
+    QStringList valuesForStrorageEngines;
+    valuesForStrorageEngines << "MyISAM" << "InnoDB" << "Memory" << "Archive" << "Merge" << "BDB" << "Federated" << "Archive" << "CSV" << "Blackhole";
+    result.push_back(new ValueListSp(uidMysqlStorageEngineTable, uidTable, QString("StorageEngine"), QString("Storage Engine"), QString("Advanced"), valuesForStrorageEngines));
+
     return result;
 }
 

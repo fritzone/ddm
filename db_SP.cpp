@@ -1,9 +1,9 @@
 #include "db_SP.h"
 
-Sp::Sp(const QString &sqlRoleUid, const QString& referringObjectClassUid, const QString& propertyName, const QString& propertyGuiText) :
+Sp::Sp(const QString &sqlRoleUid, const QString& referringObjectClassUid, const QString& propertyName, const QString& propertyGuiText, const QString& group) :
     ObjectWithUid(QUuid::createUuid().toString()), NamedItem(propertyName),
     m_sqlRoleUid(sqlRoleUid), m_referredObjectClasUid(referringObjectClassUid),
-    m_propertyGuiText(propertyGuiText)
+    m_propertyGuiText(propertyGuiText), m_group(group)
 {
 }
 
