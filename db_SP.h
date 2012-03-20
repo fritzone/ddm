@@ -27,7 +27,7 @@ public:
      * @param propertyName - the name of the property
      * @param propertyGuiText - the text that will be shown on the GUI for this property
      */
-    Sp(const QString& sqlRoleUid, const QString& referringObjectClassUid, const QString& propertyName, const QString& propertyGuiText);
+    Sp(const QString& sqlRoleUid, const QString& referringObjectClassUid, const QString& propertyName, const QString& propertyGuiText, const QString& group);
 
     QString getSqlRoleUid() const
     {
@@ -66,6 +66,14 @@ public:
      */
     virtual QUuid getClassUid() const = 0;
 
+    /**
+     * The scope of this function is to return the name of the group this SP belongs to
+     */
+    QString getSpGroup() const
+    {
+        return m_group;
+    }
+
 
     virtual void serialize(QDomDocument& doc, QDomElement& parent) const;
 
@@ -78,6 +86,8 @@ private:
 
     // the property's text for the GUI
     QString m_propertyGuiText;
+
+    QString m_group;
 };
 
 #endif // DB_SP_H

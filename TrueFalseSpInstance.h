@@ -15,7 +15,6 @@ public:
 
     virtual QString get() const;
     virtual void set(const QString& v);
-    virtual void serialize(QDomDocument& doc, QDomElement& parent) const;
 
 private:
     bool m_value;

@@ -2,13 +2,14 @@
 #include "TrueFalseSpInstance.h"
 #include "uids.h"
 
-TrueFalseSp::TrueFalseSp(const QString& sqlPrUid, const QString& referringObjectClassUid, const QString &name, const QString& propertyGuiText) :
-    Sp(sqlPrUid, referringObjectClassUid, name, propertyGuiText)
-{}
+TrueFalseSp::TrueFalseSp(const QString& sqlPrUid, const QString& referringObjectClassUid, const QString &name, const QString& propertyGuiText, const QString& group) :
+    Sp(sqlPrUid, referringObjectClassUid, name, propertyGuiText, group)
+{
+}
 
 QUuid TrueFalseSp::getClassUid() const
 {
-    return QUuid(uidTrueFalseObj);
+    return QUuid(uidTrueFalseSp);
 }
 
 SpInstance* TrueFalseSp::instantiate()
@@ -18,6 +19,5 @@ SpInstance* TrueFalseSp::instantiate()
 
 SpInstance* TrueFalseSp::createSpecifiedInstance(const QString& spi_uid)
 {
-    TrueFalseSpInstance* spi = new TrueFalseSpInstance(this, spi_uid);
-    return spi;
+    return new TrueFalseSpInstance(this, spi_uid);
 }

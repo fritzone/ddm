@@ -21,7 +21,17 @@ public:
     SpInstance(const Sp* theClass, const QString& uid) : SerializableElement(), ObjectWithUid(uid), m_class(theClass)
     {}
 
-    virtual void serialize(QDomDocument& doc, QDomElement& parent) const = 0;
+    virtual void serialize(QDomDocument& doc, QDomElement& parent) const
+    {
+        QDomElement spElement = doc.createElement("SpInstance");
+        getClass()->serialize(doc, spElement);
+        spElement.setAttribute("Value", get());
+        spElement.setAttribute("uid", getObjectUid());
+        spElement.setAttribute("class-uid", getClassUid());
+
+        parent.appendChild(spElement);
+    }
+
     virtual QString get() const = 0;
     virtual void set(const QString& v) = 0;
 
