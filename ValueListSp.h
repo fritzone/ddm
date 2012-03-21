@@ -9,7 +9,10 @@ class ValueListSp : public Sp
 {
 public:
 
-    ValueListSp(const QString& sqlPrUid, const QString& referringObjectClassUid, const QString &name, const QString& propertyGuiText, const QString& group, const QStringList& values);
+    ValueListSp(const QString& sqlPrUid, const QString& referringObjectClassUid,
+                const QString &name, const QString& propertyGuiText,
+                const QString& group, const QStringList& values,
+                int defaultValueIndex);
     virtual QUuid getClassUid() const;
     virtual SpInstance* instantiate();
     virtual SpInstance* createSpecifiedInstance(const QString& spi_uid);
@@ -17,10 +20,15 @@ public:
     {
         return m_values;
     }
+    int getDefaultValuesIndex() const
+    {
+        return m_defaultValuesIndex;
+    }
 
 private:
 
     QStringList m_values;
+    int m_defaultValuesIndex;
 
 };
 

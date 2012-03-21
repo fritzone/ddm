@@ -61,6 +61,7 @@ private:
     static QVector<DatabaseBuiltinFunction> buildFunctions();
     static QVector<Sp*> buildSps();
     static QString provideConnectionName(const QString&);
+    static QStringList getCodepageList();
 
 private:
 

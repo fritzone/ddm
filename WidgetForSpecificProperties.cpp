@@ -12,6 +12,7 @@
 #include <QCheckBox>
 #include <QDebug>
 #include <QWidget>
+#include <QListWidget>
 #include <QComboBox>
 
 WidgetForSpecificProperties::WidgetForSpecificProperties(const DatabaseEngine* dbe, ObjectWithSpInstances* osp, QWidget *parent) :
@@ -23,6 +24,7 @@ WidgetForSpecificProperties::WidgetForSpecificProperties(const DatabaseEngine* d
 
     toolBox = new QToolBox(this);
     toolBox->setObjectName(QString::fromUtf8("toolBox"));
+    toolBox->layout()->setSpacing(0);
 
     ui->verticalLayout->addWidget(toolBox);
 }
@@ -43,6 +45,91 @@ void WidgetForSpecificProperties::changeEvent(QEvent *e)
         break;
     }
 }
+
+void WidgetForSpecificProperties::populateCodepageCombo(QComboBox* comboBox, const QStringList& cps)
+{
+    QListWidget* lw = new QListWidget(this);
+    for(int i=0; i<cps.size(); i++)
+    {
+        QString name = cps[i];
+        bool header = false;
+        if(cps[i].startsWith(QString("--")))
+        {
+            header = true;
+            name = name.right(name.length() - 2);
+        }
+        QString iconName = "";
+
+        if(!header)
+        {
+        // dig out the second string
+            QStringList ls = name.split("_");
+            if(ls.size() > 1)
+            {
+
+                if(ls[1] != "bin" && ls[1] != "unicode" && ls[1] != "general")
+                {
+                    iconName = ":/images/actions/images/small/flag_" + ls[1] + ".png";
+                }
+                else
+                {
+                    if(ls[0] == "greek")
+                    {
+                        iconName = ":/images/actions/images/small/flag_greek.png";
+                    }
+                    else
+                    if(ls[0] == "armscii8")
+                    {
+                        iconName = ":/images/actions/images/small/flag_armenia.png";
+                    }
+                    else
+                    if(ls[0] == "hebrew")
+                    {
+                        iconName = ":/images/actions/images/small/flag_israel.png";
+                    }
+                    else
+                    {
+                        iconName = ":/images/actions/images/small/flag_" + ls[1] + ".png";
+                    }
+                }
+
+                ls[1][0] = ls[1][0].toUpper();
+
+                name = ls[1] + " (" + ls[0];
+                if(ls.size() > 2)
+                {
+                    name += ", " + ls[2];
+                }
+                name += ")";
+            }
+        }
+
+        // create the lw object
+        QListWidgetItem* lwi = new QListWidgetItem(name);
+        QFont font = lwi->font();
+        if(iconName.length() > 0)
+        {
+            lwi->setIcon(QIcon(iconName));
+        }
+
+        if(header)
+        {
+            font.setBold(true);
+            font.setItalic(true);
+            font.setPointSize(font.pointSize() + 1);
+        }
+
+        lwi->setFont(font);
+        lwi->setData(Qt::UserRole, QVariant(cps[i]));
+
+        lw->addItem(lwi);
+    }
+
+    comboBox->setModel(lw->model());
+    comboBox->setView(lw);
+    comboBox->setCurrentIndex(-1);
+}
+
 
 QWidget* WidgetForSpecificProperties::getToolboxPageForText(const QString& s)
 {
@@ -95,10 +182,6 @@ void WidgetForSpecificProperties::feedInSpecificProperties(const QVector<SpInsta
 
         if(spInstances.at(i)->getClass()->getReferredObjectClassUid() == dbDestinationUid)
         {
-//            QLabel* label = new QLabel(this);
-//            label->setText(sps.at(i)->getClass()->getPropertyGuiText());
-//            ui->formLayout->setWidget(i, QFormLayout::LabelRole, label);
-
             if(spInstances.at(i)->getClass()->getClassUid().toString() == uidTrueFalseSp)   // create a check box
             {
                 QCheckBox* checkBox = new QCheckBox(page);
@@ -130,10 +213,17 @@ void WidgetForSpecificProperties::feedInSpecificProperties(const QVector<SpInsta
                 const ValueListSp* spi = dynamic_cast<const ValueListSp*>(spInstances.at(i)->getClass());
                 if(spi)
                 {
-                    QStringList values = spi->getValues();
-                    for(int j=0; j<values.size(); j++)
+                    if(spi->getSqlRoleUid() == uidMysqlCodepage)
                     {
-                        comboBox->addItem(values.at(j));
+                        populateCodepageCombo(comboBox, spi->getValues());
+                    }
+                    else
+                    {
+                        QStringList values = spi->getValues();
+                        for(int j=0; j<values.size(); j++)
+                        {
+                            comboBox->addItem(values.at(j));
+                        }
                     }
                 }
 
@@ -146,24 +236,38 @@ void WidgetForSpecificProperties::feedInSpecificProperties(const QVector<SpInsta
                 uiw->w = comboBox;
                 m_mappings.append(uiw);
                 m_signalMapper->setMapping(comboBox, spInstances.at(i)->getObjectUid());
-                connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(comboBoxSelected(int)));
+                comboBox->setCurrentIndex(comboBox->findText(spInstances.at(i)->get()));
+                connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(comboBoxSelected(int))); // must be the last line
             }
         }
     }
-
     connect(m_signalMapper, SIGNAL(mapped(QString)), this, SLOT(checkBoxToggled(QString)));
-
 }
 
-void WidgetForSpecificProperties::comboBoxSelected(int i)
+void WidgetForSpecificProperties::comboBoxSelected(int idx)
 {
-    qDebug() << i;
     QComboBox *combo = qobject_cast<QComboBox *>(sender());
     if(combo != 0)
     {
-        qDebug() << combo->currentText();
+        QString uid = getObjectUidForWidget(combo);
+        if(uid.length())
+        {
+            SpInstance* spi = m_osp->getInstance(m_dbEngine, uid);
+            if(spi)
+            {
+                QVariant t = combo->itemData(idx);
+                if(t.isValid())
+                {
+                    QString s = t.toString();
+                    spi->set(s);
+                }
+                else
+                {
+                    spi->set(combo->currentText());
+                }
+            }
+        }
     }
-
 }
 
 void WidgetForSpecificProperties::checkBoxToggled(QString uid)
@@ -171,7 +275,6 @@ void WidgetForSpecificProperties::checkBoxToggled(QString uid)
     QCheckBox* cb = getCheckBoxForObjectUid(uid);
     if(cb)
     {
-        qDebug() << cb->isChecked() << " " << uid;
         bool b = cb->isChecked();
         SpInstance* spi = m_osp->getInstance(m_dbEngine, uid);
         if(spi)
@@ -204,5 +307,5 @@ QString WidgetForSpecificProperties::getObjectUidForWidget(const QWidget* w)
             return (uiw->objectUid);
         }
     }
-    return 0;
+    return "";
 }
