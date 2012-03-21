@@ -10,6 +10,7 @@ class SpInstance;
 #include <QFormLayout>
 #include <QToolBox>
 #include <QMap>
+#include <QComboBox>
 
 namespace Ui {
     class WidgetForSpecificProperties;
@@ -40,12 +41,13 @@ protected:
 private slots:
 
     void checkBoxToggled(QString);
-    void comboBoxSelected(int);
+    void comboBoxSelected(int idx);
 
 private:
     QCheckBox* getCheckBoxForObjectUid(const QString&);
     QWidget* getToolboxPageForText(const QString&);
     QString getObjectUidForWidget(const QWidget* w);
+    void populateCodepageCombo(QComboBox* comboBox, const QStringList& cps);
 
 private:
     Ui::WidgetForSpecificProperties *ui;

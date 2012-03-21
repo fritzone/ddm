@@ -77,51 +77,42 @@ void ObjectWithSpInstances::serialize_spinstances(QDomDocument &doc, QDomElement
 
 SpInstance* ObjectWithSpInstances::getInstanceForSqlRoleUid(const DatabaseEngine *eng, const QString &sqlRoleUid)
 {
-    qDebug() << "getInstance="<< eng<< " as " << eng->getDatabaseEngineName();
     if(!m_spInstances.contains(eng->getDatabaseEngineName()))
     {
-        qDebug() << "NO DB";
         return 0;
     }
 
     QVector<SpInstance*>& v = m_spInstances[eng->getDatabaseEngineName()];
     for(int i=0; i<v.size(); i++)
     {
-        qDebug() << "VVV=" << v.at(i)->getObjectUid() << " +++ " << sqlRoleUid;
         if(v.at(i)->getClass()->getSqlRoleUid() == sqlRoleUid)
         {
             return v.at(i);
         }
     }
-    qDebug() << "No object";
     return 0;
 }
 
 SpInstance* ObjectWithSpInstances::getInstance(const DatabaseEngine *eng, const QString &objectUid)
 {
-    qDebug() << "getInstance="<< eng<< " as " << eng->getDatabaseEngineName();
     if(!m_spInstances.contains(eng->getDatabaseEngineName()))
     {
-        qDebug() << "NO DB";
         return 0;
     }
 
     QVector<SpInstance*>& v = m_spInstances[eng->getDatabaseEngineName()];
     for(int i=0; i<v.size(); i++)
     {
-        qDebug() << "VVV=" << v.at(i)->getObjectUid() << " +++ " << objectUid;
         if(v.at(i)->getObjectUid() == objectUid)
         {
             return v.at(i);
         }
     }
-    qDebug() << "No object";
     return 0;
 }
 
 void ObjectWithSpInstances::addSpInstance(const DatabaseEngine *eng, SpInstance *spi)
 {
-    qDebug() << "addSpI="<< eng<< " as " << eng->getDatabaseEngineName();
     if(!m_spInstances.contains(eng->getDatabaseEngineName()))
     {
         QVector<SpInstance*> t;
