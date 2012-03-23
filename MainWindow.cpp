@@ -82,7 +82,29 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), m_ui(new Ui::Main
 
     m_btndlg = new MainWindowButtonDialog();
     m_btndlg->showMe();
+
+    QApplication::instance()->installEventFilter(this);
 }
+
+bool MainWindow::eventFilter(QObject *obj, QEvent *evt)
+{
+    if(obj==qApp && ( evt->type() == QEvent::ApplicationActivate
+                      || evt->type() == QEvent::ApplicationDeactivate))
+    {
+        bool shouldHide = evt->type() == QEvent::ApplicationDeactivate;
+        if (shouldHide) {
+            m_splashWasVisible = m_btndlg && m_btndlg->isVisible();
+            if(m_splashWasVisible && m_btndlg)
+                m_btndlg->hide();
+        } else {
+            if(m_splashWasVisible && m_btndlg)
+                m_btndlg->show();
+        }
+        return true;
+    }
+    return QMainWindow::eventFilter(obj, evt);
+}
+
 
 MainWindow::~MainWindow()
 {
@@ -294,7 +316,6 @@ NewTableForm* MainWindow::showExistingTable(Table *table)
 
 void MainWindow::showTableWithGuid(const QString &guid, bool focus)
 {
-    qDebug() << "guid=" << guid;
     Table* table =  dynamic_cast<Table*>(UidWarehouse::instance().getElement(guid));
     if(table == 0)  // shouldn't be ...
     {
@@ -404,7 +425,7 @@ void MainWindow::showViewWithGuid(const QString& guid, bool /*focus*/)
 
             m_nvf->setSqlSource(v);
             m_nvf->setView(v);
-            m_nvf->presentSql(Workspace::getInstance()->currentProject(), QString("latin1"));
+            m_nvf->presentSql(Workspace::getInstance()->currentProject());
 
             setCentralWidget(m_nvf);
         }
@@ -422,7 +443,6 @@ void MainWindow::showObjectwithGuid(QTreeWidgetItem* current, showSomething s, b
 {
     QVariant qv = current->data(0, Qt::UserRole);
     QString uid = qv.toString();
-    qDebug() << "aaa=" << uid;
     (this->*s)(uid,f);
 }
 
@@ -451,7 +471,7 @@ void MainWindow::currentProjectTreeItemChanged(QTreeWidgetItem * current, QTreeW
         {// user clicked on the final SQL item
             SqlForm* frm = m_workspace->workingVersion()->getGui()->getSqlForm();
             frm->setSqlSource(0);
-            frm->presentSql(m_workspace->currentProject(), m_workspace->currentProject()->getCodepage());
+            frm->presentSql(m_workspace->currentProject());
             setCentralWidget(frm);
         }
         else
@@ -535,7 +555,7 @@ void MainWindow::currentProjectTreeItemChanged(QTreeWidgetItem * current, QTreeW
                     return;
                 }
                 frm->setSqlSource(ent);
-                frm->presentSql(m_workspace->currentProject(), ent, m_workspace->currentProject()->getCodepage(), (MainWindow::showSomething)&MainWindow::showNothing);
+                frm->presentSql(m_workspace->currentProject(), ent, (MainWindow::showSomething)&MainWindow::showNothing);
                 setCentralWidget(frm);
             }
             else    // user possibly clicked on a table which had a parent a table ...
@@ -987,7 +1007,6 @@ void MainWindow::onSpecializeTableFromPopup()
 
     specializedTable->setName(table->getName() + "_specialized");
     specializedTable->setParent(table);
-    specializedTable->setStorageEngine(table->getStorageEngine());
     specializedTable->setParentUid(table->getObjectUid());
 
     ContextMenuEnabledTreeWidgetItem* newTblsItem = m_workspace->workingVersion()->getGui()->createTableTreeEntry(specializedTable, table->getLocation()) ;
@@ -1188,7 +1207,7 @@ void MainWindow::specificDeploymentCallback(const QString &connName)
 {
     QStringList t;
     t << connName;
-    doDeployment(QString("latin1"), t);
+    doDeployment(t);
 }
 
 void MainWindow::onDeployHovered()
@@ -1300,7 +1319,7 @@ void MainWindow::onPreferences()
         SourceCodePresenterWidget* scw = dynamic_cast<SourceCodePresenterWidget*> (mainwidget);
         if(scw)
         {
-            scw->updateSql(m_workspace->currentProject(), m_workspace->currentProject()->getCodepage());
+            scw->updateSql(m_workspace->currentProject());
         }
     }
 }
@@ -1899,15 +1918,14 @@ void MainWindow::onDeploy()
     if(injectDialog->exec() == QDialog::Accepted)
     {
         QStringList connectionNames = injectDialog->getSelectedConnections();
-        QString codePage = injectDialog->getCodepage();
-        doDeployment(codePage, connectionNames);
+        doDeployment(connectionNames);
     }
 }
 
-void MainWindow::doDeployment(const QString& codePage, QStringList connectionNames)
+void MainWindow::doDeployment(QStringList connectionNames)
 {
     createStatusLabel();
-    InjectSqlGenerator* injectSqlGen = new InjectSqlGenerator(codePage, m_workspace->workingVersion(), connectionNames, this);
+    InjectSqlGenerator* injectSqlGen = new InjectSqlGenerator(m_workspace->workingVersion(), connectionNames, this);
     connect(injectSqlGen, SIGNAL(done(InjectSqlGenerator*)), this, SLOT(onSqlGenerationFinished(InjectSqlGenerator*)));
     injectSqlGen->generate();
 }
@@ -2109,7 +2127,7 @@ void MainWindow::onNewViewWithSql()
 
     m_nvf->setSqlSource(v);
     m_nvf->setView(v);
-    m_nvf->presentSql(Workspace::getInstance()->currentProject(), QString("latin1"));
+    m_nvf->presentSql(Workspace::getInstance()->currentProject());
 
     setCentralWidget(m_nvf);
 }
@@ -2195,7 +2213,7 @@ void MainWindow::rerenderQuery(Query* q)
 
     m_nvf->setGraphicsItem(q->getGraphicsItem());
     q->getHelper()->setScene(m_nvf->getScene());
-    m_nvf->presentSql(Workspace::getInstance()->currentProject(), QString("latin1"));
+    m_nvf->presentSql(Workspace::getInstance()->currentProject());
     setCentralWidget(m_nvf);
     m_nvf->scrollTo(cx, cy);
 }
@@ -2212,26 +2230,6 @@ void MainWindow::changeEvent(QEvent *e)
         if( isMinimized() )
         {
             if(m_btndlg && m_btndlg->isVisible())
-            {
-                m_btndlg->hide();
-                m_splashWasVisible = true;
-            }
-        }
-        else
-        {
-            if(m_splashWasVisible)
-            {
-                m_btndlg->show();
-                m_splashWasVisible = false;
-            }
-        }
-    }
-
-    if(e->type() == QEvent::ActivationChange)
-    {
-        if(!isActiveWindow())
-        {
-            if(m_btndlg && m_btndlg->isVisible() && !m_btndlg->isActiveWindow())
             {
                 m_btndlg->hide();
                 m_splashWasVisible = true;

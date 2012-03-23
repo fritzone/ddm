@@ -1,11 +1,8 @@
 #include "Index.h"
 #include "Column.h"
+#include "uids.h"
 
-Index::Index(Table* tab) :  NamedItem(""), m_owner(tab), m_type(""), m_columns()
-{
-}
-
-Index::Index(const QString &name, const QString &type, Table* tab) : NamedItem(name), m_owner(tab), m_type(type), m_columns()
+Index::Index(const QString &name, Table* tab, const QString& uid) : NamedItem(name), ObjectWithUid(uid), ObjectWithSpInstances(), m_owner(tab), m_columns()
 {
 }
 
@@ -31,16 +28,6 @@ bool Index::hasColumn(const Column* column) const
     return false;
 }
 
-const QString& Index::getType() const
-{
-    return m_type;
-}
-
-void Index::setType(const QString &type)
-{
-    m_type = type;
-}
-
 void Index::resetColumns()
 {
     m_columns.clear();
@@ -51,7 +38,8 @@ void Index::serialize(QDomDocument &doc, QDomElement &parent) const
     QDomElement indexElement = doc.createElement("Index");      // will hold the Index
 
     indexElement.setAttribute("Name", getName());
-    indexElement.setAttribute("Type", getType());
+    indexElement.setAttribute("uid", getObjectUid());
+    indexElement.setAttribute("class-uid", getClassUid().toString());
 
     {
     QDomElement sqlColumnsElement = doc.createElement("Columns");
@@ -64,5 +52,17 @@ void Index::serialize(QDomDocument &doc, QDomElement &parent) const
     indexElement.appendChild(sqlColumnsElement);
     }
 
+    // save the sps
+    {
+    QDomElement spsElement = doc.createElement("SpInstances");
+    serialize_spinstances(doc, spsElement);
+    indexElement.appendChild(spsElement);
+    }
+
     parent.appendChild(indexElement);
+}
+
+QUuid Index::getClassUid() const
+{
+    return QUuid(uidIndex);
 }

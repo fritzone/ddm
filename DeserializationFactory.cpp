@@ -7,8 +7,6 @@
 #include "Solution.h"
 #include "db_DatabaseEngine.h"
 #include "ForeignKey.h"
-#include "db_AbstractStorageEngineListProvider.h"
-#include "db_AbstractStorageEngine.h"
 #include "DiagramTableDescriptor.h"
 #include "DiagramNoteDescriptor.h"
 #include "DiagramFKDescriptor.h"
@@ -125,12 +123,21 @@ ForeignKey* DeserializationFactory::createForeignKey(Table *, const QDomDocument
 
 }
 
-Index* DeserializationFactory::createIndex(Table* table, const QDomDocument &, const QDomElement &element)
+Index* DeserializationFactory::createIndex(DatabaseEngine* engine, Table* table, const QDomDocument& doc, const QDomElement &element)
 {
+    QString uid = element.attribute("uid");
+    QString class_uid = element.attribute("class-uid");
     QString name = element.attribute("Name");
-    QString type = element.attribute("Type");
 
-    Index* result = new Index(name, type, table);
+    if(uid.length() == 0)
+    {
+        uid = QUuid::createUuid().toString();
+    }
+    if(class_uid != uidView)
+    {
+    }
+
+    Index* result = new Index(name, table, uid);
 
     for(int i=0; i<element.childNodes().size(); i++)
     {
@@ -141,7 +148,13 @@ Index* DeserializationFactory::createIndex(Table* table, const QDomDocument &, c
                 result->addColumn(table->getColumn(element.childNodes().at(i).childNodes().at(j).toElement().attribute("Name")));    // finding the Name attribute
             }
         }
+        if(element.childNodes().at(i).nodeName() == "SpInstances")
+        {
+            createObjectWithSpInstances(engine, result, doc, element.childNodes().at(i).firstChild().toElement());
+        }
     }
+
+    result->initializeRemainingSps(engine, QUuid(uidIndex));
 
     return result;
 }
@@ -576,20 +589,6 @@ Table* DeserializationFactory::createTable(DatabaseEngine* engine, Version* ver,
     result->setPersistent(element.attribute("Persistent")=="1");
     result->setTempTabName(element.attribute("Parent"));
 
-    QString stEngineName = element.attribute("StorageEngine");
-    AbstractStorageEngineListProvider* lp = engine->getStorageEngineListProviders();
-    QVector<AbstractStorageEngine*>const & engines = lp->getStorageEngines();
-    AbstractStorageEngine* ceng = 0;
-    for(int i=0; i<engines.size(); i++)
-    {
-        if(engines.at(i)->name() == stEngineName)
-        {
-            ceng = engines.at(i);
-        }
-    }
-
-    result->setStorageEngine(ceng);
-
     for(int i=0; i<element.childNodes().count(); i++)
     {
         QString nodeN = element.childNodes().at(i).nodeName();
@@ -610,7 +609,7 @@ Table* DeserializationFactory::createTable(DatabaseEngine* engine, Version* ver,
         {
             for(int j=0; j<element.childNodes().at(i).childNodes().count(); j++)
             {
-                Index* idx = createIndex(result, doc, element.childNodes().at(i).childNodes().at(j).toElement());
+                Index* idx = createIndex(engine, result, doc, element.childNodes().at(i).childNodes().at(j).toElement());
                 result->addIndex(idx);
             }
         }
@@ -640,41 +639,47 @@ Table* DeserializationFactory::createTable(DatabaseEngine* engine, Version* ver,
 
         if(nodeN == "SpInstances")
         {
-            QDomElement dbEnginesSps = element.childNodes().at(i).firstChild().toElement();
-            for(int j=0; j<dbEnginesSps.childNodes().count(); j++)
-            {
-                QDomElement dbEngineSp = dbEnginesSps.childNodes().at(j).toElement();
-                if(dbEngineSp.attribute("Name") == engine->getDatabaseEngineName())
-                {
-                    for(int k=0; k<dbEngineSp.childNodes().count(); k++)
-                    {
-                        QDomElement spiElement = dbEngineSp.childNodes().at(k).toElement();
-                        QString spi_value = spiElement.attribute("Value");
-                        QString spi_uid = spiElement.attribute("uid");
-                        QString spi_class_uid = spiElement.attribute("class-uid");
-
-                        QDomElement sp = spiElement.firstChild().toElement();
-                        QString sp_sql_role_uid = sp.attribute("sql-role-uid");
-                        QString sp_class_uid = sp.attribute("class-uid");
-                        QString sp_uid = sp.attribute("uid");
-                        QString sp_name = sp.attribute("Name");
-                        QString sp_referred_object_class_uid = sp.attribute("referred-object-class-uid");
-
-                        SpInstance* spi = createSpInstance(engine, sp_sql_role_uid, spi_uid);
-                        if(spi)
-                        {
-                            spi->set(spi_value);
-                            result->addSpInstance(engine, spi);
-                        }
-                    }
-                }
-            }
+            createObjectWithSpInstances(engine, result, doc, element.childNodes().at(i).firstChild().toElement());
         }
     }
 
     result->initializeRemainingSps(engine, QUuid(uidTable));
 
     return result;
+}
+
+void DeserializationFactory::createObjectWithSpInstances(DatabaseEngine* engine, ObjectWithSpInstances *obj, const QDomDocument &doc, const QDomElement &element)
+{
+    QDomElement dbEnginesSps = element;
+    for(int j=0; j<dbEnginesSps.childNodes().count(); j++)
+    {
+        QDomElement dbEngineSp = dbEnginesSps.childNodes().at(j).toElement();
+        if(dbEngineSp.attribute("Name") == engine->getDatabaseEngineName())
+        {
+            for(int k=0; k<dbEngineSp.childNodes().count(); k++)
+            {
+                QDomElement spiElement = dbEngineSp.childNodes().at(k).toElement();
+                QString spi_value = spiElement.attribute("Value");
+                QString spi_uid = spiElement.attribute("uid");
+                QString spi_class_uid = spiElement.attribute("class-uid");
+
+                QDomElement sp = spiElement.firstChild().toElement();
+                QString sp_sql_role_uid = sp.attribute("sql-role-uid");
+                QString sp_class_uid = sp.attribute("class-uid");
+                QString sp_uid = sp.attribute("uid");
+                QString sp_name = sp.attribute("Name");
+                QString sp_referred_object_class_uid = sp.attribute("referred-object-class-uid");
+
+                SpInstance* spi = createSpInstance(engine, sp_sql_role_uid, spi_uid);
+                if(spi)
+                {
+                    qDebug() << spi_value;
+                    spi->set(spi_value);
+                    obj->addSpInstance(engine, spi);
+                }
+            }
+        }
+    }
 }
 
 SpInstance* DeserializationFactory::createSpInstance(DatabaseEngine* engine, const QString &sql_role_uid, const QString& spi_uid)

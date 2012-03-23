@@ -162,11 +162,6 @@ public:
         m_storageEngine = ste;
     }
 
-    AbstractStorageEngine* getStorageEngine() const
-    {
-        return m_storageEngine;
-    }
-
     const Table* parent() const
     {
         return m_parent;
@@ -251,7 +246,7 @@ public:
      */
     QSet<const Table*> getTablesReferencedByForeignKeys();
 
-    virtual QStringList generateSqlSource(AbstractSqlGenerator * generator, QHash<QString,QString>, const QString& codepage);
+    virtual QStringList generateSqlSource(AbstractSqlGenerator * generator, QHash<QString,QString>);
 
     /**
      * returns the first available index name

@@ -11,7 +11,7 @@ Trigger::Trigger(const QString& name, const QString& uid) : SqlSourceEntity(),
 {
 }
 
-QStringList Trigger::generateSqlSource(AbstractSqlGenerator * gen, QHash<QString, QString> opts, const QString& /*codepage*/)
+QStringList Trigger::generateSqlSource(AbstractSqlGenerator * gen, QHash<QString, QString> opts)
 {
     return gen->generateTriggerSql(this, opts);
 }

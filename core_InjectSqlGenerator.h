@@ -11,7 +11,7 @@ class InjectSqlGenerator : public QObject
 {
     Q_OBJECT
 public:
-    explicit InjectSqlGenerator(const QString& codePage, Version* v, QStringList connectionNames, QObject *parent = 0);
+    explicit InjectSqlGenerator(Version* v, QStringList connectionNames, QObject *parent = 0);
     QStringList getSqls()
     {
         return m_sqls;
@@ -32,8 +32,6 @@ private:
     Version *m_version;
     QStringList m_connectionNames;
     QStringList m_sqls;
-    QString m_codePage;
-
 };
 
 #endif // CORE_INJECTSQLGENERATOR_H

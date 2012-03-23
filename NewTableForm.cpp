@@ -10,7 +10,6 @@
 #include "Index.h"
 #include "Table.h"
 #include "MainWindow.h"
-#include "db_AbstractStorageEngineListProvider.h"
 #include "ForeignKey.h"
 #include "StartupValuesHelper.h"
 #include "db_AbstractSQLGenerator.h"
@@ -28,6 +27,7 @@
 #include "core_ConnectionManager.h"
 #include "strings.h"
 #include "WidgetForSpecificProperties.h"
+#include "SpInstance.h"
 
 #include <QMessageBox>
 #include <QHashIterator>
@@ -48,7 +48,6 @@ NewTableForm::NewTableForm(DatabaseEngine* db, Project* prj, QWidget *parent, bo
     m_currentStorageEngine(0), m_engineProviders(0)
 {
     m_ui->setupUi(this);
-
 
     // now set up the Column list and the context menus for the Column list
     lstColumns = new ContextMenuEnabledTreeWidget();
@@ -91,42 +90,6 @@ NewTableForm::NewTableForm(DatabaseEngine* db, Project* prj, QWidget *parent, bo
     lstColumns->header()->resizeSection(0, 50);
     m_ui->cmbNewColumnType->setCurrentIndex(-1);
 
-    // fill in the storage engine types
-    m_engineProviders = db->getStorageEngineListProviders();
-    if(m_engineProviders)
-    {
-        const QVector<AbstractStorageEngine*>& storageEngines = m_engineProviders->getStorageEngines();
-        for(int i=0; i<storageEngines.size(); i++)
-        {
-            m_ui->cmbStorageEngine->addItem(storageEngines.at(i)->name());
-            if(i==0)
-            {
-                m_currentStorageEngine = storageEngines.at(i);
-            }
-        }
-    }
-    else
-    {
-        m_ui->lblStorageEngine->hide();
-        m_ui->cmbStorageEngine->hide();
-    }
-
-    // fill in the index types combo box depending on the storage engine if applicable
-    populateIndexTypesDependingOnStorageEngine();
-    enableForeignKeysDependingOnStorageEngine();
-
-    m_ui->btnAdvanced->hide();
-
-    if(!db->supportsEngines())
-    {
-        m_ui->lblStorageEngine->hide();
-        m_ui->cmbStorageEngine->hide();
-    }
-    else
-    {
-
-    }
-
     m_ui->tabWidget->setCurrentIndex(0);
 
     // next two: don't change the order. This way the remove is done from the end
@@ -141,7 +104,6 @@ NewTableForm::NewTableForm(DatabaseEngine* db, Project* prj, QWidget *parent, bo
     m_ui->txtNewColumnName->setValidator(m_nameValidator);
     m_ui->txtForeignKeyName->setValidator(m_nameValidator);
     m_ui->txtNewIndexName->setValidator(m_nameValidator);
-
 
     if(newTable)
     {
@@ -160,6 +122,7 @@ NewTableForm::NewTableForm(DatabaseEngine* db, Project* prj, QWidget *parent, bo
 
     m_signalMapperForCombosInColumns = new QSignalMapper(this);
     m_ui->buttons->hide();
+
 }
 
 NewTableForm::~NewTableForm()
@@ -173,7 +136,6 @@ void NewTableForm::resetForeignTablesCombo()
 
     // create the foreign keys screen
     const QVector<Table*>& tables = m_project->getWorkingVersion()->getTables();
-    qDebug() << tables.size() << "  " << tables << " aa " << m_table;
     for(int i=0; i<tables.size(); i++)
     {
         if(tables[i]->getName() != m_table->getName())
@@ -274,46 +236,6 @@ void NewTableForm::populateCodepageCombo()
     m_ui->cmbCharSetForSql->setView(lw);
     m_ui->cmbCharSetForSql->setCurrentIndex(-1);
 
-}
-
-void NewTableForm::populateIndexTypesDependingOnStorageEngine()
-{
-    const QStringList& indexTypes = m_dbEngine->getIndexTypes();
-    QStringList::const_iterator it = indexTypes.constBegin();
-
-    m_ui->cmbIndexType->clear();
-    while(it != indexTypes.constEnd())
-    {
-        if(m_engineProviders)
-        {
-            if(m_currentStorageEngine && m_currentStorageEngine->supportsIndexType(*it))
-            {
-                m_ui->cmbIndexType->addItem(*it);
-            }
-        }
-        else
-        {
-            m_ui->cmbIndexType->addItem(*it);
-        }
-
-        it ++;
-    }
-}
-
-void NewTableForm::enableForeignKeysDependingOnStorageEngine()
-{
-    m_ui->grpForeignKeysList->setEnabled(true);
-    m_ui->grpNewForeignKey->setEnabled(true);
-    m_ui->lblForeignKeysNotAllowed->setVisible(false);
-    if(m_engineProviders && m_currentStorageEngine)
-    {
-        if(!m_currentStorageEngine->supportsForeignKeys())
-        {
-            //m_ui->grpForeignKeysList->setEnabled(false);
-            //m_ui->grpNewForeignKey->setEnabled(false);
-            m_ui->lblForeignKeysNotAllowed->setVisible(true);
-        }
-    }
 }
 
 ContextMenuEnabledTreeWidgetItem* NewTableForm::createTWIForForeignKey(const ForeignKey* fk)
@@ -568,13 +490,6 @@ void NewTableForm::setTable(Table *table)
     m_ui->txtTableName->setText(table->getName());
     m_ui->txtDescription->setText(table->getDescription());
 
-    m_currentStorageEngine = table->getStorageEngine();
-    if(table->getStorageEngine())
-    {
-        m_ui->cmbStorageEngine->setCurrentIndex(m_ui->cmbStorageEngine->findText(table->getStorageEngine()->name()));
-    }
-    populateIndexTypesDependingOnStorageEngine();
-    enableForeignKeysDependingOnStorageEngine();
     if(m_table) resetForeignTablesCombo();
     prepareSpsTabs();
 
@@ -1056,8 +971,13 @@ void NewTableForm::onMoveColumnToRight()
 {
     if(!m_ui->lstAvailableColumnsForIndex->currentItem()) return;
     QListWidgetItem* itm = new QListWidgetItem(*m_ui->lstAvailableColumnsForIndex->currentItem());
+    QString name = itm->text();
     delete m_ui->lstAvailableColumnsForIndex->currentItem();
     m_ui->lstSelectedColumnsForIndex->addItem(itm);
+    if(m_ui->txtNewIndexName->text().length() == 0)
+    {
+        m_ui->txtNewIndexName->setText(QString("index_" + name));
+    }
 }
 
 void NewTableForm::onMoveColumnToLeft()
@@ -1085,7 +1005,7 @@ ContextMenuEnabledTreeWidgetItem* NewTableForm::createTWIForIndex(const Index* i
 
     // create the listview entry
     QStringList a(index->getName());
-    a.append(index->getType());
+    // TODO: Fetch a list of index properties from here and add them to the view
     a.append(columnsAsString);
 
     ContextMenuEnabledTreeWidgetItem* item = new ContextMenuEnabledTreeWidgetItem((ContextMenuEnabledTreeWidgetItem*)0, a);
@@ -1127,7 +1047,8 @@ void NewTableForm::onAddIndex()
             return;
         }
 
-        Index* index = new Index(m_ui->txtNewIndexName->text(), m_ui->cmbIndexType->currentText(), m_table);
+        Index* index = new Index(m_ui->txtNewIndexName->text(), m_table, QUuid::createUuid().toString());
+        index->initializeFor(m_dbEngine, QUuid(uidIndex));
         int cnt = m_ui->lstSelectedColumnsForIndex->count();
         for(int i = 0; i< cnt; i++)
         {
@@ -1159,7 +1080,6 @@ void NewTableForm::onAddIndex()
     else    // update the index with the modified data
     {
         m_currentIndex->setName(m_ui->txtNewIndexName->text());
-        m_currentIndex->setType(m_ui->cmbIndexType->currentText());
         m_currentIndex->resetColumns();
         // TODO: "almost" duplicate code, consider refactoring
         QString columnsAsString = "";
@@ -1175,8 +1095,7 @@ void NewTableForm::onAddIndex()
         }
 
         m_currentIndex->getLocation()->setText(0, m_currentIndex->getName());
-        m_currentIndex->getLocation()->setText(1, m_currentIndex->getType());
-        m_currentIndex->getLocation()->setText(2, columnsAsString);
+        m_currentIndex->getLocation()->setText(1, columnsAsString);
     }
     resetIndexGui();
 
@@ -1187,7 +1106,6 @@ void NewTableForm::resetIndexGui()
 {
     m_ui->lstSelectedColumnsForIndex->clear();
     populateColumnsForIndices();
-    m_ui->cmbIndexType->setCurrentIndex(0);
     m_ui->txtNewIndexName->setText("");
     m_ui->btnAddIndex->setIcon(IconFactory::getAddIcon());
     m_currentIndex = 0;
@@ -1227,20 +1145,6 @@ void NewTableForm::populateIndexGui(Index* idx)
         qlwi->setIcon(column->getLocation()->icon(COL_POS_DT));
     }
 
-    // select the required combo box item
-    const QStringList& indexTypes = m_dbEngine->getIndexTypes();
-    QStringList::const_iterator it = indexTypes.constBegin();
-    int indx = 0;
-    while(it != indexTypes.constEnd())
-    {
-        if(*it == idx->getType())
-        {
-            break;
-        }
-        indx ++;
-        it ++;
-    }
-    m_ui->cmbIndexType->setCurrentIndex(indx);
 }
 
 void NewTableForm::toggleIndexFieldDisableness(bool a)
@@ -1248,7 +1152,6 @@ void NewTableForm::toggleIndexFieldDisableness(bool a)
     m_ui->txtNewIndexName->setDisabled(a);
     m_ui->lstAvailableColumnsForIndex->setDisabled(a);
     m_ui->lstSelectedColumnsForIndex->setDisabled(a);
-    m_ui->cmbIndexType->setDisabled(a);
 
     m_ui->btnMoveColumnToLeft->setDisabled(a);
     m_ui->btnMoveColumnToRight->setDisabled(a);
@@ -1278,6 +1181,7 @@ void NewTableForm::onSelectIndex(QTreeWidgetItem*, int)
     }
 
     m_ui->btnAddIndex->setIcon(IconFactory::getApplyIcon());
+    prepareSpsTabsForIndex(m_currentIndex);
 }
 
 void NewTableForm::onCancelIndexEditing()
@@ -1930,32 +1834,8 @@ void NewTableForm::onLoadStartupValuesFromCSV()
 
 void NewTableForm::updateSqlDueToChange()
 {
-    QString s = m_ui->cmbCharSetForSql->itemData(m_ui->cmbCharSetForSql->currentIndex()).toString();
-    qDebug() << s;
-    if(s.indexOf('_') == -1) s = "latin1";
-    s=s.left(s.indexOf('_'));
-    presentSql(m_project, s);
+    presentSql(m_project);
 }
-
-void NewTableForm::onStorageEngineChange(QString name)
-{
-    const QVector<AbstractStorageEngine*>& storageEngines = m_engineProviders->getStorageEngines();
-    for(int i=0; i<storageEngines.size(); i++)
-    {
-        if(storageEngines.at(i)->name() == name)
-        {
-            m_currentStorageEngine = storageEngines.at(i);
-        }
-    }
-
-    m_table->setStorageEngine(m_currentStorageEngine);
-
-    populateIndexTypesDependingOnStorageEngine();
-    enableForeignKeysDependingOnStorageEngine();
-
-    updateSqlDueToChange();
-}
-
 
 void NewTableForm::onBtnCancelForeignKeyEditing()
 {
@@ -2011,7 +1891,7 @@ void NewTableForm::onChangeTab(int idx)
     {
         if(m_ui->tabWidget->tabText(idx) == "SQL")
         {
-            presentSql(m_project, "latin1");
+            presentSql(m_project);
         }
     }
 }
@@ -2091,12 +1971,12 @@ void NewTableForm::onSaveSql()
     out << m_ui->txtSql->toPlainText() << "\n";
 }
 
-void NewTableForm::presentSql(Project *, const QString& codepage)
+void NewTableForm::presentSql(Project *)
 {
     QString fs = "";
     QHash<QString,QString> fo = Configuration::instance().sqlGenerationOptions();
     fo["FKSposition"] = "OnlyInternal";
-    finalSql = m_project->getEngine()->getSqlGenerator()->generateCreateTableSql(m_table, fo, m_table->getName(), codepage);
+    finalSql = m_project->getEngine()->getSqlGenerator()->generateCreateTableSql(m_table, fo, m_table->getName());
     if(!Workspace::getInstance()->currentProjectIsOop())
     {
         finalSql << m_project->getEngine()->getSqlGenerator()->generateDefaultValuesSql(m_table, fo);
@@ -2171,7 +2051,7 @@ void NewTableForm::onCodepageChange(QString)
     updateSqlDueToChange();
 }
 
-void NewTableForm::presentSql(Project*, SqlSourceEntity*,const QString&, MainWindow::showSomething)
+void NewTableForm::presentSql(Project*, SqlSourceEntity*, MainWindow::showSomething)
 {
 }
 
@@ -2285,5 +2165,40 @@ void NewTableForm::prepareSpsTabs()
         QVector<SpInstance*> allSps = m_table->getSpInstances(m_dbEngine);
         wsp->feedInSpecificProperties(allSps, uidTable);
         m_ui->tabWidget->insertTab(4, wsp, IconFactory::getMySqlIcon(), "MySql");
+
+        prepareSpsTabsForIndex(0);
     }
+}
+
+void NewTableForm::prepareSpsTabsForIndex(Index* idx)
+{
+    // clean the tab
+    while(m_ui->tabWidgetForIndex->count() > 1)
+    {
+        m_ui->tabWidgetForIndex->removeTab(1);
+    }
+
+    // create the new tab pages
+    WidgetForSpecificProperties* wsp = new WidgetForSpecificProperties(m_dbEngine, m_table, this);
+    QVector<SpInstance*> allSps;
+    if(idx)
+    {
+        allSps = idx->getSpInstances(m_dbEngine);
+    }
+    else
+    {
+        const QVector<Sp*> allSps1 = m_dbEngine->getDatabaseSpecificProperties();
+        for(int i=0; i<allSps1.size(); i++)
+        {
+            if(allSps1.at(i)->getReferredObjectClassUid() == uidIndex)
+            {
+                SpInstance* spi = allSps1.at(i)->instantiate();
+                allSps.append(spi);
+            }
+        }
+    }
+
+    wsp->feedInSpecificProperties(allSps, uidIndex);
+    m_ui->tabWidgetForIndex->insertTab(1, wsp, IconFactory::getMySqlIcon(), "MySql");
+
 }

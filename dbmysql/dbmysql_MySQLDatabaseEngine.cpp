@@ -16,7 +16,6 @@
 #include "UserDataType.h"
 #include "Index.h"
 #include "TableInstance.h"
-#include "db_AbstractStorageEngineListProvider.h"
 #include "ForeignKey.h"
 #include "db_DatabaseBuiltinFunction.h"
 #include "core_View.h"
@@ -27,6 +26,7 @@
 #include "core_Trigger.h"
 #include "TrueFalseSp.h"
 #include "ValueListSp.h"
+#include "SpInstance.h"
 
 QVector<DatabaseBuiltinFunction>* MySQLDatabaseEngine::s_builtinFunctions = 0;
 QVector<Sp*>* MySQLDatabaseEngine::s_mysqlSpecificProperties = 0;
@@ -513,7 +513,8 @@ Table* MySQLDatabaseEngine::reverseEngineerTable(Connection *c, const QString& t
         }
         else
         {
-            idx = new Index(finalIndexName, indextype, tab);
+            idx = new Index(finalIndexName, tab, QUuid::createUuid().toString());
+            // TODO: set the index type SPI based on indextype from above
             createdIndexes.insert(keyname, idx);
         }
 
@@ -600,16 +601,17 @@ Table* MySQLDatabaseEngine::reverseEngineerTable(Connection *c, const QString& t
             eng = query.value(0).toString();
         }
 
-        AbstractStorageEngineListProvider* stlist = getStorageEngineListProviders();
-        QVector<AbstractStorageEngine*> stengines = stlist->getStorageEngines();
-        for(int i=0; i<stengines.size(); i++)
+
         {
-            if(stengines.at(i)->name() == eng)
-            {
-                tab->setStorageEngine(stengines.at(i));
-                break;
-            }
+        // see if we have a storage engine
+        SpInstance* spi = tab->getInstanceForSqlRoleUid(this, uidMysqlStorageEngineTable);
+        if(spi)
+        {
+            spi->set(eng);
         }
+        }
+
+        throw "feed in the SP for storage engine for a table";
     }
     dbo.close();
     return tab;
@@ -1658,7 +1660,11 @@ QVector<Sp*> MySQLDatabaseEngine::buildSps()
     result.push_back(new ValueListSp(uidMysqlStorageEngineTable, uidTable, QString("StorageEngine"), QString("Storage Engine"), QString("Advanced"), valuesForStrorageEngines, 1));
 
     QStringList valuesForCodepages = getCodepageList();
-    result.push_back(new ValueListSp(uidMysqlCodepage, uidTable, QString("Codepage"), QString("Codepage"), QString("Advanced"), valuesForCodepages, 0));
+    result.push_back(new ValueListSp(uidMysqlCodepageTable, uidTable, QString("Codepage"), QString("Codepage"), QString("Advanced"), valuesForCodepages, 0));
+
+    QStringList valuesForIndexTypes;
+    valuesForIndexTypes << "BTREE" << "HASH";
+    result.push_back(new ValueListSp(uidMysqlIndexType, uidIndex, QString("Index Type"), QString("Index Type"), QString("General"), valuesForIndexTypes, 0));
 
     return result;
 }

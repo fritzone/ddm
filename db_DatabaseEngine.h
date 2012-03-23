@@ -6,7 +6,6 @@
 #include <QSqlDatabase>
 
 class AbstractDTSupplier;
-class AbstractStorageEngineListProvider;
 class AbstractSqlGenerator;
 class Version;
 class Table;
@@ -46,13 +45,6 @@ public:
     AbstractDTSupplier* getDTSupplier() const;
 
     /**
-     * If the database supports storage engines, such as InnoDB for
-     * MySQL this method returns an object that provides the Storage Engines to the outside world.
-     * @return the storage engine list providers of this database
-     */
-    AbstractStorageEngineListProvider* getStorageEngineListProviders() const;
-
-    /**
      * Returns an SQL generator for this database engine. The SQL generator is responsible for
      * generating SQLs for various SQL related jobs, such as table creation, or etc...
      * @return an SQL generator
@@ -87,14 +79,6 @@ public:
     /**
      * @group Generic database related functions such as connection, run an SQL, etc...
      */
-
-    /**
-     * Tells the GUI if this database engine supports the "storage engine" feature (such as InnoDB for MySQL).
-     * Anyone deriving from this class (such as MysqlDatabaseEngine) should provide this method to see if we
-     * show the combo box in the GUI.
-     * @return true if the DB supports storage engine, false if not
-     */
-    virtual bool supportsEngines() = 0;
 
     /**
      * On project creation there is a possibility to create a set of default database specific data types
@@ -372,8 +356,6 @@ private:
 
     // the list of data type suppliers supported
     static QMap<QString, AbstractDTSupplier*> dtsuppliers;
-
-    static QMap<QString, AbstractStorageEngineListProvider*> storageEngineProviders;
 
     static QMap<QString, AbstractSqlGenerator*> sqlGenerators;
 

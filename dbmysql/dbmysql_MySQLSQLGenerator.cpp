@@ -2,7 +2,6 @@
 #include "Table.h"
 #include "UserDataType.h"
 #include "Column.h"
-#include "db_AbstractStorageEngine.h"
 #include "Index.h"
 #include "ForeignKey.h"
 #include "TableInstance.h"
@@ -13,7 +12,7 @@
 #include "strings.h"
 #include "SpInstance.h"
 
-QStringList MySQLSQLGenerator::generateCreateTableSql(Table *table, const QHash<QString, QString> &options, const QString& tabName, const QString& codepage) const
+QStringList MySQLSQLGenerator::generateCreateTableSql(Table *table, const QHash<QString, QString> &options, const QString& tabName) const
 {
     // do not generate any code for a table which has no columns
     if(table->fullColumns().size() == 0) return QStringList();
@@ -87,6 +86,7 @@ QStringList MySQLSQLGenerator::generateCreateTableSql(Table *table, const QHash<
     }
     QString createTable = upcase? "CREATE " : "create ";
 
+    {
     // see if this is a temporary table
     SpInstance* spi = table->getInstanceForSqlRoleUid(m_engine, uidMysqlTemporaryTable);
     if(spi)
@@ -97,8 +97,22 @@ QStringList MySQLSQLGenerator::generateCreateTableSql(Table *table, const QHash<
             createTable += upcase? "TEMPORARY ":"temporary ";
         }
     }
+    }
 
     createTable += !upcase? "table ":"TABLE ";
+
+    {
+    // see if we have "IF NOT EXISTS" checked
+    SpInstance* spi = table->getInstanceForSqlRoleUid(m_engine, uidMysqlIfNotExistsTable);
+    if(spi)
+    {
+        QString ifNotExists = spi->get();
+        if(ifNotExists == "TRUE")
+        {
+            createTable += upcase? "IF NOT EXISTS ":"if not exists ";
+        }
+    }
+    }
 
     // table name
     createTable += backticks?"`":"";
@@ -260,22 +274,32 @@ QStringList MySQLSQLGenerator::generateCreateTableSql(Table *table, const QHash<
     // this is closing the create table SQL
     createTable += "\n)\n";
 
-    // now check the engine
-    if(table->getStorageEngine())
-    if(table->getStorageEngine()->name().length() > 0)
+
     {
-        createTable += QString(upcase?"ENGINE = ":"engine = ") + table->getStorageEngine()->name();
+    // see if we have a storage engine
+    SpInstance* spi = table->getInstanceForSqlRoleUid(m_engine, uidMysqlStorageEngineTable);
+    if(spi)
+    {
+        QString storageEngine = spi->get();
+        createTable += QString(upcase?"ENGINE = ":"engine = ") + storageEngine;
+    }
     }
 
+
+    {
     // and the codepage
-    if(codepage.length() > 1)
+    SpInstance* spi = table->getInstanceForSqlRoleUid(m_engine, uidMysqlCodepageTable);
+    if(spi)
     {
-        createTable += upcase?" DEFAULT CHARACTER SET " + codepage:" default character set " +codepage;
+        QString codepage = spi->get();
+        if(codepage.length())
+        {
+            QString charset = codepage.left(codepage.indexOf('_'));
+            createTable += upcase?(" DEFAULT CHARACTER SET " + charset + " COLLATE " + codepage):(" default character set "  + charset + " collate " + codepage);
+        }
     }
-    else
-    {
-        createTable += " DEFAULT CHARACTER SET=latin1" ;
     }
+
     createTable += ";\n\n";
     // and here we are done with the create table command
     toReturn << createTable;
@@ -291,7 +315,6 @@ QStringList MySQLSQLGenerator::generateCreateTableSql(Table *table, const QHash<
     {
         QString indexCommand = upcase?"CREATE INDEX ":"create index ";
         indexCommand += table->fullIndices().at(i);
-        indexCommand += upcase?" USING ":" using ";
         Index* idx = table->getIndex(table->fullIndices().at(i));
         if(idx == 0)
         {
@@ -301,7 +324,6 @@ QStringList MySQLSQLGenerator::generateCreateTableSql(Table *table, const QHash<
                 return QStringList("ERROR");
             }
         }
-        indexCommand += upcase?idx->getType().toUpper():idx->getType().toLower();
         indexCommand +=upcase?" ON ":" on ";
         indexCommand += tabName;
         indexCommand += "(";

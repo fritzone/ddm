@@ -12,7 +12,7 @@ public:
 
     StoredMethod(const QString& name) : NamedItem(name) {}
 
-    virtual QStringList generateSqlSource(AbstractSqlGenerator*, QHash<QString,QString>, const QString& codepage);
+    virtual QStringList generateSqlSource(AbstractSqlGenerator*, QHash<QString,QString>);
     virtual void serialize(QDomDocument& doc, QDomElement& parent) const = 0;
 
     void setSql(const QString&);

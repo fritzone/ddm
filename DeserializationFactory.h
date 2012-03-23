@@ -25,13 +25,14 @@ class Procedure;
 class Trigger;
 class Function;
 class SpInstance;
+class ObjectWithSpInstances;
 
 class DeserializationFactory
 {
 public:
 
     static UserDataType* createUserDataType(const QDomDocument& doc, const QDomElement& element);
-    static Index* createIndex(Table* table, const QDomDocument& doc, const QDomElement& element);
+    static Index* createIndex(DatabaseEngine* engine, Table* table, const QDomDocument& doc, const QDomElement& element);
     static Table* createTable(DatabaseEngine* engine, Version* ver, const QDomDocument& doc, const QDomElement& element);
     static Column* createColumn(Version* ver, const QDomDocument& doc, const QDomElement& element);
     static MajorVersion* createMajorVersion(Project* p, DatabaseEngine* engine, const QDomDocument& doc, const QDomElement& element);
@@ -49,6 +50,7 @@ public:
     static Trigger* createTrigger(Project* p, Version* v, const QDomDocument& doc, const QDomElement& element);
     static Function* createFunction(Project*, Version*,  const QDomDocument&, const QDomElement& element);
     static SpInstance* createSpInstance(DatabaseEngine* engine, const QString& sql_role_uid, const QString& spi_uid);
+    static void createObjectWithSpInstances(DatabaseEngine* engine, ObjectWithSpInstances* obj, const QDomDocument &doc, const QDomElement &element);
 
 private:
     DeserializationFactory();

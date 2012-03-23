@@ -13,12 +13,11 @@ public:
 
     MySQLSQLGenerator(DatabaseEngine* engine) : m_engine(engine)
     {
-        qDebug() << "new engine = " << engine;
     }
 
     ~MySQLSQLGenerator() {}
 
-    virtual QStringList generateCreateTableSql(Table* table, const QHash<QString, QString>& options, const QString& tabName, const QString& codepage) const;
+    virtual QStringList generateCreateTableSql(Table* table, const QHash<QString, QString>& options, const QString& tabName) const;
     virtual QStringList generateDefaultValuesSql(TableInstance* tableInstance, const QHash<QString, QString>& options) const;
     virtual QStringList generateDefaultValuesSql(Table* table, const QHash<QString, QString>& options) const;
     virtual QStringList generateCreateViewSql(View *v, const QHash<QString, QString> &options) const;

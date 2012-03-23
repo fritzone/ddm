@@ -15,7 +15,7 @@ public:
 
     Trigger(const QString& name, const QString& uid);
 
-    virtual QStringList generateSqlSource(AbstractSqlGenerator*, QHash<QString,QString>, const QString& codepage);
+    virtual QStringList generateSqlSource(AbstractSqlGenerator*, QHash<QString,QString>);
     virtual void serialize(QDomDocument& doc, QDomElement& parent) const;
 
     void setSql(const QString& s)

@@ -3,13 +3,13 @@
 
 #include <QThread>
 
-InjectSqlGenerator::InjectSqlGenerator(const QString& codePage, Version* v, QStringList connectionNames, QObject *parent) : QObject(parent), m_version(v), m_connectionNames(connectionNames), m_codePage(codePage)
+InjectSqlGenerator::InjectSqlGenerator(Version* v, QStringList connectionNames, QObject *parent) : QObject(parent), m_version(v), m_connectionNames(connectionNames)
 {
 }
 
 void InjectSqlGenerator::generate()
 {
-    InjectSqlGeneratorThread* genThread = new InjectSqlGeneratorThread(m_codePage, m_version);
+    InjectSqlGeneratorThread* genThread = new InjectSqlGeneratorThread(m_version);
     QThread* a = new QThread(this);
     genThread->moveToThread(a);
     connect(this, SIGNAL(startWork()), genThread, SLOT(doWork()));

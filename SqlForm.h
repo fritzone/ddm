@@ -28,8 +28,8 @@ public:
         sqlList = s;
     }
 
-    virtual void presentSql(Project* p,const QString& codepage);
-    virtual void presentSql(Project*, SqlSourceEntity*,const QString& codepage, MainWindow::showSomething s);
+    virtual void presentSql(Project* p);
+    virtual void presentSql(Project*, SqlSourceEntity*, MainWindow::showSomething s);
 
 public slots:
 
@@ -47,7 +47,6 @@ private:
     SqlHighlighter* highlighter;
     DatabaseEngine* m_engine;
     QStringList sqlList;
-    QString m_codepage;
     SqlSourceEntity* m_sourceEntity;
 };
 

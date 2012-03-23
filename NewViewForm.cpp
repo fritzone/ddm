@@ -130,21 +130,17 @@ void NewViewForm::getCenter(int &x, int &y)
     }
 }
 
-void NewViewForm::presentSql(Project* p, const QString& codepage)
+void NewViewForm::presentSql(Project* p)
 {
     // TODO: this is still not right, it's here just to work.
     QHash<QString, QString> opts = Configuration::instance().sqlGenerationOptions();
-    QStringList sqls = getSqlSourceEntity()->generateSqlSource(p->getEngine()->getSqlGenerator(), opts, codepage);
+    QStringList sqls = getSqlSourceEntity()->generateSqlSource(p->getEngine()->getSqlGenerator(), opts);
     QString sql = "";
     for(int i=0; i<sqls.size(); i++)
     {
         sql += sqls.at(i);
     }
     txtSql->setPlainText(sql);
-}
-
-void NewViewForm::presentSql(Project*, SqlSourceEntity*, const QString&,MainWindow::showSomething)
-{
 }
 
 void NewViewForm::setView(View *v)
@@ -213,7 +209,7 @@ void NewViewForm::setView(View *v)
 void NewViewForm::onChkCanReplaceToggle(bool st)
 {
     m_view->setReplace(st);
-    presentSql(Workspace::getInstance()->currentProject(), QString("latin1"));
+    presentSql(Workspace::getInstance()->currentProject());
 }
 
 void NewViewForm::onNameChange(QString a)
@@ -224,7 +220,7 @@ void NewViewForm::onNameChange(QString a)
     if(m_updateSqlAfterNameChange)
     {
         m_autoChange = true;
-        presentSql(Workspace::getInstance()->currentProject(), QString("latin1"));
+        presentSql(Workspace::getInstance()->currentProject());
         m_autoChange = false;
     }
 }
