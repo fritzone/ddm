@@ -51,8 +51,8 @@ public:
     }
     void resetForeignTablesCombo();
 
-    virtual void presentSql(Project*,const QString& codepage);
-    virtual void presentSql(Project*, SqlSourceEntity*,const QString& codepage, MainWindow::showSomething s);
+    virtual void presentSql(Project*);
+    virtual void presentSql(Project*, SqlSourceEntity*, MainWindow::showSomething s);
 
 protected:
 
@@ -62,7 +62,6 @@ protected:
 public slots:
 
     // main page
-    void onStorageEngineChange(QString);
     void onChangeTab(int);
     void onHelp();
     void onChangeName(QString);
@@ -156,9 +155,6 @@ private:
     void backupDefaultValuesTable();
     void restoreDefaultValuesTable();
 
-    void populateIndexTypesDependingOnStorageEngine();
-    void enableForeignKeysDependingOnStorageEngine();
-
     /*
      * Populates the gui with the given table. current has the following role: if this is the "bottom" of a specialization chain then the fields are editable (white background)
      * otherwise they are disabled (grey background)
@@ -192,6 +188,8 @@ private:
     void setTypeComboBoxForColumnItem(ContextMenuEnabledTreeWidgetItem*, Column*);
 
     void prepareSpsTabs();
+
+    void prepareSpsTabsForIndex(Index*);
 
 private:
     Ui::NewTableForm *m_ui;

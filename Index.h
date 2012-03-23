@@ -4,6 +4,8 @@
 #include "TreeItem.h"
 #include "NamedItem.h"
 #include "SerializableElement.h"
+#include "core_ObjectWithUid.h"
+#include "ObjectWithSpInstances.h"
 
 #include <QVector>
 #include <QString>
@@ -11,22 +13,17 @@
 class Column;
 class Table;
 
-class Index : public TreeItem, public SerializableElement, public NamedItem
+class Index : public TreeItem, public SerializableElement, public NamedItem, public ObjectWithUid, public ObjectWithSpInstances
 {
 public:
-    Index(Table*);
 
-    Index(const QString& name, const QString& type, Table* tab);
+    Index(const QString& name, Table* tab, const QString& uid);
 
     void addColumn(const Column* column);
 
     void addColumn(const Column* column, int pos);
 
     bool hasColumn(const Column*) const;
-
-    const QString& getType() const;
-
-    void setType(const QString& type);
 
     void resetColumns();
 
@@ -42,11 +39,11 @@ public:
         return m_owner;
     }
 
+    virtual QUuid getClassUid() const;
+
 private:
 
     Table* m_owner;
-
-    QString m_type;
 
     QVector<const Column*> m_columns;
 };

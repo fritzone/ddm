@@ -33,8 +33,8 @@ public:
     void scrollTo(int hor, int ver);
     void getCenter(int& x, int& y);
 
-    virtual void presentSql(Project*, const QString& codepage);
-    virtual void presentSql(Project*, SqlSourceEntity*, const QString& codepage,MainWindow::showSomething s);
+    virtual void presentSql(Project*);
+    virtual void presentSql(Project*, SqlSourceEntity*, MainWindow::showSomething s){};
     void setView(View* );
 
 public slots:

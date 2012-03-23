@@ -38,6 +38,5 @@ void NamedObjectListingForm::changeEvent(QEvent *e)
 void NamedObjectListingForm::doubleClickTree(QTreeWidgetItem* item, int)
 {
     QString guid = item->data(0, Qt::UserRole).toString();
-    qDebug() << guid;
     (MainWindow::instance()->*m_objectShower)(guid, true);
 }

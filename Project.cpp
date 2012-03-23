@@ -16,14 +16,12 @@ void Project::createTreeItem(GuiElements* gui)
     projectItem->setIcon(0, IconFactory::getProjectOpenIcon());
     gui->getProjectTree()->insertTopLevelItem(0, projectItem);
     setLocation(projectItem);
-    qDebug() << projectItem;
 }
 
 void Project::populateTreeItem(GuiElements* gui)
 {
     for(int i=0; i<m_majorVersions.size(); i++)
     {
-        qDebug() << getLocation();
         m_majorVersions[i]->createTreeItems(gui, getLocation());
         m_majorVersions[i]->getGui()->populateTreeItems();
     }
@@ -56,7 +54,6 @@ Version* Project::getWorkingVersion() const
     {
         return m_majorVersions[m_workingVersionIndex];
     }
-    qDebug() << "No version ...";
     return 0;
 }
 

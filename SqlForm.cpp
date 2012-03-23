@@ -21,7 +21,7 @@
 #include <QString>
 #include <QTextStream>
 
-SqlForm::SqlForm(DatabaseEngine* engine, QWidget *parent) : SourceCodePresenterWidget(parent), ui(new Ui::SqlForm), m_engine(engine), m_codepage("latin1"), m_sourceEntity(0)
+SqlForm::SqlForm(DatabaseEngine* engine, QWidget *parent) : SourceCodePresenterWidget(parent), ui(new Ui::SqlForm), m_engine(engine), m_sourceEntity(0)
 {
     ui->setupUi(this);
     highlighter = new SqlHighlighter(ui->txtSql->document(),Workspace::getInstance()->currentProjectsEngine()->getKeywords(),
@@ -72,7 +72,7 @@ void SqlForm::onInject()
             Connection* c = ConnectionManager::instance()->getConnection(connectionNames.at(i));
             if(c)
             {
-                QStringList tempSqlList = Workspace::getInstance()->workingVersion()->getSqlScript(m_codepage, false);
+                QStringList tempSqlList = Workspace::getInstance()->workingVersion()->getSqlScript(false);
                 if(!m_engine->executeSql(c, tempSqlList, tSql, injectDialog->getRollbackOnError()))
                 {
                     QMessageBox::critical (this, tr("Error"), tr("<B>Cannot execute a query!</B><P>Reason: ") + m_engine->getLastError() + tr(".<P>Query:<PRE>") + tSql+ "</PRE><P>" +
@@ -99,14 +99,13 @@ void SqlForm::onSave()
     out << ui->txtSql->toPlainText() << "\n";
 }
 
-void SqlForm::presentSql(Project* p,const QString& codepage)
+void SqlForm::presentSql(Project* p)
 {
     // here create the final SQL:
     // firstly only the tables and then the foreign keys. We'll see the other elements (triggers, functions) later
 
     Version *v = p->getWorkingVersion();
-    QStringList finalSql = v->getSqlScript(codepage, true);
-    m_codepage = codepage;
+    QStringList finalSql = v->getSqlScript(true);
 
     QString fs = "";
     for(int i=0; i< finalSql.size(); i++)
@@ -117,12 +116,12 @@ void SqlForm::presentSql(Project* p,const QString& codepage)
     setSqlList(finalSql);
 }
 
-void SqlForm::presentSql(Project* p, SqlSourceEntity* ent,const QString& codepage, MainWindow::showSomething)
+void SqlForm::presentSql(Project* p, SqlSourceEntity* ent, MainWindow::showSomething)
 {
     QString fs = "";
     QHash<QString, QString> opts = Configuration::instance().sqlGenerationOptions();
     opts["FKSposition"] = "OnlyInternal";
-    QStringList finalSql = ent->generateSqlSource(p->getEngine()->getSqlGenerator(), opts, codepage);
+    QStringList finalSql = ent->generateSqlSource(p->getEngine()->getSqlGenerator(), opts);
     for(int i=0; i< finalSql.size(); i++)
     {
         fs += finalSql[i];

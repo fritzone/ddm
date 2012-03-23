@@ -17,22 +17,22 @@ public:
     /**
      * Presents the SQL for the whole project
      */
-    virtual void presentSql(Project*, const QString& codepage) = 0;
+    virtual void presentSql(Project*) = 0;
 
     /**
      * Presents the SQL for the selected entity
      */
-    virtual void presentSql(Project*, SqlSourceEntity*, const QString& codepage, MainWindow::showSomething s) = 0;
+    virtual void presentSql(Project*, SqlSourceEntity*, MainWindow::showSomething s) = 0;
 
-    virtual void updateSql(Project* p, const QString& codepage)
+    virtual void updateSql(Project* p)
     {
         if(entity)
         {
-            presentSql(p, entity, codepage, (MainWindow::showSomething)&MainWindow::showNothing);
+            presentSql(p, entity, (MainWindow::showSomething)&MainWindow::showNothing);
         }
         else
         {
-            presentSql(p, codepage);
+            presentSql(p);
         }
     }
 

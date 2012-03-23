@@ -99,6 +99,7 @@ public:
 protected:
     virtual void closeEvent( QCloseEvent * event );
     virtual void changeEvent(QEvent *e);
+    virtual bool eventFilter(QObject *obj, QEvent *evt);
 
 public slots:
 
@@ -196,7 +197,7 @@ private:
     template <class T> T* getNamedObject(QTreeWidgetItem*, itemGetter);
     template <class T> void showNamedObjectList(showSomething s, const QVector<T*> items, const QIcon& icon, const QString& title);
 
-    void doDeployment(const QString& codePage, QStringList connectionNames);
+    void doDeployment(QStringList connectionNames);
     void hideSplashwindow();
     void tryBrowseConnection(Connection* c);
     void showObjectwithGuid(QTreeWidgetItem* current, showSomething s, bool focus=true);

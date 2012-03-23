@@ -7,7 +7,7 @@ void StoredMethod::setSql(const QString &s)
     m_sql = s;
 }
 
-QStringList StoredMethod::generateSqlSource(AbstractSqlGenerator * gen, QHash<QString, QString> /*opts*/, const QString& /*codepage*/)
+QStringList StoredMethod::generateSqlSource(AbstractSqlGenerator * gen, QHash<QString, QString> /*opts*/)
 {
     QStringList r;
     r.append(gen->generateCreateStoredMethodSql(this, Configuration::instance().sqlOpts()));

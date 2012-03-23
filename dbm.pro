@@ -139,8 +139,6 @@ HEADERS += MainWindow.h \
     ColumnProviderForQuery.h \
     db_AbstractDTSupplier.h \
     db_AbstractSQLGenerator.h \
-    db_AbstractStorageEngine.h \
-    db_AbstractStorageEngineListProvider.h \
     db_DatabaseBuiltinFunction.h \
     db_DatabaseBuiltinFunctionsParameter.h \
     db_DatabaseEngine.h \
@@ -234,6 +232,8 @@ INSTALLS += installfiles_doc
 installfiles_rs.files += rsrc/mysql.defaults
 installfiles_rs.path =  /home/ferenc/rpmbuild/BUILDROOT/usr/local/ddm/rsrc
 INSTALLS += installfiles_rs
+
+
 
 
 

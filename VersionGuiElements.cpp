@@ -330,7 +330,6 @@ ContextMenuEnabledTreeWidgetItem* VersionGuiElements::createTableTreeEntry(Table
     ContextMenuEnabledTreeWidgetItem* newTblsItem = new ContextMenuEnabledTreeWidgetItem(getTablesItem(), QStringList(tab->getName())) ;
     QString guid = tab->getObjectUid();
     QVariant var(guid);
-    qDebug() << guid;
     newTblsItem->setData(0, Qt::UserRole, var);
     newTblsItem->setPopupMenu(ContextMenuCollection::getInstance()->getTablePopupMenu());
     // set the icon, add to the tree
@@ -522,7 +521,7 @@ void VersionGuiElements::updateForms()
 
     getSqlForm();
     m_sqlForm->setSqlSource(0);
-    m_sqlForm->presentSql(Workspace::getInstance()->currentProject(), Workspace::getInstance()->currentProject()->getCodepage());
+    m_sqlForm->presentSql(Workspace::getInstance()->currentProject());
     if(dynamic_cast<SqlForm*>(MainWindow::instance()->centralWidget()))
     {
         MainWindow::instance()->setCentralWidget(m_sqlForm);

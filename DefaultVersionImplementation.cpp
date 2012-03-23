@@ -453,7 +453,7 @@ void DefaultVersionImplementation::setupForeignKeyRelationshipsForATable(Table* 
     }
 }
 
-QList<QString> DefaultVersionImplementation::getSqlScript(const QString& codepage, bool generateDelimiters)
+QList<QString> DefaultVersionImplementation::getSqlScript(bool generateDelimiters)
 {
     QList<QString> finalSql;
     QHash<QString, QString> opts = Configuration::instance().sqlGenerationOptions();
@@ -465,7 +465,7 @@ QList<QString> DefaultVersionImplementation::getSqlScript(const QString& codepag
     {
         for(int i=0; i<getTableInstances().size(); i++)
         {
-            QStringList sql = getTableInstances().at(i)->generateSqlSource(m_project->getEngine()->getSqlGenerator(), opts, codepage);
+            QStringList sql = getTableInstances().at(i)->generateSqlSource(m_project->getEngine()->getSqlGenerator(), opts);
             finalSql << sql;
         }
 
@@ -479,7 +479,7 @@ QList<QString> DefaultVersionImplementation::getSqlScript(const QString& codepag
     {
         for(int i=0; i<getTables().size(); i++)
         {
-            QStringList sql = getTables().at(i)->generateSqlSource(m_project->getEngine()->getSqlGenerator(), opts, codepage);
+            QStringList sql = getTables().at(i)->generateSqlSource(m_project->getEngine()->getSqlGenerator(), opts);
             finalSql << sql;
         }
 
@@ -498,7 +498,7 @@ QList<QString> DefaultVersionImplementation::getSqlScript(const QString& codepag
     }
     for(int i=0; i<m_data.m_views.size(); i++)
     {
-        QStringList t = m_data.m_views.at(i)->generateSqlSource(m_project->getEngine()->getSqlGenerator(), opts, codepage);
+        QStringList t = m_data.m_views.at(i)->generateSqlSource(m_project->getEngine()->getSqlGenerator(), opts);
         QString s = "";
         for(int j=0; j<t.size(); j++)
         {
@@ -526,7 +526,7 @@ QList<QString> DefaultVersionImplementation::getSqlScript(const QString& codepag
     {
         QString s = "";
         if (comments) s = "-- Procedure " + m_data.m_procedures.at(i)->getName() + strNewline;
-        QStringList t = m_data.m_procedures.at(i)->generateSqlSource(m_project->getEngine()->getSqlGenerator(), opts, codepage);
+        QStringList t = m_data.m_procedures.at(i)->generateSqlSource(m_project->getEngine()->getSqlGenerator(), opts);
         for(int j=0; j<t.size(); j++)
         {
             s += t.at(j) + " ";
@@ -565,7 +565,7 @@ QList<QString> DefaultVersionImplementation::getSqlScript(const QString& codepag
     {
         QString s = "";
         if (comments) s = "-- Function " + m_data.m_functions.at(i)->getName() + strNewline;
-        QStringList t = m_data.m_functions.at(i)->generateSqlSource(m_project->getEngine()->getSqlGenerator(), opts, codepage);
+        QStringList t = m_data.m_functions.at(i)->generateSqlSource(m_project->getEngine()->getSqlGenerator(), opts);
         for(int j=0; j<t.size(); j++)
         {
             s += t.at(j) + " ";
@@ -599,7 +599,7 @@ QList<QString> DefaultVersionImplementation::getSqlScript(const QString& codepag
     {
         QString s = "";
         if (comments) s = "-- Trigger " + m_data.m_triggers.at(i)->getName() + strNewline;
-        QStringList t = m_data.m_triggers.at(i)->generateSqlSource(m_project->getEngine()->getSqlGenerator(), opts, codepage);
+        QStringList t = m_data.m_triggers.at(i)->generateSqlSource(m_project->getEngine()->getSqlGenerator(), opts);
         for(int j=0; j<t.size(); j++)
         {
             s += t.at(j) + " ";

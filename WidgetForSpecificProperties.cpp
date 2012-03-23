@@ -161,7 +161,6 @@ void WidgetForSpecificProperties::feedInSpecificProperties(const QVector<SpInsta
             page->setObjectName(QString::fromUtf8("generalPage"));
             page->setGeometry(QRect(0, 0, 382, 251));
             formLayout = new QFormLayout(page);
-            formLayout->setObjectName(QString::fromUtf8("formLayout_2"));
             formLayout->setFieldGrowthPolicy(QFormLayout::AllNonFixedFieldsGrow);
             int idx = toolBox->addItem(page, group);
             m_GroupToIndex[group] = idx;
@@ -213,7 +212,7 @@ void WidgetForSpecificProperties::feedInSpecificProperties(const QVector<SpInsta
                 const ValueListSp* spi = dynamic_cast<const ValueListSp*>(spInstances.at(i)->getClass());
                 if(spi)
                 {
-                    if(spi->getSqlRoleUid() == uidMysqlCodepage)
+                    if(spi->getSqlRoleUid() == uidMysqlCodepageTable)
                     {
                         populateCodepageCombo(comboBox, spi->getValues());
                     }

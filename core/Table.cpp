@@ -6,7 +6,6 @@
 #include "db_DatabaseEngine.h"
 #include "Configuration.h"
 #include "UserDataType.h"
-#include "db_AbstractStorageEngine.h"
 #include "db_AbstractSQLGenerator.h"
 #include "IconFactory.h"
 #include "NameGenerator.h"
@@ -326,7 +325,6 @@ void Table::serialize(QDomDocument &doc, QDomElement &parent) const
     tableElement.setAttribute("Name", m_name);
     tableElement.setAttribute("Persistent", m_persistent);
     tableElement.setAttribute("Parent",m_parent?m_parent->getName():strNA);
-    tableElement.setAttribute("StorageEngine", m_storageEngine?m_storageEngine->name():strNA);
     tableElement.setAttribute("uid", getObjectUid());
     tableElement.setAttribute("class-uid", getClassUid().toString());
     tableElement.setAttribute("parent-uid", m_parent?m_parent->getObjectUid().toString():strNA);
@@ -421,10 +419,10 @@ const UserDataType* Table::getDataTypeOfColumn(const QString& cname) const
     return col->getDataType();
 }
 
-QStringList Table::generateSqlSource(AbstractSqlGenerator *generator, QHash<QString,QString> opts, const QString& codepage)
+QStringList Table::generateSqlSource(AbstractSqlGenerator *generator, QHash<QString,QString> opts)
 {
     const_cast<Table*>(this)->restartSqlRendering();
-    QStringList createSql = generator->generateCreateTableSql(const_cast<Table*>(this), opts, getName(), codepage);
+    QStringList createSql = generator->generateCreateTableSql(const_cast<Table*>(this), opts, getName());
     if(!Workspace::getInstance()->currentProjectIsOop())
     {
         createSql << generator->generateDefaultValuesSql(this, opts);
@@ -462,7 +460,7 @@ QString Table::getAvailableIndexName(const QString& prefix)
 Index* Table::createAutoIndex(QVector<const Column*> cols)
 {
     QString idxName = getAvailableIndexName(strAutoIdx + strUnderline + getName());
-    Index* idx = new Index(idxName, Workspace::getInstance()->currentProjectsEngine()->getDefaultIndextype(), this);
+    Index* idx = new Index(idxName, this, QUuid::createUuid().toString());
     for(int i=0; i<cols.size(); i++)
     {
         idx->addColumn(cols.at(i));

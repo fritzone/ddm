@@ -251,13 +251,6 @@ void InjectSqlDialog::populateCodepageCombo()
 
 }
 
-QString InjectSqlDialog::getCodepage() const
-{
-    QString s = ui->cmbCharacterSets->itemData(ui->cmbCharacterSets->currentIndex()).toString();
-    s=s.left(s.indexOf('_'));
-    return s;
-}
-
 void InjectSqlDialog::onCreateDatabase()
 {
     SimpleTextInputDialog* dlg = new SimpleTextInputDialog(this, tr("Enter the name of the new database"));

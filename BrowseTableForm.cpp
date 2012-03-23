@@ -339,7 +339,6 @@ void BrowseTableForm::newPage(Connection *c, const QString &tab, BrowsedTableLay
 
         // and fill in the data for the "data" tab
         QSqlDatabase sqldb = c->getQSqlDatabase();
-        qDebug() << sqldb;
         QSqlTableModel *model = new QSqlTableModel(tableForTableData, sqldb);
         model->setTable(tab);
         model->select();

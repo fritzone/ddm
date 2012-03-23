@@ -10,7 +10,7 @@ class InjectSqlGeneratorThread : public QObject
 {
     Q_OBJECT
 public:
-    explicit InjectSqlGeneratorThread(const QString& codePage, Version* v, QObject *parent = 0);
+    explicit InjectSqlGeneratorThread(Version* v, QObject *parent = 0);
     QStringList getSqls() const
     {
         return m_sqls;
@@ -25,7 +25,6 @@ signals:
 private:
     QStringList m_sqls;
     Version* m_version;
-    QString m_codePage;
 };
 
 #endif // CORE_INJECTSQLGENERATORTHREAD_H
