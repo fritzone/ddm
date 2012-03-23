@@ -142,11 +142,12 @@ void MainWindowButtonDialog::onBtnClose()
 void MainWindowButtonDialog::showMe()
 {
     setModal(false);
-    setWindowFlags(Qt::SplashScreen | Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint | Qt::X11BypassWindowManagerHint);
+    setWindowFlags(Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint | Qt::X11BypassWindowManagerHint);
 
     QDesktopWidget *d = QApplication::desktop();
 
     QRect t = d->availableGeometry(this);
     move(mapToGlobal(this->geometry().topLeft()).x() + t.center().x() - width() / 2, t.center().y()- height() / 2);
     show();
+    raise();
 }
