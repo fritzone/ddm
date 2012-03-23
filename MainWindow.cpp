@@ -82,6 +82,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), m_ui(new Ui::Main
 
     m_btndlg = new MainWindowButtonDialog();
     m_btndlg->showMe();
+    //m_btndlg->raise();
 
     QApplication::instance()->installEventFilter(this);
 }
@@ -161,8 +162,9 @@ void MainWindow::onNewSolution()
     bool w = false;
     if(m_btndlg && m_btndlg->isVisible())
     {
-        Qt::WindowFlags flags = m_btndlg->windowFlags();
-        m_btndlg->setWindowFlags(flags ^ (Qt::SplashScreen |Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint));
+        m_btndlg->hide();
+//        Qt::WindowFlags flags = m_btndlg->windowFlags();
+//        m_btndlg->setWindowFlags(flags ^ (Qt::SplashScreen |Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint));
         w = true;
     }
 
@@ -258,10 +260,8 @@ void MainWindow::onNewSolution()
     }
     else
     {
-        if(m_btndlg && m_btndlg->isVisible() && w)
+        if(m_btndlg && w)
         {
-            Qt::WindowFlags flags = m_btndlg->windowFlags();
-            m_btndlg->setWindowFlags(flags | Qt::SplashScreen |Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint);
             m_btndlg->show();
         }
     }
