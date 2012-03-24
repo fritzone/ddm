@@ -163,8 +163,12 @@ void MainWindow::onNewSolution()
     if(m_btndlg && m_btndlg->isVisible())
     {
         m_btndlg->hide();
-//        Qt::WindowFlags flags = m_btndlg->windowFlags();
-//        m_btndlg->setWindowFlags(flags ^ (Qt::SplashScreen |Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint));
+
+#ifdef Q_WS_WIN
+        Qt::WindowFlags flags = m_btndlg->windowFlags();
+        m_btndlg->setWindowFlags(flags ^ (Qt::SplashScreen |Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint));
+#endif
+
         w = true;
     }
 
@@ -184,8 +188,10 @@ void MainWindow::onNewSolution()
                 QMessageBox::critical (this, tr("Error"), tr("Cannot create a solution. Not enough memory?"), QMessageBox::Ok);
                 if(m_btndlg && m_btndlg->isVisible() && w)
                 {
+#ifdef Q_WS_WIN
                     Qt::WindowFlags flags = m_btndlg->windowFlags();
                     m_btndlg->setWindowFlags(flags | Qt::SplashScreen |Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint);
+#endif
                     m_btndlg->show();
                 }
                 return;
@@ -198,8 +204,10 @@ void MainWindow::onNewSolution()
                 QMessageBox::critical (this, tr("Error"), tr("Cannot create a solution. Not enough memory?"), QMessageBox::Ok);
                 if(m_btndlg && m_btndlg->isVisible() && w)
                 {
+#ifdef Q_WS_WIN
                     Qt::WindowFlags flags = m_btndlg->windowFlags();
                     m_btndlg->setWindowFlags(flags | Qt::SplashScreen |Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint);
+#endif
                     m_btndlg->show();
                 }
                 return;
@@ -262,6 +270,10 @@ void MainWindow::onNewSolution()
     {
         if(m_btndlg && w)
         {
+#ifdef Q_WS_WIN
+            Qt::WindowFlags flags = m_btndlg->windowFlags();
+            m_btndlg->setWindowFlags(flags | Qt::SplashScreen |Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint);
+#endif
             m_btndlg->show();
         }
     }
@@ -689,8 +701,10 @@ void MainWindow::doLoadSolution(const QString& fileName, bool splashVisible)
         QMessageBox::critical (this, tr("Error"), tr("Cannot load the solution."), QMessageBox::Ok);
         if(splashVisible)
         {
+#ifdef Q_WS_WIN
             Qt::WindowFlags flags = m_btndlg->windowFlags();
             m_btndlg->setWindowFlags(flags | Qt::SplashScreen |Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint);
+#endif
             m_btndlg->show();
         }
 
@@ -729,8 +743,11 @@ void MainWindow::onOpenSolution()
     bool splashVisible = false;
     if(m_btndlg && m_btndlg->isVisible())
     {
+        m_btndlg->hide();
+#ifdef Q_WS_WIN
         Qt::WindowFlags flags = m_btndlg->windowFlags();
         m_btndlg->setWindowFlags(flags ^ (Qt::SplashScreen |Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint));
+#endif
         splashVisible = true;
     }
 
@@ -739,8 +756,10 @@ void MainWindow::onOpenSolution()
     {
         if(splashVisible)
         {
+#ifdef Q_WS_WIN
             Qt::WindowFlags flags = m_btndlg->windowFlags();
             m_btndlg->setWindowFlags(flags |Qt::SplashScreen | Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint);
+#endif
             m_btndlg->show();
         }
         return;
@@ -921,8 +940,11 @@ void MainWindow::onAbout()
     bool wasBtndlg = false;
     if(m_btndlg && m_btndlg->isVisible())
     {
+        m_btndlg->hide();
+#ifdef Q_WS_WIN
         Qt::WindowFlags flags = m_btndlg->windowFlags();
         m_btndlg->setWindowFlags(flags ^ (Qt::SplashScreen |Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint));
+#endif
         wasBtndlg = true;
     }
 
@@ -932,8 +954,10 @@ void MainWindow::onAbout()
 
     if(m_btndlg && wasBtndlg)
     {
+#ifdef Q_WS_WIN
         Qt::WindowFlags flags = m_btndlg->windowFlags();
         m_btndlg->setWindowFlags(flags | Qt::SplashScreen |Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint);
+#endif
         m_btndlg->show();
     }
 
@@ -1629,8 +1653,11 @@ void MainWindow::onDropConnection()
         bool w = false;
         if(m_btndlg && m_btndlg->isVisible())
         {
+            m_btndlg->hide();
+#ifdef Q_WS_WIN
             Qt::WindowFlags flags = m_btndlg->windowFlags();
             m_btndlg->setWindowFlags(flags ^ (Qt::SplashScreen |Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint));
+#endif
             w = true;
         }
 
@@ -1644,8 +1671,10 @@ void MainWindow::onDropConnection()
 
         if(m_btndlg && w)
         {
+#ifdef Q_WS_WIN
             Qt::WindowFlags flags = m_btndlg->windowFlags();
             m_btndlg->setWindowFlags(flags | Qt::SplashScreen |Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint);
+#endif
             m_btndlg->show();
         }
     }
@@ -1655,8 +1684,10 @@ void MainWindow::hideSplashwindow()
 {
     if(m_btndlg && m_btndlg->isVisible())
     {
+#ifdef Q_WS_WIN
         Qt::WindowFlags flags = m_btndlg->windowFlags();
         m_btndlg->setWindowFlags(flags ^ (Qt::SplashScreen |Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint));
+#endif
         m_btndlg->hide();
     }
 }
@@ -2095,16 +2126,46 @@ void MainWindow::onReverseEngineeringFinished(ReverseEngineerer*)
 
 }
 
+void MainWindow::onHelp()
+{
+    if(m_btndlg && m_btndlg->isVisible())
+    {
+        m_btndlg->hide();
+#ifdef Q_WS_WIN
+        Qt::WindowFlags flags = m_btndlg->windowFlags();
+        m_btndlg->setWindowFlags(flags ^ (Qt::SplashScreen |Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint));
+#endif
+        delete m_btndlg;
+        m_btndlg = 0;
+    }
+
+    HelpWindow* hw = HelpWindow::instance();
+    hw->showHelp(QString("/doc/main.html"));
+    hw->show();
+}
+
 void MainWindow::onNewConnection()
 {
     bool wasVisible = false;
     if(m_btndlg && m_btndlg->isVisible())
     {
+#ifdef Q_WS_WIN
+            Qt::WindowFlags flags = m_btndlg->windowFlags();
+            m_btndlg->setWindowFlags(flags ^ (Qt::SplashScreen |Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint));
+#endif
         m_btndlg->hide();
         wasVisible = true;
     }
     m_workspace->createNewConnection();
-    if(wasVisible) m_btndlg->show();
+    if(wasVisible)
+    {
+#ifdef Q_WS_WIN
+        Qt::WindowFlags flags = m_btndlg->windowFlags();
+        m_btndlg->setWindowFlags(flags | Qt::SplashScreen |Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint);
+#endif
+
+        m_btndlg->show();
+    }
 }
 
 void MainWindow::onValidate()
