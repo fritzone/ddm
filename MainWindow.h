@@ -115,6 +115,7 @@ public slots:
     void onSaveAs();
     void onCloseSolution();
     void onDestroyed();
+    void onHelp();
     void currentProjectTreeItemChanged(QTreeWidgetItem * current, QTreeWidgetItem*);
 
     void dtTreeItemClicked ( QTreeWidgetItem * item, int column );

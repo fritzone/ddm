@@ -88,9 +88,7 @@ void MainWindowButtonDialog::changeEvent(QEvent *e)
 
 void MainWindowButtonDialog::onHelp()
 {
-    HelpWindow* hw = HelpWindow::instance();
-    hw->showHelp(QString("/doc/main.html"));
-    hw->show();
+    MainWindow::instance()->onHelp();
 }
 
 void MainWindowButtonDialog::onQuick1()
@@ -126,23 +124,23 @@ void MainWindowButtonDialog::onQuick5()
 
 void MainWindowButtonDialog::onQuick(const QString &f)
 {
-    Qt::WindowFlags flags = windowFlags();
-    setWindowFlags(flags ^ (Qt::SplashScreen |Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint));
     hide();
     MainWindow::instance()->doLoadSolution(f, true);
 }
 
 void MainWindowButtonDialog::onBtnClose()
 {
-    Qt::WindowFlags flags = windowFlags();
-    setWindowFlags(flags ^ (Qt::SplashScreen |Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint));
     hide();
 }
 
 void MainWindowButtonDialog::showMe()
 {
     setModal(false);
-    setWindowFlags(Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint | Qt::X11BypassWindowManagerHint);
+    setWindowFlags(
+            #ifdef Q_WS_WIN
+                Qt::SplashScreen |
+            #endif
+                Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint | Qt::X11BypassWindowManagerHint);
 
     QDesktopWidget *d = QApplication::desktop();
 
