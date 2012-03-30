@@ -103,6 +103,7 @@ SpInstance* ObjectWithSpInstances::getInstance(const DatabaseEngine *eng, const 
     QVector<SpInstance*>& v = m_spInstances[eng->getDatabaseEngineName()];
     for(int i=0; i<v.size(); i++)
     {
+        qDebug() << v.at(i)->getObjectUid() << " " << objectUid;
         if(v.at(i)->getObjectUid() == objectUid)
         {
             return v.at(i);

@@ -6,8 +6,8 @@ ValueListSp::ValueListSp(const QString& sqlPrUid,
                          const QString& referringObjectClassUid,
                          const QString &name, const QString& propertyGuiText,
                          const QString& group, const QStringList& values,
-                         int defaultValueIndex):
-    Sp(sqlPrUid, referringObjectClassUid, name, propertyGuiText, group),
+                         int defaultValueIndex, int major, int minor):
+    Sp(sqlPrUid, referringObjectClassUid, name, propertyGuiText, group, major, minor),
     m_values(values),
     m_defaultValuesIndex(defaultValueIndex<values.length()?defaultValueIndex:0)
 {

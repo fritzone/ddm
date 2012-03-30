@@ -2,8 +2,8 @@
 #include "TrueFalseSpInstance.h"
 #include "uids.h"
 
-TrueFalseSp::TrueFalseSp(const QString& sqlPrUid, const QString& referringObjectClassUid, const QString &name, const QString& propertyGuiText, const QString& group) :
-    Sp(sqlPrUid, referringObjectClassUid, name, propertyGuiText, group)
+TrueFalseSp::TrueFalseSp(const QString& sqlPrUid, const QString& referringObjectClassUid, const QString &name, const QString& propertyGuiText, const QString& group, int major, int minor) :
+    Sp(sqlPrUid, referringObjectClassUid, name, propertyGuiText, group, major, minor)
 {
 }
 

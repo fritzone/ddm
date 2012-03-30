@@ -77,6 +77,7 @@ void HelpWindow::changeEvent(QEvent *e)
 
 void HelpWindow::showHelp(const QString &h)
 {
+    qDebug() << h;
     m_cindex ++;
     m_buttonNavigate = true;
     ui->webView->setUrl(QApplication::applicationDirPath() + h);
