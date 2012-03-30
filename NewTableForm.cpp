@@ -2179,7 +2179,7 @@ void NewTableForm::prepareSpsTabsForIndex(Index* idx)
     }
 
     // create the new tab pages
-    WidgetForSpecificProperties* wsp = new WidgetForSpecificProperties(m_dbEngine, m_table, this);
+    WidgetForSpecificProperties* wsp = new WidgetForSpecificProperties(m_dbEngine, idx, this);
     QVector<SpInstance*> allSps;
     if(idx)
     {

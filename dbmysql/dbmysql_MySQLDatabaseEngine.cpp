@@ -1652,19 +1652,19 @@ QStringList MySQLDatabaseEngine::getCodepageList()
 QVector<Sp*> MySQLDatabaseEngine::buildSps()
 {
     QVector<Sp*> result;
-    result.push_back(new TrueFalseSp(uidMysqlTemporaryTable, uidTable, QString("Temporary"), QString("Temporary table"), QString("General")));
-    result.push_back(new TrueFalseSp(uidMysqlIfNotExistsTable, uidTable, QString("IfNotExists"), QString("Create only if not exists"), QString("General")));
+    result.push_back(new TrueFalseSp(uidMysqlTemporaryTable, uidTable, QString("Temporary"), QString("Temporary table"), QString("General"), 5, 0));
+    result.push_back(new TrueFalseSp(uidMysqlIfNotExistsTable, uidTable, QString("IfNotExists"), QString("Create only if not exists"), QString("General"), 5, 0));
 
     QStringList valuesForStrorageEngines;
     valuesForStrorageEngines << "MyISAM" << "InnoDB" << "Memory" << "Archive" << "Merge" << "BDB" << "Federated" << "Archive" << "CSV" << "Blackhole";
-    result.push_back(new ValueListSp(uidMysqlStorageEngineTable, uidTable, QString("StorageEngine"), QString("Storage Engine"), QString("Advanced"), valuesForStrorageEngines, 1));
+    result.push_back(new ValueListSp(uidMysqlStorageEngineTable, uidTable, QString("StorageEngine"), QString("Storage Engine"), QString("Advanced"), valuesForStrorageEngines, 1, 5, 0));
 
     QStringList valuesForCodepages = getCodepageList();
-    result.push_back(new ValueListSp(uidMysqlCodepageTable, uidTable, QString("Codepage"), QString("Codepage"), QString("Advanced"), valuesForCodepages, 0));
+    result.push_back(new ValueListSp(uidMysqlCodepageTable, uidTable, QString("Codepage"), QString("Codepage"), QString("Advanced"), valuesForCodepages, 0, 5, 0));
 
     QStringList valuesForIndexTypes;
     valuesForIndexTypes << "BTREE" << "HASH";
-    result.push_back(new ValueListSp(uidMysqlIndexType, uidIndex, QString("Index Type"), QString("Index Type"), QString("General"), valuesForIndexTypes, 0));
+    result.push_back(new ValueListSp(uidMysqlIndexType, uidIndex, QString("Index Type"), QString("Index Type"), QString("General"), valuesForIndexTypes, 0, 5, 0));
 
     return result;
 }
