@@ -198,7 +198,7 @@
        </DataType>
       </DataTypes>
       <Tables>
-       <Table class-uid="{10000001-0000-0000-0000-000000000001}" Persistent="0" parent-uid="N/A" Parent="N/A" StorageEngine="InnoDB" uid="{482036cc-caaf-47cf-9a1f-e10e5bb15afc}" Name="ADDRESS">
+       <Table class-uid="{10000001-0000-0000-0000-000000000001}" Persistent="0" parent-uid="N/A" Parent="N/A" uid="{482036cc-caaf-47cf-9a1f-e10e5bb15afc}" Name="ADDRESS">
         <Description></Description>
         <Columns>
          <Column class-uid="{10000001-0000-0000-0000-000000000007}" Type="ADDRESS_ID" uid="{00d375e6-ab61-4c92-b3d9-de2b43117eef}" Name="ID" PK="1" AutoIncrement="1">
@@ -221,10 +221,35 @@
          </Column>
         </Columns>
         <Indices>
-         <Index Type="BTREE" Name="autoidx_0">
+         <Index class-uid="{10000001-0000-0000-0000-000000000008}" uid="{c5a4bf42-49e9-4113-bc3e-3d97196494a1}" Name="autoidx_0">
           <Columns>
            <Column Name="ID"/>
           </Columns>
+          <SpInstances>
+           <DbEnginesSps>
+            <DbEngineSps Name="MySQL">
+             <SpInstance class-uid="{10000005-0000-0000-0000-000000000001}" uid="{8b9835ef-8531-4a9d-8b73-a79e226e6d52}" Value="HASH">
+              <Sp sql-role-uid="{10000005-0000-0000-0000-000000000001}" class-uid="{10000002-0000-0000-0000-000000000002}" uid="{9356415f-9875-4fb8-866d-4b660f60e415}" Name="Index Type" referred-object-class-uid="{10000001-0000-0000-0000-000000000008}"/>
+             </SpInstance>
+            </DbEngineSps>
+           </DbEnginesSps>
+          </SpInstances>
+         </Index>
+         <Index class-uid="{10000001-0000-0000-0000-000000000008}" uid="{30fcb6aa-851c-4a52-b3e9-5058123f5782}" Name="index_POSTCODE">
+          <Columns>
+           <Column Name="POSTCODE"/>
+           <Column Name="STREET_NAME"/>
+           <Column Name="CITY"/>
+          </Columns>
+          <SpInstances>
+           <DbEnginesSps>
+            <DbEngineSps Name="MySQL">
+             <SpInstance class-uid="{10000005-0000-0000-0000-000000000001}" uid="{12a99a73-2409-48d4-bcdd-16531a0892a1}" Value="HASH">
+              <Sp sql-role-uid="{10000005-0000-0000-0000-000000000001}" class-uid="{10000002-0000-0000-0000-000000000002}" uid="{9356415f-9875-4fb8-866d-4b660f60e415}" Name="Index Type" referred-object-class-uid="{10000001-0000-0000-0000-000000000008}"/>
+             </SpInstance>
+            </DbEngineSps>
+           </DbEnginesSps>
+          </SpInstances>
          </Index>
         </Indices>
         <ForeignKeys/>
@@ -233,22 +258,22 @@
          <DbEnginesSps>
           <DbEngineSps Name="MySQL">
            <SpInstance class-uid="{10000004-0000-0000-0000-000000000001}" uid="{b87430fa-52b6-4ce5-a1aa-088d31f28e6a}" Value="FALSE">
-            <Sp sql-role-uid="{10000004-0000-0000-0000-000000000001}" class-uid="{10000002-0000-0000-0000-000000000001}" uid="{82e7718e-b5d6-4912-8b4d-4416cebd1ffc}" Name="Temporary" referred-object-class-uid="{10000001-0000-0000-0000-000000000001}"/>
+            <Sp sql-role-uid="{10000004-0000-0000-0000-000000000001}" class-uid="{10000002-0000-0000-0000-000000000001}" uid="{da4ab873-9a8e-489f-8326-5eddf76a6210}" Name="Temporary" referred-object-class-uid="{10000001-0000-0000-0000-000000000001}"/>
            </SpInstance>
            <SpInstance class-uid="{10000004-0000-0000-0000-000000000002}" uid="{274f642e-9318-4325-9f2b-1aa50972602d}" Value="FALSE">
-            <Sp sql-role-uid="{10000004-0000-0000-0000-000000000002}" class-uid="{10000002-0000-0000-0000-000000000001}" uid="{5bbd5ac0-3c16-4806-99d9-6e68b105efb2}" Name="IfNotExists" referred-object-class-uid="{10000001-0000-0000-0000-000000000001}"/>
+            <Sp sql-role-uid="{10000004-0000-0000-0000-000000000002}" class-uid="{10000002-0000-0000-0000-000000000001}" uid="{fb5d415e-7e52-4808-b58d-fbbf6d552240}" Name="IfNotExists" referred-object-class-uid="{10000001-0000-0000-0000-000000000001}"/>
            </SpInstance>
            <SpInstance class-uid="{10000004-0000-0000-0000-000000000003}" uid="{bf4a67d9-208a-4e5a-9809-de958695fee1}" Value="BDB">
-            <Sp sql-role-uid="{10000004-0000-0000-0000-000000000003}" class-uid="{10000002-0000-0000-0000-000000000002}" uid="{43283bde-f3d6-4e30-91f9-f1b6e99e44a4}" Name="StorageEngine" referred-object-class-uid="{10000001-0000-0000-0000-000000000001}"/>
+            <Sp sql-role-uid="{10000004-0000-0000-0000-000000000003}" class-uid="{10000002-0000-0000-0000-000000000002}" uid="{71bbdcb4-cd6c-4f2a-8198-fc256670f4a5}" Name="StorageEngine" referred-object-class-uid="{10000001-0000-0000-0000-000000000001}"/>
            </SpInstance>
            <SpInstance class-uid="{10000004-0000-0000-0000-000000000004}" uid="{5f5471ee-3ca9-4aab-9fe7-4fe25052ad73}" Value="ucs2_esperanto_ci">
-            <Sp sql-role-uid="{10000004-0000-0000-0000-000000000004}" class-uid="{10000002-0000-0000-0000-000000000002}" uid="{2f05feb9-8dbe-4fd3-86f1-878208d1f15e}" Name="Codepage" referred-object-class-uid="{10000001-0000-0000-0000-000000000001}"/>
+            <Sp sql-role-uid="{10000004-0000-0000-0000-000000000004}" class-uid="{10000002-0000-0000-0000-000000000002}" uid="{1464073c-93ee-4aff-96f6-b2a0bdf69f69}" Name="Codepage" referred-object-class-uid="{10000001-0000-0000-0000-000000000001}"/>
            </SpInstance>
           </DbEngineSps>
          </DbEnginesSps>
         </SpInstances>
        </Table>
-       <Table class-uid="{10000001-0000-0000-0000-000000000001}" Persistent="0" parent-uid="N/A" Parent="N/A" StorageEngine="InnoDB" uid="{ca74e462-d3a0-46eb-b43f-348211ceaf29}" Name="PERSON">
+       <Table class-uid="{10000001-0000-0000-0000-000000000001}" Persistent="0" parent-uid="N/A" Parent="N/A" uid="{ca74e462-d3a0-46eb-b43f-348211ceaf29}" Name="PERSON">
         <Description></Description>
         <Columns>
          <Column class-uid="{10000001-0000-0000-0000-000000000007}" Type="INTEGER - UNSIGNED" uid="{c7e841c8-99b8-4bdc-a6da-7bb8d5d5d22e}" Name="ID" PK="1" AutoIncrement="1">
@@ -277,16 +302,16 @@
          <DbEnginesSps>
           <DbEngineSps Name="MySQL">
            <SpInstance class-uid="{10000004-0000-0000-0000-000000000001}" uid="{fdd05f60-ddbb-4a6e-951e-8b225e25c3be}" Value="FALSE">
-            <Sp sql-role-uid="{10000004-0000-0000-0000-000000000001}" class-uid="{10000002-0000-0000-0000-000000000001}" uid="{82e7718e-b5d6-4912-8b4d-4416cebd1ffc}" Name="Temporary" referred-object-class-uid="{10000001-0000-0000-0000-000000000001}"/>
+            <Sp sql-role-uid="{10000004-0000-0000-0000-000000000001}" class-uid="{10000002-0000-0000-0000-000000000001}" uid="{da4ab873-9a8e-489f-8326-5eddf76a6210}" Name="Temporary" referred-object-class-uid="{10000001-0000-0000-0000-000000000001}"/>
            </SpInstance>
            <SpInstance class-uid="{10000004-0000-0000-0000-000000000002}" uid="{43376ad6-7a20-483b-93e8-de13e15a2cf2}" Value="FALSE">
-            <Sp sql-role-uid="{10000004-0000-0000-0000-000000000002}" class-uid="{10000002-0000-0000-0000-000000000001}" uid="{5bbd5ac0-3c16-4806-99d9-6e68b105efb2}" Name="IfNotExists" referred-object-class-uid="{10000001-0000-0000-0000-000000000001}"/>
+            <Sp sql-role-uid="{10000004-0000-0000-0000-000000000002}" class-uid="{10000002-0000-0000-0000-000000000001}" uid="{fb5d415e-7e52-4808-b58d-fbbf6d552240}" Name="IfNotExists" referred-object-class-uid="{10000001-0000-0000-0000-000000000001}"/>
            </SpInstance>
            <SpInstance class-uid="{10000004-0000-0000-0000-000000000003}" uid="{7579e5fb-57eb-4e19-a51d-6d47dd312360}" Value="InnoDB">
-            <Sp sql-role-uid="{10000004-0000-0000-0000-000000000003}" class-uid="{10000002-0000-0000-0000-000000000002}" uid="{43283bde-f3d6-4e30-91f9-f1b6e99e44a4}" Name="StorageEngine" referred-object-class-uid="{10000001-0000-0000-0000-000000000001}"/>
+            <Sp sql-role-uid="{10000004-0000-0000-0000-000000000003}" class-uid="{10000002-0000-0000-0000-000000000002}" uid="{71bbdcb4-cd6c-4f2a-8198-fc256670f4a5}" Name="StorageEngine" referred-object-class-uid="{10000001-0000-0000-0000-000000000001}"/>
            </SpInstance>
            <SpInstance class-uid="{10000004-0000-0000-0000-000000000004}" uid="{21f6a867-7f18-4e4e-9464-763866a957a9}" Value="">
-            <Sp sql-role-uid="{10000004-0000-0000-0000-000000000004}" class-uid="{10000002-0000-0000-0000-000000000002}" uid="{2f05feb9-8dbe-4fd3-86f1-878208d1f15e}" Name="Codepage" referred-object-class-uid="{10000001-0000-0000-0000-000000000001}"/>
+            <Sp sql-role-uid="{10000004-0000-0000-0000-000000000004}" class-uid="{10000002-0000-0000-0000-000000000002}" uid="{1464073c-93ee-4aff-96f6-b2a0bdf69f69}" Name="Codepage" referred-object-class-uid="{10000001-0000-0000-0000-000000000001}"/>
            </SpInstance>
           </DbEngineSps>
          </DbEnginesSps>

@@ -1109,7 +1109,8 @@ void NewTableForm::resetIndexGui()
     m_ui->txtNewIndexName->setText("");
     m_ui->btnAddIndex->setIcon(IconFactory::getAddIcon());
     m_currentIndex = 0;
-
+    m_ui->tabWidgetForIndex->setCurrentIndex(0);
+    prepareSpsTabsForIndex(0);
     toggleIndexFieldDisableness(false);
 }
 
@@ -2179,7 +2180,7 @@ void NewTableForm::prepareSpsTabsForIndex(Index* idx)
     }
 
     // create the new tab pages
-    WidgetForSpecificProperties* wsp = new WidgetForSpecificProperties(m_dbEngine, m_table, this);
+    WidgetForSpecificProperties* wsp = new WidgetForSpecificProperties(m_dbEngine, idx, this);
     QVector<SpInstance*> allSps;
     if(idx)
     {

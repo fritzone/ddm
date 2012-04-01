@@ -27,7 +27,9 @@ public:
      * @param propertyName - the name of the property
      * @param propertyGuiText - the text that will be shown on the GUI for this property
      */
-    Sp(const QString& sqlRoleUid, const QString& referringObjectClassUid, const QString& propertyName, const QString& propertyGuiText, const QString& group);
+    Sp(const QString& sqlRoleUid, const QString& referringObjectClassUid,
+       const QString& propertyName, const QString& propertyGuiText, const QString& group,
+       int majorV, int minorV);
 
     QString getSqlRoleUid() const
     {
@@ -88,6 +90,12 @@ private:
     QString m_propertyGuiText;
 
     QString m_group;
+
+    // the supported major version on the database side of this property
+    int m_supportedMajorVersion;
+
+    // the supported major version on the database side of this property
+    int m_supportedMinorVersion;
 };
 
 #endif // DB_SP_H
