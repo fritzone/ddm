@@ -1109,7 +1109,8 @@ void NewTableForm::resetIndexGui()
     m_ui->txtNewIndexName->setText("");
     m_ui->btnAddIndex->setIcon(IconFactory::getAddIcon());
     m_currentIndex = 0;
-
+    m_ui->tabWidgetForIndex->setCurrentIndex(0);
+    prepareSpsTabsForIndex(0);
     toggleIndexFieldDisableness(false);
 }
 
