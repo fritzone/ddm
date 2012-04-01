@@ -26,6 +26,7 @@ class WidgetForSpecificProperties : public QWidget
     struct UidToWidget
     {
         QString objectUid;
+        QString objectRoleUid;
         QWidget* w;
     };
 

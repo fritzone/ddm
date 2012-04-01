@@ -146,7 +146,27 @@ QWidget* WidgetForSpecificProperties::getToolboxPageForText(const QString& s)
 
 void WidgetForSpecificProperties::taylorToSpecificObject(const ObjectWithSpInstances *dest)
 {
-
+    // first specific test: see the storage engine type
+    SpInstance* storageEngineInstance = dest->getInstanceForSqlRoleUid(m_dbEngine, uidMysqlStorageEngineTable);
+    if(storageEngineInstance)
+    {
+        QString value = storageEngineInstance->get();
+        if(value == "MyISAM" || value == "InnoDB")
+        {
+            for(int i=0; i<m_mappings.size(); i++)
+            {
+                UidToWidget* uiw = m_mappings.at(i);
+                if(uiw->objectRoleUid == uidMysqlIndexType)
+                {
+                    QComboBox* cmb = qobject_cast<QComboBox*>(uiw->w);
+                    if(cmb)
+                    {
+                        cmb->removeItem(cmb->findText("HASH"));
+                    }
+                }
+            }
+        }
+    }
 }
 
 void WidgetForSpecificProperties::feedInSpecificProperties(const QVector<SpInstance*>& spInstances, const QString& dbDestinationUid)
@@ -194,6 +214,7 @@ void WidgetForSpecificProperties::feedInSpecificProperties(const QVector<SpInsta
                 formLayout->setWidget(m_rowsForGroups[group], QFormLayout::FieldRole, checkBox);
                 UidToWidget* uiw = new UidToWidget();
                 uiw->objectUid = spInstances.at(i)->getObjectUid();
+                uiw->objectRoleUid = spInstances.at(i)->getClass()->getSqlRoleUid();
                 uiw->w = checkBox;
                 m_mappings.append(uiw);
 
@@ -238,6 +259,7 @@ void WidgetForSpecificProperties::feedInSpecificProperties(const QVector<SpInsta
                 UidToWidget* uiw = new UidToWidget();
                 uiw->objectUid = spInstances.at(i)->getObjectUid();
                 uiw->w = comboBox;
+                uiw->objectRoleUid = spInstances.at(i)->getClass()->getSqlRoleUid();
                 m_mappings.append(uiw);
                 m_signalMapper->setMapping(comboBox, spInstances.at(i)->getObjectUid());
                 comboBox->setCurrentIndex(comboBox->findText(spInstances.at(i)->get()));
@@ -268,6 +290,10 @@ void WidgetForSpecificProperties::comboBoxSelected(int idx)
                 else
                 {
                     spi->set(combo->currentText());
+                    // and now: 1. give a feedback to the "parent form" (ie. NewTableForm) to taylor all the WidgetForSpecificProperties
+                    // objects to match the newly configured property... such as: user changes storage engine, we allow index type
+                    // 2. right now we don't give feedback to the object (table) which is held by the "parent" form...
+                    // it would be too complicate and the benefits would be minimal
                 }
             }
         }

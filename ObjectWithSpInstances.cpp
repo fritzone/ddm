@@ -75,14 +75,14 @@ void ObjectWithSpInstances::serialize_spinstances(QDomDocument &doc, QDomElement
     parent.appendChild(dbElements);
 }
 
-SpInstance* ObjectWithSpInstances::getInstanceForSqlRoleUid(const DatabaseEngine *eng, const QString &sqlRoleUid)
+SpInstance* ObjectWithSpInstances::getInstanceForSqlRoleUid(const DatabaseEngine *eng, const QString &sqlRoleUid) const
 {
     if(!m_spInstances.contains(eng->getDatabaseEngineName()))
     {
         return 0;
     }
 
-    QVector<SpInstance*>& v = m_spInstances[eng->getDatabaseEngineName()];
+    const QVector<SpInstance*>& v = m_spInstances[eng->getDatabaseEngineName()];
     for(int i=0; i<v.size(); i++)
     {
         if(v.at(i)->getClass()->getSqlRoleUid() == sqlRoleUid)
@@ -93,17 +93,16 @@ SpInstance* ObjectWithSpInstances::getInstanceForSqlRoleUid(const DatabaseEngine
     return 0;
 }
 
-SpInstance* ObjectWithSpInstances::getInstance(const DatabaseEngine *eng, const QString &objectUid)
+SpInstance* ObjectWithSpInstances::getInstance(const DatabaseEngine *eng, const QString &objectUid) const
 {
     if(!m_spInstances.contains(eng->getDatabaseEngineName()))
     {
         return 0;
     }
 
-    QVector<SpInstance*>& v = m_spInstances[eng->getDatabaseEngineName()];
+    const QVector<SpInstance*>& v = m_spInstances[eng->getDatabaseEngineName()];
     for(int i=0; i<v.size(); i++)
     {
-        qDebug() << v.at(i)->getObjectUid() << " " << objectUid;
         if(v.at(i)->getObjectUid() == objectUid)
         {
             return v.at(i);
