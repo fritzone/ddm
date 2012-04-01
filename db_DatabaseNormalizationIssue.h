@@ -1,0 +1,47 @@
+#ifndef DATABASENORMALIZATIONISSUE_H
+#define DATABASENORMALIZATIONISSUE_H
+
+#include "Issue.h"
+
+class Table;
+class Column;
+
+class DatabaseNormalizationIssue : public Issue
+{
+public:
+
+    /**
+     * @param newTable - the table that we are working on right now
+     * @param newColumn - the column on which we are working right now (the causing column)
+     * @param firstTable - the table, that was there in the system and conflicted with the new table
+     * @param firstColumn - the column which was there in the system and conflicted with the new column
+     */
+    DatabaseNormalizationIssue(Table* newTable, Column* newColumn, Table* firstTable, Column* firstColumn);
+
+
+    virtual bool stillValid();
+    virtual bool isLike(Issue*);
+    virtual bool affects(Table *);
+    Table* getNewTable() const { return m_newTable; }
+    Table* getFirstTable() const { return m_firstTable; }
+    Column* getNewColumn() const { return m_newColumn; }
+    Column* getFirstColumn() const { return m_firstColumn; }
+
+    QString getNewTableName() const { return m_newTableName; }
+    QString getFirstTableName() const { return m_firstTableName; }
+    QString getNewColumnName() const { return m_newColumnName; }
+    QString getFirstColumnName() const { return m_firstColumnName; }
+
+private:
+    Table* m_newTable;
+    Table* m_firstTable;
+    Column* m_newColumn;
+    Column* m_firstColumn;
+    QString m_newTableName;
+    QString m_firstTableName;
+    QString m_newColumnName;
+    QString m_firstColumnName;
+
+};
+
+#endif // DATABASENORMALIZATIONISSUE_H
