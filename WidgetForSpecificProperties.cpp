@@ -144,6 +144,11 @@ QWidget* WidgetForSpecificProperties::getToolboxPageForText(const QString& s)
     return 0;
 }
 
+void WidgetForSpecificProperties::taylorToSpecificObject(const ObjectWithSpInstances *dest)
+{
+
+}
+
 void WidgetForSpecificProperties::feedInSpecificProperties(const QVector<SpInstance*>& spInstances, const QString& dbDestinationUid)
 {
     QStringList alreadyAddedPages;

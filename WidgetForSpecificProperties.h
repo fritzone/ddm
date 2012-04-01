@@ -35,6 +35,14 @@ public:
 
     void feedInSpecificProperties(const QVector<SpInstance*> & spInstances, const QString& dbDestinationUid);
 
+    /**
+     * This method will re-work the controls in a way that the SPs of the obhect passed
+     * in will restrict the controls to contain a possible subset of the values they
+     * might contain by default. For example: for MySQL engine InnoDB the index types
+     * differ.
+     */
+    void taylorToSpecificObject(const ObjectWithSpInstances* dest);
+
 protected:
     void changeEvent(QEvent *e);
 
