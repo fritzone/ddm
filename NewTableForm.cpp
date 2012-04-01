@@ -2200,6 +2200,6 @@ void NewTableForm::prepareSpsTabsForIndex(Index* idx)
     }
 
     wsp->feedInSpecificProperties(allSps, uidIndex);
+    wsp->taylorToSpecificObject(m_table);
     m_ui->tabWidgetForIndex->insertTab(1, wsp, IconFactory::getMySqlIcon(), "MySql");
-
 }
