@@ -27,9 +27,9 @@ public:
 
     void resetColumns();
 
-    const QVector<const Column*>& getColumns() const
+    QVector<const Column*> getColumns() const
     {
-        return m_columns;
+        return m_columnsWithSpInstances.keys().toVector();
     }
 
     virtual void serialize(QDomDocument &doc, QDomElement &parent) const;
@@ -45,7 +45,13 @@ private:
 
     Table* m_owner;
 
+    // this is here to just to keep the order of the columns
     QVector<const Column*> m_columns;
+
+    // The following is to be interpreted as:
+    // for each column there is a map, mapping a database name to a vector of SP instances from that specific database
+    QMap< const Column*, QMap<QString, QVector<SpInstance*> > > m_columnsWithSpInstances;
+
 };
 
 #endif // INDEX_H
