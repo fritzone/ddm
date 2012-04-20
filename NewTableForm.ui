@@ -56,7 +56,7 @@
          <enum>QTabWidget::Rounded</enum>
         </property>
         <property name="currentIndex">
-         <number>1</number>
+         <number>0</number>
         </property>
         <widget class="QWidget" name="tabWidgetPage1">
          <attribute name="icon">
@@ -223,43 +223,56 @@
                <item row="3" column="1">
                 <widget class="QTextEdit" name="txtColumnDescription"/>
                </item>
-               <item row="4" column="0">
-                <layout class="QHBoxLayout" name="horizontalLayout_3">
-                 <item>
-                  <widget class="QToolButton" name="btnAddColumn">
-                   <property name="toolTip">
-                    <string>Add/Update the column</string>
-                   </property>
-                   <property name="statusTip">
-                    <string>Add/Update the column</string>
-                   </property>
-                   <property name="text">
-                    <string>...</string>
-                   </property>
-                   <property name="icon">
-                    <iconset resource="dbm.qrc">
-                     <normaloff>:/images/actions/images/small/add.png</normaloff>:/images/actions/images/small/add.png</iconset>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QToolButton" name="btnCancelColumnEditing">
-                   <property name="toolTip">
-                    <string>Cancel the changes made to these fields</string>
-                   </property>
-                   <property name="statusTip">
-                    <string>Cancel the changes made to these fields</string>
-                   </property>
-                   <property name="text">
-                    <string/>
-                   </property>
-                   <property name="icon">
-                    <iconset resource="dbm.qrc">
-                     <normaloff>:/images/actions/images/small/cancel.png</normaloff>:/images/actions/images/small/cancel.png</iconset>
-                   </property>
-                  </widget>
-                 </item>
-                </layout>
+              </layout>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayout_3">
+               <item>
+                <widget class="QToolButton" name="btnAddColumn">
+                 <property name="toolTip">
+                  <string>Add/Update the column</string>
+                 </property>
+                 <property name="statusTip">
+                  <string>Add/Update the column</string>
+                 </property>
+                 <property name="text">
+                  <string>...</string>
+                 </property>
+                 <property name="icon">
+                  <iconset resource="dbm.qrc">
+                   <normaloff>:/images/actions/images/small/add.png</normaloff>:/images/actions/images/small/add.png</iconset>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QToolButton" name="btnCancelColumnEditing">
+                 <property name="toolTip">
+                  <string>Cancel the changes made to these fields</string>
+                 </property>
+                 <property name="statusTip">
+                  <string>Cancel the changes made to these fields</string>
+                 </property>
+                 <property name="text">
+                  <string/>
+                 </property>
+                 <property name="icon">
+                  <iconset resource="dbm.qrc">
+                   <normaloff>:/images/actions/images/small/cancel.png</normaloff>:/images/actions/images/small/cancel.png</iconset>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <spacer name="horizontalSpacer_7">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>40</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
                </item>
               </layout>
              </item>
@@ -425,7 +438,85 @@
                     </layout>
                    </item>
                    <item>
-                    <widget class="QListWidget" name="lstSelectedColumnsForIndex"/>
+                    <layout class="QVBoxLayout" name="verticalLayout_13">
+                     <item>
+                      <layout class="QHBoxLayout" name="horizontalLayout_18">
+                       <item>
+                        <widget class="QToolButton" name="btnAddSpToColumnOfIndex">
+                         <property name="toolTip">
+                          <string>Add a Database Specific Property to the selected column</string>
+                         </property>
+                         <property name="statusTip">
+                          <string>Add a Database Specific Property to the selected column</string>
+                         </property>
+                         <property name="whatsThis">
+                          <string>Add a Database Specific Property to the selected column</string>
+                         </property>
+                         <property name="text">
+                          <string>...</string>
+                         </property>
+                         <property name="icon">
+                          <iconset resource="dbm.qrc">
+                           <normaloff>:/images/actions/images/small/add.png</normaloff>:/images/actions/images/small/add.png</iconset>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QToolButton" name="btnRemoveSpFromColumnOfIndex">
+                         <property name="toolTip">
+                          <string>Remove the selceted Database Specific Property from the column it belongs to</string>
+                         </property>
+                         <property name="statusTip">
+                          <string>Remove the selceted Database Specific Property from the column it belongs to</string>
+                         </property>
+                         <property name="whatsThis">
+                          <string>Remove the selceted Database Specific Property from the column it belongs to</string>
+                         </property>
+                         <property name="text">
+                          <string>...</string>
+                         </property>
+                         <property name="icon">
+                          <iconset resource="dbm.qrc">
+                           <normaloff>:/images/actions/images/small/remove.png</normaloff>:/images/actions/images/small/remove.png</iconset>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <spacer name="horizontalSpacer_5">
+                         <property name="orientation">
+                          <enum>Qt::Horizontal</enum>
+                         </property>
+                         <property name="sizeHint" stdset="0">
+                          <size>
+                           <width>40</width>
+                           <height>20</height>
+                          </size>
+                         </property>
+                        </spacer>
+                       </item>
+                      </layout>
+                     </item>
+                     <item>
+                      <widget class="QTreeWidget" name="lstSelectedColumnsForIndex">
+                       <property name="columnCount">
+                        <number>2</number>
+                       </property>
+                       <attribute name="headerVisible">
+                        <bool>false</bool>
+                       </attribute>
+                       <column>
+                        <property name="text">
+                         <string notr="true">1</string>
+                        </property>
+                       </column>
+                       <column>
+                        <property name="text">
+                         <string notr="true">2</string>
+                        </property>
+                       </column>
+                      </widget>
+                     </item>
+                    </layout>
                    </item>
                    <item>
                     <layout class="QVBoxLayout" name="verticalLayout_17">
@@ -1815,38 +1906,6 @@
    </hints>
   </connection>
   <connection>
-   <sender>btnMoveColumnToRight</sender>
-   <signal>clicked()</signal>
-   <receiver>NewTableForm</receiver>
-   <slot>onMoveColumnToRight()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>282</x>
-     <y>612</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>243</x>
-     <y>386</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>btnMoveColumnToLeft</sender>
-   <signal>clicked()</signal>
-   <receiver>NewTableForm</receiver>
-   <slot>onMoveColumnToLeft()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>282</x>
-     <y>532</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>243</x>
-     <y>386</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
    <sender>btnMoveIndexColumnUp</sender>
    <signal>clicked()</signal>
    <receiver>NewTableForm</receiver>
@@ -1890,6 +1949,38 @@
     </hint>
     <hint type="destinationlabel">
      <x>260</x>
+     <y>386</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnMoveColumnToRight</sender>
+   <signal>clicked()</signal>
+   <receiver>NewTableForm</receiver>
+   <slot>onMoveColumnToRight()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>282</x>
+     <y>612</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>243</x>
+     <y>386</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnMoveColumnToLeft</sender>
+   <signal>clicked()</signal>
+   <receiver>NewTableForm</receiver>
+   <slot>onMoveColumnToLeft()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>282</x>
+     <y>532</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>243</x>
      <y>386</y>
     </hint>
    </hints>

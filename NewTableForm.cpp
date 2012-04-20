@@ -843,7 +843,7 @@ void NewTableForm::populateColumnsForIndices()
     m_ui->lstAvailableColumnsForIndex->clear();
     for(int i=0; i<m_table->fullColumns().size(); i++)
     {
-        if(m_ui->lstSelectedColumnsForIndex->count() == 0)
+        if(m_ui->lstSelectedColumnsForIndex->topLevelItemCount() == 0)
         {
             QListWidgetItem* qlwi = new QListWidgetItem(m_table->fullColumns()[i], m_ui->lstAvailableColumnsForIndex);
             Column* col = m_table->getColumn(m_table->fullColumns()[i]);
@@ -862,9 +862,9 @@ void NewTableForm::populateColumnsForIndices()
         }
         else
         {
-            for(int j = 0; j<m_ui->lstSelectedColumnsForIndex->count(); j++)
+            for(int j = 0; j<m_ui->lstSelectedColumnsForIndex->topLevelItemCount(); j++)
             {
-                if(m_ui->lstSelectedColumnsForIndex->item(j)->text() != m_table->getColumns()[i]->getName())
+                if(m_ui->lstSelectedColumnsForIndex->topLevelItem(j)->text(0) != m_table->getColumns()[i]->getName())
                 {
                     QListWidgetItem* qlwi = new QListWidgetItem(m_table->fullColumns()[i], m_ui->lstAvailableColumnsForIndex);
                     // TODO: duplication with the one above
@@ -921,7 +921,7 @@ void NewTableForm::onSave()
     else
     if(m_ui->tabWidget->currentIndex() == 1)
     {
-        if(m_ui->txtNewIndexName->text().length() != 0 && m_ui->lstSelectedColumnsForIndex->count() != 0)
+        if(m_ui->txtNewIndexName->text().length() != 0 && m_ui->lstSelectedColumnsForIndex->topLevelItemCount() != 0)
         {
             onAddIndex();
         }
@@ -970,10 +970,11 @@ void NewTableForm::prepareValuesToBeSaved()
 void NewTableForm::onMoveColumnToRight()
 {
     if(!m_ui->lstAvailableColumnsForIndex->currentItem()) return;
-    QListWidgetItem* itm = new QListWidgetItem(*m_ui->lstAvailableColumnsForIndex->currentItem());
-    QString name = itm->text();
+    QTreeWidgetItem* itm = new QTreeWidgetItem(QStringList(m_ui->lstAvailableColumnsForIndex->currentItem()->text()));
+    itm->setIcon(0, m_ui->lstAvailableColumnsForIndex->currentItem()->icon());
+    QString name = itm->text(0);
     delete m_ui->lstAvailableColumnsForIndex->currentItem();
-    m_ui->lstSelectedColumnsForIndex->addItem(itm);
+    m_ui->lstSelectedColumnsForIndex->addTopLevelItem(itm);
     if(m_ui->txtNewIndexName->text().length() == 0)
     {
         m_ui->txtNewIndexName->setText(QString("index_" + name));
@@ -1023,7 +1024,7 @@ void NewTableForm::onAddIndex()
         return;
     }
 
-    if(m_ui->lstSelectedColumnsForIndex->count() == 0)
+    if(m_ui->lstSelectedColumnsForIndex->topLevelItemCount() == 0)
     {
         QMessageBox::critical (this, tr("Error"), tr("Please specify at least one column"), QMessageBox::Ok);
         return;
@@ -1049,18 +1050,18 @@ void NewTableForm::onAddIndex()
 
         Index* index = new Index(m_ui->txtNewIndexName->text(), m_table, QUuid::createUuid().toString());
         index->initializeFor(m_dbEngine, QUuid(uidIndex));
-        int cnt = m_ui->lstSelectedColumnsForIndex->count();
+        int cnt = m_ui->lstSelectedColumnsForIndex->topLevelItemCount();
         for(int i = 0; i< cnt; i++)
         {
             // check if this goes to a parent table or stays here
-            Column* col = m_table->getColumn(m_ui->lstSelectedColumnsForIndex->item(i)->text());
+            Column* col = m_table->getColumn(m_ui->lstSelectedColumnsForIndex->topLevelItem(i)->text(0));
             if(col)  // stays here
             {
                 index->addColumn(col);
             }
             else
             {
-                col = m_table->getColumnFromParents(m_ui->lstSelectedColumnsForIndex->item(i)->text());
+                col = m_table->getColumnFromParents(m_ui->lstSelectedColumnsForIndex->topLevelItem(i)->text(0));
                 if(col)
                 {
                     index->addColumn(col);
@@ -1083,11 +1084,11 @@ void NewTableForm::onAddIndex()
         m_currentIndex->resetColumns();
         // TODO: "almost" duplicate code, consider refactoring
         QString columnsAsString = "";
-        int cnt = m_ui->lstSelectedColumnsForIndex->count();
+        int cnt = m_ui->lstSelectedColumnsForIndex->topLevelItemCount();
         for(int i = 0; i< cnt; i++)
         {
-            m_currentIndex->addColumn(m_table->getColumn(m_ui->lstSelectedColumnsForIndex->item(i)->text()));
-            columnsAsString += m_ui->lstSelectedColumnsForIndex->item(i)->text();
+            m_currentIndex->addColumn(m_table->getColumn(m_ui->lstSelectedColumnsForIndex->topLevelItem(i)->text(0)));
+            columnsAsString += m_ui->lstSelectedColumnsForIndex->topLevelItem(i)->text(0);
             if(i < cnt - 1)
             {
                 columnsAsString += ", ";
@@ -1136,14 +1137,17 @@ void NewTableForm::populateIndexGui(Index* idx)
         QListWidget *targetList = 0;
         if(idx->hasColumn(column))
         {
-            targetList = m_ui->lstSelectedColumnsForIndex;
+            QTreeWidgetItem* itm = new QTreeWidgetItem(QStringList(column->getName()));
+            itm->setIcon(0, column->getLocation()->icon(COL_POS_DT));
+            m_ui->lstSelectedColumnsForIndex->addTopLevelItem(itm);
         }
         else
         {
             targetList = m_ui->lstAvailableColumnsForIndex;
+            QListWidgetItem* qlwi = new QListWidgetItem(column->getName(), targetList);
+            qlwi->setIcon(column->getLocation()->icon(COL_POS_DT));
         }
-        QListWidgetItem* qlwi = new QListWidgetItem(column->getName(), targetList);
-        qlwi->setIcon(column->getLocation()->icon(COL_POS_DT));
+
     }
 
 }
@@ -1219,9 +1223,10 @@ void NewTableForm::onBtnRemoveIndex()
 void NewTableForm::onDoubleClickColumnForIndex(QListWidgetItem* item)
 {
     if(!item) return;
-    QListWidgetItem* itm = new QListWidgetItem(*item);
+    QTreeWidgetItem* itm = new QTreeWidgetItem(QStringList(item->text()));
+    itm->setIcon(0, item->icon());
     delete m_ui->lstAvailableColumnsForIndex->currentItem();
-    m_ui->lstSelectedColumnsForIndex->addItem(itm);
+    m_ui->lstSelectedColumnsForIndex->addTopLevelItem(itm);
 
 }
 
@@ -1232,9 +1237,9 @@ void NewTableForm::onMoveSelectedIndexColumnUp()
         QModelIndex x = m_ui->lstSelectedColumnsForIndex->currentIndex();
         if(x.row() > 0)
         {
-            QListWidgetItem* w = new QListWidgetItem(*m_ui->lstSelectedColumnsForIndex->currentItem());
+            QTreeWidgetItem* w = new QTreeWidgetItem(*m_ui->lstSelectedColumnsForIndex->currentItem());
             delete m_ui->lstSelectedColumnsForIndex->currentItem();
-            m_ui->lstSelectedColumnsForIndex->insertItem(x.row() - 1, w);
+            m_ui->lstSelectedColumnsForIndex->insertTopLevelItem(x.row() - 1, w);
             m_ui->lstSelectedColumnsForIndex->setCurrentItem(w);
         }
     }
@@ -1245,11 +1250,11 @@ void NewTableForm::onMoveSelectedIndexColumnDown()
     if(m_ui->lstSelectedColumnsForIndex->selectedItems().size() > 0)
     {
         QModelIndex x = m_ui->lstSelectedColumnsForIndex->currentIndex();
-        if(x.row() < m_ui->lstSelectedColumnsForIndex->count() - 1)
+        if(x.row() < m_ui->lstSelectedColumnsForIndex->topLevelItemCount() - 1)
         {
-            QListWidgetItem* w = new QListWidgetItem(*m_ui->lstSelectedColumnsForIndex->currentItem());
+            QTreeWidgetItem* w = new QTreeWidgetItem(*m_ui->lstSelectedColumnsForIndex->currentItem());
             delete m_ui->lstSelectedColumnsForIndex->currentItem();
-            m_ui->lstSelectedColumnsForIndex->insertItem(x.row() + 1, w);
+            m_ui->lstSelectedColumnsForIndex->insertTopLevelItem(x.row() + 1, w);
             m_ui->lstSelectedColumnsForIndex->setCurrentItem(w);
         }
     }
