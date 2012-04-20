@@ -13,7 +13,7 @@ class SpInstance;
 /**
  * This class represents a Special Property of a database object (Table, Column, Index, ...)
  * which will be presented in the GUI for each Database in a specific Tab
- * When creating an object With Sps the instantiate method os being called to create the instances
+ * When creating an object With Sps the instantiate method is being called to create the instances
  * of the SPs for the given object.
  * Each Sp object has a property specifying where to put it in the query.
  */
@@ -26,6 +26,9 @@ public:
      * @param referringObjectClassUid - the uid of the "class" this Sp is referring to. Such as "Table" -> uidTable
      * @param propertyName - the name of the property
      * @param propertyGuiText - the text that will be shown on the GUI for this property
+     * @param group - the "logical" group to which this property belongs
+     * @param majorV - the minimum major version required from the database this version is supported on
+     * @param minorV - the minimum minor version required from the database this version is supported on
      */
     Sp(const QString& sqlRoleUid, const QString& referringObjectClassUid,
        const QString& propertyName, const QString& propertyGuiText, const QString& group,
