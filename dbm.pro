@@ -81,7 +81,9 @@ SOURCES += main.cpp \
     TrueFalseSpInstance.cpp \
     SpsTooltipProviderForUid.cpp \
     ValueListSp.cpp \
-    ValueListSpInstance.cpp
+    ValueListSpInstance.cpp \
+    ValueSp.cpp \
+    ValueSpInstance.cpp
 
 HEADERS += MainWindow.h \
     MainWindowButtonDialog.h \
@@ -178,7 +180,9 @@ HEADERS += MainWindow.h \
     TrueFalseSpInstance.h \
     SpsTooltipProviderForUid.h \
     ValueListSp.h \
-    ValueListSpInstance.h
+    ValueListSpInstance.h \
+    ValueSp.h \
+    ValueSpInstance.h
 
 FORMS += MainWindow.ui \
     MainWindowButtonDialog.ui \

@@ -19,6 +19,7 @@ static const QString uidColumnOfIndex   =             "{10000001-0000-0000-0000-
 
 static const QString uidTrueFalseSp     =             "{10000002-0000-0000-0000-000000000001}";
 static const QString uidValueListSp     =             "{10000002-0000-0000-0000-000000000002}";
+static const QString uidValueSp         =             "{10000002-0000-0000-0000-000000000003}";
 
 static const QString uidSqlTableProperty =            "{10000003-0000-0000-0000-000000000001}";
 
@@ -30,6 +31,5 @@ static const QString uidMysqlCodepageTable =          "{10000004-0000-0000-0000-
 static const QString uidMysqlIndexType =              "{10000005-0000-0000-0000-000000000001}";
 
 static const QString uidMysqlColumnOfIndexLength =    "{10000006-0000-0000-0000-000000000001}";
-static const QString uidMysqlColumnOfIndexAscDesc =   "{10000006-0000-0000-0000-000000000002}";
 
 #endif // UIDS_H

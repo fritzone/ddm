@@ -27,6 +27,7 @@ class SqlHighlighter;
 class ContextMenuEnabledTreeWidget;
 class SqlNamesValidator;
 class Issue;
+class QMenu;
 
 class NewTableForm : public SourceCodePresenterWidget
 {
@@ -93,6 +94,8 @@ public slots:
     void onMoveSelectedIndexColumnDown();
     void onDoubleClickColumnForIndex(QListWidgetItem*);
     void onIndexNameChange(QString);
+    void onIndexOrderTypeChanged(QString);
+    void onAddSpToColumnOfIndex();
 
     // foreign columns page
     void onForeignTableComboChange(QString);
@@ -190,6 +193,8 @@ private:
     void prepareSpsTabs();
 
     void prepareSpsTabsForIndex(Index*);
+
+    QMenu* buildPopupForSpsForColumnInIndex();
 
 private:
     Ui::NewTableForm *m_ui;
