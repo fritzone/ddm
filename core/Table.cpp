@@ -463,7 +463,7 @@ Index* Table::createAutoIndex(QVector<const Column*> cols)
     Index* idx = new Index(idxName, this, QUuid::createUuid().toString());
     for(int i=0; i<cols.size(); i++)
     {
-        idx->addColumn(cols.at(i));
+        idx->addColumn(cols.at(i), "");
     }
     addIndex(idx);
     return idx;

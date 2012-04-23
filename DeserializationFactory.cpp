@@ -145,7 +145,9 @@ Index* DeserializationFactory::createIndex(DatabaseEngine* engine, Table* table,
         {
             for(int j=0; j<element.childNodes().at(i).childNodes().size(); j++) // iterating through the "Column" nodes
             {
-                result->addColumn(table->getColumn(element.childNodes().at(i).childNodes().at(j).toElement().attribute("Name")));    // finding the Name attribute
+                QString name = element.childNodes().at(i).childNodes().at(j).toElement().attribute("Name");
+                QString order = element.childNodes().at(i).childNodes().at(j).toElement().attribute("Order");
+                result->addColumn(table->getColumn(name), order);    // finding the Name attribute
             }
         }
         if(element.childNodes().at(i).nodeName() == "SpInstances")

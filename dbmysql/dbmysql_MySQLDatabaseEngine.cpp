@@ -26,6 +26,7 @@
 #include "core_Trigger.h"
 #include "TrueFalseSp.h"
 #include "ValueListSp.h"
+#include "ValueSp.h"
 #include "SpInstance.h"
 
 QVector<DatabaseBuiltinFunction>* MySQLDatabaseEngine::s_builtinFunctions = 0;
@@ -507,6 +508,9 @@ Table* MySQLDatabaseEngine::reverseEngineerTable(Connection *c, const QString& t
         if(keyname == "PRIMARY") continue;
 
         Index* idx = 0;
+        QString order = "DESC";
+        if(collation == "A") order = "ASC";
+        if(collation.toUpper() == "NULL") order = "";
         if(createdIndexes.keys().contains(keyname))
         {
             idx = createdIndexes[keyname];
@@ -518,7 +522,7 @@ Table* MySQLDatabaseEngine::reverseEngineerTable(Connection *c, const QString& t
             createdIndexes.insert(keyname, idx);
         }
 
-        idx->addColumn(tab->getColumn(columnname), seqinindex.toInt());
+        idx->addColumn(tab->getColumn(columnname), order, seqinindex.toInt());
         if(!tab->hasIndex(finalIndexName))
         {
             tab->addIndex(idx);
@@ -1665,6 +1669,9 @@ QVector<Sp*> MySQLDatabaseEngine::buildSps()
     QStringList valuesForIndexTypes;
     valuesForIndexTypes << "BTREE" << "HASH";
     result.push_back(new ValueListSp(uidMysqlIndexType, uidIndex, QString("Index Type"), QString("Index Type"), QString("General"), valuesForIndexTypes, 0, 5, 0));
+
+    result.push_back(new ValueSp(uidMysqlColumnOfIndexLength, uidColumnOfIndex,
+                                 "Column Length", "Used Length", "default", "", 5, 0));
 
     return result;
 }

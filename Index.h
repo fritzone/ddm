@@ -15,13 +15,20 @@ class Table;
 
 class Index : public TreeItem, public SerializableElement, public NamedItem, public ObjectWithUid, public ObjectWithSpInstances
 {
+
+    struct ColumnAndOrder
+    {
+        const Column* c;
+        QString order;
+    };
+
 public:
 
     Index(const QString& name, Table* tab, const QString& uid);
 
-    void addColumn(const Column* column);
+    void addColumn(const Column* column, const QString& order);
 
-    void addColumn(const Column* column, int pos);
+    void addColumn(const Column* column, const QString& order, int pos);
 
     bool hasColumn(const Column*) const;
 
@@ -46,7 +53,7 @@ private:
     Table* m_owner;
 
     // this is here to just to keep the order of the columns
-    QVector<const Column*> m_columns;
+    QVector<ColumnAndOrder*> m_columns;
 
     // The following is to be interpreted as:
     // for each column there is a map, mapping a database name to a vector of SP instances from that specific database

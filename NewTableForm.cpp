@@ -35,6 +35,7 @@
 #include <QKeyEvent>
 #include <QtGui>
 #include <QList>
+#include <QMenu>
 
 // the positions of various items in the columns view, used for icon retrieval mostly
 const int COL_POS_PK = 0;
@@ -1055,16 +1056,17 @@ void NewTableForm::onAddIndex()
         {
             // check if this goes to a parent table or stays here
             Column* col = m_table->getColumn(m_ui->lstSelectedColumnsForIndex->topLevelItem(i)->text(0));
+            QString order = m_ui->lstSelectedColumnsForIndex->topLevelItem(i)->text(1);
             if(col)  // stays here
             {
-                index->addColumn(col);
+                index->addColumn(col, order);
             }
             else
             {
                 col = m_table->getColumnFromParents(m_ui->lstSelectedColumnsForIndex->topLevelItem(i)->text(0));
                 if(col)
                 {
-                    index->addColumn(col);
+                    index->addColumn(col, order);
                 }
                 else
                 {
@@ -1087,7 +1089,8 @@ void NewTableForm::onAddIndex()
         int cnt = m_ui->lstSelectedColumnsForIndex->topLevelItemCount();
         for(int i = 0; i< cnt; i++)
         {
-            m_currentIndex->addColumn(m_table->getColumn(m_ui->lstSelectedColumnsForIndex->topLevelItem(i)->text(0)));
+            QString order = m_ui->lstSelectedColumnsForIndex->topLevelItem(i)->text(1);
+            m_currentIndex->addColumn(m_table->getColumn(m_ui->lstSelectedColumnsForIndex->topLevelItem(i)->text(0)), order);
             columnsAsString += m_ui->lstSelectedColumnsForIndex->topLevelItem(i)->text(0);
             if(i < cnt - 1)
             {
@@ -1138,18 +1141,16 @@ void NewTableForm::populateIndexGui(Index* idx)
         if(idx->hasColumn(column))
         {
             QTreeWidgetItem* itm = new QTreeWidgetItem(QStringList(column->getName()));
-            itm->setIcon(0, column->getLocation()->icon(COL_POS_DT));
+            itm->setIcon(0, IconFactory::getIconForDataType(column->getDataType()->getType()));
             m_ui->lstSelectedColumnsForIndex->addTopLevelItem(itm);
         }
         else
         {
             targetList = m_ui->lstAvailableColumnsForIndex;
             QListWidgetItem* qlwi = new QListWidgetItem(column->getName(), targetList);
-            qlwi->setIcon(column->getLocation()->icon(COL_POS_DT));
+            qlwi->setIcon(IconFactory::getIconForDataType(column->getDataType()->getType()));
         }
-
     }
-
 }
 
 void NewTableForm::toggleIndexFieldDisableness(bool a)
@@ -2162,6 +2163,15 @@ void NewTableForm::onIndexNameChange(QString)
     }
 }
 
+void NewTableForm::onIndexOrderTypeChanged(QString newOrder)
+{
+    QTreeWidgetItem* selectedCol = m_ui->lstSelectedColumnsForIndex->currentItem();
+    if(selectedCol)
+    {
+        selectedCol->setText(1, newOrder);
+    }
+}
+
 void NewTableForm::prepareSpsTabs()
 {
     if(m_table)
@@ -2207,4 +2217,33 @@ void NewTableForm::prepareSpsTabsForIndex(Index* idx)
     wsp->feedInSpecificProperties(allSps, uidIndex);
     wsp->taylorToSpecificObject(m_table);
     m_ui->tabWidgetForIndex->insertTab(1, wsp, IconFactory::getMySqlIcon(), "MySql");
+}
+
+QMenu* NewTableForm::buildPopupForSpsForColumnInIndex()
+{
+    QMenu* menu = new QMenu(this);
+    DatabaseEngine* eng = Workspace::getInstance()->currentProjectsEngine();
+
+    QMenu* mysqlsMenu = menu->addMenu(IconFactory::getMySqlIcon(),
+                  eng->getDatabaseEngineName());
+
+    const QVector<Sp*> allSps = m_dbEngine->getDatabaseSpecificProperties();
+    for(int i=0; i<allSps.size(); i++)
+    {
+        if(allSps.at(i)->getReferredObjectClassUid() == uidColumnOfIndex)
+        {
+            mysqlsMenu->addAction(allSps.at(i)->getPropertyGuiText());
+        }
+    }
+
+
+    return menu;
+}
+
+void NewTableForm::onAddSpToColumnOfIndex()
+{
+    QMenu* m = buildPopupForSpsForColumnInIndex();
+
+    m->popup( mapToGlobal(QPoint(m_ui->btnAddSpToColumnOfIndex->pos().x(),
+                    m_ui->btnAddSpToColumnOfIndex->pos().y() + m_ui->btnAddSpToColumnOfIndex->height())));
 }

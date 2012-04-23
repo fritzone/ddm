@@ -2,19 +2,29 @@
 #include "Column.h"
 #include "uids.h"
 
-Index::Index(const QString &name, Table* tab, const QString& uid) : NamedItem(name), ObjectWithUid(uid), ObjectWithSpInstances(), m_owner(tab), m_columns(), m_columnsWithSpInstances()
+Index::Index(const QString &name, Table* tab, const QString& uid) :
+    NamedItem(name), ObjectWithUid(uid), ObjectWithSpInstances(),
+    m_owner(tab), m_columns(), m_columnsWithSpInstances()
 {
 }
 
-void Index::addColumn(const Column* column)
+void Index::addColumn(const Column* column, const QString &order)
 {
+    ColumnAndOrder* cando = new ColumnAndOrder;
+    cando->c = column;
+    cando->order = order;
     m_columnsWithSpInstances.insert(column, QMap<QString, QVector<SpInstance*> > ());
-    m_columns.append(column);
+    m_columns.append(cando);
 }
 
-void Index::addColumn(const Column* column, int pos)
+
+void Index::addColumn(const Column* column, const QString& order, int pos)
 {
-    m_columns.insert(pos - 1, column);
+    ColumnAndOrder* cando = new ColumnAndOrder;
+    cando->c = column;
+    cando->order = order;
+
+    m_columns.insert(pos - 1, cando);
     m_columnsWithSpInstances.insert(column, QMap<QString, QVector<SpInstance*> > ());
 }
 
@@ -50,7 +60,7 @@ void Index::serialize(QDomDocument &doc, QDomElement &parent) const
     for(int i=0; i<m_columns.size(); i++)
     {
         QDomElement sqlColumnElement = doc.createElement("Column");
-        sqlColumnElement.setAttribute("Name", m_columns[i]->getName());
+        sqlColumnElement.setAttribute("Name", m_columns[i]->c->getName());
         sqlColumnsElement.appendChild(sqlColumnElement);
 
         // TODO: Now serialize the SP instances of the given column
