@@ -1671,7 +1671,7 @@ QVector<Sp*> MySQLDatabaseEngine::buildSps()
     result.push_back(new ValueListSp(uidMysqlIndexType, uidIndex, QString("Index Type"), QString("Index Type"), QString("General"), valuesForIndexTypes, 0, 5, 0));
 
     result.push_back(new ValueSp(uidMysqlColumnOfIndexLength, uidColumnOfIndex,
-                                 "Column Length", "Used Length", "default", "", 5, 0));
+                                 "Column Length", "Used Column Length", "default", "", 5, 0));
 
     return result;
 }

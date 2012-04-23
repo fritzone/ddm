@@ -96,6 +96,7 @@ public slots:
     void onIndexNameChange(QString);
     void onIndexOrderTypeChanged(QString);
     void onAddSpToColumnOfIndex();
+    void onTriggerSpItemForIndexesColumn();
 
     // foreign columns page
     void onForeignTableComboChange(QString);

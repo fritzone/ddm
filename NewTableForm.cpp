@@ -976,6 +976,7 @@ void NewTableForm::onMoveColumnToRight()
     QString name = itm->text(0);
     delete m_ui->lstAvailableColumnsForIndex->currentItem();
     m_ui->lstSelectedColumnsForIndex->addTopLevelItem(itm);
+    m_ui->lstSelectedColumnsForIndex->header()->resizeSections(QHeaderView::Stretch);
     if(m_ui->txtNewIndexName->text().length() == 0)
     {
         m_ui->txtNewIndexName->setText(QString("index_" + name));
@@ -2232,10 +2233,9 @@ QMenu* NewTableForm::buildPopupForSpsForColumnInIndex()
     {
         if(allSps.at(i)->getReferredObjectClassUid() == uidColumnOfIndex)
         {
-            mysqlsMenu->addAction(allSps.at(i)->getPropertyGuiText());
+            mysqlsMenu->addAction(allSps.at(i)->getPropertyGuiText(), this, SLOT(onTriggerSpItemForIndexesColumn()));
         }
     }
-
 
     return menu;
 }
@@ -2244,6 +2244,32 @@ void NewTableForm::onAddSpToColumnOfIndex()
 {
     QMenu* m = buildPopupForSpsForColumnInIndex();
 
-    m->popup( mapToGlobal(QPoint(m_ui->btnAddSpToColumnOfIndex->pos().x(),
-                    m_ui->btnAddSpToColumnOfIndex->pos().y() + m_ui->btnAddSpToColumnOfIndex->height())));
+    m->popup(m_ui->btnAddSpToColumnOfIndex->mapToGlobal(QPoint(0, m_ui->btnAddSpToColumnOfIndex->height())));
+}
+
+void NewTableForm::onTriggerSpItemForIndexesColumn()
+{
+    if(m_ui->lstSelectedColumnsForIndex->currentItem() == 0) return;
+
+    QAction *act = qobject_cast<QAction*>(sender());
+    if(act)
+    {
+        qDebug() << act->text();
+        const QVector<Sp*> allSps = m_dbEngine->getDatabaseSpecificProperties();
+        for(int i=0; i<allSps.size(); i++)
+        {
+            if(allSps.at(i)->getReferredObjectClassUid() == uidColumnOfIndex)
+            {
+                if(allSps.at(i)->getPropertyGuiText() == act->text())
+                {
+                    QTreeWidgetItem* itm = new QTreeWidgetItem(m_ui->lstSelectedColumnsForIndex->currentItem(), QStringList(act->text()));
+                    m_ui->lstSelectedColumnsForIndex->addTopLevelItem(itm);
+                    m_ui->lstSelectedColumnsForIndex->header()->resizeSections(QHeaderView::Stretch);
+                    m_ui->lstSelectedColumnsForIndex->currentItem()->setExpanded(true);
+
+                    // TODO: set the control in column 2 according to the type of the SP
+                }
+            }
+        }
+    }
 }
