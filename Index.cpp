@@ -47,6 +47,33 @@ void Index::resetColumns()
     m_columnsWithSpInstances.clear();
 }
 
+void Index::addSpToColumn(const Column *c, const QString &db, SpInstance *spi)
+{
+    if(m_columnsWithSpInstances.contains(c))
+    {
+        QMap<QString, QVector<SpInstance*> >& map1 = m_columnsWithSpInstances[c];
+        if(map1.contains(db))
+        {
+            QVector<SpInstance*>& v1 = map1[db];
+            v1.append(spi);
+        }
+        else
+        {
+            QVector<SpInstance*> v1;
+            v1.append(spi);
+            map1.insert(db, v1);
+        }
+    }
+    else
+    {
+        QMap<QString, QVector<SpInstance*> > map1;
+        QVector<SpInstance*> v1;
+        v1.append(spi);
+        map1.insert(db, v1);
+        m_columnsWithSpInstances.insert(c, map1);
+    }
+}
+
 void Index::serialize(QDomDocument &doc, QDomElement &parent) const
 {
     QDomElement indexElement = doc.createElement("Index");      // will hold the Index
