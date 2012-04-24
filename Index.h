@@ -39,7 +39,7 @@ public:
         return m_columnsWithSpInstances.keys().toVector();
     }
 
-    virtual void serialize(QDomDocument &doc, QDomElement &parent) const;
+    void addSpToColumn(const Column* c, const QString& db, SpInstance* spi);
 
     Table* getOwner() const
     {
@@ -47,6 +47,8 @@ public:
     }
 
     virtual QUuid getClassUid() const;
+
+    virtual void serialize(QDomDocument &doc, QDomElement &parent) const;
 
 private:
 

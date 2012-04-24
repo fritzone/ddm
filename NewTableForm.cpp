@@ -1056,6 +1056,7 @@ void NewTableForm::onAddIndex()
         for(int i = 0; i< cnt; i++)
         {
             // check if this goes to a parent table or stays here
+
             Column* col = m_table->getColumn(m_ui->lstSelectedColumnsForIndex->topLevelItem(i)->text(0));
             QString order = m_ui->lstSelectedColumnsForIndex->topLevelItem(i)->text(1);
             if(col)  // stays here
@@ -1072,8 +1073,11 @@ void NewTableForm::onAddIndex()
                 else
                 {
                     // something wrent wrong ... we shouldn't be here
+                    QMessageBox::critical(this, tr("Error"), tr("Cannot fetch a column named ") +m_ui->lstSelectedColumnsForIndex->topLevelItem(i)->text(0) + tr(". Please contact the developers.") , QMessageBox::Ok);
+                    return;
                 }
             }
+            // and now the SPs for the column
         }
         m_table->addIndex(index);
 
@@ -1234,6 +1238,16 @@ void NewTableForm::onDoubleClickColumnForIndex(QListWidgetItem* item)
 
 void NewTableForm::onMoveSelectedIndexColumnUp()
 {
+    // and is this item a column?
+    if(!m_table->hasColumn(m_ui->lstSelectedColumnsForIndex->currentItem()->text(0)))
+    {
+        if(!m_table->parentsHaveColumn(m_ui->lstSelectedColumnsForIndex->currentItem()->text(0)))
+        {
+            QMessageBox::information(this, tr("Info"), tr("In order to add an SP to a column select the column in the list"), QMessageBox::Ok);
+            return;
+        }
+    }
+
     if(m_ui->lstSelectedColumnsForIndex->selectedItems().size() > 0)
     {
         QModelIndex x = m_ui->lstSelectedColumnsForIndex->currentIndex();
@@ -2249,7 +2263,18 @@ void NewTableForm::onAddSpToColumnOfIndex()
 
 void NewTableForm::onTriggerSpItemForIndexesColumn()
 {
+    // do we have a selected item?
     if(m_ui->lstSelectedColumnsForIndex->currentItem() == 0) return;
+
+    // and is this item a column?
+    if(!m_table->hasColumn(m_ui->lstSelectedColumnsForIndex->currentItem()->text(0)))
+    {
+        if(!m_table->parentsHaveColumn(m_ui->lstSelectedColumnsForIndex->currentItem()->text(0)))
+        {
+            QMessageBox::information(this, tr("Info"), tr("In order to add an SP to a column select the column in the list"), QMessageBox::Ok);
+            return;
+        }
+    }
 
     QAction *act = qobject_cast<QAction*>(sender());
     if(act)
@@ -2262,14 +2287,43 @@ void NewTableForm::onTriggerSpItemForIndexesColumn()
             {
                 if(allSps.at(i)->getPropertyGuiText() == act->text())
                 {
+                    // does this column contain already this SP?
+                    for(int j=0; j<m_ui->lstSelectedColumnsForIndex->currentItem()->childCount(); j++)
+                    {
+                        if(m_ui->lstSelectedColumnsForIndex->currentItem()->child(j)->text(0) == act->text())
+                        {
+                            QMessageBox::warning(this, tr("Warning"), tr("You can add the property \"") + act->text() + "\" only once to a column", QMessageBox::Ok);
+                            return;
+                        }
+                    }
+
                     QTreeWidgetItem* itm = new QTreeWidgetItem(m_ui->lstSelectedColumnsForIndex->currentItem(), QStringList(act->text()));
                     m_ui->lstSelectedColumnsForIndex->addTopLevelItem(itm);
                     m_ui->lstSelectedColumnsForIndex->header()->resizeSections(QHeaderView::Stretch);
                     m_ui->lstSelectedColumnsForIndex->currentItem()->setExpanded(true);
 
                     // TODO: set the control in column 2 according to the type of the SP
+                    if(allSps.at(i)->getClassUid().toString() == uidValueSp)
+                    {   // create a QLineEdit
+                        QLineEdit* lstValueSp = new QLineEdit(0);
+                        m_ui->lstSelectedColumnsForIndex->setItemWidget(itm, 1, lstValueSp);
+                        lstValueSp->setText("0");
+                    }
                 }
             }
+        }
+    }
+}
+
+void NewTableForm::onRemoveSpsFromColumnOfIndex()
+{
+    if(m_ui->lstSelectedColumnsForIndex->currentItem() == 0) return;
+    const QVector<Sp*> allSps = m_dbEngine->getDatabaseSpecificProperties();
+    for(int i=0; i<allSps.size(); i++)
+    {
+        if(allSps.at(i)->getPropertyGuiText() == m_ui->lstSelectedColumnsForIndex->currentItem()->text(0))
+        {
+            delete m_ui->lstSelectedColumnsForIndex->currentItem();
         }
     }
 }
