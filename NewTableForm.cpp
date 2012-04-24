@@ -1193,6 +1193,7 @@ void NewTableForm::onSelectIndex(QTreeWidgetItem*, int)
 
     m_ui->btnAddIndex->setIcon(IconFactory::getApplyIcon());
     prepareSpsTabsForIndex(m_currentIndex);
+    m_ui->lstSelectedColumnsForIndex->header()->resizeSections(QHeaderView::Stretch);
 }
 
 void NewTableForm::onCancelIndexEditing()
@@ -1243,7 +1244,7 @@ void NewTableForm::onMoveSelectedIndexColumnUp()
     {
         if(!m_table->parentsHaveColumn(m_ui->lstSelectedColumnsForIndex->currentItem()->text(0)))
         {
-            QMessageBox::information(this, tr("Info"), tr("In order to add an SP to a column select the column in the list"), QMessageBox::Ok);
+            QMessageBox::information(this, tr("Info"), tr("For this functionality select a column you want to move up"), QMessageBox::Ok);
             return;
         }
     }
@@ -1263,6 +1264,16 @@ void NewTableForm::onMoveSelectedIndexColumnUp()
 
 void NewTableForm::onMoveSelectedIndexColumnDown()
 {
+    // and is this item a column?
+    if(!m_table->hasColumn(m_ui->lstSelectedColumnsForIndex->currentItem()->text(0)))
+    {
+        if(!m_table->parentsHaveColumn(m_ui->lstSelectedColumnsForIndex->currentItem()->text(0)))
+        {
+            QMessageBox::information(this, tr("Info"), tr("For this functionality select a column you want to move down"), QMessageBox::Ok);
+            return;
+        }
+    }
+
     if(m_ui->lstSelectedColumnsForIndex->selectedItems().size() > 0)
     {
         QModelIndex x = m_ui->lstSelectedColumnsForIndex->currentIndex();
