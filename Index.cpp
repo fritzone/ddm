@@ -1,6 +1,7 @@
 #include "Index.h"
 #include "Column.h"
 #include "uids.h"
+#include "SpInstance.h"
 
 Index::Index(const QString &name, Table* tab, const QString& uid) :
     NamedItem(name), ObjectWithUid(uid), ObjectWithSpInstances(),
@@ -90,7 +91,26 @@ void Index::serialize(QDomDocument &doc, QDomElement &parent) const
         sqlColumnElement.setAttribute("Name", m_columns[i]->c->getName());
         sqlColumnsElement.appendChild(sqlColumnElement);
 
+        QDomElement cspsElement = doc.createElement("ColumnsSps");
         // TODO: Now serialize the SP instances of the given column
+        for(int j=0; j<m_columnsWithSpInstances.keys().size(); j++)
+        {
+            const Column* c = m_columnsWithSpInstances.keys().at(j);
+            QMap<QString, QVector<SpInstance*> > map1 = m_columnsWithSpInstances[c];
+            for(int k=0; k<map1.keys().size(); k++)
+            {
+                QString db = map1.keys().at(k);
+                QDomElement dbElement = doc.createElement("DbEnginesps");
+                dbElement.setAttribute("Name", db);
+                QVector<SpInstance*> spis = map1[db];
+                for(int l=0; l<spis.size(); l++)
+                {
+                    spis.at(l)->serialize(doc, dbElement);
+                }
+                cspsElement.appendChild(dbElement);
+            }
+            sqlColumnElement.appendChild(cspsElement);
+        }
     }
     indexElement.appendChild(sqlColumnsElement);
     }
@@ -108,4 +128,14 @@ void Index::serialize(QDomDocument &doc, QDomElement &parent) const
 QUuid Index::getClassUid() const
 {
     return QUuid(uidIndex);
+}
+
+QMap<QString, QVector<SpInstance*> > Index::getSpsOfColumn(const Column* c) const
+{
+    if(m_columnsWithSpInstances.contains(c))
+    {
+        return m_columnsWithSpInstances[c];
+    }
+
+    return QMap<QString, QVector<SpInstance*> >();
 }
