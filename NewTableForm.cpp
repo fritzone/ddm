@@ -1056,16 +1056,16 @@ void NewTableForm::onAddIndex()
         for(int i = 0; i< cnt; i++)
         {
             // check if this goes to a parent table or stays here
-
-            Column* col = m_table->getColumn(m_ui->lstSelectedColumnsForIndex->topLevelItem(i)->text(0));
-            QString order = m_ui->lstSelectedColumnsForIndex->topLevelItem(i)->text(1);
+            const QTreeWidgetItem* cItem = m_ui->lstSelectedColumnsForIndex->topLevelItem(i);
+            Column* col = m_table->getColumn(cItem->text(0));
+            QString order = cItem->text(1);
             if(col)  // stays here
             {
                 index->addColumn(col, order);
             }
             else
             {
-                col = m_table->getColumnFromParents(m_ui->lstSelectedColumnsForIndex->topLevelItem(i)->text(0));
+                col = m_table->getColumnFromParents(cItem->text(0));
                 if(col)
                 {
                     index->addColumn(col, order);
@@ -1073,11 +1073,38 @@ void NewTableForm::onAddIndex()
                 else
                 {
                     // something wrent wrong ... we shouldn't be here
-                    QMessageBox::critical(this, tr("Error"), tr("Cannot fetch a column named ") +m_ui->lstSelectedColumnsForIndex->topLevelItem(i)->text(0) + tr(". Please contact the developers.") , QMessageBox::Ok);
+                    QMessageBox::critical(this, tr("Error"), tr("Cannot fetch a column named ") + cItem->text(0) + tr(". Please contact the developers.") , QMessageBox::Ok);
                     return;
                 }
             }
             // and now the SPs for the column
+            for(int j=0; j<cItem->childCount(); j++)
+            {
+                QWidget* w = m_ui->lstSelectedColumnsForIndex->itemWidget(cItem->child(j), 1);
+                if(QLineEdit* le = qobject_cast<QLineEdit*>(w))
+                {
+                    // now find the SP and create an instance of it
+                    const QVector<Sp*> allSps = m_dbEngine->getDatabaseSpecificProperties();
+                    Sp* theSp = 0;
+                    for(int k=0; k<allSps.size(); k++)
+                    {
+                        if(allSps.at(k)->getPropertyGuiText() == cItem->child(j)->text(0))
+                        {
+                            theSp = allSps.at(k);
+                            break;
+                        }
+                    }
+
+                    if(theSp)
+                    {
+                        SpInstance* spi = theSp->instantiate();
+                        spi->set(le->text());
+                        index->addSpToColumn(col, m_dbEngine->getDatabaseEngineName(), spi);
+                    }
+                }
+            }
+
+
         }
         m_table->addIndex(index);
 
@@ -1139,6 +1166,7 @@ void NewTableForm::populateIndexGui(Index* idx)
             column = m_table->getColumnFromParents(m_table->fullColumns()[i]);
             if(!column) // this shouldn't be
             {
+                QMessageBox::critical(this, tr("Error"), tr("An index has an invalid reference as ") + m_table->fullColumns()[i], QMessageBox::Ok);
                 return;
             }
         }
@@ -1148,6 +1176,32 @@ void NewTableForm::populateIndexGui(Index* idx)
             QTreeWidgetItem* itm = new QTreeWidgetItem(QStringList(column->getName()));
             itm->setIcon(0, IconFactory::getIconForDataType(column->getDataType()->getType()));
             m_ui->lstSelectedColumnsForIndex->addTopLevelItem(itm);
+
+            // and now feed in the SPs for the given column
+            QMap<QString, QVector<SpInstance*> > sps = idx->getSpsOfColumn(column);
+            for(int j = 0; j<sps.keys().size(); j++)
+            {
+                QString dbName = sps.keys().at(j);
+                QVector<SpInstance*> insts = sps[dbName];
+                for(int k=0; k<insts.size(); k++)
+                {
+                    QTreeWidgetItem* spiItem = new QTreeWidgetItem(itm, QStringList(insts.at(k)->getClass()->getPropertyGuiText()));
+                    m_ui->lstSelectedColumnsForIndex->addTopLevelItem(spiItem);
+                    m_ui->lstSelectedColumnsForIndex->header()->resizeSections(QHeaderView::Stretch);
+                    itm->setExpanded(true);
+
+                    // TODO: when there will be more databases change this!
+                    spiItem->setIcon(0, IconFactory::getMySqlIcon());
+
+                    // TODO: set the control in column 2 according to the type of the SP
+                    if(insts.at(k)->getClass()->getClassUid().toString() == uidValueSp)
+                    {   // create a QLineEdit
+                        QLineEdit* lstValueSp = new QLineEdit(0);
+                        m_ui->lstSelectedColumnsForIndex->setItemWidget(spiItem, 1, lstValueSp);
+                        lstValueSp->setText(insts.at(k)->get());
+                    }
+                }
+            }
         }
         else
         {
@@ -1230,11 +1284,16 @@ void NewTableForm::onBtnRemoveIndex()
 void NewTableForm::onDoubleClickColumnForIndex(QListWidgetItem* item)
 {
     if(!item) return;
-    QTreeWidgetItem* itm = new QTreeWidgetItem(QStringList(item->text()));
+    QString name = item->text();
+    QTreeWidgetItem* itm = new QTreeWidgetItem(QStringList(name));
     itm->setIcon(0, item->icon());
     delete m_ui->lstAvailableColumnsForIndex->currentItem();
     m_ui->lstSelectedColumnsForIndex->addTopLevelItem(itm);
-
+    m_ui->lstSelectedColumnsForIndex->header()->resizeSections(QHeaderView::Stretch);
+    if(m_ui->txtNewIndexName->text().length() == 0)
+    {
+        m_ui->txtNewIndexName->setText(QString("index_" + name));
+    }
 }
 
 void NewTableForm::onMoveSelectedIndexColumnUp()
@@ -2261,7 +2320,6 @@ QMenu* NewTableForm::buildPopupForSpsForColumnInIndex()
             mysqlsMenu->addAction(allSps.at(i)->getPropertyGuiText(), this, SLOT(onTriggerSpItemForIndexesColumn()));
         }
     }
-
     return menu;
 }
 
@@ -2312,6 +2370,9 @@ void NewTableForm::onTriggerSpItemForIndexesColumn()
                     m_ui->lstSelectedColumnsForIndex->addTopLevelItem(itm);
                     m_ui->lstSelectedColumnsForIndex->header()->resizeSections(QHeaderView::Stretch);
                     m_ui->lstSelectedColumnsForIndex->currentItem()->setExpanded(true);
+
+                    // TODO: when there will be more databases change this!
+                    itm->setIcon(0, IconFactory::getMySqlIcon());
 
                     // TODO: set the control in column 2 according to the type of the SP
                     if(allSps.at(i)->getClassUid().toString() == uidValueSp)

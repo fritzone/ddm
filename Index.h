@@ -50,6 +50,8 @@ public:
 
     virtual void serialize(QDomDocument &doc, QDomElement &parent) const;
 
+    QMap<QString, QVector<SpInstance*> > getSpsOfColumn(const Column*) const;
+
 private:
 
     Table* m_owner;
