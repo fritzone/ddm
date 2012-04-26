@@ -89,6 +89,7 @@ void Index::serialize(QDomDocument &doc, QDomElement &parent) const
     {
         QDomElement sqlColumnElement = doc.createElement("Column");
         sqlColumnElement.setAttribute("Name", m_columns[i]->c->getName());
+        sqlColumnElement.setAttribute("Order", m_columns[i]->order);
         sqlColumnsElement.appendChild(sqlColumnElement);
 
         QDomElement cspsElement = doc.createElement("ColumnsSps");
