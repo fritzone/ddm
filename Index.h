@@ -34,10 +34,7 @@ public:
 
     void resetColumns();
 
-    QVector<const Column*> getColumns() const
-    {
-        return m_columnsWithSpInstances.keys().toVector();
-    }
+    QVector<const Column*> getColumns() const;
 
     void addSpToColumn(const Column* c, const QString& db, SpInstance* spi);
 
@@ -61,7 +58,7 @@ private:
 
     // The following is to be interpreted as:
     // for each column there is a map, mapping a database name to a vector of SP instances from that specific database
-    QMap< const Column*, QMap<QString, QVector<SpInstance*> > > m_columnsWithSpInstances;
+    QMap<QString, QMap<QString, QVector<SpInstance*> > > m_columnsWithSpInstances;
 
 };
 

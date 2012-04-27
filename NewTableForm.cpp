@@ -1116,7 +1116,6 @@ void NewTableForm::onAddIndex()
     {
         m_currentIndex->setName(m_ui->txtNewIndexName->text());
         m_currentIndex->resetColumns();
-        // TODO: "almost" duplicate code, consider refactoring
         QString columnsAsString = "";
         int cnt = m_ui->lstSelectedColumnsForIndex->topLevelItemCount();
         for(int i = 0; i< cnt; i++)
@@ -2365,6 +2364,8 @@ void NewTableForm::onTriggerSpItemForIndexesColumn()
                             return;
                         }
                     }
+
+                    // TODO: check that the selected column supports this type of SP
 
                     QTreeWidgetItem* itm = new QTreeWidgetItem(m_ui->lstSelectedColumnsForIndex->currentItem(), QStringList(act->text()));
                     m_ui->lstSelectedColumnsForIndex->addTopLevelItem(itm);

@@ -146,13 +146,30 @@ Index* DeserializationFactory::createIndex(DatabaseEngine* engine, Table* table,
             for(int j=0; j<element.childNodes().at(i).childNodes().size(); j++) // iterating through the "Column" nodes
             {
                 QDomElement columnElement = element.childNodes().at(i).childNodes().at(j).toElement();
-                QString name = columnElement.attribute("Name");
+                QString columnName = columnElement.attribute("Name");
                 QString order = columnElement.attribute("Order");
-                result->addColumn(table->getColumn(name), order);    // finding the Name attribute
+                result->addColumn(table->getColumn(columnName), order);    // finding the Name attribute
                 if(columnElement.firstChild().toElement().nodeName() == "ColumnsSps")
                 {
                     QDomElement colSpsElement = columnElement.firstChild().toElement();
-                    for(int )
+                    for(int k=0; k<colSpsElement.childNodes().count(); k++)
+                    {
+                        QDomElement dbEngineSp = colSpsElement.childNodes().at(k).toElement();
+
+                        QDomElement spiElement = dbEngineSp.childNodes().at(0).toElement();
+                        QString spi_value = spiElement.attribute("Value");
+                        QString spi_uid = spiElement.attribute("uid");
+
+                        QDomElement sp = spiElement.firstChild().toElement();
+                        QString sp_sql_role_uid = sp.attribute("sql-role-uid");
+
+                        SpInstance* spi = createSpInstance(engine, sp_sql_role_uid, spi_uid);
+                        if(spi)
+                        {
+                            spi->set(spi_value);
+                            result->addSpToColumn(table->getColumn(columnName), dbEngineSp.attribute("Name"), spi);
+                        }
+                    }
                 }
             }
         }

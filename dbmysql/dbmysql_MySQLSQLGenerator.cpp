@@ -285,7 +285,6 @@ QStringList MySQLSQLGenerator::generateCreateTableSql(Table *table, const QHash<
     }
     }
 
-
     {
     // and the codepage
     SpInstance* spi = table->getInstanceForSqlRoleUid(m_engine, uidMysqlCodepageTable);
@@ -324,6 +323,20 @@ QStringList MySQLSQLGenerator::generateCreateTableSql(Table *table, const QHash<
                 return QStringList("ERROR");
             }
         }
+        // See if this index has BTREE or HASH specified
+        {
+        SpInstance* spi = idx->getInstanceForSqlRoleUid(m_engine, uidMysqlIndexType);
+        if(spi)
+        {
+            QString t = spi->get();
+            if(t.length())
+            {
+                indexCommand += upcase?(" USING " + t.toUpper() + " ")
+                                     :(" using " + t.toLower() + " ");
+            }
+        }
+        }
+        // and the table
         indexCommand +=upcase?" ON ":" on ";
         indexCommand += tabName;
         indexCommand += "(";
@@ -336,7 +349,9 @@ QStringList MySQLSQLGenerator::generateCreateTableSql(Table *table, const QHash<
                 indexCommand += ", ";
             }
         }
-        indexCommand +=");\n\n";
+        indexCommand += ")";
+        indexCommand +=";";
+        indexCommand +="\n\n";
 
         toReturn << indexCommand;
     }

@@ -14,7 +14,7 @@ void Index::addColumn(const Column* column, const QString &order)
     ColumnAndOrder* cando = new ColumnAndOrder;
     cando->c = column;
     cando->order = order;
-    m_columnsWithSpInstances.insert(column, QMap<QString, QVector<SpInstance*> > ());
+    m_columnsWithSpInstances.insert(column->getName(), QMap<QString, QVector<SpInstance*> > ());
     m_columns.append(cando);
 }
 
@@ -26,7 +26,7 @@ void Index::addColumn(const Column* column, const QString& order, int pos)
     cando->order = order;
 
     m_columns.insert(pos - 1, cando);
-    m_columnsWithSpInstances.insert(column, QMap<QString, QVector<SpInstance*> > ());
+    m_columnsWithSpInstances.insert(column->getName(), QMap<QString, QVector<SpInstance*> > ());
 }
 
 bool Index::hasColumn(const Column* column) const
@@ -42,6 +42,17 @@ bool Index::hasColumn(const Column* column) const
     return false;
 }
 
+QVector<const Column*> Index::getColumns() const
+{
+    QVector<const Column*> result;
+    for(int i=0; i<m_columns.size(); i++)
+    {
+        result.push_back(m_columns.at(i)->c);
+    }
+
+    return result;
+}
+
 void Index::resetColumns()
 {
     m_columns.clear();
@@ -50,19 +61,21 @@ void Index::resetColumns()
 
 void Index::addSpToColumn(const Column *c, const QString &db, SpInstance *spi)
 {
-    if(m_columnsWithSpInstances.contains(c))
+    if(m_columnsWithSpInstances.contains(c->getName()))
     {
-        QMap<QString, QVector<SpInstance*> >& map1 = m_columnsWithSpInstances[c];
+        QMap<QString, QVector<SpInstance*> >& map1 = m_columnsWithSpInstances[c->getName()];
         if(map1.contains(db))
         {
             QVector<SpInstance*>& v1 = map1[db];
             v1.append(spi);
+            qDebug() << 1;
         }
         else
         {
             QVector<SpInstance*> v1;
             v1.append(spi);
             map1.insert(db, v1);
+            qDebug() << 2;
         }
     }
     else
@@ -71,8 +84,11 @@ void Index::addSpToColumn(const Column *c, const QString &db, SpInstance *spi)
         QVector<SpInstance*> v1;
         v1.append(spi);
         map1.insert(db, v1);
-        m_columnsWithSpInstances.insert(c, map1);
+        m_columnsWithSpInstances.insert(c->getName(), map1);
+        qDebug() << 3;
     }
+
+    qDebug() << "COL:"<< c->getName()<< " DB:"<<db<< " spi:"<<spi->getClass()->getName()<<" V:"<<spi->get();
 }
 
 void Index::serialize(QDomDocument &doc, QDomElement &parent) const
@@ -90,18 +106,17 @@ void Index::serialize(QDomDocument &doc, QDomElement &parent) const
         QDomElement sqlColumnElement = doc.createElement("Column");
         sqlColumnElement.setAttribute("Name", m_columns[i]->c->getName());
         sqlColumnElement.setAttribute("Order", m_columns[i]->order);
-        sqlColumnsElement.appendChild(sqlColumnElement);
 
         QDomElement cspsElement = doc.createElement("ColumnsSps");
-        // TODO: Now serialize the SP instances of the given column
         for(int j=0; j<m_columnsWithSpInstances.keys().size(); j++)
         {
-            const Column* c = m_columnsWithSpInstances.keys().at(j);
-            QMap<QString, QVector<SpInstance*> > map1 = m_columnsWithSpInstances[c];
+            QString cName = m_columnsWithSpInstances.keys().at(j);
+            if(cName != m_columns[i]->c->getName()) continue;
+            QMap<QString, QVector<SpInstance*> > map1 = m_columnsWithSpInstances[cName];
             for(int k=0; k<map1.keys().size(); k++)
             {
                 QString db = map1.keys().at(k);
-                QDomElement dbElement = doc.createElement("DbEnginesps");
+                QDomElement dbElement = doc.createElement("DbEngineSps");
                 dbElement.setAttribute("Name", db);
                 QVector<SpInstance*> spis = map1[db];
                 for(int l=0; l<spis.size(); l++)
@@ -112,6 +127,7 @@ void Index::serialize(QDomDocument &doc, QDomElement &parent) const
             }
             sqlColumnElement.appendChild(cspsElement);
         }
+        sqlColumnsElement.appendChild(sqlColumnElement);
     }
     indexElement.appendChild(sqlColumnsElement);
     }
@@ -133,9 +149,9 @@ QUuid Index::getClassUid() const
 
 QMap<QString, QVector<SpInstance*> > Index::getSpsOfColumn(const Column* c) const
 {
-    if(m_columnsWithSpInstances.contains(c))
+    if(m_columnsWithSpInstances.contains(c->getName()))
     {
-        return m_columnsWithSpInstances[c];
+        return m_columnsWithSpInstances[c->getName()];
     }
 
     return QMap<QString, QVector<SpInstance*> >();
