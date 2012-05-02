@@ -8,6 +8,7 @@
 #include "NamedItem.h"
 #include "core_ItemWithDescription.h"
 #include "core_ObjectWithUid.h"
+#include "ObjectWithSpInstances.h"
 
 #include <QString>
 
@@ -19,10 +20,10 @@ class Table;
  */
 class Column : public TreeItem, public SerializableElement, public CopyableElement,
         public IssueOriginator, public NamedItem, public ItemWithDescription,
-        public ObjectWithUid
+        public ObjectWithUid, public ObjectWithSpInstances
 {
 public:
-    Column(const QString& uid, const QString& name, const UserDataType* type, bool pk, bool autoInc);
+    Column(const QString& uid, const QString& name, const UserDataType* type, bool pk);
 
     const UserDataType* getDataType() const;
 
@@ -33,10 +34,6 @@ public:
     void setPk(bool pk);
 
     virtual void serialize(QDomDocument &doc, QDomElement &parent) const;
-
-    bool hasAutoIncrement() const;
-
-    void setAutoIncrement(bool a);
 
     virtual void copy();
 
@@ -62,7 +59,6 @@ public:
 private:
     const UserDataType* m_type;
     bool m_pk;
-    bool m_autoIncrement;
     Table* m_table;
 };
 

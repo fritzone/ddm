@@ -25,9 +25,12 @@ class WidgetForSpecificProperties : public QWidget
 
     struct UidToWidget
     {
+        UidToWidget(SpInstance* s) : m_spi(s) {}
+
         QString objectUid;
         QString objectRoleUid;
         QWidget* w;
+        SpInstance* m_spi;
     };
 
 public:
@@ -43,6 +46,13 @@ public:
      * differ.
      */
     void taylorToSpecificObject(const ObjectWithSpInstances* dest);
+
+    /**
+     * In case this object was create with a NULL m_osp it is mandatory to call at the end this
+     * to feed back the data to a new newly created obejct
+     * @param dest - the target object
+     */
+    void repopulateSpsOfObject(ObjectWithSpInstances* dest);
 
 protected:
     void changeEvent(QEvent *e);

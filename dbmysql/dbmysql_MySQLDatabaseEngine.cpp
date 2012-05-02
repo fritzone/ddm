@@ -436,7 +436,6 @@ Table* MySQLDatabaseEngine::reverseEngineerTable(Connection *c, const QString& t
     int nulldNo = query.record().indexOf("Null");
     int keyNo = query.record().indexOf("Key");
     int defNo = query.record().indexOf("Default");
-    int extraNo = query.record().indexOf("Extra");
 
     while(query.next())
     {
@@ -445,7 +444,6 @@ Table* MySQLDatabaseEngine::reverseEngineerTable(Connection *c, const QString& t
         QString nullable = query.value(nulldNo).toString();
         QString keyness = query.value(keyNo).toString();
         QString defaultValue = query.value(defNo).toString();
-        QString extra = query.value(extraNo).toString();
 
         UserDataType* udt = 0;
         QString oneTimeKey = field_name + type + nullable + defaultValue;
@@ -460,7 +458,7 @@ Table* MySQLDatabaseEngine::reverseEngineerTable(Connection *c, const QString& t
             udt = v->provideDatatypeForSqlType(field_name, type, nullable, defaultValue, relaxed);
             m_oneTimeMappings.insert(oneTimeKey, udt);
         }
-        Column* col = new Column(QUuid::createUuid().toString(), field_name, udt, QString::compare(keyness, "PRI", Qt::CaseInsensitive) == 0, extra == "auto_increment");
+        Column* col = new Column(QUuid::createUuid().toString(), field_name, udt, QString::compare(keyness, "PRI", Qt::CaseInsensitive) == 0);
 
         // and add the column to the table
         if(!found) m_revEngMappings.insert(udt, col);
@@ -1514,11 +1512,6 @@ QVector<Sp*> MySQLDatabaseEngine::getDatabaseSpecificProperties() const
     return *s_mysqlSpecificProperties;
 }
 
-bool MySQLDatabaseEngine::supportsEngines()
-{
-    return true;
-}
-
 QStringList MySQLDatabaseEngine::getCodepageList()
 {
     QStringList codepages;
@@ -1668,10 +1661,11 @@ QVector<Sp*> MySQLDatabaseEngine::buildSps()
 
     QStringList valuesForIndexTypes;
     valuesForIndexTypes << "BTREE" << "HASH";
-    result.push_back(new ValueListSp(uidMysqlIndexType, uidIndex, QString("Index Type"), QString("Index Type"), QString("General"), valuesForIndexTypes, 0, 5, 0));
+    result.push_back(new ValueListSp(uidMysqlIndexType, uidIndex, "Index Type", "Index Type", "General", valuesForIndexTypes, 0, 5, 0));
 
-    result.push_back(new ValueSp(uidMysqlColumnOfIndexLength, uidColumnOfIndex,
-                                 "Column Length", "Used Column Length", "default", "", 5, 0));
+    result.push_back(new ValueSp(uidMysqlColumnOfIndexLength, uidColumnOfIndex, "Column Length", "Used Column Length", "default", "", 5, 0));
+
+    result.push_back(new TrueFalseSp(uidMysqlColumnAutoIncrement, uidColumn, "Auto Increment", "Auto Increment", "General", 5, 0));
 
     return result;
 }

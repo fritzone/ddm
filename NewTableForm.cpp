@@ -587,7 +587,6 @@ void NewTableForm::onAddColumn()
         m_currentColumn->setName(m_ui->txtNewColumnName->text());
         m_currentColumn->setDescription(m_ui->txtColumnDescription->toPlainText());
         m_currentColumn->setPk(m_ui->chkPrimary->isChecked());
-        m_currentColumn->setAutoIncrement(m_ui->chkAutoInc->isChecked());
 
         m_currentColumn->setDataType(m_project->getWorkingVersion()->getDataType(m_ui->cmbNewColumnType->currentText()));
 
@@ -623,7 +622,7 @@ void NewTableForm::onAddColumn()
         }
 
         UserDataType* colsDt = m_project->getWorkingVersion()->getDataType(m_ui->cmbNewColumnType->currentText());
-        Column* col = new Column(QUuid::createUuid().toString(), m_ui->txtNewColumnName->text(), colsDt, m_ui->chkPrimary->isChecked(), m_ui->chkAutoInc->isChecked());
+        Column* col = new Column(QUuid::createUuid().toString(), m_ui->txtNewColumnName->text(), colsDt, m_ui->chkPrimary->isChecked());
         col->setDescription(m_ui->txtColumnDescription->toPlainText());
         ContextMenuEnabledTreeWidgetItem* item = createTWIForColumn(col);
         lstColumns->addTopLevelItem(item);
@@ -644,7 +643,6 @@ void NewTableForm::onAddColumn()
     m_ui->cmbNewColumnType->setCurrentIndex(-1);
     m_ui->txtColumnDescription->setText("");
     m_ui->chkPrimary->setChecked(false);
-    m_ui->chkAutoInc->setChecked(false);
     m_ui->btnAddColumn->setIcon(IconFactory::getAddIcon());
 
     lstColumns->resizeColumnToContents(0);
@@ -665,7 +663,6 @@ void NewTableForm::onCancelColumnEditing()
     m_ui->txtNewColumnName->clear();
     m_ui->cmbNewColumnType->setCurrentIndex(-1);
     m_ui->chkPrimary->setChecked(false);
-    m_ui->chkAutoInc->setChecked(false);
     m_ui->btnAddColumn->setIcon(IconFactory::getAddIcon());
     toggleColumnFieldDisableness(false);
     m_ui->grpColumnDetails->setTitle(tr(" New column "));
@@ -789,7 +786,6 @@ void NewTableForm::toggleColumnFieldDisableness(bool a)
     m_ui->txtNewColumnName->setDisabled(a);
     m_ui->cmbNewColumnType->setDisabled(a);
     m_ui->chkPrimary->setDisabled(a);
-    m_ui->chkAutoInc->setDisabled(a);
     m_ui->txtColumnDescription->setDisabled(a);
 }
 
@@ -799,7 +795,6 @@ void NewTableForm::showColumn(const Column * c)
     m_ui->txtNewColumnName->setText(c->getName());
     m_ui->cmbNewColumnType->setCurrentIndex(m_project->getWorkingVersion()->getDataTypeIndex(c->getDataType()->getName()));
     m_ui->chkPrimary->setChecked(c->isPk());
-    m_ui->chkAutoInc->setChecked(c->hasAutoIncrement());
     m_ui->txtColumnDescription->setText(c->getDescription());
 
     m_ui->btnAddColumn->setIcon(IconFactory::getApplyIcon());
@@ -1225,7 +1220,6 @@ void NewTableForm::toggleIndexFieldDisableness(bool a)
 
 void NewTableForm::onSelectIndex(QTreeWidgetItem*, int)
 {
-    QModelIndex x = m_ui->lstIndices->currentIndex();
     m_currentIndex = m_table->getIndex(m_ui->lstIndices->currentItem()->text(0));
 
     if(m_currentIndex == 0)
@@ -2168,15 +2162,6 @@ void NewTableForm::onColumnNameChange(QString)
 
 void NewTableForm::onDatatypeComboChange(QString)
 {
-    m_ui->chkAutoInc->setEnabled(true);
-
-    UserDataType* udt = m_project->getWorkingVersion()->getDataType(m_ui->cmbNewColumnType->currentText());
-    if(udt && !udt->supportsAutoIncrement())
-    {
-        m_ui->chkAutoInc->setChecked(false);
-        m_ui->chkAutoInc->setEnabled(false);
-    }
-
     if(m_currentColumn)
     {
         // TODO: This is dupliation with code from onAddColumn
@@ -2267,7 +2252,42 @@ void NewTableForm::prepareSpsTabs()
         m_ui->tabWidget->insertTab(4, wsp, IconFactory::getMySqlIcon(), "MySql");
 
         prepareSpsTabsForIndex(0);
+        prepareSpsTabsForColumn(0);
     }
+}
+
+void NewTableForm::prepareSpsTabsForColumn(Column* col)
+{
+    // clean the tab
+    while(m_ui->tabWidgetForColumnDetails->count() > 1)
+    {
+        m_ui->tabWidgetForColumnDetails->removeTab(1);
+    }
+
+    // TODO: this is very similar to the one from the index below
+    WidgetForSpecificProperties* wsp = new WidgetForSpecificProperties(m_dbEngine, col, this);
+    QVector<SpInstance*> allSps;
+    if(col)
+    {
+        allSps = col->getSpInstances(m_dbEngine);
+    }
+    else
+    {
+        const QVector<Sp*> allSps1 = m_dbEngine->getDatabaseSpecificProperties();
+        for(int i=0; i<allSps1.size(); i++)
+        {
+            if(allSps1.at(i)->getReferredObjectClassUid() == uidColumn)
+            {
+                SpInstance* spi = allSps1.at(i)->instantiate();
+                allSps.append(spi);
+            }
+        }
+    }
+
+    wsp->feedInSpecificProperties(allSps, uidColumn);
+    wsp->taylorToSpecificObject(m_table);
+    m_ui->tabWidgetForColumnDetails->insertTab(1, wsp, IconFactory::getMySqlIcon(), "MySql");
+
 }
 
 void NewTableForm::prepareSpsTabsForIndex(Index* idx)

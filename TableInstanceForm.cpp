@@ -96,18 +96,19 @@ void TableInstanceForm::onAddNewRow()
             if(c == 0) return;
         }
 
-        if(c->hasAutoIncrement())
-        {
-            int lastR = ui->values->rowCount() - 1; // number of preceeding rows, the last one is empty
-            int lastV = -1;
-            if(lastR != 0)
-            {
-                lastV = ui->values->item(lastR-1,i)->text().toInt();
-            }
-            lastV ++;
-            QTableWidgetItem* twi = new QTableWidgetItem(QString::number(lastV));
-            ui->values->setItem(lastR, i, twi);
-        }
+        // TODO: Fix this in a way that it will work with the SP
+//        if(c->hasAutoIncrement())
+//        {
+//            int lastR = ui->values->rowCount() - 1; // number of preceeding rows, the last one is empty
+//            int lastV = -1;
+//            if(lastR != 0)
+//            {
+//                lastV = ui->values->item(lastR-1,i)->text().toInt();
+//            }
+//            lastV ++;
+//            QTableWidgetItem* twi = new QTableWidgetItem(QString::number(lastV));
+//            ui->values->setItem(lastR, i, twi);
+//        }
     }
 }
 

@@ -584,7 +584,7 @@ Column* DeserializationFactory::createColumn(Version* ver, const QDomDocument &,
 
     }
 
-    Column* col = new Column(uid, name, udt, pk == "1", element.attribute("AutoIncrement")=="1");
+    Column* col = new Column(uid, name, udt, pk == "1");
     QString g = element.firstChild().firstChild().nodeValue();
     col->setDescription(g);
     return col;

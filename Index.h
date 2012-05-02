@@ -49,6 +49,8 @@ public:
 
     QMap<QString, QVector<SpInstance*> > getSpsOfColumn(const Column*) const;
 
+    SpInstance* getSpiOfColumnForSpecificRole(const Column* c, const QString& role, const QString& db) const;
+
 private:
 
     Table* m_owner;
