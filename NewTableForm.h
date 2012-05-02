@@ -196,6 +196,8 @@ private:
 
     void prepareSpsTabsForIndex(Index*);
 
+    void prepareSpsTabsForColumn(Column*col);
+
     QMenu* buildPopupForSpsForColumnInIndex();
 
 private:

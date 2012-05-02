@@ -156,3 +156,24 @@ QMap<QString, QVector<SpInstance*> > Index::getSpsOfColumn(const Column* c) cons
 
     return QMap<QString, QVector<SpInstance*> >();
 }
+
+SpInstance* Index::getSpiOfColumnForSpecificRole(const Column* c, const QString& role, const QString &db) const
+{
+    if(m_columnsWithSpInstances.contains(c->getName()))
+    {
+        const QMap<QString, QVector<SpInstance*> >& map1 =  m_columnsWithSpInstances[c->getName()];
+        if(map1.contains(db))
+        {
+            const QVector<SpInstance*>& v1 = map1[db];
+            for(int i=0; i<v1.size(); i++)
+            {
+                if(v1.at(i)->getClass()->getSqlRoleUid() == role)
+                {
+                    return v1.at(i);
+                }
+            }
+        }
+    }
+
+    return 0;
+}

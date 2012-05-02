@@ -146,6 +146,7 @@ QWidget* WidgetForSpecificProperties::getToolboxPageForText(const QString& s)
 
 void WidgetForSpecificProperties::taylorToSpecificObject(const ObjectWithSpInstances *dest)
 {
+    if(!dest) return;
     // first specific test: see the storage engine type
     SpInstance* storageEngineInstance = dest->getInstanceForSqlRoleUid(m_dbEngine, uidMysqlStorageEngineTable);
     if(storageEngineInstance)
@@ -212,7 +213,7 @@ void WidgetForSpecificProperties::feedInSpecificProperties(const QVector<SpInsta
                 checkBox->setText(spInstances.at(i)->getClass()->getPropertyGuiText());
                 checkBox->setToolTip(SpsTooltipProviderForUid::provideTooltipForUid(spInstances.at(i)->getClass()->getSqlRoleUid()));
                 formLayout->setWidget(m_rowsForGroups[group], QFormLayout::FieldRole, checkBox);
-                UidToWidget* uiw = new UidToWidget();
+                UidToWidget* uiw = new UidToWidget(spInstances.at(i));
                 uiw->objectUid = spInstances.at(i)->getObjectUid();
                 uiw->objectRoleUid = spInstances.at(i)->getClass()->getSqlRoleUid();
                 uiw->w = checkBox;
@@ -256,7 +257,7 @@ void WidgetForSpecificProperties::feedInSpecificProperties(const QVector<SpInsta
                 label->setText(spInstances.at(i)->getClass()->getPropertyGuiText());
                 formLayout->setWidget(m_rowsForGroups[group], QFormLayout::LabelRole, label);
                 formLayout->setWidget(m_rowsForGroups[group], QFormLayout::FieldRole, comboBox);
-                UidToWidget* uiw = new UidToWidget();
+                UidToWidget* uiw = new UidToWidget(spInstances.at(i));
                 uiw->objectUid = spInstances.at(i)->getObjectUid();
                 uiw->w = comboBox;
                 uiw->objectRoleUid = spInstances.at(i)->getClass()->getSqlRoleUid();
@@ -338,4 +339,9 @@ QString WidgetForSpecificProperties::getObjectUidForWidget(const QWidget* w)
         }
     }
     return "";
+}
+
+void WidgetForSpecificProperties::repopulateSpsOfObject(ObjectWithSpInstances *dest)
+{
+
 }
