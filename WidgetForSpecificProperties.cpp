@@ -7,6 +7,8 @@
 #include "SpsTooltipProviderForUid.h"
 #include "ValueListSp.h"
 #include "ValueListSpInstance.h"
+#include "Column.h"
+#include "db_DatabaseEngine.h"
 
 #include <QLabel>
 #include <QCheckBox>
@@ -168,6 +170,12 @@ void WidgetForSpecificProperties::taylorToSpecificObject(const ObjectWithSpInsta
             }
         }
     }
+
+    // second specific test: see if for MySQL a column type is numeric or not. If yes hide the check box for the AUTOINC
+//    if(Column* col = dynamic_cast<Column*>(const_cast<ObjectWithSpInstances*>(dest)))
+//    {
+//        if(col->getDataType().)
+//    }
 }
 
 void WidgetForSpecificProperties::feedInSpecificProperties(const QVector<SpInstance*>& spInstances, const QString& dbDestinationUid)
@@ -279,7 +287,17 @@ void WidgetForSpecificProperties::comboBoxSelected(int idx)
         QString uid = getObjectUidForWidget(combo);
         if(uid.length())
         {
-            SpInstance* spi = m_osp->getInstance(m_dbEngine, uid);
+            SpInstance* spi = 0;
+            if(!m_osp)
+            {
+                // find the SPI in our internal map
+                spi = getSpInstanceForWidget(combo);
+            }
+            else
+            {
+                spi = m_osp->getInstance(m_dbEngine, uid);
+            }
+
             if(spi)
             {
                 QVariant t = combo->itemData(idx);
@@ -291,12 +309,13 @@ void WidgetForSpecificProperties::comboBoxSelected(int idx)
                 else
                 {
                     spi->set(combo->currentText());
-                    // and now: 1. give a feedback to the "parent form" (ie. NewTableForm) to taylor all the WidgetForSpecificProperties
+                    // TODO: and now: 1. give a feedback to the "parent form" (ie. NewTableForm) to taylor all the WidgetForSpecificProperties
                     // objects to match the newly configured property... such as: user changes storage engine, we allow index type
                     // 2. right now we don't give feedback to the object (table) which is held by the "parent" form...
                     // it would be too complicate and the benefits would be minimal
                 }
             }
+
         }
     }
 }
@@ -307,7 +326,16 @@ void WidgetForSpecificProperties::checkBoxToggled(QString uid)
     if(cb)
     {
         bool b = cb->isChecked();
-        SpInstance* spi = m_osp->getInstance(m_dbEngine, uid);
+        SpInstance* spi = 0;
+        if(!m_osp)
+        {
+            // find the SPI in our internal map
+            spi = getSpInstanceForWidget(cb);
+        }
+        else
+        {
+            spi = m_osp->getInstance(m_dbEngine, uid);
+        }
         if(spi)
         {
             spi->set(b?"TRUE":"FALSE");
@@ -341,7 +369,25 @@ QString WidgetForSpecificProperties::getObjectUidForWidget(const QWidget* w)
     return "";
 }
 
+SpInstance* WidgetForSpecificProperties::getSpInstanceForWidget(const QWidget* w)
+{
+    for(int i=0; i<m_mappings.size(); i++)
+    {
+        UidToWidget* uiw = m_mappings.at(i);
+        if(uiw->w == w)
+        {
+            return (uiw->m_spi);
+        }
+    }
+    return 0;
+}
+
+
 void WidgetForSpecificProperties::repopulateSpsOfObject(ObjectWithSpInstances *dest)
 {
-
+    dest->clearSpInstances(m_dbEngine);
+    for(int i=0; i<m_mappings.size(); i++)
+    {
+        dest->addSpInstance(m_dbEngine, m_mappings.at(i)->m_spi);
+    }
 }

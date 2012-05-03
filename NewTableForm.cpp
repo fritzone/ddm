@@ -46,7 +46,7 @@ NewTableForm::NewTableForm(DatabaseEngine* db, Project* prj, QWidget *parent, bo
     m_ui(new Ui::NewTableForm),
     m_dbEngine(db), m_project(prj), m_table(0),
     m_currentColumn(0), m_currentIndex(0), m_foreignTable(0), m_currentForeignKey(0), m_foreignKeySelected(false),
-    m_currentStorageEngine(0), m_engineProviders(0)
+    m_engineProviders(0), m_wspForIndex(0), m_wspForColumn(0)
 {
     m_ui->setupUi(this);
 
@@ -109,7 +109,6 @@ NewTableForm::NewTableForm(DatabaseEngine* db, Project* prj, QWidget *parent, bo
     if(newTable)
     {
         m_table = new Table(prj->getWorkingVersion(), QUuid::createUuid().toString(), 0);
-        m_table->setStorageEngine(m_currentStorageEngine);
         m_table->initializeFor(db, QUuid(uidTable));
 
         Workspace::getInstance()->onSaveNewTable(m_table);
@@ -623,6 +622,9 @@ void NewTableForm::onAddColumn()
 
         UserDataType* colsDt = m_project->getWorkingVersion()->getDataType(m_ui->cmbNewColumnType->currentText());
         Column* col = new Column(QUuid::createUuid().toString(), m_ui->txtNewColumnName->text(), colsDt, m_ui->chkPrimary->isChecked());
+        col->initializeFor(m_dbEngine, QUuid(uidColumn));
+        if(m_wspForColumn) m_wspForColumn->repopulateSpsOfObject(col);
+
         col->setDescription(m_ui->txtColumnDescription->toPlainText());
         ContextMenuEnabledTreeWidgetItem* item = createTWIForColumn(col);
         lstColumns->addTopLevelItem(item);
@@ -958,9 +960,7 @@ void NewTableForm::doTheSave()
 void NewTableForm::prepareValuesToBeSaved()
 {
     m_table->setName(m_ui->txtTableName->text());
-
     m_table->setDescription(m_ui->txtDescription->toPlainText());
-    m_table->setStorageEngine(m_currentStorageEngine);
 }
 
 void NewTableForm::onMoveColumnToRight()
@@ -1047,6 +1047,8 @@ void NewTableForm::onAddIndex()
 
         Index* index = new Index(m_ui->txtNewIndexName->text(), m_table, QUuid::createUuid().toString());
         index->initializeFor(m_dbEngine, QUuid(uidIndex));
+        if(m_wspForIndex) m_wspForIndex->repopulateSpsOfObject(index);
+
         int cnt = m_ui->lstSelectedColumnsForIndex->topLevelItemCount();
         for(int i = 0; i< cnt; i++)
         {
@@ -2265,7 +2267,7 @@ void NewTableForm::prepareSpsTabsForColumn(Column* col)
     }
 
     // TODO: this is very similar to the one from the index below
-    WidgetForSpecificProperties* wsp = new WidgetForSpecificProperties(m_dbEngine, col, this);
+    m_wspForColumn = new WidgetForSpecificProperties(m_dbEngine, col, this);
     QVector<SpInstance*> allSps;
     if(col)
     {
@@ -2284,9 +2286,9 @@ void NewTableForm::prepareSpsTabsForColumn(Column* col)
         }
     }
 
-    wsp->feedInSpecificProperties(allSps, uidColumn);
-    wsp->taylorToSpecificObject(m_table);
-    m_ui->tabWidgetForColumnDetails->insertTab(1, wsp, IconFactory::getMySqlIcon(), "MySql");
+    m_wspForColumn->feedInSpecificProperties(allSps, uidColumn);
+    m_wspForColumn->taylorToSpecificObject(col);
+    m_ui->tabWidgetForColumnDetails->insertTab(1, m_wspForColumn, IconFactory::getMySqlIcon(), "MySql");
 
 }
 
@@ -2299,7 +2301,7 @@ void NewTableForm::prepareSpsTabsForIndex(Index* idx)
     }
 
     // create the new tab pages
-    WidgetForSpecificProperties* wsp = new WidgetForSpecificProperties(m_dbEngine, idx, this);
+    m_wspForIndex = new WidgetForSpecificProperties(m_dbEngine, idx, this);
     QVector<SpInstance*> allSps;
     if(idx)
     {
@@ -2318,9 +2320,9 @@ void NewTableForm::prepareSpsTabsForIndex(Index* idx)
         }
     }
 
-    wsp->feedInSpecificProperties(allSps, uidIndex);
-    wsp->taylorToSpecificObject(m_table);
-    m_ui->tabWidgetForIndex->insertTab(1, wsp, IconFactory::getMySqlIcon(), "MySql");
+    m_wspForIndex->feedInSpecificProperties(allSps, uidIndex);
+    m_wspForIndex->taylorToSpecificObject(m_table);
+    m_ui->tabWidgetForIndex->insertTab(1, m_wspForIndex, IconFactory::getMySqlIcon(), "MySql");
 }
 
 QMenu* NewTableForm::buildPopupForSpsForColumnInIndex()

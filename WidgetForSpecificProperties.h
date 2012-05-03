@@ -66,6 +66,7 @@ private:
     QCheckBox* getCheckBoxForObjectUid(const QString&);
     QWidget* getToolboxPageForText(const QString&);
     QString getObjectUidForWidget(const QWidget* w);
+    SpInstance* getSpInstanceForWidget(const QWidget*);
     void populateCodepageCombo(QComboBox* comboBox, const QStringList& cps);
 
 private:
