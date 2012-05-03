@@ -16,7 +16,6 @@
 class Column;
 class Index;
 class ForeignKey;
-class AbstractStorageEngine;
 class Version;
 class UserDataType;
 class TableInstance;
@@ -155,11 +154,6 @@ public:
     void setPersistent(bool t)
     {
         m_persistent = t;
-    }
-
-    void setStorageEngine(AbstractStorageEngine* ste)
-    {
-        m_storageEngine = ste;
     }
 
     const Table* parent() const
@@ -317,8 +311,6 @@ private:
 
     // if the table is marked as persistent the C++ (Java) code generator will generate some extra code which will load the table on instantiation
     bool m_persistent;
-
-    AbstractStorageEngine* m_storageEngine;
 
     Version* m_version;
 

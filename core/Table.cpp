@@ -22,7 +22,7 @@ Table::Table(Version* v, QString uid, int dummy) : TreeItem(), SerializableEleme
     NamedItem(NameGenerator::getUniqueName(v, (itemGetter)&Version::getTable, QString("TAB"))),
     ObjectWithUid(uid), ObjectWithSpInstances(),
     m_description(""), m_columns(), m_indices(), m_foreignKeys(), m_startupValues(),
-    m_parent(0), m_persistent(false), m_storageEngine(0),
+    m_parent(0), m_persistent(false),
     m_version(v), m_children()
 {
 }

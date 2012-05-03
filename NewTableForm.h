@@ -20,7 +20,6 @@ class Table;
 class Column;
 class Index;
 class ForeignKey;
-class AbstractStorageEngine;
 class AbstractStorageEngineListProvider;
 class ContextMenuEnabledTreeWidgetItem;
 class SqlHighlighter;
@@ -28,6 +27,7 @@ class ContextMenuEnabledTreeWidget;
 class SqlNamesValidator;
 class Issue;
 class QMenu;
+class WidgetForSpecificProperties;
 
 class NewTableForm : public SourceCodePresenterWidget
 {
@@ -227,13 +227,17 @@ private:
     QString m_newColumnName;
     QString m_oldColumnName;
 
-    AbstractStorageEngine* m_currentStorageEngine;
     AbstractStorageEngineListProvider* m_engineProviders;
     SqlHighlighter* highlighter;
     QStringList finalSql;
     SqlNamesValidator* m_nameValidator;
     ContextMenuEnabledTreeWidget* lstColumns;
     QSignalMapper* m_signalMapperForCombosInColumns;
+
+    // TODO: with multiple db engines this will be a vector
+    WidgetForSpecificProperties* m_wspForIndex;
+    WidgetForSpecificProperties* m_wspForColumn;
+
 };
 
 #endif // NEWTABLEFORM_H

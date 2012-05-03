@@ -121,3 +121,11 @@ void ObjectWithSpInstances::addSpInstance(const DatabaseEngine *eng, SpInstance 
 
     m_spInstances[eng->getDatabaseEngineName()].append(spi);
 }
+
+void ObjectWithSpInstances::clearSpInstances(const DatabaseEngine *eng)
+{
+    if(m_spInstances.contains(eng->getDatabaseEngineName()))
+    {
+        m_spInstances[eng->getDatabaseEngineName()].clear();
+    }
+}

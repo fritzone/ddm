@@ -22,6 +22,7 @@ public:
     SpInstance* getInstance(const DatabaseEngine* eng, const QString& objectUid) const;
     SpInstance* getInstanceForSqlRoleUid(const DatabaseEngine* eng, const QString& sqlRoleUid) const;
     void addSpInstance(const DatabaseEngine* eng, SpInstance* spi);
+    void clearSpInstances(const DatabaseEngine*);
 
 private:
     QMap<QString, QVector<SpInstance*> > m_spInstances;
