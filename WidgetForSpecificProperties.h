@@ -44,8 +44,9 @@ public:
      * in will restrict the controls to contain a possible subset of the values they
      * might contain by default. For example: for MySQL engine InnoDB the index types
      * differ.
+     * This method is alloved to change the object it is passed in.
      */
-    void taylorToSpecificObject(const ObjectWithSpInstances* dest);
+    void taylorToSpecificObject(ObjectWithSpInstances* dest);
 
     /**
      * In case this object was create with a NULL m_osp it is mandatory to call at the end this
@@ -61,6 +62,7 @@ private slots:
 
     void checkBoxToggled(QString);
     void comboBoxSelected(int idx);
+    void editTextEdited(const QString&);
 
 private:
     QCheckBox* getCheckBoxForObjectUid(const QString&);

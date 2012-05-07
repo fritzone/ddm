@@ -15,6 +15,7 @@ class ObjectWithSpInstances
 {
 public:
     ObjectWithSpInstances();
+    virtual ~ObjectWithSpInstances(){}
     void initializeFor(const DatabaseEngine* engine, const QUuid& uid);
     void initializeRemainingSps(const DatabaseEngine* engine, const QUuid& uid);
     QVector<SpInstance*>& getSpInstances(const DatabaseEngine* engine);

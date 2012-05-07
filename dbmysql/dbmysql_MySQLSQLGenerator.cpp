@@ -195,6 +195,25 @@ QStringList MySQLSQLGenerator::generateCreateTableSql(Table *table, const QHash<
                     QString( (dt->getType()==DT_STRING) || (dt->getType()==DT_DATETIME && g.toUpper()!="CURRENT_TIMESTAMP") ? "\"" : "") ;
         }
 
+        {
+        // see if we have "AUTO_INCREMENT" sp
+        SpInstance* spi = col->getInstanceForSqlRoleUid(m_engine, uidMysqlColumnAutoIncrement);
+        if(spi)
+        {
+            QString autoInc = spi->get();
+            if(autoInc == "TRUE")
+            {
+                createTable += upcase? "AUTO_INCREMENT ":"auto_increment ";
+            }
+        }
+        }
+
+        // is there a comment for this?
+        if(col->getDescription().length())
+        {
+            createTable += QString(upcase?" COMMENT ":" comment ") + "\'" + col->getDescription() + "\' ";
+        }
+
         // do we have more columns after this?
         if(i<table->fullColumns().size() - 1)
         {

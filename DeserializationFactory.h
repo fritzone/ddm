@@ -34,7 +34,7 @@ public:
     static UserDataType* createUserDataType(const QDomDocument& doc, const QDomElement& element);
     static Index* createIndex(DatabaseEngine* engine, Table* table, const QDomDocument& doc, const QDomElement& element);
     static Table* createTable(DatabaseEngine* engine, Version* ver, const QDomDocument& doc, const QDomElement& element);
-    static Column* createColumn(Version* ver, const QDomDocument& doc, const QDomElement& element);
+    static Column* createColumn(DatabaseEngine* engine, Version* ver, const QDomDocument& doc, const QDomElement& element);
     static MajorVersion* createMajorVersion(Project* p, DatabaseEngine* engine, const QDomDocument& doc, const QDomElement& element);
     static Solution* createSolution(const QDomDocument& doc, const QDomElement& element);
     static Project* createProject(const QDomDocument& doc, const QDomElement& element);

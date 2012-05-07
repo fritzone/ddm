@@ -50,6 +50,8 @@ NewTableForm::NewTableForm(DatabaseEngine* db, Project* prj, QWidget *parent, bo
 {
     m_ui->setupUi(this);
 
+    m_ui->lstSelectedColumnsForIndex->setHeaderHidden(false);
+
     // now set up the Column list and the context menus for the Column list
     lstColumns = new ContextMenuEnabledTreeWidget();
     lstColumns->setObjectName(QString::fromUtf8("lstColumns"));
@@ -68,7 +70,6 @@ NewTableForm::NewTableForm(DatabaseEngine* db, Project* prj, QWidget *parent, bo
     lstColumns->setItemDelegate(new ContextMenuDelegate(contextMenuHandler,lstColumns));
     // then connect the signals
     QObject::connect(lstColumns, SIGNAL(itemClicked(QTreeWidgetItem*,int)), this, SLOT(onSelectColumn(QTreeWidgetItem*,int)));
-    QObject::connect(lstColumns, SIGNAL(currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)), this, SLOT(onChangeColumnSelection(QTreeWidgetItem*,QTreeWidgetItem*)));
     QObject::connect(ContextMenuCollection::getInstance()->getAction_CopyColumn(), SIGNAL(activated()), this, SLOT(onCopyColumn()));
     QObject::connect(ContextMenuCollection::getInstance()->getAction_PasteColumn(), SIGNAL(activated()), this, SLOT(onPasteColumn()));
 
@@ -603,8 +604,11 @@ void NewTableForm::onAddColumn()
 
         // see if the change has done anything to the issues
         updateIssues();
+        if(m_wspForColumn) m_wspForColumn->repopulateSpsOfObject(m_currentColumn);
+
         autoSave();
         m_currentColumn = 0;
+
     }
     else                    // we are not working on a column, but adding a new one
     {
@@ -657,6 +661,9 @@ void NewTableForm::onAddColumn()
     restoreDefaultValuesTable();
 
     autoSave();
+    prepareSpsTabsForColumn(0);
+    m_ui->grpColumnDetails->setTitle(tr(" New column "));
+
 }
 
 void NewTableForm::onCancelColumnEditing()
@@ -791,7 +798,7 @@ void NewTableForm::toggleColumnFieldDisableness(bool a)
     m_ui->txtColumnDescription->setDisabled(a);
 }
 
-void NewTableForm::showColumn(const Column * c)
+void NewTableForm::showColumn(Column * c)
 {
     if(!m_table->hasColumn(c->getName())) return;
     m_ui->txtNewColumnName->setText(c->getName());
@@ -802,13 +809,10 @@ void NewTableForm::showColumn(const Column * c)
     m_ui->btnAddColumn->setIcon(IconFactory::getApplyIcon());
     m_ui->btnCancelColumnEditing->show();
 
-    m_ui->grpColumnDetails->setTitle("Column details");
+    m_ui->grpColumnDetails->setTitle(" Column details: " + c->getName());
 
-}
+    prepareSpsTabsForColumn(c);
 
-void NewTableForm::onChangeColumnSelection(QTreeWidgetItem * c, QTreeWidgetItem *)
-{
-    onSelectColumn(c, 0);
 }
 
 /**
@@ -1153,6 +1157,8 @@ void NewTableForm::populateIndexGui(Index* idx)
     // fill up the two lists for the index columns
     m_ui->lstAvailableColumnsForIndex->clear();
     m_ui->lstSelectedColumnsForIndex->clear();
+
+    m_ui->cmbIndexOrderType->setCurrentIndex(-1);
 
     for(int i=0; i< m_table->fullColumns().size(); i++)
     {
@@ -2201,6 +2207,7 @@ void NewTableForm::onDatatypeComboChange(QString)
         m_currentColumn->getLocation()->setText(COL_POS_DT, m_currentColumn->getDataType()->getName());
 
         autoSave();
+        if(m_wspForColumn) m_wspForColumn->taylorToSpecificObject(m_currentColumn);
     }
 }
 
@@ -2369,15 +2376,13 @@ void NewTableForm::onTriggerSpItemForIndexesColumn()
     QAction *act = qobject_cast<QAction*>(sender());
     if(act)
     {
-        qDebug() << act->text();
         const QVector<Sp*> allSps = m_dbEngine->getDatabaseSpecificProperties();
         for(int i=0; i<allSps.size(); i++)
         {
             if(allSps.at(i)->getReferredObjectClassUid() == uidColumnOfIndex)
             {
-                if(allSps.at(i)->getPropertyGuiText() == act->text())
+                if(allSps.at(i)->getPropertyGuiText() == act->text()) // does this column contain already this SP?
                 {
-                    // does this column contain already this SP?
                     for(int j=0; j<m_ui->lstSelectedColumnsForIndex->currentItem()->childCount(); j++)
                     {
                         if(m_ui->lstSelectedColumnsForIndex->currentItem()->child(j)->text(0) == act->text())
@@ -2388,7 +2393,6 @@ void NewTableForm::onTriggerSpItemForIndexesColumn()
                     }
 
                     // TODO: check that the selected column supports this type of SP
-
                     QTreeWidgetItem* itm = new QTreeWidgetItem(m_ui->lstSelectedColumnsForIndex->currentItem(), QStringList(act->text()));
                     m_ui->lstSelectedColumnsForIndex->addTopLevelItem(itm);
                     m_ui->lstSelectedColumnsForIndex->header()->resizeSections(QHeaderView::Stretch);
@@ -2398,6 +2402,7 @@ void NewTableForm::onTriggerSpItemForIndexesColumn()
                     itm->setIcon(0, IconFactory::getMySqlIcon());
 
                     // TODO: set the control in column 2 according to the type of the SP
+                    // TODO: this code is duplicate with code from WidgetForSPS
                     if(allSps.at(i)->getClassUid().toString() == uidValueSp)
                     {   // create a QLineEdit
                         QLineEdit* lstValueSp = new QLineEdit(0);
