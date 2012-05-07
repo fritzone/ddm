@@ -272,6 +272,8 @@ void NewTableForm::setTypeComboBoxForColumnItem(ContextMenuEnabledTreeWidgetItem
     cmbColumnType->setAutoFillBackground(true);
     const QVector<UserDataType*>& dts = m_project->getWorkingVersion()->getDataTypes();
     int s = -1;
+
+    // TODO: this is just horrible. FIX! FIX! FIX!
     if(item->backgroundColor(0) == Qt::lightGray)
     {
         cmbColumnType->addItem(IconFactory::getIconForDataType(c->getDataType()->getType()),c->getDataType()->getName());
@@ -318,6 +320,8 @@ void NewTableForm::onDatatypeSelectedForColumnInList(const QString& b)
     {
         m_ui->cmbNewColumnType->setCurrentIndex(i);
     }
+
+    // TODO: fix the index GUI too
 
 }
 
@@ -406,14 +410,6 @@ void NewTableForm::populateTable(const Table *table, bool parentTab)
             item->setBackground(1, QBrush(Qt::lightGray));
             item->setBackground(2, QBrush(Qt::lightGray));
             item->setBackground(3, QBrush(Qt::lightGray));
-        }
-
-        if(indices[i]->getName().startsWith(strAutoIdx))
-        {
-            item->setBackground(0, QBrush(Qt::gray));
-            item->setBackground(1, QBrush(Qt::gray));
-            item->setBackground(2, QBrush(Qt::gray));
-            item->setBackground(3, QBrush(Qt::gray));
         }
     }
     resetIndexGui();
@@ -1121,12 +1117,58 @@ void NewTableForm::onAddIndex()
         int cnt = m_ui->lstSelectedColumnsForIndex->topLevelItemCount();
         for(int i = 0; i< cnt; i++)
         {
+            const QTreeWidgetItem* cItem = m_ui->lstSelectedColumnsForIndex->topLevelItem(i);
             QString order = m_ui->lstSelectedColumnsForIndex->topLevelItem(i)->text(1);
-            m_currentIndex->addColumn(m_table->getColumn(m_ui->lstSelectedColumnsForIndex->topLevelItem(i)->text(0)), order);
             columnsAsString += m_ui->lstSelectedColumnsForIndex->topLevelItem(i)->text(0);
             if(i < cnt - 1)
             {
                 columnsAsString += ", ";
+            }
+            Column* col = m_table->getColumn(cItem->text(0));
+            if(col)  // stays here
+            {
+                m_currentIndex->addColumn(col, order);
+            }
+            else
+            {
+                col = m_table->getColumnFromParents(cItem->text(0));
+                if(col)
+                {
+                    m_currentIndex->addColumn(col, order);
+                }
+                else
+                {
+                    // something wrent wrong ... we shouldn't be here
+                    QMessageBox::critical(this, tr("Error"), tr("Cannot fetch a column named ") + cItem->text(0) + tr(". Please contact the developers.") , QMessageBox::Ok);
+                    return;
+                }
+            }
+            // and now the SPs for the column
+            // TODO: Duplicate with code from above. Difference: destination index :(
+            for(int j=0; j<cItem->childCount(); j++)
+            {
+                QWidget* w = m_ui->lstSelectedColumnsForIndex->itemWidget(cItem->child(j), 1);
+                if(QLineEdit* le = qobject_cast<QLineEdit*>(w))
+                {
+                    // now find the SP and create an instance of it
+                    const QVector<Sp*> allSps = m_dbEngine->getDatabaseSpecificProperties();
+                    Sp* theSp = 0;
+                    for(int k=0; k<allSps.size(); k++)
+                    {
+                        if(allSps.at(k)->getPropertyGuiText() == cItem->child(j)->text(0))
+                        {
+                            theSp = allSps.at(k);
+                            break;
+                        }
+                    }
+
+                    if(theSp)
+                    {
+                        SpInstance* spi = theSp->instantiate();
+                        spi->set(le->text());
+                        m_currentIndex->addSpToColumn(col, m_dbEngine->getDatabaseEngineName(), spi);
+                    }
+                }
             }
         }
 
@@ -1314,10 +1356,28 @@ void NewTableForm::onMoveSelectedIndexColumnUp()
         QModelIndex x = m_ui->lstSelectedColumnsForIndex->currentIndex();
         if(x.row() > 0)
         {
-            QTreeWidgetItem* w = new QTreeWidgetItem(*m_ui->lstSelectedColumnsForIndex->currentItem());
+            QTreeWidgetItem* c = m_ui->lstSelectedColumnsForIndex->currentItem();
+            QTreeWidgetItem* w = new QTreeWidgetItem(*c);
+            for(int i=0; i<c->childCount(); i++)
+            {
+                QTreeWidgetItem* nc = new QTreeWidgetItem(*c->child(i));
+                w->addChild(nc);
+
+                QLineEdit* lstValueSp = new QLineEdit(0);
+                QLineEdit* oldLE = qobject_cast<QLineEdit*>(m_ui->lstSelectedColumnsForIndex->itemWidget(c->child(i), 1));
+                if(oldLE)
+                {
+                    lstValueSp->setText(oldLE->text());
+                }
+
+                m_ui->lstSelectedColumnsForIndex->setItemWidget(nc, 1, lstValueSp);
+
+            }
+
             delete m_ui->lstSelectedColumnsForIndex->currentItem();
             m_ui->lstSelectedColumnsForIndex->insertTopLevelItem(x.row() - 1, w);
             m_ui->lstSelectedColumnsForIndex->setCurrentItem(w);
+            w->setExpanded(true);
         }
     }
 }
@@ -1339,10 +1399,28 @@ void NewTableForm::onMoveSelectedIndexColumnDown()
         QModelIndex x = m_ui->lstSelectedColumnsForIndex->currentIndex();
         if(x.row() < m_ui->lstSelectedColumnsForIndex->topLevelItemCount() - 1)
         {
-            QTreeWidgetItem* w = new QTreeWidgetItem(*m_ui->lstSelectedColumnsForIndex->currentItem());
+            QTreeWidgetItem* c = m_ui->lstSelectedColumnsForIndex->currentItem();
+            QTreeWidgetItem* w = new QTreeWidgetItem(*c);
+            for(int i=0; i<c->childCount(); i++)
+            {
+                QTreeWidgetItem* nc = new QTreeWidgetItem(*c->child(i));
+                w->addChild(nc);
+
+                QLineEdit* lstValueSp = new QLineEdit(0);
+                QLineEdit* oldLE = qobject_cast<QLineEdit*>(m_ui->lstSelectedColumnsForIndex->itemWidget(c->child(i), 1));
+                if(oldLE)
+                {
+                    lstValueSp->setText(oldLE->text());
+                }
+
+                m_ui->lstSelectedColumnsForIndex->setItemWidget(nc, 1, lstValueSp);
+
+            }
+
             delete m_ui->lstSelectedColumnsForIndex->currentItem();
             m_ui->lstSelectedColumnsForIndex->insertTopLevelItem(x.row() + 1, w);
             m_ui->lstSelectedColumnsForIndex->setCurrentItem(w);
+            w->setExpanded(true);
         }
     }
 }
@@ -2393,6 +2471,15 @@ void NewTableForm::onTriggerSpItemForIndexesColumn()
                     }
 
                     // TODO: check that the selected column supports this type of SP
+                    Column* c = m_table->getColumn(m_ui->lstSelectedColumnsForIndex->currentItem()->text(0));
+                    if(c == 0) c = m_table->getColumnFromParents(m_ui->lstSelectedColumnsForIndex->currentItem()->text(0));
+                    if(c == 0) return;
+                    if(c->getDataType()->getType() != DT_STRING && c->getDataType()->getType() != DT_BLOB && allSps.at(i)->getSqlRoleUid() == uidMysqlColumnOfIndexLength)
+                    {
+                        QMessageBox::warning(this, tr("Warning"), tr("You can add the property \"") + act->text() + "\" to string/blob type columns only.", QMessageBox::Ok);
+                        return;
+                    }
+
                     QTreeWidgetItem* itm = new QTreeWidgetItem(m_ui->lstSelectedColumnsForIndex->currentItem(), QStringList(act->text()));
                     m_ui->lstSelectedColumnsForIndex->addTopLevelItem(itm);
                     m_ui->lstSelectedColumnsForIndex->header()->resizeSections(QHeaderView::Stretch);
