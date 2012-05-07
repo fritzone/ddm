@@ -9,6 +9,7 @@
 #include "ValueListSpInstance.h"
 #include "Column.h"
 #include "db_DatabaseEngine.h"
+#include "UserDataType.h"
 
 #include <QLabel>
 #include <QCheckBox>
@@ -16,6 +17,7 @@
 #include <QWidget>
 #include <QListWidget>
 #include <QComboBox>
+#include <QLineEdit>
 
 WidgetForSpecificProperties::WidgetForSpecificProperties(const DatabaseEngine* dbe, ObjectWithSpInstances* osp, QWidget *parent) :
     QWidget(parent),
@@ -146,7 +148,7 @@ QWidget* WidgetForSpecificProperties::getToolboxPageForText(const QString& s)
     return 0;
 }
 
-void WidgetForSpecificProperties::taylorToSpecificObject(const ObjectWithSpInstances *dest)
+void WidgetForSpecificProperties::taylorToSpecificObject(ObjectWithSpInstances *dest)
 {
     if(!dest) return;
     // first specific test: see the storage engine type
@@ -172,10 +174,50 @@ void WidgetForSpecificProperties::taylorToSpecificObject(const ObjectWithSpInsta
     }
 
     // second specific test: see if for MySQL a column type is numeric or not. If yes hide the check box for the AUTOINC
-//    if(Column* col = dynamic_cast<Column*>(const_cast<ObjectWithSpInstances*>(dest)))
-//    {
-//        if(col->getDataType().)
-//    }
+    if(Column* col = dynamic_cast<Column*>(dest))
+    {
+        if(col->getDataType()->getType() != DT_NUMERIC)
+        {   // disable the checkbox
+            SpInstance* autoIncInstance = dest->getInstanceForSqlRoleUid(m_dbEngine, uidMysqlColumnAutoIncrement);
+            if(autoIncInstance)
+            {
+                QString value = autoIncInstance->get();
+                if(value == "TRUE")
+                {
+                    autoIncInstance->set("FALSE");
+                }
+                for(int i=0; i<m_mappings.size(); i++)
+                {
+                    UidToWidget* uiw = m_mappings.at(i);
+                    if(uiw->objectRoleUid == uidMysqlColumnAutoIncrement)
+                    {
+                        QCheckBox* chk = qobject_cast<QCheckBox*>(uiw->w);
+                        if(chk)
+                        {
+                            chk->setChecked(false);
+                            chk->setEnabled(false);
+                        }
+                    }
+                }
+            }
+        }
+        else
+        {   // enable the checkbox
+
+            for(int i=0; i<m_mappings.size(); i++)
+            {
+                UidToWidget* uiw = m_mappings.at(i);
+                if(uiw->objectRoleUid == uidMysqlColumnAutoIncrement)
+                {
+                    QCheckBox* chk = qobject_cast<QCheckBox*>(uiw->w);
+                    if(chk)
+                    {
+                        chk->setEnabled(true);
+                    }
+                }
+            }
+        }
+    }
 }
 
 void WidgetForSpecificProperties::feedInSpecificProperties(const QVector<SpInstance*>& spInstances, const QString& dbDestinationUid)
@@ -231,6 +273,7 @@ void WidgetForSpecificProperties::feedInSpecificProperties(const QVector<SpInsta
                 connect(checkBox, SIGNAL(clicked()), m_signalMapper, SLOT(map()));
 
                 const QString& v = spInstances.at(i)->get();
+                qDebug() << spInstances.at(i)->getClass()->getName() << " " << v;
                 if(v == "TRUE")
                 {
                     checkBox->setChecked(true);
@@ -274,6 +317,26 @@ void WidgetForSpecificProperties::feedInSpecificProperties(const QVector<SpInsta
                 comboBox->setCurrentIndex(comboBox->findText(spInstances.at(i)->get()));
                 connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(comboBoxSelected(int))); // must be the last line
             }
+
+            if(spInstances.at(i)->getClassUid().toString() == uidValueSp)
+            {   // create a QLineEdit
+                QLineEdit* lstValueSp = new QLineEdit(0);
+                QLabel* label = new QLabel(this);
+
+                lstValueSp->setText(spInstances.at(i)->get());
+                label->setText(spInstances.at(i)->getClass()->getPropertyGuiText());
+                formLayout->setWidget(m_rowsForGroups[group], QFormLayout::LabelRole, label);
+                formLayout->setWidget(m_rowsForGroups[group], QFormLayout::FieldRole, lstValueSp);
+
+                UidToWidget* uiw = new UidToWidget(spInstances.at(i));
+                uiw->objectUid = spInstances.at(i)->getObjectUid();
+                uiw->w = lstValueSp;
+                uiw->objectRoleUid = spInstances.at(i)->getClass()->getSqlRoleUid();
+                m_mappings.append(uiw);
+                m_signalMapper->setMapping(lstValueSp, spInstances.at(i)->getObjectUid());
+                connect(lstValueSp, SIGNAL(textEdited (const QString&)), this, SLOT(editTextEdited(const QString&))); // must be the last line
+            }
+
         }
     }
     connect(m_signalMapper, SIGNAL(mapped(QString)), this, SLOT(checkBoxToggled(QString)));
@@ -389,5 +452,14 @@ void WidgetForSpecificProperties::repopulateSpsOfObject(ObjectWithSpInstances *d
     for(int i=0; i<m_mappings.size(); i++)
     {
         dest->addSpInstance(m_dbEngine, m_mappings.at(i)->m_spi);
+    }
+}
+
+void WidgetForSpecificProperties::editTextEdited(const QString &s)
+{
+    QLineEdit *edit = qobject_cast<QLineEdit*>(sender());
+    if(edit != 0)
+    {
+        qDebug() << edit->text();
     }
 }

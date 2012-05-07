@@ -56,7 +56,7 @@
          <enum>QTabWidget::Rounded</enum>
         </property>
         <property name="currentIndex">
-         <number>0</number>
+         <number>1</number>
         </property>
         <widget class="QWidget" name="tabWidgetPage1">
          <attribute name="icon">
@@ -168,7 +168,7 @@
             <layout class="QVBoxLayout" name="verticalLayout_4">
              <item>
               <widget class="QTabWidget" name="tabWidgetForColumnDetails">
-               <widget class="QWidget" name="tabWidget_2Page1" native="true">
+               <widget class="QWidget" name="tabWidget_2Page1">
                 <attribute name="title">
                  <string>General</string>
                 </attribute>
@@ -527,14 +527,23 @@
                        <attribute name="headerVisible">
                         <bool>false</bool>
                        </attribute>
+                       <attribute name="headerCascadingSectionResizes">
+                        <bool>false</bool>
+                       </attribute>
+                       <attribute name="headerHighlightSections">
+                        <bool>true</bool>
+                       </attribute>
+                       <attribute name="headerStretchLastSection">
+                        <bool>false</bool>
+                       </attribute>
                        <column>
                         <property name="text">
-                         <string notr="true">1</string>
+                         <string notr="true">Col</string>
                         </property>
                        </column>
                        <column>
                         <property name="text">
-                         <string notr="true">2</string>
+                         <string notr="true">Data</string>
                         </property>
                        </column>
                       </widget>

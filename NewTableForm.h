@@ -44,7 +44,7 @@ public:
     QString getTableName() const;
 
     void selectTab(int);
-    void showColumn(const Column*);
+    void showColumn(Column *);
 
     void setCurrentColumn(Column* col)
     {
@@ -74,7 +74,6 @@ public slots:
     void onMoveColumnUp();
     void onCancelColumnEditing();
     void onSelectColumn(QTreeWidgetItem*, int);
-    void onChangeColumnSelection(QTreeWidgetItem*, QTreeWidgetItem*);
     void onCopyColumn();
     void onPasteColumn();
     void onDescriptionChange();
@@ -196,7 +195,7 @@ private:
 
     void prepareSpsTabsForIndex(Index*);
 
-    void prepareSpsTabsForColumn(Column*col);
+    void prepareSpsTabsForColumn(Column *col);
 
     QMenu* buildPopupForSpsForColumnInIndex();
 

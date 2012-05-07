@@ -77,7 +77,7 @@ Column* ClipboardFactory::pasteColumn()
     if(node != "CopiedColumn")
         return 0;
 
-    Column* col = DeserializationFactory::createColumn(Workspace::getInstance()->workingVersion(), a, a.documentElement().firstChild().toElement());
+    Column* col = DeserializationFactory::createColumn(Workspace::getInstance()->currentProjectsEngine(), Workspace::getInstance()->workingVersion(), a, a.documentElement().firstChild().toElement());
 
     return col;
 }

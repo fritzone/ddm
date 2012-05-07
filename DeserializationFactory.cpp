@@ -567,7 +567,7 @@ View* DeserializationFactory::createView(Project* p, Version* v, const QDomDocum
     return view;
 }
 
-Column* DeserializationFactory::createColumn(Version* ver, const QDomDocument &, const QDomElement &element)
+Column* DeserializationFactory::createColumn(DatabaseEngine* engine, Version* ver, const QDomDocument &doc, const QDomElement &element)
 {
     QString name = element.attribute("Name");
     QString pk = element.attribute("PK");
@@ -585,8 +585,24 @@ Column* DeserializationFactory::createColumn(Version* ver, const QDomDocument &,
     }
 
     Column* col = new Column(uid, name, udt, pk == "1");
-    QString g = element.firstChild().firstChild().nodeValue();
-    col->setDescription(g);
+
+    for(int i=0; i<element.childNodes().count(); i++)
+    {
+        QDomElement cNode = element.childNodes().at(i).toElement();
+        if(cNode.nodeName() == "Description")
+        {
+            QString g = cNode.firstChild().nodeValue();
+            col->setDescription(g);
+        }
+
+        if(cNode.nodeName() == "SpInstances")
+        {
+            createObjectWithSpInstances(engine, col, doc, cNode.firstChild().toElement());
+        }
+    }
+
+    col->initializeRemainingSps(engine, QUuid(uidColumn));
+
     return col;
 }
 
@@ -626,7 +642,7 @@ Table* DeserializationFactory::createTable(DatabaseEngine* engine, Version* ver,
         {
             for(int j=0; j<element.childNodes().at(i).childNodes().count(); j++)
             {
-                Column* col = createColumn(ver, doc, element.childNodes().at(i).childNodes().at(j).toElement());
+                Column* col = createColumn(engine, ver, doc, element.childNodes().at(i).childNodes().at(j).toElement());
                 result->addColumn(col);
             }
         }
