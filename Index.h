@@ -51,6 +51,8 @@ public:
 
     SpInstance* getSpiOfColumnForSpecificRole(const Column* c, const QString& role, const QString& db) const;
 
+    QString getOrderForColumn(const Column*) const;
+
 private:
 
     Table* m_owner;
