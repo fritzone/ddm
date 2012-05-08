@@ -294,14 +294,16 @@ QStringList MySQLSQLGenerator::generateCreateTableSql(Table *table, const QHash<
     // this is closing the create table SQL
     createTable += "\n)\n";
 
-
     {
     // see if we have a storage engine
     SpInstance* spi = table->getInstanceForSqlRoleUid(m_engine, uidMysqlStorageEngineTable);
     if(spi)
     {
         QString storageEngine = spi->get();
-        createTable += QString(upcase?"ENGINE = ":"engine = ") + storageEngine;
+        if(storageEngine.length())
+        {
+            createTable += QString(upcase?"ENGINE = ":"engine = ") + storageEngine;
+        }
     }
     }
 
@@ -332,9 +334,25 @@ QStringList MySQLSQLGenerator::generateCreateTableSql(Table *table, const QHash<
     // now create the indexes of the table
     for(int i=0; i<table->fullIndices().size(); i++)
     {
-        QString indexCommand = upcase?"CREATE INDEX ":"create index ";
-        indexCommand += table->fullIndices().at(i);
+        QString indexCommand = upcase?"CREATE":"create";
         Index* idx = table->getIndex(table->fullIndices().at(i));
+
+        {
+        // and the index category
+        SpInstance* spi = idx->getInstanceForSqlRoleUid(m_engine, uidMysqlIndexCategory);
+        if(spi)
+        {
+            QString c = spi->get();
+            if(c.length())
+            {
+                indexCommand += strSpace + c + strSpace;
+            }
+        }
+        }
+
+        indexCommand += upcase?"INDEX ":"index ";
+        indexCommand += table->fullIndices().at(i);
+
         if(idx == 0)
         {
             idx = table->getIndexFromParents(table->fullIndices().at(i));

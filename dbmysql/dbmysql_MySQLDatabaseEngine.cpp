@@ -1653,15 +1653,19 @@ QVector<Sp*> MySQLDatabaseEngine::buildSps()
     result.push_back(new TrueFalseSp(uidMysqlIfNotExistsTable, uidTable, QString("IfNotExists"), QString("Create only if not exists"), QString("General"), 5, 0));
 
     QStringList valuesForStrorageEngines;
-    valuesForStrorageEngines << "MyISAM" << "InnoDB" << "Memory" << "Archive" << "Merge" << "BDB" << "Federated" << "Archive" << "CSV" << "Blackhole";
+    valuesForStrorageEngines << "" << "MyISAM" << "InnoDB" << "Memory" << "Archive" << "Merge" << "BDB" << "Federated" << "Archive" << "CSV" << "Blackhole";
     result.push_back(new ValueListSp(uidMysqlStorageEngineTable, uidTable, QString("StorageEngine"), QString("Storage Engine"), QString("Advanced"), valuesForStrorageEngines, 1, 5, 0));
 
     QStringList valuesForCodepages = getCodepageList();
     result.push_back(new ValueListSp(uidMysqlCodepageTable, uidTable, QString("Codepage"), QString("Codepage"), QString("Advanced"), valuesForCodepages, 0, 5, 0));
 
     QStringList valuesForIndexTypes;
-    valuesForIndexTypes << "BTREE" << "HASH";
+    valuesForIndexTypes << "" << "BTREE" << "HASH";
     result.push_back(new ValueListSp(uidMysqlIndexType, uidIndex, "Index Type", "Index Type", "General", valuesForIndexTypes, 0, 5, 0));
+
+    QStringList valuesForIndexCategories;
+    valuesForIndexCategories << "" << "UNIQUE" << "FULLTEXT";
+    result.push_back(new ValueListSp(uidMysqlIndexCategory, uidIndex, "Index Category", "Index Category", "General", valuesForIndexCategories, 0, 5, 0));
 
     result.push_back(new ValueSp(uidMysqlColumnOfIndexLength, uidColumnOfIndex, "Column Length", "Used Column Length", "default", "", 5, 0));
 
