@@ -2326,6 +2326,7 @@ void NewTableForm::onIndexOrderTypeChanged(QString newOrder)
     QTreeWidgetItem* selectedCol = m_ui->lstSelectedColumnsForIndex->currentItem();
     if(selectedCol)
     {
+        while(selectedCol->parent()) selectedCol = selectedCol->parent();
         selectedCol->setText(1, newOrder);
     }
 }

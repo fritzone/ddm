@@ -38,6 +38,7 @@ static const QString uidMysqlStorageEngineTable =     "{10000004-0000-0000-0000-
 static const QString uidMysqlCodepageTable =          "{10000004-0000-0000-0000-000000000004}";
 
 static const QString uidMysqlIndexType =              "{10000005-0000-0000-0000-000000000001}";
+static const QString uidMysqlIndexCategory =          "{10000005-0000-0000-0000-000000000002}";
 
 static const QString uidMysqlColumnOfIndexLength =    "{10000006-0000-0000-0000-000000000001}";
 
