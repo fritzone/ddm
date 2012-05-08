@@ -364,11 +364,13 @@ QStringList MySQLSQLGenerator::generateCreateTableSql(Table *table, const QHash<
         for(int j=0; j<idx->getColumns().size(); j++)
         {
             indexCommand += idx->getColumns().at(j)->getName();
+
             // Now see if we have an SPI for the given column
             if(SpInstance* spi = idx->getSpiOfColumnForSpecificRole(idx->getColumns().at(j), uidMysqlColumnOfIndexLength, m_engine->getDatabaseEngineName()))
             {
                 indexCommand += "(" + spi->get() + ")";
             }
+            indexCommand += " "+idx->getOrderForColumn(idx->getColumns().at(j));
             if(j<idx->getColumns().size() - 1)
             {
                 indexCommand += ", ";

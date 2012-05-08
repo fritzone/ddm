@@ -42,6 +42,18 @@ bool Index::hasColumn(const Column* column) const
     return false;
 }
 
+QString Index::getOrderForColumn(const Column* column) const
+{
+    for(int i=0; i<m_columns.size(); i++)
+    {
+        if(m_columns[i]->c == column)
+        {
+            return m_columns[i]->order;
+        }
+    }
+    return "";
+}
+
 QVector<const Column*> Index::getColumns() const
 {
     QVector<const Column*> result;

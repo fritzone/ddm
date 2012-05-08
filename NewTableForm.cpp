@@ -1190,6 +1190,7 @@ void NewTableForm::resetIndexGui()
     m_ui->tabWidgetForIndex->setCurrentIndex(0);
     prepareSpsTabsForIndex(0);
     toggleIndexFieldDisableness(false);
+    m_ui->cmbIndexOrderType->setCurrentIndex(0);
 }
 
 void NewTableForm::populateIndexGui(Index* idx)
@@ -1217,7 +1218,8 @@ void NewTableForm::populateIndexGui(Index* idx)
         QListWidget *targetList = 0;
         if(idx->hasColumn(column))
         {
-            QTreeWidgetItem* itm = new QTreeWidgetItem(QStringList(column->getName()));
+            QStringList a; a<<column->getName(); a<<idx->getOrderForColumn(column);
+            QTreeWidgetItem* itm = new QTreeWidgetItem(a);
             itm->setIcon(0, IconFactory::getIconForDataType(column->getDataType()->getType()));
             m_ui->lstSelectedColumnsForIndex->addTopLevelItem(itm);
 
