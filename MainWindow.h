@@ -67,7 +67,7 @@ public:
     void instantiateTableCallback(const QString& tabName);
     void specificDeploymentCallback(const QString& connName);
 
-    ContextMenuEnabledTreeWidgetItem* instantiateTable(const QString& tabName, QStringList otherTablesBeingInstantiated, bool ref = false, Table* referencingTable = 0, TableInstance* becauseOfThis = 0);
+    TableInstance* instantiateTable(const QString& tabName, QStringList otherTablesBeingInstantiated, bool ref = false, Table* referencingTable = 0, TableInstance* becauseOfThis = 0);
 
     void showNothing(const QString& , bool focus = true);
     void showDataType(const QString &name, bool focus = true);

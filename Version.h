@@ -100,6 +100,16 @@ public:
     virtual Table* getTable(const QString& name) const = 0;
 
     /**
+     * Return the table with the given uid for r/w access
+     */
+    virtual Table* getTableWithUid(const QString& uid) const = 0;
+
+    /**
+     * Return the table instance with the given uid for r/w access
+     */
+    virtual TableInstance* getTableInstanceWithUid(const QString& uid) const = 0;
+
+    /**
      * Serializes this version
      */
     virtual void serialize(QDomDocument &doc, QDomElement &parent) const = 0;

@@ -128,6 +128,19 @@ Table* DefaultVersionImplementation::getTable(const QString &name) const
     return 0;
 }
 
+Table* DefaultVersionImplementation::getTableWithUid(const QString& uid) const
+{
+    for(int i=0; i< m_data.m_tables.size(); i++)
+    {
+        if(m_data.m_tables[i]->getObjectUid() == uid)
+        {
+            return m_data.m_tables[i];
+        }
+    }
+    return 0;
+}
+
+
 Diagram* DefaultVersionImplementation::getDiagram(const QString& name)
 {
     for(int i=0; i<m_data.m_diagrams.size(); i++)
@@ -335,6 +348,19 @@ TableInstance* DefaultVersionImplementation::getTableInstance(const QString& nam
     }
     return 0;
 }
+
+TableInstance* DefaultVersionImplementation::getTableInstanceWithUid(const QString& uid) const
+{
+    for(int i=0; i<m_data.m_tableInstances.size(); i++)
+    {
+        if(m_data.m_tableInstances.at(i)->getObjectUid() == uid)
+        {
+            return m_data.m_tableInstances.at(i);
+        }
+    }
+    return 0;
+}
+
 
 void DefaultVersionImplementation::deleteDataType(const QString& dtName)
 {
