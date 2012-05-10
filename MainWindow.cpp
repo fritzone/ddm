@@ -128,6 +128,8 @@ void MainWindow::freeGuiElements()
     QWidget* centralWidget = new QWidget(this);
     centralWidget->setObjectName(QString::fromUtf8("centralWidget"));
     setCentralWidget(centralWidget);
+
+    if(m_guiElements) m_guiElements->freeGuiElements();
 }
 
 void MainWindow::showProjectDetails()
@@ -817,21 +819,21 @@ void MainWindow::enableActions()
 
 void MainWindow::connectActionsFromPopupMenus()
 {
-    QObject::connect(ContextMenuCollection::getInstance()->getAction_RemoveTable(), SIGNAL(activated()), this, SLOT(onDeleteTableFromPopup()));
-    QObject::connect(ContextMenuCollection::getInstance()->getAction_AddTable(), SIGNAL(activated()), this, SLOT(onNewTable()));
-    QObject::connect(ContextMenuCollection::getInstance()->getAction_TableAddColumn(), SIGNAL(activated()), this, SLOT(onTableAddColumnFromPopup()));
+    QObject::connect(ContextMenuCollection::getInstance()->getAction_RemoveTable(), SIGNAL(triggered()), this, SLOT(onDeleteTableFromPopup()));
+    QObject::connect(ContextMenuCollection::getInstance()->getAction_AddTable(), SIGNAL(triggered()), this, SLOT(onNewTable()));
+    QObject::connect(ContextMenuCollection::getInstance()->getAction_TableAddColumn(), SIGNAL(triggered()), this, SLOT(onTableAddColumnFromPopup()));
     if(m_workspace->currentProjectIsOop())
     {
         // the table popup
-        QObject::connect(ContextMenuCollection::getInstance()->getAction_SpecializeTable(), SIGNAL(activated()), this, SLOT(onSpecializeTableFromPopup()));
-        QObject::connect(ContextMenuCollection::getInstance()->getAction_InstantiateTable(), SIGNAL(activated()), this, SLOT(onInstantiateTableFromPopup()));
+        QObject::connect(ContextMenuCollection::getInstance()->getAction_SpecializeTable(), SIGNAL(triggered()), this, SLOT(onSpecializeTableFromPopup()));
+        QObject::connect(ContextMenuCollection::getInstance()->getAction_InstantiateTable(), SIGNAL(triggered()), this, SLOT(onInstantiateTableFromPopup()));
 
         // now the table instance popup
-        QObject::connect(ContextMenuCollection::getInstance()->getAction_DeleteTableInstance(), SIGNAL(activated()), this, SLOT(onDeleteInstanceFromPopup()));
-        QObject::connect(ContextMenuCollection::getInstance()->getAction_RenameTableInstance(), SIGNAL(activated()), this, SLOT(onRenameInstanceFromPopup()));
+        QObject::connect(ContextMenuCollection::getInstance()->getAction_DeleteTableInstance(), SIGNAL(triggered()), this, SLOT(onDeleteInstanceFromPopup()));
+        QObject::connect(ContextMenuCollection::getInstance()->getAction_RenameTableInstance(), SIGNAL(triggered()), this, SLOT(onRenameInstanceFromPopup()));
 
         // table instances popup
-        QObject::connect(ContextMenuCollection::getInstance()->getAction_AddTableInstance(), SIGNAL(activated()), this, SLOT(onNewTableInstance()));
+        QObject::connect(ContextMenuCollection::getInstance()->getAction_AddTableInstance(), SIGNAL(triggered()), this, SLOT(onNewTableInstance()));
 
     }
     else
@@ -839,31 +841,31 @@ void MainWindow::connectActionsFromPopupMenus()
         ContextMenuCollection::getInstance()->getAction_SpecializeTable()->setVisible(false);
         ContextMenuCollection::getInstance()->getAction_InstantiateTable()->setVisible(false);
     }
-    QObject::connect(ContextMenuCollection::getInstance()->getAction_DuplicateTable(), SIGNAL(activated()), this, SLOT(onDuplicateTableFromPopup()));
-    QObject::connect(ContextMenuCollection::getInstance()->getAction_CopyTable(), SIGNAL(activated()), this, SLOT(onCopyTableFromPopup()));
-    QObject::connect(ContextMenuCollection::getInstance()->getAction_PasteTable(), SIGNAL(activated()), this, SLOT(onPasteTableFromPopup()));
-    QObject::connect(ContextMenuCollection::getInstance()->getAction_DeleteDataType(), SIGNAL(activated()), this, SLOT(onDeleteDatatypeFromPopup()));
-    QObject::connect(ContextMenuCollection::getInstance()->getAction_DuplicateDataType(), SIGNAL(activated()), this, SLOT(onDuplicateDatatypeFromPopup()));
-    QObject::connect(ContextMenuCollection::getInstance()->getAction_DeleteDiagram(), SIGNAL(activated()), this, SLOT(onDeleteDiagramFromPopup()));
-    QObject::connect(ContextMenuCollection::getInstance()->getAction_RenameDiagram(), SIGNAL(activated()), this, SLOT(onRenameDiagramFromPopup()));
-    QObject::connect(ContextMenuCollection::getInstance()->getAction_AddDiagram(), SIGNAL(activated()), this, SLOT(onNewDiagram()));
-    QObject::connect(ContextMenuCollection::getInstance()->getAction_AddString(), SIGNAL(activated()), this, SLOT(onNewStringType()));
-    QObject::connect(ContextMenuCollection::getInstance()->getAction_AddNumeric(), SIGNAL(activated()), this, SLOT(onNewNumericType()));
-    QObject::connect(ContextMenuCollection::getInstance()->getAction_AddBool(), SIGNAL(activated()), this, SLOT(onNewBoolType()));
-    QObject::connect(ContextMenuCollection::getInstance()->getAction_AddDateType(), SIGNAL(activated()), this, SLOT(onNewDateTimeType()));
-    QObject::connect(ContextMenuCollection::getInstance()->getAction_AddMisc(), SIGNAL(activated()), this, SLOT(onNewMiscType()));
-    QObject::connect(ContextMenuCollection::getInstance()->getAction_AddBlob(), SIGNAL(activated()), this, SLOT(onNewBlobType()));
-    QObject::connect(ContextMenuCollection::getInstance()->getAction_AddSpatial(), SIGNAL(activated()), this, SLOT(onNewSpatialType()));
-    QObject::connect(ContextMenuCollection::getInstance()->getAction_GotoIssueLocation(), SIGNAL(activated()), this, SLOT(onGotoIssueLocation()));
-    QObject::connect(ContextMenuCollection::getInstance()->getAction_IgnoreIssue(), SIGNAL(activated()), this, SLOT(onIgnoreIssue()));
-    QObject::connect(ContextMenuCollection::getInstance()->getAction_IgnoreIssuesFromThisTable(), SIGNAL(activated()), this, SLOT(onIgnoreIssuesOfATable()));
-    QObject::connect(ContextMenuCollection::getInstance()->getAction_CreateViewUsingQueryBuilder(), SIGNAL(activated()), this, SLOT(onNewView()));
-    QObject::connect(ContextMenuCollection::getInstance()->getAction_CreateViewUsingSql(), SIGNAL(activated()), this, SLOT(onNewViewWithSql()));
-    QObject::connect(ContextMenuCollection::getInstance()->getAction_ConnectionConnect(), SIGNAL(activated()), this, SLOT(onConnectConnection()));
+    QObject::connect(ContextMenuCollection::getInstance()->getAction_DuplicateTable(), SIGNAL(triggered()), this, SLOT(onDuplicateTableFromPopup()));
+    QObject::connect(ContextMenuCollection::getInstance()->getAction_CopyTable(), SIGNAL(triggered()), this, SLOT(onCopyTableFromPopup()));
+    QObject::connect(ContextMenuCollection::getInstance()->getAction_PasteTable(), SIGNAL(triggered()), this, SLOT(onPasteTableFromPopup()));
+    QObject::connect(ContextMenuCollection::getInstance()->getAction_DeleteDataType(), SIGNAL(triggered()), this, SLOT(onDeleteDatatypeFromPopup()));
+    QObject::connect(ContextMenuCollection::getInstance()->getAction_DuplicateDataType(), SIGNAL(triggered()), this, SLOT(onDuplicateDatatypeFromPopup()));
+    QObject::connect(ContextMenuCollection::getInstance()->getAction_DeleteDiagram(), SIGNAL(triggered()), this, SLOT(onDeleteDiagramFromPopup()));
+    QObject::connect(ContextMenuCollection::getInstance()->getAction_RenameDiagram(), SIGNAL(triggered()), this, SLOT(onRenameDiagramFromPopup()));
+    QObject::connect(ContextMenuCollection::getInstance()->getAction_AddDiagram(), SIGNAL(triggered()), this, SLOT(onNewDiagram()));
+    QObject::connect(ContextMenuCollection::getInstance()->getAction_AddString(), SIGNAL(triggered()), this, SLOT(onNewStringType()));
+    QObject::connect(ContextMenuCollection::getInstance()->getAction_AddNumeric(), SIGNAL(triggered()), this, SLOT(onNewNumericType()));
+    QObject::connect(ContextMenuCollection::getInstance()->getAction_AddBool(), SIGNAL(triggered()), this, SLOT(onNewBoolType()));
+    QObject::connect(ContextMenuCollection::getInstance()->getAction_AddDateType(), SIGNAL(triggered()), this, SLOT(onNewDateTimeType()));
+    QObject::connect(ContextMenuCollection::getInstance()->getAction_AddMisc(), SIGNAL(triggered()), this, SLOT(onNewMiscType()));
+    QObject::connect(ContextMenuCollection::getInstance()->getAction_AddBlob(), SIGNAL(triggered()), this, SLOT(onNewBlobType()));
+    QObject::connect(ContextMenuCollection::getInstance()->getAction_AddSpatial(), SIGNAL(triggered()), this, SLOT(onNewSpatialType()));
+    QObject::connect(ContextMenuCollection::getInstance()->getAction_GotoIssueLocation(), SIGNAL(triggered()), this, SLOT(onGotoIssueLocation()));
+    QObject::connect(ContextMenuCollection::getInstance()->getAction_IgnoreIssue(), SIGNAL(triggered()), this, SLOT(onIgnoreIssue()));
+    QObject::connect(ContextMenuCollection::getInstance()->getAction_IgnoreIssuesFromThisTable(), SIGNAL(triggered()), this, SLOT(onIgnoreIssuesOfATable()));
+    QObject::connect(ContextMenuCollection::getInstance()->getAction_CreateViewUsingQueryBuilder(), SIGNAL(triggered()), this, SLOT(onNewView()));
+    QObject::connect(ContextMenuCollection::getInstance()->getAction_CreateViewUsingSql(), SIGNAL(triggered()), this, SLOT(onNewViewWithSql()));
+    QObject::connect(ContextMenuCollection::getInstance()->getAction_ConnectionConnect(), SIGNAL(triggered()), this, SLOT(onConnectConnection()));
     ContextMenuCollection::getInstance()->getAction_BrowsedTableInject()->setVisible(true);
-    QObject::connect(ContextMenuCollection::getInstance()->getAction_DeleteView(), SIGNAL(activated()), this, SLOT(onDeleteView()));
-    QObject::connect(ContextMenuCollection::getInstance()->getAction_DeleteProcedure(), SIGNAL(activated()), this, SLOT(onDeleteProcedure()));
-    QObject::connect(ContextMenuCollection::getInstance()->getAction_ReleaseMajorVersion(), SIGNAL(activated()), this, SLOT(onReleaseMajorVersion()));
+    QObject::connect(ContextMenuCollection::getInstance()->getAction_DeleteView(), SIGNAL(triggered()), this, SLOT(onDeleteView()));
+    QObject::connect(ContextMenuCollection::getInstance()->getAction_DeleteProcedure(), SIGNAL(triggered()), this, SLOT(onDeleteProcedure()));
+    QObject::connect(ContextMenuCollection::getInstance()->getAction_ReleaseMajorVersion(), SIGNAL(triggered()), this, SLOT(onReleaseMajorVersion()));
 }
 
 template <class T>
@@ -1004,16 +1006,16 @@ void MainWindow::onInstantiateTableFromPopup()
     m_guiElements->getProjectTree()->setLastRightclickedItem(0);
 
     QVariant qv = item->data(0, Qt::UserRole);
-    QString tabName = qv.toString();
-    Table* table =  m_workspace->workingVersion()->getTable(tabName);
+    QString tabUid = qv.toString();
+    Table* table =  m_workspace->workingVersion()->getTableWithUid(tabUid);
     if(table == 0)  // shouldn't be ...
     {
         return;
     }
 
     m_workspace->workingVersion()->getGui()->updateForms();
-    m_guiElements->getProjectTree()->setCurrentItem(instantiateTable(table->getName(), QStringList()));
-
+    TableInstance* tinst = instantiateTable(table->getName(), QStringList());
+    showTableInstanceWithGuid(tinst->getObjectUid());
 }
 
 void MainWindow::onSpecializeTableFromPopup()
@@ -1023,8 +1025,12 @@ void MainWindow::onSpecializeTableFromPopup()
         return;
     }
 
-    Table* table = getRightClickedObject<Table>((itemGetter)&Version::getTable);
-    if(table == 0) return;
+    ContextMenuEnabledTreeWidgetItem* item = m_guiElements->getProjectTree()->getLastRightclickedItem();
+    m_guiElements->getProjectTree()->setLastRightclickedItem(0);
+
+    QVariant qv = item->data(0, Qt::UserRole);
+    QString tabUid = qv.toString();
+    Table* table =  m_workspace->workingVersion()->getTableWithUid(tabUid);
 
     Table* specializedTable = new Table(m_workspace->workingVersion(), QUuid::createUuid().toString(), 0);
     specializedTable->initializeFor(Workspace::getInstance()->currentProjectsEngine(), QUuid(uidTable));
@@ -1049,8 +1055,17 @@ void MainWindow::onTableAddColumnFromPopup()
 {
     if(m_guiElements->getProjectTree()->getLastRightclickedItem() != 0)
     {
-        Table *table = getRightClickedObject<Table>((itemGetter)&Version::getTable);
-        if(table == 0) return;
+        if(m_guiElements->getProjectTree()->getLastRightclickedItem() == 0)
+        {
+            return;
+        }
+
+        ContextMenuEnabledTreeWidgetItem* item = m_guiElements->getProjectTree()->getLastRightclickedItem();
+        m_guiElements->getProjectTree()->setLastRightclickedItem(0);
+
+        QVariant qv = item->data(0, Qt::UserRole);
+        QString tabUid = qv.toString();
+        Table* table =  m_workspace->workingVersion()->getTableWithUid(tabUid);
         NewTableForm* frm = showExistingTable(table);
         frm->focusOnNewColumnName();
         m_guiElements->getProjectTree()->setLastRightclickedItem(0);
@@ -1110,7 +1125,18 @@ Connection* MainWindow::getRightClickedConnection()
 
 void MainWindow::onDeleteTableFromPopup()
 {
-    Table* tab = getRightClickedObject<Table>((itemGetter)&Version::getTable);
+    if(m_guiElements->getProjectTree()->getLastRightclickedItem() == 0)
+    {
+        return;
+    }
+
+    ContextMenuEnabledTreeWidgetItem* item = m_guiElements->getProjectTree()->getLastRightclickedItem();
+    m_guiElements->getProjectTree()->setLastRightclickedItem(0);
+
+    QVariant qv = item->data(0, Qt::UserRole);
+    QString tabUid = qv.toString();
+    Table* tab =  m_workspace->workingVersion()->getTableWithUid(tabUid);
+
     if(tab)
     {
         if(QMessageBox::question(this, tr("Are you sure?"), tr("Really delete ") + tab->getName() + "?", QMessageBox::Yes | QMessageBox::No) !=  QMessageBox::Yes)
@@ -1150,7 +1176,17 @@ void MainWindow::onDeleteTableFromPopup()
 
 void MainWindow::onCopyTableFromPopup()
 {
-    Table* tab = getRightClickedObject<Table>((itemGetter)&Version::getTable);
+    if(m_guiElements->getProjectTree()->getLastRightclickedItem() == 0)
+    {
+        return;
+    }
+
+    ContextMenuEnabledTreeWidgetItem* item = m_guiElements->getProjectTree()->getLastRightclickedItem();
+    m_guiElements->getProjectTree()->setLastRightclickedItem(0);
+
+    QVariant qv = item->data(0, Qt::UserRole);
+    QString tabUid = qv.toString();
+    Table* tab =  m_workspace->workingVersion()->getTableWithUid(tabUid);
     if(tab)
     {
         tab->copy();
@@ -1174,7 +1210,7 @@ void MainWindow::onPasteTableFromPopup()
         {
             ContextMenuEnabledTreeWidgetItem* sqlItm = new ContextMenuEnabledTreeWidgetItem(m_workspace->workingVersion()->getGui()->getFinalSqlItem(), QStringList(tab->getName() + ".sql"));
             sqlItm->setIcon(0, IconFactory::getTablesIcon());
-            sqlItm->setData(0, Qt::UserRole, tab->getName());
+            sqlItm->setData(0, Qt::UserRole, tab->getObjectUid().toString());
         }
 
         m_workspace->workingVersion()->getGui()->updateForms();
@@ -1184,7 +1220,18 @@ void MainWindow::onPasteTableFromPopup()
 
 void MainWindow::onDuplicateTableFromPopup()
 {
-    Table* tab = getRightClickedObject<Table>((itemGetter)&Version::getTable);
+    if(m_guiElements->getProjectTree()->getLastRightclickedItem() == 0)
+    {
+        return;
+    }
+
+    ContextMenuEnabledTreeWidgetItem* item = m_guiElements->getProjectTree()->getLastRightclickedItem();
+    m_guiElements->getProjectTree()->setLastRightclickedItem(0);
+
+    QVariant qv = item->data(0, Qt::UserRole);
+    QString tabUid = qv.toString();
+    Table* tab =  m_workspace->workingVersion()->getTableWithUid(tabUid);
+
     if(tab)
     {
         Table* dupped = m_workspace->workingVersion()->duplicateTable(tab);
@@ -1200,7 +1247,7 @@ void MainWindow::onDuplicateTableFromPopup()
         {
             ContextMenuEnabledTreeWidgetItem* sqlItm = new ContextMenuEnabledTreeWidgetItem(m_workspace->workingVersion()->getGui()->getFinalSqlItem(), QStringList(dupped->getName() + ".sql"));
             sqlItm->setIcon(0, IconFactory::getTablesIcon());
-            sqlItm->setData(0, Qt::UserRole, dupped->getName());
+            sqlItm->setData(0, Qt::UserRole, dupped->getObjectUid().toString());
         }
 
         m_workspace->workingVersion()->getGui()->updateForms();
@@ -1246,7 +1293,7 @@ void MainWindow::onDeployHovered()
         act->setData(cons.at(i)->getName());
         act->setIcon(IconFactory::getConnectionStateIcon(cons.at(i)->getState()));
         deployPopupMenu->addAction(act);
-        QObject::connect(act, SIGNAL(activated()),
+        QObject::connect(act, SIGNAL(triggered()),
                 new DynamicActionHandlerforMainWindow(cons.at(i)->getName(), this, (MainWindow::dynamicAction)&MainWindow::specificDeploymentCallback),
                 SLOT(called()));
     }
@@ -1268,7 +1315,7 @@ void MainWindow::onNewTableInstanceHovered()
             actionToAdd->setData(QVariant(m_workspace->workingVersion()->getTables()[i]->getName()));
             actionToAdd->setIcon(icon);
             createTableInstancesPopup->addAction(actionToAdd);
-            QObject::connect(actionToAdd, SIGNAL(activated()),
+            QObject::connect(actionToAdd, SIGNAL(triggered()),
                              new DynamicActionHandlerforMainWindow(m_workspace->workingVersion()->getTables()[i]->getName(), this, (MainWindow::dynamicAction)&MainWindow::instantiateTableCallback), SLOT(called()));
         }
     }
@@ -1279,7 +1326,7 @@ void MainWindow::instantiateTableCallback(const QString &tabName)
     instantiateTable(tabName, QStringList());
 }
 
-ContextMenuEnabledTreeWidgetItem* MainWindow::instantiateTable(const QString& tabName, QStringList othersTablesBeingInstantiated, bool ref, Table* referencingTable, TableInstance* becauseOfThis)
+TableInstance *MainWindow::instantiateTable(const QString& tabName, QStringList othersTablesBeingInstantiated, bool ref, Table* referencingTable, TableInstance* becauseOfThis)
 {
     Version* cVersion = m_workspace->workingVersion();
     TableInstance* tinst = cVersion->instantiateTable(cVersion->getTable(tabName), ref);
@@ -1301,7 +1348,7 @@ ContextMenuEnabledTreeWidgetItem* MainWindow::instantiateTable(const QString& ta
         becauseOfThis->addInstantiatedTableInstance(tinst);
     }
 
-    QVariant a(tinst->getName());
+    QVariant a(tinst->getObjectUid());
     itm->setData(0, Qt::UserRole, a);
 
     ContextMenuEnabledTreeWidgetItem* sqlItm = new ContextMenuEnabledTreeWidgetItem(cVersion->getGui()->getFinalSqlItem(), QStringList(tinst->getName()));
@@ -1328,7 +1375,7 @@ ContextMenuEnabledTreeWidgetItem* MainWindow::instantiateTable(const QString& ta
             tinst->addInstantiatedTableInstance(cVersion->getTableInstance(tbl->getName()));
         }
     }
-    return itm;
+    return tinst;
 }
 
 void MainWindow::onPreferences()
@@ -1366,10 +1413,7 @@ void MainWindow::onRenameInstanceFromPopup()
             }
             tinst->setName(t);
             tinst->setDisplayText(t);
-            QVariant a(t);
-            tinst->getLocation()->setData(0, Qt::UserRole, a);
             tinst->getSqlLocation()->setText(0, t);
-            tinst->getSqlLocation()->setData(0, Qt::UserRole, a);
         }
     }
 }
@@ -1388,7 +1432,6 @@ void MainWindow::onRenameDiagramFromPopup()
             dgr->setName(t);
             dgr->setDisplayText(t);
             QVariant a(t);
-            dgr->getLocation()->setData(0, Qt::UserRole, a);
 
             m_workspace->workingVersion()->getGui()->updateForms();
         }
@@ -1397,7 +1440,19 @@ void MainWindow::onRenameDiagramFromPopup()
 
 void MainWindow::onDeleteInstanceFromPopup()
 {
-    TableInstance* tinst = getRightClickedObject<TableInstance>((itemGetter)&Version::getTableInstance);
+    if(m_guiElements->getProjectTree()->getLastRightclickedItem() == 0)
+    {
+        return;
+    }
+
+    ContextMenuEnabledTreeWidgetItem* item = m_guiElements->getProjectTree()->getLastRightclickedItem();
+    m_guiElements->getProjectTree()->setLastRightclickedItem(0);
+
+    QVariant qv = item->data(0, Qt::UserRole);
+    QString tabUid = qv.toString();
+    TableInstance* tinst =  m_workspace->workingVersion()->getTableInstanceWithUid(tabUid);
+
+    //TableInstance* tinst = getRightClickedObject<TableInstance>((itemGetter)&Version::getTableInstance);
     if(tinst)
     {
         if(QMessageBox::question(this, tr("Are you sure?"), tr("Really delete ") + tinst->getName() + "?", QMessageBox::Yes | QMessageBox::No) !=  QMessageBox::Yes)
@@ -1422,13 +1477,12 @@ void MainWindow::onDeleteInstanceFromPopup()
         {
             if(m_workspace->workingVersion()->getTableInstances().at(i)->sentenced())
             {
-                QString name = m_workspace->workingVersion()->getTableInstances().at(i)->getName();
-
+                QString uid = m_workspace->workingVersion()->getTableInstances().at(i)->getObjectUid();
                 ContextMenuEnabledTreeWidgetItem* tabInstItem = m_workspace->workingVersion()->getGui()->getTableInstancesItem();
                 for(int j=0; j<tabInstItem->childCount(); j++)
                 {
                     QVariant a = tabInstItem->child(j)->data(0, Qt::UserRole);
-                    if(a.toString() == name)
+                    if(a.toString() == uid)
                     {
                         delete tabInstItem->child(j);
                     }
@@ -1438,7 +1492,7 @@ void MainWindow::onDeleteInstanceFromPopup()
                 for(int j=0; j<sqlItem->childCount(); j++)
                 {
                     QVariant a = sqlItem->child(j)->data(0, Qt::UserRole);
-                    if(a.toString() == name)
+                    if(a.toString() == uid)
                     {
                         delete sqlItem->child(j);
                     }

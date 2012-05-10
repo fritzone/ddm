@@ -71,6 +71,8 @@ public:
     virtual SqlSourceEntity* getSqlSourceEntityNamed(const QString& name) const;
     virtual void addFunction(Function* p);
     virtual const QVector<Function*>& getFunctions();
+    virtual Table* getTableWithUid(const QString& uid) const;
+    virtual TableInstance* getTableInstanceWithUid(const QString& uid) const;
 
     void createTreeItems(GuiElements* gui, ContextMenuEnabledTreeWidgetItem* projectItem);
 
