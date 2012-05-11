@@ -563,7 +563,7 @@ void MainWindow::currentProjectTreeItemChanged(QTreeWidgetItem * current, QTreeW
                 SqlForm* frm = new SqlForm(m_workspace->currentProjectsEngine(), this);
                 QVariant qv = current->data(0, Qt::UserRole);
                 QString name = qv.toString();
-                SqlSourceEntity* ent = Workspace::getInstance()->currentProject()->getWorkingVersion()->getSqlSourceEntityNamed(name);
+                SqlSourceEntity* ent = Workspace::getInstance()->currentProject()->getWorkingVersion()->getSqlSourceEntityWithGuid(name);
                 if(ent == 0)
                 {   // hm.. this shouldn't be
                     return;
@@ -1125,6 +1125,8 @@ Connection* MainWindow::getRightClickedConnection()
 
 void MainWindow::onDeleteTableFromPopup()
 {
+
+    // TODO: Since the introduction of the GUIDs this code repeats itself over and over
     if(m_guiElements->getProjectTree()->getLastRightclickedItem() == 0)
     {
         return;
@@ -1397,7 +1399,18 @@ void MainWindow::onPreferences()
 
 void MainWindow::onRenameInstanceFromPopup()
 {
-    TableInstance* tinst = getRightClickedObject<TableInstance>((itemGetter)&Version::getTableInstance);
+    if(m_guiElements->getProjectTree()->getLastRightclickedItem() == 0)
+    {
+        return;
+    }
+
+    ContextMenuEnabledTreeWidgetItem* item = m_guiElements->getProjectTree()->getLastRightclickedItem();
+    m_guiElements->getProjectTree()->setLastRightclickedItem(0);
+
+    QVariant qv = item->data(0, Qt::UserRole);
+    QString tabUid = qv.toString();
+    TableInstance* tinst =  m_workspace->workingVersion()->getTableInstanceWithUid(tabUid);
+
     if(tinst)
     {
         SimpleTextInputDialog* dlg = new SimpleTextInputDialog(this, tr("Enter the new name"));
@@ -1420,7 +1433,17 @@ void MainWindow::onRenameInstanceFromPopup()
 
 void MainWindow::onRenameDiagramFromPopup()
 {
-    Diagram* dgr = getRightClickedObject<Diagram>((itemGetter)&Version::getDiagram);
+    if(m_guiElements->getProjectTree()->getLastRightclickedItem() == 0)
+    {
+        return;
+    }
+
+    ContextMenuEnabledTreeWidgetItem* item = m_guiElements->getProjectTree()->getLastRightclickedItem();
+    m_guiElements->getProjectTree()->setLastRightclickedItem(0);
+
+    QVariant qv = item->data(0, Qt::UserRole);
+    QString tabUid = qv.toString();
+    Diagram* dgr =  m_workspace->workingVersion()->getDiagramWithUid(tabUid);
     if(dgr)
     {
         SimpleTextInputDialog* dlg = new SimpleTextInputDialog(this, tr("Enter the new name"));
@@ -1836,7 +1859,17 @@ void MainWindow::onDuplicateDatatypeFromPopup()
 
 void MainWindow::onDeleteDiagramFromPopup()
 {
-    Diagram* dgr = getRightClickedObject<Diagram>((itemGetter)&Version::getDiagram);
+    if(m_guiElements->getProjectTree()->getLastRightclickedItem() == 0)
+    {
+        return;
+    }
+
+    ContextMenuEnabledTreeWidgetItem* item = m_guiElements->getProjectTree()->getLastRightclickedItem();
+    m_guiElements->getProjectTree()->setLastRightclickedItem(0);
+
+    QVariant qv = item->data(0, Qt::UserRole);
+    QString tabUid = qv.toString();
+    Diagram* dgr =  m_workspace->workingVersion()->getDiagramWithUid(tabUid);
     if(dgr)
     {
         if(QMessageBox::question(this, tr("Are you sure?"), tr("Really delete ") + dgr->getName()+ "?", QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
@@ -2010,7 +2043,7 @@ void MainWindow::onDeploy()
 void MainWindow::doDeployment(QStringList connectionNames)
 {
     createStatusLabel();
-    InjectSqlGenerator* injectSqlGen = new InjectSqlGenerator(m_workspace->workingVersion(), connectionNames, this);
+    InjectSqlGenerator* injectSqlGen = new InjectSqlGenerator(m_workspace->workingVersion(), connectionNames, 0);
     connect(injectSqlGen, SIGNAL(done(InjectSqlGenerator*)), this, SLOT(onSqlGenerationFinished(InjectSqlGenerator*)));
     injectSqlGen->generate();
 }
@@ -2036,9 +2069,9 @@ void MainWindow::setStatus(const QString& s, bool err)
 
 void MainWindow::onSqlGenerationFinished(InjectSqlGenerator *generator)
 {
-    QStringList sqlList = generator->getSqls();
+    QMap<Connection*, QStringList> sqlList = generator->getSqls();
     QStringList connectionNames = generator->getConnectionNames();
-    Deployer* deployer = new Deployer(connectionNames, sqlList, this);
+    Deployer* deployer = new Deployer(connectionNames, sqlList, 0);
     m_deployers.append(deployer);
     connect(deployer, SIGNAL(done(Deployer*)), this, SLOT(onDeploymentFinished(Deployer*)));
     deployer->deploy();

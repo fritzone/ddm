@@ -14,6 +14,10 @@
 #include "gui_HelpWindow.h"
 #include "core_ConnectionManager.h"
 #include "db_AbstractDTSupplier.h"
+#include "core_Procedure.h"
+#include "core_Function.h"
+#include "core_Trigger.h"
+#include "core_View.h"
 
 #include <QFileDialog>
 #include <QMessageBox>
@@ -72,7 +76,7 @@ void SqlForm::onInject()
             Connection* c = ConnectionManager::instance()->getConnection(connectionNames.at(i));
             if(c)
             {
-                QStringList tempSqlList = Workspace::getInstance()->workingVersion()->getSqlScript(false);
+                QStringList tempSqlList = Workspace::getInstance()->workingVersion()->getSqlScript(false, c);
                 if(!m_engine->executeSql(c, tempSqlList, tSql, injectDialog->getRollbackOnError()))
                 {
                     QMessageBox::critical (this, tr("Error"), tr("<B>Cannot execute a query!</B><P>Reason: ") + m_engine->getLastError() + tr(".<P>Query:<PRE>") + tSql+ "</PRE><P>" +
@@ -105,7 +109,7 @@ void SqlForm::presentSql(Project* p)
     // firstly only the tables and then the foreign keys. We'll see the other elements (triggers, functions) later
 
     Version *v = p->getWorkingVersion();
-    QStringList finalSql = v->getSqlScript(true);
+    QStringList finalSql = v->getSqlScript(true, 0);
 
     QString fs = "";
     for(int i=0; i< finalSql.size(); i++)
@@ -121,7 +125,7 @@ void SqlForm::presentSql(Project* p, SqlSourceEntity* ent, MainWindow::showSomet
     QString fs = "";
     QHash<QString, QString> opts = Configuration::instance().sqlGenerationOptions();
     opts["FKSposition"] = "OnlyInternal";
-    QStringList finalSql = ent->generateSqlSource(p->getEngine()->getSqlGenerator(), opts);
+    QStringList finalSql = ent->generateSqlSource(p->getEngine()->getSqlGenerator(), opts, 0);
     for(int i=0; i< finalSql.size(); i++)
     {
         fs += finalSql[i];
@@ -142,6 +146,22 @@ void SqlForm::onGoToOriginator()
 {
     if(m_sourceEntity)
     {
+        Table* t = dynamic_cast<Table*>(m_sourceEntity);
+        if(t) MainWindow::instance()->showTableWithGuid(t->getObjectUid());
 
+        TableInstance* tinst = dynamic_cast<TableInstance*>(m_sourceEntity);
+        if(tinst) MainWindow::instance()->showTableInstanceWithGuid(tinst->getObjectUid());
+
+        Procedure* p = dynamic_cast<Procedure*>(m_sourceEntity);
+        if(p) MainWindow::instance()->showProcedureWithGuid(p->getObjectUid());
+
+        Function* f = dynamic_cast<Function*>(m_sourceEntity);
+        if(f) MainWindow::instance()->showFunctionWithGuid(f->getObjectUid());
+
+        Trigger* tr = dynamic_cast<Trigger*>(m_sourceEntity);
+        if(tr) MainWindow::instance()->showTriggerWithGuid(tr->getObjectUid());
+
+        View* v = dynamic_cast<View*>(m_sourceEntity);
+        if(v) MainWindow::instance()->showViewWithGuid(v->getObjectUid());
     }
 }

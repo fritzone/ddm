@@ -18,6 +18,7 @@ class Procedure;
 class Trigger;
 class SqlSourceEntity;
 class Function;
+class Connection;
 
 /**
  * Basic class holding data related to versions
@@ -103,6 +104,11 @@ public:
      * Return the table with the given uid for r/w access
      */
     virtual Table* getTableWithUid(const QString& uid) const = 0;
+
+    /**
+     * Return the diagram with the given uid for r/w access
+     */
+    virtual Diagram* getDiagramWithUid(const QString& uid) const = 0;
 
     /**
      * Return the table instance with the given uid for r/w access
@@ -204,7 +210,7 @@ public:
      */
     virtual QVector<Table*> getTablesReferencingAColumnThroughForeignKeys(const Column*) = 0;
 
-    virtual QList<QString> getSqlScript(bool generateDelimiters) = 0;
+    virtual QList<QString> getSqlScript(bool generateDelimiters, const Connection*) = 0;
 
     /**
      * Provides a data type for the given SQL type. Firstly checks if there are data types corresponding to the
@@ -301,7 +307,7 @@ public:
     virtual Trigger* getTrigger(const QString&) const = 0;
     virtual const QVector<Trigger*>& getTriggers() = 0;
 
-    virtual SqlSourceEntity* getSqlSourceEntityNamed(const QString& name) const = 0;
+    virtual SqlSourceEntity* getSqlSourceEntityWithGuid(const QString& name) const = 0;
 
     virtual void addFunction(Function* p) = 0;
     virtual Function* getFunction(const QString& procName) const = 0;

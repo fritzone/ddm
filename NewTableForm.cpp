@@ -2149,7 +2149,7 @@ void NewTableForm::presentSql(Project *)
     QString fs = "";
     QHash<QString,QString> fo = Configuration::instance().sqlGenerationOptions();
     fo["FKSposition"] = "OnlyInternal";
-    finalSql = m_project->getEngine()->getSqlGenerator()->generateCreateTableSql(m_table, fo, m_table->getName());
+    finalSql = m_project->getEngine()->getSqlGenerator()->generateCreateTableSql(m_table, fo, m_table->getName(), 0);
     if(!Workspace::getInstance()->currentProjectIsOop())
     {
         finalSql << m_project->getEngine()->getSqlGenerator()->generateDefaultValuesSql(m_table, fo);

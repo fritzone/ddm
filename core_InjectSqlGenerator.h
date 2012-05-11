@@ -3,16 +3,22 @@
 
 #include <QObject>
 #include <QStringList>
+#include <QMap>
 
 class Version;
 class InjectSqlGeneratorThread;
+class Connection;
 
 class InjectSqlGenerator : public QObject
 {
     Q_OBJECT
 public:
-    explicit InjectSqlGenerator(Version* v, QStringList connectionNames, QObject *parent = 0);
-    QStringList getSqls()
+    explicit InjectSqlGenerator(Version* v, QStringList connectionNames, QObject *parent);
+    QStringList getSqls(Connection* c)
+    {
+        return m_sqls[c];
+    }
+    QMap<Connection*, QStringList> getSqls()
     {
         return m_sqls;
     }
@@ -31,7 +37,7 @@ public slots:
 private:
     Version *m_version;
     QStringList m_connectionNames;
-    QStringList m_sqls;
+    QMap<Connection*, QStringList> m_sqls;
 };
 
 #endif // CORE_INJECTSQLGENERATOR_H

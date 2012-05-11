@@ -19,7 +19,7 @@ void ConnectionGuiElements::createGuiElements()
     m_connectionsTreeDock->setFeatures(QDockWidget::AllDockWidgetFeatures);
     m_connectionsTreeDock->setFloating(false);
     m_connectionsTreeDock->setMinimumSize(300, 340);
-    m_connectionsTreeDock->setMaximumSize(500, 9999);
+    m_connectionsTreeDock->setMaximumSize(QApplication::desktop()->screenGeometry().width() / 4, 9999);
     m_connectionsTreeDock->setSizePolicy(QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Maximum));
     m_connectionsTreeDock->resize(301,341);
 

@@ -80,14 +80,12 @@ void Index::addSpToColumn(const Column *c, const QString &db, SpInstance *spi)
         {
             QVector<SpInstance*>& v1 = map1[db];
             v1.append(spi);
-            qDebug() << 1;
         }
         else
         {
             QVector<SpInstance*> v1;
             v1.append(spi);
             map1.insert(db, v1);
-            qDebug() << 2;
         }
     }
     else
@@ -97,10 +95,7 @@ void Index::addSpToColumn(const Column *c, const QString &db, SpInstance *spi)
         v1.append(spi);
         map1.insert(db, v1);
         m_columnsWithSpInstances.insert(c->getName(), map1);
-        qDebug() << 3;
     }
-
-    qDebug() << "COL:"<< c->getName()<< " DB:"<<db<< " spi:"<<spi->getClass()->getName()<<" V:"<<spi->get();
 }
 
 void Index::serialize(QDomDocument &doc, QDomElement &parent) const

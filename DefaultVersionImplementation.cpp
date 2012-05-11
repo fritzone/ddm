@@ -1,5 +1,4 @@
 #include "DefaultVersionImplementation.h"
-
 #include "ContextMenuCollection.h"
 #include "UserDataType.h"
 #include "Table.h"
@@ -21,6 +20,7 @@
 #include "core_Trigger.h"
 #include "core_Function.h"
 #include "strings.h"
+#include "UidWarehouse.h"
 
 #include <QtGui>
 
@@ -140,6 +140,18 @@ Table* DefaultVersionImplementation::getTableWithUid(const QString& uid) const
     return 0;
 }
 
+Diagram* DefaultVersionImplementation::getDiagramWithUid(const QString& uid) const
+{
+    for(int i=0; i<m_data.m_diagrams.size(); i++)
+    {
+        if(m_data.m_diagrams[i]->getObjectUid() == uid)
+        {
+            return m_data.m_diagrams[i];
+        }
+    }
+
+    return 0;
+}
 
 Diagram* DefaultVersionImplementation::getDiagram(const QString& name)
 {
@@ -479,7 +491,7 @@ void DefaultVersionImplementation::setupForeignKeyRelationshipsForATable(Table* 
     }
 }
 
-QList<QString> DefaultVersionImplementation::getSqlScript(bool generateDelimiters)
+QList<QString> DefaultVersionImplementation::getSqlScript(bool generateDelimiters, const Connection* dest)
 {
     QList<QString> finalSql;
     QHash<QString, QString> opts = Configuration::instance().sqlGenerationOptions();
@@ -489,30 +501,41 @@ QList<QString> DefaultVersionImplementation::getSqlScript(bool generateDelimiter
 
     if(Workspace::getInstance()->currentProjectIsOop())   // list the table instances' SQL
     {
+        bool fkAllowed = true;
         for(int i=0; i<getTableInstances().size(); i++)
         {
-            QStringList sql = getTableInstances().at(i)->generateSqlSource(m_project->getEngine()->getSqlGenerator(), opts);
+            QStringList sql = getTableInstances().at(i)->generateSqlSource(m_project->getEngine()->getSqlGenerator(), opts, dest);
             finalSql << sql;
+
+            if(fkAllowed) fkAllowed = m_project->getEngine()->tableBlocksForeignKeyFunctionality(getTableInstances().at(i)->table());
         }
 
-        for(int i=0; i<getTableInstances().size(); i++)
+        if(fkAllowed)
         {
-            QStringList foreignKeyCommands = m_project->getEngine()->getSqlGenerator()->generateAlterTableForForeignKeys(getTableInstances().at(i)->table(), opts);
-            finalSql << foreignKeyCommands;
+            for(int i=0; i<getTableInstances().size(); i++)
+            {
+                QStringList foreignKeyCommands = m_project->getEngine()->getSqlGenerator()->generateAlterTableForForeignKeys(getTableInstances().at(i)->table(), opts);
+                finalSql << foreignKeyCommands;
+            }
         }
     }
     else    // list table's SQL
     {
+        bool fkAllowed = true;
         for(int i=0; i<getTables().size(); i++)
         {
-            QStringList sql = getTables().at(i)->generateSqlSource(m_project->getEngine()->getSqlGenerator(), opts);
+            QStringList sql = getTables().at(i)->generateSqlSource(m_project->getEngine()->getSqlGenerator(), opts, dest);
             finalSql << sql;
+            if(fkAllowed) fkAllowed = m_project->getEngine()->tableBlocksForeignKeyFunctionality(getTables().at(i));
         }
 
-        for(int i=0; i<getTables().size(); i++)
+        if(fkAllowed)
         {
-            QStringList foreignKeyCommands = m_project->getEngine()->getSqlGenerator()->generateAlterTableForForeignKeys(getTables().at(i), opts);
-            finalSql << foreignKeyCommands;
+            for(int i=0; i<getTables().size(); i++)
+            {
+                QStringList foreignKeyCommands = m_project->getEngine()->getSqlGenerator()->generateAlterTableForForeignKeys(getTables().at(i), opts);
+                finalSql << foreignKeyCommands;
+            }
         }
     }
 
@@ -524,7 +547,7 @@ QList<QString> DefaultVersionImplementation::getSqlScript(bool generateDelimiter
     }
     for(int i=0; i<m_data.m_views.size(); i++)
     {
-        QStringList t = m_data.m_views.at(i)->generateSqlSource(m_project->getEngine()->getSqlGenerator(), opts);
+        QStringList t = m_data.m_views.at(i)->generateSqlSource(m_project->getEngine()->getSqlGenerator(), opts, dest);
         QString s = "";
         for(int j=0; j<t.size(); j++)
         {
@@ -552,7 +575,7 @@ QList<QString> DefaultVersionImplementation::getSqlScript(bool generateDelimiter
     {
         QString s = "";
         if (comments) s = "-- Procedure " + m_data.m_procedures.at(i)->getName() + strNewline;
-        QStringList t = m_data.m_procedures.at(i)->generateSqlSource(m_project->getEngine()->getSqlGenerator(), opts);
+        QStringList t = m_data.m_procedures.at(i)->generateSqlSource(m_project->getEngine()->getSqlGenerator(), opts, dest);
         for(int j=0; j<t.size(); j++)
         {
             s += t.at(j) + " ";
@@ -591,7 +614,7 @@ QList<QString> DefaultVersionImplementation::getSqlScript(bool generateDelimiter
     {
         QString s = "";
         if (comments) s = "-- Function " + m_data.m_functions.at(i)->getName() + strNewline;
-        QStringList t = m_data.m_functions.at(i)->generateSqlSource(m_project->getEngine()->getSqlGenerator(), opts);
+        QStringList t = m_data.m_functions.at(i)->generateSqlSource(m_project->getEngine()->getSqlGenerator(), opts, dest);
         for(int j=0; j<t.size(); j++)
         {
             s += t.at(j) + " ";
@@ -625,7 +648,7 @@ QList<QString> DefaultVersionImplementation::getSqlScript(bool generateDelimiter
     {
         QString s = "";
         if (comments) s = "-- Trigger " + m_data.m_triggers.at(i)->getName() + strNewline;
-        QStringList t = m_data.m_triggers.at(i)->generateSqlSource(m_project->getEngine()->getSqlGenerator(), opts);
+        QStringList t = m_data.m_triggers.at(i)->generateSqlSource(m_project->getEngine()->getSqlGenerator(), opts, dest);
         for(int j=0; j<t.size(); j++)
         {
             s += t.at(j) + " ";
@@ -966,37 +989,28 @@ QString DefaultVersionImplementation::getVersionText()
     return version;
 }
 
-SqlSourceEntity* DefaultVersionImplementation::getSqlSourceEntityNamed(const QString &name) const
+SqlSourceEntity* DefaultVersionImplementation::getSqlSourceEntityWithGuid(const QString &guid) const
 {
-    SqlSourceEntity* ent = 0;
+    Table* table =  dynamic_cast<Table*>(UidWarehouse::instance().getElement(guid));
+    if(table) return table;
+
     if(m_project->oopProject())
     {
-        ent = getTableInstance(name);
-    }
-    else
-    {
-        ent = getTable(name);
+        TableInstance* tinst =  dynamic_cast<TableInstance*>(UidWarehouse::instance().getElement(guid));
+        if(tinst) return tinst;
     }
 
-    if(ent == 0)
-    {
-        ent = getView(name);
-    }
+    Procedure* p = dynamic_cast<Procedure*>(UidWarehouse::instance().getElement(guid));
+    if(p) return p;
 
-    if(ent == 0)
-    {
-        ent = getProcedure(name);
-    }
+    Function* f = dynamic_cast<Function*>(UidWarehouse::instance().getElement(guid));
+    if(f) return f;
 
-    if(ent == 0)
-    {
-        ent = getTrigger(name);
-    }
+    Trigger* t = dynamic_cast<Trigger*>(UidWarehouse::instance().getElement(guid));
+    if(t) return t;
 
-    if(ent == 0)
-    {
-        ent = getFunction(name);
-    }
+    View* v = dynamic_cast<View*>(UidWarehouse::instance().getElement(guid));
+    if(v) return v;
 
-    return ent;
+    return 0;
 }

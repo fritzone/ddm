@@ -16,8 +16,8 @@ void GuiElements::createGuiElements()
     m_projectTreeDock->setFeatures(QDockWidget::AllDockWidgetFeatures);
     m_projectTreeDock->setFloating(false);
     m_projectTreeDock->setMinimumSize(300, 340);
-    m_projectTreeDock->setMaximumSize(500, 9999);
-    m_projectTreeDock->setSizePolicy(QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Maximum));
+    m_projectTreeDock->setMaximumSize(QApplication::desktop()->screenGeometry().width() / 4, 9999);
+ //    m_projectTreeDock->setSizePolicy(QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Maximum));
     m_projectTreeDock->resize(301,341);
 
     m_datatypesTreeDock = new QDockWidget(QObject::tr("DataTypes") , MainWindow::instance());
@@ -25,7 +25,7 @@ void GuiElements::createGuiElements()
     m_datatypesTreeDock->setFeatures(QDockWidget::AllDockWidgetFeatures);
     m_datatypesTreeDock->setFloating(false);
     m_datatypesTreeDock->setMinimumSize(300, 340);
-    m_datatypesTreeDock->setMaximumSize(500, 9999);
+    m_datatypesTreeDock->setMaximumSize(QApplication::desktop()->screenGeometry().width() / 4, 9999);
 
     m_projectTree = new ContextMenuEnabledTreeWidget();
     m_projectTree->setAllColumnsShowFocus(true);
@@ -76,7 +76,6 @@ void GuiElements::createGuiElements()
 
 void GuiElements::freeGuiElements()
 {
-
     if(m_projectTree)
     {
         delete m_projectTree;

@@ -17,7 +17,7 @@ public:
     View(bool manual, QString uid);
     View(Version* v, bool manual, QString uid); // used by the deserialization engine
 
-    virtual QStringList generateSqlSource(AbstractSqlGenerator*, QHash<QString,QString>);
+    virtual QStringList generateSqlSource(AbstractSqlGenerator*, QHash<QString,QString>, const Connection*);
 
     QueryGraphicsHelper* getHelper() const
     {

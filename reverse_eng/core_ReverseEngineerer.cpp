@@ -1,6 +1,7 @@
 #include "core_ReverseEngineerer.h"
 #include "core_ReverseEngineererThread.h"
 #include <QThread>
+#include <QDebug>
 
 ReverseEngineerer::ReverseEngineerer(bool c, DatabaseEngine* engine, Project* p,
                                      const QString &host, const QString &user, const QString &pass, const QString &db,

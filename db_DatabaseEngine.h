@@ -339,6 +339,14 @@ public:
      */
     virtual Sp* getSpForSqlRole(const QString& uid) const = 0;
 
+    /**
+     * Checks if the deployment of this table will block the foreign keys.
+     * Pretty useful for ex. MyISAM mysql engines.
+     * @param table - the table to check
+     * @return true if teh table will block the foreign key functionality
+     */
+    virtual bool tableBlocksForeignKeyFunctionality(const Table* table) const = 0;
+
 public:
 
     /**

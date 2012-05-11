@@ -17,7 +17,7 @@ public:
 
     ~MySQLSQLGenerator() {}
 
-    virtual QStringList generateCreateTableSql(Table* table, const QHash<QString, QString>& options, const QString& tabName) const;
+    virtual QStringList generateCreateTableSql(Table* table, const QHash<QString, QString>& options, const QString& tabName, const Connection* dest) const;
     virtual QStringList generateDefaultValuesSql(TableInstance* tableInstance, const QHash<QString, QString>& options) const;
     virtual QStringList generateDefaultValuesSql(Table* table, const QHash<QString, QString>& options) const;
     virtual QStringList generateCreateViewSql(View *v, const QHash<QString, QString> &options) const;

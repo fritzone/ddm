@@ -5,15 +5,20 @@
 #include <QStringList>
 
 class Version;
+class Connection;
 
 class InjectSqlGeneratorThread : public QObject
 {
     Q_OBJECT
 public:
-    explicit InjectSqlGeneratorThread(Version* v, QObject *parent = 0);
+    explicit InjectSqlGeneratorThread(Version* v, QObject *parent, Connection*);
     QStringList getSqls() const
     {
         return m_sqls;
+    }
+    Connection* getConnection() const
+    {
+        return m_connection;
     }
 
 public slots:
@@ -25,6 +30,7 @@ signals:
 private:
     QStringList m_sqls;
     Version* m_version;
+    Connection* m_connection;
 };
 
 #endif // CORE_INJECTSQLGENERATORTHREAD_H

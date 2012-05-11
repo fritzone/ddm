@@ -8,6 +8,7 @@
 
 class GuiElements;
 class Project;
+class Connection;
 
 class DefaultVersionImplementation : public Version
 {
@@ -46,7 +47,7 @@ public:
     virtual QString getVersionText();
     virtual QVector<Table*> getTablesReferencingAColumnThroughForeignKeys(const Column*);
     virtual void setupForeignKeyRelationshipsForATable(Table *tab);
-    virtual QList<QString> getSqlScript(bool generateDelimiters);
+    virtual QList<QString> getSqlScript(bool generateDelimiters, const Connection*);
     virtual UserDataType* provideDatatypeForSqlType(const QString& name, const QString& sql, const QString& nullable, const QString& defaultValue, bool relaxed);
     virtual QVector<Issue*> checkIssuesOfNewColumn(Column* inNewColumn, Table* inTable);
     virtual void addIssuse(Issue*);
@@ -68,11 +69,12 @@ public:
     virtual void addTrigger(Trigger *);
     virtual Trigger* getTrigger(const QString &name) const;
     virtual const QVector<Trigger*>& getTriggers();
-    virtual SqlSourceEntity* getSqlSourceEntityNamed(const QString& name) const;
+    virtual SqlSourceEntity* getSqlSourceEntityWithGuid(const QString& guid) const;
     virtual void addFunction(Function* p);
     virtual const QVector<Function*>& getFunctions();
     virtual Table* getTableWithUid(const QString& uid) const;
     virtual TableInstance* getTableInstanceWithUid(const QString& uid) const;
+    virtual Diagram* getDiagramWithUid(const QString& uid) const;
 
     void createTreeItems(GuiElements* gui, ContextMenuEnabledTreeWidgetItem* projectItem);
 
