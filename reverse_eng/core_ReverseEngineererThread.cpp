@@ -21,8 +21,11 @@ ReverseEngineererThread::ReverseEngineererThread(bool c, DatabaseEngine* engine,
 void ReverseEngineererThread::doWork()
 {
     Connection* c = new Connection("temp", m_host, m_user, m_pass, m_db, false, false);
-    m_engine->reverseEngineerDatabase(c, m_tabsToReverse, m_viewsToReverse, m_procsToReverse, m_funcsToReverse,
-                                      m_triggersToReverse, m_project, m_createDataTypesForColumns);
+    if(!m_engine->reverseEngineerDatabase(c, m_tabsToReverse, m_viewsToReverse, m_procsToReverse, m_funcsToReverse,
+                                      m_triggersToReverse, m_project, m_createDataTypesForColumns))
+    {
+        qDebug() << "excetpion caught";
+    }
     emit done(this);
     delete c;
 }

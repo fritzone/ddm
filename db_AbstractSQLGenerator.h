@@ -10,6 +10,7 @@ class TableInstance;
 class View;
 class StoredMethod;
 class Trigger;
+class Connection;
 
 /**
  * Interface towards the Database Engine responsible for generating the SQLs for the given database
@@ -32,12 +33,13 @@ public:
      * @param table - the table for which the SQL is being generated.
      * @param options - the options that are used for code generation
      * @param tabName - this is the name of the table that will be used in the code generation
+     * @param dest - the destination database this sql is heading for
      *
      * @return a list of SQL commands as string values for creating the table, the indexes and the
      * foreign keys for this table.
      *
      */
-    virtual QStringList generateCreateTableSql(Table* table, const QHash<QString, QString>& options, const QString& tabName) const = 0;
+    virtual QStringList generateCreateTableSql(Table* table, const QHash<QString, QString>& options, const QString& tabName, const Connection* dest) const = 0;
 
     /**
      * Generates a list of "Insert Into" sqls for the given table instance, one for each row in the default values.

@@ -134,7 +134,7 @@ void NewViewForm::presentSql(Project* p)
 {
     // TODO: this is still not right, it's here just to work.
     QHash<QString, QString> opts = Configuration::instance().sqlGenerationOptions();
-    QStringList sqls = getSqlSourceEntity()->generateSqlSource(p->getEngine()->getSqlGenerator(), opts);
+    QStringList sqls = getSqlSourceEntity()->generateSqlSource(p->getEngine()->getSqlGenerator(), opts, 0);
     QString sql = "";
     for(int i=0; i<sqls.size(); i++)
     {

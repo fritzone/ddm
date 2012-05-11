@@ -12,8 +12,10 @@
 #include "strings.h"
 #include "SpInstance.h"
 #include "db_DatabaseEngine.h"
+#include "dbmysql_MySQLDatabaseEngine.h"
+#include "core_Connection.h"
 
-QStringList MySQLSQLGenerator::generateCreateTableSql(Table *table, const QHash<QString, QString> &options, const QString& tabName) const
+QStringList MySQLSQLGenerator::generateCreateTableSql(Table *table, const QHash<QString, QString> &options, const QString& tabName, const Connection* dest) const
 {
     // do not generate any code for a table which has no columns
     if(table->fullColumns().size() == 0) return QStringList();
@@ -191,8 +193,9 @@ QStringList MySQLSQLGenerator::generateCreateTableSql(Table *table, const QHash<
         {
             QString g = dt->getDefaultValue();
             createTable += QString(upcase?" DEFAULT ":" default ") +
-                    QString( (dt->getType()==DT_STRING) || (dt->getType()==DT_DATETIME && g.toUpper()!="CURRENT_TIMESTAMP") ? "\"" : "") + dt->getDefaultValue() +
-                    QString( (dt->getType()==DT_STRING) || (dt->getType()==DT_DATETIME && g.toUpper()!="CURRENT_TIMESTAMP") ? "\"" : "") ;
+                    (dt->getDefaultValue().toUpper() == "NULL"? ("NULL ") :
+                    (QString( (dt->getType()==DT_STRING) || (dt->getType()==DT_DATETIME && g.toUpper()!="CURRENT_TIMESTAMP") ? "\"" : "") + dt->getDefaultValue() +
+                    QString( (dt->getType()==DT_STRING) || (dt->getType()==DT_DATETIME && g.toUpper()!="CURRENT_TIMESTAMP") ? "\"" : "") ));
         }
 
         {
@@ -203,7 +206,7 @@ QStringList MySQLSQLGenerator::generateCreateTableSql(Table *table, const QHash<
             QString autoInc = spi->get();
             if(autoInc == "TRUE")
             {
-                createTable += upcase? "AUTO_INCREMENT ":"auto_increment ";
+                createTable += upcase? " AUTO_INCREMENT ":" auto_increment ";
             }
         }
         }
@@ -302,7 +305,22 @@ QStringList MySQLSQLGenerator::generateCreateTableSql(Table *table, const QHash<
         QString storageEngine = spi->get();
         if(storageEngine.length())
         {
-            createTable += QString(upcase?"ENGINE = ":"engine = ") + storageEngine;
+            MySQLDatabaseEngine* mysEng = dynamic_cast<MySQLDatabaseEngine*>(m_engine);
+            if(mysEng)
+            {
+                if(dest)
+                {
+                    QStringList supportedStroageEngines = mysEng->getSupportedStorageEngines(dest->getHost(), dest->getUser(), dest->getPassword());
+                    if(supportedStroageEngines.contains(storageEngine.toUpper()))
+                    {
+                        createTable += QString(upcase?"ENGINE = ":"engine = ") + storageEngine;
+                    }
+                }
+                else
+                {
+                    createTable += QString(upcase?"ENGINE = ":"engine = ") + storageEngine;
+                }
+            }
         }
     }
     }
@@ -345,12 +363,12 @@ QStringList MySQLSQLGenerator::generateCreateTableSql(Table *table, const QHash<
             QString c = spi->get();
             if(c.length())
             {
-                indexCommand += strSpace + c + strSpace;
+                indexCommand += strSpace + c;
             }
         }
         }
 
-        indexCommand += upcase?"INDEX ":"index ";
+        indexCommand += strSpace + (upcase?"INDEX ":"index ");
         indexCommand += table->fullIndices().at(i);
 
         if(idx == 0)
@@ -638,7 +656,7 @@ QStringList MySQLSQLGenerator::generateTriggerSql(Trigger* t, const QHash<QStrin
     s += t->getTime(); s+= strSpace;
     s += t->getEvent(); s+= strSpace;
     s += upcase? "ON ":"on ";
-    s += t->getName(); s+= strSpace;
+    s += t->getTable(); s+= strSpace;
     s += upcase? "FOR EACH ROW ":"for each row ";
     s += strNewline + t->getSql() + strSemicolon + strNewline;
     result << s;

@@ -3,8 +3,10 @@
 
 #include <QStringList>
 
-class AbstractSqlGenerator;
 #include "ContextMenuEnabledTreeWidget.h"
+
+class AbstractSqlGenerator;
+class Connection;
 
 /**
  * This is a very stupid name for a class which can generate SQLs (ie. a Table or a Trigger).
@@ -12,7 +14,7 @@ class AbstractSqlGenerator;
 class SqlSourceEntity
 {
 public:
-    virtual QStringList generateSqlSource(AbstractSqlGenerator*, QHash<QString,QString>) = 0;
+    virtual QStringList generateSqlSource(AbstractSqlGenerator*, QHash<QString,QString>, const Connection* ) = 0;
     virtual ~SqlSourceEntity() {}
     void setSqlItem(ContextMenuEnabledTreeWidgetItem* sqlItem)
     {

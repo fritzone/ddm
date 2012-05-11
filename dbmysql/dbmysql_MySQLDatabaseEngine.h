@@ -53,7 +53,9 @@ public:
     virtual QString getTableCreationScript(Connection* c, const QString& tabName);
     virtual QVector<Sp*> getDatabaseSpecificProperties() const;
     virtual Sp* getSpForSqlRole(const QString& uid) const;
+    virtual bool tableBlocksForeignKeyFunctionality(const Table* table) const;
 
+    QStringList getSupportedStorageEngines(const QString& host, const QString& user, const QString& pass);
 private:
     MySQLDatabaseEngine();
 

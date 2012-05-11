@@ -273,7 +273,7 @@ void WidgetForSpecificProperties::feedInSpecificProperties(const QVector<SpInsta
                 connect(checkBox, SIGNAL(clicked()), m_signalMapper, SLOT(map()));
 
                 const QString& v = spInstances.at(i)->get();
-                qDebug() << spInstances.at(i)->getClass()->getName() << " " << v;
+
                 if(v == "TRUE")
                 {
                     checkBox->setChecked(true);
@@ -460,6 +460,6 @@ void WidgetForSpecificProperties::editTextEdited(const QString &s)
     QLineEdit *edit = qobject_cast<QLineEdit*>(sender());
     if(edit != 0)
     {
-        qDebug() << edit->text();
+//        qDebug() << edit->text();
     }
 }

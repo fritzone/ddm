@@ -31,6 +31,7 @@ public slots:
     void onCellChange(int,int);
     void onHelp();
     void onValuesDoubleClick();
+    void onGotoTable();
 
 protected:
     void changeEvent(QEvent *e);

@@ -71,6 +71,8 @@ QString MySQLDatabaseEngine::provideConnectionName(const QString& prefix)
 bool MySQLDatabaseEngine::reverseEngineerDatabase(Connection *c, const QStringList& tables, const QStringList& views, const QStringList& procs,
                                                   const QStringList& funcs, const QStringList& triggers, Project*p, bool relaxed)
 {
+    try
+    {
     Version* v = p->getWorkingVersion();
     m_revEngMappings.clear();
     m_oneTimeMappings.clear();
@@ -160,6 +162,13 @@ bool MySQLDatabaseEngine::reverseEngineerDatabase(Connection *c, const QStringLi
             dbo.close();
         }
     }
+    }
+    catch(...)
+    {
+        qDebug() << "exception";
+        return false;
+    }
+
     return true;
 }
 
@@ -645,6 +654,7 @@ bool MySQLDatabaseEngine::executeSql(Connection* c, const QStringList& sqls, QSt
                 {
                     db.rollback();
                 }
+                qDebug() << lastSql;
                 return false;
             }
         }
@@ -1685,4 +1695,46 @@ Sp* MySQLDatabaseEngine::getSpForSqlRole(const QString& uid) const
         }
     }
     return 0;
+}
+
+bool MySQLDatabaseEngine::tableBlocksForeignKeyFunctionality(const Table* table) const
+{
+    SpInstance* spi = table->getInstanceForSqlRoleUid(this, uidMysqlStorageEngineTable);
+    if(spi)
+    {
+        QString storageEngine = spi->get();
+        if(storageEngine.length())
+        {
+            if(storageEngine.toUpper() == "INNODB") return false;
+        }
+    }
+    return true;
+}
+
+QStringList MySQLDatabaseEngine::getSupportedStorageEngines(const QString& host, const QString& user, const QString& pass)
+{
+    Connection *c = new Connection("temp", host, user, pass, "", false, false);
+    QSqlDatabase db = getQSqlDatabaseForConnection(c);
+    bool ok = db.isOpen();
+    QStringList result;
+
+    if(!ok)
+    {
+        lastError = QObject::tr("Cannot connect to the database: ") + db.lastError().databaseText() + "/" + db.lastError().driverText();
+        return result;
+    }
+
+    QSqlQuery query(db);
+    query.exec("show engines");
+
+    while(query.next())
+    {
+        QString dbName = query.value(0).toString();
+        bool supported = query.value(1).toString().toUpper() != "NO";
+        if(supported) result.append(dbName);
+    }
+    db.close();
+
+    return result;
+
 }

@@ -49,7 +49,7 @@ public:
         m_instantiatedTablesInstances.append(tabInst);
     }
 
-    virtual QStringList generateSqlSource(AbstractSqlGenerator *generator,QHash<QString,QString>);
+    virtual QStringList generateSqlSource(AbstractSqlGenerator *generator,QHash<QString,QString>, const Connection*);
 
     QVector<TableInstance*>& getInstantiatedTableInstances()
     {

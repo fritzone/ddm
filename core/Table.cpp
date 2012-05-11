@@ -419,10 +419,10 @@ const UserDataType* Table::getDataTypeOfColumn(const QString& cname) const
     return col->getDataType();
 }
 
-QStringList Table::generateSqlSource(AbstractSqlGenerator *generator, QHash<QString,QString> opts)
+QStringList Table::generateSqlSource(AbstractSqlGenerator *generator, QHash<QString,QString> opts, const Connection* dest)
 {
     const_cast<Table*>(this)->restartSqlRendering();
-    QStringList createSql = generator->generateCreateTableSql(const_cast<Table*>(this), opts, getName());
+    QStringList createSql = generator->generateCreateTableSql(const_cast<Table*>(this), opts, getName(), dest);
     if(!Workspace::getInstance()->currentProjectIsOop())
     {
         createSql << generator->generateDefaultValuesSql(this, opts);

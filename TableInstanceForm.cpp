@@ -258,3 +258,7 @@ void TableInstanceForm::onValuesDoubleClick()
     onAddNewRow();
 }
 
+void TableInstanceForm::onGotoTable()
+{
+    MainWindow::instance()->showTableWithGuid(m_tinst->table()->getObjectUid());
+}

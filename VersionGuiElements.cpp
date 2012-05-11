@@ -217,7 +217,7 @@ void VersionGuiElements::populateTreeItems()
             TableInstance* tI = tableInstances[i];
             ContextMenuEnabledTreeWidgetItem* tabInstSqlItem = new ContextMenuEnabledTreeWidgetItem(getFinalSqlItem(), QStringList(tI->getName())) ;
 
-            QVariant var(tI->getName());
+            QVariant var(tI->getObjectUid());
             tabInstSqlItem->setData(0, Qt::UserRole, var);
             tI->setSqlItem(tabInstSqlItem);
 
@@ -241,7 +241,7 @@ void VersionGuiElements::populateTreeItems()
             Table* tbl = tables.at(i);
             ContextMenuEnabledTreeWidgetItem* newTblsItem = new ContextMenuEnabledTreeWidgetItem(getFinalSqlItem(), QStringList(tbl->getName())) ;
 
-            QVariant var(tbl->getName());
+            QVariant var(tbl->getObjectUid());
             newTblsItem->setData(0, Qt::UserRole, var);
             newTblsItem->setPopupMenu(ContextMenuCollection::getInstance()->getTablePopupMenu());
             // set the icon, add to the tree

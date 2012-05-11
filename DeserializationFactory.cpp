@@ -714,7 +714,6 @@ void DeserializationFactory::createObjectWithSpInstances(DatabaseEngine* engine,
                 SpInstance* spi = createSpInstance(engine, sp_sql_role_uid, spi_uid);
                 if(spi)
                 {
-                    qDebug() << spi_value;
                     spi->set(spi_value);
                     obj->addSpInstance(engine, spi);
                 }

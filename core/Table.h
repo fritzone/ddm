@@ -240,7 +240,7 @@ public:
      */
     QSet<const Table*> getTablesReferencedByForeignKeys();
 
-    virtual QStringList generateSqlSource(AbstractSqlGenerator * generator, QHash<QString,QString>);
+    virtual QStringList generateSqlSource(AbstractSqlGenerator * generator, QHash<QString,QString>, const Connection*);
 
     /**
      * returns the first available index name
