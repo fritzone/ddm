@@ -621,8 +621,6 @@ Table* MySQLDatabaseEngine::reverseEngineerTable(Connection *c, const QString& t
             spi->set(eng);
         }
         }
-
-        throw "feed in the SP for storage engine for a table";
     }
     dbo.close();
     return tab;
