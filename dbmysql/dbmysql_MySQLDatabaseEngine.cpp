@@ -1656,6 +1656,8 @@ QStringList MySQLDatabaseEngine::getCodepageList()
 
 QVector<Sp*> MySQLDatabaseEngine::buildSps()
 {
+
+    // SPs for TABLE
     QVector<Sp*> result;
     result.push_back(new TrueFalseSp(uidMysqlTemporaryTable, uidTable, QString("Temporary"), QString("Temporary table"), QString("General"), 5, 0));
     result.push_back(new TrueFalseSp(uidMysqlIfNotExistsTable, uidTable, QString("IfNotExists"), QString("Create only if not exists"), QString("General"), 5, 0));
@@ -1667,6 +1669,7 @@ QVector<Sp*> MySQLDatabaseEngine::buildSps()
     QStringList valuesForCodepages = getCodepageList();
     result.push_back(new ValueListSp(uidMysqlCodepageTable, uidTable, QString("Codepage"), QString("Codepage"), QString("Advanced"), valuesForCodepages, 0, 5, 0));
 
+    // SPs for INDEX
     QStringList valuesForIndexTypes;
     valuesForIndexTypes << "" << "BTREE" << "HASH";
     result.push_back(new ValueListSp(uidMysqlIndexType, uidIndex, "Index Type", "Index Type", "General", valuesForIndexTypes, 0, 5, 0));
@@ -1675,9 +1678,12 @@ QVector<Sp*> MySQLDatabaseEngine::buildSps()
     valuesForIndexCategories << "" << "UNIQUE" << "FULLTEXT";
     result.push_back(new ValueListSp(uidMysqlIndexCategory, uidIndex, "Index Category", "Index Category", "General", valuesForIndexCategories, 0, 5, 0));
 
+    // SPs for column of index
     result.push_back(new ValueSp(uidMysqlColumnOfIndexLength, uidColumnOfIndex, "Column Length", "Used Column Length", "default", "", 5, 0));
 
+    // SPs for column
     result.push_back(new TrueFalseSp(uidMysqlColumnAutoIncrement, uidColumn, "Auto Increment", "Auto Increment", "General", 5, 0));
+    result.push_back(new TrueFalseSp(uidMysqlColumnZeroFill, uidColumn, "Zero fill", "Zero fill", "General", 5, 0));
 
     return result;
 }

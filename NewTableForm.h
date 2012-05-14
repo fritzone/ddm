@@ -185,8 +185,6 @@ private:
 
     void finalizeColumnMovement();
 
-    void populateCodepageCombo();
-
     void updateIssues();
 
     void setTypeComboBoxForColumnItem(ContextMenuEnabledTreeWidgetItem*, Column*);

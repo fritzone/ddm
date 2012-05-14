@@ -119,8 +119,6 @@ NewTableForm::NewTableForm(DatabaseEngine* db, Project* prj, QWidget *parent, bo
         prepareSpsTabs();
     }
 
-    populateCodepageCombo();
-
     m_signalMapperForCombosInColumns = new QSignalMapper(this);
     m_ui->buttons->hide();
 
@@ -151,92 +149,6 @@ void NewTableForm::resetForeignTablesCombo()
     m_ui->lstForeignTablesColumns->clear();
     m_ui->lstLocalColumn->clear();
     m_ui->txtForeignKeyName->clear();
-}
-
-void NewTableForm::populateCodepageCombo()
-{
-    const QVector<Codepage*> &cps = m_dbEngine->getCodepages();
-    QListWidget* lw = new QListWidget(this);
-    for(int i=0; i<cps.size(); i++)
-    {
-        QString name = cps[i]->getName();
-        bool header = false;
-        if(cps[i]->getName().startsWith(QString("--")))
-        {
-            header = true;
-            name = name.right(name.length() - 2);
-        }
-        QString iconName = "";
-
-        if(!header)
-        {
-        // dig out the second string
-            QStringList ls = name.split("_");
-            if(ls.size() > 1)
-            {
-
-                if(ls[1] != "bin" && ls[1] != "unicode" && ls[1] != "general")
-                {
-                    iconName = ":/images/actions/images/small/flag_" + ls[1] + ".png";
-                }
-                else
-                {
-                    if(ls[0] == "greek")
-                    {
-                        iconName = ":/images/actions/images/small/flag_greek.png";
-                    }
-                    else
-                    if(ls[0] == "armscii8")
-                    {
-                        iconName = ":/images/actions/images/small/flag_armenia.png";
-                    }
-                    else
-                    if(ls[0] == "hebrew")
-                    {
-                        iconName = ":/images/actions/images/small/flag_israel.png";
-                    }
-                    else
-                    {
-                        iconName = ":/images/actions/images/small/flag_" + ls[1] + ".png";
-                    }
-                }
-
-                ls[1][0] = ls[1][0].toUpper();
-
-                name = ls[1] + " (" + ls[0];
-                if(ls.size() > 2)
-                {
-                    name += ", " + ls[2];
-                }
-                name += ")";
-            }
-        }
-
-        // create the lw object
-        QListWidgetItem* lwi = new QListWidgetItem(name);
-        QFont font = lwi->font();
-        if(iconName.length() > 0)
-        {
-            lwi->setIcon(QIcon(iconName));
-        }
-
-        if(header)
-        {
-            font.setBold(true);
-            font.setItalic(true);
-            font.setPointSize(font.pointSize() + 1);
-        }
-
-        lwi->setFont(font);
-        lwi->setData(Qt::UserRole, QVariant(cps[i]->getName()));
-
-        lw->addItem(lwi);
-    }
-
-    m_ui->cmbCharSetForSql->setModel(lw->model());
-    m_ui->cmbCharSetForSql->setView(lw);
-    m_ui->cmbCharSetForSql->setCurrentIndex(-1);
-
 }
 
 ContextMenuEnabledTreeWidgetItem* NewTableForm::createTWIForForeignKey(const ForeignKey* fk)
@@ -2064,7 +1976,10 @@ void NewTableForm::onChangeTab(int idx)
     {
         if(m_ui->tabWidget->tabText(idx) == "SQL")
         {
-            presentSql(m_project);
+            if(m_table)
+            {
+                presentSql(m_project);
+            }
         }
     }
 }
@@ -2107,7 +2022,7 @@ void NewTableForm::onChangeName(QString a)
 void NewTableForm::onInject()
 {
     InjectSqlDialog* injectDialog = new InjectSqlDialog(Workspace::getInstance()->currentProjectsEngine(), this);
-    injectDialog->selectCodePage(m_ui->cmbCharSetForSql->currentIndex());
+
     injectDialog->setModal(true);
     bool error = false;
     if(injectDialog->exec() == QDialog::Accepted)
@@ -2250,6 +2165,7 @@ void NewTableForm::onColumnNameChange(QString)
 
 void NewTableForm::onDatatypeComboChange(QString)
 {
+    if(m_ui->cmbNewColumnType->currentIndex() == -1) return;
     if(m_currentColumn)
     {
         // TODO: This is dupliation with code from onAddColumn
@@ -2287,8 +2203,21 @@ void NewTableForm::onDatatypeComboChange(QString)
         m_currentColumn->getLocation()->setText(COL_POS_DT, m_currentColumn->getDataType()->getName());
 
         autoSave();
-        if(m_wspForColumn) m_wspForColumn->taylorToSpecificObject(m_currentColumn);
+        if(m_wspForColumn)
+        {
+                m_wspForColumn->taylorToSpecificObject(m_currentColumn);
+        }
     }
+    else
+    {
+        if(m_wspForColumn)
+        {
+            Column* tCol = new Column(QUuid::createUuid().toString(), "temp",(m_project->getWorkingVersion()->getDataType(m_ui->cmbNewColumnType->currentText())), false);
+            m_wspForColumn->taylorToSpecificObject(tCol);
+            delete tCol;
+        }
+    }
+
 }
 
 void NewTableForm::onPrimaryChange(bool)
