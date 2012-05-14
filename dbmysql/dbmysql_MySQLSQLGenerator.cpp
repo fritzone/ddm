@@ -173,6 +173,19 @@ QStringList MySQLSQLGenerator::generateCreateTableSql(Table *table, const QHash<
         const UserDataType* dt = table->getDataTypeOfColumn(table->fullColumns()[i]);
         createTable += upcase?dt->sqlAsString().toUpper():dt->sqlAsString().toLower();
 
+        {
+        // zero fill SP?
+        SpInstance* spi = col->getInstanceForSqlRoleUid(m_engine, uidMysqlColumnZeroFill);
+        if(spi)
+        {
+            QString zeroFill = spi->get();
+            if(zeroFill == "TRUE")
+            {
+                createTable += upcase? " ZEROFILL ":" zerofill ";
+            }
+        }
+        }
+
         // is this primary key?
         if(col->isPk())
         {

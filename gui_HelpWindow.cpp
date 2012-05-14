@@ -77,10 +77,9 @@ void HelpWindow::changeEvent(QEvent *e)
 
 void HelpWindow::showHelp(const QString &h)
 {
-    qDebug() << h;
     m_cindex ++;
     m_buttonNavigate = true;
-    ui->webView->setUrl(QApplication::applicationDirPath() + h);
+    ui->webView->setUrl(QString("file://") + QApplication::applicationDirPath() + h);
     m_links.erase(m_links.begin() + m_cindex, m_links.end());
     m_links.append(QApplication::applicationDirPath() + h);
 

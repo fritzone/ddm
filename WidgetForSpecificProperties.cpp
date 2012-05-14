@@ -177,7 +177,8 @@ void WidgetForSpecificProperties::taylorToSpecificObject(ObjectWithSpInstances *
     if(Column* col = dynamic_cast<Column*>(dest))
     {
         if(col->getDataType()->getType() != DT_NUMERIC)
-        {   // disable the checkbox
+        {   // disable the checkboxes for zerofill and autoinc
+            {
             SpInstance* autoIncInstance = dest->getInstanceForSqlRoleUid(m_dbEngine, uidMysqlColumnAutoIncrement);
             if(autoIncInstance)
             {
@@ -186,17 +187,32 @@ void WidgetForSpecificProperties::taylorToSpecificObject(ObjectWithSpInstances *
                 {
                     autoIncInstance->set("FALSE");
                 }
-                for(int i=0; i<m_mappings.size(); i++)
+            }
+            }
+
+
+            {
+            SpInstance* zeroFillInstance = dest->getInstanceForSqlRoleUid(m_dbEngine, uidMysqlColumnZeroFill);
+            if(zeroFillInstance)
+            {
+                QString value = zeroFillInstance->get();
+                if(value == "TRUE")
                 {
-                    UidToWidget* uiw = m_mappings.at(i);
-                    if(uiw->objectRoleUid == uidMysqlColumnAutoIncrement)
+                    zeroFillInstance->set("FALSE");
+                }
+            }
+            }
+
+            for(int i=0; i<m_mappings.size(); i++)
+            {
+                UidToWidget* uiw = m_mappings.at(i);
+                if(uiw->objectRoleUid == uidMysqlColumnAutoIncrement || uiw->objectRoleUid == uidMysqlColumnZeroFill)
+                {
+                    QCheckBox* chk = qobject_cast<QCheckBox*>(uiw->w);
+                    if(chk)
                     {
-                        QCheckBox* chk = qobject_cast<QCheckBox*>(uiw->w);
-                        if(chk)
-                        {
-                            chk->setChecked(false);
-                            chk->setEnabled(false);
-                        }
+                        chk->setChecked(false);
+                        chk->setEnabled(false);
                     }
                 }
             }

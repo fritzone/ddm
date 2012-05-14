@@ -36,7 +36,6 @@ InjectSqlDialog::InjectSqlDialog(DatabaseEngine* engine, QWidget *parent) : QDia
 
     if(engine)
     {
-        populateCodepageCombo();
         populateConnections();
     }
     else
@@ -126,8 +125,6 @@ void InjectSqlDialog::setupForConnectionStorage()
 {
     setupForReverseEngineering();
     ui->grpConnectionDetails->show();
-    ui->cmbCharacterSets->hide();
-    ui->lblCodepage->hide();
 
     ui->lblConnectionName->show();
     ui->txtConnectionName->show();
@@ -139,7 +136,9 @@ void InjectSqlDialog::setupForConnectionStorage()
     ui->grpConnections->hide();
     ui->txtDatabaseName->hide();
     ui->cmbDatabases->show();
-    ui->btnDetails->hide();
+    ui->frame->hide();
+    ui->verticalLayout_4->setMargin(0);
+    ui->verticalLayout_4->setSpacing(0);
 
     setWindowTitle(QObject::tr("Connection Details"));
     resize(450, 400);
@@ -148,11 +147,6 @@ void InjectSqlDialog::setupForConnectionStorage()
 void InjectSqlDialog::setupForReverseEngineering()
 {
     ui->chkRollbackOnError->hide();
-}
-
-void InjectSqlDialog::selectCodePage(int i)
-{
-    ui->cmbCharacterSets->setCurrentIndex(i);
 }
 
 void InjectSqlDialog::populateConnections()
@@ -164,91 +158,6 @@ void InjectSqlDialog::populateConnections()
         lwi->setText(connections.at(i)->getName() + " ("+ connections.at(i)->getDb()+"@"+ connections.at(i)->getHost() + ")");   // TODO: This should be done with setData but I'm lasy now
         lwi->setIcon(IconFactory::getConnectionStateIcon(connections.at(i)->getState()));
     }
-}
-
-void InjectSqlDialog::populateCodepageCombo()
-{
-    const QVector<Codepage*> &cps = m_dbEngine->getCodepages();
-    QListWidget* lw = new QListWidget(this);
-    for(int i=0; i<cps.size(); i++)
-    {
-        QString name = cps[i]->getName();
-        bool header = false;
-        if(cps[i]->getName().startsWith(QString("--")))
-        {
-            header = true;
-            name = name.right(name.length() - 2);
-        }
-        QString iconName = "";
-
-        if(!header)
-        {
-        // dig out the second string
-            QStringList ls = name.split("_");
-            if(ls.size() > 1)
-            {
-
-                if(ls[1] != "bin" && ls[1] != "unicode" && ls[1] != "general")
-                {
-                    iconName = ":/images/actions/images/small/flag_" + ls[1] + ".png";
-                }
-                else
-                {
-                    if(ls[0] == "greek")
-                    {
-                        iconName = ":/images/actions/images/small/flag_greek.png";
-                    }
-                    else
-                    if(ls[0] == "armscii8")
-                    {
-                        iconName = ":/images/actions/images/small/flag_armenia.png";
-                    }
-                    else
-                    if(ls[0] == "hebrew")
-                    {
-                        iconName = ":/images/actions/images/small/flag_israel.png";
-                    }
-                    else
-                    {
-                        iconName = ":/images/actions/images/small/flag_" + ls[1] + ".pmg";
-                    }
-                }
-
-                ls[1][0] = ls[1][0].toUpper();
-
-                name = ls[1] + " (" + ls[0];
-                if(ls.size() > 2)
-                {
-                    name += ", " + ls[2];
-                }
-                name += ")";
-            }
-        }
-
-        // create the lw object
-        QListWidgetItem* lwi = new QListWidgetItem(name);
-        QFont font = lwi->font();
-        if(iconName.length() > 0)
-        {
-            lwi->setIcon(QIcon(iconName));
-        }
-
-        if(header)
-        {
-            font.setBold(true);
-            font.setItalic(true);
-            font.setPointSize(font.pointSize() + 1);
-        }
-
-        lwi->setFont(font);
-
-        lw->addItem(lwi);
-    }
-
-    ui->cmbCharacterSets->setModel(lw->model());
-    ui->cmbCharacterSets->setView(lw);
-    ui->cmbCharacterSets->setCurrentIndex(-1);
-
 }
 
 void InjectSqlDialog::onCreateDatabase()
@@ -293,6 +202,13 @@ void InjectSqlDialog::onSelectConnection(QListWidgetItem* item)
     {
         populateConnectionDetails(c);
     }
+
+    ui->txtDatabaseHost->setReadOnly(true);
+    ui->txtDatabaseUser->setReadOnly(true);
+    ui->txtDatabasePassword->setReadOnly(true);
+    ui->txtConnectionName->setReadOnly(true);
+    ui->txtDatabaseName->setReadOnly(true);
+
 }
 
 void InjectSqlDialog::populateConnectionDetails(Connection* c)

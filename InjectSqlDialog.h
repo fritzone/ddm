@@ -33,10 +33,6 @@ public:
     void setupForReverseEngineering();
     void setupForConnectionStorage();
 
-    // loads the codepages from the codepages
-    void populateCodepageCombo();
-
-    void selectCodePage(int);
     void populateConnectionDetails(Connection* c);
     void clearConnectionDetails();
 
