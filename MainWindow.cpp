@@ -2141,7 +2141,7 @@ void MainWindow::onReverseEngineerWizardNextPage(int cpage)
     case 2: // user selected a database to reverse engineer
         if(!m_revEngWizard->selectDatabase()) // did he?
         {
-            QMessageBox::critical(this, tr("Error"), tr("Please select a database"), QMessageBox::Ok);
+            QMessageBox::critical(m_revEngWizard, tr("Error"), tr("Please select a database"), QMessageBox::Ok);
             m_revEngWizard->back();
         }
 
@@ -2150,7 +2150,7 @@ void MainWindow::onReverseEngineerWizardNextPage(int cpage)
     case 3: // user selected the tables, advanced to the views
         if(!m_revEngWizard->selectDatabase()) // did he select a database?
         {
-            QMessageBox::critical(this, tr("Error"), tr("Please select a database"), QMessageBox::Ok);
+            QMessageBox::critical(m_revEngWizard, tr("Error"), tr("Please select a database"), QMessageBox::Ok);
             m_revEngWizard->back();
         }
         m_revEngWizard->connectAndRetrieveViews();
@@ -2158,7 +2158,7 @@ void MainWindow::onReverseEngineerWizardNextPage(int cpage)
     case 4: // procedures
         if(!m_revEngWizard->selectDatabase()) // did he select a database?
         {
-            QMessageBox::critical(this, tr("Error"), tr("Please select a database"), QMessageBox::Ok);
+            QMessageBox::critical(m_revEngWizard, tr("Error"), tr("Please select a database"), QMessageBox::Ok);
             m_revEngWizard->back();
         }
         m_revEngWizard->connectAndRetrieveProcedures();
@@ -2166,7 +2166,7 @@ void MainWindow::onReverseEngineerWizardNextPage(int cpage)
     case 5: // functions
         if(!m_revEngWizard->selectDatabase()) // did he select a database?
         {
-            QMessageBox::critical(this, tr("Error"), tr("Please select a database"), QMessageBox::Ok);
+            QMessageBox::critical(m_revEngWizard, tr("Error"), tr("Please select a database"), QMessageBox::Ok);
             m_revEngWizard->back();
         }
         m_revEngWizard->connectAndRetrieveFunctions();
@@ -2174,7 +2174,7 @@ void MainWindow::onReverseEngineerWizardNextPage(int cpage)
     case 6: // triggers
         if(!m_revEngWizard->selectDatabase()) // did he select a database?
         {
-            QMessageBox::critical(this, tr("Error"), tr("Please select a database"), QMessageBox::Ok);
+            QMessageBox::critical(m_revEngWizard, tr("Error"), tr("Please select a database"), QMessageBox::Ok);
             m_revEngWizard->back();
         }
         m_revEngWizard->connectAndRetrieveTriggers();
@@ -2201,7 +2201,7 @@ void MainWindow::onReverseEngineerWizardAccept()
                                                       m_revEngWizard->getProceduresToReverse(),
                                                       m_revEngWizard->getFunctionsToReverse(),
                                                       m_revEngWizard->getTriggersToReverse(),
-                                                      this);
+                                                      0);
     connect(revEng, SIGNAL(done(ReverseEngineerer*)), this, SLOT(onReverseEngineeringFinished(ReverseEngineerer*)));
     revEng->reverseEngineer();
 }
