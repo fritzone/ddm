@@ -474,6 +474,8 @@ QStringList MySQLSQLGenerator::generateDefaultValuesSql(TableInstance* tableInst
     QStringList result;
     int maxValues = 0;
     bool upcase = options.contains("Case") && options["Case"] == "Upper";
+    Table* t = tableInstance->table();
+
     // find how many values we have
     for(int i=0; i<tableInstance->columns().size(); i++)
     {
@@ -487,10 +489,32 @@ QStringList MySQLSQLGenerator::generateDefaultValuesSql(TableInstance* tableInst
         insert += " (";
         for(int j=0; j<tableInstance->columns().size(); j++)
         {
-            insert += tableInstance->columns().at(j);
-            if(j< tableInstance->columns().size() - 1)
+            Column* c = t->getColumn(tableInstance->columns().at(j));
+            if(!c) c = t->getColumnFromParents(tableInstance->columns().at(j));
+            if(!c)
             {
-                insert += ", ";
+                qDebug() << "cannot find c: " << c->getName();
+                return QStringList();
+            }
+            bool ainc = false;
+            {
+                SpInstance* spi = c->getInstanceForSqlRoleUid(m_engine, uidMysqlColumnAutoIncrement);
+                if(spi)
+                {
+                    QString autoInc = spi->get();
+                    if(autoInc == "TRUE")
+                    {
+                        ainc = true;
+                    }
+                }
+            }
+            if(!ainc)
+            {
+                insert += tableInstance->columns().at(j);
+                if(j< tableInstance->columns().size() - 1)
+                {
+                    insert += ", ";
+                }
             }
 
         }
@@ -498,33 +522,55 @@ QStringList MySQLSQLGenerator::generateDefaultValuesSql(TableInstance* tableInst
         for(int j=0; j<tableInstance->columns().size(); j++)
         {
             QVector<QString> vals = tableInstance->values()[tableInstance->columns().at(j)];
-            QString val = vals.at(i);
-            if(val.toUpper() != "NULL")
+            Column* c = t->getColumn(tableInstance->columns().at(j));
+            if(!c) c = t->getColumnFromParents(tableInstance->columns().at(j));
+            if(!c)
             {
-                if(val.length() > 0)
+                qDebug() << "cannot find c: " << c->getName();
+                return QStringList();
+            }
+            bool ainc = false;
+            {
+                SpInstance* spi = c->getInstanceForSqlRoleUid(m_engine, uidMysqlColumnAutoIncrement);
+                if(spi)
                 {
-                    insert += "\"";
-                    insert += quotelessString(vals.at(i));
-                    insert += "\"";
+                    QString autoInc = spi->get();
+                    if(autoInc == "TRUE")
+                    {
+                        ainc = true;
+                    }
+                }
+            }
+            if(!ainc)
+            {
+                QString val = vals.at(i);
+                if(val.toUpper() != "NULL")
+                {
+                    if(val.length() > 0)
+                    {
+                        insert += "\"";
+                        insert += quotelessString(vals.at(i));
+                        insert += "\"";
+                    }
+                    else
+                    {
+                        // find the datatype, add the default value here
+                        Column* pcol = tableInstance->table()->getColumn(tableInstance->columns().at(j));
+                        if(pcol == 0) pcol = tableInstance->table()->getColumnFromParents(tableInstance->columns().at(j));
+                        const UserDataType* udt = pcol->getDataType();
+                        insert += "\"";
+                        insert += udt->getDefaultValue();
+                        insert += "\"";
+                    }
                 }
                 else
                 {
-                    // find the datatype, add the default value here
-                    Column* pcol = tableInstance->table()->getColumn(tableInstance->columns().at(j));
-                    if(pcol == 0) pcol = tableInstance->table()->getColumnFromParents(tableInstance->columns().at(j));
-                    const UserDataType* udt = pcol->getDataType();
-                    insert += "\"";
-                    insert += udt->getDefaultValue();
-                    insert += "\"";
+                    insert += upcase?"NULL":"null";
                 }
-            }
-            else
-            {
-                insert += upcase?"NULL":"null";
-            }
-            if(j< tableInstance->columns().size() - 1)
-            {
-                insert += ", ";
+                if(j< tableInstance->columns().size() - 1)
+                {
+                    insert += ", ";
+                }
             }
         }
         insert += ");\n\n";
