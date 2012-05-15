@@ -76,7 +76,7 @@ void SqlForm::onInject()
             Connection* c = ConnectionManager::instance()->getConnection(connectionNames.at(i));
             if(c)
             {
-                QStringList tempSqlList = Workspace::getInstance()->workingVersion()->getSqlScript(false, c);
+                QStringList tempSqlList = sqlList;
                 if(!m_engine->executeSql(c, tempSqlList, tSql, injectDialog->getRollbackOnError()))
                 {
                     QMessageBox::critical (this, tr("Error"), tr("<B>Cannot execute a query!</B><P>Reason: ") + m_engine->getLastError() + tr(".<P>Query:<PRE>") + tSql+ "</PRE><P>" +

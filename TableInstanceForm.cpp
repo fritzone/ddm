@@ -10,6 +10,7 @@
 #include "VersionGuiElements.h"
 #include "MainWindow.h"
 #include "gui_HelpWindow.h"
+#include "SpInstance.h"
 
 #include <QLineEdit>
 
@@ -96,19 +97,36 @@ void TableInstanceForm::onAddNewRow()
             if(c == 0) return;
         }
 
-        // TODO: Fix this in a way that it will work with the SP
-//        if(c->hasAutoIncrement())
-//        {
-//            int lastR = ui->values->rowCount() - 1; // number of preceeding rows, the last one is empty
-//            int lastV = -1;
-//            if(lastR != 0)
-//            {
-//                lastV = ui->values->item(lastR-1,i)->text().toInt();
-//            }
-//            lastV ++;
-//            QTableWidgetItem* twi = new QTableWidgetItem(QString::number(lastV));
-//            ui->values->setItem(lastR, i, twi);
-//        }
+        bool ainc = false;
+        {
+            SpInstance* spi = c->getInstanceForSqlRoleUid(Workspace::getInstance()->currentProjectsEngine(), uidMysqlColumnAutoIncrement);
+            if(spi)
+            {
+                QString autoInc = spi->get();
+                if(autoInc == "TRUE")
+                {
+                    ainc = true;
+                }
+            }
+        }
+
+        if(ainc)
+        {
+            int lastR = ui->values->rowCount() - 1; // number of preceeding rows, the last one is empty
+            int lastV = -1;
+            if(lastR != 0)
+            {
+                for(int j = 0; j<lastR; j++)
+                {
+                    lastV = ui->values->item(j, i)->text().toInt() > lastV ?
+                                ui->values->item(j, i)->text().toInt() :
+                                lastV;
+                }
+            }
+            lastV ++;
+            QTableWidgetItem* twi = new QTableWidgetItem(QString::number(lastV));
+            ui->values->setItem(lastR, i, twi);
+        }
     }
 }
 

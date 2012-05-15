@@ -2,6 +2,7 @@
 #include "UserDataType.h"
 #include "Table.h"
 #include "uids.h"
+#include "Workspace.h"
 
 #include <QApplication>
 #include <QClipboard>

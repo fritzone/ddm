@@ -645,6 +645,7 @@ bool MySQLDatabaseEngine::executeSql(Connection* c, const QStringList& sqls, QSt
         {
             QSqlQuery query(db);
 
+            qDebug() << lastSql ;
             if(!query.exec(lastSql))
             {
                 lastError = query.lastError().driverText() + "/" + query.lastError().databaseText();
@@ -652,9 +653,10 @@ bool MySQLDatabaseEngine::executeSql(Connection* c, const QStringList& sqls, QSt
                 {
                     db.rollback();
                 }
-                qDebug() << lastSql;
+                qDebug() << " <-- ERROR";
                 return false;
             }
+            qDebug() << " <-- OK";
         }
     }
 
