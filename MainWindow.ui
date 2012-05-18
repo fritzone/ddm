@@ -42,7 +42,7 @@
      <x>0</x>
      <y>0</y>
      <width>909</width>
-     <height>25</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -160,6 +160,9 @@
    <property name="text">
     <string>&amp;New Solution</string>
    </property>
+   <property name="toolTip">
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Create&lt;/span&gt; a new Solution&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+   </property>
    <property name="shortcut">
     <string>Ctrl+N</string>
    </property>
@@ -176,7 +179,7 @@
     <string>&amp;Save Solution</string>
    </property>
    <property name="toolTip">
-    <string>Save</string>
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Save&lt;/span&gt; Solution&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+S</string>
@@ -197,7 +200,7 @@
     <string>New DataType</string>
    </property>
    <property name="toolTip">
-    <string>Create a new data type</string>
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Create a new &lt;span style=&quot; font-weight:600;&quot;&gt;Data Type&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+Shift+D</string>
@@ -218,7 +221,7 @@
     <string>New &amp;Table</string>
    </property>
    <property name="toolTip">
-    <string>Create a New Table Template</string>
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Create a new &lt;span style=&quot; font-weight:600;&quot;&gt;Table Template&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+Shift+T</string>
@@ -231,6 +234,9 @@
    </property>
    <property name="text">
     <string>&amp;Open Solution</string>
+   </property>
+   <property name="toolTip">
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Open&lt;/span&gt; an existing Solution&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+O</string>
@@ -249,6 +255,9 @@
    <property name="text">
     <string>New &amp;Project</string>
    </property>
+   <property name="toolTip">
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Create a &lt;span style=&quot; font-weight:600;&quot;&gt;New Project&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+   </property>
   </action>
   <action name="action_NewDiagram">
    <property name="enabled">
@@ -260,6 +269,9 @@
    </property>
    <property name="text">
     <string>New Diagram</string>
+   </property>
+   <property name="toolTip">
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Create a new &lt;span style=&quot; font-weight:600;&quot;&gt;Diagram&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+Shift+G</string>
@@ -277,7 +289,7 @@
     <string>Save As</string>
    </property>
    <property name="toolTip">
-    <string>Save as...</string>
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Save&lt;/span&gt; Solution as...&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
   </action>
   <action name="actionQuit">
@@ -303,6 +315,9 @@
    <property name="text">
     <string>New Table Instance</string>
    </property>
+   <property name="toolTip">
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Create a new &lt;span style=&quot; font-weight:600;&quot;&gt;Table Instance&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+   </property>
   </action>
   <action name="action_Preferences">
    <property name="enabled">
@@ -317,7 +332,7 @@
     <string>Close Solution</string>
    </property>
    <property name="toolTip">
-    <string>Close Solution</string>
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Close&lt;/span&gt; Solution&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
   </action>
   <action name="action_Deploy">
@@ -332,7 +347,7 @@
     <string>Deploy</string>
    </property>
    <property name="toolTip">
-    <string>Deploy the solution</string>
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Deploy&lt;/span&gt; the Solution&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
    <property name="shortcut">
     <string>F5</string>
@@ -381,7 +396,7 @@
     <string>Validate</string>
    </property>
    <property name="toolTip">
-    <string>Validate the project</string>
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Validate&lt;/span&gt; the Solution&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
   </action>
   <action name="action_NewView">
@@ -396,7 +411,7 @@
     <string>New View</string>
    </property>
    <property name="toolTip">
-    <string>Create a new view</string>
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Create a new &lt;span style=&quot; font-weight:600;&quot;&gt;View&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+Shift+V</string>
@@ -412,6 +427,9 @@
    </property>
    <property name="text">
     <string>New Database Connection</string>
+   </property>
+   <property name="toolTip">
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Create a new &lt;span style=&quot; font-weight:600;&quot;&gt;Database Connection&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
   </action>
   <action name="action_ConnectionsTree">
@@ -437,7 +455,7 @@
     <string>New Procedure</string>
    </property>
    <property name="toolTip">
-    <string>Create a new procedure</string>
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Create a new &lt;span style=&quot; font-weight:600;&quot;&gt;Procedure&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+Shift+P</string>
@@ -473,6 +491,9 @@
    <property name="text">
     <string>New Trigger</string>
    </property>
+   <property name="toolTip">
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Create a new &lt;span style=&quot; font-weight:600;&quot;&gt;Trigger&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+   </property>
   </action>
   <action name="action_NewFunction">
    <property name="enabled">
@@ -486,7 +507,7 @@
     <string>New Function</string>
    </property>
    <property name="toolTip">
-    <string>Create a new function</string>
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Create a new &lt;span style=&quot; font-weight:600;&quot;&gt;Function&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
   </action>
  </widget>

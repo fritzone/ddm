@@ -26,6 +26,11 @@ TriggerForm::TriggerForm(bool reverseSource, bool fc, QWidget *parent) :
     m_textEdit->setLineNumberFrame(m_frameForLineNumbers);
     m_textEdit->setFocus();
     connect(m_textEdit, SIGNAL(textChanged()), this, SLOT(textChanged()));
+
+    if(m_reverseSource)
+    {
+        ui->tabWidget->removeTab(1);
+    }
 }
 
 void TriggerForm::textChanged()
@@ -56,6 +61,9 @@ void TriggerForm::setTrigger(Trigger *t)
     m_trigger = t;
     ui->txtTriggerName->setText(t->getName());
     ui->cmbTables->setCurrentIndex(ui->cmbTables->findText(t->getTable()));
+    ui->cmbEvent->setCurrentIndex(ui->cmbEvent->findText(t->getEvent()));
+    ui->cmbTime->setCurrentIndex(ui->cmbTime->findText(t->getTime()));
+    ui->txtDescription->setText(t->getDescription());
 }
 
 void TriggerForm::initSql()
@@ -147,4 +155,9 @@ void TriggerForm::tableChanged(QString a)
     {
         m_trigger->setTable(t->getName());
     }
+}
+
+void TriggerForm::descriptionChanged()
+{
+    m_trigger->setDescription(ui->txtDescription->toPlainText());
 }

@@ -218,6 +218,7 @@ private:
     bool m_splashWasVisible;
     GuiElements* m_guiElements;
     ConnectionGuiElements* m_connectionGuiElements;
+    QString m_lastLoadedProject;
 };
 
 #endif // MAINWINDOW_H

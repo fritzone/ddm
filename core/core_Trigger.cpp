@@ -27,9 +27,15 @@ void Trigger::serialize(QDomDocument &doc, QDomElement &parent) const
     triggerElement.setAttribute("class-uid", getClassUid());
 
     QDomElement textElement = doc.createElement("Body");
-    QDomCDATASection cdata = doc.createCDATASection(m_body);
+    QDomText cdata = doc.createTextNode(m_body);
     textElement.appendChild(cdata);
     triggerElement.appendChild(textElement);
+
+    QDomElement descElement = doc.createElement("Description");  // description
+    QDomText descNode = doc.createTextNode(m_description);
+    descElement.appendChild(descNode);
+    triggerElement.appendChild(descElement);
+
     parent.appendChild(triggerElement);
 }
 

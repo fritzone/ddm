@@ -135,7 +135,7 @@ void MainWindow::freeGuiElements()
 void MainWindow::showProjectDetails()
 {
     ProjectDetailsForm* prjDetailsForm = new ProjectDetailsForm(this);
-    prjDetailsForm->setProject(m_workspace->currentProject());
+    prjDetailsForm->setProject(m_workspace->currentProject(), m_lastLoadedProject);
     setCentralWidget(prjDetailsForm);
 }
 
@@ -727,10 +727,11 @@ void MainWindow::doLoadSolution(const QString& fileName, bool splashVisible)
     m_guiElements->getProjectTree()->expandAll();
 
     ProjectDetailsForm* prjDetailsForm = new ProjectDetailsForm(this);
-    prjDetailsForm->setProject(m_workspace->currentSolution()->currentProject());
+    prjDetailsForm->setProject(m_workspace->currentSolution()->currentProject(), fileName);
     setCentralWidget(prjDetailsForm);
 
-    setWindowTitle(tr("DDM - [") + m_workspace->currentSolution()->name() + tr("]"));
+    setWindowTitle(tr("DDM - [") + m_workspace->currentSolution()->name() + tr("] - [") + fileName + tr("]"));
+    m_lastLoadedProject = fileName;
 
     connectActionsFromPopupMenus();
 
