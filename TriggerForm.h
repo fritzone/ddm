@@ -35,6 +35,8 @@ protected slots:
     void eventChanged(QString);
     void tableChanged(QString);
 
+    void descriptionChanged();
+
 protected:
     void changeEvent(QEvent *e);
 

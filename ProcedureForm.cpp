@@ -60,9 +60,6 @@ QString ProcedureForm::getProcNameFromSql()
         }
         m_proc->setDisplayText(n);
         m_proc->setName(n);
-        QVariant v;
-        v.setValue(n);
-        m_proc->getLocation()->setData(0, Qt::UserRole, v);
         return n;
     }
 

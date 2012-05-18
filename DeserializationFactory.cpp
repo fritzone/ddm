@@ -966,7 +966,7 @@ Procedure* DeserializationFactory::createProcedure(Project*, Version*,  const QD
     Procedure* p = new Procedure(name, uid);
 
     QDomElement sqlElement = element.firstChild().toElement();
-    QDomCDATASection cdata = sqlElement.firstChild().toCDATASection();
+    QDomText cdata = sqlElement.firstChild().toText();
     p->setSql(cdata.toText().data());
     return p;
 }
@@ -987,7 +987,7 @@ Function* DeserializationFactory::createFunction(Project*, Version*,  const QDom
     Function* p = new Function(name, uid);
 
     QDomElement sqlElement = element.firstChild().toElement();
-    QDomCDATASection cdata = sqlElement.firstChild().toCDATASection();
+    QDomText cdata = sqlElement.firstChild().toText();
     p->setSql(cdata.toText().data());
     return p;
 }
@@ -1005,9 +1005,23 @@ Trigger* DeserializationFactory::createTrigger(Project*, Version* v,  const QDom
     QString class_uid = element.attribute("class-uid");
 
     Trigger* trigg = new Trigger(name, uid);
-    QDomElement sqlElement = element.firstChild().toElement();
-    QDomCDATASection cdata = sqlElement.firstChild().toCDATASection();
-    trigg->setSql(cdata.toText().data());
+    for(int i=0; i<element.childNodes().size(); i++)
+    {
+        if(element.childNodes().at(i).nodeName() == "Body")
+        {
+            QDomElement sqlElement = element.childNodes().at(i).toElement();
+            QDomText cdata = sqlElement.firstChild().toText();
+            trigg->setSql(cdata.data());
+        }
+
+        if(element.childNodes().at(i).nodeName() == "Description")
+        {
+            QDomElement descElement = element.childNodes().at(i).toElement();
+            QDomText cdata = descElement.firstChild().toText();
+            trigg->setDescription(cdata.data());
+        }
+    }
+
     trigg->setTime(element.attribute("Time"));
     trigg->setEvent(element.attribute("Event"));
     trigg->setTable(tab->getName());

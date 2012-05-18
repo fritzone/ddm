@@ -58,6 +58,16 @@ public:
         m_table = t;
     }
 
+    void setDescription(const QString& t)
+    {
+        m_description = t;
+    }
+
+    QString getDescription() const
+    {
+        return m_description;
+    }
+
     virtual QUuid getClassUid() const;
 
 private:
@@ -66,6 +76,7 @@ private:
     QString m_event;
     QString m_ttime;
     QString m_table;
+    QString m_description;
 };
 
 #endif // CORE_TRIGGER_H

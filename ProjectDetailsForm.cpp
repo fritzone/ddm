@@ -26,13 +26,14 @@ void ProjectDetailsForm::changeEvent(QEvent *e)
     }
 }
 
-void ProjectDetailsForm::setProject(Project *prj)
+void ProjectDetailsForm::setProject(Project *prj, const QString & onDisk)
 {
     m_project = prj;
 
     ui->txtProjectName->setText(m_project->getName());
     ui->textEdit->setText(m_project->getDescription());
     ui->checkBox->setCheckState(prj->oopProject()?Qt::Checked:Qt::Unchecked);
+    ui->txtLocationOnDisk->setText(onDisk);
 }
 
 void ProjectDetailsForm::onBtnUpdate()

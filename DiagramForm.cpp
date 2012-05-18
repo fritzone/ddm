@@ -337,8 +337,6 @@ void DiagramForm::onNameChange(QString a)
     {
         m_diagram->setName(a);
         m_diagram->setDisplayText(a);
-        QVariant var(a);
-        m_diagram->getLocation()->setData(0, Qt::UserRole, var);
     }
 }
 
