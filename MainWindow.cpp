@@ -1671,6 +1671,17 @@ void MainWindow::onEditConnection()
     Connection* c = getRightClickedConnection();
     if(c)
     {
+        bool w = false;
+        if(m_btndlg && m_btndlg->isVisible())
+        {
+            m_btndlg->hide();
+#ifdef Q_WS_WIN
+            Qt::WindowFlags flags = m_btndlg->windowFlags();
+            m_btndlg->setWindowFlags(flags ^ (Qt::SplashScreen |Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint));
+#endif
+            w = true;
+        }
+
         InjectSqlDialog* ij = new InjectSqlDialog(0);
         ij->setModal(true);
         ij->populateConnectionDetails(c);
@@ -1683,6 +1694,16 @@ void MainWindow::onEditConnection()
             c->getLocation()->setData(0, Qt::UserRole, var);
             c->getLocation()->setIcon(0, IconFactory::getConnectionStateIcon(c->getState()));
         }
+
+        if(m_btndlg && w)
+        {
+#ifdef Q_WS_WIN
+            Qt::WindowFlags flags = m_btndlg->windowFlags();
+            m_btndlg->setWindowFlags(flags | Qt::SplashScreen |Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint);
+#endif
+            m_btndlg->show();
+        }
+
     }
 }
 
