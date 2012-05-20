@@ -34,7 +34,7 @@ public:
     void getCenter(int& x, int& y);
 
     virtual void presentSql(Project*);
-    virtual void presentSql(Project*, SqlSourceEntity*, MainWindow::showSomething s){};
+    virtual void presentSql(Project*, SqlSourceEntity*, MainWindow::showSomething){};
     void setView(View* );
 
 public slots:
