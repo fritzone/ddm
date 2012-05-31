@@ -653,7 +653,7 @@ bool MySQLDatabaseEngine::executeSql(Connection* c, const QStringList& sqls, QSt
                 {
                     db.rollback();
                 }
-                qDebug() << " <-- ERROR";
+                qDebug() << " <-- ERROR" << lastError ;
                 return false;
             }
             qDebug() << " <-- OK";
@@ -1743,4 +1743,78 @@ QStringList MySQLDatabaseEngine::getSupportedStorageEngines(const QString& host,
 
     return result;
 
+}
+
+bool MySQLDatabaseEngine::injectMetadata(Connection *c, const Version *v)
+{
+    QDomDocument doc("DBM");
+    QDomElement root = doc.createElement("Metadata");
+    v->serialize(doc, root);
+
+    doc.appendChild(root);
+    QString xml = doc.toString();
+    qDebug() << xml;
+
+    QStringList sqls;
+    sqls << "DROP TABLE IF EXISTS DDM_META";
+    sqls << "create table DDM_META                                          \
+            (                                                               \
+                INJECT_TIME timestamp,                                      \
+                IDX integer(10) primary key auto_increment ,     \
+                METADATA_CHUNK text                                         \
+            )";
+
+    QString last;
+    bool b = executeSql(c, sqls, last, false);
+    if(!b) return false;
+
+    QSqlDatabase db = getQSqlDatabaseForConnection(c);
+    if(!db.isOpen()) return false;
+    QSqlQuery q(db);
+    q.prepare("INSERT INTO DDM_META(inject_time, metadata_chunk)  VALUES(SYSDATE(), :md)");
+    QString hexedXml = toHexString(xml);
+    QStringList chopped = chopUpString(hexedXml, 200);
+    for(int i=0; i<chopped.size(); i++)
+    {
+        q.bindValue(":md", chopped.at(i));
+        if(!q.exec())
+        {
+            lastError = q.lastError().driverText() + "/" + q.lastError().databaseText();
+            qDebug() << lastError;
+            return false;
+        }
+    }
+    return true;
+}
+
+QStringList MySQLDatabaseEngine::chopUpString(const QString &x, int size)
+{
+    QStringList result;
+    QString piece = "";
+    int ctr = 0;
+    for(int i=0;i <x.length(); i++)
+    {
+        piece += x.at(i);
+        ctr ++;
+        if(ctr == size)
+        {
+            result.push_back(piece);
+            piece = "";
+            ctr = 0;
+        }
+    }
+    return result;
+}
+
+QString MySQLDatabaseEngine::toHexString(const QString &x)
+{
+    QString result = "0x";
+    for(int i=0; i<x.length(); i++)
+    {
+        QString hex = QString("%1").arg((int)(x.at(i).toAscii()), 0, 16);
+        if(hex.length() == 1) hex = "0" + hex;
+        result += hex;
+    }
+
+    return result;
 }

@@ -3,7 +3,11 @@
 #include "core_ConnectionManager.h"
 #include "Workspace.h"
 
-Deployer::Deployer(const QStringList& connections, const QMap<Connection *, QStringList> &sqls, QObject *parent) : QObject(parent), m_deployerThreads(), m_connections(connections), m_sqls(sqls)
+Deployer::Deployer(const QStringList& connections, const QMap<Connection *,
+                   QStringList> &sqls, bool injectMetadata, const Version* v,
+                   QObject *parent) :
+    QObject(parent), m_deployerThreads(), m_connections(connections),
+    m_sqls(sqls), m_injectMetadata(injectMetadata), m_version(v)
 {
 }
 
@@ -13,7 +17,7 @@ void Deployer::deploy()
     {
         Connection* c = ConnectionManager::instance()->getConnection(m_connections.at(i));
         DeployerThread* thread = new DeployerThread(Workspace::getInstance()->currentProjectsEngine(),
-                                                    c, m_sqls[c], i);
+                                                    c, m_sqls[c], i, m_injectMetadata, m_version, 0);
         QThread *a = new QThread(this);
         thread->moveToThread(a);
         connect(this, SIGNAL(startWork()), thread, SLOT(doWork()));

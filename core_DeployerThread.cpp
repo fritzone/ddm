@@ -2,9 +2,14 @@
 #include "db_DatabaseEngine.h"
 #include "core_Connection.h"
 #include "IconFactory.h"
+#include "Version.h"
 
-DeployerThread::DeployerThread(DatabaseEngine* e, Connection* c, const QStringList& sqls, int i, QObject *parent) :
-    QObject(parent), m_connection(c), m_engine(e), m_sqls(sqls), m_lastSql(), m_success(false), m_idx(i)
+DeployerThread::DeployerThread(DatabaseEngine* e, Connection* c,
+                               const QStringList& sqls, int i,
+                               bool injectMetadata, const Version *v,
+                               QObject *parent) :
+    QObject(parent), m_connection(c), m_engine(e), m_sqls(sqls), m_lastSql(),
+    m_success(false), m_idx(i), m_injectMetadata(injectMetadata), m_version(v)
 {
 }
 
@@ -23,6 +28,12 @@ void DeployerThread::doWork()
             m_connection->setState(DID_NOT_TRY);
             m_connection->getLocation()->setIcon(0, IconFactory::getConnectionStateIcon(m_connection->getState()));
         }
+    }
+
+    // Now inject the project metadata if required
+    if(/*m_success && */m_injectMetadata)
+    {
+        m_engine->injectMetadata(m_connection, m_version);
     }
     emit(done(m_idx));
 }

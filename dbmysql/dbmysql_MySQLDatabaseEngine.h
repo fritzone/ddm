@@ -54,6 +54,7 @@ public:
     virtual QVector<Sp*> getDatabaseSpecificProperties() const;
     virtual Sp* getSpForSqlRole(const QString& uid) const;
     virtual bool tableBlocksForeignKeyFunctionality(const Table* table) const;
+    virtual bool injectMetadata(Connection* c, const Version* v);
 
     QStringList getSupportedStorageEngines(const QString& host, const QString& user, const QString& pass);
 private:
@@ -63,6 +64,8 @@ private:
     static QVector<Sp*> buildSps();
     static QString provideConnectionName(const QString&);
     static QStringList getCodepageList();
+    QString toHexString(const QString& x);
+    QStringList chopUpString(const QString& x, int size);
 
 private:
 

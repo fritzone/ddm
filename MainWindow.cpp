@@ -1281,7 +1281,7 @@ void MainWindow::specificDeploymentCallback(const QString &connName)
 {
     QStringList t;
     t << connName;
-    doDeployment(t);
+    doDeployment(t, false);
 }
 
 void MainWindow::onDeployHovered()
@@ -2027,45 +2027,19 @@ void MainWindow::createStatusLabel()
 
 void MainWindow::onDeploy()
 {
-    if(m_workspace->currentProjectIsOop())
-    {
-        if(m_workspace->workingVersion()->getTableInstances().size() == 0)
-        {
-            QMessageBox msgBox;
-            msgBox.setText(tr("You have the OOP features enabled, however you don't have created any table instances. There is nothing to deploy right now. Would you like to create table instances?"));
-            msgBox.setIcon(QMessageBox::Question);
-            msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
-            msgBox.setDefaultButton(QMessageBox::Yes);
-            int ret = msgBox.exec();
-
-            if(ret == QMessageBox::Yes)
-            {
-                onNewTableInstance();
-            }
-            else
-            {
-                return;
-            }
-        }
-    }
-    if(m_workspace->currentProjectIsOop() && m_workspace->workingVersion()->getTableInstances().size() == 0)
-    {
-        QMessageBox::information(this, tr("Deploying"), tr("Nothing to deploy"), QMessageBox::Ok);
-        return;
-    }
     InjectSqlDialog* injectDialog = new InjectSqlDialog(m_workspace->getInstance()->currentProjectsEngine(), this);
     injectDialog->setModal(true);
     if(injectDialog->exec() == QDialog::Accepted)
     {
         QStringList connectionNames = injectDialog->getSelectedConnections();
-        doDeployment(connectionNames);
+        doDeployment(connectionNames, injectDialog->injectMetadataRequired());
     }
 }
 
-void MainWindow::doDeployment(QStringList connectionNames)
+void MainWindow::doDeployment(QStringList connectionNames, bool metadataInject)
 {
     createStatusLabel();
-    InjectSqlGenerator* injectSqlGen = new InjectSqlGenerator(m_workspace->workingVersion(), connectionNames, 0);
+    InjectSqlGenerator* injectSqlGen = new InjectSqlGenerator(m_workspace->workingVersion(), connectionNames, 0, metadataInject);
     connect(injectSqlGen, SIGNAL(done(InjectSqlGenerator*)), this, SLOT(onSqlGenerationFinished(InjectSqlGenerator*)));
     injectSqlGen->generate();
 }
@@ -2093,7 +2067,9 @@ void MainWindow::onSqlGenerationFinished(InjectSqlGenerator *generator)
 {
     QMap<Connection*, QStringList> sqlList = generator->getSqls();
     QStringList connectionNames = generator->getConnectionNames();
-    Deployer* deployer = new Deployer(connectionNames, sqlList, 0);
+    Deployer* deployer = new Deployer(connectionNames, sqlList,
+                                      generator->metadataInjectRequired(),
+                                      generator->getVersion(), 0);
     m_deployers.append(deployer);
     connect(deployer, SIGNAL(done(Deployer*)), this, SLOT(onDeploymentFinished(Deployer*)));
     deployer->deploy();

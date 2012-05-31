@@ -20,7 +20,9 @@ QString InjectSqlDialog::previousHost="";
 QString InjectSqlDialog::previousUser="";
 
 
-InjectSqlDialog::InjectSqlDialog(DatabaseEngine* engine, QWidget *parent) : QDialog(parent), ui(new Ui::InjectSqlDialog), m_dbEngine(engine), m_nameWasChanged(false)
+InjectSqlDialog::InjectSqlDialog(DatabaseEngine* engine, QWidget *parent) :
+    QDialog(parent), ui(new Ui::InjectSqlDialog), m_dbEngine(engine),
+    m_nameWasChanged(false), m_injectMetadata(false)
 {
     ui->setupUi(this);
     ui->buttonBox->button(QDialogButtonBox::Ok)->setDisabled(true);
@@ -116,6 +118,11 @@ bool InjectSqlDialog::getRollbackOnError() const
     return ui->chkRollbackOnError->isChecked();
 }
 
+bool InjectSqlDialog::injectMetadataRequired() const
+{
+    return ui->chkInjectMetadata->isChecked();
+}
+
 bool InjectSqlDialog::getAutoConnect() const
 {
     return ui->chkAutoConnect->isChecked();
@@ -147,6 +154,7 @@ void InjectSqlDialog::setupForConnectionStorage()
 void InjectSqlDialog::setupForReverseEngineering()
 {
     ui->chkRollbackOnError->hide();
+    ui->chkInjectMetadata->hide();
 }
 
 void InjectSqlDialog::populateConnections()

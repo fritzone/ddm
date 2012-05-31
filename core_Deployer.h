@@ -8,12 +8,15 @@
 
 class DeployerThread;
 class Connection;
+class Version;
 
 class Deployer : public QObject
 {
     Q_OBJECT
 public:
-    explicit Deployer(const QStringList& connections, const QMap<Connection*, QStringList>& sqls, QObject *parent = 0);
+    explicit Deployer(const QStringList& connections, const QMap<Connection*,
+                      QStringList>& sqls, bool injectMetadata, const Version* v,
+                      QObject *parent);
     void deploy();
     bool hadErrors();
     QMap<QString, QString> getErrors();
@@ -30,6 +33,8 @@ private:
     QStringList m_connections;
     QMap<Connection*, QStringList> m_sqls;
     QVector<int> m_finishedThreads;
+    bool m_injectMetadata;
+    const Version* m_version;
 };
 
 #endif // CORE_DEPLOYER_H
