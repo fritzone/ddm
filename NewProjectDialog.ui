@@ -68,14 +68,11 @@
           <height>24</height>
          </size>
         </property>
-        <property name="spacing">
-         <number>4</number>
-        </property>
         <property name="uniformItemSizes">
          <bool>true</bool>
         </property>
         <property name="currentRow">
-         <number>0</number>
+         <number>-1</number>
         </property>
         <item>
          <property name="text">
@@ -91,6 +88,16 @@ p, li { white-space: pre-wrap; }
          <property name="icon">
           <iconset resource="dbm.qrc">
            <normaloff>:/images/actions/images/actions/database-conn.png</normaloff>:/images/actions/images/actions/database-conn.png</iconset>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Bind to Deployment</string>
+         </property>
+       
+         <property name="icon">
+          <iconset resource="dbm.qrc">
+           <normaloff>:/images/actions/images/big/folder_database.png</normaloff>:/images/actions/images/big/folder_database.png</iconset>
          </property>
         </item>
         <item>

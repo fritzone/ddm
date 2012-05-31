@@ -6,12 +6,16 @@
 
 class Connection;
 class DatabaseEngine;
+class Version;
 
 class DeployerThread : public QObject
 {
     Q_OBJECT
 public:
-    explicit DeployerThread(DatabaseEngine* e, Connection* c, const QStringList& sqls, int i, QObject *parent = 0);
+    explicit DeployerThread(DatabaseEngine* e, Connection* c, const QStringList& sqls,
+                            int i, bool injectMetadata,
+                            const Version* v,
+                            QObject *parent);
     bool wasFaulted() const
     {
         return !m_success;
@@ -39,6 +43,8 @@ private:
     bool m_success;
     int m_idx;
     QString m_lastError;
+    bool m_injectMetadata;
+    const Version* m_version;
 };
 
 #endif // CORE_DEPLOYERTHREAD_H

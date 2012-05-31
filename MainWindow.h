@@ -198,7 +198,7 @@ private:
     template <class T> T* getNamedObject(QTreeWidgetItem*, itemGetter);
     template <class T> void showNamedObjectList(showSomething s, const QVector<T*> items, const QIcon& icon, const QString& title);
 
-    void doDeployment(QStringList connectionNames);
+    void doDeployment(QStringList connectionNames, bool metadataInject);
     void hideSplashwindow();
     void tryBrowseConnection(Connection* c);
     void showObjectwithGuid(QTreeWidgetItem* current, showSomething s, bool focus=true);

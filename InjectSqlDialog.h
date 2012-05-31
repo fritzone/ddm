@@ -29,12 +29,14 @@ public:
 
     bool getRollbackOnError() const;
     bool getAutoConnect() const;
+    bool injectMetadataRequired() const;
 
     void setupForReverseEngineering();
     void setupForConnectionStorage();
 
     void populateConnectionDetails(Connection* c);
     void clearConnectionDetails();
+
 
 public slots:
 
@@ -55,6 +57,7 @@ private:
     Ui::InjectSqlDialog *ui;
     DatabaseEngine* m_dbEngine;
     bool m_nameWasChanged;
+    bool m_injectMetadata;
 
 private:
 

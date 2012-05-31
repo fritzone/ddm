@@ -3,7 +3,10 @@
 #include "core_ConnectionManager.h"
 #include <QThread>
 
-InjectSqlGenerator::InjectSqlGenerator(Version* v, QStringList connectionNames, QObject *parent) : QObject(parent), m_version(v), m_connectionNames(connectionNames)
+InjectSqlGenerator::InjectSqlGenerator(Version* v, QStringList connectionNames,
+                                       QObject *parent, bool injectRequired) :
+    QObject(parent), m_version(v), m_connectionNames(connectionNames),
+    m_metadataInjectRequired(injectRequired)
 {
 }
 

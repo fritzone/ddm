@@ -201,8 +201,18 @@ QStringList MySQLSQLGenerator::generateCreateTableSql(Table *table, const QHash<
             createTable += upcase? " NOT NULL " : " not null ";
         }
 
-        // do we have a default value for this columns' data type?
-        if(dt->getDefaultValue().length() > 0)
+        QString autoInc = "FALSE";
+        {
+        // see if we have "AUTO_INCREMENT" sp
+        SpInstance* spi = col->getInstanceForSqlRoleUid(m_engine, uidMysqlColumnAutoIncrement);
+        if(spi)
+        {
+            autoInc = spi->get();
+        }
+        }
+
+        // do we have a default value for this columns' data type? Only for non auto inc.
+        if(dt->getDefaultValue().length() > 0 && autoInc != "TRUE")
         {
             QString g = dt->getDefaultValue();
             createTable += QString(upcase?" DEFAULT ":" default ") +
@@ -211,17 +221,10 @@ QStringList MySQLSQLGenerator::generateCreateTableSql(Table *table, const QHash<
                     QString( (dt->getType()==DT_STRING) || (dt->getType()==DT_DATETIME && g.toUpper()!="CURRENT_TIMESTAMP") ? "\"" : "") ));
         }
 
+        // and set the auto inc
+        if(autoInc == "TRUE")
         {
-        // see if we have "AUTO_INCREMENT" sp
-        SpInstance* spi = col->getInstanceForSqlRoleUid(m_engine, uidMysqlColumnAutoIncrement);
-        if(spi)
-        {
-            QString autoInc = spi->get();
-            if(autoInc == "TRUE")
-            {
-                createTable += upcase? " AUTO_INCREMENT ":" auto_increment ";
-            }
-        }
+            createTable += upcase? " AUTO_INCREMENT ":" auto_increment ";
         }
 
         // is there a comment for this?

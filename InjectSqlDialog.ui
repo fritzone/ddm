@@ -57,6 +57,13 @@
           </property>
          </widget>
         </item>
+        <item>
+         <widget class="QCheckBox" name="chkInjectMetadata">
+          <property name="text">
+           <string>Inject Metadata</string>
+          </property>
+         </widget>
+        </item>
        </layout>
       </widget>
      </item>
