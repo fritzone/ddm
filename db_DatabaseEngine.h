@@ -435,6 +435,16 @@ public:
      */
     virtual bool injectMetadata(Connection* c, const Version* v) = 0;
 
+    /**
+     * Returns the metadata that was stored in a previous deployment in this
+     * database. If there is no metadata it returns an empty string.
+     *
+     * @param c - the connection
+     *
+     * @return the metadata of the database or an empty string
+     */
+    virtual QString getDbMetadata(Connection *c) = 0;
+
 public:
 
     /**

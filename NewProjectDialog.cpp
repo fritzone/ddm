@@ -55,6 +55,12 @@ int NewProjectDialog::getProjectType() const
     return (m_ui->listWidget->currentRow() + 1);
 }
 
+void NewProjectDialog::onChangeProjectType(int)
+{
+    int projectType = m_ui->listWidget->currentRow() + 1;
+    Q_UNUSED(projectType);
+}
+
 void NewProjectDialog::onHelp()
 {
     HelpWindow* hw = HelpWindow::instance();

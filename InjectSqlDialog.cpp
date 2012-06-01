@@ -157,6 +157,20 @@ void InjectSqlDialog::setupForReverseEngineering()
     ui->chkInjectMetadata->hide();
 }
 
+void InjectSqlDialog::setupForBindToDatabase()
+{
+    setupForReverseEngineering();
+    ui->chkAutoConnect->hide();
+    ui->chkSavePassword->hide();
+    ui->txtConnectionName->hide();
+    ui->lblConnectionName->hide();
+    ui->btnCreateDatabase->hide();
+    ui->line->hide();
+    resize(450, 300);
+    setWindowTitle(QObject::tr("Bind to Deployment"));
+    ui->grpConnectionDetails->setTitle("Database Details");
+}
+
 void InjectSqlDialog::populateConnections()
 {
     const QVector<Connection*>& connections = ConnectionManager::instance()->connections();

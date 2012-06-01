@@ -55,6 +55,7 @@ public:
     virtual Sp* getSpForSqlRole(const QString& uid) const;
     virtual bool tableBlocksForeignKeyFunctionality(const Table* table) const;
     virtual bool injectMetadata(Connection* c, const Version* v);
+    virtual QString getDbMetadata(Connection *c);
 
     QStringList getSupportedStorageEngines(const QString& host, const QString& user, const QString& pass);
 private:
