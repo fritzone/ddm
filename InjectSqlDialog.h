@@ -33,6 +33,7 @@ public:
 
     void setupForReverseEngineering();
     void setupForConnectionStorage();
+    void setupForBindToDatabase();
 
     void populateConnectionDetails(Connection* c);
     void clearConnectionDetails();

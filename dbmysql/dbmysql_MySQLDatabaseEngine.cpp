@@ -1742,7 +1742,6 @@ QStringList MySQLDatabaseEngine::getSupportedStorageEngines(const QString& host,
     db.close();
 
     return result;
-
 }
 
 bool MySQLDatabaseEngine::injectMetadata(Connection *c, const Version *v)
@@ -1760,7 +1759,7 @@ bool MySQLDatabaseEngine::injectMetadata(Connection *c, const Version *v)
     sqls << "create table DDM_META                                          \
             (                                                               \
                 INJECT_TIME timestamp,                                      \
-                IDX integer(10) primary key auto_increment ,     \
+                IDX integer(10) primary key auto_increment ,                \
                 METADATA_CHUNK text                                         \
             )";
 
@@ -1787,6 +1786,58 @@ bool MySQLDatabaseEngine::injectMetadata(Connection *c, const Version *v)
     return true;
 }
 
+QString MySQLDatabaseEngine::getDbMetadata(Connection *c)
+{
+    QSqlDatabase db = getQSqlDatabaseForConnection(c);
+    if(!db.isOpen()) return "";
+    {
+    QSqlQuery q(db);
+    QString g = "SELECT count(*) FROM information_schema.tables WHERE table_schema = '" + c->getDb() + "' AND table_name='DDM_META'";
+    if(!q.exec(g))
+    {
+        qDebug() << q.lastError();
+        return "";
+    }
+
+    bool foundMetaTable = false;
+    while(q.next())
+    {
+        int cnt = q.value(0).toInt();
+        qDebug() << cnt;
+        if(cnt == 1)
+        {
+            foundMetaTable = true;
+        }
+    }
+    if(!foundMetaTable) return "";
+    }
+
+    QString dq = "SELECT metadata_chunk FROM "+c->getDb()+".DDM_META ORDER BY IDX";
+    QSqlQuery q(db);
+    if(!q.exec(dq))
+    {
+        qDebug() << q.lastError();
+        return "";
+    }
+
+    QString xmd = "";
+    while(q.next())
+    {
+        QString chunk = q.value(0).toString();
+        for(int i=0; i<chunk.length();)
+        {
+            QString hex = chunk.at(i);
+            hex += chunk.at(i+1);
+            i += 2;
+            xmd += QChar((char)(hex.toInt(0, 16)));
+        }
+        qDebug() << xmd;
+    }
+    QString result = "X";
+
+    return result;
+}
+
 QStringList MySQLDatabaseEngine::chopUpString(const QString &x, int size)
 {
     QStringList result;
@@ -1808,7 +1859,7 @@ QStringList MySQLDatabaseEngine::chopUpString(const QString &x, int size)
 
 QString MySQLDatabaseEngine::toHexString(const QString &x)
 {
-    QString result = "0x";
+    QString result = "";
     for(int i=0; i<x.length(); i++)
     {
         QString hex = QString("%1").arg((int)(x.at(i).toAscii()), 0, 16);

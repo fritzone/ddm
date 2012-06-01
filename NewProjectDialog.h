@@ -18,7 +18,8 @@ class NewProjectDialog : public QDialog
 public:
 
     static const int PRJ_DATAMODEL = 1;
-    static const int PRJ_REVERSEENGINEER = 2;
+    static const int PRJ_BINDTODATABASE = 2;
+    static const int PRJ_REVERSEENGINEER = 3;
 
     NewProjectDialog(QWidget *parent = 0);
     ~NewProjectDialog();
@@ -54,6 +55,7 @@ public slots:
     void onHelp();
     void onAccept();
     void onReject();
+    void onChangeProjectType(int);
 
 private:
     Ui::NewProjectDialog *m_ui;

@@ -254,7 +254,7 @@ void MainWindow::onNewSolution()
             m_workspace->workingVersion()->getGui()->getTablesItem()->setText(0, tr("Tables"));
         }
 
-        if(nprjdlg->getProjectType() != NewProjectDialog::PRJ_DATAMODEL)
+        if(nprjdlg->getProjectType() == NewProjectDialog::PRJ_REVERSEENGINEER)
         {
             m_revEngWizard = new ReverseEngineerWizard(nprjdlg->getDatabaseEngine());
             m_revEngWizard->setWizardStyle(QWizard::ClassicStyle);
@@ -262,6 +262,23 @@ void MainWindow::onNewSolution()
 
             QObject::connect(m_revEngWizard, SIGNAL(currentIdChanged(int)), this, SLOT(onReverseEngineerWizardNextPage(int)));
             QObject::connect(m_revEngWizard, SIGNAL(accepted()), this, SLOT(onReverseEngineerWizardAccept()));
+        }
+        if(nprjdlg->getProjectType() == NewProjectDialog::PRJ_BINDTODATABASE)
+        {
+            InjectSqlDialog* injectDialog = new InjectSqlDialog(0);
+            injectDialog->setupForBindToDatabase();
+            injectDialog->setModal(true);
+            if(injectDialog->exec() == QDialog::Accepted)
+            {
+                QString host = injectDialog->getHost();
+                QString user = injectDialog->getUser();
+                QString password = injectDialog->getPassword();
+                QString db = injectDialog->getDatabase();
+
+                Connection c("temp", host, user, password, db, false, false);
+                QString meta = nprjdlg->getDatabaseEngine()->getDbMetadata(&c);
+                qDebug() << meta;
+            }
         }
 
         enableActions();
@@ -701,7 +718,7 @@ void MainWindow::doLoadSolution(const QString& fileName, bool splashVisible)
     if(!m_workspace->loadSolution(fileName))
     {
         QMessageBox::critical (this, tr("Error"), tr("Cannot load the solution."), QMessageBox::Ok);
-        if(splashVisible)
+        if(m_btndlg && splashVisible)
         {
 #ifdef Q_WS_WIN
             Qt::WindowFlags flags = m_btndlg->windowFlags();
@@ -1554,9 +1571,6 @@ void MainWindow::onCloseSolution()
 
     freeGuiElements();
     showConnections();
-
-    m_btndlg = new MainWindowButtonDialog();
-    m_btndlg->showMe();
 }
 
 void MainWindow::onDeleteDatatypeFromPopup()
