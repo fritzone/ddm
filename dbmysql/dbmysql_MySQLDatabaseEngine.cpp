@@ -1821,8 +1821,11 @@ QString MySQLDatabaseEngine::getDbMetadata(Connection *c)
     }
 
     QString xmd = "";
+    QString last;
+    bool f = true;
     while(q.next())
     {
+        last = "";
         QString chunk = q.value(0).toString();
         for(int i=0; i<chunk.length();)
         {
@@ -1830,12 +1833,17 @@ QString MySQLDatabaseEngine::getDbMetadata(Connection *c)
             hex += chunk.at(i+1);
             i += 2;
             xmd += QChar((char)(hex.toInt(0, 16)));
+            last+= QChar((char)(hex.toInt(0, 16)));
         }
-        qDebug() << xmd;
-    }
-    QString result = "X";
+        if(f)
+        {
+            qDebug() << xmd;
+            f = false;
+        }
 
-    return result;
+    }
+    qDebug() << last;
+    return xmd;
 }
 
 QStringList MySQLDatabaseEngine::chopUpString(const QString &x, int size)
@@ -1854,6 +1862,8 @@ QStringList MySQLDatabaseEngine::chopUpString(const QString &x, int size)
             ctr = 0;
         }
     }
+
+    result.push_back(piece);
     return result;
 }
 
