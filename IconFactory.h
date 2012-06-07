@@ -100,6 +100,7 @@ static const QString strBrowseConnectionIcon = ":/images/actions/images/small/fo
 static const QString strEditConnectionIcon = ":/images/actions/images/small/pencil3.png";
 static const QString strOpenFileIcon = ":/images/actions/images/actions/fileopen.png";
 static const QString strRunQueryIcon = ":/images/actions/images/actions/button_play_green.png";
+static const QString strBindToDbIcon = ":/images/actions/images/big/folder_database.png";
 }
 
 class IconFactory
@@ -638,6 +639,12 @@ public:
     static const QIcon& getOpenFileIcon()
     {
         static const QIcon icon(icons::strOpenFileIcon);
+        return icon;
+    }
+
+    static const QIcon& getBindToDbIcon()
+    {
+        static const QIcon icon(icons::strBindToDbIcon);
         return icon;
     }
 

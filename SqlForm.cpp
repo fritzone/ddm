@@ -64,7 +64,7 @@ void SqlForm::setSource(const QString &src)
 void SqlForm::onInject()
 {
     ui->labelDeploymentStatus->setText("");
-    InjectSqlDialog* injectDialog = new InjectSqlDialog(Workspace::getInstance()->currentProjectsEngine(), this);
+    InjectSqlDialog* injectDialog = new InjectSqlDialog(Workspace::getInstance()->currentProjectsEngine(), this, 0);
     injectDialog->setModal(true);
     if(injectDialog->exec() == QDialog::Accepted)
     {
