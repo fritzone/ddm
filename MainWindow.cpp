@@ -224,7 +224,7 @@ void MainWindow::onNewSolution()
 
         if(nprjdlg->getProjectType() == NewProjectDialog::PRJ_BINDTODATABASE)
         {
-            InjectSqlDialog* injectDialog = new InjectSqlDialog(0);
+            InjectSqlDialog* injectDialog = new InjectSqlDialog(0, 0, 0);
             injectDialog->setupForBindToDatabase();
             injectDialog->setModal(true);
             if(injectDialog->exec() == QDialog::Accepted)
@@ -244,6 +244,10 @@ void MainWindow::onNewSolution()
                 }
                 MajorVersion* mv = DeserializationFactory::createMajorVersion(project, project->getEngine(), doc, doc.firstChildElement().firstChildElement());
                 project->addMajorVersion(mv);
+            }
+            else
+            {
+                project->createMajorVersion(1, 0);
             }
         }
         else
@@ -1706,7 +1710,7 @@ void MainWindow::onEditConnection()
             w = true;
         }
 
-        InjectSqlDialog* ij = new InjectSqlDialog(0);
+        InjectSqlDialog* ij = new InjectSqlDialog(0, 0, 0);
         ij->setModal(true);
         ij->populateConnectionDetails(c);
         if(ij->exec()  == QDialog::Accepted)
@@ -1992,7 +1996,7 @@ void MainWindow::onGotoIssueLocation()
     Connection* c = dynamic_cast<Connection*>(source);
     if(c)
     {
-        InjectSqlDialog* ij = new InjectSqlDialog(0);
+        InjectSqlDialog* ij = new InjectSqlDialog(0, 0, 0);
         ij->setModal(true);
         ij->populateConnectionDetails(c);
         if(ij->exec()  == QDialog::Accepted)
@@ -2051,7 +2055,7 @@ void MainWindow::createStatusLabel()
 
 void MainWindow::onDeploy()
 {
-    InjectSqlDialog* injectDialog = new InjectSqlDialog(m_workspace->getInstance()->currentProjectsEngine(), this);
+    InjectSqlDialog* injectDialog = new InjectSqlDialog(m_workspace->getInstance()->currentProjectsEngine(), this, Workspace::getInstance()->workingVersion());
     injectDialog->setModal(true);
     if(injectDialog->exec() == QDialog::Accepted)
     {

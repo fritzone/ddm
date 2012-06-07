@@ -20,7 +20,7 @@ QString InjectSqlDialog::previousHost="";
 QString InjectSqlDialog::previousUser="";
 
 
-InjectSqlDialog::InjectSqlDialog(DatabaseEngine* engine, QWidget *parent) :
+InjectSqlDialog::InjectSqlDialog(DatabaseEngine* engine, QWidget *parent, Version *v) :
     QDialog(parent), ui(new Ui::InjectSqlDialog), m_dbEngine(engine),
     m_nameWasChanged(false), m_injectMetadata(false)
 {
@@ -148,6 +148,9 @@ void InjectSqlDialog::setupForConnectionStorage()
     ui->verticalLayout_4->setSpacing(0);
 
     setWindowTitle(QObject::tr("Connection Details"));
+    ui->tabWidget->setTabText(0, tr("Connection"));
+    ui->tabWidget->setTabIcon(0, IconFactory::getDatabaseIcon());
+    ui->tabWidget->removeTab(1);
     resize(450, 400);
 }
 
@@ -160,6 +163,7 @@ void InjectSqlDialog::setupForReverseEngineering()
 void InjectSqlDialog::setupForBindToDatabase()
 {
     setupForReverseEngineering();
+    ui->tabWidget->removeTab(1);
     ui->chkAutoConnect->hide();
     ui->chkSavePassword->hide();
     ui->txtConnectionName->hide();
@@ -169,6 +173,9 @@ void InjectSqlDialog::setupForBindToDatabase()
     resize(450, 300);
     setWindowTitle(QObject::tr("Bind to Deployment"));
     ui->grpConnectionDetails->setTitle("Database Details");
+    ui->tabWidget->setTabText(0, tr("Source"));
+    ui->tabWidget->setTabIcon(0, IconFactory::getBindToDbIcon());
+
 }
 
 void InjectSqlDialog::populateConnections()

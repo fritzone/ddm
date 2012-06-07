@@ -2021,7 +2021,7 @@ void NewTableForm::onChangeName(QString a)
 
 void NewTableForm::onInject()
 {
-    InjectSqlDialog* injectDialog = new InjectSqlDialog(Workspace::getInstance()->currentProjectsEngine(), this);
+    InjectSqlDialog* injectDialog = new InjectSqlDialog(Workspace::getInstance()->currentProjectsEngine(), this, 0);
 
     injectDialog->setModal(true);
     bool error = false;

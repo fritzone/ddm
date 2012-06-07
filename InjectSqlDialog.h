@@ -6,7 +6,7 @@
 
 class DatabaseEngine;
 class Connection;
-
+class Version;
 
 namespace Ui
 {
@@ -17,7 +17,7 @@ class InjectSqlDialog : public QDialog
 {
     Q_OBJECT
 public:
-    InjectSqlDialog(DatabaseEngine* engine, QWidget *parent = 0);
+    InjectSqlDialog(DatabaseEngine* engine, QWidget *parent, Version* v);
     ~InjectSqlDialog();
 
     QString getDatabase() const;
