@@ -25,7 +25,10 @@
    </property>
    <item>
     <widget class="QTabWidget" name="tabWidget">
-     <widget class="QWidget" name="Page1" native="true">
+     <property name="currentIndex">
+      <number>0</number>
+     </property>
+     <widget class="QWidget" name="Page1">
       <attribute name="title">
        <string>Destination</string>
       </attribute>
