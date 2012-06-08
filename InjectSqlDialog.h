@@ -3,6 +3,8 @@
 
 #include <QDialog>
 #include <QListWidgetItem>
+#include <QSignalMapper>
+#include <QTreeWidgetItem>
 
 class DatabaseEngine;
 class Connection;
@@ -53,12 +55,14 @@ protected:
 private:
 
     void populateConnections();
+    void createTreeItem(QTreeWidgetItem* parent, const QString& text, const QString& uid, const QIcon& icon);
 
 private:
     Ui::InjectSqlDialog *ui;
     DatabaseEngine* m_dbEngine;
     bool m_nameWasChanged;
     bool m_injectMetadata;
+    QSignalMapper* m_signalMapper;
 
 private:
 

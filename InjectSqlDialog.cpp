@@ -8,6 +8,14 @@
 #include "dbmysql_MySQLDatabaseEngine.h"
 #include "core_ConnectionManager.h"
 #include "core_Connection.h"
+#include "Table.h"
+#include "TableInstance.h"
+#include "Version.h"
+#include "Workspace.h"
+#include "core_View.h"
+#include "core_Procedure.h"
+#include "core_Trigger.h"
+#include "core_Function.h"
 
 #include <QSqlDatabase>
 #include <QMessageBox>
@@ -22,7 +30,7 @@ QString InjectSqlDialog::previousUser="";
 
 InjectSqlDialog::InjectSqlDialog(DatabaseEngine* engine, QWidget *parent, Version *v) :
     QDialog(parent), ui(new Ui::InjectSqlDialog), m_dbEngine(engine),
-    m_nameWasChanged(false), m_injectMetadata(false)
+    m_nameWasChanged(false), m_injectMetadata(false), m_signalMapper(new QSignalMapper(this))
 {
     ui->setupUi(this);
     ui->buttonBox->button(QDialogButtonBox::Ok)->setDisabled(true);
@@ -47,6 +55,104 @@ InjectSqlDialog::InjectSqlDialog(DatabaseEngine* engine, QWidget *parent, Versio
     }
 
     clearConnectionDetails();
+
+    if(v)
+    {
+        // create the tables
+        QTreeWidgetItem* tabItem = new QTreeWidgetItem(QStringList("Tables"));
+        tabItem->setIcon(0, IconFactory::getTableIcon());
+        if(Workspace::getInstance()->currentProjectIsOop())
+        {
+            tabItem->setIcon(0, IconFactory::getTabinstIcon());
+        }
+        ui->treeObjectsToDeploy->addTopLevelItem(tabItem);
+
+        if(Workspace::getInstance()->currentProjectIsOop())
+        {
+            QVector <TableInstance*> tabs = v->getTableInstances();
+            for(int i=0; i<tabs.size(); i++)
+            {
+                createTreeItem(tabItem, tabs.at(i)->getName(), tabs.at(i)->getObjectUid(), IconFactory::getTabinstIcon());
+            }
+        }
+        else
+        {
+            QVector <Table*> tabs = v->getTables();
+            for(int i=0; i<tabs.size(); i++)
+            {
+                createTreeItem(tabItem, tabs.at(i)->getName(), tabs.at(i)->getObjectUid(), IconFactory::getTableIcon());
+            }
+        }
+        tabItem->setExpanded(true);
+
+        // views
+        QTreeWidgetItem* viewsItem = new QTreeWidgetItem(QStringList("Views"));
+        viewsItem->setIcon(0, IconFactory::getViewsIcon());
+        ui->treeObjectsToDeploy->addTopLevelItem(viewsItem);
+
+        QVector <View*> views = v->getViews();
+        for(int i=0; i<views.size(); i++)
+        {
+            createTreeItem(viewsItem, views.at(i)->getName(), views.at(i)->getObjectUid(), IconFactory::getViewIcon());
+        }
+        viewsItem->setExpanded(true);
+
+        // procedures
+        QTreeWidgetItem* proceduresItem = new QTreeWidgetItem(QStringList("Procedures"));
+        proceduresItem->setIcon(0, IconFactory::getProceduresIcon());
+        ui->treeObjectsToDeploy->addTopLevelItem(proceduresItem);
+
+        QVector <Procedure*> procedures = v->getProcedures();
+        for(int i=0; i<procedures.size(); i++)
+        {
+            createTreeItem(proceduresItem, procedures.at(i)->getName(), procedures.at(i)->getObjectUid(), IconFactory::getProcedureIcon());
+        }
+        proceduresItem->setExpanded(true);
+
+        // functions
+        QTreeWidgetItem* functionsItem = new QTreeWidgetItem(QStringList("Functions"));
+        functionsItem->setIcon(0, IconFactory::getFunctionsTreeIcon());
+        ui->treeObjectsToDeploy->addTopLevelItem(functionsItem);
+
+        QVector <Function*> functions = v->getFunctions();
+        for(int i=0; i<functions.size(); i++)
+        {
+            createTreeItem(functionsItem, functions.at(i)->getName(), functions.at(i)->getObjectUid(), IconFactory::getFunctionTreeIcon());
+        }
+        functionsItem->setExpanded(true);
+
+        // triggers
+        QTreeWidgetItem* triggersItem = new QTreeWidgetItem(QStringList("Triggers"));
+        triggersItem->setIcon(0, IconFactory::getTriggersIcon());
+        ui->treeObjectsToDeploy->addTopLevelItem(triggersItem);
+
+        QVector <Trigger*> triggers = v->getTriggers();
+        for(int i=0; i<triggers.size(); i++)
+        {
+            createTreeItem(triggersItem, triggers.at(i)->getName(), triggers.at(i)->getObjectUid(), IconFactory::getTriggerIcon());
+        }
+        triggersItem->setExpanded(true);
+
+        ui->treeObjectsToDeploy->header()->setResizeMode(0, QHeaderView::ResizeToContents);
+    }
+}
+
+void InjectSqlDialog::createTreeItem(QTreeWidgetItem* parent, const QString &text, const QString &uid, const QIcon &icon)
+{
+    QTreeWidgetItem* tabItemI = new QTreeWidgetItem(parent, QStringList(text));
+    ui->treeObjectsToDeploy->addTopLevelItem(tabItemI);
+    tabItemI->setIcon(0, icon);
+
+    QCheckBox* checkToDeploy = new QCheckBox();
+    ui->treeObjectsToDeploy->setItemWidget(tabItemI, 1, checkToDeploy);
+    m_signalMapper->setMapping(checkToDeploy, QString("#") + uid);
+    connect(checkToDeploy, SIGNAL(clicked()), m_signalMapper, SLOT(map()));
+    checkToDeploy->setChecked(true);
+
+    QCheckBox* checkToDrop = new QCheckBox();
+    ui->treeObjectsToDeploy->setItemWidget(tabItemI, 2, checkToDrop);
+    m_signalMapper->setMapping(checkToDrop, QString("@") + uid);
+    connect(checkToDrop, SIGNAL(clicked()), m_signalMapper, SLOT(map()));
 }
 
 InjectSqlDialog::~InjectSqlDialog()
