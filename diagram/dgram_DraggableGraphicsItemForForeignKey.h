@@ -1,7 +1,7 @@
 #ifndef DRAGGABLEGRAPHICSITEMFORFOREIGNKEY_H
 #define DRAGGABLEGRAPHICSITEMFORFOREIGNKEY_H
 
-#include "DraggableGraphicsItem.h"
+#include "dgram_DraggableGraphicsItem.h"
 
 class DraggableGraphicsViewItemForForeignKey : public DraggableGraphicsViewItem
 {

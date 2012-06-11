@@ -1,7 +1,7 @@
 #ifndef TABLEINSTANCE_H
 #define TABLEINSTANCE_H
 
-#include "Table.h"
+#include "core_Table.h"
 #include "TreeItem.h"
 #include "NamedItem.h"
 #include "SerializableElement.h"

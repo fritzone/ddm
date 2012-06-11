@@ -1,6 +1,6 @@
-#include "Column.h"
-#include "UserDataType.h"
-#include "Table.h"
+#include "core_Column.h"
+#include "core_UserDataType.h"
+#include "core_Table.h"
 #include "uids.h"
 #include "Workspace.h"
 

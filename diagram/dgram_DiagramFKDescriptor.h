@@ -1,7 +1,7 @@
 #ifndef DIAGRAMFKDESCRIPTOR_H
 #define DIAGRAMFKDESCRIPTOR_H
 
-#include "DiagramObjectDescriptor.h"
+#include "dgram_DiagramObjectDescriptor.h"
 
 #include <QString>
 #include <QPointF>

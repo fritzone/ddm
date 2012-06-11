@@ -3,7 +3,7 @@
 
 #include <QSyntaxHighlighter>
 #include <QList>
-#include <UserDataType.h>
+#include <core_UserDataType.h>
 #include <QVector>
 
 class Table;

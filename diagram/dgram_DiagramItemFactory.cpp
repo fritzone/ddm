@@ -1,11 +1,11 @@
-#include "DiagramItemFactory.h"
-#include "Table.h"
+#include "dgram_DiagramItemFactory.h"
+#include "core_Table.h"
 #include "ForeignKey.h"
-#include "Column.h"
-#include "DraggableGraphicsItem.h"
-#include "DraggableGraphicsItemForForeignKey.h"
+#include "core_Column.h"
+#include "dgram_DraggableGraphicsItem.h"
+#include "dgram_DraggableGraphicsItemForForeignKey.h"
 #include "IconFactory.h"
-#include "UserDataType.h"
+#include "core_UserDataType.h"
 #include "Configuration.h"
 
 #include <QPen>

@@ -7,9 +7,9 @@
 #include "SpsTooltipProviderForUid.h"
 #include "ValueListSp.h"
 #include "ValueListSpInstance.h"
-#include "Column.h"
+#include "core_Column.h"
 #include "db_DatabaseEngine.h"
-#include "UserDataType.h"
+#include "core_UserDataType.h"
 
 #include <QLabel>
 #include <QCheckBox>

@@ -1,4 +1,4 @@
-#include "ReverseEngineerWizardObjectListForm.h"
+#include "reveng_ReverseEngineerWizardObjectListForm.h"
 #include "ui_ReverseEngineerWizardObjectListForm.h"
 #include "IconFactory.h"
 

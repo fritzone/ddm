@@ -3,7 +3,7 @@
 #include "Workspace.h"
 #include "NameGenerator.h"
 #include "db_AbstractSQLGenerator.h"
-#include "Table.h"
+#include "core_Table.h"
 
 Trigger::Trigger(const QString& name, const QString& uid) : SqlSourceEntity(),
     NamedItem(name), ObjectWithUid(uid),

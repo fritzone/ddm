@@ -2,8 +2,8 @@
 #include "qbr_SelectQuery.h"
 #include "qbr_SingleExpressionQueryComponent.h"
 #include "qbr_SelectQueryAsComponent.h"
-#include "Column.h"
-#include "Table.h"
+#include "core_Column.h"
+#include "core_Table.h"
 
 #include "strings.h"
 

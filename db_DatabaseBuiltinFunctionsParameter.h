@@ -4,7 +4,7 @@
 #include <Qt>
 
 #include "qbr_OptionTypes.h"
-#include "UserDataType.h"
+#include "core_UserDataType.h"
 #include "Version.h"
 #include "Workspace.h"
 #include "NameGenerator.h"

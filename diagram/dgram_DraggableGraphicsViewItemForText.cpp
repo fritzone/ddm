@@ -1,7 +1,7 @@
-#include "DraggableGraphicsItemForText.h"
-#include "ERGraphicsScene.h"
+#include "dgram_DraggableGraphicsItemForText.h"
+#include "dgram_ERGraphicsScene.h"
 #include "EnterNoteTextDialog.h"
-#include "Diagram.h"
+#include "core_Diagram.h"
 #include "DiagramForm.h"
 
 #include <QtGui>

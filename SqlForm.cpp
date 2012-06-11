@@ -5,7 +5,7 @@
 #include "db_DatabaseEngine.h"
 #include "Version.h"
 #include "Configuration.h"
-#include "TableInstance.h"
+#include "core_TableInstance.h"
 #include "Workspace.h"
 #include "Project.h"
 #include "Version.h"

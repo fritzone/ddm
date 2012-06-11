@@ -1,21 +1,21 @@
 HEADERS +=                                                      \
-        diagram/DiagramFKDescriptor.h                           \
-        diagram/DiagramNoteDescriptor.h                         \
-        diagram/DiagramObjectDescriptor.h                       \
-        diagram/DiagramTableDescriptor.h                        \
-        diagram/DiagramItemFactory.h                            \
-        diagram/ERGraphicsScene.h                               \
-        diagram/ERGraphicsView.h                                \
-        diagram/DraggableGraphicsItemForText.h                  \
-        diagram/DraggableGraphicsItemForForeignKey.h            \
-        diagram/DraggableGraphicsItem.h
+        diagram/dgram_DiagramFKDescriptor.h \
+        diagram/dgram_DiagramItemFactory.h \
+        diagram/dgram_DiagramNoteDescriptor.h \
+        diagram/dgram_DiagramObjectDescriptor.h \
+        diagram/dgram_DiagramTableDescriptor.h \
+        diagram/dgram_DraggableGraphicsItem.h \
+        diagram/dgram_DraggableGraphicsItemForForeignKey.h \
+        diagram/dgram_DraggableGraphicsItemForText.h \
+    diagram/dgram_dgram_ERGraphicsScene.h \
+    diagram/dgram_ERGraphicsView.h
 
 SOURCES +=                                                      \
-        diagram/DiagramNoteDescriptor.cpp                       \
-        diagram/DiagramTableDescriptor.cpp                      \
-        diagram/DiagramItemFactory.cpp                          \
-        diagram/ERGraphicsScene.cpp                             \
-        diagram/ERGraphicsView.cpp                              \
-        diagram/DraggableGraphicsItem.cpp                       \
-        diagram/DraggableGraphicsViewItemForForeignKey.cpp      \
-        diagram/DraggableGraphicsViewItemForText.cpp
+    diagram/dgram_DiagramItemFactory.cpp \
+    diagram/dgram_DiagramNoteDescriptor.cpp \
+    diagram/dgram_DiagramTableDescriptor.cpp \
+    diagram/dgram_DraggableGraphicsItem.cpp \
+    diagram/dgram_DraggableGraphicsViewItemForForeignKey.cpp \
+    diagram/dgram_DraggableGraphicsViewItemForText.cpp \
+    diagram/dgram_ERGraphicsScene.cpp \
+    diagram/dgram_ERGraphicsView.cpp

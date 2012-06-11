@@ -1,6 +1,6 @@
-#include "DraggableGraphicsItem.h"
-#include "ERGraphicsScene.h"
-#include "Diagram.h"
+#include "dgram_DraggableGraphicsItem.h"
+#include "dgram_ERGraphicsScene.h"
+#include "core_Diagram.h"
 #include "DiagramForm.h"
 
 #include <QtGui>

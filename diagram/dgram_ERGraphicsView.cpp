@@ -1,8 +1,8 @@
-#include "ERGraphicsView.h"
-#include "ERGraphicsScene.h"
-#include "Diagram.h"
+#include "dgram_ERGraphicsView.h"
+#include "dgram_ERGraphicsScene.h"
+#include "core_Diagram.h"
 #include "FkRelationDescriptor.h"
-#include "DraggableGraphicsItemForText.h"
+#include "dgram_DraggableGraphicsItemForText.h"
 #include "DiagramForm.h"
 
 #include <qdebug.h>

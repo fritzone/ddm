@@ -1,7 +1,7 @@
 #ifndef FKRELATIONDESCRIPTOR_H
 #define FKRELATIONDESCRIPTOR_H
 
-#include "DiagramFKDescriptor.h"
+#include "dgram_DiagramFKDescriptor.h"
 
 #include <QGraphicsLineItem>
 

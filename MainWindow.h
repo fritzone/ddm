@@ -29,7 +29,6 @@ class Query;
 class NewViewForm;
 class Connection;
 class Deployer;
-class InjectSqlGenerator;
 class ReverseEngineerer;
 class View;
 class Procedure;
@@ -117,7 +116,6 @@ public slots:
     void onDestroyed();
     void onHelp();
     void currentProjectTreeItemChanged(QTreeWidgetItem * current, QTreeWidgetItem*);
-
     void dtTreeItemClicked ( QTreeWidgetItem * item, int column );
     void onNewTableInstance();
     void onNewTableInstanceHovered();
@@ -151,14 +149,11 @@ public slots:
     void onNewProcedure();
     void onNewTrigger();
     void onNewFunction();
-
     void onReverseEngineerWizardNextPage(int);
     void onReverseEngineerWizardAccept();
-
     void onGotoIssueLocation();
     void onIgnoreIssue();
     void onIgnoreIssuesOfATable();
-
     void onValidate();
     void onNewConnection();
     void onConnectConnection();
@@ -169,7 +164,6 @@ public slots:
     void onEditConnection();
     void onRecreateConnection();
     void onDeploymentFinished(Deployer*);
-    void onSqlGenerationFinished(InjectSqlGenerator*);
     void onReverseEngineeringFinished(ReverseEngineerer*);
     void onDeployHovered();
     void onConnectionItemDoubleClicked(QTreeWidgetItem*,int);
@@ -198,7 +192,6 @@ private:
     template <class T> T* getNamedObject(QTreeWidgetItem*, itemGetter);
     template <class T> void showNamedObjectList(showSomething s, const QVector<T*> items, const QIcon& icon, const QString& title);
 
-    void doDeployment(QStringList connectionNames, bool metadataInject);
     void hideSplashwindow();
     void tryBrowseConnection(Connection* c);
     void showObjectwithGuid(QTreeWidgetItem* current, showSomething s, bool focus=true);
@@ -206,13 +199,9 @@ private:
 private:
     Ui::MainWindow *m_ui;
     MainWindowButtonDialog* m_btndlg;
-
     Workspace* m_workspace;
-
     ReverseEngineerWizard* m_revEngWizard;
-
     NewViewForm* m_nvf;
-    QVector<Deployer*> m_deployers;
     QLabel* lblStatus;
     static MainWindow* m_instance;
     bool m_splashWasVisible;

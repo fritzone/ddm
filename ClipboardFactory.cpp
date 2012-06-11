@@ -1,9 +1,9 @@
 #include "ClipboardFactory.h"
 #include "DeserializationFactory.h"
 #include "Workspace.h"
-#include "Table.h"
+#include "core_Table.h"
 #include "ForeignKey.h"
-#include "Column.h"
+#include "core_Column.h"
 #include "Version.h"
 
 #include <QDomDocument>

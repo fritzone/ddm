@@ -83,7 +83,8 @@ SOURCES += main.cpp \
     ValueListSp.cpp \
     ValueListSpInstance.cpp \
     ValueSp.cpp \
-    ValueSpInstance.cpp
+    ValueSpInstance.cpp \
+    DeploymentInitiator.cpp
 
 HEADERS += MainWindow.h \
     MainWindowButtonDialog.h \
@@ -182,7 +183,8 @@ HEADERS += MainWindow.h \
     ValueListSp.h \
     ValueListSpInstance.h \
     ValueSp.h \
-    ValueSpInstance.h
+    ValueSpInstance.h \
+    DeploymentInitiator.h
 
 FORMS += MainWindow.ui \
     MainWindowButtonDialog.ui \

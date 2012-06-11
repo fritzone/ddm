@@ -84,7 +84,6 @@ protected:
 
     // the data of this version
     VersionData m_data;
-    Project* m_project;
 
     VersionGuiElements* m_guiElements;
     int m_validationFlags;

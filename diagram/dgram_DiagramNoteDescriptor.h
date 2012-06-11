@@ -1,7 +1,7 @@
 #ifndef DIAGRAMNOTEDESCRIPTOR_H
 #define DIAGRAMNOTEDESCRIPTOR_H
 
-#include "DiagramObjectDescriptor.h"
+#include "dgram_DiagramObjectDescriptor.h"
 
 class DiagramNoteDescriptor : public DiagramObjectDescriptor
 {

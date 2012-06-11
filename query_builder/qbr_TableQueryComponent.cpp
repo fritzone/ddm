@@ -1,6 +1,6 @@
 #include "qbr_TableQueryComponent.h"
-#include "Table.h"
-#include "TableInstance.h"
+#include "core_Table.h"
+#include "core_TableInstance.h"
 #include "qbr_TableGraphicsItem.h"
 #include "Workspace.h"
 #include "Version.h"
@@ -10,7 +10,7 @@
 #include "qbr_CellAsCommand.h"
 #include "qbr_CellJoinCommand.h"
 #include "qbr_CellWhereCommand.h"
-#include "Column.h"
+#include "core_Column.h"
 #include "qbr_SingleExpressionQueryComponent.h"
 
 #include <QGraphicsScene>

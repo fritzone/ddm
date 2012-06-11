@@ -4,14 +4,14 @@
 #include "NewProjectDialog.h"
 #include "DataTypesListForm.h"
 #include "NewDataTypeForm.h"
-#include "UserDataType.h"
+#include "core_UserDataType.h"
 #include "Project.h"
 #include "db_DatabaseEngine.h"
 #include "Version.h"
 #include "db_AbstractDTSupplier.h"
 #include "NewTableForm.h"
-#include "Table.h"
-#include "Column.h"
+#include "core_Table.h"
+#include "core_Column.h"
 #include "IconFactory.h"
 #include "Configuration.h"
 #include "ProjectDetailsForm.h"
@@ -19,13 +19,13 @@
 #include "DeserializationFactory.h"
 #include "AboutBoxDialog.h"
 #include "DiagramForm.h"
-#include "Diagram.h"
+#include "core_Diagram.h"
 #include "ContextMenuEnabledTreeWidget.h"
 #include "CreateTableInstancesDialog.h"
 #include "TableInstanceForm.h"
 #include "DynamicActionHandlerForMainWindow.h"
 #include "SqlForm.h"
-#include "TableInstance.h"
+#include "core_TableInstance.h"
 #include "PreferencesDialog.h"
 #include "SimpleTextInputDialog.h"
 #include "ContextMenuCollection.h"
@@ -33,7 +33,7 @@
 #include "Workspace.h"
 #include "VersionGuiElements.h"
 #include "InjectSqlDialog.h"
-#include "ReverseEngineerWizard.h"
+#include "reveng_ReverseEngineerWizard.h"
 #include "IssueManager.h"
 #include "NewViewForm.h"
 #include "qbr_SelectQuery.h"
@@ -42,8 +42,7 @@
 #include "core_Connection.h"
 #include "core_ConnectionManager.h"
 #include "core_Deployer.h"
-#include "core_InjectSqlGenerator.h"
-#include "core_ReverseEngineerer.h"
+#include "reveng_ReverseEngineerer.h"
 #include "helper_MostRecentlyUsedFiles.h"
 #include "BrowseTableForm.h"
 #include "NameGenerator.h"
@@ -57,6 +56,7 @@
 #include "core_Function.h"
 #include "MajorVersion.h"
 #include "UidWarehouse.h"
+#include "DeploymentInitiator.h"
 
 #include <QtGui>
 
@@ -1312,7 +1312,8 @@ void MainWindow::specificDeploymentCallback(const QString &connName)
 {
     QStringList t;
     t << connName;
-    doDeployment(t, false);
+    DeploymentInitiator* dinit = new DeploymentInitiator();
+    dinit->doDeployment(m_workspace->workingVersion(), t, false);
 }
 
 void MainWindow::onDeployHovered()
@@ -2049,27 +2050,26 @@ void MainWindow::createStatusLabel()
     lblStatus->setFrameShape(QFrame::WinPanel);
     lblStatus->setFrameShadow(QFrame::Sunken);
     m_ui->statusBar->addWidget(lblStatus);
-    lblStatus->setText(QApplication::translate("MainWindow", "Deploying", 0, QApplication::UnicodeUTF8));
+    lblStatus->setText(tr("Deploying"));
 
 }
 
 void MainWindow::onDeploy()
 {
-    InjectSqlDialog* injectDialog = new InjectSqlDialog(m_workspace->getInstance()->currentProjectsEngine(), this, Workspace::getInstance()->workingVersion());
+    InjectSqlDialog* injectDialog = new InjectSqlDialog(
+                m_workspace->getInstance()->currentProjectsEngine(), this,
+                Workspace::getInstance()->workingVersion());
     injectDialog->setModal(true);
     if(injectDialog->exec() == QDialog::Accepted)
     {
+        createStatusLabel();
         QStringList connectionNames = injectDialog->getSelectedConnections();
-        doDeployment(connectionNames, injectDialog->injectMetadataRequired());
+        DeploymentInitiator* dinit = new DeploymentInitiator();
+        dinit->doDeployment(m_workspace->workingVersion(), connectionNames,
+                            injectDialog->injectMetadataRequired(),
+                            injectDialog->getUidsToDeploy(),
+                            injectDialog->getUidsToDrop());
     }
-}
-
-void MainWindow::doDeployment(QStringList connectionNames, bool metadataInject)
-{
-    createStatusLabel();
-    InjectSqlGenerator* injectSqlGen = new InjectSqlGenerator(m_workspace->workingVersion(), connectionNames, 0, metadataInject);
-    connect(injectSqlGen, SIGNAL(done(InjectSqlGenerator*)), this, SLOT(onSqlGenerationFinished(InjectSqlGenerator*)));
-    injectSqlGen->generate();
 }
 
 void MainWindow::setStatus(const QString& s, bool err)
@@ -2091,18 +2091,6 @@ void MainWindow::setStatus(const QString& s, bool err)
     }
 }
 
-void MainWindow::onSqlGenerationFinished(InjectSqlGenerator *generator)
-{
-    QMap<Connection*, QStringList> sqlList = generator->getSqls();
-    QStringList connectionNames = generator->getConnectionNames();
-    Deployer* deployer = new Deployer(connectionNames, sqlList,
-                                      generator->metadataInjectRequired(),
-                                      generator->getVersion(), 0);
-    m_deployers.append(deployer);
-    connect(deployer, SIGNAL(done(Deployer*)), this, SLOT(onDeploymentFinished(Deployer*)));
-    deployer->deploy();
-}
-
 void MainWindow::onDeploymentFinished(Deployer *d)
 {
     if(d->hadErrors())
@@ -2112,6 +2100,10 @@ void MainWindow::onDeploymentFinished(Deployer *d)
         for(QMap<QString, QString>::iterator it = errors.begin(); it != errors.end(); it++)
         {
             IssueManager::getInstance().createConnectionIssue(ConnectionManager::instance()->getConnection(it.key()), it.value());
+            if(!lblStatus)
+            {
+                createStatusLabel();
+            }
             lblStatus->setStyleSheet("QLabel { background-color : red; color : white; }");
             QString t = QApplication::translate("MainWindow", "Deployment failed at ", 0, QApplication::UnicodeUTF8);
             QTime now = QTime::currentTime();
@@ -2126,10 +2118,13 @@ void MainWindow::onDeploymentFinished(Deployer *d)
         QTime now = QTime::currentTime();
         QDate nowd = QDate::currentDate();
         t += nowd.toString() + " - " + now.toString();
+        if(!lblStatus)
+        {
+            createStatusLabel();
+        }
         lblStatus->setText(t);
         lblStatus->setStyleSheet("QLabel { background-color : green; color : white; }");
     }
-
 }
 
 void MainWindow::onViewProjectTree()

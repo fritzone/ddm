@@ -2,13 +2,13 @@
 #define ERGRAPHICSSCENE_H
 
 #include "Version.h"
-#include "Table.h"
+#include "core_Table.h"
 
 #include <QGraphicsScene>
 #include <QMimeData>
 
-#include "DraggableGraphicsItem.h"
-#include "DraggableGraphicsItemForForeignKey.h"
+#include "dgram_DraggableGraphicsItem.h"
+#include "dgram_DraggableGraphicsItemForForeignKey.h"
 #include "FkRelationDescriptor.h"
 
 class TableListWidget;

@@ -40,14 +40,24 @@ public:
     void populateConnectionDetails(Connection* c);
     void clearConnectionDetails();
 
+    QStringList getUidsToDeploy() const
+    {
+        return m_UidsToDeploy;
+    }
 
-public slots:
+    QStringList getUidsToDrop() const
+    {
+        return m_UidsToDrop;
+    }
+
+private slots:
 
     void onConnect();
     void onCreateDatabase();
     void onSelectConnection(QListWidgetItem*);
     void onHostChange(QString);
     void onUserChange(QString);
+    void checkBoxToggled(QString);
 
 protected:
     void changeEvent(QEvent *e);
@@ -56,6 +66,7 @@ private:
 
     void populateConnections();
     void createTreeItem(QTreeWidgetItem* parent, const QString& text, const QString& uid, const QIcon& icon);
+    void toggleUidBelongeness(QStringList&, const QString&);
 
 private:
     Ui::InjectSqlDialog *ui;
@@ -63,6 +74,8 @@ private:
     bool m_nameWasChanged;
     bool m_injectMetadata;
     QSignalMapper* m_signalMapper;
+    QStringList m_UidsToDeploy;
+    QStringList m_UidsToDrop;
 
 private:
 

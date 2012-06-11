@@ -19,6 +19,7 @@ class Trigger;
 class SqlSourceEntity;
 class Function;
 class Connection;
+class Project;
 
 /**
  * Basic class holding data related to versions
@@ -27,7 +28,7 @@ class Version : public SerializableElement
 {
 public:
 
-    Version(int major, int minor) : m_major(major), m_minor(minor)
+    Version(int major, int minor, Project* p) : m_major(major), m_minor(minor), m_project(p)
     {}
 
     virtual ~Version() {}
@@ -329,9 +330,15 @@ public:
         return m_minor;
     }
 
+    const Project* getProject() const
+    {
+        return m_project;
+    }
+
 protected:
     int m_major;
     int m_minor;
+    Project* m_project;
 };
 
 #endif // VERSION_H
