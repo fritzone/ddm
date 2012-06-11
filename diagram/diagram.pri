@@ -7,8 +7,8 @@ HEADERS +=                                                      \
         diagram/dgram_DraggableGraphicsItem.h \
         diagram/dgram_DraggableGraphicsItemForForeignKey.h \
         diagram/dgram_DraggableGraphicsItemForText.h \
-    diagram/dgram_dgram_ERGraphicsScene.h \
-    diagram/dgram_ERGraphicsView.h
+        diagram/dgram_ERGraphicsScene.h \
+        diagram/dgram_ERGraphicsView.h
 
 SOURCES +=                                                      \
     diagram/dgram_DiagramItemFactory.cpp \

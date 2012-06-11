@@ -6,6 +6,7 @@ QT += network \
     xml \
     webkit \
     svg
+
 TARGET = ddm
 TEMPLATE = app
 unix:QMAKE_CXXFLAGS_WARN_ON += -Wall -Wextra
@@ -51,8 +52,6 @@ SOURCES += main.cpp \
     MainWindow.cpp \
     NewDataTypeForm.cpp \
     NewProjectDialog.cpp \
-    db_DatabaseEngine.cpp \
-    db_DatabaseNormalizationIssue.cpp \
     gui_HelpWindow.cpp \
     core_Connection.cpp \
     core_ConnectionManager.cpp \
@@ -73,8 +72,6 @@ SOURCES += main.cpp \
     NamedObjectListingForm.cpp \
     core_StoredMethod.cpp \
     UidWarehouse.cpp \
-    core_ObjectWithUid.cpp \
-    db_SP.cpp \
     WidgetForSpecificProperties.cpp \
     TrueFalseSp.cpp \
     ObjectWithSpInstances.cpp \
@@ -95,7 +92,6 @@ HEADERS += MainWindow.h \
     Project.h \
     MajorVersion.h \
     Version.h \
-    Codepage.h \
     Configuration.h \
     NewTableForm.h \
     IconFactory.h \
@@ -140,12 +136,6 @@ HEADERS += MainWindow.h \
     NewViewForm.h \
     utils.h \
     ColumnProviderForQuery.h \
-    db_AbstractDTSupplier.h \
-    db_AbstractSQLGenerator.h \
-    db_DatabaseBuiltinFunction.h \
-    db_DatabaseBuiltinFunctionsParameter.h \
-    db_DatabaseEngine.h \
-    db_DatabaseNormalizationIssue.h \
     gui_HelpWindow.h \
     core_Connection.h \
     core_ConnectionManager.h \
@@ -170,10 +160,7 @@ HEADERS += MainWindow.h \
     core_StoredMethod.h \
     mw_helper.h \
     uids.h \
-    core_ObjectWithUid.h \
     UidWarehouse.h \
-    db_SP.h \
-    db_SpCollection.h \
     WidgetForSpecificProperties.h \
     TrueFalseSp.h \
     ObjectWithSpInstances.h \
@@ -211,6 +198,9 @@ FORMS += MainWindow.ui \
     NamedObjectListingForm.ui \
     WidgetForSpecificProperties.ui
 
+include (db/db.pri)
+INCLUDEPATH += db
+
 include (query_builder/query_builder.pri)
 INCLUDEPATH += query_builder
 
@@ -229,6 +219,7 @@ INCLUDEPATH += reverse_eng
 RESOURCES += dbm.qrc \
     help_resources.qrc
 RC_FILE = dbm.rc
+
 installfiles_base.files += ddm codepages/codepages.mysql.dat
 installfiles_base.path =  /home/ferenc/rpmbuild/BUILDROOT/usr/local/ddm
 INSTALLS += installfiles_base

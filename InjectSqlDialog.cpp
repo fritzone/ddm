@@ -2,7 +2,7 @@
 #include "ui_InjectSqlDialog.h"
 
 #include "IconFactory.h"
-#include "Codepage.h"
+#include "db_Codepage.h"
 #include "db_DatabaseEngine.h"
 #include "SimpleTextInputDialog.h"
 #include "dbmysql_MySQLDatabaseEngine.h"
