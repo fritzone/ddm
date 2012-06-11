@@ -9,13 +9,13 @@
 #include <QVector>
 #include <QMutexLocker>
 
-#include "Table.h"
+#include "core_Table.h"
 #include "Version.h"
-#include "Column.h"
+#include "core_Column.h"
 #include "Project.h"
-#include "UserDataType.h"
+#include "core_UserDataType.h"
 #include "Index.h"
-#include "TableInstance.h"
+#include "core_TableInstance.h"
 #include "ForeignKey.h"
 #include "db_DatabaseBuiltinFunction.h"
 #include "core_View.h"

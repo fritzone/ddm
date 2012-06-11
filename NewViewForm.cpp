@@ -12,7 +12,7 @@
 #include "qbr_SelectQuery.h"
 #include "qbr_SingleExpressionQueryComponent.h"
 #include "qbr_SelectQueryAsComponent.h"
-#include "Column.h"
+#include "core_Column.h"
 #include "Workspace.h"
 #include "Version.h"
 #include "VersionGuiElements.h"

@@ -1,6 +1,6 @@
-#include "TableInstance.h"
+#include "core_TableInstance.h"
 #include "db_AbstractSQLGenerator.h"
-#include "Table.h"
+#include "core_Table.h"
 #include "Configuration.h"
 
 TableInstance::TableInstance(Table *tab, bool ref, const QString& uid) : TreeItem(),

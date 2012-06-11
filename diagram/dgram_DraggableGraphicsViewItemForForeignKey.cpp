@@ -1,5 +1,5 @@
-#include "DraggableGraphicsItemForForeignKey.h"
-#include "ERGraphicsScene.h"
+#include "dgram_DraggableGraphicsItemForForeignKey.h"
+#include "dgram_ERGraphicsScene.h"
 
 #include <QtGui>
 #include <QGraphicsScene>

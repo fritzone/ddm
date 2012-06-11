@@ -4,7 +4,7 @@
 #include "FrameForLineNumbers.h"
 #include "core_Trigger.h"
 #include "IconFactory.h"
-#include "Table.h"
+#include "core_Table.h"
 #include "Workspace.h"
 #include "Version.h"
 

@@ -3,7 +3,7 @@
 
 #include <QList>
 
-#include "UserDataType.h"
+#include "core_UserDataType.h"
 
 class UserDataType;
 

@@ -1,5 +1,5 @@
-#include "core_ReverseEngineerer.h"
-#include "core_ReverseEngineererThread.h"
+#include "reveng_ReverseEngineerer.h"
+#include "reveng_ReverseEngineererThread.h"
 #include <QThread>
 #include <QDebug>
 

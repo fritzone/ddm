@@ -1,4 +1,4 @@
-#include "DiagramNoteDescriptor.h"
+#include "dgram_DiagramNoteDescriptor.h"
 
 void DiagramNoteDescriptor::serialize(QDomDocument& doc, QDomElement& parent) const
 {

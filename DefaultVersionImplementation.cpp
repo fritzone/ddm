@@ -1,10 +1,10 @@
 #include "DefaultVersionImplementation.h"
 #include "ContextMenuCollection.h"
-#include "UserDataType.h"
-#include "Table.h"
-#include "Diagram.h"
+#include "core_UserDataType.h"
+#include "core_Table.h"
+#include "core_Diagram.h"
 #include "IconFactory.h"
-#include "TableInstance.h"
+#include "core_TableInstance.h"
 #include "Project.h"
 #include "ForeignKey.h"
 #include "NameGenerator.h"
@@ -25,8 +25,8 @@
 #include <QtGui>
 
 DefaultVersionImplementation::DefaultVersionImplementation(Project* p, int major, int minor)
-    : Version(major, minor),
-      version(""), m_data(), m_project(p), m_guiElements(0), m_validationFlags(0)
+    : Version(major, minor, p),
+      version(""), m_data(), m_guiElements(0), m_validationFlags(0)
 {
 }
 

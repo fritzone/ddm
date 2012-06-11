@@ -1,8 +1,8 @@
 #include "ForeignKeyReccomendationIssue.h"
 #include "IssueManager.h"
-#include "Table.h"
-#include "Column.h"
-#include "UserDataType.h"
+#include "core_Table.h"
+#include "core_Column.h"
+#include "core_UserDataType.h"
 #include "Workspace.h"
 #include "Version.h"
 

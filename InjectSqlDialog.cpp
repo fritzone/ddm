@@ -8,8 +8,8 @@
 #include "dbmysql_MySQLDatabaseEngine.h"
 #include "core_ConnectionManager.h"
 #include "core_Connection.h"
-#include "Table.h"
-#include "TableInstance.h"
+#include "core_Table.h"
+#include "core_TableInstance.h"
 #include "Version.h"
 #include "Workspace.h"
 #include "core_View.h"
@@ -30,7 +30,8 @@ QString InjectSqlDialog::previousUser="";
 
 InjectSqlDialog::InjectSqlDialog(DatabaseEngine* engine, QWidget *parent, Version *v) :
     QDialog(parent), ui(new Ui::InjectSqlDialog), m_dbEngine(engine),
-    m_nameWasChanged(false), m_injectMetadata(false), m_signalMapper(new QSignalMapper(this))
+    m_nameWasChanged(false), m_injectMetadata(false), m_signalMapper(new QSignalMapper(this)),
+    m_UidsToDeploy(), m_UidsToDrop()
 {
     ui->setupUi(this);
     ui->buttonBox->button(QDialogButtonBox::Ok)->setDisabled(true);
@@ -134,6 +135,8 @@ InjectSqlDialog::InjectSqlDialog(DatabaseEngine* engine, QWidget *parent, Versio
         triggersItem->setExpanded(true);
 
         ui->treeObjectsToDeploy->header()->setResizeMode(0, QHeaderView::ResizeToContents);
+
+        connect(m_signalMapper, SIGNAL(mapped(QString)), this, SLOT(checkBoxToggled(QString)));
     }
 }
 
@@ -148,11 +151,36 @@ void InjectSqlDialog::createTreeItem(QTreeWidgetItem* parent, const QString &tex
     m_signalMapper->setMapping(checkToDeploy, QString("#") + uid);
     connect(checkToDeploy, SIGNAL(clicked()), m_signalMapper, SLOT(map()));
     checkToDeploy->setChecked(true);
+    m_UidsToDeploy.append(uid);
 
     QCheckBox* checkToDrop = new QCheckBox();
     ui->treeObjectsToDeploy->setItemWidget(tabItemI, 2, checkToDrop);
     m_signalMapper->setMapping(checkToDrop, QString("@") + uid);
     connect(checkToDrop, SIGNAL(clicked()), m_signalMapper, SLOT(map()));
+}
+
+void InjectSqlDialog::toggleUidBelongeness(QStringList &lst, const QString &s)
+{
+    if(lst.contains(s))
+    {
+        lst.removeOne(s);
+    }
+    else
+    {
+        lst.append(s);
+    }
+}
+
+void InjectSqlDialog::checkBoxToggled(QString a)
+{
+    if(a.at(0) == '#')
+    {
+        toggleUidBelongeness(m_UidsToDeploy, a.mid(1));
+    }
+    else
+    {
+        toggleUidBelongeness(m_UidsToDrop, a.mid(1));
+    }
 }
 
 InjectSqlDialog::~InjectSqlDialog()

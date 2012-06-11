@@ -1,4 +1,4 @@
-#include "DiagramTableDescriptor.h"
+#include "dgram_DiagramTableDescriptor.h"
 
 void DiagramTableDescriptor::serialize(QDomDocument &doc, QDomElement &parent) const
 {

@@ -3,9 +3,9 @@
 
 #include "TreeItem.h"
 #include "SerializableElement.h"
-#include "Column.h"
+#include "core_Column.h"
 #include "NamedItem.h"
-#include "Table.h"
+#include "core_Table.h"
 
 class Version;
 

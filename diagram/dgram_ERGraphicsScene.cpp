@@ -1,11 +1,11 @@
-#include "ERGraphicsScene.h"
+#include "dgram_ERGraphicsScene.h"
 #include "ForeignKey.h"
 #include "TableListWidget.h"
-#include "Diagram.h"
+#include "core_Diagram.h"
 #include "EnterNoteTextDialog.h"
 #include "DiagramForm.h"
-#include "DraggableGraphicsItemForText.h"
-#include "DiagramItemFactory.h"
+#include "dgram_DraggableGraphicsItemForText.h"
+#include "dgram_DiagramItemFactory.h"
 
 #include <qdebug.h>
 

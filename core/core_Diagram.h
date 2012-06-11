@@ -3,9 +3,9 @@
 
 #include "TreeItem.h"
 #include "NamedItem.h"
-#include "DiagramNoteDescriptor.h"
-#include "DiagramTableDescriptor.h"
-#include "DiagramFKDescriptor.h"
+#include "dgram_DiagramNoteDescriptor.h"
+#include "dgram_DiagramTableDescriptor.h"
+#include "dgram_DiagramFKDescriptor.h"
 #include "SerializableElement.h"
 #include "core_ObjectWithUid.h"
 

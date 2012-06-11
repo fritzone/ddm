@@ -1,7 +1,7 @@
 #ifndef DIAGRAMTABLEDESCRIPTOR_H
 #define DIAGRAMTABLEDESCRIPTOR_H
 
-#include "DiagramObjectDescriptor.h"
+#include "dgram_DiagramObjectDescriptor.h"
 
 class DiagramTableDescriptor : public DiagramObjectDescriptor
 {

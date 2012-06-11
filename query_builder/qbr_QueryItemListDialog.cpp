@@ -3,14 +3,14 @@
 
 #include "Workspace.h"
 #include "Version.h"
-#include "Table.h"
+#include "core_Table.h"
 #include "IconFactory.h"
-#include "TableInstance.h"
+#include "core_TableInstance.h"
 #include "db_DatabaseEngine.h"
 #include "db_DatabaseBuiltinFunction.h"
 #include "qbr_Query.h"
-#include "Column.h"
-#include "UserDataType.h"
+#include "core_Column.h"
+#include "core_UserDataType.h"
 #include "qbr_SelectQueryJoinComponent.h"
 #include "strings.h"
 

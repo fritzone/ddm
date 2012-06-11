@@ -1,5 +1,5 @@
 #include "qbr_TableGraphicsItem.h"
-#include "Table.h"
+#include "core_Table.h"
 #include "qbr_CellTable.h"
 #include "qbr_CellQuerySmallOptionsBox.h"
 #include "qbr_CellAsCommand.h"

@@ -1,8 +1,8 @@
-#include "ReverseEngineerWizard.h"
-#include "ReverseEngineerWizardWelcomeForm.h"
-#include "ReverseEngineerWizardDatabasesForm.h"
-#include "ReverseEngineerWizardObjectListForm.h"
-#include "ReverseEngineerWizardOptionsForm.h"
+#include "reveng_ReverseEngineerWizard.h"
+#include "reveng_ReverseEngineerWizardWelcomeForm.h"
+#include "reveng_ReverseEngineerWizardDatabasesForm.h"
+#include "reveng_ReverseEngineerWizardObjectListForm.h"
+#include "reveng_ReverseEngineerWizardOptionsForm.h"
 #include "core_Connection.h"
 #include "db_DatabaseEngine.h"
 

@@ -1,4 +1,4 @@
-#include "core_ReverseEngineererThread.h"
+#include "reveng_ReverseEngineererThread.h"
 #include "db_DatabaseEngine.h"
 #include "core_Connection.h"
 

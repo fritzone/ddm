@@ -1,7 +1,7 @@
 #ifndef DRAGGABLEGRAPHICSITEMFORTEXT_H
 #define DRAGGABLEGRAPHICSITEMFORTEXT_H
 
-#include "DraggableGraphicsItem.h"
+#include "dgram_DraggableGraphicsItem.h"
 
 #include <QGraphicsTextItem>
 #include <QBrush>

@@ -1,10 +1,10 @@
 #include "FkRelationDescriptor.h"
-#include "DraggableGraphicsItem.h"
-#include "DraggableGraphicsItemForForeignKey.h"
-#include "DiagramItemFactory.h"
+#include "dgram_DraggableGraphicsItem.h"
+#include "dgram_DraggableGraphicsItemForForeignKey.h"
+#include "dgram_DiagramItemFactory.h"
 #include "ForeignKey.h"
-#include "ERGraphicsScene.h"
-#include "Diagram.h"
+#include "dgram_ERGraphicsScene.h"
+#include "core_Diagram.h"
 
 #include <QtGui>
 
