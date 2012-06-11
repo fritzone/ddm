@@ -4,7 +4,7 @@
 #include "db_DatabaseEngine.h"
 #include "core_UserDataType.h"
 #include "db_AbstractDTSupplier.h"
-#include "Codepage.h"
+#include "db_Codepage.h"
 #include "core_UserDataType.h"
 #include "strings.h"
 #include "Configuration.h"

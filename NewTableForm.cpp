@@ -19,7 +19,7 @@
 #include "Workspace.h"
 #include "ContextMenuCollection.h"
 #include "ClipboardFactory.h"
-#include "Codepage.h"
+#include "db_Codepage.h"
 #include "db_AbstractDTSupplier.h"
 #include "IssueManager.h"
 #include "VersionGuiElements.h"

@@ -22,7 +22,7 @@
 #include "core_Connection.h"
 #include "core_Procedure.h"
 #include "core_Function.h"
-#include "Codepage.h"
+#include "db_Codepage.h"
 #include "core_Trigger.h"
 #include "TrueFalseSp.h"
 #include "ValueListSp.h"
