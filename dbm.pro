@@ -204,6 +204,9 @@ INCLUDEPATH += db
 include (query_builder/query_builder.pri)
 INCLUDEPATH += query_builder
 
+include (qhtml/qhtml.pri)
+INCLUDEPATH += qhtml
+
 include (dbmysql/dbmysql.pri)
 INCLUDEPATH += dbmysql
 
