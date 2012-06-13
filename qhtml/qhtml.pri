@@ -6,5 +6,6 @@ SOURCES += \
 HEADERS += \
     qhtml/QHtmlDocument.h \
     qhtml/HtmlSourceGenerator.h \
-    qhtml/QHtmlHead.h
+    qhtml/QHtmlHead.h \
+    qhtml/languages.h
 
