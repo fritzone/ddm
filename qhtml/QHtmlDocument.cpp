@@ -1,13 +1,17 @@
 #include "QHtmlDocument.h"
+#include "QHtmlHead.h"
 
-QHtmlDocument::QHtmlDocument(DocumentType type = HTML_5) : m_DocumentType(type)
+QHtmlDocument::QHtmlDocument(const QString &title, DocumentType type) :
+    HtmlSourceGenerator("html"),
+    m_documentType(type),
+    m_head(new QHtmlHead(title))
 {
 }
 
 QString QHtmlDocument::html() const
 {
     QString typeString = "";
-    switch(m_DocumentType)
+    switch(m_documentType)
     {
     case HTML_5:
         typeString = "html";
@@ -35,10 +39,10 @@ QString QHtmlDocument::html() const
         break;
     }
 
-    QString result = "<!DOCTYPE" + typeString + ">";
-    result += "<html>";
-
-    result += "</html>";
+    QString result = "<!DOCTYPE " + typeString + ">";
+    result += openTag();
+    result += m_head->html();
+    result += closeTag();
     return result;
 }
 

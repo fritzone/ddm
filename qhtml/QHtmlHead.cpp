@@ -1,29 +1,23 @@
 #include "QHtmlHead.h"
+#include "QHtmlTitle.h"
 
-QHtmlHead::QHtmlHead(const QString &title) : m_title(title)
+QHtmlHead::QHtmlHead(const QString &title) : HtmlSourceGenerator("head"),
+    m_title(new QHtmlTitle(title))
 {
 }
 
 QString QHtmlHead::html() const
 {
-    QString result = "<head>";
-    if(!m_title.isEmpty())
-    {
-        result += "<title>";
-        result += m_title;
-        result += "</title>";
-    }
-    result += "</head>";
-    return result;
+    return openTag() + m_title->html() + closeTag();
 }
 
 void QHtmlHead::setTitle(const QString &title)
 {
-    m_title = title;
+    m_title->setTitle(title);
 }
 
 QString QHtmlHead::getTitle() const
 {
-    return m_title;
+    return m_title->getTitle();
 }
 

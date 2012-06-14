@@ -4,13 +4,20 @@
 #include <QStyle>
 #include <QCleanlooksStyle>
 #include <QPlastiqueStyle>
+#include <QDebug>
 
 #include "MainWindow.h"
+
+#include "QHtmlDocument.h"
 
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-    MainWindow w;
-    w.show();
+
+    QHtmlDocument doc("My document");
+    qDebug() << doc.html();
+
+//    MainWindow w;
+//    w.show();
     return a.exec();
 }

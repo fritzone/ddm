@@ -2,13 +2,13 @@
 #define QHTMLDOCUMENT_H
 
 #include "HtmlSourceGenerator.h"
-
 #include <QObject>
 
-class QHtmlDocument : public HtmlSourceGenerator, public QObject
+class QHtmlHead;
+
+class QHtmlDocument : public HtmlSourceGenerator
 {
     Q_OBJECT
-
 public:
     enum DocumentType
     {
@@ -22,14 +22,19 @@ public:
         XHTML_11                    = 8
     };
 
-    QHtmlDocument(DocumentType type = HTML_5);
+    QHtmlDocument(const QString& title, DocumentType type = HTML_5);
     virtual ~QHtmlDocument() {}
-
     virtual QString html() const;
+
+    QHtmlHead* getHead() const
+    {
+        return m_head;
+    }
 
 private:
 
-    DocumentType m_DocumentType;
+    DocumentType m_documentType;
+    QHtmlHead* m_head;
 };
 
 #endif // QHTMLDOCUMENT_H
