@@ -81,7 +81,8 @@ SOURCES += main.cpp \
     ValueListSpInstance.cpp \
     ValueSp.cpp \
     ValueSpInstance.cpp \
-    DeploymentInitiator.cpp
+    DeploymentInitiator.cpp \
+    DocumentationForm.cpp
 
 HEADERS += MainWindow.h \
     MainWindowButtonDialog.h \
@@ -171,7 +172,8 @@ HEADERS += MainWindow.h \
     ValueListSpInstance.h \
     ValueSp.h \
     ValueSpInstance.h \
-    DeploymentInitiator.h
+    DeploymentInitiator.h \
+    DocumentationForm.h
 
 FORMS += MainWindow.ui \
     MainWindowButtonDialog.ui \
@@ -196,7 +198,8 @@ FORMS += MainWindow.ui \
     ProcedureForm.ui \
     TriggerForm.ui \
     NamedObjectListingForm.ui \
-    WidgetForSpecificProperties.ui
+    WidgetForSpecificProperties.ui \
+    DocumentationForm.ui
 
 include (db/db.pri)
 INCLUDEPATH += db

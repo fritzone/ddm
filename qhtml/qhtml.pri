@@ -9,6 +9,5 @@ HEADERS += \
     qhtml/HtmlSourceGenerator.h \
     qhtml/QHtmlHead.h \
     qhtml/languages.h \
-    qhtml/QHtmlTitle.h \
-    qhtml/QHtmlAttributes.h
+    qhtml/QHtmlTitle.h
 

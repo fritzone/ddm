@@ -4,8 +4,6 @@
 #include <QString>
 #include <QObject>
 
-#include "QHtmlAttributes.h"
-
 class HtmlSourceGenerator : public QObject
 {
     Q_OBJECT

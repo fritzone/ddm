@@ -29,18 +29,23 @@
 // TODO: This file looks funny. See why it seems we have a lot of duplicate code
 
 VersionGuiElements::VersionGuiElements(GuiElements* guiElements, Version* v) :
-    tablesItem(0), tableInstancesItem(0),
-    versionItem(0), diagramsItem(0), proceduresItem(0), functionsItem(0), finalSqlItem(0), dtsItem(0), viewsItem(0),
-    triggersItem(0), m_tree(guiElements->getProjectTree()), m_dtTree(guiElements->getDataTypesTree()), m_issuesTree(guiElements->getIssuesTree()),
-    stringsDtItem(0), intsDtItem(0), dateDtItem(0), blobDtItem(0),
-    boolDtItem(0), miscDtItem(0), spatialDtItem(0), m_version(v),
-    m_newTableForm(0), m_existingTableForm(0), m_procedureForm(0)
+    tablesItem(0), tableInstancesItem(0), versionItem(0), diagramsItem(0),
+    proceduresItem(0), functionsItem(0), finalSqlItem(0), viewsItem(0),
+    triggersItem(0), documentationItem(0),
+    m_tree(guiElements->getProjectTree()),
+    m_dtTree(guiElements->getDataTypesTree()),
+    m_issuesTree(guiElements->getIssuesTree()),
+    dtsItem(0), stringsDtItem(0), intsDtItem(0), dateDtItem(0), blobDtItem(0),
+    boolDtItem(0), miscDtItem(0), spatialDtItem(0),
+    m_newTableForm(0), m_existingTableForm(0), m_procedureForm(0),
+    m_version(v)
 {
 }
 
 void VersionGuiElements::createGuiElements(ContextMenuEnabledTreeWidgetItem* projectItem)
 {
-    versionItem = new ContextMenuEnabledTreeWidgetItem(projectItem, QStringList(QString("Ver: ") + m_version->getVersionText())) ;
+    versionItem = new ContextMenuEnabledTreeWidgetItem(projectItem,
+               QStringList(QString("Ver: ") + m_version->getVersionText())) ;
     versionItem->setIcon(0, IconFactory::getVersionIcon());
     //versionItem->setPopupMenu(ContextMenuCollection::getInstance()->getMajorVersionPopupMenu());
     m_tree->addTopLevelItem(versionItem);
@@ -86,7 +91,7 @@ void VersionGuiElements::createGuiElements(ContextMenuEnabledTreeWidgetItem* pro
     //viewsItem->setPopupMenu(ContextMenuCollection::getInstance()->getDiagramsPopupMenu());
     m_tree->addTopLevelItem(triggersItem);
 
-    // last one: SQLs
+    // SQLs
     ContextMenuEnabledTreeWidgetItem* codeItem= new ContextMenuEnabledTreeWidgetItem(versionItem, QStringList(QObject::tr("Code"))) ;
     codeItem->setIcon(0, IconFactory::getCodeIcon());
     m_tree->addTopLevelItem(codeItem);
@@ -94,6 +99,12 @@ void VersionGuiElements::createGuiElements(ContextMenuEnabledTreeWidgetItem* pro
     finalSqlItem= new ContextMenuEnabledTreeWidgetItem(codeItem, QStringList(QObject::tr("SQL"))) ;
     finalSqlItem->setIcon(0, IconFactory::getSqlIcon());
     m_tree->addTopLevelItem(finalSqlItem);
+
+    // documentation
+    documentationItem = new ContextMenuEnabledTreeWidgetItem(versionItem, QStringList(QObject::tr("Documentation"))) ;
+    documentationItem->setIcon(0, IconFactory::getHelpIcon());
+    //viewsItem->setPopupMenu(ContextMenuCollection::getInstance()->getDiagramsPopupMenu());
+    m_tree->addTopLevelItem(documentationItem);
 
     // make the dts sub item coming from the project
     dtsItem = new ContextMenuEnabledTreeWidgetItem((ContextMenuEnabledTreeWidgetItem*)0, QStringList(QObject::tr("Data Types"))) ;
@@ -536,12 +547,14 @@ SqlForm* VersionGuiElements::getSqlForm()
 
 NewTableForm* VersionGuiElements::getTableFormForNewTable()
 {
-    return m_newTableForm = new NewTableForm(Workspace::getInstance()->currentProjectsEngine(), Workspace::getInstance()->currentProject(), MainWindow::instance(), true);
+    return m_newTableForm = new NewTableForm(Workspace::getInstance()->currentProjectsEngine(),
+                                             Workspace::getInstance()->currentProject(), MainWindow::instance(), true);
 }
 
 NewTableForm* VersionGuiElements::getTableFormForExistingTable()
 {
-    return m_existingTableForm = new NewTableForm(Workspace::getInstance()->currentProjectsEngine(), Workspace::getInstance()->currentProject(), MainWindow::instance(), false);
+    return m_existingTableForm = new NewTableForm(Workspace::getInstance()->currentProjectsEngine(),
+                                                  Workspace::getInstance()->currentProject(), MainWindow::instance(), false);
 }
 
 ProcedureForm* VersionGuiElements::getProcedureForm(ProcedureFormMode m)
@@ -552,4 +565,142 @@ ProcedureForm* VersionGuiElements::getProcedureForm(ProcedureFormMode m)
 TriggerForm* VersionGuiElements::getTriggerForm()
 {
     return m_triggerForm = new TriggerForm(false, false, MainWindow::instance());
+}
+
+ContextMenuEnabledTreeWidgetItem* VersionGuiElements::getTablesItem() const
+{
+    return tablesItem;
+}
+
+ContextMenuEnabledTreeWidgetItem* VersionGuiElements::getTableInstancesItem() const
+{
+    return tableInstancesItem;
+}
+
+ContextMenuEnabledTreeWidgetItem* VersionGuiElements::getFinalSqlItem() const
+{
+    return finalSqlItem;
+}
+
+
+ContextMenuEnabledTreeWidgetItem* VersionGuiElements::getVersionItem() const
+{
+    return versionItem;
+}
+
+
+ContextMenuEnabledTreeWidgetItem* VersionGuiElements::getDiagramsItem() const
+{
+    return diagramsItem;
+}
+
+ContextMenuEnabledTreeWidgetItem* VersionGuiElements::getViewsItem() const
+{
+    return viewsItem;
+}
+
+ContextMenuEnabledTreeWidgetItem* VersionGuiElements::getProceduresItem() const
+{
+    return proceduresItem;
+}
+
+ContextMenuEnabledTreeWidgetItem* VersionGuiElements::getFunctionsItem() const
+{
+    return functionsItem;
+}
+
+ContextMenuEnabledTreeWidgetItem* VersionGuiElements::getTriggersItem() const
+{
+    return triggersItem;
+}
+
+ContextMenuEnabledTreeWidgetItem* VersionGuiElements::getDocumentationItem() const
+{
+    return documentationItem;
+}
+
+ContextMenuEnabledTreeWidgetItem* VersionGuiElements::getDtsItem() const
+{
+    return dtsItem;
+}
+
+ContextMenuEnabledTreeWidgetItem* VersionGuiElements::getIntsDtsItem()
+{
+    if(intsDtItem == 0)
+    {
+        intsDtItem = new ContextMenuEnabledTreeWidgetItem(dtsItem,
+                                     QStringList(QObject::tr("Numeric"))) ;
+        intsDtItem ->setIcon(0, IconFactory::getIntDataTypesIcon());
+        m_dtTree->addTopLevelItem(intsDtItem);
+    }
+    return intsDtItem;
+}
+
+ContextMenuEnabledTreeWidgetItem* VersionGuiElements::getStringDtsItem()
+{
+    if(stringsDtItem == 0)
+    {
+        stringsDtItem = new ContextMenuEnabledTreeWidgetItem(dtsItem,
+                                      QStringList(QObject::tr("String"))) ;
+        stringsDtItem ->setIcon(0, IconFactory::getStringDataTypesIcon());
+        m_dtTree->addTopLevelItem(stringsDtItem);
+    }
+    return stringsDtItem;
+}
+
+ContextMenuEnabledTreeWidgetItem* VersionGuiElements::getDateDtsItem()
+{
+    if(dateDtItem == 0)
+    {
+        dateDtItem = new ContextMenuEnabledTreeWidgetItem(dtsItem,
+                                   QStringList(QObject::tr("Date/Time"))) ;
+        dateDtItem ->setIcon(0, IconFactory::getDateTimeDataTypesIcon());
+        m_dtTree->addTopLevelItem(dateDtItem);
+    }
+
+    return dateDtItem;
+}
+ContextMenuEnabledTreeWidgetItem* VersionGuiElements::getBlobDtsItem()
+{
+    if(blobDtItem == 0)
+    {
+        blobDtItem = new ContextMenuEnabledTreeWidgetItem(dtsItem,
+                                 QStringList(QObject::tr("Blob/Binary"))) ;
+        blobDtItem ->setIcon(0, IconFactory::getBlobDataTypesIcon());
+        m_dtTree->addTopLevelItem(blobDtItem);
+    }
+    return blobDtItem;
+}
+
+ContextMenuEnabledTreeWidgetItem* VersionGuiElements::getBoolDtsItem()
+{
+    if(boolDtItem == 0)
+    {
+        boolDtItem = new ContextMenuEnabledTreeWidgetItem(dtsItem, QStringList(QObject::tr("Boolean"))) ;
+        boolDtItem ->setIcon(0, IconFactory::getBoolDataTypesIcon());
+        m_dtTree->addTopLevelItem(boolDtItem);
+    }
+    return boolDtItem;
+}
+
+ContextMenuEnabledTreeWidgetItem*VersionGuiElements:: getMiscDtsItem()
+{
+    if(miscDtItem == 0)
+    {
+        miscDtItem = new ContextMenuEnabledTreeWidgetItem(dtsItem, QStringList(QObject::tr("Misc"))) ;
+        miscDtItem ->setIcon(0, IconFactory::getMiscDataTypesIcon());
+        m_dtTree->addTopLevelItem(boolDtItem);
+    }
+    return miscDtItem;
+}
+
+ContextMenuEnabledTreeWidgetItem* VersionGuiElements::getSpatialDtsItem()
+{
+    if(spatialDtItem == 0)
+    {
+        spatialDtItem = new ContextMenuEnabledTreeWidgetItem(dtsItem, QStringList(QObject::tr("Spatial"))) ;
+        spatialDtItem ->setIcon(0, IconFactory::getSpatialDataTypesIcon());
+        m_dtTree->addTopLevelItem(spatialDtItem);
+    }
+    return spatialDtItem;
 }

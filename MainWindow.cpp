@@ -57,6 +57,7 @@
 #include "MajorVersion.h"
 #include "UidWarehouse.h"
 #include "DeploymentInitiator.h"
+#include "DocumentationForm.h"
 
 #include <QtGui>
 
@@ -543,6 +544,12 @@ void MainWindow::currentProjectTreeItemChanged(QTreeWidgetItem * current, QTreeW
         if(current == m_workspace->workingVersion()->getGui()->getTriggersItem())
         {// we have clicked on the Triggers item (i.e. the list of triggers)
             showNamedObjectList(&MainWindow::showTriggerWithGuid, m_workspace->workingVersion()->getTriggers(), IconFactory::getTriggerIcon(), "Triggers");
+        }
+        else
+        if((current == m_workspace->workingVersion()->getGui()->getDocumentationItem()))
+        {
+            DocumentationForm* docF = new DocumentationForm(this);
+            setCentralWidget(docF);
         }
         else
         {
