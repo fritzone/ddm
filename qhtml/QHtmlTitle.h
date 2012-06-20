@@ -15,6 +15,7 @@ public:
 
     QString getTitle() const;
     void setTitle(const QString&);
+
 private:
     QString m_title;
 
