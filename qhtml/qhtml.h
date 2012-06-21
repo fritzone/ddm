@@ -12,5 +12,6 @@
 #include "QHtmlElementContainer.h"
 #include "QHtmlText.h"
 #include "QHtmlTable.h"
+#include "QHtmlRow.h"
 
 #endif // QHTML_H

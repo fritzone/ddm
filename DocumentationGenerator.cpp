@@ -5,6 +5,7 @@
 #include "Project.h"
 #include "Version.h"
 #include "core_Table.h"
+#include "core_Column.h"
 
 DocumentationGenerator::DocumentationGenerator(const Solution* s) : m_solution(s)
 {
@@ -52,6 +53,13 @@ QString DocumentationGenerator::getDocumentation()
         QHtmlTable* tableForColumns = new QHtmlTable();
         doc.getBody()->addElement(tableForColumns);
 
+        QStringList cols = tabs.at(i)->fullColumns();
+        for(int j=0; j<cols.size(); j++)
+        {
+            QHtmlRow* rowJ = new QHtmlRow();
+            rowJ->addRowData(cols.at(j));
+            tableForColumns->addRow(rowJ);
+        }
     }
 
     result = doc.html();
