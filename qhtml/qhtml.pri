@@ -7,7 +7,8 @@ SOURCES += \
     qhtml/QHtmlBody.cpp \
     qhtml/QHtmlText.cpp \
     qhtml/QHtmlElementContainer.cpp \
-    qhtml/QHtmlTable.cpp
+    qhtml/QHtmlTable.cpp \
+    qhtml/QHtmlRow.cpp
 
 HEADERS += \
     qhtml/QHtmlDocument.h \
@@ -22,5 +23,6 @@ HEADERS += \
     qhtml/QHtmlElementContainer.h \
     qhtml/QHtmlText.h \
     qhtml/qhtml.h \
-    qhtml/QHtmlTable.h
+    qhtml/QHtmlTable.h \
+    qhtml/QHtmlRow.h
 
