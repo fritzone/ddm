@@ -11,7 +11,7 @@ void GuiElements::createGuiElements()
 {
     m_contextMenuHandler = new ContextMenuHandler();
     // create the dock window
-    m_projectTreeDock = new QDockWidget(QObject::tr("Solution - ") + Workspace::getInstance()->currentSolution()->name(), MainWindow::instance());
+    m_projectTreeDock = new QDockWidget(QObject::tr("Solution - ") + Workspace::getInstance()->currentSolution()->getName(), MainWindow::instance());
     m_projectTreeDock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
     m_projectTreeDock->setFeatures(QDockWidget::AllDockWidgetFeatures);
     m_projectTreeDock->setFloating(false);

@@ -82,7 +82,8 @@ SOURCES += main.cpp \
     ValueSp.cpp \
     ValueSpInstance.cpp \
     DeploymentInitiator.cpp \
-    DocumentationForm.cpp
+    DocumentationForm.cpp \
+    DocumentationGenerator.cpp
 
 HEADERS += MainWindow.h \
     MainWindowButtonDialog.h \
@@ -173,7 +174,8 @@ HEADERS += MainWindow.h \
     ValueSp.h \
     ValueSpInstance.h \
     DeploymentInitiator.h \
-    DocumentationForm.h
+    DocumentationForm.h \
+    DocumentationGenerator.h
 
 FORMS += MainWindow.ui \
     MainWindowButtonDialog.ui \

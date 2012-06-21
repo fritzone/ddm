@@ -52,3 +52,8 @@ void ProjectDetailsForm::onNameChanged(QString a)
     m_project->setName(ui->txtProjectName->text());
     m_project->setDisplayText(a);
 }
+
+void ProjectDetailsForm::decriptionChanged()
+{
+    m_project->setDescription(ui->textEdit->toPlainText());
+}

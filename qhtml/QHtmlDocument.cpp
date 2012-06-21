@@ -1,10 +1,12 @@
 #include "QHtmlDocument.h"
 #include "QHtmlHead.h"
+#include "QHtmlBody.h"
 
 QHtmlDocument::QHtmlDocument(const QString &title, DocumentType type) :
     HtmlSourceGenerator("html"),
     m_documentType(type),
-    m_head(new QHtmlHead(title))
+    m_head(new QHtmlHead(title)),
+    m_body(new QHtmlBody())
 {
 }
 
@@ -42,6 +44,7 @@ QString QHtmlDocument::html() const
     QString result = "<!DOCTYPE " + typeString + ">";
     result += openTag();
     result += m_head->html();
+    result += m_body->html();
     result += closeTag();
     return result;
 }

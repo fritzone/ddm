@@ -5,6 +5,7 @@
 #include <QObject>
 
 class QHtmlHead;
+class QHtmlBody;
 
 class QHtmlDocument : public HtmlSourceGenerator
 {
@@ -31,10 +32,16 @@ public:
         return m_head;
     }
 
+    QHtmlBody* getBody() const
+    {
+        return m_body;
+    }
+
 private:
 
     DocumentType m_documentType;
     QHtmlHead* m_head;
+    QHtmlBody* m_body;
 };
 
 #endif // QHTMLDOCUMENT_H
