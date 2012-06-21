@@ -168,10 +168,27 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>textEdit</sender>
+   <signal>textChanged()</signal>
+   <receiver>ProjectDetailsForm</receiver>
+   <slot>decriptionChanged()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>243</x>
+     <y>126</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>199</x>
+     <y>149</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>onBtnUpdate()</slot>
   <slot>onOopCheckChange(int)</slot>
   <slot>onNameChanged(QString)</slot>
+  <slot>decriptionChanged()</slot>
  </slots>
 </ui>

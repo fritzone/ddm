@@ -58,6 +58,7 @@
 #include "UidWarehouse.h"
 #include "DeploymentInitiator.h"
 #include "DocumentationForm.h"
+#include "DocumentationGenerator.h"
 
 #include <QtGui>
 
@@ -278,7 +279,7 @@ void MainWindow::onNewSolution()
         // show the project properties window
         showProjectDetails();
 
-        setWindowTitle(tr("DDM - [") + m_workspace->currentSolution()->name() + tr("]"));
+        setWindowTitle(tr("DDM - [") + m_workspace->currentSolution()->getName() + tr("]"));
 
         connectActionsFromPopupMenus();
         if(!m_workspace->currentProjectIsOop())
@@ -549,6 +550,8 @@ void MainWindow::currentProjectTreeItemChanged(QTreeWidgetItem * current, QTreeW
         if((current == m_workspace->workingVersion()->getGui()->getDocumentationItem()))
         {
             DocumentationForm* docF = new DocumentationForm(this);
+            DocumentationGenerator gen(m_workspace->currentSolution());
+            docF->setDoc(gen.getDocumentation());
             setCentralWidget(docF);
         }
         else
@@ -768,7 +771,7 @@ void MainWindow::doLoadSolution(const QString& fileName, bool splashVisible)
     prjDetailsForm->setProject(m_workspace->currentSolution()->currentProject(), fileName);
     setCentralWidget(prjDetailsForm);
 
-    setWindowTitle(tr("DDM - [") + m_workspace->currentSolution()->name() + tr("] - [") + fileName + tr("]"));
+    setWindowTitle(tr("DDM - [") + m_workspace->currentSolution()->getName() + tr("] - [") + fileName + tr("]"));
     m_lastLoadedProject = fileName;
 
     connectActionsFromPopupMenus();
