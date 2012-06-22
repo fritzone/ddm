@@ -28,5 +28,6 @@ HEADERS += \
     qhtml/QHtmlTable.h \
     qhtml/QHtmlRow.h \
     qhtml/QHtmlRowData.h \
-    qhtml/QHtmlTableHeader.h
+    qhtml/QHtmlTableHeader.h \
+    qhtml/QHtmlCSSClass.h
 
