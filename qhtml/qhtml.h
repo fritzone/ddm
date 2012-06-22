@@ -13,5 +13,7 @@
 #include "QHtmlText.h"
 #include "QHtmlTable.h"
 #include "QHtmlRow.h"
+#include "QHtmlRowData.h"
+#include "QHtmlTableHeader.h"
 
 #endif // QHTML_H

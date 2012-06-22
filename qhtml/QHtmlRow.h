@@ -1,8 +1,10 @@
 #ifndef QHTMLROW_H
 #define QHTMLROW_H
 
-#include <QStringList>
+#include <QVector>
 #include "HtmlSourceGenerator.h"
+
+class QHtmlBodyElements;
 
 class QHtmlRow : public HtmlSourceGenerator
 {
@@ -10,13 +12,13 @@ public:
     QHtmlRow();
 
     virtual QString html() const;
-    void addRowData(const QString& a)
+    void addData(QHtmlBodyElements* data)
     {
-        m_tds.append(a);
+        m_tds.append(data);
     }
 
 private:
-    QStringList m_tds;
+    QVector<QHtmlBodyElements*> m_tds;
 };
 
 #endif // QHTMLROW_H

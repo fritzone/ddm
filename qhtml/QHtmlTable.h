@@ -9,7 +9,7 @@ class QHtmlRow;
 class QHtmlTable : public HtmlSourceGenerator
 {
 public:
-    QHtmlTable();
+    QHtmlTable(int border);
     virtual QString html() const;
     void addRow(QHtmlRow* row)
     {
@@ -18,6 +18,7 @@ public:
 
 private:
     QVector<QHtmlRow*> m_rows;
+    int m_border;
 };
 
 #endif // QHTMLTABLE_H
