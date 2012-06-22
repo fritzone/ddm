@@ -46,6 +46,8 @@ ReverseEngineerWizardObjectListForm::~ReverseEngineerWizardObjectListForm()
 
 void ReverseEngineerWizardObjectListForm::addObject(const QString & tab)
 {
+    if(tab == "DDM_META") return;
+
     QListWidgetItem* lwi = new QListWidgetItem(tab, ui->listWidget);
     QIcon c = IconFactory::getTablesIcon();
     if(m_mode == REVERSE_ENGINEER_VIEWS) c = IconFactory::getViewsIcon();
