@@ -15,5 +15,6 @@
 #include "QHtmlRow.h"
 #include "QHtmlRowData.h"
 #include "QHtmlTableHeader.h"
+#include "QHtmlCSSClass.h"
 
 #endif // QHTML_H

@@ -10,8 +10,10 @@ public:
     Procedure(const QString& pname, const QString& uid);
     virtual void serialize(QDomDocument& doc, QDomElement& parent) const;
     virtual QUuid getClassUid() const;
+    virtual QString keyword()
+    {
+        return "PROCEDURE";
+    }
 };
 
 #endif // CORE_PROCEDURE_H
-
-// NameGenerator::getUniqueName(Workspace::getInstance()->workingVersion(), (itemGetter)&Version::getProcedure, QString("proc"))
