@@ -10,7 +10,8 @@ SOURCES += \
     qhtml/QHtmlTable.cpp \
     qhtml/QHtmlRow.cpp \
     qhtml/QHtmlRowData.cpp \
-    qhtml/QHtmlTableHeader.cpp
+    qhtml/QHtmlTableHeader.cpp \
+    qhtml/QHtmlCSSClass.cpp
 
 HEADERS += \
     qhtml/QHtmlDocument.h \

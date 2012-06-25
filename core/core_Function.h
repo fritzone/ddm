@@ -10,6 +10,10 @@ public:
     Function(const QString& pname, const QString& guid);
     virtual void serialize(QDomDocument& doc, QDomElement& parent) const;
     virtual QUuid getClassUid() const;
+    virtual QString keyword()
+    {
+        return "FUNCTION";
+    }
 };
 
 #endif // CORE_FUNCTION_H

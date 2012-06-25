@@ -7,6 +7,9 @@
 #include "core_Table.h"
 #include "core_Column.h"
 #include "core_UserDataType.h"
+#include "Index.h"
+#include "core_Procedure.h"
+#include <QApplication>
 
 DocumentationGenerator::DocumentationGenerator(const Solution* s) : m_solution(s)
 {
@@ -18,20 +21,20 @@ QString DocumentationGenerator::getDocumentation()
     QHtmlDocument doc(m_solution->getName());
 
     QHtmlHeading* h1 = new QHtmlHeading(1);
-    QHtmlText* solutionName = new QHtmlText(QString("Solution: ") + m_solution->getName());
+    QHtmlText* solutionName = new QHtmlText(QApplication::tr("Solution: ") + m_solution->getName(), QHtmlCSSClass::classH1());
     h1->addElement(solutionName);
     doc.getBody()->addHeading(h1);
 
     QHtmlHeading* h2 = new QHtmlHeading(2);
-    QHtmlText* projectName = new QHtmlText(QString("Project: ") + m_solution->currentProject()->getName());
+    QHtmlText* projectName = new QHtmlText(QApplication::tr("Project: ") + m_solution->currentProject()->getName(), QHtmlCSSClass::classH2());
     h2->addElement(projectName);
     doc.getBody()->addHeading(h2);
 
-    QHtmlText* projectDescription = new QHtmlText(m_solution->currentProject()->getDescription());
+    QHtmlText* projectDescription = new QHtmlText(m_solution->currentProject()->getDescription(), QHtmlCSSClass::classProjectDescription());
     doc.getBody()->addElement(projectDescription);
 
     QHtmlHeading* h3Tables = new QHtmlHeading(3);
-    QHtmlText* tablesText = new QHtmlText(QString("Tables"));
+    QHtmlText* tablesText = new QHtmlText(QApplication::tr("Tables"), QHtmlCSSClass::classH3());
     h3Tables->addElement(tablesText);
     doc.getBody()->addHeading(h3Tables);
 
@@ -39,25 +42,27 @@ QString DocumentationGenerator::getDocumentation()
     for(int i=0; i<tabs.size(); i++)
     {
         QHtmlHeading* h4Table = new QHtmlHeading(4);
-        QHtmlText* tableName= new QHtmlText(tabs.at(i)->getName());
+        QHtmlText* tableName= new QHtmlText(tabs.at(i)->getName(), QHtmlCSSClass::classH4());
         h4Table->addElement(tableName);
         doc.getBody()->addHeading(h4Table);
 
-        QHtmlText* tableDesc = new QHtmlText(tabs.at(i)->getDescription());
+        QHtmlText* tableDesc = new QHtmlText(tabs.at(i)->getDescription(), QHtmlCSSClass::classDescription());
         doc.getBody()->addElement(tableDesc);
 
-        QHtmlHeading* h5TableColumns = new QHtmlHeading(5);
-        QHtmlText* tableColumnsText= new QHtmlText("Columns");
+        // Columns
+        {
+        QHtmlHeading* h5TableColumns = new QHtmlHeading(4);
+        QHtmlText* tableColumnsText= new QHtmlText(QApplication::tr("Columns"), QHtmlCSSClass::classH5());
         h5TableColumns->addElement(tableColumnsText);
         doc.getBody()->addHeading(h5TableColumns);
 
         QHtmlTable* tableForColumns = new QHtmlTable(1);
         doc.getBody()->addElement(tableForColumns);
 
-        QHtmlText* colTabHeaderTextColPRI = new QHtmlText("PRI");
-        QHtmlText* colTabHeaderTextColName = new QHtmlText("Name");
-        QHtmlText* colTabHeaderTextColType = new QHtmlText("SQL Type");
-        QHtmlText* colTabHeaderTextColDesc = new QHtmlText("Description");
+        QHtmlText* colTabHeaderTextColPRI = new QHtmlText(QApplication::tr("PRI"), QHtmlCSSClass::classTableHeader());
+        QHtmlText* colTabHeaderTextColName = new QHtmlText(QApplication::tr("Name"), QHtmlCSSClass::classTableHeader());
+        QHtmlText* colTabHeaderTextColType = new QHtmlText(QApplication::tr("SQL Type"), QHtmlCSSClass::classTableHeader());
+        QHtmlText* colTabHeaderTextColDesc = new QHtmlText(QApplication::tr("Description"), QHtmlCSSClass::classTableHeader());
 
         QHtmlTableHeader* hdrColTabHeaderTextColPRI = new QHtmlTableHeader(colTabHeaderTextColPRI);
         QHtmlTableHeader* hdrColTabHeaderTextColName = new QHtmlTableHeader(colTabHeaderTextColName);
@@ -80,25 +85,128 @@ QString DocumentationGenerator::getDocumentation()
 
             QHtmlRow* rowJ = new QHtmlRow();
 
-            QHtmlText* colPri = new QHtmlText(c->isPk()?"Y":"");
+            QHtmlText* colPri = new QHtmlText(c->isPk()?QApplication::tr("Y"):"", QHtmlCSSClass::classTableText());
             QHtmlRowData* rowJdataColPri = new QHtmlRowData(colPri);
             rowJ->addData(rowJdataColPri);
 
-            QHtmlText* colName = new QHtmlText(cols.at(j));
+            QHtmlText* colName = new QHtmlText(cols.at(j), QHtmlCSSClass::classTableText());
             QHtmlRowData* rowJdataColName = new QHtmlRowData(colName);
             rowJ->addData(rowJdataColName);
 
-            QHtmlText* colType = new QHtmlText(c->getDataType()->sqlAsString());
+            QHtmlText* colType = new QHtmlText(c->getDataType()->sqlAsString(), QHtmlCSSClass::classCode());
             QHtmlRowData* rowJdataColType = new QHtmlRowData(colType);
             rowJ->addData(rowJdataColType);
 
-            QHtmlText* colDesc = new QHtmlText(c->getDescription());
+            QHtmlText* colDesc = new QHtmlText(c->getDescription(), QHtmlCSSClass::classTableText());
             QHtmlRowData* rowJdataColDesc = new QHtmlRowData(colDesc);
             rowJ->addData(rowJdataColDesc);
 
             tableForColumns->addRow(rowJ);
         }
+        }
+
+        // Indices
+        {
+        QHtmlHeading* h5TableIndices = new QHtmlHeading(4);
+        QHtmlText* tableColumnsText= new QHtmlText(QApplication::tr("Indices"), QHtmlCSSClass::classH5());
+        h5TableIndices->addElement(tableColumnsText);
+        doc.getBody()->addHeading(h5TableIndices);
+
+        QStringList idxs = tabs.at(i)->fullIndices();
+        for(int j=0; j<idxs.size(); j++)
+        {
+            Index* idx = tabs.at(i)->getIndex(idxs.at(j));
+            if(idx == 0) idx = tabs.at(i)->getIndexFromParents(idxs.at(j));
+            if(idx == 0) continue;
+
+            QHtmlHeading* h6IndexName = new QHtmlHeading(5);
+            QHtmlText* tableIndexNameText= new QHtmlText(idxs.at(j), QHtmlCSSClass::classH6());
+            h6IndexName->addElement(tableIndexNameText);
+            doc.getBody()->addHeading(h6IndexName);
+
+            QHtmlTable* tableForIndexes = new QHtmlTable(1);
+            QHtmlText* colTabHeaderTextIdxName = new QHtmlText(QApplication::tr("Name"), QHtmlCSSClass::classTableHeader());
+            QHtmlText* colTabHeaderTextIdxOrder = new QHtmlText(QApplication::tr("Order"), QHtmlCSSClass::classTableHeader());
+
+            QHtmlTableHeader* hdrColTabHeaderTextIdxName = new QHtmlTableHeader(colTabHeaderTextIdxName);
+            QHtmlTableHeader* hdrColTabHeaderTextIdxOrder= new QHtmlTableHeader(colTabHeaderTextIdxOrder);
+
+            QHtmlRow* hdrColRow = new QHtmlRow();
+            hdrColRow->addData(hdrColTabHeaderTextIdxName);
+            hdrColRow->addData(hdrColTabHeaderTextIdxOrder);
+
+            tableForIndexes->addRow(hdrColRow);
+            for(int k = 0; k<idx->getColumns().size(); k++)
+            {
+                QHtmlRow* rowK = new QHtmlRow();
+                QHtmlText* idxN = new QHtmlText(idx->getColumns().at(k)->getName(), QHtmlCSSClass::classTableText());
+                QHtmlText* idxO = new QHtmlText(idx->getOrderForColumn(idx->getColumns().at(k)), QHtmlCSSClass::classTableText());
+                QHtmlRowData* dataN = new QHtmlRowData(idxN);
+                QHtmlRowData* dataO = new QHtmlRowData(idxO);
+                rowK->addData(dataN);
+                rowK->addData(dataO);
+                tableForIndexes->addRow(rowK);
+            }
+
+            doc.getBody()->addElement(tableForIndexes);
+        }
+        }
     }
+
+    // Procedures
+    {
+    QHtmlHeading* h3TableProcedures = new QHtmlHeading(3);
+    QHtmlText* tableColumnsText= new QHtmlText(QApplication::tr("Procedures"), QHtmlCSSClass::classH5());
+    h3TableProcedures->addElement(tableColumnsText);
+    doc.getBody()->addHeading(h3TableProcedures);
+    QVector<Procedure*> procs = m_solution->currentProject()->getWorkingVersion()->getProcedures();
+    for(int i=0; i<procs.size(); i++)
+    {
+        QHtmlHeading* h4Proc = new QHtmlHeading(4);
+        QHtmlText* procName= new QHtmlText(procs.at(i)->getName(), QHtmlCSSClass::classH4());
+        h4Proc->addElement(procName);
+        doc.getBody()->addHeading(h4Proc);
+
+        QVector<StoredMethod::ParameterAndDescription> pads = procs.at(i)->getParametersWithDescription();
+        QHtmlText* methodBriefDescription = new QHtmlText(procs.at(i)->getBriefDescription(), QHtmlCSSClass::classDescription());
+        doc.getBody()->addElement(methodBriefDescription);
+
+        QHtmlTable* tableForParameterTypes = new QHtmlTable(1);
+        QHtmlText* colTabHeaderTextParName = new QHtmlText(QApplication::tr("Name"), QHtmlCSSClass::classTableHeader());
+        QHtmlText* colTabHeaderTextParType = new QHtmlText(QApplication::tr("Type"), QHtmlCSSClass::classTableHeader());
+        QHtmlText* colTabHeaderTextParDesc = new QHtmlText(QApplication::tr("Desc"), QHtmlCSSClass::classTableHeader());
+
+        QHtmlTableHeader* hdrMethTabHeaderTextParName = new QHtmlTableHeader(colTabHeaderTextParName);
+        QHtmlTableHeader* hdrMethTabHeaderTextParType = new QHtmlTableHeader(colTabHeaderTextParType);
+        QHtmlTableHeader* hdrMethTabHeaderTextParDesc = new QHtmlTableHeader(colTabHeaderTextParDesc);
+
+        QHtmlRow* hdrColRow = new QHtmlRow();
+        hdrColRow->addData(hdrMethTabHeaderTextParName);
+        hdrColRow->addData(hdrMethTabHeaderTextParType);
+        hdrColRow->addData(hdrMethTabHeaderTextParDesc);
+        tableForParameterTypes->addRow(hdrColRow);
+        for(int j=0; j<pads.size(); j++)
+        {
+            QHtmlText* colParName = new QHtmlText(pads.at(j).m_parameter, QHtmlCSSClass::classTableText());
+            QHtmlText* colParType = new QHtmlText(pads.at(j).m_type, QHtmlCSSClass::classTableText());
+            QHtmlText* colParDesc = new QHtmlText(pads.at(j).m_description, QHtmlCSSClass::classTableText());
+
+            QHtmlRowData* dataN = new QHtmlRowData(colParName);
+            QHtmlRowData* dataO = new QHtmlRowData(colParType);
+            QHtmlRowData* dataD = new QHtmlRowData(colParDesc);
+            QHtmlRow* rowK = new QHtmlRow();
+
+            rowK->addData(dataN);
+            rowK->addData(dataO);
+            rowK->addData(dataD);
+            tableForParameterTypes->addRow(rowK);
+
+        }
+
+        doc.getBody()->addElement(tableForParameterTypes);
+    }
+    }
+
 
     result = doc.html();
     return result;
