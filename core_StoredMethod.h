@@ -15,6 +15,7 @@ public:
         QString m_parameter;
         QString m_type;
         QString m_description;
+        QString m_direction;
     };
 
 
@@ -32,6 +33,7 @@ public:
     {
         return m_brief;
     }
+    QString getNameFromSql(int stidx, int& nameidx);
 
 protected:
 

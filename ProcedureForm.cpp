@@ -41,29 +41,14 @@ void ProcedureForm::changeEvent(QEvent *e)
 
 QString ProcedureForm::getProcNameFromSql()
 {
-    QString t = m_textEdit->toPlainText();
-    QString c = m_mode == MODE_PROCEDURE?"PROCEDURE":"FUNCTION";
-    int i = t.indexOf(c, 0, Qt::CaseInsensitive);
-
-    if(i != -1)
+    int t = 0;
+    QString n = m_proc->getNameFromSql(0, t);
+    if(n != "UNNAMED")
     {
-        i += c.length();
-        while(i<t.length() && t.at(i).isSpace())
-        {
-            i++;
-        }
-        QString n = "";
-        while(i<t.length() && t.at(i) != '(')
-        {
-            n += ((t.at(i).isSpace())?(QString("")):(t.at(i)));
-            i++;
-        }
         m_proc->setDisplayText(n);
         m_proc->setName(n);
-        return n;
     }
-
-    return "";
+    return m_proc->getName();
 }
 
 void ProcedureForm::textChanged()
