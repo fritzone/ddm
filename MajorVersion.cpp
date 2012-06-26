@@ -96,7 +96,7 @@ void MajorVersion::serialize(QDomDocument &doc, QDomElement &parent) const
     // the functions
     {
     QDomElement procElement = doc.createElement("Functions");
-    for(int i=0; i< m_data.m_procedures.size(); i++)
+    for(int i=0; i< m_data.m_functions.size(); i++)
     {
         m_data.m_functions[i]->serialize(doc, procElement);
     }

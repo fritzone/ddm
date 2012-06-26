@@ -471,7 +471,7 @@ void WidgetForSpecificProperties::repopulateSpsOfObject(ObjectWithSpInstances *d
     }
 }
 
-void WidgetForSpecificProperties::editTextEdited(const QString &s)
+void WidgetForSpecificProperties::editTextEdited(const QString &/*s*/)
 {
     QLineEdit *edit = qobject_cast<QLineEdit*>(sender());
     if(edit != 0)

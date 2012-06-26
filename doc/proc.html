@@ -1,8 +1,9 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML>
-<HEAD>
-	<TITLE>Views</TITLE>
-	<STYLE TYPE="text/css">
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+  <head>
+    <meta content="text/html;charset=ISO-8859-1" http-equiv="Content-Type">
+    <title>Views</title>
+    <style type="text/css">
 	<!--
 		P { border: 1px solid #000000; padding: 0.02in }
 .style1 {font-family: Arial, Helvetica, sans-serif}
@@ -10,14 +11,51 @@
 .style3 {color: #0000FF}
 .style4 {color: #0000FF; font-family: "Courier New", Courier, monospace; }
 	-->
-	</STYLE>
-</HEAD>
-<BODY LANG="en-US" BGCOLOR="white" DIR="LTR">
-<P ALIGN=CENTER class="style1" STYLE="margin-bottom: 0in; background: white; border: none; padding: 0in; font-style: normal; line-height: 115%; text-decoration: none">
-<B>Procedures and Functions</B></P>
-<P class="style1" STYLE="margin-bottom: 0in; background: white; line-height: 115%">
-  <FONT SIZE=2 STYLE="font-size: 11pt">
-Stored procedures and functions are statements written in SQL language and stored in a database for later execution.</FONT> For more details about the syntax please consult the documentation of your database.</P>
-<P class="style1" STYLE="background: white">With DDM you can create a stored procedure/function using the SQL syntax of your database using the DDM text editor which tries to offer some limited code completion and other features to make your life easier.</P>
-</BODY>
-</HTML>
+	</style>
+  </head>
+  <body dir="LTR" bgcolor="white" lang="en-US">
+    <p class="style1" style="margin-bottom: 0in; background: white; border: none; padding: 0in; font-style: normal; line-height: 115%; text-decoration: none"
+
+      align="CENTER"> <b>Procedures and Functions</b></p>
+    <p class="style1" style="margin-bottom: 0in; background: white; line-height: 115%">
+      Stored procedures and functions are statements written in SQL language and
+      stored in a database for later execution. For more details about the
+      syntax please consult the documentation of your database.</p>
+    <p class="style1" style="background: white">With DDM you can create a stored
+      procedure/function using the SQL syntax of your database using the DDM
+      text editor which tries to offer some limited code completion and other
+      features to make your life easier. <br>
+      <br>
+      We encourage you to add descriptive comments for your methods, in order
+      for the automatic documentation generation tool to be able to generate
+      documentation. The comments should be standard SQL comments (ie, starting
+      with "<code>--</code> " sinc the <code>) and the following javadoc-like
+        keywords are supported: <br>
+        <br>
+        <font color="green"><code>@brief</code></font> - this should be the
+        first line in your comment, please specify a one line description of the
+        method <br>
+        <font color="green"><code>@param</code></font> - for each of your
+        parameters specify the name and a one line description. <br>
+        <font color="green"><code>@return</code></font> - This is used only for
+        functions, specifies the return type of the function <br>
+        <font color="green"><code>@desc</code></font> - This should be the last
+        keyword in the comment, starts a multi line description of your methods.
+        All the lines in the comment after this will go to the description of
+        the method. <br>
+        <br>
+      </code> If a line does not contain a keyword it is assumed that it is just
+      description, and it will be used in the desription part of the
+      documentation. <br>
+      The following is an example on how to write a documentation: <br>
+    </p>
+    <pre>-- @brief a procedure to test the documentation generator
+-- @param p1 The parameter to the procedure
+-- @desc This procedure just does nothing 
+CREATE PROCEDURE proc(p1 VARCHAR(255)) 
+BEGIN 
+END
+      </pre>
+    
+  </body>
+</html>

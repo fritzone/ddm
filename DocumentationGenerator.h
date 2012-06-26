@@ -3,8 +3,10 @@
 
 #include <QString>
 
-class Project;
+class StoredMethod;
 class Solution;
+class Project;
+class QHtmlDocument;
 
 class DocumentationGenerator
 {
@@ -13,6 +15,8 @@ public:
     QString getDocumentation();
     QString generateHtmlForProject(const Project*);
 
+private:
+    void generateHtmlForStoredMethod(QVector<StoredMethod *> *_methods, const QString &header, QHtmlDocument &doc);
 private:
     const Solution* m_solution;
 };

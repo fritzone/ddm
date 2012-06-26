@@ -18,7 +18,7 @@
 #include <QApplication>
 #include <QClipboard>
 
-Table::Table(Version* v, QString uid, int dummy) : TreeItem(), SerializableElement(), SqlSourceEntity(), CopyableElement(),
+Table::Table(Version* v, QString uid, int /*dummy*/) : TreeItem(), SerializableElement(), SqlSourceEntity(), CopyableElement(),
     NamedItem(NameGenerator::getUniqueName(v, (itemGetter)&Version::getTable, QString("TAB"))),
     ObjectWithUid(uid), ObjectWithSpInstances(),
     m_description(""), m_columns(), m_indices(), m_foreignKeys(), m_startupValues(),

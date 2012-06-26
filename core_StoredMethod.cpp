@@ -8,7 +8,7 @@ void StoredMethod::setSql(const QString &s)
     m_sql = s;
 }
 
-QStringList StoredMethod::generateSqlSource(AbstractSqlGenerator * gen, QHash<QString, QString> /*opts*/, const Connection* dest)
+QStringList StoredMethod::generateSqlSource(AbstractSqlGenerator * gen, QHash<QString, QString> /*opts*/, const Connection* /*dest*/)
 {
     QStringList r;
     r.append(gen->generateCreateStoredMethodSql(this, Configuration::instance().sqlOpts()));
@@ -31,8 +31,13 @@ QVector<StoredMethod::ParameterAndDescription> StoredMethod::getParametersWithDe
 {
     QVector<StoredMethod::ParameterAndDescription> result;
     QStringList lines = m_sql.split('\n');
+    int nameidx = 0;
+    QString tName = getNameFromSql(0, nameidx);
+    int predictedIndex = 0;
     for(int i=0; i<lines.size(); i++)
     {
+        predictedIndex += lines.at(i).length();
+        if(predictedIndex > nameidx) break;
         int docKeywordIndex = lines.at(i).indexOf("@param");
         if(docKeywordIndex != -1)
         {
@@ -56,6 +61,7 @@ QVector<StoredMethod::ParameterAndDescription> StoredMethod::getParametersWithDe
             StoredMethod::ParameterAndDescription pad;
             pad.m_parameter = pName;
             pad.m_description = pDesc;
+            pad.m_source = 0;
             result.push_back(pad);
         }
         else
@@ -72,15 +78,46 @@ QVector<StoredMethod::ParameterAndDescription> StoredMethod::getParametersWithDe
                  }
                  m_brief = mthBriefDesc;
             }
+            else
+            {
+                docKeywordIndex = lines.at(i).indexOf("@return");
+                if(docKeywordIndex != -1)
+                {
+                     docKeywordIndex += 8;
+                     QString mthReturnType = "";
+                     while(docKeywordIndex < lines.at(i).length())
+                     {
+                         mthReturnType += lines.at(i).at(docKeywordIndex);
+                         docKeywordIndex ++;
+                     }
+                     m_returns = mthReturnType;
+                }
+                else
+                {
+                    docKeywordIndex = lines.at(i).indexOf("@desc");
+                    if(docKeywordIndex != -1)
+                    {
+                         docKeywordIndex += 6;
+                         QString mthDescription = "";
+                         while(docKeywordIndex < lines.at(i).length())
+                         {
+                             mthDescription += lines.at(i).at(docKeywordIndex);
+                             docKeywordIndex ++;
+                         }
+                         m_desc += mthDescription;
+                    }
+                    else
+                    {
+                        QString line = lines.at(i);
+                        line = line.mid(line.indexOf("--") + 2);
+                        m_desc += line;
+                    }
+                }
+            }
         }
     }
 
     // now feed in the SQL type from the sql for each parameter
-
-    int nameidx = 0;
-
-    QString tName = getNameFromSql(0, nameidx);
-    qDebug() << nameidx << " < " << m_sql.length();
     if(tName == "UNNAMED") return result;   // hmm hmm
     nameidx += tName.length();
     while(nameidx < m_sql.length() && m_sql.at(nameidx).isSpace()) nameidx ++;
@@ -92,8 +129,31 @@ QVector<StoredMethod::ParameterAndDescription> StoredMethod::getParametersWithDe
     {
         if(m_sql.at(nameidx) != ',' && m_sql.at(nameidx) != ')')
         {
-            cpar = cpar + m_sql.at(nameidx);
-            nameidx ++;
+            if(m_sql.at(nameidx) == '(') // parantheses, such as VARCHAR(255), INT(10, 3)
+            {
+                bool done = false;
+                int clevel = 0;
+                while(nameidx < m_sql.length() && !done)
+                {
+                    cpar = cpar + m_sql.at(nameidx);
+                    nameidx ++;
+                    if(m_sql.at(nameidx) == '(') clevel ++;
+                    if(m_sql.at(nameidx) == ')')
+                    {
+                        clevel --;
+                        if(clevel == -1)
+                        {
+                            cpar = cpar + m_sql.at(nameidx);
+                            done = true;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                cpar = cpar + m_sql.at(nameidx);
+                nameidx ++;
+            }
         }
         else
         {
@@ -109,6 +169,7 @@ QVector<StoredMethod::ParameterAndDescription> StoredMethod::getParametersWithDe
                 pname = pars[1];
                 ptype = pars[2];
             }
+            else
             if(pars.length() == 2)
             {
                 pname = pars[0];
@@ -127,6 +188,7 @@ QVector<StoredMethod::ParameterAndDescription> StoredMethod::getParametersWithDe
                 {
                     result[i].m_direction = direction;
                     result[i].m_type = ptype;
+                    result[i].m_source = 2;
                     found = true;
                     break;
                 }
@@ -138,13 +200,11 @@ QVector<StoredMethod::ParameterAndDescription> StoredMethod::getParametersWithDe
                 pad.m_description = QObject::tr("TODO: Write proper documentation.");
                 pad.m_direction = direction;
                 pad.m_type = ptype;
+                pad.m_source = 1;
                 result.push_back(pad);
             }
         }
     }
-
-    // lasty: check that all the parameters used in the DOC part are also used in the parameters list
-    // if not, cry
     return result;
 }
 
@@ -162,7 +222,7 @@ QString StoredMethod::getNameFromSql(int stidx, int &nameidx)
         int cindx = i-1;
         while(cindx && t.at(cindx).isSpace()) cindx --;
         QString prev = "";
-        while(cindx && !t.at(cindx).isSpace() && t.at(cindx)!='=')
+        while(cindx>-1 && !t.at(cindx).isSpace() && t.at(cindx)!='=')
         {
             prev = t.at(cindx) + prev;
             cindx --;
@@ -183,7 +243,7 @@ QString StoredMethod::getNameFromSql(int stidx, int &nameidx)
                 while(cindx && t.at(cindx).isSpace()) cindx --;
                 // prev2 is supposed to be be DEFINER
                 QString prev2 = "";
-                while(cindx && !t.at(cindx).isSpace())
+                while(cindx>-1 && !t.at(cindx).isSpace())
                 {
                     prev2 = t.at(cindx) + prev2;
                     cindx --;
@@ -194,7 +254,7 @@ QString StoredMethod::getNameFromSql(int stidx, int &nameidx)
                     while(cindx && t.at(cindx).isSpace()) cindx --;
                     // prev2 is supposed to be be CREATE
                     QString prev3 = "";
-                    while(cindx && !t.at(cindx).isSpace())
+                    while(cindx>-1 && !t.at(cindx).isSpace())
                     {
                         prev3 = t.at(cindx) + prev3;
                         cindx --;
