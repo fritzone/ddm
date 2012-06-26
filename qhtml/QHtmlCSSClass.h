@@ -21,6 +21,7 @@ public:
     static QHtmlCSSClass* classProjectDescription() {return 0;}
     static QHtmlCSSClass* classDescription() {return 0;}
     static QHtmlCSSClass* classTableHeader() {return 0;}
+    static QHtmlCSSClass* classTODO() {return 0;}
     static QHtmlCSSClass* classTableText() {return 0;}
     static QHtmlCSSClass* classCode() {return 0;}
 

@@ -689,7 +689,7 @@ Table* DeserializationFactory::createTable(DatabaseEngine* engine, Version* ver,
     return result;
 }
 
-void DeserializationFactory::createObjectWithSpInstances(DatabaseEngine* engine, ObjectWithSpInstances *obj, const QDomDocument &doc, const QDomElement &element)
+void DeserializationFactory::createObjectWithSpInstances(DatabaseEngine* engine, ObjectWithSpInstances *obj, const QDomDocument &/*doc*/, const QDomElement &element)
 {
     QDomElement dbEnginesSps = element;
     for(int j=0; j<dbEnginesSps.childNodes().count(); j++)
@@ -966,7 +966,7 @@ Procedure* DeserializationFactory::createProcedure(Project*, Version*,  const QD
     Procedure* p = new Procedure(name, uid);
 
     QDomElement sqlElement = element.firstChild().toElement();
-    QDomText cdata = sqlElement.firstChild().toText();
+    QDomCDATASection cdata = sqlElement.firstChild().toCDATASection();
     p->setSql(cdata.toText().data());
     return p;
 }
@@ -985,9 +985,8 @@ Function* DeserializationFactory::createFunction(Project*, Version*,  const QDom
 
     }
     Function* p = new Function(name, uid);
-
     QDomElement sqlElement = element.firstChild().toElement();
-    QDomText cdata = sqlElement.firstChild().toText();
+    QDomCDATASection cdata = sqlElement.firstChild().toCDATASection();
     p->setSql(cdata.toText().data());
     return p;
 }

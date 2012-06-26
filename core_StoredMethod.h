@@ -16,6 +16,7 @@ public:
         QString m_type;
         QString m_description;
         QString m_direction;
+        int m_source; // 0 - doc, 1 - parameter list, 2 - verified in both
     };
 
 
@@ -34,12 +35,21 @@ public:
         return m_brief;
     }
     QString getNameFromSql(int stidx, int& nameidx);
+    QString getDescription() const
+    {
+        return m_desc;
+    }
+    QString getReturnType() const
+    {
+        return m_returns;
+    }
 
 protected:
 
     QString m_sql;
     QString m_brief;
-
+    QString m_desc;
+    QString m_returns;
 };
 
 #endif // CORE_STOREDMETHOD_H
