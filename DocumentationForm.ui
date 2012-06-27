@@ -39,7 +39,7 @@
        <number>0</number>
       </property>
       <item>
-       <widget class="QToolButton" name="toolButton">
+       <widget class="QToolButton" name="btnSave">
         <property name="text">
          <string/>
         </property>
@@ -47,6 +47,31 @@
          <iconset resource="dbm.qrc">
           <normaloff>:/images/actions/images/actions/filesave.png</normaloff>:/images/actions/images/actions/filesave.png</iconset>
         </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QToolButton" name="btnPrint">
+        <property name="text">
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset resource="dbm.qrc">
+          <normaloff>:/images/actions/images/small/printer.png</normaloff>:/images/actions/images/small/printer.png</iconset>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QComboBox" name="comboBox">
+        <item>
+         <property name="text">
+          <string>Unstyled</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Classic</string>
+         </property>
+        </item>
        </widget>
       </item>
       <item>
@@ -86,5 +111,59 @@
  <resources>
   <include location="dbm.qrc"/>
  </resources>
- <connections/>
+ <connections>
+  <connection>
+   <sender>comboBox</sender>
+   <signal>activated(QString)</signal>
+   <receiver>DocumentationForm</receiver>
+   <slot>styleChanged(QString)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>64</x>
+     <y>11</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>199</x>
+     <y>149</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnSave</sender>
+   <signal>clicked()</signal>
+   <receiver>DocumentationForm</receiver>
+   <slot>onSave()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>12</x>
+     <y>11</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>199</x>
+     <y>149</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnPrint</sender>
+   <signal>clicked()</signal>
+   <receiver>DocumentationForm</receiver>
+   <slot>onPrint()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>41</x>
+     <y>11</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>199</x>
+     <y>149</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>styleChanged(QString)</slot>
+  <slot>onSave()</slot>
+  <slot>onPrint()</slot>
+ </slots>
 </ui>

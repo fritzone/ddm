@@ -2,10 +2,10 @@
 #include "QHtmlHead.h"
 #include "QHtmlBody.h"
 
-QHtmlDocument::QHtmlDocument(const QString &title, DocumentType type) :
+QHtmlDocument::QHtmlDocument(const QString &title, DocumentType type, const QHtmlCSSStyleSet* styles) :
     HtmlSourceGenerator("html"),
     m_documentType(type),
-    m_head(new QHtmlHead(title)),
+    m_head(new QHtmlHead(title, styles)),
     m_body(new QHtmlBody())
 {
 }

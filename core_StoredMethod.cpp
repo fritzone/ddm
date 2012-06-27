@@ -29,6 +29,10 @@ QString StoredMethod::getSql() const
 
 QVector<StoredMethod::ParameterAndDescription> StoredMethod::getParametersWithDescription()
 {
+    m_brief = "TODO: write the brief description of the method";
+    m_desc = "";
+    m_returns = "TODO: document the return value of the function";
+
     QVector<StoredMethod::ParameterAndDescription> result;
     QStringList lines = m_sql.split('\n');
     int nameidx = 0;

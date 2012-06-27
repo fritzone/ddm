@@ -11,30 +11,30 @@
 #include "core_Procedure.h"
 #include <QApplication>
 
-DocumentationGenerator::DocumentationGenerator(const Solution* s) : m_solution(s)
+DocumentationGenerator::DocumentationGenerator(const Solution* s, const QHtmlCSSStyleSet *ss) : m_solution(s), m_styles(ss)
 {
 }
 
 QString DocumentationGenerator::getDocumentation()
 {
     QString result;
-    QHtmlDocument doc(m_solution->getName());
+    QHtmlDocument doc(m_solution->getName(), QHtmlDocument::HTML_5, m_styles);
 
     QHtmlHeading* h1 = new QHtmlHeading(1);
-    QHtmlText* solutionName = new QHtmlText(QApplication::tr("Solution: ") + m_solution->getName(), QHtmlCSSClass::classH1());
+    QHtmlText* solutionName = new QHtmlText(QApplication::tr("Solution: ") + m_solution->getName());
     h1->addElement(solutionName);
     doc.getBody()->addHeading(h1);
 
     QHtmlHeading* h2 = new QHtmlHeading(2);
-    QHtmlText* projectName = new QHtmlText(QApplication::tr("Project: ") + m_solution->currentProject()->getName(), QHtmlCSSClass::classH2());
+    QHtmlText* projectName = new QHtmlText(QApplication::tr("Project: ") + m_solution->currentProject()->getName());
     h2->addElement(projectName);
     doc.getBody()->addHeading(h2);
 
-    QHtmlText* projectDescription = new QHtmlText(m_solution->currentProject()->getDescription(), QHtmlCSSClass::classProjectDescription());
+    QHtmlText* projectDescription = new QHtmlText(m_solution->currentProject()->getDescription());
     doc.getBody()->addElement(projectDescription);
 
     QHtmlHeading* h3Tables = new QHtmlHeading(3);
-    QHtmlText* tablesText = new QHtmlText(QApplication::tr("Tables"), QHtmlCSSClass::classH3());
+    QHtmlText* tablesText = new QHtmlText(QApplication::tr("Tables"));
     h3Tables->addElement(tablesText);
     doc.getBody()->addHeading(h3Tables);
 
@@ -42,22 +42,23 @@ QString DocumentationGenerator::getDocumentation()
     for(int i=0; i<tabs.size(); i++)
     {
         QHtmlHeading* h4Table = new QHtmlHeading(4);
-        QHtmlText* tableName= new QHtmlText(tabs.at(i)->getName(), QHtmlCSSClass::classH4());
+        QHtmlText* tableName= new QHtmlText(tabs.at(i)->getName());
         h4Table->addElement(tableName);
         doc.getBody()->addHeading(h4Table);
 
         QHtmlText* tableDesc = new QHtmlText(tabs.at(i)->getDescription(), QHtmlCSSClass::classDescription());
         doc.getBody()->addElement(tableDesc);
-
+        doc.getBody()->addElement(new QHtmlBreak());
         // Columns
         {
         QHtmlHeading* h5TableColumns = new QHtmlHeading(4);
-        QHtmlText* tableColumnsText= new QHtmlText(QApplication::tr("Columns"), QHtmlCSSClass::classH5());
+        QHtmlText* tableColumnsText= new QHtmlText(QApplication::tr("Columns"));
         h5TableColumns->addElement(tableColumnsText);
         doc.getBody()->addHeading(h5TableColumns);
 
         QHtmlTable* tableForColumns = new QHtmlTable(1);
         doc.getBody()->addElement(tableForColumns);
+        doc.getBody()->addElement(new QHtmlBreak());
 
         QHtmlText* colTabHeaderTextColPRI = new QHtmlText(QApplication::tr("PRI"), QHtmlCSSClass::classTableHeader());
         QHtmlText* colTabHeaderTextColName = new QHtmlText(QApplication::tr("Name"), QHtmlCSSClass::classTableHeader());
@@ -111,7 +112,7 @@ QString DocumentationGenerator::getDocumentation()
         if(idxs.size() > 0)
         {
             QHtmlHeading* h5TableIndices = new QHtmlHeading(4);
-            QHtmlText* tableColumnsText= new QHtmlText(QApplication::tr("Indices"), QHtmlCSSClass::classH5());
+            QHtmlText* tableColumnsText= new QHtmlText(QApplication::tr("Indices"));
             h5TableIndices->addElement(tableColumnsText);
             doc.getBody()->addHeading(h5TableIndices);
 
@@ -122,7 +123,7 @@ QString DocumentationGenerator::getDocumentation()
                 if(idx == 0) continue;
 
                 QHtmlHeading* h6IndexName = new QHtmlHeading(5);
-                QHtmlText* tableIndexNameText= new QHtmlText(idxs.at(j), QHtmlCSSClass::classH6());
+                QHtmlText* tableIndexNameText= new QHtmlText(idxs.at(j));
                 h6IndexName->addElement(tableIndexNameText);
                 doc.getBody()->addHeading(h6IndexName);
 
@@ -170,14 +171,14 @@ void DocumentationGenerator::generateHtmlForStoredMethod(QVector<StoredMethod*>*
     {
     QVector<StoredMethod*> methods = *_methods;
     QHtmlHeading* h3TableProcedures = new QHtmlHeading(3);
-    QHtmlText* tableColumnsText= new QHtmlText(header, QHtmlCSSClass::classH5());
+    QHtmlText* tableColumnsText= new QHtmlText(header);
     h3TableProcedures->addElement(tableColumnsText);
     doc.getBody()->addHeading(h3TableProcedures);
 
     for(int i=0; i<methods.size(); i++)
     {
         QHtmlHeading* h4Proc = new QHtmlHeading(4);
-        QHtmlText* procName= new QHtmlText(methods.at(i)->getName(), QHtmlCSSClass::classH4());
+        QHtmlText* procName= new QHtmlText(methods.at(i)->getName());
         h4Proc->addElement(procName);
         doc.getBody()->addHeading(h4Proc);
 
@@ -185,10 +186,19 @@ void DocumentationGenerator::generateHtmlForStoredMethod(QVector<StoredMethod*>*
         QHtmlText* methodBriefDescription = new QHtmlText(methods.at(i)->getBriefDescription(), QHtmlCSSClass::classDescription());
         doc.getBody()->addElement(methodBriefDescription);
 
+        if(header ==  QApplication::tr("Functions"))
+        {
+            doc.getBody()->addElement(new QHtmlBreak());
+            QHtmlText* funcReturn = new QHtmlText(QApplication::tr("Returns: ") + methods.at(i)->getReturns(),
+                                                  methods.at(i)->getReturns().indexOf("TODO")>-1?
+                                                      QHtmlCSSClass::classTODO():QHtmlCSSClass::classDescription());
+            doc.getBody()->addElement(funcReturn);
+        }
+
         QHtmlTable* tableForParameterTypes = new QHtmlTable(1);
         QHtmlText* colTabHeaderTextParName = new QHtmlText(QApplication::tr("Name"), QHtmlCSSClass::classTableHeader());
         QHtmlText* colTabHeaderTextParType = new QHtmlText(QApplication::tr("Type"), QHtmlCSSClass::classTableHeader());
-        QHtmlText* colTabHeaderTextParDesc = new QHtmlText(QApplication::tr("Desc"), QHtmlCSSClass::classTableHeader());
+        QHtmlText* colTabHeaderTextParDesc = new QHtmlText(QApplication::tr("Description"), QHtmlCSSClass::classTableHeader());
 
         QHtmlTableHeader* hdrMethTabHeaderTextParName = new QHtmlTableHeader(colTabHeaderTextParName);
         QHtmlTableHeader* hdrMethTabHeaderTextParType = new QHtmlTableHeader(colTabHeaderTextParType);
@@ -225,15 +235,17 @@ void DocumentationGenerator::generateHtmlForStoredMethod(QVector<StoredMethod*>*
                 needs_reminder = true;
             }
         }
-
+        doc.getBody()->addElement(new QHtmlBreak());
         doc.getBody()->addElement(tableForParameterTypes);
+        doc.getBody()->addElement(new QHtmlBreak());
         if(needs_reminder)
         {
-            QHtmlText* txtTODO = new QHtmlText(QApplication::tr("TODO: Update the documentation for the method"), QHtmlCSSClass::classTODO());
+            QHtmlText* txtTODO = new QHtmlText(QString("TODO: ") + QApplication::tr("Update the documentation for the method"), QHtmlCSSClass::classTODO());
             doc.getBody()->addElement(txtTODO);
+            doc.getBody()->addElement(new QHtmlBreak());
         }
 
-        QHtmlText* txtDesc = new QHtmlText(methods.at(i)->getDescription(), QHtmlCSSClass::classTODO());
+        QHtmlText* txtDesc = new QHtmlText(methods.at(i)->getDescription(), QHtmlCSSClass::classDescription());
         doc.getBody()->addElement(txtDesc);
     }
     }
