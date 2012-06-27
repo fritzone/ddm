@@ -225,7 +225,8 @@ include (reverse_eng/reverse_eng.pri)
 INCLUDEPATH += reverse_eng
 
 RESOURCES += dbm.qrc \
-    help_resources.qrc
+    help_resources.qrc \
+    docstyles.qrc
 RC_FILE = dbm.rc
 
 installfiles_base.files += ddm codepages/codepages.mysql.dat
@@ -237,6 +238,9 @@ INSTALLS += installfiles_doc
 installfiles_rs.files += rsrc/mysql.defaults
 installfiles_rs.path =  /home/ferenc/rpmbuild/BUILDROOT/usr/local/ddm/rsrc
 INSTALLS += installfiles_rs
+
+OTHER_FILES += \
+    classic.css
 
 
 

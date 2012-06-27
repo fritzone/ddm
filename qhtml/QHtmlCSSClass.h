@@ -9,21 +9,14 @@ class QHtmlText;
 class QHtmlCSSClass
 {
 public:
-    QHtmlCSSClass();
+    QHtmlCSSClass(const QString& name);
 
-    static QHtmlCSSClass* classH1();
-    static QHtmlCSSClass* classH2() {return 0;}
-    static QHtmlCSSClass* classH3() {return 0;}
-    static QHtmlCSSClass* classH4() {return 0;}
-    static QHtmlCSSClass* classH5() {return 0;}
-    static QHtmlCSSClass* classH6() {return 0;}
-
-    static QHtmlCSSClass* classProjectDescription() {return 0;}
-    static QHtmlCSSClass* classDescription() {return 0;}
-    static QHtmlCSSClass* classTableHeader() {return 0;}
-    static QHtmlCSSClass* classTODO() {return 0;}
-    static QHtmlCSSClass* classTableText() {return 0;}
-    static QHtmlCSSClass* classCode() {return 0;}
+    static QHtmlCSSClass* classProjectDescription();
+    static QHtmlCSSClass* classDescription();
+    static QHtmlCSSClass* classTableHeader();
+    static QHtmlCSSClass* classTODO();
+    static QHtmlCSSClass* classTableText();
+    static QHtmlCSSClass* classCode();
 
     QString renderFor(const QHtmlText *) const;
     void addAttribute(const QString&n, const QString&v)
@@ -33,6 +26,7 @@ public:
 
 private:
     QMap<QString, QString> m_attributes;
+    QString m_className;
 };
 
 #endif // QHTMLCSSCLASS_H

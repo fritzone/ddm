@@ -39,7 +39,7 @@ public:
     {
         return m_desc;
     }
-    QString getReturnType() const
+    QString getReturns() const
     {
         return m_returns;
     }

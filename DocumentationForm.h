@@ -17,6 +17,11 @@ public:
 
     void setDoc(const QString& html);
 
+public slots:
+    void styleChanged(QString);
+    void onSave();
+    void onPrint();
+
 private:
     Ui::DocumentationForm *ui;
 };

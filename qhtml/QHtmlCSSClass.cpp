@@ -1,28 +1,49 @@
 #include "QHtmlCSSClass.h"
 #include "QHtmlText.h"
 
-QHtmlCSSClass::QHtmlCSSClass()
+QHtmlCSSClass::QHtmlCSSClass(const QString &name) : m_className(name)
 {}
 
 QString QHtmlCSSClass::renderFor(const QHtmlText* txt) const
 {
-    QString result = "<span";
-    for(int i=0; i<m_attributes.keys().size(); i++)
-    {
-        if(i == 0) result += " style=\"";
-        result += m_attributes.keys().at(i) + ":" + m_attributes[m_attributes.keys().at(i)];
-        if(i < m_attributes.keys().size() - 1) result += ";";
-    }
-    result += "\">";
+    QString result = "<span class = \"" + m_className + "\">";
     result += txt->text();
     result += "</span>";
     return result;
 }
 
-QHtmlCSSClass* QHtmlCSSClass::classH1()
+QHtmlCSSClass* QHtmlCSSClass::classProjectDescription()
 {
-    QHtmlCSSClass* ch1 = new QHtmlCSSClass();
-    ch1->addAttribute("color", "blue");
-    ch1->addAttribute("font-size", "14pt");
-    return 0;
+    QHtmlCSSClass* ch1 = new QHtmlCSSClass("classProjectDescription");
+    return ch1;
+}
+
+QHtmlCSSClass* QHtmlCSSClass::classDescription()
+{
+    QHtmlCSSClass* ch1 = new QHtmlCSSClass("classDescription");
+    return ch1;
+}
+
+QHtmlCSSClass* QHtmlCSSClass::classTableHeader()
+{
+    QHtmlCSSClass* ch1 = new QHtmlCSSClass("classTableHeader");
+    return ch1;
+}
+
+QHtmlCSSClass* QHtmlCSSClass::classTODO()
+{
+    QHtmlCSSClass* ch1 = new QHtmlCSSClass("classTODO");
+    return ch1;
+}
+
+QHtmlCSSClass* QHtmlCSSClass::classTableText()
+{
+    QHtmlCSSClass* ch1 = new QHtmlCSSClass("classTableText");
+    return ch1;
+}
+
+QHtmlCSSClass* QHtmlCSSClass::classCode()
+{
+    QHtmlCSSClass* ch1 = new QHtmlCSSClass("classCode");
+    return ch1;
 }

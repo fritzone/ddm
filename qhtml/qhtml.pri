@@ -11,7 +11,9 @@ SOURCES += \
     qhtml/QHtmlRow.cpp \
     qhtml/QHtmlRowData.cpp \
     qhtml/QHtmlTableHeader.cpp \
-    qhtml/QHtmlCSSClass.cpp
+    qhtml/QHtmlCSSClass.cpp \
+    qhtml/QHtmlCSSStyleSet.cpp \
+    qhtml/QHtmlBreak.cpp
 
 HEADERS += \
     qhtml/QHtmlDocument.h \
@@ -30,5 +32,7 @@ HEADERS += \
     qhtml/QHtmlRow.h \
     qhtml/QHtmlRowData.h \
     qhtml/QHtmlTableHeader.h \
-    qhtml/QHtmlCSSClass.h
+    qhtml/QHtmlCSSClass.h \
+    qhtml/QHtmlCSSStyleSet.h \
+    qhtml/QHtmlBreak.h
 
