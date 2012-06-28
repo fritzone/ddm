@@ -72,6 +72,11 @@
           <string>Classic</string>
          </property>
         </item>
+        <item>
+         <property name="text">
+          <string>Choose a file ...</string>
+         </property>
+        </item>
        </widget>
       </item>
       <item>

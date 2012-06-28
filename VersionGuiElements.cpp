@@ -150,10 +150,10 @@ void VersionGuiElements::populateTreeItems()
     const QVector<Table*>& tables = m_version->getTables();
     for(int i=0; i<tables.size(); i++)
     {
-        Table* tbl = tables.at(i);
-        ContextMenuEnabledTreeWidgetItem* newTblsItem = new ContextMenuEnabledTreeWidgetItem(getTablesItem(), QStringList(tbl->getName())) ;
+        Table* tab = tables.at(i);
+        ContextMenuEnabledTreeWidgetItem* newTblsItem = new ContextMenuEnabledTreeWidgetItem(getTablesItem(), QStringList(tab->getName())) ;
 
-        QVariant var(tbl->getObjectUid());
+        QVariant var(tab->getObjectUid());
         newTblsItem->setData(0, Qt::UserRole, var);
         newTblsItem->setPopupMenu(ContextMenuCollection::getInstance()->getTablePopupMenu());
         // set the icon, add to the tree
@@ -161,7 +161,13 @@ void VersionGuiElements::populateTreeItems()
         m_tree->insertTopLevelItem(0, newTblsItem);
 
         // set the link to the tree
-        tbl->setLocation(newTblsItem);
+        tab->setLocation(newTblsItem);
+
+        // the documentation item
+        ContextMenuEnabledTreeWidgetItem* docItem = new ContextMenuEnabledTreeWidgetItem(getDocumentationItem(), QStringList(tab->getName()));
+        docItem->setIcon(0, IconFactory::getHelpIcon());
+        docItem->setData(0, Qt::UserRole, var);
+        m_tree->addTopLevelItem(docItem);
     }
 
     // now update the parents
@@ -338,17 +344,7 @@ ContextMenuEnabledTreeWidgetItem* VersionGuiElements::createDiagramTreeEntry(Dia
 
 ContextMenuEnabledTreeWidgetItem* VersionGuiElements::createTableTreeEntry(Table* tab)
 {
-    ContextMenuEnabledTreeWidgetItem* newTblsItem = new ContextMenuEnabledTreeWidgetItem(getTablesItem(), QStringList(tab->getName())) ;
-    QString guid = tab->getObjectUid();
-    QVariant var(guid);
-    newTblsItem->setData(0, Qt::UserRole, var);
-    newTblsItem->setPopupMenu(ContextMenuCollection::getInstance()->getTablePopupMenu());
-    // set the icon, add to the tree
-    newTblsItem->setIcon(0, IconFactory::getTablesIcon());
-    m_tree->addTopLevelItem(newTblsItem);
-    // set the link to the tree
-    tab->setLocation(newTblsItem);
-    return newTblsItem;
+    return createTableTreeEntry(tab, getTablesItem());
 }
 
 ContextMenuEnabledTreeWidgetItem* VersionGuiElements::createTableTreeEntry(Table* tab, ContextMenuEnabledTreeWidgetItem* p)
@@ -357,11 +353,17 @@ ContextMenuEnabledTreeWidgetItem* VersionGuiElements::createTableTreeEntry(Table
     QVariant var(tab->getObjectUid());
     newTblsItem->setData(0, Qt::UserRole, var);
     newTblsItem->setPopupMenu(ContextMenuCollection::getInstance()->getTablePopupMenu());
-    // set the icon, add to the tree
     newTblsItem->setIcon(0, IconFactory::getTablesIcon());
     m_tree->addTopLevelItem(newTblsItem);
-    // set the link to the tree
     tab->setLocation(newTblsItem);
+
+    // the documentation item
+
+    ContextMenuEnabledTreeWidgetItem* docItem = new ContextMenuEnabledTreeWidgetItem(getDocumentationItem(), QStringList(tab->getName()));
+    docItem->setIcon(0, IconFactory::getHelpIcon());
+    docItem->setData(0, Qt::UserRole, var);
+    m_tree->addTopLevelItem(docItem);
+
     return newTblsItem;
 }
 

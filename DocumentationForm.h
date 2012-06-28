@@ -16,6 +16,10 @@ public:
     ~DocumentationForm();
 
     void setDoc(const QString& html);
+    void setUid(const QString& uid)
+    {
+        m_uidShown = uid;
+    }
 
 public slots:
     void styleChanged(QString);
@@ -24,6 +28,7 @@ public slots:
 
 private:
     Ui::DocumentationForm *ui;
+    QString m_uidShown;
 };
 
 #endif // DOCUMENTATIONFORM_H

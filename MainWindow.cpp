@@ -59,6 +59,7 @@
 #include "DeploymentInitiator.h"
 #include "DocumentationForm.h"
 #include "DocumentationGenerator.h"
+#include "QHtmlDocument.h"
 
 #include <QtGui>
 
@@ -613,9 +614,26 @@ void MainWindow::currentProjectTreeItemChanged(QTreeWidgetItem * current, QTreeW
                 frm->presentSql(m_workspace->currentProject(), ent, (MainWindow::showSomething)&MainWindow::showNothing);
                 setCentralWidget(frm);
             }
+            else
+            if(current->parent() && current->parent() == m_workspace->workingVersion()->getGui()->getDocumentationItem())
+            {
+                DocumentationForm* docF = new DocumentationForm(this);
+                DocumentationGenerator gen(m_workspace->currentSolution());
+                QVariant qv = current->data(0, Qt::UserRole);
+                QString guid = qv.toString();
+                Table* table =  dynamic_cast<Table*>(UidWarehouse::instance().getElement(guid));
+                if(table != 0)  // shouldn't be ...
+                {
+                    QHtmlDocument doc("Documentation for table " + table->getName(), QHtmlDocument::HTML_5, 0);
+                    gen.getDocumentationForTable(table, doc);
+                    docF->setUid(guid);
+                    docF->setDoc(doc.html());
+                }
+                setCentralWidget(docF);
+            }
             else    // user possibly clicked on a table which had a parent a table ...
             {
-                showExistingTable(getNamedObject<Table>(current, (itemGetter)&Version::getTable));
+                showObjectwithGuid(current, (showSomething)&MainWindow::showTableWithGuid, false);
             }
         }
     }
