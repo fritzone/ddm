@@ -9,6 +9,7 @@
 #include "core_UserDataType.h"
 #include "Index.h"
 #include "core_Procedure.h"
+#include "core_Trigger.h"
 #include <QApplication>
 
 DocumentationGenerator::DocumentationGenerator(const Solution* s, const QHtmlCSSStyleSet *ss) : m_solution(s), m_styles(ss)
@@ -41,128 +42,168 @@ QString DocumentationGenerator::getDocumentation()
     QVector<Table*> tabs = m_solution->currentProject()->getWorkingVersion()->getTables();
     for(int i=0; i<tabs.size(); i++)
     {
-        QHtmlHeading* h4Table = new QHtmlHeading(4);
-        QHtmlText* tableName= new QHtmlText(tabs.at(i)->getName());
-        h4Table->addElement(tableName);
-        doc.getBody()->addHeading(h4Table);
-
-        QHtmlText* tableDesc = new QHtmlText(tabs.at(i)->getDescription(), QHtmlCSSClass::classDescription());
-        doc.getBody()->addElement(tableDesc);
-        doc.getBody()->addElement(new QHtmlBreak());
-        // Columns
-        {
-        QHtmlHeading* h5TableColumns = new QHtmlHeading(4);
-        QHtmlText* tableColumnsText= new QHtmlText(QApplication::tr("Columns"));
-        h5TableColumns->addElement(tableColumnsText);
-        doc.getBody()->addHeading(h5TableColumns);
-
-        QHtmlTable* tableForColumns = new QHtmlTable(1);
-        doc.getBody()->addElement(tableForColumns);
-        doc.getBody()->addElement(new QHtmlBreak());
-
-        QHtmlText* colTabHeaderTextColPRI = new QHtmlText(QApplication::tr("PRI"), QHtmlCSSClass::classTableHeader());
-        QHtmlText* colTabHeaderTextColName = new QHtmlText(QApplication::tr("Name"), QHtmlCSSClass::classTableHeader());
-        QHtmlText* colTabHeaderTextColType = new QHtmlText(QApplication::tr("SQL Type"), QHtmlCSSClass::classTableHeader());
-        QHtmlText* colTabHeaderTextColDesc = new QHtmlText(QApplication::tr("Description"), QHtmlCSSClass::classTableHeader());
-
-        QHtmlTableHeader* hdrColTabHeaderTextColPRI = new QHtmlTableHeader(colTabHeaderTextColPRI);
-        QHtmlTableHeader* hdrColTabHeaderTextColName = new QHtmlTableHeader(colTabHeaderTextColName);
-        QHtmlTableHeader* hdrColTabHeaderTextColType = new QHtmlTableHeader(colTabHeaderTextColType);
-        QHtmlTableHeader* hdrColTabHeaderTextColDesc = new QHtmlTableHeader(colTabHeaderTextColDesc);
-
-        QHtmlRow* hdrColRow = new QHtmlRow();
-        hdrColRow->addData(hdrColTabHeaderTextColPRI);
-        hdrColRow->addData(hdrColTabHeaderTextColName);
-        hdrColRow->addData(hdrColTabHeaderTextColType);
-        hdrColRow->addData(hdrColTabHeaderTextColDesc);
-        tableForColumns->addRow(hdrColRow);
-
-        QStringList cols = tabs.at(i)->fullColumns();
-        for(int j=0; j<cols.size(); j++)
-        {
-            Column* c = tabs.at(i)->getColumn(cols.at(j));
-            if(c == 0) c = tabs.at(i)->getColumnFromParents(cols.at(j));
-            if(c == 0) continue;
-
-            QHtmlRow* rowJ = new QHtmlRow();
-
-            QHtmlText* colPri = new QHtmlText(c->isPk()?QApplication::tr("Y"):"", QHtmlCSSClass::classTableText());
-            QHtmlRowData* rowJdataColPri = new QHtmlRowData(colPri);
-            rowJ->addData(rowJdataColPri);
-
-            QHtmlText* colName = new QHtmlText(cols.at(j), QHtmlCSSClass::classTableText());
-            QHtmlRowData* rowJdataColName = new QHtmlRowData(colName);
-            rowJ->addData(rowJdataColName);
-
-            QHtmlText* colType = new QHtmlText(c->getDataType()->sqlAsString(), QHtmlCSSClass::classCode());
-            QHtmlRowData* rowJdataColType = new QHtmlRowData(colType);
-            rowJ->addData(rowJdataColType);
-
-            QHtmlText* colDesc = new QHtmlText(c->getDescription(), QHtmlCSSClass::classTableText());
-            QHtmlRowData* rowJdataColDesc = new QHtmlRowData(colDesc);
-            rowJ->addData(rowJdataColDesc);
-
-            tableForColumns->addRow(rowJ);
-        }
-        }
-
-        // Indices
-        {
-        QStringList idxs = tabs.at(i)->fullIndices();
-        if(idxs.size() > 0)
-        {
-            QHtmlHeading* h5TableIndices = new QHtmlHeading(4);
-            QHtmlText* tableColumnsText= new QHtmlText(QApplication::tr("Indices"));
-            h5TableIndices->addElement(tableColumnsText);
-            doc.getBody()->addHeading(h5TableIndices);
-
-            for(int j=0; j<idxs.size(); j++)
-            {
-                Index* idx = tabs.at(i)->getIndex(idxs.at(j));
-                if(idx == 0) idx = tabs.at(i)->getIndexFromParents(idxs.at(j));
-                if(idx == 0) continue;
-
-                QHtmlHeading* h6IndexName = new QHtmlHeading(5);
-                QHtmlText* tableIndexNameText= new QHtmlText(idxs.at(j));
-                h6IndexName->addElement(tableIndexNameText);
-                doc.getBody()->addHeading(h6IndexName);
-
-                QHtmlTable* tableForIndexes = new QHtmlTable(1);
-                QHtmlText* colTabHeaderTextIdxName = new QHtmlText(QApplication::tr("Name"), QHtmlCSSClass::classTableHeader());
-                QHtmlText* colTabHeaderTextIdxOrder = new QHtmlText(QApplication::tr("Order"), QHtmlCSSClass::classTableHeader());
-
-                QHtmlTableHeader* hdrColTabHeaderTextIdxName = new QHtmlTableHeader(colTabHeaderTextIdxName);
-                QHtmlTableHeader* hdrColTabHeaderTextIdxOrder= new QHtmlTableHeader(colTabHeaderTextIdxOrder);
-
-                QHtmlRow* hdrColRow = new QHtmlRow();
-                hdrColRow->addData(hdrColTabHeaderTextIdxName);
-                hdrColRow->addData(hdrColTabHeaderTextIdxOrder);
-
-                tableForIndexes->addRow(hdrColRow);
-                for(int k = 0; k<idx->getColumns().size(); k++)
-                {
-                    QHtmlRow* rowK = new QHtmlRow();
-                    QHtmlText* idxN = new QHtmlText(idx->getColumns().at(k)->getName(), QHtmlCSSClass::classTableText());
-                    QHtmlText* idxO = new QHtmlText(idx->getOrderForColumn(idx->getColumns().at(k)), QHtmlCSSClass::classTableText());
-                    QHtmlRowData* dataN = new QHtmlRowData(idxN);
-                    QHtmlRowData* dataO = new QHtmlRowData(idxO);
-                    rowK->addData(dataN);
-                    rowK->addData(dataO);
-                    tableForIndexes->addRow(rowK);
-                }
-
-                doc.getBody()->addElement(tableForIndexes);
-            }
-        }
-        }
+        Table* tabI = tabs.at(i);
+        getDocumentationForTable(tabI, doc);
     }
 
     // Procedures and functions
     generateHtmlForStoredMethod((QVector<StoredMethod*>*)(&m_solution->currentProject()->getWorkingVersion()->getProcedures()), QApplication::tr("Procedures"), doc);
     generateHtmlForStoredMethod((QVector<StoredMethod*>*)(&m_solution->currentProject()->getWorkingVersion()->getFunctions()), QApplication::tr("Functions"), doc);
 
+    // Triggers
+    {
+    QHtmlHeading* h3TableTriggers = new QHtmlHeading(3);
+    QHtmlText* triggerText= new QHtmlText(QApplication::tr("Triggers"));
+    h3TableTriggers->addElement(triggerText);
+    doc.getBody()->addHeading(h3TableTriggers);
+    QVector<Trigger*> triggers = m_solution->currentProject()->getWorkingVersion()->getTriggers();
+    for(int i=0; i<triggers.size(); i++)
+    {
+        QHtmlHeading* h4Trg = new QHtmlHeading(4);
+        QHtmlText* trigName= new QHtmlText(triggers.at(i)->getName());
+        h4Trg->addElement(trigName);
+        doc.getBody()->addHeading(h4Trg);
+
+        QHtmlText* trigDesc = new QHtmlText(triggers.at(i)->getDescription(), QHtmlCSSClass::classDescription());
+        doc.getBody()->addElement(trigDesc);
+        doc.getBody()->addElement(new QHtmlBreak());
+
+        // TODO: tis down here is ugly
+        QHtmlText* trigTable = new QHtmlText("Table: <b>" + triggers.at(i)->getTable() + "</b>", QHtmlCSSClass::classDescription());
+        doc.getBody()->addElement(trigTable);
+        doc.getBody()->addElement(new QHtmlBreak());
+        QHtmlText* trigTime = new QHtmlText("Timing: <b>" + triggers.at(i)->getTime() + "</b>", QHtmlCSSClass::classDescription());
+        doc.getBody()->addElement(trigTime);
+        doc.getBody()->addElement(new QHtmlBreak());
+        QHtmlText* trigMethod = new QHtmlText("Event: <b>" + triggers.at(i)->getEvent() + "</b>", QHtmlCSSClass::classDescription());
+        doc.getBody()->addElement(trigMethod);
+        doc.getBody()->addElement(new QHtmlBreak());
+
+    }
+    }
+
     result = doc.html();
     return result;
+}
+
+
+void DocumentationGenerator::getDocumentationForTable(const Table* table, QHtmlDocument& doc)
+{
+    QHtmlHeading* h4Table = new QHtmlHeading(4);
+    QHtmlText* tableName= new QHtmlText(table->getName());
+    h4Table->addElement(tableName);
+    doc.getBody()->addHeading(h4Table);
+
+    QHtmlText* tableDesc = new QHtmlText(table->getDescription(), QHtmlCSSClass::classDescription());
+    doc.getBody()->addElement(tableDesc);
+    doc.getBody()->addElement(new QHtmlBreak());
+    // Columns
+    {
+    QHtmlHeading* h5TableColumns = new QHtmlHeading(4);
+    QHtmlText* tableColumnsText= new QHtmlText(QApplication::tr("Columns"));
+    h5TableColumns->addElement(tableColumnsText);
+    doc.getBody()->addHeading(h5TableColumns);
+
+    QHtmlTable* tableForColumns = new QHtmlTable(1);
+    doc.getBody()->addElement(tableForColumns);
+    doc.getBody()->addElement(new QHtmlBreak());
+
+    QHtmlText* colTabHeaderTextColPRI = new QHtmlText(QApplication::tr("PRI"), QHtmlCSSClass::classTableHeader());
+    QHtmlText* colTabHeaderTextColName = new QHtmlText(QApplication::tr("Name"), QHtmlCSSClass::classTableHeader());
+    QHtmlText* colTabHeaderTextColType = new QHtmlText(QApplication::tr("SQL Type"), QHtmlCSSClass::classTableHeader());
+    QHtmlText* colTabHeaderTextColDesc = new QHtmlText(QApplication::tr("Description"), QHtmlCSSClass::classTableHeader());
+
+    QHtmlTableHeader* hdrColTabHeaderTextColPRI = new QHtmlTableHeader(colTabHeaderTextColPRI);
+    QHtmlTableHeader* hdrColTabHeaderTextColName = new QHtmlTableHeader(colTabHeaderTextColName);
+    QHtmlTableHeader* hdrColTabHeaderTextColType = new QHtmlTableHeader(colTabHeaderTextColType);
+    QHtmlTableHeader* hdrColTabHeaderTextColDesc = new QHtmlTableHeader(colTabHeaderTextColDesc);
+
+    QHtmlRow* hdrColRow = new QHtmlRow();
+    hdrColRow->addData(hdrColTabHeaderTextColPRI);
+    hdrColRow->addData(hdrColTabHeaderTextColName);
+    hdrColRow->addData(hdrColTabHeaderTextColType);
+    hdrColRow->addData(hdrColTabHeaderTextColDesc);
+    tableForColumns->addRow(hdrColRow);
+
+    QStringList cols = table->fullColumns();
+    for(int j=0; j<cols.size(); j++)
+    {
+        Column* c = table->getColumn(cols.at(j));
+        if(c == 0) c = table->getColumnFromParents(cols.at(j));
+        if(c == 0) continue;
+
+        QHtmlRow* rowJ = new QHtmlRow();
+
+        QHtmlText* colPri = new QHtmlText(c->isPk()?QApplication::tr("Y"):"", QHtmlCSSClass::classTableText());
+        QHtmlRowData* rowJdataColPri = new QHtmlRowData(colPri);
+        rowJ->addData(rowJdataColPri);
+
+        QHtmlText* colName = new QHtmlText(cols.at(j), QHtmlCSSClass::classTableText());
+        QHtmlRowData* rowJdataColName = new QHtmlRowData(colName);
+        rowJ->addData(rowJdataColName);
+
+        QHtmlText* colType = new QHtmlText(c->getDataType()->sqlAsString(), QHtmlCSSClass::classCode());
+        QHtmlRowData* rowJdataColType = new QHtmlRowData(colType);
+        rowJ->addData(rowJdataColType);
+
+        QHtmlText* colDesc = new QHtmlText(c->getDescription(), QHtmlCSSClass::classTableText());
+        QHtmlRowData* rowJdataColDesc = new QHtmlRowData(colDesc);
+        rowJ->addData(rowJdataColDesc);
+
+        tableForColumns->addRow(rowJ);
+    }
+    }
+
+    // Indices
+    {
+    QStringList idxs = table->fullIndices();
+    if(idxs.size() > 0)
+    {
+        QHtmlHeading* h5TableIndices = new QHtmlHeading(4);
+        QHtmlText* tableColumnsText= new QHtmlText(QApplication::tr("Indices"));
+        h5TableIndices->addElement(tableColumnsText);
+        doc.getBody()->addHeading(h5TableIndices);
+
+        for(int j=0; j<idxs.size(); j++)
+        {
+            Index* idx = table->getIndex(idxs.at(j));
+            if(idx == 0) idx = table->getIndexFromParents(idxs.at(j));
+            if(idx == 0) continue;
+
+            QHtmlHeading* h6IndexName = new QHtmlHeading(5);
+            QHtmlText* tableIndexNameText= new QHtmlText(idxs.at(j));
+            h6IndexName->addElement(tableIndexNameText);
+            doc.getBody()->addHeading(h6IndexName);
+
+            QHtmlTable* tableForIndexes = new QHtmlTable(1);
+            QHtmlText* colTabHeaderTextIdxName = new QHtmlText(QApplication::tr("Name"), QHtmlCSSClass::classTableHeader());
+            QHtmlText* colTabHeaderTextIdxOrder = new QHtmlText(QApplication::tr("Order"), QHtmlCSSClass::classTableHeader());
+
+            QHtmlTableHeader* hdrColTabHeaderTextIdxName = new QHtmlTableHeader(colTabHeaderTextIdxName);
+            QHtmlTableHeader* hdrColTabHeaderTextIdxOrder= new QHtmlTableHeader(colTabHeaderTextIdxOrder);
+
+            QHtmlRow* hdrColRow = new QHtmlRow();
+            hdrColRow->addData(hdrColTabHeaderTextIdxName);
+            hdrColRow->addData(hdrColTabHeaderTextIdxOrder);
+
+            tableForIndexes->addRow(hdrColRow);
+            for(int k = 0; k<idx->getColumns().size(); k++)
+            {
+                QHtmlRow* rowK = new QHtmlRow();
+                QHtmlText* idxN = new QHtmlText(idx->getColumns().at(k)->getName(), QHtmlCSSClass::classTableText());
+                QHtmlText* idxO = new QHtmlText(idx->getOrderForColumn(idx->getColumns().at(k)), QHtmlCSSClass::classTableText());
+                QHtmlRowData* dataN = new QHtmlRowData(idxN);
+                QHtmlRowData* dataO = new QHtmlRowData(idxO);
+                rowK->addData(dataN);
+                rowK->addData(dataO);
+                tableForIndexes->addRow(rowK);
+            }
+
+            doc.getBody()->addElement(tableForIndexes);
+        }
+    }
+    }
+
 }
 
 void DocumentationGenerator::generateHtmlForStoredMethod(QVector<StoredMethod*>* _methods, const QString& header, QHtmlDocument& doc)
@@ -183,7 +224,8 @@ void DocumentationGenerator::generateHtmlForStoredMethod(QVector<StoredMethod*>*
         doc.getBody()->addHeading(h4Proc);
 
         QVector<StoredMethod::ParameterAndDescription> pads = methods.at(i)->getParametersWithDescription();
-        QHtmlText* methodBriefDescription = new QHtmlText(methods.at(i)->getBriefDescription(), QHtmlCSSClass::classDescription());
+        QHtmlText* methodBriefDescription = new QHtmlText(methods.at(i)->getBriefDescription(),methods.at(i)->getBriefDescription().indexOf("TODO")>-1?
+                                                              QHtmlCSSClass::classTODO():QHtmlCSSClass::classDescription());
         doc.getBody()->addElement(methodBriefDescription);
 
         if(header ==  QApplication::tr("Functions"))

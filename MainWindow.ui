@@ -82,6 +82,7 @@
     <property name="title">
      <string>&amp;Help</string>
     </property>
+    <addaction name="action_Contents"/>
     <addaction name="action_About"/>
    </widget>
    <widget class="QMenu" name="menu_View">
@@ -510,6 +511,11 @@
     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Create a new &lt;span style=&quot; font-weight:600;&quot;&gt;Function&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
   </action>
+  <action name="action_Contents">
+   <property name="text">
+    <string>&amp;Contents</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources>
@@ -932,6 +938,22 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>action_Contents</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>onHelp()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>454</x>
+     <y>67</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>onNewSolution()</slot>
@@ -959,5 +981,6 @@
   <slot>onNewTrigger()</slot>
   <slot>onNewFunction()</slot>
   <slot>onDestroyed()</slot>
+  <slot>onHelp()</slot>
  </slots>
 </ui>
