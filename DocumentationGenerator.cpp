@@ -206,10 +206,84 @@ void DocumentationGenerator::getDocumentationForTable(const Table* table, QHtmlD
 
 }
 
+void DocumentationGenerator::getDocumentationForStoredMethod(StoredMethod *mth, QHtmlDocument &doc, const QString& header)
+{
+    QHtmlHeading* h4Proc = new QHtmlHeading(4);
+    QHtmlText* procName= new QHtmlText(mth->getName());
+    h4Proc->addElement(procName);
+    doc.getBody()->addHeading(h4Proc);
+
+    QVector<StoredMethod::ParameterAndDescription> pads = mth->getParametersWithDescription();
+    QHtmlText* methodBriefDescription = new QHtmlText(mth->getBriefDescription(), mth->getBriefDescription().indexOf("TODO")>-1?
+                                                          QHtmlCSSClass::classTODO():QHtmlCSSClass::classDescription());
+    doc.getBody()->addElement(methodBriefDescription);
+
+    if(header ==  QApplication::tr("Functions"))
+    {
+        doc.getBody()->addElement(new QHtmlBreak());
+        QHtmlText* funcReturn = new QHtmlText(QApplication::tr("Returns: ") + mth->getReturns(),
+                                              mth->getReturns().indexOf("TODO")>-1?
+                                                  QHtmlCSSClass::classTODO():QHtmlCSSClass::classDescription());
+        doc.getBody()->addElement(funcReturn);
+    }
+
+    QHtmlTable* tableForParameterTypes = new QHtmlTable(1);
+    QHtmlText* colTabHeaderTextParName = new QHtmlText(QApplication::tr("Name"), QHtmlCSSClass::classTableHeader());
+    QHtmlText* colTabHeaderTextParType = new QHtmlText(QApplication::tr("Type"), QHtmlCSSClass::classTableHeader());
+    QHtmlText* colTabHeaderTextParDesc = new QHtmlText(QApplication::tr("Description"), QHtmlCSSClass::classTableHeader());
+
+    QHtmlTableHeader* hdrMethTabHeaderTextParName = new QHtmlTableHeader(colTabHeaderTextParName);
+    QHtmlTableHeader* hdrMethTabHeaderTextParType = new QHtmlTableHeader(colTabHeaderTextParType);
+    QHtmlTableHeader* hdrMethTabHeaderTextParDesc = new QHtmlTableHeader(colTabHeaderTextParDesc);
+
+    QHtmlRow* hdrColRow = new QHtmlRow();
+    hdrColRow->addData(hdrMethTabHeaderTextParName);
+    hdrColRow->addData(hdrMethTabHeaderTextParType);
+    hdrColRow->addData(hdrMethTabHeaderTextParDesc);
+    tableForParameterTypes->addRow(hdrColRow);
+    bool needs_reminder = false;
+    for(int j=0; j<pads.size(); j++)
+    {
+        if(pads.at(j).m_source > 0)
+        {
+            QHtmlText* colParName = new QHtmlText(pads.at(j).m_parameter, QHtmlCSSClass::classTableText());
+            QHtmlText* colParType = new QHtmlText(pads.at(j).m_type, QHtmlCSSClass::classTableText());
+            QHtmlText* colParDesc = new QHtmlText(pads.at(j).m_description,
+                                                  pads.at(j).m_description.indexOf("TODO")>-1?
+                                                      QHtmlCSSClass::classTODO():QHtmlCSSClass::classTableText());
+
+            QHtmlRowData* dataN = new QHtmlRowData(colParName);
+            QHtmlRowData* dataO = new QHtmlRowData(colParType);
+            QHtmlRowData* dataD = new QHtmlRowData(colParDesc);
+            QHtmlRow* rowK = new QHtmlRow();
+
+            rowK->addData(dataN);
+            rowK->addData(dataO);
+            rowK->addData(dataD);
+            tableForParameterTypes->addRow(rowK);
+        }
+        else
+        {
+            needs_reminder = true;
+        }
+    }
+    doc.getBody()->addElement(new QHtmlBreak());
+    doc.getBody()->addElement(tableForParameterTypes);
+    doc.getBody()->addElement(new QHtmlBreak());
+    if(needs_reminder)
+    {
+        QHtmlText* txtTODO = new QHtmlText(QString("TODO: ") + QApplication::tr("Update the documentation for the method"), QHtmlCSSClass::classTODO());
+        doc.getBody()->addElement(txtTODO);
+        doc.getBody()->addElement(new QHtmlBreak());
+    }
+
+    QHtmlText* txtDesc = new QHtmlText(mth->getDescription(), QHtmlCSSClass::classDescription());
+    doc.getBody()->addElement(txtDesc);
+}
+
+
 void DocumentationGenerator::generateHtmlForStoredMethod(QVector<StoredMethod*>* _methods, const QString& header, QHtmlDocument& doc)
 {
-
-    {
     QVector<StoredMethod*> methods = *_methods;
     QHtmlHeading* h3TableProcedures = new QHtmlHeading(3);
     QHtmlText* tableColumnsText= new QHtmlText(header);
@@ -218,78 +292,7 @@ void DocumentationGenerator::generateHtmlForStoredMethod(QVector<StoredMethod*>*
 
     for(int i=0; i<methods.size(); i++)
     {
-        QHtmlHeading* h4Proc = new QHtmlHeading(4);
-        QHtmlText* procName= new QHtmlText(methods.at(i)->getName());
-        h4Proc->addElement(procName);
-        doc.getBody()->addHeading(h4Proc);
-
-        QVector<StoredMethod::ParameterAndDescription> pads = methods.at(i)->getParametersWithDescription();
-        QHtmlText* methodBriefDescription = new QHtmlText(methods.at(i)->getBriefDescription(),methods.at(i)->getBriefDescription().indexOf("TODO")>-1?
-                                                              QHtmlCSSClass::classTODO():QHtmlCSSClass::classDescription());
-        doc.getBody()->addElement(methodBriefDescription);
-
-        if(header ==  QApplication::tr("Functions"))
-        {
-            doc.getBody()->addElement(new QHtmlBreak());
-            QHtmlText* funcReturn = new QHtmlText(QApplication::tr("Returns: ") + methods.at(i)->getReturns(),
-                                                  methods.at(i)->getReturns().indexOf("TODO")>-1?
-                                                      QHtmlCSSClass::classTODO():QHtmlCSSClass::classDescription());
-            doc.getBody()->addElement(funcReturn);
-        }
-
-        QHtmlTable* tableForParameterTypes = new QHtmlTable(1);
-        QHtmlText* colTabHeaderTextParName = new QHtmlText(QApplication::tr("Name"), QHtmlCSSClass::classTableHeader());
-        QHtmlText* colTabHeaderTextParType = new QHtmlText(QApplication::tr("Type"), QHtmlCSSClass::classTableHeader());
-        QHtmlText* colTabHeaderTextParDesc = new QHtmlText(QApplication::tr("Description"), QHtmlCSSClass::classTableHeader());
-
-        QHtmlTableHeader* hdrMethTabHeaderTextParName = new QHtmlTableHeader(colTabHeaderTextParName);
-        QHtmlTableHeader* hdrMethTabHeaderTextParType = new QHtmlTableHeader(colTabHeaderTextParType);
-        QHtmlTableHeader* hdrMethTabHeaderTextParDesc = new QHtmlTableHeader(colTabHeaderTextParDesc);
-
-        QHtmlRow* hdrColRow = new QHtmlRow();
-        hdrColRow->addData(hdrMethTabHeaderTextParName);
-        hdrColRow->addData(hdrMethTabHeaderTextParType);
-        hdrColRow->addData(hdrMethTabHeaderTextParDesc);
-        tableForParameterTypes->addRow(hdrColRow);
-        bool needs_reminder = false;
-        for(int j=0; j<pads.size(); j++)
-        {
-            if(pads.at(j).m_source > 0)
-            {
-                QHtmlText* colParName = new QHtmlText(pads.at(j).m_parameter, QHtmlCSSClass::classTableText());
-                QHtmlText* colParType = new QHtmlText(pads.at(j).m_type, QHtmlCSSClass::classTableText());
-                QHtmlText* colParDesc = new QHtmlText(pads.at(j).m_description,
-                                                      pads.at(j).m_description.indexOf("TODO")>-1?
-                                                          QHtmlCSSClass::classTODO():QHtmlCSSClass::classTableText());
-
-                QHtmlRowData* dataN = new QHtmlRowData(colParName);
-                QHtmlRowData* dataO = new QHtmlRowData(colParType);
-                QHtmlRowData* dataD = new QHtmlRowData(colParDesc);
-                QHtmlRow* rowK = new QHtmlRow();
-
-                rowK->addData(dataN);
-                rowK->addData(dataO);
-                rowK->addData(dataD);
-                tableForParameterTypes->addRow(rowK);
-            }
-            else
-            {
-                needs_reminder = true;
-            }
-        }
-        doc.getBody()->addElement(new QHtmlBreak());
-        doc.getBody()->addElement(tableForParameterTypes);
-        doc.getBody()->addElement(new QHtmlBreak());
-        if(needs_reminder)
-        {
-            QHtmlText* txtTODO = new QHtmlText(QString("TODO: ") + QApplication::tr("Update the documentation for the method"), QHtmlCSSClass::classTODO());
-            doc.getBody()->addElement(txtTODO);
-            doc.getBody()->addElement(new QHtmlBreak());
-        }
-
-        QHtmlText* txtDesc = new QHtmlText(methods.at(i)->getDescription(), QHtmlCSSClass::classDescription());
-        doc.getBody()->addElement(txtDesc);
-    }
+        getDocumentationForStoredMethod(methods.at(i), doc, header);
     }
 
 }

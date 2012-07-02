@@ -16,6 +16,7 @@ public:
     DocumentationGenerator(const Solution*, const QHtmlCSSStyleSet* ss = 0);
     QString getDocumentation();
     void getDocumentationForTable(const Table* table, QHtmlDocument &doc);
+    void getDocumentationForStoredMethod(StoredMethod *mth, QHtmlDocument &doc, const QString &header);
 
 private:
     void generateHtmlForStoredMethod(QVector<StoredMethod *> *_methods, const QString &header, QHtmlDocument &doc);
