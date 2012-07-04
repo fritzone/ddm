@@ -249,6 +249,7 @@ void DocumentationGenerator::getDocumentationForStoredMethod(StoredMethod *mth, 
     hdrColRow->addData(hdrMethTabHeaderTextParDesc);
     tableForParameterTypes->addRow(hdrColRow);
     bool needs_reminder = false;
+    bool at_least_1_parameter_added = false;
     for(int j=0; j<pads.size(); j++)
     {
         if(pads.at(j).m_source > 0)
@@ -268,15 +269,22 @@ void DocumentationGenerator::getDocumentationForStoredMethod(StoredMethod *mth, 
             rowK->addData(dataO);
             rowK->addData(dataD);
             tableForParameterTypes->addRow(rowK);
+
+            at_least_1_parameter_added = true;
         }
         else
         {
             needs_reminder = true;
         }
     }
-    doc.getBody()->addElement(new QHtmlBreak());
-    doc.getBody()->addElement(tableForParameterTypes);
-    doc.getBody()->addElement(new QHtmlBreak());
+
+    if(at_least_1_parameter_added)
+    {
+        doc.getBody()->addElement(new QHtmlBreak());
+        doc.getBody()->addElement(tableForParameterTypes);
+        doc.getBody()->addElement(new QHtmlBreak());
+    }
+
     if(needs_reminder)
     {
         QHtmlText* txtTODO = new QHtmlText(QString("TODO: ") + QApplication::tr("Update the documentation for the method"), QHtmlCSSClass::classTODO());
