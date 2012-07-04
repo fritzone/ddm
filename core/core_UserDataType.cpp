@@ -1,18 +1,22 @@
 #include "core_UserDataType.h"
 #include "strings.h"
+#include "uids.h"
 
 #include <QComboBox>
 
 UserDataType::UserDataType(const QString& name, const QString& typeString,
                            const QString& _sqlType, const QString& _s,
-                           const QString& _defaultValue, const QString& _cp,
-                           const QStringList& _mvs, bool unsi, const QString& desc,
-                           bool nullable, bool autoInc) :
+                           const QString& _defaultValue, const QStringList &_mvs,
+                           bool unsi, const QString &desc, bool nullable, const QString& uid) :
         NamedItem(name),
+        TreeItem(),
+        SerializableElement(),
+        ObjectWithUid(uid),
+        CloneableElement(),
         sqlType(_sqlType),
-        size(_s), defaultValue(_defaultValue), miscStuff(_mvs), codePage(_cp),
-        unsignedDT(unsi), description(desc), canBeNull(nullable), autoIncrement(autoInc), m_type(getDT_TYPE(typeString))
-{    
+        size(_s), defaultValue(_defaultValue), miscStuff(_mvs),
+        unsignedDT(unsi), description(desc), canBeNull(nullable), m_type(getDT_TYPE(typeString))
+{
 }
 
 UserDataType& UserDataType::operator = (const UserDataType& other)
@@ -25,11 +29,9 @@ UserDataType& UserDataType::operator = (const UserDataType& other)
         size = other.size;
         defaultValue = other.defaultValue;
         miscStuff = other.miscStuff;
-        codePage = other.codePage;
         unsignedDT = other.unsignedDT;
         description = other.description;
         canBeNull = other.canBeNull;
-        autoIncrement = other.autoIncrement;
     }
 
     return *this;
@@ -49,10 +51,11 @@ void UserDataType::serialize(QDomDocument& doc, QDomElement& parent) const
     dtElement.setAttribute("SqlType", getSqlType());
     dtElement.setAttribute("Size", getSize());
     dtElement.setAttribute("DefaultValue", getDefaultValue());
-    dtElement.setAttribute("Codepage", getCodepage());
     dtElement.setAttribute("Unsigned", isUnsigned() );
     dtElement.setAttribute("CanBeNull", canBeNull);
-    dtElement.setAttribute("AutoIncrement", autoIncrement);
+    dtElement.setAttribute("uid", getObjectUid());
+    dtElement.setAttribute("class-uid", getClassUid().toString());
+    dtElement.setAttribute("source-uid", getSourceUid());
 
     {
     QDomElement descElement = doc.createElement("Description");  // description
@@ -149,3 +152,35 @@ DT_TYPE UserDataType::getDT_TYPE(const QString& typeString)
     return DT_INVALID;
 }
 
+CloneableElement* UserDataType::clone(Version */*sourceVersion*/, Version */*targetVersion*/)
+{
+    UserDataType* newUdt = new UserDataType(getName(), getType(), QUuid::createUuid().toString());
+    newUdt->size = this->size;
+    newUdt->sqlType = this->sqlType;
+    newUdt->defaultValue = this->defaultValue;
+    newUdt->miscStuff = this->miscStuff;
+    newUdt->unsignedDT = this->unsignedDT;
+    newUdt->description = this->description;
+    newUdt->canBeNull = this->canBeNull;
+    newUdt->setSourceUid(getObjectUid());
+
+    return newUdt;
+}
+
+QUuid UserDataType::getClassUid() const
+{
+    switch(m_type)
+    {
+    case DT_STRING: return uidStringDT;
+    case DT_NUMERIC: return uidNumericDT;
+    case DT_BOOLEAN: return uidBooleanDT;
+    case DT_BLOB: return uidBlobDT;
+    case DT_DATETIME: return uidDateTimeDT;
+    case DT_MISC: return uidMiscDT;
+    case DT_SPATIAL: return uidSpatialDT;
+    case DT_GENERIC:
+    case DT_INVALID:
+    default:
+       return nullUid;
+    }
+}

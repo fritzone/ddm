@@ -724,8 +724,8 @@ UserDataType* DefaultVersionImplementation::provideDatatypeForSqlType(const QStr
     // nothing found, we should create a new data type with some default values
     UserDataType* newUdt = new UserDataType(finalName,
                                             Workspace::getInstance()->currentProjectsEngine()->getTypeStringForSqlType(type),
-                                            type, size, defaultValue, "", QStringList(), false, type + " " + size,
-                                            QString::compare(nullable, "YES", Qt::CaseInsensitive) == 0, false);
+                                            type, size, defaultValue, QStringList(), false, type + " " + size,
+                                            QString::compare(nullable, "YES", Qt::CaseInsensitive) == 0, QUuid::createUuid().toString());
 
     newUdt->setName(NameGenerator::getUniqueName(this, (itemGetter)&Version::getDataType, newUdt->getName()));
     addNewDataType(newUdt);
@@ -1013,4 +1013,29 @@ SqlSourceEntity* DefaultVersionImplementation::getSqlSourceEntityWithGuid(const 
     if(v) return v;
 
     return 0;
+}
+
+bool DefaultVersionImplementation::cloneInto(Version* other)
+{
+    // clone the data types
+    const QVector<UserDataType*> dts = getDataTypes();
+    for(int i=0; i<dts.size(); i++)
+    {
+        other->addNewDataType(dynamic_cast<UserDataType*>(dts.at(i)->clone(this, other)));
+    }
+
+    // clone the tables
+    const QVector<Table*> tabs = getTables();
+    for(int i=0; i<tabs.size(); i++)
+    {
+        other->addTable(dynamic_cast<Table*>(tabs.at(i)->clone(this, other)));
+    }
+    // now fix the foreign keys of the table
+    // now fix the parent/child relationships of the tables
+
+
+    // clone the table instances
+    // fix the table instances into the cloned tables
+
+    return true;
 }

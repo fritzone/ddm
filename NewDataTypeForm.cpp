@@ -35,9 +35,6 @@ NewDataTypeForm::NewDataTypeForm(DT_TYPE t, DatabaseEngine* dbe, QWidget *parent
     m_ui->btnAddEnumValue->hide();
     m_ui->btnRemoveEnumValue->hide();
 
-    m_ui->lblIncrement->hide();
-    m_ui->chkAutoIncrement->hide();
-
     resetContent();
 
     switch(t)
@@ -164,7 +161,7 @@ void NewDataTypeForm::onSave()
         m_ui->tabWidget->setCurrentIndex(1);
         return;
     }
-    QString cp = m_ui->cmbCharacterSets->currentIndex() > 0 ? m_dbEngine->getCodepages()[m_ui->cmbCharacterSets->currentIndex()]->getName() : "";
+
     QStringList mv;
     for(int i=0; i<m_ui->lstEnumValues->count(); i++)
     {
@@ -187,10 +184,10 @@ void NewDataTypeForm::onSave()
                                m_ui->cmbDTSQLType->currentText(),
                                m_ui->txtWidth->text(),
                                defaultValue,
-                               cp, mv, m_ui->txtDescription->toPlainText(),
+                               mv, m_ui->txtDescription->toPlainText(),
                                m_ui->chkUnsigned->isChecked(),
                                m_ui->chkCanBeNull->isChecked(),
-                               m_ui->chkAutoIncrement->isChecked(), m_udt))
+                               m_udt))
     {
         resetContent();
     }
@@ -243,16 +240,6 @@ void NewDataTypeForm::onSqlTypeSelected(QString selectedItem)
         {
             m_ui->txtWidth->setText(QString::number(size));
         }
-    }
-}
-
-
-void NewDataTypeForm::onCharacterSetCmbChanged(int i)
-{
-    const QVector<Codepage*> &cps = m_dbEngine->getCodepages();
-    if(cps[i]->getName()[0] == '-')
-    {
-        m_ui->cmbCharacterSets->setCurrentIndex(i + 1);
     }
 }
 
@@ -315,19 +302,6 @@ void NewDataTypeForm::setDataType(UserDataType* udt)
     m_ui->txtWidth->setText(udt->getSize());
     m_ui->chkUnsigned->setChecked(udt->isUnsigned());
     m_ui->txtDefaultValue->setText(udt->getDefaultValue());
-
-    // find the codepage
-    QVector<Codepage*> cps = m_dbEngine->getCodepages();
-    int idx = -1;
-    for(int i=0; i< cps.size(); i++)
-    {
-        if(cps[i]->getName().compare(udt->getCodepage()) == 0)
-        {
-            idx = i;
-            break;
-        }
-    }
-    m_ui->cmbCharacterSets->setCurrentIndex(idx);
 
     // populate the "misc" entries, if any
     for(int i=0; i<udt->getMiscValues().count(); i++)

@@ -47,7 +47,7 @@ void VersionGuiElements::createGuiElements(ContextMenuEnabledTreeWidgetItem* pro
     versionItem = new ContextMenuEnabledTreeWidgetItem(projectItem,
                QStringList(QString("Ver: ") + m_version->getVersionText())) ;
     versionItem->setIcon(0, IconFactory::getVersionIcon());
-    //versionItem->setPopupMenu(ContextMenuCollection::getInstance()->getMajorVersionPopupMenu());
+    versionItem->setPopupMenu(ContextMenuCollection::getInstance()->getMajorVersionPopupMenu());
     m_tree->addTopLevelItem(versionItem);
     QVariant a;
     a.setValue(m_version->getVersionText());

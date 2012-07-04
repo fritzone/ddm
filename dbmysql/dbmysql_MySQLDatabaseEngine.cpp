@@ -759,16 +759,16 @@ QVector<DatabaseBuiltinFunction> MySQLDatabaseEngine::buildFunctions()
     QString X = QString("X");
 
 
-#define RET_NUMERIC     UserDataType("return", DT_NUMERIC)
-#define RET_DATETIME    UserDataType("return", DT_DATETIME)
-#define RET_STRING      UserDataType("return", DT_STRING)
+#define RET_NUMERIC     UserDataType("return", DT_NUMERIC, nullUid)
+#define RET_DATETIME    UserDataType("return", DT_DATETIME, nullUid)
+#define RET_STRING      UserDataType("return", DT_STRING, nullUid)
 
-#define PAR_STRING      DatabaseBuiltinFunctionsParameter(X, UserDataType(X, DT_STRING), true)
-#define PAR_NUMERIC     DatabaseBuiltinFunctionsParameter(X, UserDataType(X, DT_NUMERIC), true)
-#define PAR_VARIABLE    DatabaseBuiltinFunctionsParameter(X, UserDataType(X, DT_VARIABLE), true)
+#define PAR_STRING      DatabaseBuiltinFunctionsParameter(X, UserDataType(X, DT_STRING, nullUid), true)
+#define PAR_NUMERIC     DatabaseBuiltinFunctionsParameter(X, UserDataType(X, DT_NUMERIC, nullUid), true)
+#define PAR_VARIABLE    DatabaseBuiltinFunctionsParameter(X, UserDataType(X, DT_VARIABLE, nullUid), true)
 
-#define OPAR_STRING      DatabaseBuiltinFunctionsParameter(X, UserDataType(X, DT_STRING), false)
-#define OPAR_NUMERIC     DatabaseBuiltinFunctionsParameter(X, UserDataType(X, DT_NUMERIC), false)
+#define OPAR_STRING      DatabaseBuiltinFunctionsParameter(X, UserDataType(X, DT_STRING, nullUid), false)
+#define OPAR_NUMERIC     DatabaseBuiltinFunctionsParameter(X, UserDataType(X, DT_NUMERIC, nullUid), false)
 
 #define FUNC result.append(DatabaseBuiltinFunction(QString
 

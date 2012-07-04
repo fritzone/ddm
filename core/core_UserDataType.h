@@ -7,17 +7,25 @@
 #include "SerializableElement.h"
 #include "IconFactory.h"
 #include "NamedItem.h"
+#include "core_CloneableElement.h"
+#include "core_ObjectWithUid.h"
 
 /**
  * Class representing a data type
  */
-class UserDataType : public NamedItem, public TreeItem, public SerializableElement
+class UserDataType : public NamedItem, public TreeItem, public SerializableElement, public ObjectWithUid, public CloneableElement
 {
 public:
 
-    UserDataType(const QString& name, DT_TYPE type) : NamedItem(name), sqlType(""),
-        size(""), defaultValue(""), miscStuff(), codePage(""),
-        unsignedDT(false), description(""), canBeNull(true), autoIncrement(false), m_type(type)
+    UserDataType(const QString& name, DT_TYPE type, const QString& uid) :
+        NamedItem(name),
+        TreeItem(),
+        SerializableElement(),
+        ObjectWithUid(uid),
+        CloneableElement(),
+        sqlType(""),
+        size(""), defaultValue(""), miscStuff(),
+        unsignedDT(false), description(""), canBeNull(true), m_type(type)
     {}
 
 
@@ -26,9 +34,9 @@ public:
 
     UserDataType(const QString& name, const QString& typeString,
                  const QString& _sqlType, const QString& _s,
-                 const QString& _defaultValue, const QString& _cp,
+                 const QString& _defaultValue,
                  const QStringList& _mvs, bool unsi, const QString& desc,
-                 bool nullable, bool autoInc);
+                 bool nullable, const QString& uid);
 
     UserDataType& operator = (const UserDataType& other);
 
@@ -48,11 +56,6 @@ public:
     const QString& getSize() const
     {
         return size;
-    }
-
-    const QString& getCodepage() const
-    {
-        return codePage;
     }
 
     bool isUnsigned() const
@@ -84,7 +87,7 @@ public:
      * Serializes this UserDataType to be saved in the final XML.
      * Modifies the doc object, this is why it's passed in by reference.
      * XML will look like:
-     * <DataType Name = NAME, Type=DT_TYPE, SqlType=SQL_TYPE, Size=SIZE, DefaultValue=DEFAULT_VALUE, Codepage=CODEPAGE, Unsigned=0/1, CanBeNull=0/1 AutoIncrement=0/1>
+     * <DataType Name = NAME, Type=DT_TYPE, SqlType=SQL_TYPE, Size=SIZE, DefaultValue=DEFAULT_VALUE, Unsigned=0/1, CanBeNull=0/1>
      *  <Description> Description </Description>
      *  <Values>
      *   <Value> VALUE </Value>
@@ -114,6 +117,11 @@ public:
 
     static DT_TYPE getDT_TYPE(const QString& typeString);
 
+    virtual CloneableElement* clone(Version* sourceVersion, Version* targetVersion);
+
+    virtual QUuid getClassUid() const;
+
+
 private:
 
     // the SQL type of this Data Type
@@ -128,18 +136,12 @@ private:
     // the stuff for the ENUMs, SETs, etcs...
     QStringList miscStuff;
 
-    // the codepage (if any)
-    QString codePage;
-
     // if the data type is numeric and this will be unsigned
     bool unsignedDT;
 
     QString description;
 
     bool canBeNull;
-
-    // if the data type is numeric it can be auto increment or not ...
-    bool autoIncrement;
 
     DT_TYPE m_type;
 

@@ -78,7 +78,7 @@
               <string>Text/String</string>
              </property>
              <property name="icon">
-              <iconset resource="dbm.qrc">
+              <iconset>
                <normaloff>:/images/actions/images/small/datatypes_text.png</normaloff>:/images/actions/images/small/datatypes_text.png</iconset>
              </property>
             </item>
@@ -87,7 +87,7 @@
               <string>Numeric</string>
              </property>
              <property name="icon">
-              <iconset resource="dbm.qrc">
+              <iconset>
                <normaloff>:/images/actions/images/small/datatypes_numeric.png</normaloff>:/images/actions/images/small/datatypes_numeric.png</iconset>
              </property>
             </item>
@@ -96,7 +96,7 @@
               <string>Boolean</string>
              </property>
              <property name="icon">
-              <iconset resource="dbm.qrc">
+              <iconset>
                <normaloff>:/images/actions/images/small/datatypes_bool.png</normaloff>:/images/actions/images/small/datatypes_bool.png</iconset>
              </property>
             </item>
@@ -105,7 +105,7 @@
               <string>Date/Time</string>
              </property>
              <property name="icon">
-              <iconset resource="dbm.qrc">
+              <iconset>
                <normaloff>:/images/actions/images/small/datatypes_datetime.png</normaloff>:/images/actions/images/small/datatypes_datetime.png</iconset>
              </property>
             </item>
@@ -114,7 +114,7 @@
               <string>Blob/Binary</string>
              </property>
              <property name="icon">
-              <iconset resource="dbm.qrc">
+              <iconset>
                <normaloff>:/images/actions/images/small/datatypes_blob.png</normaloff>:/images/actions/images/small/datatypes_blob.png</iconset>
              </property>
             </item>
@@ -123,7 +123,7 @@
               <string>Misc</string>
              </property>
              <property name="icon">
-              <iconset resource="dbm.qrc">
+              <iconset>
                <normaloff>:/images/actions/images/small/datatypes_misc.png</normaloff>:/images/actions/images/small/datatypes_misc.png</iconset>
              </property>
             </item>
@@ -132,7 +132,7 @@
               <string>Spatial</string>
              </property>
              <property name="icon">
-              <iconset resource="dbm.qrc">
+              <iconset>
                <normaloff>:/images/actions/images/small/datatypes_spatial.png</normaloff>:/images/actions/images/small/datatypes_spatial.png</iconset>
              </property>
             </item>
@@ -176,7 +176,7 @@
                <string>...</string>
               </property>
               <property name="icon">
-               <iconset resource="dbm.qrc">
+               <iconset>
                 <normaloff>:/images/actions/images/small/remove.png</normaloff>:/images/actions/images/small/remove.png</iconset>
               </property>
              </widget>
@@ -187,7 +187,7 @@
                <string>...</string>
               </property>
               <property name="icon">
-               <iconset resource="dbm.qrc">
+               <iconset>
                 <normaloff>:/images/actions/images/small/add.png</normaloff>:/images/actions/images/small/add.png</iconset>
               </property>
              </widget>
@@ -204,6 +204,9 @@
           <string>Advanced</string>
          </attribute>
          <layout class="QFormLayout" name="formLayout_2">
+          <property name="fieldGrowthPolicy">
+           <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+          </property>
           <item row="1" column="0">
            <widget class="QLabel" name="label_3">
             <property name="text">
@@ -239,30 +242,6 @@
            <widget class="QCheckBox" name="chkUnsigned">
             <property name="text">
              <string>Unsigned</string>
-            </property>
-           </widget>
-          </item>
-          <item row="7" column="0">
-           <widget class="QLabel" name="label_7">
-            <property name="text">
-             <string>Character sets</string>
-            </property>
-           </widget>
-          </item>
-          <item row="7" column="1">
-           <widget class="QComboBox" name="cmbCharacterSets"/>
-          </item>
-          <item row="6" column="0">
-           <widget class="QLabel" name="lblIncrement">
-            <property name="text">
-             <string>Increment</string>
-            </property>
-           </widget>
-          </item>
-          <item row="6" column="1">
-           <widget class="QCheckBox" name="chkAutoIncrement">
-            <property name="text">
-             <string>Auto Increment</string>
             </property>
            </widget>
           </item>
@@ -355,9 +334,7 @@
    </item>
   </layout>
  </widget>
- <resources>
-  <include location="dbm.qrc"/>
- </resources>
+ <resources/>
  <connections>
   <connection>
    <sender>cmbDTType</sender>
@@ -416,22 +393,6 @@
     <hint type="sourcelabel">
      <x>363</x>
      <y>277</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>199</x>
-     <y>324</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>cmbCharacterSets</sender>
-   <signal>activated(int)</signal>
-   <receiver>NewDataTypeForm</receiver>
-   <slot>onCharacterSetCmbChanged(int)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>261</x>
-     <y>260</y>
     </hint>
     <hint type="destinationlabel">
      <x>199</x>

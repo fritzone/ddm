@@ -9,6 +9,7 @@
 #include "core_ObjectWithUid.h"
 #include "ObjectWithSpInstances.h"
 #include "uids.h"
+#include "core_CloneableElement.h"
 
 #include <QString>
 #include <QVector>
@@ -30,7 +31,8 @@ class Table : public TreeItem,
         public CopyableElement,
         public NamedItem,
         public ObjectWithUid,
-        public ObjectWithSpInstances
+        public ObjectWithSpInstances,
+        public CloneableElement
 {
 public:
 
@@ -146,16 +148,6 @@ public:
 
     void setParent(Table* parent);
 
-    bool isPersistent() const
-    {
-        return m_persistent;
-    }
-
-    void setPersistent(bool t)
-    {
-        m_persistent = t;
-    }
-
     const Table* parent() const
     {
         return m_parent;
@@ -184,16 +176,6 @@ public:
     Version* getVersion() const
     {
         return m_version;
-    }
-
-    void setTempTabName(const QString& s)
-    {
-        m_tempTabName = s;
-    }
-
-    QString getTempTabName() const
-    {
-        return m_tempTabName;
     }
 
     /**
@@ -289,6 +271,17 @@ public:
 
     void setParentUid(const QString&);
 
+    virtual CloneableElement* clone(Version* sourceVersion, Version* targetVersion);
+
+    QString getTempTabName() const
+    {
+        return m_tempTabName;
+    }
+    void setTempTabName(const QString& s)
+    {
+        m_tempTabName = s;
+    }
+
 private:
 
     // describes the table
@@ -309,12 +302,7 @@ private:
     // tables can be built up in a OO hierarchy, each table inherits the parent table's properties (columns, indices, etc), and it can extend it
     Table* m_parent;
 
-    // if the table is marked as persistent the C++ (Java) code generator will generate some extra code which will load the table on instantiation
-    bool m_persistent;
-
     Version* m_version;
-
-    QString m_tempTabName;
 
     mutable QStringList m_foreignKeyCommands;
 
@@ -326,6 +314,7 @@ private:
 
     QString m_parentUid;
 
+    QString m_tempTabName;
 private:
 
 };
