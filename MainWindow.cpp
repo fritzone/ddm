@@ -554,6 +554,7 @@ void MainWindow::currentProjectTreeItemChanged(QTreeWidgetItem * current, QTreeW
             DocumentationGenerator gen(m_workspace->currentSolution());
             docF->setDoc(gen.getDocumentation());
             setCentralWidget(docF);
+            docF->initiateStyleChange(docF->s_lastStyle);
         }
         else
         {
@@ -618,18 +619,12 @@ void MainWindow::currentProjectTreeItemChanged(QTreeWidgetItem * current, QTreeW
             if(current->parent() && current->parent() == m_workspace->workingVersion()->getGui()->getDocumentationItem())
             {
                 DocumentationForm* docF = new DocumentationForm(this);
-                DocumentationGenerator gen(m_workspace->currentSolution());
                 QVariant qv = current->data(0, Qt::UserRole);
                 QString guid = qv.toString();
-                Table* table =  dynamic_cast<Table*>(UidWarehouse::instance().getElement(guid));
-                if(table != 0)  // shouldn't be ...
-                {
-                    QHtmlDocument doc("Documentation for table " + table->getName(), QHtmlDocument::HTML_5, 0);
-                    gen.getDocumentationForTable(table, doc);
-                    docF->setUid(guid);
-                    docF->setDoc(doc.html());
-                }
+                docF->showDocumentationforUid(guid);
                 setCentralWidget(docF);
+                docF->initiateStyleChange(docF->s_lastStyle);
+
             }
             else    // user possibly clicked on a table which had a parent a table ...
             {
@@ -734,6 +729,11 @@ void MainWindow::saveProject(bool saveAs)
         if(fileName.length() == 0)
         {
             return;
+        }
+
+        if(!fileName.endsWith(".dmx", Qt::CaseInsensitive))
+        {
+            fileName += ".dmx";
         }
     }
 

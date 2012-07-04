@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <html>
   <head>
-    <meta content="text/html;charset=ISO-8859-1" http-equiv="Content-Type">
+    <meta content="text/html;charset=UTF-8" http-equiv="Content-Type">
     <title>Views</title>
     <style type="text/css">
 	<!--
@@ -14,8 +14,7 @@
 	</style>
   </head>
   <body dir="LTR" bgcolor="white" lang="en-US">
-    <p class="style1" style="margin-bottom: 0in; background: white; border: none; padding: 0in; font-style: normal; line-height: 115%; text-decoration: none"
-
+    <p class="style1" style="margin-bottom: 0in; background: white; border: none; padding: 0in; font-style: normal; line-height: 115%; text-decoration: none"
       align="CENTER"> <b>Procedures and Functions</b></p>
     <p class="style1" style="margin-bottom: 0in; background: white; line-height: 115%">
       Stored procedures and functions are statements written in SQL language and
@@ -48,14 +47,26 @@
       description, and it will be used in the desription part of the
       documentation. <br>
       The following is an example on how to write a documentation: <br>
+      <br>
+      <font face="Courier New, Courier, monospace"><font color="#009900">-- </font><font
+          color="#3333ff">@brief</font><font color="#009900"> a procedure to
+          test the documentation generator</font>
+        <br>
+        <font color="#009900">-- </font><font color="#3333ff">@param</font><font
+          color="#009900"> p1 The parameter to the procedure</font>
+        <br>
+        <font color="#009900">-- </font><font color="#3333ff">@desc</font><font
+          color="#009900"> This procedure just does nothing</font> <br>
+        <font color="#3333ff"><strong>CREATE PROCEDURE</strong></font> proc(p1 <font
+          color="#3333ff"><strong>VARCHAR</strong></font>(255)) <br>
+        <font color="#3333ff"><strong>BEGIN <br>
+            END</strong></font></font><br>
+      <br>
+      In case you did not provide a description for all the parameters, or a
+      brief description the application will generate a TODO message for you.
+      This is not customizable, we believe that the quality of the product
+      depends on the documentation too, so please provide it to your users.<br>
     </p>
-    <pre>-- @brief a procedure to test the documentation generator
--- @param p1 The parameter to the procedure
--- @desc This procedure just does nothing 
-CREATE PROCEDURE proc(p1 VARCHAR(255)) 
-BEGIN 
-END
-      </pre>
-    
+    <pre><br></pre>
   </body>
 </html>

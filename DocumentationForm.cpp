@@ -4,6 +4,9 @@
 #include "DocumentationGenerator.h"
 #include "Workspace.h"
 #include "Solution.h"
+#include "core_Trigger.h"
+#include "core_Function.h"
+#include "core_Procedure.h"
 #include "Project.h"
 #include "Version.h"
 #include "core_Table.h"
@@ -18,6 +21,9 @@
 #include <QTextDocument>
 #include <QTextDocumentWriter>
 
+QString DocumentationForm::s_lastStyle = "Unstyled";
+QStringList DocumentationForm::s_openedStyles;
+
 DocumentationForm::DocumentationForm(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::DocumentationForm), m_uidShown("")
@@ -30,6 +36,21 @@ DocumentationForm::~DocumentationForm()
     delete ui;
 }
 
+void DocumentationForm::initiateStyleChange(QString ns)
+{
+    styleChanged(ns);
+    ui->comboBox->setCurrentIndex(ui->comboBox->findText(ns));
+
+    for(int i=0; i<s_openedStyles.size(); i++)
+    {
+        if(ui->comboBox->findText(s_openedStyles.at(i)) == -1)
+        {
+            ui->comboBox->addItem(s_openedStyles.at(i));
+        }
+    }
+}
+
+
 void DocumentationForm::setDoc(const QString &html)
 {
     qDebug() << html;
@@ -37,9 +58,57 @@ void DocumentationForm::setDoc(const QString &html)
     ui->webView->setContent(ba);
 }
 
+void DocumentationForm::showDocumentationforUid(const QString &guid, QHtmlCSSStyleSet* css)
+{
+    DocumentationGenerator gen(Workspace::getInstance()->currentSolution(), css);
+
+    Table* table =  dynamic_cast<Table*>(UidWarehouse::instance().getElement(guid));
+    if(table)
+    {
+        QHtmlDocument doc("Documentation for table " + table->getName(), QHtmlDocument::HTML_5, css);
+        gen.getDocumentationForTable(table, doc);
+        setUid(guid);
+        setDoc(doc.html());
+    }
+    else
+    {
+        Function* f = dynamic_cast<Function*>(UidWarehouse::instance().getElement(guid));
+        if(f)
+        {
+            QHtmlDocument doc("Documentation for function " + f->getName(), QHtmlDocument::HTML_5, css);
+            gen.getDocumentationForStoredMethod(f, doc);
+            setUid(guid);
+            setDoc(doc.html());
+        }
+        else
+        {
+            Procedure* p = dynamic_cast<Procedure*>(UidWarehouse::instance().getElement(guid));
+            if(p)
+            {
+                QHtmlDocument doc("Documentation for procedure " + p->getName(), QHtmlDocument::HTML_5, css);
+                gen.getDocumentationForStoredMethod(p, doc);
+                setUid(guid);
+                setDoc(doc.html());
+            }
+            else
+            {
+                Trigger* trg = dynamic_cast<Trigger*>(UidWarehouse::instance().getElement(guid));
+                if(trg)
+                {
+                    QHtmlDocument doc("Documentation for trigger " + trg->getName(), QHtmlDocument::HTML_5, css);
+                    gen.getDocumentationForTrigger(trg, doc);
+                    setUid(guid);
+                    setDoc(doc.html());
+                }
+            }
+        }
+    }
+}
+
 void DocumentationForm::styleChanged(QString a)
 {
     QHtmlCSSStyleSet* css = 0;
+    bool new_stuff = false;
     if(a == "Choose a file ...")
     {
         QString fileName = QFileDialog::getOpenFileName(this,  "Load stylesheet", "", "CSS files (*.css)");
@@ -48,33 +117,55 @@ void DocumentationForm::styleChanged(QString a)
             return;
         }
         css =  new QHtmlCSSStyleSet(fileName);
+        s_lastStyle = fileName;
+        new_stuff = true;
     }
     else
     {
-        css = new QHtmlCSSStyleSet(QString(":/doc/" + a.toLower() + ".css"));
-
+        QFile f(a);
+        if(f.exists())
+        {
+            css = new QHtmlCSSStyleSet(a);
+            s_lastStyle = a;
+            new_stuff = true;
+        }
+        else
+        {
+            if(a != "Unstyled")
+            {
+                s_lastStyle = ":/doc/" + a.toLower() + ".css";
+                css = new QHtmlCSSStyleSet(QString(s_lastStyle));
+            }
+        }
     }
+
     if(m_uidShown.length())
     {
-        Table* table =  dynamic_cast<Table*>(UidWarehouse::instance().getElement(m_uidShown));
-        if(table != 0)  // shouldn't be ...
-        {
-            DocumentationGenerator gen(Workspace::getInstance()->currentSolution(), css);
-            QHtmlDocument doc("Documentation for table " + table->getName(), QHtmlDocument::HTML_5, css);
-            gen.getDocumentationForTable(table, doc);
-            setDoc(doc.html());
-        }
+        showDocumentationforUid(m_uidShown, css);
     }
     else
     {
         DocumentationGenerator gen (Workspace::getInstance()->currentSolution(), css);
         setDoc(gen.getDocumentation());
     }
+
+    if(new_stuff && !s_openedStyles.contains(s_lastStyle))
+    {
+        if(!!s_lastStyle.startsWith(":/doc"))
+        {
+            s_openedStyles.append(s_lastStyle);
+        }
+
+        if(ui->comboBox->findText(s_lastStyle) == -1 && !s_lastStyle.startsWith(":/doc"))
+        {
+            ui->comboBox->addItem(s_lastStyle);
+        }
+    }
 }
 
 void DocumentationForm::onSave()
 {
-    QString name = QFileDialog::getSaveFileName(this, tr("Save Documentation"), "", tr("Adobe PDF Files(*.pdf);;Open Document Format(*.odf);;Web Page(*.html *.htm)"));
+    QString name = QFileDialog::getSaveFileName(this, tr("Save Documentation"), "", tr("Adobe PDF Files(*.pdf);;Open Document Format(*.odt);;Web Page(*.html *.htm)"));
 
     if(name.length() == 0)  // nothing selected
     {
@@ -83,9 +174,14 @@ void DocumentationForm::onSave()
 
     QString mode("");
     if(name.endsWith(".pdf", Qt::CaseInsensitive)) mode = "pdf";
-    if(name.endsWith(".odf", Qt::CaseInsensitive)) mode = "odf";
-    if(name.endsWith(".htm", Qt::CaseInsensitive)) mode = "htm";
-    if(name.endsWith(".html", Qt::CaseInsensitive)) mode = "htm";
+    else if(name.endsWith(".odt", Qt::CaseInsensitive)) mode = "odf";
+    else if(name.endsWith(".htm", Qt::CaseInsensitive)) mode = "htm";
+    else if(name.endsWith(".html", Qt::CaseInsensitive)) mode = "htm";
+    else
+    {
+        mode = "htm";
+        name += ".html";
+    }
 
     if(mode.length() == 0)
     {

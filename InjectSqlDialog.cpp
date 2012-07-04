@@ -44,6 +44,7 @@ InjectSqlDialog::InjectSqlDialog(DatabaseEngine* engine, QWidget *parent, Versio
     ui->btnConnect->hide();
     ui->btnCreateDatabase->hide();
     ui->grpConnectionDetails->hide();
+    ui->chkRollbackOnError->hide();
 
     if(engine)
     {
@@ -249,7 +250,8 @@ QString InjectSqlDialog::getName() const
 
 bool InjectSqlDialog::getRollbackOnError() const
 {
-    return ui->chkRollbackOnError->isChecked();
+    return false;
+//    return ui->chkRollbackOnError->isChecked();
 }
 
 bool InjectSqlDialog::injectMetadataRequired() const

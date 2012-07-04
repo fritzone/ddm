@@ -9,6 +9,7 @@
 #include "core_UserDataType.h"
 #include "Index.h"
 #include "core_Procedure.h"
+#include "core_Function.h"
 #include "core_Trigger.h"
 #include <QApplication>
 
@@ -47,8 +48,8 @@ QString DocumentationGenerator::getDocumentation()
     }
 
     // Procedures and functions
-    generateHtmlForStoredMethod((QVector<StoredMethod*>*)(&m_solution->currentProject()->getWorkingVersion()->getProcedures()), QApplication::tr("Procedures"), doc);
-    generateHtmlForStoredMethod((QVector<StoredMethod*>*)(&m_solution->currentProject()->getWorkingVersion()->getFunctions()), QApplication::tr("Functions"), doc);
+    generateHtmlForStoredMethods((QVector<StoredMethod*>*)(&m_solution->currentProject()->getWorkingVersion()->getProcedures()), QApplication::tr("Procedures"), doc);
+    generateHtmlForStoredMethods((QVector<StoredMethod*>*)(&m_solution->currentProject()->getWorkingVersion()->getFunctions()), QApplication::tr("Functions"), doc);
 
     // Triggers
     {
@@ -59,26 +60,7 @@ QString DocumentationGenerator::getDocumentation()
     QVector<Trigger*> triggers = m_solution->currentProject()->getWorkingVersion()->getTriggers();
     for(int i=0; i<triggers.size(); i++)
     {
-        QHtmlHeading* h4Trg = new QHtmlHeading(4);
-        QHtmlText* trigName= new QHtmlText(triggers.at(i)->getName());
-        h4Trg->addElement(trigName);
-        doc.getBody()->addHeading(h4Trg);
-
-        QHtmlText* trigDesc = new QHtmlText(triggers.at(i)->getDescription(), QHtmlCSSClass::classDescription());
-        doc.getBody()->addElement(trigDesc);
-        doc.getBody()->addElement(new QHtmlBreak());
-
-        // TODO: tis down here is ugly
-        QHtmlText* trigTable = new QHtmlText("Table: <b>" + triggers.at(i)->getTable() + "</b>", QHtmlCSSClass::classDescription());
-        doc.getBody()->addElement(trigTable);
-        doc.getBody()->addElement(new QHtmlBreak());
-        QHtmlText* trigTime = new QHtmlText("Timing: <b>" + triggers.at(i)->getTime() + "</b>", QHtmlCSSClass::classDescription());
-        doc.getBody()->addElement(trigTime);
-        doc.getBody()->addElement(new QHtmlBreak());
-        QHtmlText* trigMethod = new QHtmlText("Event: <b>" + triggers.at(i)->getEvent() + "</b>", QHtmlCSSClass::classDescription());
-        doc.getBody()->addElement(trigMethod);
-        doc.getBody()->addElement(new QHtmlBreak());
-
+        getDocumentationForTrigger(triggers.at(i), doc);
     }
     }
 
@@ -86,6 +68,31 @@ QString DocumentationGenerator::getDocumentation()
     return result;
 }
 
+
+void DocumentationGenerator::getDocumentationForTrigger(Trigger *trg, QHtmlDocument &doc)
+{
+    QHtmlHeading* h4Trg = new QHtmlHeading(4);
+    QHtmlText* trigName= new QHtmlText(trg->getName());
+    h4Trg->addElement(trigName);
+    doc.getBody()->addHeading(h4Trg);
+
+    QHtmlText* trigDesc = new QHtmlText(trg->getDescription(), QHtmlCSSClass::classDescription());
+    doc.getBody()->addElement(trigDesc);
+    doc.getBody()->addElement(new QHtmlBreak());
+
+    // TODO: tis down here is ugly
+    QHtmlText* trigTable = new QHtmlText("Table: <b>" + trg->getTable() + "</b>", QHtmlCSSClass::classDescription());
+    doc.getBody()->addElement(trigTable);
+    doc.getBody()->addElement(new QHtmlBreak());
+    QHtmlText* trigTime = new QHtmlText("Timing: <b>" + trg->getTime() + "</b>", QHtmlCSSClass::classDescription());
+    doc.getBody()->addElement(trigTime);
+    doc.getBody()->addElement(new QHtmlBreak());
+    QHtmlText* trigMethod = new QHtmlText("Event: <b>" + trg->getEvent() + "</b>", QHtmlCSSClass::classDescription());
+    doc.getBody()->addElement(trigMethod);
+    doc.getBody()->addElement(new QHtmlBreak());
+
+
+}
 
 void DocumentationGenerator::getDocumentationForTable(const Table* table, QHtmlDocument& doc)
 {
@@ -206,7 +213,7 @@ void DocumentationGenerator::getDocumentationForTable(const Table* table, QHtmlD
 
 }
 
-void DocumentationGenerator::getDocumentationForStoredMethod(StoredMethod *mth, QHtmlDocument &doc, const QString& header)
+void DocumentationGenerator::getDocumentationForStoredMethod(StoredMethod *mth, QHtmlDocument &doc)
 {
     QHtmlHeading* h4Proc = new QHtmlHeading(4);
     QHtmlText* procName= new QHtmlText(mth->getName());
@@ -218,7 +225,7 @@ void DocumentationGenerator::getDocumentationForStoredMethod(StoredMethod *mth, 
                                                           QHtmlCSSClass::classTODO():QHtmlCSSClass::classDescription());
     doc.getBody()->addElement(methodBriefDescription);
 
-    if(header ==  QApplication::tr("Functions"))
+    if(dynamic_cast<Function*>(mth))
     {
         doc.getBody()->addElement(new QHtmlBreak());
         QHtmlText* funcReturn = new QHtmlText(QApplication::tr("Returns: ") + mth->getReturns(),
@@ -282,7 +289,7 @@ void DocumentationGenerator::getDocumentationForStoredMethod(StoredMethod *mth, 
 }
 
 
-void DocumentationGenerator::generateHtmlForStoredMethod(QVector<StoredMethod*>* _methods, const QString& header, QHtmlDocument& doc)
+void DocumentationGenerator::generateHtmlForStoredMethods(QVector<StoredMethod*>* _methods, const QString& header, QHtmlDocument& doc)
 {
     QVector<StoredMethod*> methods = *_methods;
     QHtmlHeading* h3TableProcedures = new QHtmlHeading(3);
@@ -292,7 +299,7 @@ void DocumentationGenerator::generateHtmlForStoredMethod(QVector<StoredMethod*>*
 
     for(int i=0; i<methods.size(); i++)
     {
-        getDocumentationForStoredMethod(methods.at(i), doc, header);
+        getDocumentationForStoredMethod(methods.at(i), doc);
     }
 
 }
