@@ -64,9 +64,6 @@ public slots:
     /// called when the user has removed a misc value
     void onRemoveSelectedMiscValue();
 
-    /// when the user changed the character set
-    void onCharacterSetCmbChanged(int);
-
     /// when the user clicked the "Null" is default value
     void onNullClicked();
 

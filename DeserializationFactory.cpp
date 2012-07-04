@@ -46,11 +46,23 @@ UserDataType* DeserializationFactory::createUserDataType(const QDomDocument&, co
     QString sqlType = element.attribute("SqlType");
     QString size = element.attribute("Size");
     QString defaultValue = element.attribute("DefaultValue");
-    QString codepage = element.attribute("Codepage");
     QString isUnsigned = element.attribute("Unsigned");
     QString canBeNull = element.attribute("CanBeNull");
-    QString autoInc = element.attribute("CanBeNull");
     QString description = "";
+    QString uid = element.attribute("uid");
+    QString class_uid = element.attribute("class-uid");
+    QString source_uid = element.attribute("source-uid");
+
+    if(uid.length() == 0)
+    {
+        uid = QUuid::createUuid().toString();
+    }
+
+    if(source_uid.length() == 0)
+    {
+        source_uid = nullUid;
+    }
+
     QStringList miscValues;
 
     for(int i=0; i<element.childNodes().size(); i++)
@@ -71,7 +83,8 @@ UserDataType* DeserializationFactory::createUserDataType(const QDomDocument&, co
         }
     }
 
-    UserDataType* result = new UserDataType(name, type, sqlType, size, defaultValue, codepage, miscValues, isUnsigned=="1", description, canBeNull == "1", autoInc == "1");
+    UserDataType* result = new UserDataType(name, type, sqlType, size, defaultValue, miscValues, isUnsigned=="1", description, canBeNull == "1", QUuid::createUuid().toString());
+    result->setSourceUid(source_uid);
 
     return result;
 
@@ -627,7 +640,6 @@ Table* DeserializationFactory::createTable(DatabaseEngine* engine, Version* ver,
 
     result->setParentUid(parent_uid);
     result->setName(name);
-    result->setPersistent(element.attribute("Persistent")=="1");
     result->setTempTabName(element.attribute("Parent"));
 
     for(int i=0; i<element.childNodes().count(); i++)

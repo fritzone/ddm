@@ -314,6 +314,13 @@ public:
     virtual Function* getFunction(const QString& procName) const = 0;
     virtual const QVector<Function*>& getFunctions() = 0;
 
+    /**
+     * Clones this version into the other one, ie. it inserts all the elements of this version
+     * into the other version.
+     * @param other - the destination version
+     */
+    virtual bool cloneInto(Version* other) = 0;
+
     void setVersionNumbers(int major, int minor)
     {
         m_major = major;

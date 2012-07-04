@@ -660,8 +660,8 @@ void MainWindow::onNewDataType()
     showNewDataTypeWindow(DT_INVALID);
 }
 
-bool MainWindow::onSaveNewDataType(const QString& name, const QString& type, const QString& sqlType, const QString& size, const QString& defaultValue, const QString& cp,
-                             const QStringList& mvs, const QString& desc, bool unsi, bool canBeNull, bool autoInc,  UserDataType* pudt)
+bool MainWindow::onSaveNewDataType(const QString& name, const QString& type, const QString& sqlType, const QString& size, const QString& defaultValue,
+                             const QStringList& mvs, const QString& desc, bool unsi, bool canBeNull,  UserDataType* pudt)
 {
     if(name.length() == 0 || type.length() == 0 || sqlType.length() == 0)
     {
@@ -670,7 +670,7 @@ bool MainWindow::onSaveNewDataType(const QString& name, const QString& type, con
     }
 
 
-    UserDataType* udt = new UserDataType(name, type, sqlType, size, defaultValue, cp, mvs, unsi, desc, canBeNull, autoInc);
+    UserDataType* udt = new UserDataType(name, type, sqlType, size, defaultValue, mvs, unsi, desc, canBeNull, QUuid::createUuid().toString());
 
     if(! m_workspace->currentProjectsEngine()->getDTSupplier()->isValid(udt))
     {

@@ -1951,11 +1951,6 @@ void NewTableForm::onBtnRemoveForeignKey()
     autoSave();
 }
 
-void NewTableForm::onPersistentChange(int a)
-{
-    m_table->setPersistent(a == Qt::Checked);
-}
-
 void NewTableForm::onDeleteDefaultRow()
 {
     m_ui->tableStartupValues->removeRow(m_ui->tableStartupValues->currentRow());

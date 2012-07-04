@@ -84,10 +84,6 @@ DraggableGraphicsViewItem* DiagramItemFactory::getDiagramEntityForTable(Table *t
     QGraphicsRectItem* rect = new QGraphicsRectItem(0,0, maxX, py, grp);
     QPen tPen;
 
-    if(t->isPersistent())
-    {
-        tPen.setWidth(2);
-    }
     if(Configuration::instance().drawTableTypes()) rect->setPen(tPen);
 
     grp->setLastX(maxX);

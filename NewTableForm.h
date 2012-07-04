@@ -116,9 +116,6 @@ public slots:
     void onLoadStartupValuesFromCSV();
     void onDeleteDefaultRow();
 
-    // the advanced page
-    void onPersistentChange(int);
-
     // description page
     void onChangeDescription();
 

@@ -9,6 +9,7 @@
 #include "Workspace.h"
 #include "NameGenerator.h"
 #include "Project.h"
+#include "uids.h"
 
 /**
  * This class describes a parameter that goes into a DatabaseBuiltinFunction,
@@ -20,7 +21,8 @@ class DatabaseBuiltinFunctionsParameter
 {
 public:
     explicit DatabaseBuiltinFunctionsParameter(QString name, const UserDataType& type, bool mandatory) : m_name(name), m_type(type), m_mandatory(mandatory) {}
-    DatabaseBuiltinFunctionsParameter() : m_name("invalid"), m_type(NameGenerator::getUniqueName(Workspace::getInstance()->currentProject()->getWorkingVersion(), (itemGetter)&Version::getDataType, "invalid"), DT_INVALID), m_mandatory(false) {}
+    DatabaseBuiltinFunctionsParameter() :
+        m_name("invalid"), m_type(NameGenerator::getUniqueName(Workspace::getInstance()->currentProject()->getWorkingVersion(), (itemGetter)&Version::getDataType, "invalid"), DT_INVALID, nullUid), m_mandatory(false) {}
 
 private:
     QString m_name;

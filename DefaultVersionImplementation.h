@@ -75,6 +75,7 @@ public:
     virtual Table* getTableWithUid(const QString& uid) const;
     virtual TableInstance* getTableInstanceWithUid(const QString& uid) const;
     virtual Diagram* getDiagramWithUid(const QString& uid) const;
+    virtual bool cloneInto(Version* other);
 
     void createTreeItems(GuiElements* gui, ContextMenuEnabledTreeWidgetItem* projectItem);
 

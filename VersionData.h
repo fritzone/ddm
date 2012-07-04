@@ -32,10 +32,10 @@ private:
     friend class DefaultVersionImplementation;
     friend class MajorVersion;
 
-    // The vector of data types. The order in it is the one the user creates the data types
+private:
+
     QVector<UserDataType*> m_dataTypes;
 
-    // the tables in the system
     QVector<Table*> m_tables;
 
     QVector<Diagram*> m_diagrams;
