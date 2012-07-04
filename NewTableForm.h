@@ -7,26 +7,30 @@
 #include <QTreeWidgetItem>
 #include <QAbstractButton>
 #include <QListWidgetItem>
+#include <QSignalMapper>
 
 namespace Ui
 {
     class NewTableForm;
 }
 
-class MainWindow;
 class DatabaseEngine;
 class Project;
 class Table;
 class Column;
 class Index;
 class ForeignKey;
-class AbstractStorageEngine;
 class AbstractStorageEngineListProvider;
 class ContextMenuEnabledTreeWidgetItem;
 class SqlHighlighter;
+class ContextMenuEnabledTreeWidget;
 class SqlNamesValidator;
+class Issue;
+class QMenu;
+class WidgetForSpecificProperties;
 
-class NewTableForm : public SourceCodePresenterWidget {
+class NewTableForm : public SourceCodePresenterWidget
+{
     Q_OBJECT
 public:
 
@@ -37,23 +41,29 @@ public:
     void focusOnNewColumnName();
 
     void setTable(Table* table);
+    QString getTableName() const;
 
     void selectTab(int);
+    void showColumn(Column *);
+
+    void setCurrentColumn(Column* col)
+    {
+        m_currentColumn = col;
+    }
+    void resetForeignTablesCombo();
 
     virtual void presentSql(Project*);
-    virtual void presentSql(Project*, SqlSourceEntity*){};
-
+    virtual void presentSql(Project*, SqlSourceEntity*, MainWindow::showSomething s);
 
 protected:
 
+    void changeEvent(QEvent *e);
     virtual void keyPressEvent(QKeyEvent *);
 
 public slots:
 
     // main page
-    void onStorageEngineChange(QString);
     void onChangeTab(int);
-    void onButtonsClicked(QAbstractButton*);
     void onHelp();
     void onChangeName(QString);
 
@@ -63,7 +73,14 @@ public slots:
     void onMoveColumnDown();
     void onMoveColumnUp();
     void onCancelColumnEditing();
-    void onItemSelected(QTreeWidgetItem*, int);             // when a column gets selected... sorry for bad naming
+    void onSelectColumn(QTreeWidgetItem*, int);
+    void onCopyColumn();
+    void onPasteColumn();
+    void onDescriptionChange();
+    void onColumnNameChange(QString);
+    void onDatatypeComboChange(QString);
+    void onPrimaryChange(bool);
+    void onDatatypeSelectedForColumnInList(const QString&);
 
     // on the index page
     void onSelectIndex(QTreeWidgetItem*,int);
@@ -75,6 +92,11 @@ public slots:
     void onMoveSelectedIndexColumnUp();
     void onMoveSelectedIndexColumnDown();
     void onDoubleClickColumnForIndex(QListWidgetItem*);
+    void onIndexNameChange(QString);
+    void onIndexOrderTypeChanged(QString);
+    void onAddSpToColumnOfIndex();
+    void onTriggerSpItemForIndexesColumn();
+    void onRemoveSpsFromColumnOfIndex();
 
     // foreign columns page
     void onForeignTableComboChange(QString);
@@ -96,7 +118,6 @@ public slots:
 
     // the advanced page
     void onPersistentChange(int);
-    void onTemporaryChange(int);
 
     // description page
     void onChangeDescription();
@@ -104,9 +125,7 @@ public slots:
     // SQL page
     void onInject();
     void onSaveSql();
-
-protected:
-    void changeEvent(QEvent *e);
+    void onCodepageChange(QString);
 
 private:
 
@@ -119,11 +138,11 @@ private:
     /*
      * Prepares the list of "grayed" items that represent the columns of the parent tables
      */
-    void prepareColumnsListWithParentItems(const Table*);
+    //void prepareColumnsListWithParentItems(const Table*);
 
     void onSave();
-    void onReset();
 
+    void autoSave();
     void resetIndexGui();
 
     /*
@@ -139,9 +158,6 @@ private:
     void updateDefaultValuesTableHeader();
     void backupDefaultValuesTable();
     void restoreDefaultValuesTable();
-
-    void populateIndexTypesDependingOnStorageEngine();
-    void enableForeignKeysDependingOnStorageEngine();
 
     /*
      * Populates the gui with the given table. current has the following role: if this is the "bottom" of a specialization chain then the fields are editable (white background)
@@ -166,12 +182,23 @@ private:
     void prepareValuesToBeSaved();
 
     void doTheSave();
-    void autoSave();
+
+    void finalizeColumnMovement();
+
+    void updateIssues();
+
+    void setTypeComboBoxForColumnItem(ContextMenuEnabledTreeWidgetItem*, Column*);
+
+    void prepareSpsTabs();
+
+    void prepareSpsTabsForIndex(Index*);
+
+    void prepareSpsTabsForColumn(Column *col);
+
+    QMenu* buildPopupForSpsForColumnInIndex();
 
 private:
     Ui::NewTableForm *m_ui;
-    // the main window
-    MainWindow* m_mw;
     // the DB engine
     DatabaseEngine* m_dbEngine;
     // the project we are working on
@@ -197,11 +224,17 @@ private:
     QString m_newColumnName;
     QString m_oldColumnName;
 
-    AbstractStorageEngine* m_currentStorageEngine;
     AbstractStorageEngineListProvider* m_engineProviders;
     SqlHighlighter* highlighter;
     QStringList finalSql;
     SqlNamesValidator* m_nameValidator;
+    ContextMenuEnabledTreeWidget* lstColumns;
+    QSignalMapper* m_signalMapperForCombosInColumns;
+
+    // TODO: with multiple db engines this will be a vector
+    WidgetForSpecificProperties* m_wspForIndex;
+    WidgetForSpecificProperties* m_wspForColumn;
+
 };
 
 #endif // NEWTABLEFORM_H

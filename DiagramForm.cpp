@@ -2,14 +2,19 @@
 #include "ui_DiagramForm.h"
 #include "Version.h"
 #include "IconFactory.h"
-#include "Table.h"
-#include "ERGraphicsScene.h"
-#include "ERGraphicsView.h"
-#include "DraggableGraphicsItem.h"
-#include "DraggableGraphicsItemForText.h"
+#include "core_Table.h"
+#include "dgram_ERGraphicsScene.h"
+#include "dgram_ERGraphicsView.h"
+#include "dgram_DraggableGraphicsItem.h"
+#include "dgram_DraggableGraphicsItemForText.h"
 #include "TableListWidget.h"
-#include "Diagram.h"
-#include "mainwindow.h"
+#include "core_Diagram.h"
+#include "MainWindow.h"
+#include "Workspace.h"
+#include "Version.h"
+#include "VersionGuiElements.h"
+#include "MainWindow.h"
+#include "gui_HelpWindow.h"
 
 #include <QListWidgetItem>
 #include <QGraphicsView>
@@ -23,7 +28,7 @@
 #include <qdebug.h>
 
 DiagramForm::DiagramForm(Version* v, Diagram* dgram, QWidget *parent) : QWidget(parent),
-        ui(new Ui::DiagramForm), ver(v), m_diagram(dgram), m_mw(dynamic_cast<MainWindow*>(parent)), m_tabToRemove(""), m_noteToRemove(-1)
+        ui(new Ui::DiagramForm), ver(v), m_diagram(dgram), m_tabToRemove(""), m_noteToRemove(-1)
 {
 
     ui->setupUi(this);
@@ -54,14 +59,12 @@ DiagramForm::DiagramForm(Version* v, Diagram* dgram, QWidget *parent) : QWidget(
 
     ui->txtDiagramName->setText(m_diagram->getName());
 
-    ui->verticalLayout_2->addWidget(lstTables);
-    ui->verticalLayout_2->addWidget(lstDiagramForms);
+    ui->contentLayout->addWidget(lstTables);
+    ui->contentLayout->addWidget(lstDiagramForms);
     ui->horizontalLayout->addWidget(graphicsView);
 
     prepareLists();
     ui->cmbDgramNotation->hide();
-    ui->grpHelp->hide();
-
 }
 
 void DiagramForm::prepareLists()
@@ -221,18 +224,6 @@ void DiagramForm::saveToImageFile()
     saveToFile(name, transparent, mode);
 }
 
-void DiagramForm::onButtonBoxClicked(QAbstractButton* btn)
-{
-    if(btn == ui->buttonBox->buttons().at(0)) // Seems very strange, but works like this... Save is the First, after Reset
-    {
-        onSave();
-    }
-    else
-    {
-        onReset();
-    }
-}
-
 void DiagramForm::onSave()
 {
     m_diagram->setName(ui->txtDiagramName->text());
@@ -240,7 +231,7 @@ void DiagramForm::onSave()
     {
         ver->addDiagram(m_diagram);
     }
-    m_mw->onSaveDiagram(m_diagram);
+    MainWindow::instance()->onSaveDiagram(m_diagram);
 }
 
 void DiagramForm::onReset()
@@ -276,7 +267,6 @@ void DiagramForm::setCurrentWorkNoteOnDiagram(int noteIndex)
     m_noteToRemove = noteIndex;
 }
 
-
 void DiagramForm::onAddNote()
 {
 }
@@ -285,7 +275,6 @@ void DiagramForm::doneNote()
 {
     lstDiagramForms->setEnabled(true);
 }
-
 
 void DiagramForm::editorLostFocus(DiagramTextItem *)
 {
@@ -305,11 +294,11 @@ void DiagramForm::paintDiagram()
 {
     bool enableNotes = false;
     m_diagram->reset();
+    graphicsView->scene()->clear();
     // first step, put on all the notes
     for(int i=0; i<m_diagram->getNoteDescriptors().size(); i++)
     {
         DiagramNoteDescriptor* noteItem = m_diagram->getNoteDescriptors()[i];
-        qDebug() << noteItem->isFramed();
         DraggableGraphicsViewItemForText* toAdd = m_diagram->clone(noteItem);
         graphicsView->scene()->addItem(toAdd);
         toAdd->place();
@@ -337,9 +326,9 @@ void DiagramForm::paintDiagram()
 
 void DiagramForm::onHelp()
 {
-    ui->grpHelp->show();
-    ui->btnHelp->setHidden(true);
-    ui->webView->setUrl(QApplication::applicationDirPath() + QString("/doc/dgram.html"));
+    HelpWindow* hw = HelpWindow::instance();
+    hw->showHelp(QString("/doc/dgram.html"));
+    hw->show();
 }
 
 void DiagramForm::onNameChange(QString a)
@@ -347,8 +336,16 @@ void DiagramForm::onNameChange(QString a)
     if(m_diagram && m_diagram->getLocation())
     {
         m_diagram->setName(a);
-        m_diagram->getLocation()->setText(0, a);
-        QVariant var(a);
-        m_diagram->getLocation()->setData(0, Qt::UserRole, var);
+        m_diagram->setDisplayText(a);
     }
+}
+
+void DiagramForm::onZoomOut()
+{
+    graphicsView->scale(1/1.2, 1/1.2);
+}
+
+void DiagramForm::onZoomIn()
+{
+    graphicsView->scale(1.2, 1.2);
 }

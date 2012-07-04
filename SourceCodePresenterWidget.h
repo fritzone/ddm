@@ -2,6 +2,7 @@
 #define SOURCECODEPRESENTERWIDGET_H
 
 #include <QWidget>
+#include "mw_helper.h"
 
 class Project;
 class SqlSourceEntity;
@@ -21,13 +22,13 @@ public:
     /**
      * Presents the SQL for the selected entity
      */
-    virtual void presentSql(Project*, SqlSourceEntity*) = 0;
+    virtual void presentSql(Project*, SqlSourceEntity*, MainWindow::showSomething s) = 0;
 
     virtual void updateSql(Project* p)
     {
         if(entity)
         {
-            presentSql(p, entity);
+            presentSql(p, entity, (MainWindow::showSomething)&MainWindow::showNothing);
         }
         else
         {
@@ -40,7 +41,7 @@ public:
         entity = ent;
     }
 
-    SqlSourceEntity* getSqlSourceEntity()
+    SqlSourceEntity* getSqlSourceEntity() const
     {
         return entity;
     }

@@ -67,7 +67,36 @@
           </property>
           <property name="icon">
            <iconset resource="dbm.qrc">
-            <normaloff>:/images/actions/images/small/inject.png</normaloff>:/images/actions/images/small/inject.png</iconset>
+            <normaloff>:/images/actions/images/small/database.png</normaloff>:/images/actions/images/small/database.png</iconset>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QToolButton" name="btnGoToSource">
+          <property name="maximumSize">
+           <size>
+            <width>24</width>
+            <height>24</height>
+           </size>
+          </property>
+          <property name="toolTip">
+           <string>Go to the originator element</string>
+          </property>
+          <property name="statusTip">
+           <string>Go to the originator element</string>
+          </property>
+          <property name="text">
+           <string>...</string>
+          </property>
+          <property name="icon">
+           <iconset resource="dbm.qrc">
+            <normaloff>:/images/actions/images/small/alias.png</normaloff>:/images/actions/images/small/alias.png</iconset>
+          </property>
+          <property name="iconSize">
+           <size>
+            <width>22</width>
+            <height>22</height>
+           </size>
           </property>
          </widget>
         </item>
@@ -118,6 +147,13 @@
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout">
         <item>
+         <widget class="QLabel" name="labelDeploymentStatus">
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+        </item>
+        <item>
          <spacer name="horizontalSpacer">
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
@@ -142,33 +178,8 @@
      </layout>
     </widget>
    </item>
-   <item>
-    <widget class="QGroupBox" name="grpHelp">
-     <property name="title">
-      <string/>
-     </property>
-     <layout class="QVBoxLayout" name="verticalLayout_2">
-      <item>
-       <widget class="QWebView" name="webView">
-        <property name="url">
-         <url>
-          <string>about:blank</string>
-         </url>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </widget>
-   </item>
   </layout>
  </widget>
- <customwidgets>
-  <customwidget>
-   <class>QWebView</class>
-   <extends>QWidget</extends>
-   <header>QtWebKit/QWebView</header>
-  </customwidget>
- </customwidgets>
  <resources>
   <include location="dbm.qrc"/>
  </resources>
@@ -221,10 +232,27 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>btnGoToSource</sender>
+   <signal>clicked()</signal>
+   <receiver>SqlForm</receiver>
+   <slot>onGoToOriginator()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>86</x>
+     <y>46</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>308</x>
+     <y>220</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>onInject()</slot>
   <slot>onSave()</slot>
   <slot>onHelp()</slot>
+  <slot>onGoToOriginator()</slot>
  </slots>
 </ui>

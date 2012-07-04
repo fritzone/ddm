@@ -2,76 +2,62 @@
 <HTML>
 <HEAD>
 	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=utf-8">
-	<TITLE></TITLE>
-	<META NAME="GENERATOR" CONTENT="OpenOffice.org 3.1  (Unix)">
-	<META NAME="CREATED" CONTENT="0;0">
-	<META NAME="CHANGEDBY" CONTENT="Ferenc Deak">
-	<META NAME="CHANGED" CONTENT="20100730;15200400">
+	<TITLE>Data Types</TITLE>
 	<STYLE TYPE="text/css">
 	<!--
 		P { border: 1px solid #000000; padding: 0.02in }
 	-->
 	</STYLE>
 </HEAD>
-<BODY LANG="en-US" BGCOLOR="#23b8dc" DIR="LTR">
-<P ALIGN=CENTER STYLE="margin-bottom: 0in; background: #23b8dc; border: none; padding: 0in; font-style: normal; line-height: 115%; text-decoration: none">
-<FONT COLOR="#000000"><FONT FACE="Arial"><FONT SIZE=3><B> Data types</B></FONT></FONT></FONT></P>
-<P STYLE="margin-bottom: 0in; background: #23b8dc; font-style: normal; font-weight: normal; line-height: 115%; text-decoration: none">
-<FONT COLOR="#000000"><FONT FACE="Arial"><FONT SIZE=2 STYLE="font-size: 11pt">Data types are basic building blocks for your data structures and tables. You use them to specify the type of the columns in the tables you create. Data types can be seven types:<br>
+<BODY LANG="en-US" BGCOLOR="white" DIR="LTR">
+<P ALIGN=CENTER STYLE="margin-bottom: 0in; background: white; border: none; padding: 0in; font-style: normal; line-height: 115%; text-decoration: none">
+<FONT COLOR="#000000" FACE="Arial" SIZE=3><B>Data types</B></FONT></P>
+<P STYLE="margin-bottom: 0in; background: white; font-style: normal; font-weight: normal; line-height: 115%; text-decoration: none">
+<FONT COLOR="#000000" FACE="Arial" SIZE=2 STYLE="font-size: 11pt">Data types are basic building blocks for your data structures and tables. You use them to specify the type of the columns in the tables you create. Data types can be of seven types:<br>
 <br>
-<img src="datatypes_text.PNG" alt="Text" width="16" height="16">Text datatypes - These values store character strings, such as names, adresses, descriptions, etc... <br>
-<img src="datatypes_numeric.PNG" alt="Numeric" width="16" height="16">Numeric datatypes - These values can store numbers, integer or float alike.<br>
-<img src="datatypes_bool.PNG" alt="Bool" width="16" height="16">Boolean datatypes - The values TRUE or FALSE<br>
-<img src="datatypes_datetime.PNG" alt="Date/Time" width="16" height="16">Date/Time datatypes - These values will store fo example a date, or a timestamp<br>
-<img src="datatypes_blob.PNG" alt="Blob" width="16" height="16">Blod datatypes - These values store large binary data, such as the content of a file, or anything else large enough<br>
-<img src="datatypes_misc.PNG" alt="Misc" width="16" height="16">Miscellaneous datatypes - These values can be of type enumeration or set. You can specify which values to choose from<br>
-<img src="datatypes_spatial.PNG" alt="Spatial" width="16" height="16">Spatial datatypes - Used to represent geometrical notions<br>
+<img src="datatypes_text.png" alt="Text" width="16" height="16">Text datatypes - These values store character strings, such as names, adresses, descriptions, etc... <br>
+<img src="datatypes_numeric.png" alt="Numeric" width="16" height="16">Numeric datatypes - These values can store numbers, integer or float alike.<br>
+<img src="datatypes_bool.png" alt="Bool" width="16" height="16">Boolean datatypes - The values TRUE or FALSE<br>
+<img src="datatypes_datetime.png" alt="Date/Time" width="16" height="16">Date/Time datatypes - These values will store fo example a date, or a timestamp<br>
+<img src="datatypes_blob.png" alt="Blob" width="16" height="16">Blod datatypes - These values store large binary data, such as the content of a file, or anything else large enough<br>
+<img src="datatypes_misc.png" alt="Misc" width="16" height="16">Miscellaneous datatypes - These values can be of type enumeration or set. You can specify which values to choose from<br>
+<img src="datatypes_spatial.png" alt="Spatial" width="16" height="16">Spatial datatypes - Used to represent geometrical notions<br>
 <br>
 When you have specified the type of the data type you have to choose the underlying SQL which will be used when creating the actual column in the table. For example, if you chose Text you wil be able to specify it to be CHAR, VARCHAR, etc... for the Numeric type you can choose between INT, FLOAT, etc...<br>
-</FONT></FONT></FONT></P>
-<P STYLE="margin-bottom: 0in; background: #23b8dc; line-height: 115%">
-<FONT SIZE=2 STYLE="font-size: 11pt"><FONT COLOR="#000000"><SPAN STYLE="text-decoration: none"><FONT FACE="Arial"><SPAN STYLE="font-style: normal"><span style="margin-bottom: 0in; background: #23b8dc; font-style: normal; line-height: 115%; text-decoration: none"><strong><FONT COLOR="#000000"><FONT FACE="Arial"><FONT SIZE=2 STYLE="font-size: 11pt">Properties
-of the data type</FONT></FONT></FONT>.</strong></span><B><br>
-<br>
-</B></SPAN><em>Basic properties</em><SPAN STYLE="font-style: normal"><B><br>
-<br>
-Name:
-</B><SPAN STYLE="font-weight: normal">Give
-a unique name for the data type. A small advice is to follow some
-consistent notation among your datatypes.<BR>
-<BR>
-</SPAN><B>Type: </B><SPAN STYLE="font-weight: normal">Adatatype
-can be either a number, or a string, a boolean, a date or a.blob.
-Specify here the type of the datatype<BR>
-<BR>
-</SPAN><B>Underlying
-SQL: </B><SPAN STYLE="font-weight: normal">Select
-the SQL type this datatype will have. This combobox is populated
-bassed on the type of the datatype<BR>
-<BR>
-</SPAN><B>Width:
-</B><SPAN STYLE="font-weight: normal">This
-is the width of the data-type. For text/blob type DTs this.is the
-length of the text, for numerical types this is the max number of
-column digits. Also you can specify a decimal counter, seprated by a
-comma from the width (such as 10,2). This field is not used for the
-other types.<BR><BR>
-</SPAN><B>Values:</B><SPAN STYLE="font-weight: normal">In
-case you want to create a “Misc” datatype which can choose its
-values from a list (such as ENUM, or SET) here you can add the
-initial values of the datatype.<br>
-<br>
-<em>Advanced<br>
-<br>
-</em></SPAN></SPAN><SPAN STYLE="font-weight: normal"><strong>Default</strong></SPAN> <strong>Value: </strong>gives the possibility to specify a default value for the column(s) which are based on this datatype when creating the table.<br>
-<br>
-<strong>The &quot;Null&quot; checkbox: </strong>check this if you want the NULL to be the default value for th column.<br>
-<br>
-<SPAN STYLE="font-weight: bold">Character set: </SPAN>specify the character set of the data type if using special languages<br>
-<br>
-<em> Description</em><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal"><em><br>
-<br>
-</em></SPAN></SPAN><SPAN STYLE="font-weight: normal">Provide a description of the data type. It will be used later in the code generation and the document generation phase.</SPAN></FONT></SPAN></FONT></FONT><br>
+</FONT></P>
+<P STYLE="margin-bottom: 0in; background: white; line-height: 115%">
+<FONT SIZE=2 STYLE="font-size: 11pt" COLOR="#000000" FACE="Arial"><strong>Properties of the data type.</strong>
+<br><br>
+
+<em>Basic properties</em>
+<br> <br>
+<B>Name:</B> Give a unique name for the data type. A small advice is to follow some consistent notation among your datatypes.
+<BR><BR>
+<B>Type: </B> A datatype can be either a number, or a string, a boolean, a date or a.blob. Specify here the type of the datatype
+<BR><BR>
+<B>Underlying SQL:</B> Select the SQL type this datatype will have. This combobox is populated bassed on the type of the datatype
+<BR><BR>
+<B>Width:</B> This is the width of the data-type. For text/blob type DTs this.is the length of the text, for numerical types this is the max number of column digits. Also you can specify a decimal counter, seprated by a comma from the width (such as 10,2). This field is not used for the other types.
+<BR><BR>
+<B>Values:</B> In case you want to create a “Misc” datatype which can choose its values from a list (such as ENUM, or SET) here you can add the initial values of the datatype.
+<br><br>
+<em>Advanced</em>
+<br><br>
+<strong>Default Value:</strong> gives the possibility to specify a default value for the column(s) which are based on this datatype when creating the table.
+<br><br>
+<strong>The "Null" checkbox: </strong>check this if you want the NULL to be the default value for th column.
+<br><br>
+<B>Character set:</B>specify the character set of the data type if using special languages
+<br><br>
+<em>Description</em>
+<br><br>
+ Provide a description of the data type. It will be used later in the code generation and the document generation phase.</FONT>
+</P>
+<P STYLE="margin-bottom: 0in; background: white; line-height: 115%">
+<FONT SIZE=2 STYLE="font-size: 11pt" COLOR="#000000" FACE="Arial"><B>The Importance of Datatypes in database validation</B>
+<br><br>
+When DDM is performing a validation it is doing a database normalization check (ie. to not to have the possibilty to introduce duplicate data in the tables which will need further maintenance efforts). If DDM finds that two columns in two different tables are having the same Text or Blob data type it considers this is being treated as a normalization issue (since entering data in the same type of fields might lead to data duplication) so it is reported in the issues found. Validations are performed every time a column changes, or on request by using the Validate Solution button in the toolbar.
+</FONT>
 </P>
 </BODY>
 </HTML>

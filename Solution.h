@@ -4,10 +4,11 @@
 #include "TreeItem.h"
 #include "Project.h"
 #include "SerializableElement.h"
+#include "NamedItem.h"
 
 #include <QVector>
 
-class Solution : public TreeItem, public SerializableElement
+class Solution : public NamedItem, public TreeItem, public SerializableElement
 {
 public:
     Solution(const QString&);
@@ -17,7 +18,7 @@ public:
         m_projects.append(prj);
     }
 
-    Project* currentProject()
+    Project* currentProject() const
     {
         if(m_projects.size() > 0)
         {
@@ -34,8 +35,6 @@ public:
 
     virtual void serialize(QDomDocument &doc, QDomElement &parent) const;
 
-    const QString& name() const {return m_name;}
-
     void setFile(const QString& f)
     {
         savedToFile = f;
@@ -49,8 +48,6 @@ public:
 private:
     // the vector holding the projects
     QVector<Project*> m_projects;
-
-    QString m_name;
 
     QString savedToFile;
 

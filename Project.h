@@ -3,31 +3,29 @@
 
 #include "SerializableElement.h"
 #include "TreeItem.h"
+#include "NamedItem.h"
 
-#include <QTreeWidget>
-#include <QTreeWidgetItem>
 #include <QVector>
 
 class AbstractDTSupplier;
 class MajorVersion;
 class Version;
 class DatabaseEngine;
+class GuiElements;
 
 /**
  * Holds the data of a project.
  * TODO: I don't like that the clas is knowing a QTreeWidget item. When there's new time, find a way to detach it from this class.
  */
-class Project : public SerializableElement, public TreeItem
+class Project : public NamedItem, public SerializableElement, public TreeItem
 {
 public:
 
     // constructor
-    Project(const QString& _name, QTreeWidget* _tree, QTreeWidget* _dtTree, bool oopIsEnabled);
-
-    Project(const QString& _name, bool);
+    Project(const QString& _name, bool oop);
 
     // creates a version, updates the GUI
-    void createMajorVersion();
+    void createMajorVersion(int major, int  minor);
 
     // creates a major version, does not update the gui, it must be done at a later stage
     void addMajorVersion(MajorVersion*);
@@ -37,27 +35,18 @@ public:
 
     Version* getWorkingVersion() const;
 
+    Version* getVersionNamed(const QString&) const;
+
     DatabaseEngine* getEngine() const;
 
     virtual void serialize(QDomDocument& doc, QDomElement& parent) const;
 
-    void createTreeItem(QTreeWidget* _tree, QTreeWidget* _dtt);
+    void createTreeItem(GuiElements*);
 
     /**
      * This should be called only by the deserialization method.
      */
-    void populateTreeItem();
-
-    const QString& getName() const
-    {
-        return m_name;
-    }
-
-    void setName(const QString& nm)
-    {
-        m_name = nm;
-        m_location->setText(0, nm);
-    }
+    void populateTreeItem(GuiElements*);
 
     const QString& getDescription() const
     {
@@ -74,14 +63,18 @@ public:
         return m_oopIsEnabled;
     }
 
+    QString getCodepage() const
+    {
+        return "latin1";
+    }
+
+    /**
+     * Releases the current working version, creates the next one, copies over all the objects, and locks the current version.
+     */
+    void releaseMajorVersion();
+
+
 private:
-
-    // this is the tree from the main window of the application
-    QTreeWidget* m_tree;
-    QTreeWidget* m_dtTree;
-
-    // the name of the project
-    QString m_name;
 
     // the description of the project
     QString m_description;
@@ -94,6 +87,8 @@ private:
 
     // if this project supports OOP features
     bool m_oopIsEnabled;
+
+    int m_workingVersionIndex;
 
 };
 

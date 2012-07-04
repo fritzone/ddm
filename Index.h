@@ -2,7 +2,10 @@
 #define INDEX_H
 
 #include "TreeItem.h"
+#include "NamedItem.h"
 #include "SerializableElement.h"
+#include "core_ObjectWithUid.h"
+#include "ObjectWithSpInstances.h"
 
 #include <QVector>
 #include <QString>
@@ -10,48 +13,57 @@
 class Column;
 class Table;
 
-class Index : virtual public TreeItem, virtual public SerializableElement
+class Index : public TreeItem, public SerializableElement, public NamedItem, public ObjectWithUid, public ObjectWithSpInstances
 {
+
+    struct ColumnAndOrder
+    {
+        const Column* c;
+        QString order;
+    };
+
 public:
-    Index(Table*);
 
-    Index(const QString& name, const QString& type, Table* tab);
+    Index(const QString& name, Table* tab, const QString& uid);
 
-    void addColumn(const Column* column);
+    void addColumn(const Column* column, const QString& order);
+
+    void addColumn(const Column* column, const QString& order, int pos);
 
     bool hasColumn(const Column*) const;
 
-    const QString& getName() const;
-
-    const QString& getType() const;
-
-    void setName(const QString& name);
-
-    void setType(const QString& type);
-
     void resetColumns();
 
-    const QVector<const Column*>& getColumns() const
-    {
-        return m_columns;
-    }
+    QVector<const Column*> getColumns() const;
 
-    virtual void serialize(QDomDocument &doc, QDomElement &parent) const;
+    void addSpToColumn(const Column* c, const QString& db, SpInstance* spi);
 
     Table* getOwner() const
     {
         return m_owner;
     }
 
+    virtual QUuid getClassUid() const;
+
+    virtual void serialize(QDomDocument &doc, QDomElement &parent) const;
+
+    QMap<QString, QVector<SpInstance*> > getSpsOfColumn(const Column*) const;
+
+    SpInstance* getSpiOfColumnForSpecificRole(const Column* c, const QString& role, const QString& db) const;
+
+    QString getOrderForColumn(const Column*) const;
+
 private:
 
     Table* m_owner;
 
-    QString m_name;
+    // this is here to just to keep the order of the columns
+    QVector<ColumnAndOrder*> m_columns;
 
-    QString m_type;
+    // The following is to be interpreted as:
+    // for each column there is a map, mapping a database name to a vector of SP instances from that specific database
+    QMap<QString, QMap<QString, QVector<SpInstance*> > > m_columnsWithSpInstances;
 
-    QVector<const Column*> m_columns;
 };
 
 #endif // INDEX_H

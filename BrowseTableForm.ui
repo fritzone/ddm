@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>BrowseTableForm</class>
+ <widget class="QWidget" name="BrowseTableForm">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>674</width>
+    <height>672</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout_3"/>
+ </widget>
+ <resources/>
+ <connections/>
+ <slots>
+  <slot>onRunQuery()</slot>
+  <slot>onSaveQuery()</slot>
+  <slot>onLoadQuery()</slot>
+ </slots>
+</ui>

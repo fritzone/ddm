@@ -3,8 +3,6 @@
 
 #include "SerializableElement.h"
 
-#include <QTreeWidgetItem>
-
 class UserDataType;
 class Table;
 class ForeignKey;
@@ -12,55 +10,53 @@ class Diagram;
 class ContextMenuEnabledTreeWidgetItem;
 class TableInstance;
 class DatabaseEngine;
+class VersionGuiElements;
+class Column;
+class Issue;
+class View;
+class Procedure;
+class Trigger;
+class SqlSourceEntity;
+class Function;
+class Connection;
+class Project;
 
 /**
  * Basic class holding data related to versions
  */
-class Version : virtual public SerializableElement
+class Version : public SerializableElement
 {
 public:
-    Version() {};
-    virtual ~Version() {};
 
-    /**
-     * Return the tree item of the Data Types
-     */
-    virtual ContextMenuEnabledTreeWidgetItem* getDtsItem() const = 0;
+    Version(int major, int minor, Project* p) : m_major(major), m_minor(minor), m_project(p)
+    {}
 
-    /**
-     * Return the tree item of the Tables
-     */
-    virtual ContextMenuEnabledTreeWidgetItem* getTablesItem() const = 0;
-
-    /**
-     * Return the tree item of the final SQL script
-     */
-    virtual ContextMenuEnabledTreeWidgetItem* getFinalSqlItem() const = 0;
-
-    /**
-     * Return the tree item of the defined queries
-     */
-    virtual ContextMenuEnabledTreeWidgetItem* getTableInstancesItem() const = 0;
-
-    /**
-     * Return the tree item of the Version
-     */
-    virtual ContextMenuEnabledTreeWidgetItem* getVersionItem() const = 0;
-
-    /**
-     * Return the tree item of the diagrams
-     */
-    virtual ContextMenuEnabledTreeWidgetItem* getDiagramsItem() const = 0;
-
-    /**
-     * Adds a new data type to this version
-     */
-    virtual void addNewDataType(UserDataType*) = 0;
+    virtual ~Version() {}
 
     /**
      * Returns a constant reference to the data types of the version
      */
     virtual const QVector<UserDataType*>& getDataTypes() const = 0;
+
+    /**
+     * Returns the tables stored in this version
+     */
+    virtual const QVector<Table*>& getTables() const = 0;
+
+    /**
+     * Return the table instances
+     */
+    virtual const QVector<TableInstance*> & getTableInstances() const = 0;
+
+    /**
+     * Return the diagrams
+     */
+    virtual const QVector<Diagram*> & getDiagrams() const = 0;
+
+    /**
+     * Adds a new data type to this version
+     */
+    virtual void addNewDataType(UserDataType*) = 0;
 
     /**
      * Checks if this version has a data type with the specified name
@@ -103,12 +99,22 @@ public:
     /**
      * Return the table with the given name for r/w access
      */
-    virtual Table* getTable(const QString& name) = 0;
+    virtual Table* getTable(const QString& name) const = 0;
 
     /**
-     * Returns the tables stored in this version
+     * Return the table with the given uid for r/w access
      */
-    virtual const QVector<Table*>& getTables() const = 0;
+    virtual Table* getTableWithUid(const QString& uid) const = 0;
+
+    /**
+     * Return the diagram with the given uid for r/w access
+     */
+    virtual Diagram* getDiagramWithUid(const QString& uid) const = 0;
+
+    /**
+     * Return the table instance with the given uid for r/w access
+     */
+    virtual TableInstance* getTableInstanceWithUid(const QString& uid) const = 0;
 
     /**
      * Serializes this version
@@ -126,10 +132,18 @@ public:
     virtual void removeForeignKeyFromDiagrams(ForeignKey*) = 0;
 
     /**
-     * Deletes a table from the system. Also resolves the FK dependencies: 1. deletes the table and the foreign table referencing this table 2. Deletes the FK reference from the foreign table
+     * Deletes a table from the system. Also deletes the instantiated tables,
+     * and resolves the Diagrams
+     * Does not delete the table if there are foreign keys referencing it.
+     * @return true if the table was succesfully deleted, false if not
      */
-    virtual void deleteTable(Table*) = 0;
+    virtual bool deleteTable(Table*) = 0;
 
+    /**
+     * Deletes the given table instance, and also all the other table instances
+     * that were instantiated due to foreign keys referencing this table instance
+     * when it was instantiated
+     */
     virtual void deleteTableInstance(TableInstance*) = 0;
 
     /**
@@ -138,19 +152,19 @@ public:
     virtual Table* duplicateTable(Table*) = 0;
 
     /**
-     * Sets up a parent child relationship
+     * Sets up a parent child relationship. Used in the factory methods of creating a version
      */
     virtual void setupTableParentChildRelationships() = 0;
 
     /**
-     * Instantiates a table from the given table template
+     * Sets up the foreign key relationships. Used in the factory methods of creating a version
      */
-    virtual TableInstance* instantiateTable(Table* tab, bool reason) = 0;
+    virtual void setupForeignKeyRelationshipsForATable(Table* tab) = 0;
 
     /**
-     * Returns true if this version is in a project which has OOP features enabled
+     * Instantiates a table from the given table template
      */
-    virtual bool oop() = 0;
+    virtual TableInstance* instantiateTable(Table* tab, bool becauseOfReference) = 0;
 
     /**
      * Adds a new table instance to this version
@@ -160,44 +174,171 @@ public:
     /**
      * Returns a table instance
      */
-    virtual TableInstance* getTableInstance(const QString& ) = 0;
+    virtual TableInstance* getTableInstance(const QString& ) const = 0;
 
-    virtual const QVector<TableInstance*> & getTableInstances() = 0;
-
+    /**
+     * Purges the table instances that were sentenced in a "delete table instance" procedure
+     */
     virtual void purgeSentencedTableInstances() = 0;
 
-    virtual DatabaseEngine* getDatabaseEngine() = 0;
-
+    /**
+     * Deletes the given data type
+     */
     virtual void deleteDataType(const QString&) = 0;
 
+    /**
+     * Duplicates the given data type
+     */
     virtual UserDataType* duplicateDataType(const QString&) = 0;
 
+    /**
+     * Deletes a diagram from this version
+     */
     virtual void deleteDiagram(const QString&) = 0;
 
-    // don't know if this is a good design or not for the popups ....
+    /**
+     * Returns the GUI elements (the Version tree widget item, and the otehrs) of this version
+     */
+    virtual VersionGuiElements* getGui() = 0;
 
-    virtual QMenu* getTablePopupMenu() = 0;
-    virtual QAction * getAction_RemoveTable() = 0;
-    virtual QAction * getAction_TableAddColumn() = 0;
-    virtual QAction * getAction_SpecializeTable() = 0;
-    virtual QAction * getAction_DuplicateTable() = 0;
-    virtual QAction * getAction_InstantiateTable() = 0;
+    /**
+     * Returns the version as a human readable string
+     */
+    virtual QString getVersionText() = 0;
 
-    virtual QMenu* getTableInstancePopupMenu() = 0;
-    virtual QAction * getAction_DeleteTableInstance() = 0;
-    virtual QAction * getAction_RenameTableInstance() = 0;
+    /**
+     * Return a vector of tables that are referencing the given column through a foreign key
+     */
+    virtual QVector<Table*> getTablesReferencingAColumnThroughForeignKeys(const Column*) = 0;
 
-    virtual QMenu* getDatatypePopupMenu() = 0;
-    virtual QAction* getAction_DeleteDataType() = 0;
-    virtual QAction* getAction_DuplicateDataType() = 0;
+    virtual QList<QString> getSqlScript(bool generateDelimiters, const Connection*) = 0;
 
-    virtual QMenu* getDiagramPopupMenu() = 0;
-    virtual QAction* getAction_DeleteDiagram() = 0;
-    virtual QAction* getAction_RenameDiagram() = 0;
+    /**
+     * Provides a data type for the given SQL type. Firstly checks if there are data types corresponding to the
+     * given name/size pair and and if found one, returns it. If did not find any, creates a new one, adds to the
+     * vector of data types and returns it.
+     * The scope of relaxed is that if it's false it tries to build data types based on the @param name (allowing
+     * each column to have its own datatype, thus enforcing more strict foreign key policies) otherwise
+     * it builds the data types from the SQL type, allowing more relaxed foreign keys.
+     */
+    virtual UserDataType* provideDatatypeForSqlType(const QString& name, const QString& sql, const QString& nullable, const QString& defaultValue, bool relaxed) = 0;
 
-private:
+    /**
+     * Method called when a new column was created in this version, for the given table. It will report
+     * issues that the new column introduces (such as normalization, or foreign key suggestion..)
+     */
+    virtual QVector<Issue*> checkIssuesOfNewColumn(Column* inNewColumn, Table* inTable) = 0;
 
+    /**
+     * Adds an issue to the version
+     */
+    virtual void addIssuse(Issue*) = 0;
+
+    /**
+     * Retrieves the issue with the given name, or 0 if there is none
+     */
+    virtual Issue* getIssue(const QString&) = 0;
+
+    /**
+     * Removes the issue from the version
+     */
+    virtual void removeIssue(const QString&) = 0;
+
+    /**
+     * Retrieves the versions' issues
+     */
+    virtual QVector<Issue*>& getIssues() = 0;
+
+    /**
+     * Validates the version. The flag tells if it's an automatic or on request validation
+     */
+    virtual void validateVersion(bool onRequest) = 0;
+
+    /**
+     * Sets the valiadtion flags for the next validation
+     */
+    virtual void setSpecialValidationFlags(int) = 0;
+
+    /**
+     * Returns the given view
+     */
+    virtual View* getView(const QString& viewName) const = 0;
+
+    /**
+     * Adds a view in the system
+     */
+    virtual void addView(View* v) = 0;
+
+    /**
+     * Deletes the view from the system
+     */
+    virtual void deleteView(const QString& v) = 0;
+
+    /**
+     * Return the views of the version
+     */
+    virtual const QVector<View*>& getViews() = 0;
+
+    /**
+    * Returns the given procedure
+    */
+    virtual Procedure* getProcedure(const QString& procName) const = 0;
+
+    /**
+    * Adds a procedure in the system
+    */
+    virtual void addProcedure(Procedure* p) = 0;
+
+    /**
+    *  Returns all the procedures of the system
+    */
+    virtual const QVector<Procedure*>& getProcedures() = 0;
+
+    /**
+    * Delete the given procedure
+    */
+    virtual void deleteProcedure(const QString& p) = 0;
+
+    /**
+    * Deletes all the unused data types
+    */
+    virtual void cleanupDataTypes() = 0;
+
+    virtual void addTrigger(Trigger*) = 0;
+    virtual Trigger* getTrigger(const QString&) const = 0;
+    virtual const QVector<Trigger*>& getTriggers() = 0;
+
+    virtual SqlSourceEntity* getSqlSourceEntityWithGuid(const QString& name) const = 0;
+
+    virtual void addFunction(Function* p) = 0;
+    virtual Function* getFunction(const QString& procName) const = 0;
+    virtual const QVector<Function*>& getFunctions() = 0;
+
+    void setVersionNumbers(int major, int minor)
+    {
+        m_major = major;
+        m_minor = minor;
+    }
+
+    int getMajor() const
+    {
+        return m_major;
+    }
+
+    int getMinor() const
+    {
+        return m_minor;
+    }
+
+    const Project* getProject() const
+    {
+        return m_project;
+    }
+
+protected:
+    int m_major;
+    int m_minor;
+    Project* m_project;
 };
 
 #endif // VERSION_H
-

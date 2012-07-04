@@ -29,13 +29,14 @@ public:
     }
 
     virtual void presentSql(Project* p);
-    virtual void presentSql(Project*,SqlSourceEntity*);
+    virtual void presentSql(Project*, SqlSourceEntity*, MainWindow::showSomething s);
 
 public slots:
 
     void onInject();
     void onSave();
     void onHelp();
+    void onGoToOriginator();
 
 protected:
     void changeEvent(QEvent *e);
@@ -46,6 +47,7 @@ private:
     SqlHighlighter* highlighter;
     DatabaseEngine* m_engine;
     QStringList sqlList;
+    SqlSourceEntity* m_sourceEntity;
 };
 
 #endif // SQLFORM_H

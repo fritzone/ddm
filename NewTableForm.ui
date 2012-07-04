@@ -7,8 +7,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1257</width>
-    <height>734</height>
+    <width>817</width>
+    <height>702</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -21,12 +21,18 @@
    <string>Form</string>
   </property>
   <layout class="QHBoxLayout" name="horizontalLayout_14">
+   <property name="margin">
+    <number>9</number>
+   </property>
    <item>
     <widget class="QGroupBox" name="groupBox_5">
      <property name="title">
       <string/>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout">
+      <property name="margin">
+       <number>9</number>
+      </property>
       <item>
        <layout class="QFormLayout" name="formLayout_4">
         <property name="fieldGrowthPolicy">
@@ -42,16 +48,6 @@
         <item row="0" column="1">
          <widget class="QLineEdit" name="txtTableName"/>
         </item>
-        <item row="1" column="0">
-         <widget class="QLabel" name="lblStorageEngine">
-          <property name="text">
-           <string>Storage Engine</string>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="1">
-         <widget class="QComboBox" name="cmbStorageEngine"/>
-        </item>
        </layout>
       </item>
       <item>
@@ -60,9 +56,13 @@
          <enum>QTabWidget::Rounded</enum>
         </property>
         <property name="currentIndex">
-         <number>3</number>
+         <number>0</number>
         </property>
         <widget class="QWidget" name="tabWidgetPage1">
+         <attribute name="icon">
+          <iconset resource="dbm.qrc">
+           <normaloff>:/images/actions/images/small/table-select-column-icon.png</normaloff>:/images/actions/images/small/table-select-column-icon.png</iconset>
+         </attribute>
          <attribute name="title">
           <string>Columns</string>
          </attribute>
@@ -74,7 +74,7 @@
             </property>
             <layout class="QVBoxLayout" name="verticalLayout_5">
              <item>
-              <layout class="QHBoxLayout" name="horizontalLayout_2">
+              <layout class="QHBoxLayout" name="columnListLayout">
                <item>
                 <layout class="QGridLayout" name="gridLayout">
                  <item row="0" column="0">
@@ -149,48 +149,6 @@
                  </item>
                 </layout>
                </item>
-               <item>
-                <widget class="QTreeWidget" name="lstColumns">
-                 <property name="rootIsDecorated">
-                  <bool>false</bool>
-                 </property>
-                 <property name="itemsExpandable">
-                  <bool>false</bool>
-                 </property>
-                 <property name="animated">
-                  <bool>false</bool>
-                 </property>
-                 <property name="expandsOnDoubleClick">
-                  <bool>false</bool>
-                 </property>
-                 <attribute name="headerDefaultSectionSize">
-                  <number>150</number>
-                 </attribute>
-                 <attribute name="headerDefaultSectionSize">
-                  <number>150</number>
-                 </attribute>
-                 <column>
-                  <property name="text">
-                   <string>PK</string>
-                  </property>
-                 </column>
-                 <column>
-                  <property name="text">
-                   <string>Name</string>
-                  </property>
-                 </column>
-                 <column>
-                  <property name="text">
-                   <string>Type</string>
-                  </property>
-                 </column>
-                 <column>
-                  <property name="text">
-                   <string>SQL Type</string>
-                  </property>
-                 </column>
-                </widget>
-               </item>
               </layout>
              </item>
             </layout>
@@ -209,99 +167,116 @@
             </property>
             <layout class="QVBoxLayout" name="verticalLayout_4">
              <item>
-              <layout class="QFormLayout" name="formLayout">
-               <property name="fieldGrowthPolicy">
-                <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
-               </property>
-               <item row="0" column="0">
-                <widget class="QLabel" name="label_2">
-                 <property name="text">
-                  <string>Name</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="0" column="1">
-                <widget class="QLineEdit" name="txtNewColumnName">
-                 <property name="toolTip">
-                  <string>The name of the column</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="1" column="0">
-                <widget class="QLabel" name="label_4">
-                 <property name="text">
-                  <string>Type</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="1" column="1">
-                <widget class="QComboBox" name="cmbNewColumnType">
-                 <property name="toolTip">
-                  <string>The Type of the column</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="2" column="0">
-                <widget class="QCheckBox" name="chkPrimary">
-                 <property name="text">
-                  <string>Primary Key</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="2" column="1">
-                <widget class="QCheckBox" name="chkAutoInc">
-                 <property name="text">
-                  <string>Auto Increment</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="3" column="0">
-                <widget class="QLabel" name="lblDescription">
-                 <property name="text">
-                  <string>Description</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="3" column="1">
-                <widget class="QTextEdit" name="txtColumnDescription"/>
-               </item>
-               <item row="4" column="0">
-                <layout class="QHBoxLayout" name="horizontalLayout_3">
+              <widget class="QTabWidget" name="tabWidgetForColumnDetails">
+               <widget class="QWidget" name="tabWidget_2Page1">
+                <attribute name="title">
+                 <string>General</string>
+                </attribute>
+                <layout class="QVBoxLayout" name="verticalLayout_18">
                  <item>
-                  <widget class="QToolButton" name="btnAdd">
-                   <property name="toolTip">
-                    <string>Add/Update the column</string>
+                  <layout class="QFormLayout" name="formLayout">
+                   <property name="fieldGrowthPolicy">
+                    <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
                    </property>
-                   <property name="statusTip">
-                    <string>Add/Update the column</string>
-                   </property>
-                   <property name="text">
-                    <string>...</string>
-                   </property>
-                   <property name="icon">
-                    <iconset resource="dbm.qrc">
-                     <normaloff>:/images/actions/images/small/add.png</normaloff>:/images/actions/images/small/add.png</iconset>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QToolButton" name="btnCancelColumnEditing">
-                   <property name="toolTip">
-                    <string>Cancel the changes made to these fields</string>
-                   </property>
-                   <property name="statusTip">
-                    <string>Cancel the changes made to these fields</string>
-                   </property>
-                   <property name="text">
-                    <string/>
-                   </property>
-                   <property name="icon">
-                    <iconset resource="dbm.qrc">
-                     <normaloff>:/images/actions/images/small/cancel.png</normaloff>:/images/actions/images/small/cancel.png</iconset>
-                   </property>
-                  </widget>
+                   <item row="0" column="0">
+                    <widget class="QLabel" name="label_2">
+                     <property name="text">
+                      <string>Name</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="0" column="1">
+                    <widget class="QLineEdit" name="txtNewColumnName">
+                     <property name="toolTip">
+                      <string>The name of the column</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="1" column="0">
+                    <widget class="QLabel" name="label_4">
+                     <property name="text">
+                      <string>Type</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="1" column="1">
+                    <widget class="QComboBox" name="cmbNewColumnType">
+                     <property name="toolTip">
+                      <string>The Type of the column</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="2" column="1">
+                    <widget class="QCheckBox" name="chkPrimary">
+                     <property name="text">
+                      <string>Primary Key</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="3" column="0">
+                    <widget class="QLabel" name="lblDescription">
+                     <property name="text">
+                      <string>Description</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="3" column="1">
+                    <widget class="QTextEdit" name="txtColumnDescription"/>
+                   </item>
+                  </layout>
                  </item>
                 </layout>
+               </widget>
+              </widget>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayout_3">
+               <item>
+                <widget class="QToolButton" name="btnAddColumn">
+                 <property name="toolTip">
+                  <string>Add/Update the column</string>
+                 </property>
+                 <property name="statusTip">
+                  <string>Add/Update the column</string>
+                 </property>
+                 <property name="text">
+                  <string>...</string>
+                 </property>
+                 <property name="icon">
+                  <iconset resource="dbm.qrc">
+                   <normaloff>:/images/actions/images/small/add.png</normaloff>:/images/actions/images/small/add.png</iconset>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QToolButton" name="btnCancelColumnEditing">
+                 <property name="toolTip">
+                  <string>Cancel the changes made to these fields</string>
+                 </property>
+                 <property name="statusTip">
+                  <string>Cancel the changes made to these fields</string>
+                 </property>
+                 <property name="text">
+                  <string/>
+                 </property>
+                 <property name="icon">
+                  <iconset resource="dbm.qrc">
+                   <normaloff>:/images/actions/images/small/cancel.png</normaloff>:/images/actions/images/small/cancel.png</iconset>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <spacer name="horizontalSpacer_7">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>40</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
                </item>
               </layout>
              </item>
@@ -311,6 +286,10 @@
          </layout>
         </widget>
         <widget class="QWidget" name="tabWidgetPage2">
+         <attribute name="icon">
+          <iconset resource="dbm.qrc">
+           <normaloff>:/images/actions/images/small/index.png</normaloff>:/images/actions/images/small/index.png</iconset>
+         </attribute>
          <attribute name="title">
           <string>Indices</string>
          </attribute>
@@ -322,24 +301,28 @@
             </property>
             <layout class="QHBoxLayout" name="horizontalLayout_7">
              <item>
-              <widget class="QToolButton" name="btnRemoveIndex">
-               <property name="toolTip">
-                <string>Delete this index</string>
-               </property>
-               <property name="statusTip">
-                <string>Delete this index</string>
-               </property>
-               <property name="whatsThis">
-                <string>Deletes this index</string>
-               </property>
-               <property name="text">
-                <string>...</string>
-               </property>
-               <property name="icon">
-                <iconset resource="dbm.qrc">
-                 <normaloff>:/images/actions/images/small/remove.png</normaloff>:/images/actions/images/small/remove.png</iconset>
-               </property>
-              </widget>
+              <layout class="QVBoxLayout" name="verticalLayout_12">
+               <item>
+                <widget class="QToolButton" name="btnRemoveIndex">
+                 <property name="toolTip">
+                  <string>Delete this index</string>
+                 </property>
+                 <property name="statusTip">
+                  <string>Delete this index</string>
+                 </property>
+                 <property name="whatsThis">
+                  <string>Deletes this index</string>
+                 </property>
+                 <property name="text">
+                  <string>...</string>
+                 </property>
+                 <property name="icon">
+                  <iconset resource="dbm.qrc">
+                   <normaloff>:/images/actions/images/small/remove.png</normaloff>:/images/actions/images/small/remove.png</iconset>
+                 </property>
+                </widget>
+               </item>
+              </layout>
              </item>
              <item>
               <widget class="QTreeWidget" name="lstIndices">
@@ -352,14 +335,15 @@
                <property name="expandsOnDoubleClick">
                 <bool>false</bool>
                </property>
+               <attribute name="headerDefaultSectionSize">
+                <number>200</number>
+               </attribute>
+               <attribute name="headerMinimumSectionSize">
+                <number>100</number>
+               </attribute>
                <column>
                 <property name="text">
                  <string notr="true">Name</string>
-                </property>
-               </column>
-               <column>
-                <property name="text">
-                 <string>Type</string>
                 </property>
                </column>
                <column>
@@ -396,102 +380,205 @@
                <item row="0" column="2">
                 <widget class="QLineEdit" name="txtNewIndexName"/>
                </item>
-               <item row="0" column="3">
-                <widget class="QLabel" name="label_8">
-                 <property name="text">
-                  <string>Type</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="0" column="4">
-                <widget class="QComboBox" name="cmbIndexType"/>
-               </item>
               </layout>
              </item>
              <item>
               <layout class="QHBoxLayout" name="horizontalLayout_6">
                <item>
-                <widget class="QLabel" name="label_14">
-                 <property name="text">
-                  <string>Columns</string>
+                <widget class="QTabWidget" name="tabWidgetForIndex">
+                 <property name="currentIndex">
+                  <number>0</number>
                  </property>
+                 <widget class="QWidget" name="tab_3">
+                  <attribute name="title">
+                   <string>Columns</string>
+                  </attribute>
+                  <layout class="QHBoxLayout" name="horizontalLayout_16">
+                   <item>
+                    <widget class="QListWidget" name="lstAvailableColumnsForIndex"/>
+                   </item>
+                   <item>
+                    <layout class="QVBoxLayout" name="verticalLayout_10">
+                     <item>
+                      <widget class="QToolButton" name="btnMoveColumnToRight">
+                       <property name="toolTip">
+                        <string>Add thes selecte column to the index</string>
+                       </property>
+                       <property name="statusTip">
+                        <string>Add the selected column to the index</string>
+                       </property>
+                       <property name="whatsThis">
+                        <string>Add this column to the index</string>
+                       </property>
+                       <property name="text">
+                        <string>...</string>
+                       </property>
+                       <property name="icon">
+                        <iconset resource="dbm.qrc">
+                         <normaloff>:/images/actions/images/small/right.png</normaloff>:/images/actions/images/small/right.png</iconset>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QToolButton" name="btnMoveColumnToLeft">
+                       <property name="toolTip">
+                        <string>Remove the selected column from the right listbox and the index</string>
+                       </property>
+                       <property name="statusTip">
+                        <string>Remove the selected column from the right listbox and the index</string>
+                       </property>
+                       <property name="whatsThis">
+                        <string>Remove the selected column from the right listbox and the index</string>
+                       </property>
+                       <property name="text">
+                        <string>...</string>
+                       </property>
+                       <property name="icon">
+                        <iconset resource="dbm.qrc">
+                         <normaloff>:/images/actions/images/small/left.png</normaloff>:/images/actions/images/small/left.png</iconset>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
+                   </item>
+                   <item>
+                    <layout class="QVBoxLayout" name="verticalLayout_13">
+                     <item>
+                      <layout class="QHBoxLayout" name="horizontalLayout_18">
+                       <item>
+                        <widget class="QToolButton" name="btnAddSpToColumnOfIndex">
+                         <property name="toolTip">
+                          <string>Add a Database Specific Property to the selected column</string>
+                         </property>
+                         <property name="statusTip">
+                          <string>Add a Database Specific Property to the selected column</string>
+                         </property>
+                         <property name="whatsThis">
+                          <string>Add a Database Specific Property to the selected column</string>
+                         </property>
+                         <property name="text">
+                          <string>...</string>
+                         </property>
+                         <property name="icon">
+                          <iconset resource="dbm.qrc">
+                           <normaloff>:/images/actions/images/small/add.png</normaloff>:/images/actions/images/small/add.png</iconset>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QToolButton" name="btnRemoveSpFromColumnOfIndex">
+                         <property name="toolTip">
+                          <string>Remove the selceted Database Specific Property from the column it belongs to</string>
+                         </property>
+                         <property name="statusTip">
+                          <string>Remove the selceted Database Specific Property from the column it belongs to</string>
+                         </property>
+                         <property name="whatsThis">
+                          <string>Remove the selceted Database Specific Property from the column it belongs to</string>
+                         </property>
+                         <property name="text">
+                          <string>...</string>
+                         </property>
+                         <property name="icon">
+                          <iconset resource="dbm.qrc">
+                           <normaloff>:/images/actions/images/small/remove.png</normaloff>:/images/actions/images/small/remove.png</iconset>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QComboBox" name="cmbIndexOrderType">
+                         <item>
+                          <property name="text">
+                           <string/>
+                          </property>
+                         </item>
+                         <item>
+                          <property name="text">
+                           <string>ASC</string>
+                          </property>
+                         </item>
+                         <item>
+                          <property name="text">
+                           <string>DESC</string>
+                          </property>
+                         </item>
+                        </widget>
+                       </item>
+                       <item>
+                        <spacer name="horizontalSpacer_5">
+                         <property name="orientation">
+                          <enum>Qt::Horizontal</enum>
+                         </property>
+                         <property name="sizeHint" stdset="0">
+                          <size>
+                           <width>40</width>
+                           <height>20</height>
+                          </size>
+                         </property>
+                        </spacer>
+                       </item>
+                      </layout>
+                     </item>
+                     <item>
+                      <widget class="QTreeWidget" name="lstSelectedColumnsForIndex">
+                       <property name="columnCount">
+                        <number>2</number>
+                       </property>
+                       <attribute name="headerVisible">
+                        <bool>false</bool>
+                       </attribute>
+                       <attribute name="headerCascadingSectionResizes">
+                        <bool>false</bool>
+                       </attribute>
+                       <attribute name="headerHighlightSections">
+                        <bool>true</bool>
+                       </attribute>
+                       <attribute name="headerStretchLastSection">
+                        <bool>false</bool>
+                       </attribute>
+                       <column>
+                        <property name="text">
+                         <string notr="true">Col</string>
+                        </property>
+                       </column>
+                       <column>
+                        <property name="text">
+                         <string notr="true">Data</string>
+                        </property>
+                       </column>
+                      </widget>
+                     </item>
+                    </layout>
+                   </item>
+                   <item>
+                    <layout class="QVBoxLayout" name="verticalLayout_17">
+                     <item>
+                      <widget class="QToolButton" name="btnMoveIndexColumnUp">
+                       <property name="text">
+                        <string>...</string>
+                       </property>
+                       <property name="icon">
+                        <iconset resource="dbm.qrc">
+                         <normaloff>:/images/actions/images/small/up.png</normaloff>:/images/actions/images/small/up.png</iconset>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QToolButton" name="btnMoveIndexColumnDown">
+                       <property name="text">
+                        <string>...</string>
+                       </property>
+                       <property name="icon">
+                        <iconset resource="dbm.qrc">
+                         <normaloff>:/images/actions/images/small/down.png</normaloff>:/images/actions/images/small/down.png</iconset>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
+                   </item>
+                  </layout>
+                 </widget>
                 </widget>
-               </item>
-               <item>
-                <widget class="QListWidget" name="lstAvailableColumnsForIndex"/>
-               </item>
-               <item>
-                <layout class="QVBoxLayout" name="verticalLayout_10">
-                 <item>
-                  <widget class="QToolButton" name="btnMoveColumnToRight">
-                   <property name="toolTip">
-                    <string>Add thes selecte column to the index</string>
-                   </property>
-                   <property name="statusTip">
-                    <string>Add the selected column to the index</string>
-                   </property>
-                   <property name="whatsThis">
-                    <string>Add this column to the index</string>
-                   </property>
-                   <property name="text">
-                    <string>...</string>
-                   </property>
-                   <property name="icon">
-                    <iconset resource="dbm.qrc">
-                     <normaloff>:/images/actions/images/small/right.png</normaloff>:/images/actions/images/small/right.png</iconset>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QToolButton" name="btnMoveColumnToLeft">
-                   <property name="toolTip">
-                    <string>Remove the selected column from the right listbox and the index</string>
-                   </property>
-                   <property name="statusTip">
-                    <string>Remove the selected column from the right listbox and the index</string>
-                   </property>
-                   <property name="whatsThis">
-                    <string>Remove the selected column from the right listbox and the index</string>
-                   </property>
-                   <property name="text">
-                    <string>...</string>
-                   </property>
-                   <property name="icon">
-                    <iconset resource="dbm.qrc">
-                     <normaloff>:/images/actions/images/small/left.png</normaloff>:/images/actions/images/small/left.png</iconset>
-                   </property>
-                  </widget>
-                 </item>
-                </layout>
-               </item>
-               <item>
-                <widget class="QListWidget" name="lstSelectedColumnsForIndex"/>
-               </item>
-               <item>
-                <layout class="QVBoxLayout" name="verticalLayout_17">
-                 <item>
-                  <widget class="QToolButton" name="btnMoveIndexColumnUp">
-                   <property name="text">
-                    <string>...</string>
-                   </property>
-                   <property name="icon">
-                    <iconset resource="dbm.qrc">
-                     <normaloff>:/images/actions/images/small/up.png</normaloff>:/images/actions/images/small/up.png</iconset>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QToolButton" name="btnMoveIndexColumnDown">
-                   <property name="text">
-                    <string>...</string>
-                   </property>
-                   <property name="icon">
-                    <iconset resource="dbm.qrc">
-                     <normaloff>:/images/actions/images/small/down.png</normaloff>:/images/actions/images/small/down.png</iconset>
-                   </property>
-                  </widget>
-                 </item>
-                </layout>
                </item>
               </layout>
              </item>
@@ -526,13 +613,6 @@
                 </widget>
                </item>
                <item>
-                <widget class="QPushButton" name="btnAdvanced">
-                 <property name="text">
-                  <string>Advanced</string>
-                 </property>
-                </widget>
-               </item>
-               <item>
                 <spacer name="horizontalSpacer_2">
                  <property name="orientation">
                   <enum>Qt::Horizontal</enum>
@@ -553,24 +633,14 @@
          </layout>
         </widget>
         <widget class="QWidget" name="tabWidgetPage3">
+         <attribute name="icon">
+          <iconset resource="dbm.qrc">
+           <normaloff>:/images/actions/images/small/foreign_key.png</normaloff>:/images/actions/images/small/foreign_key.png</iconset>
+         </attribute>
          <attribute name="title">
           <string>Foreign keys</string>
          </attribute>
          <layout class="QVBoxLayout" name="verticalLayout_15">
-          <item>
-           <widget class="QLabel" name="lblForeignKeysNotAllowed">
-            <property name="text">
-             <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:7.8pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;table border=&quot;0&quot; style=&quot;-qt-table-type: root; margin-top:4px; margin-bottom:4px; margin-left:4px; margin-right:4px;&quot;&gt;
-&lt;tr&gt;
-&lt;td style=&quot;border: none;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;img src=&quot;:/images/actions/images/small/remove.png&quot; /&gt;&lt;span style=&quot; font-family:'Sans'; font-size:10pt;&quot;&gt; &lt;/span&gt;&lt;span style=&quot; font-family:'Sans'; font-size:10pt; font-style:italic;&quot;&gt;Foreign keys are not supported natively by this storage engine however they will be shown on the E-R diagrams&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/body&gt;&lt;/html&gt;</string>
-            </property>
-           </widget>
-          </item>
           <item>
            <widget class="QGroupBox" name="grpForeignKeysList">
             <property name="title">
@@ -602,9 +672,6 @@ p, li { white-space: pre-wrap; }
                <property name="expandsOnDoubleClick">
                 <bool>false</bool>
                </property>
-               <attribute name="headerDefaultSectionSize">
-                <number>90</number>
-               </attribute>
                <attribute name="headerDefaultSectionSize">
                 <number>90</number>
                </attribute>
@@ -755,21 +822,6 @@ p, li { white-space: pre-wrap; }
                  </attribute>
                  <attribute name="headerShowSortIndicator" stdset="0">
                   <bool>false</bool>
-                 </attribute>
-                 <attribute name="headerCascadingSectionResizes">
-                  <bool>true</bool>
-                 </attribute>
-                 <attribute name="headerDefaultSectionSize">
-                  <number>200</number>
-                 </attribute>
-                 <attribute name="headerMinimumSectionSize">
-                  <number>150</number>
-                 </attribute>
-                 <attribute name="headerShowSortIndicator" stdset="0">
-                  <bool>false</bool>
-                 </attribute>
-                 <attribute name="headerHighlightSections">
-                  <bool>true</bool>
                  </attribute>
                  <column>
                   <property name="text">
@@ -926,123 +978,107 @@ p, li { white-space: pre-wrap; }
          </layout>
         </widget>
         <widget class="QWidget" name="tab">
+         <attribute name="icon">
+          <iconset resource="dbm.qrc">
+           <normaloff>:/images/actions/images/small/tabinst.png</normaloff>:/images/actions/images/small/tabinst.png</iconset>
+         </attribute>
          <attribute name="title">
           <string>Startup values</string>
          </attribute>
          <layout class="QVBoxLayout" name="verticalLayout_8">
           <item>
-           <layout class="QVBoxLayout" name="verticalLayout_9">
+           <layout class="QHBoxLayout" name="horizontalLayout_13">
             <item>
-             <layout class="QHBoxLayout" name="horizontalLayout_13">
-              <item>
-               <widget class="QToolButton" name="btnLoadStartupValues">
-                <property name="toolTip">
-                 <string>Load the startup values from a CSV file</string>
-                </property>
-                <property name="statusTip">
-                 <string>Load the startup values from a CSV file</string>
-                </property>
-                <property name="text">
-                 <string>...</string>
-                </property>
-                <property name="icon">
-                 <iconset resource="dbm.qrc">
-                  <normaloff>:/images/actions/images/actions/fileopen.png</normaloff>:/images/actions/images/actions/fileopen.png</iconset>
-                </property>
-                <property name="iconSize">
-                 <size>
-                  <width>16</width>
-                  <height>16</height>
-                 </size>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QToolButton" name="btnImportValues">
-                <property name="enabled">
-                 <bool>false</bool>
-                </property>
-                <property name="toolTip">
-                 <string>Import startup values</string>
-                </property>
-                <property name="statusTip">
-                 <string>Import startup values from an alread existing DB table</string>
-                </property>
-                <property name="text">
-                 <string>...</string>
-                </property>
-                <property name="icon">
-                 <iconset resource="dbm.qrc">
-                  <normaloff>:/images/actions/images/big/bigfileimport.png</normaloff>:/images/actions/images/big/bigfileimport.png</iconset>
-                </property>
-                <property name="iconSize">
-                 <size>
-                  <width>16</width>
-                  <height>16</height>
-                 </size>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QToolButton" name="btnSaveStartupValues">
-                <property name="toolTip">
-                 <string>Save startup values</string>
-                </property>
-                <property name="statusTip">
-                 <string>Save startup values to a CSV file</string>
-                </property>
-                <property name="text">
-                 <string>...</string>
-                </property>
-                <property name="icon">
-                 <iconset resource="dbm.qrc">
-                  <normaloff>:/images/actions/images/actions/filesave.png</normaloff>:/images/actions/images/actions/filesave.png</iconset>
-                </property>
-                <property name="iconSize">
-                 <size>
-                  <width>16</width>
-                  <height>16</height>
-                 </size>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <spacer name="horizontalSpacer_6">
-                <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>40</width>
-                  <height>20</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
-             </layout>
-            </item>
-            <item>
-             <widget class="QTableWidget" name="tableStartupValues"/>
-            </item>
-            <item>
-             <widget class="QLabel" name="label_15">
-              <property name="text">
-               <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Sans'; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;table border=&quot;0&quot; style=&quot;-qt-table-type: root; margin-top:4px; margin-bottom:4px; margin-left:4px; margin-right:4px;&quot;&gt;
-&lt;tr&gt;
-&lt;td style=&quot;border: none;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt; font-style:italic;&quot;&gt;Please start filling up the startup values only after you have finalized the layout of the columns. This is still experimental and if you modify the column layout (order) when you have already startup values defined, you might lose some values from this table. When done please press the Accept button&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             <widget class="QToolButton" name="btnLoadStartupValues">
+              <property name="toolTip">
+               <string>Load the startup values from a CSV file</string>
               </property>
-              <property name="wordWrap">
-               <bool>true</bool>
+              <property name="statusTip">
+               <string>Load the startup values from a CSV file</string>
+              </property>
+              <property name="text">
+               <string>...</string>
+              </property>
+              <property name="icon">
+               <iconset resource="dbm.qrc">
+                <normaloff>:/images/actions/images/actions/fileopen.png</normaloff>:/images/actions/images/actions/fileopen.png</iconset>
+              </property>
+              <property name="iconSize">
+               <size>
+                <width>24</width>
+                <height>24</height>
+               </size>
               </property>
              </widget>
             </item>
             <item>
-             <layout class="QHBoxLayout" name="horizontalLayout_11">
+             <widget class="QToolButton" name="btnImportValues">
+              <property name="enabled">
+               <bool>false</bool>
+              </property>
+              <property name="toolTip">
+               <string>Import startup values</string>
+              </property>
+              <property name="statusTip">
+               <string>Import startup values from an alread existing DB table</string>
+              </property>
+              <property name="text">
+               <string>...</string>
+              </property>
+              <property name="icon">
+               <iconset resource="dbm.qrc">
+                <normaloff>:/images/actions/images/big/bigfileimport.png</normaloff>:/images/actions/images/big/bigfileimport.png</iconset>
+              </property>
+              <property name="iconSize">
+               <size>
+                <width>24</width>
+                <height>24</height>
+               </size>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QToolButton" name="btnSaveStartupValues">
+              <property name="toolTip">
+               <string>Save startup values</string>
+              </property>
+              <property name="statusTip">
+               <string>Save startup values to a CSV file</string>
+              </property>
+              <property name="text">
+               <string>...</string>
+              </property>
+              <property name="icon">
+               <iconset resource="dbm.qrc">
+                <normaloff>:/images/actions/images/actions/filesave.png</normaloff>:/images/actions/images/actions/filesave.png</iconset>
+              </property>
+              <property name="iconSize">
+               <size>
+                <width>24</width>
+                <height>24</height>
+               </size>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <spacer name="horizontalSpacer_6">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_2">
+            <item>
+             <layout class="QVBoxLayout" name="verticalLayout_6">
               <item>
                <widget class="QToolButton" name="btnAddNewDefaultRow">
                 <property name="toolTip">
@@ -1095,101 +1131,52 @@ p, li { white-space: pre-wrap; }
                </widget>
               </item>
               <item>
-               <spacer name="horizontalSpacer_7">
+               <spacer name="verticalSpacer_3">
                 <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
+                 <enum>Qt::Vertical</enum>
                 </property>
                 <property name="sizeHint" stdset="0">
                  <size>
-                  <width>40</width>
-                  <height>20</height>
+                  <width>20</width>
+                  <height>40</height>
                  </size>
                 </property>
                </spacer>
               </item>
              </layout>
             </item>
+            <item>
+             <widget class="QTableWidget" name="tableStartupValues"/>
+            </item>
            </layout>
           </item>
          </layout>
         </widget>
-        <widget class="QWidget" name="tabWidgetPage4">
-         <attribute name="title">
-          <string>Advanced</string>
-         </attribute>
-         <layout class="QFormLayout" name="formLayout_2">
-          <property name="fieldGrowthPolicy">
-           <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
-          </property>
-          <item row="0" column="0">
-           <widget class="QLabel" name="lblCharacterSet">
-            <property name="text">
-             <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Sans'; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;table border=&quot;0&quot; style=&quot;-qt-table-type: root; margin-top:4px; margin-bottom:4px; margin-left:4px; margin-right:4px;&quot;&gt;
-&lt;tr&gt;
-&lt;td style=&quot;border: none;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Sans Serif';&quot;&gt;Character Set&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/body&gt;&lt;/html&gt;</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1">
-           <widget class="QComboBox" name="cmbCharacterSets"/>
-          </item>
-          <item row="1" column="0">
-           <widget class="QCheckBox" name="chkPersistent">
-            <property name="statusTip">
-             <string>This table is not updated when the application runs.</string>
-            </property>
-            <property name="whatsThis">
-             <string>This table is not updated when the application runs. This allows the code generator to generate code which loads the content of this table at startup for faster usage</string>
-            </property>
-            <property name="text">
-             <string>Persistent table</string>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="0">
-           <widget class="QCheckBox" name="chkTemporary">
-            <property name="statusTip">
-             <string>This is a temporary table.</string>
-            </property>
-            <property name="whatsThis">
-             <string>This is a temporary table.</string>
-            </property>
-            <property name="text">
-             <string>Temporary table</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
         <widget class="QWidget" name="tabWidgetPage5">
+         <attribute name="icon">
+          <iconset resource="dbm.qrc">
+           <normaloff>:/images/actions/images/actions/note.png</normaloff>:/images/actions/images/actions/note.png</iconset>
+         </attribute>
          <attribute name="title">
           <string>Description</string>
          </attribute>
-         <layout class="QFormLayout" name="formLayout_5">
-          <item row="0" column="0">
-           <widget class="QLabel" name="label_5">
-            <property name="text">
-             <string>Description</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1">
+         <layout class="QVBoxLayout" name="verticalLayout_9">
+          <item>
            <widget class="QTextEdit" name="txtDescription"/>
           </item>
          </layout>
         </widget>
         <widget class="QWidget" name="tab_2">
+         <attribute name="icon">
+          <iconset resource="dbm.qrc">
+           <normaloff>:/images/actions/images/small/sql.png</normaloff>:/images/actions/images/small/sql.png</iconset>
+         </attribute>
          <attribute name="title">
           <string>SQL</string>
          </attribute>
          <layout class="QVBoxLayout" name="verticalLayout_16">
           <item>
-           <widget class="QGroupBox" name="groupBox_9">
+           <widget class="QFrame" name="frame_9">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
               <horstretch>0</horstretch>
@@ -1208,93 +1195,80 @@ p, li { white-space: pre-wrap; }
               <height>36</height>
              </size>
             </property>
-            <property name="title">
-             <string/>
-            </property>
-            <widget class="QWidget" name="horizontalLayoutWidget">
-             <property name="geometry">
-              <rect>
-               <x>0</x>
-               <y>0</y>
-               <width>541</width>
-               <height>27</height>
-              </rect>
+            <layout class="QHBoxLayout" name="horizontalLayout_11">
+             <property name="spacing">
+              <number>0</number>
              </property>
-             <layout class="QHBoxLayout" name="horizontalLayout_15">
-              <property name="spacing">
-               <number>0</number>
-              </property>
-              <item>
-               <widget class="QToolButton" name="btnSaveSql">
-                <property name="maximumSize">
-                 <size>
-                  <width>24</width>
-                  <height>24</height>
-                 </size>
-                </property>
-                <property name="toolTip">
-                 <string>Save SQL to a file</string>
-                </property>
-                <property name="statusTip">
-                 <string>Save SQL to a file</string>
-                </property>
-                <property name="text">
-                 <string>...</string>
-                </property>
-                <property name="icon">
-                 <iconset resource="dbm.qrc">
-                  <normaloff>:/images/actions/images/actions/filesave.png</normaloff>:/images/actions/images/actions/filesave.png</iconset>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QToolButton" name="btnInject">
-                <property name="maximumSize">
-                 <size>
-                  <width>24</width>
-                  <height>24</height>
-                 </size>
-                </property>
-                <property name="toolTip">
-                 <string>Inject this SQL to a database and create a table</string>
-                </property>
-                <property name="statusTip">
-                 <string>Inject this SQL to a database and create a table</string>
-                </property>
-                <property name="text">
-                 <string>...</string>
-                </property>
-                <property name="icon">
-                 <iconset resource="dbm.qrc">
-                  <normaloff>:/images/actions/images/small/inject.png</normaloff>:/images/actions/images/small/inject.png</iconset>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QComboBox" name="cmbOptions">
-                <property name="maximumSize">
-                 <size>
-                  <width>16777215</width>
-                  <height>24</height>
-                 </size>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <spacer name="horizontalSpacer_4">
-                <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>40</width>
-                  <height>20</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
-             </layout>
-            </widget>
+             <property name="margin">
+              <number>0</number>
+             </property>
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayout_15">
+               <property name="spacing">
+                <number>0</number>
+               </property>
+               <item>
+                <widget class="QToolButton" name="btnSaveSql">
+                 <property name="maximumSize">
+                  <size>
+                   <width>24</width>
+                   <height>24</height>
+                  </size>
+                 </property>
+                 <property name="toolTip">
+                  <string>Save SQL to a file</string>
+                 </property>
+                 <property name="statusTip">
+                  <string>Save SQL to a file</string>
+                 </property>
+                 <property name="text">
+                  <string>...</string>
+                 </property>
+                 <property name="icon">
+                  <iconset resource="dbm.qrc">
+                   <normaloff>:/images/actions/images/actions/filesave.png</normaloff>:/images/actions/images/actions/filesave.png</iconset>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QToolButton" name="btnInject">
+                 <property name="maximumSize">
+                  <size>
+                   <width>24</width>
+                   <height>24</height>
+                  </size>
+                 </property>
+                 <property name="toolTip">
+                  <string>Inject this SQL to a database and create a table</string>
+                 </property>
+                 <property name="statusTip">
+                  <string>Inject this SQL to a database and create a table</string>
+                 </property>
+                 <property name="text">
+                  <string>...</string>
+                 </property>
+                 <property name="icon">
+                  <iconset resource="dbm.qrc">
+                   <normaloff>:/images/actions/images/small/database.png</normaloff>:/images/actions/images/small/database.png</iconset>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <spacer name="horizontalSpacer_4">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>40</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+              </layout>
+             </item>
+            </layout>
            </widget>
           </item>
           <item>
@@ -1315,10 +1289,7 @@ p, li { white-space: pre-wrap; }
        </widget>
       </item>
       <item>
-       <widget class="QGroupBox" name="groupBox_6">
-        <property name="title">
-         <string/>
-        </property>
+       <widget class="QFrame" name="frame_6">
         <layout class="QHBoxLayout" name="horizontalLayout">
          <item>
           <widget class="QDialogButtonBox" name="buttons">
@@ -1365,52 +1336,18 @@ p, li { white-space: pre-wrap; }
      </layout>
     </widget>
    </item>
-   <item>
-    <widget class="QGroupBox" name="grpHelp">
-     <property name="title">
-      <string/>
-     </property>
-     <layout class="QVBoxLayout" name="verticalLayout_6">
-      <item>
-       <widget class="QWebView" name="webView">
-        <property name="minimumSize">
-         <size>
-          <width>300</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="url">
-         <url>
-          <string>about:blank</string>
-         </url>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </widget>
-   </item>
   </layout>
  </widget>
- <customwidgets>
-  <customwidget>
-   <class>QWebView</class>
-   <extends>QWidget</extends>
-   <header>QtWebKit/QWebView</header>
-  </customwidget>
- </customwidgets>
  <tabstops>
   <tabstop>txtTableName</tabstop>
   <tabstop>txtNewColumnName</tabstop>
   <tabstop>cmbNewColumnType</tabstop>
   <tabstop>txtColumnDescription</tabstop>
-  <tabstop>lstColumns</tabstop>
   <tabstop>btnUp</tabstop>
   <tabstop>btnRemove</tabstop>
   <tabstop>tabWidget</tabstop>
   <tabstop>txtNewIndexName</tabstop>
-  <tabstop>lstAvailableColumnsForIndex</tabstop>
   <tabstop>btnMoveColumnToLeft</tabstop>
-  <tabstop>lstSelectedColumnsForIndex</tabstop>
   <tabstop>btnMoveIndexColumnUp</tabstop>
   <tabstop>btnMoveIndexColumnDown</tabstop>
   <tabstop>lstIndices</tabstop>
@@ -1421,7 +1358,6 @@ p, li { white-space: pre-wrap; }
   <tabstop>lstForeignKeyAssociations</tabstop>
   <tabstop>btnRemoveAssociation</tabstop>
   <tabstop>btnCancelForeignKeyEditing</tabstop>
-  <tabstop>cmbCharacterSets</tabstop>
   <tabstop>txtDescription</tabstop>
   <tabstop>lstForeignKeys</tabstop>
   <tabstop>tableStartupValues</tabstop>
@@ -1432,30 +1368,14 @@ p, li { white-space: pre-wrap; }
  </resources>
  <connections>
   <connection>
-   <sender>buttons</sender>
-   <signal>clicked(QAbstractButton*)</signal>
+   <sender>btnDown</sender>
+   <signal>clicked()</signal>
    <receiver>NewTableForm</receiver>
-   <slot>onButtonsClicked(QAbstractButton*)</slot>
+   <slot>onMoveColumnDown()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>243</x>
-     <y>751</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>243</x>
-     <y>386</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>lstColumns</sender>
-   <signal>itemClicked(QTreeWidgetItem*,int)</signal>
-   <receiver>NewTableForm</receiver>
-   <slot>onItemSelected(QTreeWidgetItem*,int)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>228</x>
-     <y>246</y>
+     <x>481</x>
+     <y>248</y>
     </hint>
     <hint type="destinationlabel">
      <x>243</x>
@@ -1480,23 +1400,7 @@ p, li { white-space: pre-wrap; }
    </hints>
   </connection>
   <connection>
-   <sender>btnDown</sender>
-   <signal>clicked()</signal>
-   <receiver>NewTableForm</receiver>
-   <slot>onMoveColumnDown()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>481</x>
-     <y>248</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>243</x>
-     <y>386</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>btnAdd</sender>
+   <sender>btnAddColumn</sender>
    <signal>clicked()</signal>
    <receiver>NewTableForm</receiver>
    <slot>onAddColumn()</slot>
@@ -1528,30 +1432,14 @@ p, li { white-space: pre-wrap; }
    </hints>
   </connection>
   <connection>
-   <sender>btnMoveColumnToRight</sender>
+   <sender>btnAddIndex</sender>
    <signal>clicked()</signal>
    <receiver>NewTableForm</receiver>
-   <slot>onMoveColumnToRight()</slot>
+   <slot>onAddIndex()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>282</x>
-     <y>612</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>243</x>
-     <y>386</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>btnMoveColumnToLeft</sender>
-   <signal>clicked()</signal>
-   <receiver>NewTableForm</receiver>
-   <slot>onMoveColumnToLeft()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>282</x>
-     <y>532</y>
+     <x>482</x>
+     <y>698</y>
     </hint>
     <hint type="destinationlabel">
      <x>243</x>
@@ -1576,14 +1464,14 @@ p, li { white-space: pre-wrap; }
    </hints>
   </connection>
   <connection>
-   <sender>btnAddIndex</sender>
+   <sender>btnRemoveIndex</sender>
    <signal>clicked()</signal>
    <receiver>NewTableForm</receiver>
-   <slot>onAddIndex()</slot>
+   <slot>onBtnRemoveIndex()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>482</x>
-     <y>698</y>
+     <x>483</x>
+     <y>255</y>
     </hint>
     <hint type="destinationlabel">
      <x>243</x>
@@ -1624,54 +1512,6 @@ p, li { white-space: pre-wrap; }
    </hints>
   </connection>
   <connection>
-   <sender>btnRemoveIndex</sender>
-   <signal>clicked()</signal>
-   <receiver>NewTableForm</receiver>
-   <slot>onBtnRemoveIndex()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>483</x>
-     <y>255</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>243</x>
-     <y>386</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>btnMoveIndexColumnUp</sender>
-   <signal>clicked()</signal>
-   <receiver>NewTableForm</receiver>
-   <slot>onMoveSelectedIndexColumnUp()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>481</x>
-     <y>532</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>243</x>
-     <y>386</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>btnMoveIndexColumnDown</sender>
-   <signal>clicked()</signal>
-   <receiver>NewTableForm</receiver>
-   <slot>onMoveSelectedIndexColumnUp()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>481</x>
-     <y>612</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>243</x>
-     <y>386</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
    <sender>cmbForeignTables</sender>
    <signal>activated(QString)</signal>
    <receiver>NewTableForm</receiver>
@@ -1683,6 +1523,22 @@ p, li { white-space: pre-wrap; }
     </hint>
     <hint type="destinationlabel">
      <x>243</x>
+     <y>386</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnAddForeignKey</sender>
+   <signal>clicked()</signal>
+   <receiver>NewTableForm</receiver>
+   <slot>onBtnAddForeignKey()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>468</x>
+     <y>661</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>260</x>
      <y>386</y>
     </hint>
    </hints>
@@ -1720,22 +1576,6 @@ p, li { white-space: pre-wrap; }
    </hints>
   </connection>
   <connection>
-   <sender>lstForeignKeyAssociations</sender>
-   <signal>itemClicked(QTreeWidgetItem*,int)</signal>
-   <receiver>NewTableForm</receiver>
-   <slot>onSelectAssociation(QTreeWidgetItem*,int)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>276</x>
-     <y>560</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>243</x>
-     <y>386</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
    <sender>btnRemoveAssociation</sender>
    <signal>clicked()</signal>
    <receiver>NewTableForm</receiver>
@@ -1744,38 +1584,6 @@ p, li { white-space: pre-wrap; }
     <hint type="sourcelabel">
      <x>477</x>
      <y>558</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>260</x>
-     <y>386</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>btnAddForeignKey</sender>
-   <signal>clicked()</signal>
-   <receiver>NewTableForm</receiver>
-   <slot>onBtnAddForeignKey()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>468</x>
-     <y>661</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>260</x>
-     <y>386</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>lstForeignKeys</sender>
-   <signal>itemClicked(QTreeWidgetItem*,int)</signal>
-   <receiver>NewTableForm</receiver>
-   <slot>onSelectForeignKey(QTreeWidgetItem*,int)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>242</x>
-     <y>160</y>
     </hint>
     <hint type="destinationlabel">
      <x>260</x>
@@ -1800,14 +1608,46 @@ p, li { white-space: pre-wrap; }
    </hints>
   </connection>
   <connection>
-   <sender>lstAvailableColumnsForIndex</sender>
-   <signal>itemDoubleClicked(QListWidgetItem*)</signal>
+   <sender>lstForeignKeys</sender>
+   <signal>itemClicked(QTreeWidgetItem*,int)</signal>
    <receiver>NewTableForm</receiver>
-   <slot>onDoubleClickColumnForIndex(QListWidgetItem*)</slot>
+   <slot>onSelectForeignKey(QTreeWidgetItem*,int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>170</x>
+     <x>242</x>
+     <y>160</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>260</x>
+     <y>386</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>lstForeignKeyAssociations</sender>
+   <signal>itemClicked(QTreeWidgetItem*,int)</signal>
+   <receiver>NewTableForm</receiver>
+   <slot>onSelectAssociation(QTreeWidgetItem*,int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>276</x>
      <y>560</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>243</x>
+     <y>386</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnSaveStartupValues</sender>
+   <signal>clicked()</signal>
+   <receiver>NewTableForm</receiver>
+   <slot>onSaveStartupValuestoCSV()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>108</x>
+     <y>97</y>
     </hint>
     <hint type="destinationlabel">
      <x>260</x>
@@ -1832,17 +1672,17 @@ p, li { white-space: pre-wrap; }
    </hints>
   </connection>
   <connection>
-   <sender>btnSaveStartupValues</sender>
+   <sender>btnCancelForeignKeyEditing</sender>
    <signal>clicked()</signal>
    <receiver>NewTableForm</receiver>
-   <slot>onSaveStartupValuestoCSV()</slot>
+   <slot>onBtnCancelForeignKeyEditing()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>108</x>
-     <y>97</y>
+     <x>52</x>
+     <y>676</y>
     </hint>
     <hint type="destinationlabel">
-     <x>260</x>
+     <x>368</x>
      <y>386</y>
     </hint>
    </hints>
@@ -1864,38 +1704,6 @@ p, li { white-space: pre-wrap; }
    </hints>
   </connection>
   <connection>
-   <sender>cmbStorageEngine</sender>
-   <signal>activated(QString)</signal>
-   <receiver>NewTableForm</receiver>
-   <slot>onStorageEngineChange(QString)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>309</x>
-     <y>53</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>260</x>
-     <y>386</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>btnCancelForeignKeyEditing</sender>
-   <signal>clicked()</signal>
-   <receiver>NewTableForm</receiver>
-   <slot>onBtnCancelForeignKeyEditing()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>52</x>
-     <y>676</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>368</x>
-     <y>386</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
    <sender>btnRemoveForeignKey</sender>
    <signal>clicked()</signal>
    <receiver>NewTableForm</receiver>
@@ -1908,70 +1716,6 @@ p, li { white-space: pre-wrap; }
     <hint type="destinationlabel">
      <x>368</x>
      <y>386</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>chkPersistent</sender>
-   <signal>stateChanged(int)</signal>
-   <receiver>NewTableForm</receiver>
-   <slot>onPersistentChange(int)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>80</x>
-     <y>160</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>368</x>
-     <y>386</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>chkTemporary</sender>
-   <signal>stateChanged(int)</signal>
-   <receiver>NewTableForm</receiver>
-   <slot>onTemporaryChange(int)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>82</x>
-     <y>186</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>368</x>
-     <y>386</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>btnDeleteDefaultRow</sender>
-   <signal>clicked()</signal>
-   <receiver>NewTableForm</receiver>
-   <slot>onDeleteDefaultRow()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>69</x>
-     <y>703</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>450</x>
-     <y>386</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>btnHelp</sender>
-   <signal>clicked()</signal>
-   <receiver>NewTableForm</receiver>
-   <slot>onHelp()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>844</x>
-     <y>681</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>628</x>
-     <y>365</y>
     </hint>
    </hints>
   </connection>
@@ -1992,6 +1736,38 @@ p, li { white-space: pre-wrap; }
    </hints>
   </connection>
   <connection>
+   <sender>txtTableName</sender>
+   <signal>textEdited(QString)</signal>
+   <receiver>NewTableForm</receiver>
+   <slot>onChangeName(QString)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>434</x>
+     <y>47</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>628</x>
+     <y>366</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnDeleteDefaultRow</sender>
+   <signal>clicked()</signal>
+   <receiver>NewTableForm</receiver>
+   <slot>onDeleteDefaultRow()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>69</x>
+     <y>703</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>450</x>
+     <y>386</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
    <sender>txtDescription</sender>
    <signal>textChanged()</signal>
    <receiver>NewTableForm</receiver>
@@ -2008,14 +1784,78 @@ p, li { white-space: pre-wrap; }
    </hints>
   </connection>
   <connection>
-   <sender>txtTableName</sender>
-   <signal>textChanged(QString)</signal>
+   <sender>txtColumnDescription</sender>
+   <signal>textChanged()</signal>
    <receiver>NewTableForm</receiver>
-   <slot>onChangeName(QString)</slot>
+   <slot>onDescriptionChange()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>434</x>
-     <y>47</y>
+     <x>691</x>
+     <y>503</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>628</x>
+     <y>366</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>txtNewColumnName</sender>
+   <signal>textEdited(QString)</signal>
+   <receiver>NewTableForm</receiver>
+   <slot>onColumnNameChange(QString)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>691</x>
+     <y>345</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>628</x>
+     <y>366</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>chkPrimary</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>NewTableForm</receiver>
+   <slot>onPrimaryChange(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>106</x>
+     <y>408</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>628</x>
+     <y>366</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnHelp</sender>
+   <signal>clicked()</signal>
+   <receiver>NewTableForm</receiver>
+   <slot>onHelp()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>1187</x>
+     <y>691</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>628</x>
+     <y>366</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>cmbNewColumnType</sender>
+   <signal>currentIndexChanged(QString)</signal>
+   <receiver>NewTableForm</receiver>
+   <slot>onDatatypeComboChange(QString)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>691</x>
+     <y>378</y>
     </hint>
     <hint type="destinationlabel">
      <x>628</x>
@@ -2031,7 +1871,23 @@ p, li { white-space: pre-wrap; }
    <hints>
     <hint type="sourcelabel">
      <x>73</x>
-     <y>150</y>
+     <y>154</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>628</x>
+     <y>366</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>txtNewIndexName</sender>
+   <signal>textEdited(QString)</signal>
+   <receiver>NewTableForm</receiver>
+   <slot>onIndexNameChange(QString)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>594</x>
+     <y>391</y>
     </hint>
     <hint type="destinationlabel">
      <x>628</x>
@@ -2047,11 +1903,139 @@ p, li { white-space: pre-wrap; }
    <hints>
     <hint type="sourcelabel">
      <x>49</x>
-     <y>150</y>
+     <y>154</y>
     </hint>
     <hint type="destinationlabel">
      <x>628</x>
      <y>366</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnMoveIndexColumnUp</sender>
+   <signal>clicked()</signal>
+   <receiver>NewTableForm</receiver>
+   <slot>onMoveSelectedIndexColumnUp()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>481</x>
+     <y>532</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>243</x>
+     <y>386</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnMoveIndexColumnDown</sender>
+   <signal>clicked()</signal>
+   <receiver>NewTableForm</receiver>
+   <slot>onMoveSelectedIndexColumnDown()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>481</x>
+     <y>612</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>243</x>
+     <y>386</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>lstAvailableColumnsForIndex</sender>
+   <signal>itemDoubleClicked(QListWidgetItem*)</signal>
+   <receiver>NewTableForm</receiver>
+   <slot>onDoubleClickColumnForIndex(QListWidgetItem*)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>170</x>
+     <y>560</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>260</x>
+     <y>386</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnMoveColumnToRight</sender>
+   <signal>clicked()</signal>
+   <receiver>NewTableForm</receiver>
+   <slot>onMoveColumnToRight()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>282</x>
+     <y>612</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>243</x>
+     <y>386</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnMoveColumnToLeft</sender>
+   <signal>clicked()</signal>
+   <receiver>NewTableForm</receiver>
+   <slot>onMoveColumnToLeft()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>282</x>
+     <y>532</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>243</x>
+     <y>386</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>cmbIndexOrderType</sender>
+   <signal>activated(QString)</signal>
+   <receiver>NewTableForm</receiver>
+   <slot>onIndexOrderTypeChanged(QString)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>504</x>
+     <y>381</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>408</x>
+     <y>350</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnAddSpToColumnOfIndex</sender>
+   <signal>clicked()</signal>
+   <receiver>NewTableForm</receiver>
+   <slot>onAddSpToColumnOfIndex()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>423</x>
+     <y>381</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>408</x>
+     <y>350</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnRemoveSpFromColumnOfIndex</sender>
+   <signal>clicked()</signal>
+   <receiver>NewTableForm</receiver>
+   <slot>onRemoveSpsFromColumnOfIndex()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>452</x>
+     <y>381</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>408</x>
+     <y>350</y>
     </hint>
    </hints>
   </connection>
@@ -2114,5 +2098,14 @@ p, li { white-space: pre-wrap; }
   <slot>onChangeName(QString)</slot>
   <slot>onInject()</slot>
   <slot>onSaveSql()</slot>
+  <slot>onCodepageChange(QString)</slot>
+  <slot>onDescriptionChange()</slot>
+  <slot>onColumnNameChange(QString)</slot>
+  <slot>onDatatypeComboChange(QString)</slot>
+  <slot>onPrimaryChange(bool)</slot>
+  <slot>onIndexNameChange(QString)</slot>
+  <slot>onIndexOrderTypeChanged(QString)</slot>
+  <slot>onAddSpToColumnOfIndex()</slot>
+  <slot>onRemoveSpsFromColumnOfIndex()</slot>
  </slots>
 </ui>

@@ -1,40 +1,29 @@
 #include "Project.h"
-#include "AbstractDTSupplier.h"
+#include "db_AbstractDTSupplier.h"
 #include "MajorVersion.h"
-#include "DatabaseEngine.h"
+#include "db_DatabaseEngine.h"
 #include "IconFactory.h"
+#include "VersionGuiElements.h"
+#include "GuiElements.h"
 
-Project::Project(const QString& _name, QTreeWidget* _tree, QTreeWidget* _dtTree, bool oopIsEnabled):
-        m_tree(_tree), m_dtTree(_dtTree), m_name(_name), m_engine(0), m_majorVersions(), m_oopIsEnabled(oopIsEnabled)
-{
-    createTreeItem(m_tree, m_dtTree);
-}
-
-Project::Project(const QString &_name, bool oop) : m_tree(0), m_name(_name), m_engine(0), m_majorVersions(), m_oopIsEnabled(oop)
+Project::Project(const QString &_name, bool oop) : NamedItem(_name), m_engine(0), m_majorVersions(), m_oopIsEnabled(oop), m_workingVersionIndex(0)
 {
 }
 
-void Project::createTreeItem(QTreeWidget* _tree, QTreeWidget* _dtt)
+void Project::createTreeItem(GuiElements* gui)
 {
-    m_tree = _tree;
-    m_dtTree = _dtt;
-
     ContextMenuEnabledTreeWidgetItem* projectItem = new ContextMenuEnabledTreeWidgetItem((ContextMenuEnabledTreeWidgetItem*)0, QStringList(m_name)) ;
     projectItem->setIcon(0, IconFactory::getProjectOpenIcon());
-
-    QList<QTreeWidgetItem *> items;
-    items.append(projectItem);
-    m_tree->insertTopLevelItems(0, items);
-
+    gui->getProjectTree()->insertTopLevelItem(0, projectItem);
     setLocation(projectItem);
 }
 
-void Project::populateTreeItem()
+void Project::populateTreeItem(GuiElements* gui)
 {
     for(int i=0; i<m_majorVersions.size(); i++)
     {
-        m_majorVersions[i]->createTreeItems(m_tree, m_dtTree, getLocation());
-        m_majorVersions[i]->populateTreeItems();
+        m_majorVersions[i]->createTreeItems(gui, getLocation());
+        m_majorVersions[i]->getGui()->populateTreeItems();
     }
 }
 
@@ -43,9 +32,9 @@ void Project::setEngine(DatabaseEngine* eng)
     m_engine = eng;
 }
 
-void Project::createMajorVersion()
+void Project::createMajorVersion(int major, int minor)
 {
-    MajorVersion* mjw = new MajorVersion(m_tree, m_dtTree, getLocation(), 1, this);
+    MajorVersion* mjw = new MajorVersion(major, minor, this);
     m_majorVersions.append(mjw);
 }
 
@@ -63,7 +52,22 @@ Version* Project::getWorkingVersion() const
 {
     if(m_majorVersions.size() > 0)
     {
-        return m_majorVersions[0];
+        return m_majorVersions[m_workingVersionIndex];
+    }
+    return 0;
+}
+
+Version* Project::getVersionNamed(const QString &a) const
+{
+    if(m_majorVersions.size() > 0)
+    {
+        for(int i=0; i<m_majorVersions.size(); i++)
+        {
+            if(m_majorVersions.at(i)->getVersionText() == a)
+            {
+                return m_majorVersions[i];
+            }
+        }
     }
 
     return 0;
@@ -75,7 +79,7 @@ void Project::serialize(QDomDocument& doc, QDomElement& parent) const
 
     projectElement.setAttribute("Name", m_name);
     projectElement.setAttribute("OOP", m_oopIsEnabled);
-    projectElement.setAttribute("DB", m_engine->getDatabase());
+    projectElement.setAttribute("DB", m_engine->getDatabaseEngineName());
 
     {
     QDomElement descElement = doc.createElement("Description");  // description
@@ -96,4 +100,11 @@ void Project::serialize(QDomDocument& doc, QDomElement& parent) const
 
     parent.appendChild(projectElement);
 
+}
+
+void Project::releaseMajorVersion()
+{
+    Version* cv = getWorkingVersion();
+    createMajorVersion(cv->getMajor() + 1, 0);
+    m_workingVersionIndex ++;
 }
