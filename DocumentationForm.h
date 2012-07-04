@@ -7,6 +7,9 @@ namespace Ui {
 class DocumentationForm;
 }
 
+class DocumentationGenerator;
+class QHtmlCSSStyleSet;
+
 class DocumentationForm : public QWidget
 {
     Q_OBJECT
@@ -20,6 +23,8 @@ public:
     {
         m_uidShown = uid;
     }
+    void showDocumentationforUid(const QString &guid, QHtmlCSSStyleSet *css = 0);
+    void initiateStyleChange(QString);
 
 public slots:
     void styleChanged(QString);
@@ -29,6 +34,11 @@ public slots:
 private:
     Ui::DocumentationForm *ui;
     QString m_uidShown;
+
+public:
+    static QString s_lastStyle;
+
+    static QStringList s_openedStyles;
 };
 
 #endif // DOCUMENTATIONFORM_H

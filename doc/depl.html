@@ -1,28 +1,45 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML>
-<HEAD>
-	<STYLE TYPE="text/css">
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+  <head>
+    <meta content="text/html;charset=ISO-8859-1" http-equiv="Content-Type">
+    <style type="text/css">
 	<!--
 		P { border: 1px solid #000000; padding: 0.02in }
 	-->
-	</STYLE>
-</HEAD>
-<BODY LANG="en-US" BGCOLOR="white" DIR="LTR">
-<P ALIGN=CENTER STYLE="margin-bottom: 0in; background: white; border: none; padding: 0in; font-style: normal; line-height: 115%; text-decoration: none">
-<FONT COLOR="#000000" FACE="Arial" SIZE=3><B>Deploying the solution</B></FONT></P>
-<P STYLE="margin-bottom: 0in; background: white; font-style: normal; font-weight: normal; line-height: 115%; text-decoration: none">
-<FONT COLOR="#000000" FACE="Arial" SIZE=2 STYLE="font-size: 11pt">Deploying the solution in terms of DDM means to take the generated SQL scripts of all the components of the solution, connect to a specific database and run the SQL script. This will create the tables, views and foreign keys. Deployment can be done by:<br>
-<br>
-- Clicking the &quot;Deploy solution&quot; button <img src="deploy.png" width="16" height="16"> in the main toolbar. This will open a dialog box with all the connection that are defined and you can select one or more connections. DDM will deploy the solutoin to all the selected databases.<br>
-- Long click the &quot;Deploy solution&quot; button and in the popup menu select the database you want this solution to be deployed.<br>
-<br>
-When starting the deployment DDM will update the status bar of the application, and when done with the deployment DDM will give a feedback about the status of the deployment. In case of deployment errors a descriptive message will be presented to the user.<br>
-<br>
-<strong>Rollback on errors<br>
-<br>
-</strong>This option does not work with all the database configuration. In order to have the desired functionality in this release of the application (0.1i)you will need to delete the created objects manually, or recreate the database.
-</FONT><br>
-</P>
-
-</BODY>
-</HTML>
+	</style>
+  </head>
+  <body dir="LTR" bgcolor="white" lang="en-US">
+    <p style="margin-bottom: 0in; background: white; border: none; padding: 0in; font-style: normal; line-height: 115%; text-decoration: none"
+      align="CENTER">
+      <font color="#000000" face="Arial" size="3"><b>Deploying the solution</b></font></p>
+    <p style="margin-bottom: 0in; background: white; font-style: normal; font-weight: normal; line-height: 115%; text-decoration: none">
+      <font style="font-size: 11pt" color="#000000" face="Arial" size="2">Deploying
+        the solution in terms of DDM means to take the generated SQL scripts of
+        all the components of the solution, connect to a specific database and
+        run the SQL script. This will create the tables, views and foreign keys.
+        Deployment can be done by:<br>
+        <br>
+        - Clicking the "Deploy solution" button <img src="deploy.png" height="16"
+          width="16"> in the main toolbar. This will open a dialog box with all
+        the connection that are defined and you can select one or more
+        connections. DDM will deploy the solution to all the selected databases.<br>
+        - Long click the "Deploy solution" button and in the popup menu select
+        the database you want this solution to be deployed.<br>
+        <br>
+        When starting the deployment DDM will update the status bar of the
+        application, and when done with the deployment DDM will give a feedback
+        about the status of the deployment. In case of deployment errors a
+        descriptive message will be presented to the user.<br>
+        <br>
+        <strong><em>Inject Metadata</em><br>
+          <br>
+        </strong>By Selecting this option you instruct DDM to inject the
+        metadata of the version (ie. the serialized XML into the database where
+        the solution was deployed. This will allow other users to bind to the
+        specific deployment (this option is given in the <a href="newp.html">New
+          Solution</a> screen) and continue the work. Beware! This is not
+        synchronized yet and multiple users can connect to the same database
+        thus destroying each others work.&nbsp;</font> <br>
+    </p>
+  </body>
+</html>

@@ -165,7 +165,7 @@ void VersionGuiElements::populateTreeItems()
 
         // the documentation item
         ContextMenuEnabledTreeWidgetItem* docItem = new ContextMenuEnabledTreeWidgetItem(getDocumentationItem(), QStringList(tab->getName()));
-        docItem->setIcon(0, IconFactory::getHelpIcon());
+        docItem->setIcon(0, IconFactory::getTableIcon());
         docItem->setData(0, Qt::UserRole, var);
         m_tree->addTopLevelItem(docItem);
     }
@@ -400,6 +400,11 @@ ContextMenuEnabledTreeWidgetItem* VersionGuiElements::createProcedureTreeEntry(P
     sqlItm->setData(0, Qt::UserRole, var);
     proc->setSqlItem(sqlItm);
 
+    ContextMenuEnabledTreeWidgetItem* docItem = new ContextMenuEnabledTreeWidgetItem(getDocumentationItem(), QStringList(proc->getName()));
+    docItem->setIcon(0, IconFactory::getProcedureIcon());
+    docItem->setData(0, Qt::UserRole, var);
+    m_tree->addTopLevelItem(docItem);
+
     return newProcItem;
 }
 
@@ -417,6 +422,11 @@ ContextMenuEnabledTreeWidgetItem* VersionGuiElements::createFunctionTreeEntry(Fu
     sqlItm->setIcon(0, IconFactory::getFunctionTreeIcon());
     sqlItm->setData(0, Qt::UserRole, var);
     proc->setSqlItem(sqlItm);
+
+    ContextMenuEnabledTreeWidgetItem* docItem = new ContextMenuEnabledTreeWidgetItem(getDocumentationItem(), QStringList(proc->getName()));
+    docItem->setIcon(0, IconFactory::getFunctionTreeIcon());
+    docItem->setData(0, Qt::UserRole, var);
+    m_tree->addTopLevelItem(docItem);
 
     return newFuncItem;
 }
