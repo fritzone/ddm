@@ -16,11 +16,13 @@ class ProjectDetailsForm : public QWidget
 public:
     ProjectDetailsForm(QWidget *parent = 0);
     ~ProjectDetailsForm();
-    void setProject(Project* prj);
+    void setProject(Project* prj, const QString&);
 
 public slots:
     void onBtnUpdate();
     void onOopCheckChange(int);
+    void onNameChanged(QString);
+    void decriptionChanged();
 
 protected:
     void changeEvent(QEvent *e);

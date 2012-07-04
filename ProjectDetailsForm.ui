@@ -73,6 +73,20 @@
         </item>
        </widget>
       </item>
+      <item row="3" column="0">
+       <widget class="QLabel" name="label_3">
+        <property name="text">
+         <string>Location on disk</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1">
+       <widget class="QLineEdit" name="txtLocationOnDisk">
+        <property name="echoMode">
+         <enum>QLineEdit::Normal</enum>
+        </property>
+       </widget>
+      </item>
      </layout>
     </widget>
    </item>
@@ -138,9 +152,43 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>txtProjectName</sender>
+   <signal>textEdited(QString)</signal>
+   <receiver>ProjectDetailsForm</receiver>
+   <slot>onNameChanged(QString)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>258</x>
+     <y>47</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>199</x>
+     <y>149</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>textEdit</sender>
+   <signal>textChanged()</signal>
+   <receiver>ProjectDetailsForm</receiver>
+   <slot>decriptionChanged()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>243</x>
+     <y>126</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>199</x>
+     <y>149</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>onBtnUpdate()</slot>
   <slot>onOopCheckChange(int)</slot>
+  <slot>onNameChanged(QString)</slot>
+  <slot>decriptionChanged()</slot>
  </slots>
 </ui>

@@ -28,7 +28,7 @@ public:
 
     bool defaultLengths() const
     {
-        return useDefaultLengths;
+        return m_useDefaultLengths;
     }
 
     bool allowForeignKeyPropagation() const
@@ -61,16 +61,29 @@ public:
         return m_sqlOpts;
     }
 
+    bool continuousValidation() const
+    {
+        return m_continuousValidation;
+    }
+
+    void setContinuousValidation(bool a)
+    {
+        m_continuousValidation = a;
+    }
+
 private:
 
     // whether the "New Data Type" window should populate the default lengths
-    bool useDefaultLengths;
+    bool m_useDefaultLengths;
 
     // if the application allows that the foreign keys are being propagated to the "child" tables
     bool m_allowForeignKeyPropagation;
 
     // if we want to draw the specific table types (persistent, temporary) with double/dashed line
     bool m_drawTableTypes;
+
+    // if we want to perform a validation when the user changes something in a column
+    bool m_continuousValidation;
 
     QHash<QString,QString> m_sqlOpts;
 };

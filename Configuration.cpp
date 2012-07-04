@@ -1,16 +1,10 @@
 #include "Configuration.h"
+#include "strings.h"
 
-#include <QDomDocument>
-#include <QFile>
+#include <QSettings>
 
-Configuration::Configuration() : useDefaultLengths(true), m_allowForeignKeyPropagation(false), m_drawTableTypes(false), m_sqlOpts()
+Configuration::Configuration() : m_useDefaultLengths(true), m_allowForeignKeyPropagation(false), m_drawTableTypes(false), m_continuousValidation(false), m_sqlOpts()
 {
-    m_sqlOpts["Case"] = "Lower";
-    m_sqlOpts["Backticks"] = "No";
-    m_sqlOpts["GenerateComments"] = "Yes";
-    m_sqlOpts["PKSposition"] = "ColumnDeclaration";
-    m_sqlOpts["FKSposition"] = "InTable";
-
     readFromFile();
 }
 
@@ -22,69 +16,37 @@ Configuration::~Configuration()
 
 void Configuration::writeToFile()
 {
-    QDomDocument doc("DDM-CONFIG");
-    QDomElement root = doc.createElement("Configuration");
+    QSettings s(strUnauthorizedFrog, strDDM);
 
-    QDomElement diagrams = doc.createElement("Diagrams");
-    diagrams.setAttribute("DrawTableTypes", m_drawTableTypes);
-    root.appendChild(diagrams);
+    s.setValue(strDrawTableTypes, m_drawTableTypes);
+    s.setValue(strAllowFkPropagation, m_allowForeignKeyPropagation);
+    s.setValue(strUseDefaultLengths, m_useDefaultLengths);
+    s.setValue(strContinuousValidation, m_continuousValidation);
+    s.setValue(strCase, m_sqlOpts[strCase]);
+    s.setValue(strBackticks, m_sqlOpts[strBackticks]);
+    s.setValue(strGenerateComments, m_sqlOpts[strGenerateComments]);
+    s.setValue(strPKSposition, m_sqlOpts[strPKSposition]);
+    s.setValue(strFKSposition, m_sqlOpts[strFKSposition]);
+    s.setValue(strNewLineBetweenSelectExpressionsInSqlGeneration, m_sqlOpts[strNewLineBetweenSelectExpressionsInSqlGeneration]);
+    s.setValue(strSqlDelimiterText, m_sqlOpts[strSqlDelimiterText]);
 
-    QDomElement behavior = doc.createElement("Behavior");
-    behavior.setAttribute("AllowFkPropagation", m_allowForeignKeyPropagation);
-    behavior.setAttribute("UseDefaultLengths", useDefaultLengths);
-    root.appendChild(behavior);
-
-    QDomElement sqlGeneration = doc.createElement("SqlGeneration");
-    sqlGeneration.setAttribute("Case", m_sqlOpts["Case"]);
-    sqlGeneration.setAttribute("Backticks", m_sqlOpts["Backticks"]);
-    sqlGeneration.setAttribute("GenerateComments", m_sqlOpts["GenerateComments"]);
-    sqlGeneration.setAttribute("PKSposition", m_sqlOpts["PKSposition"]);
-    sqlGeneration.setAttribute("FKSposition", m_sqlOpts["FKSposition"]);
-    root.appendChild(sqlGeneration);
-
-    doc.appendChild(root);
-
-    QString xml = doc.toString();
-    QFile f1("ddm.cfx");
-    if (!f1.open(QIODevice::WriteOnly | QIODevice::Text))
-    {
-        return;
-    }
-    f1.write(xml.toAscii());
-    f1.close();
+    s.sync();
 }
 
 void Configuration::readFromFile()
 {
-    QDomDocument doc ("DDM-CONFIG");
-    QFile file ("ddm.cfx");
-    if (!file.open(QIODevice::ReadOnly)) return;
-    if (!doc.setContent(&file))
-    {
-        file.close();
-        return;
-    }
-    file.close();
-    QDomElement docElem = doc.documentElement();
-    for(int i=0; i<docElem.childNodes().size(); i++)
-    {
-        if(docElem.childNodes().at(i).nodeName() == "Diagrams")
-        {
-            m_drawTableTypes = docElem.childNodes().at(i).toElement().attribute("DrawTableTypes") == "1";
-        }
-        if(docElem.childNodes().at(i).nodeName() == "Behavior")
-        {
-            useDefaultLengths = docElem.childNodes().at(i).toElement().attribute("UseDefaultLengths") == "1";
-            m_allowForeignKeyPropagation = docElem.childNodes().at(i).toElement().attribute("AllowFkPropagation") == "1";
-        }
-        if(docElem.childNodes().at(i).nodeName() == "SqlGeneration")
-        {
-            for(int j=0; j<docElem.childNodes().at(i).attributes().size(); j++)
-            {
-                m_sqlOpts[docElem.childNodes().at(i).attributes().item(j).nodeName()] =
-                        docElem.childNodes().at(i).toElement().attribute(docElem.childNodes().at(i).attributes().item(j).nodeName());
-            }
-        }
-    }
+    QSettings s(strUnauthorizedFrog, strDDM);
+
+    m_drawTableTypes = s.value(strDrawTableTypes, QVariant(false)).toBool();
+    m_allowForeignKeyPropagation = s.value(strAllowFkPropagation, QVariant(false)).toBool();
+    m_useDefaultLengths = s.value(strUseDefaultLengths, QVariant(true)).toBool();
+    m_continuousValidation = s.value(strContinuousValidation, QVariant(false)).toBool();
+    m_sqlOpts[strCase] = s.value(strCase, QVariant(strLower)).toString();
+    m_sqlOpts[strBackticks] = s.value(strBackticks, QVariant(strNo)).toString();
+    m_sqlOpts[strGenerateComments] = s.value(strGenerateComments, QVariant(strYes)).toString();
+    m_sqlOpts[strPKSposition] = s.value(strPKSposition, QVariant(strColumnDeclaration)).toString();
+    m_sqlOpts[strFKSposition] = s.value(strFKSposition, QVariant(strInTable)).toString();
+    m_sqlOpts[strNewLineBetweenSelectExpressionsInSqlGeneration] = s.value(strNewLineBetweenSelectExpressionsInSqlGeneration, QVariant(strNo)).toString();
+    m_sqlOpts[strSqlDelimiterText] = s.value(strSqlDelimiterText, QVariant(strSqlDelimiter)).toString();
 
 }

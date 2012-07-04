@@ -1,6 +1,6 @@
 #include "Solution.h"
 
-Solution::Solution(const QString & nm) : m_name(nm), savedToFile("")
+Solution::Solution(const QString & nm) : NamedItem(nm), savedToFile("")
 {
 }
 

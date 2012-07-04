@@ -8,7 +8,6 @@ class ERGraphicsView;
 class Version;
 class TableListWidget;
 class Diagram;
-class MainWindow;
 class DiagramTextItem;
 
 namespace Ui
@@ -31,7 +30,6 @@ public:
 public slots:
 
     void saveToImageFile();
-    void onButtonBoxClicked(QAbstractButton*);
     void removeFromDiagram();
     void removeNoteFromDiagram();
     void onAddNote();
@@ -40,6 +38,8 @@ public slots:
     void printDiagram();
     void onHelp();
     void onNameChange(QString);
+    void onZoomOut();
+    void onZoomIn();
 
 protected:
     void changeEvent(QEvent *e);
@@ -56,7 +56,6 @@ private:
     ERGraphicsView *graphicsView;
     TableListWidget *lstTables, *lstDiagramForms;
     Diagram* m_diagram;
-    MainWindow* m_mw;
     QString m_tabToRemove;
     int m_noteToRemove;
 };

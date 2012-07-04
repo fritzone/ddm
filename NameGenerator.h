@@ -3,21 +3,19 @@
 
 #include <QString>
 
-class Version;
+#include "Version.h"
+#include "NamedItem.h"
+#include "commons.h"
 
 class NameGenerator
 {
 public:
-    static QString getNextTableNameFromVersion(Version* v, QString prefix);
-    static QString generateUniqueTableInstanceName(Version* v, QString input);
-    static QString generateUniqueDiagramName(Version* v, QString input);
-    static QString generateUniqueDatatypeName(Version* v, QString input);
+
+    static QString getUniqueName(Version* v, itemGetter fun, const QString& prefix);
 
 private:
 
     static const long MAX_IT = 99999999;
-
-    NameGenerator();
 };
 
 #endif // NAMEGENERATOR_H
