@@ -6,6 +6,7 @@
 #include "SerializableElement.h"
 #include "core_ObjectWithUid.h"
 #include "ObjectWithSpInstances.h"
+#include "core_CloneableElement.h"
 
 #include <QVector>
 #include <QString>
@@ -13,7 +14,7 @@
 class Column;
 class Table;
 
-class Index : public TreeItem, public SerializableElement, public NamedItem, public ObjectWithUid, public ObjectWithSpInstances
+class Index : public TreeItem, public SerializableElement, public NamedItem, public ObjectWithUid, public ObjectWithSpInstances, public CloneableElement
 {
 
     struct ColumnAndOrder
@@ -52,6 +53,10 @@ public:
     SpInstance* getSpiOfColumnForSpecificRole(const Column* c, const QString& role, const QString& db) const;
 
     QString getOrderForColumn(const Column*) const;
+
+    CloneableElement* clone(Version *sourceVersion, Version *targetVersion);
+
+    void finalizeCloning(Table*, Index *source);
 
 private:
 

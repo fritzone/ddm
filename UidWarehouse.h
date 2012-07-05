@@ -6,6 +6,7 @@
 
 #include <QMap>
 
+class Version;
 
 /**
  * Class holding all the object in the system referenced by an Uid
@@ -17,12 +18,14 @@ class UidWarehouse
     {
         QUuid objectId;
         ObjectWithUid* obj;
+        Version* ver;
     };
 
 public:
 
     void addElement(ObjectWithUid* o);
     ObjectWithUid* getElement(const QString&);
+    Version* getVersionForUid(const QString& uid);
 
 public:
 

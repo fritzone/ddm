@@ -1,5 +1,6 @@
 #include "NamedObjectListingForm.h"
 #include "NamedItem.h"
+#include "Workspace.h"
 
 #include <QDebug>
 
@@ -38,5 +39,5 @@ void NamedObjectListingForm::changeEvent(QEvent *e)
 void NamedObjectListingForm::doubleClickTree(QTreeWidgetItem* item, int)
 {
     QString guid = item->data(0, Qt::UserRole).toString();
-    (MainWindow::instance()->*m_objectShower)(guid, true);
+    (MainWindow::instance()->*m_objectShower)(Workspace::getInstance()->workingVersion(), guid, true);
 }

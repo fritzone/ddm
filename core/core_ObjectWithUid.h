@@ -3,6 +3,8 @@
 
 #include <QUuid>
 
+class Version;
+
 /**
  * This class is the base class for all the objects that are having UIDs for versioning, parenting and other issues.
  */

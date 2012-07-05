@@ -6,9 +6,16 @@
 #include "VersionGuiElements.h"
 #include "GuiElements.h"
 
-Project::Project(const QString &_name, bool oop) : NamedItem(_name), m_engine(0), m_majorVersions(), m_oopIsEnabled(oop), m_workingVersionIndex(0)
+Project::Project(const QString &_name, bool oop) : NamedItem(_name),
+    m_engine(0), m_majorVersions(), m_oopIsEnabled(oop),
+    m_workingVersionIndex(0), m_gui(0)
 {
 }
+
+Project::Project() :  NamedItem(""),
+    m_engine(0), m_majorVersions(), m_oopIsEnabled(true),
+    m_workingVersionIndex(0), m_gui(0)
+{}
 
 void Project::createTreeItem(GuiElements* gui)
 {
@@ -16,6 +23,7 @@ void Project::createTreeItem(GuiElements* gui)
     projectItem->setIcon(0, IconFactory::getProjectOpenIcon());
     gui->getProjectTree()->insertTopLevelItem(0, projectItem);
     setLocation(projectItem);
+    m_gui = gui;
 }
 
 void Project::populateTreeItem(GuiElements* gui)
@@ -32,10 +40,11 @@ void Project::setEngine(DatabaseEngine* eng)
     m_engine = eng;
 }
 
-void Project::createMajorVersion(int major, int minor)
+MajorVersion* Project::createMajorVersion(int major, int minor)
 {
     MajorVersion* mjw = new MajorVersion(major, minor, this);
     m_majorVersions.append(mjw);
+    return mjw;
 }
 
 void Project::addMajorVersion(MajorVersion* mv)
@@ -104,7 +113,12 @@ void Project::serialize(QDomDocument& doc, QDomElement& parent) const
 
 void Project::releaseMajorVersion()
 {
+    qDebug() << " -------------------------------- ";
     Version* cv = getWorkingVersion();
-    createMajorVersion(cv->getMajor() + 1, 0);
+    MajorVersion* newVersion = createMajorVersion(cv->getMajor() + 1, 0);
     m_workingVersionIndex ++;
+    cv->cloneInto(newVersion);
+
+    newVersion->createTreeItems(m_gui, getLocation());
+    newVersion->getGui()->populateTreeItems();
 }

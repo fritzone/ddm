@@ -129,3 +129,27 @@ void ObjectWithSpInstances::clearSpInstances(const DatabaseEngine *eng)
         m_spInstances[eng->getDatabaseEngineName()].clear();
     }
 }
+
+void ObjectWithSpInstances::cloneSps(ObjectWithSpInstances *target)
+{
+    QList<QString> k = m_spInstances.keys();
+    for(int dbI = 0; dbI<k.size(); dbI++)
+    {
+        for(int i=0; i<m_spInstances[k.at(dbI)].size(); i++)
+        {
+            target->addSpInstance(k.at(dbI),dynamic_cast<SpInstance*>(m_spInstances[k.at(dbI)].at(i)->clone(0, 0)));
+        }
+    }
+}
+
+
+void ObjectWithSpInstances::addSpInstance(const QString& eng, SpInstance *spi)
+{
+    if(!m_spInstances.contains(eng))
+    {
+        QVector<SpInstance*> t;
+        m_spInstances[eng] = t;
+    }
+
+    m_spInstances[eng].append(spi);
+}

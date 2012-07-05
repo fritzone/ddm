@@ -147,21 +147,21 @@ void SqlForm::onGoToOriginator()
     if(m_sourceEntity)
     {
         Table* t = dynamic_cast<Table*>(m_sourceEntity);
-        if(t) MainWindow::instance()->showTableWithGuid(t->getObjectUid());
+        if(t) MainWindow::instance()->showTableWithGuid(Workspace::getInstance()->workingVersion(), t->getObjectUid());
 
         TableInstance* tinst = dynamic_cast<TableInstance*>(m_sourceEntity);
-        if(tinst) MainWindow::instance()->showTableInstanceWithGuid(tinst->getObjectUid());
+        if(tinst) MainWindow::instance()->showTableInstanceWithGuid(Workspace::getInstance()->workingVersion(), tinst->getObjectUid());
 
         Procedure* p = dynamic_cast<Procedure*>(m_sourceEntity);
-        if(p) MainWindow::instance()->showProcedureWithGuid(p->getObjectUid());
+        if(p) MainWindow::instance()->showProcedureWithGuid(Workspace::getInstance()->workingVersion(), p->getObjectUid());
 
         Function* f = dynamic_cast<Function*>(m_sourceEntity);
-        if(f) MainWindow::instance()->showFunctionWithGuid(f->getObjectUid());
+        if(f) MainWindow::instance()->showFunctionWithGuid(Workspace::getInstance()->workingVersion(), f->getObjectUid());
 
         Trigger* tr = dynamic_cast<Trigger*>(m_sourceEntity);
-        if(tr) MainWindow::instance()->showTriggerWithGuid(tr->getObjectUid());
+        if(tr) MainWindow::instance()->showTriggerWithGuid(Workspace::getInstance()->workingVersion(), tr->getObjectUid());
 
         View* v = dynamic_cast<View*>(m_sourceEntity);
-        if(v) MainWindow::instance()->showViewWithGuid(v->getObjectUid());
+        if(v) MainWindow::instance()->showViewWithGuid(Workspace::getInstance()->workingVersion(), v->getObjectUid());
     }
 }

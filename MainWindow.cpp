@@ -245,8 +245,9 @@ void MainWindow::onNewSolution()
                 {
                     qDebug() << "Cannot set data:" << lastErr;
                 }
-                MajorVersion* mv = DeserializationFactory::createMajorVersion(project, project->getEngine(), doc, doc.firstChildElement().firstChildElement());
+                MajorVersion* mv = new MajorVersion;
                 project->addMajorVersion(mv);
+                DeserializationFactory::createMajorVersion(mv, project, project->getEngine(), doc, doc.firstChildElement().firstChildElement());
             }
             else
             {
@@ -347,7 +348,7 @@ void MainWindow::onDTTreeClicked()
     }
 }
 
-void MainWindow::showNothing(const QString &, bool )
+void MainWindow::showNothing(Version *v, const QString &, bool focus )
 {
 
 }
@@ -362,7 +363,7 @@ NewTableForm* MainWindow::showExistingTable(Table *table)
     return frm;
 }
 
-void MainWindow::showTableWithGuid(const QString &guid, bool focus)
+void MainWindow::showTableWithGuid(Version *v, const QString &guid, bool focus)
 {
     Table* table =  dynamic_cast<Table*>(UidWarehouse::instance().getElement(guid));
     if(table == 0)  // shouldn't be ...
@@ -376,7 +377,7 @@ void MainWindow::showTableWithGuid(const QString &guid, bool focus)
     }
 }
 
-void MainWindow::showTableInstanceWithGuid(const QString &guid, bool focus)
+void MainWindow::showTableInstanceWithGuid(Version *v, const QString &guid, bool focus)
 {
     TableInstance* table =  dynamic_cast<TableInstance*>(UidWarehouse::instance().getElement(guid));
     if(table == 0)  // shouldn't be ...
@@ -393,9 +394,9 @@ void MainWindow::showTableInstanceWithGuid(const QString &guid, bool focus)
     if(focus) m_guiElements->getProjectTree()->setCurrentItem(table->getLocation());
 }
 
-void MainWindow::showDataType(const QString &name, bool focus)
+void MainWindow::showDataType(Version *v, const QString &name, bool focus)
 {
-    UserDataType* dt = m_workspace->workingVersion()->getDataType(name);
+    UserDataType* dt = v->getDataType(name);
     if(dt == 0)  // shouldn't be ...
     {
         return;
@@ -409,50 +410,50 @@ void MainWindow::showDataType(const QString &name, bool focus)
     if(focus) m_guiElements->getDataTypesTree()->setCurrentItem(dt->getLocation());
 }
 
-void MainWindow::showDiagramWithGuid(const QString &guid, bool /*focus*/)
+void MainWindow::showDiagramWithGuid(Version *v, const QString & guid, bool focus /*focus*/)
 {
     Diagram* dgram = dynamic_cast<Diagram*>(UidWarehouse::instance().getElement(guid));
     if(dgram == 0)
     {
         return;
     }
-    DiagramForm* df = new DiagramForm(m_workspace->workingVersion(), dgram, this);
+    DiagramForm* df = new DiagramForm(v, dgram, this);
     dgram->setForm(df);
     setCentralWidget(dgram->getDiagramForm());
     df->paintDiagram();
 }
 
-void MainWindow::showProcedureWithGuid(const QString &guid, bool /*focus*/)
+void MainWindow::showProcedureWithGuid(Version *v, const QString & guid, bool focus /*focus*/)
 {
     Procedure* p = dynamic_cast<Procedure*>(UidWarehouse::instance().getElement(guid));
     if(p)
     {
-        ProcedureForm* pf = m_workspace->workingVersion()->getGui()->getProcedureForm(MODE_PROCEDURE);
+        ProcedureForm* pf = v->getGui()->getProcedureForm(MODE_PROCEDURE);
         pf->setProcedure(p);
         setCentralWidget(pf);
         pf->showSql();
     }
 }
 
-void MainWindow::showFunctionWithGuid(const QString &guid, bool /*focus*/)
+void MainWindow::showFunctionWithGuid(Version *v, const QString & guid, bool focus /*focus*/)
 {
     Function* p = dynamic_cast<Function*>(UidWarehouse::instance().getElement(guid));
     if(p)
     {
-        ProcedureForm* pf = m_workspace->workingVersion()->getGui()->getProcedureForm(MODE_FUNCTION);
+        ProcedureForm* pf = v->getGui()->getProcedureForm(MODE_FUNCTION);
         pf->setProcedure(p);
         setCentralWidget(pf);
         pf->showSql();
     }
 }
 
-void MainWindow::showTriggerWithGuid(const QString &guid, bool /*focus*/)
+void MainWindow::showTriggerWithGuid(Version *v, const QString & guid, bool focus /*focus*/)
 {
     Trigger* p = dynamic_cast<Trigger*>(UidWarehouse::instance().getElement(guid));
     if(p)
     {
-        TriggerForm* pf = m_workspace->workingVersion()->getGui()->getTriggerForm();
-        const QVector<Table*>& allTables = Workspace::getInstance()->workingVersion()->getTables();
+        TriggerForm* pf = v->getGui()->getTriggerForm();
+        const QVector<Table*>& allTables = v->getTables();
         pf->feedInTables(allTables);
         pf->feedInTriggerEvents(Workspace::getInstance()->currentProjectsEngine()->getTriggerEvents());
         pf->feedInTriggerTimes(Workspace::getInstance()->currentProjectsEngine()->getTriggerTimings());
@@ -462,7 +463,7 @@ void MainWindow::showTriggerWithGuid(const QString &guid, bool /*focus*/)
     }
 }
 
-void MainWindow::showViewWithGuid(const QString& guid, bool /*focus*/)
+void MainWindow::showViewWithGuid(Version *, const QString & guid, bool focus /*focus*/)
 {
     View* v = dynamic_cast<View*>(UidWarehouse::instance().getElement(guid));
     if(v)
@@ -487,27 +488,33 @@ void MainWindow::showViewWithGuid(const QString& guid, bool /*focus*/)
     }
 }
 
-void MainWindow::showObjectwithGuid(QTreeWidgetItem* current, showSomething s, bool f)
+void MainWindow::showObjectwithGuid(Version *v, QTreeWidgetItem* current, showSomething s, bool f)
 {
     QVariant qv = current->data(0, Qt::UserRole);
     QString uid = qv.toString();
-    (this->*s)(uid,f);
+    (this->*s)(v, uid,f);
 }
 
 void MainWindow::currentProjectTreeItemChanged(QTreeWidgetItem * current, QTreeWidgetItem*)
 {
     if(current)
     {
-        if(current == m_workspace->workingVersion()->getGui()->getTablesItem())
+        QVariant qv = current->data(0, Qt::UserRole);
+        QString uid = qv.toString();
+
+        Version* foundVersion = UidWarehouse::instance().getVersionForUid(uid);
+        if(!foundVersion) return;
+
+        if(current == foundVersion->getGui()->getTablesItem())
         {// we have clicked on the Tables item (i.e. the list of tables)
-            showNamedObjectList(&MainWindow::showTableWithGuid, m_workspace->workingVersion()->getTables(),
+            showNamedObjectList(&MainWindow::showTableWithGuid, foundVersion->getTables(),
                                 Workspace::getInstance()->currentProjectIsOop()?IconFactory::getTabinstIcon():IconFactory::getTableIcon(),
                                 Workspace::getInstance()->currentProjectIsOop()?"Table Templates":"Tables");
         }
         else
-        if(current == m_workspace->workingVersion()->getGui()->getTableInstancesItem())
+        if(current == foundVersion->getGui()->getTableInstancesItem())
         {// we have clicked on the Table instances item (i.e. the list of table instances)
-            showNamedObjectList(&MainWindow::showTableInstanceWithGuid, m_workspace->workingVersion()->getTableInstances(), IconFactory::getTabinstIcon(), "Tables");
+            showNamedObjectList(&MainWindow::showTableInstanceWithGuid, foundVersion->getTableInstances(), IconFactory::getTabinstIcon(), "Tables");
         }
         else
         if(current == m_workspace->currentProject()->getLocation())
@@ -515,40 +522,40 @@ void MainWindow::currentProjectTreeItemChanged(QTreeWidgetItem * current, QTreeW
             showProjectDetails();
         }
         else
-        if(current == m_workspace->workingVersion()->getGui()->getFinalSqlItem())
+        if(current == foundVersion->getGui()->getFinalSqlItem())
         {// user clicked on the final SQL item
-            SqlForm* frm = m_workspace->workingVersion()->getGui()->getSqlForm();
+            SqlForm* frm = foundVersion->getGui()->getSqlForm();
             frm->setSqlSource(0);
             frm->presentSql(m_workspace->currentProject());
             setCentralWidget(frm);
         }
         else
-        if(current == m_workspace->workingVersion()->getGui()->getDiagramsItem())
+        if(current == foundVersion->getGui()->getDiagramsItem())
         {// we have clicked on the Diagrams item (i.e. the list of diagrams)
-            showNamedObjectList(&MainWindow::showDiagramWithGuid, m_workspace->workingVersion()->getDiagrams(), IconFactory::getDiagramIcon(), "Diagrams");
+            showNamedObjectList(&MainWindow::showDiagramWithGuid, foundVersion->getDiagrams(), IconFactory::getDiagramIcon(), "Diagrams");
         }
         else
-        if(current == m_workspace->workingVersion()->getGui()->getViewsItem())
+        if(current == foundVersion->getGui()->getViewsItem())
         {// we have clicked on the Views item (i.e. the list of views)
-            showNamedObjectList(&MainWindow::showViewWithGuid, m_workspace->workingVersion()->getViews(), IconFactory::getViewIcon(), "Views");
+            showNamedObjectList(&MainWindow::showViewWithGuid, foundVersion->getViews(), IconFactory::getViewIcon(), "Views");
         }
         else
-        if(current == m_workspace->workingVersion()->getGui()->getProceduresItem())
+        if(current == foundVersion->getGui()->getProceduresItem())
         {// we have clicked on the Procedures item (i.e. the list of procedures)
-            showNamedObjectList(&MainWindow::showProcedureWithGuid, m_workspace->workingVersion()->getProcedures(), IconFactory::getProcedureIcon(), "Procedures");
+            showNamedObjectList(&MainWindow::showProcedureWithGuid, foundVersion->getProcedures(), IconFactory::getProcedureIcon(), "Procedures");
         }
         else
-        if(current == m_workspace->workingVersion()->getGui()->getFunctionsItem())
+        if(current == foundVersion->getGui()->getFunctionsItem())
         {// we have clicked on the Procedures item (i.e. the list of procedures)
-            showNamedObjectList(&MainWindow::showFunctionWithGuid, m_workspace->workingVersion()->getFunctions(), IconFactory::getFunctionTreeIcon(), "Functions");
+            showNamedObjectList(&MainWindow::showFunctionWithGuid, foundVersion->getFunctions(), IconFactory::getFunctionTreeIcon(), "Functions");
         }
         else
-        if(current == m_workspace->workingVersion()->getGui()->getTriggersItem())
+        if(current == foundVersion->getGui()->getTriggersItem())
         {// we have clicked on the Triggers item (i.e. the list of triggers)
-            showNamedObjectList(&MainWindow::showTriggerWithGuid, m_workspace->workingVersion()->getTriggers(), IconFactory::getTriggerIcon(), "Triggers");
+            showNamedObjectList(&MainWindow::showTriggerWithGuid, foundVersion->getTriggers(), IconFactory::getTriggerIcon(), "Triggers");
         }
         else
-        if((current == m_workspace->workingVersion()->getGui()->getDocumentationItem()))
+        if((current == foundVersion->getGui()->getDocumentationItem()))
         {
             DocumentationForm* docF = new DocumentationForm(this);
             DocumentationGenerator gen(m_workspace->currentSolution());
@@ -558,55 +565,55 @@ void MainWindow::currentProjectTreeItemChanged(QTreeWidgetItem * current, QTreeW
         }
         else
         {
-            if(current->parent() && current->parent() == m_workspace->workingVersion()->getGui()->getTablesItem())
+            if(current->parent() && current->parent() == foundVersion->getGui()->getTablesItem())
             {
                 // the user clicked on a table, the name of the table is a tag
-                showObjectwithGuid(current, (showSomething)&MainWindow::showTableWithGuid, false);
+                showObjectwithGuid(foundVersion, current, (showSomething)&MainWindow::showTableWithGuid, false);
             }
             else
-            if(current->parent() && current->parent() == m_workspace->workingVersion()->getGui()->getDiagramsItem())
+            if(current->parent() && current->parent() == foundVersion->getGui()->getDiagramsItem())
             {
                 // the user clicked on a diagram
-                showObjectwithGuid(current, (showSomething)&MainWindow::showDiagramWithGuid, false);
+                showObjectwithGuid(foundVersion, current, (showSomething)&MainWindow::showDiagramWithGuid, false);
             }
             else
-            if(current->parent() && current->parent() == m_workspace->workingVersion()->getGui()->getTableInstancesItem())
+            if(current->parent() && current->parent() == foundVersion->getGui()->getTableInstancesItem())
             {
                 // user clicked on a table instance
-                showObjectwithGuid(current, (showSomething)&MainWindow::showTableInstanceWithGuid, false);
+                showObjectwithGuid(foundVersion, current, (showSomething)&MainWindow::showTableInstanceWithGuid, false);
             }
             else
-            if(current->parent() && current->parent() == m_workspace->workingVersion()->getGui()->getViewsItem())
+            if(current->parent() && current->parent() == foundVersion->getGui()->getViewsItem())
             {
                 // user clicked on a view
-                showObjectwithGuid(current, (showSomething)&MainWindow::showViewWithGuid, false);
+                showObjectwithGuid(foundVersion, current, (showSomething)&MainWindow::showViewWithGuid, false);
             }
             else
-            if(current->parent() && current->parent() == m_workspace->workingVersion()->getGui()->getProceduresItem())
+            if(current->parent() && current->parent() == foundVersion->getGui()->getProceduresItem())
             {
                 // user clicked on a procedure
-                showObjectwithGuid(current, (showSomething)&MainWindow::showProcedureWithGuid, false);
+                showObjectwithGuid(foundVersion, current, (showSomething)&MainWindow::showProcedureWithGuid, false);
             }
             else
-            if(current->parent() && current->parent() == m_workspace->workingVersion()->getGui()->getFunctionsItem())
+            if(current->parent() && current->parent() == foundVersion->getGui()->getFunctionsItem())
             {
                 // user clicked on a function
-                showObjectwithGuid(current, (showSomething)&MainWindow::showFunctionWithGuid, false);
+                showObjectwithGuid(foundVersion, current, (showSomething)&MainWindow::showFunctionWithGuid, false);
             }
             else
-            if(current->parent() && current->parent() == m_workspace->workingVersion()->getGui()->getTriggersItem())
+            if(current->parent() && current->parent() == foundVersion->getGui()->getTriggersItem())
             {
                 // user clicked on a procedure
-                showObjectwithGuid(current, (showSomething)&MainWindow::showTriggerWithGuid, false);
+                showObjectwithGuid(foundVersion, current, (showSomething)&MainWindow::showTriggerWithGuid, false);
             }
             else
-            if(current->parent() && current->parent() == m_workspace->workingVersion()->getGui()->getFinalSqlItem())
+            if(current->parent() && current->parent() == foundVersion->getGui()->getFinalSqlItem())
             {
                 // user clicked on a SQL item
                 SqlForm* frm = new SqlForm(m_workspace->currentProjectsEngine(), this);
                 QVariant qv = current->data(0, Qt::UserRole);
                 QString name = qv.toString();
-                SqlSourceEntity* ent = Workspace::getInstance()->currentProject()->getWorkingVersion()->getSqlSourceEntityWithGuid(name);
+                SqlSourceEntity* ent = foundVersion->getSqlSourceEntityWithGuid(name);
                 if(ent == 0)
                 {   // hm.. this shouldn't be
                     return;
@@ -616,7 +623,7 @@ void MainWindow::currentProjectTreeItemChanged(QTreeWidgetItem * current, QTreeW
                 setCentralWidget(frm);
             }
             else
-            if(current->parent() && current->parent() == m_workspace->workingVersion()->getGui()->getDocumentationItem())
+            if(current->parent() && current->parent() == foundVersion->getGui()->getDocumentationItem())
             {
                 DocumentationForm* docF = new DocumentationForm(this);
                 QVariant qv = current->data(0, Qt::UserRole);
@@ -628,7 +635,7 @@ void MainWindow::currentProjectTreeItemChanged(QTreeWidgetItem * current, QTreeW
             }
             else    // user possibly clicked on a table which had a parent a table ...
             {
-                showObjectwithGuid(current, (showSomething)&MainWindow::showTableWithGuid, false);
+                showObjectwithGuid(foundVersion, current, (showSomething)&MainWindow::showTableWithGuid, false);
             }
         }
     }
@@ -1075,7 +1082,7 @@ void MainWindow::onInstantiateTableFromPopup()
 
     m_workspace->workingVersion()->getGui()->updateForms();
     TableInstance* tinst = instantiateTable(table->getName(), QStringList());
-    showTableInstanceWithGuid(tinst->getObjectUid());
+    showTableInstanceWithGuid(m_workspace->workingVersion(), tinst->getObjectUid());
 }
 
 void MainWindow::onSpecializeTableFromPopup()
@@ -1686,7 +1693,7 @@ void MainWindow::onInjectBrowsedTable()
             t->setName(NameGenerator::getUniqueName(Workspace::getInstance()->currentProject()->getWorkingVersion(), (itemGetter)&Version::getTable, tab));
             Workspace::getInstance()->currentProject()->getWorkingVersion()->addTable(t);
             m_workspace->workingVersion()->getGui()->createTableTreeEntry(t, m_workspace->workingVersion()->getGui()->getTablesItem());
-            showTableWithGuid(t->getObjectUid());
+            showTableWithGuid(m_workspace->workingVersion(), t->getObjectUid());
             QVector<TableInstance*> r = t->getTableInstances();
             for(int i=0; i<r.size(); i++)
             {

@@ -282,6 +282,11 @@ public:
         m_tempTabName = s;
     }
 
+    QString getParentUid() const
+    {
+        return m_parentUid;
+    }
+
 private:
 
     // describes the table

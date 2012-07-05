@@ -1,6 +1,8 @@
 #include "DataTypesListForm.h"
 #include "core_UserDataType.h"
 #include "ui_DataTypesListForm.h"
+#include "Workspace.h"
+#include "Version.h"
 #include "MainWindow.h"
 
 DataTypesListForm::DataTypesListForm(QWidget *parent) :
@@ -53,5 +55,5 @@ void DataTypesListForm::feedInDataTypes(const QVector<UserDataType*>& dataTypes)
 void DataTypesListForm::doubleClickTree(QTreeWidgetItem* item,int)
 {
     QString dtName = item->text(0);
-    MainWindow::instance()->showDataType(dtName, true);
+    MainWindow::instance()->showDataType(Workspace::getInstance()->workingVersion(), dtName, true);
 }

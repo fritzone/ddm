@@ -570,9 +570,25 @@ CloneableElement* Table::clone(Version *sourceVersion, Version *targetVersion)
 {
     Table* result = new Table(targetVersion, QUuid::createUuid().toString(), 0);
     result->setDescription(m_description);
+    result->m_startupValues = m_startupValues;  // this is plainly copyable
+
+    result->setSourceUid(getObjectUid());
 
     // now fix the columns
+    const QVector<Column*> cols = getColumns();
+    for(int i=0; i<cols.size(); i++)
+    {
+        Column* newColumn = dynamic_cast<Column*>(cols.at(i)->clone(sourceVersion, targetVersion));
+        result->addColumn(newColumn);
+    }
+
     // now fix the indexes
+    const QVector<Index*> idxs = getIndices();
+    for(int i=0; i<idxs.size(); i++)
+    {
+        Index* indx = dynamic_cast<Index*>(idxs.at(i)->clone(sourceVersion, targetVersion));
+        indx->finalizeCloning(result, idxs.at(i));
+    }
 
     return result;
 }

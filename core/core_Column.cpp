@@ -3,6 +3,7 @@
 #include "core_Table.h"
 #include "uids.h"
 #include "Workspace.h"
+#include "Version.h"
 
 #include <QApplication>
 #include <QClipboard>
@@ -82,4 +83,15 @@ QString Column::getFullLocation() const
 QUuid Column::getClassUid() const
 {
     return uidColumn;
+}
+
+CloneableElement* Column::clone(Version *sourceVersion, Version *targetVersion)
+{
+    UserDataType* udt = targetVersion->getDataType(getDataType()->getName());
+    Column* result = new Column(QUuid::createUuid().toString(), getName(), udt, isPk());
+
+    // now fix the SPs of the column
+    cloneSps(result);
+
+    return result;
 }

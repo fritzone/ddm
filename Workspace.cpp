@@ -115,7 +115,8 @@ bool Workspace::loadSolution(const QString& fileName)
     file.close();
 
     QDomElement docElem = doc.documentElement();
-    m_currentSolution = DeserializationFactory::createSolution(doc, docElem.firstChild().toElement());
+    m_currentSolution = new Solution("");
+    DeserializationFactory::createSolution(m_currentSolution, doc, docElem.firstChild().toElement());
     m_currentSolution->setFile(fileName);
     if(m_solutions.size() > 0)  // TODO: This is here only till we release a version which can support multiple solutions
     {
@@ -155,7 +156,8 @@ QVector<UserDataType*> Workspace::loadDefaultDatatypesIntoCurrentSolution()
         file.close();
 
         QDomElement docElem = doc.documentElement();
-        Solution* tempSolution = DeserializationFactory::createSolution(doc, docElem.firstChild().toElement());
+        Solution* tempSolution = new Solution("");
+        DeserializationFactory::createSolution(tempSolution, doc, docElem.firstChild().toElement());
         QVector<UserDataType*> dts = tempSolution->currentProject()->getWorkingVersion()->getDataTypes();
 
         for(int i=0; i<dts.size(); i++)        // add to the project itself

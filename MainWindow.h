@@ -47,7 +47,7 @@ class MainWindow : public QMainWindow
 public:
 
     typedef bool (MainWindow::*dynamicAction)(QString);
-    typedef void (MainWindow::*showSomething)(const QString&, bool);
+    typedef void (MainWindow::*showSomething)(Version*, const QString&, bool);
 
     MainWindow(QWidget *parent = 0);
     ~MainWindow();
@@ -68,16 +68,16 @@ public:
 
     TableInstance* instantiateTable(const QString& tabName, QStringList otherTablesBeingInstantiated, bool ref = false, Table* referencingTable = 0, TableInstance* becauseOfThis = 0);
 
-    void showNothing(const QString& , bool focus = true);
-    void showDataType(const QString &name, bool focus = true);
+    void showNothing(Version* v, const QString& , bool focus = true);
+    void showDataType(Version* v, const QString &name, bool focus = true);
 
-    void showTableWithGuid(const QString& guid, bool focus = true);
-    void showTableInstanceWithGuid(const QString& guid, bool focus = true);
-    void showDiagramWithGuid(const QString& guid, bool focus = true);
-    void showViewWithGuid(const QString& guid, bool focus = true);
-    void showProcedureWithGuid(const QString& guid, bool focus = true);
-    void showFunctionWithGuid(const QString& guid, bool focus = true);
-    void showTriggerWithGuid(const QString& guid, bool focus = true);
+    void showTableWithGuid(Version* v, const QString& guid, bool focus = true);
+    void showTableInstanceWithGuid(Version* v, const QString& guid, bool focus = true);
+    void showDiagramWithGuid(Version* v, const QString& guid, bool focus = true);
+    void showViewWithGuid(Version* v, const QString& guid, bool focus = true);
+    void showProcedureWithGuid(Version* v, const QString& guid, bool focus = true);
+    void showFunctionWithGuid(Version* v, const QString& guid, bool focus = true);
+    void showTriggerWithGuid(Version* v, const QString& guid, bool focus = true);
 
     void rerenderQuery(Query*);
     void showConnections();
@@ -194,7 +194,7 @@ private:
 
     void hideSplashwindow();
     void tryBrowseConnection(Connection* c);
-    void showObjectwithGuid(QTreeWidgetItem* current, showSomething s, bool focus=true);
+    void showObjectwithGuid(Version* v, QTreeWidgetItem* current, showSomething s, bool focus=true);
 
 private:
     Ui::MainWindow *m_ui;

@@ -21,11 +21,13 @@ class Project : public NamedItem, public SerializableElement, public TreeItem
 {
 public:
 
+    Project();
+
     // constructor
     Project(const QString& _name, bool oop);
 
     // creates a version, updates the GUI
-    void createMajorVersion(int major, int  minor);
+    MajorVersion* createMajorVersion(int major, int  minor);
 
     // creates a major version, does not update the gui, it must be done at a later stage
     void addMajorVersion(MajorVersion*);
@@ -73,6 +75,10 @@ public:
      */
     void releaseMajorVersion();
 
+    void setOop(bool a)
+    {
+        m_oopIsEnabled = a;
+    }
 
 private:
 
@@ -89,6 +95,8 @@ private:
     bool m_oopIsEnabled;
 
     int m_workingVersionIndex;
+
+    GuiElements* m_gui;
 
 };
 
