@@ -7,7 +7,9 @@
 #include "db_AbstractSQLGenerator.h"
 #include "uids.h"
 
-View::View(bool manual, QString uid) : SqlSourceEntity(), NamedItem(NameGenerator::getUniqueName(Workspace::getInstance()->workingVersion(), (itemGetter)&Version::getView, QString("v"))),
+View::View(bool manual, QString uid) :
+    SqlSourceEntity(),
+    NamedItem(NameGenerator::getUniqueName(Workspace::getInstance()->workingVersion(), (itemGetter)&Version::getView, QString("v"))),
     ObjectWithUid(uid),
     m_columNames(), m_canReplace(false), m_manual(manual)
 {

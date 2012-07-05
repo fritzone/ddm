@@ -278,5 +278,5 @@ void TableInstanceForm::onValuesDoubleClick()
 
 void TableInstanceForm::onGotoTable()
 {
-    MainWindow::instance()->showTableWithGuid(m_tinst->table()->getObjectUid());
+    MainWindow::instance()->showTableWithGuid(Workspace::getInstance()->workingVersion(), m_tinst->table()->getObjectUid());
 }

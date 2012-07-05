@@ -19,4 +19,3 @@ void ValueListSpInstance::set(const QString &v)
         m_currentValue = vs[dynamic_cast<const ValueListSp*>(getClass())->getDefaultValuesIndex()];
     }
 }
-

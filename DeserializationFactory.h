@@ -35,9 +35,9 @@ public:
     static Index* createIndex(DatabaseEngine* engine, Table* table, const QDomDocument& doc, const QDomElement& element);
     static Table* createTable(DatabaseEngine* engine, Version* ver, const QDomDocument& doc, const QDomElement& element);
     static Column* createColumn(DatabaseEngine* engine, Version* ver, const QDomDocument& doc, const QDomElement& element);
-    static MajorVersion* createMajorVersion(Project* p, DatabaseEngine* engine, const QDomDocument& doc, const QDomElement& element);
-    static Solution* createSolution(const QDomDocument& doc, const QDomElement& element);
-    static Project* createProject(const QDomDocument& doc, const QDomElement& element);
+    static void createMajorVersion(MajorVersion* mv, Project* p, DatabaseEngine* engine, const QDomDocument& doc, const QDomElement& element);
+    static void createSolution(Solution* s, const QDomDocument& doc, const QDomElement& element);
+    static void createProject(Project* project, const QDomDocument& doc, const QDomElement& element);
     static ForeignKey* createForeignKey(Table* tab, const QDomDocument& doc, const QDomElement& element);
     static DiagramTableDescriptor* createDiagramTableDescriptor(const QDomDocument& doc, const QDomElement& element);
     static DiagramNoteDescriptor* createDiagramNoteDescriptor(const QDomDocument& doc, const QDomElement& element);

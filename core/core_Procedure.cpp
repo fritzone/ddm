@@ -6,7 +6,8 @@
 #include "Configuration.h"
 #include "uids.h"
 
-Procedure::Procedure(const QString &pname, const QString& uid) : StoredMethod(pname), ObjectWithUid(uid)
+Procedure::Procedure(const QString &pname, const QString& uid) : StoredMethod(pname),
+    ObjectWithUid(uid)
 {
 }
 

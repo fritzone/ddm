@@ -323,8 +323,11 @@ public:
 
     void setVersionNumbers(int major, int minor)
     {
-        m_major = major;
-        m_minor = minor;
+        if(major > m_major)
+        {
+            m_major = major;
+            m_minor = minor;
+        }
     }
 
     int getMajor() const
@@ -340,6 +343,11 @@ public:
     const Project* getProject() const
     {
         return m_project;
+    }
+
+    void setProject(Project* p)
+    {
+        m_project = p;
     }
 
 protected:

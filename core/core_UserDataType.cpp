@@ -162,6 +162,7 @@ CloneableElement* UserDataType::clone(Version */*sourceVersion*/, Version */*tar
     newUdt->unsignedDT = this->unsignedDT;
     newUdt->description = this->description;
     newUdt->canBeNull = this->canBeNull;
+
     newUdt->setSourceUid(getObjectUid());
 
     return newUdt;

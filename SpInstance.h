@@ -4,46 +4,32 @@
 #include "SerializableElement.h"
 #include "core_ObjectWithUid.h"
 #include "db_SP.h"
+#include "core_CloneableElement.h"
 
 #include <QString>
 
 class Sp;
+class Version;
 
 /**
  * Represents an instance of an SP object.
  */
-class SpInstance : public SerializableElement, public ObjectWithUid
+class SpInstance : public SerializableElement, public ObjectWithUid, public CloneableElement
 {
 public:
-    SpInstance(const Sp* theClass) : SerializableElement(), ObjectWithUid(QUuid::createUuid().toString()), m_class(theClass)
-    {}
+    SpInstance(const Sp* theClass);
 
-    SpInstance(const Sp* theClass, const QString& uid) : SerializableElement(), ObjectWithUid(uid), m_class(theClass)
-    {}
+    SpInstance(const Sp* theClass, const QString& uid);
 
-    virtual void serialize(QDomDocument& doc, QDomElement& parent) const
-    {
-        QDomElement spElement = doc.createElement("SpInstance");
-        getClass()->serialize(doc, spElement);
-        spElement.setAttribute("Value", get());
-        spElement.setAttribute("uid", getObjectUid());
-        spElement.setAttribute("class-uid", getClassUid());
-
-        parent.appendChild(spElement);
-    }
-
+    virtual void serialize(QDomDocument& doc, QDomElement& parent) const;
     virtual QString get() const = 0;
     virtual void set(const QString& v) = 0;
 
-    virtual QUuid getClassUid() const
-    {
-        return m_class->getSqlRoleUid();
-    }
+    virtual QUuid getClassUid() const;
 
-    const Sp* getClass() const
-    {
-        return m_class;
-    }
+    const Sp* getClass() const;
+
+    CloneableElement* clone(Version * /*sourceVersion*/, Version * /*targetVersion*/);
 
 private:
 

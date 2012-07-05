@@ -21,6 +21,8 @@
 class MajorVersion : public DefaultVersionImplementation
 {
 public:
+
+    MajorVersion() : DefaultVersionImplementation(0, -1, -1) {}
     /**
      * Constructor: Takes in the project Item and the current version
      */
@@ -32,6 +34,7 @@ public:
     MajorVersion(QString verAsString, Project*);
 
     virtual void serialize(QDomDocument &doc, QDomElement &parent) const;
+    void setVersionNumbersFromString(const QString& n);
 
 };
 

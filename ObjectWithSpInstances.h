@@ -25,6 +25,10 @@ public:
     void addSpInstance(const DatabaseEngine* eng, SpInstance* spi);
     void clearSpInstances(const DatabaseEngine*);
 
+    // copies the SPs over to the specified object
+    void cloneSps(ObjectWithSpInstances* target);
+private:
+    void addSpInstance(const QString&, SpInstance*);
 private:
     QMap<QString, QVector<SpInstance*> > m_spInstances;
 };

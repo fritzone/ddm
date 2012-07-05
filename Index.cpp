@@ -2,6 +2,7 @@
 #include "core_Column.h"
 #include "uids.h"
 #include "SpInstance.h"
+#include "core_Table.h"
 
 Index::Index(const QString &name, Table* tab, const QString& uid) :
     NamedItem(name), ObjectWithUid(uid), ObjectWithSpInstances(),
@@ -183,4 +184,47 @@ SpInstance* Index::getSpiOfColumnForSpecificRole(const Column* c, const QString&
     }
 
     return 0;
+}
+
+CloneableElement* Index::clone(Version * /*sourceVersion*/, Version * /*targetVersion*/)
+{
+    Index* result = new Index(getName(), 0, QUuid::createUuid().toString());
+    setSourceUid(getObjectUid());
+    return result;
+}
+
+void Index::finalizeCloning(Table *t, Index* source)
+{
+    m_owner = t;
+
+    // the columns and their order
+    for(int i=0; i < source->m_columns.size(); i++)
+    {
+        ColumnAndOrder* cAndO = new ColumnAndOrder;
+        ColumnAndOrder* cAndOOrig = source->m_columns.at(i);
+        cAndO->c = t->getColumn(cAndOOrig->c->getName());
+        cAndO->order = cAndOOrig->order;
+        m_columns.append(cAndO);
+    }
+
+    // and the SPs
+    for(int i = 0; i<source->m_columnsWithSpInstances.keys().size(); i++)
+    {
+        QString colName = source->m_columnsWithSpInstances.keys().at(i);
+        const QMap<QString, QVector<SpInstance*> >& map1 = source->m_columnsWithSpInstances[colName];
+        QMap<QString, QVector<SpInstance*> > outMap1;
+        for(int j = 0; j<map1.keys().size(); j++)
+        {
+            QString dbName = map1.keys().at(j);
+            const QVector<SpInstance*>& dbsSps = map1[dbName];
+            QVector<SpInstance*> outDbSps;
+            for(int k=0; k<dbsSps.size(); k++)
+            {
+                SpInstance* cloned = dynamic_cast<SpInstance*>(dbsSps.at(k)->clone(0,0));
+                outDbSps.append(cloned);
+            }
+            outMap1.insert(dbName, outDbSps);
+        }
+        m_columnsWithSpInstances.insert(colName, outMap1);
+    }
 }

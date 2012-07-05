@@ -18,7 +18,19 @@ MajorVersion::MajorVersion(int major, int minor, Project* p) : DefaultVersionImp
 
 MajorVersion::MajorVersion(QString verAsString, Project* p) : DefaultVersionImplementation(p, 0, 0)
 {
+    QString smajor = verAsString.left(verAsString.indexOf("."));
+    QString sminor = verAsString.mid(verAsString.indexOf(".") + 1);
+    setVersionNumbers(smajor.toInt(), sminor.toInt());
     version = verAsString;
+}
+
+
+void MajorVersion::setVersionNumbersFromString(const QString& n)
+{
+    QString smajor = n.left(n.indexOf("."));
+    QString sminor = n.mid(n.indexOf(".") + 1);
+    setVersionNumbers(smajor.toInt(), sminor.toInt());
+    version = n;
 }
 
 void MajorVersion::serialize(QDomDocument &doc, QDomElement &parent) const
