@@ -1082,8 +1082,27 @@ bool DefaultVersionImplementation::cloneInto(Version* other)
     }
 
     // clone the table instances
-    // fix the table instances into the cloned tables
+    QVector<TableInstance*> tinsts = getTableInstances();
+    for(int i=0; i<tinsts.size(); i++)
+    {
+        TableInstance* newTinst = dynamic_cast<TableInstance*>(tinsts.at(i)->clone(this, other));
 
+        // this also fixes the tables with the required link
+        newTinst->finalizeCloning(tinsts.at(i), this, other);
+        other->addTableInstance(newTinst);
+    }
+
+    // fix the automatically instantiated table instances for the table instances
+    QVector<TableInstance*> otherTinsts = other->getTableInstances();
+    for(int i=0; i<otherTinsts.size(); i++)
+    {
+        TableInstance* srcTinst = getTableInstance(otherTinsts.at(i)->getName());
+        otherTinsts.at(i)->finalizeAutoinstantiatedTinsts(srcTinst, this, other);
+    }
+
+    // clone the views
+    // clone the procedures
+    // clone the functions
     return true;
 }
 

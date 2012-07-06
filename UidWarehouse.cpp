@@ -57,6 +57,26 @@ void UidWarehouse::addElement(ObjectWithUid *o)
     }
 }
 
+void UidWarehouse::addElement(QUuid uid, Version *v)
+{
+    WarehouseEntry* whe = new WarehouseEntry();
+    whe->obj = 0;
+    whe->objectId = uid;
+    whe->ver = v;
+
+    Solution* s = 0;
+    if(m_items.keys().contains(s))
+    {
+        m_items[s].insert(uid.toString(), whe);
+    }
+    else
+    {
+        QMap<QString, WarehouseEntry*> * e = new QMap<QString, WarehouseEntry*>();
+        e->insert(uid.toString(), whe);
+        m_items.insert(s, *e);
+    }
+}
+
 Version* UidWarehouse::getVersionForUid(const QString &uid)
 {
     Solution* s = 0;

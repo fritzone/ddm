@@ -27,7 +27,7 @@ static const QString strTableInstIcon = ":/images/actions/images/small/tabinst.p
 static const QString strTableInstLockIcon = ":/images/actions/images/small/tabinstlock.png";
 static const QString strProjectOpenIcon = ":/images/actions/images/small/project_open.png";
 static const QString strDiagramIcon = ":/images/actions/images/small/diagram.png";
-static const QString strDataTypesIcon = ":/images/actions/images/small/datatypes.PNG";
+static const QString strDataTypesIcon = ":/images/actions/images/small/datatypes.png";
 static const QString strCodeIcon = ":/images/actions/images/small/code.png";
 static const QString strSqlIcon = ":/images/actions/images/small/sql.png";
 static const QString strMajorVersionIcon = ":/images/actions/images/small/arrow-000-medium.png";
@@ -663,6 +663,12 @@ public:
     static const QIcon& getMySqlIcon()
     {
         static const QIcon icon(icons::strMySqlIcon);
+        return icon;
+    }
+
+    static const QIcon& getAllDataTypes()
+    {
+        static const QIcon icon(icons::strIcon);
         return icon;
     }
 

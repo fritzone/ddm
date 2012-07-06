@@ -7,16 +7,24 @@
 #include "SerializableElement.h"
 #include "SqlSourceEntity.h"
 #include "core_ObjectWithUid.h"
+#include "core_CloneableElement.h"
 
 #include <QHash>
 #include <QList>
 #include <QString>
 
-class TableInstance : public TreeItem, public NamedItem, public SerializableElement, public SqlSourceEntity, public ObjectWithUid
+class Version;
+
+class TableInstance : public TreeItem,
+        public NamedItem, public SerializableElement,
+        public SqlSourceEntity, public ObjectWithUid,
+        public CloneableElement
 {
 public:
 
     TableInstance(Table* tab, bool ref, const QString& uid);
+
+    TableInstance(const QString &name, bool ref, const QString &uid);
 
     QVector<QString> columns() const;
 
@@ -83,7 +91,10 @@ public:
 
     void renameColumn(const QString& oldName, const QString& newName);
     virtual QUuid getClassUid() const;
+    virtual CloneableElement* clone(Version *sourceVersion, Version *targetVersion);
 
+    void finalizeCloning(TableInstance* src, Version *sourceVersion, Version *targetVersion);
+    void finalizeAutoinstantiatedTinsts(TableInstance* src, Version *sourceVersion, Version *targetVersion);
 
 private:
 
