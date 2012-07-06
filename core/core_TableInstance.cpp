@@ -2,6 +2,7 @@
 #include "db_AbstractSQLGenerator.h"
 #include "core_Table.h"
 #include "Configuration.h"
+#include "Version.h"
 
 TableInstance::TableInstance(Table *tab, bool ref, const QString& uid) : TreeItem(),
     NamedItem(tab->getName()), ObjectWithUid(uid),
@@ -12,6 +13,12 @@ TableInstance::TableInstance(Table *tab, bool ref, const QString& uid) : TreeIte
         m_values.insert(m_table->fullColumns()[i], QVector<QString>());
     }
     tab->addInstance(this);
+}
+
+TableInstance::TableInstance(const QString& name, bool ref, const QString &uid): TreeItem(),
+    NamedItem(name), ObjectWithUid(uid),
+    m_table(0), m_values(), m_becauseOfReference(ref), m_referencingTables(0), m_instantiatedTablesInstances(), m_sentenced(false)
+{
 }
 
 void TableInstance::addTableReferencingThis(Table* refTab)
@@ -114,4 +121,41 @@ void TableInstance::renameColumn(const QString& oldName, const QString& newName)
 QUuid TableInstance::getClassUid() const
 {
     return QUuid(uidTableInstance);
+}
+
+CloneableElement* TableInstance::clone(Version *sourceVersion, Version *targetVersion)
+{
+    TableInstance* result = new TableInstance(getName(), m_becauseOfReference, QUuid::createUuid().toString());
+    result->setSourceUid(getObjectUid());
+    result->m_values = m_values;
+
+    return result;
+}
+
+
+void TableInstance::finalizeCloning(TableInstance *src, Version *sourceVersion, Version *targetVersion)
+{
+    Table* otherTable = src->table();
+    Table* myTable = targetVersion->getTable(otherTable->getName());
+    myTable->addInstance(this);
+    if(!myTable) return;
+    m_table = myTable;
+
+    for(int i=0; i<src->m_referencingTables.size(); i++)
+    {
+        Table* otherRefTable = src->m_referencingTables.at(i);
+        Table* myRefTable = targetVersion->getTable(otherRefTable->getName());
+        if(!myRefTable) return;
+        m_referencingTables.append(myRefTable);
+    }
+}
+
+void TableInstance::finalizeAutoinstantiatedTinsts(TableInstance* src, Version *sourceVersion, Version *targetVersion)
+{
+    for(int i=0; i<src->m_instantiatedTablesInstances.size(); i++)
+    {
+        TableInstance* myInstantiated = targetVersion->getTableInstance(src->m_instantiatedTablesInstances.at(i)->getName());
+        if(!myInstantiated) return;
+        m_instantiatedTablesInstances.append(myInstantiated);
+    }
 }

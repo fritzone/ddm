@@ -96,7 +96,6 @@ private:
 
     // the different trees for the app
     QTreeWidget* m_tree;
-    QTreeWidget* m_dtTree;
     QTreeWidget* m_issuesTree;
 
     // the tree item containing the various data types

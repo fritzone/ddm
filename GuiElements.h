@@ -22,16 +22,6 @@ public:
         return m_projectTree;
     }
 
-    QDockWidget* getDatatypesDock() const
-    {
-        return m_datatypesTreeDock;
-    }
-
-    ContextMenuEnabledTreeWidget* getDataTypesTree() const
-    {
-        return m_datatypesTree;
-    }
-
     QDockWidget* getIssuesDock() const
     {
         return m_issuesTreeDock;
@@ -45,11 +35,9 @@ public:
 private:
 
     QDockWidget* m_projectTreeDock;
-    QDockWidget* m_datatypesTreeDock;
     QDockWidget* m_issuesTreeDock;
 
     ContextMenuEnabledTreeWidget* m_projectTree;
-    ContextMenuEnabledTreeWidget* m_datatypesTree;
     ContextMenuEnabledTreeWidget* m_issuesTree;
 
     ContextMenuHandler* m_contextMenuHandler;

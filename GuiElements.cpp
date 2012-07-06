@@ -3,7 +3,7 @@
 #include "Workspace.h"
 #include "Solution.h"
 
-GuiElements::GuiElements() : m_projectTreeDock(0), m_datatypesTreeDock(0), m_projectTree(0), m_datatypesTree(0), m_contextMenuHandler(0)
+GuiElements::GuiElements() : m_projectTreeDock(0), m_projectTree(0), m_contextMenuHandler(0)
 {
 }
 
@@ -20,13 +20,6 @@ void GuiElements::createGuiElements()
  //    m_projectTreeDock->setSizePolicy(QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Maximum));
     m_projectTreeDock->resize(301,341);
 
-    m_datatypesTreeDock = new QDockWidget(QObject::tr("DataTypes") , MainWindow::instance());
-    m_datatypesTreeDock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
-    m_datatypesTreeDock->setFeatures(QDockWidget::AllDockWidgetFeatures);
-    m_datatypesTreeDock->setFloating(false);
-    m_datatypesTreeDock->setMinimumSize(300, 340);
-    m_datatypesTreeDock->setMaximumSize(QApplication::desktop()->screenGeometry().width() / 4, 9999);
-
     m_projectTree = new ContextMenuEnabledTreeWidget();
     m_projectTree->setAllColumnsShowFocus(true);
     m_projectTree->setSelectionMode(QAbstractItemView::SingleSelection);
@@ -35,17 +28,6 @@ void GuiElements::createGuiElements()
     m_projectTree->setColumnCount(1);
     m_projectTree->setHeaderHidden(true);
     QObject::connect(m_projectTree, SIGNAL (currentItemChanged ( QTreeWidgetItem*, QTreeWidgetItem*)), MainWindow::instance(), SLOT(currentProjectTreeItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)));
-
-    m_datatypesTree = new ContextMenuEnabledTreeWidget();
-    m_datatypesTree ->setColumnCount(2);
-    QTreeWidgetItem *hdr = m_datatypesTree->headerItem();
-    hdr->setText(0, QObject::tr("Type"));
-    hdr->setText(1, QObject::tr("SQL"));
-    m_datatypesTree->header()->setDefaultSectionSize(200);
-    m_datatypesTree->setItemDelegate(new ContextMenuDelegate(m_contextMenuHandler,m_datatypesTree));
-    m_datatypesTree ->setHeaderHidden(false);
-    QObject::connect(m_datatypesTree, SIGNAL(itemSelectionChanged()), MainWindow::instance(), SLOT(onDTTreeClicked()));
-    QObject::connect(m_datatypesTree, SIGNAL (itemClicked ( QTreeWidgetItem * , int ) ), MainWindow::instance(), SLOT(dtTreeItemClicked(QTreeWidgetItem*,int)));
 
     m_issuesTreeDock = new QDockWidget(QObject::tr("Issues"), MainWindow::instance());
     m_issuesTreeDock->setAllowedAreas(Qt::BottomDockWidgetArea);
@@ -68,7 +50,6 @@ void GuiElements::createGuiElements()
 
     m_issuesTreeDock->setWidget(m_issuesTree);
     m_projectTreeDock->setWidget(m_projectTree);
-    m_datatypesTreeDock->setWidget(m_datatypesTree);
 
     m_issuesTreeDock->hide();
 
@@ -86,18 +67,6 @@ void GuiElements::freeGuiElements()
     {
         delete m_projectTreeDock;
         m_projectTreeDock = 0;
-    }
-
-    if(m_datatypesTree)
-    {
-        delete m_datatypesTree;
-        m_datatypesTree = 0;
-    }
-
-    if(m_datatypesTreeDock)
-    {
-        delete m_datatypesTreeDock;
-        m_datatypesTreeDock = 0;
     }
 
     if(m_issuesTree)

@@ -154,7 +154,6 @@ void MainWindow::setupGuiForNewSolution()
     m_guiElements->createGuiElements();
 
     addDockWidget(Qt::LeftDockWidgetArea, m_guiElements->getProjectDock());
-    addDockWidget(Qt::LeftDockWidgetArea, m_guiElements->getDatatypesDock());
     addDockWidget(Qt::BottomDockWidgetArea, m_guiElements->getIssuesDock());
 
     IssueManager::getInstance().setIssuesDock(m_guiElements->getIssuesDock());
@@ -270,9 +269,6 @@ void MainWindow::onNewSolution()
             {
                 m_workspace->workingVersion()->getGui()->createDataTypeTreeEntry(dts.at(i));
             }
-
-            m_guiElements->getDataTypesTree()->scrollToItem(m_workspace->workingVersion()->getGui()->getDtsItem());
-            m_guiElements->getDataTypesTree()->expandAll();
         }
 
         // expand the tree
@@ -318,34 +314,6 @@ void MainWindow::onNewSolution()
 
 void MainWindow::onDTTreeClicked()
 {
-    QList<QTreeWidgetItem*> selectedItems = m_guiElements->getDataTypesTree()->selectedItems();
-    if(selectedItems.length() == 1)
-    {
-        QTreeWidgetItem* item = selectedItems[0];
-        if(item == m_workspace->workingVersion()->getGui()->getDtsItem())
-        {// we have clicked on the Data Types item
-            DataTypesListForm* dtLst = new DataTypesListForm(this);
-            dtLst->feedInDataTypes(m_workspace->workingVersion()->getDataTypes());
-            setCentralWidget(dtLst);
-        }
-        else
-        {
-            if(item->parent() != m_workspace->workingVersion()->getGui()->getDtsItem()) // this must be a data type
-            {
-                QVariant qv = item->data(0, Qt::UserRole);
-                QString n = qv.toString();
-                UserDataType* udt = 0;
-                if(m_workspace->workingVersion()->hasDataType(n))
-                {
-                    udt = m_workspace->workingVersion()->getDataType(n);
-                }
-                NewDataTypeForm* frm = new NewDataTypeForm(DT_INVALID, m_workspace->currentProjectsEngine(), this);
-                frm->focusOnName();
-                frm->setDataType(udt);
-                setCentralWidget(frm);
-            }
-        }
-    }
 }
 
 void MainWindow::showNothing(Version *v, const QString &, bool focus )
@@ -407,7 +375,7 @@ void MainWindow::showDataType(Version *v, const QString &name, bool focus)
     frm->setDataType(dt);
     setCentralWidget(frm);
 
-    if(focus) m_guiElements->getDataTypesTree()->setCurrentItem(dt->getLocation());
+    if(focus) m_guiElements->getProjectTree()->setCurrentItem(dt->getLocation());
 }
 
 void MainWindow::showDiagramWithGuid(Version *v, const QString & guid, bool focus /*focus*/)
@@ -555,7 +523,7 @@ void MainWindow::currentProjectTreeItemChanged(QTreeWidgetItem * current, QTreeW
             showNamedObjectList(&MainWindow::showTriggerWithGuid, foundVersion->getTriggers(), IconFactory::getTriggerIcon(), "Triggers");
         }
         else
-        if((current == foundVersion->getGui()->getDocumentationItem()))
+        if(current == foundVersion->getGui()->getDocumentationItem())
         {
             DocumentationForm* docF = new DocumentationForm(this);
             DocumentationGenerator gen(m_workspace->currentSolution());
@@ -564,7 +532,26 @@ void MainWindow::currentProjectTreeItemChanged(QTreeWidgetItem * current, QTreeW
             docF->initiateStyleChange(docF->s_lastStyle);
         }
         else
+        if(current == foundVersion->getGui()->getDtsItem())
+        {// we have clicked on the Data Types item
+            DataTypesListForm* dtLst = new DataTypesListForm(this);
+            dtLst->feedInDataTypes(foundVersion->getDataTypes());
+            setCentralWidget(dtLst);
+        }
+        else
         {
+            // the user clicked on a data type, this must be performed before all of them, since hey are more hierachical
+            QVariant qv = current->data(0, Qt::UserRole);
+            QString n = qv.toString();
+            UserDataType* udt = 0;
+            if(udt = dynamic_cast<UserDataType*>(UidWarehouse::instance().getElement(n)))
+            {
+                NewDataTypeForm* frm = new NewDataTypeForm(DT_INVALID, m_workspace->currentProjectsEngine(), this);
+                frm->focusOnName();
+                frm->setDataType(udt);
+                setCentralWidget(frm);
+            }
+            else
             if(current->parent() && current->parent() == foundVersion->getGui()->getTablesItem())
             {
                 // the user clicked on a table, the name of the table is a tag
@@ -715,8 +702,8 @@ bool MainWindow::onSaveNewDataType(const QString& name, const QString& type, con
         ContextMenuEnabledTreeWidgetItem* newDtItem = m_workspace->workingVersion()->getGui()->createDataTypeTreeEntry(udt);
 
         // set the link to the tree
-        m_guiElements->getDataTypesTree()->expandItem(newDtItem);
-        m_guiElements->getDataTypesTree()->scrollToItem(newDtItem);
+        m_guiElements->getProjectTree()->expandItem(newDtItem);
+        m_guiElements->getProjectTree()->scrollToItem(newDtItem);
         return true;
     }
     return false;
@@ -1163,10 +1150,10 @@ T* MainWindow::getRightClickedObject(itemGetter g)
 
 UserDataType* MainWindow::getRightClickedDatatype()
 {
-    if(m_guiElements->getDataTypesTree()->getLastRightclickedItem() != 0)
+    if(m_guiElements->getProjectTree()->getLastRightclickedItem() != 0)
     {
-        ContextMenuEnabledTreeWidgetItem* item = m_guiElements->getDataTypesTree()->getLastRightclickedItem();
-        m_guiElements->getDataTypesTree()->setLastRightclickedItem(0);
+        ContextMenuEnabledTreeWidgetItem* item = m_guiElements->getProjectTree()->getLastRightclickedItem();
+        m_guiElements->getProjectTree()->setLastRightclickedItem(0);
 
         QVariant qv = item->data(0, Qt::UserRole);
         UserDataType* udt = static_cast<UserDataType*>(qv.data());
@@ -1625,7 +1612,7 @@ void MainWindow::onCloseSolution()
 
 void MainWindow::onDeleteDatatypeFromPopup()
 {
-    ContextMenuEnabledTreeWidgetItem* itm = m_guiElements->getDataTypesTree()->getLastRightclickedItem();
+    ContextMenuEnabledTreeWidgetItem* itm = m_guiElements->getProjectTree()->getLastRightclickedItem();
     if(!itm)
     {
         return;
@@ -1934,12 +1921,12 @@ void MainWindow::onDuplicateDatatypeFromPopup()
 
         ContextMenuEnabledTreeWidgetItem* newDTItem = m_workspace->workingVersion()->getGui()->createDataTypeTreeEntry(dup);
 
-        m_guiElements->getDataTypesTree()->expandItem(newDTItem);
-        m_guiElements->getDataTypesTree()->scrollToItem(newDTItem);
+        m_guiElements->getProjectTree()->expandItem(newDTItem);
+        m_guiElements->getProjectTree()->scrollToItem(newDTItem);
 
         // resize to look better
-        m_guiElements->getDataTypesTree()->resizeColumnToContents(0);
-        m_guiElements->getDataTypesTree()->resizeColumnToContents(1);
+        m_guiElements->getProjectTree()->resizeColumnToContents(0);
+        m_guiElements->getProjectTree()->resizeColumnToContents(1);
     }
 }
 
@@ -2176,9 +2163,9 @@ void MainWindow::onViewConnectionsTree()
 
 void MainWindow::onViewDatatypesTree()
 {
-    bool t = m_guiElements->getDataTypesTree()->isVisible() ;
+    bool t = m_guiElements->getProjectTree()->isVisible() ;
     m_ui->action_Datatypes_Tree->setChecked(!t);
-    m_guiElements->getDataTypesTree()->setVisible(!t);
+    m_guiElements->getProjectTree()->setVisible(!t);
 }
 
 void MainWindow::onReverseEngineerWizardNextPage(int cpage)
