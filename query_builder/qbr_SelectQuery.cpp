@@ -12,6 +12,7 @@
 #include "Version.h"
 #include "qbr_SingleExpressionQueryComponent.h"
 #include "qbr_QueryAsGenerator.h"
+#include "uids.h"
 
 #include <QGraphicsScene>
 #include <QGraphicsView>
@@ -335,6 +336,23 @@ QueryComponent* SelectQuery::duplicate()
     return newQuery;
 }
 
+CloneableElement* SelectQuery::clone(Version *sourceVersion, Version *targetVersion)
+{
+    SelectQuery* newQuery = new SelectQuery(m_helper, m_level, m_sqlSource);
+    // TODO: set the parent from the new version: newQuery->setParent(getParent());
+    newQuery->m_select = m_select?dynamic_cast<SelectQuerySelectComponent*> (m_select->clone(sourceVersion, targetVersion)):0;
+    newQuery->m_from = m_from?dynamic_cast<SelectQueryFromComponent*>(m_from->clone(sourceVersion, targetVersion)):0;
+    newQuery->m_where = m_where?dynamic_cast<SelectQueryWhereComponent*>(m_where->clone(sourceVersion, targetVersion)):0;
+    newQuery->m_groupby = m_groupby?dynamic_cast<SelectQueryGroupByComponent*>(m_groupby->clone(sourceVersion, targetVersion)):0;
+    newQuery->m_having = m_having?dynamic_cast<SelectQueryWhereComponent*>(m_having->clone(sourceVersion, targetVersion)):0;
+    newQuery->m_as = m_as?dynamic_cast<SelectQueryAsComponent*>(m_as->clone(sourceVersion, targetVersion)):0;
+    newQuery->m_orderBy = m_orderBy?dynamic_cast<SelectQueryOrderByComponent*>(m_orderBy->clone(sourceVersion, targetVersion)):0;
+
+    newQuery->setSourceUid(getObjectUid());
+    cloneTheChildren(sourceVersion, targetVersion, newQuery);
+    return newQuery;
+}
+
 QString SelectQuery::get() const
 {
     QString result = "";
@@ -402,6 +420,8 @@ void SelectQuery::serialize(QDomDocument &doc, QDomElement &parent) const
 {
     QDomElement queryElement = doc.createElement("Query");
     queryElement.setAttribute("Type", "Select");
+    queryElement.setAttribute("uid", getObjectUid());
+    queryElement.setAttribute("class-uid", getClassUid());
 
     if(m_select)
     {
@@ -475,4 +495,9 @@ void SelectQuery::serialize(QDomDocument &doc, QDomElement &parent) const
 
     parent.appendChild(queryElement);
 
+}
+
+QUuid SelectQuery::getClassUid() const
+{
+    return QUuid(uidSelectQuery);
 }

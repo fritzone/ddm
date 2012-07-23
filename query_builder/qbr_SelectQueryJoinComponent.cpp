@@ -1,7 +1,7 @@
 #include "qbr_SelectQueryJoinComponent.h"
 #include "qbr_TableQueryComponent.h"
 #include "qbr_SingleExpressionQueryComponent.h"
-
+#include "uids.h"
 #include "strings.h"
 
 SelectQueryJoinComponent::SelectQueryJoinComponent(QueryComponent* p, int l):QueryComponent(p,l),  m_helper(0), m_joinExpressions()
@@ -76,6 +76,17 @@ QueryComponent* SelectQueryJoinComponent::duplicate()
     return newc;
 }
 
+CloneableElement* SelectQueryJoinComponent::clone(Version *sourceVersion, Version *targetVersion)
+{
+    SelectQueryJoinComponent* newc = new SelectQueryJoinComponent(m_parent, m_level);
+    for(int i=0; i<m_joinExpressions.size(); i++)
+    {
+        newc->m_joinExpressions.append(dynamic_cast<SingleExpressionQueryComponent*>(m_joinExpressions.at(i)->clone(sourceVersion, targetVersion)));
+    }
+    newc->setSourceUid(getObjectUid());
+    cloneTheChildren(sourceVersion, targetVersion, newc);
+    return newc;
+}
 void SelectQueryJoinComponent::removeExpression(SingleExpressionQueryComponent *w)
 {
     m_joinExpressions.remove(m_joinExpressions.indexOf(w));
@@ -126,4 +137,9 @@ QVector<const Table*> SelectQueryJoinComponent::getJoinedTables() const
         }
     }
     return result;
+}
+
+QUuid SelectQueryJoinComponent::getClassUid() const
+{
+    return QUuid(uidSelectQueryJoinComponent);
 }

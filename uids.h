@@ -45,4 +45,16 @@ static const QString uidMysqlColumnOfIndexLength =    "{10000006-0000-0000-0000-
 static const QString uidMysqlColumnAutoIncrement =    "{10000007-0000-0000-0000-000000000001}";
 static const QString uidMysqlColumnZeroFill =         "{10000007-0000-0000-0000-000000000002}";
 
+static const QString uidSelectQueryAsComponent =      "{10000008-0000-0000-0000-000000000001}";
+static const QString uidSelectQuerySelectComponent =  "{10000008-0000-0000-0000-000000000002}";
+static const QString uidSelectQueryFromComponent =    "{10000008-0000-0000-0000-000000000003}";
+static const QString uidSelectQueryWhereComponent =   "{10000008-0000-0000-0000-000000000004}";
+static const QString uidSelectQueryGroupByComponent = "{10000008-0000-0000-0000-000000000005}";
+static const QString uidSelectQueryOrderByComponent = "{10000008-0000-0000-0000-000000000006}";
+static const QString uidSelectQueryJoinComponent    = "{10000008-0000-0000-0000-000000000007}";
+static const QString uidSingleExpressionComponent   = "{10000008-0000-0000-0000-000000000008}";
+static const QString uidTableQueryComponent         = "{10000008-0000-0000-0000-000000000009}";
+static const QString uidSelectQuery                 = "{10000008-0000-0000-0000-00000000000A}";
+
+
 #endif // UIDS_H

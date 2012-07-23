@@ -1,6 +1,6 @@
 #include "qbr_SelectQueryOrderByComponent.h"
 #include "qbr_SelectQuery.h"
-
+#include "uids.h"
 #include "strings.h"
 
 #include <QDebug>
@@ -35,6 +35,14 @@ QueryComponent* SelectQueryOrderByComponent::duplicate()
     return newc;
 }
 
+CloneableElement* SelectQueryOrderByComponent::clone(Version *sourceVersion, Version *targetVersion)
+{
+    SelectQueryOrderByComponent* newc = new SelectQueryOrderByComponent(m_parent, m_level);
+    newc->setSourceUid(getObjectUid());
+    cloneTheChildren(sourceVersion, targetVersion, newc);
+    return newc;
+}
+
 QString SelectQueryOrderByComponent::get() const
 {
     QString result = "ORDER BY";
@@ -53,4 +61,9 @@ void SelectQueryOrderByComponent::serialize(QDomDocument &doc, QDomElement &pare
     QDomElement orderByElement = doc.createElement("OrderBy");
     QueryComponent::serialize(doc, orderByElement);
     parent.appendChild(orderByElement);
+}
+
+QUuid SelectQueryOrderByComponent::getClassUid() const
+{
+    return QUuid(uidSelectQueryOrderByComponent);
 }

@@ -1,6 +1,7 @@
 #include "qbr_SelectQueryGroupByComponent.h"
 #include "qbr_SelectQuery.h"
 #include "strings.h"
+#include "uids.h"
 
 SelectQueryGroupByComponent::SelectQueryGroupByComponent(QueryComponent* p, int l):QueryComponent(p,l)
 {
@@ -32,6 +33,14 @@ QueryComponent* SelectQueryGroupByComponent::duplicate()
     return newc;
 }
 
+CloneableElement* SelectQueryGroupByComponent::clone(Version *sourceVersion, Version *targetVersion)
+{
+    SelectQueryGroupByComponent *newc = new SelectQueryGroupByComponent(m_parent, m_level);
+    newc->setSourceUid(getObjectUid());
+    cloneTheChildren(sourceVersion, targetVersion, newc);
+    return newc;
+}
+
 QString SelectQueryGroupByComponent::get() const
 {
     QString result = "GROUP BY";
@@ -52,3 +61,7 @@ void SelectQueryGroupByComponent::serialize(QDomDocument &doc, QDomElement &pare
     parent.appendChild(groupBy);
 }
 
+QUuid SelectQueryGroupByComponent::getClassUid() const
+{
+    return QUuid(uidSelectQueryGroupByComponent);
+}

@@ -19,7 +19,8 @@ void Procedure::serialize(QDomDocument &doc, QDomElement &parent) const
     procElement.setAttribute("class-uid", getClassUid());
 
     QDomElement textElement = doc.createElement("Sql");
-    QDomCDATASection cdata = doc.createCDATASection(m_sql);
+    textElement.setAttribute("Encoded", "Base64");
+    QDomCDATASection cdata = doc.createCDATASection(QString(m_sql.toUtf8().toBase64()));
     textElement.appendChild(cdata);
     procElement.appendChild(textElement);
     parent.appendChild(procElement);

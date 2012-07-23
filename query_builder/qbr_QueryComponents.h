@@ -3,6 +3,8 @@
 
 #include "qbr_OptionTypes.h"
 #include "SerializableElement.h"
+#include "core_ObjectWithUid.h"
+#include "core_CloneableElement.h"
 
 #include <QString>
 #include <QList>
@@ -15,10 +17,10 @@ class QueryGraphicsHelper;
 /**
  * The logic behind a query
  */
-class QueryComponent : public SerializableElement
+class QueryComponent : public SerializableElement, public ObjectWithUid, public CloneableElement
 {
 public:
-    QueryComponent(QueryComponent* parent, int level) : m_parent(parent), m_level(level) {}
+    QueryComponent(QueryComponent* parent, int level) : ObjectWithUid(QUuid::createUuid().toString()), m_parent(parent), m_level(level) {}
     virtual ~QueryComponent(){}
 
     virtual QString get() const = 0;
@@ -33,6 +35,9 @@ public:
     virtual QSet<OptionsType> provideOptions() = 0;
     virtual void onClose() = 0;
     virtual QueryComponent* duplicate() = 0;
+    virtual QUuid getClassUid() const = 0;
+    virtual CloneableElement* clone(Version* sourceVersion, Version* targetVersion) = 0;
+    void cloneTheChildren(Version* sourceVersion, Version* targetVersion, QueryComponent *targetObject);
 
     void addChild(QueryComponent* c) {m_children.append(c);}
     void setChild(QueryComponent* c, int i) {m_children.insert(i,c);}
@@ -60,4 +65,3 @@ protected:
 };
 
 #endif // QUERYCOMPONENTS_H
-

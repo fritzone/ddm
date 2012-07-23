@@ -8,6 +8,8 @@ void QueryComponent::removeChild(QueryComponent *c)
 void QueryComponent::serialize(QDomDocument &doc, QDomElement &parent) const
 {
     QDomElement component= doc.createElement("Children");
+    parent.setAttribute("uid", getObjectUid());
+    parent.setAttribute("class-uid", getClassUid());
     parent.setAttribute("level", m_level);
     parent.setAttribute("class", getClass());
     parent.setAttribute("children", m_children.size());
@@ -21,4 +23,12 @@ void QueryComponent::serialize(QDomDocument &doc, QDomElement &parent) const
         childCreated = true;
     }
     if(childCreated) parent.appendChild(component);
+}
+
+void QueryComponent::cloneTheChildren(Version* sourceVersion, Version* targetVersion, QueryComponent* targetObject)
+{
+    for(int i=0; i<m_children.size(); i++)
+    {
+        targetObject->addChild(dynamic_cast<QueryComponent*>(m_children.at(i)->clone(sourceVersion, targetVersion)));
+    }
 }

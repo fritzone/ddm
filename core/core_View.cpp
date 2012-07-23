@@ -25,6 +25,13 @@ View::View(Version*v, bool manual, QString uid) : SqlSourceEntity(), NamedItem(N
     m_helper = new QueryGraphicsHelper();
 }
 
+void View::secondStepClone()
+{
+    m_helper = new QueryGraphicsHelper();
+    QueryAsGenerator::instance().initNewQuery(m_selectQuery);
+    m_helper->setQuery(m_selectQuery);
+}
+
 void View::finalizeViewDeserialization()
 {
     QueryAsGenerator::instance().initNewQuery(m_selectQuery);
@@ -72,4 +79,24 @@ void View::serialize(QDomDocument& doc, QDomElement& parent) const
 QUuid View::getClassUid() const
 {
     return QUuid(uidView);
+}
+
+CloneableElement* View::clone(Version *sourceVersion, Version *targetVersion)
+{
+    View* nv = new View(targetVersion, m_manual, QUuid::createUuid().toString());
+    nv->setName(m_name);
+    nv->setSourceUid(getObjectUid());
+    if(m_manual)
+    {
+        nv->setSql(m_sql);
+    }
+    else
+    {
+        SelectQuery* newQuery = dynamic_cast<SelectQuery*>(m_selectQuery->clone(sourceVersion, targetVersion));
+        nv->setQuery(newQuery);
+        nv->m_columNames = m_columNames;
+        nv->secondStepClone();
+    }
+
+    return nv;
 }
