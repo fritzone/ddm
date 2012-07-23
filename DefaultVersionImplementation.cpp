@@ -1101,6 +1101,12 @@ bool DefaultVersionImplementation::cloneInto(Version* other)
     }
 
     // clone the views
+    const QVector<View*> views = getViews();
+    for(int i=0; i<views.size(); i++)
+    {
+        View* v =  dynamic_cast<View*>(views.at(i)->clone(this, other));
+        other->addView(v);
+    }
     // clone the procedures
     // clone the functions
     return true;

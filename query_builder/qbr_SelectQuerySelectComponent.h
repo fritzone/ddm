@@ -30,6 +30,8 @@ public:
      */
     QVector<const QueryComponent*> getSelectedComponents();
     virtual void serialize(QDomDocument& doc, QDomElement& parent) const;
+    virtual QUuid getClassUid() const;
+    virtual CloneableElement* clone(Version* sourceVersion, Version* targetVersion);
 };
 
 #endif // SELECTQUERYSELECTCOMPONENT_H

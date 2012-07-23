@@ -101,6 +101,8 @@ public:
         m_as = as;
     }
 
+    virtual QUuid getClassUid() const;
+    virtual CloneableElement* clone(Version* sourceVersion, Version* targetVersion);
 private:
 
     QMap<CellTypeChooserType,QString> prepareMappings() const;

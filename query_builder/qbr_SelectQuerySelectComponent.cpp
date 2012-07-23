@@ -32,6 +32,14 @@ QueryComponent* SelectQuerySelectComponent::duplicate()
     return newc;
 }
 
+CloneableElement* SelectQuerySelectComponent::clone(Version* sourceVersion, Version* targetVersion)
+{
+    SelectQuerySelectComponent* newc = dynamic_cast<SelectQuerySelectComponent*>(duplicate());
+    newc->setSourceUid(getObjectUid());
+    cloneTheChildren(sourceVersion, targetVersion, newc);
+    return newc;
+}
+
 void SelectQuerySelectComponent::handleAction(const QString& action, QueryComponent* /*referringObject*/)
 {
     if(action == ADD_WHERE_EXPRESSION)
@@ -161,4 +169,9 @@ void SelectQuerySelectComponent::serialize(QDomDocument& doc, QDomElement& paren
     QDomElement selectElement = doc.createElement("Select");
     QueryComponent::serialize(doc, selectElement);
     parent.appendChild(selectElement);
+}
+
+QUuid SelectQuerySelectComponent::getClassUid() const
+{
+    return QUuid(uidSelectQuerySelectComponent);
 }

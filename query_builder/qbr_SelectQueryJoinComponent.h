@@ -37,7 +37,8 @@ public:
     {
         m_joinExpressions.append(je);
     }
-
+    virtual QUuid getClassUid() const;
+    virtual CloneableElement* clone(Version* sourceVersion, Version* targetVersion);
 private:
     QueryGraphicsHelper* m_helper;
     QVector<SingleExpressionQueryComponent*> m_joinExpressions;

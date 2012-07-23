@@ -6,12 +6,14 @@
 #include "TreeItem.h"
 #include "SerializableElement.h"
 #include "core_ObjectWithUid.h"
+#include "core_CloneableElement.h"
 
 class SelectQuery;
 class QueryGraphicsHelper;
 class Version;
 
-class View : public SqlSourceEntity, public NamedItem, public TreeItem, public SerializableElement, public ObjectWithUid
+class View : public SqlSourceEntity, public NamedItem, public TreeItem, public SerializableElement, public ObjectWithUid, public CloneableElement
+
 {
 public:
     View(bool manual, QString uid);
@@ -74,6 +76,9 @@ public:
     }
 
     virtual QUuid getClassUid() const;
+
+    virtual CloneableElement* clone(Version* sourceVersion, Version* targetVersion);
+    void secondStepClone();
 
 private:
     SelectQuery* m_selectQuery;

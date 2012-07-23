@@ -75,6 +75,10 @@ public:
     {
         m_orderBy = s;
     }
+    void setHaving(SelectQueryWhereComponent* s) // called by the deserialization and noone else
+    {
+        m_having = s;
+    }
 
 
     bool hasGroupByFunctions();
@@ -91,7 +95,8 @@ public:
     QStringList getOrderByElements();
     QVector<const QueryComponent*> getSelectedComponents();
     virtual void serialize(QDomDocument& doc, QDomElement& parent) const;
-
+    virtual QUuid getClassUid() const;
+    virtual CloneableElement* clone(Version* sourceVersion, Version* targetVersion);
 private:
     SelectQuerySelectComponent* m_select;
     SelectQueryFromComponent* m_from;

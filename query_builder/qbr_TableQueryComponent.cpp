@@ -80,6 +80,23 @@ void TableQueryComponent::handleAction(const QString &action, QueryComponent *)
     m_parent->handleAction(action, this);
 }
 
+CloneableElement* TableQueryComponent::clone(Version *sourceVersion, Version *targetVersion)
+{
+    TableQueryComponent* newc = new TableQueryComponent(m_table, m_parent, m_level);
+    newc->m_as = m_as?dynamic_cast<SelectQueryAsComponent*>(m_as->clone(sourceVersion, targetVersion)):0;
+    cloneTheChildren(sourceVersion, targetVersion, newc);
+    // TODO: Fetch the correct table from the new version
+
+    // Joins do not clone for now
+    //for(int i=0; i<m_joins.size(); i++)
+    //{
+    //    SelectQueryJoinComponent* jI = dynamic_cast<SelectQueryJoinComponent*>(m_joins.at(i)->duplicate());
+    //    newc->m_joins.append(jI);
+    //}
+    newc->setSourceUid(getObjectUid());
+    return newc;
+}
+
 QueryComponent* TableQueryComponent::duplicate()
 {
     TableQueryComponent* newc = new TableQueryComponent(m_table, m_parent, m_level);
@@ -202,4 +219,9 @@ void TableQueryComponent::serialize(QDomDocument &doc, QDomElement &parent) cons
     }
     QueryComponent::serialize(doc, tableElement);
     parent.appendChild(tableElement);
+}
+
+QUuid TableQueryComponent::getClassUid() const
+{
+    return QUuid(uidTableQueryComponent);
 }

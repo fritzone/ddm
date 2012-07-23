@@ -19,6 +19,8 @@ public:
         return QVector<CellTypeChooserType> ();
     }
     virtual void serialize(QDomDocument& doc, QDomElement& parent) const;
+    virtual QUuid getClassUid() const;
+    virtual CloneableElement* clone(Version* sourceVersion, Version* targetVersion);
 };
 
 #endif // SELECTQUERYGROUPBYCOMPONENT_H

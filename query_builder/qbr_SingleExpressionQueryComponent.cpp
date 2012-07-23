@@ -13,7 +13,7 @@
 #include "qbr_CellAsCommand.h"
 #include "qbr_SelectQueryAsComponent.h"
 #include "strings.h"
-
+#include "uids.h"
 #include <QDebug>
 
 SingleExpressionQueryComponent::SingleExpressionQueryComponent(QueryComponent* p, int l): QueryComponent(p,l),
@@ -167,6 +167,32 @@ QSet<OptionsType> SingleExpressionQueryComponent::provideOptions()
 QueryComponent* SingleExpressionQueryComponent::duplicate()
 {
     SingleExpressionQueryComponent* newc = new SingleExpressionQueryComponent(m_parent, m_level);
+    return newc;
+}
+
+CloneableElement* SingleExpressionQueryComponent::clone(Version *sourceVersion, Version *targetVersion)
+{
+    SingleExpressionQueryComponent* newc = new SingleExpressionQueryComponent(m_parent, m_level);
+    newc->m_elements = m_elements;
+    newc->m_columnsAtGivenPosition = m_columnsAtGivenPosition;
+    newc->m_functionsAtGivenPosition = m_functionsAtGivenPosition;
+    newc->m_functionInstantiationAtGivenPosition = m_functionInstantiationAtGivenPosition;
+    newc->m_typedValuesAtGivenPosition = m_typedValuesAtGivenPosition;
+    newc->m_forcedType = m_forcedType;
+    newc->m_hasForcedType = m_hasForcedType;
+    newc->m_as = m_as?dynamic_cast<SelectQueryAsComponent*>(m_as->clone(sourceVersion,targetVersion)):0;
+    if(m_ownedByOn)
+    {
+        newc->m_ownedByOn = m_ownedByOn;
+        // TODO: find a way to fetch out the m_onOwner and m_onComponent from the target Version
+    }
+    else
+    {
+        newc->m_ownedByOn = false;
+        newc->m_onOwner = 0;
+        newc->m_onComponent = 0;
+    }
+    cloneTheChildren(sourceVersion, targetVersion, newc);
     return newc;
 }
 
@@ -555,3 +581,7 @@ bool SingleExpressionQueryComponent::hasStar()
     return false;
 }
 
+QUuid SingleExpressionQueryComponent::getClassUid() const
+{
+    return QUuid(uidSingleExpressionComponent);
+}

@@ -2,6 +2,7 @@
 #include "qbr_QueryAsGenerator.h"
 #include "qbr_TableQueryComponent.h"
 #include "qbr_SingleExpressionQueryComponent.h"
+#include "uids.h"
 
 SelectQueryAsComponent::SelectQueryAsComponent(QueryComponent* p, int l):QueryComponent(p,l)
 {
@@ -24,6 +25,15 @@ QueryComponent* SelectQueryAsComponent::duplicate()
     SelectQueryAsComponent* newc = new SelectQueryAsComponent(m_parent, m_level);
     newc->m_as = (QueryAsGenerator::instance().getNextValidAs());
     return newc;
+}
+
+CloneableElement* SelectQueryAsComponent::clone(Version *sourceVersion, Version *targetVersion)
+{
+    SelectQueryAsComponent* n = dynamic_cast<SelectQueryAsComponent*>(duplicate());
+    n->m_as = m_as;
+    n->setSourceUid(getObjectUid());
+    cloneTheChildren(sourceVersion, targetVersion, n);
+    return n;
 }
 
 bool SelectQueryAsComponent::setAs(const QString& as)
@@ -59,4 +69,9 @@ void SelectQueryAsComponent::serialize(QDomDocument& /*doc*/, QDomElement& /*par
 //    QDomElement asElement = doc.createElement("As");
 //    QueryComponent::serialize(doc, asElement);
 //    parent.appendChild(asElement);
+}
+
+QUuid SelectQueryAsComponent::getClassUid() const
+{
+    return QUuid(uidSelectQueryAsComponent);
 }

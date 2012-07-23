@@ -369,6 +369,11 @@ QueryComponent* DeserializationFactory::createComponent(QueryComponent* parent, 
         c = new SelectQueryWhereComponent(parent, componentNode.attribute("level").toInt(), static_cast<SelectQueryWhereComponent::WhereType>(componentNode.attribute("Type").toInt()));
     }
 
+    if(strClass == "SelectQueryHavingComponent")
+    {
+        c = new SelectQueryWhereComponent(parent, componentNode.attribute("level").toInt(), static_cast<SelectQueryWhereComponent::WhereType>(componentNode.attribute("Type").toInt()));
+    }
+
     if(strClass == "SelectQueryGroupByComponent")
     {
         c = new SelectQueryGroupByComponent(parent, componentNode.attribute("level").toInt());
@@ -492,7 +497,16 @@ QueryComponent* DeserializationFactory::createComponent(QueryComponent* parent, 
                 dynamic_cast<SelectQueryJoinComponent*>(c)->addJoinExpression(dynamic_cast<SingleExpressionQueryComponent*>(child));
             }
         }
+    }
 
+    if(componentNode.hasAttribute("uid"))
+    {
+        QString s = componentNode.attribute("uid");
+        c->setForcedUid(s);
+    }
+    else
+    {
+        c->setForcedUid(QUuid::createUuid().toString());
     }
 
     return c;
@@ -539,7 +553,19 @@ View* DeserializationFactory::createView(Project* p, Version* v, const QDomDocum
             if(element.childNodes().at(i).nodeName() == "Query")
             {
                 QDomElement queryNode = element.childNodes().at(i).toElement();
+                if(queryNode.hasAttribute("class-uid"))
+                {
+                    QString cuid = queryNode.attribute("class-uid");
+                    if(cuid.toUpper() != uidSelectQuery)
+                    {
+                        qDebug() << "Views's select query UID is not valid: cuid (" << cuid << ") != " << uidSelectQuery ;
+                    }
+                }
                 SelectQuery* q = new SelectQuery(view->getHelper(), view);
+                if(queryNode.hasAttribute("uid"))
+                {
+                    q->setForcedUid(queryNode.attribute("uid"));
+                }
                 view->setQuery(q);
                 view->getHelper()->setQuery(q);
 
@@ -565,6 +591,11 @@ View* DeserializationFactory::createView(Project* p, Version* v, const QDomDocum
                     {
                         SelectQueryGroupByComponent* sqgbc = dynamic_cast<SelectQueryGroupByComponent*> (createComponent(q, p, v, doc, childNode));
                         q->setGroupBy(sqgbc);
+                    }
+                    if(childNode.nodeName() == "HavingComponent")
+                    {
+                        SelectQueryWhereComponent* sqwc = dynamic_cast<SelectQueryWhereComponent*> (createComponent(q, p, v, doc, childNode));
+                        q->setHaving(sqwc);
                     }
                     if(childNode.nodeName() == "OrderBy")
                     {
@@ -977,8 +1008,21 @@ Procedure* DeserializationFactory::createProcedure(Project*, Version*,  const QD
     Procedure* p = new Procedure(name, uid);
 
     QDomElement sqlElement = element.firstChild().toElement();
+    if(sqlElement.hasAttribute("Encoded"))
+    {
+        if(sqlElement.attribute("Encoded") == "Base64")
+        {
+            QDomCDATASection cdata = sqlElement.firstChild().toCDATASection();
+            QByteArray encoded = QByteArray(cdata.toText().data().toLocal8Bit());
+            p->setSql(QString(QByteArray::fromBase64(encoded)));
+
+            return p;
+        }
+    }
+
+    // assuming a not encoded SQL, old versions, pre 0.1i
     QDomCDATASection cdata = sqlElement.firstChild().toCDATASection();
-    p->setSql(cdata.toText().data());
+    p->setSql(cdata.toText().data().toLocal8Bit());
     return p;
 }
 
@@ -997,6 +1041,19 @@ Function* DeserializationFactory::createFunction(Project*, Version*,  const QDom
     }
     Function* p = new Function(name, uid);
     QDomElement sqlElement = element.firstChild().toElement();
+    if(sqlElement.hasAttribute("Encoded"))
+    {
+        if(sqlElement.attribute("Encoded") == "Base64")
+        {
+            QDomCDATASection cdata = sqlElement.firstChild().toCDATASection();
+            QByteArray encoded = QByteArray(cdata.toText().data().toLocal8Bit());
+            p->setSql(QString(QByteArray::fromBase64(encoded)));
+
+            return p;
+        }
+    }
+
+    // assuming a not encoded SQL, old versions, pre 0.1i
     QDomCDATASection cdata = sqlElement.firstChild().toCDATASection();
     p->setSql(cdata.toText().data());
     return p;

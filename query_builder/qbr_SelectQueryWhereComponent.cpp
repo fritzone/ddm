@@ -2,6 +2,7 @@
 #include "qbr_OptionTypes.h"
 #include "qbr_SelectQuery.h"
 #include "qbr_SingleExpressionQueryComponent.h"
+#include "uids.h"
 
 #include "strings.h"
 
@@ -75,6 +76,15 @@ QueryComponent* SelectQueryWhereComponent::duplicate()
     return newc;
 }
 
+CloneableElement* SelectQueryWhereComponent::clone(Version* sourceVersion, Version* targetVersion)
+{
+    SelectQueryWhereComponent* nc = dynamic_cast<SelectQueryWhereComponent*>(duplicate());
+    nc->setSourceUid(getObjectUid());
+    cloneTheChildren(sourceVersion, targetVersion, nc);
+    return nc;
+}
+
+
 QString SelectQueryWhereComponent::get() const
 {
     QString result = "";
@@ -139,4 +149,9 @@ void SelectQueryWhereComponent::serialize(QDomDocument &doc, QDomElement &parent
     whereElement.setAttribute("Type", m_whereType);
     QueryComponent::serialize(doc, whereElement);
     parent.appendChild(whereElement);
+}
+
+QUuid SelectQueryWhereComponent::getClassUid() const
+{
+    return QUuid(uidSelectQueryWhereComponent);
 }

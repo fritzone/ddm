@@ -88,6 +88,14 @@ QueryComponent* SelectQueryFromComponent::duplicate()
     return newc;
 }
 
+CloneableElement* SelectQueryFromComponent::clone(Version *sourceVersion, Version *targetVersion)
+{
+    SelectQueryFromComponent* newc = new SelectQueryFromComponent(m_parent, m_level);
+    newc->setSourceUid(getObjectUid());
+    cloneTheChildren(sourceVersion, targetVersion, newc);
+    return newc;
+}
+
 QVector<const Table*> SelectQueryFromComponent::getTables() const
 {
     QVector<const Table*>  result;
@@ -121,4 +129,9 @@ void SelectQueryFromComponent::serialize(QDomDocument& doc, QDomElement& parent)
     QDomElement fromElement = doc.createElement("From");
     QueryComponent::serialize(doc, fromElement);
     parent.appendChild(fromElement);
+}
+
+QUuid SelectQueryFromComponent::getClassUid() const
+{
+    return QUuid(uidSelectQueryFromComponent);
 }

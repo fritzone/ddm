@@ -544,7 +544,7 @@ void MainWindow::currentProjectTreeItemChanged(QTreeWidgetItem * current, QTreeW
             QVariant qv = current->data(0, Qt::UserRole);
             QString n = qv.toString();
             UserDataType* udt = 0;
-            if(udt = dynamic_cast<UserDataType*>(UidWarehouse::instance().getElement(n)))
+            if((udt = dynamic_cast<UserDataType*>(UidWarehouse::instance().getElement(n))))
             {
                 NewDataTypeForm* frm = new NewDataTypeForm(DT_INVALID, m_workspace->currentProjectsEngine(), this);
                 frm->focusOnName();
