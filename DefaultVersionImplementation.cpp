@@ -1107,8 +1107,30 @@ bool DefaultVersionImplementation::cloneInto(Version* other)
         View* v =  dynamic_cast<View*>(views.at(i)->clone(this, other));
         other->addView(v);
     }
+
     // clone the procedures
-    // clone the functions
+    const QVector<Procedure*> procs = getProcedures();
+    for(int i=0; i<procs.size(); i++)
+    {
+        Procedure* newp = dynamic_cast<Procedure*>(procs.at(i)->clone(this, other));
+        other->addProcedure(newp);
+    }
+
+    // and the functions
+    const QVector<Function*> funcs = getFunctions();
+    for(int i=0; i<funcs.size(); i++)
+    {
+        Function* newp = dynamic_cast<Function*>(funcs.at(i)->clone(this, other));
+        other->addFunction(newp);
+    }
+
+    // clone the triggers
+    const QVector<Trigger*> trigs = getTriggers();
+    for(int i=0; i<trigs.size(); i++)
+    {
+        Trigger* newp = dynamic_cast<Trigger*>(trigs.at(i)->clone(this, other));
+        other->addTrigger(newp);
+    }
     return true;
 }
 

@@ -12,6 +12,7 @@
 #include "qbr_CellWhereCommand.h"
 #include "core_Column.h"
 #include "qbr_SingleExpressionQueryComponent.h"
+#include "UidWarehouse.h"
 
 #include <QGraphicsScene>
 #include <QGraphicsView>
@@ -85,14 +86,24 @@ CloneableElement* TableQueryComponent::clone(Version *sourceVersion, Version *ta
     TableQueryComponent* newc = new TableQueryComponent(m_table, m_parent, m_level);
     newc->m_as = m_as?dynamic_cast<SelectQueryAsComponent*>(m_as->clone(sourceVersion, targetVersion)):0;
     cloneTheChildren(sourceVersion, targetVersion, newc);
-    // TODO: Fetch the correct table from the new version
+    // Fetch the correct table from the new version
 
-    // Joins do not clone for now
-    //for(int i=0; i<m_joins.size(); i++)
-    //{
-    //    SelectQueryJoinComponent* jI = dynamic_cast<SelectQueryJoinComponent*>(m_joins.at(i)->duplicate());
-    //    newc->m_joins.append(jI);
-    //}
+    QString tableName = m_table->getName();
+    const QVector<Table*> newVersionTables = targetVersion->getTables();
+    for(int i=0; i<newVersionTables.size(); i++)
+    {
+        if(newVersionTables.at(i)->getName() == tableName)
+        {
+            newc->m_table = newVersionTables.at(i);
+        }
+    }
+
+    for(int i=0; i<m_joins.size(); i++)
+    {
+        SelectQueryJoinComponent* jI = dynamic_cast<SelectQueryJoinComponent*>(m_joins.at(i)->clone(sourceVersion, targetVersion));
+        newc->m_joins.append(jI);
+    }
+
     newc->setSourceUid(getObjectUid());
     return newc;
 }

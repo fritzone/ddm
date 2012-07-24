@@ -181,18 +181,14 @@ CloneableElement* SingleExpressionQueryComponent::clone(Version *sourceVersion, 
     newc->m_forcedType = m_forcedType;
     newc->m_hasForcedType = m_hasForcedType;
     newc->m_as = m_as?dynamic_cast<SelectQueryAsComponent*>(m_as->clone(sourceVersion,targetVersion)):0;
-    if(m_ownedByOn)
-    {
-        newc->m_ownedByOn = m_ownedByOn;
-        // TODO: find a way to fetch out the m_onOwner and m_onComponent from the target Version
-    }
-    else
+    // the ownedByON is set on the graphics drawing
     {
         newc->m_ownedByOn = false;
         newc->m_onOwner = 0;
         newc->m_onComponent = 0;
     }
     cloneTheChildren(sourceVersion, targetVersion, newc);
+    newc->setSourceUid(getObjectUid());
     return newc;
 }
 

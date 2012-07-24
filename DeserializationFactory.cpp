@@ -1077,8 +1077,20 @@ Trigger* DeserializationFactory::createTrigger(Project*, Version* v,  const QDom
         if(element.childNodes().at(i).nodeName() == "Body")
         {
             QDomElement sqlElement = element.childNodes().at(i).toElement();
-            QDomText cdata = sqlElement.firstChild().toText();
-            trigg->setSql(cdata.data());
+            if(sqlElement.hasAttribute("Encoded"))
+            {
+                if(sqlElement.attribute("Encoded") == "Base64")
+                {
+                    QDomCDATASection cdata = sqlElement.firstChild().toCDATASection();
+                    QByteArray encoded = QByteArray(cdata.toText().data().toLocal8Bit());
+                    trigg->setSql(QString(QByteArray::fromBase64(encoded)));
+                }
+            }
+            else
+            {
+                QDomText cdata = sqlElement.firstChild().toText();
+                trigg->setSql(cdata.data());
+            }
         }
 
         if(element.childNodes().at(i).nodeName() == "Description")

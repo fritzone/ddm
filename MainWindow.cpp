@@ -155,6 +155,7 @@ void MainWindow::setupGuiForNewSolution()
 
     addDockWidget(Qt::LeftDockWidgetArea, m_guiElements->getProjectDock());
     addDockWidget(Qt::BottomDockWidgetArea, m_guiElements->getIssuesDock());
+    addDockWidget(Qt::LeftDockWidgetArea, m_guiElements->getGenDock());
 
     IssueManager::getInstance().setIssuesDock(m_guiElements->getIssuesDock());
 
@@ -269,10 +270,12 @@ void MainWindow::onNewSolution()
             {
                 m_workspace->workingVersion()->getGui()->createDataTypeTreeEntry(dts.at(i));
             }
+
         }
 
         // expand the tree
         m_guiElements->getProjectTree()->expandAll();
+        Workspace::getInstance()->workingVersion()->getGui()->collapseDTEntries();
 
         // show the project properties window
         showProjectDetails();
@@ -294,6 +297,7 @@ void MainWindow::onNewSolution()
             QObject::connect(m_revEngWizard, SIGNAL(currentIdChanged(int)), this, SLOT(onReverseEngineerWizardNextPage(int)));
             QObject::connect(m_revEngWizard, SIGNAL(accepted()), this, SLOT(onReverseEngineerWizardAccept()));
         }
+
 
         enableActions();
         delete m_btndlg;
@@ -778,6 +782,7 @@ void MainWindow::doLoadSolution(const QString& fileName, bool splashVisible)
     }
 
     m_guiElements->getProjectTree()->expandAll();
+    Workspace::getInstance()->workingVersion()->getGui()->collapseDTEntries();
 
     ProjectDetailsForm* prjDetailsForm = new ProjectDetailsForm(this);
     prjDetailsForm->setProject(m_workspace->currentSolution()->currentProject(), fileName);
