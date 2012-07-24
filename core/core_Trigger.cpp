@@ -27,7 +27,8 @@ void Trigger::serialize(QDomDocument &doc, QDomElement &parent) const
     triggerElement.setAttribute("class-uid", getClassUid());
 
     QDomElement textElement = doc.createElement("Body");
-    QDomText cdata = doc.createTextNode(m_body);
+    textElement.setAttribute("Encoded", "Base64");
+    QDomCDATASection cdata = doc.createCDATASection(QString(getSql().toUtf8().toBase64()));
     textElement.appendChild(cdata);
     triggerElement.appendChild(textElement);
 
@@ -42,4 +43,16 @@ void Trigger::serialize(QDomDocument &doc, QDomElement &parent) const
 QUuid Trigger::getClassUid() const
 {
     return QUuid(uidTrigger);
+}
+
+CloneableElement* Trigger::clone(Version *sourceVersion, Version *targetVersion)
+{
+    Trigger* t = new Trigger(getName(), QUuid::createUuid().toString());
+    t->m_body = m_body;
+    t->m_event = m_event;
+    t->m_ttime = m_ttime;
+    t->m_table = m_table;
+    t->m_description = m_description;
+    t->setSourceUid(getObjectUid());
+    return t;
 }

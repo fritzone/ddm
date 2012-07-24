@@ -5,8 +5,9 @@
 #include "SqlSourceEntity.h"
 #include "TreeItem.h"
 #include "SerializableElement.h"
+#include "core_CloneableElement.h"
 
-class StoredMethod : public NamedItem, public SqlSourceEntity, public TreeItem, public SerializableElement
+class StoredMethod : public NamedItem, public SqlSourceEntity, public TreeItem, public SerializableElement, public CloneableElement
 {
 public:
 
@@ -25,6 +26,7 @@ public:
     virtual QStringList generateSqlSource(AbstractSqlGenerator*, QHash<QString,QString>, const Connection*);
     virtual void serialize(QDomDocument& doc, QDomElement& parent) const = 0;
     virtual QString keyword() = 0;
+    virtual CloneableElement* clone(Version* sourceVersion, Version* targetVersion) = 0;
 
     void setSql(const QString&);
     virtual void rename(const QString&);
@@ -47,6 +49,8 @@ public:
 protected:
 
     QString m_sql;
+
+    // these are populated automatically by the documentation generator
     QString m_brief;
     QString m_desc;
     QString m_returns;

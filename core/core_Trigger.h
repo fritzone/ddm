@@ -6,10 +6,11 @@
 #include "TreeItem.h"
 #include "SerializableElement.h"
 #include "core_ObjectWithUid.h"
+#include "core_CloneableElement.h"
 
 class Table;
 
-class Trigger : public SqlSourceEntity, public NamedItem, public TreeItem, public SerializableElement, public ObjectWithUid
+class Trigger : public SqlSourceEntity, public NamedItem, public TreeItem, public SerializableElement, public ObjectWithUid, public CloneableElement
 {
 public:
 
@@ -17,6 +18,7 @@ public:
 
     virtual QStringList generateSqlSource(AbstractSqlGenerator*, QHash<QString,QString>, const Connection*);
     virtual void serialize(QDomDocument& doc, QDomElement& parent) const;
+    virtual CloneableElement* clone(Version* sourceVersion, Version* targetVersion);
 
     void setSql(const QString& s)
     {

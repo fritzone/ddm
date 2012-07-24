@@ -33,6 +33,7 @@ class VersionGuiElements
 public:
 
     VersionGuiElements(GuiElements*, Version*);
+    void collapseDTEntries();
 
     /** @group project tree items */
     ContextMenuEnabledTreeWidgetItem* getTablesItem() const;
@@ -82,21 +83,25 @@ public:
 
 private:
 
-    // project tree items
+    /** @group project tree items */
     ContextMenuEnabledTreeWidgetItem* tablesItem;
     ContextMenuEnabledTreeWidgetItem* tableInstancesItem;
     ContextMenuEnabledTreeWidgetItem* versionItem;
     ContextMenuEnabledTreeWidgetItem* diagramsItem;
     ContextMenuEnabledTreeWidgetItem* proceduresItem;
     ContextMenuEnabledTreeWidgetItem* functionsItem;
-    ContextMenuEnabledTreeWidgetItem* finalSqlItem;
     ContextMenuEnabledTreeWidgetItem* viewsItem;
     ContextMenuEnabledTreeWidgetItem* triggersItem;
+    ContextMenuEnabledTreeWidgetItem* versionItemForDocs;
+
+    /** @group the genTree items */
+    ContextMenuEnabledTreeWidgetItem* finalSqlItem;
     ContextMenuEnabledTreeWidgetItem* documentationItem;
 
-    // the different trees for the app
-    QTreeWidget* m_tree;
-    QTreeWidget* m_issuesTree;
+    /** @group the different trees for the app */
+    QTreeWidget* m_tree;            // the solution objects tree
+    QTreeWidget* m_issuesTree;      // the tree for the issues
+    QTreeWidget* m_genTree;         // the tree for the generated items (code, documentation)
 
     // the tree item containing the various data types
     ContextMenuEnabledTreeWidgetItem* dtsItem;

@@ -31,15 +31,28 @@
 
 VersionGuiElements::VersionGuiElements(GuiElements* guiElements, Version* v) :
     tablesItem(0), tableInstancesItem(0), versionItem(0), diagramsItem(0),
-    proceduresItem(0), functionsItem(0), finalSqlItem(0), viewsItem(0),
-    triggersItem(0), documentationItem(0),
+    proceduresItem(0), functionsItem(0), viewsItem(0),
+    triggersItem(0), versionItemForDocs(0),
+    finalSqlItem(0), documentationItem(0),
     m_tree(guiElements->getProjectTree()),
     m_issuesTree(guiElements->getIssuesTree()),
+    m_genTree(guiElements->getGenTree()),
     dtsItem(0), stringsDtItem(0), intsDtItem(0), dateDtItem(0), blobDtItem(0),
     boolDtItem(0), miscDtItem(0), spatialDtItem(0),
     m_newTableForm(0), m_existingTableForm(0), m_procedureForm(0),
     m_version(v)
 {
+}
+
+void VersionGuiElements::collapseDTEntries()
+{
+    if(stringsDtItem != 0) getStringDtsItem()->setExpanded(false);
+    if(intsDtItem != 0)    getIntsDtsItem()->setExpanded(false);
+    if(dateDtItem != 0)    getDateDtsItem()->setExpanded(false);
+    if(blobDtItem != 0)    getBlobDtsItem()->setExpanded(false);
+    if(boolDtItem != 0)    getBoolDtsItem()->setExpanded(false);
+    if(miscDtItem != 0)    getMiscDtsItem()->setExpanded(false);
+    if(spatialDtItem != 0) getSpatialDtsItem()->setExpanded(false);
 }
 
 void VersionGuiElements::createGuiElements(ContextMenuEnabledTreeWidgetItem* projectItem)
@@ -116,23 +129,32 @@ void VersionGuiElements::createGuiElements(ContextMenuEnabledTreeWidgetItem* pro
     triggersItem->setData(0, Qt::UserRole, QVariant(trigsUid));
     UidWarehouse::instance().addElement(trigsUid, m_version);
 
+    // and the generated items
+
+    versionItemForDocs = new ContextMenuEnabledTreeWidgetItem(0,
+               QStringList(QString("Ver: ") + m_version->getVersionText())) ;
+    versionItemForDocs->setIcon(0, IconFactory::getVersionIcon());
+    versionItemForDocs->setPopupMenu(ContextMenuCollection::getInstance()->getMajorVersionPopupMenu());
+    m_genTree->addTopLevelItem(versionItemForDocs);
+    versionItemForDocs->setData(0, Qt::UserRole, a);
+
     // SQLs
-    ContextMenuEnabledTreeWidgetItem* codeItem= new ContextMenuEnabledTreeWidgetItem(versionItem, QStringList(QObject::tr("Code"))) ;
+    ContextMenuEnabledTreeWidgetItem* codeItem= new ContextMenuEnabledTreeWidgetItem(versionItemForDocs, QStringList(QObject::tr("Code"))) ;
     codeItem->setIcon(0, IconFactory::getCodeIcon());
-    m_tree->addTopLevelItem(codeItem);
+    m_genTree->addTopLevelItem(codeItem);
 
     finalSqlItem= new ContextMenuEnabledTreeWidgetItem(codeItem, QStringList(QObject::tr("SQL"))) ;
     finalSqlItem->setIcon(0, IconFactory::getSqlIcon());
-    m_tree->addTopLevelItem(finalSqlItem);
+    m_genTree->addTopLevelItem(finalSqlItem);
     QUuid sqlsUid = QUuid::createUuid();
     finalSqlItem->setData(0, Qt::UserRole, QVariant(sqlsUid));
     UidWarehouse::instance().addElement(sqlsUid, m_version);
 
     // documentation
-    documentationItem = new ContextMenuEnabledTreeWidgetItem(versionItem, QStringList(QObject::tr("Documentation"))) ;
+    documentationItem = new ContextMenuEnabledTreeWidgetItem(versionItemForDocs, QStringList(QObject::tr("Documentation"))) ;
     documentationItem->setIcon(0, IconFactory::getHelpIcon());
     //viewsItem->setPopupMenu(ContextMenuCollection::getInstance()->getDiagramsPopupMenu());
-    m_tree->addTopLevelItem(documentationItem);
+    m_genTree->addTopLevelItem(documentationItem);
     QUuid docsUid = QUuid::createUuid();
     documentationItem->setData(0, Qt::UserRole, QVariant(docsUid));
     UidWarehouse::instance().addElement(docsUid, m_version);

@@ -30,3 +30,11 @@ QUuid Procedure::getClassUid() const
 {
     return QUuid(uidProcedure);
 }
+
+CloneableElement* Procedure::clone(Version *sourceVersion, Version *targetVersion)
+{
+    Procedure* newp = new Procedure(getName(), QUuid::createUuid().toString() );
+    newp->setSql(getSql());
+    newp->setSourceUid(getObjectUid());
+    return newp;
+}
