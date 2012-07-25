@@ -9,12 +9,21 @@ namespace icons
 {
 
 static const QString strDtTextIcon = ":/images/actions/images/small/datatypes_text.png";
+static const QString strDtLockedTextIcon = ":/images/actions/images/small/datatypes_text_locked.png";
 static const QString strDtNumericIcon = ":/images/actions/images/small/datatypes_numeric.png";
+static const QString strDtLockedNumericIcon = ":/images/actions/images/small/datatypes_numeric_locked.png";
 static const QString strDtMiscIcon = ":/images/actions/images/small/datatypes_misc.png";
+static const QString strDtLockedMiscIcon = ":/images/actions/images/small/datatypes_misc_locked.png";
 static const QString strDtDateTimeIcon = ":/images/actions/images/small/datatypes_datetime.png";
+static const QString strDtLockedDateTimeIcon = ":/images/actions/images/small/datatypes_datetime_locked.png";
 static const QString strDtBoolIcon = ":/images/actions/images/small/datatypes_bool.png";
+static const QString strDtLockedBoolIcon = ":/images/actions/images/small/datatypes_bool_locked.png";
 static const QString strDtBlobIcon = ":/images/actions/images/small/datatypes_blob.png";
+static const QString strDtLockedBlobIcon = ":/images/actions/images/small/datatypes_blob_locked.png";
 static const QString strDtSpatialIcon = ":/images/actions/images/small/datatypes_spatial.png";
+static const QString strDtLockedSpatialIcon = ":/images/actions/images/small/datatypes_spatial_locked.png";
+static const QString strLockedIcon = ":/images/actions/images/small/locked.png";
+static const QString strUnLockedIcon = ":/images/actions/images/small/unlocked.png";
 static const QString strKeyIcon = ":/images/actions/images/small/key.png";
 static const QString strSaveIcon = ":/images/actions/images/actions/filesave.png";
 static const QString strApplyIcon = ":/images/actions/images/small/apply.png";
@@ -245,6 +254,11 @@ public:
         static const QIcon icon(icons::strDtTextIcon);
         return icon;
     }
+    static const QIcon& getLockedStringDataTypeIcon()
+    {
+        static const QIcon icon(icons::strDtLockedTextIcon);
+        return icon;
+    }
 
     static const QIcon& getIntDataTypesIcon()
     {
@@ -258,21 +272,51 @@ public:
         return icon;
     }
 
+    static const QIcon& getLockedIntDataTypeIcon()
+    {
+        static const QIcon icon(icons::strDtLockedNumericIcon);
+        return icon;
+    }
+
     static const QIcon& getBlobDataTypesIcon()
     {
         static const QIcon icon(icons::strBlobFolder);
         return icon;
     }
 
+    static const QIcon& getLockedBlobDataTypeIcon()
+    {
+        static const QIcon icon(icons::strDtLockedBlobIcon);
+        return icon;
+    }
+
+    static const QIcon& getLockedIcon()
+    {
+        static const QIcon icon(icons::strLockedIcon);
+        return icon;
+    }
+
+    static const QIcon& getUnLockedIcon()
+    {
+        static const QIcon icon(icons::strUnLockedIcon);
+        return icon;
+    }
+
     static const QIcon& getBlobDataTypeIcon()
     {
-        static const QIcon icon(icons::strDtBlobIcon);
+        static const QIcon icon(icons::strDtLockedBlobIcon);
         return icon;
     }
 
     static const QIcon& getBoolDataTypesIcon()
     {
         static const QIcon icon(icons::strBoolFolder);
+        return icon;
+    }
+
+    static const QIcon& getLockedBoolDataTypeIcon()
+    {
+        static const QIcon icon(icons::strDtLockedBoolIcon);
         return icon;
     }
 
@@ -294,6 +338,12 @@ public:
         return icon;
     }
 
+    static const QIcon& getLockedMiscDataTypeIcon()
+    {
+        static const QIcon icon(icons::strDtLockedMiscIcon);
+        return icon;
+    }
+
     static const QIcon& getSpatialDataTypesIcon()
     {
         static const QIcon icon(icons::strSpatialFolder);
@@ -306,6 +356,12 @@ public:
         return icon;
     }
 
+    static const QIcon& getLockedSpatialDataTypeIcon()
+    {
+        static const QIcon icon(icons::strDtLockedSpatialIcon);
+        return icon;
+    }
+
     static const QIcon& getDateTimeDataTypesIcon()
     {
         static const QIcon icon(icons::strDateTimesFolder);
@@ -315,6 +371,12 @@ public:
     static const QIcon& getDateTimeDataTypeIcon()
     {
         static const QIcon icon(icons::strDtDateTimeIcon);
+        return icon;
+    }
+
+    static const QIcon& getLockedDateTimeDataTypeIcon()
+    {
+        static const QIcon icon(icons::strDtLockedDateTimeIcon);
         return icon;
     }
 
@@ -692,6 +754,26 @@ public:
         return getEmptyIcon();
     }
 
+
+    static QIcon getLockedIconForDataType(DT_TYPE dt)
+    {
+        switch(dt)
+        {
+        case DT_STRING: return getLockedStringDataTypeIcon();
+        case DT_NUMERIC: return getLockedIntDataTypeIcon();
+        case DT_BOOLEAN: return getLockedBoolDataTypeIcon();
+        case DT_BLOB: return getLockedBlobDataTypeIcon();
+        case DT_DATETIME: return getLockedDateTimeDataTypeIcon();
+        case DT_MISC: return getLockedMiscDataTypeIcon();
+        case DT_SPATIAL: return getLockedSpatialDataTypeIcon();
+        case DT_INVALID:
+        case DT_GENERIC:
+        default:
+            return getEmptyIcon();
+        }
+
+        return getEmptyIcon();
+    }
     static QIcon getConnectionStateIcon(ConnectionState c)
     {
         switch(c)

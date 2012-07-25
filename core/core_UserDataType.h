@@ -120,6 +120,7 @@ public:
     virtual CloneableElement* clone(Version* sourceVersion, Version* targetVersion);
 
     virtual QUuid getClassUid() const;
+    virtual void updateGui();
 
 
 private:

@@ -177,6 +177,15 @@
         <file>images/actions/forward.png</file>
         <file>images/small/help_book_3d.png</file>
         <file>images/big/folder_database.png</file>
+        <file>images/small/datatypes_bool_locked.png</file>
+        <file>images/small/datatypes_numeric_locked.png</file>
+        <file>images/small/datatypes_text_locked.png</file>
+        <file>images/small/datatypes_blob_locked.png</file>
+        <file>images/small/datatypes_datetime_locked.png</file>
+        <file>images/small/datatypes_misc_locked.png</file>
+        <file>images/small/datatypes_spatial_locked.png</file>
+        <file>images/small/locked.png</file>
+        <file>images/small/unlocked.png</file>
     </qresource>
     <qresource prefix="/bigger">
         <file>images/unaf.png</file>
