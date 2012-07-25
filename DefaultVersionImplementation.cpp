@@ -1023,6 +1023,8 @@ bool DefaultVersionImplementation::cloneInto(Version* other)
     for(int i=0; i<dts.size(); i++)
     {
         other->addNewDataType(dynamic_cast<UserDataType*>(dts.at(i)->clone(this, other)));
+        dts.at(i)->lock();
+        dts.at(i)->updateGui();
     }
 
     // clone the tables
@@ -1131,6 +1133,7 @@ bool DefaultVersionImplementation::cloneInto(Version* other)
         Trigger* newp = dynamic_cast<Trigger*>(trigs.at(i)->clone(this, other));
         other->addTrigger(newp);
     }
+
     return true;
 }
 

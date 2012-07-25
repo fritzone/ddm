@@ -84,7 +84,8 @@ SOURCES += main.cpp \
     DeploymentInitiator.cpp \
     DocumentationForm.cpp \
     DocumentationGenerator.cpp \
-    SpInstance.cpp
+    SpInstance.cpp \
+    TreeItem.cpp
 
 HEADERS += MainWindow.h \
     MainWindowButtonDialog.h \

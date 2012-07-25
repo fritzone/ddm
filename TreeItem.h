@@ -4,6 +4,7 @@
 #include <QTreeWidgetItem>
 
 #include "ContextMenuEnabledTreeWidget.h"
+#include "core_LockableElement.h"
 
 /**
  * Every object that can be put in the tree (DataType, Table, etc...) must be derived from this class
@@ -11,7 +12,7 @@
  * to the tree location. On the other end, all the other elements that are put in the trees in the
  * NewTableForm are also using this, since they are also can be found in a tree widget.
  */
-class TreeItem
+class TreeItem : public LockableElement
 {
 public:
 
@@ -38,6 +39,8 @@ public:
     {
         rename(newText);
     }
+
+    virtual void updateGui();
 
 protected:
     // where the object is to be found

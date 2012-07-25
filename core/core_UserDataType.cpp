@@ -185,3 +185,9 @@ QUuid UserDataType::getClassUid() const
        return nullUid;
     }
 }
+
+void UserDataType::updateGui()
+{
+    getLocation()->setIcon(0, IconFactory::getLockedIconForDataType(m_type));
+    TreeItem::updateGui();
+}

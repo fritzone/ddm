@@ -341,6 +341,23 @@ void NewDataTypeForm::setDataType(UserDataType* udt)
     }
 
     m_ui->txtDescription->setText(udt->getDescription());
+
+    if(!udt->wasLocked())
+    {
+        m_ui->frameForUnlockButton->hide();
+    }
+    else
+    {
+        m_ui->frameForUnlockButton->show();
+        if(udt->isLocked())
+        {
+            m_ui->btnLock->setIcon(IconFactory::getLockedIcon());
+        }
+        else
+        {
+            m_ui->btnLock->setIcon(IconFactory::getUnLockedIcon());
+        }
+    }
 }
 
 void NewDataTypeForm::onNullClicked()

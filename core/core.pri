@@ -23,7 +23,8 @@ HEADERS +=                                         \
             core/core_Table.h \
             core/core_TableInstance.h \
             core/core_UserDataType.h \
-    core/core_CloneableElement.h
+    core/core_CloneableElement.h \
+    core/core_LockableElement.h
 
 
 
