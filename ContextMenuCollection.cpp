@@ -27,6 +27,8 @@ ContextMenuCollection::ContextMenuCollection()
     m_viewPopupMenu = new QMenu();
     m_procedurePopupMenu = new QMenu();
     m_majorVersionPopupMenu = new QMenu();
+    m_unlockLementPopupMenu = new QMenu();
+    m_relockLementPopupMenu = new QMenu();
 
     // actions
     action_RemoveTable = new QAction(QObject::tr("Delete table"), 0);
@@ -86,6 +88,10 @@ ContextMenuCollection::ContextMenuCollection()
     action_deleteProcedure->setIcon(IconFactory::getRemoveIcon());
     action_releaseMajorVersion = new QAction(QObject::tr("Release Version"), 0);
     action_releaseMajorVersion->setIcon(IconFactory::getReleaseMajorVersionIcon());
+    action_unlock = new QAction(QObject::tr("Unlock"), 0);
+    action_unlock->setIcon(IconFactory::getUnLockedIcon());
+    action_relock = new QAction(QObject::tr("Lock"), 0);
+    action_relock->setIcon(IconFactory::getLockedIcon());
 
     // populate the table popup menu
     m_tablePopupMenu->addAction(action_TableAddColumn);
@@ -169,4 +175,7 @@ ContextMenuCollection::ContextMenuCollection()
     m_procedurePopupMenu->addAction(action_deleteProcedure);
 
     m_majorVersionPopupMenu->addAction(action_releaseMajorVersion);
+
+    m_unlockLementPopupMenu->addAction(action_unlock);
+    m_relockLementPopupMenu->addAction(action_relock);
 }

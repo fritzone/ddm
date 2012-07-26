@@ -925,6 +925,8 @@ void MainWindow::connectActionsFromPopupMenus()
     QObject::connect(ContextMenuCollection::getInstance()->getAction_DeleteView(), SIGNAL(triggered()), this, SLOT(onDeleteView()));
     QObject::connect(ContextMenuCollection::getInstance()->getAction_DeleteProcedure(), SIGNAL(triggered()), this, SLOT(onDeleteProcedure()));
     QObject::connect(ContextMenuCollection::getInstance()->getAction_ReleaseMajorVersion(), SIGNAL(triggered()), this, SLOT(onReleaseMajorVersion()));
+    QObject::connect(ContextMenuCollection::getInstance()->getAction_unlock(), SIGNAL(triggered()), this, SLOT(onUnlockSomething()));
+    QObject::connect(ContextMenuCollection::getInstance()->getAction_relock(), SIGNAL(triggered()), this, SLOT(onRelockSomething()));
 }
 
 template <class T>
@@ -944,7 +946,7 @@ void MainWindow::onReleaseMajorVersion()
         m_guiElements->getProjectTree()->setLastRightclickedItem(0);
         QVariant qv = item->data(0, Qt::UserRole);
         QString name = qv.toString();
-        Version* v = Workspace::getInstance()->currentProject()->getVersionNamed(name)        ;
+        Version* v = Workspace::getInstance()->currentProject()->getVersionNamed(name);
         if(v)
         {
             m = dynamic_cast<MajorVersion*>(v);
@@ -952,6 +954,49 @@ void MainWindow::onReleaseMajorVersion()
             {
                 Workspace::getInstance()->currentProject()->releaseMajorVersion();
             }
+        }
+    }
+}
+
+void MainWindow::onUnlockSomething()
+{
+    if(m_guiElements->getProjectTree()->getLastRightclickedItem() != 0)
+    {
+        ContextMenuEnabledTreeWidgetItem* item = m_guiElements->getProjectTree()->getLastRightclickedItem();
+        m_guiElements->getProjectTree()->setLastRightclickedItem(0);
+        QVariant qv = item->data(0, Qt::UserRole);
+        QString guid = qv.toString();
+        ObjectWithUid* element = UidWarehouse::instance().getElement(guid);
+        Version* v = UidWarehouse::instance().getVersionForUid(guid);
+        // now find the type of this element
+        UserDataType* udt = dynamic_cast<UserDataType*>(element);
+        if(udt)
+        {
+            udt->unlock();
+            udt->updateGui();
+            showDataType(v, udt->getName(), true);
+        }
+    }
+}
+
+// TODO: Unlock and Relock share a lot of code :(
+void MainWindow::onRelockSomething()
+{
+    if(m_guiElements->getProjectTree()->getLastRightclickedItem() != 0)
+    {
+        ContextMenuEnabledTreeWidgetItem* item = m_guiElements->getProjectTree()->getLastRightclickedItem();
+        m_guiElements->getProjectTree()->setLastRightclickedItem(0);
+        QVariant qv = item->data(0, Qt::UserRole);
+        QString guid = qv.toString();
+        ObjectWithUid* element = UidWarehouse::instance().getElement(guid);
+        Version* v = UidWarehouse::instance().getVersionForUid(guid);
+        // now find the type of this element
+        UserDataType* udt = dynamic_cast<UserDataType*>(element);
+        if(udt)
+        {
+            udt->lock();
+            udt->updateGui();
+            showDataType(v, udt->getName(), true);
         }
     }
 }
@@ -1159,10 +1204,15 @@ UserDataType* MainWindow::getRightClickedDatatype()
     {
         ContextMenuEnabledTreeWidgetItem* item = m_guiElements->getProjectTree()->getLastRightclickedItem();
         m_guiElements->getProjectTree()->setLastRightclickedItem(0);
-
         QVariant qv = item->data(0, Qt::UserRole);
-        UserDataType* udt = static_cast<UserDataType*>(qv.data());
-        return udt;
+        QString guid = qv.toString();
+        ObjectWithUid* element = UidWarehouse::instance().getElement(guid);
+        // now find the type of this element
+        UserDataType* udt = dynamic_cast<UserDataType*>(element);
+        if(udt)
+        {
+            return udt;
+        }
     }
     return 0;
 }
@@ -1922,7 +1972,8 @@ void MainWindow::onDuplicateDatatypeFromPopup()
     UserDataType* udt = getRightClickedDatatype();
     if(udt)
     {
-        UserDataType* dup = m_workspace->workingVersion()->duplicateDataType(udt->getName());
+        QString x = udt->getName();
+        UserDataType* dup = m_workspace->workingVersion()->duplicateDataType(x);
 
         ContextMenuEnabledTreeWidgetItem* newDTItem = m_workspace->workingVersion()->getGui()->createDataTypeTreeEntry(dup);
 

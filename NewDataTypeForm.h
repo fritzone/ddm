@@ -71,6 +71,7 @@ public slots:
     void onCanBeNullClicked();
 
     void onHelp();
+    void onLockUnlock(bool);
 
 protected:
 

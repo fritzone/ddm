@@ -45,8 +45,8 @@
         </property>
         <property name="iconSize">
          <size>
-          <width>64</width>
-          <height>64</height>
+          <width>48</width>
+          <height>48</height>
          </size>
         </property>
         <property name="checkable">
@@ -77,7 +77,7 @@
     </widget>
    </item>
    <item>
-    <widget class="QGroupBox" name="groupBox_2">
+    <widget class="QGroupBox" name="grpContent">
      <property name="title">
       <string/>
      </property>
@@ -519,6 +519,22 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>btnLock</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>NewDataTypeForm</receiver>
+   <slot>onLockUnlock(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>37</x>
+     <y>36</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>479</x>
+     <y>330</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>basicDTselected(QString)</slot>
@@ -531,5 +547,6 @@
   <slot>onNullClicked()</slot>
   <slot>onCanBeNullClicked()</slot>
   <slot>onHelp()</slot>
+  <slot>onLockUnlock(bool)</slot>
  </slots>
 </ui>

@@ -55,6 +55,46 @@ void VersionGuiElements::collapseDTEntries()
     if(spatialDtItem != 0) getSpatialDtsItem()->setExpanded(false);
 }
 
+void VersionGuiElements::cleanupDtEntries()
+{
+    if(stringsDtItem != 0)
+    {
+        if(stringsDtItem->childCount() == 0) delete stringsDtItem;
+    }
+
+    if(intsDtItem != 0)
+    {
+        if(intsDtItem->childCount() == 0) delete intsDtItem;
+    }
+
+    if(dateDtItem != 0)
+    {
+        if(dateDtItem->childCount() == 0) delete dateDtItem;
+    }
+
+    if(blobDtItem != 0)
+    {
+        if(blobDtItem->childCount() == 0) delete blobDtItem;
+    }
+
+    if(boolDtItem != 0)
+    {
+        if(boolDtItem->childCount() == 0) delete boolDtItem;
+    }
+
+    if(miscDtItem != 0)
+    {
+        if(miscDtItem->childCount() == 0) delete miscDtItem;
+    }
+
+    if(spatialDtItem != 0)
+    {
+        if(spatialDtItem->childCount() == 0) delete spatialDtItem;
+    }
+
+}
+
+
 void VersionGuiElements::createGuiElements(ContextMenuEnabledTreeWidgetItem* projectItem)
 {
     versionItem = new ContextMenuEnabledTreeWidgetItem(projectItem,

@@ -976,8 +976,9 @@ void DefaultVersionImplementation::cleanupDataTypes()
         QString dtName = m_data.m_dataTypes.at(sentencedIndices.at(i))->getName();
         delete m_data.m_dataTypes.at(sentencedIndices.at(i))->getLocation();
         deleteDataType(dtName);
-
     }
+
+    getGui()->cleanupDtEntries();
 }
 
 VersionGuiElements* DefaultVersionImplementation::getGui()
