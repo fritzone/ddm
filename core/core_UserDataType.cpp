@@ -1,6 +1,7 @@
 #include "core_UserDataType.h"
 #include "strings.h"
 #include "uids.h"
+#include "ContextMenuCollection.h"
 
 #include <QComboBox>
 
@@ -188,6 +189,15 @@ QUuid UserDataType::getClassUid() const
 
 void UserDataType::updateGui()
 {
-    getLocation()->setIcon(0, IconFactory::getLockedIconForDataType(m_type));
+    if(isLocked())
+    {
+        getLocation()->setIcon(0, IconFactory::getLockedIconForDataType(m_type));
+        getLocation()->setPopupMenu(ContextMenuCollection::getInstance()->getUnlockLementPopupMenu());
+    }
+    else
+    {
+        getLocation()->setIcon(0, IconFactory::getIconForDataType(m_type));
+        getLocation()->setPopupMenu(ContextMenuCollection::getInstance()->getRelockLementPopupMenu());
+    }
     TreeItem::updateGui();
 }

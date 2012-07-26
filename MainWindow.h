@@ -173,6 +173,8 @@ public slots:
     void onDeleteUnusedDatatypes();
     void onDeleteProcedure();
     void onReleaseMajorVersion();
+    void onUnlockSomething();
+    void onRelockSomething();
 
 private:
 

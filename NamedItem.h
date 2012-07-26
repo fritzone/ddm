@@ -32,7 +32,7 @@ public:
         return *this;
     }
 
-    const QString& getName() const
+    QString getName() const
     {
         return m_name;
     }

@@ -34,6 +34,7 @@ public:
 
     VersionGuiElements(GuiElements*, Version*);
     void collapseDTEntries();
+    void cleanupDtEntries();
 
     /** @group project tree items */
     ContextMenuEnabledTreeWidgetItem* getTablesItem() const;

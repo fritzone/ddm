@@ -44,6 +44,8 @@ public:
     QMenu* getViewPopupMenu() { return m_viewPopupMenu; }
     QMenu* getProcedurePopupMenu() { return m_procedurePopupMenu; }
     QMenu* getMajorVersionPopupMenu() { return m_majorVersionPopupMenu; }
+    QMenu* getUnlockLementPopupMenu() { return m_unlockLementPopupMenu; }
+    QMenu* getRelockLementPopupMenu() { return m_relockLementPopupMenu; }
 
     /*
      * Actions
@@ -92,6 +94,8 @@ public:
     QAction* getAction_DeleteView() {return action_deleteView; }
     QAction* getAction_DeleteProcedure() {return action_deleteProcedure; }
     QAction* getAction_ReleaseMajorVersion() {return action_releaseMajorVersion; }
+    QAction* getAction_unlock() {return action_unlock; }
+    QAction* getAction_relock() {return action_relock; }
 
 private:
 
@@ -117,6 +121,8 @@ private:
     QMenu* m_browsedTablePopupMenu;             // popup menu for a table which was retrieved from the browse connection
     QMenu* m_procedurePopupMenu;                // popup menu for one procedure tree element
     QMenu* m_majorVersionPopupMenu;             // popup menu for one major version tree element
+    QMenu* m_unlockLementPopupMenu;             // popup menu for unlocking one major version tree element which was locked after being released
+    QMenu* m_relockLementPopupMenu;             // popup menu for re-locking one major version tree element which was unlocked by the user
 
     // the actions in the table popup menu
     QAction* action_RemoveTable;
@@ -191,6 +197,9 @@ private:
     QAction* action_deleteProcedure;
 
     QAction* action_releaseMajorVersion;
+
+    QAction* action_unlock;
+    QAction* action_relock;
 
     // the instance of the popup menu collection
     static ContextMenuCollection* m_instance;

@@ -352,11 +352,41 @@ void NewDataTypeForm::setDataType(UserDataType* udt)
         if(udt->isLocked())
         {
             m_ui->btnLock->setIcon(IconFactory::getLockedIcon());
+            m_ui->btnLock->blockSignals(true);
+            m_ui->btnLock->setChecked(false);
+            m_ui->btnLock->blockSignals(false);
+            m_ui->grpContent->setEnabled(false);
+            m_ui->btnLock->setToolTip(QObject::tr("DataType is <b>locked</b>. Click this button to unlock it."));
         }
         else
         {
             m_ui->btnLock->setIcon(IconFactory::getUnLockedIcon());
+            m_ui->btnLock->blockSignals(true);
+            m_ui->btnLock->setChecked(true);
+            m_ui->btnLock->blockSignals(false);
+            m_ui->grpContent->setEnabled(true);
+            m_ui->btnLock->setToolTip(QObject::tr("DataType is <b>unlocked</b>. Click this button to lock it."));
         }
+    }
+}
+
+void NewDataTypeForm::onLockUnlock(bool checked)
+{
+    if(checked)
+    {
+        m_ui->btnLock->setIcon(IconFactory::getUnLockedIcon());
+        m_ui->grpContent->setEnabled(true);
+        m_udt->unlock();
+        m_udt->updateGui();
+        m_ui->btnLock->setToolTip(QObject::tr("DataType is <b>unlocked</b>. Click this button to lock it."));
+    }
+    else
+    {
+        m_ui->btnLock->setIcon(IconFactory::getLockedIcon());
+        m_ui->grpContent->setEnabled(false);
+        m_udt->lock();
+        m_udt->updateGui();
+        m_ui->btnLock->setToolTip(QObject::tr("DataType is <b>locked</b>. Click this button to unlock it."));
     }
 }
 
