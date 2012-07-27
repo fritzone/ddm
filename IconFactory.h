@@ -41,6 +41,7 @@ static const QString strCodeIcon = ":/images/actions/images/small/code.png";
 static const QString strSqlIcon = ":/images/actions/images/small/sql.png";
 static const QString strMajorVersionIcon = ":/images/actions/images/small/arrow-000-medium.png";
 static const QString strReleaseMajorVersionIcon = ":/images/actions/images/small/arrow-branch.png";
+static const QString strMajorVersionLockedIcon = ":/images/actions/images/small/version_locked.png";
 static const QString strProcedureIcon = ":/images/actions/images/actions/procedure.png";
 static const QString strFunctionTreeIcon = ":/images/actions/images/actions/function_icon.png";
 static const QString strRemoveIcon = ":/images/actions/images/small/remove.png";
@@ -395,6 +396,12 @@ public:
     static const QIcon& getVersionIcon()
     {
         static const QIcon icon(icons::strMajorVersionIcon);
+        return icon;
+    }
+
+    static const QIcon& getLockedVersionIcon()
+    {
+        static const QIcon icon(icons::strMajorVersionLockedIcon);
         return icon;
     }
 

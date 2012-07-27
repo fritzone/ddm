@@ -321,6 +321,8 @@ public:
      */
     virtual bool cloneInto(Version* other) = 0;
 
+    virtual void patchItem(const QString& uid) = 0;
+
     void setVersionNumbers(int major, int minor)
     {
         if(major > m_major)
