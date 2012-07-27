@@ -113,7 +113,6 @@ void Project::serialize(QDomDocument& doc, QDomElement& parent) const
 
 void Project::releaseMajorVersion()
 {
-    qDebug() << " -------------------------------- ";
     Version* cv = getWorkingVersion();
     MajorVersion* newVersion = createMajorVersion(cv->getMajor() + 1, 0);
     m_workingVersionIndex ++;
@@ -121,4 +120,14 @@ void Project::releaseMajorVersion()
 
     newVersion->createTreeItems(m_gui, getLocation());
     newVersion->getGui()->populateTreeItems();
+
+    cv->getGui()->getVersionItem()->setExpanded(false);
+    newVersion->getGui()->getVersionItem()->setExpanded(true);
+
+    QFont f = cv->getGui()->getVersionItem()->font(0);
+    f.setItalic(true);
+    cv->getGui()->getVersionItem()->setFont(0, f);
+    cv->getGui()->getVersionItem()->setIcon(0, IconFactory::getLockedVersionIcon());
+
+    cv->getGui()->getVersionItem()->setPopupMenu(0);
 }

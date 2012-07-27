@@ -976,6 +976,8 @@ void MainWindow::onUnlockSomething()
             udt->updateGui();
             showDataType(v, udt->getName(), true);
         }
+
+        // and finally tell the version of the element that a new pathc is about to be born
     }
 }
 

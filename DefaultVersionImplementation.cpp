@@ -1138,3 +1138,7 @@ bool DefaultVersionImplementation::cloneInto(Version* other)
     return true;
 }
 
+void DefaultVersionImplementation::patchItem(const QString &uid)
+{
+
+}
