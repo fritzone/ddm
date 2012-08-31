@@ -287,6 +287,8 @@ public:
         return m_parentUid;
     }
 
+    void updateGui();
+
 private:
 
     // describes the table

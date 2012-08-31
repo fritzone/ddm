@@ -402,6 +402,36 @@ void NewTableForm::setTable(Table *table)
     if(m_table) resetForeignTablesCombo();
     prepareSpsTabs();
 
+    // do the locking
+    // TODO: this is code duplication from the UserDataType form
+    if(!m_table->wasLocked())
+    {
+        m_ui->frameForUnlockButton->hide();
+    }
+    else
+    {
+        m_ui->frameForUnlockButton->show();
+        if(m_table->isLocked())
+        {
+            m_ui->btnLock->setIcon(IconFactory::getLockedIcon());
+            m_ui->btnLock->blockSignals(true);
+            m_ui->btnLock->setChecked(false);
+            m_ui->btnLock->blockSignals(false);
+            m_ui->grpContent->setEnabled(false);
+            m_ui->btnLock->setToolTip(QObject::tr("This table is <b>locked</b>. Click this button to unlock it."));
+        }
+        else
+        {
+            m_ui->btnLock->setIcon(IconFactory::getUnLockedIcon());
+            m_ui->btnLock->blockSignals(true);
+            m_ui->btnLock->setChecked(true);
+            m_ui->btnLock->blockSignals(false);
+            m_ui->grpContent->setEnabled(true);
+            m_ui->btnLock->setToolTip(QObject::tr("This table is <b>unlocked</b>. Click this button to lock it."));
+        }
+
+    }
+
 }
 
 void NewTableForm::focusOnName()
@@ -2439,5 +2469,25 @@ void NewTableForm::onRemoveSpsFromColumnOfIndex()
         {
             delete m_ui->lstSelectedColumnsForIndex->currentItem();
         }
+    }
+}
+
+void NewTableForm::onLockUnlock(bool checked)
+{
+    if(checked)
+    {
+        m_ui->btnLock->setIcon(IconFactory::getUnLockedIcon());
+        m_ui->grpContent->setEnabled(true);
+        m_table->unlock();
+        m_table->updateGui();
+        m_ui->btnLock->setToolTip(QObject::tr("This table is <b>unlocked</b>. Click this button to lock it."));
+    }
+    else
+    {
+        m_ui->btnLock->setIcon(IconFactory::getLockedIcon());
+        m_ui->grpContent->setEnabled(false);
+        m_table->lock();
+        m_table->updateGui();
+        m_ui->btnLock->setToolTip(QObject::tr("This table is <b>locked</b>. Click this button to unlock it."));
     }
 }

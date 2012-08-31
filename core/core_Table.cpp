@@ -15,6 +15,7 @@
 #include "uids.h"
 #include "UidWarehouse.h"
 #include "strings.h"
+#include "ContextMenuCollection.h"
 #include <QApplication>
 #include <QClipboard>
 
@@ -591,4 +592,19 @@ CloneableElement* Table::clone(Version *sourceVersion, Version *targetVersion)
     }
 
     return result;
+}
+
+void Table::updateGui()
+{
+    if(isLocked())
+    {
+        getLocation()->setIcon(0, IconFactory::getLockedTableIcon());
+        getLocation()->setPopupMenu(ContextMenuCollection::getInstance()->getUnlockLementPopupMenu());
+    }
+    else
+    {
+        getLocation()->setIcon(0, IconFactory::getTableIcon());
+        getLocation()->setPopupMenu(ContextMenuCollection::getInstance()->getRelockLementPopupMenu());
+    }
+    TreeItem::updateGui();
 }

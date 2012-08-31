@@ -187,6 +187,7 @@
         <file>images/small/locked.png</file>
         <file>images/small/unlocked.png</file>
         <file>images/small/version_locked.png</file>
+        <file>images/actions/table_lock.png</file>
     </qresource>
     <qresource prefix="/bigger">
         <file>images/unaf.png</file>
