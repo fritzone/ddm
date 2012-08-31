@@ -66,6 +66,7 @@ public slots:
     void onChangeTab(int);
     void onHelp();
     void onChangeName(QString);
+    void onLockUnlock(bool);
 
     // on the columns page
     void onAddColumn();

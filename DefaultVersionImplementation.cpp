@@ -1024,6 +1024,7 @@ bool DefaultVersionImplementation::cloneInto(Version* other)
     for(int i=0; i<dts.size(); i++)
     {
         other->addNewDataType(dynamic_cast<UserDataType*>(dts.at(i)->clone(this, other)));
+        // lock the datatype
         dts.at(i)->lock();
         dts.at(i)->updateGui();
     }
@@ -1034,8 +1035,10 @@ bool DefaultVersionImplementation::cloneInto(Version* other)
     {
         Table* newTable = dynamic_cast<Table*>(tabs.at(i)->clone(this, other));
         newTable->setName(tabs.at(i)->getName());
-        qDebug() << newTable->getName();
         other->addTable(newTable);
+        // lock the table
+        tabs.at(i)->lock();
+        tabs.at(i)->updateGui();
     }
 
     // now fix the foreign keys of the table
