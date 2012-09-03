@@ -21,3 +21,8 @@ void DraggableGraphicsViewItemForForeignKey::mouseReleaseEvent ( QGraphicsSceneM
     event->accept();
     dynamic_cast<ERGraphicsScene*>(this->scene())->setDraggedItem(0);
 }
+
+QUuid DraggableGraphicsViewItemForForeignKey::getClassUid() const
+{
+    return QUuid(uidDraggableGraphicsViewItemForFK);
+}

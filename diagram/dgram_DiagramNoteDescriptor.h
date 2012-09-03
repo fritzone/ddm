@@ -14,7 +14,7 @@ public:
     void setFramed(bool f) {m_framed = f;}
 
     virtual void serialize(QDomDocument& doc, QDomElement& parent) const;
-
+    virtual QUuid getClassUid() const;
 private:
 
     bool m_framed;

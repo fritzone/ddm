@@ -30,6 +30,7 @@ public:
         }
 
     }
+    virtual QUuid getClassUid() const;
 
     virtual QRectF boundingRect() const
     {

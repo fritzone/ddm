@@ -52,11 +52,12 @@ public:
         return bottomPoint;
     }
 
-
     QRectF boundingRect() const
     {
         return QRectF(leftPoint.x(), topPoint.y(), rightPoint.x(), bottomPoint.y());
     }
+
+    virtual QUuid getClassUid() const;
 
 protected:
 

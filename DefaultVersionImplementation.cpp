@@ -1138,6 +1138,13 @@ bool DefaultVersionImplementation::cloneInto(Version* other)
         other->addTrigger(newp);
     }
 
+    // TODO: clone the diagrams
+    const QVector<Diagram*> dias = getDiagrams();
+    for(int i=0; i<dias.size(); i++)
+    {
+        Diagram* dgr = dynamic_cast<Diagram*>(dias.at(i)->clone(this, other));
+        other->addDiagram(dgr);
+    }
     return true;
 }
 

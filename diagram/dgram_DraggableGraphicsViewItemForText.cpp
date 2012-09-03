@@ -112,3 +112,8 @@ void DraggableGraphicsViewItemForText::editNote()
         }
     }
 }
+
+QUuid DraggableGraphicsViewItemForText::getClassUid() const
+{
+    return QUuid(uidDraggableGraphicsViewItemForText);
+}

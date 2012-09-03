@@ -8,6 +8,7 @@
 #include "dgram_DiagramFKDescriptor.h"
 #include "SerializableElement.h"
 #include "core_ObjectWithUid.h"
+#include "core_CloneableElement.h"
 
 class Table;
 class ERGraphicsScene;
@@ -22,7 +23,7 @@ class ForeignKey;
 /**
  * Class responsible for managing the diagrams of a project
  */
-class Diagram : public TreeItem, public NamedItem, public SerializableElement, public ObjectWithUid
+class Diagram : public TreeItem, public NamedItem, public SerializableElement, public ObjectWithUid, public CloneableElement
 {
 public:
 
@@ -115,6 +116,8 @@ public:
     virtual void serialize(QDomDocument &doc, QDomElement &parent) const;
 
     virtual QUuid getClassUid() const;
+
+    virtual CloneableElement* clone(Version* sourceVersion, Version* targetVersion);
 
 public:
 

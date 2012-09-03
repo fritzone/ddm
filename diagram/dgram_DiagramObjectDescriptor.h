@@ -1,11 +1,12 @@
 #ifndef DIAGRAMOBJECTDESCRIPTOR_H
 #define DIAGRAMOBJECTDESCRIPTOR_H
 
+#include "core_ObjectWithUid.h"
 #include <QString>
 
 #include "SerializableElement.h"
 
-class DiagramObjectDescriptor : public SerializableElement
+class DiagramObjectDescriptor : public SerializableElement, public ObjectWithUid
 {
 public:
 
@@ -38,6 +39,7 @@ public:
     }
 
     virtual void serialize(QDomDocument& doc, QDomElement& parent) const = 0;
+    virtual QUuid getClassUid() const = 0;
 
 private:
 
