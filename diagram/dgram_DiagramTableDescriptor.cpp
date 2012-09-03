@@ -1,4 +1,5 @@
 #include "dgram_DiagramTableDescriptor.h"
+#include "uids.h"
 
 void DiagramTableDescriptor::serialize(QDomDocument &doc, QDomElement &parent) const
 {
@@ -8,5 +9,10 @@ void DiagramTableDescriptor::serialize(QDomDocument &doc, QDomElement &parent) c
     tableElement.setAttribute("y", getY());
 
     parent.appendChild(tableElement);
+}
 
+
+QUuid DiagramTableDescriptor::getClassUid() const
+{
+    return QUuid(uidDiagramTableDescriptor);
 }

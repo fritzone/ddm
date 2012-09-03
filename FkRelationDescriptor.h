@@ -1,6 +1,7 @@
 #ifndef FKRELATIONDESCRIPTOR_H
 #define FKRELATIONDESCRIPTOR_H
 
+#include "core_ObjectWithUid.h"
 #include "dgram_DiagramFKDescriptor.h"
 
 #include <QGraphicsLineItem>
@@ -11,11 +12,11 @@ class ERGraphicsScene;
 class ForeignKey;
 class Diagram;
 
-class FkRelationDescriptor
+class FkRelationDescriptor : public ObjectWithUid
 {
 public:
 
-    /* LPTODO: something is messed up in the algorithm finding the closest points. Right now it works, but stinks. when you have time fix it.*/
+    /* TODO: something is messed up in the algorithm finding the closest points. Right now it works, but stinks. when you have time fix it.*/
     static const int LEFT = 1;
     static const int RIGHT = 0;
     static const int TOP = 3;
@@ -102,6 +103,9 @@ public:
 
     QString getTab1Name() {return tab1Name; }
     QString getTab2Name() {return tab2Name; }
+
+    virtual QUuid getClassUid() const;
+
 
 private:
 

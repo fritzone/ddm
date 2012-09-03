@@ -2,6 +2,7 @@
 #define DIAGRAMFKDESCRIPTOR_H
 
 #include "dgram_DiagramObjectDescriptor.h"
+#include "uids.h"
 
 #include <QString>
 #include <QPointF>
@@ -167,6 +168,11 @@ public:
     }
 
     QPointF m_ellipsePos;       // the place of the ellipse
+
+    virtual QUuid getClassUid() const
+    {
+        return QUuid(uidDiagramFkDescriptor);
+    }
 
 private:
     QPointF line1OtherPoint;    // the first point of the line is (0,0) this is the other point

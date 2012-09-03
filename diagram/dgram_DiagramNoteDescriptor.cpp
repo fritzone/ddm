@@ -1,4 +1,5 @@
 #include "dgram_DiagramNoteDescriptor.h"
+#include "uids.h"
 
 void DiagramNoteDescriptor::serialize(QDomDocument& doc, QDomElement& parent) const
 {
@@ -13,5 +14,9 @@ void DiagramNoteDescriptor::serialize(QDomDocument& doc, QDomElement& parent) co
     tableElement.appendChild(textElement);
 
     parent.appendChild(tableElement);
+}
 
+QUuid DiagramNoteDescriptor::getClassUid() const
+{
+    return QUuid(uidDiagramNoteDescriptor);
 }

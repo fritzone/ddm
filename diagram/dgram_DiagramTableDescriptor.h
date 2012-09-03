@@ -13,6 +13,7 @@ public:
     DiagramTableDescriptor(const QString& tableName, int x, int y) : DiagramObjectDescriptor(tableName, x, y) {}
 
     virtual void serialize(QDomDocument& doc, QDomElement& parent) const;
+    virtual QUuid getClassUid() const;
 };
 
 #endif // DIAGRAMTABLEDESCRIPTOR_H

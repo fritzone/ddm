@@ -293,3 +293,9 @@ void FkRelationDescriptor::removeFromScene()
     scene->removeItem(rel1Txt);
     scene->removeItem(m_arrowHead);
 }
+
+
+QUuid FkRelationDescriptor::getClassUid() const
+{
+    return QUuid(uidFKRelationdescriptor);
+}

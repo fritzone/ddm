@@ -301,3 +301,12 @@ QUuid Diagram::getClassUid() const
 {
     return QUuid(uidDiagram);
 }
+
+CloneableElement* Diagram::clone(Version* sourceVersion, Version* targetVersion)
+{
+    Diagram* new_dgram = new Diagram(targetVersion, getName(), QUuid::createUuid().toString());
+
+    new_dgram->m_version = targetVersion;
+    new_dgram->setSourceUid(getObjectUid());
+    return new_dgram;
+}

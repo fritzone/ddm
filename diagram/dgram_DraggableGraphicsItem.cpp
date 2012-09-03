@@ -57,3 +57,8 @@ QRectF DraggableGraphicsViewItem::boundingRect() const
 {
     return QRectF(0,0,lastX,lastY);
 }
+
+QUuid DraggableGraphicsViewItem::getClassUid() const
+{
+    return QUuid(uidDraggableGraphicsViewItem);
+}

@@ -1,6 +1,8 @@
 #ifndef DRAGGABLEGRAPHICSITEM_H
 #define DRAGGABLEGRAPHICSITEM_H
 
+#include "core_ObjectWithUid.h"
+
 #include <QGraphicsItemGroup>
 #include <QGraphicsSceneDragDropEvent>
 
@@ -8,7 +10,7 @@
 
 class Table;
 
-class DraggableGraphicsViewItem : public QGraphicsItemGroup
+class DraggableGraphicsViewItem : public QGraphicsItemGroup, public ObjectWithUid
 {
 
     friend class ERGraphicsView;
@@ -23,6 +25,8 @@ public:
     virtual ~DraggableGraphicsViewItem()
     {
     }
+
+    virtual QUuid getClassUid() const;
 
     QPixmap getDragImage();
 
