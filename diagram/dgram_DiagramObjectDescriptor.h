@@ -1,16 +1,17 @@
 #ifndef DIAGRAMOBJECTDESCRIPTOR_H
 #define DIAGRAMOBJECTDESCRIPTOR_H
 
+#include "SerializableElement.h"
 #include "core_ObjectWithUid.h"
+#include "core_CloneableElement.h"
+
 #include <QString>
 
-#include "SerializableElement.h"
-
-class DiagramObjectDescriptor : public SerializableElement, public ObjectWithUid
+class DiagramObjectDescriptor : public SerializableElement, public ObjectWithUid, public CloneableElement
 {
 public:
 
-    DiagramObjectDescriptor(const QString& txt, int x, int y) : m_txt(txt), m_x(x), m_y(y) {}
+    DiagramObjectDescriptor(const QString& txt, int x, int y) : ObjectWithUid(QUuid::createUuid().toString()), m_txt(txt), m_x(x), m_y(y) {}
 
 
     QString getText() const
@@ -40,6 +41,7 @@ public:
 
     virtual void serialize(QDomDocument& doc, QDomElement& parent) const = 0;
     virtual QUuid getClassUid() const = 0;
+    virtual CloneableElement* clone(Version* sourceVersion, Version* targetVersion) = 0;
 
 private:
 

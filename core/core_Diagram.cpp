@@ -306,6 +306,22 @@ CloneableElement* Diagram::clone(Version* sourceVersion, Version* targetVersion)
 {
     Diagram* new_dgram = new Diagram(targetVersion, getName(), QUuid::createUuid().toString());
 
+    for(int i=0; i<m_tableDescriptors.size(); i++)
+    {
+        new_dgram->addTableDescriptor(dynamic_cast<DiagramTableDescriptor*>(m_tableDescriptors.at(i)->clone(sourceVersion, targetVersion)));
+    }
+
+    for(int i=0; i<m_noteDescriptors.size(); i++)
+    {
+        new_dgram->addNoteDescriptor(dynamic_cast<DiagramNoteDescriptor*>(m_noteDescriptors.at(i)->clone(sourceVersion, targetVersion)));
+    }
+
+    for(int i=0; i<m_fksOnStage.size(); i++)
+    {
+        new_dgram->addFKDescriptor(dynamic_cast<DiagramFKDescriptor*>(m_fksOnStage.at(i)->descriptor()->clone(sourceVersion, targetVersion)));
+    }
+
+    new_dgram->setSaved(true);
     new_dgram->m_version = targetVersion;
     new_dgram->setSourceUid(getObjectUid());
     return new_dgram;

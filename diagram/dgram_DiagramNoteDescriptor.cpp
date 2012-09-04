@@ -20,3 +20,10 @@ QUuid DiagramNoteDescriptor::getClassUid() const
 {
     return QUuid(uidDiagramNoteDescriptor);
 }
+
+CloneableElement* DiagramNoteDescriptor::clone(Version* sourceVersion, Version* targetVersion)
+{
+    DiagramNoteDescriptor* result = new DiagramNoteDescriptor(getText(), getX(), getY(), m_framed);
+    result->setSourceUid(getObjectUid());
+    return result;
+}

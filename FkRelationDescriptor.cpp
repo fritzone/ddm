@@ -261,7 +261,6 @@ void FkRelationDescriptor::recreate(Diagram* dgr)
     polyPoints.append(m_descriptor->getArrowP2());
     polyPoints.append(QPointF(0, 0));
 
-    QPolygonF polyf(polyPoints);
     m_arrowHead = new QGraphicsPolygonItem(polyPoints);
     m_arrowHead->scale(1.2, 1.2);
     m_arrowHead->rotate(180);

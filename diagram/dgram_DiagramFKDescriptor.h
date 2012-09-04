@@ -174,6 +174,8 @@ public:
         return QUuid(uidDiagramFkDescriptor);
     }
 
+    virtual CloneableElement* clone(Version* sourceVersion, Version* targetVersion);
+
 private:
     QPointF line1OtherPoint;    // the first point of the line is (0,0) this is the other point
     QPointF line1PosPoint;      // where the line is placed after created
