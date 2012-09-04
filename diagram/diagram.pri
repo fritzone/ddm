@@ -18,4 +18,5 @@ SOURCES +=                                                      \
     diagram/dgram_DraggableGraphicsViewItemForForeignKey.cpp \
     diagram/dgram_DraggableGraphicsViewItemForText.cpp \
     diagram/dgram_ERGraphicsScene.cpp \
-    diagram/dgram_ERGraphicsView.cpp
+    diagram/dgram_ERGraphicsView.cpp \
+    diagram/dgram_DiagramFKDescriptor.cpp

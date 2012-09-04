@@ -591,6 +591,8 @@ CloneableElement* Table::clone(Version *sourceVersion, Version *targetVersion)
         indx->finalizeCloning(result, idxs.at(i));
     }
 
+    // TODO: clone the foreign keys
+
     return result;
 }
 
