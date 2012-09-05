@@ -329,6 +329,9 @@ void Table::serialize(QDomDocument &doc, QDomElement &parent) const
     tableElement.setAttribute("class-uid", getClassUid().toString());
     tableElement.setAttribute("parent-uid", m_parent?m_parent->getObjectUid().toString():strNA);
 
+    tableElement.setAttribute("locked", isLocked());
+    tableElement.setAttribute("source-id", getSourceUid().toString().length() ? getSourceUid().toString() : strNA);
+
     if(m_parent !=0)
     {
         tableElement.setAttribute("Parent", m_parent->getName());
@@ -590,8 +593,6 @@ CloneableElement* Table::clone(Version *sourceVersion, Version *targetVersion)
         Index* indx = dynamic_cast<Index*>(idxs.at(i)->clone(sourceVersion, targetVersion));
         indx->finalizeCloning(result, idxs.at(i));
     }
-
-    // TODO: clone the foreign keys
 
     return result;
 }
