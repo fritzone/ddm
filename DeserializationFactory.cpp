@@ -666,7 +666,16 @@ Table* DeserializationFactory::createTable(DatabaseEngine* engine, Version* ver,
 
     QString parent_uid = element.attribute("parent-uid");
 
+
     Table* result = new Table(ver, uid, 0);
+
+    QString locked = element.attribute("locked");
+    QString sourceId = "";
+    if(locked == "1")
+    {
+        result->lock();
+        result->setSourceUid(element.attribute("source-uid"));
+    }
 
     result->setParentUid(parent_uid);
     result->setName(name);
