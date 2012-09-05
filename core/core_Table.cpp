@@ -330,7 +330,7 @@ void Table::serialize(QDomDocument &doc, QDomElement &parent) const
     tableElement.setAttribute("parent-uid", m_parent?m_parent->getObjectUid().toString():strNA);
 
     tableElement.setAttribute("locked", isLocked());
-    tableElement.setAttribute("source-id", getSourceUid().toString().length() ? getSourceUid().toString() : strNA);
+    tableElement.setAttribute("source-uid", getSourceUid().toString().length() ? getSourceUid().toString() : strNA);
 
     if(m_parent !=0)
     {
