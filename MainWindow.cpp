@@ -475,6 +475,13 @@ void MainWindow::currentProjectTreeItemChanged(QTreeWidgetItem * current, QTreeW
         QString uid = qv.toString();
 
         Version* foundVersion = UidWarehouse::instance().getVersionForUid(uid);
+        ObjectWithUid* obj = UidWarehouse::instance().getElement(uid);
+        QString classUid = nullUid;
+        if(obj)
+        {
+            classUid = obj->getClassUid();
+        }
+
         if(!foundVersion) return;
 
         if(current == foundVersion->getGui()->getTablesItem())
@@ -556,77 +563,53 @@ void MainWindow::currentProjectTreeItemChanged(QTreeWidgetItem * current, QTreeW
                 setCentralWidget(frm);
             }
             else
-            if(current->parent() && current->parent() == foundVersion->getGui()->getTablesItem())
             {
-                // the user clicked on a table, the name of the table is a tag
-                showObjectwithGuid(foundVersion, current, (showSomething)&MainWindow::showTableWithGuid, false);
-            }
-            else
-            if(current->parent() && current->parent() == foundVersion->getGui()->getDiagramsItem())
-            {
-                // the user clicked on a diagram
-                showObjectwithGuid(foundVersion, current, (showSomething)&MainWindow::showDiagramWithGuid, false);
-            }
-            else
-            if(current->parent() && current->parent() == foundVersion->getGui()->getTableInstancesItem())
-            {
-                // user clicked on a table instance
-                showObjectwithGuid(foundVersion, current, (showSomething)&MainWindow::showTableInstanceWithGuid, false);
-            }
-            else
-            if(current->parent() && current->parent() == foundVersion->getGui()->getViewsItem())
-            {
-                // user clicked on a view
-                showObjectwithGuid(foundVersion, current, (showSomething)&MainWindow::showViewWithGuid, false);
-            }
-            else
-            if(current->parent() && current->parent() == foundVersion->getGui()->getProceduresItem())
-            {
-                // user clicked on a procedure
-                showObjectwithGuid(foundVersion, current, (showSomething)&MainWindow::showProcedureWithGuid, false);
-            }
-            else
-            if(current->parent() && current->parent() == foundVersion->getGui()->getFunctionsItem())
-            {
-                // user clicked on a function
-                showObjectwithGuid(foundVersion, current, (showSomething)&MainWindow::showFunctionWithGuid, false);
-            }
-            else
-            if(current->parent() && current->parent() == foundVersion->getGui()->getTriggersItem())
-            {
-                // user clicked on a procedure
-                showObjectwithGuid(foundVersion, current, (showSomething)&MainWindow::showTriggerWithGuid, false);
-            }
-            else
-            if(current->parent() && current->parent() == foundVersion->getGui()->getFinalSqlItem())
-            {
-                // user clicked on a SQL item
-                SqlForm* frm = new SqlForm(m_workspace->currentProjectsEngine(), this);
-                QVariant qv = current->data(0, Qt::UserRole);
-                QString name = qv.toString();
-                SqlSourceEntity* ent = foundVersion->getSqlSourceEntityWithGuid(name);
-                if(ent == 0)
-                {   // hm.. this shouldn't be
-                    return;
-                }
-                frm->setSqlSource(ent);
-                frm->presentSql(m_workspace->currentProject(), ent, (MainWindow::showSomething)&MainWindow::showNothing);
-                setCentralWidget(frm);
-            }
-            else
-            if(current->parent() && current->parent() == foundVersion->getGui()->getDocumentationItem())
-            {
-                DocumentationForm* docF = new DocumentationForm(this);
-                QVariant qv = current->data(0, Qt::UserRole);
-                QString guid = qv.toString();
-                docF->showDocumentationforUid(guid);
-                setCentralWidget(docF);
-                docF->initiateStyleChange(docF->s_lastStyle);
 
-            }
-            else    // user possibly clicked on a table which had a parent a table ...
-            {
-                showObjectwithGuid(foundVersion, current, (showSomething)&MainWindow::showTableWithGuid, false);
+                QMap<QString, showSomething> mapping;
+                mapping.insert(uidTable, (showSomething)&MainWindow::showTableWithGuid);
+                mapping.insert(uidTableInstance, (showSomething)&MainWindow::showTableInstanceWithGuid);
+                mapping.insert(uidDiagram, (showSomething)&MainWindow::showDiagramWithGuid);
+                mapping.insert(uidProcedure, (showSomething)&MainWindow::showTableWithGuid);
+                mapping.insert(uidFunction, (showSomething)&MainWindow::showTableWithGuid);
+                mapping.insert(uidTrigger, (showSomething)&MainWindow::showTableWithGuid);
+                mapping.insert(uidView, (showSomething)&MainWindow::showViewWithGuid);
+
+                if(mapping.contains(classUid))
+                {
+                    showObjectwithGuid(foundVersion, current, mapping[classUid], false);
+                }
+                else
+                if(current->parent() && current->parent() == foundVersion->getGui()->getFinalSqlItem())
+                {
+                    // user clicked on a SQL item
+                    SqlForm* frm = new SqlForm(m_workspace->currentProjectsEngine(), this);
+                    QVariant qv = current->data(0, Qt::UserRole);
+                    QString name = qv.toString();
+                    SqlSourceEntity* ent = foundVersion->getSqlSourceEntityWithGuid(name);
+                    if(ent == 0)
+                    {   // hm.. this shouldn't be
+                        return;
+                    }
+                    frm->setSqlSource(ent);
+                    frm->presentSql(m_workspace->currentProject(), ent, (MainWindow::showSomething)&MainWindow::showNothing);
+                    setCentralWidget(frm);
+                }
+                else
+                if(current->parent() && current->parent() == foundVersion->getGui()->getDocumentationItem())
+                {
+                    DocumentationForm* docF = new DocumentationForm(this);
+                    QVariant qv = current->data(0, Qt::UserRole);
+                    QString guid = qv.toString();
+                    docF->showDocumentationforUid(guid);
+                    setCentralWidget(docF);
+                    docF->initiateStyleChange(docF->s_lastStyle);
+
+                }
+                else    // user possibly clicked on a table which had a parent a table ...
+                {
+                    showObjectwithGuid(foundVersion, current, (showSomething)&MainWindow::showTableWithGuid, false);
+                }
+
             }
         }
     }

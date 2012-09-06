@@ -97,10 +97,7 @@ void VersionGuiElements::cleanupDtEntries()
 
 void VersionGuiElements::createGuiElements(ContextMenuEnabledTreeWidgetItem* projectItem)
 {
-    versionItem = new ContextMenuEnabledTreeWidgetItem(projectItem,
-               QStringList(QString("Ver: ") + m_version->getVersionText())) ;
-    versionItem->setIcon(0, IconFactory::getVersionIcon());
-    versionItem->setPopupMenu(ContextMenuCollection::getInstance()->getMajorVersionPopupMenu());
+    versionItem = new ContextMenuEnabledTreeWidgetItem(projectItem, QStringList(QString("Ver: ") + m_version->getVersionText())) ;
     m_tree->addTopLevelItem(versionItem);
     QVariant a;
     a.setValue(m_version->getVersionText());
@@ -208,6 +205,7 @@ void VersionGuiElements::createGuiElements(ContextMenuEnabledTreeWidgetItem* pro
     dtsItem->setData(0, Qt::UserRole, QVariant(dtsUid));
     UidWarehouse::instance().addElement(dtsUid, m_version);
 
+    m_version->updateGui();
 }
 
 void VersionGuiElements::populateTreeItems()
@@ -236,6 +234,8 @@ void VersionGuiElements::populateTreeItems()
         newDTItem->setIcon(0, IconFactory::getIconForDataType(dataTypes.at(i)->getType()));
         m_tree->insertTopLevelItem(0, newDTItem);
         dataTypes[i]->setLocation(newDTItem);
+
+        dataTypes[i]->updateGui();
     }
 
     // insert the tables
@@ -260,6 +260,8 @@ void VersionGuiElements::populateTreeItems()
         docItem->setIcon(0, IconFactory::getTableIcon());
         docItem->setData(0, Qt::UserRole, var);
         m_tree->addTopLevelItem(docItem);
+
+        tab->updateGui();
     }
 
     // now update the parents

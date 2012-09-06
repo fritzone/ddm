@@ -7,6 +7,7 @@
 #include "core_Procedure.h"
 #include "core_Trigger.h"
 #include "core_Function.h"
+#include "uids.h"
 
 MajorVersion::MajorVersion(int major, int minor, Project* p) : DefaultVersionImplementation(p, major, minor)
 {
@@ -39,6 +40,10 @@ void MajorVersion::serialize(QDomDocument &doc, QDomElement &parent) const
 
     majorVersionElement.setAttribute("major", m_major);
     majorVersionElement.setAttribute("minor", m_minor);
+    majorVersionElement.setAttribute("uid", getObjectUid());
+    majorVersionElement.setAttribute("source-uid", getSourceUid().toString());
+    majorVersionElement.setAttribute("class-uid", getClassUid().toString());
+    majorVersionElement.setAttribute("locked", isLocked());
 
     QDomElement versionElement = doc.createElement("Version");        // the version node
     QDomText versionNode = doc.createTextNode(version);
@@ -128,3 +133,7 @@ void MajorVersion::serialize(QDomDocument &doc, QDomElement &parent) const
 
 }
 
+QUuid MajorVersion::getClassUid() const
+{
+    return QUuid(uidVersion);
+}

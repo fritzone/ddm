@@ -34,6 +34,7 @@ public:
     MajorVersion(QString verAsString, Project*);
 
     virtual void serialize(QDomDocument &doc, QDomElement &parent) const;
+    virtual QUuid getClassUid() const;
     void setVersionNumbersFromString(const QString& n);
 
 };

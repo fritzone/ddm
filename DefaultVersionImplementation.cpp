@@ -37,6 +37,42 @@ void DefaultVersionImplementation::createTreeItems(GuiElements* gui, ContextMenu
     m_guiElements->createGuiElements(projectItem);
 }
 
+void DefaultVersionImplementation::updateGui()
+{
+    QFont f = getGui()->getVersionItem()->font(0);
+
+    if(isLocked())
+    {
+        f.setItalic(true);
+        getGui()->getVersionItem()->setIcon(0, IconFactory::getLockedVersionIcon());
+        getGui()->getVersionItem()->setPopupMenu(0);
+    }
+    else
+    {
+        f.setItalic(false);
+        getGui()->getVersionItem()->setIcon(0, IconFactory::getVersionIcon());
+        getGui()->getVersionItem()->setPopupMenu(ContextMenuCollection::getInstance()->getMajorVersionPopupMenu());
+    }
+
+    getGui()->getVersionItem()->setFont(0, f);
+    getGui()->getTablesItem()->setFont(0, f);
+    getGui()->getTableInstancesItem()->setFont(0, f);
+    getGui()->getDiagramsItem()->setFont(0, f);
+    getGui()->getDtsItem()->setFont(0, f);
+    getGui()->getProceduresItem()->setFont(0, f);
+    getGui()->getFunctionsItem()->setFont(0, f);
+    getGui()->getTriggersItem()->setFont(0, f);
+
+    if(getGui()->hasIntsDtsItem()) getGui()->getIntsDtsItem()->setFont(0, f);
+    if(getGui()->hasStringDtsItem()) getGui()->getStringDtsItem()->setFont(0, f);
+    if(getGui()->hasDateDtsItem()) getGui()->getDateDtsItem()->setFont(0, f);
+    if(getGui()->hasBlobDtsItem()) getGui()->getBlobDtsItem()->setFont(0, f);
+    if(getGui()->hasBoolDtsItem()) getGui()->getBoolDtsItem()->setFont(0, f);
+    if(getGui()->hasMiscDtsItem()) getGui()->getMiscDtsItem()->setFont(0, f);
+    if(getGui()->hasSpatialDtsItem()) getGui()->getSpatialDtsItem()->setFont(0, f);
+
+}
+
 void DefaultVersionImplementation::addNewDataType(UserDataType* dt)
 {
     int i = 0;
@@ -1019,6 +1055,8 @@ SqlSourceEntity* DefaultVersionImplementation::getSqlSourceEntityWithGuid(const 
 
 bool DefaultVersionImplementation::cloneInto(Version* other)
 {
+    lock();
+
     // clone the data types
     const QVector<UserDataType*> dts = getDataTypes();
     for(int i=0; i<dts.size(); i++)
@@ -1150,7 +1188,7 @@ bool DefaultVersionImplementation::cloneInto(Version* other)
         other->addTrigger(newp);
     }
 
-    // TODO: clone the diagrams
+    // clone the diagrams
     const QVector<Diagram*> dias = getDiagrams();
     for(int i=0; i<dias.size(); i++)
     {
@@ -1161,6 +1199,11 @@ bool DefaultVersionImplementation::cloneInto(Version* other)
 }
 
 void DefaultVersionImplementation::patchItem(const QString &uid)
+{
+
+}
+
+CloneableElement* DefaultVersionImplementation::clone(Version* sourceVersion, Version* targetVersion)
 {
 
 }

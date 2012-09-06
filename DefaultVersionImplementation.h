@@ -4,8 +4,6 @@
 #include "Version.h"
 #include "VersionData.h"
 
-#include <QTreeWidgetItem>
-
 class GuiElements;
 class Project;
 class Connection;
@@ -16,6 +14,9 @@ public:
     DefaultVersionImplementation(Project* p, int, int);
 
     virtual void serialize(QDomDocument &doc, QDomElement &parent) const = 0;
+    virtual QUuid getClassUid() const = 0;
+    virtual CloneableElement* clone(Version* sourceVersion, Version* targetVersion);
+    virtual void updateGui();
 
     virtual void addNewDataType(UserDataType*);
     virtual void addDiagram(Diagram*);
