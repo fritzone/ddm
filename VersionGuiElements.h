@@ -58,6 +58,14 @@ public:
     ContextMenuEnabledTreeWidgetItem* getMiscDtsItem();
     ContextMenuEnabledTreeWidgetItem* getSpatialDtsItem();
 
+    bool hasIntsDtsItem() { return intsDtItem != 0; }
+    bool hasStringDtsItem() { return stringsDtItem != 0; }
+    bool hasDateDtsItem() { return dateDtItem != 0; }
+    bool hasBlobDtsItem() { return blobDtItem != 0; }
+    bool hasBoolDtsItem() { return boolDtItem != 0; }
+    bool hasMiscDtsItem() { return miscDtItem != 0; }
+    bool hasSpatialDtsItem() { return spatialDtItem != 0; }
+
     /** @group creators, other methods*/
     void createGuiElements(ContextMenuEnabledTreeWidgetItem* projectItem);
     void populateTreeItems();

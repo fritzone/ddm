@@ -13,7 +13,8 @@
 /**
  * Class representing a data type
  */
-class UserDataType : public NamedItem, public TreeItem, public SerializableElement, public ObjectWithUid, public CloneableElement
+class UserDataType : public NamedItem, public TreeItem,
+        public SerializableElement, public ObjectWithUid, public CloneableElement
 {
 public:
 

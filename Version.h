@@ -2,6 +2,9 @@
 #define VERSION_H
 
 #include "SerializableElement.h"
+#include "core_ObjectWithUid.h"
+#include "core_CloneableElement.h"
+#include "core_LockableElement.h"
 
 class UserDataType;
 class Table;
@@ -24,11 +27,11 @@ class Project;
 /**
  * Basic class holding data related to versions
  */
-class Version : public SerializableElement
+class Version : public SerializableElement, public ObjectWithUid, public CloneableElement, public LockableElement
 {
 public:
 
-    Version(int major, int minor, Project* p) : m_major(major), m_minor(minor), m_project(p)
+    Version(int major, int minor, Project* p) : ObjectWithUid(QUuid::createUuid()), m_major(major), m_minor(minor), m_project(p)
     {}
 
     virtual ~Version() {}
@@ -322,6 +325,12 @@ public:
     virtual bool cloneInto(Version* other) = 0;
 
     virtual void patchItem(const QString& uid) = 0;
+
+    virtual QUuid getClassUid() const = 0;
+
+    virtual CloneableElement* clone(Version* sourceVersion, Version* targetVersion) = 0;
+
+    virtual void updateGui() = 0;
 
     void setVersionNumbers(int major, int minor)
     {

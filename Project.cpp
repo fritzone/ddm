@@ -117,6 +117,7 @@ void Project::releaseMajorVersion()
     MajorVersion* newVersion = createMajorVersion(cv->getMajor() + 1, 0);
     m_workingVersionIndex ++;
     cv->cloneInto(newVersion);
+    newVersion->setSourceUid(cv->getObjectUid());
 
     newVersion->createTreeItems(m_gui, getLocation());
     newVersion->getGui()->populateTreeItems();
@@ -124,10 +125,5 @@ void Project::releaseMajorVersion()
     cv->getGui()->getVersionItem()->setExpanded(false);
     newVersion->getGui()->getVersionItem()->setExpanded(true);
 
-    QFont f = cv->getGui()->getVersionItem()->font(0);
-    f.setItalic(true);
-    cv->getGui()->getVersionItem()->setFont(0, f);
-    cv->getGui()->getVersionItem()->setIcon(0, IconFactory::getLockedVersionIcon());
-
-    cv->getGui()->getVersionItem()->setPopupMenu(0);
+    cv->updateGui();
 }

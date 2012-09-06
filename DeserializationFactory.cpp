@@ -52,6 +52,7 @@ UserDataType* DeserializationFactory::createUserDataType(const QDomDocument&, co
     QString uid = element.attribute("uid");
     QString class_uid = element.attribute("class-uid");
     QString source_uid = element.attribute("source-uid");
+    QString locked = element.attribute("locked");
 
     if(uid.length() == 0)
     {
@@ -84,7 +85,23 @@ UserDataType* DeserializationFactory::createUserDataType(const QDomDocument&, co
     }
 
     UserDataType* result = new UserDataType(name, type, sqlType, size, defaultValue, miscValues, isUnsigned=="1", description, canBeNull == "1", QUuid::createUuid().toString());
-    result->setSourceUid(source_uid);
+
+    if(source_uid.length())
+    {
+        result->setSourceUid(source_uid);
+    }
+    else
+    {
+        result->setSourceUid(nullUid);
+    }
+    if(locked == "1")
+    {
+        result->lock();
+    }
+    else
+    {
+        result->unlock();
+    }
 
     return result;
 
@@ -203,6 +220,32 @@ void DeserializationFactory::createMajorVersion(MajorVersion *mv, Project *p, Da
 
     int major = element.attribute("major").toInt();
     int minor = element.attribute("minor").toInt();
+    QString uid = element.attribute("uid");
+    if(uid.length() == 0)
+    {
+        uid = QUuid::createUuid().toString();
+    }
+    mv->setForcedUid(uid);
+    QString sourceUid = element.attribute("source-uid");
+    if(sourceUid.length())
+    {
+        mv->setSourceUid(QUuid(sourceUid));
+    }
+    QString classUid = element.attribute("class-uid");
+    Q_UNUSED(classUid);
+
+    QString locked = element.attribute("locked");
+    if(locked.length())
+    {
+        if(locked == "1")
+        {
+            mv->lock();
+        }
+        else
+        {
+            mv->unlock();
+        }
+    }
 
     for(int i=0; i<element.childNodes().count(); i++)
     {
@@ -670,7 +713,6 @@ Table* DeserializationFactory::createTable(DatabaseEngine* engine, Version* ver,
     Table* result = new Table(ver, uid, 0);
 
     QString locked = element.attribute("locked");
-    QString sourceId = "";
     if(locked == "1")
     {
         result->lock();
