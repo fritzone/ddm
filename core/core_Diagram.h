@@ -119,6 +119,8 @@ public:
 
     virtual CloneableElement* clone(Version* sourceVersion, Version* targetVersion);
 
+    virtual void updateGui();
+
 public:
 
     friend class ERGraphicsScene;

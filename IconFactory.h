@@ -34,9 +34,11 @@ static const QString strTableIcon = ":/images/actions/images/actions/table.png";
 static const QString strTableLockIcon = ":/images/actions/images/actions/table_lock.png";
 static const QString strTablesIcon = ":/images/actions/images/actions/table.png";
 static const QString strTableInstIcon = ":/images/actions/images/small/tabinst.png";
+static const QString strLockedTableInstIcon = ":/images/actions/images/small/locked_tabinst.png";
 static const QString strTableInstLockIcon = ":/images/actions/images/small/tabinstlock.png";
 static const QString strProjectOpenIcon = ":/images/actions/images/small/project_open.png";
 static const QString strDiagramIcon = ":/images/actions/images/small/diagram.png";
+static const QString strLockedDiagramIcon = ":/images/actions/images/small/locked_diagram.png";
 static const QString strDataTypesIcon = ":/images/actions/images/small/datatypes.png";
 static const QString strCodeIcon = ":/images/actions/images/small/code.png";
 static const QString strSqlIcon = ":/images/actions/images/small/sql.png";
@@ -64,9 +66,12 @@ static const QString strIndexIcon = ":/images/actions/images/small/index.png";
 static const QString strHelpIcon = ":/images/actions/images/small/help_book_3d.png";
 static const QString strWarningIcon = ":/images/actions/images/small/warning.png";
 static const QString strRecommendIcon = ":/images/actions/images/small/reccomend.png";
+static const QString strViewIcon = ":/images/actions/images/small/view.png";
 static const QString strViewsIcon = ":/images/actions/images/small/view.png";
+static const QString strLockedViewIcon = ":/images/actions/images/small/view.png";
 static const QString strTriggersIcon = ":/images/actions/images/small/trigger.png";
 static const QString strTriggerIcon = ":/images/actions/images/small/trigger.png";
+static const QString strLockedTriggerIcon = ":/images/actions/images/small/locked_trigger.png";
 static const QString strCloseIcon = ":/images/actions/images/actions/application_exit.png";
 static const QString strWandIcon = ":/images/actions/images/small/wand.png";    // used for the distinct selection
 static const QString strNotIcon = ":/images/actions/images/small/not.png";
@@ -230,6 +235,12 @@ public:
     static const QIcon& getTabinstIcon()
     {
         static const QIcon icon(icons::strTableInstIcon);
+        return icon;
+    }
+
+    static const QIcon& getLockedTabinstIcon()
+    {
+        static const QIcon icon(icons::strLockedTableInstIcon);
         return icon;
     }
 
@@ -442,9 +453,21 @@ public:
         return icon;
     }
 
+    static const QIcon& getLockedTriggerIcon()
+    {
+        static const QIcon icon(icons::strLockedTriggerIcon);
+        return icon;
+    }
+
     static const QIcon& getDiagramIcon()
     {
         static const QIcon icon(icons::strDiagramIcon);
+        return icon;
+    }
+
+    static const QIcon& getLockedDiagramIcon()
+    {
+        static const QIcon icon(icons::strLockedDiagramIcon);
         return icon;
     }
 
@@ -600,7 +623,13 @@ public:
 
     static const QIcon& getViewIcon()
     {
-        static const QIcon icon(icons::strViewsIcon);
+        static const QIcon icon(icons::strViewIcon);
+        return icon;
+    }
+
+    static const QIcon& getLockedViewIcon()
+    {
+        static const QIcon icon(icons::strLockedViewIcon);
         return icon;
     }
 

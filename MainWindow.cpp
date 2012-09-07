@@ -2403,12 +2403,18 @@ void MainWindow::onNewFunction()
 
 void MainWindow::onNewTrigger()
 {
+    const QVector<Table*>& allTables = Workspace::getInstance()->workingVersion()->getTables();
+    if(allTables.size() == 0)
+    {
+        QMessageBox::critical(this, tr("Cannot create a trigger when there are no tables"), tr("No tables defined"), QMessageBox::Ok);
+        return;
+    }
     TriggerForm* frm = Workspace::getInstance()->workingVersion()->getGui()->getTriggerForm();
     Trigger* trigger = new Trigger(NameGenerator::getUniqueName(Workspace::getInstance()->workingVersion(), (itemGetter)&Version::getTrigger, QString("trig")), QUuid::createUuid().toString());
     frm->setTrigger(trigger);
     frm->initSql();
-    const QVector<Table*>& allTables = Workspace::getInstance()->workingVersion()->getTables();
     frm->feedInTables(allTables);
+    trigger->setTable(allTables.at(0)->getName());
     frm->feedInTriggerEvents(Workspace::getInstance()->currentProjectsEngine()->getTriggerEvents());
     frm->feedInTriggerTimes(Workspace::getInstance()->currentProjectsEngine()->getTriggerTimings());
     Workspace::getInstance()->workingVersion()->addTrigger(trigger);

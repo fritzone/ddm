@@ -92,6 +92,7 @@ public:
     void renameColumn(const QString& oldName, const QString& newName);
     virtual QUuid getClassUid() const;
     virtual CloneableElement* clone(Version *sourceVersion, Version *targetVersion);
+    virtual void updateGui();
 
     void finalizeCloning(TableInstance* src, Version *sourceVersion, Version *targetVersion);
     void finalizeAutoinstantiatedTinsts(TableInstance* src, Version *sourceVersion, Version *targetVersion);
