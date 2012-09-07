@@ -71,6 +71,7 @@ public:
     }
 
     virtual QUuid getClassUid() const;
+    virtual void updateGui();
 
 private:
 

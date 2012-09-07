@@ -3,6 +3,9 @@
 #include "core_Table.h"
 #include "Configuration.h"
 #include "Version.h"
+#include "IconFactory.h"
+#include "IconFactory.h"
+#include "ContextMenuCollection.h"
 
 TableInstance::TableInstance(Table *tab, bool ref, const QString& uid) : TreeItem(),
     NamedItem(tab->getName()), ObjectWithUid(uid),
@@ -44,6 +47,8 @@ void TableInstance::serialize(QDomDocument &doc, QDomElement &parent) const
     tableInstanceElement.setAttribute("Ref", instantiatedBecuaseOfRkReference());
     tableInstanceElement.setAttribute("uid", getObjectUid());
     tableInstanceElement.setAttribute("class-uid", getClassUid());
+    tableInstanceElement.setAttribute("source-uid", getSourceUid());
+    tableInstanceElement.setAttribute("locked", isLocked());
 
     {
     QString refTables = "";
@@ -158,4 +163,28 @@ void TableInstance::finalizeAutoinstantiatedTinsts(TableInstance* src, Version *
         if(!myInstantiated) return;
         m_instantiatedTablesInstances.append(myInstantiated);
     }
+}
+
+void TableInstance::updateGui()
+{
+    if(isLocked())
+    {
+        getLocation()->setIcon(0, IconFactory::getLockedTabinstIcon());
+        getLocation()->setPopupMenu(ContextMenuCollection::getInstance()->getUnlockLementPopupMenu());
+    }
+    else
+    {
+
+        // set the icon, add to the tree
+        if(instantiatedBecuaseOfRkReference())
+        {
+            getLocation()->setIcon(0, IconFactory::getTabinstLockIcon());
+        }
+        else
+        {
+            getLocation()->setIcon(0, IconFactory::getTabinstIcon());
+        }
+        getLocation()->setPopupMenu(ContextMenuCollection::getInstance()->getRelockLementPopupMenu());
+    }
+    TreeItem::updateGui();
 }

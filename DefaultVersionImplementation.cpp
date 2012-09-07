@@ -1146,6 +1146,8 @@ bool DefaultVersionImplementation::cloneInto(Version* other)
         // this also fixes the tables with the required link
         newTinst->finalizeCloning(tinsts.at(i), this, other);
         other->addTableInstance(newTinst);
+        tinsts.at(i)->lock();
+        tinsts.at(i)->updateGui();
     }
 
     // fix the automatically instantiated table instances for the table instances
@@ -1186,6 +1188,8 @@ bool DefaultVersionImplementation::cloneInto(Version* other)
     {
         Trigger* newp = dynamic_cast<Trigger*>(trigs.at(i)->clone(this, other));
         other->addTrigger(newp);
+        trigs.at(i)->lock();
+        trigs.at(i)->updateGui();
     }
 
     // clone the diagrams
@@ -1194,6 +1198,8 @@ bool DefaultVersionImplementation::cloneInto(Version* other)
     {
         Diagram* dgr = dynamic_cast<Diagram*>(dias.at(i)->clone(this, other));
         other->addDiagram(dgr);
+        dias.at(i)->lock();
+        dias.at(i)->updateGui();
     }
     return true;
 }

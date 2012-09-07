@@ -287,7 +287,7 @@ public:
         return m_parentUid;
     }
 
-    void updateGui();
+    virtual void updateGui();
 
 private:
 

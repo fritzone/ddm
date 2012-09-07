@@ -291,6 +291,8 @@ void VersionGuiElements::populateTreeItems()
 
         // set the link to the tree
         dI->setLocation(newDgramItem);
+
+        dI->updateGui();
     }
 
     // insert the table instances (but only if this is an OOP project...)
@@ -318,6 +320,7 @@ void VersionGuiElements::populateTreeItems()
 
         // set the link to the tree
         tI->setLocation(newTabInstItem);
+        tI->updateGui();
     }
 
     // now populate the "Code" tree items by adding the SQLs of the tables or table instances
@@ -538,6 +541,8 @@ ContextMenuEnabledTreeWidgetItem* VersionGuiElements::createTriggerTreeEntry(Tri
     sqlItm->setIcon(0, IconFactory::getTriggerIcon());
     sqlItm->setData(0, Qt::UserRole, var);
     trg->setSqlItem(sqlItm);
+
+    trg->updateGui();
 
     return newTriggerItem;
 }

@@ -4,6 +4,8 @@
 #include "NameGenerator.h"
 #include "db_AbstractSQLGenerator.h"
 #include "core_Table.h"
+#include "IconFactory.h"
+#include "ContextMenuCollection.h"
 
 Trigger::Trigger(const QString& name, const QString& uid) : SqlSourceEntity(),
     NamedItem(name), ObjectWithUid(uid),
@@ -25,6 +27,8 @@ void Trigger::serialize(QDomDocument &doc, QDomElement &parent) const
     triggerElement.setAttribute("Table", m_table);
     triggerElement.setAttribute("uid", getObjectUid());
     triggerElement.setAttribute("class-uid", getClassUid());
+    triggerElement.setAttribute("locked", isLocked());
+    triggerElement.setAttribute("source-uid", getSourceUid());
 
     QDomElement textElement = doc.createElement("Body");
     textElement.setAttribute("Encoded", "Base64");
@@ -55,4 +59,19 @@ CloneableElement* Trigger::clone(Version *sourceVersion, Version *targetVersion)
     t->m_description = m_description;
     t->setSourceUid(getObjectUid());
     return t;
+}
+
+void Trigger::updateGui()
+{
+    if(isLocked())
+    {
+        getLocation()->setIcon(0, IconFactory::getLockedTriggerIcon());
+        getLocation()->setPopupMenu(ContextMenuCollection::getInstance()->getUnlockLementPopupMenu());
+    }
+    else
+    {
+        getLocation()->setIcon(0, IconFactory::getTriggerIcon());
+        getLocation()->setPopupMenu(ContextMenuCollection::getInstance()->getRelockLementPopupMenu());
+    }
+    TreeItem::updateGui();
 }

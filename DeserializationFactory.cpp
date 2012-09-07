@@ -231,6 +231,10 @@ void DeserializationFactory::createMajorVersion(MajorVersion *mv, Project *p, Da
     {
         mv->setSourceUid(QUuid(sourceUid));
     }
+    else
+    {
+        mv->setSourceUid(nullUid);
+    }
     QString classUid = element.attribute("class-uid");
     Q_UNUSED(classUid);
 
@@ -716,7 +720,19 @@ Table* DeserializationFactory::createTable(DatabaseEngine* engine, Version* ver,
     if(locked == "1")
     {
         result->lock();
-        result->setSourceUid(element.attribute("source-uid"));
+    }
+    else
+    {
+        result->unlock();
+    }
+    QString sourceUid = element.attribute("source-uid");
+    if(sourceUid.length())
+    {
+        result->setSourceUid(sourceUid);
+    }
+    else
+    {
+        result->setSourceUid(nullUid);
     }
 
     result->setParentUid(parent_uid);
@@ -941,6 +957,8 @@ Diagram* DeserializationFactory::createDiagram(Version* v, const QDomDocument &d
     QString name = element.attribute("Name");
     QString uid = element.attribute("uid");
     QString class_uid = element.attribute("class-uid");
+    QString sourceUid = element.attribute("source-uid");
+    QString locked = element.attribute("locked");
 
     if(uid.length() == 0)
     {
@@ -985,6 +1003,22 @@ Diagram* DeserializationFactory::createDiagram(Version* v, const QDomDocument &d
 
     // means, there's a tree item for this diagram
     result->setSaved(true);
+    if(sourceUid.length())
+    {
+        result->setSourceUid(QUuid(sourceUid));
+    }
+    else
+    {
+        result->setSourceUid(nullUid);
+    }
+    if(locked == "1")
+    {
+        result->lock();
+    }
+    else
+    {
+        result->unlock();
+    }
     return result;
 }
 
@@ -997,6 +1031,9 @@ TableInstance* DeserializationFactory::createTableInstance(Version* v, const QDo
     QString instantiatedTableInstances = element.attribute("InstantiatedTableInstances");
     QString uid = element.attribute("uid");
     QString class_uid = element.attribute("class-uid");
+    QString sourceUid = element.attribute("source-uid");
+    QString locked = element.attribute("locked");
+
     if(uid.length() == 0)
     {
         uid = QUuid::createUuid().toString();
@@ -1038,6 +1075,13 @@ TableInstance* DeserializationFactory::createTableInstance(Version* v, const QDo
 
         result->setValues(data);
         result->setName(name);
+
+        if(sourceUid.length()) result->setSourceUid(sourceUid);
+        else result->setSourceUid(nullUid);
+
+        if(locked == "1") result->lock();
+        else result->unlock();
+
         return result;
     }
 }
@@ -1155,5 +1199,26 @@ Trigger* DeserializationFactory::createTrigger(Project*, Version* v,  const QDom
     trigg->setTime(element.attribute("Time"));
     trigg->setEvent(element.attribute("Event"));
     trigg->setTable(tab->getName());
+
+    QString locked = element.attribute("locked");
+    QString sourceUid = element.attribute("source-uid");
+    if(locked == "1")
+    {
+        trigg->lock();
+    }
+    else
+    {
+        trigg->unlock();
+    }
+
+    if(sourceUid.length())
+    {
+        trigg->setSourceUid(sourceUid);
+    }
+    else
+    {
+        trigg->setSourceUid(nullUid);
+    }
+
     return trigg;
 }

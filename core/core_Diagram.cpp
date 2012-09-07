@@ -9,6 +9,8 @@
 #include "NameGenerator.h"
 #include "dgram_DiagramItemFactory.h"
 #include "uids.h"
+#include "IconFactory.h"
+#include "ContextMenuCollection.h"
 
 Diagram::Diagram(Version* v, const QString& uid) : TreeItem(),
     NamedItem(NameGenerator::getUniqueName(v, (itemGetter)&Version::getDiagram, QString("Diagram"))),
@@ -245,6 +247,8 @@ void Diagram::serialize(QDomDocument &doc, QDomElement &parent) const
     diagramElement.setAttribute("Name", m_name);
     diagramElement.setAttribute("uid", getObjectUid());
     diagramElement.setAttribute("class-uid", getClassUid());
+    diagramElement.setAttribute("locked", isLocked());
+    diagramElement.setAttribute("source-uid", getSourceUid());
 
     // save the tables
     {
@@ -325,4 +329,19 @@ CloneableElement* Diagram::clone(Version* sourceVersion, Version* targetVersion)
     new_dgram->m_version = targetVersion;
     new_dgram->setSourceUid(getObjectUid());
     return new_dgram;
+}
+
+void Diagram::updateGui()
+{
+    if(isLocked())
+    {
+        getLocation()->setIcon(0, IconFactory::getLockedDiagramIcon());
+        getLocation()->setPopupMenu(ContextMenuCollection::getInstance()->getUnlockLementPopupMenu());
+    }
+    else
+    {
+        getLocation()->setIcon(0, IconFactory::getDiagramIcon());
+        getLocation()->setPopupMenu(ContextMenuCollection::getInstance()->getRelockLementPopupMenu());
+    }
+    TreeItem::updateGui();
 }
