@@ -25,6 +25,8 @@ public:
 
     QUuid getSourceUid() const;
 
+
+
 private:
 
     QUuid m_sourceUid;

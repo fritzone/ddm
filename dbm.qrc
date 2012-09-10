@@ -192,6 +192,8 @@
         <file>images/small/locked_trigger.png</file>
         <file>images/small/locked_view.png</file>
         <file>images/small/locked_tabinst.png</file>
+        <file>images/actions/locked_function_icon.png</file>
+        <file>images/actions/locked_procedure.png</file>
     </qresource>
     <qresource prefix="/bigger">
         <file>images/unaf.png</file>

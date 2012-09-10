@@ -501,28 +501,32 @@ ContextMenuEnabledTreeWidgetItem* VersionGuiElements::createProcedureTreeEntry(P
     docItem->setData(0, Qt::UserRole, var);
     m_tree->addTopLevelItem(docItem);
 
+    proc->updateGui();
+
     return newProcItem;
 }
 
-ContextMenuEnabledTreeWidgetItem* VersionGuiElements::createFunctionTreeEntry(Function* proc)
+ContextMenuEnabledTreeWidgetItem* VersionGuiElements::createFunctionTreeEntry(Function* func)
 {
-    ContextMenuEnabledTreeWidgetItem* newFuncItem = new ContextMenuEnabledTreeWidgetItem(functionsItem, QStringList(proc->getName())) ;
-    QVariant var(proc->getObjectUid());
+    ContextMenuEnabledTreeWidgetItem* newFuncItem = new ContextMenuEnabledTreeWidgetItem(functionsItem, QStringList(func->getName())) ;
+    QVariant var(func->getObjectUid());
     newFuncItem->setData(0, Qt::UserRole, var);
     newFuncItem->setIcon(0, IconFactory::getFunctionTreeIcon());
     //newFuncItem->setPopupMenu(ContextMenuCollection::getInstance()->getProcedurePopupMenu());
     m_tree->addTopLevelItem(newFuncItem);
-    proc->setLocation(newFuncItem);
+    func->setLocation(newFuncItem);
 
-    ContextMenuEnabledTreeWidgetItem* sqlItm = new ContextMenuEnabledTreeWidgetItem(getFinalSqlItem(), QStringList(proc->getName()));
+    ContextMenuEnabledTreeWidgetItem* sqlItm = new ContextMenuEnabledTreeWidgetItem(getFinalSqlItem(), QStringList(func->getName()));
     sqlItm->setIcon(0, IconFactory::getFunctionTreeIcon());
     sqlItm->setData(0, Qt::UserRole, var);
-    proc->setSqlItem(sqlItm);
+    func->setSqlItem(sqlItm);
 
-    ContextMenuEnabledTreeWidgetItem* docItem = new ContextMenuEnabledTreeWidgetItem(getDocumentationItem(), QStringList(proc->getName()));
+    ContextMenuEnabledTreeWidgetItem* docItem = new ContextMenuEnabledTreeWidgetItem(getDocumentationItem(), QStringList(func->getName()));
     docItem->setIcon(0, IconFactory::getFunctionTreeIcon());
     docItem->setData(0, Qt::UserRole, var);
     m_tree->addTopLevelItem(docItem);
+
+    func->updateGui();
 
     return newFuncItem;
 }

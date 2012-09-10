@@ -5,6 +5,8 @@
 #include "db_AbstractSQLGenerator.h"
 #include "Configuration.h"
 #include "uids.h"
+#include "IconFactory.h"
+#include "ContextMenuCollection.h"
 
 Procedure::Procedure(const QString &pname, const QString& uid) : StoredMethod(pname),
     ObjectWithUid(uid)
@@ -37,4 +39,19 @@ CloneableElement* Procedure::clone(Version *sourceVersion, Version *targetVersio
     newp->setSql(getSql());
     newp->setSourceUid(getObjectUid());
     return newp;
+}
+
+void Procedure::updateGui()
+{
+    if(isLocked())
+    {
+        getLocation()->setIcon(0, IconFactory::getLockedProcedureIcon());
+        getLocation()->setPopupMenu(ContextMenuCollection::getInstance()->getUnlockLementPopupMenu());
+    }
+    else
+    {
+        getLocation()->setIcon(0, IconFactory::getProcedureIcon());
+        getLocation()->setPopupMenu(ContextMenuCollection::getInstance()->getRelockLementPopupMenu());
+    }
+    TreeItem::updateGui();
 }

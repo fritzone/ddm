@@ -1172,6 +1172,8 @@ bool DefaultVersionImplementation::cloneInto(Version* other)
     {
         Procedure* newp = dynamic_cast<Procedure*>(procs.at(i)->clone(this, other));
         other->addProcedure(newp);
+        procs.at(i)->lock();
+        procs.at(i)->updateGui();
     }
 
     // and the functions
@@ -1180,6 +1182,8 @@ bool DefaultVersionImplementation::cloneInto(Version* other)
     {
         Function* newp = dynamic_cast<Function*>(funcs.at(i)->clone(this, other));
         other->addFunction(newp);
+        funcs.at(i)->lock();
+        funcs.at(i)->updateGui();
     }
 
     // clone the triggers
@@ -1211,5 +1215,28 @@ void DefaultVersionImplementation::patchItem(const QString &uid)
 
 CloneableElement* DefaultVersionImplementation::clone(Version* sourceVersion, Version* targetVersion)
 {
+    return 0;
+}
 
+void DefaultVersionImplementation::replaceTable(const QString& uid, Table* newTab)
+{
+    Table* t = getTableWithUid(uid);
+    if(!t) return;
+
+    newTab->setForcedUid(uid);
+    newTab->setName(t->getName());
+    newTab->lock();
+
+    for(int i=0; i< m_data.m_tables.size(); i++)
+    {
+        if(m_data.m_tables[i]->getObjectUid() == uid)
+        {
+            delete m_data.m_tables[i]; // hopefully this will not mess up the vector :)
+            m_data.m_tables[i] = newTab;
+        }
+    }
+
+    newTab->updateGui();
+
+    return;
 }

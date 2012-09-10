@@ -23,6 +23,7 @@ class SqlSourceEntity;
 class Function;
 class Connection;
 class Project;
+class Patch;
 
 /**
  * Basic class holding data related to versions
@@ -360,6 +361,19 @@ public:
     {
         m_project = p;
     }
+
+    /**
+     * @brief getWorkingPatch
+     * @return the patch on which we are currently working. Patches can be
+     */
+    Patch* getWorkingPatch();
+
+    /**
+     * @brief replaceTable replaces the table with uid with the newTab. Used only at the version handling!
+     * @param uid
+     * @param newTab
+     */
+    virtual void replaceTable(const QString& uid, Table* newTab) = 0;
 
 protected:
     int m_major;

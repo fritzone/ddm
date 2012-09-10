@@ -79,7 +79,7 @@ public:
     ContextMenuEnabledTreeWidgetItem* createTableTreeEntryForIssue(Table* tab);
     ContextMenuEnabledTreeWidgetItem* createViewTreeEntry(View* view);
     ContextMenuEnabledTreeWidgetItem* createProcedureTreeEntry(Procedure* proc);
-    ContextMenuEnabledTreeWidgetItem* createFunctionTreeEntry(Function* proc);
+    ContextMenuEnabledTreeWidgetItem* createFunctionTreeEntry(Function* func);
     ContextMenuEnabledTreeWidgetItem* createTriggerTreeEntry(Trigger* trg);
     void updateForms();
 

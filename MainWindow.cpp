@@ -961,6 +961,8 @@ void MainWindow::onUnlockSomething()
         }
 
         // and finally tell the version of the element that a new pathc is about to be born
+        // v->getWorkingPatch().addElement()
+
     }
 }
 

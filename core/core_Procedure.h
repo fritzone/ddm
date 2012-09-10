@@ -15,6 +15,7 @@ public:
     {
         return "PROCEDURE";
     }
+    virtual void updateGui();
 };
 
 #endif // CORE_PROCEDURE_H

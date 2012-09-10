@@ -9,7 +9,8 @@ SOURCES +=                                       \
             core/core_ObjectWithUid.cpp \
             core/core_TableInstance.cpp \
             core/core_UserDataType.cpp \
-    core/core_CloneableElement.cpp
+    core/core_CloneableElement.cpp \
+    core/core_Patch.cpp
 
 HEADERS +=                                         \
             core/core_Trigger.h                                 \
@@ -24,7 +25,8 @@ HEADERS +=                                         \
             core/core_TableInstance.h \
             core/core_UserDataType.h \
     core/core_CloneableElement.h \
-    core/core_LockableElement.h
+    core/core_LockableElement.h \
+    core/core_Patch.h
 
 
 
