@@ -11,6 +11,7 @@ public:
     virtual void serialize(QDomDocument& doc, QDomElement& parent) const;
     virtual QUuid getClassUid() const;
     virtual CloneableElement* clone(Version* sourceVersion, Version* targetVersion);
+    virtual void updateGui();
 
     virtual QString keyword()
     {

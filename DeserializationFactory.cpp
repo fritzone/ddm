@@ -1091,6 +1091,8 @@ Procedure* DeserializationFactory::createProcedure(Project*, Version*,  const QD
     QString name = element.attribute("Name");
     QString uid = element.attribute("uid");
     QString class_uid = element.attribute("class-uid");
+    QString sourceUid = element.attribute("source-uid");
+    QString locked = element.attribute("locked");
 
     if(uid.length() == 0)
     {
@@ -1118,6 +1120,14 @@ Procedure* DeserializationFactory::createProcedure(Project*, Version*,  const QD
     // assuming a not encoded SQL, old versions, pre 0.1i
     QDomCDATASection cdata = sqlElement.firstChild().toCDATASection();
     p->setSql(cdata.toText().data().toLocal8Bit());
+
+
+    if(sourceUid.length()) p->setSourceUid(sourceUid);
+    else p->setSourceUid(nullUid);
+
+    if(locked == "1") p->lock();
+    else p->unlock();
+
     return p;
 }
 
@@ -1126,6 +1136,9 @@ Function* DeserializationFactory::createFunction(Project*, Version*,  const QDom
     QString name = element.attribute("Name");
     QString uid = element.attribute("uid");
     QString class_uid = element.attribute("class-uid");
+    QString sourceUid = element.attribute("source-uid");
+    QString locked = element.attribute("locked");
+
     if(uid.length() == 0)
     {
         uid = QUuid::createUuid().toString();
@@ -1151,6 +1164,14 @@ Function* DeserializationFactory::createFunction(Project*, Version*,  const QDom
     // assuming a not encoded SQL, old versions, pre 0.1i
     QDomCDATASection cdata = sqlElement.firstChild().toCDATASection();
     p->setSql(cdata.toText().data());
+
+    if(sourceUid.length()) p->setSourceUid(sourceUid);
+    else p->setSourceUid(nullUid);
+
+    if(locked == "1") p->lock();
+    else p->unlock();
+
+
     return p;
 }
 

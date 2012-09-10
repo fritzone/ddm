@@ -47,6 +47,8 @@ static const QString strReleaseMajorVersionIcon = ":/images/actions/images/small
 static const QString strMajorVersionLockedIcon = ":/images/actions/images/small/version_locked.png";
 static const QString strProcedureIcon = ":/images/actions/images/actions/procedure.png";
 static const QString strFunctionTreeIcon = ":/images/actions/images/actions/function_icon.png";
+static const QString strLockedProcedureIcon = ":/images/actions/images/actions/locked_procedure.png";
+static const QString strLockedFunctionTreeIcon = ":/images/actions/images/actions/locked_function_icon.png";
 static const QString strRemoveIcon = ":/images/actions/images/small/remove.png";
 static const QString strStringsFolder = ":/images/actions/images/big/folder_red.png";
 static const QString strIntsFolder = ":/images/actions/images/big/folder_darkblue.png";
@@ -687,6 +689,12 @@ public:
         return icon;
     }
 
+    static const QIcon& getLockedProcedureIcon()
+    {
+        static const QIcon icon(icons::strLockedProcedureIcon);
+        return icon;
+    }
+
     static const QIcon& getProceduresIcon()
     {
         static const QIcon icon(icons::strProcedureIcon);
@@ -702,6 +710,12 @@ public:
     static const QIcon& getFunctionTreeIcon()
     {
         static const QIcon icon(icons::strFunctionTreeIcon);
+        return icon;
+    }
+
+    static const QIcon& getLockedFunctionTreeIcon()
+    {
+        static const QIcon icon(icons::strLockedFunctionTreeIcon);
         return icon;
     }
 

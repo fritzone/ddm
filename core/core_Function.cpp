@@ -5,6 +5,8 @@
 #include "db_AbstractSQLGenerator.h"
 #include "Configuration.h"
 #include "uids.h"
+#include "IconFactory.h"
+#include "ContextMenuCollection.h"
 
 Function::Function(const QString &pname, const QString& uid) : StoredMethod(pname), ObjectWithUid(uid)
 {
@@ -16,6 +18,8 @@ void Function::serialize(QDomDocument &doc, QDomElement &parent) const
     element.setAttribute("Name", m_name);
     element.setAttribute("uid", getObjectUid());
     element.setAttribute("class-uid", getClassUid());
+    element.setAttribute("source-uid", getSourceUid());
+    element.setAttribute("locked", isLocked());
 
     QDomElement textElement = doc.createElement("Sql");
     textElement.setAttribute("Encoded", "Base64");
@@ -36,4 +40,19 @@ CloneableElement* Function::clone(Version *sourceVersion, Version *targetVersion
     newp->setSql(getSql());
     newp->setSourceUid(getObjectUid());
     return newp;
+}
+
+void Function::updateGui()
+{
+    if(isLocked())
+    {
+        getLocation()->setIcon(0, IconFactory::getLockedFunctionTreeIcon());
+        getLocation()->setPopupMenu(ContextMenuCollection::getInstance()->getUnlockLementPopupMenu());
+    }
+    else
+    {
+        getLocation()->setIcon(0, IconFactory::getFunctionTreeIcon());
+        getLocation()->setPopupMenu(ContextMenuCollection::getInstance()->getRelockLementPopupMenu());
+    }
+    TreeItem::updateGui();
 }
