@@ -60,6 +60,7 @@
 #include "DocumentationForm.h"
 #include "DocumentationGenerator.h"
 #include "QHtmlDocument.h"
+#include "core_Patch.h"
 
 #include <QtGui>
 
@@ -953,15 +954,30 @@ void MainWindow::onUnlockSomething()
         Version* v = UidWarehouse::instance().getVersionForUid(guid);
         // now find the type of this element
         UserDataType* udt = dynamic_cast<UserDataType*>(element);
+        bool doneSomething = false;
+
         if(udt)
         {
             udt->unlock();
             udt->updateGui();
             showDataType(v, udt->getName(), true);
+            doneSomething = true;
+        }
+
+        Table* t = dynamic_cast<Table*>(element);
+        if(t)
+        {
+            t->unlock();
+            t->updateGui();
+            showTableWithGuid(v, guid);
+            doneSomething = true;
         }
 
         // and finally tell the version of the element that a new pathc is about to be born
-        // v->getWorkingPatch().addElement()
+        if(doneSomething)
+        {
+            v->getWorkingPatch()->addElement(guid);
+        }
 
     }
 }
