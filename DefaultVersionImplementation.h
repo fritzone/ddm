@@ -7,6 +7,7 @@
 class GuiElements;
 class Project;
 class Connection;
+class Patch;
 
 class DefaultVersionImplementation : public Version
 {
@@ -79,6 +80,7 @@ public:
     virtual bool cloneInto(Version* other);
     virtual void patchItem(const QString& uid);
     virtual void replaceTable(const QString& uid, Table* newTab);
+    virtual Patch* getWorkingPatch();
 
     void createTreeItems(GuiElements* gui, ContextMenuEnabledTreeWidgetItem* projectItem);
 
@@ -91,6 +93,9 @@ protected:
 
     VersionGuiElements* m_guiElements;
     int m_validationFlags;
+
+    QVector<Patch*> m_patches;
+    int m_currentPatchIndex;
 };
 
 #endif // DEFAULTVERSIONIMPLEMENTATION_H

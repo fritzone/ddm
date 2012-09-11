@@ -248,6 +248,7 @@ void Diagram::serialize(QDomDocument &doc, QDomElement &parent) const
     diagramElement.setAttribute("uid", getObjectUid());
     diagramElement.setAttribute("class-uid", getClassUid());
     diagramElement.setAttribute("locked", isLocked());
+    diagramElement.setAttribute("was-locked", wasLocked());
     diagramElement.setAttribute("source-uid", getSourceUid());
 
     // save the tables
@@ -340,8 +341,11 @@ void Diagram::updateGui()
     }
     else
     {
-        getLocation()->setIcon(0, IconFactory::getDiagramIcon());
-        getLocation()->setPopupMenu(ContextMenuCollection::getInstance()->getRelockLementPopupMenu());
+        if(wasLocked())
+        {
+            getLocation()->setIcon(0, IconFactory::getDiagramIcon());
+            getLocation()->setPopupMenu(ContextMenuCollection::getInstance()->getRelockLementPopupMenu());
+        }
     }
     TreeItem::updateGui();
 }

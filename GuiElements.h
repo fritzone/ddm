@@ -5,6 +5,8 @@
 
 #include <QtGui>
 
+class Patch;
+
 class GuiElements
 {
 public:
@@ -42,19 +44,37 @@ public:
         return m_genTree;
     }
 
+    QDockWidget* getPatchesDock() const
+    {
+        return m_patchesTreeDock;
+    }
+
+    ContextMenuEnabledTreeWidget* getPatchesTree() const
+    {
+        return m_patchesTree;
+    }
+
+    ContextMenuEnabledTreeWidgetItem* createNewPatchItem(Patch *p);
+    ContextMenuEnabledTreeWidgetItem* createNewItemForPatch(Patch *p, const QString& uid, const QString &name);
+    void removeItemForPatch(Patch *p, const QString& uid);
+
 private:
 
     QDockWidget* m_projectTreeDock;
     QDockWidget* m_issuesTreeDock;
     QDockWidget* m_genTreeDock;
+    QDockWidget* m_patchesTreeDock;
 
     ContextMenuEnabledTreeWidget* m_projectTree;
     ContextMenuEnabledTreeWidget* m_issuesTree;
     ContextMenuEnabledTreeWidget* m_genTree;
+    ContextMenuEnabledTreeWidget* m_patchesTree;
 
     ContextMenuHandler* m_contextMenuHandler;
     ContextMenuHandler* m_issuesContextMenuHandler;
 
+    // the vector holding the root tree items of the patches
+    QMap<Patch*, ContextMenuEnabledTreeWidgetItem*> m_patchItems;
 };
 
 #endif // GUIELEMENTS_H

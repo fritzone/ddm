@@ -111,6 +111,7 @@ private:
     QTreeWidget* m_tree;            // the solution objects tree
     QTreeWidget* m_issuesTree;      // the tree for the issues
     QTreeWidget* m_genTree;         // the tree for the generated items (code, documentation)
+    QTreeWidget* m_patchesTree;         // the tree for the generated items (code, documentation)
 
     // the tree item containing the various data types
     ContextMenuEnabledTreeWidgetItem* dtsItem;

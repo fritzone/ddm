@@ -40,6 +40,11 @@ public:
         return m_lockState;
     }
 
+    void forceSetWasLocked(bool b)
+    {
+        m_wasLocked = b;
+    }
+
     virtual void updateGui() = 0;
 
 private:

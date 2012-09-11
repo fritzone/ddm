@@ -58,6 +58,7 @@ void UserDataType::serialize(QDomDocument& doc, QDomElement& parent) const
     dtElement.setAttribute("class-uid", getClassUid().toString());
     dtElement.setAttribute("source-uid", getSourceUid());
     dtElement.setAttribute("locked", isLocked());
+    dtElement.setAttribute("was-locked", wasLocked());
 
     {
     QDomElement descElement = doc.createElement("Description");  // description
@@ -197,8 +198,11 @@ void UserDataType::updateGui()
     }
     else
     {
-        getLocation()->setIcon(0, IconFactory::getIconForDataType(m_type));
-        getLocation()->setPopupMenu(ContextMenuCollection::getInstance()->getRelockLementPopupMenu());
+        if(wasLocked())
+        {
+            getLocation()->setIcon(0, IconFactory::getIconForDataType(m_type));
+            getLocation()->setPopupMenu(ContextMenuCollection::getInstance()->getRelockLementPopupMenu());
+        }
     }
     TreeItem::updateGui();
 }

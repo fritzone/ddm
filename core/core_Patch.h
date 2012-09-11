@@ -5,9 +5,12 @@
 #include <QStringList>
 #include <QMap>
 
+#include "NamedItem.h"
+#include "TreeItem.h"
+
 class Version;
 
-class Patch
+class Patch : public NamedItem, public TreeItem
 {
 public:
 

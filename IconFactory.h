@@ -2,6 +2,7 @@
 #define ICONFACTORY_H
 
 #include "enums.h"
+#include "uids.h"
 
 #include <QIcon>
 
@@ -41,6 +42,7 @@ static const QString strDiagramIcon = ":/images/actions/images/small/diagram.png
 static const QString strLockedDiagramIcon = ":/images/actions/images/small/locked_diagram.png";
 static const QString strDataTypesIcon = ":/images/actions/images/small/datatypes.png";
 static const QString strCodeIcon = ":/images/actions/images/small/code.png";
+static const QString strPatchIcon = ":/images/actions/images/small/patch.png";
 static const QString strSqlIcon = ":/images/actions/images/small/sql.png";
 static const QString strMajorVersionIcon = ":/images/actions/images/small/arrow-000-medium.png";
 static const QString strReleaseMajorVersionIcon = ":/images/actions/images/small/arrow-branch.png";
@@ -70,7 +72,7 @@ static const QString strWarningIcon = ":/images/actions/images/small/warning.png
 static const QString strRecommendIcon = ":/images/actions/images/small/reccomend.png";
 static const QString strViewIcon = ":/images/actions/images/small/view.png";
 static const QString strViewsIcon = ":/images/actions/images/small/view.png";
-static const QString strLockedViewIcon = ":/images/actions/images/small/view.png";
+static const QString strLockedViewIcon = ":/images/actions/images/small/locked_view.png";
 static const QString strTriggersIcon = ":/images/actions/images/small/trigger.png";
 static const QString strTriggerIcon = ":/images/actions/images/small/trigger.png";
 static const QString strLockedTriggerIcon = ":/images/actions/images/small/locked_trigger.png";
@@ -785,10 +787,35 @@ public:
         return icon;
     }
 
+    static const QIcon& getPatchIcon()
+    {
+        static const QIcon icon(icons::strPatchIcon);
+        return icon;
+    }
+
     static const QIcon& getAllDataTypes()
     {
         static const QIcon icon(icons::strIcon);
         return icon;
+    }
+
+    static const QIcon& getIconForClassUid(const QString& cuid)
+    {
+        if(cuid == uidTable) return getTableIcon();
+        if(cuid == uidTableInstance) return getTabinstIcon();
+        if(cuid == uidDiagram) return getDiagramIcon();
+        if(cuid == uidProcedure) return getProcedureIcon();
+        if(cuid == uidFunction) return getFunctionTreeIcon();
+        if(cuid == uidView) return getViewIcon();
+        if(cuid == uidTrigger) return getTriggerIcon();
+
+        if(cuid == uidNumericDT) return getIntDataTypeIcon();
+        if(cuid == uidStringDT) return getStringDataTypeIcon();
+        if(cuid == uidDateTimeDT) return getDateTimeDataTypeIcon();
+        if(cuid == uidBooleanDT) return getBoolDataTypeIcon();
+        if(cuid == uidBlobDT) return getBlobDataTypeIcon();
+        if(cuid == uidMiscDT) return getMiscDataTypeIcon();
+        if(cuid == uidSpatialDT) return getSpatialDataTypeIcon();
     }
 
     static QIcon getIconForDataType(DT_TYPE dt)

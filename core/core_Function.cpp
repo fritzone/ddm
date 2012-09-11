@@ -20,6 +20,7 @@ void Function::serialize(QDomDocument &doc, QDomElement &parent) const
     element.setAttribute("class-uid", getClassUid());
     element.setAttribute("source-uid", getSourceUid());
     element.setAttribute("locked", isLocked());
+    element.setAttribute("was-locked", wasLocked());
 
     QDomElement textElement = doc.createElement("Sql");
     textElement.setAttribute("Encoded", "Base64");
@@ -51,8 +52,11 @@ void Function::updateGui()
     }
     else
     {
-        getLocation()->setIcon(0, IconFactory::getFunctionTreeIcon());
-        getLocation()->setPopupMenu(ContextMenuCollection::getInstance()->getRelockLementPopupMenu());
+        if(wasLocked())
+        {
+            getLocation()->setIcon(0, IconFactory::getFunctionTreeIcon());
+            getLocation()->setPopupMenu(ContextMenuCollection::getInstance()->getRelockLementPopupMenu());
+        }
     }
     TreeItem::updateGui();
 }

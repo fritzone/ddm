@@ -92,8 +92,14 @@ public:
     {
         return m_connectionGuiElements;
     }
+    GuiElements* getGuiElements() const
+    {
+        return m_guiElements;
+    }
 
     virtual void setCentralWidget(QWidget *widget);
+    void finallyDoLockLikeOperation(bool reLocking, const QString& guid);
+
 
 protected:
     virtual void closeEvent( QCloseEvent * event );
@@ -196,7 +202,9 @@ private:
 
     void hideSplashwindow();
     void tryBrowseConnection(Connection* c);
-    void showObjectwithGuid(Version* v, QTreeWidgetItem* current, showSomething s, bool focus=true);
+    void showObjectwithGuid(Version* v, QString uid, showSomething s, bool focus=true);
+
+    void doLockLikeOperation(bool reLocking);
 
 private:
     Ui::MainWindow *m_ui;
