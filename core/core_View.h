@@ -80,6 +80,8 @@ public:
     virtual CloneableElement* clone(Version* sourceVersion, Version* targetVersion);
     void secondStepClone();
 
+    virtual void updateGui();
+
 private:
     SelectQuery* m_selectQuery;
     QueryGraphicsHelper* m_helper;

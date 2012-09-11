@@ -53,6 +53,7 @@ UserDataType* DeserializationFactory::createUserDataType(const QDomDocument&, co
     QString class_uid = element.attribute("class-uid");
     QString source_uid = element.attribute("source-uid");
     QString locked = element.attribute("locked");
+    QString wasLocked = element.attribute("was-locked");
 
     if(uid.length() == 0)
     {
@@ -102,6 +103,8 @@ UserDataType* DeserializationFactory::createUserDataType(const QDomDocument&, co
     {
         result->unlock();
     }
+
+    result->forceSetWasLocked(wasLocked == "1");
 
     return result;
 
@@ -566,6 +569,15 @@ View* DeserializationFactory::createView(Project* p, Version* v, const QDomDocum
     QString class_uid = element.attribute("class-uid");
     QString name = element.attribute("Name");
 
+    QString source_uid = element.attribute("source-uid");
+    QString locked = element.attribute("locked");
+    QString wasLocked = element.attribute("was-locked");
+
+    if(source_uid.length() == 0)
+    {
+        source_uid = nullUid;
+    }
+
     if(uid.length() == 0)
     {
         uid = QUuid::createUuid().toString();
@@ -654,6 +666,19 @@ View* DeserializationFactory::createView(Project* p, Version* v, const QDomDocum
         }
     }
 
+    view->setSourceUid(source_uid);
+
+    if(locked == "1")
+    {
+        view->lock();
+    }
+    else
+    {
+        view->unlock();
+    }
+
+    view->forceSetWasLocked(wasLocked == "1");
+
     return view;
 }
 
@@ -734,6 +759,9 @@ Table* DeserializationFactory::createTable(DatabaseEngine* engine, Version* ver,
     {
         result->setSourceUid(nullUid);
     }
+
+    QString wasLocked = element.attribute("was-locked");
+    result->forceSetWasLocked(wasLocked == "1");
 
     result->setParentUid(parent_uid);
     result->setName(name);
@@ -959,6 +987,7 @@ Diagram* DeserializationFactory::createDiagram(Version* v, const QDomDocument &d
     QString class_uid = element.attribute("class-uid");
     QString sourceUid = element.attribute("source-uid");
     QString locked = element.attribute("locked");
+    QString wasLocked = element.attribute("was-locked");
 
     if(uid.length() == 0)
     {
@@ -1019,6 +1048,7 @@ Diagram* DeserializationFactory::createDiagram(Version* v, const QDomDocument &d
     {
         result->unlock();
     }
+    result->forceSetWasLocked(wasLocked == "1");
     return result;
 }
 
@@ -1033,6 +1063,7 @@ TableInstance* DeserializationFactory::createTableInstance(Version* v, const QDo
     QString class_uid = element.attribute("class-uid");
     QString sourceUid = element.attribute("source-uid");
     QString locked = element.attribute("locked");
+    QString wasLocked = element.attribute("was-locked");
 
     if(uid.length() == 0)
     {
@@ -1082,6 +1113,8 @@ TableInstance* DeserializationFactory::createTableInstance(Version* v, const QDo
         if(locked == "1") result->lock();
         else result->unlock();
 
+        result->forceSetWasLocked(wasLocked == "1");
+
         return result;
     }
 }
@@ -1093,6 +1126,7 @@ Procedure* DeserializationFactory::createProcedure(Project*, Version*,  const QD
     QString class_uid = element.attribute("class-uid");
     QString sourceUid = element.attribute("source-uid");
     QString locked = element.attribute("locked");
+    QString wasLocked = element.attribute("was-locked");
 
     if(uid.length() == 0)
     {
@@ -1103,6 +1137,15 @@ Procedure* DeserializationFactory::createProcedure(Project*, Version*,  const QD
 
     }
     Procedure* p = new Procedure(name, uid);
+
+
+    if(sourceUid.length()) p->setSourceUid(sourceUid);
+    else p->setSourceUid(nullUid);
+
+    if(locked == "1") p->lock();
+    else p->unlock();
+
+    p->forceSetWasLocked(wasLocked == "1");
 
     QDomElement sqlElement = element.firstChild().toElement();
     if(sqlElement.hasAttribute("Encoded"))
@@ -1121,13 +1164,6 @@ Procedure* DeserializationFactory::createProcedure(Project*, Version*,  const QD
     QDomCDATASection cdata = sqlElement.firstChild().toCDATASection();
     p->setSql(cdata.toText().data().toLocal8Bit());
 
-
-    if(sourceUid.length()) p->setSourceUid(sourceUid);
-    else p->setSourceUid(nullUid);
-
-    if(locked == "1") p->lock();
-    else p->unlock();
-
     return p;
 }
 
@@ -1138,6 +1174,7 @@ Function* DeserializationFactory::createFunction(Project*, Version*,  const QDom
     QString class_uid = element.attribute("class-uid");
     QString sourceUid = element.attribute("source-uid");
     QString locked = element.attribute("locked");
+    QString wasLocked = element.attribute("was-locked");
 
     if(uid.length() == 0)
     {
@@ -1147,7 +1184,16 @@ Function* DeserializationFactory::createFunction(Project*, Version*,  const QDom
     {
 
     }
-    Function* p = new Function(name, uid);
+    Function* func = new Function(name, uid);
+
+    if(sourceUid.length()) func->setSourceUid(sourceUid);
+    else func->setSourceUid(nullUid);
+
+    if(locked == "1") func->lock();
+    else func->unlock();
+
+    func->forceSetWasLocked(wasLocked == "1");
+
     QDomElement sqlElement = element.firstChild().toElement();
     if(sqlElement.hasAttribute("Encoded"))
     {
@@ -1155,24 +1201,17 @@ Function* DeserializationFactory::createFunction(Project*, Version*,  const QDom
         {
             QDomCDATASection cdata = sqlElement.firstChild().toCDATASection();
             QByteArray encoded = QByteArray(cdata.toText().data().toLocal8Bit());
-            p->setSql(QString(QByteArray::fromBase64(encoded)));
+            func->setSql(QString(QByteArray::fromBase64(encoded)));
 
-            return p;
+            return func;
         }
     }
 
     // assuming a not encoded SQL, old versions, pre 0.1i
     QDomCDATASection cdata = sqlElement.firstChild().toCDATASection();
-    p->setSql(cdata.toText().data());
+    func->setSql(cdata.toText().data());
 
-    if(sourceUid.length()) p->setSourceUid(sourceUid);
-    else p->setSourceUid(nullUid);
-
-    if(locked == "1") p->lock();
-    else p->unlock();
-
-
-    return p;
+    return func;
 }
 
 Trigger* DeserializationFactory::createTrigger(Project*, Version* v,  const QDomDocument&, const QDomElement& element)
@@ -1221,6 +1260,7 @@ Trigger* DeserializationFactory::createTrigger(Project*, Version* v,  const QDom
     trigg->setEvent(element.attribute("Event"));
     trigg->setTable(tab->getName());
 
+    QString wasLocked = element.attribute("was-locked");
     QString locked = element.attribute("locked");
     QString sourceUid = element.attribute("source-uid");
     if(locked == "1")
@@ -1240,6 +1280,7 @@ Trigger* DeserializationFactory::createTrigger(Project*, Version* v,  const QDom
     {
         trigg->setSourceUid(nullUid);
     }
+    trigg->forceSetWasLocked(wasLocked == "1");
 
     return trigg;
 }

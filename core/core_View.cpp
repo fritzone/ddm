@@ -6,6 +6,8 @@
 #include "NameGenerator.h"
 #include "db_AbstractSQLGenerator.h"
 #include "uids.h"
+#include "IconFactory.h"
+#include "ContextMenuCollection.h"
 
 View::View(bool manual, QString uid) :
     SqlSourceEntity(),
@@ -50,6 +52,9 @@ void View::serialize(QDomDocument& doc, QDomElement& parent) const
     viewElement.setAttribute("Manual", m_manual);
     viewElement.setAttribute("uid", getObjectUid());
     viewElement.setAttribute("class-uid", getClassUid());
+    viewElement.setAttribute("source-uid", getSourceUid());
+    viewElement.setAttribute("locked", isLocked());
+    viewElement.setAttribute("was-locked", wasLocked());
 
     if(m_manual)
     {
@@ -99,4 +104,22 @@ CloneableElement* View::clone(Version *sourceVersion, Version *targetVersion)
     }
 
     return nv;
+}
+
+void View::updateGui()
+{
+    if(isLocked())
+    {
+        getLocation()->setIcon(0, IconFactory::getLockedViewIcon());
+        getLocation()->setPopupMenu(ContextMenuCollection::getInstance()->getUnlockLementPopupMenu());
+    }
+    else
+    {
+        if(wasLocked())
+        {
+            getLocation()->setIcon(0, IconFactory::getViewIcon());
+            getLocation()->setPopupMenu(ContextMenuCollection::getInstance()->getRelockLementPopupMenu());
+        }
+    }
+    TreeItem::updateGui();
 }

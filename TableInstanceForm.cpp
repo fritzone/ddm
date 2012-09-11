@@ -280,3 +280,62 @@ void TableInstanceForm::onGotoTable()
 {
     MainWindow::instance()->showTableWithGuid(Workspace::getInstance()->workingVersion(), m_tinst->table()->getObjectUid());
 }
+
+
+void TableInstanceForm::onLockUnlock(bool checked)
+{
+    if(checked)
+    {
+        ui->btnLock->setIcon(IconFactory::getUnLockedIcon());
+        ui->grpContent->setEnabled(true);
+        m_tinst->unlock();
+        m_tinst->updateGui();
+        ui->btnLock->setToolTip(QObject::tr("DataType is <b>unlocked</b>. Click this button to lock it."));
+
+        MainWindow::instance()->finallyDoLockLikeOperation(false, m_tinst->getObjectUid());
+    }
+    else
+    {
+        ui->btnLock->setIcon(IconFactory::getLockedIcon());
+        ui->grpContent->setEnabled(false);
+        m_tinst->lock();
+        m_tinst->updateGui();
+        ui->btnLock->setToolTip(QObject::tr("DataType is <b>locked</b>. Click this button to unlock it."));
+
+        MainWindow::instance()->finallyDoLockLikeOperation(false, m_tinst->getObjectUid());
+    }
+}
+
+void TableInstanceForm::setTableInstance(TableInstance *st)
+{
+    m_tinst = st;
+
+    // TODO: Duplicate from the otehr forms
+    if(!m_tinst->wasLocked())
+    {
+        ui->frameForUnlockButton->hide();
+    }
+    else
+    {
+        ui->frameForUnlockButton->show();
+        if(m_tinst->isLocked())
+        {
+            ui->btnLock->setIcon(IconFactory::getLockedIcon());
+            ui->btnLock->blockSignals(true);
+            ui->btnLock->setChecked(false);
+            ui->btnLock->blockSignals(false);
+            ui->grpContent->setEnabled(false);
+            ui->btnLock->setToolTip(QObject::tr("This table instance is <b>locked</b>. Click this button to unlock it."));
+        }
+        else
+        {
+            ui->btnLock->setIcon(IconFactory::getUnLockedIcon());
+            ui->btnLock->blockSignals(true);
+            ui->btnLock->setChecked(true);
+            ui->btnLock->blockSignals(false);
+            ui->grpContent->setEnabled(true);
+            ui->btnLock->setToolTip(QObject::tr("This table instance is <b>unlocked</b>. Click this button to lock it."));
+        }
+
+    }
+}

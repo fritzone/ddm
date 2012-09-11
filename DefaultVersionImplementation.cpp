@@ -22,12 +22,13 @@
 #include "strings.h"
 #include "UidWarehouse.h"
 #include "Index.h"
+#include "core_Patch.h"
 
 #include <QtGui>
 
 DefaultVersionImplementation::DefaultVersionImplementation(Project* p, int major, int minor)
     : Version(major, minor, p),
-      version(""), m_data(), m_guiElements(0), m_validationFlags(0)
+      version(""), m_data(), m_guiElements(0), m_validationFlags(0), m_patches(), m_currentPatchIndex(-1)
 {
 }
 
@@ -1226,12 +1227,12 @@ void DefaultVersionImplementation::replaceTable(const QString& uid, Table* newTa
     newTab->setForcedUid(uid);
     newTab->setName(t->getName());
     newTab->lock();
+    newTab->setLocation(t->getLocation());
 
     for(int i=0; i< m_data.m_tables.size(); i++)
     {
         if(m_data.m_tables[i]->getObjectUid() == uid)
         {
-            delete m_data.m_tables[i]; // hopefully this will not mess up the vector :)
             m_data.m_tables[i] = newTab;
         }
     }
@@ -1239,4 +1240,16 @@ void DefaultVersionImplementation::replaceTable(const QString& uid, Table* newTa
     newTab->updateGui();
 
     return;
+}
+
+Patch* DefaultVersionImplementation::getWorkingPatch()
+{
+    if(m_patches.size() == 0)
+    {
+        Patch* p = new Patch(this);
+        m_currentPatchIndex = 0;
+        m_patches.append(p);
+    }
+
+    return m_patches.at(m_currentPatchIndex);
 }

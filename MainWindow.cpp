@@ -461,10 +461,8 @@ void MainWindow::showViewWithGuid(Version *, const QString & guid, bool focus /*
     }
 }
 
-void MainWindow::showObjectwithGuid(Version *v, QTreeWidgetItem* current, showSomething s, bool f)
+void MainWindow::showObjectwithGuid(Version *v, QString uid, showSomething s, bool f)
 {
-    QVariant qv = current->data(0, Qt::UserRole);
-    QString uid = qv.toString();
     (this->*s)(v, uid,f);
 }
 
@@ -481,6 +479,7 @@ void MainWindow::currentProjectTreeItemChanged(QTreeWidgetItem * current, QTreeW
         if(obj)
         {
             classUid = obj->getClassUid();
+            classUid = classUid.toUpper();
         }
 
         if(!foundVersion) return;
@@ -570,14 +569,14 @@ void MainWindow::currentProjectTreeItemChanged(QTreeWidgetItem * current, QTreeW
                 mapping.insert(uidTable, (showSomething)&MainWindow::showTableWithGuid);
                 mapping.insert(uidTableInstance, (showSomething)&MainWindow::showTableInstanceWithGuid);
                 mapping.insert(uidDiagram, (showSomething)&MainWindow::showDiagramWithGuid);
-                mapping.insert(uidProcedure, (showSomething)&MainWindow::showTableWithGuid);
-                mapping.insert(uidFunction, (showSomething)&MainWindow::showTableWithGuid);
-                mapping.insert(uidTrigger, (showSomething)&MainWindow::showTableWithGuid);
+                mapping.insert(uidProcedure, (showSomething)&MainWindow::showProcedureWithGuid);
+                mapping.insert(uidFunction, (showSomething)&MainWindow::showFunctionWithGuid);
+                mapping.insert(uidTrigger, (showSomething)&MainWindow::showTriggerWithGuid);
                 mapping.insert(uidView, (showSomething)&MainWindow::showViewWithGuid);
 
                 if(mapping.contains(classUid))
                 {
-                    showObjectwithGuid(foundVersion, current, mapping[classUid], false);
+                    showObjectwithGuid(foundVersion, uid, mapping[classUid], false);
                 }
                 else
                 if(current->parent() && current->parent() == foundVersion->getGui()->getFinalSqlItem())
@@ -608,7 +607,7 @@ void MainWindow::currentProjectTreeItemChanged(QTreeWidgetItem * current, QTreeW
                 }
                 else    // user possibly clicked on a table which had a parent a table ...
                 {
-                    showObjectwithGuid(foundVersion, current, (showSomething)&MainWindow::showTableWithGuid, false);
+                    showObjectwithGuid(foundVersion, uid, (showSomething)&MainWindow::showTableWithGuid, false);
                 }
 
             }
@@ -942,7 +941,86 @@ void MainWindow::onReleaseMajorVersion()
     }
 }
 
-void MainWindow::onUnlockSomething()
+void MainWindow::finallyDoLockLikeOperation(bool reLocking, const QString& guid)
+{
+    ObjectWithUid* element = UidWarehouse::instance().getElement(guid);
+    Version* v = UidWarehouse::instance().getVersionForUid(guid);
+    // now find the type of this element
+    UserDataType* udt = dynamic_cast<UserDataType*>(element);
+    bool doneSomething = false;
+
+    if(udt)
+    {
+        if(!reLocking)
+        {
+            udt->unlock();
+        }
+        else
+        {
+            udt->lock();
+        }
+
+        udt->updateGui();
+        showDataType(v, udt->getName(), true);
+        doneSomething = true;
+    }
+
+    LockableElement* le = dynamic_cast<LockableElement*>(element);
+
+    if(le)
+    {
+        ObjectWithUid* owuid = dynamic_cast<ObjectWithUid*>(element);
+        QString classUid = owuid->getClassUid();
+
+        Version* foundVersion = UidWarehouse::instance().getVersionForUid(guid);
+        if(!reLocking) le->unlock(); else le->lock();
+        le->updateGui();
+
+        // TODO: this map is a duplicate from the tree change
+        QMap<QString, showSomething> mapping;
+        mapping.insert(uidTable, (showSomething)&MainWindow::showTableWithGuid);
+        mapping.insert(uidTableInstance, (showSomething)&MainWindow::showTableInstanceWithGuid);
+        mapping.insert(uidDiagram, (showSomething)&MainWindow::showDiagramWithGuid);
+        mapping.insert(uidProcedure, (showSomething)&MainWindow::showProcedureWithGuid);
+        mapping.insert(uidFunction, (showSomething)&MainWindow::showFunctionWithGuid);
+        mapping.insert(uidTrigger, (showSomething)&MainWindow::showTriggerWithGuid);
+        mapping.insert(uidView, (showSomething)&MainWindow::showViewWithGuid);
+
+        if(mapping.contains(classUid))
+        {
+            showObjectwithGuid(foundVersion, guid, mapping[classUid], false);
+            doneSomething = true;
+        }
+
+    }
+
+    // and finally tell the version of the element that a new patch is about to be born
+    if(doneSomething)
+    {
+        NamedItem *ni = dynamic_cast<NamedItem*>(element);
+        if(!ni) return;
+        if(!m_guiElements->getPatchesDock()->isVisible())
+        {
+            m_guiElements->getPatchesDock()->show();
+            addDockWidget(Qt::LeftDockWidgetArea, m_guiElements->getPatchesDock());
+        }
+
+        if(!reLocking)
+        {
+
+            v->getWorkingPatch()->addElement(guid);
+            m_guiElements->createNewItemForPatch(v->getWorkingPatch(), element->getClassUid(), ni->getName());
+        }
+        else
+        {
+            v->getWorkingPatch()->removeElement(guid);
+            m_guiElements->removeItemForPatch(v->getWorkingPatch(), element->getClassUid());
+        }
+    }
+
+}
+
+void MainWindow::doLockLikeOperation(bool reLocking)
 {
     if(m_guiElements->getProjectTree()->getLastRightclickedItem() != 0)
     {
@@ -950,58 +1028,18 @@ void MainWindow::onUnlockSomething()
         m_guiElements->getProjectTree()->setLastRightclickedItem(0);
         QVariant qv = item->data(0, Qt::UserRole);
         QString guid = qv.toString();
-        ObjectWithUid* element = UidWarehouse::instance().getElement(guid);
-        Version* v = UidWarehouse::instance().getVersionForUid(guid);
-        // now find the type of this element
-        UserDataType* udt = dynamic_cast<UserDataType*>(element);
-        bool doneSomething = false;
-
-        if(udt)
-        {
-            udt->unlock();
-            udt->updateGui();
-            showDataType(v, udt->getName(), true);
-            doneSomething = true;
-        }
-
-        Table* t = dynamic_cast<Table*>(element);
-        if(t)
-        {
-            t->unlock();
-            t->updateGui();
-            showTableWithGuid(v, guid);
-            doneSomething = true;
-        }
-
-        // and finally tell the version of the element that a new pathc is about to be born
-        if(doneSomething)
-        {
-            v->getWorkingPatch()->addElement(guid);
-        }
-
+        finallyDoLockLikeOperation(reLocking, guid);
     }
 }
 
-// TODO: Unlock and Relock share a lot of code :(
+void MainWindow::onUnlockSomething()
+{
+    doLockLikeOperation(false);
+}
+
 void MainWindow::onRelockSomething()
 {
-    if(m_guiElements->getProjectTree()->getLastRightclickedItem() != 0)
-    {
-        ContextMenuEnabledTreeWidgetItem* item = m_guiElements->getProjectTree()->getLastRightclickedItem();
-        m_guiElements->getProjectTree()->setLastRightclickedItem(0);
-        QVariant qv = item->data(0, Qt::UserRole);
-        QString guid = qv.toString();
-        ObjectWithUid* element = UidWarehouse::instance().getElement(guid);
-        Version* v = UidWarehouse::instance().getVersionForUid(guid);
-        // now find the type of this element
-        UserDataType* udt = dynamic_cast<UserDataType*>(element);
-        if(udt)
-        {
-            udt->lock();
-            udt->updateGui();
-            showDataType(v, udt->getName(), true);
-        }
-    }
+    doLockLikeOperation(true);
 }
 
 void MainWindow::onDeleteProcedure()

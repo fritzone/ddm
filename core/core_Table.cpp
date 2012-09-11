@@ -331,6 +331,7 @@ void Table::serialize(QDomDocument &doc, QDomElement &parent) const
 
     tableElement.setAttribute("locked", isLocked());
     tableElement.setAttribute("source-uid", getSourceUid().toString().length() ? getSourceUid().toString() : strNA);
+    tableElement.setAttribute("was-locked", wasLocked());
 
     if(m_parent !=0)
     {
@@ -606,8 +607,11 @@ void Table::updateGui()
     }
     else
     {
-        getLocation()->setIcon(0, IconFactory::getTableIcon());
-        getLocation()->setPopupMenu(ContextMenuCollection::getInstance()->getRelockLementPopupMenu());
+        if(wasLocked())
+        {
+            getLocation()->setIcon(0, IconFactory::getTableIcon());
+            getLocation()->setPopupMenu(ContextMenuCollection::getInstance()->getRelockLementPopupMenu());
+        }
     }
     TreeItem::updateGui();
 }

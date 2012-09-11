@@ -15,10 +15,7 @@ public:
     TableInstanceForm(QWidget *parent = 0);
     ~TableInstanceForm();
 
-    void setTableInstance(TableInstance* st)
-    {
-        m_tinst = st;
-    }
+    void setTableInstance(TableInstance* st);
 
     void createTableWithValues();
 
@@ -32,6 +29,7 @@ public slots:
     void onHelp();
     void onValuesDoubleClick();
     void onGotoTable();
+    void onLockUnlock(bool);
 
 protected:
     void changeEvent(QEvent *e);

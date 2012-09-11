@@ -366,7 +366,7 @@ public:
      * @brief getWorkingPatch
      * @return the patch on which we are currently working. Patches can be
      */
-    Patch* getWorkingPatch();
+    virtual Patch* getWorkingPatch() = 0;
 
     /**
      * @brief replaceTable replaces the table with uid with the newTab. Used only at the version handling!

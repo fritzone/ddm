@@ -19,6 +19,9 @@ void Procedure::serialize(QDomDocument &doc, QDomElement &parent) const
     procElement.setAttribute("Name", m_name);
     procElement.setAttribute("uid", getObjectUid());
     procElement.setAttribute("class-uid", getClassUid());
+    procElement.setAttribute("locked", isLocked());
+    procElement.setAttribute("was-locked", wasLocked());
+    procElement.setAttribute("source-uid", getSourceUid());
 
     QDomElement textElement = doc.createElement("Sql");
     textElement.setAttribute("Encoded", "Base64");
@@ -50,8 +53,11 @@ void Procedure::updateGui()
     }
     else
     {
-        getLocation()->setIcon(0, IconFactory::getProcedureIcon());
-        getLocation()->setPopupMenu(ContextMenuCollection::getInstance()->getRelockLementPopupMenu());
+        if(wasLocked())
+        {
+            getLocation()->setIcon(0, IconFactory::getProcedureIcon());
+            getLocation()->setPopupMenu(ContextMenuCollection::getInstance()->getRelockLementPopupMenu());
+        }
     }
     TreeItem::updateGui();
 }

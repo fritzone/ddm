@@ -49,6 +49,7 @@ void TableInstance::serialize(QDomDocument &doc, QDomElement &parent) const
     tableInstanceElement.setAttribute("class-uid", getClassUid());
     tableInstanceElement.setAttribute("source-uid", getSourceUid());
     tableInstanceElement.setAttribute("locked", isLocked());
+    tableInstanceElement.setAttribute("was-locked", wasLocked());
 
     {
     QString refTables = "";
@@ -174,17 +175,19 @@ void TableInstance::updateGui()
     }
     else
     {
-
-        // set the icon, add to the tree
-        if(instantiatedBecuaseOfRkReference())
+        if(wasLocked())
         {
-            getLocation()->setIcon(0, IconFactory::getTabinstLockIcon());
+            // set the icon, add to the tree
+            if(instantiatedBecuaseOfRkReference())
+            {
+                getLocation()->setIcon(0, IconFactory::getTabinstLockIcon());
+            }
+            else
+            {
+                getLocation()->setIcon(0, IconFactory::getTabinstIcon());
+            }
+            getLocation()->setPopupMenu(ContextMenuCollection::getInstance()->getRelockLementPopupMenu());
         }
-        else
-        {
-            getLocation()->setIcon(0, IconFactory::getTabinstIcon());
-        }
-        getLocation()->setPopupMenu(ContextMenuCollection::getInstance()->getRelockLementPopupMenu());
     }
     TreeItem::updateGui();
 }

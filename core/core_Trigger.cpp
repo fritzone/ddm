@@ -28,6 +28,7 @@ void Trigger::serialize(QDomDocument &doc, QDomElement &parent) const
     triggerElement.setAttribute("uid", getObjectUid());
     triggerElement.setAttribute("class-uid", getClassUid());
     triggerElement.setAttribute("locked", isLocked());
+    triggerElement.setAttribute("was-locked", wasLocked());
     triggerElement.setAttribute("source-uid", getSourceUid());
 
     QDomElement textElement = doc.createElement("Body");
@@ -70,8 +71,11 @@ void Trigger::updateGui()
     }
     else
     {
-        getLocation()->setIcon(0, IconFactory::getTriggerIcon());
-        getLocation()->setPopupMenu(ContextMenuCollection::getInstance()->getRelockLementPopupMenu());
+        if(wasLocked())
+        {
+            getLocation()->setIcon(0, IconFactory::getTriggerIcon());
+            getLocation()->setPopupMenu(ContextMenuCollection::getInstance()->getRelockLementPopupMenu());
+        }
     }
     TreeItem::updateGui();
 }

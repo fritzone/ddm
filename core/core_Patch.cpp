@@ -6,9 +6,17 @@
 #include "DeserializationFactory.h"
 #include "core_Table.h"
 #include "Version.h"
+#include "MainWindow.h" // TODO: horrible
+#include "GuiElements.h"
 
-Patch::Patch(Version *v) : m_version(v)
+#include <QDateTime>
+
+Patch::Patch(Version *v) : NamedItem("Patch"), m_version(v)
 {
+    QString finalName = QObject::tr("Patch") + " (" + v->getVersionText() + ") - " + QDateTime::currentDateTime().toString();
+    setName(finalName);
+
+    MainWindow::instance()->getGuiElements()->createNewPatchItem(this);
 }
 
 void Patch::addElement(const QString &uid)
