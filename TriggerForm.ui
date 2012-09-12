@@ -13,10 +13,60 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout">
-   <property name="margin">
-    <number>0</number>
-   </property>
+  <layout class="QHBoxLayout" name="horizontalLayout_5">
+   <item>
+    <widget class="QFrame" name="frameForUnlockButton">
+     <property name="frameShape">
+      <enum>QFrame::StyledPanel</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Raised</enum>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_4">
+      <property name="spacing">
+       <number>0</number>
+      </property>
+      <property name="margin">
+       <number>0</number>
+      </property>
+      <item>
+       <widget class="QToolButton" name="btnLock">
+        <property name="text">
+         <string/>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>48</width>
+          <height>48</height>
+         </size>
+        </property>
+        <property name="checkable">
+         <bool>true</bool>
+        </property>
+        <property name="popupMode">
+         <enum>QToolButton::InstantPopup</enum>
+        </property>
+        <property name="autoRaise">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer name="verticalSpacer_2">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>20</width>
+          <height>40</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+     </layout>
+    </widget>
+   </item>
    <item>
     <widget class="QTabWidget" name="tabWidget">
      <widget class="QWidget" name="tabWidgetPage1">
@@ -325,6 +375,22 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>btnLock</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>TriggerForm</receiver>
+   <slot>onLockUnlock(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>38</x>
+     <y>37</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>302</x>
+     <y>209</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>nameChanged(QString)</slot>
@@ -332,5 +398,6 @@
   <slot>whenChanged(QString)</slot>
   <slot>tableChanged(QString)</slot>
   <slot>descriptionChanged()</slot>
+  <slot>onLockUnlock(bool)</slot>
  </slots>
 </ui>

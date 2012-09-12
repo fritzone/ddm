@@ -161,6 +161,7 @@ ContextMenuEnabledTreeWidgetItem* GuiElements::createNewItemForPatch(Patch *p, c
     newItem->setPopupMenu(ContextMenuCollection::getInstance()->getRelockLementPopupMenu());
     m_patchesTree->addTopLevelItem(newItem);
     newItem->setData(0, Qt::UserRole, QVariant(uid));
+    m_patchItems[p]->setExpanded(true);
 }
 
 void GuiElements::removeItemForPatch(Patch *p, const QString& uid)

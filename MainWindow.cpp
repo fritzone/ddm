@@ -1007,7 +1007,6 @@ void MainWindow::finallyDoLockLikeOperation(bool reLocking, const QString& guid)
 
         if(!reLocking)
         {
-
             v->getWorkingPatch()->addElement(guid);
             m_guiElements->createNewItemForPatch(v->getWorkingPatch(), element->getClassUid(), ni->getName());
         }

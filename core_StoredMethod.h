@@ -6,8 +6,9 @@
 #include "TreeItem.h"
 #include "SerializableElement.h"
 #include "core_CloneableElement.h"
+#include "core_ObjectWithUid.h"
 
-class StoredMethod : public NamedItem, public SqlSourceEntity, public TreeItem, public SerializableElement, public CloneableElement
+class StoredMethod : public NamedItem, public SqlSourceEntity, public TreeItem, public SerializableElement, public CloneableElement, public ObjectWithUid
 {
 public:
 
@@ -21,7 +22,7 @@ public:
     };
 
 
-    StoredMethod(const QString& name) : NamedItem(name), m_sql(), m_brief() {}
+    StoredMethod(const QString& name, const QString& uid) : NamedItem(name), ObjectWithUid(uid), m_sql(), m_brief() {}
 
     virtual QStringList generateSqlSource(AbstractSqlGenerator*, QHash<QString,QString>, const Connection*);
     virtual void serialize(QDomDocument& doc, QDomElement& parent) const = 0;

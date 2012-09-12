@@ -44,6 +44,7 @@ public slots:
     void onHelp();
     void onSaveSql();
     void onInject();
+    void onLockUnlock(bool checked);
 
 protected:
     void changeEvent(QEvent *e);

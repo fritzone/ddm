@@ -8,8 +8,7 @@
 #include "IconFactory.h"
 #include "ContextMenuCollection.h"
 
-Procedure::Procedure(const QString &pname, const QString& uid) : StoredMethod(pname),
-    ObjectWithUid(uid)
+Procedure::Procedure(const QString &pname, const QString& uid) : StoredMethod(pname, uid)
 {
 }
 

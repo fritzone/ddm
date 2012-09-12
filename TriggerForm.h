@@ -37,6 +37,8 @@ protected slots:
 
     void descriptionChanged();
 
+    void onLockUnlock(bool);
+
 protected:
     void changeEvent(QEvent *e);
 

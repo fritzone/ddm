@@ -65,6 +65,35 @@ DiagramForm::DiagramForm(Version* v, Diagram* dgram, QWidget *parent) : QWidget(
 
     prepareLists();
     ui->cmbDgramNotation->hide();
+
+    // TODO: duplicate
+    if(!m_diagram->wasLocked())
+    {
+        ui->frameForUnlockButton->hide();
+    }
+    else
+    {
+        ui->frameForUnlockButton->show();
+        if(m_diagram->isLocked())
+        {
+            ui->btnLock->setIcon(IconFactory::getLockedIcon());
+            ui->btnLock->blockSignals(true);
+            ui->btnLock->setChecked(false);
+            ui->btnLock->blockSignals(false);
+            ui->grpContent->setEnabled(false);
+            ui->btnLock->setToolTip(QObject::tr("This diagram is <b>locked</b>. Click this button to unlock it."));
+        }
+        else
+        {
+            ui->btnLock->setIcon(IconFactory::getUnLockedIcon());
+            ui->btnLock->blockSignals(true);
+            ui->btnLock->setChecked(true);
+            ui->btnLock->blockSignals(false);
+            ui->grpContent->setEnabled(true);
+            ui->btnLock->setToolTip(QObject::tr("This diagram is <b>unlocked</b>. Click this button to lock it."));
+        }
+    }
+
 }
 
 void DiagramForm::prepareLists()
@@ -102,7 +131,7 @@ void DiagramForm::changeEvent(QEvent *e)
 
 bool DiagramForm::saveToFile(const QString& fileName, bool transparent, const char* mode)
 {
-    // fin the area which has diagram elemts in it
+    // find the area which has diagram elemts in it
     QRectF cvr = graphicsView->scene()->getCoverageRect();
     QPoint tl = graphicsView->mapFromScene(cvr.topLeft());
     QPoint br = graphicsView->mapFromScene(cvr.bottomRight());
@@ -348,4 +377,29 @@ void DiagramForm::onZoomOut()
 void DiagramForm::onZoomIn()
 {
     graphicsView->scale(1.2, 1.2);
+}
+
+void DiagramForm::onLockUnlock(bool checked)
+{
+    if(checked)
+    {
+        ui->btnLock->setIcon(IconFactory::getUnLockedIcon());
+        ui->grpContent->setEnabled(true);
+        m_diagram->unlock();
+        m_diagram->updateGui();
+        ui->btnLock->setToolTip(QObject::tr("Diagram is <b>unlocked</b>. Click this button to lock it."));
+
+        MainWindow::instance()->finallyDoLockLikeOperation(false, m_diagram->getObjectUid());
+    }
+    else
+    {
+        ui->btnLock->setIcon(IconFactory::getLockedIcon());
+        ui->grpContent->setEnabled(false);
+        m_diagram->lock();
+        m_diagram->updateGui();
+        ui->btnLock->setToolTip(QObject::tr("Diagram is <b>locked</b>. Click this button to unlock it."));
+
+        MainWindow::instance()->finallyDoLockLikeOperation(true, m_diagram->getObjectUid());
+    }
+
 }

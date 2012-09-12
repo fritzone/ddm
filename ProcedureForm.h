@@ -23,10 +23,7 @@ public:
 
     explicit ProcedureForm(ProcedureFormMode m, bool forced = false, Connection* c = 0, QWidget *parent = 0);
     ~ProcedureForm();
-    void setProcedure(StoredMethod* p)
-    {
-        m_proc = p;
-    }
+    void setProcedure(StoredMethod* p);
     void initSql();
     void showSql();
 
@@ -35,6 +32,7 @@ protected:
 
 private slots:
     void textChanged();
+    void onLockUnlock(bool);
 
 private:
     QString getProcNameFromSql();

@@ -302,7 +302,7 @@ void TableInstanceForm::onLockUnlock(bool checked)
         m_tinst->updateGui();
         ui->btnLock->setToolTip(QObject::tr("DataType is <b>locked</b>. Click this button to unlock it."));
 
-        MainWindow::instance()->finallyDoLockLikeOperation(false, m_tinst->getObjectUid());
+        MainWindow::instance()->finallyDoLockLikeOperation(true, m_tinst->getObjectUid());
     }
 }
 
@@ -310,7 +310,7 @@ void TableInstanceForm::setTableInstance(TableInstance *st)
 {
     m_tinst = st;
 
-    // TODO: Duplicate from the otehr forms
+    // TODO: Duplicate from the other forms
     if(!m_tinst->wasLocked())
     {
         ui->frameForUnlockButton->hide();

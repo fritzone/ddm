@@ -7,6 +7,7 @@
 #include "core_Table.h"
 #include "Workspace.h"
 #include "Version.h"
+#include "MainWindow.h"
 
 TriggerForm::TriggerForm(bool reverseSource, bool fc, QWidget *parent) :
     QWidget(parent),
@@ -64,6 +65,36 @@ void TriggerForm::setTrigger(Trigger *t)
     ui->cmbEvent->setCurrentIndex(ui->cmbEvent->findText(t->getEvent()));
     ui->cmbTime->setCurrentIndex(ui->cmbTime->findText(t->getTime()));
     ui->txtDescription->setText(t->getDescription());
+
+    // TODO: duplicate
+    if(!m_trigger->wasLocked())
+    {
+        ui->frameForUnlockButton->hide();
+    }
+    else
+    {
+        ui->frameForUnlockButton->show();
+        if(m_trigger->isLocked())
+        {
+            ui->btnLock->setIcon(IconFactory::getLockedIcon());
+            ui->btnLock->blockSignals(true);
+            ui->btnLock->setChecked(false);
+            ui->btnLock->blockSignals(false);
+            ui->tabWidget->setEnabled(false);
+            ui->btnLock->setToolTip(QObject::tr("This trigger is <b>locked</b>. Click this button to unlock it."));
+        }
+        else
+        {
+            ui->btnLock->setIcon(IconFactory::getUnLockedIcon());
+            ui->btnLock->blockSignals(true);
+            ui->btnLock->setChecked(true);
+            ui->btnLock->blockSignals(false);
+            ui->tabWidget->setEnabled(true);
+            ui->btnLock->setToolTip(QObject::tr("This trigger is <b>unlocked</b>. Click this button to lock it."));
+        }
+
+    }
+
 }
 
 void TriggerForm::initSql()
@@ -160,4 +191,29 @@ void TriggerForm::tableChanged(QString a)
 void TriggerForm::descriptionChanged()
 {
     m_trigger->setDescription(ui->txtDescription->toPlainText());
+}
+
+void TriggerForm::onLockUnlock(bool checked)
+{
+    if(checked)
+    {
+        ui->btnLock->setIcon(IconFactory::getUnLockedIcon());
+        ui->tabWidget->setEnabled(true);
+        m_trigger->unlock();
+        m_trigger->updateGui();
+        ui->btnLock->setToolTip(QObject::tr("Trigger is <b>unlocked</b>. Click this button to lock it."));
+
+        MainWindow::instance()->finallyDoLockLikeOperation(false, m_trigger->getObjectUid());
+    }
+    else
+    {
+        ui->btnLock->setIcon(IconFactory::getLockedIcon());
+        ui->tabWidget->setEnabled(false);
+        m_trigger->lock();
+        m_trigger->updateGui();
+        ui->btnLock->setToolTip(QObject::tr("Trigger is <b>locked</b>. Click this button to unlock it."));
+
+        MainWindow::instance()->finallyDoLockLikeOperation(true, m_trigger->getObjectUid());
+    }
+
 }

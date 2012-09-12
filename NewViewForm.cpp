@@ -148,6 +148,36 @@ void NewViewForm::setView(View *v)
     m_view = v;
     ui->chkCanReplace->setChecked(v->getReplace());
     ui->txtViewName->setText(v->getName());
+
+    // TODO: duplicate
+    if(!m_view->wasLocked())
+    {
+        ui->frameForUnlockButton->hide();
+    }
+    else
+    {
+        ui->frameForUnlockButton->show();
+        if(m_view->isLocked())
+        {
+            ui->btnLock->setIcon(IconFactory::getLockedIcon());
+            ui->btnLock->blockSignals(true);
+            ui->btnLock->setChecked(false);
+            ui->btnLock->blockSignals(false);
+            ui->grpContent->setEnabled(false);
+            ui->btnLock->setToolTip(QObject::tr("This view is <b>locked</b>. Click this button to unlock it."));
+        }
+        else
+        {
+            ui->btnLock->setIcon(IconFactory::getUnLockedIcon());
+            ui->btnLock->blockSignals(true);
+            ui->btnLock->setChecked(true);
+            ui->btnLock->blockSignals(false);
+            ui->grpContent->setEnabled(true);
+            ui->btnLock->setToolTip(QObject::tr("This view is <b>unlocked</b>. Click this button to lock it."));
+        }
+
+    }
+
     if(m_comps) // do this only if w are buildingteh query with the query builder
     {
         SelectQuery* sq = dynamic_cast<SelectQuery*>(m_comps->getQuery());
@@ -310,4 +340,29 @@ void NewViewForm::onInject()
         }
         MainWindow::instance()->setStatus(QString("Creating view ") + ui->txtViewName->text() + (error?" Failed ":" Succeeded "), error);
     }
+}
+
+void NewViewForm::onLockUnlock(bool checked)
+{
+    if(checked)
+    {
+        ui->btnLock->setIcon(IconFactory::getUnLockedIcon());
+        ui->grpContent->setEnabled(true);
+        m_view->unlock();
+        m_view->updateGui();
+        ui->btnLock->setToolTip(QObject::tr("Trigger is <b>unlocked</b>. Click this button to lock it."));
+
+        MainWindow::instance()->finallyDoLockLikeOperation(false, m_view->getObjectUid());
+    }
+    else
+    {
+        ui->btnLock->setIcon(IconFactory::getLockedIcon());
+        ui->grpContent->setEnabled(false);
+        m_view->lock();
+        m_view->updateGui();
+        ui->btnLock->setToolTip(QObject::tr("Trigger is <b>locked</b>. Click this button to unlock it."));
+
+        MainWindow::instance()->finallyDoLockLikeOperation(true, m_view->getObjectUid());
+    }
+
 }

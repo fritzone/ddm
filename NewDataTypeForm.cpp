@@ -390,7 +390,7 @@ void NewDataTypeForm::onLockUnlock(bool checked)
         m_udt->updateGui();
         m_ui->btnLock->setToolTip(QObject::tr("DataType is <b>locked</b>. Click this button to unlock it."));
 
-        MainWindow::instance()->finallyDoLockLikeOperation(false, m_udt->getObjectUid());
+        MainWindow::instance()->finallyDoLockLikeOperation(true, m_udt->getObjectUid());
     }
 }
 
