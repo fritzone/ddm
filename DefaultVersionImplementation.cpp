@@ -1164,6 +1164,8 @@ bool DefaultVersionImplementation::cloneInto(Version* other)
     for(int i=0; i<views.size(); i++)
     {
         View* v =  dynamic_cast<View*>(views.at(i)->clone(this, other));
+        views.at(i)->lock();
+        views.at(i)->updateGui();
         other->addView(v);
     }
 

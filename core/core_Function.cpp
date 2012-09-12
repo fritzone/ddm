@@ -8,7 +8,7 @@
 #include "IconFactory.h"
 #include "ContextMenuCollection.h"
 
-Function::Function(const QString &pname, const QString& uid) : StoredMethod(pname), ObjectWithUid(uid)
+Function::Function(const QString &pname, const QString& uid) : StoredMethod(pname, uid)
 {
 }
 

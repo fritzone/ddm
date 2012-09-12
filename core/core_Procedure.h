@@ -2,12 +2,11 @@
 #define CORE_PROCEDURE_H
 
 #include "core_StoredMethod.h"
-#include "core_ObjectWithUid.h"
 
-class Procedure : public StoredMethod, public ObjectWithUid
+class Procedure : public StoredMethod
 {
 public:
-    Procedure(const QString& pname, const QString& uid);
+    Procedure(const QString& pname, const QString &uid);
     virtual void serialize(QDomDocument& doc, QDomElement& parent) const;
     virtual QUuid getClassUid() const;
     virtual CloneableElement* clone(Version* sourceVersion, Version* targetVersion);

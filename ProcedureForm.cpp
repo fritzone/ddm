@@ -3,6 +3,7 @@
 #include "TextEditWithCodeCompletion.h"
 #include "FrameForLineNumbers.h"
 #include "core_Connection.h"
+#include "MainWindow.h"
 
 ProcedureForm::ProcedureForm(ProcedureFormMode m, bool forced, Connection *c, QWidget *parent) :
     QWidget(parent),
@@ -76,4 +77,63 @@ void ProcedureForm::showSql()
 {
     m_textEdit->setPlainText(m_proc->getSql());
     m_textEdit->updateLineNumbers();
+}
+
+void ProcedureForm::onLockUnlock(bool checked)
+{
+    if(checked)
+    {
+        ui->btnLock->setIcon(IconFactory::getUnLockedIcon());
+        ui->grpContent->setEnabled(true);
+        m_proc->unlock();
+        m_proc->updateGui();
+        ui->btnLock->setToolTip((m_mode == MODE_PROCEDURE?"Procedure ":"Function ") + QObject::tr("is <b>unlocked</b>. Click this button to lock it."));
+
+            MainWindow::instance()->finallyDoLockLikeOperation(false, m_proc->getObjectUid());
+    }
+    else
+    {
+        ui->btnLock->setIcon(IconFactory::getLockedIcon());
+        ui->grpContent->setEnabled(false);
+        m_proc->lock();
+        m_proc->updateGui();
+        ui->btnLock->setToolTip((m_mode == MODE_PROCEDURE?"Procedure ":"Function ") + QObject::tr("is <b>locked</b>. Click this button to lock it."));
+
+        MainWindow::instance()->finallyDoLockLikeOperation(true, m_proc->getObjectUid());
+    }
+
+}
+
+void ProcedureForm::setProcedure(StoredMethod *p)
+{
+    m_proc = p;
+
+    if(!m_proc->wasLocked())
+    {
+        ui->frameForUnlockButton->hide();
+    }
+    else
+    {
+        ui->frameForUnlockButton->show();
+        if(m_proc->isLocked())
+        {
+            ui->btnLock->setIcon(IconFactory::getLockedIcon());
+            ui->btnLock->blockSignals(true);
+            ui->btnLock->setChecked(false);
+            ui->btnLock->blockSignals(false);
+            ui->grpContent->setEnabled(false);
+            ui->btnLock->setToolTip((m_mode == MODE_PROCEDURE?"This Procedure ":"This Function ") + QObject::tr("is <b>locked</b>. Click this button to unlock it."));
+        }
+        else
+        {
+            ui->btnLock->setIcon(IconFactory::getUnLockedIcon());
+            ui->btnLock->blockSignals(true);
+            ui->btnLock->setChecked(true);
+            ui->btnLock->blockSignals(false);
+            ui->grpContent->setEnabled(true);
+            ui->btnLock->setToolTip((m_mode == MODE_PROCEDURE?"This Procedure ":"This Function ") + QObject::tr("is <b>unlocked</b>. Click this button to unlock it."));
+        }
+
+    }
+
 }

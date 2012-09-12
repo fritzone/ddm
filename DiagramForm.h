@@ -40,6 +40,7 @@ public slots:
     void onNameChange(QString);
     void onZoomOut();
     void onZoomIn();
+    void onLockUnlock(bool);
 
 protected:
     void changeEvent(QEvent *e);
