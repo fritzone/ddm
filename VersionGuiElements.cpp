@@ -512,7 +512,7 @@ ContextMenuEnabledTreeWidgetItem* VersionGuiElements::createFunctionTreeEntry(Fu
     QVariant var(func->getObjectUid());
     newFuncItem->setData(0, Qt::UserRole, var);
     newFuncItem->setIcon(0, IconFactory::getFunctionTreeIcon());
-    //newFuncItem->setPopupMenu(ContextMenuCollection::getInstance()->getProcedurePopupMenu());
+    newFuncItem->setPopupMenu(ContextMenuCollection::getInstance()->getFunctionPopupMenu());
     m_tree->addTopLevelItem(newFuncItem);
     func->setLocation(newFuncItem);
 
@@ -537,7 +537,7 @@ ContextMenuEnabledTreeWidgetItem* VersionGuiElements::createTriggerTreeEntry(Tri
     QVariant var(trg->getObjectUid());
     newTriggerItem->setData(0, Qt::UserRole, var);
     newTriggerItem->setIcon(0, IconFactory::getTriggerIcon());
-    //newTriggerItem->setPopupMenu(ContextMenuCollection::getInstance()->getTriggerPopupMenu());
+    newTriggerItem->setPopupMenu(ContextMenuCollection::getInstance()->getTriggerPopupMenu());
     m_tree->addTopLevelItem(newTriggerItem);
     trg->setLocation(newTriggerItem);
 

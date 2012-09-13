@@ -29,6 +29,10 @@ ContextMenuCollection::ContextMenuCollection()
     m_majorVersionPopupMenu = new QMenu();
     m_unlockLementPopupMenu = new QMenu();
     m_relockLementPopupMenu = new QMenu();
+    m_functionPopupMenu = new QMenu();
+    m_triggerPopupMenu = new QMenu();
+    m_suspendPatchMenu = new QMenu();
+    m_resumePatchMenu = new QMenu();
 
     // actions
     action_RemoveTable = new QAction(QObject::tr("Delete table"), 0);
@@ -83,7 +87,9 @@ ContextMenuCollection::ContextMenuCollection()
     action_browsedTableBrowse = new QAction(QObject::tr("Browse table"), 0);
     action_browsedTableView = new QAction(QObject::tr("View table details"), 0);
     action_deleteView = new QAction(QObject::tr("Delete view"), 0);
-    action_deleteView ->setIcon(IconFactory::getRemoveIcon());
+    action_deleteView->setIcon(IconFactory::getRemoveIcon());
+    action_deleteTrigger = new QAction(QObject::tr("Delete trigger"), 0);
+    action_deleteTrigger->setIcon(IconFactory::getRemoveIcon());
     action_deleteProcedure = new QAction(QObject::tr("Delete procedure"), 0);
     action_deleteProcedure->setIcon(IconFactory::getRemoveIcon());
     action_releaseMajorVersion = new QAction(QObject::tr("Release Version"), 0);
@@ -92,6 +98,11 @@ ContextMenuCollection::ContextMenuCollection()
     action_unlock->setIcon(IconFactory::getUnLockedIcon());
     action_relock = new QAction(QObject::tr("Lock"), 0);
     action_relock->setIcon(IconFactory::getLockedIcon());
+    action_deleteFunction = new QAction(QObject::tr("Delete function"), 0);
+    action_deleteFunction->setIcon(IconFactory::getRemoveIcon());
+    action_suspendPatch = new QAction(QObject::tr("Suspend this patch"), 0);
+    action_suspendPatch->setIcon(IconFactory::getSuspendPatchIcon());
+    action_resumePatch = new QAction(QObject::tr("Resume this patch"), 0);
 
     // populate the table popup menu
     m_tablePopupMenu->addAction(action_TableAddColumn);
@@ -172,10 +183,23 @@ ContextMenuCollection::ContextMenuCollection()
     // one views popup menu
     m_viewPopupMenu->addAction(action_deleteView);
 
+    // one procedures popup menu
     m_procedurePopupMenu->addAction(action_deleteProcedure);
 
+    // the major version popup menu
     m_majorVersionPopupMenu->addAction(action_releaseMajorVersion);
 
+    // the locked elements popup menus
     m_unlockLementPopupMenu->addAction(action_unlock);
     m_relockLementPopupMenu->addAction(action_relock);
+
+    // one functions popup menu
+    m_functionPopupMenu->addAction(action_deleteFunction);
+
+    // one triggers' menu
+    m_triggerPopupMenu->addAction(action_deleteTrigger);
+
+    // the patch's menu
+    m_suspendPatchMenu->addAction(action_suspendPatch);
+    m_resumePatchMenu->addAction(action_resumePatch);
 }

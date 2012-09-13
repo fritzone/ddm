@@ -317,6 +317,7 @@ bool DefaultVersionImplementation::deleteTable(Table *tab)
         }
     }
 
+    // BIG TODO: see if this table is used in any of the triggers/diagrams/views/functions/procedures ...
 
     // and delete the issues of other tables, this table was referenced in
     QVector<Issue*> issuesReferencingTheTable = IssueManager::getInstance().getIssuesReferencingTable(tab->getName());
@@ -452,6 +453,24 @@ void DefaultVersionImplementation::deleteView(const QString &name)
     delete v->getLocation();
     delete v->getSqlLocation();
     delete v;
+}
+
+void DefaultVersionImplementation::deleteFunction(const QString& f)
+{
+    Function* func = getFunction(f);
+    m_data.m_functions.remove(m_data.m_functions.indexOf(func));
+    delete func->getLocation();
+    delete func->getSqlLocation();
+    delete func;
+}
+
+void DefaultVersionImplementation::deleteTrigger(const QString& t)
+{
+    Trigger* trg = getTrigger(t);
+    m_data.m_triggers.remove(m_data.m_triggers.indexOf(trg));
+    delete trg->getLocation();
+    delete trg->getSqlLocation();
+    delete trg;
 }
 
 void DefaultVersionImplementation::deleteProcedure(const QString& p)

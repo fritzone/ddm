@@ -466,6 +466,50 @@ void MainWindow::showObjectwithGuid(Version *v, QString uid, showSomething s, bo
     (this->*s)(v, uid,f);
 }
 
+void MainWindow::currentPatchTreeItemChanged(QTreeWidgetItem * current, QTreeWidgetItem*)
+{
+    if(current)
+    {
+        QVariant qv = current->data(0, Qt::UserRole);
+        QString uid = qv.toString();
+        qDebug() << uid;
+
+        Version* foundVersion = UidWarehouse::instance().getVersionForUid(uid);
+        ObjectWithUid* obj = UidWarehouse::instance().getElement(uid);
+        QString classUid = nullUid;
+        if(obj)
+        {
+            classUid = obj->getClassUid();
+            classUid = classUid.toUpper();
+        }
+        UserDataType* udt = 0;
+        if((udt = dynamic_cast<UserDataType*>(UidWarehouse::instance().getElement(uid))))
+        {
+            NewDataTypeForm* frm = new NewDataTypeForm(DT_INVALID, m_workspace->currentProjectsEngine(), this);
+            frm->focusOnName();
+            frm->setDataType(udt);
+            setCentralWidget(frm);
+        }
+        else
+        {
+
+            QMap<QString, showSomething> mapping;
+            mapping.insert(uidTable, (showSomething)&MainWindow::showTableWithGuid);
+            mapping.insert(uidTableInstance, (showSomething)&MainWindow::showTableInstanceWithGuid);
+            mapping.insert(uidDiagram, (showSomething)&MainWindow::showDiagramWithGuid);
+            mapping.insert(uidProcedure, (showSomething)&MainWindow::showProcedureWithGuid);
+            mapping.insert(uidFunction, (showSomething)&MainWindow::showFunctionWithGuid);
+            mapping.insert(uidTrigger, (showSomething)&MainWindow::showTriggerWithGuid);
+            mapping.insert(uidView, (showSomething)&MainWindow::showViewWithGuid);
+
+            if(mapping.contains(classUid))
+            {
+                showObjectwithGuid(foundVersion, uid, mapping[classUid], false);
+            }
+        }
+    }
+}
+
 void MainWindow::currentProjectTreeItemChanged(QTreeWidgetItem * current, QTreeWidgetItem*)
 {
     if(current)
@@ -552,10 +596,8 @@ void MainWindow::currentProjectTreeItemChanged(QTreeWidgetItem * current, QTreeW
         else
         {
             // the user clicked on a data type, this must be performed before all of them, since hey are more hierachical
-            QVariant qv = current->data(0, Qt::UserRole);
-            QString n = qv.toString();
             UserDataType* udt = 0;
-            if((udt = dynamic_cast<UserDataType*>(UidWarehouse::instance().getElement(n))))
+            if((udt = dynamic_cast<UserDataType*>(UidWarehouse::instance().getElement(uid))))
             {
                 NewDataTypeForm* frm = new NewDataTypeForm(DT_INVALID, m_workspace->currentProjectsEngine(), this);
                 frm->focusOnName();
@@ -907,6 +949,8 @@ void MainWindow::connectActionsFromPopupMenus()
     ContextMenuCollection::getInstance()->getAction_BrowsedTableInject()->setVisible(true);
     QObject::connect(ContextMenuCollection::getInstance()->getAction_DeleteView(), SIGNAL(triggered()), this, SLOT(onDeleteView()));
     QObject::connect(ContextMenuCollection::getInstance()->getAction_DeleteProcedure(), SIGNAL(triggered()), this, SLOT(onDeleteProcedure()));
+    QObject::connect(ContextMenuCollection::getInstance()->getAction_DeleteFunction(), SIGNAL(triggered()), this, SLOT(onDeleteFunction()));
+    QObject::connect(ContextMenuCollection::getInstance()->getAction_DeleteTrigger(), SIGNAL(triggered()), this, SLOT(onDeleteTrigger()));
     QObject::connect(ContextMenuCollection::getInstance()->getAction_ReleaseMajorVersion(), SIGNAL(triggered()), this, SLOT(onReleaseMajorVersion()));
     QObject::connect(ContextMenuCollection::getInstance()->getAction_unlock(), SIGNAL(triggered()), this, SLOT(onUnlockSomething()));
     QObject::connect(ContextMenuCollection::getInstance()->getAction_relock(), SIGNAL(triggered()), this, SLOT(onRelockSomething()));
@@ -1008,12 +1052,12 @@ void MainWindow::finallyDoLockLikeOperation(bool reLocking, const QString& guid)
         if(!reLocking)
         {
             v->getWorkingPatch()->addElement(guid);
-            m_guiElements->createNewItemForPatch(v->getWorkingPatch(), element->getClassUid(), ni->getName());
+            m_guiElements->createNewItemForPatch(v->getWorkingPatch(), element->getClassUid(), guid, ni->getName());
         }
         else
         {
             v->getWorkingPatch()->removeElement(guid);
-            m_guiElements->removeItemForPatch(v->getWorkingPatch(), element->getClassUid());
+            m_guiElements->removeItemForPatch(v->getWorkingPatch(), guid);
         }
     }
 
@@ -1041,9 +1085,64 @@ void MainWindow::onRelockSomething()
     doLockLikeOperation(true);
 }
 
+void MainWindow::onDeleteFunction()
+{
+    ContextMenuEnabledTreeWidgetItem* itm = m_guiElements->getProjectTree()->getLastRightclickedItem();
+    m_guiElements->getProjectTree()->setLastRightclickedItem(0);
+
+    QVariant qv = itm->data(0, Qt::UserRole);
+    QString guid = qv.toString();
+
+    Function* p = dynamic_cast<Function*>(UidWarehouse::instance().getElement(guid));
+    if(p)
+    {
+        if(QMessageBox::question(this, tr("Are you sure?"), tr("Really delete ") + p->getName()+ "?", QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
+        {
+            return;
+        }
+        m_workspace->workingVersion()->deleteFunction(p->getName());
+        m_workspace->workingVersion()->getGui()->updateForms();
+
+        showNamedObjectList(&MainWindow::showFunctionWithGuid, m_workspace->workingVersion()->getFunctions(), IconFactory::getFunctionIcon(), "Functions");
+
+        m_workspace->workingVersion()->getGui()->getFunctionsItem()->treeWidget()->clearSelection();
+        m_workspace->workingVersion()->getGui()->getFunctionsItem()->setSelected(true);
+    }
+}
+
+void MainWindow::onDeleteTrigger()
+{
+    ContextMenuEnabledTreeWidgetItem* itm = m_guiElements->getProjectTree()->getLastRightclickedItem();
+    m_guiElements->getProjectTree()->setLastRightclickedItem(0);
+
+    QVariant qv = itm->data(0, Qt::UserRole);
+    QString guid = qv.toString();
+
+    Trigger* p = dynamic_cast<Trigger*>(UidWarehouse::instance().getElement(guid));
+    if(p)
+    {
+        if(QMessageBox::question(this, tr("Are you sure?"), tr("Really delete ") + p->getName()+ "?", QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
+        {
+            return;
+        }
+        m_workspace->workingVersion()->deleteTrigger(p->getName());
+        m_workspace->workingVersion()->getGui()->updateForms();
+
+        showNamedObjectList(&MainWindow::showTriggerWithGuid, m_workspace->workingVersion()->getTriggers(), IconFactory::getTriggerIcon(), "Triggers");
+
+        m_workspace->workingVersion()->getGui()->getTriggersItem()->treeWidget()->clearSelection();
+        m_workspace->workingVersion()->getGui()->getTriggersItem()->setSelected(true);
+    }
+}
+
 void MainWindow::onDeleteProcedure()
 {
-    Procedure* p = getRightClickedObject<Procedure>((itemGetter)&Version::getProcedure);
+    ContextMenuEnabledTreeWidgetItem* itm = m_guiElements->getProjectTree()->getLastRightclickedItem();
+    m_guiElements->getProjectTree()->setLastRightclickedItem(0);
+
+    QVariant qv = itm->data(0, Qt::UserRole);
+    QString guid = qv.toString();
+    Procedure* p = dynamic_cast<Procedure*>(UidWarehouse::instance().getElement(guid));
     if(p)
     {
         if(QMessageBox::question(this, tr("Are you sure?"), tr("Really delete ") + p->getName()+ "?", QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
@@ -1063,7 +1162,12 @@ void MainWindow::onDeleteProcedure()
 
 void MainWindow::onDeleteView()
 {
-    View* v = getRightClickedObject<View>((itemGetter)&Version::getView);
+    ContextMenuEnabledTreeWidgetItem* itm = m_guiElements->getProjectTree()->getLastRightclickedItem();
+    m_guiElements->getProjectTree()->setLastRightclickedItem(0);
+
+    QVariant qv = itm->data(0, Qt::UserRole);
+    QString guid = qv.toString();
+    View* v = dynamic_cast<View*>(UidWarehouse::instance().getElement(guid));
     if(v)
     {
         if(QMessageBox::question(this, tr("Are you sure?"), tr("Really delete ") + v->getName()+ "?", QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
@@ -1309,16 +1413,13 @@ void MainWindow::onDeleteTableFromPopup()
             {
                 dynamic_cast<DiagramForm*>(w)->paintDiagram();
             }
-            if(NewTableForm* ntf = dynamic_cast<NewTableForm*>(w))
+            else
             {
-                if(ntf->getTableName() == tabName)  // show the list of tables if we deleted the current table
-                {
-                    showNamedObjectList(&MainWindow::showTableWithGuid, m_workspace->workingVersion()->getTables(),
-                                        Workspace::getInstance()->currentProjectIsOop()?IconFactory::getTabinstIcon():IconFactory::getTableIcon(),
-                                        Workspace::getInstance()->currentProjectIsOop()?"Table Templates":"Tables");
-                    m_workspace->workingVersion()->getGui()->getTablesItem()->treeWidget()->clearSelection();
-                    m_workspace->workingVersion()->getGui()->getTablesItem()->setSelected(true);
-                }
+                showNamedObjectList(&MainWindow::showTableWithGuid, m_workspace->workingVersion()->getTables(),
+                                    Workspace::getInstance()->currentProjectIsOop()?IconFactory::getTabinstIcon():IconFactory::getTableIcon(),
+                                    Workspace::getInstance()->currentProjectIsOop()?"Table Templates":"Tables");
+                m_workspace->workingVersion()->getGui()->getTablesItem()->treeWidget()->clearSelection();
+                m_workspace->workingVersion()->getGui()->getTablesItem()->setSelected(true);
             }
         }
         m_workspace->workingVersion()->getGui()->updateForms();

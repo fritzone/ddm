@@ -43,6 +43,8 @@ static const QString strLockedDiagramIcon = ":/images/actions/images/small/locke
 static const QString strDataTypesIcon = ":/images/actions/images/small/datatypes.png";
 static const QString strCodeIcon = ":/images/actions/images/small/code.png";
 static const QString strPatchIcon = ":/images/actions/images/small/patch.png";
+static const QString strSuspendedPatchIcon = ":/images/actions/images/small/shared_patch.png";
+static const QString strSuspendPatchIcon = ":/images/actions/images/small/share.png";
 static const QString strSqlIcon = ":/images/actions/images/small/sql.png";
 static const QString strMajorVersionIcon = ":/images/actions/images/small/arrow-000-medium.png";
 static const QString strReleaseMajorVersionIcon = ":/images/actions/images/small/arrow-branch.png";
@@ -790,6 +792,18 @@ public:
     static const QIcon& getPatchIcon()
     {
         static const QIcon icon(icons::strPatchIcon);
+        return icon;
+    }
+
+    static const QIcon& getSuspendPatchIcon()
+    {
+        static const QIcon icon(icons::strSuspendPatchIcon);
+        return icon;
+    }
+
+    static const QIcon& getSuspendedPatchIcon()
+    {
+        static const QIcon icon(icons::strSuspendedPatchIcon);
         return icon;
     }
 

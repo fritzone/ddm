@@ -195,6 +195,8 @@
         <file>images/actions/locked_function_icon.png</file>
         <file>images/actions/locked_procedure.png</file>
         <file>images/small/patch.png</file>
+        <file>images/small/share.png</file>
+        <file>images/small/shared_patch.png</file>
     </qresource>
     <qresource prefix="/bigger">
         <file>images/unaf.png</file>

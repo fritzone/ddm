@@ -301,7 +301,9 @@ public:
     /**
     * Delete the given procedure
     */
-    virtual void deleteProcedure(const QString& p) = 0;
+    virtual void deleteProcedure(const QString&) = 0;
+    virtual void deleteFunction(const QString&) = 0;
+    virtual void deleteTrigger(const QString&) = 0;
 
     /**
     * Deletes all the unused data types

@@ -97,7 +97,7 @@ void GuiElements::createGuiElements()
     m_patchesTree->setItemDelegate(new ContextMenuDelegate(m_contextMenuHandler,m_patchesTree));
     m_patchesTree->setColumnCount(1);
     m_patchesTree->setHeaderHidden(true);
-    //QObject::connect(m_patchesTree, SIGNAL (currentItemChanged ( QTreeWidgetItem*, QTreeWidgetItem*)), MainWindow::instance(), SLOT(currentProjectTreeItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)));
+    QObject::connect(m_patchesTree, SIGNAL (currentItemChanged ( QTreeWidgetItem*, QTreeWidgetItem*)), MainWindow::instance(), SLOT(currentPatchTreeItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)));
 
     m_patchesTreeDock->setWidget(m_patchesTree);
     m_patchesTreeDock->hide();
@@ -142,7 +142,7 @@ ContextMenuEnabledTreeWidgetItem* GuiElements::createNewPatchItem(Patch* p)
     // make the tables sub item coming from the version
     ContextMenuEnabledTreeWidgetItem* patchItem = new ContextMenuEnabledTreeWidgetItem(0, QStringList(p->getName()));
     patchItem->setIcon(0, IconFactory::getPatchIcon());
-    //patchItem->setPopupMenu(ContextMenuCollection::getInstance()->getTablesPopupMenu());
+    patchItem->setPopupMenu(ContextMenuCollection::getInstance()->getSuspendPatchPopupMenu());
     m_patchesTree->addTopLevelItem(patchItem);
     //QUuid tablesUid = QUuid::createUuid();
     //patchItem->setData(0, Qt::UserRole, QVariant(tablesUid));
@@ -150,14 +150,14 @@ ContextMenuEnabledTreeWidgetItem* GuiElements::createNewPatchItem(Patch* p)
     m_patchItems[p] = patchItem;
 }
 
-ContextMenuEnabledTreeWidgetItem* GuiElements::createNewItemForPatch(Patch *p, const QString& uid, const QString& name)
+ContextMenuEnabledTreeWidgetItem* GuiElements::createNewItemForPatch(Patch *p, const QString& class_uid, const QString& uid, const QString& name)
 {
     if(!m_patchItems.contains(p))
     {
         createNewPatchItem(p);
     }
     ContextMenuEnabledTreeWidgetItem* newItem = new ContextMenuEnabledTreeWidgetItem(m_patchItems[p], QStringList(name));
-    newItem->setIcon(0, IconFactory::getIconForClassUid(uid));
+    newItem->setIcon(0, IconFactory::getIconForClassUid(class_uid));
     newItem->setPopupMenu(ContextMenuCollection::getInstance()->getRelockLementPopupMenu());
     m_patchesTree->addTopLevelItem(newItem);
     newItem->setData(0, Qt::UserRole, QVariant(uid));

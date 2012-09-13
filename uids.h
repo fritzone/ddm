@@ -66,4 +66,7 @@ static const QString uidDiagramFkDescriptor         =       "{10000009-0000-0000
 
 static const QString uidVersion                     =       "{1000000A-0000-0000-0000-000000000001}";
 
+static const QString uidPatch                       =       "{1000000B-0000-0000-0000-000000000001}";
+
+
 #endif // UIDS_H

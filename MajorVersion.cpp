@@ -8,6 +8,7 @@
 #include "core_Trigger.h"
 #include "core_Function.h"
 #include "uids.h"
+#include "core_Patch.h"
 
 MajorVersion::MajorVersion(int major, int minor, Project* p) : DefaultVersionImplementation(p, major, minor)
 {
@@ -127,6 +128,16 @@ void MajorVersion::serialize(QDomDocument &doc, QDomElement &parent) const
         m_data.m_triggers[i]->serialize(doc, triggerElement);
     }
     majorVersionElement.appendChild(triggerElement);
+    }
+
+    // the patches
+    {
+        QDomElement patchEl = doc.createElement("Patches");
+        for(int i=0; i< m_patches.size(); i++)
+        {
+            m_patches[i]->serialize(doc, patchEl);
+        }
+        majorVersionElement.appendChild(patchEl);
     }
 
     parent.appendChild(majorVersionElement);

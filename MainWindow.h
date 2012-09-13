@@ -181,6 +181,10 @@ public slots:
     void onReleaseMajorVersion();
     void onUnlockSomething();
     void onRelockSomething();
+    void onDeleteFunction();
+    void onDeleteTrigger();
+    void currentPatchTreeItemChanged(QTreeWidgetItem * current, QTreeWidgetItem*);
+
 
 private:
 

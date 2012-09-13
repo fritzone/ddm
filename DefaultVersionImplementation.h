@@ -67,6 +67,8 @@ public:
     virtual void addProcedure(Procedure* p);
     virtual const QVector<Procedure*>& getProcedures();
     virtual void deleteProcedure(const QString& p);
+    virtual void deleteFunction(const QString& f);
+    virtual void deleteTrigger(const QString& t);
     virtual void cleanupDataTypes();
     virtual void addTrigger(Trigger *);
     virtual Trigger* getTrigger(const QString &name) const;
