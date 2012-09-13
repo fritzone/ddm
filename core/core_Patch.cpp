@@ -11,7 +11,7 @@
 
 #include <QDateTime>
 
-Patch::Patch(Version *v) : NamedItem("Patch"), m_version(v)
+Patch::Patch(Version *v) : NamedItem("Patch"), ObjectWithUid(QUuid::createUuid().toString()), m_lockedUids(), m_originals(), m_version(v), m_suspended(false)
 {
     QString finalName = QObject::tr("Patch") + " (" + v->getVersionText() + ") - " + QDateTime::currentDateTime().toString();
     setName(finalName);
@@ -73,4 +73,14 @@ void Patch::removeElement(const QString &uid)
         }
 
     }
+}
+
+void Patch::serialize(QDomDocument &doc, QDomElement &parent) const
+{
+
+}
+
+QUuid Patch::getClassUid() const
+{
+    return QUuid(uidPatch);
 }

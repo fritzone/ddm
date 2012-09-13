@@ -55,7 +55,7 @@ public:
     }
 
     ContextMenuEnabledTreeWidgetItem* createNewPatchItem(Patch *p);
-    ContextMenuEnabledTreeWidgetItem* createNewItemForPatch(Patch *p, const QString& uid, const QString &name);
+    ContextMenuEnabledTreeWidgetItem* createNewItemForPatch(Patch *p, const QString& class_uid, const QString &uid, const QString &name);
     void removeItemForPatch(Patch *p, const QString& uid);
 
 private:

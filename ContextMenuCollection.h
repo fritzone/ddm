@@ -46,6 +46,10 @@ public:
     QMenu* getMajorVersionPopupMenu() { return m_majorVersionPopupMenu; }
     QMenu* getUnlockLementPopupMenu() { return m_unlockLementPopupMenu; }
     QMenu* getRelockLementPopupMenu() { return m_relockLementPopupMenu; }
+    QMenu* getFunctionPopupMenu() { return m_functionPopupMenu; }
+    QMenu* getTriggerPopupMenu() { return m_triggerPopupMenu; }
+    QMenu* getSuspendPatchPopupMenu() { return m_suspendPatchMenu; }
+    QMenu* getResumePatchPopupMenu() { return m_resumePatchMenu; }
 
     /*
      * Actions
@@ -93,9 +97,14 @@ public:
     QAction* getAction_BrowsedTableBrowse() {return action_browsedTableBrowse; }
     QAction* getAction_DeleteView() {return action_deleteView; }
     QAction* getAction_DeleteProcedure() {return action_deleteProcedure; }
+    QAction* getAction_DeleteFunction() {return action_deleteFunction; }
+    QAction* getAction_DeleteTrigger() {return action_deleteTrigger; }
     QAction* getAction_ReleaseMajorVersion() {return action_releaseMajorVersion; }
     QAction* getAction_unlock() {return action_unlock; }
     QAction* getAction_relock() {return action_relock; }
+    QAction* getAction_SuspendPatch() { return action_suspendPatch; }
+    QAction* getAction_ResumePatch() { return action_resumePatch; }
+    QAction* getAction_RelocateElementToAnotherPatch() { return action_relocateElementToAnotherPatch; }
 
 private:
 
@@ -123,6 +132,10 @@ private:
     QMenu* m_majorVersionPopupMenu;             // popup menu for one major version tree element
     QMenu* m_unlockLementPopupMenu;             // popup menu for unlocking one major version tree element which was locked after being released
     QMenu* m_relockLementPopupMenu;             // popup menu for re-locking one major version tree element which was unlocked by the user
+    QMenu* m_functionPopupMenu;                 // popup menu for a function
+    QMenu* m_triggerPopupMenu;                  // popup menu for a trigger
+    QMenu* m_suspendPatchMenu;                  // popup menu for an unsuspended patch
+    QMenu* m_resumePatchMenu;                  // popup menu for a suspended patch
 
     // the actions in the table popup menu
     QAction* action_RemoveTable;
@@ -192,14 +205,33 @@ private:
     QAction* action_browsedTableBrowse; // see the data of the table
     QAction* action_browsedTableView;   // see the details of the table
 
+    // the view menu's actions
     QAction* action_deleteView;
 
+    // the procedure menu's actions
     QAction* action_deleteProcedure;
 
+    // the major version popup menu
     QAction* action_releaseMajorVersion;
 
+    // actions for a locked/unlocked element
     QAction* action_unlock;
     QAction* action_relock;
+
+    // actions for the functions popup menu
+    QAction* action_deleteFunction;
+
+    // actions for the trigger popup menu
+    QAction* action_deleteTrigger;
+
+    // action for the patch, when it is not suspended
+    QAction* action_suspendPatch;
+
+    // action for the patch when it is suspended
+    QAction* action_resumePatch;
+
+    // action for moving an element from a patch to a different patch
+    QAction* action_relocateElementToAnotherPatch;
 
     // the instance of the popup menu collection
     static ContextMenuCollection* m_instance;

@@ -81,7 +81,7 @@
        <item>
         <widget class="QFrame" name="frame">
          <property name="frameShape">
-          <enum>QFrame::StyledPanel</enum>
+          <enum>QFrame::NoFrame</enum>
          </property>
          <property name="frameShadow">
           <enum>QFrame::Raised</enum>
@@ -491,6 +491,86 @@
     <hint type="destinationlabel">
      <x>358</x>
      <y>244</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnConnect</sender>
+   <signal>clicked()</signal>
+   <receiver>InjectSqlDialog</receiver>
+   <slot>onConnect()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>361</x>
+     <y>222</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>358</x>
+     <y>244</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnCreateDatabase</sender>
+   <signal>clicked()</signal>
+   <receiver>InjectSqlDialog</receiver>
+   <slot>onCreateDatabase()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>668</x>
+     <y>258</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>358</x>
+     <y>244</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>txtDatabaseHost</sender>
+   <signal>textEdited(QString)</signal>
+   <receiver>InjectSqlDialog</receiver>
+   <slot>onHostChange(QString)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>563</x>
+     <y>125</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>358</x>
+     <y>244</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>txtDatabaseUser</sender>
+   <signal>textEdited(QString)</signal>
+   <receiver>InjectSqlDialog</receiver>
+   <slot>onUserChange(QString)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>563</x>
+     <y>157</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>358</x>
+     <y>244</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnDetails</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>grpConnectionDetails</receiver>
+   <slot>setVisible(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>293</x>
+     <y>235</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>503</x>
+     <y>236</y>
     </hint>
    </hints>
   </connection>
