@@ -337,14 +337,14 @@ void Diagram::updateGui()
     if(isLocked())
     {
         getLocation()->setIcon(0, IconFactory::getLockedDiagramIcon());
-        getLocation()->setPopupMenu(ContextMenuCollection::getInstance()->getUnlockLementPopupMenu());
+        getLocation()->setPopupMenu(ContextMenuCollection::getInstance()->getUnlockDiagramPopupMenu());
     }
     else
     {
         if(wasLocked())
         {
             getLocation()->setIcon(0, IconFactory::getDiagramIcon());
-            getLocation()->setPopupMenu(ContextMenuCollection::getInstance()->getRelockLementPopupMenu());
+            getLocation()->setPopupMenu(ContextMenuCollection::getInstance()->getRelockDiagramPopupMenu());
         }
     }
     TreeItem::updateGui();

@@ -180,7 +180,7 @@ Table* Workspace::pasteTable()
     {
         tab->setName(NameGenerator::getUniqueName(currentSolution()->currentProject()->getWorkingVersion(),
                                                   (itemGetter)&Version::getTable, tab->getName()+"_copy"));
-        currentSolution()->currentProject()->getWorkingVersion()->addTable(tab);
+        currentSolution()->currentProject()->getWorkingVersion()->addTable(tab, false);
         return tab;
     }
 
@@ -199,8 +199,8 @@ bool Workspace::onUpdateTable(Table* tbl)
 
 bool Workspace::onSaveNewTable(Table* tbl)
 {
-    workingVersion()->getGui()->createTableTreeEntry(tbl);
-    workingVersion()->addTable(tbl);
+    tbl->getVersion()->getGui()->createTableTreeEntry(tbl);
+    tbl->getVersion()->addTable(tbl, false);
     change();
     return true;
 }

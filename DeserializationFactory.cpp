@@ -287,7 +287,7 @@ void DeserializationFactory::createMajorVersion(MajorVersion *mv, Project *p, Da
             for(int j=0; j<element.childNodes().at(i).childNodes().count(); j++)
             {
                 Table* tab = createTable(engine, mv, doc, element.childNodes().at(i).childNodes().at(j).toElement());
-                mv->addTable(tab);
+                mv->addTable(tab, true);
             }
         }
     }
@@ -334,7 +334,7 @@ void DeserializationFactory::createMajorVersion(MajorVersion *mv, Project *p, Da
             for(int j=0; j<element.childNodes().at(i).childNodes().count(); j++)
             {
                 TableInstance* tabInst = createTableInstance(mv, doc, element.childNodes().at(i).childNodes().at(j).toElement());
-                mv->addTableInstance(tabInst);
+                mv->addTableInstance(tabInst, true);
             }
 
             // and here populate the "instantiated" like stuff

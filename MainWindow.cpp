@@ -514,10 +514,55 @@ void MainWindow::currentProjectTreeItemChanged(QTreeWidgetItem * current, QTreeW
 {
     if(current)
     {
+
         QVariant qv = current->data(0, Qt::UserRole);
         QString uid = qv.toString();
-
         Version* foundVersion = UidWarehouse::instance().getVersionForUid(uid);
+        if(!foundVersion) return;
+
+        // special cases:
+        // 1. Full documentation
+        if(foundVersion && current == foundVersion->getGui()->getDocumentationItem())
+        {
+            DocumentationForm* docF = new DocumentationForm(this);
+            DocumentationGenerator gen(m_workspace->currentSolution());
+            docF->setDoc(gen.getDocumentation());
+            setCentralWidget(docF);
+            docF->initiateStyleChange(docF->s_lastStyle);
+            return;
+        }
+
+        // 2. the documentation of 1 item
+        if(current->parent() && current->parent() == foundVersion->getGui()->getDocumentationItem())
+        {
+            DocumentationForm* docF = new DocumentationForm(this);
+            QVariant qv = current->data(0, Qt::UserRole);
+            QString guid = qv.toString();
+            docF->showDocumentationforUid(guid);
+            setCentralWidget(docF);
+            docF->initiateStyleChange(docF->s_lastStyle);
+            return;
+        }
+
+        // 3. the SQL of 1 item
+        if(current->parent() && current->parent() == foundVersion->getGui()->getFinalSqlItem())
+        {
+            // user clicked on a SQL item
+            SqlForm* frm = new SqlForm(m_workspace->currentProjectsEngine(), this);
+            QVariant qv = current->data(0, Qt::UserRole);
+            QString name = qv.toString();
+            SqlSourceEntity* ent = foundVersion->getSqlSourceEntityWithGuid(name);
+            if(ent == 0)
+            {   // hm.. this shouldn't be
+                return;
+            }
+            frm->setSqlSource(ent);
+            frm->presentSql(m_workspace->currentProject(), ent, (MainWindow::showSomething)&MainWindow::showNothing);
+            setCentralWidget(frm);
+            return;
+        }
+
+
         ObjectWithUid* obj = UidWarehouse::instance().getElement(uid);
         QString classUid = nullUid;
         if(obj)
@@ -525,8 +570,6 @@ void MainWindow::currentProjectTreeItemChanged(QTreeWidgetItem * current, QTreeW
             classUid = obj->getClassUid();
             classUid = classUid.toUpper();
         }
-
-        if(!foundVersion) return;
 
         if(current == foundVersion->getGui()->getTablesItem())
         {// we have clicked on the Tables item (i.e. the list of tables)
@@ -578,15 +621,6 @@ void MainWindow::currentProjectTreeItemChanged(QTreeWidgetItem * current, QTreeW
             showNamedObjectList(&MainWindow::showTriggerWithGuid, foundVersion->getTriggers(), IconFactory::getTriggerIcon(), "Triggers");
         }
         else
-        if(current == foundVersion->getGui()->getDocumentationItem())
-        {
-            DocumentationForm* docF = new DocumentationForm(this);
-            DocumentationGenerator gen(m_workspace->currentSolution());
-            docF->setDoc(gen.getDocumentation());
-            setCentralWidget(docF);
-            docF->initiateStyleChange(docF->s_lastStyle);
-        }
-        else
         if(current == foundVersion->getGui()->getDtsItem())
         {// we have clicked on the Data Types item
             DataTypesListForm* dtLst = new DataTypesListForm(this);
@@ -620,44 +654,37 @@ void MainWindow::currentProjectTreeItemChanged(QTreeWidgetItem * current, QTreeW
                 {
                     showObjectwithGuid(foundVersion, uid, mapping[classUid], false);
                 }
-                else
-                if(current->parent() && current->parent() == foundVersion->getGui()->getFinalSqlItem())
-                {
-                    // user clicked on a SQL item
-                    SqlForm* frm = new SqlForm(m_workspace->currentProjectsEngine(), this);
-                    QVariant qv = current->data(0, Qt::UserRole);
-                    QString name = qv.toString();
-                    SqlSourceEntity* ent = foundVersion->getSqlSourceEntityWithGuid(name);
-                    if(ent == 0)
-                    {   // hm.. this shouldn't be
-                        return;
-                    }
-                    frm->setSqlSource(ent);
-                    frm->presentSql(m_workspace->currentProject(), ent, (MainWindow::showSomething)&MainWindow::showNothing);
-                    setCentralWidget(frm);
-                }
-                else
-                if(current->parent() && current->parent() == foundVersion->getGui()->getDocumentationItem())
-                {
-                    DocumentationForm* docF = new DocumentationForm(this);
-                    QVariant qv = current->data(0, Qt::UserRole);
-                    QString guid = qv.toString();
-                    docF->showDocumentationforUid(guid);
-                    setCentralWidget(docF);
-                    docF->initiateStyleChange(docF->s_lastStyle);
-
-                }
-                else    // user possibly clicked on a table which had a parent a table ...
-                {
-                    showObjectwithGuid(foundVersion, uid, (showSomething)&MainWindow::showTableWithGuid, false);
-                }
-
             }
         }
     }
 }
 
+void MainWindow::onNewTableFromPopup()
+{
+    if(m_guiElements->getProjectTree()->getLastRightclickedItem() == 0)
+    {
+        return;
+    }
 
+    ContextMenuEnabledTreeWidgetItem* item = m_guiElements->getProjectTree()->getLastRightclickedItem();
+    m_guiElements->getProjectTree()->setLastRightclickedItem(0);
+
+    QVariant qv = item->data(0, Qt::UserRole);
+    QString tablesUid = qv.toString();
+    qDebug() << tablesUid;
+
+    Version* v = UidWarehouse::instance().getVersionForUid(tablesUid);
+
+    // TODO: duplicate with below
+    m_ui->action_NewTable->setDisabled(true);
+
+    NewTableForm* frm = v->getGui()->getTableFormForNewTable();
+    frm->focusOnName();
+    m_guiElements->getProjectTree()->setCurrentItem(0);
+    setCentralWidget(frm);
+    m_ui->action_NewTable->setDisabled(false);
+
+}
 
 void MainWindow::onNewTable()
 {
@@ -904,7 +931,7 @@ void MainWindow::enableActions()
 void MainWindow::connectActionsFromPopupMenus()
 {
     QObject::connect(ContextMenuCollection::getInstance()->getAction_RemoveTable(), SIGNAL(triggered()), this, SLOT(onDeleteTableFromPopup()));
-    QObject::connect(ContextMenuCollection::getInstance()->getAction_AddTable(), SIGNAL(triggered()), this, SLOT(onNewTable()));
+    QObject::connect(ContextMenuCollection::getInstance()->getAction_AddTable(), SIGNAL(triggered()), this, SLOT(onNewTableFromPopup()));
     QObject::connect(ContextMenuCollection::getInstance()->getAction_TableAddColumn(), SIGNAL(triggered()), this, SLOT(onTableAddColumnFromPopup()));
     if(m_workspace->currentProjectIsOop())
     {
@@ -954,6 +981,9 @@ void MainWindow::connectActionsFromPopupMenus()
     QObject::connect(ContextMenuCollection::getInstance()->getAction_ReleaseMajorVersion(), SIGNAL(triggered()), this, SLOT(onReleaseMajorVersion()));
     QObject::connect(ContextMenuCollection::getInstance()->getAction_unlock(), SIGNAL(triggered()), this, SLOT(onUnlockSomething()));
     QObject::connect(ContextMenuCollection::getInstance()->getAction_relock(), SIGNAL(triggered()), this, SLOT(onRelockSomething()));
+    QObject::connect(ContextMenuCollection::getInstance()->getAction_SuspendPatch(), SIGNAL(triggered()), this, SLOT(suspendPatch()));
+    QObject::connect(ContextMenuCollection::getInstance()->getAction_RenamePatch(), SIGNAL(triggered()), this, SLOT(renamePatch()));
+
 }
 
 template <class T>
@@ -1041,26 +1071,38 @@ void MainWindow::finallyDoLockLikeOperation(bool reLocking, const QString& guid)
     // and finally tell the version of the element that a new patch is about to be born
     if(doneSomething)
     {
-        NamedItem *ni = dynamic_cast<NamedItem*>(element);
-        if(!ni) return;
-        if(!m_guiElements->getPatchesDock()->isVisible())
-        {
-            m_guiElements->getPatchesDock()->show();
-            addDockWidget(Qt::LeftDockWidgetArea, m_guiElements->getPatchesDock());
-        }
-
-        if(!reLocking)
-        {
-            v->getWorkingPatch()->addElement(guid);
-            m_guiElements->createNewItemForPatch(v->getWorkingPatch(), element->getClassUid(), guid, ni->getName());
-        }
-        else
-        {
-            v->getWorkingPatch()->removeElement(guid);
-            m_guiElements->removeItemForPatch(v->getWorkingPatch(), guid);
-        }
+        createPatchElement(v, element, guid, reLocking);
     }
 
+}
+
+void MainWindow::updatePatchElementToReflectState(Version *v, ObjectWithUid *element, const QString &guid, int state)
+{
+    NamedItem *ni = dynamic_cast<NamedItem*>(element);
+    if(!ni) return;
+    m_guiElements->updateItemForPatchWithState(v->getWorkingPatch(), element->getClassUid(), guid, ni->getName(), state);
+}
+
+void MainWindow::createPatchElement(Version* v, ObjectWithUid * element, const QString& guid, bool reLocking)
+{
+    NamedItem *ni = dynamic_cast<NamedItem*>(element);
+    if(!ni) return;
+    if(!m_guiElements->getPatchesDock()->isVisible())
+    {
+        m_guiElements->getPatchesDock()->show();
+        addDockWidget(Qt::LeftDockWidgetArea, m_guiElements->getPatchesDock());
+    }
+
+    if(!reLocking)
+    {
+        v->getWorkingPatch()->addElement(guid);
+        m_guiElements->createNewItemForPatch(v->getWorkingPatch(), element->getClassUid(), guid, ni->getName());
+    }
+    else
+    {
+        v->getWorkingPatch()->removeElement(guid);
+        m_guiElements->removeItemForPatch(v->getWorkingPatch(), guid);
+    }
 }
 
 void MainWindow::doLockLikeOperation(bool reLocking)
@@ -1290,7 +1332,7 @@ void MainWindow::onSpecializeTableFromPopup()
     ContextMenuEnabledTreeWidgetItem* newTblsItem = m_workspace->workingVersion()->getGui()->createTableTreeEntry(specializedTable, table->getLocation()) ;
 
     // add to the project itself
-    m_workspace->workingVersion()->addTable(specializedTable);
+    m_workspace->workingVersion()->addTable(specializedTable, false);
 
     // set the link to the tree
     specializedTable->setLocation(newTblsItem);
@@ -1874,7 +1916,7 @@ void MainWindow::onInjectBrowsedTable()
             QString tab = s.left(s.indexOf("?")).mid(2);
             Table* t = Workspace::getInstance()->currentProjectsEngine()->reverseEngineerTable(c, tab, Workspace::getInstance()->currentProject(), true);
             t->setName(NameGenerator::getUniqueName(Workspace::getInstance()->currentProject()->getWorkingVersion(), (itemGetter)&Version::getTable, tab));
-            Workspace::getInstance()->currentProject()->getWorkingVersion()->addTable(t);
+            Workspace::getInstance()->currentProject()->getWorkingVersion()->addTable(t, false);
             m_workspace->workingVersion()->getGui()->createTableTreeEntry(t, m_workspace->workingVersion()->getGui()->getTablesItem());
             showTableWithGuid(m_workspace->workingVersion(), t->getObjectUid());
             QVector<TableInstance*> r = t->getTableInstances();
@@ -2656,5 +2698,48 @@ void MainWindow::onSqlQueryInConnection()
         BrowseTableForm* frm = BrowseTableForm::instance(this, c, "", CREATE_SCRIPT);
         setCentralWidget(frm);
         frm->focusOnTextEdit();
+    }
+}
+
+void MainWindow::suspendPatch()
+{
+    if(m_guiElements->getPatchesTree()->getLastRightclickedItem() != 0)
+    {
+        ContextMenuEnabledTreeWidgetItem* item = m_guiElements->getPatchesTree()->getLastRightclickedItem();
+        m_guiElements->getPatchesTree()->setLastRightclickedItem(0);
+
+        QVariant qv = item->data(0, Qt::UserRole);
+        QString uid = qv.toString();
+
+        qDebug() << uid;
+    }
+
+}
+void MainWindow::renamePatch()
+{
+    if(m_guiElements->getPatchesTree()->getLastRightclickedItem() != 0)
+    {
+        ContextMenuEnabledTreeWidgetItem* item = m_guiElements->getPatchesTree()->getLastRightclickedItem();
+        m_guiElements->getPatchesTree()->setLastRightclickedItem(0);
+
+        QVariant qv = item->data(0, Qt::UserRole);
+        QString uid = qv.toString();
+        Patch* p = dynamic_cast<Patch*>(UidWarehouse::instance().getElement(uid));
+        if(!p) return;
+
+        SimpleTextInputDialog* dlg = new SimpleTextInputDialog(this, tr("Enter the new name"));
+        dlg->setModal(true);
+        dlg->setText(p->getName());
+        if(dlg->exec() == QDialog::Accepted)
+        {
+            QString t = dlg->getText();
+            //if(m_workspace->getInstance()->workingVersion()->getTableInstance(t))
+            //{
+            //    QMessageBox::critical(this, tr("Error"), tr("You can have only one table instance called ") + t, QMessageBox::Ok);
+            //    return;
+            //}
+            p->setName(t);
+            p->setDisplayText(t);
+        }
     }
 }

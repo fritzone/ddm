@@ -44,8 +44,22 @@ public:
     QMenu* getViewPopupMenu() { return m_viewPopupMenu; }
     QMenu* getProcedurePopupMenu() { return m_procedurePopupMenu; }
     QMenu* getMajorVersionPopupMenu() { return m_majorVersionPopupMenu; }
-    QMenu* getUnlockLementPopupMenu() { return m_unlockLementPopupMenu; }
-    QMenu* getRelockLementPopupMenu() { return m_relockLementPopupMenu; }
+    QMenu* getUnlockTablePopupMenu() { return m_unlockTablePopupMenu; }
+    QMenu* getRelockTablePopupMenu() { return m_relockTablePopupMenu; }
+    QMenu* getUnlockTableInstancePopupMenu() { return m_unlockTableInstancePopupMenu; }
+    QMenu* getRelockTableInstancePopupMenu() { return m_relockTableInstancePopupMenu; }
+    QMenu* getUnlockViewPopupMenu() { return m_unlockViewPopupMenu; }
+    QMenu* getRelockViewPopupMenu() { return m_relockViewPopupMenu; }
+    QMenu* getUnlockDiagramPopupMenu() { return m_unlockDiagramPopupMenu; }
+    QMenu* getRelockDiagramPopupMenu() { return m_relockDiagramPopupMenu; }
+    QMenu* getUnlockDataTypePopupMenu() { return m_unlockDTPopupMenu; }
+    QMenu* getRelockDataTypePopupMenu() { return m_relockDTPopupMenu; }
+    QMenu* getUnlockTriggerPopupMenu() { return m_unlockTriggerPopupMenu; }
+    QMenu* getRelockTriggerPopupMenu() { return m_relockTriggerPopupMenu; }
+    QMenu* getUnlockProcedurePopupMenu() { return m_unlockProcedurePopupMenu; }
+    QMenu* getRelockProcedurePopupMenu() { return m_relockProcedurePopupMenu; }
+    QMenu* getUnlockFunctionPopupMenu() { return m_unlockFunctionPopupMenu; }
+    QMenu* getRelockFunctionPopupMenu() { return m_relockFunctionPopupMenu; }
     QMenu* getFunctionPopupMenu() { return m_functionPopupMenu; }
     QMenu* getTriggerPopupMenu() { return m_triggerPopupMenu; }
     QMenu* getSuspendPatchPopupMenu() { return m_suspendPatchMenu; }
@@ -104,7 +118,11 @@ public:
     QAction* getAction_relock() {return action_relock; }
     QAction* getAction_SuspendPatch() { return action_suspendPatch; }
     QAction* getAction_ResumePatch() { return action_resumePatch; }
+    QAction* getAction_RenamePatch() { return action_renamePatch; }
     QAction* getAction_RelocateElementToAnotherPatch() { return action_relocateElementToAnotherPatch; }
+
+    QMenu* getUnLockMenuForClassUid(const QString& uid);
+    QMenu* getReLockMenuForClassUid(const QString& uid);
 
 private:
 
@@ -130,12 +148,27 @@ private:
     QMenu* m_browsedTablePopupMenu;             // popup menu for a table which was retrieved from the browse connection
     QMenu* m_procedurePopupMenu;                // popup menu for one procedure tree element
     QMenu* m_majorVersionPopupMenu;             // popup menu for one major version tree element
-    QMenu* m_unlockLementPopupMenu;             // popup menu for unlocking one major version tree element which was locked after being released
-    QMenu* m_relockLementPopupMenu;             // popup menu for re-locking one major version tree element which was unlocked by the user
+    QMenu* m_unlockTablePopupMenu;              // popup menu for unlocking one major version table element which was locked after being released
+    QMenu* m_relockTablePopupMenu;              // popup menu for re-locking one major version table element which was unlocked by the user
+    QMenu* m_unlockTableInstancePopupMenu;      // popup menu for unlocking one major version table instance element which was locked after being released
+    QMenu* m_relockTableInstancePopupMenu;      // popup menu for re-locking one major version table instance element which was unlocked by the user
+    QMenu* m_unlockDiagramPopupMenu;            // popup menu for unlocking one major version diagram element which was locked after being released
+    QMenu* m_relockDiagramPopupMenu;            // popup menu for re-locking one major version diagram element which was unlocked by the user
+    QMenu* m_unlockTriggerPopupMenu;            // popup menu for unlocking one major version trigger element which was locked after being released
+    QMenu* m_relockTriggerPopupMenu;            // popup menu for re-locking one major version trigger element which was unlocked by the user
+    QMenu* m_unlockProcedurePopupMenu;          // popup menu for unlocking one major version procedure element which was locked after being released
+    QMenu* m_relockProcedurePopupMenu;          // popup menu for re-locking one major version procedure element which was unlocked by the user
+    QMenu* m_unlockFunctionPopupMenu;           // popup menu for unlocking one major version function element which was locked after being released
+    QMenu* m_relockFunctionPopupMenu;           // popup menu for re-locking one major version function element which was unlocked by the user
+    QMenu* m_unlockDTPopupMenu;                 // popup menu for unlocking one major version data type element which was locked after being released
+    QMenu* m_relockDTPopupMenu;                 // popup menu for re-locking one major version data type element which was unlocked by the user
+    QMenu* m_unlockViewPopupMenu;               // popup menu for unlocking one major version view element which was locked after being released
+    QMenu* m_relockViewPopupMenu;               // popup menu for re-locking one major version view element which was unlocked by the user
+
     QMenu* m_functionPopupMenu;                 // popup menu for a function
     QMenu* m_triggerPopupMenu;                  // popup menu for a trigger
     QMenu* m_suspendPatchMenu;                  // popup menu for an unsuspended patch
-    QMenu* m_resumePatchMenu;                  // popup menu for a suspended patch
+    QMenu* m_resumePatchMenu;                   // popup menu for a suspended patch
 
     // the actions in the table popup menu
     QAction* action_RemoveTable;
@@ -224,8 +257,9 @@ private:
     // actions for the trigger popup menu
     QAction* action_deleteTrigger;
 
-    // action for the patch, when it is not suspended
+    // actions for the patch, when it is not suspended
     QAction* action_suspendPatch;
+    QAction* action_renamePatch;
 
     // action for the patch when it is suspended
     QAction* action_resumePatch;

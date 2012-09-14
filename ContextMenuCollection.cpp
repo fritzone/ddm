@@ -1,6 +1,7 @@
 #include "ContextMenuCollection.h"
 #include "IconFactory.h"
 #include "core_ConnectionManager.h"
+#include "uids.h"
 
 ContextMenuCollection* ContextMenuCollection::m_instance = 0;
 
@@ -27,8 +28,23 @@ ContextMenuCollection::ContextMenuCollection()
     m_viewPopupMenu = new QMenu();
     m_procedurePopupMenu = new QMenu();
     m_majorVersionPopupMenu = new QMenu();
-    m_unlockLementPopupMenu = new QMenu();
-    m_relockLementPopupMenu = new QMenu();
+    m_unlockTablePopupMenu = new QMenu();
+    m_relockTablePopupMenu = new QMenu();
+    m_unlockTriggerPopupMenu = new QMenu();
+    m_relockTriggerPopupMenu = new QMenu();
+    m_unlockTableInstancePopupMenu = new QMenu();
+    m_relockTableInstancePopupMenu = new QMenu();
+    m_unlockFunctionPopupMenu = new QMenu();
+    m_relockFunctionPopupMenu = new QMenu();
+    m_unlockProcedurePopupMenu = new QMenu();
+    m_relockProcedurePopupMenu = new QMenu();
+    m_unlockViewPopupMenu = new QMenu();
+    m_relockViewPopupMenu = new QMenu();
+    m_unlockDTPopupMenu = new QMenu();
+    m_relockDTPopupMenu = new QMenu();
+    m_unlockDiagramPopupMenu = new QMenu();
+    m_relockDiagramPopupMenu = new QMenu();
+
     m_functionPopupMenu = new QMenu();
     m_triggerPopupMenu = new QMenu();
     m_suspendPatchMenu = new QMenu();
@@ -103,6 +119,7 @@ ContextMenuCollection::ContextMenuCollection()
     action_suspendPatch = new QAction(QObject::tr("Suspend this patch"), 0);
     action_suspendPatch->setIcon(IconFactory::getSuspendPatchIcon());
     action_resumePatch = new QAction(QObject::tr("Resume this patch"), 0);
+    action_renamePatch = new QAction(QObject::tr("Rename"), 0);
 
     // populate the table popup menu
     m_tablePopupMenu->addAction(action_TableAddColumn);
@@ -189,9 +206,6 @@ ContextMenuCollection::ContextMenuCollection()
     // the major version popup menu
     m_majorVersionPopupMenu->addAction(action_releaseMajorVersion);
 
-    // the locked elements popup menus
-    m_unlockLementPopupMenu->addAction(action_unlock);
-    m_relockLementPopupMenu->addAction(action_relock);
 
     // one functions popup menu
     m_functionPopupMenu->addAction(action_deleteFunction);
@@ -201,5 +215,95 @@ ContextMenuCollection::ContextMenuCollection()
 
     // the patch's menu
     m_suspendPatchMenu->addAction(action_suspendPatch);
+    m_suspendPatchMenu->addAction(action_renamePatch);
+
+    // the locked table popup menus
+    m_unlockTablePopupMenu->addAction(action_unlock);
+    m_relockTablePopupMenu->addAction(action_relock);
+    m_unlockTablePopupMenu->addAction(action_RemoveTable);
+
+    // the locked trigger popup menus
+    m_unlockTriggerPopupMenu->addAction(action_unlock);
+    m_relockTriggerPopupMenu->addAction(action_relock);
+
+    // the locked tab inst popup menus
+    m_unlockTableInstancePopupMenu->addAction(action_unlock);
+    m_relockTableInstancePopupMenu->addAction(action_relock);
+
+    // the locked func popup menus
+    m_unlockFunctionPopupMenu->addAction(action_unlock);
+    m_relockFunctionPopupMenu->addAction(action_relock);
+
+    // the locked proc popup menus
+    m_unlockProcedurePopupMenu->addAction(action_unlock);
+    m_relockProcedurePopupMenu->addAction(action_relock);
+
+    // the locked view popup menus
+    m_unlockViewPopupMenu->addAction(action_unlock);
+    m_relockViewPopupMenu->addAction(action_relock);
+
+    // the locked dt popup menus
+    m_unlockDTPopupMenu->addAction(action_unlock);
+    m_relockDTPopupMenu->addAction(action_relock);
+
+    // the locked diagr popup menus
+    m_unlockDiagramPopupMenu->addAction(action_unlock);
+    m_relockDiagramPopupMenu->addAction(action_relock);
+
     m_resumePatchMenu->addAction(action_resumePatch);
+}
+
+QMenu* ContextMenuCollection::getUnLockMenuForClassUid(const QString& uid)
+{
+    QMap<QString, QMenu*> mapping;
+    mapping.insert(uidTable, m_unlockTablePopupMenu);
+    mapping.insert(uidTableInstance, m_unlockTableInstancePopupMenu);
+    mapping.insert(uidDiagram, m_unlockDiagramPopupMenu);
+    mapping.insert(uidProcedure, m_unlockProcedurePopupMenu);
+    mapping.insert(uidFunction, m_unlockFunctionPopupMenu);
+    mapping.insert(uidTrigger, m_unlockTriggerPopupMenu);
+    mapping.insert(uidView, m_unlockViewPopupMenu);
+
+    mapping.insert(uidStringDT, m_unlockDTPopupMenu);
+    mapping.insert(uidNumericDT, m_unlockDTPopupMenu);
+    mapping.insert(uidDateTimeDT, m_unlockDTPopupMenu);
+    mapping.insert(uidBooleanDT, m_unlockDTPopupMenu);
+    mapping.insert(uidMiscDT, m_unlockDTPopupMenu);
+    mapping.insert(uidSpatialDT, m_unlockDTPopupMenu);
+    mapping.insert(uidBlobDT, m_unlockDTPopupMenu);
+
+    if(mapping.contains(uid))
+    {
+        return mapping[uid];
+    }
+
+    return 0;
+}
+
+
+QMenu* ContextMenuCollection::getReLockMenuForClassUid(const QString& uid)
+{
+    QMap<QString, QMenu*> mapping;
+    mapping.insert(uidTable, m_relockTablePopupMenu);
+    mapping.insert(uidTableInstance, m_relockTableInstancePopupMenu);
+    mapping.insert(uidDiagram, m_relockDiagramPopupMenu);
+    mapping.insert(uidProcedure, m_relockProcedurePopupMenu);
+    mapping.insert(uidFunction, m_relockFunctionPopupMenu);
+    mapping.insert(uidTrigger, m_relockTriggerPopupMenu);
+    mapping.insert(uidView, m_relockViewPopupMenu);
+
+    mapping.insert(uidStringDT, m_relockDTPopupMenu);
+    mapping.insert(uidNumericDT, m_relockDTPopupMenu);
+    mapping.insert(uidDateTimeDT, m_relockDTPopupMenu);
+    mapping.insert(uidBooleanDT, m_relockDTPopupMenu);
+    mapping.insert(uidMiscDT, m_relockDTPopupMenu);
+    mapping.insert(uidSpatialDT, m_relockDTPopupMenu);
+    mapping.insert(uidBlobDT, m_relockDTPopupMenu);
+
+    if(mapping.contains(uid))
+    {
+        return mapping[uid];
+    }
+
+    return 0;
 }

@@ -25,7 +25,7 @@ public:
     virtual bool hasDataType(const QString& name) const;
     virtual UserDataType* getDataType(const QString& name);
     virtual int getDataTypeIndex(const QString& name);
-    virtual void addTable(Table*);
+    virtual void addTable(Table*t, bool initial);
     virtual bool hasTable(Table*);
     virtual bool hasTable(const QString&);
     virtual bool deleteTable(Table*);
@@ -41,7 +41,7 @@ public:
     virtual void setupTableParentChildRelationships();
     virtual TableInstance* instantiateTable(Table* tab, bool becauseOfReference);
     virtual TableInstance* getTableInstance(const QString& ) const;
-    virtual void addTableInstance(TableInstance* inst);
+    virtual void addTableInstance(TableInstance* inst, bool initial);
     virtual const QVector<TableInstance*> & getTableInstances() const;
     virtual UserDataType* duplicateDataType(const QString&);
     virtual void deleteDiagram(const QString&);

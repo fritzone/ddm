@@ -24,6 +24,9 @@
 #include "Index.h"
 #include "core_Patch.h"
 
+// TODO: This is horrible!!!
+#include "MainWindow.h"
+
 #include <QtGui>
 
 DefaultVersionImplementation::DefaultVersionImplementation(Project* p, int major, int minor)
@@ -123,9 +126,15 @@ int DefaultVersionImplementation::getDataTypeIndex(const QString& name)
     return -1;
 }
 
-inline void DefaultVersionImplementation::addTable(Table *t)
+inline void DefaultVersionImplementation::addTable(Table *t, bool initial)
 {
     m_data.m_tables.append(t);
+    if(isLocked() && !initial)
+    {
+        MainWindow::instance()->createPatchElement(this, t, t->getObjectUid(), false);
+        getWorkingPatch()->addNewElement(t->getObjectUid()); // this will be a new element ...
+        MainWindow::instance()->updatePatchElementToReflectState(this, t, t->getObjectUid(), 1);
+    }
 }
 
 inline void DefaultVersionImplementation::addDiagram(Diagram* d)
@@ -361,7 +370,7 @@ Table* DefaultVersionImplementation::duplicateTable(Table *src)
 {
     Table* dup = new Table(*src);
     dup->setName(NameGenerator::getUniqueName(this,  (itemGetter)&Version::getTable, src->getName()+"_copy"));
-    addTable(dup);
+    addTable(dup, false);
     return dup;
 }
 
@@ -385,6 +394,10 @@ TableInstance* DefaultVersionImplementation::instantiateTable(Table* tab, bool b
         tabInst->setName(NameGenerator::getUniqueName(this,  (itemGetter)&Version::getTableInstance, tabInst->getName()));
     }
     m_data.m_tableInstances.append(tabInst);
+    if(isLocked())
+    {
+        MainWindow::instance()->createPatchElement(this, tabInst, tabInst->getObjectUid(), false);
+    }
     return tabInst;
 }
 
@@ -726,9 +739,13 @@ const QVector<View*>& DefaultVersionImplementation::getViews()
     return m_data.m_views;
 }
 
-void DefaultVersionImplementation::addTableInstance(TableInstance* inst)
+void DefaultVersionImplementation::addTableInstance(TableInstance* inst, bool initial)
 {
     m_data.m_tableInstances.append(inst);
+    if(isLocked() && !initial)
+    {
+        MainWindow::instance()->createPatchElement(this, inst, inst->getObjectUid(), false);
+    }
 }
 
 const QVector<TableInstance*>& DefaultVersionImplementation::getTableInstances() const
@@ -1093,7 +1110,7 @@ bool DefaultVersionImplementation::cloneInto(Version* other)
     {
         Table* newTable = dynamic_cast<Table*>(tabs.at(i)->clone(this, other));
         newTable->setName(tabs.at(i)->getName());
-        other->addTable(newTable);
+        other->addTable(newTable, true);
         // lock the table
         tabs.at(i)->lock();
         tabs.at(i)->updateGui();
@@ -1165,7 +1182,7 @@ bool DefaultVersionImplementation::cloneInto(Version* other)
 
         // this also fixes the tables with the required link
         newTinst->finalizeCloning(tinsts.at(i), this, other);
-        other->addTableInstance(newTinst);
+        other->addTableInstance(newTinst, true);
         tinsts.at(i)->lock();
         tinsts.at(i)->updateGui();
     }

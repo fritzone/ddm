@@ -197,6 +197,7 @@
         <file>images/small/patch.png</file>
         <file>images/small/share.png</file>
         <file>images/small/shared_patch.png</file>
+        <file>images/small/changed.png</file>
     </qresource>
     <qresource prefix="/bigger">
         <file>images/unaf.png</file>

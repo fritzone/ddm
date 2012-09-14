@@ -111,14 +111,14 @@ void View::updateGui()
     if(isLocked())
     {
         getLocation()->setIcon(0, IconFactory::getLockedViewIcon());
-        getLocation()->setPopupMenu(ContextMenuCollection::getInstance()->getUnlockLementPopupMenu());
+        getLocation()->setPopupMenu(ContextMenuCollection::getInstance()->getUnlockViewPopupMenu());
     }
     else
     {
         if(wasLocked())
         {
             getLocation()->setIcon(0, IconFactory::getViewIcon());
-            getLocation()->setPopupMenu(ContextMenuCollection::getInstance()->getRelockLementPopupMenu());
+            getLocation()->setPopupMenu(ContextMenuCollection::getInstance()->getRelockViewPopupMenu());
         }
     }
     TreeItem::updateGui();
