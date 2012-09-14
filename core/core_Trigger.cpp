@@ -67,14 +67,14 @@ void Trigger::updateGui()
     if(isLocked())
     {
         getLocation()->setIcon(0, IconFactory::getLockedTriggerIcon());
-        getLocation()->setPopupMenu(ContextMenuCollection::getInstance()->getUnlockLementPopupMenu());
+        getLocation()->setPopupMenu(ContextMenuCollection::getInstance()->getUnlockTriggerPopupMenu());
     }
     else
     {
         if(wasLocked())
         {
             getLocation()->setIcon(0, IconFactory::getTriggerIcon());
-            getLocation()->setPopupMenu(ContextMenuCollection::getInstance()->getRelockLementPopupMenu());
+            getLocation()->setPopupMenu(ContextMenuCollection::getInstance()->getRelockTriggerPopupMenu());
         }
     }
     TreeItem::updateGui();

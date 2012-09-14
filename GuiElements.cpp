@@ -95,8 +95,11 @@ void GuiElements::createGuiElements()
     m_patchesTree->setSelectionMode(QAbstractItemView::SingleSelection);
     m_patchesTree->setSelectionBehavior(QAbstractItemView::SelectItems);
     m_patchesTree->setItemDelegate(new ContextMenuDelegate(m_contextMenuHandler,m_patchesTree));
-    m_patchesTree->setColumnCount(1);
-    m_patchesTree->setHeaderHidden(true);
+    m_patchesTree->setColumnCount(2);
+    m_patchesTree->setHeaderHidden(false);
+    m_patchesTree->headerItem()->setText(1, QObject::tr("Status"));
+    m_patchesTree->headerItem()->setText(0, QObject::tr("Element"));
+    m_patchesTree->header()->setDefaultSectionSize(350);
     QObject::connect(m_patchesTree, SIGNAL (currentItemChanged ( QTreeWidgetItem*, QTreeWidgetItem*)), MainWindow::instance(), SLOT(currentPatchTreeItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)));
 
     m_patchesTreeDock->setWidget(m_patchesTree);
@@ -139,15 +142,34 @@ void GuiElements::freeGuiElements()
 
 ContextMenuEnabledTreeWidgetItem* GuiElements::createNewPatchItem(Patch* p)
 {
-    // make the tables sub item coming from the version
     ContextMenuEnabledTreeWidgetItem* patchItem = new ContextMenuEnabledTreeWidgetItem(0, QStringList(p->getName()));
     patchItem->setIcon(0, IconFactory::getPatchIcon());
     patchItem->setPopupMenu(ContextMenuCollection::getInstance()->getSuspendPatchPopupMenu());
     m_patchesTree->addTopLevelItem(patchItem);
-    //QUuid tablesUid = QUuid::createUuid();
-    //patchItem->setData(0, Qt::UserRole, QVariant(tablesUid));
-    //UidWarehouse::instance().addElement(tablesUid, m_version);
+    patchItem->setData(0, Qt::UserRole, QVariant(p->getObjectUid()));
     m_patchItems[p] = patchItem;
+    p->setLocation(patchItem);
+}
+
+ContextMenuEnabledTreeWidgetItem* GuiElements::updateItemForPatchWithState(Patch *p, const QString& class_uid, const QString &uid, const QString &name, int state)
+{
+    if(state == 1) // NEW stuff ! TODO: make this nicer
+    {
+        if(!m_patchItems.contains(p))
+        {
+            return 0;
+        }
+
+        for(int i=0; i<m_patchItems[p]->childCount(); i++)
+        {
+            QVariant v = m_patchItems[p]->child(i)->data(0, Qt::UserRole);
+            if(v.toString() == uid)
+            {
+                m_patchItems[p]->child(i)->setIcon(1, IconFactory::getAddIcon());
+            }
+
+        }
+    }
 }
 
 ContextMenuEnabledTreeWidgetItem* GuiElements::createNewItemForPatch(Patch *p, const QString& class_uid, const QString& uid, const QString& name)
@@ -158,7 +180,8 @@ ContextMenuEnabledTreeWidgetItem* GuiElements::createNewItemForPatch(Patch *p, c
     }
     ContextMenuEnabledTreeWidgetItem* newItem = new ContextMenuEnabledTreeWidgetItem(m_patchItems[p], QStringList(name));
     newItem->setIcon(0, IconFactory::getIconForClassUid(class_uid));
-    newItem->setPopupMenu(ContextMenuCollection::getInstance()->getRelockLementPopupMenu());
+    newItem->setIcon(1, IconFactory::getChangedIcon());
+    newItem->setPopupMenu(ContextMenuCollection::getInstance()->getReLockMenuForClassUid(class_uid));
     m_patchesTree->addTopLevelItem(newItem);
     newItem->setData(0, Qt::UserRole, QVariant(uid));
     m_patchItems[p]->setExpanded(true);

@@ -92,7 +92,7 @@ bool MySQLDatabaseEngine::reverseEngineerDatabase(Connection *c, const QStringLi
     for(int i=0; i<tables.size(); i++)
     {
         Table* tab = reverseEngineerTable(c, tables.at(i), p, relaxed);
-        if(tab) v->addTable(tab);
+        if(tab) v->addTable(tab, true); // TODO: is this true that this is true?
     }
 
     for(int i=0; i<views.size(); i++)

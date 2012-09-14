@@ -48,14 +48,14 @@ void Procedure::updateGui()
     if(isLocked())
     {
         getLocation()->setIcon(0, IconFactory::getLockedProcedureIcon());
-        getLocation()->setPopupMenu(ContextMenuCollection::getInstance()->getUnlockLementPopupMenu());
+        getLocation()->setPopupMenu(ContextMenuCollection::getInstance()->getUnlockProcedurePopupMenu());
     }
     else
     {
         if(wasLocked())
         {
             getLocation()->setIcon(0, IconFactory::getProcedureIcon());
-            getLocation()->setPopupMenu(ContextMenuCollection::getInstance()->getRelockLementPopupMenu());
+            getLocation()->setPopupMenu(ContextMenuCollection::getInstance()->getRelockProcedurePopupMenu());
         }
     }
     TreeItem::updateGui();

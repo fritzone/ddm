@@ -78,9 +78,11 @@ public:
     virtual int getDataTypeIndex(const QString& name) = 0;
 
     /**
-     * Adds a new table to the system
+     * @brief addTable Adds a new table to the system
+     * @param t - the table to add
+     * @param initial - true if this is done while loading a solution, false if a normal addition is happening
      */
-    virtual void addTable(Table*) = 0;
+    virtual void addTable(Table* t, bool initial) = 0;
 
     /**
      * Add a diagram to the system
@@ -171,9 +173,11 @@ public:
     virtual TableInstance* instantiateTable(Table* tab, bool becauseOfReference) = 0;
 
     /**
-     * Adds a new table instance to this version
+     * @brief addTableInstance Adds a table instance to the application
+     * @param inst - the instane
+     * @param initial - true if this happens while loading a solution/reverse engineering, false otherwise
      */
-    virtual void addTableInstance(TableInstance* inst) = 0;
+    virtual void addTableInstance(TableInstance* inst, bool initial) = 0;
 
     /**
      * Returns a table instance

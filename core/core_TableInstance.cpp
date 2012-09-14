@@ -171,7 +171,7 @@ void TableInstance::updateGui()
     if(isLocked())
     {
         getLocation()->setIcon(0, IconFactory::getLockedTabinstIcon());
-        getLocation()->setPopupMenu(ContextMenuCollection::getInstance()->getUnlockLementPopupMenu());
+        getLocation()->setPopupMenu(ContextMenuCollection::getInstance()->getUnlockTableInstancePopupMenu());
     }
     else
     {
@@ -186,7 +186,7 @@ void TableInstance::updateGui()
             {
                 getLocation()->setIcon(0, IconFactory::getTabinstIcon());
             }
-            getLocation()->setPopupMenu(ContextMenuCollection::getInstance()->getRelockLementPopupMenu());
+            getLocation()->setPopupMenu(ContextMenuCollection::getInstance()->getRelockTableInstancePopupMenu());
         }
     }
     TreeItem::updateGui();

@@ -194,14 +194,14 @@ void UserDataType::updateGui()
     if(isLocked())
     {
         getLocation()->setIcon(0, IconFactory::getLockedIconForDataType(m_type));
-        getLocation()->setPopupMenu(ContextMenuCollection::getInstance()->getUnlockLementPopupMenu());
+        getLocation()->setPopupMenu(ContextMenuCollection::getInstance()->getUnlockDataTypePopupMenu());
     }
     else
     {
         if(wasLocked())
         {
             getLocation()->setIcon(0, IconFactory::getIconForDataType(m_type));
-            getLocation()->setPopupMenu(ContextMenuCollection::getInstance()->getRelockLementPopupMenu());
+            getLocation()->setPopupMenu(ContextMenuCollection::getInstance()->getRelockDataTypePopupMenu());
         }
     }
     TreeItem::updateGui();

@@ -26,6 +26,7 @@ static const QString strDtLockedSpatialIcon = ":/images/actions/images/small/dat
 static const QString strLockedIcon = ":/images/actions/images/small/locked.png";
 static const QString strUnLockedIcon = ":/images/actions/images/small/unlocked.png";
 static const QString strKeyIcon = ":/images/actions/images/small/key.png";
+static const QString strChangedIcon = ":/images/actions/images/small/changed.png";
 static const QString strSaveIcon = ":/images/actions/images/actions/filesave.png";
 static const QString strApplyIcon = ":/images/actions/images/small/apply.png";
 static const QString strAddIcon = ":/images/actions/images/small/add.png";
@@ -786,6 +787,12 @@ public:
     static const QIcon& getMySqlIcon()
     {
         static const QIcon icon(icons::strMySqlIcon);
+        return icon;
+    }
+
+    static const QIcon& getChangedIcon()
+    {
+        static const QIcon icon(icons::strChangedIcon);
         return icon;
     }
 

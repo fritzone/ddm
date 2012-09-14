@@ -42,11 +42,11 @@ const int COL_POS_PK = 0;
 const int COL_POS_NM = 1;
 const int COL_POS_DT = 2;
 
-NewTableForm::NewTableForm(DatabaseEngine* db, Project* prj, QWidget *parent, bool newTable) : SourceCodePresenterWidget(parent),
+NewTableForm::NewTableForm(DatabaseEngine* db, Project* prj, Version* v, QWidget *parent, bool newTable) : SourceCodePresenterWidget(parent),
     m_ui(new Ui::NewTableForm),
     m_dbEngine(db), m_project(prj), m_table(0),
     m_currentColumn(0), m_currentIndex(0), m_foreignTable(0), m_currentForeignKey(0), m_foreignKeySelected(false),
-    m_engineProviders(0), m_wspForIndex(0), m_wspForColumn(0)
+    m_engineProviders(0), m_wspForIndex(0), m_wspForColumn(0), m_version(v)
 {
     m_ui->setupUi(this);
 
@@ -81,9 +81,9 @@ NewTableForm::NewTableForm(DatabaseEngine* db, Project* prj, QWidget *parent, bo
                                      Workspace::getInstance()->currentProjectsEngine()->getDTSupplier()->blobTypes(),
                                      Workspace::getInstance()->currentProjectsEngine()->getDTSupplier()->dateTimeTypes(),
                                      Workspace::getInstance()->currentProjectsEngine()->getDTSupplier()->miscTypes(),
-                                     Workspace::getInstance()->workingVersion()->getTables());
+                                     v->getTables());
 
-    const QVector<UserDataType*>& dts = m_project->getWorkingVersion()->getDataTypes();
+    const QVector<UserDataType*>& dts = v->getDataTypes();
     for(int i=0; i<dts.size(); i++)
     {
         m_ui->cmbNewColumnType->addItem(IconFactory::getIconForDataType(dts[i]->getType()), dts[i]->getName());
@@ -109,7 +109,7 @@ NewTableForm::NewTableForm(DatabaseEngine* db, Project* prj, QWidget *parent, bo
 
     if(newTable)
     {
-        m_table = new Table(prj->getWorkingVersion(), QUuid::createUuid().toString(), 0);
+        m_table = new Table(m_version, QUuid::createUuid().toString(), 0);
         m_table->initializeFor(db, QUuid(uidTable));
 
         Workspace::getInstance()->onSaveNewTable(m_table);
@@ -134,7 +134,7 @@ void NewTableForm::resetForeignTablesCombo()
     m_ui->cmbForeignTables->clear();
 
     // create the foreign keys screen
-    const QVector<Table*>& tables = m_project->getWorkingVersion()->getTables();
+    const QVector<Table*>& tables = m_version->getTables();
     for(int i=0; i<tables.size(); i++)
     {
         if(tables[i]->getName() != m_table->getName())
@@ -182,7 +182,7 @@ void NewTableForm::setTypeComboBoxForColumnItem(ContextMenuEnabledTreeWidgetItem
 {
     QComboBox* cmbColumnType = new QComboBox(0);
     cmbColumnType->setAutoFillBackground(true);
-    const QVector<UserDataType*>& dts = m_project->getWorkingVersion()->getDataTypes();
+    const QVector<UserDataType*>& dts = m_version->getDataTypes();
     int s = -1;
 
     // TODO: this is just horrible. FIX! FIX! FIX!
@@ -219,7 +219,7 @@ void NewTableForm::onDatatypeSelectedForColumnInList(const QString& b)
     {
         return;
     }
-    const QVector<UserDataType*>& dts = m_project->getWorkingVersion()->getDataTypes();
+    const QVector<UserDataType*>& dts = m_version->getDataTypes();
     int i;
     for(i=0; i<dts.size(); i++)
     {
@@ -463,7 +463,7 @@ void NewTableForm::changeEvent(QEvent *e)
 
 void NewTableForm::updateIssues()
 {
-    Workspace::getInstance()->workingVersion()->validateVersion(false);
+    m_version->validateVersion(false);
 }
 
 void NewTableForm::onAddColumn()
@@ -501,7 +501,7 @@ void NewTableForm::onAddColumn()
                 return;
             }
             // 2. no other column is referencing this column in the DB through a foreign key from all the tables in the version
-            QVector<Table*> otherTablesReferencingThiscolumn = Workspace::getInstance()->workingVersion()->getTablesReferencingAColumnThroughForeignKeys(m_currentColumn);
+            QVector<Table*> otherTablesReferencingThiscolumn = m_version->getTablesReferencingAColumnThroughForeignKeys(m_currentColumn);
             if(otherTablesReferencingThiscolumn.size() > 0)
             {
                 QString s = "";
@@ -526,7 +526,7 @@ void NewTableForm::onAddColumn()
         m_currentColumn->setDescription(m_ui->txtColumnDescription->toPlainText());
         m_currentColumn->setPk(m_ui->chkPrimary->isChecked());
 
-        m_currentColumn->setDataType(m_project->getWorkingVersion()->getDataType(m_ui->cmbNewColumnType->currentText()));
+        m_currentColumn->setDataType(m_version->getDataType(m_ui->cmbNewColumnType->currentText()));
 
         m_currentColumn->getLocation()->setText(1, m_currentColumn->getName());
         if(m_ui->chkPrimary->isChecked())
@@ -562,7 +562,7 @@ void NewTableForm::onAddColumn()
             return;
         }
 
-        UserDataType* colsDt = m_project->getWorkingVersion()->getDataType(m_ui->cmbNewColumnType->currentText());
+        UserDataType* colsDt = m_version->getDataType(m_ui->cmbNewColumnType->currentText());
         Column* col = new Column(QUuid::createUuid().toString(), m_ui->txtNewColumnName->text(), colsDt, m_ui->chkPrimary->isChecked());
         col->initializeFor(m_dbEngine, QUuid(uidColumn));
         if(m_wspForColumn) m_wspForColumn->repopulateSpsOfObject(col);
@@ -740,7 +740,7 @@ void NewTableForm::showColumn(Column * c)
 {
     if(!m_table->hasColumn(c->getName())) return;
     m_ui->txtNewColumnName->setText(c->getName());
-    m_ui->cmbNewColumnType->setCurrentIndex(m_project->getWorkingVersion()->getDataTypeIndex(c->getDataType()->getName()));
+    m_ui->cmbNewColumnType->setCurrentIndex(m_version->getDataTypeIndex(c->getDataType()->getName()));
     m_ui->chkPrimary->setChecked(c->isPk());
     m_ui->txtColumnDescription->setText(c->getDescription());
 
@@ -887,7 +887,7 @@ void NewTableForm::autoSave()
 
 void NewTableForm::doTheSave()
 {
-    if(m_project->getWorkingVersion()->hasTable(m_table))
+    if(m_version->hasTable(m_table))
     {
         // update the data of the table, and the tree view
         Workspace::getInstance()->onUpdateTable(m_table);
@@ -1371,7 +1371,7 @@ void NewTableForm::onMoveSelectedIndexColumnDown()
 
 void NewTableForm::onForeignTableComboChange(QString selected)
 {
-    Table* table = m_project->getWorkingVersion()->getTable(selected);
+    Table* table = m_version->getTable(selected);
     if(table == 0)
     {
         return;
@@ -1549,7 +1549,7 @@ void NewTableForm::onSelectAssociation(QTreeWidgetItem* current, int)
 {
     QVariant qv = current->data(0, Qt::UserRole);
     QString tabName = qv.toString();
-    m_foreignTable = m_project->getWorkingVersion()->getTable(tabName);
+    m_foreignTable = m_version->getTable(tabName);
     if(m_foreignTable == 0)
     {
         QMessageBox::critical (this, tr("Internal Error (1)"), tr("Please contact the developers"), QMessageBox::Ok);
@@ -1664,7 +1664,7 @@ void NewTableForm::onBtnAddForeignKey()
         m_table->addForeignKey(m_currentForeignKey);
         // now, here create an index in the _foreign table_ which has columns the foreign columns of the index (this is required for some versions of MySQL, we'll see for the other ones)
         QString fktName = m_currentForeignKey->getForeignTableName();
-        Table* tbl = m_project->getWorkingVersion()->getTable(fktName);
+        Table* tbl = m_version->getTable(fktName);
         Index* generatedIndex = tbl->createAutoIndex(m_currentForeignKey->foreignColumns());
         m_currentForeignKey->addAutogeneratedIndex(generatedIndex);
     }
@@ -1735,7 +1735,7 @@ void NewTableForm::populateFKGui(ForeignKey * fk)
 
     // find the foreign keys table in the combo box
     int idx = m_ui->cmbForeignTables->findText(tabName);
-    Table* table = m_project->getWorkingVersion()->getTable(tabName);
+    Table* table = m_version->getTable(tabName);
     // populate the foreign columns list
     if(table == 0)
     {
@@ -2223,7 +2223,7 @@ void NewTableForm::onDatatypeComboChange(QString)
             }
         }
 
-        m_currentColumn->setDataType(m_project->getWorkingVersion()->getDataType(m_ui->cmbNewColumnType->currentText()));
+        m_currentColumn->setDataType(m_version->getDataType(m_ui->cmbNewColumnType->currentText()));
         //m_currentColumn->getLocation()->setIcon(COL_POS_DT, m_currentColumn->getDataType()->getIcon());
         m_currentColumn->getLocation()->setText(COL_POS_DT, m_currentColumn->getDataType()->getName());
 
@@ -2237,7 +2237,7 @@ void NewTableForm::onDatatypeComboChange(QString)
     {
         if(m_wspForColumn)
         {
-            Column* tCol = new Column(QUuid::createUuid().toString(), "temp",(m_project->getWorkingVersion()->getDataType(m_ui->cmbNewColumnType->currentText())), false);
+            Column* tCol = new Column(QUuid::createUuid().toString(), "temp",(m_version->getDataType(m_ui->cmbNewColumnType->currentText())), false);
             m_wspForColumn->taylorToSpecificObject(tCol);
             delete tCol;
         }

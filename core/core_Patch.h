@@ -23,11 +23,18 @@ public:
     Patch(Version* v);
 
     /**
-     * @brief addElement adds an element to the patch. Creates a local copy of it.
+     * @brief addElement adds a locked element to the patch. Creates a local copy of it.
      * We get here from the unlocking of an element
      * @param uid - the uid which will be addedd to the patch
      */
     void addElement(const QString& uid);
+
+    /**
+     * @brief addNewElement adds a NEW element to the patch. This should always be called after addElement.
+     * We get here when adding a new table in a locked version
+     * @param uid
+     */
+    void addNewElement(const QString& uid);
 
     /**
      * @brief removeElement removes the element from the patch. Erases
@@ -54,6 +61,9 @@ private:
     // the original elements, in case we need to re-lock them, we just copy them back and fix the sourceUid
     // they are stored as serialized stuff, and upon serialization they are stored as CDATA
     QMap<QString, QString> m_originals;
+
+    // the UIDs of the elements that were created in this patch
+    QStringList m_newUids;
 
     // the version in which this patch is active
     Version* m_version;

@@ -28,13 +28,14 @@ class SqlNamesValidator;
 class Issue;
 class QMenu;
 class WidgetForSpecificProperties;
+class Version;
 
 class NewTableForm : public SourceCodePresenterWidget
 {
     Q_OBJECT
 public:
 
-    NewTableForm(DatabaseEngine* engine, Project* prj, QWidget *parent = 0, bool newTable = false);
+    NewTableForm(DatabaseEngine* engine, Project* prj, Version *v, QWidget *parent = 0, bool newTable = false);
     ~NewTableForm();
 
     void focusOnName();
@@ -232,6 +233,8 @@ private:
     // TODO: with multiple db engines this will be a vector
     WidgetForSpecificProperties* m_wspForIndex;
     WidgetForSpecificProperties* m_wspForColumn;
+
+    Version* m_version;
 
 };
 

@@ -42,6 +42,11 @@ void Patch::addElement(const QString &uid)
     m_originals.insert(uid, text);
 }
 
+void Patch::addNewElement(const QString &uid)
+{
+    m_newUids.append(uid);
+}
+
 void Patch::removeElement(const QString &uid)
 {
     if(m_lockedUids.contains(uid))

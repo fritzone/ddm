@@ -34,6 +34,7 @@ class View;
 class Procedure;
 class GuiElements;
 class ConnectionGuiElements;
+class ObjectWithUid;
 
 namespace Ui
 {
@@ -99,6 +100,9 @@ public:
 
     virtual void setCentralWidget(QWidget *widget);
     void finallyDoLockLikeOperation(bool reLocking, const QString& guid);
+
+    void createPatchElement(Version *v, ObjectWithUid*, const QString &guid, bool reLocking);
+    void updatePatchElementToReflectState(Version *v, ObjectWithUid*, const QString &guid, int state);
 
 
 protected:
@@ -184,7 +188,9 @@ public slots:
     void onDeleteFunction();
     void onDeleteTrigger();
     void currentPatchTreeItemChanged(QTreeWidgetItem * current, QTreeWidgetItem*);
-
+    void suspendPatch();
+    void renamePatch();
+    void onNewTableFromPopup();
 
 private:
 
