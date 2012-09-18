@@ -7,8 +7,8 @@
 #include "IconFactory.h"
 #include "ContextMenuCollection.h"
 
-Trigger::Trigger(const QString& name, const QString& uid) : SqlSourceEntity(),
-    NamedItem(name), ObjectWithUid(uid),
+Trigger::Trigger(const QString& name, const QString& uid, Version* v) : SqlSourceEntity(),
+    NamedItem(name), ObjectWithUid(uid, v),
     m_body(), m_event(), m_ttime(), m_table()
 {
 }
@@ -52,7 +52,7 @@ QUuid Trigger::getClassUid() const
 
 CloneableElement* Trigger::clone(Version *sourceVersion, Version *targetVersion)
 {
-    Trigger* t = new Trigger(getName(), QUuid::createUuid().toString());
+    Trigger* t = new Trigger(getName(), QUuid::createUuid().toString(), targetVersion);
     t->m_body = m_body;
     t->m_event = m_event;
     t->m_ttime = m_ttime;

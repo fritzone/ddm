@@ -10,10 +10,11 @@
 
 #include <math.h>
 
-FkRelationDescriptor::FkRelationDescriptor(ForeignKey* fk, DraggableGraphicsViewItemForForeignKey* fkitm, DraggableGraphicsViewItem* tab1, DraggableGraphicsViewItem* tab2) :
+FkRelationDescriptor::FkRelationDescriptor(ForeignKey* fk, DraggableGraphicsViewItemForForeignKey* fkitm, DraggableGraphicsViewItem* tab1, DraggableGraphicsViewItem* tab2, Version* v) :
         m_ellipse(0), m_arrowHead(0), rel2Txt(0), rel1Txt(0),
         m_fkitm(fkitm),m_tab1(tab1), m_tab2(tab2), m_sentenced(false), firstLine(0), secondLine(0),
-        m_descriptor(new DiagramFKDescriptor(tab1->getTable()->getName(), tab2->getTable()->getName(), 0, 0, fk->getName())), m_fk(fk),
+        m_descriptor(new DiagramFKDescriptor(tab1->getTable()->getName(), tab2->getTable()->getName(), 0, 0, fk->getName(), v)),
+        m_fk(fk),
         tab1Name(tab1->getTable()->getName()), tab2Name(tab2->getTable()->getName())
 {}
 

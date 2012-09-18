@@ -6,7 +6,7 @@
 class SelectQueryOrderByComponent : public QueryComponent
 {
 public:
-    SelectQueryOrderByComponent(QueryComponent*, int);
+    SelectQueryOrderByComponent(QueryComponent*, int, Version *v);
     virtual QString get() const;
     virtual QString getClass() const {return "SelectQueryOrderByComponent";}
     virtual QueryGraphicsItem* createGraphicsItem(QueryGraphicsHelper*, QueryGraphicsItem*){return 0;}

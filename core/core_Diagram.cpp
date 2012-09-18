@@ -14,7 +14,7 @@
 
 Diagram::Diagram(Version* v, const QString& uid) : TreeItem(),
     NamedItem(NameGenerator::getUniqueName(v, (itemGetter)&Version::getDiagram, QString("Diagram"))),
-    ObjectWithUid(uid), m_onStage(), m_fksOnStage(), m_notes(),
+    ObjectWithUid(uid, v), m_onStage(), m_fksOnStage(), m_notes(),
     m_noteDescriptors(0), m_tableDescriptors(), m_form(0), m_saved(false), m_version(v), m_removed(false)
 {
 
@@ -23,7 +23,7 @@ Diagram::Diagram(Version* v, const QString& uid) : TreeItem(),
 Diagram::Diagram(Version* v, const QString & name, const QString& uid) :
     TreeItem(),
     NamedItem(name),
-    ObjectWithUid(uid),
+    ObjectWithUid(uid, v),
     m_onStage(), m_fksOnStage(), m_notes(), m_form(0), m_saved(false), m_version(v)
 {
 
@@ -163,13 +163,13 @@ DraggableGraphicsViewItem* Diagram::clone(DiagramObjectDescriptor* src)
 
 void Diagram::addDescriptor(DraggableGraphicsViewItemForText* df)
 {
-    DiagramNoteDescriptor* desc = new DiagramNoteDescriptor(df->getText(), df->getpSX(), df->getpSY(), df->isFramed());
+    DiagramNoteDescriptor* desc = new DiagramNoteDescriptor(df->getText(), df->getpSX(), df->getpSY(), df->isFramed(), version());
     m_noteDescriptors.append(desc);
 }
 
 void Diagram::addDescriptor(DraggableGraphicsViewItem* df)
 {
-    DiagramTableDescriptor* desc = new DiagramTableDescriptor(df->getTable()->getName(), df->getpSX(), df->getpSY());
+    DiagramTableDescriptor* desc = new DiagramTableDescriptor(df->getTable()->getName(), df->getpSX(), df->getpSY(), version());
     m_tableDescriptors.append(desc);
 }
 

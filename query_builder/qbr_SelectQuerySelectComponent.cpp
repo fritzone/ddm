@@ -7,7 +7,7 @@
 
 #include "strings.h"
 
-SelectQuerySelectComponent::SelectQuerySelectComponent(QueryComponent* p, int l) : QueryComponent(p,l)
+SelectQuerySelectComponent::SelectQuerySelectComponent(QueryComponent* p, int l, Version *v) : QueryComponent(p,l, v)
 {
 }
 
@@ -28,13 +28,13 @@ void SelectQuerySelectComponent::onClose()
 
 QueryComponent* SelectQuerySelectComponent::duplicate()
 {
-    SelectQuerySelectComponent* newc = new SelectQuerySelectComponent(m_parent, m_level);
+    SelectQuerySelectComponent* newc = new SelectQuerySelectComponent(m_parent, m_level, version());
     return newc;
 }
 
 CloneableElement* SelectQuerySelectComponent::clone(Version* sourceVersion, Version* targetVersion)
 {
-    SelectQuerySelectComponent* newc = dynamic_cast<SelectQuerySelectComponent*>(duplicate());
+    SelectQuerySelectComponent* newc = new SelectQuerySelectComponent(m_parent, m_level, targetVersion);
     newc->setSourceUid(getObjectUid());
     cloneTheChildren(sourceVersion, targetVersion, newc);
     return newc;

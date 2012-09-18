@@ -14,6 +14,7 @@ namespace Ui {
 }
 
 class UserDataType;
+class Version;
 
 /**
  * This is the window in which the user can create a new DataType
@@ -25,7 +26,7 @@ public:
      * Constructor
      * @param dts - the database engine
      */
-    NewDataTypeForm(DT_TYPE t, DatabaseEngine* dts, QWidget *parent = 0);
+    NewDataTypeForm(Version *v, DT_TYPE t, DatabaseEngine* dts, QWidget *parent = 0);
 
     /**
      * Destructor.
@@ -91,6 +92,7 @@ private:
     Ui::NewDataTypeForm *m_ui;
     DatabaseEngine* m_dbEngine;
     UserDataType* m_udt;
+    Version* m_version;
 };
 
 #endif // NEWDATATYPEFORM_H

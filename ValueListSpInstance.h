@@ -7,8 +7,8 @@
 class ValueListSpInstance : public SpInstance
 {
 public:
-    ValueListSpInstance(const Sp* theClass) : SpInstance(theClass), m_currentValue() {}
-    ValueListSpInstance(const Sp* theClass, const QString& uid) : SpInstance(theClass)
+    ValueListSpInstance(const Sp* theClass, Version* v) : SpInstance(theClass, v), m_currentValue() {}
+    ValueListSpInstance(const Sp* theClass, const QString& uid, Version* v) : SpInstance(theClass, v)
     {
         setForcedUid(uid);
     }

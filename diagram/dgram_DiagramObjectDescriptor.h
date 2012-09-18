@@ -11,7 +11,7 @@ class DiagramObjectDescriptor : public SerializableElement, public ObjectWithUid
 {
 public:
 
-    DiagramObjectDescriptor(const QString& txt, int x, int y) : ObjectWithUid(QUuid::createUuid().toString()), m_txt(txt), m_x(x), m_y(y) {}
+    DiagramObjectDescriptor(const QString& txt, int x, int y, Version *v) : ObjectWithUid(QUuid::createUuid().toString(), v), m_txt(txt), m_x(x), m_y(y) {}
 
 
     QString getText() const

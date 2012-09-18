@@ -11,11 +11,11 @@
 
 #include <QDateTime>
 
-Patch::Patch(Version *v) : NamedItem("Patch"), ObjectWithUid(QUuid::createUuid().toString()), m_lockedUids(), m_originals(), m_version(v), m_suspended(false)
+Patch::Patch(Version *v) : NamedItem("Patch"), ObjectWithUid(QUuid::createUuid().toString(), v), m_lockedUids(), m_originals(), m_suspended(false)
 {
     QString finalName = QObject::tr("Patch") + " (" + v->getVersionText() + ") - " + QDateTime::currentDateTime().toString();
     setName(finalName);
-
+    m_version = v;
     MainWindow::instance()->getGuiElements()->createNewPatchItem(this);
 }
 

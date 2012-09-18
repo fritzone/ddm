@@ -25,7 +25,7 @@ class Column : public TreeItem, public SerializableElement, public CopyableEleme
         public ObjectWithUid, public ObjectWithSpInstances, public CloneableElement
 {
 public:
-    Column(const QString& uid, const QString& name, const UserDataType* type, bool pk);
+    Column(const QString& uid, const QString& name, const UserDataType* type, bool pk, Version *v);
 
     const UserDataType* getDataType() const;
 

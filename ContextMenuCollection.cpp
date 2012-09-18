@@ -122,6 +122,7 @@ ContextMenuCollection::ContextMenuCollection()
     action_renamePatch = new QAction(QObject::tr("Rename"), 0);
 
     // populate the table popup menu
+    m_tablePopupMenu->setTitle("Table");
     m_tablePopupMenu->addAction(action_TableAddColumn);
     m_tablePopupMenu->addSeparator();
     m_tablePopupMenu->addAction(action_RemoveTable);
@@ -221,6 +222,7 @@ ContextMenuCollection::ContextMenuCollection()
     m_unlockTablePopupMenu->addAction(action_unlock);
     m_relockTablePopupMenu->addAction(action_relock);
     m_unlockTablePopupMenu->addAction(action_RemoveTable);
+    m_relockTablePopupMenu->addMenu(m_tablePopupMenu);
 
     // the locked trigger popup menus
     m_unlockTriggerPopupMenu->addAction(action_unlock);

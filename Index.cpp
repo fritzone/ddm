@@ -4,8 +4,8 @@
 #include "SpInstance.h"
 #include "core_Table.h"
 
-Index::Index(const QString &name, Table* tab, const QString& uid) :
-    NamedItem(name), ObjectWithUid(uid), ObjectWithSpInstances(),
+Index::Index(const QString &name, Table* tab, const QString& uid, Version* v) :
+    NamedItem(name), ObjectWithUid(uid, v), ObjectWithSpInstances(),
     m_owner(tab), m_columns(), m_columnsWithSpInstances()
 {
 }
@@ -186,9 +186,9 @@ SpInstance* Index::getSpiOfColumnForSpecificRole(const Column* c, const QString&
     return 0;
 }
 
-CloneableElement* Index::clone(Version * /*sourceVersion*/, Version * /*targetVersion*/)
+CloneableElement* Index::clone(Version * /*sourceVersion*/, Version * targetVersion)
 {
-    Index* result = new Index(getName(), 0, QUuid::createUuid().toString());
+    Index* result = new Index(getName(), 0, QUuid::createUuid().toString(), targetVersion);
     setSourceUid(getObjectUid());
     return result;
 }

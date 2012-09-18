@@ -4,7 +4,7 @@
 #include "uids.h"
 #include "strings.h"
 
-SelectQueryJoinComponent::SelectQueryJoinComponent(QueryComponent* p, int l):QueryComponent(p,l),  m_helper(0), m_joinExpressions()
+SelectQueryJoinComponent::SelectQueryJoinComponent(QueryComponent* p, int l, Version *v):QueryComponent(p,l,v),  m_helper(0), m_joinExpressions()
 {
 }
 
@@ -20,14 +20,14 @@ void SelectQueryJoinComponent::handleAction(const QString& action, QueryComponen
     }
     if(action == ADD_WHERE_EXPRESSION)  // we get here when the user clicked the New join expr...
     {
-        SingleExpressionQueryComponent* c = new SingleExpressionQueryComponent(this, m_level);
+        SingleExpressionQueryComponent* c = new SingleExpressionQueryComponent(this, m_level, version());
         m_joinExpressions.append(c);
         m_helper->triggerReRender();
         return;
     }
     if(action == ADD_WHERE_EXPRESSION_AND)
     {
-        SingleExpressionQueryComponent* c = new SingleExpressionQueryComponent(this, m_level);
+        SingleExpressionQueryComponent* c = new SingleExpressionQueryComponent(this, m_level, version());
         dynamic_cast<SingleExpressionQueryComponent*>(c)->setForcedType(SingleExpressionQueryComponent::FORCED_AND);
         m_joinExpressions.append(c);
         m_helper->triggerReRender();
@@ -35,7 +35,7 @@ void SelectQueryJoinComponent::handleAction(const QString& action, QueryComponen
     }
     if(action == ADD_WHERE_EXPRESSION_OR)
     {
-        SingleExpressionQueryComponent* c = new SingleExpressionQueryComponent(this, m_level);
+        SingleExpressionQueryComponent* c = new SingleExpressionQueryComponent(this, m_level, version());
         dynamic_cast<SingleExpressionQueryComponent*>(c)->setForcedType(SingleExpressionQueryComponent::FORCED_OR);
         m_joinExpressions.append(c);
         m_helper->triggerReRender();
@@ -68,7 +68,7 @@ void SelectQueryJoinComponent::onClose()
 
 QueryComponent* SelectQueryJoinComponent::duplicate()
 {
-    SelectQueryJoinComponent* newc = new SelectQueryJoinComponent(m_parent, m_level);
+    SelectQueryJoinComponent* newc = new SelectQueryJoinComponent(m_parent, m_level, version());
     for(int i=0; i<m_joinExpressions.size(); i++)
     {
         newc->m_joinExpressions.append(dynamic_cast<SingleExpressionQueryComponent*>(m_joinExpressions.at(i)->duplicate()));
@@ -78,7 +78,7 @@ QueryComponent* SelectQueryJoinComponent::duplicate()
 
 CloneableElement* SelectQueryJoinComponent::clone(Version *sourceVersion, Version *targetVersion)
 {
-    SelectQueryJoinComponent* newc = new SelectQueryJoinComponent(m_parent, m_level);
+    SelectQueryJoinComponent* newc = new SelectQueryJoinComponent(m_parent, m_level, targetVersion);
     for(int i=0; i<m_joinExpressions.size(); i++)
     {
         newc->m_joinExpressions.append(dynamic_cast<SingleExpressionQueryComponent*>(m_joinExpressions.at(i)->clone(sourceVersion, targetVersion)));

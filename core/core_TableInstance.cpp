@@ -7,8 +7,8 @@
 #include "IconFactory.h"
 #include "ContextMenuCollection.h"
 
-TableInstance::TableInstance(Table *tab, bool ref, const QString& uid) : TreeItem(),
-    NamedItem(tab->getName()), ObjectWithUid(uid),
+TableInstance::TableInstance(Table *tab, bool ref, const QString& uid, Version *v) : TreeItem(),
+    NamedItem(tab->getName()), ObjectWithUid(uid, v),
     m_table(tab), m_values(), m_becauseOfReference(ref), m_referencingTables(0), m_instantiatedTablesInstances(), m_sentenced(false)
 {
     for(int i=0; i<m_table->fullColumns().size(); i++)
@@ -18,8 +18,8 @@ TableInstance::TableInstance(Table *tab, bool ref, const QString& uid) : TreeIte
     tab->addInstance(this);
 }
 
-TableInstance::TableInstance(const QString& name, bool ref, const QString &uid): TreeItem(),
-    NamedItem(name), ObjectWithUid(uid),
+TableInstance::TableInstance(const QString& name, bool ref, const QString &uid, Version *v): TreeItem(),
+    NamedItem(name), ObjectWithUid(uid, v),
     m_table(0), m_values(), m_becauseOfReference(ref), m_referencingTables(0), m_instantiatedTablesInstances(), m_sentenced(false)
 {
 }
@@ -131,7 +131,7 @@ QUuid TableInstance::getClassUid() const
 
 CloneableElement* TableInstance::clone(Version *sourceVersion, Version *targetVersion)
 {
-    TableInstance* result = new TableInstance(getName(), m_becauseOfReference, QUuid::createUuid().toString());
+    TableInstance* result = new TableInstance(getName(), m_becauseOfReference, QUuid::createUuid().toString(), targetVersion);
     result->setSourceUid(getObjectUid());
     result->m_values = m_values;
 

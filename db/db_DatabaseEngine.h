@@ -270,7 +270,7 @@ public:
      * @return the reverse engineered table
      */
     virtual Table* reverseEngineerTable(Connection *c, const QString& tableName,
-                                        Project* p, bool relaxedDtCreation) = 0;
+                                        Project* p, bool relaxedDtCreation, Version* v) = 0;
 
     /**
      * Executes a script which creates the database represented by the
@@ -316,7 +316,7 @@ public:
      * @return the View object representing the database view, or 0 in case
      *         there is no view.
      */
-    virtual View* reverseEngineerView(Connection *c, const QString& viewName) = 0;
+    virtual View* reverseEngineerView(Connection *c, const QString& viewName, Version* v) = 0;
 
     /**
      * Reverse engineers the functions which is to be found in the database
@@ -328,7 +328,7 @@ public:
      * @return the Function object representing the function in the database
      *         or 0 in case there is no function called like that
      */
-    virtual Function* reverseEngineerFunc(Connection *c, const QString& funcName) = 0;
+    virtual Function* reverseEngineerFunc(Connection *c, const QString& funcName, Version* v) = 0;
 
     /**
      * Reverse engineers the procedure which is to be found in the database
@@ -340,7 +340,7 @@ public:
      * @return the Procedure object representing the procedure in the database
      *         or 0 in case there is no procedure called like that
      */
-    virtual Procedure* reverseEngineerProc(Connection *c, const QString& procName) = 0;
+    virtual Procedure* reverseEngineerProc(Connection *c, const QString& procName, Version* v) = 0;
 
     /**
      * Reverse engineers the trigger which is to be found in the database
@@ -351,7 +351,7 @@ public:
      * @return the Procedure object representing the procedure in the database
      *         or 0 in case there is no procedure called like that
      */
-    virtual Trigger* reverseEngineerTrigger(Connection *c, const QString& procName) = 0;
+    virtual Trigger* reverseEngineerTrigger(Connection *c, const QString& procName, Version* v) = 0;
 
     /**
      * Returns the columns of the given table as a list of strings

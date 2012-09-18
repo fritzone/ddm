@@ -375,7 +375,7 @@ void MainWindow::showDataType(Version *v, const QString &name, bool focus)
         return;
     }
 
-    NewDataTypeForm* frm = new NewDataTypeForm(DT_INVALID, m_workspace->currentProjectsEngine(), this);
+    NewDataTypeForm* frm = new NewDataTypeForm(v, DT_INVALID, m_workspace->currentProjectsEngine(), this);
     frm->focusOnName();
     frm->setDataType(dt);
     setCentralWidget(frm);
@@ -485,7 +485,7 @@ void MainWindow::currentPatchTreeItemChanged(QTreeWidgetItem * current, QTreeWid
         UserDataType* udt = 0;
         if((udt = dynamic_cast<UserDataType*>(UidWarehouse::instance().getElement(uid))))
         {
-            NewDataTypeForm* frm = new NewDataTypeForm(DT_INVALID, m_workspace->currentProjectsEngine(), this);
+            NewDataTypeForm* frm = new NewDataTypeForm(foundVersion, DT_INVALID, m_workspace->currentProjectsEngine(), this);
             frm->focusOnName();
             frm->setDataType(udt);
             setCentralWidget(frm);
@@ -633,7 +633,7 @@ void MainWindow::currentProjectTreeItemChanged(QTreeWidgetItem * current, QTreeW
             UserDataType* udt = 0;
             if((udt = dynamic_cast<UserDataType*>(UidWarehouse::instance().getElement(uid))))
             {
-                NewDataTypeForm* frm = new NewDataTypeForm(DT_INVALID, m_workspace->currentProjectsEngine(), this);
+                NewDataTypeForm* frm = new NewDataTypeForm(foundVersion, DT_INVALID, m_workspace->currentProjectsEngine(), this);
                 frm->focusOnName();
                 frm->setDataType(udt);
                 setCentralWidget(frm);
@@ -674,6 +674,7 @@ void MainWindow::onNewTableFromPopup()
     qDebug() << tablesUid;
 
     Version* v = UidWarehouse::instance().getVersionForUid(tablesUid);
+    qDebug() << v->getVersionText();
 
     // TODO: duplicate with below
     m_ui->action_NewTable->setDisabled(true);
@@ -699,7 +700,7 @@ void MainWindow::onNewTable()
 
 void MainWindow::showNewDataTypeWindow(int a)
 {
-    NewDataTypeForm* frm = new NewDataTypeForm((DT_TYPE)a, m_workspace->currentProjectsEngine(), this);
+    NewDataTypeForm* frm = new NewDataTypeForm(m_workspace->workingVersion(), (DT_TYPE)a, m_workspace->currentProjectsEngine(), this);
     frm->focusOnName();
     m_guiElements->getProjectTree()->setCurrentItem(0);
     setCentralWidget(frm);
@@ -711,7 +712,7 @@ void MainWindow::onNewDataType()
 }
 
 bool MainWindow::onSaveNewDataType(const QString& name, const QString& type, const QString& sqlType, const QString& size, const QString& defaultValue,
-                             const QStringList& mvs, const QString& desc, bool unsi, bool canBeNull,  UserDataType* pudt)
+                             const QStringList& mvs, const QString& desc, bool unsi, bool canBeNull,  UserDataType* pudt, Version *v)
 {
     if(name.length() == 0 || type.length() == 0 || sqlType.length() == 0)
     {
@@ -720,7 +721,7 @@ bool MainWindow::onSaveNewDataType(const QString& name, const QString& type, con
     }
 
 
-    UserDataType* udt = new UserDataType(name, type, sqlType, size, defaultValue, mvs, unsi, desc, canBeNull, QUuid::createUuid().toString());
+    UserDataType* udt = new UserDataType(name, type, sqlType, size, defaultValue, mvs, unsi, desc, canBeNull, QUuid::createUuid().toString(), v);
 
     if(! m_workspace->currentProjectsEngine()->getDTSupplier()->isValid(udt))
     {
@@ -746,7 +747,7 @@ bool MainWindow::onSaveNewDataType(const QString& name, const QString& type, con
 
         // updating the "data" of the tree item
         QVariant var;
-        var.setValue(udt->getName());
+        var.setValue(udt->getObjectUid().toString());
         pudt->getLocation()->setData(0, Qt::UserRole, var);
     }
     else        // new stuff
@@ -1297,15 +1298,26 @@ void MainWindow::onInstantiateTableFromPopup()
 
     QVariant qv = item->data(0, Qt::UserRole);
     QString tabUid = qv.toString();
-    Table* table =  m_workspace->workingVersion()->getTableWithUid(tabUid);
-    if(table == 0)  // shouldn't be ...
+
+    Version* v = UidWarehouse::instance().getVersionForUid(tabUid);
+
+    if(v == 0)
     {
+        qDebug() << "version is null";
         return;
     }
 
-    m_workspace->workingVersion()->getGui()->updateForms();
-    TableInstance* tinst = instantiateTable(table->getName(), QStringList());
-    showTableInstanceWithGuid(m_workspace->workingVersion(), tinst->getObjectUid());
+    qDebug() << v->getVersionText();
+    Table* table = v->getTableWithUid(tabUid);
+    if(table == 0)  // shouldn't be ...
+    {
+        qDebug() << "table is null";
+        return;
+    }
+
+    v->getGui()->updateForms();
+    TableInstance* tinst = instantiateTable(table->getName(), QStringList(), v);
+    showTableInstanceWithGuid(v, tinst->getObjectUid());
 }
 
 void MainWindow::onSpecializeTableFromPopup()
@@ -1561,7 +1573,7 @@ void MainWindow::onNewTableInstance()
         QStringList items = newDialog->getSelectedTables();
         for(int i=0; i<items.size(); i++)
         {
-            instantiateTable(items.at(i), items);
+            instantiateTable(items.at(i), items, m_workspace->workingVersion());
         }
 
         m_workspace->workingVersion()->getGui()->updateForms();
@@ -1618,12 +1630,12 @@ void MainWindow::onNewTableInstanceHovered()
 
 void MainWindow::instantiateTableCallback(const QString &tabName)
 {
-    instantiateTable(tabName, QStringList());
+    instantiateTable(tabName, QStringList(), m_workspace->workingVersion());
 }
 
-TableInstance *MainWindow::instantiateTable(const QString& tabName, QStringList othersTablesBeingInstantiated, bool ref, Table* referencingTable, TableInstance* becauseOfThis)
+TableInstance *MainWindow::instantiateTable(const QString& tabName, QStringList othersTablesBeingInstantiated, Version *v, bool ref, Table* referencingTable, TableInstance* becauseOfThis)
 {
-    Version* cVersion = m_workspace->workingVersion();
+    Version* cVersion = v;
     TableInstance* tinst = cVersion->instantiateTable(cVersion->getTable(tabName), ref);
     ContextMenuEnabledTreeWidgetItem* itm = new ContextMenuEnabledTreeWidgetItem(cVersion->getGui()->getTableInstancesItem(), QStringList(tinst->getName()));
     tinst->setLocation(itm);
@@ -1661,7 +1673,7 @@ TableInstance *MainWindow::instantiateTable(const QString& tabName, QStringList 
             //now check that the tbl->getName()is NOT in the provided list, and only then instantiate it recursively
             if(!othersTablesBeingInstantiated.contains(tbl->getName()))
             {
-                instantiateTable(tbl->getName(), othersTablesBeingInstantiated, true, tinst->table(), tinst);
+                instantiateTable(tbl->getName(), othersTablesBeingInstantiated, v, true, tinst->table(), tinst);
             }
         }
         else
@@ -1914,7 +1926,7 @@ void MainWindow::onInjectBrowsedTable()
             Connection *c = ConnectionManager::instance()->getConnection(cname);
             if(!c) return;
             QString tab = s.left(s.indexOf("?")).mid(2);
-            Table* t = Workspace::getInstance()->currentProjectsEngine()->reverseEngineerTable(c, tab, Workspace::getInstance()->currentProject(), true);
+            Table* t = Workspace::getInstance()->currentProjectsEngine()->reverseEngineerTable(c, tab, Workspace::getInstance()->currentProject(), true, m_workspace->workingVersion());
             t->setName(NameGenerator::getUniqueName(Workspace::getInstance()->currentProject()->getWorkingVersion(), (itemGetter)&Version::getTable, tab));
             Workspace::getInstance()->currentProject()->getWorkingVersion()->addTable(t, false);
             m_workspace->workingVersion()->getGui()->createTableTreeEntry(t, m_workspace->workingVersion()->getGui()->getTablesItem());
@@ -2551,7 +2563,7 @@ void MainWindow::onValidate()
 void MainWindow::onNewViewWithSql()
 {
     m_nvf = new NewViewForm(false, 0, this);
-    View* v = new View(true, QUuid::createUuid().toString());
+    View* v = new View(true, QUuid::createUuid().toString(), m_workspace->workingVersion());
     Workspace::getInstance()->workingVersion()->addView(v);
     Workspace::getInstance()->workingVersion()->getGui()->createViewTreeEntry(v);
 
@@ -2564,7 +2576,7 @@ void MainWindow::onNewViewWithSql()
 
 void MainWindow::onNewView()
 {
-    View* v = new View(false, QUuid::createUuid().toString());
+    View* v = new View(false, QUuid::createUuid().toString(), m_workspace->workingVersion());
     m_nvf = 0;
     v->getHelper()->setForm(this);
     Workspace::getInstance()->workingVersion()->addView(v);
@@ -2576,7 +2588,9 @@ void MainWindow::onNewView()
 void MainWindow::onNewProcedure()
 {
     ProcedureForm* frm = Workspace::getInstance()->workingVersion()->getGui()->getProcedureForm(MODE_PROCEDURE);
-    Procedure* p = new Procedure(NameGenerator::getUniqueName(Workspace::getInstance()->workingVersion(), (itemGetter)&Version::getProcedure, QString("proc")), QUuid::createUuid().toString());
+    Procedure* p = new Procedure(NameGenerator::getUniqueName(Workspace::getInstance()->workingVersion(),
+                                                              (itemGetter)&Version::getProcedure, QString("proc")),
+                                                               QUuid::createUuid().toString(), m_workspace->workingVersion());
     frm->setProcedure(p);
     frm->initSql();
     Workspace::getInstance()->workingVersion()->addProcedure(p);
@@ -2589,7 +2603,7 @@ void MainWindow::onNewProcedure()
 void MainWindow::onNewFunction()
 {
     ProcedureForm* frm = Workspace::getInstance()->workingVersion()->getGui()->getProcedureForm(MODE_FUNCTION);
-    Function* func = new Function(NameGenerator::getUniqueName(Workspace::getInstance()->workingVersion(), (itemGetter)&Version::getFunction, QString("func")), QUuid::createUuid().toString());
+    Function* func = new Function(NameGenerator::getUniqueName(Workspace::getInstance()->workingVersion(), (itemGetter)&Version::getFunction, QString("func")), QUuid::createUuid().toString(), m_workspace->workingVersion());
     frm->setProcedure(func);
     frm->initSql();
     Workspace::getInstance()->workingVersion()->addFunction(func);
@@ -2608,7 +2622,7 @@ void MainWindow::onNewTrigger()
         return;
     }
     TriggerForm* frm = Workspace::getInstance()->workingVersion()->getGui()->getTriggerForm();
-    Trigger* trigger = new Trigger(NameGenerator::getUniqueName(Workspace::getInstance()->workingVersion(), (itemGetter)&Version::getTrigger, QString("trig")), QUuid::createUuid().toString());
+    Trigger* trigger = new Trigger(NameGenerator::getUniqueName(Workspace::getInstance()->workingVersion(), (itemGetter)&Version::getTrigger, QString("trig")), QUuid::createUuid().toString(), m_workspace->workingVersion());
     frm->setTrigger(trigger);
     frm->initSql();
     frm->feedInTables(allTables);

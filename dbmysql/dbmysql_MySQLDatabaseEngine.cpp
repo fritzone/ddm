@@ -79,31 +79,31 @@ bool MySQLDatabaseEngine::reverseEngineerDatabase(Connection *c, const QStringLi
 
     for(int i=0; i<procs.size(); i++)
     {
-        Procedure* proc = reverseEngineerProc(c, procs.at(i));
+        Procedure* proc = reverseEngineerProc(c, procs.at(i), v);
         if(proc) v->addProcedure(proc);
     }
 
     for(int i=0; i<funcs.size(); i++)
     {
-        Function* func = reverseEngineerFunc(c, funcs.at(i));
+        Function* func = reverseEngineerFunc(c, funcs.at(i), v);
         if(func) v->addFunction(func);
     }
 
     for(int i=0; i<tables.size(); i++)
     {
-        Table* tab = reverseEngineerTable(c, tables.at(i), p, relaxed);
+        Table* tab = reverseEngineerTable(c, tables.at(i), p, relaxed, v);
         if(tab) v->addTable(tab, true); // TODO: is this true that this is true?
     }
 
     for(int i=0; i<views.size(); i++)
     {
-        View* view = reverseEngineerView(c, views.at(i));
+        View* view = reverseEngineerView(c, views.at(i), v);
         if(view) v->addView(view);
     }
 
     for(int i=0; i<triggers.size(); i++)
     {
-        Trigger* t= reverseEngineerTrigger(c, triggers.at(i));
+        Trigger* t= reverseEngineerTrigger(c, triggers.at(i), v);
         if(t) v->addTrigger(t);
     }
 
@@ -312,7 +312,7 @@ QStringList MySQLDatabaseEngine::getAvailableTables(Connection* c)
     return result;
 }
 
-Procedure* MySQLDatabaseEngine::reverseEngineerProc(Connection *c, const QString &procName)
+Procedure* MySQLDatabaseEngine::reverseEngineerProc(Connection *c, const QString &procName, Version *v)
 {
     QSqlDatabase db = getQSqlDatabaseForConnection(c);
 
@@ -328,7 +328,7 @@ Procedure* MySQLDatabaseEngine::reverseEngineerProc(Connection *c, const QString
     while(query.next())
     {
         QString sql = query.value(2).toString();
-        proc = new Procedure(procName, QUuid::createUuid().toString());
+        proc = new Procedure(procName, QUuid::createUuid().toString(), v);
         proc->setSql(sql);
     }
 
@@ -337,7 +337,7 @@ Procedure* MySQLDatabaseEngine::reverseEngineerProc(Connection *c, const QString
     return proc;
 }
 
-Function* MySQLDatabaseEngine::reverseEngineerFunc(Connection *c, const QString &funcName)
+Function* MySQLDatabaseEngine::reverseEngineerFunc(Connection *c, const QString &funcName, Version *v)
 {
     QSqlDatabase db = getQSqlDatabaseForConnection(c);
 
@@ -353,7 +353,7 @@ Function* MySQLDatabaseEngine::reverseEngineerFunc(Connection *c, const QString 
     while(query.next())
     {
         QString sql = query.value(2).toString();
-        func = new Function(funcName, QUuid::createUuid().toString());
+        func = new Function(funcName, QUuid::createUuid().toString(), v);
         func->setSql(sql);
     }
 
@@ -362,7 +362,7 @@ Function* MySQLDatabaseEngine::reverseEngineerFunc(Connection *c, const QString 
     return func;
 }
 
-View* MySQLDatabaseEngine::reverseEngineerView(Connection* c, const QString& viewName)
+View* MySQLDatabaseEngine::reverseEngineerView(Connection* c, const QString& viewName, Version *v)
 {
     QSqlDatabase dbo = getQSqlDatabaseForConnection(c);
 
@@ -387,7 +387,7 @@ View* MySQLDatabaseEngine::reverseEngineerView(Connection* c, const QString& vie
     while(query.next())
     {
         QString sql = query.value(1).toString();
-        view = new View(true, QUuid::createUuid().toString());
+        view = new View(true, QUuid::createUuid().toString(), v);
         view->setSql(sql);
     }
     dbo.close();
@@ -419,7 +419,7 @@ QStringList MySQLDatabaseEngine::getColumnsOfTable(Connection *c, const QString 
     return result;
 }
 
-Table* MySQLDatabaseEngine::reverseEngineerTable(Connection *c, const QString& tableName, Project* p, bool relaxed)
+Table* MySQLDatabaseEngine::reverseEngineerTable(Connection *c, const QString& tableName, Project* p, bool relaxed, Version *ver)
 {
     QSqlDatabase dbo = c->getQSqlDatabase();
     Version* v = p->getWorkingVersion();
@@ -467,7 +467,7 @@ Table* MySQLDatabaseEngine::reverseEngineerTable(Connection *c, const QString& t
             udt = v->provideDatatypeForSqlType(field_name, type, nullable, defaultValue, relaxed);
             m_oneTimeMappings.insert(oneTimeKey, udt);
         }
-        Column* col = new Column(QUuid::createUuid().toString(), field_name, udt, QString::compare(keyness, "PRI", Qt::CaseInsensitive) == 0);
+        Column* col = new Column(QUuid::createUuid().toString(), field_name, udt, QString::compare(keyness, "PRI", Qt::CaseInsensitive) == 0, ver);
 
         // and add the column to the table
         if(!found) m_revEngMappings.insert(udt, col);
@@ -524,7 +524,7 @@ Table* MySQLDatabaseEngine::reverseEngineerTable(Connection *c, const QString& t
         }
         else
         {
-            idx = new Index(finalIndexName, tab, QUuid::createUuid().toString());
+            idx = new Index(finalIndexName, tab, QUuid::createUuid().toString(), ver);
             // TODO: set the index type SPI based on indextype from above
             createdIndexes.insert(keyname, idx);
         }
@@ -759,16 +759,16 @@ QVector<DatabaseBuiltinFunction> MySQLDatabaseEngine::buildFunctions()
     QString X = QString("X");
 
 
-#define RET_NUMERIC     UserDataType("return", DT_NUMERIC, nullUid)
-#define RET_DATETIME    UserDataType("return", DT_DATETIME, nullUid)
-#define RET_STRING      UserDataType("return", DT_STRING, nullUid)
+#define RET_NUMERIC     UserDataType("return", DT_NUMERIC, nullUid, 0)
+#define RET_DATETIME    UserDataType("return", DT_DATETIME, nullUid, 0)
+#define RET_STRING      UserDataType("return", DT_STRING, nullUid, 0)
 
-#define PAR_STRING      DatabaseBuiltinFunctionsParameter(X, UserDataType(X, DT_STRING, nullUid), true)
-#define PAR_NUMERIC     DatabaseBuiltinFunctionsParameter(X, UserDataType(X, DT_NUMERIC, nullUid), true)
-#define PAR_VARIABLE    DatabaseBuiltinFunctionsParameter(X, UserDataType(X, DT_VARIABLE, nullUid), true)
+#define PAR_STRING      DatabaseBuiltinFunctionsParameter(X, UserDataType(X, DT_STRING, nullUid, 0), true)
+#define PAR_NUMERIC     DatabaseBuiltinFunctionsParameter(X, UserDataType(X, DT_NUMERIC, nullUid, 0), true)
+#define PAR_VARIABLE    DatabaseBuiltinFunctionsParameter(X, UserDataType(X, DT_VARIABLE, nullUid, 0), true)
 
-#define OPAR_STRING      DatabaseBuiltinFunctionsParameter(X, UserDataType(X, DT_STRING, nullUid), false)
-#define OPAR_NUMERIC     DatabaseBuiltinFunctionsParameter(X, UserDataType(X, DT_NUMERIC, nullUid), false)
+#define OPAR_STRING      DatabaseBuiltinFunctionsParameter(X, UserDataType(X, DT_STRING, nullUid, 0), false)
+#define OPAR_NUMERIC     DatabaseBuiltinFunctionsParameter(X, UserDataType(X, DT_NUMERIC, nullUid, 0), false)
 
 #define FUNC result.append(DatabaseBuiltinFunction(QString
 
@@ -1416,7 +1416,7 @@ QStringList MySQLDatabaseEngine::getTriggerTimings()
     return result;
 }
 
-Trigger* MySQLDatabaseEngine::reverseEngineerTrigger(Connection *c, const QString& procName)
+Trigger* MySQLDatabaseEngine::reverseEngineerTrigger(Connection *c, const QString& procName, Version *v)
 {
     QSqlDatabase dbo = getQSqlDatabaseForConnection(c);
 
@@ -1442,7 +1442,7 @@ Trigger* MySQLDatabaseEngine::reverseEngineerTrigger(Connection *c, const QStrin
             QString table =  query.value(2).toString();
             QString stmt =  query.value(3).toString();
             QString timing =  query.value(4).toString();
-            result = new Trigger(trigName, QUuid::createUuid().toString());
+            result = new Trigger(trigName, QUuid::createUuid().toString(), v);
             result->setEvent(event);
             result->setTable(table);
             result->setSql(stmt);
@@ -1661,31 +1661,31 @@ QVector<Sp*> MySQLDatabaseEngine::buildSps()
 
     // SPs for TABLE
     QVector<Sp*> result;
-    result.push_back(new TrueFalseSp(uidMysqlTemporaryTable, uidTable, QString("Temporary"), QString("Temporary table"), QString("General"), 5, 0));
-    result.push_back(new TrueFalseSp(uidMysqlIfNotExistsTable, uidTable, QString("IfNotExists"), QString("Create only if not exists"), QString("General"), 5, 0));
+    result.push_back(new TrueFalseSp(uidMysqlTemporaryTable, uidTable, QString("Temporary"), QString("Temporary table"), QString("General"), 5, 0, 0));
+    result.push_back(new TrueFalseSp(uidMysqlIfNotExistsTable, uidTable, QString("IfNotExists"), QString("Create only if not exists"), QString("General"), 5, 0, 0));
 
     QStringList valuesForStrorageEngines;
     valuesForStrorageEngines << "" << "MyISAM" << "InnoDB" << "Memory" << "Archive" << "Merge" << "BDB" << "Federated" << "Archive" << "CSV" << "Blackhole";
-    result.push_back(new ValueListSp(uidMysqlStorageEngineTable, uidTable, QString("StorageEngine"), QString("Storage Engine"), QString("Advanced"), valuesForStrorageEngines, 1, 5, 0));
+    result.push_back(new ValueListSp(uidMysqlStorageEngineTable, uidTable, QString("StorageEngine"), QString("Storage Engine"), QString("Advanced"), valuesForStrorageEngines, 1, 5, 0, 0));
 
     QStringList valuesForCodepages = getCodepageList();
-    result.push_back(new ValueListSp(uidMysqlCodepageTable, uidTable, QString("Codepage"), QString("Codepage"), QString("Advanced"), valuesForCodepages, 0, 5, 0));
+    result.push_back(new ValueListSp(uidMysqlCodepageTable, uidTable, QString("Codepage"), QString("Codepage"), QString("Advanced"), valuesForCodepages, 0, 5, 0, 0));
 
     // SPs for INDEX
     QStringList valuesForIndexTypes;
     valuesForIndexTypes << "" << "BTREE" << "HASH";
-    result.push_back(new ValueListSp(uidMysqlIndexType, uidIndex, "Index Type", "Index Type", "General", valuesForIndexTypes, 0, 5, 0));
+    result.push_back(new ValueListSp(uidMysqlIndexType, uidIndex, "Index Type", "Index Type", "General", valuesForIndexTypes, 0, 5, 0, 0));
 
     QStringList valuesForIndexCategories;
     valuesForIndexCategories << "" << "UNIQUE" << "FULLTEXT";
-    result.push_back(new ValueListSp(uidMysqlIndexCategory, uidIndex, "Index Category", "Index Category", "General", valuesForIndexCategories, 0, 5, 0));
+    result.push_back(new ValueListSp(uidMysqlIndexCategory, uidIndex, "Index Category", "Index Category", "General", valuesForIndexCategories, 0, 5, 0, 0));
 
     // SPs for column of index
-    result.push_back(new ValueSp(uidMysqlColumnOfIndexLength, uidColumnOfIndex, "Column Length", "Used Column Length", "default", "", 5, 0));
+    result.push_back(new ValueSp(uidMysqlColumnOfIndexLength, uidColumnOfIndex, "Column Length", "Used Column Length", "default", "", 5, 0, 0));
 
     // SPs for column
-    result.push_back(new TrueFalseSp(uidMysqlColumnAutoIncrement, uidColumn, "Auto Increment", "Auto Increment", "General", 5, 0));
-    result.push_back(new TrueFalseSp(uidMysqlColumnZeroFill, uidColumn, "Zero fill", "Zero fill", "General", 5, 0));
+    result.push_back(new TrueFalseSp(uidMysqlColumnAutoIncrement, uidColumn, "Auto Increment", "Auto Increment", "General", 5, 0, 0));
+    result.push_back(new TrueFalseSp(uidMysqlColumnZeroFill, uidColumn, "Zero fill", "Zero fill", "General", 5, 0, 0));
 
     return result;
 }

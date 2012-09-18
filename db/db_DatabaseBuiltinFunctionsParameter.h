@@ -22,7 +22,11 @@ class DatabaseBuiltinFunctionsParameter
 public:
     explicit DatabaseBuiltinFunctionsParameter(QString name, const UserDataType& type, bool mandatory) : m_name(name), m_type(type), m_mandatory(mandatory) {}
     DatabaseBuiltinFunctionsParameter() :
-        m_name("invalid"), m_type(NameGenerator::getUniqueName(Workspace::getInstance()->currentProject()->getWorkingVersion(), (itemGetter)&Version::getDataType, "invalid"), DT_INVALID, nullUid), m_mandatory(false) {}
+        m_name("invalid"),
+        m_type(NameGenerator::getUniqueName(Workspace::getInstance()->currentProject()->getWorkingVersion(), (itemGetter)&Version::getDataType, "invalid"),
+               DT_INVALID, nullUid, Workspace::getInstance()->currentProject()->getWorkingVersion()),
+        m_mandatory(false)
+    {}
 
 private:
     QString m_name;

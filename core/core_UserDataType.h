@@ -18,11 +18,11 @@ class UserDataType : public NamedItem, public TreeItem,
 {
 public:
 
-    UserDataType(const QString& name, DT_TYPE type, const QString& uid) :
+    UserDataType(const QString& name, DT_TYPE type, const QString& uid, Version *v) :
         NamedItem(name),
         TreeItem(),
         SerializableElement(),
-        ObjectWithUid(uid),
+        ObjectWithUid(uid, v),
         CloneableElement(),
         sqlType(""),
         size(""), defaultValue(""), miscStuff(),
@@ -37,7 +37,7 @@ public:
                  const QString& _sqlType, const QString& _s,
                  const QString& _defaultValue,
                  const QStringList& _mvs, bool unsi, const QString& desc,
-                 bool nullable, const QString& uid);
+                 bool nullable, const QString& uid, Version *v);
 
     UserDataType& operator = (const UserDataType& other);
 

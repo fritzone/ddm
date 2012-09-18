@@ -14,7 +14,7 @@ public:
 
     ObjectWithUid();
 
-    ObjectWithUid(const QString&);
+    ObjectWithUid(const QString&, Version *v);
 
     virtual ~ObjectWithUid() {}
 
@@ -37,9 +37,18 @@ public:
         m_uid = QUuid(uid);
     }
 
+    Version* version() const
+    {
+        return m_version;
+    }
+
 private:
 
     QUuid m_uid;
+
+protected:
+
+    Version *m_version;
 };
 
 #endif // CORE_OBJECTWITHUID_H

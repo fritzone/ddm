@@ -65,9 +65,6 @@ private:
     // the UIDs of the elements that were created in this patch
     QStringList m_newUids;
 
-    // the version in which this patch is active
-    Version* m_version;
-
     // if this patch was suspended by the user (ie: it
     bool m_suspended;
 };

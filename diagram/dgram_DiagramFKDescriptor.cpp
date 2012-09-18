@@ -14,7 +14,7 @@ CloneableElement* DiagramFKDescriptor::clone(Version* sourceVersion, Version* ta
                                                        arrowP1.x(), arrowP1.y(),
                                                        arrowP2.x(),  arrowP2.y(),
                                                        arrowPos.x(),  arrowPos.y(),
-                                                       getFkName());
+                                                       getFkName(), targetVersion);
 
     dfk->setSourceUid(getObjectUid());
     return dfk;

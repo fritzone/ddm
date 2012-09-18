@@ -3,7 +3,8 @@
 #include "strings.h"
 #include "uids.h"
 
-SelectQueryGroupByComponent::SelectQueryGroupByComponent(QueryComponent* p, int l):QueryComponent(p,l)
+SelectQueryGroupByComponent::SelectQueryGroupByComponent(QueryComponent* p, int l, Version *v) :
+    QueryComponent(p, l, v)
 {
 }
 
@@ -29,13 +30,13 @@ QSet<OptionsType> SelectQueryGroupByComponent::provideOptions()
 
 QueryComponent* SelectQueryGroupByComponent::duplicate()
 {
-    SelectQueryGroupByComponent *newc = new SelectQueryGroupByComponent(m_parent, m_level);
+    SelectQueryGroupByComponent *newc = new SelectQueryGroupByComponent(m_parent, m_level, version());
     return newc;
 }
 
 CloneableElement* SelectQueryGroupByComponent::clone(Version *sourceVersion, Version *targetVersion)
 {
-    SelectQueryGroupByComponent *newc = new SelectQueryGroupByComponent(m_parent, m_level);
+    SelectQueryGroupByComponent *newc = new SelectQueryGroupByComponent(m_parent, m_level, targetVersion);
     newc->setSourceUid(getObjectUid());
     cloneTheChildren(sourceVersion, targetVersion, newc);
     return newc;

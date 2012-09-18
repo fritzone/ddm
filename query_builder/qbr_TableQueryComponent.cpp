@@ -17,7 +17,7 @@
 #include <QGraphicsScene>
 #include <QGraphicsView>
 
-TableQueryComponent::TableQueryComponent(Table* tab, QueryComponent* p, int level):QueryComponent(p, level), m_table(tab), m_as(0), m_joins()
+TableQueryComponent::TableQueryComponent(Table* tab, QueryComponent* p, int level, Version *v):QueryComponent(p, level, v), m_table(tab), m_as(0), m_joins()
 {
 }
 
@@ -61,7 +61,7 @@ void TableQueryComponent::handleAction(const QString &action, QueryComponent *)
     {
         if(m_as == 0)
         {
-            m_as = new SelectQueryAsComponent(this, m_level + 1);
+            m_as = new SelectQueryAsComponent(this, m_level + 1, version());
             addChild(m_as);
             m_helper->triggerReRender();
         }
@@ -70,7 +70,7 @@ void TableQueryComponent::handleAction(const QString &action, QueryComponent *)
 
     if(action == ADD_JOIN)
     {
-        SelectQueryJoinComponent* join = new SelectQueryJoinComponent(this, m_level + 1);
+        SelectQueryJoinComponent* join = new SelectQueryJoinComponent(this, m_level + 1, version());
         join->setHelper(m_helper);
         //addChild(join);   // TODO: Check if this still works ...
         m_joins.append(join);
@@ -83,7 +83,7 @@ void TableQueryComponent::handleAction(const QString &action, QueryComponent *)
 
 CloneableElement* TableQueryComponent::clone(Version *sourceVersion, Version *targetVersion)
 {
-    TableQueryComponent* newc = new TableQueryComponent(m_table, m_parent, m_level);
+    TableQueryComponent* newc = new TableQueryComponent(m_table, m_parent, m_level, targetVersion);
     newc->m_as = m_as?dynamic_cast<SelectQueryAsComponent*>(m_as->clone(sourceVersion, targetVersion)):0;
     cloneTheChildren(sourceVersion, targetVersion, newc);
     // Fetch the correct table from the new version
@@ -110,7 +110,7 @@ CloneableElement* TableQueryComponent::clone(Version *sourceVersion, Version *ta
 
 QueryComponent* TableQueryComponent::duplicate()
 {
-    TableQueryComponent* newc = new TableQueryComponent(m_table, m_parent, m_level);
+    TableQueryComponent* newc = new TableQueryComponent(m_table, m_parent, m_level, version());
     newc->m_as = m_as?dynamic_cast<SelectQueryAsComponent*>(m_as->duplicate()):0;
     // Joins do not duplicate for now
     //for(int i=0; i<m_joins.size(); i++)
@@ -150,7 +150,7 @@ TableQueryComponent* TableQueryComponent::provideFirstTableIfAny(QueryComponent*
     {
         if(Workspace::getInstance()->workingVersion()->getTableInstances().size() > 0)
         {
-            tccp = new TableQueryComponent(Workspace::getInstance()->workingVersion()->getTableInstances().at(0)->table(), parent, level);
+            tccp = new TableQueryComponent(Workspace::getInstance()->workingVersion()->getTableInstances().at(0)->table(), parent, level, parent->version());
         }
         else
         {
@@ -161,7 +161,7 @@ TableQueryComponent* TableQueryComponent::provideFirstTableIfAny(QueryComponent*
     {
         if(Workspace::getInstance()->workingVersion()->getTables().size() > 0)
         {
-            tccp = new TableQueryComponent(Workspace::getInstance()->workingVersion()->getTables().at(0), parent, level);
+            tccp = new TableQueryComponent(Workspace::getInstance()->workingVersion()->getTables().at(0), parent, level, parent->version());
         }
         else
         {

@@ -387,7 +387,7 @@ void DefaultVersionImplementation::setupTableParentChildRelationships()
 
 TableInstance* DefaultVersionImplementation::instantiateTable(Table* tab, bool becauseOfReference)
 {
-    TableInstance* tabInst = new TableInstance(tab, becauseOfReference, QUuid::createUuid().toString());
+    TableInstance* tabInst = new TableInstance(tab, becauseOfReference, QUuid::createUuid().toString(), this);
     TableInstance* other = getTableInstance(tabInst->getName());        // just to see that we have another instance of this table
     if(other && other != tabInst)
     {   // and in this case generate a new name for the current one
@@ -799,7 +799,7 @@ UserDataType* DefaultVersionImplementation::provideDatatypeForSqlType(const QStr
     UserDataType* newUdt = new UserDataType(finalName,
                                             Workspace::getInstance()->currentProjectsEngine()->getTypeStringForSqlType(type),
                                             type, size, defaultValue, QStringList(), false, type + " " + size,
-                                            QString::compare(nullable, "YES", Qt::CaseInsensitive) == 0, QUuid::createUuid().toString());
+                                            QString::compare(nullable, "YES", Qt::CaseInsensitive) == 0, QUuid::createUuid().toString(), this);
 
     newUdt->setName(NameGenerator::getUniqueName(this, (itemGetter)&Version::getDataType, newUdt->getName()));
     addNewDataType(newUdt);

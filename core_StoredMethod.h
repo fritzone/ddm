@@ -22,7 +22,7 @@ public:
     };
 
 
-    StoredMethod(const QString& name, const QString& uid) : NamedItem(name), ObjectWithUid(uid), m_sql(), m_brief() {}
+    StoredMethod(const QString& name, const QString& uid, Version *v) : NamedItem(name), ObjectWithUid(uid, v), m_sql(), m_brief() {}
 
     virtual QStringList generateSqlSource(AbstractSqlGenerator*, QHash<QString,QString>, const Connection*);
     virtual void serialize(QDomDocument& doc, QDomElement& parent) const = 0;

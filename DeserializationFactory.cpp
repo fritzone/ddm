@@ -39,7 +39,7 @@ DeserializationFactory::DeserializationFactory()
 {
 }
 
-UserDataType* DeserializationFactory::createUserDataType(const QDomDocument&, const QDomElement& element)
+UserDataType* DeserializationFactory::createUserDataType(const QDomDocument&, const QDomElement& element, Version* v)
 {
     QString name = element.attribute("Name");
     QString type = element.attribute("Type");
@@ -85,7 +85,7 @@ UserDataType* DeserializationFactory::createUserDataType(const QDomDocument&, co
         }
     }
 
-    UserDataType* result = new UserDataType(name, type, sqlType, size, defaultValue, miscValues, isUnsigned=="1", description, canBeNull == "1", QUuid::createUuid().toString());
+    UserDataType* result = new UserDataType(name, type, sqlType, size, defaultValue, miscValues, isUnsigned=="1", description, canBeNull == "1", QUuid::createUuid().toString(), v);
 
     if(source_uid.length())
     {
@@ -156,7 +156,7 @@ ForeignKey* DeserializationFactory::createForeignKey(Table *, const QDomDocument
 
 }
 
-Index* DeserializationFactory::createIndex(DatabaseEngine* engine, Table* table, const QDomDocument& doc, const QDomElement &element)
+Index* DeserializationFactory::createIndex(DatabaseEngine* engine, Table* table, const QDomDocument& doc, const QDomElement &element, Version* v)
 {
     QString uid = element.attribute("uid");
     QString class_uid = element.attribute("class-uid");
@@ -170,7 +170,7 @@ Index* DeserializationFactory::createIndex(DatabaseEngine* engine, Table* table,
     {
     }
 
-    Index* result = new Index(name, table, uid);
+    Index* result = new Index(name, table, uid, v);
 
     for(int i=0; i<element.childNodes().size(); i++)
     {
@@ -273,7 +273,7 @@ void DeserializationFactory::createMajorVersion(MajorVersion *mv, Project *p, Da
         {
             for(int j=0; j<element.childNodes().at(i).childNodes().count(); j++)
             {
-                UserDataType* dt = createUserDataType(doc, element.childNodes().at(i).childNodes().at(j).toElement());
+                UserDataType* dt = createUserDataType(doc, element.childNodes().at(i).childNodes().at(j).toElement(), mv);
                 mv->addNewDataType(dt);
             }
         }
@@ -406,48 +406,52 @@ QueryComponent* DeserializationFactory::createComponent(QueryComponent* parent, 
 
     if(strClass == "SelectQuerySelectComponent")    // god, this is soo lame ... TODO: Find a more appropriate way to implement this mechanism
     {
-        c = new SelectQuerySelectComponent(parent, componentNode.attribute("level").toInt());
+        c = new SelectQuerySelectComponent(parent, componentNode.attribute("level").toInt(), v);
     }
 
     if(strClass == "SelectQueryFromComponent")
     {
-        c = new SelectQueryFromComponent(parent, componentNode.attribute("level").toInt());
+        c = new SelectQueryFromComponent(parent, componentNode.attribute("level").toInt(), v);
     }
 
     if(strClass == "SelectQueryWhereComponent")
     {
-        c = new SelectQueryWhereComponent(parent, componentNode.attribute("level").toInt(), static_cast<SelectQueryWhereComponent::WhereType>(componentNode.attribute("Type").toInt()));
+        c = new SelectQueryWhereComponent(parent, componentNode.attribute("level").toInt(),
+                                          static_cast<SelectQueryWhereComponent::WhereType>(componentNode.attribute("Type").toInt()),
+                                          v);
     }
 
     if(strClass == "SelectQueryHavingComponent")
     {
-        c = new SelectQueryWhereComponent(parent, componentNode.attribute("level").toInt(), static_cast<SelectQueryWhereComponent::WhereType>(componentNode.attribute("Type").toInt()));
+        c = new SelectQueryWhereComponent(parent, componentNode.attribute("level").toInt(),
+                                          static_cast<SelectQueryWhereComponent::WhereType>(componentNode.attribute("Type").toInt()),
+                                          v);
     }
 
     if(strClass == "SelectQueryGroupByComponent")
     {
-        c = new SelectQueryGroupByComponent(parent, componentNode.attribute("level").toInt());
+        c = new SelectQueryGroupByComponent(parent, componentNode.attribute("level").toInt(), v);
     }
 
     if(strClass == "SelectQueryOrderByComponent")
     {
-        c = new SelectQueryOrderByComponent(parent, componentNode.attribute("level").toInt());
+        c = new SelectQueryOrderByComponent(parent, componentNode.attribute("level").toInt(), v);
     }
 
     if(strClass == "SelectQueryJoinComponent")
     {
-        c = new SelectQueryJoinComponent(parent, componentNode.attribute("level").toInt());
+        c = new SelectQueryJoinComponent(parent, componentNode.attribute("level").toInt(), v);
     }
 
     if(strClass == "SingleExpressionQueryComponent")
     {
-         c = new SingleExpressionQueryComponent(parent, componentNode.attribute("level").toInt());    // This is <Expression>
+         c = new SingleExpressionQueryComponent(parent, componentNode.attribute("level").toInt(), v);    // This is <Expression>
          dynamic_cast<SingleExpressionQueryComponent*>(c)->setForcedType((SingleExpressionQueryComponent::ForcedSingleExpressionQueryComponent)componentNode.attribute("forced").toInt(), true);
 
          if(componentNode.hasAttribute("alias"))
          {
              QString a = componentNode.attribute("alias");
-             SelectQueryAsComponent* sqas = new SelectQueryAsComponent(c, c->getLevel() + 1);
+             SelectQueryAsComponent* sqas = new SelectQueryAsComponent(c, c->getLevel() + 1, v);
              sqas->setAs(a);
              dynamic_cast<SingleExpressionQueryComponent*>(c)->setAs(sqas);
          }
@@ -482,7 +486,7 @@ QueryComponent* DeserializationFactory::createComponent(QueryComponent* parent, 
                  QDomElement function = element.firstChild().firstChild().toElement();  // <Function>
                  QString name = function.attribute("Name");
                  const DatabaseBuiltinFunction& f = p->getEngine()->getBuiltinFunction(name.mid(1));
-                 DatabaseFunctionInstantiationComponent* fic = new DatabaseFunctionInstantiationComponent(c, f, true);
+                 DatabaseFunctionInstantiationComponent* fic = new DatabaseFunctionInstantiationComponent(c, f, true, v);
                  QDomElement parameters = function.firstChild().toElement();        // <Parameters>
                  for(int j=0; j<parameters.childNodes().count(); j++)
                  {
@@ -501,11 +505,11 @@ QueryComponent* DeserializationFactory::createComponent(QueryComponent* parent, 
         Table* t = v->getTable(componentNode.attribute("Name"));
         if(t == 0) return 0;
 
-        c = new TableQueryComponent(t, parent, componentNode.attribute("level").toInt());
+        c = new TableQueryComponent(t, parent, componentNode.attribute("level").toInt(), v);
         if(componentNode.hasAttribute("As"))
         {
             QString a = componentNode.attribute("As");
-            SelectQueryAsComponent* sqas = new SelectQueryAsComponent(c, c->getLevel() + 1);
+            SelectQueryAsComponent* sqas = new SelectQueryAsComponent(c, c->getLevel() + 1, v);
             sqas->setAs(a);
             dynamic_cast<TableQueryComponent*>(c)->setAs(sqas);
         }
@@ -620,7 +624,7 @@ View* DeserializationFactory::createView(Project* p, Version* v, const QDomDocum
                         qDebug() << "Views's select query UID is not valid: cuid (" << cuid << ") != " << uidSelectQuery ;
                     }
                 }
-                SelectQuery* q = new SelectQuery(view->getHelper(), view);
+                SelectQuery* q = new SelectQuery(view->getHelper(), view, v);
                 if(queryNode.hasAttribute("uid"))
                 {
                     q->setForcedUid(queryNode.attribute("uid"));
@@ -699,7 +703,7 @@ Column* DeserializationFactory::createColumn(DatabaseEngine* engine, Version* ve
 
     }
 
-    Column* col = new Column(uid, name, udt, pk == "1");
+    Column* col = new Column(uid, name, udt, pk == "1", ver);
 
     for(int i=0; i<element.childNodes().count(); i++)
     {
@@ -787,7 +791,7 @@ Table* DeserializationFactory::createTable(DatabaseEngine* engine, Version* ver,
         {
             for(int j=0; j<element.childNodes().at(i).childNodes().count(); j++)
             {
-                Index* idx = createIndex(engine, result, doc, element.childNodes().at(i).childNodes().at(j).toElement());
+                Index* idx = createIndex(engine, result, doc, element.childNodes().at(i).childNodes().at(j).toElement(), ver);
                 result->addIndex(idx);
             }
         }
@@ -911,17 +915,17 @@ void DeserializationFactory::createSolution(Solution *s, const QDomDocument &doc
     }
 }
 
-DiagramTableDescriptor* DeserializationFactory::createDiagramTableDescriptor(const QDomDocument &, const QDomElement &element)
+DiagramTableDescriptor* DeserializationFactory::createDiagramTableDescriptor(const QDomDocument &, const QDomElement &element, Version* v)
 {
     QString tabName = element.attribute("Name");
     int x = element.attribute("x").toInt();
     int y = element.attribute("y").toInt();
 
-    DiagramTableDescriptor* result = new DiagramTableDescriptor(tabName, x, y);
+    DiagramTableDescriptor* result = new DiagramTableDescriptor(tabName, x, y, v);
     return result;
 }
 
-DiagramNoteDescriptor* DeserializationFactory::createDiagramNoteDescriptor(const QDomDocument &, const QDomElement &element)
+DiagramNoteDescriptor* DeserializationFactory::createDiagramNoteDescriptor(const QDomDocument &, const QDomElement &element, Version* v)
 {
     int x = element.attribute("x").toInt();
     int y = element.attribute("y").toInt();
@@ -930,11 +934,11 @@ DiagramNoteDescriptor* DeserializationFactory::createDiagramNoteDescriptor(const
     QDomNode cdataNode = textNode.firstChild();
     QString text = cdataNode.nodeValue();
 
-    DiagramNoteDescriptor* result = new DiagramNoteDescriptor(text, x, y, framed);
+    DiagramNoteDescriptor* result = new DiagramNoteDescriptor(text, x, y, framed, v);
     return result;
 }
 
-DiagramFKDescriptor* DeserializationFactory::createDiagramFKDescriptor(const QDomDocument&, const QDomElement& element)
+DiagramFKDescriptor* DeserializationFactory::createDiagramFKDescriptor(const QDomDocument&, const QDomElement& element, Version* v)
 {
     QString tab1 = element.attribute("tab1");
     QString tab2 = element.attribute("tab2");
@@ -974,7 +978,7 @@ DiagramFKDescriptor* DeserializationFactory::createDiagramFKDescriptor(const QDo
 
     DiagramFKDescriptor* dfk = new     DiagramFKDescriptor(tab1, tab2, x, y,  ellx,  elly,  l1otx,  l1oty,  l1posx, l1posy,  l2otx,  l2oty,  l2posx,
                                                            l2posy,  rel1posx,  rel1posy,  rel2posx,  rel2posy,
-                                                           arrowp1x,  arrowp1y,  arrowp2x,  arrowp2y,  arrowposx,  arrowposy, fkn);
+                                                           arrowp1x,  arrowp1y,  arrowp2x,  arrowp2y,  arrowposx,  arrowposy, fkn, v);
 
     return dfk;
 
@@ -1006,7 +1010,7 @@ Diagram* DeserializationFactory::createDiagram(Version* v, const QDomDocument &d
         {
             for(int j=0; j<element.childNodes().at(i).childNodes().count(); j++)
             {
-                DiagramTableDescriptor* tabDesc = createDiagramTableDescriptor(doc, element.childNodes().at(i).childNodes().at(j).toElement());
+                DiagramTableDescriptor* tabDesc = createDiagramTableDescriptor(doc, element.childNodes().at(i).childNodes().at(j).toElement(), v);
                 result->addTableDescriptor(tabDesc);
             }
         }
@@ -1015,7 +1019,7 @@ Diagram* DeserializationFactory::createDiagram(Version* v, const QDomDocument &d
         {
             for(int j=0; j<element.childNodes().at(i).childNodes().count(); j++)
             {
-                DiagramNoteDescriptor* noteDesc = createDiagramNoteDescriptor(doc, element.childNodes().at(i).childNodes().at(j).toElement());
+                DiagramNoteDescriptor* noteDesc = createDiagramNoteDescriptor(doc, element.childNodes().at(i).childNodes().at(j).toElement(), v);
                 result->addNoteDescriptor(noteDesc);
             }
         }
@@ -1024,7 +1028,7 @@ Diagram* DeserializationFactory::createDiagram(Version* v, const QDomDocument &d
         {
             for(int j=0; j<element.childNodes().at(i).childNodes().count(); j++)
             {
-                DiagramFKDescriptor* fkDesc = createDiagramFKDescriptor(doc, element.childNodes().at(i).childNodes().at(j).toElement());
+                DiagramFKDescriptor* fkDesc = createDiagramFKDescriptor(doc, element.childNodes().at(i).childNodes().at(j).toElement(), v);
                 result->addFKDescriptor(fkDesc);
             }
         }
@@ -1095,7 +1099,7 @@ TableInstance* DeserializationFactory::createTableInstance(Version* v, const QDo
     }
     else
     {
-        TableInstance* result = new TableInstance(v->getTable(tabName), refed, uid);
+        TableInstance* result = new TableInstance(v->getTable(tabName), refed, uid, v);
 
         QStringList lst = refTables.split(QChar(','), QString::SkipEmptyParts);
         for(int i=0; i<lst.size(); i++)
@@ -1119,7 +1123,7 @@ TableInstance* DeserializationFactory::createTableInstance(Version* v, const QDo
     }
 }
 
-Procedure* DeserializationFactory::createProcedure(Project*, Version*,  const QDomDocument&, const QDomElement& element)
+Procedure* DeserializationFactory::createProcedure(Project*, Version* v,  const QDomDocument&, const QDomElement& element)
 {
     QString name = element.attribute("Name");
     QString uid = element.attribute("uid");
@@ -1136,7 +1140,7 @@ Procedure* DeserializationFactory::createProcedure(Project*, Version*,  const QD
     {
 
     }
-    Procedure* p = new Procedure(name, uid);
+    Procedure* p = new Procedure(name, uid, v);
 
 
     if(sourceUid.length()) p->setSourceUid(sourceUid);
@@ -1167,7 +1171,7 @@ Procedure* DeserializationFactory::createProcedure(Project*, Version*,  const QD
     return p;
 }
 
-Function* DeserializationFactory::createFunction(Project*, Version*,  const QDomDocument&, const QDomElement& element)
+Function* DeserializationFactory::createFunction(Project*, Version* v,  const QDomDocument&, const QDomElement& element)
 {
     QString name = element.attribute("Name");
     QString uid = element.attribute("uid");
@@ -1184,7 +1188,7 @@ Function* DeserializationFactory::createFunction(Project*, Version*,  const QDom
     {
 
     }
-    Function* func = new Function(name, uid);
+    Function* func = new Function(name, uid, v);
 
     if(sourceUid.length()) func->setSourceUid(sourceUid);
     else func->setSourceUid(nullUid);
@@ -1226,7 +1230,7 @@ Trigger* DeserializationFactory::createTrigger(Project*, Version* v,  const QDom
     }
     QString class_uid = element.attribute("class-uid");
 
-    Trigger* trigg = new Trigger(name, uid);
+    Trigger* trigg = new Trigger(name, uid, v);
     for(int i=0; i<element.childNodes().size(); i++)
     {
         if(element.childNodes().at(i).nodeName() == "Body")
