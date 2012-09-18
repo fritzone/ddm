@@ -20,7 +20,7 @@ class QueryGraphicsHelper;
 class QueryComponent : public SerializableElement, public ObjectWithUid, public CloneableElement
 {
 public:
-    QueryComponent(QueryComponent* parent, int level) : ObjectWithUid(QUuid::createUuid().toString()), m_parent(parent), m_level(level) {}
+    QueryComponent(QueryComponent* parent, int level, Version *v) : ObjectWithUid(QUuid::createUuid().toString(), v), m_parent(parent), m_level(level) {}
     virtual ~QueryComponent(){}
 
     virtual QString get() const = 0;

@@ -8,7 +8,7 @@ class Column;
 class SelectQuerySelectComponent : public QueryComponent
 {
 public:
-    SelectQuerySelectComponent(QueryComponent*,int);
+    SelectQuerySelectComponent(QueryComponent*, int, Version *v);
     virtual QString get() const;
     virtual QString getClass() const {return "SelectQuerySelectComponent";}
     virtual void handleAction(const QString& action, QueryComponent* referringObject);

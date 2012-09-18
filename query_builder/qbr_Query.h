@@ -14,7 +14,7 @@ class Query : public QueryComponent
 {
 public:
 
-    Query(QueryGraphicsHelper* components, int level, SqlSourceEntity* se) : QueryComponent(this, level), m_helper(components), m_graphicsItem(0), m_sqlSource(se) {}
+    Query(QueryGraphicsHelper* components, int level, SqlSourceEntity* se, Version *v) : QueryComponent(this, level, v), m_helper(components), m_graphicsItem(0), m_sqlSource(se) {}
     virtual ~Query() {}
 
     QueryGraphicsItem* getGraphicsItem()

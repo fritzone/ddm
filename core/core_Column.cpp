@@ -8,9 +8,9 @@
 #include <QApplication>
 #include <QClipboard>
 
-Column::Column(const QString& uid, const QString& name, const UserDataType* type, bool pk) :
+Column::Column(const QString& uid, const QString& name, const UserDataType* type, bool pk, Version* v) :
     TreeItem(), SerializableElement(), CopyableElement(), IssueOriginator(),
-    NamedItem(name), ItemWithDescription(), ObjectWithUid(uid), ObjectWithSpInstances(),
+    NamedItem(name), ItemWithDescription(), ObjectWithUid(uid, v), ObjectWithSpInstances(),
     m_type(type), m_pk(pk)
 {
 
@@ -88,7 +88,7 @@ QUuid Column::getClassUid() const
 CloneableElement* Column::clone(Version *sourceVersion, Version *targetVersion)
 {
     UserDataType* udt = targetVersion->getDataType(getDataType()->getName());
-    Column* result = new Column(QUuid::createUuid().toString(), getName(), udt, isPk());
+    Column* result = new Column(QUuid::createUuid().toString(), getName(), udt, isPk(), targetVersion);
 
     // now fix the SPs of the column
     cloneSps(result);

@@ -5,7 +5,7 @@
 
 #include <QDebug>
 
-SelectQueryOrderByComponent::SelectQueryOrderByComponent(QueryComponent* p, int l):QueryComponent(p,l)
+SelectQueryOrderByComponent::SelectQueryOrderByComponent(QueryComponent* p, int l, Version *v):QueryComponent(p,l,v)
 {
 }
 
@@ -31,13 +31,13 @@ QSet<OptionsType> SelectQueryOrderByComponent::provideOptions()
 
 QueryComponent* SelectQueryOrderByComponent::duplicate()
 {
-    SelectQueryOrderByComponent* newc = new SelectQueryOrderByComponent(m_parent, m_level);
+    SelectQueryOrderByComponent* newc = new SelectQueryOrderByComponent(m_parent, m_level, version());
     return newc;
 }
 
 CloneableElement* SelectQueryOrderByComponent::clone(Version *sourceVersion, Version *targetVersion)
 {
-    SelectQueryOrderByComponent* newc = new SelectQueryOrderByComponent(m_parent, m_level);
+    SelectQueryOrderByComponent* newc = new SelectQueryOrderByComponent(m_parent, m_level, targetVersion);
     newc->setSourceUid(getObjectUid());
     cloneTheChildren(sourceVersion, targetVersion, newc);
     return newc;

@@ -32,7 +32,7 @@ public:
      */
     Sp(const QString& sqlRoleUid, const QString& referringObjectClassUid,
        const QString& propertyName, const QString& propertyGuiText, const QString& group,
-       int majorV, int minorV);
+       int majorV, int minorV, Version *v);
 
     QString getSqlRoleUid() const
     {

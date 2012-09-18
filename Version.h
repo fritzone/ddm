@@ -32,7 +32,7 @@ class Version : public SerializableElement, public ObjectWithUid, public Cloneab
 {
 public:
 
-    Version(int major, int minor, Project* p) : ObjectWithUid(QUuid::createUuid()), m_major(major), m_minor(minor), m_project(p)
+    Version(int major, int minor, Project* p) : ObjectWithUid(QUuid::createUuid(), this), m_major(major), m_minor(minor), m_project(p)
     {}
 
     virtual ~Version() {}

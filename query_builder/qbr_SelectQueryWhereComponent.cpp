@@ -6,7 +6,8 @@
 
 #include "strings.h"
 
-SelectQueryWhereComponent::SelectQueryWhereComponent(QueryComponent* p, int l, WhereType w):QueryComponent(p,l), m_whereType(w)
+SelectQueryWhereComponent::SelectQueryWhereComponent(QueryComponent* p, int l, WhereType w, Version* v) : QueryComponent(p, l, v),
+    m_whereType(w)
 {
 }
 
@@ -72,7 +73,7 @@ QSet<OptionsType> SelectQueryWhereComponent::provideOptions()
 
 QueryComponent* SelectQueryWhereComponent::duplicate()
 {
-    SelectQueryWhereComponent* newc = new SelectQueryWhereComponent(m_parent, m_level, m_whereType);
+    SelectQueryWhereComponent* newc = new SelectQueryWhereComponent(m_parent, m_level, m_whereType, version());
     return newc;
 }
 

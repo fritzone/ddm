@@ -8,11 +8,11 @@
 UserDataType::UserDataType(const QString& name, const QString& typeString,
                            const QString& _sqlType, const QString& _s,
                            const QString& _defaultValue, const QStringList &_mvs,
-                           bool unsi, const QString &desc, bool nullable, const QString& uid) :
+                           bool unsi, const QString &desc, bool nullable, const QString& uid, Version* v) :
         NamedItem(name),
         TreeItem(),
         SerializableElement(),
-        ObjectWithUid(uid),
+        ObjectWithUid(uid, v),
         CloneableElement(),
         sqlType(_sqlType),
         size(_s), defaultValue(_defaultValue), miscStuff(_mvs),
@@ -155,9 +155,9 @@ DT_TYPE UserDataType::getDT_TYPE(const QString& typeString)
     return DT_INVALID;
 }
 
-CloneableElement* UserDataType::clone(Version */*sourceVersion*/, Version */*targetVersion*/)
+CloneableElement* UserDataType::clone(Version */*sourceVersion*/, Version *targetVersion)
 {
-    UserDataType* newUdt = new UserDataType(getName(), getType(), QUuid::createUuid().toString());
+    UserDataType* newUdt = new UserDataType(getName(), getType(), QUuid::createUuid().toString(), targetVersion);
     newUdt->size = this->size;
     newUdt->sqlType = this->sqlType;
     newUdt->defaultValue = this->defaultValue;

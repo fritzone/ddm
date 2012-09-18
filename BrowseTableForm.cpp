@@ -271,7 +271,7 @@ void BrowseTableForm::newPage(Connection *c, const QString &tab, BrowsedTableLay
 
         if(layout == BROWSE_PROCEDURE)
         {
-            Procedure* p = c->getEngine()->reverseEngineerProc(c, tab);
+            Procedure* p = c->getEngine()->reverseEngineerProc(c, tab, 0);
             if(p)
             {
                 m_textEdit->setPlainText(p->getSql());
@@ -281,7 +281,7 @@ void BrowseTableForm::newPage(Connection *c, const QString &tab, BrowsedTableLay
         }
         else
         {
-            Function* p = c->getEngine()->reverseEngineerFunc(c, tab);
+            Function* p = c->getEngine()->reverseEngineerFunc(c, tab, 0);
             if(p)
             {
                 m_textEdit->setPlainText(p->getSql());
@@ -310,7 +310,7 @@ void BrowseTableForm::newPage(Connection *c, const QString &tab, BrowsedTableLay
         queryFramesMainHorizontalLayout->addLayout(queryFramesMainVerticalLayout);
 
 
-        Trigger* t = c->getEngine()->reverseEngineerTrigger(c, tab);
+        Trigger* t = c->getEngine()->reverseEngineerTrigger(c, tab, 0);
         if(t)
         {
             TriggerForm* pf = new TriggerForm(true, true, this);

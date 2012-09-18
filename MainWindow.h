@@ -60,14 +60,14 @@ public:
                              const QString& sqlType, const QString& size,
                              const QString& defaultValue, const QStringList &mvs,
                              const QString &desc, bool unsi,
-                             bool canBeNull, UserDataType *pudt);
+                             bool canBeNull, UserDataType *pudt, Version *v);
 
     bool onSaveDiagram(Diagram*);
 
     void instantiateTableCallback(const QString& tabName);
     void specificDeploymentCallback(const QString& connName);
 
-    TableInstance* instantiateTable(const QString& tabName, QStringList otherTablesBeingInstantiated, bool ref = false, Table* referencingTable = 0, TableInstance* becauseOfThis = 0);
+    TableInstance* instantiateTable(const QString& tabName, QStringList otherTablesBeingInstantiated, Version* v, bool ref = false, Table* referencingTable = 0, TableInstance* becauseOfThis = 0);
 
     void showNothing(Version* v, const QString& , bool focus = true);
     void showDataType(Version* v, const QString &name, bool focus = true);

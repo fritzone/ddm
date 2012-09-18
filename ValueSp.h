@@ -12,7 +12,7 @@ public:
     ValueSp(const QString& sqlPrUid, const QString& referringObjectClassUid,
                 const QString &name, const QString& propertyGuiText,
                 const QString& group, const QString& value,
-                int major, int minor);
+                int major, int minor, Version* v);
     virtual QUuid getClassUid() const;
     virtual SpInstance* instantiate();
     virtual SpInstance* createSpecifiedInstance(const QString& spi_uid);

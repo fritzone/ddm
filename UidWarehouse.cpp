@@ -21,28 +21,12 @@ void UidWarehouse::create()
 }
 
 // TODO: right now the Solution is just a fake
-void UidWarehouse::addElement(ObjectWithUid *o)
+void UidWarehouse::addElement(ObjectWithUid *o, Version *v)
 {
     WarehouseEntry* whe = new WarehouseEntry();
     whe->obj = o;
     whe->objectId = o->getObjectUid();
-    Solution* ss = Workspace::getInstance()->currentSolution();
-    if(ss)
-    {
-        Project* p = ss->currentProject();
-        if(p)
-        {
-            whe->ver = p->getWorkingVersion();
-        }
-        else
-        {
-            whe->ver = 0;
-        }
-    }
-    else
-    {
-        whe->ver = 0;
-    }
+    whe->ver = v;
 
     Solution* s = 0;
     if(m_items.keys().contains(s))

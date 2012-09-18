@@ -7,8 +7,8 @@
 class TrueFalseSpInstance : public SpInstance
 {
 public:
-    TrueFalseSpInstance(const Sp* theClass) : SpInstance(theClass), m_value(false) {}
-    TrueFalseSpInstance(const Sp* theClass, const QString& uid) : SpInstance(theClass)
+    TrueFalseSpInstance(const Sp* theClass, Version* v) : SpInstance(theClass, v), m_value(false) {}
+    TrueFalseSpInstance(const Sp* theClass, const QString& uid, Version* v) : SpInstance(theClass, v)
     {
         setForcedUid(uid);
     }

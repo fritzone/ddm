@@ -21,7 +21,7 @@
 
 Table::Table(Version* v, QString uid, int /*dummy*/) : TreeItem(), SerializableElement(), SqlSourceEntity(), CopyableElement(),
     NamedItem(NameGenerator::getUniqueName(v, (itemGetter)&Version::getTable, QString("TAB"))),
-    ObjectWithUid(uid), ObjectWithSpInstances(),
+    ObjectWithUid(uid, v), ObjectWithSpInstances(),
     m_description(""), m_columns(), m_indices(), m_foreignKeys(), m_startupValues(),
     m_parent(0),
     m_version(v), m_children()
@@ -464,7 +464,7 @@ QString Table::getAvailableIndexName(const QString& prefix)
 Index* Table::createAutoIndex(QVector<const Column*> cols)
 {
     QString idxName = getAvailableIndexName(strAutoIdx + strUnderline + getName());
-    Index* idx = new Index(idxName, this, QUuid::createUuid().toString());
+    Index* idx = new Index(idxName, this, QUuid::createUuid().toString(), version());
     for(int i=0; i<cols.size(); i++)
     {
         idx->addColumn(cols.at(i), "");

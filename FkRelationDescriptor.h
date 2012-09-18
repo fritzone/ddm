@@ -22,7 +22,7 @@ public:
     static const int TOP = 3;
     static const int BOTTOM = 2;
 
-    FkRelationDescriptor(ForeignKey* fk, DraggableGraphicsViewItemForForeignKey* fkitm, DraggableGraphicsViewItem* tab1, DraggableGraphicsViewItem* tab2);
+    FkRelationDescriptor(ForeignKey* fk, DraggableGraphicsViewItemForForeignKey* fkitm, DraggableGraphicsViewItem* tab1, DraggableGraphicsViewItem* tab2, Version *v);
 
     FkRelationDescriptor() : m_ellipse(0), m_arrowHead(0), rel2Txt(0), rel1Txt(0),
         m_fkitm(0),m_tab1(0), m_tab2(0), m_sentenced(false), firstLine(0), secondLine(0),

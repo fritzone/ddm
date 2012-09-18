@@ -19,7 +19,8 @@
 #include <QListWidget>
 #include <QListWidgetItem>
 
-NewDataTypeForm::NewDataTypeForm(DT_TYPE t, DatabaseEngine* dbe, QWidget *parent) : QWidget(parent), m_ui(new Ui::NewDataTypeForm), m_dbEngine(dbe), m_udt(0)
+NewDataTypeForm::NewDataTypeForm(Version *v, DT_TYPE t, DatabaseEngine* dbe, QWidget *parent) :
+    QWidget(parent), m_ui(new Ui::NewDataTypeForm), m_dbEngine(dbe), m_udt(0), m_version(v)
 {
     m_ui->setupUi(this);
 
@@ -187,7 +188,7 @@ void NewDataTypeForm::onSave()
                                mv, m_ui->txtDescription->toPlainText(),
                                m_ui->chkUnsigned->isChecked(),
                                m_ui->chkCanBeNull->isChecked(),
-                               m_udt))
+                               m_udt, m_version))
     {
         resetContent();
     }

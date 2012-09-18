@@ -8,7 +8,7 @@ class Table;
 class SelectQueryFromComponent : public QueryComponent
 {
 public:
-    SelectQueryFromComponent(QueryComponent*,int);
+    SelectQueryFromComponent(QueryComponent*, int, Version *v);
     virtual QString get() const ;
     virtual QString getClass() const {return "SelectQueryFromComponent";}
     virtual QueryGraphicsItem* createGraphicsItem(QueryGraphicsHelper*, QueryGraphicsItem*){return 0;}

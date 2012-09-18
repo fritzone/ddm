@@ -10,7 +10,7 @@ class Table;
 class SelectQueryJoinComponent : public QueryComponent
 {
 public:
-    SelectQueryJoinComponent(QueryComponent*, int);
+    SelectQueryJoinComponent(QueryComponent*, int, Version *v);
     virtual QString get() const;
     virtual QString getClass() const {return "SelectQueryJoinComponent";}
     virtual QueryGraphicsItem* createGraphicsItem(QueryGraphicsHelper*, QueryGraphicsItem*);

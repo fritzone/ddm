@@ -16,7 +16,7 @@
 #include "uids.h"
 #include <QDebug>
 
-SingleExpressionQueryComponent::SingleExpressionQueryComponent(QueryComponent* p, int l): QueryComponent(p,l),
+SingleExpressionQueryComponent::SingleExpressionQueryComponent(QueryComponent* p, int l, Version *v): QueryComponent(p,l,v),
     m_helper(0), m_gritm(0), m_elements(), m_columnsAtGivenPosition(), m_functionsAtGivenPosition(), m_functionInstantiationAtGivenPosition(), m_typedValuesAtGivenPosition(), m_forcedType(NOT_FORCED),
     m_ownedByOn(false), m_onOwner(0), m_onComponent(0), m_as(0), m_hasForcedType(false)
 {
@@ -166,13 +166,13 @@ QSet<OptionsType> SingleExpressionQueryComponent::provideOptions()
 
 QueryComponent* SingleExpressionQueryComponent::duplicate()
 {
-    SingleExpressionQueryComponent* newc = new SingleExpressionQueryComponent(m_parent, m_level);
+    SingleExpressionQueryComponent* newc = new SingleExpressionQueryComponent(m_parent, m_level, version());
     return newc;
 }
 
 CloneableElement* SingleExpressionQueryComponent::clone(Version *sourceVersion, Version *targetVersion)
 {
-    SingleExpressionQueryComponent* newc = new SingleExpressionQueryComponent(m_parent, m_level);
+    SingleExpressionQueryComponent* newc = new SingleExpressionQueryComponent(m_parent, m_level, targetVersion);
     newc->m_elements = m_elements;
     newc->m_columnsAtGivenPosition = m_columnsAtGivenPosition;
     newc->m_functionsAtGivenPosition = m_functionsAtGivenPosition;
@@ -350,7 +350,7 @@ void SingleExpressionQueryComponent::handleAction(const QString& action, QueryCo
         else
         if(localAction == ADD_ALIAS)
         {
-            m_as = new SelectQueryAsComponent(this, m_level + 1);
+            m_as = new SelectQueryAsComponent(this, m_level + 1, version());
             addChild(m_as);
             m_helper->triggerReRender();
         }
@@ -383,12 +383,20 @@ void SingleExpressionQueryComponent::handleAction(const QString& action, QueryCo
         if(m_functionsAtGivenPosition.find(index) == m_functionsAtGivenPosition.end())
         {
             m_functionsAtGivenPosition.insert(index, &Workspace::getInstance()->currentProjectsEngine()->getBuiltinFunction(fName));
-            m_functionInstantiationAtGivenPosition.insert(index, new DatabaseFunctionInstantiationComponent(new SingleExpressionQueryComponent(this, m_level + 1), Workspace::getInstance()->currentProjectsEngine()->getBuiltinFunction(fName)));
+            m_functionInstantiationAtGivenPosition.insert(index, new DatabaseFunctionInstantiationComponent(new SingleExpressionQueryComponent(this, m_level + 1, version()),
+                                                                                                            Workspace::getInstance()->currentProjectsEngine()->getBuiltinFunction(fName),
+                                                                                                            false,
+                                                                                                            version())
+                                                          );
         }
         else
         {
             m_functionsAtGivenPosition[index] = &Workspace::getInstance()->currentProjectsEngine()->getBuiltinFunction(fName);
-            m_functionInstantiationAtGivenPosition[index] = new DatabaseFunctionInstantiationComponent(new SingleExpressionQueryComponent(this, m_level + 1), Workspace::getInstance()->currentProjectsEngine()->getBuiltinFunction(fName));
+            m_functionInstantiationAtGivenPosition[index] = new DatabaseFunctionInstantiationComponent(new SingleExpressionQueryComponent(this, m_level + 1, version()),
+                                                                                                       Workspace::getInstance()->currentProjectsEngine()->getBuiltinFunction(fName),
+                                                                                                       false,
+                                                                                                       version()
+                                                                                                       );
         }
 
         // let's see if we overwrote a column

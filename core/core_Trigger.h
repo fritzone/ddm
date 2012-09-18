@@ -14,7 +14,7 @@ class Trigger : public SqlSourceEntity, public NamedItem, public TreeItem, publi
 {
 public:
 
-    Trigger(const QString& name, const QString& uid);
+    Trigger(const QString& name, const QString& uid, Version *v);
 
     virtual QStringList generateSqlSource(AbstractSqlGenerator*, QHash<QString,QString>, const Connection*);
     virtual void serialize(QDomDocument& doc, QDomElement& parent) const;

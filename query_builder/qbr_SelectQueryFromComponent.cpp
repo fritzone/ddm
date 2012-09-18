@@ -6,7 +6,7 @@
 #include "core_Table.h"
 #include "qbr_TableQueryComponent.h"
 
-SelectQueryFromComponent::SelectQueryFromComponent(QueryComponent* p, int l):QueryComponent(p,l)
+SelectQueryFromComponent::SelectQueryFromComponent(QueryComponent* p, int l, Version *v):QueryComponent(p,l,v)
 {
 }
 
@@ -84,13 +84,13 @@ bool SelectQueryFromComponent::allowCloseButton()
 
 QueryComponent* SelectQueryFromComponent::duplicate()
 {
-    SelectQueryFromComponent* newc = new SelectQueryFromComponent(m_parent, m_level);
+    SelectQueryFromComponent* newc = new SelectQueryFromComponent(m_parent, m_level, version());
     return newc;
 }
 
 CloneableElement* SelectQueryFromComponent::clone(Version *sourceVersion, Version *targetVersion)
 {
-    SelectQueryFromComponent* newc = new SelectQueryFromComponent(m_parent, m_level);
+    SelectQueryFromComponent* newc = new SelectQueryFromComponent(m_parent, m_level, targetVersion);
     newc->setSourceUid(getObjectUid());
     cloneTheChildren(sourceVersion, targetVersion, newc);
     return newc;

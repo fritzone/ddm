@@ -6,7 +6,7 @@
 class SelectQueryGroupByComponent : public QueryComponent
 {
 public:
-    SelectQueryGroupByComponent(QueryComponent*, int);
+    SelectQueryGroupByComponent(QueryComponent*, int, Version *v);
     virtual QString get() const;
     virtual QString getClass() const {return "SelectQueryGroupByComponent";}
     virtual QueryGraphicsItem* createGraphicsItem(QueryGraphicsHelper*, QueryGraphicsItem*){return 0;}

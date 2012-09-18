@@ -8,7 +8,7 @@
 #include "IconFactory.h"
 #include "ContextMenuCollection.h"
 
-Function::Function(const QString &pname, const QString& uid) : StoredMethod(pname, uid)
+Function::Function(const QString &pname, const QString& uid, Version *v) : StoredMethod(pname, uid, v)
 {
 }
 
@@ -37,7 +37,7 @@ QUuid Function::getClassUid() const
 
 CloneableElement* Function::clone(Version *sourceVersion, Version *targetVersion)
 {
-    Function* newp = new Function(getName(), QUuid::createUuid().toString() );
+    Function* newp = new Function(getName(), QUuid::createUuid().toString(), targetVersion );
     newp->setSql(getSql());
     newp->setSourceUid(getObjectUid());
     return newp;

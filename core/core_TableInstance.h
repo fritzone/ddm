@@ -22,9 +22,9 @@ class TableInstance : public TreeItem,
 {
 public:
 
-    TableInstance(Table* tab, bool ref, const QString& uid);
+    TableInstance(Table* tab, bool ref, const QString& uid, Version *v);
 
-    TableInstance(const QString &name, bool ref, const QString &uid);
+    TableInstance(const QString &name, bool ref, const QString &uid, Version *v);
 
     QVector<QString> columns() const;
 

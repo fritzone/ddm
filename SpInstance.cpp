@@ -1,11 +1,11 @@
 #include "SpInstance.h"
 
-SpInstance::SpInstance(const Sp* theClass) : SerializableElement(),
-    ObjectWithUid(QUuid::createUuid().toString()), m_class(theClass)
+SpInstance::SpInstance(const Sp* theClass, Version* v) : SerializableElement(),
+    ObjectWithUid(QUuid::createUuid().toString(), v), m_class(theClass)
 {}
 
-SpInstance::SpInstance(const Sp* theClass, const QString& uid) :
-    SerializableElement(), ObjectWithUid(uid), m_class(theClass)
+SpInstance::SpInstance(const Sp* theClass, const QString& uid, Version* v) :
+    SerializableElement(), ObjectWithUid(uid, v), m_class(theClass)
 {}
 
 void SpInstance::serialize(QDomDocument& doc, QDomElement& parent) const

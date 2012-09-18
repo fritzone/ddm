@@ -10,7 +10,7 @@ public:
     /**
      * Constructor
      */
-    DiagramTableDescriptor(const QString& tableName, int x, int y) : DiagramObjectDescriptor(tableName, x, y) {}
+    DiagramTableDescriptor(const QString& tableName, int x, int y, Version* v) : DiagramObjectDescriptor(tableName, x, y, v) {}
 
     virtual void serialize(QDomDocument& doc, QDomElement& parent) const;
     virtual QUuid getClassUid() const;

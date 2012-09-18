@@ -25,7 +25,7 @@ class Index : public TreeItem, public SerializableElement, public NamedItem, pub
 
 public:
 
-    Index(const QString& name, Table* tab, const QString& uid);
+    Index(const QString& name, Table* tab, const QString& uid, Version *v);
 
     void addColumn(const Column* column, const QString& order);
 

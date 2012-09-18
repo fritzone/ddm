@@ -23,7 +23,7 @@ class UidWarehouse
 
 public:
 
-    void addElement(ObjectWithUid* o);
+    void addElement(ObjectWithUid* o, Version *v);
     void addElement(QUuid uid, Version* v);
     ObjectWithUid* getElement(const QString&);
     Version* getVersionForUid(const QString& uid);

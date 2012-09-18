@@ -563,7 +563,7 @@ void NewTableForm::onAddColumn()
         }
 
         UserDataType* colsDt = m_version->getDataType(m_ui->cmbNewColumnType->currentText());
-        Column* col = new Column(QUuid::createUuid().toString(), m_ui->txtNewColumnName->text(), colsDt, m_ui->chkPrimary->isChecked());
+        Column* col = new Column(QUuid::createUuid().toString(), m_ui->txtNewColumnName->text(), colsDt, m_ui->chkPrimary->isChecked(), colsDt->version());
         col->initializeFor(m_dbEngine, QUuid(uidColumn));
         if(m_wspForColumn) m_wspForColumn->repopulateSpsOfObject(col);
 
@@ -987,7 +987,7 @@ void NewTableForm::onAddIndex()
             return;
         }
 
-        Index* index = new Index(m_ui->txtNewIndexName->text(), m_table, QUuid::createUuid().toString());
+        Index* index = new Index(m_ui->txtNewIndexName->text(), m_table, QUuid::createUuid().toString(), m_version);
         index->initializeFor(m_dbEngine, QUuid(uidIndex));
         if(m_wspForIndex) m_wspForIndex->repopulateSpsOfObject(index);
 
@@ -2237,7 +2237,7 @@ void NewTableForm::onDatatypeComboChange(QString)
     {
         if(m_wspForColumn)
         {
-            Column* tCol = new Column(QUuid::createUuid().toString(), "temp",(m_version->getDataType(m_ui->cmbNewColumnType->currentText())), false);
+            Column* tCol = new Column(QUuid::createUuid().toString(), "temp",(m_version->getDataType(m_ui->cmbNewColumnType->currentText())), false, m_version);
             m_wspForColumn->taylorToSpecificObject(tCol);
             delete tCol;
         }

@@ -84,7 +84,7 @@ void ERGraphicsScene::finalizeItem(int x, int y)
                             if(itmForOtherTable != 0)
                             {
                                 DraggableGraphicsViewItemForForeignKey* difks = DiagramItemFactory::getDiagramEntityForForeignKey(fksI.at(j));
-                                FkRelationDescriptor* fkrd = new FkRelationDescriptor(fksI.at(j), difks, itm, itmForOtherTable);
+                                FkRelationDescriptor* fkrd = new FkRelationDescriptor(fksI.at(j), difks, itm, itmForOtherTable, difks->version());
                                 addItem(difks);
                                 addForeignKey(fkrd);
                                 break;
@@ -108,7 +108,7 @@ void ERGraphicsScene::finalizeItem(int x, int y)
                     if(itmForOtherTable != 0)
                     {
                         DraggableGraphicsViewItemForForeignKey* difks = DiagramItemFactory::getDiagramEntityForForeignKey(cfks.at(i));
-                        FkRelationDescriptor* fkrd = new FkRelationDescriptor(cfks.at(i), difks, itmForOtherTable, itm);
+                        FkRelationDescriptor* fkrd = new FkRelationDescriptor(cfks.at(i), difks, itmForOtherTable, itm, difks->version());
                         addItem(difks);
                         addForeignKey(fkrd);
                         break;

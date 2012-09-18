@@ -17,9 +17,9 @@ class Version;
 class SpInstance : public SerializableElement, public ObjectWithUid, public CloneableElement
 {
 public:
-    SpInstance(const Sp* theClass);
+    SpInstance(const Sp* theClass, Version *v);
 
-    SpInstance(const Sp* theClass, const QString& uid);
+    SpInstance(const Sp* theClass, const QString& uid, Version *v);
 
     virtual void serialize(QDomDocument& doc, QDomElement& parent) const;
     virtual QString get() const = 0;

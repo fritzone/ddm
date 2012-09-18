@@ -16,8 +16,8 @@ class View : public SqlSourceEntity, public NamedItem, public TreeItem, public S
 
 {
 public:
-    View(bool manual, QString uid);
-    View(Version* v, bool manual, QString uid); // used by the deserialization engine
+    View(Version *v, bool manual, QString uid);
+    View(bool manual, QString uid, Version* v); // used by the deserialization engine
 
     virtual QStringList generateSqlSource(AbstractSqlGenerator*, QHash<QString,QString>, const Connection*);
 

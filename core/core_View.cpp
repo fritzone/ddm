@@ -9,19 +9,22 @@
 #include "IconFactory.h"
 #include "ContextMenuCollection.h"
 
-View::View(bool manual, QString uid) :
+View::View(bool manual, QString uid, Version *v) :
     SqlSourceEntity(),
     NamedItem(NameGenerator::getUniqueName(Workspace::getInstance()->workingVersion(), (itemGetter)&Version::getView, QString("v"))),
-    ObjectWithUid(uid),
+    ObjectWithUid(uid, v),
     m_columNames(), m_canReplace(false), m_manual(manual)
 {
     m_helper = new QueryGraphicsHelper();
-    m_selectQuery = new SelectQuery(m_helper, 0, this);
+    m_selectQuery = new SelectQuery(m_helper, 0, this, v);
     QueryAsGenerator::instance().initNewQuery(m_selectQuery);
     m_helper->setQuery(m_selectQuery);
 }
 
-View::View(Version*v, bool manual, QString uid) : SqlSourceEntity(), NamedItem(NameGenerator::getUniqueName(v, (itemGetter)&Version::getView, QString("v"))), ObjectWithUid(uid),
+View::View(Version*v, bool manual, QString uid) :
+    SqlSourceEntity(),
+    NamedItem(NameGenerator::getUniqueName(v, (itemGetter)&Version::getView, QString("v"))),
+    ObjectWithUid(uid, v),
     m_columNames(), m_canReplace(false), m_manual(manual)
 {
     m_helper = new QueryGraphicsHelper();

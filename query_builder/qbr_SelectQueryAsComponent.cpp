@@ -4,7 +4,7 @@
 #include "qbr_SingleExpressionQueryComponent.h"
 #include "uids.h"
 
-SelectQueryAsComponent::SelectQueryAsComponent(QueryComponent* p, int l):QueryComponent(p,l)
+SelectQueryAsComponent::SelectQueryAsComponent(QueryComponent* p, int l, Version *v):QueryComponent(p, l, v)
 {
     m_as = QueryAsGenerator::instance().getNextValidAs();
 }
@@ -22,7 +22,7 @@ QSet<OptionsType> SelectQueryAsComponent::provideOptions()
 
 QueryComponent* SelectQueryAsComponent::duplicate()
 {
-    SelectQueryAsComponent* newc = new SelectQueryAsComponent(m_parent, m_level);
+    SelectQueryAsComponent* newc = new SelectQueryAsComponent(m_parent, m_level, version());
     newc->m_as = (QueryAsGenerator::instance().getNextValidAs());
     return newc;
 }
