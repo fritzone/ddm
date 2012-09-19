@@ -122,7 +122,8 @@ ContextMenuCollection::ContextMenuCollection()
     action_renamePatch = new QAction(QObject::tr("Rename"), 0);
 
     // populate the table popup menu
-    m_tablePopupMenu->setTitle("Table");
+    m_tablePopupMenu->setTitle(QObject::tr("Table"));
+    m_tablePopupMenu->setIcon(IconFactory::getTableIcon());
     m_tablePopupMenu->addAction(action_TableAddColumn);
     m_tablePopupMenu->addSeparator();
     m_tablePopupMenu->addAction(action_RemoveTable);
@@ -134,6 +135,8 @@ ContextMenuCollection::ContextMenuCollection()
     m_tablePopupMenu->addAction(action_CopyTable);
 
     // populate the table instances popup menu
+    m_tableInstancePopupMenu->setTitle(QObject::tr("Table Instance"));
+    m_tableInstancePopupMenu->setIcon(IconFactory::getTabinstIcon());
     m_tableInstancePopupMenu->addAction(action_DeleteTableInstance);
     m_tableInstancePopupMenu->addAction(action_RenameTableInstance);
 
@@ -231,6 +234,8 @@ ContextMenuCollection::ContextMenuCollection()
     // the locked tab inst popup menus
     m_unlockTableInstancePopupMenu->addAction(action_unlock);
     m_relockTableInstancePopupMenu->addAction(action_relock);
+    m_unlockTableInstancePopupMenu->addAction(action_DeleteTableInstance);
+    m_relockTableInstancePopupMenu->addMenu(m_tableInstancePopupMenu);
 
     // the locked func popup menus
     m_unlockFunctionPopupMenu->addAction(action_unlock);
@@ -301,6 +306,33 @@ QMenu* ContextMenuCollection::getReLockMenuForClassUid(const QString& uid)
     mapping.insert(uidMiscDT, m_relockDTPopupMenu);
     mapping.insert(uidSpatialDT, m_relockDTPopupMenu);
     mapping.insert(uidBlobDT, m_relockDTPopupMenu);
+
+    if(mapping.contains(uid))
+    {
+        return mapping[uid];
+    }
+
+    return 0;
+}
+
+QMenu* ContextMenuCollection::getMenuForClassUid(const QString& uid)
+{
+    QMap<QString, QMenu*> mapping;
+    mapping.insert(uidTable, m_tablePopupMenu);
+    mapping.insert(uidTableInstance, m_tableInstancePopupMenu);
+    mapping.insert(uidDiagram, m_diagramPopupMenu);
+    mapping.insert(uidProcedure, m_procedurePopupMenu);
+    mapping.insert(uidFunction, m_functionPopupMenu);
+    mapping.insert(uidTrigger, m_triggerPopupMenu);
+    mapping.insert(uidView, m_viewPopupMenu);
+
+    mapping.insert(uidStringDT, m_datatypePopupMenu);
+    mapping.insert(uidNumericDT, m_datatypePopupMenu);
+    mapping.insert(uidDateTimeDT, m_datatypePopupMenu);
+    mapping.insert(uidBooleanDT, m_datatypePopupMenu);
+    mapping.insert(uidMiscDT, m_datatypePopupMenu);
+    mapping.insert(uidSpatialDT, m_datatypePopupMenu);
+    mapping.insert(uidBlobDT, m_datatypePopupMenu);
 
     if(mapping.contains(uid))
     {

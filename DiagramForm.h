@@ -53,7 +53,7 @@ private:
 
 private:
     Ui::DiagramForm *ui;
-    Version* ver;
+    Version* m_version;
     ERGraphicsView *graphicsView;
     TableListWidget *lstTables, *lstDiagramForms;
     Diagram* m_diagram;
