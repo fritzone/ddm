@@ -6,7 +6,7 @@ ObjectWithUid::ObjectWithUid() : m_uid(nullUid)
 {
 }
 
-ObjectWithUid::ObjectWithUid(const QString& uid, Version* v) : m_uid(uid)
+ObjectWithUid::ObjectWithUid(const QString& uid, Version* v) : m_uid(uid), m_version(v)
 {
     UidWarehouse::instance().addElement(this, v);
 }

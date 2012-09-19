@@ -122,6 +122,7 @@ public:
     QAction* getAction_RelocateElementToAnotherPatch() { return action_relocateElementToAnotherPatch; }
 
     QMenu* getUnLockMenuForClassUid(const QString& uid);
+    QMenu* getMenuForClassUid(const QString& uid);
     QMenu* getReLockMenuForClassUid(const QString& uid);
 
 private:

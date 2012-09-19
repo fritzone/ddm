@@ -232,3 +232,4 @@ void Workspace::createNewConnection()
         MainWindow::instance()->getConnectionGuiElements()->createConnectionTreeEntry(c);
     }
 }
+

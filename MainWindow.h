@@ -62,7 +62,7 @@ public:
                              const QString &desc, bool unsi,
                              bool canBeNull, UserDataType *pudt, Version *v);
 
-    bool onSaveDiagram(Diagram*);
+    bool onSaveDiagram(Diagram*, Version *v);
 
     void instantiateTableCallback(const QString& tabName);
     void specificDeploymentCallback(const QString& connName);
@@ -128,6 +128,7 @@ public slots:
     void currentProjectTreeItemChanged(QTreeWidgetItem * current, QTreeWidgetItem*);
     void dtTreeItemClicked ( QTreeWidgetItem * item, int column );
     void onNewTableInstance();
+    void onNewTableInstanceFromPopup();
     void onNewTableInstanceHovered();
     void onDeleteTableFromPopup();
     void onTableAddColumnFromPopup();
@@ -142,6 +143,7 @@ public slots:
     void onDuplicateDatatypeFromPopup();
     void onDeleteDiagramFromPopup();
     void onRenameDiagramFromPopup();
+    void onNewDiagramFromPopup();
     void onNewStringType();
     void onNewNumericType();
     void onNewBoolType();
@@ -202,12 +204,11 @@ private:
     void freeGuiElements();
     void showProjectDetails();
     void showNewDataTypeWindow(int);
-    NewTableForm* showExistingTable(Table*);
-    UserDataType* getRightClickedDatatype();
+    NewTableForm* showExistingTable(Table*, Version *v);
+
     Connection* getRightClickedConnection();
 
-    template <class T> T* getRightClickedObject(itemGetter);
-    template <class T> T* getNamedObject(QTreeWidgetItem*, itemGetter);
+    template <class T> T* getRightClickedObject();
     template <class T> void showNamedObjectList(showSomething s, const QVector<T*> items, const QIcon& icon, const QString& title);
 
     void hideSplashwindow();
@@ -215,6 +216,7 @@ private:
     void showObjectwithGuid(Version* v, QString uid, showSomething s, bool focus=true);
 
     void doLockLikeOperation(bool reLocking);
+    ContextMenuEnabledTreeWidgetItem* getLastRightClickedTreeItem();
 
 private:
     Ui::MainWindow *m_ui;

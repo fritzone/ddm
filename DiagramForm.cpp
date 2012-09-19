@@ -28,7 +28,7 @@
 #include <qdebug.h>
 
 DiagramForm::DiagramForm(Version* v, Diagram* dgram, QWidget *parent) : QWidget(parent),
-        ui(new Ui::DiagramForm), ver(v), m_diagram(dgram), m_tabToRemove(""), m_noteToRemove(-1)
+        ui(new Ui::DiagramForm), m_version(v), m_diagram(dgram), m_tabToRemove(""), m_noteToRemove(-1)
 {
 
     ui->setupUi(this);
@@ -101,9 +101,9 @@ void DiagramForm::prepareLists()
     lstTables->clear();
     lstDiagramForms->clear();
 
-    for(int i=0; i<ver->getTables().size(); i++)
+    for(int i=0; i<m_version->getTables().size(); i++)
     {
-        QListWidgetItem* qlwi = new QListWidgetItem(ver->getTables()[i]->getName(), lstTables);
+        QListWidgetItem* qlwi = new QListWidgetItem(m_version->getTables()[i]->getName(), lstTables);
         qlwi->setIcon(IconFactory::getTablesIcon());
     }
 
@@ -258,9 +258,9 @@ void DiagramForm::onSave()
     m_diagram->setName(ui->txtDiagramName->text());
     if(!m_diagram->isSaved())
     {
-        ver->addDiagram(m_diagram);
+        m_version->addDiagram(m_diagram);
     }
-    MainWindow::instance()->onSaveDiagram(m_diagram);
+    MainWindow::instance()->onSaveDiagram(m_diagram, m_version);
 }
 
 void DiagramForm::onReset()

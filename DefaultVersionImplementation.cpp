@@ -26,6 +26,7 @@
 
 // TODO: This is horrible!!!
 #include "MainWindow.h"
+#include "GuiElements.h"
 
 #include <QtGui>
 
@@ -144,7 +145,15 @@ inline void DefaultVersionImplementation::addDiagram(Diagram* d)
 
 inline bool DefaultVersionImplementation::hasTable(Table *t)
 {
-    return m_data.m_tables.indexOf(t) >= 0;
+    for(int i=0; i<m_data.m_tables.size(); i++)
+    {
+        qDebug() << m_data.m_tables.at(i)->getObjectUid() << "==" << t->getObjectUid() << " IN " <<getVersionText();
+        if(m_data.m_tables.at(i)->getObjectUid() == t->getObjectUid())
+        {
+            return true;
+        }
+    }
+    return false;
 }
 
 inline bool DefaultVersionImplementation::hasTable(const QString& tb)
@@ -282,6 +291,8 @@ bool DefaultVersionImplementation::deleteTable(Table *tab)
 {
     int tabIndex = -1;
     QString incomingForeignKeys = "";
+    QString guid = tab->getObjectUid();
+
     for(int i=0; i<m_data.m_tables.size(); i++)
     {
         if(m_data.m_tables[i]->getForeignKeyToTable(tab->getName()) != 0)
@@ -353,6 +364,14 @@ bool DefaultVersionImplementation::deleteTable(Table *tab)
     ContextMenuEnabledTreeWidgetItem* tabLoc = tab->getLocation();
     delete tabLoc;
     m_data.m_tables.remove(tabIndex);
+
+    if(isLocked())  // remove the entry from the patch
+    {
+        // getWorkingPatch()->markElemetForDeletion(tab->getObjectUid(), tabIndex); // so that we know where to inject it on revert patch
+        // MainWindow::instance()->updatePatchElementToReflectState(this, tab, tab->getObjectUid(), 3); // 3 is DELETED
+        qDebug() << tab->getObjectUid() << " was deleted from " << tab->version()->getVersionText();
+
+    }
     return true;
 }
 
@@ -397,6 +416,9 @@ TableInstance* DefaultVersionImplementation::instantiateTable(Table* tab, bool b
     if(isLocked())
     {
         MainWindow::instance()->createPatchElement(this, tabInst, tabInst->getObjectUid(), false);
+        getWorkingPatch()->addNewElement(tabInst->getObjectUid()); // this will be a new element ...
+        MainWindow::instance()->updatePatchElementToReflectState(this, tabInst, tabInst->getObjectUid(), 1);
+
     }
     return tabInst;
 }
@@ -745,6 +767,9 @@ void DefaultVersionImplementation::addTableInstance(TableInstance* inst, bool in
     if(isLocked() && !initial)
     {
         MainWindow::instance()->createPatchElement(this, inst, inst->getObjectUid(), false);
+        getWorkingPatch()->addNewElement(inst->getObjectUid()); // this will be a new element ...
+        MainWindow::instance()->updatePatchElementToReflectState(this, inst, inst->getObjectUid(), 1);
+
     }
 }
 

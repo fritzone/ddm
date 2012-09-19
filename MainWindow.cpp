@@ -150,7 +150,6 @@ void MainWindow::showConnections()
 
 void MainWindow::setupGuiForNewSolution()
 {
-
     m_guiElements = new GuiElements();
     m_guiElements->createGuiElements();
 
@@ -326,10 +325,14 @@ void MainWindow::showNothing(Version *v, const QString &, bool focus )
 
 }
 
-NewTableForm* MainWindow::showExistingTable(Table *table)
+NewTableForm* MainWindow::showExistingTable(Table *table, Version* v)
 {
-    if(table == 0) return 0;
-    NewTableForm* frm = m_workspace->workingVersion()->getGui()->getTableFormForExistingTable();
+    if(table == 0 || v == 0)
+    {
+        return 0;
+    }
+
+    NewTableForm* frm = v->getGui()->getTableFormForExistingTable();
     frm->setTable(table);
     frm->focusOnName();
     setCentralWidget(frm);
@@ -343,7 +346,7 @@ void MainWindow::showTableWithGuid(Version *v, const QString &guid, bool focus)
     {
         return;
     }
-    showExistingTable(table);
+    showExistingTable(table, v);
     if(focus)
     {
         m_guiElements->getProjectTree()->setCurrentItem(table->getLocation());
@@ -364,7 +367,10 @@ void MainWindow::showTableInstanceWithGuid(Version *v, const QString &guid, bool
     frmTinst->createTableWithValues();
     setCentralWidget(frmTinst);
 
-    if(focus) m_guiElements->getProjectTree()->setCurrentItem(table->getLocation());
+    if(focus)
+    {
+        m_guiElements->getProjectTree()->setCurrentItem(table->getLocation());
+    }
 }
 
 void MainWindow::showDataType(Version *v, const QString &name, bool focus)
@@ -383,7 +389,7 @@ void MainWindow::showDataType(Version *v, const QString &name, bool focus)
     if(focus) m_guiElements->getProjectTree()->setCurrentItem(dt->getLocation());
 }
 
-void MainWindow::showDiagramWithGuid(Version *v, const QString & guid, bool focus /*focus*/)
+void MainWindow::showDiagramWithGuid(Version *v, const QString & guid, bool /*focus*/)
 {
     Diagram* dgram = dynamic_cast<Diagram*>(UidWarehouse::instance().getElement(guid));
     if(dgram == 0)
@@ -396,7 +402,7 @@ void MainWindow::showDiagramWithGuid(Version *v, const QString & guid, bool focu
     df->paintDiagram();
 }
 
-void MainWindow::showProcedureWithGuid(Version *v, const QString & guid, bool focus /*focus*/)
+void MainWindow::showProcedureWithGuid(Version *v, const QString & guid, bool /*focus*/)
 {
     Procedure* p = dynamic_cast<Procedure*>(UidWarehouse::instance().getElement(guid));
     if(p)
@@ -408,7 +414,7 @@ void MainWindow::showProcedureWithGuid(Version *v, const QString & guid, bool fo
     }
 }
 
-void MainWindow::showFunctionWithGuid(Version *v, const QString & guid, bool focus /*focus*/)
+void MainWindow::showFunctionWithGuid(Version *v, const QString & guid, bool /*focus*/)
 {
     Function* p = dynamic_cast<Function*>(UidWarehouse::instance().getElement(guid));
     if(p)
@@ -420,7 +426,7 @@ void MainWindow::showFunctionWithGuid(Version *v, const QString & guid, bool foc
     }
 }
 
-void MainWindow::showTriggerWithGuid(Version *v, const QString & guid, bool focus /*focus*/)
+void MainWindow::showTriggerWithGuid(Version *v, const QString & guid, bool /*focus*/)
 {
     Trigger* p = dynamic_cast<Trigger*>(UidWarehouse::instance().getElement(guid));
     if(p)
@@ -436,7 +442,7 @@ void MainWindow::showTriggerWithGuid(Version *v, const QString & guid, bool focu
     }
 }
 
-void MainWindow::showViewWithGuid(Version *, const QString & guid, bool focus /*focus*/)
+void MainWindow::showViewWithGuid(Version *, const QString & guid, bool /*focus*/)
 {
     View* v = dynamic_cast<View*>(UidWarehouse::instance().getElement(guid));
     if(v)
@@ -472,7 +478,6 @@ void MainWindow::currentPatchTreeItemChanged(QTreeWidgetItem * current, QTreeWid
     {
         QVariant qv = current->data(0, Qt::UserRole);
         QString uid = qv.toString();
-        qDebug() << uid;
 
         Version* foundVersion = UidWarehouse::instance().getVersionForUid(uid);
         ObjectWithUid* obj = UidWarehouse::instance().getElement(uid);
@@ -517,6 +522,7 @@ void MainWindow::currentProjectTreeItemChanged(QTreeWidgetItem * current, QTreeW
 
         QVariant qv = current->data(0, Qt::UserRole);
         QString uid = qv.toString();
+        ObjectWithUid* obj = UidWarehouse::instance().getElement(uid);
         Version* foundVersion = UidWarehouse::instance().getVersionForUid(uid);
         if(!foundVersion) return;
 
@@ -563,18 +569,18 @@ void MainWindow::currentProjectTreeItemChanged(QTreeWidgetItem * current, QTreeW
         }
 
 
-        ObjectWithUid* obj = UidWarehouse::instance().getElement(uid);
         QString classUid = nullUid;
         if(obj)
         {
             classUid = obj->getClassUid();
             classUid = classUid.toUpper();
+            foundVersion = obj->version();
         }
 
         if(current == foundVersion->getGui()->getTablesItem())
         {// we have clicked on the Tables item (i.e. the list of tables)
             showNamedObjectList(&MainWindow::showTableWithGuid, foundVersion->getTables(),
-                                Workspace::getInstance()->currentProjectIsOop()?IconFactory::getTabinstIcon():IconFactory::getTableIcon(),
+                                IconFactory::getTableIcon(),
                                 Workspace::getInstance()->currentProjectIsOop()?"Table Templates":"Tables");
         }
         else
@@ -659,6 +665,31 @@ void MainWindow::currentProjectTreeItemChanged(QTreeWidgetItem * current, QTreeW
     }
 }
 
+void MainWindow::onNewDiagramFromPopup()
+{
+    if(m_guiElements->getProjectTree()->getLastRightclickedItem() == 0)
+    {
+        return;
+    }
+
+    ContextMenuEnabledTreeWidgetItem* item = m_guiElements->getProjectTree()->getLastRightclickedItem();
+    m_guiElements->getProjectTree()->setLastRightclickedItem(0);
+
+    QVariant qv = item->data(0, Qt::UserRole);
+    QString diagramsUid = qv.toString();
+
+    Version* v = UidWarehouse::instance().getVersionForUid(diagramsUid);
+    qDebug() << v->getVersionText();
+
+    // TODO: This is pure duplication with onNewDiagram
+    Diagram* dgram = new Diagram(v, QUuid::createUuid().toString());
+    DiagramForm* df = new DiagramForm(v, dgram, this);
+    v->addDiagram(dgram);
+    setCentralWidget(df);
+    dgram->setForm(df);
+    onSaveDiagram(dgram, v);
+}
+
 void MainWindow::onNewTableFromPopup()
 {
     if(m_guiElements->getProjectTree()->getLastRightclickedItem() == 0)
@@ -671,10 +702,8 @@ void MainWindow::onNewTableFromPopup()
 
     QVariant qv = item->data(0, Qt::UserRole);
     QString tablesUid = qv.toString();
-    qDebug() << tablesUid;
 
     Version* v = UidWarehouse::instance().getVersionForUid(tablesUid);
-    qDebug() << v->getVersionText();
 
     // TODO: duplicate with below
     m_ui->action_NewTable->setDisabled(true);
@@ -945,7 +974,7 @@ void MainWindow::connectActionsFromPopupMenus()
         QObject::connect(ContextMenuCollection::getInstance()->getAction_RenameTableInstance(), SIGNAL(triggered()), this, SLOT(onRenameInstanceFromPopup()));
 
         // table instances popup
-        QObject::connect(ContextMenuCollection::getInstance()->getAction_AddTableInstance(), SIGNAL(triggered()), this, SLOT(onNewTableInstance()));
+        QObject::connect(ContextMenuCollection::getInstance()->getAction_AddTableInstance(), SIGNAL(triggered()), this, SLOT(onNewTableInstanceFromPopup()));
 
     }
     else
@@ -960,7 +989,7 @@ void MainWindow::connectActionsFromPopupMenus()
     QObject::connect(ContextMenuCollection::getInstance()->getAction_DuplicateDataType(), SIGNAL(triggered()), this, SLOT(onDuplicateDatatypeFromPopup()));
     QObject::connect(ContextMenuCollection::getInstance()->getAction_DeleteDiagram(), SIGNAL(triggered()), this, SLOT(onDeleteDiagramFromPopup()));
     QObject::connect(ContextMenuCollection::getInstance()->getAction_RenameDiagram(), SIGNAL(triggered()), this, SLOT(onRenameDiagramFromPopup()));
-    QObject::connect(ContextMenuCollection::getInstance()->getAction_AddDiagram(), SIGNAL(triggered()), this, SLOT(onNewDiagram()));
+    QObject::connect(ContextMenuCollection::getInstance()->getAction_AddDiagram(), SIGNAL(triggered()), this, SLOT(onNewDiagramFromPopup()));
     QObject::connect(ContextMenuCollection::getInstance()->getAction_AddString(), SIGNAL(triggered()), this, SLOT(onNewStringType()));
     QObject::connect(ContextMenuCollection::getInstance()->getAction_AddNumeric(), SIGNAL(triggered()), this, SLOT(onNewNumericType()));
     QObject::connect(ContextMenuCollection::getInstance()->getAction_AddBool(), SIGNAL(triggered()), this, SLOT(onNewBoolType()));
@@ -1045,7 +1074,7 @@ void MainWindow::finallyDoLockLikeOperation(bool reLocking, const QString& guid)
     if(le)
     {
         ObjectWithUid* owuid = dynamic_cast<ObjectWithUid*>(element);
-        QString classUid = owuid->getClassUid();
+        QString classUid = owuid->getClassUid().toString().toUpper();
 
         Version* foundVersion = UidWarehouse::instance().getVersionForUid(guid);
         if(!reLocking) le->unlock(); else le->lock();
@@ -1108,13 +1137,10 @@ void MainWindow::createPatchElement(Version* v, ObjectWithUid * element, const Q
 
 void MainWindow::doLockLikeOperation(bool reLocking)
 {
-    if(m_guiElements->getProjectTree()->getLastRightclickedItem() != 0)
+    ObjectWithUid* obj = getRightClickedObject<ObjectWithUid>();
+    if(obj)
     {
-        ContextMenuEnabledTreeWidgetItem* item = m_guiElements->getProjectTree()->getLastRightclickedItem();
-        m_guiElements->getProjectTree()->setLastRightclickedItem(0);
-        QVariant qv = item->data(0, Qt::UserRole);
-        QString guid = qv.toString();
-        finallyDoLockLikeOperation(reLocking, guid);
+        finallyDoLockLikeOperation(reLocking, obj->getObjectUid());
     }
 }
 
@@ -1130,20 +1156,14 @@ void MainWindow::onRelockSomething()
 
 void MainWindow::onDeleteFunction()
 {
-    ContextMenuEnabledTreeWidgetItem* itm = m_guiElements->getProjectTree()->getLastRightclickedItem();
-    m_guiElements->getProjectTree()->setLastRightclickedItem(0);
-
-    QVariant qv = itm->data(0, Qt::UserRole);
-    QString guid = qv.toString();
-
-    Function* p = dynamic_cast<Function*>(UidWarehouse::instance().getElement(guid));
-    if(p)
+    Function* f = getRightClickedObject<Function>();
+    if(f)
     {
-        if(QMessageBox::question(this, tr("Are you sure?"), tr("Really delete ") + p->getName()+ "?", QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
+        if(QMessageBox::question(this, tr("Are you sure?"), tr("Really delete ") + f->getName()+ "?", QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
         {
             return;
         }
-        m_workspace->workingVersion()->deleteFunction(p->getName());
+        m_workspace->workingVersion()->deleteFunction(f->getName());
         m_workspace->workingVersion()->getGui()->updateForms();
 
         showNamedObjectList(&MainWindow::showFunctionWithGuid, m_workspace->workingVersion()->getFunctions(), IconFactory::getFunctionIcon(), "Functions");
@@ -1155,20 +1175,14 @@ void MainWindow::onDeleteFunction()
 
 void MainWindow::onDeleteTrigger()
 {
-    ContextMenuEnabledTreeWidgetItem* itm = m_guiElements->getProjectTree()->getLastRightclickedItem();
-    m_guiElements->getProjectTree()->setLastRightclickedItem(0);
-
-    QVariant qv = itm->data(0, Qt::UserRole);
-    QString guid = qv.toString();
-
-    Trigger* p = dynamic_cast<Trigger*>(UidWarehouse::instance().getElement(guid));
-    if(p)
+    Trigger* t = getRightClickedObject<Trigger>();
+    if(t)
     {
-        if(QMessageBox::question(this, tr("Are you sure?"), tr("Really delete ") + p->getName()+ "?", QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
+        if(QMessageBox::question(this, tr("Are you sure?"), tr("Really delete ") + t->getName()+ "?", QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
         {
             return;
         }
-        m_workspace->workingVersion()->deleteTrigger(p->getName());
+        m_workspace->workingVersion()->deleteTrigger(t->getName());
         m_workspace->workingVersion()->getGui()->updateForms();
 
         showNamedObjectList(&MainWindow::showTriggerWithGuid, m_workspace->workingVersion()->getTriggers(), IconFactory::getTriggerIcon(), "Triggers");
@@ -1180,12 +1194,7 @@ void MainWindow::onDeleteTrigger()
 
 void MainWindow::onDeleteProcedure()
 {
-    ContextMenuEnabledTreeWidgetItem* itm = m_guiElements->getProjectTree()->getLastRightclickedItem();
-    m_guiElements->getProjectTree()->setLastRightclickedItem(0);
-
-    QVariant qv = itm->data(0, Qt::UserRole);
-    QString guid = qv.toString();
-    Procedure* p = dynamic_cast<Procedure*>(UidWarehouse::instance().getElement(guid));
+    Procedure* p = getRightClickedObject<Procedure>();
     if(p)
     {
         if(QMessageBox::question(this, tr("Are you sure?"), tr("Really delete ") + p->getName()+ "?", QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
@@ -1205,12 +1214,7 @@ void MainWindow::onDeleteProcedure()
 
 void MainWindow::onDeleteView()
 {
-    ContextMenuEnabledTreeWidgetItem* itm = m_guiElements->getProjectTree()->getLastRightclickedItem();
-    m_guiElements->getProjectTree()->setLastRightclickedItem(0);
-
-    QVariant qv = itm->data(0, Qt::UserRole);
-    QString guid = qv.toString();
-    View* v = dynamic_cast<View*>(UidWarehouse::instance().getElement(guid));
+    View* v = getRightClickedObject<View>();
     if(v)
     {
         if(QMessageBox::question(this, tr("Are you sure?"), tr("Really delete ") + v->getName()+ "?", QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
@@ -1263,14 +1267,14 @@ void MainWindow::onNewDiagram()
     m_workspace->workingVersion()->addDiagram(dgram);
     setCentralWidget(df);
     dgram->setForm(df);
-    onSaveDiagram(dgram);
+    onSaveDiagram(dgram, m_workspace->workingVersion());
 }
 
-bool MainWindow::onSaveDiagram(Diagram* dgram)
+bool MainWindow::onSaveDiagram(Diagram* dgram, Version* v)
 {
     if(!dgram->isSaved())
     {
-        m_workspace->workingVersion()->getGui()->createDiagramTreeEntry(dgram);
+        v->getGui()->createDiagramTreeEntry(dgram);
     }
     else
     {
@@ -1287,34 +1291,18 @@ void MainWindow::onSaveAs()
 
 void MainWindow::onInstantiateTableFromPopup()
 {
-    if(m_guiElements->getProjectTree()->getLastRightclickedItem() == 0)
-    {
-        return;
-    }
 
-    // TODO: Code duplication with some stuff from below (onDelete...)
-    ContextMenuEnabledTreeWidgetItem* item = m_guiElements->getProjectTree()->getLastRightclickedItem();
-    m_guiElements->getProjectTree()->setLastRightclickedItem(0);
-
-    QVariant qv = item->data(0, Qt::UserRole);
-    QString tabUid = qv.toString();
-
-    Version* v = UidWarehouse::instance().getVersionForUid(tabUid);
-
-    if(v == 0)
-    {
-        qDebug() << "version is null";
-        return;
-    }
-
-    qDebug() << v->getVersionText();
-    Table* table = v->getTableWithUid(tabUid);
+    Table* table =getRightClickedObject<Table>();
     if(table == 0)  // shouldn't be ...
     {
         qDebug() << "table is null";
         return;
     }
-
+    Version* v = table->version();
+    if(!v)
+    {
+        return;
+    }
     v->getGui()->updateForms();
     TableInstance* tinst = instantiateTable(table->getName(), QStringList(), v);
     showTableInstanceWithGuid(v, tinst->getObjectUid());
@@ -1322,97 +1310,68 @@ void MainWindow::onInstantiateTableFromPopup()
 
 void MainWindow::onSpecializeTableFromPopup()
 {
-    if(m_guiElements->getProjectTree()->getLastRightclickedItem() == 0)
-    {
-        return;
-    }
-
-    ContextMenuEnabledTreeWidgetItem* item = m_guiElements->getProjectTree()->getLastRightclickedItem();
-    m_guiElements->getProjectTree()->setLastRightclickedItem(0);
-
-    QVariant qv = item->data(0, Qt::UserRole);
-    QString tabUid = qv.toString();
-    Table* table =  m_workspace->workingVersion()->getTableWithUid(tabUid);
-
-    Table* specializedTable = new Table(m_workspace->workingVersion(), QUuid::createUuid().toString(), 0);
+    Table* table = getRightClickedObject<Table>();
+    Table* specializedTable = new Table(table->version(), QUuid::createUuid().toString(), 0);
     specializedTable->initializeFor(Workspace::getInstance()->currentProjectsEngine(), QUuid(uidTable));
 
     specializedTable->setName(table->getName() + "_specialized");
     specializedTable->setParent(table);
     specializedTable->setParentUid(table->getObjectUid());
 
-    ContextMenuEnabledTreeWidgetItem* newTblsItem = m_workspace->workingVersion()->getGui()->createTableTreeEntry(specializedTable, table->getLocation()) ;
+    ContextMenuEnabledTreeWidgetItem* newTblsItem = table->version()->getGui()->createTableTreeEntry(specializedTable, table->getLocation()) ;
 
     // add to the project itself
-    m_workspace->workingVersion()->addTable(specializedTable, false);
+    table->version()->addTable(specializedTable, false);
 
     // set the link to the tree
     specializedTable->setLocation(newTblsItem);
 
     // now open the new table for to show this table
-    showExistingTable(specializedTable);
+    showExistingTable(specializedTable, table->version());
 }
 
 void MainWindow::onTableAddColumnFromPopup()
 {
-    if(m_guiElements->getProjectTree()->getLastRightclickedItem() != 0)
+    Table* table =  getRightClickedObject<Table>();
+    if(!table)
     {
-        if(m_guiElements->getProjectTree()->getLastRightclickedItem() == 0)
-        {
-            return;
-        }
-
-        ContextMenuEnabledTreeWidgetItem* item = m_guiElements->getProjectTree()->getLastRightclickedItem();
-        m_guiElements->getProjectTree()->setLastRightclickedItem(0);
-
-        QVariant qv = item->data(0, Qt::UserRole);
-        QString tabUid = qv.toString();
-        Table* table =  m_workspace->workingVersion()->getTableWithUid(tabUid);
-        NewTableForm* frm = showExistingTable(table);
-        frm->focusOnNewColumnName();
-        m_guiElements->getProjectTree()->setLastRightclickedItem(0);
+        return;
     }
+
+    NewTableForm* frm = showExistingTable(table, table->version());
+    frm->focusOnNewColumnName();
 }
 
 template <class T>
-T* MainWindow::getNamedObject(QTreeWidgetItem* itm, itemGetter g)
+T* MainWindow::getRightClickedObject()
 {
-    QVariant qv = itm->data(0, Qt::UserRole);
-    QString name = qv.toString();
-    T* t =  reinterpret_cast<T*>((m_workspace->getInstance()->workingVersion()->*g)(name));
+    ContextMenuEnabledTreeWidgetItem* item = getLastRightClickedTreeItem();
+    if(item == 0)
+    {
+        return 0;
+    }
+
+    QVariant qv = item->data(0, Qt::UserRole);
+    QString uid = qv.toString();
+    ObjectWithUid* obj = UidWarehouse::instance().getElement(uid);
+    if(obj == 0)
+    {
+        return 0;
+    }
+
+    Version* v = obj->version();
+    if(v == 0)
+    {
+        return 0;
+    }
+
+    T* t =  dynamic_cast<T*>(obj);
+    if(t == 0)
+    {
+        return 0;
+    }
+
     return t;
-}
-
-template <class T>
-T* MainWindow::getRightClickedObject(itemGetter g)
-{
-    if(m_guiElements->getProjectTree()->getLastRightclickedItem() != 0)
-    {
-        ContextMenuEnabledTreeWidgetItem* item = m_guiElements->getProjectTree()->getLastRightclickedItem();
-        m_guiElements->getProjectTree()->setLastRightclickedItem(0);
-
-        return getNamedObject<T>(item, g);
-    }
-    return 0;
-}
-
-UserDataType* MainWindow::getRightClickedDatatype()
-{
-    if(m_guiElements->getProjectTree()->getLastRightclickedItem() != 0)
-    {
-        ContextMenuEnabledTreeWidgetItem* item = m_guiElements->getProjectTree()->getLastRightclickedItem();
-        m_guiElements->getProjectTree()->setLastRightclickedItem(0);
-        QVariant qv = item->data(0, Qt::UserRole);
-        QString guid = qv.toString();
-        ObjectWithUid* element = UidWarehouse::instance().getElement(guid);
-        // now find the type of this element
-        UserDataType* udt = dynamic_cast<UserDataType*>(element);
-        if(udt)
-        {
-            return udt;
-        }
-    }
-    return 0;
 }
 
 Connection* MainWindow::getRightClickedConnection()
@@ -1432,22 +1391,10 @@ Connection* MainWindow::getRightClickedConnection()
 
 void MainWindow::onDeleteTableFromPopup()
 {
-
-    // TODO: Since the introduction of the GUIDs this code repeats itself over and over
-    if(m_guiElements->getProjectTree()->getLastRightclickedItem() == 0)
-    {
-        return;
-    }
-
-    ContextMenuEnabledTreeWidgetItem* item = m_guiElements->getProjectTree()->getLastRightclickedItem();
-    m_guiElements->getProjectTree()->setLastRightclickedItem(0);
-
-    QVariant qv = item->data(0, Qt::UserRole);
-    QString tabUid = qv.toString();
-    Table* tab =  m_workspace->workingVersion()->getTableWithUid(tabUid);
-
+    Table* tab =  getRightClickedObject<Table>();
     if(tab)
     {
+        Version* v = tab->version();
         if(QMessageBox::question(this, tr("Are you sure?"), tr("Really delete ") + tab->getName() + "?", QMessageBox::Yes | QMessageBox::No) !=  QMessageBox::Yes)
         {
             return;
@@ -1459,9 +1406,8 @@ void MainWindow::onDeleteTableFromPopup()
             return;
 
         }
-        QString tabName = tab->getName();
         QWidget* w = centralWidget();
-        if(m_workspace->workingVersion()->deleteTable(tab))
+        if(v->deleteTable(tab))
         {
             if(dynamic_cast<DiagramForm*>(w))
             {
@@ -1469,30 +1415,20 @@ void MainWindow::onDeleteTableFromPopup()
             }
             else
             {
-                showNamedObjectList(&MainWindow::showTableWithGuid, m_workspace->workingVersion()->getTables(),
+                showNamedObjectList(&MainWindow::showTableWithGuid, v->getTables(),
                                     Workspace::getInstance()->currentProjectIsOop()?IconFactory::getTabinstIcon():IconFactory::getTableIcon(),
                                     Workspace::getInstance()->currentProjectIsOop()?"Table Templates":"Tables");
-                m_workspace->workingVersion()->getGui()->getTablesItem()->treeWidget()->clearSelection();
-                m_workspace->workingVersion()->getGui()->getTablesItem()->setSelected(true);
+                v->getGui()->getTablesItem()->treeWidget()->clearSelection();
+                v->getGui()->getTablesItem()->setSelected(true);
             }
         }
-        m_workspace->workingVersion()->getGui()->updateForms();
+        v->getGui()->updateForms();
     }
 }
 
 void MainWindow::onCopyTableFromPopup()
 {
-    if(m_guiElements->getProjectTree()->getLastRightclickedItem() == 0)
-    {
-        return;
-    }
-
-    ContextMenuEnabledTreeWidgetItem* item = m_guiElements->getProjectTree()->getLastRightclickedItem();
-    m_guiElements->getProjectTree()->setLastRightclickedItem(0);
-
-    QVariant qv = item->data(0, Qt::UserRole);
-    QString tabUid = qv.toString();
-    Table* tab =  m_workspace->workingVersion()->getTableWithUid(tabUid);
+    Table* tab =  getRightClickedObject<Table>();
     if(tab)
     {
         tab->copy();
@@ -1504,7 +1440,7 @@ void MainWindow::onPasteTableFromPopup()
     Table* tab = Workspace::getInstance()->pasteTable();
     if(tab)
     {
-        m_workspace->getInstance()->workingVersion()->getGui()->createTableTreeEntry(tab);
+        tab->version()->getGui()->createTableTreeEntry(tab);
         if(tab->getParent())
         {
             QTreeWidgetItem* p = tab->getLocation();
@@ -1514,7 +1450,7 @@ void MainWindow::onPasteTableFromPopup()
         // add the SQL item but only if it's not an oop project
         if(!m_workspace->currentProjectIsOop())
         {
-            ContextMenuEnabledTreeWidgetItem* sqlItm = new ContextMenuEnabledTreeWidgetItem(m_workspace->workingVersion()->getGui()->getFinalSqlItem(), QStringList(tab->getName() + ".sql"));
+            ContextMenuEnabledTreeWidgetItem* sqlItm = new ContextMenuEnabledTreeWidgetItem(tab->version()->getGui()->getFinalSqlItem(), QStringList(tab->getName() + ".sql"));
             sqlItm->setIcon(0, IconFactory::getTablesIcon());
             sqlItm->setData(0, Qt::UserRole, tab->getObjectUid().toString());
         }
@@ -1523,20 +1459,37 @@ void MainWindow::onPasteTableFromPopup()
     }
 }
 
-
-void MainWindow::onDuplicateTableFromPopup()
+ContextMenuEnabledTreeWidgetItem* MainWindow::getLastRightClickedTreeItem()
 {
-    if(m_guiElements->getProjectTree()->getLastRightclickedItem() == 0)
+    if(m_guiElements->getProjectTree()->getLastRightclickedItem() == 0 && m_guiElements->getPatchesTree()->getLastRightclickedItem() == 0)
     {
-        return;
+        return 0;
     }
 
     ContextMenuEnabledTreeWidgetItem* item = m_guiElements->getProjectTree()->getLastRightclickedItem();
-    m_guiElements->getProjectTree()->setLastRightclickedItem(0);
+    if(item == 0)
+    {
+        item = m_guiElements->getPatchesTree()->getLastRightclickedItem();
+        if(item == 0)
+        {
+            return 0;
+        }
+        else
+        {
+            m_guiElements->getPatchesTree()->setLastRightclickedItem(0);
+        }
+    }
+    else
+    {
+        m_guiElements->getProjectTree()->setLastRightclickedItem(0);
+    }
 
-    QVariant qv = item->data(0, Qt::UserRole);
-    QString tabUid = qv.toString();
-    Table* tab =  m_workspace->workingVersion()->getTableWithUid(tabUid);
+    return item;
+}
+
+void MainWindow::onDuplicateTableFromPopup()
+{
+    Table* tab = getRightClickedObject<Table>();
 
     if(tab)
     {
@@ -1560,6 +1513,42 @@ void MainWindow::onDuplicateTableFromPopup()
     }
 }
 
+void MainWindow::onNewTableInstanceFromPopup()
+{
+    // TODO: Duplicate from various spaces :)
+    if(m_guiElements->getProjectTree()->getLastRightclickedItem() == 0)
+    {
+        return;
+    }
+
+    ContextMenuEnabledTreeWidgetItem* item = m_guiElements->getProjectTree()->getLastRightclickedItem();
+    m_guiElements->getProjectTree()->setLastRightclickedItem(0);
+
+    QVariant qv = item->data(0, Qt::UserRole);
+    QString tablesUid = qv.toString();
+
+    Version* v = UidWarehouse::instance().getVersionForUid(tablesUid);
+
+    // Duplicate with the one below
+    CreateTableInstancesDialog* newDialog = new CreateTableInstancesDialog(this);
+    for(int i=0; i<v->getTables().size(); i++)
+    {
+        newDialog->addTable(v->getTables()[i]->getName());
+    }
+
+    if(newDialog->exec() == QDialog::Accepted)
+    {
+        QStringList items = newDialog->getSelectedTables();
+        for(int i=0; i<items.size(); i++)
+        {
+            instantiateTable(items.at(i), items, v);
+        }
+
+        // This is OK, the button defaultly adds to the working version
+        v->getGui()->updateForms();
+    }
+}
+
 void MainWindow::onNewTableInstance()
 {
     CreateTableInstancesDialog* newDialog = new CreateTableInstancesDialog(this);
@@ -1576,6 +1565,7 @@ void MainWindow::onNewTableInstance()
             instantiateTable(items.at(i), items, m_workspace->workingVersion());
         }
 
+        // This is OK, the button defaultly adds to the working version
         m_workspace->workingVersion()->getGui()->updateForms();
     }
 }
@@ -1612,18 +1602,20 @@ void MainWindow::onNewTableInstanceHovered()
     QMenu* createTableInstancesPopup = ContextMenuCollection::getInstance()->getCreateTableInstancesPopupMenu();
     createTableInstancesPopup->clear();
 
-    if(m_workspace && m_workspace->currentSolution() && m_workspace->currentProject() && m_workspace->workingVersion())
+    Version* v = m_workspace->workingVersion();
+    if(m_workspace && m_workspace->currentSolution() && m_workspace->currentProject() && v) // OK, using the working version here
     {
-        for(int i=0; i<m_workspace->workingVersion()->getTables().size(); i++)
+        for(int i=0; i<v->getTables().size(); i++)
         {
             QAction * actionToAdd = new QAction(this);
-            actionToAdd->setText(m_workspace->workingVersion()->getTables()[i]->getName());
+            actionToAdd->setText(v->getTables()[i]->getName());
             QIcon icon(IconFactory::getTablesIcon());
-            actionToAdd->setData(QVariant(m_workspace->workingVersion()->getTables()[i]->getName()));
+            actionToAdd->setData(QVariant(v->getTables()[i]->getName()));
             actionToAdd->setIcon(icon);
             createTableInstancesPopup->addAction(actionToAdd);
             QObject::connect(actionToAdd, SIGNAL(triggered()),
-                             new DynamicActionHandlerforMainWindow(m_workspace->workingVersion()->getTables()[i]->getName(), this, (MainWindow::dynamicAction)&MainWindow::instantiateTableCallback), SLOT(called()));
+                             new DynamicActionHandlerforMainWindow(v->getTables()[i]->getName(), this,
+                                    (MainWindow::dynamicAction)&MainWindow::instantiateTableCallback), SLOT(called()));
         }
     }
 }
@@ -1704,17 +1696,7 @@ void MainWindow::onPreferences()
 
 void MainWindow::onRenameInstanceFromPopup()
 {
-    if(m_guiElements->getProjectTree()->getLastRightclickedItem() == 0)
-    {
-        return;
-    }
-
-    ContextMenuEnabledTreeWidgetItem* item = m_guiElements->getProjectTree()->getLastRightclickedItem();
-    m_guiElements->getProjectTree()->setLastRightclickedItem(0);
-
-    QVariant qv = item->data(0, Qt::UserRole);
-    QString tabUid = qv.toString();
-    TableInstance* tinst =  m_workspace->workingVersion()->getTableInstanceWithUid(tabUid);
+    TableInstance* tinst =  getRightClickedObject<TableInstance>();
 
     if(tinst)
     {
@@ -1724,7 +1706,7 @@ void MainWindow::onRenameInstanceFromPopup()
         if(dlg->exec() == QDialog::Accepted)
         {
             QString t = dlg->getText();
-            if(m_workspace->getInstance()->workingVersion()->getTableInstance(t))
+            if(tinst->version()->getTableInstance(t))
             {
                 QMessageBox::critical(this, tr("Error"), tr("You can have only one table instance called ") + t, QMessageBox::Ok);
                 return;
@@ -1732,23 +1714,15 @@ void MainWindow::onRenameInstanceFromPopup()
             tinst->setName(t);
             tinst->setDisplayText(t);
             tinst->getSqlLocation()->setText(0, t);
+
+            m_guiElements->updateItemForPatchWithState(tinst->version()->getWorkingPatch(), uidTableInstance, tinst->getObjectUid(), t, 2);
         }
     }
 }
 
 void MainWindow::onRenameDiagramFromPopup()
 {
-    if(m_guiElements->getProjectTree()->getLastRightclickedItem() == 0)
-    {
-        return;
-    }
-
-    ContextMenuEnabledTreeWidgetItem* item = m_guiElements->getProjectTree()->getLastRightclickedItem();
-    m_guiElements->getProjectTree()->setLastRightclickedItem(0);
-
-    QVariant qv = item->data(0, Qt::UserRole);
-    QString tabUid = qv.toString();
-    Diagram* dgr =  m_workspace->workingVersion()->getDiagramWithUid(tabUid);
+    Diagram* dgr =  getRightClickedObject<Diagram>();
     if(dgr)
     {
         SimpleTextInputDialog* dlg = new SimpleTextInputDialog(this, tr("Enter the new name"));
@@ -1768,19 +1742,7 @@ void MainWindow::onRenameDiagramFromPopup()
 
 void MainWindow::onDeleteInstanceFromPopup()
 {
-    if(m_guiElements->getProjectTree()->getLastRightclickedItem() == 0)
-    {
-        return;
-    }
-
-    ContextMenuEnabledTreeWidgetItem* item = m_guiElements->getProjectTree()->getLastRightclickedItem();
-    m_guiElements->getProjectTree()->setLastRightclickedItem(0);
-
-    QVariant qv = item->data(0, Qt::UserRole);
-    QString tabUid = qv.toString();
-    TableInstance* tinst =  m_workspace->workingVersion()->getTableInstanceWithUid(tabUid);
-
-    //TableInstance* tinst = getRightClickedObject<TableInstance>((itemGetter)&Version::getTableInstance);
+    TableInstance* tinst =  getRightClickedObject<TableInstance>();
     if(tinst)
     {
         if(QMessageBox::question(this, tr("Are you sure?"), tr("Really delete ") + tinst->getName() + "?", QMessageBox::Yes | QMessageBox::No) !=  QMessageBox::Yes)
@@ -1797,16 +1759,18 @@ void MainWindow::onDeleteInstanceFromPopup()
             }
         }
 
+        Version* v = tinst->version();
+
         // mark for purge
-        m_workspace->workingVersion()->deleteTableInstance(tinst);
+        v->deleteTableInstance(tinst);
 
         // Now delete the tree entries and the SQL tree entry
-        for(int i=0; i<m_workspace->workingVersion()->getTableInstances().size(); i++)
+        for(int i=0; i<v->getTableInstances().size(); i++)
         {
-            if(m_workspace->workingVersion()->getTableInstances().at(i)->sentenced())
+            if(v->getTableInstances().at(i)->sentenced())
             {
-                QString uid = m_workspace->workingVersion()->getTableInstances().at(i)->getObjectUid();
-                ContextMenuEnabledTreeWidgetItem* tabInstItem = m_workspace->workingVersion()->getGui()->getTableInstancesItem();
+                QString uid = v->getTableInstances().at(i)->getObjectUid();
+                ContextMenuEnabledTreeWidgetItem* tabInstItem = v->getGui()->getTableInstancesItem();
                 for(int j=0; j<tabInstItem->childCount(); j++)
                 {
                     QVariant a = tabInstItem->child(j)->data(0, Qt::UserRole);
@@ -1816,7 +1780,7 @@ void MainWindow::onDeleteInstanceFromPopup()
                     }
                 }
 
-                ContextMenuEnabledTreeWidgetItem* sqlItem = m_workspace->workingVersion()->getGui()->getFinalSqlItem();
+                ContextMenuEnabledTreeWidgetItem* sqlItem = v->getGui()->getFinalSqlItem();
                 for(int j=0; j<sqlItem->childCount(); j++)
                 {
                     QVariant a = sqlItem->child(j)->data(0, Qt::UserRole);
@@ -1829,15 +1793,12 @@ void MainWindow::onDeleteInstanceFromPopup()
         }
 
         // and finally remove all purged table instances
-        m_workspace->workingVersion()->purgeSentencedTableInstances();
+        v->purgeSentencedTableInstances();
 
         // and show a table instances list form
-        showNamedObjectList(&MainWindow::showTableWithGuid, m_workspace->workingVersion()->getTables(),
-                            Workspace::getInstance()->currentProjectIsOop()?IconFactory::getTabinstIcon():IconFactory::getTableIcon(),
-                            Workspace::getInstance()->currentProjectIsOop()?"Table Templates":"Tables");
+        showNamedObjectList(&MainWindow::showTableWithGuid, v->getTableInstances(), IconFactory::getTabinstIcon(), QObject::tr("Tables"));
 
-        m_workspace->workingVersion()->getGui()->getDiagramsItem()->treeWidget()->clearSelection();
-        m_workspace->workingVersion()->getGui()->getTableInstancesItem()->setSelected(true);
+        //v->getGui()->getTableInstancesItem()->setSelected(true);
 
     }
 }
@@ -1862,12 +1823,7 @@ void MainWindow::onCloseSolution()
 
 void MainWindow::onDeleteDatatypeFromPopup()
 {
-    ContextMenuEnabledTreeWidgetItem* itm = m_guiElements->getProjectTree()->getLastRightclickedItem();
-    if(!itm)
-    {
-        return;
-    }
-    UserDataType* udt = getRightClickedDatatype();
+    UserDataType* udt = getRightClickedObject<UserDataType>();
     if(udt)
     {
         QString dtName = udt->getName();
@@ -1895,8 +1851,8 @@ void MainWindow::onDeleteDatatypeFromPopup()
                 return;
             }
 
+            delete udt->getLocation();
             m_workspace->workingVersion()->deleteDataType(dtName);
-            delete itm;
         }
     }
 }
@@ -2164,13 +2120,14 @@ void MainWindow::onConnectConnection()
 
 void MainWindow::onDuplicateDatatypeFromPopup()
 {
-    UserDataType* udt = getRightClickedDatatype();
+    UserDataType* udt = getRightClickedObject<UserDataType>();
     if(udt)
     {
         QString x = udt->getName();
-        UserDataType* dup = m_workspace->workingVersion()->duplicateDataType(x);
+        Version* v = udt->version();
+        UserDataType* dup = v->duplicateDataType(x);
 
-        ContextMenuEnabledTreeWidgetItem* newDTItem = m_workspace->workingVersion()->getGui()->createDataTypeTreeEntry(dup);
+        ContextMenuEnabledTreeWidgetItem* newDTItem = v->getGui()->createDataTypeTreeEntry(dup);
 
         m_guiElements->getProjectTree()->expandItem(newDTItem);
         m_guiElements->getProjectTree()->scrollToItem(newDTItem);
@@ -2183,30 +2140,20 @@ void MainWindow::onDuplicateDatatypeFromPopup()
 
 void MainWindow::onDeleteDiagramFromPopup()
 {
-    if(m_guiElements->getProjectTree()->getLastRightclickedItem() == 0)
-    {
-        return;
-    }
-
-    ContextMenuEnabledTreeWidgetItem* item = m_guiElements->getProjectTree()->getLastRightclickedItem();
-    m_guiElements->getProjectTree()->setLastRightclickedItem(0);
-
-    QVariant qv = item->data(0, Qt::UserRole);
-    QString tabUid = qv.toString();
-    Diagram* dgr =  m_workspace->workingVersion()->getDiagramWithUid(tabUid);
+    Diagram* dgr =  getRightClickedObject<Diagram>();
     if(dgr)
     {
         if(QMessageBox::question(this, tr("Are you sure?"), tr("Really delete ") + dgr->getName()+ "?", QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
         {
             return;
         }
-        m_workspace->workingVersion()->deleteDiagram(dgr->getName());
-        m_workspace->workingVersion()->getGui()->updateForms();
+        Version *v = dgr->version();
+        v->deleteDiagram(dgr->getName());
+        v->getGui()->updateForms();
 
-        showNamedObjectList(&MainWindow::showDiagramWithGuid, m_workspace->workingVersion()->getTables(), IconFactory::getDiagramIcon(), "Diagrams");
-        m_workspace->workingVersion()->getGui()->getDiagramsItem()->treeWidget()->clearSelection();
-        m_workspace->workingVersion()->getGui()->getDiagramsItem()->setSelected(true);
-
+        showNamedObjectList(&MainWindow::showDiagramWithGuid, v->getTables(), IconFactory::getDiagramIcon(), "Diagrams");
+        v->getGui()->getDiagramsItem()->treeWidget()->clearSelection();
+        v->getGui()->getDiagramsItem()->setSelected(true);
     }
 }
 
@@ -2256,13 +2203,14 @@ void MainWindow::onGotoIssueLocation()
     if(!m_guiElements->getIssuesTree()->getLastRightclickedItem()) return;
     QVariant a = m_guiElements->getIssuesTree()->getLastRightclickedItem()->data(0, Qt::UserRole);
     QString issueName = a.toString();
-    Issue* selectedIssue = m_workspace->workingVersion()->getIssue(issueName);
+    // TODO: Associate the issue tree locations to the specific version too!
+    Issue* selectedIssue = m_workspace->workingVersion()->getIssue(issueName); // TODO: Fix this too!
     IssueOriginator* source = selectedIssue->getOriginator();
     Column* testCol = dynamic_cast<Column*>(source);
     if(testCol)
     {
         tab = testCol->getTable();
-        NewTableForm*frm = showExistingTable(tab);
+        NewTableForm*frm = showExistingTable(tab, tab->version());
         frm->showColumn(testCol);
         frm->focusOnNewColumnName();
         frm->setCurrentColumn(testCol);
@@ -2503,6 +2451,8 @@ void MainWindow::onReverseEngineerWizardAccept()
 void MainWindow::onReverseEngineeringFinished(ReverseEngineerer*)
 {
     lblStatus->setText(QApplication::translate("MainWindow", "Reverse engineering finished", 0, QApplication::UnicodeUTF8));
+
+    // Ok, reverse engineering can happen only to the current version
     m_workspace->workingVersion()->getGui()->populateTreeItems();
 
 }
@@ -2562,6 +2512,7 @@ void MainWindow::onValidate()
 
 void MainWindow::onNewViewWithSql()
 {
+    // Ok. New views from the button go always to the working version
     m_nvf = new NewViewForm(false, 0, this);
     View* v = new View(true, QUuid::createUuid().toString(), m_workspace->workingVersion());
     Workspace::getInstance()->workingVersion()->addView(v);
@@ -2576,6 +2527,7 @@ void MainWindow::onNewViewWithSql()
 
 void MainWindow::onNewView()
 {
+    // Ok. New views from the button go always to the working version
     View* v = new View(false, QUuid::createUuid().toString(), m_workspace->workingVersion());
     m_nvf = 0;
     v->getHelper()->setForm(this);
@@ -2587,6 +2539,7 @@ void MainWindow::onNewView()
 
 void MainWindow::onNewProcedure()
 {
+    // Ok. New procedures from the button go always to the working version
     ProcedureForm* frm = Workspace::getInstance()->workingVersion()->getGui()->getProcedureForm(MODE_PROCEDURE);
     Procedure* p = new Procedure(NameGenerator::getUniqueName(Workspace::getInstance()->workingVersion(),
                                                               (itemGetter)&Version::getProcedure, QString("proc")),
@@ -2596,12 +2549,12 @@ void MainWindow::onNewProcedure()
     Workspace::getInstance()->workingVersion()->addProcedure(p);
     Workspace::getInstance()->workingVersion()->getGui()->createProcedureTreeEntry(p);
 
-    //m_guiElements->getProjectTree()->setCurrentItem(p->getLocation());
     setCentralWidget(frm);
 }
 
 void MainWindow::onNewFunction()
 {
+    // Ok. New functions from the button go always to the working version
     ProcedureForm* frm = Workspace::getInstance()->workingVersion()->getGui()->getProcedureForm(MODE_FUNCTION);
     Function* func = new Function(NameGenerator::getUniqueName(Workspace::getInstance()->workingVersion(), (itemGetter)&Version::getFunction, QString("func")), QUuid::createUuid().toString(), m_workspace->workingVersion());
     frm->setProcedure(func);
@@ -2615,6 +2568,7 @@ void MainWindow::onNewFunction()
 
 void MainWindow::onNewTrigger()
 {
+    // Ok. New triggers from the button go always to the working version
     const QVector<Table*>& allTables = Workspace::getInstance()->workingVersion()->getTables();
     if(allTables.size() == 0)
     {
@@ -2631,8 +2585,6 @@ void MainWindow::onNewTrigger()
     frm->feedInTriggerTimes(Workspace::getInstance()->currentProjectsEngine()->getTriggerTimings());
     Workspace::getInstance()->workingVersion()->addTrigger(trigger);
     Workspace::getInstance()->workingVersion()->getGui()->createTriggerTreeEntry(trigger);
-
-    //m_guiElements->getProjectTree()->setCurrentItem(trigger->getLocation());
     setCentralWidget(frm);
 
 }
