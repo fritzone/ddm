@@ -428,7 +428,8 @@ void MainWindow::showFunctionWithGuid(Version *v, const QString & guid, bool /*f
 
 void MainWindow::showTriggerWithGuid(Version *v, const QString & guid, bool /*focus*/)
 {
-    Trigger* p = dynamic_cast<Trigger*>(UidWarehouse::instance().getElement(guid));
+    Trigger* p = dynamic_cast<Trigger*>(UidWarehouse::instance().getElement(guid));static const QString strBindToDbIcon = ":/images/actions/images/big/folder_database.png";
+
     if(p)
     {
         TriggerForm* pf = v->getGui()->getTriggerForm();
@@ -1013,6 +1014,7 @@ void MainWindow::connectActionsFromPopupMenus()
     QObject::connect(ContextMenuCollection::getInstance()->getAction_relock(), SIGNAL(triggered()), this, SLOT(onRelockSomething()));
     QObject::connect(ContextMenuCollection::getInstance()->getAction_SuspendPatch(), SIGNAL(triggered()), this, SLOT(suspendPatch()));
     QObject::connect(ContextMenuCollection::getInstance()->getAction_RenamePatch(), SIGNAL(triggered()), this, SLOT(renamePatch()));
+    QObject::connect(ContextMenuCollection::getInstance()->getAction_Undelete(), SIGNAL(triggered()), this, SLOT(onUndeleteSomething()));
 
 }
 
@@ -2708,4 +2710,10 @@ void MainWindow::renamePatch()
             p->setDisplayText(t);
         }
     }
+}
+
+void MainWindow::onUndeleteSomething()
+{
+    ObjectWithUid* obj = getRightClickedObject<ObjectWithUid>();
+    qDebug() << obj->getObjectUid() << " " << obj->getClassUid();
 }

@@ -83,6 +83,7 @@ public:
     virtual void patchItem(const QString& uid);
     virtual void replaceTable(const QString& uid, Table* newTab);
     virtual Patch* getWorkingPatch();
+    virtual void undeleteObject(const QString& uid);
 
     void createTreeItems(GuiElements* gui, ContextMenuEnabledTreeWidgetItem* projectItem);
 

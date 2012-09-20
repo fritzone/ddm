@@ -44,6 +44,25 @@ public:
     void removeElement(const QString& uid);
 
     /**
+     * @brief markElemetForDeletion marks the element as being deleted from the Version
+     * @param uid the UID of the element
+     */
+    void markElemetForDeletion(const QString& uid);
+
+    /**
+     * @brief undeleteObject Undeletes the object with the given UID
+     * @param uid
+     */
+    void undeleteObject(const QString& uid);
+
+    /**
+     * @brief getDeletedObject returns a delete object, 0 if not found
+     * @param uid
+     * @return
+     */
+    ObjectWithUid* getDeletedObject(const QString& uid);
+
+    /**
      * @brief serialize
      * @param doc
      * @param parent
@@ -51,6 +70,10 @@ public:
      */
     virtual void serialize(QDomDocument &doc, QDomElement &parent) const;
 
+    /**
+     * @brief getClassUid returns the patch class Uid
+     * @return the patch class Uid
+     */
     virtual QUuid getClassUid() const;
 
 
@@ -64,6 +87,12 @@ private:
 
     // the UIDs of the elements that were created in this patch
     QStringList m_newUids;
+
+    // the UIDs that were deleted from teh version in case of revert
+    QStringList m_deletedUids;
+
+    // the delete objects will be placed in here
+    QMap<QString, ObjectWithUid*> m_deletedObjects;
 
     // if this patch was suspended by the user (ie: it
     bool m_suspended;

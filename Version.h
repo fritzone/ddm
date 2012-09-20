@@ -381,6 +381,12 @@ public:
      */
     virtual void replaceTable(const QString& uid, Table* newTab) = 0;
 
+    /**
+     * @brief undeleteObject Undeletes the object with given UID. The object was supposed to be deleted in a patch.
+     * @param uid
+     */
+    virtual void undeleteObject(const QString& uid) = 0;
+
 protected:
     int m_major;
     int m_minor;

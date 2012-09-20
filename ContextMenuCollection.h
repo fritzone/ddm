@@ -64,6 +64,7 @@ public:
     QMenu* getTriggerPopupMenu() { return m_triggerPopupMenu; }
     QMenu* getSuspendPatchPopupMenu() { return m_suspendPatchMenu; }
     QMenu* getResumePatchPopupMenu() { return m_resumePatchMenu; }
+    QMenu* getUndeletePopupMenu() { return m_undeletePopupMenu; }
 
     /*
      * Actions
@@ -120,6 +121,8 @@ public:
     QAction* getAction_ResumePatch() { return action_resumePatch; }
     QAction* getAction_RenamePatch() { return action_renamePatch; }
     QAction* getAction_RelocateElementToAnotherPatch() { return action_relocateElementToAnotherPatch; }
+    QAction* getAction_Undelete() { return action_undelete; }
+
 
     QMenu* getUnLockMenuForClassUid(const QString& uid);
     QMenu* getMenuForClassUid(const QString& uid);
@@ -165,6 +168,7 @@ private:
     QMenu* m_relockDTPopupMenu;                 // popup menu for re-locking one major version data type element which was unlocked by the user
     QMenu* m_unlockViewPopupMenu;               // popup menu for unlocking one major version view element which was locked after being released
     QMenu* m_relockViewPopupMenu;               // popup menu for re-locking one major version view element which was unlocked by the user
+    QMenu* m_undeletePopupMenu;                 // popup menu for undeleting something from a patch which was deleted by the user
 
     QMenu* m_functionPopupMenu;                 // popup menu for a function
     QMenu* m_triggerPopupMenu;                  // popup menu for a trigger
@@ -267,6 +271,8 @@ private:
 
     // action for moving an element from a patch to a different patch
     QAction* action_relocateElementToAnotherPatch;
+
+    QAction* action_undelete;
 
     // the instance of the popup menu collection
     static ContextMenuCollection* m_instance;

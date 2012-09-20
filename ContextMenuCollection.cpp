@@ -44,6 +44,7 @@ ContextMenuCollection::ContextMenuCollection()
     m_relockDTPopupMenu = new QMenu();
     m_unlockDiagramPopupMenu = new QMenu();
     m_relockDiagramPopupMenu = new QMenu();
+    m_undeletePopupMenu = new QMenu();
 
     m_functionPopupMenu = new QMenu();
     m_triggerPopupMenu = new QMenu();
@@ -120,6 +121,8 @@ ContextMenuCollection::ContextMenuCollection()
     action_suspendPatch->setIcon(IconFactory::getSuspendPatchIcon());
     action_resumePatch = new QAction(QObject::tr("Resume this patch"), 0);
     action_renamePatch = new QAction(QObject::tr("Rename"), 0);
+    action_undelete =  new QAction(QObject::tr("Undelete"), 0);
+    action_undelete->setIcon(IconFactory::getUndeleteIcon());
 
     // populate the table popup menu
     m_tablePopupMenu->setTitle(QObject::tr("Table"));
@@ -258,6 +261,8 @@ ContextMenuCollection::ContextMenuCollection()
     m_relockDiagramPopupMenu->addAction(action_relock);
 
     m_resumePatchMenu->addAction(action_resumePatch);
+
+    m_undeletePopupMenu->addAction(action_undelete);
 }
 
 QMenu* ContextMenuCollection::getUnLockMenuForClassUid(const QString& uid)
