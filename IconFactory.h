@@ -124,6 +124,8 @@ static const QString strEditConnectionIcon = ":/images/actions/images/small/penc
 static const QString strOpenFileIcon = ":/images/actions/images/actions/fileopen.png";
 static const QString strRunQueryIcon = ":/images/actions/images/actions/button_play_green.png";
 static const QString strBindToDbIcon = ":/images/actions/images/big/folder_database.png";
+static const QString strUndeleteIcon = ":/images/actions/images/small/gnome_undelete.png";
+
 }
 
 class IconFactory
@@ -818,6 +820,12 @@ public:
     {
         static const QIcon icon(icons::strIcon);
         return icon;
+    }
+
+    static const QIcon& getUndeleteIcon()
+    {
+        static const QIcon key(icons::strUndeleteIcon);
+        return key;
     }
 
     static const QIcon& getIconForClassUid(const QString& cuid)

@@ -168,7 +168,6 @@ ContextMenuEnabledTreeWidgetItem* GuiElements::updateItemForPatchWithState(Patch
                 m_patchItems[p]->child(i)->setIcon(1, IconFactory::getAddIcon());
                 dynamic_cast<ContextMenuEnabledTreeWidgetItem*>(m_patchItems[p]->child(i))->setPopupMenu(ContextMenuCollection::getInstance()->getMenuForClassUid(class_uid));
             }
-
         }
     }
     if(state == 2) // RENAMED stuff ! TODO: make this ncier too!
@@ -184,6 +183,23 @@ ContextMenuEnabledTreeWidgetItem* GuiElements::updateItemForPatchWithState(Patch
             if(v.toString() == uid)
             {
                 m_patchItems[p]->child(i)->setText(0, name);
+            }
+        }
+    }
+    if(state == 3)
+    {
+        if(!m_patchItems.contains(p))
+        {
+            return 0;
+        }
+
+        for(int i=0; i<m_patchItems[p]->childCount(); i++)
+        {
+            QVariant v = m_patchItems[p]->child(i)->data(0, Qt::UserRole);
+            if(v.toString() == uid)
+            {
+                m_patchItems[p]->child(i)->setIcon(1, IconFactory::getRemoveIcon());
+                dynamic_cast<ContextMenuEnabledTreeWidgetItem*>(m_patchItems[p]->child(i))->setPopupMenu(ContextMenuCollection::getInstance()->getUndeletePopupMenu());
             }
         }
     }

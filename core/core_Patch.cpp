@@ -47,6 +47,16 @@ void Patch::addNewElement(const QString &uid)
     m_newUids.append(uid);
 }
 
+void Patch::markElemetForDeletion(const QString &uid)
+{
+    ObjectWithUid* obj = UidWarehouse::getElement(uid);
+
+    if(!obj) return;
+
+    m_deletedUids.append(uid);
+    m_deletedObjects.insert(uid, obj);
+}
+
 void Patch::removeElement(const QString &uid)
 {
     if(m_lockedUids.contains(uid))
@@ -88,4 +98,21 @@ void Patch::serialize(QDomDocument &doc, QDomElement &parent) const
 QUuid Patch::getClassUid() const
 {
     return QUuid(uidPatch);
+}
+
+ObjectWithUid* Patch::getDeletedObject(const QString& uid)
+{
+    if(!m_deletedUids.contains(uid)) return 0;
+    if(!m_deletedObjects.keys().contains(uid)) return 0;
+    return m_deletedObjects.value(uid);
+}
+
+void Patch::undeleteObject(const QString &uid)
+{
+    if(!m_deletedUids.contains(uid)) return;
+    if(!m_deletedObjects.keys().contains(uid)) return;
+
+    m_deletedUids.removeOne(uid);
+    m_deletedObjects.remove(uid);
+
 }

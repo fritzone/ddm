@@ -193,6 +193,7 @@ public slots:
     void suspendPatch();
     void renamePatch();
     void onNewTableFromPopup();
+    void onUndeleteSomething();
 
 private:
 

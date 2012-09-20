@@ -367,10 +367,9 @@ bool DefaultVersionImplementation::deleteTable(Table *tab)
 
     if(isLocked())  // remove the entry from the patch
     {
-        // getWorkingPatch()->markElemetForDeletion(tab->getObjectUid(), tabIndex); // so that we know where to inject it on revert patch
-        // MainWindow::instance()->updatePatchElementToReflectState(this, tab, tab->getObjectUid(), 3); // 3 is DELETED
-        qDebug() << tab->getObjectUid() << " was deleted from " << tab->version()->getVersionText();
-
+        MainWindow::instance()->createPatchElement(this, tab, tab->getObjectUid(), false);
+        getWorkingPatch()->markElemetForDeletion(tab->getObjectUid());
+        MainWindow::instance()->updatePatchElementToReflectState(this, tab, tab->getObjectUid(), 3); // 3 is DELETED
     }
     return true;
 }
@@ -1316,3 +1315,14 @@ Patch* DefaultVersionImplementation::getWorkingPatch()
 
     return m_patches.at(m_currentPatchIndex);
 }
+
+ void DefaultVersionImplementation::undeleteObject(const QString& uid)
+ {
+    ObjectWithUid* obj = getWorkingPatch()->getDeletedObject(uid);
+    if(!obj) return;
+
+    // undelete
+
+    // remvoe from the patch
+    getWorkingPatch()->undeleteObject(uid);
+ }

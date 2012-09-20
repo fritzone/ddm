@@ -198,6 +198,7 @@
         <file>images/small/share.png</file>
         <file>images/small/shared_patch.png</file>
         <file>images/small/changed.png</file>
+        <file>images/small/gnome_undelete.png</file>
     </qresource>
     <qresource prefix="/bigger">
         <file>images/unaf.png</file>
