@@ -5,6 +5,7 @@
 #include "core_Patch.h"
 #include "IconFactory.h"
 #include "ContextMenuCollection.h"
+#include "core_TableInstance.h"
 
 GuiElements::GuiElements() : m_projectTreeDock(0),m_issuesTreeDock(0),
     m_genTreeDock(0), m_patchesTreeDock(0),
@@ -200,6 +201,22 @@ ContextMenuEnabledTreeWidgetItem* GuiElements::updateItemForPatchWithState(Patch
             {
                 m_patchItems[p]->child(i)->setIcon(1, IconFactory::getRemoveIcon());
                 dynamic_cast<ContextMenuEnabledTreeWidgetItem*>(m_patchItems[p]->child(i))->setPopupMenu(ContextMenuCollection::getInstance()->getUndeletePopupMenu());
+                // TODO: create sub items with deleted state
+                TableDeletionAction* tda = p->getTDA(uid);
+                if(tda)
+                {
+                    for(int j=0; j<tda->deletedTableInstances.size(); j++)
+                    {
+                        ContextMenuEnabledTreeWidgetItem* tdItem = new ContextMenuEnabledTreeWidgetItem(dynamic_cast<ContextMenuEnabledTreeWidgetItem*>(m_patchItems[p]->child(i)), QStringList(tda->deletedTableInstances.at(j)->getName()));
+                        tdItem->setIcon(0, IconFactory::getTabinstIcon());
+                        tdItem->setIcon(1, IconFactory::getRemoveIcon());
+                        //tdItem->setPopupMenu(ContextMenuCollection::getInstance()->getUndeletePopupMenu());
+                        m_patchesTree->addTopLevelItem(tdItem);
+                        tdItem->setData(0, Qt::UserRole, QVariant(tda->deletedTable->getObjectUid()));
+                    }
+
+                    m_patchItems[p]->child(i)->setExpanded(true);
+                }
             }
         }
     }

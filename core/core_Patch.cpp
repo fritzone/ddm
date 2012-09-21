@@ -126,6 +126,12 @@ TableDeletionAction* Patch::getTDA(const QString &uid)
 {
     if(!m_tableDeletions.contains(uid)) return 0;
     TableDeletionAction* tda = m_tableDeletions.value(uid);
-    m_tableDeletions.remove(uid);
     return tda;
+}
+
+void Patch::removeTDA(const QString &uid)
+{
+    if(!m_tableDeletions.contains(uid)) return;
+    TableDeletionAction* tda = m_tableDeletions.value(uid);
+    m_tableDeletions.remove(uid);
 }
