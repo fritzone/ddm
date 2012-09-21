@@ -461,7 +461,7 @@ ContextMenuEnabledTreeWidgetItem* VersionGuiElements::createTableTreeEntry(Table
     docItem->setIcon(0, IconFactory::getHelpIcon());
     docItem->setData(0, Qt::UserRole, var);
     m_tree->addTopLevelItem(docItem);
-
+    tab->setDocItem(docItem);
     return newTblsItem;
 }
 

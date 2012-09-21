@@ -84,6 +84,20 @@ public:
     ObjectWithUid* getDeletedObject(const QString& uid);
 
     /**
+     * @brief elementWasNewInThisPatch
+     * @param uid
+     * @return
+     */
+    bool elementWasNewInThisPatch(const QString& uid);
+
+    /**
+     * @brief removeNewElementBecauseOfDeletion
+     * @param uid
+     * @return
+     */
+    bool removeNewElementBecauseOfDeletion(const QString& uid);
+
+    /**
      * @brief serialize
      * @param doc
      * @param parent

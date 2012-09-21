@@ -87,6 +87,7 @@ void Patch::removeElement(const QString &uid)
             m_version->replaceTable(uid, tab);
         }
 
+        m_originals.remove(uid);
     }
 }
 
@@ -134,4 +135,21 @@ void Patch::removeTDA(const QString &uid)
     if(!m_tableDeletions.contains(uid)) return;
     TableDeletionAction* tda = m_tableDeletions.value(uid);
     m_tableDeletions.remove(uid);
+}
+
+bool Patch::elementWasNewInThisPatch(const QString &uid)
+{
+    return m_newUids.indexOf(uid) != -1;
+}
+
+bool Patch::removeNewElementBecauseOfDeletion(const QString& uid)
+{
+    if(elementWasNewInThisPatch(uid))
+    {
+        m_newUids.removeOne(uid);
+        if(m_originals.contains(uid))
+        {
+            m_originals.remove(uid);
+        }
+    }
 }

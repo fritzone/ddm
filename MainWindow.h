@@ -137,7 +137,7 @@ public slots:
     void onDuplicateTableFromPopup();
     void onCopyTableFromPopup();
     void onPasteTableFromPopup();
-    void onDeleteInstanceFromPopup();
+    void onDeleteTableInstanceFromPopup();
     void onRenameInstanceFromPopup();
     void onDeleteDatatypeFromPopup();
     void onDuplicateDatatypeFromPopup();
