@@ -47,9 +47,9 @@ void Patch::addNewElement(const QString &uid)
     m_newUids.append(uid);
 }
 
-void Patch::markElemetForDeletion(const QString &uid)
+void Patch::markElementForDeletion(const QString &uid)
 {
-    ObjectWithUid* obj = UidWarehouse::getElement(uid);
+    ObjectWithUid* obj = UidWarehouse::instance().getElement(uid);
 
     if(!obj) return;
 
@@ -115,4 +115,17 @@ void Patch::undeleteObject(const QString &uid)
     m_deletedUids.removeOne(uid);
     m_deletedObjects.remove(uid);
 
+}
+
+void Patch::addDeletedTable(const QString &uid, TableDeletionAction *td)
+{
+    m_tableDeletions[uid] = td;
+}
+
+TableDeletionAction* Patch::getTDA(const QString &uid)
+{
+    if(!m_tableDeletions.contains(uid)) return 0;
+    TableDeletionAction* tda = m_tableDeletions.value(uid);
+    m_tableDeletions.remove(uid);
+    return tda;
 }

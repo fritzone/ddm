@@ -828,8 +828,9 @@ public:
         return key;
     }
 
-    static const QIcon& getIconForClassUid(const QString& cuid)
+    static const QIcon& getIconForClassUid(const QString& uid)
     {
+        QString cuid = uid.toUpper();
         if(cuid == uidTable) return getTableIcon();
         if(cuid == uidTableInstance) return getTabinstIcon();
         if(cuid == uidDiagram) return getDiagramIcon();

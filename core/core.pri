@@ -26,7 +26,9 @@ HEADERS +=                                         \
             core/core_UserDataType.h \
     core/core_CloneableElement.h \
     core/core_LockableElement.h \
-    core/core_Patch.h
+    core/core_Patch.h \
+    core/DocumentationSource.h \
+    core/ActionDeleteTable.h
 
 
 

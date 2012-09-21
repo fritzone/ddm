@@ -9,6 +9,7 @@
 #include "TreeItem.h"
 #include "SerializableElement.h"
 #include "core_ObjectWithUid.h"
+#include "ActionDeleteTable.h"
 
 class Version;
 
@@ -47,7 +48,21 @@ public:
      * @brief markElemetForDeletion marks the element as being deleted from the Version
      * @param uid the UID of the element
      */
-    void markElemetForDeletion(const QString& uid);
+    void markElementForDeletion(const QString& uid);
+
+    /**
+     * @brief addDeletedTable
+     * @param uid
+     * @param td
+     */
+    void addDeletedTable(const QString& uid, TableDeletionAction* td);
+
+    /**
+     * @brief getTDA
+     * @param uid
+     * @return
+     */
+    TableDeletionAction* getTDA(const QString& uid);
 
     /**
      * @brief undeleteObject Undeletes the object with the given UID
@@ -96,6 +111,8 @@ private:
 
     // if this patch was suspended by the user (ie: it
     bool m_suspended;
+
+    QMap<QString, TableDeletionAction*> m_tableDeletions;
 };
 
 #endif // CORE_PATCH_H

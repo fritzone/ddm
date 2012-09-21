@@ -4,14 +4,18 @@
 #include "Version.h"
 #include "VersionData.h"
 
+#include <QMap>
+
 class GuiElements;
 class Project;
 class Connection;
 class Patch;
+class TableDeletionAction;
 
 class DefaultVersionImplementation : public Version
 {
 public:
+
     DefaultVersionImplementation(Project* p, int, int);
 
     virtual void serialize(QDomDocument &doc, QDomElement &parent) const = 0;
@@ -86,6 +90,8 @@ public:
     virtual void undeleteObject(const QString& uid);
 
     void createTreeItems(GuiElements* gui, ContextMenuEnabledTreeWidgetItem* projectItem);
+    void deleteTableInstance(TableInstance *tinst, TableDeletionAction* );
+    void doDeleteTableInstance(TableInstance *tinst, TableDeletionAction* );
 
 protected:
     // the version as a string representation. Major versions are always of form X.0

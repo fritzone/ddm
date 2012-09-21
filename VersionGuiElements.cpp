@@ -261,6 +261,8 @@ void VersionGuiElements::populateTreeItems()
         docItem->setData(0, Qt::UserRole, var);
         m_tree->addTopLevelItem(docItem);
 
+        tab->setDocItem(docItem);
+
         tab->updateGui();
     }
 

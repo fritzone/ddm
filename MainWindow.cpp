@@ -1762,46 +1762,10 @@ void MainWindow::onDeleteInstanceFromPopup()
         }
 
         Version* v = tinst->version();
-
-        // mark for purge
         v->deleteTableInstance(tinst);
-
-        // Now delete the tree entries and the SQL tree entry
-        for(int i=0; i<v->getTableInstances().size(); i++)
-        {
-            if(v->getTableInstances().at(i)->sentenced())
-            {
-                QString uid = v->getTableInstances().at(i)->getObjectUid();
-                ContextMenuEnabledTreeWidgetItem* tabInstItem = v->getGui()->getTableInstancesItem();
-                for(int j=0; j<tabInstItem->childCount(); j++)
-                {
-                    QVariant a = tabInstItem->child(j)->data(0, Qt::UserRole);
-                    if(a.toString() == uid)
-                    {
-                        delete tabInstItem->child(j);
-                    }
-                }
-
-                ContextMenuEnabledTreeWidgetItem* sqlItem = v->getGui()->getFinalSqlItem();
-                for(int j=0; j<sqlItem->childCount(); j++)
-                {
-                    QVariant a = sqlItem->child(j)->data(0, Qt::UserRole);
-                    if(a.toString() == uid)
-                    {
-                        delete sqlItem->child(j);
-                    }
-                }
-            }
-        }
-
-        // and finally remove all purged table instances
-        v->purgeSentencedTableInstances();
 
         // and show a table instances list form
         showNamedObjectList(&MainWindow::showTableWithGuid, v->getTableInstances(), IconFactory::getTabinstIcon(), QObject::tr("Tables"));
-
-        //v->getGui()->getTableInstancesItem()->setSelected(true);
-
     }
 }
 
@@ -2715,5 +2679,7 @@ void MainWindow::renamePatch()
 void MainWindow::onUndeleteSomething()
 {
     ObjectWithUid* obj = getRightClickedObject<ObjectWithUid>();
-    qDebug() << obj->getObjectUid() << " " << obj->getClassUid();
+    Version* v = UidWarehouse::instance().getVersionForUid(obj->getObjectUid());
+    v->undeleteObject(obj->getObjectUid());
+    m_guiElements->removeItemForPatch(v->getWorkingPatch(), obj->getObjectUid());
 }
