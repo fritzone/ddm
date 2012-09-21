@@ -10,6 +10,7 @@
 #include "ObjectWithSpInstances.h"
 #include "uids.h"
 #include "core_CloneableElement.h"
+#include "DocumentationSource.h"
 
 #include <QString>
 #include <QVector>
@@ -32,7 +33,8 @@ class Table : public TreeItem,
         public NamedItem,
         public ObjectWithUid,
         public ObjectWithSpInstances,
-        public CloneableElement
+        public CloneableElement,
+        public DocumentationSource
 {
 public:
 

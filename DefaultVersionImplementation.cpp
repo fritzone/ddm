@@ -241,7 +241,6 @@ void DefaultVersionImplementation::purgeSentencedTableInstances()
         {
             TableInstance* tinst = m_data.m_tableInstances.at(i);
             m_data.m_tableInstances.remove(i);
-            delete tinst;
         }
         else
         {
@@ -250,8 +249,19 @@ void DefaultVersionImplementation::purgeSentencedTableInstances()
     }
 }
 
-void DefaultVersionImplementation::deleteTableInstance(TableInstance *tinst)
+void DefaultVersionImplementation::deleteTableInstance(TableInstance *tinst, TableDeletionAction * tda)
 {
+    doDeleteTableInstance(tinst, tda);
+}
+
+void DefaultVersionImplementation::doDeleteTableInstance(TableInstance *tinst, TableDeletionAction *tda)
+{
+    if(tda)
+    {
+        tda->deletedTableInstances.append(tinst);
+        qDebug() << tinst->getName();
+    }
+
     tinst->sentence();
     // now find which table instances were created because of this and remove them
     QVector<TableInstance*>& insted = tinst->getInstantiatedTableInstances();
@@ -281,17 +291,57 @@ void DefaultVersionImplementation::deleteTableInstance(TableInstance *tinst)
         {
             if(!insted.at(i)->sentenced() && insted.at(i)->instantiatedBecuaseOfRkReference())
             {
-                deleteTableInstance(insted.at(i));
+                deleteTableInstance(insted.at(i), tda);
             }
         }
     }
+
+    for(int i=0; i<getTableInstances().size(); i++)
+    {
+        if(getTableInstances().at(i)->sentenced())
+        {
+            QString uid = getTableInstances().at(i)->getObjectUid();
+            ContextMenuEnabledTreeWidgetItem* tabInstItem = getGui()->getTableInstancesItem();
+            for(int j=0; j<tabInstItem->childCount(); j++)
+            {
+                QVariant a = tabInstItem->child(j)->data(0, Qt::UserRole);
+                if(a.toString() == uid)
+                {
+                    delete tabInstItem->child(j);
+                }
+            }
+
+            ContextMenuEnabledTreeWidgetItem* sqlItem = getGui()->getFinalSqlItem();
+            for(int j=0; j<sqlItem->childCount(); j++)
+            {
+                QVariant a = sqlItem->child(j)->data(0, Qt::UserRole);
+                if(a.toString() == uid)
+                {
+                    delete sqlItem->child(j);
+                }
+            }
+        }
+    }
+
+    // and finally remove all purged table instances
+    purgeSentencedTableInstances();
+}
+
+
+void DefaultVersionImplementation::deleteTableInstance(TableInstance *tinst)
+{
+    doDeleteTableInstance(tinst, 0);
 }
 
 bool DefaultVersionImplementation::deleteTable(Table *tab)
 {
-    int tabIndex = -1;
+    int tabIndex = m_data.m_tables.indexOf(tab);
+    if(tabIndex == -1)
+    {
+        return false;
+    }
+
     QString incomingForeignKeys = "";
-    QString guid = tab->getObjectUid();
 
     for(int i=0; i<m_data.m_tables.size(); i++)
     {
@@ -299,14 +349,8 @@ bool DefaultVersionImplementation::deleteTable(Table *tab)
         {
             incomingForeignKeys+= "\n - " + m_data.m_tables[i]->getName();
         }
-
-        if(m_data.m_tables[i]->getName() == tab->getName())
-        {
-            tabIndex = i;
-        }
-
     }
-    if(tabIndex == -1) return false;
+
     if(incomingForeignKeys.length() > 0)
     {
         QMessageBox::warning(0, QObject::tr("Foreign keys found"),
@@ -318,18 +362,20 @@ bool DefaultVersionImplementation::deleteTable(Table *tab)
 
     for(int i=0; i<m_data.m_diagrams.size(); i++)
     {
+        // TODO: on a delete create a solution for the diagrams too, so that they can be restored
         m_data.m_diagrams[i]->removeTable(tab->getName());
     }
 
-    // and now we should delete the table instances that were created absed on this table, and the SQLs too...
+    TableDeletionAction *tda = new TableDeletionAction(tab);
+
+    // and now we should delete the table instances that were created based on this table, and the SQLs too...
     int i=0;
     while(i<m_data.m_tableInstances.size())
     {
         if(m_data.m_tableInstances.at(i)->table()->getName() == tab->getName())
         {
-            delete m_data.m_tableInstances.at(i)->getLocation();
-            m_data.m_tableInstances.at(i)->onDelete();
-            m_data.m_tableInstances.remove(i);
+            TableInstance* tinst = m_data.m_tableInstances.at(i);
+            deleteTableInstance(tinst, tda);
         }
         else
         {
@@ -356,19 +402,26 @@ bool DefaultVersionImplementation::deleteTable(Table *tab)
     getGui()->cleanupOrphanedIssueTableItems();
 
     // remove from the parenttable
-    if(m_data.m_tables[tabIndex]->getParent())
+    if(tab->getParent())
     {
-        m_data.m_tables[tabIndex]->getParent()->removeSpecializedTable(m_data.m_tables[tabIndex]);
+        tda->parentTable = tab->getParent();
+        tab->getParent()->removeSpecializedTable(tab);
     }
 
-    ContextMenuEnabledTreeWidgetItem* tabLoc = tab->getLocation();
-    delete tabLoc;
+    // tree cleanup
+
+    // remove the DOC item
+    tab->onDeleteDoc();
+    delete tab->getLocation();
+
+    // remove from inside
     m_data.m_tables.remove(tabIndex);
 
     if(isLocked())  // remove the entry from the patch
     {
         MainWindow::instance()->createPatchElement(this, tab, tab->getObjectUid(), false);
-        getWorkingPatch()->markElemetForDeletion(tab->getObjectUid());
+        getWorkingPatch()->markElementForDeletion(tab->getObjectUid());
+        getWorkingPatch()->addDeletedTable(tab->getObjectUid(), tda);
         MainWindow::instance()->updatePatchElementToReflectState(this, tab, tab->getObjectUid(), 3); // 3 is DELETED
     }
     return true;
@@ -1322,7 +1375,29 @@ Patch* DefaultVersionImplementation::getWorkingPatch()
     if(!obj) return;
 
     // undelete
+    TableDeletionAction* tda = getWorkingPatch()->getTDA(uid);
+    if(tda)
+    {
+        addTable(tda->deletedTable, true);
+        // now see if this had a parent table or not
+        if(tda->parentTable)
+        {
+            tda->parentTable->addSpecializedTable(tda->deletedTable);
+            getGui()->createTableTreeEntry(tda->deletedTable, tda->parentTable->getLocation());
+        }
+        else
+        {
+            getGui()->createTableTreeEntry(tda->deletedTable, getGui()->getTablesItem());
+        }
+        // and the table instances
+        for(int i=0; i<tda->deletedTableInstances.size(); i++)
+        {
+            addTableInstance(tda->deletedTableInstances.at(i), true);
+            qDebug() << tda->deletedTableInstances.at(i)->getName();
+            getGui()->createTableInstanceTreeEntry(tda->deletedTableInstances.at(i));
+        }
+    }
 
-    // remvoe from the patch
+    // remove from the patch
     getWorkingPatch()->undeleteObject(uid);
  }

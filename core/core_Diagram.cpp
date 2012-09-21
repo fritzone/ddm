@@ -39,7 +39,7 @@ void Diagram::removeTable(const QString &tabName)
             idx = i;
             for(int j=0; j<m_fksOnStage.size(); j++)
             {
-                if(m_fksOnStage[j]->getTab1Name() == m_tableDescriptors[i]->getText() || m_fksOnStage[j]->getTab2Name() == m_tableDescriptors[i]->getText())
+                if(m_fksOnStage[j]->getTab1Name() == tabName || m_fksOnStage[j]->getTab2Name() == tabName)
                 {
                     m_fksOnStage[j]->sentence();
                 }
@@ -47,12 +47,16 @@ void Diagram::removeTable(const QString &tabName)
             break;
         }
     }
+
     int ms = m_onStage.size();
     if(idx != -1 && ms > 0)
     {
         DraggableGraphicsViewItem* toDelete = m_onStage[idx];
         m_onStage.remove(idx);
-        if(!m_removed) delete toDelete;
+        if(!m_removed)
+        {
+            delete toDelete;
+        }
     }
 
     int l = m_tableDescriptors.size();
