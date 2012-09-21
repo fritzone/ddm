@@ -259,7 +259,7 @@ void DefaultVersionImplementation::doDeleteTableInstance(TableInstance *tinst, T
     if(tda)
     {
         tda->deletedTableInstances.append(tinst);
-        qDebug() << tinst->getName();
+        qDebug() << "DELETE for patch " << tinst->getName();
     }
 
     tinst->sentence();
@@ -427,12 +427,20 @@ bool DefaultVersionImplementation::deleteTable(Table *tab)
     // remove from inside
     m_data.m_tables.remove(tabIndex);
 
-    if(isLocked())  // remove the entry from the patch
+    if(isLocked())  // marking the element as deleted,
     {
-        MainWindow::instance()->createPatchElement(this, tab, tab->getObjectUid(), false);
-        getWorkingPatch()->markElementForDeletion(tab->getObjectUid());
-        getWorkingPatch()->addDeletedTable(tab->getObjectUid(), tda);
-        MainWindow::instance()->updatePatchElementToReflectState(this, tab, tab->getObjectUid(), 3); // 3 is DELETED
+        if(!getWorkingPatch()->elementWasNewInThisPatch(tab->getObjectUid())) // but only if it was NOT a newly created element
+        {
+            MainWindow::instance()->createPatchElement(this, tab, tab->getObjectUid(), false);
+            getWorkingPatch()->markElementForDeletion(tab->getObjectUid());
+            getWorkingPatch()->addDeletedTable(tab->getObjectUid(), tda);
+            MainWindow::instance()->updatePatchElementToReflectState(this, tab, tab->getObjectUid(), 3); // 3 is DELETED
+        }
+        else
+        {
+            getWorkingPatch()->removeNewElementBecauseOfDeletion(tab->getObjectUid());
+            MainWindow::instance()->updatePatchElementToReflectState(this, tab, tab->getObjectUid(), 4); // 4 is REMOVE FROM THE TREE
+        }
     }
     return true;
 }
@@ -450,6 +458,9 @@ void DefaultVersionImplementation::removeForeignKeyFromDiagrams(ForeignKey* fkTo
 Table* DefaultVersionImplementation::duplicateTable(Table *src)
 {
     Table* dup = new Table(*src);
+    dup->setForcedUid(QUuid::createUuid().toString());
+    UidWarehouse::instance().addElement(dup, this);
+
     dup->setName(NameGenerator::getUniqueName(this,  (itemGetter)&Version::getTable, src->getName()+"_copy"));
     addTable(dup, false);
     return dup;

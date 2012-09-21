@@ -498,7 +498,7 @@ void MainWindow::currentPatchTreeItemChanged(QTreeWidgetItem * current, QTreeWid
         }
         else
         {
-
+            qDebug() << "SELECT: " << uid;
             QMap<QString, showSomething> mapping;
             mapping.insert(uidTable, (showSomething)&MainWindow::showTableWithGuid);
             mapping.insert(uidTableInstance, (showSomething)&MainWindow::showTableInstanceWithGuid);
@@ -523,6 +523,7 @@ void MainWindow::currentProjectTreeItemChanged(QTreeWidgetItem * current, QTreeW
 
         QVariant qv = current->data(0, Qt::UserRole);
         QString uid = qv.toString();
+
         ObjectWithUid* obj = UidWarehouse::instance().getElement(uid);
         Version* foundVersion = UidWarehouse::instance().getVersionForUid(uid);
         if(!foundVersion) return;
@@ -577,6 +578,9 @@ void MainWindow::currentProjectTreeItemChanged(QTreeWidgetItem * current, QTreeW
             classUid = classUid.toUpper();
             foundVersion = obj->version();
         }
+
+        qDebug() << "SELECT: " << uid;
+        qDebug() << "CLASS: " << classUid;
 
         if(current == foundVersion->getGui()->getTablesItem())
         {// we have clicked on the Tables item (i.e. the list of tables)
@@ -659,6 +663,7 @@ void MainWindow::currentProjectTreeItemChanged(QTreeWidgetItem * current, QTreeW
 
                 if(mapping.contains(classUid))
                 {
+                    qDebug() << "SELECT SHOW: " << uid << " " << classUid;
                     showObjectwithGuid(foundVersion, uid, mapping[classUid], false);
                 }
             }
@@ -971,7 +976,7 @@ void MainWindow::connectActionsFromPopupMenus()
         QObject::connect(ContextMenuCollection::getInstance()->getAction_InstantiateTable(), SIGNAL(triggered()), this, SLOT(onInstantiateTableFromPopup()));
 
         // now the table instance popup
-        QObject::connect(ContextMenuCollection::getInstance()->getAction_DeleteTableInstance(), SIGNAL(triggered()), this, SLOT(onDeleteInstanceFromPopup()));
+        QObject::connect(ContextMenuCollection::getInstance()->getAction_DeleteTableInstance(), SIGNAL(triggered()), this, SLOT(onDeleteTableInstanceFromPopup()));
         QObject::connect(ContextMenuCollection::getInstance()->getAction_RenameTableInstance(), SIGNAL(triggered()), this, SLOT(onRenameInstanceFromPopup()));
 
         // table instances popup
@@ -1313,23 +1318,26 @@ void MainWindow::onInstantiateTableFromPopup()
 void MainWindow::onSpecializeTableFromPopup()
 {
     Table* table = getRightClickedObject<Table>();
-    Table* specializedTable = new Table(table->version(), QUuid::createUuid().toString(), 0);
-    specializedTable->initializeFor(Workspace::getInstance()->currentProjectsEngine(), QUuid(uidTable));
+    if(table)
+    {
+        Table* specializedTable = new Table(table->version(), QUuid::createUuid().toString(), 0);
+        specializedTable->initializeFor(Workspace::getInstance()->currentProjectsEngine(), QUuid(uidTable));
 
-    specializedTable->setName(table->getName() + "_specialized");
-    specializedTable->setParent(table);
-    specializedTable->setParentUid(table->getObjectUid());
+        specializedTable->setName(table->getName() + "_specialized");
+        specializedTable->setParent(table);
+        specializedTable->setParentUid(table->getObjectUid());
 
-    ContextMenuEnabledTreeWidgetItem* newTblsItem = table->version()->getGui()->createTableTreeEntry(specializedTable, table->getLocation()) ;
+        ContextMenuEnabledTreeWidgetItem* newTblsItem = table->version()->getGui()->createTableTreeEntry(specializedTable, table->getLocation()) ;
 
-    // add to the project itself
-    table->version()->addTable(specializedTable, false);
+        // add to the project itself
+        table->version()->addTable(specializedTable, false);
 
-    // set the link to the tree
-    specializedTable->setLocation(newTblsItem);
+        // set the link to the tree
+        specializedTable->setLocation(newTblsItem);
 
-    // now open the new table for to show this table
-    showExistingTable(specializedTable, table->version());
+        // now open the new table for to show this table
+        showExistingTable(specializedTable, table->version());
+    }
 }
 
 void MainWindow::onTableAddColumnFromPopup()
@@ -1391,7 +1399,7 @@ Connection* MainWindow::getRightClickedConnection()
     return 0;
 }
 
-void MainWindow::onDeleteInstanceFromPopup()
+void MainWindow::onDeleteTableInstanceFromPopup()
 {
     TableInstance* tinst =  getRightClickedObject<TableInstance>();
     if(tinst)
@@ -1523,12 +1531,14 @@ void MainWindow::onDuplicateTableFromPopup()
     {
         Table* dupped = m_workspace->workingVersion()->duplicateTable(tab);
         m_workspace->onSaveNewTable(dupped);
+
         if(tab->getParent())
         {
             QTreeWidgetItem* p = dupped->getLocation();
             p->parent()->removeChild(p);
             tab->getParent()->getLocation()->addChild(p);
         }
+        dupped->getLocation()->setData(0, Qt::UserRole, QVariant(dupped->getObjectUid().toString()));
         // add the SQL item but only if it's not an oop project
         if(!m_workspace->currentProjectIsOop())
         {
