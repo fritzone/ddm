@@ -65,6 +65,12 @@ public:
     TableDeletionAction* getTDA(const QString& uid);
 
     /**
+     * @brief removeTDA
+     * @param uid
+     */
+    void removeTDA(const QString &uid);
+
+    /**
      * @brief undeleteObject Undeletes the object with the given UID
      * @param uid
      */
