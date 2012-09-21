@@ -330,7 +330,17 @@ void DefaultVersionImplementation::doDeleteTableInstance(TableInstance *tinst, T
 
 void DefaultVersionImplementation::deleteTableInstance(TableInstance *tinst)
 {
-    doDeleteTableInstance(tinst, 0);
+    TableDeletionAction* tda = new TableDeletionAction(0);
+
+    doDeleteTableInstance(tinst, tda);
+
+    if(isLocked())  // remove the entry from the patch
+    {
+        MainWindow::instance()->createPatchElement(this, tinst, tinst->getObjectUid(), false);
+        getWorkingPatch()->markElementForDeletion(tinst->getObjectUid());
+        getWorkingPatch()->addDeletedTable(tinst->getObjectUid(), tda);
+        MainWindow::instance()->updatePatchElementToReflectState(this, tinst, tinst->getObjectUid(), 3); // 3 is DELETED
+    }
 }
 
 bool DefaultVersionImplementation::deleteTable(Table *tab)
@@ -1378,23 +1388,38 @@ Patch* DefaultVersionImplementation::getWorkingPatch()
     TableDeletionAction* tda = getWorkingPatch()->getTDA(uid);
     if(tda)
     {
-        addTable(tda->deletedTable, true);
-        // now see if this had a parent table or not
-        if(tda->parentTable)
+        if(tda->deletedTable) // obivously a table was deleted
         {
-            tda->parentTable->addSpecializedTable(tda->deletedTable);
-            getGui()->createTableTreeEntry(tda->deletedTable, tda->parentTable->getLocation());
+            addTable(tda->deletedTable, true);
+            // now see if this had a parent table or not
+            if(tda->parentTable)
+            {
+                tda->parentTable->addSpecializedTable(tda->deletedTable);
+                getGui()->createTableTreeEntry(tda->deletedTable, tda->parentTable->getLocation());
+            }
+            else
+            {
+                getGui()->createTableTreeEntry(tda->deletedTable, getGui()->getTablesItem());
+            }
+            // and the table instances
+            for(int i=0; i<tda->deletedTableInstances.size(); i++)
+            {
+                addTableInstance(tda->deletedTableInstances.at(i), true);
+                qDebug() << tda->deletedTableInstances.at(i)->getName();
+                getGui()->createTableInstanceTreeEntry(tda->deletedTableInstances.at(i));
+                tda->deletedTableInstances.at(i)->unSentence();
+            }
         }
-        else
+        else // just a table instance was deleted
         {
-            getGui()->createTableTreeEntry(tda->deletedTable, getGui()->getTablesItem());
-        }
-        // and the table instances
-        for(int i=0; i<tda->deletedTableInstances.size(); i++)
-        {
-            addTableInstance(tda->deletedTableInstances.at(i), true);
-            qDebug() << tda->deletedTableInstances.at(i)->getName();
-            getGui()->createTableInstanceTreeEntry(tda->deletedTableInstances.at(i));
+            // and the table instances
+            for(int i=0; i<tda->deletedTableInstances.size(); i++)
+            {
+                addTableInstance(tda->deletedTableInstances.at(i), true);
+                qDebug() << tda->deletedTableInstances.at(i)->getName();
+                getGui()->createTableInstanceTreeEntry(tda->deletedTableInstances.at(i));
+                tda->deletedTableInstances.at(i)->unSentence();
+            }
         }
     }
 

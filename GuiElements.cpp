@@ -205,14 +205,12 @@ ContextMenuEnabledTreeWidgetItem* GuiElements::updateItemForPatchWithState(Patch
                 TableDeletionAction* tda = p->getTDA(uid);
                 if(tda)
                 {
-                    for(int j=0; j<tda->deletedTableInstances.size(); j++)
+                    for(int j=tda->deletedTable?0:1; j<tda->deletedTableInstances.size(); j++)
                     {
                         ContextMenuEnabledTreeWidgetItem* tdItem = new ContextMenuEnabledTreeWidgetItem(dynamic_cast<ContextMenuEnabledTreeWidgetItem*>(m_patchItems[p]->child(i)), QStringList(tda->deletedTableInstances.at(j)->getName()));
                         tdItem->setIcon(0, IconFactory::getTabinstIcon());
                         tdItem->setIcon(1, IconFactory::getRemoveIcon());
-                        //tdItem->setPopupMenu(ContextMenuCollection::getInstance()->getUndeletePopupMenu());
                         m_patchesTree->addTopLevelItem(tdItem);
-                        tdItem->setData(0, Qt::UserRole, QVariant(tda->deletedTable->getObjectUid()));
                     }
 
                     m_patchItems[p]->child(i)->setExpanded(true);

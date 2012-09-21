@@ -1391,6 +1391,32 @@ Connection* MainWindow::getRightClickedConnection()
     return 0;
 }
 
+void MainWindow::onDeleteInstanceFromPopup()
+{
+    TableInstance* tinst =  getRightClickedObject<TableInstance>();
+    if(tinst)
+    {
+        if(QMessageBox::question(this, tr("Are you sure?"), tr("Really delete ") + tinst->getName() + "?", QMessageBox::Yes | QMessageBox::No) !=  QMessageBox::Yes)
+        {
+            return;
+        }
+        if(tinst->instantiatedBecuaseOfRkReference())
+        {
+            if(tinst->getReferencingTables().length() > 0)
+            {
+                QMessageBox::critical(this, tr("Error"), tr("Cannot delete this table instance since it was auto-instantiated because another table has a foreign key to it. Deleting the following tables will remove this table too:\n") + tinst->getReferencingTables(), QMessageBox::Ok);
+                m_guiElements->getProjectTree()->setLastRightclickedItem(0);
+                return;
+            }
+        }
+
+        Version* v = tinst->version();
+        v->deleteTableInstance(tinst);
+
+        showNamedObjectList(&MainWindow::showTableInstanceWithGuid, v->getTableInstances(), IconFactory::getTabinstIcon(), QObject::tr("Tables"));
+    }
+}
+
 void MainWindow::onDeleteTableFromPopup()
 {
     Table* tab =  getRightClickedObject<Table>();
@@ -1419,7 +1445,7 @@ void MainWindow::onDeleteTableFromPopup()
             {
                 showNamedObjectList(&MainWindow::showTableWithGuid, v->getTables(),
                                     Workspace::getInstance()->currentProjectIsOop()?IconFactory::getTabinstIcon():IconFactory::getTableIcon(),
-                                    Workspace::getInstance()->currentProjectIsOop()?"Table Templates":"Tables");
+                                    Workspace::getInstance()->currentProjectIsOop()?tr("Table Templates"):tr("Tables"));
                 v->getGui()->getTablesItem()->treeWidget()->clearSelection();
                 v->getGui()->getTablesItem()->setSelected(true);
             }
@@ -1739,33 +1765,6 @@ void MainWindow::onRenameDiagramFromPopup()
 
             m_workspace->workingVersion()->getGui()->updateForms();
         }
-    }
-}
-
-void MainWindow::onDeleteInstanceFromPopup()
-{
-    TableInstance* tinst =  getRightClickedObject<TableInstance>();
-    if(tinst)
-    {
-        if(QMessageBox::question(this, tr("Are you sure?"), tr("Really delete ") + tinst->getName() + "?", QMessageBox::Yes | QMessageBox::No) !=  QMessageBox::Yes)
-        {
-            return;
-        }
-        if(tinst->instantiatedBecuaseOfRkReference())
-        {
-            if(tinst->getReferencingTables().length() > 0)
-            {
-                QMessageBox::critical(this, tr("Error"), tr("Cannot delete this table instance since it was auto-instantiated because another table has a foreign key to it. Deleting the following tables will remove this table too:\n") + tinst->getReferencingTables(), QMessageBox::Ok);
-                m_guiElements->getProjectTree()->setLastRightclickedItem(0);
-                return;
-            }
-        }
-
-        Version* v = tinst->version();
-        v->deleteTableInstance(tinst);
-
-        // and show a table instances list form
-        showNamedObjectList(&MainWindow::showTableWithGuid, v->getTableInstances(), IconFactory::getTabinstIcon(), QObject::tr("Tables"));
     }
 }
 

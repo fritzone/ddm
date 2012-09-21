@@ -66,7 +66,14 @@ public:
 
     void sentence()
     {
+        qDebug() <<  "sentece " << getName();
         m_sentenced = true;
+    }
+
+    void unSentence()
+    {
+        qDebug() <<  "unsentece " << getName();
+        m_sentenced = false;
     }
 
     bool sentenced() const
