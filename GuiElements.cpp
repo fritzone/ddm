@@ -150,6 +150,7 @@ ContextMenuEnabledTreeWidgetItem* GuiElements::createNewPatchItem(Patch* p)
     patchItem->setData(0, Qt::UserRole, QVariant(p->getObjectUid()));
     m_patchItems[p] = patchItem;
     p->setLocation(patchItem);
+    return patchItem;
 }
 
 ContextMenuEnabledTreeWidgetItem* GuiElements::updateItemForPatchWithState(Patch *p, const QString& class_uid, const QString &uid, const QString &name, int state)
@@ -249,6 +250,7 @@ ContextMenuEnabledTreeWidgetItem* GuiElements::createNewItemForPatch(Patch *p, c
     m_patchesTree->addTopLevelItem(newItem);
     newItem->setData(0, Qt::UserRole, QVariant(uid));
     m_patchItems[p]->setExpanded(true);
+    return newItem;
 }
 
 void GuiElements::removeItemForPatch(Patch *p, const QString& uid)

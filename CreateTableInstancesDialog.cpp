@@ -1,5 +1,5 @@
-#include "CreateTableInstancesDialog.h"
 #include "ui_CreateTableInstancesDialog.h"
+#include "CreateTableInstancesDialog.h"
 #include "IconFactory.h"
 
 #include <QListWidgetItem>
