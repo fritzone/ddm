@@ -152,4 +152,5 @@ bool Patch::removeNewElementBecauseOfDeletion(const QString& uid)
             m_originals.remove(uid);
         }
     }
+    return true;
 }
