@@ -148,6 +148,8 @@ ContextMenuCollection::ContextMenuCollection()
     m_datatypePopupMenu->addAction(action_DuplicateDataType);
 
     // diagrams popup menu
+    m_diagramPopupMenu->setTitle(QObject::tr("Diagram"));
+    m_diagramPopupMenu->setIcon(IconFactory::getDiagramIcon());
     m_diagramPopupMenu->addAction(action_DeleteDiagram);
     m_diagramPopupMenu->addAction(action_RenameDiagram);
 
@@ -213,7 +215,6 @@ ContextMenuCollection::ContextMenuCollection()
     // the major version popup menu
     m_majorVersionPopupMenu->addAction(action_releaseMajorVersion);
 
-
     // one functions popup menu
     m_functionPopupMenu->addAction(action_deleteFunction);
 
@@ -258,6 +259,7 @@ ContextMenuCollection::ContextMenuCollection()
 
     // the locked diagr popup menus
     m_unlockDiagramPopupMenu->addAction(action_unlock);
+    m_unlockDiagramPopupMenu->addMenu(m_diagramPopupMenu);
     m_relockDiagramPopupMenu->addAction(action_relock);
 
     m_resumePatchMenu->addAction(action_resumePatch);

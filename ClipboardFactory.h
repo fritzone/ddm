@@ -3,6 +3,7 @@
 
 class Table;
 class Column;
+class Version;
 
 /**
  * This class creates objects from the clipboard
@@ -14,7 +15,7 @@ public:
 
 public:
     // paste a table
-    static Table* pasteTable();
+    static Table* pasteTable(Version *v);
     static bool tableIsAvailableOnClipboard();
 
     //paste a column

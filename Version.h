@@ -87,7 +87,7 @@ public:
     /**
      * Add a diagram to the system
      */
-    virtual void addDiagram(Diagram*) = 0;
+    virtual void addDiagram(Diagram*, bool initial) = 0;
 
 
     /**
@@ -385,7 +385,7 @@ public:
      * @brief undeleteObject Undeletes the object with given UID. The object was supposed to be deleted in a patch.
      * @param uid
      */
-    virtual void undeleteObject(const QString& uid) = 0;
+    virtual bool undeleteObject(const QString& uid) = 0;
 
 protected:
     int m_major;

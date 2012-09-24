@@ -137,6 +137,11 @@ bool Workspace::currentProjectIsOop() const
     return currentProject()->oopProject();
 }
 
+Version* Workspace::getVersion(const QString &uid)
+{
+    return currentProject()->getVersion(uid);
+}
+
 DatabaseEngine* Workspace::currentProjectsEngine() const
 {
     return currentProject()->getEngine();
@@ -173,14 +178,13 @@ QVector<UserDataType*> Workspace::loadDefaultDatatypesIntoCurrentSolution()
     }
 }
 
-Table* Workspace::pasteTable()
+Table* Workspace::pasteTable(Version* v)
 {
-    Table* tab = ClipboardFactory::pasteTable();
+    Table* tab = ClipboardFactory::pasteTable(v);
     if(tab != 0)
     {
-        tab->setName(NameGenerator::getUniqueName(currentSolution()->currentProject()->getWorkingVersion(),
-                                                  (itemGetter)&Version::getTable, tab->getName()+"_copy"));
-        currentSolution()->currentProject()->getWorkingVersion()->addTable(tab, false);
+        tab->setName(NameGenerator::getUniqueName(v, (itemGetter)&Version::getTable, tab->getName()+"_copy"));
+        v->addTable(tab, false);
         return tab;
     }
 

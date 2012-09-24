@@ -127,3 +127,15 @@ void Project::releaseMajorVersion()
 
     cv->updateGui();
 }
+
+Version* Project::getVersion(const QString& uid)
+{
+    for(int i=0; i<m_majorVersions.size(); i++)
+    {
+        if(m_majorVersions.at(i)->getObjectUid() == uid)
+        {
+            return m_majorVersions.at(i);
+        }
+    }
+    return 0;
+}

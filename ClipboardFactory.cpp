@@ -4,7 +4,9 @@
 #include "core_Table.h"
 #include "ForeignKey.h"
 #include "core_Column.h"
+#include "core_Patch.h"
 #include "Version.h"
+#include "MainWindow.h"
 
 #include <QDomDocument>
 #include <QDomElement>
@@ -15,7 +17,7 @@ ClipboardFactory::ClipboardFactory()
 {
 }
 
-Table* ClipboardFactory::pasteTable()
+Table* ClipboardFactory::pasteTable(Version* v)
 {
     QDomDocument a("ClipboardData");
     QString err;
@@ -27,10 +29,11 @@ Table* ClipboardFactory::pasteTable()
     if(node != "CopiedTable")
         return 0;
 
-    Table* tab = DeserializationFactory::createTable(Workspace::getInstance()->currentProjectsEngine(), Workspace::getInstance()->workingVersion(), a,
-                                                     a.documentElement().firstChild().toElement());
+    QDomElement e = a.documentElement().firstChild().toElement();
+    e.setAttribute("uid", QUuid::createUuid().toString());
+    Table* tab = DeserializationFactory::createTable(Workspace::getInstance()->currentProjectsEngine(), v, a, e);
 
-    Workspace::getInstance()->workingVersion()->setupForeignKeyRelationshipsForATable(tab);
+    v->setupForeignKeyRelationshipsForATable(tab);
 
     return tab;
 }

@@ -24,7 +24,7 @@ public:
     virtual void updateGui();
 
     virtual void addNewDataType(UserDataType*);
-    virtual void addDiagram(Diagram*);
+    virtual void addDiagram(Diagram*, bool initial);
     virtual const QVector<UserDataType*>& getDataTypes() const;
     virtual bool hasDataType(const QString& name) const;
     virtual UserDataType* getDataType(const QString& name);
@@ -87,11 +87,19 @@ public:
     virtual void patchItem(const QString& uid);
     virtual void replaceTable(const QString& uid, Table* newTab);
     virtual Patch* getWorkingPatch();
-    virtual void undeleteObject(const QString& uid);
+    virtual bool undeleteObject(const QString& uid);
 
     void createTreeItems(GuiElements* gui, ContextMenuEnabledTreeWidgetItem* projectItem);
     void deleteTableInstance(TableInstance *tinst, TableDeletionAction* );
     void doDeleteTableInstance(TableInstance *tinst, TableDeletionAction* );
+
+    /**
+     * @brief canUndeleteTable check if we can undelete the table with the given UID... (if the deleted table instances contain
+     * an instantiated table that was already deleted we cannot undelete the table)
+     * @param uid
+     * @return
+     */
+    QString canUndeleteTable(const QString& uid);
 
 protected:
     // the version as a string representation. Major versions are always of form X.0
