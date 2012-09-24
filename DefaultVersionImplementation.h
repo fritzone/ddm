@@ -10,7 +10,7 @@ class GuiElements;
 class Project;
 class Connection;
 class Patch;
-class TableDeletionAction;
+struct TableDeletionAction;
 
 class DefaultVersionImplementation : public Version
 {

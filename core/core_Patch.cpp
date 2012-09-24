@@ -139,7 +139,8 @@ void Patch::removeTDA(const QString &uid)
 
 bool Patch::elementWasNewInThisPatch(const QString &uid)
 {
-    return m_newUids.indexOf(uid) != -1;
+    int idx = m_newUids.indexOf(uid);
+    return idx != -1;
 }
 
 bool Patch::removeNewElementBecauseOfDeletion(const QString& uid)
