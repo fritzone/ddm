@@ -526,7 +526,11 @@ void MainWindow::currentProjectTreeItemChanged(QTreeWidgetItem * current, QTreeW
 
         ObjectWithUid* obj = UidWarehouse::instance().getElement(uid);
         Version* foundVersion = UidWarehouse::instance().getVersionForUid(uid);
-        if(!foundVersion) return;
+        if(!foundVersion)
+        {
+            qDebug() << "no version";
+            return;
+        }
 
         // special cases:
         // 1. Full documentation
@@ -690,7 +694,7 @@ void MainWindow::onNewDiagramFromPopup()
     // TODO: This is pure duplication with onNewDiagram
     Diagram* dgram = new Diagram(v, QUuid::createUuid().toString());
     DiagramForm* df = new DiagramForm(v, dgram, this);
-    v->addDiagram(dgram);
+    v->addDiagram(dgram, false);
     setCentralWidget(df);
     dgram->setForm(df);
     onSaveDiagram(dgram, v);
@@ -1271,7 +1275,7 @@ void MainWindow::onNewDiagram()
 {
     Diagram* dgram = new Diagram(m_workspace->workingVersion(), QUuid::createUuid().toString());
     DiagramForm* df = new DiagramForm(m_workspace->workingVersion(), dgram, this);
-    m_workspace->workingVersion()->addDiagram(dgram);
+    m_workspace->workingVersion()->addDiagram(dgram, false);
     setCentralWidget(df);
     dgram->setForm(df);
     onSaveDiagram(dgram, m_workspace->workingVersion());
@@ -1473,10 +1477,21 @@ void MainWindow::onCopyTableFromPopup()
 
 void MainWindow::onPasteTableFromPopup()
 {
-    Table* tab = Workspace::getInstance()->pasteTable();
+    ContextMenuEnabledTreeWidgetItem* item = getLastRightClickedTreeItem();
+    if(item == 0)
+    {
+        return;
+    }
+
+    QVariant qv = item->data(0, Qt::UserRole);
+    QString uid = qv.toString();
+    Version* v = UidWarehouse::instance().getVersionForUid(uid);
+    if(!v) return;
+
+    Table* tab = Workspace::getInstance()->pasteTable(v);
     if(tab)
     {
-        tab->version()->getGui()->createTableTreeEntry(tab);
+        v->getGui()->createTableTreeEntry(tab);
         if(tab->getParent())
         {
             QTreeWidgetItem* p = tab->getLocation();
@@ -1486,12 +1501,18 @@ void MainWindow::onPasteTableFromPopup()
         // add the SQL item but only if it's not an oop project
         if(!m_workspace->currentProjectIsOop())
         {
-            ContextMenuEnabledTreeWidgetItem* sqlItm = new ContextMenuEnabledTreeWidgetItem(tab->version()->getGui()->getFinalSqlItem(), QStringList(tab->getName() + ".sql"));
+            ContextMenuEnabledTreeWidgetItem* sqlItm = new ContextMenuEnabledTreeWidgetItem(v->getGui()->getFinalSqlItem(), QStringList(tab->getName() + ".sql"));
             sqlItm->setIcon(0, IconFactory::getTablesIcon());
             sqlItm->setData(0, Qt::UserRole, tab->getObjectUid().toString());
         }
 
-        m_workspace->workingVersion()->getGui()->updateForms();
+        if(v->isLocked())
+        {
+            createPatchElement(v, tab, tab->getObjectUid(), false);
+            v->getWorkingPatch()->addNewElement(tab->getObjectUid()); // this will be a new element ...
+            updatePatchElementToReflectState(v, tab, tab->getObjectUid(), 1);
+        }
+        v->getGui()->updateForms();
     }
 }
 
@@ -2689,6 +2710,8 @@ void MainWindow::onUndeleteSomething()
 {
     ObjectWithUid* obj = getRightClickedObject<ObjectWithUid>();
     Version* v = UidWarehouse::instance().getVersionForUid(obj->getObjectUid());
-    v->undeleteObject(obj->getObjectUid());
-    m_guiElements->removeItemForPatch(v->getWorkingPatch(), obj->getObjectUid());
+    if(v->undeleteObject(obj->getObjectUid()))
+    {
+        m_guiElements->removeItemForPatch(v->getWorkingPatch(), obj->getObjectUid());
+    }
 }

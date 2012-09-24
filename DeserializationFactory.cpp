@@ -321,7 +321,7 @@ void DeserializationFactory::createMajorVersion(MajorVersion *mv, Project *p, Da
             for(int j=0; j<element.childNodes().at(i).childNodes().count(); j++)
             {
                 Diagram* diagram = createDiagram(mv, doc, element.childNodes().at(i).childNodes().at(j).toElement());
-                mv->addDiagram(diagram);
+                mv->addDiagram(diagram, true);
             }
         }
     }

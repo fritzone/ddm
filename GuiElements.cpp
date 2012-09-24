@@ -243,6 +243,14 @@ ContextMenuEnabledTreeWidgetItem* GuiElements::createNewItemForPatch(Patch *p, c
     {
         createNewPatchItem(p);
     }
+    for(int i=0; i<m_patchItems[p]->childCount(); i++)
+    {
+        QVariant v = m_patchItems[p]->child(i)->data(0, Qt::UserRole);
+        if(v.toString() == uid) // this element is already there
+        {
+            return dynamic_cast<ContextMenuEnabledTreeWidgetItem*>(m_patchItems[p]->child(i));
+        }
+    }
     ContextMenuEnabledTreeWidgetItem* newItem = new ContextMenuEnabledTreeWidgetItem(m_patchItems[p], QStringList(name));
     newItem->setIcon(0, IconFactory::getIconForClassUid(class_uid));
     newItem->setIcon(1, IconFactory::getChangedIcon());

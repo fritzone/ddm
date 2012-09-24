@@ -70,6 +70,13 @@ public:
     Version* workingVersion() const;
 
     /**
+     * @brief getVersion
+     * @param uid the uid of the version
+     * @return
+     */
+    Version* getVersion(const QString& uid);
+
+    /**
      * Saves the current solution to a file
      */
     bool saveCurrentSolution(const QString&);
@@ -102,7 +109,7 @@ public:
     /**
      * Pastes a table from the clipboard
      */
-    Table* pasteTable();
+    Table* pasteTable(Version *v);
 
     /**
      * This method gets called when a new table is saved

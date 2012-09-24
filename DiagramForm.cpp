@@ -258,7 +258,7 @@ void DiagramForm::onSave()
     m_diagram->setName(ui->txtDiagramName->text());
     if(!m_diagram->isSaved())
     {
-        m_version->addDiagram(m_diagram);
+        m_version->addDiagram(m_diagram, false);
     }
     MainWindow::instance()->onSaveDiagram(m_diagram, m_version);
 }

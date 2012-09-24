@@ -502,8 +502,10 @@ void Table::copy()
 {
     QDomDocument doc("ClipboardData");
     QDomElement root = doc.createElement("CopiedTable");
+    root.setAttribute("version", version()->getObjectUid());
     serialize(doc, root);
     doc.appendChild(root);
+
     QString text = doc.toString();
 
     QApplication::clipboard()->setText(text);

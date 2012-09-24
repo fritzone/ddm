@@ -138,9 +138,17 @@ inline void DefaultVersionImplementation::addTable(Table *t, bool initial)
     }
 }
 
-inline void DefaultVersionImplementation::addDiagram(Diagram* d)
+inline void DefaultVersionImplementation::addDiagram(Diagram* d, bool initial)
 {
     m_data.m_diagrams.append(d);
+
+    if(isLocked() && !initial)
+    {
+        MainWindow::instance()->createPatchElement(this, d, d->getObjectUid(), false);
+        getWorkingPatch()->addNewElement(d->getObjectUid()); // this will be a new element ...
+        MainWindow::instance()->updatePatchElementToReflectState(this, d, d->getObjectUid(), 1);
+    }
+
 }
 
 inline bool DefaultVersionImplementation::hasTable(Table *t)
@@ -386,6 +394,12 @@ bool DefaultVersionImplementation::deleteTable(Table *tab)
         {
             TableInstance* tinst = m_data.m_tableInstances.at(i);
             deleteTableInstance(tinst, tda);
+            // check if this table instance was created as a NEW one in this patch
+            if(getWorkingPatch()->elementWasNewInThisPatch(tinst->getObjectUid()))
+            {
+                getWorkingPatch()->removeNewElementBecauseOfDeletion(tinst->getObjectUid());
+                MainWindow::instance()->updatePatchElementToReflectState(this, tinst, tinst->getObjectUid(), 4); // 4 is REMOVE FROM THE TREE
+            }
         }
         else
         {
@@ -1338,7 +1352,7 @@ bool DefaultVersionImplementation::cloneInto(Version* other)
     for(int i=0; i<dias.size(); i++)
     {
         Diagram* dgr = dynamic_cast<Diagram*>(dias.at(i)->clone(this, other));
-        other->addDiagram(dgr);
+        other->addDiagram(dgr, true);
         dias.at(i)->lock();
         dias.at(i)->updateGui();
     }
@@ -1390,10 +1404,36 @@ Patch* DefaultVersionImplementation::getWorkingPatch()
     return m_patches.at(m_currentPatchIndex);
 }
 
- void DefaultVersionImplementation::undeleteObject(const QString& uid)
- {
+QString DefaultVersionImplementation::canUndeleteTable(const QString &uid)
+{
     ObjectWithUid* obj = getWorkingPatch()->getDeletedObject(uid);
-    if(!obj) return;
+    if(!obj) return QObject::tr("Deleted object");
+
+    TableDeletionAction* tda = getWorkingPatch()->getTDA(uid);
+    if(!tda) return QObject::tr("Deleted table");
+
+    for(int i=0; i<tda->deletedTableInstances.size(); i++)
+    {
+        if(!hasTable(tda->deletedTableInstances.at(i)->table()) && tda->deletedTableInstances.at(i)->table()->getObjectUid() != tda->deletedTable->getObjectUid())
+        {
+            return tda->deletedTableInstances.at(i)->table()->getName();
+        }
+    }
+    return "";
+}
+
+
+bool DefaultVersionImplementation::undeleteObject(const QString& uid)
+{
+    QString notFoundTable = canUndeleteTable(uid);
+    if(notFoundTable.length() > 1)
+    {
+        QMessageBox::critical(MainWindow::instance(), QObject::tr("Error"), QObject::tr("Cannot undelete this object: ") + notFoundTable + QObject::tr(" missing from version."), QMessageBox::Ok);
+        return false;
+    }
+
+    ObjectWithUid* obj = getWorkingPatch()->getDeletedObject(uid);
+    if(!obj) return false;
 
     // undelete
     TableDeletionAction* tda = getWorkingPatch()->getTDA(uid);
@@ -1436,4 +1476,6 @@ Patch* DefaultVersionImplementation::getWorkingPatch()
 
     // remove from the patch
     getWorkingPatch()->undeleteObject(uid);
+
+    return true;
  }

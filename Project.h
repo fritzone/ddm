@@ -80,6 +80,8 @@ public:
         m_oopIsEnabled = a;
     }
 
+    Version* getVersion(const QString& uid);
+
 private:
 
     // the description of the project
