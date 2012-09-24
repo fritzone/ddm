@@ -344,10 +344,20 @@ void DefaultVersionImplementation::deleteTableInstance(TableInstance *tinst)
 
     if(isLocked())  // remove the entry from the patch
     {
-        MainWindow::instance()->createPatchElement(this, tinst, tinst->getObjectUid(), false);
-        getWorkingPatch()->markElementForDeletion(tinst->getObjectUid());
-        getWorkingPatch()->addDeletedTable(tinst->getObjectUid(), tda);
-        MainWindow::instance()->updatePatchElementToReflectState(this, tinst, tinst->getObjectUid(), 3); // 3 is DELETED
+        // check if this table instance was created as a NEW one in this patch
+        if(getWorkingPatch()->elementWasNewInThisPatch(tinst->getObjectUid()))
+        {
+            getWorkingPatch()->removeNewElementBecauseOfDeletion(tinst->getObjectUid());
+            MainWindow::instance()->updatePatchElementToReflectState(this, tinst, tinst->getObjectUid(), 4); // 4 is REMOVE FROM THE TREE
+        }
+        else
+        {
+            MainWindow::instance()->createPatchElement(this, tinst, tinst->getObjectUid(), false);
+            getWorkingPatch()->markElementForDeletion(tinst->getObjectUid());
+            getWorkingPatch()->addDeletedTable(tinst->getObjectUid(), tda);
+            MainWindow::instance()->updatePatchElementToReflectState(this, tinst, tinst->getObjectUid(), 3); // 3 is DELETED
+        }
+
     }
 }
 

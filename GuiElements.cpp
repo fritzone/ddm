@@ -232,6 +232,17 @@ ContextMenuEnabledTreeWidgetItem* GuiElements::updateItemForPatchWithState(Patch
             if(v.toString() == uid)
             {
                 delete m_patchItems[p]->child(i);
+
+                if(m_patchItems[p]->childCount() == 0)
+                {
+                    delete m_patchItems[p];
+                    m_patchItems.remove(p);
+                    if(m_patchItems.keys().size() == 0)
+                    {
+                        m_patchesTreeDock->hide();
+                    }
+                    return 0;
+                }
             }
         }
     }
