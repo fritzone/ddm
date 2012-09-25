@@ -123,11 +123,35 @@ void Patch::addDeletedTable(const QString &uid, TableDeletionAction *td)
     m_tableDeletions[uid] = td;
 }
 
+void Patch::addDeletedDiagram(const QString &uid, DiagramDeletionAction *dda)
+{
+    m_diagramDeletions[uid] = dda;
+}
+
+void Patch::addDeletedProcedure(const QString &uid, ProcedureDeletionAction *pda)
+{
+    m_procedureDeletions[uid] = pda;
+}
+
 TableDeletionAction* Patch::getTDA(const QString &uid)
 {
     if(!m_tableDeletions.contains(uid)) return 0;
     TableDeletionAction* tda = m_tableDeletions.value(uid);
     return tda;
+}
+
+DiagramDeletionAction* Patch::getDDA(const QString &uid)
+{
+    if(!m_diagramDeletions.contains(uid)) return 0;
+    DiagramDeletionAction* dda = m_diagramDeletions.value(uid);
+    return dda;
+}
+
+ProcedureDeletionAction* Patch::getPDA(const QString &uid)
+{
+    if(!m_procedureDeletions.contains(uid)) return 0;
+    ProcedureDeletionAction* pda = m_procedureDeletions.value(uid);
+    return pda;
 }
 
 void Patch::removeTDA(const QString &uid)

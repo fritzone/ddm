@@ -451,7 +451,7 @@ bool DefaultVersionImplementation::deleteTable(Table *tab)
     // remove from inside
     m_data.m_tables.remove(tabIndex);
 
-    if(isLocked())  // marking the element as deleted,
+    if(isLocked())  // marking the element as deleted, ro removing
     {
         if(!getWorkingPatch()->elementWasNewInThisPatch(tab->getObjectUid())) // but only if it was NOT a newly created element
         {
@@ -611,7 +611,24 @@ void DefaultVersionImplementation::deleteProcedure(const QString& p)
     m_data.m_procedures.remove(m_data.m_procedures.indexOf(v));
     delete v->getLocation();
     delete v->getSqlLocation();
-    delete v;
+    ProcedureDeletionAction* pda = new ProcedureDeletionAction;
+    pda->deletedProcedure = v;
+
+    if(isLocked())  // marking the element as deleted, ro removing
+    {
+        if(!getWorkingPatch()->elementWasNewInThisPatch(v->getObjectUid())) // but only if it was NOT a newly created element
+        {
+            MainWindow::instance()->createPatchElement(this, v, v->getObjectUid(), false);
+            getWorkingPatch()->markElementForDeletion(v->getObjectUid());
+            getWorkingPatch()->addDeletedProcedure(v->getObjectUid(), pda);
+            MainWindow::instance()->updatePatchElementToReflectState(this, v, v->getObjectUid(), 3); // 3 is DELETED
+        }
+        else
+        {
+            getWorkingPatch()->removeNewElementBecauseOfDeletion(v->getObjectUid());
+            MainWindow::instance()->updatePatchElementToReflectState(this, v, v->getObjectUid(), 4); // 4 is REMOVE FROM THE TREE
+        }
+    }
 }
 
 void DefaultVersionImplementation::deleteDiagram(const QString& name)
@@ -619,7 +636,24 @@ void DefaultVersionImplementation::deleteDiagram(const QString& name)
     Diagram* dgr = getDiagram(name);
     m_data.m_diagrams.remove(m_data.m_diagrams.indexOf(dgr));
     delete dgr->getLocation();
-    delete dgr;
+    DiagramDeletionAction* dda = new DiagramDeletionAction;
+    dda->deletedDiagram = dgr;
+
+    if(isLocked())  // marking the element as deleted, ro removing
+    {
+        if(!getWorkingPatch()->elementWasNewInThisPatch(dgr->getObjectUid())) // but only if it was NOT a newly created element
+        {
+            MainWindow::instance()->createPatchElement(this, dgr, dgr->getObjectUid(), false);
+            getWorkingPatch()->markElementForDeletion(dgr->getObjectUid());
+            getWorkingPatch()->addDeletedDiagram(dgr->getObjectUid(), dda);
+            MainWindow::instance()->updatePatchElementToReflectState(this, dgr, dgr->getObjectUid(), 3); // 3 is DELETED
+        }
+        else
+        {
+            getWorkingPatch()->removeNewElementBecauseOfDeletion(dgr->getObjectUid());
+            MainWindow::instance()->updatePatchElementToReflectState(this, dgr, dgr->getObjectUid(), 4); // 4 is REMOVE FROM THE TREE
+        }
+    }
 }
 
 QVector<Table*> DefaultVersionImplementation::getTablesReferencingAColumnThroughForeignKeys(const Column* col)
@@ -1109,9 +1143,17 @@ Procedure* DefaultVersionImplementation::getProcedure(const QString &procedureNa
     return 0;
 }
 
-void DefaultVersionImplementation::addProcedure(Procedure* p)
+void DefaultVersionImplementation::addProcedure(Procedure* p, bool initial)
 {
     m_data.m_procedures.append(p);
+
+    if(isLocked() && !initial)
+    {
+        MainWindow::instance()->createPatchElement(this, p, p->getObjectUid(), false);
+        getWorkingPatch()->addNewElement(p->getObjectUid()); // this will be a new element ...
+        MainWindow::instance()->updatePatchElementToReflectState(this, p, p->getObjectUid(), 1);
+    }
+
 }
 
 void DefaultVersionImplementation::addFunction(Function* p)
@@ -1332,7 +1374,7 @@ bool DefaultVersionImplementation::cloneInto(Version* other)
     for(int i=0; i<procs.size(); i++)
     {
         Procedure* newp = dynamic_cast<Procedure*>(procs.at(i)->clone(this, other));
-        other->addProcedure(newp);
+        other->addProcedure(newp, true);
         procs.at(i)->lock();
         procs.at(i)->updateGui();
     }
@@ -1414,41 +1456,123 @@ Patch* DefaultVersionImplementation::getWorkingPatch()
     return m_patches.at(m_currentPatchIndex);
 }
 
-QString DefaultVersionImplementation::canUndeleteTable(const QString &uid)
+DefaultVersionImplementation::CAN_UNDELETE_STATUS DefaultVersionImplementation::canUndeleteTable(const QString &uid, QString &extra)
 {
     ObjectWithUid* obj = getWorkingPatch()->getDeletedObject(uid);
-    if(!obj) return QObject::tr("Deleted object");
+    if(!obj)
+    {
+        return DELETED_OBJECT_WAS_NOT_FOUND_IN_PATCH;
+    }
 
     TableDeletionAction* tda = getWorkingPatch()->getTDA(uid);
-    if(!tda) return QObject::tr("Deleted table");
+    if(!tda)
+    {
+        return DELETED_OBJECT_WAS_NOT_FOUND_IN_PATCH;
+    }
 
     for(int i=0; i<tda->deletedTableInstances.size(); i++)
     {
         if(!hasTable(tda->deletedTableInstances.at(i)->table()) && tda->deletedTableInstances.at(i)->table()->getObjectUid() != tda->deletedTable->getObjectUid())
         {
-            return tda->deletedTableInstances.at(i)->table()->getName();
+            extra = tda->deletedTableInstances.at(i)->table()->getName();
+            return DEPENDENT_TABLE_WAS_NOT_FOUND_IN_VERSION;
         }
     }
-    return "";
+    return CAN_UNDELETE;
+}
+
+DefaultVersionImplementation::CAN_UNDELETE_STATUS DefaultVersionImplementation::canUndeleteDiagram(const QString &uid, QString &extra)
+{
+    ObjectWithUid* obj = getWorkingPatch()->getDeletedObject(uid);
+    if(!obj)
+    {
+        return DELETED_OBJECT_WAS_NOT_FOUND_IN_PATCH;
+    }
+
+    DiagramDeletionAction* dda = getWorkingPatch()->getDDA(uid);
+    if(!dda)
+    {
+        return DELETED_OBJECT_WAS_NOT_FOUND_IN_PATCH;
+    }
+
+    Diagram* dgr = dda->deletedDiagram;
+    QStringList tabsInDgr = dgr->getTableNames();
+    for(int i=0; i<tabsInDgr.size(); i++)
+    {
+        if(!hasTable(tabsInDgr.at(i)))
+        {
+            extra = tabsInDgr.at(i);
+            return DEPENDENT_TABLE_WAS_NOT_FOUND_IN_VERSION;
+        }
+    }
+    return CAN_UNDELETE;
+}
+
+DefaultVersionImplementation::CAN_UNDELETE_STATUS DefaultVersionImplementation::canUndeleteProcedure(const QString &uid, QString &extra)
+{
+    ObjectWithUid* obj = getWorkingPatch()->getDeletedObject(uid);
+    if(!obj)
+    {
+        return DELETED_OBJECT_WAS_NOT_FOUND_IN_PATCH;
+    }
+
+    ProcedureDeletionAction* pda = getWorkingPatch()->getPDA(uid);
+    if(!pda)
+    {
+        return DELETED_OBJECT_WAS_NOT_FOUND_IN_PATCH;
+    }
+
+    return CAN_UNDELETE;
 }
 
 
 bool DefaultVersionImplementation::undeleteObject(const QString& uid)
 {
-    QString notFoundTable = canUndeleteTable(uid);
-    if(notFoundTable.length() > 1)
+    QString extra;
+
+    // can we undelete a table or a table instance?
+    DefaultVersionImplementation::CAN_UNDELETE_STATUS canUndelete = canUndeleteTable(uid, extra);
+    if(canUndelete != CAN_UNDELETE)
     {
-        QMessageBox::critical(MainWindow::instance(), QObject::tr("Error"), QObject::tr("Cannot undelete this object: ") + notFoundTable + QObject::tr(" missing from version."), QMessageBox::Ok);
+
+        // can we undelete a diagram?
+        canUndelete = canUndeleteDiagram(uid, extra);
+        if(canUndelete == CAN_UNDELETE)
+        {
+            DiagramDeletionAction* dda = getWorkingPatch()->getDDA(uid);
+            addDiagram(dda->deletedDiagram, true);
+            getGui()->createDiagramTreeEntry(dda->deletedDiagram);
+            dda->deletedDiagram->updateGui();
+            return true;
+        }
+
+        canUndelete = canUndeleteProcedure(uid, extra);
+        if(canUndelete == CAN_UNDELETE)
+        {
+            ProcedureDeletionAction* pda = getWorkingPatch()->getPDA(uid);
+            addProcedure(pda->deletedProcedure, true);
+            getGui()->createProcedureTreeEntry(pda->deletedProcedure);
+            pda->deletedProcedure->updateGui();
+            return true;
+        }
+
+
+        // see if we can undelete a procedure?
+
+        if(canUndelete == DEPENDENT_TABLE_WAS_NOT_FOUND_IN_VERSION)
+        {
+            QMessageBox::critical(MainWindow::instance(), QObject::tr("Error"), QObject::tr("Cannot undelete this object: ") + extra + QObject::tr(" missing from version."), QMessageBox::Ok);
+            return false;
+        }
+
+        QMessageBox::critical(MainWindow::instance(), QObject::tr("Error"), QObject::tr("Cannot undelete this object: ") + extra + QObject::tr(" missing from version."), QMessageBox::Ok);
         return false;
+
     }
-
-    ObjectWithUid* obj = getWorkingPatch()->getDeletedObject(uid);
-    if(!obj) return false;
-
-    // undelete
-    TableDeletionAction* tda = getWorkingPatch()->getTDA(uid);
-    if(tda)
+    else // undelete a table
     {
+        // undelete
+        TableDeletionAction* tda = getWorkingPatch()->getTDA(uid);
         if(tda->deletedTable) // obivously a table was deleted
         {
             addTable(tda->deletedTable, true);
@@ -1469,7 +1593,11 @@ bool DefaultVersionImplementation::undeleteObject(const QString& uid)
                 qDebug() << tda->deletedTableInstances.at(i)->getName();
                 getGui()->createTableInstanceTreeEntry(tda->deletedTableInstances.at(i));
                 tda->deletedTableInstances.at(i)->unSentence();
+
+                tda->deletedTableInstances.at(i)->updateGui();
             }
+
+            tda->deletedTable->updateGui();
         }
         else // just a table instance was deleted
         {
@@ -1482,6 +1610,8 @@ bool DefaultVersionImplementation::undeleteObject(const QString& uid)
                 tda->deletedTableInstances.at(i)->unSentence();
             }
         }
+
+
     }
 
     // remove from the patch

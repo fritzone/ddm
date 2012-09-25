@@ -16,6 +16,7 @@ DiagramItemFactory::DiagramItemFactory()
 
 DraggableGraphicsViewItem* DiagramItemFactory::getDiagramEntityForTable(Table *t)
 {
+    if(!t) return 0;
     DraggableGraphicsViewItem* grp = new DraggableGraphicsViewItem(t);
 
     QGraphicsTextItem* txtName = new QGraphicsTextItem(t->getName(), grp);

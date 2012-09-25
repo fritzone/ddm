@@ -366,7 +366,7 @@ void DeserializationFactory::createMajorVersion(MajorVersion *mv, Project *p, Da
             for(int j=0; j<element.childNodes().at(i).childNodes().count(); j++)
             {
                 Procedure* proc = createProcedure(p, mv, doc, element.childNodes().at(i).childNodes().at(j).toElement());
-                mv->addProcedure(proc);
+                mv->addProcedure(proc, true);
             }
         }
     }

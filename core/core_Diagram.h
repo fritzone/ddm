@@ -57,6 +57,7 @@ public:
     void forcefullyRemoveForeignKey(ForeignKey* fk);
 
     QVector<const Table*> getTables() const;
+    QStringList getTableNames() const;
 
     const QVector<DiagramNoteDescriptor*> & getNoteDescriptors();
     const QVector<DiagramTableDescriptor*> & getTableDescriptors();

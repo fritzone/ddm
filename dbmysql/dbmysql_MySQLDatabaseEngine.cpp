@@ -80,7 +80,7 @@ bool MySQLDatabaseEngine::reverseEngineerDatabase(Connection *c, const QStringLi
     for(int i=0; i<procs.size(); i++)
     {
         Procedure* proc = reverseEngineerProc(c, procs.at(i), v);
-        if(proc) v->addProcedure(proc);
+        if(proc) v->addProcedure(proc, true);
     }
 
     for(int i=0; i<funcs.size(); i++)

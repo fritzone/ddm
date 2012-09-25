@@ -45,11 +45,11 @@ ContextMenuCollection::ContextMenuCollection()
     m_unlockDiagramPopupMenu = new QMenu();
     m_relockDiagramPopupMenu = new QMenu();
     m_undeletePopupMenu = new QMenu();
-
     m_functionPopupMenu = new QMenu();
     m_triggerPopupMenu = new QMenu();
     m_suspendPatchMenu = new QMenu();
     m_resumePatchMenu = new QMenu();
+    m_proceduresPopupMenu = new QMenu();
 
     // actions
     action_RemoveTable = new QAction(QObject::tr("Delete table"), 0);
@@ -123,6 +123,7 @@ ContextMenuCollection::ContextMenuCollection()
     action_renamePatch = new QAction(QObject::tr("Rename"), 0);
     action_undelete =  new QAction(QObject::tr("Undelete"), 0);
     action_undelete->setIcon(IconFactory::getUndeleteIcon());
+    action_addProcedure =  new QAction(QObject::tr("New Procedure"), 0);
 
     // populate the table popup menu
     m_tablePopupMenu->setTitle(QObject::tr("Table"));
@@ -162,6 +163,9 @@ ContextMenuCollection::ContextMenuCollection()
 
     // diagrams
     m_diagramsPopupMenu->addAction(action_AddDiagram);
+
+    // procedures
+    m_proceduresPopupMenu->addAction(action_addProcedure);
 
     // columns
     m_columnPopupMenu->addAction(action_CopyColumn);
@@ -210,6 +214,8 @@ ContextMenuCollection::ContextMenuCollection()
     m_viewPopupMenu->addAction(action_deleteView);
 
     // one procedures popup menu
+    m_procedurePopupMenu->setTitle(QObject::tr("Procedure"));
+    m_procedurePopupMenu->setIcon(IconFactory::getProcedureIcon());
     m_procedurePopupMenu->addAction(action_deleteProcedure);
 
     // the major version popup menu
@@ -248,6 +254,8 @@ ContextMenuCollection::ContextMenuCollection()
     // the locked proc popup menus
     m_unlockProcedurePopupMenu->addAction(action_unlock);
     m_relockProcedurePopupMenu->addAction(action_relock);
+    m_relockProcedurePopupMenu->addMenu(m_procedurePopupMenu);
+    m_unlockProcedurePopupMenu->addMenu(m_procedurePopupMenu);
 
     // the locked view popup menus
     m_unlockViewPopupMenu->addAction(action_unlock);
@@ -261,6 +269,7 @@ ContextMenuCollection::ContextMenuCollection()
     m_unlockDiagramPopupMenu->addAction(action_unlock);
     m_unlockDiagramPopupMenu->addMenu(m_diagramPopupMenu);
     m_relockDiagramPopupMenu->addAction(action_relock);
+    m_relockDiagramPopupMenu->addMenu(m_diagramPopupMenu);
 
     m_resumePatchMenu->addAction(action_resumePatch);
 
@@ -270,25 +279,25 @@ ContextMenuCollection::ContextMenuCollection()
 QMenu* ContextMenuCollection::getUnLockMenuForClassUid(const QString& uid)
 {
     QMap<QString, QMenu*> mapping;
-    mapping.insert(uidTable, m_unlockTablePopupMenu);
-    mapping.insert(uidTableInstance, m_unlockTableInstancePopupMenu);
-    mapping.insert(uidDiagram, m_unlockDiagramPopupMenu);
-    mapping.insert(uidProcedure, m_unlockProcedurePopupMenu);
-    mapping.insert(uidFunction, m_unlockFunctionPopupMenu);
-    mapping.insert(uidTrigger, m_unlockTriggerPopupMenu);
-    mapping.insert(uidView, m_unlockViewPopupMenu);
+    mapping.insert(uidTable.toUpper(), m_unlockTablePopupMenu);
+    mapping.insert(uidTableInstance.toUpper(), m_unlockTableInstancePopupMenu);
+    mapping.insert(uidDiagram.toUpper(), m_unlockDiagramPopupMenu);
+    mapping.insert(uidProcedure.toUpper(), m_unlockProcedurePopupMenu);
+    mapping.insert(uidFunction.toUpper(), m_unlockFunctionPopupMenu);
+    mapping.insert(uidTrigger.toUpper(), m_unlockTriggerPopupMenu);
+    mapping.insert(uidView.toUpper(), m_unlockViewPopupMenu);
 
-    mapping.insert(uidStringDT, m_unlockDTPopupMenu);
-    mapping.insert(uidNumericDT, m_unlockDTPopupMenu);
-    mapping.insert(uidDateTimeDT, m_unlockDTPopupMenu);
-    mapping.insert(uidBooleanDT, m_unlockDTPopupMenu);
-    mapping.insert(uidMiscDT, m_unlockDTPopupMenu);
-    mapping.insert(uidSpatialDT, m_unlockDTPopupMenu);
-    mapping.insert(uidBlobDT, m_unlockDTPopupMenu);
+    mapping.insert(uidStringDT.toUpper(), m_unlockDTPopupMenu);
+    mapping.insert(uidNumericDT.toUpper(), m_unlockDTPopupMenu);
+    mapping.insert(uidDateTimeDT.toUpper(), m_unlockDTPopupMenu);
+    mapping.insert(uidBooleanDT.toUpper(), m_unlockDTPopupMenu);
+    mapping.insert(uidMiscDT.toUpper(), m_unlockDTPopupMenu);
+    mapping.insert(uidSpatialDT.toUpper(), m_unlockDTPopupMenu);
+    mapping.insert(uidBlobDT.toUpper(), m_unlockDTPopupMenu);
 
-    if(mapping.contains(uid))
+    if(mapping.contains(uid.toUpper()))
     {
-        return mapping[uid];
+        return mapping[uid.toUpper()];
     }
 
     return 0;
@@ -298,25 +307,25 @@ QMenu* ContextMenuCollection::getUnLockMenuForClassUid(const QString& uid)
 QMenu* ContextMenuCollection::getReLockMenuForClassUid(const QString& uid)
 {
     QMap<QString, QMenu*> mapping;
-    mapping.insert(uidTable, m_relockTablePopupMenu);
-    mapping.insert(uidTableInstance, m_relockTableInstancePopupMenu);
-    mapping.insert(uidDiagram, m_relockDiagramPopupMenu);
-    mapping.insert(uidProcedure, m_relockProcedurePopupMenu);
-    mapping.insert(uidFunction, m_relockFunctionPopupMenu);
-    mapping.insert(uidTrigger, m_relockTriggerPopupMenu);
-    mapping.insert(uidView, m_relockViewPopupMenu);
+    mapping.insert(uidTable.toUpper(), m_relockTablePopupMenu);
+    mapping.insert(uidTableInstance.toUpper(), m_relockTableInstancePopupMenu);
+    mapping.insert(uidDiagram.toUpper(), m_relockDiagramPopupMenu);
+    mapping.insert(uidProcedure.toUpper(), m_relockProcedurePopupMenu);
+    mapping.insert(uidFunction.toUpper(), m_relockFunctionPopupMenu);
+    mapping.insert(uidTrigger.toUpper(), m_relockTriggerPopupMenu);
+    mapping.insert(uidView.toUpper(), m_relockViewPopupMenu);
 
-    mapping.insert(uidStringDT, m_relockDTPopupMenu);
-    mapping.insert(uidNumericDT, m_relockDTPopupMenu);
-    mapping.insert(uidDateTimeDT, m_relockDTPopupMenu);
-    mapping.insert(uidBooleanDT, m_relockDTPopupMenu);
-    mapping.insert(uidMiscDT, m_relockDTPopupMenu);
-    mapping.insert(uidSpatialDT, m_relockDTPopupMenu);
-    mapping.insert(uidBlobDT, m_relockDTPopupMenu);
+    mapping.insert(uidStringDT.toUpper(), m_relockDTPopupMenu);
+    mapping.insert(uidNumericDT.toUpper(), m_relockDTPopupMenu);
+    mapping.insert(uidDateTimeDT.toUpper(), m_relockDTPopupMenu);
+    mapping.insert(uidBooleanDT.toUpper(), m_relockDTPopupMenu);
+    mapping.insert(uidMiscDT.toUpper(), m_relockDTPopupMenu);
+    mapping.insert(uidSpatialDT.toUpper(), m_relockDTPopupMenu);
+    mapping.insert(uidBlobDT.toUpper(), m_relockDTPopupMenu);
 
-    if(mapping.contains(uid))
+    if(mapping.contains(uid.toUpper()))
     {
-        return mapping[uid];
+        return mapping[uid.toUpper()];
     }
 
     return 0;
@@ -325,25 +334,25 @@ QMenu* ContextMenuCollection::getReLockMenuForClassUid(const QString& uid)
 QMenu* ContextMenuCollection::getMenuForClassUid(const QString& uid)
 {
     QMap<QString, QMenu*> mapping;
-    mapping.insert(uidTable, m_tablePopupMenu);
-    mapping.insert(uidTableInstance, m_tableInstancePopupMenu);
-    mapping.insert(uidDiagram, m_diagramPopupMenu);
-    mapping.insert(uidProcedure, m_procedurePopupMenu);
-    mapping.insert(uidFunction, m_functionPopupMenu);
-    mapping.insert(uidTrigger, m_triggerPopupMenu);
-    mapping.insert(uidView, m_viewPopupMenu);
+    mapping.insert(uidTable.toUpper(), m_tablePopupMenu);
+    mapping.insert(uidTableInstance.toUpper(), m_tableInstancePopupMenu);
+    mapping.insert(uidDiagram.toUpper(), m_diagramPopupMenu);
+    mapping.insert(uidProcedure.toUpper(), m_procedurePopupMenu);
+    mapping.insert(uidFunction.toUpper(), m_functionPopupMenu);
+    mapping.insert(uidTrigger.toUpper(), m_triggerPopupMenu);
+    mapping.insert(uidView.toUpper(), m_viewPopupMenu);
 
-    mapping.insert(uidStringDT, m_datatypePopupMenu);
-    mapping.insert(uidNumericDT, m_datatypePopupMenu);
-    mapping.insert(uidDateTimeDT, m_datatypePopupMenu);
-    mapping.insert(uidBooleanDT, m_datatypePopupMenu);
-    mapping.insert(uidMiscDT, m_datatypePopupMenu);
-    mapping.insert(uidSpatialDT, m_datatypePopupMenu);
-    mapping.insert(uidBlobDT, m_datatypePopupMenu);
+    mapping.insert(uidStringDT.toUpper(), m_datatypePopupMenu);
+    mapping.insert(uidNumericDT.toUpper(), m_datatypePopupMenu);
+    mapping.insert(uidDateTimeDT.toUpper(), m_datatypePopupMenu);
+    mapping.insert(uidBooleanDT.toUpper(), m_datatypePopupMenu);
+    mapping.insert(uidMiscDT.toUpper(), m_datatypePopupMenu);
+    mapping.insert(uidSpatialDT.toUpper(), m_datatypePopupMenu);
+    mapping.insert(uidBlobDT.toUpper(), m_datatypePopupMenu);
 
-    if(mapping.contains(uid))
+    if(mapping.contains(uid.toUpper()))
     {
-        return mapping[uid];
+        return mapping[uid.toUpper()];
     }
 
     return 0;

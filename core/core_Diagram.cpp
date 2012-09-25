@@ -113,13 +113,23 @@ void Diagram::forcefullyRemoveForeignKey(ForeignKey* fk)
     }
 }
 
-
 QVector<const Table*> Diagram::getTables() const
 {
     QVector<const Table*> result;
     for(int i=0; i<m_onStage.size(); i++)
     {
         result.append(m_onStage[i]->getTable());
+    }
+
+    return result;
+}
+
+QStringList Diagram::getTableNames() const
+{
+    QStringList result;
+    for(int i=0; i<m_tableDescriptors.size(); i++)
+    {
+        result.append(m_tableDescriptors[i]->getText());
     }
 
     return result;
