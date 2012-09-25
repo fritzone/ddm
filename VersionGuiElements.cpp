@@ -133,7 +133,7 @@ void VersionGuiElements::createGuiElements(ContextMenuEnabledTreeWidgetItem* pro
     // procedures are still coming from the version
     proceduresItem = new ContextMenuEnabledTreeWidgetItem(versionItem, QStringList(QObject::tr("Procedures"))) ;
     proceduresItem->setIcon(0, IconFactory::getProcedureIcon());
-    //proceduresItem->setPopupMenu(ContextMenuCollection::getInstance()->getDiagramsPopupMenu());
+    proceduresItem->setPopupMenu(ContextMenuCollection::getInstance()->getProceduresPopupMenu());
     m_tree->addTopLevelItem(proceduresItem);
     QUuid procsUid = QUuid::createUuid();
     proceduresItem->setData(0, Qt::UserRole, QVariant(procsUid ));

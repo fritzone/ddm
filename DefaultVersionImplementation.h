@@ -68,7 +68,7 @@ public:
     virtual const QVector<View*>& getViews();
     virtual Procedure* getProcedure(const QString &name) const;
     virtual Function* getFunction(const QString &name) const;
-    virtual void addProcedure(Procedure* p);
+    virtual void addProcedure(Procedure* p, bool initial);
     virtual const QVector<Procedure*>& getProcedures();
     virtual void deleteProcedure(const QString& p);
     virtual void deleteFunction(const QString& f);
@@ -93,13 +93,28 @@ public:
     void deleteTableInstance(TableInstance *tinst, TableDeletionAction* );
     void doDeleteTableInstance(TableInstance *tinst, TableDeletionAction* );
 
+    enum CAN_UNDELETE_STATUS
+    {
+        CAN_UNDELETE = 0,
+        DELETED_OBJECT_WAS_NOT_FOUND_IN_PATCH = 1,
+        DEPENDENT_TABLE_WAS_NOT_FOUND_IN_VERSION = 2
+    };
+
     /**
      * @brief canUndeleteTable check if we can undelete the table with the given UID... (if the deleted table instances contain
      * an instantiated table that was already deleted we cannot undelete the table)
      * @param uid
      * @return
      */
-    QString canUndeleteTable(const QString& uid);
+    CAN_UNDELETE_STATUS canUndeleteTable(const QString& uid, QString& extra);
+
+    /**
+     * @brief canUndeleteDiagram we can undelete a diagram only if the tables it is using are still in the version
+     * @param uid
+     * @return
+     */
+    CAN_UNDELETE_STATUS canUndeleteDiagram(const QString& uid, QString& extra);
+    CAN_UNDELETE_STATUS canUndeleteProcedure(const QString& uid, QString& extra);
 
 protected:
     // the version as a string representation. Major versions are always of form X.0
@@ -116,3 +131,4 @@ protected:
 };
 
 #endif // DEFAULTVERSIONIMPLEMENTATION_H
+

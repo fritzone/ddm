@@ -31,6 +31,7 @@ public:
     QMenu* getDiagramPopupMenu() { return m_diagramPopupMenu; }
     QMenu* getTableInstancesPopupMenu() { return m_tableInstancesPopupMenu; }
     QMenu* getDiagramsPopupMenu() { return m_diagramsPopupMenu; }
+    QMenu* getProceduresPopupMenu() { return m_proceduresPopupMenu; }
     QMenu* getColumnPopupMenu() { return m_columnPopupMenu; }
     QMenu* getDatatypesPopupMenu() { return m_datatypesPopupMenu; }
     QMenu* getIssuePopupMenu() { return m_issuePopupMenu; }
@@ -122,7 +123,7 @@ public:
     QAction* getAction_RenamePatch() { return action_renamePatch; }
     QAction* getAction_RelocateElementToAnotherPatch() { return action_relocateElementToAnotherPatch; }
     QAction* getAction_Undelete() { return action_undelete; }
-
+    QAction* getAction_AddProcedure() { return action_addProcedure; }
 
     QMenu* getUnLockMenuForClassUid(const QString& uid);
     QMenu* getMenuForClassUid(const QString& uid);
@@ -169,11 +170,11 @@ private:
     QMenu* m_unlockViewPopupMenu;               // popup menu for unlocking one major version view element which was locked after being released
     QMenu* m_relockViewPopupMenu;               // popup menu for re-locking one major version view element which was unlocked by the user
     QMenu* m_undeletePopupMenu;                 // popup menu for undeleting something from a patch which was deleted by the user
-
     QMenu* m_functionPopupMenu;                 // popup menu for a function
     QMenu* m_triggerPopupMenu;                  // popup menu for a trigger
     QMenu* m_suspendPatchMenu;                  // popup menu for an unsuspended patch
     QMenu* m_resumePatchMenu;                   // popup menu for a suspended patch
+    QMenu* m_proceduresPopupMenu;               // popup menu for the procedures tree entry
 
     // the actions in the table popup menu
     QAction* action_RemoveTable;
@@ -272,7 +273,11 @@ private:
     // action for moving an element from a patch to a different patch
     QAction* action_relocateElementToAnotherPatch;
 
+    // a more generic undelete action
     QAction* action_undelete;
+
+    // for the procedures menu
+    QAction* action_addProcedure;
 
     // the instance of the popup menu collection
     static ContextMenuCollection* m_instance;

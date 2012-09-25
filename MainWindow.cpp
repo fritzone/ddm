@@ -675,6 +675,34 @@ void MainWindow::currentProjectTreeItemChanged(QTreeWidgetItem * current, QTreeW
     }
 }
 
+void MainWindow::onNewProcedureFromPopup()
+{
+    if(m_guiElements->getProjectTree()->getLastRightclickedItem() == 0)
+    {
+        return;
+    }
+
+    ContextMenuEnabledTreeWidgetItem* item = m_guiElements->getProjectTree()->getLastRightclickedItem();
+    m_guiElements->getProjectTree()->setLastRightclickedItem(0);
+
+    QVariant qv = item->data(0, Qt::UserRole);
+    QString diagramsUid = qv.toString();
+
+    Version* v = UidWarehouse::instance().getVersionForUid(diagramsUid);
+    qDebug() << v->getVersionText();
+
+    // TODO: This is pure duplication with onNewProcedure except the version
+    ProcedureForm* frm = v->getGui()->getProcedureForm(MODE_PROCEDURE);
+    Procedure* p = new Procedure(NameGenerator::getUniqueName(v, (itemGetter)&Version::getProcedure, QString("proc")),
+                                                               QUuid::createUuid().toString(), m_workspace->workingVersion());
+    frm->setProcedure(p);
+    frm->initSql();
+    v->addProcedure(p, false);
+    v->getGui()->createProcedureTreeEntry(p);
+
+    setCentralWidget(frm);
+}
+
 void MainWindow::onNewDiagramFromPopup()
 {
     if(m_guiElements->getProjectTree()->getLastRightclickedItem() == 0)
@@ -1024,6 +1052,7 @@ void MainWindow::connectActionsFromPopupMenus()
     QObject::connect(ContextMenuCollection::getInstance()->getAction_SuspendPatch(), SIGNAL(triggered()), this, SLOT(suspendPatch()));
     QObject::connect(ContextMenuCollection::getInstance()->getAction_RenamePatch(), SIGNAL(triggered()), this, SLOT(renamePatch()));
     QObject::connect(ContextMenuCollection::getInstance()->getAction_Undelete(), SIGNAL(triggered()), this, SLOT(onUndeleteSomething()));
+    QObject::connect(ContextMenuCollection::getInstance()->getAction_AddProcedure(), SIGNAL(triggered()), this, SLOT(onNewProcedureFromPopup()));
 
 }
 
@@ -1212,13 +1241,13 @@ void MainWindow::onDeleteProcedure()
         {
             return;
         }
-        m_workspace->workingVersion()->deleteProcedure(p->getName());
-        m_workspace->workingVersion()->getGui()->updateForms();
+        p->version()->deleteProcedure(p->getName());
+        p->version()->getGui()->updateForms();
 
-        showNamedObjectList(&MainWindow::showProcedureWithGuid, m_workspace->workingVersion()->getProcedures(), IconFactory::getProcedureIcon(), "Procedures");
+        showNamedObjectList(&MainWindow::showProcedureWithGuid, p->version()->getProcedures(), IconFactory::getProcedureIcon(), "Procedures");
 
-        m_workspace->workingVersion()->getGui()->getProceduresItem()->treeWidget()->clearSelection();
-        m_workspace->workingVersion()->getGui()->getProceduresItem()->setSelected(true);
+        p->version()->getGui()->getProceduresItem()->treeWidget()->clearSelection();
+        p->version()->getGui()->getProceduresItem()->setSelected(true);
     }
 }
 
@@ -2542,7 +2571,7 @@ void MainWindow::onNewProcedure()
                                                                QUuid::createUuid().toString(), m_workspace->workingVersion());
     frm->setProcedure(p);
     frm->initSql();
-    Workspace::getInstance()->workingVersion()->addProcedure(p);
+    Workspace::getInstance()->workingVersion()->addProcedure(p, false);
     Workspace::getInstance()->workingVersion()->getGui()->createProcedureTreeEntry(p);
 
     setCentralWidget(frm);

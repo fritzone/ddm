@@ -58,11 +58,27 @@ public:
     void addDeletedTable(const QString& uid, TableDeletionAction* td);
 
     /**
+     * @brief addDeletedDiagram
+     * @param uid
+     * @param td
+     */
+    void addDeletedDiagram(const QString& uid, DiagramDeletionAction* dda);
+
+    /**
+     * @brief addDeletedProcedure
+     * @param uid
+     * @param dda
+     */
+    void addDeletedProcedure(const QString& uid, ProcedureDeletionAction* pda);
+
+    /**
      * @brief getTDA
      * @param uid
      * @return
      */
     TableDeletionAction* getTDA(const QString& uid);
+    DiagramDeletionAction *getDDA(const QString& uid);
+    ProcedureDeletionAction *getPDA(const QString& uid);
 
     /**
      * @brief removeTDA
@@ -133,6 +149,9 @@ private:
     bool m_suspended;
 
     QMap<QString, TableDeletionAction*> m_tableDeletions;
+    QMap<QString, DiagramDeletionAction*> m_diagramDeletions;
+    QMap<QString, ProcedureDeletionAction*> m_procedureDeletions;
+
 };
 
 #endif // CORE_PATCH_H

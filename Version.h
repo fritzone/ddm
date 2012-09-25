@@ -295,7 +295,7 @@ public:
     /**
     * Adds a procedure in the system
     */
-    virtual void addProcedure(Procedure* p) = 0;
+    virtual void addProcedure(Procedure* p, bool initial) = 0;
 
     /**
     *  Returns all the procedures of the system
