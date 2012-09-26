@@ -145,6 +145,7 @@ public slots:
     void onRenameDiagramFromPopup();
     void onNewDiagramFromPopup();
     void onNewProcedureFromPopup();
+    void onNewFunctionFromPopup();
     void onNewStringType();
     void onNewNumericType();
     void onNewBoolType();

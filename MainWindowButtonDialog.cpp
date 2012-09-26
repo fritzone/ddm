@@ -144,8 +144,12 @@ void MainWindowButtonDialog::showMe()
 
     QDesktopWidget *d = QApplication::desktop();
 
+
     QRect t = d->availableGeometry(this);
+    qDebug() <<d->screenCount() << "<-Cnt " << d->screen()->rect() << "<- ACTSCREEN " << d->screenNumber(MainWindow::instance()) << "AV_THS=" << d->availableGeometry(this) << " RECT=" << d->rect() << "AVAIL_MW_SCREE=" << d->availableGeometry(d->screenNumber(MainWindow::instance())) << " AVA_MW=" << t << " MAIN=" << MainWindow::instance()->rect();
+
     move(mapToGlobal(this->geometry().topLeft()).x() + t.center().x() - width() / 2, t.center().y()- height() / 2);
+    qDebug() << rect();
     show();
     raise();
 }

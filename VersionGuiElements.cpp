@@ -142,7 +142,7 @@ void VersionGuiElements::createGuiElements(ContextMenuEnabledTreeWidgetItem* pro
     // functions are still coming from the version
     functionsItem = new ContextMenuEnabledTreeWidgetItem(versionItem, QStringList(QObject::tr("Functions"))) ;
     functionsItem->setIcon(0, IconFactory::getFunctionTreeIcon());
-    //functionsItem->setPopupMenu(ContextMenuCollection::getInstance()->getDiagramsPopupMenu());
+    functionsItem->setPopupMenu(ContextMenuCollection::getInstance()->getFunctionsPopupMenu());
     m_tree->addTopLevelItem(functionsItem);
     QUuid funcsUid = QUuid::createUuid();
     functionsItem->setData(0, Qt::UserRole, QVariant(funcsUid  ));
@@ -160,7 +160,7 @@ void VersionGuiElements::createGuiElements(ContextMenuEnabledTreeWidgetItem* pro
     // triggers
     triggersItem = new ContextMenuEnabledTreeWidgetItem(versionItem, QStringList(QObject::tr("Triggers"))) ;
     triggersItem->setIcon(0, IconFactory::getTriggersIcon());
-    //viewsItem->setPopupMenu(ContextMenuCollection::getInstance()->getDiagramsPopupMenu());
+    viewsItem->setPopupMenu(ContextMenuCollection::getInstance()->getTriggersPopupMenu());
     m_tree->addTopLevelItem(triggersItem);
     QUuid trigsUid = QUuid::createUuid();
     triggersItem->setData(0, Qt::UserRole, QVariant(trigsUid));

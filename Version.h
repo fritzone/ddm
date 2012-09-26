@@ -314,13 +314,13 @@ public:
     */
     virtual void cleanupDataTypes() = 0;
 
-    virtual void addTrigger(Trigger*) = 0;
+    virtual void addTrigger(Trigger*,bool) = 0;
     virtual Trigger* getTrigger(const QString&) const = 0;
     virtual const QVector<Trigger*>& getTriggers() = 0;
 
     virtual SqlSourceEntity* getSqlSourceEntityWithGuid(const QString& name) const = 0;
 
-    virtual void addFunction(Function* p) = 0;
+    virtual void addFunction(Function* p, bool) = 0;
     virtual Function* getFunction(const QString& procName) const = 0;
     virtual const QVector<Function*>& getFunctions() = 0;
 

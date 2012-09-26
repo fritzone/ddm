@@ -86,7 +86,7 @@ bool MySQLDatabaseEngine::reverseEngineerDatabase(Connection *c, const QStringLi
     for(int i=0; i<funcs.size(); i++)
     {
         Function* func = reverseEngineerFunc(c, funcs.at(i), v);
-        if(func) v->addFunction(func);
+        if(func) v->addFunction(func, true);
     }
 
     for(int i=0; i<tables.size(); i++)
@@ -104,7 +104,7 @@ bool MySQLDatabaseEngine::reverseEngineerDatabase(Connection *c, const QStringLi
     for(int i=0; i<triggers.size(); i++)
     {
         Trigger* t= reverseEngineerTrigger(c, triggers.at(i), v);
-        if(t) v->addTrigger(t);
+        if(t) v->addTrigger(t, true);
     }
 
     // now populate the foreign keys

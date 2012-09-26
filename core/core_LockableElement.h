@@ -12,7 +12,8 @@ public:
         UNLOCKED = 2
     };
 
-    LockableElement() : m_lockState(NEVER_LOCKED), m_wasLocked(false) {}
+    LockableElement() : m_lockState(NEVER_LOCKED), m_wasLocked(false), m_isDeleted(false)
+    {}
 
     void lock()
     {
@@ -47,9 +48,25 @@ public:
 
     virtual void updateGui() = 0;
 
+    bool isDeleted()
+    {
+        return m_isDeleted;
+    }
+
+    bool deleteObject()
+    {
+        m_isDeleted = true;
+    }
+
+    bool undeleteObject()
+    {
+        m_isDeleted = false;
+    }
+
 private:
     LockType m_lockState;
     bool m_wasLocked;
+    bool m_isDeleted;
 };
 
 #endif // CORE_LOCKABLEELEMENT_H

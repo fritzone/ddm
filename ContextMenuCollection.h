@@ -32,6 +32,8 @@ public:
     QMenu* getTableInstancesPopupMenu() { return m_tableInstancesPopupMenu; }
     QMenu* getDiagramsPopupMenu() { return m_diagramsPopupMenu; }
     QMenu* getProceduresPopupMenu() { return m_proceduresPopupMenu; }
+    QMenu* getFunctionsPopupMenu() { return m_functionsPopupMenu; }
+    QMenu* getTriggersPopupMenu() { return m_triggersPopupMenu; }
     QMenu* getColumnPopupMenu() { return m_columnPopupMenu; }
     QMenu* getDatatypesPopupMenu() { return m_datatypesPopupMenu; }
     QMenu* getIssuePopupMenu() { return m_issuePopupMenu; }
@@ -124,6 +126,8 @@ public:
     QAction* getAction_RelocateElementToAnotherPatch() { return action_relocateElementToAnotherPatch; }
     QAction* getAction_Undelete() { return action_undelete; }
     QAction* getAction_AddProcedure() { return action_addProcedure; }
+    QAction* getAction_AddFunction() { return action_addFunction; }
+    QAction* getAction_AddTrigger() { return action_addTrigger; }
 
     QMenu* getUnLockMenuForClassUid(const QString& uid);
     QMenu* getMenuForClassUid(const QString& uid);
@@ -172,9 +176,11 @@ private:
     QMenu* m_undeletePopupMenu;                 // popup menu for undeleting something from a patch which was deleted by the user
     QMenu* m_functionPopupMenu;                 // popup menu for a function
     QMenu* m_triggerPopupMenu;                  // popup menu for a trigger
+    QMenu* m_triggersPopupMenu;                 // popup menu for the triggers
     QMenu* m_suspendPatchMenu;                  // popup menu for an unsuspended patch
     QMenu* m_resumePatchMenu;                   // popup menu for a suspended patch
     QMenu* m_proceduresPopupMenu;               // popup menu for the procedures tree entry
+    QMenu* m_functionsPopupMenu;                // popup menu for the procedures tree entry
 
     // the actions in the table popup menu
     QAction* action_RemoveTable;
@@ -278,6 +284,12 @@ private:
 
     // for the procedures menu
     QAction* action_addProcedure;
+
+    // for the functions menu
+    QAction* action_addFunction;
+
+    // for the triggers menu
+    QAction* action_addTrigger;
 
     // the instance of the popup menu collection
     static ContextMenuCollection* m_instance;

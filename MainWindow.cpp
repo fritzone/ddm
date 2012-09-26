@@ -694,11 +694,39 @@ void MainWindow::onNewProcedureFromPopup()
     // TODO: This is pure duplication with onNewProcedure except the version
     ProcedureForm* frm = v->getGui()->getProcedureForm(MODE_PROCEDURE);
     Procedure* p = new Procedure(NameGenerator::getUniqueName(v, (itemGetter)&Version::getProcedure, QString("proc")),
-                                                               QUuid::createUuid().toString(), m_workspace->workingVersion());
+                                                               QUuid::createUuid().toString(), v);
     frm->setProcedure(p);
     frm->initSql();
     v->addProcedure(p, false);
     v->getGui()->createProcedureTreeEntry(p);
+
+    setCentralWidget(frm);
+}
+
+void MainWindow::onNewFunctionFromPopup()
+{
+    if(m_guiElements->getProjectTree()->getLastRightclickedItem() == 0)
+    {
+        return;
+    }
+
+    ContextMenuEnabledTreeWidgetItem* item = m_guiElements->getProjectTree()->getLastRightclickedItem();
+    m_guiElements->getProjectTree()->setLastRightclickedItem(0);
+
+    QVariant qv = item->data(0, Qt::UserRole);
+    QString diagramsUid = qv.toString();
+
+    Version* v = UidWarehouse::instance().getVersionForUid(diagramsUid);
+    qDebug() << v->getVersionText();
+
+    // TODO: This is pure duplication with onNewFunction except the version
+    ProcedureForm* frm = v->getGui()->getProcedureForm(MODE_FUNCTION);
+    Function* p = new Function(NameGenerator::getUniqueName(v, (itemGetter)&Version::getFunction, QString("func")),
+                                                               QUuid::createUuid().toString(), v);
+    frm->setProcedure(p);
+    frm->initSql();
+    v->addFunction(p, false);
+    v->getGui()->createFunctionTreeEntry(p);
 
     setCentralWidget(frm);
 }
@@ -1053,6 +1081,7 @@ void MainWindow::connectActionsFromPopupMenus()
     QObject::connect(ContextMenuCollection::getInstance()->getAction_RenamePatch(), SIGNAL(triggered()), this, SLOT(renamePatch()));
     QObject::connect(ContextMenuCollection::getInstance()->getAction_Undelete(), SIGNAL(triggered()), this, SLOT(onUndeleteSomething()));
     QObject::connect(ContextMenuCollection::getInstance()->getAction_AddProcedure(), SIGNAL(triggered()), this, SLOT(onNewProcedureFromPopup()));
+    QObject::connect(ContextMenuCollection::getInstance()->getAction_AddFunction(), SIGNAL(triggered()), this, SLOT(onNewFunctionFromPopup()));
 
 }
 
@@ -1203,13 +1232,13 @@ void MainWindow::onDeleteFunction()
         {
             return;
         }
-        m_workspace->workingVersion()->deleteFunction(f->getName());
-        m_workspace->workingVersion()->getGui()->updateForms();
+        f->version()->deleteFunction(f->getName());
+        f->version()->getGui()->updateForms();
 
-        showNamedObjectList(&MainWindow::showFunctionWithGuid, m_workspace->workingVersion()->getFunctions(), IconFactory::getFunctionIcon(), "Functions");
+        showNamedObjectList(&MainWindow::showFunctionWithGuid, f->version()->getFunctions(), IconFactory::getFunctionIcon(), "Functions");
 
-        m_workspace->workingVersion()->getGui()->getFunctionsItem()->treeWidget()->clearSelection();
-        m_workspace->workingVersion()->getGui()->getFunctionsItem()->setSelected(true);
+        f->version()->getGui()->getFunctionsItem()->treeWidget()->clearSelection();
+        f->version()->getGui()->getFunctionsItem()->setSelected(true);
     }
 }
 
@@ -1222,13 +1251,13 @@ void MainWindow::onDeleteTrigger()
         {
             return;
         }
-        m_workspace->workingVersion()->deleteTrigger(t->getName());
-        m_workspace->workingVersion()->getGui()->updateForms();
+        t->version()->deleteTrigger(t->getName());
+        t->version()->getGui()->updateForms();
 
-        showNamedObjectList(&MainWindow::showTriggerWithGuid, m_workspace->workingVersion()->getTriggers(), IconFactory::getTriggerIcon(), "Triggers");
+        showNamedObjectList(&MainWindow::showTriggerWithGuid, t->version()->getTriggers(), IconFactory::getTriggerIcon(), "Triggers");
 
-        m_workspace->workingVersion()->getGui()->getTriggersItem()->treeWidget()->clearSelection();
-        m_workspace->workingVersion()->getGui()->getTriggersItem()->setSelected(true);
+        t->version()->getGui()->getTriggersItem()->treeWidget()->clearSelection();
+        t->version()->getGui()->getTriggersItem()->setSelected(true);
     }
 }
 
@@ -2584,7 +2613,7 @@ void MainWindow::onNewFunction()
     Function* func = new Function(NameGenerator::getUniqueName(Workspace::getInstance()->workingVersion(), (itemGetter)&Version::getFunction, QString("func")), QUuid::createUuid().toString(), m_workspace->workingVersion());
     frm->setProcedure(func);
     frm->initSql();
-    Workspace::getInstance()->workingVersion()->addFunction(func);
+    Workspace::getInstance()->workingVersion()->addFunction(func, false);
     Workspace::getInstance()->workingVersion()->getGui()->createFunctionTreeEntry(func);
 
     //m_guiElements->getProjectTree()->setCurrentItem(p->getLocation());
@@ -2608,7 +2637,7 @@ void MainWindow::onNewTrigger()
     trigger->setTable(allTables.at(0)->getName());
     frm->feedInTriggerEvents(Workspace::getInstance()->currentProjectsEngine()->getTriggerEvents());
     frm->feedInTriggerTimes(Workspace::getInstance()->currentProjectsEngine()->getTriggerTimings());
-    Workspace::getInstance()->workingVersion()->addTrigger(trigger);
+    Workspace::getInstance()->workingVersion()->addTrigger(trigger, false);
     Workspace::getInstance()->workingVersion()->getGui()->createTriggerTreeEntry(trigger);
     setCentralWidget(frm);
 
