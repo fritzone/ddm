@@ -133,6 +133,16 @@ void Patch::addDeletedProcedure(const QString &uid, ProcedureDeletionAction *pda
     m_procedureDeletions[uid] = pda;
 }
 
+void Patch::addDeletedFunction(const QString &uid, FunctionDeletionAction *pda)
+{
+    m_functionDeletions[uid] = pda;
+}
+
+void Patch::addDeletedTrigger(const QString &uid, TriggerDeletionAction *tda)
+{
+    m_triggerDeletions[uid] = tda;
+}
+
 TableDeletionAction* Patch::getTDA(const QString &uid)
 {
     if(!m_tableDeletions.contains(uid)) return 0;
@@ -152,6 +162,20 @@ ProcedureDeletionAction* Patch::getPDA(const QString &uid)
     if(!m_procedureDeletions.contains(uid)) return 0;
     ProcedureDeletionAction* pda = m_procedureDeletions.value(uid);
     return pda;
+}
+
+FunctionDeletionAction* Patch::getFDA(const QString &uid)
+{
+    if(!m_functionDeletions.contains(uid)) return 0;
+    FunctionDeletionAction* fda = m_functionDeletions.value(uid);
+    return fda;
+}
+
+TriggerDeletionAction* Patch::getTrDA(const QString &uid)
+{
+    if(!m_triggerDeletions.contains(uid)) return 0;
+    TriggerDeletionAction* tda = m_triggerDeletions.value(uid);
+    return tda;
 }
 
 void Patch::removeTDA(const QString &uid)

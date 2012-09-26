@@ -6,6 +6,7 @@ class TableInstance;
 class Diagram;
 class Procedure;
 class Function;
+class Trigger;
 
 #include <QList>
 
@@ -27,6 +28,16 @@ struct DiagramDeletionAction
 struct ProcedureDeletionAction
 {
     Procedure* deletedProcedure;
+};
+
+struct FunctionDeletionAction
+{
+    Function* deletedFunction;
+};
+
+struct TriggerDeletionAction
+{
+    Trigger* deletedTrigger;
 };
 
 #endif // ACTIONDELETETABLE_H

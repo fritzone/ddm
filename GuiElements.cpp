@@ -6,6 +6,7 @@
 #include "IconFactory.h"
 #include "ContextMenuCollection.h"
 #include "core_TableInstance.h"
+#include "UidWarehouse.h"
 
 GuiElements::GuiElements() : m_projectTreeDock(0),m_issuesTreeDock(0),
     m_genTreeDock(0), m_patchesTreeDock(0),
@@ -219,7 +220,7 @@ ContextMenuEnabledTreeWidgetItem* GuiElements::updateItemForPatchWithState(Patch
             }
         }
     }
-    if(state == 4) // REMOVE stuff from the tree
+    if(state == 4) // REMOVE stuff from the tree... but only if it was NOT unlocked before
     {
         if(!m_patchItems.contains(p))
         {
@@ -231,17 +232,29 @@ ContextMenuEnabledTreeWidgetItem* GuiElements::updateItemForPatchWithState(Patch
             QVariant v = m_patchItems[p]->child(i)->data(0, Qt::UserRole);
             if(v.toString() == uid)
             {
-                delete m_patchItems[p]->child(i);
-
-                if(m_patchItems[p]->childCount() == 0)
+                ObjectWithUid* obj = UidWarehouse::instance().getElement(uid);
+                LockableElement* le = dynamic_cast<LockableElement*>(obj);
+                if(le && !le->isLocked())
                 {
-                    delete m_patchItems[p];
-                    m_patchItems.remove(p);
-                    if(m_patchItems.keys().size() == 0)
-                    {
-                        m_patchesTreeDock->hide();
-                    }
+                    dynamic_cast<ContextMenuEnabledTreeWidgetItem*>(m_patchItems[p]->child(i))->setPopupMenu(ContextMenuCollection::getInstance()->getReLockMenuForClassUid(obj->getClassUid()));
+
+                    m_patchItems[p]->child(i)->setIcon(1, IconFactory::getChangedIcon());
                     return 0;
+                }
+                else
+                {
+                    delete m_patchItems[p]->child(i);
+
+                    if(m_patchItems[p]->childCount() == 0)
+                    {
+                        delete m_patchItems[p];
+                        m_patchItems.remove(p);
+                        if(m_patchItems.keys().size() == 0)
+                        {
+                            m_patchesTreeDock->hide();
+                        }
+                        return 0;
+                    }
                 }
             }
         }
@@ -284,6 +297,16 @@ void GuiElements::removeItemForPatch(Patch *p, const QString& uid)
         QVariant v = itm->child(i)->data(0, Qt::UserRole);
         if(v.toString() == uid)
         {
+            ObjectWithUid* obj = UidWarehouse::instance().getElement(uid);
+            LockableElement* le = dynamic_cast<LockableElement*>(obj);
+            if(le && !le->isLocked())   // if the element was locked, and then deleted re-state the locked state entry in the tree
+            {
+                itm->child(i)->setIcon(1, IconFactory::getChangedIcon());
+                dynamic_cast<ContextMenuEnabledTreeWidgetItem*>(itm->child(i))->setPopupMenu(ContextMenuCollection::getInstance()->getReLockMenuForClassUid(obj->getClassUid()));
+
+                return ;
+            }
+
             itm->removeChild(itm->child(i));
             break;
         }

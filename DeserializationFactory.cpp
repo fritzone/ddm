@@ -379,7 +379,7 @@ void DeserializationFactory::createMajorVersion(MajorVersion *mv, Project *p, Da
             for(int j=0; j<element.childNodes().at(i).childNodes().count(); j++)
             {
                 Function* func= createFunction(p, mv, doc, element.childNodes().at(i).childNodes().at(j).toElement());
-                mv->addFunction(func);
+                mv->addFunction(func, true);
             }
         }
     }
@@ -392,7 +392,7 @@ void DeserializationFactory::createMajorVersion(MajorVersion *mv, Project *p, Da
             for(int j=0; j<element.childNodes().at(i).childNodes().count(); j++)
             {
                 Trigger* trig = createTrigger(p, mv, doc, element.childNodes().at(i).childNodes().at(j).toElement());
-                mv->addTrigger(trig);
+                mv->addTrigger(trig, true);
             }
         }
     }

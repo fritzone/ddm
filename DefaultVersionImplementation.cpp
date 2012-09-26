@@ -593,7 +593,24 @@ void DefaultVersionImplementation::deleteFunction(const QString& f)
     m_data.m_functions.remove(m_data.m_functions.indexOf(func));
     delete func->getLocation();
     delete func->getSqlLocation();
-    delete func;
+    FunctionDeletionAction* pda = new FunctionDeletionAction;
+    pda->deletedFunction = func;
+
+    if(isLocked())  // marking the element as deleted, ro removing
+    {
+        if(!getWorkingPatch()->elementWasNewInThisPatch(func->getObjectUid())) // but only if it was NOT a newly created element
+        {
+            MainWindow::instance()->createPatchElement(this, func, func->getObjectUid(), false);
+            getWorkingPatch()->markElementForDeletion(func->getObjectUid());
+            getWorkingPatch()->addDeletedFunction(func->getObjectUid(), pda);
+            MainWindow::instance()->updatePatchElementToReflectState(this, func, func->getObjectUid(), 3); // 3 is DELETED
+        }
+        else
+        {
+            getWorkingPatch()->removeNewElementBecauseOfDeletion(func->getObjectUid());
+            MainWindow::instance()->updatePatchElementToReflectState(this, func, func->getObjectUid(), 4); // 4 is REMOVE FROM THE TREE
+        }
+    }
 }
 
 void DefaultVersionImplementation::deleteTrigger(const QString& t)
@@ -602,7 +619,25 @@ void DefaultVersionImplementation::deleteTrigger(const QString& t)
     m_data.m_triggers.remove(m_data.m_triggers.indexOf(trg));
     delete trg->getLocation();
     delete trg->getSqlLocation();
-    delete trg;
+    TriggerDeletionAction* tda = new TriggerDeletionAction;
+    tda->deletedTrigger= trg;
+
+    // TODO: this is more or less a duplication with other places. Fix it.
+    if(isLocked())  // marking the element as deleted, ro removing
+    {
+        if(!getWorkingPatch()->elementWasNewInThisPatch(trg->getObjectUid())) // but only if it was NOT a newly created element
+        {
+            MainWindow::instance()->createPatchElement(this, trg, trg->getObjectUid(), false);
+            getWorkingPatch()->markElementForDeletion(trg->getObjectUid());
+            getWorkingPatch()->addDeletedTrigger(trg->getObjectUid(), tda);
+            MainWindow::instance()->updatePatchElementToReflectState(this, trg, trg->getObjectUid(), 3); // 3 is DELETED
+        }
+        else
+        {
+            getWorkingPatch()->removeNewElementBecauseOfDeletion(trg->getObjectUid());
+            MainWindow::instance()->updatePatchElementToReflectState(this, trg, trg->getObjectUid(), 4); // 4 is REMOVE FROM THE TREE
+        }
+    }
 }
 
 void DefaultVersionImplementation::deleteProcedure(const QString& p)
@@ -1156,14 +1191,26 @@ void DefaultVersionImplementation::addProcedure(Procedure* p, bool initial)
 
 }
 
-void DefaultVersionImplementation::addFunction(Function* p)
+void DefaultVersionImplementation::addFunction(Function* p, bool initial)
 {
     m_data.m_functions.append(p);
+    if(isLocked() && !initial)
+    {
+        MainWindow::instance()->createPatchElement(this, p, p->getObjectUid(), false);
+        getWorkingPatch()->addNewElement(p->getObjectUid()); // this will be a new element ...
+        MainWindow::instance()->updatePatchElementToReflectState(this, p, p->getObjectUid(), 1);
+    }
 }
 
-void DefaultVersionImplementation::addTrigger(Trigger* t)
+void DefaultVersionImplementation::addTrigger(Trigger* t, bool initial)
 {
     m_data.m_triggers.append(t);
+    if(isLocked() && !initial)
+    {
+        MainWindow::instance()->createPatchElement(this, t, t->getObjectUid(), false);
+        getWorkingPatch()->addNewElement(t->getObjectUid()); // this will be a new element ...
+        MainWindow::instance()->updatePatchElementToReflectState(this, t, t->getObjectUid(), 1);
+    }
 }
 
 const QVector<Procedure*>& DefaultVersionImplementation::getProcedures()
@@ -1384,7 +1431,7 @@ bool DefaultVersionImplementation::cloneInto(Version* other)
     for(int i=0; i<funcs.size(); i++)
     {
         Function* newp = dynamic_cast<Function*>(funcs.at(i)->clone(this, other));
-        other->addFunction(newp);
+        other->addFunction(newp, true);
         funcs.at(i)->lock();
         funcs.at(i)->updateGui();
     }
@@ -1394,7 +1441,7 @@ bool DefaultVersionImplementation::cloneInto(Version* other)
     for(int i=0; i<trigs.size(); i++)
     {
         Trigger* newp = dynamic_cast<Trigger*>(trigs.at(i)->clone(this, other));
-        other->addTrigger(newp);
+        other->addTrigger(newp, true);
         trigs.at(i)->lock();
         trigs.at(i)->updateGui();
     }
@@ -1525,6 +1572,46 @@ DefaultVersionImplementation::CAN_UNDELETE_STATUS DefaultVersionImplementation::
     return CAN_UNDELETE;
 }
 
+DefaultVersionImplementation::CAN_UNDELETE_STATUS DefaultVersionImplementation::canUndeleteFunction(const QString &uid, QString &extra)
+{
+    ObjectWithUid* obj = getWorkingPatch()->getDeletedObject(uid);
+    if(!obj)
+    {
+        return DELETED_OBJECT_WAS_NOT_FOUND_IN_PATCH;
+    }
+
+    FunctionDeletionAction* pda = getWorkingPatch()->getFDA(uid);
+    if(!pda)
+    {
+        return DELETED_OBJECT_WAS_NOT_FOUND_IN_PATCH;
+    }
+
+    return CAN_UNDELETE;
+}
+
+DefaultVersionImplementation::CAN_UNDELETE_STATUS DefaultVersionImplementation::canUndeleteTrigger(const QString &uid, QString &extra)
+{
+    ObjectWithUid* obj = getWorkingPatch()->getDeletedObject(uid);
+    if(!obj)
+    {
+        return DELETED_OBJECT_WAS_NOT_FOUND_IN_PATCH;
+    }
+
+    TriggerDeletionAction* tda = getWorkingPatch()->getTrDA(uid);
+    if(!tda)
+    {
+        return DELETED_OBJECT_WAS_NOT_FOUND_IN_PATCH;
+    }
+
+    if(!hasTable(tda->deletedTrigger->getTable()))
+    {
+        extra = tda->deletedTrigger->getTable();
+        return DEPENDENT_TABLE_WAS_NOT_FOUND_IN_VERSION;
+    }
+
+    return CAN_UNDELETE;
+}
+
 
 bool DefaultVersionImplementation::undeleteObject(const QString& uid)
 {
@@ -1546,6 +1633,7 @@ bool DefaultVersionImplementation::undeleteObject(const QString& uid)
             return true;
         }
 
+        // see if we can undelete a procedure?
         canUndelete = canUndeleteProcedure(uid, extra);
         if(canUndelete == CAN_UNDELETE)
         {
@@ -1556,9 +1644,29 @@ bool DefaultVersionImplementation::undeleteObject(const QString& uid)
             return true;
         }
 
+        // see if we can undelete a function?
+        canUndelete = canUndeleteFunction(uid, extra);
+        if(canUndelete == CAN_UNDELETE)
+        {
+            FunctionDeletionAction* pda = getWorkingPatch()->getFDA(uid);
+            addFunction(pda->deletedFunction, true);
+            getGui()->createFunctionTreeEntry(pda->deletedFunction);
+            pda->deletedFunction->updateGui();
+            return true;
+        }
 
-        // see if we can undelete a procedure?
+        // see if we can undelete a trigger?
+        canUndelete = canUndeleteTrigger(uid, extra);
+        if(canUndelete == CAN_UNDELETE)
+        {
+            TriggerDeletionAction* tda = getWorkingPatch()->getTrDA(uid);
+            addTrigger(tda->deletedTrigger, true);
+            getGui()->createTriggerTreeEntry(tda->deletedTrigger);
+            tda->deletedTrigger->updateGui();
+            return true;
+        }
 
+        // hmm, cannot undelete
         if(canUndelete == DEPENDENT_TABLE_WAS_NOT_FOUND_IN_VERSION)
         {
             QMessageBox::critical(MainWindow::instance(), QObject::tr("Error"), QObject::tr("Cannot undelete this object: ") + extra + QObject::tr(" missing from version."), QMessageBox::Ok);

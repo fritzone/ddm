@@ -50,6 +50,8 @@ ContextMenuCollection::ContextMenuCollection()
     m_suspendPatchMenu = new QMenu();
     m_resumePatchMenu = new QMenu();
     m_proceduresPopupMenu = new QMenu();
+    m_functionsPopupMenu = new QMenu();
+    m_triggersPopupMenu = new QMenu();
 
     // actions
     action_RemoveTable = new QAction(QObject::tr("Delete table"), 0);
@@ -124,6 +126,8 @@ ContextMenuCollection::ContextMenuCollection()
     action_undelete =  new QAction(QObject::tr("Undelete"), 0);
     action_undelete->setIcon(IconFactory::getUndeleteIcon());
     action_addProcedure =  new QAction(QObject::tr("New Procedure"), 0);
+    action_addFunction =  new QAction(QObject::tr("New Function"), 0);
+    action_addTrigger =  new QAction(QObject::tr("New Trigger"), 0);
 
     // populate the table popup menu
     m_tablePopupMenu->setTitle(QObject::tr("Table"));
@@ -166,6 +170,12 @@ ContextMenuCollection::ContextMenuCollection()
 
     // procedures
     m_proceduresPopupMenu->addAction(action_addProcedure);
+
+    // triggers
+    m_triggersPopupMenu->addAction(action_addTrigger);
+
+    // functions
+    m_functionsPopupMenu->addAction(action_addFunction);
 
     // columns
     m_columnPopupMenu->addAction(action_CopyColumn);
@@ -223,8 +233,12 @@ ContextMenuCollection::ContextMenuCollection()
 
     // one functions popup menu
     m_functionPopupMenu->addAction(action_deleteFunction);
+    m_functionPopupMenu->setTitle(QObject::tr("Function"));
+    m_functionPopupMenu->setIcon(IconFactory::getFunctionTreeIcon());
 
     // one triggers' menu
+    m_triggerPopupMenu->setTitle(QObject::tr("Trigger"));
+    m_triggerPopupMenu->setIcon(IconFactory::getTriggerIcon());
     m_triggerPopupMenu->addAction(action_deleteTrigger);
 
     // the patch's menu
@@ -240,6 +254,8 @@ ContextMenuCollection::ContextMenuCollection()
     // the locked trigger popup menus
     m_unlockTriggerPopupMenu->addAction(action_unlock);
     m_relockTriggerPopupMenu->addAction(action_relock);
+    m_unlockTriggerPopupMenu->addMenu(m_triggerPopupMenu);
+    m_relockTriggerPopupMenu->addMenu(m_triggerPopupMenu);
 
     // the locked tab inst popup menus
     m_unlockTableInstancePopupMenu->addAction(action_unlock);
@@ -250,12 +266,14 @@ ContextMenuCollection::ContextMenuCollection()
     // the locked func popup menus
     m_unlockFunctionPopupMenu->addAction(action_unlock);
     m_relockFunctionPopupMenu->addAction(action_relock);
+    m_unlockFunctionPopupMenu->addMenu(m_functionPopupMenu);
+    m_relockFunctionPopupMenu->addMenu(m_functionPopupMenu);
 
     // the locked proc popup menus
     m_unlockProcedurePopupMenu->addAction(action_unlock);
+    m_unlockProcedurePopupMenu->addMenu(m_procedurePopupMenu);
     m_relockProcedurePopupMenu->addAction(action_relock);
     m_relockProcedurePopupMenu->addMenu(m_procedurePopupMenu);
-    m_unlockProcedurePopupMenu->addMenu(m_procedurePopupMenu);
 
     // the locked view popup menus
     m_unlockViewPopupMenu->addAction(action_unlock);

@@ -72,6 +72,16 @@ public:
     void addDeletedProcedure(const QString& uid, ProcedureDeletionAction* pda);
 
     /**
+     * @brief addDeletedFunction
+     * @param uid
+     * @param pda
+     */
+    void addDeletedFunction(const QString &uid, FunctionDeletionAction *pda);
+
+    void addDeletedTrigger(const QString &uid, TriggerDeletionAction *tda);
+
+
+    /**
      * @brief getTDA
      * @param uid
      * @return
@@ -79,6 +89,8 @@ public:
     TableDeletionAction* getTDA(const QString& uid);
     DiagramDeletionAction *getDDA(const QString& uid);
     ProcedureDeletionAction *getPDA(const QString& uid);
+    FunctionDeletionAction *getFDA(const QString& uid);
+    TriggerDeletionAction *getTrDA(const QString& uid);
 
     /**
      * @brief removeTDA
@@ -151,6 +163,8 @@ private:
     QMap<QString, TableDeletionAction*> m_tableDeletions;
     QMap<QString, DiagramDeletionAction*> m_diagramDeletions;
     QMap<QString, ProcedureDeletionAction*> m_procedureDeletions;
+    QMap<QString, FunctionDeletionAction*> m_functionDeletions;
+    QMap<QString, TriggerDeletionAction*> m_triggerDeletions;
 
 };
 

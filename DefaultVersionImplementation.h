@@ -74,11 +74,11 @@ public:
     virtual void deleteFunction(const QString& f);
     virtual void deleteTrigger(const QString& t);
     virtual void cleanupDataTypes();
-    virtual void addTrigger(Trigger *);
+    virtual void addTrigger(Trigger *, bool initial);
     virtual Trigger* getTrigger(const QString &name) const;
     virtual const QVector<Trigger*>& getTriggers();
     virtual SqlSourceEntity* getSqlSourceEntityWithGuid(const QString& guid) const;
-    virtual void addFunction(Function* p);
+    virtual void addFunction(Function* p, bool initial);
     virtual const QVector<Function*>& getFunctions();
     virtual Table* getTableWithUid(const QString& uid) const;
     virtual TableInstance* getTableInstanceWithUid(const QString& uid) const;
@@ -115,6 +115,8 @@ public:
      */
     CAN_UNDELETE_STATUS canUndeleteDiagram(const QString& uid, QString& extra);
     CAN_UNDELETE_STATUS canUndeleteProcedure(const QString& uid, QString& extra);
+    CAN_UNDELETE_STATUS canUndeleteFunction(const QString& uid, QString& extra);
+    CAN_UNDELETE_STATUS canUndeleteTrigger(const QString &uid, QString &extra);
 
 protected:
     // the version as a string representation. Major versions are always of form X.0

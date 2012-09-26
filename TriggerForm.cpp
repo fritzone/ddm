@@ -195,6 +195,7 @@ void TriggerForm::descriptionChanged()
 
 void TriggerForm::onLockUnlock(bool checked)
 {
+//    if()
     if(checked)
     {
         ui->btnLock->setIcon(IconFactory::getUnLockedIcon());
