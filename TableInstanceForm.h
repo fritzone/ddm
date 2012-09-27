@@ -30,6 +30,7 @@ public slots:
     void onValuesDoubleClick();
     void onGotoTable();
     void onLockUnlock(bool);
+    void onUndelete();
 
 protected:
     void changeEvent(QEvent *e);

@@ -117,6 +117,7 @@ public:
      * @return
      */
     bool elementWasNewInThisPatch(const QString& uid);
+    bool elementWasLockedInThisPatch(const QString& uid);
 
     /**
      * @brief removeNewElementBecauseOfDeletion

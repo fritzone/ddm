@@ -11,6 +11,7 @@
 #include "MainWindow.h"
 #include "gui_HelpWindow.h"
 #include "SpInstance.h"
+#include "GuiElements.h"
 
 #include <QLineEdit>
 
@@ -278,7 +279,7 @@ void TableInstanceForm::onValuesDoubleClick()
 
 void TableInstanceForm::onGotoTable()
 {
-    MainWindow::instance()->showTableWithGuid(Workspace::getInstance()->workingVersion(), m_tinst->table()->getObjectUid());
+    MainWindow::instance()->showTableWithGuid(m_tinst->version(), m_tinst->table()->getObjectUid());
 }
 
 
@@ -309,11 +310,20 @@ void TableInstanceForm::onLockUnlock(bool checked)
 void TableInstanceForm::setTableInstance(TableInstance *st)
 {
     m_tinst = st;
-
+    ui->btnUndelete->hide();
     // TODO: Duplicate from the other forms
     if(!m_tinst->wasLocked())
     {
-        ui->frameForUnlockButton->hide();
+        if(m_tinst->isDeleted())
+        {
+            ui->frameForUnlockButton->show();
+            ui->btnLock->hide();
+            ui->btnUndelete->show();
+        }
+        else
+        {
+            ui->frameForUnlockButton->hide();
+        }
     }
     else
     {
@@ -325,7 +335,7 @@ void TableInstanceForm::setTableInstance(TableInstance *st)
             ui->btnLock->setChecked(false);
             ui->btnLock->blockSignals(false);
             ui->grpContent->setEnabled(false);
-            ui->btnLock->setToolTip(QObject::tr("This table instance is <b>locked</b>. Click this button to unlock it."));
+            ui->btnLock->setToolTip(QObject::tr("This table is <b>locked</b>. Click this button to unlock it."));
         }
         else
         {
@@ -334,8 +344,43 @@ void TableInstanceForm::setTableInstance(TableInstance *st)
             ui->btnLock->setChecked(true);
             ui->btnLock->blockSignals(false);
             ui->grpContent->setEnabled(true);
-            ui->btnLock->setToolTip(QObject::tr("This table instance is <b>unlocked</b>. Click this button to lock it."));
+            ui->btnLock->setToolTip(QObject::tr("This table is <b>unlocked</b>. Click this button to lock it."));
         }
 
+        if(m_tinst->isDeleted())
+        {
+            ui->btnLock->hide();
+            ui->btnUndelete->show();
+        }
+    }
+}
+
+
+void TableInstanceForm::onUndelete()
+{
+    if(m_tinst->version()->undeleteObject(m_tinst->getObjectUid()))
+    {
+        MainWindow::instance()->getGuiElements()->removeItemForPatch(m_tinst->version()->getWorkingPatch(), m_tinst->getObjectUid());
+        // TODO: Duplicate from above
+        if(m_tinst->isLocked())
+        {
+            ui->btnLock->setIcon(IconFactory::getLockedIcon());
+            ui->btnLock->blockSignals(true);
+            ui->btnLock->setChecked(false);
+            ui->btnLock->blockSignals(false);
+            ui->grpContent->setEnabled(false);
+            ui->btnLock->setToolTip(QObject::tr("This table is <b>locked</b>. Click this button to unlock it."));
+        }
+        else
+        {
+            ui->btnLock->setIcon(IconFactory::getUnLockedIcon());
+            ui->btnLock->blockSignals(true);
+            ui->btnLock->setChecked(true);
+            ui->btnLock->blockSignals(false);
+            ui->grpContent->setEnabled(true);
+            ui->btnLock->setToolTip(QObject::tr("This table is <b>unlocked</b>. Click this button to lock it."));
+        }
+        ui->btnUndelete->hide();
+        ui->btnLock->show();
     }
 }

@@ -28,6 +28,7 @@
 #include "strings.h"
 #include "WidgetForSpecificProperties.h"
 #include "SpInstance.h"
+#include "GuiElements.h"
 
 #include <QMessageBox>
 #include <QHashIterator>
@@ -405,11 +406,22 @@ void NewTableForm::setTable(Table *table)
     if(m_table) resetForeignTablesCombo();
     prepareSpsTabs();
 
+    m_ui->btnUndelete->hide();
+
     // do the locking
     // TODO: this is code duplication from the UserDataType form
     if(!m_table->wasLocked())
     {
-        m_ui->frameForUnlockButton->hide();
+        if(m_table->isDeleted())
+        {
+            m_ui->frameForUnlockButton->show();
+            m_ui->btnLock->hide();
+            m_ui->btnUndelete->show();
+        }
+        else
+        {
+            m_ui->frameForUnlockButton->hide();
+        }
     }
     else
     {
@@ -433,6 +445,11 @@ void NewTableForm::setTable(Table *table)
             m_ui->btnLock->setToolTip(QObject::tr("This table is <b>unlocked</b>. Click this button to lock it."));
         }
 
+        if(m_table->isDeleted())
+        {
+            m_ui->btnLock->hide();
+            m_ui->btnUndelete->show();
+        }
     }
 
 }
@@ -2496,5 +2513,35 @@ void NewTableForm::onLockUnlock(bool checked)
         m_ui->btnLock->setToolTip(QObject::tr("This table is <b>locked</b>. Click this button to unlock it."));
 
         MainWindow::instance()->finallyDoLockLikeOperation(true, m_table->getObjectUid());
+    }
+
+}
+
+void NewTableForm::onUndelete()
+{
+    if(m_version->undeleteObject(m_table->getObjectUid()))
+    {
+        MainWindow::instance()->getGuiElements()->removeItemForPatch(m_version->getWorkingPatch(), m_table->getObjectUid());
+        // TODO: Duplicate from above
+        if(m_table->isLocked())
+        {
+            m_ui->btnLock->setIcon(IconFactory::getLockedIcon());
+            m_ui->btnLock->blockSignals(true);
+            m_ui->btnLock->setChecked(false);
+            m_ui->btnLock->blockSignals(false);
+            m_ui->grpContent->setEnabled(false);
+            m_ui->btnLock->setToolTip(QObject::tr("This table is <b>locked</b>. Click this button to unlock it."));
+        }
+        else
+        {
+            m_ui->btnLock->setIcon(IconFactory::getUnLockedIcon());
+            m_ui->btnLock->blockSignals(true);
+            m_ui->btnLock->setChecked(true);
+            m_ui->btnLock->blockSignals(false);
+            m_ui->grpContent->setEnabled(true);
+            m_ui->btnLock->setToolTip(QObject::tr("This table is <b>unlocked</b>. Click this button to lock it."));
+        }
+        m_ui->btnUndelete->hide();
+        m_ui->btnLock->show();
     }
 }

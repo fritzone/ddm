@@ -50,6 +50,7 @@ void Patch::addNewElement(const QString &uid)
 void Patch::markElementForDeletion(const QString &uid)
 {
     ObjectWithUid* obj = UidWarehouse::instance().getElement(uid);
+    dynamic_cast<LockableElement*>(obj)->deleteObject();
 
     if(!obj) return;
 
@@ -115,6 +116,10 @@ void Patch::undeleteObject(const QString &uid)
 
     m_deletedUids.removeOne(uid);
     m_deletedObjects.remove(uid);
+
+    ObjectWithUid* obj = UidWarehouse::instance().getElement(uid);
+    if(!obj) return;
+    dynamic_cast<LockableElement*>(obj)->undeleteObject();
 
 }
 
@@ -188,6 +193,12 @@ void Patch::removeTDA(const QString &uid)
 bool Patch::elementWasNewInThisPatch(const QString &uid)
 {
     int idx = m_newUids.indexOf(uid);
+    return idx != -1;
+}
+
+bool Patch::elementWasLockedInThisPatch(const QString &uid)
+{
+    int idx = m_lockedUids.indexOf(uid);
     return idx != -1;
 }
 

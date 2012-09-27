@@ -53,12 +53,12 @@ public:
         return m_isDeleted;
     }
 
-    bool deleteObject()
+    void deleteObject()
     {
         m_isDeleted = true;
     }
 
-    bool undeleteObject()
+    void undeleteObject()
     {
         m_isDeleted = false;
     }

@@ -257,12 +257,12 @@ void DefaultVersionImplementation::purgeSentencedTableInstances()
     }
 }
 
-void DefaultVersionImplementation::deleteTableInstance(TableInstance *tinst, TableDeletionAction * tda)
+void DefaultVersionImplementation::deleteTableInstance(TableInstance *tinst, TableDeletionAction *&tda)
 {
     doDeleteTableInstance(tinst, tda);
 }
 
-void DefaultVersionImplementation::doDeleteTableInstance(TableInstance *tinst, TableDeletionAction *tda)
+void DefaultVersionImplementation::doDeleteTableInstance(TableInstance *tinst, TableDeletionAction*& tda)
 {
     if(tda)
     {
@@ -299,6 +299,19 @@ void DefaultVersionImplementation::doDeleteTableInstance(TableInstance *tinst, T
         {
             if(!insted.at(i)->sentenced() && insted.at(i)->instantiatedBecuaseOfRkReference())
             {
+                if(getWorkingPatch()->elementWasLockedInThisPatch(insted.at(i)->getObjectUid()))
+                {
+                    QMessageBox::warning(0, QObject::tr("Locked Table Instance found"),
+                                         QObject::tr("Cannot execute the deletion operation since the following table instance is already unlocked in the patch:<BR><UL><LI>") +
+                                         insted.at(i)->getName() +
+                                         QObject::tr("</LI></UL><BR>Firstly Re-lock (right click -> Lock) the table instance then delete the table."), QMessageBox::Ok);
+                    tinst->unSentence();
+                    delete tda;
+                    tda = 0;
+                    return;
+
+                }
+
                 deleteTableInstance(insted.at(i), tda);
             }
         }
@@ -341,6 +354,7 @@ void DefaultVersionImplementation::deleteTableInstance(TableInstance *tinst)
     TableDeletionAction* tda = new TableDeletionAction(0);
 
     doDeleteTableInstance(tinst, tda);
+    if(tda == 0) return;
 
     if(isLocked())  // remove the entry from the patch
     {
@@ -403,7 +417,21 @@ bool DefaultVersionImplementation::deleteTable(Table *tab)
         if(m_data.m_tableInstances.at(i)->table()->getName() == tab->getName())
         {
             TableInstance* tinst = m_data.m_tableInstances.at(i);
+            if(getWorkingPatch()->elementWasLockedInThisPatch(tinst->getObjectUid()))
+            {
+                QMessageBox::warning(0, QObject::tr("Locked Table Instance found"),
+                                     QObject::tr("Cannot execute the deletion operation since the following table instance is already unlocked in the patch:<BR><UL><LI>") +
+                                     tinst->getName() +
+                                     QObject::tr("</LI></UL><BR>Firstly Re-lock (right click -> Lock) the table instance then delete the table."), QMessageBox::Ok);
+                delete tda;
+                return false;
+
+            }
             deleteTableInstance(tinst, tda);
+            if(tda == 0)
+            {
+                return false;
+            }
             // check if this table instance was created as a NEW one in this patch
             if(getWorkingPatch()->elementWasNewInThisPatch(tinst->getObjectUid()))
             {

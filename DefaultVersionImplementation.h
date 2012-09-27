@@ -90,8 +90,8 @@ public:
     virtual bool undeleteObject(const QString& uid);
 
     void createTreeItems(GuiElements* gui, ContextMenuEnabledTreeWidgetItem* projectItem);
-    void deleteTableInstance(TableInstance *tinst, TableDeletionAction* );
-    void doDeleteTableInstance(TableInstance *tinst, TableDeletionAction* );
+    void deleteTableInstance(TableInstance *tinst, TableDeletionAction*& );
+    void doDeleteTableInstance(TableInstance *tinst, TableDeletionAction *& );
 
     enum CAN_UNDELETE_STATUS
     {
