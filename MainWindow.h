@@ -146,6 +146,7 @@ public slots:
     void onNewDiagramFromPopup();
     void onNewProcedureFromPopup();
     void onNewFunctionFromPopup();
+    void onNewTriggerFromPopup();
     void onNewStringType();
     void onNewNumericType();
     void onNewBoolType();

@@ -703,6 +703,43 @@ void MainWindow::onNewProcedureFromPopup()
     setCentralWidget(frm);
 }
 
+void MainWindow::onNewTriggerFromPopup()
+{
+
+    if(m_guiElements->getProjectTree()->getLastRightclickedItem() == 0)
+    {
+        return;
+    }
+
+    ContextMenuEnabledTreeWidgetItem* item = m_guiElements->getProjectTree()->getLastRightclickedItem();
+    m_guiElements->getProjectTree()->setLastRightclickedItem(0);
+
+    QVariant qv = item->data(0, Qt::UserRole);
+    QString diagramsUid = qv.toString();
+
+    Version* v = UidWarehouse::instance().getVersionForUid(diagramsUid);
+
+    // TODO: Duplication with onNewTrigger
+    const QVector<Table*>& allTables = Workspace::getInstance()->workingVersion()->getTables();
+    if(allTables.size() == 0)
+    {
+        QMessageBox::critical(this, tr("Cannot create a trigger when there are no tables"), tr("No tables defined"), QMessageBox::Ok);
+        return;
+    }
+    TriggerForm* frm = Workspace::getInstance()->workingVersion()->getGui()->getTriggerForm();
+    Trigger* trigger = new Trigger(NameGenerator::getUniqueName(Workspace::getInstance()->workingVersion(), (itemGetter)&Version::getTrigger, QString("trig")), QUuid::createUuid().toString(), m_workspace->workingVersion());
+    frm->setTrigger(trigger);
+    frm->initSql();
+    frm->feedInTables(allTables);
+    trigger->setTable(allTables.at(0)->getName());
+    frm->feedInTriggerEvents(Workspace::getInstance()->currentProjectsEngine()->getTriggerEvents());
+    frm->feedInTriggerTimes(Workspace::getInstance()->currentProjectsEngine()->getTriggerTimings());
+    Workspace::getInstance()->workingVersion()->addTrigger(trigger, false);
+    Workspace::getInstance()->workingVersion()->getGui()->createTriggerTreeEntry(trigger);
+    setCentralWidget(frm);
+
+}
+
 void MainWindow::onNewFunctionFromPopup()
 {
     if(m_guiElements->getProjectTree()->getLastRightclickedItem() == 0)
@@ -1082,6 +1119,7 @@ void MainWindow::connectActionsFromPopupMenus()
     QObject::connect(ContextMenuCollection::getInstance()->getAction_Undelete(), SIGNAL(triggered()), this, SLOT(onUndeleteSomething()));
     QObject::connect(ContextMenuCollection::getInstance()->getAction_AddProcedure(), SIGNAL(triggered()), this, SLOT(onNewProcedureFromPopup()));
     QObject::connect(ContextMenuCollection::getInstance()->getAction_AddFunction(), SIGNAL(triggered()), this, SLOT(onNewFunctionFromPopup()));
+    QObject::connect(ContextMenuCollection::getInstance()->getAction_AddTrigger(), SIGNAL(triggered()), this, SLOT(onNewTriggerFromPopup()));
 
 }
 
