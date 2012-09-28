@@ -160,7 +160,7 @@ void VersionGuiElements::createGuiElements(ContextMenuEnabledTreeWidgetItem* pro
     // triggers
     triggersItem = new ContextMenuEnabledTreeWidgetItem(versionItem, QStringList(QObject::tr("Triggers"))) ;
     triggersItem->setIcon(0, IconFactory::getTriggersIcon());
-    viewsItem->setPopupMenu(ContextMenuCollection::getInstance()->getTriggersPopupMenu());
+    triggersItem->setPopupMenu(ContextMenuCollection::getInstance()->getTriggersPopupMenu());
     m_tree->addTopLevelItem(triggersItem);
     QUuid trigsUid = QUuid::createUuid();
     triggersItem->setData(0, Qt::UserRole, QVariant(trigsUid));
