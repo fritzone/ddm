@@ -13,6 +13,7 @@ class QueryGraphicsItem;
 class SqlHighlighter;
 class View;
 class TextEditWithCodeCompletion;
+class Version;
 
 namespace Ui {
     class NewViewForm;
@@ -22,7 +23,7 @@ class NewViewForm : public SourceCodePresenterWidget
 {
     Q_OBJECT
 public:
-    NewViewForm(bool queryBuilder, QueryGraphicsHelper*c, QWidget *parent = 0);
+    NewViewForm(Version *v, bool queryBuilder, QueryGraphicsHelper*c, QWidget *parent = 0);
     ~NewViewForm();
     void setGraphicsItem(QueryGraphicsItem*);
     QueryGraphicsScene* getScene()
@@ -45,6 +46,7 @@ public slots:
     void onSaveSql();
     void onInject();
     void onLockUnlock(bool checked);
+    void onUndelete();
 
 protected:
     void changeEvent(QEvent *e);
@@ -63,6 +65,7 @@ private:
     TextEditWithCodeCompletion*txtSql;
     bool m_updateSqlAfterNameChange;
     bool m_autoChange;
+    Version* m_version;
 };
 
 #endif // NEWVIEWFORM_H

@@ -79,6 +79,7 @@ public:
     void addDeletedFunction(const QString &uid, FunctionDeletionAction *pda);
 
     void addDeletedTrigger(const QString &uid, TriggerDeletionAction *tda);
+    void addDeletedView(const QString &uid, ViewDeletionAction *vda);
 
 
     /**
@@ -91,6 +92,8 @@ public:
     ProcedureDeletionAction *getPDA(const QString& uid);
     FunctionDeletionAction *getFDA(const QString& uid);
     TriggerDeletionAction *getTrDA(const QString& uid);
+    ViewDeletionAction* getVDA(const QString &uid);
+
 
     /**
      * @brief removeTDA
@@ -166,6 +169,7 @@ private:
     QMap<QString, ProcedureDeletionAction*> m_procedureDeletions;
     QMap<QString, FunctionDeletionAction*> m_functionDeletions;
     QMap<QString, TriggerDeletionAction*> m_triggerDeletions;
+    QMap<QString, ViewDeletionAction*> m_viewDeletions;
 
 };
 

@@ -143,6 +143,11 @@ void Patch::addDeletedFunction(const QString &uid, FunctionDeletionAction *pda)
     m_functionDeletions[uid] = pda;
 }
 
+void Patch::addDeletedView(const QString &uid, ViewDeletionAction *vda)
+{
+    m_viewDeletions[uid] = vda;
+}
+
 void Patch::addDeletedTrigger(const QString &uid, TriggerDeletionAction *tda)
 {
     m_triggerDeletions[uid] = tda;
@@ -181,6 +186,13 @@ TriggerDeletionAction* Patch::getTrDA(const QString &uid)
     if(!m_triggerDeletions.contains(uid)) return 0;
     TriggerDeletionAction* tda = m_triggerDeletions.value(uid);
     return tda;
+}
+
+ViewDeletionAction* Patch::getVDA(const QString &uid)
+{
+    if(!m_viewDeletions.contains(uid)) return 0;
+    ViewDeletionAction* vda = m_viewDeletions.value(uid);
+    return vda;
 }
 
 void Patch::removeTDA(const QString &uid)

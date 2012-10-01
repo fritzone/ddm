@@ -128,6 +128,8 @@ public:
     QAction* getAction_AddProcedure() { return action_addProcedure; }
     QAction* getAction_AddFunction() { return action_addFunction; }
     QAction* getAction_AddTrigger() { return action_addTrigger; }
+    QAction* getAction_AddView() { return action_addView; }
+    QAction* getAction_AddViewWithSql() { return action_addViewWithSql; }
 
     QMenu* getUnLockMenuForClassUid(const QString& uid);
     QMenu* getMenuForClassUid(const QString& uid);
@@ -290,6 +292,10 @@ private:
 
     // for the triggers menu
     QAction* action_addTrigger;
+
+    // for the views menu
+    QAction* action_addView;
+    QAction* action_addViewWithSql;
 
     // the instance of the popup menu collection
     static ContextMenuCollection* m_instance;

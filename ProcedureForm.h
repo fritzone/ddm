@@ -21,7 +21,7 @@ class ProcedureForm : public QWidget
 
 public:
 
-    explicit ProcedureForm(ProcedureFormMode m, bool forced = false, Connection* c = 0, QWidget *parent = 0);
+    explicit ProcedureForm(Version *v, ProcedureFormMode m, bool forced = false, Connection* c = 0, QWidget *parent = 0);
     ~ProcedureForm();
     void setProcedure(StoredMethod* p);
     void initSql();
@@ -33,6 +33,7 @@ protected:
 private slots:
     void textChanged();
     void onLockUnlock(bool);
+    void onUndelete();
 
 private:
     QString getProcNameFromSql();
@@ -44,6 +45,7 @@ private:
     StoredMethod* m_proc;
     bool m_forcedChange;
     ProcedureFormMode m_mode;
+    Version* m_version;
 };
 
 #endif // PROCEDUREFORM_H

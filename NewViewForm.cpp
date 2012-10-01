@@ -21,6 +21,7 @@
 #include "InjectSqlDialog.h"
 #include "core_ConnectionManager.h"
 #include "FrameForLineNumbers.h"
+#include "GuiElements.h"
 
 #include <QScrollBar>
 #include <QVBoxLayout>
@@ -28,11 +29,11 @@
 
 #include <QDebug>
 
-NewViewForm::NewViewForm(bool queryBuilder, QueryGraphicsHelper* c, QWidget *parent) :
+NewViewForm::NewViewForm(Version* v, bool queryBuilder, QueryGraphicsHelper* c, QWidget *parent) :
     SourceCodePresenterWidget(parent),
     ui(new Ui::NewViewForm),
     m_comps(c),
-    m_queryBuilder(queryBuilder), m_updateSqlAfterNameChange(true), m_autoChange(false)
+    m_queryBuilder(queryBuilder), m_updateSqlAfterNameChange(true), m_autoChange(false), m_version(v)
 {
     ui->setupUi(this);
     txtSql = new TextEditWithCodeCompletion(ui->groupBox_3);
@@ -149,10 +150,22 @@ void NewViewForm::setView(View *v)
     ui->chkCanReplace->setChecked(v->getReplace());
     ui->txtViewName->setText(v->getName());
 
-    // TODO: duplicate
+
+    ui->btnUndelete->hide();
+
+    // TODO: duplicate with the other forms ... at least, the logic!
     if(!m_view->wasLocked())
     {
-        ui->frameForUnlockButton->hide();
+        if(m_view->isDeleted())
+        {
+            ui->frameForUnlockButton->show();
+            ui->btnLock->hide();
+            ui->btnUndelete->show();
+        }
+        else
+        {
+            ui->frameForUnlockButton->hide();
+        }
     }
     else
     {
@@ -176,6 +189,11 @@ void NewViewForm::setView(View *v)
             ui->btnLock->setToolTip(QObject::tr("This view is <b>unlocked</b>. Click this button to lock it."));
         }
 
+        if(m_view->isDeleted())
+        {
+            ui->btnLock->hide();
+            ui->btnUndelete->show();
+        }
     }
 
     if(m_comps) // do this only if w are buildingteh query with the query builder
@@ -350,7 +368,7 @@ void NewViewForm::onLockUnlock(bool checked)
         ui->grpContent->setEnabled(true);
         m_view->unlock();
         m_view->updateGui();
-        ui->btnLock->setToolTip(QObject::tr("Trigger is <b>unlocked</b>. Click this button to lock it."));
+        ui->btnLock->setToolTip(QObject::tr("This view is <b>unlocked</b>. Click this button to lock it."));
 
         MainWindow::instance()->finallyDoLockLikeOperation(false, m_view->getObjectUid());
     }
@@ -360,9 +378,39 @@ void NewViewForm::onLockUnlock(bool checked)
         ui->grpContent->setEnabled(false);
         m_view->lock();
         m_view->updateGui();
-        ui->btnLock->setToolTip(QObject::tr("Trigger is <b>locked</b>. Click this button to unlock it."));
+        ui->btnLock->setToolTip(QObject::tr("This view is <b>locked</b>. Click this button to unlock it."));
 
         MainWindow::instance()->finallyDoLockLikeOperation(true, m_view->getObjectUid());
     }
 
+}
+
+
+void NewViewForm::onUndelete()
+{
+    if(m_version->undeleteObject(m_view->getObjectUid()))
+    {
+        MainWindow::instance()->getGuiElements()->removeItemForPatch(m_version->getWorkingPatch(), m_view->getObjectUid());
+        // TODO: Duplicate from above
+        if(m_view->isLocked())
+        {
+            ui->btnLock->setIcon(IconFactory::getLockedIcon());
+            ui->btnLock->blockSignals(true);
+            ui->btnLock->setChecked(false);
+            ui->btnLock->blockSignals(false);
+            ui->grpContent->setEnabled(false);
+            ui->btnLock->setToolTip(QObject::tr("This view is <b>locked</b>. Click this button to unlock it."));
+        }
+        else
+        {
+            ui->btnLock->setIcon(IconFactory::getUnLockedIcon());
+            ui->btnLock->blockSignals(true);
+            ui->btnLock->setChecked(true);
+            ui->btnLock->blockSignals(false);
+            ui->grpContent->setEnabled(true);
+            ui->btnLock->setToolTip(QObject::tr("This view is <b>unlocked</b>. Click this button to lock it."));
+        }
+        ui->btnUndelete->hide();
+        ui->btnLock->show();
+    }
 }

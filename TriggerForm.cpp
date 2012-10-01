@@ -8,10 +8,11 @@
 #include "Workspace.h"
 #include "Version.h"
 #include "MainWindow.h"
+#include "GuiElements.h"
 
-TriggerForm::TriggerForm(bool reverseSource, bool fc, QWidget *parent) :
+TriggerForm::TriggerForm(Version *v, bool reverseSource, bool fc, QWidget *parent) :
     QWidget(parent),
-    ui(new Ui::TriggerForm), m_trigger(0), m_forcedChange(fc), m_reverseSource(reverseSource)
+    ui(new Ui::TriggerForm), m_trigger(0), m_forcedChange(fc), m_reverseSource(reverseSource), m_version(v)
 {
     ui->setupUi(this);
 
@@ -66,10 +67,22 @@ void TriggerForm::setTrigger(Trigger *t)
     ui->cmbTime->setCurrentIndex(ui->cmbTime->findText(t->getTime()));
     ui->txtDescription->setText(t->getDescription());
 
-    // TODO: duplicate
+
+    ui->btnUndelete->hide();
+
+    // TODO: duplicate with the other forms ... at least, the logic!
     if(!m_trigger->wasLocked())
     {
-        ui->frameForUnlockButton->hide();
+        if(m_trigger->isDeleted())
+        {
+            ui->frameForUnlockButton->show();
+            ui->btnLock->hide();
+            ui->btnUndelete->show();
+        }
+        else
+        {
+            ui->frameForUnlockButton->hide();
+        }
     }
     else
     {
@@ -93,6 +106,11 @@ void TriggerForm::setTrigger(Trigger *t)
             ui->btnLock->setToolTip(QObject::tr("This trigger is <b>unlocked</b>. Click this button to lock it."));
         }
 
+        if(m_trigger->isDeleted())
+        {
+            ui->btnLock->hide();
+            ui->btnUndelete->show();
+        }
     }
 
 }
@@ -195,7 +213,6 @@ void TriggerForm::descriptionChanged()
 
 void TriggerForm::onLockUnlock(bool checked)
 {
-//    if()
     if(checked)
     {
         ui->btnLock->setIcon(IconFactory::getUnLockedIcon());
@@ -217,4 +234,33 @@ void TriggerForm::onLockUnlock(bool checked)
         MainWindow::instance()->finallyDoLockLikeOperation(true, m_trigger->getObjectUid());
     }
 
+}
+
+void TriggerForm::onUndelete()
+{
+    if(m_version->undeleteObject(m_trigger->getObjectUid()))
+    {
+        MainWindow::instance()->getGuiElements()->removeItemForPatch(m_version->getWorkingPatch(), m_trigger->getObjectUid());
+        // TODO: Duplicate from above
+        if(m_trigger->isLocked())
+        {
+            ui->btnLock->setIcon(IconFactory::getLockedIcon());
+            ui->btnLock->blockSignals(true);
+            ui->btnLock->setChecked(false);
+            ui->btnLock->blockSignals(false);
+            ui->tabWidget->setEnabled(false);
+            ui->btnLock->setToolTip(QObject::tr("This trigger is <b>locked</b>. Click this button to unlock it."));
+        }
+        else
+        {
+            ui->btnLock->setIcon(IconFactory::getUnLockedIcon());
+            ui->btnLock->blockSignals(true);
+            ui->btnLock->setChecked(true);
+            ui->btnLock->blockSignals(false);
+            ui->tabWidget->setEnabled(true);
+            ui->btnLock->setToolTip(QObject::tr("This trigger is <b>unlocked</b>. Click this button to lock it."));
+        }
+        ui->btnUndelete->hide();
+        ui->btnLock->show();
+    }
 }

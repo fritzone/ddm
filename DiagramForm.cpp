@@ -15,6 +15,7 @@
 #include "VersionGuiElements.h"
 #include "MainWindow.h"
 #include "gui_HelpWindow.h"
+#include "GuiElements.h"
 
 #include <QListWidgetItem>
 #include <QGraphicsView>
@@ -66,10 +67,21 @@ DiagramForm::DiagramForm(Version* v, Diagram* dgram, QWidget *parent) : QWidget(
     prepareLists();
     ui->cmbDgramNotation->hide();
 
-    // TODO: duplicate
+    ui->btnUndelete->hide();
+
+    // TODO: duplicate with the other forms ... at least, the logic!
     if(!m_diagram->wasLocked())
     {
-        ui->frameForUnlockButton->hide();
+        if(m_diagram->isDeleted())
+        {
+            ui->frameForUnlockButton->show();
+            ui->btnLock->hide();
+            ui->btnUndelete->show();
+        }
+        else
+        {
+            ui->frameForUnlockButton->hide();
+        }
     }
     else
     {
@@ -92,8 +104,13 @@ DiagramForm::DiagramForm(Version* v, Diagram* dgram, QWidget *parent) : QWidget(
             ui->grpContent->setEnabled(true);
             ui->btnLock->setToolTip(QObject::tr("This diagram is <b>unlocked</b>. Click this button to lock it."));
         }
-    }
 
+        if(m_diagram->isDeleted())
+        {
+            ui->btnLock->hide();
+            ui->btnUndelete->show();
+        }
+    }
 }
 
 void DiagramForm::prepareLists()
@@ -387,7 +404,7 @@ void DiagramForm::onLockUnlock(bool checked)
         ui->grpContent->setEnabled(true);
         m_diagram->unlock();
         m_diagram->updateGui();
-        ui->btnLock->setToolTip(QObject::tr("Diagram is <b>unlocked</b>. Click this button to lock it."));
+        ui->btnLock->setToolTip(QObject::tr("This diagram is <b>unlocked</b>. Click this button to lock it."));
 
         MainWindow::instance()->finallyDoLockLikeOperation(false, m_diagram->getObjectUid());
     }
@@ -397,9 +414,38 @@ void DiagramForm::onLockUnlock(bool checked)
         ui->grpContent->setEnabled(false);
         m_diagram->lock();
         m_diagram->updateGui();
-        ui->btnLock->setToolTip(QObject::tr("Diagram is <b>locked</b>. Click this button to unlock it."));
+        ui->btnLock->setToolTip(QObject::tr("this diagram is <b>locked</b>. Click this button to unlock it."));
 
         MainWindow::instance()->finallyDoLockLikeOperation(true, m_diagram->getObjectUid());
     }
 
+}
+
+void DiagramForm::onUndelete()
+{
+    if(m_version->undeleteObject(m_diagram->getObjectUid()))
+    {
+        MainWindow::instance()->getGuiElements()->removeItemForPatch(m_version->getWorkingPatch(), m_diagram->getObjectUid());
+        // TODO: Duplicate from above
+        if(m_diagram->isLocked())
+        {
+            ui->btnLock->setIcon(IconFactory::getLockedIcon());
+            ui->btnLock->blockSignals(true);
+            ui->btnLock->setChecked(false);
+            ui->btnLock->blockSignals(false);
+            ui->grpContent->setEnabled(false);
+            ui->btnLock->setToolTip(QObject::tr("This diagram is <b>locked</b>. Click this button to unlock it."));
+        }
+        else
+        {
+            ui->btnLock->setIcon(IconFactory::getUnLockedIcon());
+            ui->btnLock->blockSignals(true);
+            ui->btnLock->setChecked(true);
+            ui->btnLock->blockSignals(false);
+            ui->grpContent->setEnabled(true);
+            ui->btnLock->setToolTip(QObject::tr("This diagram is <b>unlocked</b>. Click this button to lock it."));
+        }
+        ui->btnUndelete->hide();
+        ui->btnLock->show();
+    }
 }

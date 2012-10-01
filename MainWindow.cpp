@@ -443,14 +443,14 @@ void MainWindow::showTriggerWithGuid(Version *v, const QString & guid, bool /*fo
     }
 }
 
-void MainWindow::showViewWithGuid(Version *, const QString & guid, bool /*focus*/)
+void MainWindow::showViewWithGuid(Version * ver, const QString & guid, bool /*focus*/)
 {
     View* v = dynamic_cast<View*>(UidWarehouse::instance().getElement(guid));
     if(v)
     {
         if(v->getManual())
         {
-            m_nvf = new NewViewForm(false, 0, this);
+            m_nvf = new NewViewForm(ver, false, 0, this);
 
             m_nvf->setSqlSource(v);
             m_nvf->setView(v);
@@ -473,7 +473,7 @@ void MainWindow::showObjectwithGuid(Version *v, QString uid, showSomething s, bo
     (this->*s)(v, uid,f);
 }
 
-void MainWindow::currentPatchTreeItemChanged(QTreeWidgetItem * current, QTreeWidgetItem*)
+void MainWindow::patchTreeItemClicked(QTreeWidgetItem * current, int)
 {
     if(current)
     {
@@ -516,7 +516,7 @@ void MainWindow::currentPatchTreeItemChanged(QTreeWidgetItem * current, QTreeWid
     }
 }
 
-void MainWindow::currentProjectTreeItemChanged(QTreeWidgetItem * current, QTreeWidgetItem*)
+void MainWindow::projectTreeItemClicked(QTreeWidgetItem * current, int)
 {
     if(current)
     {
@@ -703,6 +703,59 @@ void MainWindow::onNewProcedureFromPopup()
     setCentralWidget(frm);
 }
 
+
+void MainWindow::onNewViewWithSqlFromPopup()
+{
+    if(m_guiElements->getProjectTree()->getLastRightclickedItem() == 0)
+    {
+        return;
+    }
+
+    ContextMenuEnabledTreeWidgetItem* item = m_guiElements->getProjectTree()->getLastRightclickedItem();
+    m_guiElements->getProjectTree()->setLastRightclickedItem(0);
+
+    QVariant qv = item->data(0, Qt::UserRole);
+    QString diagramsUid = qv.toString();
+
+    Version* ver = UidWarehouse::instance().getVersionForUid(diagramsUid);
+    // Ok. New views from the button go always to the working version
+    m_nvf = new NewViewForm(ver, false, 0, this);
+    View* v = new View(true, QUuid::createUuid().toString(), ver);
+    ver->addView(v, false);
+    ver->getGui()->createViewTreeEntry(v);
+
+    m_nvf->setSqlSource(v);
+    m_nvf->setView(v);
+    m_nvf->presentSql(Workspace::getInstance()->currentProject());
+
+    setCentralWidget(m_nvf);
+}
+
+void MainWindow::onNewViewFromPopup()
+{
+    if(m_guiElements->getProjectTree()->getLastRightclickedItem() == 0)
+    {
+        return;
+    }
+
+    ContextMenuEnabledTreeWidgetItem* item = m_guiElements->getProjectTree()->getLastRightclickedItem();
+    m_guiElements->getProjectTree()->setLastRightclickedItem(0);
+
+    QVariant qv = item->data(0, Qt::UserRole);
+    QString diagramsUid = qv.toString();
+
+    Version* ver = UidWarehouse::instance().getVersionForUid(diagramsUid);
+    // Ok. New views from the button go always to the working version
+    View* v = new View(false, QUuid::createUuid().toString(), ver);
+    m_nvf = 0;
+    v->getHelper()->setForm(this);
+    ver->addView(v, false);
+    ver->getGui()->createViewTreeEntry(v);
+
+    rerenderQuery(v->getQuery());
+}
+
+
 void MainWindow::onNewTriggerFromPopup()
 {
 
@@ -720,22 +773,23 @@ void MainWindow::onNewTriggerFromPopup()
     Version* v = UidWarehouse::instance().getVersionForUid(diagramsUid);
 
     // TODO: Duplication with onNewTrigger
-    const QVector<Table*>& allTables = Workspace::getInstance()->workingVersion()->getTables();
+    const QVector<Table*>& allTables = v->getTables();
     if(allTables.size() == 0)
     {
         QMessageBox::critical(this, tr("Cannot create a trigger when there are no tables"), tr("No tables defined"), QMessageBox::Ok);
         return;
     }
-    TriggerForm* frm = Workspace::getInstance()->workingVersion()->getGui()->getTriggerForm();
-    Trigger* trigger = new Trigger(NameGenerator::getUniqueName(Workspace::getInstance()->workingVersion(), (itemGetter)&Version::getTrigger, QString("trig")), QUuid::createUuid().toString(), m_workspace->workingVersion());
+    TriggerForm* frm = v->getGui()->getTriggerForm();
+    Trigger* trigger = new Trigger(NameGenerator::getUniqueName(v, (itemGetter)&Version::getTrigger, QString("trig")),
+                                   QUuid::createUuid().toString(), v);
     frm->setTrigger(trigger);
     frm->initSql();
     frm->feedInTables(allTables);
     trigger->setTable(allTables.at(0)->getName());
     frm->feedInTriggerEvents(Workspace::getInstance()->currentProjectsEngine()->getTriggerEvents());
     frm->feedInTriggerTimes(Workspace::getInstance()->currentProjectsEngine()->getTriggerTimings());
-    Workspace::getInstance()->workingVersion()->addTrigger(trigger, false);
-    Workspace::getInstance()->workingVersion()->getGui()->createTriggerTreeEntry(trigger);
+    v->addTrigger(trigger, false);
+    v->getGui()->createTriggerTreeEntry(trigger);
     setCentralWidget(frm);
 
 }
@@ -1107,7 +1161,7 @@ void MainWindow::connectActionsFromPopupMenus()
     QObject::connect(ContextMenuCollection::getInstance()->getAction_CreateViewUsingSql(), SIGNAL(triggered()), this, SLOT(onNewViewWithSql()));
     QObject::connect(ContextMenuCollection::getInstance()->getAction_ConnectionConnect(), SIGNAL(triggered()), this, SLOT(onConnectConnection()));
     ContextMenuCollection::getInstance()->getAction_BrowsedTableInject()->setVisible(true);
-    QObject::connect(ContextMenuCollection::getInstance()->getAction_DeleteView(), SIGNAL(triggered()), this, SLOT(onDeleteView()));
+    QObject::connect(ContextMenuCollection::getInstance()->getAction_DeleteView(), SIGNAL(triggered()), this, SLOT(onDeleteViewFromPopup()));
     QObject::connect(ContextMenuCollection::getInstance()->getAction_DeleteProcedure(), SIGNAL(triggered()), this, SLOT(onDeleteProcedure()));
     QObject::connect(ContextMenuCollection::getInstance()->getAction_DeleteFunction(), SIGNAL(triggered()), this, SLOT(onDeleteFunction()));
     QObject::connect(ContextMenuCollection::getInstance()->getAction_DeleteTrigger(), SIGNAL(triggered()), this, SLOT(onDeleteTrigger()));
@@ -1120,6 +1174,8 @@ void MainWindow::connectActionsFromPopupMenus()
     QObject::connect(ContextMenuCollection::getInstance()->getAction_AddProcedure(), SIGNAL(triggered()), this, SLOT(onNewProcedureFromPopup()));
     QObject::connect(ContextMenuCollection::getInstance()->getAction_AddFunction(), SIGNAL(triggered()), this, SLOT(onNewFunctionFromPopup()));
     QObject::connect(ContextMenuCollection::getInstance()->getAction_AddTrigger(), SIGNAL(triggered()), this, SLOT(onNewTriggerFromPopup()));
+    QObject::connect(ContextMenuCollection::getInstance()->getAction_AddView(), SIGNAL(triggered()), this, SLOT(onNewViewFromPopup()));
+    QObject::connect(ContextMenuCollection::getInstance()->getAction_AddViewWithSql(), SIGNAL(triggered()), this, SLOT(onNewViewWithSqlFromPopup()));
 
 }
 
@@ -1319,7 +1375,7 @@ void MainWindow::onDeleteProcedure()
 }
 
 
-void MainWindow::onDeleteView()
+void MainWindow::onDeleteViewFromPopup()
 {
     View* v = getRightClickedObject<View>();
     if(v)
@@ -1328,13 +1384,13 @@ void MainWindow::onDeleteView()
         {
             return;
         }
-        m_workspace->workingVersion()->deleteView(v->getName());
-        m_workspace->workingVersion()->getGui()->updateForms();
+        v->version()->deleteView(v->getName());
+        v->version()->getGui()->updateForms();
 
-        showNamedObjectList(&MainWindow::showViewWithGuid, m_workspace->workingVersion()->getViews(), IconFactory::getViewsIcon(), "Views");
+        showNamedObjectList(&MainWindow::showViewWithGuid, v->version()->getViews(), IconFactory::getViewsIcon(), "Views");
 
-        m_workspace->workingVersion()->getGui()->getViewsItem()->treeWidget()->clearSelection();
-        m_workspace->workingVersion()->getGui()->getViewsItem()->setSelected(true);
+        v->version()->getGui()->getViewsItem()->treeWidget()->clearSelection();
+        v->version()->getGui()->getViewsItem()->setSelected(true);
 
     }
 }
@@ -2605,9 +2661,9 @@ void MainWindow::onValidate()
 void MainWindow::onNewViewWithSql()
 {
     // Ok. New views from the button go always to the working version
-    m_nvf = new NewViewForm(false, 0, this);
+    m_nvf = new NewViewForm(m_workspace->workingVersion(), false, 0, this);
     View* v = new View(true, QUuid::createUuid().toString(), m_workspace->workingVersion());
-    Workspace::getInstance()->workingVersion()->addView(v);
+    Workspace::getInstance()->workingVersion()->addView(v, false);
     Workspace::getInstance()->workingVersion()->getGui()->createViewTreeEntry(v);
 
     m_nvf->setSqlSource(v);
@@ -2623,7 +2679,7 @@ void MainWindow::onNewView()
     View* v = new View(false, QUuid::createUuid().toString(), m_workspace->workingVersion());
     m_nvf = 0;
     v->getHelper()->setForm(this);
-    Workspace::getInstance()->workingVersion()->addView(v);
+    Workspace::getInstance()->workingVersion()->addView(v, false);
     Workspace::getInstance()->workingVersion()->getGui()->createViewTreeEntry(v);
 
     rerenderQuery(v->getQuery());
@@ -2701,7 +2757,7 @@ void MainWindow::rerenderQuery(Query* q)
         m_nvf->getCenter(cx, cy);
     }
 
-    m_nvf = new NewViewForm(true, q->getHelper(), this);
+    m_nvf = new NewViewForm(dynamic_cast<View*>(q->getSourceEntity())->version(), true, q->getHelper(), this);
     m_nvf->setSqlSource(q->getSourceEntity());
     m_nvf->setView(dynamic_cast<View*>(q->getSourceEntity()));
 

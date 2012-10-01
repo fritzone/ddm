@@ -291,7 +291,7 @@ void TableInstanceForm::onLockUnlock(bool checked)
         ui->grpContent->setEnabled(true);
         m_tinst->unlock();
         m_tinst->updateGui();
-        ui->btnLock->setToolTip(QObject::tr("DataType is <b>unlocked</b>. Click this button to lock it."));
+        ui->btnLock->setToolTip(QObject::tr("This table instance is <b>unlocked</b>. Click this button to lock it."));
 
         MainWindow::instance()->finallyDoLockLikeOperation(false, m_tinst->getObjectUid());
     }
@@ -301,7 +301,7 @@ void TableInstanceForm::onLockUnlock(bool checked)
         ui->grpContent->setEnabled(false);
         m_tinst->lock();
         m_tinst->updateGui();
-        ui->btnLock->setToolTip(QObject::tr("DataType is <b>locked</b>. Click this button to unlock it."));
+        ui->btnLock->setToolTip(QObject::tr("This table instance is <b>locked</b>. Click this button to unlock it."));
 
         MainWindow::instance()->finallyDoLockLikeOperation(true, m_tinst->getObjectUid());
     }
@@ -335,7 +335,7 @@ void TableInstanceForm::setTableInstance(TableInstance *st)
             ui->btnLock->setChecked(false);
             ui->btnLock->blockSignals(false);
             ui->grpContent->setEnabled(false);
-            ui->btnLock->setToolTip(QObject::tr("This table is <b>locked</b>. Click this button to unlock it."));
+            ui->btnLock->setToolTip(QObject::tr("This table instance is <b>locked</b>. Click this button to unlock it."));
         }
         else
         {
@@ -344,7 +344,7 @@ void TableInstanceForm::setTableInstance(TableInstance *st)
             ui->btnLock->setChecked(true);
             ui->btnLock->blockSignals(false);
             ui->grpContent->setEnabled(true);
-            ui->btnLock->setToolTip(QObject::tr("This table is <b>unlocked</b>. Click this button to lock it."));
+            ui->btnLock->setToolTip(QObject::tr("This table instance is <b>unlocked</b>. Click this button to lock it."));
         }
 
         if(m_tinst->isDeleted())
@@ -369,7 +369,7 @@ void TableInstanceForm::onUndelete()
             ui->btnLock->setChecked(false);
             ui->btnLock->blockSignals(false);
             ui->grpContent->setEnabled(false);
-            ui->btnLock->setToolTip(QObject::tr("This table is <b>locked</b>. Click this button to unlock it."));
+            ui->btnLock->setToolTip(QObject::tr("This table instance is <b>locked</b>. Click this button to unlock it."));
         }
         else
         {
@@ -378,7 +378,7 @@ void TableInstanceForm::onUndelete()
             ui->btnLock->setChecked(true);
             ui->btnLock->blockSignals(false);
             ui->grpContent->setEnabled(true);
-            ui->btnLock->setToolTip(QObject::tr("This table is <b>unlocked</b>. Click this button to lock it."));
+            ui->btnLock->setToolTip(QObject::tr("This table instance is <b>unlocked</b>. Click this button to lock it."));
         }
         ui->btnUndelete->hide();
         ui->btnLock->show();

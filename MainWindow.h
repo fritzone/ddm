@@ -125,7 +125,7 @@ public slots:
     void onCloseSolution();
     void onDestroyed();
     void onHelp();
-    void currentProjectTreeItemChanged(QTreeWidgetItem * current, QTreeWidgetItem*);
+    void projectTreeItemClicked(QTreeWidgetItem * current, int);
     void dtTreeItemClicked ( QTreeWidgetItem * item, int column );
     void onNewTableInstance();
     void onNewTableInstanceFromPopup();
@@ -147,6 +147,8 @@ public slots:
     void onNewProcedureFromPopup();
     void onNewFunctionFromPopup();
     void onNewTriggerFromPopup();
+    void onNewViewFromPopup();
+    void onNewViewWithSqlFromPopup();
     void onNewStringType();
     void onNewNumericType();
     void onNewBoolType();
@@ -184,7 +186,7 @@ public slots:
     void onConnectionItemDoubleClicked(QTreeWidgetItem*,int);
     void onInjectBrowsedTable();
     void onBrowseBrowsedTable();
-    void onDeleteView();
+    void onDeleteViewFromPopup();
     void onDeleteUnusedDatatypes();
     void onDeleteProcedure();
     void onReleaseMajorVersion();
@@ -192,7 +194,7 @@ public slots:
     void onRelockSomething();
     void onDeleteFunction();
     void onDeleteTrigger();
-    void currentPatchTreeItemChanged(QTreeWidgetItem * current, QTreeWidgetItem*);
+    void patchTreeItemClicked(QTreeWidgetItem * current, int);
     void suspendPatch();
     void renamePatch();
     void onNewTableFromPopup();

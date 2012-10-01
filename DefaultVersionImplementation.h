@@ -63,7 +63,7 @@ public:
     virtual void validateVersion(bool onRequest);
     virtual void setSpecialValidationFlags(int);
     virtual View* getView(const QString &viewName) const;
-    virtual void addView(View* v);
+    virtual void addView(View* v, bool initial);
     virtual void deleteView(const QString &v);
     virtual const QVector<View*>& getViews();
     virtual Procedure* getProcedure(const QString &name) const;
@@ -117,6 +117,7 @@ public:
     CAN_UNDELETE_STATUS canUndeleteProcedure(const QString& uid, QString& extra);
     CAN_UNDELETE_STATUS canUndeleteFunction(const QString& uid, QString& extra);
     CAN_UNDELETE_STATUS canUndeleteTrigger(const QString &uid, QString &extra);
+    CAN_UNDELETE_STATUS canUndeleteView(const QString &uid, QString &extra);
 
 protected:
     // the version as a string representation. Major versions are always of form X.0

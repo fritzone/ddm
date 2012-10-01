@@ -4,10 +4,11 @@
 #include "FrameForLineNumbers.h"
 #include "core_Connection.h"
 #include "MainWindow.h"
+#include "GuiElements.h"
 
-ProcedureForm::ProcedureForm(ProcedureFormMode m, bool forced, Connection *c, QWidget *parent) :
+ProcedureForm::ProcedureForm(Version* v, ProcedureFormMode m, bool forced, Connection *c, QWidget *parent) :
     QWidget(parent),
-    ui(new Ui::ProcedureForm), m_textEdit(0), m_frameForLineNumbers(0), m_proc(0), m_forcedChange(forced), m_mode(m)
+    ui(new Ui::ProcedureForm), m_textEdit(0), m_frameForLineNumbers(0), m_proc(0), m_forcedChange(forced), m_mode(m), m_version(v)
 {
     ui->setupUi(this);
 
@@ -46,14 +47,19 @@ QString ProcedureForm::getProcNameFromSql()
     QString n = m_proc->getNameFromSql(0, t);
     if(n != "UNNAMED")
     {
-        m_proc->setDisplayText(n);
-        m_proc->setName(n);
+        if(!m_proc->isDeleted())
+        {
+            m_proc->setDisplayText(n);
+            m_proc->setName(n);
+        }
     }
     return m_proc->getName();
 }
 
 void ProcedureForm::textChanged()
 {
+    if(m_proc->isDeleted()) return;
+
     m_proc->setSql(m_textEdit->toPlainText());
     if(!m_forcedChange)
     {
@@ -89,7 +95,7 @@ void ProcedureForm::onLockUnlock(bool checked)
         m_proc->updateGui();
         ui->btnLock->setToolTip((m_mode == MODE_PROCEDURE?"Procedure ":"Function ") + QObject::tr("is <b>unlocked</b>. Click this button to lock it."));
 
-            MainWindow::instance()->finallyDoLockLikeOperation(false, m_proc->getObjectUid());
+        MainWindow::instance()->finallyDoLockLikeOperation(false, m_proc->getObjectUid());
     }
     else
     {
@@ -107,10 +113,21 @@ void ProcedureForm::onLockUnlock(bool checked)
 void ProcedureForm::setProcedure(StoredMethod *p)
 {
     m_proc = p;
+    ui->btnUndelete->hide();
 
+    // TODO: duplicate with the other forms ... at least, the logic!
     if(!m_proc->wasLocked())
     {
-        ui->frameForUnlockButton->hide();
+        if(m_proc->isDeleted())
+        {
+            ui->frameForUnlockButton->show();
+            ui->btnLock->hide();
+            ui->btnUndelete->show();
+        }
+        else
+        {
+            ui->frameForUnlockButton->hide();
+        }
     }
     else
     {
@@ -134,6 +151,40 @@ void ProcedureForm::setProcedure(StoredMethod *p)
             ui->btnLock->setToolTip((m_mode == MODE_PROCEDURE?"This Procedure ":"This Function ") + QObject::tr("is <b>unlocked</b>. Click this button to unlock it."));
         }
 
+        if(m_proc->isDeleted())
+        {
+            ui->btnLock->hide();
+            ui->btnUndelete->show();
+        }
     }
+}
 
+
+void ProcedureForm::onUndelete()
+{
+    if(m_version->undeleteObject(m_proc->getObjectUid()))
+    {
+        MainWindow::instance()->getGuiElements()->removeItemForPatch(m_version->getWorkingPatch(), m_proc->getObjectUid());
+        // TODO: Duplicate from above
+        if(m_proc->isLocked())
+        {
+            ui->btnLock->setIcon(IconFactory::getLockedIcon());
+            ui->btnLock->blockSignals(true);
+            ui->btnLock->setChecked(false);
+            ui->btnLock->blockSignals(false);
+            ui->grpContent->setEnabled(false);
+            ui->btnLock->setToolTip((m_mode == MODE_PROCEDURE?"This Procedure ":"This Function ") + QObject::tr("is <b>locked</b>. Click this button to unlock it."));
+        }
+        else
+        {
+            ui->btnLock->setIcon(IconFactory::getUnLockedIcon());
+            ui->btnLock->blockSignals(true);
+            ui->btnLock->setChecked(true);
+            ui->btnLock->blockSignals(false);
+            ui->grpContent->setEnabled(true);
+            ui->btnLock->setToolTip((m_mode == MODE_PROCEDURE?"This Procedure ":"This Function ") + QObject::tr("is <b>unlocked</b>. Click this button to unlock it."));
+        }
+        ui->btnUndelete->hide();
+        ui->btnLock->show();
+    }
 }
