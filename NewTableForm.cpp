@@ -408,8 +408,7 @@ void NewTableForm::setTable(Table *table)
 
     m_ui->btnUndelete->hide();
 
-    // do the locking
-    // TODO: this is code duplication from the UserDataType form
+    // TODO: this is code duplication from the other forms
     if(!m_table->wasLocked())
     {
         if(m_table->isDeleted())

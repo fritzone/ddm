@@ -128,6 +128,8 @@ ContextMenuCollection::ContextMenuCollection()
     action_addProcedure =  new QAction(QObject::tr("New Procedure"), 0);
     action_addFunction =  new QAction(QObject::tr("New Function"), 0);
     action_addTrigger =  new QAction(QObject::tr("New Trigger"), 0);
+    action_addView = new QAction(QObject::tr("New View (with Query Builder)"), 0);
+    action_addViewWithSql = new QAction(QObject::tr("New View (SQL)"), 0);
 
     // populate the table popup menu
     m_tablePopupMenu->setTitle(QObject::tr("Table"));
@@ -161,6 +163,10 @@ ContextMenuCollection::ContextMenuCollection()
     //tables popup menu
     m_tablesPopupMenu->addAction(action_AddTable);
     m_tablesPopupMenu->addAction(action_PasteTable);
+
+    // view popup menu
+    m_viewsPopupMenu->addAction(action_addView);
+    m_viewsPopupMenu->addAction(action_addViewWithSql);
 
     // table instances
     m_tableInstancesPopupMenu->addAction(action_AddTableInstance);
@@ -221,6 +227,8 @@ ContextMenuCollection::ContextMenuCollection()
     m_createTableInstancesPopup->clear();
 
     // one views popup menu
+    m_viewPopupMenu->setTitle(QObject::tr("View"));
+    m_viewPopupMenu->setIcon(IconFactory::getViewIcon());
     m_viewPopupMenu->addAction(action_deleteView);
 
     // one procedures popup menu
@@ -278,6 +286,8 @@ ContextMenuCollection::ContextMenuCollection()
     // the locked view popup menus
     m_unlockViewPopupMenu->addAction(action_unlock);
     m_relockViewPopupMenu->addAction(action_relock);
+    m_unlockViewPopupMenu->addMenu(m_viewPopupMenu);
+    m_relockViewPopupMenu->addMenu(m_viewPopupMenu);
 
     // the locked dt popup menus
     m_unlockDTPopupMenu->addAction(action_unlock);

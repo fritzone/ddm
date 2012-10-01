@@ -98,7 +98,7 @@ bool MySQLDatabaseEngine::reverseEngineerDatabase(Connection *c, const QStringLi
     for(int i=0; i<views.size(); i++)
     {
         View* view = reverseEngineerView(c, views.at(i), v);
-        if(view) v->addView(view);
+        if(view) v->addView(view, true);
     }
 
     for(int i=0; i<triggers.size(); i++)

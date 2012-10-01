@@ -36,7 +36,8 @@ void GuiElements::createGuiElements()
     m_projectTree->setItemDelegate(new ContextMenuDelegate(m_contextMenuHandler,m_projectTree));
     m_projectTree->setColumnCount(1);
     m_projectTree->setHeaderHidden(true);
-    QObject::connect(m_projectTree, SIGNAL (currentItemChanged ( QTreeWidgetItem*, QTreeWidgetItem*)), MainWindow::instance(), SLOT(currentProjectTreeItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)));
+    QObject::connect(m_projectTree, SIGNAL (itemClicked (QTreeWidgetItem*, int)),
+                     MainWindow::instance(), SLOT(projectTreeItemClicked(QTreeWidgetItem*,int)));
 
     // the issues tree dock window
     m_issuesTreeDock = new QDockWidget(QObject::tr("Issues"), MainWindow::instance());
@@ -79,7 +80,8 @@ void GuiElements::createGuiElements()
     m_genTree->setItemDelegate(new ContextMenuDelegate(m_contextMenuHandler,m_genTree));
     m_genTree->setColumnCount(1);
     m_genTree->setHeaderHidden(true);
-    QObject::connect(m_genTree, SIGNAL (currentItemChanged ( QTreeWidgetItem*, QTreeWidgetItem*)), MainWindow::instance(), SLOT(currentProjectTreeItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)));
+    QObject::connect(m_genTree, SIGNAL (itemClicked ( QTreeWidgetItem*, int)), MainWindow::instance(),
+                     SLOT(projectTreeItemClicked(QTreeWidgetItem*, int)));
 
     m_genTreeDock->setWidget(m_genTree);
 
@@ -102,7 +104,8 @@ void GuiElements::createGuiElements()
     m_patchesTree->headerItem()->setText(1, QObject::tr("Status"));
     m_patchesTree->headerItem()->setText(0, QObject::tr("Element"));
     m_patchesTree->header()->setDefaultSectionSize(350);
-    QObject::connect(m_patchesTree, SIGNAL (currentItemChanged ( QTreeWidgetItem*, QTreeWidgetItem*)), MainWindow::instance(), SLOT(currentPatchTreeItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)));
+    QObject::connect(m_patchesTree, SIGNAL (itemClicked ( QTreeWidgetItem*, int)),
+                     MainWindow::instance(), SLOT(patchTreeItemClicked(QTreeWidgetItem*,int)));
 
     m_patchesTreeDock->setWidget(m_patchesTree);
     m_patchesTreeDock->hide();
@@ -234,7 +237,7 @@ ContextMenuEnabledTreeWidgetItem* GuiElements::updateItemForPatchWithState(Patch
             {
                 ObjectWithUid* obj = UidWarehouse::instance().getElement(uid);
                 LockableElement* le = dynamic_cast<LockableElement*>(obj);
-                if(le && !le->isLocked())
+                if(le && le->isLocked())    // if the element was locked and deleted then "plain" undelete, ie, change the icon
                 {
                     dynamic_cast<ContextMenuEnabledTreeWidgetItem*>(m_patchItems[p]->child(i))->setPopupMenu(ContextMenuCollection::getInstance()->getReLockMenuForClassUid(obj->getClassUid()));
 

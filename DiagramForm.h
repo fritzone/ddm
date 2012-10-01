@@ -41,6 +41,7 @@ public slots:
     void onZoomOut();
     void onZoomIn();
     void onLockUnlock(bool);
+    void onUndelete();
 
 protected:
     void changeEvent(QEvent *e);

@@ -11,7 +11,7 @@
 
 View::View(bool manual, QString uid, Version *v) :
     SqlSourceEntity(),
-    NamedItem(NameGenerator::getUniqueName(Workspace::getInstance()->workingVersion(), (itemGetter)&Version::getView, QString("v"))),
+    NamedItem(NameGenerator::getUniqueName(Workspace::getInstance()->workingVersion(), (itemGetter)&Version::getView, QString("view"))),
     ObjectWithUid(uid, v),
     m_columNames(), m_canReplace(false), m_manual(manual)
 {
@@ -23,7 +23,7 @@ View::View(bool manual, QString uid, Version *v) :
 
 View::View(Version*v, bool manual, QString uid) :
     SqlSourceEntity(),
-    NamedItem(NameGenerator::getUniqueName(v, (itemGetter)&Version::getView, QString("v"))),
+    NamedItem(NameGenerator::getUniqueName(v, (itemGetter)&Version::getView, QString("view"))),
     ObjectWithUid(uid, v),
     m_columNames(), m_canReplace(false), m_manual(manual)
 {

@@ -151,7 +151,7 @@ void VersionGuiElements::createGuiElements(ContextMenuEnabledTreeWidgetItem* pro
     // views come from the version item too
     viewsItem = new ContextMenuEnabledTreeWidgetItem(versionItem, QStringList(QObject::tr("Views"))) ;
     viewsItem->setIcon(0, IconFactory::getViewsIcon());
-    //viewsItem->setPopupMenu(ContextMenuCollection::getInstance()->getDiagramsPopupMenu());
+    viewsItem->setPopupMenu(ContextMenuCollection::getInstance()->getViewsPopupMenu());
     m_tree->addTopLevelItem(viewsItem);
     QUuid viewsUid = QUuid::createUuid();
     viewsItem->setData(0, Qt::UserRole, QVariant(viewsUid  ));
@@ -675,12 +675,12 @@ NewTableForm* VersionGuiElements::getTableFormForExistingTable()
 
 ProcedureForm* VersionGuiElements::getProcedureForm(ProcedureFormMode m)
 {
-    return m_procedureForm = new ProcedureForm(m, false, 0, MainWindow::instance());
+    return m_procedureForm = new ProcedureForm(m_version, m, false, 0, MainWindow::instance());
 }
 
 TriggerForm* VersionGuiElements::getTriggerForm()
 {
-    return m_triggerForm = new TriggerForm(false, false, MainWindow::instance());
+    return m_triggerForm = new TriggerForm(m_version, false, false, MainWindow::instance());
 }
 
 ContextMenuEnabledTreeWidgetItem* VersionGuiElements::getTablesItem() const

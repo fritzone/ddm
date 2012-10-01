@@ -275,7 +275,7 @@ public:
     /**
      * Adds a view in the system
      */
-    virtual void addView(View* v) = 0;
+    virtual void addView(View* v, bool initial) = 0;
 
     /**
      * Deletes the view from the system
@@ -314,7 +314,7 @@ public:
     */
     virtual void cleanupDataTypes() = 0;
 
-    virtual void addTrigger(Trigger*,bool) = 0;
+    virtual void addTrigger(Trigger*, bool) = 0;
     virtual Trigger* getTrigger(const QString&) const = 0;
     virtual const QVector<Trigger*>& getTriggers() = 0;
 

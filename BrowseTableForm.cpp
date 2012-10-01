@@ -313,7 +313,7 @@ void BrowseTableForm::newPage(Connection *c, const QString &tab, BrowsedTableLay
         Trigger* t = c->getEngine()->reverseEngineerTrigger(c, tab, 0);
         if(t)
         {
-            TriggerForm* pf = new TriggerForm(true, true, this);
+            TriggerForm* pf = new TriggerForm(0, true, true, this);
             pf->feedInTables(QStringList(t->getTable()));
             pf->setTrigger(t);
             pf->showSql();

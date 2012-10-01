@@ -12,13 +12,14 @@ class Trigger;
 class TextEditWithCodeCompletion;
 class FrameForLineNumbers;
 class Table;
+class Version;
 
 class TriggerForm : public QWidget
 {
     Q_OBJECT
 
 public:
-    explicit TriggerForm(bool reverseSource, bool fc, QWidget *parent = 0);
+    explicit TriggerForm(Version *v, bool reverseSource, bool fc, QWidget *parent);
     ~TriggerForm();
     void setTrigger(Trigger* t);
     void initSql();
@@ -34,10 +35,9 @@ protected slots:
     void whenChanged(QString);
     void eventChanged(QString);
     void tableChanged(QString);
-
     void descriptionChanged();
-
     void onLockUnlock(bool);
+    void onUndelete();
 
 protected:
     void changeEvent(QEvent *e);
@@ -49,6 +49,7 @@ private:
     FrameForLineNumbers* m_frameForLineNumbers;
     bool m_forcedChange;
     bool m_reverseSource;
+    Version* m_version;
 };
 
 #endif // TRIGGERFORM_H

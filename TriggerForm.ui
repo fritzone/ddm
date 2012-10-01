@@ -22,7 +22,7 @@
      <property name="frameShadow">
       <enum>QFrame::Raised</enum>
      </property>
-     <layout class="QVBoxLayout" name="verticalLayout_4">
+     <layout class="QVBoxLayout" name="verticalLayout">
       <property name="spacing">
        <number>0</number>
       </property>
@@ -42,6 +42,35 @@
         </property>
         <property name="checkable">
          <bool>true</bool>
+        </property>
+        <property name="popupMode">
+         <enum>QToolButton::InstantPopup</enum>
+        </property>
+        <property name="autoRaise">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QToolButton" name="btnUndelete">
+        <property name="toolTip">
+         <string>This object was deleted in a Patch. Click this button to Undelete it.</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset resource="dbm.qrc">
+          <normaloff>:/images/actions/images/small/gnome_undelete.png</normaloff>:/images/actions/images/small/gnome_undelete.png</iconset>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>48</width>
+          <height>48</height>
+         </size>
+        </property>
+        <property name="checkable">
+         <bool>false</bool>
         </property>
         <property name="popupMode">
          <enum>QToolButton::InstantPopup</enum>
@@ -391,6 +420,22 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>btnUndelete</sender>
+   <signal>clicked()</signal>
+   <receiver>TriggerForm</receiver>
+   <slot>onUndelete()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>38</x>
+     <y>91</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>302</x>
+     <y>209</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>nameChanged(QString)</slot>
@@ -399,5 +444,6 @@
   <slot>tableChanged(QString)</slot>
   <slot>descriptionChanged()</slot>
   <slot>onLockUnlock(bool)</slot>
+  <slot>onUndelete()</slot>
  </slots>
 </ui>

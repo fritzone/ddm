@@ -612,7 +612,24 @@ void DefaultVersionImplementation::deleteView(const QString &name)
     m_data.m_views.remove(m_data.m_views.indexOf(v));
     delete v->getLocation();
     delete v->getSqlLocation();
-    delete v;
+    ViewDeletionAction* vda = new ViewDeletionAction;
+    vda->deletedView = v;
+
+    if(isLocked())  // marking the element as deleted, ro removing
+    {
+        if(!getWorkingPatch()->elementWasNewInThisPatch(v->getObjectUid())) // but only if it was NOT a newly created element
+        {
+            MainWindow::instance()->createPatchElement(this, v, v->getObjectUid(), false);
+            getWorkingPatch()->markElementForDeletion(v->getObjectUid());
+            getWorkingPatch()->addDeletedView(v->getObjectUid(), vda);
+            MainWindow::instance()->updatePatchElementToReflectState(this, v, v->getObjectUid(), 3); // 3 is DELETED
+        }
+        else
+        {
+            getWorkingPatch()->removeNewElementBecauseOfDeletion(v->getObjectUid());
+            MainWindow::instance()->updatePatchElementToReflectState(this, v, v->getObjectUid(), 4); // 4 is REMOVE FROM THE TREE
+        }
+    }
 }
 
 void DefaultVersionImplementation::deleteFunction(const QString& f)
@@ -1165,9 +1182,17 @@ View* DefaultVersionImplementation::getView(const QString &viewName) const
     return 0;
 }
 
-void DefaultVersionImplementation::addView(View* v)
+void DefaultVersionImplementation::addView(View* v, bool initial)
 {
     m_data.m_views.append(v);
+
+    if(isLocked() && !initial)
+    {
+        MainWindow::instance()->createPatchElement(this, v, v->getObjectUid(), false);
+        getWorkingPatch()->addNewElement(v->getObjectUid()); // this will be a new element ...
+        MainWindow::instance()->updatePatchElementToReflectState(this, v, v->getObjectUid(), 1);
+    }
+
 }
 
 Trigger* DefaultVersionImplementation::getTrigger(const QString &triggerName) const
@@ -1441,7 +1466,7 @@ bool DefaultVersionImplementation::cloneInto(Version* other)
         View* v =  dynamic_cast<View*>(views.at(i)->clone(this, other));
         views.at(i)->lock();
         views.at(i)->updateGui();
-        other->addView(v);
+        other->addView(v, true);
     }
 
     // clone the procedures
@@ -1640,6 +1665,24 @@ DefaultVersionImplementation::CAN_UNDELETE_STATUS DefaultVersionImplementation::
     return CAN_UNDELETE;
 }
 
+DefaultVersionImplementation::CAN_UNDELETE_STATUS DefaultVersionImplementation::canUndeleteView(const QString &uid, QString &extra)
+{
+    ObjectWithUid* obj = getWorkingPatch()->getDeletedObject(uid);
+    if(!obj)
+    {
+        return DELETED_OBJECT_WAS_NOT_FOUND_IN_PATCH;
+    }
+
+    ViewDeletionAction* tda = getWorkingPatch()->getVDA(uid);
+    if(!tda)
+    {
+        return DELETED_OBJECT_WAS_NOT_FOUND_IN_PATCH;
+    }
+
+    // BIG TODO: go through the view and see if all the tables it references are still in the version
+
+    return CAN_UNDELETE;
+}
 
 bool DefaultVersionImplementation::undeleteObject(const QString& uid)
 {
@@ -1658,6 +1701,7 @@ bool DefaultVersionImplementation::undeleteObject(const QString& uid)
             addDiagram(dda->deletedDiagram, true);
             getGui()->createDiagramTreeEntry(dda->deletedDiagram);
             dda->deletedDiagram->updateGui();
+            getWorkingPatch()->undeleteObject(uid);
             return true;
         }
 
@@ -1669,6 +1713,7 @@ bool DefaultVersionImplementation::undeleteObject(const QString& uid)
             addProcedure(pda->deletedProcedure, true);
             getGui()->createProcedureTreeEntry(pda->deletedProcedure);
             pda->deletedProcedure->updateGui();
+            getWorkingPatch()->undeleteObject(uid);
             return true;
         }
 
@@ -1680,6 +1725,7 @@ bool DefaultVersionImplementation::undeleteObject(const QString& uid)
             addFunction(pda->deletedFunction, true);
             getGui()->createFunctionTreeEntry(pda->deletedFunction);
             pda->deletedFunction->updateGui();
+            getWorkingPatch()->undeleteObject(uid);
             return true;
         }
 
@@ -1691,6 +1737,19 @@ bool DefaultVersionImplementation::undeleteObject(const QString& uid)
             addTrigger(tda->deletedTrigger, true);
             getGui()->createTriggerTreeEntry(tda->deletedTrigger);
             tda->deletedTrigger->updateGui();
+            getWorkingPatch()->undeleteObject(uid);
+            return true;
+        }
+
+        // see if we can undelete a trigger?
+        canUndelete = canUndeleteView(uid, extra);
+        if(canUndelete == CAN_UNDELETE)
+        {
+            ViewDeletionAction* vda = getWorkingPatch()->getVDA(uid);
+            addView(vda->deletedView, true);
+            getGui()->createViewTreeEntry(vda->deletedView);
+            vda->deletedView->updateGui();
+            getWorkingPatch()->undeleteObject(uid);
             return true;
         }
 
@@ -1746,8 +1805,6 @@ bool DefaultVersionImplementation::undeleteObject(const QString& uid)
                 tda->deletedTableInstances.at(i)->unSentence();
             }
         }
-
-
     }
 
     // remove from the patch
