@@ -23,7 +23,7 @@ public:
     virtual CloneableElement* clone(Version* sourceVersion, Version* targetVersion);
     virtual void updateGui();
 
-    virtual void addNewDataType(UserDataType*);
+    virtual void addNewDataType(UserDataType*, bool initial);
     virtual void addDiagram(Diagram*, bool initial);
     virtual const QVector<UserDataType*>& getDataTypes() const;
     virtual bool hasDataType(const QString& name) const;
@@ -118,6 +118,7 @@ public:
     CAN_UNDELETE_STATUS canUndeleteFunction(const QString& uid, QString& extra);
     CAN_UNDELETE_STATUS canUndeleteTrigger(const QString &uid, QString &extra);
     CAN_UNDELETE_STATUS canUndeleteView(const QString &uid, QString &extra);
+    CAN_UNDELETE_STATUS canUndeleteDataType(const QString &uid, QString &extra);
 
 protected:
     // the version as a string representation. Major versions are always of form X.0

@@ -78,7 +78,7 @@ void DefaultVersionImplementation::updateGui()
 
 }
 
-void DefaultVersionImplementation::addNewDataType(UserDataType* dt)
+void DefaultVersionImplementation::addNewDataType(UserDataType* dt, bool initial)
 {
     int i = 0;
     while(i < m_data.m_dataTypes.size())
@@ -88,6 +88,14 @@ void DefaultVersionImplementation::addNewDataType(UserDataType* dt)
     }
 
     m_data.m_dataTypes.insert(i, dt);
+
+    if(isLocked() && !initial)
+    {
+        MainWindow::instance()->createPatchElement(this, dt, dt->getObjectUid(), false);
+        getWorkingPatch()->addNewElement(dt->getObjectUid()); // this will be a new element ...
+        MainWindow::instance()->updatePatchElementToReflectState(this, dt, dt->getObjectUid(), 1);
+    }
+
 
 }
 
@@ -579,8 +587,28 @@ void DefaultVersionImplementation::deleteDataType(const QString& dtName)
     {
         if(m_data.m_dataTypes.at(i)->getName() == dtName)
         {
+            UserDataType* udt = m_data.m_dataTypes.at(i);
             m_data.m_dataTypes.remove(i);
-            return;
+
+            DataTypeDeletionAction* dtda = new DataTypeDeletionAction;
+            dtda->deletedDataType = udt;
+
+            if(isLocked())  // marking the element as deleted, ro removing
+            {
+                if(!getWorkingPatch()->elementWasNewInThisPatch(udt->getObjectUid())) // but only if it was NOT a newly created element
+                {
+                    MainWindow::instance()->createPatchElement(this, udt, udt->getObjectUid(), false);
+                    getWorkingPatch()->markElementForDeletion(udt->getObjectUid());
+                    getWorkingPatch()->addDeletedDataType(udt->getObjectUid(), dtda);
+                    MainWindow::instance()->updatePatchElementToReflectState(this, udt, udt->getObjectUid(), 3); // 3 is DELETED
+                }
+                else
+                {
+                    getWorkingPatch()->removeNewElementBecauseOfDeletion(udt->getObjectUid());
+                    MainWindow::instance()->updatePatchElementToReflectState(this, udt, udt->getObjectUid(), 4); // 4 is REMOVE FROM THE TREE
+                }
+            }
+
         }
     }
 }
@@ -602,7 +630,7 @@ UserDataType* DefaultVersionImplementation::duplicateDataType(const QString& nam
     }
     UserDataType* dt = new UserDataType(*src);
     dt->setName(NameGenerator::getUniqueName(this,  (itemGetter)&Version::getDataType, dt->getName()));
-    addNewDataType(dt);
+    addNewDataType(dt, false);
     return dt;
 }
 
@@ -1038,7 +1066,7 @@ UserDataType* DefaultVersionImplementation::provideDatatypeForSqlType(const QStr
                                             QString::compare(nullable, "YES", Qt::CaseInsensitive) == 0, QUuid::createUuid().toString(), this);
 
     newUdt->setName(NameGenerator::getUniqueName(this, (itemGetter)&Version::getDataType, newUdt->getName()));
-    addNewDataType(newUdt);
+    addNewDataType(newUdt, true);
     return newUdt;
 }
 
@@ -1362,7 +1390,7 @@ bool DefaultVersionImplementation::cloneInto(Version* other)
     const QVector<UserDataType*> dts = getDataTypes();
     for(int i=0; i<dts.size(); i++)
     {
-        other->addNewDataType(dynamic_cast<UserDataType*>(dts.at(i)->clone(this, other)));
+        other->addNewDataType(dynamic_cast<UserDataType*>(dts.at(i)->clone(this, other)), true);
         // lock the datatype
         dts.at(i)->lock();
         dts.at(i)->updateGui();
@@ -1684,6 +1712,25 @@ DefaultVersionImplementation::CAN_UNDELETE_STATUS DefaultVersionImplementation::
     return CAN_UNDELETE;
 }
 
+DefaultVersionImplementation::CAN_UNDELETE_STATUS DefaultVersionImplementation::canUndeleteDataType(const QString &uid, QString &extra)
+{
+    ObjectWithUid* obj = getWorkingPatch()->getDeletedObject(uid);
+    if(!obj)
+    {
+        return DELETED_OBJECT_WAS_NOT_FOUND_IN_PATCH;
+    }
+
+    DataTypeDeletionAction* dtda = getWorkingPatch()->getDtDA(uid);
+    if(!dtda)
+    {
+        return DELETED_OBJECT_WAS_NOT_FOUND_IN_PATCH;
+    }
+
+    // BIG TODO: go through the view and see if all the tables it references are still in the version
+
+    return CAN_UNDELETE;
+}
+
 bool DefaultVersionImplementation::undeleteObject(const QString& uid)
 {
     QString extra;
@@ -1749,6 +1796,18 @@ bool DefaultVersionImplementation::undeleteObject(const QString& uid)
             addView(vda->deletedView, true);
             getGui()->createViewTreeEntry(vda->deletedView);
             vda->deletedView->updateGui();
+            getWorkingPatch()->undeleteObject(uid);
+            return true;
+        }
+
+        // see if we can undelete a data type?
+        canUndelete = canUndeleteDataType(uid, extra);
+        if(canUndelete == CAN_UNDELETE)
+        {
+            DataTypeDeletionAction* dtda = getWorkingPatch()->getDtDA(uid);
+            addNewDataType(dtda->deletedDataType, true);
+            getGui()->createDataTypeTreeEntry(dtda->deletedDataType);
+            dtda->deletedDataType->updateGui();
             getWorkingPatch()->undeleteObject(uid);
             return true;
         }

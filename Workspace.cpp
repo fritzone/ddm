@@ -167,7 +167,7 @@ QVector<UserDataType*> Workspace::loadDefaultDatatypesIntoCurrentSolution()
 
         for(int i=0; i<dts.size(); i++)        // add to the project itself
         {
-            Workspace::getInstance()->workingVersion()->addNewDataType(dts.at(i));
+            Workspace::getInstance()->workingVersion()->addNewDataType(dts.at(i), true);
         }
 
         return dts;

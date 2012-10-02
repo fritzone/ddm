@@ -291,7 +291,9 @@ ContextMenuCollection::ContextMenuCollection()
 
     // the locked dt popup menus
     m_unlockDTPopupMenu->addAction(action_unlock);
+    m_unlockDTPopupMenu->addAction(action_DeleteDataType);
     m_relockDTPopupMenu->addAction(action_relock);
+    m_relockDTPopupMenu->addAction(action_DeleteDataType);
 
     // the locked diagr popup menus
     m_unlockDiagramPopupMenu->addAction(action_unlock);

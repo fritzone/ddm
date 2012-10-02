@@ -8,6 +8,7 @@ class Procedure;
 class Function;
 class Trigger;
 class View;
+class UserDataType;
 
 #include <QList>
 
@@ -44,6 +45,11 @@ struct TriggerDeletionAction
 struct ViewDeletionAction
 {
     View* deletedView;
+};
+
+struct DataTypeDeletionAction
+{
+    UserDataType* deletedDataType;
 };
 
 #endif // ACTIONDELETETABLE_H

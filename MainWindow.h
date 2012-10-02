@@ -209,7 +209,7 @@ private:
     void connectActionsFromPopupMenus();
     void freeGuiElements();
     void showProjectDetails();
-    void showNewDataTypeWindow(int);
+    void showNewDataTypeWindow(int, Version *v);
     NewTableForm* showExistingTable(Table*, Version *v);
 
     Connection* getRightClickedConnection();
@@ -223,6 +223,8 @@ private:
 
     void doLockLikeOperation(bool reLocking);
     ContextMenuEnabledTreeWidgetItem* getLastRightClickedTreeItem();
+    Version* getVersionOfLastRightClickedElement();
+    bool showObjectWithGuid(const QString&);
 
 private:
     Ui::MainWindow *m_ui;

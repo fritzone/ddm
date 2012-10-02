@@ -80,7 +80,7 @@ public:
 
     void addDeletedTrigger(const QString &uid, TriggerDeletionAction *tda);
     void addDeletedView(const QString &uid, ViewDeletionAction *vda);
-
+    void addDeletedDataType(const QString &uid, DataTypeDeletionAction *dtda);
 
     /**
      * @brief getTDA
@@ -93,7 +93,7 @@ public:
     FunctionDeletionAction *getFDA(const QString& uid);
     TriggerDeletionAction *getTrDA(const QString& uid);
     ViewDeletionAction* getVDA(const QString &uid);
-
+    DataTypeDeletionAction* getDtDA(const QString &uid);
 
     /**
      * @brief removeTDA
@@ -143,13 +143,13 @@ public:
      */
     virtual QUuid getClassUid() const;
 
-
 private:
     // the UIDS that are locked in this change
     QStringList m_lockedUids;
 
     // the original elements, in case we need to re-lock them, we just copy them back and fix the sourceUid
-    // they are stored as serialized stuff, and upon serialization they are stored as CDATA
+    // they are stored as serialized stuff, and upon serialization they are stored as CDATA.
+    // Maps an UID to the serialized XML of the object
     QMap<QString, QString> m_originals;
 
     // the UIDs of the elements that were created in this patch
@@ -158,19 +158,20 @@ private:
     // the UIDs that were deleted from teh version in case of revert
     QStringList m_deletedUids;
 
-    // the delete objects will be placed in here
+    // the delete objects will be placed in here. This will not be serialized, but recreated from the "originals"
     QMap<QString, ObjectWithUid*> m_deletedObjects;
 
-    // if this patch was suspended by the user (ie: it
+    // if this patch was suspended by the user
     bool m_suspended;
 
+    // the mappings of the deleted objects. These will NOT be serialized, except the table deletions
     QMap<QString, TableDeletionAction*> m_tableDeletions;
     QMap<QString, DiagramDeletionAction*> m_diagramDeletions;
     QMap<QString, ProcedureDeletionAction*> m_procedureDeletions;
     QMap<QString, FunctionDeletionAction*> m_functionDeletions;
     QMap<QString, TriggerDeletionAction*> m_triggerDeletions;
     QMap<QString, ViewDeletionAction*> m_viewDeletions;
-
+    QMap<QString, DataTypeDeletionAction*> m_dtDeletions;
 };
 
 #endif // CORE_PATCH_H
