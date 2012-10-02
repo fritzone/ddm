@@ -583,9 +583,6 @@ void MainWindow::projectTreeItemClicked(QTreeWidgetItem * current, int)
             foundVersion = obj->version();
         }
 
-        qDebug() << "SELECT: " << uid;
-        qDebug() << "CLASS: " << classUid;
-
         if(current == foundVersion->getGui()->getTablesItem())
         {// we have clicked on the Tables item (i.e. the list of tables)
             showNamedObjectList(&MainWindow::showTableWithGuid, foundVersion->getTables(),
@@ -884,9 +881,9 @@ void MainWindow::onNewTable()
     m_ui->action_NewTable->setDisabled(false);
 }
 
-void MainWindow::showNewDataTypeWindow(int a)
+void MainWindow::showNewDataTypeWindow(int a, Version *v)
 {
-    NewDataTypeForm* frm = new NewDataTypeForm(m_workspace->workingVersion(), (DT_TYPE)a, m_workspace->currentProjectsEngine(), this);
+    NewDataTypeForm* frm = new NewDataTypeForm(v, (DT_TYPE)a, m_workspace->currentProjectsEngine(), this);
     frm->focusOnName();
     m_guiElements->getProjectTree()->setCurrentItem(0);
     setCentralWidget(frm);
@@ -894,7 +891,7 @@ void MainWindow::showNewDataTypeWindow(int a)
 
 void MainWindow::onNewDataType()
 {
-    showNewDataTypeWindow(DT_INVALID);
+    showNewDataTypeWindow(DT_INVALID, m_workspace->workingVersion());
 }
 
 bool MainWindow::onSaveNewDataType(const QString& name, const QString& type, const QString& sqlType, const QString& size, const QString& defaultValue,
@@ -915,7 +912,7 @@ bool MainWindow::onSaveNewDataType(const QString& name, const QString& type, con
         return false;
     }
 
-    UserDataType* other = m_workspace->workingVersion()->getDataType(name);
+    UserDataType* other = v->getDataType(name);
 
     if(other &&  other != pudt)
     {
@@ -939,10 +936,10 @@ bool MainWindow::onSaveNewDataType(const QString& name, const QString& type, con
     else        // new stuff
     {
         // add to the project itself
-        m_workspace->workingVersion()->addNewDataType(udt);
+        v->addNewDataType(udt, false);
 
         // create the tree entry
-        ContextMenuEnabledTreeWidgetItem* newDtItem = m_workspace->workingVersion()->getGui()->createDataTypeTreeEntry(udt);
+        ContextMenuEnabledTreeWidgetItem* newDtItem = v->getGui()->createDataTypeTreeEntry(udt);
 
         // set the link to the tree
         m_guiElements->getProjectTree()->expandItem(newDtItem);
@@ -1208,6 +1205,32 @@ void MainWindow::onReleaseMajorVersion()
     }
 }
 
+bool MainWindow::showObjectWithGuid(const QString & guid)
+{
+    ObjectWithUid* element = UidWarehouse::instance().getElement(guid);
+    QString classUid = element->getClassUid().toString().toUpper();
+    Version* v = UidWarehouse::instance().getVersionForUid(guid);
+    // TODO: this map is a duplicate from the tree change
+    QMap<QString, showSomething> mapping;
+    mapping.insert(uidTable, (showSomething)&MainWindow::showTableWithGuid);
+    mapping.insert(uidTableInstance, (showSomething)&MainWindow::showTableInstanceWithGuid);
+    mapping.insert(uidDiagram, (showSomething)&MainWindow::showDiagramWithGuid);
+    mapping.insert(uidProcedure, (showSomething)&MainWindow::showProcedureWithGuid);
+    mapping.insert(uidFunction, (showSomething)&MainWindow::showFunctionWithGuid);
+    mapping.insert(uidTrigger, (showSomething)&MainWindow::showTriggerWithGuid);
+    mapping.insert(uidView, (showSomething)&MainWindow::showViewWithGuid);
+
+    if(mapping.contains(classUid))
+    {
+        showObjectwithGuid(v, guid, mapping[classUid], false);
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
 void MainWindow::finallyDoLockLikeOperation(bool reLocking, const QString& guid)
 {
     ObjectWithUid* element = UidWarehouse::instance().getElement(guid);
@@ -1234,30 +1257,19 @@ void MainWindow::finallyDoLockLikeOperation(bool reLocking, const QString& guid)
 
     LockableElement* le = dynamic_cast<LockableElement*>(element);
 
-    if(le)
+    if(le && !doneSomething)
     {
-        ObjectWithUid* owuid = dynamic_cast<ObjectWithUid*>(element);
-        QString classUid = owuid->getClassUid().toString().toUpper();
-
-        Version* foundVersion = UidWarehouse::instance().getVersionForUid(guid);
-        if(!reLocking) le->unlock(); else le->lock();
-        le->updateGui();
-
-        // TODO: this map is a duplicate from the tree change
-        QMap<QString, showSomething> mapping;
-        mapping.insert(uidTable, (showSomething)&MainWindow::showTableWithGuid);
-        mapping.insert(uidTableInstance, (showSomething)&MainWindow::showTableInstanceWithGuid);
-        mapping.insert(uidDiagram, (showSomething)&MainWindow::showDiagramWithGuid);
-        mapping.insert(uidProcedure, (showSomething)&MainWindow::showProcedureWithGuid);
-        mapping.insert(uidFunction, (showSomething)&MainWindow::showFunctionWithGuid);
-        mapping.insert(uidTrigger, (showSomething)&MainWindow::showTriggerWithGuid);
-        mapping.insert(uidView, (showSomething)&MainWindow::showViewWithGuid);
-
-        if(mapping.contains(classUid))
+        if(!reLocking)
         {
-            showObjectwithGuid(foundVersion, guid, mapping[classUid], false);
-            doneSomething = true;
+            le->unlock();
         }
+        else
+        {
+            le->lock();
+        }
+
+        le->updateGui();
+        doneSomething = showObjectWithGuid(guid);
 
     }
 
@@ -1978,7 +1990,7 @@ void MainWindow::onDeleteDatatypeFromPopup()
         if(QMessageBox::question(this, tr("Are you sure?"), tr("Really delete ") + dtName + "?", QMessageBox::Yes | QMessageBox::No) ==  QMessageBox::Yes)
         {
             // now check that this stuff is not used in any of the tables and the delete it from the current version
-            const QVector<Table*>& allTables = m_workspace->workingVersion()->getTables();
+            const QVector<Table*>& allTables = udt->version()->getTables();
             QString usage = "";
             for(int i=0; i<allTables.size(); i++)
             {
@@ -2000,7 +2012,12 @@ void MainWindow::onDeleteDatatypeFromPopup()
             }
 
             delete udt->getLocation();
-            m_workspace->workingVersion()->deleteDataType(dtName);
+            udt->version()->deleteDataType(dtName);
+
+            DataTypesListForm* dtLst = new DataTypesListForm(this);
+            dtLst->feedInDataTypes(udt->version()->getDataTypes());
+            setCentralWidget(dtLst);
+
         }
     }
 }
@@ -2310,39 +2327,56 @@ void MainWindow::dtTreeItemClicked ( QTreeWidgetItem *, int)
     onDTTreeClicked();
 }
 
+Version* MainWindow::getVersionOfLastRightClickedElement()
+{
+    if(m_guiElements->getProjectTree()->getLastRightclickedItem() == 0)
+    {
+        return 0;
+    }
+
+    ContextMenuEnabledTreeWidgetItem* item = m_guiElements->getProjectTree()->getLastRightclickedItem();
+    m_guiElements->getProjectTree()->setLastRightclickedItem(0);
+
+    QVariant qv = item->data(0, Qt::UserRole);
+    QString diagramsUid = qv.toString();
+
+    Version* ver = UidWarehouse::instance().getVersionForUid(diagramsUid);
+    return ver;
+}
+
 void MainWindow::onNewStringType()
 {
-    showNewDataTypeWindow(DT_STRING);
+    showNewDataTypeWindow(DT_STRING, getVersionOfLastRightClickedElement());
 }
 
 void MainWindow::onNewNumericType()
 {
-    showNewDataTypeWindow(DT_NUMERIC);
+    showNewDataTypeWindow(DT_NUMERIC, getVersionOfLastRightClickedElement());
 }
 
 void MainWindow::onNewBoolType()
 {
-    showNewDataTypeWindow(DT_BOOLEAN);
+    showNewDataTypeWindow(DT_BOOLEAN, getVersionOfLastRightClickedElement());
 }
 
 void MainWindow::onNewDateTimeType()
 {
-    showNewDataTypeWindow(DT_DATETIME);
+    showNewDataTypeWindow(DT_DATETIME, getVersionOfLastRightClickedElement());
 }
 
 void MainWindow::onNewBlobType()
 {
-    showNewDataTypeWindow(DT_BLOB);
+    showNewDataTypeWindow(DT_BLOB, getVersionOfLastRightClickedElement());
 }
 
 void MainWindow::onNewMiscType()
 {
-    showNewDataTypeWindow(DT_MISC);
+    showNewDataTypeWindow(DT_MISC, getVersionOfLastRightClickedElement());
 }
 
 void MainWindow::onNewSpatialType()
 {
-    showNewDataTypeWindow(DT_SPATIAL);
+    showNewDataTypeWindow(DT_SPATIAL, getVersionOfLastRightClickedElement());
 }
 
 void MainWindow::onGotoIssueLocation()

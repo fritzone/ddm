@@ -73,6 +73,7 @@ public slots:
 
     void onHelp();
     void onLockUnlock(bool);
+    void onUndelete();
 
 protected:
 

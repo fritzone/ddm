@@ -13,6 +13,7 @@
 #include "VersionGuiElements.h"
 #include "gui_HelpWindow.h"
 #include "MainWindow.h"
+#include "GuiElements.h"
 
 #include <QMessageBox>
 #include <QComboBox>
@@ -67,6 +68,8 @@ NewDataTypeForm::NewDataTypeForm(Version *v, DT_TYPE t, DatabaseEngine* dbe, QWi
         m_ui->cmbDTType->setCurrentIndex(-1);
         break;
     }
+
+    m_ui->frameForUnlockButton->hide();
 }
 
 NewDataTypeForm::~NewDataTypeForm()
@@ -343,21 +346,32 @@ void NewDataTypeForm::setDataType(UserDataType* udt)
 
     m_ui->txtDescription->setText(udt->getDescription());
 
-    if(!udt->wasLocked())
+    m_ui->btnUndelete->hide();
+    // TODO: Duplicate from the other forms
+    if(!m_udt->wasLocked())
     {
-        m_ui->frameForUnlockButton->hide();
+        if(m_udt->isDeleted())
+        {
+            m_ui->frameForUnlockButton->show();
+            m_ui->btnLock->hide();
+            m_ui->btnUndelete->show();
+        }
+        else
+        {
+            m_ui->frameForUnlockButton->hide();
+        }
     }
     else
     {
         m_ui->frameForUnlockButton->show();
-        if(udt->isLocked())
+        if(m_udt->isLocked())
         {
             m_ui->btnLock->setIcon(IconFactory::getLockedIcon());
             m_ui->btnLock->blockSignals(true);
             m_ui->btnLock->setChecked(false);
             m_ui->btnLock->blockSignals(false);
             m_ui->grpContent->setEnabled(false);
-            m_ui->btnLock->setToolTip(QObject::tr("DataType is <b>locked</b>. Click this button to unlock it."));
+            m_ui->btnLock->setToolTip(QObject::tr("This data type is <b>locked</b>. Click this button to unlock it."));
         }
         else
         {
@@ -366,7 +380,13 @@ void NewDataTypeForm::setDataType(UserDataType* udt)
             m_ui->btnLock->setChecked(true);
             m_ui->btnLock->blockSignals(false);
             m_ui->grpContent->setEnabled(true);
-            m_ui->btnLock->setToolTip(QObject::tr("DataType is <b>unlocked</b>. Click this button to lock it."));
+            m_ui->btnLock->setToolTip(QObject::tr("This data type is <b>unlocked</b>. Click this button to lock it."));
+        }
+
+        if(m_udt->isDeleted())
+        {
+            m_ui->btnLock->hide();
+            m_ui->btnUndelete->show();
         }
     }
 }
@@ -379,7 +399,7 @@ void NewDataTypeForm::onLockUnlock(bool checked)
         m_ui->grpContent->setEnabled(true);
         m_udt->unlock();
         m_udt->updateGui();
-        m_ui->btnLock->setToolTip(QObject::tr("DataType is <b>unlocked</b>. Click this button to lock it."));
+        m_ui->btnLock->setToolTip(QObject::tr("This data type is <b>unlocked</b>. Click this button to lock it."));
 
         MainWindow::instance()->finallyDoLockLikeOperation(false, m_udt->getObjectUid());
     }
@@ -389,7 +409,7 @@ void NewDataTypeForm::onLockUnlock(bool checked)
         m_ui->grpContent->setEnabled(false);
         m_udt->lock();
         m_udt->updateGui();
-        m_ui->btnLock->setToolTip(QObject::tr("DataType is <b>locked</b>. Click this button to unlock it."));
+        m_ui->btnLock->setToolTip(QObject::tr("This data type is <b>locked</b>. Click this button to unlock it."));
 
         MainWindow::instance()->finallyDoLockLikeOperation(true, m_udt->getObjectUid());
     }
@@ -439,4 +459,34 @@ void NewDataTypeForm::onHelp()
     HelpWindow* hw = HelpWindow::instance();
     hw->showHelp(QString("/doc/dtyp.html"));
     hw->show();
+}
+
+
+void NewDataTypeForm::onUndelete()
+{
+    if(m_udt->version()->undeleteObject(m_udt->getObjectUid()))
+    {
+        MainWindow::instance()->getGuiElements()->removeItemForPatch(m_udt->version()->getWorkingPatch(), m_udt->getObjectUid());
+        // TODO: Duplicate from above
+        if(m_udt->isLocked())
+        {
+            m_ui->btnLock->setIcon(IconFactory::getLockedIcon());
+            m_ui->btnLock->blockSignals(true);
+            m_ui->btnLock->setChecked(false);
+            m_ui->btnLock->blockSignals(false);
+            m_ui->grpContent->setEnabled(false);
+            m_ui->btnLock->setToolTip(QObject::tr("This Data Type instance is <b>locked</b>. Click this button to unlock it."));
+        }
+        else
+        {
+            m_ui->btnLock->setIcon(IconFactory::getUnLockedIcon());
+            m_ui->btnLock->blockSignals(true);
+            m_ui->btnLock->setChecked(true);
+            m_ui->btnLock->blockSignals(false);
+            m_ui->grpContent->setEnabled(true);
+            m_ui->btnLock->setToolTip(QObject::tr("This table instance is <b>unlocked</b>. Click this button to lock it."));
+        }
+        m_ui->btnUndelete->hide();
+        m_ui->btnLock->show();
+    }
 }

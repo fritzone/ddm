@@ -60,7 +60,7 @@ public:
     /**
      * Adds a new data type to this version
      */
-    virtual void addNewDataType(UserDataType*) = 0;
+    virtual void addNewDataType(UserDataType*, bool) = 0;
 
     /**
      * Checks if this version has a data type with the specified name
