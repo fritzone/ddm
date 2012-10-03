@@ -1572,11 +1572,17 @@ void DefaultVersionImplementation::replaceTable(const QString& uid, Table* newTa
     return;
 }
 
+void DefaultVersionImplementation::addPatch(Patch* p)
+{
+    m_patches.append(p);
+    if(!p->isSuspended()) m_currentPatchIndex = m_patches.indexOf(p);
+}
+
 Patch* DefaultVersionImplementation::getWorkingPatch()
 {
     if(m_patches.size() == 0)
     {
-        Patch* p = new Patch(this);
+        Patch* p = new Patch(this, false);
         m_currentPatchIndex = 0;
         m_patches.append(p);
     }

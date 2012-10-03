@@ -21,7 +21,7 @@ public:
      * @brief Patch - create a new Patch object
      * @param v - the version for which the patch is requested
      */
-    Patch(Version* v);
+    Patch(Version* v, bool init);
 
     /**
      * @brief addElement adds a locked element to the patch. Creates a local copy of it.
@@ -143,6 +143,48 @@ public:
      */
     virtual QUuid getClassUid() const;
 
+    bool isSuspended() const
+    {
+        return m_suspended;
+    }
+
+    void setSuspended(bool s)
+    {
+        m_suspended = s;
+    }
+
+    void setLockedUids(const QStringList& luids)
+    {
+        m_lockedUids = luids;
+    }
+
+    void setDeletedUids(const QStringList& duids)
+    {
+        m_deletedUids = duids;
+    }
+
+    void setNewUids(const QStringList& nuids)
+    {
+        m_newUids = nuids;
+    }
+
+    void setOriginalMap(const QMap<QString, QString>& m)
+    {
+        m_originals = m;
+    }
+
+    void finalizePatchDeserialization();
+
+    void addObjUidToClassUidMapEntry(const QString& objUid, const QString& classUid)
+    {
+        m_objUidToClassUid[objUid] = classUid;
+    }
+
+    void setTempTabInstUidVector(const QMap<QString, QVector <QString> > & a)
+    {
+        m_uidsToTabInstUids = a;
+    }
+
 private:
     // the UIDS that are locked in this change
     QStringList m_lockedUids;
@@ -164,7 +206,7 @@ private:
     // if this patch was suspended by the user
     bool m_suspended;
 
-    // the mappings of the deleted objects. These will NOT be serialized, except the table deletions
+    // the mappings of the deleted objects. These will NOT be serialized, except the table deletions. Then it will be recreated from the originals
     QMap<QString, TableDeletionAction*> m_tableDeletions;
     QMap<QString, DiagramDeletionAction*> m_diagramDeletions;
     QMap<QString, ProcedureDeletionAction*> m_procedureDeletions;
@@ -172,6 +214,11 @@ private:
     QMap<QString, TriggerDeletionAction*> m_triggerDeletions;
     QMap<QString, ViewDeletionAction*> m_viewDeletions;
     QMap<QString, DataTypeDeletionAction*> m_dtDeletions;
+
+    //temporayr stuff used for deserialization
+    QMap<QString, QString> m_objUidToClassUid; // contains a map of obj uid to class uid just for the patch internals
+    QMap<QString, QVector <QString> > m_uidsToTabInstUids;
+
 };
 
 #endif // CORE_PATCH_H

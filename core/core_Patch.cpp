@@ -9,15 +9,20 @@
 #include "MainWindow.h" // TODO: horrible
 #include "GuiElements.h"
 #include "core_TableInstance.h"
+#include "core_Diagram.h"
 
 #include <QDateTime>
 
-Patch::Patch(Version *v) : NamedItem("Patch"), ObjectWithUid(QUuid::createUuid().toString(), v), m_lockedUids(), m_originals(), m_suspended(false)
+Patch::Patch(Version *v, bool init) : NamedItem("Patch"), ObjectWithUid(QUuid::createUuid().toString(), v), m_lockedUids(), m_originals(), m_suspended(false)
 {
-    QString finalName = QObject::tr("Patch") + " (" + v->getVersionText() + ") - " + QDateTime::currentDateTime().toString();
-    setName(finalName);
     m_version = v;
-    MainWindow::instance()->getGuiElements()->createNewPatchItem(this);
+
+    if(!init)
+    {
+        QString finalName = QObject::tr("Patch") + " (" + v->getVersionText() + ") - " + QDateTime::currentDateTime().toString();
+        setName(finalName);
+        MainWindow::instance()->getGuiElements()->createNewPatchItem(this);
+    }
 }
 
 void Patch::addElement(const QString &uid)
@@ -84,12 +89,11 @@ void Patch::removeElement(const QString &uid)
         QDomDocument a("PatchData");
         QByteArray encoded = QByteArray(m_originals.value(uid).toLocal8Bit());
 
-
         QString err;
         QString fromb64 = QString(QByteArray::fromBase64(encoded));
         if(!a.setContent(fromb64, &err))
         {
-            qDebug() << "Cannot set a b64 encoded stuff";
+            qDebug() << "Cannot set a b64 encoded stuff: " << err;
             return;
         }
         QString node = a.documentElement().nodeName();
@@ -262,9 +266,10 @@ bool Patch::removeNewElementBecauseOfDeletion(const QString& uid)
 void Patch::serialize(QDomDocument &doc, QDomElement &parent) const
 {
     QDomElement patchElement = doc.createElement("Patch");
-    patchElement.setAttribute("Name", m_name);
+    patchElement.setAttribute("name", m_name);
     patchElement.setAttribute("uid", getObjectUid());
     patchElement.setAttribute("class-uid", getClassUid().toString());
+    patchElement.setAttribute("suspended", m_suspended);
 
     {
     // save the locked uids
@@ -273,6 +278,8 @@ void Patch::serialize(QDomDocument &doc, QDomElement &parent) const
     {
         QDomElement lockedUid = doc.createElement("uid");
         lockedUid.setAttribute("value", m_lockedUids.at(i));
+        ObjectWithUid* obj = UidWarehouse::instance().getElement(m_lockedUids.at(i));
+        lockedUid.setAttribute("class-uid", obj->getClassUid().toString());
         lockedUids.appendChild(lockedUid);
     }
     patchElement.appendChild(lockedUids);
@@ -284,6 +291,8 @@ void Patch::serialize(QDomDocument &doc, QDomElement &parent) const
     for(int i=0; i<m_newUids.size(); i++)
     {
         QDomElement newUid = doc.createElement("uid");
+        ObjectWithUid* obj = UidWarehouse::instance().getElement(m_newUids.at(i));
+        newUid.setAttribute("class-uid", obj->getClassUid().toString());
         newUid.setAttribute("value", m_newUids.at(i));
         newUids.appendChild(newUid);
     }
@@ -297,6 +306,8 @@ void Patch::serialize(QDomDocument &doc, QDomElement &parent) const
     {
         QDomElement deletedUid = doc.createElement("uid");
         deletedUid.setAttribute("value", m_deletedUids.at(i));
+        ObjectWithUid* obj = UidWarehouse::instance().getElement(m_deletedUids.at(i));
+        deletedUid.setAttribute("class-uid", obj->getClassUid().toString());
         deletedUids.appendChild(deletedUid);
     }
     patchElement.appendChild(deletedUids);
@@ -309,6 +320,8 @@ void Patch::serialize(QDomDocument &doc, QDomElement &parent) const
     {
         QDomElement original = doc.createElement("Original");
         original.setAttribute("uid", m_originals.keys().at(i));
+        ObjectWithUid* obj = UidWarehouse::instance().getElement(m_originals.keys().at(i));
+        original.setAttribute("class-uid", obj->getClassUid().toString());
         QDomCDATASection cd = doc.createCDATASection(m_originals[m_originals.keys().at(i)]);
         original.appendChild(cd);
         originals.appendChild(original);
@@ -324,6 +337,10 @@ void Patch::serialize(QDomDocument &doc, QDomElement &parent) const
         QDomElement tableDel = doc.createElement("MainObject");
         tableDel.setAttribute("uid", m_tableDeletions.keys().at(i));
         TableDeletionAction* tda = m_tableDeletions[m_tableDeletions.keys().at(i)];
+        if(tda->parentTable)
+        {
+            tableDel.setAttribute("parent-uid", tda->parentTable->getObjectUid());
+        }
         for(int j=0; j<tda->deletedTableInstances.size(); j++)
         {
             QDomElement tinstDel = doc.createElement("PulledInObjects");
@@ -336,4 +353,60 @@ void Patch::serialize(QDomDocument &doc, QDomElement &parent) const
     }
 
     parent.appendChild(patchElement);
+}
+
+void Patch::finalizePatchDeserialization()
+{
+    // create the m_deletedObjects map... ie. deserialize the elements from the originals and fill up this map
+    for(int i=0; i<m_deletedUids.size(); i++)
+    {
+        QString uid = m_deletedUids.at(i);
+        if(m_originals.contains(uid))
+        {
+            QString decoded = QString(QByteArray::fromBase64(m_originals[uid].toLocal8Bit()));
+            QString classUid = m_objUidToClassUid[uid];
+            if(classUid.length() == 0)
+            {
+                qDebug() << "No class uid for " << uid;
+                continue;
+            }
+            ObjectWithUid* o = DeserializationFactory::createElementForClassUid(classUid, decoded, version());
+            m_deletedObjects.insert(uid, o);
+        }
+    }
+
+    //now create the TableDeletionAction map
+    for(int i=0; i<m_uidsToTabInstUids.keys().size(); i++)
+    {
+        TableDeletionAction* tda = new TableDeletionAction(0);
+        if(m_objUidToClassUid[m_uidsToTabInstUids.keys().at(i)].toUpper() == uidTable.toUpper())    // create a table
+        {
+            // get it from the m_deletedObjects
+            ObjectWithUid* o = m_deletedObjects[m_uidsToTabInstUids.keys().at(i)];
+            Table* t = dynamic_cast<Table*>(o);
+            tda->deletedTable = t;
+            tda->parentTable = t->parent();
+        }
+        const QVector<QString>& vec = m_uidsToTabInstUids[m_uidsToTabInstUids.keys().at(i)];
+        for(int j=0; j<vec.size(); j++)
+        {
+            ObjectWithUid* o = m_deletedObjects[vec.at(j)];
+            tda->deletedTableInstances.append(dynamic_cast<TableInstance*>(o));
+        }
+        m_tableDeletions.insert(m_uidsToTabInstUids.keys().at(i), tda);
+    }
+
+    // now create the DiagramDeletion map
+    for(int i=0; i<m_deletedUids.size(); i++)
+    {
+        QString uid = m_deletedUids.at(i);
+        QString classUid = m_objUidToClassUid[uid];
+        if(classUid.toUpper() == uidDiagram.toUpper())
+        {
+            DiagramDeletionAction* dda = new DiagramDeletionAction;
+            ObjectWithUid* o = (m_deletedObjects[uid]);
+            dda->deletedDiagram = dynamic_cast<Diagram*>(o);
+            m_diagramDeletions.insert(uid, dda);
+        }
+    }
 }

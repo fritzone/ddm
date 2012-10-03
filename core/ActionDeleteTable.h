@@ -19,7 +19,7 @@ struct TableDeletionAction
 
     Table* deletedTable;
     QList<TableInstance*> deletedTableInstances;
-    Table* parentTable;
+    const Table* parentTable;
 };
 
 struct DiagramDeletionAction
