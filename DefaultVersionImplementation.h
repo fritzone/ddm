@@ -93,6 +93,8 @@ public:
     void deleteTableInstance(TableInstance *tinst, TableDeletionAction*& );
     void doDeleteTableInstance(TableInstance *tinst, TableDeletionAction *& );
 
+    void addPatch(Patch* p);
+
     enum CAN_UNDELETE_STATUS
     {
         CAN_UNDELETE = 0,

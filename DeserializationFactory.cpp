@@ -32,6 +32,7 @@
 #include "uids.h"
 #include "TrueFalseSp.h"
 #include "SpInstance.h"
+#include "core_Patch.h"
 
 #include <QStringList>
 
@@ -393,6 +394,19 @@ void DeserializationFactory::createMajorVersion(MajorVersion *mv, Project *p, Da
             {
                 Trigger* trig = createTrigger(p, mv, doc, element.childNodes().at(i).childNodes().at(j).toElement());
                 mv->addTrigger(trig, true);
+            }
+        }
+    }
+    // getting the patches ... if any
+    for(int i=0; i<element.childNodes().count(); i++)
+    {
+        if(element.childNodes().at(i).nodeName() == "Patches")
+        {
+            for(int j=0; j<element.childNodes().at(i).childNodes().count(); j++)
+            {
+                Patch* patch = createPatch(p, mv, doc, element.childNodes().at(i).childNodes().at(j).toElement());
+                mv->addPatch(patch);
+                patch->finalizePatchDeserialization();
             }
         }
     }
@@ -1287,4 +1301,131 @@ Trigger* DeserializationFactory::createTrigger(Project*, Version* v,  const QDom
     trigg->forceSetWasLocked(wasLocked == "1");
 
     return trigg;
+}
+
+Patch* DeserializationFactory::createPatch(Project* p, Version* v, const QDomDocument& doc, const QDomElement& element)
+{
+    Patch* patch = new Patch(v, true);
+
+    patch->setName(element.attribute("name"));
+    patch->setSuspended(element.attribute("suspended") == "1");
+    patch->setForcedUid(element.attribute("uid"));
+
+    for(int i=0; i<element.childNodes().count(); i++)
+    {
+        // get the locked uids
+        if(element.childNodes().at(i).nodeName() == "LockedUids")
+        {
+            QStringList uids;
+            QDomElement el = element.childNodes().at(i).toElement();
+            for(int j=0; j<el.childNodes().count(); j++)
+            {
+                QString uid = el.childNodes().at(j).toElement().attribute("value");
+                QString classUid = el.childNodes().at(j).toElement().attribute("class-uid");
+                uids.append(uid);
+                patch->addObjUidToClassUidMapEntry(uid, classUid);
+            }
+            patch->setLockedUids(uids);
+        }
+
+        // get the deleted uids
+        if(element.childNodes().at(i).nodeName() == "DeletedUids")
+        {
+            QStringList uids;
+            QDomElement el = element.childNodes().at(i).toElement();
+            for(int j=0; j<el.childNodes().count(); j++)
+            {
+                QString uid = el.childNodes().at(j).toElement().attribute("value");
+                QString classUid = el.childNodes().at(j).toElement().attribute("class-uid");
+                uids.append(uid);
+                patch->addObjUidToClassUidMapEntry(uid, classUid);
+            }
+            patch->setDeletedUids(uids);
+        }
+
+        // get the new uids
+        if(element.childNodes().at(i).nodeName() == "NewUids")
+        {
+            QStringList uids;
+            QDomElement el = element.childNodes().at(i).toElement();
+            for(int j=0; j<el.childNodes().count(); j++)
+            {
+                QString uid = el.childNodes().at(j).toElement().attribute("value");
+                QString classUid = el.childNodes().at(j).toElement().attribute("class-uid");
+                uids.append(uid);
+                patch->addObjUidToClassUidMapEntry(uid, classUid);
+            }
+            patch->setNewUids(uids);
+        }
+
+        // create the originals map
+        if(element.childNodes().at(i).nodeName() == "Originals")
+        {
+            QDomElement el = element.childNodes().at(i).toElement();
+            QMap<QString, QString>  map;
+            for(int j=0; j<el.childNodes().count(); j++)
+            {
+                QString uid = el.attribute("uid");
+                QDomCDATASection cdata = el.firstChild().toCDATASection();
+                QByteArray encoded = QByteArray(cdata.toText().data().toLocal8Bit());
+                map.insert(uid, encoded);
+            }
+            patch->setOriginalMap(map);
+        }
+
+        if(element.childNodes().at(i).nodeName() == "TableDeletions")
+        {
+            QDomElement el = element.childNodes().at(i).toElement();
+            QMap<QString, QVector<QString> >  map;
+            for(int j=0; j<el.childNodes().count(); j++)    // MainObject
+            {
+                QString uid = el.childNodes().at(j).toElement().attribute("uid");
+                qDebug() << el.childNodes().at(j).nodeName() << " uid=" <<  uid;
+                for(int k=0; k<el.childNodes().at(j).childNodes().count(); k++)
+                {
+                    QDomElement elPulledIn = el.childNodes().at(j).childNodes().at(k).toElement();
+                    qDebug() << elPulledIn.nodeName() << " uid=" << elPulledIn.attribute("uid");
+                }
+            }
+            patch->setTempTabInstUidVector(map);
+        }
+    }
+
+    return patch;
+}
+
+
+ObjectWithUid* DeserializationFactory::createElementForClassUid(const QString& classUid, const QString& serialized, Version *v)
+{
+    QString err;
+    QDomDocument a("PatchData");
+    if(!a.setContent(serialized, &err))
+    {
+        qDebug() << "Cannot set a b64 encoded stuff:" << err;
+        return 0;
+    }
+    QString node = a.documentElement().nodeName();
+    if(node != "OriginalElement")
+    {
+        qDebug() << "This is not an original element stuff but: " << node;
+        return 0;
+    }
+
+    // now find the type based on the class-uid and replace the element with the original that was there
+    QString class_uid = a.documentElement().firstChild().toElement().attribute("class-uid");
+    if(classUid != class_uid)
+    {
+        qDebug() << "This is not an expected (" << classUid << ") element but " << class_uid;
+        return 0;
+
+    }
+    if(classUid == uidTable)
+    {
+        Table* tab = DeserializationFactory::createTable(v->getProject()->getEngine(), v, a, a.documentElement().firstChild().toElement());
+        v->setupForeignKeyRelationshipsForATable(tab);
+        return tab;
+    }
+
+    return 0;
+
 }
