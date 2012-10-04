@@ -34,7 +34,7 @@ public:
     void scrollTo(int hor, int ver);
     void getCenter(int& x, int& y);
 
-    virtual void presentSql(Project*);
+    virtual void presentSql(Project*, Version*);
     virtual void presentSql(Project*, SqlSourceEntity*, MainWindow::showSomething){};
     void setView(View* );
 

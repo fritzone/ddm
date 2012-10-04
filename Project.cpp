@@ -5,6 +5,7 @@
 #include "IconFactory.h"
 #include "VersionGuiElements.h"
 #include "GuiElements.h"
+#include "MainWindow.h" // TODO: This sucks for now ...
 
 Project::Project(const QString &_name, bool oop) : NamedItem(_name),
     m_engine(0), m_majorVersions(), m_oopIsEnabled(oop),
@@ -32,6 +33,20 @@ void Project::populateTreeItem(GuiElements* gui)
     {
         m_majorVersions[i]->createTreeItems(gui, getLocation());
         m_majorVersions[i]->getGui()->populateTreeItems();
+
+        // and now the patches
+        const QVector<Patch*>& patches = m_majorVersions[i]->getPatches();
+        if(patches.size())
+        {
+            gui->getPatchesDock()->show();
+            MainWindow::instance()->addDockWidget(Qt::LeftDockWidgetArea, gui->getPatchesDock());
+
+        }
+        for(int j=0; j<patches.size(); j++)
+        {
+            ContextMenuEnabledTreeWidgetItem* patchItem = gui->createNewPatchItem(patches.at(j));
+            gui->populatePathcItem(patchItem, patches.at(j));
+        }
     }
 }
 

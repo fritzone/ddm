@@ -219,7 +219,7 @@ private:
 
     void hideSplashwindow();
     void tryBrowseConnection(Connection* c);
-    void showObjectwithGuid(Version* v, QString uid, showSomething s, bool focus=true);
+    void showObjectWithGuidAndVersion(Version* v, QString uid, showSomething s, bool focus=true);
 
     void doLockLikeOperation(bool reLocking);
     ContextMenuEnabledTreeWidgetItem* getLastRightClickedTreeItem();

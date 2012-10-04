@@ -185,6 +185,31 @@ public:
         m_uidsToTabInstUids = a;
     }
 
+    const QStringList& getLockedUids() const
+    {
+        return m_lockedUids;
+    }
+
+    const QStringList& getDeletedUids() const
+    {
+        return m_deletedUids;
+    }
+
+    const QStringList& getNewUids() const
+    {
+        return m_newUids;
+    }
+
+    const QMap<QString, QString>& getUidToClassUidMap() const
+    {
+        return m_objUidToClassUid;
+    }
+
+    const QMap<QString, QVector <QString> > & getDeletionStruct() const
+    {
+        return m_uidsToTabInstUids;
+    }
+
 private:
     // the UIDS that are locked in this change
     QStringList m_lockedUids;

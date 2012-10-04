@@ -30,7 +30,7 @@
 #include <QDebug>
 
 NewViewForm::NewViewForm(Version* v, bool queryBuilder, QueryGraphicsHelper* c, QWidget *parent) :
-    SourceCodePresenterWidget(parent),
+    SourceCodePresenterWidget(v, parent),
     ui(new Ui::NewViewForm),
     m_comps(c),
     m_queryBuilder(queryBuilder), m_updateSqlAfterNameChange(true), m_autoChange(false), m_version(v)
@@ -131,7 +131,7 @@ void NewViewForm::getCenter(int &x, int &y)
     }
 }
 
-void NewViewForm::presentSql(Project* p)
+void NewViewForm::presentSql(Project* p, Version *)
 {
     // TODO: this is still not right, it's here just to work.
     QHash<QString, QString> opts = Configuration::instance().sqlGenerationOptions();
@@ -257,7 +257,7 @@ void NewViewForm::setView(View *v)
 void NewViewForm::onChkCanReplaceToggle(bool st)
 {
     m_view->setReplace(st);
-    presentSql(Workspace::getInstance()->currentProject());
+    presentSql(Workspace::getInstance()->currentProject(), m_version);
 }
 
 void NewViewForm::onNameChange(QString a)
@@ -268,7 +268,7 @@ void NewViewForm::onNameChange(QString a)
     if(m_updateSqlAfterNameChange)
     {
         m_autoChange = true;
-        presentSql(Workspace::getInstance()->currentProject());
+        presentSql(Workspace::getInstance()->currentProject(), m_version);
         m_autoChange = false;
     }
 }
