@@ -18,7 +18,7 @@ class SqlForm : public SourceCodePresenterWidget
 {
     Q_OBJECT
 public:
-    SqlForm(DatabaseEngine* engine, QWidget *parent = 0);
+    SqlForm(Version* v, DatabaseEngine* engine, QWidget *parent = 0);
     ~SqlForm();
 
     void setSource(const QString& src);
@@ -28,7 +28,7 @@ public:
         sqlList = s;
     }
 
-    virtual void presentSql(Project* p);
+    virtual void presentSql(Project* p, Version *v);
     virtual void presentSql(Project*, SqlSourceEntity*, MainWindow::showSomething s);
 
 public slots:

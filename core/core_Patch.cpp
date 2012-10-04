@@ -10,6 +10,13 @@
 #include "GuiElements.h"
 #include "core_TableInstance.h"
 #include "core_Diagram.h"
+#include "core_Procedure.h"
+#include "core_Function.h"
+#include "core_Trigger.h"
+#include "core_View.h"
+#include "core_UserDataType.h"
+#include "core_LockableElement.h"
+#include "NamedItem.h"
 
 #include <QDateTime>
 
@@ -70,7 +77,10 @@ void Patch::markElementForDeletion(const QString &uid)
 
     if(!obj) return;
 
-    m_deletedUids.append(uid);
+    if(m_deletedUids.indexOf(uid) == -1)
+    {
+        m_deletedUids.append(uid);
+    }
     m_deletedObjects.insert(uid, obj);
 
     qDebug() << "mark for deletion: " << uid;
@@ -111,6 +121,12 @@ void Patch::removeElement(const QString &uid)
             m_version->replaceTable(uid, tab);
         }
 
+        if(class_uid == uidTableInstance)
+        {
+            TableInstance* tinst = DeserializationFactory::createTableInstance(m_version, a, a.documentElement().firstChild().toElement());
+            m_version->replaceTableInstance(uid, tinst);
+        }
+
         m_originals.remove(uid);
     }
 }
@@ -138,6 +154,7 @@ void Patch::undeleteObject(const QString &uid)
     ObjectWithUid* obj = UidWarehouse::instance().getElement(uid);
     if(!obj) return;
     dynamic_cast<LockableElement*>(obj)->undeleteObject();
+    qDebug() << "undeleted" << uid;
 
 }
 
@@ -335,7 +352,8 @@ void Patch::serialize(QDomDocument &doc, QDomElement &parent) const
     for(int i=0; i<m_tableDeletions.keys().size(); i++)
     {
         QDomElement tableDel = doc.createElement("MainObject");
-        tableDel.setAttribute("uid", m_tableDeletions.keys().at(i));
+        QString mainUid = m_tableDeletions.keys().at(i);
+        tableDel.setAttribute("uid", mainUid);
         TableDeletionAction* tda = m_tableDeletions[m_tableDeletions.keys().at(i)];
         if(tda->parentTable)
         {
@@ -344,8 +362,12 @@ void Patch::serialize(QDomDocument &doc, QDomElement &parent) const
         for(int j=0; j<tda->deletedTableInstances.size(); j++)
         {
             QDomElement tinstDel = doc.createElement("PulledInObjects");
-            tinstDel.setAttribute("uid", tda->deletedTableInstances.at(j)->getObjectUid());
-            tableDel.appendChild(tinstDel);
+            QString pulledInUid = tda->deletedTableInstances.at(j)->getObjectUid();
+            if(mainUid != pulledInUid)
+            {
+                tinstDel.setAttribute("uid", pulledInUid);
+                tableDel.appendChild(tinstDel);
+            }
         }
         tableDeletions.appendChild(tableDel);
     }
@@ -371,7 +393,32 @@ void Patch::finalizePatchDeserialization()
                 continue;
             }
             ObjectWithUid* o = DeserializationFactory::createElementForClassUid(classUid, decoded, version());
-            m_deletedObjects.insert(uid, o);
+            if(o)
+            {
+                m_deletedObjects.insert(uid, o);
+                dynamic_cast<LockableElement*>(o)->deleteObject();
+            }
+        }
+    }
+
+    // now fix the table of the deleted table instances in case they reference a table that was deleted
+    for(int i=0; i<m_deletedObjects.keys().size(); i++)
+    {
+        TableInstance* tinst = dynamic_cast<TableInstance*>(m_deletedObjects[m_deletedObjects.keys().at(i)]);
+        if(tinst)
+        {
+            QString tn = tinst->getTableName();
+            if(!tn.isEmpty())   // means, could not fid an object in the version, it must have been in the patch, already deleted
+            {
+                for(int j=0; j<m_deletedObjects.size(); j++)
+                {
+                    NamedItem* ni = dynamic_cast<NamedItem*>(m_deletedObjects[m_deletedObjects.keys().at(j)]);
+                    if(ni->getName() == tn && m_deletedObjects[m_deletedObjects.keys().at(j)]->getClassUid() == uidTable)
+                    {
+                        tinst->forceSetTable(dynamic_cast<Table*>(m_deletedObjects[m_deletedObjects.keys().at(j)]));
+                    }
+                }
+            }
         }
     }
 
@@ -379,19 +426,45 @@ void Patch::finalizePatchDeserialization()
     for(int i=0; i<m_uidsToTabInstUids.keys().size(); i++)
     {
         TableDeletionAction* tda = new TableDeletionAction(0);
+        bool tableWasSet = false;
         if(m_objUidToClassUid[m_uidsToTabInstUids.keys().at(i)].toUpper() == uidTable.toUpper())    // create a table
         {
             // get it from the m_deletedObjects
-            ObjectWithUid* o = m_deletedObjects[m_uidsToTabInstUids.keys().at(i)];
-            Table* t = dynamic_cast<Table*>(o);
-            tda->deletedTable = t;
-            tda->parentTable = t->parent();
+            QString uid = m_uidsToTabInstUids.keys().at(i);
+            ObjectWithUid* o = m_deletedObjects[uid];
+            if(o)
+            {
+                Table* t = dynamic_cast<Table*>(o);
+                tda->deletedTable = t;
+                if(t)
+                {
+                    tda->parentTable = t->parent();
+                    tableWasSet = true;
+                }
+            }
         }
+
+        // regardless what was there fill up the table instances of the tda
         const QVector<QString>& vec = m_uidsToTabInstUids[m_uidsToTabInstUids.keys().at(i)];
         for(int j=0; j<vec.size(); j++)
         {
-            ObjectWithUid* o = m_deletedObjects[vec.at(j)];
-            tda->deletedTableInstances.append(dynamic_cast<TableInstance*>(o));
+            QString uid = vec.at(j);
+            ObjectWithUid* o = m_deletedObjects[uid];
+            if(o)
+            {
+                tda->deletedTableInstances.append(dynamic_cast<TableInstance*>(o));
+            }
+        }
+
+        // if a table was not set we need to add in the main element in the TDA deletedTableInstances
+        if(!tableWasSet)
+        {
+            QString uid = m_uidsToTabInstUids.keys().at(i);
+            ObjectWithUid* o = m_deletedObjects[uid];
+            if(o)
+            {
+                tda->deletedTableInstances.prepend(dynamic_cast<TableInstance*>(o));
+            }
         }
         m_tableDeletions.insert(m_uidsToTabInstUids.keys().at(i), tda);
     }
@@ -409,4 +482,81 @@ void Patch::finalizePatchDeserialization()
             m_diagramDeletions.insert(uid, dda);
         }
     }
+
+    // now create the ProcedureDeletion map
+    for(int i=0; i<m_deletedUids.size(); i++)
+    {
+        QString uid = m_deletedUids.at(i);
+        QString classUid = m_objUidToClassUid[uid];
+        if(classUid.toUpper() == uidProcedure.toUpper())
+        {
+            ProcedureDeletionAction* pda = new ProcedureDeletionAction;
+            ObjectWithUid* o = (m_deletedObjects[uid]);
+            pda->deletedProcedure = dynamic_cast<Procedure*>(o);
+            m_procedureDeletions.insert(uid, pda);
+        }
+    }
+
+    // now create the FunctionDeletion map
+    for(int i=0; i<m_deletedUids.size(); i++)
+    {
+        QString uid = m_deletedUids.at(i);
+        QString classUid = m_objUidToClassUid[uid];
+        if(classUid.toUpper() == uidFunction.toUpper())
+        {
+            FunctionDeletionAction* fda = new FunctionDeletionAction;
+            ObjectWithUid* o = (m_deletedObjects[uid]);
+            fda->deletedFunction = dynamic_cast<Function*>(o);
+            m_functionDeletions.insert(uid, fda);
+        }
+    }
+
+    // now create the TriggerDeletion map
+    for(int i=0; i<m_deletedUids.size(); i++)
+    {
+        QString uid = m_deletedUids.at(i);
+        QString classUid = m_objUidToClassUid[uid];
+        if(classUid.toUpper() == uidTrigger.toUpper())
+        {
+            TriggerDeletionAction* tda = new TriggerDeletionAction;
+            ObjectWithUid* o = (m_deletedObjects[uid]);
+            tda->deletedTrigger= dynamic_cast<Trigger*>(o);
+            m_triggerDeletions.insert(uid, tda);
+        }
+    }
+
+    // now create the ViewDeletion map
+    for(int i=0; i<m_deletedUids.size(); i++)
+    {
+        QString uid = m_deletedUids.at(i);
+        QString classUid = m_objUidToClassUid[uid];
+        if(classUid.toUpper() == uidView.toUpper())
+        {
+            ViewDeletionAction* vda = new ViewDeletionAction;
+            ObjectWithUid* o = (m_deletedObjects[uid]);
+            vda->deletedView = dynamic_cast<View*>(o);
+            m_viewDeletions.insert(uid, vda);
+        }
+    }
+
+    // now create the DataTypeDeletion map
+    for(int i=0; i<m_deletedUids.size(); i++)
+    {
+        QString uid = m_deletedUids.at(i);
+        QString classUid = m_objUidToClassUid[uid];
+        if(classUid.toUpper() == uidNumericDT.toUpper()
+            || classUid.toUpper() == uidStringDT.toUpper()
+            || classUid.toUpper() == uidDateTimeDT.toUpper()
+            || classUid.toUpper() == uidBooleanDT.toUpper()
+            || classUid.toUpper() == uidBlobDT.toUpper()
+            || classUid.toUpper() == uidMiscDT.toUpper()
+            || classUid.toUpper() == uidSpatialDT.toUpper())
+        {
+            DataTypeDeletionAction* dtda = new DataTypeDeletionAction;
+            ObjectWithUid* o = (m_deletedObjects[uid]);
+            dtda->deletedDataType = dynamic_cast<UserDataType*>(o);
+            m_dtDeletions.insert(uid, dtda);
+        }
+    }
+
 }

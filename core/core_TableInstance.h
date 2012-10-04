@@ -104,6 +104,21 @@ public:
     void finalizeCloning(TableInstance* src, Version *sourceVersion, Version *targetVersion);
     void finalizeAutoinstantiatedTinsts(TableInstance* src, Version *sourceVersion, Version *targetVersion);
 
+    void forceSetTableName(const QString& t)
+    {
+        m_tabName = t;
+    }
+
+    QString getTableName() const
+    {
+        return m_tabName;
+    }
+
+    void forceSetTable(Table* t)
+    {
+        m_table = t;
+    }
+
 private:
 
     // the table of the table instance
@@ -126,6 +141,9 @@ private:
     QVector<TableInstance*> m_instantiatedTablesInstances;
 
     bool m_sentenced;
+
+    // used in the deserialization, nowhere else
+    QString m_tabName;
 
 };
 

@@ -43,7 +43,7 @@ const int COL_POS_PK = 0;
 const int COL_POS_NM = 1;
 const int COL_POS_DT = 2;
 
-NewTableForm::NewTableForm(DatabaseEngine* db, Project* prj, Version* v, QWidget *parent, bool newTable) : SourceCodePresenterWidget(parent),
+NewTableForm::NewTableForm(DatabaseEngine* db, Project* prj, Version* v, QWidget *parent, bool newTable) : SourceCodePresenterWidget(v, parent),
     m_ui(new Ui::NewTableForm),
     m_dbEngine(db), m_project(prj), m_table(0),
     m_currentColumn(0), m_currentIndex(0), m_foreignTable(0), m_currentForeignKey(0), m_foreignKeySelected(false),
@@ -1968,7 +1968,7 @@ void NewTableForm::onLoadStartupValuesFromCSV()
 
 void NewTableForm::updateSqlDueToChange()
 {
-    presentSql(m_project);
+    presentSql(m_project, m_version);
 }
 
 void NewTableForm::onBtnCancelForeignKeyEditing()
@@ -2022,7 +2022,7 @@ void NewTableForm::onChangeTab(int idx)
         {
             if(m_table)
             {
-                presentSql(m_project);
+                presentSql(m_project, m_version);
             }
         }
     }
@@ -2103,7 +2103,7 @@ void NewTableForm::onSaveSql()
     out << m_ui->txtSql->toPlainText() << "\n";
 }
 
-void NewTableForm::presentSql(Project *)
+void NewTableForm::presentSql(Project *, Version *v)
 {
     QString fs = "";
     QHash<QString,QString> fo = Configuration::instance().sqlGenerationOptions();

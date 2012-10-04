@@ -25,7 +25,7 @@
 #include <QString>
 #include <QTextStream>
 
-SqlForm::SqlForm(DatabaseEngine* engine, QWidget *parent) : SourceCodePresenterWidget(parent), ui(new Ui::SqlForm), m_engine(engine), m_sourceEntity(0)
+SqlForm::SqlForm(Version *v, DatabaseEngine* engine, QWidget *parent) : SourceCodePresenterWidget(v, parent), ui(new Ui::SqlForm), m_engine(engine), m_sourceEntity(0)
 {
     ui->setupUi(this);
     highlighter = new SqlHighlighter(ui->txtSql->document(),Workspace::getInstance()->currentProjectsEngine()->getKeywords(),
@@ -103,12 +103,11 @@ void SqlForm::onSave()
     out << ui->txtSql->toPlainText() << "\n";
 }
 
-void SqlForm::presentSql(Project* p)
+void SqlForm::presentSql(Project* p, Version *v)
 {
     // here create the final SQL:
     // firstly only the tables and then the foreign keys. We'll see the other elements (triggers, functions) later
 
-    Version *v = p->getWorkingVersion();
     QStringList finalSql = v->getSqlScript(true, 0);
 
     QString fs = "";

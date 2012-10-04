@@ -382,6 +382,14 @@ public:
     virtual void replaceTable(const QString& uid, Table* newTab) = 0;
 
     /**
+     * @brief replaceTableInstance replaces the table instance with the gven uid with the newInst
+     * @param uid
+     * @param newTab
+     */
+    virtual void replaceTableInstance(const QString& uid, TableInstance* newInst) = 0;
+
+
+    /**
      * @brief undeleteObject Undeletes the object with given UID. The object was supposed to be deleted in a patch.
      * @param uid
      */

@@ -539,7 +539,7 @@ QString Table::generateUniqueColumnName(const QString& in)
     return in;
 }
 
-void Table::addSpecializedTable(Table* childTable)
+void Table::addSpecializedTable(const Table* childTable)
 {
     m_children.append(childTable);
 }

@@ -261,7 +261,7 @@ public:
 
     QString generateUniqueColumnName(const QString& in);
 
-    void addSpecializedTable(Table* childTable);
+    void addSpecializedTable(const Table *childTable);
 
     bool hasSpecializedTables() const;
 
@@ -319,7 +319,7 @@ private:
     QVector<TableInstance*> m_tableInstances;
 
     // all the specialized tables that were created from this
-    QVector<Table*> m_children;
+    QVector<const Table*> m_children;
 
     QString m_parentUid;
 

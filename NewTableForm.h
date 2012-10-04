@@ -53,7 +53,7 @@ public:
     }
     void resetForeignTablesCombo();
 
-    virtual void presentSql(Project*);
+    virtual void presentSql(Project*, Version* v);
     virtual void presentSql(Project*, SqlSourceEntity*, MainWindow::showSomething s);
 
 protected:

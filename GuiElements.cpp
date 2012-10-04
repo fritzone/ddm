@@ -9,8 +9,8 @@
 #include "UidWarehouse.h"
 
 GuiElements::GuiElements() : m_projectTreeDock(0),m_issuesTreeDock(0),
-    m_genTreeDock(0), m_patchesTreeDock(0),
-    m_projectTree(0), m_issuesTree(0), m_genTree(0), m_patchesTree(0),
+    m_patchesTreeDock(0),
+    m_projectTree(0), m_issuesTree(0), m_patchesTree(0),
     m_contextMenuHandler(0), m_issuesContextMenuHandler(0),
     m_patchItems()
 {
@@ -24,10 +24,10 @@ void GuiElements::createGuiElements()
     m_projectTreeDock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
     m_projectTreeDock->setFeatures(QDockWidget::AllDockWidgetFeatures);
     m_projectTreeDock->setFloating(false);
-    m_projectTreeDock->setMinimumSize(300, 340);
+    m_projectTreeDock->setMinimumSize(300, 540);
     m_projectTreeDock->setMaximumSize(QApplication::desktop()->screenGeometry().width() / 4, 9999);
  //    m_projectTreeDock->setSizePolicy(QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Maximum));
-    m_projectTreeDock->resize(301,341);
+    m_projectTreeDock->resize(301,541);
 
     m_projectTree = new ContextMenuEnabledTreeWidget();
     m_projectTree->setAllColumnsShowFocus(true);
@@ -64,26 +64,26 @@ void GuiElements::createGuiElements()
 
     m_issuesTreeDock->hide();
 
-    // create the gen tree
-    m_genTreeDock = new QDockWidget(QObject::tr("Generated Items - ") + Workspace::getInstance()->currentSolution()->getName(), MainWindow::instance());
-    m_genTreeDock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
-    m_genTreeDock->setFeatures(QDockWidget::AllDockWidgetFeatures);
-    m_genTreeDock->setFloating(false);
-    m_genTreeDock->setMinimumSize(300, 340);
-    m_genTreeDock->setMaximumSize(QApplication::desktop()->screenGeometry().width() / 4, 9999);
-    m_genTreeDock->resize(301,341);
+//    // create the gen tree
+//    m_genTreeDock = new QDockWidget(QObject::tr("Generated Items - ") + Workspace::getInstance()->currentSolution()->getName(), MainWindow::instance());
+//    m_genTreeDock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
+//    m_genTreeDock->setFeatures(QDockWidget::AllDockWidgetFeatures);
+//    m_genTreeDock->setFloating(false);
+//    m_genTreeDock->setMinimumSize(300, 340);
+//    m_genTreeDock->setMaximumSize(QApplication::desktop()->screenGeometry().width() / 4, 9999);
+//    m_genTreeDock->resize(301,341);
 
-    m_genTree = new ContextMenuEnabledTreeWidget();
-    m_genTree->setAllColumnsShowFocus(true);
-    m_genTree->setSelectionMode(QAbstractItemView::SingleSelection);
-    m_genTree->setSelectionBehavior(QAbstractItemView::SelectItems);
-    m_genTree->setItemDelegate(new ContextMenuDelegate(m_contextMenuHandler,m_genTree));
-    m_genTree->setColumnCount(1);
-    m_genTree->setHeaderHidden(true);
-    QObject::connect(m_genTree, SIGNAL (itemClicked ( QTreeWidgetItem*, int)), MainWindow::instance(),
-                     SLOT(projectTreeItemClicked(QTreeWidgetItem*, int)));
+//    m_genTree = new ContextMenuEnabledTreeWidget();
+//    m_genTree->setAllColumnsShowFocus(true);
+//    m_genTree->setSelectionMode(QAbstractItemView::SingleSelection);
+//    m_genTree->setSelectionBehavior(QAbstractItemView::SelectItems);
+//    m_genTree->setItemDelegate(new ContextMenuDelegate(m_contextMenuHandler,m_genTree));
+//    m_genTree->setColumnCount(1);
+//    m_genTree->setHeaderHidden(true);
+//    QObject::connect(m_genTree, SIGNAL (itemClicked ( QTreeWidgetItem*, int)), MainWindow::instance(),
+//                     SLOT(projectTreeItemClicked(QTreeWidgetItem*, int)));
 
-    m_genTreeDock->setWidget(m_genTree);
+//    m_genTreeDock->setWidget(m_genTree);
 
     // the patches dockable window
     m_patchesTreeDock = new QDockWidget(QObject::tr("Patches"), MainWindow::instance());
@@ -285,6 +285,7 @@ ContextMenuEnabledTreeWidgetItem* GuiElements::createNewItemForPatch(Patch *p, c
     m_patchesTree->addTopLevelItem(newItem);
     newItem->setData(0, Qt::UserRole, QVariant(uid));
     m_patchItems[p]->setExpanded(true);
+    m_uidToTreeItem[uid] = newItem;
     return newItem;
 }
 
@@ -325,4 +326,58 @@ void GuiElements::removeItemForPatch(Patch *p, const QString& uid)
     {
         m_patchesTreeDock->hide();
     }
+}
+
+void GuiElements::populatePathcItem(ContextMenuEnabledTreeWidgetItem *patchItem, Patch *patch)
+{
+    // firstly the locked elements. This will NOT create tree items for the deleted ones
+    const QStringList& lockeds = patch->getLockedUids();
+    const QMap<QString, QString> & uidToClassUidMap = patch->getUidToClassUidMap();
+    for(int i=0; i<lockeds.size(); i++)
+    {
+        qDebug() << i;
+        ObjectWithUid* ouid = UidWarehouse::instance().getElement(lockeds.at(i));
+        if(ouid)
+        {
+            NamedItem* ni = dynamic_cast<NamedItem*>(ouid);
+            if(ni)
+            {
+                createNewItemForPatch(patch, uidToClassUidMap[lockeds.at(i)], lockeds.at(i), ni->getName());
+            }
+        }
+        else
+        {
+            qDebug() << "no ouid for " << lockeds.at(i);
+        }
+    }
+
+    // now the deleted items should be fixed with their icon
+    const QStringList& deleteds = patch->getDeletedUids();
+    for(int i=0; i<deleteds.size(); i++)
+    {
+        m_uidToTreeItem[deleteds.at(i)]->setIcon(1, IconFactory::getRemoveIcon());
+        m_uidToTreeItem[deleteds.at(i)]->setPopupMenu(ContextMenuCollection::getInstance()->getUndeletePopupMenu());
+    }
+    // and their tree relationship should be built up
+    const QMap<QString, QVector <QString> > & delS = patch->getDeletionStruct();
+    for(int i=0; i<delS.keys().size(); i++)
+    {
+        QVector<QString> delUids = delS[delS.keys().at(i)];
+        for(int j=0; j<delUids.size(); j++)
+        {
+            m_uidToTreeItem[delUids.at(j)]->parent()->removeChild(m_uidToTreeItem[delUids.at(j)]);
+            m_uidToTreeItem[delS.keys().at(i)]->addChild(m_uidToTreeItem[delUids.at(j)]);
+            m_uidToTreeItem[delUids.at(j)]->setData(0, Qt::UserRole, QVariant());
+            m_uidToTreeItem[delUids.at(j)]->setPopupMenu(0);
+        }
+    }
+
+    // the NEW items should be added
+    const QStringList& news = patch->getNewUids();
+    for(int i=0; i<news.size(); i++)
+    {
+        m_uidToTreeItem[news.at(i)]->setIcon(1, IconFactory::getAddIcon());
+        m_uidToTreeItem[news.at(i)]->setPopupMenu(ContextMenuCollection::getInstance()->getMenuForClassUid(uidToClassUidMap[news.at(i)]));
+    }
+
 }

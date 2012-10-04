@@ -155,7 +155,7 @@ void MainWindow::setupGuiForNewSolution()
 
     addDockWidget(Qt::LeftDockWidgetArea, m_guiElements->getProjectDock());
     addDockWidget(Qt::BottomDockWidgetArea, m_guiElements->getIssuesDock());
-    addDockWidget(Qt::LeftDockWidgetArea, m_guiElements->getGenDock());
+//    addDockWidget(Qt::LeftDockWidgetArea, m_guiElements->getGenDock());
 
     IssueManager::getInstance().setIssuesDock(m_guiElements->getIssuesDock());
 
@@ -454,7 +454,7 @@ void MainWindow::showViewWithGuid(Version * ver, const QString & guid, bool /*fo
 
             m_nvf->setSqlSource(v);
             m_nvf->setView(v);
-            m_nvf->presentSql(Workspace::getInstance()->currentProject());
+            m_nvf->presentSql(Workspace::getInstance()->currentProject(), v->version());
 
             setCentralWidget(m_nvf);
         }
@@ -468,7 +468,7 @@ void MainWindow::showViewWithGuid(Version * ver, const QString & guid, bool /*fo
     }
 }
 
-void MainWindow::showObjectwithGuid(Version *v, QString uid, showSomething s, bool f)
+void MainWindow::showObjectWithGuidAndVersion(Version *v, QString uid, showSomething s, bool f)
 {
     (this->*s)(v, uid,f);
 }
@@ -510,7 +510,7 @@ void MainWindow::patchTreeItemClicked(QTreeWidgetItem * current, int)
 
             if(mapping.contains(classUid))
             {
-                showObjectwithGuid(foundVersion, uid, mapping[classUid], false);
+                showObjectWithGuidAndVersion(foundVersion, uid, mapping[classUid], false);
             }
         }
     }
@@ -560,7 +560,7 @@ void MainWindow::projectTreeItemClicked(QTreeWidgetItem * current, int)
         if(current->parent() && current->parent() == foundVersion->getGui()->getFinalSqlItem())
         {
             // user clicked on a SQL item
-            SqlForm* frm = new SqlForm(m_workspace->currentProjectsEngine(), this);
+            SqlForm* frm = new SqlForm(foundVersion, m_workspace->currentProjectsEngine(), this);
             QVariant qv = current->data(0, Qt::UserRole);
             QString name = qv.toString();
             SqlSourceEntity* ent = foundVersion->getSqlSourceEntityWithGuid(name);
@@ -604,7 +604,7 @@ void MainWindow::projectTreeItemClicked(QTreeWidgetItem * current, int)
         {// user clicked on the final SQL item
             SqlForm* frm = foundVersion->getGui()->getSqlForm();
             frm->setSqlSource(0);
-            frm->presentSql(m_workspace->currentProject());
+            frm->presentSql(m_workspace->currentProject(), foundVersion);
             setCentralWidget(frm);
         }
         else
@@ -652,21 +652,7 @@ void MainWindow::projectTreeItemClicked(QTreeWidgetItem * current, int)
             }
             else
             {
-
-                QMap<QString, showSomething> mapping;
-                mapping.insert(uidTable, (showSomething)&MainWindow::showTableWithGuid);
-                mapping.insert(uidTableInstance, (showSomething)&MainWindow::showTableInstanceWithGuid);
-                mapping.insert(uidDiagram, (showSomething)&MainWindow::showDiagramWithGuid);
-                mapping.insert(uidProcedure, (showSomething)&MainWindow::showProcedureWithGuid);
-                mapping.insert(uidFunction, (showSomething)&MainWindow::showFunctionWithGuid);
-                mapping.insert(uidTrigger, (showSomething)&MainWindow::showTriggerWithGuid);
-                mapping.insert(uidView, (showSomething)&MainWindow::showViewWithGuid);
-
-                if(mapping.contains(classUid))
-                {
-                    qDebug() << "SELECT SHOW: " << uid << " " << classUid;
-                    showObjectwithGuid(foundVersion, uid, mapping[classUid], false);
-                }
+                showObjectWithGuid(uid);
             }
         }
     }
@@ -723,7 +709,7 @@ void MainWindow::onNewViewWithSqlFromPopup()
 
     m_nvf->setSqlSource(v);
     m_nvf->setView(v);
-    m_nvf->presentSql(Workspace::getInstance()->currentProject());
+    m_nvf->presentSql(Workspace::getInstance()->currentProject(), ver);
 
     setCentralWidget(m_nvf);
 }
@@ -1222,7 +1208,7 @@ bool MainWindow::showObjectWithGuid(const QString & guid)
 
     if(mapping.contains(classUid))
     {
-        showObjectwithGuid(v, guid, mapping[classUid], false);
+        showObjectWithGuidAndVersion(v, guid, mapping[classUid], false);
         return true;
     }
     else
@@ -1912,7 +1898,7 @@ void MainWindow::onPreferences()
         SourceCodePresenterWidget* scw = dynamic_cast<SourceCodePresenterWidget*> (mainwidget);
         if(scw)
         {
-            scw->updateSql(m_workspace->currentProject());
+            scw->updateSql(m_workspace->currentProject(), scw->version());
         }
     }
 }
@@ -2702,7 +2688,7 @@ void MainWindow::onNewViewWithSql()
 
     m_nvf->setSqlSource(v);
     m_nvf->setView(v);
-    m_nvf->presentSql(Workspace::getInstance()->currentProject());
+    m_nvf->presentSql(Workspace::getInstance()->currentProject(), v->version());
 
     setCentralWidget(m_nvf);
 }
@@ -2797,7 +2783,7 @@ void MainWindow::rerenderQuery(Query* q)
 
     m_nvf->setGraphicsItem(q->getGraphicsItem());
     q->getHelper()->setScene(m_nvf->getScene());
-    m_nvf->presentSql(Workspace::getInstance()->currentProject());
+    m_nvf->presentSql(Workspace::getInstance()->currentProject(), dynamic_cast<View*>(q->getSourceEntity())->version());
     setCentralWidget(m_nvf);
     m_nvf->scrollTo(cx, cy);
 }
@@ -2899,5 +2885,6 @@ void MainWindow::onUndeleteSomething()
     if(v->undeleteObject(obj->getObjectUid()))
     {
         m_guiElements->removeItemForPatch(v->getWorkingPatch(), obj->getObjectUid());
+        showObjectWithGuid(obj->getObjectUid());
     }
 }

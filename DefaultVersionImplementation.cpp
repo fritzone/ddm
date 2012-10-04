@@ -274,8 +274,11 @@ void DefaultVersionImplementation::doDeleteTableInstance(TableInstance *tinst, T
 {
     if(tda)
     {
-        tda->deletedTableInstances.append(tinst);
-        qDebug() << "DELETE for patch " << tinst->getName();
+        if(tda->deletedTableInstances.indexOf(tinst) == -1)
+        {
+            tda->deletedTableInstances.append(tinst);
+            qDebug() << "DELETE for patch " << tinst->getName();
+        }
     }
 
     tinst->sentence();
@@ -796,10 +799,11 @@ void DefaultVersionImplementation::setupForeignKeyRelationshipsForATable(Table* 
                 {
                     assK->setForeignTable(getTables().at(l));
                 }
-                if(getTables().at(l)->getName() == assK->getSLocalTable())
-                {
-                    assK->setLocalTable(getTables().at(l));
-                }
+                assK->setLocalTable(tab);
+                //if(getTables().at(l)->getName() == assK->getSLocalTable())
+                //{
+                //    assK->setLocalTable(getTables().at(l));
+                //}
             }
             // then: set the columns of those tables
             for(int l=0; l<assK->getLocalTable()->columns().size(); l++)
@@ -1572,6 +1576,30 @@ void DefaultVersionImplementation::replaceTable(const QString& uid, Table* newTa
     return;
 }
 
+void DefaultVersionImplementation::replaceTableInstance(const QString& uid, TableInstance* newInst)
+{
+    TableInstance* t = getTableInstanceWithUid(uid);
+    if(!t) return;
+
+    newInst->setForcedUid(uid);
+    newInst->setName(t->getName());
+    newInst->lock();
+    newInst->setLocation(t->getLocation());
+
+    for(int i=0; i< m_data.m_tableInstances.size(); i++)
+    {
+        if(m_data.m_tableInstances[i]->getObjectUid() == uid)
+        {
+            m_data.m_tableInstances[i] = newInst;
+        }
+    }
+
+    newInst->updateGui();
+
+    return;
+}
+
+
 void DefaultVersionImplementation::addPatch(Patch* p)
 {
     m_patches.append(p);
@@ -1606,10 +1634,19 @@ DefaultVersionImplementation::CAN_UNDELETE_STATUS DefaultVersionImplementation::
 
     for(int i=0; i<tda->deletedTableInstances.size(); i++)
     {
-        if(!hasTable(tda->deletedTableInstances.at(i)->table()) && tda->deletedTableInstances.at(i)->table()->getObjectUid() != tda->deletedTable->getObjectUid())
+        Table* instancesTable = tda->deletedTableInstances.at(i)->table();
+        if(instancesTable)
         {
-            extra = tda->deletedTableInstances.at(i)->table()->getName();
-            return DEPENDENT_TABLE_WAS_NOT_FOUND_IN_VERSION;
+            if(!hasTable(instancesTable) && instancesTable->getObjectUid() != tda->deletedTable->getObjectUid())
+            {
+                extra = tda->deletedTableInstances.at(i)->table()->getName();
+                return DEPENDENT_TABLE_WAS_NOT_FOUND_IN_VERSION;
+            }
+        }
+        else
+        {
+            extra = "Tinst: " + tda->deletedTableInstances.at(i)->getName() + " <- Table for this in version not found. ";
+            return DELETED_OBJECT_WAS_NOT_FOUND_IN_PATCH;
         }
     }
     return CAN_UNDELETE;
@@ -1839,7 +1876,7 @@ bool DefaultVersionImplementation::undeleteObject(const QString& uid)
             // now see if this had a parent table or not
             if(tda->parentTable)
             {
-                tda->parentTable->addSpecializedTable(tda->deletedTable);
+                const_cast<Table*>(tda->parentTable)->addSpecializedTable(tda->deletedTable);
                 getGui()->createTableTreeEntry(tda->deletedTable, tda->parentTable->getLocation());
             }
             else
@@ -1853,7 +1890,7 @@ bool DefaultVersionImplementation::undeleteObject(const QString& uid)
                 qDebug() << tda->deletedTableInstances.at(i)->getName();
                 getGui()->createTableInstanceTreeEntry(tda->deletedTableInstances.at(i));
                 tda->deletedTableInstances.at(i)->unSentence();
-
+                tda->deletedTableInstances.at(i)->undeleteObject();
                 tda->deletedTableInstances.at(i)->updateGui();
             }
 
@@ -1865,9 +1902,9 @@ bool DefaultVersionImplementation::undeleteObject(const QString& uid)
             for(int i=0; i<tda->deletedTableInstances.size(); i++)
             {
                 addTableInstance(tda->deletedTableInstances.at(i), true);
-                qDebug() << tda->deletedTableInstances.at(i)->getName();
                 getGui()->createTableInstanceTreeEntry(tda->deletedTableInstances.at(i));
                 tda->deletedTableInstances.at(i)->unSentence();
+                tda->deletedTableInstances.at(i)->undeleteObject();
             }
         }
     }

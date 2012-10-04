@@ -86,6 +86,7 @@ public:
     virtual bool cloneInto(Version* other);
     virtual void patchItem(const QString& uid);
     virtual void replaceTable(const QString& uid, Table* newTab);
+    virtual void replaceTableInstance(const QString& uid, TableInstance* newInst);
     virtual Patch* getWorkingPatch();
     virtual bool undeleteObject(const QString& uid);
 
@@ -121,6 +122,11 @@ public:
     CAN_UNDELETE_STATUS canUndeleteTrigger(const QString &uid, QString &extra);
     CAN_UNDELETE_STATUS canUndeleteView(const QString &uid, QString &extra);
     CAN_UNDELETE_STATUS canUndeleteDataType(const QString &uid, QString &extra);
+
+    const QVector<Patch*>& getPatches()
+    {
+        return m_patches;
+    }
 
 protected:
     // the version as a string representation. Major versions are always of form X.0

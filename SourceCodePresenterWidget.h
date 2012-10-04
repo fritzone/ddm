@@ -11,20 +11,20 @@ class SourceCodePresenterWidget : public QWidget
 {
 public:
 
-    SourceCodePresenterWidget(QWidget *parent = 0) : QWidget(parent), entity(0)
+    SourceCodePresenterWidget(Version *v, QWidget *parent) : QWidget(parent), entity(0), m_version(v)
     {}
 
     /**
      * Presents the SQL for the whole project
      */
-    virtual void presentSql(Project*) = 0;
+    virtual void presentSql(Project*, Version*) = 0;
 
     /**
      * Presents the SQL for the selected entity
      */
     virtual void presentSql(Project*, SqlSourceEntity*, MainWindow::showSomething s) = 0;
 
-    virtual void updateSql(Project* p)
+    virtual void updateSql(Project* p, Version *v)
     {
         if(entity)
         {
@@ -32,7 +32,7 @@ public:
         }
         else
         {
-            presentSql(p);
+            presentSql(p, v);
         }
     }
 
@@ -46,9 +46,15 @@ public:
         return entity;
     }
 
+    Version* version() const
+    {
+        return m_version;
+    }
+
 protected:
 
     SqlSourceEntity* entity;
+    Version* m_version;
 
 };
 

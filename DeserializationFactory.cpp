@@ -756,7 +756,6 @@ Table* DeserializationFactory::createTable(DatabaseEngine* engine, Version* ver,
 
     QString parent_uid = element.attribute("parent-uid");
 
-
     Table* result = new Table(ver, uid, 0);
 
     QString locked = element.attribute("locked");
@@ -1113,7 +1112,17 @@ TableInstance* DeserializationFactory::createTableInstance(Version* v, const QDo
     }
     else
     {
-        TableInstance* result = new TableInstance(v->getTable(tabName), refed, uid, v);
+        Table* tbl = v->getTable(tabName);
+        TableInstance* result = 0;
+        if(tbl)
+        {
+            result = new TableInstance(tbl, refed, uid, v);
+        }
+        else
+        {
+            result = new TableInstance(name, refed, uid, v);
+            result->forceSetTableName(tabName);
+        }
 
         QStringList lst = refTables.split(QChar(','), QString::SkipEmptyParts);
         for(int i=0; i<lst.size(); i++)
@@ -1365,8 +1374,9 @@ Patch* DeserializationFactory::createPatch(Project* p, Version* v, const QDomDoc
             QMap<QString, QString>  map;
             for(int j=0; j<el.childNodes().count(); j++)
             {
-                QString uid = el.attribute("uid");
-                QDomCDATASection cdata = el.firstChild().toCDATASection();
+                QDomElement cel = el.childNodes().at(j).toElement();
+                QString uid = cel.attribute("uid");
+                QDomCDATASection cdata = cel.firstChild().toCDATASection();
                 QByteArray encoded = QByteArray(cdata.toText().data().toLocal8Bit());
                 map.insert(uid, encoded);
             }
@@ -1380,12 +1390,15 @@ Patch* DeserializationFactory::createPatch(Project* p, Version* v, const QDomDoc
             for(int j=0; j<el.childNodes().count(); j++)    // MainObject
             {
                 QString uid = el.childNodes().at(j).toElement().attribute("uid");
+                QVector<QString> tabinstUids;
                 qDebug() << el.childNodes().at(j).nodeName() << " uid=" <<  uid;
                 for(int k=0; k<el.childNodes().at(j).childNodes().count(); k++)
                 {
                     QDomElement elPulledIn = el.childNodes().at(j).childNodes().at(k).toElement();
                     qDebug() << elPulledIn.nodeName() << " uid=" << elPulledIn.attribute("uid");
+                    tabinstUids.append(elPulledIn.attribute("uid"));
                 }
+                map[uid] = tabinstUids;
             }
             patch->setTempTabInstUidVector(map);
         }
@@ -1424,6 +1437,12 @@ ObjectWithUid* DeserializationFactory::createElementForClassUid(const QString& c
         Table* tab = DeserializationFactory::createTable(v->getProject()->getEngine(), v, a, a.documentElement().firstChild().toElement());
         v->setupForeignKeyRelationshipsForATable(tab);
         return tab;
+    }
+    if(classUid == uidTableInstance)
+    {
+        // Warning! This does not set the table for the table instance! Need to set it later
+        TableInstance* tabInst = DeserializationFactory::createTableInstance(v, a, a.documentElement().firstChild().toElement());
+        return tabInst;
     }
 
     return 0;
