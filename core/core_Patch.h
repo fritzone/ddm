@@ -210,6 +210,8 @@ public:
         return m_uidsToTabInstUids;
     }
 
+    void suspendPatch();
+
 private:
     // the UIDS that are locked in this change
     QStringList m_lockedUids;
