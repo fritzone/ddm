@@ -149,6 +149,7 @@ public slots:
     void onNewTriggerFromPopup();
     void onNewViewFromPopup();
     void onNewViewWithSqlFromPopup();
+    void onInitiatePatch();
     void onNewStringType();
     void onNewNumericType();
     void onNewBoolType();

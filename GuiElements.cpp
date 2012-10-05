@@ -64,27 +64,6 @@ void GuiElements::createGuiElements()
 
     m_issuesTreeDock->hide();
 
-//    // create the gen tree
-//    m_genTreeDock = new QDockWidget(QObject::tr("Generated Items - ") + Workspace::getInstance()->currentSolution()->getName(), MainWindow::instance());
-//    m_genTreeDock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
-//    m_genTreeDock->setFeatures(QDockWidget::AllDockWidgetFeatures);
-//    m_genTreeDock->setFloating(false);
-//    m_genTreeDock->setMinimumSize(300, 340);
-//    m_genTreeDock->setMaximumSize(QApplication::desktop()->screenGeometry().width() / 4, 9999);
-//    m_genTreeDock->resize(301,341);
-
-//    m_genTree = new ContextMenuEnabledTreeWidget();
-//    m_genTree->setAllColumnsShowFocus(true);
-//    m_genTree->setSelectionMode(QAbstractItemView::SingleSelection);
-//    m_genTree->setSelectionBehavior(QAbstractItemView::SelectItems);
-//    m_genTree->setItemDelegate(new ContextMenuDelegate(m_contextMenuHandler,m_genTree));
-//    m_genTree->setColumnCount(1);
-//    m_genTree->setHeaderHidden(true);
-//    QObject::connect(m_genTree, SIGNAL (itemClicked ( QTreeWidgetItem*, int)), MainWindow::instance(),
-//                     SLOT(projectTreeItemClicked(QTreeWidgetItem*, int)));
-
-//    m_genTreeDock->setWidget(m_genTree);
-
     // the patches dockable window
     m_patchesTreeDock = new QDockWidget(QObject::tr("Patches"), MainWindow::instance());
     m_patchesTreeDock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);

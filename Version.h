@@ -118,6 +118,41 @@ public:
     virtual Diagram* getDiagramWithUid(const QString& uid) const = 0;
 
     /**
+     * @brief getProcedureWithUid
+     * @param uid
+     * @return
+     */
+    virtual Procedure* getProcedureWithUid(const QString& uid) const = 0;
+
+    /**
+     * @brief getFunctionWithUid
+     * @param uid
+     * @return
+     */
+    virtual Function* getFunctionWithUid(const QString& uid) const = 0;
+
+    /**
+     * @brief getUserDataTypeWithUid
+     * @param uid
+     * @return
+     */
+    virtual UserDataType* getUserDataTypeWithUid(const QString& uid) const = 0;
+
+    /**
+     * @brief getViewWithUid Returns the View with the given UID
+     * @param uid
+     * @return
+     */
+    virtual View* getViewWithUid(const QString& uid) const = 0;
+
+    /**
+     * @brief getTriggerWithUid
+     * @param uid
+     * @return
+     */
+    virtual Trigger* getTriggerWithUid(const QString& uid) const = 0;
+
+    /**
      * Return the table instance with the given uid for r/w access
      */
     virtual TableInstance* getTableInstanceWithUid(const QString& uid) const = 0;
@@ -363,6 +398,11 @@ public:
         return m_project;
     }
 
+    Project* getProject()
+    {
+        return m_project;
+    }
+
     void setProject(Project* p)
     {
         m_project = p;
@@ -388,6 +428,46 @@ public:
      */
     virtual void replaceTableInstance(const QString& uid, TableInstance* newInst) = 0;
 
+    /**
+     * @brief replaceDiagram replaces the diagram with the given UID with the diagram
+     * @param uid
+     * @param withDgram
+     */
+    virtual void replaceDiagram(const QString& uid, Diagram* withDgram) = 0;
+
+    /**
+     * @brief replaceView replaces the view with the given v
+     * @param uid
+     */
+    virtual void replaceView(const QString& uid, View* v) = 0;
+
+    /**
+     * @brief replaceTrigger replaces a trigger
+     * @param uid
+     * @param t
+     */
+    virtual void replaceTrigger(const QString& uid, Trigger* t) = 0;
+
+    /**
+     * @brief replaceProcedure replace a procedure
+     * @param uid
+     * @param p
+     */
+    virtual void replaceProcedure(const QString& uid, Procedure* p) = 0;
+
+    /**
+     * @brief replaceFunction
+     * @param uid
+     * @param f
+     */
+    virtual void replaceFunction(const QString& uid, Function* f) = 0;
+
+    /**
+     * @brief replaceUserDataType
+     * @param uid
+     * @param dt
+     */
+    virtual void replaceUserDataType(const QString& uid, UserDataType* dt) = 0;
 
     /**
      * @brief undeleteObject Undeletes the object with given UID. The object was supposed to be deleted in a patch.

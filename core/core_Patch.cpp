@@ -127,6 +127,48 @@ void Patch::removeElement(const QString &uid)
             m_version->replaceTableInstance(uid, tinst);
         }
 
+        if(class_uid.toUpper() == uidDiagram.toUpper())
+        {
+            Diagram* dgram = DeserializationFactory::createDiagram(m_version, a, a.documentElement().firstChild().toElement());
+            m_version->replaceDiagram(uid, dgram);
+        }
+
+        if(class_uid.toUpper() == uidView.toUpper())
+        {
+            View* view = DeserializationFactory::createView(m_version, a, a.documentElement().firstChild().toElement());
+            m_version->replaceView(uid, view);
+        }
+
+        if(class_uid.toUpper() == uidTrigger.toUpper())
+        {
+            Trigger* trg = DeserializationFactory::createTrigger(m_version, a, a.documentElement().firstChild().toElement());
+            m_version->replaceTrigger(uid, trg);
+        }
+
+        if(class_uid.toUpper() == uidProcedure.toUpper())
+        {
+            Procedure* proc = DeserializationFactory::createProcedure(m_version, a, a.documentElement().firstChild().toElement());
+            m_version->replaceProcedure(uid, proc);
+        }
+
+        if(class_uid.toUpper() == uidFunction.toUpper())
+        {
+            Function* func= DeserializationFactory::createFunction(m_version, a, a.documentElement().firstChild().toElement());
+            m_version->replaceFunction(uid, func);
+        }
+
+        if(class_uid.toUpper() == uidNumericDT.toUpper()
+            || class_uid.toUpper() == uidStringDT.toUpper()
+            || class_uid.toUpper() == uidDateTimeDT.toUpper()
+            || class_uid.toUpper() == uidBooleanDT.toUpper()
+            || class_uid.toUpper() == uidBlobDT.toUpper()
+            || class_uid.toUpper() == uidMiscDT.toUpper()
+            || class_uid.toUpper() == uidSpatialDT.toUpper())
+        {
+            UserDataType* udt = DeserializationFactory::createUserDataType(m_version, a, a.documentElement().firstChild().toElement());
+            m_version->replaceUserDataType(uid, udt);
+        }
+
         m_originals.remove(uid);
     }
 }

@@ -43,6 +43,10 @@ public:
 
     void setTable(Table* table);
     QString getTableName() const;
+    Table* getTable() const
+    {
+        return m_table;
+    }
 
     void selectTab(int);
     void showColumn(Column *);

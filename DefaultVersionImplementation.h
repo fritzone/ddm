@@ -82,11 +82,22 @@ public:
     virtual const QVector<Function*>& getFunctions();
     virtual Table* getTableWithUid(const QString& uid) const;
     virtual TableInstance* getTableInstanceWithUid(const QString& uid) const;
+    virtual Procedure* getProcedureWithUid(const QString& uid) const;
+    virtual Function* getFunctionWithUid(const QString& uid) const;
     virtual Diagram* getDiagramWithUid(const QString& uid) const;
+    virtual View* getViewWithUid(const QString& uid) const;
+    virtual Trigger* getTriggerWithUid(const QString& uid) const;
+    virtual UserDataType* getUserDataTypeWithUid(const QString& uid) const;
     virtual bool cloneInto(Version* other);
     virtual void patchItem(const QString& uid);
     virtual void replaceTable(const QString& uid, Table* newTab);
     virtual void replaceTableInstance(const QString& uid, TableInstance* newInst);
+    virtual void replaceDiagram(const QString& uid, Diagram* withDgram);
+    virtual void replaceView(const QString& uid, View* view);
+    virtual void replaceTrigger(const QString& uid, Trigger* trg);
+    virtual void replaceProcedure(const QString& uid, Procedure* proc);
+    virtual void replaceUserDataType(const QString& uid, UserDataType* dt);
+    virtual void replaceFunction(const QString& uid, Function* func);
     virtual Patch* getWorkingPatch();
     virtual bool undeleteObject(const QString& uid);
 
@@ -143,4 +154,5 @@ protected:
 };
 
 #endif // DEFAULTVERSIONIMPLEMENTATION_H
+
 
