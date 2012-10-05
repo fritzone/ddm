@@ -40,7 +40,7 @@ DeserializationFactory::DeserializationFactory()
 {
 }
 
-UserDataType* DeserializationFactory::createUserDataType(const QDomDocument&, const QDomElement& element, Version* v)
+UserDataType* DeserializationFactory::createUserDataType(Version* v, const QDomDocument&, const QDomElement& element)
 {
     QString name = element.attribute("Name");
     QString type = element.attribute("Type");
@@ -274,7 +274,7 @@ void DeserializationFactory::createMajorVersion(MajorVersion *mv, Project *p, Da
         {
             for(int j=0; j<element.childNodes().at(i).childNodes().count(); j++)
             {
-                UserDataType* dt = createUserDataType(doc, element.childNodes().at(i).childNodes().at(j).toElement(), mv);
+                UserDataType* dt = createUserDataType(mv, doc, element.childNodes().at(i).childNodes().at(j).toElement());
                 mv->addNewDataType(dt, true);
             }
         }
@@ -353,7 +353,7 @@ void DeserializationFactory::createMajorVersion(MajorVersion *mv, Project *p, Da
         {
             for(int j=0; j<element.childNodes().at(i).childNodes().count(); j++)
             {
-                View* view = createView(p, mv, doc, element.childNodes().at(i).childNodes().at(j).toElement());
+                View* view = createView(mv, doc, element.childNodes().at(i).childNodes().at(j).toElement());
                 mv->addView(view, true);
             }
         }
@@ -366,7 +366,7 @@ void DeserializationFactory::createMajorVersion(MajorVersion *mv, Project *p, Da
         {
             for(int j=0; j<element.childNodes().at(i).childNodes().count(); j++)
             {
-                Procedure* proc = createProcedure(p, mv, doc, element.childNodes().at(i).childNodes().at(j).toElement());
+                Procedure* proc = createProcedure(mv, doc, element.childNodes().at(i).childNodes().at(j).toElement());
                 mv->addProcedure(proc, true);
             }
         }
@@ -379,7 +379,7 @@ void DeserializationFactory::createMajorVersion(MajorVersion *mv, Project *p, Da
         {
             for(int j=0; j<element.childNodes().at(i).childNodes().count(); j++)
             {
-                Function* func= createFunction(p, mv, doc, element.childNodes().at(i).childNodes().at(j).toElement());
+                Function* func= createFunction(mv, doc, element.childNodes().at(i).childNodes().at(j).toElement());
                 mv->addFunction(func, true);
             }
         }
@@ -392,7 +392,7 @@ void DeserializationFactory::createMajorVersion(MajorVersion *mv, Project *p, Da
         {
             for(int j=0; j<element.childNodes().at(i).childNodes().count(); j++)
             {
-                Trigger* trig = createTrigger(p, mv, doc, element.childNodes().at(i).childNodes().at(j).toElement());
+                Trigger* trig = createTrigger(mv, doc, element.childNodes().at(i).childNodes().at(j).toElement());
                 mv->addTrigger(trig, true);
             }
         }
@@ -580,7 +580,7 @@ QueryComponent* DeserializationFactory::createComponent(QueryComponent* parent, 
     return c;
 }
 
-View* DeserializationFactory::createView(Project* p, Version* v, const QDomDocument& doc, const QDomElement& element)
+View* DeserializationFactory::createView(Version* v, const QDomDocument& doc, const QDomElement& element)
 {
     bool manual = element.attribute("Manual") == "1";
     QString uid = element.attribute("uid");
@@ -651,32 +651,32 @@ View* DeserializationFactory::createView(Project* p, Version* v, const QDomDocum
                     QDomElement childNode = queryNode.childNodes().at(j).toElement();
                     if(childNode.nodeName() == "Select")
                     {
-                        SelectQuerySelectComponent* sqsc = dynamic_cast<SelectQuerySelectComponent*> (createComponent(q, p, v, doc, childNode));
+                        SelectQuerySelectComponent* sqsc = dynamic_cast<SelectQuerySelectComponent*> (createComponent(q, v->getProject(), v, doc, childNode));
                         q->setSelect(sqsc);
                     }
                     if(childNode.nodeName() == "From")
                     {
-                        SelectQueryFromComponent* sqfc = dynamic_cast<SelectQueryFromComponent*> (createComponent(q, p, v, doc, childNode));
+                        SelectQueryFromComponent* sqfc = dynamic_cast<SelectQueryFromComponent*> (createComponent(q, v->getProject(), v, doc, childNode));
                         q->setFrom(sqfc);
                     }
                     if(childNode.nodeName() == "WhereComponent")
                     {
-                        SelectQueryWhereComponent* sqwc = dynamic_cast<SelectQueryWhereComponent*> (createComponent(q, p, v, doc, childNode));
+                        SelectQueryWhereComponent* sqwc = dynamic_cast<SelectQueryWhereComponent*> (createComponent(q, v->getProject(), v, doc, childNode));
                         q->setWhere(sqwc);
                     }
                     if(childNode.nodeName() == "GroupBy")
                     {
-                        SelectQueryGroupByComponent* sqgbc = dynamic_cast<SelectQueryGroupByComponent*> (createComponent(q, p, v, doc, childNode));
+                        SelectQueryGroupByComponent* sqgbc = dynamic_cast<SelectQueryGroupByComponent*> (createComponent(q, v->getProject(), v, doc, childNode));
                         q->setGroupBy(sqgbc);
                     }
                     if(childNode.nodeName() == "HavingComponent")
                     {
-                        SelectQueryWhereComponent* sqwc = dynamic_cast<SelectQueryWhereComponent*> (createComponent(q, p, v, doc, childNode));
+                        SelectQueryWhereComponent* sqwc = dynamic_cast<SelectQueryWhereComponent*> (createComponent(q, v->getProject(), v, doc, childNode));
                         q->setHaving(sqwc);
                     }
                     if(childNode.nodeName() == "OrderBy")
                     {
-                        SelectQueryOrderByComponent* sqobc = dynamic_cast<SelectQueryOrderByComponent*> (createComponent(q, p, v, doc, childNode));
+                        SelectQueryOrderByComponent* sqobc = dynamic_cast<SelectQueryOrderByComponent*> (createComponent(q, v->getProject(), v, doc, childNode));
                         q->setOrderBy(sqobc);
                     }
                 }
@@ -1146,7 +1146,7 @@ TableInstance* DeserializationFactory::createTableInstance(Version* v, const QDo
     }
 }
 
-Procedure* DeserializationFactory::createProcedure(Project*, Version* v,  const QDomDocument&, const QDomElement& element)
+Procedure* DeserializationFactory::createProcedure(Version* v,  const QDomDocument&, const QDomElement& element)
 {
     QString name = element.attribute("Name");
     QString uid = element.attribute("uid");
@@ -1194,7 +1194,7 @@ Procedure* DeserializationFactory::createProcedure(Project*, Version* v,  const 
     return p;
 }
 
-Function* DeserializationFactory::createFunction(Project*, Version* v,  const QDomDocument&, const QDomElement& element)
+Function* DeserializationFactory::createFunction(Version* v,  const QDomDocument&, const QDomElement& element)
 {
     QString name = element.attribute("Name");
     QString uid = element.attribute("uid");
@@ -1241,7 +1241,7 @@ Function* DeserializationFactory::createFunction(Project*, Version* v,  const QD
     return func;
 }
 
-Trigger* DeserializationFactory::createTrigger(Project*, Version* v,  const QDomDocument&, const QDomElement& element)
+Trigger* DeserializationFactory::createTrigger(Version* v,  const QDomDocument&, const QDomElement& element)
 {
     Table* tab = v->getTable(element.attribute("Table"));
     if(tab == 0) return 0;
@@ -1443,6 +1443,42 @@ ObjectWithUid* DeserializationFactory::createElementForClassUid(const QString& c
         // Warning! This does not set the table for the table instance! Need to set it later
         TableInstance* tabInst = DeserializationFactory::createTableInstance(v, a, a.documentElement().firstChild().toElement());
         return tabInst;
+    }
+    if(classUid.toUpper() == uidDiagram.toUpper())
+    {
+        Diagram* dgram = DeserializationFactory::createDiagram(v, a, a.documentElement().firstChild().toElement());
+        return dgram;
+    }
+    if(classUid.toUpper() == uidView.toUpper())
+    {
+        View* view = DeserializationFactory::createView(v, a, a.documentElement().firstChild().toElement());
+        return view;
+    }
+    if(classUid.toUpper() == uidTrigger.toUpper())
+    {
+        Trigger* trg= DeserializationFactory::createTrigger(v, a, a.documentElement().firstChild().toElement());
+        return trg;
+    }
+    if(classUid.toUpper() == uidProcedure.toUpper())
+    {
+        Procedure* proc= DeserializationFactory::createProcedure(v, a, a.documentElement().firstChild().toElement());
+        return proc;
+    }
+    if(classUid.toUpper() == uidFunction.toUpper())
+    {
+        Function* func= DeserializationFactory::createFunction(v, a, a.documentElement().firstChild().toElement());
+        return func;
+    }
+    if(classUid.toUpper() == uidNumericDT.toUpper()
+        || classUid.toUpper() == uidStringDT.toUpper()
+        || classUid.toUpper() == uidDateTimeDT.toUpper()
+        || classUid.toUpper() == uidBooleanDT.toUpper()
+        || classUid.toUpper() == uidBlobDT.toUpper()
+        || classUid.toUpper() == uidMiscDT.toUpper()
+        || classUid.toUpper() == uidSpatialDT.toUpper())
+    {
+        UserDataType* udt= DeserializationFactory::createUserDataType(v, a, a.documentElement().firstChild().toElement());
+        return udt;
     }
 
     return 0;

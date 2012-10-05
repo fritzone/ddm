@@ -862,7 +862,7 @@ void MainWindow::onNewTable()
     NewTableForm* frm = Workspace::getInstance()->workingVersion()->getGui()->getTableFormForNewTable();
     frm->focusOnName();
 
-    m_guiElements->getProjectTree()->setCurrentItem(0);
+    m_guiElements->getProjectTree()->setCurrentItem(frm->getTable()->getLocation());
     setCentralWidget(frm);
     m_ui->action_NewTable->setDisabled(false);
 }
@@ -927,9 +927,7 @@ bool MainWindow::onSaveNewDataType(const QString& name, const QString& type, con
         // create the tree entry
         ContextMenuEnabledTreeWidgetItem* newDtItem = v->getGui()->createDataTypeTreeEntry(udt);
 
-        // set the link to the tree
-        m_guiElements->getProjectTree()->expandItem(newDtItem);
-        m_guiElements->getProjectTree()->scrollToItem(newDtItem);
+        m_guiElements->getProjectTree()->setCurrentItem(newDtItem);
         return true;
     }
     return false;
@@ -1159,6 +1157,7 @@ void MainWindow::connectActionsFromPopupMenus()
     QObject::connect(ContextMenuCollection::getInstance()->getAction_AddTrigger(), SIGNAL(triggered()), this, SLOT(onNewTriggerFromPopup()));
     QObject::connect(ContextMenuCollection::getInstance()->getAction_AddView(), SIGNAL(triggered()), this, SLOT(onNewViewFromPopup()));
     QObject::connect(ContextMenuCollection::getInstance()->getAction_AddViewWithSql(), SIGNAL(triggered()), this, SLOT(onNewViewWithSqlFromPopup()));
+    QObject::connect(ContextMenuCollection::getInstance()->getAction_InitiatePatch(), SIGNAL(triggered()), this, SLOT(onInitiatePatch()));
 
 }
 
@@ -1186,6 +1185,7 @@ void MainWindow::onReleaseMajorVersion()
             if(m)
             {
                 Workspace::getInstance()->currentProject()->releaseMajorVersion();
+                v->getGui()->getVersionItem()->setPopupMenu(ContextMenuCollection::getInstance()->getReleasedVersionPopupMenu());
             }
         }
     }
@@ -1255,7 +1255,7 @@ void MainWindow::finallyDoLockLikeOperation(bool reLocking, const QString& guid)
         }
 
         le->updateGui();
-        doneSomething = showObjectWithGuid(guid);
+        doneSomething = true;
 
     }
 
@@ -1263,6 +1263,8 @@ void MainWindow::finallyDoLockLikeOperation(bool reLocking, const QString& guid)
     if(doneSomething)
     {
         createPatchElement(v, element, guid, reLocking);
+        showObjectWithGuid(guid);
+        m_guiElements->getProjectTree()->setCurrentItem( (dynamic_cast<TreeItem*>(element)->getLocation()));
     }
 
 }
@@ -1278,7 +1280,7 @@ void MainWindow::createPatchElement(Version* v, ObjectWithUid * element, const Q
 {
     NamedItem *ni = dynamic_cast<NamedItem*>(element);
     if(!ni) return;
-    if(!m_guiElements->getPatchesDock()->isVisible())
+    if(!m_guiElements->getPatchesDock()->isVisible() && !reLocking)
     {
         m_guiElements->getPatchesDock()->show();
         addDockWidget(Qt::LeftDockWidgetArea, m_guiElements->getPatchesDock());
@@ -1429,6 +1431,7 @@ void MainWindow::onNewDiagram()
     setCentralWidget(df);
     dgram->setForm(df);
     onSaveDiagram(dgram, m_workspace->workingVersion());
+    m_guiElements->getProjectTree()->setCurrentItem(dgram->getLocation());
 }
 
 bool MainWindow::onSaveDiagram(Diagram* dgram, Version* v)
@@ -1776,6 +1779,9 @@ void MainWindow::onNewTableInstance()
 
         // This is OK, the button defaultly adds to the working version
         m_workspace->workingVersion()->getGui()->updateForms();
+        m_guiElements->getProjectTree()->setCurrentItem(m_workspace->workingVersion()->getGui()->getTableInstancesItem());
+
+
     }
 }
 
@@ -2701,7 +2707,7 @@ void MainWindow::onNewView()
     v->getHelper()->setForm(this);
     Workspace::getInstance()->workingVersion()->addView(v, false);
     Workspace::getInstance()->workingVersion()->getGui()->createViewTreeEntry(v);
-
+    m_guiElements->getProjectTree()->setCurrentItem(v->getLocation());
     rerenderQuery(v->getQuery());
 }
 
@@ -2716,7 +2722,7 @@ void MainWindow::onNewProcedure()
     frm->initSql();
     Workspace::getInstance()->workingVersion()->addProcedure(p, false);
     Workspace::getInstance()->workingVersion()->getGui()->createProcedureTreeEntry(p);
-
+    m_guiElements->getProjectTree()->setCurrentItem(p->getLocation());
     setCentralWidget(frm);
 }
 
@@ -2729,7 +2735,7 @@ void MainWindow::onNewFunction()
     frm->initSql();
     Workspace::getInstance()->workingVersion()->addFunction(func, false);
     Workspace::getInstance()->workingVersion()->getGui()->createFunctionTreeEntry(func);
-
+    m_guiElements->getProjectTree()->setCurrentItem(func->getLocation());
     //m_guiElements->getProjectTree()->setCurrentItem(p->getLocation());
     setCentralWidget(frm);
 }
@@ -2753,6 +2759,7 @@ void MainWindow::onNewTrigger()
     frm->feedInTriggerTimes(Workspace::getInstance()->currentProjectsEngine()->getTriggerTimings());
     Workspace::getInstance()->workingVersion()->addTrigger(trigger, false);
     Workspace::getInstance()->workingVersion()->getGui()->createTriggerTreeEntry(trigger);
+    m_guiElements->getProjectTree()->setCurrentItem(trigger->getLocation());
     setCentralWidget(frm);
 
 }
@@ -2886,5 +2893,31 @@ void MainWindow::onUndeleteSomething()
     {
         m_guiElements->removeItemForPatch(v->getWorkingPatch(), obj->getObjectUid());
         showObjectWithGuid(obj->getObjectUid());
+    }
+}
+
+void MainWindow::onInitiatePatch()
+{
+    MajorVersion * m = 0;
+    if(m_guiElements->getProjectTree()->getLastRightclickedItem() != 0)
+    {
+        ContextMenuEnabledTreeWidgetItem* item = m_guiElements->getProjectTree()->getLastRightclickedItem();
+        m_guiElements->getProjectTree()->setLastRightclickedItem(0);
+        QVariant qv = item->data(0, Qt::UserRole);
+        QString name = qv.toString();
+        Version* v = Workspace::getInstance()->currentProject()->getVersionNamed(name);
+        if(v)
+        {
+            m = dynamic_cast<MajorVersion*>(v);
+            if(m)
+            {
+                if(!m_guiElements->getPatchesDock()->isVisible())
+                {
+                    m_guiElements->getPatchesDock()->show();
+                    addDockWidget(Qt::LeftDockWidgetArea, m_guiElements->getPatchesDock());
+                }
+                m->getWorkingPatch();
+            }
+        }
     }
 }

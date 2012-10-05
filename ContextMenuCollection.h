@@ -68,6 +68,7 @@ public:
     QMenu* getSuspendPatchPopupMenu() { return m_suspendPatchMenu; }
     QMenu* getResumePatchPopupMenu() { return m_resumePatchMenu; }
     QMenu* getUndeletePopupMenu() { return m_undeletePopupMenu; }
+    QMenu* getReleasedVersionPopupMenu() { return m_releasedVersionPopupMenu; }
 
     /*
      * Actions
@@ -130,6 +131,7 @@ public:
     QAction* getAction_AddTrigger() { return action_addTrigger; }
     QAction* getAction_AddView() { return action_addView; }
     QAction* getAction_AddViewWithSql() { return action_addViewWithSql; }
+    QAction* getAction_InitiatePatch() { return action_initiatePatch; }
 
     QMenu* getUnLockMenuForClassUid(const QString& uid);
     QMenu* getMenuForClassUid(const QString& uid);
@@ -183,6 +185,7 @@ private:
     QMenu* m_resumePatchMenu;                   // popup menu for a suspended patch
     QMenu* m_proceduresPopupMenu;               // popup menu for the procedures tree entry
     QMenu* m_functionsPopupMenu;                // popup menu for the procedures tree entry
+    QMenu* m_releasedVersionPopupMenu;          // popup menu for the version which was just released. Contains a "Initiate patch" entry
 
     // the actions in the table popup menu
     QAction* action_RemoveTable;
@@ -296,6 +299,9 @@ private:
     // for the views menu
     QAction* action_addView;
     QAction* action_addViewWithSql;
+
+    // for the released version
+    QAction* action_initiatePatch;
 
     // the instance of the popup menu collection
     static ContextMenuCollection* m_instance;

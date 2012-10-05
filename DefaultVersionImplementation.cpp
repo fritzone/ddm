@@ -212,6 +212,70 @@ Table* DefaultVersionImplementation::getTableWithUid(const QString& uid) const
     return 0;
 }
 
+Procedure* DefaultVersionImplementation::getProcedureWithUid(const QString& uid) const
+{
+    for(int i=0; i<m_data.m_procedures.size(); i++)
+    {
+        if(m_data.m_procedures[i]->getObjectUid() == uid)
+        {
+            return m_data.m_procedures[i];
+        }
+    }
+    return 0;
+}
+
+Function* DefaultVersionImplementation::getFunctionWithUid(const QString& uid) const
+{
+    for(int i=0; i<m_data.m_functions.size(); i++)
+    {
+        if(m_data.m_functions[i]->getObjectUid() == uid)
+        {
+            return m_data.m_functions[i];
+        }
+    }
+    return 0;
+}
+
+UserDataType* DefaultVersionImplementation::getUserDataTypeWithUid(const QString& uid) const
+{
+    for(int i=0; i<m_data.m_dataTypes.size(); i++)
+    {
+        if(m_data.m_dataTypes[i]->getObjectUid() == uid)
+        {
+            return m_data.m_dataTypes[i];
+        }
+    }
+
+    return 0;
+
+}
+
+Trigger* DefaultVersionImplementation::getTriggerWithUid(const QString& uid) const
+{
+    for(int i=0; i<m_data.m_triggers.size(); i++)
+    {
+        if(m_data.m_triggers[i]->getObjectUid() == uid)
+        {
+            return m_data.m_triggers[i];
+        }
+    }
+
+    return 0;
+}
+
+View* DefaultVersionImplementation::getViewWithUid(const QString& uid) const
+{
+    for(int i=0; i<m_data.m_views.size(); i++)
+    {
+        if(m_data.m_views[i]->getObjectUid() == uid)
+        {
+            return m_data.m_views[i];
+        }
+    }
+
+    return 0;
+}
+
 Diagram* DefaultVersionImplementation::getDiagramWithUid(const QString& uid) const
 {
     for(int i=0; i<m_data.m_diagrams.size(); i++)
@@ -1595,6 +1659,140 @@ void DefaultVersionImplementation::replaceTableInstance(const QString& uid, Tabl
     }
 
     newInst->updateGui();
+
+    return;
+}
+
+
+void DefaultVersionImplementation::replaceDiagram(const QString& uid, Diagram* withDgram)
+{
+    Diagram* d = getDiagramWithUid(uid);
+    if(!d) return;
+
+    withDgram->setForcedUid(uid);
+    withDgram->setName(d->getName());
+    withDgram->lock();
+    withDgram->setLocation(d->getLocation());
+
+    for(int i=0; i< m_data.m_diagrams.size(); i++)
+    {
+        if(m_data.m_diagrams[i]->getObjectUid() == uid)
+        {
+            m_data.m_diagrams[i] = withDgram;
+        }
+    }
+
+    withDgram->updateGui();
+
+    return;
+}
+
+void DefaultVersionImplementation::replaceView(const QString& uid, View* view)
+{
+    View* v = getViewWithUid(uid);
+    if(!v) return;
+
+    view->setForcedUid(uid);
+    view->setName(v->getName());
+    view->lock();
+    view->setLocation(v->getLocation());
+
+    for(int i=0; i< m_data.m_views.size(); i++)
+    {
+        if(m_data.m_views[i]->getObjectUid() == uid)
+        {
+            m_data.m_views[i] = view;
+        }
+    }
+
+    view->updateGui();
+
+    return;
+}
+
+void DefaultVersionImplementation::replaceProcedure(const QString& uid, Procedure* proc)
+{
+    Procedure* p = getProcedureWithUid(uid);
+    if(!p) return;
+
+    proc->setForcedUid(uid);
+    proc->setName(p->getName());
+    proc->lock();
+    proc->setLocation(p->getLocation());
+
+    for(int i=0; i< m_data.m_procedures.size(); i++)
+    {
+        if(m_data.m_procedures[i]->getObjectUid() == uid)
+        {
+            m_data.m_procedures[i] = proc;
+        }
+    }
+    proc->updateGui();
+    return;
+}
+
+void DefaultVersionImplementation::replaceFunction(const QString& uid, Function* func)
+{
+    Function* f = getFunctionWithUid(uid);
+    if(!f) return;
+
+    func->setForcedUid(uid);
+    func->setName(f->getName());
+    func->lock();
+    func->setLocation(f->getLocation());
+
+    for(int i=0; i< m_data.m_functions.size(); i++)
+    {
+        if(m_data.m_functions[i]->getObjectUid() == uid)
+        {
+            m_data.m_functions[i] = func;
+        }
+    }
+
+    func->updateGui();
+    return;
+}
+
+void DefaultVersionImplementation::replaceUserDataType(const QString& uid, UserDataType* dt)
+{
+    UserDataType* d = getUserDataTypeWithUid(uid);
+    if(!d) return;
+
+    dt->setForcedUid(uid);
+    dt->setName(d->getName());
+    dt->lock();
+    dt->setLocation(d->getLocation());
+
+    for(int i=0; i< m_data.m_dataTypes.size(); i++)
+    {
+        if(m_data.m_dataTypes[i]->getObjectUid() == uid)
+        {
+            m_data.m_dataTypes[i] = dt;
+        }
+    }
+    dt->updateGui();
+    return;
+}
+
+void DefaultVersionImplementation::replaceTrigger(const QString& uid, Trigger* trg)
+{
+    Trigger* t = getTriggerWithUid(uid);
+    if(!t) return;
+
+    trg->setForcedUid(uid);
+    trg->setName(t->getName());
+    trg->lock();
+    trg->setLocation(t->getLocation());
+
+    for(int i=0; i< m_data.m_triggers.size(); i++)
+    {
+        if(m_data.m_triggers[i]->getObjectUid() == uid)
+        {
+            m_data.m_triggers[i] = trg;
+        }
+    }
+
+    trg->updateGui();
 
     return;
 }
