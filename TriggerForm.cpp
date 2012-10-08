@@ -238,7 +238,7 @@ void TriggerForm::onLockUnlock(bool checked)
 
 void TriggerForm::onUndelete()
 {
-    if(m_version->undeleteObject(m_trigger->getObjectUid()))
+    if(m_version->undeleteObject(m_trigger->getObjectUid(), false))
     {
         MainWindow::instance()->getGuiElements()->removeItemForPatch(m_version->getWorkingPatch(), m_trigger->getObjectUid());
         // TODO: Duplicate from above

@@ -213,6 +213,11 @@ public:
     void suspendPatch();
 
 private:
+
+    QString serializedElementAsB64(const QString& uid);
+    void removeDeletionAction(const QString& uid);
+
+private:
     // the UIDS that are locked in this change
     QStringList m_lockedUids;
 
@@ -246,6 +251,14 @@ private:
     QMap<QString, QString> m_objUidToClassUid; // contains a map of obj uid to class uid just for the patch internals
     QMap<QString, QVector <QString> > m_uidsToTabInstUids;
 
+    // this map contains the elements that were modified in this patch. This is populated when the
+    // user has suspended the patch with the elements from the version that were modified (basically
+    // the elements of the m_lockedUids are serialized in here)
+    QMap<QString, QString> m_suspendPatchModifiedElements;
+
+    // this map contains the elements that were added in the patch. This map is populated
+    // when the user suspends a patch. The elements from m_newUids are to be found here
+    QMap<QString, QString> m_suspendedPatchNewElements;
 };
 
 #endif // CORE_PATCH_H

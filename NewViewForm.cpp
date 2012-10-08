@@ -388,7 +388,7 @@ void NewViewForm::onLockUnlock(bool checked)
 
 void NewViewForm::onUndelete()
 {
-    if(m_version->undeleteObject(m_view->getObjectUid()))
+    if(m_version->undeleteObject(m_view->getObjectUid(), false))
     {
         MainWindow::instance()->getGuiElements()->removeItemForPatch(m_version->getWorkingPatch(), m_view->getObjectUid());
         // TODO: Duplicate from above

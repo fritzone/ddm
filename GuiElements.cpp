@@ -299,6 +299,7 @@ void GuiElements::removeItemForPatch(Patch *p, const QString& uid)
     {
         delete itm;
         m_patchItems.remove(p);
+        p->version()->removePatch(p);
     }
 
     if(m_patchItems.keys().size() == 0)

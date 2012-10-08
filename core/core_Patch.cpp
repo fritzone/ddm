@@ -32,24 +32,24 @@ Patch::Patch(Version *v, bool init) : NamedItem("Patch"), ObjectWithUid(QUuid::c
     }
 }
 
-void Patch::addElement(const QString &uid)
+QString Patch::serializedElementAsB64(const QString &uid)
 {
     ObjectWithUid* element = UidWarehouse::instance().getElement(uid);
     if(!element)
     {
         qDebug() << "no element for " << uid;
-        return;
+        return "";
     }
     if(m_lockedUids.contains(uid, Qt::CaseInsensitive))
     {
         qDebug() << "element already here " << uid;
-        return;
+        return "";
     }
     m_lockedUids.append(uid);
     SerializableElement* e = dynamic_cast<SerializableElement*>(element);
     if(!e)
     {
-        return;
+        return "";
     }
 
     QDomDocument doc("PatchData");
@@ -60,9 +60,14 @@ void Patch::addElement(const QString &uid)
 
     // convert the text to bas64 encoding
     text = QString(text.toUtf8().toBase64());
-    m_originals.insert(uid, text);
+    return text;
+}
 
-    qDebug() << "added " << uid;
+void Patch::addElement(const QString &uid)
+{
+    QString text = serializedElementAsB64(uid);
+    if(text.isEmpty()) return;
+    m_originals.insert(uid, text);
 }
 
 void Patch::addNewElement(const QString &uid)
@@ -189,14 +194,19 @@ void Patch::undeleteObject(const QString &uid)
 {
     if(!m_deletedUids.contains(uid)) return;
     if(!m_deletedObjects.keys().contains(uid)) return;
+    if(!m_lockedUids.contains(uid)) return;
+    ObjectWithUid* obj = UidWarehouse::instance().getElement(uid);
+    if(!obj) return;
 
     m_deletedUids.removeOne(uid);
     m_deletedObjects.remove(uid);
+    m_lockedUids.removeOne(uid);
+    m_originals.remove(uid);
 
-    ObjectWithUid* obj = UidWarehouse::instance().getElement(uid);
-    if(!obj) return;
+    removeDeletionAction(uid);
+
     dynamic_cast<LockableElement*>(obj)->undeleteObject();
-    qDebug() << "undeleted" << uid;
+    UidWarehouse::instance().replace(uid, obj);
 
 }
 
@@ -600,5 +610,55 @@ void Patch::finalizePatchDeserialization()
             m_dtDeletions.insert(uid, dtda);
         }
     }
-
 }
+
+void Patch::suspendPatch()
+{
+    // create the modified elements map
+    for(int i=0; i<m_lockedUids.size(); i++)
+    {
+        QString text = serializedElementAsB64(m_lockedUids.at(i));
+        m_suspendPatchModifiedElements.insert(m_lockedUids.at(i), text);
+    }
+
+    // create the new elements map
+    for(int i=0; i<m_newUids.size(); i++)
+    {
+        QString text = serializedElementAsB64(m_newUids.at(i));
+        m_suspendedPatchNewElements.insert(m_newUids.at(i), text);
+    }
+
+
+    // now put back the locked elements in the version
+    for(int i=0; i<m_lockedUids.size(); i++)
+    {
+        removeElement(m_lockedUids.at(i));
+    }
+
+    // undelete the deleted elements
+    //for(int i=m_deletedUids.size() - 1; i >=0 ; i--)
+    for(int i=0; i<m_deletedUids.size(); i++)
+    {
+        qDebug() << "---------------- Undelete: " << m_deletedUids.at(i);
+        m_version->undeleteObject(m_deletedUids.at(i), true); // if we delete the elements backwards we might get rid of the dependencies
+    }
+
+    // upate GUI and flags
+    m_suspended = true;
+    getLocation()->setIcon(0, IconFactory::getSuspendedPatchIcon());
+}
+
+
+void Patch::removeDeletionAction(const QString &uid)
+{
+    if(m_tableDeletions.contains(uid)) m_tableDeletions.remove(uid);
+    if(m_dtDeletions.contains(uid)) m_dtDeletions.remove(uid);
+    if(m_viewDeletions.contains(uid)) m_viewDeletions.remove(uid);
+    if(m_triggerDeletions.contains(uid)) m_triggerDeletions.remove(uid);
+    if(m_functionDeletions.contains(uid)) m_functionDeletions.remove(uid);
+    if(m_procedureDeletions.contains(uid)) m_procedureDeletions.remove(uid);
+    if(m_diagramDeletions.contains(uid)) m_diagramDeletions.remove(uid);
+}
+
+
+

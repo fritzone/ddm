@@ -99,7 +99,8 @@ public:
     virtual void replaceUserDataType(const QString& uid, UserDataType* dt);
     virtual void replaceFunction(const QString& uid, Function* func);
     virtual Patch* getWorkingPatch();
-    virtual bool undeleteObject(const QString& uid);
+    virtual bool undeleteObject(const QString& uid, bool suspend);
+    virtual void removePatch(const Patch* p);
 
     void createTreeItems(GuiElements* gui, ContextMenuEnabledTreeWidgetItem* projectItem);
     void deleteTableInstance(TableInstance *tinst, TableDeletionAction*& );

@@ -423,7 +423,7 @@ void DiagramForm::onLockUnlock(bool checked)
 
 void DiagramForm::onUndelete()
 {
-    if(m_version->undeleteObject(m_diagram->getObjectUid()))
+    if(m_version->undeleteObject(m_diagram->getObjectUid(), false))
     {
         MainWindow::instance()->getGuiElements()->removeItemForPatch(m_version->getWorkingPatch(), m_diagram->getObjectUid());
         // TODO: Duplicate from above

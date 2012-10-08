@@ -24,6 +24,7 @@ class UidWarehouse
 public:
 
     void addElement(ObjectWithUid* o, Version *v);
+    void replace(const QString& uid, ObjectWithUid* o);
     void addElement(QUuid uid, Version* v);
     ObjectWithUid* getElement(const QString&);
     Version* getVersionForUid(const QString& uid);
