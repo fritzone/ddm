@@ -498,7 +498,6 @@ void MainWindow::patchTreeItemClicked(QTreeWidgetItem * current, int)
         }
         else
         {
-            qDebug() << "SELECT: " << uid;
             QMap<QString, showSomething> mapping;
             mapping.insert(uidTable, (showSomething)&MainWindow::showTableWithGuid);
             mapping.insert(uidTableInstance, (showSomething)&MainWindow::showTableInstanceWithGuid);
@@ -511,6 +510,12 @@ void MainWindow::patchTreeItemClicked(QTreeWidgetItem * current, int)
             if(mapping.contains(classUid))
             {
                 showObjectWithGuidAndVersion(foundVersion, uid, mapping[classUid], false);
+
+                QFont f = current->font(0);
+                if(f.italic())  // TODO: the lamest way of checking if this element is in a suspended patch or not, but I'm too lazy now.
+                {
+                    this->centralWidget()->setDisabled(true);
+                }
             }
         }
     }
@@ -525,6 +530,7 @@ void MainWindow::projectTreeItemClicked(QTreeWidgetItem * current, int)
         QString uid = qv.toString();
 
         ObjectWithUid* obj = UidWarehouse::instance().getElement(uid);
+        qDebug() << "ptcl " << uid << " obj=" << obj;
         Version* foundVersion = UidWarehouse::instance().getVersionForUid(uid);
         if(!foundVersion)
         {
@@ -2844,15 +2850,29 @@ void MainWindow::onSqlQueryInConnection()
 
 void MainWindow::suspendPatch()
 {
-    if(m_guiElements->getPatchesTree()->getLastRightclickedItem() != 0)
+    Patch* p = getRightClickedObject<Patch>();
+    if(p)
     {
-        ContextMenuEnabledTreeWidgetItem* item = m_guiElements->getPatchesTree()->getLastRightclickedItem();
-        m_guiElements->getPatchesTree()->setLastRightclickedItem(0);
-
-        QVariant qv = item->data(0, Qt::UserRole);
-        QString uid = qv.toString();
-
-        qDebug() << uid;
+        p->suspendPatch();
+        ContextMenuEnabledTreeWidgetItem* itm = p->getLocation();
+        itm->setPopupMenu(ContextMenuCollection::getInstance()->getResumePatchPopupMenu());
+        for(int i=0; i<itm->childCount(); i++)
+        {
+            QFont f = itm->child(i)->font(0);
+            f.setItalic(true);
+            itm->child(i)->setFont(0, f);
+            ((ContextMenuEnabledTreeWidgetItem*)itm->child(i))->setPopupMenu(ContextMenuCollection::getInstance()->getResumePatchPopupMenu());
+            if(itm->child(i)->childCount())
+            {
+                for(int j=0; j<itm->child(i)->childCount(); j++)
+                {
+                    QFont f1 = itm->child(i)->child(j)->font(0);
+                    f1.setItalic(true);
+                    itm->child(i)->child(j)->setFont(0, f1);
+                    ((ContextMenuEnabledTreeWidgetItem*)itm->child(i)->child(j))->setPopupMenu(ContextMenuCollection::getInstance()->getResumePatchPopupMenu());
+                }
+            }
+        }
     }
 
 }
@@ -2889,7 +2909,7 @@ void MainWindow::onUndeleteSomething()
 {
     ObjectWithUid* obj = getRightClickedObject<ObjectWithUid>();
     Version* v = UidWarehouse::instance().getVersionForUid(obj->getObjectUid());
-    if(v->undeleteObject(obj->getObjectUid()))
+    if(v->undeleteObject(obj->getObjectUid(), false))
     {
         m_guiElements->removeItemForPatch(v->getWorkingPatch(), obj->getObjectUid());
         showObjectWithGuid(obj->getObjectUid());

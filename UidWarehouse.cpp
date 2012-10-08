@@ -41,6 +41,33 @@ void UidWarehouse::addElement(ObjectWithUid *o, Version *v)
     }
 }
 
+void UidWarehouse::replace(const QString &uid, ObjectWithUid *o)
+{
+    WarehouseEntry* whe = new WarehouseEntry();
+    whe->obj = o;
+    whe->objectId = uid;
+    whe->ver = o->version();
+
+
+    Solution* s = 0;
+    if(m_items.keys().contains(s))
+    {
+        if(m_items[s].contains(uid))
+        {
+            m_items[s][uid] = whe;
+
+            qDebug() << "1 replace" << uid << " obj=" << o;
+        }
+    }
+    else
+    {
+        qDebug() << "1 replace" << uid << " obj=" << o;
+        QMap<QString, WarehouseEntry*> * e = new QMap<QString, WarehouseEntry*>();
+        e->insert(uid, whe);
+        m_items.insert(s, *e);
+    }
+}
+
 void UidWarehouse::addElement(QUuid uid, Version *v)
 {
     WarehouseEntry* whe = new WarehouseEntry();

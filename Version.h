@@ -473,7 +473,13 @@ public:
      * @brief undeleteObject Undeletes the object with given UID. The object was supposed to be deleted in a patch.
      * @param uid
      */
-    virtual bool undeleteObject(const QString& uid) = 0;
+    virtual bool undeleteObject(const QString& uid, bool suspend) = 0;
+
+    /**
+     * @brief removePatch
+     * @param p
+     */
+    virtual void removePatch(const Patch* p) = 0;
 
 protected:
     int m_major;

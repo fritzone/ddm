@@ -358,7 +358,7 @@ void TableInstanceForm::setTableInstance(TableInstance *st)
 
 void TableInstanceForm::onUndelete()
 {
-    if(m_tinst->version()->undeleteObject(m_tinst->getObjectUid()))
+    if(m_tinst->version()->undeleteObject(m_tinst->getObjectUid(), false))
     {
         MainWindow::instance()->getGuiElements()->removeItemForPatch(m_tinst->version()->getWorkingPatch(), m_tinst->getObjectUid());
         // TODO: Duplicate from above

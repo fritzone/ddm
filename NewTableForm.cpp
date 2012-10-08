@@ -2518,7 +2518,7 @@ void NewTableForm::onLockUnlock(bool checked)
 
 void NewTableForm::onUndelete()
 {
-    if(m_version->undeleteObject(m_table->getObjectUid()))
+    if(m_version->undeleteObject(m_table->getObjectUid(), false))
     {
         MainWindow::instance()->getGuiElements()->removeItemForPatch(m_version->getWorkingPatch(), m_table->getObjectUid());
         // TODO: Duplicate from above

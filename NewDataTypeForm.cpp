@@ -464,7 +464,7 @@ void NewDataTypeForm::onHelp()
 
 void NewDataTypeForm::onUndelete()
 {
-    if(m_udt->version()->undeleteObject(m_udt->getObjectUid()))
+    if(m_udt->version()->undeleteObject(m_udt->getObjectUid(), false))
     {
         MainWindow::instance()->getGuiElements()->removeItemForPatch(m_udt->version()->getWorkingPatch(), m_udt->getObjectUid());
         // TODO: Duplicate from above

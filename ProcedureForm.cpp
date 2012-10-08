@@ -162,7 +162,7 @@ void ProcedureForm::setProcedure(StoredMethod *p)
 
 void ProcedureForm::onUndelete()
 {
-    if(m_version->undeleteObject(m_proc->getObjectUid()))
+    if(m_version->undeleteObject(m_proc->getObjectUid(), false))
     {
         MainWindow::instance()->getGuiElements()->removeItemForPatch(m_version->getWorkingPatch(), m_proc->getObjectUid());
         // TODO: Duplicate from above

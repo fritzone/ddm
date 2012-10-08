@@ -381,6 +381,7 @@ void DefaultVersionImplementation::doDeleteTableInstance(TableInstance *tinst, T
                                          insted.at(i)->getName() +
                                          QObject::tr("</LI></UL><BR>Firstly <B>Re-lock</B> (right click -> Lock) the table instance then delete the table."), QMessageBox::Ok);
                     tinst->unSentence();
+                    qDebug() << "AB";
                     delete tda;
                     tda = 0;
                     return;
@@ -498,6 +499,7 @@ bool DefaultVersionImplementation::deleteTable(Table *tab)
                                      QObject::tr("Cannot execute the deletion operation since the following table instance is already unlocked in the patch:<BR><UL><LI>") +
                                      tinst->getName() +
                                      QObject::tr("</LI></UL><BR>Firstly <B>Re-lock</B> (right click -> Lock) the table instance then delete the table."), QMessageBox::Ok);
+                qDebug() << "A";
                 delete tda;
                 return false;
 
@@ -1821,12 +1823,14 @@ DefaultVersionImplementation::CAN_UNDELETE_STATUS DefaultVersionImplementation::
     ObjectWithUid* obj = getWorkingPatch()->getDeletedObject(uid);
     if(!obj)
     {
+        extra = "Deleted object not found in patch.";
         return DELETED_OBJECT_WAS_NOT_FOUND_IN_PATCH;
     }
 
     TableDeletionAction* tda = getWorkingPatch()->getTDA(uid);
     if(!tda)
     {
+        extra = "Deletion action not found in patch.";
         return DELETED_OBJECT_WAS_NOT_FOUND_IN_PATCH;
     }
 
@@ -1972,7 +1976,7 @@ DefaultVersionImplementation::CAN_UNDELETE_STATUS DefaultVersionImplementation::
     return CAN_UNDELETE;
 }
 
-bool DefaultVersionImplementation::undeleteObject(const QString& uid)
+bool DefaultVersionImplementation::undeleteObject(const QString& uid, bool suspend)
 {
     QString extra;
 
@@ -2054,14 +2058,19 @@ bool DefaultVersionImplementation::undeleteObject(const QString& uid)
         }
 
         // hmm, cannot undelete
-        if(canUndelete == DEPENDENT_TABLE_WAS_NOT_FOUND_IN_VERSION)
+        if(canUndelete == DEPENDENT_TABLE_WAS_NOT_FOUND_IN_VERSION && !suspend)
         {
+            qDebug() << "UID(1) " << uid;
             QMessageBox::critical(MainWindow::instance(), QObject::tr("Error"), QObject::tr("Cannot undelete this object: ") + extra + QObject::tr(" missing from version."), QMessageBox::Ok);
             return false;
         }
 
-        QMessageBox::critical(MainWindow::instance(), QObject::tr("Error"), QObject::tr("Cannot undelete this object: ") + extra + QObject::tr(" missing from version."), QMessageBox::Ok);
-        return false;
+        if(!suspend)
+        {
+            qDebug() << "UID(2) " << uid;
+            QMessageBox::critical(MainWindow::instance(), QObject::tr("Error"), QObject::tr("Cannot undelete this object: ") + extra + QObject::tr(" missing from version."), QMessageBox::Ok);
+            return false;
+        }
 
     }
     else // undelete a table
@@ -2072,6 +2081,7 @@ bool DefaultVersionImplementation::undeleteObject(const QString& uid)
         {
             addTable(tda->deletedTable, true);
             // now see if this had a parent table or not
+            qDebug() << "create tbl " << uid << " obj=" << tda->deletedTable;
             if(tda->parentTable)
             {
                 const_cast<Table*>(tda->parentTable)->addSpecializedTable(tda->deletedTable);
@@ -2085,11 +2095,13 @@ bool DefaultVersionImplementation::undeleteObject(const QString& uid)
             for(int i=0; i<tda->deletedTableInstances.size(); i++)
             {
                 addTableInstance(tda->deletedTableInstances.at(i), true);
-                qDebug() << tda->deletedTableInstances.at(i)->getName();
+
                 getGui()->createTableInstanceTreeEntry(tda->deletedTableInstances.at(i));
                 tda->deletedTableInstances.at(i)->unSentence();
                 tda->deletedTableInstances.at(i)->undeleteObject();
                 tda->deletedTableInstances.at(i)->updateGui();
+
+                getWorkingPatch()->undeleteObject(tda->deletedTableInstances.at(i)->getObjectUid());
             }
 
             tda->deletedTable->updateGui();
@@ -2103,6 +2115,8 @@ bool DefaultVersionImplementation::undeleteObject(const QString& uid)
                 getGui()->createTableInstanceTreeEntry(tda->deletedTableInstances.at(i));
                 tda->deletedTableInstances.at(i)->unSentence();
                 tda->deletedTableInstances.at(i)->undeleteObject();
+                tda->deletedTableInstances.at(i)->updateGui();
+                getWorkingPatch()->undeleteObject(tda->deletedTableInstances.at(i)->getObjectUid());
             }
         }
     }
@@ -2112,3 +2126,17 @@ bool DefaultVersionImplementation::undeleteObject(const QString& uid)
 
     return true;
  }
+
+void DefaultVersionImplementation::removePatch(const Patch* p)
+{
+    if(m_patches.size() == 0) return;
+
+    for(int i=0; i<m_patches.size(); i++)
+    {
+        if(m_patches.at(i)->getObjectUid() == p->getObjectUid())
+        {
+            m_currentPatchIndex = i - 1;
+            m_patches.remove(i);
+        }
+    }
+}
