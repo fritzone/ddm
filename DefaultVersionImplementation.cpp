@@ -1808,13 +1808,27 @@ void DefaultVersionImplementation::addPatch(Patch* p)
 
 Patch* DefaultVersionImplementation::getWorkingPatch()
 {
+    m_currentPatchIndex = -1;
+
     if(m_patches.size() == 0)
     {
         Patch* p = new Patch(this, false);
-        m_currentPatchIndex = 0;
         m_patches.append(p);
     }
+    for(int i=0; i<m_patches.size(); i++)
+    {
+        if(!m_patches.at(i)->isSuspended())
+        {
+            m_currentPatchIndex = i;
+        }
+    }
 
+    if(m_currentPatchIndex == -1) // all the patches are suspended
+    {
+        Patch* p = new Patch(this, false);
+        m_patches.append(p);
+        m_currentPatchIndex = 0;
+    }
     return m_patches.at(m_currentPatchIndex);
 }
 

@@ -173,6 +173,16 @@ public:
         m_originals = m;
     }
 
+    void setSuspModifiedMap(const QMap<QString, QString>& m)
+    {
+        m_suspendPatchModifiedElements = m;
+    }
+
+    void setSuspNewMap(const QMap<QString, QString>& m)
+    {
+        m_suspendedPatchNewElements = m;
+    }
+
     void finalizePatchDeserialization();
 
     void addObjUidToClassUidMapEntry(const QString& objUid, const QString& classUid)
