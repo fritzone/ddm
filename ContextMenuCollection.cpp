@@ -47,7 +47,7 @@ ContextMenuCollection::ContextMenuCollection()
     m_undeletePopupMenu = new QMenu();
     m_functionPopupMenu = new QMenu();
     m_triggerPopupMenu = new QMenu();
-    m_suspendPatchMenu = new QMenu();
+    m_finalizePatchMenu = new QMenu();
     m_resumePatchMenu = new QMenu();
     m_proceduresPopupMenu = new QMenu();
     m_functionsPopupMenu = new QMenu();
@@ -120,8 +120,8 @@ ContextMenuCollection::ContextMenuCollection()
     action_relock->setIcon(IconFactory::getLockedIcon());
     action_deleteFunction = new QAction(QObject::tr("Delete function"), 0);
     action_deleteFunction->setIcon(IconFactory::getRemoveIcon());
-    action_suspendPatch = new QAction(QObject::tr("Suspend this patch"), 0);
-    action_suspendPatch->setIcon(IconFactory::getSuspendPatchIcon());
+    action_finalizePatch = new QAction(QObject::tr("Finalize patch"), 0);
+
     action_resumePatch = new QAction(QObject::tr("Resume this patch"), 0);
     action_renamePatch = new QAction(QObject::tr("Rename"), 0);
     action_undelete =  new QAction(QObject::tr("Undelete"), 0);
@@ -253,8 +253,8 @@ ContextMenuCollection::ContextMenuCollection()
     m_triggerPopupMenu->addAction(action_deleteTrigger);
 
     // the patch's menu
-    m_suspendPatchMenu->addAction(action_suspendPatch);
-    m_suspendPatchMenu->addAction(action_renamePatch);
+    m_finalizePatchMenu->addAction(action_finalizePatch);
+    m_finalizePatchMenu->addAction(action_renamePatch);
 
     // the locked table popup menus
     m_unlockTablePopupMenu->addAction(action_unlock);

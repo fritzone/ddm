@@ -22,7 +22,7 @@ void Project::createTreeItem(GuiElements* gui)
 {
     ContextMenuEnabledTreeWidgetItem* projectItem = new ContextMenuEnabledTreeWidgetItem((ContextMenuEnabledTreeWidgetItem*)0, QStringList(m_name)) ;
     projectItem->setIcon(0, IconFactory::getProjectOpenIcon());
-    gui->getProjectTree()->insertTopLevelItem(0, projectItem);
+    //gui->getProjectTree()->insertTopLevelItem(0, projectItem);
     setLocation(projectItem);
     m_gui = gui;
 }
@@ -31,7 +31,7 @@ void Project::populateTreeItem(GuiElements* gui)
 {
     for(int i=0; i<m_majorVersions.size(); i++)
     {
-        m_majorVersions[i]->createTreeItems(gui, getLocation());
+        m_majorVersions[i]->createTreeItems(gui, getLocation(), -1);
         m_majorVersions[i]->getGui()->populateTreeItems();
 
         // and now the patches
@@ -134,7 +134,7 @@ void Project::releaseMajorVersion()
     cv->cloneInto(newVersion);
     newVersion->setSourceUid(cv->getObjectUid());
 
-    newVersion->createTreeItems(m_gui, getLocation());
+    newVersion->createTreeItems(m_gui, getLocation(), -1);
     newVersion->getGui()->populateTreeItems();
 
     cv->getGui()->getVersionItem()->setExpanded(false);

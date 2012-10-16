@@ -102,7 +102,7 @@ public:
     virtual bool undeleteObject(const QString& uid, bool suspend);
     virtual void removePatch(const Patch* p);
 
-    void createTreeItems(GuiElements* gui, ContextMenuEnabledTreeWidgetItem* projectItem);
+    void createTreeItems(GuiElements* gui, ContextMenuEnabledTreeWidgetItem* projectItem, int idxAfter);
     void deleteTableInstance(TableInstance *tinst, TableDeletionAction*& );
     void doDeleteTableInstance(TableInstance *tinst, TableDeletionAction *& );
 

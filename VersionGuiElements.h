@@ -67,7 +67,7 @@ public:
     bool hasSpatialDtsItem() { return spatialDtItem != 0; }
 
     /** @group creators, other methods*/
-    void createGuiElements(ContextMenuEnabledTreeWidgetItem* projectItem);
+    void createGuiElements(ContextMenuEnabledTreeWidgetItem* projectItem, int idxAfter);
     void populateTreeItems();
     void cleanupOrphanedIssueTableItems();
     ContextMenuEnabledTreeWidgetItem* createDataTypeTreeEntry(UserDataType*);

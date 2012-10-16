@@ -689,11 +689,7 @@ void Patch::suspendPatch()
     }
 
     // upate GUI and flags
-    m_suspended = true;
-    getLocation()->setIcon(0, IconFactory::getSuspendedPatchIcon());
-    QFont f = getLocation()->font(0);
-    f.setItalic(true);
-    getLocation()->setFont(0, f);
+    delete getLocation();
 }
 
 
