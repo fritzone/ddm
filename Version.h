@@ -4,6 +4,7 @@
 #include "SerializableElement.h"
 #include "core_ObjectWithUid.h"
 #include "core_CloneableElement.h"
+#include "TreeItem.h"
 #include "core_LockableElement.h"
 
 class UserDataType;
@@ -28,7 +29,7 @@ class Patch;
 /**
  * Basic class holding data related to versions
  */
-class Version : public SerializableElement, public ObjectWithUid, public CloneableElement, public LockableElement
+class Version : public SerializableElement, public ObjectWithUid, public CloneableElement, public TreeItem
 {
 public:
 

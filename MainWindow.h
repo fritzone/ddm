@@ -196,7 +196,7 @@ public slots:
     void onDeleteFunction();
     void onDeleteTrigger();
     void patchTreeItemClicked(QTreeWidgetItem * current, int);
-    void suspendPatch();
+    void finalizePatch();
     void renamePatch();
     void onNewTableFromPopup();
     void onUndeleteSomething();

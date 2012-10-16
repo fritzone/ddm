@@ -65,7 +65,7 @@ public:
     QMenu* getRelockFunctionPopupMenu() { return m_relockFunctionPopupMenu; }
     QMenu* getFunctionPopupMenu() { return m_functionPopupMenu; }
     QMenu* getTriggerPopupMenu() { return m_triggerPopupMenu; }
-    QMenu* getSuspendPatchPopupMenu() { return m_suspendPatchMenu; }
+    QMenu* getSuspendPatchPopupMenu() { return m_finalizePatchMenu; }
     QMenu* getResumePatchPopupMenu() { return m_resumePatchMenu; }
     QMenu* getUndeletePopupMenu() { return m_undeletePopupMenu; }
     QMenu* getReleasedVersionPopupMenu() { return m_releasedVersionPopupMenu; }
@@ -121,7 +121,7 @@ public:
     QAction* getAction_ReleaseMajorVersion() {return action_releaseMajorVersion; }
     QAction* getAction_unlock() {return action_unlock; }
     QAction* getAction_relock() {return action_relock; }
-    QAction* getAction_SuspendPatch() { return action_suspendPatch; }
+    QAction* getAction_FinalizePatch() { return action_finalizePatch; }
     QAction* getAction_ResumePatch() { return action_resumePatch; }
     QAction* getAction_RenamePatch() { return action_renamePatch; }
     QAction* getAction_RelocateElementToAnotherPatch() { return action_relocateElementToAnotherPatch; }
@@ -181,7 +181,7 @@ private:
     QMenu* m_functionPopupMenu;                 // popup menu for a function
     QMenu* m_triggerPopupMenu;                  // popup menu for a trigger
     QMenu* m_triggersPopupMenu;                 // popup menu for the triggers
-    QMenu* m_suspendPatchMenu;                  // popup menu for an unsuspended patch
+    QMenu* m_finalizePatchMenu;                 // popup menu for an unsuspended patch
     QMenu* m_resumePatchMenu;                   // popup menu for a suspended patch
     QMenu* m_proceduresPopupMenu;               // popup menu for the procedures tree entry
     QMenu* m_functionsPopupMenu;                // popup menu for the procedures tree entry
@@ -275,7 +275,7 @@ private:
     QAction* action_deleteTrigger;
 
     // actions for the patch, when it is not suspended
-    QAction* action_suspendPatch;
+    QAction* action_finalizePatch;
     QAction* action_renamePatch;
 
     // action for the patch when it is suspended

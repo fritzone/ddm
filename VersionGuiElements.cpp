@@ -95,13 +95,23 @@ void VersionGuiElements::cleanupDtEntries()
 }
 
 
-void VersionGuiElements::createGuiElements(ContextMenuEnabledTreeWidgetItem* projectItem)
+void VersionGuiElements::createGuiElements(ContextMenuEnabledTreeWidgetItem* projectItem, int idxAfter)
 {
-    versionItem = new ContextMenuEnabledTreeWidgetItem(projectItem, QStringList(QString("Ver: ") + m_version->getVersionText())) ;
-    m_tree->addTopLevelItem(versionItem);
+    versionItem = new ContextMenuEnabledTreeWidgetItem(0, QStringList(QString("Ver: ") + m_version->getVersionText())) ;
+
+    if(idxAfter == -1)
+    {
+        m_tree->addTopLevelItem(versionItem);
+    }
+    else
+    {
+        m_tree->insertTopLevelItem(idxAfter, versionItem);
+    }
+
     QVariant a;
     a.setValue(m_version->getVersionText());
     versionItem->setData(0, Qt::UserRole, a);
+    m_version->setLocation(versionItem);
 
     // make the tables sub item coming from the version
     tablesItem = new ContextMenuEnabledTreeWidgetItem(versionItem, QStringList(QObject::tr("Table templates"))) ;

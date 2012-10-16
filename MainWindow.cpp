@@ -1155,7 +1155,7 @@ void MainWindow::connectActionsFromPopupMenus()
     QObject::connect(ContextMenuCollection::getInstance()->getAction_ReleaseMajorVersion(), SIGNAL(triggered()), this, SLOT(onReleaseMajorVersion()));
     QObject::connect(ContextMenuCollection::getInstance()->getAction_unlock(), SIGNAL(triggered()), this, SLOT(onUnlockSomething()));
     QObject::connect(ContextMenuCollection::getInstance()->getAction_relock(), SIGNAL(triggered()), this, SLOT(onRelockSomething()));
-    QObject::connect(ContextMenuCollection::getInstance()->getAction_SuspendPatch(), SIGNAL(triggered()), this, SLOT(suspendPatch()));
+    QObject::connect(ContextMenuCollection::getInstance()->getAction_FinalizePatch(), SIGNAL(triggered()), this, SLOT(finalizePatch()));
     QObject::connect(ContextMenuCollection::getInstance()->getAction_RenamePatch(), SIGNAL(triggered()), this, SLOT(renamePatch()));
     QObject::connect(ContextMenuCollection::getInstance()->getAction_Undelete(), SIGNAL(triggered()), this, SLOT(onUndeleteSomething()));
     QObject::connect(ContextMenuCollection::getInstance()->getAction_AddProcedure(), SIGNAL(triggered()), this, SLOT(onNewProcedureFromPopup()));
@@ -2848,31 +2848,29 @@ void MainWindow::onSqlQueryInConnection()
     }
 }
 
-void MainWindow::suspendPatch()
+void MainWindow::finalizePatch()
 {
     Patch* p = getRightClickedObject<Patch>();
     if(p)
     {
+        Version* v = p->version();
+        Project* prj = v->getProject();
+        MajorVersion* newVersion = prj->createMajorVersion(v->getMajor(), v->getMinor() + 1);
+        v->cloneInto(newVersion);
+        newVersion->setSourceUid(v->getObjectUid());
+
+
+        newVersion->createTreeItems(m_guiElements, p->getLocation(), m_guiElements->getProjectTree()->indexOfTopLevelItem(v->getLocation()) + 1);
+        newVersion->getGui()->populateTreeItems();
+
+        v->getGui()->getVersionItem()->setExpanded(false);
+        newVersion->getGui()->getVersionItem()->setExpanded(true);
+
+        v->updateGui();
+
+        v->getGui()->getVersionItem()->setPopupMenu(0);
+
         p->suspendPatch();
-        ContextMenuEnabledTreeWidgetItem* itm = p->getLocation();
-        itm->setPopupMenu(ContextMenuCollection::getInstance()->getResumePatchPopupMenu());
-        for(int i=0; i<itm->childCount(); i++)
-        {
-            QFont f = itm->child(i)->font(0);
-            f.setItalic(true);
-            itm->child(i)->setFont(0, f);
-            ((ContextMenuEnabledTreeWidgetItem*)itm->child(i))->setPopupMenu(ContextMenuCollection::getInstance()->getResumePatchPopupMenu());
-            if(itm->child(i)->childCount())
-            {
-                for(int j=0; j<itm->child(i)->childCount(); j++)
-                {
-                    QFont f1 = itm->child(i)->child(j)->font(0);
-                    f1.setItalic(true);
-                    itm->child(i)->child(j)->setFont(0, f1);
-                    ((ContextMenuEnabledTreeWidgetItem*)itm->child(i)->child(j))->setPopupMenu(ContextMenuCollection::getInstance()->getResumePatchPopupMenu());
-                }
-            }
-        }
     }
 
 }
