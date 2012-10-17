@@ -1452,9 +1452,9 @@ SqlSourceEntity* DefaultVersionImplementation::getSqlSourceEntityWithGuid(const 
     return 0;
 }
 
-bool DefaultVersionImplementation::cloneInto(Version* other)
+bool DefaultVersionImplementation::cloneInto(Version* other, LockType lt)
 {
-    lock();
+    lock(lt);
 
     // clone the data types
     const QVector<UserDataType*> dts = getDataTypes();
@@ -1462,7 +1462,7 @@ bool DefaultVersionImplementation::cloneInto(Version* other)
     {
         other->addNewDataType(dynamic_cast<UserDataType*>(dts.at(i)->clone(this, other)), true);
         // lock the datatype
-        dts.at(i)->lock();
+        dts.at(i)->lock(lt);
         dts.at(i)->updateGui();
     }
 
@@ -1474,7 +1474,7 @@ bool DefaultVersionImplementation::cloneInto(Version* other)
         newTable->setName(tabs.at(i)->getName());
         other->addTable(newTable, true);
         // lock the table
-        tabs.at(i)->lock();
+        tabs.at(i)->lock(lt);
         tabs.at(i)->updateGui();
     }
 
@@ -1545,7 +1545,7 @@ bool DefaultVersionImplementation::cloneInto(Version* other)
         // this also fixes the tables with the required link
         newTinst->finalizeCloning(tinsts.at(i), this, other);
         other->addTableInstance(newTinst, true);
-        tinsts.at(i)->lock();
+        tinsts.at(i)->lock(lt);
         tinsts.at(i)->updateGui();
     }
 
@@ -1562,7 +1562,7 @@ bool DefaultVersionImplementation::cloneInto(Version* other)
     for(int i=0; i<views.size(); i++)
     {
         View* v =  dynamic_cast<View*>(views.at(i)->clone(this, other));
-        views.at(i)->lock();
+        views.at(i)->lock(lt);
         views.at(i)->updateGui();
         other->addView(v, true);
     }
@@ -1573,7 +1573,7 @@ bool DefaultVersionImplementation::cloneInto(Version* other)
     {
         Procedure* newp = dynamic_cast<Procedure*>(procs.at(i)->clone(this, other));
         other->addProcedure(newp, true);
-        procs.at(i)->lock();
+        procs.at(i)->lock(lt);
         procs.at(i)->updateGui();
     }
 
@@ -1583,7 +1583,7 @@ bool DefaultVersionImplementation::cloneInto(Version* other)
     {
         Function* newp = dynamic_cast<Function*>(funcs.at(i)->clone(this, other));
         other->addFunction(newp, true);
-        funcs.at(i)->lock();
+        funcs.at(i)->lock(lt);
         funcs.at(i)->updateGui();
     }
 
@@ -1593,7 +1593,7 @@ bool DefaultVersionImplementation::cloneInto(Version* other)
     {
         Trigger* newp = dynamic_cast<Trigger*>(trigs.at(i)->clone(this, other));
         other->addTrigger(newp, true);
-        trigs.at(i)->lock();
+        trigs.at(i)->lock(lt);
         trigs.at(i)->updateGui();
     }
 
@@ -1603,7 +1603,7 @@ bool DefaultVersionImplementation::cloneInto(Version* other)
     {
         Diagram* dgr = dynamic_cast<Diagram*>(dias.at(i)->clone(this, other));
         other->addDiagram(dgr, true);
-        dias.at(i)->lock();
+        dias.at(i)->lock(lt);
         dias.at(i)->updateGui();
     }
     return true;
@@ -1626,7 +1626,7 @@ void DefaultVersionImplementation::replaceTable(const QString& uid, Table* newTa
 
     newTab->setForcedUid(uid);
     newTab->setName(t->getName());
-    newTab->lock();
+    newTab->lock(LockableElement::LOCKED);
     newTab->setLocation(t->getLocation());
 
     for(int i=0; i< m_data.m_tables.size(); i++)
@@ -1649,7 +1649,7 @@ void DefaultVersionImplementation::replaceTableInstance(const QString& uid, Tabl
 
     newInst->setForcedUid(uid);
     newInst->setName(t->getName());
-    newInst->lock();
+    newInst->lock(LockableElement::LOCKED);
     newInst->setLocation(t->getLocation());
 
     for(int i=0; i< m_data.m_tableInstances.size(); i++)
@@ -1673,7 +1673,7 @@ void DefaultVersionImplementation::replaceDiagram(const QString& uid, Diagram* w
 
     withDgram->setForcedUid(uid);
     withDgram->setName(d->getName());
-    withDgram->lock();
+    withDgram->lock(LockableElement::LOCKED);
     withDgram->setLocation(d->getLocation());
 
     for(int i=0; i< m_data.m_diagrams.size(); i++)
@@ -1696,7 +1696,7 @@ void DefaultVersionImplementation::replaceView(const QString& uid, View* view)
 
     view->setForcedUid(uid);
     view->setName(v->getName());
-    view->lock();
+    view->lock(LockableElement::LOCKED);
     view->setLocation(v->getLocation());
 
     for(int i=0; i< m_data.m_views.size(); i++)
@@ -1719,7 +1719,7 @@ void DefaultVersionImplementation::replaceProcedure(const QString& uid, Procedur
 
     proc->setForcedUid(uid);
     proc->setName(p->getName());
-    proc->lock();
+    proc->lock(LockableElement::LOCKED);
     proc->setLocation(p->getLocation());
 
     for(int i=0; i< m_data.m_procedures.size(); i++)
@@ -1740,7 +1740,7 @@ void DefaultVersionImplementation::replaceFunction(const QString& uid, Function*
 
     func->setForcedUid(uid);
     func->setName(f->getName());
-    func->lock();
+    func->lock(LockableElement::LOCKED);
     func->setLocation(f->getLocation());
 
     for(int i=0; i< m_data.m_functions.size(); i++)
@@ -1762,7 +1762,7 @@ void DefaultVersionImplementation::replaceUserDataType(const QString& uid, UserD
 
     dt->setForcedUid(uid);
     dt->setName(d->getName());
-    dt->lock();
+    dt->lock(LockableElement::LOCKED);
     dt->setLocation(d->getLocation());
 
     for(int i=0; i< m_data.m_dataTypes.size(); i++)
@@ -1783,7 +1783,7 @@ void DefaultVersionImplementation::replaceTrigger(const QString& uid, Trigger* t
 
     trg->setForcedUid(uid);
     trg->setName(t->getName());
-    trg->lock();
+    trg->lock(LockableElement::LOCKED);
     trg->setLocation(t->getLocation());
 
     for(int i=0; i< m_data.m_triggers.size(); i++)

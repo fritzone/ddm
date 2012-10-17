@@ -9,15 +9,16 @@ public:
     {
         NEVER_LOCKED = 0,
         LOCKED = 1,
-        UNLOCKED = 2
+        UNLOCKED = 2,
+        FINAL_LOCK = 3
     };
 
     LockableElement() : m_lockState(NEVER_LOCKED), m_wasLocked(false), m_isDeleted(false)
     {}
 
-    void lock()
+    void lock(LockType lt)
     {
-        m_lockState = LOCKED;
+        m_lockState = lt;
         m_wasLocked = true;
     }
 

@@ -227,7 +227,7 @@ void TriggerForm::onLockUnlock(bool checked)
     {
         ui->btnLock->setIcon(IconFactory::getLockedIcon());
         ui->tabWidget->setEnabled(false);
-        m_trigger->lock();
+        m_trigger->lock(LockableElement::LOCKED);
         m_trigger->updateGui();
         ui->btnLock->setToolTip(QObject::tr("Trigger is <b>locked</b>. Click this button to unlock it."));
 

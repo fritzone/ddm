@@ -101,7 +101,7 @@ void ProcedureForm::onLockUnlock(bool checked)
     {
         ui->btnLock->setIcon(IconFactory::getLockedIcon());
         ui->grpContent->setEnabled(false);
-        m_proc->lock();
+        m_proc->lock(LockableElement::LOCKED);
         m_proc->updateGui();
         ui->btnLock->setToolTip((m_mode == MODE_PROCEDURE?"Procedure ":"Function ") + QObject::tr("is <b>locked</b>. Click this button to lock it."));
 

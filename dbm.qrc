@@ -199,6 +199,13 @@
         <file>images/small/shared_patch.png</file>
         <file>images/small/changed.png</file>
         <file>images/small/gnome_undelete.png</file>
+        <file>images/small/tabinst_finallock.png</file>
+        <file>images/small/diagram_finallock.png</file>
+        <file>images/small/view_finallock.png</file>
+        <file>images/small/version_finallock.png</file>
+        <file>images/small/trigger_finallock.png</file>
+        <file>images/actions/function_finallock.png</file>
+        <file>images/actions/procedure_finallock.png</file>
     </qresource>
     <qresource prefix="/bigger">
         <file>images/unaf.png</file>

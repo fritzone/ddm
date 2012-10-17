@@ -407,7 +407,7 @@ void NewDataTypeForm::onLockUnlock(bool checked)
     {
         m_ui->btnLock->setIcon(IconFactory::getLockedIcon());
         m_ui->grpContent->setEnabled(false);
-        m_udt->lock();
+        m_udt->lock(LockableElement::LOCKED);
         m_udt->updateGui();
         m_ui->btnLock->setToolTip(QObject::tr("This data type is <b>locked</b>. Click this button to unlock it."));
 
