@@ -412,7 +412,7 @@ void DiagramForm::onLockUnlock(bool checked)
     {
         ui->btnLock->setIcon(IconFactory::getLockedIcon());
         ui->grpContent->setEnabled(false);
-        m_diagram->lock();
+        m_diagram->lock(LockableElement::LOCKED);
         m_diagram->updateGui();
         ui->btnLock->setToolTip(QObject::tr("this diagram is <b>locked</b>. Click this button to unlock it."));
 

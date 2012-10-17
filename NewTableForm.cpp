@@ -2507,7 +2507,7 @@ void NewTableForm::onLockUnlock(bool checked)
     {
         m_ui->btnLock->setIcon(IconFactory::getLockedIcon());
         m_ui->grpContent->setEnabled(false);
-        m_table->lock();
+        m_table->lock(LockableElement::LOCKED);
         m_table->updateGui();
         m_ui->btnLock->setToolTip(QObject::tr("This table is <b>locked</b>. Click this button to unlock it."));
 

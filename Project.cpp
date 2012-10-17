@@ -131,7 +131,7 @@ void Project::releaseMajorVersion()
     Version* cv = getWorkingVersion();
     MajorVersion* newVersion = createMajorVersion(cv->getMajor() + 1, 0);
     m_workingVersionIndex ++;
-    cv->cloneInto(newVersion);
+    cv->cloneInto(newVersion, LockableElement::LOCKED);
     newVersion->setSourceUid(cv->getObjectUid());
 
     newVersion->createTreeItems(m_gui, getLocation(), -1);

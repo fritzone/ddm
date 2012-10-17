@@ -299,7 +299,7 @@ void TableInstanceForm::onLockUnlock(bool checked)
     {
         ui->btnLock->setIcon(IconFactory::getLockedIcon());
         ui->grpContent->setEnabled(false);
-        m_tinst->lock();
+        m_tinst->lock(LockableElement::LOCKED);
         m_tinst->updateGui();
         ui->btnLock->setToolTip(QObject::tr("This table instance is <b>locked</b>. Click this button to unlock it."));
 

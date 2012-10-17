@@ -376,7 +376,7 @@ void NewViewForm::onLockUnlock(bool checked)
     {
         ui->btnLock->setIcon(IconFactory::getLockedIcon());
         ui->grpContent->setEnabled(false);
-        m_view->lock();
+        m_view->lock(LockableElement::LOCKED);
         m_view->updateGui();
         ui->btnLock->setToolTip(QObject::tr("This view is <b>locked</b>. Click this button to unlock it."));
 

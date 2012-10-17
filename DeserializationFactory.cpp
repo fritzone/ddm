@@ -98,7 +98,7 @@ UserDataType* DeserializationFactory::createUserDataType(Version* v, const QDomD
     }
     if(locked == "1")
     {
-        result->lock();
+        result->lock(LockableElement::LOCKED);
     }
     else
     {
@@ -247,7 +247,7 @@ void DeserializationFactory::createMajorVersion(MajorVersion *mv, Project *p, Da
     {
         if(locked == "1")
         {
-            mv->lock();
+            mv->lock(LockableElement::LOCKED);
         }
         else
         {
@@ -688,7 +688,7 @@ View* DeserializationFactory::createView(Version* v, const QDomDocument& doc, co
 
     if(locked == "1")
     {
-        view->lock();
+        view->lock(LockableElement::LOCKED);
     }
     else
     {
@@ -761,7 +761,7 @@ Table* DeserializationFactory::createTable(DatabaseEngine* engine, Version* ver,
     QString locked = element.attribute("locked");
     if(locked == "1")
     {
-        result->lock();
+        result->lock(LockableElement::LOCKED);
     }
     else
     {
@@ -1059,7 +1059,7 @@ Diagram* DeserializationFactory::createDiagram(Version* v, const QDomDocument &d
     }
     if(locked == "1")
     {
-        result->lock();
+        result->lock(LockableElement::LOCKED);
     }
     else
     {
@@ -1137,7 +1137,7 @@ TableInstance* DeserializationFactory::createTableInstance(Version* v, const QDo
         if(sourceUid.length()) result->setSourceUid(sourceUid);
         else result->setSourceUid(nullUid);
 
-        if(locked == "1") result->lock();
+        if(locked == "1") result->lock(LockableElement::LOCKED);
         else result->unlock();
 
         result->forceSetWasLocked(wasLocked == "1");
@@ -1169,7 +1169,7 @@ Procedure* DeserializationFactory::createProcedure(Version* v,  const QDomDocume
     if(sourceUid.length()) p->setSourceUid(sourceUid);
     else p->setSourceUid(nullUid);
 
-    if(locked == "1") p->lock();
+    if(locked == "1") p->lock(LockableElement::LOCKED);
     else p->unlock();
 
     p->forceSetWasLocked(wasLocked == "1");
@@ -1216,7 +1216,7 @@ Function* DeserializationFactory::createFunction(Version* v,  const QDomDocument
     if(sourceUid.length()) func->setSourceUid(sourceUid);
     else func->setSourceUid(nullUid);
 
-    if(locked == "1") func->lock();
+    if(locked == "1") func->lock(LockableElement::LOCKED);
     else func->unlock();
 
     func->forceSetWasLocked(wasLocked == "1");
@@ -1292,7 +1292,7 @@ Trigger* DeserializationFactory::createTrigger(Version* v,  const QDomDocument&,
     QString sourceUid = element.attribute("source-uid");
     if(locked == "1")
     {
-        trigg->lock();
+        trigg->lock(LockableElement::LOCKED);
     }
     else
     {

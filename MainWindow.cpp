@@ -1239,7 +1239,7 @@ void MainWindow::finallyDoLockLikeOperation(bool reLocking, const QString& guid)
         }
         else
         {
-            udt->lock();
+            udt->lock(LockableElement::LOCKED);
         }
 
         udt->updateGui();
@@ -1257,7 +1257,7 @@ void MainWindow::finallyDoLockLikeOperation(bool reLocking, const QString& guid)
         }
         else
         {
-            le->lock();
+            le->lock(LockableElement::LOCKED);
         }
 
         le->updateGui();
@@ -2856,7 +2856,7 @@ void MainWindow::finalizePatch()
         Version* v = p->version();
         Project* prj = v->getProject();
         MajorVersion* newVersion = prj->createMajorVersion(v->getMajor(), v->getMinor() + 1);
-        v->cloneInto(newVersion);
+        v->cloneInto(newVersion, LockableElement::FINAL_LOCK);
         newVersion->setSourceUid(v->getObjectUid());
 
 

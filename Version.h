@@ -365,7 +365,7 @@ public:
      * into the other version.
      * @param other - the destination version
      */
-    virtual bool cloneInto(Version* other) = 0;
+    virtual bool cloneInto(Version* other, LockType) = 0;
 
     virtual void patchItem(const QString& uid) = 0;
 

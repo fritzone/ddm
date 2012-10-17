@@ -88,7 +88,7 @@ public:
     virtual View* getViewWithUid(const QString& uid) const;
     virtual Trigger* getTriggerWithUid(const QString& uid) const;
     virtual UserDataType* getUserDataTypeWithUid(const QString& uid) const;
-    virtual bool cloneInto(Version* other);
+    virtual bool cloneInto(Version* other, LockType lt);
     virtual void patchItem(const QString& uid);
     virtual void replaceTable(const QString& uid, Table* newTab);
     virtual void replaceTableInstance(const QString& uid, TableInstance* newInst);
