@@ -11,18 +11,32 @@ namespace icons
 
 static const QString strDtTextIcon = ":/images/actions/images/small/datatypes_text.png";
 static const QString strDtLockedTextIcon = ":/images/actions/images/small/datatypes_text_locked.png";
+static const QString strDtFinalLockedTextIcon = ":/images/actions/images/small/datatypes_text_finallock.png";
+
 static const QString strDtNumericIcon = ":/images/actions/images/small/datatypes_numeric.png";
 static const QString strDtLockedNumericIcon = ":/images/actions/images/small/datatypes_numeric_locked.png";
+static const QString strDtFinalLockedNumericIcon = ":/images/actions/images/small/datatypes_numeric_finallock.png";
+
 static const QString strDtMiscIcon = ":/images/actions/images/small/datatypes_misc.png";
 static const QString strDtLockedMiscIcon = ":/images/actions/images/small/datatypes_misc_locked.png";
+static const QString strDtFinalLockedMiscIcon = ":/images/actions/images/small/datatypes_misc_finallock.png";
+
 static const QString strDtDateTimeIcon = ":/images/actions/images/small/datatypes_datetime.png";
 static const QString strDtLockedDateTimeIcon = ":/images/actions/images/small/datatypes_datetime_locked.png";
+static const QString strDtFinalLockedDateTimeIcon = ":/images/actions/images/small/datatypes_datetime_finallock.png";
+
 static const QString strDtBoolIcon = ":/images/actions/images/small/datatypes_bool.png";
 static const QString strDtLockedBoolIcon = ":/images/actions/images/small/datatypes_bool_locked.png";
+static const QString strDtFinalLockedBoolIcon = ":/images/actions/images/small/datatypes_bool_finallock.png";
+
 static const QString strDtBlobIcon = ":/images/actions/images/small/datatypes_blob.png";
 static const QString strDtLockedBlobIcon = ":/images/actions/images/small/datatypes_blob_locked.png";
+static const QString strDtFinalLockedBlobIcon = ":/images/actions/images/small/datatypes_blob_finallock.png";
+
 static const QString strDtSpatialIcon = ":/images/actions/images/small/datatypes_spatial.png";
 static const QString strDtLockedSpatialIcon = ":/images/actions/images/small/datatypes_spatial_locked.png";
+static const QString strDtFinalLockedSpatialIcon = ":/images/actions/images/small/datatypes_spatial_finallock.png";
+
 static const QString strLockedIcon = ":/images/actions/images/small/locked.png";
 static const QString strUnLockedIcon = ":/images/actions/images/small/unlocked.png";
 static const QString strKeyIcon = ":/images/actions/images/small/key.png";
@@ -32,28 +46,43 @@ static const QString strApplyIcon = ":/images/actions/images/small/apply.png";
 static const QString strAddIcon = ":/images/actions/images/small/add.png";
 static const QString strEmptyIcon = ":/images/actions/images/actions/empty_icon.png";
 static const QString strMySqlIcon = ":/images/actions/images/small/mysql.png";
+
 static const QString strTableIcon = ":/images/actions/images/actions/table.png";
 static const QString strTableLockIcon = ":/images/actions/images/actions/table_lock.png";
+static const QString strTableFinalLockIcon = ":/images/actions/images/actions/table_finallock.png";
 static const QString strTablesIcon = ":/images/actions/images/actions/table.png";
+
 static const QString strTableInstIcon = ":/images/actions/images/small/tabinst.png";
 static const QString strLockedTableInstIcon = ":/images/actions/images/small/locked_tabinst.png";
 static const QString strTableInstLockIcon = ":/images/actions/images/small/tabinstlock.png";
+static const QString strFinalLockedTableInstIcon = ":/images/actions/images/small/tabinst_finallock.png";
+
 static const QString strProjectOpenIcon = ":/images/actions/images/small/project_open.png";
+
 static const QString strDiagramIcon = ":/images/actions/images/small/diagram.png";
 static const QString strLockedDiagramIcon = ":/images/actions/images/small/locked_diagram.png";
+static const QString strFinalLockedDiagramIcon = ":/images/actions/images/small/diagram_finallock.png";
+
 static const QString strDataTypesIcon = ":/images/actions/images/small/datatypes.png";
 static const QString strCodeIcon = ":/images/actions/images/small/code.png";
 static const QString strPatchIcon = ":/images/actions/images/small/patch.png";
 static const QString strSuspendedPatchIcon = ":/images/actions/images/small/shared_patch.png";
 static const QString strSuspendPatchIcon = ":/images/actions/images/small/share.png";
 static const QString strSqlIcon = ":/images/actions/images/small/sql.png";
-static const QString strMajorVersionIcon = ":/images/actions/images/small/arrow-000-medium.png";
 static const QString strReleaseMajorVersionIcon = ":/images/actions/images/small/arrow-branch.png";
+
+static const QString strMajorVersionIcon = ":/images/actions/images/small/arrow-000-medium.png";
 static const QString strMajorVersionLockedIcon = ":/images/actions/images/small/version_locked.png";
+static const QString strMajorVersionFinalLockedIcon = ":/images/actions/images/small/version_finallock.png";
+
 static const QString strProcedureIcon = ":/images/actions/images/actions/procedure.png";
-static const QString strFunctionTreeIcon = ":/images/actions/images/actions/function_icon.png";
 static const QString strLockedProcedureIcon = ":/images/actions/images/actions/locked_procedure.png";
+static const QString strFinalLockedProcedureIcon = ":/images/actions/images/actions/procedure_finallock.png";
+
+static const QString strFunctionTreeIcon = ":/images/actions/images/actions/function_icon.png";
 static const QString strLockedFunctionTreeIcon = ":/images/actions/images/actions/locked_function_icon.png";
+static const QString strFinalLockedFunctionTreeIcon = ":/images/actions/images/actions/function_finallock.png";
+
 static const QString strRemoveIcon = ":/images/actions/images/small/remove.png";
 static const QString strStringsFolder = ":/images/actions/images/big/folder_red.png";
 static const QString strIntsFolder = ":/images/actions/images/big/folder_darkblue.png";
@@ -73,12 +102,17 @@ static const QString strIndexIcon = ":/images/actions/images/small/index.png";
 static const QString strHelpIcon = ":/images/actions/images/small/help_book_3d.png";
 static const QString strWarningIcon = ":/images/actions/images/small/warning.png";
 static const QString strRecommendIcon = ":/images/actions/images/small/reccomend.png";
+
 static const QString strViewIcon = ":/images/actions/images/small/view.png";
-static const QString strViewsIcon = ":/images/actions/images/small/view.png";
 static const QString strLockedViewIcon = ":/images/actions/images/small/locked_view.png";
+static const QString strFinalLockedViewIcon = ":/images/actions/images/small/view_finallock.png";
+static const QString strViewsIcon = ":/images/actions/images/small/view.png";
+
 static const QString strTriggersIcon = ":/images/actions/images/small/trigger.png";
 static const QString strTriggerIcon = ":/images/actions/images/small/trigger.png";
 static const QString strLockedTriggerIcon = ":/images/actions/images/small/locked_trigger.png";
+static const QString strFinalLockedTriggerIcon = ":/images/actions/images/small/trigger_finallock.png";
+
 static const QString strCloseIcon = ":/images/actions/images/actions/application_exit.png";
 static const QString strWandIcon = ":/images/actions/images/small/wand.png";    // used for the distinct selection
 static const QString strNotIcon = ":/images/actions/images/small/not.png";
@@ -175,6 +209,12 @@ public:
         return icon;
     }
 
+    static const QIcon& getFinalLockedTableIcon()
+    {
+        static const QIcon icon(icons::strTableFinalLockIcon);
+        return icon;
+    }
+
     static const QIcon& getTableIcon()
     {
         static const QIcon icon(icons::strTableIcon);
@@ -253,6 +293,12 @@ public:
         return icon;
     }
 
+    static const QIcon& getFinalLockedTabinstIcon()
+    {
+        static const QIcon icon(icons::strFinalLockedTableInstIcon);
+        return icon;
+    }
+
     static const QIcon& getLiteralIcon()
     {
         static const QIcon icon(icons::strTypeHereIcon);
@@ -282,6 +328,13 @@ public:
         static const QIcon icon(icons::strDtTextIcon);
         return icon;
     }
+
+    static const QIcon& getFinalLockedStringDataTypeIcon()
+    {
+        static const QIcon icon(icons::strDtFinalLockedTextIcon);
+        return icon;
+    }
+
     static const QIcon& getLockedStringDataTypeIcon()
     {
         static const QIcon icon(icons::strDtLockedTextIcon);
@@ -306,6 +359,12 @@ public:
         return icon;
     }
 
+    static const QIcon& getFinalLockedIntDataTypeIcon()
+    {
+        static const QIcon icon(icons::strDtFinalLockedNumericIcon);
+        return icon;
+    }
+
     static const QIcon& getBlobDataTypesIcon()
     {
         static const QIcon icon(icons::strBlobFolder);
@@ -315,6 +374,12 @@ public:
     static const QIcon& getLockedBlobDataTypeIcon()
     {
         static const QIcon icon(icons::strDtLockedBlobIcon);
+        return icon;
+    }
+
+    static const QIcon& getFinalLockedBlobDataTypeIcon()
+    {
+        static const QIcon icon(icons::strDtFinalLockedBlobIcon);
         return icon;
     }
 
@@ -348,6 +413,12 @@ public:
         return icon;
     }
 
+    static const QIcon& getFinalLockedBoolDataTypeIcon()
+    {
+        static const QIcon icon(icons::strDtFinalLockedBoolIcon);
+        return icon;
+    }
+
     static const QIcon& getBoolDataTypeIcon()
     {
         static const QIcon icon(icons::strDtBoolIcon);
@@ -372,6 +443,12 @@ public:
         return icon;
     }
 
+    static const QIcon& getFinalLockedMiscDataTypeIcon()
+    {
+        static const QIcon icon(icons::strDtFinalLockedMiscIcon);
+        return icon;
+    }
+
     static const QIcon& getSpatialDataTypesIcon()
     {
         static const QIcon icon(icons::strSpatialFolder);
@@ -381,6 +458,12 @@ public:
     static const QIcon& getSpatialDataTypeIcon()
     {
         static const QIcon icon(icons::strDtSpatialIcon);
+        return icon;
+    }
+
+    static const QIcon& getFinalLockedSpatialDataTypeIcon()
+    {
+        static const QIcon icon(icons::strDtFinalLockedSpatialIcon);
         return icon;
     }
 
@@ -408,6 +491,12 @@ public:
         return icon;
     }
 
+    static const QIcon& getFinalLockedDateTimeDataTypeIcon()
+    {
+        static const QIcon icon(icons::strDtFinalLockedDateTimeIcon);
+        return icon;
+    }
+
     static const QIcon& getCodeIcon()
     {
         static const QIcon icon(icons::strCodeIcon);
@@ -429,6 +518,12 @@ public:
     static const QIcon& getLockedVersionIcon()
     {
         static const QIcon icon(icons::strMajorVersionLockedIcon);
+        return icon;
+    }
+
+    static const QIcon& getFinalLockedVersionIcon()
+    {
+        static const QIcon icon(icons::strMajorVersionFinalLockedIcon);
         return icon;
     }
 
@@ -468,6 +563,12 @@ public:
         return icon;
     }
 
+    static const QIcon& getFinalLockedTriggerIcon()
+    {
+        static const QIcon icon(icons::strFinalLockedTriggerIcon);
+        return icon;
+    }
+
     static const QIcon& getDiagramIcon()
     {
         static const QIcon icon(icons::strDiagramIcon);
@@ -477,6 +578,12 @@ public:
     static const QIcon& getLockedDiagramIcon()
     {
         static const QIcon icon(icons::strLockedDiagramIcon);
+        return icon;
+    }
+
+    static const QIcon& getFinalLockedDiagramIcon()
+    {
+        static const QIcon icon(icons::strFinalLockedDiagramIcon);
         return icon;
     }
 
@@ -642,6 +749,12 @@ public:
         return icon;
     }
 
+    static const QIcon& getFinalLockedViewIcon()
+    {
+        static const QIcon icon(icons::strFinalLockedViewIcon);
+        return icon;
+    }
+
     static const QIcon& getConnectedDatabaseIcon()
     {
         static const QIcon icon(icons::strConnectedDatabaseIcon);
@@ -702,6 +815,12 @@ public:
         return icon;
     }
 
+    static const QIcon& getFinalLockedProcedureIcon()
+    {
+        static const QIcon icon(icons::strFinalLockedProcedureIcon);
+        return icon;
+    }
+
     static const QIcon& getProceduresIcon()
     {
         static const QIcon icon(icons::strProcedureIcon);
@@ -723,6 +842,12 @@ public:
     static const QIcon& getLockedFunctionTreeIcon()
     {
         static const QIcon icon(icons::strLockedFunctionTreeIcon);
+        return icon;
+    }
+
+    static const QIcon& getFinalLockedFunctionTreeIcon()
+    {
+        static const QIcon icon(icons::strFinalLockedFunctionTreeIcon);
         return icon;
     }
 
@@ -868,6 +993,25 @@ public:
         return getEmptyIcon();
     }
 
+    static QIcon getFinalLockedIconForDataType(DT_TYPE dt)
+    {
+        switch(dt)
+        {
+        case DT_STRING: return getFinalLockedStringDataTypeIcon();
+        case DT_NUMERIC: return getFinalLockedIntDataTypeIcon();
+        case DT_BOOLEAN: return getFinalLockedBoolDataTypeIcon();
+        case DT_BLOB: return getFinalLockedBlobDataTypeIcon();
+        case DT_DATETIME: return getFinalLockedDateTimeDataTypeIcon();
+        case DT_MISC: return getFinalLockedMiscDataTypeIcon();
+        case DT_SPATIAL: return getFinalLockedSpatialDataTypeIcon();
+        case DT_INVALID:
+        case DT_GENERIC:
+        default:
+            return getEmptyIcon();
+        }
+
+        return getEmptyIcon();
+    }
 
     static QIcon getLockedIconForDataType(DT_TYPE dt)
     {
@@ -888,6 +1032,7 @@ public:
 
         return getEmptyIcon();
     }
+
     static QIcon getConnectionStateIcon(ConnectionState c)
     {
         switch(c)

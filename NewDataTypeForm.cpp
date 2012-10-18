@@ -364,7 +364,7 @@ void NewDataTypeForm::setDataType(UserDataType* udt)
     else
     {
         m_ui->frameForUnlockButton->show();
-        if(m_udt->isLocked())
+        if(m_udt->lockState() == LockableElement::LOCKED)
         {
             m_ui->btnLock->setIcon(IconFactory::getLockedIcon());
             m_ui->btnLock->blockSignals(true);
@@ -468,7 +468,7 @@ void NewDataTypeForm::onUndelete()
     {
         MainWindow::instance()->getGuiElements()->removeItemForPatch(m_udt->version()->getWorkingPatch(), m_udt->getObjectUid());
         // TODO: Duplicate from above
-        if(m_udt->isLocked())
+        if(m_udt->lockState() == LockableElement::LOCKED)
         {
             m_ui->btnLock->setIcon(IconFactory::getLockedIcon());
             m_ui->btnLock->blockSignals(true);

@@ -56,7 +56,7 @@ void View::serialize(QDomDocument& doc, QDomElement& parent) const
     viewElement.setAttribute("uid", getObjectUid());
     viewElement.setAttribute("class-uid", getClassUid());
     viewElement.setAttribute("source-uid", getSourceUid());
-    viewElement.setAttribute("locked", isLocked());
+    viewElement.setAttribute("locked", lockState() == LockableElement::LOCKED);
     viewElement.setAttribute("was-locked", wasLocked());
 
     if(m_manual)
@@ -111,10 +111,16 @@ CloneableElement* View::clone(Version *sourceVersion, Version *targetVersion)
 
 void View::updateGui()
 {
-    if(isLocked())
+    if(lockState() == LockableElement::LOCKED)
     {
         getLocation()->setIcon(0, IconFactory::getLockedViewIcon());
         getLocation()->setPopupMenu(ContextMenuCollection::getInstance()->getUnlockViewPopupMenu());
+    }
+    else
+    if(lockState() == LockableElement::FINAL_LOCK)
+    {
+        getLocation()->setIcon(0, IconFactory::getFinalLockedViewIcon());
+        getLocation()->setPopupMenu(0);
     }
     else
     {

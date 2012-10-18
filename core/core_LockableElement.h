@@ -27,17 +27,12 @@ public:
         m_lockState = UNLOCKED;
     }
 
-    bool isLocked() const
-    {
-        return m_lockState == LOCKED;
-    }
-
     bool wasLocked() const
     {
         return m_wasLocked;
     }
 
-    LockType state() const
+    LockType lockState() const
     {
         return m_lockState;
     }
