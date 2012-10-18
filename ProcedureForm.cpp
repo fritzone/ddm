@@ -132,7 +132,7 @@ void ProcedureForm::setProcedure(StoredMethod *p)
     else
     {
         ui->frameForUnlockButton->show();
-        if(m_proc->isLocked())
+        if(m_proc->lockState() == LockableElement::LOCKED)
         {
             ui->btnLock->setIcon(IconFactory::getLockedIcon());
             ui->btnLock->blockSignals(true);
@@ -166,7 +166,7 @@ void ProcedureForm::onUndelete()
     {
         MainWindow::instance()->getGuiElements()->removeItemForPatch(m_version->getWorkingPatch(), m_proc->getObjectUid());
         // TODO: Duplicate from above
-        if(m_proc->isLocked())
+        if(m_proc->lockState() == LockableElement::LOCKED)
         {
             ui->btnLock->setIcon(IconFactory::getLockedIcon());
             ui->btnLock->blockSignals(true);

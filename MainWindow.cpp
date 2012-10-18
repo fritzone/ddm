@@ -1665,7 +1665,7 @@ void MainWindow::onPasteTableFromPopup()
             sqlItm->setData(0, Qt::UserRole, tab->getObjectUid().toString());
         }
 
-        if(v->isLocked())
+        if(v->lockState() == LockableElement::LOCKED)
         {
             createPatchElement(v, tab, tab->getObjectUid(), false);
             v->getWorkingPatch()->addNewElement(tab->getObjectUid()); // this will be a new element ...
@@ -2871,6 +2871,9 @@ void MainWindow::finalizePatch()
         v->getGui()->getVersionItem()->setPopupMenu(0);
 
         p->suspendPatch();
+
+        v->lockVersion(LockableElement::FINAL_LOCK);
+        newVersion->lockVersion(LockableElement::LOCKED);
     }
 
 }

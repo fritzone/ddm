@@ -57,7 +57,7 @@ void UserDataType::serialize(QDomDocument& doc, QDomElement& parent) const
     dtElement.setAttribute("uid", getObjectUid());
     dtElement.setAttribute("class-uid", getClassUid().toString());
     dtElement.setAttribute("source-uid", getSourceUid());
-    dtElement.setAttribute("locked", isLocked());
+    dtElement.setAttribute("locked", lockState() == LockableElement::LOCKED);
     dtElement.setAttribute("was-locked", wasLocked());
 
     {
@@ -191,10 +191,16 @@ QUuid UserDataType::getClassUid() const
 
 void UserDataType::updateGui()
 {
-    if(isLocked())
+    if(lockState() == LockableElement::LOCKED)
     {
         getLocation()->setIcon(0, IconFactory::getLockedIconForDataType(m_type));
         getLocation()->setPopupMenu(ContextMenuCollection::getInstance()->getUnlockDataTypePopupMenu());
+    }
+    else
+    if(lockState() == LockableElement::FINAL_LOCK)
+    {
+        getLocation()->setIcon(0, IconFactory::getFinalLockedIconForDataType(m_type));
+        getLocation()->setPopupMenu(0);
     }
     else
     {

@@ -86,7 +86,7 @@ DiagramForm::DiagramForm(Version* v, Diagram* dgram, QWidget *parent) : QWidget(
     else
     {
         ui->frameForUnlockButton->show();
-        if(m_diagram->isLocked())
+        if(m_diagram->lockState() == LockableElement::LOCKED)
         {
             ui->btnLock->setIcon(IconFactory::getLockedIcon());
             ui->btnLock->blockSignals(true);
@@ -427,7 +427,7 @@ void DiagramForm::onUndelete()
     {
         MainWindow::instance()->getGuiElements()->removeItemForPatch(m_version->getWorkingPatch(), m_diagram->getObjectUid());
         // TODO: Duplicate from above
-        if(m_diagram->isLocked())
+        if(m_diagram->lockState() == LockableElement::LOCKED)
         {
             ui->btnLock->setIcon(IconFactory::getLockedIcon());
             ui->btnLock->blockSignals(true);

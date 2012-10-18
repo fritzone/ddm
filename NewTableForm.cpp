@@ -425,7 +425,7 @@ void NewTableForm::setTable(Table *table)
     else
     {
         m_ui->frameForUnlockButton->show();
-        if(m_table->isLocked())
+        if(m_table->lockState() == LockableElement::LOCKED)
         {
             m_ui->btnLock->setIcon(IconFactory::getLockedIcon());
             m_ui->btnLock->blockSignals(true);
@@ -2522,7 +2522,7 @@ void NewTableForm::onUndelete()
     {
         MainWindow::instance()->getGuiElements()->removeItemForPatch(m_version->getWorkingPatch(), m_table->getObjectUid());
         // TODO: Duplicate from above
-        if(m_table->isLocked())
+        if(m_table->lockState() == LockableElement::LOCKED)
         {
             m_ui->btnLock->setIcon(IconFactory::getLockedIcon());
             m_ui->btnLock->blockSignals(true);

@@ -87,7 +87,7 @@ void TriggerForm::setTrigger(Trigger *t)
     else
     {
         ui->frameForUnlockButton->show();
-        if(m_trigger->isLocked())
+        if(m_trigger->lockState() == LockableElement::LOCKED)
         {
             ui->btnLock->setIcon(IconFactory::getLockedIcon());
             ui->btnLock->blockSignals(true);
@@ -242,7 +242,7 @@ void TriggerForm::onUndelete()
     {
         MainWindow::instance()->getGuiElements()->removeItemForPatch(m_version->getWorkingPatch(), m_trigger->getObjectUid());
         // TODO: Duplicate from above
-        if(m_trigger->isLocked())
+        if(m_trigger->lockState() == LockableElement::LOCKED)
         {
             ui->btnLock->setIcon(IconFactory::getLockedIcon());
             ui->btnLock->blockSignals(true);

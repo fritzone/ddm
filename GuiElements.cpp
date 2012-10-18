@@ -216,7 +216,7 @@ ContextMenuEnabledTreeWidgetItem* GuiElements::updateItemForPatchWithState(Patch
             {
                 ObjectWithUid* obj = UidWarehouse::instance().getElement(uid);
                 LockableElement* le = dynamic_cast<LockableElement*>(obj);
-                if(le && le->isLocked())    // if the element was locked and deleted then "plain" undelete, ie, change the icon
+                if(le && le->lockState() == LockableElement::LOCKED)    // if the element was locked and deleted then "plain" undelete, ie, change the icon
                 {
                     dynamic_cast<ContextMenuEnabledTreeWidgetItem*>(m_patchItems[p]->child(i))->setPopupMenu(ContextMenuCollection::getInstance()->getReLockMenuForClassUid(obj->getClassUid()));
 
@@ -282,7 +282,7 @@ void GuiElements::removeItemForPatch(Patch *p, const QString& uid)
         {
             ObjectWithUid* obj = UidWarehouse::instance().getElement(uid);
             LockableElement* le = dynamic_cast<LockableElement*>(obj);
-            if(le && !le->isLocked())   // if the element was locked, and then deleted re-state the locked state entry in the tree
+            if(le && !le->lockState() == LockableElement::LOCKED)   // if the element was locked, and then deleted re-state the locked state entry in the tree
             {
                 itm->child(i)->setIcon(1, IconFactory::getChangedIcon());
                 dynamic_cast<ContextMenuEnabledTreeWidgetItem*>(itm->child(i))->setPopupMenu(ContextMenuCollection::getInstance()->getReLockMenuForClassUid(obj->getClassUid()));
