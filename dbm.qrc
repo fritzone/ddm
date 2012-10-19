@@ -214,6 +214,7 @@
         <file>images/small/datatypes_spatial_finallock.png</file>
         <file>images/small/datatypes_text_finallock.png</file>
         <file>images/actions/table_finallock.png</file>
+        <file>images/small/locked_final.png</file>
     </qresource>
     <qresource prefix="/bigger">
         <file>images/unaf.png</file>

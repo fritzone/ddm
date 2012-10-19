@@ -29,6 +29,7 @@ class Issue;
 class QMenu;
 class WidgetForSpecificProperties;
 class Version;
+class QComboBox;
 
 class NewTableForm : public SourceCodePresenterWidget
 {
@@ -201,6 +202,8 @@ private:
 
     QMenu* buildPopupForSpsForColumnInIndex();
 
+    void disableEditingControls(bool disabled);
+
 private:
     Ui::NewTableForm *m_ui;
     // the DB engine
@@ -238,8 +241,11 @@ private:
     // TODO: with multiple db engines this will be a vector
     WidgetForSpecificProperties* m_wspForIndex;
     WidgetForSpecificProperties* m_wspForColumn;
+    WidgetForSpecificProperties* m_mainWsp;
 
     Version* m_version;
+
+    QMap<QString, QComboBox*> m_combos;
 
 };
 

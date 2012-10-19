@@ -97,6 +97,7 @@ void VersionGuiElements::cleanupDtEntries()
 
 void VersionGuiElements::createGuiElements(ContextMenuEnabledTreeWidgetItem* projectItem, int idxAfter)
 {
+
     versionItem = new ContextMenuEnabledTreeWidgetItem(0, QStringList(QString("Ver: ") + m_version->getVersionText())) ;
 
     if(idxAfter == -1)
