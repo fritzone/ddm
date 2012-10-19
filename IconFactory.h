@@ -39,6 +39,8 @@ static const QString strDtFinalLockedSpatialIcon = ":/images/actions/images/smal
 
 static const QString strLockedIcon = ":/images/actions/images/small/locked.png";
 static const QString strUnLockedIcon = ":/images/actions/images/small/unlocked.png";
+static const QString strFinalLockedIcon = ":/images/actions/images/small/locked_final.png";
+
 static const QString strKeyIcon = ":/images/actions/images/small/key.png";
 static const QString strChangedIcon = ":/images/actions/images/small/changed.png";
 static const QString strSaveIcon = ":/images/actions/images/actions/filesave.png";
@@ -386,6 +388,12 @@ public:
     static const QIcon& getLockedIcon()
     {
         static const QIcon icon(icons::strLockedIcon);
+        return icon;
+    }
+
+    static const QIcon& getFinalLockedIcon()
+    {
+        static const QIcon icon(icons::strFinalLockedIcon);
         return icon;
     }
 
