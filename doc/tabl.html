@@ -1,0 +1,139 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML>
+<HEAD>
+	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=utf-8">
+	<TITLE>Tables</TITLE><STYLE TYPE="text/css">
+	<!--
+		P { border: 1px solid #000000; padding: 0.02in }
+	-->
+	</STYLE>
+</HEAD>
+<BODY LANG="en-US" BGCOLOR="white" DIR="LTR">
+<P ALIGN=CENTER STYLE="margin-bottom: 0in; background: white; border: none; padding: 0in; font-style: normal; line-height: 115%; text-decoration: none">
+<FONT COLOR="#000000" FACE="Arial" SIZE=3><B>Tables</B></FONT></P>
+
+<P STYLE="margin-bottom: 0in; background: white; font-style: normal; font-weight: normal; line-height: 115%; text-decoration: none"><FONT color="#000000" face="Arial" size=2 style="font-size: 11pt">In a relational database a table is a set of data, organized in a model using horizontal rows and vertical columns. The columns are identified by a name, and the rows are identified by the values appearing in the columns belonging to the rows key elements. The table can have a specific number of columns and an unlimited number of rows. DDM allows you to create tables using the Data types you have defined acting as the types for columns, and also allows you to set up relationships between various tables, which can be later presented in a diagram.<br><br><em><b>Object oriented modelling</b></em><br><br>
+DDM has a unique feature which allows the user to make a database design using an object orinted modelling approach. Here is a short description of this feature: If on the "New project" dialog you have checked the "Allow object oriented modelling" checkbox, when you create a table, you actually create a "table template" (imagine this, as a generic class that can be extended) and you can reuse this table template for table instances, you can create more than one table instance from one table template (just like in object oriented programming). This table instance creation ca be done either by clicking the correspondig button on the main toolbar of the application, or by right clicking the table in the project tree, and choosing the "Instantiate table" entry. When selecting a table instance from the project tree the user is presented a screen where it is possible to fill in the startup values for the new table instance.<br><br>To have more features and be in the control of the object oriented paradigms, by right clicking a table you can specialize a table, ie. give more features to an existing table (template), by creating a version which knows everything that its parent knows, but also knows more. By "knowing more", we mean: has more columns, indices, etc... This is good for you, because for example if you need some tables which share some common data (for example a column with the creation timestamp, that you want to include in all your tables, or the user who created it, or anything else that is there in more than one table) you can create a table template to include all these common properties and then you can specialize as many tables from this one as many you like, and all the "derived" tables will have the common columns. This way, if in the future some change request comes in to modify one of the common columns that are there in many tables, you need to do it only once.<br><br>In case the object oriented modelling is used, the generated SQL script is based on the table instances, otherwise the generated SQL script is based on the tables.<br>
+<br>
+DDM supports the notion of database specific properties for selected database elements. These appear in the GUI in the form of a new section in the properties of the database element and are usually marked with the representative icon and name of the database. 
+</FONT><br>
+</P>
+<BR><em>GUI elements</em>
+<P STYLE="margin-bottom: 0in; background: white; line-height: 115%">
+<FONT SIZE=2 STYLE="font-size: 11pt" COLOR="#000000" FACE="Arial"><B>Table Name:</B>Give a unique name for the table type. A small advice is to follow some consistent notation among your tables. <br>
+<B>Save:</B> When you're done with the modifications of the current table please press this button.</FONT></P>
+
+<P STYLE="margin-bottom: 0in; background: white; line-height: 115%"><FONT SIZE=2 STYLE="font-size: 11pt" COLOR="#000000" FACE="Arial"><em><B>Columns page</B></em><BR>
+<br>
+<em>Columns list</em><br>
+<br>
+The list of columns contains all the columns you have created for this table. The PK field has a <img src="key.png" alt="key" width="16" height="16"> icon in case this is a primary key. By clicking on a column in the list you select the column, and you can modify the name, type or other properties of it.<br>
+<br>
+By clicking the <img src="up.png" alt="up" width="16" height="16"> button you move the selected column &quot;Up&quot; in the list(ie. to the left in the tables columns), and by clicking the <img src="down.png" alt="down" width="16" height="16"> button you move the selected column &quot;Down&quot; (ie. to the rght in the tables columns). By clicking the <img src="remove.png" alt="remove" width="16" height="16"> button you delete the selected column from the list (and from the table). In case this is a specialized table, the columns from the parent table will be shown with a light gray background and you cannot modify or delete them, nor can you change their position.<br>
+<br>
+<em>New Column<br>
+<br>
+General Tab
+<br>
+<br>
+</em><B>Name: </B>Give a unique name in this table for the new column.<br>
+<br>
+<B>Type: </B>Choose the type of the column from the list of Data types you have created.<br>
+<br>
+<B>Primary key:</B> If you want your column to take part from a list of primary key columns, check this checkbox.<br>
+<br>
+<B>Description: </B>Give a meaningful description for the column, as this text will appear in the generated code in form of comments and in the generated documentation too.<br>
+<br>
+When you have filled up the required fields to create a column press the <img src="add.png" alt="add" width="16" height="16"> button to add the new column to the table. If you have a column already selected the <img src="add.png" alt="add" width="16" height="16"> button will be replaced by the <img src="apply.png" alt="apply" width="16" height="16"> button and pressing it will update the column in the table. By pressing the <img src="cancel.png" alt="cancel" width="16" height="16"> button you will reset the changes you have done and can start over again. No changes will be saved to the selected column.<br>
+<br>
+<em>MySql Tab</em>
+<br>
+<br>
+This section contains the MySQL specific properties for a column. The following properties are supported:<br>
+<br>
+<B>Auto increment: </B>The incrementation of Numeric types can be taken care automatically by the MySQL database. The property is disabled for non numeric types.<br>
+<br>
+<B>Zero fill: </B>The Numeric fields are filled with leading zeroes to obtain the desired width.<br>
+<BR></FONT>
+</P>
+
+<P STYLE="margin-bottom: 0in; background: white; line-height: 115%">
+<FONT size=2 style="font-size: 11pt" COLOR="#000000" FACE="Arial"><em><B>Indices Page</B></em><br><br><em>Indices list</em><br>
+  <br>
+This list contains the indices that were created for the table. By clicking on an index you select it, and you can modify its properties. You also can delete the selected index with the <img src="remove.png" alt="remove" width="16" height="16"> button. The indices starting with "autodix_" are indices that were created because of a foreign key referencing this table and should not be deleted nor modified. These indices are having a dark grey background. In case this table is a spcialized table, the indices from the parent table are presented on a light gray background.<br><br>
+<em>New Index<br>
+<br>
+</em><B>Name: </B>is the name of the index.<em><br>
+<br>
+ Columns Tab
+</em><br>
+<br>
+<B>Columns:</B> the available columns for the index are on the left side, you can use the <img src="right.png" alt="right" width="16" height="16"> button to move the selected columnto the right (and you can use the <img src="left.png" alt="left" width="16" height="16"> button to remove the selected column from the index). Once a column has been moved to the right side (meaning it was added to the index) you can move them up/down with the <img src="up.png" alt="up" width="16" height="16">/<img src="down.png" alt="down" width="16" height="16"> buttons.<br>
+  <br>
+When done press the <img src="add.png" alt="add" width="16" height="16"> button to add the new index to the table. Pressing the <img src="cancel.png" alt="cancel" width="16" height="16"> button you will cancel editing the current index.<br>
+<br>
+On a selected column you can define database specific properties in the following way: select the column, and press the 
+<img src="add.png" alt="add" width="16" height="16"> button (above the selected column list) to choose a database specific property. Removing the database specific properties is done by the remove button above the column list.<br>
+<br>
+<em>MySql Tab<br>
+</em><br>
+<B>Type: </B>you can define the type of the index (BTREE is the most accepted) depending on the MySQL Storage Engine and the capabilities of the database.<br>
+<br>
+<strong>Category:</strong> you can define the category (UNIQUE, FULLTEXT, ...) of the index<br>
+<em></em>
+</FONT><br>
+</P>
+
+<P STYLE="margin-bottom: 0in; background: white; line-height: 115%">
+      <FONT size=2 style="font-size: 11pt" color="#000000" face="Arial"><em><B>Foreign keys Page</B></em><br><br>
+In case the selected storage engine for the table does not support foreign keys you will see a warning regarding this. For MySQL right now the InnoDB storage engine has support for foreign keys. In case the selected storage engine does not support foreign keys, you still will be able to specify them, and they also will be shown on the E-R diagrams.<br><br>
+<em>Foreign keys list</em><br>
+<br> This list contains the foreign keys that were defined for this table. By clicking on a foreign key you select it and you can delete the selected foreign key with the <img src="remove.png" alt="remove" width="16" height="16"> button. Foreign key propagation is by default not enabled, meaning, a foreign key defined in a parent table usually is not taken over in the specialized table.<br>
+<br><em>New Foreign Key</em><br>
+<br>
+<B>FK Name: </B> the name of the foreign key you will define. This must be unique. <br>
+<br>
+<B>Foreign table: </B> As a first step in creating a foreign key you have to select the table which it is referenced.
+<br><br>
+<B>Foreign column: </B>Once the foreign table is selected this listbox will be populated with the columns of the foreign table. Click on a column in this list.
+<br><br>
+<B>Local column: </B>Once you have selected the foreign column the local columns which have the same datatype as the remote column will be inserted in this list. Now you can select one column here and press the <img src="add.png" alt="add" width="16" height="16"> button to create a foreign column -> local column association. This association will go in the list box below.
+<BR>
+<br>
+<B>List of associations: </B>This list contains the associations between the columns in the foreign table and the local table. By clicking on one association you can delete it with the  <img src="remove.png" alt="remove" width="16" height="16"> button on the right.
+<BR>
+<br>
+<B>
+On Update / On Delete: </B>Use these two selections to specify what should happen on the UPDATE / DELETE with the foreign referenced items (please read your MySQL documentation to understand this if you're not clear with the terminology).
+</FONT>
+</P>
+<P STYLE="margin-bottom: 0in; background: white; line-height: 115%">
+<FONT size=2 style="font-size: 11pt" color="#000000" face="Arial"><em><B>Default values page</B></em><br><br>
+In case you chose to not to use the object oriented modeling features of DDM here you are given the opportunity to provide default values for your table. These will go in the SQL generate script. Warning! This screen is quite experimental in this version, so be careful when using it. There is the possibilty to import values from CSV files, and also you can save the values for further reference into CSV files. <BR><BR>
+With the  <img src="add.png" alt="add" width="16" height="16"> button you insert a new row in the table, with the <img src="remove.png" alt="remove" width="16" height="16"> button you remove the currently selected row from the table. When you are done with inserting the data press the  <img src="apply.png" alt="apply" width="16" height="16"> button to validate the data that was entered by you. Basic validation is done at this, there are some basic error checkings, such as do not enter a string value for a numeric field, but the more complex validations are reserverd for future releases of the application.
+</FONT>
+</P>
+<P STYLE="margin-bottom: 0in; background: white; line-height: 115%">
+<FONT size=2 style="font-size: 11pt" color="#000000" face="Arial"><em><B>Descriptions Page</B></em><br><br>
+Please provide a description for this table. The generated description will go in the generated code.
+</FONT>
+</P>
+<P STYLE="margin-bottom: 0in; background: white; line-height: 115%">
+<FONT size=2 style="font-size: 11pt" color="#000000" face="Arial"><em><B>MySql Page</B></em><br>
+<br>
+This page contains the MySql specific properties for the table. The properties are grouped in &quot;General&quot; and &quot;Advanced&quot; groups. The following properties are implemented:<br>
+<br>
+<em>Temporary table (General) - </em>Creates a temporary table using the MySql TEMPORARY keyword<br>
+<br>
+<em>Create only if not exists (General)</em> - Creates a table only if the table does not exist.<br>
+<br>
+<em>Storage engine (Advanced) - </em>Specify the storage engine of the table. If on deployment DDM discovers that the destination database does not support the desired storage engine it will switch to the default storage engine of the database (usually InnoDB)<br>
+<br>
+<em>Codepgage (Advanced)</em> - You can specify the codepage which will be used upon deployment. If the destination database does not support the required storage engine the behavior is database specific. Either it can return an error, thus failing the deployment or silently ignore it. Consult the manual of your database before trying exotic codepages.</FONT><br>
+<br>
+</P>
+<P STYLE="margin-bottom: 0in; background: white; line-height: 115%"><FONT size=2 style="font-size: 11pt" color="#000000" face="Arial"><em><B>SQL Page</B></em><br><br>
+  This page contains a preview of the SQL script for this table. You can save the script, or you can try to insert it into a database. Foreign keys are not supported in this screen.
+  </FONT></P>
+</BODY>
+</HTML>

@@ -1,0 +1,9 @@
+syntax: glob
+*.o
+ui_*.*
+*~
+moc_*.*
+qrc_*.*
+*.user
+*.orig
+*.pro.user.*
