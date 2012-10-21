@@ -19,7 +19,7 @@ void Function::serialize(QDomDocument &doc, QDomElement &parent) const
     element.setAttribute("uid", getObjectUid());
     element.setAttribute("class-uid", getClassUid());
     element.setAttribute("source-uid", getSourceUid());
-    element.setAttribute("locked", isLocked());
+    element.setAttribute("locked", lockState() == LockableElement::LOCKED);
     element.setAttribute("was-locked", wasLocked());
 
     QDomElement textElement = doc.createElement("Sql");
@@ -45,10 +45,16 @@ CloneableElement* Function::clone(Version *sourceVersion, Version *targetVersion
 
 void Function::updateGui()
 {
-    if(isLocked())
+    if(lockState() == LockableElement::LOCKED)
     {
         getLocation()->setIcon(0, IconFactory::getLockedFunctionTreeIcon());
         getLocation()->setPopupMenu(ContextMenuCollection::getInstance()->getUnlockFunctionPopupMenu());
+    }
+    else
+    if(lockState() == LockableElement::FINAL_LOCK)
+    {
+        getLocation()->setIcon(0, IconFactory::getFinalLockedFunctionTreeIcon());
+        getLocation()->setPopupMenu(0);
     }
     else
     {

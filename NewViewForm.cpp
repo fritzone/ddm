@@ -170,7 +170,7 @@ void NewViewForm::setView(View *v)
     else
     {
         ui->frameForUnlockButton->show();
-        if(m_view->isLocked())
+        if(m_view->lockState() == LockableElement::LOCKED)
         {
             ui->btnLock->setIcon(IconFactory::getLockedIcon());
             ui->btnLock->blockSignals(true);
@@ -392,7 +392,7 @@ void NewViewForm::onUndelete()
     {
         MainWindow::instance()->getGuiElements()->removeItemForPatch(m_version->getWorkingPatch(), m_view->getObjectUid());
         // TODO: Duplicate from above
-        if(m_view->isLocked())
+        if(m_view->lockState() == LockableElement::LOCKED)
         {
             ui->btnLock->setIcon(IconFactory::getLockedIcon());
             ui->btnLock->blockSignals(true);

@@ -375,6 +375,8 @@ public:
 
     virtual void updateGui() = 0;
 
+    virtual void lockVersion(LockableElement::LockType) = 0;
+
     void setVersionNumbers(int major, int minor)
     {
         if(major > m_major)

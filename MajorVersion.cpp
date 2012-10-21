@@ -44,7 +44,7 @@ void MajorVersion::serialize(QDomDocument &doc, QDomElement &parent) const
     majorVersionElement.setAttribute("uid", getObjectUid());
     majorVersionElement.setAttribute("source-uid", getSourceUid().toString());
     majorVersionElement.setAttribute("class-uid", getClassUid().toString());
-    majorVersionElement.setAttribute("locked", isLocked());
+    majorVersionElement.setAttribute("locked", lockState());
 
     QDomElement versionElement = doc.createElement("Version");        // the version node
     QDomText versionNode = doc.createTextNode(version);

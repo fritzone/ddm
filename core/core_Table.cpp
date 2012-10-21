@@ -329,7 +329,7 @@ void Table::serialize(QDomDocument &doc, QDomElement &parent) const
     tableElement.setAttribute("class-uid", getClassUid().toString());
     tableElement.setAttribute("parent-uid", m_parent?m_parent->getObjectUid().toString():strNA);
 
-    tableElement.setAttribute("locked", isLocked());
+    tableElement.setAttribute("locked", lockState() == LockableElement::LOCKED);
     tableElement.setAttribute("source-uid", getSourceUid().toString().length() ? getSourceUid().toString() : strNA);
     tableElement.setAttribute("was-locked", wasLocked());
 
@@ -602,10 +602,16 @@ CloneableElement* Table::clone(Version *sourceVersion, Version *targetVersion)
 
 void Table::updateGui()
 {
-    if(isLocked())
+    if(lockState() == LockableElement::LOCKED)
     {
         getLocation()->setIcon(0, IconFactory::getLockedTableIcon());
         getLocation()->setPopupMenu(ContextMenuCollection::getInstance()->getUnlockTablePopupMenu());
+    }
+    else
+    if(lockState() == LockableElement::FINAL_LOCK)
+    {
+        getLocation()->setIcon(0, IconFactory::getFinalLockedTableIcon());
+        getLocation()->setPopupMenu(0);
     }
     else
     {

@@ -46,11 +46,38 @@ void DefaultVersionImplementation::updateGui()
 {
     QFont f = getGui()->getVersionItem()->font(0);
 
-    if(isLocked())
+    if(lockState() == LockableElement::LOCKED)
     {
         f.setItalic(true);
         getGui()->getVersionItem()->setIcon(0, IconFactory::getLockedVersionIcon());
         getGui()->getVersionItem()->setPopupMenu(0);
+    }
+    else
+    if(lockState() == LockableElement::FINAL_LOCK)
+    {
+        f.setItalic(true);
+        getGui()->getVersionItem()->setIcon(0, IconFactory::getFinalLockedVersionIcon());
+        getGui()->getVersionItem()->setPopupMenu(0);
+
+        getGui()->getVersionItem()->setForeground(0, QBrush(Qt::lightGray));
+        getGui()->getTablesItem()->setForeground(0, QBrush(Qt::lightGray));
+        getGui()->getTableInstancesItem()->setForeground(0, QBrush(Qt::lightGray));
+        getGui()->getDiagramsItem()->setForeground(0, QBrush(Qt::lightGray));
+        getGui()->getDtsItem()->setForeground(0, QBrush(Qt::lightGray));
+        getGui()->getProceduresItem()->setForeground(0, QBrush(Qt::lightGray));
+        getGui()->getFunctionsItem()->setForeground(0, QBrush(Qt::lightGray));
+        getGui()->getTriggersItem()->setForeground(0, QBrush(Qt::lightGray));
+        getGui()->getViewsItem()->setForeground(0, QBrush(Qt::lightGray));
+
+        if(getGui()->hasIntsDtsItem()) getGui()->getIntsDtsItem()->setForeground(0, QBrush(Qt::lightGray));
+        if(getGui()->hasStringDtsItem()) getGui()->getStringDtsItem()->setForeground(0, QBrush(Qt::lightGray));
+        if(getGui()->hasDateDtsItem()) getGui()->getDateDtsItem()->setForeground(0, QBrush(Qt::lightGray));
+        if(getGui()->hasBlobDtsItem()) getGui()->getBlobDtsItem()->setForeground(0, QBrush(Qt::lightGray));
+        if(getGui()->hasBoolDtsItem()) getGui()->getBoolDtsItem()->setForeground(0, QBrush(Qt::lightGray));
+        if(getGui()->hasMiscDtsItem()) getGui()->getMiscDtsItem()->setForeground(0, QBrush(Qt::lightGray));
+        if(getGui()->hasSpatialDtsItem()) getGui()->getSpatialDtsItem()->setForeground(0, QBrush(Qt::lightGray));
+
+
     }
     else
     {
@@ -67,6 +94,7 @@ void DefaultVersionImplementation::updateGui()
     getGui()->getProceduresItem()->setFont(0, f);
     getGui()->getFunctionsItem()->setFont(0, f);
     getGui()->getTriggersItem()->setFont(0, f);
+    getGui()->getViewsItem()->setFont(0, f);
 
     if(getGui()->hasIntsDtsItem()) getGui()->getIntsDtsItem()->setFont(0, f);
     if(getGui()->hasStringDtsItem()) getGui()->getStringDtsItem()->setFont(0, f);
@@ -89,7 +117,7 @@ void DefaultVersionImplementation::addNewDataType(UserDataType* dt, bool initial
 
     m_data.m_dataTypes.insert(i, dt);
 
-    if(isLocked() && !initial)
+    if(lockState() == LockableElement::LOCKED && !initial)
     {
         MainWindow::instance()->createPatchElement(this, dt, dt->getObjectUid(), false);
         getWorkingPatch()->addNewElement(dt->getObjectUid()); // this will be a new element ...
@@ -138,7 +166,7 @@ int DefaultVersionImplementation::getDataTypeIndex(const QString& name)
 inline void DefaultVersionImplementation::addTable(Table *t, bool initial)
 {
     m_data.m_tables.append(t);
-    if(isLocked() && !initial)
+    if(lockState() == LockableElement::LOCKED && !initial)
     {
         MainWindow::instance()->createPatchElement(this, t, t->getObjectUid(), false);
         getWorkingPatch()->addNewElement(t->getObjectUid()); // this will be a new element ...
@@ -150,7 +178,7 @@ inline void DefaultVersionImplementation::addDiagram(Diagram* d, bool initial)
 {
     m_data.m_diagrams.append(d);
 
-    if(isLocked() && !initial)
+    if(lockState() == LockableElement::LOCKED && !initial)
     {
         MainWindow::instance()->createPatchElement(this, d, d->getObjectUid(), false);
         getWorkingPatch()->addNewElement(d->getObjectUid()); // this will be a new element ...
@@ -432,7 +460,7 @@ void DefaultVersionImplementation::deleteTableInstance(TableInstance *tinst)
     doDeleteTableInstance(tinst, tda);
     if(tda == 0) return;
 
-    if(isLocked())  // remove the entry from the patch
+    if(lockState() == LockableElement::LOCKED)  // remove the entry from the patch
     {
         // check if this table instance was created as a NEW one in this patch
         if(getWorkingPatch()->elementWasNewInThisPatch(tinst->getObjectUid()))
@@ -556,7 +584,7 @@ bool DefaultVersionImplementation::deleteTable(Table *tab)
     // remove from inside
     m_data.m_tables.remove(tabIndex);
 
-    if(isLocked())  // marking the element as deleted, ro removing
+    if(lockState() == LockableElement::LOCKED)  // marking the element as deleted, ro removing
     {
         if(!getWorkingPatch()->elementWasNewInThisPatch(tab->getObjectUid())) // but only if it was NOT a newly created element
         {
@@ -615,7 +643,7 @@ TableInstance* DefaultVersionImplementation::instantiateTable(Table* tab, bool b
         tabInst->setName(NameGenerator::getUniqueName(this,  (itemGetter)&Version::getTableInstance, tabInst->getName()));
     }
     m_data.m_tableInstances.append(tabInst);
-    if(isLocked())
+    if(lockState() == LockableElement::LOCKED)
     {
         MainWindow::instance()->createPatchElement(this, tabInst, tabInst->getObjectUid(), false);
         getWorkingPatch()->addNewElement(tabInst->getObjectUid()); // this will be a new element ...
@@ -662,7 +690,7 @@ void DefaultVersionImplementation::deleteDataType(const QString& dtName)
             DataTypeDeletionAction* dtda = new DataTypeDeletionAction;
             dtda->deletedDataType = udt;
 
-            if(isLocked())  // marking the element as deleted, ro removing
+            if(lockState() == LockableElement::LOCKED)  // marking the element as deleted, ro removing
             {
                 if(!getWorkingPatch()->elementWasNewInThisPatch(udt->getObjectUid())) // but only if it was NOT a newly created element
                 {
@@ -712,7 +740,7 @@ void DefaultVersionImplementation::deleteView(const QString &name)
     ViewDeletionAction* vda = new ViewDeletionAction;
     vda->deletedView = v;
 
-    if(isLocked())  // marking the element as deleted, ro removing
+    if(lockState() == LockableElement::LOCKED)  // marking the element as deleted, ro removing
     {
         if(!getWorkingPatch()->elementWasNewInThisPatch(v->getObjectUid())) // but only if it was NOT a newly created element
         {
@@ -738,7 +766,7 @@ void DefaultVersionImplementation::deleteFunction(const QString& f)
     FunctionDeletionAction* pda = new FunctionDeletionAction;
     pda->deletedFunction = func;
 
-    if(isLocked())  // marking the element as deleted, ro removing
+    if(lockState() == LockableElement::LOCKED)  // marking the element as deleted, ro removing
     {
         if(!getWorkingPatch()->elementWasNewInThisPatch(func->getObjectUid())) // but only if it was NOT a newly created element
         {
@@ -765,7 +793,7 @@ void DefaultVersionImplementation::deleteTrigger(const QString& t)
     tda->deletedTrigger= trg;
 
     // TODO: this is more or less a duplication with other places. Fix it.
-    if(isLocked())  // marking the element as deleted, ro removing
+    if(lockState() == LockableElement::LOCKED)  // marking the element as deleted, ro removing
     {
         if(!getWorkingPatch()->elementWasNewInThisPatch(trg->getObjectUid())) // but only if it was NOT a newly created element
         {
@@ -791,7 +819,7 @@ void DefaultVersionImplementation::deleteProcedure(const QString& p)
     ProcedureDeletionAction* pda = new ProcedureDeletionAction;
     pda->deletedProcedure = v;
 
-    if(isLocked())  // marking the element as deleted, ro removing
+    if(lockState() == LockableElement::LOCKED)  // marking the element as deleted, ro removing
     {
         if(!getWorkingPatch()->elementWasNewInThisPatch(v->getObjectUid())) // but only if it was NOT a newly created element
         {
@@ -816,7 +844,7 @@ void DefaultVersionImplementation::deleteDiagram(const QString& name)
     DiagramDeletionAction* dda = new DiagramDeletionAction;
     dda->deletedDiagram = dgr;
 
-    if(isLocked())  // marking the element as deleted, ro removing
+    if(lockState() == LockableElement::LOCKED)  // marking the element as deleted, ro removing
     {
         if(!getWorkingPatch()->elementWasNewInThisPatch(dgr->getObjectUid())) // but only if it was NOT a newly created element
         {
@@ -1073,7 +1101,7 @@ const QVector<View*>& DefaultVersionImplementation::getViews()
 void DefaultVersionImplementation::addTableInstance(TableInstance* inst, bool initial)
 {
     m_data.m_tableInstances.append(inst);
-    if(isLocked() && !initial)
+    if(lockState() == LockableElement::LOCKED && !initial)
     {
         MainWindow::instance()->createPatchElement(this, inst, inst->getObjectUid(), false);
         getWorkingPatch()->addNewElement(inst->getObjectUid()); // this will be a new element ...
@@ -1284,7 +1312,7 @@ void DefaultVersionImplementation::addView(View* v, bool initial)
 {
     m_data.m_views.append(v);
 
-    if(isLocked() && !initial)
+    if(lockState() == LockableElement::LOCKED && !initial)
     {
         MainWindow::instance()->createPatchElement(this, v, v->getObjectUid(), false);
         getWorkingPatch()->addNewElement(v->getObjectUid()); // this will be a new element ...
@@ -1333,7 +1361,7 @@ void DefaultVersionImplementation::addProcedure(Procedure* p, bool initial)
 {
     m_data.m_procedures.append(p);
 
-    if(isLocked() && !initial)
+    if(lockState() == LockableElement::LOCKED && !initial)
     {
         MainWindow::instance()->createPatchElement(this, p, p->getObjectUid(), false);
         getWorkingPatch()->addNewElement(p->getObjectUid()); // this will be a new element ...
@@ -1345,7 +1373,7 @@ void DefaultVersionImplementation::addProcedure(Procedure* p, bool initial)
 void DefaultVersionImplementation::addFunction(Function* p, bool initial)
 {
     m_data.m_functions.append(p);
-    if(isLocked() && !initial)
+    if(lockState() == LockableElement::LOCKED && !initial)
     {
         MainWindow::instance()->createPatchElement(this, p, p->getObjectUid(), false);
         getWorkingPatch()->addNewElement(p->getObjectUid()); // this will be a new element ...
@@ -1356,7 +1384,7 @@ void DefaultVersionImplementation::addFunction(Function* p, bool initial)
 void DefaultVersionImplementation::addTrigger(Trigger* t, bool initial)
 {
     m_data.m_triggers.append(t);
-    if(isLocked() && !initial)
+    if(lockState() == LockableElement::LOCKED && !initial)
     {
         MainWindow::instance()->createPatchElement(this, t, t->getObjectUid(), false);
         getWorkingPatch()->addNewElement(t->getObjectUid()); // this will be a new element ...
@@ -2152,5 +2180,78 @@ void DefaultVersionImplementation::removePatch(const Patch* p)
             m_currentPatchIndex = i - 1;
             m_patches.remove(i);
         }
+    }
+}
+
+void DefaultVersionImplementation::lockVersion(LockableElement::LockType lt)
+{
+    lock(lt);
+    updateGui();
+
+    // clone the data types
+    const QVector<UserDataType*> dts = getDataTypes();
+    for(int i=0; i<dts.size(); i++)
+    {
+        // lock the datatype
+        dts.at(i)->lock(lt);
+        dts.at(i)->updateGui();
+    }
+
+    // clone the tables
+    const QVector<Table*> tabs = getTables();
+    for(int i=0; i<tabs.size(); i++)
+    {
+        // lock the table
+        tabs.at(i)->lock(lt);
+        tabs.at(i)->updateGui();
+    }
+
+
+    QVector<TableInstance*> tinsts = getTableInstances();
+    for(int i=0; i<tinsts.size(); i++)
+    {
+        tinsts.at(i)->lock(lt);
+        tinsts.at(i)->updateGui();
+    }
+
+
+    // clone the views
+    const QVector<View*> views = getViews();
+    for(int i=0; i<views.size(); i++)
+    {
+        views.at(i)->lock(lt);
+        views.at(i)->updateGui();
+    }
+
+    // clone the procedures
+    const QVector<Procedure*> procs = getProcedures();
+    for(int i=0; i<procs.size(); i++)
+    {
+        procs.at(i)->lock(lt);
+        procs.at(i)->updateGui();
+    }
+
+    // and the functions
+    const QVector<Function*> funcs = getFunctions();
+    for(int i=0; i<funcs.size(); i++)
+    {
+        funcs.at(i)->lock(lt);
+        funcs.at(i)->updateGui();
+    }
+
+    // clone the triggers
+    const QVector<Trigger*> trigs = getTriggers();
+    for(int i=0; i<trigs.size(); i++)
+    {
+        trigs.at(i)->lock(lt);
+        trigs.at(i)->updateGui();
+    }
+
+    // clone the diagrams
+    const QVector<Diagram*> dias = getDiagrams();
+    for(int i=0; i<dias.size(); i++)
+    {
+        dias.at(i)->lock(lt);
+        dias.at(i)->updateGui();
     }
 }
