@@ -27,7 +27,7 @@ void Trigger::serialize(QDomDocument &doc, QDomElement &parent) const
     triggerElement.setAttribute("Table", m_table);
     triggerElement.setAttribute("uid", getObjectUid());
     triggerElement.setAttribute("class-uid", getClassUid());
-    triggerElement.setAttribute("locked", isLocked());
+    triggerElement.setAttribute("locked", lockState() == LockableElement::LOCKED);
     triggerElement.setAttribute("was-locked", wasLocked());
     triggerElement.setAttribute("source-uid", getSourceUid());
 
@@ -64,10 +64,16 @@ CloneableElement* Trigger::clone(Version *sourceVersion, Version *targetVersion)
 
 void Trigger::updateGui()
 {
-    if(isLocked())
+    if(lockState() == LockableElement::LOCKED)
     {
         getLocation()->setIcon(0, IconFactory::getLockedTriggerIcon());
         getLocation()->setPopupMenu(ContextMenuCollection::getInstance()->getUnlockTriggerPopupMenu());
+    }
+    else
+    if(lockState() == LockableElement::FINAL_LOCK)
+    {
+        getLocation()->setIcon(0, IconFactory::getFinalLockedTriggerIcon());
+        getLocation()->setPopupMenu(0);
     }
     else
     {

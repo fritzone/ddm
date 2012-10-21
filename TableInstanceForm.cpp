@@ -328,7 +328,7 @@ void TableInstanceForm::setTableInstance(TableInstance *st)
     else
     {
         ui->frameForUnlockButton->show();
-        if(m_tinst->isLocked())
+        if(m_tinst->lockState() == LockableElement::LOCKED)
         {
             ui->btnLock->setIcon(IconFactory::getLockedIcon());
             ui->btnLock->blockSignals(true);
@@ -362,7 +362,7 @@ void TableInstanceForm::onUndelete()
     {
         MainWindow::instance()->getGuiElements()->removeItemForPatch(m_tinst->version()->getWorkingPatch(), m_tinst->getObjectUid());
         // TODO: Duplicate from above
-        if(m_tinst->isLocked())
+        if(m_tinst->lockState() == LockableElement::LOCKED)
         {
             ui->btnLock->setIcon(IconFactory::getLockedIcon());
             ui->btnLock->blockSignals(true);

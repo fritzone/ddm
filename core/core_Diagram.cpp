@@ -261,7 +261,7 @@ void Diagram::serialize(QDomDocument &doc, QDomElement &parent) const
     diagramElement.setAttribute("Name", m_name);
     diagramElement.setAttribute("uid", getObjectUid());
     diagramElement.setAttribute("class-uid", getClassUid());
-    diagramElement.setAttribute("locked", isLocked());
+    diagramElement.setAttribute("locked", lockState() == LockableElement::LOCKED);
     diagramElement.setAttribute("was-locked", wasLocked());
     diagramElement.setAttribute("source-uid", getSourceUid());
 
@@ -348,10 +348,16 @@ CloneableElement* Diagram::clone(Version* sourceVersion, Version* targetVersion)
 
 void Diagram::updateGui()
 {
-    if(isLocked())
+    if(lockState() == LockableElement::LOCKED)
     {
         getLocation()->setIcon(0, IconFactory::getLockedDiagramIcon());
         getLocation()->setPopupMenu(ContextMenuCollection::getInstance()->getUnlockDiagramPopupMenu());
+    }
+    else
+    if(lockState() == LockableElement::FINAL_LOCK)
+    {
+        getLocation()->setIcon(0, IconFactory::getFinalLockedDiagramIcon());
+        getLocation()->setPopupMenu(0);
     }
     else
     {

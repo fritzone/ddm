@@ -47,7 +47,7 @@ NewTableForm::NewTableForm(DatabaseEngine* db, Project* prj, Version* v, QWidget
     m_ui(new Ui::NewTableForm),
     m_dbEngine(db), m_project(prj), m_table(0),
     m_currentColumn(0), m_currentIndex(0), m_foreignTable(0), m_currentForeignKey(0), m_foreignKeySelected(false),
-    m_engineProviders(0), m_wspForIndex(0), m_wspForColumn(0), m_version(v)
+    m_engineProviders(0), m_wspForIndex(0), m_wspForColumn(0), m_version(v), m_combos()
 {
     m_ui->setupUi(this);
 
@@ -203,6 +203,11 @@ void NewTableForm::setTypeComboBoxForColumnItem(ContextMenuEnabledTreeWidgetItem
     }
     lstColumns->setItemWidget(item, 2, cmbColumnType);
     cmbColumnType->setCurrentIndex(s);
+    if(m_table->lockState() == LockableElement::FINAL_LOCK || m_table->lockState() == LockableElement::LOCKED)
+    {
+        cmbColumnType->setDisabled(true);
+    }
+    m_combos.insert(c->getName(), cmbColumnType);
     connect(cmbColumnType, SIGNAL(activated(QString)), m_signalMapperForCombosInColumns, SLOT(map()));
     m_signalMapperForCombosInColumns->setMapping(cmbColumnType, c->getName());
     // TODO: This is pretty ugly, it will call the slot several times. find a better location for this in the code
@@ -425,22 +430,35 @@ void NewTableForm::setTable(Table *table)
     else
     {
         m_ui->frameForUnlockButton->show();
-        if(m_table->isLocked())
+        if(m_table->lockState() == LockableElement::LOCKED)
         {
             m_ui->btnLock->setIcon(IconFactory::getLockedIcon());
             m_ui->btnLock->blockSignals(true);
             m_ui->btnLock->setChecked(false);
             m_ui->btnLock->blockSignals(false);
-            m_ui->grpContent->setEnabled(false);
+
+            disableEditingControls(true);
+
             m_ui->btnLock->setToolTip(QObject::tr("This table is <b>locked</b>. Click this button to unlock it."));
         }
         else
+        if(m_table->lockState() == LockableElement::FINAL_LOCK)
         {
+            m_ui->btnLock->setIcon(IconFactory::getFinalLockedIcon());
+            m_ui->btnLock->blockSignals(true);
+            m_ui->btnLock->setChecked(false);
+            m_ui->btnLock->blockSignals(false);
+            disableEditingControls(true);
+            m_ui->btnLock->setCheckable(false);
+            m_ui->btnLock->setToolTip(QObject::tr("This table is in a <b>final lock</b> stage. You cannot unlock or modify it."));
+        }
+        else
+            {
             m_ui->btnLock->setIcon(IconFactory::getUnLockedIcon());
             m_ui->btnLock->blockSignals(true);
             m_ui->btnLock->setChecked(true);
             m_ui->btnLock->blockSignals(false);
-            m_ui->grpContent->setEnabled(true);
+            disableEditingControls(false);
             m_ui->btnLock->setToolTip(QObject::tr("This table is <b>unlocked</b>. Click this button to lock it."));
         }
 
@@ -450,7 +468,53 @@ void NewTableForm::setTable(Table *table)
             m_ui->btnUndelete->show();
         }
     }
+}
 
+void NewTableForm::disableEditingControls(bool disabled)
+{
+    m_ui->btnUp->setEnabled(!disabled);
+    m_ui->txtColumnDescription->setEnabled(!disabled);
+    m_ui->btnDown->setEnabled(!disabled);
+    m_ui->btnRemove->setEnabled(!disabled);
+    m_ui->txtTableName->setEnabled(!disabled);
+    m_ui->txtNewColumnName->setEnabled(!disabled);
+    m_ui->cmbNewColumnType->setEnabled(!disabled);
+    m_ui->btnAddColumn->setEnabled(!disabled);
+    m_ui->btnCancelColumnEditing->setEnabled(!disabled);
+    m_ui->chkPrimary->setEnabled(!disabled);
+    m_ui->btnRemoveIndex->setEnabled(!disabled);
+    m_ui->txtNewIndexName->setEnabled(!disabled);
+    m_ui->btnAddSpToColumnOfIndex->setEnabled(!disabled);
+    m_ui->btnRemoveSpFromColumnOfIndex->setEnabled(!disabled);
+    m_ui->cmbIndexOrderType->setEnabled(!disabled);
+    m_ui->lstAvailableColumnsForIndex->setEnabled(!disabled);
+    m_ui->lstSelectedColumnsForIndex->setEnabled(!disabled);
+    m_ui->btnMoveColumnToLeft->setEnabled(!disabled);
+    m_ui->btnMoveColumnToRight->setEnabled(!disabled);
+    m_ui->btnMoveIndexColumnDown->setEnabled(!disabled);
+    m_ui->btnMoveIndexColumnUp->setEnabled(!disabled);
+    m_ui->btnAddIndex->setEnabled(!disabled);
+    m_ui->btnCancelIndexEditing->setEnabled(!disabled);
+    m_ui->btnRemoveForeignKey->setEnabled(!disabled);
+    m_ui->txtForeignKeyName->setEnabled(!disabled);
+    m_ui->cmbForeignTables->setEnabled(!disabled);
+    m_ui->lstForeignTablesColumns->setEnabled(!disabled);
+    m_ui->lstForeignKeyAssociations->setEnabled(!disabled);
+    m_ui->lstLocalColumn->setEnabled(!disabled);
+    m_ui->btnAddForeignKeyAssociation->setEnabled(!disabled);
+    m_ui->btnRemoveAssociation->setEnabled(!disabled);
+    m_ui->btnAddForeignKey->setEnabled(!disabled);
+    m_ui->cmbFkOnUpdate->setEnabled(!disabled);
+    m_ui->cmbFkOnDelete->setEnabled(!disabled);
+    m_ui->btnAddNewDefaultRow->setEnabled(!disabled);
+    m_ui->btnDeleteDefaultRow->setEnabled(!disabled);
+    m_ui->btnUpdateTableWithDefaultValues->setEnabled(!disabled);
+    m_ui->tableStartupValues->setEnabled(!disabled);
+    m_ui->txtDescription->setEnabled(!disabled);
+
+    m_wspForColumn->setEnabled(!disabled);
+    m_wspForIndex->setEnabled(!disabled);
+    m_mainWsp->setEnabled(!disabled);
 }
 
 void NewTableForm::focusOnName()
@@ -556,6 +620,8 @@ void NewTableForm::onAddColumn()
         {
             m_currentColumn->getLocation()->setIcon(COL_POS_PK, IconFactory::getEmptyIcon());
         }
+
+        // TODO: Change the combo box in the tree...
         //m_currentColumn->getLocation()->setIcon(COL_POS_DT, m_currentColumn->getDataType()->getIcon());
         m_currentColumn->getLocation()->setText(COL_POS_DT, m_currentColumn->getDataType()->getName());
 
@@ -789,11 +855,15 @@ void NewTableForm::onSelectColumn(QTreeWidgetItem* current, int)
         }
         showColumn(colFromParent);
         toggleColumnFieldDisableness(true);
+        if(m_table->lockState() == LockableElement::FINAL_LOCK || m_table->lockState() == LockableElement::LOCKED) disableEditingControls(true);
+        else disableEditingControls(false);
     }
     else
     {
         showColumn(m_currentColumn);
         toggleColumnFieldDisableness(false);
+        if(m_table->lockState() == LockableElement::FINAL_LOCK || m_table->lockState() == LockableElement::LOCKED) disableEditingControls(true);
+        else disableEditingControls(false);
     }
 }
 
@@ -1254,6 +1324,10 @@ void NewTableForm::onSelectIndex(QTreeWidgetItem*, int)
     m_ui->btnAddIndex->setIcon(IconFactory::getApplyIcon());
     prepareSpsTabsForIndex(m_currentIndex);
     m_ui->lstSelectedColumnsForIndex->header()->resizeSections(QHeaderView::Stretch);
+
+    if(m_table->lockState() == LockableElement::FINAL_LOCK || m_table->lockState() == LockableElement::LOCKED) disableEditingControls(true);
+    else disableEditingControls(false);
+
 }
 
 void NewTableForm::onCancelIndexEditing()
@@ -1805,11 +1879,16 @@ void NewTableForm::onSelectForeignKey(QTreeWidgetItem*, int)
 
         populateFKGui(parFk);
         toggleFkFieldDisableness(true);
+        if(m_table->lockState() == LockableElement::FINAL_LOCK || m_table->lockState() == LockableElement::LOCKED) disableEditingControls(true);
+        else disableEditingControls(false);
+
         return;
     }
 
     populateFKGui(m_currentForeignKey);
     toggleFkFieldDisableness(false);
+    if(m_table->lockState() == LockableElement::FINAL_LOCK || m_table->lockState() == LockableElement::LOCKED) disableEditingControls(true);
+    disableEditingControls(false);
 }
 
 void NewTableForm::updateDefaultValuesTableHeader()
@@ -2246,6 +2325,8 @@ void NewTableForm::onDatatypeComboChange(QString)
         //m_currentColumn->getLocation()->setIcon(COL_POS_DT, m_currentColumn->getDataType()->getIcon());
         m_currentColumn->getLocation()->setText(COL_POS_DT, m_currentColumn->getDataType()->getName());
 
+        m_combos[m_currentColumn->getName()]->setCurrentIndex(m_ui->cmbNewColumnType->currentIndex());
+
         autoSave();
         if(m_wspForColumn)
         {
@@ -2309,10 +2390,10 @@ void NewTableForm::prepareSpsTabs()
     if(m_table)
     {
         // and now create the tab widgets for the SPs
-        WidgetForSpecificProperties* wsp = new WidgetForSpecificProperties(m_dbEngine, m_table, this);
+        m_mainWsp = new WidgetForSpecificProperties(m_dbEngine, m_table, this);
         QVector<SpInstance*> allSps = m_table->getSpInstances(m_dbEngine);
-        wsp->feedInSpecificProperties(allSps, uidTable);
-        m_ui->tabWidget->insertTab(4, wsp, IconFactory::getMySqlIcon(), "MySql");
+        m_mainWsp->feedInSpecificProperties(allSps, uidTable);
+        m_ui->tabWidget->insertTab(4, m_mainWsp, IconFactory::getMySqlIcon(), "MySql");
 
         prepareSpsTabsForIndex(0);
         prepareSpsTabsForColumn(0);
@@ -2493,6 +2574,12 @@ void NewTableForm::onRemoveSpsFromColumnOfIndex()
 
 void NewTableForm::onLockUnlock(bool checked)
 {
+    if(m_table->lockState() == LockableElement::FINAL_LOCK)
+    {
+        return;
+    }
+
+
     if(checked)
     {
         m_ui->btnLock->setIcon(IconFactory::getUnLockedIcon());
@@ -2522,7 +2609,7 @@ void NewTableForm::onUndelete()
     {
         MainWindow::instance()->getGuiElements()->removeItemForPatch(m_version->getWorkingPatch(), m_table->getObjectUid());
         // TODO: Duplicate from above
-        if(m_table->isLocked())
+        if(m_table->lockState() == LockableElement::LOCKED)
         {
             m_ui->btnLock->setIcon(IconFactory::getLockedIcon());
             m_ui->btnLock->blockSignals(true);

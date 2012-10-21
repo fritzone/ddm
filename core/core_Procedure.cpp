@@ -18,7 +18,7 @@ void Procedure::serialize(QDomDocument &doc, QDomElement &parent) const
     procElement.setAttribute("Name", m_name);
     procElement.setAttribute("uid", getObjectUid());
     procElement.setAttribute("class-uid", getClassUid());
-    procElement.setAttribute("locked", isLocked());
+    procElement.setAttribute("locked", lockState() == LockableElement::LOCKED);
     procElement.setAttribute("was-locked", wasLocked());
     procElement.setAttribute("source-uid", getSourceUid());
 
@@ -45,10 +45,16 @@ CloneableElement* Procedure::clone(Version *sourceVersion, Version *targetVersio
 
 void Procedure::updateGui()
 {
-    if(isLocked())
+    if(lockState() == LockableElement::LOCKED)
     {
         getLocation()->setIcon(0, IconFactory::getLockedProcedureIcon());
         getLocation()->setPopupMenu(ContextMenuCollection::getInstance()->getUnlockProcedurePopupMenu());
+    }
+    else
+    if(lockState() == LockableElement::FINAL_LOCK)
+    {
+        getLocation()->setIcon(0, IconFactory::getFinalLockedProcedureIcon());
+        getLocation()->setPopupMenu(0);
     }
     else
     {

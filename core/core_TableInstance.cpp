@@ -48,7 +48,7 @@ void TableInstance::serialize(QDomDocument &doc, QDomElement &parent) const
     tableInstanceElement.setAttribute("uid", getObjectUid());
     tableInstanceElement.setAttribute("class-uid", getClassUid());
     tableInstanceElement.setAttribute("source-uid", getSourceUid());
-    tableInstanceElement.setAttribute("locked", isLocked());
+    tableInstanceElement.setAttribute("locked", lockState() == LockableElement::LOCKED);
     tableInstanceElement.setAttribute("was-locked", wasLocked());
 
     {
@@ -168,10 +168,16 @@ void TableInstance::finalizeAutoinstantiatedTinsts(TableInstance* src, Version *
 
 void TableInstance::updateGui()
 {
-    if(isLocked())
+    if(lockState() == LockableElement::LOCKED)
     {
         getLocation()->setIcon(0, IconFactory::getLockedTabinstIcon());
         getLocation()->setPopupMenu(ContextMenuCollection::getInstance()->getUnlockTableInstancePopupMenu());
+    }
+    else
+    if(lockState() == LockableElement::FINAL_LOCK)
+    {
+        getLocation()->setIcon(0, IconFactory::getFinalLockedTabinstIcon());
+        getLocation()->setPopupMenu(0);
     }
     else
     {
