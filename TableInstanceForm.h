@@ -36,6 +36,9 @@ protected:
     void changeEvent(QEvent *e);
 
 private:
+    void disableEditingControls(bool);
+
+private:
     Ui::TableInstanceForm *ui;
     TableInstance* m_tinst;
     bool m_populated;

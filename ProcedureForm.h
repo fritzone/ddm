@@ -37,6 +37,7 @@ private slots:
 
 private:
     QString getProcNameFromSql();
+    void disableEditingControls(bool dis);
 
 private:
     Ui::ProcedureForm *ui;

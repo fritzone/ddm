@@ -93,7 +93,17 @@ void TriggerForm::setTrigger(Trigger *t)
             ui->btnLock->blockSignals(true);
             ui->btnLock->setChecked(false);
             ui->btnLock->blockSignals(false);
-            ui->tabWidget->setEnabled(false);
+            disableEditingControls(true);
+            ui->btnLock->setToolTip(QObject::tr("This trigger is <b>locked</b>. Click this button to unlock it."));
+        }
+        else
+        if(m_trigger->lockState() == LockableElement::FINAL_LOCK)
+        {
+            ui->btnLock->setIcon(IconFactory::getLockedIcon());
+            ui->btnLock->blockSignals(true);
+            ui->btnLock->setChecked(false);
+            ui->btnLock->blockSignals(false);
+            disableEditingControls(true);
             ui->btnLock->setToolTip(QObject::tr("This trigger is <b>locked</b>. Click this button to unlock it."));
         }
         else
@@ -102,7 +112,7 @@ void TriggerForm::setTrigger(Trigger *t)
             ui->btnLock->blockSignals(true);
             ui->btnLock->setChecked(true);
             ui->btnLock->blockSignals(false);
-            ui->tabWidget->setEnabled(true);
+            disableEditingControls(false);
             ui->btnLock->setToolTip(QObject::tr("This trigger is <b>unlocked</b>. Click this button to lock it."));
         }
 
@@ -112,7 +122,16 @@ void TriggerForm::setTrigger(Trigger *t)
             ui->btnUndelete->show();
         }
     }
+}
 
+void TriggerForm::disableEditingControls(bool dis)
+{
+    ui->txtDescription->setDisabled(dis);
+    ui->txtTriggerName->setDisabled(dis);
+    ui->cmbEvent->setDisabled(dis);
+    ui->cmbTables->setDisabled(dis);
+    ui->cmbTime->setDisabled(dis);
+    m_textEdit->setDisabled(dis);
 }
 
 void TriggerForm::initSql()
@@ -216,7 +235,7 @@ void TriggerForm::onLockUnlock(bool checked)
     if(checked)
     {
         ui->btnLock->setIcon(IconFactory::getUnLockedIcon());
-        ui->tabWidget->setEnabled(true);
+        disableEditingControls(false);
         m_trigger->unlock();
         m_trigger->updateGui();
         ui->btnLock->setToolTip(QObject::tr("Trigger is <b>unlocked</b>. Click this button to lock it."));
@@ -226,7 +245,7 @@ void TriggerForm::onLockUnlock(bool checked)
     else
     {
         ui->btnLock->setIcon(IconFactory::getLockedIcon());
-        ui->tabWidget->setEnabled(false);
+        disableEditingControls(true);
         m_trigger->lock(LockableElement::LOCKED);
         m_trigger->updateGui();
         ui->btnLock->setToolTip(QObject::tr("Trigger is <b>locked</b>. Click this button to unlock it."));
@@ -248,7 +267,7 @@ void TriggerForm::onUndelete()
             ui->btnLock->blockSignals(true);
             ui->btnLock->setChecked(false);
             ui->btnLock->blockSignals(false);
-            ui->tabWidget->setEnabled(false);
+            disableEditingControls(true);
             ui->btnLock->setToolTip(QObject::tr("This trigger is <b>locked</b>. Click this button to unlock it."));
         }
         else
@@ -257,7 +276,7 @@ void TriggerForm::onUndelete()
             ui->btnLock->blockSignals(true);
             ui->btnLock->setChecked(true);
             ui->btnLock->blockSignals(false);
-            ui->tabWidget->setEnabled(true);
+            disableEditingControls(false);
             ui->btnLock->setToolTip(QObject::tr("This trigger is <b>unlocked</b>. Click this button to lock it."));
         }
         ui->btnUndelete->hide();
