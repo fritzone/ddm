@@ -34,6 +34,11 @@ public:
         m_mode = a;
     }
 
+    void disableMouse(bool dis)
+    {
+        m_mouseDisabled = dis;
+    }
+
 protected:
 
     virtual void mouseMoveEvent(QMouseEvent *event);
@@ -46,6 +51,7 @@ private:
     TableListWidget *lstTables;
     Diagram* m_diagram;
     Mode m_mode;
+    bool m_mouseDisabled;
 };
 
 

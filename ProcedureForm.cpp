@@ -24,6 +24,12 @@ ProcedureForm::ProcedureForm(Version* v, ProcedureFormMode m, bool forced, Conne
 
 }
 
+void ProcedureForm::disableEditingControls(bool dis)
+{
+    m_textEdit->setReadOnly(dis);
+}
+
+
 ProcedureForm::~ProcedureForm()
 {
     delete ui;

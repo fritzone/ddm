@@ -307,6 +307,14 @@ void TableInstanceForm::onLockUnlock(bool checked)
     }
 }
 
+void TableInstanceForm::disableEditingControls(bool dis)
+{
+    ui->btnLoadStartupValues->setDisabled(dis);
+    ui->btnAddNewDefaultRow->setDisabled(dis);
+    ui->btnImportValues->setDisabled(dis);
+    ui->btnDeleteRow->setDisabled(dis);
+}
+
 void TableInstanceForm::setTableInstance(TableInstance *st)
 {
     m_tinst = st;
@@ -334,8 +342,18 @@ void TableInstanceForm::setTableInstance(TableInstance *st)
             ui->btnLock->blockSignals(true);
             ui->btnLock->setChecked(false);
             ui->btnLock->blockSignals(false);
-            ui->grpContent->setEnabled(false);
+            disableEditingControls(true);
             ui->btnLock->setToolTip(QObject::tr("This table instance is <b>locked</b>. Click this button to unlock it."));
+        }
+        else
+        if(m_tinst->lockState() == LockableElement::FINAL_LOCK)
+        {
+            ui->btnLock->setIcon(IconFactory::getFinalLockedIcon());
+            ui->btnLock->blockSignals(true);
+            ui->btnLock->setChecked(false);
+            disableEditingControls(true);
+            ui->btnLock->setCheckable(false);
+            ui->btnLock->setToolTip(QObject::tr("This table instance is in a <b>final lock</b> stage. You cannot modify it."));
         }
         else
         {
@@ -343,7 +361,7 @@ void TableInstanceForm::setTableInstance(TableInstance *st)
             ui->btnLock->blockSignals(true);
             ui->btnLock->setChecked(true);
             ui->btnLock->blockSignals(false);
-            ui->grpContent->setEnabled(true);
+            disableEditingControls(false);
             ui->btnLock->setToolTip(QObject::tr("This table instance is <b>unlocked</b>. Click this button to lock it."));
         }
 
@@ -368,7 +386,7 @@ void TableInstanceForm::onUndelete()
             ui->btnLock->blockSignals(true);
             ui->btnLock->setChecked(false);
             ui->btnLock->blockSignals(false);
-            ui->grpContent->setEnabled(false);
+            disableEditingControls(true);
             ui->btnLock->setToolTip(QObject::tr("This table instance is <b>locked</b>. Click this button to unlock it."));
         }
         else
@@ -377,7 +395,7 @@ void TableInstanceForm::onUndelete()
             ui->btnLock->blockSignals(true);
             ui->btnLock->setChecked(true);
             ui->btnLock->blockSignals(false);
-            ui->grpContent->setEnabled(true);
+            disableEditingControls(false);
             ui->btnLock->setToolTip(QObject::tr("This table instance is <b>unlocked</b>. Click this button to lock it."));
         }
         ui->btnUndelete->hide();

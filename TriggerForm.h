@@ -43,6 +43,9 @@ protected:
     void changeEvent(QEvent *e);
 
 private:
+    void disableEditingControls(bool);
+
+private:
     Ui::TriggerForm *ui;
     Trigger* m_trigger;
     TextEditWithCodeCompletion* m_textEdit;

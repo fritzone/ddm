@@ -52,6 +52,8 @@ private:
     void onReset();
     void prepareLists();
 
+    void disableEditingControls(bool);
+
 private:
     Ui::DiagramForm *ui;
     Version* m_version;

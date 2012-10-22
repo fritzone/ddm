@@ -92,8 +92,18 @@ DiagramForm::DiagramForm(Version* v, Diagram* dgram, QWidget *parent) : QWidget(
             ui->btnLock->blockSignals(true);
             ui->btnLock->setChecked(false);
             ui->btnLock->blockSignals(false);
-            ui->grpContent->setEnabled(false);
+            disableEditingControls(true);
             ui->btnLock->setToolTip(QObject::tr("This diagram is <b>locked</b>. Click this button to unlock it."));
+        }
+        else
+        if(m_diagram->lockState() == LockableElement::FINAL_LOCK)
+        {
+            ui->btnLock->setIcon(IconFactory::getFinalLockedIcon());
+            ui->btnLock->blockSignals(true);
+            ui->btnLock->setChecked(false);
+            ui->btnLock->blockSignals(false);
+            disableEditingControls(true);
+            ui->btnLock->setToolTip(QObject::tr("This diagram is in a <b>final lock</b> stage. You cannot modify it."));
         }
         else
         {
@@ -101,7 +111,7 @@ DiagramForm::DiagramForm(Version* v, Diagram* dgram, QWidget *parent) : QWidget(
             ui->btnLock->blockSignals(true);
             ui->btnLock->setChecked(true);
             ui->btnLock->blockSignals(false);
-            ui->grpContent->setEnabled(true);
+            disableEditingControls(false);
             ui->btnLock->setToolTip(QObject::tr("This diagram is <b>unlocked</b>. Click this button to lock it."));
         }
 
@@ -111,6 +121,14 @@ DiagramForm::DiagramForm(Version* v, Diagram* dgram, QWidget *parent) : QWidget(
             ui->btnUndelete->show();
         }
     }
+}
+
+void DiagramForm::disableEditingControls(bool dis)
+{
+    ui->txtDiagramName->setDisabled(dis);
+    lstTables->setDisabled(dis);
+    lstDiagramForms->setDisabled(dis);
+    graphicsView->disableMouse(dis);
 }
 
 void DiagramForm::prepareLists()
@@ -319,7 +337,17 @@ void DiagramForm::onAddNote()
 
 void DiagramForm::doneNote()
 {
+
     lstDiagramForms->setEnabled(true);
+    if(m_diagram->lockState() == LockableElement::LOCKED || m_diagram->lockState() == LockableElement::FINAL_LOCK)
+    {
+        disableEditingControls(true);
+    }
+    else
+    {
+        disableEditingControls(false);
+    }
+
 }
 
 void DiagramForm::editorLostFocus(DiagramTextItem *)
@@ -368,6 +396,16 @@ void DiagramForm::paintDiagram()
     lstDiagramForms->setEnabled(enableNotes);
 
     graphicsView->centerOn(graphicsView->scene()->getCoverageRect().center());
+
+    if(m_diagram->lockState() == LockableElement::LOCKED || m_diagram->lockState() == LockableElement::FINAL_LOCK)
+    {
+        disableEditingControls(true);
+    }
+    else
+    {
+        disableEditingControls(false);
+    }
+
 }
 
 void DiagramForm::onHelp()
@@ -401,7 +439,7 @@ void DiagramForm::onLockUnlock(bool checked)
     if(checked)
     {
         ui->btnLock->setIcon(IconFactory::getUnLockedIcon());
-        ui->grpContent->setEnabled(true);
+        disableEditingControls(false);
         m_diagram->unlock();
         m_diagram->updateGui();
         ui->btnLock->setToolTip(QObject::tr("This diagram is <b>unlocked</b>. Click this button to lock it."));
@@ -411,7 +449,7 @@ void DiagramForm::onLockUnlock(bool checked)
     else
     {
         ui->btnLock->setIcon(IconFactory::getLockedIcon());
-        ui->grpContent->setEnabled(false);
+        disableEditingControls(true);
         m_diagram->lock(LockableElement::LOCKED);
         m_diagram->updateGui();
         ui->btnLock->setToolTip(QObject::tr("this diagram is <b>locked</b>. Click this button to unlock it."));
@@ -433,7 +471,7 @@ void DiagramForm::onUndelete()
             ui->btnLock->blockSignals(true);
             ui->btnLock->setChecked(false);
             ui->btnLock->blockSignals(false);
-            ui->grpContent->setEnabled(false);
+            disableEditingControls(true);
             ui->btnLock->setToolTip(QObject::tr("This diagram is <b>locked</b>. Click this button to unlock it."));
         }
         else
@@ -442,7 +480,7 @@ void DiagramForm::onUndelete()
             ui->btnLock->blockSignals(true);
             ui->btnLock->setChecked(true);
             ui->btnLock->blockSignals(false);
-            ui->grpContent->setEnabled(true);
+            disableEditingControls(false);
             ui->btnLock->setToolTip(QObject::tr("This diagram is <b>unlocked</b>. Click this button to lock it."));
         }
         ui->btnUndelete->hide();

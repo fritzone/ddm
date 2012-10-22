@@ -9,7 +9,8 @@
 
 #include <QObject>
 
-ERGraphicsView::ERGraphicsView(QWidget* parent, Version* v, Diagram* dgram, TableListWidget* tlst) : QGraphicsView(parent), lstTables(tlst), m_diagram(dgram), m_mode(Nothing)
+ERGraphicsView::ERGraphicsView(QWidget* parent, Version* v, Diagram* dgram, TableListWidget* tlst) : QGraphicsView(parent),
+    lstTables(tlst), m_diagram(dgram), m_mode(Nothing), m_mouseDisabled(false)
 {
     setAcceptDrops(true);
     m_scene = new ERGraphicsScene(this, v, dgram, tlst);
@@ -48,6 +49,7 @@ void ERGraphicsView::mouseMoveEvent(QMouseEvent *event)
 // otherwise it will start the "work" as per the windows's settings ...
 void ERGraphicsView::mousePressEvent(QMouseEvent *mouseEvent)
 {
+    if(m_mouseDisabled) return;
     if(m_mode == Nothing)
     {
         for(int i=0; i<m_scene->m_diagram->m_onStage.size(); i++)

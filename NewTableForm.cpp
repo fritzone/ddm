@@ -447,7 +447,6 @@ void NewTableForm::setTable(Table *table)
             m_ui->btnLock->setIcon(IconFactory::getFinalLockedIcon());
             m_ui->btnLock->blockSignals(true);
             m_ui->btnLock->setChecked(false);
-            m_ui->btnLock->blockSignals(false);
             disableEditingControls(true);
             m_ui->btnLock->setCheckable(false);
             m_ui->btnLock->setToolTip(QObject::tr("This table is in a <b>final lock</b> stage. You cannot unlock or modify it."));
@@ -1888,7 +1887,7 @@ void NewTableForm::onSelectForeignKey(QTreeWidgetItem*, int)
     populateFKGui(m_currentForeignKey);
     toggleFkFieldDisableness(false);
     if(m_table->lockState() == LockableElement::FINAL_LOCK || m_table->lockState() == LockableElement::LOCKED) disableEditingControls(true);
-    disableEditingControls(false);
+    else disableEditingControls(false);
 }
 
 void NewTableForm::updateDefaultValuesTableHeader()
@@ -2583,7 +2582,7 @@ void NewTableForm::onLockUnlock(bool checked)
     if(checked)
     {
         m_ui->btnLock->setIcon(IconFactory::getUnLockedIcon());
-        m_ui->grpContent->setEnabled(true);
+        disableEditingControls(false);
         m_table->unlock();
         m_table->updateGui();
         m_ui->btnLock->setToolTip(QObject::tr("This table is <b>unlocked</b>. Click this button to lock it."));
@@ -2593,7 +2592,7 @@ void NewTableForm::onLockUnlock(bool checked)
     else
     {
         m_ui->btnLock->setIcon(IconFactory::getLockedIcon());
-        m_ui->grpContent->setEnabled(false);
+        disableEditingControls(true);
         m_table->lock(LockableElement::LOCKED);
         m_table->updateGui();
         m_ui->btnLock->setToolTip(QObject::tr("This table is <b>locked</b>. Click this button to unlock it."));
@@ -2615,7 +2614,7 @@ void NewTableForm::onUndelete()
             m_ui->btnLock->blockSignals(true);
             m_ui->btnLock->setChecked(false);
             m_ui->btnLock->blockSignals(false);
-            m_ui->grpContent->setEnabled(false);
+            disableEditingControls(true);
             m_ui->btnLock->setToolTip(QObject::tr("This table is <b>locked</b>. Click this button to unlock it."));
         }
         else
@@ -2624,7 +2623,7 @@ void NewTableForm::onUndelete()
             m_ui->btnLock->blockSignals(true);
             m_ui->btnLock->setChecked(true);
             m_ui->btnLock->blockSignals(false);
-            m_ui->grpContent->setEnabled(true);
+            disableEditingControls(false);
             m_ui->btnLock->setToolTip(QObject::tr("This table is <b>unlocked</b>. Click this button to lock it."));
         }
         m_ui->btnUndelete->hide();
