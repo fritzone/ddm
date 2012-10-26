@@ -132,6 +132,7 @@ public:
     QAction* getAction_AddView() { return action_addView; }
     QAction* getAction_AddViewWithSql() { return action_addViewWithSql; }
     QAction* getAction_InitiatePatch() { return action_initiatePatch; }
+    QAction* getAction_CompareTable() { return action_compareTable; }
 
     QMenu* getUnLockMenuForClassUid(const QString& uid);
     QMenu* getMenuForClassUid(const QString& uid);
@@ -302,6 +303,9 @@ private:
 
     // for the released version
     QAction* action_initiatePatch;
+
+    // comparison for tables
+    QAction* action_compareTable;
 
     // the instance of the popup menu collection
     static ContextMenuCollection* m_instance;

@@ -85,7 +85,8 @@ SOURCES += main.cpp \
     DocumentationForm.cpp \
     DocumentationGenerator.cpp \
     SpInstance.cpp \
-    TreeItem.cpp
+    TreeItem.cpp \
+    TableComparisonForm.cpp
 
 HEADERS += MainWindow.h \
     MainWindowButtonDialog.h \
@@ -177,7 +178,8 @@ HEADERS += MainWindow.h \
     ValueSpInstance.h \
     DeploymentInitiator.h \
     DocumentationForm.h \
-    DocumentationGenerator.h
+    DocumentationGenerator.h \
+    TableComparisonForm.h
 
 FORMS += MainWindow.ui \
     MainWindowButtonDialog.ui \
@@ -203,7 +205,8 @@ FORMS += MainWindow.ui \
     TriggerForm.ui \
     NamedObjectListingForm.ui \
     WidgetForSpecificProperties.ui \
-    DocumentationForm.ui
+    DocumentationForm.ui \
+    TableComparisonForm.ui
 
 include (db/db.pri)
 INCLUDEPATH += db

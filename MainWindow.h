@@ -200,6 +200,7 @@ public slots:
     void renamePatch();
     void onNewTableFromPopup();
     void onUndeleteSomething();
+    void onCompareTables();
 
 private:
 

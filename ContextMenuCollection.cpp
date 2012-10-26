@@ -121,6 +121,7 @@ ContextMenuCollection::ContextMenuCollection()
     action_deleteFunction = new QAction(QObject::tr("Delete function"), 0);
     action_deleteFunction->setIcon(IconFactory::getRemoveIcon());
     action_finalizePatch = new QAction(QObject::tr("Finalize patch"), 0);
+    action_compareTable = new QAction(QObject::tr("Compare"), 0);
 
     action_resumePatch = new QAction(QObject::tr("Resume this patch"), 0);
     action_renamePatch = new QAction(QObject::tr("Rename"), 0);
@@ -260,7 +261,9 @@ ContextMenuCollection::ContextMenuCollection()
     m_unlockTablePopupMenu->addAction(action_unlock);
     m_relockTablePopupMenu->addAction(action_relock);
     m_unlockTablePopupMenu->addAction(action_RemoveTable);
+    m_unlockTablePopupMenu->addAction(action_compareTable);
     m_relockTablePopupMenu->addMenu(m_tablePopupMenu);
+    m_relockTablePopupMenu->addAction(action_compareTable);
 
     // the locked trigger popup menus
     m_unlockTriggerPopupMenu->addAction(action_unlock);
