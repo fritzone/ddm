@@ -33,7 +33,7 @@
        <widget class="QComboBox" name="comboBox"/>
       </item>
       <item>
-       <widget class="QTreeWidget" name="treeWidget">
+       <widget class="QTreeWidget" name="treeWidgetLeft">
         <property name="allColumnsShowFocus">
          <bool>true</bool>
         </property>
@@ -42,7 +42,22 @@
         </property>
         <column>
          <property name="text">
-          <string notr="true">1</string>
+          <string>Sync</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>PK</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Name</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Type</string>
          </property>
         </column>
        </widget>
@@ -69,7 +84,7 @@
        <widget class="QComboBox" name="comboBox_2"/>
       </item>
       <item>
-       <widget class="QTreeWidget" name="treeWidget_2">
+       <widget class="QTreeWidget" name="treeWidgetRight">
         <property name="allColumnsShowFocus">
          <bool>true</bool>
         </property>
@@ -78,7 +93,22 @@
         </property>
         <column>
          <property name="text">
-          <string notr="true">1</string>
+          <string>Sync</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>PK</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>New Column</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Type</string>
          </property>
         </column>
        </widget>

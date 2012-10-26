@@ -37,11 +37,15 @@ public:
     void populateTree();
 
 private:
+
+    void populateColumns();
+
+private:
     Ui::TableComparisonForm *ui;
     Table* m_leftTable;
     Table* m_rightTable;
     QSplitter* m_spl;
-    QMap<Sides, QTreeWidgetItem*> m_mainItems;
+    QMap<Sides, QTreeWidget*> m_trees;
 };
 
 #endif // TABLECOMPARISONFORM_H
