@@ -61,6 +61,7 @@
 #include "DocumentationGenerator.h"
 #include "QHtmlDocument.h"
 #include "core_Patch.h"
+#include "TableComparisonForm.h"
 
 #include <QtGui>
 
@@ -1158,6 +1159,7 @@ void MainWindow::connectActionsFromPopupMenus()
     QObject::connect(ContextMenuCollection::getInstance()->getAction_FinalizePatch(), SIGNAL(triggered()), this, SLOT(finalizePatch()));
     QObject::connect(ContextMenuCollection::getInstance()->getAction_RenamePatch(), SIGNAL(triggered()), this, SLOT(renamePatch()));
     QObject::connect(ContextMenuCollection::getInstance()->getAction_Undelete(), SIGNAL(triggered()), this, SLOT(onUndeleteSomething()));
+    QObject::connect(ContextMenuCollection::getInstance()->getAction_CompareTable(), SIGNAL(triggered()), this, SLOT(onCompareTables()));
     QObject::connect(ContextMenuCollection::getInstance()->getAction_AddProcedure(), SIGNAL(triggered()), this, SLOT(onNewProcedureFromPopup()));
     QObject::connect(ContextMenuCollection::getInstance()->getAction_AddFunction(), SIGNAL(triggered()), this, SLOT(onNewFunctionFromPopup()));
     QObject::connect(ContextMenuCollection::getInstance()->getAction_AddTrigger(), SIGNAL(triggered()), this, SLOT(onNewTriggerFromPopup()));
@@ -2941,4 +2943,23 @@ void MainWindow::onInitiatePatch()
             }
         }
     }
+}
+
+void MainWindow::onCompareTables()
+{
+    Table* table =getRightClickedObject<Table>();
+    if(table == 0)  // shouldn't be ...
+    {
+        qDebug() << "table for comparison is null";
+        return;
+    }
+
+    TableComparisonForm* tcf = new TableComparisonForm();
+    tcf->setLeftTable(table);
+
+    // now search for the given table
+
+    // populate the tree of the form and show it
+    tcf->populateTree();
+    setCentralWidget(tcf);
 }
