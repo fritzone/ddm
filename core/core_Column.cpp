@@ -95,3 +95,16 @@ CloneableElement* Column::clone(Version *sourceVersion, Version *targetVersion)
 
     return result;
 }
+
+// this is used only in the comparison, the other is supposed to have source ID
+// columns are equal if: they have the same name, same SQL type, same primary keyness (for now)
+int Column::checkEquality(const Column *other)
+{
+
+    // names are not equal, they are not equal
+    if(getName() != other->getName()) return 3;
+    if(isPk() != other->isPk()) return 2;
+    if(getDataType()->sqlAsString() != other->getDataType()->sqlAsString()) return 4;
+
+    return 0;
+}

@@ -2956,7 +2956,7 @@ void MainWindow::onCompareTables()
 
     TableComparisonForm* tcf = new TableComparisonForm();
     tcf->setLeftTable(table);
-
+    tcf->setRightTable(table);
     // now search for the given table
 
     // populate the tree of the form and show it

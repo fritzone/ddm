@@ -2,6 +2,7 @@
 #define WORKSPACE_H
 
 #include <QVector>
+#include <QStringList>
 
 class Solution;
 class Project;
@@ -140,6 +141,7 @@ public:
 
     void createNewConnection();
 
+    QStringList getAllVersions();
 
 private:
 

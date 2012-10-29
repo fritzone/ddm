@@ -237,3 +237,7 @@ void Workspace::createNewConnection()
     }
 }
 
+QStringList Workspace::getAllVersions()
+{
+    return m_currentSolution->currentProject()->getVersionNames();
+}

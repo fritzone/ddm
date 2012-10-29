@@ -60,6 +60,8 @@ public:
 
     CloneableElement* clone(Version *sourceVersion, Version *targetVersion);
 
+    int checkEquality(const Column* other);
+
 private:
     const UserDataType* m_type;
     bool m_pk;

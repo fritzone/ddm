@@ -30,19 +30,25 @@
        <widget class="QLineEdit" name="txtTab1"/>
       </item>
       <item>
-       <widget class="QComboBox" name="comboBox"/>
+       <widget class="QComboBox" name="cmbVersionLeft"/>
       </item>
       <item>
        <widget class="QTreeWidget" name="treeWidgetLeft">
+        <property name="rootIsDecorated">
+         <bool>true</bool>
+        </property>
         <property name="allColumnsShowFocus">
          <bool>true</bool>
         </property>
         <property name="headerHidden">
-         <bool>true</bool>
+         <bool>false</bool>
         </property>
+        <attribute name="headerDefaultSectionSize">
+         <number>50</number>
+        </attribute>
         <column>
          <property name="text">
-          <string>Sync</string>
+          <string>Section</string>
          </property>
         </column>
         <column>
@@ -81,19 +87,25 @@
        <widget class="QLineEdit" name="txtTab2"/>
       </item>
       <item>
-       <widget class="QComboBox" name="comboBox_2"/>
+       <widget class="QComboBox" name="cmbVersionRight"/>
       </item>
       <item>
        <widget class="QTreeWidget" name="treeWidgetRight">
+        <property name="rootIsDecorated">
+         <bool>true</bool>
+        </property>
         <property name="allColumnsShowFocus">
          <bool>true</bool>
         </property>
         <property name="headerHidden">
-         <bool>true</bool>
+         <bool>false</bool>
         </property>
+        <attribute name="headerDefaultSectionSize">
+         <number>50</number>
+        </attribute>
         <column>
          <property name="text">
-          <string>Sync</string>
+          <string>Section</string>
          </property>
         </column>
         <column>
@@ -103,7 +115,7 @@
         </column>
         <column>
          <property name="text">
-          <string>New Column</string>
+          <string>Name</string>
          </property>
         </column>
         <column>

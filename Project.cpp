@@ -154,3 +154,13 @@ Version* Project::getVersion(const QString& uid)
     }
     return 0;
 }
+
+QStringList Project::getVersionNames()
+{
+    QStringList a;
+    for(int i=0; i<m_majorVersions.size(); i++)
+    {
+        a.push_back(m_majorVersions[i]->getVersionText());
+    }
+    return a;
+}

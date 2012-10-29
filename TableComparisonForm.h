@@ -24,21 +24,19 @@ public:
     explicit TableComparisonForm(QWidget *parent = 0);
     ~TableComparisonForm();
 
-    void setLeftTable(Table *t)
-    {
-        m_leftTable = t;
-    }
-
-    void setRightTable(Table *t)
-    {
-        m_leftTable = t;
-    }
+    void setLeftTable(Table *t);
+    void setRightTable(Table *t);
     
     void populateTree();
 
 private:
 
     void populateColumns();
+
+private slots:
+
+    void leftItemSelected(const QString&);
+    void rightItemSelected(const QString&);
 
 private:
     Ui::TableComparisonForm *ui;
