@@ -6,6 +6,7 @@
 #include "NamedItem.h"
 
 #include <QVector>
+#include <QStringList>
 
 class AbstractDTSupplier;
 class MajorVersion;
@@ -81,6 +82,8 @@ public:
     }
 
     Version* getVersion(const QString& uid);
+
+    QStringList getVersionNames();
 
 private:
 

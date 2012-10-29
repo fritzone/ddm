@@ -1,6 +1,7 @@
 #include "UidWarehouse.h"
 #include "Workspace.h"
 #include "Project.h"
+#include "uids.h"
 
 UidWarehouse* UidWarehouse::m_instance = 0;
 

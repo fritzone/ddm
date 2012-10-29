@@ -623,3 +623,17 @@ void Table::updateGui()
     }
     TreeItem::updateGui();
 }
+
+int Table::getIndexOfColumn(const Column *c)
+{
+    const QVector<Column*> cols = getColumns();
+
+    for(int i=0; i<cols.size(); i++)
+    {
+        if(c->getObjectUid() == cols[i]->getObjectUid())
+        {
+            return i;
+        }
+    }
+    return -1;
+}

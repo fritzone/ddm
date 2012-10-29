@@ -291,6 +291,8 @@ public:
 
     virtual void updateGui();
 
+    int getIndexOfColumn(const Column*);
+
 private:
 
     // describes the table
