@@ -6,6 +6,7 @@
 #include <QMap>
 #include <QTreeWidgetItem>
 class Table;
+class Column;
 
 namespace Ui {
 class TableComparisonForm;
@@ -37,6 +38,10 @@ private slots:
 
     void leftItemSelected(const QString&);
     void rightItemSelected(const QString&);
+
+private:
+
+    void populateClosestMatchingColumn(Column* left, QTreeWidgetItem *colItemLeft, QTreeWidgetItem *colItemRight);
 
 private:
     Ui::TableComparisonForm *ui;

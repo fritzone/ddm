@@ -4,6 +4,7 @@
 #include "uids.h"
 #include "Workspace.h"
 #include "Version.h"
+#include "UidWarehouse.h"
 
 #include <QApplication>
 #include <QClipboard>
@@ -89,7 +90,7 @@ CloneableElement* Column::clone(Version *sourceVersion, Version *targetVersion)
 {
     UserDataType* udt = targetVersion->getDataType(getDataType()->getName());
     Column* result = new Column(QUuid::createUuid().toString(), getName(), udt, isPk(), targetVersion);
-
+    result->setSourceUid(getObjectUid());
     // now fix the SPs of the column
     cloneSps(result);
 
@@ -101,10 +102,63 @@ CloneableElement* Column::clone(Version *sourceVersion, Version *targetVersion)
 int Column::checkEquality(const Column *other)
 {
 
-    // names are not equal, they are not equal
-    if(getName() != other->getName()) return 3;
-    if(isPk() != other->isPk()) return 2;
-    if(getDataType()->sqlAsString() != other->getDataType()->sqlAsString()) return 4;
+    if(getObjectUid() == other->getObjectUid()) return 0;
 
-    return 0;
+    QString otherUid = other->getObjectUid();
+    Q_UNUSED(otherUid);
+
+    // now see if they have any common source uid ...
+    QStringList thisUpwardsSourceUids = sourceUids();
+    qDebug() << thisUpwardsSourceUids;
+    QStringList otherUpwardsSourceUids = other->sourceUids();
+    qDebug() << otherUpwardsSourceUids;
+
+    for(int i=0; i<thisUpwardsSourceUids.size(); i++)
+    {
+        if(otherUpwardsSourceUids.indexOf(thisUpwardsSourceUids[i]) != -1)
+        {
+            // they are related
+            // but if the names are not equal, they are not equal
+            if(getName() != other->getName()) return 3;
+
+            // or the PK?
+            if(isPk() != other->isPk()) return 2;
+
+            // or the data type?
+            if(getDataType()->sqlAsString() != other->getDataType()->sqlAsString()) return 4;
+
+            return 0;
+        }
+    }
+    for(int i=0; i<otherUpwardsSourceUids.size(); i++)
+    {
+        if(thisUpwardsSourceUids.indexOf(otherUpwardsSourceUids[i]) != -1)
+        {   // they are related
+            // names are not equal, they are not equal
+            if(getName() != other->getName()) return 3;
+            if(isPk() != other->isPk()) return 2;
+            if(getDataType()->sqlAsString() != other->getDataType()->sqlAsString()) return 4;
+
+            return 0;
+        }
+    }
+
+    return -1;
+}
+
+QStringList Column::sourceUids() const
+{
+    QStringList thisUpwardsSourceUids;
+    thisUpwardsSourceUids.append(getObjectUid());
+    const Column* c = this;
+    while(true)
+    {
+        QString srcUid = c->getSourceUid();
+        if(srcUid == nullUid) break;
+
+        thisUpwardsSourceUids.append(srcUid);
+        c = dynamic_cast<Column*>(UidWarehouse::instance().getElement(srcUid));
+        if(!c) break;
+    }
+    return thisUpwardsSourceUids;
 }
