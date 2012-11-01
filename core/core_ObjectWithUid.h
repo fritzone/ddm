@@ -42,9 +42,22 @@ public:
         return m_version;
     }
 
+
+    void setSourceUid(const QUuid& o)
+    {
+        m_sourceUid = o;
+    }
+
+    QUuid getSourceUid() const
+    {
+        return m_sourceUid;
+    }
+
 private:
 
     QUuid m_uid;
+
+    QUuid m_sourceUid;
 
 protected:
 

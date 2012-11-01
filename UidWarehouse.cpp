@@ -134,3 +134,8 @@ ObjectWithUid* UidWarehouse::getElement(const QString &uid)
     }
     return 0;
 }
+
+bool UidWarehouse::related(const ObjectWithUid* obj1, const ObjectWithUid* obj2)
+{
+    return false;
+}

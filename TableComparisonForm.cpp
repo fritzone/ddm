@@ -8,6 +8,7 @@
 #include "Version.h"
 #include "Project.h"
 #include "UidWarehouse.h"
+#include "TableUpdateGenerator.h"
 
 TableComparisonForm::TableComparisonForm(QWidget *parent) : m_leftTable(0), m_rightTable(0),
     QWidget(parent),
@@ -18,7 +19,7 @@ TableComparisonForm::TableComparisonForm(QWidget *parent) : m_leftTable(0), m_ri
     m_spl = new QSplitter(Qt::Horizontal, this);
     m_spl->addWidget(ui->grpLeft);
     m_spl->addWidget(ui->grpRight);
-    ui->horizontalLayout->addWidget(m_spl);
+    ui->horizontalLayout_2->addWidget(m_spl);
 
     m_trees[LEFT] = ui->treeWidgetLeft;
     m_trees[RIGHT] = ui->treeWidgetRight;
@@ -51,6 +52,54 @@ TableComparisonForm::~TableComparisonForm()
 
 void TableComparisonForm::rightItemSelected(const QString& v)
 {
+    Version* ver = Workspace::getInstance()->currentProject()->getVersionNamed(v);
+    if(!ver)
+    {
+        qDebug () << "No version " << v;
+        return;
+    }
+
+    // get the table from the specific version
+    Table* t = ver->getTable(m_rightTable->getName());
+    if(!t)
+    {
+        // maybe the table was deleted
+
+        // try to get the table by the UID
+        int maj = m_rightTable->version()->getMajor();
+        int min = m_rightTable->version()->getMinor();
+        qDebug() << "J:" << maj << " N:" << min;
+        if(maj > ver->getMajor())
+        {
+            // our left table is in a version above the selected one. Source UID of our table should lead downwards N steps to the table in
+            // the requried version.
+            QString srcTabUid = m_rightTable->getSourceUid();
+            Version* srcVer = UidWarehouse::instance().getVersionForUid(srcTabUid);
+            Table* tab = 0;
+            while(srcVer && srcVer->getVersionText() != ver->getVersionText())
+            {
+                tab = dynamic_cast<Table*>(UidWarehouse::instance().getElement(srcTabUid));
+                if(!tab) return;
+                srcTabUid = m_rightTable->getSourceUid();
+                srcVer = UidWarehouse::instance().getVersionForUid(srcTabUid);
+            }
+            if(tab == 0) return;
+            m_rightTable = t;
+            populateTree();
+        }
+        else
+        {
+            qDebug() << "hm... right";
+            // our table is in a version below (or in a minor) the slected one. See all the tables in the selected version which has
+            // a source leading towards our table.
+        }
+    }
+    else
+    {
+        qDebug() << "right found";
+        m_rightTable = t;
+        populateTree();
+    }
 
 }
 
@@ -116,6 +165,8 @@ void TableComparisonForm::populateTree()
     m_trees[RIGHT]->clear();
 
     populateColumns();
+
+    TableUpdateGenerator gen (m_leftTable, m_rightTable);
 }
 
 void TableComparisonForm::populateColumns()

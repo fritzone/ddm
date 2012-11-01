@@ -13,120 +13,132 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QHBoxLayout" name="horizontalLayout">
+  <layout class="QVBoxLayout" name="verticalLayout_3">
    <item>
-    <widget class="QGroupBox" name="grpLeft">
+    <widget class="QGroupBox" name="groupBox">
      <property name="title">
       <string/>
      </property>
-     <layout class="QVBoxLayout" name="verticalLayout">
-      <property name="spacing">
-       <number>0</number>
-      </property>
-      <property name="margin">
-       <number>0</number>
-      </property>
+     <layout class="QHBoxLayout" name="horizontalLayout_2">
       <item>
-       <widget class="QLineEdit" name="txtTab1"/>
+       <widget class="QGroupBox" name="grpLeft">
+        <property name="title">
+         <string/>
+        </property>
+        <layout class="QVBoxLayout" name="verticalLayout">
+         <property name="spacing">
+          <number>0</number>
+         </property>
+         <property name="margin">
+          <number>0</number>
+         </property>
+         <item>
+          <widget class="QLineEdit" name="txtTab1"/>
+         </item>
+         <item>
+          <widget class="QComboBox" name="cmbVersionLeft"/>
+         </item>
+         <item>
+          <widget class="QTreeWidget" name="treeWidgetLeft">
+           <property name="rootIsDecorated">
+            <bool>true</bool>
+           </property>
+           <property name="allColumnsShowFocus">
+            <bool>true</bool>
+           </property>
+           <property name="headerHidden">
+            <bool>false</bool>
+           </property>
+           <attribute name="headerDefaultSectionSize">
+            <number>50</number>
+           </attribute>
+           <column>
+            <property name="text">
+             <string>Section</string>
+            </property>
+           </column>
+           <column>
+            <property name="text">
+             <string>PK</string>
+            </property>
+           </column>
+           <column>
+            <property name="text">
+             <string>Name</string>
+            </property>
+           </column>
+           <column>
+            <property name="text">
+             <string>Type</string>
+            </property>
+           </column>
+          </widget>
+         </item>
+        </layout>
+       </widget>
       </item>
       <item>
-       <widget class="QComboBox" name="cmbVersionLeft"/>
-      </item>
-      <item>
-       <widget class="QTreeWidget" name="treeWidgetLeft">
-        <property name="rootIsDecorated">
-         <bool>true</bool>
+       <widget class="QGroupBox" name="grpRight">
+        <property name="title">
+         <string/>
         </property>
-        <property name="allColumnsShowFocus">
-         <bool>true</bool>
-        </property>
-        <property name="headerHidden">
-         <bool>false</bool>
-        </property>
-        <attribute name="headerDefaultSectionSize">
-         <number>50</number>
-        </attribute>
-        <column>
-         <property name="text">
-          <string>Section</string>
+        <layout class="QVBoxLayout" name="verticalLayout_2">
+         <property name="spacing">
+          <number>0</number>
          </property>
-        </column>
-        <column>
-         <property name="text">
-          <string>PK</string>
+         <property name="margin">
+          <number>0</number>
          </property>
-        </column>
-        <column>
-         <property name="text">
-          <string>Name</string>
-         </property>
-        </column>
-        <column>
-         <property name="text">
-          <string>Type</string>
-         </property>
-        </column>
+         <item>
+          <widget class="QLineEdit" name="txtTab2"/>
+         </item>
+         <item>
+          <widget class="QComboBox" name="cmbVersionRight"/>
+         </item>
+         <item>
+          <widget class="QTreeWidget" name="treeWidgetRight">
+           <property name="rootIsDecorated">
+            <bool>true</bool>
+           </property>
+           <property name="allColumnsShowFocus">
+            <bool>true</bool>
+           </property>
+           <property name="headerHidden">
+            <bool>false</bool>
+           </property>
+           <attribute name="headerDefaultSectionSize">
+            <number>50</number>
+           </attribute>
+           <column>
+            <property name="text">
+             <string>Section</string>
+            </property>
+           </column>
+           <column>
+            <property name="text">
+             <string>PK</string>
+            </property>
+           </column>
+           <column>
+            <property name="text">
+             <string>Name</string>
+            </property>
+           </column>
+           <column>
+            <property name="text">
+             <string>Type</string>
+            </property>
+           </column>
+          </widget>
+         </item>
+        </layout>
        </widget>
       </item>
      </layout>
     </widget>
    </item>
    <item>
-    <widget class="QGroupBox" name="grpRight">
-     <property name="title">
-      <string/>
-     </property>
-     <layout class="QVBoxLayout" name="verticalLayout_2">
-      <property name="spacing">
-       <number>0</number>
-      </property>
-      <property name="margin">
-       <number>0</number>
-      </property>
-      <item>
-       <widget class="QLineEdit" name="txtTab2"/>
-      </item>
-      <item>
-       <widget class="QComboBox" name="cmbVersionRight"/>
-      </item>
-      <item>
-       <widget class="QTreeWidget" name="treeWidgetRight">
-        <property name="rootIsDecorated">
-         <bool>true</bool>
-        </property>
-        <property name="allColumnsShowFocus">
-         <bool>true</bool>
-        </property>
-        <property name="headerHidden">
-         <bool>false</bool>
-        </property>
-        <attribute name="headerDefaultSectionSize">
-         <number>50</number>
-        </attribute>
-        <column>
-         <property name="text">
-          <string>Section</string>
-         </property>
-        </column>
-        <column>
-         <property name="text">
-          <string>PK</string>
-         </property>
-        </column>
-        <column>
-         <property name="text">
-          <string>Name</string>
-         </property>
-        </column>
-        <column>
-         <property name="text">
-          <string>Type</string>
-         </property>
-        </column>
-       </widget>
-      </item>
-     </layout>
-    </widget>
+    <widget class="QTextEdit" name="textEdit"/>
    </item>
   </layout>
  </widget>

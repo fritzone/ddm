@@ -21,16 +21,6 @@ public:
      */
     virtual CloneableElement* clone(Version* sourceVersion, Version* targetVersion) = 0;
 
-    void setSourceUid(const QUuid& o);
-
-    QUuid getSourceUid() const;
-
-
-
-private:
-
-    QUuid m_sourceUid;
-
 };
 
 #endif // CORE_CLONEABLEELEMENT_H
