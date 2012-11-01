@@ -2,7 +2,7 @@
 #include "UidWarehouse.h"
 #include "uids.h"
 
-ObjectWithUid::ObjectWithUid() : m_uid(nullUid)
+ObjectWithUid::ObjectWithUid() : m_uid(nullUid), m_sourceUid(nullUid)
 {
 }
 
