@@ -5,8 +5,10 @@
 #include <QSplitter>
 #include <QMap>
 #include <QTreeWidgetItem>
+
 class Table;
 class Column;
+class SqlHighlighter;
 
 namespace Ui {
 class TableComparisonForm;
@@ -49,6 +51,7 @@ private:
     Table* m_rightTable;
     QSplitter* m_spl;
     QMap<Sides, QTreeWidget*> m_trees;
+    SqlHighlighter* highlighter;
 };
 
 #endif // TABLECOMPARISONFORM_H

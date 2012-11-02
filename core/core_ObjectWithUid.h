@@ -53,6 +53,8 @@ public:
         return m_sourceUid;
     }
 
+    QStringList sourceUids() const;
+
 private:
 
     QUuid m_uid;

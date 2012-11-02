@@ -138,7 +138,13 @@
     </widget>
    </item>
    <item>
-    <widget class="QTextEdit" name="textEdit"/>
+    <widget class="QTextEdit" name="textEdit">
+     <property name="font">
+      <font>
+       <family>Courier 10 Pitch</family>
+      </font>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>

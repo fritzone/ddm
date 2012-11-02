@@ -64,10 +64,6 @@ public:
 
 private:
 
-    QStringList sourceUids() const;
-
-private:
-
     const UserDataType* m_type;
     bool m_pk;
     Table* m_table;

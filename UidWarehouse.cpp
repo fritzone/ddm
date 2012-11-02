@@ -137,5 +137,25 @@ ObjectWithUid* UidWarehouse::getElement(const QString &uid)
 
 bool UidWarehouse::related(const ObjectWithUid* obj1, const ObjectWithUid* obj2)
 {
+    // now see if they have any common source uid ...
+    QStringList obj1Ancestry = obj1->sourceUids();
+    QStringList obj2Ancestry = obj2->sourceUids();
+
+    for(int i=0; i<obj1Ancestry.size(); i++)
+    {
+        if(obj2Ancestry.indexOf(obj1Ancestry[i]) != -1)
+        {
+            return true;
+        }
+    }
+
+    for(int i=0; i<obj2Ancestry.size(); i++)
+    {
+        if(obj1Ancestry.indexOf(obj2Ancestry[i]) != -1)
+        {
+            return true;
+        }
+    }
+
     return false;
 }

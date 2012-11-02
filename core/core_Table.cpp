@@ -637,3 +637,17 @@ int Table::getIndexOfColumn(const Column *c)
     }
     return -1;
 }
+
+int Table::getIndexOfColumn(const QString& n)
+{
+    const QVector<Column*> cols = getColumns();
+
+    for(int i=0; i<cols.size(); i++)
+    {
+        if(n == cols[i]->getName())
+        {
+            return i;
+        }
+    }
+    return -1;
+}

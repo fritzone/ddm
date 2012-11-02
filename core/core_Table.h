@@ -292,6 +292,7 @@ public:
     virtual void updateGui();
 
     int getIndexOfColumn(const Column*);
+    int getIndexOfColumn(const QString&);
 
 private:
 
