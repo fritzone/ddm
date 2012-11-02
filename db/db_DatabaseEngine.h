@@ -18,6 +18,7 @@ class Procedure;
 class Function;
 class Trigger;
 class Sp;
+class Column;
 
 /**
  * The DatabaseEngine class is the common interface for accessing the database
@@ -213,7 +214,7 @@ public:
      * represented by the given connection
      *
      * @param c - the connection to the database
-     *
+     *it neede a
      * @return the list of views
      */
     virtual QStringList getAvailableViews(Connection* c) = 0;
@@ -444,6 +445,43 @@ public:
      * @return the metadata of the database or an empty string
      */
     virtual QString getDbMetadata(Connection *c) = 0;
+
+    /**
+     * Generates SQL script to rename a table
+     * @brief getTableRenameSql
+     * @param from - the old name of the table
+     * @param to - the new name of the table
+     * @return the generated SQL Script
+     */
+    virtual QString getTableRenameSql(const QString& from, const QString& to) = 0;
+
+
+    /**
+     * @brief getAlterTableForChangeColumnOrder
+     * @param table
+     * @param column
+     * @param afterThis
+     * @return
+     */
+    virtual QString getAlterTableForChangeColumnOrder(const QString& table, const Column* column, const QString& afterThis) = 0;
+
+    /**
+     * @brief getAlterTableForColumnRename
+     * @param table
+     * @param column
+     * @param afterThis
+     * @return
+     */
+    virtual QString getAlterTableForColumnRename(const QString& table, const Column* column, const QString& oldName) = 0;
+
+    /**
+     * @brief getAlterTableForNewColumn
+     * @param table
+     * @param column
+     * @param after - might be empty, in this case the DBEngine should generate code that will put it in teh first position
+     * @return
+     */
+    virtual QString getAlterTableForNewColumn(const QString& table, const Column* column, const QString& after) = 0;
 
 public:
 

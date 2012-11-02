@@ -9,6 +9,10 @@
 #include "Project.h"
 #include "UidWarehouse.h"
 #include "TableUpdateGenerator.h"
+#include "SqlHighlighter.h"
+#include "db_DatabaseEngine.h"
+#include "db_AbstractDTSupplier.h"
+
 
 TableComparisonForm::TableComparisonForm(QWidget *parent) : m_leftTable(0), m_rightTable(0),
     QWidget(parent),
@@ -40,6 +44,15 @@ TableComparisonForm::TableComparisonForm(QWidget *parent) : m_leftTable(0), m_ri
         ui->cmbVersionLeft->addItem(a[i]);
         ui->cmbVersionRight->addItem(a[i]);
     }
+
+    highlighter = new SqlHighlighter(ui->textEdit->document(),Workspace::getInstance()->currentProjectsEngine()->getKeywords(),
+                                     Workspace::getInstance()->currentProjectsEngine()->getDTSupplier()->numericTypes(),
+                                     Workspace::getInstance()->currentProjectsEngine()->getDTSupplier()->booleanTypes(),
+                                     Workspace::getInstance()->currentProjectsEngine()->getDTSupplier()->textTypes(),
+                                     Workspace::getInstance()->currentProjectsEngine()->getDTSupplier()->blobTypes(),
+                                     Workspace::getInstance()->currentProjectsEngine()->getDTSupplier()->dateTimeTypes(),
+                                     Workspace::getInstance()->currentProjectsEngine()->getDTSupplier()->miscTypes(),
+                                     Workspace::getInstance()->workingVersion()->getTables());
 
     QObject::connect(ui->cmbVersionLeft, SIGNAL(activated(QString)), this, SLOT(leftItemSelected(QString)));
     QObject::connect(ui->cmbVersionRight, SIGNAL(activated(QString)), this, SLOT(rightItemSelected(QString)));
@@ -166,7 +179,16 @@ void TableComparisonForm::populateTree()
 
     populateColumns();
 
-    TableUpdateGenerator gen (m_leftTable, m_rightTable);
+    TableUpdateGenerator gen (m_leftTable, m_rightTable, Workspace::getInstance()->currentProjectsEngine());
+
+    QString finalSql;
+    const QStringList& lines = gen.commands();
+    for(int i=0; i<lines.size(); i++)
+    {
+        finalSql += lines.at(i);
+        finalSql += "\n";
+    }
+    ui->textEdit->setText(finalSql);
 }
 
 void TableComparisonForm::populateColumns()
@@ -367,9 +389,7 @@ void TableComparisonForm::populateClosestMatchingColumn(Column *left, QTreeWidge
 
                 }
             }
-
         }
     }
-
 }
 

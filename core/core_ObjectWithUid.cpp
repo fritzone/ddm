@@ -10,3 +10,20 @@ ObjectWithUid::ObjectWithUid(const QString& uid, Version* v) : m_uid(uid), m_ver
 {
     UidWarehouse::instance().addElement(this, v);
 }
+
+QStringList ObjectWithUid::sourceUids() const
+{
+    QStringList thisUpwardsSourceUids;
+    thisUpwardsSourceUids.append(getObjectUid());
+    const ObjectWithUid* c = this;
+    while(true)
+    {
+        QString srcUid = c->getSourceUid();
+        if(srcUid == nullUid) break;
+
+        thisUpwardsSourceUids.append(srcUid);
+        c = dynamic_cast<ObjectWithUid*>(UidWarehouse::instance().getElement(srcUid));
+        if(!c) break;
+    }
+    return thisUpwardsSourceUids;
+}

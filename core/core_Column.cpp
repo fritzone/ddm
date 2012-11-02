@@ -145,20 +145,3 @@ int Column::checkEquality(const Column *other)
 
     return -1;
 }
-
-QStringList Column::sourceUids() const
-{
-    QStringList thisUpwardsSourceUids;
-    thisUpwardsSourceUids.append(getObjectUid());
-    const Column* c = this;
-    while(true)
-    {
-        QString srcUid = c->getSourceUid();
-        if(srcUid == nullUid) break;
-
-        thisUpwardsSourceUids.append(srcUid);
-        c = dynamic_cast<Column*>(UidWarehouse::instance().getElement(srcUid));
-        if(!c) break;
-    }
-    return thisUpwardsSourceUids;
-}

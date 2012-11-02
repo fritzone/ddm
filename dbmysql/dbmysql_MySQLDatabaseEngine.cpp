@@ -28,6 +28,7 @@
 #include "ValueListSp.h"
 #include "ValueSp.h"
 #include "SpInstance.h"
+#include "core_UserDataType.h"
 
 QVector<DatabaseBuiltinFunction>* MySQLDatabaseEngine::s_builtinFunctions = 0;
 QVector<Sp*>* MySQLDatabaseEngine::s_mysqlSpecificProperties = 0;
@@ -1878,4 +1879,44 @@ QString MySQLDatabaseEngine::toHexString(const QString &x)
     }
 
     return result;
+}
+
+QString MySQLDatabaseEngine::getTableRenameSql(const QString& from, const QString& to)
+{
+    QString res = "RENAME TABLE " + from + " TO " + to;
+    return res;
+}
+
+QString MySQLDatabaseEngine::getAlterTableForChangeColumnOrder(const QString& table, const Column* column, const QString& afterThis)
+{
+    QString res = "ALTER TABLE " + table + " MODIFY COLUMN `" + column->getName() + "` " + column->getDataType()->sqlAsString();
+    if(afterThis.isEmpty())
+    {
+        res += " FIRST";
+    }
+    else
+    {
+        res += " AFTER " + afterThis;
+    }
+    return res;
+}
+
+QString MySQLDatabaseEngine::getAlterTableForColumnRename(const QString& table, const Column* column, const QString& oldName)
+{
+    QString res = "ALTER TABLE " + table + " CHANGE `" + oldName + "` `" + column->getName() + "` " + column->getDataType()->sqlAsString();
+    return res;
+}
+
+QString MySQLDatabaseEngine::getAlterTableForNewColumn(const QString& table, const Column* column, const QString& after)
+{
+    QString res = "ALTER TABLE " + table + " ADD `" + column->getName() + "` " + column->getDataType()->sqlAsString();
+    if(after.isEmpty())
+    {
+        res += " FIRST";
+    }
+    else
+    {
+        res += " AFTER " + after;
+    }
+    return res;
 }

@@ -56,6 +56,10 @@ public:
     virtual bool tableBlocksForeignKeyFunctionality(const Table* table) const;
     virtual bool injectMetadata(Connection* c, const Version* v);
     virtual QString getDbMetadata(Connection *c);
+    virtual QString getTableRenameSql(const QString& from, const QString& to);
+    virtual QString getAlterTableForChangeColumnOrder(const QString& table, const Column* column, const QString& afterThis);
+    virtual QString getAlterTableForColumnRename(const QString& table, const Column* column, const QString& oldName);
+    virtual QString getAlterTableForNewColumn(const QString& table, const Column* column, const QString& after);
 
     QStringList getSupportedStorageEngines(const QString& host, const QString& user, const QString& pass);
 private:
