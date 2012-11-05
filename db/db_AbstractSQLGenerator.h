@@ -11,6 +11,7 @@ class View;
 class StoredMethod;
 class Trigger;
 class Connection;
+class Column;
 
 /**
  * Interface towards the Database Engine responsible for generating the SQLs for the given database
@@ -106,6 +107,52 @@ public:
      * @return a list of SQL commands for generating this trigger
      */
     virtual QStringList generateTriggerSql(Trigger* t, const QHash<QString, QString>& options) const = 0;
+
+    /**
+     * Generates SQL script to rename a table
+     * @brief getTableRenameSql
+     * @param from - the old name of the table
+     * @param to - the new name of the table
+     * @return the generated SQL Script
+     */
+    virtual QString getTableRenameSql(const QString& from, const QString& to) = 0;
+
+
+    /**
+     * @brief getAlterTableForChangeColumnOrder
+     * @param table
+     * @param column
+     * @param afterThis
+     * @return
+     */
+    virtual QString getAlterTableForChangeColumnOrder(const QString& table, const Column* column, const QString& afterThis) = 0;
+
+    /**
+     * @brief getAlterTableForColumnRename
+     * @param table
+     * @param column
+     * @param afterThis
+     * @return
+     */
+    virtual QString getAlterTableForColumnRename(const QString& table, const Column* column, const QString& oldName) = 0;
+
+    /**
+     * @brief getAlterTableForNewColumn
+     * @param table
+     * @param column
+     * @param after - might be empty, in this case the DBEngine should generate code that will put it in teh first position
+     * @return
+     */
+    virtual QString getAlterTableForNewColumn(const QString& table, const Column* column, const QString& after) = 0;
+
+    /**
+     * Return an alter table command for deleting a column from an existing table
+     * @brief getAlterTableForColumnDeletion
+     * @param table
+     * @param column
+     * @return
+     */
+    virtual QString getAlterTableForColumnDeletion(const QString& table, const QString& column) = 0;
 
     virtual ~AbstractSqlGenerator() {}
 };

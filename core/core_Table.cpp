@@ -200,6 +200,18 @@ Column* Table::getColumn(const QString& name) const
     return 0;
 }
 
+Column* Table::getColumnByUid(const QString& uid) const
+{
+    for(int i = 0; i<m_columns.size(); i++)
+    {
+        if(m_columns[i]->getObjectUid() == uid)
+        {
+            return m_columns[i];
+        }
+    }
+    return 0;
+}
+
 Column* Table::getColumnFromParents(const QString& name) const
 {
     const Table* p = m_parent;

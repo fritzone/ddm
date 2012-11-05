@@ -219,16 +219,11 @@ void TableComparisonForm::populateColumns()
             itm->setIcon(1, IconFactory::getKeyIcon());
         }
         itm->setIcon(3, IconFactory::getIconForDataType(leftCols[i]->getDataType()->getType()));
-
-        if(m_rightTable)
-        {
-            populateClosestMatchingColumn(leftCols[i], colItemLeft, colItemRight);
-        }
     }
 
     // and now put in the other items from the right table is any left
     const QVector<Column*> rightCols = m_rightTable->getColumns();
-    for(int j=leftCols.size(); j<rightCols.size(); j++)
+    for(int j=0; j<rightCols.size(); j++)
     {
         QStringList colRightText;
         colRightText << ""<< ""<< rightCols[j]->getName() << rightCols[j]->getDataType()->getName();
@@ -242,10 +237,7 @@ void TableComparisonForm::populateColumns()
             itmRight->setIcon(1, IconFactory::getKeyIcon());
         }
         itmRight->setIcon(3, IconFactory::getIconForDataType(rightCols[j]->getDataType()->getType()));
-        itmRight->setBackgroundColor(0, QColor(0xff, 0x66, 0));
-        itmRight->setBackgroundColor(1, QColor(0xff, 0x66, 0));
-        itmRight->setBackgroundColor(2, QColor(0xff, 0x66, 0));
-        itmRight->setBackgroundColor(3, QColor(0xff, 0x66, 0));
+
     }
 }
 
@@ -265,131 +257,119 @@ void TableComparisonForm::setRightTable(Table *t)
 
 void TableComparisonForm::populateClosestMatchingColumn(Column *left, QTreeWidgetItem* colItemLeft, QTreeWidgetItem* colItemRight)
 {
-    const QVector<Column*> rightCols = m_rightTable->getColumns();
-    for(int j=0; j<rightCols.size(); j++)
-    {
-        if(rightCols[j]->getObjectUid() == left->getObjectUid()) // same table, same column
-        {
-            QStringList colRightText;
-            colRightText << ""<< ""<< left->getName() << left->getDataType()->getName();
+//    const QVector<Column*> rightCols = m_rightTable->getColumns();
+//    for(int j=0; j<rightCols.size(); j++)
+//    {
+//        if(rightCols[j]->getObjectUid() == left->getObjectUid()) // same table, same column
+//        {
+//            QStringList colRightText;
+//            colRightText << ""<< ""<< left->getName() << left->getDataType()->getName();
 
-            QTreeWidgetItem* itmRight = new QTreeWidgetItem(colItemRight, colRightText);
-            itmRight->setIcon(2, IconFactory::getColumnIcon());
-            m_trees[RIGHT]->addTopLevelItem(itmRight);
+//            QTreeWidgetItem* itmRight = new QTreeWidgetItem(colItemRight, colRightText);
+//            itmRight->setIcon(2, IconFactory::getColumnIcon());
+//            m_trees[RIGHT]->addTopLevelItem(itmRight);
 
-            if(rightCols[j]->isPk())
-            {
-                itmRight->setIcon(1, IconFactory::getKeyIcon());
-            }
-            itmRight->setIcon(3, IconFactory::getIconForDataType(rightCols[j]->getDataType()->getType()));
-        }
-        else    // same table, different column.
-        {
-            // is the column left at i equal with the column right j?
-            int eqind = left->checkEquality(rightCols[j]);
-            if(eqind == 0)
-            {
-                int i = m_leftTable->getIndexOfColumn(left);
-                // they are equal
-                if(i ==j)
-                {
-                    // now we foudn that the two columns occupy the same position.
-                    QStringList colRight;
-                    colRight << ""<< ""<< rightCols.at(j)->getName() << rightCols[j]->getDataType()->getName();
+//            if(rightCols[j]->isPk())
+//            {
+//                itmRight->setIcon(1, IconFactory::getKeyIcon());
+//            }
+//            itmRight->setIcon(3, IconFactory::getIconForDataType(rightCols[j]->getDataType()->getType()));
+//        }
+//        else    // same table, different column.
+//        {
+//            // is the column left at i equal with the column right j?
+//            int eqind = left->checkEquality(rightCols[j]);
+//            if(eqind == 0)
+//            {
+//                int i = m_leftTable->getIndexOfColumn(left);
+//                // they are equal
+//                if(i ==j)
+//                {
+//                    // now we foudn that the two columns occupy the same position.
+//                    QStringList colRight;
+//                    colRight << ""<< ""<< rightCols.at(j)->getName() << rightCols[j]->getDataType()->getName();
 
-                    QTreeWidgetItem* itmRight = new QTreeWidgetItem(colItemRight, colRight);
-                    itmRight->setIcon(2, IconFactory::getColumnIcon());
-                    m_trees[RIGHT]->addTopLevelItem(itmRight);
+//                    QTreeWidgetItem* itmRight = new QTreeWidgetItem(colItemRight, colRight);
+//                    itmRight->setIcon(2, IconFactory::getColumnIcon());
+//                    m_trees[RIGHT]->addTopLevelItem(itmRight);
 
-                    if(rightCols[j]->isPk())
-                    {
-                        itmRight->setIcon(1, IconFactory::getKeyIcon());
-                    }
-                    itmRight->setIcon(3, IconFactory::getIconForDataType(rightCols[j]->getDataType()->getType()));
+//                    if(rightCols[j]->isPk())
+//                    {
+//                        itmRight->setIcon(1, IconFactory::getKeyIcon());
+//                    }
+//                    itmRight->setIcon(3, IconFactory::getIconForDataType(rightCols[j]->getDataType()->getType()));
 
-                }
-                else
-                {
-                    // the two columns do not occupy the same position, so it means one of them was moved
-                    if(i < j)   // means the left column comes before the right... possibly a new column was inserted in the right table or one deleted from the left
-                    {
-                        // try to move down the left ... (j - i) steps
-                        QTreeWidgetItem* empty = new QTreeWidgetItem(QStringList());
-                        for(int k = 0; k<j-i; k++)
-                        {
-                            colItemLeft->insertChild(i, empty);
-                        }
+//                }
+//                else
+//                {
+//                    // the two columns do not occupy the same position, so it means one of them was moved
+//                    if(i < j)   // means the left column comes before the right... possibly a new column was inserted in the right table or one deleted from the left
+//                    {
+//                        // try to move down the left ... (j - i) steps
+//                        // and add the curret item
+//                        QStringList colRight;
+//                        colRight << ""<< ""<< rightCols.at(j)->getName() << rightCols[j]->getDataType()->getName();
 
-                        // and add the curret item
-                        QStringList colRight;
-                        colRight << ""<< ""<< rightCols.at(j)->getName() << rightCols[j]->getDataType()->getName();
+//                        QTreeWidgetItem* itmRight = new QTreeWidgetItem(colItemRight, colRight);
+//                        itmRight->setIcon(2, IconFactory::getColumnIcon());
+//                        m_trees[RIGHT]->addTopLevelItem(itmRight);
 
-                        QTreeWidgetItem* itmRight = new QTreeWidgetItem(colItemRight, colRight);
-                        itmRight->setIcon(2, IconFactory::getColumnIcon());
-                        m_trees[RIGHT]->addTopLevelItem(itmRight);
+//                        if(rightCols[j]->isPk())
+//                        {
+//                            itmRight->setIcon(1, IconFactory::getKeyIcon());
+//                        }
+//                        itmRight->setIcon(3, IconFactory::getIconForDataType(rightCols[j]->getDataType()->getType()));
+//                    }
+//                    else        // the right comes before the left, a column was deleted from the right table (or added to the left)
+//                    {
+//                        QStringList colRight;
+//                        colRight << ""<< ""<< rightCols.at(j)->getName() << rightCols[j]->getDataType()->getName();
 
-                        if(rightCols[j]->isPk())
-                        {
-                            itmRight->setIcon(1, IconFactory::getKeyIcon());
-                        }
-                        itmRight->setIcon(3, IconFactory::getIconForDataType(rightCols[j]->getDataType()->getType()));
-                    }
-                    else        // the right comes before the left, a column was deleted from the right table (or added to the left)
-                    {
-                        // insert empty items and then the requried one
-                        QTreeWidgetItem* empty = new QTreeWidgetItem(colItemRight, QStringList());
-                        for(int k = 0; k<i-j; k++)
-                        {
-                            m_trees[RIGHT]->addTopLevelItem(empty);
-                        }
-                        QStringList colRight;
-                        colRight << ""<< ""<< rightCols.at(j)->getName() << rightCols[j]->getDataType()->getName();
+//                        QTreeWidgetItem* itmRight = new QTreeWidgetItem(colItemRight, colRight);
+//                        itmRight->setIcon(2, IconFactory::getColumnIcon());
+//                        m_trees[RIGHT]->addTopLevelItem(itmRight);
 
-                        QTreeWidgetItem* itmRight = new QTreeWidgetItem(colItemRight, colRight);
-                        itmRight->setIcon(2, IconFactory::getColumnIcon());
-                        m_trees[RIGHT]->addTopLevelItem(itmRight);
+//                        if(rightCols[j]->isPk())
+//                        {
+//                            itmRight->setIcon(1, IconFactory::getKeyIcon());
+//                        }
+//                        itmRight->setIcon(3, IconFactory::getIconForDataType(rightCols[j]->getDataType()->getType()));
 
-                        if(rightCols[j]->isPk())
-                        {
-                            itmRight->setIcon(1, IconFactory::getKeyIcon());
-                        }
-                        itmRight->setIcon(3, IconFactory::getIconForDataType(rightCols[j]->getDataType()->getType()));
+//                    }
+//                }
+//            }
+//            else // these two are not equal.
+//            {
+//                int i = m_leftTable->getIndexOfColumn(left);
+//                if (i == j && eqind > -1)
+//                {
+//                    QStringList colRight;
+//                    colRight << ""<< ""<< rightCols.at(j)->getName() << rightCols[j]->getDataType()->getName();
 
-                    }
-                }
-            }
-            else // these two are not equal.
-            {
-                int i = m_leftTable->getIndexOfColumn(left);
-                if (i == j && eqind > -1)
-                {
-                    QStringList colRight;
-                    colRight << ""<< ""<< rightCols.at(j)->getName() << rightCols[j]->getDataType()->getName();
+//                    QTreeWidgetItem* itmRight = new QTreeWidgetItem(colItemRight, colRight);
+//                    itmRight->setIcon(2, IconFactory::getColumnIcon());
+//                    m_trees[RIGHT]->addTopLevelItem(itmRight);
 
-                    QTreeWidgetItem* itmRight = new QTreeWidgetItem(colItemRight, colRight);
-                    itmRight->setIcon(2, IconFactory::getColumnIcon());
-                    m_trees[RIGHT]->addTopLevelItem(itmRight);
+//                    if(rightCols[j]->isPk())
+//                    {
+//                        itmRight->setIcon(1, IconFactory::getKeyIcon());
+//                    }
+//                    itmRight->setIcon(3, IconFactory::getIconForDataType(rightCols[j]->getDataType()->getType()));
+//                    if(eqind != -1) itmRight->setBackgroundColor(eqind - 1, QColor(0xff, 0x66, 0));
+//                    else
+//                    {
+//                        itmRight->setBackgroundColor(0, QColor(0xff, 0x66, 0));
+//                        itmRight->setBackgroundColor(1, QColor(0xff, 0x66, 0));
+//                        itmRight->setBackgroundColor(2, QColor(0xff, 0x66, 0));
+//                        itmRight->setBackgroundColor(3, QColor(0xff, 0x66, 0));
+//                    }
+//                }
+//                else
+//                {
 
-                    if(rightCols[j]->isPk())
-                    {
-                        itmRight->setIcon(1, IconFactory::getKeyIcon());
-                    }
-                    itmRight->setIcon(3, IconFactory::getIconForDataType(rightCols[j]->getDataType()->getType()));
-                    if(eqind != -1) itmRight->setBackgroundColor(eqind - 1, QColor(0xff, 0x66, 0));
-                    else
-                    {
-                        itmRight->setBackgroundColor(0, QColor(0xff, 0x66, 0));
-                        itmRight->setBackgroundColor(1, QColor(0xff, 0x66, 0));
-                        itmRight->setBackgroundColor(2, QColor(0xff, 0x66, 0));
-                        itmRight->setBackgroundColor(3, QColor(0xff, 0x66, 0));
-                    }
-                }
-                else
-                {
-
-                }
-            }
-        }
-    }
+//                }
+//            }
+//        }
+//    }
 }
 

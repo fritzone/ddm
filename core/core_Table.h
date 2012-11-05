@@ -273,6 +273,8 @@ public:
 
     void setParentUid(const QString&);
 
+    Column* getColumnByUid(const QString&) const;
+
     virtual CloneableElement* clone(Version* sourceVersion, Version* targetVersion);
 
     QString getTempTabName() const

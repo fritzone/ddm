@@ -2,6 +2,7 @@
 #include "core_Table.h"
 #include "core_Column.h"
 #include "UidWarehouse.h"
+#include "db_AbstractSQLGenerator.h"
 #include "db_DatabaseEngine.h"
 
 struct OldNameNewName
@@ -38,13 +39,14 @@ TableUpdateGenerator::TableUpdateGenerator(Table *t1, Table *t2, DatabaseEngine*
     if(t2->getName() != t1->getName())
     {
         m_commands.append("-- table " + t1->getName() + " renamed to: " + t2->getName());
-        m_commands.append(dbEngine->getTableRenameSql(t1->getName(), t2->getName()));
+        m_commands.append(dbEngine->getSqlGenerator()->getTableRenameSql(t1->getName(), t2->getName()));
     }
 
     QVector<NewColumns> newColumns;     // contains a lis of columns that are new in T2
     QVector<OldNameNewName> renamedColumns;
-
     QVector<ColumnOrderChange> columnsThatHaveChangedOrder;
+    QVector<QString> deletedColumns;
+    QVector<Column*> changedColumns;    // contains a list of columns that have chagned their datatype
 
     // next run. See if T2 has new or renamed columns
     QStringList t2Columns = t2->fullColumns();
@@ -107,6 +109,8 @@ TableUpdateGenerator::TableUpdateGenerator(Table *t1, Table *t2, DatabaseEngine*
             }
             // however only if there are no new columns before it.
 
+            if(cidx >= t2Columns.size()) cidx = t2Columns.size() - 1;
+
             bool newColumnsBefore = false;
             for(int j = cidx; j> -1; j--)
             {
@@ -132,17 +136,44 @@ TableUpdateGenerator::TableUpdateGenerator(Table *t1, Table *t2, DatabaseEngine*
         }
     }
 
-    if(newColumns.size()) m_commands.append("\n");
-    for(int i=0; i< newColumns.size() ; i++)
+    // next run: see if there were any columns deleted in t2
+    QStringList t1Columns = t1->fullColumns();
+    for(int i=0; i<t1Columns.size(); i++)
     {
-        Column* ct2 = t2->getColumn(newColumns[i].newName);
-        if(!ct2) ct2 = t2->getColumnFromParents(newColumns[i].newName);
-        if(!ct2) continue;
+        Column* c1 = t1->getColumn(t1Columns[i]);
+        if(!c1) c1 = t1->getColumnFromParents(t1Columns[i]);
+        if(!c1) continue;
+        bool columnFoundSomewhere = false;
+        int tidx = t2Columns.indexOf(c1->getName()) ;
 
-        m_commands.append("-- new column " + newColumns[i].newName);
-        m_commands.append(dbEngine->getAlterTableForNewColumn(t2->getName(), ct2, newColumns[i].afterColumn));
+        if(tidx == -1)
+        {
+            // the column is not there in the names, we might need to see if it was renamed or not through a generation of tables
+            for(int j=0; j<t2Columns.size(); j++)
+            {
+                Column* ct2 = t2->getColumn(t2Columns[j]);
+                if(!ct2) ct2 = t2->getColumnFromParents(t2Columns[j]);
+                if(!ct2) continue;
+                // now see that after some time the ancestry of ct2 is the same as ct1
+                if(UidWarehouse::instance().related(c1, ct2))
+                {
+                    columnFoundSomewhere = true;
+                    break;
+                }
+            }
+        }
+        else
+        {
+            columnFoundSomewhere = true;
+        }
+
+        if(!columnFoundSomewhere)
+        {
+            deletedColumns.append(c1->getName());
+        }
     }
 
+    // renamed columns should be the first. There might be new columns after a renamed one
     if(renamedColumns.size()) m_commands.append("\n");
     for(int i=0; i< renamedColumns.size() ; i++)
     {
@@ -151,21 +182,42 @@ TableUpdateGenerator::TableUpdateGenerator(Table *t1, Table *t2, DatabaseEngine*
         if(!ct2) continue;
 
         m_commands.append("-- rename column " + renamedColumns[i].oldName + " to " + renamedColumns[i].newName);
-        m_commands.append(dbEngine->getAlterTableForColumnRename(t2->getName(), ct2, renamedColumns[i].oldName));
+        m_commands.append(dbEngine->getSqlGenerator()->getAlterTableForColumnRename(t2->getName(), ct2, renamedColumns[i].oldName));
 
     }
 
-    if(columnsThatHaveChangedOrder.size()) m_commands.append("\n");
-    for(int i=0; i<columnsThatHaveChangedOrder.size(); i++)
+    if(newColumns.size()) m_commands.append("\n");
+    for(int i=0; i< newColumns.size() ; i++)
     {
-        Column* ct2 = t2->getColumn(columnsThatHaveChangedOrder[i].name);
-        if(!ct2) ct2 = t2->getColumnFromParents(columnsThatHaveChangedOrder[i].name);
+        Column* ct2 = t2->getColumn(newColumns[i].newName);
+        if(!ct2) ct2 = t2->getColumnFromParents(newColumns[i].newName);
         if(!ct2) continue;
 
-        m_commands.append("-- column " + columnsThatHaveChangedOrder[i].name + " was relocated " +
-                          (columnsThatHaveChangedOrder[i].afterColumn.isEmpty()? " to the first location "
-                                                                              : "after " + columnsThatHaveChangedOrder[i].afterColumn));
-        m_commands.append(dbEngine->getAlterTableForChangeColumnOrder(t2->getName(), ct2, columnsThatHaveChangedOrder[i].afterColumn));
+        m_commands.append("-- new column " + newColumns[i].newName);
+        m_commands.append(dbEngine->getSqlGenerator()->getAlterTableForNewColumn(t2->getName(), ct2, newColumns[i].afterColumn));
     }
 
+    if(newColumns.size() == 0 && deletedColumns.size() == 0)
+    {
+        // only create the change order columns if there are no new columns
+        if(columnsThatHaveChangedOrder.size()) m_commands.append("\n");
+        for(int i=0; i<columnsThatHaveChangedOrder.size(); i++)
+        {
+            Column* ct2 = t2->getColumn(columnsThatHaveChangedOrder[i].name);
+            if(!ct2) ct2 = t2->getColumnFromParents(columnsThatHaveChangedOrder[i].name);
+            if(!ct2) continue;
+
+            m_commands.append("-- column " + columnsThatHaveChangedOrder[i].name + " was relocated " +
+                              (columnsThatHaveChangedOrder[i].afterColumn.isEmpty()? " to the first location "
+                                                                                  : "after " + columnsThatHaveChangedOrder[i].afterColumn));
+            m_commands.append(dbEngine->getSqlGenerator()->getAlterTableForChangeColumnOrder(t2->getName(), ct2, columnsThatHaveChangedOrder[i].afterColumn));
+        }
+    }
+
+    if(deletedColumns.size()) m_commands.append("\n");
+    for(int i=0; i<deletedColumns.size(); i++)
+    {
+        m_commands.append("-- column " + deletedColumns[i] + " was deleted");
+        m_commands.append(dbEngine->getSqlGenerator()->getAlterTableForColumnDeletion(t2->getName(), deletedColumns[i]));
+    }
 }
