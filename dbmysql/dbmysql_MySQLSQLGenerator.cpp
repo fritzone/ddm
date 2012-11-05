@@ -154,10 +154,6 @@ QStringList MySQLSQLGenerator::generateCreateTableSql(Table *table, const QHash<
     {
         // column name
 
-        createTable += "\t";
-        createTable += (backticks?"`":"") + table->fullColumns()[i];
-        createTable += backticks?"`":"";
-        createTable += " ";
 
         Column *col = table->getColumn(table->fullColumns()[i]);
         if(col == 0)
@@ -169,70 +165,7 @@ QStringList MySQLSQLGenerator::generateCreateTableSql(Table *table, const QHash<
             }
         }
 
-        // column type
-        const UserDataType* dt = table->getDataTypeOfColumn(table->fullColumns()[i]);
-        createTable += upcase?dt->sqlAsString().toUpper():dt->sqlAsString().toLower();
-
-        {
-        // zero fill SP?
-        SpInstance* spi = col->getInstanceForSqlRoleUid(m_engine, uidMysqlColumnZeroFill);
-        if(spi)
-        {
-            QString zeroFill = spi->get();
-            if(zeroFill == "TRUE")
-            {
-                createTable += upcase? " ZEROFILL ":" zerofill ";
-            }
-        }
-        }
-
-        // is this primary key?
-        if(col->isPk())
-        {
-            if(pkpos == 0)
-            {
-                createTable += upcase?" PRIMARY KEY ":" primary key ";
-            }
-        }
-
-        // is this a nullable column?
-        if(!dt->isNullable())
-        {
-            createTable += upcase? " NOT NULL " : " not null ";
-        }
-
-        QString autoInc = "FALSE";
-        {
-        // see if we have "AUTO_INCREMENT" sp
-        SpInstance* spi = col->getInstanceForSqlRoleUid(m_engine, uidMysqlColumnAutoIncrement);
-        if(spi)
-        {
-            autoInc = spi->get();
-        }
-        }
-
-        // do we have a default value for this columns' data type? Only for non auto inc.
-        if(dt->getDefaultValue().length() > 0 && autoInc != "TRUE")
-        {
-            QString g = dt->getDefaultValue();
-            createTable += QString(upcase?" DEFAULT ":" default ") +
-                    (dt->getDefaultValue().toUpper() == "NULL"? ("NULL ") :
-                    (QString( (dt->getType()==DT_STRING) || (dt->getType()==DT_DATETIME && g.toUpper()!="CURRENT_TIMESTAMP") ? "\"" : "") + dt->getDefaultValue() +
-                    QString( (dt->getType()==DT_STRING) || (dt->getType()==DT_DATETIME && g.toUpper()!="CURRENT_TIMESTAMP") ? "\"" : "") ));
-        }
-
-        // and set the auto inc
-        if(autoInc == "TRUE")
-        {
-            createTable += upcase? " AUTO_INCREMENT ":" auto_increment ";
-        }
-
-        // is there a comment for this?
-        if(col->getDescription().length())
-        {
-            createTable += QString(upcase?" COMMENT ":" comment ") + "\'" + col->getDescription() + "\' ";
-        }
-
+        createTable += sqlForAColumn(col, pkpos, backticks, upcase);
         // do we have more columns after this?
         if(i<table->fullColumns().size() - 1)
         {
@@ -723,4 +656,124 @@ QStringList MySQLSQLGenerator::generateTriggerSql(Trigger* t, const QHash<QStrin
     s += strNewline + t->getSql() + strSemicolon + strNewline;
     result << s;
     return result;
+}
+
+QString MySQLSQLGenerator::getTableRenameSql(const QString& from, const QString& to)
+{
+    QString res = "RENAME TABLE " + from + " TO " + to;
+    return res;
+}
+
+QString MySQLSQLGenerator::getAlterTableForChangeColumnOrder(const QString& table, const Column* column, const QString& afterThis)
+{
+    QString res = "ALTER TABLE " + table + " MODIFY COLUMN " + sqlForAColumn(column, -1, true, true);
+    if(afterThis.isEmpty())
+    {
+        res += " FIRST";
+    }
+    else
+    {
+        res += " AFTER " + afterThis;
+    }
+    return res;
+}
+
+QString MySQLSQLGenerator::getAlterTableForColumnRename(const QString& table, const Column* column, const QString& oldName)
+{
+    QString res = "ALTER TABLE " + table + " CHANGE `" + oldName + "` "+ sqlForAColumn(column, -1, true, true);
+    return res;
+}
+
+QString MySQLSQLGenerator::getAlterTableForNewColumn(const QString& table, const Column* column, const QString& after)
+{
+    QString res = "ALTER TABLE " + table + " ADD " + sqlForAColumn(column, -1, true, true);
+    if(after.isEmpty())
+    {
+        res += " FIRST";
+    }
+    else
+    {
+        res += " AFTER " + after;
+    }
+    return res;
+}
+
+QString MySQLSQLGenerator::getAlterTableForColumnDeletion(const QString& table, const QString& column)
+{
+    QString res = "ALTER TABLE " + table + " DROP " + column;
+    return res;
+}
+
+QString MySQLSQLGenerator::sqlForAColumn(const Column *col, int pkpos, bool backticks, bool upcase) const
+{
+    QString createTable = "\t";
+    createTable += (backticks?"`":"") + col->getName();
+    createTable += backticks?"`":"";
+    createTable += " ";
+
+    // column type
+    const UserDataType* dt = col->getDataType();
+    createTable += upcase?dt->sqlAsString().toUpper():dt->sqlAsString().toLower();
+
+    {
+    // zero fill SP?
+    SpInstance* spi = col->getInstanceForSqlRoleUid(m_engine, uidMysqlColumnZeroFill);
+    if(spi)
+    {
+        QString zeroFill = spi->get();
+        if(zeroFill == "TRUE")
+        {
+            createTable += upcase? " ZEROFILL ":" zerofill ";
+        }
+    }
+    }
+
+    // is this primary key?
+    if(col->isPk())
+    {
+        if(pkpos == 0)
+        {
+            createTable += upcase?" PRIMARY KEY ":" primary key ";
+        }
+    }
+
+    // is this a nullable column?
+    if(!dt->isNullable())
+    {
+        createTable += upcase? " NOT NULL " : " not null ";
+    }
+
+    QString autoInc = "FALSE";
+    {
+    // see if we have "AUTO_INCREMENT" sp
+    SpInstance* spi = col->getInstanceForSqlRoleUid(m_engine, uidMysqlColumnAutoIncrement);
+    if(spi)
+    {
+        autoInc = spi->get();
+    }
+    }
+
+    // do we have a default value for this columns' data type? Only for non auto inc.
+    if(dt->getDefaultValue().length() > 0 && autoInc != "TRUE")
+    {
+        QString g = dt->getDefaultValue();
+        createTable += QString(upcase?" DEFAULT ":" default ") +
+                (dt->getDefaultValue().toUpper() == "NULL"? ("NULL ") :
+                (QString( (dt->getType()==DT_STRING) || (dt->getType()==DT_DATETIME && g.toUpper()!="CURRENT_TIMESTAMP") ? "\"" : "") + dt->getDefaultValue() +
+                QString( (dt->getType()==DT_STRING) || (dt->getType()==DT_DATETIME && g.toUpper()!="CURRENT_TIMESTAMP") ? "\"" : "") ));
+    }
+
+    // and set the auto inc
+    if(autoInc == "TRUE")
+    {
+        createTable += upcase? " AUTO_INCREMENT ":" auto_increment ";
+    }
+
+    // is there a comment for this?
+    if(col->getDescription().length())
+    {
+        createTable += QString(upcase?" COMMENT ":" comment ") + "\'" + col->getDescription() + "\' ";
+    }
+
+    return createTable;
 }

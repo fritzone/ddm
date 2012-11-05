@@ -24,10 +24,16 @@ public:
     virtual QStringList generateAlterTableForForeignKeys(Table* t, const QHash<QString, QString>& options) const;
     virtual QStringList generateCreateStoredMethodSql(StoredMethod* p, const QHash<QString, QString>& options) const;
     virtual QStringList generateTriggerSql(Trigger* t, const QHash<QString, QString>& options) const;
+    virtual QString getTableRenameSql(const QString& from, const QString& to);
+    virtual QString getAlterTableForChangeColumnOrder(const QString& table, const Column* column, const QString& afterThis);
+    virtual QString getAlterTableForColumnRename(const QString& table, const Column* column, const QString& oldName);
+    virtual QString getAlterTableForNewColumn(const QString& table, const Column* column, const QString& after);
+    virtual QString getAlterTableForColumnDeletion(const QString& table, const QString& column);
 
 private:
 
     QString quotelessString(const QString&) const;
+    QString sqlForAColumn(const Column* col, int pkpos, bool backticks, bool upcase) const;
 
 private:
 
