@@ -29,6 +29,7 @@ public:
     virtual QString getAlterTableForColumnRename(const QString& table, const Column* column, const QString& oldName);
     virtual QString getAlterTableForNewColumn(const QString& table, const Column* column, const QString& after);
     virtual QString getAlterTableForColumnDeletion(const QString& table, const QString& column);
+    virtual QString getAlterTableForColumnChange(const QString& table, const Column* col);
 
 private:
 

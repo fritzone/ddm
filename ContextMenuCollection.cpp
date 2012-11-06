@@ -53,6 +53,7 @@ ContextMenuCollection::ContextMenuCollection()
     m_functionsPopupMenu = new QMenu();
     m_triggersPopupMenu = new QMenu();
     m_releasedVersionPopupMenu = new QMenu();
+    m_finalisedVersionPopupMenu = new QMenu();
 
     // actions
     action_RemoveTable = new QAction(QObject::tr("Delete table"), 0);
@@ -134,6 +135,8 @@ ContextMenuCollection::ContextMenuCollection()
     action_addViewWithSql = new QAction(QObject::tr("New View (SQL)"), 0);
     action_initiatePatch = new QAction(QObject::tr("Initiate patch"), 0);
     action_initiatePatch->setIcon(IconFactory::getPatchIcon());
+    action_deployVersion = new QAction(QObject::tr("Deploy this version"), 0);
+    action_deployVersion->setIcon(IconFactory::getDeployIcon());
 
     // populate the table popup menu
     m_tablePopupMenu->setTitle(QObject::tr("Table"));
@@ -312,6 +315,9 @@ ContextMenuCollection::ContextMenuCollection()
     m_undeletePopupMenu->addAction(action_undelete);
 
     m_releasedVersionPopupMenu->addAction(action_initiatePatch);
+    m_releasedVersionPopupMenu->addAction(action_deployVersion);
+
+    m_finalisedVersionPopupMenu->addAction(action_deployVersion);
 }
 
 QMenu* ContextMenuCollection::getUnLockMenuForClassUid(const QString& uid)

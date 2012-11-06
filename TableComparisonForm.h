@@ -42,10 +42,6 @@ private slots:
     void rightItemSelected(const QString&);
 
 private:
-
-    void populateClosestMatchingColumn(Column* left, QTreeWidgetItem *colItemLeft, QTreeWidgetItem *colItemRight);
-
-private:
     Ui::TableComparisonForm *ui;
     Table* m_leftTable;
     Table* m_rightTable;

@@ -154,6 +154,14 @@ public:
      */
     virtual QString getAlterTableForColumnDeletion(const QString& table, const QString& column) = 0;
 
+    /**
+     * @brief getAlterTableForColumnChange
+     * @param table
+     * @param col
+     * @return
+     */
+    virtual QString getAlterTableForColumnChange(const QString& table, const Column* col) = 0;
+
     virtual ~AbstractSqlGenerator() {}
 };
 

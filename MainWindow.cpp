@@ -1166,6 +1166,7 @@ void MainWindow::connectActionsFromPopupMenus()
     QObject::connect(ContextMenuCollection::getInstance()->getAction_AddView(), SIGNAL(triggered()), this, SLOT(onNewViewFromPopup()));
     QObject::connect(ContextMenuCollection::getInstance()->getAction_AddViewWithSql(), SIGNAL(triggered()), this, SLOT(onNewViewWithSqlFromPopup()));
     QObject::connect(ContextMenuCollection::getInstance()->getAction_InitiatePatch(), SIGNAL(triggered()), this, SLOT(onInitiatePatch()));
+    QObject::connect(ContextMenuCollection::getInstance()->getAction_DeployVersion(), SIGNAL(triggered()), this, SLOT(onDeployVersion()));
 
 }
 
@@ -1175,6 +1176,41 @@ void MainWindow::showNamedObjectList(showSomething s, const QVector<T*> items, c
     NamedObjectListingForm* lstForm = new NamedObjectListingForm(this, s, icon, title);
     lstForm->populateObjects(items);
     setCentralWidget(lstForm);
+}
+
+void MainWindow::onDeployVersion()
+{
+    MajorVersion * m = 0;
+    if(m_guiElements->getProjectTree()->getLastRightclickedItem() != 0)
+    {
+        ContextMenuEnabledTreeWidgetItem* item = m_guiElements->getProjectTree()->getLastRightclickedItem();
+        m_guiElements->getProjectTree()->setLastRightclickedItem(0);
+        QVariant qv = item->data(0, Qt::UserRole);
+        QString name = qv.toString();
+        Version* v = Workspace::getInstance()->currentProject()->getVersionNamed(name);
+        if(v)
+        {
+            m = dynamic_cast<MajorVersion*>(v);
+            if(m)
+            {
+                // TODO: This is duplicate from onDeploy
+                InjectSqlDialog* injectDialog = new InjectSqlDialog(
+                            m_workspace->getInstance()->currentProjectsEngine(), this, m);
+                injectDialog->setModal(true);
+                if(injectDialog->exec() == QDialog::Accepted)
+                {
+                    createStatusLabel();
+                    QStringList connectionNames = injectDialog->getSelectedConnections();
+                    DeploymentInitiator* dinit = new DeploymentInitiator();
+                    dinit->doDeployment(m, connectionNames,
+                                        injectDialog->injectMetadataRequired(),
+                                        injectDialog->getUidsToDeploy(),
+                                        injectDialog->getUidsToDrop());
+                }
+
+            }
+        }
+    }
 }
 
 void MainWindow::onReleaseMajorVersion()
@@ -2867,10 +2903,11 @@ void MainWindow::finalizePatch()
 
         v->getGui()->getVersionItem()->setExpanded(false);
         newVersion->getGui()->getVersionItem()->setExpanded(true);
+        newVersion->getGui()->getVersionItem()->setPopupMenu(ContextMenuCollection::getInstance()->getReleasedVersionPopupMenu());
 
         v->updateGui();
 
-        v->getGui()->getVersionItem()->setPopupMenu(0);
+        v->getGui()->getVersionItem()->setPopupMenu(ContextMenuCollection::getInstance()->getFinalisedVersionPopupMenu());
 
         p->suspendPatch();
 

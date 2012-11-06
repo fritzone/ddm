@@ -29,6 +29,7 @@
 #include "WidgetForSpecificProperties.h"
 #include "SpInstance.h"
 #include "GuiElements.h"
+#include "ForeignKey.h"
 
 #include <QMessageBox>
 #include <QHashIterator>
@@ -604,7 +605,10 @@ void NewTableForm::onAddColumn()
             m_oldColumnName = m_currentColumn->getName();
             m_table->tableInstancesRenameColumn(m_oldColumnName, m_newColumnName);
         }
-        m_currentColumn->setName(m_ui->txtNewColumnName->text());
+        QString prevName = m_currentColumn->getName();
+        QString a = m_ui->txtNewColumnName->text();
+
+        m_currentColumn->setName(a);
         m_currentColumn->setDescription(m_ui->txtColumnDescription->toPlainText());
         m_currentColumn->setPk(m_ui->chkPrimary->isChecked());
 
@@ -630,6 +634,24 @@ void NewTableForm::onAddColumn()
 
         autoSave();
         m_currentColumn = 0;
+
+        // and now update all the foreign kesy in the version regarding their foreign key column associations
+        Version* ver = m_table->version();
+        const QVector<Table*>& tabs = ver->getTables();
+        for(int i=0; i<tabs.size(); i++)
+        {
+            const QVector<ForeignKey*> & tabfks = tabs[i]->getFks();
+            for(int j=0; j<tabfks.size(); j++)
+            {
+                const QVector<ForeignKey::ColumnAssociation*>& assocs = tabfks[j]->getAssociations();
+                for(int k=0; k<assocs.size(); k++)
+                {
+                    if(assocs[k]->getSForeignColumn() == prevName) assocs[k]->setSForeignTable(a);
+                    if(assocs[k]->getSLocalColumn() == prevName) assocs[k]->setSLocalTable(a);
+                }
+            }
+        }
+
 
     }
     else                    // we are not working on a column, but adding a new one
@@ -2136,8 +2158,26 @@ void NewTableForm::onChangeName(QString a)
         m_table->setName(a);
         m_table->setDisplayText(a);
         updateSqlDueToChange();
+
         // and see if this was due to a new table being focused ... weird check.
         if(prevName != a) updateIssues();
+
+        // and now update all the tables in the version regarding their foreign key table associations
+        Version* ver = m_table->version();
+        const QVector<Table*>& tabs = ver->getTables();
+        for(int i=0; i<tabs.size(); i++)
+        {
+            const QVector<ForeignKey*> & tabfks = tabs[i]->getFks();
+            for(int j=0; j<tabfks.size(); j++)
+            {
+                const QVector<ForeignKey::ColumnAssociation*>& assocs = tabfks[j]->getAssociations();
+                for(int k=0; k<assocs.size(); k++)
+                {
+                    if(assocs[k]->getSForeignTable() == prevName) assocs[k]->setSForeignTable(a);
+                    if(assocs[k]->getSLocalTable() == prevName) assocs[k]->setSLocalTable(a);
+                }
+            }
+        }
     }
 }
 

@@ -110,6 +110,8 @@ static const QString strLockedViewIcon = ":/images/actions/images/small/locked_v
 static const QString strFinalLockedViewIcon = ":/images/actions/images/small/view_finallock.png";
 static const QString strViewsIcon = ":/images/actions/images/small/view.png";
 
+static const QString strDeployIcon = ":/images/actions/images/actions/deploy.png";
+
 static const QString strTriggersIcon = ":/images/actions/images/small/trigger.png";
 static const QString strTriggerIcon = ":/images/actions/images/small/trigger.png";
 static const QString strLockedTriggerIcon = ":/images/actions/images/small/locked_trigger.png";
@@ -940,6 +942,12 @@ public:
     static const QIcon& getSuspendPatchIcon()
     {
         static const QIcon icon(icons::strSuspendPatchIcon);
+        return icon;
+    }
+
+    static const QIcon& getDeployIcon()
+    {
+        static const QIcon icon(icons::strDeployIcon);
         return icon;
     }
 

@@ -81,13 +81,14 @@ void TableComparisonForm::rightItemSelected(const QString& v)
         // try to get the table by the UID
         int maj = m_rightTable->version()->getMajor();
         int min = m_rightTable->version()->getMinor();
-        qDebug() << "J:" << maj << " N:" << min;
+        qDebug() << "OFT Maj:" << maj << " OFT MiN:" << min << " FoundV MAJ:" << ver->getMajor() << " MIN: " << ver->getMinor();
+
         if(maj > ver->getMajor())
         {
-            // our left table is in a version above the selected one. Source UID of our table should lead downwards N steps to the table in
+            // our right table is in a version above the selected one. Source UID of our table should lead downwards N steps to the table in
             // the requried version.
             QString srcTabUid = m_rightTable->getSourceUid();
-            Version* srcVer = UidWarehouse::instance().getVersionForUid(srcTabUid);
+            Version* srcVer = m_rightTable->version();
             Table* tab = 0;
             while(srcVer && srcVer->getVersionText() != ver->getVersionText())
             {
@@ -97,14 +98,24 @@ void TableComparisonForm::rightItemSelected(const QString& v)
                 srcVer = UidWarehouse::instance().getVersionForUid(srcTabUid);
             }
             if(tab == 0) return;
-            m_rightTable = t;
+            m_rightTable = tab;
             populateTree();
         }
         else
         {
             qDebug() << "hm... right";
-            // our table is in a version below (or in a minor) the slected one. See all the tables in the selected version which has
+            // our right table is in a version below (or in a minor) the slected one. See all the tables in the selected version which has
             // a source leading towards our table.
+            const QVector<Table*> & tabs = ver->getTables();
+            for(int i=0; i<tabs.size(); i++)
+            {
+                if(UidWarehouse::instance().related(m_rightTable, tabs[i]))
+                {
+                    m_rightTable = tabs[i];
+                    populateTree();
+                    break;
+                }
+            }
         }
     }
     else
@@ -140,7 +151,7 @@ void TableComparisonForm::leftItemSelected(const QString& v)
             // our left table is in a version above the selected one. Source UID of our table should lead downwards N steps to the table in
             // the requried version.
             QString srcTabUid = m_leftTable->getSourceUid();
-            Version* srcVer = UidWarehouse::instance().getVersionForUid(srcTabUid);
+            Version* srcVer = m_leftTable->version();
             Table* tab = 0;
             while(srcVer && srcVer->getVersionText() != ver->getVersionText())
             {
@@ -150,7 +161,7 @@ void TableComparisonForm::leftItemSelected(const QString& v)
                 srcVer = UidWarehouse::instance().getVersionForUid(srcTabUid);
             }
             if(tab == 0) return;
-            m_leftTable = t;
+            m_leftTable = tab;
             populateTree();
         }
         else
@@ -158,6 +169,16 @@ void TableComparisonForm::leftItemSelected(const QString& v)
             qDebug() << "hm";
             // our table is in a version below (or in a minor) the slected one. See all the tables in the selected version which has
             // a source leading towards our table.
+            const QVector<Table*> & tabs = ver->getTables();
+            for(int i=0; i<tabs.size(); i++)
+            {
+                if(UidWarehouse::instance().related(m_leftTable, tabs[i]))
+                {
+                    m_leftTable = tabs[i];
+                    populateTree();
+                    break;
+                }
+            }
         }
     }
     else
@@ -254,122 +275,3 @@ void TableComparisonForm::setRightTable(Table *t)
     m_rightTable = t;
     ui->cmbVersionRight->setCurrentIndex(ui->cmbVersionRight->findText(t->version()->getVersionText()));
 }
-
-void TableComparisonForm::populateClosestMatchingColumn(Column *left, QTreeWidgetItem* colItemLeft, QTreeWidgetItem* colItemRight)
-{
-//    const QVector<Column*> rightCols = m_rightTable->getColumns();
-//    for(int j=0; j<rightCols.size(); j++)
-//    {
-//        if(rightCols[j]->getObjectUid() == left->getObjectUid()) // same table, same column
-//        {
-//            QStringList colRightText;
-//            colRightText << ""<< ""<< left->getName() << left->getDataType()->getName();
-
-//            QTreeWidgetItem* itmRight = new QTreeWidgetItem(colItemRight, colRightText);
-//            itmRight->setIcon(2, IconFactory::getColumnIcon());
-//            m_trees[RIGHT]->addTopLevelItem(itmRight);
-
-//            if(rightCols[j]->isPk())
-//            {
-//                itmRight->setIcon(1, IconFactory::getKeyIcon());
-//            }
-//            itmRight->setIcon(3, IconFactory::getIconForDataType(rightCols[j]->getDataType()->getType()));
-//        }
-//        else    // same table, different column.
-//        {
-//            // is the column left at i equal with the column right j?
-//            int eqind = left->checkEquality(rightCols[j]);
-//            if(eqind == 0)
-//            {
-//                int i = m_leftTable->getIndexOfColumn(left);
-//                // they are equal
-//                if(i ==j)
-//                {
-//                    // now we foudn that the two columns occupy the same position.
-//                    QStringList colRight;
-//                    colRight << ""<< ""<< rightCols.at(j)->getName() << rightCols[j]->getDataType()->getName();
-
-//                    QTreeWidgetItem* itmRight = new QTreeWidgetItem(colItemRight, colRight);
-//                    itmRight->setIcon(2, IconFactory::getColumnIcon());
-//                    m_trees[RIGHT]->addTopLevelItem(itmRight);
-
-//                    if(rightCols[j]->isPk())
-//                    {
-//                        itmRight->setIcon(1, IconFactory::getKeyIcon());
-//                    }
-//                    itmRight->setIcon(3, IconFactory::getIconForDataType(rightCols[j]->getDataType()->getType()));
-
-//                }
-//                else
-//                {
-//                    // the two columns do not occupy the same position, so it means one of them was moved
-//                    if(i < j)   // means the left column comes before the right... possibly a new column was inserted in the right table or one deleted from the left
-//                    {
-//                        // try to move down the left ... (j - i) steps
-//                        // and add the curret item
-//                        QStringList colRight;
-//                        colRight << ""<< ""<< rightCols.at(j)->getName() << rightCols[j]->getDataType()->getName();
-
-//                        QTreeWidgetItem* itmRight = new QTreeWidgetItem(colItemRight, colRight);
-//                        itmRight->setIcon(2, IconFactory::getColumnIcon());
-//                        m_trees[RIGHT]->addTopLevelItem(itmRight);
-
-//                        if(rightCols[j]->isPk())
-//                        {
-//                            itmRight->setIcon(1, IconFactory::getKeyIcon());
-//                        }
-//                        itmRight->setIcon(3, IconFactory::getIconForDataType(rightCols[j]->getDataType()->getType()));
-//                    }
-//                    else        // the right comes before the left, a column was deleted from the right table (or added to the left)
-//                    {
-//                        QStringList colRight;
-//                        colRight << ""<< ""<< rightCols.at(j)->getName() << rightCols[j]->getDataType()->getName();
-
-//                        QTreeWidgetItem* itmRight = new QTreeWidgetItem(colItemRight, colRight);
-//                        itmRight->setIcon(2, IconFactory::getColumnIcon());
-//                        m_trees[RIGHT]->addTopLevelItem(itmRight);
-
-//                        if(rightCols[j]->isPk())
-//                        {
-//                            itmRight->setIcon(1, IconFactory::getKeyIcon());
-//                        }
-//                        itmRight->setIcon(3, IconFactory::getIconForDataType(rightCols[j]->getDataType()->getType()));
-
-//                    }
-//                }
-//            }
-//            else // these two are not equal.
-//            {
-//                int i = m_leftTable->getIndexOfColumn(left);
-//                if (i == j && eqind > -1)
-//                {
-//                    QStringList colRight;
-//                    colRight << ""<< ""<< rightCols.at(j)->getName() << rightCols[j]->getDataType()->getName();
-
-//                    QTreeWidgetItem* itmRight = new QTreeWidgetItem(colItemRight, colRight);
-//                    itmRight->setIcon(2, IconFactory::getColumnIcon());
-//                    m_trees[RIGHT]->addTopLevelItem(itmRight);
-
-//                    if(rightCols[j]->isPk())
-//                    {
-//                        itmRight->setIcon(1, IconFactory::getKeyIcon());
-//                    }
-//                    itmRight->setIcon(3, IconFactory::getIconForDataType(rightCols[j]->getDataType()->getType()));
-//                    if(eqind != -1) itmRight->setBackgroundColor(eqind - 1, QColor(0xff, 0x66, 0));
-//                    else
-//                    {
-//                        itmRight->setBackgroundColor(0, QColor(0xff, 0x66, 0));
-//                        itmRight->setBackgroundColor(1, QColor(0xff, 0x66, 0));
-//                        itmRight->setBackgroundColor(2, QColor(0xff, 0x66, 0));
-//                        itmRight->setBackgroundColor(3, QColor(0xff, 0x66, 0));
-//                    }
-//                }
-//                else
-//                {
-
-//                }
-//            }
-//        }
-//    }
-}
-
