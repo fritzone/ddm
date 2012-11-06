@@ -53,6 +53,11 @@ public:
         void setLocalColumn(const Column* localColumn) {m_localColumn = localColumn;}
         void setLocalTable(const Table* localTable) {m_localTable = localTable;}
 
+        void setSForeignTable(const QString& foreignTable) {m_sforeignTable = foreignTable;}
+        void setSForeignColumn(const QString& foreignColumn) {m_sforeignColumn = foreignColumn;}
+        void setSLocalColumn(const QString& localColumn) {m_slocalColumn = localColumn;}
+        void setSLocalTable(const QString& localTable) {m_slocalTable = localTable;}
+
     private:
 
         const Table* m_foreignTable;

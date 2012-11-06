@@ -35,7 +35,6 @@ InjectSqlDialog::InjectSqlDialog(DatabaseEngine* engine, QWidget *parent, Versio
 {
     ui->setupUi(this);
     ui->buttonBox->button(QDialogButtonBox::Ok)->setDisabled(true);
-
     ui->txtDatabaseHost->setText(previousHost.length()?previousHost:"localhost");
     ui->txtDatabaseUser->setText(previousUser);
     ui->chkSavePassword->hide();
@@ -60,6 +59,7 @@ InjectSqlDialog::InjectSqlDialog(DatabaseEngine* engine, QWidget *parent, Versio
 
     if(v)
     {
+        ui->lblVersionToBeDeployed->setText(QObject::tr("Deploying: ") + v->getVersionText());
         // create the tables
         QTreeWidgetItem* tabItem = new QTreeWidgetItem(QStringList("Tables"));
         tabItem->setIcon(0, IconFactory::getTableIcon());
@@ -287,6 +287,7 @@ void InjectSqlDialog::setupForConnectionStorage()
     ui->tabWidget->setTabText(0, tr("Connection"));
     ui->tabWidget->setTabIcon(0, IconFactory::getDatabaseIcon());
     ui->tabWidget->removeTab(1);
+
     resize(450, 400);
 }
 
@@ -294,6 +295,8 @@ void InjectSqlDialog::setupForReverseEngineering()
 {
     ui->chkRollbackOnError->hide();
     ui->chkInjectMetadata->hide();
+
+    ui->lblVersionToBeDeployed->hide();
 }
 
 void InjectSqlDialog::setupForBindToDatabase()

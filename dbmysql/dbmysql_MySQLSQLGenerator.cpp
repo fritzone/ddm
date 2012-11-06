@@ -706,7 +706,7 @@ QString MySQLSQLGenerator::getAlterTableForColumnDeletion(const QString& table, 
 
 QString MySQLSQLGenerator::sqlForAColumn(const Column *col, int pkpos, bool backticks, bool upcase) const
 {
-    QString createTable = "\t";
+    QString createTable = " ";
     createTable += (backticks?"`":"") + col->getName();
     createTable += backticks?"`":"";
     createTable += " ";
@@ -776,4 +776,10 @@ QString MySQLSQLGenerator::sqlForAColumn(const Column *col, int pkpos, bool back
     }
 
     return createTable;
+}
+
+QString MySQLSQLGenerator::getAlterTableForColumnChange(const QString& table, const Column* col)
+{
+    QString res = "ALTER TABLE " + table + " MODIFY COLUMN " + sqlForAColumn(col, -1, true, true);
+    return res;
 }

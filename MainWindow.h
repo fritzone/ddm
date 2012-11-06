@@ -201,6 +201,7 @@ public slots:
     void onNewTableFromPopup();
     void onUndeleteSomething();
     void onCompareTables();
+    void onDeployVersion();
 
 private:
 

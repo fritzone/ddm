@@ -69,6 +69,7 @@ public:
     QMenu* getResumePatchPopupMenu() { return m_resumePatchMenu; }
     QMenu* getUndeletePopupMenu() { return m_undeletePopupMenu; }
     QMenu* getReleasedVersionPopupMenu() { return m_releasedVersionPopupMenu; }
+    QMenu* getFinalisedVersionPopupMenu() { return m_finalisedVersionPopupMenu; }
 
     /*
      * Actions
@@ -133,6 +134,7 @@ public:
     QAction* getAction_AddViewWithSql() { return action_addViewWithSql; }
     QAction* getAction_InitiatePatch() { return action_initiatePatch; }
     QAction* getAction_CompareTable() { return action_compareTable; }
+    QAction* getAction_DeployVersion() { return action_deployVersion; }
 
     QMenu* getUnLockMenuForClassUid(const QString& uid);
     QMenu* getMenuForClassUid(const QString& uid);
@@ -186,7 +188,8 @@ private:
     QMenu* m_resumePatchMenu;                   // popup menu for a suspended patch
     QMenu* m_proceduresPopupMenu;               // popup menu for the procedures tree entry
     QMenu* m_functionsPopupMenu;                // popup menu for the procedures tree entry
-    QMenu* m_releasedVersionPopupMenu;          // popup menu for the version which was just released. Contains a "Initiate patch" entry
+    QMenu* m_releasedVersionPopupMenu;          // popup menu for the version which was just released. Contains a "Initiate patch" and a "Deploy" entry
+    QMenu* m_finalisedVersionPopupMenu;         // popup menu for the version which was finalise. Contains a "Deploy" entry
 
     // the actions in the table popup menu
     QAction* action_RemoveTable;
@@ -303,6 +306,7 @@ private:
 
     // for the released version
     QAction* action_initiatePatch;
+    QAction* action_deployVersion;
 
     // comparison for tables
     QAction* action_compareTable;

@@ -4,6 +4,7 @@
 #include "UidWarehouse.h"
 #include "db_AbstractSQLGenerator.h"
 #include "db_DatabaseEngine.h"
+#include "core_UserDataType.h"
 
 struct OldNameNewName
 {
@@ -101,6 +102,20 @@ TableUpdateGenerator::TableUpdateGenerator(Table *t1, Table *t2, DatabaseEngine*
         {
             // the column is there, see if the index of it was changed or not.
             int cidx = t1->getIndexOfColumn(t2Columns[i]);
+
+            // also see that the data type is the same
+            Column* c1 = t1->getColumn(t2Columns[i]);
+            if(!c1) c1 = t1->getColumnFromParents(t2Columns[i]);
+            if(!c1) continue;
+
+            Column* c2 = t2->getColumn(t2Columns[i]);
+            if(!c2) c2 = t2->getColumnFromParents(t2Columns[i]);
+            if(!c2) continue;
+
+            if(c1->getDataType()->sqlAsString() != c2->getDataType()->sqlAsString())
+            {
+                changedColumns.append(c2);
+            }
 
             if(cidx == i)
             {
@@ -219,5 +234,12 @@ TableUpdateGenerator::TableUpdateGenerator(Table *t1, Table *t2, DatabaseEngine*
     {
         m_commands.append("-- column " + deletedColumns[i] + " was deleted");
         m_commands.append(dbEngine->getSqlGenerator()->getAlterTableForColumnDeletion(t2->getName(), deletedColumns[i]));
+    }
+
+    if(changedColumns.size()) m_commands.append("\n");
+    for(int i=0; i<changedColumns.size(); i++)
+    {
+        m_commands.append("-- column " + changedColumns[i]->getName() + " has changed its datatype");
+        m_commands.append(dbEngine->getSqlGenerator()->getAlterTableForColumnChange(t2->getName(), changedColumns[i]));
     }
 }

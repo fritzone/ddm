@@ -50,14 +50,14 @@ void DefaultVersionImplementation::updateGui()
     {
         f.setItalic(true);
         getGui()->getVersionItem()->setIcon(0, IconFactory::getLockedVersionIcon());
-        getGui()->getVersionItem()->setPopupMenu(0);
+        getGui()->getVersionItem()->setPopupMenu(ContextMenuCollection::getInstance()->getReleasedVersionPopupMenu());
     }
     else
     if(lockState() == LockableElement::FINAL_LOCK)
     {
         f.setItalic(true);
         getGui()->getVersionItem()->setIcon(0, IconFactory::getFinalLockedVersionIcon());
-        getGui()->getVersionItem()->setPopupMenu(0);
+        getGui()->getVersionItem()->setPopupMenu(ContextMenuCollection::getInstance()->getFinalisedVersionPopupMenu());
 
         getGui()->getVersionItem()->setForeground(0, QBrush(Qt::lightGray));
         getGui()->getTablesItem()->setForeground(0, QBrush(Qt::lightGray));
