@@ -1081,6 +1081,7 @@ void MainWindow::enableActions()
     m_ui->action_DeploymentScript->setVisible(false);
     m_ui->action_NewTrigger->setEnabled(true);
     m_ui->action_NewFunction->setEnabled(true);
+    m_ui->action_UpdateDatabase->setEnabled(true);
 
     if(m_workspace->currentProjectIsOop())
     {
@@ -1101,6 +1102,7 @@ void MainWindow::enableActions()
     m_ui->action_NewDataType->setMenu(ContextMenuCollection::getInstance()->getDatatypesPopupMenu());
     m_ui->action_NewView->setMenu(ContextMenuCollection::getInstance()->getCreateNewViewPopupMenu());
     m_ui->action_Deploy->setMenu(ContextMenuCollection::getInstance()->getDeployPopupMenu());
+
 }
 
 void MainWindow::connectActionsFromPopupMenus()
@@ -1193,7 +1195,7 @@ void MainWindow::onDeployVersion()
             m = dynamic_cast<MajorVersion*>(v);
             if(m)
             {
-                // TODO: This is duplicate from onDeploy
+                // TODO: This is duplicate from onDeploy except the version
                 InjectSqlDialog* injectDialog = new InjectSqlDialog(
                             m_workspace->getInstance()->currentProjectsEngine(), this, m);
                 injectDialog->setModal(true);
@@ -1207,7 +1209,6 @@ void MainWindow::onDeployVersion()
                                         injectDialog->getUidsToDeploy(),
                                         injectDialog->getUidsToDrop());
                 }
-
             }
         }
     }
@@ -2991,12 +2992,17 @@ void MainWindow::onCompareTables()
         return;
     }
 
-    TableComparisonForm* tcf = new TableComparisonForm();
+    TableComparisonForm* tcf = new TableComparisonForm(TableComparisonForm::COMPARE_TABLES);
     tcf->setLeftTable(table);
     tcf->setRightTable(table);
-    // now search for the given table
 
     // populate the tree of the form and show it
     tcf->populateTree();
+    setCentralWidget(tcf);
+}
+
+void MainWindow::onUpdateDb()
+{
+    TableComparisonForm* tcf = new TableComparisonForm(TableComparisonForm::COMPARE_VERSIONS);
     setCentralWidget(tcf);
 }

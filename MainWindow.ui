@@ -42,7 +42,7 @@
      <x>0</x>
      <y>0</y>
      <width>909</width>
-     <height>21</height>
+     <height>24</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -99,6 +99,7 @@
     </property>
     <addaction name="action_Deploy"/>
     <addaction name="action_DeploymentScript"/>
+    <addaction name="action_UpdateDatabase"/>
    </widget>
    <addaction name="menu_File"/>
    <addaction name="menu_Edit"/>
@@ -150,6 +151,7 @@
    <addaction name="separator"/>
    <addaction name="action_Validate"/>
    <addaction name="action_Deploy"/>
+   <addaction name="action_UpdateDatabase"/>
    <addaction name="separator"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
@@ -514,6 +516,21 @@
   <action name="action_Contents">
    <property name="text">
     <string>&amp;Contents</string>
+   </property>
+  </action>
+  <action name="action_UpdateDatabase">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="dbm.qrc">
+     <normaloff>:/images/actions/images/actions/updatedb.png</normaloff>:/images/actions/images/actions/updatedb.png</iconset>
+   </property>
+   <property name="text">
+    <string>Update Database</string>
+   </property>
+   <property name="toolTip">
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Update&lt;/span&gt; a database which has already a deployed version&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
   </action>
  </widget>
@@ -954,6 +971,22 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>action_UpdateDatabase</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>onUpdateDb()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>454</x>
+     <y>67</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>onNewSolution()</slot>
@@ -982,5 +1015,6 @@
   <slot>onNewFunction()</slot>
   <slot>onDestroyed()</slot>
   <slot>onHelp()</slot>
+  <slot>onUpdateDb()</slot>
  </slots>
 </ui>

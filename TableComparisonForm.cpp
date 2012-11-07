@@ -14,29 +14,43 @@
 #include "db_AbstractDTSupplier.h"
 
 
-TableComparisonForm::TableComparisonForm(QWidget *parent) : m_leftTable(0), m_rightTable(0),
+TableComparisonForm::TableComparisonForm(Mode m, QWidget *parent) : m_leftTable(0), m_rightTable(0),
     QWidget(parent),
-    ui(new Ui::TableComparisonForm)
+    ui(new Ui::TableComparisonForm), m_mode(m)
 {
     ui->setupUi(this);
 
-    m_spl = new QSplitter(Qt::Horizontal, this);
-    m_spl->addWidget(ui->grpLeft);
-    m_spl->addWidget(ui->grpRight);
-    ui->horizontalLayout_2->addWidget(m_spl);
+    if(m_mode == COMPARE_TABLES)
+    {
+        m_spl = new QSplitter(Qt::Horizontal, this);
+        m_spl->addWidget(ui->grpLeft);
+        m_spl->addWidget(ui->grpRight);
+        ui->horizontalLayout_2->addWidget(m_spl);
 
-    m_trees[LEFT] = ui->treeWidgetLeft;
-    m_trees[RIGHT] = ui->treeWidgetRight;
+        m_trees[LEFT] = ui->treeWidgetLeft;
+        m_trees[RIGHT] = ui->treeWidgetRight;
 
-    m_trees[LEFT]->header()->resizeSection(0, 100);
-    m_trees[LEFT]->header()->resizeSection(1, 32);
-    m_trees[LEFT]->header()->resizeSection(2, 150);
-    m_trees[LEFT]->header()->resizeSection(3, 150);
+        m_trees[LEFT]->header()->resizeSection(0, 100);
+        m_trees[LEFT]->header()->resizeSection(1, 32);
+        m_trees[LEFT]->header()->resizeSection(2, 150);
+        m_trees[LEFT]->header()->resizeSection(3, 150);
 
-    m_trees[RIGHT]->header()->resizeSection(0, 100);
-    m_trees[RIGHT]->header()->resizeSection(1, 32);
-    m_trees[RIGHT]->header()->resizeSection(2, 150);
-    m_trees[RIGHT]->header()->resizeSection(3, 150);
+        m_trees[RIGHT]->header()->resizeSection(0, 100);
+        m_trees[RIGHT]->header()->resizeSection(1, 32);
+        m_trees[RIGHT]->header()->resizeSection(2, 150);
+        m_trees[RIGHT]->header()->resizeSection(3, 150);
+
+        ui->lblFrom->hide();
+        ui->lblTo->hide();
+    }
+
+    if(m_mode == COMPARE_VERSIONS)
+    {
+        ui->treeWidgetLeft->hide();
+        ui->treeWidgetRight->hide();
+        ui->txtTab1->hide();
+        ui->txtTab2->hide();
+    }
 
     QStringList a = Workspace::getInstance()->getAllVersions();
     for(int i=0; i<a.size(); i++)
@@ -63,7 +77,7 @@ TableComparisonForm::~TableComparisonForm()
     delete ui;
 }
 
-void TableComparisonForm::rightItemSelected(const QString& v)
+void TableComparisonForm::setupNewTable(const QString &v, Table *& table)
 {
     Version* ver = Workspace::getInstance()->currentProject()->getVersionNamed(v);
     if(!ver)
@@ -73,32 +87,32 @@ void TableComparisonForm::rightItemSelected(const QString& v)
     }
 
     // get the table from the specific version
-    Table* t = ver->getTable(m_rightTable->getName());
+    Table* t = ver->getTable(table->getName());
     if(!t)
     {
         // maybe the table was deleted
 
         // try to get the table by the UID
-        int maj = m_rightTable->version()->getMajor();
-        int min = m_rightTable->version()->getMinor();
+        int maj = table->version()->getMajor();
+        int min = table->version()->getMinor();
         qDebug() << "OFT Maj:" << maj << " OFT MiN:" << min << " FoundV MAJ:" << ver->getMajor() << " MIN: " << ver->getMinor();
 
         if(maj > ver->getMajor())
         {
             // our right table is in a version above the selected one. Source UID of our table should lead downwards N steps to the table in
             // the requried version.
-            QString srcTabUid = m_rightTable->getSourceUid();
-            Version* srcVer = m_rightTable->version();
+            QString srcTabUid = table->getSourceUid();
+            Version* srcVer = table->version();
             Table* tab = 0;
             while(srcVer && srcVer->getVersionText() != ver->getVersionText())
             {
                 tab = dynamic_cast<Table*>(UidWarehouse::instance().getElement(srcTabUid));
                 if(!tab) return;
-                srcTabUid = m_rightTable->getSourceUid();
+                srcTabUid = table->getSourceUid();
                 srcVer = UidWarehouse::instance().getVersionForUid(srcTabUid);
             }
             if(tab == 0) return;
-            m_rightTable = tab;
+            table = tab;
             populateTree();
         }
         else
@@ -109,9 +123,9 @@ void TableComparisonForm::rightItemSelected(const QString& v)
             const QVector<Table*> & tabs = ver->getTables();
             for(int i=0; i<tabs.size(); i++)
             {
-                if(UidWarehouse::instance().related(m_rightTable, tabs[i]))
+                if(UidWarehouse::instance().related(table, tabs[i]))
                 {
-                    m_rightTable = tabs[i];
+                    table = tabs[i];
                     populateTree();
                     break;
                 }
@@ -121,71 +135,24 @@ void TableComparisonForm::rightItemSelected(const QString& v)
     else
     {
         qDebug() << "right found";
-        m_rightTable = t;
+        table = t;
         populateTree();
     }
+}
 
+void TableComparisonForm::rightItemSelected(const QString& v)
+{
+    if(m_mode == COMPARE_TABLES)
+    {
+        setupNewTable(v, m_rightTable);
+    }
 }
 
 void TableComparisonForm::leftItemSelected(const QString& v)
 {
-    Version* ver = Workspace::getInstance()->currentProject()->getVersionNamed(v);
-    if(!ver)
+    if(m_mode == COMPARE_TABLES)
     {
-        qDebug () << "No version " << v;
-        return;
-    }
-
-    // get the table from the specific version
-    Table* t = ver->getTable(m_leftTable->getName());
-    if(!t)
-    {
-        // maybe the table was deleted
-
-        // try to get the table by the UID
-        int maj = m_leftTable->version()->getMajor();
-        int min = m_leftTable->version()->getMinor();
-        qDebug() << "J:" << maj << " N:" << min;
-        if(maj > ver->getMajor())
-        {
-            // our left table is in a version above the selected one. Source UID of our table should lead downwards N steps to the table in
-            // the requried version.
-            QString srcTabUid = m_leftTable->getSourceUid();
-            Version* srcVer = m_leftTable->version();
-            Table* tab = 0;
-            while(srcVer && srcVer->getVersionText() != ver->getVersionText())
-            {
-                tab = dynamic_cast<Table*>(UidWarehouse::instance().getElement(srcTabUid));
-                if(!tab) return;
-                srcTabUid = m_leftTable->getSourceUid();
-                srcVer = UidWarehouse::instance().getVersionForUid(srcTabUid);
-            }
-            if(tab == 0) return;
-            m_leftTable = tab;
-            populateTree();
-        }
-        else
-        {
-            qDebug() << "hm";
-            // our table is in a version below (or in a minor) the slected one. See all the tables in the selected version which has
-            // a source leading towards our table.
-            const QVector<Table*> & tabs = ver->getTables();
-            for(int i=0; i<tabs.size(); i++)
-            {
-                if(UidWarehouse::instance().related(m_leftTable, tabs[i]))
-                {
-                    m_leftTable = tabs[i];
-                    populateTree();
-                    break;
-                }
-            }
-        }
-    }
-    else
-    {
-        qDebug() << "left found";
-        m_leftTable = t;
-        populateTree();
+        setupNewTable(v, m_leftTable);
     }
 }
 
@@ -275,3 +242,4 @@ void TableComparisonForm::setRightTable(Table *t)
     m_rightTable = t;
     ui->cmbVersionRight->setCurrentIndex(ui->cmbVersionRight->findText(t->version()->getVersionText()));
 }
+
