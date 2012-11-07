@@ -202,6 +202,7 @@ public slots:
     void onUndeleteSomething();
     void onCompareTables();
     void onDeployVersion();
+    void onUpdateDb();
 
 private:
 
