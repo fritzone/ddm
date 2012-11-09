@@ -9,7 +9,7 @@
 
 class Version;
 
-class ForeignKey : public TreeItem, public SerializableElement, public NamedItem
+class ForeignKey : public TreeItem, public SerializableElement, public NamedItem, public ObjectWithUid
 {
 
 public:
@@ -74,7 +74,7 @@ public:
 
 public:
 
-    ForeignKey();
+    ForeignKey(Version *v, const QString& uid);
 
     void addAssociation(ColumnAssociation* assoc)
     {
@@ -116,6 +116,8 @@ public:
     bool hasAssociation(const QString& fcName, const QString& lcName);
 
     virtual void serialize(QDomDocument &doc, QDomElement &parent) const;
+
+    virtual QUuid getClassUid() const;
 
     QString getDescriptiveText() const;
 

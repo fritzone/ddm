@@ -162,6 +162,15 @@ public:
      */
     virtual QString getAlterTableForColumnChange(const QString& table, const Column* col) = 0;
 
+    /**
+     * Generate SQL to drop a foreign key
+     * @brief getAlterTableToDropForeignKey
+     * @param table
+     * @param fkName
+     * @return
+     */
+    virtual QString getAlterTableToDropForeignKey(const QString& table, const QString& fkName) = 0;
+
     virtual ~AbstractSqlGenerator() {}
 };
 

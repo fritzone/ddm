@@ -148,7 +148,7 @@ bool MySQLDatabaseEngine::reverseEngineerDatabase(Connection *c, const QStringLi
                 }
 
                 ForeignKey::ColumnAssociation* fkAssociation = new ForeignKey::ColumnAssociation(referencedTable, referencedColumn, referenceeTable, referenceeColumn);
-                ForeignKey* fk = new ForeignKey();
+                ForeignKey* fk = new ForeignKey(v, QUuid::createUuid().toString());
                 fk->setName(name);
                 fk->addAssociation(fkAssociation);
                 referenceeTable->addForeignKey(fk);

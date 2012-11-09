@@ -12,11 +12,11 @@
 #include "SqlHighlighter.h"
 #include "db_DatabaseEngine.h"
 #include "db_AbstractDTSupplier.h"
-
+#include "VersionUpdateGenerator.h"
 
 TableComparisonForm::TableComparisonForm(Mode m, QWidget *parent) : m_leftTable(0), m_rightTable(0),
     QWidget(parent),
-    ui(new Ui::TableComparisonForm), m_mode(m)
+    ui(new Ui::TableComparisonForm), m_mode(m), m_from(0), m_to(0)
 {
     ui->setupUi(this);
 
@@ -77,6 +77,28 @@ TableComparisonForm::~TableComparisonForm()
     delete ui;
 }
 
+void TableComparisonForm::setFromVersion(Version *v)
+{
+    m_from = v;
+    ui->cmbVersionLeft->setCurrentIndex(ui->cmbVersionLeft->findText(v->getVersionText()));
+    if(m_from && m_to)
+    {
+        VersionUpdateGenerator vug = VersionUpdateGenerator(m_from, m_to);
+        ui->textEdit->setText(addCommands(vug.getCommands()));
+    }
+}
+
+void TableComparisonForm::setToVersion(Version *v)
+{
+    m_to = v;
+    ui->cmbVersionRight->setCurrentIndex(ui->cmbVersionRight->findText(v->getVersionText()));
+    if(m_from && m_to)
+    {
+        VersionUpdateGenerator vug = VersionUpdateGenerator(m_from, m_to);
+        ui->textEdit->setText(addCommands(vug.getCommands()));
+    }
+}
+
 void TableComparisonForm::setupNewTable(const QString &v, Table *& table)
 {
     Version* ver = Workspace::getInstance()->currentProject()->getVersionNamed(v);
@@ -95,8 +117,6 @@ void TableComparisonForm::setupNewTable(const QString &v, Table *& table)
         // try to get the table by the UID
         int maj = table->version()->getMajor();
         int min = table->version()->getMinor();
-        qDebug() << "OFT Maj:" << maj << " OFT MiN:" << min << " FoundV MAJ:" << ver->getMajor() << " MIN: " << ver->getMinor();
-
         if(maj > ver->getMajor())
         {
             // our right table is in a version above the selected one. Source UID of our table should lead downwards N steps to the table in
@@ -117,7 +137,6 @@ void TableComparisonForm::setupNewTable(const QString &v, Table *& table)
         }
         else
         {
-            qDebug() << "hm... right";
             // our right table is in a version below (or in a minor) the slected one. See all the tables in the selected version which has
             // a source leading towards our table.
             const QVector<Table*> & tabs = ver->getTables();
@@ -134,7 +153,6 @@ void TableComparisonForm::setupNewTable(const QString &v, Table *& table)
     }
     else
     {
-        qDebug() << "right found";
         table = t;
         populateTree();
     }
@@ -146,6 +164,15 @@ void TableComparisonForm::rightItemSelected(const QString& v)
     {
         setupNewTable(v, m_rightTable);
     }
+    if(m_mode == COMPARE_VERSIONS)
+    {
+        Version* ver = Workspace::getInstance()->currentProject()->getVersionNamed(v);
+        if(!ver)
+        {
+            return;
+        }
+        setToVersion(ver);
+    }
 }
 
 void TableComparisonForm::leftItemSelected(const QString& v)
@@ -154,6 +181,27 @@ void TableComparisonForm::leftItemSelected(const QString& v)
     {
         setupNewTable(v, m_leftTable);
     }
+    if(m_mode == COMPARE_VERSIONS)
+    {
+        Version* ver = Workspace::getInstance()->currentProject()->getVersionNamed(v);
+        if(!ver)
+        {
+            return;
+        }
+        setFromVersion(ver);
+    }
+}
+
+QString TableComparisonForm::addCommands(const QStringList &cmds)
+{
+    QString finalSql;
+    const QStringList& lines = cmds;
+    for(int i=0; i<lines.size(); i++)
+    {
+        finalSql += lines.at(i);
+        finalSql += "\n";
+    }
+    return finalSql;
 }
 
 void TableComparisonForm::populateTree()
@@ -169,13 +217,10 @@ void TableComparisonForm::populateTree()
 
     TableUpdateGenerator gen (m_leftTable, m_rightTable, Workspace::getInstance()->currentProjectsEngine());
 
-    QString finalSql;
-    const QStringList& lines = gen.commands();
-    for(int i=0; i<lines.size(); i++)
-    {
-        finalSql += lines.at(i);
-        finalSql += "\n";
-    }
+    // the update commands
+    QString finalSql = addCommands(gen.commands());
+    finalSql += addCommands(gen.droppedFksCommands());
+    finalSql += addCommands(gen.newFksCommands());
     ui->textEdit->setText(finalSql);
 }
 
@@ -225,10 +270,8 @@ void TableComparisonForm::populateColumns()
             itmRight->setIcon(1, IconFactory::getKeyIcon());
         }
         itmRight->setIcon(3, IconFactory::getIconForDataType(rightCols[j]->getDataType()->getType()));
-
     }
 }
-
 
 void TableComparisonForm::setLeftTable(Table *t)
 {
@@ -242,4 +285,3 @@ void TableComparisonForm::setRightTable(Table *t)
     m_rightTable = t;
     ui->cmbVersionRight->setCurrentIndex(ui->cmbVersionRight->findText(t->version()->getVersionText()));
 }
-

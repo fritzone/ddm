@@ -76,7 +76,23 @@ void SqlForm::onInject()
             Connection* c = ConnectionManager::instance()->getConnection(connectionNames.at(i));
             if(c)
             {
-                QStringList tempSqlList = sqlList;
+                QStringList tempSqlList;
+                for(int j=0; j<sqlList.size(); j++)
+                {
+                    QString s = sqlList[j].trimmed();
+                    if(s.endsWith("//"))
+                    {
+                        s = s.left(s.length() - 2);
+                        s += ";";
+                    }
+
+                    // because of some funny reason "delimiter" is not accepted here, but if we copy/paste, it's ok
+                    if(!s.startsWith("delimiter", Qt::CaseInsensitive))
+                    {
+                        tempSqlList.append(s);
+                    }
+                }
+
                 if(!m_engine->executeSql(c, tempSqlList, tSql, injectDialog->getRollbackOnError()))
                 {
                     QMessageBox::critical (this, tr("Error"), tr("<B>Cannot execute a query!</B><P>Reason: ") + m_engine->getLastError() + tr(".<P>Query:<PRE>") + tSql+ "</PRE><P>" +
@@ -85,7 +101,7 @@ void SqlForm::onInject()
                 }
             }
         }
-        MainWindow::instance()->setStatus(QString("SQL injection ") + (error?" failed":" succeeded"), error);
+        MainWindow::instance()->setStatus(QString("SQL injection ") + (error?" failed ":" succeeded "), error);
         if(!error) ui->labelDeploymentStatus->setText("Succesful deployment");
     }
 }
