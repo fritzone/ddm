@@ -8,6 +8,7 @@
 
 class Table;
 class Column;
+class Version;
 class SqlHighlighter;
 
 namespace Ui {
@@ -39,6 +40,10 @@ public:
     
     void populateTree();
 
+    void setFromVersion(Version* v);
+    void setToVersion(Version* v);
+
+
 private:
 
     void populateColumns();
@@ -51,6 +56,7 @@ private slots:
 private:
 
     void setupNewTable(const QString& v, Table*& table);
+    QString addCommands(const QStringList&);
 
 private:
     Ui::TableComparisonForm *ui;
@@ -60,6 +66,8 @@ private:
     QMap<Sides, QTreeWidget*> m_trees;
     SqlHighlighter* highlighter;
     Mode m_mode;
+    Version* m_from;
+    Version* m_to;
 };
 
 #endif // TABLECOMPARISONFORM_H

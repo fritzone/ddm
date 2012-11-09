@@ -72,7 +72,7 @@ void ERGraphicsScene::finalizeItem(int x, int y)
         {
             if(allTables.at(i) != itm->getTable())
             {
-                const QVector<ForeignKey*> & fksI = allTables.at(i)->getFks();
+                const QVector<ForeignKey*> & fksI = allTables.at(i)->getForeignKeys();
                 for(int j=0; j<fksI.size(); j++)
                 {
                     const QVector<ForeignKey::ColumnAssociation*>&  assocs = fksI.at(j)->getAssociations();
@@ -96,7 +96,7 @@ void ERGraphicsScene::finalizeItem(int x, int y)
         }
 
         // now we should do: search in the foreign keys of the new item, to see if it has a FK to any table in the scene
-        const QVector<ForeignKey*> & cfks = itm->getTable()->getFks();
+        const QVector<ForeignKey*> & cfks = itm->getTable()->getForeignKeys();
         for(int i=0; i<cfks.size(); i++)
         {
             const QVector<ForeignKey::ColumnAssociation*>&  assocs = cfks.at(i)->getAssociations();

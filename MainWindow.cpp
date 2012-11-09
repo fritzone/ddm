@@ -3004,5 +3004,8 @@ void MainWindow::onCompareTables()
 void MainWindow::onUpdateDb()
 {
     TableComparisonForm* tcf = new TableComparisonForm(TableComparisonForm::COMPARE_VERSIONS);
+    tcf->setFromVersion(Workspace::getInstance()->workingVersion());
+    tcf->setToVersion(Workspace::getInstance()->workingVersion());
     setCentralWidget(tcf);
 }
+

@@ -5,6 +5,11 @@
 
 class Version;
 
+/**
+ * @brief The VersionUpdateGenerator class
+ * This class generates code that is supposed to be executed on a database which has deployed
+ * the version "from" but needs to be updated to the version "to".
+ */
 class VersionUpdateGenerator
 {
 public:

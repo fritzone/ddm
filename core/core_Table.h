@@ -97,7 +97,7 @@ public:
     /**
      * Returns the foreign keys of this table for a read-only access
      */
-    const QVector<ForeignKey*> & getFks() const
+    const QVector<ForeignKey*> & getForeignKeys() const
     {
         return m_foreignKeys;
     }

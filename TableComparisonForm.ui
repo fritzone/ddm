@@ -93,10 +93,10 @@
         </property>
         <layout class="QVBoxLayout" name="verticalLayout">
          <item>
-          <widget class="QLineEdit" name="txtTab1"/>
-         </item>
-         <item>
           <layout class="QFormLayout" name="formLayout">
+           <property name="fieldGrowthPolicy">
+            <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+           </property>
            <item row="0" column="0">
             <widget class="QLabel" name="lblFrom">
              <property name="text">
@@ -105,7 +105,14 @@
             </widget>
            </item>
            <item row="0" column="1">
-            <widget class="QComboBox" name="cmbVersionLeft"/>
+            <layout class="QHBoxLayout" name="horizontalLayout_3">
+             <item>
+              <widget class="QComboBox" name="cmbVersionLeft"/>
+             </item>
+             <item>
+              <widget class="QLineEdit" name="txtTab1"/>
+             </item>
+            </layout>
            </item>
           </layout>
          </item>
@@ -155,19 +162,23 @@
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_2">
          <item>
-          <widget class="QLineEdit" name="txtTab2"/>
-         </item>
-         <item>
           <layout class="QFormLayout" name="formLayout_2">
-           <item row="0" column="1">
-            <widget class="QComboBox" name="cmbVersionRight"/>
-           </item>
            <item row="0" column="0">
             <widget class="QLabel" name="lblTo">
              <property name="text">
               <string>To</string>
              </property>
             </widget>
+           </item>
+           <item row="0" column="1">
+            <layout class="QHBoxLayout" name="horizontalLayout_4">
+             <item>
+              <widget class="QComboBox" name="cmbVersionRight"/>
+             </item>
+             <item>
+              <widget class="QLineEdit" name="txtTab2"/>
+             </item>
+            </layout>
            </item>
           </layout>
          </item>

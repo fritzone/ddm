@@ -15,8 +15,21 @@ public:
     {
         return m_commands;
     }
+
+    const QStringList& droppedFksCommands() const
+    {
+        return m_droppedForeignKeys;
+    }
+
+    const QStringList& newFksCommands() const
+    {
+        return m_newForeignKeys;
+    }
+
 private:
     QStringList m_commands;
+    QStringList m_droppedForeignKeys;
+    QStringList m_newForeignKeys;
 };
 
 #endif // TABLEUPDATEGENERATOR_H

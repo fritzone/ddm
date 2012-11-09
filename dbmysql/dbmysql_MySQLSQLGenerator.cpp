@@ -192,13 +192,13 @@ QStringList MySQLSQLGenerator::generateCreateTableSql(Table *table, const QHash<
 
 
     // creating the FOREIGN KEY sql(s)...
-    for(int i=0; i<table->getFks().size(); i++)
+    for(int i=0; i<table->getForeignKeys().size(); i++)
     {
         // just pre-render the SQL for foreign keys
         QString foreignKeySql1 = "";
         QString foreignKeySql2 = "";
 
-        ForeignKey* fkI = table->getFks().at(i);
+        ForeignKey* fkI = table->getForeignKeys().at(i);
         foreignKeysTable = fkI->getForeignTableName();
         for(int j=0; j<fkI->getAssociations().size(); j++)
         {
@@ -213,7 +213,9 @@ QStringList MySQLSQLGenerator::generateCreateTableSql(Table *table, const QHash<
                 foreignKeySql2 += ", ";
             }
         }
-        QString foreignKeySql = upcase?"FOREIGN KEY (":"foreign key(";
+        QString foreignKeySql = upcase?" CONSTRAINT " : " constraint ";
+        foreignKeySql += fkI->getName();
+        foreignKeySql += upcase?" FOREIGN KEY (":" foreign key(";
         foreignKeySql += foreignKeySql1;
         foreignKeySql += upcase?") REFERENCES ":") references ";
         foreignKeySql += foreignKeysTable;
@@ -781,5 +783,11 @@ QString MySQLSQLGenerator::sqlForAColumn(const Column *col, int pkpos, bool back
 QString MySQLSQLGenerator::getAlterTableForColumnChange(const QString& table, const Column* col)
 {
     QString res = "ALTER TABLE " + table + " MODIFY COLUMN " + sqlForAColumn(col, -1, true, true);
+    return res;
+}
+
+QString MySQLSQLGenerator::getAlterTableToDropForeignKey(const QString& table, const QString& fkName)
+{
+    QString res = "ALTER TABLE " + table + " DROP FOREIGN KEY " + fkName;
     return res;
 }

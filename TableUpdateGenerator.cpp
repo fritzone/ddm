@@ -5,6 +5,7 @@
 #include "db_AbstractSQLGenerator.h"
 #include "db_DatabaseEngine.h"
 #include "core_UserDataType.h"
+#include "ForeignKey.h"
 
 struct OldNameNewName
 {
@@ -48,6 +49,8 @@ TableUpdateGenerator::TableUpdateGenerator(Table *t1, Table *t2, DatabaseEngine*
     QVector<ColumnOrderChange> columnsThatHaveChangedOrder;
     QVector<QString> deletedColumns;
     QVector<Column*> changedColumns;    // contains a list of columns that have chagned their datatype
+    QStringList droppedPrimaryKeys;     // contains the columns of T2 which were primary kesy in T1
+    QStringList newPrimaryKeys;         // contains the primary key columns of T2 which wre NOT primary keys in T1
 
     // next run. See if T2 has new or renamed columns
     QStringList t2Columns = t2->fullColumns();
@@ -70,6 +73,12 @@ TableUpdateGenerator::TableUpdateGenerator(Table *t1, Table *t2, DatabaseEngine*
                     nc.newName = t2Columns[i];
                     if(i > 0) nc.afterColumn = t2Columns[i - 1];
                     newColumns.append(nc);
+
+                    // is this a primary key?
+                    if(ct2->isPk())
+                    {
+                        newPrimaryKeys.append(ct2->getName());
+                    }
                 }
                 else
                 {
@@ -95,6 +104,12 @@ TableUpdateGenerator::TableUpdateGenerator(Table *t1, Table *t2, DatabaseEngine*
                     }
                     nn.oldName = oldName;
                     renamedColumns.append(nn);
+
+                    // is this a primary key?
+                    if(ct2->isPk())
+                    {
+                        newPrimaryKeys.append(ct2->getName());
+                    }
                 }
             }
         }
@@ -115,6 +130,24 @@ TableUpdateGenerator::TableUpdateGenerator(Table *t1, Table *t2, DatabaseEngine*
             if(c1->getDataType()->sqlAsString() != c2->getDataType()->sqlAsString())
             {
                 changedColumns.append(c2);
+            }
+
+            // see if the c1 was primary key and if c2 is NOT add to the list
+            if(c1->isPk())
+            {
+                if(!c2->isPk())
+                {
+                    droppedPrimaryKeys.append(c2->getName());
+                }
+            }
+
+            // and the other way around
+            if(c2->isPk())
+            {
+                if(!c1->isPk())
+                {
+                    newPrimaryKeys.append(c2->getName());
+                }
             }
 
             if(cidx == i)
@@ -242,4 +275,104 @@ TableUpdateGenerator::TableUpdateGenerator(Table *t1, Table *t2, DatabaseEngine*
         m_commands.append("-- column " + changedColumns[i]->getName() + " has changed its datatype");
         m_commands.append(dbEngine->getSqlGenerator()->getAlterTableForColumnChange(t2->getName(), changedColumns[i]));
     }
+
+    // now find all the dropped foreign keys (ie: foreign keys that are there in T1 and not in T2)
+    QStringList droppedFksFromT2;
+    const QVector<ForeignKey*>& fksOfT1 = t1->getForeignKeys();
+    for(int i=0; i<fksOfT1.size(); i++)
+    {
+        bool foundARelatedFk = false;
+        const QVector<ForeignKey*>& fksOfT2 = t2->getForeignKeys();
+        for(int j=0; j<fksOfT2.size(); j++)
+        {
+            if(UidWarehouse::instance().related(fksOfT1[i], fksOfT2[j]))
+            {
+                foundARelatedFk = true;
+                break;
+            }
+        }
+        if(!foundARelatedFk)
+        {
+            droppedFksFromT2.append(fksOfT1[i]->getName());
+        }
+    }
+
+    // and generate the required SQL commands for dropping a foreign key
+    for(int i=0; i<droppedFksFromT2.size(); i++)
+    {
+        m_droppedForeignKeys.append("-- foreign key " + droppedFksFromT2[i] + " was dropped");
+        m_droppedForeignKeys.append(dbEngine->getSqlGenerator()->getAlterTableToDropForeignKey(t2->getName(), droppedFksFromT2[i]));
+    }
+
+    // now search for NEW foreign keys
+    QStringList newFksFromT2;
+    const QVector<ForeignKey*>& fksOfT2 = t2->getForeignKeys();
+    for(int i=0; i<fksOfT2.size(); i++)
+    {
+        bool foundARelatedFk = false;
+        const QVector<ForeignKey*>& fksOfT1 = t1->getForeignKeys();
+        for(int j=0; j<fksOfT1.size(); j++)
+        {
+            if(UidWarehouse::instance().related(fksOfT2[i], fksOfT1[j]))
+            {
+                foundARelatedFk = true;
+                break;
+            }
+        }
+        if(!foundARelatedFk)
+        {
+            newFksFromT2.append(fksOfT2[i]->getName());
+        }
+    }
+    for(int k=0; k<newFksFromT2.size(); k++)
+    {
+        m_newForeignKeys.append("-- foreign key " + newFksFromT2[k] + " was created");
+        // creating the FOREIGN KEY sql(s)...
+        for(int i=0; i<t2->getForeignKeys().size(); i++)
+        {
+            ForeignKey* fkI = t2->getForeignKeys().at(i);
+
+            if(newFksFromT2.contains(fkI->getName()))
+            {
+                // just pre-render the SQL for foreign keys
+                QString foreignKeySql1 = "";
+                QString foreignKeySql2 = "";
+
+                QString foreignKeysTable = fkI->getForeignTableName();
+                for(int j=0; j<fkI->getAssociations().size(); j++)
+                {
+
+                    ForeignKey::ColumnAssociation* assocJ = fkI->getAssociations().at(j);
+                    foreignKeySql1 += assocJ->getLocalColumn()->getName();
+                    foreignKeySql2 += assocJ->getForeignColumn()->getName();
+
+                    if(j < fkI->getAssociations().size() - 1)
+                    {
+                        foreignKeySql1 += ", ";
+                        foreignKeySql2 += ", ";
+                    }
+                }
+                QString foreignKeySql = " CONSTRAINT " + fkI->getName() + " FOREIGN KEY (";
+                foreignKeySql += foreignKeySql1;
+                foreignKeySql += ") REFERENCES ";
+                foreignKeySql += foreignKeysTable;
+                foreignKeySql += "(" + foreignKeySql2 + ")";
+                QString t = fkI->getOnDelete();
+                if(t.length() > 0) foreignKeySql += QString(" ") + ("ON DELETE ") + (t);
+                t = fkI->getOnUpdate();
+                if(t.length() > 0) foreignKeySql += QString(" ") + ("ON UPDATE ") + (t);
+
+                // TODO: This is just MySQL for now
+                QString f = "ALTER TABLE ";
+                f += t2->getName();
+                f += " ADD ";
+                f += foreignKeySql;
+                m_newForeignKeys.append(f);
+            }
+        }
+    }
+
+    qDebug() << droppedPrimaryKeys;
+    qDebug() << newPrimaryKeys;
+
 }

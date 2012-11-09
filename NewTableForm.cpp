@@ -346,7 +346,7 @@ void NewTableForm::populateTable(const Table *table, bool parentTab)
     }
 
     // third step: set up the foreign keys
-    const QVector<ForeignKey*> & fks = table->getFks();
+    const QVector<ForeignKey*> & fks = table->getForeignKeys();
     for(int i=0; i<fks.size(); i++)
     {
         ContextMenuEnabledTreeWidgetItem* item = createTWIForForeignKey(fks[i]);
@@ -640,7 +640,7 @@ void NewTableForm::onAddColumn()
         const QVector<Table*>& tabs = ver->getTables();
         for(int i=0; i<tabs.size(); i++)
         {
-            const QVector<ForeignKey*> & tabfks = tabs[i]->getFks();
+            const QVector<ForeignKey*> & tabfks = tabs[i]->getForeignKeys();
             for(int j=0; j<tabfks.size(); j++)
             {
                 const QVector<ForeignKey::ColumnAssociation*>& assocs = tabfks[j]->getAssociations();
@@ -1619,7 +1619,7 @@ void NewTableForm::onAddForeignKeyAssociation()
     // finally do some work too
     if(!m_currentForeignKey)
     {
-        m_currentForeignKey = new ForeignKey();
+        m_currentForeignKey = new ForeignKey(m_version, QUuid::createUuid().toString());
         m_foreignKeySelected = false;
     }
 
@@ -2167,7 +2167,7 @@ void NewTableForm::onChangeName(QString a)
         const QVector<Table*>& tabs = ver->getTables();
         for(int i=0; i<tabs.size(); i++)
         {
-            const QVector<ForeignKey*> & tabfks = tabs[i]->getFks();
+            const QVector<ForeignKey*> & tabfks = tabs[i]->getForeignKeys();
             for(int j=0; j<tabfks.size(); j++)
             {
                 const QVector<ForeignKey::ColumnAssociation*>& assocs = tabfks[j]->getAssociations();
