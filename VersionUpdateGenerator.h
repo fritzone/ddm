@@ -23,6 +23,10 @@ public:
 
 private:
 
+    void updateTables(Version* from, Version* to);
+
+private:
+
     QStringList m_commands;
 };
 

@@ -171,6 +171,13 @@ public:
      */
     virtual QString getAlterTableToDropForeignKey(const QString& table, const QString& fkName) = 0;
 
+    /**
+     * @brief getDropTable
+     * @param table
+     * @return
+     */
+    virtual QString getDropTable(const QString& table) = 0;
+
     virtual ~AbstractSqlGenerator() {}
 };
 

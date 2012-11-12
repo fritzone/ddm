@@ -26,6 +26,13 @@ private:
 
 public:
 
+    enum ForeignKeyPosition
+    {
+        InTable = 1,
+        AfterTable = 2,
+        OnlyInternal = 3
+    };
+
     bool defaultLengths() const
     {
         return m_useDefaultLengths;
