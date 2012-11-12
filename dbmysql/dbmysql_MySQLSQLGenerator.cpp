@@ -14,6 +14,7 @@
 #include "db_DatabaseEngine.h"
 #include "dbmysql_MySQLDatabaseEngine.h"
 #include "core_Connection.h"
+#include "Configuration.h"
 
 QStringList MySQLSQLGenerator::generateCreateTableSql(Table *table, const QHash<QString, QString> &options, const QString& tabName, const Connection* dest) const
 {
@@ -43,20 +44,20 @@ QStringList MySQLSQLGenerator::generateCreateTableSql(Table *table, const QHash<
         }
     }
     // foreign key pos: 1 in the table script, 2 in an alter script after the table, 3 - not now, just update the table
-    int fkpos = 1;
+    Configuration::ForeignKeyPosition fkpos = Configuration::InTable;
     if(options.contains("FKSposition"))
     {
         if(options["FKSposition"] == "InTable")
         {
-            fkpos = 1;
+            fkpos = Configuration::InTable;
         }
         if(options["FKSposition"] == "AfterTable")
         {
-            fkpos = 2;
+            fkpos = Configuration::AfterTable;
         }
         if(options["FKSposition"] == "OnlyInternal")
         {
-            fkpos = 3;
+            fkpos = Configuration::OnlyInternal;
         }
     }
 
@@ -232,7 +233,7 @@ QStringList MySQLSQLGenerator::generateCreateTableSql(Table *table, const QHash<
     }
 
     // now check the foreign keys if any
-    if(fkpos == 1 && foreignKeys.size() > 0)
+    if(fkpos == Configuration::InTable && foreignKeys.size() > 0)
     {
         createTable += ",\n";
         for(int i=0; i<foreignKeys.size(); i++)
@@ -371,7 +372,7 @@ QStringList MySQLSQLGenerator::generateCreateTableSql(Table *table, const QHash<
     }
 
     // and check if we have foreign keys
-    if(fkpos == 2 && foreignKeys.size() > 0)
+    if(fkpos == Configuration::AfterTable && foreignKeys.size() > 0)
     {
         if(comments)
         {
@@ -789,5 +790,11 @@ QString MySQLSQLGenerator::getAlterTableForColumnChange(const QString& table, co
 QString MySQLSQLGenerator::getAlterTableToDropForeignKey(const QString& table, const QString& fkName)
 {
     QString res = "ALTER TABLE " + table + " DROP FOREIGN KEY " + fkName;
+    return res;
+}
+
+QString MySQLSQLGenerator::getDropTable(const QString& table)
+{
+    QString res = "DROP TABLE " + table;
     return res;
 }

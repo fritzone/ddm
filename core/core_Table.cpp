@@ -593,6 +593,8 @@ CloneableElement* Table::clone(Version *sourceVersion, Version *targetVersion)
 
     result->setSourceUid(getObjectUid());
 
+    cloneSps(result);
+
     // now fix the columns
     const QVector<Column*> cols = getColumns();
     for(int i=0; i<cols.size(); i++)

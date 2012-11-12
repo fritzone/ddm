@@ -9,7 +9,7 @@ QT += network \
 
 TARGET = ddm
 TEMPLATE = app
-unix:QMAKE_CXXFLAGS_WARN_ON += -Wall -Wextra
+unix:QMAKE_CXXFLAGS_WARN_ON += -Wall -Wextra -ansi -pedantic -std=c++0x
 
 SOURCES += main.cpp \
     MainWindowButtonDialog.cpp \

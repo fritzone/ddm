@@ -31,6 +31,7 @@ public:
     virtual QString getAlterTableForColumnDeletion(const QString& table, const QString& column);
     virtual QString getAlterTableForColumnChange(const QString& table, const Column* col);
     virtual QString getAlterTableToDropForeignKey(const QString& table, const QString& fkName);
+    virtual QString getDropTable(const QString& table);
 
 private:
 
