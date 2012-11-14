@@ -10,6 +10,7 @@ class Table;
 class Column;
 class Version;
 class SqlHighlighter;
+class DatabaseEngine;
 
 namespace Ui {
 class TableComparisonForm;
@@ -43,6 +44,10 @@ public:
     void setFromVersion(Version* v);
     void setToVersion(Version* v);
 
+    void setSqlList(QStringList s)
+    {
+        sqlList = s;
+    }
 
 private:
 
@@ -52,6 +57,8 @@ private slots:
 
     void leftItemSelected(const QString&);
     void rightItemSelected(const QString&);
+
+    void onInject();
 
 private:
 
@@ -68,6 +75,9 @@ private:
     Mode m_mode;
     Version* m_from;
     Version* m_to;
+    QStringList sqlList;
+    DatabaseEngine* m_engine;
+
 };
 
 #endif // TABLECOMPARISONFORM_H

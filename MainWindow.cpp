@@ -2193,6 +2193,7 @@ void MainWindow::onBrowseConnection()
     {
         if(c->getState() == CONNECTED)
         {
+            m_connectionGuiElements->resetConnectionTreeForConnection(c);
             m_connectionGuiElements->populateConnectionTreeForConnection(c);
         }
         else

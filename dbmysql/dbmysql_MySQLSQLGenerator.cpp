@@ -798,3 +798,18 @@ QString MySQLSQLGenerator::getDropTable(const QString& table)
     QString res = "DROP TABLE " + table;
     return res;
 }
+
+QStringList MySQLSQLGenerator::getAlterTableForDropForeignKey(const QString& table, const ForeignKey* fk)
+{
+    QStringList r;
+//    QString g = "ALTER TABLE " + table + " DROP KEY ";
+//    for(int i=0; i<fk->getAssociations().size(); i++)
+//    {
+//        g += fk->getAssociations()[i]->getSLocalColumn();
+//    }
+//    r << g;
+    QString res = "ALTER TABLE " + table + " DROP FOREIGN KEY " + fk->getName();
+
+    r << res;
+    return r;
+}

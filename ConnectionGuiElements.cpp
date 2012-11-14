@@ -226,6 +226,6 @@ void ConnectionGuiElements::populateConnectionTreeForConnection(Connection *c)
 
 void ConnectionGuiElements::resetConnectionTreeForConnection(Connection *c)
 {
-    while(c->getLocation()->childCount()) c->getLocation()->removeChild(c->getLocation()->child(0));
+    while(c->getLocation()->childCount() > 0) c->getLocation()->removeChild(c->getLocation()->child(0));
     c->getLocation()->setIcon(0, IconFactory::getConnectedDatabaseIcon());
 }

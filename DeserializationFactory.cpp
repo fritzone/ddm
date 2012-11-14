@@ -134,6 +134,7 @@ ForeignKey* DeserializationFactory::createForeignKey(Table *t, const QDomDocumen
     fk->setName(name);
     fk->setOnDelete(onDelete);
     fk->setOnUpdate(onUpdate);
+    fk->setSourceUid(source_uid);
 
     for(int i=0; i<element.childNodes().count(); i++)
     {
@@ -727,10 +728,16 @@ Column* DeserializationFactory::createColumn(DatabaseEngine* engine, Version* ve
     }
     if(class_uid != uidColumn)
     {
-
+    }
+    QString source_uid = element.attribute("source-uid");
+    if(source_uid.length() == 0)
+    {
+        source_uid = nullUid;
     }
 
     Column* col = new Column(uid, name, udt, pk == "1", ver);
+
+    col->setSourceUid(source_uid);
 
     for(int i=0; i<element.childNodes().count(); i++)
     {
@@ -906,6 +913,7 @@ void DeserializationFactory::createProject(Project *project, const QDomDocument 
     project->setOop(element.attribute("OOP")=="1");
     DatabaseEngine* engine = DatabaseEngine::provideEngineFor(element.attribute("DB"));
     project->setEngine(engine);
+    int wvi = element.attribute("WorkingVersionIndex").toInt();
 
     for(int i=0; i<element.childNodes().count(); i++)
     {
@@ -925,6 +933,12 @@ void DeserializationFactory::createProject(Project *project, const QDomDocument 
             project->setDescription(element.childNodes().at(i).firstChild().nodeValue());
         }
     }
+
+    if(wvi > 0)
+    {
+        project->setWorkingVersionIndex(wvi);
+    }
+
 }
 
 void DeserializationFactory::createSolution(Solution *s, const QDomDocument &doc, const QDomElement &element)

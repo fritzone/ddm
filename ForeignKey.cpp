@@ -86,6 +86,15 @@ const Table* ForeignKey::getForeignTable() const
     return 0;
 }
 
+const Table* ForeignKey::getLocalTable() const
+{
+    for(int i=0; i<m_associations.size(); i++)
+    {
+        return m_associations[i]->getLocalTable();
+    }
+    return 0;
+}
+
 QString ForeignKey::getForeignTableName() const
 {
     QString result = "";

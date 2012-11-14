@@ -128,6 +128,7 @@ public:
     QString getForeignTableName() const;
 
     const Table* getForeignTable() const;
+    const Table* getLocalTable() const;
 
     /**
      * Return a vector of the foreign columns

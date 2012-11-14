@@ -13,10 +13,15 @@
 #include "db_DatabaseEngine.h"
 #include "db_AbstractDTSupplier.h"
 #include "VersionUpdateGenerator.h"
+#include "InjectSqlDialog.h"
+#include "core_ConnectionManager.h"
+#include "MainWindow.h"
+
+#include <QMessageBox>
 
 TableComparisonForm::TableComparisonForm(Mode m, QWidget *parent) : m_leftTable(0), m_rightTable(0),
     QWidget(parent),
-    ui(new Ui::TableComparisonForm), m_mode(m), m_from(0), m_to(0)
+    ui(new Ui::TableComparisonForm), m_mode(m), m_from(0), m_to(0), sqlList(), m_engine(0)
 {
     ui->setupUi(this);
 
@@ -96,6 +101,7 @@ void TableComparisonForm::setToVersion(Version *v)
     {
         VersionUpdateGenerator vug = VersionUpdateGenerator(m_from, m_to);
         ui->textEdit->setText(addCommands(vug.getCommands()));
+        m_engine = m_to->getProject()->getEngine();
     }
 }
 
@@ -201,6 +207,7 @@ QString TableComparisonForm::addCommands(const QStringList &cmds)
         finalSql += lines.at(i);
         finalSql += "\n";
     }
+    sqlList << cmds;
     return finalSql;
 }
 
@@ -284,4 +291,51 @@ void TableComparisonForm::setRightTable(Table *t)
 {
     m_rightTable = t;
     ui->cmbVersionRight->setCurrentIndex(ui->cmbVersionRight->findText(t->version()->getVersionText()));
+}
+
+// TODO: this is duplicate from SqlForm
+void TableComparisonForm::onInject()
+{
+    ui->labelDeploymentStatus->setText("");
+    InjectSqlDialog* injectDialog = new InjectSqlDialog(Workspace::getInstance()->currentProjectsEngine(), this, 0);
+    injectDialog->setModal(true);
+    if(injectDialog->exec() == QDialog::Accepted)
+    {
+        QString tSql;
+        QStringList connectionNames = injectDialog->getSelectedConnections();
+        bool error = false;
+        for(int i=0; i< connectionNames.size(); i++)
+        {
+            Connection* c = ConnectionManager::instance()->getConnection(connectionNames.at(i));
+            if(c)
+            {
+                QStringList tempSqlList;
+                for(int j=0; j<sqlList.size(); j++)
+                {
+                    QString s = sqlList[j].trimmed();
+                    if(s.endsWith("//"))
+                    {
+                        s = s.left(s.length() - 2);
+                        s += ";";
+                    }
+
+                    // because of some funny reason "delimiter" is not accepted here, but if we copy/paste, it's ok
+                    if(!s.startsWith("delimiter", Qt::CaseInsensitive))
+                    {
+                        tempSqlList.append(s);
+                    }
+                }
+
+                if(!m_engine->executeSql(c, tempSqlList, tSql, injectDialog->getRollbackOnError()))
+                {
+                    QMessageBox::critical (this, tr("Error"), tr("<B>Cannot execute a query!</B><P>Reason: ") + m_engine->getLastError() + tr(".<P>Query:<PRE>") + tSql+ "</PRE><P>" +
+                                           (injectDialog->getRollbackOnError()?tr("Transaction was rolled back."):tr("Transaction was <font color=red><B>NOT</B></font> rolled back, you might have partial data in your database.")), QMessageBox::Ok);
+                    error = true;
+                }
+            }
+        }
+        MainWindow::instance()->setStatus(QString("SQL injection ") + (error?" failed ":" succeeded "), error);
+        if(!error) ui->labelDeploymentStatus->setText("Succesful deployment");
+    }
+
 }

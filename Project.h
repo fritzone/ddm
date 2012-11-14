@@ -85,6 +85,11 @@ public:
 
     QStringList getVersionNames();
 
+    void setWorkingVersionIndex(int u)
+    {
+        m_workingVersionIndex = u;
+    }
+
 private:
 
     // the description of the project

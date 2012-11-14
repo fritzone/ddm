@@ -2319,6 +2319,7 @@ void NewTableForm::onColumnNameChange(QString)
     if(m_currentColumn)
     {
         if(m_ui->txtNewColumnName->text().length() == 0) return;
+        m_table->tableInstancesRenameColumn(m_currentColumn->getName(), m_ui->txtNewColumnName->text());
         m_currentColumn->setName(m_ui->txtNewColumnName->text());
         m_currentColumn->getLocation()->setText(1, m_currentColumn->getName());
         autoSave();
