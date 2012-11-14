@@ -12,6 +12,7 @@ class StoredMethod;
 class Trigger;
 class Connection;
 class Column;
+class ForeignKey;
 
 /**
  * Interface towards the Database Engine responsible for generating the SQLs for the given database
@@ -163,20 +164,20 @@ public:
     virtual QString getAlterTableForColumnChange(const QString& table, const Column* col) = 0;
 
     /**
-     * Generate SQL to drop a foreign key
-     * @brief getAlterTableToDropForeignKey
-     * @param table
-     * @param fkName
-     * @return
-     */
-    virtual QString getAlterTableToDropForeignKey(const QString& table, const QString& fkName) = 0;
-
-    /**
      * @brief getDropTable
      * @param table
      * @return
      */
     virtual QString getDropTable(const QString& table) = 0;
+
+    /**
+     * Returns
+     * @brief getAlterTableForDropForeignKey
+     * @param table
+     * @param fk
+     * @return
+     */
+    virtual QStringList getAlterTableForDropForeignKey(const QString& table, const ForeignKey *fk) = 0;
 
     virtual ~AbstractSqlGenerator() {}
 };

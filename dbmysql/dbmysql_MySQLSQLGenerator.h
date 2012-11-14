@@ -6,6 +6,7 @@
 #include "db_AbstractSQLGenerator.h"
 
 class DatabaseEngine;
+class ForeignKey;
 
 class MySQLSQLGenerator : public AbstractSqlGenerator
 {
@@ -32,6 +33,7 @@ public:
     virtual QString getAlterTableForColumnChange(const QString& table, const Column* col);
     virtual QString getAlterTableToDropForeignKey(const QString& table, const QString& fkName);
     virtual QString getDropTable(const QString& table);
+    virtual QStringList getAlterTableForDropForeignKey(const QString& table, const ForeignKey *fk);
 
 private:
 

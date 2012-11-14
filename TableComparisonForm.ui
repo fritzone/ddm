@@ -248,10 +248,37 @@
      </property>
     </widget>
    </item>
+   <item>
+    <widget class="QLabel" name="labelDeploymentStatus">
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+   </item>
   </layout>
  </widget>
  <resources>
   <include location="dbm.qrc"/>
  </resources>
- <connections/>
+ <connections>
+  <connection>
+   <sender>btnInject</sender>
+   <signal>clicked()</signal>
+   <receiver>TableComparisonForm</receiver>
+   <slot>onInject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>45</x>
+     <y>21</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>423</x>
+     <y>237</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>onInject()</slot>
+ </slots>
 </ui>

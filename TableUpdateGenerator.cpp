@@ -13,14 +13,6 @@ struct OldNameNewName
     QString newName;
 };
 
-struct NewColumns
-{
-    // the new name of the column (from Table 2)
-    QString newName;
-
-    // the column aftwer which this should be added (from Table 2)
-    QString afterColumn;
-};
 
 struct ColumnOrderChange
 {
@@ -31,7 +23,7 @@ struct ColumnOrderChange
     QString afterColumn;
 };
 
-TableUpdateGenerator::TableUpdateGenerator(Table *t1, Table *t2, DatabaseEngine* dbEngine)
+TableUpdateGenerator::TableUpdateGenerator(Table *t1, Table *t2, DatabaseEngine* dbEngine) : m_futurePksDropNeeded(false)
 {
     // see if these two tables have a common ancestor or not
     bool related = UidWarehouse::instance().related(t1, t2);
@@ -44,7 +36,6 @@ TableUpdateGenerator::TableUpdateGenerator(Table *t1, Table *t2, DatabaseEngine*
         m_commands.append(dbEngine->getSqlGenerator()->getTableRenameSql(t1->getName(), t2->getName()));
     }
 
-    QVector<NewColumns> newColumns;     // contains a lis of columns that are new in T2
     QVector<OldNameNewName> renamedColumns;
     QVector<ColumnOrderChange> columnsThatHaveChangedOrder;
     QVector<QString> deletedColumns;
@@ -72,7 +63,7 @@ TableUpdateGenerator::TableUpdateGenerator(Table *t1, Table *t2, DatabaseEngine*
                     NewColumns nc;
                     nc.newName = t2Columns[i];
                     if(i > 0) nc.afterColumn = t2Columns[i - 1];
-                    newColumns.append(nc);
+                    m_newColumns.append(nc);
 
                     // is this a primary key?
                     if(ct2->isPk())
@@ -105,10 +96,12 @@ TableUpdateGenerator::TableUpdateGenerator(Table *t1, Table *t2, DatabaseEngine*
                     nn.oldName = oldName;
                     renamedColumns.append(nn);
 
-                    // is this a primary key?
+                    // is this a primary key? If yes later the foreign keys need to be recreated
                     if(ct2->isPk())
                     {
                         newPrimaryKeys.append(ct2->getName());
+                        m_pkRenamedColsAffected.append(ct2->getName());
+                        m_futurePksDropNeeded = true;
                     }
                 }
             }
@@ -138,6 +131,7 @@ TableUpdateGenerator::TableUpdateGenerator(Table *t1, Table *t2, DatabaseEngine*
                 if(!c2->isPk())
                 {
                     droppedPrimaryKeys.append(c2->getName());
+                    // here we don't need to recreate the foreign keys, the GUI forced us to drop them before
                 }
             }
 
@@ -234,18 +228,18 @@ TableUpdateGenerator::TableUpdateGenerator(Table *t1, Table *t2, DatabaseEngine*
 
     }
 
-    if(newColumns.size()) m_commands.append("\n");
-    for(int i=0; i< newColumns.size() ; i++)
+    if(m_newColumns.size()) m_commands.append("\n");
+    for(int i=0; i< m_newColumns.size() ; i++)
     {
-        Column* ct2 = t2->getColumn(newColumns[i].newName);
-        if(!ct2) ct2 = t2->getColumnFromParents(newColumns[i].newName);
+        Column* ct2 = t2->getColumn(m_newColumns[i].newName);
+        if(!ct2) ct2 = t2->getColumnFromParents(m_newColumns[i].newName);
         if(!ct2) continue;
 
-        m_commands.append("-- new column " + newColumns[i].newName);
-        m_commands.append(dbEngine->getSqlGenerator()->getAlterTableForNewColumn(t2->getName(), ct2, newColumns[i].afterColumn));
+        m_commands.append("-- new column " + m_newColumns[i].newName);
+        m_commands.append(dbEngine->getSqlGenerator()->getAlterTableForNewColumn(t2->getName(), ct2, m_newColumns[i].afterColumn));
     }
 
-    if(newColumns.size() == 0 && deletedColumns.size() == 0)
+    if(m_newColumns.size() == 0 && deletedColumns.size() == 0)
     {
         // only create the change order columns if there are no new columns
         if(columnsThatHaveChangedOrder.size()) m_commands.append("\n");
@@ -277,7 +271,7 @@ TableUpdateGenerator::TableUpdateGenerator(Table *t1, Table *t2, DatabaseEngine*
     }
 
     // now find all the dropped foreign keys (ie: foreign keys that are there in T1 and not in T2)
-    QStringList droppedFksFromT2;
+    QVector<ForeignKey*> droppedFksFromT2;
     const QVector<ForeignKey*>& fksOfT1 = t1->getForeignKeys();
     for(int i=0; i<fksOfT1.size(); i++)
     {
@@ -293,15 +287,15 @@ TableUpdateGenerator::TableUpdateGenerator(Table *t1, Table *t2, DatabaseEngine*
         }
         if(!foundARelatedFk)
         {
-            droppedFksFromT2.append(fksOfT1[i]->getName());
+            droppedFksFromT2.append(fksOfT1[i]);
         }
     }
 
     // and generate the required SQL commands for dropping a foreign key
     for(int i=0; i<droppedFksFromT2.size(); i++)
     {
-        m_droppedForeignKeys.append("-- foreign key " + droppedFksFromT2[i] + " was dropped");
-        m_droppedForeignKeys.append(dbEngine->getSqlGenerator()->getAlterTableToDropForeignKey(t2->getName(), droppedFksFromT2[i]));
+        m_droppedForeignKeys.append("-- foreign key " + droppedFksFromT2[i]->getName() + " was dropped");
+        m_droppedForeignKeys << dbEngine->getSqlGenerator()->getAlterTableForDropForeignKey(t2->getName(), droppedFksFromT2[i]);
     }
 
     // now search for NEW foreign keys
