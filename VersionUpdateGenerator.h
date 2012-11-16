@@ -1,11 +1,14 @@
 #ifndef VERSIONUPDATEGENERATOR_H
 #define VERSIONUPDATEGENERATOR_H
 
+#include "core_ColumnWithValue.h"
+
 #include <QStringList>
 #include <QMap>
 
 class Version;
 class TableUpdateGenerator;
+class Column;
 
 /**
  * @brief The VersionUpdateGenerator class
@@ -14,6 +17,18 @@ class TableUpdateGenerator;
  */
 class VersionUpdateGenerator
 {
+
+    struct FromToColumn
+    {
+        Column* from;
+        Column* to;
+    };
+
+    struct ColumnWithValuesAndReference : public ColumnWithValue
+    {
+        FromToColumn* ref;
+    };
+
 public:
 
     VersionUpdateGenerator(Version* from, Version* to);

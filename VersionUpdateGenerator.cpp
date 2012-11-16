@@ -381,7 +381,7 @@ void VersionUpdateGenerator::updateTableInstances(Version *from, Version *to)
             continue;
         }
 
-        // first run: the changed values in existing rows
+        // first run: the changed values in existing rows. Let's assume the PKs did not change
         TableInstance* ancestor = 0;
         for(int j=0; j<fromTabInsts.size(); j++)
         {
@@ -398,7 +398,7 @@ void VersionUpdateGenerator::updateTableInstances(Version *from, Version *to)
 
         // the value comparison is done based on the primary keys, so it is not searching for primary key value changes
         // find all the primary keys in the from ancestor table
-        QVector<Column*>fromPkColumns;
+        QSet<Column*>fromPkColumns;
         QStringList fromCols = ancestor->table()->fullColumns();
         for(int i=0; i<fromCols.size(); i++)
         {
@@ -406,10 +406,10 @@ void VersionUpdateGenerator::updateTableInstances(Version *from, Version *to)
             if(!c) c = ancestor->table()->getColumnFromParents(fromCols[i]);
             if(!c) continue;
 
-            if(c->isPk()) fromPkColumns.append(c);
+            if(c->isPk()) fromPkColumns.insert(c);
         }
         // find all the primary keys in the from current table
-        QVector<Column*>toPkColumns;
+        QSet<Column*>toPkColumns;
         QStringList toCols = tinst->table()->fullColumns();
         for(int i=0; i<toCols.size(); i++)
         {
@@ -417,40 +417,53 @@ void VersionUpdateGenerator::updateTableInstances(Version *from, Version *to)
             if(!c) c = tinst->table()->getColumnFromParents(toCols[i]);
             if(!c) continue;
 
-            if(c->isPk()) toPkColumns.append(c);
+            if(c->isPk()) toPkColumns.insert(c);
         }
-        // now build up a vector of PK values like: pk1_pk2_pk3_
-        QHash < QString, QVector<QString> > fromVals = ancestor->values();
-        QStringList fromTabInstPks;
-        QVector<QString> cols = ancestor->columns();
+        // Find the intersection of the two sets
 
-        bool canGo = true;
-        int trc = 0;
-
-        while(canGo)
+        QSet<FromToColumn*> commonPks;
+        foreach(Column* cFrom, fromPkColumns)
         {
-            QString cRow = "";
-            for(int i=0; i<fromPkColumns.size(); i++)
+            foreach(Column* cTo, toPkColumns)
             {
-                QVector<QString> cv = fromVals[fromPkColumns[i]->getName()];
-                if(cv.size() > trc)
+                if(UidWarehouse::instance().related(cFrom, cTo))
                 {
-                    cRow += cv[trc];
+                    FromToColumn* a = new FromToColumn;
+                    a->from = cFrom;
+                    a->to = cTo;
+                    commonPks.insert(a);
                 }
-                else
-                {
-                    canGo = false;
-                }
-                if(i<fromPkColumns.size() - 1) cRow += "_";
             }
-
-            fromTabInstPks.append(cRow);
-            trc ++;
         }
-        qDebug() << fromTabInstPks;
+
+        foreach(FromToColumn* ft, commonPks)
+        {
+            qDebug() << ft->from->getName() << " @ " << ft->from->getTable()->getName() << " -> " << ft->to->getName() << " @ " << ft->to->getTable()->getName();
+        }
+
+        // now the commonPKs has the set of common primary keys. Build up a vector of PK value maps to -> list of data values
+        const QHash < QString, QVector<QString> >& tinstValues = tinst->values();
+        const QHash < QString, QVector<QString> >& ancestorValues = ancestor->values();
+        QVector<ColumnWithValuesAndReference*> * fromVecPks = new QVector<ColumnWithValuesAndReference*>();
+        QVector<ColumnWithValuesAndReference*> * toVecPks = new QVector<ColumnWithValuesAndReference*>();
+
+        QVector<ColumnWithValue*> columnsWithValuesOfTo;
+        QVector<ColumnWithValue*> columnsWithValuesOfFrom;
+
+        foreach(FromToColumn* ftpk, commonPks)
+        {
+            ColumnWithValue* cwv = new ColumnWithValue;
+            cwv->column = ftpk->from;
+            columnsWithValuesOfFrom.append(cwv);
+
+            ColumnWithValue* cwv1 = new ColumnWithValue;
+            cwv1->column = ftpk->to;
+            columnsWithValuesOfTo.append(cwv1);
+        }
+
+        QVector <QVector<ColumnWithValue*> > cv = tinst->getValues(columnsWithValuesOfFrom);
 
         // second run: the new rows in the tinst
-
         // third run: adding the new columns
         TableUpdateGenerator* tud = m_tableUpdates[tinst->table()->getObjectUid()];
         if(!tud)

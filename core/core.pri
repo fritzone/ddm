@@ -28,7 +28,8 @@ HEADERS +=                                         \
     core/core_LockableElement.h \
     core/core_Patch.h \
     core/DocumentationSource.h \
-    core/ActionDeleteTable.h
+    core/ActionDeleteTable.h \
+    core/core_ColumnWithValue.h
 
 
 
