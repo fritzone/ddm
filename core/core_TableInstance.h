@@ -121,7 +121,7 @@ public:
     }
 
     QVector <QVector<ColumnWithValue*> > getValues(QVector<ColumnWithValue*> columns);
-    QVector <QVector<ColumnWithValue*> > getFullValues(QVector<ColumnWithValue*> cols);
+    QVector <QVector<ColumnWithValue*> > getFullValues();
 
 private:
 
