@@ -242,7 +242,7 @@ QVector <QVector<ColumnWithValue*> > TableInstance::getValues(QVector<ColumnWith
     QVector<ColumnWithValue*> row;
     for(int i=0; i<vecPks.size(); i++)
     {
-        if(i%size == 0)
+        if(i%columns.size() == 0)
         {
             if(!row.isEmpty())
             {
@@ -269,23 +269,28 @@ QVector <QVector<ColumnWithValue*> > TableInstance::getValues(QVector<ColumnWith
     for(int i=0; i<result.size(); i++)
     {
         const QVector<ColumnWithValue*> row = result[i];
+        QString x = "";
         for(int j=0; j<row.size(); j++)
         {
-            qDebug() << row.at(j)->column->getName() << " = " << row.at(j)->value;
+            x += row.at(j)->column->getName() + "="  + row.at(j)->value + "  ";
         }
+        qDebug() << x;
     }
 }
 
-QVector <QVector<ColumnWithValue*> > TableInstance::getFullValues(QVector<ColumnWithValue*> cols)
+QVector <QVector<ColumnWithValue*> > TableInstance::getFullValues()
 {
     QVector<ColumnWithValue*> vecPks;
     int ctr = 0;
     int size = 0;
     while(true)
     {
-        for(int i=0; i<cols.size(); i++)
+        for(int i=0; i<columns().size(); i++)
         {
-            Column* c = cols.at(i)->column;
+            Column* c = table()->getColumn(columns().at(i));
+            if(!c) c = table()->getColumnFromParents(columns().at(i));
+            if(!c) continue;
+
             const QVector<QString>& fromColVs = values()[c->getName()];
             size = size>fromColVs.size()?size:fromColVs.size();
             ColumnWithValue* ftcWv = new ColumnWithValue;
@@ -304,7 +309,7 @@ QVector <QVector<ColumnWithValue*> > TableInstance::getFullValues(QVector<Column
     QVector<ColumnWithValue*> row;
     for(int i=0; i<vecPks.size(); i++)
     {
-        if(i%size == 0)
+        if(i%columns().size() == 0)
         {
             if(!row.isEmpty())
             {
@@ -322,9 +327,11 @@ QVector <QVector<ColumnWithValue*> > TableInstance::getFullValues(QVector<Column
     for(int i=0; i<result.size(); i++)
     {
         const QVector<ColumnWithValue*> row = result[i];
+        QString x = "";
         for(int j=0; j<row.size(); j++)
         {
-            qDebug() << row.at(j)->column->getName() << " = " << row.at(j)->value;
+            x += row.at(j)->column->getName() + "="  + row.at(j)->value + "  ";
         }
+        qDebug() << x;
     }
 }

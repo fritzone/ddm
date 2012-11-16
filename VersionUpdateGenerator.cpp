@@ -419,8 +419,8 @@ void VersionUpdateGenerator::updateTableInstances(Version *from, Version *to)
 
             if(c->isPk()) toPkColumns.insert(c);
         }
-        // Find the intersection of the two sets
 
+        // Find the intersection of the two sets
         QSet<FromToColumn*> commonPks;
         foreach(Column* cFrom, fromPkColumns)
         {
@@ -435,18 +435,7 @@ void VersionUpdateGenerator::updateTableInstances(Version *from, Version *to)
                 }
             }
         }
-
-        foreach(FromToColumn* ft, commonPks)
-        {
-            qDebug() << ft->from->getName() << " @ " << ft->from->getTable()->getName() << " -> " << ft->to->getName() << " @ " << ft->to->getTable()->getName();
-        }
-
         // now the commonPKs has the set of common primary keys. Build up a vector of PK value maps to -> list of data values
-        const QHash < QString, QVector<QString> >& tinstValues = tinst->values();
-        const QHash < QString, QVector<QString> >& ancestorValues = ancestor->values();
-        QVector<ColumnWithValuesAndReference*> * fromVecPks = new QVector<ColumnWithValuesAndReference*>();
-        QVector<ColumnWithValuesAndReference*> * toVecPks = new QVector<ColumnWithValuesAndReference*>();
-
         QVector<ColumnWithValue*> columnsWithValuesOfTo;
         QVector<ColumnWithValue*> columnsWithValuesOfFrom;
 
@@ -461,16 +450,33 @@ void VersionUpdateGenerator::updateTableInstances(Version *from, Version *to)
             columnsWithValuesOfTo.append(cwv1);
         }
 
-        QVector <QVector<ColumnWithValue*> > cv = tinst->getValues(columnsWithValuesOfFrom);
+        // holds the values of the primary columns
+        QVector <QVector<ColumnWithValue*> > pksTo = tinst->getValues(columnsWithValuesOfTo);
+        QVector <QVector<ColumnWithValue*> > pksFrom = ancestor->getValues(columnsWithValuesOfFrom);
+
+        // now get all the values from the tinst and ancestor table instances into allTo, allFrom variables
+        QVector <QVector<ColumnWithValue*> > allTo = tinst->getFullValues();
+        QVector <QVector<ColumnWithValue*> > allFrom = ancestor->getFullValues();
+
+        // and start the algorithm:
+        /*
+         * step on all the rows
+         * compare the primary key entries (they are in the pksTo and pksFrom too, so that's
+         *  from where you need to take them in order to eliminate them from the other columns)
+         *  - this will be a double loop... not so effective
+         * if they match: get all the other columns for the specific row from allTo (create new temp objects) and allFrom
+         * loop through these two temps above and find the differences, and if there is a difference create the corresponding SQL command
+         */
+
 
         // second run: the new rows in the tinst
         // third run: adding the new columns
-        TableUpdateGenerator* tud = m_tableUpdates[tinst->table()->getObjectUid()];
-        if(!tud)
-        {
-            continue;
-        }
+//        TableUpdateGenerator* tud = m_tableUpdates[tinst->table()->getObjectUid()];
+//        if(!tud)
+//        {
+//            continue;
+//        }
 
-        QVector<NewColumns> newColsForTab = tud->getNewColumns();
+//        QVector<NewColumns> newColsForTab = tud->getNewColumns();
     }
 }
