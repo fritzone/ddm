@@ -8,6 +8,7 @@
 #include "SqlSourceEntity.h"
 #include "core_ObjectWithUid.h"
 #include "core_CloneableElement.h"
+#include "core_ColumnWithValue.h"
 
 #include <QHash>
 #include <QList>
@@ -118,6 +119,9 @@ public:
     {
         m_table = t;
     }
+
+    QVector <QVector<ColumnWithValue*> > getValues(QVector<ColumnWithValue*> columns);
+    QVector <QVector<ColumnWithValue*> > getFullValues(QVector<ColumnWithValue*> cols);
 
 private:
 

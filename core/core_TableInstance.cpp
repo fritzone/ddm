@@ -5,6 +5,7 @@
 #include "Version.h"
 #include "IconFactory.h"
 #include "IconFactory.h"
+#include "core_Column.h"
 #include "ContextMenuCollection.h"
 
 TableInstance::TableInstance(Table *tab, bool ref, const QString& uid, Version *v) : TreeItem(),
@@ -196,4 +197,134 @@ void TableInstance::updateGui()
         }
     }
     TreeItem::updateGui();
+}
+
+/**
+ * @brief TableInstance::getValues
+ * @param columns
+ * @return
+ */
+QVector <QVector<ColumnWithValue*> > TableInstance::getValues(QVector<ColumnWithValue*> columns)
+{
+    QVector<ColumnWithValue*> vecPks;
+    int ctr = 0;
+    int size = 0;
+    while(true)
+    {
+        for(int i=0; i<columns.size(); i++)
+        {
+            Column* c = columns.at(i)->column;
+            const QVector<QString>& fromColVs = values()[c->getName()];
+            size = size>fromColVs.size()?size:fromColVs.size();
+            if(fromColVs[ctr] == columns.at(i)->value || columns.at(i)->value.isEmpty())
+            {
+                ColumnWithValue* ftcWv = new ColumnWithValue;
+                ftcWv->column = c;
+                ftcWv->value = fromColVs[ctr];
+                vecPks.append(ftcWv);
+            }
+            else
+            {
+                ColumnWithValue* ftcWv = new ColumnWithValue;
+                ftcWv->column = c;
+                ftcWv->value = "DDM:IGNORE_THIS_ROW";
+                vecPks.append(ftcWv);
+            }
+        }
+        ctr++;
+        if(ctr == size)
+        {
+            break;
+        }
+    }
+
+    QVector <QVector<ColumnWithValue*> >  result;
+    QVector<ColumnWithValue*> row;
+    for(int i=0; i<vecPks.size(); i++)
+    {
+        if(i%size == 0)
+        {
+            if(!row.isEmpty())
+            {
+                // see if there is a DDM ignore entry in this row
+                bool ignorable = false;
+                for(int j=0; j<row.size(); j++)
+                {
+                    if(row.at(j)->value == "DDM:IGNORE_THIS_ROW") ignorable = true;
+                }
+                if(!ignorable)
+                {
+                    result.append(row);
+                }
+            }
+            row.clear();
+        }
+        ColumnWithValue* cwv = new ColumnWithValue;
+        cwv->column = vecPks.at(i)->column;
+        cwv->value = vecPks.at(i)->value;
+        row.append(cwv);
+    }
+    qDebug() << "RESULT:";
+    result.append(row);
+    for(int i=0; i<result.size(); i++)
+    {
+        const QVector<ColumnWithValue*> row = result[i];
+        for(int j=0; j<row.size(); j++)
+        {
+            qDebug() << row.at(j)->column->getName() << " = " << row.at(j)->value;
+        }
+    }
+}
+
+QVector <QVector<ColumnWithValue*> > TableInstance::getFullValues(QVector<ColumnWithValue*> cols)
+{
+    QVector<ColumnWithValue*> vecPks;
+    int ctr = 0;
+    int size = 0;
+    while(true)
+    {
+        for(int i=0; i<cols.size(); i++)
+        {
+            Column* c = cols.at(i)->column;
+            const QVector<QString>& fromColVs = values()[c->getName()];
+            size = size>fromColVs.size()?size:fromColVs.size();
+            ColumnWithValue* ftcWv = new ColumnWithValue;
+            ftcWv->column = c;
+            ftcWv->value = fromColVs[ctr];
+            vecPks.append(ftcWv);
+        }
+        ctr++;
+        if(ctr == size)
+        {
+            break;
+        }
+    }
+
+    QVector <QVector<ColumnWithValue*> >  result;
+    QVector<ColumnWithValue*> row;
+    for(int i=0; i<vecPks.size(); i++)
+    {
+        if(i%size == 0)
+        {
+            if(!row.isEmpty())
+            {
+                result.append(row);
+            }
+            row.clear();
+        }
+        ColumnWithValue* cwv = new ColumnWithValue;
+        cwv->column = vecPks.at(i)->column;
+        cwv->value = vecPks.at(i)->value;
+        row.append(cwv);
+    }
+    qDebug() << "RESULT:";
+    result.append(row);
+    for(int i=0; i<result.size(); i++)
+    {
+        const QVector<ColumnWithValue*> row = result[i];
+        for(int j=0; j<row.size(); j++)
+        {
+            qDebug() << row.at(j)->column->getName() << " = " << row.at(j)->value;
+        }
+    }
 }
