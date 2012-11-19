@@ -264,7 +264,6 @@ QVector <QVector<ColumnWithValue*> > TableInstance::getValues(QVector<ColumnWith
         cwv->value = vecPks.at(i)->value;
         row.append(cwv);
     }
-    qDebug() << "RESULT:";
     result.append(row);
     for(int i=0; i<result.size(); i++)
     {
@@ -274,8 +273,9 @@ QVector <QVector<ColumnWithValue*> > TableInstance::getValues(QVector<ColumnWith
         {
             x += row.at(j)->column->getName() + "="  + row.at(j)->value + "  ";
         }
-        qDebug() << x;
     }
+
+    return result;
 }
 
 QVector <QVector<ColumnWithValue*> > TableInstance::getFullValues()
@@ -322,7 +322,6 @@ QVector <QVector<ColumnWithValue*> > TableInstance::getFullValues()
         cwv->value = vecPks.at(i)->value;
         row.append(cwv);
     }
-    qDebug() << "RESULT:";
     result.append(row);
     for(int i=0; i<result.size(); i++)
     {
@@ -332,6 +331,7 @@ QVector <QVector<ColumnWithValue*> > TableInstance::getFullValues()
         {
             x += row.at(j)->column->getName() + "="  + row.at(j)->value + "  ";
         }
-        qDebug() << x;
     }
+
+    return result;
 }
