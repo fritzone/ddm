@@ -370,8 +370,8 @@ void VersionUpdateGenerator::updateTables(Version* from, Version* to)
 
 void VersionUpdateGenerator::updateTableInstances(Version *from, Version *to)
 {
-    const QVector<TableInstance*>& toTabInsts = to->getTableInstances();
-    const QVector<TableInstance*>& fromTabInsts = from->getTableInstances();
+    const QVector<TableInstance*> toTabInsts = to->getTableInstances();
+    const QVector<TableInstance*> fromTabInsts = from->getTableInstances();
 
     for(int l=0; l<toTabInsts.size(); l++)
     {
@@ -380,6 +380,8 @@ void VersionUpdateGenerator::updateTableInstances(Version *from, Version *to)
         {
             continue;
         }
+
+        qDebug() << "TAB: " << tinst->table()->getName();
 
         // first run: the changed values in existing rows. Let's assume the PKs did not change
         TableInstance* ancestor = 0;
@@ -457,6 +459,121 @@ void VersionUpdateGenerator::updateTableInstances(Version *from, Version *to)
         // now get all the values from the tinst and ancestor table instances into allTo, allFrom variables
         QVector <QVector<ColumnWithValue*> > allTo = tinst->getFullValues();
         QVector <QVector<ColumnWithValue*> > allFrom = ancestor->getFullValues();
+
+        QMap<int, int> fromToIndexMappings; // map to hold the corresponding indexes regarding the rows where the primary keys are equal
+
+        for(int pksFromC = 0; pksFromC < pksFrom.size(); pksFromC ++)
+        {
+            for(int allFromC=0; allFromC<allFrom.size(); allFromC++)
+            {
+                QMap<QString, bool> founds;
+                for(int j=0; j<pksFrom[pksFromC].size(); j++)
+                {
+                    for(int i=0; i<allFrom[allFromC].size(); i++)
+                    {
+                        if(founds.keys().contains(pksFrom[pksFromC][j]->column->getName()))
+                        {
+                            if(!founds[pksFrom[pksFromC][j]->column->getName()])
+                            {
+                                founds[pksFrom[pksFromC][j]->column->getName()] = false;
+                            }
+                        }
+                        else
+                        {
+                            founds[pksFrom[pksFromC][j]->column->getName()] = false;
+                        }
+                        ColumnWithValue* cwv = allFrom[allFromC][i];
+                        Column* c = cwv->column;
+                        ColumnWithValue* pkcwv = pksFrom[pksFromC][j];
+                        Column* pkC = pkcwv->column;
+                        if(c->getName() == pkC->getName())
+                        {
+                            if(cwv->value == pkcwv->value)
+                            {
+                                founds[c->getName()] = true;
+                            }
+                        }
+                    }
+                }
+
+                bool found = true;
+                for(int j=0; j<founds.keys().size(); j++)
+                {
+                    found &= founds[ founds.keys().at(j) ];
+                }
+
+                if(found)   // this means the allFromC row is the extension of the PK pksFromC row
+                {
+                    for(int pksToC = 0; pksToC < pksTo.size(); pksToC ++)
+                    {
+                        for(int allToC=0; allToC<allTo.size(); allToC++)
+                        {
+                            QMap<QString, bool> foundsTo;
+                            for(int j=0; j<pksTo[pksToC].size(); j++)
+                            {
+                                for(int i=0; i<allTo[allToC].size(); i++)
+                                {
+                                    if(foundsTo.keys().contains(pksTo[pksToC][j]->column->getName()))
+                                    {
+                                        if(!foundsTo[pksTo[pksToC][j]->column->getName()])
+                                        {
+                                            foundsTo[pksTo[pksToC][j]->column->getName()] = false;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        foundsTo[pksTo[pksToC][j]->column->getName()] = false;
+                                    }
+                                    ColumnWithValue* cwv = allTo[allToC][i];
+                                    Column* c = cwv->column;
+                                    ColumnWithValue* pkcwv = pksTo[pksToC][j];
+                                    Column* pkC = pkcwv->column;
+                                    if(c->getName() == pkC->getName())
+                                    {
+                                        if(cwv->value == pkcwv->value)
+                                        {
+                                            foundsTo[c->getName()] = true;
+                                        }
+                                    }
+                                }
+                            }
+                            bool foundTo = true;
+
+                            for(int j=0; j<foundsTo.keys().size(); j++)
+                            {
+                                foundTo &= foundsTo[ foundsTo.keys().at(j) ];
+                            }
+
+                            if(foundTo)
+                            {
+                                // found another mathcing pair set from the "TO" side where pksTo[pksToC] is the key part of allTo[allToC]
+                                // See if the primary keys match or not... ie:
+                                // all the values of pksFrom[pksFromC] should map pksTo[pksToC]. The order is already predefined, we just compare the values
+                                QString froms;
+                                for(int j=0; j<pksFrom[pksFromC].size(); j++)
+                                {
+                                    froms += pksFrom[pksFromC][j]->value + " ";
+                                }
+                                QString tos;
+                                for(int j=0; j<pksTo[pksToC].size(); j++)
+                                {
+                                    tos += pksTo[pksToC][j]->value + " ";
+                                }
+                                froms = froms.trimmed();
+                                tos = tos.trimmed();
+
+                                if(froms == tos)
+                                {
+                                    fromToIndexMappings.insert(allFromC, allToC);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        qDebug() << fromToIndexMappings;
 
         // and start the algorithm:
         /*
