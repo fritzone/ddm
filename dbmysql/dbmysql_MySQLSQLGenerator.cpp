@@ -512,7 +512,7 @@ QStringList MySQLSQLGenerator::generateDefaultValuesSql(TableInstance* tableInst
                 }
             }
         }
-        insert += ");\n\n";
+        insert += ");\n";
         result << insert;
     }
     return result;
@@ -812,4 +812,50 @@ QStringList MySQLSQLGenerator::getAlterTableForDropForeignKey(const QString& tab
 
     r << res;
     return r;
+}
+
+QString MySQLSQLGenerator::getUpdateTableForColumns(const QString& table, const QStringList& pkeys, const QStringList& pvalues, const QString& destCol, const QString& destValue)
+{
+    QString where = "";
+    for(int i=0; i<pkeys.size(); i++)
+    {
+        where += pkeys[i] + " = \"" + pvalues[i] + "\"";
+        if(i < pkeys.size() - 1) where += " AND ";
+        else where += " ";
+    }
+    QString res = "UPDATE " + table + " SET " + destCol + " = \"" + destValue + "\" WHERE " + where;
+    return res;
+}
+
+QString MySQLSQLGenerator::getDeleteFromTable(const QString& table, const QStringList& pkeys, const QStringList& pvalues)
+{
+    QString where = "";
+    for(int i=0; i<pkeys.size(); i++)
+    {
+        where += pkeys[i] + " = \"" + pvalues[i] + "\"";
+        if(i < pkeys.size() - 1) where += " AND ";
+        else where += " ";
+    }
+    QString res = "DELETE FROM " + table + " WHERE " + where;
+    return res;
+
+}
+
+QString MySQLSQLGenerator::getInsertsIntoTable(const QString& table, const QStringList &columns, const QStringList &values)
+{
+    QString res = "INSERT INTO " + table + " (";
+    for(int i=0; i<columns.size(); i++)
+    {
+        res += columns[i];
+        if(i<columns.size() - 1) res += ", ";
+    }
+    res += ") VALUES (";
+    for(int i=0; i<values.size(); i++)
+    {
+        res += "\"" + values[i] + "\"";
+        if(i<values.size() - 1) res += ", ";
+    }
+    res += ")";
+
+    return res;
 }

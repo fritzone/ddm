@@ -12,6 +12,11 @@
 #include "core_Column.h"
 #include "ForeignKey.h"
 
+struct IndexHolder
+{
+    int allFromC, allToC, pksFromC, pksToC;
+};
+
 VersionUpdateGenerator::VersionUpdateGenerator(Version *from, Version *to) : m_commands(), m_tablesReferencedWithFkFromOtherTables()
 {
     if(from->getObjectUid() == to->getObjectUid()) return;
@@ -370,6 +375,7 @@ void VersionUpdateGenerator::updateTables(Version* from, Version* to)
 
 void VersionUpdateGenerator::updateTableInstances(Version *from, Version *to)
 {
+    // next run: the rows which have changed some values
     const QVector<TableInstance*> toTabInsts = to->getTableInstances();
     const QVector<TableInstance*> fromTabInsts = from->getTableInstances();
 
@@ -460,8 +466,9 @@ void VersionUpdateGenerator::updateTableInstances(Version *from, Version *to)
         QVector <QVector<ColumnWithValue*> > allTo = tinst->getFullValues();
         QVector <QVector<ColumnWithValue*> > allFrom = ancestor->getFullValues();
 
-        QMap<int, int> fromToIndexMappings; // map to hold the corresponding indexes regarding the rows where the primary keys are equal
+        QVector<IndexHolder> fromToIndexMappings; // map to hold the corresponding indexes regarding the rows where the primary keys are equal
 
+        // now walk through all the rows of the from and to tables
         for(int pksFromC = 0; pksFromC < pksFrom.size(); pksFromC ++)
         {
             for(int allFromC=0; allFromC<allFrom.size(); allFromC++)
@@ -496,6 +503,7 @@ void VersionUpdateGenerator::updateTableInstances(Version *from, Version *to)
                     }
                 }
 
+                // match the rows with their foreign key
                 bool found = true;
                 for(int j=0; j<founds.keys().size(); j++)
                 {
@@ -504,6 +512,7 @@ void VersionUpdateGenerator::updateTableInstances(Version *from, Version *to)
 
                 if(found)   // this means the allFromC row is the extension of the PK pksFromC row
                 {
+                    // TODO: this loop is basically the same as above
                     for(int pksToC = 0; pksToC < pksTo.size(); pksToC ++)
                     {
                         for(int allToC=0; allToC<allTo.size(); allToC++)
@@ -562,9 +571,15 @@ void VersionUpdateGenerator::updateTableInstances(Version *from, Version *to)
                                 froms = froms.trimmed();
                                 tos = tos.trimmed();
 
+                                // and set the corresponding values
                                 if(froms == tos)
                                 {
-                                    fromToIndexMappings.insert(allFromC, allToC);
+                                    IndexHolder ih;
+                                    ih.allFromC = allFromC;
+                                    ih.allToC = allToC;
+                                    ih.pksFromC = pksFromC;
+                                    ih.pksToC = pksToC;
+                                    fromToIndexMappings.append(ih);
                                 }
                             }
                         }
@@ -573,27 +588,151 @@ void VersionUpdateGenerator::updateTableInstances(Version *from, Version *to)
             }
         }
 
-        qDebug() << fromToIndexMappings;
+        // now in the vector above we have the matching rows of the allTo and allFrom vectors ... see if the rows match or not
+        for(int keyCounter=0; keyCounter<fromToIndexMappings.size(); keyCounter++)
+        {
+            int idxFrom = fromToIndexMappings[keyCounter].allFromC;
+            int idxTo = fromToIndexMappings[keyCounter].allToC;
 
-        // and start the algorithm:
-        /*
-         * step on all the rows
-         * compare the primary key entries (they are in the pksTo and pksFrom too, so that's
-         *  from where you need to take them in order to eliminate them from the other columns)
-         *  - this will be a double loop... not so effective
-         * if they match: get all the other columns for the specific row from allTo (create new temp objects) and allFrom
-         * loop through these two temps above and find the differences, and if there is a difference create the corresponding SQL command
-         */
+            const QVector<ColumnWithValue*>& fromRow = allFrom[idxFrom];
+            const QVector<ColumnWithValue*>& toRow = allTo[idxTo];
 
+            for(int i=0; i<fromRow.size(); i++)
+            {
+                int idxFound = -1;
+                // now find the corresponding column in "to"
+                for(int j=0; j<toRow.size(); j++)
+                {
+                    if(UidWarehouse::instance().related(fromRow[i]->column, toRow[j]->column))
+                    {
+                        idxFound = j;
+                        break;
+                    }
+                }
 
-        // second run: the new rows in the tinst
-        // third run: adding the new columns
-//        TableUpdateGenerator* tud = m_tableUpdates[tinst->table()->getObjectUid()];
-//        if(!tud)
-//        {
-//            continue;
-//        }
+                // and see if we have found something or not
+                if(idxFound != -1)
+                {
+                    if(fromRow[i]->value != toRow[idxFound]->value)
+                    {
+                        // now generate an update script
+                        int pksToIdx = fromToIndexMappings[keyCounter].pksToC;
+                        QStringList pksToNames;
+                        QStringList pksToValues;
+                        for(int k = 0; k<pksTo[pksToIdx].size(); k++)
+                        {
+                            pksToNames << pksTo[pksToIdx][k]->column->getName();
+                            pksToValues <<pksTo[pksToIdx][k]->value;
+                        }
+                        m_commands << to->getProject()->getEngine()->getSqlGenerator()->getUpdateTableForColumns(tinst->table()->getName(), pksToNames, pksToValues, toRow[idxFound]->column->getName(), toRow[idxFound]->value);
+                    }
+                }
+            }
+        }
 
-//        QVector<NewColumns> newColsForTab = tud->getNewColumns();
+        // next run: the deleted rows. These will be picked out from the fromToIndexMappings: if the fromIndex is NOT in the vector this means that row was deleted
+        {
+        QSet<int> missingRows;
+        QSet<int> foundRows;
+        QSet<int> allRows;
+        for(int keyCounter=0; keyCounter<fromToIndexMappings.size(); keyCounter++)
+        {
+            int idxFrom = fromToIndexMappings[keyCounter].pksFromC;
+            foundRows.insert(idxFrom);
+        }
+        for(int i=0; i<pksFrom.size(); i++)
+        {
+            allRows.insert(i);
+        }
+        missingRows = allRows - foundRows;
+
+        foreach(int idx, missingRows)
+        {
+            QStringList pksFromName;
+            QStringList pksFromValues;
+            for(int k = 0; k<pksFrom[idx].size(); k++)
+            {
+                pksFromName << pksFrom[idx][k]->column->getName();
+                pksFromValues <<pksFrom[idx][k]->value;
+            }
+            m_commands << to->getProject()->getEngine()->getSqlGenerator()->getDeleteFromTable(tinst->table()->getName(), pksFromName, pksFromValues);
+
+        }
+        }
+
+        // next run: the new rows in the tinst: these will be picked up from the fromToIndexMappings: if the toIndex is NOT in it this is a new row
+        {
+        QSet<int> missingRows;
+        QSet<int> foundRows;
+        QSet<int> allRows;
+        for(int keyCounter=0; keyCounter<fromToIndexMappings.size(); keyCounter++)
+        {
+            int idxTo = fromToIndexMappings[keyCounter].pksToC;
+            foundRows.insert(idxTo);
+        }
+        for(int i=0; i<pksTo.size(); i++)
+        {
+            allRows.insert(i);
+        }
+        missingRows = allRows - foundRows;
+
+        foreach(int idx, missingRows)
+        {
+            QStringList pksToName;
+            QStringList pksToValues;
+            for(int allToC=0; allToC<allTo.size(); allToC++)
+            {
+                QMap<QString, bool> foundsTo;
+                for(int j=0; j<pksTo[idx].size(); j++)
+                {
+                    for(int i=0; i<allTo[allToC].size(); i++)
+                    {
+                        if(foundsTo.keys().contains(pksTo[idx][j]->column->getName()))
+                        {
+                            if(!foundsTo[pksTo[idx][j]->column->getName()])
+                            {
+                                foundsTo[pksTo[idx][j]->column->getName()] = false;
+                            }
+                        }
+                        else
+                        {
+                            foundsTo[pksTo[idx][j]->column->getName()] = false;
+                        }
+                        ColumnWithValue* cwv = allTo[allToC][i];
+                        Column* c = cwv->column;
+                        ColumnWithValue* pkcwv = pksTo[idx][j];
+                        Column* pkC = pkcwv->column;
+                        if(c->getName() == pkC->getName())
+                        {
+                            if(cwv->value == pkcwv->value)
+                            {
+                                foundsTo[c->getName()] = true;
+                            }
+                        }
+                    }
+                }
+                bool foundTo = true;
+
+                for(int j=0; j<foundsTo.keys().size(); j++)
+                {
+                    foundTo &= foundsTo[ foundsTo.keys().at(j) ];
+                }
+
+                if(foundTo)
+                {
+                    QStringList cols;
+                    QStringList vals;
+                    for(int i=0; i<allTo[allToC].size(); i++)
+                    {
+                        ColumnWithValue* cwv = allTo[allToC][i];
+                        cols << cwv->column->getName();
+                        vals << cwv->value;
+                    }
+                    m_commands << to->getProject()->getEngine()->getSqlGenerator()->getInsertsIntoTable(tinst->table()->getName(), cols, vals);
+                }
+            }
+        }
+        }
+
     }
 }
