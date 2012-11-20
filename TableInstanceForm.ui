@@ -507,6 +507,22 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>values</sender>
+   <signal>cellChanged(int,int)</signal>
+   <receiver>TableInstanceForm</receiver>
+   <slot>onCellChange(int,int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>445</x>
+     <y>285</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>393</x>
+     <y>295</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>onLoadValuesFromCSV()</slot>

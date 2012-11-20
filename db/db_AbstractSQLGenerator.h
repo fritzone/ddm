@@ -179,6 +179,37 @@ public:
      */
     virtual QStringList getAlterTableForDropForeignKey(const QString& table, const ForeignKey *fk) = 0;
 
+    /**
+     * Get and UPDATE table script to update destCol with valeu destValue where the pkeys are pvalues
+     * @brief getUpdateTableForColumns
+     * @param table
+     * @param pkeys
+     * @param pvalues
+     * @param destCol
+     * @param destValue
+     * @return
+     */
+    virtual QString getUpdateTableForColumns(const QString& table, const QStringList& pkeys, const QStringList& pvalues, const QString& destCol, const QString& destValue) = 0;
+
+    /**
+     * @brief getDeleteFromTable
+     * @param table
+     * @param pkeys
+     * @param pvalues
+     * @return
+     */
+    virtual QString getDeleteFromTable(const QString& table, const QStringList& pkeys, const QStringList& pvalues) = 0;
+
+    /**
+     * @brief getInsertsIntoTable
+     * @param table
+     * @param columns
+     * @param values
+     * @return
+     */
+    virtual QString getInsertsIntoTable(const QString& table, const QStringList& columns, const QStringList& values) = 0;
+
+
     virtual ~AbstractSqlGenerator() {}
 };
 

@@ -34,6 +34,9 @@ public:
     virtual QString getAlterTableToDropForeignKey(const QString& table, const QString& fkName);
     virtual QString getDropTable(const QString& table);
     virtual QStringList getAlterTableForDropForeignKey(const QString& table, const ForeignKey *fk);
+    virtual QString getUpdateTableForColumns(const QString& table, const QStringList& pkeys, const QStringList& pvalues, const QString& destCol, const QString& destValue);
+    virtual QString getDeleteFromTable(const QString& table, const QStringList& pkeys, const QStringList& pvalues);
+    virtual QString getInsertsIntoTable(const QString& table, const QStringList& columns, const QStringList& values);
 
 private:
 
