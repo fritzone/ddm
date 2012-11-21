@@ -262,7 +262,7 @@ QStringList MySQLSQLGenerator::generateCreateTableSql(Table *table, const QHash<
             {
                 if(dest)
                 {
-                    QStringList supportedStroageEngines = mysEng->getSupportedStorageEngines(dest->getHost(), dest->getUser(), dest->getPassword());
+                    QStringList supportedStroageEngines = mysEng->getSupportedStorageEngines(dest->getHost(), dest->getUser(), dest->getPassword(), dest->getPort());
                     if(supportedStroageEngines.contains(storageEngine.toUpper()))
                     {
                         createTable += QString(upcase?"ENGINE = ":"engine = ") + storageEngine;

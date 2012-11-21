@@ -172,38 +172,38 @@
             </property>
            </widget>
           </item>
-          <item row="4" column="0">
+          <item row="5" column="0">
            <widget class="QLabel" name="label_4">
             <property name="text">
              <string>User</string>
             </property>
            </widget>
           </item>
-          <item row="4" column="1">
+          <item row="5" column="1">
            <widget class="QLineEdit" name="txtDatabaseUser"/>
           </item>
-          <item row="5" column="0">
+          <item row="6" column="0">
            <widget class="QLabel" name="label_5">
             <property name="text">
              <string>Password</string>
             </property>
            </widget>
           </item>
-          <item row="5" column="1">
+          <item row="6" column="1">
            <widget class="QLineEdit" name="txtDatabasePassword">
             <property name="echoMode">
              <enum>QLineEdit::Password</enum>
             </property>
            </widget>
           </item>
-          <item row="13" column="0">
+          <item row="14" column="0">
            <widget class="QCheckBox" name="chkAutoConnect">
             <property name="text">
              <string>Auto Connect</string>
             </property>
            </widget>
           </item>
-          <item row="14" column="0">
+          <item row="15" column="0">
            <widget class="QCheckBox" name="chkSavePassword">
             <property name="enabled">
              <bool>false</bool>
@@ -216,7 +216,7 @@
             </property>
            </widget>
           </item>
-          <item row="7" column="0">
+          <item row="8" column="0">
            <widget class="QLabel" name="lblDatabase">
             <property name="enabled">
              <bool>true</bool>
@@ -226,7 +226,7 @@
             </property>
            </widget>
           </item>
-          <item row="7" column="1">
+          <item row="8" column="1">
            <layout class="QFormLayout" name="formLayout_2">
             <property name="fieldGrowthPolicy">
              <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
@@ -273,31 +273,45 @@
             </item>
            </layout>
           </item>
-          <item row="6" column="0">
+          <item row="7" column="0">
            <widget class="QPushButton" name="btnConnect">
             <property name="text">
              <string>Connect</string>
             </property>
            </widget>
           </item>
-          <item row="11" column="0">
+          <item row="12" column="0">
            <widget class="QLabel" name="lblConnectionName">
             <property name="text">
              <string>Name</string>
             </property>
            </widget>
           </item>
-          <item row="11" column="1">
+          <item row="12" column="1">
            <widget class="QLineEdit" name="txtConnectionName">
             <property name="text">
              <string>localhost</string>
             </property>
            </widget>
           </item>
-          <item row="9" column="0" colspan="2">
+          <item row="10" column="0" colspan="2">
            <widget class="Line" name="line">
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="0">
+           <widget class="QLabel" name="label_2">
+            <property name="text">
+             <string>Port</string>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="1">
+           <widget class="QLineEdit" name="txtPort">
+            <property name="text">
+             <string>3306</string>
             </property>
            </widget>
           </item>

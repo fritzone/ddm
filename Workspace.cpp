@@ -231,7 +231,8 @@ void Workspace::createNewConnection()
         QString password = injectDialog->getPassword();
         QString db = injectDialog->getDatabase();
         QString name = injectDialog->getName();
-        Connection* c = new Connection(name, host, user, password, db, true, injectDialog->getAutoConnect());
+        int port = injectDialog->getPort();
+        Connection* c = new Connection(name, host, user, password, db, true, injectDialog->getAutoConnect(), port);
         ConnectionManager::instance()->addConnection(c);
         MainWindow::instance()->getConnectionGuiElements()->createConnectionTreeEntry(c);
     }

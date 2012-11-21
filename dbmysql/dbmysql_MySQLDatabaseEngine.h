@@ -25,7 +25,7 @@ public:
     virtual bool reverseEngineerDatabase(Connection *c, const QStringList& tables, const QStringList& views, const QStringList& procs, const QStringList& funcs, const QStringList& triggers, Project* p, bool relaxed);
     virtual Table* reverseEngineerTable(Connection *c, const QString& tableName, Project* p, bool relaxed, Version* ver);
     virtual View* reverseEngineerView(Connection *c, const QString& viewName, Version* v);
-    virtual QStringList getAvailableDatabases(const QString& host, const QString& user, const QString& pass);
+    virtual QStringList getAvailableDatabases(const QString& host, const QString& user, const QString& pass, int port);
     virtual QStringList getAvailableTables(Connection* c);
     virtual QStringList getAvailableViews(Connection* c);
     virtual QStringList getAvailableStoredProcedures(Connection* c);
@@ -57,7 +57,7 @@ public:
     virtual bool injectMetadata(Connection* c, const Version* v);
     virtual QString getDbMetadata(Connection *c);
 
-    QStringList getSupportedStorageEngines(const QString& host, const QString& user, const QString& pass);
+    QStringList getSupportedStorageEngines(const QString& host, const QString& user, const QString& pass, int port);
 private:
     MySQLDatabaseEngine();
 

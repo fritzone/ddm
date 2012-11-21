@@ -197,7 +197,7 @@ public:
      *
      * @return a list of database names
      */
-    virtual QStringList getAvailableDatabases(const QString& host, const QString& user, const QString& pass) = 0;
+    virtual QStringList getAvailableDatabases(const QString& host, const QString& user, const QString& pass, int port) = 0;
 
     /**
      * Returnd a list of the tables that are in the database represented by
