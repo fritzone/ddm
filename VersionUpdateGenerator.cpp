@@ -21,6 +21,9 @@ VersionUpdateGenerator::VersionUpdateGenerator(Version *from, Version *to) : m_c
 {
     if(from->getObjectUid() == to->getObjectUid()) return;
 
+    m_commands << "-- Update script for version " + to->getVersionText() + " from " + from->getVersionText();
+    m_commands << "\n-- Tables";
+
     updateTables(from, to);
 
     if(m_tablesReferencedWithFkFromOtherTables.keys().size())
@@ -108,7 +111,11 @@ VersionUpdateGenerator::VersionUpdateGenerator(Version *from, Version *to) : m_c
         }
     }
 
-    updateTableInstances(from, to);
+    if(to->getProject()->oopProject())
+    {
+        m_commands << "\n-- Table instances";
+        updateTableInstances(from, to);
+    }
 
 }
 

@@ -236,9 +236,10 @@ void MainWindow::onNewSolution()
                 QString host = injectDialog->getHost();
                 QString user = injectDialog->getUser();
                 QString password = injectDialog->getPassword();
+                int port = injectDialog->getPort();
                 QString db = injectDialog->getDatabase();
 
-                Connection c("temp", host, user, password, db, false, false);
+                Connection c("temp", host, user, password, db, false, false, port);
                 QString meta = nprjdlg->getDatabaseEngine()->getDbMetadata(&c);
                 QDomDocument doc;
                 QString lastErr;
@@ -2146,7 +2147,7 @@ void MainWindow::onEditConnection()
         ij->populateConnectionDetails(c);
         if(ij->exec()  == QDialog::Accepted)
         {
-            c->resetTo(ij->getName(), ij->getHost(), ij->getUser(), ij->getPassword(), ij->getDatabase(), true, ij->getAutoConnect());
+            c->resetTo(ij->getName(), ij->getHost(), ij->getUser(), ij->getPassword(), ij->getDatabase(), ij->getPort(), true, ij->getAutoConnect());
             c->setDisplayText(c->getName());
             c->getLocation()->setText(1, c->getDb()+"@"+c->getHost());
             QVariant var(c->getName());
@@ -2443,7 +2444,7 @@ void MainWindow::onGotoIssueLocation()
         ij->populateConnectionDetails(c);
         if(ij->exec()  == QDialog::Accepted)
         {
-            c->resetTo(ij->getName(), ij->getHost(), ij->getUser(), ij->getPassword(), ij->getDatabase(), true, ij->getAutoConnect());
+            c->resetTo(ij->getName(), ij->getHost(), ij->getUser(), ij->getPassword(), ij->getDatabase(), ij->getPort(), true, ij->getAutoConnect());
         }
     }
 }
@@ -2650,6 +2651,7 @@ void MainWindow::onReverseEngineerWizardAccept()
     QString user = m_revEngWizard->getUser();
     QString pass = m_revEngWizard->getPasword();
     QString db = m_revEngWizard->getDatabase();
+    int port = m_revEngWizard->getPort();
     Project* p = m_workspace->currentProject();
     bool c = !m_revEngWizard->createDataTypesForColumns();
     DatabaseEngine* engine = m_workspace->currentProjectsEngine();
@@ -2657,7 +2659,7 @@ void MainWindow::onReverseEngineerWizardAccept()
     createStatusLabel();
     lblStatus->setText(QApplication::translate("MainWindow", "Reverse engineering started", 0, QApplication::UnicodeUTF8));
 
-    ReverseEngineerer* revEng = new ReverseEngineerer(c, engine, p, host, user, pass, db,
+    ReverseEngineerer* revEng = new ReverseEngineerer(c, engine, p, host, user, pass, db, port,
                                                       m_revEngWizard->getTablesToReverse(),
                                                       m_revEngWizard->getViewsToReverse(),
                                                       m_revEngWizard->getProceduresToReverse(),

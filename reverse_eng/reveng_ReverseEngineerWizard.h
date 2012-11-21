@@ -34,6 +34,8 @@ public:
     QString getUser() {return m_user; }
     QString getPasword() {return m_pass; }
     QString getDatabase() {return m_database; }
+    int getPort() {return m_port; }
+
     bool createDataTypesForColumns();
 
 private:
@@ -53,6 +55,7 @@ private:
     QString m_user;
     QString m_pass;
     QString m_database;
+    int m_port;
 };
 
 #endif // REVERSEENGINEERWIZARD_H

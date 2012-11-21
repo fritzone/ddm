@@ -34,3 +34,9 @@ QString ReverseEngineerWizardWelcomeForm::getPassword()
 {
     return ui->txtDatabasePassword->text();
 }
+
+
+int ReverseEngineerWizardWelcomeForm::getPort()
+{
+    return ui->txtPort->text().toInt();
+}

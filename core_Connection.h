@@ -17,7 +17,7 @@ class Connection : public TreeItem, public SerializableElement,  public IssueOri
 {
 public:
 
-    Connection(const QString& name, const QString& host, const QString& user, const QString& pass, const QString& db, bool savePw, bool autoConnect);
+    Connection(const QString& name, const QString& host, const QString& user, const QString& pass, const QString& db, bool savePw, bool autoConnect, int port);
     virtual void serialize(QDomDocument& doc, QDomElement& parent) const;
     virtual Table* getIssueTable() const
     {
@@ -56,7 +56,7 @@ public:
     {
         return m_pass;
     }
-    void resetTo(const QString& name, const QString& host, const QString& user, const QString& pass, const QString& db, bool savePw, bool autoConnect);
+    void resetTo(const QString& name, const QString& host, const QString& user, const QString& pass, const QString& db, int port, bool savePw, bool autoConnect);
     DatabaseEngine* getEngine() const
     {
         return m_engine;
@@ -87,6 +87,11 @@ public:
         return m_autoConnect;
     }
 
+    int getPort() const
+    {
+        return m_port;
+    }
+
 private:
 
     QString m_host;
@@ -94,6 +99,7 @@ private:
     QString m_pass;
     QString m_db;
     QString m_dbType;
+    int m_port;
     bool m_savePw;
     bool m_autoConnect;
     DatabaseEngine* m_engine;

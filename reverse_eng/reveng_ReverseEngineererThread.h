@@ -13,7 +13,7 @@ class ReverseEngineererThread : public QObject
     Q_OBJECT
 public:
     explicit ReverseEngineererThread(bool c, DatabaseEngine* engine, Project* p,
-                                     const QString& host, const QString& user, const QString& pass, const QString& db,
+                                     const QString& host, const QString& user, const QString& pass, const QString& db, int port,
                                      const QStringList& tabsToReverse,  const QStringList& viewsToReverse,
                                      const QStringList& procsToReverse, const QStringList& funcsToReverse,
                                      const QStringList& triggersToReverse, QObject *parent = 0);
@@ -37,6 +37,7 @@ private:
     DatabaseEngine* m_engine;
     Project* m_project;
     bool m_createDataTypesForColumns;
+    int m_port;
 };
 
 #endif // CORE_REVERSEENGINEERERTHREAD_H

@@ -204,10 +204,13 @@ void InjectSqlDialog::changeEvent(QEvent *e)
 void InjectSqlDialog::onConnect()
 {
 
-    QStringList databases = m_dbEngine->getAvailableDatabases(ui->txtDatabaseHost->text(), ui->txtDatabaseUser->text(), ui->txtDatabasePassword->text());
+    QStringList databases = m_dbEngine->getAvailableDatabases(ui->txtDatabaseHost->text(),
+                                                              ui->txtDatabaseUser->text(),
+                                                              ui->txtDatabasePassword->text(),
+                                                              ui->txtPort->text().toInt());
     if(databases.size() == 0)
     {
-        QMessageBox::critical(this, tr("Error"), m_dbEngine->getLastError(), QMessageBox::Ok)        ;
+        QMessageBox::critical(this, tr("Error"), m_dbEngine->getLastError(), QMessageBox::Ok);
         return;
     }
 
@@ -336,7 +339,11 @@ void InjectSqlDialog::onCreateDatabase()
     if(dlg->exec() == QDialog::Accepted)
     {
         QString t = dlg->getText();
-        Connection* c = new Connection("temp", ui->txtDatabaseHost->text(), ui->txtDatabaseUser->text(),  ui->txtDatabasePassword->text(), dlg->getText(), false, false);
+        Connection* c = new Connection("temp",
+                                       ui->txtDatabaseHost->text(),
+                                       ui->txtDatabaseUser->text(),
+                                       ui->txtDatabasePassword->text(),
+                                       dlg->getText(), false, false, ui->txtPort->text().toInt());
 
         bool b = m_dbEngine->createDatabase(c);
         if(!b)
@@ -373,6 +380,7 @@ void InjectSqlDialog::onSelectConnection(QListWidgetItem* item)
 
     ui->txtDatabaseHost->setReadOnly(true);
     ui->txtDatabaseUser->setReadOnly(true);
+    ui->txtPort->setReadOnly(true);
     ui->txtDatabasePassword->setReadOnly(true);
     ui->txtConnectionName->setReadOnly(true);
     ui->txtDatabaseName->setReadOnly(true);
@@ -386,6 +394,7 @@ void InjectSqlDialog::populateConnectionDetails(Connection* c)
     ui->txtDatabaseUser->setText(c->getUser());
     ui->txtDatabasePassword->setText(c->getPassword());
     ui->txtDatabaseName->setText(c->getDb());
+    ui->txtPort->setText(QString::number(c->getPort()));
 }
 
 void InjectSqlDialog::clearConnectionDetails()
@@ -393,6 +402,7 @@ void InjectSqlDialog::clearConnectionDetails()
     ui->txtConnectionName->setText("localhost");
     ui->txtDatabaseHost->setText("localhost");
     ui->txtDatabaseUser->clear();
+    ui->txtPort->clear();
     ui->txtDatabasePassword->clear();
     ui->txtDatabaseName->clear();
 }
@@ -427,4 +437,9 @@ void InjectSqlDialog::onUserChange(QString newText)
         QString finalName = newText.length()?newText + "@" + (db.length()?db:"localhost"):(db.length()?db:"localhost");
         ui->txtConnectionName->setText(finalName);
     }
+}
+
+int InjectSqlDialog::getPort() const
+{
+    return ui->txtPort->text().toInt();
 }

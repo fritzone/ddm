@@ -14,7 +14,7 @@ class ReverseEngineerer : public QObject
     Q_OBJECT
 public:
     explicit ReverseEngineerer(bool c, DatabaseEngine* engine, Project* p,
-                               const QString& host, const QString& user, const QString& pass, const QString& db,
+                               const QString& host, const QString& user, const QString& pass, const QString& db, int port,
                                const QStringList& tabsToReverse, const QStringList& viewsToReverse,
                                const QStringList& procsToReverse, const QStringList& funcsToReverse,
                                const QStringList& triggersToReverse,
@@ -39,6 +39,7 @@ private:
     DatabaseEngine* m_engine;
     Project* m_project;
     bool m_createDataTypesForColumns;
+    int m_port;
 };
 
 

@@ -18,6 +18,7 @@ public:
     QString getHost();
     QString getUser();
     QString getPassword();
+    int getPort();
 
 private:
     Ui::ReverseEngineerWizardWelcomeForm *ui;

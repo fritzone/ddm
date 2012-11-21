@@ -15,7 +15,7 @@ ReverseEngineerWizard::ReverseEngineerWizard(DatabaseEngine* engine) : QWizard()
     m_functionsPage(new ReverseEngineerWizardObjectListForm(0, ReverseEngineerWizardObjectListForm::REVERSE_ENGINEER_FUNCS)),
     m_triggersPage(new ReverseEngineerWizardObjectListForm(0, ReverseEngineerWizardObjectListForm::REVERSE_ENGINEER_TRIGGERS)),
     m_optionsPage(new ReverseEngineerWizardOptionsForm),
-    m_host(""), m_user(""), m_pass(""), m_database("")
+    m_host(""), m_user(""), m_pass(""), m_database(""), m_port(0)
 {
     addPage(m_welcomePage);
     addPage(m_databasesPage);
@@ -37,7 +37,7 @@ void ReverseEngineerWizard::gatherConnectionData()
 
 bool ReverseEngineerWizard::connectAndRetrieveDatabases()
 {
-    QStringList databases = m_engine->getAvailableDatabases(m_host, m_user, m_pass);
+    QStringList databases = m_engine->getAvailableDatabases(m_host, m_user, m_pass, m_port);
     if(databases.size() == 0)
     {
         QMessageBox::critical(this, tr("Error"), QObject::tr("Seems there are no databases at the given location.\n") + m_engine->getLastError(), QMessageBox::Ok)        ;
@@ -62,7 +62,7 @@ bool ReverseEngineerWizard::selectDatabase()
 
 bool ReverseEngineerWizard::connectAndRetrieveViews()
 {
-    Connection* c = new Connection("temp", m_host, m_user, m_pass, m_database, false, false);
+    Connection* c = new Connection("temp", m_host, m_user, m_pass, m_database, false, false, m_port);
 
     QStringList views = m_engine->getAvailableViews(c);
     m_viewsPage->clearList();
@@ -76,7 +76,7 @@ bool ReverseEngineerWizard::connectAndRetrieveViews()
 
 bool ReverseEngineerWizard::connectAndRetrieveFunctions()
 {
-    Connection* c = new Connection("temp", m_host, m_user, m_pass, m_database, false, false);
+    Connection* c = new Connection("temp", m_host, m_user, m_pass, m_database, false, false, m_port);
 
     QStringList funcs = m_engine->getAvailableStoredFunctions(c);
     m_functionsPage->clearList();
@@ -90,7 +90,7 @@ bool ReverseEngineerWizard::connectAndRetrieveFunctions()
 
 bool ReverseEngineerWizard::connectAndRetrieveProcedures()
 {
-    Connection* c = new Connection("temp", m_host, m_user, m_pass, m_database, false, false);
+    Connection* c = new Connection("temp", m_host, m_user, m_pass, m_database, false, false, m_port);
 
     QStringList procs = m_engine->getAvailableStoredProcedures(c);
     m_proceduresPage->clearList();
@@ -104,7 +104,7 @@ bool ReverseEngineerWizard::connectAndRetrieveProcedures()
 
 bool ReverseEngineerWizard::connectAndRetrieveTriggers()
 {
-    Connection* c = new Connection("temp", m_host, m_user, m_pass, m_database, false, false);
+    Connection* c = new Connection("temp", m_host, m_user, m_pass, m_database, false, false, m_port);
 
     QStringList triggers = m_engine->getAvailableTriggers(c);
     m_triggersPage->clearList();
@@ -118,7 +118,7 @@ bool ReverseEngineerWizard::connectAndRetrieveTriggers()
 
 bool ReverseEngineerWizard::connectAndRetrieveTables()
 {
-    Connection* c = new Connection("temp", m_host, m_user, m_pass, m_database, false, false);
+    Connection* c = new Connection("temp", m_host, m_user, m_pass, m_database, false, false, m_port);
     QStringList tables = m_engine->getAvailableTables(c);
     m_tablesPage->clearList();
     for(int i=0; i<tables.size(); i++)

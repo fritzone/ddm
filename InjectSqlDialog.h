@@ -27,6 +27,8 @@ public:
     QString getPassword() const;
     QString getHost() const;
     QString getName() const;
+    int getPort() const;
+
     QStringList getSelectedConnections() const;
 
     bool getRollbackOnError() const;

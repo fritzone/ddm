@@ -180,6 +180,7 @@ QSqlDatabase MySQLDatabaseEngine::getQSqlDatabaseForConnection(Connection *c)
 
     dbo.setHostName(c->getHost());
     dbo.setDatabaseName(c->getDb());
+    if(c->getPort()) dbo.setPort(c->getPort());
     dbo.open(c->getUser(), c->getPassword());
 
     return dbo;
@@ -674,9 +675,9 @@ QString MySQLDatabaseEngine::getDefaultDatatypesLocation()
     return "mysql.defaults";
 }
 
-QStringList MySQLDatabaseEngine::getAvailableDatabases(const QString& host, const QString& user, const QString& pass)
+QStringList MySQLDatabaseEngine::getAvailableDatabases(const QString& host, const QString& user, const QString& pass, int port)
 {
-    Connection *c = new Connection("temp", host, user, pass, "", false, false);
+    Connection *c = new Connection("temp", host, user, pass, "", false, false, port);
     QSqlDatabase db = getQSqlDatabaseForConnection(c);
     bool ok = db.isOpen();
     QStringList result;
@@ -1718,9 +1719,9 @@ bool MySQLDatabaseEngine::tableBlocksForeignKeyFunctionality(const Table* table)
     return true;
 }
 
-QStringList MySQLDatabaseEngine::getSupportedStorageEngines(const QString& host, const QString& user, const QString& pass)
+QStringList MySQLDatabaseEngine::getSupportedStorageEngines(const QString& host, const QString& user, const QString& pass, int port)
 {
-    Connection *c = new Connection("temp", host, user, pass, "", false, false);
+    Connection *c = new Connection("temp", host, user, pass, "", false, false, port);
     QSqlDatabase db = getQSqlDatabaseForConnection(c);
     bool ok = db.isOpen();
     QStringList result;

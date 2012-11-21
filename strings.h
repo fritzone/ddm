@@ -113,6 +113,7 @@ static const QString strName = "Name";
 static const QString strHost = "Host";
 static const QString strPass = "Pass";
 static const QString strUser = "User";
+static const QString strPort = "Port";
 static const QString strDB = "DB";
 static const QString strAutoConnect = "AutoConnect";
 static const QString strDbType = "DbType";
