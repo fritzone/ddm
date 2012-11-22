@@ -147,7 +147,7 @@ void NewViewForm::presentSql(Project* p, Version *)
 void NewViewForm::setView(View *v)
 {
     m_view = v;
-    ui->chkCanReplace->setChecked(v->getReplace());
+    ui->chkCanReplace->setChecked(v->canReplace());
     ui->txtViewName->setText(v->getName());
 
 

@@ -56,6 +56,14 @@ private:
      */
     void updateTableInstances(Version* from, Version* to);
 
+    /**
+     * Generate code to update the views
+     * @brief updateViews
+     * @param from
+     * @param to
+     */
+    void updateViews(Version* from, Version* to);
+
 private:
 
     QStringList m_commands;

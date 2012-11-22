@@ -46,12 +46,12 @@ public:
         m_canReplace = b;
     }
 
-    bool getReplace() const
+    bool canReplace() const
     {
         return m_canReplace;
     }
 
-    bool getManual() const
+    bool isManual() const
     {
         return m_manual;
     }
@@ -81,6 +81,14 @@ public:
     void secondStepClone();
 
     virtual void updateGui();
+
+    /**
+     * @brief getHash
+     * @return a hash of this Views's SQL in order for to be compared with other views
+     */
+    QString getHash() const;
+
+    QString getCreationStatement() const;
 
 private:
     SelectQuery* m_selectQuery;
