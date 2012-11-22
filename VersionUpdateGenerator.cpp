@@ -11,6 +11,7 @@
 #include "Configuration.h"
 #include "core_Column.h"
 #include "ForeignKey.h"
+#include "core_View.h"
 
 struct IndexHolder
 {
@@ -116,6 +117,8 @@ VersionUpdateGenerator::VersionUpdateGenerator(Version *from, Version *to) : m_c
         m_commands << "\n-- Table instances";
         updateTableInstances(from, to);
     }
+
+    updateViews(from, to);
 
 }
 
@@ -604,6 +607,7 @@ void VersionUpdateGenerator::updateTableInstances(Version *from, Version *to)
             const QVector<ColumnWithValue*>& fromRow = allFrom[idxFrom];
             const QVector<ColumnWithValue*>& toRow = allTo[idxTo];
 
+            QSet<Column*> usedColumns;   // holds all the columns for which a descendant was found in this row. The other columns are new columns, will be handled after
             for(int i=0; i<fromRow.size(); i++)
             {
                 int idxFound = -1;
@@ -612,6 +616,7 @@ void VersionUpdateGenerator::updateTableInstances(Version *from, Version *to)
                 {
                     if(UidWarehouse::instance().related(fromRow[i]->column, toRow[j]->column))
                     {
+                        usedColumns.insert(toRow[j]->column);
                         idxFound = j;
                         break;
                     }
@@ -634,6 +639,37 @@ void VersionUpdateGenerator::updateTableInstances(Version *from, Version *to)
                         m_commands << to->getProject()->getEngine()->getSqlGenerator()->getUpdateTableForColumns(tinst->table()->getName(), pksToNames, pksToValues, toRow[idxFound]->column->getName(), toRow[idxFound]->value);
                     }
                 }
+            }
+
+            QSet<Column*> allColumns;
+            for(int i=0; i<toRow.size(); i++)
+            {
+                allColumns.insert(toRow[i]->column);
+            }
+
+            QSet<Column*>  newColumnsInTo = allColumns - usedColumns;
+            foreach(Column* col, newColumnsInTo)
+            {
+                int idx2Found = -1;
+                for(int j=0; j<toRow.size(); j++)
+                {
+                    if(toRow[j]->column == col)
+                    {
+                        idx2Found = j;
+                        break;
+                    }
+                }
+
+
+                int pksToIdx = fromToIndexMappings[keyCounter].pksToC;
+                QStringList pksToNames;
+                QStringList pksToValues;
+                for(int k = 0; k<pksTo[pksToIdx].size(); k++)
+                {
+                    pksToNames << pksTo[pksToIdx][k]->column->getName();
+                    pksToValues <<pksTo[pksToIdx][k]->value;
+                }
+                m_commands << to->getProject()->getEngine()->getSqlGenerator()->getUpdateTableForColumns(tinst->table()->getName(), pksToNames, pksToValues, col->getName(), toRow[idx2Found]->value);
             }
         }
 
@@ -685,8 +721,6 @@ void VersionUpdateGenerator::updateTableInstances(Version *from, Version *to)
 
         foreach(int idx, missingRows)
         {
-            QStringList pksToName;
-            QStringList pksToValues;
             for(int allToC=0; allToC<allTo.size(); allToC++)
             {
                 QMap<QString, bool> foundsTo;
@@ -741,5 +775,34 @@ void VersionUpdateGenerator::updateTableInstances(Version *from, Version *to)
         }
         }
 
+    }
+}
+
+void VersionUpdateGenerator::updateViews(Version *from, Version *to)
+{
+    const QVector<View*>& toViews = to->getViews();
+    const QVector<View*>& fromViews = from->getViews();
+
+    QSet<View*> foundViews;
+    // first step: find the views which
+    for(int i=0; i<fromViews.size(); i++)
+    {
+        View* viewFrom = fromViews.at(i);
+        for(int j=0; j<toViews.size(); j++)
+        {
+            View* viewTo = toViews.at(j);
+            if(UidWarehouse::instance().related(viewFrom, viewTo))
+            {
+                foundViews.insert(viewTo);
+
+                QString fromHash = viewFrom->getHash();
+                QString toHash = viewTo->getHash();
+
+                if(fromHash != toHash)
+                {
+                    qDebug() << viewTo->getName() << " changed";
+                }
+            }
+        }
     }
 }

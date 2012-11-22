@@ -450,7 +450,7 @@ void MainWindow::showViewWithGuid(Version * ver, const QString & guid, bool /*fo
     View* v = dynamic_cast<View*>(UidWarehouse::instance().getElement(guid));
     if(v)
     {
-        if(v->getManual())
+        if(v->isManual())
         {
             m_nvf = new NewViewForm(ver, false, 0, this);
 

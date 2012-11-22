@@ -579,7 +579,7 @@ QStringList MySQLSQLGenerator::generateDefaultValuesSql(Table* table, const QHas
 
 QStringList MySQLSQLGenerator::generateCreateViewSql(View *v, const QHash<QString, QString> &options) const
 {
-    if(v->getManual())
+    if(v->isManual())
     {
         QStringList res;
         res.append(v->getManualSql());
@@ -590,7 +590,7 @@ QStringList MySQLSQLGenerator::generateCreateViewSql(View *v, const QHash<QStrin
         QStringList res;
         bool upcase = options.contains("Case") && options["Case"] == "Upper";
         res.append(upcase?"CREATE ":"create ");
-        if(v->getReplace())
+        if(v->canReplace())
         {
             res.append(upcase?"OR REPLACE ":"or replace ");
         }

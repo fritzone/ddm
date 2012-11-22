@@ -9,6 +9,8 @@
 #include "IconFactory.h"
 #include "ContextMenuCollection.h"
 
+#include <QCryptographicHash>
+
 View::View(bool manual, QString uid, Version *v) :
     SqlSourceEntity(),
     NamedItem(NameGenerator::getUniqueName(Workspace::getInstance()->workingVersion(), (itemGetter)&Version::getView, QString("view"))),
@@ -131,4 +133,39 @@ void View::updateGui()
         }
     }
     TreeItem::updateGui();
+}
+
+QString View::getHash() const
+{
+    QString sql = m_manual?m_sql:m_selectQuery->get();
+    QString spaceless = "";
+    for(int i=0; i<sql.size(); i++)
+    {
+        if(!sql.at(i).isSpace())
+        {
+            spaceless += sql.at(i);
+        }
+    }
+
+    QString hash = QString(QCryptographicHash::hash((sql.toLocal8Bit()),QCryptographicHash::Md5).toHex());
+
+    return hash;
+}
+
+QString View::getCreationStatement() const
+{
+    QString result = "";
+    QString sql = m_manual?m_sql:m_selectQuery->get();
+    int asPosition = sql.indexOf("AS", Qt::CaseInsensitive);
+    if(asPosition > -1)
+    {
+        asPosition += 2;
+        int t = asPosition;
+        while(sql.at(asPosition).isSpace()) asPosition ++;
+        if(t == asPosition) // no space around as
+        {
+
+        }
+    }
+    return result;
 }
