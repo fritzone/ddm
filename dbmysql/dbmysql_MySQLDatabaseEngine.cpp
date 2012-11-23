@@ -183,6 +183,11 @@ QSqlDatabase MySQLDatabaseEngine::getQSqlDatabaseForConnection(Connection *c)
     if(c->getPort()) dbo.setPort(c->getPort());
     dbo.open(c->getUser(), c->getPassword());
 
+    if(!dbo.isOpen())
+    {
+        qDebug() << dbo.lastError();
+    }
+
     return dbo;
 }
 
@@ -1488,6 +1493,7 @@ QStringList MySQLDatabaseEngine::getAvailableIndexes(Connection* c)
 
         result.append(tabName + "." + indexName + " (" + columnName +")");
     }
+    db.close();
     return result;
 }
 
@@ -1515,6 +1521,7 @@ QString MySQLDatabaseEngine::getTableCreationScript(Connection* c, const QString
     {
         result = query.value(1).toString();
     }
+    db.close();
     return result;
 }
 

@@ -348,6 +348,7 @@ void BrowseTableForm::newPage(Connection *c, const QString &tab, BrowsedTableLay
             tableForTableData->setModel(model);
             tableForTableData->setEditTriggers(QAbstractItemView::DoubleClicked|QAbstractItemView::EditKeyPressed);
         }
+        sqldb.close();
         }
 
         {
@@ -359,13 +360,16 @@ void BrowseTableForm::newPage(Connection *c, const QString &tab, BrowsedTableLay
         tabWidget->addTab(columnsTab, QString("Columns"));
 
         QSqlQueryModel *model = new QSqlQueryModel(tableForTableColumns);
-        model->setQuery(QSqlQuery(c->getEngine()->getTableDescriptionScript(tab), c->getQSqlDatabase()));
+        QSqlDatabase db2 = c->getQSqlDatabase();
+        model->setQuery(QSqlQuery(c->getEngine()->getTableDescriptionScript(tab), db2));
         if(model->lastError().type() != QSqlError::NoError)
         {
             QMessageBox::critical(this, tr("Error"), model->lastError().text(), QMessageBox::Ok);
+            if(db2.isOpen()) db2.close();
             return;
         }
         tableForTableColumns->setModel(model);
+        db2.close();
         }
 
         // create the Script tab
@@ -410,6 +414,7 @@ void BrowseTableForm::newPage(Connection *c, const QString &tab, BrowsedTableLay
         tabWidget->setCurrentIndex(0);
 
         mainTab->addTab(tabWidget, layout == BROWSE_TABLE?IconFactory::getTabinstIcon():IconFactory::getViewIcon(), c->getDb() + "." + tab);
+
     }
 
     // create the frame for the query ... if this is a query
