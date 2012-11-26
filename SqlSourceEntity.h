@@ -15,6 +15,9 @@ class SqlSourceEntity
 {
 public:
     virtual QStringList generateSqlSource(AbstractSqlGenerator*, QHash<QString,QString>, const Connection* ) = 0;
+
+    virtual QString getSqlHash() const = 0;
+
     virtual ~SqlSourceEntity() {}
     void setSqlItem(ContextMenuEnabledTreeWidgetItem* sqlItem)
     {

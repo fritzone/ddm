@@ -47,6 +47,9 @@ public:
         return m_returns;
     }
 
+    virtual QString getSqlHash() const;
+
+
 protected:
 
     QString m_sql;

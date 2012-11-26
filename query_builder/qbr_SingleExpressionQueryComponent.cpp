@@ -105,8 +105,26 @@ QString SingleExpressionQueryComponent::get() const
                 result += m_functionInstantiationAtGivenPosition[i]->get();
                 break;
             case CELLTYPE_LITERAL:
-                result += m_typedValuesAtGivenPosition[i].startsWith("~")?m_typedValuesAtGivenPosition[i].mid(1):m_typedValuesAtGivenPosition[i];
+                {
+                QString g = m_typedValuesAtGivenPosition[i].startsWith("~")?m_typedValuesAtGivenPosition[i].mid(1):m_typedValuesAtGivenPosition[i];
+                g = g.trimmed();
+                bool onlyNumber = true;
+                bool appendQuote = true;
+                for(int k=0; k<g.size(); k++)
+                {
+                    if(!g.at(k).isNumber())
+                    {
+                        onlyNumber = false;
+                    }
+                }
+                if(!onlyNumber)
+                {
+                    if(g.at(0) == '"' && g.at(g.length() - 1) == '"') appendQuote = false;
+                }
+                if(onlyNumber) appendQuote = false;
+                result += !appendQuote?g:("\"" + g + "\"");
                 break;
+                }
             default:
                 void (0);
             }

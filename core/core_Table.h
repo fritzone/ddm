@@ -296,6 +296,8 @@ public:
     int getIndexOfColumn(const Column*);
     int getIndexOfColumn(const QString&);
 
+    virtual QString getSqlHash() const { return "N/A"; }
+
 private:
 
     // describes the table

@@ -118,7 +118,10 @@ VersionUpdateGenerator::VersionUpdateGenerator(Version *from, Version *to) : m_c
         updateTableInstances(from, to);
     }
 
+    m_commands << "\n-- Views";
     updateViews(from, to);
+
+    // procedures, methods and triggers need to be dropped and recreated (at least in MySQL)
 
 }
 
@@ -784,7 +787,7 @@ void VersionUpdateGenerator::updateViews(Version *from, Version *to)
     const QVector<View*>& fromViews = from->getViews();
 
     QSet<View*> foundViews;
-    // first step: find the views which
+    // first step: find the views which have changed their sql and generate an alter statement
     for(int i=0; i<fromViews.size(); i++)
     {
         View* viewFrom = fromViews.at(i);
@@ -795,12 +798,39 @@ void VersionUpdateGenerator::updateViews(Version *from, Version *to)
             {
                 foundViews.insert(viewTo);
 
-                QString fromHash = viewFrom->getHash();
-                QString toHash = viewTo->getHash();
+                if(viewFrom->getName() != viewTo->getName())
+                {
+                    // the view changed its name.
+                    m_commands << to->getProject()->getEngine()->getSqlGenerator()->getTableRenameSql(viewFrom->getName(), viewTo->getName());
+                }
+
+                QString fromHash = viewFrom->getSqlHash();
+                QString toHash = viewTo->getSqlHash();
 
                 if(fromHash != toHash)
                 {
-                    qDebug() << viewTo->getName() << " changed";
+                    // there is a change in the views' sql too.
+
+                    // the creation step was changed. We alter it
+                    QHash<QString, QString> opts = Configuration::instance().sqlOpts();
+                    QStringList createViewLst = viewTo->generateSqlSource(to->getProject()->getEngine()->getSqlGenerator(), opts, 0);
+                    QString createView = createViewLst.at(0);
+                    // now chop the CREATE, put in the ALTER... sort of hack
+                    int idx = 0;
+                    QString cr = "";
+                    while(createView.at(idx).isSpace()) idx ++;
+                    while(createView.at(idx).isLetter())
+                    {
+                        cr += createView.at(idx);
+                        idx ++;
+                    }
+
+                    // TODO: This is MYSQL spceific
+                    if(cr.toUpper() == "CREATE")
+                    {
+                        m_commands << "ALTER " <<createView.mid(idx);
+                    }
+
                 }
             }
         }

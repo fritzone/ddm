@@ -86,9 +86,13 @@ public:
      * @brief getHash
      * @return a hash of this Views's SQL in order for to be compared with other views
      */
-    QString getHash() const;
-
+    QString getSqlHash() const;
     QString getCreationStatement() const;
+    QString getHashForCreationStatement() const;
+
+private:
+
+    QString getHash(const QString&) const;
 
 private:
     SelectQuery* m_selectQuery;

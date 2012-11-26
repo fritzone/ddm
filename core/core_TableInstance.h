@@ -123,6 +123,10 @@ public:
     QVector <QVector<ColumnWithValue*> > getValues(QVector<ColumnWithValue*> columns);
     QVector <QVector<ColumnWithValue*> > getFullValues();
 
+
+    virtual QString getSqlHash() const { return "N/A"; }
+
+
 private:
 
     // the table of the table instance

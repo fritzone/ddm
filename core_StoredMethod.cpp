@@ -1,7 +1,9 @@
 #include "core_StoredMethod.h"
 #include "db_AbstractSQLGenerator.h"
 #include "Configuration.h"
+
 #include <QStringList>
+#include <QCryptographicHash>
 
 void StoredMethod::setSql(const QString &s)
 {
@@ -303,4 +305,20 @@ QString StoredMethod::getNameFromSql(int stidx, int &nameidx)
     }
 
     return "UNNAMED";
+}
+
+QString StoredMethod::getSqlHash() const
+{
+    QString s = m_sql;
+    QString spaceless = "";
+    for(int i=0; i<s.size(); i++)
+    {
+        if(!s.at(i).isSpace())
+        {
+            spaceless += s.at(i);
+        }
+    }
+    QString hash = QString(QCryptographicHash::hash((spaceless.toUpper().toLocal8Bit()),QCryptographicHash::Md5).toHex());
+    return hash;
+
 }

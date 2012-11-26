@@ -135,21 +135,29 @@ void View::updateGui()
     TreeItem::updateGui();
 }
 
-QString View::getHash() const
+QString View::getSqlHash() const
 {
     QString sql = m_manual?m_sql:m_selectQuery->get();
+    return getHash(sql);
+}
+
+QString View::getHash(const QString& s) const
+{
     QString spaceless = "";
-    for(int i=0; i<sql.size(); i++)
+    for(int i=0; i<s.size(); i++)
     {
-        if(!sql.at(i).isSpace())
+        if(!s.at(i).isSpace())
         {
-            spaceless += sql.at(i);
+            spaceless += s.at(i);
         }
     }
-
-    QString hash = QString(QCryptographicHash::hash((sql.toLocal8Bit()),QCryptographicHash::Md5).toHex());
-
+    QString hash = QString(QCryptographicHash::hash((spaceless.toUpper().toLocal8Bit()),QCryptographicHash::Md5).toHex());
     return hash;
+}
+
+QString View::getHashForCreationStatement() const
+{
+    return getHash(getCreationStatement());
 }
 
 QString View::getCreationStatement() const
@@ -157,15 +165,39 @@ QString View::getCreationStatement() const
     QString result = "";
     QString sql = m_manual?m_sql:m_selectQuery->get();
     int asPosition = sql.indexOf("AS", Qt::CaseInsensitive);
-    if(asPosition > -1)
+    if(m_manual)
     {
-        asPosition += 2;
-        int t = asPosition;
-        while(sql.at(asPosition).isSpace()) asPosition ++;
-        if(t == asPosition) // no space around as
+        while(asPosition > -1 && asPosition < sql.length())
         {
-
+            asPosition += 2;
+            int t = asPosition;
+            while(sql.at(asPosition).isSpace()) asPosition ++;
+            if(t == asPosition) // no space around as
+            {
+                asPosition = sql.indexOf("AS", asPosition, Qt::CaseInsensitive);
+            }
+            else
+            {
+                // now asPosition should be pointing to the "SELECT"
+                QString nextW = "";
+                int selP = asPosition;
+                while(!sql.at(asPosition).isSpace())
+                {
+                    nextW += sql.at(asPosition);
+                    asPosition ++;
+                }
+                if(nextW.toUpper() == "SELECT")
+                {
+                    // found the select after the AS
+                    result = sql.mid(selP);
+                    return !m_manual?result.toUpper():result;
+                }
+            }
         }
+    }
+    else
+    {
+        result = sql;
     }
     return result;
 }
