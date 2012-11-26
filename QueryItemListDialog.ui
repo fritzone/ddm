@@ -511,8 +511,8 @@
           <rect>
            <x>0</x>
            <y>0</y>
-           <width>461</width>
-           <height>192</height>
+           <width>446</width>
+           <height>195</height>
           </rect>
          </property>
          <attribute name="label">
@@ -1316,8 +1316,8 @@ p, li { white-space: pre-wrap; }
           <rect>
            <x>0</x>
            <y>0</y>
-           <width>461</width>
-           <height>192</height>
+           <width>96</width>
+           <height>26</height>
           </rect>
          </property>
          <attribute name="icon">
@@ -1689,6 +1689,22 @@ p, li { white-space: pre-wrap; }
     <hint type="sourcelabel">
      <x>62</x>
      <y>368</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>244</x>
+     <y>265</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>txtQueryText</sender>
+   <signal>returnPressed()</signal>
+   <receiver>QueryItemListDialog</receiver>
+   <slot>btnAcceptText()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>232</x>
+     <y>468</y>
     </hint>
     <hint type="destinationlabel">
      <x>244</x>
