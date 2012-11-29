@@ -12,4 +12,15 @@ struct ColumnWithValue
     QString value;
 };
 
+struct FromToColumn
+{
+    Column* from;
+    Column* to;
+};
+
+struct ColumnWithValuesAndReference : public ColumnWithValue
+{
+    FromToColumn* ref;
+};
+
 #endif // CORE_COLUMNWITHVALUE_H

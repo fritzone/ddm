@@ -6,6 +6,9 @@
 #include "db_DatabaseEngine.h"
 #include "core_UserDataType.h"
 #include "ForeignKey.h"
+#include "Version.h"
+#include "core_ColumnWithValue.h"
+#include "VersionUpdateGenerator.h"
 
 struct OldNameNewName
 {
@@ -23,7 +26,7 @@ struct ColumnOrderChange
     QString afterColumn;
 };
 
-TableUpdateGenerator::TableUpdateGenerator(Table *t1, Table *t2, DatabaseEngine* dbEngine) : m_futurePksDropNeeded(false)
+TableUpdateGenerator::TableUpdateGenerator(Table *t1, Table *t2, DatabaseEngine* dbEngine, VersionUpdateGenerator* vug) : m_futurePksDropNeeded(false)
 {
     // see if these two tables have a common ancestor or not
     bool related = UidWarehouse::instance().related(t1, t2);
@@ -366,7 +369,52 @@ TableUpdateGenerator::TableUpdateGenerator(Table *t1, Table *t2, DatabaseEngine*
         }
     }
 
-    qDebug() << droppedPrimaryKeys;
-    qDebug() << newPrimaryKeys;
+    // and now see if the project is NOT oop that the default values are updated too
+    if(!vug) return;
+    if(!t2->version()->getProject()->oopProject())
+    {
+        // algorithm similar to tableInstance update from VersionUpdateGenerator
+        QSet<Column*>fromPkColumns = t1->primaryKeyColumns();
+        QSet<Column*>toPkColumns = t2->primaryKeyColumns();
 
+        // Find the intersection of the two sets
+        QSet<FromToColumn*> commonPks;
+        foreach(Column* cFrom, fromPkColumns)
+        {
+            foreach(Column* cTo, toPkColumns)
+            {
+                if(UidWarehouse::instance().related(cFrom, cTo))
+                {
+                    FromToColumn* a = new FromToColumn;
+                    a->from = cFrom;
+                    a->to = cTo;
+                    commonPks.insert(a);
+                }
+            }
+        }
+        // now the commonPKs has the set of common primary keys. Build up a vector of PK value maps to -> list of data values
+        QVector<ColumnWithValue*> columnsWithValuesOfTo;
+        QVector<ColumnWithValue*> columnsWithValuesOfFrom;
+
+        foreach(FromToColumn* ftpk, commonPks)
+        {
+            ColumnWithValue* cwv = new ColumnWithValue;
+            cwv->column = ftpk->from;
+            columnsWithValuesOfFrom.append(cwv);
+
+            ColumnWithValue* cwv1 = new ColumnWithValue;
+            cwv1->column = ftpk->to;
+            columnsWithValuesOfTo.append(cwv1);
+        }
+
+        // holds the values of the primary columns
+        QVector <QVector<ColumnWithValue*> > pksTo = t2->getValues(columnsWithValuesOfTo);
+        QVector <QVector<ColumnWithValue*> > pksFrom = t1->getValues(columnsWithValuesOfFrom);
+
+        // now get all the values from the tinst and ancestor table instances into allTo, allFrom variables
+        QVector <QVector<ColumnWithValue*> > allTo = t2->getFullValues();
+        QVector <QVector<ColumnWithValue*> > allFrom = t1->getFullValues();
+
+        vug->generateDefaultValuesUpdateData(pksTo, pksFrom, allTo, allFrom, t2->version(), t2->getName(), true);
+    }
 }

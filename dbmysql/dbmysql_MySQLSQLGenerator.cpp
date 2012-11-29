@@ -859,3 +859,9 @@ QString MySQLSQLGenerator::getInsertsIntoTable(const QString& table, const QStri
 
     return res;
 }
+
+QString MySQLSQLGenerator::getDropView(const QString& viewName)
+{
+    QString res = "DROP VIEW IF EXISTS " + viewName;
+    return res;
+}
