@@ -209,6 +209,13 @@ public:
      */
     virtual QString getInsertsIntoTable(const QString& table, const QStringList& columns, const QStringList& values) = 0;
 
+    /**
+     * @brief getDropView
+     * @param viewName
+     * @return
+     */
+    virtual QString getDropView(const QString& viewName) = 0;
+
 
     virtual ~AbstractSqlGenerator() {}
 };

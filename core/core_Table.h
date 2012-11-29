@@ -11,6 +11,7 @@
 #include "uids.h"
 #include "core_CloneableElement.h"
 #include "DocumentationSource.h"
+#include "core_ColumnWithValue.h"
 
 #include <QString>
 #include <QVector>
@@ -297,6 +298,22 @@ public:
     int getIndexOfColumn(const QString&);
 
     virtual QString getSqlHash() const { return "N/A"; }
+
+    QSet<Column*> primaryKeyColumns() const;
+
+    /**
+     * Returns a vector of vector of startup values filtered to the given columns/value
+     * @brief getValues
+     * @return
+     */
+    QVector <QVector<ColumnWithValue*> > getValues(QVector<ColumnWithValue*> vals) const;
+
+    /**
+     * Returns all the startup values in the specified format
+     * @brief getFullValues
+     * @return
+     */
+    QVector <QVector<ColumnWithValue*> > getFullValues() const;
 
 private:
 

@@ -37,6 +37,7 @@ public:
     virtual QString getUpdateTableForColumns(const QString& table, const QStringList& pkeys, const QStringList& pvalues, const QString& destCol, const QString& destValue);
     virtual QString getDeleteFromTable(const QString& table, const QStringList& pkeys, const QStringList& pvalues);
     virtual QString getInsertsIntoTable(const QString& table, const QStringList& columns, const QStringList& values);
+    virtual QString getDropView(const QString& viewName);
 
 private:
 

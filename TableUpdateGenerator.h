@@ -3,6 +3,7 @@
 
 class Table;
 class DatabaseEngine;
+class VersionUpdateGenerator;
 
 #include <QStringList>
 #include <QVector>
@@ -21,7 +22,7 @@ class TableUpdateGenerator
 {
 
 public:
-    TableUpdateGenerator(Table* t1, Table* t2, DatabaseEngine *dbEngine);
+    TableUpdateGenerator(Table* t1, Table* t2, DatabaseEngine *dbEngine, VersionUpdateGenerator *vug);
 
     const QStringList& commands() const
     {

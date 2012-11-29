@@ -18,17 +18,6 @@ class Column;
 class VersionUpdateGenerator
 {
 
-    struct FromToColumn
-    {
-        Column* from;
-        Column* to;
-    };
-
-    struct ColumnWithValuesAndReference : public ColumnWithValue
-    {
-        FromToColumn* ref;
-    };
-
 public:
 
     VersionUpdateGenerator(Version* from, Version* to);
@@ -37,6 +26,7 @@ public:
     {
         return m_commands;
     }
+    void generateDefaultValuesUpdateData(const QVector<QVector<ColumnWithValue *> > &pksTo, const QVector<QVector<ColumnWithValue *> > &pksFrom, const QVector<QVector<ColumnWithValue *> > &allTo, const QVector<QVector<ColumnWithValue *> > &allFrom, Version *to, const QString &tabName, bool delayedCommands);
 
 private:
 
@@ -64,6 +54,7 @@ private:
      */
     void updateViews(Version* from, Version* to);
 
+
 private:
 
     QStringList m_commands;
@@ -71,6 +62,7 @@ private:
     QMap<QString, TableUpdateGenerator*> m_tableUpdates;
     QMap<QString, QStringList> m_tablesReferencedWithFkFromOtherTables;           // the table -> columns which are referenced by other tables with foreign keys
                                                                                   // and must have the foreign keys dropped because of a name change in the PK
+    QStringList m_delayedCommands;
 };
 
 #endif // VERSIONUPDATEGENERATOR_H

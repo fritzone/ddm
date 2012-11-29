@@ -229,6 +229,8 @@ void NewTableForm::onDatatypeSelectedForColumnInList(const QString& b)
     {
         return;
     }
+
+    backupDefaultValuesTable();
     const QVector<UserDataType*>& dts = m_version->getDataTypes();
     int i;
     for(i=0; i<dts.size(); i++)
@@ -242,6 +244,10 @@ void NewTableForm::onDatatypeSelectedForColumnInList(const QString& b)
     {
         m_ui->cmbNewColumnType->setCurrentIndex(i);
     }
+
+    updateDefaultValuesTableHeader();
+    restoreDefaultValuesTable();
+
 
     // TODO: fix the index GUI too
 
@@ -371,12 +377,14 @@ void NewTableForm::populateTable(const Table *table, bool parentTab)
     m_ui->lstForeignKeys->resizeColumnToContents(5);
 
     // set the default values
+
     if(! Workspace::getInstance()->currentProjectIsOop())
     {
+        const QVector <QVector <QString> > & defV = table->getDefaultValues();
         updateDefaultValuesTableHeader();
-        for(int i=0; i<table->getDefaultValues().size(); i++)
+        for(int i=0; i<defV.size(); i++)
         {
-            const QVector<QString>& rowI = table->getDefaultValues()[i];
+            const QVector<QString>& rowI = defV[i];
             m_ui->tableStartupValues->insertRow(i);
             for(int j=0; j<rowI.size(); j++)
             {
@@ -597,16 +605,19 @@ void NewTableForm::onAddColumn()
             }
         }
 
+        QString prevName = m_currentColumn->getName();
+        QString a = m_ui->txtNewColumnName->text();
 
-        if(m_currentColumn->getName() != m_ui->txtNewColumnName->text())
+        if(prevName != a)
         {
             m_columnOperation = 3;
             m_newColumnName = m_ui->txtNewColumnName->text();
             m_oldColumnName = m_currentColumn->getName();
             m_table->tableInstancesRenameColumn(m_oldColumnName, m_newColumnName);
+            m_combos[a] = m_combos[prevName];
+            m_combos.remove(prevName);
+            m_signalMapperForCombosInColumns->setMapping(m_combos[a], a);
         }
-        QString prevName = m_currentColumn->getName();
-        QString a = m_ui->txtNewColumnName->text();
 
         m_currentColumn->setName(a);
         m_currentColumn->setDescription(m_ui->txtColumnDescription->toPlainText());
@@ -635,7 +646,7 @@ void NewTableForm::onAddColumn()
         autoSave();
         m_currentColumn = 0;
 
-        // and now update all the foreign kesy in the version regarding their foreign key column associations
+        // and now update all the foreign keys in the version regarding their foreign key column associations
         Version* ver = m_table->version();
         const QVector<Table*>& tabs = ver->getTables();
         for(int i=0; i<tabs.size(); i++)
@@ -1971,6 +1982,7 @@ void NewTableForm::restoreDefaultValuesTable()
         }
         QVector <QString> columnI = it.value();
 
+        // TODO: check if the old value is still valid in the new context (string -> number ...)
         int hc = m_ui->tableStartupValues->horizontalHeader()->count();
         for(int i=0; i<hc; i++)
         {
@@ -2316,12 +2328,24 @@ void NewTableForm::onDescriptionChange()
 
 void NewTableForm::onColumnNameChange(QString)
 {
+    // TODO: this is commented out, since it breaks the default values in not OOP projects...
+    // see why.
     if(m_currentColumn)
     {
+        backupDefaultValuesTable();
+        m_columnOperation = 3;
         if(m_ui->txtNewColumnName->text().length() == 0) return;
+        QString prevName = m_currentColumn->getName();
         m_table->tableInstancesRenameColumn(m_currentColumn->getName(), m_ui->txtNewColumnName->text());
         m_currentColumn->setName(m_ui->txtNewColumnName->text());
         m_currentColumn->getLocation()->setText(1, m_currentColumn->getName());
+        m_combos[m_currentColumn->getName()] = m_combos[prevName];
+        m_oldColumnName = prevName;
+        m_newColumnName = m_currentColumn->getName();
+        m_combos.remove(prevName);
+        m_signalMapperForCombosInColumns->setMapping(m_combos[m_currentColumn->getName()], m_currentColumn->getName());
+        updateDefaultValuesTableHeader();
+        restoreDefaultValuesTable();
         autoSave();
     }
 }
@@ -2365,12 +2389,16 @@ void NewTableForm::onDatatypeComboChange(QString)
         //m_currentColumn->getLocation()->setIcon(COL_POS_DT, m_currentColumn->getDataType()->getIcon());
         m_currentColumn->getLocation()->setText(COL_POS_DT, m_currentColumn->getDataType()->getName());
 
-        m_combos[m_currentColumn->getName()]->setCurrentIndex(m_ui->cmbNewColumnType->currentIndex());
+        QComboBox* cmb = m_combos[m_currentColumn->getName()];
+        if(cmb)
+        {
+            cmb->setCurrentIndex(m_ui->cmbNewColumnType->currentIndex());
+        }
 
         autoSave();
         if(m_wspForColumn)
         {
-                m_wspForColumn->taylorToSpecificObject(m_currentColumn);
+            m_wspForColumn->taylorToSpecificObject(m_currentColumn);
         }
     }
     else

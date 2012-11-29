@@ -18,7 +18,7 @@ struct IndexHolder
     int allFromC, allToC, pksFromC, pksToC;
 };
 
-VersionUpdateGenerator::VersionUpdateGenerator(Version *from, Version *to) : m_commands(), m_tablesReferencedWithFkFromOtherTables()
+VersionUpdateGenerator::VersionUpdateGenerator(Version *from, Version *to) : m_commands(), m_tablesReferencedWithFkFromOtherTables(), m_delayedCommands()
 {
     if(from->getObjectUid() == to->getObjectUid()) return;
 
@@ -308,11 +308,15 @@ void VersionUpdateGenerator::updateTables(Version* from, Version* to)
                 if(proceed)
                 {
                     tableChanges << "\n-- Update " + fromTables[i]->getName() + " (" +from->getVersionText() + ")  to " + toTables[j]->getName() + " (" +to->getVersionText() + ")";
-                    TableUpdateGenerator* tud = new TableUpdateGenerator(fromTables[i], toTables[j], Workspace::getInstance()->currentProjectsEngine());
+                    TableUpdateGenerator* tud = new TableUpdateGenerator(fromTables[i], toTables[j], Workspace::getInstance()->currentProjectsEngine(), this);
                     m_tableUpdates[toTables[j]->getObjectUid()] = tud;
                     tableChanges << tud->commands();
                     fkCommands << tud->droppedFksCommands();
                     fkCommands << tud->newFksCommands();
+                    if(!to->getProject()->oopProject())
+                    {
+                        tableChanges << m_delayedCommands;
+                    }
 
                     if(tud->fkDroppingIsRequired())
                     {
@@ -419,27 +423,9 @@ void VersionUpdateGenerator::updateTableInstances(Version *from, Version *to)
 
         // the value comparison is done based on the primary keys, so it is not searching for primary key value changes
         // find all the primary keys in the from ancestor table
-        QSet<Column*>fromPkColumns;
-        QStringList fromCols = ancestor->table()->fullColumns();
-        for(int i=0; i<fromCols.size(); i++)
-        {
-            Column* c = ancestor->table()->getColumn(fromCols[i]);
-            if(!c) c = ancestor->table()->getColumnFromParents(fromCols[i]);
-            if(!c) continue;
-
-            if(c->isPk()) fromPkColumns.insert(c);
-        }
+        QSet<Column*>fromPkColumns = ancestor->table()->primaryKeyColumns();
         // find all the primary keys in the from current table
-        QSet<Column*>toPkColumns;
-        QStringList toCols = tinst->table()->fullColumns();
-        for(int i=0; i<toCols.size(); i++)
-        {
-            Column* c = tinst->table()->getColumn(toCols[i]);
-            if(!c) c = tinst->table()->getColumnFromParents(toCols[i]);
-            if(!c) continue;
-
-            if(c->isPk()) toPkColumns.insert(c);
-        }
+        QSet<Column*>toPkColumns = tinst->table()->primaryKeyColumns();
 
         // Find the intersection of the two sets
         QSet<FromToColumn*> commonPks;
@@ -479,304 +465,7 @@ void VersionUpdateGenerator::updateTableInstances(Version *from, Version *to)
         QVector <QVector<ColumnWithValue*> > allTo = tinst->getFullValues();
         QVector <QVector<ColumnWithValue*> > allFrom = ancestor->getFullValues();
 
-        QVector<IndexHolder> fromToIndexMappings; // map to hold the corresponding indexes regarding the rows where the primary keys are equal
-
-        // now walk through all the rows of the from and to tables
-        for(int pksFromC = 0; pksFromC < pksFrom.size(); pksFromC ++)
-        {
-            for(int allFromC=0; allFromC<allFrom.size(); allFromC++)
-            {
-                QMap<QString, bool> founds;
-                for(int j=0; j<pksFrom[pksFromC].size(); j++)
-                {
-                    for(int i=0; i<allFrom[allFromC].size(); i++)
-                    {
-                        if(founds.keys().contains(pksFrom[pksFromC][j]->column->getName()))
-                        {
-                            if(!founds[pksFrom[pksFromC][j]->column->getName()])
-                            {
-                                founds[pksFrom[pksFromC][j]->column->getName()] = false;
-                            }
-                        }
-                        else
-                        {
-                            founds[pksFrom[pksFromC][j]->column->getName()] = false;
-                        }
-                        ColumnWithValue* cwv = allFrom[allFromC][i];
-                        Column* c = cwv->column;
-                        ColumnWithValue* pkcwv = pksFrom[pksFromC][j];
-                        Column* pkC = pkcwv->column;
-                        if(c->getName() == pkC->getName())
-                        {
-                            if(cwv->value == pkcwv->value)
-                            {
-                                founds[c->getName()] = true;
-                            }
-                        }
-                    }
-                }
-
-                // match the rows with their foreign key
-                bool found = true;
-                for(int j=0; j<founds.keys().size(); j++)
-                {
-                    found &= founds[ founds.keys().at(j) ];
-                }
-
-                if(found)   // this means the allFromC row is the extension of the PK pksFromC row
-                {
-                    // TODO: this loop is basically the same as above
-                    for(int pksToC = 0; pksToC < pksTo.size(); pksToC ++)
-                    {
-                        for(int allToC=0; allToC<allTo.size(); allToC++)
-                        {
-                            QMap<QString, bool> foundsTo;
-                            for(int j=0; j<pksTo[pksToC].size(); j++)
-                            {
-                                for(int i=0; i<allTo[allToC].size(); i++)
-                                {
-                                    if(foundsTo.keys().contains(pksTo[pksToC][j]->column->getName()))
-                                    {
-                                        if(!foundsTo[pksTo[pksToC][j]->column->getName()])
-                                        {
-                                            foundsTo[pksTo[pksToC][j]->column->getName()] = false;
-                                        }
-                                    }
-                                    else
-                                    {
-                                        foundsTo[pksTo[pksToC][j]->column->getName()] = false;
-                                    }
-                                    ColumnWithValue* cwv = allTo[allToC][i];
-                                    Column* c = cwv->column;
-                                    ColumnWithValue* pkcwv = pksTo[pksToC][j];
-                                    Column* pkC = pkcwv->column;
-                                    if(c->getName() == pkC->getName())
-                                    {
-                                        if(cwv->value == pkcwv->value)
-                                        {
-                                            foundsTo[c->getName()] = true;
-                                        }
-                                    }
-                                }
-                            }
-                            bool foundTo = true;
-
-                            for(int j=0; j<foundsTo.keys().size(); j++)
-                            {
-                                foundTo &= foundsTo[ foundsTo.keys().at(j) ];
-                            }
-
-                            if(foundTo)
-                            {
-                                // found another mathcing pair set from the "TO" side where pksTo[pksToC] is the key part of allTo[allToC]
-                                // See if the primary keys match or not... ie:
-                                // all the values of pksFrom[pksFromC] should map pksTo[pksToC]. The order is already predefined, we just compare the values
-                                QString froms;
-                                for(int j=0; j<pksFrom[pksFromC].size(); j++)
-                                {
-                                    froms += pksFrom[pksFromC][j]->value + " ";
-                                }
-                                QString tos;
-                                for(int j=0; j<pksTo[pksToC].size(); j++)
-                                {
-                                    tos += pksTo[pksToC][j]->value + " ";
-                                }
-                                froms = froms.trimmed();
-                                tos = tos.trimmed();
-
-                                // and set the corresponding values
-                                if(froms == tos)
-                                {
-                                    IndexHolder ih;
-                                    ih.allFromC = allFromC;
-                                    ih.allToC = allToC;
-                                    ih.pksFromC = pksFromC;
-                                    ih.pksToC = pksToC;
-                                    fromToIndexMappings.append(ih);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        // now in the vector above we have the matching rows of the allTo and allFrom vectors ... see if the rows match or not
-        for(int keyCounter=0; keyCounter<fromToIndexMappings.size(); keyCounter++)
-        {
-            int idxFrom = fromToIndexMappings[keyCounter].allFromC;
-            int idxTo = fromToIndexMappings[keyCounter].allToC;
-
-            const QVector<ColumnWithValue*>& fromRow = allFrom[idxFrom];
-            const QVector<ColumnWithValue*>& toRow = allTo[idxTo];
-
-            QSet<Column*> usedColumns;   // holds all the columns for which a descendant was found in this row. The other columns are new columns, will be handled after
-            for(int i=0; i<fromRow.size(); i++)
-            {
-                int idxFound = -1;
-                // now find the corresponding column in "to"
-                for(int j=0; j<toRow.size(); j++)
-                {
-                    if(UidWarehouse::instance().related(fromRow[i]->column, toRow[j]->column))
-                    {
-                        usedColumns.insert(toRow[j]->column);
-                        idxFound = j;
-                        break;
-                    }
-                }
-
-                // and see if we have found something or not
-                if(idxFound != -1)
-                {
-                    if(fromRow[i]->value != toRow[idxFound]->value)
-                    {
-                        // now generate an update script
-                        int pksToIdx = fromToIndexMappings[keyCounter].pksToC;
-                        QStringList pksToNames;
-                        QStringList pksToValues;
-                        for(int k = 0; k<pksTo[pksToIdx].size(); k++)
-                        {
-                            pksToNames << pksTo[pksToIdx][k]->column->getName();
-                            pksToValues <<pksTo[pksToIdx][k]->value;
-                        }
-                        m_commands << to->getProject()->getEngine()->getSqlGenerator()->getUpdateTableForColumns(tinst->table()->getName(), pksToNames, pksToValues, toRow[idxFound]->column->getName(), toRow[idxFound]->value);
-                    }
-                }
-            }
-
-            QSet<Column*> allColumns;
-            for(int i=0; i<toRow.size(); i++)
-            {
-                allColumns.insert(toRow[i]->column);
-            }
-
-            QSet<Column*>  newColumnsInTo = allColumns - usedColumns;
-            foreach(Column* col, newColumnsInTo)
-            {
-                int idx2Found = -1;
-                for(int j=0; j<toRow.size(); j++)
-                {
-                    if(toRow[j]->column == col)
-                    {
-                        idx2Found = j;
-                        break;
-                    }
-                }
-
-
-                int pksToIdx = fromToIndexMappings[keyCounter].pksToC;
-                QStringList pksToNames;
-                QStringList pksToValues;
-                for(int k = 0; k<pksTo[pksToIdx].size(); k++)
-                {
-                    pksToNames << pksTo[pksToIdx][k]->column->getName();
-                    pksToValues <<pksTo[pksToIdx][k]->value;
-                }
-                m_commands << to->getProject()->getEngine()->getSqlGenerator()->getUpdateTableForColumns(tinst->table()->getName(), pksToNames, pksToValues, col->getName(), toRow[idx2Found]->value);
-            }
-        }
-
-        // next run: the deleted rows. These will be picked out from the fromToIndexMappings: if the fromIndex is NOT in the vector this means that row was deleted
-        {
-        QSet<int> missingRows;
-        QSet<int> foundRows;
-        QSet<int> allRows;
-        for(int keyCounter=0; keyCounter<fromToIndexMappings.size(); keyCounter++)
-        {
-            int idxFrom = fromToIndexMappings[keyCounter].pksFromC;
-            foundRows.insert(idxFrom);
-        }
-        for(int i=0; i<pksFrom.size(); i++)
-        {
-            allRows.insert(i);
-        }
-        missingRows = allRows - foundRows;
-
-        foreach(int idx, missingRows)
-        {
-            QStringList pksFromName;
-            QStringList pksFromValues;
-            for(int k = 0; k<pksFrom[idx].size(); k++)
-            {
-                pksFromName << pksFrom[idx][k]->column->getName();
-                pksFromValues <<pksFrom[idx][k]->value;
-            }
-            m_commands << to->getProject()->getEngine()->getSqlGenerator()->getDeleteFromTable(tinst->table()->getName(), pksFromName, pksFromValues);
-
-        }
-        }
-
-        // next run: the new rows in the tinst: these will be picked up from the fromToIndexMappings: if the toIndex is NOT in it this is a new row
-        {
-        QSet<int> missingRows;
-        QSet<int> foundRows;
-        QSet<int> allRows;
-        for(int keyCounter=0; keyCounter<fromToIndexMappings.size(); keyCounter++)
-        {
-            int idxTo = fromToIndexMappings[keyCounter].pksToC;
-            foundRows.insert(idxTo);
-        }
-        for(int i=0; i<pksTo.size(); i++)
-        {
-            allRows.insert(i);
-        }
-        missingRows = allRows - foundRows;
-
-        foreach(int idx, missingRows)
-        {
-            for(int allToC=0; allToC<allTo.size(); allToC++)
-            {
-                QMap<QString, bool> foundsTo;
-                for(int j=0; j<pksTo[idx].size(); j++)
-                {
-                    for(int i=0; i<allTo[allToC].size(); i++)
-                    {
-                        if(foundsTo.keys().contains(pksTo[idx][j]->column->getName()))
-                        {
-                            if(!foundsTo[pksTo[idx][j]->column->getName()])
-                            {
-                                foundsTo[pksTo[idx][j]->column->getName()] = false;
-                            }
-                        }
-                        else
-                        {
-                            foundsTo[pksTo[idx][j]->column->getName()] = false;
-                        }
-                        ColumnWithValue* cwv = allTo[allToC][i];
-                        Column* c = cwv->column;
-                        ColumnWithValue* pkcwv = pksTo[idx][j];
-                        Column* pkC = pkcwv->column;
-                        if(c->getName() == pkC->getName())
-                        {
-                            if(cwv->value == pkcwv->value)
-                            {
-                                foundsTo[c->getName()] = true;
-                            }
-                        }
-                    }
-                }
-                bool foundTo = true;
-
-                for(int j=0; j<foundsTo.keys().size(); j++)
-                {
-                    foundTo &= foundsTo[ foundsTo.keys().at(j) ];
-                }
-
-                if(foundTo)
-                {
-                    QStringList cols;
-                    QStringList vals;
-                    for(int i=0; i<allTo[allToC].size(); i++)
-                    {
-                        ColumnWithValue* cwv = allTo[allToC][i];
-                        cols << cwv->column->getName();
-                        vals << cwv->value;
-                    }
-                    m_commands << to->getProject()->getEngine()->getSqlGenerator()->getInsertsIntoTable(tinst->table()->getName(), cols, vals);
-                }
-            }
-        }
-        }
+        generateDefaultValuesUpdateData(pksTo, pksFrom, allTo, allFrom, to, tinst->table()->getName(), false);
 
     }
 }
@@ -786,7 +475,8 @@ void VersionUpdateGenerator::updateViews(Version *from, Version *to)
     const QVector<View*>& toViews = to->getViews();
     const QVector<View*>& fromViews = from->getViews();
 
-    QSet<View*> foundViews;
+    QSet<View*> foundToViews;
+    QSet<View*> foundFromViews;
     // first step: find the views which have changed their sql and generate an alter statement
     for(int i=0; i<fromViews.size(); i++)
     {
@@ -796,7 +486,8 @@ void VersionUpdateGenerator::updateViews(Version *from, Version *to)
             View* viewTo = toViews.at(j);
             if(UidWarehouse::instance().related(viewFrom, viewTo))
             {
-                foundViews.insert(viewTo);
+                foundToViews.insert(viewTo);
+                foundFromViews.insert(viewFrom);
 
                 if(viewFrom->getName() != viewTo->getName())
                 {
@@ -834,5 +525,346 @@ void VersionUpdateGenerator::updateViews(Version *from, Version *to)
                 }
             }
         }
+    }
+
+    // second run: drop the views that are not there in the second version
+    for(int i=0; i<fromViews.size(); i++)
+    {
+        if(!foundFromViews.contains(fromViews[i]))
+        {
+            m_commands << to->getProject()->getEngine()->getSqlGenerator()->getDropView(fromViews[i]->getName());
+        }
+    }
+
+    // third run the new views in "to"
+    for(int i=0; i<toViews.size(); i++)
+    {
+        if(!foundToViews.contains(toViews[i]))
+        {
+            QHash<QString, QString> opts = Configuration::instance().sqlOpts();
+            QStringList createViewLst = toViews[i]->generateSqlSource(to->getProject()->getEngine()->getSqlGenerator(), opts, 0);
+            m_commands << createViewLst;
+        }
+    }
+
+}
+
+void VersionUpdateGenerator::generateDefaultValuesUpdateData(const QVector <QVector<ColumnWithValue*> >& pksTo,
+                                                             const QVector <QVector<ColumnWithValue*> >& pksFrom,
+                                                             const QVector <QVector<ColumnWithValue*> >& allTo,
+                                                             const QVector <QVector<ColumnWithValue*> >& allFrom,
+                                                             Version *to,
+                                                             const QString& tabName, bool delayedCommands)
+{
+    if(delayedCommands)
+    {
+        m_delayedCommands.clear();
+    }
+    QVector<IndexHolder> fromToIndexMappings; // map to hold the corresponding indexes regarding the rows where the primary keys are equal
+
+    // now walk through all the rows of the from and to tables
+    for(int pksFromC = 0; pksFromC < pksFrom.size(); pksFromC ++)
+    {
+        for(int allFromC=0; allFromC<allFrom.size(); allFromC++)
+        {
+            QMap<QString, bool> founds;
+            for(int j=0; j<pksFrom[pksFromC].size(); j++)
+            {
+                for(int i=0; i<allFrom[allFromC].size(); i++)
+                {
+                    if(founds.keys().contains(pksFrom[pksFromC][j]->column->getName()))
+                    {
+                        if(!founds[pksFrom[pksFromC][j]->column->getName()])
+                        {
+                            founds[pksFrom[pksFromC][j]->column->getName()] = false;
+                        }
+                    }
+                    else
+                    {
+                        founds[pksFrom[pksFromC][j]->column->getName()] = false;
+                    }
+                    ColumnWithValue* cwv = allFrom[allFromC][i];
+                    Column* c = cwv->column;
+                    ColumnWithValue* pkcwv = pksFrom[pksFromC][j];
+                    Column* pkC = pkcwv->column;
+                    if(c->getName() == pkC->getName())
+                    {
+                        if(cwv->value == pkcwv->value)
+                        {
+                            founds[c->getName()] = true;
+                        }
+                    }
+                }
+            }
+
+            // match the rows with their foreign key
+            bool found = true;
+            for(int j=0; j<founds.keys().size(); j++)
+            {
+                found &= founds[ founds.keys().at(j) ];
+            }
+
+            if(found)   // this means the allFromC row is the extension of the PK pksFromC row
+            {
+                // TODO: this loop is basically the same as above
+                for(int pksToC = 0; pksToC < pksTo.size(); pksToC ++)
+                {
+                    for(int allToC=0; allToC<allTo.size(); allToC++)
+                    {
+                        QMap<QString, bool> foundsTo;
+                        for(int j=0; j<pksTo[pksToC].size(); j++)
+                        {
+                            for(int i=0; i<allTo[allToC].size(); i++)
+                            {
+                                if(foundsTo.keys().contains(pksTo[pksToC][j]->column->getName()))
+                                {
+                                    if(!foundsTo[pksTo[pksToC][j]->column->getName()])
+                                    {
+                                        foundsTo[pksTo[pksToC][j]->column->getName()] = false;
+                                    }
+                                }
+                                else
+                                {
+                                    foundsTo[pksTo[pksToC][j]->column->getName()] = false;
+                                }
+                                ColumnWithValue* cwv = allTo[allToC][i];
+                                Column* c = cwv->column;
+                                ColumnWithValue* pkcwv = pksTo[pksToC][j];
+                                Column* pkC = pkcwv->column;
+                                if(c->getName() == pkC->getName())
+                                {
+                                    if(cwv->value == pkcwv->value)
+                                    {
+                                        foundsTo[c->getName()] = true;
+                                    }
+                                }
+                            }
+                        }
+                        bool foundTo = true;
+
+                        for(int j=0; j<foundsTo.keys().size(); j++)
+                        {
+                            foundTo &= foundsTo[ foundsTo.keys().at(j) ];
+                        }
+
+                        if(foundTo)
+                        {
+                            // found another mathcing pair set from the "TO" side where pksTo[pksToC] is the key part of allTo[allToC]
+                            // See if the primary keys match or not... ie:
+                            // all the values of pksFrom[pksFromC] should map pksTo[pksToC]. The order is already predefined, we just compare the values
+                            QString froms;
+                            for(int j=0; j<pksFrom[pksFromC].size(); j++)
+                            {
+                                froms += pksFrom[pksFromC][j]->value + " ";
+                            }
+                            QString tos;
+                            for(int j=0; j<pksTo[pksToC].size(); j++)
+                            {
+                                tos += pksTo[pksToC][j]->value + " ";
+                            }
+                            froms = froms.trimmed();
+                            tos = tos.trimmed();
+
+                            // and set the corresponding values
+                            if(froms == tos)
+                            {
+                                IndexHolder ih;
+                                ih.allFromC = allFromC;
+                                ih.allToC = allToC;
+                                ih.pksFromC = pksFromC;
+                                ih.pksToC = pksToC;
+                                fromToIndexMappings.append(ih);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    // now in the vector above we have the matching rows of the allTo and allFrom vectors ... see if the rows match or not
+    for(int keyCounter=0; keyCounter<fromToIndexMappings.size(); keyCounter++)
+    {
+        int idxFrom = fromToIndexMappings[keyCounter].allFromC;
+        int idxTo = fromToIndexMappings[keyCounter].allToC;
+
+        const QVector<ColumnWithValue*>& fromRow = allFrom[idxFrom];
+        const QVector<ColumnWithValue*>& toRow = allTo[idxTo];
+
+        QSet<Column*> usedColumns;   // holds all the columns for which a descendant was found in this row. The other columns are new columns, will be handled after
+        for(int i=0; i<fromRow.size(); i++)
+        {
+            int idxFound = -1;
+            // now find the corresponding column in "to"
+            for(int j=0; j<toRow.size(); j++)
+            {
+                if(UidWarehouse::instance().related(fromRow[i]->column, toRow[j]->column))
+                {
+                    usedColumns.insert(toRow[j]->column);
+                    idxFound = j;
+                    break;
+                }
+            }
+
+            // and see if we have found something or not
+            if(idxFound != -1)
+            {
+                if(fromRow[i]->value != toRow[idxFound]->value)
+                {
+                    // now generate an update script
+                    int pksToIdx = fromToIndexMappings[keyCounter].pksToC;
+                    QStringList pksToNames;
+                    QStringList pksToValues;
+                    for(int k = 0; k<pksTo[pksToIdx].size(); k++)
+                    {
+                        pksToNames << pksTo[pksToIdx][k]->column->getName();
+                        pksToValues <<pksTo[pksToIdx][k]->value;
+                    }
+                    QString command = to->getProject()->getEngine()->getSqlGenerator()->getUpdateTableForColumns(tabName, pksToNames, pksToValues, toRow[idxFound]->column->getName(), toRow[idxFound]->value);
+                    if(!delayedCommands) m_commands << command;
+                    else m_delayedCommands << command;
+                }
+            }
+        }
+
+        QSet<Column*> allColumns;
+        for(int i=0; i<toRow.size(); i++)
+        {
+            allColumns.insert(toRow[i]->column);
+        }
+
+        QSet<Column*>  newColumnsInTo = allColumns - usedColumns;
+        foreach(Column* col, newColumnsInTo)
+        {
+            int idx2Found = -1;
+            for(int j=0; j<toRow.size(); j++)
+            {
+                if(toRow[j]->column == col)
+                {
+                    idx2Found = j;
+                    break;
+                }
+            }
+
+
+            int pksToIdx = fromToIndexMappings[keyCounter].pksToC;
+            QStringList pksToNames;
+            QStringList pksToValues;
+            for(int k = 0; k<pksTo[pksToIdx].size(); k++)
+            {
+                pksToNames << pksTo[pksToIdx][k]->column->getName();
+                pksToValues <<pksTo[pksToIdx][k]->value;
+            }
+
+            QString command = to->getProject()->getEngine()->getSqlGenerator()->getUpdateTableForColumns(tabName, pksToNames, pksToValues, col->getName(), toRow[idx2Found]->value);
+            if(!delayedCommands) m_commands << command;
+            else m_delayedCommands << command;
+        }
+    }
+
+    // next run: the deleted rows. These will be picked out from the fromToIndexMappings: if the fromIndex is NOT in the vector this means that row was deleted
+    {
+    QSet<int> missingRows;
+    QSet<int> foundRows;
+    QSet<int> allRows;
+    for(int keyCounter=0; keyCounter<fromToIndexMappings.size(); keyCounter++)
+    {
+        int idxFrom = fromToIndexMappings[keyCounter].pksFromC;
+        foundRows.insert(idxFrom);
+    }
+    for(int i=0; i<pksFrom.size(); i++)
+    {
+        allRows.insert(i);
+    }
+    missingRows = allRows - foundRows;
+
+    foreach(int idx, missingRows)
+    {
+        QStringList pksFromName;
+        QStringList pksFromValues;
+        for(int k = 0; k<pksFrom[idx].size(); k++)
+        {
+            pksFromName << pksFrom[idx][k]->column->getName();
+            pksFromValues <<pksFrom[idx][k]->value;
+        }
+        QString command = to->getProject()->getEngine()->getSqlGenerator()->getDeleteFromTable(tabName, pksFromName, pksFromValues);
+        if(!delayedCommands) m_commands << command;
+        else m_delayedCommands << command;
+
+    }
+    }
+
+    // next run: the new rows in the tinst: these will be picked up from the fromToIndexMappings: if the toIndex is NOT in it this is a new row
+    {
+    QSet<int> missingRows;
+    QSet<int> foundRows;
+    QSet<int> allRows;
+    for(int keyCounter=0; keyCounter<fromToIndexMappings.size(); keyCounter++)
+    {
+        int idxTo = fromToIndexMappings[keyCounter].pksToC;
+        foundRows.insert(idxTo);
+    }
+    for(int i=0; i<pksTo.size(); i++)
+    {
+        allRows.insert(i);
+    }
+    missingRows = allRows - foundRows;
+
+    foreach(int idx, missingRows)
+    {
+        for(int allToC=0; allToC<allTo.size(); allToC++)
+        {
+            QMap<QString, bool> foundsTo;
+            for(int j=0; j<pksTo[idx].size(); j++)
+            {
+                for(int i=0; i<allTo[allToC].size(); i++)
+                {
+                    if(foundsTo.keys().contains(pksTo[idx][j]->column->getName()))
+                    {
+                        if(!foundsTo[pksTo[idx][j]->column->getName()])
+                        {
+                            foundsTo[pksTo[idx][j]->column->getName()] = false;
+                        }
+                    }
+                    else
+                    {
+                        foundsTo[pksTo[idx][j]->column->getName()] = false;
+                    }
+                    ColumnWithValue* cwv = allTo[allToC][i];
+                    Column* c = cwv->column;
+                    ColumnWithValue* pkcwv = pksTo[idx][j];
+                    Column* pkC = pkcwv->column;
+                    if(c->getName() == pkC->getName())
+                    {
+                        if(cwv->value == pkcwv->value)
+                        {
+                            foundsTo[c->getName()] = true;
+                        }
+                    }
+                }
+            }
+            bool foundTo = true;
+
+            for(int j=0; j<foundsTo.keys().size(); j++)
+            {
+                foundTo &= foundsTo[ foundsTo.keys().at(j) ];
+            }
+
+            if(foundTo)
+            {
+                QStringList cols;
+                QStringList vals;
+                for(int i=0; i<allTo[allToC].size(); i++)
+                {
+                    ColumnWithValue* cwv = allTo[allToC][i];
+                    cols << cwv->column->getName();
+                    vals << cwv->value;
+                }
+                QString command = to->getProject()->getEngine()->getSqlGenerator()->getInsertsIntoTable(tabName, cols, vals);
+                if(!delayedCommands) m_commands << command;
+                else m_delayedCommands << command;
+            }
+        }
+    }
     }
 }

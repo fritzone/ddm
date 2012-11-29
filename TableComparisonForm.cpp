@@ -222,7 +222,7 @@ void TableComparisonForm::populateTree()
 
     populateColumns();
 
-    TableUpdateGenerator gen (m_leftTable, m_rightTable, Workspace::getInstance()->currentProjectsEngine());
+    TableUpdateGenerator gen (m_leftTable, m_rightTable, Workspace::getInstance()->currentProjectsEngine(), 0);
 
     // the update commands
     QString finalSql = addCommands(gen.commands());

@@ -665,3 +665,73 @@ int Table::getIndexOfColumn(const QString& n)
     }
     return -1;
 }
+
+QSet<Column*> Table::primaryKeyColumns() const
+{
+    QSet<Column*> result;
+    QStringList fromCols = fullColumns();
+    for(int i=0; i<fromCols.size(); i++)
+    {
+        Column* c = getColumn(fromCols[i]);
+        if(!c) c = getColumnFromParents(fromCols[i]);
+        if(!c) continue;
+
+        if(c->isPk()) result.insert(c);
+    }
+    return result;
+}
+
+QVector <QVector<ColumnWithValue*> > Table::getFullValues() const
+{
+    QVector <QVector<ColumnWithValue*> > result;
+    const QVector <QVector <QString> >& sv = getDefaultValues();
+    for(int i=0; i<sv.size(); i++)
+    {
+        const QVector<QString> &rowI = sv[i];
+        QVector<ColumnWithValue*> resI;
+        for(int j=0; j<rowI.size(); j++)
+        {
+            ColumnWithValue* cwv = new ColumnWithValue;
+            cwv->column = getColumns().at(j);
+            cwv->value = rowI[j];
+            resI.append(cwv);
+        }
+        result.append(resI);
+    }
+    return result;
+}
+
+QVector <QVector<ColumnWithValue*> > Table::getValues(QVector<ColumnWithValue*> vals) const
+{
+    QVector <QVector<ColumnWithValue*> > result;
+    const QVector <QVector <QString> >& sv = getDefaultValues();
+    for(int i=0; i<sv.size(); i++)
+    {
+        const QVector<QString> &rowI = sv[i];
+        QVector<ColumnWithValue*> resI;
+        for(int j=0; j<rowI.size(); j++)
+        {
+            Column* c = getColumns().at(j);
+            // now see if the column c is in the vals
+            bool found = false;
+            for(int k = 0; k<vals.size(); k++)
+            {
+                if(vals[k]->column->getName() == c->getName())
+                {
+                    found = true;
+                    break;
+                }
+            }
+            if(found)
+            {
+                ColumnWithValue* cwv = new ColumnWithValue;
+                cwv->column = c;
+                cwv->value = rowI[j];
+                resI.append(cwv);
+            }
+        }
+        result.append(resI);
+    }
+    return result;
+
+}
