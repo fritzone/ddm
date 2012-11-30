@@ -12,6 +12,7 @@
 #include "core_Column.h"
 #include "ForeignKey.h"
 #include "core_View.h"
+#include "core_Procedure.h"
 
 struct IndexHolder
 {
@@ -122,6 +123,8 @@ VersionUpdateGenerator::VersionUpdateGenerator(Version *from, Version *to) : m_c
     updateViews(from, to);
 
     // procedures, methods and triggers need to be dropped and recreated (at least in MySQL)
+
+    updateProcedures(from, to);
 
 }
 
@@ -867,4 +870,80 @@ void VersionUpdateGenerator::generateDefaultValuesUpdateData(const QVector <QVec
         }
     }
     }
+}
+
+void VersionUpdateGenerator::updateProcedures(Version *from, Version *to)
+{
+    const QVector<Procedure*>& toProcedures = to->getProcedures();
+    const QVector<Procedure*>& fromProcedures = from->getProcedures();
+
+    QSet<Procedure*> foundToProcedures;
+    QSet<Procedure*> foundFromProcedures;
+    // first step: find the Procedures which have changed their sql and generate an alter statement
+    for(int i=0; i<fromProcedures.size(); i++)
+    {
+        Procedure* procedureFrom = fromProcedures.at(i);
+        for(int j=0; j<toProcedures.size(); j++)
+        {
+            Procedure* procedureTo = toProcedures.at(j);
+            if(UidWarehouse::instance().related(procedureFrom, procedureTo))
+            {
+                foundToProcedures.insert(procedureTo);
+                foundFromProcedures.insert(procedureFrom);
+
+                if(procedureFrom->getName() != procedureTo->getName())
+                {
+                    // the Procedure changed its name.
+                    //m_commands << to->getProject()->getEngine()->getSqlGenerator()->getTableRenameSql(procedureFrom->getName(), procedureTo->getName());
+                    // use the SQL scripts:
+/*
+ UPDATE `mysql`.`proc`
+SET name = '<new_proc_name>',
+specific_name = '<new_proc_name>'
+WHERE db = '<database>' AND
+  name = '<old_proc_name>';
+
+
+  and
+
+UPDATE `mysql`.`procs_priv`
+SET Routine_name = '<new_proc_name>'
+WHERE Db = '<database>' AND
+  Routine_name = '<old_proc_name>';
+ FLUSH PRIVILEGES;
+ */
+                }
+
+                QString fromHash = procedureFrom->getSqlHash();
+                QString toHash = procedureTo->getSqlHash();
+
+                if(fromHash != toHash)
+                {
+                    // there is a change in the Procedures' sql too.
+                    // drop the procedure and recreate it, this is the only way of fixing it
+                }
+            }
+        }
+    }
+
+    // second run: drop the Procedures that are not there in the second version
+    for(int i=0; i<fromProcedures.size(); i++)
+    {
+        if(!foundFromProcedures.contains(fromProcedures[i]))
+        {
+            // m_commands << to->getProject()->getEngine()->getSqlGenerator()->getDropProcedure(fromProcedures[i]->getName());
+        }
+    }
+
+    // third run the new Procedures in "to"
+    for(int i=0; i<toProcedures.size(); i++)
+    {
+        if(!foundToProcedures.contains(toProcedures[i]))
+        {
+            QHash<QString, QString> opts = Configuration::instance().sqlOpts();
+            QStringList createProcedureLst = toProcedures[i]->generateSqlSource(to->getProject()->getEngine()->getSqlGenerator(), opts, 0);
+            m_commands << createProcedureLst;
+        }
+    }
+
 }

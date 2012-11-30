@@ -53,6 +53,7 @@ private:
      * @param to
      */
     void updateViews(Version* from, Version* to);
+    void updateProcedures(Version* from, Version* to);
 
 
 private:
