@@ -2119,8 +2119,18 @@ void MainWindow::onRecreateConnection()
         // clear the tree
         while(c->getLocation()->childCount()) c->getLocation()->removeChild(c->getLocation()->child(0));
         // drop and create the DB
-        c->getEngine()->dropDatabase(c);
-        c->getEngine()->createDatabase(c);
+        if(!c->getEngine()->dropDatabase(c))
+        {
+            QMessageBox::critical(this, tr("Error"), tr("Cannot drop: ") + c->getEngine()->getLastError(), QMessageBox::Ok);
+            return;
+        }
+        if(!c->getEngine()->createDatabase(c))
+        {
+            QMessageBox::critical(this, tr("Error"), tr("Cannot create: ") + c->getEngine()->getLastError(), QMessageBox::Ok);
+            c->setState(FAILED);
+            c->getLocation()->setIcon(0, IconFactory::getConnectionStateIcon(c->getState()));
+            return;
+        }
         c->setState(DID_NOT_TRY);
         c->getLocation()->setIcon(0, IconFactory::getConnectionStateIcon(c->getState()));
     }

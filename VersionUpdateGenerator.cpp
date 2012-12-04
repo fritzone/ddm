@@ -890,28 +890,15 @@ void VersionUpdateGenerator::updateProcedures(Version *from, Version *to)
             {
                 foundToProcedures.insert(procedureTo);
                 foundFromProcedures.insert(procedureFrom);
+                bool recreated = false;
 
                 if(procedureFrom->getName() != procedureTo->getName())
                 {
-                    // the Procedure changed its name.
-                    //m_commands << to->getProject()->getEngine()->getSqlGenerator()->getTableRenameSql(procedureFrom->getName(), procedureTo->getName());
-                    // use the SQL scripts:
-/*
- UPDATE `mysql`.`proc`
-SET name = '<new_proc_name>',
-specific_name = '<new_proc_name>'
-WHERE db = '<database>' AND
-  name = '<old_proc_name>';
-
-
-  and
-
-UPDATE `mysql`.`procs_priv`
-SET Routine_name = '<new_proc_name>'
-WHERE Db = '<database>' AND
-  Routine_name = '<old_proc_name>';
- FLUSH PRIVILEGES;
- */
+                    // the Procedure changed its name. Drop it and recreate it. There is no other generic way
+                    QHash<QString, QString> opts = Configuration::instance().sqlOpts();
+                    m_commands << to->getProject()->getEngine()->getSqlGenerator()->getDropProcedure(procedureFrom->getName());
+                    m_commands << procedureTo->generateSqlSource(to->getProject()->getEngine()->getSqlGenerator(), opts, 0);
+                    recreated = true;
                 }
 
                 QString fromHash = procedureFrom->getSqlHash();
@@ -919,8 +906,12 @@ WHERE Db = '<database>' AND
 
                 if(fromHash != toHash)
                 {
-                    // there is a change in the Procedures' sql too.
-                    // drop the procedure and recreate it, this is the only way of fixing it
+                    if(!recreated)
+                    {
+                        QHash<QString, QString> opts = Configuration::instance().sqlOpts();
+                        m_commands << to->getProject()->getEngine()->getSqlGenerator()->getDropProcedure(procedureFrom->getName());
+                        m_commands << procedureTo->generateSqlSource(to->getProject()->getEngine()->getSqlGenerator(), opts, 0);
+                    }
                 }
             }
         }
@@ -931,7 +922,7 @@ WHERE Db = '<database>' AND
     {
         if(!foundFromProcedures.contains(fromProcedures[i]))
         {
-            // m_commands << to->getProject()->getEngine()->getSqlGenerator()->getDropProcedure(fromProcedures[i]->getName());
+            m_commands << to->getProject()->getEngine()->getSqlGenerator()->getDropProcedure(fromProcedures[i]->getName());
         }
     }
 

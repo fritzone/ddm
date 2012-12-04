@@ -795,19 +795,13 @@ QString MySQLSQLGenerator::getAlterTableToDropForeignKey(const QString& table, c
 
 QString MySQLSQLGenerator::getDropTable(const QString& table)
 {
-    QString res = "DROP TABLE " + table;
+    QString res = "DROP TABLE IF EXISTS " + table;
     return res;
 }
 
 QStringList MySQLSQLGenerator::getAlterTableForDropForeignKey(const QString& table, const ForeignKey* fk)
 {
     QStringList r;
-//    QString g = "ALTER TABLE " + table + " DROP KEY ";
-//    for(int i=0; i<fk->getAssociations().size(); i++)
-//    {
-//        g += fk->getAssociations()[i]->getSLocalColumn();
-//    }
-//    r << g;
     QString res = "ALTER TABLE " + table + " DROP FOREIGN KEY " + fk->getName();
 
     r << res;
@@ -863,5 +857,17 @@ QString MySQLSQLGenerator::getInsertsIntoTable(const QString& table, const QStri
 QString MySQLSQLGenerator::getDropView(const QString& viewName)
 {
     QString res = "DROP VIEW IF EXISTS " + viewName;
+    return res;
+}
+
+QString MySQLSQLGenerator::getDropProcedure(const QString& proc)
+{
+    QString res = "DROP PROCEDURE IF EXISTS " + proc;
+    return res;
+}
+
+QString MySQLSQLGenerator::getDropFunction(const QString& func)
+{
+    QString res = "DROP FUNCTION IF EXISTS " + func;
     return res;
 }
