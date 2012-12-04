@@ -216,6 +216,19 @@ public:
      */
     virtual QString getDropView(const QString& viewName) = 0;
 
+    /**
+     * @brief getDropProcedure
+     * @param table
+     * @return
+     */
+    virtual QString getDropProcedure(const QString& proc) = 0;
+
+    /**
+     * @brief getDropFunction
+     * @param func
+     * @return
+     */
+    virtual QString getDropFunction(const QString& func) = 0;
 
     virtual ~AbstractSqlGenerator() {}
 };
