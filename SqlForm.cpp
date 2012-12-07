@@ -18,6 +18,7 @@
 #include "core_Function.h"
 #include "core_Trigger.h"
 #include "core_View.h"
+#include "strings.h"
 
 #include <QFileDialog>
 #include <QMessageBox>
@@ -80,7 +81,7 @@ void SqlForm::onInject()
                 for(int j=0; j<sqlList.size(); j++)
                 {
                     QString s = sqlList[j].trimmed();
-                    if(s.endsWith("//"))
+                    if(s.endsWith(Configuration::instance().sqlOpts()[strSqlDelimiterText].trimmed()))
                     {
                         s = s.left(s.length() - 2);
                         s += ";";

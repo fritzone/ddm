@@ -230,6 +230,13 @@ public:
      */
     virtual QString getDropFunction(const QString& func) = 0;
 
+    /**
+     * @brief getDropTrigger
+     * @param trig
+     * @return
+     */
+    virtual QString getDropTrigger(const QString& trig) = 0;
+
     virtual ~AbstractSqlGenerator() {}
 };
 

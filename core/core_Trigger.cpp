@@ -7,6 +7,8 @@
 #include "IconFactory.h"
 #include "ContextMenuCollection.h"
 
+#include <QCryptographicHash>
+
 Trigger::Trigger(const QString& name, const QString& uid, Version* v) : SqlSourceEntity(),
     NamedItem(name), ObjectWithUid(uid, v),
     m_body(), m_event(), m_ttime(), m_table()
@@ -84,4 +86,19 @@ void Trigger::updateGui()
         }
     }
     TreeItem::updateGui();
+}
+
+QString Trigger::getSqlHash() const
+{
+    QString s = m_body + m_event + m_ttime + m_table;
+    QString spaceless = "";
+    for(int i=0; i<s.size(); i++)
+    {
+        if(!s.at(i).isSpace())
+        {
+            spaceless += s.at(i);
+        }
+    }
+    QString hash = QString(QCryptographicHash::hash((spaceless.toUpper().toLocal8Bit()),QCryptographicHash::Md5).toHex());
+    return hash;
 }

@@ -661,6 +661,7 @@ bool MySQLDatabaseEngine::executeSql(Connection* c, const QStringList& sqls, QSt
                     db.rollback();
                 }
                 qDebug() << " <-- ERROR" << lastError ;
+                db.close();
                 return false;
             }
             qDebug() << " <-- OK";
