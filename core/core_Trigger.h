@@ -73,7 +73,7 @@ public:
     virtual QUuid getClassUid() const;
     virtual void updateGui();
 
-    virtual QString getSqlHash() const { return "N/A"; }
+    virtual QString getSqlHash() const;
 
 private:
 

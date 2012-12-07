@@ -360,7 +360,7 @@
    <sender>cmbTables</sender>
    <signal>currentIndexChanged(QString)</signal>
    <receiver>TriggerForm</receiver>
-   <slot>whenChanged(QString)</slot>
+   <slot>tableChanged(QString)</slot>
    <hints>
     <hint type="sourcelabel">
      <x>89</x>

@@ -2,7 +2,6 @@
 #include "ui_NewDataTypeForm.h"
 #include "MainWindow.h"
 #include "db_DatabaseEngine.h"
-#include "core_UserDataType.h"
 #include "db_AbstractDTSupplier.h"
 #include "db_Codepage.h"
 #include "core_UserDataType.h"

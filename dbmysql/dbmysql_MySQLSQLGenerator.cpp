@@ -871,3 +871,10 @@ QString MySQLSQLGenerator::getDropFunction(const QString& func)
     QString res = "DROP FUNCTION IF EXISTS " + func;
     return res;
 }
+
+QString MySQLSQLGenerator::getDropTrigger(const QString& trig)
+{
+    QString res = "DROP TRIGGER IF EXISTS " + trig;
+    return res;
+
+}

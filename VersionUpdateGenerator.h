@@ -54,6 +54,8 @@ private:
      */
     void updateViews(Version* from, Version* to);
     void updateProcedures(Version* from, Version* to);
+    void updateFunctions(Version* from, Version* to);
+    void updateTriggers(Version *from, Version *to);
 
 
 private:

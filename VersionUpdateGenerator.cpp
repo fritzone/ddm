@@ -13,6 +13,9 @@
 #include "ForeignKey.h"
 #include "core_View.h"
 #include "core_Procedure.h"
+#include "core_Function.h"
+#include "strings.h"
+#include "core_Trigger.h"
 
 struct IndexHolder
 {
@@ -125,6 +128,8 @@ VersionUpdateGenerator::VersionUpdateGenerator(Version *from, Version *to) : m_c
     // procedures, methods and triggers need to be dropped and recreated (at least in MySQL)
 
     updateProcedures(from, to);
+    updateFunctions(from, to);
+    updateTriggers(from, to);
 
 }
 
@@ -897,7 +902,16 @@ void VersionUpdateGenerator::updateProcedures(Version *from, Version *to)
                     // the Procedure changed its name. Drop it and recreate it. There is no other generic way
                     QHash<QString, QString> opts = Configuration::instance().sqlOpts();
                     m_commands << to->getProject()->getEngine()->getSqlGenerator()->getDropProcedure(procedureFrom->getName());
-                    m_commands << procedureTo->generateSqlSource(to->getProject()->getEngine()->getSqlGenerator(), opts, 0);
+                    m_commands << to->getProject()->getEngine()->getDelimiterKeyword() + strSpace + Configuration::instance().sqlOpts()[strSqlDelimiterText] + strNewline;
+                    QStringList t = procedureTo->generateSqlSource(to->getProject()->getEngine()->getSqlGenerator(), opts, 0) ;
+                    QString s = "";
+                    for(int j=0; j<t.size(); j++)
+                    {
+                        s += t.at(j) + " ";
+                    }
+                    s += Configuration::instance().sqlOpts()[strSqlDelimiterText] + strNewline;
+                    m_commands << s;
+                    m_commands << to->getProject()->getEngine()->getDelimiterKeyword() + strSpace + strSemicolon + strNewline;
                     recreated = true;
                 }
 
@@ -910,7 +924,16 @@ void VersionUpdateGenerator::updateProcedures(Version *from, Version *to)
                     {
                         QHash<QString, QString> opts = Configuration::instance().sqlOpts();
                         m_commands << to->getProject()->getEngine()->getSqlGenerator()->getDropProcedure(procedureFrom->getName());
-                        m_commands << procedureTo->generateSqlSource(to->getProject()->getEngine()->getSqlGenerator(), opts, 0);
+                        m_commands << to->getProject()->getEngine()->getDelimiterKeyword() + strSpace + Configuration::instance().sqlOpts()[strSqlDelimiterText] + strNewline;
+                        QStringList t = procedureTo->generateSqlSource(to->getProject()->getEngine()->getSqlGenerator(), opts, 0) ;
+                        QString s = "";
+                        for(int j=0; j<t.size(); j++)
+                        {
+                            s += t.at(j) + " ";
+                        }
+                        s += Configuration::instance().sqlOpts()[strSqlDelimiterText] + strNewline;
+                        m_commands << s;
+                        m_commands << to->getProject()->getEngine()->getDelimiterKeyword() + strSpace + strSemicolon + strNewline;
                     }
                 }
             }
@@ -932,8 +955,177 @@ void VersionUpdateGenerator::updateProcedures(Version *from, Version *to)
         if(!foundToProcedures.contains(toProcedures[i]))
         {
             QHash<QString, QString> opts = Configuration::instance().sqlOpts();
-            QStringList createProcedureLst = toProcedures[i]->generateSqlSource(to->getProject()->getEngine()->getSqlGenerator(), opts, 0);
-            m_commands << createProcedureLst;
+            m_commands << to->getProject()->getEngine()->getDelimiterKeyword() + strSpace + Configuration::instance().sqlOpts()[strSqlDelimiterText] + strNewline;
+            QStringList t = toProcedures[i]->generateSqlSource(to->getProject()->getEngine()->getSqlGenerator(), opts, 0) ;
+            QString s = "";
+            for(int j=0; j<t.size(); j++)
+            {
+                s += t.at(j) + " ";
+            }
+            s += Configuration::instance().sqlOpts()[strSqlDelimiterText] + strNewline;
+
+            m_commands << s;
+            m_commands << to->getProject()->getEngine()->getDelimiterKeyword() + strSpace + strSemicolon + strNewline;
+        }
+    }
+
+}
+
+void VersionUpdateGenerator::updateFunctions(Version *from, Version *to)
+{
+    const QVector<Function*>& toFunctions = to->getFunctions();
+    const QVector<Function*>& fromFunctions = from->getFunctions();
+
+    QSet<Function*> foundToFunctions;
+    QSet<Function*> foundFromFunctions;
+    // first step: find the Functions which have changed their sql and generate an alter statement
+    for(int i=0; i<fromFunctions.size(); i++)
+    {
+        Function* FunctionFrom = fromFunctions.at(i);
+        for(int j=0; j<toFunctions.size(); j++)
+        {
+            Function* FunctionTo = toFunctions.at(j);
+            if(UidWarehouse::instance().related(FunctionFrom, FunctionTo))
+            {
+                foundToFunctions.insert(FunctionTo);
+                foundFromFunctions.insert(FunctionFrom);
+                bool recreated = false;
+
+                if(FunctionFrom->getName() != FunctionTo->getName())
+                {
+                    // the Function changed its name. Drop it and recreate it. There is no other generic way
+                    QHash<QString, QString> opts = Configuration::instance().sqlOpts();
+                    m_commands << to->getProject()->getEngine()->getSqlGenerator()->getDropFunction(FunctionFrom->getName());
+                    m_commands << to->getProject()->getEngine()->getDelimiterKeyword() + strSpace + Configuration::instance().sqlOpts()[strSqlDelimiterText] + strNewline;
+                    QStringList t = FunctionTo->generateSqlSource(to->getProject()->getEngine()->getSqlGenerator(), opts, 0) ;
+                    QString s = "";
+                    for(int j=0; j<t.size(); j++)
+                    {
+                        s += t.at(j) + " ";
+                    }
+                    s += Configuration::instance().sqlOpts()[strSqlDelimiterText] + strNewline;
+                    m_commands << s;
+                    m_commands << to->getProject()->getEngine()->getDelimiterKeyword() + strSpace + strSemicolon + strNewline;
+                    recreated = true;
+                }
+
+                QString fromHash = FunctionFrom->getSqlHash();
+                QString toHash = FunctionTo->getSqlHash();
+
+                if(fromHash != toHash)
+                {
+                    if(!recreated)
+                    {
+                        QHash<QString, QString> opts = Configuration::instance().sqlOpts();
+                        m_commands << to->getProject()->getEngine()->getSqlGenerator()->getDropFunction(FunctionFrom->getName());
+                        m_commands << to->getProject()->getEngine()->getDelimiterKeyword() + strSpace + Configuration::instance().sqlOpts()[strSqlDelimiterText] + strNewline;
+                        QStringList t = FunctionTo->generateSqlSource(to->getProject()->getEngine()->getSqlGenerator(), opts, 0) ;
+                        QString s = "";
+                        for(int j=0; j<t.size(); j++)
+                        {
+                            s += t.at(j) + " ";
+                        }
+                        s += Configuration::instance().sqlOpts()[strSqlDelimiterText] + strNewline;
+                        m_commands << s;
+                        m_commands << to->getProject()->getEngine()->getDelimiterKeyword() + strSpace + strSemicolon + strNewline;
+                    }
+                }
+            }
+        }
+    }
+
+    // second run: drop the Functions that are not there in the second version
+    for(int i=0; i<fromFunctions.size(); i++)
+    {
+        if(!foundFromFunctions.contains(fromFunctions[i]))
+        {
+            m_commands << to->getProject()->getEngine()->getSqlGenerator()->getDropFunction(fromFunctions[i]->getName());
+        }
+    }
+
+    // third run the new Functions in "to"
+    for(int i=0; i<toFunctions.size(); i++)
+    {
+        if(!foundToFunctions.contains(toFunctions[i]))
+        {
+            QHash<QString, QString> opts = Configuration::instance().sqlOpts();
+            m_commands << to->getProject()->getEngine()->getDelimiterKeyword() + strSpace + Configuration::instance().sqlOpts()[strSqlDelimiterText] + strNewline;
+            QStringList t = toFunctions[i]->generateSqlSource(to->getProject()->getEngine()->getSqlGenerator(), opts, 0) ;
+            QString s = "";
+            for(int j=0; j<t.size(); j++)
+            {
+                s += t.at(j) + " ";
+            }
+            s += Configuration::instance().sqlOpts()[strSqlDelimiterText] + strNewline;
+
+            m_commands << s;
+            m_commands << to->getProject()->getEngine()->getDelimiterKeyword() + strSpace + strSemicolon + strNewline;
+        }
+    }
+
+}
+
+void VersionUpdateGenerator::updateTriggers(Version *from, Version *to)
+{
+    const QVector<Trigger*>& toTriggers = to->getTriggers();
+    const QVector<Trigger*>& fromTriggers = from->getTriggers();
+
+    QSet<Trigger*> foundToTriggers;
+    QSet<Trigger*> foundFromTriggers;
+    // first step: find the Triggers which have changed their sql and generate an alter statement
+    for(int i=0; i<fromTriggers.size(); i++)
+    {
+        Trigger* TriggerFrom = fromTriggers.at(i);
+        for(int j=0; j<toTriggers.size(); j++)
+        {
+            Trigger* TriggerTo = toTriggers.at(j);
+            if(UidWarehouse::instance().related(TriggerFrom, TriggerTo))
+            {
+                foundToTriggers.insert(TriggerTo);
+                foundFromTriggers.insert(TriggerFrom);
+                bool recreated = false;
+
+                if(TriggerFrom->getName() != TriggerTo->getName())
+                {
+                    // the Trigger changed its name. Drop it and recreate it. There is no other generic way
+                    QHash<QString, QString> opts = Configuration::instance().sqlOpts();
+                    m_commands << to->getProject()->getEngine()->getSqlGenerator()->getDropTrigger(TriggerFrom->getName());
+                    m_commands <<  TriggerTo->generateSqlSource(to->getProject()->getEngine()->getSqlGenerator(), opts, 0) ;
+                    recreated = true;
+                }
+
+                QString fromHash = TriggerFrom->getSqlHash();
+                QString toHash = TriggerTo->getSqlHash();
+
+                if(fromHash != toHash)
+                {
+                    if(!recreated)
+                    {
+                        QHash<QString, QString> opts = Configuration::instance().sqlOpts();
+                        m_commands << to->getProject()->getEngine()->getSqlGenerator()->getDropTrigger(TriggerFrom->getName());
+                        m_commands << TriggerTo->generateSqlSource(to->getProject()->getEngine()->getSqlGenerator(), opts, 0) ;
+                    }
+                }
+            }
+        }
+    }
+
+    // second run: drop the Triggers that are not there in the second version
+    for(int i=0; i<fromTriggers.size(); i++)
+    {
+        if(!foundFromTriggers.contains(fromTriggers[i]))
+        {
+            m_commands << to->getProject()->getEngine()->getSqlGenerator()->getDropTrigger(fromTriggers[i]->getName());
+        }
+    }
+
+    // third run the new Triggers in "to"
+    for(int i=0; i<toTriggers.size(); i++)
+    {
+        if(!foundToTriggers.contains(toTriggers[i]))
+        {
+            QHash<QString, QString> opts = Configuration::instance().sqlOpts();
+            m_commands << toTriggers[i]->generateSqlSource(to->getProject()->getEngine()->getSqlGenerator(), opts, 0) ;;
         }
     }
 

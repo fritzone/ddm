@@ -40,6 +40,7 @@ public:
     virtual QString getDropView(const QString& viewName);
     virtual QString getDropProcedure(const QString& proc);
     virtual QString getDropFunction(const QString& func);
+    virtual QString getDropTrigger(const QString& trig);
 
 private:
 

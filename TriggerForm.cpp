@@ -252,7 +252,6 @@ void TriggerForm::onLockUnlock(bool checked)
 
         MainWindow::instance()->finallyDoLockLikeOperation(true, m_trigger->getObjectUid());
     }
-
 }
 
 void TriggerForm::onUndelete()
