@@ -12,7 +12,7 @@ class DeployerThread : public QObject
 {
     Q_OBJECT
 public:
-    explicit DeployerThread(DatabaseEngine* e, Connection* c, const QStringList& sqls,
+    explicit DeployerThread(DatabaseEngine* e, Connection* c, const QStringList& sqls, const QStringList &uids,
                             int i, bool injectMetadata,
                             const Version* v,
                             QObject *parent);
@@ -28,6 +28,10 @@ public:
     {
         return m_lastError;
     }
+    QStringList getUids() const
+    {
+        return m_uids;
+    }
 public slots:
     void doWork();
 
@@ -39,6 +43,7 @@ private:
     Connection* m_connection;
     DatabaseEngine* m_engine;
     QStringList m_sqls;
+    QStringList m_uids;
     QString m_lastSql;
     bool m_success;
     int m_idx;

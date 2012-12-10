@@ -5,17 +5,18 @@
 #include "Version.h"
 
 DeployerThread::DeployerThread(DatabaseEngine* e, Connection* c,
-                               const QStringList& sqls, int i,
+                               const QStringList& sqls, const QStringList& uids, int i,
                                bool injectMetadata, const Version *v,
                                QObject *parent) :
-    QObject(parent), m_connection(c), m_engine(e), m_sqls(sqls), m_lastSql(),
+    QObject(parent), m_connection(c), m_engine(e), m_sqls(sqls), m_uids(uids), m_lastSql(),
     m_success(false), m_idx(i), m_injectMetadata(injectMetadata), m_version(v)
 {
 }
 
 void DeployerThread::doWork()
 {
-    m_success = m_engine->executeSql(m_connection, m_sqls, m_lastSql, true);
+    qDebug() << "GGGGGGGGGGG:" << m_uids;
+    m_success = m_engine->executeSql(m_connection, m_sqls, m_uids, m_lastSql, true);
     if(!m_success)
     {
         m_lastError = m_engine->getLastError();

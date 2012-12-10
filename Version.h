@@ -255,7 +255,7 @@ public:
      */
     virtual QVector<Table*> getTablesReferencingAColumnThroughForeignKeys(const Column*) = 0;
 
-    virtual QList<QString> getSqlScript(bool generateDelimiters, const Connection*) = 0;
+    virtual QList<QString> getSqlScript(bool generateDelimiters, const Connection*, QStringList&) = 0;
 
     /**
      * Provides a data type for the given SQL type. Firstly checks if there are data types corresponding to the

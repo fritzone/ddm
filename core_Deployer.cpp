@@ -4,11 +4,13 @@
 #include "Workspace.h"
 
 Deployer::Deployer(const QStringList& connections, const QMap<Connection *,
-                   QStringList> &sqls, bool injectMetadata, const Version* v,
+                   QStringList> &sqls, const QMap<QString,
+                   QStringList> &uids, bool injectMetadata, const Version* v,
                    QObject *parent) :
     QObject(parent), m_deployerThreads(), m_connections(connections),
-    m_sqls(sqls), m_injectMetadata(injectMetadata), m_version(v)
+    m_sqls(sqls), m_uids(uids), m_injectMetadata(injectMetadata), m_version(v)
 {
+    qDebug() << "OOOOOOOOOOOOOOOOOOO:" << m_uids;
 }
 
 void Deployer::deploy()
@@ -16,8 +18,9 @@ void Deployer::deploy()
     for(int i=0; i<m_connections.size(); i++)
     {
         Connection* c = ConnectionManager::instance()->getConnection(m_connections.at(i));
+        qDebug() << "JJJJJJJJJJJJJ:" << c->getName() << m_uids[c->getName()];
         DeployerThread* thread = new DeployerThread(Workspace::getInstance()->currentProjectsEngine(),
-                                                    c, m_sqls[c], i, m_injectMetadata, m_version, 0);
+                                                    c, m_sqls[c], m_uids[c->getName()], i, m_injectMetadata, m_version, 0);
         QThread *a = new QThread(this);
         thread->moveToThread(a);
         connect(this, SIGNAL(startWork()), thread, SLOT(doWork()));
@@ -44,7 +47,7 @@ bool Deployer::hadErrors()
     return false;
 }
 
-QMap<QString, QString> Deployer::getErrors()
+QMap<QString, QString> Deployer::getErrors(QMap<QString, QStringList> & uids)
 {
     QMap<QString, QString> result;
     for(int i=0; i<m_deployerThreads.size(); i++)
@@ -52,6 +55,7 @@ QMap<QString, QString> Deployer::getErrors()
         if(m_deployerThreads.at(i)->wasFaulted())
         {
             result[m_connections.at(i)] = m_deployerThreads.at(i)->getLastError();
+            uids[m_connections.at(i)] = m_deployerThreads.at(i)->getUids();
         }
     }
     return result;

@@ -79,6 +79,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), m_ui(new Ui::Main
 
     m_connectionGuiElements = new ConnectionGuiElements();
     m_connectionGuiElements->createGuiElements();
+    m_ui->action_ConnectionsTree->setChecked(true);
     showConnections();
 
     m_ui->action_NewDatabaseConnection->setEnabled(true);
@@ -146,7 +147,15 @@ void MainWindow::showProjectDetails()
 
 void MainWindow::showConnections()
 {
-    addDockWidget(Qt::RightDockWidgetArea, m_connectionGuiElements->getConnectionsTreeDock());
+    if(!m_ui->action_ConnectionsTree->isChecked())
+    {
+        m_connectionGuiElements->getConnectionsTreeDock()->hide();
+    }
+    else
+    {
+        addDockWidget(Qt::RightDockWidgetArea, m_connectionGuiElements->getConnectionsTreeDock());
+        m_connectionGuiElements->getConnectionsTreeDock()->show();
+    }
 }
 
 void MainWindow::setupGuiForNewSolution()
@@ -1864,6 +1873,7 @@ void MainWindow::onNewTableInstanceHovered()
     createTableInstancesPopup->clear();
 
     Version* v = m_workspace->workingVersion();
+    if(!v) return;
     if(m_workspace && m_workspace->currentSolution() && m_workspace->currentProject() && v) // OK, using the working version here
     {
         for(int i=0; i<v->getTables().size(); i++)
@@ -2547,11 +2557,13 @@ void MainWindow::onDeploymentFinished(Deployer *d)
 {
     if(d->hadErrors())
     {
-        QMap<QString, QString> errors = d->getErrors();
+        QMap<QString, QStringList> uids;
+        QMap<QString, QString> errors = d->getErrors(uids);
         m_guiElements->getIssuesDock()->show();
         for(QMap<QString, QString>::iterator it = errors.begin(); it != errors.end(); it++)
         {
-            IssueManager::getInstance().createConnectionIssue(ConnectionManager::instance()->getConnection(it.key()), it.value());
+            QString reason = it.value();
+            IssueManager::getInstance().createConnectionIssue(ConnectionManager::instance()->getConnection(it.key()), reason);
             if(!lblStatus)
             {
                 createStatusLabel();

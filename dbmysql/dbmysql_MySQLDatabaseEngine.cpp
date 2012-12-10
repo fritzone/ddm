@@ -200,7 +200,7 @@ QStringList MySQLDatabaseEngine::getAvailableViews(Connection* c)
 
     if(!ok)
     {
-        lastError = dbo.lastError().databaseText() + "/" + dbo.lastError().databaseText();
+        lastError = formatLastError(QObject::tr("Cannot get views"), dbo.lastError());
         return result;
     }
 
@@ -226,7 +226,7 @@ QStringList MySQLDatabaseEngine::getAvailableTriggers(Connection* c)
 
     if(!ok)
     {
-        lastError = dbo.lastError().databaseText() + "/" + dbo.lastError().databaseText();
+        lastError = formatLastError(QObject::tr("Cannot get triggers"), dbo.lastError());
         return result;
     }
 
@@ -252,7 +252,7 @@ QStringList MySQLDatabaseEngine::getAvailableStoredProcedures(Connection* c)
 
     if(!ok)
     {
-        lastError = dbo.lastError().databaseText() + "/" + dbo.lastError().databaseText();
+        lastError = formatLastError(QObject::tr("Cannot get stored procedures"), dbo.lastError());
         return QStringList();
     }
 
@@ -277,7 +277,7 @@ QStringList MySQLDatabaseEngine::getAvailableStoredFunctions(Connection* c)
 
     if(!ok)
     {
-        lastError = dbo.lastError().databaseText() + "/" + dbo.lastError().databaseText();
+        lastError = formatLastError(QObject::tr("Cannot get stored functions"), dbo.lastError());
         return QStringList();
     }
 
@@ -302,7 +302,7 @@ QStringList MySQLDatabaseEngine::getAvailableTables(Connection* c)
 
     if(!ok)
     {
-        lastError = dbo.lastError().databaseText() + "/" + dbo.lastError().databaseText();
+        lastError = formatLastError(QObject::tr("Cannot get tables"),dbo.lastError());
         return result;
     }
 
@@ -378,7 +378,7 @@ View* MySQLDatabaseEngine::reverseEngineerView(Connection* c, const QString& vie
 
     if(!ok)
     {
-        lastError = dbo.lastError().databaseText() + "/" + dbo.lastError().databaseText();
+        lastError = formatLastError(QObject::tr("Cannot reverse engineer a view"), dbo.lastError());
         return 0;
     }
 
@@ -434,7 +434,7 @@ Table* MySQLDatabaseEngine::reverseEngineerTable(Connection *c, const QString& t
 
     if(!ok)
     {
-        lastError = dbo.lastError().databaseText() + "/" + dbo.lastError().databaseText();
+        lastError = formatLastError(QObject::tr("Cannot reverse engineer a table"), dbo.lastError());
         return 0;
     }
 
@@ -619,7 +619,6 @@ Table* MySQLDatabaseEngine::reverseEngineerTable(Connection *c, const QString& t
             eng = query.value(0).toString();
         }
 
-
         {
         // see if we have a storage engine
         SpInstance* spi = tab->getInstanceForSqlRoleUid(this, uidMysqlStorageEngineTable);
@@ -633,13 +632,13 @@ Table* MySQLDatabaseEngine::reverseEngineerTable(Connection *c, const QString& t
     return tab;
 }
 
-bool MySQLDatabaseEngine::executeSql(Connection* c, const QStringList& sqls, QString& lastSql, bool rollbackOnError)
+bool MySQLDatabaseEngine::executeSql(Connection* c, const QStringList& sqls, const QStringList &uid, QString& lastSql, bool rollbackOnError)
 {
     QSqlDatabase db = getQSqlDatabaseForConnection(c);
     bool ok = db.isOpen();
     if(!ok)
     {
-        lastError = db.lastError().driverText() + "/" + db.lastError().databaseText();
+        lastError = formatLastError(QObject::tr("Cannot connect to:") + c->getFullLocation(), db.lastError());
         return false;
     }
 
@@ -652,14 +651,18 @@ bool MySQLDatabaseEngine::executeSql(Connection* c, const QStringList& sqls, QSt
         {
             QSqlQuery query(db);
 
-            qDebug() << lastSql ;
+            qDebug() << lastSql  << uid;
             if(!query.exec(lastSql))
             {
-                lastError = query.lastError().driverText() + "/" + query.lastError().databaseText();
+                lastError = formatLastError(QObject::tr("Cannot run a query"), query.lastError());
+                QString theUid = nullUid;
+                if(i < uid.size() - 1) theUid = uid[i];
+                lastError += "<!-- UID:" + theUid + "--> <br><br><pre>" + lastSql;
                 if(transactionSucces && rollbackOnError)
                 {
                     db.rollback();
                 }
+
                 qDebug() << " <-- ERROR" << lastError ;
                 db.close();
                 return false;
@@ -686,14 +689,15 @@ QStringList MySQLDatabaseEngine::getAvailableDatabases(const QString& host, cons
     Connection *c = new Connection("temp", host, user, pass, "", false, false, port);
     QSqlDatabase db = getQSqlDatabaseForConnection(c);
     bool ok = db.isOpen();
-    QStringList result;
 
     if(!ok)
     {
-        lastError = QObject::tr("Cannot connect to the database: ") + db.lastError().databaseText() + "/" + db.lastError().driverText();
-        return result;
+        lastError = formatLastError(QObject::tr("Cannot run a query"), db.lastError());
+
+        return QStringList();
     }
 
+    QStringList result;
     QSqlQuery query(db);
     query.exec("show databases");
 
@@ -713,7 +717,7 @@ bool MySQLDatabaseEngine::dropDatabase(Connection* c)
     bool ok = db.isOpen();
     if(!ok)
     {
-        lastError = QObject::tr("Cannot connect to the database: ") + db.lastError().databaseText() + "/" + db.lastError().driverText();
+        lastError = formatLastError(QObject::tr("Cannot connect to the DB for dropping a database"), db.lastError());
         return false;
     }
 
@@ -721,7 +725,7 @@ bool MySQLDatabaseEngine::dropDatabase(Connection* c)
     bool t = query.exec("drop database "+ c->getDb());
     if(!t)
     {
-        lastError = QObject::tr("Cannot drop a database: ") + db.lastError().databaseText() + "/" + db.lastError().driverText();
+        lastError = formatLastError(QObject::tr("Cannot drop database: ") + c->getDb(), db.lastError());
         return false;
     }
     db.close();
@@ -729,29 +733,52 @@ bool MySQLDatabaseEngine::dropDatabase(Connection* c)
     return true;
 }
 
+QString MySQLDatabaseEngine::formatLastError(const QString& header, const QSqlError &error)
+{
+    QString errorText = "<b>" + header + "</b>";
+    errorText += "<br><br>";
+    errorText += "<b>"+ QObject::tr("DB Error: ")  + "</b>"+ error.databaseText();
+    errorText += "<br>";
+    errorText += "<b>" + QObject::tr("Driver Error: ")  + "</b>"+ error.driverText() + "<br>";
+    errorText += "<b>" + QObject::tr("Error Number: ")  + "</b>"+  QString::number(error.number()) + "<br>";
+    errorText += "<b>" + QObject::tr("Error Type: ") + "</b>";
+    switch(error.type())
+    {
+    case QSqlError::NoError: errorText += ". No Error";
+        break;
+    case QSqlError::ConnectionError: errorText += "Connection Error";
+        break;
+    case QSqlError::StatementError: errorText += "Statement Error";
+        break;
+    case QSqlError::TransactionError: errorText += "Transaction Error";
+        break;
+    case QSqlError::UnknownError: errorText += "Unknown Error";
+        break;
+    }
+    errorText += "<br>";
+    return errorText;
+}
+
 bool MySQLDatabaseEngine::createDatabase(Connection* c)
 {
-    QString newConnName = provideConnectionName("getConnection");
-    QSqlDatabase dbo = QSqlDatabase::addDatabase("QMYSQL", newConnName);
+    Connection *c1 = new Connection("temp", c->getHost(), c->getUser(), c->getPassword(), "", false, false, c->getPort());
+    QSqlDatabase db = getQSqlDatabaseForConnection(c1);
+    bool ok = db.isOpen();
 
-    dbo.setHostName(c->getHost());
-    dbo.open(c->getUser(), c->getPassword());
-
-    bool ok = dbo.isOpen();
     if(!ok)
     {
-        lastError = QObject::tr("Cannot connect to the database: ") + dbo.lastError().databaseText() + "/" + dbo.lastError().driverText();
+        lastError = formatLastError(QObject::tr("Cannot connect to the DB server to create a new database"), db.lastError());
         return false;
     }
 
-    QSqlQuery query(dbo);
+    QSqlQuery query(db);
     bool t = query.exec("create database "+ c->getDb());
     if(!t)
     {
-        lastError = QObject::tr("Cannot create a database: ") + dbo.lastError().databaseText() + "/" + dbo.lastError().driverText();
+        lastError = formatLastError(QObject::tr("Cannot create database: ") + c->getDb(), query.lastError());
         return false;
     }
-    dbo.close();
+    db.close();
     return true;
 }
 
@@ -999,7 +1026,7 @@ bool MySQLDatabaseEngine::tryConnect(Connection* c)
 
     if(!ok)
     {
-        lastError = dbo.lastError().driverText() + "/" + dbo.lastError().databaseText();
+        lastError = formatLastError(QObject::tr("Cannot connect to the database"), dbo.lastError());
         return false;
     }
     dbo.close();
@@ -1432,7 +1459,7 @@ Trigger* MySQLDatabaseEngine::reverseEngineerTrigger(Connection *c, const QStrin
 
     if(!ok)
     {
-        lastError = dbo.lastError().databaseText() + "/" + dbo.lastError().databaseText();
+        lastError = formatLastError(QObject::tr("Cannot reverse engineer trigger"), dbo.lastError());
         return 0;
     }
 
@@ -1736,7 +1763,7 @@ QStringList MySQLDatabaseEngine::getSupportedStorageEngines(const QString& host,
 
     if(!ok)
     {
-        lastError = QObject::tr("Cannot connect to the database: ") + db.lastError().databaseText() + "/" + db.lastError().driverText();
+        lastError = formatLastError(QObject::tr("Cannot connect to the database"), db.lastError());
         return result;
     }
 
@@ -1774,7 +1801,7 @@ bool MySQLDatabaseEngine::injectMetadata(Connection *c, const Version *v)
             )";
 
     QString last;
-    bool b = executeSql(c, sqls, last, false);
+    bool b = executeSql(c, sqls, QStringList(), last, false);
     if(!b) return false;
 
     QSqlDatabase db = getQSqlDatabaseForConnection(c);
@@ -1788,7 +1815,7 @@ bool MySQLDatabaseEngine::injectMetadata(Connection *c, const Version *v)
         q.bindValue(":md", chopped.at(i));
         if(!q.exec())
         {
-            lastError = q.lastError().driverText() + "/" + q.lastError().databaseText();
+            lastError = formatLastError(QObject::tr("Cannot inject metadata"), db.lastError());
             qDebug() << lastError;
             return false;
         }

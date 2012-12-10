@@ -920,7 +920,7 @@ void DefaultVersionImplementation::setupForeignKeyRelationshipsForATable(Table* 
     }
 }
 
-QList<QString> DefaultVersionImplementation::getSqlScript(bool generateDelimiters, const Connection* dest)
+QList<QString> DefaultVersionImplementation::getSqlScript(bool generateDelimiters, const Connection* dest, QStringList& uids)
 {
     QList<QString> finalSql;
     QHash<QString, QString> opts = Configuration::instance().sqlGenerationOptions();
@@ -935,6 +935,7 @@ QList<QString> DefaultVersionImplementation::getSqlScript(bool generateDelimiter
         {
             QStringList sql = getTableInstances().at(i)->generateSqlSource(m_project->getEngine()->getSqlGenerator(), opts, dest);
             finalSql << sql;
+            for(int j=0; j<sql.size(); j++) uids << getTableInstances().at(i)->getObjectUid();
 
             if(fkAllowed) fkAllowed = !m_project->getEngine()->tableBlocksForeignKeyFunctionality(getTableInstances().at(i)->table());
         }
@@ -944,7 +945,9 @@ QList<QString> DefaultVersionImplementation::getSqlScript(bool generateDelimiter
             for(int i=0; i<getTableInstances().size(); i++)
             {
                 QStringList foreignKeyCommands = m_project->getEngine()->getSqlGenerator()->generateAlterTableForForeignKeys(getTableInstances().at(i)->table(), opts);
+
                 finalSql << foreignKeyCommands;
+                for(int j=0; j<foreignKeyCommands.size(); j++) uids << getTableInstances().at(i)->getObjectUid();
             }
         }
     }
@@ -955,6 +958,7 @@ QList<QString> DefaultVersionImplementation::getSqlScript(bool generateDelimiter
         {
             QStringList sql = getTables().at(i)->generateSqlSource(m_project->getEngine()->getSqlGenerator(), opts, dest);
             finalSql << sql;
+            for(int j=0; j<sql.size(); j++) uids << getTables().at(i)->getObjectUid();
             if(fkAllowed)
             {
                 fkAllowed =!m_project->getEngine()->tableBlocksForeignKeyFunctionality(getTables().at(i));
@@ -967,6 +971,7 @@ QList<QString> DefaultVersionImplementation::getSqlScript(bool generateDelimiter
             {
                 QStringList foreignKeyCommands = m_project->getEngine()->getSqlGenerator()->generateAlterTableForForeignKeys(getTables().at(i), opts);
                 finalSql << foreignKeyCommands;
+                for(int j=0; j<foreignKeyCommands.size(); j++) uids << getTables().at(i)->getObjectUid();
             }
         }
         else
@@ -976,11 +981,10 @@ QList<QString> DefaultVersionImplementation::getSqlScript(bool generateDelimiter
     }
 
     // and the views
-    finalSql.append("\n");
-    if(comments)
-    {   finalSql << "-- Creating the views\n";
-        finalSql.append("\n");
-    }
+//    if(comments)
+//    {   finalSql << "-- Creating the views\n";
+//        finalSql.append("\n");
+//    }
     for(int i=0; i<m_data.m_views.size(); i++)
     {
         QStringList t = m_data.m_views.at(i)->generateSqlSource(m_project->getEngine()->getSqlGenerator(), opts, dest);
@@ -991,20 +995,22 @@ QList<QString> DefaultVersionImplementation::getSqlScript(bool generateDelimiter
         }
         s += ";\n\n";
         finalSql << s;
+        uids << m_data.m_views.at(i)->getObjectUid();
     }
 
     // and the procedures
     finalSql.append("\n");
 
-    if(m_data.m_procedures.size() && comments)
-    {
-        finalSql << "-- Creating the procedures\n";
-        finalSql.append("\n");
-    }
+//    if(m_data.m_procedures.size() && comments)
+//    {
+//        finalSql << "-- Creating the procedures\n";
+//        finalSql.append("\n");
+//    }
 
     if(m_data.m_procedures.size() && generateDelimiters)
     {
         finalSql << m_project->getEngine()->getDelimiterKeyword() + strSpace + Configuration::instance().sqlOpts()[strSqlDelimiterText] + strNewline;
+        uids << nullUid;
     }
 
     for(int i=0; i<m_data.m_procedures.size(); i++)
@@ -1024,6 +1030,7 @@ QList<QString> DefaultVersionImplementation::getSqlScript(bool generateDelimiter
         {
             s += strSemicolon + strNewline;
         }
+        uids << m_data.m_procedures.at(i)->getObjectUid();
         finalSql << s;
     }
 
@@ -1031,6 +1038,8 @@ QList<QString> DefaultVersionImplementation::getSqlScript(bool generateDelimiter
     if(m_data.m_procedures.size() && generateDelimiters)
     {
         finalSql << m_project->getEngine()->getDelimiterKeyword() + strSpace + strSemicolon + strNewline;
+        uids << nullUid;
+
     }
 
     // and the functions
@@ -1038,13 +1047,15 @@ QList<QString> DefaultVersionImplementation::getSqlScript(bool generateDelimiter
     if(m_data.m_functions.size() && generateDelimiters)
     {
         finalSql << m_project->getEngine()->getDelimiterKeyword() + strSpace + Configuration::instance().sqlOpts()[strSqlDelimiterText] + strNewline;
+        uids << nullUid;
+
     }
 
-    if(m_data.m_functions.size() && comments)
-    {
-        finalSql << "-- Creating the functions";
-        finalSql.append("\n");
-    }
+//    if(m_data.m_functions.size() && comments)
+//    {
+//        finalSql << "-- Creating the functions";
+//        finalSql.append("\n");
+//    }
 
     for(int i=0; i<m_data.m_functions.size(); i++)
     {
@@ -1064,21 +1075,23 @@ QList<QString> DefaultVersionImplementation::getSqlScript(bool generateDelimiter
             s += strSemicolon + strNewline;
         }
         finalSql << s;
+        uids << m_data.m_functions.at(i)->getObjectUid();
     }
 
     if(m_data.m_functions.size() && generateDelimiters)
     {
         finalSql << m_project->getEngine()->getDelimiterKeyword() + strSpace + strSemicolon + strNewline;
+        uids << nullUid;
     }
 
     // and the triggers
-    finalSql.append("\n");
+//    finalSql.append("\n");
 
-    if(m_data.m_triggers.size() && comments)
-    {
-        finalSql << "-- Creating the triggers\n";
-        finalSql.append("\n");
-    }
+//    if(m_data.m_triggers.size() && comments)
+//    {
+//        finalSql << "-- Creating the triggers\n";
+//        finalSql.append("\n");
+//    }
 
     for(int i=0; i<m_data.m_triggers.size(); i++)
     {
@@ -1090,6 +1103,7 @@ QList<QString> DefaultVersionImplementation::getSqlScript(bool generateDelimiter
             s += t.at(j) + " ";
         }
         finalSql << s;
+        uids << m_data.m_triggers.at(i)->getObjectUid();
     }
 
     return finalSql;

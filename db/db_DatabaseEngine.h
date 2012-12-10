@@ -107,6 +107,7 @@ public:
      * @return true in case of success, false in case of error
      */
     virtual bool executeSql(Connection* c, const QStringList& sqls,
+                            const QStringList& uid,
                             QString& lastSql, bool rollbackOnError) = 0;
 
     /**
