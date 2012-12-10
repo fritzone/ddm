@@ -15,11 +15,17 @@ class Deployer : public QObject
     Q_OBJECT
 public:
     explicit Deployer(const QStringList& connections, const QMap<Connection*,
-                      QStringList>& sqls, bool injectMetadata, const Version* v,
+                      QStringList>& sqls, const QMap<QString,
+                      QStringList> &uids, bool injectMetadata, const Version* v,
                       QObject *parent);
     void deploy();
     bool hadErrors();
-    QMap<QString, QString> getErrors();
+
+    /**
+     * @brief getErrors
+     * @return a map of connection names -> the last error
+     */
+    QMap<QString, QString> getErrors(QMap<QString, QStringList> &uids);
 
 signals:
     void done(Deployer*);
@@ -32,6 +38,7 @@ private:
     QVector<DeployerThread*> m_deployerThreads;
     QStringList m_connections;
     QMap<Connection*, QStringList> m_sqls;
+    QMap<QString, QStringList> m_uids;
     QVector<int> m_finishedThreads;
     bool m_injectMetadata;
     const Version* m_version;

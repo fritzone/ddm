@@ -348,7 +348,7 @@ void InjectSqlDialog::onCreateDatabase()
         bool b = m_dbEngine->createDatabase(c);
         if(!b)
         {
-            QMessageBox::critical(this, tr("Error"), tr("Could not create a new database: ") + m_dbEngine->getLastError(), QMessageBox::Ok);
+            QMessageBox::critical(this, tr("Error"), m_dbEngine->getLastError(), QMessageBox::Ok);
         }
         else
         {

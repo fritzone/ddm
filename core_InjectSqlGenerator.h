@@ -23,7 +23,10 @@ public:
     {
         return m_sqls;
     }
-
+    QMap<QString, QStringList> getUids()
+    {
+        return m_uids;
+    }
     QStringList getConnectionNames()
     {
         return m_connectionNames;
@@ -47,6 +50,7 @@ private:
     Version *m_version;
     QStringList m_connectionNames;
     QMap<Connection*, QStringList> m_sqls;
+    QMap<QString, QStringList> m_uids;
     bool m_metadataInjectRequired;
 };
 

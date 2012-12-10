@@ -5,7 +5,7 @@
 
 InjectSqlGenerator::InjectSqlGenerator(Version* v, QStringList connectionNames,
                                        QObject *parent, bool injectRequired) :
-    QObject(parent), m_version(v), m_connectionNames(connectionNames),
+    QObject(parent), m_version(v), m_connectionNames(connectionNames), m_sqls(), m_uids(),
     m_metadataInjectRequired(injectRequired)
 {
 }
@@ -27,5 +27,7 @@ void InjectSqlGenerator::generate()
 void InjectSqlGenerator::onSqlGeneratorThreadIsDone(InjectSqlGeneratorThread* t)
 {
     m_sqls[t->getConnection()] = t->getSqls();
+    m_uids[t->getConnection()->getName()] = t->getUids();
+    qDebug() << "XXXXXX:" << m_uids[t->getConnection()->getName()] ;
     if(m_sqls.keys().size() == m_connectionNames.size()) emit done(this);
 }

@@ -20,7 +20,7 @@ public:
 
     virtual ~MySQLDatabaseEngine();
 
-    virtual bool executeSql(Connection* c, const QStringList& sqls, QString& lastSql, bool rollbackOnError);
+    virtual bool executeSql(Connection* c, const QStringList& sqls, const QStringList& uid, QString& lastSql, bool rollbackOnError);
     virtual QString getDefaultDatatypesLocation();
     virtual bool reverseEngineerDatabase(Connection *c, const QStringList& tables, const QStringList& views, const QStringList& procs, const QStringList& funcs, const QStringList& triggers, Project* p, bool relaxed);
     virtual Table* reverseEngineerTable(Connection *c, const QString& tableName, Project* p, bool relaxed, Version* ver);
@@ -58,6 +58,8 @@ public:
     virtual QString getDbMetadata(Connection *c);
 
     QStringList getSupportedStorageEngines(const QString& host, const QString& user, const QString& pass, int port);
+    QString formatLastError(const QString &header, const QSqlError&);
+
 private:
     MySQLDatabaseEngine();
 

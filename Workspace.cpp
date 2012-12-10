@@ -58,6 +58,8 @@ bool Workspace::addProjectToSolution(Solution *s, Project *p)
 
 Version* Workspace::workingVersion() const
 {
+    Project* p = currentProject();
+    if(!p) return 0;
     return currentProject()->getWorkingVersion();
 }
 
@@ -129,6 +131,8 @@ bool Workspace::loadSolution(const QString& fileName)
 
 Project* Workspace::currentProject() const
 {
+    Solution* s = currentSolution();
+    if(!s) return 0;
     return currentSolution()->currentProject();
 }
 

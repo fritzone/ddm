@@ -72,8 +72,10 @@ void DeploymentInitiator::doDeployment(Version* v, QStringList connectionNames, 
 void DeploymentInitiator::onSqlGenerationFinished(InjectSqlGenerator *generator)
 {
     QMap<Connection*, QStringList> sqlList = generator->getSqls();
+    QMap<QString, QStringList> uidList = generator->getUids();
+    qDebug() << "AAAAAAAAAA:" << uidList;
     QStringList connectionNames = generator->getConnectionNames();
-    Deployer* deployer = new Deployer(connectionNames, sqlList,
+    Deployer* deployer = new Deployer(connectionNames, sqlList, uidList,
                                       generator->metadataInjectRequired(),
                                       generator->getVersion(), 0);
     m_deployers.append(deployer);

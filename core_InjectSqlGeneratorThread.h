@@ -16,6 +16,10 @@ public:
     {
         return m_sqls;
     }
+    QStringList getUids() const
+    {
+        return m_uids;
+    }
     Connection* getConnection() const
     {
         return m_connection;
@@ -29,6 +33,7 @@ signals:
 
 private:
     QStringList m_sqls;
+    QStringList m_uids;
     Version* m_version;
     Connection* m_connection;
 };

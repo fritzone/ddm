@@ -264,9 +264,9 @@ ContextMenuCollection::ContextMenuCollection()
     m_unlockTablePopupMenu->addAction(action_unlock);
     m_relockTablePopupMenu->addAction(action_relock);
     m_unlockTablePopupMenu->addAction(action_RemoveTable);
-    m_unlockTablePopupMenu->addAction(action_compareTable);
+    //m_unlockTablePopupMenu->addAction(action_compareTable);
     m_relockTablePopupMenu->addMenu(m_tablePopupMenu);
-    m_relockTablePopupMenu->addAction(action_compareTable);
+    //m_relockTablePopupMenu->addAction(action_compareTable);
 
     // the locked trigger popup menus
     m_unlockTriggerPopupMenu->addAction(action_unlock);
