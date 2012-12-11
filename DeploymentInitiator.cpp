@@ -18,7 +18,8 @@ DeploymentInitiator::DeploymentInitiator(QObject *parent) : QObject(parent),
 {
 }
 
-void DeploymentInitiator::doDeployment(Version* v, QStringList connectionNames, bool metadataInject, const QStringList &/*uidsToDeploy*/, const QStringList& /*uidsToDrop*/)
+void DeploymentInitiator::doDeployment(Version* v, QStringList connectionNames, bool metadataInject,
+                                       const QStringList &/*uidsToDeploy*/, const QStringList& /*uidsToDrop*/)
 {
     InjectSqlGenerator* injectSqlGen = new InjectSqlGenerator(v, connectionNames, 0, metadataInject);
     connect(injectSqlGen, SIGNAL(done(InjectSqlGenerator*)), this, SLOT(onSqlGenerationFinished(InjectSqlGenerator*)));
@@ -66,7 +67,6 @@ void DeploymentInitiator::doDeployment(Version* v, QStringList connectionNames, 
         uidsToDeploy.append(triggers.at(i)->getObjectUid());
     }
     doDeployment(v, connectionNames, metadataInject, uidsToDeploy, QStringList());
-
 }
 
 void DeploymentInitiator::onSqlGenerationFinished(InjectSqlGenerator *generator)

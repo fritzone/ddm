@@ -237,7 +237,7 @@ void MainWindow::onNewSolution()
 
         if(nprjdlg->getProjectType() == NewProjectDialog::PRJ_BINDTODATABASE)
         {
-            InjectSqlDialog* injectDialog = new InjectSqlDialog(0, 0, 0);
+            InjectSqlDialog* injectDialog = new InjectSqlDialog(0, 0, 0, "");
             injectDialog->setupForBindToDatabase();
             injectDialog->setModal(true);
             if(injectDialog->exec() == QDialog::Accepted)
@@ -1018,7 +1018,7 @@ void MainWindow::doLoadSolution(const QString& fileName, bool splashVisible)
         m_workspace->workingVersion()->getGui()->getTablesItem()->setText(0, tr("Tables"));
     }
 
-    m_guiElements->getProjectTree()->expandAll();
+    //m_guiElements->getProjectTree()->expandAll();
     Workspace::getInstance()->workingVersion()->getGui()->collapseDTEntries();
 
     ProjectDetailsForm* prjDetailsForm = new ProjectDetailsForm(this);
@@ -1207,7 +1207,7 @@ void MainWindow::onDeployVersion()
             {
                 // TODO: This is duplicate from onDeploy except the version
                 InjectSqlDialog* injectDialog = new InjectSqlDialog(
-                            m_workspace->getInstance()->currentProjectsEngine(), this, m);
+                            m_workspace->getInstance()->currentProjectsEngine(), this, m, "");
                 injectDialog->setModal(true);
                 if(injectDialog->exec() == QDialog::Accepted)
                 {
@@ -2162,7 +2162,7 @@ void MainWindow::onEditConnection()
             w = true;
         }
 
-        InjectSqlDialog* ij = new InjectSqlDialog(0, 0, 0);
+        InjectSqlDialog* ij = new InjectSqlDialog(0, 0, 0, "");
         ij->setModal(true);
         ij->populateConnectionDetails(c);
         if(ij->exec()  == QDialog::Accepted)
@@ -2459,7 +2459,7 @@ void MainWindow::onGotoIssueLocation()
     Connection* c = dynamic_cast<Connection*>(source);
     if(c)
     {
-        InjectSqlDialog* ij = new InjectSqlDialog(0, 0, 0);
+        InjectSqlDialog* ij = new InjectSqlDialog(0, 0, 0, "");
         ij->setModal(true);
         ij->populateConnectionDetails(c);
         if(ij->exec()  == QDialog::Accepted)
@@ -2520,7 +2520,7 @@ void MainWindow::onDeploy()
 {
     InjectSqlDialog* injectDialog = new InjectSqlDialog(
                 m_workspace->getInstance()->currentProjectsEngine(), this,
-                Workspace::getInstance()->workingVersion());
+                Workspace::getInstance()->workingVersion(), "");
     injectDialog->setModal(true);
     if(injectDialog->exec() == QDialog::Accepted)
     {
@@ -2553,6 +2553,22 @@ void MainWindow::setStatus(const QString& s, bool err)
     }
 }
 
+static QString getErrorForTag(const QString &src, const QString& tag)
+{
+    int errIdx = src.indexOf(tag);
+    if(errIdx == -1) return "";
+    errIdx += tag.length();
+    QString result = "";
+    while(errIdx < src.length() - 2)
+    {
+        result += src.at(errIdx);
+        errIdx ++;
+        if(src[errIdx] == '<' && src[errIdx + 1] == '!') return result;
+    }
+
+    return result;
+}
+
 void MainWindow::onDeploymentFinished(Deployer *d)
 {
     if(d->hadErrors())
@@ -2563,7 +2579,18 @@ void MainWindow::onDeploymentFinished(Deployer *d)
         for(QMap<QString, QString>::iterator it = errors.begin(); it != errors.end(); it++)
         {
             QString reason = it.value();
-            IssueManager::getInstance().createConnectionIssue(ConnectionManager::instance()->getConnection(it.key()), reason);
+            QString theError = getErrorForTag(reason, "<!-- DBE: -->");
+            QString drvError = getErrorForTag(reason, "<!-- DRV: -->");
+            QString code = getErrorForTag(reason, "<!-- NR: -->");
+            QString guid = getErrorForTag(reason, "<!-- UID:");
+
+            Issue* iss = IssueManager::getInstance().createConnectionIssue(ConnectionManager::instance()->getConnection(it.key()),
+                                                                           theError + "/"  + drvError + tr(" Code: ") +  code);
+            ObjectWithUid* obj = UidWarehouse::instance().getElement(guid);
+            if(obj)
+            {
+                iss->getLocation()->setIcon(3, IconFactory::getIconForClassUid(obj->getClassUid()));
+            }
             if(!lblStatus)
             {
                 createStatusLabel();

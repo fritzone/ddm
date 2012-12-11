@@ -657,7 +657,7 @@ bool MySQLDatabaseEngine::executeSql(Connection* c, const QStringList& sqls, con
                 lastError = formatLastError(QObject::tr("Cannot run a query"), query.lastError());
                 QString theUid = nullUid;
                 if(i < uid.size() - 1) theUid = uid[i];
-                lastError += "<!-- UID:" + theUid + "--> <br><br><pre>" + lastSql;
+                lastError += "<!-- UID:" + theUid + "<!-- /UID --> <br><br><pre>" + lastSql;
                 if(transactionSucces && rollbackOnError)
                 {
                     db.rollback();
@@ -737,22 +737,21 @@ QString MySQLDatabaseEngine::formatLastError(const QString& header, const QSqlEr
 {
     QString errorText = "<b>" + header + "</b>";
     errorText += "<br><br>";
-    errorText += "<b>"+ QObject::tr("DB Error: ")  + "</b>"+ error.databaseText();
-    errorText += "<br>";
-    errorText += "<b>" + QObject::tr("Driver Error: ")  + "</b>"+ error.driverText() + "<br>";
-    errorText += "<b>" + QObject::tr("Error Number: ")  + "</b>"+  QString::number(error.number()) + "<br>";
+    errorText += "<b>"+ QObject::tr("DB Error: ")  + "</b><!-- DBE: -->"+ error.databaseText() + "<!-- /DBE --><br>";
+    errorText += "<b>" + QObject::tr("Driver Error: ")  + "</b><!-- DRV: -->"+ error.driverText() + "<!-- /DRV --><br>";
+    errorText += "<b>" + QObject::tr("Error Number: ")  + "</b><!-- NR: -->"+  QString::number(error.number()) + "<!-- /NR --><br>";
     errorText += "<b>" + QObject::tr("Error Type: ") + "</b>";
     switch(error.type())
     {
-    case QSqlError::NoError: errorText += ". No Error";
+    case QSqlError::NoError: errorText += "<!-- TYPE: -->No Error<!-- /TYPE -->";
         break;
-    case QSqlError::ConnectionError: errorText += "Connection Error";
+    case QSqlError::ConnectionError: errorText += "<!-- TYPE: -->Connection Error<!-- /TYPE -->";
         break;
-    case QSqlError::StatementError: errorText += "Statement Error";
+    case QSqlError::StatementError: errorText += "<!-- TYPE: -->Statement Error<!-- /TYPE -->";
         break;
-    case QSqlError::TransactionError: errorText += "Transaction Error";
+    case QSqlError::TransactionError: errorText += "<!-- TYPE: -->Transaction Error<!-- /TYPE -->";
         break;
-    case QSqlError::UnknownError: errorText += "Unknown Error";
+    case QSqlError::UnknownError: errorText += "<!-- TYPE: -->Unknown Error<!-- /TYPE -->";
         break;
     }
     errorText += "<br>";

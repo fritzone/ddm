@@ -40,7 +40,12 @@ void ConnectionManager::loadConnections()
         QString host = s.value(strHost).toString();
         QString pass = s.value(strPass).toString();
         QString user = s.value(strUser).toString();
-        int port = s.value(strPort).toString().toInt();
+        int port = 3306;
+        if(s.contains(strPort))
+        {
+            QVariant portV = s.value(strPort);
+            port = portV.toString().toInt();
+        }
         QString db = s.value(strDB).toString();
         bool ac = s.value(strAutoConnect).toBool();
         QString dbt = s.value(strDbType).toString();

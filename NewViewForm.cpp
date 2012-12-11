@@ -333,7 +333,7 @@ void NewViewForm::onSaveSql()
 
 void NewViewForm::onInject()
 {
-    InjectSqlDialog* injectDialog = new InjectSqlDialog(Workspace::getInstance()->currentProjectsEngine(), this, 0);
+    InjectSqlDialog* injectDialog = new InjectSqlDialog(Workspace::getInstance()->currentProjectsEngine(), this, 0, m_view->getName());
     //injectDialog->selectCodePage(ui->cmbCharSetForSql->currentIndex());
     injectDialog->setModal(true);
     bool error = false;
