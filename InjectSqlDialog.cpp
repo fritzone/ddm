@@ -28,12 +28,14 @@ QString InjectSqlDialog::previousHost="";
 QString InjectSqlDialog::previousUser="";
 
 
-InjectSqlDialog::InjectSqlDialog(DatabaseEngine* engine, QWidget *parent, Version *v) :
+InjectSqlDialog::InjectSqlDialog(DatabaseEngine* engine, QWidget *parent, Version *v, const QString &objNameToDeploy) :
     QDialog(parent), ui(new Ui::InjectSqlDialog), m_dbEngine(engine),
     m_nameWasChanged(false), m_injectMetadata(false), m_signalMapper(new QSignalMapper(this)),
-    m_UidsToDeploy(), m_UidsToDrop()
+    m_UidsToDeploy(), m_UidsToDrop(), m_objName(objNameToDeploy)
 {
     ui->setupUi(this);
+
+    ui->frame_2->hide();
     ui->buttonBox->button(QDialogButtonBox::Ok)->setDisabled(true);
     ui->txtDatabaseHost->setText(previousHost.length()?previousHost:"localhost");
     ui->txtDatabaseUser->setText(previousUser);
@@ -44,6 +46,7 @@ InjectSqlDialog::InjectSqlDialog(DatabaseEngine* engine, QWidget *parent, Versio
     ui->btnCreateDatabase->hide();
     ui->grpConnectionDetails->hide();
     ui->chkRollbackOnError->hide();
+    ui->tabWidget->removeTab(1);
 
     if(engine)
     {
@@ -59,7 +62,7 @@ InjectSqlDialog::InjectSqlDialog(DatabaseEngine* engine, QWidget *parent, Versio
 
     if(v)
     {
-        ui->lblVersionToBeDeployed->setText(QObject::tr("Deploying: ") + v->getVersionText());
+        ui->lblVersionToBeDeployed->setText(QObject::tr("Deploying: <b>Version ") + v->getVersionText());
         // create the tables
         QTreeWidgetItem* tabItem = new QTreeWidgetItem(QStringList("Tables"));
         tabItem->setIcon(0, IconFactory::getTableIcon());
@@ -138,6 +141,17 @@ InjectSqlDialog::InjectSqlDialog(DatabaseEngine* engine, QWidget *parent, Versio
         ui->treeObjectsToDeploy->header()->setResizeMode(0, QHeaderView::ResizeToContents);
 
         connect(m_signalMapper, SIGNAL(mapped(QString)), this, SLOT(checkBoxToggled(QString)));
+    }
+    else
+    {
+        if(objNameToDeploy.length())
+        {
+            ui->lblVersionToBeDeployed->setText(QObject::tr("Deploying: <b>") + objNameToDeploy);
+        }
+        else
+        {
+            ui->lblVersionToBeDeployed->hide();
+        }
     }
 }
 
@@ -395,6 +409,7 @@ void InjectSqlDialog::populateConnectionDetails(Connection* c)
     ui->txtDatabasePassword->setText(c->getPassword());
     ui->txtDatabaseName->setText(c->getDb());
     ui->txtPort->setText(QString::number(c->getPort()));
+    ui->cmbDatabases->addItem(c->getDb());
 }
 
 void InjectSqlDialog::clearConnectionDetails()
@@ -442,4 +457,16 @@ void InjectSqlDialog::onUserChange(QString newText)
 int InjectSqlDialog::getPort() const
 {
     return ui->txtPort->text().toInt();
+}
+
+void InjectSqlDialog::changeConnection()
+{
+    if(ui->lstAllConnections->selectedItems().size())
+    {
+        ui->buttonBox->button(QDialogButtonBox::Ok)->setDisabled(false);
+    }
+    else
+    {
+        ui->buttonBox->button(QDialogButtonBox::Ok)->setDisabled(true);
+    }
 }

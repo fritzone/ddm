@@ -297,7 +297,7 @@ void TableComparisonForm::setRightTable(Table *t)
 void TableComparisonForm::onInject()
 {
     ui->labelDeploymentStatus->setText("");
-    InjectSqlDialog* injectDialog = new InjectSqlDialog(Workspace::getInstance()->currentProjectsEngine(), this, 0);
+    InjectSqlDialog* injectDialog = new InjectSqlDialog(Workspace::getInstance()->currentProjectsEngine(), this, 0, "");
     injectDialog->setModal(true);
     if(injectDialog->exec() == QDialog::Accepted)
     {

@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>717</width>
-    <height>490</height>
+    <height>518</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -25,15 +25,6 @@
    </property>
    <item>
     <widget class="QLabel" name="lblVersionToBeDeployed">
-     <property name="font">
-      <font>
-       <family>Ubuntu Mono</family>
-       <pointsize>12</pointsize>
-       <weight>50</weight>
-       <bold>false</bold>
-       <underline>true</underline>
-      </font>
-     </property>
      <property name="text">
       <string>TextLabel</string>
      </property>
@@ -64,13 +55,16 @@
           <item>
            <widget class="QListWidget" name="lstAllConnections">
             <property name="selectionMode">
-             <enum>QAbstractItemView::ExtendedSelection</enum>
+             <enum>QAbstractItemView::MultiSelection</enum>
             </property>
             <property name="iconSize">
              <size>
               <width>16</width>
               <height>16</height>
              </size>
+            </property>
+            <property name="uniformItemSizes">
+             <bool>true</bool>
             </property>
            </widget>
           </item>
@@ -146,7 +140,7 @@
            </widget>
           </item>
           <item row="2" column="1">
-           <widget class="QComboBox" name="cmbDatabase">
+           <widget class="QComboBox" name="cmbDatabaseType">
             <item>
              <property name="text">
               <string>MySQL</string>
@@ -414,7 +408,7 @@
   </layout>
  </widget>
  <tabstops>
-  <tabstop>cmbDatabase</tabstop>
+  <tabstop>cmbDatabaseType</tabstop>
   <tabstop>txtDatabaseHost</tabstop>
   <tabstop>txtDatabaseUser</tabstop>
   <tabstop>txtDatabasePassword</tabstop>
@@ -509,22 +503,6 @@
    </hints>
   </connection>
   <connection>
-   <sender>lstAllConnections</sender>
-   <signal>itemClicked(QListWidgetItem*)</signal>
-   <receiver>InjectSqlDialog</receiver>
-   <slot>onSelectConnection(QListWidgetItem*)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>167</x>
-     <y>222</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>358</x>
-     <y>244</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
    <sender>btnConnect</sender>
    <signal>clicked()</signal>
    <receiver>InjectSqlDialog</receiver>
@@ -604,6 +582,54 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>lstAllConnections</sender>
+   <signal>itemActivated(QListWidgetItem*)</signal>
+   <receiver>InjectSqlDialog</receiver>
+   <slot>onSelectConnection(QListWidgetItem*)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>153</x>
+     <y>241</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>358</x>
+     <y>258</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>lstAllConnections</sender>
+   <signal>itemClicked(QListWidgetItem*)</signal>
+   <receiver>InjectSqlDialog</receiver>
+   <slot>onSelectConnection(QListWidgetItem*)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>167</x>
+     <y>222</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>358</x>
+     <y>244</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>lstAllConnections</sender>
+   <signal>itemSelectionChanged()</signal>
+   <receiver>InjectSqlDialog</receiver>
+   <slot>changeConnection()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>153</x>
+     <y>241</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>358</x>
+     <y>258</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>onConnect()</slot>
@@ -611,5 +637,6 @@
   <slot>onSelectConnection(QListWidgetItem*)</slot>
   <slot>onHostChange(QString)</slot>
   <slot>onUserChange(QString)</slot>
+  <slot>changeConnection()</slot>
  </slots>
 </ui>

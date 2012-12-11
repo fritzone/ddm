@@ -19,7 +19,7 @@ class InjectSqlDialog : public QDialog
 {
     Q_OBJECT
 public:
-    InjectSqlDialog(DatabaseEngine* engine, QWidget *parent, Version* v);
+    InjectSqlDialog(DatabaseEngine* engine, QWidget *parent, Version* v, const QString& objNameToDeploy);
     ~InjectSqlDialog();
 
     QString getDatabase() const;
@@ -55,6 +55,7 @@ public:
 private slots:
 
     void onConnect();
+    void changeConnection();
     void onCreateDatabase();
     void onSelectConnection(QListWidgetItem*);
     void onHostChange(QString);
@@ -78,6 +79,7 @@ private:
     QSignalMapper* m_signalMapper;
     QStringList m_UidsToDeploy;
     QStringList m_UidsToDrop;
+    QString m_objName;
 
 private:
 

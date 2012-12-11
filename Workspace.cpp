@@ -215,7 +215,7 @@ bool Workspace::onSaveNewTable(Table* tbl)
 
 void Workspace::createNewConnection()
 {
-    InjectSqlDialog* injectDialog = new InjectSqlDialog(0, 0, 0);
+    InjectSqlDialog* injectDialog = new InjectSqlDialog(0, 0, 0, "");
     injectDialog->setModal(true);
     if(injectDialog->exec() == QDialog::Accepted)
     {

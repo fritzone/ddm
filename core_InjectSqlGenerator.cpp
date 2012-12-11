@@ -28,6 +28,5 @@ void InjectSqlGenerator::onSqlGeneratorThreadIsDone(InjectSqlGeneratorThread* t)
 {
     m_sqls[t->getConnection()] = t->getSqls();
     m_uids[t->getConnection()->getName()] = t->getUids();
-    qDebug() << "XXXXXX:" << m_uids[t->getConnection()->getName()] ;
     if(m_sqls.keys().size() == m_connectionNames.size()) emit done(this);
 }

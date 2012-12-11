@@ -29,6 +29,7 @@ void Project::createTreeItem(GuiElements* gui)
 
 void Project::populateTreeItem(GuiElements* gui)
 {
+    int lastIdx = 0;
     for(int i=0; i<m_majorVersions.size(); i++)
     {
         m_majorVersions[i]->createTreeItems(gui, getLocation(), -1);
@@ -47,7 +48,11 @@ void Project::populateTreeItem(GuiElements* gui)
             ContextMenuEnabledTreeWidgetItem* patchItem = gui->createNewPatchItem(patches.at(j));
             gui->populatePathcItem(patchItem, patches.at(j));
         }
+
+        m_majorVersions[i]->getGui()->getVersionItem()->treeWidget()->collapseItem(m_majorVersions[i]->getGui()->getVersionItem());
+        lastIdx = i;
     }
+    m_majorVersions[lastIdx]->getGui()->getVersionItem()->treeWidget()->expandItem(m_majorVersions[lastIdx]->getGui()->getVersionItem());
 }
 
 void Project::setEngine(DatabaseEngine* eng)
