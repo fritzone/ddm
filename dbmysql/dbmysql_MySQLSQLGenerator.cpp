@@ -22,7 +22,7 @@ QStringList MySQLSQLGenerator::generateCreateTableSql(Table *table, const QHash<
     if(table->fullColumns().size() == 0) return QStringList();
 
     bool upcase = options.contains("Case") && options["Case"] == "Upper";
-    bool comments = options.contains("GenerateComments") && options["GenerateComments"] == "Yes";
+    bool comments = false; //options.contains("GenerateComments") && options["GenerateComments"] == "Yes";
     bool backticks = options.contains("Backticks") && options["Backticks"] == "Yes";
     // primary key pos = 0 if the primary key is specified in the column declaration
     // it is 1 if the primary key is defined in a PRIMARY KEY section in the table definition

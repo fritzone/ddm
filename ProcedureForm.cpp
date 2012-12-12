@@ -5,6 +5,7 @@
 #include "core_Connection.h"
 #include "MainWindow.h"
 #include "GuiElements.h"
+#include "strings.h"
 
 ProcedureForm::ProcedureForm(Version* v, ProcedureFormMode m, bool forced, Connection *c, QWidget *parent) :
     QWidget(parent),
@@ -20,6 +21,7 @@ ProcedureForm::ProcedureForm(Version* v, ProcedureFormMode m, bool forced, Conne
     ui->horizontalLayout->addWidget(m_textEdit);
     m_textEdit->setFocus();
 
+    ui->btnInject->hide();
     connect(m_textEdit, SIGNAL(textChanged()), this, SLOT(textChanged()));
 
 }
@@ -193,4 +195,58 @@ void ProcedureForm::onUndelete()
         ui->btnUndelete->hide();
         ui->btnLock->show();
     }
+}
+
+
+void ProcedureForm::onSave()
+{
+    QString name = QFileDialog::getSaveFileName(this, tr("Save sql"), "", tr("SQL files (*.sql)"));
+    QFile file(name);
+
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
+    {
+        return;
+    }
+    QTextStream out(&file);
+    out << m_textEdit->toPlainText() << "\n";
+}
+
+void ProcedureForm::onLoadFile()
+{
+    QString fileName = QFileDialog::getOpenFileName(this,  "Load values", "", "SQL files (*.sql)");
+    if(fileName.length() == 0)
+    {
+        return;
+    }
+
+    QFile file(fileName);
+
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+    {
+        return;
+    }
+
+    QString sql = "";
+    QTextStream in(&file);
+
+    while (!in.atEnd())
+    {
+        QString line = in.readLine();
+        sql += line;
+        sql += strNewline;
+    }
+
+    m_forcedChange = true;
+    m_textEdit->setPlainText(sql);
+    m_forcedChange = false;
+    m_textEdit->updateLineNumbers();
+
+}
+
+void ProcedureForm::onInject()
+{
+}
+
+void ProcedureForm::onNew()
+{
 }

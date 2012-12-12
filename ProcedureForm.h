@@ -34,6 +34,10 @@ private slots:
     void textChanged();
     void onLockUnlock(bool);
     void onUndelete();
+    void onSave();
+    void onLoadFile();
+    void onInject();
+    void onNew();
 
 private:
     QString getProcNameFromSql();

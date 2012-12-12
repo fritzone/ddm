@@ -17,7 +17,11 @@
 #include "core_ConnectionManager.h"
 #include "MainWindow.h"
 
+#include <QFileDialog>
 #include <QMessageBox>
+#include <QFile>
+#include <QString>
+#include <QTextStream>
 
 TableComparisonForm::TableComparisonForm(Mode m, QWidget *parent) : m_leftTable(0), m_rightTable(0),
     QWidget(parent),
@@ -328,8 +332,7 @@ void TableComparisonForm::onInject()
 
                 if(!m_engine->executeSql(c, tempSqlList, QStringList(), tSql, injectDialog->getRollbackOnError()))
                 {
-                    QMessageBox::critical (this, tr("Error"), tr("<B>Cannot execute a query!</B><P>Reason: ") + m_engine->getLastError() + tr(".<P>Query:<PRE>") + tSql+ "</PRE><P>" +
-                                           (injectDialog->getRollbackOnError()?tr("Transaction was rolled back."):tr("Transaction was <font color=red><B>NOT</B></font> rolled back, you might have partial data in your database.")), QMessageBox::Ok);
+                    QMessageBox::critical (this, tr("Error"), tr("<B>Cannot execute a query!</B><P>Reason: ") + m_engine->getLastError(), QMessageBox::Ok);
                     error = true;
                 }
             }
@@ -338,4 +341,17 @@ void TableComparisonForm::onInject()
         if(!error) ui->labelDeploymentStatus->setText("Succesful deployment");
     }
 
+}
+
+void TableComparisonForm::onSave()
+{
+    QString name = QFileDialog::getSaveFileName(this, tr("Save sql"), "", tr("SQL files (*.sql)"));
+    QFile file(name);
+
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
+    {
+        return;
+    }
+    QTextStream out(&file);
+    out << ui->textEdit->toPlainText() << "\n";
 }

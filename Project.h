@@ -74,7 +74,7 @@ public:
     /**
      * Releases the current working version, creates the next one, copies over all the objects, and locks the current version.
      */
-    void releaseMajorVersion();
+    Version* releaseMajorVersion();
 
     void setOop(bool a)
     {

@@ -132,7 +132,7 @@ void Project::serialize(QDomDocument& doc, QDomElement& parent) const
 
 }
 
-void Project::releaseMajorVersion()
+Version *Project::releaseMajorVersion()
 {
     Version* cv = getWorkingVersion();
     MajorVersion* newVersion = createMajorVersion(cv->getMajor() + 1, 0);
@@ -147,6 +147,8 @@ void Project::releaseMajorVersion()
     newVersion->getGui()->getVersionItem()->setExpanded(true);
 
     cv->updateGui();
+
+    return newVersion;
 }
 
 Version* Project::getVersion(const QString& uid)

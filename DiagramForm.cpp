@@ -65,7 +65,6 @@ DiagramForm::DiagramForm(Version* v, Diagram* dgram, QWidget *parent) : QWidget(
     ui->horizontalLayout->addWidget(graphicsView);
 
     prepareLists();
-    ui->cmbDgramNotation->hide();
 
     ui->btnUndelete->hide();
 
