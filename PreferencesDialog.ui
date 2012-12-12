@@ -43,6 +43,39 @@
           <string>Code generation</string>
          </attribute>
          <layout class="QFormLayout" name="formLayout">
+          <property name="fieldGrowthPolicy">
+           <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+          </property>
+          <item row="0" column="0" colspan="2">
+           <widget class="QCheckBox" name="chkBackticks">
+            <property name="toolTip">
+             <string>Whether to use backticks in the names generated in the SQL</string>
+            </property>
+            <property name="text">
+             <string>Use backticks (`)</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0" colspan="2">
+           <widget class="QCheckBox" name="chkUpcase">
+            <property name="toolTip">
+             <string>If the generated SQL code should be UPCASE of lowercase</string>
+            </property>
+            <property name="text">
+             <string>Upcase</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0" colspan="2">
+           <widget class="QCheckBox" name="chkComments">
+            <property name="toolTip">
+             <string>Check if you want to insert comments in the generated code. These will be taken from the description of the elements, and also will contain some other comments</string>
+            </property>
+            <property name="text">
+             <string>Generate comments</string>
+            </property>
+           </widget>
+          </item>
           <item row="4" column="0">
            <widget class="QLabel" name="label">
             <property name="text">
@@ -107,43 +140,6 @@ p, li { white-space: pre-wrap; }
               <string>AfterTable</string>
              </property>
             </item>
-           </widget>
-          </item>
-          <item row="0" column="0" colspan="2">
-           <widget class="QCheckBox" name="chkBackticks">
-            <property name="toolTip">
-             <string>Whether to use backticks in the names generated in the SQL</string>
-            </property>
-            <property name="text">
-             <string>Use backticks (`)</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0" colspan="2">
-           <widget class="QCheckBox" name="chkUpcase">
-            <property name="toolTip">
-             <string>If the generated SQL code should be UPCASE of lowercase</string>
-            </property>
-            <property name="text">
-             <string>Upcase</string>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="0" colspan="2">
-           <widget class="QCheckBox" name="chkComments">
-            <property name="toolTip">
-             <string>Check if you want to insert comments in the generated code. These will be taken from the description of the elements, and also will contain some other comments</string>
-            </property>
-            <property name="text">
-             <string>Generate comments</string>
-            </property>
-           </widget>
-          </item>
-          <item row="6" column="0">
-           <widget class="QCheckBox" name="checkBox">
-            <property name="text">
-             <string>CheckBox</string>
-            </property>
            </widget>
           </item>
          </layout>

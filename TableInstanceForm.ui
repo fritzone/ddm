@@ -111,8 +111,8 @@
          <widget class="QToolButton" name="btnLoadStartupValues">
           <property name="maximumSize">
            <size>
-            <width>24</width>
-            <height>24</height>
+            <width>32</width>
+            <height>32</height>
            </size>
           </property>
           <property name="toolTip">
@@ -130,8 +130,8 @@
           </property>
           <property name="iconSize">
            <size>
-            <width>22</width>
-            <height>22</height>
+            <width>24</width>
+            <height>24</height>
            </size>
           </property>
          </widget>
@@ -143,8 +143,8 @@
           </property>
           <property name="maximumSize">
            <size>
-            <width>24</width>
-            <height>24</height>
+            <width>32</width>
+            <height>32</height>
            </size>
           </property>
           <property name="toolTip">
@@ -162,8 +162,8 @@
           </property>
           <property name="iconSize">
            <size>
-            <width>22</width>
-            <height>22</height>
+            <width>24</width>
+            <height>24</height>
            </size>
           </property>
          </widget>
@@ -172,8 +172,8 @@
          <widget class="QToolButton" name="btnSaveStartupValues">
           <property name="maximumSize">
            <size>
-            <width>24</width>
-            <height>24</height>
+            <width>32</width>
+            <height>32</height>
            </size>
           </property>
           <property name="toolTip">
@@ -191,8 +191,8 @@
           </property>
           <property name="iconSize">
            <size>
-            <width>22</width>
-            <height>22</height>
+            <width>24</width>
+            <height>24</height>
            </size>
           </property>
          </widget>
@@ -201,8 +201,8 @@
          <widget class="QToolButton" name="btnGoToSourceTab">
           <property name="maximumSize">
            <size>
-            <width>24</width>
-            <height>24</height>
+            <width>32</width>
+            <height>32</height>
            </size>
           </property>
           <property name="toolTip">
@@ -220,8 +220,8 @@
           </property>
           <property name="iconSize">
            <size>
-            <width>22</width>
-            <height>22</height>
+            <width>24</width>
+            <height>24</height>
            </size>
           </property>
          </widget>
@@ -240,6 +240,13 @@
          </spacer>
         </item>
        </layout>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="lineEdit">
+        <property name="placeholderText">
+         <string>Name</string>
+        </property>
+       </widget>
       </item>
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout_2">

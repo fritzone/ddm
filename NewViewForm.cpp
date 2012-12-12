@@ -67,12 +67,11 @@ NewViewForm::NewViewForm(Version* v, bool queryBuilder, QueryGraphicsHelper* c, 
         ui->tabWidget_4->hide();
 
         delete ui->txtViewName;
-        delete ui->labelName;
 
         ui->txtViewName = new QLineEdit(ui->groupBox_3);
         ui->txtViewName->setObjectName(QString::fromUtf8("txtViewName"));
         ui->txtViewName->setToolTip(QApplication::translate("NewViewForm", "The name of the View", 0, QApplication::UnicodeUTF8));
-        ui->groupBox->hide();
+        ui->frame->hide();
         ui->verticalLayout_4->insertWidget(0, ui->txtViewName);
         connect(ui->txtViewName, SIGNAL(textChanged(QString)), this, SLOT(onNameChange(QString)));
 

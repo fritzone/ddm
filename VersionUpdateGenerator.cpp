@@ -26,8 +26,8 @@ VersionUpdateGenerator::VersionUpdateGenerator(Version *from, Version *to) : m_c
 {
     if(from->getObjectUid() == to->getObjectUid()) return;
 
-    m_commands << "-- Update script for version " + to->getVersionText() + " from " + from->getVersionText();
-    m_commands << "\n-- Tables";
+    //m_commands << "-- Update script for version " + to->getVersionText() + " from " + from->getVersionText();
+    //m_commands << "\n-- Tables";
 
     updateTables(from, to);
 
@@ -38,7 +38,7 @@ VersionUpdateGenerator::VersionUpdateGenerator(Version *from, Version *to) : m_c
         QStringList dropCommands;
         QStringList createCommands;
 
-        dropCommands << "-- Dropping foreign keys due to a change in the primary key structure of some tables";
+//        dropCommands << "-- Dropping foreign keys due to a change in the primary key structure of some tables";
         const QVector<Table*>& toTables = to->getTables();
         for(int i=0; i<toTables.size(); i++)
         {
@@ -118,11 +118,9 @@ VersionUpdateGenerator::VersionUpdateGenerator(Version *from, Version *to) : m_c
 
     if(to->getProject()->oopProject())
     {
-        m_commands << "\n-- Table instances";
         updateTableInstances(from, to);
     }
 
-    m_commands << "\n-- Views";
     updateViews(from, to);
 
     // procedures, methods and triggers need to be dropped and recreated (at least in MySQL)
@@ -207,7 +205,7 @@ void VersionUpdateGenerator::updateTables(Version* from, Version* to)
 
     }
     else
-    {
+    { /*
         // first run: generate SQL for the elements defined in this version
         {
         const QVector<TableInstance*> &toTinsts = to->getTableInstances();
@@ -220,6 +218,13 @@ void VersionUpdateGenerator::updateTables(Version* from, Version* to)
                 // find the table
                 Table* t = toTinsts[i]->table();
                 if(newTabUids.contains(t->getObjectUid()))
+                {
+                    QStringList sql = toTinsts[i]->generateSqlSource(to->getProject()->getEngine()->getSqlGenerator(), fo, 0);
+                    m_commands << sql;
+                    m_generatedTabinstUids.append(toTinsts[i]->getObjectUid());
+                    if(fkAllowed) fkAllowed = !to->getProject()->getEngine()->tableBlocksForeignKeyFunctionality(toTinsts[i]->table());
+                }
+                else    // a new instance of an existing table... basically the same code as above.
                 {
                     QStringList sql = toTinsts[i]->generateSqlSource(to->getProject()->getEngine()->getSqlGenerator(), fo, 0);
                     m_commands << sql;
@@ -243,6 +248,7 @@ void VersionUpdateGenerator::updateTables(Version* from, Version* to)
         }
 
         // second run: generate SQLS for the elements not necessarily defined in this version but which are not the in the from
+        // ie. tables created in a version between current and previous, which were also instantiated
         {
         bool fkAllowed = true;
         const QVector<TableInstance*> &toTinsts = to->getTableInstances();
@@ -332,14 +338,14 @@ void VersionUpdateGenerator::updateTables(Version* from, Version* to)
                     }
                 }
             }
-        }
+        } */
     }
 
     // task: the alter scripts
-    m_commands << tableChanges;
+    //m_commands << tableChanges;
 
     // task: drop all the foreign keys
-    m_commands << fkCommands;
+    //m_commands << fkCommands;
 
     // check: see if there are deleted tables in version "to" which are not there in "from"
     if(!to->getProject()->oopProject())
@@ -400,6 +406,10 @@ void VersionUpdateGenerator::updateTables(Version* from, Version* to)
 
 void VersionUpdateGenerator::updateTableInstances(Version *from, Version *to)
 {
+    // check for the dropped table instances and the new table instances
+    {
+        updateDifferentTableInstances(from, to);
+    }
     // next run: the rows which have changed some values
     const QVector<TableInstance*> toTabInsts = to->getTableInstances();
     const QVector<TableInstance*> fromTabInsts = from->getTableInstances();
@@ -411,8 +421,6 @@ void VersionUpdateGenerator::updateTableInstances(Version *from, Version *to)
         {
             continue;
         }
-
-        qDebug() << "TAB: " << tinst->table()->getName();
 
         // first run: the changed values in existing rows. Let's assume the PKs did not change
         TableInstance* ancestor = 0;
@@ -1128,5 +1136,70 @@ void VersionUpdateGenerator::updateTriggers(Version *from, Version *to)
             m_commands << toTriggers[i]->generateSqlSource(to->getProject()->getEngine()->getSqlGenerator(), opts, 0) ;;
         }
     }
+
+}
+
+void VersionUpdateGenerator::updateDifferentTableInstances(Version *from, Version *to)
+{
+    const QVector<TableInstance*>& toTableInstances = to->getTableInstances();
+    const QVector<TableInstance*>& fromTableInstances = from->getTableInstances();
+
+    QSet<TableInstance*> foundToTableInstances;
+    QSet<TableInstance*> foundFromTableInstances;
+    // first step: find the TableInstances which have changed their sql and generate an alter statement
+    for(int i=0; i<fromTableInstances.size(); i++)
+    {
+        TableInstance* tableInstanceFrom = fromTableInstances.at(i);
+        for(int j=0; j<toTableInstances.size(); j++)
+        {
+            TableInstance* tableInstanceTo = toTableInstances.at(j);
+            if(UidWarehouse::instance().related(tableInstanceFrom, tableInstanceTo))
+            {
+                foundToTableInstances.insert(tableInstanceTo);
+                foundFromTableInstances.insert(tableInstanceFrom);
+            }
+        }
+    }
+
+    // second run: drop the TableInstances that are not there in the second version
+    for(int i=0; i<fromTableInstances.size(); i++)
+    {
+        if(!foundFromTableInstances.contains(fromTableInstances[i]))
+        {
+     //       m_commands << to->getProject()->getEngine()->getSqlGenerator()->getDropTable(fromTableInstances[i]->getName());
+        }
+    }
+
+    bool fkAllowed = true;
+    QStringList newUids;
+    QHash<QString,QString> fo = Configuration::instance().sqlGenerationOptions();
+    fo["FKSposition"] = "OnlyInternal";
+    fo["PKSposition"] = "AfterColumnsDeclaration";
+    // third run the new TableInstances in "to"
+    for(int i=0; i<toTableInstances.size(); i++)
+    {
+        if(!foundToTableInstances.contains(toTableInstances[i]))
+        {
+            QStringList sql = toTableInstances[i]->generateSqlSource(to->getProject()->getEngine()->getSqlGenerator(), fo, 0);
+            m_commands << sql;
+            newUids.append(toTableInstances[i]->getObjectUid());
+            if(fkAllowed) fkAllowed = !to->getProject()->getEngine()->tableBlocksForeignKeyFunctionality(toTableInstances[i]->table());
+
+        }
+    }
+
+    if(fkAllowed)
+    {
+        for(int j=0; j<newUids.size(); j++)
+        {
+            TableInstance* tinst = dynamic_cast<TableInstance*>(UidWarehouse::instance().getElement(newUids[j]));
+            if(tinst)
+            {
+                QStringList foreignKeyCommands = to->getProject()->getEngine()->getSqlGenerator()->generateAlterTableForForeignKeys(tinst->table(), fo);
+                m_commands << foreignKeyCommands;
+            }
+        }
+    }
+
 
 }

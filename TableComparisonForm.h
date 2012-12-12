@@ -57,7 +57,7 @@ private slots:
 
     void leftItemSelected(const QString&);
     void rightItemSelected(const QString&);
-
+    void onSave();
     void onInject();
 
 private:

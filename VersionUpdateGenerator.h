@@ -56,7 +56,7 @@ private:
     void updateProcedures(Version* from, Version* to);
     void updateFunctions(Version* from, Version* to);
     void updateTriggers(Version *from, Version *to);
-
+    void updateDifferentTableInstances(Version *from, Version *to);
 
 private:
 

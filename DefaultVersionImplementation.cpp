@@ -220,7 +220,7 @@ Table* DefaultVersionImplementation::getTable(const QString &name) const
 {
     for(int i=0; i< m_data.m_tables.size(); i++)
     {
-        if(m_data.m_tables[i]->getName() == name)
+        if(m_data.m_tables[i]->getName().toUpper() == name.toUpper())
         {
             return m_data.m_tables[i];
         }
@@ -1016,7 +1016,7 @@ QList<QString> DefaultVersionImplementation::getSqlScript(bool generateDelimiter
     for(int i=0; i<m_data.m_procedures.size(); i++)
     {
         QString s = "";
-        if (comments) s = "-- Procedure " + m_data.m_procedures.at(i)->getName() + strNewline;
+        //if (comments) s = "-- Procedure " + m_data.m_procedures.at(i)->getName() + strNewline;
         QStringList t = m_data.m_procedures.at(i)->generateSqlSource(m_project->getEngine()->getSqlGenerator(), opts, dest);
         for(int j=0; j<t.size(); j++)
         {
@@ -1060,7 +1060,7 @@ QList<QString> DefaultVersionImplementation::getSqlScript(bool generateDelimiter
     for(int i=0; i<m_data.m_functions.size(); i++)
     {
         QString s = "";
-        if (comments) s = "-- Function " + m_data.m_functions.at(i)->getName() + strNewline;
+        //if (comments) s = "-- Function " + m_data.m_functions.at(i)->getName() + strNewline;
         QStringList t = m_data.m_functions.at(i)->generateSqlSource(m_project->getEngine()->getSqlGenerator(), opts, dest);
         for(int j=0; j<t.size(); j++)
         {
@@ -1096,7 +1096,7 @@ QList<QString> DefaultVersionImplementation::getSqlScript(bool generateDelimiter
     for(int i=0; i<m_data.m_triggers.size(); i++)
     {
         QString s = "";
-        if (comments) s = "-- Trigger " + m_data.m_triggers.at(i)->getName() + strNewline;
+        //if (comments) s = "-- Trigger " + m_data.m_triggers.at(i)->getName() + strNewline;
         QStringList t = m_data.m_triggers.at(i)->generateSqlSource(m_project->getEngine()->getSqlGenerator(), opts, dest);
         for(int j=0; j<t.size(); j++)
         {

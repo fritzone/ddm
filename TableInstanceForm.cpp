@@ -319,6 +319,8 @@ void TableInstanceForm::setTableInstance(TableInstance *st)
 {
     m_tinst = st;
     ui->btnUndelete->hide();
+    ui->lineEdit->setText(m_tinst->getName());
+
     // TODO: Duplicate from the other forms
     if(!m_tinst->wasLocked())
     {

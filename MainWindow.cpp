@@ -541,7 +541,6 @@ void MainWindow::projectTreeItemClicked(QTreeWidgetItem * current, int)
         QString uid = qv.toString();
 
         ObjectWithUid* obj = UidWarehouse::instance().getElement(uid);
-        qDebug() << "ptcl " << uid << " obj=" << obj;
         Version* foundVersion = UidWarehouse::instance().getVersionForUid(uid);
         if(!foundVersion)
         {
@@ -1032,7 +1031,7 @@ void MainWindow::doLoadSolution(const QString& fileName, bool splashVisible)
 
     enableActions();
 
-    delete m_btndlg;
+    m_btndlg->hide();
     m_btndlg = 0;
 }
 
@@ -1239,8 +1238,16 @@ void MainWindow::onReleaseMajorVersion()
             m = dynamic_cast<MajorVersion*>(v);
             if(m)
             {
-                Workspace::getInstance()->currentProject()->releaseMajorVersion();
+                Version* newVersion = Workspace::getInstance()->currentProject()->releaseMajorVersion();
                 v->getGui()->getVersionItem()->setPopupMenu(ContextMenuCollection::getInstance()->getReleasedVersionPopupMenu());
+
+                if(!newVersion->getProject()->oopProject())
+                {
+                    ContextMenuEnabledTreeWidgetItem* item = newVersion->getGui()->getTableInstancesItem();
+                    item->setHidden(true);
+                    newVersion->getGui()->getTablesItem()->setText(0, tr("Tables"));
+
+                }
             }
         }
     }
@@ -2095,8 +2102,9 @@ void MainWindow::onInjectBrowsedTable()
             Connection *c = ConnectionManager::instance()->getConnection(cname);
             if(!c) return;
             QString tab = s.left(s.indexOf("?")).mid(2);
-            Table* t = Workspace::getInstance()->currentProjectsEngine()->reverseEngineerTable(c, tab, Workspace::getInstance()->currentProject(), true, m_workspace->workingVersion());
-            t->setName(NameGenerator::getUniqueName(Workspace::getInstance()->currentProject()->getWorkingVersion(), (itemGetter)&Version::getTable, tab));
+            QString validName = NameGenerator::getUniqueName(Workspace::getInstance()->currentProject()->getWorkingVersion(), (itemGetter)&Version::getTable, tab);
+            Table* t = Workspace::getInstance()->currentProjectsEngine()->reverseEngineerTable(c, validName, Workspace::getInstance()->currentProject(), true, m_workspace->workingVersion());
+            t->setName(validName);
             Workspace::getInstance()->currentProject()->getWorkingVersion()->addTable(t, false);
             m_workspace->workingVersion()->getGui()->createTableTreeEntry(t, m_workspace->workingVersion()->getGui()->getTablesItem());
             showTableWithGuid(m_workspace->workingVersion(), t->getObjectUid());

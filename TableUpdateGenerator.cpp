@@ -35,7 +35,7 @@ TableUpdateGenerator::TableUpdateGenerator(Table *t1, Table *t2, DatabaseEngine*
     // see if the second table has changed its name or not
     if(t2->getName() != t1->getName())
     {
-        m_commands.append("-- table " + t1->getName() + " renamed to: " + t2->getName());
+//        m_commands.append("-- table " + t1->getName() + " renamed to: " + t2->getName());
         m_commands.append(dbEngine->getSqlGenerator()->getTableRenameSql(t1->getName(), t2->getName()));
     }
 
@@ -226,7 +226,7 @@ TableUpdateGenerator::TableUpdateGenerator(Table *t1, Table *t2, DatabaseEngine*
         if(!ct2) ct2 = t2->getColumnFromParents(renamedColumns[i].newName);
         if(!ct2) continue;
 
-        m_commands.append("-- rename column " + renamedColumns[i].oldName + " to " + renamedColumns[i].newName);
+//        m_commands.append("-- rename column " + renamedColumns[i].oldName + " to " + renamedColumns[i].newName);
         m_commands.append(dbEngine->getSqlGenerator()->getAlterTableForColumnRename(t2->getName(), ct2, renamedColumns[i].oldName));
 
     }
@@ -238,7 +238,7 @@ TableUpdateGenerator::TableUpdateGenerator(Table *t1, Table *t2, DatabaseEngine*
         if(!ct2) ct2 = t2->getColumnFromParents(m_newColumns[i].newName);
         if(!ct2) continue;
 
-        m_commands.append("-- new column " + m_newColumns[i].newName);
+//        m_commands.append("-- new column " + m_newColumns[i].newName);
         m_commands.append(dbEngine->getSqlGenerator()->getAlterTableForNewColumn(t2->getName(), ct2, m_newColumns[i].afterColumn));
     }
 
@@ -252,9 +252,9 @@ TableUpdateGenerator::TableUpdateGenerator(Table *t1, Table *t2, DatabaseEngine*
             if(!ct2) ct2 = t2->getColumnFromParents(columnsThatHaveChangedOrder[i].name);
             if(!ct2) continue;
 
-            m_commands.append("-- column " + columnsThatHaveChangedOrder[i].name + " was relocated " +
-                              (columnsThatHaveChangedOrder[i].afterColumn.isEmpty()? " to the first location "
-                                                                                  : "after " + columnsThatHaveChangedOrder[i].afterColumn));
+//            m_commands.append("-- column " + columnsThatHaveChangedOrder[i].name + " was relocated " +
+//                              (columnsThatHaveChangedOrder[i].afterColumn.isEmpty()? " to the first location "
+//                                                                                  : "after " + columnsThatHaveChangedOrder[i].afterColumn));
             m_commands.append(dbEngine->getSqlGenerator()->getAlterTableForChangeColumnOrder(t2->getName(), ct2, columnsThatHaveChangedOrder[i].afterColumn));
         }
     }
@@ -262,14 +262,14 @@ TableUpdateGenerator::TableUpdateGenerator(Table *t1, Table *t2, DatabaseEngine*
     if(deletedColumns.size()) m_commands.append("\n");
     for(int i=0; i<deletedColumns.size(); i++)
     {
-        m_commands.append("-- column " + deletedColumns[i] + " was deleted");
+//        m_commands.append("-- column " + deletedColumns[i] + " was deleted");
         m_commands.append(dbEngine->getSqlGenerator()->getAlterTableForColumnDeletion(t2->getName(), deletedColumns[i]));
     }
 
     if(changedColumns.size()) m_commands.append("\n");
     for(int i=0; i<changedColumns.size(); i++)
     {
-        m_commands.append("-- column " + changedColumns[i]->getName() + " has changed its datatype");
+//        m_commands.append("-- column " + changedColumns[i]->getName() + " has changed its datatype");
         m_commands.append(dbEngine->getSqlGenerator()->getAlterTableForColumnChange(t2->getName(), changedColumns[i]));
     }
 
@@ -297,7 +297,7 @@ TableUpdateGenerator::TableUpdateGenerator(Table *t1, Table *t2, DatabaseEngine*
     // and generate the required SQL commands for dropping a foreign key
     for(int i=0; i<droppedFksFromT2.size(); i++)
     {
-        m_droppedForeignKeys.append("-- foreign key " + droppedFksFromT2[i]->getName() + " was dropped");
+//        m_droppedForeignKeys.append("-- foreign key " + droppedFksFromT2[i]->getName() + " was dropped");
         m_droppedForeignKeys << dbEngine->getSqlGenerator()->getAlterTableForDropForeignKey(t2->getName(), droppedFksFromT2[i]);
     }
 
@@ -323,7 +323,7 @@ TableUpdateGenerator::TableUpdateGenerator(Table *t1, Table *t2, DatabaseEngine*
     }
     for(int k=0; k<newFksFromT2.size(); k++)
     {
-        m_newForeignKeys.append("-- foreign key " + newFksFromT2[k] + " was created");
+//        m_newForeignKeys.append("-- foreign key " + newFksFromT2[k] + " was created");
         // creating the FOREIGN KEY sql(s)...
         for(int i=0; i<t2->getForeignKeys().size(); i++)
         {

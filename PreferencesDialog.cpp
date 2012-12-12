@@ -12,6 +12,8 @@ PreferencesDialog::PreferencesDialog(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    ui->chkComments->hide();
+
     ui->chkUpcase->setCheckState(Configuration::instance().sqlGenerationOptions()[strCase] == strUpper?Qt::Checked:Qt::Unchecked);
     ui->chkBackticks->setCheckState(Configuration::instance().sqlGenerationOptions()[strBackticks] == strYes?Qt::Checked:Qt::Unchecked);
     ui->chkComments->setCheckState(Configuration::instance().sqlGenerationOptions()[strGenerateComments] == strYes?Qt::Checked:Qt::Unchecked);
