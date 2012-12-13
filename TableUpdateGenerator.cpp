@@ -10,13 +10,6 @@
 #include "core_ColumnWithValue.h"
 #include "VersionUpdateGenerator.h"
 
-struct OldNameNewName
-{
-    QString oldName;
-    QString newName;
-};
-
-
 struct ColumnOrderChange
 {
     // the name of the column (from Table 2)

@@ -14,7 +14,6 @@
 #include "QHtmlDocument.h"
 
 #include <QPrinter>
-#include <QDebug>
 #include <QFileDialog>
 #include <QWebFrame>
 #include <QWebPage>
@@ -53,7 +52,6 @@ void DocumentationForm::initiateStyleChange(QString ns)
 
 void DocumentationForm::setDoc(const QString &html)
 {
-    qDebug() << html;
     QByteArray ba(html.toLocal8Bit().data());
     ui->webView->setContent(ba);
 }

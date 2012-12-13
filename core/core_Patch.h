@@ -105,7 +105,7 @@ public:
      * @brief undeleteObject Undeletes the object with the given UID
      * @param uid
      */
-    void undeleteObject(const QString& uid);
+    bool undeleteObject(const QString& uid);
 
     /**
      * @brief getDeletedObject returns a delete object, 0 if not found
@@ -185,10 +185,7 @@ public:
 
     void finalizePatchDeserialization();
 
-    void addObjUidToClassUidMapEntry(const QString& objUid, const QString& classUid)
-    {
-        m_objUidToClassUid[objUid] = classUid;
-    }
+    void addObjUidToClassUidMapEntry(const QString& objUid, const QString& classUid);
 
     void setTempTabInstUidVector(const QMap<QString, QVector <QString> > & a)
     {

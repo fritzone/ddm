@@ -129,7 +129,7 @@
          <enum>QTabWidget::Rounded</enum>
         </property>
         <property name="currentIndex">
-         <number>3</number>
+         <number>1</number>
         </property>
         <widget class="QWidget" name="tabWidgetPage1">
          <attribute name="icon">
@@ -518,6 +518,9 @@
                     <layout class="QVBoxLayout" name="verticalLayout_13">
                      <item>
                       <layout class="QHBoxLayout" name="horizontalLayout_18">
+                       <property name="spacing">
+                        <number>1</number>
+                       </property>
                        <item>
                         <widget class="QToolButton" name="btnAddSpToColumnOfIndex">
                          <property name="toolTip">
@@ -559,6 +562,26 @@
                         </widget>
                        </item>
                        <item>
+                        <spacer name="horizontalSpacer_5">
+                         <property name="orientation">
+                          <enum>Qt::Horizontal</enum>
+                         </property>
+                         <property name="sizeHint" stdset="0">
+                          <size>
+                           <width>40</width>
+                           <height>20</height>
+                          </size>
+                         </property>
+                        </spacer>
+                       </item>
+                       <item>
+                        <widget class="QLabel" name="label">
+                         <property name="text">
+                          <string>Sort order:</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
                         <widget class="QComboBox" name="cmbIndexOrderType">
                          <item>
                           <property name="text">
@@ -576,19 +599,6 @@
                           </property>
                          </item>
                         </widget>
-                       </item>
-                       <item>
-                        <spacer name="horizontalSpacer_5">
-                         <property name="orientation">
-                          <enum>Qt::Horizontal</enum>
-                         </property>
-                         <property name="sizeHint" stdset="0">
-                          <size>
-                           <width>40</width>
-                           <height>20</height>
-                          </size>
-                         </property>
-                        </spacer>
                        </item>
                       </layout>
                      </item>
@@ -1061,8 +1071,17 @@
          <layout class="QVBoxLayout" name="verticalLayout_8">
           <item>
            <layout class="QHBoxLayout" name="horizontalLayout_13">
+            <property name="spacing">
+             <number>1</number>
+            </property>
             <item>
              <widget class="QToolButton" name="btnLoadStartupValues">
+              <property name="maximumSize">
+               <size>
+                <width>32</width>
+                <height>32</height>
+               </size>
+              </property>
               <property name="toolTip">
                <string>Load the startup values from a CSV file</string>
               </property>
@@ -1089,6 +1108,12 @@
               <property name="enabled">
                <bool>false</bool>
               </property>
+              <property name="maximumSize">
+               <size>
+                <width>32</width>
+                <height>32</height>
+               </size>
+              </property>
               <property name="toolTip">
                <string>Import startup values</string>
               </property>
@@ -1112,6 +1137,12 @@
             </item>
             <item>
              <widget class="QToolButton" name="btnSaveStartupValues">
+              <property name="maximumSize">
+               <size>
+                <width>32</width>
+                <height>32</height>
+               </size>
+              </property>
               <property name="toolTip">
                <string>Save startup values</string>
               </property>
@@ -1278,14 +1309,14 @@
              <item>
               <layout class="QHBoxLayout" name="horizontalLayout_15">
                <property name="spacing">
-                <number>0</number>
+                <number>1</number>
                </property>
                <item>
                 <widget class="QToolButton" name="btnSaveSql">
                  <property name="maximumSize">
                   <size>
-                   <width>24</width>
-                   <height>24</height>
+                   <width>32</width>
+                   <height>32</height>
                   </size>
                  </property>
                  <property name="toolTip">
@@ -1307,8 +1338,8 @@
                 <widget class="QToolButton" name="btnInject">
                  <property name="maximumSize">
                   <size>
-                   <width>24</width>
-                   <height>24</height>
+                   <width>32</width>
+                   <height>32</height>
                   </size>
                  </property>
                  <property name="toolTip">

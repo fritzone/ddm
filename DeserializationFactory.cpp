@@ -1358,6 +1358,7 @@ Patch* DeserializationFactory::createPatch(Project* p, Version* v, const QDomDoc
             {
                 QString uid = el.childNodes().at(j).toElement().attribute("value");
                 QString classUid = el.childNodes().at(j).toElement().attribute("class-uid");
+                qDebug () << "CUID:" << classUid << " UID: " << uid;
                 uids.append(uid);
                 patch->addObjUidToClassUidMapEntry(uid, classUid);
             }

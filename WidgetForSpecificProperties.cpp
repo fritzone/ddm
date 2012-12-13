@@ -50,12 +50,17 @@ void WidgetForSpecificProperties::changeEvent(QEvent *e)
     }
 }
 
-void WidgetForSpecificProperties::populateCodepageCombo(QComboBox* comboBox, const QStringList& cps)
+void WidgetForSpecificProperties::populateCodepageCombo(QComboBox* comboBox, const QStringList& cps, const QString& current)
 {
+    int foundIndex = -1;
     QListWidget* lw = new QListWidget(this);
     for(int i=0; i<cps.size(); i++)
     {
         QString name = cps[i];
+        if(name == current)
+        {
+            foundIndex = i;
+        }
         bool header = false;
         if(cps[i].startsWith(QString("--")))
         {
@@ -131,7 +136,7 @@ void WidgetForSpecificProperties::populateCodepageCombo(QComboBox* comboBox, con
 
     comboBox->setModel(lw->model());
     comboBox->setView(lw);
-    comboBox->setCurrentIndex(-1);
+    comboBox->setCurrentIndex(foundIndex);
 }
 
 
@@ -304,11 +309,13 @@ void WidgetForSpecificProperties::feedInSpecificProperties(const QVector<SpInsta
             {
                 QComboBox* comboBox = new QComboBox(this);
                 const ValueListSp* spi = dynamic_cast<const ValueListSp*>(spInstances.at(i)->getClass());
+                QString cv = spInstances.at(i)->get();
+
                 if(spi)
                 {
                     if(spi->getSqlRoleUid() == uidMysqlCodepageTable)
                     {
-                        populateCodepageCombo(comboBox, spi->getValues());
+                        populateCodepageCombo(comboBox, spi->getValues(), cv);
                     }
                     else
                     {
@@ -330,7 +337,9 @@ void WidgetForSpecificProperties::feedInSpecificProperties(const QVector<SpInsta
                 uiw->objectRoleUid = spInstances.at(i)->getClass()->getSqlRoleUid();
                 m_mappings.append(uiw);
                 m_signalMapper->setMapping(comboBox, spInstances.at(i)->getObjectUid());
-                comboBox->setCurrentIndex(comboBox->findText(spInstances.at(i)->get()));
+                int icv = comboBox->findText(cv);
+                if(comboBox->currentIndex() == -1) comboBox->setCurrentIndex(icv);
+                if(icv != -1) comboBox->setCurrentIndex(icv);
                 connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(comboBoxSelected(int))); // must be the last line
             }
 
