@@ -544,7 +544,6 @@ void MainWindow::projectTreeItemClicked(QTreeWidgetItem * current, int)
         Version* foundVersion = UidWarehouse::instance().getVersionForUid(uid);
         if(!foundVersion)
         {
-            qDebug() << "no version";
             return;
         }
 
@@ -1031,7 +1030,10 @@ void MainWindow::doLoadSolution(const QString& fileName, bool splashVisible)
 
     enableActions();
 
-    m_btndlg->hide();
+    if(m_btndlg)
+    {
+        m_btndlg->hide();
+    }
     m_btndlg = 0;
 }
 
@@ -3010,9 +3012,13 @@ void MainWindow::onUndeleteSomething()
 {
     ObjectWithUid* obj = getRightClickedObject<ObjectWithUid>();
     Version* v = UidWarehouse::instance().getVersionForUid(obj->getObjectUid());
-    if(v->undeleteObject(obj->getObjectUid(), false))
+    Version::PatchTreeRemovalStatus removeFromTree = v->undeleteObject(obj->getObjectUid(), false);
+    if(removeFromTree != Version::DO_NOT_REMOVE_FROM_PATCH_TREE_FAILURE)
     {
-        m_guiElements->removeItemForPatch(v->getWorkingPatch(), obj->getObjectUid());
+//        if(removeFromTree == Version::REMOVE_FROM_PATCH_TREE)
+        {
+            m_guiElements->removeItemForPatch(v->getWorkingPatch(), obj->getObjectUid());
+        }
         showObjectWithGuid(obj->getObjectUid());
     }
 }

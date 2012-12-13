@@ -66,6 +66,9 @@ NewViewForm::NewViewForm(Version* v, bool queryBuilder, QueryGraphicsHelper* c, 
     {
         ui->tabWidget_4->hide();
 
+        ui->tabWidget->removeTab(0);
+        ui->tabWidget->removeTab(1);    //remains only the SQL tab
+
         delete ui->txtViewName;
 
         ui->txtViewName = new QLineEdit(ui->groupBox_3);

@@ -99,7 +99,7 @@ public:
     virtual void replaceUserDataType(const QString& uid, UserDataType* dt);
     virtual void replaceFunction(const QString& uid, Function* func);
     virtual Patch* getWorkingPatch();
-    virtual bool undeleteObject(const QString& uid, bool suspend);
+    virtual PatchTreeRemovalStatus undeleteObject(const QString& uid, bool suspend);
     virtual void removePatch(const Patch* p);
     virtual void lockVersion(LockableElement::LockType);
 

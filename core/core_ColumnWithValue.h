@@ -23,4 +23,10 @@ struct ColumnWithValuesAndReference : public ColumnWithValue
     FromToColumn* ref;
 };
 
+struct OldNameNewName
+{
+    QString oldName;
+    QString newName;
+};
+
 #endif // CORE_COLUMNWITHVALUE_H

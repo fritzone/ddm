@@ -69,7 +69,7 @@ private:
     QWidget* getToolboxPageForText(const QString&);
     QString getObjectUidForWidget(const QWidget* w);
     SpInstance* getSpInstanceForWidget(const QWidget*);
-    void populateCodepageCombo(QComboBox* comboBox, const QStringList& cps);
+    void populateCodepageCombo(QComboBox* comboBox, const QStringList& cps, const QString &current);
 
 private:
     Ui::WidgetForSpecificProperties *ui;

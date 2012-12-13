@@ -12,6 +12,7 @@
 #include "gui_HelpWindow.h"
 #include "SpInstance.h"
 #include "GuiElements.h"
+#include "uids.h"
 
 #include <QLineEdit>
 
@@ -403,4 +404,17 @@ void TableInstanceForm::onUndelete()
         ui->btnUndelete->hide();
         ui->btnLock->show();
     }
+}
+
+void TableInstanceForm::onChangeName(QString t)
+{
+    m_tinst->setName(t);
+    m_tinst->setDisplayText(t);
+    m_tinst->getSqlLocation()->setText(0, t);
+
+    if(m_tinst->version() != Workspace::getInstance()->workingVersion())
+    {
+        MainWindow::instance()->getGuiElements()->updateItemForPatchWithState(m_tinst->version()->getWorkingPatch(), uidTableInstance, m_tinst->getObjectUid(), t, 2);
+    }
+
 }

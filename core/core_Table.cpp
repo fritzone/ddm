@@ -608,6 +608,7 @@ CloneableElement* Table::clone(Version *sourceVersion, Version *targetVersion)
     for(int i=0; i<idxs.size(); i++)
     {
         Index* indx = dynamic_cast<Index*>(idxs.at(i)->clone(sourceVersion, targetVersion));
+        result->addIndex(indx);
         indx->finalizeCloning(result, idxs.at(i));
     }
 

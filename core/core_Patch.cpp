@@ -192,22 +192,31 @@ ObjectWithUid* Patch::getDeletedObject(const QString& uid)
     return m_deletedObjects.value(uid);
 }
 
-void Patch::undeleteObject(const QString &uid)
+bool Patch::undeleteObject(const QString &uid)
 {
+    bool removeFromTree = true;
     if(!m_deletedUids.contains(uid))
     {
         qDebug() << "Undelete: Not in "<<uid;
-        return;
+        return true;
     }
-    if(!m_deletedObjects.keys().contains(uid)) return;
-    if(!m_lockedUids.contains(uid)) return;
+    if(!m_deletedObjects.keys().contains(uid)) return true;
+    if(!m_lockedUids.contains(uid)) return true;
     ObjectWithUid* obj = UidWarehouse::instance().getElement(uid);
-    if(!obj) return;
+    if(!obj) return true;
 
     int t = m_deletedUids.size();
     m_deletedUids.removeOne(uid);
     m_deletedObjects.remove(uid);
-    m_lockedUids.removeOne(uid);
+
+    // remove from the locked uids only if it was not locked before deleted
+    LockableElement* le = dynamic_cast<LockableElement*>(obj);
+    if(le->lockState() != LockableElement::LOCKED)
+    {
+        m_lockedUids.removeOne(uid);
+        removeFromTree = false;
+    }
+
     m_originals.remove(uid);
 
     removeDeletionAction(uid);
@@ -215,6 +224,8 @@ void Patch::undeleteObject(const QString &uid)
 
     dynamic_cast<LockableElement*>(obj)->undeleteObject();
     //UidWarehouse::instance().replace(uid, obj);
+
+    return removeFromTree;
 
 }
 
@@ -482,7 +493,7 @@ void Patch::finalizePatchDeserialization()
             QString classUid = m_objUidToClassUid[uid];
             if(classUid.length() == 0)
             {
-                qDebug() << "No class uid for " << uid;
+                qDebug() << "No class uid for " << uid << " OBJ:" << this;
                 continue;
             }
             ObjectWithUid* o = DeserializationFactory::createElementForClassUid(classUid, decoded, version());
@@ -705,4 +716,20 @@ void Patch::removeDeletionAction(const QString &uid)
 }
 
 
+
+void Patch::addObjUidToClassUidMapEntry(const QString& objUid, const QString& classUid)
+{
+    if(m_objUidToClassUid.contains(objUid))
+    {
+        QString s = m_objUidToClassUid[objUid];
+        if(s.isEmpty())
+        {
+            m_objUidToClassUid[objUid] = classUid;
+        }
+    }
+    else
+    {
+        m_objUidToClassUid[objUid] = classUid;
+    }
+}
 

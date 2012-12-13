@@ -31,6 +31,7 @@ public slots:
     void onGotoTable();
     void onLockUnlock(bool);
     void onUndelete();
+    void onChangeName(QString t);
 
 protected:
     void changeEvent(QEvent *e);

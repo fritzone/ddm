@@ -6,6 +6,7 @@
 #include "core_CloneableElement.h"
 #include "TreeItem.h"
 #include "core_LockableElement.h"
+#include "commons.h"
 
 class UserDataType;
 class Table;
@@ -32,6 +33,13 @@ class Patch;
 class Version : public SerializableElement, public ObjectWithUid, public CloneableElement, public TreeItem
 {
 public:
+
+    enum PatchTreeRemovalStatus
+    {
+        REMOVE_FROM_PATCH_TREE = 0,
+        DO_NOT_REMOVE_FROM_PATCH_TREE = 1,
+        DO_NOT_REMOVE_FROM_PATCH_TREE_FAILURE = 2
+    } ;
 
     Version(int major, int minor, Project* p) : ObjectWithUid(QUuid::createUuid(), this), m_major(major), m_minor(minor), m_project(p)
     {}
@@ -476,7 +484,7 @@ public:
      * @brief undeleteObject Undeletes the object with given UID. The object was supposed to be deleted in a patch.
      * @param uid
      */
-    virtual bool undeleteObject(const QString& uid, bool suspend) = 0;
+    virtual PatchTreeRemovalStatus undeleteObject(const QString& uid, bool suspend) = 0;
 
     /**
      * @brief removePatch
