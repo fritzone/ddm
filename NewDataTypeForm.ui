@@ -23,6 +23,9 @@
    <string>Form</string>
   </property>
   <layout class="QHBoxLayout" name="horizontalLayout_2">
+   <property name="bottomMargin">
+    <number>0</number>
+   </property>
    <item>
     <widget class="QFrame" name="frameForUnlockButton">
      <property name="frameShape">
@@ -115,6 +118,61 @@
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_2">
       <item>
+       <widget class="QGroupBox" name="groupBox">
+        <property name="title">
+         <string/>
+        </property>
+        <property name="flat">
+         <bool>true</bool>
+        </property>
+        <layout class="QHBoxLayout" name="horizontalLayout">
+         <property name="margin">
+          <number>0</number>
+         </property>
+         <item>
+          <widget class="QToolButton" name="btnSave">
+           <property name="maximumSize">
+            <size>
+             <width>32</width>
+             <height>32</height>
+            </size>
+           </property>
+           <property name="toolTip">
+            <string>&lt;b&gt; Save &lt;/b&gt; the datatype</string>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+           <property name="icon">
+            <iconset resource="dbm.qrc">
+             <normaloff>:/images/actions/images/actions/save_dt.png</normaloff>:/images/actions/images/actions/save_dt.png</iconset>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="horizontalSpacer">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="txtDTName">
+        <property name="placeholderText">
+         <string>Name</string>
+        </property>
+       </widget>
+      </item>
+      <item>
        <widget class="QTabWidget" name="tabWidget">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
@@ -126,6 +184,10 @@
          <number>0</number>
         </property>
         <widget class="QWidget" name="tabWidgetPage1">
+         <attribute name="icon">
+          <iconset resource="dbm.qrc">
+           <normaloff>:/images/actions/images/big/bigdatatypes.png</normaloff>:/images/actions/images/big/bigdatatypes.png</iconset>
+         </attribute>
          <attribute name="title">
           <string>Basic properties</string>
          </attribute>
@@ -134,23 +196,13 @@
            <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
           </property>
           <item row="0" column="0">
-           <widget class="QLabel" name="label">
-            <property name="text">
-             <string>Name</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1">
-           <widget class="QLineEdit" name="txtDTName"/>
-          </item>
-          <item row="1" column="0">
            <widget class="QLabel" name="label_4">
             <property name="text">
              <string>Type</string>
             </property>
            </widget>
           </item>
-          <item row="1" column="1">
+          <item row="0" column="1">
            <widget class="QComboBox" name="cmbDTType">
             <property name="currentIndex">
              <number>0</number>
@@ -220,34 +272,34 @@
             </item>
            </widget>
           </item>
-          <item row="2" column="0">
+          <item row="1" column="0">
            <widget class="QLabel" name="label_2">
             <property name="text">
              <string>SQL</string>
             </property>
            </widget>
           </item>
-          <item row="2" column="1">
+          <item row="1" column="1">
            <widget class="QComboBox" name="cmbDTSQLType"/>
           </item>
-          <item row="3" column="0">
+          <item row="2" column="0">
            <widget class="QLabel" name="lblWidth">
             <property name="text">
              <string>Width</string>
             </property>
            </widget>
           </item>
-          <item row="3" column="1">
+          <item row="2" column="1">
            <widget class="QLineEdit" name="txtWidth"/>
           </item>
-          <item row="4" column="0">
+          <item row="3" column="0">
            <widget class="QLabel" name="lblValues">
             <property name="text">
              <string>Values</string>
             </property>
            </widget>
           </item>
-          <item row="4" column="1">
+          <item row="3" column="1">
            <layout class="QGridLayout" name="layoutEnums">
             <item row="0" column="0">
              <widget class="QListWidget" name="lstEnumValues"/>
@@ -282,6 +334,10 @@
          </layout>
         </widget>
         <widget class="QWidget" name="tabWidgetPage2">
+         <attribute name="icon">
+          <iconset resource="dbm.qrc">
+           <normaloff>:/images/actions/images/small/advanced-icon.png</normaloff>:/images/actions/images/small/advanced-icon.png</iconset>
+         </attribute>
          <attribute name="title">
           <string>Advanced</string>
          </attribute>
@@ -347,6 +403,10 @@
          </layout>
         </widget>
         <widget class="QWidget" name="tabWidgetPage3">
+         <attribute name="icon">
+          <iconset resource="dbm.qrc">
+           <normaloff>:/images/actions/images/actions/note.png</normaloff>:/images/actions/images/actions/note.png</iconset>
+         </attribute>
          <attribute name="title">
           <string>Description</string>
          </attribute>
@@ -375,43 +435,10 @@
         </widget>
        </widget>
       </item>
-      <item>
-       <widget class="QGroupBox" name="groupBox_6">
-        <property name="title">
-         <string/>
-        </property>
-        <layout class="QHBoxLayout" name="horizontalLayout">
-         <item>
-          <widget class="QPushButton" name="btnSave">
-           <property name="text">
-            <string>Save</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <spacer name="horizontalSpacer_2">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>40</width>
-             <height>20</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-         <item>
-          <widget class="QPushButton" name="btnHelp">
-           <property name="text">
-            <string>Help</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </widget>
-      </item>
      </layout>
+     <zorder>tabWidget</zorder>
+     <zorder>groupBox</zorder>
+     <zorder>txtDTName</zorder>
     </widget>
    </item>
   </layout>
@@ -517,38 +544,6 @@
    </hints>
   </connection>
   <connection>
-   <sender>btnHelp</sender>
-   <signal>clicked()</signal>
-   <receiver>NewDataTypeForm</receiver>
-   <slot>onHelp()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>238</x>
-     <y>552</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>319</x>
-     <y>330</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>btnSave</sender>
-   <signal>clicked()</signal>
-   <receiver>NewDataTypeForm</receiver>
-   <slot>onSave()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>81</x>
-     <y>612</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>479</x>
-     <y>330</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
    <sender>btnLock</sender>
    <signal>toggled(bool)</signal>
    <receiver>NewDataTypeForm</receiver>
@@ -573,6 +568,22 @@
     <hint type="sourcelabel">
      <x>38</x>
      <y>91</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>479</x>
+     <y>330</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnSave</sender>
+   <signal>clicked()</signal>
+   <receiver>NewDataTypeForm</receiver>
+   <slot>onSave()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>102</x>
+     <y>36</y>
     </hint>
     <hint type="destinationlabel">
      <x>479</x>

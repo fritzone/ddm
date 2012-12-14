@@ -104,11 +104,13 @@ public:
     void createPatchElement(Version *v, ObjectWithUid*, const QString &guid, bool reLocking);
     void updatePatchElementToReflectState(Version *v, ObjectWithUid*, const QString &guid, int state);
 
+    virtual void keyPressEvent(QKeyEvent *e);
 
 protected:
     virtual void closeEvent( QCloseEvent * event );
     virtual void changeEvent(QEvent *e);
     virtual bool eventFilter(QObject *obj, QEvent *evt);
+
 
 public slots:
 

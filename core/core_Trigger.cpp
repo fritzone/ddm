@@ -52,7 +52,7 @@ QUuid Trigger::getClassUid() const
     return QUuid(uidTrigger);
 }
 
-CloneableElement* Trigger::clone(Version *sourceVersion, Version *targetVersion)
+CloneableElement* Trigger::clone(Version */*sourceVersion*/, Version *targetVersion)
 {
     Trigger* t = new Trigger(getName(), QUuid::createUuid().toString(), targetVersion);
     t->m_body = m_body;

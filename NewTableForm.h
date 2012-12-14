@@ -70,7 +70,6 @@ public slots:
 
     // main page
     void onChangeTab(int);
-    void onHelp();
     void onChangeName(QString);
     void onLockUnlock(bool);
     void onUndelete();

@@ -23,9 +23,8 @@
 #include <QString>
 #include <QTextStream>
 
-TableComparisonForm::TableComparisonForm(Mode m, QWidget *parent) : m_leftTable(0), m_rightTable(0),
-    QWidget(parent),
-    ui(new Ui::TableComparisonForm), m_mode(m), m_from(0), m_to(0), sqlList(), m_engine(0)
+TableComparisonForm::TableComparisonForm(Mode m, QWidget *parent) : QWidget(parent), ui(new Ui::TableComparisonForm),
+    m_leftTable(0), m_rightTable(0), m_spl(0), m_trees(), highlighter(0), m_mode(m), m_from(0), m_to(0), sqlList(), m_engine(0)
 {
     ui->setupUi(this);
 
@@ -126,7 +125,7 @@ void TableComparisonForm::setupNewTable(const QString &v, Table *& table)
 
         // try to get the table by the UID
         int maj = table->version()->getMajor();
-        int min = table->version()->getMinor();
+//        int min = table->version()->getMinor();
         if(maj > ver->getMajor())
         {
             // our right table is in a version above the selected one. Source UID of our table should lead downwards N steps to the table in
@@ -300,7 +299,6 @@ void TableComparisonForm::setRightTable(Table *t)
 // TODO: this is duplicate from SqlForm
 void TableComparisonForm::onInject()
 {
-    ui->labelDeploymentStatus->setText("");
     InjectSqlDialog* injectDialog = new InjectSqlDialog(Workspace::getInstance()->currentProjectsEngine(), this, 0, "");
     injectDialog->setModal(true);
     if(injectDialog->exec() == QDialog::Accepted)
@@ -338,9 +336,7 @@ void TableComparisonForm::onInject()
             }
         }
         MainWindow::instance()->setStatus(QString("SQL injection ") + (error?" failed ":" succeeded "), error);
-        if(!error) ui->labelDeploymentStatus->setText("Succesful deployment");
     }
-
 }
 
 void TableComparisonForm::onSave()

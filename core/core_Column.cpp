@@ -87,7 +87,7 @@ QUuid Column::getClassUid() const
     return uidColumn;
 }
 
-CloneableElement* Column::clone(Version *sourceVersion, Version *targetVersion)
+CloneableElement* Column::clone(Version */*sourceVersion*/, Version *targetVersion)
 {
     UserDataType* udt = targetVersion->getDataType(getDataType()->getName());
     Column* result = new Column(QUuid::createUuid().toString(), getName(), udt, isPk(), targetVersion);

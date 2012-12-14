@@ -42,7 +42,6 @@ public slots:
     void onChkCanReplaceToggle(bool);
     void onNameChange(QString);
     void onSqlChange();
-    void onHelp();
     void onSaveSql();
     void onInject();
     void onLockUnlock(bool checked);

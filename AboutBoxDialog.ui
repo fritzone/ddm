@@ -36,8 +36,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>587</width>
-        <height>187</height>
+        <width>582</width>
+        <height>181</height>
        </rect>
       </property>
       <attribute name="label">
@@ -69,7 +69,7 @@
         </rect>
        </property>
        <property name="text">
-        <string>DDM v0.1i - The Database Deployment Manager
+        <string>DDM v0.1j - The Database Deployment Manager
 © 2009 - 2012 - The Unauthorized Frog project
 
 Programming - fritzone@gmail.com
@@ -104,8 +104,8 @@ Testing - Nikos Mantas, Althaf Hameez, elancer2010</string>
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>98</width>
-        <height>28</height>
+        <width>582</width>
+        <height>181</height>
        </rect>
       </property>
       <attribute name="label">

@@ -130,7 +130,7 @@ QUuid TableInstance::getClassUid() const
     return QUuid(uidTableInstance);
 }
 
-CloneableElement* TableInstance::clone(Version *sourceVersion, Version *targetVersion)
+CloneableElement* TableInstance::clone(Version */*sourceVersion*/, Version *targetVersion)
 {
     TableInstance* result = new TableInstance(getName(), m_becauseOfReference, QUuid::createUuid().toString(), targetVersion);
     result->setSourceUid(getObjectUid());
@@ -140,7 +140,7 @@ CloneableElement* TableInstance::clone(Version *sourceVersion, Version *targetVe
 }
 
 
-void TableInstance::finalizeCloning(TableInstance *src, Version *sourceVersion, Version *targetVersion)
+void TableInstance::finalizeCloning(TableInstance *src, Version */*sourceVersion*/, Version *targetVersion)
 {
     Table* otherTable = src->table();
     Table* myTable = targetVersion->getTable(otherTable->getName());
@@ -157,7 +157,7 @@ void TableInstance::finalizeCloning(TableInstance *src, Version *sourceVersion, 
     }
 }
 
-void TableInstance::finalizeAutoinstantiatedTinsts(TableInstance* src, Version *sourceVersion, Version *targetVersion)
+void TableInstance::finalizeAutoinstantiatedTinsts(TableInstance* src, Version */*sourceVersion*/, Version *targetVersion)
 {
     for(int i=0; i<src->m_instantiatedTablesInstances.size(); i++)
     {

@@ -31,11 +31,11 @@ MainWindowButtonDialog::MainWindowButtonDialog(QWidget *parent) :
     m_ui->lblRecent->hide();
 
     QVector<QString> mru = MostRecentlyUsedFiles::instance().getFiles();
-    if(mru.size()>1 && mru[0].length() > 0) {fixButton(m_ui->btnQuick1, mru[0]);}
-    if(mru.size()>2 && mru[1].length() > 0) {fixButton(m_ui->btnQuick2, mru[1]);}
-    if(mru.size()>3 && mru[2].length() > 0) {fixButton(m_ui->btnQuick3, mru[2]);}
-    if(mru.size()>4 && mru[3].length() > 0) {fixButton(m_ui->btnQuick4, mru[3]);}
-    if(mru.size()>5 && mru[4].length() > 0) {fixButton(m_ui->btnQuick5, mru[4]);}
+    if(mru.size()>=1 && mru[0].length() > 0) {fixButton(m_ui->btnQuick1, mru[0]);}
+    if(mru.size()>=2 && mru[1].length() > 0) {fixButton(m_ui->btnQuick2, mru[1]);}
+    if(mru.size()>=3 && mru[2].length() > 0) {fixButton(m_ui->btnQuick3, mru[2]);}
+    if(mru.size()>=4 && mru[3].length() > 0) {fixButton(m_ui->btnQuick4, mru[3]);}
+    if(mru.size()>=5 && mru[4].length() > 0) {fixButton(m_ui->btnQuick5, mru[4]);}
 }
 
 void MainWindowButtonDialog::fixButton(QCommandLinkButton *b, const QString &s)
@@ -146,10 +146,19 @@ void MainWindowButtonDialog::showMe()
 
 
     QRect t = d->availableGeometry(this);
-    qDebug() <<d->screenCount() << "<-Cnt " << d->screen()->rect() << "<- ACTSCREEN " << d->screenNumber(MainWindow::instance()) << "AV_THS=" << d->availableGeometry(this) << " RECT=" << d->rect() << "AVAIL_MW_SCREE=" << d->availableGeometry(d->screenNumber(MainWindow::instance())) << " AVA_MW=" << t << " MAIN=" << MainWindow::instance()->rect();
+//    qDebug() <<d->screenCount() << "<-Cnt " << d->screen()->rect() << "<- ACTSCREEN " << d->screenNumber(MainWindow::instance()) << "AV_THS=" << d->availableGeometry(this) << " RECT=" << d->rect() << "AVAIL_MW_SCREE=" << d->availableGeometry(d->screenNumber(MainWindow::instance())) << " AVA_MW=" << t << " MAIN=" << MainWindow::instance()->rect();
 
     move(mapToGlobal(this->geometry().topLeft()).x() + t.center().x() - width() / 2, t.center().y()- height() / 2);
-    qDebug() << rect();
+//    qDebug() << rect();
     show();
     raise();
+}
+
+void MainWindowButtonDialog::keyPressEvent(QKeyEvent *e)
+{
+    qDebug() << e->key();
+    if(e->key() == Qt::Key_Escape)
+    {
+        close();
+    }
 }

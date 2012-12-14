@@ -35,7 +35,7 @@ QUuid Function::getClassUid() const
     return QUuid(uidFunction);
 }
 
-CloneableElement* Function::clone(Version *sourceVersion, Version *targetVersion)
+CloneableElement* Function::clone(Version */*sourceVersion*/, Version *targetVersion)
 {
     Function* newp = new Function(getName(), QUuid::createUuid().toString(), targetVersion );
     newp->setSql(getSql());

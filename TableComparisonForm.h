@@ -49,6 +49,16 @@ public:
         sqlList = s;
     }
 
+    Version* getFromVersion() const
+    {
+        return m_from;
+    }
+
+    Version* getToVersion() const
+    {
+        return m_to;
+    }
+
 private:
 
     void populateColumns();
