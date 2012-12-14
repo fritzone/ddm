@@ -21,6 +21,9 @@
    <string>Form</string>
   </property>
   <layout class="QHBoxLayout" name="horizontalLayout_14">
+   <property name="bottomMargin">
+    <number>0</number>
+   </property>
    <item>
     <widget class="QFrame" name="frameForUnlockButton">
      <property name="frameShape">
@@ -108,9 +111,15 @@
      <property name="title">
       <string/>
      </property>
+     <property name="flat">
+      <bool>true</bool>
+     </property>
      <layout class="QVBoxLayout" name="verticalLayout">
+      <property name="spacing">
+       <number>6</number>
+      </property>
       <property name="margin">
-       <number>9</number>
+       <number>0</number>
       </property>
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout_17">
@@ -129,7 +138,7 @@
          <enum>QTabWidget::Rounded</enum>
         </property>
         <property name="currentIndex">
-         <number>1</number>
+         <number>0</number>
         </property>
         <widget class="QWidget" name="tabWidgetPage1">
          <attribute name="icon">
@@ -370,7 +379,7 @@
           <item>
            <widget class="QGroupBox" name="groupBox_4">
             <property name="title">
-             <string>Indices</string>
+             <string> Indices </string>
             </property>
             <layout class="QHBoxLayout" name="horizontalLayout_7">
              <item>
@@ -394,6 +403,19 @@
                    <normaloff>:/images/actions/images/small/remove.png</normaloff>:/images/actions/images/small/remove.png</iconset>
                  </property>
                 </widget>
+               </item>
+               <item>
+                <spacer name="verticalSpacer_5">
+                 <property name="orientation">
+                  <enum>Qt::Vertical</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>20</width>
+                   <height>40</height>
+                  </size>
+                 </property>
+                </spacer>
                </item>
               </layout>
              </item>
@@ -727,22 +749,39 @@
           <item>
            <widget class="QGroupBox" name="grpForeignKeysList">
             <property name="title">
-             <string>Foreign keys</string>
+             <string> Foreign keys </string>
             </property>
-            <layout class="QHBoxLayout" name="horizontalLayout_10">
+            <layout class="QHBoxLayout" name="horizontalLayout">
              <item>
-              <widget class="QToolButton" name="btnRemoveForeignKey">
-               <property name="toolTip">
-                <string>Delete foriegn key</string>
-               </property>
-               <property name="text">
-                <string>...</string>
-               </property>
-               <property name="icon">
-                <iconset resource="dbm.qrc">
-                 <normaloff>:/images/actions/images/small/remove.png</normaloff>:/images/actions/images/small/remove.png</iconset>
-               </property>
-              </widget>
+              <layout class="QVBoxLayout" name="verticalLayout_20">
+               <item>
+                <widget class="QToolButton" name="btnRemoveForeignKey">
+                 <property name="toolTip">
+                  <string>Delete foriegn key</string>
+                 </property>
+                 <property name="text">
+                  <string>...</string>
+                 </property>
+                 <property name="icon">
+                  <iconset resource="dbm.qrc">
+                   <normaloff>:/images/actions/images/small/remove.png</normaloff>:/images/actions/images/small/remove.png</iconset>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <spacer name="verticalSpacer_6">
+                 <property name="orientation">
+                  <enum>Qt::Vertical</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>20</width>
+                   <height>40</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+              </layout>
              </item>
              <item>
               <widget class="QTreeWidget" name="lstForeignKeys">
@@ -796,7 +835,7 @@
           <item>
            <widget class="QGroupBox" name="grpNewForeignKey">
             <property name="title">
-             <string>New Foreign Key</string>
+             <string> New Foreign Key </string>
             </property>
             <layout class="QVBoxLayout" name="verticalLayout_14">
              <item>
@@ -1392,51 +1431,6 @@
         </widget>
        </widget>
       </item>
-      <item>
-       <widget class="QFrame" name="frame_6">
-        <layout class="QHBoxLayout" name="horizontalLayout">
-         <item>
-          <widget class="QDialogButtonBox" name="buttons">
-           <property name="toolTip">
-            <string>Save the table</string>
-           </property>
-           <property name="autoFillBackground">
-            <bool>false</bool>
-           </property>
-           <property name="orientation">
-            <enum>Qt::Vertical</enum>
-           </property>
-           <property name="standardButtons">
-            <set>QDialogButtonBox::Save</set>
-           </property>
-           <property name="centerButtons">
-            <bool>false</bool>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <spacer name="horizontalSpacer">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>40</width>
-             <height>20</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-         <item>
-          <widget class="QPushButton" name="btnHelp">
-           <property name="text">
-            <string>Help</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </widget>
-      </item>
      </layout>
     </widget>
    </item>
@@ -1465,7 +1459,6 @@
   <tabstop>txtDescription</tabstop>
   <tabstop>lstForeignKeys</tabstop>
   <tabstop>tableStartupValues</tabstop>
-  <tabstop>buttons</tabstop>
  </tabstops>
  <resources>
   <include location="dbm.qrc"/>
@@ -1928,22 +1921,6 @@
     <hint type="sourcelabel">
      <x>106</x>
      <y>408</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>628</x>
-     <y>366</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>btnHelp</sender>
-   <signal>clicked()</signal>
-   <receiver>NewTableForm</receiver>
-   <slot>onHelp()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>1187</x>
-     <y>691</y>
     </hint>
     <hint type="destinationlabel">
      <x>628</x>

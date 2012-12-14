@@ -407,7 +407,7 @@ public:
 
     static const QIcon& getBlobDataTypeIcon()
     {
-        static const QIcon icon(icons::strDtLockedBlobIcon);
+        static const QIcon icon(icons::strDtBlobIcon);
         return icon;
     }
 
@@ -987,6 +987,8 @@ public:
         if(cuid == uidBlobDT) return getBlobDataTypeIcon();
         if(cuid == uidMiscDT) return getMiscDataTypeIcon();
         if(cuid == uidSpatialDT) return getSpatialDataTypeIcon();
+
+        return getEmptyIcon();
     }
 
     static QIcon getIconForDataType(DT_TYPE dt)

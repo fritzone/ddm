@@ -183,7 +183,6 @@ QVector<StoredMethod::ParameterAndDescription> StoredMethod::getParametersWithDe
             }
             else
             {
-                qDebug() << "hmm::" << pars;
                 return result;
             }
 

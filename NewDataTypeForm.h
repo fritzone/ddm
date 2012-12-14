@@ -71,7 +71,6 @@ public slots:
     /// when the user clicked the cna be null checkbox
     void onCanBeNullClicked();
 
-    void onHelp();
     void onLockUnlock(bool);
     void onUndelete();
 

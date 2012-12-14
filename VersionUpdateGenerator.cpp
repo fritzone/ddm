@@ -354,7 +354,7 @@ void VersionUpdateGenerator::updateTables(Version* from, Version* to)
                 }
                 if(proceed)
                 {
-                    tableChanges << "\n-- Update " + fromTables[i]->getName() + " (" +from->getVersionText() + ")  to " + toTables[j]->getName() + " (" +to->getVersionText() + ")";
+                    //tableChanges << "\n-- Update " + fromTables[i]->getName() + " (" +from->getVersionText() + ")  to " + toTables[j]->getName() + " (" +to->getVersionText() + ")";
                     TableUpdateGenerator* tud = new TableUpdateGenerator(fromTables[i], toTables[j], Workspace::getInstance()->currentProjectsEngine(), this);
                     m_tableUpdates[toTables[j]->getObjectUid()] = tud;
                     tableChanges << tud->commands();

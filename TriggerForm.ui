@@ -14,6 +14,9 @@
    <string>Form</string>
   </property>
   <layout class="QHBoxLayout" name="horizontalLayout_5">
+   <property name="bottomMargin">
+    <number>0</number>
+   </property>
    <item>
     <widget class="QFrame" name="frameForUnlockButton">
      <property name="frameShape">
@@ -97,225 +100,248 @@
     </widget>
    </item>
    <item>
-    <widget class="QTabWidget" name="tabWidget">
-     <widget class="QWidget" name="tabWidgetPage1">
-      <attribute name="title">
-       <string>Properties</string>
-      </attribute>
-      <layout class="QFormLayout" name="formLayout">
-       <property name="fieldGrowthPolicy">
-        <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
-       </property>
-       <property name="margin">
-        <number>9</number>
-       </property>
-       <item row="0" column="0">
-        <widget class="QLabel" name="label_5">
-         <property name="text">
-          <string>Name</string>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="1">
-        <widget class="QLineEdit" name="txtTriggerName"/>
-       </item>
-       <item row="1" column="0">
-        <widget class="QLabel" name="label">
-         <property name="text">
-          <string>Table</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="1">
-        <widget class="QFrame" name="frame_tab">
-         <property name="frameShape">
-          <enum>QFrame::StyledPanel</enum>
-         </property>
-         <property name="frameShadow">
-          <enum>QFrame::Raised</enum>
-         </property>
-         <layout class="QHBoxLayout" name="horizontalLayout_2">
-          <property name="topMargin">
-           <number>3</number>
+    <widget class="QGroupBox" name="groupBox">
+     <property name="title">
+      <string/>
+     </property>
+     <property name="flat">
+      <bool>true</bool>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_3">
+      <property name="margin">
+       <number>0</number>
+      </property>
+      <item>
+       <widget class="QLineEdit" name="txtTriggerName">
+        <property name="placeholderText">
+         <string>Name</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QTabWidget" name="tabWidget">
+        <property name="currentIndex">
+         <number>0</number>
+        </property>
+        <widget class="QWidget" name="tabWidgetPage1">
+         <attribute name="icon">
+          <iconset resource="dbm.qrc">
+           <normaloff>:/images/actions/images/small/trigger.png</normaloff>:/images/actions/images/small/trigger.png</iconset>
+         </attribute>
+         <attribute name="title">
+          <string>Properties</string>
+         </attribute>
+         <layout class="QFormLayout" name="formLayout">
+          <property name="fieldGrowthPolicy">
+           <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
           </property>
-          <property name="bottomMargin">
-           <number>3</number>
+          <property name="margin">
+           <number>9</number>
           </property>
-          <item>
-           <widget class="QComboBox" name="cmbTables"/>
-          </item>
-          <item>
-           <spacer name="horizontalSpacer_2">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
+          <item row="0" column="0">
+           <widget class="QLabel" name="label">
+            <property name="text">
+             <string>Table</string>
             </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>40</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-         </layout>
-        </widget>
-       </item>
-       <item row="2" column="0">
-        <widget class="QLabel" name="label_2">
-         <property name="text">
-          <string>When</string>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="1">
-        <widget class="QFrame" name="frame">
-         <property name="frameShape">
-          <enum>QFrame::StyledPanel</enum>
-         </property>
-         <property name="frameShadow">
-          <enum>QFrame::Raised</enum>
-         </property>
-         <layout class="QHBoxLayout" name="horizontalLayout">
-          <property name="topMargin">
-           <number>3</number>
-          </property>
-          <property name="bottomMargin">
-           <number>3</number>
-          </property>
-          <item>
-           <widget class="QComboBox" name="cmbTime">
-            <item>
-             <property name="text">
-              <string>BEFORE</string>
-             </property>
-             <property name="icon">
-              <iconset resource="dbm.qrc">
-               <normaloff>:/images/actions/images/small/before.png</normaloff>:/images/actions/images/small/before.png</iconset>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>AFTER</string>
-             </property>
-             <property name="icon">
-              <iconset resource="dbm.qrc">
-               <normaloff>:/images/actions/images/small/after.png</normaloff>:/images/actions/images/small/after.png</iconset>
-             </property>
-            </item>
            </widget>
           </item>
-          <item>
-           <spacer name="horizontalSpacer">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
+          <item row="0" column="1">
+           <widget class="QFrame" name="frame_tab">
+            <property name="frameShape">
+             <enum>QFrame::StyledPanel</enum>
             </property>
-            <property name="sizeType">
-             <enum>QSizePolicy::MinimumExpanding</enum>
+            <property name="frameShadow">
+             <enum>QFrame::Raised</enum>
             </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>40</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-         </layout>
-        </widget>
-       </item>
-       <item row="3" column="0">
-        <widget class="QLabel" name="label_3">
-         <property name="text">
-          <string>Event</string>
-         </property>
-        </widget>
-       </item>
-       <item row="3" column="1">
-        <widget class="QFrame" name="frame_3">
-         <property name="frameShape">
-          <enum>QFrame::StyledPanel</enum>
-         </property>
-         <property name="frameShadow">
-          <enum>QFrame::Raised</enum>
-         </property>
-         <layout class="QHBoxLayout" name="horizontalLayout_3">
-          <property name="topMargin">
-           <number>3</number>
-          </property>
-          <property name="bottomMargin">
-           <number>3</number>
-          </property>
-          <item>
-           <widget class="QComboBox" name="cmbEvent">
-            <item>
-             <property name="text">
-              <string>INSERT</string>
+            <layout class="QHBoxLayout" name="horizontalLayout_2">
+             <property name="topMargin">
+              <number>3</number>
              </property>
-             <property name="icon">
-              <iconset resource="dbm.qrc">
-               <normaloff>:/images/actions/images/small/insert_table_row.png</normaloff>:/images/actions/images/small/insert_table_row.png</iconset>
+             <property name="bottomMargin">
+              <number>3</number>
              </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>UPDATE</string>
-             </property>
-             <property name="icon">
-              <iconset resource="dbm.qrc">
-               <normaloff>:/images/actions/images/small/trigger_update.png</normaloff>:/images/actions/images/small/trigger_update.png</iconset>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>DELETE</string>
-             </property>
-             <property name="icon">
-              <iconset resource="dbm.qrc">
-               <normaloff>:/images/actions/images/small/delete_table_row.png</normaloff>:/images/actions/images/small/delete_table_row.png</iconset>
-             </property>
-            </item>
+             <item>
+              <widget class="QComboBox" name="cmbTables"/>
+             </item>
+             <item>
+              <spacer name="horizontalSpacer_2">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+            </layout>
            </widget>
           </item>
-          <item>
-           <spacer name="horizontalSpacer_3">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
+          <item row="1" column="0">
+           <widget class="QLabel" name="label_2">
+            <property name="text">
+             <string>When</string>
             </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>40</width>
-              <height>20</height>
-             </size>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QFrame" name="frame">
+            <property name="frameShape">
+             <enum>QFrame::StyledPanel</enum>
             </property>
-           </spacer>
+            <property name="frameShadow">
+             <enum>QFrame::Raised</enum>
+            </property>
+            <layout class="QHBoxLayout" name="horizontalLayout">
+             <property name="topMargin">
+              <number>3</number>
+             </property>
+             <property name="bottomMargin">
+              <number>3</number>
+             </property>
+             <item>
+              <widget class="QComboBox" name="cmbTime">
+               <item>
+                <property name="text">
+                 <string>BEFORE</string>
+                </property>
+                <property name="icon">
+                 <iconset resource="dbm.qrc">
+                  <normaloff>:/images/actions/images/small/before.png</normaloff>:/images/actions/images/small/before.png</iconset>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>AFTER</string>
+                </property>
+                <property name="icon">
+                 <iconset resource="dbm.qrc">
+                  <normaloff>:/images/actions/images/small/after.png</normaloff>:/images/actions/images/small/after.png</iconset>
+                </property>
+               </item>
+              </widget>
+             </item>
+             <item>
+              <spacer name="horizontalSpacer">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeType">
+                <enum>QSizePolicy::MinimumExpanding</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+            </layout>
+           </widget>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="label_3">
+            <property name="text">
+             <string>Event</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QFrame" name="frame_3">
+            <property name="frameShape">
+             <enum>QFrame::StyledPanel</enum>
+            </property>
+            <property name="frameShadow">
+             <enum>QFrame::Raised</enum>
+            </property>
+            <layout class="QHBoxLayout" name="horizontalLayout_3">
+             <property name="topMargin">
+              <number>3</number>
+             </property>
+             <property name="bottomMargin">
+              <number>3</number>
+             </property>
+             <item>
+              <widget class="QComboBox" name="cmbEvent">
+               <item>
+                <property name="text">
+                 <string>INSERT</string>
+                </property>
+                <property name="icon">
+                 <iconset resource="dbm.qrc">
+                  <normaloff>:/images/actions/images/small/insert_table_row.png</normaloff>:/images/actions/images/small/insert_table_row.png</iconset>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>UPDATE</string>
+                </property>
+                <property name="icon">
+                 <iconset resource="dbm.qrc">
+                  <normaloff>:/images/actions/images/small/trigger_update.png</normaloff>:/images/actions/images/small/trigger_update.png</iconset>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>DELETE</string>
+                </property>
+                <property name="icon">
+                 <iconset resource="dbm.qrc">
+                  <normaloff>:/images/actions/images/small/delete_table_row.png</normaloff>:/images/actions/images/small/delete_table_row.png</iconset>
+                </property>
+               </item>
+              </widget>
+             </item>
+             <item>
+              <spacer name="horizontalSpacer_3">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+            </layout>
+           </widget>
+          </item>
+          <item row="3" column="0">
+           <widget class="QLabel" name="label_4">
+            <property name="text">
+             <string>Body</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="1">
+           <widget class="QFrame" name="frame_2">
+            <layout class="QHBoxLayout" name="horizontalLayout_4"/>
+           </widget>
           </item>
          </layout>
         </widget>
-       </item>
-       <item row="4" column="0">
-        <widget class="QLabel" name="label_4">
-         <property name="text">
-          <string>Body</string>
-         </property>
+        <widget class="QWidget" name="tab">
+         <attribute name="icon">
+          <iconset resource="dbm.qrc">
+           <normaloff>:/images/actions/images/actions/note.png</normaloff>:/images/actions/images/actions/note.png</iconset>
+         </attribute>
+         <attribute name="title">
+          <string>Description</string>
+         </attribute>
+         <layout class="QVBoxLayout" name="verticalLayout_2">
+          <item>
+           <widget class="QTextEdit" name="txtDescription"/>
+          </item>
+         </layout>
         </widget>
-       </item>
-       <item row="4" column="1">
-        <widget class="QFrame" name="frame_2">
-         <layout class="QHBoxLayout" name="horizontalLayout_4"/>
-        </widget>
-       </item>
-      </layout>
-     </widget>
-     <widget class="QWidget" name="tab">
-      <attribute name="title">
-       <string>Description</string>
-      </attribute>
-      <layout class="QVBoxLayout" name="verticalLayout_2">
-       <item>
-        <widget class="QTextEdit" name="txtDescription"/>
-       </item>
-      </layout>
-     </widget>
+       </widget>
+      </item>
+     </layout>
     </widget>
    </item>
   </layout>

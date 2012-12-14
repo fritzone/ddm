@@ -64,6 +64,12 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>txtDatabaseHost</tabstop>
+  <tabstop>txtPort</tabstop>
+  <tabstop>txtDatabaseUser</tabstop>
+  <tabstop>txtDatabasePassword</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

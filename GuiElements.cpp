@@ -241,6 +241,8 @@ ContextMenuEnabledTreeWidgetItem* GuiElements::updateItemForPatchWithState(Patch
             }
         }
     }
+
+    return 0;
 }
 
 ContextMenuEnabledTreeWidgetItem* GuiElements::createNewItemForPatch(Patch *p, const QString& class_uid, const QString& uid, const QString& name)
@@ -308,7 +310,7 @@ void GuiElements::removeItemForPatch(Patch *p, const QString& uid)
     }
 }
 
-void GuiElements::populatePathcItem(ContextMenuEnabledTreeWidgetItem *patchItem, Patch *patch)
+void GuiElements::populatePathcItem(ContextMenuEnabledTreeWidgetItem */*patchItem*/, Patch *patch)
 {
     // firstly the locked elements. This will NOT create tree items for the deleted ones
     const QStringList& lockeds = patch->getLockedUids();

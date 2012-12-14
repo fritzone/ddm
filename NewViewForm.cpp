@@ -46,9 +46,9 @@ NewViewForm::NewViewForm(Version* v, bool queryBuilder, QueryGraphicsHelper* c, 
     {
         ui->horizontalLayout_4->addWidget(txtSql);
 
-        m_qgs = new QueryGraphicsScene(c, this);
+        m_qgs = new QueryGraphicsScene(c, ui->groupBox);
 
-        m_qgv = new QueryGraphicsView(this);
+        m_qgv = new QueryGraphicsView(ui->groupBox);
         m_qgv->setObjectName(QString::fromUtf8("queryGraphicsView"));
         m_qgv->setDragMode(QGraphicsView::RubberBandDrag);
         m_qgv->setAcceptDrops(true);
@@ -61,6 +61,7 @@ NewViewForm::NewViewForm(Version* v, bool queryBuilder, QueryGraphicsHelper* c, 
         ui->verticalLayout->insertWidget(1, m_qgv);
 
         txtSql->setReadOnly(true);
+        ui->tabWidget->setCurrentIndex(0);
     }
     else
     {
@@ -74,7 +75,7 @@ NewViewForm::NewViewForm(Version* v, bool queryBuilder, QueryGraphicsHelper* c, 
         ui->txtViewName = new QLineEdit(ui->groupBox_3);
         ui->txtViewName->setObjectName(QString::fromUtf8("txtViewName"));
         ui->txtViewName->setToolTip(QApplication::translate("NewViewForm", "The name of the View", 0, QApplication::UnicodeUTF8));
-        ui->frame->hide();
+        ui->groupBox->hide();
         ui->verticalLayout_4->insertWidget(0, ui->txtViewName);
         connect(ui->txtViewName, SIGNAL(textChanged(QString)), this, SLOT(onNameChange(QString)));
 
@@ -123,13 +124,13 @@ void NewViewForm::scrollTo(int hor, int ver)
     if(m_queryBuilder) m_qgv->centerOn(hor, ver);
 }
 
-
 void NewViewForm::getCenter(int &x, int &y)
 {
     if(m_queryBuilder)
     {
-        x = m_qgv->mapToScene(m_qgv->viewport()->rect().center()).x();
-        y = m_qgv->mapToScene(m_qgv->viewport()->rect().center()).y();
+        QPoint centre = m_qgv->viewport()->mapTo(this, QPoint(0,0));;
+        x = m_qgv->mapToScene(centre).x();
+        y = m_qgv->mapToScene(centre).y();
     }
 }
 
@@ -311,13 +312,6 @@ QString NewViewForm::getViewNameFromSql()
     }
 
     return "";
-}
-
-void NewViewForm::onHelp()
-{
-    HelpWindow* hw = HelpWindow::instance();
-    hw->showHelp(QString("/doc/view.html"));
-    hw->show();
 }
 
 void NewViewForm::onSaveSql()

@@ -93,6 +93,56 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), m_ui(new Ui::Main
     QApplication::instance()->installEventFilter(this);
 }
 
+void MainWindow::keyPressEvent(QKeyEvent *e)
+{
+    if(e->key() == Qt::Key_Escape)
+    {
+        if(m_btndlg && m_btndlg->isVisible())
+        {
+            m_btndlg->hide();
+            m_btndlg = 0;
+        }
+    }
+    if(e->key() == Qt::Key_F1)
+    {
+        // based on the centralWidget select the desried help...
+        // TODO: these things should come from the centralWidget somehow :)
+        QWidget* c = centralWidget();
+        QString s = QString("/doc/main.html");
+        if(dynamic_cast<NewTableForm*>(c))
+        {
+            s = QString("/doc/tabl.html");
+        }
+        if(dynamic_cast<TableInstanceForm*>(c))
+        {
+            s = QString("/doc/tinst.html");
+        }
+        if(dynamic_cast<NewViewForm*>(c))
+        {
+            s = QString("/doc/view.html");
+        }
+        if(dynamic_cast<NewDataTypeForm*>(c))
+        {
+            s = QString("/doc/dtyp.html");
+        }
+        if(dynamic_cast<TriggerForm*>(c))
+        {
+            s = QString("/doc/trig.html");
+        }
+        if(dynamic_cast<ProcedureForm*>(c))
+        {
+            s = QString("/doc/proc.html");
+        }
+        if(dynamic_cast<DiagramForm*>(c))
+        {
+            s = QString("/doc/dgram.html");
+        }
+        HelpWindow* hw = HelpWindow::instance();
+        hw->showHelp(s);
+        hw->show();
+    }
+}
+
 bool MainWindow::eventFilter(QObject *obj, QEvent *evt)
 {
     if(obj==qApp && ( evt->type() == QEvent::ApplicationActivate
@@ -331,7 +381,7 @@ void MainWindow::onDTTreeClicked()
 {
 }
 
-void MainWindow::showNothing(Version *v, const QString &, bool focus )
+void MainWindow::showNothing(Version */*v*/, const QString &, bool /*focus*/ )
 {
 
 }
@@ -364,7 +414,7 @@ void MainWindow::showTableWithGuid(Version *v, const QString &guid, bool focus)
     }
 }
 
-void MainWindow::showTableInstanceWithGuid(Version *v, const QString &guid, bool focus)
+void MainWindow::showTableInstanceWithGuid(Version */*v*/, const QString &guid, bool focus)
 {
     TableInstance* table =  dynamic_cast<TableInstance*>(UidWarehouse::instance().getElement(guid));
     if(table == 0)  // shouldn't be ...
@@ -1248,7 +1298,16 @@ void MainWindow::onReleaseMajorVersion()
                     ContextMenuEnabledTreeWidgetItem* item = newVersion->getGui()->getTableInstancesItem();
                     item->setHidden(true);
                     newVersion->getGui()->getTablesItem()->setText(0, tr("Tables"));
+                }
 
+                // see if the central form is a TableComparisonForm?
+                TableComparisonForm* atcf = dynamic_cast<TableComparisonForm*>(centralWidget());
+                if(atcf)
+                {
+                    TableComparisonForm* tcf = new TableComparisonForm(TableComparisonForm::COMPARE_VERSIONS);
+                    tcf->setFromVersion(atcf->getFromVersion());
+                    tcf->setToVersion(atcf->getToVersion());
+                    setCentralWidget(tcf);
                 }
             }
         }

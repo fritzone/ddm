@@ -124,7 +124,6 @@ NewTableForm::NewTableForm(DatabaseEngine* db, Project* prj, Version* v, QWidget
     }
 
     m_signalMapperForCombosInColumns = new QSignalMapper(this);
-    m_ui->buttons->hide();
     m_ui->frameForUnlockButton->hide();
 
 }
@@ -2020,6 +2019,10 @@ void NewTableForm::keyPressEvent(QKeyEvent *evt)
             }
         }
     }
+    if(evt->key() == Qt::Key_F1)
+    {
+        MainWindow::instance()->keyPressEvent(evt);
+    }
 }
 
 void NewTableForm::onBtnUpdateTableWithDefaultValues()
@@ -2117,13 +2120,6 @@ void NewTableForm::onDeleteDefaultRow()
     m_ui->tableStartupValues->removeRow(m_ui->tableStartupValues->currentRow());
     onBtnUpdateTableWithDefaultValues();
     autoSave();
-}
-
-void NewTableForm::onHelp()
-{
-    HelpWindow* hw = HelpWindow::instance();
-    hw->showHelp(QString("/doc/tabl.html"));
-    hw->show();
 }
 
 void NewTableForm::onChangeTab(int idx)
@@ -2232,7 +2228,7 @@ void NewTableForm::onSaveSql()
     out << m_ui->txtSql->toPlainText() << "\n";
 }
 
-void NewTableForm::presentSql(Project *, Version *v)
+void NewTableForm::presentSql(Project *, Version *)
 {
     QString fs = "";
     QHash<QString,QString> fo = Configuration::instance().sqlGenerationOptions();

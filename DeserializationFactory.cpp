@@ -1339,7 +1339,7 @@ Trigger* DeserializationFactory::createTrigger(Version* v,  const QDomDocument&,
     return trigg;
 }
 
-Patch* DeserializationFactory::createPatch(Project* p, Version* v, const QDomDocument& doc, const QDomElement& element)
+Patch* DeserializationFactory::createPatch(Project* /*p*/, Version* v, const QDomDocument& /*doc*/, const QDomElement& element)
 {
     Patch* patch = new Patch(v, true);
 
@@ -1358,7 +1358,6 @@ Patch* DeserializationFactory::createPatch(Project* p, Version* v, const QDomDoc
             {
                 QString uid = el.childNodes().at(j).toElement().attribute("value");
                 QString classUid = el.childNodes().at(j).toElement().attribute("class-uid");
-                qDebug () << "CUID:" << classUid << " UID: " << uid;
                 uids.append(uid);
                 patch->addObjUidToClassUidMapEntry(uid, classUid);
             }

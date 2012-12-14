@@ -30,7 +30,14 @@ void MostRecentlyUsedFiles::readFiles()
     result.push_back(s.value(strMru4, QVariant("")).toString());
     result.push_back(s.value(strMru5, QVariant("")).toString());
 
-    m_files = result;
+    for(int i=0; i<result.size(); i++)
+    {
+        if(QFile::exists(result[i]))
+        {
+            m_files.append(result[i]);
+        }
+    }
+    while(m_files.size() < 5) m_files.append("");
 }
 
 void MostRecentlyUsedFiles::writeFiles()

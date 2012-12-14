@@ -453,14 +453,6 @@ void NewDataTypeForm::keyPressEvent(QKeyEvent *evt)
     }
 }
 
-void NewDataTypeForm::onHelp()
-{
-    HelpWindow* hw = HelpWindow::instance();
-    hw->showHelp(QString("/doc/dtyp.html"));
-    hw->show();
-}
-
-
 void NewDataTypeForm::onUndelete()
 {
     if(m_udt->version()->undeleteObject(m_udt->getObjectUid(), false))

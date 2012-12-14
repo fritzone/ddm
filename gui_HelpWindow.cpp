@@ -138,3 +138,11 @@ void HelpWindow::treeItemChanged(QTreeWidgetItem* c, QTreeWidgetItem*)
     QString l = a.toString();
     showHelp(QString("/doc/") + l);
 }
+
+void HelpWindow::keyPressEvent(QKeyEvent *e)
+{
+    if(e->key() == Qt::Key_Escape)
+    {
+        hide();
+    }
+}

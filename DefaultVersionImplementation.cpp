@@ -347,7 +347,6 @@ void DefaultVersionImplementation::purgeSentencedTableInstances()
     {
         if(m_data.m_tableInstances.at(i)->sentenced())
         {
-            TableInstance* tinst = m_data.m_tableInstances.at(i);
             m_data.m_tableInstances.remove(i);
         }
         else
@@ -926,7 +925,7 @@ QList<QString> DefaultVersionImplementation::getSqlScript(bool generateDelimiter
     QHash<QString, QString> opts = Configuration::instance().sqlGenerationOptions();
     opts["FKSposition"] = "OnlyInternal";
     opts["PKSposition"] = "AfterColumnsDeclaration";
-    bool comments =  opts.contains("Comments") && opts["Comments"] == "Yes";
+//    bool comments =  opts.contains("Comments") && opts["Comments"] == "Yes";
 
     if(Workspace::getInstance()->currentProjectIsOop())   // list the table instances' SQL
     {
@@ -1658,12 +1657,12 @@ bool DefaultVersionImplementation::cloneInto(Version* other, LockType lt)
     return true;
 }
 
-void DefaultVersionImplementation::patchItem(const QString &uid)
+void DefaultVersionImplementation::patchItem(const QString &/*uid*/)
 {
 
 }
 
-CloneableElement* DefaultVersionImplementation::clone(Version* sourceVersion, Version* targetVersion)
+CloneableElement* DefaultVersionImplementation::clone(Version* /*sourceVersion*/, Version* /*targetVersion*/)
 {
     return 0;
 }
@@ -1944,7 +1943,7 @@ DefaultVersionImplementation::CAN_UNDELETE_STATUS DefaultVersionImplementation::
     return CAN_UNDELETE;
 }
 
-DefaultVersionImplementation::CAN_UNDELETE_STATUS DefaultVersionImplementation::canUndeleteProcedure(const QString &uid, QString &extra)
+DefaultVersionImplementation::CAN_UNDELETE_STATUS DefaultVersionImplementation::canUndeleteProcedure(const QString &uid, QString &/*extra*/)
 {
     ObjectWithUid* obj = getWorkingPatch()->getDeletedObject(uid);
     if(!obj)
@@ -1961,7 +1960,7 @@ DefaultVersionImplementation::CAN_UNDELETE_STATUS DefaultVersionImplementation::
     return CAN_UNDELETE;
 }
 
-DefaultVersionImplementation::CAN_UNDELETE_STATUS DefaultVersionImplementation::canUndeleteFunction(const QString &uid, QString &extra)
+DefaultVersionImplementation::CAN_UNDELETE_STATUS DefaultVersionImplementation::canUndeleteFunction(const QString &uid, QString &/*extra*/)
 {
     ObjectWithUid* obj = getWorkingPatch()->getDeletedObject(uid);
     if(!obj)
@@ -2001,7 +2000,7 @@ DefaultVersionImplementation::CAN_UNDELETE_STATUS DefaultVersionImplementation::
     return CAN_UNDELETE;
 }
 
-DefaultVersionImplementation::CAN_UNDELETE_STATUS DefaultVersionImplementation::canUndeleteView(const QString &uid, QString &extra)
+DefaultVersionImplementation::CAN_UNDELETE_STATUS DefaultVersionImplementation::canUndeleteView(const QString &uid, QString &/*extra*/)
 {
     ObjectWithUid* obj = getWorkingPatch()->getDeletedObject(uid);
     if(!obj)
@@ -2020,7 +2019,7 @@ DefaultVersionImplementation::CAN_UNDELETE_STATUS DefaultVersionImplementation::
     return CAN_UNDELETE;
 }
 
-DefaultVersionImplementation::CAN_UNDELETE_STATUS DefaultVersionImplementation::canUndeleteDataType(const QString &uid, QString &extra)
+DefaultVersionImplementation::CAN_UNDELETE_STATUS DefaultVersionImplementation::canUndeleteDataType(const QString &uid, QString &/*extra*/)
 {
     ObjectWithUid* obj = getWorkingPatch()->getDeletedObject(uid);
     if(!obj)

@@ -205,7 +205,7 @@ bool Patch::undeleteObject(const QString &uid)
     ObjectWithUid* obj = UidWarehouse::instance().getElement(uid);
     if(!obj) return true;
 
-    int t = m_deletedUids.size();
+//    int t = m_deletedUids.size();
     m_deletedUids.removeOne(uid);
     m_deletedObjects.remove(uid);
 
@@ -220,7 +220,7 @@ bool Patch::undeleteObject(const QString &uid)
     m_originals.remove(uid);
 
     removeDeletionAction(uid);
-    t = m_deletedUids.size();
+//    t = m_deletedUids.size();
 
     dynamic_cast<LockableElement*>(obj)->undeleteObject();
     //UidWarehouse::instance().replace(uid, obj);
@@ -322,7 +322,7 @@ DataTypeDeletionAction* Patch::getDtDA(const QString &uid)
 void Patch::removeTDA(const QString &uid)
 {
     if(!m_tableDeletions.contains(uid)) return;
-    TableDeletionAction* tda = m_tableDeletions.value(uid);
+//    TableDeletionAction* tda = m_tableDeletions.value(uid);
     m_tableDeletions.remove(uid);
 }
 

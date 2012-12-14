@@ -29,6 +29,7 @@ protected slots:
 protected:
     void changeEvent(QEvent *e);
     void resizeEvent(QResizeEvent *);
+    virtual void keyPressEvent(QKeyEvent *e);
 
 private:
     explicit HelpWindow(QWidget *parent = 0);

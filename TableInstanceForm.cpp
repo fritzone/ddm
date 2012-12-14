@@ -265,14 +265,6 @@ void TableInstanceForm::onCellChange(int,int)
     }
 }
 
-
-void TableInstanceForm::onHelp()
-{
-    HelpWindow* hw = HelpWindow::instance();
-    hw->showHelp(QString("/doc/tinst.html"));
-    hw->show();
-}
-
 void TableInstanceForm::onValuesDoubleClick()
 {
     onAddNewRow();

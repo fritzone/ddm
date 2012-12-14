@@ -26,7 +26,6 @@ public slots:
     void onDeleteRow();
     void onValidateData();
     void onCellChange(int,int);
-    void onHelp();
     void onValuesDoubleClick();
     void onGotoTable();
     void onLockUnlock(bool);

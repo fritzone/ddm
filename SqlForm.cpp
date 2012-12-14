@@ -64,7 +64,6 @@ void SqlForm::setSource(const QString &src)
 
 void SqlForm::onInject()
 {
-    ui->labelDeploymentStatus->setText("");
     InjectSqlDialog* injectDialog = new InjectSqlDialog(Workspace::getInstance()->currentProjectsEngine(), this, 0, "");
     injectDialog->setModal(true);
     if(injectDialog->exec() == QDialog::Accepted)
@@ -103,7 +102,6 @@ void SqlForm::onInject()
             }
         }
         MainWindow::instance()->setStatus(QString("SQL injection ") + (error?" failed ":" succeeded "), error);
-        if(!error) ui->labelDeploymentStatus->setText("Succesful deployment");
     }
 }
 
@@ -120,7 +118,7 @@ void SqlForm::onSave()
     out << ui->txtSql->toPlainText() << "\n";
 }
 
-void SqlForm::presentSql(Project* p, Version *v)
+void SqlForm::presentSql(Project* /*p*/, Version *v)
 {
     // here create the final SQL:
     // firstly only the tables and then the foreign keys. We'll see the other elements (triggers, functions) later

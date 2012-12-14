@@ -141,6 +141,15 @@
           </item>
           <item row="2" column="1">
            <widget class="QComboBox" name="cmbDatabaseType">
+            <property name="toolTip">
+             <string>The database engine that will support this connection</string>
+            </property>
+            <property name="statusTip">
+             <string>The database engine that will support this connection</string>
+            </property>
+            <property name="whatsThis">
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The database engine that will support this connection. Right now (v0.1j) Database Deployment Manager supports only MySql.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            </property>
             <item>
              <property name="text">
               <string>MySQL</string>
@@ -161,6 +170,15 @@
           </item>
           <item row="3" column="1">
            <widget class="QLineEdit" name="txtDatabaseHost">
+            <property name="toolTip">
+             <string>The host which is hosting the database</string>
+            </property>
+            <property name="statusTip">
+             <string>The host which is hosting the database</string>
+            </property>
+            <property name="whatsThis">
+             <string>The host which is hosting the database</string>
+            </property>
             <property name="text">
              <string>localhost</string>
             </property>
@@ -174,7 +192,17 @@
            </widget>
           </item>
           <item row="5" column="1">
-           <widget class="QLineEdit" name="txtDatabaseUser"/>
+           <widget class="QLineEdit" name="txtDatabaseUser">
+            <property name="toolTip">
+             <string>User which is used to log in to the DB</string>
+            </property>
+            <property name="statusTip">
+             <string>User which is used to log in to the DB.</string>
+            </property>
+            <property name="whatsThis">
+             <string>User which is used to log in to the DB. Make sure the user has enough privileges for the operations you are trying to execute, such as he needs to be able to create tables, drop/create databases, enumerate objects, etc...</string>
+            </property>
+           </widget>
           </item>
           <item row="6" column="0">
            <widget class="QLabel" name="label_5">
@@ -185,6 +213,15 @@
           </item>
           <item row="6" column="1">
            <widget class="QLineEdit" name="txtDatabasePassword">
+            <property name="toolTip">
+             <string>The password of the user</string>
+            </property>
+            <property name="statusTip">
+             <string>The password of the user.</string>
+            </property>
+            <property name="whatsThis">
+             <string>The password of the user. Right now (v0.1j) this is stored as plaintext, we will fix it in the future.</string>
+            </property>
             <property name="echoMode">
              <enum>QLineEdit::Password</enum>
             </property>
@@ -235,6 +272,15 @@
                 <property name="enabled">
                  <bool>false</bool>
                 </property>
+                <property name="toolTip">
+                 <string>The list of databases found on the server</string>
+                </property>
+                <property name="statusTip">
+                 <string>The list of databases found on the server</string>
+                </property>
+                <property name="whatsThis">
+                 <string>The list of databases found on the server</string>
+                </property>
                 <property name="editable">
                  <bool>false</bool>
                 </property>
@@ -269,6 +315,15 @@
           </item>
           <item row="7" column="0">
            <widget class="QPushButton" name="btnConnect">
+            <property name="toolTip">
+             <string>Click this button to test the connection to the host.</string>
+            </property>
+            <property name="statusTip">
+             <string>Click this button to test the connection to the host.</string>
+            </property>
+            <property name="whatsThis">
+             <string>Click this button to test the connection to the host</string>
+            </property>
             <property name="text">
              <string>Connect</string>
             </property>
@@ -283,6 +338,15 @@
           </item>
           <item row="12" column="1">
            <widget class="QLineEdit" name="txtConnectionName">
+            <property name="toolTip">
+             <string>The name of the connection</string>
+            </property>
+            <property name="statusTip">
+             <string>The name of the connection</string>
+            </property>
+            <property name="whatsThis">
+             <string>The name of the connection</string>
+            </property>
             <property name="text">
              <string>localhost</string>
             </property>
@@ -304,6 +368,15 @@
           </item>
           <item row="4" column="1">
            <widget class="QLineEdit" name="txtPort">
+            <property name="toolTip">
+             <string>The port of the connection</string>
+            </property>
+            <property name="statusTip">
+             <string>The port of the connection</string>
+            </property>
+            <property name="whatsThis">
+             <string>The port of the connection</string>
+            </property>
             <property name="text">
              <string>3306</string>
             </property>
