@@ -19,6 +19,7 @@
 #include "core_Trigger.h"
 #include "core_View.h"
 #include "strings.h"
+#include "helper_utils.h"
 
 #include <QFileDialog>
 #include <QMessageBox>
@@ -107,15 +108,7 @@ void SqlForm::onInject()
 
 void SqlForm::onSave()
 {
-    QString name = QFileDialog::getSaveFileName(this, tr("Save sql"), "", tr("SQL files (*.sql)"));
-    QFile file(name);
-
-    if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
-    {
-        return;
-    }
-    QTextStream out(&file);
-    out << ui->txtSql->toPlainText() << "\n";
+    DDM::saveTextFileWithType(this, ui->txtSql->toPlainText(), tr("Save SQL Script"), tr("SQL files (*.sql)"));
 }
 
 void SqlForm::presentSql(Project* /*p*/, Version *v)

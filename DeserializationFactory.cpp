@@ -558,6 +558,8 @@ QueryComponent* DeserializationFactory::createComponent(QueryComponent* parent, 
         }
     }
 
+    if(!c) return 0;
+
     for(int k=0; k<componentNode.childNodes().count(); k++)
     {
         if(componentNode.childNodes().at(k).nodeName() == "Children")
@@ -567,7 +569,10 @@ QueryComponent* DeserializationFactory::createComponent(QueryComponent* parent, 
                 QDomElement e = componentNode.childNodes().at(k).childNodes().at(i).toElement();    // This is <Child idx="12">
                 int idx = e.attribute("idx").toInt();
                 QueryComponent* child = createComponent(c, p, v, doc, e.firstChild().toElement()); // This is "Expression"
-                c->setChild(child, idx);
+                if(child)
+                {
+                    c->setChild(child, idx);
+                }
             }
         }
         if(componentNode.childNodes().at(k).nodeName() == "On" && strClass == "SelectQueryJoinComponent")
@@ -576,7 +581,10 @@ QueryComponent* DeserializationFactory::createComponent(QueryComponent* parent, 
             {
                 QDomElement e = componentNode.childNodes().at(k).childNodes().at(i).toElement();    // This is <JoinExpression idx="12">
                 QueryComponent* child = createComponent(c, p, v, doc, e.firstChild().toElement()); // This is "Expression"
-                dynamic_cast<SelectQueryJoinComponent*>(c)->addJoinExpression(dynamic_cast<SingleExpressionQueryComponent*>(child));
+                if(child)
+                {
+                    dynamic_cast<SelectQueryJoinComponent*>(c)->addJoinExpression(dynamic_cast<SingleExpressionQueryComponent*>(child));
+                }
             }
         }
     }
@@ -649,7 +657,7 @@ View* DeserializationFactory::createView(Version* v, const QDomDocument& doc, co
                     QString cuid = queryNode.attribute("class-uid");
                     if(cuid.toUpper() != uidSelectQuery)
                     {
-                        qDebug() << "Views's select query UID is not valid: cuid (" << cuid << ") != " << uidSelectQuery ;
+//                        qDebug() << "Views's select query UID is not valid: cuid (" << cuid << ") != " << uidSelectQuery ;
                     }
                 }
                 SelectQuery* q = new SelectQuery(view->getHelper(), view, v);
@@ -1418,11 +1426,11 @@ Patch* DeserializationFactory::createPatch(Project* /*p*/, Version* v, const QDo
             {
                 QString uid = el.childNodes().at(j).toElement().attribute("uid");
                 QVector<QString> tabinstUids;
-                qDebug() << el.childNodes().at(j).nodeName() << " uid=" <<  uid;
+//                qDebug() << el.childNodes().at(j).nodeName() << " uid=" <<  uid;
                 for(int k=0; k<el.childNodes().at(j).childNodes().count(); k++)
                 {
                     QDomElement elPulledIn = el.childNodes().at(j).childNodes().at(k).toElement();
-                    qDebug() << elPulledIn.nodeName() << " uid=" << elPulledIn.attribute("uid");
+//                    qDebug() << elPulledIn.nodeName() << " uid=" << elPulledIn.attribute("uid");
                     tabinstUids.append(elPulledIn.attribute("uid"));
                 }
                 map[uid] = tabinstUids;
@@ -1441,13 +1449,13 @@ ObjectWithUid* DeserializationFactory::createElementForClassUid(const QString& c
     QDomDocument a("PatchData");
     if(!a.setContent(serialized, &err))
     {
-        qDebug() << "Cannot set a b64 encoded stuff:" << err;
+//        qDebug() << "Cannot set a b64 encoded stuff:" << err;
         return 0;
     }
     QString node = a.documentElement().nodeName();
     if(node != "OriginalElement")
     {
-        qDebug() << "This is not an original element stuff but: " << node;
+//        qDebug() << "This is not an original element stuff but: " << node;
         return 0;
     }
 
@@ -1455,7 +1463,7 @@ ObjectWithUid* DeserializationFactory::createElementForClassUid(const QString& c
     QString class_uid = a.documentElement().firstChild().toElement().attribute("class-uid");
     if(classUid != class_uid)
     {
-        qDebug() << "This is not an expected (" << classUid << ") element but " << class_uid;
+//        qDebug() << "This is not an expected (" << classUid << ") element but " << class_uid;
         return 0;
 
     }

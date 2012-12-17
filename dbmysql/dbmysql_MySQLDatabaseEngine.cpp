@@ -185,7 +185,7 @@ QSqlDatabase MySQLDatabaseEngine::getQSqlDatabaseForConnection(Connection *c)
 
     if(!dbo.isOpen())
     {
-        qDebug() << dbo.lastError();
+//        qDebug() << dbo.lastError();
     }
 
     return dbo;
@@ -651,7 +651,7 @@ bool MySQLDatabaseEngine::executeSql(Connection* c, const QStringList& sqls, con
         {
             QSqlQuery query(db);
 
-            qDebug() << lastSql  << uid;
+//            qDebug() << lastSql  << uid;
             if(!query.exec(lastSql))
             {
                 lastError = formatLastError(QObject::tr("Cannot run a query"), query.lastError());
@@ -663,11 +663,11 @@ bool MySQLDatabaseEngine::executeSql(Connection* c, const QStringList& sqls, con
                     db.rollback();
                 }
 
-                qDebug() << " <-- ERROR" << lastError ;
+//                qDebug() << " <-- ERROR" << lastError ;
                 db.close();
                 return false;
             }
-            qDebug() << " <-- OK";
+//            qDebug() << " <-- OK";
         }
     }
 
@@ -1788,7 +1788,7 @@ bool MySQLDatabaseEngine::injectMetadata(Connection *c, const Version *v)
 
     doc.appendChild(root);
     QString xml = doc.toString();
-    qDebug() << xml;
+//    qDebug() << xml;
 
     QStringList sqls;
     sqls << "DROP TABLE IF EXISTS DDM_META";
@@ -1815,7 +1815,7 @@ bool MySQLDatabaseEngine::injectMetadata(Connection *c, const Version *v)
         if(!q.exec())
         {
             lastError = formatLastError(QObject::tr("Cannot inject metadata"), db.lastError());
-            qDebug() << lastError;
+//            qDebug() << lastError;
             return false;
         }
     }
@@ -1831,7 +1831,7 @@ QString MySQLDatabaseEngine::getDbMetadata(Connection *c)
     QString g = "SELECT count(*) FROM information_schema.tables WHERE table_schema = '" + c->getDb() + "' AND table_name='DDM_META'";
     if(!q.exec(g))
     {
-        qDebug() << q.lastError();
+//        qDebug() << q.lastError();
         return "";
     }
 
@@ -1839,7 +1839,7 @@ QString MySQLDatabaseEngine::getDbMetadata(Connection *c)
     while(q.next())
     {
         int cnt = q.value(0).toInt();
-        qDebug() << cnt;
+//        qDebug() << cnt;
         if(cnt == 1)
         {
             foundMetaTable = true;
@@ -1852,7 +1852,7 @@ QString MySQLDatabaseEngine::getDbMetadata(Connection *c)
     QSqlQuery q(db);
     if(!q.exec(dq))
     {
-        qDebug() << q.lastError();
+//        qDebug() << q.lastError();
         return "";
     }
 
@@ -1873,12 +1873,12 @@ QString MySQLDatabaseEngine::getDbMetadata(Connection *c)
         }
         if(f)
         {
-            qDebug() << xmd;
+//            qDebug() << xmd;
             f = false;
         }
 
     }
-    qDebug() << last;
+//    qDebug() << last;
     return xmd;
 }
 

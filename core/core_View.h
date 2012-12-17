@@ -11,6 +11,7 @@
 class SelectQuery;
 class QueryGraphicsHelper;
 class Version;
+class Table;
 
 class View : public SqlSourceEntity, public NamedItem, public TreeItem, public SerializableElement, public ObjectWithUid, public CloneableElement
 
@@ -89,6 +90,21 @@ public:
     QString getSqlHash() const;
     QString getCreationStatement() const;
     QString getHashForCreationStatement() const;
+
+    /**
+     * Returns a list of tables the Query builder uses to fetch the data from... Only the first level.
+     * @brief getSourceTables
+     * @return
+     */
+    QVector<const Table *> getSourceTables() const;
+
+    /**
+     * Returns true if the view is using this table
+     * @brief usesTable
+     * @param tab
+     * @return
+     */
+    bool usesTable(const Table* tab) const;
 
 private:
 

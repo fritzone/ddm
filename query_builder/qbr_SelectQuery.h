@@ -53,6 +53,7 @@ public:
 
     void removeFrom();
     bool hasWhere();
+    bool hasFrom();
     bool hasGroupBy();
 
     void setSelect(SelectQuerySelectComponent* s)   // called by the deserialization
@@ -84,6 +85,10 @@ public:
     bool hasGroupByFunctions();
     bool hasAtLeastOneColumnSelected();
     QVector<const Column*> getSelectedColumns();    // used only for group by stuff, not for the SQL writer ...
+    SelectQueryFromComponent* getFrom() const
+    {
+        return m_from;
+    }
 
     /**
      *  Returns a list of strings that can be used in an order by command. The format of the strings is: $COLUMN ^ALIAS #nr

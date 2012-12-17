@@ -191,7 +191,7 @@ inline bool DefaultVersionImplementation::hasTable(Table *t)
 {
     for(int i=0; i<m_data.m_tables.size(); i++)
     {
-        qDebug() << m_data.m_tables.at(i)->getObjectUid() << "==" << t->getObjectUid() << " IN " <<getVersionText();
+//        qDebug() << m_data.m_tables.at(i)->getObjectUid() << "==" << t->getObjectUid() << " IN " <<getVersionText();
         if(m_data.m_tables.at(i)->getObjectUid() == t->getObjectUid())
         {
             return true;
@@ -211,10 +211,6 @@ inline bool DefaultVersionImplementation::hasTable(const QString& tb)
     }
     return false;
 }
-
-
-// TODO: 1. Make the Table class to come from the named item
-//       2. the two methods below could be very easily templated after this
 
 Table* DefaultVersionImplementation::getTable(const QString &name) const
 {
@@ -368,7 +364,7 @@ void DefaultVersionImplementation::doDeleteTableInstance(TableInstance *tinst, T
         if(tda->deletedTableInstances.indexOf(tinst) == -1)
         {
             tda->deletedTableInstances.append(tinst);
-            qDebug() << "DELETE for patch " << tinst->getName();
+//            qDebug() << "DELETE for patch " << tinst->getName();
         }
     }
 
@@ -408,7 +404,7 @@ void DefaultVersionImplementation::doDeleteTableInstance(TableInstance *tinst, T
                                          insted.at(i)->getName() +
                                          QObject::tr("</LI></UL><BR>Firstly <B>Re-lock</B> (right click -> Lock) the table instance then delete the table."), QMessageBox::Ok);
                     tinst->unSentence();
-                    qDebug() << "AB";
+//                    qDebug() << "AB";
                     delete tda;
                     tda = 0;
                     return;
@@ -526,7 +522,6 @@ bool DefaultVersionImplementation::deleteTable(Table *tab)
                                      QObject::tr("Cannot execute the deletion operation since the following table instance is already unlocked in the patch:<BR><UL><LI>") +
                                      tinst->getName() +
                                      QObject::tr("</LI></UL><BR>Firstly <B>Re-lock</B> (right click -> Lock) the table instance then delete the table."), QMessageBox::Ok);
-                qDebug() << "A";
                 delete tda;
                 return false;
 
@@ -975,7 +970,7 @@ QList<QString> DefaultVersionImplementation::getSqlScript(bool generateDelimiter
         }
         else
         {
-            qDebug() << "FKs not allowed";
+//            qDebug() << "FKs not allowed";
         }
     }
 
@@ -2000,7 +1995,7 @@ DefaultVersionImplementation::CAN_UNDELETE_STATUS DefaultVersionImplementation::
     return CAN_UNDELETE;
 }
 
-DefaultVersionImplementation::CAN_UNDELETE_STATUS DefaultVersionImplementation::canUndeleteView(const QString &uid, QString &/*extra*/)
+DefaultVersionImplementation::CAN_UNDELETE_STATUS DefaultVersionImplementation::canUndeleteView(const QString &uid, QString& extra)
 {
     ObjectWithUid* obj = getWorkingPatch()->getDeletedObject(uid);
     if(!obj)
@@ -2014,7 +2009,15 @@ DefaultVersionImplementation::CAN_UNDELETE_STATUS DefaultVersionImplementation::
         return DELETED_OBJECT_WAS_NOT_FOUND_IN_PATCH;
     }
 
-    // BIG TODO: go through the view and see if all the tables it references are still in the version
+    QVector<const Table*> usedTabs = tda->deletedView->getSourceTables();
+    for(int i=0; i<usedTabs.size(); i++)
+    {
+        if(!hasTable(usedTabs.at(i)->getName()))
+        {
+            extra = usedTabs.at(i)->getName();
+            return DEPENDENT_TABLE_WAS_NOT_FOUND_IN_VERSION;
+        }
+    }
 
     return CAN_UNDELETE;
 }
@@ -2032,8 +2035,6 @@ DefaultVersionImplementation::CAN_UNDELETE_STATUS DefaultVersionImplementation::
     {
         return DELETED_OBJECT_WAS_NOT_FOUND_IN_PATCH;
     }
-
-    // BIG TODO: go through the view and see if all the tables it references are still in the version
 
     return CAN_UNDELETE;
 }
@@ -2140,14 +2141,14 @@ Version::PatchTreeRemovalStatus DefaultVersionImplementation::undeleteObject(con
         // hmm, cannot undelete
         if(canUndelete == DEPENDENT_TABLE_WAS_NOT_FOUND_IN_VERSION && !suspend)
         {
-            qDebug() << "UID(1) " << uid;
+//            qDebug() << "UID(1) " << uid;
             QMessageBox::critical(MainWindow::instance(), QObject::tr("Error"), QObject::tr("Cannot undelete this object: ") + extra + QObject::tr(" missing from version."), QMessageBox::Ok);
             return DO_NOT_REMOVE_FROM_PATCH_TREE_FAILURE;
         }
 
         if(!suspend)
         {
-            qDebug() << "UID(2) " << uid;
+//            qDebug() << "UID(2) " << uid;
             QMessageBox::critical(MainWindow::instance(), QObject::tr("Error"), QObject::tr("Cannot undelete this object: ") + extra + QObject::tr(" missing from version."), QMessageBox::Ok);
             return DO_NOT_REMOVE_FROM_PATCH_TREE_FAILURE;
         }
@@ -2162,7 +2163,7 @@ Version::PatchTreeRemovalStatus DefaultVersionImplementation::undeleteObject(con
             addTable(tda->deletedTable, true);
             tda->deletedTable->lock(LOCKED);
             // now see if this had a parent table or not
-            qDebug() << "create tbl " << uid << " obj=" << tda->deletedTable;
+//            qDebug() << "create tbl " << uid << " obj=" << tda->deletedTable;
             if(tda->parentTable)
             {
                 const_cast<Table*>(tda->parentTable)->addSpecializedTable(tda->deletedTable);

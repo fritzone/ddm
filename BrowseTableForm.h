@@ -64,6 +64,7 @@ private:
     void firstTimeSetup(Connection*c);
     void retranslateUi();
     QTableView* createTable(QWidget* p);
+    void updateCursor();
 
 private:
     static QVector<BrowsedObjectAndConnection*> connectionsForTabs;

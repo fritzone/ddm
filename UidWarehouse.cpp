@@ -57,12 +57,12 @@ void UidWarehouse::replace(const QString &uid, ObjectWithUid *o)
         {
             m_items[s][uid] = whe;
 
-            qDebug() << "1 replace" << uid << " obj=" << o;
+//            qDebug() << "1 replace" << uid << " obj=" << o;
         }
     }
     else
     {
-        qDebug() << "1 replace" << uid << " obj=" << o;
+//        qDebug() << "1 replace" << uid << " obj=" << o;
         QMap<QString, WarehouseEntry*> * e = new QMap<QString, WarehouseEntry*>();
         e->insert(uid, whe);
         m_items.insert(s, *e);

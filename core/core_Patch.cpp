@@ -37,7 +37,7 @@ QString Patch::serializedElementAsB64(const QString &uid)
     ObjectWithUid* element = UidWarehouse::instance().getElement(uid);
     if(!element)
     {
-        qDebug() << "no element for " << uid;
+//        qDebug() << "no element for " << uid;
         return "";
     }
     SerializableElement* e = dynamic_cast<SerializableElement*>(element);
@@ -61,7 +61,7 @@ void Patch::addElement(const QString &uid)
 {
     if(m_lockedUids.contains(uid, Qt::CaseInsensitive))
     {
-        qDebug() << "element already here " << uid;
+//        qDebug() << "element already here " << uid;
         return ;
     }
 
@@ -110,7 +110,7 @@ void Patch::removeElement(const QString &uid)
         QString fromb64 = QString(QByteArray::fromBase64(encoded));
         if(!a.setContent(fromb64, &err))
         {
-            qDebug() << "Cannot set a b64 encoded stuff: " << err;
+//            qDebug() << "Cannot set a b64 encoded stuff: " << err;
             return;
         }
         QString node = a.documentElement().nodeName();
@@ -197,7 +197,7 @@ bool Patch::undeleteObject(const QString &uid)
     bool removeFromTree = true;
     if(!m_deletedUids.contains(uid))
     {
-        qDebug() << "Undelete: Not in "<<uid;
+//        qDebug() << "Undelete: Not in "<<uid;
         return true;
     }
     if(!m_deletedObjects.keys().contains(uid)) return true;
@@ -493,7 +493,7 @@ void Patch::finalizePatchDeserialization()
             QString classUid = m_objUidToClassUid[uid];
             if(classUid.length() == 0)
             {
-                qDebug() << "No class uid for " << uid << " OBJ:" << this;
+//                qDebug() << "No class uid for " << uid << " OBJ:" << this;
                 continue;
             }
             ObjectWithUid* o = DeserializationFactory::createElementForClassUid(classUid, decoded, version());

@@ -8,12 +8,14 @@
 #include "uids.h"
 #include "IconFactory.h"
 #include "ContextMenuCollection.h"
+#include "qbr_SelectQueryFromComponent.h"
+#include "core_Table.h"
 
 #include <QCryptographicHash>
 
 View::View(bool manual, QString uid, Version *v) :
     SqlSourceEntity(),
-    NamedItem(NameGenerator::getUniqueName(Workspace::getInstance()->workingVersion(), (itemGetter)&Version::getView, QString("view"))),
+    NamedItem(NameGenerator::getUniqueName(Workspace::getInstance()->workingVersion(), (itemGetter)&Version::getView, QString("my_view"))),
     ObjectWithUid(uid, v),
     m_columNames(), m_canReplace(false), m_manual(manual)
 {
@@ -25,7 +27,7 @@ View::View(bool manual, QString uid, Version *v) :
 
 View::View(Version*v, bool manual, QString uid) :
     SqlSourceEntity(),
-    NamedItem(NameGenerator::getUniqueName(v, (itemGetter)&Version::getView, QString("view"))),
+    NamedItem(NameGenerator::getUniqueName(v, (itemGetter)&Version::getView, QString("my_view"))),
     ObjectWithUid(uid, v),
     m_columNames(), m_canReplace(false), m_manual(manual)
 {
@@ -200,4 +202,35 @@ QString View::getCreationStatement() const
         result = sql;
     }
     return result;
+}
+
+QVector<const Table*> View::getSourceTables() const
+{
+    QVector<const Table*> result;
+    if(m_manual)
+    {
+        return result;
+    }
+    else
+    {
+        if(m_selectQuery->hasFrom())
+        {
+            SelectQueryFromComponent* fr = m_selectQuery->getFrom();
+            result = fr->getTables();
+        }
+    }
+    return result;
+}
+
+bool View::usesTable(const Table *tab) const
+{
+    QVector<const Table*> tabs = getSourceTables();
+    for(int i=0; i<tabs.size(); i++)
+    {
+        if(tabs[i]->getName() == tab->getName())
+        {
+            return true;
+        }
+    }
+    return false;
 }

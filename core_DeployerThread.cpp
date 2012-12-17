@@ -15,7 +15,7 @@ DeployerThread::DeployerThread(DatabaseEngine* e, Connection* c,
 
 void DeployerThread::doWork()
 {
-    qDebug() << "GGGGGGGGGGG:" << m_uids;
+//    qDebug() << "GGGGGGGGGGG:" << m_uids;
     m_success = m_engine->executeSql(m_connection, m_sqls, m_uids, m_lastSql, true);
     if(!m_success)
     {

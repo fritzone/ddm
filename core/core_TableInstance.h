@@ -67,13 +67,13 @@ public:
 
     void sentence()
     {
-        qDebug() <<  "sentece " << getName();
+//        qDebug() <<  "sentece " << getName();
         m_sentenced = true;
     }
 
     void unSentence()
     {
-        qDebug() <<  "unsentece " << getName();
+//        qDebug() <<  "unsentece " << getName();
         m_sentenced = false;
     }
 

@@ -1,6 +1,6 @@
 #include "dgram_DiagramFKDescriptor.h"
 
-CloneableElement* DiagramFKDescriptor::clone(Version* sourceVersion, Version* targetVersion)
+CloneableElement* DiagramFKDescriptor::clone(Version* /*sourceVersion*/, Version* targetVersion)
 {
     DiagramFKDescriptor* dfk = new DiagramFKDescriptor(getText(), getText2(),
                                                        getX(), getY(),

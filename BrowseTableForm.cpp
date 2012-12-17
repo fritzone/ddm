@@ -7,6 +7,8 @@
 #include "core_Function.h"
 #include "core_Trigger.h"
 #include "TriggerForm.h"
+#include "helper_utils.h"
+#include "strings.h"
 
 #include <QtGui>
 #include <QSqlTableModel>
@@ -102,16 +104,7 @@ QString BrowseTableForm::retrieveCurrentQuery()
 {
     if(m_firstP != 0 || m_lastP != 0)
     {
-        // TODO: This is duplicate with below
-        QTextCursor origCursor = m_textEdit->textCursor();
-        QTextCursor copyCursor = origCursor;
-
-        copyCursor.setPosition(m_firstP);
-        for(int j = m_firstP; j!= m_lastP; j++) copyCursor.movePosition(QTextCursor::Right, QTextCursor::KeepAnchor);
-        QTextCharFormat fmt = copyCursor.charFormat();
-        fmt.setBackground(QBrush(Qt::white));
-        copyCursor.setCharFormat(fmt);
-        m_textEdit->setTextCursor(origCursor);
+        updateCursor();
     }
 
     QString t = m_textEdit->toPlainText();
@@ -145,6 +138,12 @@ QString BrowseTableForm::retrieveCurrentQuery()
     }
     m_lastP = i;
 
+    updateCursor();
+    return before + after;
+}
+
+void BrowseTableForm::updateCursor()
+{
     QTextCursor origCursor = m_textEdit->textCursor();
     QTextCursor copyCursor = origCursor;
 
@@ -155,7 +154,6 @@ QString BrowseTableForm::retrieveCurrentQuery()
     copyCursor.setCharFormat(fmt);
     m_textEdit->setTextCursor(origCursor);
 
-    return before + after;
 }
 
 void BrowseTableForm::onLoadQuery()
@@ -173,16 +171,7 @@ void BrowseTableForm::onLoadQuery()
 
 void BrowseTableForm::onSaveQuery()
 {
-    // TODO: This is a pure duplicate from the SqlForm.cpp ... find a better way to admiister these things
-    QString name = QFileDialog::getSaveFileName(this, tr("Save SQL Script"), "", tr("SQL files (*.sql)"));
-    QFile file(name);
-
-    if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
-    {
-        return;
-    }
-    QTextStream out(&file);
-    out << m_textEdit->toPlainText() << "\n";
+    DDM::saveTextFileWithType(this, m_textEdit->toPlainText(), tr("Save SQL Script"), tr("SQL files (*.sql)"));
 }
 
 void BrowseTableForm::resizeEvent(QResizeEvent *e)
