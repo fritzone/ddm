@@ -317,7 +317,7 @@ void GuiElements::populatePathcItem(ContextMenuEnabledTreeWidgetItem */*patchIte
     const QMap<QString, QString> & uidToClassUidMap = patch->getUidToClassUidMap();
     for(int i=0; i<lockeds.size(); i++)
     {
-        qDebug() << i;
+//        qDebug() << i;
         ObjectWithUid* ouid = UidWarehouse::instance().getElement(lockeds.at(i));
         if(ouid)
         {
@@ -329,7 +329,7 @@ void GuiElements::populatePathcItem(ContextMenuEnabledTreeWidgetItem */*patchIte
         }
         else
         {
-            qDebug() << "no ouid for " << lockeds.at(i);
+//            qDebug() << "no ouid for " << lockeds.at(i);
         }
     }
 

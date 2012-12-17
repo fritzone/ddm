@@ -110,9 +110,9 @@ int Column::checkEquality(const Column *other)
 
     // now see if they have any common source uid ...
     QStringList thisUpwardsSourceUids = sourceUids();
-    qDebug() << thisUpwardsSourceUids;
+//    qDebug() << thisUpwardsSourceUids;
     QStringList otherUpwardsSourceUids = other->sourceUids();
-    qDebug() << otherUpwardsSourceUids;
+//    qDebug() << otherUpwardsSourceUids;
 
     for(int i=0; i<thisUpwardsSourceUids.size(); i++)
     {

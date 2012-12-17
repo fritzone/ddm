@@ -10,7 +10,7 @@ Deployer::Deployer(const QStringList& connections, const QMap<Connection *,
     QObject(parent), m_deployerThreads(), m_connections(connections),
     m_sqls(sqls), m_uids(uids), m_injectMetadata(injectMetadata), m_version(v)
 {
-    qDebug() << "OOOOOOOOOOOOOOOOOOO:" << m_uids;
+//    qDebug() << "OOOOOOOOOOOOOOOOOOO:" << m_uids;
 }
 
 void Deployer::deploy()
@@ -18,7 +18,7 @@ void Deployer::deploy()
     for(int i=0; i<m_connections.size(); i++)
     {
         Connection* c = ConnectionManager::instance()->getConnection(m_connections.at(i));
-        qDebug() << "JJJJJJJJJJJJJ:" << c->getName() << m_uids[c->getName()];
+//        qDebug() << "JJJJJJJJJJJJJ:" << c->getName() << m_uids[c->getName()];
         DeployerThread* thread = new DeployerThread(Workspace::getInstance()->currentProjectsEngine(),
                                                     c, m_sqls[c], m_uids[c->getName()], i, m_injectMetadata, m_version, 0);
         QThread *a = new QThread(this);

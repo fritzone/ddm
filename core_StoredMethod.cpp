@@ -127,7 +127,7 @@ QVector<StoredMethod::ParameterAndDescription> StoredMethod::getParametersWithDe
     if(tName == "UNNAMED") return result;   // hmm hmm
     nameidx += tName.length();
     while(nameidx < m_sql.length() && m_sql.at(nameidx).isSpace()) nameidx ++;
-    qDebug() << nameidx << " =>" << m_sql.at(nameidx) << "<";
+//    qDebug() << nameidx << " =>" << m_sql.at(nameidx) << "<";
     if(nameidx < m_sql.length()  && m_sql.at(nameidx) != '(') return result;
     nameidx ++;
     QString cpar = "";

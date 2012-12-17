@@ -432,7 +432,7 @@ QStringList MySQLSQLGenerator::generateDefaultValuesSql(TableInstance* tableInst
             if(!c) c = t->getColumnFromParents(tableInstance->columns().at(j));
             if(!c)
             {
-                qDebug() << "cannot find c: " << c->getName();
+//                qDebug() << "cannot find c: " << c->getName();
                 return QStringList();
             }
             bool ainc = false;
@@ -465,7 +465,7 @@ QStringList MySQLSQLGenerator::generateDefaultValuesSql(TableInstance* tableInst
             if(!c) c = t->getColumnFromParents(tableInstance->columns().at(j));
             if(!c)
             {
-                qDebug() << "cannot find c: " << c->getName();
+//                qDebug() << "cannot find c: " << c->getName();
                 return QStringList();
             }
             bool ainc = false;
@@ -577,7 +577,7 @@ QStringList MySQLSQLGenerator::generateDefaultValuesSql(Table* table, const QHas
     return result;
 }
 
-QStringList MySQLSQLGenerator::generateCreateViewSql(View *v, const QHash<QString, QString> &options) const
+QStringList MySQLSQLGenerator::generateCreateViewSql(View *v, const QHash<QString, QString> &/*options*/) const
 {
     if(v->isManual())
     {
@@ -588,32 +588,34 @@ QStringList MySQLSQLGenerator::generateCreateViewSql(View *v, const QHash<QStrin
     else
     {
         QStringList res;
-        bool upcase = options.contains("Case") && options["Case"] == "Upper";
-        res.append(upcase?"CREATE ":"create ");
+        bool upcase = true; /*options.contains("Case") && options["Case"] == "Upper";*/
+        res.append(upcase?"CREATE":"create");
         if(v->canReplace())
         {
-            res.append(upcase?"OR REPLACE ":"or replace ");
+            res.append(upcase?"OR REPLACE":"or replace");
         }
-        res.append(QString(upcase?"VIEW ":"view ") + v->getName());
+        res.append(QString(upcase?"VIEW ":"view ") + v->getName() + "(");
         if(v->getColumnNames().size() > 0)
         {
-            res.append(" (");
             QString c = "";
             for(int i=0; i<v->getColumnNames().size(); i++)
             {
                 c += v->getColumnNames().at(i);
                 if(i<v->getColumnNames().size() - 1) c += ", ";
             }
-            res.append(c);
-            res.append(")");
+            res.append(c + ")");
         }
-        res.append("\n");
-        res.append(upcase?"AS\n":"as\n");
+        res.append(upcase?"AS":"as");
+        res.append(strNewline);
         res.append(v->getQuery()->get());
         QString g;
         for(int i=0; i< res.size(); i++)
         {
-            g += res.at(i) + " ";
+            g += res.at(i);
+            if(res.at(i) != strNewline)
+            {
+                g += " ";
+            }
         }
         res.clear();
         res.append(g);

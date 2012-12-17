@@ -304,7 +304,7 @@ void MainWindow::onNewSolution()
                 QString lastErr;
                 if(!doc.setContent(meta, &lastErr))
                 {
-                    qDebug() << "Cannot set data:" << lastErr;
+//                    qDebug() << "Cannot set data:" << lastErr;
                 }
                 MajorVersion* mv = new MajorVersion;
                 project->addMajorVersion(mv);
@@ -737,7 +737,7 @@ void MainWindow::onNewProcedureFromPopup()
     QString diagramsUid = qv.toString();
 
     Version* v = UidWarehouse::instance().getVersionForUid(diagramsUid);
-    qDebug() << v->getVersionText();
+//    qDebug() << v->getVersionText();
 
     // TODO: This is pure duplication with onNewProcedure except the version
     ProcedureForm* frm = v->getGui()->getProcedureForm(MODE_PROCEDURE);
@@ -856,7 +856,7 @@ void MainWindow::onNewFunctionFromPopup()
     QString diagramsUid = qv.toString();
 
     Version* v = UidWarehouse::instance().getVersionForUid(diagramsUid);
-    qDebug() << v->getVersionText();
+//    qDebug() << v->getVersionText();
 
     // TODO: This is pure duplication with onNewFunction except the version
     ProcedureForm* frm = v->getGui()->getProcedureForm(MODE_FUNCTION);
@@ -884,7 +884,7 @@ void MainWindow::onNewDiagramFromPopup()
     QString diagramsUid = qv.toString();
 
     Version* v = UidWarehouse::instance().getVersionForUid(diagramsUid);
-    qDebug() << v->getVersionText();
+//    qDebug() << v->getVersionText();
 
     // TODO: This is pure duplication with onNewDiagram
     Diagram* dgram = new Diagram(v, QUuid::createUuid().toString());
@@ -1582,7 +1582,7 @@ void MainWindow::onInstantiateTableFromPopup()
     Table* table =getRightClickedObject<Table>();
     if(table == 0)  // shouldn't be ...
     {
-        qDebug() << "table is null";
+//        qDebug() << "table is null";
         return;
     }
     Version* v = table->version();
@@ -3113,7 +3113,7 @@ void MainWindow::onCompareTables()
     Table* table =getRightClickedObject<Table>();
     if(table == 0)  // shouldn't be ...
     {
-        qDebug() << "table for comparison is null";
+//        qDebug() << "table for comparison is null";
         return;
     }
 

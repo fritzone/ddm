@@ -53,7 +53,7 @@ NewTableForm::NewTableForm(DatabaseEngine* db, Project* prj, Version* v, QWidget
     m_ui->setupUi(this);
 
 
-    qDebug() << "New table form: " << v->getVersionText();
+//    qDebug() << "New table form: " << v->getVersionText();
     m_ui->lstSelectedColumnsForIndex->setHeaderHidden(false);
 
     // now set up the Column list and the context menus for the Column list

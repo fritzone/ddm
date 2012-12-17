@@ -17,7 +17,7 @@ QUuid DiagramTableDescriptor::getClassUid() const
     return QUuid(uidDiagramTableDescriptor);
 }
 
-CloneableElement* DiagramTableDescriptor::clone(Version* sourceVersion, Version* targetVersion)
+CloneableElement* DiagramTableDescriptor::clone(Version* /*sourceVersion*/, Version* targetVersion)
 {
     DiagramTableDescriptor* dtd = new DiagramTableDescriptor(getText(), getX(), getY(), targetVersion);
     dtd->setSourceUid(getObjectUid());

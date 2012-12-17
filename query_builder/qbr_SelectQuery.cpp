@@ -319,6 +319,11 @@ void SelectQuery::onClose()
     }
 }
 
+bool SelectQuery::hasFrom()
+{
+    return m_from != 0;
+}
+
 void SelectQuery::removeFrom()
 {
     if(m_from)

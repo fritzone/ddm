@@ -88,7 +88,8 @@ SOURCES += main.cpp \
     TreeItem.cpp \
     TableComparisonForm.cpp \
     TableUpdateGenerator.cpp \
-    VersionUpdateGenerator.cpp
+    VersionUpdateGenerator.cpp \
+    helper_utils.cpp
 
 HEADERS += MainWindow.h \
     MainWindowButtonDialog.h \
@@ -183,7 +184,8 @@ HEADERS += MainWindow.h \
     DocumentationGenerator.h \
     TableComparisonForm.h \
     TableUpdateGenerator.h \
-    VersionUpdateGenerator.h
+    VersionUpdateGenerator.h \
+    helper_utils.h
 
 FORMS += MainWindow.ui \
     MainWindowButtonDialog.ui \

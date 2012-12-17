@@ -156,7 +156,7 @@ void MainWindowButtonDialog::showMe()
 
 void MainWindowButtonDialog::keyPressEvent(QKeyEvent *e)
 {
-    qDebug() << e->key();
+//    qDebug() << e->key();
     if(e->key() == Qt::Key_Escape)
     {
         close();

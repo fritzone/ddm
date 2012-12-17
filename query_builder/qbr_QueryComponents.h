@@ -52,7 +52,7 @@ public:
         QString r = "";
         for(int i=0; i<=m_level; i++)
         {
-            r += "  ";
+            r += " ";
         }
         return r;
     }
