@@ -1,7 +1,7 @@
 #ifndef PROCEDUREFORM_H
 #define PROCEDUREFORM_H
 
-#include "enums.h"
+#include "core_enums.h"
 #include "core_StoredMethod.h"
 
 #include <QWidget>

@@ -1,4 +1,4 @@
-#include "core_ConnectionIssue.h"
+#include "ConnectionIssue.h"
 #include "core_Connection.h"
 #include "IssueManager.h"
 

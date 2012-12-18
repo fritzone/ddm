@@ -1,4 +1,4 @@
-#include "db_DatabaseNormalizationIssue.h"
+#include "DatabaseNormalizationIssue.h"
 #include "IssueManager.h"
 #include "core_Table.h"
 #include "core_Column.h"

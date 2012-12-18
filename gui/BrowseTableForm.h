@@ -2,7 +2,7 @@
 #define BROWSETABLEFORM_H
 
 #include "TextEditWithCodeCompletion.h"
-#include "enums.h"
+#include "core_enums.h"
 
 #include <QWidget>
 #include <QSplitter>

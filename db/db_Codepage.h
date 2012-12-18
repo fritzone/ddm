@@ -6,7 +6,7 @@
 class Codepage
 {
 public:
-    Codepage(const QString& in);
+    Codepage(const QString& in) : desc(in), name (in)  {}
 
     const QString& getName() const
     {

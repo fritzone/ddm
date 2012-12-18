@@ -6,9 +6,9 @@
 #include "Version.h"
 #include "VersionGuiElements.h"
 #include "ContextMenuEnabledTreeWidget.h"
-#include "db_DatabaseNormalizationIssue.h"
+#include "DatabaseNormalizationIssue.h"
 #include "ForeignKeyReccomendationIssue.h"
-#include "core_ConnectionIssue.h"
+#include "ConnectionIssue.h"
 
 #include <QApplication>
 

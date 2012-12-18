@@ -5,7 +5,7 @@
 
 #include "ContextMenuEnabledTreeWidget.h"
 #include "IconFactory.h"
-#include "enums.h"
+#include "core_enums.h"
 
 class Version;
 class UserDataType;

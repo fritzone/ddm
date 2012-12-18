@@ -2,10 +2,12 @@
 #define SOURCECODEPRESENTERWIDGET_H
 
 #include <QWidget>
-#include "mw_helper.h"
+
+#include "MainWindow.h"
 
 class Project;
 class SqlSourceEntity;
+class Version;
 
 class SourceCodePresenterWidget : public QWidget
 {

@@ -1,8 +1,6 @@
 #ifndef TREEITEM_H
 #define TREEITEM_H
 
-#include <QTreeWidgetItem>
-
 #include "ContextMenuEnabledTreeWidget.h"
 #include "core_LockableElement.h"
 
