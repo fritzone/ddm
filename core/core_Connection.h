@@ -5,7 +5,7 @@
 #include "NamedItem.h"
 #include "TreeItem.h"
 #include "IssueOriginator.h"
-#include "enums.h"
+#include "core_enums.h"
 
 #include <QString>
 #include <QSqlDatabase>

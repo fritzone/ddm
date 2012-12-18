@@ -34,7 +34,8 @@ HEADERS += query_builder/qbr_CellAsCommand.h                          \
         query_builder/qbr_CellOrderByCommand.h                        \
         query_builder/qbr_OptionTypes.h                               \
         query_builder/qbr_QueryItemListDialog.h                       \
-        query_builder/qbr_SelectQueryOrderByComponent.h
+        query_builder/qbr_SelectQueryOrderByComponent.h               \
+        query_builder/ColumnProviderForQuery.h
 
 SOURCES += query_builder/qbr_CellAsCommand.cpp                        \
         query_builder/qbr_CellQuerySmallOptionsBox.cpp                \
