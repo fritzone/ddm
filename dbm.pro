@@ -32,12 +32,8 @@ SOURCES += main.cpp \
 
 HEADERS += \
     strings.h \
-    MajorVersion.h \
     Configuration.h \
-    SerializableElement.h \
-    NamedItem.h \
     DeserializationFactory.h \
-    ForeignKey.h \
     FkRelationDescriptor.h \
     StartupValuesHelper.h \
     SqlNamesValidator.h \
@@ -57,7 +53,8 @@ HEADERS += \
     TableUpdateGenerator.h \
     VersionUpdateGenerator.h \
     helper_utils.h \
-    core_enums.h
+    core_enums.h \
+    core/ForeignKey.h
 
 include (db/db.pri)
 INCLUDEPATH += db

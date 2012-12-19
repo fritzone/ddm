@@ -29,8 +29,11 @@ class ObjectWithSpInstances;
 class Patch;
 class ObjectWithUid;
 
+#include <QObject>
+
 class DeserializationFactory
 {
+
 public:
 
     static UserDataType* createUserDataType(Version *v, const QDomDocument& doc, const QDomElement& element);

@@ -73,4 +73,7 @@ HEADERS += \
     core/ValueSp.h \
     core/ValueSpInstance.h \
     core/Version.h \
-    core/VersionData.h
+    core/VersionData.h \
+    core/MajorVersion.h \
+    core/NamedItem.h \
+    core/SerializableElement.h
