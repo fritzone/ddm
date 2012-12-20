@@ -14,7 +14,7 @@
 #include <QCryptographicHash>
 
 View::View(bool manual, QString uid, Version *v) :
-    SqlSourceEntity(),
+    SqlSourceTreeItem(),
     NamedItem(NameGenerator::getUniqueName(Workspace::getInstance()->workingVersion(), (itemGetter)&Version::getView, QString("my_view"))),
     ObjectWithUid(uid, v),
     m_columNames(), m_canReplace(false), m_manual(manual)
@@ -26,7 +26,7 @@ View::View(bool manual, QString uid, Version *v) :
 }
 
 View::View(Version*v, bool manual, QString uid) :
-    SqlSourceEntity(),
+    SqlSourceTreeItem(),
     NamedItem(NameGenerator::getUniqueName(v, (itemGetter)&Version::getView, QString("my_view"))),
     ObjectWithUid(uid, v),
     m_columNames(), m_canReplace(false), m_manual(manual)

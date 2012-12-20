@@ -3,7 +3,7 @@
 
 #include <QWidget>
 
-#include "SqlSourceEntity.h"
+#include "core_SqlSource.h"
 #include "SourceCodePresenterWidget.h"
 
 class SqlHighlighter;
@@ -29,7 +29,7 @@ public:
     }
 
     virtual void presentSql(Project* p, Version *v);
-    virtual void presentSql(Project*, SqlSourceEntity*, MainWindow::showSomething s);
+    virtual void presentSql(Project*, SqlSource*, MainWindow::showSomething s);
 
 public slots:
 
@@ -47,7 +47,7 @@ private:
     SqlHighlighter* highlighter;
     DatabaseEngine* m_engine;
     QStringList sqlList;
-    SqlSourceEntity* m_sourceEntity;
+    SqlSource* m_sourceEntity;
 };
 
 #endif // SQLFORM_H

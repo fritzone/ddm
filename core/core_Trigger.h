@@ -2,15 +2,23 @@
 #define CORE_TRIGGER_H
 
 #include "NamedItem.h"
-#include "SqlSourceEntity.h"
+#include "SqlSourceTreeItem.h"
 #include "TreeItem.h"
 #include "SerializableElement.h"
 #include "core_ObjectWithUid.h"
 #include "core_CloneableElement.h"
+#include "core_SqlSource.h"
 
 class Table;
 
-class Trigger : public SqlSourceEntity, public NamedItem, public TreeItem, public SerializableElement, public ObjectWithUid, public CloneableElement
+class Trigger :
+        public SqlSourceTreeItem,
+        public NamedItem,
+        public TreeItem,
+        public SerializableElement,
+        public ObjectWithUid,
+        public CloneableElement,
+        public SqlSource
 {
 public:
 

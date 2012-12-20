@@ -23,7 +23,12 @@ class ForeignKey;
 /**
  * Class responsible for managing the diagrams of a project
  */
-class Diagram : public TreeItem, public NamedItem, public SerializableElement, public ObjectWithUid, public CloneableElement
+class Diagram :
+        public NamedItem,
+        public SerializableElement,
+        public ObjectWithUid,
+        public CloneableElement,
+        public TreeItem
 {
 public:
 

@@ -143,6 +143,8 @@ public:
 
     QStringList getAllVersions();
 
+    bool initiatePatch();
+
 private:
 
     Workspace();

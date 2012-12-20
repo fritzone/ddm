@@ -5,8 +5,6 @@
 #include <QTreeWidget>
 #include <QLabel>
 
-#include "commons.h"
-
 class Project;
 class MainWindowButtonDialog;
 class DataTypesListForm;
@@ -35,6 +33,7 @@ class Procedure;
 class GuiElements;
 class ConnectionGuiElements;
 class ObjectWithUid;
+class Version;
 
 namespace Ui
 {

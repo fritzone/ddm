@@ -628,7 +628,7 @@ void MainWindow::projectTreeItemClicked(QTreeWidgetItem * current, int)
             SqlForm* frm = new SqlForm(foundVersion, m_workspace->currentProjectsEngine(), this);
             QVariant qv = current->data(0, Qt::UserRole);
             QString name = qv.toString();
-            SqlSourceEntity* ent = foundVersion->getSqlSourceEntityWithGuid(name);
+            SqlSource* ent = foundVersion->getSqlSourceEntityWithGuid(name);
             if(ent == 0)
             {   // hm.. this shouldn't be
                 return;
@@ -1600,7 +1600,7 @@ void MainWindow::onSpecializeTableFromPopup()
     Table* table = getRightClickedObject<Table>();
     if(table)
     {
-        Table* specializedTable = new Table(table->version(), QUuid::createUuid().toString(), 0);
+        Table* specializedTable = new Table(table->version(), QUuid::createUuid().toString());
         specializedTable->initializeFor(Workspace::getInstance()->currentProjectsEngine(), QUuid(uidTable));
 
         specializedTable->setName(table->getName() + "_specialized");
@@ -3113,7 +3113,6 @@ void MainWindow::onCompareTables()
     Table* table =getRightClickedObject<Table>();
     if(table == 0)  // shouldn't be ...
     {
-//        qDebug() << "table for comparison is null";
         return;
     }
 

@@ -25,6 +25,7 @@ public:
     }
 
     virtual void serialize(QDomDocument& doc, QDomElement& parent) const;
+
 private:
     QueryComponent* m_parent;
     const DatabaseBuiltinFunction& m_func;

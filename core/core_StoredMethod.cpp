@@ -5,6 +5,13 @@
 #include <QStringList>
 #include <QCryptographicHash>
 
+StoredMethod::StoredMethod(const QString& name, const QString& uid, Version *v) :
+    NamedItem(name), SerializableElement(), CloneableElement(), ObjectWithUid(uid, v),
+    TreeItem(), SqlSourceTreeItem(),
+    m_sql(), m_brief(), m_desc(), m_returns()
+{}
+
+
 void StoredMethod::setSql(const QString &s)
 {
     m_sql = s;
@@ -29,13 +36,13 @@ QString StoredMethod::getSql() const
     return m_sql;
 }
 
-QVector<StoredMethod::ParameterAndDescription> StoredMethod::getParametersWithDescription()
+QVector<ParameterAndDescription> StoredMethod::getParametersWithDescription()
 {
     m_brief = "TODO: write the brief description of the method";
     m_desc = "";
     m_returns = "TODO: document the return value of the function";
 
-    QVector<StoredMethod::ParameterAndDescription> result;
+    QVector<ParameterAndDescription> result;
     QStringList lines = m_sql.split('\n');
     int nameidx = 0;
     QString tName = getNameFromSql(0, nameidx);
@@ -64,7 +71,7 @@ QVector<StoredMethod::ParameterAndDescription> StoredMethod::getParametersWithDe
                 pDesc += lines.at(i).at(docKeywordIndex);
                 docKeywordIndex ++;
             }
-            StoredMethod::ParameterAndDescription pad;
+            ParameterAndDescription pad;
             pad.m_parameter = pName;
             pad.m_description = pDesc;
             pad.m_source = 0;
@@ -200,7 +207,7 @@ QVector<StoredMethod::ParameterAndDescription> StoredMethod::getParametersWithDe
             }
             if(!found)
             {
-                StoredMethod::ParameterAndDescription pad;
+                ParameterAndDescription pad;
                 pad.m_parameter = pname;
                 pad.m_description = QObject::tr("TODO: Write proper documentation.");
                 pad.m_direction = direction;

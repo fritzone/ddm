@@ -13,7 +13,11 @@
 class DatabaseEngine;
 class Table;
 
-class Connection : public TreeItem, public SerializableElement,  public IssueOriginator, public NamedItem
+class Connection :
+        public SerializableElement,
+        public IssueOriginator,
+        public NamedItem,
+        public TreeItem
 {
 public:
 

@@ -1469,7 +1469,7 @@ QString DefaultVersionImplementation::getVersionText()
     return version;
 }
 
-SqlSourceEntity* DefaultVersionImplementation::getSqlSourceEntityWithGuid(const QString &guid) const
+SqlSource *DefaultVersionImplementation::getSqlSourceEntityWithGuid(const QString &guid) const
 {
     Table* table =  dynamic_cast<Table*>(UidWarehouse::instance().getElement(guid));
     if(table) return table;

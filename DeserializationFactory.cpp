@@ -784,7 +784,7 @@ Table* DeserializationFactory::createTable(DatabaseEngine* engine, Version* ver,
 
     QString parent_uid = element.attribute("parent-uid");
 
-    Table* result = new Table(ver, uid, 0);
+    Table* result = new Table(ver, uid);
 
     QString locked = element.attribute("locked");
     if(locked == "1")

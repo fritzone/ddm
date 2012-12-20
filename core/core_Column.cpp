@@ -10,8 +10,9 @@
 #include <QClipboard>
 
 Column::Column(const QString& uid, const QString& name, const UserDataType* type, bool pk, Version* v) :
-    TreeItem(), SerializableElement(), CopyableElement(), IssueOriginator(),
+    SerializableElement(), CopyableElement(), IssueOriginator(),
     NamedItem(name), ItemWithDescription(), ObjectWithUid(uid, v), ObjectWithSpInstances(),
+    TreeItem(),
     m_type(type), m_pk(pk)
 {
 
@@ -96,53 +97,4 @@ CloneableElement* Column::clone(Version */*sourceVersion*/, Version *targetVersi
     cloneSps(result);
 
     return result;
-}
-
-// this is used only in the comparison, the other is supposed to have source ID
-// columns are equal if: they have the same name, same SQL type, same primary keyness (for now)
-int Column::checkEquality(const Column *other)
-{
-
-    if(getObjectUid() == other->getObjectUid()) return 0;
-
-    QString otherUid = other->getObjectUid();
-    Q_UNUSED(otherUid);
-
-    // now see if they have any common source uid ...
-    QStringList thisUpwardsSourceUids = sourceUids();
-//    qDebug() << thisUpwardsSourceUids;
-    QStringList otherUpwardsSourceUids = other->sourceUids();
-//    qDebug() << otherUpwardsSourceUids;
-
-    for(int i=0; i<thisUpwardsSourceUids.size(); i++)
-    {
-        if(otherUpwardsSourceUids.indexOf(thisUpwardsSourceUids[i]) != -1)
-        {
-            // they are related
-            // but if the names are not equal, they are not equal
-            if(getName() != other->getName()) return 3;
-
-            // or the PK?
-            if(isPk() != other->isPk()) return 2;
-
-            // or the data type?
-            if(getDataType()->sqlAsString() != other->getDataType()->sqlAsString()) return 4;
-
-            return 0;
-        }
-    }
-    for(int i=0; i<otherUpwardsSourceUids.size(); i++)
-    {
-        if(thisUpwardsSourceUids.indexOf(otherUpwardsSourceUids[i]) != -1)
-        {   // they are related
-            // names are not equal, they are not equal
-            if(getName() != other->getName()) return 3;
-            if(isPk() != other->isPk()) return 2;
-            if(getDataType()->sqlAsString() != other->getDataType()->sqlAsString()) return 4;
-
-            return 0;
-        }
-    }
-
-    return -1;
 }

@@ -9,7 +9,7 @@
 
 #include <QCryptographicHash>
 
-Trigger::Trigger(const QString& name, const QString& uid, Version* v) : SqlSourceEntity(),
+Trigger::Trigger(const QString& name, const QString& uid, Version* v) : SqlSourceTreeItem(),
     NamedItem(name), ObjectWithUid(uid, v),
     m_body(), m_event(), m_ttime(), m_table()
 {

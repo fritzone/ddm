@@ -113,7 +113,7 @@ NewTableForm::NewTableForm(DatabaseEngine* db, Project* prj, Version* v, QWidget
 
     if(newTable)
     {
-        m_table = new Table(m_version, QUuid::createUuid().toString(), 0);
+        m_table = new Table(m_version, QUuid::createUuid().toString());
         m_table->initializeFor(db, QUuid(uidTable));
 
         Workspace::getInstance()->onSaveNewTable(m_table);
@@ -2308,7 +2308,7 @@ void NewTableForm::onCodepageChange(QString)
     updateSqlDueToChange();
 }
 
-void NewTableForm::presentSql(Project*, SqlSourceEntity*, MainWindow::showSomething)
+void NewTableForm::presentSql(Project*, SqlSource *, MainWindow::showSomething)
 {
 }
 

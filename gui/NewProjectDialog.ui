@@ -38,7 +38,7 @@
    <string>New Solution</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="dbm.qrc">
+   <iconset resource="../dbm.qrc">
     <normaloff>:/images/actions/images/actions/filenew.png</normaloff>:/images/actions/images/actions/filenew.png</iconset>
   </property>
   <property name="toolTip">
@@ -80,8 +80,11 @@
         <property name="uniformItemSizes">
          <bool>true</bool>
         </property>
+        <property name="selectionRectVisible">
+         <bool>true</bool>
+        </property>
         <property name="currentRow">
-         <number>-1</number>
+         <number>0</number>
         </property>
         <item>
          <property name="text">
@@ -95,7 +98,7 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Sans'; font-size:10pt;&quot;&gt;Create a new &lt;/span&gt;&lt;span style=&quot; font-family:'Sans'; font-size:10pt; font-weight:600;&quot;&gt;Data Model&lt;/span&gt;&lt;span style=&quot; font-family:'Sans'; font-size:10pt;&quot;&gt; project. Within the project you can create tables, views, triggers, procedures and other elements. When you are done with the initial design you can &lt;/span&gt;&lt;span style=&quot; font-family:'Sans'; font-size:10pt; font-weight:600;&quot;&gt;deploy &lt;/span&gt;&lt;span style=&quot; font-family:'Sans'; font-size:10pt;&quot;&gt;the solution to one or more databases.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
          </property>
          <property name="icon">
-          <iconset resource="dbm.qrc">
+          <iconset resource="../dbm.qrc">
            <normaloff>:/images/actions/images/actions/database-conn.png</normaloff>:/images/actions/images/actions/database-conn.png</iconset>
          </property>
         </item>
@@ -107,7 +110,7 @@ p, li { white-space: pre-wrap; }
           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:9pt;&quot;&gt;Create a new project and automatically &lt;/span&gt;&lt;span style=&quot; font-size:9pt; font-weight:600;&quot;&gt;bind&lt;/span&gt;&lt;span style=&quot; font-size:9pt;&quot;&gt; it to a deployment you have done in the past. This is possible only if you have enabled the &lt;/span&gt;&lt;span style=&quot; font-size:9pt; font-weight:600;&quot;&gt;metadata&lt;/span&gt;&lt;span style=&quot; font-size:9pt;&quot;&gt; export feature during the previous deployment. The new project will get all the objects that were deplyoed. The new project will not get the other objects that are to be found in the source database. You will have the opportunity to import the values from the tables.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
          </property>
          <property name="icon">
-          <iconset resource="dbm.qrc">
+          <iconset resource="../dbm.qrc">
            <normaloff>:/images/actions/images/big/folder_database.png</normaloff>:/images/actions/images/big/folder_database.png</iconset>
          </property>
         </item>
@@ -123,7 +126,7 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Sans'; font-size:10pt; font-weight:600;&quot;&gt;Reverse Engineer&lt;/span&gt;&lt;span style=&quot; font-family:'Sans'; font-size:10pt;&quot;&gt; a MySQL database, and import the selected database elements (tables, view, triggers, procedures, ...) into a new solution. During the process you can choose to create the data types that are used for building up the database elements.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
          </property>
          <property name="icon">
-          <iconset resource="dbm.qrc">
+          <iconset resource="../dbm.qrc">
            <normaloff>:/images/actions/images/small/exec.png</normaloff>:/images/actions/images/small/exec.png</iconset>
          </property>
         </item>
@@ -208,7 +211,7 @@ p, li { white-space: pre-wrap; }
             <string>MySQL</string>
            </property>
            <property name="icon">
-            <iconset resource="dbm.qrc">
+            <iconset resource="../dbm.qrc">
              <normaloff>:/images/actions/images/small/mysql.png</normaloff>:/images/actions/images/small/mysql.png</iconset>
            </property>
           </item>
@@ -308,7 +311,7 @@ p, li { white-space: pre-wrap; }
   <tabstop>txtSolutionName</tabstop>
  </tabstops>
  <resources>
-  <include location="dbm.qrc"/>
+  <include location="../dbm.qrc"/>
  </resources>
  <connections>
   <connection>

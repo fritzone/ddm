@@ -25,8 +25,8 @@ public:
         AND_NEW_WHERE_EXPRESSION = 2
     } ;
 
-    SelectQuery(QueryGraphicsHelper*, int, SqlSourceEntity*, Version *v);
-    SelectQuery(QueryGraphicsHelper*, SqlSourceEntity*, Version *v);    // called by the deserialization
+    SelectQuery(QueryGraphicsHelper*, int, SqlSource*, Version *v);
+    SelectQuery(QueryGraphicsHelper*, SqlSource*, Version *v);    // called by the deserialization
 
     virtual bool initializeGraphicsItem();
     virtual QueryGraphicsItem* createGraphicsItem(QueryGraphicsHelper*, QueryGraphicsItem*);

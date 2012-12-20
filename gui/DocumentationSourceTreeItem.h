@@ -3,7 +3,7 @@
 
 #include "ContextMenuEnabledTreeWidget.h"
 
-class DocumentationSource
+class DocumentationSourceTreeItem
 {
 public:
 

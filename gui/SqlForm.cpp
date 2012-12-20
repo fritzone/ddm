@@ -128,7 +128,7 @@ void SqlForm::presentSql(Project* /*p*/, Version *v)
     setSqlList(finalSql);
 }
 
-void SqlForm::presentSql(Project* p, SqlSourceEntity* ent, MainWindow::showSomething)
+void SqlForm::presentSql(Project* p, SqlSource *ent, MainWindow::showSomething)
 {
     QString fs = "";
     QHash<QString, QString> opts = Configuration::instance().sqlGenerationOptions();

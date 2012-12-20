@@ -13,7 +13,11 @@
 
 class Version;
 
-class Patch : public NamedItem, public TreeItem, public SerializableElement, public ObjectWithUid
+class Patch :
+        public NamedItem,
+        public SerializableElement,
+        public ObjectWithUid,
+        public TreeItem
 {
 public:
 

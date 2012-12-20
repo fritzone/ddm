@@ -1,24 +1,16 @@
 #ifndef SQLSOURCEENTITY_H
 #define SQLSOURCEENTITY_H
 
-#include <QStringList>
-
 #include "ContextMenuEnabledTreeWidget.h"
-
-class AbstractSqlGenerator;
-class Connection;
 
 /**
  * This is a very stupid name for a class which can generate SQLs (ie. a Table or a Trigger).
  */
-class SqlSourceEntity
+class SqlSourceTreeItem
 {
 public:
-    virtual QStringList generateSqlSource(AbstractSqlGenerator*, QHash<QString,QString>, const Connection* ) = 0;
 
-    virtual QString getSqlHash() const = 0;
-
-    virtual ~SqlSourceEntity() {}
+    virtual ~SqlSourceTreeItem() {}
     void setSqlItem(ContextMenuEnabledTreeWidgetItem* sqlItem)
     {
         m_sqlItem = sqlItem;
