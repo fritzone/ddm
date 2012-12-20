@@ -19,7 +19,7 @@
 #include <QScrollBar>
 #include <QDebug>
 
-SelectQuery::SelectQuery(QueryGraphicsHelper* helper, int level, SqlSourceEntity* se, Version *v) :
+SelectQuery::SelectQuery(QueryGraphicsHelper* helper, int level, SqlSource* se, Version *v) :
     Query(helper, level, se, v),
     m_select(0),
     m_from(0),
@@ -33,7 +33,7 @@ SelectQuery::SelectQuery(QueryGraphicsHelper* helper, int level, SqlSourceEntity
     if(m_level > 0) m_as = new SelectQueryAsComponent(this, level, v);
 }
 
-SelectQuery::SelectQuery(QueryGraphicsHelper* helper, SqlSourceEntity* se, Version *v) :
+SelectQuery::SelectQuery(QueryGraphicsHelper* helper, SqlSource* se, Version *v) :
     Query(helper, 0, se, v),
     m_select(0),
     m_from(0),

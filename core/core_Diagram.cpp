@@ -12,18 +12,19 @@
 #include "IconFactory.h"
 #include "ContextMenuCollection.h"
 
-Diagram::Diagram(Version* v, const QString& uid) : TreeItem(),
+Diagram::Diagram(Version* v, const QString& uid) :
     NamedItem(NameGenerator::getUniqueName(v, (itemGetter)&Version::getDiagram, QString("Diagram"))),
-    ObjectWithUid(uid, v), m_onStage(), m_fksOnStage(), m_notes(),
+    ObjectWithUid(uid, v), TreeItem(),
+    m_onStage(), m_fksOnStage(), m_notes(),
     m_noteDescriptors(0), m_tableDescriptors(), m_form(0), m_saved(false), m_version(v), m_removed(false)
 {
 
 }
 
 Diagram::Diagram(Version* v, const QString & name, const QString& uid) :
-    TreeItem(),
     NamedItem(name),
     ObjectWithUid(uid, v),
+    TreeItem(),
     m_onStage(), m_fksOnStage(), m_notes(), m_form(0), m_saved(false), m_version(v)
 {
 

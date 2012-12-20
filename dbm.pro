@@ -39,7 +39,6 @@ HEADERS += \
     SqlNamesValidator.h \
     NameGenerator.h \
     Workspace.h \
-    DefaultVersionImplementation.h \
     ClipboardFactory.h \
     utils.h \
     gui_colors.h \
@@ -54,7 +53,7 @@ HEADERS += \
     VersionUpdateGenerator.h \
     helper_utils.h \
     core_enums.h \
-    core/ForeignKey.h
+    core/DefaultVersionImplementation.h
 
 include (db/db.pri)
 INCLUDEPATH += db

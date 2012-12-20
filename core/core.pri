@@ -9,7 +9,6 @@ SOURCES += \
     core/core_ObjectWithUid.cpp \
     core/core_TableInstance.cpp \
     core/core_UserDataType.cpp \
-    core/core_CloneableElement.cpp \
     core/core_Patch.cpp \
     core/core_Connection.cpp \
     core/core_ConnectionManager.cpp \
@@ -49,7 +48,6 @@ HEADERS += \
     core/core_CloneableElement.h \
     core/core_LockableElement.h \
     core/core_Patch.h \
-    core/DocumentationSource.h \
     core/ActionDeleteTable.h \
     core/core_ColumnWithValue.h \
     core/CopyableElement.h \
@@ -65,7 +63,6 @@ HEADERS += \
     core/ObjectWithSpInstances.h \
     core/Solution.h \
     core/SpInstance.h \
-    core/SqlSourceEntity.h \
     core/TrueFalseSp.h \
     core/TrueFalseSpInstance.h \
     core/ValueListSp.h \
@@ -76,4 +73,7 @@ HEADERS += \
     core/VersionData.h \
     core/MajorVersion.h \
     core/NamedItem.h \
-    core/SerializableElement.h
+    core/SerializableElement.h \
+    core/ForeignKey.h \
+    core/core_SqlSource.h \
+    core/core_ParameterAndDescription.h \

@@ -6,6 +6,7 @@
 
 #include <QApplication>
 #include <QDesktopWidget>
+#include <QKeyEvent>
 
 MainWindowButtonDialog::MainWindowButtonDialog(QWidget *parent) :
     QDialog(parent),

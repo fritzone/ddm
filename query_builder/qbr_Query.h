@@ -8,13 +8,13 @@
 
 class QueryGraphicsHelper;
 class Table;
-class SqlSourceEntity;
+class SqlSource;
 
 class Query : public QueryComponent
 {
 public:
 
-    Query(QueryGraphicsHelper* components, int level, SqlSourceEntity* se, Version *v) : QueryComponent(this, level, v), m_helper(components), m_graphicsItem(0), m_sqlSource(se) {}
+    Query(QueryGraphicsHelper* components, int level, SqlSource* se, Version *v) : QueryComponent(this, level, v), m_helper(components), m_graphicsItem(0), m_sqlSource(se) {}
     virtual ~Query() {}
 
     QueryGraphicsItem* getGraphicsItem()
@@ -30,7 +30,7 @@ public:
     {
         return m_helper;
     }
-    SqlSourceEntity* getSourceEntity()
+    SqlSource* getSourceEntity()
     {
         return m_sqlSource;
     }
@@ -43,7 +43,7 @@ public:
 protected:
     QueryGraphicsHelper* m_helper;
     QueryGraphicsItem* m_graphicsItem;
-    SqlSourceEntity* m_sqlSource;
+    SqlSource* m_sqlSource;
 };
 
 #endif // QUERY_H

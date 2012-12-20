@@ -20,10 +20,12 @@
 
 #include <QDateTime>
 
-Patch::Patch(Version *v, bool init) : NamedItem("Patch"), ObjectWithUid(QUuid::createUuid().toString(), v), m_lockedUids(), m_originals(), m_suspended(false)
+Patch::Patch(Version *v, bool init) :
+    NamedItem("Patch"),
+    ObjectWithUid(QUuid::createUuid().toString(), v),
+    TreeItem(),
+    m_lockedUids(), m_originals(), m_suspended(false)
 {
-    m_version = v;
-
     if(!init)
     {
         QString finalName = QObject::tr("Patch") + " (" + v->getVersionText() + ") - " + QDateTime::currentDateTime().toString();

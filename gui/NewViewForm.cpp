@@ -5,7 +5,7 @@
 #include "qbr_QueryGraphicsView.h"
 #include "qbr_QueryGraphicsScene.h"
 #include "qbr_QueryGraphicsItem.h"
-#include "SqlSourceEntity.h"
+#include "SqlSourceTreeItem.h"
 #include "Project.h"
 #include "Configuration.h"
 #include "core_View.h"

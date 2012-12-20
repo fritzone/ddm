@@ -220,7 +220,7 @@ void DocumentationGenerator::getDocumentationForStoredMethod(StoredMethod *mth, 
     h4Proc->addElement(procName);
     doc.getBody()->addHeading(h4Proc);
 
-    QVector<StoredMethod::ParameterAndDescription> pads = mth->getParametersWithDescription();
+    QVector<ParameterAndDescription> pads = mth->getParametersWithDescription();
     QHtmlText* methodBriefDescription = new QHtmlText(mth->getBriefDescription(), mth->getBriefDescription().indexOf("TODO")>-1?
                                                           QHtmlCSSClass::classTODO():QHtmlCSSClass::classDescription());
     doc.getBody()->addElement(methodBriefDescription);

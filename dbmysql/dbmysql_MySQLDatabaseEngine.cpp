@@ -438,7 +438,7 @@ Table* MySQLDatabaseEngine::reverseEngineerTable(Connection *c, const QString& t
         return 0;
     }
 
-    Table* tab = new Table(v, QUuid::createUuid().toString(), 0);
+    Table* tab = new Table(v, QUuid::createUuid().toString());
     tab->initializeFor(this, QUuid(uidTable));
     tab->setName(tableName);
 

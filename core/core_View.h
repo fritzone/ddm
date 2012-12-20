@@ -2,18 +2,26 @@
 #define CORE_VIEW_H
 
 #include "NamedItem.h"
-#include "SqlSourceEntity.h"
+#include "SqlSourceTreeItem.h"
 #include "TreeItem.h"
 #include "SerializableElement.h"
 #include "core_ObjectWithUid.h"
 #include "core_CloneableElement.h"
+#include "core_SqlSource.h"
 
 class SelectQuery;
 class QueryGraphicsHelper;
 class Version;
 class Table;
 
-class View : public SqlSourceEntity, public NamedItem, public TreeItem, public SerializableElement, public ObjectWithUid, public CloneableElement
+class View :
+        public SqlSourceTreeItem,
+        public NamedItem,
+        public TreeItem,
+        public SerializableElement,
+        public ObjectWithUid,
+        public CloneableElement,
+        public SqlSource
 
 {
 public:

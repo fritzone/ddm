@@ -6,7 +6,7 @@
 #include "core_CloneableElement.h"
 #include "TreeItem.h"
 #include "core_LockableElement.h"
-#include "commons.h"
+#include "NamedItem.h"
 
 class UserDataType;
 class Table;
@@ -21,7 +21,7 @@ class Issue;
 class View;
 class Procedure;
 class Trigger;
-class SqlSourceEntity;
+class SqlSource;
 class Function;
 class Connection;
 class Project;
@@ -362,7 +362,7 @@ public:
     virtual Trigger* getTrigger(const QString&) const = 0;
     virtual const QVector<Trigger*>& getTriggers() = 0;
 
-    virtual SqlSourceEntity* getSqlSourceEntityWithGuid(const QString& name) const = 0;
+    virtual SqlSource* getSqlSourceEntityWithGuid(const QString& name) const = 0;
 
     virtual void addFunction(Function* p, bool) = 0;
     virtual Function* getFunction(const QString& procName) const = 0;
@@ -497,5 +497,7 @@ protected:
     int m_minor;
     Project* m_project;
 };
+
+typedef NamedItem* (Version::*itemGetter)(const QString&);
 
 #endif // VERSION_H

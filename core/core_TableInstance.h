@@ -5,10 +5,11 @@
 #include "TreeItem.h"
 #include "NamedItem.h"
 #include "SerializableElement.h"
-#include "SqlSourceEntity.h"
+#include "SqlSourceTreeItem.h"
 #include "core_ObjectWithUid.h"
 #include "core_CloneableElement.h"
 #include "core_ColumnWithValue.h"
+#include "core_SqlSource.h"
 
 #include <QHash>
 #include <QList>
@@ -17,9 +18,12 @@
 class Version;
 
 class TableInstance : public TreeItem,
-        public NamedItem, public SerializableElement,
-        public SqlSourceEntity, public ObjectWithUid,
-        public CloneableElement
+        public NamedItem,
+        public SerializableElement,
+        public SqlSourceTreeItem,
+        public ObjectWithUid,
+        public CloneableElement,
+        public SqlSource
 {
 public:
 

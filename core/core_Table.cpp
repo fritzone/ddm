@@ -11,7 +11,7 @@
 #include "NameGenerator.h"
 #include "core_TableInstance.h"
 #include "Workspace.h"
-#include "commons.h"
+#include "Version.h"
 #include "uids.h"
 #include "UidWarehouse.h"
 #include "strings.h"
@@ -19,9 +19,9 @@
 #include <QApplication>
 #include <QClipboard>
 
-Table::Table(Version* v, QString uid, int /*dummy*/) : TreeItem(), SerializableElement(), SqlSourceEntity(), CopyableElement(),
+Table::Table(Version* v, QString uid) : SerializableElement(), SqlSourceTreeItem(), CopyableElement(),
     NamedItem(NameGenerator::getUniqueName(v, (itemGetter)&Version::getTable, QString("TAB"))),
-    ObjectWithUid(uid, v), ObjectWithSpInstances(),
+    ObjectWithUid(uid, v), ObjectWithSpInstances(), TreeItem(),
     m_description(""), m_columns(), m_indices(), m_foreignKeys(), m_startupValues(),
     m_parent(0),
     m_version(v), m_children()
@@ -587,7 +587,7 @@ QUuid Table::getClassUid() const
 
 CloneableElement* Table::clone(Version *sourceVersion, Version *targetVersion)
 {
-    Table* result = new Table(targetVersion, QUuid::createUuid().toString(), 0);
+    Table* result = new Table(targetVersion, QUuid::createUuid().toString());
     result->setDescription(m_description);
     result->m_startupValues = m_startupValues;  // this is plainly copyable
 

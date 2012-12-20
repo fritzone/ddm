@@ -7,6 +7,7 @@
 #include "ContextMenuCollection.h"
 #include "core_TableInstance.h"
 #include "UidWarehouse.h"
+#include "Version.h"
 
 GuiElements::GuiElements() : m_projectTreeDock(0),m_issuesTreeDock(0),
     m_patchesTreeDock(0),

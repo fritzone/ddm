@@ -123,6 +123,13 @@ public:
         return m_type;
     }
 
+
+    QString getNiceName() const
+    {
+        QString a = m_name.mid(1).toUpper();
+        return a;
+    }
+
 private:
     FunctionType m_type;
     UserDataType m_returnType;

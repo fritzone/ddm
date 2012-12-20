@@ -2,32 +2,52 @@
 #define CORE_STOREDMETHOD_H
 
 #include "NamedItem.h"
-#include "SqlSourceEntity.h"
+#include "SqlSourceTreeItem.h"
 #include "TreeItem.h"
 #include "SerializableElement.h"
 #include "core_CloneableElement.h"
 #include "core_ObjectWithUid.h"
+#include "core_SqlSource.h"
+#include "core_ParameterAndDescription.h"
 
-class StoredMethod : public NamedItem, public SqlSourceEntity, public TreeItem, public SerializableElement, public CloneableElement, public ObjectWithUid
+class StoredMethod :
+        public NamedItem,
+        public SerializableElement,
+        public CloneableElement,
+        public ObjectWithUid,
+        public SqlSource,
+        public TreeItem,
+        public SqlSourceTreeItem
 {
 public:
 
-    struct ParameterAndDescription
-    {
-        QString m_parameter;
-        QString m_type;
-        QString m_description;
-        QString m_direction;
-        int m_source; // 0 - doc, 1 - parameter list, 2 - verified in both
-    };
+    /**
+     * Returns the keyword which is used in the SQL generation of this stored method (ie: FUNCTION/PROCEDURE)
+     * @return the keyword used in SQL generation
+     */
+    virtual QString keyword() = 0;
 
+    /**
+     * @brief serialize
+     * @param doc
+     * @param parent
+     * @see SerializableElement::serialize
+     */
+    virtual void serialize(QDomDocument& doc, QDomElement& parent) const = 0;
 
-    StoredMethod(const QString& name, const QString& uid, Version *v) : NamedItem(name), ObjectWithUid(uid, v), m_sql(), m_brief() {}
+    /**
+     * @brief clone
+     * @param sourceVersion
+     * @param targetVersion
+     * @return
+     */
+    virtual CloneableElement* clone(Version* sourceVersion, Version* targetVersion) = 0;
+
+public:
+
+    StoredMethod(const QString& name, const QString& uid, Version *v);
 
     virtual QStringList generateSqlSource(AbstractSqlGenerator*, QHash<QString,QString>, const Connection*);
-    virtual void serialize(QDomDocument& doc, QDomElement& parent) const = 0;
-    virtual QString keyword() = 0;
-    virtual CloneableElement* clone(Version* sourceVersion, Version* targetVersion) = 0;
 
     void setSql(const QString&);
     virtual void rename(const QString&);

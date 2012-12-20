@@ -74,7 +74,9 @@ HEADERS += \
     gui/DynamicActionHandlerForMainWindow.h \
     gui/IconFactory.h \
     gui/TableListWidget.h \
-    gui/TextEditWithCodeCompletion.h
+    gui/TextEditWithCodeCompletion.h \
+    gui/SqlSourceTreeItem.h \
+    gui/DocumentationSourceTreeItem.h
 
 FORMS += \
     gui/AboutBoxDialog.ui \

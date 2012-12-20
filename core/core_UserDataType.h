@@ -13,14 +13,16 @@
 /**
  * Class representing a data type
  */
-class UserDataType : public NamedItem, public TreeItem,
-        public SerializableElement, public ObjectWithUid, public CloneableElement
+class UserDataType : public NamedItem,
+        public SerializableElement,
+        public ObjectWithUid,
+        public CloneableElement,
+        public TreeItem
 {
 public:
 
     UserDataType(const QString& name, DT_TYPE type, const QString& uid, Version *v) :
         NamedItem(name),
-        TreeItem(),
         SerializableElement(),
         ObjectWithUid(uid, v),
         CloneableElement(),

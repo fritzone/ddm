@@ -10,10 +10,10 @@ UserDataType::UserDataType(const QString& name, const QString& typeString,
                            const QString& _defaultValue, const QStringList &_mvs,
                            bool unsi, const QString &desc, bool nullable, const QString& uid, Version* v) :
         NamedItem(name),
-        TreeItem(),
         SerializableElement(),
         ObjectWithUid(uid, v),
         CloneableElement(),
+        TreeItem(),
         sqlType(_sqlType),
         size(_s), defaultValue(_defaultValue), miscStuff(_mvs),
         unsignedDT(unsi), description(desc), canBeNull(nullable), m_type(getDT_TYPE(typeString))

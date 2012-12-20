@@ -6,7 +6,7 @@
 #include "MainWindow.h"
 
 class Project;
-class SqlSourceEntity;
+class SqlSource;
 class Version;
 
 class SourceCodePresenterWidget : public QWidget
@@ -24,7 +24,7 @@ public:
     /**
      * Presents the SQL for the selected entity
      */
-    virtual void presentSql(Project*, SqlSourceEntity*, MainWindow::showSomething s) = 0;
+    virtual void presentSql(Project*, SqlSource*, MainWindow::showSomething s) = 0;
 
     virtual void updateSql(Project* p, Version *v)
     {
@@ -38,12 +38,12 @@ public:
         }
     }
 
-    void setSqlSource(SqlSourceEntity* ent)
+    void setSqlSource(SqlSource* ent)
     {
         entity = ent;
     }
 
-    SqlSourceEntity* getSqlSourceEntity() const
+    SqlSource* getSqlSourceEntity() const
     {
         return entity;
     }
@@ -55,7 +55,7 @@ public:
 
 protected:
 
-    SqlSourceEntity* entity;
+    SqlSource* entity;
     Version* m_version;
 
 };

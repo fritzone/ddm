@@ -77,7 +77,7 @@ public:
     virtual void addTrigger(Trigger *, bool initial);
     virtual Trigger* getTrigger(const QString &name) const;
     virtual const QVector<Trigger*>& getTriggers();
-    virtual SqlSourceEntity* getSqlSourceEntityWithGuid(const QString& guid) const;
+    virtual SqlSource* getSqlSourceEntityWithGuid(const QString& guid) const;
     virtual void addFunction(Function* p, bool initial);
     virtual const QVector<Function*>& getFunctions();
     virtual Table* getTableWithUid(const QString& uid) const;

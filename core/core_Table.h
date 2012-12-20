@@ -1,17 +1,20 @@
 #ifndef _TABLE_H_
 #define _TABLE_H_
 
-#include "TreeItem.h"
+
 #include "SerializableElement.h"
-#include "SqlSourceEntity.h"
+#include "SqlSourceTreeItem.h"
 #include "CopyableElement.h"
 #include "NamedItem.h"
 #include "core_ObjectWithUid.h"
 #include "ObjectWithSpInstances.h"
 #include "uids.h"
 #include "core_CloneableElement.h"
-#include "DocumentationSource.h"
 #include "core_ColumnWithValue.h"
+#include "core_SqlSource.h"
+
+#include "TreeItem.h"
+#include "DocumentationSourceTreeItem.h"
 
 #include <QString>
 #include <QVector>
@@ -27,22 +30,24 @@ class TableInstance;
  * The table class holds a database table defined by the user. It must be derived from the TreeItem since a table can be placed in
  * the tree, so the user of it must know how to update the visual part too.
  */
-class Table : public TreeItem,
+class Table :
         public SerializableElement,
-        public SqlSourceEntity,
+        public SqlSourceTreeItem,
         public CopyableElement,
         public NamedItem,
         public ObjectWithUid,
         public ObjectWithSpInstances,
         public CloneableElement,
-        public DocumentationSource
+        public SqlSource,
+        public TreeItem,
+        public DocumentationSourceTreeItem
 {
 public:
 
     /**
      * Constructor, creates a new object
      */
-    Table(Version* v, QString uid, int dummy);
+    Table(Version* v, QString uid);
 
     virtual ~Table() {}
 
