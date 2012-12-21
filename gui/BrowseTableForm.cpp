@@ -288,12 +288,12 @@ void BrowseTableForm::newPage(Connection *c, const QString &tab, BrowsedTableLay
         queryFramesMainHorizontalLayout = new QHBoxLayout(queryFrame);
         queryFramesMainVerticalLayout = new QVBoxLayout();
         horizontalLayoutForButtons = new QHBoxLayout();
-        btnSaveQuery = new QToolButton(queryFrame);
-        btnSaveQuery->setIcon(IconFactory::getSaveIcon());
-        horizontalSpacer = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
-        horizontalLayoutForButtons->addWidget(btnSaveQuery);
-        horizontalLayoutForButtons->addItem(horizontalSpacer);
-        queryFramesMainVerticalLayout->addLayout(horizontalLayoutForButtons);
+//        btnSaveQuery = new QToolButton(queryFrame);
+//        btnSaveQuery->setIcon(IconFactory::getSaveIcon());
+//        horizontalSpacer = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+//        horizontalLayoutForButtons->addWidget(btnSaveQuery);
+//        horizontalLayoutForButtons->addItem(horizontalSpacer);
+//        queryFramesMainVerticalLayout->addLayout(horizontalLayoutForButtons);
         horizontalLayoutForLineNumbersAndTextEdit = new QHBoxLayout();
         queryFramesMainVerticalLayout->addLayout(horizontalLayoutForLineNumbersAndTextEdit);
         queryFramesMainHorizontalLayout->addLayout(queryFramesMainVerticalLayout);

@@ -33,87 +33,176 @@ VersionUpdateGenerator::VersionUpdateGenerator(Version *from, Version *to) : m_c
 
     if(m_tablesReferencedWithFkFromOtherTables.keys().size())
     {
-        // drop all the foreign keys from other tables that reference the tables/columns in this map
-        QVector<ForeignKey*> droppedFks;
-        QStringList dropCommands;
-        QStringList createCommands;
-
-//        dropCommands << "-- Dropping foreign keys due to a change in the primary key structure of some tables";
-        const QVector<Table*>& toTables = to->getTables();
-        for(int i=0; i<toTables.size(); i++)
+        if(!to->version()->getProject()->oopProject())
         {
-            const QVector<ForeignKey*>& ofks = toTables.at(i)->getForeignKeys();
-            for(int j=0; j<ofks.size(); j++)
+            // drop all the foreign keys from other tables that reference the tables/columns in this map
+            QVector<ForeignKey*> droppedFks;
+            QStringList dropCommands;
+            QStringList createCommands;
+
+    //        dropCommands << "-- Dropping foreign keys due to a change in the primary key structure of some tables";
+            const QVector<Table*>& toTables = to->getTables();
+            for(int i=0; i<toTables.size(); i++)
             {
-                ForeignKey* fkj = ofks.at(j);
-                const QVector<ForeignKey::ColumnAssociation*>& ofkAssocs = fkj->getAssociations();
-                for(int k=0; k<ofkAssocs.size(); k++)
+                const QVector<ForeignKey*>& ofks = toTables.at(i)->getForeignKeys();
+                for(int j=0; j<ofks.size(); j++)
                 {
-                    QString otherSLocalTable = ofkAssocs.at(k)->getSLocalTable();
-                    QString otherSForeignTable = ofkAssocs.at(k)->getSForeignTable();
-                    if(m_tablesReferencedWithFkFromOtherTables.contains(otherSForeignTable))
+                    ForeignKey* fkj = ofks.at(j);
+                    const QVector<ForeignKey::ColumnAssociation*>& ofkAssocs = fkj->getAssociations();
+                    for(int k=0; k<ofkAssocs.size(); k++)
                     {
-                        if(!to->getProject()->getEngine()->tableBlocksForeignKeyFunctionality(toTables[i]))
+                        QString otherSLocalTable = ofkAssocs.at(k)->getSLocalTable();
+                        QString otherSForeignTable = ofkAssocs.at(k)->getSForeignTable();
+                        if(m_tablesReferencedWithFkFromOtherTables.contains(otherSForeignTable))
                         {
-                            QStringList c = to->getProject()->getEngine()->getSqlGenerator()->getAlterTableForDropForeignKey(otherSLocalTable, fkj);
-                            dropCommands << c;
-                            droppedFks.append(fkj);
+                            if(!to->getProject()->getEngine()->tableBlocksForeignKeyFunctionality(toTables[i]))
+                            {
+                                QStringList c = to->getProject()->getEngine()->getSqlGenerator()->getAlterTableForDropForeignKey(otherSLocalTable, fkj);
+                                dropCommands << c;
+                                droppedFks.append(fkj);
+                            }
                         }
                     }
                 }
             }
-        }
 
-        // then recreate them
-        if(droppedFks.size())
-        {
-            for(int i=0; i<droppedFks.size(); i++)
+            // then recreate them
+            if(droppedFks.size())
             {
-                ForeignKey* fkI = droppedFks.at(i);
-                // TODO: Duplicate from the TableUpdateGenerator, MysqlCodeGenerator and it is MySQL specific
+                for(int i=0; i<droppedFks.size(); i++)
                 {
-                    // just pre-render the SQL for foreign keys
-                    QString foreignKeySql1 = "";
-                    QString foreignKeySql2 = "";
-
-                    QString foreignKeysTable = fkI->getForeignTableName();
-                    for(int j=0; j<fkI->getAssociations().size(); j++)
+                    ForeignKey* fkI = droppedFks.at(i);
+                    // TODO: Duplicate from the TableUpdateGenerator, MysqlCodeGenerator and it is MySQL specific
                     {
+                        // just pre-render the SQL for foreign keys
+                        QString foreignKeySql1 = "";
+                        QString foreignKeySql2 = "";
 
-                        ForeignKey::ColumnAssociation* assocJ = fkI->getAssociations().at(j);
-                        foreignKeySql1 += assocJ->getLocalColumn()->getName();
-                        foreignKeySql2 += assocJ->getForeignColumn()->getName();
-
-                        if(j < fkI->getAssociations().size() - 1)
+                        QString foreignKeysTable = fkI->getForeignTableName();
+                        for(int j=0; j<fkI->getAssociations().size(); j++)
                         {
-                            foreignKeySql1 += ", ";
-                            foreignKeySql2 += ", ";
+
+                            ForeignKey::ColumnAssociation* assocJ = fkI->getAssociations().at(j);
+                            foreignKeySql1 += assocJ->getLocalColumn()->getName();
+                            foreignKeySql2 += assocJ->getForeignColumn()->getName();
+
+                            if(j < fkI->getAssociations().size() - 1)
+                            {
+                                foreignKeySql1 += ", ";
+                                foreignKeySql2 += ", ";
+                            }
+                        }
+                        QString foreignKeySql = " CONSTRAINT " + fkI->getName() + " FOREIGN KEY (";
+                        foreignKeySql += foreignKeySql1;
+                        foreignKeySql += ") REFERENCES ";
+                        foreignKeySql += foreignKeysTable;
+                        foreignKeySql += "(" + foreignKeySql2 + ")";
+                        QString t = fkI->getOnDelete();
+                        if(t.length() > 0) foreignKeySql += QString(" ") + ("ON DELETE ") + (t);
+                        t = fkI->getOnUpdate();
+                        if(t.length() > 0) foreignKeySql += QString(" ") + ("ON UPDATE ") + (t);
+
+                        // TODO: This is just MySQL for now
+                        QString f = "ALTER TABLE ";
+                        f += fkI->getLocalTable()->getName();
+                        f += " ADD ";
+                        f += foreignKeySql;
+                        createCommands << f;
+                    }
+                }
+                QStringList tCommands = dropCommands;
+                tCommands << m_commands;
+                tCommands << createCommands;
+
+                m_commands = tCommands;
+            }
+        }
+        else
+        {
+            // drop all the foreign keys from other tables that reference the tables/columns in this map
+            QVector<ForeignKey*> droppedFks;
+            QStringList dropCommands;
+            QStringList createCommands;
+
+    //        dropCommands << "-- Dropping foreign keys due to a change in the primary key structure of some tables";
+            const QVector<TableInstance*> toTables = to->getTableInstances();
+            //const QVector<Table*>& toTables = to->getTables();
+            for(int i=0; i<toTables.size(); i++)
+            {
+                const QVector<ForeignKey*>& ofks = toTables[i]->table()->getForeignKeys();
+                for(int j=0; j<ofks.size(); j++)
+                {
+                    ForeignKey* fkj = ofks.at(j);
+                    const QVector<ForeignKey::ColumnAssociation*>& ofkAssocs = fkj->getAssociations();
+                    for(int k=0; k<ofkAssocs.size(); k++)
+                    {
+                        QString otherSLocalTable = ofkAssocs.at(k)->getSLocalTable();
+                        QString otherSForeignTable = ofkAssocs.at(k)->getSForeignTable();
+                        if(m_tablesReferencedWithFkFromOtherTables.contains(otherSForeignTable))
+                        {
+                            if(!to->getProject()->getEngine()->tableBlocksForeignKeyFunctionality(toTables[i]->table()))
+                            {
+                                QStringList c = to->getProject()->getEngine()->getSqlGenerator()->getAlterTableForDropForeignKey(otherSLocalTable, fkj);
+                                dropCommands << c;
+                                droppedFks.append(fkj);
+                            }
                         }
                     }
-                    QString foreignKeySql = " CONSTRAINT " + fkI->getName() + " FOREIGN KEY (";
-                    foreignKeySql += foreignKeySql1;
-                    foreignKeySql += ") REFERENCES ";
-                    foreignKeySql += foreignKeysTable;
-                    foreignKeySql += "(" + foreignKeySql2 + ")";
-                    QString t = fkI->getOnDelete();
-                    if(t.length() > 0) foreignKeySql += QString(" ") + ("ON DELETE ") + (t);
-                    t = fkI->getOnUpdate();
-                    if(t.length() > 0) foreignKeySql += QString(" ") + ("ON UPDATE ") + (t);
-
-                    // TODO: This is just MySQL for now
-                    QString f = "ALTER TABLE ";
-                    f += fkI->getLocalTable()->getName();
-                    f += " ADD ";
-                    f += foreignKeySql;
-                    createCommands << f;
                 }
             }
-            QStringList tCommands = dropCommands;
-            tCommands << m_commands;
-            tCommands << createCommands;
 
-            m_commands = tCommands;
+            // then recreate them
+            if(droppedFks.size())
+            {
+                for(int i=0; i<droppedFks.size(); i++)
+                {
+                    ForeignKey* fkI = droppedFks.at(i);
+                    // TODO: Duplicate from the TableUpdateGenerator, MysqlCodeGenerator and it is MySQL specific
+                    {
+                        // just pre-render the SQL for foreign keys
+                        QString foreignKeySql1 = "";
+                        QString foreignKeySql2 = "";
+
+                        QString foreignKeysTable = fkI->getForeignTableName();
+                        for(int j=0; j<fkI->getAssociations().size(); j++)
+                        {
+
+                            ForeignKey::ColumnAssociation* assocJ = fkI->getAssociations().at(j);
+                            foreignKeySql1 += assocJ->getLocalColumn()->getName();
+                            foreignKeySql2 += assocJ->getForeignColumn()->getName();
+
+                            if(j < fkI->getAssociations().size() - 1)
+                            {
+                                foreignKeySql1 += ", ";
+                                foreignKeySql2 += ", ";
+                            }
+                        }
+                        QString foreignKeySql = " CONSTRAINT " + fkI->getName() + " FOREIGN KEY (";
+                        foreignKeySql += foreignKeySql1;
+                        foreignKeySql += ") REFERENCES ";
+                        foreignKeySql += foreignKeysTable;
+                        foreignKeySql += "(" + foreignKeySql2 + ")";
+                        QString t = fkI->getOnDelete();
+                        if(t.length() > 0) foreignKeySql += QString(" ") + ("ON DELETE ") + (t);
+                        t = fkI->getOnUpdate();
+                        if(t.length() > 0) foreignKeySql += QString(" ") + ("ON UPDATE ") + (t);
+
+                        // TODO: This is just MySQL for now
+                        QString f = "ALTER TABLE ";
+                        f += fkI->getLocalTable()->getName();
+                        f += " ADD ";
+                        f += foreignKeySql;
+                        createCommands << f;
+                    }
+                }
+                QStringList tCommands = dropCommands;
+                tCommands << m_commands;
+                tCommands << createCommands;
+
+                m_commands = tCommands;
+            }
         }
+
     }
 
     if(to->getProject()->oopProject())
@@ -134,6 +223,68 @@ VersionUpdateGenerator::VersionUpdateGenerator(Version *from, Version *to) : m_c
 void VersionUpdateGenerator::updateTables(Version* from, Version* to)
 {
     // section: tables
+
+    // check: see if there are deleted tables in version "to" which are not there in "from". This is here to just to skip the stupid situation
+    // when the user drops a table instance and the created another one with the same name because then the script generator generates stupid sql
+    {
+    const QVector<Table*>& toTables = to->getTables();
+    const QVector<Table*>& fromTables = from->getTables();
+
+    if(!to->getProject()->oopProject())
+    {
+        QStringList droppedTables;
+        for(int i=0; i<fromTables.size(); i++)
+        {
+            bool foundDescendant = false;
+            for(int j=0; j<toTables.size(); j++)
+            {
+                if(UidWarehouse::instance().related(fromTables[i], toTables[j]))
+                {
+                    foundDescendant = true;
+                    break;
+                }
+            }
+            if(!foundDescendant)
+            {
+                droppedTables.append(fromTables[i]->getObjectUid());
+            }
+        }
+
+        for(int i=0; i<droppedTables.size(); i++)
+        {
+            Table* t = from->getTableWithUid(droppedTables[i]);
+            m_commands << to->getProject()->getEngine()->getSqlGenerator()->getDropTable(t->getName());
+        }
+    }
+    else
+    {
+        const QVector<TableInstance*>& fromTabInsts = from->getTableInstances();
+        const QVector<TableInstance*>& toTabInsts = to->getTableInstances();
+        QStringList droppedTables;
+        for(int i=0; i<fromTabInsts.size(); i++)
+        {
+            bool foundDescendant = false;
+            for(int j=0; j<toTabInsts.size(); j++)
+            {
+                if(UidWarehouse::instance().related(fromTabInsts[i], toTabInsts[j]))
+                {
+                    foundDescendant = true;
+                    break;
+                }
+            }
+            if(!foundDescendant)
+            {
+                droppedTables.append(fromTabInsts[i]->getObjectUid());
+            }
+        }
+
+        for(int i=0; i<droppedTables.size(); i++)
+        {
+            TableInstance* t = from->getTableInstanceWithUid(droppedTables[i]);
+            m_commands << to->getProject()->getEngine()->getSqlGenerator()->getDropTable(t->getName());
+        }
+    }
+    }
 
     // first step: find the TableInstances which were renamed
     QVector<OldNameNewName*> renamedTableInstances;
@@ -380,61 +531,6 @@ void VersionUpdateGenerator::updateTables(Version* from, Version* to)
     // task: drop all the foreign keys
     m_commands << fkCommands;
 
-    // check: see if there are deleted tables in version "to" which are not there in "from"
-    if(!to->getProject()->oopProject())
-    {
-        QStringList droppedTables;
-        for(int i=0; i<fromTables.size(); i++)
-        {
-            bool foundDescendant = false;
-            for(int j=0; j<toTables.size(); j++)
-            {
-                if(UidWarehouse::instance().related(fromTables[i], toTables[j]))
-                {
-                    foundDescendant = true;
-                    break;
-                }
-            }
-            if(!foundDescendant)
-            {
-                droppedTables.append(fromTables[i]->getObjectUid());
-            }
-        }
-
-        for(int i=0; i<droppedTables.size(); i++)
-        {
-            Table* t = from->getTableWithUid(droppedTables[i]);
-            m_commands << to->getProject()->getEngine()->getSqlGenerator()->getDropTable(t->getName());
-        }
-    }
-    else
-    {
-        const QVector<TableInstance*>& fromTabInsts = from->getTableInstances();
-        const QVector<TableInstance*>& toTabInsts = to->getTableInstances();
-        QStringList droppedTables;
-        for(int i=0; i<fromTabInsts.size(); i++)
-        {
-            bool foundDescendant = false;
-            for(int j=0; j<toTabInsts.size(); j++)
-            {
-                if(UidWarehouse::instance().related(fromTabInsts[i], toTabInsts[j]))
-                {
-                    foundDescendant = true;
-                    break;
-                }
-            }
-            if(!foundDescendant)
-            {
-                droppedTables.append(fromTabInsts[i]->getObjectUid());
-            }
-        }
-
-        for(int i=0; i<droppedTables.size(); i++)
-        {
-            TableInstance* t = from->getTableInstanceWithUid(droppedTables[i]);
-            m_commands << to->getProject()->getEngine()->getSqlGenerator()->getDropTable(t->getName());
-        }
-    }
 }
 
 void VersionUpdateGenerator::updateTableInstances(Version *from, Version *to)

@@ -157,6 +157,11 @@ private:
     // used in the deserialization, nowhere else
     QString m_tabName;
 
+    // this maps a foreign key of the table of this tabe instance in a way that
+    // the source table of the FK will be this tab instance, the target table of it will be
+    // the Table Instance in the map. Used when the user renamed a table instance
+    QMap<ForeignKey*, TableInstance*> m_fkMappings;
+
 };
 
 #endif // TABLEINSTANCE_H
