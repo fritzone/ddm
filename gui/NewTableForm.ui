@@ -70,7 +70,7 @@
          <string/>
         </property>
         <property name="icon">
-         <iconset resource="dbm.qrc">
+         <iconset resource="../dbm.qrc">
           <normaloff>:/images/actions/images/small/gnome_undelete.png</normaloff>:/images/actions/images/small/gnome_undelete.png</iconset>
         </property>
         <property name="iconSize">
@@ -130,6 +130,26 @@
           </property>
          </widget>
         </item>
+        <item>
+         <widget class="QToolButton" name="btnInstantiate">
+          <property name="toolTip">
+           <string>Create a table instance from this table</string>
+          </property>
+          <property name="statusTip">
+           <string>Create a table instance from this table</string>
+          </property>
+          <property name="whatsThis">
+           <string>Create a table instance from this table</string>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+          <property name="icon">
+           <iconset resource="../dbm.qrc">
+            <normaloff>:/images/actions/images/actions/tabinstnew.png</normaloff>:/images/actions/images/actions/tabinstnew.png</iconset>
+          </property>
+         </widget>
+        </item>
        </layout>
       </item>
       <item>
@@ -142,7 +162,7 @@
         </property>
         <widget class="QWidget" name="tabWidgetPage1">
          <attribute name="icon">
-          <iconset resource="dbm.qrc">
+          <iconset resource="../dbm.qrc">
            <normaloff>:/images/actions/images/small/table-select-column-icon.png</normaloff>:/images/actions/images/small/table-select-column-icon.png</iconset>
          </attribute>
          <attribute name="title">
@@ -171,7 +191,7 @@
                     <string/>
                    </property>
                    <property name="icon">
-                    <iconset resource="dbm.qrc">
+                    <iconset resource="../dbm.qrc">
                      <normaloff>:/images/actions/images/small/up.png</normaloff>:/images/actions/images/small/up.png</iconset>
                    </property>
                    <property name="popupMode">
@@ -191,7 +211,7 @@
                     <string/>
                    </property>
                    <property name="icon">
-                    <iconset resource="dbm.qrc">
+                    <iconset resource="../dbm.qrc">
                      <normaloff>:/images/actions/images/small/remove.png</normaloff>:/images/actions/images/small/remove.png</iconset>
                    </property>
                   </widget>
@@ -208,7 +228,7 @@
                     <string/>
                    </property>
                    <property name="icon">
-                    <iconset resource="dbm.qrc">
+                    <iconset resource="../dbm.qrc">
                      <normaloff>:/images/actions/images/small/down.png</normaloff>:/images/actions/images/small/down.png</iconset>
                    </property>
                    <property name="popupMode">
@@ -325,7 +345,7 @@
                   <string>...</string>
                  </property>
                  <property name="icon">
-                  <iconset resource="dbm.qrc">
+                  <iconset resource="../dbm.qrc">
                    <normaloff>:/images/actions/images/small/add.png</normaloff>:/images/actions/images/small/add.png</iconset>
                  </property>
                 </widget>
@@ -342,7 +362,7 @@
                   <string/>
                  </property>
                  <property name="icon">
-                  <iconset resource="dbm.qrc">
+                  <iconset resource="../dbm.qrc">
                    <normaloff>:/images/actions/images/small/cancel.png</normaloff>:/images/actions/images/small/cancel.png</iconset>
                  </property>
                 </widget>
@@ -369,7 +389,7 @@
         </widget>
         <widget class="QWidget" name="tabWidgetPage2">
          <attribute name="icon">
-          <iconset resource="dbm.qrc">
+          <iconset resource="../dbm.qrc">
            <normaloff>:/images/actions/images/small/index.png</normaloff>:/images/actions/images/small/index.png</iconset>
          </attribute>
          <attribute name="title">
@@ -399,7 +419,7 @@
                   <string>...</string>
                  </property>
                  <property name="icon">
-                  <iconset resource="dbm.qrc">
+                  <iconset resource="../dbm.qrc">
                    <normaloff>:/images/actions/images/small/remove.png</normaloff>:/images/actions/images/small/remove.png</iconset>
                  </property>
                 </widget>
@@ -509,7 +529,7 @@
                         <string>...</string>
                        </property>
                        <property name="icon">
-                        <iconset resource="dbm.qrc">
+                        <iconset resource="../dbm.qrc">
                          <normaloff>:/images/actions/images/small/right.png</normaloff>:/images/actions/images/small/right.png</iconset>
                        </property>
                       </widget>
@@ -529,7 +549,7 @@
                         <string>...</string>
                        </property>
                        <property name="icon">
-                        <iconset resource="dbm.qrc">
+                        <iconset resource="../dbm.qrc">
                          <normaloff>:/images/actions/images/small/left.png</normaloff>:/images/actions/images/small/left.png</iconset>
                        </property>
                       </widget>
@@ -558,7 +578,7 @@
                           <string>...</string>
                          </property>
                          <property name="icon">
-                          <iconset resource="dbm.qrc">
+                          <iconset resource="../dbm.qrc">
                            <normaloff>:/images/actions/images/small/add.png</normaloff>:/images/actions/images/small/add.png</iconset>
                          </property>
                         </widget>
@@ -578,7 +598,7 @@
                           <string>...</string>
                          </property>
                          <property name="icon">
-                          <iconset resource="dbm.qrc">
+                          <iconset resource="../dbm.qrc">
                            <normaloff>:/images/actions/images/small/remove.png</normaloff>:/images/actions/images/small/remove.png</iconset>
                          </property>
                         </widget>
@@ -663,7 +683,7 @@
                         <string>...</string>
                        </property>
                        <property name="icon">
-                        <iconset resource="dbm.qrc">
+                        <iconset resource="../dbm.qrc">
                          <normaloff>:/images/actions/images/small/up.png</normaloff>:/images/actions/images/small/up.png</iconset>
                        </property>
                       </widget>
@@ -674,7 +694,7 @@
                         <string>...</string>
                        </property>
                        <property name="icon">
-                        <iconset resource="dbm.qrc">
+                        <iconset resource="../dbm.qrc">
                          <normaloff>:/images/actions/images/small/down.png</normaloff>:/images/actions/images/small/down.png</iconset>
                        </property>
                       </widget>
@@ -698,7 +718,7 @@
                   <string/>
                  </property>
                  <property name="icon">
-                  <iconset resource="dbm.qrc">
+                  <iconset resource="../dbm.qrc">
                    <normaloff>:/images/actions/images/small/add.png</normaloff>:/images/actions/images/small/add.png</iconset>
                  </property>
                 </widget>
@@ -712,7 +732,7 @@
                   <string/>
                  </property>
                  <property name="icon">
-                  <iconset resource="dbm.qrc">
+                  <iconset resource="../dbm.qrc">
                    <normaloff>:/images/actions/images/small/cancel.png</normaloff>:/images/actions/images/small/cancel.png</iconset>
                  </property>
                 </widget>
@@ -739,7 +759,7 @@
         </widget>
         <widget class="QWidget" name="tabWidgetPage3">
          <attribute name="icon">
-          <iconset resource="dbm.qrc">
+          <iconset resource="../dbm.qrc">
            <normaloff>:/images/actions/images/small/foreign_key.png</normaloff>:/images/actions/images/small/foreign_key.png</iconset>
          </attribute>
          <attribute name="title">
@@ -763,7 +783,7 @@
                   <string>...</string>
                  </property>
                  <property name="icon">
-                  <iconset resource="dbm.qrc">
+                  <iconset resource="../dbm.qrc">
                    <normaloff>:/images/actions/images/small/remove.png</normaloff>:/images/actions/images/small/remove.png</iconset>
                  </property>
                 </widget>
@@ -890,7 +910,7 @@
                   <string>...</string>
                  </property>
                  <property name="icon">
-                  <iconset resource="dbm.qrc">
+                  <iconset resource="../dbm.qrc">
                    <normaloff>:/images/actions/images/small/add.png</normaloff>:/images/actions/images/small/add.png</iconset>
                  </property>
                 </widget>
@@ -966,7 +986,7 @@
                   <string>...</string>
                  </property>
                  <property name="icon">
-                  <iconset resource="dbm.qrc">
+                  <iconset resource="../dbm.qrc">
                    <normaloff>:/images/actions/images/small/remove.png</normaloff>:/images/actions/images/small/remove.png</iconset>
                  </property>
                 </widget>
@@ -986,7 +1006,7 @@
                     <string>...</string>
                    </property>
                    <property name="icon">
-                    <iconset resource="dbm.qrc">
+                    <iconset resource="../dbm.qrc">
                      <normaloff>:/images/actions/images/small/add.png</normaloff>:/images/actions/images/small/add.png</iconset>
                    </property>
                   </widget>
@@ -1000,7 +1020,7 @@
                     <string>...</string>
                    </property>
                    <property name="icon">
-                    <iconset resource="dbm.qrc">
+                    <iconset resource="../dbm.qrc">
                      <normaloff>:/images/actions/images/small/cancel.png</normaloff>:/images/actions/images/small/cancel.png</iconset>
                    </property>
                   </widget>
@@ -1101,7 +1121,7 @@
         </widget>
         <widget class="QWidget" name="tab">
          <attribute name="icon">
-          <iconset resource="dbm.qrc">
+          <iconset resource="../dbm.qrc">
            <normaloff>:/images/actions/images/small/tabinst.png</normaloff>:/images/actions/images/small/tabinst.png</iconset>
          </attribute>
          <attribute name="title">
@@ -1131,7 +1151,7 @@
                <string>...</string>
               </property>
               <property name="icon">
-               <iconset resource="dbm.qrc">
+               <iconset resource="../dbm.qrc">
                 <normaloff>:/images/actions/images/actions/fileopen.png</normaloff>:/images/actions/images/actions/fileopen.png</iconset>
               </property>
               <property name="iconSize">
@@ -1163,7 +1183,7 @@
                <string>...</string>
               </property>
               <property name="icon">
-               <iconset resource="dbm.qrc">
+               <iconset resource="../dbm.qrc">
                 <normaloff>:/images/actions/images/big/bigfileimport.png</normaloff>:/images/actions/images/big/bigfileimport.png</iconset>
               </property>
               <property name="iconSize">
@@ -1192,7 +1212,7 @@
                <string>...</string>
               </property>
               <property name="icon">
-               <iconset resource="dbm.qrc">
+               <iconset resource="../dbm.qrc">
                 <normaloff>:/images/actions/images/actions/filesave.png</normaloff>:/images/actions/images/actions/filesave.png</iconset>
               </property>
               <property name="iconSize">
@@ -1234,7 +1254,7 @@
                  <string>...</string>
                 </property>
                 <property name="icon">
-                 <iconset resource="dbm.qrc">
+                 <iconset resource="../dbm.qrc">
                   <normaloff>:/images/actions/images/small/add.png</normaloff>:/images/actions/images/small/add.png</iconset>
                 </property>
                </widget>
@@ -1251,7 +1271,7 @@
                  <string>...</string>
                 </property>
                 <property name="icon">
-                 <iconset resource="dbm.qrc">
+                 <iconset resource="../dbm.qrc">
                   <normaloff>:/images/actions/images/small/remove.png</normaloff>:/images/actions/images/small/remove.png</iconset>
                 </property>
                </widget>
@@ -1268,7 +1288,7 @@
                  <string>...</string>
                 </property>
                 <property name="icon">
-                 <iconset resource="dbm.qrc">
+                 <iconset resource="../dbm.qrc">
                   <normaloff>:/images/actions/images/small/apply.png</normaloff>:/images/actions/images/small/apply.png</iconset>
                 </property>
                </widget>
@@ -1297,7 +1317,7 @@
         </widget>
         <widget class="QWidget" name="tabWidgetPage5">
          <attribute name="icon">
-          <iconset resource="dbm.qrc">
+          <iconset resource="../dbm.qrc">
            <normaloff>:/images/actions/images/actions/note.png</normaloff>:/images/actions/images/actions/note.png</iconset>
          </attribute>
          <attribute name="title">
@@ -1311,7 +1331,7 @@
         </widget>
         <widget class="QWidget" name="tab_2">
          <attribute name="icon">
-          <iconset resource="dbm.qrc">
+          <iconset resource="../dbm.qrc">
            <normaloff>:/images/actions/images/small/sql.png</normaloff>:/images/actions/images/small/sql.png</iconset>
          </attribute>
          <attribute name="title">
@@ -1368,7 +1388,7 @@
                   <string>...</string>
                  </property>
                  <property name="icon">
-                  <iconset resource="dbm.qrc">
+                  <iconset resource="../dbm.qrc">
                    <normaloff>:/images/actions/images/actions/filesave.png</normaloff>:/images/actions/images/actions/filesave.png</iconset>
                  </property>
                 </widget>
@@ -1391,7 +1411,7 @@
                   <string>...</string>
                  </property>
                  <property name="icon">
-                  <iconset resource="dbm.qrc">
+                  <iconset resource="../dbm.qrc">
                    <normaloff>:/images/actions/images/small/database.png</normaloff>:/images/actions/images/small/database.png</iconset>
                  </property>
                 </widget>
@@ -1461,7 +1481,7 @@
   <tabstop>tableStartupValues</tabstop>
  </tabstops>
  <resources>
-  <include location="dbm.qrc"/>
+  <include location="../dbm.qrc"/>
  </resources>
  <connections>
   <connection>
@@ -2152,6 +2172,22 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>btnInstantiate</sender>
+   <signal>clicked()</signal>
+   <receiver>NewTableForm</receiver>
+   <slot>onInstantiate()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>789</x>
+     <y>26</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>408</x>
+     <y>350</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <designerdata>
   <property name="gridDeltaX">
@@ -2222,5 +2258,6 @@
   <slot>onRemoveSpsFromColumnOfIndex()</slot>
   <slot>onLockUnlock(bool)</slot>
   <slot>onUndelete()</slot>
+  <slot>onInstantiate()</slot>
  </slots>
 </ui>

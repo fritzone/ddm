@@ -30,6 +30,7 @@
 #include "SpInstance.h"
 #include "GuiElements.h"
 #include "ForeignKey.h"
+#include "core_TableInstance.h"
 
 #include <QMessageBox>
 #include <QHashIterator>
@@ -125,6 +126,11 @@ NewTableForm::NewTableForm(DatabaseEngine* db, Project* prj, Version* v, QWidget
 
     m_signalMapperForCombosInColumns = new QSignalMapper(this);
     m_ui->frameForUnlockButton->hide();
+
+    if(!m_version->getProject()->oopProject())
+    {
+        m_ui->btnInstantiate->hide();
+    }
 
 }
 
@@ -2693,4 +2699,12 @@ void NewTableForm::onUndelete()
         m_ui->btnUndelete->hide();
         m_ui->btnLock->show();
     }
+}
+
+void NewTableForm::onInstantiate()
+{
+    TableInstance* tinst = MainWindow::instance()->instantiateTable(m_table->getName(), QStringList(), m_table->version());
+    MainWindow::instance()->getGuiElements()->getProjectTree()->setCurrentItem(tinst->getLocation());
+    MainWindow::instance()->getGuiElements()->getProjectTree()->setCurrentItem(m_table->getLocation());
+
 }

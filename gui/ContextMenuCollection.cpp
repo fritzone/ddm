@@ -218,10 +218,11 @@ ContextMenuCollection::ContextMenuCollection()
     m_connectionPopupMenu->addAction(action_connectionSqlQuery);
     m_connectionPopupMenu->addAction(action_connectionConnect);
     m_connectionPopupMenu->addAction(action_connectionBrowse);
-    m_connectionPopupMenu->addAction(action_connectionEdit);
     m_connectionPopupMenu->addAction(action_connectionRecreate);
-    m_connectionPopupMenu->addAction(action_connectionDelete);
     m_connectionPopupMenu->addAction(action_connectionDrop);
+    m_connectionPopupMenu->addSeparator();
+    m_connectionPopupMenu->addAction(action_connectionEdit);
+    m_connectionPopupMenu->addAction(action_connectionDelete);
 
     // browsed table
     m_browsedTablePopupMenu->addAction(action_browsedTableInjectIntoSolution);

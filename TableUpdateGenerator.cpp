@@ -73,20 +73,20 @@ TableUpdateGenerator::TableUpdateGenerator(Table *t1, Table *t2, DatabaseEngine*
                     OldNameNewName nn;
                     nn.newName = t2Columns[i];
                     // now find the column which has a different name for a column with objectUid = ct2.sourceUid
-                    bool found = false;
-                    Column *c = ct2;
                     QString oldName = "";
-                    while(!found)
+                    // ok, but what if the user tries to upgrade from a minor version in that case the
+                    // source UID of ct2 will lead to the "parent" of the "column" in the minor version
+                    // and never to the actual column. For this we should see the "related" of UidWarehouse?
+                    QStringList c1cols = t1->fullColumns();
+                    for(int j=0; j<c1cols.size(); j++)
                     {
-                        QString srcUid = c->getSourceUid();
-                        if(srcUid == nullUid) break;
-                        c = dynamic_cast<Column*>(UidWarehouse::instance().getElement(srcUid));
-                        if(!c) break;
-                        if(c->getName() != ct2->getName())
+                        Column* c1 = t1->getColumn(c1cols[j]);
+                        if(!c1) c1 = t1->getColumnFromParents(c1cols[j]);
+                        if(!c1) continue;
+
+                        if(UidWarehouse::instance().related(c1, ct2))
                         {
-                            oldName = c->getName();
-                            found = true;
-                            break;
+                            oldName = c1->getName();
                         }
                     }
                     nn.oldName = oldName;

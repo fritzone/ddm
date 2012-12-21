@@ -1,8 +1,10 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML>
-<HEAD>
-<TITLE>Welcome</TITLE>
-<STYLE TYPE="text/css">
+<html><head>
+  <title>Version handling</title>
+
+  
+  
+  <style type="text/css">
 <!--
 P {
 	border: 1px solid #000000;
@@ -15,85 +17,130 @@ body p {
         font-family: Arial, Helvetica, sans-serif;
 }
 -->
-</STYLE>
-</HEAD>
-<FONT size=3>
-<BODY LANG="en-US" BGCOLOR="white" DIR="LTR">
-<P ALIGN=CENTER STYLE="margin-bottom: 0in; background: white; border: none; padding: 0in; font-style: normal; line-height: 115%; text-decoration: none">
-<span id="myfont"><B>Version handling in Database Deployment Manager</B></span></P>
-<P STYLE="margin-bottom: 0in; background: white; line-height: 115%"> <span id="myfont"> </span>
-DDM has support for version handling in the application since release 0.1j. From the users'
-perspective the version handling of DDM can be shortly described as a sequence of the following steps.<br>
+  </style>
+</head><body dir="ltr" style="background-color: white;" lang="en-US">
+
+<p style="border: medium none ; padding: 0in; background: white none repeat scroll 0% 50%; margin-bottom: 0in; -moz-background-clip: -moz-initial; -moz-background-origin: -moz-initial; -moz-background-inline-policy: -moz-initial; font-style: normal; line-height: 115%; text-decoration: none;" align="center"><span id="myfont"><font size="3"><b>Version handling in
+Database Deployment Manager</b></font></span></p>
+
+<p style="background: white none repeat scroll 0% 50%; margin-bottom: 0in; -moz-background-clip: -moz-initial; -moz-background-origin: -moz-initial; -moz-background-inline-policy: -moz-initial; line-height: 115%;"><font size="3"> <span id="myfont"> </span>
+DDM has support for version handling in the application since release
+0.1j. From the users'
+perspective the version handling of DDM can be shortly described as a
+sequence of the following steps.<br>
+<br>1. When starting a new project the user works on a major version:
+1.0.
+All the work goes into this version. When he is done with the work and
+considers all the objects to be "final" he can "release" the version.
+The
+released major versions (they conform to the naming convention of X.0)
+are supposed to be the ones being deployed to sites, however the user
+can choose to deploy any version he finds suitable for deployment.
+Releaseing a version is done from the Context menu of the Version, by
+choosing "<span style="font-style: italic;"><span style="font-weight: bold;">Release Version</span></span>".<br>
 <br>
-  1. When starting a new project the user works on a major version: 1.0.
-  All the work goes into this version. When he is done with the work and considers all the objects to be final he
-  can "release" the version. The released major versions (they conform to the naming convention of  X.0)
-  are supposed to be the ones being deployed to sites, however the user can choose to deploy any version he finds suitable for deployment.<br>
+2. Releasing a major version (such as 1.0) will create another major
+version,
+namely "2.0" (or X+1.0 if the user works on version X.0). All the
+objects are copied over from version 1.0. All the objects in v1.0 (and
+in the tree) are locked into a normal lock stage(in the tree they
+change the icon with a yellow lock indicator), they are not available
+for further modification unless unlocked in a patch. All the objects in
+v2.0 are unlocked, the user can continue working on this major version.
+He can change, delete, etc... all the objects he wants. From this point
+on all the default operations (those that are triggered from the Main
+toolbar or the Menu of the Application) of addition of new objects,
+instantiation
+of table templates, injection of elements from existing databases will
+happen in this version. The user can release V2.0 and this will lead to
+V3.0 and so on...<br>
 <br>
-  2. Releasing a version (such as 1.0) will create another major version, namely "2.0"
-  (or X+1.0 if the user works on version X.0). All the objects are copied over from version 1.0.
-  All the objects in v1.0 (and in the tree) are locked into a normal lock stage(in the
-  tree they change the icon with a yellow lock indicator), they are not available for further
-  modification unless unlocked in a patch. All the objects in v2.0 are unlocked, the user can continue
-  working on this major version. He can change, delete, etc... all the objects he wants. From this point
-  on all the default operations of addition of new objects, instantiation of table templates, injection
-  of elements from existing databases will happen in this version.
-  The user can release V2.0 and this will lead to V3.0 and so on...<br>
-  <br>
-These simple steps ensure a stable version handling, without too much hassle and a consistent management of changes between versions.<br>
+These simple steps ensure a stable version handling, without too much
+hassle and a consistent management of changes between versions.<br>
 <br>
-The version management feature of DDM is NOT for tracking your daily changes. It is morer suitable 
-to use a version control system (git, mercurial, svn, ...) for this purpose. The main purpose for it
-is to track changes of your database between deliveries, to easily upgrade already deployed systems and
+The version management feature of DDM is NOT for tracking your daily
+changes. It is more suitable to use a version control system (git,
+mercurial, svn, ...) for this purpose. The main purpose for it
+is to track changes of your database between deliveries, to easily
+upgrade already deployed systems and
 to manage versions of the same database objects.<br>
 <br>
 <em><strong>Patching</strong></em><strong></strong><br>
 <br>
-DDM has support for patching existing versions thus providing support to already existing deployments. T
-he need for patching comes when in an already deployed version bugs were identified, however there is no real
+DDM has support for patching existing versions thus providing support
+to already existing deployments. The need for patching comes when in an already deployed version bugs
+were identified, however there is no real
 business need to upgrade the entire site to a newer version. <br>
 <br>
-After releasing a version (1.0) this version gets locked in a normal lock stage (yellow lock icon) meaning the
+After releasing a version (1.0) this version gets locked in a normal
+lock stage (yellow lock icon) meaning the
 elements of this version can be patched. This is done like:<br>
+<br>- Right click a locked element in v1.0 and select "Unlock". This
+will
+unlock the element in 1.0 (also will create
+a "Patch" object for the version and a new "Patch" window should appear
+on the screen with the newly created patch name and the unlocked
+element(s) ). <br>
+- The user can modify the element or re-lock it (this will revert the
+element and remove the copy from the patch).
+If there are no more elements in the patch the patch item will be
+removed from the gui.<br>
 <br>
-- Right click a locked element in v1.0 and select "Unlock". This will unlock the element in 1.0 (also will create
-a "Patch" object for the version and internally will create a copy of the original element to the patch section
-of the version just in case the user wants to re-lock it). <br>
-- 
-The user can modify the element or re-lock it (this will revert the element and remove the copy from the patch).
-If there are no more elements in the patch the patch item will be removed from the gui.<br>
+Deleting elements in released versions conforms to the deletion
+procedure in current versions. Users cannot delete
+tables which were specialized unless all the specialized tables are
+deleted. Users cannot delete tables which are
+referenced by foreign keys. When deleting table instances which
+instantiated other table instances the automatically
+instantiated instances will also be deleted. The user gets visual
+feedback in the patch tree, all the elements that
+were automatically deleted will appear under the deleted item with the
+deletion indicator. Users can undelete
+deleted table instances from their context menu in the patch window.
+This will restore all the automatically
+deleted objects however we cannot guarantee that the order of elements
+will be as before deletion.<br>
 <br>
-Deleting elements in released versions conforms to the deletion procedure in current versions. Users cannot delete
-tables which were specialized unless all the specialized tables are deleted. Users cannot delete tables which are
-referenced by foreign keys. When deleting table instances which instantiated other table instances the automatically
-instantiated instances will also be deleted. The user gets visual feedback in the patch tree, all the elements that
-were automatically deleted will appear under the deleted item with the deletion indicator. Users can undelete
-deleted table instances from their context menu in the patch window. This will restore all the automatically
-deleted objects however we cannot guarantee that the order of elements will be as before deletion.<br>
-  When the user is done modifying the locked element he either can:<br>
-  1. modify more elements<br>
-  2. release a Minor version by releasing the "Patch", meaning (from the GUI, Patch window, context menu):
-  <br>
-  - 
-  Create a copy of the major version the user worked on (ie: a normal cloneInto) and set the correct version number.<br>
-  - incorporate all the changes from the patch into the copy major version (yes, overwrite the elements of the copy major version only)<br>
-  - Add a new major version to to the tree 1.1 right after 1.0 (and also in the saved XML)<br>
-  Version 1.0 gets locked again, the user cannot modify it anymore, all the changes he must do on 1.1 but the XML
-  data for 1.0 is preserved for future update scripts<br>
-The user can choose whether to migrate the changes upwards to version 2.0 upon releasing. If the same element was
-modified in 2.0 the migration will not be completed, the user will get a warning.<br>
+When the user is done modifying the locked element he either can:<br>
+1. modify more elements (by unlocking them in the tree)<br>
+2. <span style="font-style: italic;"><span style="font-weight: bold;">R</span></span><span style="font-weight: bold; font-style: italic;">elease</span>
+a Minor version by releasing the "Patch", by selecting this option from
+the
+GUI, Patch window, Patch's context menu. This operation will add a new
+major version to to the tree 1.1 right after 1.0. Version 1.0 gets
+locked again (in a final lock stage, meaning Red icon in the project
+tree and unavailable GUI controls for editing), the user cannot modify
+it anymore, all
+the further patches must be done on 1.1. <br>
 <br>
 <strong><em> Version locking</em></strong><br>
 <br>
 A version in DDM can be in the following lock stages:<br>
 <br>
-<em>Current version</em>. This version is the one the user by default works with. All the default actions the user
-performs from the main toolbar or the application menu are effective in the current version. I.e. if the user presses
-the new table button (while having other versions with or without patches) the table will be created in the current
-working version. In the project tree the current version is marked with a bold label and a standard version icon.
-If there are no released  versions thetree item is not bold.<br>
-<em>Released version</em>. This is the version the user just released. The tree indicator has a yellow lock icon.
-The user can create a patch in this version. The user has the possibilty to add new elements to this version and also delete objects from this version via a patch.<br>
-<em>Fianlized version</em>. This is a version that was patched. The user cannot modify any element in this version</P>
-</BODY>
-</HTML>
+<em>Current version</em>. This version is the one the user by default
+works with. All the default actions the user
+performs from the main toolbar or the application menu are effective in
+the current version. I.e. if the user presses
+the new table button (while having other versions with or without
+patches) the table will be created in the current
+working version. In the project tree the current version is marked with
+a standard version icon.
+If there are no released versions thetree item is not bold.<br>
+<br>
+<em>Released version</em>. This is the version the user just released.
+The tree indicator has a yellow lock icon with italic text.
+The user can create a patch in this version. The user has the
+possibilty to add new elements to this version and also delete objects
+from this version via a patch.<br>
+<br>
+<em>Finalized version</em>. This is a version that was patched. The
+user cannot modify any element in this version. The GUI indicatior of a
+finalized version is a red icon with pale grey italic text. The GUI of
+the properties elements in a final version is read only.<br>
+<br>
+<span style="font-style: italic;"><span style="font-weight: bold;">Update<br>
+</span><br>
+</span>There is the possibilty to generate update scripts from one version to the another. See <a href="upd.html">this</a> document.<br>
+</font></p>
+
+</body></html>

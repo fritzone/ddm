@@ -73,6 +73,7 @@ public slots:
     void onChangeName(QString);
     void onLockUnlock(bool);
     void onUndelete();
+    void onInstantiate();
 
     // on the columns page
     void onAddColumn();

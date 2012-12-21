@@ -1,28 +1,75 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML>
-<HEAD>
-	<STYLE TYPE="text/css">
+<html><head><title>Table Instances</title>
+
+  
+
+  
+  
+  <style type="text/css">
 	<!--
 		P { border: 1px solid #000000; padding: 0.02in }
 	-->
-	</STYLE>
-</HEAD>
-<BODY LANG="en-US" BGCOLOR="white" DIR="LTR">
-<P ALIGN=CENTER STYLE="margin-bottom: 0in; background: white; border: none; padding: 0in; font-style: normal; line-height: 115%; text-decoration: none">
-<FONT COLOR="#000000" FACE="Arial" SIZE=3><B>Table instances</B></FONT></P>
-<P STYLE="margin-bottom: 0in; background: white; font-style: normal; font-weight: normal; line-height: 115%; text-decoration: none">
-<FONT COLOR="#000000" FACE="Arial" SIZE=2 STYLE="font-size: 11pt">When working in an object oriented modelling project, the table instances are being created from a table template:<br>
-- 
-in the project tree right click on the table template, choose Instantiate, or<br>
-- Click the &quot;New Table Instance&quot; tool button and in the new dialog box check all the table instance you need<br>
-- or Long click the &quot;New Table Instance&quot; button and from the popup select one table instance.<br>
-<br>
-The table instance screen can be used to create the startup values of the tables (ie, values that will be inserted in the tables right after the creation. There is the possibility to import values from CSV files, and also you can save the values for further reference into CSV files. These values will be appended in the table generation SQL script in form of INSERT INTO ... lines of code. In case your table contains an AUTO_INCREMENT column (MySQL tables) the GUI will allow you to specify the values, however the generated SQL script will NOT contain them to protect the integrity of the data.<BR>
-<BR>
-With the  <img src="add.png" alt="add" width="16" height="16"> button you insert a new row in the table, with the <img src="remove.png" alt="remove" width="16" height="16"> button you remove the currently selected row from the table. When you are done with inserting the data press the  <img src="apply.png" alt="apply" width="16" height="16"> button to validate the data that was entered by you, and pressthe "Save" button to save the data. Basic validation is done at this, there are some basic error checkings, such as do not enter a string value for a numeric field, but the more complex validations are reserverd for future releases of the application. <br>
-<br>
- When you are instantiating a table that has a foreign key reference to another table the other table will be instantiated also (I call this phenomenon: one table pulled in another table in the instantiation), and in the project tree it will get a specific marking: <img src="tabinstlock.png" width="16" height="16"> ie. the icon of the table instance (<img src="tabinst.png" width="16" height="16">) with a small black dot. When you delete a table instance which pulled in other tables being instantiated will also delete the pulled in tables, and you cannot delete a pulled in table without deleting the table which pulled it in.</FONT><br>
-</P>
+	</style></head><body dir="ltr" style="background-color: white;" lang="en-US">
+<p style="border: medium none ; padding: 0in; background: white none repeat scroll 0% 50%; margin-bottom: 0in; -moz-background-clip: -moz-initial; -moz-background-origin: -moz-initial; -moz-background-inline-policy: -moz-initial; font-style: normal; line-height: 115%; text-decoration: none;" align="center">
+<font color="#000000" face="Arial" size="3"><b>Table instances</b></font></p>
 
-</BODY>
-</HTML>
+<p style="background: white none repeat scroll 0% 50%; margin-bottom: 0in; -moz-background-clip: -moz-initial; -moz-background-origin: -moz-initial; -moz-background-inline-policy: -moz-initial; font-style: normal; font-weight: normal; line-height: 115%; text-decoration: none;">
+<font style="font-size: 11pt;" color="#000000" face="Arial" size="2">When
+working in an object oriented modelling project, the table instances
+are being created from a table template:<br>
+<br>
+- in the project tree right click on the table template, choose
+Instantiate, or<br>
+- Click the "New Table Instance" tool button and in the new dialog box
+check all the table instance you need<br>
+- or Long click the "New Table Instance" button and from the popup
+select one table instance.<br>
+- or click the "Instantiate table" next to the table name in the Table properties window <br>
+<br>
+The table instance screen can be used to create the startup values of
+the tables (ie, values that will be inserted in the tables right after
+the creation. There is the possibility to import values from CSV files,
+and also you can save the values for further reference into CSV files.
+These values will be appended in the table generation SQL script in
+form of INSERT INTO ... lines of code. In case your table contains an
+AUTO_INCREMENT column (MySQL tables) the GUI will allow you to specify
+the values, however the generated SQL script will NOT contain them to
+protect the integrity of the data.<br>
+<br>
+With the <img src="add.png" alt="add" height="16" width="16"> button
+you insert a new row in the table, with the <img src="remove.png" alt="remove" height="16" width="16"> button you remove the currently
+selected row from the table. When you are done with inserting the data
+press the <img src="apply.png" alt="apply" height="16" width="16">
+
+
+button to validate the data that was entered by you. 
+Basic validation is done at this stage, there
+are some basic error checkings, such as do not enter a string value for
+a numeric field, but the more complex validations are reserverd for
+future releases of the application. The data is saved automatically during the input.<br>
+<br>
+When you are instantiating a table that has a foreign key reference to
+another table the other table will be instantiated also, but only if
+there are no other instances of that table (I call this phenomenon: one
+table pulled in another table in the instantiation), and in the project
+tree it will get a specific marking: <img src="tabinstlock.png" height="16" width="16"> ie. the icon of the table instance (<img src="tabinst.png" height="16" width="16">) with a small yellow lock
+icon. When you delete a table instance which pulled in other tables
+being instantiated will also delete the pulled in tables, and you
+cannot delete a pulled in table without deleting the table which pulled
+it in. <span style="font-style: italic; font-weight: bold;">WARNING</span>
+Do not change the name of the table instances if they contain foreign
+keys otherwise the SQL script that will be generated will refer to an
+invalid table. We know about this limitation of the application, and we
+are working hard to fix it. The reason is that the Foreign Keys are
+attached to the table at the current stage, not the table instance.<br>
+<br>
+A typical confusion among first time users of the tool is that they
+create a table <span style="font-style: italic;">template </span>and
+then they expect to see its SQL in the deployment script, however the
+SQLs of the tables that are being deployed are created based on the
+table <span style="font-style: italic;">instances</span> so always
+instantiate a table template when you are done with the layout of the
+table.</font><br>
+</p>
+
+</body></html>
