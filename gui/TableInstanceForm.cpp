@@ -13,6 +13,7 @@
 #include "SpInstance.h"
 #include "GuiElements.h"
 #include "uids.h"
+#include "ForeignKey.h"
 
 #include <QLineEdit>
 
@@ -22,6 +23,8 @@ TableInstanceForm::TableInstanceForm(QWidget *parent) :
 {
     ui->setupUi(this);
     ui->btnImportValues->hide();
+    ui->tabWidget->setCurrentIndex(0);
+    m_signalMapperForFKTinstCombos = new QSignalMapper(this);
 }
 
 TableInstanceForm::~TableInstanceForm()
@@ -281,7 +284,7 @@ void TableInstanceForm::onLockUnlock(bool checked)
     if(checked)
     {
         ui->btnLock->setIcon(IconFactory::getUnLockedIcon());
-        ui->grpContent->setEnabled(true);
+        ui->grpContentMain->setEnabled(true);
         m_tinst->unlock();
         m_tinst->updateGui();
         ui->btnLock->setToolTip(QObject::tr("This table instance is <b>unlocked</b>. Click this button to lock it."));
@@ -291,7 +294,7 @@ void TableInstanceForm::onLockUnlock(bool checked)
     else
     {
         ui->btnLock->setIcon(IconFactory::getLockedIcon());
-        ui->grpContent->setEnabled(false);
+        ui->grpContentMain->setEnabled(false);
         m_tinst->lock(LockableElement::LOCKED);
         m_tinst->updateGui();
         ui->btnLock->setToolTip(QObject::tr("This table instance is <b>locked</b>. Click this button to unlock it."));
@@ -306,6 +309,8 @@ void TableInstanceForm::disableEditingControls(bool dis)
     ui->btnAddNewDefaultRow->setDisabled(dis);
     ui->btnImportValues->setDisabled(dis);
     ui->btnDeleteRow->setDisabled(dis);
+    ui->values->setDisabled(dis);
+    ui->lineEdit->setDisabled(dis);
 }
 
 void TableInstanceForm::setTableInstance(TableInstance *st)
@@ -314,7 +319,40 @@ void TableInstanceForm::setTableInstance(TableInstance *st)
     ui->btnUndelete->hide();
     ui->lineEdit->setText(m_tinst->getName());
 
-    // TODO: Duplicate from the other forms
+    // fill in the foreign keys
+    Table* t = st->table();
+    const QVector<ForeignKey*> &fks = t->getForeignKeys();
+    for(int i=0; i<fks.size(); i++)
+    {
+        QTreeWidgetItem* item = new QTreeWidgetItem(QStringList(fks[i]->getName()));
+        item->setIcon(0, IconFactory::getForeignKeyIcon());
+
+        QComboBox* cmbGoesToTable = new QComboBox(0);
+        cmbGoesToTable->setAutoFillBackground(true);
+        // find all the table instances instantiated from fks[i]->getForeingTable()
+
+        const QVector<TableInstance*> &otherTinsts = st->version()->getTableInstances();
+
+        for(int j=0; j<otherTinsts.size(); j++)
+        {
+            TableInstance* tabInstJ = otherTinsts.at(j);
+            if(tabInstJ->table()->getObjectUid() == fks[i]->getForeignTable()->getObjectUid())  // same tab
+            {
+                cmbGoesToTable->addItem(IconFactory::getTableIcon(), tabInstJ->getName());
+            }
+        }
+        ui->treeWidget->addTopLevelItem(item);
+        ui->treeWidget->setItemWidget(item, 1, cmbGoesToTable);
+
+        m_combos.insert(fks[i]->getName(), cmbGoesToTable);
+        connect(cmbGoesToTable, SIGNAL(activated(QString)), m_signalMapperForFKTinstCombos, SLOT(map()));
+        m_signalMapperForFKTinstCombos->setMapping(cmbGoesToTable, fks[i]->getName());
+//        // TODO: This is pretty ugly, it will call the slot several times. find a better location for this in the code
+        connect(m_signalMapperForFKTinstCombos, SIGNAL(mapped(const QString&)), this, SLOT(onTInstSelectedForFk(const QString&)));
+
+    }
+
+    // TODO: Duplicate from the other forms ... more or less
     if(!m_tinst->wasLocked())
     {
         if(m_tinst->isDeleted())
@@ -368,6 +406,13 @@ void TableInstanceForm::setTableInstance(TableInstance *st)
     }
 }
 
+void TableInstanceForm::onTInstSelectedForFk(const QString& d)
+{
+    if(m_tinst)
+    {
+        m_tinst->setFkMappingToTinst(d, m_combos[d]->currentText());
+    }
+}
 
 void TableInstanceForm::onUndelete()
 {

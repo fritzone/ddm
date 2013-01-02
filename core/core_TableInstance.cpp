@@ -335,3 +335,8 @@ QVector <QVector<ColumnWithValue*> > TableInstance::getFullValues()
 
     return result;
 }
+
+void TableInstance::setFkMappingToTinst(const QString& fkName, const QString& destTinst)
+{
+    m_fkMappings[fkName] = destTinst;
+}
