@@ -2,8 +2,11 @@
 #define TABLEINSTANCEFORM_H
 
 #include <QWidget>
+#include <QSignalMapper>
+#include <QMap>
 
 class TableInstance;
+class QComboBox;
 
 namespace Ui {
     class TableInstanceForm;
@@ -32,6 +35,10 @@ public slots:
     void onUndelete();
     void onChangeName(QString t);
 
+private slots:
+
+    void onTInstSelectedForFk(const QString&);
+
 protected:
     void changeEvent(QEvent *e);
 
@@ -42,6 +49,9 @@ private:
     Ui::TableInstanceForm *ui;
     TableInstance* m_tinst;
     bool m_populated;
+    QSignalMapper* m_signalMapperForFKTinstCombos;
+    QMap<QString, QComboBox*> m_combos;
+
 };
 
 #endif // TABLEINSTANCEFORM_H

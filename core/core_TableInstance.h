@@ -130,6 +130,7 @@ public:
 
     virtual QString getSqlHash() const { return "N/A"; }
 
+    void setFkMappingToTinst(const QString& fkName, const QString& destTinst);
 
 private:
 
@@ -159,8 +160,10 @@ private:
 
     // this maps a foreign key of the table of this tabe instance in a way that
     // the source table of the FK will be this tab instance, the target table of it will be
-    // the Table Instance in the map. Used when the user renamed a table instance
-    QMap<ForeignKey*, TableInstance*> m_fkMappings;
+    // the Table Instance in the map. Used when the user renamed a table instance.
+    // First QString: The name of the foreign key
+    // Second QString: The name of the table instance
+    QMap<QString, QString> m_fkMappings;
 
 };
 
