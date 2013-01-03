@@ -7,6 +7,7 @@
 #include "IconFactory.h"
 #include "core_Column.h"
 #include "ContextMenuCollection.h"
+#include "ForeignKey.h"
 
 TableInstance::TableInstance(Table *tab, bool ref, const QString& uid, Version *v) : TreeItem(),
     NamedItem(tab->getName()), ObjectWithUid(uid, v),
@@ -52,6 +53,7 @@ void TableInstance::serialize(QDomDocument &doc, QDomElement &parent) const
     tableInstanceElement.setAttribute("locked", lockState() == LockableElement::LOCKED);
     tableInstanceElement.setAttribute("was-locked", wasLocked());
 
+    // The referencing tables
     {
     QString refTables = "";
     for(int i=0; i<m_referencingTables.size(); i++)
@@ -65,6 +67,7 @@ void TableInstance::serialize(QDomDocument &doc, QDomElement &parent) const
     tableInstanceElement.setAttribute("ReferencingTables", refTables);
     }
 
+    // The Instantiated Table Instances
     {
     QString instantiatedTablesInstances = "";
     for(int i=0; i<m_instantiatedTablesInstances.size(); i++)
@@ -78,8 +81,9 @@ void TableInstance::serialize(QDomDocument &doc, QDomElement &parent) const
     tableInstanceElement.setAttribute("InstantiatedTableInstances", instantiatedTablesInstances);
     }
 
+    // The Columns
+    {
     QVector<QString> cols = columns();
-
     for(int i=0; i<cols.size(); i++)
     {
         QDomElement column = doc.createElement("Column");
@@ -93,7 +97,20 @@ void TableInstance::serialize(QDomDocument &doc, QDomElement &parent) const
         }
         tableInstanceElement.appendChild(column);
     }
+    }
 
+    // The Foreign Key Mappings
+    {
+        QDomElement fkMap = doc.createElement("FkMappings");
+        for(int i=0; i<m_fkMappings.keys().size(); i++)
+        {
+            QDomElement fkEntry = doc.createElement("FkEntry");
+            fkEntry.setAttribute("FK", m_fkMappings.keys().at(i));
+            fkEntry.setAttribute("TINST", m_fkMappings[m_fkMappings.keys().at(i)]);
+            fkMap.appendChild(fkEntry);
+        }
+        tableInstanceElement.appendChild(fkMap);
+    }
     parent.appendChild(tableInstanceElement);
 }
 
@@ -101,7 +118,7 @@ QStringList TableInstance::generateSqlSource(AbstractSqlGenerator *generator, QH
 {
     QStringList result;
     m_table->restartSqlRendering();
-    result << generator->generateCreateTableSql(m_table, opts, getName(), dest);
+    result << generator->generateCreateTableSql(m_table, opts, getName(), m_fkMappings, dest);
     // and now the default values as "inserts"
     result << generator->generateDefaultValuesSql(this, opts);
     return result;
@@ -216,6 +233,8 @@ QVector <QVector<ColumnWithValue*> > TableInstance::getValues(QVector<ColumnWith
             Column* c = columns.at(i)->column;
             const QVector<QString>& fromColVs = values()[c->getName()];
             size = size>fromColVs.size()?size:fromColVs.size();
+            if(fromColVs.isEmpty()) continue;
+
             if(fromColVs[ctr] == columns.at(i)->value || columns.at(i)->value.isEmpty())
             {
                 ColumnWithValue* ftcWv = new ColumnWithValue;
@@ -232,7 +251,7 @@ QVector <QVector<ColumnWithValue*> > TableInstance::getValues(QVector<ColumnWith
             }
         }
         ctr++;
-        if(ctr == size)
+        if(ctr >= size)
         {
             break;
         }
@@ -293,13 +312,15 @@ QVector <QVector<ColumnWithValue*> > TableInstance::getFullValues()
 
             const QVector<QString>& fromColVs = values()[c->getName()];
             size = size>fromColVs.size()?size:fromColVs.size();
+            if(fromColVs.isEmpty()) continue;
+
             ColumnWithValue* ftcWv = new ColumnWithValue;
             ftcWv->column = c;
             ftcWv->value = fromColVs[ctr];
             vecPks.append(ftcWv);
         }
         ctr++;
-        if(ctr == size)
+        if(ctr >= size)
         {
             break;
         }
@@ -339,4 +360,75 @@ QVector <QVector<ColumnWithValue*> > TableInstance::getFullValues()
 void TableInstance::setFkMappingToTinst(const QString& fkName, const QString& destTinst)
 {
     m_fkMappings[fkName] = destTinst;
+}
+
+QString TableInstance::getReferencingTables() const
+{
+    QString result = "";
+    for(int i=0; i<m_referencingTables.size(); i++)
+    {
+        result += m_referencingTables.at(i)->getName();
+        result += " ";
+    }
+    return result;
+}
+
+bool TableInstance::finalizeFkMappings(QVector<QString>& failedFks)
+{
+    Table* t = table();
+    bool result = false;
+    const QVector<ForeignKey*> &fks = t->getForeignKeys();
+    for(int i=0; i<fks.size(); i++)
+    {
+        const QVector<TableInstance*> &otherTinsts = version()->getTableInstances();
+        QString first = "";
+
+        for(int j=0; j<otherTinsts.size(); j++)
+        {
+            TableInstance* tabInstJ = otherTinsts.at(j);
+            if(tabInstJ->table()->getObjectUid() == fks[i]->getForeignTable()->getObjectUid())  // same tab
+            {
+                if(first.isEmpty()) first = tabInstJ->getName();
+            }
+        }
+        if(!first.isEmpty())
+        {
+            if(!hasFkMappingFor(fks[i]->getName()))
+            {
+                setFkMappingToTinst(fks[i]->getName(), first);
+            }
+            result = true;
+        }
+        else
+        {
+            failedFks.append(fks[i]->getName());
+            result = false;
+        }
+
+    }
+    return result;
+}
+
+void TableInstance::updateFksDueToTInstRename(const QString& oldName, const QString& newName)
+{
+    for(int i=0; i<m_fkMappings.keys().size(); i++)
+    {
+        if(m_fkMappings[m_fkMappings.keys()[i]] == oldName)
+        {
+            m_fkMappings[m_fkMappings.keys()[i]] = newName;
+        }
+    }
+}
+
+void TableInstance::onRename(const QString &oldName, const QString &newName)
+{
+    // walk through the version, and for all the other table instances call the updateFksDueToTInstRename();
+    const QVector<TableInstance*> otherInstances = version()->getTableInstances();
+    for(int i=0; i<otherInstances.size(); i++)
+    {
+        if(otherInstances[i]->getObjectUid() != getObjectUid())
+        {
+            otherInstances[i]->updateFksDueToTInstRename(oldName, newName);
+        }
+    }
 }

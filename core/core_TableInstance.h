@@ -71,13 +71,11 @@ public:
 
     void sentence()
     {
-//        qDebug() <<  "sentece " << getName();
         m_sentenced = true;
     }
 
     void unSentence()
     {
-//        qDebug() <<  "unsentece " << getName();
         m_sentenced = false;
     }
 
@@ -86,16 +84,7 @@ public:
         return m_sentenced;
     }
 
-    QString getReferencingTables() const
-    {
-        QString result = "";
-        for(int i=0; i<m_referencingTables.size(); i++)
-        {
-            result += m_referencingTables.at(i)->getName();
-            result += " ";
-        }
-        return result;
-    }
+    QString getReferencingTables() const;
 
     void addColumn(const QString& colName);
 
@@ -127,10 +116,33 @@ public:
     QVector <QVector<ColumnWithValue*> > getValues(QVector<ColumnWithValue*> columns);
     QVector <QVector<ColumnWithValue*> > getFullValues();
 
-
     virtual QString getSqlHash() const { return "N/A"; }
 
     void setFkMappingToTinst(const QString& fkName, const QString& destTinst);
+    bool hasFkMappingFor(const QString& fkName)
+    {
+        return m_fkMappings.contains(fkName);
+    }
+
+    void setFkMappings(const QMap<QString, QString>& mappings)
+    {
+        m_fkMappings = mappings;
+    }
+
+    bool finalizeFkMappings(QVector<QString> &failedFks);
+
+    QString getTinstForFk(const QString& fkName)
+    {
+        if(m_fkMappings.contains(fkName))
+        {
+            return m_fkMappings[fkName];
+        }
+        return "";
+    }
+
+    void updateFksDueToTInstRename(const QString& oldName, const QString& newName);
+
+    void onRename(const QString &oldName, const QString &newName);
 
 private:
 

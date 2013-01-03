@@ -16,7 +16,7 @@
 #include "core_Connection.h"
 #include "Configuration.h"
 
-QStringList MySQLSQLGenerator::generateCreateTableSql(Table *table, const QHash<QString, QString> &options, const QString& tabName, const Connection* dest) const
+QStringList MySQLSQLGenerator::generateCreateTableSql(Table *table, const QHash<QString, QString> &options, const QString& tabName, const QMap<QString, QString> &fkMappings, const Connection* dest) const
 {
     // do not generate any code for a table which has no columns
     if(table->fullColumns().size() == 0) return QStringList();
@@ -201,6 +201,14 @@ QStringList MySQLSQLGenerator::generateCreateTableSql(Table *table, const QHash<
 
         ForeignKey* fkI = table->getForeignKeys().at(i);
         foreignKeysTable = fkI->getForeignTableName();
+        if(fkMappings.contains(fkI->getName()))
+        {
+            QString fkTabInst = fkMappings[fkI->getName()];
+            if(!fkTabInst.isEmpty())
+            {
+                foreignKeysTable = fkTabInst;
+            }
+        }
         for(int j=0; j<fkI->getAssociations().size(); j++)
         {
 

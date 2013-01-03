@@ -41,7 +41,12 @@ public:
      * foreign keys for this table.
      *
      */
-    virtual QStringList generateCreateTableSql(Table* table, const QHash<QString, QString>& options, const QString& tabName, const Connection* dest) const = 0;
+    virtual QStringList generateCreateTableSql(
+            Table* table,
+            const QHash<QString, QString>& options,
+            const QString& tabName,
+            const QMap<QString, QString>& fkMappings,
+            const Connection* dest) const = 0;
 
     /**
      * Generates a list of "Insert Into" sqls for the given table instance, one for each row in the default values.
