@@ -266,102 +266,106 @@ TableUpdateGenerator::TableUpdateGenerator(Table *t1, Table *t2, DatabaseEngine*
         m_commands.append(dbEngine->getSqlGenerator()->getAlterTableForColumnChange(t2->getName(), changedColumns[i]));
     }
 
-    // now find all the dropped foreign keys (ie: foreign keys that are there in T1 and not in T2)
-    QVector<ForeignKey*> droppedFksFromT2;
-    const QVector<ForeignKey*>& fksOfT1 = t1->getForeignKeys();
-    for(int i=0; i<fksOfT1.size(); i++)
+    // now find all the dropped foreign keys (ie: foreign keys that are there in T1 and not in T2) but only if not an OOP project
+    if(!t2->version()->getProject()->oopProject())
     {
-        bool foundARelatedFk = false;
-        const QVector<ForeignKey*>& fksOfT2 = t2->getForeignKeys();
-        for(int j=0; j<fksOfT2.size(); j++)
-        {
-            if(UidWarehouse::instance().related(fksOfT1[i], fksOfT2[j]))
-            {
-                foundARelatedFk = true;
-                break;
-            }
-        }
-        if(!foundARelatedFk)
-        {
-            droppedFksFromT2.append(fksOfT1[i]);
-        }
-    }
-
-    // and generate the required SQL commands for dropping a foreign key
-    for(int i=0; i<droppedFksFromT2.size(); i++)
-    {
-//        m_droppedForeignKeys.append("-- foreign key " + droppedFksFromT2[i]->getName() + " was dropped");
-        m_droppedForeignKeys << dbEngine->getSqlGenerator()->getAlterTableForDropForeignKey(t2->getName(), droppedFksFromT2[i]);
-    }
-
-    // now search for NEW foreign keys
-    QStringList newFksFromT2;
-    const QVector<ForeignKey*>& fksOfT2 = t2->getForeignKeys();
-    for(int i=0; i<fksOfT2.size(); i++)
-    {
-        bool foundARelatedFk = false;
+        QVector<ForeignKey*> droppedFksFromT2;
         const QVector<ForeignKey*>& fksOfT1 = t1->getForeignKeys();
-        for(int j=0; j<fksOfT1.size(); j++)
+        for(int i=0; i<fksOfT1.size(); i++)
         {
-            if(UidWarehouse::instance().related(fksOfT2[i], fksOfT1[j]))
+            bool foundARelatedFk = false;
+            const QVector<ForeignKey*>& fksOfT2 = t2->getForeignKeys();
+            for(int j=0; j<fksOfT2.size(); j++)
             {
-                foundARelatedFk = true;
-                break;
-            }
-        }
-        if(!foundARelatedFk)
-        {
-            newFksFromT2.append(fksOfT2[i]->getName());
-        }
-    }
-    for(int k=0; k<newFksFromT2.size(); k++)
-    {
-//        m_newForeignKeys.append("-- foreign key " + newFksFromT2[k] + " was created");
-        // creating the FOREIGN KEY sql(s)...
-        for(int i=0; i<t2->getForeignKeys().size(); i++)
-        {
-            ForeignKey* fkI = t2->getForeignKeys().at(i);
-
-            if(newFksFromT2.contains(fkI->getName()))
-            {
-                // just pre-render the SQL for foreign keys
-                QString foreignKeySql1 = "";
-                QString foreignKeySql2 = "";
-
-                QString foreignKeysTable = fkI->getForeignTableName();
-                for(int j=0; j<fkI->getAssociations().size(); j++)
+                if(UidWarehouse::instance().related(fksOfT1[i], fksOfT2[j]))
                 {
-
-                    ForeignKey::ColumnAssociation* assocJ = fkI->getAssociations().at(j);
-                    foreignKeySql1 += assocJ->getLocalColumn()->getName();
-                    foreignKeySql2 += assocJ->getForeignColumn()->getName();
-
-                    if(j < fkI->getAssociations().size() - 1)
-                    {
-                        foreignKeySql1 += ", ";
-                        foreignKeySql2 += ", ";
-                    }
+                    foundARelatedFk = true;
+                    break;
                 }
-                QString foreignKeySql = " CONSTRAINT " + fkI->getName() + " FOREIGN KEY (";
-                foreignKeySql += foreignKeySql1;
-                foreignKeySql += ") REFERENCES ";
-                foreignKeySql += foreignKeysTable;
-                foreignKeySql += "(" + foreignKeySql2 + ")";
-                QString t = fkI->getOnDelete();
-                if(t.length() > 0) foreignKeySql += QString(" ") + ("ON DELETE ") + (t);
-                t = fkI->getOnUpdate();
-                if(t.length() > 0) foreignKeySql += QString(" ") + ("ON UPDATE ") + (t);
+            }
+            if(!foundARelatedFk)
+            {
+                droppedFksFromT2.append(fksOfT1[i]);
+            }
+        }
 
-                // TODO: This is just MySQL for now
-                QString f = "ALTER TABLE ";
-                f += t2->getName();
-                f += " ADD ";
-                f += foreignKeySql;
-                m_newForeignKeys.append(f);
+        // and generate the required SQL commands for dropping a foreign key
+        for(int i=0; i<droppedFksFromT2.size(); i++)
+        {
+    //        m_droppedForeignKeys.append("-- foreign key " + droppedFksFromT2[i]->getName() + " was dropped");
+            m_droppedForeignKeys << dbEngine->getSqlGenerator()->getAlterTableForDropForeignKey(t2->getName(), droppedFksFromT2[i]);
+        }
+
+        // now search for NEW foreign keys
+        QStringList newFksFromT2;
+        const QVector<ForeignKey*>& fksOfT2 = t2->getForeignKeys();
+        for(int i=0; i<fksOfT2.size(); i++)
+        {
+            bool foundARelatedFk = false;
+            const QVector<ForeignKey*>& fksOfT1 = t1->getForeignKeys();
+            for(int j=0; j<fksOfT1.size(); j++)
+            {
+                if(UidWarehouse::instance().related(fksOfT2[i], fksOfT1[j]))
+                {
+                    foundARelatedFk = true;
+                    break;
+                }
+            }
+            if(!foundARelatedFk)
+            {
+                newFksFromT2.append(fksOfT2[i]->getName());
+            }
+        }
+        for(int k=0; k<newFksFromT2.size(); k++)
+        {
+    //        m_newForeignKeys.append("-- foreign key " + newFksFromT2[k] + " was created");
+            // creating the FOREIGN KEY sql(s)...
+            for(int i=0; i<t2->getForeignKeys().size(); i++)
+            {
+                ForeignKey* fkI = t2->getForeignKeys().at(i);
+
+                if(newFksFromT2.contains(fkI->getName()))
+                {
+                    // just pre-render the SQL for foreign keys
+                    QString foreignKeySql1 = "";
+                    QString foreignKeySql2 = "";
+
+                    QString foreignKeysTable = fkI->getForeignTableName();
+                    for(int j=0; j<fkI->getAssociations().size(); j++)
+                    {
+
+                        ForeignKey::ColumnAssociation* assocJ = fkI->getAssociations().at(j);
+                        foreignKeySql1 += assocJ->getLocalColumn()->getName();
+                        foreignKeySql2 += assocJ->getForeignColumn()->getName();
+
+                        if(j < fkI->getAssociations().size() - 1)
+                        {
+                            foreignKeySql1 += ", ";
+                            foreignKeySql2 += ", ";
+                        }
+                    }
+
+                    // TODO: This is duplicate and is MYSQL specific
+                    QString foreignKeySql = " CONSTRAINT " + fkI->getName() + " FOREIGN KEY (";
+                    foreignKeySql += foreignKeySql1;
+                    foreignKeySql += ") REFERENCES ";
+                    foreignKeySql += foreignKeysTable;  // Not an OOP project, it is ok
+                    foreignKeySql += "(" + foreignKeySql2 + ")";
+                    QString t = fkI->getOnDelete();
+                    if(t.length() > 0) foreignKeySql += QString(" ") + ("ON DELETE ") + (t);
+                    t = fkI->getOnUpdate();
+                    if(t.length() > 0) foreignKeySql += QString(" ") + ("ON UPDATE ") + (t);
+
+                    // TODO: This is just MySQL for now
+                    QString f = "ALTER TABLE ";
+                    f += t2->getName();
+                    f += " ADD ";
+                    f += foreignKeySql;
+                    m_newForeignKeys.append(f);
+                }
             }
         }
     }
-
     // and now see if the project is NOT oop that the default values are updated too
     if(!vug) return;
     if(!t2->version()->getProject()->oopProject())

@@ -332,6 +332,7 @@ void TableInstanceForm::setTableInstance(TableInstance *st)
         // find all the table instances instantiated from fks[i]->getForeingTable()
 
         const QVector<TableInstance*> &otherTinsts = st->version()->getTableInstances();
+        QString first = "";
 
         for(int j=0; j<otherTinsts.size(); j++)
         {
@@ -339,6 +340,7 @@ void TableInstanceForm::setTableInstance(TableInstance *st)
             if(tabInstJ->table()->getObjectUid() == fks[i]->getForeignTable()->getObjectUid())  // same tab
             {
                 cmbGoesToTable->addItem(IconFactory::getTableIcon(), tabInstJ->getName());
+                if(first.isEmpty()) first = tabInstJ->getName();
             }
         }
         ui->treeWidget->addTopLevelItem(item);
@@ -347,9 +349,16 @@ void TableInstanceForm::setTableInstance(TableInstance *st)
         m_combos.insert(fks[i]->getName(), cmbGoesToTable);
         connect(cmbGoesToTable, SIGNAL(activated(QString)), m_signalMapperForFKTinstCombos, SLOT(map()));
         m_signalMapperForFKTinstCombos->setMapping(cmbGoesToTable, fks[i]->getName());
-//        // TODO: This is pretty ugly, it will call the slot several times. find a better location for this in the code
         connect(m_signalMapperForFKTinstCombos, SIGNAL(mapped(const QString&)), this, SLOT(onTInstSelectedForFk(const QString&)));
 
+        if(!st->hasFkMappingFor(fks[i]->getName()))
+        {
+            st->setFkMappingToTinst(fks[i]->getName(), first);
+        }
+        else
+        {
+            cmbGoesToTable->setCurrentIndex(cmbGoesToTable->findText(st->getTinstForFk(fks[i]->getName())));
+        }
     }
 
     // TODO: Duplicate from the other forms ... more or less

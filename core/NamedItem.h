@@ -39,7 +39,14 @@ public:
 
     void setName(const QString& name)
     {
+        onRename(m_name, name);
         m_name = name;
+    }
+
+    virtual void onRename(const QString& oldName, const QString& newName)
+    {
+        Q_UNUSED(oldName);
+        Q_UNUSED(newName);
     }
 
 protected:

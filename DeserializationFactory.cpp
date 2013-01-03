@@ -1104,6 +1104,13 @@ Diagram* DeserializationFactory::createDiagram(Version* v, const QDomDocument &d
     return result;
 }
 
+/**
+ * @brief DeserializationFactory::createTableInstance - creates a new table instance
+ * @param v - the version
+ * @param element - the XML element
+ * @param secondStep - if this is the phase where the automatically "instantiated" table instances are being created or not
+ * @return - the table instance
+ */
 TableInstance* DeserializationFactory::createTableInstance(Version* v, const QDomDocument&, const QDomElement &element, bool secondStep)
 {
     QString name = element.attribute("Name");
@@ -1112,7 +1119,7 @@ TableInstance* DeserializationFactory::createTableInstance(Version* v, const QDo
     QString refTables = element.attribute("ReferencingTables");
     QString instantiatedTableInstances = element.attribute("InstantiatedTableInstances");
     QString uid = element.attribute("uid");
-    QString class_uid = element.attribute("class-uid");
+    QString class_uid = element.attribute("class-uid"); Q_UNUSED(class_uid);
     QString sourceUid = element.attribute("source-uid");
     QString locked = element.attribute("locked");
     QString wasLocked = element.attribute("was-locked");
@@ -1123,15 +1130,31 @@ TableInstance* DeserializationFactory::createTableInstance(Version* v, const QDo
     }
 
     QHash <QString, QVector<QString> > data;
+    QMap<QString, QString> fkMapping;
+
     for(int i=0; i<element.childNodes().count(); i++)
     {
-        QString colName = element.childNodes().at(i).toElement().attribute("Name");
-        QVector<QString> col;
-        for(int j=0; j<element.childNodes().at(i).toElement().childNodes().count(); j++)
+        if(element.childNodes().at(i).nodeName() == "Column")
         {
-            col.append(element.childNodes().at(i).toElement().childNodes().at(j).toElement().attribute("value"));
+            QString colName = element.childNodes().at(i).toElement().attribute("Name");
+            QVector<QString> col;
+            for(int j=0; j<element.childNodes().at(i).toElement().childNodes().count(); j++)
+            {
+                col.append(element.childNodes().at(i).toElement().childNodes().at(j).toElement().attribute("value"));
+            }
+            data[colName] = col;
         }
-        data[colName] = col;
+        else
+        if(element.childNodes().at(i).nodeName() == "FkMappings")
+        {
+            QDomElement el = element.childNodes().at(i).toElement();
+            for(int j =0; j<el.childNodes().count(); j++)
+            {
+                QString fkName = el.childNodes().at(j).toElement().attribute("FK");
+                QString tinstName = el.childNodes().at(j).toElement().attribute("TINST");
+                fkMapping[fkName] = tinstName;
+            }
+        }
     }
 
     if(secondStep)
@@ -1176,7 +1199,10 @@ TableInstance* DeserializationFactory::createTableInstance(Version* v, const QDo
         else result->unlock();
 
         result->forceSetWasLocked(wasLocked == "1");
-
+        result->setFkMappings(fkMapping);
+        QVector<QString> failedFks;
+        result->finalizeFkMappings(failedFks);
+        // fetch the FK mappings
         return result;
     }
 }
