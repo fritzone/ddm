@@ -105,6 +105,8 @@ public:
 
     virtual void keyPressEvent(QKeyEvent *e);
 
+    void showDataTypesList(Version *foundVersion);
+
 protected:
     virtual void closeEvent( QCloseEvent * event );
     virtual void changeEvent(QEvent *e);
@@ -218,7 +220,7 @@ private:
     NewTableForm* showExistingTable(Table*, Version *v);
 
     Connection* getRightClickedConnection();
-
+    Version* getRightClickedVersion();
     template <class T> T* getRightClickedObject();
     template <class T> void showNamedObjectList(showSomething s, const QVector<T*> items, const QIcon& icon, const QString& title);
 

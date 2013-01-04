@@ -494,15 +494,21 @@ QueryComponent* DeserializationFactory::createComponent(QueryComponent* parent, 
              {
                  QString col = element.attribute("Column");
                  QString tab = element.attribute("Table");
+                 QString tabInstance = element.attribute("TabInstance");
                  Table* t = v->getTable(tab);
                  if(!t)
                  {
                      return 0;
                  }
+                 TableInstance* tinst = v->getTableInstance(tabInstance);
                  Column* tcol = t->getColumn(col);
                  if(tcol == 0) tcol = t->getColumnFromParents(col);
                  if(tcol == 0) return 0;
-                 dynamic_cast<SingleExpressionQueryComponent*>(c)->setColumnAtGivenPosition(idx, tcol);
+                 ColumnOfTabWithTabInstance* coft = new ColumnOfTabWithTabInstance;
+                 coft->c = tcol;
+                 coft->tab = t;
+                 coft->tinst = tinst;
+                 dynamic_cast<SingleExpressionQueryComponent*>(c)->setColumnAtGivenPosition(idx, coft);
              }
              if(type == CELLTYPE_LITERAL)
              {
@@ -530,10 +536,25 @@ QueryComponent* DeserializationFactory::createComponent(QueryComponent* parent, 
 
     if(strClass == "TableQueryComponent")
     {
-        Table* t = v->getTable(componentNode.attribute("Name"));
-        if(t == 0) return 0;
+        QString tName = componentNode.attribute("Name");
 
-        c = new TableQueryComponent(t, parent, componentNode.attribute("level").toInt(), v);
+        bool tabInsteadOfTinst = false;
+        if(componentNode.hasAttribute("tabInstedOfTinst"))
+        {
+            tabInsteadOfTinst = componentNode.attribute("tabInstedOfTinst") == "1";
+        }
+        if(tabInsteadOfTinst)
+        {
+            Table* table = v->getTable(tName);
+            if(table == 0) return 0;
+            c = new TableQueryComponent(table, parent, componentNode.attribute("level").toInt(), v);
+        }
+        else
+        {
+            TableInstance* tinst = v->getTableInstance(tName);
+            if(tinst == 0) return 0;
+            c = new TableQueryComponent(tinst, parent, componentNode.attribute("level").toInt(), v);
+        }
         if(componentNode.hasAttribute("As"))
         {
             QString a = componentNode.attribute("As");

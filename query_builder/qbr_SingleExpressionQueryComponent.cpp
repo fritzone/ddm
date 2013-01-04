@@ -14,6 +14,7 @@
 #include "qbr_SelectQueryAsComponent.h"
 #include "strings.h"
 #include "uids.h"
+#include "core_TableInstance.h"
 #include <QDebug>
 
 SingleExpressionQueryComponent::SingleExpressionQueryComponent(QueryComponent* p, int l, Version *v): QueryComponent(p,l,v),
@@ -99,8 +100,14 @@ QString SingleExpressionQueryComponent::get() const
             switch(m_elements.at(i))
             {
             case CELLTYPE_COLUMN:
-                result += m_columnsAtGivenPosition[i]->getFullLocation();   // this goes into IssueOriginator! Beware!
+            {
+                QString t;
+                if(!m_columnsAtGivenPosition[i]->tinst) t= m_columnsAtGivenPosition[i]->tab->getName();
+                else t= m_columnsAtGivenPosition[i]->tinst->getName();
+                result += t + "." + m_columnsAtGivenPosition[i]->c->getName();   // this goes into IssueOriginator! Beware!
+
                 break;
+            }
             case CELLTYPE_FUNCTION:
                 result += m_functionInstantiationAtGivenPosition[i]->get();
                 break;
@@ -152,8 +159,9 @@ void SingleExpressionQueryComponent::serialize(QDomDocument& doc, QDomElement& p
         element.setAttribute("idx", i);
         if(m_elements.at(i) == CELLTYPE_COLUMN)
         {
-            element.setAttribute("Table", m_columnsAtGivenPosition[i]->getTable()->getName());
-            element.setAttribute("Column", m_columnsAtGivenPosition[i]->getName());
+            element.setAttribute("Table", m_columnsAtGivenPosition[i]->tab->getName());
+            element.setAttribute("Column", m_columnsAtGivenPosition[i]->c->getName());
+            element.setAttribute("TabInstance",m_columnsAtGivenPosition[i]->tinst?m_columnsAtGivenPosition[i]->tinst->getName():"");
         }
         if(m_elements.at(i) == CELLTYPE_LITERAL)
         {
@@ -192,7 +200,22 @@ CloneableElement* SingleExpressionQueryComponent::clone(Version *sourceVersion, 
 {
     SingleExpressionQueryComponent* newc = new SingleExpressionQueryComponent(m_parent, m_level, targetVersion);
     newc->m_elements = m_elements;
+    // the m_columnsAtGivenPosition has columns from sourceVersion but should be referring to the tables in the targetVersion
     newc->m_columnsAtGivenPosition = m_columnsAtGivenPosition;
+    for(int i=0; i<m_columnsAtGivenPosition.keys().size(); i++)
+    {
+        Table* sourceTable = m_columnsAtGivenPosition[m_columnsAtGivenPosition.keys().at(i)]->tab;
+        // find the table in the targetVersion which has sourceUid soruceTable.getObjectUid
+        Table* descTable = targetVersion->getDescendantTable(sourceTable);
+        TableInstance* descTinst = m_columnsAtGivenPosition[m_columnsAtGivenPosition.keys().at(i)]->tinst?
+                    targetVersion->getDescendantTableInstance(m_columnsAtGivenPosition[m_columnsAtGivenPosition.keys().at(i)]->tinst):0;
+        ColumnOfTabWithTabInstance* coft = new ColumnOfTabWithTabInstance;
+        coft->c = descTable->getDescendantColumn(m_columnsAtGivenPosition[m_columnsAtGivenPosition.keys().at(i)]->c);
+        coft->tab = descTable;
+        coft->tinst = descTinst;
+        newc->m_columnsAtGivenPosition[m_columnsAtGivenPosition.keys().at(i)] = coft;
+    }
+
     newc->m_functionsAtGivenPosition = m_functionsAtGivenPosition;
     newc->m_functionInstantiationAtGivenPosition = m_functionInstantiationAtGivenPosition;
     newc->m_typedValuesAtGivenPosition = m_typedValuesAtGivenPosition;
@@ -246,7 +269,7 @@ const DatabaseBuiltinFunction* SingleExpressionQueryComponent::getFunctionAt(int
     return 0;
 }
 
-const Column* SingleExpressionQueryComponent::getColumnAt(int i)
+const ColumnOfTabWithTabInstance* SingleExpressionQueryComponent::getColumnAt(int i)
 {
     if(m_columnsAtGivenPosition.contains(i)) return m_columnsAtGivenPosition[i];
     return 0;
@@ -441,9 +464,12 @@ void SingleExpressionQueryComponent::handleAction(const QString& action, QueryCo
         QString colName = t2.at(0);
         int index = t2.at(1).toInt();
         Table* tab = Workspace::getInstance()->workingVersion()->getTable(tabName);
+        TableInstance* tinst = 0;
         if(tab == 0)
         {
-            return;
+            tinst = Workspace::getInstance()->workingVersion()->getTableInstance(tabName);
+            tab = tinst->table();
+            if(tab == 0) return;
         }
         Column* c = tab->getColumn(colName);
         if(c == 0) c = tab->getColumnFromParents(colName);
@@ -451,7 +477,11 @@ void SingleExpressionQueryComponent::handleAction(const QString& action, QueryCo
         {
             return;
         }
-        m_columnsAtGivenPosition[index] = c;
+        ColumnOfTabWithTabInstance * coft = new ColumnOfTabWithTabInstance;
+        coft->c = c;
+        coft->tab = tab;
+        coft->tinst = tinst;
+        m_columnsAtGivenPosition[index] = coft;
 
         if(index < m_elements.size())   // let's see if we overwrote something
         {
@@ -571,10 +601,10 @@ bool SingleExpressionQueryComponent::hasAtLeastOneColumnSelected()
     return false;
 }
 
-QVector<const Column*> SingleExpressionQueryComponent::getColumns()
+QVector<const ColumnOfTabWithTabInstance*> SingleExpressionQueryComponent::getColumns()
 {
-    QVector<const Column*> result;
-    QMap<int, const Column*>::const_iterator it = m_columnsAtGivenPosition.begin();
+    QVector<const ColumnOfTabWithTabInstance*> result;
+    QMap<int, const ColumnOfTabWithTabInstance*>::const_iterator it = m_columnsAtGivenPosition.begin();
     while(it != m_columnsAtGivenPosition.end())
     {
         result.push_back(it.value());

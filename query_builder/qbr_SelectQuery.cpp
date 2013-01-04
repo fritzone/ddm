@@ -422,7 +422,13 @@ QVector<const Table*> SelectQuery::getTables() const
     else return QVector<const Table*> ();
 }
 
-QVector<const Column*> SelectQuery::getSelectedColumns()
+QVector<const TableInstance*> SelectQuery::getTableInstances() const
+{
+    if(m_from) return m_from->getTableInstances();
+    else return QVector<const TableInstance*> ();
+}
+
+QVector<const ColumnOfTabWithTabInstance*> SelectQuery::getSelectedColumns()
 {
     return m_select->getSelectedColumns();
 }

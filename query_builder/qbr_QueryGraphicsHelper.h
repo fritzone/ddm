@@ -16,6 +16,7 @@ class NewViewForm;
 class MainWindow;
 class Column;
 class SelectQueryJoinComponent;
+class ColumnOfTabWithTabInstance;
 
 class QueryGraphicsHelper
 {
@@ -56,7 +57,7 @@ public:
         return m_query;
     }
 
-    void setColumns(QVector<const Column*> c)
+    void setColumns(QVector<const ColumnOfTabWithTabInstance*> c)
     {
         m_columnsToShow = c;
     }
@@ -78,7 +79,7 @@ private:
     QueryGraphicsScene* m_scene;
     Query* m_query;
     MainWindow* m_form;
-    QVector<const Column*> m_columnsToShow;
+    QVector<const ColumnOfTabWithTabInstance*> m_columnsToShow;
     QStringList m_orderByElements;
     const SelectQueryJoinComponent* m_join;
 };

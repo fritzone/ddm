@@ -209,7 +209,7 @@ void NewViewForm::setView(View *v)
             for(int i=0; i<sel.size(); i++)
             {
                 bool added = false;
-                QVector<const Column*> columns;
+                QVector<const ColumnOfTabWithTabInstance*> columns;
                 SingleExpressionQueryComponent* seq = dynamic_cast<SingleExpressionQueryComponent*>(const_cast<QueryComponent*>(sel.at(i)));
                 if(seq->hasStar())
                 {
@@ -225,8 +225,8 @@ void NewViewForm::setView(View *v)
 
                     for(int j=0; j<columns.size(); j++)
                     {
-                        QStringList a; a.append(columns.at(j)->getName()); a.append(columns.at(j)->getName());
-                        columnNamesForView.append(columns.at(j)->getName());
+                        QStringList a; a.append(columns.at(j)->c->getName()); a.append(columns.at(j)->c->getName());
+                        columnNamesForView.append(columns.at(j)->c->getName());
                         QTreeWidgetItem* w = new QTreeWidgetItem(a);
                         ui->lstColumnsForView->addTopLevelItem(w);
                         added = true;

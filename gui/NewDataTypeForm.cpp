@@ -388,6 +388,8 @@ void NewDataTypeForm::setDataType(UserDataType* udt)
             m_ui->btnUndelete->show();
         }
     }
+
+    m_ui->cmbDTType->setDisabled(true);
 }
 
 void NewDataTypeForm::onLockUnlock(bool checked)
@@ -479,5 +481,15 @@ void NewDataTypeForm::onUndelete()
         }
         m_ui->btnUndelete->hide();
         m_ui->btnLock->show();
+    }
+}
+
+void NewDataTypeForm::onDeleteDataType()
+{
+    if(!m_udt) return;
+    if(Workspace::getInstance()->deleteDataType(m_udt))
+    {
+        delete m_udt->getLocation();
+        MainWindow::instance()->showDataTypesList(m_udt->version());
     }
 }

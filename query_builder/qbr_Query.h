@@ -9,6 +9,7 @@
 class QueryGraphicsHelper;
 class Table;
 class SqlSource;
+class TableInstance;
 
 class Query : public QueryComponent
 {
@@ -24,7 +25,10 @@ public:
 
     virtual bool initializeGraphicsItem() = 0;
     virtual QueryGraphicsItem* createGraphicsItem(QueryGraphicsHelper*, QueryGraphicsItem*) = 0;
+
     virtual QVector<const Table*> getTables() const = 0;
+    virtual QVector<const TableInstance*> getTableInstances() const = 0;
+
 
     QueryGraphicsHelper* getHelper()
     {

@@ -15,7 +15,7 @@ class TableGraphicsItem : public QueryGraphicsItem
 {
 public:
 
-    TableGraphicsItem(Table*, int level, QueryGraphicsHelper* c, QueryGraphicsItem* parent, QueryComponent* owner);
+    TableGraphicsItem(const QString& tabName, int level, QueryGraphicsHelper* c, QueryGraphicsItem* parent, QueryComponent* owner);
 
     virtual QGraphicsItemGroup* render(int& x, int& y, int& w, int &h);
     virtual void updateWidth(int newWidth);
@@ -28,7 +28,6 @@ public:
     void addJoin(CellJoinCommand* join, CellWhereCommand* on);
 
 private:
-    Table* m_table;
     CellTable* m_tableCell;
     CellAsCommand* m_as;
     QVector<CellJoinCommand*> m_joins;

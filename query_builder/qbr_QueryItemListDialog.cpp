@@ -13,6 +13,8 @@
 #include "core_UserDataType.h"
 #include "qbr_SelectQueryJoinComponent.h"
 #include "strings.h"
+// TODO: this should not be here, it is here only for ColumnOfTabWithTabInstance
+#include "qbr_SingleExpressionQueryComponent.h"
 
 #include <QListWidget>
 #include <QMessageBox>
@@ -240,8 +242,17 @@ void QueryItemListDialog::showSymbolPanel()
 
     /* Now building the menu system for the columns */
     Query* q = m_helper->getQuery();
-    QVector<const Table*> tables = q->getTables();
-    populateTablesAndColumns(tables);
+    if(!Workspace::getInstance()->currentProjectIsOop())
+    {
+        QVector<const Table*> tables = q->getTables();
+        populateTablesAndColumns(tables);
+    }
+    else
+    {
+        QVector<const TableInstance*> tableInsts = q->getTableInstances();
+        populateTablesAndColumns(tableInsts);
+    }
+
     if(m_join)
     {
         QVector<const Table*> joinTables = m_join->getJoinedTables();
@@ -289,7 +300,50 @@ void QueryItemListDialog::populateTablesAndColumns(QVector<const Table*> tables)
                 // search if the found column is in the m_columnsToShow vector
                 for(int k=0; k<m_columnsToShow.size(); k++)
                 {
-                    if(m_columnsToShow.at(k)->getName() == c->getName() && m_columnsToShow.at(k)->getTable()->getName() == tables.at(i)->getName())
+                    if(m_columnsToShow.at(k)->c->getName() == c->getName() && m_columnsToShow.at(k)->tab->getName() == tables.at(i)->getName())
+                    {
+                        canGo = true;
+                    }
+                }
+            }
+
+            if(canGo)
+            {
+                QAction* colAction = new QAction(IconFactory::getIconForDataType(c->getDataType()->getType()), c->getName(), this);
+                colAction->setData(QString("#") + tables.at(i)->getName()+QString("+")+c->getName());
+                colMenu->addAction(colAction);
+            }
+
+        }
+        tempAction->setMenu(colMenu);
+    }
+
+}
+
+void QueryItemListDialog::populateTablesAndColumns(const QVector<const TableInstance *>& tables)
+{
+    for(int i=0; i<tables.size(); i++)
+    {
+        QAction* tempAction = new QAction(IconFactory::getTablesIcon(), tables.at(i)->getName(), this);
+        m_tablesMenu->addAction(tempAction);
+        QMenu* colMenu = new QMenu();
+        QStringList cols = tables.at(i)->table()->fullColumns();
+        for(int j=0; j<cols.size(); j++)
+        {
+            Column* c = tables.at(i)->table()->getColumn(cols.at(j));
+            if(c==0) c = tables.at(i)->table()->getColumnFromParents(cols.at(j));
+            if(c==0) continue;
+            bool canGo = false;
+            if(m_columnsToShow.isEmpty())
+            {
+                canGo = true;
+            }
+            else
+            {
+                // search if the found column is in the m_columnsToShow vector
+                for(int k=0; k<m_columnsToShow.size(); k++)
+                {
+                    if(m_columnsToShow.at(k)->c->getName() == c->getName() && m_columnsToShow.at(k)->tab->getName() == tables.at(i)->getName())
                     {
                         canGo = true;
                     }

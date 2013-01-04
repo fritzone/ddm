@@ -47,9 +47,14 @@ void CellTableChooser::updateWidth(int newWidth)
 void CellTableChooser::mousePress(int /*x*/, int /*y*/)
 {
     QPoint a = scene()->views().at(0)->mapToGlobal((m_frame->mapToScene(m_frame->boundingRect().bottomLeft().toPoint())).toPoint() ) ;
-    QString selected = m_helper->presentList(a.x() + 2-scene()->views().at(0)->horizontalScrollBar()->sliderPosition()
-                                             , a.y() - scene()->views().at(0)->verticalScrollBar()->sliderPosition(), QueryGraphicsHelper::LIST_TABLES);
-    if(selected.length() == 0) return;
+    QString selected = m_helper->presentList(a.x() + 2-scene()->views().at(0)->horizontalScrollBar()->sliderPosition(),
+                                             a.y() - scene()->views().at(0)->verticalScrollBar()->sliderPosition(),
+                                             QueryGraphicsHelper::LIST_TABLES);
+    if(selected.length() == 0)
+    {
+        return;
+    }
+
     m_name = selected;
     m_txt->setPlainText(m_name);
     TableQueryComponent* tc = dynamic_cast<TableQueryComponent*>(m_parent->getParent()->getOwner());

@@ -112,7 +112,7 @@
              <string>...</string>
             </property>
             <property name="icon">
-             <iconset resource="dbm.qrc">
+             <iconset resource="../dbm.qrc">
               <normaloff>:/images/actions/images/small/alias.png</normaloff>:/images/actions/images/small/alias.png</iconset>
             </property>
             <property name="checkable">
@@ -155,7 +155,7 @@
               <string>MySQL</string>
              </property>
              <property name="icon">
-              <iconset resource="dbm.qrc">
+              <iconset resource="../dbm.qrc">
                <normaloff>:/images/actions/images/small/mysql.png</normaloff>:/images/actions/images/small/mysql.png</iconset>
              </property>
             </item>
@@ -304,7 +304,7 @@
                  <string/>
                 </property>
                 <property name="icon">
-                 <iconset resource="dbm.qrc">
+                 <iconset resource="../dbm.qrc">
                   <normaloff>:/images/actions/images/small/add.png</normaloff>:/images/actions/images/small/add.png</iconset>
                 </property>
                </widget>
@@ -492,7 +492,7 @@
   <tabstop>buttonBox</tabstop>
  </tabstops>
  <resources>
-  <include location="dbm.qrc"/>
+  <include location="../dbm.qrc"/>
  </resources>
  <connections>
   <connection>
@@ -703,6 +703,38 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>cmbDatabases</sender>
+   <signal>currentIndexChanged(QString)</signal>
+   <receiver>InjectSqlDialog</receiver>
+   <slot>onDbChange(QString)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>605</x>
+     <y>312</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>358</x>
+     <y>258</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>txtConnectionName</sender>
+   <signal>textEdited(QString)</signal>
+   <receiver>InjectSqlDialog</receiver>
+   <slot>onConnectionNameEdited(QString)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>562</x>
+     <y>369</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>358</x>
+     <y>258</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>onConnect()</slot>
@@ -711,5 +743,7 @@
   <slot>onHostChange(QString)</slot>
   <slot>onUserChange(QString)</slot>
   <slot>changeConnection()</slot>
+  <slot>onDbChange(QString)</slot>
+  <slot>onConnectionNameEdited(QString)</slot>
  </slots>
 </ui>

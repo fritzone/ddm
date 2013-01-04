@@ -8,6 +8,7 @@
 #include <QSet>
 
 class Column;
+class ColumnOfTabWithTabInstance;
 
 class CellTypeChooser : public QueryGraphicsItem
 {
@@ -40,7 +41,7 @@ public:
         return m_functionSupport;
     }
 
-    void setColumn(const Column* c);
+    void setColumn(const ColumnOfTabWithTabInstance *c);
 
     void setLiteral(const QString& s)
     {
@@ -56,7 +57,7 @@ private:
     int m_index;
     const DatabaseBuiltinFunction* m_functionSupport;
     QGraphicsTextItem* m_text;
-    const Column* m_column;
+    const ColumnOfTabWithTabInstance* m_column;
     bool m_needsFrame;
     QString m_literal;
 };
