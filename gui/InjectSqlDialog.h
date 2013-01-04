@@ -61,6 +61,8 @@ private slots:
     void onHostChange(QString);
     void onUserChange(QString);
     void checkBoxToggled(QString);
+    void onDbChange(QString);
+    void onConnectionNameEdited(QString);
 
 protected:
     void changeEvent(QEvent *e);

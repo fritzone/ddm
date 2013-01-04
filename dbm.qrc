@@ -219,6 +219,7 @@
         <file>images/small/interface_builder.png</file>
         <file>images/actions/save_dt.png</file>
         <file>images/small/advanced-icon.png</file>
+        <file>images/actions/remove-icon.png</file>
     </qresource>
     <qresource prefix="/bigger">
         <file>images/unaf.png</file>

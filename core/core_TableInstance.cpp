@@ -152,7 +152,7 @@ CloneableElement* TableInstance::clone(Version */*sourceVersion*/, Version *targ
     TableInstance* result = new TableInstance(getName(), m_becauseOfReference, QUuid::createUuid().toString(), targetVersion);
     result->setSourceUid(getObjectUid());
     result->m_values = m_values;
-
+    result->m_fkMappings = m_fkMappings;
     return result;
 }
 

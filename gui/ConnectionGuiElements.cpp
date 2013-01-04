@@ -27,13 +27,12 @@ void ConnectionGuiElements::createGuiElements()
     m_connectionsTree->setAllColumnsShowFocus(true);
     m_connectionsTree->setSelectionMode(QAbstractItemView::SingleSelection);
     m_connectionsTree->setSelectionBehavior(QAbstractItemView::SelectItems);
-    m_connectionsTree->setColumnCount(2);
+    m_connectionsTree->setColumnCount(1);
     m_connectionsTree->setHeaderHidden(false);
 
     QTreeWidgetItem *headerItm = m_connectionsTree->headerItem();
     headerItm->setText(0, QApplication::translate("MainWindow", "Name", 0, QApplication::UnicodeUTF8));
-    headerItm->setText(1, QApplication::translate("MainWindow", "DB", 0, QApplication::UnicodeUTF8));
-    m_connectionsTree->header()->setDefaultSectionSize(150);
+    m_connectionsTree->header()->setDefaultSectionSize(250);
 
     m_connectionsContextMenuHandler = new ContextMenuHandler();
     m_connectionsTree->setItemDelegate(new ContextMenuDelegate(m_connectionsContextMenuHandler, m_connectionsTree));
@@ -61,7 +60,7 @@ void ConnectionGuiElements::createGuiElements()
 ContextMenuEnabledTreeWidgetItem* ConnectionGuiElements::createConnectionTreeEntry(Connection* c)
 {
     QStringList items;
-    items << c->getName() << c->getDb();
+    items << c->getName();
     ContextMenuEnabledTreeWidgetItem* newConnectionItem = new ContextMenuEnabledTreeWidgetItem((ContextMenuEnabledTreeWidgetItem*)0, items);
     QVariant var(c->getName());
     newConnectionItem->setData(0, Qt::UserRole, var);
@@ -69,6 +68,7 @@ ContextMenuEnabledTreeWidgetItem* ConnectionGuiElements::createConnectionTreeEnt
     m_connectionsTree->addTopLevelItem(newConnectionItem);
     newConnectionItem->setPopupMenu(ContextMenuCollection::getInstance()->getConnectionsPopupMenu());
     c->setLocation(newConnectionItem);
+
     return newConnectionItem ;
 }
 

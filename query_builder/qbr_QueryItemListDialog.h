@@ -5,7 +5,9 @@
 #include <QListWidgetItem>
 
 #include "qbr_QueryGraphicsHelper.h"
+
 class Table;
+class TableInstance;
 
 namespace Ui {
     class QueryItemListDialog;
@@ -32,7 +34,7 @@ public:
     void setText(const QString& a);
     void showSymbolPanel();
     void setColumnMode();
-    void setColumns(QVector<const Column*> c)
+    void setColumns(QVector<const ColumnOfTabWithTabInstance*> c)
     {
         m_columnsToShow = c;
     }
@@ -46,6 +48,7 @@ public:
     }
     void setOrderByMode();
     void populateTablesAndColumns(QVector<const Table*>);
+    void populateTablesAndColumns(const QVector<const TableInstance*> &);
 
 public slots:
 
@@ -88,7 +91,7 @@ private:
     QMenu* m_functionsInfoMenu;
 
     QueryGraphicsHelper* m_helper;
-    QVector<const Column*> m_columnsToShow;
+    QVector<const ColumnOfTabWithTabInstance*> m_columnsToShow;
     const SelectQueryJoinComponent* m_join;
     QStringList m_orderBy;
 };

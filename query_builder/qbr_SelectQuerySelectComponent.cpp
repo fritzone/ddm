@@ -78,12 +78,12 @@ bool SelectQuerySelectComponent::hasAtLeastOneColumnSelected()
     return false;
 }
 
-QVector<const Column*> SelectQuerySelectComponent::getSelectedColumns()
+QVector<const ColumnOfTabWithTabInstance*> SelectQuerySelectComponent::getSelectedColumns()
 {
-    QVector<const Column*> result;
+    QVector<const ColumnOfTabWithTabInstance*> result;
     for(int i=0; i<m_children.size(); i++)
     {
-        QVector<const Column*> localResult;
+        QVector<const ColumnOfTabWithTabInstance*> localResult;
         SingleExpressionQueryComponent* seq = dynamic_cast<SingleExpressionQueryComponent*>(m_children.at(i));
         if(seq)
         {
@@ -118,7 +118,7 @@ QStringList SelectQuerySelectComponent::getOrderByElements()
     for(int i=0; i<m_children.size(); i++)
     {
         bool added = false;
-        QVector<const Column*> columns;
+        QVector<const ColumnOfTabWithTabInstance*> columns;
         SingleExpressionQueryComponent* seq = dynamic_cast<SingleExpressionQueryComponent*>(m_children.at(i));
         if(seq)
         {
@@ -129,7 +129,7 @@ QStringList SelectQuerySelectComponent::getOrderByElements()
 
             for(int j=0; j<columns.size(); j++)
             {
-                result.push_back(QString("$") + columns.at(j)->getTable()->getName() + "." + columns.at(j)->getName());  // add the columns
+                result.push_back(QString("$") + columns.at(j)->tab->getName() + "." + columns.at(j)->c->getName());  // add the columns
                 added = true;
             }
 

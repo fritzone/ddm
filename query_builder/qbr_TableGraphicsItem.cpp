@@ -6,11 +6,11 @@
 #include "qbr_CellWhereCommand.h"
 #include "qbr_CellJoinCommand.h"
 
-TableGraphicsItem::TableGraphicsItem(Table* tab, int level, QueryGraphicsHelper* c, QueryGraphicsItem* parent, QueryComponent* owner):
+TableGraphicsItem::TableGraphicsItem(const QString& tabName, int level, QueryGraphicsHelper* c, QueryGraphicsItem* parent, QueryComponent* owner):
         QueryGraphicsItem(level, parent, c, owner),
-        m_table(tab), m_tableCell(0), m_as(0), m_joins(), m_ons()
+        m_tableCell(0), m_as(0), m_joins(), m_ons()
 {
-    m_tableCell = new CellTable(tab->getName(), level, c, this, owner);
+    m_tableCell = new CellTable(tabName, level, c, this, owner);
     m_level = level;
 }
 

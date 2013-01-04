@@ -2297,3 +2297,29 @@ void DefaultVersionImplementation::lockVersion(LockableElement::LockType lt)
         dias.at(i)->updateGui();
     }
 }
+
+Table* DefaultVersionImplementation::getDescendantTable(Table* src)
+{
+    const QVector<Table*> &tables = getTables();
+    for(int i=0; i<tables.size(); i++)
+    {
+        if(UidWarehouse::instance().related(tables[i], src))
+        {
+            return tables[i];
+        }
+    }
+    return 0;
+}
+
+TableInstance* DefaultVersionImplementation::getDescendantTableInstance(TableInstance* src)
+{
+    const QVector<TableInstance*> &tables = getTableInstances();
+    for(int i=0; i<tables.size(); i++)
+    {
+        if(UidWarehouse::instance().related(tables[i], src))
+        {
+            return tables[i];
+        }
+    }
+    return 0;
+}

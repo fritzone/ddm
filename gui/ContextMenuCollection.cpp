@@ -92,7 +92,7 @@ ContextMenuCollection::ContextMenuCollection()
     action_createViewUsingSql = new QAction(QObject::tr("SQL"), 0);
     action_connectionSqlQuery = new QAction(QObject::tr("Run Script"), 0);
     action_connectionSqlQuery->setIcon(IconFactory::getSqlIcon());
-    action_connectionConnect = new QAction(QObject::tr("Connect"), 0);
+    action_connectionConnect = new QAction(QObject::tr("Test Connection"), 0);
     action_connectionConnect->setIcon(IconFactory::getConnectConnectionIcon());
     action_connectionDelete = new QAction(QObject::tr("Delete"), 0);
     action_connectionDelete->setIcon(IconFactory::getRemoveIcon());

@@ -5,6 +5,7 @@
 #include "ColumnProviderForQuery.h"
 
 class Table;
+class TableInstance;
 class SelectQueryAsComponent;
 class TableGraphicsItem;
 class SelectQueryJoinComponent;
@@ -17,6 +18,7 @@ public:
 
 public:
     TableQueryComponent(Table*, QueryComponent*, int, Version *v);
+    TableQueryComponent(TableInstance* tinst, QueryComponent* p, int level, Version *v);
 
     virtual QString get() const;
     virtual QString getClass() const {return "TableQueryComponent";}
@@ -35,10 +37,8 @@ public:
     void removeAs();
     void removeJoin(SelectQueryJoinComponent*);
     void setTable(const QString& tab);
-    const Table* getTable() const
-    {
-        return m_table;
-    }
+    const Table* getTable() const;
+    const TableInstance* getTableInstance() const;
     void setAs(SelectQueryAsComponent* as)
     {
         m_as = as;
@@ -52,7 +52,11 @@ public:
     virtual QUuid getClassUid() const;
     virtual CloneableElement* clone(Version* sourceVersion, Version* targetVersion);
 private:
+    // if m_table is 0 m_tinst is used
     Table* m_table;
+    TableInstance* m_tinst;
+    bool m_tabInsteadOfTinst;
+
     SelectQueryAsComponent* m_as;
     QueryGraphicsHelper* m_helper;
     TableGraphicsItem* m_tgitm;

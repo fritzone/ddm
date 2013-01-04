@@ -700,9 +700,7 @@ void MainWindow::projectTreeItemClicked(QTreeWidgetItem * current, int)
         else
         if(current == foundVersion->getGui()->getDtsItem())
         {// we have clicked on the Data Types item
-            DataTypesListForm* dtLst = new DataTypesListForm(this);
-            dtLst->feedInDataTypes(foundVersion->getDataTypes());
-            setCentralWidget(dtLst);
+            showDataTypesList(foundVersion);
         }
         else
         {
@@ -1243,34 +1241,12 @@ void MainWindow::showNamedObjectList(showSomething s, const QVector<T*> items, c
 
 void MainWindow::onDeployVersion()
 {
-    MajorVersion * m = 0;
     if(m_guiElements->getProjectTree()->getLastRightclickedItem() != 0)
     {
-        ContextMenuEnabledTreeWidgetItem* item = m_guiElements->getProjectTree()->getLastRightclickedItem();
-        m_guiElements->getProjectTree()->setLastRightclickedItem(0);
-        QVariant qv = item->data(0, Qt::UserRole);
-        QString name = qv.toString();
-        Version* v = Workspace::getInstance()->currentProject()->getVersionNamed(name);
+        Version* v = getRightClickedVersion();
         if(v)
         {
-            m = dynamic_cast<MajorVersion*>(v);
-            if(m)
-            {
-                // TODO: This is duplicate from onDeploy except the version
-                InjectSqlDialog* injectDialog = new InjectSqlDialog(
-                            m_workspace->getInstance()->currentProjectsEngine(), this, m, "");
-                injectDialog->setModal(true);
-                if(injectDialog->exec() == QDialog::Accepted)
-                {
-                    createStatusLabel();
-                    QStringList connectionNames = injectDialog->getSelectedConnections();
-                    DeploymentInitiator* dinit = new DeploymentInitiator();
-                    dinit->doDeployment(m, connectionNames,
-                                        injectDialog->injectMetadataRequired(),
-                                        injectDialog->getUidsToDeploy(),
-                                        injectDialog->getUidsToDrop());
-                }
-            }
+            Workspace::getInstance()->deployVersion(v);
         }
     }
 }
@@ -1662,6 +1638,16 @@ T* MainWindow::getRightClickedObject()
     }
 
     return t;
+}
+
+Version* MainWindow::getRightClickedVersion()
+{
+    ContextMenuEnabledTreeWidgetItem* item = m_guiElements->getProjectTree()->getLastRightclickedItem();
+    m_guiElements->getProjectTree()->setLastRightclickedItem(0);
+    QVariant qv = item->data(0, Qt::UserRole);
+    QString name = qv.toString();
+    Version* v = Workspace::getInstance()->currentProject()->getVersionNamed(name);
+    return v;
 }
 
 Connection* MainWindow::getRightClickedConnection()
@@ -2103,37 +2089,14 @@ void MainWindow::onDeleteDatatypeFromPopup()
     if(udt)
     {
         QString dtName = udt->getName();
+        Version* v = udt->version();
         if(QMessageBox::question(this, tr("Are you sure?"), tr("Really delete ") + dtName + "?", QMessageBox::Yes | QMessageBox::No) ==  QMessageBox::Yes)
         {
-            // now check that this stuff is not used in any of the tables and the delete it from the current version
-            const QVector<Table*>& allTables = udt->version()->getTables();
-            QString usage = "";
-            for(int i=0; i<allTables.size(); i++)
+            if(Workspace::getInstance()->deleteDataType(udt))
             {
-                const QVector<Column*> & tablesColumns = allTables.at(i)->getColumns();
-                for(int j=0; j<tablesColumns.size(); j++)
-                {
-                    QString cn = tablesColumns.at(j)->getDataType()->getName();
-                    if(cn == dtName)
-                    {
-                        usage += tr("Table: ") + allTables.at(i)->getName() + tr(" Column:") + tablesColumns.at(j)->getName() + "\n";
-                    }
-                }
+                delete udt->getLocation();
+                showDataTypesList(v);
             }
-
-            if(usage.length() > 0)
-            {
-                QMessageBox::critical(this, tr("Error"), tr("Cannot delete this data type since it's used in the following locations:\n") + usage, QMessageBox::Ok);
-                return;
-            }
-
-            delete udt->getLocation();
-            udt->version()->deleteDataType(dtName);
-
-            DataTypesListForm* dtLst = new DataTypesListForm(this);
-            dtLst->feedInDataTypes(udt->version()->getDataTypes());
-            setCentralWidget(dtLst);
-
         }
     }
 }
@@ -2407,6 +2370,7 @@ void MainWindow::onConnectConnection()
         {
 
             c->getLocation()->setIcon(0, IconFactory::getUnConnectedDatabaseIcon());
+            QMessageBox::critical(this, tr("Error"), c->getLastError(), QMessageBox::Ok);
         }
     }
 }
@@ -2587,20 +2551,7 @@ void MainWindow::createStatusLabel()
 
 void MainWindow::onDeploy()
 {
-    InjectSqlDialog* injectDialog = new InjectSqlDialog(
-                m_workspace->getInstance()->currentProjectsEngine(), this,
-                Workspace::getInstance()->workingVersion(), "");
-    injectDialog->setModal(true);
-    if(injectDialog->exec() == QDialog::Accepted)
-    {
-        createStatusLabel();
-        QStringList connectionNames = injectDialog->getSelectedConnections();
-        DeploymentInitiator* dinit = new DeploymentInitiator();
-        dinit->doDeployment(m_workspace->workingVersion(), connectionNames,
-                            injectDialog->injectMetadataRequired(),
-                            injectDialog->getUidsToDeploy(),
-                            injectDialog->getUidsToDrop());
-    }
+    Workspace::getInstance()->deployVersion(Workspace::getInstance()->workingVersion());
 }
 
 void MainWindow::setStatus(const QString& s, bool err)
@@ -3013,28 +2964,7 @@ void MainWindow::finalizePatch()
     Patch* p = getRightClickedObject<Patch>();
     if(p)
     {
-        Version* v = p->version();
-        Project* prj = v->getProject();
-        MajorVersion* newVersion = prj->createMajorVersion(v->getMajor(), v->getMinor() + 1);
-        v->cloneInto(newVersion, LockableElement::FINAL_LOCK);
-        newVersion->setSourceUid(v->getObjectUid());
-
-
-        newVersion->createTreeItems(m_guiElements, p->getLocation(), m_guiElements->getProjectTree()->indexOfTopLevelItem(v->getLocation()) + 1);
-        newVersion->getGui()->populateTreeItems();
-
-        v->getGui()->getVersionItem()->setExpanded(false);
-        newVersion->getGui()->getVersionItem()->setExpanded(true);
-        newVersion->getGui()->getVersionItem()->setPopupMenu(ContextMenuCollection::getInstance()->getReleasedVersionPopupMenu());
-
-        v->updateGui();
-
-        v->getGui()->getVersionItem()->setPopupMenu(ContextMenuCollection::getInstance()->getFinalisedVersionPopupMenu());
-
-        p->suspendPatch();
-
-        v->lockVersion(LockableElement::FINAL_LOCK);
-        newVersion->lockVersion(LockableElement::LOCKED);
+        Workspace::getInstance()->finalizePatch(p);
     }
 
 }
@@ -3084,26 +3014,17 @@ void MainWindow::onUndeleteSomething()
 
 void MainWindow::onInitiatePatch()
 {
-    MajorVersion * m = 0;
     if(m_guiElements->getProjectTree()->getLastRightclickedItem() != 0)
     {
-        ContextMenuEnabledTreeWidgetItem* item = m_guiElements->getProjectTree()->getLastRightclickedItem();
-        m_guiElements->getProjectTree()->setLastRightclickedItem(0);
-        QVariant qv = item->data(0, Qt::UserRole);
-        QString name = qv.toString();
-        Version* v = Workspace::getInstance()->currentProject()->getVersionNamed(name);
+        Version* v =getRightClickedVersion();
         if(v)
         {
-            m = dynamic_cast<MajorVersion*>(v);
-            if(m)
+            if(!m_guiElements->getPatchesDock()->isVisible())
             {
-                if(!m_guiElements->getPatchesDock()->isVisible())
-                {
-                    m_guiElements->getPatchesDock()->show();
-                    addDockWidget(Qt::LeftDockWidgetArea, m_guiElements->getPatchesDock());
-                }
-                m->getWorkingPatch();
+                m_guiElements->getPatchesDock()->show();
+                addDockWidget(Qt::LeftDockWidgetArea, m_guiElements->getPatchesDock());
             }
+            v->getWorkingPatch();
         }
     }
 }
@@ -3133,3 +3054,9 @@ void MainWindow::onUpdateDb()
     setCentralWidget(tcf);
 }
 
+void MainWindow::showDataTypesList(Version* foundVersion)
+{
+    DataTypesListForm* dtLst = new DataTypesListForm(this);
+    dtLst->feedInDataTypes(foundVersion->getDataTypes());
+    setCentralWidget(dtLst);
+}

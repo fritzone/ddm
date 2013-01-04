@@ -8,7 +8,8 @@ Connection::Connection(const QString& name, const QString& host, const QString& 
     m_host(host), m_user(user), m_pass(pass), m_db(db),
     m_dbType("MySQL"), m_port(port),
     m_savePw(savePw), m_autoConnect(autoConnect),
-    m_engine(0), m_state(DID_NOT_TRY)
+    m_engine(0), m_state(DID_NOT_TRY),
+    m_lastError("")
 {
     m_engine = DatabaseEngine::provideEngineFor(m_dbType);
 }
@@ -30,9 +31,11 @@ void Connection::serialize(QDomDocument& doc, QDomElement& parent) const
 
 bool Connection::tryConnect()
 {
+    m_lastError = "";
     if(!m_engine->tryConnect(this))
     {
         m_state = FAILED;
+        m_lastError = m_engine->getLastError();
         if(getLocation())
         {
             getLocation()->setIcon(0, IconFactory::getUnConnectedDatabaseIcon());

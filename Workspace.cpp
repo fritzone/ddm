@@ -14,6 +14,12 @@
 #include "MainWindow.h"
 #include "core_ConnectionManager.h"
 #include "ConnectionGuiElements.h"
+#include "core_Column.h"
+#include "InjectSqlDialog.h"
+#include "DeploymentInitiator.h"
+#include "core_Patch.h"
+#include "MajorVersion.h"
+#include "GuiElements.h"
 
 #include <QFile>
 #include <QApplication>
@@ -245,4 +251,84 @@ void Workspace::createNewConnection()
 QStringList Workspace::getAllVersions()
 {
     return m_currentSolution->currentProject()->getVersionNames();
+}
+
+bool Workspace::deleteDataType(UserDataType *udt)
+{
+    // now check that this stuff is not used in any of the tables and the delete it from the current version
+    const QVector<Table*>& allTables = udt->version()->getTables();
+    QString usage = "";
+    for(int i=0; i<allTables.size(); i++)
+    {
+        const QVector<Column*> & tablesColumns = allTables.at(i)->getColumns();
+        for(int j=0; j<tablesColumns.size(); j++)
+        {
+            QString cn = tablesColumns.at(j)->getDataType()->getName();
+            if(cn == udt->getName())
+            {
+                usage += QObject::tr("Table: <b>") + allTables.at(i)->getName() + QObject::tr("</b> Column:<b>") + tablesColumns.at(j)->getName() + "</b><br><br>";
+            }
+        }
+    }
+
+    if(usage.length() > 0)
+    {
+        QMessageBox::critical(MainWindow::instance(),
+                              QObject::tr("Error"),
+                              QObject::tr("Cannot delete this data type since it's used in the following locations:<p>") + usage,
+                              QMessageBox::Ok
+                              );
+        return false;
+    }
+
+    udt->version()->deleteDataType(udt->getName());
+    return true;
+}
+
+bool Workspace::deployVersion(Version *v)
+{
+    InjectSqlDialog* injectDialog = new InjectSqlDialog(currentProjectsEngine(), MainWindow::instance(), v, "");
+    injectDialog->setModal(true);
+    if(injectDialog->exec() == QDialog::Accepted)
+    {
+        MainWindow::instance()->createStatusLabel();
+        QStringList connectionNames = injectDialog->getSelectedConnections();
+        DeploymentInitiator* dinit = new DeploymentInitiator();
+        dinit->doDeployment(v, connectionNames,
+                            injectDialog->injectMetadataRequired(),
+                            injectDialog->getUidsToDeploy(),
+                            injectDialog->getUidsToDrop());
+    }
+    return true;
+}
+
+bool Workspace::finalizePatch(Patch *p)
+{
+    Version* v = p->version();
+    Project* prj = v->getProject();
+    MajorVersion* newVersion = prj->createMajorVersion(v->getMajor(), v->getMinor() + 1);
+    v->cloneInto(newVersion, LockableElement::FINAL_LOCK);
+    newVersion->setSourceUid(v->getObjectUid());
+
+    newVersion->createTreeItems(
+                MainWindow::instance()->getGuiElements(),
+                p->getLocation(),
+                MainWindow::instance()->getGuiElements()->getProjectTree()->indexOfTopLevelItem(v->getLocation()) + 1
+                );
+    newVersion->getGui()->populateTreeItems();
+
+    v->getGui()->getVersionItem()->setExpanded(false);
+    newVersion->getGui()->getVersionItem()->setExpanded(true);
+    newVersion->getGui()->getVersionItem()->setPopupMenu(ContextMenuCollection::getInstance()->getReleasedVersionPopupMenu());
+
+    v->updateGui();
+
+    v->getGui()->getVersionItem()->setPopupMenu(ContextMenuCollection::getInstance()->getFinalisedVersionPopupMenu());
+
+    p->suspendPatch();
+
+    v->lockVersion(LockableElement::FINAL_LOCK);
+    newVersion->lockVersion(LockableElement::LOCKED);
+
+    return true;
 }

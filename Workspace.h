@@ -10,6 +10,7 @@ class Version;
 class DatabaseEngine;
 class UserDataType;
 class Table;
+class Patch;
 
 /**
  * The role of the Workspace class is to be a collection point for the "logical" elements of the
@@ -144,6 +145,12 @@ public:
     QStringList getAllVersions();
 
     bool initiatePatch();
+
+    bool deleteDataType(UserDataType* udt);
+
+    bool deployVersion(Version *v);
+
+    bool finalizePatch(Patch* p);
 
 private:
 

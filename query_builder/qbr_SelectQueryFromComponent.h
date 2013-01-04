@@ -4,6 +4,7 @@
 #include "qbr_QueryComponents.h"
 
 class Table;
+class TableInstance;
 
 class SelectQueryFromComponent : public QueryComponent
 {
@@ -24,6 +25,7 @@ public:
     bool allowCloseButton();
 
     QVector<const Table*> getTables() const;
+    QVector<const TableInstance*> getTableInstances() const;
     virtual void serialize(QDomDocument& doc, QDomElement& parent) const;
     virtual QUuid getClassUid() const;
     virtual CloneableElement* clone(Version* sourceVersion, Version* targetVersion);

@@ -736,3 +736,19 @@ QVector <QVector<ColumnWithValue*> > Table::getValues(QVector<ColumnWithValue*> 
     return result;
 
 }
+
+Column* Table::getDescendantColumn(const Column* sourceColumn)
+{
+    const QStringList &cols = fullColumns();
+    for(int i=0; i<cols.size(); i++)
+    {
+        Column *c = getColumn(cols[i]);
+        if(c == 0) c = getColumnFromParents(cols[i]);
+        if(c == 0) continue;
+        if(UidWarehouse::instance().related(c, sourceColumn))
+        {
+            return c;
+        }
+    }
+    return 0;
+}

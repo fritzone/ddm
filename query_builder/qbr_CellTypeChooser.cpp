@@ -7,6 +7,7 @@
 #include "qbr_QueryComponents.h"
 #include "core_Column.h"
 #include "core_Table.h"
+#include "core_TableInstance.h"
 #include "qbr_SelectQueryGroupByComponent.h"
 #include "qbr_SelectQuery.h"
 #include "qbr_SelectQueryOrderByComponent.h"
@@ -145,9 +146,16 @@ QGraphicsItemGroup* CellTypeChooser::render(int& x, int& y, int& w, int &/*h*/)
         break;
 
     case CELLTYPE_COLUMN:
+        {
         typeIcon = new QGraphicsPixmapItem(IconFactory::getColumnIcon().pixmap(CELL_SIZE+1,CELL_SIZE+1), this);
         if(!m_column) break;
-        m_text = new QGraphicsTextItem(m_column->getTable()->getName() + "." + m_column->getName());// TODO: Code below is duplication with code from above...
+
+        QString t;
+        if(!m_column->tinst) t= m_column->tab->getName();
+        else t= m_column->tinst->getName();
+        t += ".";
+
+        m_text = new QGraphicsTextItem(t + m_column->c->getName());
         m_text->setFont(theFont);
         m_text->setX(x + CELL_SIZE + 1);
         m_text->setY(y - 4);
@@ -155,7 +163,7 @@ QGraphicsItemGroup* CellTypeChooser::render(int& x, int& y, int& w, int &/*h*/)
         width += m_text->boundingRect().width();
         w += m_text->boundingRect().width();
         break;
-
+        }
     case CELLTYPE_LITERAL:
         {
         bool alias = false;
@@ -231,7 +239,7 @@ QGraphicsItemGroup* CellTypeChooser::render(int& x, int& y, int& w, int &/*h*/)
     return this;
 }
 
-void CellTypeChooser::setColumn(const Column *c)
+void CellTypeChooser::setColumn(const ColumnOfTabWithTabInstance *c)
 {
     m_column = c;
 }
@@ -273,7 +281,7 @@ void CellTypeChooser::mousePress(int /*x*/, int /*y*/)
     QString selected = "";
     QueryGraphicsHelper::ListType listType = QueryGraphicsHelper::INPUT_SYMBOLS;
     SingleExpressionQueryComponent* seq = dynamic_cast<SingleExpressionQueryComponent*>(m_parent->getOwner());
-    QVector<const Column*> columns;
+    QVector<const ColumnOfTabWithTabInstance*> columns;
     QStringList orderBy;
     SelectQueryJoinComponent* join = 0;
 

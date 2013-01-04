@@ -12,6 +12,15 @@ class DatabaseBuiltinFunction;
 class Column;
 class SelectQueryJoinComponent;
 class SelectQueryAsComponent;
+class Table;
+class TableInstance;
+
+struct ColumnOfTabWithTabInstance
+{
+    Table* tab;
+    TableInstance* tinst;
+    Column* c;
+};
 
 /**
  * Class, representing a unary where expression.
@@ -27,6 +36,8 @@ public:
         FORCED_AND = 1,
         NOT_FORCED = 2
     };
+
+
 
     SingleExpressionQueryComponent(QueryComponent*, int, Version *v);
     virtual QString get() const;
@@ -48,7 +59,7 @@ public:
     bool hasFunctionAtIndex(int);
     const DatabaseBuiltinFunction* getFunctionAt(int i);
     void shiftElementsToTheLeft(int after);
-    const Column* getColumnAt(int i);
+    const ColumnOfTabWithTabInstance *getColumnAt(int i);
     const QString getTypedInValueAt(int i);
 
     DatabaseFunctionInstantiationComponent* getFunctionInstantiationAt(int);
@@ -69,13 +80,13 @@ public:
     bool hasGroupByFunctions();
     bool hasAtLeastOneColumnSelected();
 
-    QVector<const Column*> getColumns();
+    QVector<const ColumnOfTabWithTabInstance *> getColumns();
     void removeAs();
     const SelectQueryAsComponent* hasAs();
     bool hasStar();
     virtual void serialize(QDomDocument& doc, QDomElement& parent) const;
 
-    void setColumnAtGivenPosition(int pos, Column* col)
+    void setColumnAtGivenPosition(int pos, ColumnOfTabWithTabInstance* col)
     {
         m_columnsAtGivenPosition[pos] = col;
     }
@@ -108,6 +119,7 @@ private:
     QMap<CellTypeChooserType,QString> prepareMappings() const;
 
 private:
+
     QueryGraphicsHelper* m_helper;
     // the graphic element
     CellForSingleExpression* m_gritm;
@@ -116,7 +128,7 @@ private:
     QVector<CellTypeChooserType> m_elements;
 
     // if at a given position there is a column, it is put in this map
-    QMap<int, const Column*> m_columnsAtGivenPosition;
+    QMap<int, const ColumnOfTabWithTabInstance*> m_columnsAtGivenPosition;
 
     // if at a given position there is a function it is put in this map
     QMap<int, const DatabaseBuiltinFunction*> m_functionsAtGivenPosition;

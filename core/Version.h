@@ -492,6 +492,18 @@ public:
      */
     virtual void removePatch(const Patch* p) = 0;
 
+    /**
+     * @brief getDescendantTable returns the table which is the descendant of the given table
+     * @return
+     */
+    virtual Table* getDescendantTable(Table*) = 0;
+
+    /**
+     * @brief getDescendantTableInstance
+     * @return
+     */
+    virtual TableInstance* getDescendantTableInstance(TableInstance*) = 0;
+
 protected:
     int m_major;
     int m_minor;

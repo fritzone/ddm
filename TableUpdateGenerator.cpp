@@ -26,7 +26,7 @@ TableUpdateGenerator::TableUpdateGenerator(Table *t1, Table *t2, DatabaseEngine*
     if(!related) return;
 
     // see if the second table has changed its name or not
-    if(t2->getName() != t1->getName())
+    if(t2->getName() != t1->getName() && !t2->version()->getProject()->oopProject())
     {
 //        m_commands.append("-- table " + t1->getName() + " renamed to: " + t2->getName());
         m_commands.append(dbEngine->getSqlGenerator()->getTableRenameSql(t1->getName(), t2->getName()));

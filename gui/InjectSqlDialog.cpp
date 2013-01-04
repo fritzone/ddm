@@ -228,11 +228,13 @@ void InjectSqlDialog::onConnect()
         return;
     }
 
+    QString t = ui->cmbDatabases->currentText();
     ui->cmbDatabases->clear();
     for(int i=0; i<databases.size(); i++)
     {
         ui->cmbDatabases->addItem(databases.at(i));
     }
+    ui->cmbDatabases->setCurrentIndex(ui->cmbDatabases->findText(t));
     ui->cmbDatabases->setEnabled(true);
     ui->buttonBox->button(QDialogButtonBox::Ok)->setDisabled(false);
     ui->btnCreateDatabase->setEnabled(true);
@@ -297,8 +299,6 @@ void InjectSqlDialog::setupForConnectionStorage()
     ui->txtDatabaseName->hide();
     ui->cmbDatabases->show();
     ui->frame->hide();
-    ui->verticalLayout_4->setMargin(0);
-    ui->verticalLayout_4->setSpacing(0);
 
     setWindowTitle(QObject::tr("Connection Details"));
     ui->tabWidget->setTabText(0, tr("Connection"));
@@ -448,8 +448,8 @@ void InjectSqlDialog::onUserChange(QString newText)
 {
     if(!m_nameWasChanged)
     {
-        QString db = ui->txtDatabaseHost->text();
-        QString finalName = newText.length()?newText + "@" + (db.length()?db:"localhost"):(db.length()?db:"localhost");
+        QString dbHost = ui->txtDatabaseHost->text();
+        QString finalName = newText.length()?newText + "@" + (dbHost.length()?dbHost:"localhost"):(dbHost.length()?dbHost:"localhost");
         ui->txtConnectionName->setText(finalName);
     }
 }
@@ -469,4 +469,19 @@ void InjectSqlDialog::changeConnection()
     {
         ui->buttonBox->button(QDialogButtonBox::Ok)->setDisabled(true);
     }
+}
+
+void InjectSqlDialog::onDbChange(QString newDb)
+{
+    if(!m_nameWasChanged)
+    {
+        QString dbHost = ui->txtDatabaseHost->text();
+        QString finalName = newDb.length()?newDb + "@" + (dbHost.length()?dbHost:"localhost"):(dbHost.length()?dbHost:"localhost");
+        ui->txtConnectionName->setText(finalName);
+    }
+}
+
+void InjectSqlDialog::onConnectionNameEdited(QString)
+{
+    m_nameWasChanged = true;
 }

@@ -96,6 +96,11 @@ public:
         return m_port;
     }
 
+    QString getLastError() const
+    {
+        return m_lastError;
+    }
+
 private:
 
     QString m_host;
@@ -109,7 +114,7 @@ private:
     DatabaseEngine* m_engine;
     ConnectionState m_state;
     QStringList m_tables;
-
+    QString m_lastError;
 };
 
 #endif // CORE_CONNECTION_H

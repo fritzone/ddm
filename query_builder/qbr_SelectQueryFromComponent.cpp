@@ -51,8 +51,9 @@ QSet<OptionsType> SelectQueryFromComponent::provideOptions()
     }
 
     // TODO: MySQL does not support subquerys in view creation. For now just disable it
+    // and at later stages when we will support independent query creation find a way to
+    // fix this
     // t.insert(OPTIONS_NEW_SUBQUERY);
-
 
     return t;
 }
@@ -105,6 +106,20 @@ QVector<const Table*> SelectQueryFromComponent::getTables() const
         if(tc)
         {
             result.push_back(tc->getTable());
+        }
+    }
+    return result;
+}
+
+QVector<const TableInstance*> SelectQueryFromComponent::getTableInstances() const
+{
+    QVector<const TableInstance*>  result;
+    for(int i=0; i<m_children.size(); i++)
+    {
+        TableQueryComponent* tc = dynamic_cast<TableQueryComponent*>(m_children.at(i));
+        if(tc)
+        {
+            result.push_back(tc->getTableInstance());
         }
     }
     return result;

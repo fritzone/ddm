@@ -72,7 +72,7 @@
          <string/>
         </property>
         <property name="icon">
-         <iconset resource="dbm.qrc">
+         <iconset resource="../dbm.qrc">
           <normaloff>:/images/actions/images/small/gnome_undelete.png</normaloff>:/images/actions/images/small/gnome_undelete.png</iconset>
         </property>
         <property name="iconSize">
@@ -126,6 +126,9 @@
          <bool>true</bool>
         </property>
         <layout class="QHBoxLayout" name="horizontalLayout">
+         <property name="spacing">
+          <number>1</number>
+         </property>
          <property name="margin">
           <number>0</number>
          </property>
@@ -144,8 +147,28 @@
             <string/>
            </property>
            <property name="icon">
-            <iconset resource="dbm.qrc">
-             <normaloff>:/images/actions/images/actions/save_dt.png</normaloff>:/images/actions/images/actions/save_dt.png</iconset>
+            <iconset resource="../dbm.qrc">
+             <normaloff>:/images/actions/images/actions/filesave.png</normaloff>:/images/actions/images/actions/filesave.png</iconset>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QToolButton" name="btnDeleteDataType">
+           <property name="maximumSize">
+            <size>
+             <width>32</width>
+             <height>32</height>
+            </size>
+           </property>
+           <property name="toolTip">
+            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Delete &lt;/span&gt;this datatype&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+           <property name="icon">
+            <iconset resource="../dbm.qrc">
+             <normaloff>:/images/actions/images/actions/remove-icon.png</normaloff>:/images/actions/images/actions/remove-icon.png</iconset>
            </property>
           </widget>
          </item>
@@ -185,7 +208,7 @@
         </property>
         <widget class="QWidget" name="tabWidgetPage1">
          <attribute name="icon">
-          <iconset resource="dbm.qrc">
+          <iconset resource="../dbm.qrc">
            <normaloff>:/images/actions/images/big/bigdatatypes.png</normaloff>:/images/actions/images/big/bigdatatypes.png</iconset>
          </attribute>
          <attribute name="title">
@@ -212,7 +235,7 @@
               <string>Text/String</string>
              </property>
              <property name="icon">
-              <iconset resource="dbm.qrc">
+              <iconset resource="../dbm.qrc">
                <normaloff>:/images/actions/images/small/datatypes_text.png</normaloff>:/images/actions/images/small/datatypes_text.png</iconset>
              </property>
             </item>
@@ -221,7 +244,7 @@
               <string>Numeric</string>
              </property>
              <property name="icon">
-              <iconset resource="dbm.qrc">
+              <iconset resource="../dbm.qrc">
                <normaloff>:/images/actions/images/small/datatypes_numeric.png</normaloff>:/images/actions/images/small/datatypes_numeric.png</iconset>
              </property>
             </item>
@@ -230,7 +253,7 @@
               <string>Boolean</string>
              </property>
              <property name="icon">
-              <iconset resource="dbm.qrc">
+              <iconset resource="../dbm.qrc">
                <normaloff>:/images/actions/images/small/datatypes_bool.png</normaloff>:/images/actions/images/small/datatypes_bool.png</iconset>
              </property>
             </item>
@@ -239,7 +262,7 @@
               <string>Date/Time</string>
              </property>
              <property name="icon">
-              <iconset resource="dbm.qrc">
+              <iconset resource="../dbm.qrc">
                <normaloff>:/images/actions/images/small/datatypes_datetime.png</normaloff>:/images/actions/images/small/datatypes_datetime.png</iconset>
              </property>
             </item>
@@ -248,7 +271,7 @@
               <string>Blob/Binary</string>
              </property>
              <property name="icon">
-              <iconset resource="dbm.qrc">
+              <iconset resource="../dbm.qrc">
                <normaloff>:/images/actions/images/small/datatypes_blob.png</normaloff>:/images/actions/images/small/datatypes_blob.png</iconset>
              </property>
             </item>
@@ -257,7 +280,7 @@
               <string>Misc</string>
              </property>
              <property name="icon">
-              <iconset resource="dbm.qrc">
+              <iconset resource="../dbm.qrc">
                <normaloff>:/images/actions/images/small/datatypes_misc.png</normaloff>:/images/actions/images/small/datatypes_misc.png</iconset>
              </property>
             </item>
@@ -266,7 +289,7 @@
               <string>Spatial</string>
              </property>
              <property name="icon">
-              <iconset resource="dbm.qrc">
+              <iconset resource="../dbm.qrc">
                <normaloff>:/images/actions/images/small/datatypes_spatial.png</normaloff>:/images/actions/images/small/datatypes_spatial.png</iconset>
              </property>
             </item>
@@ -310,7 +333,7 @@
                <string>...</string>
               </property>
               <property name="icon">
-               <iconset resource="dbm.qrc">
+               <iconset resource="../dbm.qrc">
                 <normaloff>:/images/actions/images/small/remove.png</normaloff>:/images/actions/images/small/remove.png</iconset>
               </property>
              </widget>
@@ -321,7 +344,7 @@
                <string>...</string>
               </property>
               <property name="icon">
-               <iconset resource="dbm.qrc">
+               <iconset resource="../dbm.qrc">
                 <normaloff>:/images/actions/images/small/add.png</normaloff>:/images/actions/images/small/add.png</iconset>
               </property>
              </widget>
@@ -335,7 +358,7 @@
         </widget>
         <widget class="QWidget" name="tabWidgetPage2">
          <attribute name="icon">
-          <iconset resource="dbm.qrc">
+          <iconset resource="../dbm.qrc">
            <normaloff>:/images/actions/images/small/advanced-icon.png</normaloff>:/images/actions/images/small/advanced-icon.png</iconset>
          </attribute>
          <attribute name="title">
@@ -404,7 +427,7 @@
         </widget>
         <widget class="QWidget" name="tabWidgetPage3">
          <attribute name="icon">
-          <iconset resource="dbm.qrc">
+          <iconset resource="../dbm.qrc">
            <normaloff>:/images/actions/images/actions/note.png</normaloff>:/images/actions/images/actions/note.png</iconset>
          </attribute>
          <attribute name="title">
@@ -444,7 +467,7 @@
   </layout>
  </widget>
  <resources>
-  <include location="dbm.qrc"/>
+  <include location="../dbm.qrc"/>
  </resources>
  <connections>
   <connection>
@@ -591,6 +614,22 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>btnDeleteDataType</sender>
+   <signal>clicked()</signal>
+   <receiver>NewDataTypeForm</receiver>
+   <slot>onDeleteDataType()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>139</x>
+     <y>36</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>479</x>
+     <y>330</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>basicDTselected(QString)</slot>
@@ -605,5 +644,6 @@
   <slot>onHelp()</slot>
   <slot>onLockUnlock(bool)</slot>
   <slot>onUndelete()</slot>
+  <slot>onDeleteDataType()</slot>
  </slots>
 </ui>

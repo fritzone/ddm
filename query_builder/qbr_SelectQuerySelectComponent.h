@@ -4,6 +4,7 @@
 #include "qbr_QueryComponents.h"
 
 class Column;
+class ColumnOfTabWithTabInstance;
 
 class SelectQuerySelectComponent : public QueryComponent
 {
@@ -22,7 +23,7 @@ public:
     }
     bool hasGroupByFunctions();
     bool hasAtLeastOneColumnSelected();
-    QVector<const Column*> getSelectedColumns();
+    QVector<const ColumnOfTabWithTabInstance *> getSelectedColumns();
     QStringList getOrderByElements();
 
     /**

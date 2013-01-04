@@ -13,6 +13,7 @@ class SelectQueryGroupByComponent;
 class SelectQueryAsComponent;
 class SelectQueryOrderByComponent;
 class Column;
+class ColumnOfTabWithTabInstance;
 
 class SelectQuery : public Query
 {
@@ -39,6 +40,7 @@ public:
         return QVector<CellTypeChooserType> ();
     }
     virtual QVector<const Table*> getTables() const;
+    virtual QVector<const TableInstance*> getTableInstances() const;
     virtual QString get() const;
     virtual QString getClass() const {return "SelectQuery";}
     void newFromTableComponent();
@@ -84,7 +86,7 @@ public:
 
     bool hasGroupByFunctions();
     bool hasAtLeastOneColumnSelected();
-    QVector<const Column*> getSelectedColumns();    // used only for group by stuff, not for the SQL writer ...
+    QVector<const ColumnOfTabWithTabInstance *> getSelectedColumns();    // used only for group by stuff, not for the SQL writer ...
     SelectQueryFromComponent* getFrom() const
     {
         return m_from;

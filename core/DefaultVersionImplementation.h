@@ -102,6 +102,8 @@ public:
     virtual PatchTreeRemovalStatus undeleteObject(const QString& uid, bool suspend);
     virtual void removePatch(const Patch* p);
     virtual void lockVersion(LockableElement::LockType);
+    virtual Table* getDescendantTable(Table*);
+    virtual TableInstance* getDescendantTableInstance(TableInstance*);
 
     void createTreeItems(GuiElements* gui, ContextMenuEnabledTreeWidgetItem* projectItem, int idxAfter);
     void deleteTableInstance(TableInstance *tinst, TableDeletionAction*& );

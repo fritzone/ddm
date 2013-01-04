@@ -320,6 +320,12 @@ public:
      */
     QVector <QVector<ColumnWithValue*> > getFullValues() const;
 
+    /**
+     * @brief getDescendantColumn returns the column which is the descendant of the given column
+     * @return
+     */
+    Column* getDescendantColumn(const Column *sourceColumn);
+
 private:
 
     // describes the table
