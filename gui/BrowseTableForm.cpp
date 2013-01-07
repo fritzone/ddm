@@ -91,13 +91,15 @@ void BrowseTableForm::onRunQuery()
         return;
     }
     QSqlQueryModel *model = new QSqlQueryModel(tableForScriptResult);
-    model->setQuery(QSqlQuery(retrieveCurrentQuery(), m_connection->getQSqlDatabase()));
+    QSqlDatabase db = m_connection->getQSqlDatabase();
+    model->setQuery(QSqlQuery(retrieveCurrentQuery(), db));
     if(model->lastError().type() != QSqlError::NoError)
     {
         QMessageBox::critical(this, tr("Error"), model->lastError().text(), QMessageBox::Ok);
         return;
     }
     tableForScriptResult->setModel(model);
+    db.close();
 }
 
 QString BrowseTableForm::retrieveCurrentQuery()
@@ -414,6 +416,7 @@ void BrowseTableForm::newPage(Connection *c, const QString &tab, BrowsedTableLay
         queryFramesMainHorizontalLayout = new QHBoxLayout(queryFrame);
         queryFramesMainVerticalLayout = new QVBoxLayout();
         horizontalLayoutForButtons = new QHBoxLayout();
+        horizontalLayoutForButtons->setSpacing(1);
         btnExecuteQuery = new QToolButton(queryFrame);
         btnExecuteQuery->setIcon(IconFactory::getRunQueryIcon());
         btnOpenQuery = new QToolButton(queryFrame);
@@ -426,6 +429,7 @@ void BrowseTableForm::newPage(Connection *c, const QString &tab, BrowsedTableLay
         horizontalLayoutForButtons->addWidget(btnSaveQuery);
         horizontalLayoutForButtons->addItem(horizontalSpacer);
         queryFramesMainVerticalLayout->addLayout(horizontalLayoutForButtons);
+
         horizontalLayoutForLineNumbersAndTextEdit = new QHBoxLayout();
         queryFramesMainVerticalLayout->addLayout(horizontalLayoutForLineNumbersAndTextEdit);
         queryFramesMainHorizontalLayout->addLayout(queryFramesMainVerticalLayout);
@@ -473,15 +477,15 @@ void BrowseTableForm::retranslateUi()
     if(tabWidget) tabWidget->setTabText(tabWidget->indexOf(dataTab), QApplication::translate("BrowseTableForm", "Data", 0, QApplication::UnicodeUTF8));
     if(tabWidget) tabWidget->setTabText(tabWidget->indexOf(columnsTab), QApplication::translate("BrowseTableForm", "Columns", 0, QApplication::UnicodeUTF8));
 #ifndef QT_NO_TOOLTIP
-    if(btnExecuteQuery) btnExecuteQuery->setToolTip(QApplication::translate("BrowseTableForm", "Run the query", 0, QApplication::UnicodeUTF8));
+    if(btnExecuteQuery) btnExecuteQuery->setToolTip(QApplication::translate("BrowseTableForm", "<b>Run</b> the query", 0, QApplication::UnicodeUTF8));
 #endif // QT_NO_TOOLTIP
     if(btnExecuteQuery) btnExecuteQuery->setText(QApplication::translate("BrowseTableForm", "...", 0, QApplication::UnicodeUTF8));
 #ifndef QT_NO_TOOLTIP
-    if(btnOpenQuery) btnOpenQuery->setToolTip(QApplication::translate("BrowseTableForm", "Run the query", 0, QApplication::UnicodeUTF8));
+    if(btnOpenQuery) btnOpenQuery->setToolTip(QApplication::translate("BrowseTableForm", "<b>Open</b> a SQL file", 0, QApplication::UnicodeUTF8));
 #endif // QT_NO_TOOLTIP
     if(btnOpenQuery) btnOpenQuery->setText(QApplication::translate("BrowseTableForm", "...", 0, QApplication::UnicodeUTF8));
 #ifndef QT_NO_TOOLTIP
-    if(btnSaveQuery) btnSaveQuery->setToolTip(QApplication::translate("BrowseTableForm", "Run the query", 0, QApplication::UnicodeUTF8));
+    if(btnSaveQuery) btnSaveQuery->setToolTip(QApplication::translate("BrowseTableForm", "<b>Save</b> the query", 0, QApplication::UnicodeUTF8));
 #endif // QT_NO_TOOLTIP
     if(btnSaveQuery) btnSaveQuery->setText(QApplication::translate("BrowseTableForm", "...", 0, QApplication::UnicodeUTF8));
 } // retranslateUi

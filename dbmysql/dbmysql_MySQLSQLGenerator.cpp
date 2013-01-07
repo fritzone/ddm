@@ -602,10 +602,10 @@ QStringList MySQLSQLGenerator::generateCreateViewSql(View *v, const QHash<QStrin
         {
             res.append(upcase?"OR REPLACE":"or replace");
         }
-        res.append(QString(upcase?"VIEW ":"view ") + v->getName() + "(");
+        res.append(QString(upcase?"VIEW ":"view ") + v->getName());
         if(v->getColumnNames().size() > 0)
         {
-            QString c = "";
+            QString c = "(";
             for(int i=0; i<v->getColumnNames().size(); i++)
             {
                 c += v->getColumnNames().at(i);

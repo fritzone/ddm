@@ -1,3 +1,4 @@
+
 #include "NewViewForm.h"
 #include "ui_NewViewForm.h"
 #include "db_DatabaseEngine.h"
@@ -114,6 +115,14 @@ void NewViewForm::changeEvent(QEvent *e)
     }
 }
 
+void NewViewForm::disableEditingControls(bool dis)
+{
+    ui->lstColumnsForView->setDisabled(dis);
+    ui->chkCanReplace->setDisabled(dis);
+//    m_qgv->setInteractive(dis);
+    m_qgv->setDisabled(dis);
+}
+
 void NewViewForm::setGraphicsItem(QueryGraphicsItem * itm)
 {
     if(m_queryBuilder) m_qgs->addItem(itm);
@@ -179,7 +188,8 @@ void NewViewForm::setView(View *v)
             ui->btnLock->blockSignals(true);
             ui->btnLock->setChecked(false);
             ui->btnLock->blockSignals(false);
-            ui->grpContent->setEnabled(false);
+//            ui->frame_3->setEnabled(false);
+            disableEditingControls(true);
             ui->btnLock->setToolTip(QObject::tr("This view is <b>locked</b>. Click this button to unlock it."));
         }
         else
@@ -188,7 +198,8 @@ void NewViewForm::setView(View *v)
             ui->btnLock->blockSignals(true);
             ui->btnLock->setChecked(true);
             ui->btnLock->blockSignals(false);
-            ui->grpContent->setEnabled(true);
+//            ui->frame_3->setEnabled(true);
+            disableEditingControls(false);
             ui->btnLock->setToolTip(QObject::tr("This view is <b>unlocked</b>. Click this button to lock it."));
         }
 
@@ -361,7 +372,8 @@ void NewViewForm::onLockUnlock(bool checked)
     if(checked)
     {
         ui->btnLock->setIcon(IconFactory::getUnLockedIcon());
-        ui->grpContent->setEnabled(true);
+        disableEditingControls(false);
+//        ui->frame_3->setEnabled(true);
         m_view->unlock();
         m_view->updateGui();
         ui->btnLock->setToolTip(QObject::tr("This view is <b>unlocked</b>. Click this button to lock it."));
@@ -371,7 +383,8 @@ void NewViewForm::onLockUnlock(bool checked)
     else
     {
         ui->btnLock->setIcon(IconFactory::getLockedIcon());
-        ui->grpContent->setEnabled(false);
+        disableEditingControls(true);
+//        ui->frame_3->setEnabled(false);
         m_view->lock(LockableElement::LOCKED);
         m_view->updateGui();
         ui->btnLock->setToolTip(QObject::tr("This view is <b>locked</b>. Click this button to unlock it."));

@@ -63,7 +63,7 @@
          <string/>
         </property>
         <property name="icon">
-         <iconset resource="dbm.qrc">
+         <iconset resource="../dbm.qrc">
           <normaloff>:/images/actions/images/small/gnome_undelete.png</normaloff>:/images/actions/images/small/gnome_undelete.png</iconset>
         </property>
         <property name="iconSize">
@@ -130,11 +130,11 @@
       <item>
        <widget class="QTabWidget" name="tabWidget">
         <property name="currentIndex">
-         <number>2</number>
+         <number>1</number>
         </property>
         <widget class="QWidget" name="tab">
          <attribute name="icon">
-          <iconset resource="dbm.qrc">
+          <iconset resource="../dbm.qrc">
            <normaloff>:/images/actions/images/small/interface_builder.png</normaloff>:/images/actions/images/small/interface_builder.png</iconset>
          </attribute>
          <attribute name="title">
@@ -175,7 +175,7 @@
         </widget>
         <widget class="QWidget" name="tab_4">
          <attribute name="icon">
-          <iconset resource="dbm.qrc">
+          <iconset resource="../dbm.qrc">
            <normaloff>:/images/actions/images/small/sql.png</normaloff>:/images/actions/images/small/sql.png</iconset>
          </attribute>
          <attribute name="title">
@@ -192,7 +192,7 @@
         </widget>
         <widget class="QWidget" name="tab_3">
          <attribute name="icon">
-          <iconset resource="dbm.qrc">
+          <iconset resource="../dbm.qrc">
            <normaloff>:/images/actions/images/small/advanced-icon.png</normaloff>:/images/actions/images/small/advanced-icon.png</iconset>
          </attribute>
          <attribute name="title">
@@ -266,7 +266,7 @@
                        <string>...</string>
                       </property>
                       <property name="icon">
-                       <iconset resource="dbm.qrc">
+                       <iconset resource="../dbm.qrc">
                         <normaloff>:/images/actions/images/actions/filesave.png</normaloff>:/images/actions/images/actions/filesave.png</iconset>
                       </property>
                      </widget>
@@ -295,7 +295,7 @@
                        <string>...</string>
                       </property>
                       <property name="icon">
-                       <iconset resource="dbm.qrc">
+                       <iconset resource="../dbm.qrc">
                         <normaloff>:/images/actions/images/small/database.png</normaloff>:/images/actions/images/small/database.png</iconset>
                       </property>
                      </widget>
@@ -394,7 +394,7 @@
   </layout>
  </widget>
  <resources>
-  <include location="dbm.qrc"/>
+  <include location="../dbm.qrc"/>
  </resources>
  <connections>
   <connection>
