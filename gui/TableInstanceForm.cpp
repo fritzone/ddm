@@ -311,6 +311,7 @@ void TableInstanceForm::disableEditingControls(bool dis)
     ui->btnDeleteRow->setDisabled(dis);
     ui->values->setDisabled(dis);
     ui->lineEdit->setDisabled(dis);
+    ui->treeWidget->setDisabled(dis);
 }
 
 void TableInstanceForm::setTableInstance(TableInstance *st)

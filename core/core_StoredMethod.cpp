@@ -232,27 +232,27 @@ QString StoredMethod::getNameFromSql(int stidx, int &nameidx)
     {
         // search backward to see if the previous word is "CREATE"
         int cindx = i-1;
-        while(cindx && t.at(cindx).isSpace()) cindx --;
+        while(cindx >= 0 && t.at(cindx).isSpace()) cindx --;
         QString prev = "";
         while(cindx>-1 && !t.at(cindx).isSpace() && t.at(cindx)!='=')
         {
             prev = t.at(cindx) + prev;
             cindx --;
         }
-        if(cindx == 0)
+        if(cindx <= 0)
         {
             return "UNNAMED";
         }
         if(prev.toUpper() != "CREATE")
         {
             // search back if we have definer ...
-            while(cindx && t.at(cindx).isSpace()) cindx --;
+            while(cindx >= 0 && t.at(cindx).isSpace()) cindx --;
             // this should be '='
-            if(t.at(cindx) == '=')
+            if(cindx >= 0 && t.at(cindx) == '=')
             {
                 cindx --;
                 // skip space before =
-                while(cindx && t.at(cindx).isSpace()) cindx --;
+                while(cindx >= 0 && t.at(cindx).isSpace()) cindx --;
                 // prev2 is supposed to be be DEFINER
                 QString prev2 = "";
                 while(cindx>-1 && !t.at(cindx).isSpace())
@@ -263,7 +263,7 @@ QString StoredMethod::getNameFromSql(int stidx, int &nameidx)
                 if(prev2.toUpper() == "DEFINER")
                 {
                     // skip space before DEFINER
-                    while(cindx && t.at(cindx).isSpace()) cindx --;
+                    while(cindx >= 0 && t.at(cindx).isSpace()) cindx --;
                     // prev2 is supposed to be be CREATE
                     QString prev3 = "";
                     while(cindx>-1 && !t.at(cindx).isSpace())

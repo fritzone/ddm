@@ -29,6 +29,7 @@ ProcedureForm::ProcedureForm(Version* v, ProcedureFormMode m, bool forced, Conne
 void ProcedureForm::disableEditingControls(bool dis)
 {
     m_textEdit->setReadOnly(dis);
+    ui->btnLoad->setDisabled(dis);
 }
 
 
@@ -98,7 +99,8 @@ void ProcedureForm::onLockUnlock(bool checked)
     if(checked)
     {
         ui->btnLock->setIcon(IconFactory::getUnLockedIcon());
-        ui->grpContent->setEnabled(true);
+        //ui->grpContent->setEnabled(true);
+        disableEditingControls(false);
         m_proc->unlock();
         m_proc->updateGui();
         ui->btnLock->setToolTip((m_mode == MODE_PROCEDURE?"Procedure ":"Function ") + QObject::tr("is <b>unlocked</b>. Click this button to lock it."));
@@ -108,7 +110,8 @@ void ProcedureForm::onLockUnlock(bool checked)
     else
     {
         ui->btnLock->setIcon(IconFactory::getLockedIcon());
-        ui->grpContent->setEnabled(false);
+        //ui->grpContent->setEnabled(false);
+        disableEditingControls(true);
         m_proc->lock(LockableElement::LOCKED);
         m_proc->updateGui();
         ui->btnLock->setToolTip((m_mode == MODE_PROCEDURE?"Procedure ":"Function ") + QObject::tr("is <b>locked</b>. Click this button to lock it."));
@@ -146,7 +149,8 @@ void ProcedureForm::setProcedure(StoredMethod *p)
             ui->btnLock->blockSignals(true);
             ui->btnLock->setChecked(false);
             ui->btnLock->blockSignals(false);
-            ui->grpContent->setEnabled(false);
+            //ui->grpContent->setEnabled(false);
+            disableEditingControls(true);
             ui->btnLock->setToolTip((m_mode == MODE_PROCEDURE?"This Procedure ":"This Function ") + QObject::tr("is <b>locked</b>. Click this button to unlock it."));
         }
         else
@@ -155,7 +159,8 @@ void ProcedureForm::setProcedure(StoredMethod *p)
             ui->btnLock->blockSignals(true);
             ui->btnLock->setChecked(true);
             ui->btnLock->blockSignals(false);
-            ui->grpContent->setEnabled(true);
+            //ui->grpContent->setEnabled(true);
+            disableEditingControls(false);
             ui->btnLock->setToolTip((m_mode == MODE_PROCEDURE?"This Procedure ":"This Function ") + QObject::tr("is <b>unlocked</b>. Click this button to unlock it."));
         }
 
@@ -180,7 +185,8 @@ void ProcedureForm::onUndelete()
             ui->btnLock->blockSignals(true);
             ui->btnLock->setChecked(false);
             ui->btnLock->blockSignals(false);
-            ui->grpContent->setEnabled(false);
+            //ui->grpContent->setEnabled(false);
+            disableEditingControls(true);
             ui->btnLock->setToolTip((m_mode == MODE_PROCEDURE?"This Procedure ":"This Function ") + QObject::tr("is <b>locked</b>. Click this button to unlock it."));
         }
         else
@@ -189,7 +195,8 @@ void ProcedureForm::onUndelete()
             ui->btnLock->blockSignals(true);
             ui->btnLock->setChecked(true);
             ui->btnLock->blockSignals(false);
-            ui->grpContent->setEnabled(true);
+            //ui->grpContent->setEnabled(true);
+            disableEditingControls(false);
             ui->btnLock->setToolTip((m_mode == MODE_PROCEDURE?"This Procedure ":"This Function ") + QObject::tr("is <b>unlocked</b>. Click this button to unlock it."));
         }
         ui->btnUndelete->hide();
