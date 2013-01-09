@@ -1,0 +1,11 @@
+[Desktop Entry]
+Version=0.1
+Name=Database Deployment Manager
+Comment=Database Deployment manager
+Exec=/opt/ddm/bin/ddm %U
+Icon=ddm
+Terminal=false
+Type=Application
+Categories=Qt;Development
+MimeType=application/x-ddm-item;
+GenericName=Database Deployment Manager

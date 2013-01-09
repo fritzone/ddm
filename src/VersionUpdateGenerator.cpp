@@ -21,6 +21,11 @@ struct IndexHolder
 {
     int allFromC, allToC, pksFromC, pksToC;
 };
+struct DroppedFkWithTinst
+{
+    ForeignKey* fk;
+    TableInstance* tinst;
+};
 
 VersionUpdateGenerator::VersionUpdateGenerator(Version *from, Version *to) : m_commands(), m_tablesReferencedWithFkFromOtherTables(), m_delayedCommands()
 {
@@ -119,12 +124,6 @@ VersionUpdateGenerator::VersionUpdateGenerator(Version *from, Version *to) : m_c
         }
         else
         {
-            struct DroppedFkWithTinst
-            {
-                ForeignKey* fk;
-                TableInstance* tinst;
-            };
-
             // drop all the foreign keys from other tables that reference the tables/columns in this map
             QVector<DroppedFkWithTinst*> droppedFks;
             QStringList dropCommands;
