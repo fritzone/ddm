@@ -89,6 +89,29 @@ void UidWarehouse::addElement(QUuid uid, Version *v)
     }
 }
 
+void UidWarehouse::setForcedVersionForUid(const QString &uid, Version* v)
+{
+    Solution* s = 0;
+
+    if(! m_items.keys().contains(s))
+    {
+        return;
+    }
+    else
+    {
+        const QMap<QString, WarehouseEntry*>& m = m_items[s];
+        if(m.contains(uid))
+        {
+            WarehouseEntry* whe = m[uid];
+            if(whe)
+            {
+                whe->ver = v;
+            }
+        }
+    }
+    return;
+}
+
 Version* UidWarehouse::getVersionForUid(const QString &uid)
 {
     Solution* s = 0;

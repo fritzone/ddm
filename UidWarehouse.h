@@ -29,12 +29,7 @@ public:
     ObjectWithUid* getElement(const QString&);
     Version* getVersionForUid(const QString& uid);
     bool related(const ObjectWithUid* obj1, const ObjectWithUid* obj2);
-
-//    /**
-//     * Returns the descendant of the element with the given UID from
-//     * the given Version
-//     */
-//    ObjectWithUid* getDescendant(const QString& uid, Version* v);
+    void setForcedVersionForUid(const QString& uid, Version *v);
 
 public:
 

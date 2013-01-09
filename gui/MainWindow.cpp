@@ -325,7 +325,7 @@ void MainWindow::onNewSolution()
         // are we supposed to inherit the default data types?
         if(nprjdlg->inheritDefaultDatatypes())
         {
-            QVector<UserDataType*> dts = m_workspace->loadDefaultDatatypesIntoCurrentSolution();
+            QVector<UserDataType*> dts = m_workspace->loadDefaultDatatypesIntoCurrentSolution(Workspace::getInstance()->currentSolution());
 
             for(int i=0; i<dts.size(); i++)
             {
@@ -336,7 +336,8 @@ void MainWindow::onNewSolution()
 
         // expand the tree
         m_guiElements->getProjectTree()->expandAll();
-        Workspace::getInstance()->workingVersion()->getGui()->collapseDTEntries();
+        Version *tv = Workspace::getInstance()->workingVersion();
+        tv->getGui()->collapseDTEntries();
 
         // show the project properties window
         showProjectDetails();
@@ -1687,6 +1688,13 @@ void MainWindow::onDeleteTableInstanceFromPopup()
         Version* v = tinst->version();
         v->deleteTableInstance(tinst);
 
+        const QVector<TableInstance*>& otherTinsts = v->getTableInstances();
+        for(int i=0; i<otherTinsts.size(); i++)
+        {
+            QVector<QString> fksFailures;
+            otherTinsts[i]->finalizeFkMappings(fksFailures);
+        }
+
         showNamedObjectList(&MainWindow::showTableInstanceWithGuid, v->getTableInstances(), IconFactory::getTabinstIcon(), QObject::tr("Tables"));
     }
 }
@@ -2039,6 +2047,12 @@ void MainWindow::onRenameInstanceFromPopup()
             tinst->setName(t);
             tinst->setDisplayText(t);
             tinst->getSqlLocation()->setText(0, t);
+            const QVector<TableInstance*>& otherTinsts = tinst->version()->getTableInstances();
+            for(int i=0; i<otherTinsts.size(); i++)
+            {
+                QVector<QString> fksFailures;
+                otherTinsts[i]->finalizeFkMappings(fksFailures);
+            }
 
             m_guiElements->updateItemForPatchWithState(tinst->version()->getWorkingPatch(), uidTableInstance, tinst->getObjectUid(), t, 2);
         }
