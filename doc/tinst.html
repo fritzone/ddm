@@ -1,6 +1,8 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <html><head><title>Table Instances</title>
 
+
+
   
 
   
@@ -56,12 +58,16 @@ tree it will get a specific marking: <img src="tabinstlock.png" height="16" widt
 icon. When you delete a table instance which pulled in other tables
 being instantiated will also delete the pulled in tables, and you
 cannot delete a pulled in table without deleting the table which pulled
-it in. <span style="font-style: italic; font-weight: bold;">WARNING</span>
-Do not change the name of the table instances if they contain foreign
-keys otherwise the SQL script that will be generated will refer to an
-invalid table. We know about this limitation of the application, and we
-are working hard to fix it. The reason is that the Foreign Keys are
-attached to the table at the current stage, not the table instance.<br>
+it in.<br>
+<br>
+For table instances which have a foreign key to another table in the
+"Table Instance" window there is a new Tab, for specifying to which
+table instance the specified foreign keys are mapped. Select the
+corresponding table instance. On the deletion or rename of a table instance which
+was specified as a foreign key destination in some other table
+instance, you will need to specify again the table instance to which
+the foreign key will map, otherwise you might not get the desired results in your
+deployment script.<br>
 <br>
 A typical confusion among first time users of the tool is that they
 create a table <span style="font-style: italic;">template </span>and

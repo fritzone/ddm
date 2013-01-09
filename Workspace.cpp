@@ -20,6 +20,7 @@
 #include "core_Patch.h"
 #include "MajorVersion.h"
 #include "GuiElements.h"
+#include "UidWarehouse.h"
 
 #include <QFile>
 #include <QApplication>
@@ -157,7 +158,7 @@ DatabaseEngine* Workspace::currentProjectsEngine() const
     return currentProject()->getEngine();
 }
 
-QVector<UserDataType*> Workspace::loadDefaultDatatypesIntoCurrentSolution()
+QVector<UserDataType*> Workspace::loadDefaultDatatypesIntoCurrentSolution(Solution* s)
 {
     QDomDocument doc ("DBM");
     QFile file (QApplication::applicationDirPath() + "/rsrc/" + Workspace::getInstance()->currentProjectsEngine()->getDefaultDatatypesLocation()); // TODO: This will not work for other databases :)
@@ -177,7 +178,10 @@ QVector<UserDataType*> Workspace::loadDefaultDatatypesIntoCurrentSolution()
 
         for(int i=0; i<dts.size(); i++)        // add to the project itself
         {
-            Workspace::getInstance()->workingVersion()->addNewDataType(dts.at(i), true);
+            s->currentProject()->getWorkingVersion()->addNewDataType(dts.at(i), true);
+            // make the working version of the "s" to be the version for dts[i] in UidWarehouse
+            UidWarehouse::instance().setForcedVersionForUid(dts[i]->getObjectUid(), s->currentProject()->getWorkingVersion());
+            dts[i]->setForcedVersion(s->currentProject()->getWorkingVersion());
         }
 
         return dts;

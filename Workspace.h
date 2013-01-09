@@ -106,7 +106,7 @@ public:
     /**
      * Loads the default data types in the current solution
      */
-    QVector<UserDataType*> loadDefaultDatatypesIntoCurrentSolution();
+    QVector<UserDataType*> loadDefaultDatatypesIntoCurrentSolution(Solution *s);
 
     /**
      * Pastes a table from the clipboard

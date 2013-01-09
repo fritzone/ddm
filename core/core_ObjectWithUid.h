@@ -65,6 +65,11 @@ public:
         return m_version;
     }
 
+    void setForcedVersion(Version *v)
+    {
+        m_version = v;
+    }
+
     /**
      * @brief sets the SourceUid ofthe object
      * @param o - the UID

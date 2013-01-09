@@ -397,6 +397,15 @@ bool TableInstance::finalizeFkMappings(QVector<QString>& failedFks)
             {
                 setFkMappingToTinst(fks[i]->getName(), first);
             }
+            else
+            {
+                QString tabToFkMap = getTinstForFk(fks[i]->getName());
+                TableInstance* otherTinst = version()->getTableInstance(tabToFkMap);
+                if(otherTinst == 0) // the table instance went missing, default it to "first"
+                {
+                    setFkMappingToTinst(fks[i]->getName(), first);
+                }
+            }
             result = true;
         }
         else

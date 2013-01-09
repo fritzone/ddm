@@ -604,6 +604,8 @@ Table* MySQLDatabaseEngine::reverseEngineerTable(Connection *c, const QString& t
             }
             // and create a table instance for it
             TableInstance* inst = v->instantiateTable(tab, false);
+            QString instName = NameGenerator::getUniqueName(v, (itemGetter)&Version::getTableInstance, tab->getName());
+            inst->setName(instName);
             inst->setValues(values);
         }
     }
