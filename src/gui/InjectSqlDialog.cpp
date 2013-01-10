@@ -236,6 +236,7 @@ void InjectSqlDialog::onConnect()
     }
     ui->cmbDatabases->setCurrentIndex(ui->cmbDatabases->findText(t));
     ui->cmbDatabases->setEnabled(true);
+    ui->lblDatabase->setEnabled(true);
     ui->buttonBox->button(QDialogButtonBox::Ok)->setDisabled(false);
     ui->btnCreateDatabase->setEnabled(true);
     previousHost = ui->txtDatabaseHost->text();
