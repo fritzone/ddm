@@ -20,7 +20,11 @@ MainWindowButtonDialog::MainWindowButtonDialog(QWidget *parent) :
 
     gradient.setColorAt(1, Qt::white);
     QBrush brush(gradient);
+
+#ifndef Q_WS_X11
     thePalette.setBrush(QPalette::Window, brush);
+#endif
+
     setPalette(thePalette);
 
     m_ui->btnQuick1->hide();
