@@ -21,6 +21,8 @@
 #include "MajorVersion.h"
 #include "GuiElements.h"
 #include "UidWarehouse.h"
+#include "TriggerForm.h"
+#include "core_Trigger.h"
 
 #include <QFile>
 #include <QApplication>
@@ -335,4 +337,28 @@ bool Workspace::finalizePatch(Patch *p)
     newVersion->lockVersion(LockableElement::LOCKED);
 
     return true;
+}
+
+Trigger* Workspace::createTrigger(Version *v)
+{
+    // TODO: Duplication with onNewTrigger
+    const QVector<Table*>& allTables = v->getTables();
+    if(allTables.size() == 0)
+    {
+        QMessageBox::critical(MainWindow::instance(), QObject::tr("Cannot create a trigger when there are no tables"), QObject::tr("No tables defined"), QMessageBox::Ok);
+        return 0;
+    }
+    TriggerForm* frm = v->getGui()->getTriggerForm();
+    Trigger* trigger = new Trigger(NameGenerator::getUniqueName(v, (itemGetter)&Version::getTrigger, QString("trig")),
+                                   QUuid::createUuid().toString(), v);
+    frm->setTrigger(trigger);
+    frm->initSql();
+    frm->feedInTables(allTables);
+    trigger->setTable(allTables.at(0)->getName());
+    frm->feedInTriggerEvents(Workspace::getInstance()->currentProjectsEngine()->getTriggerEvents());
+    frm->feedInTriggerTimes(Workspace::getInstance()->currentProjectsEngine()->getTriggerTimings());
+    v->addTrigger(trigger, false);
+    v->getGui()->createTriggerTreeEntry(trigger);
+    MainWindow::instance()->setCentralWidget(frm);
+    return trigger;
 }

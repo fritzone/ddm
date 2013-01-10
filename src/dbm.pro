@@ -12,7 +12,6 @@ TEMPLATE = app
 unix:QMAKE_CXXFLAGS_WARN_ON += -Wall -Wextra -ansi -pedantic -std=c++0x
 
 SOURCES += main.cpp \
-    DataTypesListForm.cpp \
     Configuration.cpp \
     DeserializationFactory.cpp \
     FkRelationDescriptor.cpp \
@@ -47,7 +46,6 @@ HEADERS += \
     uids.h \
     UidWarehouse.h \
     SpsTooltipProviderForUid.h \
-    DeploymentInitiator.h \
     DocumentationGenerator.h \
     TableUpdateGenerator.h \
     VersionUpdateGenerator.h \

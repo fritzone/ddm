@@ -51,6 +51,7 @@ HEADERS += \
     core/ActionDeleteTable.h \
     core/core_ColumnWithValue.h \
     core/CopyableElement.h \
+    core/DeploymentInitiator.h \
     core/core_Connection.h \
     core/core_ConnectionManager.h \
     core/core_Deployer.h \

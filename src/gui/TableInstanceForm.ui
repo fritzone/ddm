@@ -97,13 +97,7 @@
     </widget>
    </item>
    <item>
-    <widget class="QGroupBox" name="grpContentMain">
-     <property name="title">
-      <string/>
-     </property>
-     <property name="flat">
-      <bool>true</bool>
-     </property>
+    <widget class="QWidget" name="grpContentMain" native="true">
      <layout class="QVBoxLayout" name="verticalLayout_5">
       <property name="margin">
        <number>0</number>
@@ -118,7 +112,7 @@
       <item>
        <widget class="QTabWidget" name="tabWidget">
         <property name="currentIndex">
-         <number>1</number>
+         <number>0</number>
         </property>
         <widget class="QWidget" name="tab">
          <attribute name="icon">
@@ -130,13 +124,7 @@
          </attribute>
          <layout class="QVBoxLayout" name="verticalLayout_4">
           <item>
-           <widget class="QGroupBox" name="grpStartupData">
-            <property name="title">
-             <string/>
-            </property>
-            <property name="flat">
-             <bool>true</bool>
-            </property>
+           <widget class="QWidget" name="grpStartupData" native="true">
             <layout class="QVBoxLayout" name="verticalLayout">
              <property name="margin">
               <number>0</number>
@@ -155,7 +143,7 @@
                   </size>
                  </property>
                  <property name="toolTip">
-                  <string>Load the startup values from a CSV file</string>
+                  <string>&lt;b&gt;Load&lt;/b&gt; the startup values from a CSV file</string>
                  </property>
                  <property name="statusTip">
                   <string>Load the startup values from a CSV file</string>
@@ -169,8 +157,37 @@
                  </property>
                  <property name="iconSize">
                   <size>
-                   <width>24</width>
-                   <height>24</height>
+                   <width>16</width>
+                   <height>16</height>
+                  </size>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QToolButton" name="btnSaveStartupValues">
+                 <property name="maximumSize">
+                  <size>
+                   <width>32</width>
+                   <height>32</height>
+                  </size>
+                 </property>
+                 <property name="toolTip">
+                  <string>&lt;b&gt;Save&lt;/b&gt; startup values</string>
+                 </property>
+                 <property name="statusTip">
+                  <string>Save startup values to a CSV file</string>
+                 </property>
+                 <property name="text">
+                  <string>...</string>
+                 </property>
+                 <property name="icon">
+                  <iconset resource="../dbm.qrc">
+                   <normaloff>:/images/actions/images/actions/filesave.png</normaloff>:/images/actions/images/actions/filesave.png</iconset>
+                 </property>
+                 <property name="iconSize">
+                  <size>
+                   <width>16</width>
+                   <height>16</height>
                   </size>
                  </property>
                 </widget>
@@ -187,7 +204,7 @@
                   </size>
                  </property>
                  <property name="toolTip">
-                  <string>Import startup values</string>
+                  <string>&lt;b&gt;Import&lt;/b&gt; startup values</string>
                  </property>
                  <property name="statusTip">
                   <string>Import startup values from an alread existing DB table</string>
@@ -201,37 +218,8 @@
                  </property>
                  <property name="iconSize">
                   <size>
-                   <width>24</width>
-                   <height>24</height>
-                  </size>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QToolButton" name="btnSaveStartupValues">
-                 <property name="maximumSize">
-                  <size>
-                   <width>32</width>
-                   <height>32</height>
-                  </size>
-                 </property>
-                 <property name="toolTip">
-                  <string>Save startup values</string>
-                 </property>
-                 <property name="statusTip">
-                  <string>Save startup values to a CSV file</string>
-                 </property>
-                 <property name="text">
-                  <string>...</string>
-                 </property>
-                 <property name="icon">
-                  <iconset resource="../dbm.qrc">
-                   <normaloff>:/images/actions/images/actions/filesave.png</normaloff>:/images/actions/images/actions/filesave.png</iconset>
-                 </property>
-                 <property name="iconSize">
-                  <size>
-                   <width>24</width>
-                   <height>24</height>
+                   <width>16</width>
+                   <height>16</height>
                   </size>
                  </property>
                 </widget>
@@ -245,7 +233,7 @@
                   </size>
                  </property>
                  <property name="toolTip">
-                  <string>Go to the originator element</string>
+                  <string>Go to the &lt;b&gt;originator&lt;/b&gt; element</string>
                  </property>
                  <property name="statusTip">
                   <string>Go to the originator element</string>
@@ -259,8 +247,8 @@
                  </property>
                  <property name="iconSize">
                   <size>
-                   <width>24</width>
-                   <height>24</height>
+                   <width>16</width>
+                   <height>16</height>
                   </size>
                  </property>
                 </widget>

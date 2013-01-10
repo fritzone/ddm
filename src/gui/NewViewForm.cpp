@@ -45,7 +45,7 @@ NewViewForm::NewViewForm(Version* v, bool queryBuilder, QueryGraphicsHelper* c, 
 
     if(m_queryBuilder)
     {
-        ui->horizontalLayout_4->addWidget(txtSql);
+        ui->horizontalLayout_8->addWidget(txtSql);
 
         m_qgs = new QueryGraphicsScene(c, ui->groupBox);
 
@@ -90,8 +90,8 @@ NewViewForm::NewViewForm(Version* v, bool queryBuilder, QueryGraphicsHelper* c, 
         m_frameForLineNumbers->setMaximumSize(QSize(48, 16777215));
         m_frameForLineNumbers->setFrameShape(QFrame::StyledPanel);
         m_frameForLineNumbers->setFrameShadow(QFrame::Raised);
-        ui->horizontalLayout_4->addWidget(m_frameForLineNumbers);
-        ui->horizontalLayout_4->addWidget(txtSql);
+        ui->horizontalLayout_8->addWidget(m_frameForLineNumbers);
+        ui->horizontalLayout_8->addWidget(txtSql);
         txtSql->setLineNumberFrame(m_frameForLineNumbers);
         txtSql->updateLineNumbers();
         txtSql->setFocus();

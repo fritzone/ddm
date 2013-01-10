@@ -2,6 +2,7 @@ SOURCES += \
     gui/AboutBoxDialog.cpp \
     gui/BrowseTableForm.cpp \
     gui/CreateTableInstancesDialog.cpp \
+    gui/DataTypesListForm.cpp \
     gui/DiagramForm.cpp \
     gui/DocumentationForm.cpp \
     gui/EnterNoteTextDialog.cpp \
@@ -98,7 +99,6 @@ FORMS += \
     gui/PreferencesDialog.ui \
     gui/ProcedureForm.ui \
     gui/ProjectDetailsForm.ui \
-    gui/QueryItemListDialog.ui \
     gui/SimpleTextInputDialog.ui \
     gui/SqlForm.ui \
     gui/TableComparisonForm.ui \
