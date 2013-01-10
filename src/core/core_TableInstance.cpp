@@ -8,6 +8,7 @@
 #include "core_Column.h"
 #include "ContextMenuCollection.h"
 #include "ForeignKey.h"
+#include "core_Trigger.h"
 
 TableInstance::TableInstance(Table *tab, bool ref, const QString& uid, Version *v) : TreeItem(),
     NamedItem(tab->getName()), ObjectWithUid(uid, v),
@@ -438,6 +439,16 @@ void TableInstance::onRename(const QString &oldName, const QString &newName)
         if(otherInstances[i]->getObjectUid() != getObjectUid())
         {
             otherInstances[i]->updateFksDueToTInstRename(oldName, newName);
+        }
+    }
+
+    // and the same for all the Triggers
+    const QVector<Trigger*> triggers = version()->getTriggers();
+    for(int i=0; i<triggers.size(); i++)
+    {
+        if(triggers[i]->getTable() == oldName)
+        {
+            triggers[i]->setName(newName);
         }
     }
 }

@@ -23,6 +23,7 @@
 #include "UidWarehouse.h"
 #include "TriggerForm.h"
 #include "core_Trigger.h"
+#include "core_TableInstance.h"
 
 #include <QFile>
 #include <QApplication>
@@ -341,20 +342,40 @@ bool Workspace::finalizePatch(Patch *p)
 
 Trigger* Workspace::createTrigger(Version *v)
 {
-    // TODO: Duplication with onNewTrigger
-    const QVector<Table*>& allTables = v->getTables();
-    if(allTables.size() == 0)
+    QStringList names;
+    if(currentProjectIsOop())
     {
-        QMessageBox::critical(MainWindow::instance(), QObject::tr("Cannot create a trigger when there are no tables"), QObject::tr("No tables defined"), QMessageBox::Ok);
-        return 0;
+        const QVector<TableInstance*>& allTables = v->getTableInstances();
+        if(allTables.size() == 0)
+        {
+            QMessageBox::critical(MainWindow::instance(), QObject::tr("No tables defined"), QObject::tr("Cannot create a trigger when there are no table instances in an OOP project"), QMessageBox::Ok);
+            return 0;
+        }
+        for(int i=0; i<allTables.size(); i++)
+        {
+            names.push_back(allTables[i]->getName());
+        }
+    }
+    else
+    {
+        const QVector<Table*>& allTables = v->getTables();
+        if(allTables.size() == 0)
+        {
+            QMessageBox::critical(MainWindow::instance(), QObject::tr("No tables defined"), QObject::tr("Cannot create a trigger when there are no tables"), QMessageBox::Ok);
+            return 0;
+        }
+        for(int i=0; i<allTables.size(); i++)
+        {
+            names.push_back(allTables[i]->getName());
+        }
     }
     TriggerForm* frm = v->getGui()->getTriggerForm();
     Trigger* trigger = new Trigger(NameGenerator::getUniqueName(v, (itemGetter)&Version::getTrigger, QString("trig")),
                                    QUuid::createUuid().toString(), v);
     frm->setTrigger(trigger);
     frm->initSql();
-    frm->feedInTables(allTables);
-    trigger->setTable(allTables.at(0)->getName());
+    frm->feedInTables(names);
+    trigger->setTable(names[0]);
     frm->feedInTriggerEvents(Workspace::getInstance()->currentProjectsEngine()->getTriggerEvents());
     frm->feedInTriggerTimes(Workspace::getInstance()->currentProjectsEngine()->getTriggerTimings());
     v->addTrigger(trigger, false);

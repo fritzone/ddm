@@ -4,11 +4,12 @@
 #include "FrameForLineNumbers.h"
 #include "core_Trigger.h"
 #include "IconFactory.h"
-#include "core_Table.h"
 #include "Workspace.h"
 #include "Version.h"
 #include "MainWindow.h"
 #include "GuiElements.h"
+#include "core_Table.h"
+#include "core_TableInstance.h"
 
 TriggerForm::TriggerForm(Version *v, bool reverseSource, bool fc, QWidget *parent) :
     QWidget(parent),
@@ -143,12 +144,12 @@ void TriggerForm::initSql()
     m_textEdit->updateLineNumbers();
 }
 
-void TriggerForm::feedInTables(const QVector<Table *> &tables)
+void TriggerForm::feedInTables(const QVector<QString> &tables, bool oop)
 {
     ui->cmbTables->clear();
     for(int i=0; i<tables.size(); i++)
     {
-        ui->cmbTables->addItem(IconFactory::getTableIcon(), tables.at(i)->getName());
+        ui->cmbTables->addItem(oop?IconFactory::getTabinstIcon():IconFactory::getTableIcon(), tables.at(i));
     }
 }
 
@@ -218,10 +219,20 @@ void TriggerForm::whenChanged(QString a)
 void TriggerForm::tableChanged(QString a)
 {
     if(m_reverseSource) return;
-    Table* t = Workspace::getInstance()->workingVersion()->getTable(a);
-    if(t && m_trigger)
+    if(!m_trigger) return;
+
+    Table* t = m_trigger->version()->getTable(a);
+    if(t)
     {
         m_trigger->setTable(t->getName());
+    }
+    else
+    {
+        TableInstance* tinst = m_trigger->version()->getTableInstance(a);
+        if(tinst)
+        {
+            m_trigger->setTable(tinst->getName());
+        }
     }
 }
 

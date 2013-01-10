@@ -38,7 +38,6 @@ DefaultVersionImplementation::DefaultVersionImplementation(Project* p, int major
 
 void DefaultVersionImplementation::createTreeItems(GuiElements* gui, ContextMenuEnabledTreeWidgetItem* projectItem, int idxAfter)
 {
-    qDebug() << this;
     m_guiElements = new VersionGuiElements(gui, this);
     m_guiElements->createGuiElements(projectItem, idxAfter);
 }
