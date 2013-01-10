@@ -483,13 +483,24 @@
  <tabstops>
   <tabstop>cmbDatabaseType</tabstop>
   <tabstop>txtDatabaseHost</tabstop>
+  <tabstop>txtPort</tabstop>
   <tabstop>txtDatabaseUser</tabstop>
   <tabstop>txtDatabasePassword</tabstop>
+  <tabstop>btnConnect</tabstop>
   <tabstop>cmbDatabases</tabstop>
   <tabstop>btnCreateDatabase</tabstop>
+  <tabstop>txtConnectionName</tabstop>
   <tabstop>chkAutoConnect</tabstop>
   <tabstop>chkSavePassword</tabstop>
+  <tabstop>tabWidget</tabstop>
+  <tabstop>lstAllConnections</tabstop>
+  <tabstop>chkRollbackOnError</tabstop>
+  <tabstop>chkInjectMetadata</tabstop>
+  <tabstop>btnDetails</tabstop>
   <tabstop>buttonBox</tabstop>
+  <tabstop>txtDatabaseName</tabstop>
+  <tabstop>treeObjectsToDeploy</tabstop>
+  <tabstop>pushButton</tabstop>
  </tabstops>
  <resources>
   <include location="../dbm.qrc"/>
@@ -502,8 +513,8 @@
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>248</x>
-     <y>254</y>
+     <x>257</x>
+     <y>508</y>
     </hint>
     <hint type="destinationlabel">
      <x>157</x>
@@ -518,8 +529,8 @@
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>316</x>
-     <y>260</y>
+     <x>325</x>
+     <y>508</y>
     </hint>
     <hint type="destinationlabel">
      <x>286</x>
@@ -534,8 +545,8 @@
    <slot>onConnect()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>572</x>
-     <y>104</y>
+     <x>685</x>
+     <y>160</y>
     </hint>
     <hint type="destinationlabel">
      <x>358</x>
@@ -550,8 +561,8 @@
    <slot>onConnect()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>572</x>
-     <y>130</y>
+     <x>685</x>
+     <y>224</y>
     </hint>
     <hint type="destinationlabel">
      <x>358</x>
@@ -566,8 +577,8 @@
    <slot>onConnect()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>572</x>
-     <y>156</y>
+     <x>685</x>
+     <y>256</y>
     </hint>
     <hint type="destinationlabel">
      <x>358</x>
@@ -582,8 +593,8 @@
    <slot>onConnect()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>361</x>
-     <y>222</y>
+     <x>399</x>
+     <y>289</y>
     </hint>
     <hint type="destinationlabel">
      <x>358</x>
@@ -598,8 +609,8 @@
    <slot>onCreateDatabase()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>668</x>
-     <y>258</y>
+     <x>683</x>
+     <y>327</y>
     </hint>
     <hint type="destinationlabel">
      <x>358</x>
@@ -614,8 +625,8 @@
    <slot>onHostChange(QString)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>563</x>
-     <y>125</y>
+     <x>685</x>
+     <y>160</y>
     </hint>
     <hint type="destinationlabel">
      <x>358</x>
@@ -630,8 +641,8 @@
    <slot>onUserChange(QString)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>563</x>
-     <y>157</y>
+     <x>685</x>
+     <y>224</y>
     </hint>
     <hint type="destinationlabel">
      <x>358</x>
@@ -646,8 +657,8 @@
    <slot>setVisible(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>293</x>
-     <y>235</y>
+     <x>308</x>
+     <y>275</y>
     </hint>
     <hint type="destinationlabel">
      <x>503</x>
