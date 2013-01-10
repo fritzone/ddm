@@ -494,9 +494,36 @@ void MainWindow::showTriggerWithGuid(Version *v, const QString & guid, bool /*fo
 
     if(p)
     {
+        QStringList names;
+        if(p->version()->getProject()->oopProject())
+        {
+            const QVector<TableInstance*>& allTables = v->getTableInstances();
+            if(allTables.size() == 0)
+            {
+                QMessageBox::critical(MainWindow::instance(), QObject::tr("Cannot create a trigger when there are no table instances in an OOP project"), QObject::tr("No tables defined"), QMessageBox::Ok);
+                return;
+            }
+            for(int i=0; i<allTables.size(); i++)
+            {
+                names.push_back(allTables[i]->getName());
+            }
+        }
+        else
+        {
+            const QVector<Table*>& allTables = v->getTables();
+            if(allTables.size() == 0)
+            {
+                QMessageBox::critical(MainWindow::instance(), QObject::tr("Cannot create a trigger when there are no tables"), QObject::tr("No tables defined"), QMessageBox::Ok);
+                return;
+            }
+            for(int i=0; i<allTables.size(); i++)
+            {
+                names.push_back(allTables[i]->getName());
+            }
+        }
+
         TriggerForm* pf = v->getGui()->getTriggerForm();
-        const QVector<Table*>& allTables = v->getTables();
-        pf->feedInTables(allTables);
+        pf->feedInTables(names);
         pf->feedInTriggerEvents(Workspace::getInstance()->currentProjectsEngine()->getTriggerEvents());
         pf->feedInTriggerTimes(Workspace::getInstance()->currentProjectsEngine()->getTriggerTimings());
         pf->setTrigger(p);

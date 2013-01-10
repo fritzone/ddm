@@ -23,7 +23,7 @@ public:
     ~TriggerForm();
     void setTrigger(Trigger* t);
     void initSql();
-    void feedInTables(const QVector<Table*>& tables);
+    void feedInTables(const QVector<QString> &tables, bool oop);
     void feedInTables(const QStringList& tables);
     void feedInTriggerEvents(const QStringList&);
     void feedInTriggerTimes(const QStringList&);
