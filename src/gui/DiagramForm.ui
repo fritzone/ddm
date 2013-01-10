@@ -63,7 +63,7 @@
          <string/>
         </property>
         <property name="icon">
-         <iconset resource="dbm.qrc">
+         <iconset resource="../dbm.qrc">
           <normaloff>:/images/actions/images/small/gnome_undelete.png</normaloff>:/images/actions/images/small/gnome_undelete.png</iconset>
         </property>
         <property name="iconSize">
@@ -100,13 +100,7 @@
     </widget>
    </item>
    <item>
-    <widget class="QGroupBox" name="grpContent">
-     <property name="title">
-      <string/>
-     </property>
-     <property name="flat">
-      <bool>true</bool>
-     </property>
+    <widget class="QWidget" name="grpContent" native="true">
      <layout class="QVBoxLayout" name="verticalLayout">
       <property name="margin">
        <number>0</number>
@@ -127,7 +121,7 @@
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout_5">
         <property name="spacing">
-         <number>1</number>
+         <number>0</number>
         </property>
         <item>
          <widget class="QToolButton" name="btnSaveToImageFile">
@@ -147,7 +141,7 @@
            <string>...</string>
           </property>
           <property name="icon">
-           <iconset resource="dbm.qrc">
+           <iconset resource="../dbm.qrc">
             <normaloff>:/images/actions/images/actions/filesave.png</normaloff>:/images/actions/images/actions/filesave.png</iconset>
           </property>
          </widget>
@@ -170,7 +164,7 @@
            <string>...</string>
           </property>
           <property name="icon">
-           <iconset resource="dbm.qrc">
+           <iconset resource="../dbm.qrc">
             <normaloff>:/images/actions/images/small/printer.png</normaloff>:/images/actions/images/small/printer.png</iconset>
           </property>
          </widget>
@@ -193,7 +187,7 @@
            <string>...</string>
           </property>
           <property name="icon">
-           <iconset resource="dbm.qrc">
+           <iconset resource="../dbm.qrc">
             <normaloff>:/images/actions/images/small/zoom_in.png</normaloff>:/images/actions/images/small/zoom_in.png</iconset>
           </property>
          </widget>
@@ -216,7 +210,7 @@
            <string>...</string>
           </property>
           <property name="icon">
-           <iconset resource="dbm.qrc">
+           <iconset resource="../dbm.qrc">
             <normaloff>:/images/actions/images/small/zoom_out.png</normaloff>:/images/actions/images/small/zoom_out.png</iconset>
           </property>
          </widget>
@@ -242,10 +236,7 @@
          <number>0</number>
         </property>
         <item>
-         <widget class="QGroupBox" name="groupBox1">
-          <property name="flat">
-           <bool>true</bool>
-          </property>
+         <widget class="QWidget" name="groupBox1" native="true">
           <layout class="QVBoxLayout" name="verticalLayout_2">
            <property name="spacing">
             <number>0</number>
@@ -254,18 +245,21 @@
             <number>0</number>
            </property>
            <item>
-            <widget class="QGroupBox" name="groupBox">
-             <property name="title">
-              <string/>
-             </property>
-             <property name="flat">
-              <bool>false</bool>
-             </property>
+            <widget class="QWidget" name="groupBox" native="true">
              <layout class="QVBoxLayout" name="contentLayout">
               <property name="spacing">
                <number>2</number>
               </property>
-              <property name="margin">
+              <property name="leftMargin">
+               <number>2</number>
+              </property>
+              <property name="topMargin">
+               <number>0</number>
+              </property>
+              <property name="rightMargin">
+               <number>2</number>
+              </property>
+              <property name="bottomMargin">
                <number>2</number>
               </property>
              </layout>
@@ -282,7 +276,7 @@
   </layout>
  </widget>
  <resources>
-  <include location="dbm.qrc"/>
+  <include location="../dbm.qrc"/>
  </resources>
  <connections>
   <connection>

@@ -819,26 +819,7 @@ void MainWindow::onNewTriggerFromPopup()
 
     Version* v = UidWarehouse::instance().getVersionForUid(diagramsUid);
 
-    // TODO: Duplication with onNewTrigger
-    const QVector<Table*>& allTables = v->getTables();
-    if(allTables.size() == 0)
-    {
-        QMessageBox::critical(this, tr("Cannot create a trigger when there are no tables"), tr("No tables defined"), QMessageBox::Ok);
-        return;
-    }
-    TriggerForm* frm = v->getGui()->getTriggerForm();
-    Trigger* trigger = new Trigger(NameGenerator::getUniqueName(v, (itemGetter)&Version::getTrigger, QString("trig")),
-                                   QUuid::createUuid().toString(), v);
-    frm->setTrigger(trigger);
-    frm->initSql();
-    frm->feedInTables(allTables);
-    trigger->setTable(allTables.at(0)->getName());
-    frm->feedInTriggerEvents(Workspace::getInstance()->currentProjectsEngine()->getTriggerEvents());
-    frm->feedInTriggerTimes(Workspace::getInstance()->currentProjectsEngine()->getTriggerTimings());
-    v->addTrigger(trigger, false);
-    v->getGui()->createTriggerTreeEntry(trigger);
-    setCentralWidget(frm);
-
+    Workspace::getInstance()->createTrigger(v);
 }
 
 void MainWindow::onNewFunctionFromPopup()
@@ -2874,25 +2855,7 @@ void MainWindow::onNewFunction()
 void MainWindow::onNewTrigger()
 {
     // Ok. New triggers from the button go always to the working version
-    const QVector<Table*>& allTables = Workspace::getInstance()->workingVersion()->getTables();
-    if(allTables.size() == 0)
-    {
-        QMessageBox::critical(this, tr("Cannot create a trigger when there are no tables"), tr("No tables defined"), QMessageBox::Ok);
-        return;
-    }
-    TriggerForm* frm = Workspace::getInstance()->workingVersion()->getGui()->getTriggerForm();
-    Trigger* trigger = new Trigger(NameGenerator::getUniqueName(Workspace::getInstance()->workingVersion(), (itemGetter)&Version::getTrigger, QString("trig")), QUuid::createUuid().toString(), m_workspace->workingVersion());
-    frm->setTrigger(trigger);
-    frm->initSql();
-    frm->feedInTables(allTables);
-    trigger->setTable(allTables.at(0)->getName());
-    frm->feedInTriggerEvents(Workspace::getInstance()->currentProjectsEngine()->getTriggerEvents());
-    frm->feedInTriggerTimes(Workspace::getInstance()->currentProjectsEngine()->getTriggerTimings());
-    Workspace::getInstance()->workingVersion()->addTrigger(trigger, false);
-    Workspace::getInstance()->workingVersion()->getGui()->createTriggerTreeEntry(trigger);
-    m_guiElements->getProjectTree()->setCurrentItem(trigger->getLocation());
-    setCentralWidget(frm);
-
+    Workspace::getInstance()->createTrigger(Workspace::getInstance()->workingVersion());
 }
 
 void MainWindow::rerenderQuery(Query* q)

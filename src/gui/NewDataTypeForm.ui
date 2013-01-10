@@ -118,13 +118,7 @@
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_2">
       <item>
-       <widget class="QGroupBox" name="groupBox">
-        <property name="title">
-         <string/>
-        </property>
-        <property name="flat">
-         <bool>true</bool>
-        </property>
+       <widget class="QWidget" name="widget" native="true">
         <layout class="QHBoxLayout" name="horizontalLayout">
          <property name="spacing">
           <number>1</number>
@@ -460,7 +454,7 @@
       </item>
      </layout>
      <zorder>tabWidget</zorder>
-     <zorder>groupBox</zorder>
+     <zorder>widget</zorder>
      <zorder>txtDTName</zorder>
     </widget>
    </item>
@@ -599,13 +593,13 @@
    </hints>
   </connection>
   <connection>
-   <sender>btnSave</sender>
+   <sender>btnDeleteDataType</sender>
    <signal>clicked()</signal>
    <receiver>NewDataTypeForm</receiver>
-   <slot>onSave()</slot>
+   <slot>onDeleteDataType()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>102</x>
+     <x>139</x>
      <y>36</y>
     </hint>
     <hint type="destinationlabel">
@@ -615,13 +609,13 @@
    </hints>
   </connection>
   <connection>
-   <sender>btnDeleteDataType</sender>
+   <sender>btnSave</sender>
    <signal>clicked()</signal>
    <receiver>NewDataTypeForm</receiver>
-   <slot>onDeleteDataType()</slot>
+   <slot>onSave()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>139</x>
+     <x>102</x>
      <y>36</y>
     </hint>
     <hint type="destinationlabel">

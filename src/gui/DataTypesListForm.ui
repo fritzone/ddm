@@ -50,13 +50,7 @@ p, li { white-space: pre-wrap; }
     </widget>
    </item>
    <item>
-    <widget class="QGroupBox" name="groupBox">
-     <property name="title">
-      <string/>
-     </property>
-     <property name="flat">
-      <bool>true</bool>
-     </property>
+    <widget class="QWidget" name="widget" native="true">
      <layout class="QHBoxLayout" name="horizontalLayout">
       <property name="bottomMargin">
        <number>0</number>
@@ -126,11 +120,11 @@ p, li { white-space: pre-wrap; }
    <slot>doubleClickTree(QTreeWidgetItem*,int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>199</x>
-     <y>167</y>
+     <x>242</x>
+     <y>197</y>
     </hint>
     <hint type="destinationlabel">
-     <x>199</x>
+     <x>242</x>
      <y>167</y>
     </hint>
    </hints>

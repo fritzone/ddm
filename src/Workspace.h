@@ -11,6 +11,7 @@ class DatabaseEngine;
 class UserDataType;
 class Table;
 class Patch;
+class Trigger;
 
 /**
  * The role of the Workspace class is to be a collection point for the "logical" elements of the
@@ -151,6 +152,8 @@ public:
     bool deployVersion(Version *v);
 
     bool finalizePatch(Patch* p);
+
+    Trigger* createTrigger(Version *v);
 
 private:
 

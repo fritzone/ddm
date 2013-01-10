@@ -74,3 +74,4 @@ SOURCES += query_builder/qbr_CellAsCommand.cpp                        \
         query_builder/qbr_QueryTextInputItem.cpp                      \
         query_builder/qbr_SelectQuerySelectComponent.cpp
 
+FORMS +=     query_builder/QueryItemListDialog.ui
