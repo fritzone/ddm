@@ -1713,7 +1713,13 @@ void MainWindow::onDeleteTableFromPopup()
     if(tab)
     {
         Version* v = tab->version();
-        if(QMessageBox::question(this, tr("Are you sure?"), tr("Really delete ") + tab->getName() + "?", QMessageBox::Yes | QMessageBox::No) !=  QMessageBox::Yes)
+        const QVector<TableInstance*> tinsts = tab->getTableInstances();
+        QString stinsts = "";
+        for(int i=0; i<tinsts.size(); i ++)
+        {
+            stinsts += "<li>" + tinsts[i]->getName() + "</li>";
+        }
+        if(QMessageBox::question(this, tr("Are you sure?"), tr("Really delete ") + tab->getName() + "?" + tr(" This will automatically delete the table instance of it too: <ul>") + stinsts + "</ul>", QMessageBox::Yes | QMessageBox::No) !=  QMessageBox::Yes)
         {
             return;
         }
@@ -1724,6 +1730,7 @@ void MainWindow::onDeleteTableFromPopup()
             return;
 
         }
+
         QWidget* w = centralWidget();
         if(v->deleteTable(tab))
         {
@@ -2392,7 +2399,27 @@ void MainWindow::onConnectConnection()
         {
 
             c->getLocation()->setIcon(0, IconFactory::getUnConnectedDatabaseIcon());
+            bool w = false;
+            if(m_btndlg && m_btndlg->isVisible())
+            {
+                m_btndlg->hide();
+    #ifdef Q_WS_WIN
+                Qt::WindowFlags flags = m_btndlg->windowFlags();
+                m_btndlg->setWindowFlags(flags ^ (Qt::SplashScreen |Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint));
+    #endif
+                w = true;
+            }
+
             QMessageBox::critical(this, tr("Error"), c->getLastError(), QMessageBox::Ok);
+
+            if(m_btndlg && w)
+            {
+    #ifdef Q_WS_WIN
+                Qt::WindowFlags flags = m_btndlg->windowFlags();
+                m_btndlg->setWindowFlags(flags | Qt::SplashScreen |Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint);
+    #endif
+                m_btndlg->show();
+            }
         }
     }
 }

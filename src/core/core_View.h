@@ -13,6 +13,7 @@ class SelectQuery;
 class QueryGraphicsHelper;
 class Version;
 class Table;
+class TableInstance;
 
 class View :
         public SqlSourceTreeItem,
@@ -106,6 +107,8 @@ public:
      */
     QVector<const Table *> getSourceTables() const;
 
+    QVector<const TableInstance *> getSourceTableInstances() const;
+
     /**
      * Returns true if the view is using this table
      * @brief usesTable
@@ -113,6 +116,7 @@ public:
      * @return
      */
     bool usesTable(const Table* tab) const;
+    bool usesTableInstance(const TableInstance* tab) const;
 
 private:
 
