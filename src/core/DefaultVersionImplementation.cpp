@@ -364,7 +364,6 @@ void DefaultVersionImplementation::doDeleteTableInstance(TableInstance *tinst, T
         if(tda->deletedTableInstances.indexOf(tinst) == -1)
         {
             tda->deletedTableInstances.append(tinst);
-//            qDebug() << "DELETE for patch " << tinst->getName();
         }
     }
 
@@ -404,7 +403,6 @@ void DefaultVersionImplementation::doDeleteTableInstance(TableInstance *tinst, T
                                          insted.at(i)->getName() +
                                          QObject::tr("</LI></UL><BR>Firstly <B>Re-lock</B> (right click -> Lock) the table instance then delete the table."), QMessageBox::Ok);
                     tinst->unSentence();
-//                    qDebug() << "AB";
                     delete tda;
                     tda = 0;
                     return;
@@ -494,12 +492,89 @@ bool DefaultVersionImplementation::deleteTable(Table *tab)
 
     if(incomingForeignKeys.length() > 0)
     {
-        QMessageBox::warning(0, QObject::tr("Foreign keys found"),
+        QMessageBox::warning(0, QObject::tr("Cannot delete"),
                              QObject::tr("Cannot delete this table since the following tables are referencing it through a foreign key: ") +
                              incomingForeignKeys +
                              QObject::tr("\nFirstly remove the foreign keys, then delete the table."), QMessageBox::Ok);
         return false;
     }
+
+    // BIG TODO: see if this table is used in any of the triggers/diagrams/views/functions/procedures ...
+    // First run: see the Triggers
+    QString trigs = "";
+    QVector<Trigger*> const& trgs = getTriggers();
+    for(int i=0; i<trgs.size(); i++)
+    {
+        QString trgTab = trgs[i]->getTable();
+        if(trgTab == tab->getName())
+        {
+            trigs += "<li>" + trgs[i]->getName() + "</li>";
+
+        }
+    }
+
+    if(!trigs.isEmpty())
+    {
+
+        QMessageBox::warning(0, QObject::tr("Cannot delete"),
+                             QObject::tr("Cannot delete this table since the following trigger(s) is (are) referencing it:  <ul>")  +
+                             trigs +
+                             QObject::tr("</ul>Firstly change the trigger(s), then delete the table."), QMessageBox::Ok);
+        return false;
+    }
+
+    trigs = "";
+    for(int i=0; i<trgs.size(); i++)
+    {
+        QString trgTab = trgs[i]->getTable();
+        // now see the table instances of the table if they are used in the trigger
+        for(int j=0; j<m_data.m_tableInstances.size(); j++)
+        {
+            if(m_data.m_tableInstances[j]->table()->getName() == tab->getName() && trgTab == m_data.m_tableInstances[j]->getName())
+            {
+                trigs += "<li>" + trgs[i]->getName() + "</li>";
+            }
+        }
+    }
+
+    if(!trigs.isEmpty())
+    {
+        QMessageBox::warning(0, QObject::tr("Cannot delete"),
+                             QObject::tr("Cannot delete this table since the following trigger(s) is (are) referencing a table instance of it: <ul>") +
+                             trigs+
+                             QObject::tr("</ul>Firstly change the trigger(s), then delete the table. Deleting the table will automatically delete tahe table isntance too."), QMessageBox::Ok);
+        return false;
+    }
+
+    trigs = "";
+    // now see the table instances that were automatically instantiated by the instances of this table
+    const QVector<TableInstance*> tinsts = tab->getTableInstances();
+
+    for(int i=0; i<tinsts.size(); i++)
+    {
+        const QVector<TableInstance*> &instedTinsts = tinsts[i]->getInstantiatedTableInstances();
+        for(int j=0; j< instedTinsts.size(); j++)
+        {
+            for(int k=0; k<trgs.size(); k++)
+            {
+                if(instedTinsts[j]->table()->getName() == trgs[k]->getTable())
+                {
+                    trigs += "<li><b>" + trgs[k]->getName() + "</b> ( instance " + tinsts[i]->getName() + " instantiated " + instedTinsts[j]->getName() + " which is used in the trigger)</li>";
+                }
+            }
+        }
+    }
+
+    if(!trigs.isEmpty())
+    {
+        QMessageBox::warning(0, QObject::tr("Cannot delete"),
+                             QObject::tr("Cannot delete this table since the following trigger(s) is (are) referencing an automatically instantiated table instance of one of its table instances:<ul>") +
+                             trigs+
+                             QObject::tr("</ul>Firstly change the trigger(s), then delete the table. Deleting the table will automatically delete tahe table isntance too."), QMessageBox::Ok);
+        return false;
+    }
+
+
 
     for(int i=0; i<m_data.m_diagrams.size(); i++)
     {
@@ -510,6 +585,7 @@ bool DefaultVersionImplementation::deleteTable(Table *tab)
     TableDeletionAction *tda = new TableDeletionAction(tab);
 
     // and now we should delete the table instances that were created based on this table, and the SQLs too...
+    {
     int i=0;
     while(i<m_data.m_tableInstances.size())
     {
@@ -543,8 +619,7 @@ bool DefaultVersionImplementation::deleteTable(Table *tab)
             i++;
         }
     }
-
-    // BIG TODO: see if this table is used in any of the triggers/diagrams/views/functions/procedures ...
+    }
 
     // and delete the issues of other tables, this table was referenced in
     QVector<Issue*> issuesReferencingTheTable = IssueManager::getInstance().getIssuesReferencingTable(tab->getName());
