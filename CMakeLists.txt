@@ -3,7 +3,7 @@ CMAKE_MINIMUM_REQUIRED(VERSION 2.6.0)
 # Project Info
 SET(PROJECT_NAME_SHORT   "DDM")
 SET(PROJECT_NAME_LONG    "Database Deployment Manager")
-SET(PROJECT_DESCRIPTION  "A tool for managind database deployments")
+SET(PROJECT_DESCRIPTION  "A tool for managing database deployments")
 SET(PROJECT_COPYRIGHT    "Copyright (C) 2010-2013 Ferenc Deak")
 SET(PROJECT_CONTACT      "fritzone@gmail.com")
 SET(PROJECT_VENDOR       "Ferenc Deak")
