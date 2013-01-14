@@ -1,0 +1,16 @@
+#!/usr/bin/make -f
+
+%:
+	dh $@
+
+build:
+	mkdir -p $(CURDIR)/build
+	cd $(CURDIR)/build && \
+	cmake -DCMAKE_INSTALL_PREFIX=/opt/ddm -DCMAKE_BUILD_TYPE=Release .. && \
+	make -j8
+
+common-install-arch::
+	cd $(CURDIR)/build && make install DESTDIR=$(CURDIR)/debian/ddm
+
+clean::
+	rm -rf $(CURDIR)/build

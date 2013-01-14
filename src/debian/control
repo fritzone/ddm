@@ -1,0 +1,13 @@
+Source: ddm
+Section: devel
+Priority: optional
+Maintainer: Ferenc Deak <fritzone@gmail.com>
+Standards-Version: 3.9.1
+Build-Depends: cmake, libqt4-dev, libqt4-gui ( >= 4.6 ), libqt4-network ( >= 4.6 ), libqt4-xml ( >= 4.6 ), libqt4-svg ( >= 4.6 ), libqt4-sql ( >= 4.6 ), libqt4-webkit ( >= 4.6 ), libqt4-sql-mysql ( >= 4.6 ), libmysqlclient18 ( >= 4.6 )
+Homepage: http://ddmproject.weebly.com/
+
+Package: ddm
+Architecture: i386 amd64 ia64
+Depends: ${shlibs:Depends}, ${misc:Depends}, libqt4-gui, libqt4-network, libqt4-xml, libqt4-svg, libqt4-sql-mysql, libqt4-sql, libmysqlclient18
+Description: DDM is a database deployment tool for MySQL
+
