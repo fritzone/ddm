@@ -59,6 +59,7 @@ void UserDataType::serialize(QDomDocument& doc, QDomElement& parent) const
     dtElement.setAttribute("source-uid", getSourceUid());
     dtElement.setAttribute("locked", lockState() == LockableElement::LOCKED);
     dtElement.setAttribute("was-locked", wasLocked());
+    dtElement.setAttribute("finalSql", sqlAsString());
 
     {
     QDomElement descElement = doc.createElement("Description");  // description

@@ -10,6 +10,7 @@ NewProjectDialog::NewProjectDialog(QWidget *parent) :
     m_ui(new Ui::NewProjectDialog)
 {
     m_ui->setupUi(this);
+    setupGuiForDatamodelProject();
 }
 
 NewProjectDialog::~NewProjectDialog()
@@ -58,7 +59,38 @@ int NewProjectDialog::getProjectType() const
 void NewProjectDialog::onChangeProjectType(int)
 {
     int projectType = m_ui->listWidget->currentRow() + 1;
-    Q_UNUSED(projectType);
+
+    switch(projectType)
+    {
+    case 1: // Datamodel Project
+        setupGuiForDatamodelProject();
+        break;
+    case 2: // Bind to ... Project
+        m_ui->lblDataModelDescription->hide();
+        m_ui->lblBindDescriptor->show();
+        m_ui->lblReverseEngineer->hide();
+        m_ui->lblTargetDatabase->hide();
+
+        m_ui->lblSourceDatabase->show();
+        m_ui->cmbDatabase->show();
+        m_ui->treeDatabases->hide();
+        m_ui->chkInheritDefaultDatatypes->hide();
+        m_ui->chkAllowOOPModel->hide();
+
+        break;
+    case 3: // Rev. Eng. Project
+        m_ui->lblDataModelDescription->hide();
+        m_ui->lblBindDescriptor->hide();
+        m_ui->lblReverseEngineer->show();
+        m_ui->lblTargetDatabase->hide();
+
+        m_ui->lblSourceDatabase->show();
+        m_ui->cmbDatabase->show();
+        m_ui->treeDatabases->hide();
+        m_ui->chkInheritDefaultDatatypes->show();
+        m_ui->chkAllowOOPModel->show();
+        break;
+    }
 }
 
 void NewProjectDialog::onHelp()
@@ -91,4 +123,17 @@ void NewProjectDialog::onAccept()
     {
         QMessageBox::critical (this, tr("Error"), tr("Please specify a valid project and solution name"), QMessageBox::Ok);
     }
+}
+
+void NewProjectDialog::setupGuiForDatamodelProject()
+{
+    m_ui->lblDataModelDescription->show();
+    m_ui->lblBindDescriptor->hide();
+    m_ui->lblReverseEngineer->hide();
+    m_ui->lblTargetDatabase->show();
+    m_ui->lblSourceDatabase->hide();
+    m_ui->cmbDatabase->hide();
+    m_ui->treeDatabases->show();
+    m_ui->chkInheritDefaultDatatypes->show();
+    m_ui->chkAllowOOPModel->show();
 }
