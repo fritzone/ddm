@@ -58,6 +58,10 @@ public slots:
     void onChangeProjectType(int);
 
 private:
+
+    void setupGuiForDatamodelProject();
+
+private:
     Ui::NewProjectDialog *m_ui;
 
     // the name of the project
