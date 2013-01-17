@@ -125,21 +125,37 @@ void NewViewForm::disableEditingControls(bool dis)
 
 void NewViewForm::setGraphicsItem(QueryGraphicsItem * itm)
 {
-    if(m_queryBuilder) m_qgs->addItem(itm);
+    if(m_queryBuilder)
+    {
+        qDebug() << "add";
+        m_qgs->clear();
+        m_qgv->centerOn(0, 0);
+        m_qgs->addItem(itm);
+    }
 }
 
 void NewViewForm::scrollTo(int hor, int ver)
 {
-    if(m_queryBuilder) m_qgv->centerOn(hor, ver);
+    if(m_queryBuilder)
+    {
+        qDebug() << "scroll to " << hor << ver;
+        m_qgv->centerOn(hor, ver);
+        m_qgs->invalidate();
+    }
 }
 
 void NewViewForm::getCenter(int &x, int &y)
 {
     if(m_queryBuilder)
     {
-        QPoint centre = m_qgv->viewport()->mapTo(this, QPoint(0,0));;
-        x = m_qgv->mapToScene(centre).x();
-        y = m_qgv->mapToScene(centre).y();
+//        QPoint centre = m_qgv->viewport()->mapTo(this, QPoint(0,0));;
+//          x = m_qgv->mapToScene(centre).x();
+//        y = m_qgv->mapToScene(centre).y();
+        qDebug() << m_qgv->viewport()->rect();
+        QPoint centre = m_qgv->viewport()->rect().center();
+        x = centre.x() + m_qgv->horizontalScrollBar()->value();;
+        y = centre.y() + m_qgv->verticalScrollBar()->value();;
+
     }
 }
 

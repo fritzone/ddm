@@ -2932,14 +2932,19 @@ void MainWindow::rerenderQuery(Query* q)
         m_nvf->getCenter(cx, cy);
     }
 
-    m_nvf = new NewViewForm(dynamic_cast<View*>(q->getSourceEntity())->version(), true, q->getHelper(), this);
-    m_nvf->setSqlSource(q->getSourceEntity());
-    m_nvf->setView(dynamic_cast<View*>(q->getSourceEntity()));
+    bool created = false;
+    if(m_nvf == 0)
+    {
+        m_nvf = new NewViewForm(dynamic_cast<View*>(q->getSourceEntity())->version(), true, q->getHelper(), this);
+        m_nvf->setSqlSource(q->getSourceEntity());
+        m_nvf->setView(dynamic_cast<View*>(q->getSourceEntity()));
+        q->getHelper()->setScene(m_nvf->getScene());
+        created = true;
+    }
 
     m_nvf->setGraphicsItem(q->getGraphicsItem());
-    q->getHelper()->setScene(m_nvf->getScene());
     m_nvf->presentSql(Workspace::getInstance()->currentProject(), dynamic_cast<View*>(q->getSourceEntity())->version());
-    setCentralWidget(m_nvf);
+    if(created) setCentralWidget(m_nvf);
     m_nvf->scrollTo(cx, cy);
 }
 
