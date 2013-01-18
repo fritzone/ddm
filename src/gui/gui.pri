@@ -34,7 +34,9 @@ SOURCES += \
     gui/ConnectionGuiElements.cpp \
     gui/ContextMenuCollection.cpp \
     gui/ContextMenuDelegate.cpp \
-    gui/DynamicActionHandlerforMainWindow.cpp
+    gui/DynamicActionHandlerforMainWindow.cpp \
+    gui/repo_DatabaseDetailsForm.cpp \
+    gui/RepositoryGuiElements.cpp
 
 HEADERS += \
     gui/AboutBoxDialog.h \
@@ -77,7 +79,9 @@ HEADERS += \
     gui/TableListWidget.h \
     gui/TextEditWithCodeCompletion.h \
     gui/SqlSourceTreeItem.h \
-    gui/DocumentationSourceTreeItem.h
+    gui/DocumentationSourceTreeItem.h \
+    gui/repo_DatabaseDetailsForm.h \
+    gui/RepositoryGuiElements.h
 
 FORMS += \
     gui/AboutBoxDialog.ui \
@@ -104,4 +108,5 @@ FORMS += \
     gui/TableComparisonForm.ui \
     gui/TableInstanceForm.ui \
     gui/TriggerForm.ui \
-    gui/WidgetForSpecificProperties.ui
+    gui/WidgetForSpecificProperties.ui \
+    gui/repo_DatabaseDetailsForm.ui

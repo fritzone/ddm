@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<repository>
+  <!-- the supported databases -->
+  <databases>
+    <database name="MySql" id="MYSQL" uid="{100000DB-0000-0000-0000-000000000001}">
+      <versions>
+        <supported-versions>
+          <version tag="5.0"/>
+          <version tag="5.1"/>
+        </supported-versions>
+        <not-supported-versions>
+          <version tag="4.0"/>
+        </not-supported-versions>
+      </versions>
+      <Description>
+        The MySql Database
+      </Description>
+      <icon>
+        <big>
+          <image type="internal" name="MYSQL_BIG_ICON"/>
+        </big>
+        <small>
+          <image type="internal" name="MYSQL_SMALL_ICON"/>
+        </small>
+      </icon>
+    </database>
+  </databases>
+</repository>

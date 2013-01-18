@@ -62,6 +62,7 @@
 #include "QHtmlDocument.h"
 #include "core_Patch.h"
 #include "TableComparisonForm.h"
+#include "RepositoryGuiElements.h"
 
 #include <QtGui>
 
@@ -79,8 +80,15 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), m_ui(new Ui::Main
 
     m_connectionGuiElements = new ConnectionGuiElements();
     m_connectionGuiElements->createGuiElements();
+
+    m_repositoryGuiElements = new RepositoryGuiElements();
+    m_repositoryGuiElements->createGuiElements();
+
     m_ui->action_ConnectionsTree->setChecked(true);
+    m_ui->action_Repository->setChecked(true);
+
     showConnections();
+    showRepository();
 
     m_ui->action_NewDatabaseConnection->setEnabled(true);
     showMaximized();
@@ -193,6 +201,19 @@ void MainWindow::showProjectDetails()
     ProjectDetailsForm* prjDetailsForm = new ProjectDetailsForm(this);
     prjDetailsForm->setProject(m_workspace->currentProject(), m_lastLoadedProject);
     setCentralWidget(prjDetailsForm);
+}
+
+void MainWindow::showRepository()
+{
+    if(!m_ui->action_ConnectionsTree->isChecked())
+    {
+        m_repositoryGuiElements->getTreeDock()->hide();
+    }
+    else
+    {
+        addDockWidget(Qt::RightDockWidgetArea, m_repositoryGuiElements->getTreeDock());
+        m_repositoryGuiElements->getTreeDock()->show();
+    }
 }
 
 void MainWindow::showConnections()

@@ -273,8 +273,6 @@ void QueryItemListDialog::showSymbolPanel()
     ui->btnComparison->setMenu(m_comparisonMenu);
     ui->btnColumn->setMenu(m_tablesMenu);
     ui->btnRollup->hide();
-
-    ui->grpExpressionButtons->setCurrentIndex(-1);
 }
 
 void QueryItemListDialog::populateTablesAndColumns(QVector<const Table*> tables)
@@ -363,13 +361,10 @@ void QueryItemListDialog::populateTablesAndColumns(const QVector<const TableInst
 
 }
 
-void QueryItemListDialog::pageRequested(int a)
+void QueryItemListDialog::btnRemoveClicked()
 {
-    if(a == 1)
-    {
-        m_selected = QString(strRemove);
-        close();
-    }
+    m_selected = QString(strRemove);
+    close();
 }
 
 void QueryItemListDialog::setText(const QString &a)

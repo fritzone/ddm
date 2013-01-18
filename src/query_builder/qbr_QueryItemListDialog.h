@@ -55,7 +55,6 @@ public slots:
     void onDblClickItem(QListWidgetItem*);
     void onTxtInputKeyPress();
     void actionTriggered(QAction*);
-    void pageRequested(int);
     void btnLikeClicked();
     void btnDistinctClicked();
     void btnStarClicked();
@@ -69,6 +68,7 @@ public slots:
     void btnNullClicked();
     void btnOpenParanthesisClicked();
     void btnCloseParanthesisClicked();
+    void btnRemoveClicked();
 
 private:
     Ui::QueryItemListDialog *ui;
