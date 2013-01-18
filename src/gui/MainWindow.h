@@ -34,6 +34,7 @@ class GuiElements;
 class ConnectionGuiElements;
 class ObjectWithUid;
 class Version;
+class RepositoryGuiElements;
 
 namespace Ui
 {
@@ -81,6 +82,7 @@ public:
 
     void rerenderQuery(Query*);
     void showConnections();
+    void showRepository();
     static MainWindow* instance()
     {
         return m_instance;
@@ -244,6 +246,7 @@ private:
     bool m_splashWasVisible;
     GuiElements* m_guiElements;
     ConnectionGuiElements* m_connectionGuiElements;
+    RepositoryGuiElements* m_repositoryGuiElements;
     QString m_lastLoadedProject;
 };
 

@@ -226,7 +226,7 @@ void NewViewForm::setView(View *v)
         }
     }
 
-    if(m_comps) // do this only if w are buildingteh query with the query builder
+    if(m_comps) // do this only if we are buildingteh query with the query builder
     {
         SelectQuery* sq = dynamic_cast<SelectQuery*>(m_comps->getQuery());
         QStringList columnNamesForView;

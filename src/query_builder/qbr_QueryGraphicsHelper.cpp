@@ -56,7 +56,7 @@ QString QueryGraphicsHelper::presentList(int x, int y, ListType lt)
     m_lstDlg->setColumns(m_columnsToShow);  // TODO: this is a little bit ugly ...
     m_lstDlg->setOrderBy(m_orderByElements);
 
-    m_lstDlg->setWindowFlags(Qt::FramelessWindowHint);
+    m_lstDlg->setWindowFlags(Qt::FramelessWindowHint | Qt::Tool);
     m_lstDlg->move(x, y);
     m_lstDlg->setModal(true);
     m_lstDlg->setJoin(m_join);
@@ -85,7 +85,7 @@ QString QueryGraphicsHelper::presentList(int x, int y, const QString& input)
         m_lstDlg = 0;
     }
     m_lstDlg = new QueryItemListDialog(this, INPUT_TEXT, 0);
-    m_lstDlg->setWindowFlags(Qt::FramelessWindowHint);
+    m_lstDlg->setWindowFlags(Qt::FramelessWindowHint | Qt::Tool);
     m_lstDlg->move(x, y);
     m_lstDlg->setText(input);
     m_lstDlg->setModal(true);
@@ -102,7 +102,7 @@ QString QueryGraphicsHelper::presentList(int x, int y, QStringList lst, QList<QI
         m_lstDlg = 0;
     }
     m_lstDlg = new QueryItemListDialog(this, lst, icons, false, 0);
-    m_lstDlg->setWindowFlags(Qt::FramelessWindowHint);
+    m_lstDlg->setWindowFlags(Qt::FramelessWindowHint | Qt::Tool);
     m_lstDlg->move(x, y);
     m_lstDlg->setModal(true);
     m_lstDlg->exec();
