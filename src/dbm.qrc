@@ -221,6 +221,7 @@
         <file>images/small/advanced-icon.png</file>
         <file>images/actions/remove-icon.png</file>
         <file>images/small/sqlite-icon.png</file>
+        <file>images/small/applications_engineering.png</file>
     </qresource>
     <qresource prefix="/bigger">
         <file>images/unaf.png</file>

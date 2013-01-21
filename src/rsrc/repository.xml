@@ -12,9 +12,9 @@
           <version tag="4.0"/>
         </not-supported-versions>
       </versions>
-      <Description>
+      <description>
         The MySql Database
-      </Description>
+      </description>
       <icon>
         <big>
           <image type="internal" name="MYSQL_BIG_ICON"/>
@@ -25,4 +25,49 @@
       </icon>
     </database>
   </databases>
+  <!-- Defines the roles of the system -->
+  <roles>
+    <!-- Generic roles -->
+    <role name="LockIndicator" class-uid="{20000001-0000-0000-0000-000000000001}" description = "Whether the item is locked or not" />
+    <role name="WasLockedIndicator" class-uid="{20000001-0000-0000-0000-000000000002}" description = "Whether the item was locked or not" />
+    <role name="Name" class-uid="{20000001-0000-0000-0000-000000000003}" description = "The name of the item" />
+
+    <!-- Data type roles -->
+    <role name="DataType_SqlType" class-uid="{20000001-0000-0000-0000-000000000004}" description = "The SQL type of a data type" />
+    <role name="DataType_Size" class-uid="{20000001-0000-0000-0000-000000000005}" description = "The size of a data type" />
+    <role name="DataType_Type" class-uid="{20000001-0000-0000-0000-000000000006}" description = "The Type of a data type" />
+    <role name="DataType_FinalSql" class-uid="{20000001-0000-0000-0000-000000000007}" description = "The Final sql of a data type" />
+    <role name="DataType_Default" class-uid="{20000001-0000-0000-0000-000000000008}" description = "The Default Value of a data type" />
+    <role name="DataType_Unsigned" class-uid="{20000001-0000-0000-0000-000000000009}" description = "If the data type is unsigned or not" />
+    <role name="DataType_CanBeNull" class-uid="{20000001-0000-0000-0000-00000000000A}" description = "If the data type can be null or not" />
+    
+    <!-- Roles of a table -->
+    <role name="Columns" class-uid="{20000001-0000-0000-0000-00000000000B}" description = "The Columns of a table" />
+
+  </roles>
+  <!-- defines the entities the user can work with. ie. how they are serialized -->
+  <entities>
+    <entity name="DataType" class-uid="{10000000-0000-0000-0000-000000000002}" hasDescription="1">
+      <attribute name="SqlType" role-class-uid="{20000001-0000-0000-0000-000000000004}"/>
+      <attribute name="Size" role-class-uid="{20000001-0000-0000-0000-000000000005}"/>
+      <attribute name="Name" role-class-uid="{20000001-0000-0000-0000-000000000003}"/>
+      <!-- TODO: finalize -->
+    </entity>
+    
+    <entity name = "Column" class-uid = "{10000001-0000-0000-0000-000000000007}">
+      <attribute name="Name" role-class-uid="{20000001-0000-0000-0000-000000000003}"/>
+    </entity>
+    
+    <entity name ="Table">
+      <attribute name="Name" role-class-uid="{20000001-0000-0000-0000-000000000003}"/>
+      <!-- TODO: finalize -->
+      
+      <!-- Define the columns as a collection where the role defines the 
+           entry for which the query builders will look and the item defines the
+           items which are in this collection
+        -->
+      <collection name="Columns" role-class-uid="{20000001-0000-0000-0000-00000000000B}" item-class-uid="{10000001-0000-0000-0000-000000000007}" />
+    </entity>
+    
+  </entities>
 </repository>

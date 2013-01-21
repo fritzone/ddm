@@ -1,9 +1,14 @@
 #include "RepositoryGuiElements.h"
 #include "MainWindow.h"
 
+#include "core_Repository.h"
+#include "db_DatabaseEngine.h"
+#include "ContextMenuCollection.h"
+#include "IconFactory.h"
+
 RepositoryGuiElements::RepositoryGuiElements()
 {
-
+    m_repo = new Repository();
 }
 
 void RepositoryGuiElements::createGuiElements()
@@ -32,4 +37,37 @@ void RepositoryGuiElements::createGuiElements()
     m_repositoryTree->setItemDelegate(new ContextMenuDelegate(m_connectionsContextMenuHandler, m_repositoryTree));
     m_repositoryTreeDock->setWidget(m_repositoryTree);
 
+    // create the tree widget for "Databases"
+    m_databasesTreeEntry = new ContextMenuEnabledTreeWidgetItem(0, QStringList(QObject::tr("Databases")));
+    m_repositoryTree->addTopLevelItem(m_databasesTreeEntry);
+    m_databasesTreeEntry->setIcon(0, IconFactory::getRepoDatabasesIcon());
+    m_databasesTreeEntry->setPopupMenu(ContextMenuCollection::getInstance()->getRepositoryDatabasesPopupMenu());
+
+    // create the tree widget for "Roles"
+    m_rolesTreeEntry = new ContextMenuEnabledTreeWidgetItem(0, QStringList(QObject::tr("Roles")));
+    m_repositoryTree->addTopLevelItem(m_rolesTreeEntry);
+    m_rolesTreeEntry->setIcon(0, IconFactory::getRepoRoleIcon());
+    m_rolesTreeEntry->setPopupMenu(ContextMenuCollection::getInstance()->getRepositoryDatabasesPopupMenu());
+
+    // and populates them
+    const QVector<DatabaseEngine*> & dbes = m_repo->getDatabases();
+    for(int i=0; i<dbes.size(); i++)
+    {
+        createDatabaseeTreeEntry(dbes[i]);
+    }
+}
+
+
+ContextMenuEnabledTreeWidgetItem* RepositoryGuiElements::createDatabaseeTreeEntry(DatabaseEngine* dbEngine)
+{
+    QStringList items;
+    items << dbEngine->getDatabaseEngineName();
+
+    ContextMenuEnabledTreeWidgetItem* newDbItem = new ContextMenuEnabledTreeWidgetItem(m_databasesTreeEntry, items);
+    QVariant var(dbEngine->getDatabaseEngineName());
+    newDbItem->setData(0, Qt::UserRole, var);
+    newDbItem->setIcon(0, IconFactory::getRepoDatabasesIcon());
+    m_repositoryTree->addTopLevelItem(newDbItem);
+
+    return newDbItem ;
 }
