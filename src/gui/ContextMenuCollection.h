@@ -70,6 +70,7 @@ public:
     QMenu* getUndeletePopupMenu() { return m_undeletePopupMenu; }
     QMenu* getReleasedVersionPopupMenu() { return m_releasedVersionPopupMenu; }
     QMenu* getFinalisedVersionPopupMenu() { return m_finalisedVersionPopupMenu; }
+    QMenu* getRepositoryDatabasesPopupMenu() { return m_repositoryDatabasesPopupMenu; }
 
     /*
      * Actions
@@ -190,6 +191,7 @@ private:
     QMenu* m_functionsPopupMenu;                // popup menu for the procedures tree entry
     QMenu* m_releasedVersionPopupMenu;          // popup menu for the version which was just released. Contains a "Initiate patch" and a "Deploy" entry
     QMenu* m_finalisedVersionPopupMenu;         // popup menu for the version which was finalise. Contains a "Deploy" entry
+    QMenu* m_repositoryDatabasesPopupMenu;      // Popup menu for  the repository, "Databases"
 
     // the actions in the table popup menu
     QAction* action_RemoveTable;

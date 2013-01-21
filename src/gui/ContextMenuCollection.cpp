@@ -54,6 +54,7 @@ ContextMenuCollection::ContextMenuCollection()
     m_triggersPopupMenu = new QMenu();
     m_releasedVersionPopupMenu = new QMenu();
     m_finalisedVersionPopupMenu = new QMenu();
+    m_repositoryDatabasesPopupMenu = new QMenu();
 
     // actions
     action_RemoveTable = new QAction(QObject::tr("Delete table"), 0);

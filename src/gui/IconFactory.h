@@ -164,12 +164,29 @@ static const QString strRunQueryIcon = ":/images/actions/images/actions/button_p
 static const QString strBindToDbIcon = ":/images/actions/images/big/folder_database.png";
 static const QString strUndeleteIcon = ":/images/actions/images/small/gnome_undelete.png";
 
+static const QString strRepositoryDatabases = ":/images/actions/images/actions/database-conn.png";
+static const QString strRepositoryRole = ":/images/actions/images/small/applications_engineering.png";
+
 }
 
 class IconFactory
 {
 
 public:
+
+    static const QIcon& getRepoDatabasesIcon()
+    {
+        static const QIcon icon(icons::strRepositoryDatabases);
+        return icon;
+
+    }
+
+    static const QIcon& getRepoRoleIcon()
+    {
+        static const QIcon icon(icons::strRepositoryRole);
+        return icon;
+
+    }
 
     static const QIcon& getKeyIcon()
     {
