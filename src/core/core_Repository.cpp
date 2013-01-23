@@ -1,5 +1,6 @@
 #include "core_Repository.h"
 #include "db_DatabaseEngine.h"
+#include "core_Role.h"
 
 #include <QApplication>
 #include <QDomDocument>
@@ -34,10 +35,22 @@ Repository::Repository()
                 addDatabase(childI.childNodes().at(j).toElement());
             }
         }
+
+        if(name == "roles")
+        {
+            for(int j=0; j<childI.childNodes().size(); j++)
+            {
+                QDomElement el = childI.childNodes().at(j).toElement();
+                if(el.nodeName() == "role")
+                {
+                    Role* r = new Role(el.attribute("name"), el.attribute("class-uid"), el.attribute("description"));
+                    m_roles.append(r);
+                }
+            }
+        }
     }
 
 }
-
 
 void Repository::addDatabase(const QDomElement & el)
 {
@@ -49,4 +62,10 @@ void Repository::addDatabase(const QDomElement & el)
             m_databases.append(dbe);
         }
     }
+}
+
+Repository* Repository::instance()
+{
+    static Repository repo;
+    return &repo;
 }
