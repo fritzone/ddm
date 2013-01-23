@@ -4,22 +4,33 @@
 #include <QVector>
 
 class DatabaseEngine;
+class Role;
 class QDomElement;
 
 class Repository
 {
 public:
-    Repository();
+
+    static Repository* instance() ;
+
     const QVector<DatabaseEngine*> & getDatabases() const
     {
         return m_databases;
     }
+
+    const QVector<Role*>& getRoles() const
+    {
+        return m_roles;
+    }
+
 private:
 
+    Repository();
     void addDatabase(const QDomElement&);
 
 private:
     QVector<DatabaseEngine*> m_databases;
+    QVector<Role*> m_roles;
 };
 
 #endif // CORE_REPOSITORY_H

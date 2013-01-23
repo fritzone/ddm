@@ -8,7 +8,7 @@
 
 RepositoryGuiElements::RepositoryGuiElements()
 {
-    m_repo = new Repository();
+    m_repo = Repository::instance();
 }
 
 void RepositoryGuiElements::createGuiElements()
@@ -55,6 +55,9 @@ void RepositoryGuiElements::createGuiElements()
     {
         createDatabaseeTreeEntry(dbes[i]);
     }
+
+    QObject::connect(m_repositoryTree, SIGNAL(itemClicked(QTreeWidgetItem*,int)), MainWindow::instance(), SLOT(onRepoItemClicked(QTreeWidgetItem*,int)));
+
 }
 
 

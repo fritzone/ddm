@@ -63,6 +63,7 @@
 #include "core_Patch.h"
 #include "TableComparisonForm.h"
 #include "RepositoryGuiElements.h"
+#include "repo_RoleListingForm.h"
 
 #include <QtGui>
 
@@ -3116,4 +3117,25 @@ void MainWindow::showDataTypesList(Version* foundVersion)
     DataTypesListForm* dtLst = new DataTypesListForm(this);
     dtLst->feedInDataTypes(foundVersion->getDataTypes());
     setCentralWidget(dtLst);
+}
+
+
+void MainWindow::onRepoItemClicked(QTreeWidgetItem* itm ,int)
+{
+    QString txt = itm->text(0);
+    if(txt == QObject::tr("Roles"))
+    {
+        if(m_btndlg && m_btndlg->isVisible())
+        {
+            m_btndlg->hide();
+#ifdef Q_WS_WIN
+            Qt::WindowFlags flags = m_btndlg->windowFlags();
+            m_btndlg->setWindowFlags(flags ^ (Qt::SplashScreen |Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint));
+#endif
+        }
+
+        RoleListingForm* rlf = new RoleListingForm(this);
+        setCentralWidget(rlf);
+    }
+
 }

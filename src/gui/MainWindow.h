@@ -208,6 +208,7 @@ public slots:
     void onCompareTables();
     void onDeployVersion();
     void onUpdateDb();
+    void onRepoItemClicked(QTreeWidgetItem*,int);
 
 private:
 
