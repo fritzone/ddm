@@ -12,6 +12,7 @@ class Repository
 public:
 
     static Repository* instance() ;
+    ~Repository();
 
     const QVector<DatabaseEngine*> & getDatabases() const
     {

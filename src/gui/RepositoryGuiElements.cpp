@@ -47,7 +47,13 @@ void RepositoryGuiElements::createGuiElements()
     m_rolesTreeEntry = new ContextMenuEnabledTreeWidgetItem(0, QStringList(QObject::tr("Roles")));
     m_repositoryTree->addTopLevelItem(m_rolesTreeEntry);
     m_rolesTreeEntry->setIcon(0, IconFactory::getRepoRoleIcon());
-    m_rolesTreeEntry->setPopupMenu(ContextMenuCollection::getInstance()->getRepositoryDatabasesPopupMenu());
+    //m_rolesTreeEntry->setPopupMenu(ContextMenuCollection::getInstance()->getRepositoryDatabasesPopupMenu());
+
+    // create the tree widget for "Entities"
+    m_entitiesTreeEntry = new ContextMenuEnabledTreeWidgetItem(0, QStringList(QObject::tr("Entities")));
+    m_repositoryTree->addTopLevelItem(m_entitiesTreeEntry);
+    m_entitiesTreeEntry->setIcon(0, IconFactory::getRepoEntityIcon());
+    //m_entitiesTreeEntry->setPopupMenu(ContextMenuCollection::getInstance()->getRepositoryDatabasesPopupMenu());
 
     // and populates them
     const QVector<DatabaseEngine*> & dbes = m_repo->getDatabases();

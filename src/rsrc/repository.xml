@@ -25,6 +25,7 @@
       </icon>
     </database>
   </databases>
+
   <!-- Defines the roles of the system -->
   <roles>
     <!-- Generic roles -->
@@ -41,24 +42,29 @@
     <role name="DataType_Unsigned" class-uid="{20000001-0000-0000-0000-000000000009}" description = "If the data type is unsigned or not" />
     <role name="DataType_CanBeNull" class-uid="{20000001-0000-0000-0000-00000000000A}" description = "If the data type can be null or not" />
     
+    <!-- Roles of a column -->
+    <role name = "PrimaryKey" class-uid = "{20000001-0000-0000-0000-00000000000C}" description = "If a column is a primary key or not" />
+    
     <!-- Roles of a table -->
     <role name="Columns" class-uid="{20000001-0000-0000-0000-00000000000B}" description = "The Columns of a table" />
 
   </roles>
   <!-- defines the entities the user can work with. ie. how they are serialized -->
-  <entities>
-    <entity name="DataType" class-uid="{10000000-0000-0000-0000-000000000002}" hasDescription="1">
+  <entities-serialization>
+    <entity name="DataType" class-uid="{10000000-0000-0000-0000-000000000002}" hasDescription="1" supportsSps = "0">
       <attribute name="SqlType" role-class-uid="{20000001-0000-0000-0000-000000000004}"/>
       <attribute name="Size" role-class-uid="{20000001-0000-0000-0000-000000000005}"/>
       <attribute name="Name" role-class-uid="{20000001-0000-0000-0000-000000000003}"/>
       <!-- TODO: finalize -->
     </entity>
     
-    <entity name = "Column" class-uid = "{10000001-0000-0000-0000-000000000007}">
+    <entity name = "Column" class-uid = "{10000001-0000-0000-0000-000000000007}" supportsSps = "1" hasDescription = "1">
       <attribute name="Name" role-class-uid="{20000001-0000-0000-0000-000000000003}"/>
+      <attribute name="PK" role-class-uid = "{20000001-0000-0000-0000-00000000000C}" />
+      <reference name="Type" reference-class-uid = "{10000000-0000-0000-0000-000000000002}" reference-role-uid = "{20000001-0000-0000-0000-000000000003}"/>
     </entity>
     
-    <entity name ="Table">
+    <entity name ="Table" class-uid = "{10000001-0000-0000-0000-000000000001}" hasDescription = "1" supportsSps = "1">
       <attribute name="Name" role-class-uid="{20000001-0000-0000-0000-000000000003}"/>
       <!-- TODO: finalize -->
       
@@ -66,8 +72,8 @@
            entry for which the query builders will look and the item defines the
            items which are in this collection
         -->
-      <collection name="Columns" role-class-uid="{20000001-0000-0000-0000-00000000000B}" item-class-uid="{10000001-0000-0000-0000-000000000007}" />
+      <collection name="Columns" role-class-uid="{20000001-0000-0000-0000-00000000000B}" collection-class-uid="{10000001-0000-0000-0000-000000000007}" />
     </entity>
     
-  </entities>
+  </entities-serialization>
 </repository>
