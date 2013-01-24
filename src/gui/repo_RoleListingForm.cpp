@@ -48,13 +48,23 @@ void RoleListingForm::newRole(QTableWidgetItem *itm)
     if(itm->row() == 0 && itm->column() == 0)
     {
         if(itm->text() == "New Role") return;
+        // See that this is already NOT there
+        for(int i=1; i<ui->tblRoles->rowCount(); i++)
+        {
+            if(itm->text() == ui->tblRoles->item(i, 0)->text())
+            {
+                return;
+            }
+        }
+
+        ui->tblRoles->blockSignals(true);
+
         QFont f = itm->font();
         f.setItalic(false);
         itm->setFont(f);
         itm->setForeground(Qt::black);
 
 
-        ui->tblRoles->blockSignals(true);
         ui->tblRoles->insertRow(0);
         QTableWidgetItem *twl = new QTableWidgetItem("New Role");
         f = twl->font();
@@ -62,6 +72,8 @@ void RoleListingForm::newRole(QTableWidgetItem *itm)
         twl->setFont(f);
         twl->setForeground(Qt::gray);
         ui->tblRoles->setItem(0, 0, twl);
+
         ui->tblRoles->blockSignals(false);
+
     }
 }

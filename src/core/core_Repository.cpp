@@ -48,8 +48,24 @@ Repository::Repository()
                 }
             }
         }
-    }
 
+        if(name == "entities-serialization")
+        {
+            for(int j=0; j<childI.childNodes().size(); j++)
+            {
+                QDomElement el = childI.childNodes().at(j).toElement();
+                if(el.nodeName() == "entity")
+                {
+                }
+            }
+
+        }
+    }
+}
+
+Repository::~Repository()
+{
+    // TODO: Save the repo
 }
 
 void Repository::addDatabase(const QDomElement & el)

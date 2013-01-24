@@ -166,6 +166,7 @@ static const QString strUndeleteIcon = ":/images/actions/images/small/gnome_unde
 
 static const QString strRepositoryDatabases = ":/images/actions/images/actions/database-conn.png";
 static const QString strRepositoryRole = ":/images/actions/images/small/applications_engineering.png";
+static const QString strRepositoryEntity = ":/images/actions/images/small/entity.png";
 
 }
 
@@ -174,11 +175,16 @@ class IconFactory
 
 public:
 
+    static const QIcon& getRepoEntityIcon()
+    {
+        static const QIcon icon(icons::strRepositoryEntity);
+        return icon;
+    }
+
     static const QIcon& getRepoDatabasesIcon()
     {
         static const QIcon icon(icons::strRepositoryDatabases);
         return icon;
-
     }
 
     static const QIcon& getRepoRoleIcon()

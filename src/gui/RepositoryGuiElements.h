@@ -36,6 +36,7 @@ private:
 
     ContextMenuEnabledTreeWidgetItem* m_databasesTreeEntry;
     ContextMenuEnabledTreeWidgetItem* m_rolesTreeEntry;
+    ContextMenuEnabledTreeWidgetItem* m_entitiesTreeEntry;
     Repository* m_repo;
 };
 

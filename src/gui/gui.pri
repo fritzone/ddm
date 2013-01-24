@@ -37,7 +37,8 @@ SOURCES += \
     gui/DynamicActionHandlerforMainWindow.cpp \
     gui/repo_DatabaseDetailsForm.cpp \
     gui/RepositoryGuiElements.cpp \
-    gui/repo_RoleListingForm.cpp
+    gui/repo_RoleListingForm.cpp \
+    gui/repo_RepositoryElementForm.cpp
 
 HEADERS += \
     gui/AboutBoxDialog.h \
@@ -83,7 +84,8 @@ HEADERS += \
     gui/DocumentationSourceTreeItem.h \
     gui/repo_DatabaseDetailsForm.h \
     gui/RepositoryGuiElements.h \
-    gui/repo_RoleListingForm.h
+    gui/repo_RoleListingForm.h \
+    gui/repo_RepositoryElementForm.h
 
 FORMS += \
     gui/AboutBoxDialog.ui \
@@ -112,4 +114,5 @@ FORMS += \
     gui/TriggerForm.ui \
     gui/WidgetForSpecificProperties.ui \
     gui/repo_DatabaseDetailsForm.ui \
-    gui/repo_RoleListingForm.ui
+    gui/repo_RoleListingForm.ui \
+    gui/repo_RepositoryElementForm.ui
