@@ -9,6 +9,7 @@
 #include "SerializableElement.h"
 #include "core_ObjectWithUid.h"
 #include "core_CloneableElement.h"
+#include "core_VersionElement.h"
 
 class Table;
 class ERGraphicsScene;
@@ -26,7 +27,7 @@ class ForeignKey;
 class Diagram :
         public NamedItem,
         public SerializableElement,
-        public ObjectWithUid,
+        public VersionElement,
         public CloneableElement,
         public TreeItem
 {

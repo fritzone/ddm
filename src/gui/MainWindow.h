@@ -235,6 +235,7 @@ private:
     ContextMenuEnabledTreeWidgetItem* getLastRightClickedTreeItem();
     Version* getVersionOfLastRightClickedElement();
     bool showObjectWithGuid(const QString&);
+    bool showRepoObjectWithGuid(const QString&);
 
 private:
     Ui::MainWindow *m_ui;

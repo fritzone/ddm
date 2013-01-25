@@ -15,6 +15,11 @@ public:
         return m_description;
     }
 
+    QUuid getUid() const
+    {
+        return m_uid;
+    }
+
 private:
     QString m_description;
     QUuid m_uid;

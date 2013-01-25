@@ -33,7 +33,8 @@ SOURCES += \
     core/ValueSp.cpp \
     core/ValueSpInstance.cpp \
     core/core_Repository.cpp \
-    core/core_Role.cpp
+    core/core_Role.cpp \
+    core/core_Entity.cpp
 
 HEADERS += \
     core/core_Trigger.h \
@@ -81,4 +82,6 @@ HEADERS += \
     core/core_SqlSource.h \
     core/core_ParameterAndDescription.h \
     core/core_Repository.h \
-    core/core_Role.h
+    core/core_Role.h \
+    core/core_Entity.h \
+    core/core_VersionElement.h

@@ -38,7 +38,7 @@ VersionUpdateGenerator::VersionUpdateGenerator(Version *from, Version *to) : m_c
 
     if(m_tablesReferencedWithFkFromOtherTables.keys().size())
     {
-        if(!to->version()->getProject()->oopProject())
+        if(!to->getProject()->oopProject())
         {
             // drop all the foreign keys from other tables that reference the tables/columns in this map
             QVector<ForeignKey*> droppedFks;

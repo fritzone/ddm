@@ -2,13 +2,12 @@
 #include "UidWarehouse.h"
 #include "uids.h"
 
-ObjectWithUid::ObjectWithUid() : m_version(0), m_uid(nullUid), m_sourceUid(nullUid)
+ObjectWithUid::ObjectWithUid() : m_uid(nullUid), m_sourceUid(nullUid)
 {
 }
 
-ObjectWithUid::ObjectWithUid(const QString& uid, Version* v) : m_version(v), m_uid(uid), m_sourceUid(nullUid)
+ObjectWithUid::ObjectWithUid(const QString& uid) : m_uid(uid), m_sourceUid(nullUid)
 {
-    UidWarehouse::instance().addElement(this, v);
 }
 
 QStringList ObjectWithUid::sourceUids() const

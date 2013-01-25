@@ -16,7 +16,7 @@
 View::View(bool manual, QString uid, Version *v) :
     SqlSourceTreeItem(),
     NamedItem(NameGenerator::getUniqueName(Workspace::getInstance()->workingVersion(), (itemGetter)&Version::getView, QString("my_view"))),
-    ObjectWithUid(uid, v),
+    VersionElement(uid, v),
     m_columNames(), m_canReplace(false), m_manual(manual)
 {
     m_helper = new QueryGraphicsHelper();
@@ -28,7 +28,7 @@ View::View(bool manual, QString uid, Version *v) :
 View::View(Version*v, bool manual, QString uid) :
     SqlSourceTreeItem(),
     NamedItem(NameGenerator::getUniqueName(v, (itemGetter)&Version::getView, QString("my_view"))),
-    ObjectWithUid(uid, v),
+    VersionElement(uid, v),
     m_columNames(), m_canReplace(false), m_manual(manual)
 {
     m_helper = new QueryGraphicsHelper();

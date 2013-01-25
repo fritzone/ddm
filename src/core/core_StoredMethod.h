@@ -9,12 +9,13 @@
 #include "core_ObjectWithUid.h"
 #include "core_SqlSource.h"
 #include "core_ParameterAndDescription.h"
+#include "core_VersionElement.h"
 
 class StoredMethod :
         public NamedItem,
         public SerializableElement,
         public CloneableElement,
-        public ObjectWithUid,
+        public VersionElement,
         public SqlSource,
         public TreeItem,
         public SqlSourceTreeItem

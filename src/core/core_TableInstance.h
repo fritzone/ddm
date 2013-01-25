@@ -10,6 +10,8 @@
 #include "core_CloneableElement.h"
 #include "core_ColumnWithValue.h"
 #include "core_SqlSource.h"
+#include "core_VersionElement.h"
+
 
 #include <QHash>
 #include <QList>
@@ -21,7 +23,7 @@ class TableInstance : public TreeItem,
         public NamedItem,
         public SerializableElement,
         public SqlSourceTreeItem,
-        public ObjectWithUid,
+        public VersionElement,
         public CloneableElement,
         public SqlSource
 {

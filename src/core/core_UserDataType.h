@@ -9,13 +9,14 @@
 #include "NamedItem.h"
 #include "core_CloneableElement.h"
 #include "core_ObjectWithUid.h"
+#include "core_VersionElement.h"
 
 /**
  * Class representing a data type
  */
 class UserDataType : public NamedItem,
         public SerializableElement,
-        public ObjectWithUid,
+        public VersionElement,
         public CloneableElement,
         public TreeItem
 {
@@ -24,7 +25,7 @@ public:
     UserDataType(const QString& name, DT_TYPE type, const QString& uid, Version *v) :
         NamedItem(name),
         SerializableElement(),
-        ObjectWithUid(uid, v),
+        VersionElement(uid, v),
         CloneableElement(),
         sqlType(""),
         size(""), defaultValue(""), miscStuff(),

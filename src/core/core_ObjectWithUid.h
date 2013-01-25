@@ -3,7 +3,6 @@
 
 #include <QUuid>
 
-class Version;
 class UidWarehouse;
 
 /**
@@ -32,7 +31,7 @@ public:
      * @param uid
      * @param v
      */
-    ObjectWithUid(const QString& uid, Version *v);
+    ObjectWithUid(const QString& uid);
 
     /**
      * Destructor
@@ -54,20 +53,6 @@ public:
     void setForcedUid(const QString& uid)
     {
         m_uid = QUuid(uid);
-    }
-
-    /**
-     * @brief Returns the version of this object
-     * @return the Version of this object
-     */
-    Version* version() const
-    {
-        return m_version;
-    }
-
-    void setForcedVersion(Version *v)
-    {
-        m_version = v;
     }
 
     /**
@@ -99,10 +84,6 @@ private:
      * @return the list of object UIDs
      */
     QStringList sourceUids() const;
-
-protected:
-    // the version in which this element resides
-    Version *m_version;
 
 private:
 

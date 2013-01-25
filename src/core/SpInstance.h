@@ -5,6 +5,7 @@
 #include "core_ObjectWithUid.h"
 #include "db_SP.h"
 #include "core_CloneableElement.h"
+#include "core_VersionElement.h"
 
 #include <QString>
 
@@ -14,7 +15,7 @@ class Version;
 /**
  * Represents an instance of an SP object.
  */
-class SpInstance : public SerializableElement, public ObjectWithUid, public CloneableElement
+class SpInstance : public SerializableElement, public VersionElement, public CloneableElement
 {
 public:
     SpInstance(const Sp* theClass, Version *v);

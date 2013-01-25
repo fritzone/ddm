@@ -22,7 +22,7 @@
 
 Patch::Patch(Version *v, bool init) :
     NamedItem("Patch"),
-    ObjectWithUid(QUuid::createUuid().toString(), v),
+    VersionElement(QUuid::createUuid().toString(), v),
     TreeItem(),
     m_lockedUids(), m_originals(), m_suspended(false)
 {

@@ -1,6 +1,9 @@
 #ifndef DATABASEENGINE_H
 #define DATABASEENGINE_H
 
+#include "core_ObjectWithUid.h"
+#include "core_Entity.h"
+
 #include <QMap>
 #include <QString>
 #include <QSqlDatabase>
@@ -20,19 +23,20 @@ class Trigger;
 class Sp;
 class Column;
 
+
 /**
  * The DatabaseEngine class is the common interface for accessing the database
  * the DDM works with in a uniform way. It exposes the most common methods
  * for operations the user can do on a database.
  */
-class DatabaseEngine
+class DatabaseEngine : public Entity
 {
 public:
 
     /**
      * Constructor. Gets in the Database name as string (MySQL, Oracle, ...)
      */
-    DatabaseEngine(const QString& db);
+    DatabaseEngine(const QString& db, const QString &uid);
 
     /**
      * Destructor

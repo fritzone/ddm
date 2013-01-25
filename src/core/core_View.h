@@ -8,6 +8,7 @@
 #include "core_ObjectWithUid.h"
 #include "core_CloneableElement.h"
 #include "core_SqlSource.h"
+#include "core_VersionElement.h"
 
 class SelectQuery;
 class QueryGraphicsHelper;
@@ -20,7 +21,7 @@ class View :
         public NamedItem,
         public TreeItem,
         public SerializableElement,
-        public ObjectWithUid,
+        public VersionElement,
         public CloneableElement,
         public SqlSource
 

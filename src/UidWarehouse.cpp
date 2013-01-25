@@ -2,6 +2,7 @@
 #include "Workspace.h"
 #include "Project.h"
 #include "uids.h"
+#include "core_VersionElement.h"
 
 UidWarehouse* UidWarehouse::m_instance = 0;
 
@@ -47,7 +48,7 @@ void UidWarehouse::replace(const QString &uid, ObjectWithUid *o)
     WarehouseEntry* whe = new WarehouseEntry();
     whe->obj = o;
     whe->objectId = uid;
-    whe->ver = o->version();
+    whe->ver = dynamic_cast<VersionElement*>(o)->version();
 
 
     Solution* s = 0;
@@ -75,6 +76,27 @@ void UidWarehouse::addElement(QUuid uid, Version *v)
     whe->obj = 0;
     whe->objectId = uid;
     whe->ver = v;
+
+    Solution* s = 0;
+    if(m_items.keys().contains(s))
+    {
+        m_items[s].insert(uid.toString(), whe);
+    }
+    else
+    {
+        QMap<QString, WarehouseEntry*> * e = new QMap<QString, WarehouseEntry*>();
+        e->insert(uid.toString(), whe);
+        m_items.insert(s, *e);
+    }
+}
+
+// maps a class uid to an entity .. or at least it should
+void UidWarehouse::addElement(QUuid uid, ObjectWithUid *obj)
+{
+    WarehouseEntry* whe = new WarehouseEntry();
+    whe->obj = obj;
+    whe->objectId = uid;
+    whe->ver = 0;
 
     Solution* s = 0;
     if(m_items.keys().contains(s))

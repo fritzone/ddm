@@ -64,6 +64,7 @@
 #include "TableComparisonForm.h"
 #include "RepositoryGuiElements.h"
 #include "repo_RoleListingForm.h"
+#include "repo_RepositoryElementForm.h"
 
 #include <QtGui>
 
@@ -640,7 +641,7 @@ void MainWindow::projectTreeItemClicked(QTreeWidgetItem * current, int)
         QVariant qv = current->data(0, Qt::UserRole);
         QString uid = qv.toString();
 
-        ObjectWithUid* obj = UidWarehouse::instance().getElement(uid);
+        VersionElement* obj = dynamic_cast<VersionElement*>(UidWarehouse::instance().getElement(uid));
         Version* foundVersion = UidWarehouse::instance().getVersionForUid(uid);
         if(!foundVersion)
         {
@@ -1347,6 +1348,19 @@ bool MainWindow::showObjectWithGuid(const QString & guid)
     }
 }
 
+bool MainWindow::showRepoObjectWithGuid(const QString & guid)
+{
+    qDebug() << "FOR"<<  guid;
+    ObjectWithUid* owuid = UidWarehouse::instance().getElement(guid);
+    if(owuid)
+    {
+        RepositoryEntityForm* repoEF = new RepositoryEntityForm(this, dynamic_cast<Entity*>(owuid));
+        setCentralWidget(repoEF);
+    }
+    return true;
+}
+
+
 void MainWindow::finallyDoLockLikeOperation(bool reLocking, const QString& guid)
 {
     ObjectWithUid* element = UidWarehouse::instance().getElement(guid);
@@ -1650,7 +1664,7 @@ T* MainWindow::getRightClickedObject()
 
     QVariant qv = item->data(0, Qt::UserRole);
     QString uid = qv.toString();
-    ObjectWithUid* obj = UidWarehouse::instance().getElement(uid);
+    VersionElement* obj = dynamic_cast<VersionElement*>(UidWarehouse::instance().getElement(uid));
     if(obj == 0)
     {
         return 0;
@@ -3122,20 +3136,32 @@ void MainWindow::showDataTypesList(Version* foundVersion)
 
 void MainWindow::onRepoItemClicked(QTreeWidgetItem* itm ,int)
 {
+    if(m_btndlg && m_btndlg->isVisible())
+    {
+        m_btndlg->hide();
+#ifdef Q_WS_WIN
+        Qt::WindowFlags flags = m_btndlg->windowFlags();
+        m_btndlg->setWindowFlags(flags ^ (Qt::SplashScreen |Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint));
+#endif
+    }
+
     QString txt = itm->text(0);
     if(txt == QObject::tr("Roles"))
     {
-        if(m_btndlg && m_btndlg->isVisible())
-        {
-            m_btndlg->hide();
-#ifdef Q_WS_WIN
-            Qt::WindowFlags flags = m_btndlg->windowFlags();
-            m_btndlg->setWindowFlags(flags ^ (Qt::SplashScreen |Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint));
-#endif
-        }
 
         RoleListingForm* rlf = new RoleListingForm(this);
         setCentralWidget(rlf);
     }
+    else
+    {
+        QString uid = itm->data(0, Qt::UserRole).toString();
+        qDebug() << uid;
+        if(uid.isEmpty()) return;
+        if(uid.at(0) == '{')
+        {
+            showRepoObjectWithGuid(uid);
+        }
+    }
+
 
 }

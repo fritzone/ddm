@@ -11,7 +11,7 @@
 
 Column::Column(const QString& uid, const QString& name, const UserDataType* type, bool pk, Version* v) :
     SerializableElement(), CopyableElement(), IssueOriginator(),
-    NamedItem(name), ItemWithDescription(), ObjectWithUid(uid, v), ObjectWithSpInstances(),
+    NamedItem(name), ItemWithDescription(), VersionElement(uid, v), ObjectWithSpInstances(),
     TreeItem(),
     m_type(type), m_pk(pk)
 {

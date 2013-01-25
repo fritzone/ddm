@@ -14,7 +14,7 @@
 
 Diagram::Diagram(Version* v, const QString& uid) :
     NamedItem(NameGenerator::getUniqueName(v, (itemGetter)&Version::getDiagram, QString("Diagram"))),
-    ObjectWithUid(uid, v), TreeItem(),
+    VersionElement(uid, v), TreeItem(),
     m_onStage(), m_fksOnStage(), m_notes(),
     m_noteDescriptors(0), m_tableDescriptors(), m_form(0), m_saved(false), m_version(v), m_removed(false)
 {
@@ -23,7 +23,7 @@ Diagram::Diagram(Version* v, const QString& uid) :
 
 Diagram::Diagram(Version* v, const QString & name, const QString& uid) :
     NamedItem(name),
-    ObjectWithUid(uid, v),
+    VersionElement(uid, v),
     TreeItem(),
     m_onStage(), m_fksOnStage(), m_notes(), m_form(0), m_saved(false), m_version(v)
 {

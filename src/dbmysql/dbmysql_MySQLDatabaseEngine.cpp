@@ -46,7 +46,12 @@ MySQLDatabaseEngine* MySQLDatabaseEngine::instance()
     return s_instance;
 }
 
-MySQLDatabaseEngine::MySQLDatabaseEngine() : DatabaseEngine("MySQL"), m_revEngMappings(), m_oneTimeMappings(), m_indexTypes(), m_defaultIndexType("BTREE")
+QUuid MySQLDatabaseEngine::getClassUid() const
+{
+    return QUuid(m_classUid);
+}
+
+MySQLDatabaseEngine::MySQLDatabaseEngine() : DatabaseEngine("MySQL", uidMysqlDb), m_revEngMappings(), m_oneTimeMappings(), m_indexTypes(), m_defaultIndexType("BTREE")
 {
     static QVector<DatabaseBuiltinFunction> v = buildFunctions();
     static QVector<Sp*> t = buildSps();

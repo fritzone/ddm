@@ -24,7 +24,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QLineEdit" name="lineEdit"/>
+      <widget class="QLineEdit" name="txtEntityName"/>
      </item>
     </layout>
    </item>
@@ -71,7 +71,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QTableWidget" name="tableWidget">
+       <widget class="QTableWidget" name="tblAttributes">
         <column>
          <property name="text">
           <string>Name</string>
@@ -134,7 +134,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QTableWidget" name="tableWidget_2">
+       <widget class="QTableWidget" name="tblCollections">
         <column>
          <property name="text">
           <string>Name</string>
