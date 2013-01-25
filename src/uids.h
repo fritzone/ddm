@@ -68,5 +68,7 @@ static const QString uidVersion                     =       "{1000000A-0000-0000
 
 static const QString uidPatch                       =       "{1000000B-0000-0000-0000-000000000001}";
 
+static const QString uidRepoEntity                  =       "{1000000C-0000-0000-0000-000000000001}";
+static const QString uidMysqlDb = "{100000DB-0000-0000-0000-000000000001}";
 
 #endif // UIDS_H

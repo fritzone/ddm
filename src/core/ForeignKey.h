@@ -6,10 +6,11 @@
 #include "core_Column.h"
 #include "NamedItem.h"
 #include "core_Table.h"
+#include "core_VersionElement.h"
 
 class Version;
 
-class ForeignKey : public TreeItem, public SerializableElement, public NamedItem, public ObjectWithUid
+class ForeignKey : public TreeItem, public SerializableElement, public NamedItem, public VersionElement
 {
 
 public:

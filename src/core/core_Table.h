@@ -12,6 +12,7 @@
 #include "core_CloneableElement.h"
 #include "core_ColumnWithValue.h"
 #include "core_SqlSource.h"
+#include "core_VersionElement.h"
 
 #include "TreeItem.h"
 #include "DocumentationSourceTreeItem.h"
@@ -35,7 +36,7 @@ class Table :
         public SqlSourceTreeItem,
         public CopyableElement,
         public NamedItem,
-        public ObjectWithUid,
+        public VersionElement,
         public ObjectWithSpInstances,
         public CloneableElement,
         public SqlSource,

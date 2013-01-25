@@ -2,7 +2,7 @@
 <repository>
   <!-- the supported databases -->
   <databases>
-    <database name="MySql" id="MYSQL" uid="{100000DB-0000-0000-0000-000000000001}">
+    <database name="MySql" id="MYSQL" class-uid="{100000DB-0000-0000-0000-000000000001}">
       <versions>
         <supported-versions>
           <version tag="5.0"/>
@@ -51,20 +51,20 @@
   </roles>
   <!-- defines the entities the user can work with. ie. how they are serialized -->
   <entities-serialization>
-    <entity name="DataType" class-uid="{10000000-0000-0000-0000-000000000002}" hasDescription="1" supportsSps = "0">
+    <entity name="DataType" target-class-uid="{10000000-0000-0000-0000-000000000002}" hasDescription="1" supportsSps = "0" class-uid = "{1000000C-0000-0000-0000-000000000001}">
       <attribute name="SqlType" role-class-uid="{20000001-0000-0000-0000-000000000004}"/>
       <attribute name="Size" role-class-uid="{20000001-0000-0000-0000-000000000005}"/>
       <attribute name="Name" role-class-uid="{20000001-0000-0000-0000-000000000003}"/>
       <!-- TODO: finalize -->
     </entity>
     
-    <entity name = "Column" class-uid = "{10000001-0000-0000-0000-000000000007}" supportsSps = "1" hasDescription = "1">
+    <entity name = "Column" target-class-uid = "{10000001-0000-0000-0000-000000000007}" supportsSps = "1" hasDescription = "1" class-uid = "{1000000C-0000-0000-0000-000000000001}">
       <attribute name="Name" role-class-uid="{20000001-0000-0000-0000-000000000003}"/>
       <attribute name="PK" role-class-uid = "{20000001-0000-0000-0000-00000000000C}" />
-      <reference name="Type" reference-class-uid = "{10000000-0000-0000-0000-000000000002}" reference-role-uid = "{20000001-0000-0000-0000-000000000003}"/>
+      <reference name="Type" reference-class-uid = "{10000000-0000-0000-0000-000000000002}" reference-role-uid = "{20000001-0000-0000-0000-000000000003}" />
     </entity>
     
-    <entity name ="Table" class-uid = "{10000001-0000-0000-0000-000000000001}" hasDescription = "1" supportsSps = "1">
+    <entity name ="Table" target-class-uid = "{10000001-0000-0000-0000-000000000001}" hasDescription = "1" supportsSps = "1" class-uid = "{1000000C-0000-0000-0000-000000000001}">
       <attribute name="Name" role-class-uid="{20000001-0000-0000-0000-000000000003}"/>
       <!-- TODO: finalize -->
       
@@ -72,7 +72,7 @@
            entry for which the query builders will look and the item defines the
            items which are in this collection
         -->
-      <collection name="Columns" role-class-uid="{20000001-0000-0000-0000-00000000000B}" collection-class-uid="{10000001-0000-0000-0000-000000000007}" />
+      <collection name="Columns" role-class-uid="{20000001-0000-0000-0000-00000000000B}" target-class-uid="{10000001-0000-0000-0000-000000000007}" />
     </entity>
     
   </entities-serialization>

@@ -21,7 +21,7 @@
 
 Table::Table(Version* v, QString uid) : SerializableElement(), SqlSourceTreeItem(), CopyableElement(),
     NamedItem(NameGenerator::getUniqueName(v, (itemGetter)&Version::getTable, QString("TAB"))),
-    ObjectWithUid(uid, v), ObjectWithSpInstances(), TreeItem(),
+    VersionElement(uid, v), ObjectWithSpInstances(), TreeItem(),
     m_description(""), m_columns(), m_indices(), m_foreignKeys(), m_startupValues(),
     m_parent(0),
     m_version(v), m_children()

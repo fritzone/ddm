@@ -6,7 +6,7 @@
 #include <QCryptographicHash>
 
 StoredMethod::StoredMethod(const QString& name, const QString& uid, Version *v) :
-    NamedItem(name), SerializableElement(), CloneableElement(), ObjectWithUid(uid, v),
+    NamedItem(name), SerializableElement(), CloneableElement(), VersionElement(uid, v),
     TreeItem(), SqlSourceTreeItem(),
     m_sql(), m_brief(), m_desc(), m_returns()
 {}

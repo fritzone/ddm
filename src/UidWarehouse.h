@@ -26,6 +26,7 @@ public:
     void addElement(ObjectWithUid* o, Version *v);
     void replace(const QString& uid, ObjectWithUid* o);
     void addElement(QUuid uid, Version* v);
+    void addElement(QUuid uid, ObjectWithUid* obj);
     ObjectWithUid* getElement(const QString&);
     Version* getVersionForUid(const QString& uid);
     bool related(const ObjectWithUid* obj1, const ObjectWithUid* obj2);

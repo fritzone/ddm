@@ -11,7 +11,7 @@ UserDataType::UserDataType(const QString& name, const QString& typeString,
                            bool unsi, const QString &desc, bool nullable, const QString& uid, Version* v) :
         NamedItem(name),
         SerializableElement(),
-        ObjectWithUid(uid, v),
+        VersionElement(uid, v),
         CloneableElement(),
         TreeItem(),
         sqlType(_sqlType),

@@ -7,6 +7,7 @@
 #include "core_ObjectWithUid.h"
 #include "ObjectWithSpInstances.h"
 #include "core_CloneableElement.h"
+#include "core_VersionElement.h"
 
 #include <QVector>
 #include <QString>
@@ -14,7 +15,7 @@
 class Column;
 class Table;
 
-class Index : public TreeItem, public SerializableElement, public NamedItem, public ObjectWithUid, public ObjectWithSpInstances, public CloneableElement
+class Index : public TreeItem, public SerializableElement, public NamedItem, public VersionElement, public ObjectWithSpInstances, public CloneableElement
 {
 
     struct ColumnAndOrder

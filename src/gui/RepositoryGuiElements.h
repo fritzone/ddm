@@ -7,6 +7,7 @@
 
 class DatabaseEngine;
 class Repository;
+class Entity;
 
 class RepositoryGuiElements
 {
@@ -24,7 +25,7 @@ public:
     }
 
     ContextMenuEnabledTreeWidgetItem* createDatabaseeTreeEntry(DatabaseEngine* dbEngine);
-
+    ContextMenuEnabledTreeWidgetItem* createEntityTreeEntry(Entity* entity);
 
 
 private:

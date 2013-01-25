@@ -20,6 +20,8 @@ public:
 
     virtual ~MySQLDatabaseEngine();
 
+    virtual QUuid getClassUid() const;
+
     virtual bool executeSql(Connection* c, const QStringList& sqls, const QStringList& uid, QString& lastSql, bool rollbackOnError);
     virtual QString getDefaultDatatypesLocation();
     virtual bool reverseEngineerDatabase(Connection *c, const QStringList& tables, const QStringList& views, const QStringList& procs, const QStringList& funcs, const QStringList& triggers, Project* p, bool relaxed);

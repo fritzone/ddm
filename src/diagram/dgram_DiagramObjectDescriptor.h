@@ -4,14 +4,15 @@
 #include "SerializableElement.h"
 #include "core_ObjectWithUid.h"
 #include "core_CloneableElement.h"
+#include "core_VersionElement.h"
 
 #include <QString>
 
-class DiagramObjectDescriptor : public SerializableElement, public ObjectWithUid, public CloneableElement
+class DiagramObjectDescriptor : public SerializableElement, public VersionElement, public CloneableElement
 {
 public:
 
-    DiagramObjectDescriptor(const QString& txt, int x, int y, Version *v) : ObjectWithUid(QUuid::createUuid().toString(), v), m_txt(txt), m_x(x), m_y(y) {}
+    DiagramObjectDescriptor(const QString& txt, int x, int y, Version *v) : VersionElement(QUuid::createUuid().toString(), v), m_txt(txt), m_x(x), m_y(y) {}
 
 
     QString getText() const

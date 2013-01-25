@@ -41,7 +41,7 @@ public:
         DO_NOT_REMOVE_FROM_PATCH_TREE_FAILURE = 2
     } ;
 
-    Version(int major, int minor, Project* p) : ObjectWithUid(QUuid::createUuid(), this), m_major(major), m_minor(minor), m_project(p)
+    Version(int major, int minor, Project* p) : ObjectWithUid(QUuid::createUuid()), m_major(major), m_minor(minor), m_project(p)
     {}
 
     virtual ~Version() {}

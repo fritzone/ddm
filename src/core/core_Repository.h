@@ -6,6 +6,7 @@
 class DatabaseEngine;
 class Role;
 class QDomElement;
+class Entity;
 
 class Repository
 {
@@ -24,14 +25,21 @@ public:
         return m_roles;
     }
 
+    const QVector<Entity*>& getEntities() const
+    {
+        return m_entities;
+    }
+
 private:
 
     Repository();
     void addDatabase(const QDomElement&);
+    void addEntity(const QDomElement&);
 
 private:
     QVector<DatabaseEngine*> m_databases;
     QVector<Role*> m_roles;
+    QVector<Entity*> m_entities;
 };
 
 #endif // CORE_REPOSITORY_H

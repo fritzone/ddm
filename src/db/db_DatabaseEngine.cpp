@@ -8,7 +8,9 @@ QMap<QString, AbstractSqlGenerator*> DatabaseEngine::sqlGenerators;
 
 bool DatabaseEngine::genericInit = false;
 
-DatabaseEngine::DatabaseEngine(const QString& db):database(db)
+DatabaseEngine::DatabaseEngine(const QString& db, const QString& uid):
+    Entity(db, uid, nullUid, false, false),
+    database(db)
 {
     if(!genericInit)
     {

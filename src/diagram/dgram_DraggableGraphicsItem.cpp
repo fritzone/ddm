@@ -2,9 +2,16 @@
 #include "dgram_ERGraphicsScene.h"
 #include "core_Diagram.h"
 #include "DiagramForm.h"
+#include "core_Table.h"
 
 #include <QtGui>
 #include <QGraphicsScene>
+
+DraggableGraphicsViewItem::DraggableGraphicsViewItem(Table* tab) : QGraphicsItemGroup(), VersionElement(QUuid::createUuid(), tab->version()),m_table(tab), lastX(0), lastY(0)
+{
+    setAcceptDrops(true);
+}
+
 
 QPixmap DraggableGraphicsViewItem::getDragImage()
 {

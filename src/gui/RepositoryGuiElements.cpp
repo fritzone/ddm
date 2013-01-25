@@ -3,6 +3,7 @@
 
 #include "core_Repository.h"
 #include "db_DatabaseEngine.h"
+#include "core_Entity.h"
 #include "ContextMenuCollection.h"
 #include "IconFactory.h"
 
@@ -62,6 +63,12 @@ void RepositoryGuiElements::createGuiElements()
         createDatabaseeTreeEntry(dbes[i]);
     }
 
+    const QVector<Entity*> & entities= m_repo->getEntities();
+    for(int i=0; i<entities.size(); i++)
+    {
+        createEntityTreeEntry(entities[i]);
+    }
+
     QObject::connect(m_repositoryTree, SIGNAL(itemClicked(QTreeWidgetItem*,int)), MainWindow::instance(), SLOT(onRepoItemClicked(QTreeWidgetItem*,int)));
 
 }
@@ -79,4 +86,18 @@ ContextMenuEnabledTreeWidgetItem* RepositoryGuiElements::createDatabaseeTreeEntr
     m_repositoryTree->addTopLevelItem(newDbItem);
 
     return newDbItem ;
+}
+
+ContextMenuEnabledTreeWidgetItem* RepositoryGuiElements::createEntityTreeEntry(Entity* entity)
+{
+    QStringList items;
+    items << entity->getName();
+
+    ContextMenuEnabledTreeWidgetItem* newEntityItem = new ContextMenuEnabledTreeWidgetItem(m_entitiesTreeEntry, items);
+    QVariant var(entity->getTargetClassUid());
+    newEntityItem->setData(0, Qt::UserRole, var);
+    newEntityItem->setIcon(0, IconFactory::getRepoEntityIcon());
+    m_repositoryTree->addTopLevelItem(newEntityItem);
+
+    return newEntityItem ;
 }

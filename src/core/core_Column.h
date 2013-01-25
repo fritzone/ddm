@@ -10,6 +10,7 @@
 #include "core_ObjectWithUid.h"
 #include "ObjectWithSpInstances.h"
 #include "core_CloneableElement.h"
+#include "core_VersionElement.h"
 
 #include <QString>
 
@@ -26,7 +27,7 @@ class Column :
         public IssueOriginator,
         public NamedItem,
         public ItemWithDescription,
-        public ObjectWithUid,
+        public VersionElement,
         public ObjectWithSpInstances,
         public CloneableElement,
         public TreeItem

@@ -4,6 +4,7 @@
 #include "core_ObjectWithUid.h"
 #include "NamedItem.h"
 #include "SerializableElement.h"
+#include "core_VersionElement.h"
 
 #include <QString>
 #include <QUuid>
@@ -17,7 +18,7 @@ class SpInstance;
  * of the SPs for the given object.
  * Each Sp object has a property specifying where to put it in the query.
  */
-class Sp : public ObjectWithUid, public NamedItem, public SerializableElement
+class Sp : public VersionElement, public NamedItem, public SerializableElement
 {
 public:
 

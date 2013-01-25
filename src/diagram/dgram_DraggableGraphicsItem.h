@@ -2,6 +2,7 @@
 #define DRAGGABLEGRAPHICSITEM_H
 
 #include "core_ObjectWithUid.h"
+#include "core_VersionElement.h"
 
 #include <QGraphicsItemGroup>
 #include <QGraphicsSceneDragDropEvent>
@@ -10,17 +11,14 @@
 
 class Table;
 
-class DraggableGraphicsViewItem : public QGraphicsItemGroup, public ObjectWithUid
+class DraggableGraphicsViewItem : public QGraphicsItemGroup, public VersionElement
 {
 
     friend class ERGraphicsView;
     
 public:
 
-    DraggableGraphicsViewItem(Table* tab) : QGraphicsItemGroup(), m_table(tab), lastX(0), lastY(0)
-    {
-        setAcceptDrops(true);
-    }
+    DraggableGraphicsViewItem(Table* tab) ;
 
     virtual ~DraggableGraphicsViewItem()
     {

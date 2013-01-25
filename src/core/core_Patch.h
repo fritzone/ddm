@@ -10,13 +10,14 @@
 #include "SerializableElement.h"
 #include "core_ObjectWithUid.h"
 #include "ActionDeleteTable.h"
+#include "core_VersionElement.h"
 
 class Version;
 
 class Patch :
         public NamedItem,
         public SerializableElement,
-        public ObjectWithUid,
+        public VersionElement,
         public TreeItem
 {
 public:

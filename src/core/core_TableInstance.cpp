@@ -11,7 +11,7 @@
 #include "core_Trigger.h"
 
 TableInstance::TableInstance(Table *tab, bool ref, const QString& uid, Version *v) : TreeItem(),
-    NamedItem(tab->getName()), ObjectWithUid(uid, v),
+    NamedItem(tab->getName()), VersionElement(uid, v),
     m_table(tab), m_values(), m_becauseOfReference(ref), m_referencingTables(0), m_instantiatedTablesInstances(), m_sentenced(false), m_tabName()
 {
     for(int i=0; i<m_table->fullColumns().size(); i++)
@@ -22,7 +22,7 @@ TableInstance::TableInstance(Table *tab, bool ref, const QString& uid, Version *
 }
 
 TableInstance::TableInstance(const QString& name, bool ref, const QString &uid, Version *v): TreeItem(),
-    NamedItem(name), ObjectWithUid(uid, v),
+    NamedItem(name), VersionElement(uid, v),
     m_table(0), m_values(), m_becauseOfReference(ref), m_referencingTables(0), m_instantiatedTablesInstances(), m_sentenced(false), m_tabName()
 {
 }

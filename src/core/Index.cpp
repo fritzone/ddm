@@ -5,7 +5,7 @@
 #include "core_Table.h"
 
 Index::Index(const QString &name, Table* tab, const QString& uid, Version* v) :
-    NamedItem(name), ObjectWithUid(uid, v), ObjectWithSpInstances(),
+    NamedItem(name), VersionElement(uid, v), ObjectWithSpInstances(),
     m_owner(tab), m_columns(), m_columnsWithSpInstances()
 {
 }

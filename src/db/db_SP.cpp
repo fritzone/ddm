@@ -1,7 +1,7 @@
 #include "db_SP.h"
 
 Sp::Sp(const QString &sqlRoleUid, const QString& referringObjectClassUid, const QString& propertyName, const QString& propertyGuiText, const QString& group, int majorV, int minorV, Version* v) :
-    ObjectWithUid(QUuid::createUuid().toString(), v), NamedItem(propertyName),
+    VersionElement(QUuid::createUuid().toString(), v), NamedItem(propertyName),
     m_sqlRoleUid(sqlRoleUid), m_referredObjectClasUid(referringObjectClassUid),
     m_propertyGuiText(propertyGuiText), m_group(group), m_supportedMajorVersion(majorV),
     m_supportedMinorVersion(minorV)

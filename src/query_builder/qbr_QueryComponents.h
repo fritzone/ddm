@@ -5,6 +5,7 @@
 #include "SerializableElement.h"
 #include "core_ObjectWithUid.h"
 #include "core_CloneableElement.h"
+#include "core_VersionElement.h"
 
 #include <QString>
 #include <QList>
@@ -17,10 +18,10 @@ class QueryGraphicsHelper;
 /**
  * The logic behind a query
  */
-class QueryComponent : public SerializableElement, public ObjectWithUid, public CloneableElement
+class QueryComponent : public SerializableElement, public VersionElement, public CloneableElement
 {
 public:
-    QueryComponent(QueryComponent* parent, int level, Version *v) : ObjectWithUid(QUuid::createUuid().toString(), v), m_parent(parent), m_level(level) {}
+    QueryComponent(QueryComponent* parent, int level, Version *v) : VersionElement(QUuid::createUuid().toString(), v), m_parent(parent), m_level(level) {}
     virtual ~QueryComponent(){}
 
     virtual QString get() const = 0;
