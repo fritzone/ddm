@@ -13,7 +13,7 @@ class SelectQueryGroupByComponent;
 class SelectQueryAsComponent;
 class SelectQueryOrderByComponent;
 class Column;
-class ColumnOfTabWithTabInstance;
+struct ColumnOfTabWithTabInstance;
 
 class SelectQuery : public Query
 {

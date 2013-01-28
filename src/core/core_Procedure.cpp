@@ -35,7 +35,7 @@ QUuid Procedure::getClassUid() const
     return QUuid(uidProcedure);
 }
 
-CloneableElement* Procedure::clone(Version */*sourceVersion*/, Version *targetVersion)
+CloneableElement* Procedure::clone(Version* /*sourceVersion*/, Version *targetVersion)
 {
     Procedure* newp = new Procedure(getName(), QUuid::createUuid().toString(), targetVersion );
     newp->setSql(getSql());

@@ -8,7 +8,7 @@
 #include <QSet>
 
 class Column;
-class ColumnOfTabWithTabInstance;
+struct ColumnOfTabWithTabInstance;
 
 class CellTypeChooser : public QueryGraphicsItem
 {

@@ -311,7 +311,7 @@ void GuiElements::removeItemForPatch(Patch *p, const QString& uid)
     }
 }
 
-void GuiElements::populatePathcItem(ContextMenuEnabledTreeWidgetItem */*patchItem*/, Patch *patch)
+void GuiElements::populatePathcItem(ContextMenuEnabledTreeWidgetItem* /*patchItem*/, Patch *patch)
 {
     // firstly the locked elements. This will NOT create tree items for the deleted ones
     const QStringList& lockeds = patch->getLockedUids();

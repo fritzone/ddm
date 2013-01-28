@@ -156,7 +156,7 @@ DT_TYPE UserDataType::getDT_TYPE(const QString& typeString)
     return DT_INVALID;
 }
 
-CloneableElement* UserDataType::clone(Version */*sourceVersion*/, Version *targetVersion)
+CloneableElement* UserDataType::clone(Version* /*sourceVersion*/, Version *targetVersion)
 {
     UserDataType* newUdt = new UserDataType(getName(), getType(), QUuid::createUuid().toString(), targetVersion);
     newUdt->size = this->size;

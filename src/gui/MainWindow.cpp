@@ -405,7 +405,7 @@ void MainWindow::onDTTreeClicked()
 {
 }
 
-void MainWindow::showNothing(Version */*v*/, const QString &, bool /*focus*/ )
+void MainWindow::showNothing(Version* /*v*/, const QString &, bool /*focus*/ )
 {
 
 }
@@ -438,7 +438,7 @@ void MainWindow::showTableWithGuid(Version *v, const QString &guid, bool focus)
     }
 }
 
-void MainWindow::showTableInstanceWithGuid(Version */*v*/, const QString &guid, bool focus)
+void MainWindow::showTableInstanceWithGuid(Version* /*v*/, const QString &guid, bool focus)
 {
     TableInstance* table =  dynamic_cast<TableInstance*>(UidWarehouse::instance().getElement(guid));
     if(table == 0)  // shouldn't be ...
