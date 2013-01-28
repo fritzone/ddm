@@ -4,7 +4,7 @@
 #include "qbr_QueryComponents.h"
 
 class Column;
-class ColumnOfTabWithTabInstance;
+struct ColumnOfTabWithTabInstance;
 
 class SelectQuerySelectComponent : public QueryComponent
 {

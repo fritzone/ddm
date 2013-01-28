@@ -72,21 +72,7 @@ ENDIF(UNIX)
 # Search and include Qt4 parameters
 # Set Qt min required version and add modules here
 
-IF(WIN32)
-    # FindQt4.cmake is so brain-dead when Xcompiling
-    SET(QT_LIBRARY_DIR ${CONTRIBS_PATH}/lib)
-    SET(QT_INCLUDE_DIR ${CONTRIBS_PATH}/include/qt4)
-    ADD_DEFINITIONS( -I${CONTRIBS_PATH}/include/qt4/QtCore)
-    ADD_DEFINITIONS( -I${CONTRIBS_PATH}/include/qt4/QtGui)
-    ADD_DEFINITIONS( -I${CONTRIBS_PATH}/include/qt4/QtXml)
-    ADD_DEFINITIONS( -I${CONTRIBS_PATH}/include/qt4/QtNetwork)
-    ADD_DEFINITIONS( -I${CONTRIBS_PATH}/include/qt4/QtSql)
-    ADD_DEFINITIONS( -I${CONTRIBS_PATH}/include/qt4/QtWebkit)
-    ADD_DEFINITIONS( -I${CONTRIBS_PATH}/include/qt4/)
-    FIND_PACKAGE(Qt4 COMPONENTS QtCore QtGui QtXml QtSvg QtNetwork QtSql QtWebkit REQUIRED )
-ELSE(WIN32)
-    FIND_PACKAGE(Qt4 COMPONENTS QtCore QtGui QtXml QtSvg QtNetwork QtSql QtWebkit REQUIRED )
-ENDIF(WIN32)
+FIND_PACKAGE(Qt4 COMPONENTS QtCore QtGui QtXml QtSvg QtNetwork QtSql QtWebkit REQUIRED )
 
 IF (NOT WIN32)
     #FindQt4.cmake is so brain-dead when Xcompiling
@@ -100,13 +86,7 @@ IF (NOT WIN32)
     INCLUDE(${QT_USE_FILE})
     ADD_DEFINITIONS(${QT_DEFINITIONS})
 ELSE (NOT WIN32)
-    SET (DDM_LIBS -L${CONTRIBS_PATH}/lib # Manually specify paths
-            ${CONTRIBS_PATH}/lib/libQtNetwork.a
-            ${CONTRIBS_PATH}/lib/libQtSql.a
-	    ${CONTRIBS_PATH}/lib/libQtWebkit.a
-            ${CONTRIBS_PATH}/lib/libQtXml.a
-            ${CONTRIBS_PATH}/lib/libQtGui.a
-            ${CONTRIBS_PATH}/lib/libQtCore.a
+    SET (DDM_LIBS QtNetwork QtSql QtWebkit QtXml QtGui QtCore 
             ws2_32 winmm imm32 libeay32 ssleay32 crypt32 gdi32)
 ENDIF(NOT WIN32)
 

@@ -20,7 +20,7 @@ void SpInstance::serialize(QDomDocument& doc, QDomElement& parent) const
 }
 
 
-CloneableElement* SpInstance::clone(Version */*sourceVersion*/, Version */*targetVersion*/)
+CloneableElement* SpInstance::clone(Version* /*sourceVersion*/, Version* /*targetVersion*/)
 {
     SpInstance* result = const_cast<Sp*>(getClass())->instantiate();
     result->setSourceUid(getObjectUid());

@@ -46,4 +46,5 @@ Entity::Attribute* Entity::getAttribute(const QString &attr)
             return m_attr[i];
         }
     }
+    return 0;
 }

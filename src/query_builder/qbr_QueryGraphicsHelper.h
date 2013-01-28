@@ -16,7 +16,7 @@ class NewViewForm;
 class MainWindow;
 class Column;
 class SelectQueryJoinComponent;
-class ColumnOfTabWithTabInstance;
+struct ColumnOfTabWithTabInstance;
 
 class QueryGraphicsHelper
 {
