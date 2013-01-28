@@ -1350,7 +1350,6 @@ bool MainWindow::showObjectWithGuid(const QString & guid)
 
 bool MainWindow::showRepoObjectWithGuid(const QString & guid)
 {
-    qDebug() << "FOR"<<  guid;
     ObjectWithUid* owuid = UidWarehouse::instance().getElement(guid);
     if(owuid)
     {

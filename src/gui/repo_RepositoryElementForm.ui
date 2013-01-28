@@ -44,7 +44,7 @@
           <number>0</number>
          </property>
          <item>
-          <widget class="QToolButton" name="lblDeleteRole">
+          <widget class="QToolButton" name="btnDeleteAttribute">
            <property name="text">
             <string>...</string>
            </property>
@@ -72,6 +72,15 @@
       </item>
       <item>
        <widget class="QTableWidget" name="tblAttributes">
+        <attribute name="horizontalHeaderDefaultSectionSize">
+         <number>200</number>
+        </attribute>
+        <attribute name="horizontalHeaderMinimumSectionSize">
+         <number>100</number>
+        </attribute>
+        <attribute name="horizontalHeaderStretchLastSection">
+         <bool>false</bool>
+        </attribute>
         <column>
          <property name="text">
           <string>Name</string>
@@ -84,6 +93,11 @@
          <property name="icon">
           <iconset resource="../dbm.qrc">
            <normaloff>:/images/actions/images/small/applications_engineering.png</normaloff>:/images/actions/images/small/applications_engineering.png</iconset>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Core</string>
          </property>
         </column>
        </widget>
@@ -107,7 +121,7 @@
           <number>0</number>
          </property>
          <item>
-          <widget class="QToolButton" name="lblDeleteRole_2">
+          <widget class="QToolButton" name="btnDeleteCollection">
            <property name="text">
             <string>...</string>
            </property>
@@ -135,6 +149,9 @@
       </item>
       <item>
        <widget class="QTableWidget" name="tblCollections">
+        <attribute name="horizontalHeaderStretchLastSection">
+         <bool>false</bool>
+        </attribute>
         <column>
          <property name="text">
           <string>Name</string>
@@ -190,5 +207,25 @@
  <resources>
   <include location="../dbm.qrc"/>
  </resources>
- <connections/>
+ <connections>
+  <connection>
+   <sender>btnDeleteAttribute</sender>
+   <signal>clicked()</signal>
+   <receiver>repo_RepositoryElementForm</receiver>
+   <slot>onDeleteAttribute()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>35</x>
+     <y>84</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>330</x>
+     <y>209</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>onDeleteAttribute()</slot>
+ </slots>
 </ui>
