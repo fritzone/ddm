@@ -2,6 +2,7 @@
 #include "db_DatabaseEngine.h"
 #include "core_Role.h"
 #include "core_Entity.h"
+#include "uids.h"
 
 #include <QApplication>
 #include <QDomDocument>
@@ -108,8 +109,9 @@ void Repository::addEntity(const QDomElement &el)
         if(chI.nodeName() == "attribute")
         {
             Entity::Attribute *a = new Entity::Attribute;
-            a->name = chI.attribute("name");
-            a->roleUid = chI.attribute("role-class-uid");
+            a->name = chI.hasAttribute("name")?chI.attribute("name"):"Unnamed";
+            a->roleUid = chI.hasAttribute("role-class-uid")?chI.attribute("role-class-uid"):nullUid;
+            a->builtin = chI.hasAttribute("builtin") && chI.attribute("builtin").toInt() == 1;
             ent->addAttribute(a);
         }
         if(chI.nodeName() == "collection")

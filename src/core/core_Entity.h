@@ -15,6 +15,7 @@ public:
     {
         QString name;
         QString roleUid;
+        bool builtin;
     };
 
     struct Collection
@@ -51,6 +52,10 @@ public:
     {
         return m_coll;
     }
+
+    void setAttribute(const QString& a, const QString& v);
+
+    Attribute* getAttribute(const QString& attr);
 
 protected:
     QUuid m_classUid;
