@@ -119,7 +119,7 @@ void Repository::addEntity(const QDomElement &el)
             Entity::Collection*a = new Entity::Collection;
             a->name = chI.attribute("name");
             a->roleUid = chI.attribute("role-class-uid");
-            a->targetUid = chI.attribute("target-class-uid");
+            a->targetUid = chI.attribute("collection-entity-class-uid");
             ent->addCollection(a);
         }
     }

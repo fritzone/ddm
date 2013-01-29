@@ -25,14 +25,19 @@ public:
 private slots:
 
     void newAttribute(QTableWidgetItem*);
+    void newCollection(QTableWidgetItem*);
     void onAttributeRolesSelected(const QString&);
+    void onConnectionsRolesSelected(const QString&);
     void onDeleteAttribute();
 
 private:
     Ui::repo_RepositoryElementForm *ui;
     Entity* m_entity;
     QMap<QString, QComboBox*> m_attributeCombos;
+    QMap<QString, QComboBox*> m_collectionsCombos;
     QSignalMapper* m_signalMapperForCombosInAttributes;
+    QSignalMapper* m_signalMapperForCombosRoleInCollections;
 };
 
 #endif // REPO_REPOSITORYELEMENTFORM_H
+

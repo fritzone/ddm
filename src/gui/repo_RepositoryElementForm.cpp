@@ -13,11 +13,15 @@ RepositoryEntityForm::RepositoryEntityForm(QWidget *parent, Entity *ent) :
     ui(new Ui::repo_RepositoryElementForm),
     m_entity(ent)
 {
-    ui->setupUi(this);
-
     m_signalMapperForCombosInAttributes = new QSignalMapper(this);
+    m_signalMapperForCombosRoleInCollections = new QSignalMapper(this);
+
+    ui->setupUi(this);
+    {
 
     ui->txtEntityName->setText(ent->getName());
+
+    // populate the attributes
     const QVector<Entity::Attribute*> & attrs = ent->attributes();
     for(int i=0; i<attrs.size(); i++)
     {
@@ -68,7 +72,75 @@ RepositoryEntityForm::RepositoryEntityForm(QWidget *parent, Entity *ent) :
     ui->tblAttributes->horizontalHeaderItem(0)->setTextAlignment(Qt::AlignLeft);
     ui->tblAttributes->horizontalHeaderItem(1)->setTextAlignment(Qt::AlignLeft);
     ui->tblAttributes->horizontalHeaderItem(2)->setTextAlignment(Qt::AlignLeft);
+    }
+    // populate the collections
 
+    {
+    const QVector<Entity::Collection*>& collections = ent->collections();
+    for(int i=0; i<collections.size(); i++)
+    {
+        ui->tblCollections->insertRow(i);
+        QTableWidgetItem *twl = new QTableWidgetItem(collections[i]->name);
+        ui->tblCollections->setItem(i, 0, twl);
+
+        // the role of this collection
+        QComboBox* cmbCollRole = new QComboBox(0);
+        cmbCollRole->setAutoFillBackground(true);
+        ui->tblCollections->setCellWidget(i, 1, cmbCollRole);
+
+        QVector<Role*> roles = Repository::instance()->getRoles();
+        int idx = -1;
+        for(int j=0; j<roles.size(); j++)
+        {
+            if(roles[j]->getUid() == collections[i]->roleUid) idx = j;
+            cmbCollRole->addItem(roles[j]->getName());
+        }
+
+        cmbCollRole->setCurrentIndex(idx);
+        m_collectionsCombos[collections[i]->name] = cmbCollRole;
+
+        connect(cmbCollRole, SIGNAL(activated(QString)), m_signalMapperForCombosRoleInCollections, SLOT(map()));
+        m_signalMapperForCombosRoleInCollections->setMapping(cmbCollRole, collections[i]->name);
+
+        // and the Entity which this collection refers to
+
+        QComboBox* cmbConnEntity = new QComboBox(0);
+        cmbConnEntity->setAutoFillBackground(true);
+        ui->tblCollections->setCellWidget(i, 1, cmbConnEntity);
+
+        QVector<Role*> roles = Repository::instance()->getRoles();
+        int idx = -1;
+        for(int j=0; j<roles.size(); j++)
+        {
+            if(roles[j]->getUid() == collections[i]->roleUid) idx = j;
+            cmbConnEntity->addItem(roles[j]->getName());
+        }
+
+        cmbConnEntity->setCurrentIndex(idx);
+        m_collectionsCombosForEntities[collections[i]->name] = cmbCollRole;
+
+        connect(cmbCollRole, SIGNAL(activated(QString)), m_signalMapperForCombosRoleInCollections, SLOT(map()));
+        m_signalMapperForCombosRoleInCollections->setMapping(cmbCollRole, collections[i]->name);
+    }
+
+    connect(m_signalMapperForCombosRoleInCollections, SIGNAL(mapped(const QString&)), this, SLOT(onConnectionsRolesSelected(const QString&)));
+
+
+    // and insert a row above to indicate a new entry
+    ui->tblCollections->insertRow(0);
+    QTableWidgetItem *twl = new QTableWidgetItem("New Collection element");
+    QFont f = twl->font();
+    f.setItalic(true);
+    twl->setFont(f);
+    twl->setForeground(Qt::gray);
+    ui->tblCollections->setItem(0, 0, twl);
+
+    QObject::connect(ui->tblCollections, SIGNAL(itemChanged(QTableWidgetItem*)), this, SLOT(newAttribute(QTableWidgetItem*)));
+
+    ui->tblCollections->horizontalHeaderItem(0)->setTextAlignment(Qt::AlignLeft);
+    ui->tblCollections->horizontalHeaderItem(1)->setTextAlignment(Qt::AlignLeft);
+    ui->tblCollections->horizontalHeaderItem(2)->setTextAlignment(Qt::AlignLeft);
+    }
 }
 
 RepositoryEntityForm::~RepositoryEntityForm()
@@ -123,10 +195,18 @@ void RepositoryEntityForm::newAttribute(QTableWidgetItem* itm)
         ui->tblAttributes->blockSignals(false);
 
         Entity::Attribute* newAttr = new Entity::Attribute;
+        newAttr->builtin = false;
         newAttr->name = itm->text();
         m_entity->addAttribute(newAttr);
     }
 
+}
+
+void RepositoryEntityForm::onConnectionsRolesSelected(const QString & a)
+{
+    QComboBox* cmbox = m_attributeCombos[a];
+    if(!cmbox) return;
+    m_entity->setAttribute(a, cmbox->currentText());
 }
 
 void RepositoryEntityForm::onAttributeRolesSelected(const QString & a)
@@ -143,4 +223,10 @@ void RepositoryEntityForm::onDeleteAttribute()
     {
         qDebug() << ui->tblAttributes->item(ui->tblAttributes->currentRow(), 0)->text();
     }
+}
+
+
+void RepositoryEntityForm::newCollection(QTableWidgetItem* itm)
+{
+
 }
