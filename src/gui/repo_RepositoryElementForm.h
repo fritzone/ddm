@@ -26,17 +26,39 @@ private slots:
 
     void newAttribute(QTableWidgetItem*);
     void newCollection(QTableWidgetItem*);
+    void newReference(QTableWidgetItem*);
+
     void onAttributeRolesSelected(const QString&);
     void onConnectionsRolesSelected(const QString&);
+    void onConnectionsEntitySelected(const QString&);
+    void onReferencesRolesSelected(const QString&);
+    void onReferencesEntitySelected(const QString&);
     void onDeleteAttribute();
+
+private:
+
+    void populateAttributes();
+    void populateCollections();
+    void populateReferences();
 
 private:
     Ui::repo_RepositoryElementForm *ui;
     Entity* m_entity;
     QMap<QString, QComboBox*> m_attributeCombos;
-    QMap<QString, QComboBox*> m_collectionsCombos;
+
+    QMap<QString, QComboBox*> m_collectionsCombosForRoles;
+    QMap<QString, QComboBox*> m_collectionsCombosForEntities;
+
+    QMap<QString, QComboBox*> m_referenceCombosForEntities;
+    QMap<QString, QComboBox*> m_referenceCombosForRole;
+
     QSignalMapper* m_signalMapperForCombosInAttributes;
+
     QSignalMapper* m_signalMapperForCombosRoleInCollections;
+    QSignalMapper* m_signalMapperForCombosEntityInCollections;
+
+    QSignalMapper* m_signalMapperForCombosRoleInReferences;
+    QSignalMapper* m_signalMapperForCombosEntityInReferences;
 };
 
 #endif // REPO_REPOSITORYELEMENTFORM_H
