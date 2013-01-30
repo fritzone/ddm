@@ -21,16 +21,16 @@ QUuid Entity::getClassUid() const
 
 void Entity::setAttribute(const QString& a, const QString& v)
 {
-    for(int i=0; i<m_attr.size(); i++)
+    for(int i=0; i<m_attributes.size(); i++)
     {
-        if(m_attr[i]->name == a)
+        if(m_attributes[i]->name == a)
         {
             const QVector<Role*> roles = Repository::instance()->getRoles();
             for(int j=0; j<roles.size(); j++)
             {
                 if(roles[j]->getName() == v)
                 {
-                    m_attr[i]->roleUid = roles[j]->getUid();
+                    m_attributes[i]->roleUid = roles[j]->getUid();
                 }
             }
         }
@@ -39,11 +39,11 @@ void Entity::setAttribute(const QString& a, const QString& v)
 
 Entity::Attribute* Entity::getAttribute(const QString &attr)
 {
-    for(int i=0; i<m_attr.size(); i++)
+    for(int i=0; i<m_attributes.size(); i++)
     {
-        if(m_attr[i]->name == attr)
+        if(m_attributes[i]->name == attr)
         {
-            return m_attr[i];
+            return m_attributes[i];
         }
     }
     return 0;

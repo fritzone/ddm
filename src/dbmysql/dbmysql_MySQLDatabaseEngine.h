@@ -37,7 +37,6 @@ public:
     virtual QVector<DatabaseBuiltinFunction> getBuiltinFunctions();
     virtual const DatabaseBuiltinFunction& getBuiltinFunction(const QString& name);
     virtual bool tryConnect(Connection* c);
-    virtual QStringList getKeywords() const;
     virtual QSqlDatabase getQSqlDatabaseForConnection(Connection *c);
     virtual QStringList getColumnsOfTable(Connection* c, const QString& tableName);
     virtual bool dropDatabase(Connection* c);

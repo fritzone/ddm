@@ -28,17 +28,12 @@ Repository::Repository()
     }
 
     QDomElement docElem = doc.documentElement();
+
+    // the initial run: gather all the roles of the system
     for(int i=0; i<docElem.childNodes().size(); i++)
     {
         QDomElement childI = docElem.childNodes().at(i).toElement();
         QString name = childI.nodeName();
-        if(name == "databases")
-        {
-            for(int j=0; j<childI.childNodes().size(); j++)
-            {
-                addDatabase(childI.childNodes().at(j).toElement());
-            }
-        }
 
         if(name == "roles")
         {
@@ -50,6 +45,20 @@ Repository::Repository()
                     Role* r = new Role(el.attribute("name"), el.attribute("class-uid"), el.attribute("description"));
                     m_roles.append(r);
                 }
+            }
+        }
+    }
+
+    // first run: father the databases
+    for(int i=0; i<docElem.childNodes().size(); i++)
+    {
+        QDomElement childI = docElem.childNodes().at(i).toElement();
+        QString name = childI.nodeName();
+        if(name == "databases")
+        {
+            for(int j=0; j<childI.childNodes().size(); j++)
+            {
+                addDatabase(childI.childNodes().at(j).toElement());
             }
         }
     }
@@ -87,6 +96,19 @@ void Repository::addDatabase(const QDomElement & el)
         {
             m_databases.append(dbe);
         }
+        for(int i=0; i<el.childNodes().size(); i++)
+        {
+            if(el.childNodes().at(i).nodeName() == "keywords")
+            {
+                QStringList l;
+                QDomElement el1 = el.childNodes().at(i).toElement();
+                for(int j=0; j<el1.childNodes().size(); j++)
+                {
+                    l.append(el1.childNodes().at(j).toElement().firstChild().nodeValue());
+                }
+                dbe->setKeywords(l);
+            }
+        }
     }
 }
 
@@ -116,12 +138,23 @@ void Repository::addEntity(const QDomElement &el)
         }
         if(chI.nodeName() == "collection")
         {
-            Entity::Collection*a = new Entity::Collection;
-            a->name = chI.attribute("name");
-            a->roleUid = chI.attribute("role-class-uid");
-            a->targetUid = chI.attribute("collection-entity-class-uid");
-            ent->addCollection(a);
+            Entity::Collection* c = new Entity::Collection;
+            c->name = chI.attribute("name");
+            c->roleUid = chI.attribute("role-class-uid");
+            c->targetUid = chI.attribute("collection-entity-class-uid");
+            c->builtin = chI.hasAttribute("builtin") && chI.attribute("builtin").toInt() == 1;
+            ent->addCollection(c);
         }
+        if(chI.nodeName() == "reference")
+        {
+            Entity::Reference *r = new Entity::Reference;
+            r->name = chI.attribute("name");
+            r->srcEntityUid = chI.attribute("reference-class-uid");
+            r->srcRoleUid = chI.attribute("reference-role-uid");
+            r->builtin = chI.hasAttribute("builtin") && chI.attribute("builtin").toInt() == 1;
+            ent->addReference(r);
+        }
+
     }
 }
 

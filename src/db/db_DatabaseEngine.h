@@ -7,6 +7,7 @@
 #include <QMap>
 #include <QString>
 #include <QSqlDatabase>
+#include <QStringList>
 
 class AbstractDTSupplier;
 class AbstractSqlGenerator;
@@ -76,6 +77,21 @@ public:
      */
     QString getLastError() const;
 
+
+    /**
+     * Returns a list of specific keywords for this database
+     * @return the keywords of the database
+     */
+    QStringList getKeywords() const
+    {
+        return m_keywords;
+    }
+
+    void setKeywords(const QStringList& s)
+    {
+        m_keywords = s;
+    }
+
 public:
 
     /**
@@ -132,12 +148,6 @@ public:
     /**
      * @group Database syntax related functions
      */
-
-    /**
-     * Returns a list of specific keywords for this database
-     * @return the keywords of the database
-     */
-    virtual QStringList getKeywords() const = 0;
 
     /**
      * Returns the delimiter keyword used in the function declaration
@@ -473,6 +483,9 @@ private:
 
     // whether the maps above were initialized or not
     static bool genericInit;
+
+    // the keywords of the database
+    QStringList m_keywords;
 
 protected:
 
