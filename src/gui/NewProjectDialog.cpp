@@ -73,7 +73,7 @@ void NewProjectDialog::onChangeProjectType(int)
 
         m_ui->lblSourceDatabase->show();
         m_ui->cmbDatabase->show();
-        m_ui->cmbTargetDatabase->hide();
+
         m_ui->chkInheritDefaultDatatypes->hide();
         m_ui->chkAllowOOPModel->hide();
 
@@ -86,7 +86,7 @@ void NewProjectDialog::onChangeProjectType(int)
 
         m_ui->lblSourceDatabase->show();
         m_ui->cmbDatabase->show();
-        m_ui->cmbTargetDatabase->hide();
+
         m_ui->chkInheritDefaultDatatypes->show();
         m_ui->chkAllowOOPModel->show();
         break;
@@ -132,8 +132,8 @@ void NewProjectDialog::setupGuiForDatamodelProject()
     m_ui->lblReverseEngineer->hide();
     m_ui->lblTargetDatabase->show();
     m_ui->lblSourceDatabase->hide();
-    m_ui->cmbDatabase->hide();
-    m_ui->cmbTargetDatabase->show();
+    m_ui->cmbDatabase->show();
+
     m_ui->chkInheritDefaultDatatypes->show();
     m_ui->chkAllowOOPModel->show();
 }

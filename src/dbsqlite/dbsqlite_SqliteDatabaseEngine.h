@@ -1,5 +1,5 @@
-#ifndef MYSQLDATABASEENGINE_H
-#define MYSQLDATABASEENGINE_H
+#ifndef SQLITEDATABASEENGINE_H
+#define SQLITEDATABASEENGINE_H
 
 #include "db_DatabaseEngine.h"
 
