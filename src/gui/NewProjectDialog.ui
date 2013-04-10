@@ -266,34 +266,6 @@ p, li { white-space: pre-wrap; }
            </property>
           </widget>
          </item>
-         <item row="1" column="1">
-          <widget class="QComboBox" name="cmbTargetDatabase">
-           <property name="toolTip">
-            <string>Select the underlying database for the solution.</string>
-           </property>
-           <property name="whatsThis">
-            <string>The type of the underlying database for the solution.</string>
-           </property>
-           <item>
-            <property name="text">
-             <string>MySQL</string>
-            </property>
-            <property name="icon">
-             <iconset resource="../dbm.qrc">
-              <normaloff>:/images/actions/images/small/mysql.png</normaloff>:/images/actions/images/small/mysql.png</iconset>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>SQLite</string>
-            </property>
-            <property name="icon">
-             <iconset resource="../dbm.qrc">
-              <normaloff>:/images/actions/images/small/sqlite-icon.png</normaloff>:/images/actions/images/small/sqlite-icon.png</iconset>
-            </property>
-           </item>
-          </widget>
-         </item>
          <item row="1" column="0">
           <widget class="QLabel" name="lblTargetDatabase">
            <property name="text">

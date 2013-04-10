@@ -2,6 +2,7 @@
 #include "dbmysql_MySQLDTSupplier.h"
 #include "dbmysql_MySQLDatabaseEngine.h"
 #include "dbmysql_MySQLSQLGenerator.h"
+#include "dbsqlite_SqliteDatabaseEngine.h"
 
 QMap<QString, AbstractDTSupplier*> DatabaseEngine::dtsuppliers;
 QMap<QString, AbstractSqlGenerator*> DatabaseEngine::sqlGenerators;
@@ -33,6 +34,7 @@ AbstractDTSupplier* DatabaseEngine::getDTSupplier() const
 DatabaseEngine* DatabaseEngine::provideEngineFor(const QString &db)
 {
     if(db.toUpper() == "MYSQL") return MySQLDatabaseEngine::instance();
+    if(db.toUpper() == "SQLITE") return SqliteDatabaseEngine::instance();
     return 0;
 }
 

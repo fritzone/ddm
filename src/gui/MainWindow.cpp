@@ -307,6 +307,7 @@ void MainWindow::onNewSolution()
         Project* project = new Project(nprjdlg->getProjectName().toUpper(), nprjdlg->enableOOPFeatures());
         m_workspace->addProjectToSolution(m_workspace->currentSolution(), project);
         project->setEngine(nprjdlg->getDatabaseEngine());
+        qDebug() << project->getEngine()->getDatabaseEngineName();
 
         setupGuiForNewSolution();
 
