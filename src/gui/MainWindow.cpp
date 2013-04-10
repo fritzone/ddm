@@ -83,14 +83,16 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), m_ui(new Ui::Main
     m_connectionGuiElements = new ConnectionGuiElements();
     m_connectionGuiElements->createGuiElements();
 
-    m_repositoryGuiElements = new RepositoryGuiElements();
-    m_repositoryGuiElements->createGuiElements();
+    //m_repositoryGuiElements = new RepositoryGuiElements();
+    //m_repositoryGuiElements->createGuiElements();
 
     m_ui->action_ConnectionsTree->setChecked(true);
     m_ui->action_Repository->setChecked(true);
 
     showConnections();
-    showRepository();
+    //showRepository();
+
+    m_ui->action_Repository->setVisible(false);
 
     m_ui->action_NewDatabaseConnection->setEnabled(true);
     showMaximized();
@@ -1162,7 +1164,7 @@ void MainWindow::enableActions()
     m_ui->action_Datatypes_Tree->setChecked(true);
     m_ui->action_Datatypes_Tree->setEnabled(true);
     m_ui->action_ConnectionsTree->setEnabled(true);
-    m_ui->action_ConnectionsTree->setCheckable(false);
+    m_ui->action_ConnectionsTree->setChecked(m_connectionGuiElements->getConnectionsTreeDock()->isVisible());
     m_ui->action_Validate->setEnabled(true);
     m_ui->action_NewView->setEnabled(true);
     m_ui->action_NewDatabaseConnection->setEnabled(true);

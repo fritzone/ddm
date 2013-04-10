@@ -183,7 +183,7 @@ p, li { white-space: pre-wrap; }
             <enum>Qt::PlainText</enum>
            </property>
            <property name="alignment">
-            <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+            <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
            </property>
            <property name="buddy">
             <cstring>txtSolutionName</cstring>
@@ -218,7 +218,7 @@ p, li { white-space: pre-wrap; }
            </item>
           </widget>
          </item>
-         <item row="5" column="0" colspan="2">
+         <item row="8" column="0" colspan="2">
           <widget class="QCheckBox" name="chkInheritDefaultDatatypes">
            <property name="toolTip">
             <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
@@ -242,7 +242,7 @@ p, li { white-space: pre-wrap; }
            </property>
           </widget>
          </item>
-         <item row="6" column="0" colspan="2">
+         <item row="9" column="0" colspan="2">
           <widget class="QCheckBox" name="chkAllowOOPModel">
            <property name="toolTip">
             <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
@@ -266,44 +266,17 @@ p, li { white-space: pre-wrap; }
            </property>
           </widget>
          </item>
-         <item row="1" column="0">
-          <widget class="QLabel" name="lblTargetDatabase">
-           <property name="text">
-            <string>Targets</string>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
-           </property>
-          </widget>
-         </item>
          <item row="1" column="1">
-          <widget class="QTreeWidget" name="treeDatabases">
+          <widget class="QComboBox" name="cmbTargetDatabase">
            <property name="toolTip">
-            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Select the databases your project wishes to support.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            <string>Select the underlying database for the solution.</string>
            </property>
-           <property name="rootIsDecorated">
-            <bool>false</bool>
+           <property name="whatsThis">
+            <string>The type of the underlying database for the solution.</string>
            </property>
-           <property name="headerHidden">
-            <bool>true</bool>
-           </property>
-           <column>
-            <property name="text">
-             <string/>
-            </property>
-            <property name="toolTip">
-             <string>Support for MySql database</string>
-            </property>
-           </column>
            <item>
             <property name="text">
-             <string>MySql</string>
-            </property>
-            <property name="toolTip">
-             <string>Support for MySql</string>
-            </property>
-            <property name="checkState">
-             <enum>Checked</enum>
+             <string>MySQL</string>
             </property>
             <property name="icon">
              <iconset resource="../dbm.qrc">
@@ -314,14 +287,21 @@ p, li { white-space: pre-wrap; }
             <property name="text">
              <string>SQLite</string>
             </property>
-            <property name="checkState">
-             <enum>Checked</enum>
-            </property>
             <property name="icon">
              <iconset resource="../dbm.qrc">
               <normaloff>:/images/actions/images/small/sqlite-icon.png</normaloff>:/images/actions/images/small/sqlite-icon.png</iconset>
             </property>
            </item>
+          </widget>
+         </item>
+         <item row="1" column="0">
+          <widget class="QLabel" name="lblTargetDatabase">
+           <property name="text">
+            <string>Target</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+           </property>
           </widget>
          </item>
         </layout>

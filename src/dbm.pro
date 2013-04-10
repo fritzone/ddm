@@ -65,6 +65,9 @@ INCLUDEPATH += qhtml
 include (dbmysql/dbmysql.pri)
 INCLUDEPATH += dbmysql
 
+include (dbsqlite/dbsqlite.pri)
+INCLUDEPATH += dbsqlite
+
 include (diagram/diagram.pri)
 INCLUDEPATH += diagram
 
