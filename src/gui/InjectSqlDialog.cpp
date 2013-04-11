@@ -23,6 +23,7 @@
 #include <QSqlError>
 #include <QListWidget>
 #include <QListWidgetItem>
+#include <QFileDialog>
 
 QString InjectSqlDialog::previousHost="";
 QString InjectSqlDialog::previousUser="";
@@ -31,7 +32,7 @@ QString InjectSqlDialog::previousUser="";
 InjectSqlDialog::InjectSqlDialog(DatabaseEngine* engine, QWidget *parent, Version *v, const QString &objNameToDeploy) :
     QDialog(parent), ui(new Ui::InjectSqlDialog), m_dbEngine(engine),
     m_nameWasChanged(false), m_injectMetadata(false), m_signalMapper(new QSignalMapper(this)),
-    m_UidsToDeploy(), m_UidsToDrop(), m_objName(objNameToDeploy)
+    m_UidsToDeploy(), m_UidsToDrop(), m_objName(objNameToDeploy), m_alreadyConnected(false)
 {
     ui->setupUi(this);
 
@@ -237,6 +238,7 @@ void InjectSqlDialog::onConnect()
     ui->cmbDatabases->setCurrentIndex(ui->cmbDatabases->findText(t));
     ui->cmbDatabases->setEnabled(true);
     ui->lblDatabase->setEnabled(true);
+    m_alreadyConnected = true;
     ui->buttonBox->button(QDialogButtonBox::Ok)->setDisabled(false);
     ui->btnCreateDatabase->setEnabled(true);
     previousHost = ui->txtDatabaseHost->text();
@@ -300,6 +302,8 @@ void InjectSqlDialog::setupForConnectionStorage()
     ui->txtDatabaseName->hide();
     ui->cmbDatabases->show();
     ui->frame->hide();
+
+    ui->btnBrowseForFile->hide();
 
     setWindowTitle(QObject::tr("Connection Details"));
     ui->tabWidget->setTabText(0, tr("Connection"));
@@ -485,4 +489,77 @@ void InjectSqlDialog::onDbChange(QString newDb)
 void InjectSqlDialog::onConnectionNameEdited(QString)
 {
     m_nameWasChanged = true;
+}
+
+void InjectSqlDialog::onDbTypeChange(QString a)
+{
+    qDebug() << a;
+    if(a.toUpper() == "SQLITE")
+    {
+        ui->lblHost->hide();
+        ui->lblPassword->hide();
+        ui->lblUser->hide();
+        ui->lblPort->hide();
+        ui->txtDatabaseHost->hide();
+        ui->txtDatabasePassword->hide();
+        ui->txtDatabaseUser->hide();
+        ui->txtPort->hide();
+        ui->cmbDatabases->hide();
+        ui->btnConnect->hide();
+        ui->btnCreateDatabase->hide();
+
+        ui->txtDatabaseName->show();
+        ui->btnBrowseForFile->show();
+        ui->lblDatabase->setText(tr("Filename"));
+
+        ui->lblDatabase->setEnabled(true);
+
+        ui->buttonBox->button(QDialogButtonBox::Ok)->setDisabled(ui->txtDatabaseName->text().length() == 0);
+    }
+    else
+    {
+        ui->lblHost->show();
+        ui->lblPassword->show();
+        ui->lblUser->show();
+        ui->lblPort->show();
+        ui->txtDatabaseHost->show();
+        ui->txtDatabasePassword->show();
+        ui->txtDatabaseUser->show();
+        ui->txtPort->show();
+        ui->cmbDatabases->show();
+        ui->btnConnect->show();
+        ui->btnCreateDatabase->show();
+
+        ui->txtDatabaseName->hide();
+        ui->btnBrowseForFile->hide();
+        ui->lblDatabase->setText(tr("Database"));
+
+        ui->lblDatabase->setEnabled(m_alreadyConnected);
+        ui->buttonBox->button(QDialogButtonBox::Ok)->setDisabled(!m_alreadyConnected);
+
+    }
+}
+
+void InjectSqlDialog::onSelectFileForSqlite()
+{
+    QString fileName = QFileDialog::getOpenFileName(this,  tr("Select Database file"), "", tr("Sqlite files (*.sqlite);;All files (*.*)"));
+    if(fileName.length() == 0)
+    {
+        return;
+    }
+    if(!fileName.endsWith(".sqlite")) fileName += ".sqlite";
+    ui->txtDatabaseName->setText(fileName);
+    ui->buttonBox->button(QDialogButtonBox::Ok)->setDisabled(false);
+}
+
+void InjectSqlDialog::onSqliteFileNameChange(QString a)
+{
+    if(a.length() > 0)
+    {
+        ui->buttonBox->button(QDialogButtonBox::Ok)->setDisabled(false);
+    }
+    else
+    {
+        ui->buttonBox->button(QDialogButtonBox::Ok)->setDisabled(true);
+    }
 }

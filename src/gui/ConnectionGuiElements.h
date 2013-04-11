@@ -40,6 +40,9 @@ private:
     ContextMenuEnabledTreeWidget* m_connectionsTree;
 
     ContextMenuHandler* m_connectionsContextMenuHandler;
+
+    ContextMenuEnabledTreeWidgetItem* m_mysqlConnections;
+    ContextMenuEnabledTreeWidgetItem* m_sqliteConnections;
 };
 
 #endif // CONNECTIONGUIELEMENTS_H
