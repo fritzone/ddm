@@ -542,7 +542,7 @@ void InjectSqlDialog::onDbTypeChange(QString a)
 
 void InjectSqlDialog::onSelectFileForSqlite()
 {
-    QString fileName = QFileDialog::getOpenFileName(this,  tr("Select Database file"), "", tr("Sqlite files (*.sqlite);;All files (*.*)"));
+    QString fileName = QFileDialog::getSaveFileName(this,  tr("Select Database file"), "", tr("Sqlite files (*.sqlite);;All files (*.*)"));
     if(fileName.length() == 0)
     {
         return;
