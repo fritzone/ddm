@@ -48,6 +48,7 @@ static const QString strApplyIcon = ":/images/actions/images/small/apply.png";
 static const QString strAddIcon = ":/images/actions/images/small/add.png";
 static const QString strEmptyIcon = ":/images/actions/images/actions/empty_icon.png";
 static const QString strMySqlIcon = ":/images/actions/images/small/mysql.png";
+static const QString strSqliteIcon = ":/images/actions/images/small/sqlite-icon.png";
 
 static const QString strTableIcon = ":/images/actions/images/actions/table.png";
 static const QString strTableLockIcon = ":/images/actions/images/actions/table_lock.png";
@@ -947,6 +948,12 @@ public:
     static const QIcon& getMySqlIcon()
     {
         static const QIcon icon(icons::strMySqlIcon);
+        return icon;
+    }
+
+    static const QIcon& getSqliteIcon()
+    {
+        static const QIcon icon(icons::strSqliteIcon);
         return icon;
     }
 

@@ -1,7 +1,7 @@
 #ifndef SQLITEDATABASEENGINE_H
 #define SQLITEDATABASEENGINE_H
 
-#include "db_DatabaseEngine.h"
+#include "db_DefaultDatabaseEngine.h"
 
 #include <QSqlDatabase>
 #include <QMutex>
@@ -10,7 +10,7 @@
 class UserDataType;
 class Column;
 
-class SqliteDatabaseEngine : public DatabaseEngine
+class SqliteDatabaseEngine : public DefaultDatabaseEngine
 {
 public:
 
@@ -40,8 +40,6 @@ public:
     virtual QSqlDatabase getQSqlDatabaseForConnection(Connection *c);
     virtual QStringList getColumnsOfTable(Connection* c, const QString& tableName);
     virtual bool dropDatabase(Connection* c);
-    virtual QStringList getIndexTypes();
-    virtual QString getDefaultIndextype();
     virtual QString getDelimiterKeyword();
     virtual QVector<Codepage*> getCodepages();
     virtual QStringList getTriggerEvents();
@@ -54,7 +52,7 @@ public:
     virtual QString getTableCreationScript(Connection* c, const QString& tabName);
     virtual QVector<Sp*> getDatabaseSpecificProperties() const;
     virtual Sp* getSpForSqlRole(const QString& uid) const;
-    virtual bool tableBlocksForeignKeyFunctionality(const Table* table) const;
+    virtual bool tableBlocksForeignKeyFunctionality(const Table*) const;
     virtual bool injectMetadata(Connection* c, const Version* v);
     virtual QString getDbMetadata(Connection *c);
 
@@ -67,22 +65,17 @@ private:
     static QVector<DatabaseBuiltinFunction> buildFunctions();
     static QVector<Sp*> buildSps();
     static QString provideConnectionName(const QString&);
-    static QStringList getCodepageList();
-    QString toHexString(const QString& x);
-    QStringList chopUpString(const QString& x, int size);
 
 private:
 
     QMultiMap <UserDataType*, Column*> m_revEngMappings;
     QMap <QString, UserDataType*> m_oneTimeMappings;
-    QStringList m_indexTypes;
-    QString m_defaultIndexType;
 
 private:
 
     static SqliteDatabaseEngine* s_instance;
     static QVector<DatabaseBuiltinFunction>* s_builtinFunctions;
-    static QVector<Sp*>* s_mysqlSpecificProperties;
+    static QVector<Sp*>* s_sqliteSpecificProperties;
     static int m_connectionCounter;
     static QMutex* m_connectionMutex;
 

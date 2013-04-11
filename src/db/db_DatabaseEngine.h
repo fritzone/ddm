@@ -176,21 +176,6 @@ public:
     virtual QStringList getTriggerTimings() = 0;
 
     /**
-     * Retrieves the list of index types that are supported on this specific
-     * database.
-     *
-     * @return the index types of the database
-     */
-    virtual QStringList getIndexTypes() = 0;
-
-    /**
-     * Return the default index type
-     *
-     * @return the default index type
-     */
-    virtual QString getDefaultIndextype() = 0;
-
-    /**
      * Returns a list of @see DatabaseBuiltingFunction objects that are
      * representing the functions supported by the database
      *

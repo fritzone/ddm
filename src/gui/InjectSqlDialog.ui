@@ -132,14 +132,37 @@
           <property name="fieldGrowthPolicy">
            <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
           </property>
-          <item row="2" column="0">
-           <widget class="QLabel" name="lblDatabaseType">
+          <item row="0" column="0">
+           <widget class="QLabel" name="lblConnectionName">
             <property name="text">
-             <string>Database</string>
+             <string>Name</string>
             </property>
            </widget>
           </item>
-          <item row="2" column="1">
+          <item row="0" column="1">
+           <widget class="QLineEdit" name="txtConnectionName">
+            <property name="toolTip">
+             <string>The name of the connection</string>
+            </property>
+            <property name="statusTip">
+             <string>The name of the connection</string>
+            </property>
+            <property name="whatsThis">
+             <string>The name of the connection</string>
+            </property>
+            <property name="text">
+             <string>localhost</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="lblDatabaseType">
+            <property name="text">
+             <string>Database Type</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
            <widget class="QComboBox" name="cmbDatabaseType">
             <property name="toolTip">
              <string>The database engine that will support this connection</string>
@@ -159,10 +182,26 @@
                <normaloff>:/images/actions/images/small/mysql.png</normaloff>:/images/actions/images/small/mysql.png</iconset>
              </property>
             </item>
+            <item>
+             <property name="text">
+              <string>Sqlite</string>
+             </property>
+             <property name="icon">
+              <iconset resource="../dbm.qrc">
+               <normaloff>:/images/actions/images/small/sqlite-icon.png</normaloff>:/images/actions/images/small/sqlite-icon.png</iconset>
+             </property>
+            </item>
+           </widget>
+          </item>
+          <item row="2" column="0" colspan="2">
+           <widget class="Line" name="line_2">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
            </widget>
           </item>
           <item row="3" column="0">
-           <widget class="QLabel" name="label">
+           <widget class="QLabel" name="lblHost">
             <property name="text">
              <string>Host</string>
             </property>
@@ -184,8 +223,31 @@
             </property>
            </widget>
           </item>
+          <item row="4" column="0">
+           <widget class="QLabel" name="lblPort">
+            <property name="text">
+             <string>Port</string>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="1">
+           <widget class="QLineEdit" name="txtPort">
+            <property name="toolTip">
+             <string>The port of the connection</string>
+            </property>
+            <property name="statusTip">
+             <string>The port of the connection</string>
+            </property>
+            <property name="whatsThis">
+             <string>The port of the connection</string>
+            </property>
+            <property name="text">
+             <string>3306</string>
+            </property>
+           </widget>
+          </item>
           <item row="5" column="0">
-           <widget class="QLabel" name="label_4">
+           <widget class="QLabel" name="lblUser">
             <property name="text">
              <string>User</string>
             </property>
@@ -205,7 +267,7 @@
            </widget>
           </item>
           <item row="6" column="0">
-           <widget class="QLabel" name="label_5">
+           <widget class="QLabel" name="lblPassword">
             <property name="text">
              <string>Password</string>
             </property>
@@ -224,26 +286,6 @@
             </property>
             <property name="echoMode">
              <enum>QLineEdit::Password</enum>
-            </property>
-           </widget>
-          </item>
-          <item row="14" column="0">
-           <widget class="QCheckBox" name="chkAutoConnect">
-            <property name="text">
-             <string>Auto Connect</string>
-            </property>
-           </widget>
-          </item>
-          <item row="15" column="0">
-           <widget class="QCheckBox" name="chkSavePassword">
-            <property name="enabled">
-             <bool>false</bool>
-            </property>
-            <property name="text">
-             <string>Save Password</string>
-            </property>
-            <property name="checked">
-             <bool>true</bool>
             </property>
            </widget>
           </item>
@@ -290,6 +332,32 @@
                </widget>
               </item>
               <item>
+               <widget class="QToolButton" name="btnBrowseForFile">
+                <property name="enabled">
+                 <bool>true</bool>
+                </property>
+                <property name="toolTip">
+                 <string>Create a new database</string>
+                </property>
+                <property name="statusTip">
+                 <string>Create a new database</string>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+                <property name="icon">
+                 <iconset resource="../dbm.qrc">
+                  <normaloff>:/images/actions/images/big/folder_yellow.png</normaloff>:/images/actions/images/big/folder_yellow.png</iconset>
+                </property>
+                <property name="iconSize">
+                 <size>
+                  <width>22</width>
+                  <height>22</height>
+                 </size>
+                </property>
+               </widget>
+              </item>
+              <item>
                <widget class="QToolButton" name="btnCreateDatabase">
                 <property name="enabled">
                  <bool>false</bool>
@@ -313,6 +381,33 @@
             </item>
            </layout>
           </item>
+          <item row="9" column="0" colspan="2">
+           <widget class="Line" name="line">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+           </widget>
+          </item>
+          <item row="10" column="0">
+           <widget class="QCheckBox" name="chkAutoConnect">
+            <property name="text">
+             <string>Auto Connect</string>
+            </property>
+           </widget>
+          </item>
+          <item row="11" column="0">
+           <widget class="QCheckBox" name="chkSavePassword">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
+            <property name="text">
+             <string>Save Password</string>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
           <item row="7" column="0">
            <widget class="QPushButton" name="btnConnect">
             <property name="toolTip">
@@ -326,59 +421,6 @@
             </property>
             <property name="text">
              <string>Connect</string>
-            </property>
-           </widget>
-          </item>
-          <item row="12" column="0">
-           <widget class="QLabel" name="lblConnectionName">
-            <property name="text">
-             <string>Name</string>
-            </property>
-           </widget>
-          </item>
-          <item row="12" column="1">
-           <widget class="QLineEdit" name="txtConnectionName">
-            <property name="toolTip">
-             <string>The name of the connection</string>
-            </property>
-            <property name="statusTip">
-             <string>The name of the connection</string>
-            </property>
-            <property name="whatsThis">
-             <string>The name of the connection</string>
-            </property>
-            <property name="text">
-             <string>localhost</string>
-            </property>
-           </widget>
-          </item>
-          <item row="10" column="0" colspan="2">
-           <widget class="Line" name="line">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-           </widget>
-          </item>
-          <item row="4" column="0">
-           <widget class="QLabel" name="label_2">
-            <property name="text">
-             <string>Port</string>
-            </property>
-           </widget>
-          </item>
-          <item row="4" column="1">
-           <widget class="QLineEdit" name="txtPort">
-            <property name="toolTip">
-             <string>The port of the connection</string>
-            </property>
-            <property name="statusTip">
-             <string>The port of the connection</string>
-            </property>
-            <property name="whatsThis">
-             <string>The port of the connection</string>
-            </property>
-            <property name="text">
-             <string>3306</string>
             </property>
            </widget>
           </item>
@@ -481,15 +523,12 @@
   </layout>
  </widget>
  <tabstops>
-  <tabstop>cmbDatabaseType</tabstop>
   <tabstop>txtDatabaseHost</tabstop>
   <tabstop>txtPort</tabstop>
   <tabstop>txtDatabaseUser</tabstop>
   <tabstop>txtDatabasePassword</tabstop>
-  <tabstop>btnConnect</tabstop>
   <tabstop>cmbDatabases</tabstop>
   <tabstop>btnCreateDatabase</tabstop>
-  <tabstop>txtConnectionName</tabstop>
   <tabstop>chkAutoConnect</tabstop>
   <tabstop>chkSavePassword</tabstop>
   <tabstop>tabWidget</tabstop>
@@ -746,6 +785,54 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>cmbDatabaseType</sender>
+   <signal>currentIndexChanged(QString)</signal>
+   <receiver>InjectSqlDialog</receiver>
+   <slot>onDbTypeChange(QString)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>562</x>
+     <y>115</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>358</x>
+     <y>258</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnBrowseForFile</sender>
+   <signal>clicked()</signal>
+   <receiver>InjectSqlDialog</receiver>
+   <slot>onSelectFileForSqlite()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>632</x>
+     <y>341</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>358</x>
+     <y>258</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>txtDatabaseName</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>InjectSqlDialog</receiver>
+   <slot>onSqliteFileNameChange(QString)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>474</x>
+     <y>341</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>358</x>
+     <y>258</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>onConnect()</slot>
@@ -756,5 +843,8 @@
   <slot>changeConnection()</slot>
   <slot>onDbChange(QString)</slot>
   <slot>onConnectionNameEdited(QString)</slot>
+  <slot>onDbTypeChange(QString)</slot>
+  <slot>onSelectFileForSqlite()</slot>
+  <slot>onSqliteFileNameChange(QString)</slot>
  </slots>
 </ui>

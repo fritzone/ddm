@@ -63,6 +63,9 @@ private slots:
     void checkBoxToggled(QString);
     void onDbChange(QString);
     void onConnectionNameEdited(QString);
+    void onDbTypeChange(QString);
+    void onSelectFileForSqlite();
+    void onSqliteFileNameChange(QString);
 
 protected:
     void changeEvent(QEvent *e);
@@ -82,7 +85,7 @@ private:
     QStringList m_UidsToDeploy;
     QStringList m_UidsToDrop;
     QString m_objName;
-
+    bool m_alreadyConnected;
 private:
 
     static QString previousHost;

@@ -7,7 +7,7 @@
 #include "db_DatabaseEngine.h"
 #include "strings.h"
 
-ConnectionGuiElements::ConnectionGuiElements()
+ConnectionGuiElements::ConnectionGuiElements() : m_mysqlConnections(0)
 {
 }
 
@@ -34,15 +34,32 @@ void ConnectionGuiElements::createGuiElements()
     headerItm->setText(0, QApplication::translate("MainWindow", "Name", 0, QApplication::UnicodeUTF8));
     m_connectionsTree->header()->setDefaultSectionSize(250);
 
+    // create the MySql connection tree item
+    QStringList strMySql;
+    strMySql << "MySql";
+    m_mysqlConnections = new ContextMenuEnabledTreeWidgetItem((ContextMenuEnabledTreeWidgetItem*)0, strMySql);
+    m_mysqlConnections->setIcon(0, IconFactory::getMySqlIcon());
+    m_connectionsTree->addTopLevelItem(m_mysqlConnections);
+
+    QStringList strSqlite;
+    strSqlite<< "Sqlite";
+    m_sqliteConnections = new ContextMenuEnabledTreeWidgetItem((ContextMenuEnabledTreeWidgetItem*)0, strSqlite);
+    m_sqliteConnections->setIcon(0, IconFactory::getSqliteIcon());
+    m_connectionsTree->addTopLevelItem(m_sqliteConnections);
+
+    // context handler
     m_connectionsContextMenuHandler = new ContextMenuHandler();
     m_connectionsTree->setItemDelegate(new ContextMenuDelegate(m_connectionsContextMenuHandler, m_connectionsTree));
     m_connectionsTreeDock->setWidget(m_connectionsTree);
+
+    // and finally all the connections
     const QVector<Connection*>& cons = ConnectionManager::instance()->connections();
     for(int i=0; i<cons.size(); i++)
     {
         Connection* c = cons.at(i);
         createConnectionTreeEntry(c);
     }
+
     QObject::connect(ContextMenuCollection::getInstance()->getAction_ConnectionSqlQuery(), SIGNAL(triggered()), MainWindow::instance(), SLOT(onSqlQueryInConnection()));
     QObject::connect(ContextMenuCollection::getInstance()->getAction_ConnectionConnect(), SIGNAL(triggered()), MainWindow::instance(), SLOT(onConnectConnection()));
     QObject::connect(ContextMenuCollection::getInstance()->getAction_ConnectionBrowse(), SIGNAL(triggered()), MainWindow::instance(), SLOT(onBrowseConnection()));
@@ -61,7 +78,18 @@ ContextMenuEnabledTreeWidgetItem* ConnectionGuiElements::createConnectionTreeEnt
 {
     QStringList items;
     items << c->getName();
-    ContextMenuEnabledTreeWidgetItem* newConnectionItem = new ContextMenuEnabledTreeWidgetItem((ContextMenuEnabledTreeWidgetItem*)0, items);
+    ContextMenuEnabledTreeWidgetItem* parent = 0;
+    QString dbType = c->getDbType().toUpper();
+    if(dbType == "MYSQL")
+    {
+        parent = m_mysqlConnections;
+    }
+    if(dbType == "SQLITE")
+    {
+        parent = m_sqliteConnections;
+    }
+
+    ContextMenuEnabledTreeWidgetItem* newConnectionItem = new ContextMenuEnabledTreeWidgetItem(parent, items);
     QVariant var(c->getName());
     newConnectionItem->setData(0, Qt::UserRole, var);
     newConnectionItem->setIcon(0, IconFactory::getConnectionStateIcon(c->getState()));

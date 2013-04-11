@@ -1,7 +1,7 @@
 #ifndef MYSQLDATABASEENGINE_H
 #define MYSQLDATABASEENGINE_H
 
-#include "db_DatabaseEngine.h"
+#include "db_DefaultDatabaseEngine.h"
 
 #include <QSqlDatabase>
 #include <QMutex>
@@ -10,7 +10,7 @@
 class UserDataType;
 class Column;
 
-class MySQLDatabaseEngine : public DatabaseEngine
+class MySQLDatabaseEngine : public DefaultDatabaseEngine
 {
 public:
 
@@ -41,7 +41,6 @@ public:
     virtual QStringList getColumnsOfTable(Connection* c, const QString& tableName);
     virtual bool dropDatabase(Connection* c);
     virtual QStringList getIndexTypes();
-    virtual QString getDefaultIndextype();
     virtual QString getDelimiterKeyword();
     virtual QVector<Codepage*> getCodepages();
     virtual QStringList getTriggerEvents();
@@ -68,8 +67,6 @@ private:
     static QVector<Sp*> buildSps();
     static QString provideConnectionName(const QString&);
     static QStringList getCodepageList();
-    QString toHexString(const QString& x);
-    QStringList chopUpString(const QString& x, int size);
 
 private:
 
