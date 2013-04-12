@@ -9,7 +9,7 @@
 #include "db_DatabaseBuiltinFunction.h"
 #include "SqlHighlighter.h"
 #include "db_AbstractDTSupplier.h"
-#include "core_Connection.h"
+#include "Connection.h"
 #include "BrowseTableForm.h"
 #include "FrameForLineNumbers.h"
 

@@ -1,6 +1,6 @@
 #include "core_DeployerThread.h"
 #include "db_DatabaseEngine.h"
-#include "core_Connection.h"
+#include "Connection.h"
 #include "IconFactory.h"
 #include "Version.h"
 

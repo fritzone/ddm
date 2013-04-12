@@ -1,6 +1,6 @@
 #include "BrowseTableForm.h"
 #include "ui_BrowseTableForm.h"
-#include "core_Connection.h"
+#include "Connection.h"
 #include "FrameForLineNumbers.h"
 #include "db_DatabaseEngine.h"
 #include "core_Procedure.h"

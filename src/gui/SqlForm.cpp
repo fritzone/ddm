@@ -12,7 +12,7 @@
 #include "VersionGuiElements.h"
 #include "MainWindow.h"
 #include "gui_HelpWindow.h"
-#include "core_ConnectionManager.h"
+#include "ConnectionManager.h"
 #include "db_AbstractDTSupplier.h"
 #include "core_Procedure.h"
 #include "core_Function.h"

@@ -1,5 +1,6 @@
-#include "core_ConnectionManager.h"
+#include "ConnectionManager.h"
 #include "strings.h"
+#include "MySqlConnection.h"
 
 #include <QSettings>
 
@@ -36,27 +37,16 @@ void ConnectionManager::loadConnections()
         QString connI = QString("Connection");
         connI.append(QString::number(i));
         s.beginGroup(connI);
-        QString name = s.value(strName).toString();
-        QString host = s.value(strHost).toString();
-        QString pass = s.value(strPass).toString();
-        QString user = s.value(strUser).toString();
-        int port = 3306;
-        if(s.contains(strPort))
-        {
-            QVariant portV = s.value(strPort);
-            port = portV.toString().toInt();
-        }
-        QString db = s.value(strDB).toString();
-        bool ac = s.value(strAutoConnect).toBool();
+
         QString dbt = s.value(strDbType).toString();
-        int lastState = s.value("LastState").toInt();
+
+        Connection*c = createConnection(dbt, s);
+
         s.endGroup();
 
-        Connection* c = new Connection(name, host, user, pass, db, true, ac, port);
-        c->setState((ConnectionState)(lastState));
         m_connections.append(c);
 
-        if(ac)
+        if(c->getAC())
         {
             c->tryConnect();
         }
@@ -73,14 +63,14 @@ void ConnectionManager::saveConnections()
         QString connI = QString("Connection");
         connI.append(QString::number(i));
         s.beginGroup(connI);
-        s.setValue(strName, m_connections.at(i)->getName());
-        s.setValue(strHost, m_connections.at(i)->getHost());
-        s.setValue(strPass, m_connections.at(i)->getPassword());
-        s.setValue(strUser, m_connections.at(i)->getUser());
-        s.setValue(strDB, m_connections.at(i)->getDb());
-        s.setValue(strPort, QString::number(m_connections.at(i)->getPort()));
-        s.setValue(strAutoConnect, m_connections.at(i)->getAC());
+
+        // common data
         s.setValue(strDbType, m_connections.at(i)->getDbType());
+        s.setValue(strAutoConnect, m_connections.at(i)->getAC());
+
+        // and save the sepcific data
+        m_connections[i]->saveIntoSettings(s);
+
         s.endGroup();
     }
 
@@ -108,4 +98,28 @@ bool ConnectionManager::deleteConnection(const QString& name)
         return true;
     }
     return false;
+}
+
+Connection* ConnectionManager::createConnection(const QString &dbType, const QSettings &s)
+{
+    bool ac = s.value(strAutoConnect).toBool();
+
+    if(dbType == "MYSQL")
+    {
+        QString name = s.value(strName).toString();
+        QString host = s.value(strHost).toString();
+        QString pass = s.value(strPass).toString();
+        QString user = s.value(strUser).toString();
+        int port = 3306;
+        if(s.contains(strPort))
+        {
+            QVariant portV = s.value(strPort);
+            port = portV.toString().toInt();
+        }
+        QString db = s.value(strDB).toString();
+
+        int lastState = s.value("LastState").toInt();
+        Connection* c = new MySqlConnection(name, host, user, pass, db, true, ac, port);
+        c->setState((ConnectionState)(lastState));
+    }
 }

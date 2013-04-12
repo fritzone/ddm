@@ -14,7 +14,7 @@
 #include "db_AbstractDTSupplier.h"
 #include "VersionUpdateGenerator.h"
 #include "InjectSqlDialog.h"
-#include "core_ConnectionManager.h"
+#include "ConnectionManager.h"
 #include "MainWindow.h"
 
 #include <QFileDialog>

@@ -3,7 +3,7 @@
 #include "reveng_ReverseEngineerWizardDatabasesForm.h"
 #include "reveng_ReverseEngineerWizardObjectListForm.h"
 #include "reveng_ReverseEngineerWizardOptionsForm.h"
-#include "core_Connection.h"
+#include "Connection.h"
 #include "db_DatabaseEngine.h"
 
 #include <QMessageBox>

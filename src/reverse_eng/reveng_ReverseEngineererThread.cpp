@@ -1,6 +1,6 @@
 #include "reveng_ReverseEngineererThread.h"
 #include "db_DatabaseEngine.h"
-#include "core_Connection.h"
+#include "Connection.h"
 
 ReverseEngineererThread::ReverseEngineererThread(bool c, DatabaseEngine* engine, Project* p,
                                                  const QString &host, const QString &user, const QString &pass,

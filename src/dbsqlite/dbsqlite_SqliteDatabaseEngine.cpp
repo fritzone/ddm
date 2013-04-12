@@ -19,7 +19,7 @@
 #include "ForeignKey.h"
 #include "db_DatabaseBuiltinFunction.h"
 #include "core_View.h"
-#include "core_Connection.h"
+#include "Connection.h"
 #include "core_Procedure.h"
 #include "core_Function.h"
 #include "db_Codepage.h"
@@ -29,6 +29,7 @@
 #include "ValueSp.h"
 #include "SpInstance.h"
 #include "core_UserDataType.h"
+#include "SqliteConnection.h"
 
 QVector<DatabaseBuiltinFunction>* SqliteDatabaseEngine::s_builtinFunctions = 0;
 QVector<Sp*>* SqliteDatabaseEngine::s_sqliteSpecificProperties = 0;
@@ -114,6 +115,7 @@ bool SqliteDatabaseEngine::reverseEngineerDatabase(Connection *c, const QStringL
 
     // now populate the foreign keys
     {
+#if 0
         QSqlDatabase dbo = getQSqlDatabaseForConnection(c);
 
         bool ok = dbo.isOpen();
@@ -166,6 +168,7 @@ bool SqliteDatabaseEngine::reverseEngineerDatabase(Connection *c, const QStringL
 
             dbo.close();
         }
+#endif
     }
     }
     catch(...)
@@ -177,26 +180,38 @@ bool SqliteDatabaseEngine::reverseEngineerDatabase(Connection *c, const QStringL
     return true;
 }
 
-QSqlDatabase SqliteDatabaseEngine::getQSqlDatabaseForConnection(Connection *c)
+QSqlDatabase SqliteDatabaseEngine::getQSqlDatabaseForConnection(Connection *conn)
 {
+
+    SqliteConnection* c = dynamic_cast<SqliteConnection*>(conn);
+    if(!c)
+    {
+        return QSqlDatabase::database();
+    }
+
     QString newConnName = provideConnectionName("getConnection");
     QSqlDatabase dbo = QSqlDatabase::addDatabase("QSQLITE", newConnName);
 
-    dbo.setHostName(c->getHost());
-    dbo.setDatabaseName(c->getDb());
-    if(c->getPort()) dbo.setPort(c->getPort());
-    dbo.open(c->getUser(), c->getPassword());
+    dbo.setHostName("localhost");
+    dbo.setDatabaseName(c->getFileName());
+
+    dbo.open();
 
     if(!dbo.isOpen())
     {
-//        qDebug() << dbo.lastError();
+        qDebug() << dbo.lastError();
     }
 
     return dbo;
 }
 
-QStringList SqliteDatabaseEngine::getAvailableViews(Connection* c)
+QStringList SqliteDatabaseEngine::getAvailableViews(Connection* conn)
 {
+    SqliteConnection* c = dynamic_cast<SqliteConnection*>(conn);
+    if(!c)
+    {
+        return QStringList();
+    }
     QSqlDatabase dbo = getQSqlDatabaseForConnection(c);
 
     bool ok = dbo.isOpen();
@@ -210,7 +225,7 @@ QStringList SqliteDatabaseEngine::getAvailableViews(Connection* c)
 
     QSqlQuery query (dbo);
 
-    query.exec("select table_name from information_schema.tables where table_schema='"+c->getDb()+"' and table_type='VIEW'");
+    query.exec("select name from sqlite_master where type = 'view'");
 
     while(query.next())
     {
@@ -250,52 +265,12 @@ QStringList SqliteDatabaseEngine::getAvailableTriggers(Connection* c)
 
 QStringList SqliteDatabaseEngine::getAvailableStoredProcedures(Connection* c)
 {
-    QSqlDatabase dbo = c->getQSqlDatabase();
-
-    bool ok = dbo.isOpen();
-
-    if(!ok)
-    {
-        lastError = formatLastError(QObject::tr("Cannot get stored procedures"), dbo.lastError());
-        return QStringList();
-    }
-
-    QSqlQuery query (dbo);
-    query.exec("show procedure status where Db='"+c->getDb()+"'");
-    QStringList result;
-
-    while(query.next())
-    {
-        QString proc = query.value(1).toString();
-        result.append(proc);
-    }
-    dbo.close();
-    return result;
+     return QStringList();
 }
 
 QStringList SqliteDatabaseEngine::getAvailableStoredFunctions(Connection* c)
 {
-    QSqlDatabase dbo = c->getQSqlDatabase();
-
-    bool ok = dbo.isOpen();
-
-    if(!ok)
-    {
-        lastError = formatLastError(QObject::tr("Cannot get stored functions"), dbo.lastError());
-        return QStringList();
-    }
-
-    QSqlQuery query (dbo);
-    query.exec("show function status where Db='"+c->getDb()+"'");
-    QStringList result;
-
-    while(query.next())
-    {
-        QString proc = query.value(1).toString();
-        result.append(proc);
-    }
-    dbo.close();
-    return result;
+    return QStringList();
 }
 
 QStringList SqliteDatabaseEngine::getAvailableTables(Connection* c)
@@ -312,7 +287,7 @@ QStringList SqliteDatabaseEngine::getAvailableTables(Connection* c)
 
     QSqlQuery query(dbo);
 
-    query.exec("select table_name from information_schema.tables where table_schema='"+c->getDb()+"' and table_type='BASE TABLE'");
+    query.exec("select name from sqlite_master where type = 'table'");
 
     while(query.next())
     {

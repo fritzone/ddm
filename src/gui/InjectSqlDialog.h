@@ -52,6 +52,11 @@ public:
         return m_UidsToDrop;
     }
 
+    QString getSDbEngine() const
+    {
+        return m_strDbEngine;
+    }
+
 private slots:
 
     void onConnect();
@@ -86,6 +91,7 @@ private:
     QStringList m_UidsToDrop;
     QString m_objName;
     bool m_alreadyConnected;
+    QString m_strDbEngine;
 private:
 
     static QString previousHost;

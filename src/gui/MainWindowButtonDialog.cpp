@@ -27,6 +27,11 @@ MainWindowButtonDialog::MainWindowButtonDialog(QWidget *parent) :
 
     setPalette(thePalette);
 
+    fixButtons();
+}
+
+void MainWindowButtonDialog::fixButtons()
+{
     m_ui->btnQuick1->hide();
     m_ui->btnQuick2->hide();
     m_ui->btnQuick3->hide();
@@ -41,6 +46,7 @@ MainWindowButtonDialog::MainWindowButtonDialog(QWidget *parent) :
     if(mru.size()>=3 && mru[2].length() > 0) {fixButton(m_ui->btnQuick3, mru[2]);}
     if(mru.size()>=4 && mru[3].length() > 0) {fixButton(m_ui->btnQuick4, mru[3]);}
     if(mru.size()>=5 && mru[4].length() > 0) {fixButton(m_ui->btnQuick5, mru[4]);}
+
 }
 
 void MainWindowButtonDialog::fixButton(QCommandLinkButton *b, const QString &s)

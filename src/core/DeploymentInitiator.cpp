@@ -1,6 +1,6 @@
 #include "DeploymentInitiator.h"
 #include "core_InjectSqlGenerator.h"
-#include "core_Connection.h"
+#include "Connection.h"
 #include "MainWindow.h"
 #include "core_Deployer.h"
 #include "Version.h"
