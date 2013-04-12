@@ -14,6 +14,7 @@ public:
     MainWindowButtonDialog(QWidget *parent = 0);
     ~MainWindowButtonDialog();
     void showMe();
+    void fixButtons();
 
 public slots:
 

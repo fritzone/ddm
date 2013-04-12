@@ -19,7 +19,7 @@
 #include "ForeignKey.h"
 #include "db_DatabaseBuiltinFunction.h"
 #include "core_View.h"
-#include "core_Connection.h"
+#include "Connection.h"
 #include "core_Procedure.h"
 #include "core_Function.h"
 #include "db_Codepage.h"
@@ -29,6 +29,7 @@
 #include "ValueSp.h"
 #include "SpInstance.h"
 #include "core_UserDataType.h"
+#include "MySqlConnection.h"
 
 QVector<DatabaseBuiltinFunction>* MySQLDatabaseEngine::s_builtinFunctions = 0;
 QVector<Sp*>* MySQLDatabaseEngine::s_mysqlSpecificProperties = 0;
@@ -74,9 +75,15 @@ QString MySQLDatabaseEngine::provideConnectionName(const QString& prefix)
     return t;
 }
 
-bool MySQLDatabaseEngine::reverseEngineerDatabase(Connection *c, const QStringList& tables, const QStringList& views, const QStringList& procs,
+bool MySQLDatabaseEngine::reverseEngineerDatabase(Connection *conn, const QStringList& tables, const QStringList& views, const QStringList& procs,
                                                   const QStringList& funcs, const QStringList& triggers, Project*p, bool relaxed)
 {
+    MySqlConnection* c = dynamic_cast<MySqlConnection*>(conn);
+    if(!c)
+    {
+        return false;
+    }
+
     try
     {
     Version* v = p->getWorkingVersion();
@@ -178,8 +185,14 @@ bool MySQLDatabaseEngine::reverseEngineerDatabase(Connection *c, const QStringLi
     return true;
 }
 
-QSqlDatabase MySQLDatabaseEngine::getQSqlDatabaseForConnection(Connection *c)
+QSqlDatabase MySQLDatabaseEngine::getQSqlDatabaseForConnection(Connection *conn)
 {
+    MySqlConnection* c = dynamic_cast<MySqlConnection*>(conn);
+    if(!c)
+    {
+        return QSqlDatabase::database();
+    }
+
     QString newConnName = provideConnectionName("getConnection");
     QSqlDatabase dbo = QSqlDatabase::addDatabase("QMYSQL", newConnName);
 
@@ -196,8 +209,15 @@ QSqlDatabase MySQLDatabaseEngine::getQSqlDatabaseForConnection(Connection *c)
     return dbo;
 }
 
-QStringList MySQLDatabaseEngine::getAvailableViews(Connection* c)
+QStringList MySQLDatabaseEngine::getAvailableViews(Connection* conn)
 {
+    MySqlConnection* c = dynamic_cast<MySqlConnection*>(conn);
+    if(!c)
+    {
+        return QStringList();
+    }
+
+
     QSqlDatabase dbo = getQSqlDatabaseForConnection(c);
 
     bool ok = dbo.isOpen();
@@ -249,8 +269,15 @@ QStringList MySQLDatabaseEngine::getAvailableTriggers(Connection* c)
 }
 
 
-QStringList MySQLDatabaseEngine::getAvailableStoredProcedures(Connection* c)
+QStringList MySQLDatabaseEngine::getAvailableStoredProcedures(Connection* conn)
 {
+    MySqlConnection* c = dynamic_cast<MySqlConnection*>(conn);
+    if(!c)
+    {
+        return QStringList();
+    }
+
+
     QSqlDatabase dbo = c->getQSqlDatabase();
 
     bool ok = dbo.isOpen();
@@ -274,8 +301,14 @@ QStringList MySQLDatabaseEngine::getAvailableStoredProcedures(Connection* c)
     return result;
 }
 
-QStringList MySQLDatabaseEngine::getAvailableStoredFunctions(Connection* c)
+QStringList MySQLDatabaseEngine::getAvailableStoredFunctions(Connection* conn)
 {
+    MySqlConnection* c = dynamic_cast<MySqlConnection*>(conn);
+    if(!c)
+    {
+        return QStringList();
+    }
+
     QSqlDatabase dbo = c->getQSqlDatabase();
 
     bool ok = dbo.isOpen();
@@ -299,8 +332,14 @@ QStringList MySQLDatabaseEngine::getAvailableStoredFunctions(Connection* c)
     return result;
 }
 
-QStringList MySQLDatabaseEngine::getAvailableTables(Connection* c)
+QStringList MySQLDatabaseEngine::getAvailableTables(Connection* conn)
 {
+    MySqlConnection* c = dynamic_cast<MySqlConnection*>(conn);
+    if(!c)
+    {
+        return QStringList();
+    }
+
     QSqlDatabase dbo = getQSqlDatabaseForConnection(c);
     bool ok = dbo.isOpen();
     QStringList result;
@@ -374,10 +413,15 @@ Function* MySQLDatabaseEngine::reverseEngineerFunc(Connection *c, const QString 
     return func;
 }
 
-View* MySQLDatabaseEngine::reverseEngineerView(Connection* c, const QString& viewName, Version *v)
+View* MySQLDatabaseEngine::reverseEngineerView(Connection* conn, const QString& viewName, Version *v)
 {
-    QSqlDatabase dbo = getQSqlDatabaseForConnection(c);
+    MySqlConnection* c = dynamic_cast<MySqlConnection*>(conn);
+    if(!c)
+    {
+        return 0;
+    }
 
+    QSqlDatabase dbo = getQSqlDatabaseForConnection(c);
 
     bool ok = dbo.open();
 
@@ -431,8 +475,14 @@ QStringList MySQLDatabaseEngine::getColumnsOfTable(Connection *c, const QString 
     return result;
 }
 
-Table* MySQLDatabaseEngine::reverseEngineerTable(Connection *c, const QString& tableName, Project* p, bool relaxed, Version *ver)
+Table* MySQLDatabaseEngine::reverseEngineerTable(Connection *conn, const QString& tableName, Project* p, bool relaxed, Version *ver)
 {
+    MySqlConnection* c = dynamic_cast<MySqlConnection*>(conn);
+    if(!c)
+    {
+        return 0;
+    }
+
     QSqlDatabase dbo = c->getQSqlDatabase();
     Version* v = p->getWorkingVersion();
     bool ok = dbo.isOpen();
@@ -693,7 +743,7 @@ QString MySQLDatabaseEngine::getDefaultDatatypesLocation()
 
 QStringList MySQLDatabaseEngine::getAvailableDatabases(const QString& host, const QString& user, const QString& pass, int port)
 {
-    Connection *c = new Connection("temp", host, user, pass, "", false, false, port);
+    Connection *c = new MySqlConnection("temp", host, user, pass, "", false, false, port);
     QSqlDatabase db = getQSqlDatabaseForConnection(c);
     bool ok = db.isOpen();
 
@@ -718,8 +768,14 @@ QStringList MySQLDatabaseEngine::getAvailableDatabases(const QString& host, cons
     return result;
 }
 
-bool MySQLDatabaseEngine::dropDatabase(Connection* c)
+bool MySQLDatabaseEngine::dropDatabase(Connection* conn)
 {
+    MySqlConnection* c = dynamic_cast<MySqlConnection*>(conn);
+    if(!c)
+    {
+        return 0;
+    }
+
     QSqlDatabase db = getQSqlDatabaseForConnection(c);
     bool ok = db.isOpen();
     if(!ok)
@@ -765,9 +821,15 @@ QString MySQLDatabaseEngine::formatLastError(const QString& header, const QSqlEr
     return errorText;
 }
 
-bool MySQLDatabaseEngine::createDatabase(Connection* c)
+bool MySQLDatabaseEngine::createDatabase(Connection* conn)
 {
-    Connection *c1 = new Connection("temp", c->getHost(), c->getUser(), c->getPassword(), "", false, false, c->getPort());
+    MySqlConnection* c = dynamic_cast<MySqlConnection*>(conn);
+    if(!c)
+    {
+        return 0;
+    }
+
+    MySqlConnection *c1 = new MySqlConnection("temp", c->getHost(), c->getUser(), c->getPassword(), "", false, false, c->getPort());
     QSqlDatabase db = getQSqlDatabaseForConnection(c1);
     bool ok = db.isOpen();
 
@@ -1248,8 +1310,14 @@ QString MySQLDatabaseEngine::getTableDescriptionScript(const QString& tabName)
     return result;
 }
 
-QStringList MySQLDatabaseEngine::getAvailableIndexes(Connection* c)
+QStringList MySQLDatabaseEngine::getAvailableIndexes(Connection* conn)
 {
+    MySqlConnection* c = dynamic_cast<MySqlConnection*>(conn);
+    if(!c)
+    {
+        return QStringList();
+    }
+
     QSqlDatabase db = getQSqlDatabaseForConnection(c);
     QStringList result;
 
@@ -1510,7 +1578,7 @@ bool MySQLDatabaseEngine::tableBlocksForeignKeyFunctionality(const Table* table)
 
 QStringList MySQLDatabaseEngine::getSupportedStorageEngines(const QString& host, const QString& user, const QString& pass, int port)
 {
-    Connection *c = new Connection("temp", host, user, pass, "", false, false, port);
+    MySqlConnection *c = new MySqlConnection("temp", host, user, pass, "", false, false, port);
     QSqlDatabase db = getQSqlDatabaseForConnection(c);
     bool ok = db.isOpen();
     QStringList result;
@@ -1577,8 +1645,14 @@ bool MySQLDatabaseEngine::injectMetadata(Connection *c, const Version *v)
     return true;
 }
 
-QString MySQLDatabaseEngine::getDbMetadata(Connection *c)
+QString MySQLDatabaseEngine::getDbMetadata(Connection *conn)
 {
+    MySqlConnection* c = dynamic_cast<MySqlConnection*>(conn);
+    if(!c)
+    {
+        return "";
+    }
+
     QSqlDatabase db = getQSqlDatabaseForConnection(c);
     if(!db.isOpen()) return "";
     {

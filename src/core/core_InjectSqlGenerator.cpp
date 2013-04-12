@@ -1,6 +1,6 @@
 #include "core_InjectSqlGenerator.h"
 #include "core_InjectSqlGeneratorThread.h"
-#include "core_ConnectionManager.h"
+#include "ConnectionManager.h"
 #include <QThread>
 
 InjectSqlGenerator::InjectSqlGenerator(Version* v, QStringList connectionNames,

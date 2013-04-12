@@ -6,8 +6,8 @@
 #include "db_DatabaseEngine.h"
 #include "SimpleTextInputDialog.h"
 #include "dbmysql_MySQLDatabaseEngine.h"
-#include "core_ConnectionManager.h"
-#include "core_Connection.h"
+#include "ConnectionManager.h"
+#include "Connection.h"
 #include "core_Table.h"
 #include "core_TableInstance.h"
 #include "Version.h"
@@ -32,7 +32,7 @@ QString InjectSqlDialog::previousUser="";
 InjectSqlDialog::InjectSqlDialog(DatabaseEngine* engine, QWidget *parent, Version *v, const QString &objNameToDeploy) :
     QDialog(parent), ui(new Ui::InjectSqlDialog), m_dbEngine(engine),
     m_nameWasChanged(false), m_injectMetadata(false), m_signalMapper(new QSignalMapper(this)),
-    m_UidsToDeploy(), m_UidsToDrop(), m_objName(objNameToDeploy), m_alreadyConnected(false)
+    m_UidsToDeploy(), m_UidsToDrop(), m_objName(objNameToDeploy), m_alreadyConnected(false), m_strDbEngine("MYSQL")
 {
     ui->setupUi(this);
 
@@ -494,7 +494,8 @@ void InjectSqlDialog::onConnectionNameEdited(QString)
 void InjectSqlDialog::onDbTypeChange(QString a)
 {
     qDebug() << a;
-    if(a.toUpper() == "SQLITE")
+    m_strDbEngine = a.toUpper();
+    if(m_strDbEngine == "SQLITE")
     {
         ui->lblHost->hide();
         ui->lblPassword->hide();

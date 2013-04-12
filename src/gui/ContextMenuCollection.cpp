@@ -1,6 +1,6 @@
 #include "ContextMenuCollection.h"
 #include "IconFactory.h"
-#include "core_ConnectionManager.h"
+#include "ConnectionManager.h"
 #include "uids.h"
 
 ContextMenuCollection* ContextMenuCollection::m_instance = 0;

@@ -12,7 +12,7 @@
 #include "core_Table.h"
 #include "InjectSqlDialog.h"
 #include "MainWindow.h"
-#include "core_ConnectionManager.h"
+#include "ConnectionManager.h"
 #include "ConnectionGuiElements.h"
 #include "core_Column.h"
 #include "InjectSqlDialog.h"
@@ -24,6 +24,7 @@
 #include "TriggerForm.h"
 #include "core_Trigger.h"
 #include "core_TableInstance.h"
+#include "MySqlConnection.h"
 
 #include <QFile>
 #include <QApplication>
@@ -243,15 +244,19 @@ void Workspace::createNewConnection()
         {
             MainWindow::instance()->showConnections();
         }
-        QString host = injectDialog->getHost();
-        QString user = injectDialog->getUser();
-        QString password = injectDialog->getPassword();
-        QString db = injectDialog->getDatabase();
-        QString name = injectDialog->getName();
-        int port = injectDialog->getPort();
-        Connection* c = new Connection(name, host, user, password, db, true, injectDialog->getAutoConnect(), port);
-        ConnectionManager::instance()->addConnection(c);
-        MainWindow::instance()->getConnectionGuiElements()->createConnectionTreeEntry(c);
+
+        if(injectDialog->getSDbEngine() == "MYSQL")
+        {
+            QString host = injectDialog->getHost();
+            QString user = injectDialog->getUser();
+            QString password = injectDialog->getPassword();
+            QString db = injectDialog->getDatabase();
+            QString name = injectDialog->getName();
+            int port = injectDialog->getPort();
+            Connection* c = new MySqlConnection(name, host, user, password, db, true, injectDialog->getAutoConnect(), port);
+            ConnectionManager::instance()->addConnection(c);
+            MainWindow::instance()->getConnectionGuiElements()->createConnectionTreeEntry(c);
+        }
     }
 }
 

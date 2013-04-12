@@ -24,7 +24,7 @@
 #include "IssueManager.h"
 #include "VersionGuiElements.h"
 #include "gui_HelpWindow.h"
-#include "core_ConnectionManager.h"
+#include "ConnectionManager.h"
 #include "strings.h"
 #include "WidgetForSpecificProperties.h"
 #include "SpInstance.h"

@@ -20,7 +20,7 @@
 #include "gui_HelpWindow.h"
 #include "MainWindow.h"
 #include "InjectSqlDialog.h"
-#include "core_ConnectionManager.h"
+#include "ConnectionManager.h"
 #include "FrameForLineNumbers.h"
 #include "GuiElements.h"
 

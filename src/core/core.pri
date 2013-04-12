@@ -10,8 +10,6 @@ SOURCES += \
     core/core_TableInstance.cpp \
     core/core_UserDataType.cpp \
     core/core_Patch.cpp \
-    core/core_Connection.cpp \
-    core/core_ConnectionManager.cpp \
     core/core_Deployer.cpp \
     core/core_DeployerThread.cpp \
     core/core_InjectSqlGenerator.cpp \
@@ -55,8 +53,6 @@ HEADERS += \
     core/core_ColumnWithValue.h \
     core/CopyableElement.h \
     core/DeploymentInitiator.h \
-    core/core_Connection.h \
-    core/core_ConnectionManager.h \
     core/core_Deployer.h \
     core/core_DeployerThread.h \
     core/core_InjectSqlGenerator.h \

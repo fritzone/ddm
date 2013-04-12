@@ -1,6 +1,6 @@
 #include "core_Deployer.h"
 #include "core_DeployerThread.h"
-#include "core_ConnectionManager.h"
+#include "ConnectionManager.h"
 #include "Workspace.h"
 
 Deployer::Deployer(const QStringList& connections, const QMap<Connection *,

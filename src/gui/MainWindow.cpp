@@ -39,8 +39,8 @@
 #include "qbr_SelectQuery.h"
 #include "core_View.h"
 #include "gui_HelpWindow.h"
-#include "core_Connection.h"
-#include "core_ConnectionManager.h"
+#include "Connection.h"
+#include "ConnectionManager.h"
 #include "core_Deployer.h"
 #include "reveng_ReverseEngineerer.h"
 #include "helper_MostRecentlyUsedFiles.h"
@@ -2874,6 +2874,7 @@ void MainWindow::onNewConnection()
 #endif
 
         m_btndlg->show();
+        m_btndlg->fixButtons();
     }
 }
 

@@ -2,7 +2,7 @@
 #include "ui_ProcedureForm.h"
 #include "TextEditWithCodeCompletion.h"
 #include "FrameForLineNumbers.h"
-#include "core_Connection.h"
+#include "Connection.h"
 #include "MainWindow.h"
 #include "GuiElements.h"
 #include "strings.h"

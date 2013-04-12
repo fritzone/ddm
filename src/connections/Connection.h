@@ -9,6 +9,7 @@
 
 #include <QString>
 #include <QSqlDatabase>
+#include <QSettings>
 
 class DatabaseEngine;
 class Table;
@@ -21,25 +22,13 @@ class Connection :
 {
 public:
 
-    Connection(const QString& name, const QString& host, const QString& user, const QString& pass, const QString& db, bool savePw, bool autoConnect, int port);
-    virtual void serialize(QDomDocument& doc, QDomElement& parent) const;
-    virtual Table* getIssueTable() const
-    {
-        return 0;
-    }
-    virtual QString getFullLocation() const
-    {
-        return m_db+"@"+m_host;
-    }
+    Connection(const QString& name, bool autoConnect);
 
-    QString getHost() const
-    {
-        return m_host;
-    }
-    QString getDb() const
-    {
-        return m_db;
-    }
+    virtual void serialize(QDomDocument& doc, QDomElement& parent) const = 0;
+    virtual QString getFullLocation() const = 0;
+    virtual void saveIntoSettings(QSettings& s) = 0;
+
+    virtual Table* getIssueTable() const { return 0; }
 
     bool tryConnect();
 
@@ -52,15 +41,6 @@ public:
     {
         return m_state;
     }
-    QString getUser() const
-    {
-        return m_user;
-    }
-    QString getPassword() const
-    {
-        return m_pass;
-    }
-    void resetTo(const QString& name, const QString& host, const QString& user, const QString& pass, const QString& db, int port, bool savePw, bool autoConnect);
     DatabaseEngine* getEngine() const
     {
         return m_engine;
@@ -91,25 +71,14 @@ public:
         return m_autoConnect;
     }
 
-    int getPort() const
-    {
-        return m_port;
-    }
-
     QString getLastError() const
     {
         return m_lastError;
     }
 
-private:
+protected:
 
-    QString m_host;
-    QString m_user;
-    QString m_pass;
-    QString m_db;
     QString m_dbType;
-    int m_port;
-    bool m_savePw;
     bool m_autoConnect;
     DatabaseEngine* m_engine;
     ConnectionState m_state;

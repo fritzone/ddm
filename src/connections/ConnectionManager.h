@@ -1,13 +1,17 @@
 #ifndef CORE_CONNECTIONMANAGER_H
 #define CORE_CONNECTIONMANAGER_H
 
-#include "core_Connection.h"
+#include "Connection.h"
 #include <QVector>
 
 class ConnectionManager
 {
 public:
+
     static ConnectionManager* instance();
+
+    static Connection* createConnection(const QString &dbType, const QSettings &s);
+
 public:
 
     void loadConnections();

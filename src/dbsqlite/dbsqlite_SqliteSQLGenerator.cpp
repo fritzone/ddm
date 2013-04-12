@@ -13,7 +13,7 @@
 #include "SpInstance.h"
 #include "db_DatabaseEngine.h"
 #include "dbsqlite_SqliteDatabaseEngine.h"
-#include "core_Connection.h"
+#include "Connection.h"
 #include "Configuration.h"
 
 QStringList SqliteSQLGenerator::generateCreateTableSql(Table *table, const QHash<QString, QString> &options, const QString& tabName, const QMap<QString, QString> &fkMappings, const Connection* dest) const

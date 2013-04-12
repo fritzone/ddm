@@ -68,6 +68,9 @@ INCLUDEPATH += dbmysql
 include (dbsqlite/dbsqlite.pri)
 INCLUDEPATH += dbsqlite
 
+include (connections/connections.pri)
+INCLUDEPATH += connections
+
 include (diagram/diagram.pri)
 INCLUDEPATH += diagram
 
