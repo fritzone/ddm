@@ -368,7 +368,7 @@ View* SqliteDatabaseEngine::reverseEngineerView(Connection* c, const QString& vi
 
     View* view = 0;
     QSqlQuery query(dbo);
-    QString t = "show create view "+c->getDb()+"."+viewName;
+    QString t = QString("select sql from from sqlite_master where type='view' and name='") + viewName + "'";
     query.exec(t);
     while(query.next())
     {
@@ -424,13 +424,13 @@ Table* SqliteDatabaseEngine::reverseEngineerTable(Connection *c, const QString& 
     // fetch all the columns of the table
     {
     QSqlQuery query(dbo);
-    query.exec("desc " + tableName);
+    query.exec("pragma table_info(" + tableName + ")");
 
-    int fieldNo = query.record().indexOf("Field");
-    int typeNo = query.record().indexOf("Type");
-    int nulldNo = query.record().indexOf("Null");
-    int keyNo = query.record().indexOf("Key");
-    int defNo = query.record().indexOf("Default");
+    int fieldNo = query.record().indexOf("name");
+    int typeNo = query.record().indexOf("type");
+    int nulldNo = query.record().indexOf("notnull");
+    int keyNo = query.record().indexOf("pk");
+    int defNo = query.record().indexOf("dflt_value");
 
     while(query.next())
     {
@@ -453,7 +453,9 @@ Table* SqliteDatabaseEngine::reverseEngineerTable(Connection *c, const QString& 
             udt = v->provideDatatypeForSqlType(field_name, type, nullable, defaultValue, relaxed);
             m_oneTimeMappings.insert(oneTimeKey, udt);
         }
-        Column* col = new Column(QUuid::createUuid().toString(), field_name, udt, QString::compare(keyness, "PRI", Qt::CaseInsensitive) == 0, ver);
+
+        // hm ... PK check?
+        Column* col = new Column(QUuid::createUuid().toString(), field_name, udt, QString::compare(keyness, "0", Qt::CaseInsensitive) == 0, ver);
 
         // and add the column to the table
         if(!found) m_revEngMappings.insert(udt, col);
@@ -465,58 +467,40 @@ Table* SqliteDatabaseEngine::reverseEngineerTable(Connection *c, const QString& 
     {
 
     QSqlQuery query(dbo);
-    query.exec("show indexes from " + tableName);
+    query.exec("select * from sqlite_master where type='index' and tbl_name='" + tableName + "'");
 
-    int tableNo = query.record().indexOf("Table");
-    int nonuniqueNo = query.record().indexOf("Non_unique");
-    int keynameNo = query.record().indexOf("Key_name");
-    int seqinindexNo = query.record().indexOf("Seq_in_index");
-    int columnnameNo = query.record().indexOf("Column_name");
-    int collationNo = query.record().indexOf("Collation");
-    int cardinalityNo = query.record().indexOf("Cardinality");
-    int subpartNo = query.record().indexOf("Sub_part");
-    int packedNo = query.record().indexOf("Packed");
-    int nullNo = query.record().indexOf("Null");
-    int indextypeNo = query.record().indexOf("Index_type");
-    int commentNo = query.record().indexOf("Comment");
+    int idxIndexName = query.record().indexOf("name");
 
     QMap<QString, Index*> createdIndexes;
 
     while(query.next())
     {
-        QString table = query.value(tableNo).toString();
-        QString nonunique = query.value(nonuniqueNo).toString();
-        QString keyname = query.value(keynameNo).toString();
-        QString seqinindex = query.value(seqinindexNo).toString();
-        QString columnname = query.value(columnnameNo).toString();
-        QString collation = query.value(collationNo).toString();
-        QString cardinality = query.value(cardinalityNo).toString();
-        QString subpart = query.value(subpartNo).toString();
-        QString packed = query.value(packedNo).toString();
-        QString nulld = query.value(nullNo).toString();
-        QString indextype = query.value(indextypeNo).toString();
-        QString comment = query.value(commentNo).toString();
+        QString indexName = query.value(idxIndexName).toString();
 
-        QString finalIndexName = keyname;
-        if(keyname == "PRIMARY") continue;
+        // now find the column(s) of the index
+        QSqlQuery query2(dbo);
+        query2.exec(QString("pragma index_info(") + idxIndexName + ")");
+
+        int idxColName = query2.record().indexOf("name");
+        int idxSeq = query2.record().indexOf("seqno");
+
+        QString columnname = query2.value(idxColName).toString();
+        QString seqinindex= query2.value(idxSeq).toString();
 
         Index* idx = 0;
-        QString order = "DESC";
-        if(collation == "A") order = "ASC";
-        if(collation.toUpper() == "NULL") order = "";
-        if(createdIndexes.keys().contains(keyname))
+        QString order = "";
+        if(createdIndexes.keys().contains(indexName))
         {
-            idx = createdIndexes[keyname];
+            idx = createdIndexes[indexName];
         }
         else
         {
-            idx = new Index(finalIndexName, tab, QUuid::createUuid().toString(), ver);
-            // TODO: set the index type SPI based on indextype from above
-            createdIndexes.insert(keyname, idx);
+            idx = new Index(indexName, tab, QUuid::createUuid().toString(), ver);
+            createdIndexes.insert(indexName, idx);
         }
 
         idx->addColumn(tab->getColumn(columnname), order, seqinindex.toInt());
-        if(!tab->hasIndex(finalIndexName))
+        if(!tab->hasIndex(indexName))
         {
             tab->addIndex(idx);
         }
@@ -589,26 +573,6 @@ Table* SqliteDatabaseEngine::reverseEngineerTable(Connection *c, const QString& 
         }
     }
 
-    // find the storage engine
-    {
-        QString s = "SELECT ENGINE FROM information_schema.TABLES WHERE TABLE_SCHEMA = '"+c->getDb()+"' AND TABLE_NAME = '"+tab->getName()+"'";
-        QSqlQuery query (dbo);
-        query.exec(s);
-        QString eng = "";
-        while(query.next())
-        {
-            eng = query.value(0).toString();
-        }
-
-        {
-        // see if we have a storage engine
-        SpInstance* spi = tab->getInstanceForSqlRoleUid(this, uidMysqlStorageEngineTable);
-        if(spi)
-        {
-            spi->set(eng);
-        }
-        }
-    }
     dbo.close();
     return tab;
 }
@@ -665,52 +629,16 @@ QString SqliteDatabaseEngine::getDefaultDatatypesLocation()
     return "mysql.defaults";
 }
 
+// poor guy, canot return anyting
 QStringList SqliteDatabaseEngine::getAvailableDatabases(const QString& host, const QString& user, const QString& pass, int port)
 {
-    Connection *c = new Connection("temp", host, user, pass, "", false, false, port);
-    QSqlDatabase db = getQSqlDatabaseForConnection(c);
-    bool ok = db.isOpen();
-
-    if(!ok)
-    {
-        lastError = formatLastError(QObject::tr("Cannot run a query"), db.lastError());
-
-        return QStringList();
-    }
-
     QStringList result;
-    QSqlQuery query(db);
-    query.exec("show databases");
-
-    while(query.next())
-    {
-        QString dbName = query.value(0).toString();
-        result.append(dbName);
-    }
-    db.close();
-
     return result;
 }
 
+// Sqlite cannot drop a database
 bool SqliteDatabaseEngine::dropDatabase(Connection* c)
 {
-    QSqlDatabase db = getQSqlDatabaseForConnection(c);
-    bool ok = db.isOpen();
-    if(!ok)
-    {
-        lastError = formatLastError(QObject::tr("Cannot connect to the DB for dropping a database"), db.lastError());
-        return false;
-    }
-
-    QSqlQuery query(db);
-    bool t = query.exec("drop database "+ c->getDb());
-    if(!t)
-    {
-        lastError = formatLastError(QObject::tr("Cannot drop database: ") + c->getDb(), db.lastError());
-        return false;
-    }
-    db.close();
-    c->setState(DROPPED);
     return true;
 }
 
@@ -739,26 +667,9 @@ QString SqliteDatabaseEngine::formatLastError(const QString& header, const QSqlE
     return errorText;
 }
 
+// cannot create database
 bool SqliteDatabaseEngine::createDatabase(Connection* c)
 {
-    Connection *c1 = new Connection("temp", c->getHost(), c->getUser(), c->getPassword(), "", false, false, c->getPort());
-    QSqlDatabase db = getQSqlDatabaseForConnection(c1);
-    bool ok = db.isOpen();
-
-    if(!ok)
-    {
-        lastError = formatLastError(QObject::tr("Cannot connect to the DB server to create a new database"), db.lastError());
-        return false;
-    }
-
-    QSqlQuery query(db);
-    bool t = query.exec("create database "+ c->getDb());
-    if(!t)
-    {
-        lastError = formatLastError(QObject::tr("Cannot create database: ") + c->getDb(), query.lastError());
-        return false;
-    }
-    db.close();
     return true;
 }
 
@@ -1051,19 +962,17 @@ QStringList SqliteDatabaseEngine::getAvailableIndexes(Connection* c)
     }
 
     QSqlQuery query(db);
-    query.exec("SELECT DISTINCT TABLE_NAME, INDEX_NAME, COLUMN_NAME FROM INFORMATION_SCHEMA.STATISTICS WHERE TABLE_SCHEMA = '" + c->getDb() + "'");
+    query.exec("SELECT * FROM SQLITE_MASTER WHERE type='index'");
 
-    int tabNameIdx = query.record().indexOf("TABLE_NAME");
-    int indexNameIdx = query.record().indexOf("INDEX_NAME");
-    int columnNameIdx = query.record().indexOf("COLUMN_NAME");
+    int tabNameIdx = query.record().indexOf("tbl_name");
+    int indexNameIdx = query.record().indexOf("name");
 
     while(query.next())
     {
         QString tabName = query.value(tabNameIdx).toString();
         QString indexName = query.value(indexNameIdx).toString();
-        QString columnName = query.value(columnNameIdx).toString();
 
-        result.append(tabName + "." + indexName + " (" + columnName +")");
+        result.append(tabName + "." + indexName);
     }
     db.close();
     return result;
@@ -1128,33 +1037,6 @@ bool SqliteDatabaseEngine::tableBlocksForeignKeyFunctionality(const Table*) cons
     return false;
 }
 
-QStringList SqliteDatabaseEngine::getSupportedStorageEngines(const QString& host, const QString& user, const QString& pass, int port)
-{
-    Connection *c = new Connection("temp", host, user, pass, "", false, false, port);
-    QSqlDatabase db = getQSqlDatabaseForConnection(c);
-    bool ok = db.isOpen();
-    QStringList result;
-
-    if(!ok)
-    {
-        lastError = formatLastError(QObject::tr("Cannot connect to the database"), db.lastError());
-        return result;
-    }
-
-    QSqlQuery query(db);
-    query.exec("show engines");
-
-    while(query.next())
-    {
-        QString dbName = query.value(0).toString();
-        bool supported = query.value(1).toString().toUpper() != "NO";
-        if(supported) result.append(dbName);
-    }
-    db.close();
-
-    return result;
-}
-
 bool SqliteDatabaseEngine::injectMetadata(Connection *c, const Version *v)
 {
     QDomDocument doc("DBM");
@@ -1197,16 +1079,16 @@ bool SqliteDatabaseEngine::injectMetadata(Connection *c, const Version *v)
     return true;
 }
 
+// TODO: this should go to a common place
 QString SqliteDatabaseEngine::getDbMetadata(Connection *c)
 {
     QSqlDatabase db = getQSqlDatabaseForConnection(c);
     if(!db.isOpen()) return "";
     {
     QSqlQuery q(db);
-    QString g = "SELECT count(*) FROM information_schema.tables WHERE table_schema = '" + c->getDb() + "' AND table_name='DDM_META'";
+    QString g = "SELECT count(*) FROM sqlite_master WHERE name='DDM_META' and type='table'";
     if(!q.exec(g))
     {
-//        qDebug() << q.lastError();
         return "";
     }
 
@@ -1214,7 +1096,6 @@ QString SqliteDatabaseEngine::getDbMetadata(Connection *c)
     while(q.next())
     {
         int cnt = q.value(0).toInt();
-//        qDebug() << cnt;
         if(cnt == 1)
         {
             foundMetaTable = true;
@@ -1223,11 +1104,10 @@ QString SqliteDatabaseEngine::getDbMetadata(Connection *c)
     if(!foundMetaTable) return "";
     }
 
-    QString dq = "SELECT metadata_chunk FROM "+c->getDb()+".DDM_META ORDER BY IDX";
+    QString dq = "SELECT metadata_chunk FROM DDM_META ORDER BY IDX";
     QSqlQuery q(db);
     if(!q.exec(dq))
     {
-//        qDebug() << q.lastError();
         return "";
     }
 

@@ -5,24 +5,49 @@
 #include "reveng_ReverseEngineerWizardOptionsForm.h"
 #include "Connection.h"
 #include "db_DatabaseEngine.h"
+#include "MySqlConnection.h"
+#include "SqliteConnection.h"
 
 #include <QMessageBox>
 
-ReverseEngineerWizard::ReverseEngineerWizard(DatabaseEngine* engine) : QWizard(), m_engine(engine), m_welcomePage(new ReverseEngineerWizardWelcomeForm),
-    m_databasesPage(new ReverseEngineerWizardDatabasesForm), m_tablesPage(new ReverseEngineerWizardObjectListForm),
+ReverseEngineerWizard::ReverseEngineerWizard(DatabaseEngine* engine) : QWizard(), m_engine(engine),
+    m_welcomePage(new ReverseEngineerWizardWelcomeForm),
+    m_databasesPage(new ReverseEngineerWizardDatabasesForm),
+    m_tablesPage(new ReverseEngineerWizardObjectListForm),
     m_viewsPage(new ReverseEngineerWizardObjectListForm(0, ReverseEngineerWizardObjectListForm::REVERSE_ENGINEER_VIEWS)),
     m_proceduresPage(new ReverseEngineerWizardObjectListForm(0, ReverseEngineerWizardObjectListForm::REVERSE_ENGINEER_PROCS)),
     m_functionsPage(new ReverseEngineerWizardObjectListForm(0, ReverseEngineerWizardObjectListForm::REVERSE_ENGINEER_FUNCS)),
     m_triggersPage(new ReverseEngineerWizardObjectListForm(0, ReverseEngineerWizardObjectListForm::REVERSE_ENGINEER_TRIGGERS)),
     m_optionsPage(new ReverseEngineerWizardOptionsForm),
-    m_host(""), m_user(""), m_pass(""), m_database(""), m_port(0)
+    m_host(""), m_user(""), m_pass(""), m_database(""), m_port(0), m_sqliteFile()
 {
+    if(getDbTypeName() == "MYSQL")
+    {
+        m_welcomePage->setMysqMode();
+    }
+    else
+    {
+        m_welcomePage->setSqliteMode();
+    }
+
+    // the wizard is highly fragmented because the SQLITE DB does not support procedures and functions
+
     addPage(m_welcomePage);
-    addPage(m_databasesPage);
+
+    // add the databases page only if it works as a MySQL wizard
+    if(getDbTypeName() == "MYSQL")
+    {
+        addPage(m_databasesPage);
+    }
+
     addPage(m_tablesPage);
     addPage(m_viewsPage);
-    addPage(m_proceduresPage);
-    addPage(m_functionsPage);
+    // add the procedures and functions only if it acts like a mysql wizard
+    if(getDbTypeName() == "MYSQL")
+    {
+        addPage(m_proceduresPage);
+        addPage(m_functionsPage);
+    }
     addPage(m_triggersPage);
     addPage(m_optionsPage);
     setWindowTitle(QObject::tr("Reverse Engineer a Database"));
@@ -30,9 +55,17 @@ ReverseEngineerWizard::ReverseEngineerWizard(DatabaseEngine* engine) : QWizard()
 
 void ReverseEngineerWizard::gatherConnectionData()
 {
-    m_host = m_welcomePage->getHost();
-    m_user = m_welcomePage->getUser();
-    m_pass = m_welcomePage->getPassword();
+    if(getDbTypeName() == "MYSQL")
+    {
+        m_host = m_welcomePage->getHost();
+        m_user = m_welcomePage->getUser();
+        m_pass = m_welcomePage->getPassword();
+        m_port = m_welcomePage->getPort();
+    }
+    else
+    {
+        m_sqliteFile = m_welcomePage->getSqliteFile();
+    }
 }
 
 bool ReverseEngineerWizard::connectAndRetrieveDatabases()
@@ -55,14 +88,32 @@ bool ReverseEngineerWizard::connectAndRetrieveDatabases()
 
 bool ReverseEngineerWizard::selectDatabase()
 {
-    m_database = m_databasesPage->getSelectedDatabase();
-    if(m_database.length() > 0) return true;
+    if(getDbTypeName() == "MYSQL")
+    {
+        m_database = m_databasesPage->getSelectedDatabase();
+        if(m_database.length() > 0) return true;
+    }
+    else
+    {
+        if(m_sqliteFile.length() > 0) return true;
+    }
     return false;
 }
 
 bool ReverseEngineerWizard::connectAndRetrieveViews()
 {
-    Connection* c = new Connection("temp", m_host, m_user, m_pass, m_database, false, false, m_port);
+    Connection* c = 0;
+
+    if(getDbTypeName() == "MYSQL")
+    {
+        c = new MySqlConnection("temp", m_host, m_user, m_pass, m_database, false, false, m_port);
+    }
+    else
+    {
+        c = new SqliteConnection("temp", m_sqliteFile, false);
+    }
+
+    if(!c) return false;
 
     QStringList views = m_engine->getAvailableViews(c);
     m_viewsPage->clearList();
@@ -76,7 +127,18 @@ bool ReverseEngineerWizard::connectAndRetrieveViews()
 
 bool ReverseEngineerWizard::connectAndRetrieveFunctions()
 {
-    Connection* c = new Connection("temp", m_host, m_user, m_pass, m_database, false, false, m_port);
+    Connection* c = 0;
+
+    if(getDbTypeName() == "MYSQL")
+    {
+        c = new MySqlConnection("temp", m_host, m_user, m_pass, m_database, false, false, m_port);
+    }
+    else
+    {
+        c = new SqliteConnection("temp", m_sqliteFile, false);
+    }
+
+    if(!c) return false;
 
     QStringList funcs = m_engine->getAvailableStoredFunctions(c);
     m_functionsPage->clearList();
@@ -90,7 +152,18 @@ bool ReverseEngineerWizard::connectAndRetrieveFunctions()
 
 bool ReverseEngineerWizard::connectAndRetrieveProcedures()
 {
-    Connection* c = new Connection("temp", m_host, m_user, m_pass, m_database, false, false, m_port);
+    Connection* c = 0;
+
+    if(getDbTypeName() == "MYSQL")
+    {
+        c = new MySqlConnection("temp", m_host, m_user, m_pass, m_database, false, false, m_port);
+    }
+    else
+    {
+        c = new SqliteConnection("temp", m_sqliteFile, false);
+    }
+
+    if(!c) return false;
 
     QStringList procs = m_engine->getAvailableStoredProcedures(c);
     m_proceduresPage->clearList();
@@ -104,7 +177,18 @@ bool ReverseEngineerWizard::connectAndRetrieveProcedures()
 
 bool ReverseEngineerWizard::connectAndRetrieveTriggers()
 {
-    Connection* c = new Connection("temp", m_host, m_user, m_pass, m_database, false, false, m_port);
+    Connection* c = 0;
+
+    if(getDbTypeName() == "MYSQL")
+    {
+        c = new MySqlConnection("temp", m_host, m_user, m_pass, m_database, false, false, m_port);
+    }
+    else
+    {
+        c = new SqliteConnection("temp", m_sqliteFile, false);
+    }
+
+    if(!c) return false;
 
     QStringList triggers = m_engine->getAvailableTriggers(c);
     m_triggersPage->clearList();
@@ -118,7 +202,19 @@ bool ReverseEngineerWizard::connectAndRetrieveTriggers()
 
 bool ReverseEngineerWizard::connectAndRetrieveTables()
 {
-    Connection* c = new Connection("temp", m_host, m_user, m_pass, m_database, false, false, m_port);
+    Connection* c = 0;
+
+    if(getDbTypeName() == "MYSQL")
+    {
+        c = new MySqlConnection("temp", m_host, m_user, m_pass, m_database, false, false, m_port);
+    }
+    else
+    {
+        c = new SqliteConnection("temp", m_sqliteFile, false);
+    }
+
+    if(!c) return false;
+
     QStringList tables = m_engine->getAvailableTables(c);
     m_tablesPage->clearList();
     for(int i=0; i<tables.size(); i++)
@@ -160,3 +256,7 @@ bool ReverseEngineerWizard::createDataTypesForColumns()
     return m_optionsPage->createDataTypesForColumns();
 }
 
+QString ReverseEngineerWizard::getDbTypeName() const
+{
+    return m_engine->getDatabaseEngineName().toUpper();
+}

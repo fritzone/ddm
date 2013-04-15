@@ -268,7 +268,7 @@ void BrowseTableForm::newPage(Connection *c, const QString &tab, BrowsedTableLay
                 m_textEdit->setPlainText(p->getSql());
             }
 
-            mainTab->addTab(queryFrame, IconFactory::getProcedureIcon(), tab + "@" + c->getDb());
+            mainTab->addTab(queryFrame, IconFactory::getProcedureIcon(), tab + ":" + c->getFullLocation());
         }
         else
         {
@@ -278,7 +278,7 @@ void BrowseTableForm::newPage(Connection *c, const QString &tab, BrowsedTableLay
                 m_textEdit->setPlainText(p->getSql());
             }
 
-            mainTab->addTab(queryFrame, IconFactory::getFunctionTreeIcon(), tab + "@" + c->getDb());
+            mainTab->addTab(queryFrame, IconFactory::getFunctionTreeIcon(), tab + ":" + c->getFullLocation());
 
         }
     }
@@ -310,7 +310,7 @@ void BrowseTableForm::newPage(Connection *c, const QString &tab, BrowsedTableLay
             pf->showSql();
 
             horizontalLayoutForLineNumbersAndTextEdit->addWidget(pf);
-            mainTab->addTab(queryFrame, IconFactory::getTriggerIcon(), tab + "@" + c->getDb());
+            mainTab->addTab(queryFrame, IconFactory::getTriggerIcon(), tab + ":" + c->getFullLocation());
         }
         return;
     }
@@ -404,7 +404,7 @@ void BrowseTableForm::newPage(Connection *c, const QString &tab, BrowsedTableLay
 
         tabWidget->setCurrentIndex(0);
 
-        mainTab->addTab(tabWidget, layout == BROWSE_TABLE?IconFactory::getTabinstIcon():IconFactory::getViewIcon(), c->getDb() + "." + tab);
+        mainTab->addTab(tabWidget, layout == BROWSE_TABLE?IconFactory::getTabinstIcon():IconFactory::getViewIcon(), tab + ":" + c->getFullLocation());
 
     }
 
@@ -461,7 +461,7 @@ void BrowseTableForm::newPage(Connection *c, const QString &tab, BrowsedTableLay
         spl->addWidget(tableForScriptResult);
 
         spl->resize( mainTabPageWidget->size() );
-        mainTab->addTab(spl, IconFactory::getSqlIcon(), c->getUser() + "@" + c->getDb());
+        mainTab->addTab(spl, IconFactory::getSqlIcon(), "Script:" + c->getFullLocation());
 
     }
 

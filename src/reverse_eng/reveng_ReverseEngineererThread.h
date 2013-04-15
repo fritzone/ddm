@@ -12,8 +12,45 @@ class ReverseEngineererThread : public QObject
 {
     Q_OBJECT
 public:
-    explicit ReverseEngineererThread(bool c, DatabaseEngine* engine, Project* p,
+    /**
+     * @brief ReverseEngineererThread reverse engineer a database which has an authentication model (such as mysql)
+     * @param createDataTypesForColumns
+     * @param engine
+     * @param p
+     * @param host
+     * @param user
+     * @param pass
+     * @param db
+     * @param port
+     * @param tabsToReverse
+     * @param viewsToReverse
+     * @param procsToReverse
+     * @param funcsToReverse
+     * @param triggersToReverse
+     * @param parent
+     */
+    explicit ReverseEngineererThread(bool createDataTypesForColumns, DatabaseEngine* engine, Project* p,
                                      const QString& host, const QString& user, const QString& pass, const QString& db, int port,
+                                     const QStringList& tabsToReverse,  const QStringList& viewsToReverse,
+                                     const QStringList& procsToReverse, const QStringList& funcsToReverse,
+                                     const QStringList& triggersToReverse, QObject *parent = 0);
+
+
+    /**
+     * @brief ReverseEngineererThread reverse engineer a database which stores its data in files (sqlite)
+     * @param createDataTypesForColumns
+     * @param engine
+     * @param p
+     * @param fileName
+     * @param tabsToReverse
+     * @param viewsToReverse
+     * @param procsToReverse
+     * @param funcsToReverse
+     * @param triggersToReverse
+     * @param parent
+     */
+    explicit ReverseEngineererThread(bool createDataTypesForColumns, DatabaseEngine* engine, Project* p,
+                                     const QString& fileName,
                                      const QStringList& tabsToReverse,  const QStringList& viewsToReverse,
                                      const QStringList& procsToReverse, const QStringList& funcsToReverse,
                                      const QStringList& triggersToReverse, QObject *parent = 0);
@@ -38,6 +75,7 @@ private:
     Project* m_project;
     bool m_createDataTypesForColumns;
     int m_port;
+    QString m_fileName;
 };
 
 #endif // CORE_REVERSEENGINEERERTHREAD_H

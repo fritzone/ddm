@@ -14,6 +14,11 @@ public:
     virtual QString getFullLocation() const;
     virtual Table* getIssueTable() const { return 0; }
 
+    void resetTo(const QString& fileName)
+    {
+        m_fileName = fileName;
+    }
+
     QString getFileName() const
     {
         return m_fileName;

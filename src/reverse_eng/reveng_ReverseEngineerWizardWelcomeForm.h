@@ -19,9 +19,14 @@ public:
     QString getUser();
     QString getPassword();
     int getPort();
+    QString getSqliteFile();
+
+    void setMysqMode();
+    void setSqliteMode();
 
 private:
     Ui::ReverseEngineerWizardWelcomeForm *ui;
+    QString m_mode;
 };
 
 #endif // REVERSEENGINEERWIZARDWELCOMEFORM_H

@@ -13,13 +13,57 @@ class ReverseEngineerer : public QObject
 {
     Q_OBJECT
 public:
+
+    /**
+     * @brief ReverseEngineerer creates an object for databases with authentication model (sqlite)
+     * @param c
+     * @param engine
+     * @param p
+     * @param host
+     * @param user
+     * @param pass
+     * @param db
+     * @param port
+     * @param tabsToReverse
+     * @param viewsToReverse
+     * @param procsToReverse
+     * @param funcsToReverse
+     * @param triggersToReverse
+     * @param parent
+     */
     explicit ReverseEngineerer(bool c, DatabaseEngine* engine, Project* p,
                                const QString& host, const QString& user, const QString& pass, const QString& db, int port,
                                const QStringList& tabsToReverse, const QStringList& viewsToReverse,
                                const QStringList& procsToReverse, const QStringList& funcsToReverse,
                                const QStringList& triggersToReverse,
                                QObject *parent = 0);
+
+    /**
+     * @brief ReverseEngineerer creates an object for databases with file based model (sqlite)
+     * @param c
+     * @param engine
+     * @param p
+     * @param host
+     * @param user
+     * @param pass
+     * @param db
+     * @param port
+     * @param tabsToReverse
+     * @param viewsToReverse
+     * @param procsToReverse
+     * @param funcsToReverse
+     * @param triggersToReverse
+     * @param parent
+     */
+    explicit ReverseEngineerer(bool c, DatabaseEngine* engine, Project* p,
+                               const QString& fileName,
+                               const QStringList& tabsToReverse, const QStringList& viewsToReverse,
+                               const QStringList& procsToReverse, const QStringList& funcsToReverse,
+                               const QStringList& triggersToReverse,
+                               QObject *parent = 0);
+
     void reverseEngineer();
+
 signals:
     void done(ReverseEngineerer*);
     void startWork();
@@ -40,6 +84,7 @@ private:
     Project* m_project;
     bool m_createDataTypesForColumns;
     int m_port;
+    QString m_sqliteFile;
 };
 
 

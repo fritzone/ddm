@@ -110,6 +110,7 @@ static const QString strColumnDeclaration = "ColumnDeclaration";
 static const QString strInTable = "InTable";
 static const QString strConnectionsCount = "ConnectionsCount";
 static const QString strName = "Name";
+static const QString strFile = "File";
 static const QString strHost = "Host";
 static const QString strPass = "Pass";
 static const QString strUser = "User";

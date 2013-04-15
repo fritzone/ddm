@@ -13,11 +13,17 @@
 #include "SpInstance.h"
 #include "db_DatabaseEngine.h"
 #include "dbmysql_MySQLDatabaseEngine.h"
-#include "Connection.h"
 #include "Configuration.h"
+#include "MySqlConnection.h"
 
-QStringList MySQLSQLGenerator::generateCreateTableSql(Table *table, const QHash<QString, QString> &options, const QString& tabName, const QMap<QString, QString> &fkMappings, const Connection* dest) const
+QStringList MySQLSQLGenerator::generateCreateTableSql(Table *table, const QHash<QString, QString> &options, const QString& tabName, const QMap<QString, QString> &fkMappings, const Connection* pdest) const
 {
+    const MySqlConnection* dest = dynamic_cast<const MySqlConnection*>(pdest);
+    if(!dest)
+    {
+        return QStringList();
+    }
+
     // do not generate any code for a table which has no columns
     if(table->fullColumns().size() == 0) return QStringList();
 

@@ -1,6 +1,7 @@
 #include "ConnectionManager.h"
 #include "strings.h"
 #include "MySqlConnection.h"
+#include "SqliteConnection.h"
 
 #include <QSettings>
 
@@ -102,11 +103,13 @@ bool ConnectionManager::deleteConnection(const QString& name)
 
 Connection* ConnectionManager::createConnection(const QString &dbType, const QSettings &s)
 {
-    bool ac = s.value(strAutoConnect).toBool();
+    Connection* c = 0;
 
-    if(dbType == "MYSQL")
+    bool ac = s.value(strAutoConnect).toBool();
+    QString name = s.value(strName).toString();
+
+    if(dbType.toUpper() == "MYSQL")
     {
-        QString name = s.value(strName).toString();
         QString host = s.value(strHost).toString();
         QString pass = s.value(strPass).toString();
         QString user = s.value(strUser).toString();
@@ -119,7 +122,18 @@ Connection* ConnectionManager::createConnection(const QString &dbType, const QSe
         QString db = s.value(strDB).toString();
 
         int lastState = s.value("LastState").toInt();
-        Connection* c = new MySqlConnection(name, host, user, pass, db, true, ac, port);
+        c = new MySqlConnection(name, host, user, pass, db, true, ac, port);
         c->setState((ConnectionState)(lastState));
     }
+    else
+    if(dbType.toUpper() == "SQLITE")
+    {
+        QString f = s.value(strFile).toString();
+        int lastState = s.value("LastState").toInt();
+
+        c = new SqliteConnection(name, f, ac);
+        c->setState((ConnectionState)(lastState));
+    }
+
+    return c;
 }
