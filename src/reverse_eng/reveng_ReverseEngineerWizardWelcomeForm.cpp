@@ -4,11 +4,11 @@
 
 ReverseEngineerWizardWelcomeForm::ReverseEngineerWizardWelcomeForm(QWidget *parent) :
     QWizardPage(parent),
-    ui(new Ui::ReverseEngineerWizardWelcomeForm)
+    ui(new Ui::ReverseEngineerWizardWelcomeForm), m_mode()
 {
     ui->setupUi(this);
     setTitle(tr("Connection"));
-    setSubTitle(tr("Please specify the connection settings for the database you want to reverse engineer"));
+    setSubTitle(tr("Please select the database you want to reverse engineer"));
     QIcon*p = new QIcon(icons::strFroggieIcon);
     QIcon*p1 = new QIcon(icons::strIcon);
     setPixmap(QWizard::WatermarkPixmap, p->pixmap(150, 187));
@@ -35,8 +35,26 @@ QString ReverseEngineerWizardWelcomeForm::getPassword()
     return ui->txtDatabasePassword->text();
 }
 
-
 int ReverseEngineerWizardWelcomeForm::getPort()
 {
     return ui->txtPort->text().toInt();
+}
+
+void ReverseEngineerWizardWelcomeForm::setMysqMode()
+{
+    ui->toolBox->setCurrentIndex(0);
+    ui->toolBox->setItemEnabled(1, false);
+    m_mode = "MYSQL";
+}
+
+void ReverseEngineerWizardWelcomeForm::setSqliteMode()
+{
+    ui->toolBox->setCurrentIndex(1);
+    ui->toolBox->setItemEnabled(0, false);
+    m_mode = "SQLITE";
+}
+
+QString ReverseEngineerWizardWelcomeForm::getSqliteFile()
+{
+    return ui->txtSqliteFilename->text();
 }

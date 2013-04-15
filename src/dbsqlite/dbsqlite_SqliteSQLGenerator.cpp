@@ -258,34 +258,6 @@ QStringList SqliteSQLGenerator::generateCreateTableSql(Table *table, const QHash
     createTable += "\n)\n";
 
     {
-    // see if we have a storage engine
-    SpInstance* spi = table->getInstanceForSqlRoleUid(m_engine, uidMysqlStorageEngineTable);
-    if(spi)
-    {
-        QString storageEngine = spi->get();
-        if(storageEngine.length())
-        {
-            SqliteDatabaseEngine* mysEng = dynamic_cast<SqliteDatabaseEngine*>(m_engine);
-            if(mysEng)
-            {
-                if(dest)
-                {
-                    QStringList supportedStroageEngines = mysEng->getSupportedStorageEngines(dest->getHost(), dest->getUser(), dest->getPassword(), dest->getPort());
-                    if(supportedStroageEngines.contains(storageEngine.toUpper()))
-                    {
-                        createTable += QString(upcase?"ENGINE = ":"engine = ") + storageEngine;
-                    }
-                }
-                else
-                {
-                    createTable += QString(upcase?"ENGINE = ":"engine = ") + storageEngine;
-                }
-            }
-        }
-    }
-    }
-
-    {
     // and the codepage
     SpInstance* spi = table->getInstanceForSqlRoleUid(m_engine, uidMysqlCodepageTable);
     if(spi)

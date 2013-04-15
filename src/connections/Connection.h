@@ -27,7 +27,6 @@ public:
     virtual void serialize(QDomDocument& doc, QDomElement& parent) const = 0;
     virtual QString getFullLocation() const = 0;
     virtual void saveIntoSettings(QSettings& s) = 0;
-
     virtual Table* getIssueTable() const { return 0; }
 
     bool tryConnect();

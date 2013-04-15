@@ -16,6 +16,8 @@
 #include "core_Procedure.h"
 #include "core_Trigger.h"
 #include "core_Function.h"
+#include "MySqlConnection.h"
+#include "SqliteConnection.h"
 
 #include <QSqlDatabase>
 #include <QMessageBox>
@@ -345,7 +347,7 @@ void InjectSqlDialog::populateConnections()
     for(int i=0; i<connections.size(); i++)
     {
         QListWidgetItem* lwi = new QListWidgetItem(ui->lstAllConnections);
-        lwi->setText(connections.at(i)->getName() + " ("+ connections.at(i)->getDb()+"@"+ connections.at(i)->getHost() + ")");   // TODO: This should be done with setData but I'm lasy now
+        lwi->setText(connections.at(i)->getName() + " (" + connections.at(i)->getFullLocation() + ")");   // TODO: This should be done with setData but I'm lasy now
         lwi->setIcon(IconFactory::getConnectionStateIcon(connections.at(i)->getState()));
     }
 }
@@ -358,7 +360,7 @@ void InjectSqlDialog::onCreateDatabase()
     if(dlg->exec() == QDialog::Accepted)
     {
         QString t = dlg->getText();
-        Connection* c = new Connection("temp",
+        MySqlConnection* c = new MySqlConnection("temp",
                                        ui->txtDatabaseHost->text(),
                                        ui->txtDatabaseUser->text(),
                                        ui->txtDatabasePassword->text(),
@@ -406,15 +408,33 @@ void InjectSqlDialog::onSelectConnection(QListWidgetItem* item)
 
 }
 
-void InjectSqlDialog::populateConnectionDetails(Connection* c)
+void InjectSqlDialog::populateConnectionDetails(Connection* conn)
 {
-    ui->txtConnectionName->setText(c->getName());
-    ui->txtDatabaseHost->setText(c->getHost());
-    ui->txtDatabaseUser->setText(c->getUser());
-    ui->txtDatabasePassword->setText(c->getPassword());
-    ui->txtDatabaseName->setText(c->getDb());
-    ui->txtPort->setText(QString::number(c->getPort()));
-    ui->cmbDatabases->addItem(c->getDb());
+    if(ui->cmbDatabaseType->currentText().toUpper() == "MYSQL")
+    {
+        MySqlConnection* c = dynamic_cast<MySqlConnection*>(conn);
+        if(!c)
+        {
+            return ;
+        }
+
+        ui->txtConnectionName->setText(c->getName());
+        ui->txtDatabaseHost->setText(c->getHost());
+        ui->txtDatabaseUser->setText(c->getUser());
+        ui->txtDatabasePassword->setText(c->getPassword());
+        ui->txtDatabaseName->setText(c->getDb());
+        ui->txtPort->setText(QString::number(c->getPort()));
+        ui->cmbDatabases->addItem(c->getDb());
+    }
+    else
+    {
+        SqliteConnection* c = dynamic_cast<SqliteConnection*>(conn);
+        if(!c)
+        {
+            return ;
+        }
+        ui->txtDatabaseName->setText(c->getFileName());
+    }
 }
 
 void InjectSqlDialog::clearConnectionDetails()
@@ -563,4 +583,9 @@ void InjectSqlDialog::onSqliteFileNameChange(QString a)
     {
         ui->buttonBox->button(QDialogButtonBox::Ok)->setDisabled(true);
     }
+}
+
+QString InjectSqlDialog::getFileName() const
+{
+    return ui->txtDatabaseName->text();
 }

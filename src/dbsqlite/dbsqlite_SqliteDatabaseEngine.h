@@ -56,7 +56,6 @@ public:
     virtual bool injectMetadata(Connection* c, const Version* v);
     virtual QString getDbMetadata(Connection *c);
 
-    QStringList getSupportedStorageEngines(const QString& host, const QString& user, const QString& pass, int port);
     QString formatLastError(const QString &header, const QSqlError&);
 
 private:

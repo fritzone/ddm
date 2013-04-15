@@ -65,6 +65,8 @@
 #include "RepositoryGuiElements.h"
 #include "repo_RoleListingForm.h"
 #include "repo_RepositoryElementForm.h"
+#include "MySqlConnection.h"
+#include "SqliteConnection.h"
 
 #include <QtGui>
 
@@ -318,14 +320,23 @@ void MainWindow::onNewSolution()
             injectDialog->setModal(true);
             if(injectDialog->exec() == QDialog::Accepted)
             {
-                QString host = injectDialog->getHost();
-                QString user = injectDialog->getUser();
-                QString password = injectDialog->getPassword();
-                int port = injectDialog->getPort();
-                QString db = injectDialog->getDatabase();
+                Connection* c = 0;
+                if(injectDialog->getSDbEngine() == "MYSQL")
+                {
+                    QString host = injectDialog->getHost();
+                    QString user = injectDialog->getUser();
+                    QString password = injectDialog->getPassword();
+                    int port = injectDialog->getPort();
+                    QString db = injectDialog->getDatabase();
 
-                Connection c("temp", host, user, password, db, false, false, port);
-                QString meta = nprjdlg->getDatabaseEngine()->getDbMetadata(&c);
+                    c = new MySqlConnection("temp", host, user, password, db, false, false, port);
+                }
+                else
+                {
+                    QString dbFile = injectDialog->getFileName();
+                    c = new SqliteConnection("temp", dbFile, false);
+                }
+                QString meta = nprjdlg->getDatabaseEngine()->getDbMetadata(c);
                 QDomDocument doc;
                 QString lastErr;
                 if(!doc.setContent(meta, &lastErr))
@@ -335,6 +346,8 @@ void MainWindow::onNewSolution()
                 MajorVersion* mv = new MajorVersion;
                 project->addMajorVersion(mv);
                 DeserializationFactory::createMajorVersion(mv, project, project->getEngine(), doc, doc.firstChildElement().firstChildElement());
+
+                delete c;
             }
             else
             {
@@ -1971,7 +1984,7 @@ void MainWindow::onDeployHovered()
     for(int i=0; i< cons.size(); i++)
     {
         QAction* act = new QAction(this);
-        act->setText(cons.at(i)->getName() + " - " + cons.at(i)->getDb()+"@"+cons.at(i)->getHost());
+        act->setText(cons.at(i)->getName() + " - " + cons.at(i)->getFullLocation());
         act->setData(cons.at(i)->getName());
         act->setIcon(IconFactory::getConnectionStateIcon(cons.at(i)->getState()));
         deployPopupMenu->addAction(act);
@@ -2266,9 +2279,18 @@ void MainWindow::onEditConnection()
         ij->populateConnectionDetails(c);
         if(ij->exec()  == QDialog::Accepted)
         {
-            c->resetTo(ij->getName(), ij->getHost(), ij->getUser(), ij->getPassword(), ij->getDatabase(), ij->getPort(), true, ij->getAutoConnect());
+            if(dynamic_cast<MySqlConnection*>(c))
+            {
+                dynamic_cast<MySqlConnection*>(c)->resetTo(ij->getName(), ij->getHost(), ij->getUser(),
+                                                           ij->getPassword(), ij->getDatabase(), ij->getPort(), true, ij->getAutoConnect());
+            }
+            else
+            if(dynamic_cast<SqliteConnection*>(c))
+            {
+                dynamic_cast<SqliteConnection*>(c)->resetTo(ij->getFileName());
+            }
             c->setDisplayText(c->getName());
-            c->getLocation()->setText(1, c->getDb()+"@"+c->getHost());
+            c->getLocation()->setText(1, c->getFullLocation());
             QVariant var(c->getName());
             c->getLocation()->setData(0, Qt::UserRole, var);
             c->getLocation()->setIcon(0, IconFactory::getConnectionStateIcon(c->getState()));
@@ -2584,7 +2606,16 @@ void MainWindow::onGotoIssueLocation()
         ij->populateConnectionDetails(c);
         if(ij->exec()  == QDialog::Accepted)
         {
-            c->resetTo(ij->getName(), ij->getHost(), ij->getUser(), ij->getPassword(), ij->getDatabase(), ij->getPort(), true, ij->getAutoConnect());
+            if(dynamic_cast<MySqlConnection*>(c))
+            {
+                dynamic_cast<MySqlConnection*>(c)->resetTo(ij->getName(), ij->getHost(), ij->getUser(),
+                                                            ij->getPassword(), ij->getDatabase(), ij->getPort(), true, ij->getAutoConnect());
+            }
+            else
+            if(dynamic_cast<SqliteConnection*>(c))
+            {
+                dynamic_cast<SqliteConnection*>(c)->resetTo(ij->getFileName());
+            }
         }
     }
 }
@@ -2746,58 +2777,87 @@ void MainWindow::onViewDatatypesTree()
 
 void MainWindow::onReverseEngineerWizardNextPage(int cpage)
 {
-    switch(cpage)
+    // TODO: this switch with the IF is simply horrible, come up with a more NICER solution
+    if(m_revEngWizard->getDbTypeName() == "SQLITE")
     {
-    case 1: // user just filled in the connection stuff, tell the wizard to fetch the data and feed ti to the next page
-        m_revEngWizard->gatherConnectionData();
+        switch(cpage)
+        {
+        case 1: // user just filled in the connection stuff, tell the wizard to fetch the data and feed it to the next page
+            m_revEngWizard->gatherConnectionData();
+            break;
 
-        if(!m_revEngWizard->connectAndRetrieveDatabases())  //failed?... don't go forward, there won't be databases
-        {
-            m_revEngWizard->back();
-        }
-        break;
+        case 2: // user selected a database to reverse engineer
+            if(!m_revEngWizard->selectDatabase()) // did he?
+            {
+                QMessageBox::critical(m_revEngWizard, tr("Error"), tr("Please select a database"), QMessageBox::Ok);
+                m_revEngWizard->back();
+            }
 
-    case 2: // user selected a database to reverse engineer
-        if(!m_revEngWizard->selectDatabase()) // did he?
-        {
-            QMessageBox::critical(m_revEngWizard, tr("Error"), tr("Please select a database"), QMessageBox::Ok);
-            m_revEngWizard->back();
+            m_revEngWizard->connectAndRetrieveTables();
+            break;
+        case 3: // user selected the tables, advanced to the views
+            m_revEngWizard->connectAndRetrieveViews();
+            break;
+        case 4: // triggers
+            m_revEngWizard->connectAndRetrieveTriggers();
+            break;
         }
+    }
+    else
+    {
+        switch(cpage)
+        {
+        case 1: // user just filled in the connection stuff, tell the wizard to fetch the data and feed ti to the next page
+            m_revEngWizard->gatherConnectionData();
 
-        m_revEngWizard->connectAndRetrieveTables();
-        break;
-    case 3: // user selected the tables, advanced to the views
-        if(!m_revEngWizard->selectDatabase()) // did he select a database?
-        {
-            QMessageBox::critical(m_revEngWizard, tr("Error"), tr("Please select a database"), QMessageBox::Ok);
-            m_revEngWizard->back();
+            if(!m_revEngWizard->connectAndRetrieveDatabases())  //failed?... don't go forward, there won't be databases
+            {
+                m_revEngWizard->back();
+            }
+            break;
+
+        case 2: // user selected a database to reverse engineer
+            if(!m_revEngWizard->selectDatabase()) // did he?
+            {
+                QMessageBox::critical(m_revEngWizard, tr("Error"), tr("Please select a database"), QMessageBox::Ok);
+                m_revEngWizard->back();
+            }
+
+            m_revEngWizard->connectAndRetrieveTables();
+            break;
+        case 3: // user selected the tables, advanced to the views
+            if(!m_revEngWizard->selectDatabase()) // did he select a database?
+            {
+                QMessageBox::critical(m_revEngWizard, tr("Error"), tr("Please select a database"), QMessageBox::Ok);
+                m_revEngWizard->back();
+            }
+            m_revEngWizard->connectAndRetrieveViews();
+            break;
+        case 4: // procedures
+            if(!m_revEngWizard->selectDatabase()) // did he select a database?
+            {
+                QMessageBox::critical(m_revEngWizard, tr("Error"), tr("Please select a database"), QMessageBox::Ok);
+                m_revEngWizard->back();
+            }
+            m_revEngWizard->connectAndRetrieveProcedures();
+            break;
+        case 5: // functions
+            if(!m_revEngWizard->selectDatabase()) // did he select a database?
+            {
+                QMessageBox::critical(m_revEngWizard, tr("Error"), tr("Please select a database"), QMessageBox::Ok);
+                m_revEngWizard->back();
+            }
+            m_revEngWizard->connectAndRetrieveFunctions();
+            break;
+        case 6: // triggers
+            if(!m_revEngWizard->selectDatabase()) // did he select a database?
+            {
+                QMessageBox::critical(m_revEngWizard, tr("Error"), tr("Please select a database"), QMessageBox::Ok);
+                m_revEngWizard->back();
+            }
+            m_revEngWizard->connectAndRetrieveTriggers();
+            break;
         }
-        m_revEngWizard->connectAndRetrieveViews();
-        break;
-    case 4: // procedures
-        if(!m_revEngWizard->selectDatabase()) // did he select a database?
-        {
-            QMessageBox::critical(m_revEngWizard, tr("Error"), tr("Please select a database"), QMessageBox::Ok);
-            m_revEngWizard->back();
-        }
-        m_revEngWizard->connectAndRetrieveProcedures();
-        break;
-    case 5: // functions
-        if(!m_revEngWizard->selectDatabase()) // did he select a database?
-        {
-            QMessageBox::critical(m_revEngWizard, tr("Error"), tr("Please select a database"), QMessageBox::Ok);
-            m_revEngWizard->back();
-        }
-        m_revEngWizard->connectAndRetrieveFunctions();
-        break;
-    case 6: // triggers
-        if(!m_revEngWizard->selectDatabase()) // did he select a database?
-        {
-            QMessageBox::critical(m_revEngWizard, tr("Error"), tr("Please select a database"), QMessageBox::Ok);
-            m_revEngWizard->back();
-        }
-        m_revEngWizard->connectAndRetrieveTriggers();
-        break;
     }
 }
 

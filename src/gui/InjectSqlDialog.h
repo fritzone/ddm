@@ -23,6 +23,9 @@ public:
     ~InjectSqlDialog();
 
     QString getDatabase() const;
+
+    // ugly, and returns the SQLITE file name
+    QString getFileName() const;
     QString getUser() const;
     QString getPassword() const;
     QString getHost() const;
@@ -39,7 +42,7 @@ public:
     void setupForConnectionStorage();
     void setupForBindToDatabase();
 
-    void populateConnectionDetails(Connection* c);
+    void populateConnectionDetails(Connection* conn);
     void clearConnectionDetails();
 
     QStringList getUidsToDeploy() const

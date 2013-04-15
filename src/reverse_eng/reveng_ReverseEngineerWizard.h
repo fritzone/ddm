@@ -37,6 +37,7 @@ public:
     int getPort() {return m_port; }
 
     bool createDataTypesForColumns();
+    QString getDbTypeName() const;
 
 private:
 
@@ -56,6 +57,7 @@ private:
     QString m_pass;
     QString m_database;
     int m_port;
+    QString m_sqliteFile;
 };
 
 #endif // REVERSEENGINEERWIZARD_H
