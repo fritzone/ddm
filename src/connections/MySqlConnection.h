@@ -12,6 +12,10 @@ public:
 
     virtual void serialize(QDomDocument& doc, QDomElement& parent) const;
     virtual void saveIntoSettings(QSettings& s);
+    virtual QString getDbType() const
+    {
+        return "MySql";
+    }
 
     virtual QString getFullLocation() const
     {

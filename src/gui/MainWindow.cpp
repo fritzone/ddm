@@ -307,11 +307,22 @@ void MainWindow::onNewSolution()
         }
 
         Project* project = new Project(nprjdlg->getProjectName().toUpper(), nprjdlg->enableOOPFeatures());
+        DatabaseEngine* engine = nprjdlg->getDatabaseEngine();
         m_workspace->addProjectToSolution(m_workspace->currentSolution(), project);
-        project->setEngine(nprjdlg->getDatabaseEngine());
-        qDebug() << project->getEngine()->getDatabaseEngineName();
+        project->setEngine(engine);
+        //qDebug() << project->getEngine()->getDatabaseEngineName();
 
         setupGuiForNewSolution();
+        if(!engine->supportsStoredMethods())
+        {
+            m_ui->action_NewFunction->setVisible(false);
+            m_ui->action_NewProcedure->setVisible(false);
+        }
+        else
+        {
+            m_ui->action_NewFunction->setVisible(true);
+            m_ui->action_NewProcedure->setVisible(true);
+        }
 
         if(nprjdlg->getProjectType() == NewProjectDialog::PRJ_BINDTODATABASE)
         {
@@ -3228,3 +3239,4 @@ void MainWindow::onRepoItemClicked(QTreeWidgetItem* itm ,int)
 
 
 }
+

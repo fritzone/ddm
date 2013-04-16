@@ -61,6 +61,7 @@ static const QString strDistinct = "DISTINCT";
 static const QString strStar = "*";
 static const QString strRollup = "ROLLUP";
 static const QString strNull = "NULL";
+static const QString strCreate = "CREATE";
 
 static const QString strLShiftOp = "<<";
 static const QString strRShiftOp = ">>";

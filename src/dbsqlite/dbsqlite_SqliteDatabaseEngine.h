@@ -55,6 +55,7 @@ public:
     virtual bool tableBlocksForeignKeyFunctionality(const Table*) const;
     virtual bool injectMetadata(Connection* c, const Version* v);
     virtual QString getDbMetadata(Connection *c);
+    virtual bool supportsStoredMethods() {return false;}
 
     QString formatLastError(const QString &header, const QSqlError&);
 

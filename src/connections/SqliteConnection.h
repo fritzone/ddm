@@ -12,7 +12,13 @@ public:
     virtual void serialize(QDomDocument& doc, QDomElement& parent) const;
     virtual void saveIntoSettings(QSettings& s);
     virtual QString getFullLocation() const;
+    virtual QString getDbType() const
+    {
+        return "Sqlite";
+    }
+
     virtual Table* getIssueTable() const { return 0; }
+
 
     void resetTo(const QString& fileName)
     {

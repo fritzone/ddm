@@ -78,7 +78,7 @@ void ProcedureForm::textChanged()
 
 void ProcedureForm::initSql()
 {
-    QString sql = QString("CREATE ") + (m_mode == MODE_PROCEDURE?"PROCEDURE ":"FUNCTION ") + m_proc->getName();
+    QString sql = strCreate + " " + (m_mode == MODE_PROCEDURE?"PROCEDURE ":"FUNCTION ") + m_proc->getName();
     sql += "()";
     if(m_mode == MODE_FUNCTION) sql += " RETURNS ";
     sql += "\nBEGIN\n\nEND";

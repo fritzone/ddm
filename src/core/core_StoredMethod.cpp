@@ -1,6 +1,7 @@
 #include "core_StoredMethod.h"
 #include "db_AbstractSQLGenerator.h"
 #include "Configuration.h"
+#include "strings.h"
 
 #include <QStringList>
 #include <QCryptographicHash>
@@ -243,7 +244,7 @@ QString StoredMethod::getNameFromSql(int stidx, int &nameidx)
         {
             return "UNNAMED";
         }
-        if(prev.toUpper() != "CREATE")
+        if(prev.toUpper() != strCreate)
         {
             // search back if we have definer ...
             while(cindx >= 0 && t.at(cindx).isSpace()) cindx --;
@@ -271,7 +272,7 @@ QString StoredMethod::getNameFromSql(int stidx, int &nameidx)
                         prev3 = t.at(cindx) + prev3;
                         cindx --;
                     }
-                    if(prev3.toUpper() != "CREATE")
+                    if(prev3.toUpper() != strCreate)
                     {
                         i += c.length();
                         return getNameFromSql(i, nameidx);

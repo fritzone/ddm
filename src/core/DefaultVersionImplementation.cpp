@@ -39,7 +39,7 @@ DefaultVersionImplementation::DefaultVersionImplementation(Project* p, int major
 void DefaultVersionImplementation::createTreeItems(GuiElements* gui, ContextMenuEnabledTreeWidgetItem* projectItem, int idxAfter)
 {
     m_guiElements = new VersionGuiElements(gui, this);
-    m_guiElements->createGuiElements(projectItem, idxAfter);
+    m_guiElements->createGuiElements(projectItem, idxAfter, m_project->getEngine());
 }
 
 void DefaultVersionImplementation::updateGui()
@@ -64,8 +64,11 @@ void DefaultVersionImplementation::updateGui()
         getGui()->getTableInstancesItem()->setForeground(0, QBrush(Qt::lightGray));
         getGui()->getDiagramsItem()->setForeground(0, QBrush(Qt::lightGray));
         getGui()->getDtsItem()->setForeground(0, QBrush(Qt::lightGray));
-        getGui()->getProceduresItem()->setForeground(0, QBrush(Qt::lightGray));
-        getGui()->getFunctionsItem()->setForeground(0, QBrush(Qt::lightGray));
+        if(m_project->getEngine()->supportsStoredMethods())
+        {
+            getGui()->getProceduresItem()->setForeground(0, QBrush(Qt::lightGray));
+            getGui()->getFunctionsItem()->setForeground(0, QBrush(Qt::lightGray));
+        }
         getGui()->getTriggersItem()->setForeground(0, QBrush(Qt::lightGray));
         getGui()->getViewsItem()->setForeground(0, QBrush(Qt::lightGray));
 
@@ -91,8 +94,11 @@ void DefaultVersionImplementation::updateGui()
     getGui()->getTableInstancesItem()->setFont(0, f);
     getGui()->getDiagramsItem()->setFont(0, f);
     getGui()->getDtsItem()->setFont(0, f);
-    getGui()->getProceduresItem()->setFont(0, f);
-    getGui()->getFunctionsItem()->setFont(0, f);
+    if(m_project->getEngine()->supportsStoredMethods())
+    {
+        getGui()->getProceduresItem()->setFont(0, f);
+        getGui()->getFunctionsItem()->setFont(0, f);
+    }
     getGui()->getTriggersItem()->setFont(0, f);
     getGui()->getViewsItem()->setFont(0, f);
 

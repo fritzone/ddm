@@ -214,7 +214,6 @@ public:
      * represented by the given connection
      *
      * @param c - the connection to the database
-     *it neede a
      * @return the list of views
      */
     virtual QStringList getAvailableViews(Connection* c) = 0;
@@ -445,6 +444,12 @@ public:
      * @return the metadata of the database or an empty string
      */
     virtual QString getDbMetadata(Connection *c) = 0;
+
+    /**
+     * @brief supportsStoredMethods returns true if the database supports stored functions
+     * and procedures.
+     */
+    virtual bool supportsStoredMethods() = 0;
 
 public:
 

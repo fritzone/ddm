@@ -43,6 +43,12 @@ void ConnectionManager::loadConnections()
 
         Connection*c = createConnection(dbt, s);
 
+        if(!c)
+        {
+            s.endGroup();
+            return;
+        }
+
         s.endGroup();
 
         m_connections.append(c);

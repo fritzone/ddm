@@ -27,6 +27,7 @@ public:
     virtual void serialize(QDomDocument& doc, QDomElement& parent) const = 0;
     virtual QString getFullLocation() const = 0;
     virtual void saveIntoSettings(QSettings& s) = 0;
+    virtual QString getDbType() const = 0;
     virtual Table* getIssueTable() const { return 0; }
 
     bool tryConnect();
@@ -60,10 +61,6 @@ public:
         m_tables.clear();
     }
 
-    QString getDbType() const
-    {
-        return m_dbType;
-    }
 
     bool getAC() const
     {
@@ -77,7 +74,6 @@ public:
 
 protected:
 
-    QString m_dbType;
     bool m_autoConnect;
     DatabaseEngine* m_engine;
     ConnectionState m_state;
