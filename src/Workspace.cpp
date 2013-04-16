@@ -25,6 +25,7 @@
 #include "core_Trigger.h"
 #include "core_TableInstance.h"
 #include "MySqlConnection.h"
+#include "SqliteConnection.h"
 
 #include <QFile>
 #include <QApplication>
@@ -245,6 +246,7 @@ void Workspace::createNewConnection()
             MainWindow::instance()->showConnections();
         }
 
+        Connection* c = 0;
         if(injectDialog->getSDbEngine() == "MYSQL")
         {
             QString host = injectDialog->getHost();
@@ -253,10 +255,18 @@ void Workspace::createNewConnection()
             QString db = injectDialog->getDatabase();
             QString name = injectDialog->getName();
             int port = injectDialog->getPort();
-            Connection* c = new MySqlConnection(name, host, user, password, db, true, injectDialog->getAutoConnect(), port);
-            ConnectionManager::instance()->addConnection(c);
-            MainWindow::instance()->getConnectionGuiElements()->createConnectionTreeEntry(c);
+            c = new MySqlConnection(name, host, user, password, db, true, injectDialog->getAutoConnect(), port);
         }
+        else
+        {
+            c = new SqliteConnection(injectDialog->getName(), injectDialog->getFileName(), injectDialog->getAutoConnect());
+
+        }
+        if(!c) return;
+
+        ConnectionManager::instance()->addConnection(c);
+        MainWindow::instance()->getConnectionGuiElements()->createConnectionTreeEntry(c);
+
     }
 }
 

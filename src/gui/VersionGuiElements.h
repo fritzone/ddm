@@ -22,6 +22,7 @@ class TriggerForm;
 class Trigger;
 class Function;
 class GuiElements;
+class DatabaseEngine;
 
 /**
  * The scope of this class is to have a common collection point for the
@@ -67,7 +68,7 @@ public:
     bool hasSpatialDtsItem() { return spatialDtItem != 0; }
 
     /** @group creators, other methods*/
-    void createGuiElements(ContextMenuEnabledTreeWidgetItem* projectItem, int idxAfter);
+    void createGuiElements(ContextMenuEnabledTreeWidgetItem* projectItem, int idxAfter, DatabaseEngine *dbEngine);
     void populateTreeItems();
     void cleanupOrphanedIssueTableItems();
     ContextMenuEnabledTreeWidgetItem* createDataTypeTreeEntry(UserDataType*);

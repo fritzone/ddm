@@ -1,5 +1,6 @@
 #include "dbsqlite_SqliteDatabaseEngine.h"
 
+#include <QSqlDriver>
 #include <QSqlDatabase>
 #include <QSqlError>
 #include <QSqlQuery>
@@ -192,7 +193,6 @@ QSqlDatabase SqliteDatabaseEngine::getQSqlDatabaseForConnection(Connection *conn
     QString newConnName = provideConnectionName("getConnection");
     QSqlDatabase dbo = QSqlDatabase::addDatabase("QSQLITE", newConnName);
 
-    dbo.setHostName("localhost");
     dbo.setDatabaseName(c->getFileName());
 
     dbo.open();
@@ -276,6 +276,7 @@ QStringList SqliteDatabaseEngine::getAvailableStoredFunctions(Connection* c)
 QStringList SqliteDatabaseEngine::getAvailableTables(Connection* c)
 {
     QSqlDatabase dbo = getQSqlDatabaseForConnection(c);
+
     bool ok = dbo.isOpen();
     QStringList result;
 
@@ -287,7 +288,15 @@ QStringList SqliteDatabaseEngine::getAvailableTables(Connection* c)
 
     QSqlQuery query(dbo);
 
-    query.exec("select name from sqlite_master where type = 'table'");
+
+
+    ok = query.exec("select name from sqlite_master where type = 'table';");
+    if(!ok)
+    {
+        lastError = formatLastError(QObject::tr("Cannot get tables") + QString(" <<< ") + dbo.databaseName() + ">>>", query.lastError() );
+        qDebug() << lastError;
+        return result;
+    }
 
     while(query.next())
     {

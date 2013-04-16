@@ -8,7 +8,7 @@ MySqlConnection::MySqlConnection(const QString& name,
     Connection(name, autoConnect),
     m_host(host), m_user(user), m_pass(pass), m_db(db),  m_port(port), m_savePw(savePw)
 {
-    m_engine = DatabaseEngine::provideEngineFor(m_dbType);
+    m_engine = DatabaseEngine::provideEngineFor(getDbType());
 }
 
 void MySqlConnection::serialize(QDomDocument& doc, QDomElement& parent) const
@@ -20,7 +20,7 @@ void MySqlConnection::serialize(QDomDocument& doc, QDomElement& parent) const
     connectionElement.setAttribute("Port", m_port);
     connectionElement.setAttribute("DB", m_db);
     connectionElement.setAttribute("User", m_user);
-    connectionElement.setAttribute("DbType", m_dbType);
+    connectionElement.setAttribute("DbType", getDbType());
     connectionElement.setAttribute("AutoConnect", m_autoConnect);
     connectionElement.setAttribute("LastState", m_state);
     parent.appendChild(connectionElement);
@@ -33,7 +33,6 @@ void MySqlConnection::resetTo(const QString &name, const QString &host, const QS
     m_user = user;
     m_pass = pass;
     m_db = db;
-    m_dbType = "MySQL";
     m_savePw = savePw;
     m_autoConnect = autoConnect;
     m_port = port;

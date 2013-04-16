@@ -10,7 +10,6 @@ Entity::Entity(const QString &name, const QUuid& classUid, const QUuid &targetCl
     m_classUid(targetClassUid), m_targetClassUid(targetClassUid),
     m_hasDescription(hasDesc), m_supportsSps(supportSps)
 {
-    qDebug() << "CREA:" << classUid;
     UidWarehouse::instance().addElement(targetClassUid, this);
 }
 

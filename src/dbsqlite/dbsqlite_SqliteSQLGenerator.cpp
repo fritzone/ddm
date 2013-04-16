@@ -88,7 +88,8 @@ QStringList SqliteSQLGenerator::generateCreateTableSql(Table *table, const QHash
         }
         toReturn << comment;
     }
-    QString createTable = upcase? "CREATE " : "create ";
+    QString createTable = upcase? strCreate : "create";
+    createTable += " ";
 
     {
     // see if this is a temporary table
@@ -284,7 +285,7 @@ QStringList SqliteSQLGenerator::generateCreateTableSql(Table *table, const QHash
     // now create the indexes of the table
     for(int i=0; i<table->fullIndices().size(); i++)
     {
-        QString indexCommand = upcase?"CREATE":"create";
+        QString indexCommand = upcase ? strCreate : "create";
         Index* idx = table->getIndex(table->fullIndices().at(i));
 
         {
@@ -569,7 +570,7 @@ QStringList SqliteSQLGenerator::generateCreateViewSql(View *v, const QHash<QStri
     {
         QStringList res;
         bool upcase = true; /*options.contains("Case") && options["Case"] == "Upper";*/
-        res.append(upcase?"CREATE":"create");
+        res.append(upcase ? strCreate : "create" );
         if(v->canReplace())
         {
             res.append(upcase?"OR REPLACE":"or replace");
@@ -631,7 +632,7 @@ QStringList SqliteSQLGenerator::generateTriggerSql(Trigger* t, const QHash<QStri
 {
     QStringList result;
     bool upcase = options.contains("Case") && options["Case"] == "Upper";
-    QString s = upcase?  "CREATE TRIGGER ": "create trigger ";
+    QString s = upcase?  strCreate + " TRIGGER ": "create trigger ";
     s += t->getName(); s+= strSpace;
     s += t->getTime(); s+= strSpace;
     s += t->getEvent(); s+= strSpace;

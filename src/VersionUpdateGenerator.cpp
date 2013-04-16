@@ -676,7 +676,7 @@ void VersionUpdateGenerator::updateViews(Version *from, Version *to)
                     }
 
                     // TODO: This is MYSQL spceific
-                    if(cr.toUpper() == "CREATE")
+                    if(cr.toUpper() == strCreate)
                     {
                         m_commands << "ALTER " <<createView.mid(idx);
                     }

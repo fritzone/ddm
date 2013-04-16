@@ -23,6 +23,7 @@
 #include "core_Function.h"
 #include "GuiElements.h"
 #include "UidWarehouse.h"
+#include "db_DatabaseEngine.h"
 
 #include <QVector>
 #include <QtGui>
@@ -95,7 +96,7 @@ void VersionGuiElements::cleanupDtEntries()
 }
 
 
-void VersionGuiElements::createGuiElements(ContextMenuEnabledTreeWidgetItem* /*projectItem*/, int idxAfter)
+void VersionGuiElements::createGuiElements(ContextMenuEnabledTreeWidgetItem* /*projectItem*/, int idxAfter, DatabaseEngine* dbEngine)
 {
 
     versionItem = new ContextMenuEnabledTreeWidgetItem(0, QStringList(QString("Ver: ") + m_version->getVersionText())) ;
@@ -141,23 +142,26 @@ void VersionGuiElements::createGuiElements(ContextMenuEnabledTreeWidgetItem* /*p
     diagramsItem->setData(0, Qt::UserRole, QVariant(dgramsUid ));
     UidWarehouse::instance().addElement(dgramsUid , m_version);
 
-    // procedures are still coming from the version
-    proceduresItem = new ContextMenuEnabledTreeWidgetItem(versionItem, QStringList(QObject::tr("Procedures"))) ;
-    proceduresItem->setIcon(0, IconFactory::getProcedureIcon());
-    proceduresItem->setPopupMenu(ContextMenuCollection::getInstance()->getProceduresPopupMenu());
-    m_tree->addTopLevelItem(proceduresItem);
-    QUuid procsUid = QUuid::createUuid();
-    proceduresItem->setData(0, Qt::UserRole, QVariant(procsUid ));
-    UidWarehouse::instance().addElement(procsUid , m_version);
+    if(dbEngine->supportsStoredMethods())
+    {
+        // procedures are still coming from the version
+        proceduresItem = new ContextMenuEnabledTreeWidgetItem(versionItem, QStringList(QObject::tr("Procedures"))) ;
+        proceduresItem->setIcon(0, IconFactory::getProcedureIcon());
+        proceduresItem->setPopupMenu(ContextMenuCollection::getInstance()->getProceduresPopupMenu());
+        m_tree->addTopLevelItem(proceduresItem);
+        QUuid procsUid = QUuid::createUuid();
+        proceduresItem->setData(0, Qt::UserRole, QVariant(procsUid ));
+        UidWarehouse::instance().addElement(procsUid , m_version);
 
-    // functions are still coming from the version
-    functionsItem = new ContextMenuEnabledTreeWidgetItem(versionItem, QStringList(QObject::tr("Functions"))) ;
-    functionsItem->setIcon(0, IconFactory::getFunctionTreeIcon());
-    functionsItem->setPopupMenu(ContextMenuCollection::getInstance()->getFunctionsPopupMenu());
-    m_tree->addTopLevelItem(functionsItem);
-    QUuid funcsUid = QUuid::createUuid();
-    functionsItem->setData(0, Qt::UserRole, QVariant(funcsUid  ));
-    UidWarehouse::instance().addElement(funcsUid  , m_version);
+        // functions are still coming from the version
+        functionsItem = new ContextMenuEnabledTreeWidgetItem(versionItem, QStringList(QObject::tr("Functions"))) ;
+        functionsItem->setIcon(0, IconFactory::getFunctionTreeIcon());
+        functionsItem->setPopupMenu(ContextMenuCollection::getInstance()->getFunctionsPopupMenu());
+        m_tree->addTopLevelItem(functionsItem);
+        QUuid funcsUid = QUuid::createUuid();
+        functionsItem->setData(0, Qt::UserRole, QVariant(funcsUid  ));
+        UidWarehouse::instance().addElement(funcsUid  , m_version);
+    }
 
     // views come from the version item too
     viewsItem = new ContextMenuEnabledTreeWidgetItem(versionItem, QStringList(QObject::tr("Views"))) ;
