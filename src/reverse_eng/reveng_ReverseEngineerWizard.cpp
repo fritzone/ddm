@@ -19,7 +19,7 @@ ReverseEngineerWizard::ReverseEngineerWizard(DatabaseEngine* engine) : QWizard()
     m_functionsPage(new ReverseEngineerWizardObjectListForm(0, ReverseEngineerWizardObjectListForm::REVERSE_ENGINEER_FUNCS)),
     m_triggersPage(new ReverseEngineerWizardObjectListForm(0, ReverseEngineerWizardObjectListForm::REVERSE_ENGINEER_TRIGGERS)),
     m_optionsPage(new ReverseEngineerWizardOptionsForm),
-    m_host(""), m_user(""), m_pass(""), m_database(""), m_port(0), m_sqliteFile()
+    m_host(""), m_user(""), m_pass(""), m_database(""), m_port(0), m_sqliteFile(), m_sqliteVersion(3)
 {
     if(getDbTypeName() == "MYSQL")
     {
@@ -65,6 +65,7 @@ void ReverseEngineerWizard::gatherConnectionData()
     else
     {
         m_sqliteFile = m_welcomePage->getSqliteFile();
+        m_sqliteVersion = m_welcomePage->getSqliteVersion();
     }
 }
 
@@ -110,7 +111,7 @@ bool ReverseEngineerWizard::connectAndRetrieveViews()
     }
     else
     {
-        c = new SqliteConnection("temp", m_sqliteFile, false);
+        c = new SqliteConnection("temp", m_sqliteFile, false, m_sqliteVersion);
     }
 
     if(!c) return false;
@@ -135,7 +136,7 @@ bool ReverseEngineerWizard::connectAndRetrieveFunctions()
     }
     else
     {
-        c = new SqliteConnection("temp", m_sqliteFile, false);
+        c = new SqliteConnection("temp", m_sqliteFile, false, m_sqliteVersion);
     }
 
     if(!c) return false;
@@ -160,7 +161,7 @@ bool ReverseEngineerWizard::connectAndRetrieveProcedures()
     }
     else
     {
-        c = new SqliteConnection("temp", m_sqliteFile, false);
+        c = new SqliteConnection("temp", m_sqliteFile, false, m_sqliteVersion);
     }
 
     if(!c) return false;
@@ -185,7 +186,7 @@ bool ReverseEngineerWizard::connectAndRetrieveTriggers()
     }
     else
     {
-        c = new SqliteConnection("temp", m_sqliteFile, false);
+        c = new SqliteConnection("temp", m_sqliteFile, false, m_sqliteVersion);
     }
 
     if(!c) return false;
@@ -210,7 +211,7 @@ bool ReverseEngineerWizard::connectAndRetrieveTables()
     }
     else
     {
-        c = new SqliteConnection("temp", m_sqliteFile, false);
+        c = new SqliteConnection("temp", m_sqliteFile, false, m_sqliteVersion);
     }
 
     if(!c) return false;

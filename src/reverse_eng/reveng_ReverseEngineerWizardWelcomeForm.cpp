@@ -58,3 +58,9 @@ QString ReverseEngineerWizardWelcomeForm::getSqliteFile()
 {
     return ui->txtSqliteFilename->text();
 }
+
+int ReverseEngineerWizardWelcomeForm::getSqliteVersion()
+{
+    if(ui->cmbSqliteVersion->currentText().contains("3")) return 3;
+    return 2;
+}

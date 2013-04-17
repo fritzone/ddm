@@ -7,7 +7,7 @@ class SqliteConnection : public Connection
 {
 public:
 
-    SqliteConnection(const QString& name, const QString& filename, bool autoConnect);
+    SqliteConnection(const QString& name, const QString& filename, bool autoConnect, int sqliteVersion);
 
     virtual void serialize(QDomDocument& doc, QDomElement& parent) const;
     virtual void saveIntoSettings(QSettings& s);
@@ -30,8 +30,14 @@ public:
         return m_fileName;
     }
 
+    int getVersion() const
+    {
+        return m_sqliteVersion;
+    }
+
 private:
     QString m_fileName;
+    int m_sqliteVersion;
 };
 
 #endif // SQLITECONNECTION_H

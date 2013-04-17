@@ -38,6 +38,7 @@ InjectSqlDialog::InjectSqlDialog(DatabaseEngine* engine, QWidget *parent, Versio
 {
     ui->setupUi(this);
 
+    ui->cmbSqliteVersion->hide();
     ui->frame_2->hide();
     ui->buttonBox->button(QDialogButtonBox::Ok)->setDisabled(true);
     ui->txtDatabaseHost->setText(previousHost.length()?previousHost:"localhost");
@@ -211,8 +212,12 @@ void InjectSqlDialog::changeEvent(QEvent *e)
     QDialog::changeEvent(e);
     switch (e->type()) {
     case QEvent::LanguageChange:
+    {
+        QString oldConnName = ui->txtConnectionName->text();
         ui->retranslateUi(this);
+        ui->txtConnectionName->setText(oldConnName);
         break;
+    }
     default:
         break;
     }
@@ -410,15 +415,13 @@ void InjectSqlDialog::onSelectConnection(QListWidgetItem* item)
 
 void InjectSqlDialog::populateConnectionDetails(Connection* conn)
 {
-    if(ui->cmbDatabaseType->currentText().toUpper() == "MYSQL")
-    {
-        MySqlConnection* c = dynamic_cast<MySqlConnection*>(conn);
-        if(!c)
-        {
-            return ;
-        }
+    ui->txtConnectionName->setText(conn->getName());
 
-        ui->txtConnectionName->setText(c->getName());
+    MySqlConnection* c = dynamic_cast<MySqlConnection*>(conn);
+    if(c)
+    {
+        setMysqlLayout();
+
         ui->txtDatabaseHost->setText(c->getHost());
         ui->txtDatabaseUser->setText(c->getUser());
         ui->txtDatabasePassword->setText(c->getPassword());
@@ -428,12 +431,16 @@ void InjectSqlDialog::populateConnectionDetails(Connection* conn)
     }
     else
     {
-        SqliteConnection* c = dynamic_cast<SqliteConnection*>(conn);
-        if(!c)
+        SqliteConnection* c1 = dynamic_cast<SqliteConnection*>(conn);
+        if(!c1)
         {
             return ;
         }
-        ui->txtDatabaseName->setText(c->getFileName());
+
+        setSqliteLayout();
+
+        ui->txtDatabaseName->setText(c1->getFileName());
+        if(c1->getVersion() == 2) ui->cmbSqliteVersion->setCurrentIndex(1);
     }
 }
 
@@ -517,53 +524,72 @@ void InjectSqlDialog::onDbTypeChange(QString a)
     m_strDbEngine = a.toUpper();
     if(m_strDbEngine == "SQLITE")
     {
-        ui->lblHost->hide();
-        ui->lblPassword->hide();
-        ui->lblUser->hide();
-        ui->lblPort->hide();
-        ui->txtDatabaseHost->hide();
-        ui->txtDatabasePassword->hide();
-        ui->txtDatabaseUser->hide();
-        ui->txtPort->hide();
-        ui->cmbDatabases->hide();
-        ui->btnConnect->hide();
-        ui->btnCreateDatabase->hide();
-
-        ui->txtDatabaseName->show();
-        ui->btnBrowseForFile->show();
-        ui->lblDatabase->setText(tr("Filename"));
-
-        ui->lblDatabase->setEnabled(true);
-
-        ui->buttonBox->button(QDialogButtonBox::Ok)->setDisabled(ui->txtDatabaseName->text().length() == 0);
+        setSqliteLayout();
     }
     else
     {
-        ui->lblHost->show();
-        ui->lblPassword->show();
-        ui->lblUser->show();
-        ui->lblPort->show();
-        ui->txtDatabaseHost->show();
-        ui->txtDatabasePassword->show();
-        ui->txtDatabaseUser->show();
-        ui->txtPort->show();
-        ui->cmbDatabases->show();
-        ui->btnConnect->show();
-        ui->btnCreateDatabase->show();
-
-        ui->txtDatabaseName->hide();
-        ui->btnBrowseForFile->hide();
-        ui->lblDatabase->setText(tr("Database"));
-
-        ui->lblDatabase->setEnabled(m_alreadyConnected);
-        ui->buttonBox->button(QDialogButtonBox::Ok)->setDisabled(!m_alreadyConnected);
-
+        setMysqlLayout();
     }
 }
 
+void InjectSqlDialog::setSqliteLayout()
+{
+    ui->lblHost->hide();
+    ui->lblPassword->hide();
+    ui->lblUser->hide();
+    ui->lblPort->hide();
+    ui->txtDatabaseHost->hide();
+    ui->txtDatabasePassword->hide();
+    ui->txtDatabaseUser->hide();
+    ui->txtPort->hide();
+    ui->cmbDatabases->hide();
+    ui->btnConnect->hide();
+    ui->btnCreateDatabase->hide();
+
+    ui->txtDatabaseName->show();
+    ui->btnBrowseForFile->show();
+    ui->lblDatabase->setText(tr("Filename"));
+
+    ui->lblDatabase->setEnabled(true);
+
+    ui->buttonBox->button(QDialogButtonBox::Ok)->setDisabled(ui->txtDatabaseName->text().length() == 0);
+
+    ui->cmbSqliteVersion->show();
+
+}
+
+void InjectSqlDialog::setMysqlLayout()
+{
+    ui->lblHost->show();
+    ui->lblPassword->show();
+    ui->lblUser->show();
+    ui->lblPort->show();
+    ui->txtDatabaseHost->show();
+    ui->txtDatabasePassword->show();
+    ui->txtDatabaseUser->show();
+    ui->txtPort->show();
+    ui->cmbDatabases->show();
+    ui->btnConnect->show();
+    ui->btnCreateDatabase->show();
+
+    ui->txtDatabaseName->hide();
+    ui->btnBrowseForFile->hide();
+    ui->lblDatabase->setText(tr("Database"));
+
+    ui->lblDatabase->setEnabled(m_alreadyConnected);
+    ui->buttonBox->button(QDialogButtonBox::Ok)->setDisabled(!m_alreadyConnected);
+
+    ui->cmbSqliteVersion->hide();
+
+}
+
+
 void InjectSqlDialog::onSelectFileForSqlite()
 {
-    QString fileName = QFileDialog::getSaveFileName(this,  tr("Select Database file"), "", tr("Sqlite files (*.sqlite);;All files (*.*)"), 0, QFileDialog::DontConfirmOverwrite	| QFileDialog::ReadOnly);
+    QString fileName = QFileDialog::getOpenFileName(this,
+                                                    tr("Select Database file"), "",
+                                                    tr("Sqlite files (*.sqlite);;All files (*.*)"), 0,
+                                                    QFileDialog::DontConfirmOverwrite | QFileDialog::ReadOnly);
     if(fileName.length() == 0)
     {
         return;
@@ -588,4 +614,10 @@ void InjectSqlDialog::onSqliteFileNameChange(QString a)
 QString InjectSqlDialog::getFileName() const
 {
     return ui->txtDatabaseName->text();
+}
+
+int InjectSqlDialog::getSqliteVersion() const
+{
+    if(ui->cmbSqliteVersion->currentText().contains("2")) return 2;
+    else return 3;
 }

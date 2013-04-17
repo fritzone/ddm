@@ -58,6 +58,7 @@ private:
     QString m_database;
     int m_port;
     QString m_sqliteFile;
+    int m_sqliteVersion;
 };
 
 #endif // REVERSEENGINEERWIZARD_H
