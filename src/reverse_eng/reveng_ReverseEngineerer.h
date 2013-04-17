@@ -56,7 +56,7 @@ public:
      * @param parent
      */
     explicit ReverseEngineerer(bool c, DatabaseEngine* engine, Project* p,
-                               const QString& fileName,
+                               const QString& fileName, int sqliteVersion,
                                const QStringList& tabsToReverse, const QStringList& viewsToReverse,
                                const QStringList& procsToReverse, const QStringList& funcsToReverse,
                                const QStringList& triggersToReverse,
@@ -85,6 +85,7 @@ private:
     bool m_createDataTypesForColumns;
     int m_port;
     QString m_sqliteFile;
+    int m_sqliteVersion;
 };
 
 

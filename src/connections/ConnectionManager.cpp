@@ -136,8 +136,9 @@ Connection* ConnectionManager::createConnection(const QString &dbType, const QSe
     {
         QString f = s.value(strFile).toString();
         int lastState = s.value("LastState").toInt();
+        int sqliteVersion = s.value("Version").toInt() == 2?2:3;
 
-        c = new SqliteConnection(name, f, ac);
+        c = new SqliteConnection(name, f, ac, sqliteVersion);
         c->setState((ConnectionState)(lastState));
     }
 

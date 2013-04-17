@@ -20,7 +20,7 @@ public:
     QString getPassword();
     int getPort();
     QString getSqliteFile();
-
+    int getSqliteVersion();
     void setMysqMode();
     void setSqliteMode();
 

@@ -60,6 +60,8 @@ public:
         return m_strDbEngine;
     }
 
+    int getSqliteVersion() const;
+
 private slots:
 
     void onConnect();
@@ -83,6 +85,8 @@ private:
     void populateConnections();
     void createTreeItem(QTreeWidgetItem* parent, const QString& text, const QString& uid, const QIcon& icon);
     void toggleUidBelongeness(QStringList&, const QString&);
+    void setSqliteLayout();
+    void setMysqlLayout();
 
 private:
     Ui::InjectSqlDialog *ui;

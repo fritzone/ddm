@@ -17,14 +17,15 @@ ReverseEngineerer::ReverseEngineerer(bool c, DatabaseEngine* engine, Project* p,
 
 }
 
-ReverseEngineerer::ReverseEngineerer(bool c, DatabaseEngine *engine, Project *p, const QString &fileName,
+ReverseEngineerer::ReverseEngineerer(bool c, DatabaseEngine *engine, Project *p,
+                                     const QString &fileName, int sqliteVersion,
                                      const QStringList &tabsToReverse, const QStringList &viewsToReverse,
                                      const QStringList &procsToReverse, const QStringList &funcsToReverse,
                                      const QStringList &triggersToReverse, QObject *parent) :
     m_tabsToReverse(tabsToReverse), m_viewsToReverse(viewsToReverse), m_procsToReverse(procsToReverse),
     m_funcsToReverse(funcsToReverse), m_triggersToReverse(triggersToReverse),
-    m_engine(engine), m_project(p), m_createDataTypesForColumns(c), m_sqliteFile(fileName)
-
+    m_engine(engine), m_project(p), m_createDataTypesForColumns(c),
+    m_sqliteFile(fileName), m_sqliteVersion(sqliteVersion)
 {
 }
 
@@ -40,7 +41,8 @@ void ReverseEngineerer::reverseEngineer()
     }
     else
     {
-        genThread = new ReverseEngineererThread(m_createDataTypesForColumns, m_engine, m_project, m_sqliteFile,
+        genThread = new ReverseEngineererThread(m_createDataTypesForColumns, m_engine, m_project,
+                                                m_sqliteFile, m_sqliteVersion,
                                                 m_tabsToReverse, m_viewsToReverse, m_procsToReverse,
                                                 m_funcsToReverse, m_triggersToReverse);
     }

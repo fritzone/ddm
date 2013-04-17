@@ -50,7 +50,7 @@ public:
      * @param parent
      */
     explicit ReverseEngineererThread(bool createDataTypesForColumns, DatabaseEngine* engine, Project* p,
-                                     const QString& fileName,
+                                     const QString& fileName, int sqliteVersion,
                                      const QStringList& tabsToReverse,  const QStringList& viewsToReverse,
                                      const QStringList& procsToReverse, const QStringList& funcsToReverse,
                                      const QStringList& triggersToReverse, QObject *parent = 0);
@@ -76,6 +76,7 @@ private:
     bool m_createDataTypesForColumns;
     int m_port;
     QString m_fileName;
+    int m_sqliteVersion;
 };
 
 #endif // CORE_REVERSEENGINEERERTHREAD_H

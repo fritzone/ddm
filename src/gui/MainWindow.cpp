@@ -345,7 +345,7 @@ void MainWindow::onNewSolution()
                 else
                 {
                     QString dbFile = injectDialog->getFileName();
-                    c = new SqliteConnection("temp", dbFile, false);
+                    c = new SqliteConnection("temp", dbFile, false, injectDialog->getSqliteVersion());
                 }
                 QString meta = nprjdlg->getDatabaseEngine()->getDbMetadata(c);
                 QDomDocument doc;

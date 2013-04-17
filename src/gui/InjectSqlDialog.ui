@@ -155,59 +155,21 @@
             </property>
            </widget>
           </item>
-          <item row="1" column="0">
-           <widget class="QLabel" name="lblDatabaseType">
-            <property name="text">
-             <string>Database Type</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="1">
-           <widget class="QComboBox" name="cmbDatabaseType">
-            <property name="toolTip">
-             <string>The database engine that will support this connection</string>
-            </property>
-            <property name="statusTip">
-             <string>The database engine that will support this connection</string>
-            </property>
-            <property name="whatsThis">
-             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The database engine that will support this connection. Right now (v0.1j) Database Deployment Manager supports only MySql.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-            </property>
-            <item>
-             <property name="text">
-              <string>MySQL</string>
-             </property>
-             <property name="icon">
-              <iconset resource="../dbm.qrc">
-               <normaloff>:/images/actions/images/small/mysql.png</normaloff>:/images/actions/images/small/mysql.png</iconset>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>Sqlite</string>
-             </property>
-             <property name="icon">
-              <iconset resource="../dbm.qrc">
-               <normaloff>:/images/actions/images/small/sqlite-icon.png</normaloff>:/images/actions/images/small/sqlite-icon.png</iconset>
-             </property>
-            </item>
-           </widget>
-          </item>
-          <item row="2" column="0" colspan="2">
+          <item row="3" column="0" colspan="2">
            <widget class="Line" name="line_2">
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
             </property>
            </widget>
           </item>
-          <item row="3" column="0">
+          <item row="4" column="0">
            <widget class="QLabel" name="lblHost">
             <property name="text">
              <string>Host</string>
             </property>
            </widget>
           </item>
-          <item row="3" column="1">
+          <item row="4" column="1">
            <widget class="QLineEdit" name="txtDatabaseHost">
             <property name="toolTip">
              <string>The host which is hosting the database</string>
@@ -223,14 +185,14 @@
             </property>
            </widget>
           </item>
-          <item row="4" column="0">
+          <item row="5" column="0">
            <widget class="QLabel" name="lblPort">
             <property name="text">
              <string>Port</string>
             </property>
            </widget>
           </item>
-          <item row="4" column="1">
+          <item row="5" column="1">
            <widget class="QLineEdit" name="txtPort">
             <property name="toolTip">
              <string>The port of the connection</string>
@@ -246,14 +208,14 @@
             </property>
            </widget>
           </item>
-          <item row="5" column="0">
+          <item row="6" column="0">
            <widget class="QLabel" name="lblUser">
             <property name="text">
              <string>User</string>
             </property>
            </widget>
           </item>
-          <item row="5" column="1">
+          <item row="6" column="1">
            <widget class="QLineEdit" name="txtDatabaseUser">
             <property name="toolTip">
              <string>User which is used to log in to the DB</string>
@@ -266,14 +228,14 @@
             </property>
            </widget>
           </item>
-          <item row="6" column="0">
+          <item row="7" column="0">
            <widget class="QLabel" name="lblPassword">
             <property name="text">
              <string>Password</string>
             </property>
            </widget>
           </item>
-          <item row="6" column="1">
+          <item row="7" column="1">
            <widget class="QLineEdit" name="txtDatabasePassword">
             <property name="toolTip">
              <string>The password of the user</string>
@@ -289,7 +251,7 @@
             </property>
            </widget>
           </item>
-          <item row="8" column="0">
+          <item row="9" column="0">
            <widget class="QLabel" name="lblDatabase">
             <property name="enabled">
              <bool>true</bool>
@@ -299,7 +261,7 @@
             </property>
            </widget>
           </item>
-          <item row="8" column="1">
+          <item row="9" column="1">
            <layout class="QFormLayout" name="formLayout_2">
             <property name="fieldGrowthPolicy">
              <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
@@ -381,21 +343,21 @@
             </item>
            </layout>
           </item>
-          <item row="9" column="0" colspan="2">
+          <item row="10" column="0" colspan="2">
            <widget class="Line" name="line">
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
             </property>
            </widget>
           </item>
-          <item row="10" column="0">
+          <item row="11" column="0">
            <widget class="QCheckBox" name="chkAutoConnect">
             <property name="text">
              <string>Auto Connect</string>
             </property>
            </widget>
           </item>
-          <item row="11" column="0">
+          <item row="12" column="0">
            <widget class="QCheckBox" name="chkSavePassword">
             <property name="enabled">
              <bool>false</bool>
@@ -408,7 +370,7 @@
             </property>
            </widget>
           </item>
-          <item row="7" column="0">
+          <item row="8" column="0">
            <widget class="QPushButton" name="btnConnect">
             <property name="toolTip">
              <string>Click this button to test the connection to the host.</string>
@@ -421,6 +383,62 @@
             </property>
             <property name="text">
              <string>Connect</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <layout class="QHBoxLayout" name="horizontalLayout_4">
+            <item>
+             <widget class="QComboBox" name="cmbDatabaseType">
+              <property name="toolTip">
+               <string>The database engine that will support this connection</string>
+              </property>
+              <property name="statusTip">
+               <string>The database engine that will support this connection</string>
+              </property>
+              <property name="whatsThis">
+               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The database engine that will support this connection. Right now (v0.1j) Database Deployment Manager supports only MySql.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+              </property>
+              <item>
+               <property name="text">
+                <string>MySQL</string>
+               </property>
+               <property name="icon">
+                <iconset resource="../dbm.qrc">
+                 <normaloff>:/images/actions/images/small/mysql.png</normaloff>:/images/actions/images/small/mysql.png</iconset>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Sqlite</string>
+               </property>
+               <property name="icon">
+                <iconset resource="../dbm.qrc">
+                 <normaloff>:/images/actions/images/small/sqlite-icon.png</normaloff>:/images/actions/images/small/sqlite-icon.png</iconset>
+               </property>
+              </item>
+             </widget>
+            </item>
+            <item>
+             <widget class="QComboBox" name="cmbSqliteVersion">
+              <item>
+               <property name="text">
+                <string>Version 3</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Version 2</string>
+               </property>
+              </item>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="lblDatabaseType">
+            <property name="text">
+             <string>Database Type</string>
             </property>
            </widget>
           </item>

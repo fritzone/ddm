@@ -259,7 +259,7 @@ void Workspace::createNewConnection()
         }
         else
         {
-            c = new SqliteConnection(injectDialog->getName(), injectDialog->getFileName(), injectDialog->getAutoConnect());
+            c = new SqliteConnection(injectDialog->getName(), injectDialog->getFileName(), injectDialog->getAutoConnect(), injectDialog->getSqliteVersion());
 
         }
         if(!c) return;

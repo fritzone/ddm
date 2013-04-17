@@ -84,18 +84,6 @@ bool SqliteDatabaseEngine::reverseEngineerDatabase(Connection *c, const QStringL
     m_revEngMappings.clear();
     m_oneTimeMappings.clear();
 
-    for(int i=0; i<procs.size(); i++)
-    {
-        Procedure* proc = reverseEngineerProc(c, procs.at(i), v);
-        if(proc) v->addProcedure(proc, true);
-    }
-
-    for(int i=0; i<funcs.size(); i++)
-    {
-        Function* func = reverseEngineerFunc(c, funcs.at(i), v);
-        if(func) v->addFunction(func, true);
-    }
-
     for(int i=0; i<tables.size(); i++)
     {
         Table* tab = reverseEngineerTable(c, tables.at(i), p, relaxed, v);
@@ -191,7 +179,9 @@ QSqlDatabase SqliteDatabaseEngine::getQSqlDatabaseForConnection(Connection *conn
     }
 
     QString newConnName = provideConnectionName("getConnection");
-    QSqlDatabase dbo = QSqlDatabase::addDatabase("QSQLITE", newConnName);
+    QString dbType = "QSQLITE2";
+    if(c->getVersion() == 3) dbType = "QSQLITE";
+    QSqlDatabase dbo = QSqlDatabase::addDatabase(dbType, newConnName);
 
     dbo.setDatabaseName(c->getFileName());
 
@@ -263,12 +253,12 @@ QStringList SqliteDatabaseEngine::getAvailableTriggers(Connection* c)
 }
 
 
-QStringList SqliteDatabaseEngine::getAvailableStoredProcedures(Connection* c)
+QStringList SqliteDatabaseEngine::getAvailableStoredProcedures(Connection* /*c*/)
 {
      return QStringList();
 }
 
-QStringList SqliteDatabaseEngine::getAvailableStoredFunctions(Connection* c)
+QStringList SqliteDatabaseEngine::getAvailableStoredFunctions(Connection* /*c*/)
 {
     return QStringList();
 }
@@ -307,54 +297,14 @@ QStringList SqliteDatabaseEngine::getAvailableTables(Connection* c)
     return result;
 }
 
-Procedure* SqliteDatabaseEngine::reverseEngineerProc(Connection *c, const QString &procName, Version *v)
+Procedure* SqliteDatabaseEngine::reverseEngineerProc(Connection */*c*/, const QString &/*procName*/, Version */*v*/)
 {
-    QSqlDatabase db = getQSqlDatabaseForConnection(c);
-
-    if(!db.isOpen())
-    {
-        return 0;
-    }
-
-    QSqlQuery query(db);
-    QString t = "show create procedure " + procName;
-    query.exec(t);
-    Procedure* proc= 0;
-    while(query.next())
-    {
-        QString sql = query.value(2).toString();
-        proc = new Procedure(procName, QUuid::createUuid().toString(), v);
-        proc->setSql(sql);
-    }
-
-    db.close();
-
-    return proc;
+    return 0;
 }
 
-Function* SqliteDatabaseEngine::reverseEngineerFunc(Connection *c, const QString &funcName, Version *v)
+Function* SqliteDatabaseEngine::reverseEngineerFunc(Connection */*c*/, const QString &/*funcName*/, Version */*v*/)
 {
-    QSqlDatabase db = getQSqlDatabaseForConnection(c);
-
-    if(!db.isOpen())
-    {
-        return 0;
-    }
-
-    QSqlQuery query(db);
-    QString t = "show create function " + funcName;
-    query.exec(t);
-    Function* func= 0;
-    while(query.next())
-    {
-        QString sql = query.value(2).toString();
-        func = new Function(funcName, QUuid::createUuid().toString(), v);
-        func->setSql(sql);
-    }
-
-    db.close();
-
-    return func;
+    return 0;
 }
 
 View* SqliteDatabaseEngine::reverseEngineerView(Connection* c, const QString& viewName, Version *v)
@@ -368,11 +318,6 @@ View* SqliteDatabaseEngine::reverseEngineerView(Connection* c, const QString& vi
     {
         lastError = formatLastError(QObject::tr("Cannot reverse engineer a view"), dbo.lastError());
         return 0;
-    }
-
-    {
-    QSqlQuery query(dbo);
-    query.exec("SET sql_mode = 'ANSI'");
     }
 
     View* view = 0;
@@ -402,9 +347,9 @@ QStringList SqliteDatabaseEngine::getColumnsOfTable(Connection *c, const QString
     }
 
     QSqlQuery query(db);
-    query.exec("desc " + tableName);
+    query.exec(QString("pragma table_info(") + tableName + ")");
 
-    int fieldNo = query.record().indexOf("Field");
+    int fieldNo = query.record().indexOf("name");
 
     while(query.next())
     {
@@ -639,14 +584,13 @@ QString SqliteDatabaseEngine::getDefaultDatatypesLocation()
 }
 
 // poor guy, canot return anyting
-QStringList SqliteDatabaseEngine::getAvailableDatabases(const QString& host, const QString& user, const QString& pass, int port)
+QStringList SqliteDatabaseEngine::getAvailableDatabases(const QString& /*host*/, const QString& /*user*/, const QString& /*pass*/, int /*port*/)
 {
-    QStringList result;
-    return result;
+    return QStringList();
 }
 
 // Sqlite cannot drop a database
-bool SqliteDatabaseEngine::dropDatabase(Connection* c)
+bool SqliteDatabaseEngine::dropDatabase(Connection* /*c*/)
 {
     return true;
 }
@@ -677,7 +621,7 @@ QString SqliteDatabaseEngine::formatLastError(const QString& header, const QSqlE
 }
 
 // cannot create database
-bool SqliteDatabaseEngine::createDatabase(Connection* c)
+bool SqliteDatabaseEngine::createDatabase(Connection* /*c*/)
 {
     return true;
 }
@@ -954,7 +898,7 @@ Trigger* SqliteDatabaseEngine::reverseEngineerTrigger(Connection *c, const QStri
 
 QString SqliteDatabaseEngine::getTableDescriptionScript(const QString& tabName)
 {
-    QString result = "desc " + tabName;
+    QString result = QString("pragma table_info(") + tabName + ")";
     return result;
 }
 
@@ -999,17 +943,13 @@ QString SqliteDatabaseEngine::getTableCreationScript(Connection* c, const QStrin
         return result;
     }
 
-    {
-    QSqlQuery query(db);
-    query.exec("SET sql_mode = 'ANSI'");
-    }
 
     QSqlQuery query(db);
-    query.exec("show create table " + tabName);
+    query.exec(QString("select sql from sqlite_master where type='table' and name='") + tabName + "'");
 
     while(query.next())
     {
-        result = query.value(1).toString();
+        result = query.value(0).toString();
     }
     db.close();
     return result;

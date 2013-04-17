@@ -20,7 +20,7 @@ ReverseEngineererThread::ReverseEngineererThread(bool createDataTypesForColumns,
 
 
 ReverseEngineererThread::ReverseEngineererThread(bool createDataTypesForColumns, DatabaseEngine* engine, Project* p,
-                                                 const QString& fileName,
+                                                 const QString& fileName, int sqliteVersion,
                                                  const QStringList& tabsToReverse, const QStringList& viewsToReverse,
                                                  const QStringList& procsToReverse, const QStringList& funcsToReverse,
                                                  const QStringList& triggersToReverse,
@@ -29,7 +29,8 @@ ReverseEngineererThread::ReverseEngineererThread(bool createDataTypesForColumns,
     m_tabsToReverse(tabsToReverse), m_viewsToReverse(viewsToReverse),
     m_procsToReverse(procsToReverse), m_funcsToReverse(funcsToReverse),
     m_triggersToReverse(triggersToReverse),
-    m_engine(engine), m_project(p), m_createDataTypesForColumns(createDataTypesForColumns), m_port(-1), m_fileName(fileName)
+    m_engine(engine), m_project(p), m_createDataTypesForColumns(createDataTypesForColumns), m_port(-1),
+    m_fileName(fileName), m_sqliteVersion(sqliteVersion)
 
 {
 }
@@ -43,7 +44,7 @@ void ReverseEngineererThread::doWork()
     }
     else
     {
-        c = new SqliteConnection("temp", m_fileName, false);
+        c = new SqliteConnection("temp", m_fileName, false, m_sqliteVersion);
     }
 
     if(!m_engine->reverseEngineerDatabase(c, m_tabsToReverse, m_viewsToReverse, m_procsToReverse, m_funcsToReverse,
