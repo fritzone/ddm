@@ -402,6 +402,14 @@ public:
     virtual QString getTableCreationScript(Connection* c, const QString& tabName) = 0;
 
     /**
+     * @brief getViewCreationScript returns the creation script for the view
+     * @param c
+     * @param name
+     * @return
+     */
+    virtual QString getViewCreationScript(Connection* c, const QString& name) = 0;
+
+    /**
      * Returns a vector of Database Specific properties this database provides.
      * @return a vector of Database Specific properties this database provides.
      */

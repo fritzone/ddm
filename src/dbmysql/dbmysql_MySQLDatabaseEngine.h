@@ -51,6 +51,7 @@ public:
     virtual QString getTableDescriptionScript(const QString& tabName);
     virtual QStringList getAvailableIndexes(Connection* c);
     virtual QString getTableCreationScript(Connection* c, const QString& tabName);
+    virtual QString getViewCreationScript(Connection* c, const QString& tabName);
     virtual QVector<Sp*> getDatabaseSpecificProperties() const;
     virtual Sp* getSpForSqlRole(const QString& uid) const;
     virtual bool tableBlocksForeignKeyFunctionality(const Table* table) const;
@@ -87,3 +88,4 @@ private:
 };
 
 #endif // MYSQLDATABASEENGINE_H
+

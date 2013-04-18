@@ -95,6 +95,7 @@ static const QString strNewLineBetweenSelectExpressionsInSqlGeneration = "NewLin
 static const QString strUnauthorizedFrog = "The Unauthorized Frog";
 static const QString strDDM = "Database Deployment Manager";
 static const QString strDrawTableTypes = "DrawTableTypes";
+static const QString strShowStartupDialog = "ShowStartupDialog";
 static const QString strAllowFkPropagation = "AllowFkPropagation";
 static const QString strUseDefaultLengths = "UseDefaultLengths";
 static const QString strContinuousValidation = "ContinuousValidation";

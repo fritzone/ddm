@@ -246,8 +246,11 @@ void ConnectionGuiElements::populateConnectionTreeForConnection(Connection *c)
 {
     createConnectionTreeEntryForTables(c);
     createConnectionTreeEntryForViews(c);
-    createConnectionTreeEntryForProcs(c);
-    createConnectionTreeEntryForFuncs(c);
+    if(c->getDbType().toUpper() != "SQLITE")
+    {
+        createConnectionTreeEntryForProcs(c);
+        createConnectionTreeEntryForFuncs(c);
+    }
     createConnectionTreeEntryForTriggers(c);
     createConnectionTreeEntryForIndexes(c);
 }

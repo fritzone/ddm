@@ -955,6 +955,30 @@ QString SqliteDatabaseEngine::getTableCreationScript(Connection* c, const QStrin
     return result;
 }
 
+QString SqliteDatabaseEngine::getViewCreationScript(Connection* c, const QString& name)
+{
+    QSqlDatabase db = getQSqlDatabaseForConnection(c);
+    QString result;
+
+    bool ok = db.isOpen();
+
+    if(!ok)
+    {
+        return result;
+    }
+
+
+    QSqlQuery query(db);
+    query.exec(QString("select sql from sqlite_master where type='view' and name='") + name + "'");
+
+    while(query.next())
+    {
+        result = query.value(0).toString();
+    }
+    db.close();
+    return result;
+}
+
 // TODO: find a way to not to create this vector all the time
 QVector<Sp*> SqliteDatabaseEngine::getDatabaseSpecificProperties() const
 {
