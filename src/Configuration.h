@@ -78,6 +78,16 @@ public:
         m_continuousValidation = a;
     }
 
+    bool showStartupdialog() const
+    {
+        return m_showStartupDialog;
+    }
+
+    bool enableStartupDialog(bool b)
+    {
+        m_showStartupDialog = b;
+    }
+
 private:
 
     // whether the "New Data Type" window should populate the default lengths
@@ -93,6 +103,8 @@ private:
     bool m_continuousValidation;
 
     QHash<QString,QString> m_sqlOpts;
+
+    bool m_showStartupDialog;
 };
 
 #endif // CONFIGURATION_H

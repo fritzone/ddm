@@ -1347,6 +1347,11 @@ QStringList MySQLDatabaseEngine::getAvailableIndexes(Connection* conn)
     return result;
 }
 
+QString MySQLDatabaseEngine::getViewCreationScript(Connection* c, const QString& tabName)
+{
+    return getTableCreationScript(c, tabName);
+}
+
 QString MySQLDatabaseEngine::getTableCreationScript(Connection* c, const QString& tabName)
 {
     QSqlDatabase db = getQSqlDatabaseForConnection(c);

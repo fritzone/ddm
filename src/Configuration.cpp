@@ -3,7 +3,9 @@
 
 #include <QSettings>
 
-Configuration::Configuration() : m_useDefaultLengths(true), m_allowForeignKeyPropagation(false), m_drawTableTypes(false), m_continuousValidation(false), m_sqlOpts()
+Configuration::Configuration() : m_useDefaultLengths(true),
+    m_allowForeignKeyPropagation(false), m_drawTableTypes(false),
+    m_continuousValidation(false), m_sqlOpts(), m_showStartupDialog(true)
 {
     readFromFile();
 }
@@ -29,6 +31,7 @@ void Configuration::writeToFile()
     s.setValue(strFKSposition, m_sqlOpts[strFKSposition]);
     s.setValue(strNewLineBetweenSelectExpressionsInSqlGeneration, m_sqlOpts[strNewLineBetweenSelectExpressionsInSqlGeneration]);
     s.setValue(strSqlDelimiterText, m_sqlOpts[strSqlDelimiterText]);
+    s.setValue(strShowStartupDialog, m_showStartupDialog);
 
     s.sync();
 }
@@ -41,6 +44,8 @@ void Configuration::readFromFile()
     m_allowForeignKeyPropagation = s.value(strAllowFkPropagation, QVariant(false)).toBool();
     m_useDefaultLengths = s.value(strUseDefaultLengths, QVariant(true)).toBool();
     m_continuousValidation = s.value(strContinuousValidation, QVariant(false)).toBool();
+    m_showStartupDialog = s.value(strShowStartupDialog, QVariant(true)).toBool();
+
     m_sqlOpts[strCase] = s.value(strCase, QVariant(strLower)).toString();
     m_sqlOpts[strBackticks] = s.value(strBackticks, QVariant(strNo)).toString();
     m_sqlOpts[strGenerateComments] = s.value(strGenerateComments, QVariant(strYes)).toString();

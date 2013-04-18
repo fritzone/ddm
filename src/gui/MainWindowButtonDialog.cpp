@@ -3,6 +3,7 @@
 #include "MainWindow.h"
 #include "gui_HelpWindow.h"
 #include "helper_MostRecentlyUsedFiles.h"
+#include "Configuration.h"
 
 #include <QApplication>
 #include <QDesktopWidget>
@@ -172,4 +173,9 @@ void MainWindowButtonDialog::keyPressEvent(QKeyEvent *e)
     {
         close();
     }
+}
+
+void MainWindowButtonDialog::onDontShowThis(bool a) // true: do not show
+{
+    Configuration::instance().enableStartupDialog(!a);
 }

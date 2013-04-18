@@ -32,6 +32,8 @@ private slots:
     void onQuick4();
     void onQuick5();
     void onBtnClose();
+    void onDontShowThis(bool);
+
 protected:
     void keyPressEvent(QKeyEvent *e);
 

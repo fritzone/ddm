@@ -389,8 +389,15 @@ void BrowseTableForm::newPage(Connection *c, const QString &tab, BrowsedTableLay
             m_textEdit->setBrowseForm(this);
             horizontalLayoutForLineNumbersAndTextEdit->addWidget(m_textEdit);
             m_textEdit->setLineNumberFrame(m_frameForLineNumbers);
-
-            QString s = c->getEngine()->getTableCreationScript(c, tab);
+            QString s;
+            if(layout == BROWSE_TABLE)
+            {
+                s = c->getEngine()->getTableCreationScript(c, tab);
+            }
+            else
+            {
+                s = c->getEngine()->getViewCreationScript(c, tab);
+            }
             m_textEdit->setPlainText(s);
             m_textEdit->updateLineNumbers();
             QKeyEvent* keyEvent = new QKeyEvent(QEvent::KeyPress, Qt::Key_Return, Qt::NoModifier);

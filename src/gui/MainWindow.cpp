@@ -101,7 +101,10 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), m_ui(new Ui::Main
     setWindowTitle(tr("DDM - [No Solution]"));
 
     m_btndlg = new MainWindowButtonDialog();
-    m_btndlg->showMe();
+    if(Configuration::instance().showStartupdialog())
+    {
+        m_btndlg->showMe();
+    }
     //m_btndlg->raise();
 
     QApplication::instance()->installEventFilter(this);
