@@ -21,8 +21,12 @@ public:
     int getPort();
     QString getSqliteFile();
     int getSqliteVersion();
-    void setMysqMode();
+    void setMySqlMode();
     void setSqliteMode();
+
+private slots:
+
+    void onBrowseFile();
 
 private:
     Ui::ReverseEngineerWizardWelcomeForm *ui;

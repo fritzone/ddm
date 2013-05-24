@@ -83,7 +83,7 @@ public:
         return m_showStartupDialog;
     }
 
-    bool enableStartupDialog(bool b)
+    void enableStartupDialog(bool b)
     {
         m_showStartupDialog = b;
     }
