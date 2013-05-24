@@ -23,7 +23,7 @@ ReverseEngineerWizard::ReverseEngineerWizard(DatabaseEngine* engine) : QWizard()
 {
     if(getDbTypeName() == "MYSQL")
     {
-        m_welcomePage->setMysqMode();
+        m_welcomePage->setMySqlMode();
     }
     else
     {

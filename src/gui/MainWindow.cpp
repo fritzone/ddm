@@ -2798,9 +2798,6 @@ void MainWindow::onReverseEngineerWizardNextPage(int cpage)
         {
         case 1: // user just filled in the connection stuff, tell the wizard to fetch the data and feed it to the next page
             m_revEngWizard->gatherConnectionData();
-            break;
-
-        case 2: // user selected a database to reverse engineer
             if(!m_revEngWizard->selectDatabase()) // did he?
             {
                 QMessageBox::critical(m_revEngWizard, tr("Error"), tr("Please select a database"), QMessageBox::Ok);
@@ -2809,10 +2806,10 @@ void MainWindow::onReverseEngineerWizardNextPage(int cpage)
 
             m_revEngWizard->connectAndRetrieveTables();
             break;
-        case 3: // user selected the tables, advanced to the views
+        case 2: // user selected the tables, advanced to the views
             m_revEngWizard->connectAndRetrieveViews();
             break;
-        case 4: // triggers
+        case 3: // triggers
             m_revEngWizard->connectAndRetrieveTriggers();
             break;
         }
@@ -2877,27 +2874,35 @@ void MainWindow::onReverseEngineerWizardNextPage(int cpage)
 
 void MainWindow::onReverseEngineerWizardAccept()
 {
-    QString host = m_revEngWizard->getHost();
-    QString user = m_revEngWizard->getUser();
-    QString pass = m_revEngWizard->getPasword();
-    QString db = m_revEngWizard->getDatabase();
-    int port = m_revEngWizard->getPort();
-    Project* p = m_workspace->currentProject();
-    bool c = !m_revEngWizard->createDataTypesForColumns();
-    DatabaseEngine* engine = m_workspace->currentProjectsEngine();
+    if(m_revEngWizard->getDbTypeName() == "SQLITE")
+    {
+        QString sqliteFile = m_revEngWizard->getSqliteFileName();
+        int sqliteVersion = m_revEngWizard->getSqliteVersion();
+    }
+    else // MySql
+    {
+        QString host = m_revEngWizard->getHost();
+        QString user = m_revEngWizard->getUser();
+        QString pass = m_revEngWizard->getPasword();
+        QString db = m_revEngWizard->getDatabase();
+        int port = m_revEngWizard->getPort();
+        Project* p = m_workspace->currentProject();
+        bool c = !m_revEngWizard->createDataTypesForColumns();
+        DatabaseEngine* engine = m_workspace->currentProjectsEngine();
 
-    createStatusLabel();
-    lblStatus->setText(QApplication::translate("MainWindow", "Reverse engineering started", 0, QApplication::UnicodeUTF8));
+        createStatusLabel();
+        lblStatus->setText(QApplication::translate("MainWindow", "Reverse engineering started", 0, QApplication::UnicodeUTF8));
 
-    ReverseEngineerer* revEng = new ReverseEngineerer(c, engine, p, host, user, pass, db, port,
-                                                      m_revEngWizard->getTablesToReverse(),
-                                                      m_revEngWizard->getViewsToReverse(),
-                                                      m_revEngWizard->getProceduresToReverse(),
-                                                      m_revEngWizard->getFunctionsToReverse(),
-                                                      m_revEngWizard->getTriggersToReverse(),
-                                                      0);
-    connect(revEng, SIGNAL(done(ReverseEngineerer*)), this, SLOT(onReverseEngineeringFinished(ReverseEngineerer*)));
-    revEng->reverseEngineer();
+        ReverseEngineerer* revEng = new ReverseEngineerer(c, engine, p, host, user, pass, db, port,
+                                                          m_revEngWizard->getTablesToReverse(),
+                                                          m_revEngWizard->getViewsToReverse(),
+                                                          m_revEngWizard->getProceduresToReverse(),
+                                                          m_revEngWizard->getFunctionsToReverse(),
+                                                          m_revEngWizard->getTriggersToReverse(),
+                                                          0);
+        connect(revEng, SIGNAL(done(ReverseEngineerer*)), this, SLOT(onReverseEngineeringFinished(ReverseEngineerer*)));
+        revEng->reverseEngineer();
+    }
 }
 
 void MainWindow::onReverseEngineeringFinished(ReverseEngineerer*)

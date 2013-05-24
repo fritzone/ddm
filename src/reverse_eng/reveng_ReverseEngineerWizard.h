@@ -36,6 +36,9 @@ public:
     QString getDatabase() {return m_database; }
     int getPort() {return m_port; }
 
+    QString getSqliteFileName() { return m_sqliteFile; }
+    int getSqliteVersion() { return m_sqliteVersion; }
+
     bool createDataTypesForColumns();
     QString getDbTypeName() const;
 

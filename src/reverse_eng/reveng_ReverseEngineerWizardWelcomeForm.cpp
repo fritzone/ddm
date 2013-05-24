@@ -2,6 +2,9 @@
 #include "ui_ReverseEngineerWizardWelcomeForm.h"
 #include "IconFactory.h"
 
+#include <QFileDialog>
+#include <QDebug>
+
 ReverseEngineerWizardWelcomeForm::ReverseEngineerWizardWelcomeForm(QWidget *parent) :
     QWizardPage(parent),
     ui(new Ui::ReverseEngineerWizardWelcomeForm), m_mode()
@@ -40,7 +43,7 @@ int ReverseEngineerWizardWelcomeForm::getPort()
     return ui->txtPort->text().toInt();
 }
 
-void ReverseEngineerWizardWelcomeForm::setMysqMode()
+void ReverseEngineerWizardWelcomeForm::setMySqlMode()
 {
     ui->toolBox->setCurrentIndex(0);
     ui->toolBox->setItemEnabled(1, false);
@@ -63,4 +66,18 @@ int ReverseEngineerWizardWelcomeForm::getSqliteVersion()
 {
     if(ui->cmbSqliteVersion->currentText().contains("3")) return 3;
     return 2;
+}
+
+void ReverseEngineerWizardWelcomeForm::onBrowseFile()
+{
+    QString fileName = QFileDialog::getOpenFileName(this,
+                                                    tr("Select Database file"), "",
+                                                    tr("Sqlite files (*.sqlite);;All files (*.*)"), 0,
+                                                    QFileDialog::DontConfirmOverwrite | QFileDialog::ReadOnly);
+    if(fileName.length() == 0)
+    {
+        return;
+    }
+    if(!fileName.endsWith(".sqlite")) fileName += ".sqlite";
+    ui->txtSqliteFilename->setText(fileName);
 }

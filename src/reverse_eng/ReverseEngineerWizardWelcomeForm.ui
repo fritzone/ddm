@@ -179,5 +179,25 @@
  <resources>
   <include location="../dbm.qrc"/>
  </resources>
- <connections/>
+ <connections>
+  <connection>
+   <sender>btnBrowseForFile</sender>
+   <signal>clicked()</signal>
+   <receiver>ReverseEngineerWizardWelcomeForm</receiver>
+   <slot>onBrowseFile()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>366</x>
+     <y>92</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>199</x>
+     <y>149</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>onBrowseFile()</slot>
+ </slots>
 </ui>
