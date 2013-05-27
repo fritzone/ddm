@@ -1,0 +1,4 @@
+Linux:
+
+Install the .deb package: dpkg -i package.deb
+If there are unmet requirements install them with apt-get -f install

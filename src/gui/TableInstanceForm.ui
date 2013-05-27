@@ -1,0 +1,574 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>TableInstanceForm</class>
+ <widget class="QWidget" name="TableInstanceForm">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>787</width>
+    <height>591</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QHBoxLayout" name="horizontalLayout">
+   <item>
+    <widget class="QFrame" name="frameForUnlockButton">
+     <property name="frameShape">
+      <enum>QFrame::StyledPanel</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Raised</enum>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_2">
+      <property name="spacing">
+       <number>0</number>
+      </property>
+      <property name="margin">
+       <number>0</number>
+      </property>
+      <item>
+       <widget class="QToolButton" name="btnLock">
+        <property name="text">
+         <string/>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>48</width>
+          <height>48</height>
+         </size>
+        </property>
+        <property name="checkable">
+         <bool>true</bool>
+        </property>
+        <property name="popupMode">
+         <enum>QToolButton::InstantPopup</enum>
+        </property>
+        <property name="autoRaise">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QToolButton" name="btnUndelete">
+        <property name="toolTip">
+         <string>This object was deleted in a Patch. Click this button to Undelete it.</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset resource="../dbm.qrc">
+          <normaloff>:/images/actions/images/small/gnome_undelete.png</normaloff>:/images/actions/images/small/gnome_undelete.png</iconset>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>48</width>
+          <height>48</height>
+         </size>
+        </property>
+        <property name="checkable">
+         <bool>false</bool>
+        </property>
+        <property name="popupMode">
+         <enum>QToolButton::InstantPopup</enum>
+        </property>
+        <property name="autoRaise">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer name="verticalSpacer_2">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>20</width>
+          <height>40</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QWidget" name="grpContentMain" native="true">
+     <layout class="QVBoxLayout" name="verticalLayout_5">
+      <property name="margin">
+       <number>0</number>
+      </property>
+      <item>
+       <widget class="QLineEdit" name="lineEdit">
+        <property name="placeholderText">
+         <string>Name</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QTabWidget" name="tabWidget">
+        <property name="currentIndex">
+         <number>0</number>
+        </property>
+        <widget class="QWidget" name="tab">
+         <attribute name="icon">
+          <iconset resource="../dbm.qrc">
+           <normaloff>:/images/actions/images/small/tabinst.png</normaloff>:/images/actions/images/small/tabinst.png</iconset>
+         </attribute>
+         <attribute name="title">
+          <string>Startup Values</string>
+         </attribute>
+         <layout class="QVBoxLayout" name="verticalLayout_4">
+          <item>
+           <widget class="QWidget" name="grpStartupData" native="true">
+            <layout class="QVBoxLayout" name="verticalLayout">
+             <property name="margin">
+              <number>0</number>
+             </property>
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayout_13">
+               <property name="spacing">
+                <number>0</number>
+               </property>
+               <item>
+                <widget class="QToolButton" name="btnLoadStartupValues">
+                 <property name="maximumSize">
+                  <size>
+                   <width>32</width>
+                   <height>32</height>
+                  </size>
+                 </property>
+                 <property name="toolTip">
+                  <string>&lt;b&gt;Load&lt;/b&gt; the startup values from a CSV file</string>
+                 </property>
+                 <property name="statusTip">
+                  <string>Load the startup values from a CSV file</string>
+                 </property>
+                 <property name="text">
+                  <string>...</string>
+                 </property>
+                 <property name="icon">
+                  <iconset resource="../dbm.qrc">
+                   <normaloff>:/images/actions/images/actions/fileopen.png</normaloff>:/images/actions/images/actions/fileopen.png</iconset>
+                 </property>
+                 <property name="iconSize">
+                  <size>
+                   <width>16</width>
+                   <height>16</height>
+                  </size>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QToolButton" name="btnSaveStartupValues">
+                 <property name="maximumSize">
+                  <size>
+                   <width>32</width>
+                   <height>32</height>
+                  </size>
+                 </property>
+                 <property name="toolTip">
+                  <string>&lt;b&gt;Save&lt;/b&gt; startup values</string>
+                 </property>
+                 <property name="statusTip">
+                  <string>Save startup values to a CSV file</string>
+                 </property>
+                 <property name="text">
+                  <string>...</string>
+                 </property>
+                 <property name="icon">
+                  <iconset resource="../dbm.qrc">
+                   <normaloff>:/images/actions/images/actions/filesave.png</normaloff>:/images/actions/images/actions/filesave.png</iconset>
+                 </property>
+                 <property name="iconSize">
+                  <size>
+                   <width>16</width>
+                   <height>16</height>
+                  </size>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QToolButton" name="btnImportValues">
+                 <property name="enabled">
+                  <bool>false</bool>
+                 </property>
+                 <property name="maximumSize">
+                  <size>
+                   <width>32</width>
+                   <height>32</height>
+                  </size>
+                 </property>
+                 <property name="toolTip">
+                  <string>&lt;b&gt;Import&lt;/b&gt; startup values</string>
+                 </property>
+                 <property name="statusTip">
+                  <string>Import startup values from an alread existing DB table</string>
+                 </property>
+                 <property name="text">
+                  <string>...</string>
+                 </property>
+                 <property name="icon">
+                  <iconset resource="../dbm.qrc">
+                   <normaloff>:/images/actions/images/big/bigfileimport.png</normaloff>:/images/actions/images/big/bigfileimport.png</iconset>
+                 </property>
+                 <property name="iconSize">
+                  <size>
+                   <width>16</width>
+                   <height>16</height>
+                  </size>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QToolButton" name="btnGoToSourceTab">
+                 <property name="maximumSize">
+                  <size>
+                   <width>32</width>
+                   <height>32</height>
+                  </size>
+                 </property>
+                 <property name="toolTip">
+                  <string>Go to the &lt;b&gt;originator&lt;/b&gt; element</string>
+                 </property>
+                 <property name="statusTip">
+                  <string>Go to the originator element</string>
+                 </property>
+                 <property name="text">
+                  <string>...</string>
+                 </property>
+                 <property name="icon">
+                  <iconset resource="../dbm.qrc">
+                   <normaloff>:/images/actions/images/small/alias.png</normaloff>:/images/actions/images/small/alias.png</iconset>
+                 </property>
+                 <property name="iconSize">
+                  <size>
+                   <width>16</width>
+                   <height>16</height>
+                  </size>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <spacer name="horizontalSpacer_6">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>40</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayout_2">
+               <item>
+                <layout class="QVBoxLayout" name="verticalLayout_3">
+                 <property name="spacing">
+                  <number>0</number>
+                 </property>
+                 <item>
+                  <widget class="QToolButton" name="btnAddNewDefaultRow">
+                   <property name="toolTip">
+                    <string>Add new row</string>
+                   </property>
+                   <property name="statusTip">
+                    <string>Add new row</string>
+                   </property>
+                   <property name="text">
+                    <string>...</string>
+                   </property>
+                   <property name="icon">
+                    <iconset resource="../dbm.qrc">
+                     <normaloff>:/images/actions/images/small/add.png</normaloff>:/images/actions/images/small/add.png</iconset>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QToolButton" name="btnDeleteRow">
+                   <property name="toolTip">
+                    <string>Delete row</string>
+                   </property>
+                   <property name="statusTip">
+                    <string>Delete row</string>
+                   </property>
+                   <property name="text">
+                    <string>...</string>
+                   </property>
+                   <property name="icon">
+                    <iconset resource="../dbm.qrc">
+                     <normaloff>:/images/actions/images/small/remove.png</normaloff>:/images/actions/images/small/remove.png</iconset>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QToolButton" name="btnValidate">
+                   <property name="toolTip">
+                    <string>Validate values and update table</string>
+                   </property>
+                   <property name="statusTip">
+                    <string>Validate values and update table</string>
+                   </property>
+                   <property name="text">
+                    <string>...</string>
+                   </property>
+                   <property name="icon">
+                    <iconset resource="../dbm.qrc">
+                     <normaloff>:/images/actions/images/small/apply.png</normaloff>:/images/actions/images/small/apply.png</iconset>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <spacer name="verticalSpacer">
+                   <property name="orientation">
+                    <enum>Qt::Vertical</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>20</width>
+                     <height>40</height>
+                    </size>
+                   </property>
+                  </spacer>
+                 </item>
+                </layout>
+               </item>
+               <item>
+                <widget class="QTableWidget" name="values"/>
+               </item>
+              </layout>
+             </item>
+            </layout>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QWidget" name="tab_2">
+         <attribute name="icon">
+          <iconset resource="../dbm.qrc">
+           <normaloff>:/images/actions/images/small/foreign_key.png</normaloff>:/images/actions/images/small/foreign_key.png</iconset>
+         </attribute>
+         <attribute name="title">
+          <string>Foreign Key Associations</string>
+         </attribute>
+         <layout class="QHBoxLayout" name="horizontalLayout_3">
+          <item>
+           <widget class="QTreeWidget" name="treeWidget">
+            <property name="alternatingRowColors">
+             <bool>true</bool>
+            </property>
+            <attribute name="headerDefaultSectionSize">
+             <number>250</number>
+            </attribute>
+            <attribute name="headerShowSortIndicator" stdset="0">
+             <bool>true</bool>
+            </attribute>
+            <column>
+             <property name="text">
+              <string>Foreign Key</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>Target Table Instance</string>
+             </property>
+            </column>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources>
+  <include location="../dbm.qrc"/>
+ </resources>
+ <connections>
+  <connection>
+   <sender>btnLoadStartupValues</sender>
+   <signal>clicked()</signal>
+   <receiver>TableInstanceForm</receiver>
+   <slot>onLoadValuesFromCSV()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>24</x>
+     <y>25</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>230</x>
+     <y>229</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnSaveStartupValues</sender>
+   <signal>clicked()</signal>
+   <receiver>TableInstanceForm</receiver>
+   <slot>onSaveValuesToCSV()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>92</x>
+     <y>25</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>230</x>
+     <y>229</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnAddNewDefaultRow</sender>
+   <signal>clicked()</signal>
+   <receiver>TableInstanceForm</receiver>
+   <slot>onAddNewRow()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>43</x>
+     <y>117</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>341</x>
+     <y>247</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnDeleteRow</sender>
+   <signal>clicked()</signal>
+   <receiver>TableInstanceForm</receiver>
+   <slot>onDeleteRow()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>43</x>
+     <y>147</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>341</x>
+     <y>247</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnValidate</sender>
+   <signal>clicked()</signal>
+   <receiver>TableInstanceForm</receiver>
+   <slot>onValidateData()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>43</x>
+     <y>177</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>341</x>
+     <y>247</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnGoToSourceTab</sender>
+   <signal>clicked()</signal>
+   <receiver>TableInstanceForm</receiver>
+   <slot>onGotoTable()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>103</x>
+     <y>31</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>208</x>
+     <y>186</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnLock</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>TableInstanceForm</receiver>
+   <slot>onLockUnlock(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>38</x>
+     <y>37</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>393</x>
+     <y>295</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnUndelete</sender>
+   <signal>clicked()</signal>
+   <receiver>TableInstanceForm</receiver>
+   <slot>onUndelete()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>38</x>
+     <y>91</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>393</x>
+     <y>295</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>values</sender>
+   <signal>cellChanged(int,int)</signal>
+   <receiver>TableInstanceForm</receiver>
+   <slot>onCellChange(int,int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>445</x>
+     <y>285</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>393</x>
+     <y>295</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>lineEdit</sender>
+   <signal>textEdited(QString)</signal>
+   <receiver>TableInstanceForm</receiver>
+   <slot>onChangeName(QString)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>425</x>
+     <y>70</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>393</x>
+     <y>295</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>onLoadValuesFromCSV()</slot>
+  <slot>onSaveValuesToCSV()</slot>
+  <slot>onAddNewRow()</slot>
+  <slot>onDeleteRow()</slot>
+  <slot>onValidateData()</slot>
+  <slot>onCellChange(int,int)</slot>
+  <slot>onHelp()</slot>
+  <slot>onValuesDoubleClick()</slot>
+  <slot>onGotoTable()</slot>
+  <slot>onLockUnlock(bool)</slot>
+  <slot>onUndelete()</slot>
+  <slot>onChangeName(QString)</slot>
+ </slots>
+</ui>

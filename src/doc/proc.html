@@ -1,0 +1,72 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+  <head>
+    <meta content="text/html;charset=UTF-8" http-equiv="Content-Type">
+    <title>Views</title>
+    <style type="text/css">
+	<!--
+		P { border: 1px solid #000000; padding: 0.02in }
+.style1 {font-family: Arial, Helvetica, sans-serif}
+.style2 {font-family: "Courier New", Courier, monospace}
+.style3 {color: #0000FF}
+.style4 {color: #0000FF; font-family: "Courier New", Courier, monospace; }
+	-->
+	</style>
+  </head>
+  <body dir="LTR" bgcolor="white" lang="en-US">
+    <p class="style1" style="margin-bottom: 0in; background: white; border: none; padding: 0in; font-style: normal; line-height: 115%; text-decoration: none"
+      align="CENTER"> <b>Procedures and Functions</b></p>
+    <p class="style1" style="margin-bottom: 0in; background: white; line-height: 115%">
+      Stored procedures and functions are statements written in SQL language and
+      stored in a database for later execution. For more details about the
+      syntax please consult the documentation of your database.</p>
+    <p class="style1" style="background: white">With DDM you can create a stored
+      procedure/function using the SQL syntax of your database using the DDM
+      text editor which tries to offer some limited code completion and other
+      features to make your life easier. <br>
+      <br>
+      We encourage you to add descriptive comments for your methods, in order
+      for the automatic documentation generation tool to be able to generate
+      documentation. The comments should be standard SQL comments (ie, starting
+      with "<code>--</code> " sinc the <code>) and the following javadoc-like
+        keywords are supported: <br>
+        <br>
+        <font color="green"><code>@brief</code></font> - this should be the
+        first line in your comment, please specify a one line description of the
+        method <br>
+        <font color="green"><code>@param</code></font> - for each of your
+        parameters specify the name and a one line description. <br>
+        <font color="green"><code>@return</code></font> - This is used only for
+        functions, specifies the return type of the function <br>
+        <font color="green"><code>@desc</code></font> - This should be the last
+        keyword in the comment, starts a multi line description of your methods.
+        All the lines in the comment after this will go to the description of
+        the method. <br>
+        <br>
+      </code> If a line does not contain a keyword it is assumed that it is just
+      description, and it will be used in the desription part of the
+      documentation. <br>
+      The following is an example on how to write a documentation: <br>
+      <br>
+      <font face="Courier New, Courier, monospace"><font color="#009900">-- </font><font
+          color="#3333ff">@brief</font><font color="#009900"> a procedure to
+          test the documentation generator</font>
+        <br>
+        <font color="#009900">-- </font><font color="#3333ff">@param</font><font
+          color="#009900"> p1 The parameter to the procedure</font>
+        <br>
+        <font color="#009900">-- </font><font color="#3333ff">@desc</font><font
+          color="#009900"> This procedure just does nothing</font> <br>
+        <font color="#3333ff"><strong>CREATE PROCEDURE</strong></font> proc(p1 <font
+          color="#3333ff"><strong>VARCHAR</strong></font>(255)) <br>
+        <font color="#3333ff"><strong>BEGIN <br>
+            END</strong></font></font><br>
+      <br>
+      In case you did not provide a description for all the parameters, or a
+      brief description the application will generate a TODO message for you.
+      This is not customizable, we believe that the quality of the product
+      depends on the documentation too, so please provide it to your users.<br>
+    </p>
+    <pre><br></pre>
+  </body>
+</html>

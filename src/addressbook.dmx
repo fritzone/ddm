@@ -1,0 +1,622 @@
+<!DOCTYPE DBM>
+<Solutions>
+ <Solution Name="my_address_book">
+  <Projects>
+   <Project WorkingVersionIndex="0" Name="DEFAULT" OOP="1" DB="MySQL">
+    <Description></Description>
+    <MajorVersions>
+     <MajorVersion major="1" class-uid="{1000000a-0000-0000-0000-000000000001}" uid="{d1db6dbf-219b-4121-a243-333e50a53e22}" locked="2" source-uid="{00000000-0000-0000-0000-000000000000}" minor="0">
+      <Version>1.0</Version>
+      <DataTypes>
+       <DataType SqlType="LONGTEXT" Size="" class-uid="{10000000-0000-0000-0000-000000000002}" was-locked="0" Type="Text/String" finalSql="LONGTEXT" uid="{3d217055-f791-47af-8c0a-bfc2106f6d85}" locked="0" Name="LONGTEXT" DefaultValue="" Unsigned="0" CanBeNull="1" source-uid="{00000000-0000-0000-0000-000000000000}">
+        <Description>LONGTEXT - Datatype for MySQL</Description>
+        <Values/>
+       </DataType>
+       <DataType SqlType="MEDIUMTEXT" Size="" class-uid="{10000000-0000-0000-0000-000000000002}" was-locked="0" Type="Text/String" finalSql="MEDIUMTEXT" uid="{138299ec-07b6-49df-9df1-28b7ac7bd7dc}" locked="0" Name="MEDIUMTEXT" DefaultValue="" Unsigned="0" CanBeNull="1" source-uid="{00000000-0000-0000-0000-000000000000}">
+        <Description>MEDIUMTEXT - Datatype for MySQL</Description>
+        <Values/>
+       </DataType>
+       <DataType SqlType="TINYTEXT" Size="" class-uid="{10000000-0000-0000-0000-000000000002}" was-locked="0" Type="Text/String" finalSql="TINYTEXT" uid="{a7a91b97-114d-4e37-bfbf-f13757209cc4}" locked="0" Name="TINYTEXT" DefaultValue="" Unsigned="0" CanBeNull="1" source-uid="{00000000-0000-0000-0000-000000000000}">
+        <Description>TINYTEXT - Datatype for MySQL</Description>
+        <Values/>
+       </DataType>
+       <DataType SqlType="TEXT" Size="" class-uid="{10000000-0000-0000-0000-000000000002}" was-locked="0" Type="Text/String" finalSql="TEXT" uid="{a63e40e5-800f-43f3-b152-ac9fffe0ec2e}" locked="0" Name="TEXT" DefaultValue="" Unsigned="0" CanBeNull="1" source-uid="{00000000-0000-0000-0000-000000000000}">
+        <Description>TEXT - Datatype for MySQL</Description>
+        <Values/>
+       </DataType>
+       <DataType SqlType="VARCHAR" Size="255" class-uid="{10000000-0000-0000-0000-000000000002}" was-locked="0" Type="Text/String" finalSql="VARCHAR(255)" uid="{fe090e46-0869-4ea6-8a01-e7183f8d979c}" locked="0" Name="VARCHAR(255)" DefaultValue="null" Unsigned="0" CanBeNull="1" source-uid="{00000000-0000-0000-0000-000000000000}">
+        <Description>VARCHAR(255) - Datatype for MySQL</Description>
+        <Values/>
+       </DataType>
+       <DataType SqlType="CHAR" Size="255" class-uid="{10000000-0000-0000-0000-000000000002}" was-locked="0" Type="Text/String" finalSql="CHAR(255)" uid="{f50ae5a2-cec0-4633-bb16-14127b820235}" locked="0" Name="CHAR(255)" DefaultValue="null" Unsigned="0" CanBeNull="1" source-uid="{00000000-0000-0000-0000-000000000000}">
+        <Description>CHAR(255) - Datatype for MySQL</Description>
+        <Values/>
+       </DataType>
+       <DataType SqlType="CHAR" Size="32" class-uid="{10000000-0000-0000-0000-000000000002}" was-locked="0" Type="Text/String" finalSql="CHAR(32)" uid="{0e94797b-38a2-4ed1-aeb9-8f87c96d6928}" locked="0" Name="POSTCODE" DefaultValue="" Unsigned="0" CanBeNull="1" source-uid="{00000000-0000-0000-0000-000000000000}">
+        <Description></Description>
+        <Values/>
+       </DataType>
+       <DataType SqlType="BIT" Size="64" class-uid="{10000000-0000-0000-0000-000000000001}" was-locked="0" Type="Numeric" finalSql="BIT(64)" uid="{b7d7f205-8d35-4757-ba7d-8da6df5273fc}" locked="0" Name="BIT(64)" DefaultValue="" Unsigned="0" CanBeNull="1" source-uid="{00000000-0000-0000-0000-000000000000}">
+        <Description>BIT(64) - Datatype for MySQL</Description>
+        <Values/>
+       </DataType>
+       <DataType SqlType="BIT" Size="32" class-uid="{10000000-0000-0000-0000-000000000001}" was-locked="0" Type="Numeric" finalSql="BIT(32)" uid="{4ce2f6cb-e735-4b96-a8b0-ab46e84c131a}" locked="0" Name="BIT(32)" DefaultValue="" Unsigned="0" CanBeNull="1" source-uid="{00000000-0000-0000-0000-000000000000}">
+        <Description>BIT(32) - Datatype for MySQL</Description>
+        <Values/>
+       </DataType>
+       <DataType SqlType="BIT" Size="16" class-uid="{10000000-0000-0000-0000-000000000001}" was-locked="0" Type="Numeric" finalSql="BIT(16)" uid="{bb550509-6726-47ec-afa8-5fc4654a5399}" locked="0" Name="BIT(16)" DefaultValue="" Unsigned="0" CanBeNull="1" source-uid="{00000000-0000-0000-0000-000000000000}">
+        <Description>BIT(16) - Datatype for MySQL</Description>
+        <Values/>
+       </DataType>
+       <DataType SqlType="BIT" Size="8" class-uid="{10000000-0000-0000-0000-000000000001}" was-locked="0" Type="Numeric" finalSql="BIT(8)" uid="{d9816ea2-f994-441b-b9a0-7c80e6e523b7}" locked="0" Name="BIT(8)" DefaultValue="" Unsigned="0" CanBeNull="1" source-uid="{00000000-0000-0000-0000-000000000000}">
+        <Description>BIT(8) - Datatype for MySQL</Description>
+        <Values/>
+       </DataType>
+       <DataType SqlType="BIT" Size="4" class-uid="{10000000-0000-0000-0000-000000000001}" was-locked="0" Type="Numeric" finalSql="BIT(4)" uid="{10f186ce-060a-4162-adcc-859ac7fdefd0}" locked="0" Name="BIT(4)" DefaultValue="" Unsigned="0" CanBeNull="1" source-uid="{00000000-0000-0000-0000-000000000000}">
+        <Description>BIT(4) - Datatype for MySQL</Description>
+        <Values/>
+       </DataType>
+       <DataType SqlType="BIT" Size="2" class-uid="{10000000-0000-0000-0000-000000000001}" was-locked="0" Type="Numeric" finalSql="BIT(2)" uid="{86d58f4e-cd60-4557-9ea3-14a365323123}" locked="0" Name="BIT(2)" DefaultValue="" Unsigned="0" CanBeNull="1" source-uid="{00000000-0000-0000-0000-000000000000}">
+        <Description>BIT(2) - Datatype for MySQL</Description>
+        <Values/>
+       </DataType>
+       <DataType SqlType="BIT" Size="1" class-uid="{10000000-0000-0000-0000-000000000001}" was-locked="0" Type="Numeric" finalSql="BIT(1)" uid="{f0436c75-b7ad-4dfb-86c2-c6f636c3e4f2}" locked="0" Name="BIT(1)" DefaultValue="" Unsigned="0" CanBeNull="1" source-uid="{00000000-0000-0000-0000-000000000000}">
+        <Description>BIT(1) - Datatype for MySQL</Description>
+        <Values/>
+       </DataType>
+       <DataType SqlType="DOUBLE PRECISION" Size="" class-uid="{10000000-0000-0000-0000-000000000001}" was-locked="0" Type="Numeric" finalSql="DOUBLE PRECISION" uid="{8d627171-a450-4fa9-a3d5-3830e5cbd83d}" locked="0" Name="DOUBLE PRECISION" DefaultValue="0.0" Unsigned="0" CanBeNull="1" source-uid="{00000000-0000-0000-0000-000000000000}">
+        <Description>DOUBLE PRECISION - Datatype for MySQL</Description>
+        <Values/>
+       </DataType>
+       <DataType SqlType="REAL" Size="" class-uid="{10000000-0000-0000-0000-000000000001}" was-locked="0" Type="Numeric" finalSql="REAL" uid="{70c4de35-d414-4bee-a641-963f464c5b02}" locked="0" Name="REAL" DefaultValue="0.0" Unsigned="0" CanBeNull="1" source-uid="{00000000-0000-0000-0000-000000000000}">
+        <Description>REAL - Datatype for MySQL</Description>
+        <Values/>
+       </DataType>
+       <DataType SqlType="FLOAT" Size="" class-uid="{10000000-0000-0000-0000-000000000001}" was-locked="0" Type="Numeric" finalSql="FLOAT" uid="{770841c4-4570-4136-8aa3-70294fc15f47}" locked="0" Name="FLOAT" DefaultValue="0.0" Unsigned="0" CanBeNull="1" source-uid="{00000000-0000-0000-0000-000000000000}">
+        <Description>FLOAT - Datatype for MySQL</Description>
+        <Values/>
+       </DataType>
+       <DataType SqlType="DECIMAL" Size="7,2" class-uid="{10000000-0000-0000-0000-000000000001}" was-locked="0" Type="Numeric" finalSql="DECIMAL(7,2)" uid="{84b1e55f-168c-420e-8cc2-a5ee8d456790}" locked="0" Name="DECIMAL(7,2)" DefaultValue="0" Unsigned="0" CanBeNull="1" source-uid="{00000000-0000-0000-0000-000000000000}">
+        <Description>DECIMAL(7,2) - Datatype for MySQL</Description>
+        <Values/>
+       </DataType>
+       <DataType SqlType="DECIMAL" Size="6,2" class-uid="{10000000-0000-0000-0000-000000000001}" was-locked="0" Type="Numeric" finalSql="DECIMAL(6,2)" uid="{786e5b70-5650-4b40-bd23-4d3d8fcf5694}" locked="0" Name="DECIMAL(6,2)" DefaultValue="0" Unsigned="0" CanBeNull="1" source-uid="{00000000-0000-0000-0000-000000000000}">
+        <Description>DECIMAL(6,2) - Datatype for MySQL</Description>
+        <Values/>
+       </DataType>
+       <DataType SqlType="DECIMAL" Size="5,2" class-uid="{10000000-0000-0000-0000-000000000001}" was-locked="0" Type="Numeric" finalSql="DECIMAL(5,2)" uid="{de4f1f60-d008-43a1-bdb1-822e488fc207}" locked="0" Name="DECIMAL(5,2)" DefaultValue="0" Unsigned="0" CanBeNull="1" source-uid="{00000000-0000-0000-0000-000000000000}">
+        <Description>DECIMAL(5,2) - Datatype for MySQL</Description>
+        <Values/>
+       </DataType>
+       <DataType SqlType="BIGINT" Size="" class-uid="{10000000-0000-0000-0000-000000000001}" was-locked="0" Type="Numeric" finalSql="BIGINT" uid="{f3e1fac2-ed60-40dc-919e-2ee36a5f8e6a}" locked="0" Name="BIGINT" DefaultValue="0" Unsigned="0" CanBeNull="1" source-uid="{00000000-0000-0000-0000-000000000000}">
+        <Description>BIGINT - Datatype for MySQL</Description>
+        <Values/>
+       </DataType>
+       <DataType SqlType="MEDIUMINT" Size="" class-uid="{10000000-0000-0000-0000-000000000001}" was-locked="0" Type="Numeric" finalSql="MEDIUMINT" uid="{2a012d10-9e6c-4931-a4ab-7fc7da07adb2}" locked="0" Name="MEDIUMINT" DefaultValue="0" Unsigned="0" CanBeNull="1" source-uid="{00000000-0000-0000-0000-000000000000}">
+        <Description>MEDIUMINT - Datatype for MySQL</Description>
+        <Values/>
+       </DataType>
+       <DataType SqlType="SMALLINT" Size="" class-uid="{10000000-0000-0000-0000-000000000001}" was-locked="0" Type="Numeric" finalSql="SMALLINT" uid="{baf3f955-ef3d-4fe0-b454-8ff04bb07164}" locked="0" Name="SMALLINT" DefaultValue="0" Unsigned="0" CanBeNull="1" source-uid="{00000000-0000-0000-0000-000000000000}">
+        <Description>SMALLINT - Datatype for MySQL</Description>
+        <Values/>
+       </DataType>
+       <DataType SqlType="INTEGER" Size="" class-uid="{10000000-0000-0000-0000-000000000001}" was-locked="0" Type="Numeric" finalSql="INTEGER" uid="{26729e2f-5f19-4c8a-af59-84cbcbcb41ba}" locked="0" Name="INTEGER - SIGNED" DefaultValue="0" Unsigned="0" CanBeNull="1" source-uid="{00000000-0000-0000-0000-000000000000}">
+        <Description>INTEGER - Datatype for MySQL</Description>
+        <Values/>
+       </DataType>
+       <DataType SqlType="INTEGER" Size="" class-uid="{10000000-0000-0000-0000-000000000001}" was-locked="0" Type="Numeric" finalSql="INTEGER" uid="{c001c63b-b06b-4258-b6c4-bc1fb8836daa}" locked="0" Name="INTEGER - UNSIGNED" DefaultValue="0" Unsigned="1" CanBeNull="1" source-uid="{00000000-0000-0000-0000-000000000000}">
+        <Description>INTEGER UNSIGNED  - Datatype for MySQL</Description>
+        <Values/>
+       </DataType>
+       <DataType SqlType="TINYINT" Size="" class-uid="{10000000-0000-0000-0000-000000000001}" was-locked="0" Type="Numeric" finalSql="TINYINT" uid="{9f206c2b-c7c1-4890-a736-ec2d15f42fac}" locked="0" Name="TINYINT" DefaultValue="0" Unsigned="0" CanBeNull="1" source-uid="{00000000-0000-0000-0000-000000000000}">
+        <Description>TINYINT - Datatype for MySQL</Description>
+        <Values/>
+       </DataType>
+       <DataType SqlType="INTEGER" Size="4" class-uid="{10000000-0000-0000-0000-000000000001}" was-locked="0" Type="Numeric" finalSql="INTEGER(4)" uid="{aa81937b-72d4-4eeb-aedb-e5eafa6dd40e}" locked="0" Name="INT(4)" DefaultValue="0" Unsigned="0" CanBeNull="1" source-uid="{00000000-0000-0000-0000-000000000000}">
+        <Description>INT(4) - Datatype for MySQL</Description>
+        <Values/>
+       </DataType>
+       <DataType SqlType="INTEGER" Size="3" class-uid="{10000000-0000-0000-0000-000000000001}" was-locked="0" Type="Numeric" finalSql="INTEGER(3)" uid="{d5504def-e134-48bb-a0f8-6ddec5104937}" locked="0" Name="INT(3)" DefaultValue="0" Unsigned="0" CanBeNull="1" source-uid="{00000000-0000-0000-0000-000000000000}">
+        <Description>INT(3) - Datatype for MySQL</Description>
+        <Values/>
+       </DataType>
+       <DataType SqlType="INTEGER" Size="2" class-uid="{10000000-0000-0000-0000-000000000001}" was-locked="0" Type="Numeric" finalSql="INTEGER(2)" uid="{984a3eaf-11d1-4c6a-b7be-d9376872709d}" locked="0" Name="INT(2)" DefaultValue="0" Unsigned="0" CanBeNull="1" source-uid="{00000000-0000-0000-0000-000000000000}">
+        <Description>INT(2) - Datatype for MySQL</Description>
+        <Values/>
+       </DataType>
+       <DataType SqlType="INTEGER" Size="1" class-uid="{10000000-0000-0000-0000-000000000001}" was-locked="0" Type="Numeric" finalSql="INTEGER(1)" uid="{dd8728a5-4a41-4a5e-aa16-e8834743e4df}" locked="0" Name="INT(1)" DefaultValue="0" Unsigned="0" CanBeNull="1" source-uid="{00000000-0000-0000-0000-000000000000}">
+        <Description>INT(1) - Datatype for MySQL</Description>
+        <Values/>
+       </DataType>
+       <DataType SqlType="INTEGER" Size="10" class-uid="{10000000-0000-0000-0000-000000000001}" was-locked="0" Type="Numeric" finalSql="INTEGER(10)" uid="{a5da017a-8bcf-499a-9010-eddb1f33e229}" locked="0" Name="INT(10)" DefaultValue="0" Unsigned="0" CanBeNull="1" source-uid="{00000000-0000-0000-0000-000000000000}">
+        <Description>INT(10) - Datatype for MySQL</Description>
+        <Values/>
+       </DataType>
+       <DataType SqlType="INTEGER" Size="" class-uid="{10000000-0000-0000-0000-000000000001}" was-locked="0" Type="Numeric" finalSql="INTEGER" uid="{76ca5262-a288-4542-960b-16ba9d65d021}" locked="0" Name="ADDRESS_ID" DefaultValue="" Unsigned="0" CanBeNull="1" source-uid="{00000000-0000-0000-0000-000000000000}">
+        <Description></Description>
+        <Values/>
+       </DataType>
+       <DataType SqlType="BOOL" Size="" class-uid="{10000000-0000-0000-0000-000000000004}" was-locked="0" Type="Boolean" finalSql="BOOL" uid="{e285f177-a2e4-4c0c-9a3d-619c27f37aea}" locked="0" Name="BOOL" DefaultValue="false" Unsigned="0" CanBeNull="1" source-uid="{00000000-0000-0000-0000-000000000000}">
+        <Description>BOOL - Datatype for MySQL</Description>
+        <Values/>
+       </DataType>
+       <DataType SqlType="YEAR" Size="" class-uid="{10000000-0000-0000-0000-000000000003}" was-locked="0" Type="Date/Time" finalSql="YEAR" uid="{7226acc4-3e1c-4460-9145-6fbd86f430f5}" locked="0" Name="YEAR" DefaultValue="" Unsigned="0" CanBeNull="1" source-uid="{00000000-0000-0000-0000-000000000000}">
+        <Description>YEAR - Datatype for MySQL</Description>
+        <Values/>
+       </DataType>
+       <DataType SqlType="TIMESTAMP" Size="" class-uid="{10000000-0000-0000-0000-000000000003}" was-locked="0" Type="Date/Time" finalSql="TIMESTAMP" uid="{f434156c-4065-4a96-8e6d-5783f19292bb}" locked="0" Name="TIMESTAMP" DefaultValue="" Unsigned="0" CanBeNull="1" source-uid="{00000000-0000-0000-0000-000000000000}">
+        <Description>TIMESTAMP - Datatype for MySQL</Description>
+        <Values/>
+       </DataType>
+       <DataType SqlType="DATETIME" Size="" class-uid="{10000000-0000-0000-0000-000000000003}" was-locked="0" Type="Date/Time" finalSql="DATETIME" uid="{57ccbc02-4b7c-40a1-a286-55ed9d600f45}" locked="0" Name="DATETIME" DefaultValue="" Unsigned="0" CanBeNull="1" source-uid="{00000000-0000-0000-0000-000000000000}">
+        <Description>DATETIME - Datatype for MySQL</Description>
+        <Values/>
+       </DataType>
+       <DataType SqlType="TIME" Size="" class-uid="{10000000-0000-0000-0000-000000000003}" was-locked="0" Type="Date/Time" finalSql="TIME" uid="{1b579f2a-3aae-4eab-b3d1-e0a95ce41236}" locked="0" Name="TIME" DefaultValue="" Unsigned="0" CanBeNull="1" source-uid="{00000000-0000-0000-0000-000000000000}">
+        <Description>TIME - Datatype for MySQL</Description>
+        <Values/>
+       </DataType>
+       <DataType SqlType="DATE" Size="" class-uid="{10000000-0000-0000-0000-000000000003}" was-locked="0" Type="Date/Time" finalSql="DATE" uid="{2b6c79eb-8049-48f6-88e9-a8b03a8ef63f}" locked="0" Name="DATE" DefaultValue="" Unsigned="0" CanBeNull="1" source-uid="{00000000-0000-0000-0000-000000000000}">
+        <Description>DATE - Datatype for MySQL</Description>
+        <Values/>
+       </DataType>
+       <DataType SqlType="VARBINARY" Size="65535" class-uid="{10000000-0000-0000-0000-000000000005}" was-locked="0" Type="Blob/Binary" finalSql="VARBINARY(65535)" uid="{420df278-d50a-4090-87d1-ded425a6caa5}" locked="0" Name="VARBINARY(65535)" DefaultValue="" Unsigned="0" CanBeNull="1" source-uid="{00000000-0000-0000-0000-000000000000}">
+        <Description>VARBINARY(65535) - Datatype for MySQL</Description>
+        <Values/>
+       </DataType>
+       <DataType SqlType="VARBINARY" Size="32768" class-uid="{10000000-0000-0000-0000-000000000005}" was-locked="0" Type="Blob/Binary" finalSql="VARBINARY(32768)" uid="{6b99bd74-463a-4e3a-9d59-2beb8126454d}" locked="0" Name="VARBINARY(32768)" DefaultValue="" Unsigned="0" CanBeNull="1" source-uid="{00000000-0000-0000-0000-000000000000}">
+        <Description>VARBINARY(32768) - Datatype for MySQL</Description>
+        <Values/>
+       </DataType>
+       <DataType SqlType="VARBINARY" Size="16384" class-uid="{10000000-0000-0000-0000-000000000005}" was-locked="0" Type="Blob/Binary" finalSql="VARBINARY(16384)" uid="{13147d7d-7cd4-4de7-9629-bbdf765eb5fe}" locked="0" Name="VARBINARY(16384)" DefaultValue="" Unsigned="0" CanBeNull="1" source-uid="{00000000-0000-0000-0000-000000000000}">
+        <Description>VARBINARY(16384) - Datatype for MySQL</Description>
+        <Values/>
+       </DataType>
+       <DataType SqlType="VARBINARY" Size="8192" class-uid="{10000000-0000-0000-0000-000000000005}" was-locked="0" Type="Blob/Binary" finalSql="VARBINARY(8192)" uid="{1dc03492-a2ce-4f51-82e2-7755f7fb1ca8}" locked="0" Name="VARBINARY(8192)" DefaultValue="" Unsigned="0" CanBeNull="1" source-uid="{00000000-0000-0000-0000-000000000000}">
+        <Description>VARBINARY(8192) - Datatype for MySQL</Description>
+        <Values/>
+       </DataType>
+       <DataType SqlType="VARBINARY" Size="4096" class-uid="{10000000-0000-0000-0000-000000000005}" was-locked="0" Type="Blob/Binary" finalSql="VARBINARY(4096)" uid="{5b87f14b-4246-4a84-85bc-89b6146a3a26}" locked="0" Name="VARBINARY(4096)" DefaultValue="" Unsigned="0" CanBeNull="1" source-uid="{00000000-0000-0000-0000-000000000000}">
+        <Description>VARBINARY(4096) - Datatype for MySQL</Description>
+        <Values/>
+       </DataType>
+       <DataType SqlType="BINARY" Size="16384" class-uid="{10000000-0000-0000-0000-000000000005}" was-locked="0" Type="Blob/Binary" finalSql="BINARY(16384)" uid="{389e06c4-edcc-4d80-9bfc-7d5791e171c1}" locked="0" Name="BINARY(16384)" DefaultValue="" Unsigned="0" CanBeNull="1" source-uid="{00000000-0000-0000-0000-000000000000}">
+        <Description>BINARY(16384) - Datatype for MySQL</Description>
+        <Values/>
+       </DataType>
+       <DataType SqlType="BINARY" Size="8192" class-uid="{10000000-0000-0000-0000-000000000005}" was-locked="0" Type="Blob/Binary" finalSql="BINARY(8192)" uid="{92fc5ad6-c59b-4789-9cda-1198c6d2c5f4}" locked="0" Name="BINARY(8192)" DefaultValue="" Unsigned="0" CanBeNull="1" source-uid="{00000000-0000-0000-0000-000000000000}">
+        <Description>BINARY(8192) - Datatype for MySQL</Description>
+        <Values/>
+       </DataType>
+       <DataType SqlType="BINARY" Size="4096" class-uid="{10000000-0000-0000-0000-000000000005}" was-locked="0" Type="Blob/Binary" finalSql="BINARY(4096)" uid="{fb65dbb9-6906-45fd-a847-bd7824fd8eea}" locked="0" Name="BINARY(4096)" DefaultValue="" Unsigned="0" CanBeNull="1" source-uid="{00000000-0000-0000-0000-000000000000}">
+        <Description>BINARY(4096) - Datatype for MySQL</Description>
+        <Values/>
+       </DataType>
+       <DataType SqlType="BINARY" Size="65535" class-uid="{10000000-0000-0000-0000-000000000005}" was-locked="0" Type="Blob/Binary" finalSql="BINARY(65535)" uid="{75e4fde2-45e0-4804-a5c2-1d11f55cd940}" locked="0" Name="BINARY(65535)" DefaultValue="" Unsigned="0" CanBeNull="1" source-uid="{00000000-0000-0000-0000-000000000000}">
+        <Description>BIARY(65535) - Datatype for MySQL</Description>
+        <Values/>
+       </DataType>
+      </DataTypes>
+      <Tables>
+       <Table class-uid="{10000001-0000-0000-0000-000000000001}" was-locked="0" parent-uid="N/A" Parent="N/A" uid="{482036cc-caaf-47cf-9a1f-e10e5bb15afc}" locked="0" Name="ADDRESS" source-uid="{00000000-0000-0000-0000-000000000000}">
+        <Description></Description>
+        <Columns>
+         <Column class-uid="{10000001-0000-0000-0000-000000000007}" Type="ADDRESS_ID" uid="{00d375e6-ab61-4c92-b3d9-de2b43117eef}" Name="ID" PK="1" source-uid="{00000000-0000-0000-0000-000000000000}">
+          <Description></Description>
+          <SpInstances>
+           <DbEnginesSps>
+            <DbEngineSps Name="MySQL">
+             <SpInstance class-uid="{10000007-0000-0000-0000-000000000001}" uid="{8965e2e8-e4eb-42e5-964e-2e9737561950}" Value="FALSE">
+              <Sp sql-role-uid="{10000007-0000-0000-0000-000000000001}" class-uid="{10000002-0000-0000-0000-000000000001}" uid="{37d0a457-41ba-4f1a-9e3e-aa1e91a1bae5}" Name="Auto Increment" referred-object-class-uid="{10000001-0000-0000-0000-000000000007}"/>
+             </SpInstance>
+             <SpInstance class-uid="{10000007-0000-0000-0000-000000000002}" uid="{db4e34d9-45cc-43ed-9bdf-183e6fb7a592}" Value="FALSE">
+              <Sp sql-role-uid="{10000007-0000-0000-0000-000000000002}" class-uid="{10000002-0000-0000-0000-000000000001}" uid="{09a87eb5-a9c0-4925-adf9-1d0f269c9ee8}" Name="Zero fill" referred-object-class-uid="{10000001-0000-0000-0000-000000000007}"/>
+             </SpInstance>
+            </DbEngineSps>
+           </DbEnginesSps>
+          </SpInstances>
+         </Column>
+         <Column class-uid="{10000001-0000-0000-0000-000000000007}" Type="POSTCODE" uid="{081b7c7f-fa27-4aba-a1b4-151fa884de25}" Name="POSTCODE" PK="0" source-uid="{00000000-0000-0000-0000-000000000000}">
+          <Description></Description>
+          <SpInstances>
+           <DbEnginesSps>
+            <DbEngineSps Name="MySQL">
+             <SpInstance class-uid="{10000007-0000-0000-0000-000000000001}" uid="{b8d743fa-b7b8-4e6f-84cc-5319b6739a74}" Value="FALSE">
+              <Sp sql-role-uid="{10000007-0000-0000-0000-000000000001}" class-uid="{10000002-0000-0000-0000-000000000001}" uid="{37d0a457-41ba-4f1a-9e3e-aa1e91a1bae5}" Name="Auto Increment" referred-object-class-uid="{10000001-0000-0000-0000-000000000007}"/>
+             </SpInstance>
+             <SpInstance class-uid="{10000007-0000-0000-0000-000000000002}" uid="{abe4d21b-ab13-4308-9059-10d104ca9008}" Value="FALSE">
+              <Sp sql-role-uid="{10000007-0000-0000-0000-000000000002}" class-uid="{10000002-0000-0000-0000-000000000001}" uid="{09a87eb5-a9c0-4925-adf9-1d0f269c9ee8}" Name="Zero fill" referred-object-class-uid="{10000001-0000-0000-0000-000000000007}"/>
+             </SpInstance>
+            </DbEngineSps>
+           </DbEnginesSps>
+          </SpInstances>
+         </Column>
+         <Column class-uid="{10000001-0000-0000-0000-000000000007}" Type="VARCHAR(255)" uid="{b8538daa-ebe5-461b-8080-a95532a91916}" Name="STREET_NAME" PK="0" source-uid="{00000000-0000-0000-0000-000000000000}">
+          <Description></Description>
+          <SpInstances>
+           <DbEnginesSps>
+            <DbEngineSps Name="MySQL">
+             <SpInstance class-uid="{10000007-0000-0000-0000-000000000001}" uid="{b227e46f-c881-48ec-a480-1a8cdae5a4c9}" Value="FALSE">
+              <Sp sql-role-uid="{10000007-0000-0000-0000-000000000001}" class-uid="{10000002-0000-0000-0000-000000000001}" uid="{37d0a457-41ba-4f1a-9e3e-aa1e91a1bae5}" Name="Auto Increment" referred-object-class-uid="{10000001-0000-0000-0000-000000000007}"/>
+             </SpInstance>
+             <SpInstance class-uid="{10000007-0000-0000-0000-000000000002}" uid="{a855714a-e91e-4e55-bbbd-705b70021389}" Value="FALSE">
+              <Sp sql-role-uid="{10000007-0000-0000-0000-000000000002}" class-uid="{10000002-0000-0000-0000-000000000001}" uid="{09a87eb5-a9c0-4925-adf9-1d0f269c9ee8}" Name="Zero fill" referred-object-class-uid="{10000001-0000-0000-0000-000000000007}"/>
+             </SpInstance>
+            </DbEngineSps>
+           </DbEnginesSps>
+          </SpInstances>
+         </Column>
+         <Column class-uid="{10000001-0000-0000-0000-000000000007}" Type="VARCHAR(255)" uid="{6a70741a-5ee7-42a2-a535-6402facad94c}" Name="CITY" PK="0" source-uid="{00000000-0000-0000-0000-000000000000}">
+          <Description></Description>
+          <SpInstances>
+           <DbEnginesSps>
+            <DbEngineSps Name="MySQL">
+             <SpInstance class-uid="{10000007-0000-0000-0000-000000000001}" uid="{83401112-e131-4618-a1a3-db5549f8fd8f}" Value="FALSE">
+              <Sp sql-role-uid="{10000007-0000-0000-0000-000000000001}" class-uid="{10000002-0000-0000-0000-000000000001}" uid="{37d0a457-41ba-4f1a-9e3e-aa1e91a1bae5}" Name="Auto Increment" referred-object-class-uid="{10000001-0000-0000-0000-000000000007}"/>
+             </SpInstance>
+             <SpInstance class-uid="{10000007-0000-0000-0000-000000000002}" uid="{faae9e13-a570-47a2-a60f-f4103c5d61fc}" Value="FALSE">
+              <Sp sql-role-uid="{10000007-0000-0000-0000-000000000002}" class-uid="{10000002-0000-0000-0000-000000000001}" uid="{09a87eb5-a9c0-4925-adf9-1d0f269c9ee8}" Name="Zero fill" referred-object-class-uid="{10000001-0000-0000-0000-000000000007}"/>
+             </SpInstance>
+            </DbEngineSps>
+           </DbEnginesSps>
+          </SpInstances>
+         </Column>
+         <Column class-uid="{10000001-0000-0000-0000-000000000007}" Type="VARCHAR(255)" uid="{a51e7de0-d093-4b9e-9095-4d07c9e7cea8}" Name="COUNTY" PK="0" source-uid="{00000000-0000-0000-0000-000000000000}">
+          <Description></Description>
+          <SpInstances>
+           <DbEnginesSps>
+            <DbEngineSps Name="MySQL">
+             <SpInstance class-uid="{10000007-0000-0000-0000-000000000001}" uid="{77aa408e-b562-4eca-9320-48a32e46c3c8}" Value="FALSE">
+              <Sp sql-role-uid="{10000007-0000-0000-0000-000000000001}" class-uid="{10000002-0000-0000-0000-000000000001}" uid="{37d0a457-41ba-4f1a-9e3e-aa1e91a1bae5}" Name="Auto Increment" referred-object-class-uid="{10000001-0000-0000-0000-000000000007}"/>
+             </SpInstance>
+             <SpInstance class-uid="{10000007-0000-0000-0000-000000000002}" uid="{352527a2-3348-41c1-b724-10ad800e3820}" Value="FALSE">
+              <Sp sql-role-uid="{10000007-0000-0000-0000-000000000002}" class-uid="{10000002-0000-0000-0000-000000000001}" uid="{09a87eb5-a9c0-4925-adf9-1d0f269c9ee8}" Name="Zero fill" referred-object-class-uid="{10000001-0000-0000-0000-000000000007}"/>
+             </SpInstance>
+            </DbEngineSps>
+           </DbEnginesSps>
+          </SpInstances>
+         </Column>
+         <Column class-uid="{10000001-0000-0000-0000-000000000007}" Type="CHAR(255)" uid="{e421f1f6-98c2-4166-b0c3-00df6d12004a}" Name="STREET_NUMBER" PK="0" source-uid="{00000000-0000-0000-0000-000000000000}">
+          <Description></Description>
+          <SpInstances>
+           <DbEnginesSps>
+            <DbEngineSps Name="MySQL">
+             <SpInstance class-uid="{10000007-0000-0000-0000-000000000001}" uid="{230ba8f2-0a4c-4efd-9319-1934d03151f1}" Value="FALSE">
+              <Sp sql-role-uid="{10000007-0000-0000-0000-000000000001}" class-uid="{10000002-0000-0000-0000-000000000001}" uid="{37d0a457-41ba-4f1a-9e3e-aa1e91a1bae5}" Name="Auto Increment" referred-object-class-uid="{10000001-0000-0000-0000-000000000007}"/>
+             </SpInstance>
+             <SpInstance class-uid="{10000007-0000-0000-0000-000000000002}" uid="{25d7812b-0bd6-4ae8-b67d-25f50a4a9c42}" Value="FALSE">
+              <Sp sql-role-uid="{10000007-0000-0000-0000-000000000002}" class-uid="{10000002-0000-0000-0000-000000000001}" uid="{09a87eb5-a9c0-4925-adf9-1d0f269c9ee8}" Name="Zero fill" referred-object-class-uid="{10000001-0000-0000-0000-000000000007}"/>
+             </SpInstance>
+            </DbEngineSps>
+           </DbEnginesSps>
+          </SpInstances>
+         </Column>
+        </Columns>
+        <Indices>
+         <Index class-uid="{10000001-0000-0000-0000-000000000008}" uid="{c5a4bf42-49e9-4113-bc3e-3d97196494a1}" Name="autoidx_0">
+          <Columns>
+           <Column Order="" Name="ID">
+            <ColumnsSps/>
+           </Column>
+          </Columns>
+          <SpInstances>
+           <DbEnginesSps>
+            <DbEngineSps Name="MySQL">
+             <SpInstance class-uid="{10000005-0000-0000-0000-000000000001}" uid="{8b9835ef-8531-4a9d-8b73-a79e226e6d52}" Value="HASH">
+              <Sp sql-role-uid="{10000005-0000-0000-0000-000000000001}" class-uid="{10000002-0000-0000-0000-000000000002}" uid="{61153ccd-f9ee-4bcd-87e7-b959befc64de}" Name="Index Type" referred-object-class-uid="{10000001-0000-0000-0000-000000000008}"/>
+             </SpInstance>
+             <SpInstance class-uid="{10000005-0000-0000-0000-000000000002}" uid="{1211659d-da33-4fcb-9da8-8d6ee10fe1ce}" Value="">
+              <Sp sql-role-uid="{10000005-0000-0000-0000-000000000002}" class-uid="{10000002-0000-0000-0000-000000000002}" uid="{1c5f9036-ccda-4bca-80c2-66535ccfaa5c}" Name="Index Category" referred-object-class-uid="{10000001-0000-0000-0000-000000000008}"/>
+             </SpInstance>
+            </DbEngineSps>
+           </DbEnginesSps>
+          </SpInstances>
+         </Index>
+         <Index class-uid="{10000001-0000-0000-0000-000000000008}" uid="{30fcb6aa-851c-4a52-b3e9-5058123f5782}" Name="index_POSTCODE">
+          <Columns>
+           <Column Order="" Name="POSTCODE">
+            <ColumnsSps/>
+           </Column>
+           <Column Order="" Name="STREET_NAME">
+            <ColumnsSps/>
+           </Column>
+           <Column Order="" Name="CITY">
+            <ColumnsSps/>
+           </Column>
+          </Columns>
+          <SpInstances>
+           <DbEnginesSps>
+            <DbEngineSps Name="MySQL">
+             <SpInstance class-uid="{10000005-0000-0000-0000-000000000001}" uid="{12a99a73-2409-48d4-bcdd-16531a0892a1}" Value="BTREE">
+              <Sp sql-role-uid="{10000005-0000-0000-0000-000000000001}" class-uid="{10000002-0000-0000-0000-000000000002}" uid="{61153ccd-f9ee-4bcd-87e7-b959befc64de}" Name="Index Type" referred-object-class-uid="{10000001-0000-0000-0000-000000000008}"/>
+             </SpInstance>
+             <SpInstance class-uid="{10000005-0000-0000-0000-000000000002}" uid="{b25987ba-c9ed-4212-9fb2-2ba7d817ec99}" Value="">
+              <Sp sql-role-uid="{10000005-0000-0000-0000-000000000002}" class-uid="{10000002-0000-0000-0000-000000000002}" uid="{1c5f9036-ccda-4bca-80c2-66535ccfaa5c}" Name="Index Category" referred-object-class-uid="{10000001-0000-0000-0000-000000000008}"/>
+             </SpInstance>
+            </DbEngineSps>
+           </DbEnginesSps>
+          </SpInstances>
+         </Index>
+        </Indices>
+        <ForeignKeys/>
+        <StartupValues/>
+        <SpInstances>
+         <DbEnginesSps>
+          <DbEngineSps Name="MySQL">
+           <SpInstance class-uid="{10000004-0000-0000-0000-000000000001}" uid="{b87430fa-52b6-4ce5-a1aa-088d31f28e6a}" Value="FALSE">
+            <Sp sql-role-uid="{10000004-0000-0000-0000-000000000001}" class-uid="{10000002-0000-0000-0000-000000000001}" uid="{d6af4956-5cb7-4cb3-a886-4c088a4203a3}" Name="Temporary" referred-object-class-uid="{10000001-0000-0000-0000-000000000001}"/>
+           </SpInstance>
+           <SpInstance class-uid="{10000004-0000-0000-0000-000000000002}" uid="{274f642e-9318-4325-9f2b-1aa50972602d}" Value="FALSE">
+            <Sp sql-role-uid="{10000004-0000-0000-0000-000000000002}" class-uid="{10000002-0000-0000-0000-000000000001}" uid="{8e6e77d5-6cda-4eb9-b7ed-b5dd4c9b9835}" Name="IfNotExists" referred-object-class-uid="{10000001-0000-0000-0000-000000000001}"/>
+           </SpInstance>
+           <SpInstance class-uid="{10000004-0000-0000-0000-000000000003}" uid="{bf4a67d9-208a-4e5a-9809-de958695fee1}" Value="InnoDB">
+            <Sp sql-role-uid="{10000004-0000-0000-0000-000000000003}" class-uid="{10000002-0000-0000-0000-000000000002}" uid="{93270d22-2def-4182-a926-54a3f2ed8e9f}" Name="StorageEngine" referred-object-class-uid="{10000001-0000-0000-0000-000000000001}"/>
+           </SpInstance>
+           <SpInstance class-uid="{10000004-0000-0000-0000-000000000004}" uid="{5f5471ee-3ca9-4aab-9fe7-4fe25052ad73}" Value="">
+            <Sp sql-role-uid="{10000004-0000-0000-0000-000000000004}" class-uid="{10000002-0000-0000-0000-000000000002}" uid="{00bffb75-602b-424b-8e43-b2b00e890496}" Name="Codepage" referred-object-class-uid="{10000001-0000-0000-0000-000000000001}"/>
+           </SpInstance>
+          </DbEngineSps>
+         </DbEnginesSps>
+        </SpInstances>
+       </Table>
+       <Table class-uid="{10000001-0000-0000-0000-000000000001}" was-locked="0" parent-uid="N/A" Parent="N/A" uid="{ca74e462-d3a0-46eb-b43f-348211ceaf29}" locked="0" Name="PERSON" source-uid="{00000000-0000-0000-0000-000000000000}">
+        <Description></Description>
+        <Columns>
+         <Column class-uid="{10000001-0000-0000-0000-000000000007}" Type="INTEGER - UNSIGNED" uid="{c7e841c8-99b8-4bdc-a6da-7bb8d5d5d22e}" Name="ID" PK="1" source-uid="{00000000-0000-0000-0000-000000000000}">
+          <Description></Description>
+          <SpInstances>
+           <DbEnginesSps>
+            <DbEngineSps Name="MySQL">
+             <SpInstance class-uid="{10000007-0000-0000-0000-000000000001}" uid="{c1b14f32-9a34-4f31-987f-09788d8197cd}" Value="FALSE">
+              <Sp sql-role-uid="{10000007-0000-0000-0000-000000000001}" class-uid="{10000002-0000-0000-0000-000000000001}" uid="{37d0a457-41ba-4f1a-9e3e-aa1e91a1bae5}" Name="Auto Increment" referred-object-class-uid="{10000001-0000-0000-0000-000000000007}"/>
+             </SpInstance>
+             <SpInstance class-uid="{10000007-0000-0000-0000-000000000002}" uid="{43a68d9b-7d29-420d-97d6-6429a1cd8e86}" Value="FALSE">
+              <Sp sql-role-uid="{10000007-0000-0000-0000-000000000002}" class-uid="{10000002-0000-0000-0000-000000000001}" uid="{09a87eb5-a9c0-4925-adf9-1d0f269c9ee8}" Name="Zero fill" referred-object-class-uid="{10000001-0000-0000-0000-000000000007}"/>
+             </SpInstance>
+            </DbEngineSps>
+           </DbEnginesSps>
+          </SpInstances>
+         </Column>
+         <Column class-uid="{10000001-0000-0000-0000-000000000007}" Type="VARCHAR(255)" uid="{961c0d03-84fa-4277-9168-cb701682140b}" Name="NAME" PK="0" source-uid="{00000000-0000-0000-0000-000000000000}">
+          <Description></Description>
+          <SpInstances>
+           <DbEnginesSps>
+            <DbEngineSps Name="MySQL">
+             <SpInstance class-uid="{10000007-0000-0000-0000-000000000001}" uid="{1d396f19-dbfa-4108-b88b-42833fad2975}" Value="FALSE">
+              <Sp sql-role-uid="{10000007-0000-0000-0000-000000000001}" class-uid="{10000002-0000-0000-0000-000000000001}" uid="{37d0a457-41ba-4f1a-9e3e-aa1e91a1bae5}" Name="Auto Increment" referred-object-class-uid="{10000001-0000-0000-0000-000000000007}"/>
+             </SpInstance>
+             <SpInstance class-uid="{10000007-0000-0000-0000-000000000002}" uid="{4c2530cf-eff6-4415-bcc2-a6a78cef4601}" Value="FALSE">
+              <Sp sql-role-uid="{10000007-0000-0000-0000-000000000002}" class-uid="{10000002-0000-0000-0000-000000000001}" uid="{09a87eb5-a9c0-4925-adf9-1d0f269c9ee8}" Name="Zero fill" referred-object-class-uid="{10000001-0000-0000-0000-000000000007}"/>
+             </SpInstance>
+            </DbEngineSps>
+           </DbEnginesSps>
+          </SpInstances>
+         </Column>
+         <Column class-uid="{10000001-0000-0000-0000-000000000007}" Type="ADDRESS_ID" uid="{5698344d-2743-4537-8bba-0c24ceedf04e}" Name="ADDRS_ID" PK="0" source-uid="{00000000-0000-0000-0000-000000000000}">
+          <Description></Description>
+          <SpInstances>
+           <DbEnginesSps>
+            <DbEngineSps Name="MySQL">
+             <SpInstance class-uid="{10000007-0000-0000-0000-000000000001}" uid="{ca1ccb76-5fb9-4a9e-bb3d-0f19a2300060}" Value="FALSE">
+              <Sp sql-role-uid="{10000007-0000-0000-0000-000000000001}" class-uid="{10000002-0000-0000-0000-000000000001}" uid="{37d0a457-41ba-4f1a-9e3e-aa1e91a1bae5}" Name="Auto Increment" referred-object-class-uid="{10000001-0000-0000-0000-000000000007}"/>
+             </SpInstance>
+             <SpInstance class-uid="{10000007-0000-0000-0000-000000000002}" uid="{c3cc240f-1c7c-47da-b0fd-602518319c80}" Value="FALSE">
+              <Sp sql-role-uid="{10000007-0000-0000-0000-000000000002}" class-uid="{10000002-0000-0000-0000-000000000001}" uid="{09a87eb5-a9c0-4925-adf9-1d0f269c9ee8}" Name="Zero fill" referred-object-class-uid="{10000001-0000-0000-0000-000000000007}"/>
+             </SpInstance>
+            </DbEngineSps>
+           </DbEnginesSps>
+          </SpInstances>
+         </Column>
+        </Columns>
+        <Indices/>
+        <ForeignKeys>
+         <ForeignKey class-uid="{10000001-0000-0000-0000-000000000009}" OnUpdate="CASCADE" OnDelete="CASCADE" uid="{5b92337a-041d-4ab7-8f15-4fc4b6afc577}" Name="FK_ADDRES" source-uid="{00000000-0000-0000-0000-000000000000}">
+          <Associations>
+           <Association ForeignTable="ADDRESS" ForeignColumn="ID" LocalTable="PERSON" LocalColumn="ADDRS_ID"/>
+          </Associations>
+          <AutoGenIndices>
+           <Index Table="ADDRESS" Name="autoidx_0"/>
+          </AutoGenIndices>
+         </ForeignKey>
+         <ForeignKey class-uid="{10000001-0000-0000-0000-000000000009}" OnUpdate="CASCADE" OnDelete="CASCADE" uid="{8dd4f06a-490c-40b0-aa0e-eff6a861d921}" Name="testfk" source-uid="{00000000-0000-0000-0000-000000000000}">
+          <Associations>
+           <Association ForeignTable="TABTEST" ForeignColumn="asd" LocalTable="PERSON" LocalColumn="NAME"/>
+          </Associations>
+          <AutoGenIndices>
+           <Index Table="TABTEST" Name="autoidx_TABTEST_0"/>
+          </AutoGenIndices>
+         </ForeignKey>
+        </ForeignKeys>
+        <StartupValues/>
+        <SpInstances>
+         <DbEnginesSps>
+          <DbEngineSps Name="MySQL">
+           <SpInstance class-uid="{10000004-0000-0000-0000-000000000001}" uid="{fdd05f60-ddbb-4a6e-951e-8b225e25c3be}" Value="FALSE">
+            <Sp sql-role-uid="{10000004-0000-0000-0000-000000000001}" class-uid="{10000002-0000-0000-0000-000000000001}" uid="{d6af4956-5cb7-4cb3-a886-4c088a4203a3}" Name="Temporary" referred-object-class-uid="{10000001-0000-0000-0000-000000000001}"/>
+           </SpInstance>
+           <SpInstance class-uid="{10000004-0000-0000-0000-000000000002}" uid="{43376ad6-7a20-483b-93e8-de13e15a2cf2}" Value="FALSE">
+            <Sp sql-role-uid="{10000004-0000-0000-0000-000000000002}" class-uid="{10000002-0000-0000-0000-000000000001}" uid="{8e6e77d5-6cda-4eb9-b7ed-b5dd4c9b9835}" Name="IfNotExists" referred-object-class-uid="{10000001-0000-0000-0000-000000000001}"/>
+           </SpInstance>
+           <SpInstance class-uid="{10000004-0000-0000-0000-000000000003}" uid="{7579e5fb-57eb-4e19-a51d-6d47dd312360}" Value="InnoDB">
+            <Sp sql-role-uid="{10000004-0000-0000-0000-000000000003}" class-uid="{10000002-0000-0000-0000-000000000002}" uid="{93270d22-2def-4182-a926-54a3f2ed8e9f}" Name="StorageEngine" referred-object-class-uid="{10000001-0000-0000-0000-000000000001}"/>
+           </SpInstance>
+           <SpInstance class-uid="{10000004-0000-0000-0000-000000000004}" uid="{21f6a867-7f18-4e4e-9464-763866a957a9}" Value="">
+            <Sp sql-role-uid="{10000004-0000-0000-0000-000000000004}" class-uid="{10000002-0000-0000-0000-000000000002}" uid="{00bffb75-602b-424b-8e43-b2b00e890496}" Name="Codepage" referred-object-class-uid="{10000001-0000-0000-0000-000000000001}"/>
+           </SpInstance>
+          </DbEngineSps>
+         </DbEnginesSps>
+        </SpInstances>
+       </Table>
+       <Table class-uid="{10000001-0000-0000-0000-000000000001}" was-locked="0" parent-uid="N/A" Parent="N/A" uid="{585d2d3c-d377-4099-bf0d-e1389a8cbee9}" locked="0" Name="TABTEST" source-uid="{00000000-0000-0000-0000-000000000000}">
+        <Description></Description>
+        <Columns>
+         <Column class-uid="{10000001-0000-0000-0000-000000000007}" Type="VARCHAR(255)" uid="{6ba562f1-3cda-4c76-8cf0-c21e857f412e}" Name="asd" PK="0" source-uid="{00000000-0000-0000-0000-000000000000}">
+          <Description></Description>
+          <SpInstances>
+           <DbEnginesSps>
+            <DbEngineSps Name="MySQL">
+             <SpInstance class-uid="{10000007-0000-0000-0000-000000000001}" uid="{0f60c319-e429-4433-9e90-5d80b4da7000}" Value="FALSE">
+              <Sp sql-role-uid="{10000007-0000-0000-0000-000000000001}" class-uid="{10000002-0000-0000-0000-000000000001}" uid="{37d0a457-41ba-4f1a-9e3e-aa1e91a1bae5}" Name="Auto Increment" referred-object-class-uid="{10000001-0000-0000-0000-000000000007}"/>
+             </SpInstance>
+             <SpInstance class-uid="{10000007-0000-0000-0000-000000000002}" uid="{5733d204-9434-4944-a9c9-9478232825df}" Value="FALSE">
+              <Sp sql-role-uid="{10000007-0000-0000-0000-000000000002}" class-uid="{10000002-0000-0000-0000-000000000001}" uid="{09a87eb5-a9c0-4925-adf9-1d0f269c9ee8}" Name="Zero fill" referred-object-class-uid="{10000001-0000-0000-0000-000000000007}"/>
+             </SpInstance>
+            </DbEngineSps>
+           </DbEnginesSps>
+          </SpInstances>
+         </Column>
+        </Columns>
+        <Indices>
+         <Index class-uid="{10000001-0000-0000-0000-000000000008}" uid="{64e4e40b-b798-4b4d-be97-1963d5110059}" Name="autoidx_TABTEST_0">
+          <Columns>
+           <Column Order="" Name="asd">
+            <ColumnsSps/>
+           </Column>
+          </Columns>
+          <SpInstances>
+           <DbEnginesSps>
+            <DbEngineSps Name="MySQL">
+             <SpInstance class-uid="{10000005-0000-0000-0000-000000000001}" uid="{ff8f4655-8b63-4a53-b55a-81fc351bab8c}" Value="">
+              <Sp sql-role-uid="{10000005-0000-0000-0000-000000000001}" class-uid="{10000002-0000-0000-0000-000000000002}" uid="{61153ccd-f9ee-4bcd-87e7-b959befc64de}" Name="Index Type" referred-object-class-uid="{10000001-0000-0000-0000-000000000008}"/>
+             </SpInstance>
+             <SpInstance class-uid="{10000005-0000-0000-0000-000000000002}" uid="{0cde3f12-c850-4859-ba62-f2d0cec1c1ee}" Value="">
+              <Sp sql-role-uid="{10000005-0000-0000-0000-000000000002}" class-uid="{10000002-0000-0000-0000-000000000002}" uid="{1c5f9036-ccda-4bca-80c2-66535ccfaa5c}" Name="Index Category" referred-object-class-uid="{10000001-0000-0000-0000-000000000008}"/>
+             </SpInstance>
+            </DbEngineSps>
+           </DbEnginesSps>
+          </SpInstances>
+         </Index>
+        </Indices>
+        <ForeignKeys/>
+        <StartupValues/>
+        <SpInstances>
+         <DbEnginesSps>
+          <DbEngineSps Name="MySQL">
+           <SpInstance class-uid="{10000004-0000-0000-0000-000000000001}" uid="{1ce42d64-1c95-48bf-83e4-2f91c3d12bb8}" Value="FALSE">
+            <Sp sql-role-uid="{10000004-0000-0000-0000-000000000001}" class-uid="{10000002-0000-0000-0000-000000000001}" uid="{d6af4956-5cb7-4cb3-a886-4c088a4203a3}" Name="Temporary" referred-object-class-uid="{10000001-0000-0000-0000-000000000001}"/>
+           </SpInstance>
+           <SpInstance class-uid="{10000004-0000-0000-0000-000000000002}" uid="{800aaf79-7ea6-4428-9076-73f3e54d1604}" Value="FALSE">
+            <Sp sql-role-uid="{10000004-0000-0000-0000-000000000002}" class-uid="{10000002-0000-0000-0000-000000000001}" uid="{8e6e77d5-6cda-4eb9-b7ed-b5dd4c9b9835}" Name="IfNotExists" referred-object-class-uid="{10000001-0000-0000-0000-000000000001}"/>
+           </SpInstance>
+           <SpInstance class-uid="{10000004-0000-0000-0000-000000000003}" uid="{2778f146-1535-4099-a49a-4c67b6f584b1}" Value="InnoDB">
+            <Sp sql-role-uid="{10000004-0000-0000-0000-000000000003}" class-uid="{10000002-0000-0000-0000-000000000002}" uid="{93270d22-2def-4182-a926-54a3f2ed8e9f}" Name="StorageEngine" referred-object-class-uid="{10000001-0000-0000-0000-000000000001}"/>
+           </SpInstance>
+           <SpInstance class-uid="{10000004-0000-0000-0000-000000000004}" uid="{b674f2ca-5100-4ac8-84db-79f114e20b1b}" Value="">
+            <Sp sql-role-uid="{10000004-0000-0000-0000-000000000004}" class-uid="{10000002-0000-0000-0000-000000000002}" uid="{00bffb75-602b-424b-8e43-b2b00e890496}" Name="Codepage" referred-object-class-uid="{10000001-0000-0000-0000-000000000001}"/>
+           </SpInstance>
+          </DbEngineSps>
+         </DbEnginesSps>
+        </SpInstances>
+       </Table>
+      </Tables>
+      <Diagrams>
+       <Diagram class-uid="{10000001-0000-0000-0000-00000000000a}" was-locked="0" uid="{9ff052e8-195a-4a3d-b6ff-c018e3a90790}" locked="0" Name="Diagram_1" source-uid="{00000000-0000-0000-0000-000000000000}">
+        <Tables>
+         <Table x="-268" y="86" Name="PERSON"/>
+         <Table x="21" y="-294" Name="ADDRESS"/>
+        </Tables>
+        <Notes/>
+        <FKs>
+         <Fk line1OthX="122" ellipseX="-152.6484375" line1OthY="-1" ellipseY="81" x="-196" y="-215" arrowP2x="8.61898136138916" tab1="ADDRESS" arrowP2y="-5.070815563201904" tab2="PERSON" line2OthX="3.3515625" line2OthY="230" rel1PosX="-147" line1PosX="-101" rel1PosY="66" line1PosY="-202" arrowPosx="21" arrowPosy="-203" arrowP1x="8.700944900512695" rel2PosX="-11" line2PosX="-151" arrowP1y="4.928848743438721" line2PosY="-144" rel2PosY="-203" fkn="FK_ADDRES"/>
+        </FKs>
+       </Diagram>
+      </Diagrams>
+      <TableInstances>
+       <TableInstance InstantiatedTableInstances="" class-uid="{10000001-0000-0000-0000-000000000002}" was-locked="0" ReferencingTables="" Table="ADDRESS" uid="{ad3d06b5-d383-4d9d-b04d-9117822c35b8}" locked="0" Name="ADDRESS_1" source-uid="{00000000-0000-0000-0000-000000000000}" Ref="0">
+        <Column Name="ID"/>
+        <Column Name="POSTCODE"/>
+        <Column Name="STREET_NAME"/>
+        <Column Name="CITY"/>
+        <Column Name="COUNTY"/>
+        <Column Name="STREET_NUMBER"/>
+        <FkMappings/>
+       </TableInstance>
+       <TableInstance InstantiatedTableInstances="" class-uid="{10000001-0000-0000-0000-000000000002}" was-locked="0" ReferencingTables="" Table="ADDRESS" uid="{46e1cab7-e15d-4054-8c45-6ffee1890b82}" locked="0" Name="ADDRESS_2" source-uid="{00000000-0000-0000-0000-000000000000}" Ref="0">
+        <Column Name="ID"/>
+        <Column Name="POSTCODE"/>
+        <Column Name="STREET_NAME"/>
+        <Column Name="CITY"/>
+        <Column Name="COUNTY"/>
+        <Column Name="STREET_NUMBER"/>
+        <FkMappings/>
+       </TableInstance>
+       <TableInstance InstantiatedTableInstances="" class-uid="{10000001-0000-0000-0000-000000000002}" was-locked="0" ReferencingTables="" Table="ADDRESS" uid="{3abe7a6e-c254-485b-a96f-f0addaeebba7}" locked="0" Name="ADDRESS_3" source-uid="{00000000-0000-0000-0000-000000000000}" Ref="0">
+        <Column Name="ID"/>
+        <Column Name="POSTCODE"/>
+        <Column Name="STREET_NAME"/>
+        <Column Name="CITY"/>
+        <Column Name="COUNTY"/>
+        <Column Name="STREET_NUMBER"/>
+        <FkMappings/>
+       </TableInstance>
+       <TableInstance InstantiatedTableInstances="TABTEST,ADDRESS" class-uid="{10000001-0000-0000-0000-000000000002}" was-locked="0" ReferencingTables="" Table="PERSON" uid="{ccb2106e-2754-4a8e-a303-482df4ff0f82}" locked="0" Name="PERSON" source-uid="{00000000-0000-0000-0000-000000000000}" Ref="0">
+        <Column Name="ID"/>
+        <Column Name="NAME"/>
+        <Column Name="ADDRS_ID"/>
+        <FkMappings>
+         <FkEntry FK="FK_ADDRES" TINST="ADDRESS_3"/>
+         <FkEntry FK="testfk" TINST="TABTEST"/>
+        </FkMappings>
+       </TableInstance>
+       <TableInstance InstantiatedTableInstances="" class-uid="{10000001-0000-0000-0000-000000000002}" was-locked="0" ReferencingTables="PERSON" Table="TABTEST" uid="{71afceab-4c9c-4c6c-a838-ec592dc3c329}" locked="0" Name="TABTEST" source-uid="{00000000-0000-0000-0000-000000000000}" Ref="1">
+        <Column Name="asd"/>
+        <FkMappings/>
+       </TableInstance>
+       <TableInstance InstantiatedTableInstances="" class-uid="{10000001-0000-0000-0000-000000000002}" was-locked="0" ReferencingTables="PERSON" Table="ADDRESS" uid="{98d581b7-0605-4531-bb2e-0de80fb0fe67}" locked="0" Name="ADDRESS" source-uid="{00000000-0000-0000-0000-000000000000}" Ref="1">
+        <Column Name="ID"/>
+        <Column Name="POSTCODE"/>
+        <Column Name="STREET_NAME"/>
+        <Column Name="CITY"/>
+        <Column Name="COUNTY"/>
+        <Column Name="STREET_NUMBER"/>
+        <FkMappings/>
+       </TableInstance>
+      </TableInstances>
+      <Views>
+       <View class-uid="{10000001-0000-0000-0000-000000000003}" Manual="0" was-locked="0" CanReplace="0" uid="{9a3c6e46-a312-4f0d-8b11-e353ed068785}" locked="0" Name="my_view" source-uid="{00000000-0000-0000-0000-000000000000}">
+        <Columns>
+         <Column Name="STREET_NAME"/>
+        </Columns>
+        <Query HasSelect="1" class-uid="{10000008-0000-0000-0000-00000000000a}" HasHaving="0" HasAs="0" HasWhere="0" HasOrderBy="0" HasGroupBy="0" Type="Select" HasFrom="1" uid="{9a34e844-5a6b-427f-8898-992b1f224c88}">
+         <Select class-uid="{10000008-0000-0000-0000-000000000002}" class="SelectQuerySelectComponent" uid="{6a7eb3fa-ee52-4267-8ccb-18f5fb9bff05}" level="0" children="1">
+          <Children>
+           <Child idx="0">
+            <Expression class-uid="{10000008-0000-0000-0000-000000000008}" class="SingleExpressionQueryComponent" elements="1" forced="2" uid="{b852c20d-946f-4490-99a1-ee6d9bfe4eb7}" level="0" children="0">
+             <Element Column="STREET_NAME" idx="0" Type="34" Table="ADDRESS" TabInstance="ADDRESS_3"/>
+            </Expression>
+           </Child>
+          </Children>
+         </Select>
+         <From class-uid="{10000008-0000-0000-0000-000000000003}" class="SelectQueryFromComponent" uid="{b9d639e2-30f1-4ef7-9107-d6eb56ab0f3e}" level="0" children="1">
+          <Children>
+           <Child idx="0">
+            <Table class-uid="{10000008-0000-0000-0000-000000000009}" class="TableQueryComponent" uid="{073e544f-e664-4e33-949e-e25132a355ba}" Name="ADDRESS_3" level="0" tabInstedOfTinst="0" children="0"/>
+           </Child>
+          </Children>
+         </From>
+        </Query>
+       </View>
+      </Views>
+      <Procedures>
+       <Procedure class-uid="{10000001-0000-0000-0000-000000000004}" was-locked="0" uid="{877f3165-6ae5-4e54-b372-1fa02e054939}" locked="0" Name="proc" source-uid="{00000000-0000-0000-0000-000000000000}">
+        <Sql Encoded="Base64"><![CDATA[Q1JFQVRFIFBST0NFRFVSRSBwcm9jKCkKQkVHSU4KCkVORA==]]></Sql>
+       </Procedure>
+      </Procedures>
+      <Functions>
+       <Function class-uid="{10000001-0000-0000-0000-000000000005}" was-locked="0" uid="{6d1ec617-15d0-4621-8317-6b97d2c93cea}" locked="0" Name="func" source-uid="{00000000-0000-0000-0000-000000000000}">
+        <Sql Encoded="Base64"><![CDATA[Q1JFQVRFIEZVTkNUSU9OIGZ1bmMoKSBSRVRVUk5TIGludApCRUdJTgogcmV0dXJuIDE7CkVORA==]]></Sql>
+       </Function>
+      </Functions>
+      <Triggers>
+       <Trigger class-uid="{10000001-0000-0000-0000-000000000006}" was-locked="0" Event="INSERT" Table="ADDRESS" uid="{d75fb31e-7fc0-4113-8143-e95b87345c77}" locked="0" Name="trig" Time="BEFORE" source-uid="{00000000-0000-0000-0000-000000000000}">
+        <Body Encoded="Base64"><![CDATA[QkVHSU4KCkVORA==]]></Body>
+        <Description></Description>
+       </Trigger>
+      </Triggers>
+      <Patches/>
+     </MajorVersion>
+    </MajorVersions>
+   </Project>
+  </Projects>
+ </Solution>
+</Solutions>

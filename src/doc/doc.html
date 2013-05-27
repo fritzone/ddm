@@ -1,0 +1,92 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+  <head>
+    <meta content="text/html;charset=ISO-8859-1" http-equiv="Content-Type">
+    <style type="text/css">
+	<!--
+		P { border: 1px solid #000000; padding: 0.02in }
+	-->
+	</style>
+  </head>
+  <!-- old background #23b8dc -->
+  <body dir="LTR" bgcolor="white" lang="en-US">
+    <p style="margin-bottom: 0in; background: white; border: none; padding: 0in; font-style: normal; line-height: 115%; text-decoration: none"
+      align="CENTER"> <font color="#000000" face="Arial" size="3"><b>Documentation</b></font></p>
+    <p style="margin-bottom: 0in; background: white; font-style: normal; font-weight: normal; line-height: 115%; text-decoration: none">
+      <font style="font-size: 11pt" color="#000000" face="Arial" size="2">Database
+        Deployment Manager offers the possibility to generate documentation for
+        your project which is based on the description you have provided for the
+        database objects. The following objects generate an entry in the
+        documentation of the project:<br>
+        <br>
+        &nbsp;<strong>&#8729;</strong> The Solution itself: The text you provide in
+        the description for the solution is used in the documentation<br>
+        &nbsp;</font><font style="font-size: 11pt" color="#000000" face="Arial"
+        size="2"><strong>&#8729;</strong></font><font style="font-size: 11pt" color="#000000"
+        face="Arial" size="2"> The Tables:<br>
+        &nbsp;&nbsp; &#8728; The description of the table<br>
+        &nbsp;&nbsp; </font><font style="font-size: 11pt" color="#000000" face="Arial"
+        size="2">&#8728; The description of the columns<br>
+        &nbsp;&nbsp; </font><font style="font-size: 11pt" color="#000000" face="Arial"
+        size="2">&#8728; The indexes are presented<br>
+      </font><font style="font-size: 11pt" color="#000000" face="Arial" size="2">&nbsp;</font><font
+        style="font-size: 11pt" color="#000000" face="Arial" size="2"><strong>&#8729;
+        </strong>The functions and procedures<br>
+      </font><font style="font-size: 11pt" color="#000000" face="Arial" size="2">&nbsp;
+        </font><font style="font-size: 11pt" color="#000000" face="Arial" size="2">&#8728;</font><font
+        style="font-size: 11pt" color="#000000" face="Arial" size="2"> The
+        documentation provided before the function code will be parsed and
+        meaningful information extracted. See <a href="proc.html">this </a>for
+        writing proper function documentation<br>
+      </font><font style="font-size: 11pt" color="#000000" face="Arial" size="2">&nbsp;</font><font
+        style="font-size: 11pt" color="#000000" face="Arial" size="2"><strong>&#8729;
+        </strong>The triggers<br>
+      </font><font style="font-size: 11pt" color="#000000" face="Arial" size="2">&nbsp;
+        </font><font style="font-size: 11pt" color="#000000" face="Arial" size="2">&#8728;
+        The description of the triggers<br>
+        <br>
+        <strong><em>Stylesheets</em></strong><em><strong><br>
+            <br>
+          </strong></em>Once you have loaded the documentation, you can change
+        the style of the document using CSS style sheets from the DDM gui, in
+        the combo box on the top. The default HTML elements can be styled using
+        your own style, and in addendum the documentation generator uses the
+        following style names to add more specialized styles:<br>
+        <br>
+      </font><font face="Courier New, Courier, monospace"><span style=" color:blue;">.classProjectDescription<font
+            face="Helvetica, Arial, sans-serif"><span style=" color:black;"> -
+              This is used to display the description of the project itself<br>
+            </span></font><br>
+        </span><span style=" color:blue;">.classDescription</span></font><font face="Courier New, Courier, monospace"><span
+          style=" color:blue;"><font face="Helvetica, Arial, sans-serif"><span style=" color:black;">
+              - This is used to display the description text of the database
+              elements</span></font></span></font> <br>
+      <br>
+      <font face="Courier New, Courier, monospace"><span style=" color:blue;"> </span><span
+          style=" color:blue;">.classTableHeader</span></font><font face="Courier New, Courier, monospace"><span
+          style=" color:blue;"><font face="Helvetica, Arial, sans-serif"><span style=" color:black;">
+              - This is used to display the text in the table headers (for
+              columns, etc...). The background-color should match your "th"
+              style from your CSS otherwise you'll get funny results.</span></font></span></font><br>
+      <br>
+      <font face="Courier New, Courier, monospace"><span style=" color:blue;"> </span><span
+          style=" color:blue;">.classTODO</span></font><font face="Courier New, Courier, monospace"><span
+          style=" color:blue;"><font face="Helvetica, Arial, sans-serif"><span style=" color:black;">
+              - This is used to display the TODO elements identified by DDM</span></font></span></font><br>
+      <br>
+      <font face="Courier New, Courier, monospace"><span style=" color:blue;"> </span><span
+          style=" color:blue;">.classTableText</span></font><font face="Courier New, Courier, monospace"><span
+          style=" color:blue;"><font face="Helvetica, Arial, sans-serif"><span style=" color:black;">
+              - This is used to display the text in the tables </span></font></span></font><br>
+      <br>
+      <font face="Courier New, Courier, monospace"><span style=" color:blue;"> </span><span
+          style=" color:blue;">.classCode</span></font><font style="font-size: 11pt"
+        color="#000000" face="Courier New, Courier, monospace" size="2"> </font><font
+        style="font-size: 11pt" color="#000000" face="Courier New, Courier, monospace"
+        size="2"></font><font face="Courier New, Courier, monospace"><span style=" color:blue;"><font
+            face="Helvetica, Arial, sans-serif"><span style=" color:black;"> -
+              This is used to display code sequences (SQL for now)</span></font></span></font><br>
+    </p>
+    <br>
+  </body>
+</html>
