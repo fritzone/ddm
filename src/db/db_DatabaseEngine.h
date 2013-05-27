@@ -468,6 +468,8 @@ public:
      */
     static DatabaseEngine* provideEngineFor(const QString& db);
 
+    static bool initAllEngines();
+
 
 private:
 

@@ -7,7 +7,12 @@
 QMap<QString, AbstractDTSupplier*> DatabaseEngine::dtsuppliers;
 QMap<QString, AbstractSqlGenerator*> DatabaseEngine::sqlGenerators;
 
-bool DatabaseEngine::genericInit = false;
+bool DatabaseEngine::genericInit = DatabaseEngine::initAllEngines();
+
+bool DatabaseEngine::initAllEngines()
+{
+    return false;
+}
 
 DatabaseEngine::DatabaseEngine(const QString& db, const QString& uid):
     Entity(db, uid, nullUid, false, false),
@@ -18,6 +23,8 @@ DatabaseEngine::DatabaseEngine(const QString& db, const QString& uid):
         genericInit = true;
         // initialize the DT suppliers
         dtsuppliers.insert(db, new MySQLDTSupplier());
+
+        // initialize the SQL Generators
         sqlGenerators.insert(db, new MySQLSQLGenerator(this));
     }
 }
@@ -28,7 +35,7 @@ DatabaseEngine::~DatabaseEngine()
 
 AbstractDTSupplier* DatabaseEngine::getDTSupplier() const
 {
-    return dtsuppliers.contains(database)?dtsuppliers[database]:0;
+    return dtsuppliers.contains(database.toUpper())?dtsuppliers[database]:0;
 }
 
 DatabaseEngine* DatabaseEngine::provideEngineFor(const QString &db)
@@ -40,7 +47,7 @@ DatabaseEngine* DatabaseEngine::provideEngineFor(const QString &db)
 
 AbstractSqlGenerator* DatabaseEngine::getSqlGenerator() const
 {
-    return sqlGenerators.contains(database)?sqlGenerators[database]:0;
+    return sqlGenerators.contains(database.toUpper())?sqlGenerators[database]:0;
 }
 
 QString DatabaseEngine::getTypeStringForSqlType(const QString& sqlType)

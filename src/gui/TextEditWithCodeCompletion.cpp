@@ -45,16 +45,18 @@ TextEditWithCodeCompletion::TextEditWithCodeCompletion(QWidget* p, Connection* c
 
     setLineWrapMode(QPlainTextEdit::NoWrap);
 
+    AbstractDTSupplier* dtSupplier = Workspace::getInstance()->currentProjectsEngine()->getDTSupplier();
+
     if(Workspace::getInstance()->hasCurrentSolution())
     {
         m_highlighter = new SqlHighlighter(document(),
                                        Workspace::getInstance()->currentProjectsEngine()->getKeywords(),
-                                       Workspace::getInstance()->currentProjectsEngine()->getDTSupplier()->numericTypes(),
-                                       Workspace::getInstance()->currentProjectsEngine()->getDTSupplier()->booleanTypes(),
-                                       Workspace::getInstance()->currentProjectsEngine()->getDTSupplier()->textTypes(),
-                                       Workspace::getInstance()->currentProjectsEngine()->getDTSupplier()->blobTypes(),
-                                       Workspace::getInstance()->currentProjectsEngine()->getDTSupplier()->dateTimeTypes(),
-                                       Workspace::getInstance()->currentProjectsEngine()->getDTSupplier()->miscTypes(),
+                                       dtSupplier->numericTypes(),
+                                       dtSupplier->booleanTypes(),
+                                       dtSupplier->textTypes(),
+                                       dtSupplier->blobTypes(),
+                                       dtSupplier->dateTimeTypes(),
+                                       dtSupplier->miscTypes(),
                                        Workspace::getInstance()->workingVersion()->getTables());
         dbKeywords = Workspace::getInstance()->currentProjectsEngine()->getKeywords();
         funcs = Workspace::getInstance()->currentProjectsEngine()->getBuiltinFunctions();

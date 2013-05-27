@@ -433,8 +433,19 @@ Table* SqliteDatabaseEngine::reverseEngineerTable(Connection *c, const QString& 
 
         // now find the column(s) of the index
         QSqlQuery query2(dbo);
-        query2.exec(QString("pragma index_info(") + idxIndexName + ")");
+        QString s = QString("pragma index_info(") + indexName + ")";
+        if(!query2.exec(s))
+        {
+            return 0;
+        }
 
+
+        QSqlRecord rec = query2.record();
+
+        if(!query2.next())
+        {
+            continue;
+        }
         int idxColName = query2.record().indexOf("name");
         int idxSeq = query2.record().indexOf("seqno");
 
@@ -453,7 +464,7 @@ Table* SqliteDatabaseEngine::reverseEngineerTable(Connection *c, const QString& 
             createdIndexes.insert(indexName, idx);
         }
 
-        idx->addColumn(tab->getColumn(columnname), order, seqinindex.toInt());
+        idx->addColumn(tab->getColumn(columnname), order, seqinindex.toInt() + 1);
         if(!tab->hasIndex(indexName))
         {
             tab->addIndex(idx);
@@ -550,7 +561,6 @@ bool SqliteDatabaseEngine::executeSql(Connection* c, const QStringList& sqls, co
         {
             QSqlQuery query(db);
 
-//            qDebug() << lastSql  << uid;
             if(!query.exec(lastSql))
             {
                 lastError = formatLastError(QObject::tr("Cannot run a query"), query.lastError());
@@ -561,12 +571,9 @@ bool SqliteDatabaseEngine::executeSql(Connection* c, const QStringList& sqls, co
                 {
                     db.rollback();
                 }
-
-//                qDebug() << " <-- ERROR" << lastError ;
                 db.close();
                 return false;
             }
-//            qDebug() << " <-- OK";
         }
     }
 
