@@ -55,3 +55,51 @@ void Configuration::readFromFile()
     m_sqlOpts[strSqlDelimiterText] = s.value(strSqlDelimiterText, QVariant(strSqlDelimiter)).toString();
 
 }
+
+Configuration::ForeignKeyPosition Configuration::sqlOptsGetFkPosition(const QHash<QString, QString> &options)
+{
+    Configuration::ForeignKeyPosition fkpos = Configuration::InTable;
+    if(options.contains("FKSposition"))
+    {
+        if(options["FKSposition"] == "InTable")
+        {
+            fkpos = Configuration::InTable;
+        }
+        if(options["FKSposition"] == "AfterTable")
+        {
+            fkpos = Configuration::AfterTable;
+        }
+        if(options["FKSposition"] == "OnlyInternal")
+        {
+            fkpos = Configuration::OnlyInternal;
+        }
+    }
+
+    return fkpos;
+}
+
+Configuration::PrimaryKeyPosition Configuration::sqlOptsGetPkPosition(const QHash<QString, QString> &options)
+{
+    Configuration::PrimaryKeyPosition pkpos = Configuration::AfterColumnDeclaration;
+    if(options.contains("PKSposition"))
+    {
+        if(options["PKSposition"]=="ColumnDeclaration")
+        {
+            pkpos = Configuration::ColumnDeclaration;
+        }
+        if(options["PKSposition"]=="AfterColumnsDeclaration")
+        {
+            pkpos = Configuration::AfterColumnDeclaration;
+        }
+        if(options["PKSposition"]=="AfterTableDeclaration")
+        {
+            pkpos = Configuration::AfterTableDeclaration;
+        }
+    }
+    return pkpos;
+}
+
+bool Configuration::sqlOptsGetUpcase(const QHash<QString, QString> &options)
+{
+    return options.contains("Case") && options["Case"] == "Upper";
+}

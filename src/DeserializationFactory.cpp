@@ -33,6 +33,7 @@
 #include "TrueFalseSp.h"
 #include "SpInstance.h"
 #include "core_Patch.h"
+#include "db_DatabaseEngineManager.h"
 
 #include <QStringList>
 
@@ -940,7 +941,7 @@ void DeserializationFactory::createProject(Project *project, const QDomDocument 
 {
     project->setName(element.attribute("Name"));
     project->setOop(element.attribute("OOP")=="1");
-    DatabaseEngine* engine = DatabaseEngine::provideEngineFor(element.attribute("DB"));
+    DatabaseEngine* engine = DatabaseEngineManager::instance().engine(element.attribute("DB"));
     project->setEngine(engine);
     int wvi = element.attribute("WorkingVersionIndex").toInt();
 

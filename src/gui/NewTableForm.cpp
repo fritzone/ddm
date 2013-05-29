@@ -2532,7 +2532,9 @@ void NewTableForm::prepareSpsTabs()
         m_mainWsp = new WidgetForSpecificProperties(m_dbEngine, m_table, this);
         QVector<SpInstance*> allSps = m_table->getSpInstances(m_dbEngine);
         m_mainWsp->feedInSpecificProperties(allSps, uidTable);
-        m_ui->tabWidget->insertTab(4, m_mainWsp, IconFactory::getMySqlIcon(), "MySql");
+
+        QString dbName = m_dbEngine->getDatabaseEngineName();
+        m_ui->tabWidget->insertTab(4, m_mainWsp, IconFactory::getIconForDatabase(dbName), dbName);
 
         prepareSpsTabsForIndex(0);
         prepareSpsTabsForColumn(0);
@@ -2569,7 +2571,9 @@ void NewTableForm::prepareSpsTabsForColumn(Column* col)
 
     m_wspForColumn->feedInSpecificProperties(allSps, uidColumn);
     m_wspForColumn->taylorToSpecificObject(col);
-    m_ui->tabWidgetForColumnDetails->insertTab(1, m_wspForColumn, IconFactory::getMySqlIcon(), "MySql");
+
+    QString dbName = m_dbEngine->getDatabaseEngineName();
+    m_ui->tabWidgetForColumnDetails->insertTab(1, m_wspForColumn, IconFactory::getIconForDatabase(dbName), dbName);
 
 }
 
@@ -2603,7 +2607,9 @@ void NewTableForm::prepareSpsTabsForIndex(Index* idx)
 
     m_wspForIndex->feedInSpecificProperties(allSps, uidIndex);
     m_wspForIndex->taylorToSpecificObject(m_table);
-    m_ui->tabWidgetForIndex->insertTab(1, m_wspForIndex, IconFactory::getMySqlIcon(), "MySql");
+
+    QString dbName = m_dbEngine->getDatabaseEngineName();
+    m_ui->tabWidgetForIndex->insertTab(1, m_wspForIndex, IconFactory::getIconForDatabase(dbName), dbName);
 }
 
 QMenu* NewTableForm::buildPopupForSpsForColumnInIndex()

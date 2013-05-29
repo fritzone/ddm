@@ -27,7 +27,8 @@ SOURCES += main.cpp \
     DocumentationGenerator.cpp \
     TableUpdateGenerator.cpp \
     VersionUpdateGenerator.cpp \
-    helper_utils.cpp
+    helper_utils.cpp \
+    db_DatabaseEngineManager.cpp
 
 HEADERS += \
     strings.h \
@@ -51,7 +52,8 @@ HEADERS += \
     VersionUpdateGenerator.h \
     helper_utils.h \
     core_enums.h \
-    core/DefaultVersionImplementation.h
+    core/DefaultVersionImplementation.h \
+    db_DatabaseEngineManager.h
 
 include (db/db.pri)
 INCLUDEPATH += db
@@ -90,16 +92,6 @@ RESOURCES += dbm.qrc \
     help_resources.qrc \
     docstyles.qrc
 RC_FILE = dbm.rc
-
-installfiles_base.files += ddm codepages/codepages.mysql.dat
-installfiles_base.path =  /home/ferenc/rpmbuild/BUILDROOT/usr/local/ddm
-INSTALLS += installfiles_base
-installfiles_doc.files += doc/*
-installfiles_doc.path =  /home/ferenc/rpmbuild/BUILDROOT/usr/local/ddm/doc
-INSTALLS += installfiles_doc
-installfiles_rs.files += rsrc/mysql.defaults
-installfiles_rs.path =  /home/ferenc/rpmbuild/BUILDROOT/usr/local/ddm/rsrc
-INSTALLS += installfiles_rs
 
 OTHER_FILES += \
     classic.css

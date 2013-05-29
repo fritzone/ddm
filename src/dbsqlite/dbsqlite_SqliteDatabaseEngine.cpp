@@ -75,8 +75,8 @@ QString SqliteDatabaseEngine::provideConnectionName(const QString& prefix)
     return t;
 }
 
-bool SqliteDatabaseEngine::reverseEngineerDatabase(Connection *c, const QStringList& tables, const QStringList& views, const QStringList& procs,
-                                                  const QStringList& funcs, const QStringList& triggers, Project*p, bool relaxed)
+bool SqliteDatabaseEngine::reverseEngineerDatabase(Connection *c, const QStringList& tables, const QStringList& views, const QStringList& /*procs*/,
+                                                  const QStringList& /*funcs*/, const QStringList& triggers, Project*p, bool relaxed)
 {
     try
     {
@@ -587,7 +587,7 @@ bool SqliteDatabaseEngine::executeSql(Connection* c, const QStringList& sqls, co
 
 QString SqliteDatabaseEngine::getDefaultDatatypesLocation()
 {
-    return "mysql.defaults";
+    return "sqlite.defaults";
 }
 
 // poor guy, canot return anyting
@@ -1115,4 +1115,11 @@ QString SqliteDatabaseEngine::getDbMetadata(Connection *c)
     }
 //    qDebug() << last;
     return xmd;
+}
+
+QString SqliteDatabaseEngine::spiExtension(QUuid uid)
+{
+    if(uid.toString() == uidTemporaryTable) { return "TEMPORARY"; }
+
+    return "";
 }

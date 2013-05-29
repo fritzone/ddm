@@ -67,7 +67,7 @@
 #include "repo_RepositoryElementForm.h"
 #include "MySqlConnection.h"
 #include "SqliteConnection.h"
-
+#include "db_DatabaseEngineManager.h"
 #include <QtGui>
 
 MainWindow* MainWindow::m_instance = 0;
@@ -79,8 +79,10 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), m_ui(new Ui::Main
 {
     m_ui->setupUi(this);
     m_instance = this;
+
     Configuration::instance();
     ConnectionManager::instance();
+    DatabaseEngineManager::instance();
 
     m_connectionGuiElements = new ConnectionGuiElements();
     m_connectionGuiElements->createGuiElements();
@@ -429,6 +431,11 @@ void MainWindow::onNewSolution()
             m_btndlg->show();
         }
     }
+}
+
+void MainWindow::onShowSolutionProperties()
+{
+    showProjectDetails();
 }
 
 void MainWindow::onDTTreeClicked()
@@ -1203,6 +1210,7 @@ void MainWindow::enableActions()
     m_ui->action_NewTrigger->setEnabled(true);
     m_ui->action_NewFunction->setEnabled(true);
     m_ui->action_UpdateDatabase->setEnabled(true);
+    m_ui->action_SolutionProperties->setEnabled(true);
 
     if(m_workspace->currentProjectIsOop())
     {
@@ -2175,6 +2183,44 @@ void MainWindow::onCloseSolution()
 
     freeGuiElements();
     showConnections();
+
+    disableActions();
+}
+
+void MainWindow::disableActions()
+{
+    m_ui->action_NewDataType->setEnabled(false);
+    m_ui->action_NewTable->setEnabled(false);
+    m_ui->action_NewDiagram->setEnabled(false);
+    m_ui->action_Save->setEnabled(false);
+    m_ui->action_SaveAs->setEnabled(false);
+    m_ui->action_Deploy->setEnabled(false);
+    m_ui->action_ProjectTree->setEnabled(false);
+    m_ui->action_ProjectTree->setChecked(false);
+    m_ui->action_Datatypes_Tree->setChecked(false);
+    m_ui->action_Datatypes_Tree->setEnabled(false);
+    m_ui->action_ConnectionsTree->setEnabled(false);
+    m_ui->action_ConnectionsTree->setChecked(m_connectionGuiElements->getConnectionsTreeDock()->isVisible());
+    m_ui->action_Validate->setEnabled(false);
+    m_ui->action_NewView->setEnabled(false);
+    m_ui->action_NewDatabaseConnection->setEnabled(false);
+    m_ui->action_Preferences->setEnabled(false);
+    m_ui->action_NewProcedure->setEnabled(false);
+    m_ui->action_DeleteUnusuedDatatypes->setEnabled(false);
+    m_ui->action_DeploymentScript->setVisible(false);
+    m_ui->action_NewTrigger->setEnabled(false);
+    m_ui->action_NewFunction->setEnabled(false);
+    m_ui->action_UpdateDatabase->setEnabled(false);
+    m_ui->action_SolutionProperties->setEnabled(false);
+
+    m_ui->action_NewTableInstance->setVisible(true);
+    m_ui->action_NewTableInstance->setEnabled(false);
+
+    m_ui->action_NewTableInstance->setMenu(0);
+    m_ui->action_NewDataType->setMenu(0);
+    m_ui->action_NewView->setMenu(0);
+    m_ui->action_Deploy->setMenu(0);
+
 }
 
 void MainWindow::onDeleteDatatypeFromPopup()

@@ -667,6 +667,31 @@ int Table::getIndexOfColumn(const QString& n)
     return -1;
 }
 
+
+QStringList Table::primaryKeyColumnsAsStringlist() const
+{
+    QStringList primaryKeys;
+    for(int i=0; i<fullColumns().size(); i++)
+    {
+        Column *col = getColumn(fullColumns()[i]);
+        if(col == 0)
+        {
+            col = getColumnFromParents(fullColumns()[i]);
+            if(col == 0)
+            {
+                return QStringList("ERROR");
+            }
+        }
+
+        if(col->isPk())
+        {
+            primaryKeys.append(fullColumns()[i]);
+        }
+    }
+
+    return primaryKeys;
+}
+
 QSet<Column*> Table::primaryKeyColumns() const
 {
     QSet<Column*> result;

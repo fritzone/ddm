@@ -1,4 +1,5 @@
 #include "core_Repository.h"
+#include "db_DatabaseEngineManager.h"
 #include "db_DatabaseEngine.h"
 #include "core_Role.h"
 #include "core_Entity.h"
@@ -91,7 +92,7 @@ void Repository::addDatabase(const QDomElement & el)
 {
     if(el.nodeName() == "database")
     {
-        DatabaseEngine* dbe = DatabaseEngine::provideEngineFor(el.attribute("name"));
+        DatabaseEngine* dbe = DatabaseEngineManager::instance().engine(el.attribute("name"));
         if(dbe)
         {
             m_databases.append(dbe);

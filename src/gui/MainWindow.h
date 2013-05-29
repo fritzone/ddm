@@ -209,6 +209,7 @@ public slots:
     void onDeployVersion();
     void onUpdateDb();
     void onRepoItemClicked(QTreeWidgetItem*,int);
+    void onShowSolutionProperties();
 
 private:
 
@@ -216,6 +217,7 @@ private:
     void populateTreeWithSolution(Solution* sol);
     void saveProject(bool saveAs = false);
     void enableActions();
+    void disableActions();
     void connectActionsFromPopupMenus();
     void freeGuiElements();
     void showProjectDetails();

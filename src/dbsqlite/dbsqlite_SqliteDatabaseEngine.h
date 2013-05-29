@@ -57,6 +57,7 @@ public:
     virtual bool injectMetadata(Connection* c, const Version* v);
     virtual QString getDbMetadata(Connection *c);
     virtual bool supportsStoredMethods() {return false;}
+    virtual QString spiExtension(QUuid uid);
 
     QString formatLastError(const QString &header, const QSqlError&);
 

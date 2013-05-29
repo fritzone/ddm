@@ -305,6 +305,8 @@ public:
 
     virtual QString getSqlHash() const { return "N/A"; }
 
+    QStringList primaryKeyColumnsAsStringlist() const;
+
     QSet<Column*> primaryKeyColumns() const;
 
     /**
@@ -326,6 +328,8 @@ public:
      * @return
      */
     Column* getDescendantColumn(const Column *sourceColumn);
+
+
 
 private:
 
