@@ -1,6 +1,7 @@
 #include "NewProjectDialog.h"
 #include "ui_NewProjectDialog.h"
 #include "db_DatabaseEngine.h"
+#include "db_DatabaseEngineManager.h"
 #include "gui_HelpWindow.h"
 
 #include <QMessageBox>
@@ -42,7 +43,7 @@ QString NewProjectDialog::getTargetDatabase() const
 
 DatabaseEngine* NewProjectDialog::getDatabaseEngine() const
 {
-    DatabaseEngine* engine = DatabaseEngine::provideEngineFor(getTargetDatabase());
+    DatabaseEngine* engine = DatabaseEngineManager::instance().engine(getTargetDatabase());
     return engine;
 }
 

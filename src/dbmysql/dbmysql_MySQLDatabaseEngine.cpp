@@ -1525,7 +1525,7 @@ QVector<Sp*> MySQLDatabaseEngine::buildSps()
 
     // SPs for TABLE
     QVector<Sp*> result;
-    result.push_back(new TrueFalseSp(uidMysqlTemporaryTable, uidTable, QString("Temporary"), QString("Temporary table"), QString("General"), 5, 0, 0));
+    result.push_back(new TrueFalseSp(uidTemporaryTable, uidTable, QString("Temporary"), QString("Temporary table"), QString("General"), 5, 0, 0));
     result.push_back(new TrueFalseSp(uidMysqlIfNotExistsTable, uidTable, QString("IfNotExists"), QString("Create only if not exists"), QString("General"), 5, 0, 0));
 
     QStringList valuesForStrorageEngines;
@@ -1714,4 +1714,11 @@ QString MySQLDatabaseEngine::getDbMetadata(Connection *conn)
     }
 //    qDebug() << last;
     return xmd;
+}
+
+QString MySQLDatabaseEngine::spiExtension(QUuid uid)
+{
+    if(uid.toString() == uidTemporaryTable) { return "TEMPORARY"; }
+
+    return "";
 }

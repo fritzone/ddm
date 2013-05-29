@@ -459,30 +459,18 @@ public:
      */
     virtual bool supportsStoredMethods() = 0;
 
-public:
-
     /**
-     * Creates a database engine for the given name. Right now "MySQL" is supported.
-     * @param db - the name of the database to create
-     * @return the database engine that was created for the given database
+     * @brief spiExtension returns the SQL extension for the given SPI uid,
+     * such as TEMPORARY for uidTemporaryTable. This will be a long and ugly
+     * method, but will be better for the generalization of the SQL generation.
+     * @return
      */
-    static DatabaseEngine* provideEngineFor(const QString& db);
-
-    static bool initAllEngines();
-
+    virtual QString spiExtension(QUuid) = 0;
 
 private:
 
     // the database on which this is running
     QString database;
-
-    // the list of data type suppliers supported
-    static QMap<QString, AbstractDTSupplier*> dtsuppliers;
-
-    static QMap<QString, AbstractSqlGenerator*> sqlGenerators;
-
-    // whether the maps above were initialized or not
-    static bool genericInit;
 
     // the keywords of the database
     QStringList m_keywords;

@@ -1,5 +1,5 @@
-#ifndef MYSQLSQLGENERATOR_H
-#define MYSQLSQLGENERATOR_H
+#ifndef SQLITESQLGENERATOR_H
+#define SQLITESQLGENERATOR_H
 
 #include <QDebug>
 
@@ -53,5 +53,5 @@ private:
 
 };
 
-#endif // MYSQLSQLGENERATOR_H
+#endif // SQLITESQLGENERATOR_H
 

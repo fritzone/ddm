@@ -67,8 +67,17 @@
           <string>MySQL</string>
          </property>
          <property name="icon">
-          <iconset resource="dbm.qrc">
+          <iconset resource="../dbm.qrc">
            <normaloff>:/images/actions/images/small/mysql.png</normaloff>:/images/actions/images/small/mysql.png</iconset>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Sqlite</string>
+         </property>
+         <property name="icon">
+          <iconset resource="../dbm.qrc">
+           <normaloff>:/images/actions/images/small/sqlite-icon.png</normaloff>:/images/actions/images/small/sqlite-icon.png</iconset>
          </property>
         </item>
        </widget>
@@ -117,7 +126,7 @@
   </layout>
  </widget>
  <resources>
-  <include location="dbm.qrc"/>
+  <include location="../dbm.qrc"/>
  </resources>
  <connections>
   <connection>

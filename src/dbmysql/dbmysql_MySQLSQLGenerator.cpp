@@ -27,142 +27,48 @@ QStringList MySQLSQLGenerator::generateCreateTableSql(Table *table, const QHash<
     // do not generate any code for a table which has no columns
     if(table->fullColumns().size() == 0) return QStringList();
 
-    bool upcase = options.contains("Case") && options["Case"] == "Upper";
-    bool comments = false; //options.contains("GenerateComments") && options["GenerateComments"] == "Yes";
-    bool backticks = options.contains("Backticks") && options["Backticks"] == "Yes";
-    // primary key pos = 0 if the primary key is specified in the column declaration
-    // it is 1 if the primary key is defined in a PRIMARY KEY section in the table definition
-    // it is 2 if the primary key is defined in an alter table section after the table definition
-    int pkpos = 1;
-    if(options.contains("PKSposition"))
-    {
-        if(options["PKSposition"]=="ColumnDeclaration")
-        {
-            pkpos = 0;
-        }
-        if(options["PKSposition"]=="AfterColumnsDeclaration")
-        {
-            pkpos = 1;
-        }
-        if(options["PKSposition"]=="AfterTableDeclaration")
-        {
-            pkpos = 2;
-        }
-    }
-    // foreign key pos: 1 in the table script, 2 in an alter script after the table, 3 - not now, just update the table
-    Configuration::ForeignKeyPosition fkpos = Configuration::InTable;
-    if(options.contains("FKSposition"))
-    {
-        if(options["FKSposition"] == "InTable")
-        {
-            fkpos = Configuration::InTable;
-        }
-        if(options["FKSposition"] == "AfterTable")
-        {
-            fkpos = Configuration::AfterTable;
-        }
-        if(options["FKSposition"] == "OnlyInternal")
-        {
-            fkpos = Configuration::OnlyInternal;
-        }
-    }
-
-    // the list of primary key columns, used only if pkpos is 1 or 2
+    m_upcase = Configuration::instance().sqlOptsGetUpcase(options);
+    bool comments = options.contains(strGenerateComments) && options[strGenerateComments] == strYes;
+    bool backticks = options.contains(strBackticks) && options[strBackticks] == strYes;
+    Configuration::PrimaryKeyPosition pkpos = Configuration::instance().sqlOptsGetPkPosition(options);
+    Configuration::ForeignKeyPosition fkpos = Configuration::instance().sqlOptsGetFkPosition(options);    // the list of primary key columns, used only if pkpos is 1 or 2
     QStringList primaryKeys;
 
     // the list of foreign key SQLs
     QStringList foreignKeys;
-    QString foreignKeysTable = "";
+    QString foreignKeysTable;
 
+    // this will be returned
     QStringList toReturn;
 
     if(comments)
     {
-        QString comment;
-        QString desc = table->getDescription();
-        QStringList lines = desc.split("\n");
-        if(lines.size())
-        {
-            for(int i=0; i< lines.size(); i++)
-            {
-                comment += QString("-- ") +  lines.at(i) + strNewline;
-            }
-        }
-        else
-        {
-            comment = QString("-- ") +  (desc.length()>0?desc:" Create table " + tabName) + "\n";
-        }
-        toReturn << comment;
-    }
-    QString createTable = upcase? strCreate : "create";
-    createTable += " ";
-
-    {
-    // see if this is a temporary table
-    SpInstance* spi = table->getInstanceForSqlRoleUid(m_engine, uidMysqlTemporaryTable);
-    if(spi)
-    {
-        QString temporary = spi->get();
-        if(temporary == "TRUE")
-        {
-            createTable += upcase? "TEMPORARY ":"temporary ";
-        }
-    }
+        toReturn << generateTableCreationComments(table, tabName);
     }
 
-    createTable += !upcase? "table ":"TABLE ";
-
-    {
-    // see if we have "IF NOT EXISTS" checked
-    SpInstance* spi = table->getInstanceForSqlRoleUid(m_engine, uidMysqlIfNotExistsTable);
-    if(spi)
-    {
-        QString ifNotExists = spi->get();
-        if(ifNotExists == "TRUE")
-        {
-            createTable += upcase? "IF NOT EXISTS ":"if not exists ";
-        }
-    }
-    }
+    QString createTable = keyword("create");
+    createTable += spiResult(table, uidTemporaryTable);
+    createTable += keyword("table");
+    createTable += spiResult(table, uidMysqlIfNotExistsTable);
 
     // table name
-    createTable += backticks?"`":"";
+    createTable += backticks ? strBacktick :strEmpty;
     createTable += tabName;
-    createTable += backticks?"`":"";
+    createTable += backticks ? strBacktick : strEmpty;
 
-    for(int i=0; i<table->fullColumns().size(); i++)
+    primaryKeys = table->primaryKeyColumnsAsStringlist();
+
+    if(primaryKeys.size() > 1)
     {
-        Column *col = table->getColumn(table->fullColumns()[i]);
-        if(col == 0)
-        {
-            col = table->getColumnFromParents(table->fullColumns()[i]);
-            if(col == 0)
-            {
-                return QStringList("ERROR");
-            }
-        }
-
-        if(col->isPk())
-        {
-            primaryKeys.append(table->fullColumns()[i]);
-        }
-
+        pkpos = Configuration::AfterColumnDeclaration;
     }
 
-    int x = primaryKeys.size();
-    if(x > 1)
-    {
-        pkpos = 1;
-    }
-
-    createTable += "\n(\n";
+    createTable += strNewline + strOpenParantheses + strNewline;
 
     // creating the columns
     for(int i=0; i<table->fullColumns().size(); i++)
     {
         // column name
-
-
         Column *col = table->getColumn(table->fullColumns()[i]);
         if(col == 0)
         {
@@ -173,11 +79,11 @@ QStringList MySQLSQLGenerator::generateCreateTableSql(Table *table, const QHash<
             }
         }
 
-        createTable += sqlForAColumn(col, pkpos, backticks, upcase);
+        createTable += sqlForAColumn(col, pkpos, backticks, m_upcase);
         // do we have more columns after this?
         if(i<table->fullColumns().size() - 1)
         {
-            createTable += ",\n";
+            createTable += strComma + strNewline;
         }
     }
 
@@ -185,7 +91,7 @@ QStringList MySQLSQLGenerator::generateCreateTableSql(Table *table, const QHash<
     if(pkpos == 1 && primaryKeys.size() > 0)
     {
         createTable += "\n\t,";
-        createTable += upcase?"PRIMARY KEY ":"primary key ";
+        createTable += m_upcase?"PRIMARY KEY ":"primary key ";
         createTable += "(";
         for(int i=0; i<primaryKeys.size(); i++)
         {
@@ -229,17 +135,17 @@ QStringList MySQLSQLGenerator::generateCreateTableSql(Table *table, const QHash<
                 foreignKeySql2 += ", ";
             }
         }
-        QString foreignKeySql = upcase?" CONSTRAINT " : " constraint ";
+        QString foreignKeySql = m_upcase?" CONSTRAINT " : " constraint ";
         foreignKeySql += fkI->getName();
-        foreignKeySql += upcase?" FOREIGN KEY (":" foreign key(";
+        foreignKeySql += m_upcase?" FOREIGN KEY (":" foreign key(";
         foreignKeySql += foreignKeySql1;
-        foreignKeySql += upcase?") REFERENCES ":") references ";
+        foreignKeySql += m_upcase?") REFERENCES ":") references ";
         foreignKeySql += foreignKeysTable;
         foreignKeySql += "(" + foreignKeySql2 + ")";
         QString t = fkI->getOnDelete();
-        if(t.length() > 0) foreignKeySql += QString(" ") + (!upcase?"on delete ":"ON DELETE ") + (upcase?t.toUpper():t.toLower());
+        if(t.length() > 0) foreignKeySql += QString(" ") + (!m_upcase?"on delete ":"ON DELETE ") + (m_upcase?t.toUpper():t.toLower());
         t = fkI->getOnUpdate();
-        if(t.length() > 0) foreignKeySql += QString(" ") + (!upcase?"on update ":"ON UPDATE ") + (upcase?t.toUpper():t.toLower());
+        if(t.length() > 0) foreignKeySql += QString(" ") + (!m_upcase?"on update ":"ON UPDATE ") + (m_upcase?t.toUpper():t.toLower());
 
         foreignKeys.append(foreignKeySql);
 
@@ -280,12 +186,12 @@ QStringList MySQLSQLGenerator::generateCreateTableSql(Table *table, const QHash<
                     QStringList supportedStroageEngines = mysEng->getSupportedStorageEngines(dest->getHost(), dest->getUser(), dest->getPassword(), dest->getPort());
                     if(supportedStroageEngines.contains(storageEngine.toUpper()))
                     {
-                        createTable += QString(upcase?"ENGINE = ":"engine = ") + storageEngine;
+                        createTable += QString(m_upcase?"ENGINE = ":"engine = ") + storageEngine;
                     }
                 }
                 else
                 {
-                    createTable += QString(upcase?"ENGINE = ":"engine = ") + storageEngine;
+                    createTable += QString(m_upcase?"ENGINE = ":"engine = ") + storageEngine;
                 }
             }
         }
@@ -301,7 +207,7 @@ QStringList MySQLSQLGenerator::generateCreateTableSql(Table *table, const QHash<
         if(codepage.length())
         {
             QString charset = codepage.left(codepage.indexOf('_'));
-            createTable += upcase?(" DEFAULT CHARACTER SET " + charset + " COLLATE " + codepage):(" default character set "  + charset + " collate " + codepage);
+            createTable += m_upcase?(" DEFAULT CHARACTER SET " + charset + " COLLATE " + codepage):(" default character set "  + charset + " collate " + codepage);
         }
     }
     }
@@ -319,7 +225,7 @@ QStringList MySQLSQLGenerator::generateCreateTableSql(Table *table, const QHash<
     // now create the indexes of the table
     for(int i=0; i<table->fullIndices().size(); i++)
     {
-        QString indexCommand = upcase?strCreate:"create";
+        QString indexCommand = m_upcase?strCreate:"create";
         Index* idx = table->getIndex(table->fullIndices().at(i));
 
         {
@@ -335,7 +241,7 @@ QStringList MySQLSQLGenerator::generateCreateTableSql(Table *table, const QHash<
         }
         }
 
-        indexCommand += strSpace + (upcase?"INDEX ":"index ");
+        indexCommand += strSpace + (m_upcase?"INDEX ":"index ");
         indexCommand += table->fullIndices().at(i);
 
         if(idx == 0)
@@ -354,13 +260,13 @@ QStringList MySQLSQLGenerator::generateCreateTableSql(Table *table, const QHash<
             QString t = spi->get();
             if(t.length())
             {
-                indexCommand += upcase?(" USING " + t.toUpper() + " ")
+                indexCommand += m_upcase?(" USING " + t.toUpper() + " ")
                                      :(" using " + t.toLower() + " ");
             }
         }
         }
         // and the table
-        indexCommand +=upcase?" ON ":" on ";
+        indexCommand +=m_upcase?" ON ":" on ";
         indexCommand += tabName;
         indexCommand += "(";
 
@@ -395,8 +301,8 @@ QStringList MySQLSQLGenerator::generateCreateTableSql(Table *table, const QHash<
             toReturn << comment;
         }
 
-        QString fkCommand = upcase?"\nALTER TABLE" + tabName :"\nalter table " + tabName;
-        fkCommand += upcase?" ADD":" add";
+        QString fkCommand = m_upcase?"\nALTER TABLE" + tabName :"\nalter table " + tabName;
+        fkCommand += m_upcase?" ADD":" add";
         for(int i=0; i<foreignKeys.size(); i++)
         {
             fkCommand += foreignKeys[i];

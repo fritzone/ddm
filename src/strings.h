@@ -82,6 +82,8 @@ static const QString strGrOp = ">";
 static const QString strLEOp = "<=";
 static const QString strGEOp = ">=";
 static const QString strNotOp = "!";
+static const QString strBacktick = "`";
+static const QString strEmpty = "";
 
 static const QString strOpenParantheses = "(";
 static const QString strCloseParantheses = ")";
@@ -138,5 +140,14 @@ static const QString strNewline = "\n";
 static const QString strSemicolon = ";";
 static const QString strUnderline = "_";
 static const QString strAutoIdx = "autoidx";
+static const QString strSqlComment = "-- ";
+
+static const QString strMySql = "MYSQL";
+static const QString strQMySql = "QMYSQL";
+static const QString strQMySql3 = "QMYSQL3";
+static const QString strSqlite = "SQLITE";
+static const QString strQSqlite = "QSQLITE";
+
+
 
 #endif // STRINGS_H

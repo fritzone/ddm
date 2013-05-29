@@ -18,48 +18,16 @@
 
 QStringList SqliteSQLGenerator::generateCreateTableSql(Table *table, const QHash<QString, QString> &options, const QString& tabName, const QMap<QString, QString> &fkMappings, const Connection* dest) const
 {
-    // do not generate any code for a table which has no columns
-    if(table->fullColumns().size() == 0) return QStringList();
+    QStringList toReturn;
 
-    bool upcase = options.contains("Case") && options["Case"] == "Upper";
+    // do not generate any code for a table which has no columns
+    if(table->fullColumns().size() == 0) return toReturn;
+
+    bool upcase = Configuration::instance().sqlOptsGetUpcase(options);
     bool comments = false; //options.contains("GenerateComments") && options["GenerateComments"] == "Yes";
     bool backticks = options.contains("Backticks") && options["Backticks"] == "Yes";
-    // primary key pos = 0 if the primary key is specified in the column declaration
-    // it is 1 if the primary key is defined in a PRIMARY KEY section in the table definition
-    // it is 2 if the primary key is defined in an alter table section after the table definition
-    int pkpos = 1;
-    if(options.contains("PKSposition"))
-    {
-        if(options["PKSposition"]=="ColumnDeclaration")
-        {
-            pkpos = 0;
-        }
-        if(options["PKSposition"]=="AfterColumnsDeclaration")
-        {
-            pkpos = 1;
-        }
-        if(options["PKSposition"]=="AfterTableDeclaration")
-        {
-            pkpos = 2;
-        }
-    }
-    // foreign key pos: 1 in the table script, 2 in an alter script after the table, 3 - not now, just update the table
-    Configuration::ForeignKeyPosition fkpos = Configuration::InTable;
-    if(options.contains("FKSposition"))
-    {
-        if(options["FKSposition"] == "InTable")
-        {
-            fkpos = Configuration::InTable;
-        }
-        if(options["FKSposition"] == "AfterTable")
-        {
-            fkpos = Configuration::AfterTable;
-        }
-        if(options["FKSposition"] == "OnlyInternal")
-        {
-            fkpos = Configuration::OnlyInternal;
-        }
-    }
+    Configuration::PrimaryKeyPosition pkpos = Configuration::instance().sqlOptsGetPkPosition(options);
+    Configuration::ForeignKeyPosition fkpos = Configuration::instance().sqlOptsGetFkPosition(options);
 
     // the list of primary key columns, used only if pkpos is 1 or 2
     QStringList primaryKeys;
@@ -67,8 +35,6 @@ QStringList SqliteSQLGenerator::generateCreateTableSql(Table *table, const QHash
     // the list of foreign key SQLs
     QStringList foreignKeys;
     QString foreignKeysTable = "";
-
-    QStringList toReturn;
 
     if(comments)
     {
@@ -93,7 +59,7 @@ QStringList SqliteSQLGenerator::generateCreateTableSql(Table *table, const QHash
 
     {
     // see if this is a temporary table
-    SpInstance* spi = table->getInstanceForSqlRoleUid(m_engine, uidMysqlTemporaryTable);
+    SpInstance* spi = table->getInstanceForSqlRoleUid(m_engine, uidTemporaryTable);
     if(spi)
     {
         QString temporary = spi->get();
@@ -146,7 +112,7 @@ QStringList SqliteSQLGenerator::generateCreateTableSql(Table *table, const QHash
     int x = primaryKeys.size();
     if(x > 1)
     {
-        pkpos = 1;
+        pkpos = Configuration::AfterColumnDeclaration;
     }
 
     createTable += "\n(\n";
@@ -176,7 +142,7 @@ QStringList SqliteSQLGenerator::generateCreateTableSql(Table *table, const QHash
     }
 
     // are we having primary keys after columns?
-    if(pkpos == 1 && primaryKeys.size() > 0)
+    if(pkpos == Configuration::AfterColumnDeclaration && primaryKeys.size() > 0)
     {
         createTable += "\n\t,";
         createTable += upcase?"PRIMARY KEY ":"primary key ";

@@ -3,16 +3,16 @@
 
 #include <QDebug>
 
-#include "db_AbstractSQLGenerator.h"
+#include "db_BasicSqlGenerator.h"
 
 class DatabaseEngine;
 class ForeignKey;
 
-class MySQLSQLGenerator : public AbstractSqlGenerator
+class MySQLSQLGenerator : public BasicSqlGenerator
 {
 public:
 
-    MySQLSQLGenerator(DatabaseEngine* engine) : m_engine(engine)
+    MySQLSQLGenerator(DatabaseEngine* engine) : BasicSqlGenerator(engine)
     {
     }
 
@@ -46,10 +46,6 @@ private:
 
     QString quotelessString(const QString&) const;
     QString sqlForAColumn(const Column* col, int pkpos, bool backticks, bool upcase) const;
-
-private:
-
-    DatabaseEngine* m_engine;
 
 };
 

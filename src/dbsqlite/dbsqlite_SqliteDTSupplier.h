@@ -1,5 +1,5 @@
-#ifndef MYSQLDTSUPPLIER_H
-#define MYSQLDTSUPPLIER_H
+#ifndef SQLITEDTSUPPLIER_H
+#define SQLITEDTSUPPLIER_H
 
 #include "db_AbstractDTSupplier.h"
 
@@ -28,4 +28,4 @@ public:
 
 };
 
-#endif // MYSQLDTSUPPLIER_H
+#endif // SQLITEDTSUPPLIER_H

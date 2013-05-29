@@ -1,6 +1,7 @@
 #include "MySqlConnection.h"
 #include "db_DatabaseEngine.h"
 #include "strings.h"
+#include "db_DatabaseEngineManager.h"
 
 MySqlConnection::MySqlConnection(const QString& name,
                                  const QString& host, const QString& user, const QString& pass, const QString& db,
@@ -8,7 +9,7 @@ MySqlConnection::MySqlConnection(const QString& name,
     Connection(name, autoConnect),
     m_host(host), m_user(user), m_pass(pass), m_db(db),  m_port(port), m_savePw(savePw)
 {
-    m_engine = DatabaseEngine::provideEngineFor(getDbType());
+    m_engine = DatabaseEngineManager::instance().engine(strMySql);
 }
 
 void MySqlConnection::serialize(QDomDocument& doc, QDomElement& parent) const
@@ -20,7 +21,7 @@ void MySqlConnection::serialize(QDomDocument& doc, QDomElement& parent) const
     connectionElement.setAttribute("Port", m_port);
     connectionElement.setAttribute("DB", m_db);
     connectionElement.setAttribute("User", m_user);
-    connectionElement.setAttribute("DbType", getDbType());
+    connectionElement.setAttribute("DbType", strMySql);
     connectionElement.setAttribute("AutoConnect", m_autoConnect);
     connectionElement.setAttribute("LastState", m_state);
     parent.appendChild(connectionElement);

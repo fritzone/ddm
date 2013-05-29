@@ -68,9 +68,11 @@
     <addaction name="action_NewTableInstance"/>
     <addaction name="action_NewView"/>
     <addaction name="action_NewProcedure"/>
-    <addaction name="action_DeleteUnusuedDatatypes"/>
     <addaction name="separator"/>
+    <addaction name="action_DeleteUnusuedDatatypes"/>
     <addaction name="action_Validate"/>
+    <addaction name="separator"/>
+    <addaction name="action_SolutionProperties"/>
    </widget>
    <widget class="QMenu" name="menu_Edit">
     <property name="title">
@@ -548,6 +550,14 @@
     <string>Repository</string>
    </property>
   </action>
+  <action name="action_SolutionProperties">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Properties</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources>
@@ -1002,6 +1012,22 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>action_SolutionProperties</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>onShowSolutionProperties()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>454</x>
+     <y>67</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>onNewSolution()</slot>
@@ -1031,5 +1057,6 @@
   <slot>onDestroyed()</slot>
   <slot>onHelp()</slot>
   <slot>onUpdateDb()</slot>
+  <slot>onShowSolutionProperties()</slot>
  </slots>
 </ui>

@@ -957,6 +957,13 @@ public:
         return icon;
     }
 
+    static const QIcon& getIconForDatabase(const QString& db)
+    {
+        if(db.toUpper() == "MYSQL") return getMySqlIcon();
+        if(db.toUpper() == "SQLITE") return getSqliteIcon();
+        return getEmptyIcon();
+    }
+
     static const QIcon& getChangedIcon()
     {
         static const QIcon icon(icons::strChangedIcon);

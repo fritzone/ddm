@@ -33,6 +33,13 @@ public:
         OnlyInternal = 3
     };
 
+    enum PrimaryKeyPosition
+    {
+        ColumnDeclaration = 0,
+        AfterColumnDeclaration = 1,
+        AfterTableDeclaration = 2
+    };
+
     bool defaultLengths() const
     {
         return m_useDefaultLengths;
@@ -87,6 +94,12 @@ public:
     {
         m_showStartupDialog = b;
     }
+
+    ForeignKeyPosition sqlOptsGetFkPosition(const QHash<QString, QString> &);
+
+    PrimaryKeyPosition sqlOptsGetPkPosition(const QHash<QString, QString> &);
+
+    bool sqlOptsGetUpcase(const QHash<QString, QString> &);
 
 private:
 

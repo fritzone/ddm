@@ -1,6 +1,8 @@
 #include "ProjectDetailsForm.h"
 #include "ui_ProjectDetailsForm.h"
 #include "Project.h"
+#include "db_DatabaseEngine.h"
+#include "strings.h"
 
 ProjectDetailsForm::ProjectDetailsForm(QWidget *parent) :
     QWidget(parent),
@@ -34,6 +36,15 @@ void ProjectDetailsForm::setProject(Project *prj, const QString & onDisk)
     ui->textEdit->setText(m_project->getDescription());
     ui->checkBox->setCheckState(prj->oopProject()?Qt::Checked:Qt::Unchecked);
     ui->txtLocationOnDisk->setText(onDisk);
+
+    if(prj->getEngine()->getDatabaseEngineName().toUpper() == strMySql)
+    {
+        ui->comboBox->removeItem(1); // removing the Sqlite entry
+    }
+    else
+    {
+        ui->comboBox->removeItem(0); // removing the Mysql entry
+    }
 }
 
 void ProjectDetailsForm::onBtnUpdate()
