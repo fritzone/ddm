@@ -80,20 +80,20 @@ Configuration::ForeignKeyPosition Configuration::sqlOptsGetFkPosition(const QHas
 
 Configuration::PrimaryKeyPosition Configuration::sqlOptsGetPkPosition(const QHash<QString, QString> &options)
 {
-    Configuration::PrimaryKeyPosition pkpos = Configuration::AfterColumnDeclaration;
+    Configuration::PrimaryKeyPosition pkpos = Configuration::PkAfterColumnsDeclaration;
     if(options.contains("PKSposition"))
     {
         if(options["PKSposition"]=="ColumnDeclaration")
         {
-            pkpos = Configuration::ColumnDeclaration;
+            pkpos = Configuration::PkInColumnDeclaration;
         }
         if(options["PKSposition"]=="AfterColumnsDeclaration")
         {
-            pkpos = Configuration::AfterColumnDeclaration;
+            pkpos = Configuration::PkAfterColumnsDeclaration;
         }
         if(options["PKSposition"]=="AfterTableDeclaration")
         {
-            pkpos = Configuration::AfterTableDeclaration;
+            pkpos = Configuration::PkAfterTableDeclaration;
         }
     }
     return pkpos;

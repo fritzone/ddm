@@ -7,6 +7,8 @@
 
 class DatabaseEngine;
 class ForeignKey;
+class Index;
+class MySqlConnection;
 
 class MySQLSQLGenerator : public BasicSqlGenerator
 {
@@ -42,11 +44,15 @@ public:
     virtual QString getDropFunction(const QString& func);
     virtual QString getDropTrigger(const QString& trig);
 
+    virtual QString sqlForAColumn(const Column* col) const;
 private:
 
     QString quotelessString(const QString&) const;
-    QString sqlForAColumn(const Column* col, int pkpos, bool backticks, bool upcase) const;
-
+    QStringList foreignKeyParticipants(Table* table, const QMap<QString, QString> &fkMappings) const;
+    QString provideCodepage(Table* table) const;
+    QString provideDatabaseEngine(Table* table, const MySqlConnection *dest) const;
+    QString indexTypeSpecified(Index* idx) const;
+    QString getIndexUsedLength(Index* idx, const Column* c) const;
 };
 
 #endif // MYSQLSQLGENERATOR_H

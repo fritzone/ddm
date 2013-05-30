@@ -137,8 +137,10 @@ static const QString browsedTriggerPrefix = "R:";
 static const QString browsedIndexPrefix = "I:";
 static const QString strSpace = " ";
 static const QString strNewline = "\n";
+static const QString strTab = "\t";
 static const QString strSemicolon = ";";
 static const QString strUnderline = "_";
+static const QString strComma = ",";
 static const QString strAutoIdx = "autoidx";
 static const QString strSqlComment = "-- ";
 

@@ -18,160 +18,169 @@
 
 QStringList MySQLSQLGenerator::generateCreateTableSql(Table *table, const QHash<QString, QString> &options, const QString& tabName, const QMap<QString, QString> &fkMappings, const Connection* pdest) const
 {
+    // error check: Is this a MySqlConnection? (if we have one)
     const MySqlConnection* dest = dynamic_cast<const MySqlConnection*>(pdest);
-    if(!dest)
+    if(!dest && pdest)
     {
         return QStringList();
     }
 
     // do not generate any code for a table which has no columns
-    if(table->fullColumns().size() == 0) return QStringList();
+    if(table->fullColumns().size() == 0)
+    {
+        return QStringList();
+    }
 
-    m_upcase = Configuration::instance().sqlOptsGetUpcase(options);
-    bool comments = options.contains(strGenerateComments) && options[strGenerateComments] == strYes;
-    bool backticks = options.contains(strBackticks) && options[strBackticks] == strYes;
-    Configuration::PrimaryKeyPosition pkpos = Configuration::instance().sqlOptsGetPkPosition(options);
-    Configuration::ForeignKeyPosition fkpos = Configuration::instance().sqlOptsGetFkPosition(options);    // the list of primary key columns, used only if pkpos is 1 or 2
-    QStringList primaryKeys;
-
-    // the list of foreign key SQLs
-    QStringList foreignKeys;
-    QString foreignKeysTable;
+    // initialize basic code generation options
+    initForOptions(options);
 
     // this will be returned
     QStringList toReturn;
 
-    if(comments)
+    if(m_comments)
     {
         toReturn << generateTableCreationComments(table, tabName);
     }
 
-    QString createTable = keyword("create");
-    createTable += spiResult(table, uidTemporaryTable);
-    createTable += keyword("table");
+    QString createTable = startCreateTableCommand(table);
+
+    // now something mysql specific
     createTable += spiResult(table, uidMysqlIfNotExistsTable);
 
     // table name
-    createTable += backticks ? strBacktick :strEmpty;
-    createTable += tabName;
-    createTable += backticks ? strBacktick : strEmpty;
-
-    primaryKeys = table->primaryKeyColumnsAsStringlist();
-
-    if(primaryKeys.size() > 1)
-    {
-        pkpos = Configuration::AfterColumnDeclaration;
-    }
-
-    createTable += strNewline + strOpenParantheses + strNewline;
+    createTable += requestedTableName(tabName);
 
     // creating the columns
-    for(int i=0; i<table->fullColumns().size(); i++)
-    {
-        // column name
-        Column *col = table->getColumn(table->fullColumns()[i]);
-        if(col == 0)
-        {
-            col = table->getColumnFromParents(table->fullColumns()[i]);
-            if(col == 0)
-            {
-                return QStringList("ERROR");
-            }
-        }
+    createTable += generateColumnList(table);
 
-        createTable += sqlForAColumn(col, pkpos, backticks, m_upcase);
-        // do we have more columns after this?
-        if(i<table->fullColumns().size() - 1)
-        {
-            createTable += strComma + strNewline;
-        }
+    QStringList primaryKeys = table->primaryKeyColumnsAsStringlist();
+    if(primaryKeys.size() > 1) // if there is more than one we force it to be AfterColumns
+    {
+        m_pkpos = Configuration::PkAfterColumnsDeclaration;
     }
 
     // are we having primary keys after columns?
-    if(pkpos == 1 && primaryKeys.size() > 0)
+    if(m_pkpos == Configuration::PkAfterColumnsDeclaration && !primaryKeys.empty())
     {
-        createTable += "\n\t,";
-        createTable += m_upcase?"PRIMARY KEY ":"primary key ";
-        createTable += "(";
-        for(int i=0; i<primaryKeys.size(); i++)
-        {
-            createTable += primaryKeys[i];
-            if(i<primaryKeys.size() - 1)
-            {
-                createTable += ", ";
-            }
-        }
-        createTable += ")";
+        createTable += generatePrimaryKeys(primaryKeys);
     }
-
 
     // creating the FOREIGN KEY sql(s)...
-    for(int i=0; i<table->getForeignKeys().size(); i++)
-    {
-        // just pre-render the SQL for foreign keys
-        QString foreignKeySql1 = "";
-        QString foreignKeySql2 = "";
-
-        ForeignKey* fkI = table->getForeignKeys().at(i);
-        foreignKeysTable = fkI->getForeignTableName();
-        if(fkMappings.contains(fkI->getName()))
-        {
-            QString fkTabInst = fkMappings[fkI->getName()];
-            if(!fkTabInst.isEmpty())
-            {
-                foreignKeysTable = fkTabInst;
-            }
-        }
-        for(int j=0; j<fkI->getAssociations().size(); j++)
-        {
-
-            ForeignKey::ColumnAssociation* assocJ = fkI->getAssociations().at(j);
-            foreignKeySql1 += assocJ->getLocalColumn()->getName();
-            foreignKeySql2 += assocJ->getForeignColumn()->getName();
-
-            if(j < fkI->getAssociations().size() - 1)
-            {
-                foreignKeySql1 += ", ";
-                foreignKeySql2 += ", ";
-            }
-        }
-        QString foreignKeySql = m_upcase?" CONSTRAINT " : " constraint ";
-        foreignKeySql += fkI->getName();
-        foreignKeySql += m_upcase?" FOREIGN KEY (":" foreign key(";
-        foreignKeySql += foreignKeySql1;
-        foreignKeySql += m_upcase?") REFERENCES ":") references ";
-        foreignKeySql += foreignKeysTable;
-        foreignKeySql += "(" + foreignKeySql2 + ")";
-        QString t = fkI->getOnDelete();
-        if(t.length() > 0) foreignKeySql += QString(" ") + (!m_upcase?"on delete ":"ON DELETE ") + (m_upcase?t.toUpper():t.toLower());
-        t = fkI->getOnUpdate();
-        if(t.length() > 0) foreignKeySql += QString(" ") + (!m_upcase?"on update ":"ON UPDATE ") + (m_upcase?t.toUpper():t.toLower());
-
-        foreignKeys.append(foreignKeySql);
-
-        // and send it back to the table for the final SQL rendering
-        table->addForeignKeyCommand(foreignKeySql);
-    }
+    QStringList foreignKeys = foreignKeyParticipants(table, fkMappings);
 
     // now check the foreign keys if any
-    if(fkpos == Configuration::InTable && foreignKeys.size() > 0)
+    if(m_fkpos == Configuration::InTable && foreignKeys.size() > 0)
     {
-        createTable += ",\n";
-        for(int i=0; i<foreignKeys.size(); i++)
-        {
-            createTable += "\t" + foreignKeys[i];
-            if(i<foreignKeys.size() - 1)
-            {
-                createTable += ",\n";
-            }
-        }
+        createTable += strComma + strNewline + generateForeignKeys(foreignKeys);
     }
 
     // this is closing the create table SQL
-    createTable += "\n)\n";
+    createTable += strNewline + strCloseParantheses + strNewline;
 
+    // extra MySql stuff: DB engien and codepage
+    createTable += provideDatabaseEngine(table, dest);
+    createTable += provideCodepage(table);
+
+    // done
+    createTable += strSemicolon + strNewline;
+
+    // and here we are done with the create table command
+    toReturn << createTable;
+
+    if(m_comments)
     {
+        QString comment = table->fullIndices().size()>0?"\n-- Create the indexes for table " + tabName + "\n":"";
+        toReturn << comment;
+    }
+
+    // now create the indexes of the table
+    for(int i=0; i<table->fullIndices().size(); i++)
+    {
+        Index* idx = table->getIndex(table->fullIndices().at(i));
+        if(idx == 0)
+        {
+            idx = table->getIndexFromParents(table->fullIndices().at(i));
+            if(idx == 0)
+            {
+                return QStringList("ERROR: an index was not identified");
+            }
+        }
+
+        QString indexCommand = correctCase("create");
+        indexCommand += spiResult(idx, uidMysqlIndexCategory);
+        indexCommand += correctCase("index");
+        indexCommand += table->fullIndices().at(i);
+
+        indexCommand += indexTypeSpecified(idx);
+
+        // and the table
+        indexCommand += correctCase("on") + tabName + strOpenParantheses;
+
+        for(int j=0; j<idx->getColumns().size(); j++)
+        {
+            indexCommand += idx->getColumns().at(j)->getName();
+            indexCommand += getIndexUsedLength(idx, idx->getColumns().at(j));
+            indexCommand += idx->getOrderForColumn(idx->getColumns().at(j));
+            if(j<idx->getColumns().size() - 1)
+            {
+                indexCommand += strComma + strSpace;
+            }
+        }
+        indexCommand += strCloseParantheses + strSemicolon + strNewline;
+        toReturn << indexCommand;
+    }
+
+    // and check if we have foreign keys
+    if(m_fkpos == Configuration::AfterTable && foreignKeys.size() > 0)
+    {
+        if(m_comments)
+        {
+            QString comment = "-- Create the foreign keys for table " + tabName + "\n";
+            toReturn << comment;
+        }
+
+        QString fkCommand = strNewline + correctCase("alter table") + tabName + correctCase("add");
+        fkCommand += generateForeignKeys(foreignKeys);
+        toReturn << fkCommand;
+    }
+
+    return toReturn;
+}
+
+QString MySQLSQLGenerator::getIndexUsedLength(Index* idx, const Column *c) const
+{
+    QString result = "";
+    // Now see if we have an SPI for the given column
+    if(SpInstance* spi = idx->getSpiOfColumnForSpecificRole(c, uidMysqlColumnOfIndexLength, m_engine->getDatabaseEngineName()))
+    {
+        result = strOpenParantheses + spi->get() + strCloseParantheses;
+    }
+    return result;
+}
+
+QString MySQLSQLGenerator::indexTypeSpecified(Index *idx) const
+{
+    QString result = "";
+    // See if this index has BTREE or HASH specified
+    {
+    SpInstance* spi = idx->getInstanceForSqlRoleUid(m_engine, uidMysqlIndexType);
+    if(spi)
+    {
+        QString t = spi->get();
+        if(t.length())
+        {
+            result = strSpace + correctCase("USING") + correctCase(t) + strSpace;
+        }
+    }
+    }
+
+    return result;
+}
+
+QString MySQLSQLGenerator::provideDatabaseEngine(Table *table, const MySqlConnection* dest) const
+{
     // see if we have a storage engine
+    QString result = "";
     SpInstance* spi = table->getInstanceForSqlRoleUid(m_engine, uidMysqlStorageEngineTable);
     if(spi)
     {
@@ -186,19 +195,22 @@ QStringList MySQLSQLGenerator::generateCreateTableSql(Table *table, const QHash<
                     QStringList supportedStroageEngines = mysEng->getSupportedStorageEngines(dest->getHost(), dest->getUser(), dest->getPassword(), dest->getPort());
                     if(supportedStroageEngines.contains(storageEngine.toUpper()))
                     {
-                        createTable += QString(m_upcase?"ENGINE = ":"engine = ") + storageEngine;
+                        result = correctCase("engine = ")+ storageEngine;
                     }
                 }
                 else
                 {
-                    createTable += QString(m_upcase?"ENGINE = ":"engine = ") + storageEngine;
+                    result = correctCase("engine = ")+ storageEngine;
                 }
             }
         }
     }
-    }
+    return result;
+}
 
-    {
+QString MySQLSQLGenerator::provideCodepage(Table *table) const
+{
+    QString result("");
     // and the codepage
     SpInstance* spi = table->getInstanceForSqlRoleUid(m_engine, uidMysqlCodepageTable);
     if(spi)
@@ -207,115 +219,13 @@ QStringList MySQLSQLGenerator::generateCreateTableSql(Table *table, const QHash<
         if(codepage.length())
         {
             QString charset = codepage.left(codepage.indexOf('_'));
-            createTable += m_upcase?(" DEFAULT CHARACTER SET " + charset + " COLLATE " + codepage):(" default character set "  + charset + " collate " + codepage);
+            QString dcs = correctCase("DEFAULT CHARACTER SET");
+            QString collate = correctCase("COLLATE");
+
+            result = strSpace + dcs + charset + strSpace + collate + codepage;
         }
     }
-    }
-
-    createTable += ";\n\n";
-    // and here we are done with the create table command
-    toReturn << createTable;
-
-    if(comments)
-    {
-        QString comment = table->fullIndices().size()>0?"-- Create the indexes for table " + tabName + "\n":"";
-        toReturn << comment;
-    }
-
-    // now create the indexes of the table
-    for(int i=0; i<table->fullIndices().size(); i++)
-    {
-        QString indexCommand = m_upcase?strCreate:"create";
-        Index* idx = table->getIndex(table->fullIndices().at(i));
-
-        {
-        // and the index category
-        SpInstance* spi = idx->getInstanceForSqlRoleUid(m_engine, uidMysqlIndexCategory);
-        if(spi)
-        {
-            QString c = spi->get();
-            if(c.length())
-            {
-                indexCommand += strSpace + c;
-            }
-        }
-        }
-
-        indexCommand += strSpace + (m_upcase?"INDEX ":"index ");
-        indexCommand += table->fullIndices().at(i);
-
-        if(idx == 0)
-        {
-            idx = table->getIndexFromParents(table->fullIndices().at(i));
-            if(idx == 0)
-            {
-                return QStringList("ERROR");
-            }
-        }
-        // See if this index has BTREE or HASH specified
-        {
-        SpInstance* spi = idx->getInstanceForSqlRoleUid(m_engine, uidMysqlIndexType);
-        if(spi)
-        {
-            QString t = spi->get();
-            if(t.length())
-            {
-                indexCommand += m_upcase?(" USING " + t.toUpper() + " ")
-                                     :(" using " + t.toLower() + " ");
-            }
-        }
-        }
-        // and the table
-        indexCommand +=m_upcase?" ON ":" on ";
-        indexCommand += tabName;
-        indexCommand += "(";
-
-        for(int j=0; j<idx->getColumns().size(); j++)
-        {
-            indexCommand += idx->getColumns().at(j)->getName();
-
-            // Now see if we have an SPI for the given column
-            if(SpInstance* spi = idx->getSpiOfColumnForSpecificRole(idx->getColumns().at(j), uidMysqlColumnOfIndexLength, m_engine->getDatabaseEngineName()))
-            {
-                indexCommand += "(" + spi->get() + ")";
-            }
-            indexCommand += " "+idx->getOrderForColumn(idx->getColumns().at(j));
-            if(j<idx->getColumns().size() - 1)
-            {
-                indexCommand += ", ";
-            }
-        }
-        indexCommand += ")";
-        indexCommand +=";";
-        indexCommand +="\n\n";
-
-        toReturn << indexCommand;
-    }
-
-    // and check if we have foreign keys
-    if(fkpos == Configuration::AfterTable && foreignKeys.size() > 0)
-    {
-        if(comments)
-        {
-            QString comment = "-- Create the foreign keys for table " + tabName + "\n";
-            toReturn << comment;
-        }
-
-        QString fkCommand = m_upcase?"\nALTER TABLE" + tabName :"\nalter table " + tabName;
-        fkCommand += m_upcase?" ADD":" add";
-        for(int i=0; i<foreignKeys.size(); i++)
-        {
-            fkCommand += foreignKeys[i];
-            if(i<foreignKeys.size() - 1)
-            {
-                fkCommand += ",\n";
-            }
-        }
-
-        toReturn << fkCommand;
-    }
-
-    return toReturn;
+    return result;
 }
 
 QString MySQLSQLGenerator::quotelessString(const QString& in) const
@@ -327,6 +237,66 @@ QString MySQLSQLGenerator::quotelessString(const QString& in) const
         else result += "\\\"";
     }
     return result;
+}
+
+QStringList MySQLSQLGenerator::foreignKeyParticipants(Table *table, const QMap<QString, QString> &fkMappings) const
+{
+    QStringList foreignKeys;
+    for(int i=0; i<table->getForeignKeys().size(); i++)
+    {
+        // just pre-render the SQL for foreign keys
+        QString foreignKeysLocal = "";
+        QString foreignKeysOther = "";
+
+        ForeignKey* fkI = table->getForeignKeys().at(i);
+        // the list of foreign key SQLs
+        QString foreignKeysTable = fkI->getForeignTableName();
+        if(fkMappings.contains(fkI->getName()))
+        {
+            QString fkTabInst = fkMappings[fkI->getName()];
+            if(!fkTabInst.isEmpty())
+            {
+                foreignKeysTable = fkTabInst;
+            }
+        }
+        for(int j=0; j<fkI->getAssociations().size(); j++)
+        {
+
+            ForeignKey::ColumnAssociation* assocJ = fkI->getAssociations().at(j);
+            foreignKeysLocal += assocJ->getLocalColumn()->getName();
+            foreignKeysOther += assocJ->getForeignColumn()->getName();
+
+            if(j < fkI->getAssociations().size() - 1)
+            {
+                foreignKeysLocal += strComma + strSpace;
+                foreignKeysOther += strComma + strSpace;
+            }
+        }
+
+        QString foreignKeySql = strSpace + correctCase("constraint");
+        foreignKeySql += fkI->getName() + strSpace;
+        foreignKeySql += correctCase("foreign key") + strOpenParantheses;
+        foreignKeySql += foreignKeysLocal + strCloseParantheses;
+        foreignKeySql += correctCase("references");
+        foreignKeySql += foreignKeysTable;
+        foreignKeySql += strOpenParantheses + foreignKeysOther + strCloseParantheses;
+        QString t = fkI->getOnDelete();
+        if(t.length() > 0)
+        {
+            foreignKeySql += strSpace + correctCase("on delete") +correctCase(t);
+        }
+        t = fkI->getOnUpdate();
+        if(t.length() > 0)
+        {
+            foreignKeySql += strSpace + correctCase("on update") + correctCase(t);
+        }
+
+        foreignKeys.append(foreignKeySql);
+
+        // and send it back to the table for the final SQL rendering
+        table->addForeignKeyCommand(foreignKeySql);
+    }
+    return foreignKeys;
 }
 
 QStringList MySQLSQLGenerator::generateDefaultValuesSql(TableInstance* tableInstance, const QHash<QString, QString>& options) const
@@ -592,7 +562,7 @@ QString MySQLSQLGenerator::getTableRenameSql(const QString& from, const QString&
 
 QString MySQLSQLGenerator::getAlterTableForChangeColumnOrder(const QString& table, const Column* column, const QString& afterThis)
 {
-    QString res = "ALTER TABLE " + table + " MODIFY COLUMN " + sqlForAColumn(column, -1, true, true);
+    QString res = "ALTER TABLE " + table + " MODIFY COLUMN " + sqlForAColumn(column);
     if(afterThis.isEmpty())
     {
         res += " FIRST";
@@ -606,13 +576,13 @@ QString MySQLSQLGenerator::getAlterTableForChangeColumnOrder(const QString& tabl
 
 QString MySQLSQLGenerator::getAlterTableForColumnRename(const QString& table, const Column* column, const QString& oldName)
 {
-    QString res = "ALTER TABLE " + table + " CHANGE `" + oldName + "` "+ sqlForAColumn(column, -1, true, true);
+    QString res = "ALTER TABLE " + table + " CHANGE `" + oldName + "` "+ sqlForAColumn(column);
     return res;
 }
 
 QString MySQLSQLGenerator::getAlterTableForNewColumn(const QString& table, const Column* column, const QString& after)
 {
-    QString res = "ALTER TABLE " + table + " ADD " + sqlForAColumn(column, -1, true, true);
+    QString res = "ALTER TABLE " + table + " ADD " + sqlForAColumn(column);
     if(after.isEmpty())
     {
         res += " FIRST";
@@ -630,43 +600,32 @@ QString MySQLSQLGenerator::getAlterTableForColumnDeletion(const QString& table, 
     return res;
 }
 
-QString MySQLSQLGenerator::sqlForAColumn(const Column *col, int pkpos, bool backticks, bool upcase) const
+QString MySQLSQLGenerator::sqlForAColumn(const Column *col) const
 {
-    QString createTable = " ";
-    createTable += (backticks?"`":"") + col->getName();
-    createTable += backticks?"`":"";
-    createTable += " ";
+    QString columnsSql = " ";
+    columnsSql += (m_backticks?"`":"") + col->getName();
+    columnsSql += m_backticks?"`":"";
+    columnsSql += " ";
 
     // column type
     const UserDataType* dt = col->getDataType();
-    createTable += upcase?dt->sqlAsString().toUpper():dt->sqlAsString().toLower();
+    columnsSql += correctCase(dt->sqlAsString());
 
-    {
-    // zero fill SP?
-    SpInstance* spi = col->getInstanceForSqlRoleUid(m_engine, uidMysqlColumnZeroFill);
-    if(spi)
-    {
-        QString zeroFill = spi->get();
-        if(zeroFill == "TRUE")
-        {
-            createTable += upcase? " ZEROFILL ":" zerofill ";
-        }
-    }
-    }
+    columnsSql += spiResult(col, QUuid(uidMysqlColumnZeroFill));
 
     // is this primary key?
     if(col->isPk())
     {
-        if(pkpos == 0)
+        if(m_pkpos == Configuration::PkInColumnDeclaration)
         {
-            createTable += upcase?" PRIMARY KEY ":" primary key ";
+            columnsSql += correctCase("primary key");
         }
     }
 
     // is this a nullable column?
     if(!dt->isNullable())
     {
-        createTable += upcase? " NOT NULL " : " not null ";
+        columnsSql += correctCase("not null");
     }
 
     QString autoInc = "FALSE";
@@ -683,7 +642,7 @@ QString MySQLSQLGenerator::sqlForAColumn(const Column *col, int pkpos, bool back
     if(dt->getDefaultValue().length() > 0 && autoInc != "TRUE")
     {
         QString g = dt->getDefaultValue();
-        createTable += QString(upcase?" DEFAULT ":" default ") +
+        columnsSql += correctCase("default")+
                 (dt->getDefaultValue().toUpper() == "NULL"? ("NULL ") :
                 (QString( (dt->getType()==DT_STRING) || (dt->getType()==DT_DATETIME && g.toUpper()!="CURRENT_TIMESTAMP") ? "\"" : "") + dt->getDefaultValue() +
                 QString( (dt->getType()==DT_STRING) || (dt->getType()==DT_DATETIME && g.toUpper()!="CURRENT_TIMESTAMP") ? "\"" : "") ));
@@ -692,21 +651,21 @@ QString MySQLSQLGenerator::sqlForAColumn(const Column *col, int pkpos, bool back
     // and set the auto inc
     if(autoInc == "TRUE")
     {
-        createTable += upcase? " AUTO_INCREMENT ":" auto_increment ";
+        columnsSql += m_upcase? " AUTO_INCREMENT ":" auto_increment ";
     }
 
     // is there a comment for this?
     if(col->getDescription().length())
     {
-        createTable += QString(upcase?" COMMENT ":" comment ") + "\'" + col->getDescription() + "\' ";
+        columnsSql += QString(m_upcase?" COMMENT ":" comment ") + "\'" + col->getDescription() + "\' ";
     }
 
-    return createTable;
+    return columnsSql;
 }
 
 QString MySQLSQLGenerator::getAlterTableForColumnChange(const QString& table, const Column* col)
 {
-    QString res = "ALTER TABLE " + table + " MODIFY COLUMN " + sqlForAColumn(col, -1, true, true);
+    QString res = "ALTER TABLE " + table + " MODIFY COLUMN " + sqlForAColumn(col);
     return res;
 }
 

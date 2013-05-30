@@ -35,9 +35,9 @@ public:
 
     enum PrimaryKeyPosition
     {
-        ColumnDeclaration = 0,
-        AfterColumnDeclaration = 1,
-        AfterTableDeclaration = 2
+        PkInColumnDeclaration = 0,
+        PkAfterColumnsDeclaration = 1,
+        PkAfterTableDeclaration = 2
     };
 
     bool defaultLengths() const

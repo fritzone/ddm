@@ -112,7 +112,7 @@ QStringList SqliteSQLGenerator::generateCreateTableSql(Table *table, const QHash
     int x = primaryKeys.size();
     if(x > 1)
     {
-        pkpos = Configuration::AfterColumnDeclaration;
+        pkpos = Configuration::PkAfterColumnsDeclaration;
     }
 
     createTable += "\n(\n";
@@ -142,7 +142,7 @@ QStringList SqliteSQLGenerator::generateCreateTableSql(Table *table, const QHash
     }
 
     // are we having primary keys after columns?
-    if(pkpos == Configuration::AfterColumnDeclaration && primaryKeys.size() > 0)
+    if(pkpos == Configuration::PkAfterColumnsDeclaration && primaryKeys.size() > 0)
     {
         createTable += "\n\t,";
         createTable += upcase?"PRIMARY KEY ":"primary key ";

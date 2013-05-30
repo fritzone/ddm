@@ -1719,6 +1719,7 @@ QString MySQLDatabaseEngine::getDbMetadata(Connection *conn)
 QString MySQLDatabaseEngine::spiExtension(QUuid uid)
 {
     if(uid.toString() == uidTemporaryTable) { return "TEMPORARY"; }
-
+    if(uid.toString() == uidMysqlIfNotExistsTable) { return "IF NOT EXISTS"; }
+    if(uid.toString() == uidMysqlColumnZeroFill) { return "ZEROFILL"; }
     return "";
 }
