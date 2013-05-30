@@ -371,8 +371,8 @@ TableUpdateGenerator::TableUpdateGenerator(Table *t1, Table *t2, DatabaseEngine*
     if(!t2->version()->getProject()->oopProject())
     {
         // algorithm similar to tableInstance update from VersionUpdateGenerator
-        QSet<Column*>fromPkColumns = t1->primaryKeyColumns();
-        QSet<Column*>toPkColumns = t2->primaryKeyColumns();
+        QSet<Column*>fromPkColumns = t1->primaryKeyColumnsAsSet();
+        QSet<Column*>toPkColumns = t2->primaryKeyColumnsAsSet();
 
         // Find the intersection of the two sets
         QSet<FromToColumn*> commonPks;

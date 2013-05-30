@@ -582,9 +582,9 @@ void VersionUpdateGenerator::updateTableInstances(Version *from, Version *to)
 
         // the value comparison is done based on the primary keys, so it is not searching for primary key value changes
         // find all the primary keys in the from ancestor table
-        QSet<Column*>fromPkColumns = ancestor->table()->primaryKeyColumns();
+        QSet<Column*>fromPkColumns = ancestor->table()->primaryKeyColumnsAsSet();
         // find all the primary keys in the from current table
-        QSet<Column*>toPkColumns = tinst->table()->primaryKeyColumns();
+        QSet<Column*>toPkColumns = tinst->table()->primaryKeyColumnsAsSet();
 
         // Find the intersection of the two sets
         QSet<FromToColumn*> commonPks;

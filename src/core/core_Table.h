@@ -307,7 +307,7 @@ public:
 
     QStringList primaryKeyColumnsAsStringlist() const;
 
-    QSet<Column*> primaryKeyColumns() const;
+    QSet<Column*> primaryKeyColumnsAsSet() const;
 
     /**
      * Returns a vector of vector of startup values filtered to the given columns/value

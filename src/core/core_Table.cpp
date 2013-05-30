@@ -679,7 +679,9 @@ QStringList Table::primaryKeyColumnsAsStringlist() const
             col = getColumnFromParents(fullColumns()[i]);
             if(col == 0)
             {
-                return QStringList("ERROR");
+                qDebug() << "Cannot get a column:" << fullColumns()[i] << "from"
+                         << getName();
+                return primaryKeys;
             }
         }
 
@@ -692,7 +694,7 @@ QStringList Table::primaryKeyColumnsAsStringlist() const
     return primaryKeys;
 }
 
-QSet<Column*> Table::primaryKeyColumns() const
+QSet<Column*> Table::primaryKeyColumnsAsSet() const
 {
     QSet<Column*> result;
     QStringList fromCols = fullColumns();
