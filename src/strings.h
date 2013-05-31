@@ -150,6 +150,8 @@ static const QString strQMySql3 = "QMYSQL3";
 static const QString strSqlite = "SQLITE";
 static const QString strQSqlite = "QSQLITE";
 
+static const QString strFalse = "FALSE";
+static const QString strTrue = "TRUE";
 
 
 #endif // STRINGS_H

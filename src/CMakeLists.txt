@@ -5,6 +5,7 @@ SET(DDM_UIS "" CACHE INTERNAL DDM_UIS)
 
 # add the subdirectories
 add_subdirectory(core)
+add_subdirectory(connections)
 add_subdirectory(gui)
 add_subdirectory(issues)
 add_subdirectory(db)
@@ -12,10 +13,12 @@ add_subdirectory(diagram)
 add_subdirectory(query_builder)
 add_subdirectory(qhtml)
 add_subdirectory(dbmysql)
+add_subdirectory(dbsqlite)
 add_subdirectory(reverse_eng)
 
 #Put here CPPs
 LIST( APPEND DDM_SRCS
+  db_DatabaseEngineManager.cpp
   ClipboardFactory.cpp
   Configuration.cpp
   DeserializationFactory.cpp
@@ -36,6 +39,7 @@ LIST( APPEND DDM_SRCS
 )
 
 LIST( APPEND DDM_HDRS
+  db_DatabaseEngineManager.h
   ClipboardFactory.h
   commons.h
   Configuration.h
@@ -76,12 +80,14 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_CURRENT_SOURCE_DIR}/gui
   ${CMAKE_CURRENT_SOURCE_DIR}/core
+  ${CMAKE_CURRENT_SOURCE_DIR}/connections
   ${CMAKE_CURRENT_SOURCE_DIR}/issues
   ${CMAKE_CURRENT_SOURCE_DIR}/db
   ${CMAKE_CURRENT_SOURCE_DIR}/diagram
   ${CMAKE_CURRENT_SOURCE_DIR}/query_builder
   ${CMAKE_CURRENT_SOURCE_DIR}/qhtml
   ${CMAKE_CURRENT_SOURCE_DIR}/dbmysql
+  ${CMAKE_CURRENT_SOURCE_DIR}/dbsqlite
   ${CMAKE_CURRENT_SOURCE_DIR}/reverse_eng
 )
 

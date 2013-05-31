@@ -1548,7 +1548,7 @@ QVector<Sp*> MySQLDatabaseEngine::buildSps()
     result.push_back(new ValueSp(uidMysqlColumnOfIndexLength, uidColumnOfIndex, "Column Length", "Used Column Length", "default", "", 5, 0, 0));
 
     // SPs for column
-    result.push_back(new TrueFalseSp(uidMysqlColumnAutoIncrement, uidColumn, "Auto Increment", "Auto Increment", "General", 5, 0, 0));
+    result.push_back(new TrueFalseSp(uidColumnAutoIncrement, uidColumn, "Auto Increment", "Auto Increment", "General", 5, 0, 0));
     result.push_back(new TrueFalseSp(uidMysqlColumnZeroFill, uidColumn, "Zero fill", "Zero fill", "General", 5, 0, 0));
 
     return result;
@@ -1721,5 +1721,7 @@ QString MySQLDatabaseEngine::spiExtension(QUuid uid)
     if(uid.toString() == uidTemporaryTable) { return "TEMPORARY"; }
     if(uid.toString() == uidMysqlIfNotExistsTable) { return "IF NOT EXISTS"; }
     if(uid.toString() == uidMysqlColumnZeroFill) { return "ZEROFILL"; }
+    if(uid.toString() == uidColumnAutoIncrement) { return "auto_increment"; }
+
     return "";
 }

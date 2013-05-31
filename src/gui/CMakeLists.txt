@@ -41,6 +41,12 @@ SET(DDM_GUI_SRCS
   ${CMAKE_CURRENT_SOURCE_DIR}/TriggerForm.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/VersionGuiElements.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/WidgetForSpecificProperties.cpp
+
+  ${CMAKE_CURRENT_SOURCE_DIR}/repo_DatabaseDetailsForm.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/repo_RoleListingForm.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/repo_RepositoryElementForm.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/RepositoryGuiElements.cpp
+
 )
 
 SET(DDM_GUI_HDRS
@@ -57,6 +63,8 @@ SET(DDM_GUI_HDRS
   ${CMAKE_CURRENT_SOURCE_DIR}/TableListWidget.h
   ${CMAKE_CURRENT_SOURCE_DIR}/TreeItem.h
   ${CMAKE_CURRENT_SOURCE_DIR}/VersionGuiElements.h
+  
+  ${CMAKE_CURRENT_SOURCE_DIR}/RepositoryGuiElements.h
 )
 
 SET(DDM_GUI_MOC_HDRS
@@ -89,6 +97,10 @@ SET(DDM_GUI_MOC_HDRS
   ${CMAKE_CURRENT_SOURCE_DIR}/TextEditWithCodeCompletion.h
   ${CMAKE_CURRENT_SOURCE_DIR}/TriggerForm.h
   ${CMAKE_CURRENT_SOURCE_DIR}/WidgetForSpecificProperties.h
+  
+  ${CMAKE_CURRENT_SOURCE_DIR}/repo_DatabaseDetailsForm.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/repo_RoleListingForm.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/repo_RepositoryElementForm.h
 )
 
 #Put here QRC files to be Rcc-ed
@@ -122,6 +134,11 @@ SET(DDM_GUI_UIS
   ${CMAKE_CURRENT_SOURCE_DIR}/TableInstanceForm.ui
   ${CMAKE_CURRENT_SOURCE_DIR}/TriggerForm.ui
   ${CMAKE_CURRENT_SOURCE_DIR}/WidgetForSpecificProperties.ui
+  
+  ${CMAKE_CURRENT_SOURCE_DIR}/repo_DatabaseDetailsForm.ui
+  ${CMAKE_CURRENT_SOURCE_DIR}/repo_RoleListingForm.ui
+  ${CMAKE_CURRENT_SOURCE_DIR}/repo_RepositoryElementForm.ui
+  
 )
 
 LIST( APPEND DDM_SRCS	

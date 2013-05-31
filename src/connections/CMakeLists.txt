@@ -1,12 +1,17 @@
 #Put here CPPs
 SET(DDM_CONNECTIONS_SRCS
-  ${CMAKE_CURRENT_SOURCE_DIR}/Connections.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/ConnectionsManager.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/Connection.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/ConnectionManager.cpp 
+  ${CMAKE_CURRENT_SOURCE_DIR}/MySqlConnection.cpp  
+  ${CMAKE_CURRENT_SOURCE_DIR}/SqliteConnection.cpp
+
 )
 
 SET(DDM_CONNECTIONS_HDRS
-  ${CMAKE_CURRENT_SOURCE_DIR}/Connections.h
-  ${CMAKE_CURRENT_SOURCE_DIR}/ConnectionsManager.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/Connection.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/ConnectionManager.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/MySqlConnection.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/SqliteConnection.h
 )
 
 SET(DDM_CONNECTIONS_MOC_HDRS

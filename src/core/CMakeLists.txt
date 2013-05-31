@@ -6,8 +6,6 @@
 #Put here CPPs
 SET(DDM_CORE_SRCS
   ${CMAKE_CURRENT_SOURCE_DIR}/core_Column.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/core_Connection.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/core_ConnectionManager.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/core_Deployer.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/core_DeployerThread.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/core_Diagram.cpp
@@ -38,6 +36,10 @@ SET(DDM_CORE_SRCS
   ${CMAKE_CURRENT_SOURCE_DIR}/ValueListSpInstance.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/ValueSp.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/ValueSpInstance.cpp
+  
+  ${CMAKE_CURRENT_SOURCE_DIR}/core_Repository.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/core_Entity.cpp  
+  ${CMAKE_CURRENT_SOURCE_DIR}/core_Role.cpp
 )
 
 SET(DDM_CORE_HDRS
@@ -46,8 +48,6 @@ SET(DDM_CORE_HDRS
   ${CMAKE_CURRENT_SOURCE_DIR}/core_CloneableElement.h
   ${CMAKE_CURRENT_SOURCE_DIR}/core_Column.h
   ${CMAKE_CURRENT_SOURCE_DIR}/core_ColumnWithValue.h
-  ${CMAKE_CURRENT_SOURCE_DIR}/core_Connection.h
-  ${CMAKE_CURRENT_SOURCE_DIR}/core_ConnectionManager.h
   ${CMAKE_CURRENT_SOURCE_DIR}/core_Diagram.h
   ${CMAKE_CURRENT_SOURCE_DIR}/core_Function.h
   ${CMAKE_CURRENT_SOURCE_DIR}/core_ItemWithDescription.h
@@ -81,7 +81,11 @@ SET(DDM_CORE_HDRS
   ${CMAKE_CURRENT_SOURCE_DIR}/ValueSpInstance.h
   ${CMAKE_CURRENT_SOURCE_DIR}/VersionData.h
   ${CMAKE_CURRENT_SOURCE_DIR}/Version.h
-)	
+  
+  ${CMAKE_CURRENT_SOURCE_DIR}/core_Repository.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/core_Entity.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/core_Role.h
+)
 
 SET(DDM_CORE_MOC_HDRS
   ${CMAKE_CURRENT_SOURCE_DIR}/core_Deployer.h

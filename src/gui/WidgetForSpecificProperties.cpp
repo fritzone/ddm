@@ -10,6 +10,7 @@
 #include "core_Column.h"
 #include "db_DatabaseEngine.h"
 #include "core_UserDataType.h"
+#include "strings.h"
 
 #include <QLabel>
 #include <QCheckBox>
@@ -184,13 +185,13 @@ void WidgetForSpecificProperties::taylorToSpecificObject(ObjectWithSpInstances *
         if(col->getDataType()->getType() != DT_NUMERIC)
         {   // disable the checkboxes for zerofill and autoinc
             {
-            SpInstance* autoIncInstance = dest->getInstanceForSqlRoleUid(m_dbEngine, uidMysqlColumnAutoIncrement);
+            SpInstance* autoIncInstance = dest->getInstanceForSqlRoleUid(m_dbEngine, uidColumnAutoIncrement);
             if(autoIncInstance)
             {
                 QString value = autoIncInstance->get();
-                if(value == "TRUE")
+                if(value == strTrue)
                 {
-                    autoIncInstance->set("FALSE");
+                    autoIncInstance->set(strFalse);
                 }
             }
             }
@@ -201,9 +202,9 @@ void WidgetForSpecificProperties::taylorToSpecificObject(ObjectWithSpInstances *
             if(zeroFillInstance)
             {
                 QString value = zeroFillInstance->get();
-                if(value == "TRUE")
+                if(value == strTrue)
                 {
-                    zeroFillInstance->set("FALSE");
+                    zeroFillInstance->set(strFalse);
                 }
             }
             }
@@ -211,7 +212,7 @@ void WidgetForSpecificProperties::taylorToSpecificObject(ObjectWithSpInstances *
             for(int i=0; i<m_mappings.size(); i++)
             {
                 UidToWidget* uiw = m_mappings.at(i);
-                if(uiw->objectRoleUid == uidMysqlColumnAutoIncrement || uiw->objectRoleUid == uidMysqlColumnZeroFill)
+                if(uiw->objectRoleUid == uidColumnAutoIncrement || uiw->objectRoleUid == uidMysqlColumnZeroFill)
                 {
                     QCheckBox* chk = qobject_cast<QCheckBox*>(uiw->w);
                     if(chk)
@@ -228,7 +229,7 @@ void WidgetForSpecificProperties::taylorToSpecificObject(ObjectWithSpInstances *
             for(int i=0; i<m_mappings.size(); i++)
             {
                 UidToWidget* uiw = m_mappings.at(i);
-                if(uiw->objectRoleUid == uidMysqlColumnAutoIncrement)
+                if(uiw->objectRoleUid == uidColumnAutoIncrement)
                 {
                     QCheckBox* chk = qobject_cast<QCheckBox*>(uiw->w);
                     if(chk)
@@ -295,7 +296,7 @@ void WidgetForSpecificProperties::feedInSpecificProperties(const QVector<SpInsta
 
                 const QString& v = spInstances.at(i)->get();
 
-                if(v == "TRUE")
+                if(v == strTrue)
                 {
                     checkBox->setChecked(true);
                 }
@@ -426,7 +427,7 @@ void WidgetForSpecificProperties::checkBoxToggled(QString uid)
         }
         if(spi)
         {
-            spi->set(b?"TRUE":"FALSE");
+            spi->set(b?strTrue:strFalse);
         }
     }
 }
