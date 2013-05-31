@@ -5,6 +5,7 @@
 
 #Put here CPPs
 SET(DDM_ISSUES_SRCS
+  ${CMAKE_CURRENT_SOURCE_DIR}/db_BasicSqlGenerator.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/db_DatabaseEngine.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/db_SP.cpp
 )
@@ -12,6 +13,7 @@ SET(DDM_ISSUES_SRCS
 SET(DDM_ISSUES_HDRS
   ${CMAKE_CURRENT_SOURCE_DIR}/db_AbstractDTSupplier.h
   ${CMAKE_CURRENT_SOURCE_DIR}/db_AbstractSQLGenerator.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/db_BasicSqlGenerator.h
   ${CMAKE_CURRENT_SOURCE_DIR}/db_Codepage.h
   ${CMAKE_CURRENT_SOURCE_DIR}/db_DatabaseBuiltinFunction.h
   ${CMAKE_CURRENT_SOURCE_DIR}/db_DatabaseBuiltinFunctionsParameter.h

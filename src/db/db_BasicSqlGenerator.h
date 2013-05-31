@@ -42,6 +42,8 @@ public:
 
     QString generateForeignKeys(const QStringList&) const;
 
+    QString backtickedName(const QString&) const;
+
 protected:
 
     bool mutable m_upcase;

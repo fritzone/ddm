@@ -54,7 +54,7 @@ QString BasicSqlGenerator::spiResult(const ObjectWithSpInstances *object, QUuid 
         if(spsClassUid == uidTrueFalseSp)
         {
             QString temporary = spi->get();
-            if(temporary == "TRUE")
+            if(temporary == strTrue)
             {
                 QString kw = m_engine->spiExtension(uid);
                 if(kw.isEmpty())
@@ -172,4 +172,12 @@ QString BasicSqlGenerator::generateForeignKeys(const QStringList& foreignKeys) c
     }
 
     return fkCommand;
+}
+
+QString BasicSqlGenerator::backtickedName(const QString& name) const
+{
+    QString result = (m_backticks?"`":"") + name;
+    result += m_backticks?"`":"";
+    result += " ";
+    return result;
 }

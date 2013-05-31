@@ -14,6 +14,7 @@
 #include "GuiElements.h"
 #include "uids.h"
 #include "ForeignKey.h"
+#include "strings.h"
 
 #include <QLineEdit>
 
@@ -104,11 +105,11 @@ void TableInstanceForm::onAddNewRow()
 
         bool ainc = false;
         {
-            SpInstance* spi = c->getInstanceForSqlRoleUid(Workspace::getInstance()->currentProjectsEngine(), uidMysqlColumnAutoIncrement);
+            SpInstance* spi = c->getInstanceForSqlRoleUid(Workspace::getInstance()->currentProjectsEngine(), uidColumnAutoIncrement);
             if(spi)
             {
                 QString autoInc = spi->get();
-                if(autoInc == "TRUE")
+                if(autoInc == strTrue)
                 {
                     ainc = true;
                 }

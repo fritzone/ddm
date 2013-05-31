@@ -59,11 +59,12 @@ QueryGraphicsItem* TableQueryComponent::createGraphicsItem(QueryGraphicsHelper* 
 
 void TableQueryComponent::setTable(const QString &tab)
 {
-    m_table = Workspace::getInstance()->workingVersion()->getTable(tab);
-    if(m_table == 0)
+    // firstly setting the table instance, it can have higher priority
+    m_tinst = Workspace::getInstance()->workingVersion()->getTableInstance(tab);
+    if(m_tinst == 0)
     {
-        m_tinst = Workspace::getInstance()->workingVersion()->getTableInstance(tab);
-        if(m_tinst == 0)
+        m_table = Workspace::getInstance()->workingVersion()->getTable(tab);
+        if(m_table == 0)
         {
             qDebug() << "Something went horribly wrong... no table and no table instance for: " << tab;
         }

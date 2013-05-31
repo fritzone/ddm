@@ -45,6 +45,7 @@ public:
     virtual QString getDropTrigger(const QString& trig);
 
     virtual QString sqlForAColumn(const Column* col) const;
+
 private:
 
     QString quotelessString(const QString&) const;
@@ -53,6 +54,8 @@ private:
     QString provideDatabaseEngine(Table* table, const MySqlConnection *dest) const;
     QString indexTypeSpecified(Index* idx) const;
     QString getIndexUsedLength(Index* idx, const Column* c) const;
+    QString createTableOnlyScript(Table* table, const QStringList &foreignKeys, const QString &tabName, const MySqlConnection *dest) const;
+    void appendCreateIndexCommands(Table* table, QStringList& toReturn, const QString &tabName) const;
 };
 
 #endif // MYSQLSQLGENERATOR_H

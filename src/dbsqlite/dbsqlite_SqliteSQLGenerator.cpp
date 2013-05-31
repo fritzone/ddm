@@ -63,7 +63,7 @@ QStringList SqliteSQLGenerator::generateCreateTableSql(Table *table, const QHash
     if(spi)
     {
         QString temporary = spi->get();
-        if(temporary == "TRUE")
+        if(temporary == strTrue)
         {
             createTable += upcase? "TEMPORARY ":"temporary ";
         }
@@ -78,7 +78,7 @@ QStringList SqliteSQLGenerator::generateCreateTableSql(Table *table, const QHash
     if(spi)
     {
         QString ifNotExists = spi->get();
-        if(ifNotExists == "TRUE")
+        if(ifNotExists == strTrue)
         {
             createTable += upcase? "IF NOT EXISTS ":"if not exists ";
         }
@@ -384,7 +384,7 @@ QStringList SqliteSQLGenerator::generateDefaultValuesSql(TableInstance* tableIns
             }
             bool ainc = false;
             {
-                SpInstance* spi = c->getInstanceForSqlRoleUid(m_engine, uidMysqlColumnAutoIncrement);
+                SpInstance* spi = c->getInstanceForSqlRoleUid(m_engine, uidColumnAutoIncrement);
                 if(spi)
                 {
                     QString autoInc = spi->get();
@@ -417,7 +417,7 @@ QStringList SqliteSQLGenerator::generateDefaultValuesSql(TableInstance* tableIns
             }
             bool ainc = false;
             {
-                SpInstance* spi = c->getInstanceForSqlRoleUid(m_engine, uidMysqlColumnAutoIncrement);
+                SpInstance* spi = c->getInstanceForSqlRoleUid(m_engine, uidColumnAutoIncrement);
                 if(spi)
                 {
                     QString autoInc = spi->get();
@@ -695,10 +695,10 @@ QString SqliteSQLGenerator::sqlForAColumn(const Column *col, int pkpos, bool bac
         createTable += upcase? " NOT NULL " : " not null ";
     }
 
-    QString autoInc = "FALSE";
+    QString autoInc = strFalse;
     {
     // see if we have "AUTO_INCREMENT" sp
-    SpInstance* spi = col->getInstanceForSqlRoleUid(m_engine, uidMysqlColumnAutoIncrement);
+    SpInstance* spi = col->getInstanceForSqlRoleUid(m_engine, uidColumnAutoIncrement);
     if(spi)
     {
         autoInc = spi->get();
