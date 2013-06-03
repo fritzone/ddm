@@ -53,6 +53,8 @@ HEADERS += \
     core_enums.h \
     core/DefaultVersionImplementation.h
 
+INCLUDEPATH += .
+
 include (db/db.pri)
 INCLUDEPATH += db
 

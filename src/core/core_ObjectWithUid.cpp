@@ -10,6 +10,10 @@ ObjectWithUid::ObjectWithUid(const QString& uid) : m_uid(uid), m_sourceUid(nullU
 {
 }
 
+ObjectWithUid::ObjectWithUid(const QUuid &uid):m_uid(uid), m_sourceUid(nullUid)
+{
+}
+
 QStringList ObjectWithUid::sourceUids() const
 {
     QStringList thisUpwardsSourceUids;
