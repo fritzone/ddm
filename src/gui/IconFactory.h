@@ -1,8 +1,8 @@
 #ifndef ICONFACTORY_H
 #define ICONFACTORY_H
 
-#include "core_enums.h"
-#include "uids.h"
+#include "../core_enums.h"
+#include "../uids.h"
 
 #include <QIcon>
 

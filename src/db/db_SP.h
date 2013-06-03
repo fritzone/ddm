@@ -37,7 +37,7 @@ public:
 
     QString getSqlRoleUid() const
     {
-        return m_sqlRoleUid;
+        return m_sqlRoleUid.toString();
     }
 
     QString getPropertyGuiText() const

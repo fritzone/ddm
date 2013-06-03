@@ -2,7 +2,7 @@
 #define CORE_VERSIONELEMENT_H
 
 #include "core_ObjectWithUid.h"
-#include "UidWarehouse.h"
+#include "../UidWarehouse.h"
 
 class Version;
 

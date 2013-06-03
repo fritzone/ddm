@@ -34,6 +34,13 @@ public:
     ObjectWithUid(const QString& uid);
 
     /**
+     * @brief Creates a new object with the uid for the given version
+     * @param uid
+     * @param v
+     */
+    ObjectWithUid(const QUuid& uid);
+
+    /**
      * Destructor
      */
     virtual ~ObjectWithUid() {}
