@@ -170,6 +170,80 @@
           </item>
          </layout>
         </widget>
+        <widget class="QWidget" name="tab_3">
+         <attribute name="icon">
+          <iconset resource="../dbm.qrc">
+           <normaloff>:/images/actions/images/small/table-select-column-icon.png</normaloff>:/images/actions/images/small/table-select-column-icon.png</iconset>
+         </attribute>
+         <attribute name="title">
+          <string>Columns</string>
+         </attribute>
+         <layout class="QHBoxLayout" name="horizontalLayout_7">
+          <property name="margin">
+           <number>0</number>
+          </property>
+          <item>
+           <widget class="QGroupBox" name="grpContent">
+            <property name="title">
+             <string/>
+            </property>
+            <property name="flat">
+             <bool>true</bool>
+            </property>
+            <layout class="QHBoxLayout" name="horizontalLayout_2">
+             <property name="margin">
+              <number>0</number>
+             </property>
+             <item>
+              <layout class="QVBoxLayout" name="verticalLayout_2">
+               <property name="topMargin">
+                <number>9</number>
+               </property>
+               <property name="rightMargin">
+                <number>0</number>
+               </property>
+               <item>
+                <widget class="QTreeWidget" name="lstColumnsForView">
+                 <property name="columnCount">
+                  <number>2</number>
+                 </property>
+                 <attribute name="headerDefaultSectionSize">
+                  <number>100</number>
+                 </attribute>
+                 <column>
+                  <property name="text">
+                   <string>Name</string>
+                  </property>
+                 </column>
+                 <column>
+                  <property name="text">
+                   <string>Select</string>
+                  </property>
+                 </column>
+                </widget>
+               </item>
+               <item>
+                <widget class="QWidget" name="widget_3" native="true">
+                 <property name="minimumSize">
+                  <size>
+                   <width>300</width>
+                   <height>0</height>
+                  </size>
+                 </property>
+                 <layout class="QVBoxLayout" name="verticalLayout_4">
+                  <property name="margin">
+                   <number>0</number>
+                  </property>
+                 </layout>
+                </widget>
+               </item>
+              </layout>
+             </item>
+            </layout>
+           </widget>
+          </item>
+         </layout>
+        </widget>
         <widget class="QWidget" name="tab_4">
          <attribute name="icon">
           <iconset resource="../dbm.qrc">
@@ -285,121 +359,6 @@
           </item>
          </layout>
         </widget>
-        <widget class="QWidget" name="tab_3">
-         <attribute name="icon">
-          <iconset resource="../dbm.qrc">
-           <normaloff>:/images/actions/images/small/advanced-icon.png</normaloff>:/images/actions/images/small/advanced-icon.png</iconset>
-         </attribute>
-         <attribute name="title">
-          <string>Advanced</string>
-         </attribute>
-         <layout class="QHBoxLayout" name="horizontalLayout_7">
-          <property name="margin">
-           <number>0</number>
-          </property>
-          <item>
-           <widget class="QGroupBox" name="grpContent">
-            <property name="title">
-             <string/>
-            </property>
-            <property name="flat">
-             <bool>true</bool>
-            </property>
-            <layout class="QHBoxLayout" name="horizontalLayout_2">
-             <property name="margin">
-              <number>0</number>
-             </property>
-             <item>
-              <layout class="QVBoxLayout" name="verticalLayout_2">
-               <property name="topMargin">
-                <number>9</number>
-               </property>
-               <property name="rightMargin">
-                <number>0</number>
-               </property>
-               <item>
-                <widget class="QWidget" name="widget_3" native="true">
-                 <property name="minimumSize">
-                  <size>
-                   <width>300</width>
-                   <height>0</height>
-                  </size>
-                 </property>
-                 <layout class="QVBoxLayout" name="verticalLayout_4">
-                  <property name="margin">
-                   <number>0</number>
-                  </property>
-                  <item>
-                   <widget class="QTabWidget" name="tabWidget_4">
-                    <property name="currentIndex">
-                     <number>0</number>
-                    </property>
-                    <widget class="QWidget" name="tab_2">
-                     <attribute name="title">
-                      <string>Columns</string>
-                     </attribute>
-                     <layout class="QHBoxLayout" name="horizontalLayout_5">
-                      <item>
-                       <widget class="QTreeWidget" name="lstColumnsForView">
-                        <property name="columnCount">
-                         <number>2</number>
-                        </property>
-                        <attribute name="headerDefaultSectionSize">
-                         <number>100</number>
-                        </attribute>
-                        <column>
-                         <property name="text">
-                          <string>Name</string>
-                         </property>
-                        </column>
-                        <column>
-                         <property name="text">
-                          <string>Select</string>
-                         </property>
-                        </column>
-                       </widget>
-                      </item>
-                     </layout>
-                    </widget>
-                    <widget class="QWidget" name="tabWidget_4Page1">
-                     <attribute name="title">
-                      <string>Options</string>
-                     </attribute>
-                     <layout class="QVBoxLayout" name="verticalLayout_3">
-                      <item>
-                       <widget class="QCheckBox" name="chkCanReplace">
-                        <property name="text">
-                         <string>Can Replace</string>
-                        </property>
-                       </widget>
-                      </item>
-                      <item>
-                       <spacer name="verticalSpacer">
-                        <property name="orientation">
-                         <enum>Qt::Vertical</enum>
-                        </property>
-                        <property name="sizeHint" stdset="0">
-                         <size>
-                          <width>20</width>
-                          <height>40</height>
-                         </size>
-                        </property>
-                       </spacer>
-                      </item>
-                     </layout>
-                    </widget>
-                   </widget>
-                  </item>
-                 </layout>
-                </widget>
-               </item>
-              </layout>
-             </item>
-            </layout>
-           </widget>
-          </item>
-         </layout>
-        </widget>
        </widget>
       </item>
      </layout>
@@ -484,22 +443,6 @@
     <hint type="sourcelabel">
      <x>112</x>
      <y>74</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>576</x>
-     <y>313</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>chkCanReplace</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>NewViewForm</receiver>
-   <slot>onChkCanReplaceToggle(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>127</x>
-     <y>127</y>
     </hint>
     <hint type="destinationlabel">
      <x>576</x>

@@ -368,7 +368,7 @@ void DeserializationFactory::createMajorVersion(MajorVersion *mv, Project *p, Da
         {
             for(int j=0; j<element.childNodes().at(i).childNodes().count(); j++)
             {
-                View* view = createView(mv, doc, element.childNodes().at(i).childNodes().at(j).toElement());
+                View* view = createView(mv, engine, doc, element.childNodes().at(i).childNodes().at(j).toElement());
                 mv->addView(view, true);
             }
         }
@@ -624,7 +624,7 @@ QueryComponent* DeserializationFactory::createComponent(QueryComponent* parent, 
     return c;
 }
 
-View* DeserializationFactory::createView(Version* v, const QDomDocument& doc, const QDomElement& element)
+View* DeserializationFactory::createView(Version* v, DatabaseEngine* engine, const QDomDocument& doc, const QDomElement& element)
 {
     bool manual = element.attribute("Manual") == "1";
     QString uid = element.attribute("uid");
@@ -671,6 +671,12 @@ View* DeserializationFactory::createView(Version* v, const QDomDocument& doc, co
                 }
                 view->setColumnNames(columnNames);
             }
+
+            if(element.childNodes().at(i).nodeName() == "SpInstances")
+            {
+                createObjectWithSpInstances(engine, view, doc, element.childNodes().at(i).firstChild().toElement());
+            }
+
             if(element.childNodes().at(i).nodeName() == "Query")
             {
                 QDomElement queryNode = element.childNodes().at(i).toElement();
@@ -740,6 +746,7 @@ View* DeserializationFactory::createView(Version* v, const QDomDocument& doc, co
     }
 
     view->forceSetWasLocked(wasLocked == "1");
+    view->initializeRemainingSps(engine, QUuid(uidView));
 
     return view;
 }
@@ -1534,7 +1541,7 @@ ObjectWithUid* DeserializationFactory::createElementForClassUid(const QString& c
     }
     if(classUid.toUpper() == uidView.toUpper())
     {
-        View* view = DeserializationFactory::createView(v, a, a.documentElement().firstChild().toElement());
+        View* view = DeserializationFactory::createView(v, v->getProject()->getEngine(), a, a.documentElement().firstChild().toElement());
         return view;
     }
     if(classUid.toUpper() == uidTrigger.toUpper())

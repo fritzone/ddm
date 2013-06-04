@@ -3,28 +3,23 @@
 
 #include <QDebug>
 
-#include "db_AbstractSQLGenerator.h"
+#include "db_BasicSqlGenerator.h"
 
 class DatabaseEngine;
 class ForeignKey;
 
-class SqliteSQLGenerator : public AbstractSqlGenerator
+class SqliteSQLGenerator : public BasicSqlGenerator
 {
 public:
 
-    SqliteSQLGenerator(DatabaseEngine* engine) : m_engine(engine)
+    SqliteSQLGenerator(DatabaseEngine* engine) : BasicSqlGenerator(engine)
     {
     }
 
     ~SqliteSQLGenerator() {}
-
-    virtual QStringList generateCreateTableSql(Table* table, const QHash<QString, QString>& options, const QString& tabName, const QMap<QString, QString> &fkMappings, const Connection* dest) const;
-    virtual QStringList generateDefaultValuesSql(TableInstance* tableInstance, const QHash<QString, QString>& options) const;
-    virtual QStringList generateDefaultValuesSql(Table* table, const QHash<QString, QString>& options) const;
-    virtual QStringList generateCreateViewSql(View *v, const QHash<QString, QString> &options) const;
+    virtual QStringList generateCreateTableSql(Table* table, const QHash<QString, QString>& options, const QString& tabName, const QMap<QString, QString> &fkMappings, const Connection* pdest) const;
     virtual QStringList generateAlterTableForForeignKeys(Table* t, const QHash<QString, QString>& options) const;
     virtual QStringList generateCreateStoredMethodSql(StoredMethod* p, const QHash<QString, QString>& options) const;
-    virtual QStringList generateTriggerSql(Trigger* t, const QHash<QString, QString>& options) const;
     virtual QString getTableRenameSql(const QString& from, const QString& to);
     virtual QString getAlterTableForChangeColumnOrder(const QString& table, const Column* column, const QString& afterThis);
     virtual QString getAlterTableForColumnRename(const QString& table, const Column* column, const QString& oldName);
@@ -42,15 +37,15 @@ public:
     virtual QString getDropFunction(const QString& func);
     virtual QString getDropTrigger(const QString& trig);
 
-private:
-
-    QString quotelessString(const QString&) const;
-    QString sqlForAColumn(const Column* col, int pkpos, bool backticks, bool upcase) const;
+    virtual QString sqlForAColumn(const Column* col) const;
 
 private:
 
-    DatabaseEngine* m_engine;
-
+    QString createTableOnlyScript(Table* table, const QStringList &foreignKeys, const QString &tabName, const Connection *pdest) const;
+    QString indexTypeSpecified(Index* idx) const;
+    QString getIndexUsedLength(Index* idx, const Column* c) const;
+    QString createViewReplaceability(View* v) const;
+    QString createViewColumnNames(View *v) const;
 };
 
 #endif // SQLITESQLGENERATOR_H

@@ -14,6 +14,7 @@ class SqlHighlighter;
 class View;
 class TextEditWithCodeCompletion;
 class Version;
+class WidgetForSpecificProperties;
 
 namespace Ui {
     class NewViewForm;
@@ -59,13 +60,15 @@ private:
     Ui::NewViewForm *ui;
     QueryGraphicsView* m_qgv;
     QueryGraphicsScene* m_qgs;
-    QueryGraphicsHelper* m_comps;
+    QueryGraphicsHelper* m_qgh;
     bool m_queryBuilder;
     View* m_view;
     TextEditWithCodeCompletion*txtSql;
     bool m_updateSqlAfterNameChange;
     bool m_autoChange;
     Version* m_version;
+    WidgetForSpecificProperties* m_mainWsp;
+
 };
 
 #endif // NEWVIEWFORM_H

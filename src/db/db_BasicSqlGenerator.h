@@ -9,6 +9,7 @@
 class Table;
 class ObjectWithSpInstances;
 class DatabaseEngine;
+class Index;
 
 class BasicSqlGenerator : public AbstractSqlGenerator
 {
@@ -21,6 +22,8 @@ public:
         m_pkpos(Configuration::PkAfterTableDeclaration),
         m_fkpos(Configuration::AfterTable)
     {}
+
+    QString quotelessString(const QString&) const;
 
     QString spiResult(const ObjectWithSpInstances *, QUuid) const;
 
@@ -43,6 +46,31 @@ public:
     QString generateForeignKeys(const QStringList&) const;
 
     QString backtickedName(const QString&) const;
+
+    QStringList foreignKeyParticipants(Table* table, const QMap<QString, QString> &fkMappings) const;
+
+    QString basicCreateTableScript(Table *table, const QStringList &foreignKeys, const QString &tabName) const;
+
+    virtual QStringList generateCreateTableSql(Table *table,
+                                               const QHash<QString, QString> &options,
+                                               const QString& tabName,
+                                               const QMap<QString, QString> &fkMappings,
+                                               const Connection* pdest) const;
+
+    QStringList generateDefaultValuesSql(TableInstance* tableInstance, const QHash<QString, QString>& options) const;
+    QStringList generateDefaultValuesSql(Table* table, const QHash<QString, QString>& options) const;
+    QStringList generateCreateViewSql(View *v, const QHash<QString, QString> &options) const;
+    QStringList generateTriggerSql(Trigger* t, const QHash<QString, QString>& options) const;
+
+
+    void appendCreateIndexCommands(Table* table, QStringList& toReturn, const QString& tabName) const;
+
+
+    virtual QString createTableOnlyScript(Table* table, const QStringList &foreignKeys, const QString &tabName, const Connection *dest) const = 0;
+    virtual QString indexTypeSpecified(Index *idx) const = 0;
+    virtual QString getIndexUsedLength(Index* idx, const Column *c) const = 0;
+    virtual QString createViewReplaceability(View* v) const = 0;
+    virtual QString createViewColumnNames(View* v) const = 0;
 
 protected:
 

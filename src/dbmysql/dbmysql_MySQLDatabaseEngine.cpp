@@ -1526,7 +1526,7 @@ QVector<Sp*> MySQLDatabaseEngine::buildSps()
     // SPs for TABLE
     QVector<Sp*> result;
     result.push_back(new TrueFalseSp(uidTemporaryTable, uidTable, QString("Temporary"), QString("Temporary table"), QString("General"), 5, 0, 0));
-    result.push_back(new TrueFalseSp(uidMysqlIfNotExistsTable, uidTable, QString("IfNotExists"), QString("Create only if not exists"), QString("General"), 5, 0, 0));
+    result.push_back(new TrueFalseSp(uidIfDoesNotExistTable, uidTable, QString("IfNotExists"), QString("Create only if not exists"), QString("General"), 5, 0, 0));
 
     QStringList valuesForStrorageEngines;
     valuesForStrorageEngines << "" << "MyISAM" << "InnoDB" << "Memory" << "Archive" << "Merge" << "BDB" << "Federated" << "Archive" << "CSV" << "Blackhole";
@@ -1550,6 +1550,9 @@ QVector<Sp*> MySQLDatabaseEngine::buildSps()
     // SPs for column
     result.push_back(new TrueFalseSp(uidColumnAutoIncrement, uidColumn, "Auto Increment", "Auto Increment", "General", 5, 0, 0));
     result.push_back(new TrueFalseSp(uidMysqlColumnZeroFill, uidColumn, "Zero fill", "Zero fill", "General", 5, 0, 0));
+
+    // SPs for view
+    result.push_back(new TrueFalseSp(uidMysqlViewCanReplace, uidView, "Can Replace", "Can Replace", "General", 5, 0, 0));
 
     return result;
 }
@@ -1719,9 +1722,10 @@ QString MySQLDatabaseEngine::getDbMetadata(Connection *conn)
 QString MySQLDatabaseEngine::spiExtension(QUuid uid)
 {
     if(uid.toString() == uidTemporaryTable) { return "TEMPORARY"; }
-    if(uid.toString() == uidMysqlIfNotExistsTable) { return "IF NOT EXISTS"; }
+    if(uid.toString() == uidIfDoesNotExistTable) { return "IF NOT EXISTS"; }
     if(uid.toString() == uidMysqlColumnZeroFill) { return "ZEROFILL"; }
     if(uid.toString() == uidColumnAutoIncrement) { return "auto_increment"; }
+    if(uid.toString() == uidMysqlViewCanReplace) { return "or replace"; }
 
     return "";
 }

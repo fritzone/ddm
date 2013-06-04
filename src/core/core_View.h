@@ -9,6 +9,7 @@
 #include "core_CloneableElement.h"
 #include "core_SqlSource.h"
 #include "core_VersionElement.h"
+#include "ObjectWithSpInstances.h"
 
 class SelectQuery;
 class QueryGraphicsHelper;
@@ -22,6 +23,7 @@ class View :
         public TreeItem,
         public SerializableElement,
         public VersionElement,
+        public ObjectWithSpInstances,
         public CloneableElement,
         public SqlSource
 
