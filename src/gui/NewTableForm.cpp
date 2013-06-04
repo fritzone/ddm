@@ -78,14 +78,16 @@ NewTableForm::NewTableForm(DatabaseEngine* db, Project* prj, Version* v, QWidget
     QObject::connect(ContextMenuCollection::getInstance()->getAction_CopyColumn(), SIGNAL(triggered()), this, SLOT(onCopyColumn()));
     QObject::connect(ContextMenuCollection::getInstance()->getAction_PasteColumn(), SIGNAL(triggered()), this, SLOT(onPasteColumn()));
 
+    DatabaseEngine* engine = Workspace::getInstance()->currentProjectsEngine();
+
     highlighter = new SqlHighlighter(m_ui->txtSql->document(),
-                                     Workspace::getInstance()->currentProjectsEngine()->getKeywords(),
-                                     Workspace::getInstance()->currentProjectsEngine()->getDTSupplier()->numericTypes(),
-                                     Workspace::getInstance()->currentProjectsEngine()->getDTSupplier()->booleanTypes(),
-                                     Workspace::getInstance()->currentProjectsEngine()->getDTSupplier()->textTypes(),
-                                     Workspace::getInstance()->currentProjectsEngine()->getDTSupplier()->blobTypes(),
-                                     Workspace::getInstance()->currentProjectsEngine()->getDTSupplier()->dateTimeTypes(),
-                                     Workspace::getInstance()->currentProjectsEngine()->getDTSupplier()->miscTypes(),
+                                     engine->getKeywords(),
+                                     engine->getDTSupplier()->numericTypes(),
+                                     engine->getDTSupplier()->booleanTypes(),
+                                     engine->getDTSupplier()->textTypes(),
+                                     engine->getDTSupplier()->blobTypes(),
+                                     engine->getDTSupplier()->dateTimeTypes(),
+                                     engine->getDTSupplier()->miscTypes(),
                                      v->getTables());
 
     const QVector<UserDataType*>& dts = v->getDataTypes();

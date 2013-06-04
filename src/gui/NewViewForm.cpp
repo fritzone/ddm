@@ -23,6 +23,7 @@
 #include "ConnectionManager.h"
 #include "FrameForLineNumbers.h"
 #include "GuiElements.h"
+#include "WidgetForSpecificProperties.h"
 
 #include <QScrollBar>
 #include <QVBoxLayout>
@@ -33,8 +34,9 @@
 NewViewForm::NewViewForm(Version* v, bool queryBuilder, QueryGraphicsHelper* c, QWidget *parent) :
     SourceCodePresenterWidget(v, parent),
     ui(new Ui::NewViewForm),
-    m_comps(c),
-    m_queryBuilder(queryBuilder), m_updateSqlAfterNameChange(true), m_autoChange(false), m_version(v)
+    m_qgh(c),
+    m_queryBuilder(queryBuilder), m_updateSqlAfterNameChange(true),
+    m_autoChange(false), m_version(v), m_mainWsp(0)
 {
     ui->setupUi(this);
     txtSql = new TextEditWithCodeCompletion(ui->groupBox_3);
@@ -66,8 +68,6 @@ NewViewForm::NewViewForm(Version* v, bool queryBuilder, QueryGraphicsHelper* c, 
     }
     else
     {
-        ui->tabWidget_4->hide();
-
         ui->tabWidget->removeTab(0);
         ui->tabWidget->removeTab(1);    //remains only the SQL tab
 
@@ -118,7 +118,7 @@ void NewViewForm::changeEvent(QEvent *e)
 void NewViewForm::disableEditingControls(bool dis)
 {
     ui->lstColumnsForView->setDisabled(dis);
-    ui->chkCanReplace->setDisabled(dis);
+    m_mainWsp->setDisabled(dis);
 //    m_qgv->setInteractive(dis);
     m_qgv->setDisabled(dis);
 }
@@ -175,9 +175,8 @@ void NewViewForm::presentSql(Project* p, Version *)
 void NewViewForm::setView(View *v)
 {
     m_view = v;
-    ui->chkCanReplace->setChecked(v->canReplace());
-    ui->txtViewName->setText(v->getName());
 
+    ui->txtViewName->setText(v->getName());
 
     ui->btnUndelete->hide();
 
@@ -226,9 +225,18 @@ void NewViewForm::setView(View *v)
         }
     }
 
-    if(m_comps) // do this only if we are buildingteh query with the query builder
+    if(m_qgh) // do this only if we are buildingteh query with the query builder
     {
-        SelectQuery* sq = dynamic_cast<SelectQuery*>(m_comps->getQuery());
+        // and now create the tab widgets for the SPs
+        DatabaseEngine* engine = Workspace::getInstance()->currentProjectsEngine();
+        m_mainWsp = new WidgetForSpecificProperties(engine, m_view, this);
+        QVector<SpInstance*> allSps = m_view->getSpInstances(engine);
+        m_mainWsp->feedInSpecificProperties(allSps, uidView);
+        QString dbName = engine->getDatabaseEngineName();
+        ui->tabWidget->insertTab(2, m_mainWsp, IconFactory::getIconForDatabase(dbName), dbName);
+
+
+        SelectQuery* sq = dynamic_cast<SelectQuery*>(m_qgh->getQuery());
         QStringList columnNamesForView;
         if(sq)
         {

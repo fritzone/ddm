@@ -144,7 +144,7 @@ void Patch::removeElement(const QString &uid)
 
         if(class_uid.toUpper() == uidView.toUpper())
         {
-            View* view = DeserializationFactory::createView(m_version, a, a.documentElement().firstChild().toElement());
+            View* view = DeserializationFactory::createView(m_version, m_version->getProject()->getEngine(), a, a.documentElement().firstChild().toElement());
             m_version->replaceView(uid, view);
         }
 
