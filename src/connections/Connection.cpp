@@ -4,7 +4,7 @@
 #include "strings.h"
 
 Connection::Connection(const QString &name, bool autoConnect) : SerializableElement(), IssueOriginator(), NamedItem(name),
-    TreeItem(), m_engine(0), m_state(DID_NOT_TRY), m_autoConnect(autoConnect), m_lastError("")
+    TreeItem(), m_autoConnect(autoConnect), m_engine(0), m_state(DID_NOT_TRY), m_lastError("")
 {
 
 }

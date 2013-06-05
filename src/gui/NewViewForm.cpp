@@ -292,12 +292,6 @@ void NewViewForm::setView(View *v)
     }
 }
 
-void NewViewForm::onChkCanReplaceToggle(bool st)
-{
-    m_view->setReplace(st);
-    presentSql(Workspace::getInstance()->currentProject(), m_version);
-}
-
 void NewViewForm::onNameChange(QString a)
 {
     m_view->setName(a);

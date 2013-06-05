@@ -9,7 +9,7 @@ SqliteConnection::SqliteConnection(const QString &name, const QString &filename,
     m_engine = DatabaseEngineManager::instance().engine(strSqlite);
 }
 
-void SqliteConnection::serialize(QDomDocument& doc, QDomElement& parent) const
+void SqliteConnection::serialize(QDomDocument& /*doc*/, QDomElement& /*parent*/) const
 {
 
 }

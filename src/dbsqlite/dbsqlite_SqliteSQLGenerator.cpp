@@ -94,7 +94,7 @@ QString SqliteSQLGenerator::sqlForAColumn(const Column *col) const
 }
 
 // sqlite does not really support this
-QStringList SqliteSQLGenerator::generateAlterTableForForeignKeys(Table *t, const QHash<QString, QString> &options) const
+QStringList SqliteSQLGenerator::generateAlterTableForForeignKeys(Table* /*t*/, const QHash<QString, QString>& /*options*/) const
 {
     return QStringList();
 }
@@ -112,17 +112,17 @@ QString SqliteSQLGenerator::getTableRenameSql(const QString& from, const QString
     return res;
 }
 
-QString SqliteSQLGenerator::getAlterTableForChangeColumnOrder(const QString& table, const Column* column, const QString& afterThis)
+QString SqliteSQLGenerator::getAlterTableForChangeColumnOrder(const QString& /*table*/, const Column* /*column*/, const QString& /*afterThis*/)
 {
     return "-- Sqlite does not really support change of column order";
 }
 
-QString SqliteSQLGenerator::getAlterTableForColumnRename(const QString& table, const Column* column, const QString& oldName)
+QString SqliteSQLGenerator::getAlterTableForColumnRename(const QString& /*table*/, const Column* /*column*/, const QString& /*oldName*/)
 {
     return "-- Sqlite does not really support rename of column";
 }
 
-QString SqliteSQLGenerator::getAlterTableForNewColumn(const QString& table, const Column* column, const QString& after)
+QString SqliteSQLGenerator::getAlterTableForNewColumn(const QString& table, const Column* column, const QString& /*after*/)
 {
     QString res = correctCase("ALTER TABLE") + table + strSpace +
             correctCase("ADD COLUMN") + sqlForAColumn(column);
@@ -136,7 +136,7 @@ QString SqliteSQLGenerator::getAlterTableForColumnDeletion(const QString& table,
     return res;
 }
 
-QString SqliteSQLGenerator::getAlterTableForColumnChange(const QString& table, const Column* col)
+QString SqliteSQLGenerator::getAlterTableForColumnChange(const QString& /*table*/, const Column* /*col*/)
 {
     return "-- Sqlite does not really support change of column";
 }
@@ -234,12 +234,12 @@ QString SqliteSQLGenerator::getDropTrigger(const QString& trig)
 }
 
 
-QString SqliteSQLGenerator::createViewReplaceability(View* v) const
+QString SqliteSQLGenerator::createViewReplaceability(View* /*v*/) const
 {
     return "";
 }
 
-QString SqliteSQLGenerator::createViewColumnNames(View *v) const
+QString SqliteSQLGenerator::createViewColumnNames(View* /*v*/) const
 {
     return "";
 }

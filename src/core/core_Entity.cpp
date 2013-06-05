@@ -4,7 +4,7 @@
 #include "core_Repository.h"
 #include "core_Role.h"
 
-Entity::Entity(const QString &name, const QUuid& classUid, const QUuid &targetClassUid, bool hasDesc, bool supportSps) :
+Entity::Entity(const QString &name, const QUuid& /*classUid*/, const QUuid &targetClassUid, bool hasDesc, bool supportSps) :
     NamedItem(name),
     ObjectWithUid(QUuid::createUuid()),
     m_classUid(targetClassUid), m_targetClassUid(targetClassUid),

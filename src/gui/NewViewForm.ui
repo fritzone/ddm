@@ -403,22 +403,6 @@
    </hints>
   </connection>
   <connection>
-   <sender>txtViewName</sender>
-   <signal>textEdited(QString)</signal>
-   <receiver>NewViewForm</receiver>
-   <slot>onNameChange(QString)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>609</x>
-     <y>32</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>576</x>
-     <y>313</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
    <sender>btnSave</sender>
    <signal>clicked()</signal>
    <receiver>NewViewForm</receiver>
@@ -452,7 +436,6 @@
   </connection>
  </connections>
  <slots>
-  <slot>onChkCanReplaceToggle(bool)</slot>
   <slot>onNameChange(QString)</slot>
   <slot>onSqlChange()</slot>
   <slot>onHelp()</slot>

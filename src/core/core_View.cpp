@@ -16,9 +16,9 @@
 View::View(bool manual, QString uid, Version *v) :
     SqlSourceTreeItem(),
     NamedItem(NameGenerator::getUniqueName(Workspace::getInstance()->workingVersion(), (itemGetter)&Version::getView, QString("my_view"))),
-    ObjectWithSpInstances(),
     VersionElement(uid, v),
-    m_columNames(), m_canReplace(false), m_manual(manual)
+    ObjectWithSpInstances(),
+    m_columNames(), m_manual(manual)
 {
     m_helper = new QueryGraphicsHelper();
     m_selectQuery = new SelectQuery(m_helper, 0, this, v);
@@ -30,7 +30,7 @@ View::View(Version*v, bool manual, QString uid) :
     SqlSourceTreeItem(),
     NamedItem(NameGenerator::getUniqueName(v, (itemGetter)&Version::getView, QString("my_view"))),
     VersionElement(uid, v),
-    m_columNames(), m_canReplace(false), m_manual(manual)
+    m_columNames(), m_manual(manual)
 {
     m_helper = new QueryGraphicsHelper();
 }
@@ -73,7 +73,6 @@ void View::serialize(QDomDocument& doc, QDomElement& parent) const
     }
     else
     {
-        viewElement.setAttribute("CanReplace", m_canReplace);
         QDomElement columns = doc.createElement("Columns");
         for(int i=0; i<m_columNames.size(); i++)
         {
@@ -84,6 +83,13 @@ void View::serialize(QDomDocument& doc, QDomElement& parent) const
         viewElement.appendChild(columns);
         // and now render the query
         m_selectQuery->serialize(doc, viewElement);
+    }
+
+    // save the sps
+    {
+    QDomElement spsElement = doc.createElement("SpInstances");
+    serialize_spinstances(doc, spsElement);
+    viewElement.appendChild(spsElement);
     }
 
     parent.appendChild(viewElement);
