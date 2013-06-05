@@ -134,12 +134,12 @@ void RepositoryEntityForm::onDeleteAttribute()
 }
 
 
-void RepositoryEntityForm::newCollection(QTableWidgetItem* itm)
+void RepositoryEntityForm::newCollection(QTableWidgetItem* /*itm*/)
 {
 
 }
 
-void RepositoryEntityForm::newReference(QTableWidgetItem* itm)
+void RepositoryEntityForm::newReference(QTableWidgetItem* /*itm*/)
 {
 
 }

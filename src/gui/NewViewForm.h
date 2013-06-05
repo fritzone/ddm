@@ -40,7 +40,6 @@ public:
     void setView(View* );
 
 public slots:
-    void onChkCanReplaceToggle(bool);
     void onNameChange(QString);
     void onSqlChange();
     void onSaveSql();
