@@ -26,7 +26,10 @@ QString BasicSqlGenerator::generateTableCreationComments(const Table *t, const Q
     {
         for(int i=0; i< lines.size(); i++)
         {
-            comment += strSqlComment +  lines.at(i) + strNewline;
+            if(!lines.at(i).isEmpty())
+            {
+                comment += strSqlComment +  lines.at(i) + strNewline;
+            }
         }
     }
     else
@@ -330,13 +333,13 @@ void BasicSqlGenerator::appendCreateIndexCommands(Table* table, QStringList& toR
         indexCommand += indexTypeSpecified(idx);
 
         // and the table
-        indexCommand += correctCase("on") + tabName + strOpenParantheses;
+        indexCommand += strSpace + correctCase("on") + tabName + strOpenParantheses;
 
         for(int j=0; j<idx->getColumns().size(); j++)
         {
-            indexCommand += idx->getColumns().at(j)->getName();
-            indexCommand += getIndexUsedLength(idx, idx->getColumns().at(j));
-            indexCommand += idx->getOrderForColumn(idx->getColumns().at(j));
+            indexCommand += strSpace + idx->getColumns().at(j)->getName();
+            indexCommand += strSpace +getIndexUsedLength(idx, idx->getColumns().at(j));
+            indexCommand += strSpace +idx->getOrderForColumn(idx->getColumns().at(j));
             if(j<idx->getColumns().size() - 1)
             {
                 indexCommand += strComma + strSpace;

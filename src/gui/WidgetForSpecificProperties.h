@@ -62,12 +62,15 @@ private slots:
 
     void checkBoxToggled(QString);
     void comboBoxSelected(int idx);
-    void editTextEdited(const QString&);
+    void editTextEdited(const QString&s);
 
 private:
-    QCheckBox* getCheckBoxForObjectUid(const QString&);
+    template <class T>
+    T* getWidgetForObjectUid(const QString&);
+
     QWidget* getToolboxPageForText(const QString&);
     QString getObjectUidForWidget(const QWidget* w);
+
     SpInstance* getSpInstanceForWidget(const QWidget*);
     void populateCodepageCombo(QComboBox* comboBox, const QStringList& cps, const QString &current);
 

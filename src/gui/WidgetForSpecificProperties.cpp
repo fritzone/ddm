@@ -308,7 +308,7 @@ void WidgetForSpecificProperties::feedInSpecificProperties(const QVector<SpInsta
 
             if(spInstances.at(i)->getClass()->getClassUid().toString() == uidValueListSp)   // create a combo box
             {
-                QComboBox* comboBox = new QComboBox(this);
+                QComboBox* comboBox = new QComboBox(page);
                 const ValueListSp* spi = dynamic_cast<const ValueListSp*>(spInstances.at(i)->getClass());
                 QString cv = spInstances.at(i)->get();
 
@@ -328,7 +328,7 @@ void WidgetForSpecificProperties::feedInSpecificProperties(const QVector<SpInsta
                     }
                 }
 
-                QLabel* label = new QLabel(this);
+                QLabel* label = new QLabel(page);
                 label->setText(spInstances.at(i)->getClass()->getPropertyGuiText());
                 formLayout->setWidget(m_rowsForGroups[group], QFormLayout::LabelRole, label);
                 formLayout->setWidget(m_rowsForGroups[group], QFormLayout::FieldRole, comboBox);
@@ -344,10 +344,10 @@ void WidgetForSpecificProperties::feedInSpecificProperties(const QVector<SpInsta
                 connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(comboBoxSelected(int))); // must be the last line
             }
 
-            if(spInstances.at(i)->getClassUid().toString() == uidValueSp)
+            if(spInstances.at(i)->getClass()->getClassUid().toString() == uidValueSp)
             {   // create a QLineEdit
-                QLineEdit* lstValueSp = new QLineEdit(0);
-                QLabel* label = new QLabel(this);
+                QLineEdit* lstValueSp = new QLineEdit(page);
+                QLabel* label = new QLabel(page);
 
                 lstValueSp->setText(spInstances.at(i)->get());
                 label->setText(spInstances.at(i)->getClass()->getPropertyGuiText());
@@ -411,7 +411,7 @@ void WidgetForSpecificProperties::comboBoxSelected(int idx)
 
 void WidgetForSpecificProperties::checkBoxToggled(QString uid)
 {
-    QCheckBox* cb = getCheckBoxForObjectUid(uid);
+    QCheckBox* cb = getWidgetForObjectUid<QCheckBox>(uid);
     if(cb)
     {
         bool b = cb->isChecked();
@@ -432,14 +432,15 @@ void WidgetForSpecificProperties::checkBoxToggled(QString uid)
     }
 }
 
-QCheckBox* WidgetForSpecificProperties::getCheckBoxForObjectUid(const QString& uid)
+template <class T> T*
+WidgetForSpecificProperties::getWidgetForObjectUid(const QString& uid)
 {
     for(int i=0; i<m_mappings.size(); i++)
     {
         UidToWidget* uiw = m_mappings.at(i);
         if(uiw->objectUid == uid)
         {
-            return dynamic_cast<QCheckBox*>(uiw->w);
+            return dynamic_cast<T*>(uiw->w);
         }
     }
     return 0;
@@ -481,11 +482,16 @@ void WidgetForSpecificProperties::repopulateSpsOfObject(ObjectWithSpInstances *d
     }
 }
 
-void WidgetForSpecificProperties::editTextEdited(const QString &/*s*/)
+void WidgetForSpecificProperties::editTextEdited(const QString& s)
 {
     QLineEdit *edit = qobject_cast<QLineEdit*>(sender());
     if(edit != 0)
     {
-//        qDebug() << edit->text();
+        SpInstance* spi = getSpInstanceForWidget(edit);
+        if(spi)
+        {
+            qDebug() << spi->getClass()->getName();
+            spi->set(s);
+        }
     }
 }

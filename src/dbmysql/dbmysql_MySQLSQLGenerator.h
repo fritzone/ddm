@@ -52,6 +52,10 @@ private:
 
     QString provideCodepage(Table* table) const;
     QString provideDatabaseEngine(Table* table, const MySqlConnection *dest) const;
+    QString provideChecksum(Table* table, const MySqlConnection *dest) const;
+    QString provideAutoIncrementForTable(Table* table) const;
+    QString provideAverageRowLength(Table* table) const;
+    QString dbEngineName(Table* , const MySqlConnection *dest) const;
 
 };
 

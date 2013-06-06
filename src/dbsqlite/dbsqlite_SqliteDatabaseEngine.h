@@ -41,7 +41,6 @@ public:
     virtual QStringList getColumnsOfTable(Connection* c, const QString& tableName);
     virtual bool dropDatabase(Connection* c);
     virtual QString getDelimiterKeyword();
-    virtual QVector<Codepage*> getCodepages();
     virtual QStringList getTriggerEvents();
     virtual QStringList getTriggerTimings();
     virtual Procedure* reverseEngineerProc(Connection *c, const QString& procName, Version *v);
@@ -58,6 +57,7 @@ public:
     virtual QString getDbMetadata(Connection *c);
     virtual bool supportsStoredMethods() {return false;}
     virtual QString spiExtension(QUuid uid);
+    virtual QStringList getKeywords() const;
 
     QString formatLastError(const QString &header, const QSqlError&);
 
@@ -78,7 +78,7 @@ private:
     static SqliteDatabaseEngine* s_instance;
     static QVector<DatabaseBuiltinFunction>* s_builtinFunctions;
     static QVector<Sp*>* s_sqliteSpecificProperties;
-    static int m_connectionCounter;
+    static int m_sqliteConnectionCounter;
     static QMutex* m_connectionMutex;
 
 };

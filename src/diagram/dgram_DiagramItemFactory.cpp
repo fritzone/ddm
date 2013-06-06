@@ -113,7 +113,7 @@ DraggableGraphicsViewItem* DiagramItemFactory::getDiagramEntityForTable(Table *t
  */
 DraggableGraphicsViewItemForForeignKey* DiagramItemFactory::getDiagramEntityForForeignKey(ForeignKey* fk)
 {
-    DraggableGraphicsViewItemForForeignKey* grp = new DraggableGraphicsViewItemForForeignKey();
+    DraggableGraphicsViewItemForForeignKey* grp = new DraggableGraphicsViewItemForForeignKey(fk->getLocalTable());
     QGraphicsTextItem* txtName = new QGraphicsTextItem(fk->getName(), grp);
     QRectF boundingForName = txtName->boundingRect();
     int rombX1 = boundingForName.left() - 5;

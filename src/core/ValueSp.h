@@ -9,6 +9,7 @@ class ValueSp : public Sp
 {
 public:
 
+
     ValueSp(const QString& sqlPrUid, const QString& referringObjectClassUid,
                 const QString &name, const QString& propertyGuiText,
                 const QString& group, const QString& value,
@@ -16,15 +17,19 @@ public:
     virtual QUuid getClassUid() const;
     virtual SpInstance* instantiate();
     virtual SpInstance* createSpecifiedInstance(const QString& spi_uid);
-    const QString& getValue() const
+    QString getValue() const
     {
         return m_value;
+    }
+
+    virtual QString getDefaultValue() const
+    {
+        return getValue();
     }
 
 private:
 
     QString m_value;
-
 };
 
 #endif // VALUESP_H

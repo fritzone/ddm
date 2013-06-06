@@ -42,8 +42,8 @@ public:
     virtual bool dropDatabase(Connection* c);
     virtual QStringList getIndexTypes();
     virtual QString getDelimiterKeyword();
-    virtual QVector<Codepage*> getCodepages();
     virtual QStringList getTriggerEvents();
+    virtual QStringList getKeywords() const;
     virtual QStringList getTriggerTimings();
     virtual Procedure* reverseEngineerProc(Connection *c, const QString& procName, Version *v);
     virtual Function* reverseEngineerFunc(Connection *c, const QString& funcName, Version* v);

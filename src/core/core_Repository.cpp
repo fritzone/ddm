@@ -107,7 +107,7 @@ void Repository::addDatabase(const QDomElement & el)
                 {
                     l.append(el1.childNodes().at(j).toElement().firstChild().nodeValue());
                 }
-                dbe->setKeywords(l);
+                // dbe->setKeywords(l);
             }
         }
     }

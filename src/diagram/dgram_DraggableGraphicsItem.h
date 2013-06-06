@@ -18,7 +18,7 @@ class DraggableGraphicsViewItem : public QGraphicsItemGroup, public VersionEleme
     
 public:
 
-    DraggableGraphicsViewItem(Table* tab) ;
+    DraggableGraphicsViewItem(const Table *tab) ;
 
     virtual ~DraggableGraphicsViewItem()
     {
@@ -93,7 +93,7 @@ protected:
 
 private:
 
-    Table* m_table;
+    const Table* m_table;
     qreal lastX;
     qreal lastY;
 

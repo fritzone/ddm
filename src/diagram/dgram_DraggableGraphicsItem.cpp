@@ -7,7 +7,10 @@
 #include <QtGui>
 #include <QGraphicsScene>
 
-DraggableGraphicsViewItem::DraggableGraphicsViewItem(Table* tab) : QGraphicsItemGroup(), VersionElement(QUuid::createUuid(), tab->version()),m_table(tab), lastX(0), lastY(0)
+DraggableGraphicsViewItem::DraggableGraphicsViewItem(const Table* tab) :
+    QGraphicsItemGroup(),
+    VersionElement(QUuid::createUuid(), tab->version()),
+    m_table(tab), lastX(0), lastY(0)
 {
     setAcceptDrops(true);
 }

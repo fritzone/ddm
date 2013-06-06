@@ -59,7 +59,9 @@ InjectSqlDialog::InjectSqlDialog(DatabaseEngine* engine, QWidget *parent, Versio
     else
     {
         setupForConnectionStorage();
-        m_dbEngine = MySQLDatabaseEngine::instance(); // TODO: For now ...
+
+        // initially the supported engine is MySql
+        m_dbEngine = MySQLDatabaseEngine::instance();
     }
 
     clearConnectionDetails();
@@ -351,9 +353,16 @@ void InjectSqlDialog::populateConnections()
     const QVector<Connection*>& connections = ConnectionManager::instance()->connections();
     for(int i=0; i<connections.size(); i++)
     {
-        QListWidgetItem* lwi = new QListWidgetItem(ui->lstAllConnections);
-        lwi->setText(connections.at(i)->getName() + " (" + connections.at(i)->getFullLocation() + ")");   // TODO: This should be done with setData but I'm lasy now
-        lwi->setIcon(IconFactory::getConnectionStateIcon(connections.at(i)->getState()));
+        // add only the connections where the database is the same as the current project
+        QString dbType = connections[i]->getDbType().toUpper() ;
+        QString dbName =m_dbEngine->getDatabaseEngineName().toUpper();
+        qDebug() << dbType << dbName;
+        if(m_dbEngine && dbType == dbName)
+        {
+            QListWidgetItem* lwi = new QListWidgetItem(ui->lstAllConnections);
+            lwi->setText(connections.at(i)->getName() + " (" + connections.at(i)->getFullLocation() + ")");   // TODO: This should be done with setData but I'm lasy now
+            lwi->setIcon(IconFactory::getConnectionStateIcon(connections.at(i)->getState()));
+        }
     }
 }
 
@@ -389,13 +398,13 @@ void InjectSqlDialog::onCreateDatabase()
 void InjectSqlDialog::onSelectConnection(QListWidgetItem* item)
 {
     QString connectionName =item->text();
-    if(ui->lstAllConnections->selectedItems().size())
+    if(ui->lstAllConnections->selectedItems().empty())
     {
-        ui->buttonBox->button(QDialogButtonBox::Ok)->setDisabled(false);
+        ui->buttonBox->button(QDialogButtonBox::Ok)->setDisabled(true);
     }
     else
     {
-        ui->buttonBox->button(QDialogButtonBox::Ok)->setDisabled(true);
+        ui->buttonBox->button(QDialogButtonBox::Ok)->setDisabled(false);
     }
     connectionName = connectionName.left(connectionName.indexOf("(")).trimmed();
     Connection* c = ConnectionManager::instance()->getConnection(connectionName);
@@ -577,7 +586,13 @@ void InjectSqlDialog::setMysqlLayout()
     ui->lblDatabase->setText(tr("Database"));
 
     ui->lblDatabase->setEnabled(m_alreadyConnected);
-    ui->buttonBox->button(QDialogButtonBox::Ok)->setDisabled(!m_alreadyConnected);
+
+    // set the button state only if there are no uids/objects to deploy, ie, this is
+    // a dalog setting up things, connection, etc...
+    if(m_UidsToDeploy.isEmpty() && m_objName.isEmpty())
+    {
+        ui->buttonBox->button(QDialogButtonBox::Ok)->setDisabled(!m_alreadyConnected);
+    }
 
     ui->cmbSqliteVersion->hide();
 

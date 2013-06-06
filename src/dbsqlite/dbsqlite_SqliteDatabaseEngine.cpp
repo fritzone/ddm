@@ -34,7 +34,7 @@
 
 QVector<DatabaseBuiltinFunction>* SqliteDatabaseEngine::s_builtinFunctions = 0;
 QVector<Sp*>* SqliteDatabaseEngine::s_sqliteSpecificProperties = 0;
-int SqliteDatabaseEngine::m_connectionCounter = 1;
+int SqliteDatabaseEngine::m_sqliteConnectionCounter = 1;
 QMutex* SqliteDatabaseEngine::m_connectionMutex = 0;
 SqliteDatabaseEngine* SqliteDatabaseEngine::s_instance = 0;
 
@@ -70,7 +70,7 @@ SqliteDatabaseEngine::~SqliteDatabaseEngine()
 QString SqliteDatabaseEngine::provideConnectionName(const QString& prefix)
 {
     QMutexLocker lock(m_connectionMutex);
-    QString t = prefix + QString::number(m_connectionCounter++);
+    QString t = prefix + QString::number(m_sqliteConnectionCounter++);
     lock.unlock();
     return t;
 }
@@ -542,9 +542,24 @@ Table* SqliteDatabaseEngine::reverseEngineerTable(Connection *c, const QString& 
     return tab;
 }
 
-bool SqliteDatabaseEngine::executeSql(Connection* c, const QStringList& sqls, const QStringList &uid, QString& lastSql, bool rollbackOnError)
+QStringList removeCommentsFromSqlList(const QStringList& sqls)
+{
+    QStringList result;
+    for(int i=0; i<sqls.size(); i++)
+    {
+        if(!sqls[i].trimmed().startsWith("--"))
+        {
+            result.append(sqls[i]);
+        }
+    }
+
+    return result;
+}
+
+bool SqliteDatabaseEngine::executeSql(Connection* c, const QStringList& sqls1, const QStringList &uid, QString& lastSql, bool rollbackOnError)
 {
     QSqlDatabase db = getQSqlDatabaseForConnection(c);
+    QStringList sqls = removeCommentsFromSqlList(sqls1);
     bool ok = db.isOpen();
     if(!ok)
     {
@@ -709,11 +724,6 @@ bool SqliteDatabaseEngine::tryConnect(Connection* c)
 QString SqliteDatabaseEngine::getDelimiterKeyword()
 {
     return "delimiter";
-}
-
-QVector<Codepage*> SqliteDatabaseEngine::getCodepages()
-{
-    return QVector<Codepage*>();
 }
 
 QStringList SqliteDatabaseEngine::getTriggerEvents()
@@ -988,4 +998,132 @@ QString SqliteDatabaseEngine::spiExtension(QUuid uid)
     if(uid.toString() == uidColumnAutoIncrement) { return "autoincrement"; }
 
     return "";
+}
+
+QStringList SqliteDatabaseEngine::getKeywords() const
+{
+    QStringList keywordPatterns;
+    keywordPatterns <<
+        "ABORT" <<
+        "ACTION" <<
+        "ADD" <<
+        "AFTER" <<
+        "ALL" <<
+        "ALTER" <<
+        "ANALYZE" <<
+        "AND" <<
+        "AS" <<
+        "ASC" <<
+        "ATTACH" <<
+        "AUTOINCREMENT" <<
+        "BEFORE" <<
+        "BEGIN" <<
+        "BETWEEN" <<
+        "BY" <<
+        "CASCADE" <<
+        "CASE" <<
+        "CAST" <<
+        "CHECK" <<
+        "COLLATE" <<
+        "COLUMN" <<
+        "COMMIT" <<
+        "CONFLICT" <<
+        "CONSTRAINT" <<
+        "CREATE" <<
+        "CROSS" <<
+        "CURRENT_DATE" <<
+        "CURRENT_TIME" <<
+        "CURRENT_TIMESTAMP" <<
+        "DATABASE" <<
+        "DEFAULT" <<
+        "DEFERRABLE" <<
+        "DEFERRED" <<
+        "DELETE" <<
+        "DESC" <<
+        "DETACH" <<
+        "DISTINCT" <<
+        "DROP" <<
+        "EACH" <<
+        "ELSE" <<
+        "END" <<
+        "ESCAPE" <<
+        "EXCEPT" <<
+        "EXCLUSIVE" <<
+        "EXISTS" <<
+        "EXPLAIN" <<
+        "FAIL" <<
+        "FOR" <<
+        "FOREIGN" <<
+        "FROM" <<
+        "FULL" <<
+        "GLOB" <<
+        "GROUP" <<
+        "HAVING" <<
+        "IF" <<
+        "IGNORE" <<
+        "IMMEDIATE" <<
+        "IN" <<
+        "INDEX" <<
+        "INDEXED" <<
+        "INITIALLY" <<
+        "INNER" <<
+        "INSERT" <<
+        "INSTEAD" <<
+        "INTERSECT" <<
+        "INTO" <<
+        "IS" <<
+        "ISNULL" <<
+        "JOIN" <<
+        "KEY" <<
+        "LEFT" <<
+        "LIKE" <<
+        "LIMIT" <<
+        "MATCH" <<
+        "NATURAL" <<
+        "NO" <<
+        "NOT" <<
+        "NOTNULL" <<
+        "NULL" <<
+        "OF" <<
+        "OFFSET" <<
+        "ON" <<
+        "OR" <<
+        "ORDER" <<
+        "OUTER" <<
+        "PLAN" <<
+        "PRAGMA" <<
+        "PRIMARY" <<
+        "QUERY" <<
+        "RAISE" <<
+        "REFERENCES" <<
+        "REGEXP" <<
+        "REINDEX" <<
+        "RELEASE" <<
+        "RENAME" <<
+        "REPLACE" <<
+        "RESTRICT" <<
+        "RIGHT" <<
+        "ROLLBACK" <<
+        "ROW" <<
+        "SAVEPOINT" <<
+        "SELECT" <<
+        "SET" <<
+        "TABLE" <<
+        "TEMP" <<
+        "TEMPORARY" <<
+        "THEN" <<
+        "TO" <<
+        "TRANSACTION" <<
+        "TRIGGER" <<
+        "UNION" <<
+        "UNIQUE" <<
+        "UPDATE" <<
+        "USING" <<
+        "VACUUM" <<
+        "VALUES" <<
+        "VIEW" <<
+        "VIRTUAL" <<
+        "WHEN" <<
+        "WHERE" ;
+    return keywordPatterns;
 }
