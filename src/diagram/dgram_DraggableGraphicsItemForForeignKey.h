@@ -3,13 +3,15 @@
 
 #include "dgram_DraggableGraphicsItem.h"
 
+class Table;
+
 class DraggableGraphicsViewItemForForeignKey : public DraggableGraphicsViewItem
 {
 public:
 
     friend class ERGraphicsView;
 
-    DraggableGraphicsViewItemForForeignKey() : DraggableGraphicsViewItem(0)
+    DraggableGraphicsViewItemForForeignKey(const Table* tab) : DraggableGraphicsViewItem(tab)
     {}
 
     void setLeftPoint(QPointF p)

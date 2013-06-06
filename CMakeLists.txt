@@ -119,11 +119,20 @@ SET(DDM_BIN_DIR     ${CMAKE_INSTALL_PREFIX}/${DDM_BIN_SUBDIR})
 SET(DDM_RSRC_DIR    ${CMAKE_INSTALL_PREFIX}/${DDM_BIN_SUBDIR}/rsrc/)
 SET(DDM_DOC_DIR     ${CMAKE_INSTALL_PREFIX}/${DDM_BIN_SUBDIR}/doc/)
 
+OPTION(DDM_ENABLE_CUBRID_SUPPORT "Enable CUBRID support")
+OPTION(DDM_ENABLE_UNIT_TESTS "Enable Unit tests")
+
 # Recursively add sub dirs
 # enable the next one when a translations is done
-# SUBDIRS(ts)
 add_subdirectory(src)
-# SUBDIRS(nsis)
+if(DDM_ENABLE_CUBRID_SUPPORT)
+  add_subdirectory(cubrid)
+endif()
+
+if(DDM_ENABLE_UNIT_TESTS)
+  enable_testing()
+  add_subdirectory(unit_tests)
+endif()
 
 # Install the binary
 INSTALL(FILES ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/ddm DESTINATION ${DDM_BIN_DIR})

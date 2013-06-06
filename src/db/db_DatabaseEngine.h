@@ -82,15 +82,7 @@ public:
      * Returns a list of specific keywords for this database
      * @return the keywords of the database
      */
-    QStringList getKeywords() const
-    {
-        return m_keywords;
-    }
-
-    void setKeywords(const QStringList& s)
-    {
-        m_keywords = s;
-    }
+    virtual QStringList getKeywords() const = 0;
 
 public:
 
@@ -154,12 +146,6 @@ public:
      * @return the delimiter keyword
      */
     virtual QString getDelimiterKeyword() = 0;
-
-    /**
-     * Returns the codepages supported by the database engine
-     * @return the codepages supported by the database engine
-     */
-    virtual QVector<Codepage*> getCodepages() = 0;
 
     /**
      * Returns the Events of the triggers that are supported by this DB engine
@@ -471,9 +457,6 @@ private:
 
     // the database on which this is running
     QString database;
-
-    // the keywords of the database
-    QStringList m_keywords;
 
 protected:
 

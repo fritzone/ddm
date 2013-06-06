@@ -24,6 +24,10 @@ public:
     {
         return m_defaultValuesIndex;
     }
+    virtual QString getDefaultValue() const
+    {
+        return m_values[m_defaultValuesIndex];
+    }
 
 private:
 

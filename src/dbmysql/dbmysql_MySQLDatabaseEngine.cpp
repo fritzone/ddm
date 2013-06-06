@@ -1112,147 +1112,6 @@ QString MySQLDatabaseEngine::getDelimiterKeyword()
     return "delimiter";
 }
 
-QVector<Codepage*> MySQLDatabaseEngine::getCodepages()
-{
-    QStringList codepages;
-    codepages << "--Unicode - UCS2"  <<
-                 "ucs2_bin"<<
-                 "ucs2_czech_ci"<<
-                 "ucs2_danish_ci"<<
-                 "ucs2_esperanto_ci"<<
-                 "ucs2_estonia_ci"<<
-                 "ucs2_general_ci"<<
-                 "ucs2_hungarian_ci"<<
-                 "ucs2_icelandic_ci"<<
-                 "ucs2_latvian_ci"<<
-                 "ucs2_lithuanian_ci"<<
-                 "ucs2_persian_ci"<<
-                 "ucs2_polish_ci"<<
-                 "ucs2_roman_ci"<<
-                 "ucs2_romanian_ci"<<
-                 "ucs2_slovak_ci"<<
-                 "ucs2_slovenian_ci"<<
-                 "ucs2_spanish2_ci"<<
-                 "ucs2_spanish_ci"<<
-                 "ucs2_swedish_ci"<<
-                 "ucs2_turkish_ci"<<
-                 "ucs2_unicode_ci"<<
-                 "--Unicode - UTF8"<<
-                 "utf8_bin"<<
-                 "utf8_czech_ci"<<
-                 "utf8_danish_ci"<<
-                 "utf8_esperanto_ci"<<
-                 "utf8_estonia_ci"<<
-                 "utf8_general_ci"<<
-                 "utf8_hungarian_ci"<<
-                 "utf8_icelandic_ci"<<
-                 "utf8_latvian_ci"<<
-                 "utf8_lithuanian_ci"<<
-                 "utf8_persian_ci"<<
-                 "utf8_polish_ci"<<
-                 "utf8_roman_ci"<<
-                 "utf8_romanian_ci"<<
-                 "utf8_slovak_ci"<<
-                 "utf8_slovenian_ci"<<
-                 "utf8_spanish2_ci"<<
-                 "utf8_spanish_ci"<<
-                 "utf8_swedish_ci"<<
-                 "utf8_turkish_ci"<<
-                 "utf8_unicode_ci"<<
-                 "--Western European"<<
-                 "ascii_bin"<<
-                 "ascii_general"<<
-                 "dec8_bin"<<
-                 "dec8_swedish_ci "<<
-                 "hp8_bin"<<
-                 "hp8_english_ci "<<
-                 "latin1_bin"<<
-                 "latin1_danish_ci"<<
-                 "latin1_general_ci"<<
-                 "latin1_general_cs" <<
-                 "latin1_german1_ci" <<
-                 "latin1_german2_ci" <<
-                 "latin1_spanish_ci" <<
-                 "latin1_swedish_ci"<<
-                 "--Central European"<<
-                 "cp1250_bin"<<
-                 "cp1250_croatian_ci" <<
-                 "cp1250_czech_cs" <<
-                 "cp1250_general_ci" <<
-                 "cp852_bin"<<
-                 "cp852_general_ci" <<
-                 "keybcs2_bin"<<
-                 "keybcs2_general_ci" <<
-                 "latin2_bin"<<
-                 "latin2_croatian_ci" <<
-                 "latin2_czech_cs" <<
-                 "latin2_general_ci"<<
-                 "latin2_hungarian_ci"<<
-                 "macce_bin"<<
-                 "macce_general_ci" <<
-                 "--South European"<<
-                 "armscii8_bin"<<
-                 "armscii8_general_ci" <<
-                 "cp1256_bin"<<
-                 "cp1256_general_ci" <<
-                 "geostd8_bin"<<
-                 "geostd8_general_ci" <<
-                 "greek_bin"<<
-                 "greek_general_ci" <<
-                 "hebrew_bin"<<
-                 "hebrew_general_ci" <<
-                 "latin5_bin"<<
-                 "latin5_turkish_ci"<<
-                 "--Baltic"<<
-                 "cp1257_bin"<<
-                 "cp1257_general_ci"<<
-                 "cp1257_lithuanian_ci"<<
-                 "latin7_bin"<<
-                 "latin7_estonia_cs" <<
-                 "latin7_general_ci"<<
-                 "latin7_general_cs"<<
-                 "--Cyrillic"<<
-                 "cp1251_bin"<<
-                 "cp1251_bulgarian_ci"<<
-                 "cp1251_general_ci"<<
-                 "cp1251_general_cs"<<
-                 "cp1251_ukrainian_ci"<<
-                 "cp866_bin"<<
-                 "cp866_general_ci" <<
-                 "koi8r_bin"<<
-                 "koi8r_general_ci" <<
-                 "koi8u_bin"<<
-                 "koi8u_general_ci" <<
-                 "--Asian"<<
-                 "big5_bin"<<
-                 "big5_chinese_ci" <<
-                 "cp932_bin"<<
-                 "cp932_japanese_ci" <<
-                 "eucjpms_bin"<<
-                 "eucjpms_japanese_ci" <<
-                 "euckr_bin"<<
-                 "euckr_korean_ci" <<
-                 "gb2312_bin"<<
-                 "gb2312_chinese_ci"<<
-                 "gbk_bin"<<
-                 "gbk_chinese_ci" <<
-                 "sjis_bin"<<
-                 "sjis_japanese_ci" <<
-                 "tis620_bin"<<
-                 "tis620_thai_ci" <<
-                 "ujis_bin"<<
-                 "ujis_japanese_ci" ;
-
-    QVector<Codepage*> result;
-    for(int i=0; i<codepages.size(); i++)
-    {
-         Codepage* cp = new Codepage(codepages.at(i));
-         result.append(cp);
-    }
-
-    return result;
-}
-
 QStringList MySQLDatabaseEngine::getTriggerEvents()
 {
     QStringList result;
@@ -1520,14 +1379,267 @@ QStringList MySQLDatabaseEngine::getCodepageList()
     return codepages;
 }
 
+QStringList MySQLDatabaseEngine::getKeywords() const
+{
+    QStringList keywordPatterns;
+    keywordPatterns
+            <<"ADD"
+            <<"ALL"
+            <<"ALTER"
+            <<"ANALYZE"
+            <<"AND"
+            <<"AS"
+            <<"ASC"
+            <<"ASENSITIVE"
+            <<"BEFORE"
+            <<"BEGIN"
+            <<"END"
+            <<"BETWEEN"
+            <<"BOTH"
+            <<"BY"
+            <<"CALL"
+            <<"CASCADE"
+            <<"CASE"
+            <<"CHANGE"
+            <<"CHECK"
+            <<"CHARACTER"
+            <<"COLLATE"
+            <<"COLUMN"
+            <<"CONDITION"
+            <<"CONSTRAINT"
+            <<"CONTINUE"
+            <<"CONVERT"
+            <<"CREATE"
+            <<"CROSS"
+            <<"CURRENT_DATE"
+            <<"CURRENT_TIME"
+            <<"CURRENT_TIMESTAMP"
+            <<"CURRENT_USER"
+            <<"CURSOR"
+            <<"DATABASE"
+            <<"DATABASES"
+            <<"DAY_HOUR"
+            <<"DAY_MICROSECOND"
+            <<"DAY_MINUTE"
+            <<"DAY_SECOND"
+            <<"DECLARE"
+            <<"DEFAULT"
+            <<"DELAYED"
+            <<"DELETE"
+            <<"DESC"
+            <<"DESCRIBE"
+            <<"DETERMINISTIC"
+            <<"DISTINCT"
+            <<"DISTINCTROW"
+            <<"DIV"
+            <<"DROP"
+            <<"DUAL"
+            <<"EACH"
+            <<"ELSE"
+            <<"ELSEIF"
+            <<"ENCLOSED"
+            <<"ESCAPED"
+            <<"EXISTS"
+            <<"EXIT"
+            <<"EXPLAIN"
+            <<"FALSE"
+            <<"FETCH"
+            <<"FOR"
+            <<"FORCE"
+            <<"FOREIGN"
+            <<"FROM"
+            <<"FULLTEXT"
+            <<"GRANT"
+            <<"GROUP"
+            <<"HAVING"
+            <<"HIGH_PRIORITY"
+            <<"HOUR_MICROSECOND"
+            <<"HOUR_MINUTE"
+            <<"HOUR_SECOND"
+            <<"IF"
+            <<"IGNORE"
+            <<"IN"
+            <<"INDEX"
+            <<"INFILE"
+            <<"INNER"
+            <<"INOUT"
+            <<"INSENSITIVE"
+            <<"INSERT"
+            <<"INTERVAL"
+            <<"INTO"
+            <<"IS"
+            <<"ITERATE"
+            <<"JOIN"
+            <<"KEY"
+            <<"KEYS"
+            <<"KILL"
+            <<"LEADING"
+            <<"LEAVE"
+            <<"LEFT"
+            <<"LIKE"
+            <<"LIMIT"
+            <<"LINES"
+            <<"LOAD"
+            <<"LOCALTIME"
+            <<"LOCALTIMESTAMP"
+            <<"LOCK"
+            <<"LONG"
+            <<"LONGBLOB"
+            <<"LONGTEXT"
+            <<"LOOP"
+            <<"LOW_PRIORITY"
+            <<"MATCH"
+            <<"MEDIUMBLOB"
+            <<"MEDIUMINT"
+            <<"MEDIUMTEXT"
+            <<"MIDDLEINT"
+            <<"MINUTE_MICROSECOND"
+            <<"MINUTE_SECOND"
+            <<"MOD"
+            <<"MODIFIES"
+            <<"NATURAL"
+            <<"NOT"
+            <<"NO_WRITE_TO_BINLOG"
+            <<"NULL"
+            <<"ON"
+            <<"OPTIMIZE"
+            <<"OPTION"
+            <<"OPTIONALLY"
+            <<"OR"
+            <<"ORDER"
+            <<"OUT"
+            <<"OUTER"
+            <<"OUTFILE"
+            <<"PRECISION"
+            <<"PRIMARY"
+            <<"PROCEDURE"
+            <<"PURGE"
+            <<"READ"
+            <<"READS"
+            <<"REAL"
+            <<"REFERENCES"
+            <<"REGEXP"
+            <<"RELEASE"
+            <<"RENAME"
+            <<"REPEAT"
+            <<"REPLACE"
+            <<"REQUIRE"
+            <<"RESTRICT"
+            <<"RETURN"
+            <<"REVOKE"
+            <<"RIGHT"
+            <<"RLIKE"
+            <<"SCHEMA"
+            <<"SCHEMAS"
+            <<"SECOND_MICROSECOND"
+            <<"SELECT"
+            <<"SENSITIVE"
+            <<"SEPARATOR"
+            <<"SET"
+            <<"SHOW"
+            <<"SONAME"
+            <<"SPATIAL"
+            <<"SPECIFIC"
+            <<"SQL"
+            <<"SQLEXCEPTION"
+            <<"SQLSTATE"
+            <<"SQLWARNING"
+            <<"SQL_BIG_RESULT"
+            <<"SQL_CALC_FOUND_ROWS"
+            <<"SQL_SMALL_RESULT"
+            <<"SSL"
+            <<"STARTING"
+            <<"STRAIGHT_JOIN"
+            <<"TABLE"
+            <<"TEMPORARY"
+            <<"TERMINATED"
+            <<"THEN"
+            <<"TO"
+            <<"TRAILING"
+            <<"TRIGGER"
+            <<"TRUE"
+            <<"UNDO"
+            <<"UNION"
+            <<"UNIQUE"
+            <<"UNLOCK"
+            <<"UNSIGNED"
+            <<"UPDATE"
+            <<"USAGE"
+            <<"USE"
+            <<"USING"
+            <<"UTC_DATE"
+            <<"UTC_TIME"
+            <<"UTC_TIMESTAMP"
+            <<"VALUES"
+            <<"VARYING"
+            <<"WHEN"
+            <<"WHERE"
+            <<"WHILE"
+            <<"WITH"
+            <<"WRITE"
+            <<"XOR"
+            <<"YEAR_MONTH"
+            <<"ZEROFILL"
+            <<"ASENSITIVE"
+            <<"CONNECTION"
+            <<"DECLARE"
+            <<"ELSEIF"
+            <<"GOTO"
+            <<"ITERATE"
+            <<"LOOP"
+            <<"READS"
+            <<"RETURN"
+            <<"SENSITIVE"
+            <<"SQLEXCEPTION"
+            <<"TRIGGER"
+            <<"WHILE"
+            <<"CALL"
+            <<"CONTINUE"
+            <<"DETERMINISTIC"
+            <<"EXIT"
+            <<"INOUT"
+            <<"LABEL"
+            <<"MODIFIES"
+            <<"RELEASE"
+            <<"SCHEMA"
+            <<"SPECIFIC"
+            <<"SQLSTATE"
+            <<"UNDO"
+            <<"CONDITION"
+            <<"CURSOR"
+            <<"EACH"
+            <<"FETCH"
+            <<"INSENSITIVE"
+            <<"LEAVE"
+            <<"OUT"
+            <<"REPEAT"
+            <<"SCHEMAS"
+            <<"VIEW"
+            <<"SORT"
+            <<"SQL"
+            <<"SQLWARNING"
+            <<"UPGRADE"
+            <<"DELIMITER"
+            <<"BEGIN"
+            <<"END";
+    return keywordPatterns;
+}
+
 QVector<Sp*> MySQLDatabaseEngine::buildSps()
 {
 
-    // SPs for TABLE
-    QVector<Sp*> result;
-    result.push_back(new TrueFalseSp(uidTemporaryTable, uidTable, QString("Temporary"), QString("Temporary table"), QString("General"), 5, 0, 0));
-    result.push_back(new TrueFalseSp(uidIfDoesNotExistTable, uidTable, QString("IfNotExists"), QString("Create only if not exists"), QString("General"), 5, 0, 0));
+    // SPs for the table itself
 
+    // General page
+    QVector<Sp*> result;
+    result.push_back(new TrueFalseSp(uidTemporaryTable, uidTable, QString("Temporary"), QString("Temporary table"), QString("General"), false, 5, 0, 0));
+    result.push_back(new TrueFalseSp(uidIfDoesNotExistTable, uidTable, QString("IfNotExists"), QString("Create only if not exists"), QString("General"), true, 5, 0, 0));
+
+    // "Performace" page
+    result.push_back(new ValueSp(uidMysqlAutoincrementTable, uidTable, QString("Auto Increment"), QString("Auto Increment Initial Value"), QString("Performance"), "0", 5, 1, 0 ) );
+    result.push_back(new ValueSp(uidMysqlAvgRowLengthTable, uidTable, QString("Average Row Length"), QString("Average Row Length"), QString("Performance"), "0", 5, 1, 0 ) );
+
+    // "Advanced" page
     QStringList valuesForStrorageEngines;
     valuesForStrorageEngines << "" << "MyISAM" << "InnoDB" << "Memory" << "Archive" << "Merge" << "BDB" << "Federated" << "Archive" << "CSV" << "Blackhole";
     result.push_back(new ValueListSp(uidMysqlStorageEngineTable, uidTable, QString("StorageEngine"), QString("Storage Engine"), QString("Advanced"), valuesForStrorageEngines, 1, 5, 0, 0));
@@ -1548,11 +1660,11 @@ QVector<Sp*> MySQLDatabaseEngine::buildSps()
     result.push_back(new ValueSp(uidMysqlColumnOfIndexLength, uidColumnOfIndex, "Column Length", "Used Column Length", "default", "", 5, 0, 0));
 
     // SPs for column
-    result.push_back(new TrueFalseSp(uidColumnAutoIncrement, uidColumn, "Auto Increment", "Auto Increment", "General", 5, 0, 0));
-    result.push_back(new TrueFalseSp(uidMysqlColumnZeroFill, uidColumn, "Zero fill", "Zero fill", "General", 5, 0, 0));
+    result.push_back(new TrueFalseSp(uidColumnAutoIncrement, uidColumn, "Auto Increment", "Auto Increment", "General", false, 5, 0, 0));
+    result.push_back(new TrueFalseSp(uidMysqlColumnZeroFill, uidColumn, "Zero fill", "Zero fill", "General", false, 5, 0, 0));
 
     // SPs for view
-    result.push_back(new TrueFalseSp(uidMysqlViewCanReplace, uidView, "Can Replace", "Can Replace", "General", 5, 0, 0));
+    result.push_back(new TrueFalseSp(uidMysqlViewCanReplace, uidView, "Can Replace", "Can Replace", "General", false, 5, 0, 0));
 
     return result;
 }
@@ -1726,6 +1838,7 @@ QString MySQLDatabaseEngine::spiExtension(QUuid uid)
     if(uid.toString() == uidMysqlColumnZeroFill) { return "ZEROFILL"; }
     if(uid.toString() == uidColumnAutoIncrement) { return "auto_increment"; }
     if(uid.toString() == uidMysqlViewCanReplace) { return "or replace"; }
+    if(uid.toString() == uidMysqlAutoincrementTable) { return "AUTO_INCREMENT"; }
 
     return "";
 }

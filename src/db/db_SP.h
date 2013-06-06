@@ -80,6 +80,12 @@ public:
         return m_group;
     }
 
+    /**
+     * @brief getDefaultValue return the default value, the one that was passed
+     * in from the constructor.
+     * @return
+     */
+    virtual QString getDefaultValue() const = 0;
 
     virtual void serialize(QDomDocument& doc, QDomElement& parent) const;
 

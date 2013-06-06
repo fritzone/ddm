@@ -37,9 +37,11 @@ static const QString uidIfDoesNotExistTable=                "{10000004-0000-0000
 static const QString uidColumnAutoIncrement =               "{10000007-0000-0000-0000-000000000001}";
 
 // MySQL role UIDS
-
 static const QString uidMysqlStorageEngineTable =           "{10000004-0000-0000-0000-000000000003}";
 static const QString uidMysqlCodepageTable =                "{10000004-0000-0000-0000-000000000004}";
+static const QString uidMysqlAutoincrementTable =           "{10000004-0000-0000-0000-000000000005}";
+static const QString uidMysqlAvgRowLengthTable =            "{10000004-0000-0000-0000-000000000006}";
+static const QString uidMysqlChecksumTable =                "{10000004-0000-0000-0000-000000000007}";
 
 static const QString uidMysqlIndexType =                    "{10000005-0000-0000-0000-000000000001}";
 static const QString uidMysqlIndexCategory =                "{10000005-0000-0000-0000-000000000002}";

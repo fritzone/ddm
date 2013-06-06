@@ -37,9 +37,14 @@ QString MySQLSQLGenerator::createTableOnlyScript(Table* table, const QStringList
     const MySqlConnection* dest = dynamic_cast<const MySqlConnection*>(pdest);
     QString createTable = basicCreateTableScript(table, foreignKeys, tabName);
 
-    // extra MySql stuff: DB engien and codepage
+    // extra MySql stuff: DB engine and codepage
     createTable += provideDatabaseEngine(table, dest);
     createTable += provideCodepage(table);
+
+    // more extra mysql stuff: checksum, autoIncrement, etc...
+    createTable += provideAutoIncrementForTable(table);
+    createTable += provideAverageRowLength(table);
+    createTable += provideChecksum(table, dest);
 
     // done
     createTable += strSemicolon + strNewline;
@@ -78,9 +83,41 @@ QString MySQLSQLGenerator::indexTypeSpecified(Index *idx) const
     return result;
 }
 
+QString MySQLSQLGenerator::dbEngineName(Table* table, const MySqlConnection* dest) const
+{
+    // see if we have a storage eng ine
+    QString result = "";
+    SpInstance* spi = table->getInstanceForSqlRoleUid(m_engine, uidMysqlStorageEngineTable);
+    if(spi)
+    {
+        QString storageEngine = spi->get();
+        if(storageEngine.length())
+        {
+            MySQLDatabaseEngine* mysEng = dynamic_cast<MySQLDatabaseEngine*>(m_engine);
+            if(mysEng)
+            {
+                if(dest)
+                {
+                    QStringList supportedStroageEngines = mysEng->getSupportedStorageEngines(dest->getHost(), dest->getUser(), dest->getPassword(), dest->getPort());
+                    if(supportedStroageEngines.contains(storageEngine.toUpper()))
+                    {
+                        return storageEngine;
+                    }
+                }
+                else
+                {
+                    return storageEngine;
+                }
+            }
+        }
+    }
+    return "";
+
+}
+
 QString MySQLSQLGenerator::provideDatabaseEngine(Table *table, const MySqlConnection* dest) const
 {
-    // see if we have a storage engine
+    // see if we have a storage eng ine
     QString result = "";
     SpInstance* spi = table->getInstanceForSqlRoleUid(m_engine, uidMysqlStorageEngineTable);
     if(spi)
@@ -104,6 +141,68 @@ QString MySQLSQLGenerator::provideDatabaseEngine(Table *table, const MySqlConnec
                     result = correctCase("engine = ")+ storageEngine;
                 }
             }
+        }
+    }
+    return result;
+}
+
+QString MySQLSQLGenerator::provideChecksum(Table *table, const MySqlConnection *dest) const
+{
+    if(provideDatabaseEngine(table, dest).toUpper() != "MYISAM")
+    {
+        return "";
+    }
+    QString result("");
+    // and the codepage
+    SpInstance* spi = table->getInstanceForSqlRoleUid(m_engine, uidMysqlChecksumTable);
+    if(spi)
+    {
+        QString checksum = spi->get();
+        if(checksum.length() && checksum != spi->getClass()->getDefaultValue())
+        {
+            QString aincCmd = correctCase("checksum");
+            QString value = checksum;
+
+            result = strSpace + aincCmd + strSpace + value + strSpace;
+        }
+    }
+    return result;
+
+}
+
+QString MySQLSQLGenerator::provideAutoIncrementForTable(Table *table) const
+{
+    QString result("");
+    // and the codepage
+    SpInstance* spi = table->getInstanceForSqlRoleUid(m_engine, uidMysqlAutoincrementTable);
+    if(spi)
+    {
+        QString autoInc = spi->get();
+        if(autoInc.length() && autoInc != spi->getClass()->getDefaultValue())
+        {
+            QString aincCmd = correctCase("auto_increment");
+            QString value = autoInc;
+
+            result = strSpace + aincCmd + strSpace + value + strSpace;
+        }
+    }
+    return result;
+}
+
+QString MySQLSQLGenerator::provideAverageRowLength(Table *table) const
+{
+    QString result("");
+    // and the codepage
+    SpInstance* spi = table->getInstanceForSqlRoleUid(m_engine, uidMysqlAvgRowLengthTable);
+    if(spi)
+    {
+        QString autoInc = spi->get();
+        if(autoInc.length() && autoInc != spi->getClass()->getDefaultValue())
+        {
+            QString aincCmd = correctCase("avg_row_length");
+            QString value = autoInc;
+
+            result = strSpace + aincCmd + strSpace + value + strSpace;
         }
     }
     return result;

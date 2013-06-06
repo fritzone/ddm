@@ -408,13 +408,12 @@ void MainWindow::onNewSolution()
         if(nprjdlg->getProjectType() == NewProjectDialog::PRJ_REVERSEENGINEER)
         {
             m_revEngWizard = new ReverseEngineerWizard(nprjdlg->getDatabaseEngine());
-            m_revEngWizard->setWizardStyle(QWizard::ClassicStyle);
             m_revEngWizard->show();
+
 
             QObject::connect(m_revEngWizard, SIGNAL(currentIdChanged(int)), this, SLOT(onReverseEngineerWizardNextPage(int)));
             QObject::connect(m_revEngWizard, SIGNAL(accepted()), this, SLOT(onReverseEngineerWizardAccept()));
         }
-
 
         enableActions();
         delete m_btndlg;
@@ -2264,10 +2263,18 @@ void MainWindow::onInjectBrowsedTable()
         {
             QString cname = s.mid(s.indexOf("?") + 1);
             Connection *c = ConnectionManager::instance()->getConnection(cname);
-            if(!c) return;
+            if(!c)
+            {
+                return;
+            }
+
             QString tab = s.left(s.indexOf("?")).mid(2);
             QString validName = NameGenerator::getUniqueName(Workspace::getInstance()->currentProject()->getWorkingVersion(), (itemGetter)&Version::getTable, tab);
-            Table* t = Workspace::getInstance()->currentProjectsEngine()->reverseEngineerTable(c, validName, Workspace::getInstance()->currentProject(), true, m_workspace->workingVersion());
+
+            // and reverse engineer the table with the database engine of the menu ... hm...
+            Table* t = c->getEngine()->reverseEngineerTable(c, validName, Workspace::getInstance()->currentProject(), true, m_workspace->workingVersion());
+
+            // finalize the table
             t->setName(validName);
             Workspace::getInstance()->currentProject()->getWorkingVersion()->addTable(t, false);
             m_workspace->workingVersion()->getGui()->createTableTreeEntry(t, m_workspace->workingVersion()->getGui()->getTablesItem());

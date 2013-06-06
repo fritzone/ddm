@@ -45,7 +45,16 @@ TextEditWithCodeCompletion::TextEditWithCodeCompletion(QWidget* p, Connection* c
 
     setLineWrapMode(QPlainTextEdit::NoWrap);
 
-    AbstractDTSupplier* dtSupplier = Workspace::getInstance()->currentProjectsEngine()->getDTSupplier();
+    AbstractDTSupplier* dtSupplier = 0;
+    if(c)
+    {
+        dtSupplier = c->getEngine()->getDTSupplier();
+    }
+    else
+    {
+        dtSupplier = Workspace::getInstance()->currentProjectsEngine()->getDTSupplier();
+    }
+
 
     if(Workspace::getInstance()->hasCurrentSolution())
     {
