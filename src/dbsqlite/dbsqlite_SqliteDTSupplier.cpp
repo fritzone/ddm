@@ -173,3 +173,45 @@ QString SqliteDTSupplier::typeForSqlType(const QString& sqlType)
     // the spatial data types don't have anything like this
     return "";
 }
+
+DT_TYPE SqliteDTSupplier::getDT_TYPE(const QString& usedSql)
+{
+    if(usedSql.toUpper().startsWith("CHAR")) return DT_STRING;
+    if(usedSql.toUpper().startsWith("VARCHAR")) return DT_STRING;
+    if(usedSql.toUpper().startsWith("TINYTEXT")) return DT_STRING;
+    if(usedSql.toUpper().startsWith("TEXT")) return DT_STRING;
+    if(usedSql.toUpper().startsWith("MEDIUMTEXT")) return DT_STRING;
+    if(usedSql.toUpper().startsWith("LONGTEXT")) return DT_STRING;
+
+    if(usedSql.toUpper().startsWith("INT")) return DT_NUMERIC;
+    if(usedSql.toUpper().startsWith("INTEGER")) return DT_NUMERIC;
+    if(usedSql.toUpper().startsWith("TINYINT")) return DT_NUMERIC;
+    if(usedSql.toUpper().startsWith("SMALLINT")) return DT_NUMERIC;
+    if(usedSql.toUpper().startsWith("MEDIUMINT")) return DT_NUMERIC;
+    if(usedSql.toUpper().startsWith("BIGINT")) return DT_NUMERIC;
+    if(usedSql.toUpper().startsWith("DECIMAL")) return DT_NUMERIC;
+    if(usedSql.toUpper().startsWith("NUMERIC")) return DT_NUMERIC;
+    if(usedSql.toUpper().startsWith("FLOAT")) return DT_NUMERIC;
+    if(usedSql.toUpper().startsWith("REAL")) return DT_NUMERIC;
+    if(usedSql.toUpper().startsWith("DOUBLE PRECISION")) return DT_NUMERIC;
+    if(usedSql.toUpper().startsWith("BIT")) return DT_NUMERIC;
+
+    if(usedSql.toUpper().startsWith("DATE")) return DT_DATETIME;
+    if(usedSql.toUpper().startsWith("DATETIME")) return DT_DATETIME;
+    if(usedSql.toUpper().startsWith("TIME")) return DT_DATETIME;
+    if(usedSql.toUpper().startsWith("TIMESTAMP")) return DT_DATETIME;
+    if(usedSql.toUpper().startsWith("YEAR")) return DT_DATETIME;
+
+    if(usedSql.toUpper().startsWith("BINARY")) return DT_BLOB;
+    if(usedSql.toUpper().startsWith("VARBINARY")) return DT_BLOB;
+    if(usedSql.toUpper().startsWith("TINYBLOB")) return DT_BLOB;
+    if(usedSql.toUpper().startsWith("BLOB")) return DT_BLOB;
+    if(usedSql.toUpper().startsWith("MEDIUMBLOB")) return DT_BLOB;
+    if(usedSql.toUpper().startsWith("LONGBLOB")) return DT_BLOB;
+
+    if(usedSql.toUpper().startsWith("SET")) return DT_MISC;
+    if(usedSql.toUpper().startsWith("ENUM")) return DT_MISC;
+
+    // the spatial data types don't have anything like this
+    return DT_INVALID;
+}

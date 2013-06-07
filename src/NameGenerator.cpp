@@ -4,6 +4,11 @@
 QString NameGenerator::getUniqueName(Version* v, itemGetter fun, const QString& prefix)
 {
     QString result2 = prefix;
+    if(!v)
+    {
+        return QString("TABLE_") + prefix;
+    }
+
     if((v->*fun)(result2) == 0)
     {
         return result2;

@@ -49,7 +49,7 @@ public:
 
     QStringList foreignKeyParticipants(Table* table, const QMap<QString, QString> &fkMappings) const;
 
-    QString basicCreateTableScript(Table *table, const QStringList &foreignKeys, const QString &tabName) const;
+    QString basicCreateTableScript(Table *table, const QStringList &foreignKeys, const QString &tabName, bool needfk) const;
 
     virtual QStringList generateCreateTableSql(Table *table,
                                                const QHash<QString, QString> &options,

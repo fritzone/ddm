@@ -3318,3 +3318,23 @@ void MainWindow::onRepoItemClicked(QTreeWidgetItem* itm ,int)
 
 }
 
+void MainWindow::onConnectionCreateTable()
+{
+    Connection* c = getRightClickedConnection();
+    if(c)
+    {
+        if(m_btndlg && m_btndlg->isVisible())
+        {
+            m_btndlg->hide();
+    #ifdef Q_WS_WIN
+            Qt::WindowFlags flags = m_btndlg->windowFlags();
+            m_btndlg->setWindowFlags(flags ^ (Qt::SplashScreen |Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint));
+    #endif
+            delete m_btndlg;
+            m_btndlg = 0;
+        }
+
+        NewTableForm* ntf = new NewTableForm(c->getEngine(), 0, 0, c, this, true);
+        setCentralWidget(ntf);
+    }
+}

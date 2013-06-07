@@ -12,9 +12,15 @@ class SqlHighlighter : public QSyntaxHighlighter
 {
 public:
 
-    SqlHighlighter(QTextDocument *parent, QStringList keywords, QList<UserDataType> numericTypes, QList<UserDataType> booleanTypes,
-                   QList<UserDataType> textTypes, QList<UserDataType> blobTypes, QList<UserDataType> dateTimeTypes, QList<UserDataType> miscTypes,
-                   QVector<Table*> tables);
+    SqlHighlighter(QTextDocument *parent,
+                   const QStringList& keywords,
+                   const QList<UserDataType>& numericTypes,
+                   const QList<UserDataType>& booleanTypes,
+                   const QList<UserDataType>& textTypes,
+                   const QList<UserDataType>& blobTypes,
+                   const QList<UserDataType>& dateTimeTypes,
+                   const QList<UserDataType>& miscTypes,
+                   const QStringList &tables);
     ~SqlHighlighter(){}
 
 protected:

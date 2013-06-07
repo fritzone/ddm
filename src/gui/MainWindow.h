@@ -210,6 +210,7 @@ public slots:
     void onUpdateDb();
     void onRepoItemClicked(QTreeWidgetItem*,int);
     void onShowSolutionProperties();
+    void onConnectionCreateTable();
 
 private:
 

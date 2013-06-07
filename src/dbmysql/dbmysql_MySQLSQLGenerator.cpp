@@ -35,7 +35,15 @@ QStringList MySQLSQLGenerator::generateCreateTableSql(Table *table,
 QString MySQLSQLGenerator::createTableOnlyScript(Table* table, const QStringList& foreignKeys, const QString& tabName, const Connection *pdest) const
 {
     const MySqlConnection* dest = dynamic_cast<const MySqlConnection*>(pdest);
-    QString createTable = basicCreateTableScript(table, foreignKeys, tabName);
+
+    bool needfk = true;
+
+    if(dbEngineName(table, dest).toUpper() != "INNODB")
+    {
+        needfk = false;
+    }
+
+    QString createTable = basicCreateTableScript(table, foreignKeys, tabName, needfk);
 
     // extra MySql stuff: DB engine and codepage
     createTable += provideDatabaseEngine(table, dest);
@@ -148,7 +156,7 @@ QString MySQLSQLGenerator::provideDatabaseEngine(Table *table, const MySqlConnec
 
 QString MySQLSQLGenerator::provideChecksum(Table *table, const MySqlConnection *dest) const
 {
-    if(provideDatabaseEngine(table, dest).toUpper() != "MYISAM")
+    if(dbEngineName(table, dest).toUpper() != "MYISAM")
     {
         return "";
     }

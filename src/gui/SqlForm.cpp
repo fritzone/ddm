@@ -37,7 +37,7 @@ SqlForm::SqlForm(Version *v, DatabaseEngine* engine, QWidget *parent) : SourceCo
                                      Workspace::getInstance()->currentProjectsEngine()->getDTSupplier()->blobTypes(),
                                      Workspace::getInstance()->currentProjectsEngine()->getDTSupplier()->dateTimeTypes(),
                                      Workspace::getInstance()->currentProjectsEngine()->getDTSupplier()->miscTypes(),
-                                     Workspace::getInstance()->workingVersion()->getTables());
+                                     Workspace::getInstance()->workingVersion()->getTableNames());
     ui->cmbOptions->hide();
 }
 

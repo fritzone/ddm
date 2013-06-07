@@ -342,6 +342,16 @@ inline const QVector<Table*>& DefaultVersionImplementation::getTables() const
     return m_data.m_tables;
 }
 
+QStringList DefaultVersionImplementation::getTableNames() const
+{
+    QStringList result;
+    for(int i=0; i<m_data.m_tableInstances.size(); i++)
+    {
+        result.append(m_data.m_tableInstances[i]->getName());
+    }
+    return result;
+}
+
 void DefaultVersionImplementation::purgeSentencedTableInstances()
 {
     int i=0;

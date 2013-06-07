@@ -113,6 +113,7 @@ public:
     QAction* getAction_ConnectionRecreate() {return action_connectionRecreate; }
     QAction* getAction_ConnectionBrowse() {return action_connectionBrowse; }
     QAction* getAction_ConnectionDrop() {return action_connectionDrop; }
+    QAction* getAction_ConnectionNewTable() {return action_connectionNewTable; }
     QAction* getAction_BrowsedTableInject() {return action_browsedTableInjectIntoSolution; }
     QAction* getAction_BrowsedTableView() {return action_browsedTableView; }
     QAction* getAction_BrowsedTableBrowse() {return action_browsedTableBrowse; }
@@ -254,6 +255,7 @@ private:
     QAction* action_connectionDrop;
     QAction* action_connectionRecreate;
     QAction* action_connectionSqlQuery;
+    QAction* action_connectionNewTable;
 
     // a browsed table popup menu
     QAction* action_browsedTableInjectIntoSolution;

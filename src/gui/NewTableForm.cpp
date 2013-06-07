@@ -45,11 +45,11 @@ const int COL_POS_PK = 0;
 const int COL_POS_NM = 1;
 const int COL_POS_DT = 2;
 
-NewTableForm::NewTableForm(DatabaseEngine* db, Project* prj, Version* v, QWidget *parent, bool newTable) : SourceCodePresenterWidget(v, parent),
+NewTableForm::NewTableForm(DatabaseEngine* db, Project* prj, Version* v, Connection* conn, QWidget *parent, bool newTable) : SourceCodePresenterWidget(v, parent),
     m_ui(new Ui::NewTableForm),
     m_dbEngine(db), m_project(prj), m_table(0),
     m_currentColumn(0), m_currentIndex(0), m_foreignTable(0), m_currentForeignKey(0), m_foreignKeySelected(false),
-    m_engineProviders(0), m_wspForIndex(0), m_wspForColumn(0), m_version(v), m_combos()
+    m_engineProviders(0), m_wspForIndex(0), m_wspForColumn(0), m_version(v), m_combos(), m_conn(conn)
 {
     m_ui->setupUi(this);
 
@@ -78,22 +78,24 @@ NewTableForm::NewTableForm(DatabaseEngine* db, Project* prj, Version* v, QWidget
     QObject::connect(ContextMenuCollection::getInstance()->getAction_CopyColumn(), SIGNAL(triggered()), this, SLOT(onCopyColumn()));
     QObject::connect(ContextMenuCollection::getInstance()->getAction_PasteColumn(), SIGNAL(triggered()), this, SLOT(onPasteColumn()));
 
-    DatabaseEngine* engine = Workspace::getInstance()->currentProjectsEngine();
+    QStringList tableNames = v?v->getTableNames():
+                                           (db&&conn)?db->getAvailableTables(conn):QStringList();
 
     highlighter = new SqlHighlighter(m_ui->txtSql->document(),
-                                     engine->getKeywords(),
-                                     engine->getDTSupplier()->numericTypes(),
-                                     engine->getDTSupplier()->booleanTypes(),
-                                     engine->getDTSupplier()->textTypes(),
-                                     engine->getDTSupplier()->blobTypes(),
-                                     engine->getDTSupplier()->dateTimeTypes(),
-                                     engine->getDTSupplier()->miscTypes(),
-                                     v->getTables());
+                                     db->getKeywords(),
+                                     db->getDTSupplier()->numericTypes(),
+                                     db->getDTSupplier()->booleanTypes(),
+                                     db->getDTSupplier()->textTypes(),
+                                     db->getDTSupplier()->blobTypes(),
+                                     db->getDTSupplier()->dateTimeTypes(),
+                                     db->getDTSupplier()->miscTypes(),
+                                     tableNames); // this is not really relevant here
 
-    const QVector<UserDataType*>& dts = v->getDataTypes();
-    for(int i=0; i<dts.size(); i++)
+    m_availableDataTypes = v? v->getDataTypes() : Workspace::getInstance()->loadDefaultDatatypesIntoCurrentSolution(db);
+    for(int i=0; i<m_availableDataTypes.size(); i++)
     {
-        m_ui->cmbNewColumnType->addItem(IconFactory::getIconForDataType(dts[i]->getType()), dts[i]->getName());
+        m_ui->cmbNewColumnType->addItem(IconFactory::getIconForDataType(m_availableDataTypes[i]->getType()),
+                                        m_availableDataTypes[i]->getName());
     }
 
     lstColumns->header()->resizeSection(0, 50);
@@ -102,9 +104,12 @@ NewTableForm::NewTableForm(DatabaseEngine* db, Project* prj, Version* v, QWidget
     m_ui->tabWidget->setCurrentIndex(0);
 
     // next two: don't change the order. This way the remove is done from the end
-    if(prj->oopProject())
+    if(prj)
     {
-        m_ui->tabWidget->removeTab(3);
+        if(prj->oopProject())
+        {
+            m_ui->tabWidget->removeTab(3);
+        }
     }
 
     m_ui->btnImportValues->hide();
@@ -119,17 +124,28 @@ NewTableForm::NewTableForm(DatabaseEngine* db, Project* prj, Version* v, QWidget
         m_table = new Table(m_version, QUuid::createUuid().toString());
         m_table->initializeFor(db, QUuid(uidTable));
 
-        Workspace::getInstance()->onSaveNewTable(m_table);
         m_ui->txtTableName->setText(m_table->getName());
 
-        resetForeignTablesCombo();
+        if(m_version)
+        {
+            Workspace::getInstance()->onSaveNewTable(m_table);
+            resetForeignTablesCombo();
+        }
+        else
+        {
+            resetForeignTablesCombo(tableNames);
+        }
+
+
+
+
         prepareSpsTabs();
     }
 
     m_signalMapperForCombosInColumns = new QSignalMapper(this);
     m_ui->frameForUnlockButton->hide();
 
-    if(!m_version->getProject()->oopProject())
+    if(m_version && !m_version->getProject()->oopProject())
     {
         m_ui->btnInstantiate->hide();
     }
@@ -139,6 +155,28 @@ NewTableForm::NewTableForm(DatabaseEngine* db, Project* prj, Version* v, QWidget
 NewTableForm::~NewTableForm()
 {
     delete m_ui;
+}
+
+void NewTableForm::resetForeignTablesCombo(const QStringList& tableNames)
+{
+    m_ui->cmbForeignTables->clear();
+
+    // create the foreign keys screen
+
+    for(int i=0; i<tableNames.size(); i++)
+    {
+        if(tableNames[i] != m_table->getName())
+        {
+            // at this stage we can put in all the tables, this is supposed to be a new table
+            m_ui->cmbForeignTables->addItem(tableNames[i]);
+        }
+    }
+    m_ui->cmbForeignTables->setCurrentIndex(-1);
+
+    m_ui->lstForeignKeyAssociations->clear();
+    m_ui->lstForeignTablesColumns->clear();
+    m_ui->lstLocalColumn->clear();
+    m_ui->txtForeignKeyName->clear();
 }
 
 void NewTableForm::resetForeignTablesCombo()
@@ -172,10 +210,35 @@ ContextMenuEnabledTreeWidgetItem* NewTableForm::createTWIForForeignKey(const For
     QString localColumns = "";
     for(int i=0; i<assocs.size(); i++)
     {
-        tabName = assocs[i]->getForeignTable()->getName();
-        foreignColumns += assocs[i]->getForeignColumn()->getName();
+        if(assocs[i]->getForeignTable())
+        {
+            tabName = assocs[i]->getForeignTable()->getName(); // do we have a table?
+        }
+        else
+        {
+            tabName = assocs[i]->getSForeignTable();
+        }
+
+        if(assocs[i]->getForeignColumn())
+        {
+            foreignColumns += assocs[i]->getForeignColumn()->getName();
+        }
+        else
+        {
+            foreignColumns += assocs[i]->getSForeignColumn();
+        }
+
         if(i < assocs.size()-1) foreignColumns += ", ";
-        localColumns += assocs[i]->getLocalColumn()->getName();
+
+        if(assocs[i]->getLocalColumn())
+        {
+            localColumns += assocs[i]->getLocalColumn()->getName();
+        }
+        else
+        {
+            localColumns += assocs[i]->getSLocalColumn();
+        }
+
         if(i < assocs.size()-1) localColumns += ", ";
     }
 
@@ -194,7 +257,7 @@ void NewTableForm::setTypeComboBoxForColumnItem(ContextMenuEnabledTreeWidgetItem
 {
     QComboBox* cmbColumnType = new QComboBox(0);
     cmbColumnType->setAutoFillBackground(true);
-    const QVector<UserDataType*>& dts = m_version->getDataTypes();
+    const QVector<UserDataType*>& dts = m_version?m_version->getDataTypes():m_availableDataTypes;
     int s = -1;
 
     // TODO: this is just horrible. FIX! FIX! FIX!
@@ -238,7 +301,7 @@ void NewTableForm::onDatatypeSelectedForColumnInList(const QString& b)
     }
 
     backupDefaultValuesTable();
-    const QVector<UserDataType*>& dts = m_version->getDataTypes();
+    const QVector<UserDataType*>& dts = m_version?m_version->getDataTypes():m_availableDataTypes;
     int i;
     for(i=0; i<dts.size(); i++)
     {
@@ -561,7 +624,10 @@ void NewTableForm::changeEvent(QEvent *e)
 
 void NewTableForm::updateIssues()
 {
-    m_version->validateVersion(false);
+    if(m_version)
+    {
+        m_version->validateVersion(false);
+    }
 }
 
 void NewTableForm::onAddColumn()
@@ -630,7 +696,9 @@ void NewTableForm::onAddColumn()
         m_currentColumn->setDescription(m_ui->txtColumnDescription->toPlainText());
         m_currentColumn->setPk(m_ui->chkPrimary->isChecked());
 
-        m_currentColumn->setDataType(m_version->getDataType(m_ui->cmbNewColumnType->currentText()));
+        m_currentColumn->setDataType(m_version?
+                                         m_version->getDataType(m_ui->cmbNewColumnType->currentText()):
+                                         getDataType(m_ui->cmbNewColumnType->currentText()));
 
         m_currentColumn->getLocation()->setText(1, m_currentColumn->getName());
         if(m_ui->chkPrimary->isChecked())
@@ -655,17 +723,20 @@ void NewTableForm::onAddColumn()
 
         // and now update all the foreign keys in the version regarding their foreign key column associations
         Version* ver = m_table->version();
-        const QVector<Table*>& tabs = ver->getTables();
-        for(int i=0; i<tabs.size(); i++)
+        if(ver)
         {
-            const QVector<ForeignKey*> & tabfks = tabs[i]->getForeignKeys();
-            for(int j=0; j<tabfks.size(); j++)
+            const QVector<Table*>& tabs = ver->getTables();
+            for(int i=0; i<tabs.size(); i++)
             {
-                const QVector<ForeignKey::ColumnAssociation*>& assocs = tabfks[j]->getAssociations();
-                for(int k=0; k<assocs.size(); k++)
+                const QVector<ForeignKey*> & tabfks = tabs[i]->getForeignKeys();
+                for(int j=0; j<tabfks.size(); j++)
                 {
-                    if(assocs[k]->getSForeignColumn() == prevName) assocs[k]->setSForeignTable(a);
-                    if(assocs[k]->getSLocalColumn() == prevName) assocs[k]->setSLocalTable(a);
+                    const QVector<ForeignKey::ColumnAssociation*>& assocs = tabfks[j]->getAssociations();
+                    for(int k=0; k<assocs.size(); k++)
+                    {
+                        if(assocs[k]->getSForeignColumn() == prevName) assocs[k]->setSForeignTable(a);
+                        if(assocs[k]->getSLocalColumn() == prevName) assocs[k]->setSLocalTable(a);
+                    }
                 }
             }
         }
@@ -686,7 +757,10 @@ void NewTableForm::onAddColumn()
             return;
         }
 
-        UserDataType* colsDt = m_version->getDataType(m_ui->cmbNewColumnType->currentText());
+        UserDataType* colsDt = m_version?
+                    m_version->getDataType(m_ui->cmbNewColumnType->currentText()):
+                    getDataType(m_ui->cmbNewColumnType->currentText());
+
         Column* col = new Column(QUuid::createUuid().toString(), m_ui->txtNewColumnName->text(), colsDt, m_ui->chkPrimary->isChecked(), colsDt->version());
         col->initializeFor(m_dbEngine, QUuid(uidColumn));
         if(m_wspForColumn) m_wspForColumn->repopulateSpsOfObject(col);
@@ -864,7 +938,24 @@ void NewTableForm::showColumn(Column * c)
 {
     if(!m_table->hasColumn(c->getName())) return;
     m_ui->txtNewColumnName->setText(c->getName());
-    m_ui->cmbNewColumnType->setCurrentIndex(m_version->getDataTypeIndex(c->getDataType()->getName()));
+
+    int index = -1;
+    if(m_version)
+    {
+        m_version->getDataTypeIndex(c->getDataType()->getName());
+    }
+    else
+    {
+        for(int i=0; i<m_availableDataTypes.size(); i++)
+        {
+            if(m_availableDataTypes[i]->getName() == c->getDataType()->getName())
+            {
+                index = i;
+                break;
+            }
+        }
+    }
+    m_ui->cmbNewColumnType->setCurrentIndex(index);
     m_ui->chkPrimary->setChecked(c->isPk());
     m_ui->txtColumnDescription->setText(c->getDescription());
 
@@ -1015,6 +1106,11 @@ void NewTableForm::autoSave()
 
 void NewTableForm::doTheSave()
 {
+    if(!m_version)
+    {
+        return; // possibly working on a table in a database
+    }
+
     if(m_version->hasTable(m_table))
     {
         // update the data of the table, and the tree view
@@ -1503,69 +1599,85 @@ void NewTableForm::onMoveSelectedIndexColumnDown()
 
 void NewTableForm::onForeignTableComboChange(QString selected)
 {
-    Table* table = m_version->getTable(selected);
-    if(table == 0)
+    if(m_version)
     {
-        return;
-    }
-    m_foreignTable = table;
-    QStringList foreignColumns = table->fullColumns();
-    m_ui->lstForeignTablesColumns->clear();
-    for(int i=0; i<foreignColumns.size(); i++)
-    {
-        QListWidgetItem* qlwi = new QListWidgetItem(foreignColumns[i], m_ui->lstForeignTablesColumns);
-        // TODO: these few lines below are duplicates with populateColumnsForIndices
-        Column* col = table->getColumn(foreignColumns[i]);
-        if(col)
+        Table* table = m_version->getTable(selected);
+        if(table == 0)
         {
-            qlwi->setIcon(IconFactory::getIconForDataType(col->getDataType()->getType()));
+            return;
         }
-        else
+        m_foreignTable = table;
+        QStringList foreignColumns = table->fullColumns();
+        m_ui->lstForeignTablesColumns->clear();
+        for(int i=0; i<foreignColumns.size(); i++)
         {
-            col = table->getColumnFromParents(foreignColumns[i]);
+            QListWidgetItem* qlwi = new QListWidgetItem(foreignColumns[i], m_ui->lstForeignTablesColumns);
+            // TODO: these few lines below are duplicates with populateColumnsForIndices
+            Column* col = table->getColumn(foreignColumns[i]);
             if(col)
             {
                 qlwi->setIcon(IconFactory::getIconForDataType(col->getDataType()->getType()));
             }
+            else
+            {
+                col = table->getColumnFromParents(foreignColumns[i]);
+                if(col)
+                {
+                    qlwi->setIcon(IconFactory::getIconForDataType(col->getDataType()->getType()));
+                }
+            }
+        }
+        // now clear the current stuff, it's not valid keeping foreign keys from other tables, when moving to a new table
+        m_ui->lstForeignKeyAssociations->clear();
+        m_currentForeignKey = 0;
+    }
+    else
+    {
+
+        if(m_dbEngine) // fetch the table from the Database
+        {
+            m_foreignTable = 0;
+            m_currentForeignKey = 0;
+            m_ui->lstForeignKeyAssociations->clear();
+
+            QStringList foreignColumns = m_dbEngine->getColumnsOfTable(m_conn, selected);
+
+            m_ui->lstForeignTablesColumns->clear();
+            for(int i=0; i<foreignColumns.size(); i++)
+            {
+                QString name = foreignColumns[i].left(foreignColumns[i].indexOf("@"));
+                QString type = foreignColumns[i].mid(foreignColumns[i].indexOf("@") + 1);
+                QListWidgetItem* item = new QListWidgetItem(name, m_ui->lstForeignTablesColumns);
+                item->setIcon(IconFactory::getIconForDataType(m_conn->getEngine()->getDTSupplier()->getDT_TYPE(type)));
+            }
         }
     }
-    // now clear the current stuff, it's not valid keeping foreign keys from other tables, when moving to a new table
-    m_ui->lstForeignKeyAssociations->clear();
-    m_currentForeignKey = 0;
 }
 
 void NewTableForm::onForeignTableColumnChange()
 {
     m_ui->lstLocalColumn->clear();
-    QList<QListWidgetItem *> selectedItems = m_ui->lstForeignTablesColumns->selectedItems();
-    for(int i=0; i< selectedItems.size(); i++)
-    {
-        const Column* foreignColumn = m_foreignTable->getColumn(selectedItems[i]->text());
 
-        if(foreignColumn == 0)
+    if(m_foreignTable) // table from version
+    {
+        QList<QListWidgetItem *> selectedItems = m_ui->lstForeignTablesColumns->selectedItems();
+        for(int i=0; i< selectedItems.size(); i++)
         {
-            foreignColumn = m_foreignTable->getColumnFromParents(selectedItems[i]->text());
+            const Column* foreignColumn = m_foreignTable->getColumn(selectedItems[i]->text());
+
             if(foreignColumn == 0)
             {
-                return ;
-            }
-        }
-
-        QStringList parentColumns = m_table->fullColumns();
-        for(int j=0; j<parentColumns.size(); j++)
-        {
-            Column* col = m_table->getColumn(parentColumns[j]);
-            if(col)
-            {
-                if(col->getDataType()->getName() == foreignColumn->getDataType()->getName())
+                foreignColumn = m_foreignTable->getColumnFromParents(selectedItems[i]->text());
+                if(foreignColumn == 0)
                 {
-                    QListWidgetItem* qlwj = new QListWidgetItem(parentColumns[j], m_ui->lstLocalColumn);
-                    qlwj->setIcon(IconFactory::getIconForDataType(col->getDataType()->getType()));
+                    return ;
                 }
             }
-            else
+
+            QStringList parentColumns = m_table->fullColumns();
+            for(int j=0; j<parentColumns.size(); j++)
             {
-                col = m_table->getColumnFromParents(parentColumns[j]);
+                Column* col = m_table->getColumn(parentColumns[j]);
                 if(col)
                 {
                     if(col->getDataType()->getName() == foreignColumn->getDataType()->getName())
@@ -1574,35 +1686,95 @@ void NewTableForm::onForeignTableColumnChange()
                         qlwj->setIcon(IconFactory::getIconForDataType(col->getDataType()->getType()));
                     }
                 }
+                else
+                {
+                    col = m_table->getColumnFromParents(parentColumns[j]);
+                    if(col)
+                    {
+                        if(col->getDataType()->getName() == foreignColumn->getDataType()->getName())
+                        {
+                            QListWidgetItem* qlwj = new QListWidgetItem(parentColumns[j], m_ui->lstLocalColumn);
+                            qlwj->setIcon(IconFactory::getIconForDataType(col->getDataType()->getType()));
+                        }
+                    }
+                }
             }
+            break; // only the first, if any
         }
-
-        break;
     }
+    else // table selected from the database
+    {
+        QList<QListWidgetItem *> selectedItems = m_ui->lstForeignTablesColumns->selectedItems();
+        for(int i=0; i< selectedItems.size(); i++)
+        {
+
+            QStringList parentColumns = m_table->fullColumns();
+            QStringList foreignColumns = m_dbEngine->getColumnsOfTable(m_conn, m_ui->cmbForeignTables->currentText());
+
+            for(int j=0; j<parentColumns.size(); j++)
+            {
+                Column* col = m_table->getColumn(parentColumns[j]);
+                if(col)
+                {
+                    QString foreignName = selectedItems[i]->text();
+                    QString foreignType = "UNKNOWN";
+                    for(int k=0; k<foreignColumns.size(); k++)
+                    {
+                        if(foreignColumns[k].startsWith(foreignName))
+                        {
+                            foreignType = foreignColumns[k].mid(foreignColumns[k].indexOf("@") + 1);
+                            break;
+                        }
+                    }
+                    qDebug() << foreignType << foreignName;
+                    if(col->getDataType()->getType() == m_conn->getEngine()->getDTSupplier()->getDT_TYPE(foreignType))
+                    {
+                        QListWidgetItem* qlwj = new QListWidgetItem(parentColumns[j], m_ui->lstLocalColumn);
+                        qlwj->setIcon(IconFactory::getIconForDataType(col->getDataType()->getType()));
+                    }
+                }
+            }
+
+            break; // the first only
+        }
+    }
+
 }
 
 void NewTableForm::onAddForeignKeyAssociation()
 {
 
     QString foreignColumn, localColumn;
-    const Column* cforeignColumn = NULL;
-    const Column* clocalColumn = NULL;
+    const Column* cforeignColumn = 0;
+    const Column* clocalColumn = 0;
     QList<QListWidgetItem *> selectedItems = m_ui->lstForeignTablesColumns->selectedItems();
-    for(int i=0; i< selectedItems.size(); i++)
+    if(selectedItems.isEmpty())
     {
-        foreignColumn = selectedItems[i]->text();
-        cforeignColumn = m_foreignTable->getColumn(selectedItems[i]->text());
-        if(cforeignColumn == 0)
-        {
-            cforeignColumn = m_foreignTable->getColumnFromParents(selectedItems[i]->text());
-            if(cforeignColumn == 0)
-            {
-                return ; // Shouldn't happen
-            }
-        }
-        break;
+        QMessageBox::critical (this, tr("Error"), tr("Please select two columns: one from the foreign table, one from the local table"), QMessageBox::Ok);
+        return;
     }
 
+    if(m_foreignTable)
+    {
+        for(int i=0; i< selectedItems.size(); i++)
+        {
+            foreignColumn = selectedItems[i]->text();
+            cforeignColumn = m_foreignTable->getColumn(selectedItems[i]->text());
+            if(cforeignColumn == 0)
+            {
+                cforeignColumn = m_foreignTable->getColumnFromParents(selectedItems[i]->text());
+                if(cforeignColumn == 0)
+                {
+                    return ; // Shouldn't happen
+                }
+            }
+            break;
+        }
+    }
+    else
+    {
+        foreignColumn = selectedItems[0]->text();
+    }
 
     selectedItems = m_ui->lstLocalColumn->selectedItems();
     for(int i=0; i< selectedItems.size(); i++)
@@ -1646,15 +1818,32 @@ void NewTableForm::onAddForeignKeyAssociation()
     QTreeWidgetItem* item = new QTreeWidgetItem((QTreeWidget*)0, a);
 
     // sets the data, this will be used on the "on click on this item" method to correctly populate the controls
-    QVariant var(m_foreignTable->getName());
+    QVariant var(m_ui->cmbForeignTables->currentText());
     item->setData(0, Qt::UserRole, var);
 
-    item->setIcon(0, IconFactory::getIconForDataType(cforeignColumn->getDataType()->getType()));
-    item->setIcon(1, IconFactory::getIconForDataType(clocalColumn->getDataType()->getType()));
+    if(cforeignColumn)
+    {
+        item->setIcon(0, IconFactory::getIconForDataType(cforeignColumn->getDataType()->getType()));
+        item->setIcon(1, IconFactory::getIconForDataType(clocalColumn->getDataType()->getType()));
+    }
+    else
+    {
+        item->setIcon(0, m_ui->lstForeignTablesColumns->currentItem()->icon());
+        item->setIcon(1, m_ui->lstLocalColumn->currentItem()->icon());
+    }
 
     m_ui->lstForeignKeyAssociations->addTopLevelItem(item);
 
-    ForeignKey::ColumnAssociation* fca = new ForeignKey::ColumnAssociation(m_foreignTable, cforeignColumn, m_table, clocalColumn);
+    ForeignKey::ColumnAssociation* fca = 0;
+    if(m_foreignTable)
+    {
+        fca = new ForeignKey::ColumnAssociation(m_foreignTable, cforeignColumn, m_table, clocalColumn);
+    }
+    else
+    {
+        fca = new ForeignKey::ColumnAssociation(m_ui->cmbForeignTables->currentText(),
+                                                m_ui->lstForeignTablesColumns->currentItem()->text(), m_table->getName(), localColumn);
+    }
     m_currentForeignKey->addAssociation(fca);
 }
 
@@ -1679,6 +1868,9 @@ void NewTableForm::onRemoveForeignKeyAssociation()
 
 void NewTableForm::onSelectAssociation(QTreeWidgetItem* current, int)
 {
+    // do nothing if we are working on the database
+    if(m_version == 0) return;
+
     QVariant qv = current->data(0, Qt::UserRole);
     QString tabName = qv.toString();
     m_foreignTable = m_version->getTable(tabName);
@@ -1754,7 +1946,8 @@ void NewTableForm::onBtnAddForeignKey()
     }
 
     // check for circular reference, meaning: if the "foreign table" has any foreign keys to this table, do not allow it
-    if(m_currentForeignKey->getForeignTable()->getForeignKeyToTable(m_table) != 0)
+    // this works only in the project mode
+    if(m_currentForeignKey->getForeignTable() && m_currentForeignKey->getForeignTable()->getForeignKeyToTable(m_table) != 0)
     {
         QMessageBox::critical (this, tr("Error"), tr("Trying to create a circular reference to this table, since ") + m_currentForeignKey->getForeignTableName() +
                                tr(" already contains a foreign key to this table. This is not allowed."), QMessageBox::Ok);
@@ -1794,16 +1987,20 @@ void NewTableForm::onBtnAddForeignKey()
         m_ui->lstForeignKeys->addTopLevelItem(twi);
         m_currentForeignKey->setLocation(twi);
         m_table->addForeignKey(m_currentForeignKey);
-        // now, here create an index in the _foreign table_ which has columns the foreign columns of the index (this is required for some versions of MySQL, we'll see for the other ones)
-        QString fktName = m_currentForeignKey->getForeignTableName();
-        Table* tbl = m_version->getTable(fktName);
-        Index* generatedIndex = tbl->createAutoIndex(m_currentForeignKey->foreignColumns());
-        m_currentForeignKey->addAutogeneratedIndex(generatedIndex);
+        // now, here create an index in the _foreign table_ which has for columns
+        // the foreign columns of the index (this is required for some versions of MySQL, we'll see for the other ones)
+        if(m_version) // but only if we are not working in the DB
+        {
+            QString fktName = m_currentForeignKey->getForeignTableName();
+            Table* tbl = m_version->getTable(fktName);
+            Index* generatedIndex = tbl->createAutoIndex(m_currentForeignKey->foreignColumns());
+            m_currentForeignKey->addAutogeneratedIndex(generatedIndex);
+        }
     }
 
     // now: if this is an oop solution browse through all the table instances if m_table was instantiated
     // and see if the tables required for the correct FK functionality are there or not
-    if(m_table->version()->getProject()->oopProject())
+    if(m_table->version() && m_table->version()->getProject()->oopProject())
     {
         bool currentTableInstantiated = false;
         QVector<TableInstance*> currentTablesInstances;
@@ -2310,11 +2507,29 @@ void NewTableForm::presentSql(Project *, Version *)
 {
     QString fs = "";
     QHash<QString,QString> fo = Configuration::instance().sqlGenerationOptions();
-    fo["FKSposition"] = "OnlyInternal";
-    finalSql = m_project->getEngine()->getSqlGenerator()->generateCreateTableSql(m_table, fo, m_table->getName(), QMap<QString, QString>(), 0);
-    if(!Workspace::getInstance()->currentProjectIsOop())
+
+    if(m_dbEngine && m_conn)
     {
-        finalSql << m_project->getEngine()->getSqlGenerator()->generateDefaultValuesSql(m_table, fo);
+        fo["FKSposition"] = "InTable";
+    }
+    else
+    {
+        fo["FKSposition"] = "OnlyInternal";
+    }
+
+    DatabaseEngine* eng = m_project?m_project->getEngine():m_dbEngine;
+    finalSql = eng->getSqlGenerator()->generateCreateTableSql(m_table, fo, m_table->getName(), QMap<QString, QString>(), 0);
+
+    if(m_project)
+    {
+        if(!Workspace::getInstance()->currentProjectIsOop())
+        {
+            finalSql << m_project->getEngine()->getSqlGenerator()->generateDefaultValuesSql(m_table, fo);
+        }
+    }
+    else // in DB created table always might have default values
+    {
+        finalSql << eng->getSqlGenerator()->generateDefaultValuesSql(m_table, fo);
     }
 
     for(int i=0; i< finalSql.size(); i++)
@@ -2444,21 +2659,29 @@ void NewTableForm::onDatatypeComboChange(QString)
                 QMessageBox::critical (this, tr("Error"), tr("Cannot change the type of the columns since it's participating in Foreign Key. Please change the following foreign keys and try again.")+ s, QMessageBox::Ok);
                 return;
             }
-            // 2. no other column is referencing this column in the DB through a foreign key from all the tables in the version
-            QVector<Table*> otherTablesReferencingThiscolumn = Workspace::getInstance()->workingVersion()->getTablesReferencingAColumnThroughForeignKeys(m_currentColumn);
-            if(otherTablesReferencingThiscolumn.size() > 0)
+
+            if(m_version)
             {
-                QString s = "";
-                for(int i=0; i<otherTablesReferencingThiscolumn.size(); i++)
+                // 2. no other column is referencing this column in the DB through a foreign key from all the tables in the version
+                // but only if we have a version
+                QVector<Table*> otherTablesReferencingThiscolumn = Workspace::getInstance()->workingVersion()->getTablesReferencingAColumnThroughForeignKeys(m_currentColumn);
+                if(otherTablesReferencingThiscolumn.size() > 0)
                 {
-                    s += "\n-" + otherTablesReferencingThiscolumn.at(i)->getName();
+                    QString s = "";
+                    for(int i=0; i<otherTablesReferencingThiscolumn.size(); i++)
+                    {
+                        s += "\n-" + otherTablesReferencingThiscolumn.at(i)->getName();
+                    }
+                    QMessageBox::critical (this, tr("Error"), tr("Cannot change the type of the columns since it's participating in Foreign Keys. Please change the following tables and try again.")+ s, QMessageBox::Ok);
+                    return;
                 }
-                QMessageBox::critical (this, tr("Error"), tr("Cannot change the type of the columns since it's participating in Foreign Keys. Please change the following tables and try again.")+ s, QMessageBox::Ok);
-                return;
             }
         }
 
-        m_currentColumn->setDataType(m_version->getDataType(m_ui->cmbNewColumnType->currentText()));
+        m_currentColumn->setDataType(m_version?
+                                         m_version->getDataType(m_ui->cmbNewColumnType->currentText()):
+                                         getDataType(m_ui->cmbNewColumnType->currentText())
+                                              );
         //m_currentColumn->getLocation()->setIcon(COL_POS_DT, m_currentColumn->getDataType()->getIcon());
         m_currentColumn->getLocation()->setText(COL_POS_DT, m_currentColumn->getDataType()->getName());
 
@@ -2478,7 +2701,12 @@ void NewTableForm::onDatatypeComboChange(QString)
     {
         if(m_wspForColumn)
         {
-            Column* tCol = new Column(QUuid::createUuid().toString(), "temp",(m_version->getDataType(m_ui->cmbNewColumnType->currentText())), false, m_version);
+            Column* tCol = new Column(QUuid::createUuid().toString(),
+                                      "temp",
+                                      m_version?
+                                          (m_version->getDataType(m_ui->cmbNewColumnType->currentText())):
+                                          getDataType(m_ui->cmbNewColumnType->currentText()),
+                                      false, m_version);
             m_wspForColumn->taylorToSpecificObject(tCol);
             delete tCol;
         }
@@ -2617,7 +2845,7 @@ void NewTableForm::prepareSpsTabsForIndex(Index* idx)
 QMenu* NewTableForm::buildPopupForSpsForColumnInIndex()
 {
     QMenu* menu = new QMenu(this);
-    DatabaseEngine* eng = Workspace::getInstance()->currentProjectsEngine();
+    DatabaseEngine* eng = m_dbEngine?m_dbEngine:Workspace::getInstance()->currentProjectsEngine();
 
     QMenu* mysqlsMenu = menu->addMenu(IconFactory::getMySqlIcon(),
                   eng->getDatabaseEngineName());
@@ -2785,4 +3013,16 @@ void NewTableForm::onInstantiate()
     MainWindow::instance()->getGuiElements()->getProjectTree()->setCurrentItem(tinst->getLocation());
     MainWindow::instance()->getGuiElements()->getProjectTree()->setCurrentItem(m_table->getLocation());
 
+}
+
+UserDataType* NewTableForm::getDataType(const QString& name)
+{
+    for(int i=0; i< m_availableDataTypes.size(); i++)
+    {
+        if(m_availableDataTypes.at(i)->getName() == name)
+        {
+            return const_cast<UserDataType*>(m_availableDataTypes.at(i));  // yeah, this sucks
+        }
+    }
+    return 0;
 }

@@ -7,9 +7,9 @@
 #include "db_DatabaseBuiltinFunction.h"
 #include "gui_colors.h"
 
-SqlHighlighter::SqlHighlighter(QTextDocument *parent, QStringList keywords, QList<UserDataType> numericTypes, QList<UserDataType> booleanTypes,
-                               QList<UserDataType> textTypes, QList<UserDataType> blobTypes, QList<UserDataType> dateTimeTypes, QList<UserDataType> miscTypes,
-                               QVector<Table*> tables) : QSyntaxHighlighter(parent)
+SqlHighlighter::SqlHighlighter(QTextDocument *parent, const QStringList &keywords, const QList<UserDataType> &numericTypes, const QList<UserDataType> &booleanTypes,
+                               const QList<UserDataType> &textTypes, const QList<UserDataType> &blobTypes, const QList<UserDataType> &dateTimeTypes, const QList<UserDataType> &miscTypes,
+                               const QStringList &tables) : QSyntaxHighlighter(parent)
 {
     HighlightingRule rule;  // this is sort of reused
 
@@ -66,14 +66,14 @@ SqlHighlighter::SqlHighlighter(QTextDocument *parent, QStringList keywords, QLis
     tableNamesFormat.setFontWeight(QFont::Bold);
     for(int i=0; i< tables.size(); i++)
     {
-        QString p = "\\b" + tables.at(i)->getName() + "\\b";
+        QString p = "\\b" + tables.at(i)+ "\\b";
         rule.pattern = QRegExp(p);
         rule.format = tableNamesFormat;
         highlightingRules.append(rule);
     }
 
     // the column names
-    columnNamesFormat.setForeground(columnColor);
+    /*columnNamesFormat.setForeground(columnColor);
     columnNamesFormat.setFontWeight(QFont::Bold);
     for(int i=0; i< tables.size(); i++)
     {
@@ -84,7 +84,7 @@ SqlHighlighter::SqlHighlighter(QTextDocument *parent, QStringList keywords, QLis
             rule.format = columnNamesFormat;
             highlightingRules.append(rule);
         }
-    }
+    }*/
 
     // the one line comment (if you move this before the the tables the parser will highlight the table names in the comments too, so leave it here)
     singleLineCommentFormat.setForeground(Qt::darkGreen);

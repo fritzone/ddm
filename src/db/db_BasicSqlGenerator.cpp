@@ -275,8 +275,25 @@ QStringList BasicSqlGenerator::foreignKeyParticipants(Table *table, const QMap<Q
         {
 
             ForeignKey::ColumnAssociation* assocJ = fkI->getAssociations().at(j);
-            foreignKeysLocal += assocJ->getLocalColumn()->getName();
-            foreignKeysOther += assocJ->getForeignColumn()->getName();
+
+            if(assocJ->getLocalColumn())
+            {
+                foreignKeysLocal += assocJ->getLocalColumn()->getName();
+            }
+            else
+            {
+                foreignKeysLocal += assocJ->getSLocalColumn();
+            }
+
+            if(assocJ->getForeignColumn())
+            {
+                foreignKeysOther += assocJ->getForeignColumn()->getName();
+            }
+            else
+            {
+                foreignKeysOther += assocJ->getSForeignColumn();
+            }
+
 
             if(j < fkI->getAssociations().size() - 1)
             {
@@ -573,7 +590,7 @@ QStringList BasicSqlGenerator::generateTriggerSql(Trigger* t, const QHash<QStrin
     return result;
 }
 
-QString BasicSqlGenerator::basicCreateTableScript(Table* table, const QStringList& foreignKeys, const QString& tabName) const
+QString BasicSqlGenerator::basicCreateTableScript(Table* table, const QStringList& foreignKeys, const QString& tabName, bool needfk) const
 {
     QString createTable = startCreateTableCommand(table);
 
@@ -599,7 +616,7 @@ QString BasicSqlGenerator::basicCreateTableScript(Table* table, const QStringLis
     }
 
     // now check the foreign keys if any
-    if(m_fkpos == Configuration::InTable && foreignKeys.size() > 0)
+    if(m_fkpos == Configuration::InTable && foreignKeys.size() > 0 && needfk)
     {
         createTable += strComma + strNewline + generateForeignKeys(foreignKeys);
     }
