@@ -25,6 +25,7 @@ public:
     virtual QString defaultSqlForGenericType(const QString& genericType);
     virtual bool isValid(const UserDataType* udt);
     virtual QString typeForSqlType(const QString& sqlType);
+    virtual DT_TYPE getDT_TYPE(const QString& usedSql);
 
 };
 

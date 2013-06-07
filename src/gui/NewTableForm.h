@@ -36,7 +36,7 @@ class NewTableForm : public SourceCodePresenterWidget
     Q_OBJECT
 public:
 
-    NewTableForm(DatabaseEngine* engine, Project* prj, Version *v, QWidget *parent = 0, bool newTable = false);
+    NewTableForm(DatabaseEngine* engine, Project* prj, Version *v, Connection *conn, QWidget *parent = 0, bool newTable = false);
     ~NewTableForm();
 
     void focusOnName();
@@ -56,6 +56,7 @@ public:
     {
         m_currentColumn = col;
     }
+    void resetForeignTablesCombo(const QStringList &tableNames);
     void resetForeignTablesCombo();
 
     virtual void presentSql(Project*, Version* v);
@@ -204,6 +205,8 @@ private:
 
     void disableEditingControls(bool disabled);
 
+    UserDataType* getDataType(const QString& name);
+
 private:
     Ui::NewTableForm *m_ui;
     // the DB engine
@@ -247,6 +250,8 @@ private:
 
     QMap<QString, QComboBox*> m_combos;
 
+    QVector<UserDataType*> m_availableDataTypes;
+    Connection* m_conn;
 };
 
 #endif // NEWTABLEFORM_H

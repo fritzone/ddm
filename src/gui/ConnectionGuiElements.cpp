@@ -70,6 +70,7 @@ void ConnectionGuiElements::createGuiElements()
     QObject::connect(m_connectionsTree, SIGNAL(itemDoubleClicked(QTreeWidgetItem*,int)), MainWindow::instance(), SLOT(onConnectionItemDoubleClicked(QTreeWidgetItem*,int)));
     QObject::connect(ContextMenuCollection::getInstance()->getAction_BrowsedTableInject(), SIGNAL(triggered()), MainWindow::instance(), SLOT(onInjectBrowsedTable()));
     QObject::connect(ContextMenuCollection::getInstance()->getAction_BrowsedTableBrowse(), SIGNAL(triggered()), MainWindow::instance(), SLOT(onBrowseBrowsedTable()));
+    QObject::connect(ContextMenuCollection::getInstance()->getAction_ConnectionNewTable(), SIGNAL(triggered()), MainWindow::instance(), SLOT(onConnectionCreateTable()));
 
 }
 

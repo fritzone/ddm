@@ -669,13 +669,15 @@ SqlForm* VersionGuiElements::getSqlForm()
 NewTableForm* VersionGuiElements::getTableFormForNewTable()
 {
     return m_newTableForm = new NewTableForm(Workspace::getInstance()->currentProjectsEngine(),
-                                             Workspace::getInstance()->currentProject(), m_version, MainWindow::instance(), true);
+                                             Workspace::getInstance()->currentProject(), m_version, 0,
+                                             MainWindow::instance(), true);
 }
 
 NewTableForm* VersionGuiElements::getTableFormForExistingTable()
 {
     return m_existingTableForm = new NewTableForm(Workspace::getInstance()->currentProjectsEngine(),
-                                                  Workspace::getInstance()->currentProject(), m_version, MainWindow::instance(), false);
+                                                  Workspace::getInstance()->currentProject(), m_version, 0,
+                                                  MainWindow::instance(), false);
 }
 
 ProcedureForm* VersionGuiElements::getProcedureForm(ProcedureFormMode m)

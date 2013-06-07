@@ -251,7 +251,7 @@ QString SqliteSQLGenerator::createTableOnlyScript(Table* table,
                                             const QString& tabName,
                                             const Connection */*pdest*/) const
 {
-    QString createTable = basicCreateTableScript(table, foreignKeys, tabName);
+    QString createTable = basicCreateTableScript(table, foreignKeys, tabName, true);
     // done
     createTable += strSemicolon + strNewline;
     return createTable;

@@ -66,7 +66,7 @@ TextEditWithCodeCompletion::TextEditWithCodeCompletion(QWidget* p, Connection* c
                                        dtSupplier->blobTypes(),
                                        dtSupplier->dateTimeTypes(),
                                        dtSupplier->miscTypes(),
-                                       Workspace::getInstance()->workingVersion()->getTables());
+                                       Workspace::getInstance()->workingVersion()->getTableNames());
         dbKeywords = Workspace::getInstance()->currentProjectsEngine()->getKeywords();
         funcs = Workspace::getInstance()->currentProjectsEngine()->getBuiltinFunctions();
         QVector<Table*> t = Workspace::getInstance()->workingVersion()->getTables();
@@ -88,7 +88,7 @@ TextEditWithCodeCompletion::TextEditWithCodeCompletion(QWidget* p, Connection* c
                                        c->getEngine()->getDTSupplier()->blobTypes(),
                                        c->getEngine()->getDTSupplier()->dateTimeTypes(),
                                        c->getEngine()->getDTSupplier()->miscTypes(),
-                                       QVector<Table*>());
+                                       QStringList());
             dbKeywords = c->getEngine()->getKeywords();
             funcs = c->getEngine()->getBuiltinFunctions();
             m_tabs = c->getTables();
@@ -254,6 +254,13 @@ void TextEditWithCodeCompletion::populateCodeCompletionListboxWithColumnsOfTable
     if(!Workspace::getInstance()->hasCurrentSolution())
     {
         tcs  = m_connection->getEngine()->getColumnsOfTable(m_connection, tabName);
+        QStringList newtcs;
+        for(int i=0; i<tcs.size(); i++)
+        {
+            QString temp = tcs[i].left(tcs[i].indexOf("@"));
+            newtcs.append(temp);
+        }
+        tcs = newtcs;
     }
     else
     {

@@ -197,6 +197,32 @@ QVector<UserDataType*> Workspace::loadDefaultDatatypesIntoCurrentSolution(Soluti
     }
 }
 
+QVector<UserDataType *> Workspace::loadDefaultDatatypesIntoCurrentSolution(DatabaseEngine* eng)
+{
+    QDomDocument doc ("DBM");
+    QFile file (QApplication::applicationDirPath() + "/rsrc/" + eng->getDefaultDatatypesLocation());
+    if (file.open(QIODevice::ReadOnly))
+    {
+        if (!doc.setContent(&file))
+        {
+            file.close();
+            return QVector<UserDataType*>();
+        }
+        file.close();
+
+        QDomElement docElem = doc.documentElement();
+        Solution* tempSolution = new Solution("");
+        DeserializationFactory::createSolution(tempSolution, doc, docElem.firstChild().toElement());
+        QVector<UserDataType*> dts = tempSolution->currentProject()->getWorkingVersion()->getDataTypes();
+
+        return dts;
+    }
+    else
+    {
+        return QVector<UserDataType*>();
+    }
+}
+
 Table* Workspace::pasteTable(Version* v)
 {
     Table* tab = ClipboardFactory::pasteTable(v);

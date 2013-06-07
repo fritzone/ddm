@@ -109,6 +109,8 @@ public:
      */
     QVector<UserDataType*> loadDefaultDatatypesIntoCurrentSolution(Solution *s);
 
+    QVector<UserDataType*> loadDefaultDatatypesIntoCurrentSolution(DatabaseEngine *eng);
+
     /**
      * Pastes a table from the clipboard
      */

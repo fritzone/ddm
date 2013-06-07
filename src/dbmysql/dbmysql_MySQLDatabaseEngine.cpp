@@ -466,11 +466,13 @@ QStringList MySQLDatabaseEngine::getColumnsOfTable(Connection *c, const QString 
     query.exec("desc " + tableName);
 
     int fieldNo = query.record().indexOf("Field");
+    int fieldType = query.record().indexOf("Type");
 
     while(query.next())
     {
         QString field_name = query.value(fieldNo).toString();
-        result.append(field_name);
+        QString field_type = query.value(fieldType).toString();
+        result.append(field_name + "@" + field_type);
     }
     return result;
 }

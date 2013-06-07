@@ -74,7 +74,7 @@ TableComparisonForm::TableComparisonForm(Mode m, QWidget *parent) : QWidget(pare
                                      Workspace::getInstance()->currentProjectsEngine()->getDTSupplier()->blobTypes(),
                                      Workspace::getInstance()->currentProjectsEngine()->getDTSupplier()->dateTimeTypes(),
                                      Workspace::getInstance()->currentProjectsEngine()->getDTSupplier()->miscTypes(),
-                                     Workspace::getInstance()->workingVersion()->getTables());
+                                     Workspace::getInstance()->workingVersion()->getTableNames());
 
     QObject::connect(ui->cmbVersionLeft, SIGNAL(activated(QString)), this, SLOT(leftItemSelected(QString)));
     QObject::connect(ui->cmbVersionRight, SIGNAL(activated(QString)), this, SLOT(rightItemSelected(QString)));

@@ -72,6 +72,8 @@ public:
      */
     virtual bool isValid(const UserDataType* udt) = 0;
 
+    virtual DT_TYPE getDT_TYPE(const QString& usedSql) = 0;
+
 /*
   Later we will move the SQL type combo box in the "Advanced" section of
   the GUI and introduce a new data type: real and hide the SQL in the

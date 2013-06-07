@@ -104,6 +104,7 @@ public:
     virtual void lockVersion(LockableElement::LockType);
     virtual Table* getDescendantTable(Table*);
     virtual TableInstance* getDescendantTableInstance(TableInstance*);
+    virtual QStringList getTableNames() const;
 
     void createTreeItems(GuiElements* gui, ContextMenuEnabledTreeWidgetItem* projectItem, int idxAfter);
     void deleteTableInstance(TableInstance *tinst, TableDeletionAction*& );

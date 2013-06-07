@@ -17,6 +17,7 @@ QList<UserDataType> MySQLDTSupplier::textTypes()
     static UserDataType mysql_dt_longtext("LONGTEXT", DT_STRING, nullUid, 0);
 
     static QList<UserDataType> result;
+    result.clear();
 
     result.append(mysql_dt_char);
     result.append(mysql_dt_varchar);
@@ -45,6 +46,7 @@ QList<UserDataType> MySQLDTSupplier::numericTypes()
     static UserDataType mysql_dt_bit("BIT", DT_NUMERIC, nullUid, 0);
 
     static QList<UserDataType> result;
+    result.clear();
 
     result.append(mysql_dt_int);
     result.append(mysql_dt_integer);
@@ -67,6 +69,7 @@ QList<UserDataType> MySQLDTSupplier::booleanTypes()
     static UserDataType mysql_dt_bool("BOOL", DT_BOOLEAN, nullUid, 0);
 
     static QList<UserDataType> result;
+    result.clear();
 
     result.append(mysql_dt_bool);
 
@@ -83,6 +86,7 @@ QList<UserDataType> MySQLDTSupplier::dateTimeTypes()
     static UserDataType mysql_dt_year("YEAR", DT_DATETIME, nullUid, 0);
 
     static QList<UserDataType> result;
+    result.clear();
 
     result.append(mysql_dt_date);
     result.append(mysql_dt_datetime);
@@ -103,6 +107,7 @@ QList<UserDataType> MySQLDTSupplier::blobTypes()
     static UserDataType mysql_dt_longblob("LONGBLOB", DT_BLOB, nullUid, 0);
 
     static QList<UserDataType> result;
+    result.clear();
 
     result.append(mysql_dt_binary);
     result.append(mysql_dt_varbinary);
@@ -120,6 +125,7 @@ QList<UserDataType> MySQLDTSupplier::miscTypes()
     static UserDataType mysql_dt_set("SET", DT_MISC, nullUid, 0);
 
     static QList<UserDataType> result;
+    result.clear();
 
     result.append(mysql_dt_enum);
     result.append(mysql_dt_set);
@@ -139,6 +145,7 @@ QList<UserDataType> MySQLDTSupplier::spatialTypes()
     static UserDataType mysql_dt_geometrycollection("GEOMETRYCOLLECTION", DT_SPATIAL, nullUid, 0);
 
     static QList<UserDataType> result;
+    result.clear();
 
     result.append(mysql_dt_geometry);
     result.append(mysql_dt_point);
@@ -261,4 +268,46 @@ QString MySQLDTSupplier::typeForSqlType(const QString& sqlType)
 
     // the spatial data types don't have anything like this
     return strSpatial;
+}
+
+DT_TYPE MySQLDTSupplier::getDT_TYPE(const QString& usedSql)
+{
+    if(usedSql.toUpper().startsWith("CHAR")) return DT_STRING;
+    if(usedSql.toUpper().startsWith("VARCHAR")) return DT_STRING;
+    if(usedSql.toUpper().startsWith("TINYTEXT")) return DT_STRING;
+    if(usedSql.toUpper().startsWith("TEXT")) return DT_STRING;
+    if(usedSql.toUpper().startsWith("MEDIUMTEXT")) return DT_STRING;
+    if(usedSql.toUpper().startsWith("LONGTEXT")) return DT_STRING;
+
+    if(usedSql.toUpper().startsWith("INT")) return DT_NUMERIC;
+    if(usedSql.toUpper().startsWith("INTEGER")) return DT_NUMERIC;
+    if(usedSql.toUpper().startsWith("TINYINT")) return DT_NUMERIC;
+    if(usedSql.toUpper().startsWith("SMALLINT")) return DT_NUMERIC;
+    if(usedSql.toUpper().startsWith("MEDIUMINT")) return DT_NUMERIC;
+    if(usedSql.toUpper().startsWith("BIGINT")) return DT_NUMERIC;
+    if(usedSql.toUpper().startsWith("DECIMAL")) return DT_NUMERIC;
+    if(usedSql.toUpper().startsWith("NUMERIC")) return DT_NUMERIC;
+    if(usedSql.toUpper().startsWith("FLOAT")) return DT_NUMERIC;
+    if(usedSql.toUpper().startsWith("REAL")) return DT_NUMERIC;
+    if(usedSql.toUpper().startsWith("DOUBLE PRECISION")) return DT_NUMERIC;
+    if(usedSql.toUpper().startsWith("BIT")) return DT_NUMERIC;
+
+    if(usedSql.toUpper().startsWith("DATE")) return DT_DATETIME;
+    if(usedSql.toUpper().startsWith("DATETIME")) return DT_DATETIME;
+    if(usedSql.toUpper().startsWith("TIME")) return DT_DATETIME;
+    if(usedSql.toUpper().startsWith("TIMESTAMP")) return DT_DATETIME;
+    if(usedSql.toUpper().startsWith("YEAR")) return DT_DATETIME;
+
+    if(usedSql.toUpper().startsWith("BINARY")) return DT_BLOB;
+    if(usedSql.toUpper().startsWith("VARBINARY")) return DT_BLOB;
+    if(usedSql.toUpper().startsWith("TINYBLOB")) return DT_BLOB;
+    if(usedSql.toUpper().startsWith("BLOB")) return DT_BLOB;
+    if(usedSql.toUpper().startsWith("MEDIUMBLOB")) return DT_BLOB;
+    if(usedSql.toUpper().startsWith("LONGBLOB")) return DT_BLOB;
+
+    if(usedSql.toUpper().startsWith("SET")) return DT_MISC;
+    if(usedSql.toUpper().startsWith("ENUM")) return DT_MISC;
+
+    // the spatial data types don't have anything like this
+    return DT_INVALID;
 }

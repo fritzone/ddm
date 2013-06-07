@@ -57,6 +57,12 @@ public:
     virtual const QVector<Table*>& getTables() const = 0;
 
     /**
+     * @brief getTableNames
+     * @return
+     */
+    virtual QStringList getTableNames() const = 0;
+
+    /**
      * Return the table instances
      */
     virtual const QVector<TableInstance*> & getTableInstances() const = 0;
