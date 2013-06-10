@@ -118,11 +118,35 @@
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout_17">
         <item>
-         <widget class="QLineEdit" name="txtTableName">
-          <property name="placeholderText">
-           <string>TableName</string>
-          </property>
-         </widget>
+         <layout class="QVBoxLayout" name="verticalLayout_21">
+          <item>
+           <widget class="QToolButton" name="btnCreateTableInDb">
+            <property name="toolTip">
+             <string>Create the table</string>
+            </property>
+            <property name="statusTip">
+             <string>Create the table</string>
+            </property>
+            <property name="whatsThis">
+             <string>Create the table</string>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="icon">
+             <iconset resource="../dbm.qrc">
+              <normaloff>:/images/actions/images/actions/deploy.png</normaloff>:/images/actions/images/actions/deploy.png</iconset>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="txtTableName">
+            <property name="placeholderText">
+             <string>TableName</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
         </item>
         <item>
          <widget class="QToolButton" name="btnInstantiate">
@@ -152,7 +176,7 @@
          <enum>QTabWidget::Rounded</enum>
         </property>
         <property name="currentIndex">
-         <number>0</number>
+         <number>3</number>
         </property>
         <widget class="QWidget" name="tabWidgetPage1">
          <attribute name="icon">
@@ -1447,7 +1471,6 @@
   </layout>
  </widget>
  <tabstops>
-  <tabstop>txtTableName</tabstop>
   <tabstop>txtNewColumnName</tabstop>
   <tabstop>cmbNewColumnType</tabstop>
   <tabstop>txtColumnDescription</tabstop>
@@ -2178,6 +2201,38 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>tableStartupValues</sender>
+   <signal>cellChanged(int,int)</signal>
+   <receiver>NewTableForm</receiver>
+   <slot>onTableStartupValueChanged(int,int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>460</x>
+     <y>400</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>408</x>
+     <y>350</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnCreateTableInDb</sender>
+   <signal>clicked()</signal>
+   <receiver>NewTableForm</receiver>
+   <slot>onCreateTableInDb()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>91</x>
+     <y>25</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>408</x>
+     <y>350</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <designerdata>
   <property name="gridDeltaX">
@@ -2249,5 +2304,7 @@
   <slot>onLockUnlock(bool)</slot>
   <slot>onUndelete()</slot>
   <slot>onInstantiate()</slot>
+  <slot>onTableStartupValueChanged(int,int)</slot>
+  <slot>onCreateTableInDb()</slot>
  </slots>
 </ui>

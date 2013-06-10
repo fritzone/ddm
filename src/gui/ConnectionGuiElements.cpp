@@ -50,7 +50,6 @@ void ConnectionGuiElements::createGuiElements()
     // context handler
     m_connectionsContextMenuHandler = new ContextMenuHandler();
     m_connectionsTree->setItemDelegate(new ContextMenuDelegate(m_connectionsContextMenuHandler, m_connectionsTree));
-    m_connectionsTreeDock->setWidget(m_connectionsTree);
 
     // and finally all the connections
     const QVector<Connection*>& cons = ConnectionManager::instance()->connections();
@@ -71,6 +70,26 @@ void ConnectionGuiElements::createGuiElements()
     QObject::connect(ContextMenuCollection::getInstance()->getAction_BrowsedTableInject(), SIGNAL(triggered()), MainWindow::instance(), SLOT(onInjectBrowsedTable()));
     QObject::connect(ContextMenuCollection::getInstance()->getAction_BrowsedTableBrowse(), SIGNAL(triggered()), MainWindow::instance(), SLOT(onBrowseBrowsedTable()));
     QObject::connect(ContextMenuCollection::getInstance()->getAction_ConnectionNewTable(), SIGNAL(triggered()), MainWindow::instance(), SLOT(onConnectionCreateTable()));
+
+    QMainWindow *window = new QMainWindow(0);
+
+    bar = new QToolBar(window);
+    bar->setObjectName(QString::fromUtf8("connectionToolbar"));
+    bar->setEnabled(true);
+    bar->setAcceptDrops(true);
+    bar->setMovable(false);
+    bar->setIconSize(QSize(16, 16));
+    bar->setToolButtonStyle(Qt::ToolButtonIconOnly);
+    bar->setFloatable(false);
+
+    window->setParent(m_connectionsTreeDock);
+    window->setCentralWidget(m_connectionsTree);
+    m_connectionsTreeDock->setWidget(window);
+
+    bar->addAction(ContextMenuCollection::getInstance()->getAction_ConnectionNewTable());
+
+    window->addToolBar(bar);
+
 
 }
 

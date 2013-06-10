@@ -710,7 +710,6 @@ bool MySQLDatabaseEngine::executeSql(Connection* c, const QStringList& sqls, con
         {
             QSqlQuery query(db);
 
-//            qDebug() << lastSql  << uid;
             if(!query.exec(lastSql))
             {
                 lastError = formatLastError(QObject::tr("Cannot run a query"), query.lastError());
@@ -722,11 +721,9 @@ bool MySQLDatabaseEngine::executeSql(Connection* c, const QStringList& sqls, con
                     db.rollback();
                 }
 
-//                qDebug() << " <-- ERROR" << lastError ;
                 db.close();
                 return false;
             }
-//            qDebug() << " <-- OK";
         }
     }
 

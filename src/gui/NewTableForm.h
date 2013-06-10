@@ -75,6 +75,7 @@ public slots:
     void onLockUnlock(bool);
     void onUndelete();
     void onInstantiate();
+    void onCreateTableInDb();
 
     // on the columns page
     void onAddColumn();
@@ -124,6 +125,7 @@ public slots:
     void onSaveStartupValuestoCSV();
     void onLoadStartupValuesFromCSV();
     void onDeleteDefaultRow();
+    void onTableStartupValueChanged(int,int);
 
     // description page
     void onChangeDescription();
