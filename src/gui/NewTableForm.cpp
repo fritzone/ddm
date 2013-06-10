@@ -150,6 +150,14 @@ NewTableForm::NewTableForm(DatabaseEngine* db, Project* prj, Version* v, Connect
         m_ui->btnInstantiate->hide();
     }
 
+    // are we deploying into a database?
+    m_ui->btnCreateTableInDb->hide();
+    if(m_dbEngine && m_conn)
+    {
+        m_ui->btnInstantiate->hide();
+        m_ui->btnCreateTableInDb->show();
+    }
+
 }
 
 NewTableForm::~NewTableForm()
@@ -2114,17 +2122,42 @@ void NewTableForm::populateFKGui(ForeignKey * fk)
     const QVector<ForeignKey::ColumnAssociation*>& assocs = fk->getAssociations();
     for(int i=0; i<assocs.size(); i++)
     {
-        tabName = assocs[i]->getForeignTable()->getName();
-        QStringList a(assocs[i]->getForeignColumn()->getName());
-        a.append(assocs[i]->getLocalColumn()->getName());
+        tabName = assocs[i]->getForeignTable()?assocs[i]->getForeignTable()->getName():assocs[i]->getSForeignTable();
+        QString sForeignColumn = assocs[i]->getForeignColumn()?assocs[i]->getForeignColumn()->getName():assocs[i]->getSForeignColumn();
+        QStringList a(sForeignColumn);
+
+        QString sLocalColumn = assocs[i]->getLocalColumn()?assocs[i]->getLocalColumn()->getName():assocs[i]->getSLocalColumn();
+        a.append(sLocalColumn);
         QTreeWidgetItem* item = new QTreeWidgetItem((QTreeWidget*)0, a);
 
         // sets the data, this will be used on the "on click on this item" method to correctly populate the controls
-        QVariant var(assocs[i]->getForeignTable()->getName());
+        QVariant var(assocs[i]->getForeignTable()?assocs[i]->getForeignTable()->getName():assocs[i]->getSForeignTable());
         item->setData(0, Qt::UserRole, var);
 
-        item->setIcon(0, IconFactory::getIconForDataType(assocs[i]->getForeignColumn()->getDataType()->getType()));
-        item->setIcon(1, IconFactory::getIconForDataType(assocs[i]->getLocalColumn()->getDataType()->getType()));
+        if(m_version)
+        {
+            item->setIcon(0, IconFactory::getIconForDataType(assocs[i]->getForeignColumn()->getDataType()->getType()));
+            item->setIcon(1, IconFactory::getIconForDataType(assocs[i]->getLocalColumn()->getDataType()->getType()));
+        }
+        else
+        {
+            // retrieve the data type of the column
+            QStringList foreignColumns = m_dbEngine->getColumnsOfTable(m_conn, tabName);
+
+            m_ui->lstForeignTablesColumns->clear();
+            for(int i=0; i<foreignColumns.size(); i++)
+            {
+                QString name = foreignColumns[i].left(foreignColumns[i].indexOf("@"));
+                QString type = foreignColumns[i].mid(foreignColumns[i].indexOf("@") + 1);
+                if(name == sForeignColumn)
+                {
+                    item->setIcon(0, IconFactory::getIconForDataType(m_conn->getEngine()->getDTSupplier()->getDT_TYPE(type)));
+                    item->setIcon(1, IconFactory::getIconForDataType(m_conn->getEngine()->getDTSupplier()->getDT_TYPE(type)));
+                    break;
+                }
+            }
+
+        }
 
         m_ui->lstForeignKeyAssociations->addTopLevelItem(item);
     }
@@ -2134,34 +2167,54 @@ void NewTableForm::populateFKGui(ForeignKey * fk)
 
     // find the foreign keys table in the combo box
     int idx = m_ui->cmbForeignTables->findText(tabName);
-    Table* table = m_version->getTable(tabName);
-    // populate the foreign columns list
-    if(table == 0)
-    {
-        return;
-    }
-    m_foreignTable = table;
     m_ui->cmbForeignTables->setCurrentIndex(idx);
-    QStringList foreignColumns = table->fullColumns();
     m_ui->lstForeignTablesColumns->clear();
-    for(int i=0; i<foreignColumns.size(); i++)
-    {
-        QListWidgetItem* qlwi = new QListWidgetItem(foreignColumns[i], m_ui->lstForeignTablesColumns);
 
-        Column* col = table->getColumn(foreignColumns[i]);
-        if(col)
+    QStringList foreignColumns;
+    if(m_version)
+    {
+
+        Table* table = m_version->getTable(tabName);
+        // populate the foreign columns list
+        if(table == 0)
         {
-            qlwi->setIcon(IconFactory::getIconForDataType(col->getDataType()->getType()));
+            return;
         }
-        else
+        m_foreignTable = table;
+        foreignColumns = table->fullColumns();
+        for(int i=0; i<foreignColumns.size(); i++)
         {
-            col = table->getColumnFromParents(foreignColumns[i]);
+            QListWidgetItem* qlwi = new QListWidgetItem(foreignColumns[i], m_ui->lstForeignTablesColumns);
+
+            Column* col = table->getColumn(foreignColumns[i]);
             if(col)
             {
                 qlwi->setIcon(IconFactory::getIconForDataType(col->getDataType()->getType()));
             }
+            else
+            {
+                col = table->getColumnFromParents(foreignColumns[i]);
+                if(col)
+                {
+                    qlwi->setIcon(IconFactory::getIconForDataType(col->getDataType()->getType()));
+                }
+            }
         }
     }
+    else
+    {
+        foreignColumns = m_dbEngine->getColumnsOfTable(m_conn, tabName);
+
+        for(int i=0; i<foreignColumns.size(); i++)
+        {
+            QString name = foreignColumns[i].left(foreignColumns[i].indexOf("@"));
+            QString type = foreignColumns[i].mid(foreignColumns[i].indexOf("@") + 1);
+            QListWidgetItem* item = new QListWidgetItem(name, m_ui->lstForeignTablesColumns);
+            item->setIcon(IconFactory::getIconForDataType(m_conn->getEngine()->getDTSupplier()->getDT_TYPE(type)));
+        }
+
+    }
+
     // select the on update, on delete combo boxes
     idx = m_ui->cmbFkOnDelete->findText(fk->getOnDelete());
     m_ui->cmbFkOnDelete->setCurrentIndex(idx);
@@ -2300,6 +2353,11 @@ void NewTableForm::keyPressEvent(QKeyEvent *evt)
     }
 }
 
+void NewTableForm::onTableStartupValueChanged(int, int)
+{
+    onBtnUpdateTableWithDefaultValues();
+}
+
 void NewTableForm::onBtnUpdateTableWithDefaultValues()
 {
     QVector <QVector <QString > > values;
@@ -2383,7 +2441,10 @@ void NewTableForm::onBtnRemoveForeignKey()
     }
     m_currentForeignKey->onDelete();
     m_table->removeForeignKey(m_currentForeignKey);
-    m_table->getVersion()->removeForeignKeyFromDiagrams(m_currentForeignKey);
+    if(m_table->getVersion())
+    {
+        m_table->getVersion()->removeForeignKeyFromDiagrams(m_currentForeignKey);
+    }
     delete m_currentForeignKey->getLocation();
     m_currentForeignKey = 0;
     resetFkGui();
@@ -2401,7 +2462,7 @@ void NewTableForm::onChangeTab(int idx)
 {
     if(idx > 0)
     {
-        if(m_ui->tabWidget->tabText(idx) == "SQL")
+        if(m_ui->tabWidget->tabText(idx).toUpper() == "SQL")
         {
             if(m_table)
             {
@@ -2418,8 +2479,15 @@ void NewTableForm::onChangeDescription()
 
 void NewTableForm::onChangeName(QString a)
 {
-
     if(!m_table) return;
+
+    // creating a table in the database?
+    if(!m_version && m_dbEngine && m_conn)
+    {
+        m_table->setName(a);
+        return;
+    }
+
     Table* another = m_table->getVersion()->getTable(a);
     QString prevName = m_table->getName();
     if(!m_table->getLocation()) return;
@@ -3025,4 +3093,34 @@ UserDataType* NewTableForm::getDataType(const QString& name)
         }
     }
     return 0;
+}
+
+void NewTableForm::onCreateTableInDb()
+{
+    if(m_table->getColumnCount() == 0)
+    {
+        QMessageBox::warning(this, tr("Warning"), tr("Please define some columns."), QMessageBox::Ok);
+        return;
+    }
+
+    QHash<QString,QString> fo = Configuration::instance().sqlGenerationOptions();
+
+    if(m_dbEngine && m_conn)
+    {
+        fo["FKSposition"] = "InTable";
+    }
+
+    DatabaseEngine* eng = m_dbEngine;
+    finalSql = eng->getSqlGenerator()->generateCreateTableSql(m_table, fo, m_table->getName(), QMap<QString, QString>(), 0);
+    finalSql << eng->getSqlGenerator()->generateDefaultValuesSql(m_table, fo);
+
+    QString result;
+    if(!m_dbEngine->executeSql(m_conn, finalSql, QStringList(), result, false))
+    {
+        QMessageBox::critical (this, tr("Error"), m_dbEngine->getLastError(), QMessageBox::Ok);
+    }
+    else
+    {
+        setStatusTip(QString("Table ") + m_table->getName() + " succesfully created." );
+    }
 }

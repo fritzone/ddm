@@ -26,7 +26,15 @@ bool ForeignKey::hasAssociation(const QString& fcName, const QString& lcName)
 {
     for(int i=0; i<m_associations.size(); i++)
     {
-        if(m_associations[i]->getForeignColumn()->getName() == fcName && m_associations[i]->getLocalColumn()->getName() == lcName)
+        QString assocForeignName = m_associations[i]->getForeignColumn()?
+                    m_associations[i]->getForeignColumn()->getName():
+                    m_associations[i]->getSForeignColumn();
+
+        QString assocLocalName = m_associations[i]->getLocalColumn()?
+                    m_associations[i]->getLocalColumn()->getName():
+                    m_associations[i]->getSLocalColumn();
+
+        if(assocForeignName == fcName && assocLocalName == lcName)
         {
             return true;
         }

@@ -43,6 +43,8 @@ private:
 
     ContextMenuEnabledTreeWidgetItem* m_mysqlConnections;
     ContextMenuEnabledTreeWidgetItem* m_sqliteConnections;
+
+    QToolBar *bar;
 };
 
 #endif // CONNECTIONGUIELEMENTS_H
