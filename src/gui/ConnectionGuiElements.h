@@ -3,12 +3,14 @@
 
 #include "ContextMenuEnabledTreeWidget.h"
 
+#include <QObject>
 #include <QtGui>
 
 class Connection;
 
-class ConnectionGuiElements
+class ConnectionGuiElements : public QObject
 {
+    Q_OBJECT
 public:
     ConnectionGuiElements();
     void createGuiElements();
@@ -33,6 +35,12 @@ public:
     void createConnectionTreeEntryForFuncs(Connection *c);
     void createConnectionTreeEntryForTriggers(Connection *c);
     void createConnectionTreeEntryForIndexes(Connection *c);
+
+private slots:
+    void connectionItemActivated(QTreeWidgetItem*,int);
+    void newTable();
+    void newConnection();
+
 private:
 
     QDockWidget* m_connectionsTreeDock;
@@ -45,6 +53,9 @@ private:
     ContextMenuEnabledTreeWidgetItem* m_sqliteConnections;
 
     QToolBar *bar;
+    QAction* action_connectionNewTable;
+    QAction* action_newConnection;
+    Connection* m_lastConnection;
 };
 
 #endif // CONNECTIONGUIELEMENTS_H

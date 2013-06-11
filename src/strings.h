@@ -135,6 +135,8 @@ static const QString browsedProcPrefix = "P:";
 static const QString browsedFuncPrefix = "F:";
 static const QString browsedTriggerPrefix = "R:";
 static const QString browsedIndexPrefix = "I:";
+static const QString connectionGroupPrefix = "C:";
+
 static const QString strSpace = " ";
 static const QString strNewline = "\n";
 static const QString strTab = "\t";

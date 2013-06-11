@@ -109,6 +109,8 @@ public:
 
     void showDataTypesList(Version *foundVersion);
 
+    void createTableInConnection(Connection* c);
+
 protected:
     virtual void closeEvent( QCloseEvent * event );
     virtual void changeEvent(QEvent *e);
