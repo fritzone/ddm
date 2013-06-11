@@ -7,7 +7,7 @@
 #include "db_DatabaseEngine.h"
 #include "strings.h"
 
-ConnectionGuiElements::ConnectionGuiElements() : m_mysqlConnections(0)
+ConnectionGuiElements::ConnectionGuiElements() : m_mysqlConnections(0), m_lastConnection(0)
 {
 }
 
@@ -40,12 +40,14 @@ void ConnectionGuiElements::createGuiElements()
     m_mysqlConnections = new ContextMenuEnabledTreeWidgetItem((ContextMenuEnabledTreeWidgetItem*)0, strMySql);
     m_mysqlConnections->setIcon(0, IconFactory::getMySqlIcon());
     m_connectionsTree->addTopLevelItem(m_mysqlConnections);
+    m_mysqlConnections->setData(0, Qt::UserRole, QVariant(connectionGroupPrefix + "MySql"));
 
     QStringList strSqlite;
     strSqlite<< "Sqlite";
     m_sqliteConnections = new ContextMenuEnabledTreeWidgetItem((ContextMenuEnabledTreeWidgetItem*)0, strSqlite);
     m_sqliteConnections->setIcon(0, IconFactory::getSqliteIcon());
     m_connectionsTree->addTopLevelItem(m_sqliteConnections);
+    m_sqliteConnections->setData(0, Qt::UserRole, QVariant(connectionGroupPrefix + "Sqlite"));
 
     // context handler
     m_connectionsContextMenuHandler = new ContextMenuHandler();
@@ -71,6 +73,8 @@ void ConnectionGuiElements::createGuiElements()
     QObject::connect(ContextMenuCollection::getInstance()->getAction_BrowsedTableBrowse(), SIGNAL(triggered()), MainWindow::instance(), SLOT(onBrowseBrowsedTable()));
     QObject::connect(ContextMenuCollection::getInstance()->getAction_ConnectionNewTable(), SIGNAL(triggered()), MainWindow::instance(), SLOT(onConnectionCreateTable()));
 
+    QObject::connect(m_connectionsTree, SIGNAL(itemActivated(QTreeWidgetItem*,int)), this, SLOT(connectionItemActivated(QTreeWidgetItem*,int)));
+
     QMainWindow *window = new QMainWindow(0);
 
     bar = new QToolBar(window);
@@ -86,13 +90,52 @@ void ConnectionGuiElements::createGuiElements()
     window->setCentralWidget(m_connectionsTree);
     m_connectionsTreeDock->setWidget(window);
 
-    bar->addAction(ContextMenuCollection::getInstance()->getAction_ConnectionNewTable());
+    action_connectionNewTable = new QAction(tr("New Table"), 0);
+    action_connectionNewTable->setIcon(IconFactory::getTabinstIcon());
+    QObject::connect(action_connectionNewTable, SIGNAL(triggered()), this, SLOT(newTable()));
+    action_connectionNewTable->setDisabled(true);
+
+    action_newConnection = new QAction(tr("New Connection"), 0);
+    action_newConnection->setIcon(IconFactory::getDatabaseIcon());
+    QObject::connect(action_newConnection, SIGNAL(triggered()), this, SLOT(newConnection()));
+
+    bar->addAction(action_newConnection);
+    bar->addAction(action_connectionNewTable);
 
     window->addToolBar(bar);
-
-
 }
 
+
+void ConnectionGuiElements::connectionItemActivated(QTreeWidgetItem* item,int)
+{
+    QString d = item->data(0, Qt::UserRole).toString();
+
+    // filter out to which connection the entry belongs
+    Connection* c = ConnectionManager::instance()->getConnection(d);
+    if(c)
+    {
+        m_lastConnection = c;
+    }
+
+    if(m_lastConnection)
+    {
+        action_connectionNewTable->setDisabled(false);
+        action_connectionNewTable->setToolTip(tr("Create new table in: <b>") +
+                                              m_lastConnection->getName());
+    }
+
+    qDebug() << d;
+}
+
+void ConnectionGuiElements::newConnection()
+{
+    MainWindow::instance()->onNewConnection();
+}
+
+void ConnectionGuiElements::newTable()
+{
+    MainWindow::instance()->createTableInConnection(m_lastConnection);
+}
 
 ContextMenuEnabledTreeWidgetItem* ConnectionGuiElements::createConnectionTreeEntry(Connection* c)
 {

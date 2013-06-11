@@ -2534,7 +2534,8 @@ void NewTableForm::onChangeName(QString a)
 
 void NewTableForm::onInject()
 {
-    InjectSqlDialog* injectDialog = new InjectSqlDialog(Workspace::getInstance()->currentProjectsEngine(), this, 0, m_table->getName());
+    DatabaseEngine* eng = m_dbEngine?m_dbEngine:Workspace::getInstance()->currentProjectsEngine();
+    InjectSqlDialog* injectDialog = new InjectSqlDialog(eng, this, 0, m_table->getName());
 
     injectDialog->setModal(true);
     bool error = false;
@@ -2547,7 +2548,7 @@ void NewTableForm::onInject()
             Connection* c = ConnectionManager::instance()->getConnection(connectionNames.at(i));
             if(c)
             {
-                if(!m_dbEngine->executeSql(c, finalSql, QStringList(), tSql, injectDialog->getRollbackOnError()))
+                if(!eng->executeSql(c, finalSql, QStringList(), tSql, injectDialog->getRollbackOnError()))
                 {
                     QMessageBox::critical (this, tr("Error"), m_dbEngine->getLastError(), QMessageBox::Ok);
                     error = true;
