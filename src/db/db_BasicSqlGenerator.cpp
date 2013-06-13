@@ -485,6 +485,9 @@ QStringList BasicSqlGenerator::generateDefaultValuesSql(TableInstance* tableInst
 
 QStringList BasicSqlGenerator::generateDefaultValuesSql(Table* table, const QHash<QString, QString>& options) const
 {
+
+    if(table->getColumnCount() == 0) return QStringList();
+
     QStringList result;
     initForOptions(options);
     const QVector <QVector <QString> >& sv = table->getDefaultValues();

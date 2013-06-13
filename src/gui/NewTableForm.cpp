@@ -817,6 +817,7 @@ void NewTableForm::onCancelColumnEditing()
     m_ui->cmbNewColumnType->setCurrentIndex(-1);
     m_ui->chkPrimary->setChecked(false);
     m_ui->btnAddColumn->setIcon(IconFactory::getAddIcon());
+    m_ui->btnAddColumn->setText(tr("Add Column"));
     toggleColumnFieldDisableness(false);
     m_ui->grpColumnDetails->setTitle(tr(" New column "));
     m_ui->txtColumnDescription->setText("");
@@ -968,6 +969,7 @@ void NewTableForm::showColumn(Column * c)
     m_ui->txtColumnDescription->setText(c->getDescription());
 
     m_ui->btnAddColumn->setIcon(IconFactory::getApplyIcon());
+    m_ui->btnAddColumn->setText(tr("Update Column"));
     m_ui->btnCancelColumnEditing->show();
 
     m_ui->grpColumnDetails->setTitle(" Column details: " + c->getName());
@@ -1360,6 +1362,7 @@ void NewTableForm::resetIndexGui()
     populateColumnsForIndices();
     m_ui->txtNewIndexName->setText("");
     m_ui->btnAddIndex->setIcon(IconFactory::getAddIcon());
+    m_ui->btnAddIndex->setText(tr("Add Index"));
     m_currentIndex = 0;
     m_ui->tabWidgetForIndex->setCurrentIndex(0);
     prepareSpsTabsForIndex(0);
@@ -1465,6 +1468,7 @@ void NewTableForm::onSelectIndex(QTreeWidgetItem*, int)
     }
 
     m_ui->btnAddIndex->setIcon(IconFactory::getApplyIcon());
+    m_ui->btnAddIndex->setText(tr("Update Index"));
     prepareSpsTabsForIndex(m_currentIndex);
     m_ui->lstSelectedColumnsForIndex->header()->resizeSections(QHeaderView::Stretch);
 
@@ -1521,6 +1525,12 @@ void NewTableForm::onDoubleClickColumnForIndex(QListWidgetItem* item)
 
 void NewTableForm::onMoveSelectedIndexColumnUp()
 {
+    // anything selected?
+    if(! m_ui->lstSelectedColumnsForIndex->currentItem())
+    {
+        return;
+    }
+
     // and is this item a column?
     if(!m_table->hasColumn(m_ui->lstSelectedColumnsForIndex->currentItem()->text(0)))
     {
@@ -1564,6 +1574,12 @@ void NewTableForm::onMoveSelectedIndexColumnUp()
 
 void NewTableForm::onMoveSelectedIndexColumnDown()
 {
+    // anything selected?
+    if(! m_ui->lstSelectedColumnsForIndex->currentItem())
+    {
+        return;
+    }
+
     // and is this item a column?
     if(!m_table->hasColumn(m_ui->lstSelectedColumnsForIndex->currentItem()->text(0)))
     {
@@ -2940,14 +2956,20 @@ void NewTableForm::onAddSpToColumnOfIndex()
 void NewTableForm::onTriggerSpItemForIndexesColumn()
 {
     // do we have a selected item?
-    if(m_ui->lstSelectedColumnsForIndex->currentItem() == 0) return;
-
-    // and is this item a column?
-    if(!m_table->hasColumn(m_ui->lstSelectedColumnsForIndex->currentItem()->text(0)))
+    if(m_ui->lstSelectedColumnsForIndex->currentItem() == 0)
     {
-        if(!m_table->parentsHaveColumn(m_ui->lstSelectedColumnsForIndex->currentItem()->text(0)))
+        QMessageBox::information(this, tr("Info"), tr("In order to add a Property to a column of an index select the column in the list"), QMessageBox::Ok);
+        return;
+    }
+
+    QString selectedData = m_ui->lstSelectedColumnsForIndex->currentItem()->text(0);
+    qDebug() << selectedData;
+    // and is this item a column?
+    if(!m_table->hasColumn(selectedData))
+    {
+        if(!m_table->parentsHaveColumn(selectedData))
         {
-            QMessageBox::information(this, tr("Info"), tr("In order to add an SP to a column select the column in the list"), QMessageBox::Ok);
+            QMessageBox::information(this, tr("Info"), tr("In order to add an Property to a column select the column in the list"), QMessageBox::Ok);
             return;
         }
     }
@@ -2986,8 +3008,8 @@ void NewTableForm::onTriggerSpItemForIndexesColumn()
                     m_ui->lstSelectedColumnsForIndex->header()->resizeSections(QHeaderView::Stretch);
                     m_ui->lstSelectedColumnsForIndex->currentItem()->setExpanded(true);
 
-                    // TODO: when there will be more databases change this!
-                    itm->setIcon(0, IconFactory::getMySqlIcon());
+                    QIcon icon = IconFactory::getIconForDatabase(m_dbEngine?m_dbEngine->getName():m_project->getEngine()->getName());
+                    itm->setIcon(0, icon);
 
                     // TODO: set the control in column 2 according to the type of the SP
                     // TODO: this code is duplicate with code from WidgetForSPS
@@ -3022,7 +3044,6 @@ void NewTableForm::onLockUnlock(bool checked)
     {
         return;
     }
-
 
     if(checked)
     {
