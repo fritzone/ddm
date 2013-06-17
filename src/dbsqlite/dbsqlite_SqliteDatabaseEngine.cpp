@@ -75,6 +75,7 @@ QString SqliteDatabaseEngine::provideConnectionName(const QString& prefix)
     return t;
 }
 
+
 bool SqliteDatabaseEngine::reverseEngineerDatabase(Connection *c, const QStringList& tables, const QStringList& views, const QStringList& /*procs*/,
                                                   const QStringList& /*funcs*/, const QStringList& triggers, Project*p, bool relaxed)
 {
@@ -390,7 +391,7 @@ Table* SqliteDatabaseEngine::reverseEngineerTable(Connection *c, const QString& 
     {
         QString field_name = query.value(fieldNo).toString();
         QString type = query.value(typeNo).toString().toUpper();
-        QString nullable = query.value(nulldNo).toString();
+        QString nullable = query.value(nulldNo).toString(); // in sqlite this is actuall NOT NULL!!!
         QString keyness = query.value(keyNo).toString();
         QString defaultValue = query.value(defNo).toString();
 
@@ -404,12 +405,14 @@ Table* SqliteDatabaseEngine::reverseEngineerTable(Connection *c, const QString& 
         }
         else
         {
-            udt = v->provideDatatypeForSqlType(field_name, type, nullable, defaultValue, relaxed);
+            bool bnullable = QString::compare(nullable, "0", Qt::CaseInsensitive) == 0;
+            udt = v->provideDatatypeForSqlType(field_name, type, bnullable, defaultValue, relaxed);
             m_oneTimeMappings.insert(oneTimeKey, udt);
         }
 
         // hm ... PK check?
-        Column* col = new Column(QUuid::createUuid().toString(), field_name, udt, QString::compare(keyness, "0", Qt::CaseInsensitive) == 0, ver);
+        bool pk = keyness == "1";
+        Column* col = new Column(QUuid::createUuid().toString(), field_name, udt, pk, ver);
 
         // and add the column to the table
         if(!found) m_revEngMappings.insert(udt, col);
@@ -532,7 +535,7 @@ Table* SqliteDatabaseEngine::reverseEngineerTable(Connection *c, const QString& 
             }
             // and create a table instance for it
             TableInstance* inst = v->instantiateTable(tab, false);
-            QString instName = NameGenerator::getUniqueName(v, (itemGetter)&Version::getTableInstance, tab->getName());
+            QString instName = tab->getName(); // no need to get an instance name for it
             inst->setName(instName);
             inst->setValues(values);
         }
@@ -767,14 +770,121 @@ Trigger* SqliteDatabaseEngine::reverseEngineerTrigger(Connection *c, const QStri
 
             // brose out the stuff
             result = new Trigger(trigName, QUuid::createUuid().toString(), v);
-            result->setEvent("");
+            QString tm,ev, sql;
+            parseTriggerSql(stmt, ev, tm, sql);
+            result->setEvent(ev);
             result->setTable(table);
-            result->setSql(stmt);
-            result->setTime("");
+            result->setSql(sql);
+            result->setTime(tm);
         }
     }
     dbo.close();
     return result;
+}
+
+
+/*
+CREATE TRIGGER trig before  insert  on ADDRESS_1  BEGIN
+select * from address_1;
+END;
+
+TODO: Who on earth wrote this code? a 2 years old? FIX FIX FIX
+*/
+void SqliteDatabaseEngine::parseTriggerSql(const QString &inSql, QString &outEvent, QString &outTime, QString &sql)
+{
+    QString currentWord = "";
+    int i = 0;
+    qDebug() << inSql;
+    while(i<inSql.length())
+    {
+
+        // create
+        while(i<inSql.length() && inSql[i].isSpace())
+        {
+            currentWord += inSql[i];
+            i++; // skip spaces
+        }
+
+
+        if(i == inSql.length()) return;
+
+        while(i < inSql.length() && ! inSql[i].isSpace()) // skip create
+        {
+            currentWord += inSql[i];
+            i++;
+        }
+        currentWord = "";
+
+        // trigger
+        while(i<inSql.length() && inSql[i].isSpace()) i++; // skip spaces
+        if(i == inSql.length()) return;
+
+        while(i < inSql.length() && ! inSql[i].isSpace()) // skip trigger
+        {
+            currentWord += inSql[i];
+            i++;
+        }
+        currentWord = "";
+
+        // name
+        while(i<inSql.length() && inSql[i].isSpace()) i++; // skip spaces
+        if(i == inSql.length()) return;
+
+        while(i < inSql.length() && ! inSql[i].isSpace()) // skip name
+        {
+            currentWord += inSql[i];
+            i++;
+        }
+        currentWord = "";
+
+        // time
+        while(i<inSql.length() && inSql[i].isSpace()) i++; // skip spaces
+        if(i == inSql.length()) return;
+
+        while(i < inSql.length() && ! inSql[i].isSpace()) // skip and read time
+        {
+            currentWord += inSql[i];
+            i++;
+        }
+        outTime = currentWord;
+        currentWord = "";
+
+        // event
+        while(i<inSql.length() && inSql[i].isSpace()) i++; // skip spaces
+        if(i == inSql.length()) return;
+
+        while(i < inSql.length() && ! inSql[i].isSpace()) // skip and read event
+        {
+            currentWord += inSql[i];
+            i++;
+        }
+        outEvent = currentWord;
+
+        // "ON"
+        while(i<inSql.length() && inSql[i].isSpace()) i++; // skip spaces
+        if(i == inSql.length()) return;
+
+        while(i < inSql.length() && ! inSql[i].isSpace()) // skip and read event
+        {
+            i++;
+        }
+
+        // table name
+        while(i<inSql.length() && inSql[i].isSpace()) i++; // skip spaces
+        if(i == inSql.length()) return;
+
+        while(i < inSql.length() && ! inSql[i].isSpace()) // skip and read event
+        {
+            i++;
+        }
+
+        while(i<inSql.length() && inSql[i].isSpace()) i++; // skip spaces
+
+        // fetch the BODY in, after the begin
+        int begIndx = inSql.indexOf("BEGIN", i, Qt::CaseInsensitive);
+        sql = inSql.mid(begIndx);
+        return;
+    }
 }
 
 QString SqliteDatabaseEngine::getTableDescriptionScript(const QString& tabName)

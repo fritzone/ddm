@@ -62,6 +62,11 @@ public:
     virtual void presentSql(Project*, Version* v);
     virtual void presentSql(Project*, SqlSource*, MainWindow::showSomething s);
 
+    void setMainTabIndex(int idx)
+    {
+        m_mainTabIndex = idx;
+    }
+
 protected:
 
     void changeEvent(QEvent *e);
@@ -254,6 +259,7 @@ private:
 
     QVector<UserDataType*> m_availableDataTypes;
     Connection* m_conn;
+    int m_mainTabIndex;
 };
 
 #endif // NEWTABLEFORM_H

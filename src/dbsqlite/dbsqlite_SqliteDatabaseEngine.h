@@ -68,6 +68,8 @@ private:
     static QVector<Sp*> buildSps();
     static QString provideConnectionName(const QString&);
 
+    void parseTriggerSql(const QString& inSql, QString& outEvent, QString& outTime, QString& sql);
+
 private:
 
     QMultiMap <UserDataType*, Column*> m_revEngMappings;

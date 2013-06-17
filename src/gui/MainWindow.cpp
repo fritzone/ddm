@@ -3329,8 +3329,8 @@ void MainWindow::createTableInConnection(Connection* c)
         m_btndlg = 0;
     }
 
-    NewTableForm* ntf = new NewTableForm(c->getEngine(), 0, 0, c, this, true);
-    setCentralWidget(ntf);
+    BrowseTableForm* btf = BrowseTableForm::instance(this, c, "", NEW_TABLE_IN_DB);
+    setCentralWidget(btf);
 
 }
 

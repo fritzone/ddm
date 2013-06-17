@@ -279,7 +279,7 @@ public:
      * each column to have its own datatype, thus enforcing more strict foreign key policies) otherwise
      * it builds the data types from the SQL type, allowing more relaxed foreign keys.
      */
-    virtual UserDataType* provideDatatypeForSqlType(const QString& name, const QString& sql, const QString& nullable, const QString& defaultValue, bool relaxed) = 0;
+    virtual UserDataType* provideDatatypeForSqlType(const QString& name, const QString& sql, bool nullable, const QString& defaultValue, bool relaxed) = 0;
 
     /**
      * Method called when a new column was created in this version, for the given table. It will report

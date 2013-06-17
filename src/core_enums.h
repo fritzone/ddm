@@ -38,7 +38,8 @@ enum BrowsedTableLayout
     BROWSE_VIEW = 2,
     BROWSE_PROCEDURE = 3,
     BROWSE_FUNCTION = 4,
-    BROWSE_TRIGGER = 5
+    BROWSE_TRIGGER = 5,
+    NEW_TABLE_IN_DB = 6
 };
 
 #endif // ENUMS_H
