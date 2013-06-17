@@ -63,11 +63,10 @@ void TriggerForm::setTrigger(Trigger *t)
 {
     m_trigger = t;
     ui->txtTriggerName->setText(t->getName());
-    ui->cmbTables->setCurrentIndex(ui->cmbTables->findText(t->getTable()));
-    ui->cmbEvent->setCurrentIndex(ui->cmbEvent->findText(t->getEvent()));
-    ui->cmbTime->setCurrentIndex(ui->cmbTime->findText(t->getTime()));
+    ui->cmbTables->setCurrentIndex(ui->cmbTables->findText(t->getTable().toUpper()));
+    ui->cmbEvent->setCurrentIndex(ui->cmbEvent->findText(t->getEvent().toUpper()));
+    ui->cmbTime->setCurrentIndex(ui->cmbTime->findText(t->getTime().toUpper()));
     ui->txtDescription->setText(t->getDescription());
-
 
     ui->btnUndelete->hide();
 

@@ -41,8 +41,11 @@ class BrowseTableForm : public QWidget
 public:
 
     static BrowseTableForm* instance(QWidget *parent, Connection* c, const QString& tab, BrowsedTableLayout layout);
+    static BrowseTableForm* instance();
+
     ~BrowseTableForm();
     void focusOnTextEdit();
+    void setTextAt(int index, const QString&);
 
 protected:
     void changeEvent(QEvent *e);

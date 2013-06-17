@@ -528,7 +528,8 @@ Table* MySQLDatabaseEngine::reverseEngineerTable(Connection *conn, const QString
         }
         else
         {
-            udt = v->provideDatatypeForSqlType(field_name, type, nullable, defaultValue, relaxed);
+            bool bnullable = QString::compare(nullable, "YES", Qt::CaseInsensitive) == 0;
+            udt = v->provideDatatypeForSqlType(field_name, type, bnullable, defaultValue, relaxed);
             m_oneTimeMappings.insert(oneTimeKey, udt);
         }
         Column* col = new Column(QUuid::createUuid().toString(), field_name, udt, QString::compare(keyness, "PRI", Qt::CaseInsensitive) == 0, ver);
@@ -659,10 +660,9 @@ Table* MySQLDatabaseEngine::reverseEngineerTable(Connection *conn, const QString
                     }
                 }
             }
-            // and create a table instance for it
+            // and create a table instance for it, no need for new name, this is reverse engineering
             TableInstance* inst = v->instantiateTable(tab, false);
-            QString instName = NameGenerator::getUniqueName(v, (itemGetter)&Version::getTableInstance, tab->getName());
-            inst->setName(instName);
+            inst->setName(tab->getName());
             inst->setValues(values);
         }
     }

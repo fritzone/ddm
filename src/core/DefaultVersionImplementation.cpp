@@ -1221,13 +1221,17 @@ const QVector<TableInstance*>& DefaultVersionImplementation::getTableInstances()
     return m_data.m_tableInstances;
 }
 
-UserDataType* DefaultVersionImplementation::provideDatatypeForSqlType(const QString& name, const QString& sql, const QString& nullable, const QString& defaultValue, bool relaxed)
+UserDataType* DefaultVersionImplementation::provideDatatypeForSqlType(const QString& name,
+                                                                      const QString& sql,
+                                                                      bool nullable,
+                                                                      const QString& defaultValue,
+                                                                      bool relaxed)
 {
     QString type = sql;
     QString size = "";
     QString finalName = relaxed?
-                        type + (size.length()>0?" ("+ size+")":"") + (defaultValue.length() > 0? ("=" + defaultValue) : "") + (nullable=="NO"?" Not Null":""):
-                        name + (defaultValue.length() > 0? (" (Def: " + defaultValue) + ")" : "") + (nullable=="NO"?" Not Null":"");
+                        type + (size.length()>0?" ("+ size+")":"") + (defaultValue.length() > 0? ("=" + defaultValue) : "") + (!nullable?" Not Null":""):
+                        name + (defaultValue.length() > 0? (" (Def: " + defaultValue) + ")" : "") + (!nullable?" Not Null":"");
     int stp = sql.indexOf('(') ;
     if(stp != -1)
     {
@@ -1242,7 +1246,7 @@ UserDataType* DefaultVersionImplementation::provideDatatypeForSqlType(const QStr
         {
             if(udt->getSize() == size)
             {
-                if((udt->isNullable() && QString::compare(nullable, "YES", Qt::CaseInsensitive) == 0) || (!udt->isNullable() && QString::compare(nullable, "NO", Qt::CaseInsensitive) == 0))
+                if((udt->isNullable() && nullable) || (!udt->isNullable() && !nullable)) // YES NO
                 {
                     if(udt->getDefaultValue() == defaultValue)
                     {
@@ -1267,7 +1271,7 @@ UserDataType* DefaultVersionImplementation::provideDatatypeForSqlType(const QStr
     UserDataType* newUdt = new UserDataType(finalName,
                                             Workspace::getInstance()->currentProjectsEngine()->getTypeStringForSqlType(type),
                                             type, size, defaultValue, QStringList(), false, type + " " + size,
-                                            QString::compare(nullable, "YES", Qt::CaseInsensitive) == 0, QUuid::createUuid().toString(), this);
+                                            nullable, QUuid::createUuid().toString(), this);
 
     newUdt->setName(NameGenerator::getUniqueName(this, (itemGetter)&Version::getDataType, newUdt->getName()));
     addNewDataType(newUdt, true);

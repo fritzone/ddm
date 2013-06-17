@@ -13,7 +13,12 @@ void ForeignKey::removeAssociation(const QString& fcName, const QString& lcName)
 {
     for(int i=0; i<m_associations.size(); i++)
     {
-        if(m_associations[i]->getForeignColumn()->getName() == fcName && m_associations[i]->getLocalColumn()->getName() == lcName)
+        QString foreignName = m_associations[i]->getForeignColumn()?m_associations[i]->getForeignColumn()->getName():
+                                                                   m_associations[i]->getSForeignColumn();
+        QString localName = m_associations[i]->getLocalColumn()?m_associations[i]->getLocalColumn()->getName():
+                                                                   m_associations[i]->getSLocalColumn();
+
+        if(foreignName == fcName && localName == lcName)
         {
             m_associations.remove(i);
             return;

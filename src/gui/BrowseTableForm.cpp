@@ -9,6 +9,7 @@
 #include "TriggerForm.h"
 #include "helper_utils.h"
 #include "strings.h"
+#include "NewTableForm.h"
 
 #include <QtGui>
 #include <QSqlTableModel>
@@ -36,6 +37,11 @@ BrowseTableForm* BrowseTableForm::instance(QWidget *parent, Connection *c, const
         m_instance->mainTab->setCurrentIndex(m_instance->mainTab->count() - 1);
     }
 
+    return m_instance;
+}
+
+BrowseTableForm* BrowseTableForm::instance()
+{
     return m_instance;
 }
 
@@ -197,6 +203,14 @@ void BrowseTableForm::onTabCloseRequested(int idx)
 void BrowseTableForm::focusOnTextEdit()
 {
     m_textEdit->setFocus();
+}
+
+void BrowseTableForm::setTextAt(int index, const QString & txt)
+{
+    if(index > -1)
+    {
+        mainTab->setTabText(index, txt);
+    }
 }
 
 QTableView* BrowseTableForm::createTable(QWidget *p)
@@ -470,6 +484,21 @@ void BrowseTableForm::newPage(Connection *c, const QString &tab, BrowsedTableLay
         spl->resize( mainTabPageWidget->size() );
         mainTab->addTab(spl, IconFactory::getSqlIcon(), "Script:" + c->getFullLocation());
 
+    }
+
+    if(layout == NEW_TABLE_IN_DB)
+    {
+        queryFrame = new QFrame(this);
+        queryFrame->setObjectName(QString::fromUtf8("frame_q"));
+        queryFramesMainHorizontalLayout = new QHBoxLayout(queryFrame);
+
+        NewTableForm* ntf = new NewTableForm(c->getEngine(), 0, 0, c, this, true);
+
+        queryFramesMainHorizontalLayout->addWidget(ntf);
+        int idx = mainTab->addTab(queryFrame, IconFactory::getIconForDatabase(c->getDbType()), tr("New Table: ") + c->getName());
+
+        ntf->focusOnName();
+        ntf->setMainTabIndex(idx);
     }
 
     retranslateUi();

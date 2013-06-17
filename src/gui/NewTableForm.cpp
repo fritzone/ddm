@@ -31,6 +31,7 @@
 #include "GuiElements.h"
 #include "ForeignKey.h"
 #include "core_TableInstance.h"
+#include "BrowseTableForm.h"
 
 #include <QMessageBox>
 #include <QHashIterator>
@@ -45,16 +46,18 @@ const int COL_POS_PK = 0;
 const int COL_POS_NM = 1;
 const int COL_POS_DT = 2;
 
-NewTableForm::NewTableForm(DatabaseEngine* db, Project* prj, Version* v, Connection* conn, QWidget *parent, bool newTable) : SourceCodePresenterWidget(v, parent),
+NewTableForm::NewTableForm(DatabaseEngine* db, Project* prj, Version* v,
+                           Connection* conn, QWidget *parent, bool newTable) :
+    SourceCodePresenterWidget(v, parent),
     m_ui(new Ui::NewTableForm),
     m_dbEngine(db), m_project(prj), m_table(0),
-    m_currentColumn(0), m_currentIndex(0), m_foreignTable(0), m_currentForeignKey(0), m_foreignKeySelected(false),
-    m_engineProviders(0), m_wspForIndex(0), m_wspForColumn(0), m_version(v), m_combos(), m_conn(conn)
+    m_currentColumn(0), m_currentIndex(0), m_foreignTable(0),
+    m_currentForeignKey(0), m_foreignKeySelected(false),
+    m_engineProviders(0), m_wspForIndex(0), m_wspForColumn(0), m_version(v),
+    m_combos(), m_conn(conn), m_mainTabIndex(-1)
 {
     m_ui->setupUi(this);
 
-
-//    qDebug() << "New table form: " << v->getVersionText();
     m_ui->lstSelectedColumnsForIndex->setHeaderHidden(false);
 
     // now set up the Column list and the context menus for the Column list
@@ -1882,7 +1885,7 @@ void NewTableForm::onRemoveForeignKeyAssociation()
     // from the foreign key (if it was selected) delete the FK Association in the current item
     QString localColumn = m_ui->lstForeignKeyAssociations->currentItem()->text(1);
     QString foreignColumn = m_ui->lstForeignKeyAssociations->currentItem()->text(0);
-    if(m_foreignKeySelected && m_currentForeignKey)
+    if(m_currentForeignKey)
     {
         m_currentForeignKey->removeAssociation(foreignColumn, localColumn);
     }
@@ -2501,6 +2504,11 @@ void NewTableForm::onChangeName(QString a)
     if(!m_version && m_dbEngine && m_conn)
     {
         m_table->setName(a);
+        if(m_mainTabIndex > -1)
+        {
+            QString newName = tr("New Table: ") + a + " / " + m_conn->getName();
+            BrowseTableForm::instance()->setTextAt(m_mainTabIndex, newName);
+        }
         return;
     }
 
@@ -2786,11 +2794,44 @@ void NewTableForm::onDatatypeComboChange(QString)
     {
         if(m_wspForColumn)
         {
+            QString dtName = m_ui->cmbNewColumnType->currentText();
+            UserDataType *udt = m_version?(m_version->getDataType(dtName)):
+                                         getDataType(dtName);
+            DatabaseEngine* eng = m_version?Workspace::getInstance()->currentProjectsEngine() : m_dbEngine;
+            if(udt == 0)
+            {
+                // create a datatype
+                QString type = dtName;
+                int stp = dtName.indexOf('(') ;
+                QString ssize;
+                if(stp != -1)
+                {
+                    type = dtName.left(stp);
+                    int t1 = dtName.indexOf(')') - stp - 1;
+                    ssize = dtName.mid(stp + 1, t1);
+                }
+
+                udt = new UserDataType(dtName,
+                                       eng->getTypeStringForSqlType(type),
+                                       type, ssize,
+                                       "", QStringList(), false, type + " " + ssize,
+                                       true, QUuid::createUuid().toString(), 0);
+                if(m_version)
+                {
+                    m_version->addNewDataType(udt, true);
+                }
+                else
+                {
+                    m_availableDataTypes.append(udt);
+                }
+
+                // append the newly created datatype to a global vector
+                // of user defined datatypes
+
+            }
             Column* tCol = new Column(QUuid::createUuid().toString(),
                                       "temp",
-                                      m_version?
-                                          (m_version->getDataType(m_ui->cmbNewColumnType->currentText())):
-                                          getDataType(m_ui->cmbNewColumnType->currentText()),
+                                       udt,
                                       false, m_version);
             m_wspForColumn->taylorToSpecificObject(tCol);
             delete tCol;
