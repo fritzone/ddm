@@ -96,7 +96,7 @@ void SqlForm::onInject()
 
                 if(!m_engine->executeSql(c, tempSqlList, QStringList(), tSql, injectDialog->getRollbackOnError()))
                 {
-                    QMessageBox::critical (this, tr("Error"), tr("<B>Cannot execute a query!</B><P>Reason: ") + m_engine->getLastError() + tr(".<P>Query:<PRE>") + tSql+ "</PRE><P>" +
+                    QMessageBox::critical (this, tr("Error"), m_engine->getLastError() + tr("<P></PRE>") +
                                            (injectDialog->getRollbackOnError()?tr("Transaction was rolled back."):tr("Transaction was <font color=red><B>NOT</B></font> rolled back, you might have partial data in your database.")), QMessageBox::Ok);
                     error = true;
                 }
@@ -116,8 +116,11 @@ void SqlForm::presentSql(Project* /*p*/, Version *v)
     // here create the final SQL:
     // firstly only the tables and then the foreign keys. We'll see the other elements (triggers, functions) later
 
+    QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+
     QStringList uids;
     QStringList finalSql = v->getSqlScript(true, 0, uids);
+    QApplication::restoreOverrideCursor();
 
     QString fs = "";
     for(int i=0; i< finalSql.size(); i++)

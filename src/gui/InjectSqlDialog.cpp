@@ -40,7 +40,7 @@ InjectSqlDialog::InjectSqlDialog(DatabaseEngine* engine, QWidget *parent, Versio
 
     ui->cmbSqliteVersion->hide();
     ui->frame_2->hide();
-    ui->buttonBox->button(QDialogButtonBox::Ok)->setDisabled(true);
+    disableOkButton();
     ui->txtDatabaseHost->setText(previousHost.length()?previousHost:"localhost");
     ui->txtDatabaseUser->setText(previousUser);
     ui->chkSavePassword->hide();
@@ -248,7 +248,7 @@ void InjectSqlDialog::onConnect()
     ui->cmbDatabases->setEnabled(true);
     ui->lblDatabase->setEnabled(true);
     m_alreadyConnected = true;
-    ui->buttonBox->button(QDialogButtonBox::Ok)->setDisabled(false);
+    enableOkButton();
     ui->btnCreateDatabase->setEnabled(true);
     previousHost = ui->txtDatabaseHost->text();
     previousUser = ui->txtDatabaseUser->text();
@@ -395,16 +395,26 @@ void InjectSqlDialog::onCreateDatabase()
     }
 }
 
+void InjectSqlDialog::disableOkButton()
+{
+    ui->buttonBox->button(QDialogButtonBox::Ok)->setDisabled(true);
+}
+
+void InjectSqlDialog::enableOkButton()
+{
+    ui->buttonBox->button(QDialogButtonBox::Ok)->setDisabled(false);
+}
+
 void InjectSqlDialog::onSelectConnection(QListWidgetItem* item)
 {
     QString connectionName =item->text();
     if(ui->lstAllConnections->selectedItems().empty())
     {
-        ui->buttonBox->button(QDialogButtonBox::Ok)->setDisabled(true);
+        disableOkButton();
     }
     else
     {
-        ui->buttonBox->button(QDialogButtonBox::Ok)->setDisabled(false);
+        enableOkButton();
     }
     connectionName = connectionName.left(connectionName.indexOf("(")).trimmed();
     Connection* c = ConnectionManager::instance()->getConnection(connectionName);
@@ -413,12 +423,14 @@ void InjectSqlDialog::onSelectConnection(QListWidgetItem* item)
         populateConnectionDetails(c);
     }
 
+    blockSignals(true);
     ui->txtDatabaseHost->setReadOnly(true);
     ui->txtDatabaseUser->setReadOnly(true);
     ui->txtPort->setReadOnly(true);
     ui->txtDatabasePassword->setReadOnly(true);
     ui->txtConnectionName->setReadOnly(true);
     ui->txtDatabaseName->setReadOnly(true);
+    blockSignals(false);
 
 }
 
@@ -430,13 +442,14 @@ void InjectSqlDialog::populateConnectionDetails(Connection* conn)
     if(c)
     {
         setMysqlLayout();
-
+        blockSignals(true);
         ui->txtDatabaseHost->setText(c->getHost());
         ui->txtDatabaseUser->setText(c->getUser());
         ui->txtDatabasePassword->setText(c->getPassword());
         ui->txtDatabaseName->setText(c->getDb());
         ui->txtPort->setText(QString::number(c->getPort()));
         ui->cmbDatabases->addItem(c->getDb());
+        blockSignals(false);
     }
     else
     {
@@ -498,18 +511,6 @@ void InjectSqlDialog::onUserChange(QString newText)
 int InjectSqlDialog::getPort() const
 {
     return ui->txtPort->text().toInt();
-}
-
-void InjectSqlDialog::changeConnection()
-{
-    if(ui->lstAllConnections->selectedItems().size())
-    {
-        ui->buttonBox->button(QDialogButtonBox::Ok)->setDisabled(false);
-    }
-    else
-    {
-        ui->buttonBox->button(QDialogButtonBox::Ok)->setDisabled(true);
-    }
 }
 
 void InjectSqlDialog::onDbChange(QString newDb)
@@ -611,18 +612,18 @@ void InjectSqlDialog::onSelectFileForSqlite()
     }
     if(!fileName.endsWith(".sqlite")) fileName += ".sqlite";
     ui->txtDatabaseName->setText(fileName);
-    ui->buttonBox->button(QDialogButtonBox::Ok)->setDisabled(false);
+    enableOkButton();
 }
 
 void InjectSqlDialog::onSqliteFileNameChange(QString a)
 {
     if(a.length() > 0)
     {
-        ui->buttonBox->button(QDialogButtonBox::Ok)->setDisabled(false);
+        enableOkButton();
     }
     else
     {
-        ui->buttonBox->button(QDialogButtonBox::Ok)->setDisabled(true);
+        disableOkButton();
     }
 }
 

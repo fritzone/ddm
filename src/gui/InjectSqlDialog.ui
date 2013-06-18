@@ -725,22 +725,6 @@
   </connection>
   <connection>
    <sender>lstAllConnections</sender>
-   <signal>itemActivated(QListWidgetItem*)</signal>
-   <receiver>InjectSqlDialog</receiver>
-   <slot>onSelectConnection(QListWidgetItem*)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>153</x>
-     <y>241</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>358</x>
-     <y>258</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>lstAllConnections</sender>
    <signal>itemClicked(QListWidgetItem*)</signal>
    <receiver>InjectSqlDialog</receiver>
    <slot>onSelectConnection(QListWidgetItem*)</slot>
@@ -752,22 +736,6 @@
     <hint type="destinationlabel">
      <x>358</x>
      <y>244</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>lstAllConnections</sender>
-   <signal>itemSelectionChanged()</signal>
-   <receiver>InjectSqlDialog</receiver>
-   <slot>changeConnection()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>153</x>
-     <y>241</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>358</x>
-     <y>258</y>
     </hint>
    </hints>
   </connection>

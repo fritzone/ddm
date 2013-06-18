@@ -34,8 +34,24 @@
 
 Workspace* Workspace::m_instance = 0;
 
-Workspace::Workspace() : m_solutions(), m_currentSolution(0), m_saved(true)
-{}
+Workspace::Workspace() : m_solutions(), m_currentSolution(0), m_saved(true),
+    m_userDefinedDataTypes()
+{
+    QString dataLocation = QDesktopServices::storageLocation(QDesktopServices::DataLocation);
+    QDir dir(dataLocation);
+    if(!dir.exists())
+    {
+        dir.mkpath(".");
+    }
+    else
+    {
+        loadUserDefinedDatatypes();
+    }
+}
+
+Workspace::~Workspace()
+{
+}
 
 Workspace* Workspace::getInstance()
 {
@@ -181,6 +197,8 @@ QVector<UserDataType*> Workspace::loadDefaultDatatypesIntoCurrentSolution(Soluti
         DeserializationFactory::createSolution(tempSolution, doc, docElem.firstChild().toElement());
         QVector<UserDataType*> dts = tempSolution->currentProject()->getWorkingVersion()->getDataTypes();
 
+        // now load the user defined datatypes, if any
+
         for(int i=0; i<dts.size(); i++)        // add to the project itself
         {
             s->currentProject()->getWorkingVersion()->addNewDataType(dts.at(i), true);
@@ -189,12 +207,77 @@ QVector<UserDataType*> Workspace::loadDefaultDatatypesIntoCurrentSolution(Soluti
             dts[i]->setForcedVersion(s->currentProject()->getWorkingVersion());
         }
 
+        QVector<UserDataType*> defaultDataTypes = m_userDefinedDataTypes[s->currentProject()->getEngine()->getName()];
+        dts << defaultDataTypes;
+
         return dts;
     }
     else
     {
         return QVector<UserDataType*>();
     }
+}
+
+// just save the stuff as normal project
+void Workspace::saveUserDefinedDatatypes()
+{
+    QString dataLocation = QDesktopServices::storageLocation(QDesktopServices::DataLocation);
+    qDebug() << dataLocation;
+    QDomDocument doc("DBM");
+
+    QDomElement solutions = doc.createElement("Solutions");
+
+    QDomElement solution = doc.createElement("Solution");
+    solution.setAttribute("Name", "UserDefinedDataTypes");
+
+    solutions.appendChild(solution);
+
+    QDomElement projects = doc.createElement("Projects");
+
+    solution.appendChild(projects);
+
+    for(int i=0; i<m_userDefinedDataTypes.keys().size(); i++)
+    {
+
+        QDomElement project = doc.createElement("Project");
+        project.setAttribute("Name", "default");
+        project.setAttribute("OOP", "0");
+        project.setAttribute("DB", m_userDefinedDataTypes.keys().at(i));
+
+        projects.appendChild(project);
+
+        QDomElement majorVersions = doc.createElement("MajorVersions");
+        QDomElement majorVersion = doc.createElement("MajorVersion");
+
+        project.appendChild(majorVersions);
+
+        majorVersions.appendChild(majorVersion);
+
+        QDomElement version = doc.createElement("Version");
+        version.appendChild(doc.createTextNode("1.0"));
+
+        majorVersion.appendChild(version);
+
+        QDomElement dataTypes = doc.createElement("DataTypes");
+        majorVersion.appendChild(dataTypes);
+
+        const QVector<UserDataType*> vec = m_userDefinedDataTypes[m_userDefinedDataTypes.keys().at(i)];
+        for(int i=0; i<vec.size(); i++)
+        {
+            vec[i]->serialize(doc, dataTypes);
+        }
+    }
+
+    doc.appendChild(solutions);
+
+    QString xml = doc.toString();
+    QFile f1(dataLocation + "/user_data_types.xml");
+    if (!f1.open(QIODevice::WriteOnly | QIODevice::Truncate | QIODevice::Text))
+    {
+        return;
+    }
+    f1.write(xml.toAscii());
+    f1.close();
 }
 
 QVector<UserDataType *> Workspace::loadDefaultDatatypesIntoCurrentSolution(DatabaseEngine* eng)
@@ -215,11 +298,39 @@ QVector<UserDataType *> Workspace::loadDefaultDatatypesIntoCurrentSolution(Datab
         DeserializationFactory::createSolution(tempSolution, doc, docElem.firstChild().toElement());
         QVector<UserDataType*> dts = tempSolution->currentProject()->getWorkingVersion()->getDataTypes();
 
+        QVector<UserDataType*> defaultDataTypes = m_userDefinedDataTypes[eng->getName()];
+        dts << defaultDataTypes;
         return dts;
     }
     else
     {
         return QVector<UserDataType*>();
+    }
+}
+
+void Workspace::loadUserDefinedDatatypes()
+{
+    QString dataLocation = QDesktopServices::storageLocation(QDesktopServices::DataLocation);
+    QFile file(dataLocation + "/user_data_types.xml");
+    QDomDocument doc ("DBM");
+    if (file.open(QIODevice::ReadOnly))
+    {
+        if (!doc.setContent(&file))
+        {
+            file.close();
+            return;
+        }
+        file.close();
+
+        QDomElement docElem = doc.documentElement();
+        Solution* tempSolution = new Solution("");
+        DeserializationFactory::createSolution(tempSolution, doc, docElem.firstChild().toElement());
+
+        for(int i=0; i<tempSolution->projects().size(); i++)
+        {
+            QVector<UserDataType*> dts = tempSolution->projects()[i]->getWorkingVersion()->getDataTypes();
+            m_userDefinedDataTypes[tempSolution->projects()[i]->getEngine()->getName()] = dts;
+        }
     }
 }
 
@@ -423,4 +534,23 @@ Trigger* Workspace::createTrigger(Version *v)
     v->getGui()->createTriggerTreeEntry(trigger);
     MainWindow::instance()->setCentralWidget(frm);
     return trigger;
+}
+
+void Workspace::addUserDefinedDataType(const QString& dbName, UserDataType *udt)
+{
+    if(m_userDefinedDataTypes.contains(dbName))
+    {
+        m_userDefinedDataTypes[dbName].push_back(udt);
+    }
+    else
+    {
+        QVector<UserDataType*> vec;
+        vec.append(udt);
+        m_userDefinedDataTypes.insert(dbName, vec);
+    }
+}
+
+void Workspace::cleanup()
+{
+    saveUserDefinedDatatypes();
 }

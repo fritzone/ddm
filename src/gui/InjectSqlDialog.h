@@ -65,7 +65,6 @@ public:
 private slots:
 
     void onConnect();
-    void changeConnection();
     void onCreateDatabase();
     void onSelectConnection(QListWidgetItem*);
     void onHostChange(QString);
@@ -87,6 +86,9 @@ private:
     void toggleUidBelongeness(QStringList&, const QString&);
     void setSqliteLayout();
     void setMysqlLayout();
+
+    void disableOkButton();
+    void enableOkButton();
 
 private:
     Ui::InjectSqlDialog *ui;
