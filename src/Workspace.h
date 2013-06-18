@@ -3,6 +3,7 @@
 
 #include <QVector>
 #include <QStringList>
+#include <QMap>
 
 class Solution;
 class Project;
@@ -18,11 +19,17 @@ class Trigger;
  * current session. The Workspace is a singleton, since in a session there can be only one
  * workspace. The Workspace class should be accessible from everywhere in the application.
  */
-class Workspace
+class Workspace : public QObject
 {
+    Q_OBJECT
+
 public:
 
     static Workspace* getInstance();
+
+public slots:
+
+    void cleanup();
 
 public:
 
@@ -112,6 +119,19 @@ public:
     QVector<UserDataType*> loadDefaultDatatypesIntoCurrentSolution(DatabaseEngine *eng);
 
     /**
+     * @brief loadUserDefinedDatatypes Loads the user deifned datatypes from
+     * the users' home directory and returns the given vector
+     * @return
+     */
+    void loadUserDefinedDatatypes();
+
+    /**
+     * @brief saveUserDefinedDatatypes Saves the datatypes the user defined
+     * in the users' home directory
+     */
+    void saveUserDefinedDatatypes();
+
+    /**
      * Pastes a table from the clipboard
      */
     Table* pasteTable(Version *v);
@@ -157,9 +177,13 @@ public:
 
     Trigger* createTrigger(Version *v);
 
+    void addUserDefinedDataType(const QString& dbName, UserDataType* udt);
+
 private:
 
     Workspace();
+
+    virtual ~Workspace();
 
 private:
 
@@ -175,6 +199,10 @@ private:
 
     // if the workspace was saved or not ...
     bool m_saved;
+
+    // a vector of the data types the user defined while working for
+    // each database
+    QMap<QString, QVector<UserDataType*> > m_userDefinedDataTypes;
 
 };
 

@@ -2800,8 +2800,9 @@ void NewTableForm::onDatatypeComboChange(QString)
             DatabaseEngine* eng = m_version?Workspace::getInstance()->currentProjectsEngine() : m_dbEngine;
             if(udt == 0)
             {
-                // create a datatype
+                // create a datatype, and don't forget to validate it against the DB
                 QString type = dtName;
+
                 int stp = dtName.indexOf('(') ;
                 QString ssize;
                 if(stp != -1)
@@ -2814,7 +2815,7 @@ void NewTableForm::onDatatypeComboChange(QString)
                 udt = new UserDataType(dtName,
                                        eng->getTypeStringForSqlType(type),
                                        type, ssize,
-                                       "", QStringList(), false, type + " " + ssize,
+                                       "", QStringList(), false, type + " " + ssize + " - Dynamically Created User Datatype",
                                        true, QUuid::createUuid().toString(), 0);
                 if(m_version)
                 {
@@ -2823,6 +2824,7 @@ void NewTableForm::onDatatypeComboChange(QString)
                 else
                 {
                     m_availableDataTypes.append(udt);
+                    Workspace::getInstance()->addUserDefinedDataType(eng->getDatabaseEngineName(), udt);
                 }
 
                 // append the newly created datatype to a global vector

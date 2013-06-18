@@ -102,13 +102,12 @@ QStringList SqliteSQLGenerator::generateAlterTableForForeignKeys(Table* /*t*/, c
 QStringList SqliteSQLGenerator::generateCreateStoredMethodSql(StoredMethod *p, const QHash<QString, QString>& /*options*/) const
 {
     QStringList t;
-    t.append(p->getSql());
     return t;
 }
 
 QString SqliteSQLGenerator::getTableRenameSql(const QString& from, const QString& to)
 {
-    QString res = "RENAME TABLE " + from + " TO " + to;
+    QString res = "ALTER TABLE " + from + " RENAME TO " + to;
     return res;
 }
 
