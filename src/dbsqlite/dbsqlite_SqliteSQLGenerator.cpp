@@ -29,8 +29,10 @@ QStringList SqliteSQLGenerator::generateCreateTableSql(Table *table,
     {
         return QStringList();
     }
-
-    return BasicSqlGenerator::generateCreateTableSql(table, options, tabName, fkMappings, pdest);
+    // override the
+    QHash<QString, QString> opts = options;
+    opts["FKSposition"] = "InTable";
+    return BasicSqlGenerator::generateCreateTableSql(table, opts, tabName, fkMappings, pdest);
 }
 
 QString SqliteSQLGenerator::sqlForAColumn(const Column *col) const

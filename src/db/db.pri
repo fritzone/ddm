@@ -1,6 +1,7 @@
 SOURCES +=      db/db_DatabaseEngine.cpp                       \
                 db/db_SP.cpp \
-    db/db_BasicSqlGenerator.cpp
+    db/db_BasicSqlGenerator.cpp \
+    db/DefaultDatabaseEngine.cpp
 
 HEADERS += 	db/db_AbstractDTSupplier.h                     \
                 db/db_AbstractSQLGenerator.h                   \

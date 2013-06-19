@@ -56,7 +56,6 @@ public:
     virtual Sp* getSpForSqlRole(const QString& uid) const;
     virtual bool tableBlocksForeignKeyFunctionality(const Table* table) const;
     virtual bool injectMetadata(Connection* c, const Version* v);
-    virtual QString getDbMetadata(Connection *c);
     virtual bool supportsStoredMethods() {return true;}
     virtual QString spiExtension(QUuid);
 

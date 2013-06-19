@@ -3,6 +3,9 @@
 
 #include "db_DatabaseEngine.h"
 
+class Version;
+class ForeignKey;
+
 class DefaultDatabaseEngine : public DatabaseEngine
 {
 public:
@@ -10,18 +13,7 @@ public:
     DefaultDatabaseEngine(const QString& db, const QString& uid) : DatabaseEngine(db, uid)
     {}
 
-    QString toHexString(const QString &x)
-    {
-        QString result = "";
-        for(int i=0; i<x.length(); i++)
-        {
-            QString hex = QString("%1").arg((int)(x.at(i).toAscii()), 0, 16);
-            if(hex.length() == 1) hex = "0" + hex;
-            result += hex;
-        }
-
-        return result;
-    }
+    QString toHexString(const QString &x);
 
     QStringList chopUpString(const QString &x, int size)
     {
@@ -43,6 +35,15 @@ public:
         result.push_back(piece);
         return result;
     }
+
+    ForeignKey *createForeignKey(bool& foundAtLeastOneForeignKey,
+                                                const QString& referenceeTableName,
+                                                Version* v,
+                                                const QString& referencedColumnName,
+                                                const QString& referenceeColumnName,
+                                                const QString& referencedTableName, const QString &name);
+
+    QString getDbMetadata(Connection *c);
 
 };
 
