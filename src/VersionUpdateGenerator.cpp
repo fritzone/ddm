@@ -62,8 +62,7 @@ VersionUpdateGenerator::VersionUpdateGenerator(Version *from, Version *to) : m_c
                         {
                             if(!to->getProject()->getEngine()->tableBlocksForeignKeyFunctionality(toTables[i]))
                             {
-                                QStringList c = to->getProject()->getEngine()->getSqlGenerator()->getAlterTableForDropForeignKey(otherSLocalTable, fkj);
-                                dropCommands << c;
+                                dropCommands << to->getProject()->getEngine()->getSqlGenerator()->getAlterTableToDropForeignKey(otherSLocalTable, fkj->getName());;
                                 droppedFks.append(fkj);
                             }
                         }
@@ -147,8 +146,7 @@ VersionUpdateGenerator::VersionUpdateGenerator(Version *from, Version *to) : m_c
                         {
                             if(!to->getProject()->getEngine()->tableBlocksForeignKeyFunctionality(toTableInstances[i]->table()))
                             {
-                                QStringList c = to->getProject()->getEngine()->getSqlGenerator()->getAlterTableForDropForeignKey(otherSLocalTable, fkj);
-                                dropCommands << c;
+                                dropCommands << to->getProject()->getEngine()->getSqlGenerator()->getAlterTableToDropForeignKey(otherSLocalTable, fkj->getName());;
                                 DroppedFkWithTinst* dfkwt = new DroppedFkWithTinst;
                                 dfkwt->fk = fkj;
                                 dfkwt->tinst = toTableInstances[i];

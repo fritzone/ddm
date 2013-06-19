@@ -182,7 +182,7 @@ public:
      * @param fk
      * @return
      */
-    virtual QStringList getAlterTableForDropForeignKey(const QString& table, const ForeignKey *fk) = 0;
+    virtual QString getAlterTableToDropForeignKey(const QString& table, const QString&) = 0;
 
     /**
      * Get and UPDATE table script to update destCol with valeu destValue where the pkeys are pvalues

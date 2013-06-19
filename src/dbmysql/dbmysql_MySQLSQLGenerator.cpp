@@ -398,89 +398,6 @@ QString MySQLSQLGenerator::getAlterTableToDropForeignKey(const QString& table, c
     return res;
 }
 
-QString MySQLSQLGenerator::getDropTable(const QString& table)
-{
-    initForOptions(Configuration::instance().sqlGenerationOptions());
-
-    QString res = correctCase("DROP TABLE IF EXISTS") + table;
-    return res;
-}
-
-QStringList MySQLSQLGenerator::getAlterTableForDropForeignKey(const QString& table, const ForeignKey* fk)
-{
-    initForOptions(Configuration::instance().sqlGenerationOptions());
-
-    QStringList r;
-    QString res = correctCase("ALTER TABLE") + table + strSpace + correctCase("DROP FOREIGN KEY") + fk->getName();
-
-    r << res;
-    return r;
-}
-
-QString MySQLSQLGenerator::getUpdateTableForColumns(const QString& table, const QStringList& pkeys, const QStringList& pvalues, const QString& destCol, const QString& destValue)
-{
-    initForOptions(Configuration::instance().sqlGenerationOptions());
-
-    QString where = "";
-    for(int i=0; i<pkeys.size(); i++)
-    {
-        where += pkeys[i] + " = \"" + pvalues[i] + "\"";
-        if(i < pkeys.size() - 1)
-        {
-            where += correctCase(" AND ");
-        }
-        else where += " ";
-    }
-    QString res = correctCase("UPDATE") + table + correctCase(" SET ") + destCol + " = \"" + destValue + correctCase("\" WHERE ") + where;
-    return res;
-}
-
-QString MySQLSQLGenerator::getDeleteFromTable(const QString& table, const QStringList& pkeys, const QStringList& pvalues)
-{
-    QString where = "";
-    for(int i=0; i<pkeys.size(); i++)
-    {
-        where += pkeys[i] + " = \"" + pvalues[i] + "\"";
-        if(i < pkeys.size() - 1)
-        {
-            where += correctCase(" AND ");
-        }
-        else where += " ";
-    }
-    QString res = correctCase("DELETE FROM") + table + correctCase(" WHERE") + where;
-    return res;
-
-}
-
-QString MySQLSQLGenerator::getInsertsIntoTable(const QString& table, const QStringList &columns, const QStringList &values)
-{
-    initForOptions(Configuration::instance().sqlGenerationOptions());
-
-    QString res = correctCase("INSERT INTO") + table + " (";
-    for(int i=0; i<columns.size(); i++)
-    {
-        res += columns[i];
-        if(i<columns.size() - 1) res += ", ";
-    }
-    res += correctCase(") VALUES (");
-    for(int i=0; i<values.size(); i++)
-    {
-        res += "\"" + values[i] + "\"";
-        if(i<values.size() - 1) res += ", ";
-    }
-    res += ")";
-
-    return res;
-}
-
-QString MySQLSQLGenerator::getDropView(const QString& viewName)
-{
-    initForOptions(Configuration::instance().sqlGenerationOptions());
-
-    QString res = correctCase("DROP VIEW IF EXISTS") + viewName;
-    return res;
-}
-
 QString MySQLSQLGenerator::getDropProcedure(const QString& proc)
 {
     initForOptions(Configuration::instance().sqlGenerationOptions());
@@ -494,14 +411,6 @@ QString MySQLSQLGenerator::getDropFunction(const QString& func)
     initForOptions(Configuration::instance().sqlGenerationOptions());
 
     QString res = correctCase("DROP FUNCTION IF EXISTS") + func;
-    return res;
-}
-
-QString MySQLSQLGenerator::getDropTrigger(const QString& trig)
-{
-    initForOptions(Configuration::instance().sqlGenerationOptions());
-
-    QString res = correctCase("DROP TRIGGER IF EXISTS") + trig;
     return res;
 }
 

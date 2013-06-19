@@ -153,6 +153,8 @@ bool MySQLDatabaseEngine::reverseEngineerDatabase(Connection *conn, const QStrin
                                                   referencedColumnName,
                                                   referenceeColumnName,
                                                   referencedTableName, name);
+
+                Q_UNUSED(fk);
             }
 
             if(!foundAtLeastOneForeignKey)

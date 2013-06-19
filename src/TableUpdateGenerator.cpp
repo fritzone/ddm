@@ -293,7 +293,7 @@ TableUpdateGenerator::TableUpdateGenerator(Table *t1, Table *t2, DatabaseEngine*
         for(int i=0; i<droppedFksFromT2.size(); i++)
         {
     //        m_droppedForeignKeys.append("-- foreign key " + droppedFksFromT2[i]->getName() + " was dropped");
-            m_droppedForeignKeys << dbEngine->getSqlGenerator()->getAlterTableForDropForeignKey(t2->getName(), droppedFksFromT2[i]);
+            m_droppedForeignKeys << dbEngine->getSqlGenerator()->getAlterTableToDropForeignKey(t2->getName(), droppedFksFromT2[i]->getName());
         }
 
         // now search for NEW foreign keys

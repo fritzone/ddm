@@ -67,10 +67,31 @@ public:
 
 
     virtual QString createTableOnlyScript(Table* table, const QStringList &foreignKeys, const QString &tabName, const Connection *dest) const = 0;
-    virtual QString indexTypeSpecified(Index *idx) const = 0;
-    virtual QString getIndexUsedLength(Index* idx, const Column *c) const = 0;
-    virtual QString createViewReplaceability(View* v) const = 0;
-    virtual QString createViewColumnNames(View* v) const = 0;
+
+    // stuff returning empty results. other generators should override if needed
+    virtual QString getIndexUsedLength(Index*, const Column*) const;
+    virtual QString indexTypeSpecified(Index*) const;
+    virtual QString createViewReplaceability(View*) const;
+    virtual QString createViewColumnNames(View*) const;
+
+    // default behavior for some queries (return more emptyness)
+    QString getAlterTableForChangeColumnOrder(const QString& /*table*/, const Column* /*column*/, const QString& /*afterThis*/);
+    QStringList generateAlterTableForForeignKeys(Table* t, const QHash<QString, QString>& options) const;
+    QStringList generateCreateStoredMethodSql(StoredMethod* p, const QHash<QString, QString>& options) const;
+    QString getAlterTableForColumnChange(const QString& table, const Column* col);
+    QString getDropProcedure(const QString&);
+    QString getDropFunction(const QString&);
+    QString getAlterTableToDropForeignKey(const QString& table, const QString& fkName);
+    QString getAlterTableForColumnRename(const QString& table, const Column* column, const QString& oldName);
+    QString getAlterTableForColumnDeletion(const QString& table, const QString& column);
+
+    // common sense behavior for other queries, return SQL standard queries
+    QString getInsertsIntoTable(const QString& table, const QStringList& columns, const QStringList& values);
+    QString getDeleteFromTable(const QString& table, const QStringList& pkeys, const QStringList& pvalues);
+    QString getDropView(const QString& viewName);
+    QString getDropTrigger(const QString& trig);
+    QString getUpdateTableForColumns(const QString& table, const QStringList& pkeys, const QStringList& pvalues, const QString& destCol, const QString& destValue);
+    QString getDropTable(const QString& table);
 
 protected:
 

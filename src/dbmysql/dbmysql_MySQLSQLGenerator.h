@@ -30,15 +30,8 @@ public:
     virtual QString getAlterTableForColumnDeletion(const QString& table, const QString& column);
     virtual QString getAlterTableForColumnChange(const QString& table, const Column* col);
     virtual QString getAlterTableToDropForeignKey(const QString& table, const QString& fkName);
-    virtual QString getDropTable(const QString& table);
-    virtual QStringList getAlterTableForDropForeignKey(const QString& table, const ForeignKey *fk);
-    virtual QString getUpdateTableForColumns(const QString& table, const QStringList& pkeys, const QStringList& pvalues, const QString& destCol, const QString& destValue);
-    virtual QString getDeleteFromTable(const QString& table, const QStringList& pkeys, const QStringList& pvalues);
-    virtual QString getInsertsIntoTable(const QString& table, const QStringList& columns, const QStringList& values);
-    virtual QString getDropView(const QString& viewName);
     virtual QString getDropProcedure(const QString& proc);
     virtual QString getDropFunction(const QString& func);
-    virtual QString getDropTrigger(const QString& trig);
 
     virtual QString sqlForAColumn(const Column* col) const;
 
