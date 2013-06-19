@@ -148,23 +148,11 @@ bool MySQLDatabaseEngine::reverseEngineerDatabase(Connection *conn, const QStrin
                 QString referencedTableName = referenced.left(referenced.indexOf('.'));
                 QString referencedColumnName = referenced.mid(referenced.indexOf('.') + 1);
 
-                Table* referenceeTable = v->getTable(referenceeTableName);
-                Table* referencedTable = v->getTable(referencedTableName);
-                Column* referenceeColumn = referenceeTable->getColumn(referenceeColumnName);
-                Column* referencedColumn = referencedTable->getColumn(referencedColumnName);
-                // now we should check that the columns have the same data type ...
-                if(referencedColumn->getDataType() != referenceeColumn->getDataType())
-                {
-                    // TODO initially here was nothing ...
-                    referencedColumn->setDataType(referenceeColumn->getDataType());
-                }
-
-                ForeignKey::ColumnAssociation* fkAssociation = new ForeignKey::ColumnAssociation(referencedTable, referencedColumn, referenceeTable, referenceeColumn);
-                ForeignKey* fk = new ForeignKey(v, QUuid::createUuid().toString());
-                fk->setName(name);
-                fk->addAssociation(fkAssociation);
-                referenceeTable->addForeignKey(fk);
-                foundAtLeastOneForeignKey = true;
+                ForeignKey* fk = createForeignKey(foundAtLeastOneForeignKey,
+                                                  referenceeTableName, v,
+                                                  referencedColumnName,
+                                                  referenceeColumnName,
+                                                  referencedTableName, name);
             }
 
             if(!foundAtLeastOneForeignKey)
@@ -1762,72 +1750,6 @@ bool MySQLDatabaseEngine::injectMetadata(Connection *c, const Version *v)
         }
     }
     return true;
-}
-
-QString MySQLDatabaseEngine::getDbMetadata(Connection *conn)
-{
-    MySqlConnection* c = dynamic_cast<MySqlConnection*>(conn);
-    if(!c)
-    {
-        return "";
-    }
-
-    QSqlDatabase db = getQSqlDatabaseForConnection(c);
-    if(!db.isOpen()) return "";
-    {
-    QSqlQuery q(db);
-    QString g = "SELECT count(*) FROM information_schema.tables WHERE table_schema = '" + c->getDb() + "' AND table_name='DDM_META'";
-    if(!q.exec(g))
-    {
-//        qDebug() << q.lastError();
-        return "";
-    }
-
-    bool foundMetaTable = false;
-    while(q.next())
-    {
-        int cnt = q.value(0).toInt();
-//        qDebug() << cnt;
-        if(cnt == 1)
-        {
-            foundMetaTable = true;
-        }
-    }
-    if(!foundMetaTable) return "";
-    }
-
-    QString dq = "SELECT metadata_chunk FROM "+c->getDb()+".DDM_META ORDER BY IDX";
-    QSqlQuery q(db);
-    if(!q.exec(dq))
-    {
-//        qDebug() << q.lastError();
-        return "";
-    }
-
-    QString xmd = "";
-    QString last;
-    bool f = true;
-    while(q.next())
-    {
-        last = "";
-        QString chunk = q.value(0).toString();
-        for(int i=0; i<chunk.length();)
-        {
-            QString hex = chunk.at(i);
-            hex += chunk.at(i+1);
-            i += 2;
-            xmd += QChar((char)(hex.toInt(0, 16)));
-            last+= QChar((char)(hex.toInt(0, 16)));
-        }
-        if(f)
-        {
-//            qDebug() << xmd;
-            f = false;
-        }
-
-    }
-//    qDebug() << last;
-    return xmd;
 }
 
 QString MySQLDatabaseEngine::spiExtension(QUuid uid)

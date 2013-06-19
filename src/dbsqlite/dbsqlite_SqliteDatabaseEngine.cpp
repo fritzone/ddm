@@ -75,7 +75,6 @@ QString SqliteDatabaseEngine::provideConnectionName(const QString& prefix)
     return t;
 }
 
-
 bool SqliteDatabaseEngine::reverseEngineerDatabase(Connection *c, const QStringList& tables, const QStringList& views, const QStringList& /*procs*/,
                                                   const QStringList& /*funcs*/, const QStringList& triggers, Project*p, bool relaxed)
 {
@@ -85,10 +84,16 @@ bool SqliteDatabaseEngine::reverseEngineerDatabase(Connection *c, const QStringL
     m_revEngMappings.clear();
     m_oneTimeMappings.clear();
 
+    QStringList foundTables;
+
     for(int i=0; i<tables.size(); i++)
     {
         Table* tab = reverseEngineerTable(c, tables.at(i), p, relaxed, v);
-        if(tab) v->addTable(tab, true); // TODO: is this true that this is true?
+        if(tab)
+        {
+            v->addTable(tab, true);
+            foundTables.append(tab->getName());
+        }
     }
 
     for(int i=0; i<views.size(); i++)
@@ -105,62 +110,57 @@ bool SqliteDatabaseEngine::reverseEngineerDatabase(Connection *c, const QStringL
 
     // now populate the foreign keys
     {
-#if 0
-        QSqlDatabase dbo = getQSqlDatabaseForConnection(c);
-
-        bool ok = dbo.isOpen();
-
-        if(ok)
+        for(int i=0; i<foundTables.size(); i++)
         {
-            QString s = "SELECT distinct CONCAT( table_name, '.', column_name, ':', referenced_table_name, '.', referenced_column_name ) AS list_of_fks, constraint_name "
-                    "FROM information_schema.KEY_COLUMN_USAGE WHERE REFERENCED_TABLE_SCHEMA = '"
-                    + c->getDb() +
-                    "' AND REFERENCED_TABLE_NAME is not null ORDER BY TABLE_NAME, COLUMN_NAME";
-            QSqlQuery query(dbo);
-            query.exec(s);
-            bool foundAtLeastOneForeignKey = false;
-            while(query.next())
+            QSqlDatabase dbo = getQSqlDatabaseForConnection(c);
+            bool ok = dbo.isOpen();
+
+            if(ok)
             {
-                QString val = query.value(0).toString();
-                QString name = query.value(1).toString();
-                QString referencee = val.left(val.indexOf(':'));
-                QString referenced = val.mid(val.indexOf(':') + 1);
-
-                QString referenceeTableName = referencee.left(referencee.indexOf('.'));
-                QString referenceeColumnName = referencee.mid(referencee.indexOf('.') + 1);
-
-                QString referencedTableName = referenced.left(referenced.indexOf('.'));
-                QString referencedColumnName = referenced.mid(referenced.indexOf('.') + 1);
-
-                Table* referenceeTable = v->getTable(referenceeTableName);
-                Table* referencedTable = v->getTable(referencedTableName);
-                Column* referenceeColumn = referenceeTable->getColumn(referenceeColumnName);
-                Column* referencedColumn = referencedTable->getColumn(referencedColumnName);
-                // now we should check that the columns have the same data type ...
-                if(referencedColumn->getDataType() != referenceeColumn->getDataType())
+                QString s = QString("pragma foreign_key_list(") + foundTables[i] + ")";
+                QSqlQuery query(dbo);
+                query.exec(s);
+                bool foundAtLeastOneForeignKey = false;
+                while(query.next())
                 {
-                    // TODO initially here was nothing ...
-                    referencedColumn->setDataType(referenceeColumn->getDataType());
+                    QString id = query.value(0).toString();
+                    QString seq = query.value(1).toString();
+                    QString toTabName = query.value(2).toString();
+                    QString fromColName = query.value(3).toString();
+                    QString toColName = query.value(4).toString();
+                    QString onUpdate = query.value(5).toString();
+                    QString onDelete = query.value(6).toString();
+
+                    QString referenceeTableName = foundTables[i];
+                    QString referenceeColumnName = fromColName;
+
+                    QString referencedTableName = toTabName;
+                    QString referencedColumnName = toColName;
+                    QString name = QString("fk_") + referencedTableName + "_"
+                            + referencedColumnName;
+
+                    ForeignKey* fk = createForeignKey(foundAtLeastOneForeignKey,
+                                     referenceeTableName, v,
+                                     referencedColumnName,
+                                     referenceeColumnName,
+                                     referencedTableName, name);
+                    fk->setOnDelete(onDelete);
+                    fk->setOnUpdate(onUpdate);
+
                 }
 
-                ForeignKey::ColumnAssociation* fkAssociation = new ForeignKey::ColumnAssociation(referencedTable, referencedColumn, referenceeTable, referenceeColumn);
-                ForeignKey* fk = new ForeignKey(v, QUuid::createUuid().toString());
-                fk->setName(name);
-                fk->addAssociation(fkAssociation);
-                referenceeTable->addForeignKey(fk);
-                foundAtLeastOneForeignKey = true;
-            }
+                if(!foundAtLeastOneForeignKey)
+                {
+                    v->setSpecialValidationFlags(1);
+                }
 
-            if(!foundAtLeastOneForeignKey)
-            {
-                v->setSpecialValidationFlags(1);
+                dbo.close();
             }
-
-            dbo.close();
         }
-#endif
+
     }
     }
+
     catch(...)
     {
         qDebug() << "exception";
@@ -1043,63 +1043,6 @@ bool SqliteDatabaseEngine::injectMetadata(Connection *c, const Version *v)
     return true;
 }
 
-// TODO: this should go to a common place
-QString SqliteDatabaseEngine::getDbMetadata(Connection *c)
-{
-    QSqlDatabase db = getQSqlDatabaseForConnection(c);
-    if(!db.isOpen()) return "";
-    {
-    QSqlQuery q(db);
-    QString g = "SELECT count(*) FROM sqlite_master WHERE name='DDM_META' and type='table'";
-    if(!q.exec(g))
-    {
-        return "";
-    }
-
-    bool foundMetaTable = false;
-    while(q.next())
-    {
-        int cnt = q.value(0).toInt();
-        if(cnt == 1)
-        {
-            foundMetaTable = true;
-        }
-    }
-    if(!foundMetaTable) return "";
-    }
-
-    QString dq = "SELECT metadata_chunk FROM DDM_META ORDER BY IDX";
-    QSqlQuery q(db);
-    if(!q.exec(dq))
-    {
-        return "";
-    }
-
-    QString xmd = "";
-    QString last;
-    bool f = true;
-    while(q.next())
-    {
-        last = "";
-        QString chunk = q.value(0).toString();
-        for(int i=0; i<chunk.length();)
-        {
-            QString hex = chunk.at(i);
-            hex += chunk.at(i+1);
-            i += 2;
-            xmd += QChar((char)(hex.toInt(0, 16)));
-            last+= QChar((char)(hex.toInt(0, 16)));
-        }
-        if(f)
-        {
-//            qDebug() << xmd;
-            f = false;
-        }
-
-    }
-//    qDebug() << last;
-    return xmd;
-}
 
 QString SqliteDatabaseEngine::spiExtension(QUuid uid)
 {
