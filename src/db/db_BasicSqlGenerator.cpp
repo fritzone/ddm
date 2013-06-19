@@ -629,5 +629,158 @@ QString BasicSqlGenerator::basicCreateTableScript(Table* table, const QStringLis
 
     // and here we are done with the create table command
     return createTable;
+}
 
+QString BasicSqlGenerator::getIndexUsedLength(Index* /*idx*/, const Column* /*c*/) const
+{
+    return "";
+}
+
+
+
+QString BasicSqlGenerator::indexTypeSpecified(Index* /*idx*/) const
+{
+    return "";
+}
+
+QString BasicSqlGenerator::getAlterTableForChangeColumnOrder(const QString& /*table*/, const Column* /*column*/, const QString& /*afterThis*/)
+{
+    return "";
+}
+
+// sqlite does not really support this
+QStringList BasicSqlGenerator::generateAlterTableForForeignKeys(Table* /*t*/, const QHash<QString, QString>& /*options*/) const
+{
+    return QStringList();
+}
+
+QStringList BasicSqlGenerator::generateCreateStoredMethodSql(StoredMethod */*p*/, const QHash<QString, QString>& /*options*/) const
+{
+    return QStringList();
+}
+
+QString BasicSqlGenerator::getAlterTableForColumnChange(const QString& /*table*/, const Column* /*col*/)
+{
+    return "";
+}
+
+
+QString BasicSqlGenerator::getInsertsIntoTable(const QString& table, const QStringList &columns, const QStringList &values)
+{
+    initForOptions(Configuration::instance().sqlGenerationOptions());
+
+    QString res = correctCase("INSERT INTO") + table + " (";
+    for(int i=0; i<columns.size(); i++)
+    {
+        res += columns[i];
+        if(i<columns.size() - 1) res += ", ";
+    }
+    res += correctCase(") VALUES (");
+    for(int i=0; i<values.size(); i++)
+    {
+        res += "\"" + values[i] + "\"";
+        if(i<values.size() - 1) res += ", ";
+    }
+    res += ")";
+
+    return res;
+}
+
+
+QString BasicSqlGenerator::getDeleteFromTable(const QString& table, const QStringList& pkeys, const QStringList& pvalues)
+{
+    initForOptions(Configuration::instance().sqlGenerationOptions());
+
+    QString where = "";
+    for(int i=0; i<pkeys.size(); i++)
+    {
+        where += pkeys[i] + " = \"" + pvalues[i] + "\"";
+        if(i < pkeys.size() - 1)
+        {
+            where += correctCase(" AND ");
+        }
+        else where += " ";
+    }
+    QString res = correctCase("DELETE FROM") + table + correctCase(" WHERE") + where;
+    return res;
+
+}
+
+QString BasicSqlGenerator::createViewColumnNames(View*) const
+{
+    return "";
+}
+
+QString BasicSqlGenerator::createViewReplaceability(View*) const
+{
+    return "";
+}
+
+QString BasicSqlGenerator::getDropProcedure(const QString&)
+{
+    return "";
+}
+
+QString BasicSqlGenerator::getDropFunction(const QString&)
+{
+    return "";
+}
+
+QString BasicSqlGenerator::getDropView(const QString& viewName)
+{
+    initForOptions(Configuration::instance().sqlGenerationOptions());
+
+    QString res = correctCase("DROP VIEW IF EXISTS") + viewName;
+    return res;
+}
+
+
+QString BasicSqlGenerator::getDropTrigger(const QString& trig)
+{
+    initForOptions(Configuration::instance().sqlGenerationOptions());
+
+    QString res = correctCase("DROP TRIGGER IF EXISTS") + trig;
+    return res;
+}
+
+QString BasicSqlGenerator::getAlterTableToDropForeignKey(const QString&, const QString&)
+{
+    return "";
+}
+
+QString BasicSqlGenerator::getAlterTableForColumnRename(const QString&, const Column*, const QString&)
+{
+    return "";
+}
+
+QString BasicSqlGenerator::getUpdateTableForColumns(const QString& table, const QStringList& pkeys, const QStringList& pvalues, const QString& destCol, const QString& destValue)
+{
+    initForOptions(Configuration::instance().sqlGenerationOptions());
+
+    QString where = "";
+    for(int i=0; i<pkeys.size(); i++)
+    {
+        where += pkeys[i] + " = \"" + pvalues[i] + "\"";
+        if(i < pkeys.size() - 1)
+        {
+            where += correctCase(" AND ");
+        }
+        else where += " ";
+    }
+    QString res = correctCase("UPDATE") + table + correctCase(" SET ") + destCol + " = \"" + destValue + correctCase("\" WHERE ") + where;
+    return res;
+}
+
+
+QString BasicSqlGenerator::getDropTable(const QString& table)
+{
+    initForOptions(Configuration::instance().sqlGenerationOptions());
+
+    QString res = correctCase("DROP TABLE IF EXISTS") + table;
+    return res;
+}
+
+QString BasicSqlGenerator::getAlterTableForColumnDeletion(const QString&, const QString&)
+{
+    return "";
 }
