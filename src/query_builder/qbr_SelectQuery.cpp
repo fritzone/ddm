@@ -529,3 +529,9 @@ QUuid SelectQuery::getClassUid() const
 {
     return QUuid(uidSelectQuery);
 }
+
+void SelectQuery::tableRemovedFromQuery(const QString &tabName)
+{
+    // TODO: Implement this, by walking round the children and notifying them
+    // about the event.
+}

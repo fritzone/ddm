@@ -46,13 +46,13 @@ QString MySQLSQLGenerator::createTableOnlyScript(Table* table, const QStringList
     QString createTable = basicCreateTableScript(table, foreignKeys, tabName, needfk);
 
     // extra MySql stuff: DB engine and codepage
-    createTable += provideDatabaseEngine(table, dest);
-    createTable += provideCodepage(table);
+    createTable += provideDatabaseEngineScript(table, dest);
+    createTable += provideCodepageScript(table);
 
     // more extra mysql stuff: checksum, autoIncrement, etc...
-    createTable += provideAutoIncrementForTable(table);
-    createTable += provideAverageRowLength(table);
-    createTable += provideChecksum(table, dest);
+    createTable += provideAutoIncrementForTableScript(table);
+    createTable += provideAverageRowLengthScript(table);
+    createTable += provideChecksumScript(table, dest);
 
     // done
     createTable += strSemicolon + strNewline;
@@ -90,153 +90,6 @@ QString MySQLSQLGenerator::indexTypeSpecified(Index *idx) const
 
     return result;
 }
-
-QString MySQLSQLGenerator::dbEngineName(Table* table, const MySqlConnection* dest) const
-{
-    // see if we have a storage eng ine
-    QString result = "";
-    SpInstance* spi = table->getInstanceForSqlRoleUid(m_engine, uidMysqlStorageEngineTable);
-    if(spi)
-    {
-        QString storageEngine = spi->get();
-        if(storageEngine.length())
-        {
-            MySQLDatabaseEngine* mysEng = dynamic_cast<MySQLDatabaseEngine*>(m_engine);
-            if(mysEng)
-            {
-                if(dest)
-                {
-                    QStringList supportedStroageEngines = mysEng->getSupportedStorageEngines(dest->getHost(), dest->getUser(), dest->getPassword(), dest->getPort());
-                    if(supportedStroageEngines.contains(storageEngine.toUpper()))
-                    {
-                        return storageEngine;
-                    }
-                }
-                else
-                {
-                    return storageEngine;
-                }
-            }
-        }
-    }
-    return "";
-
-}
-
-QString MySQLSQLGenerator::provideDatabaseEngine(Table *table, const MySqlConnection* dest) const
-{
-    // see if we have a storage eng ine
-    QString result = "";
-    SpInstance* spi = table->getInstanceForSqlRoleUid(m_engine, uidMysqlStorageEngineTable);
-    if(spi)
-    {
-        QString storageEngine = spi->get();
-        if(storageEngine.length())
-        {
-            MySQLDatabaseEngine* mysEng = dynamic_cast<MySQLDatabaseEngine*>(m_engine);
-            if(mysEng)
-            {
-                if(dest)
-                {
-                    QStringList supportedStroageEngines = mysEng->getSupportedStorageEngines(dest->getHost(), dest->getUser(), dest->getPassword(), dest->getPort());
-                    if(supportedStroageEngines.contains(storageEngine.toUpper()))
-                    {
-                        result = correctCase("engine = ")+ storageEngine;
-                    }
-                }
-                else
-                {
-                    result = correctCase("engine = ")+ storageEngine;
-                }
-            }
-        }
-    }
-    return result;
-}
-
-QString MySQLSQLGenerator::provideChecksum(Table *table, const MySqlConnection *dest) const
-{
-    if(dbEngineName(table, dest).toUpper() != "MYISAM")
-    {
-        return "";
-    }
-    QString result("");
-    // and the codepage
-    SpInstance* spi = table->getInstanceForSqlRoleUid(m_engine, uidMysqlChecksumTable);
-    if(spi)
-    {
-        QString checksum = spi->get();
-        if(checksum.length() && checksum != spi->getClass()->getDefaultValue())
-        {
-            QString aincCmd = correctCase("checksum");
-            QString value = checksum;
-
-            result = strSpace + aincCmd + strSpace + value + strSpace;
-        }
-    }
-    return result;
-
-}
-
-QString MySQLSQLGenerator::provideAutoIncrementForTable(Table *table) const
-{
-    QString result("");
-    // and the codepage
-    SpInstance* spi = table->getInstanceForSqlRoleUid(m_engine, uidMysqlAutoincrementTable);
-    if(spi)
-    {
-        QString autoInc = spi->get();
-        if(autoInc.length() && autoInc != spi->getClass()->getDefaultValue())
-        {
-            QString aincCmd = correctCase("auto_increment");
-            QString value = autoInc;
-
-            result = strSpace + aincCmd + strSpace + value + strSpace;
-        }
-    }
-    return result;
-}
-
-QString MySQLSQLGenerator::provideAverageRowLength(Table *table) const
-{
-    QString result("");
-    // and the codepage
-    SpInstance* spi = table->getInstanceForSqlRoleUid(m_engine, uidMysqlAvgRowLengthTable);
-    if(spi)
-    {
-        QString autoInc = spi->get();
-        if(autoInc.length() && autoInc != spi->getClass()->getDefaultValue())
-        {
-            QString aincCmd = correctCase("avg_row_length");
-            QString value = autoInc;
-
-            result = strSpace + aincCmd + strSpace + value + strSpace;
-        }
-    }
-    return result;
-}
-
-QString MySQLSQLGenerator::provideCodepage(Table *table) const
-{
-    QString result("");
-    // and the codepage
-    SpInstance* spi = table->getInstanceForSqlRoleUid(m_engine, uidMysqlCodepageTable);
-    if(spi)
-    {
-        QString codepage = spi->get();
-        if(codepage.length())
-        {
-            QString charset = codepage.left(codepage.indexOf('_'));
-            QString dcs = correctCase("DEFAULT CHARACTER SET");
-            QString collate = correctCase("COLLATE");
-
-            result = strSpace + dcs + charset + strSpace + collate + codepage;
-        }
-    }
-    return result;
-}
-
-
 
 QStringList MySQLSQLGenerator::generateAlterTableForForeignKeys(Table *t, const QHash<QString, QString> &options) const
 {
@@ -434,6 +287,151 @@ QString MySQLSQLGenerator::createViewColumnNames(View *v) const
             }
         }
         result += c + strCloseParantheses;
+    }
+    return result;
+}
+
+QString MySQLSQLGenerator::dbEngineName(Table* table, const MySqlConnection* dest) const
+{
+    // see if we have a storage eng ine
+    QString result = "";
+    SpInstance* spi = table->getInstanceForSqlRoleUid(m_engine, uidMysqlStorageEngineTable);
+    if(spi)
+    {
+        QString storageEngine = spi->get();
+        if(storageEngine.length())
+        {
+            MySQLDatabaseEngine* mysEng = dynamic_cast<MySQLDatabaseEngine*>(m_engine);
+            if(mysEng)
+            {
+                if(dest)
+                {
+                    QStringList supportedStroageEngines = mysEng->getSupportedStorageEngines(dest->getHost(), dest->getUser(), dest->getPassword(), dest->getPort());
+                    if(supportedStroageEngines.contains(storageEngine.toUpper()))
+                    {
+                        return storageEngine;
+                    }
+                }
+                else
+                {
+                    return storageEngine;
+                }
+            }
+        }
+    }
+    return "";
+
+}
+
+QString MySQLSQLGenerator::provideDatabaseEngineScript(Table *table, const MySqlConnection* dest) const
+{
+    // see if we have a storage eng ine
+    QString result = "";
+    SpInstance* spi = table->getInstanceForSqlRoleUid(m_engine, uidMysqlStorageEngineTable);
+    if(spi)
+    {
+        QString storageEngine = spi->get();
+        if(storageEngine.length())
+        {
+            MySQLDatabaseEngine* mysEng = dynamic_cast<MySQLDatabaseEngine*>(m_engine);
+            if(mysEng)
+            {
+                if(dest)
+                {
+                    QStringList supportedStroageEngines = mysEng->getSupportedStorageEngines(dest->getHost(), dest->getUser(), dest->getPassword(), dest->getPort());
+                    if(supportedStroageEngines.contains(storageEngine.toUpper()))
+                    {
+                        result = correctCase("engine = ")+ storageEngine;
+                    }
+                }
+                else
+                {
+                    result = correctCase("engine = ")+ storageEngine;
+                }
+            }
+        }
+    }
+    return result;
+}
+
+QString MySQLSQLGenerator::provideChecksumScript(Table *table, const MySqlConnection *dest) const
+{
+    if(dbEngineName(table, dest).toUpper() != "MYISAM")
+    {
+        return "";
+    }
+    QString result("");
+    // and the codepage
+    SpInstance* spi = table->getInstanceForSqlRoleUid(m_engine, uidMysqlChecksumTable);
+    if(spi)
+    {
+        QString checksum = spi->get();
+        if(checksum.length() && checksum != spi->getClass()->getDefaultValue())
+        {
+            QString aincCmd = correctCase("checksum");
+            QString value = checksum;
+
+            result = strSpace + aincCmd + strSpace + value + strSpace;
+        }
+    }
+    return result;
+
+}
+
+QString MySQLSQLGenerator::provideAutoIncrementForTableScript(Table *table) const
+{
+    QString result("");
+    // and the codepage
+    SpInstance* spi = table->getInstanceForSqlRoleUid(m_engine, uidMysqlAutoincrementTable);
+    if(spi)
+    {
+        QString autoInc = spi->get();
+        if(autoInc.length() && autoInc != spi->getClass()->getDefaultValue())
+        {
+            QString aincCmd = correctCase("auto_increment");
+            QString value = autoInc;
+
+            result = strSpace + aincCmd + strSpace + value + strSpace;
+        }
+    }
+    return result;
+}
+
+QString MySQLSQLGenerator::provideAverageRowLengthScript(Table *table) const
+{
+    QString result("");
+    // and the codepage
+    SpInstance* spi = table->getInstanceForSqlRoleUid(m_engine, uidMysqlAvgRowLengthTable);
+    if(spi)
+    {
+        QString autoInc = spi->get();
+        if(autoInc.length() && autoInc != spi->getClass()->getDefaultValue())
+        {
+            QString aincCmd = correctCase("avg_row_length");
+            QString value = autoInc;
+
+            result = strSpace + aincCmd + strSpace + value + strSpace;
+        }
+    }
+    return result;
+}
+
+QString MySQLSQLGenerator::provideCodepageScript(Table *table) const
+{
+    QString result("");
+    // and the codepage
+    SpInstance* spi = table->getInstanceForSqlRoleUid(m_engine, uidMysqlCodepageTable);
+    if(spi)
+    {
+        QString codepage = spi->get();
+        if(codepage.length())
+        {
+            QString charset = codepage.left(codepage.indexOf('_'));
+            QString dcs = correctCase("DEFAULT CHARACTER SET");
+            QString collate = correctCase("COLLATE");
+
+            result = strSpace + dcs + charset + strSpace + collate + codepage;
+        }
     }
     return result;
 }

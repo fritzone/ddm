@@ -51,9 +51,6 @@ public:
     virtual QString getTableCreationScript(Connection* c, const QString& tabName);
     virtual QString getViewCreationScript(Connection* c, const QString& name);
     virtual QVector<Sp*> getDatabaseSpecificProperties() const;
-    virtual Sp* getSpForSqlRole(const QString& uid) const;
-    virtual bool tableBlocksForeignKeyFunctionality(const Table*) const;
-    virtual bool injectMetadata(Connection* c, const Version* v);
     virtual bool supportsStoredMethods() {return false;}
     virtual QString spiExtension(QUuid uid);
     virtual QStringList getKeywords() const;

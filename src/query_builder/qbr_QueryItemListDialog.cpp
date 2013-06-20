@@ -253,11 +253,24 @@ void QueryItemListDialog::showSymbolPanel()
         populateTablesAndColumns(tableInsts);
     }
 
-    if(m_join)
+
+    if(!Workspace::getInstance()->currentProjectIsOop())
     {
-        QVector<const Table*> joinTables = m_join->getJoinedTables();
-        populateTablesAndColumns(joinTables);
+        if(m_join)
+        {
+            QVector<const Table*> joinTables = m_join->getJoinedTables();
+            populateTablesAndColumns(joinTables);
+        }
     }
+    else
+    {
+        if(m_join)
+        {
+            QVector<const TableInstance*> joinTableInsts = m_join->getJoinedTableInstances();
+            populateTablesAndColumns(joinTableInsts);
+        }
+    }
+
 
     m_mathMenu->connect(m_mathMenu, SIGNAL(triggered(QAction*)), this, SLOT(actionTriggered(QAction*)));
     m_bitMenu->connect(m_bitMenu, SIGNAL(triggered(QAction*)), this, SLOT(actionTriggered(QAction*)));

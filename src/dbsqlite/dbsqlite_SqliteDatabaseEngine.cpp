@@ -982,68 +982,6 @@ QVector<Sp*> SqliteDatabaseEngine::buildSps()
     return result;
 }
 
-Sp* SqliteDatabaseEngine::getSpForSqlRole(const QString& uid) const
-{
-    const QVector<Sp*>& allsps = getDatabaseSpecificProperties();
-    for(int i=0; i<allsps.size(); i++)
-    {
-        if(allsps.at(i)->getSqlRoleUid() == uid)
-        {
-            return allsps.at(i);
-        }
-    }
-    return 0;
-}
-
-bool SqliteDatabaseEngine::tableBlocksForeignKeyFunctionality(const Table*) const
-{
-    // SQLITE is not as picky as MySQL
-    return false;
-}
-
-bool SqliteDatabaseEngine::injectMetadata(Connection *c, const Version *v)
-{
-    QDomDocument doc("DBM");
-    QDomElement root = doc.createElement("Metadata");
-    v->serialize(doc, root);
-
-    doc.appendChild(root);
-    QString xml = doc.toString();
-//    qDebug() << xml;
-
-    QStringList sqls;
-    sqls << "DROP TABLE IF EXISTS DDM_META";
-    sqls << "create table DDM_META                                          \
-            (                                                               \
-                INJECT_TIME timestamp,                                      \
-                IDX integer(10) primary key auto_increment ,                \
-                METADATA_CHUNK text                                         \
-            )";
-
-    QString last;
-    bool b = executeSql(c, sqls, QStringList(), last, false);
-    if(!b) return false;
-
-    QSqlDatabase db = getQSqlDatabaseForConnection(c);
-    if(!db.isOpen()) return false;
-    QSqlQuery q(db);
-    q.prepare("INSERT INTO DDM_META(inject_time, metadata_chunk)  VALUES(SYSDATE(), :md)");
-    QString hexedXml = toHexString(xml);
-    QStringList chopped = chopUpString(hexedXml, 200);
-    for(int i=0; i<chopped.size(); i++)
-    {
-        q.bindValue(":md", chopped.at(i));
-        if(!q.exec())
-        {
-            lastError = formatLastError(QObject::tr("Cannot inject metadata"), db.lastError());
-//            qDebug() << lastError;
-            return false;
-        }
-    }
-    return true;
-}
-
-
 QString SqliteDatabaseEngine::spiExtension(QUuid uid)
 {
     if(uid.toString() == uidTemporaryTable) { return "TEMPORARY"; }

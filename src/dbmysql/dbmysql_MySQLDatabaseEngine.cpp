@@ -52,7 +52,8 @@ QUuid MySQLDatabaseEngine::getClassUid() const
     return QUuid(m_classUid);
 }
 
-MySQLDatabaseEngine::MySQLDatabaseEngine() : DefaultDatabaseEngine("MySQL", uidMysqlDb), m_revEngMappings(), m_oneTimeMappings(), m_indexTypes(), m_defaultIndexType("BTREE")
+MySQLDatabaseEngine::MySQLDatabaseEngine() : DefaultDatabaseEngine("MySQL", uidMysqlDb),
+    m_revEngMappings(), m_oneTimeMappings(), m_indexTypes(), m_defaultIndexType("BTREE")
 {
     static QVector<DatabaseBuiltinFunction> v = buildFunctions();
     static QVector<Sp*> t = buildSps();
@@ -86,47 +87,58 @@ bool MySQLDatabaseEngine::reverseEngineerDatabase(Connection *conn, const QStrin
 
     try
     {
-    Version* v = p->getWorkingVersion();
-    m_revEngMappings.clear();
-    m_oneTimeMappings.clear();
+        Version* v = p->getWorkingVersion();
+        m_revEngMappings.clear();
+        m_oneTimeMappings.clear();
 
-    for(int i=0; i<procs.size(); i++)
-    {
-        Procedure* proc = reverseEngineerProc(c, procs.at(i), v);
-        if(proc) v->addProcedure(proc, true);
-    }
+        for(int i=0; i<procs.size(); i++)
+        {
+            Procedure* proc = reverseEngineerProc(c, procs.at(i), v);
+            if(proc)
+            {
+                v->addProcedure(proc, true);
+            }
+        }
 
-    for(int i=0; i<funcs.size(); i++)
-    {
-        Function* func = reverseEngineerFunc(c, funcs.at(i), v);
-        if(func) v->addFunction(func, true);
-    }
+        for(int i=0; i<funcs.size(); i++)
+        {
+            Function* func = reverseEngineerFunc(c, funcs.at(i), v);
+            if(func)
+            {
+                v->addFunction(func, true);
+            }
+        }
 
-    for(int i=0; i<tables.size(); i++)
-    {
-        Table* tab = reverseEngineerTable(c, tables.at(i), p, relaxed, v);
-        if(tab) v->addTable(tab, true); // TODO: is this true that this is true?
-    }
+        for(int i=0; i<tables.size(); i++)
+        {
+            Table* tab = reverseEngineerTable(c, tables.at(i), p, relaxed, v);
+            if(tab)
+            {
+                v->addTable(tab, true);
+            }
+        }
 
-    for(int i=0; i<views.size(); i++)
-    {
-        View* view = reverseEngineerView(c, views.at(i), v);
-        if(view) v->addView(view, true);
-    }
+        for(int i=0; i<views.size(); i++)
+        {
+            View* view = reverseEngineerView(c, views.at(i), v);
+            if(view)
+            {
+                v->addView(view, true);
+            }
+        }
 
-    for(int i=0; i<triggers.size(); i++)
-    {
-        Trigger* t= reverseEngineerTrigger(c, triggers.at(i), v);
-        if(t) v->addTrigger(t, true);
-    }
+        for(int i=0; i<triggers.size(); i++)
+        {
+            Trigger* t= reverseEngineerTrigger(c, triggers.at(i), v);
+            if(t)
+            {
+                v->addTrigger(t, true);
+            }
+        }
 
-    // now populate the foreign keys
-    {
+        // now populate the foreign keys
         QSqlDatabase dbo = getQSqlDatabaseForConnection(c);
-
-        bool ok = dbo.isOpen();
-
-        if(ok)
+        if(dbo.isOpen())
         {
             QString s = "SELECT distinct CONCAT( table_name, '.', column_name, ':', referenced_table_name, '.', referenced_column_name ) AS list_of_fks, constraint_name "
                     "FROM information_schema.KEY_COLUMN_USAGE WHERE REFERENCED_TABLE_SCHEMA = '"
@@ -134,6 +146,7 @@ bool MySQLDatabaseEngine::reverseEngineerDatabase(Connection *conn, const QStrin
                     "' AND REFERENCED_TABLE_NAME is not null ORDER BY TABLE_NAME, COLUMN_NAME";
             QSqlQuery query(dbo);
             query.exec(s);
+
             bool foundAtLeastOneForeignKey = false;
             while(query.next())
             {
@@ -164,11 +177,10 @@ bool MySQLDatabaseEngine::reverseEngineerDatabase(Connection *conn, const QStrin
 
             dbo.close();
         }
-    }
+
     }
     catch(...)
     {
-        qDebug() << "exception";
         return false;
     }
 
@@ -183,174 +195,61 @@ QSqlDatabase MySQLDatabaseEngine::getQSqlDatabaseForConnection(Connection *conn)
         return QSqlDatabase::database();
     }
 
-    QString newConnName = provideConnectionName("getConnection");
-    QSqlDatabase dbo = QSqlDatabase::addDatabase("QMYSQL", newConnName);
+    QString newConnName = provideConnectionName(strConnection);
+    QSqlDatabase dbo = QSqlDatabase::addDatabase(strQMySql, newConnName);
 
     dbo.setHostName(c->getHost());
     dbo.setDatabaseName(c->getDb());
     if(c->getPort()) dbo.setPort(c->getPort());
     dbo.open(c->getUser(), c->getPassword());
 
-    if(!dbo.isOpen())
-    {
-//        qDebug() << dbo.lastError();
-    }
-
     return dbo;
 }
 
 QStringList MySQLDatabaseEngine::getAvailableViews(Connection* conn)
 {
-    MySqlConnection* c = dynamic_cast<MySqlConnection*>(conn);
-    if(!c)
-    {
-        return QStringList();
-    }
+    if(!dynamic_cast<MySqlConnection*>(conn)) return QStringList();
 
-
-    QSqlDatabase dbo = getQSqlDatabaseForConnection(c);
-
-    bool ok = dbo.isOpen();
-    QStringList result;
-
-    if(!ok)
-    {
-        lastError = formatLastError(QObject::tr("Cannot get views"), dbo.lastError());
-        return result;
-    }
-
-    QSqlQuery query (dbo);
-
-    query.exec("select table_name from information_schema.tables where table_schema='"+c->getDb()+"' and table_type='VIEW'");
-
-    while(query.next())
-    {
-        QString tab = query.value(0).toString();
-        result.append(tab);
-    }
-    dbo.close();
-    return result;
+    return getResultOfQuery(QString("select table_name from information_schema.tables where table_schema='")
+                             + dynamic_cast<MySqlConnection*>(conn)->getDb()
+                             + QString("' and table_type='VIEW'"),
+                            conn,
+                            QString("Cannot get list of available views"), 0);
 }
 
 QStringList MySQLDatabaseEngine::getAvailableTriggers(Connection* c)
 {
-    QSqlDatabase dbo = getQSqlDatabaseForConnection(c);
-
-    bool ok = dbo.isOpen();
-    QStringList result;
-
-    if(!ok)
-    {
-        lastError = formatLastError(QObject::tr("Cannot get triggers"), dbo.lastError());
-        return result;
-    }
-
-    QSqlQuery query (dbo);
-
-    query.exec("show triggers");
-
-    while(query.next())
-    {
-        QString tab = query.value(0).toString();
-        result.append(tab);
-    }
-    dbo.close();
-    return result;
+    return getResultOfQuery(QString("show triggers"), c, QString("Cannot get list of avilable triggers"), 0);
 }
-
 
 QStringList MySQLDatabaseEngine::getAvailableStoredProcedures(Connection* conn)
 {
-    MySqlConnection* c = dynamic_cast<MySqlConnection*>(conn);
-    if(!c)
-    {
-        return QStringList();
-    }
+    if(!dynamic_cast<MySqlConnection*>(conn)) return QStringList();
 
-
-    QSqlDatabase dbo = c->getQSqlDatabase();
-
-    bool ok = dbo.isOpen();
-
-    if(!ok)
-    {
-        lastError = formatLastError(QObject::tr("Cannot get stored procedures"), dbo.lastError());
-        return QStringList();
-    }
-
-    QSqlQuery query (dbo);
-    query.exec("show procedure status where Db='"+c->getDb()+"'");
-    QStringList result;
-
-    while(query.next())
-    {
-        QString proc = query.value(1).toString();
-        result.append(proc);
-    }
-    dbo.close();
-    return result;
+    return getResultOfQuery("show procedure status where db='"
+                            + dynamic_cast<MySqlConnection*>(conn)->getDb()
+                            + "'",
+                            conn,
+                            "Cannot get stored procedures", 1);
 }
 
 QStringList MySQLDatabaseEngine::getAvailableStoredFunctions(Connection* conn)
 {
-    MySqlConnection* c = dynamic_cast<MySqlConnection*>(conn);
-    if(!c)
-    {
-        return QStringList();
-    }
+    if(!dynamic_cast<MySqlConnection*>(conn)) return QStringList();
 
-    QSqlDatabase dbo = c->getQSqlDatabase();
-
-    bool ok = dbo.isOpen();
-
-    if(!ok)
-    {
-        lastError = formatLastError(QObject::tr("Cannot get stored functions"), dbo.lastError());
-        return QStringList();
-    }
-
-    QSqlQuery query (dbo);
-    query.exec("show function status where Db='"+c->getDb()+"'");
-    QStringList result;
-
-    while(query.next())
-    {
-        QString proc = query.value(1).toString();
-        result.append(proc);
-    }
-    dbo.close();
-    return result;
+    return getResultOfQuery("show function status where db='"
+                            + dynamic_cast<MySqlConnection*>(conn)->getDb() + "'",
+                            conn, "Cannot get list of available functions", 1);
 }
 
 QStringList MySQLDatabaseEngine::getAvailableTables(Connection* conn)
 {
-    MySqlConnection* c = dynamic_cast<MySqlConnection*>(conn);
-    if(!c)
-    {
-        return QStringList();
-    }
+    if(!dynamic_cast<MySqlConnection*>(conn)) return QStringList();
 
-    QSqlDatabase dbo = getQSqlDatabaseForConnection(c);
-    bool ok = dbo.isOpen();
-    QStringList result;
-
-    if(!ok)
-    {
-        lastError = formatLastError(QObject::tr("Cannot get tables"),dbo.lastError());
-        return result;
-    }
-
-    QSqlQuery query(dbo);
-
-    query.exec("select table_name from information_schema.tables where table_schema='"+c->getDb()+"' and table_type='BASE TABLE'");
-
-    while(query.next())
-    {
-        QString tab = query.value(0).toString();
-        result.append(tab);
-    }
-    dbo.close();
-    return result;
+    return getResultOfQuery("select table_name from information_schema.tables where table_schema='"
+                            + dynamic_cast<MySqlConnection*>(conn)->getDb() +
+                            "' and table_type='BASE TABLE'",
+                            conn, "Cannot get list of tables", 0);
 }
 
 Procedure* MySQLDatabaseEngine::reverseEngineerProc(Connection *c, const QString &procName, Version *v)
@@ -413,9 +312,7 @@ View* MySQLDatabaseEngine::reverseEngineerView(Connection* conn, const QString& 
 
     QSqlDatabase dbo = getQSqlDatabaseForConnection(c);
 
-    bool ok = dbo.open();
-
-    if(!ok)
+    if(!dbo.isOpen())
     {
         lastError = formatLastError(QObject::tr("Cannot reverse engineer a view"), dbo.lastError());
         return 0;
@@ -785,31 +682,6 @@ bool MySQLDatabaseEngine::dropDatabase(Connection* conn)
     return true;
 }
 
-QString MySQLDatabaseEngine::formatLastError(const QString& header, const QSqlError &error)
-{
-    QString errorText = "<b>" + header + "</b>";
-    errorText += "<br><br>";
-    errorText += "<b>"+ QObject::tr("DB Error: ")  + "</b><!-- DBE: -->"+ error.databaseText() + "<!-- /DBE --><br>";
-    errorText += "<b>" + QObject::tr("Driver Error: ")  + "</b><!-- DRV: -->"+ error.driverText() + "<!-- /DRV --><br>";
-    errorText += "<b>" + QObject::tr("Error Number: ")  + "</b><!-- NR: -->"+  QString::number(error.number()) + "<!-- /NR --><br>";
-    errorText += "<b>" + QObject::tr("Error Type: ") + "</b>";
-    switch(error.type())
-    {
-    case QSqlError::NoError: errorText += "<!-- TYPE: -->No Error<!-- /TYPE -->";
-        break;
-    case QSqlError::ConnectionError: errorText += "<!-- TYPE: -->Connection Error<!-- /TYPE -->";
-        break;
-    case QSqlError::StatementError: errorText += "<!-- TYPE: -->Statement Error<!-- /TYPE -->";
-        break;
-    case QSqlError::TransactionError: errorText += "<!-- TYPE: -->Transaction Error<!-- /TYPE -->";
-        break;
-    case QSqlError::UnknownError: errorText += "<!-- TYPE: -->Unknown Error<!-- /TYPE -->";
-        break;
-    }
-    errorText += "<br>";
-    return errorText;
-}
-
 bool MySQLDatabaseEngine::createDatabase(Connection* conn)
 {
     MySqlConnection* c = dynamic_cast<MySqlConnection*>(conn);
@@ -1118,10 +990,7 @@ QStringList MySQLDatabaseEngine::getTriggerTimings()
 Trigger* MySQLDatabaseEngine::reverseEngineerTrigger(Connection *c, const QString& procName, Version *v)
 {
     QSqlDatabase dbo = getQSqlDatabaseForConnection(c);
-
-    bool ok = dbo.isOpen();
-
-    if(!ok)
+    if(!dbo.isOpen())
     {
         lastError = formatLastError(QObject::tr("Cannot reverse engineer trigger"), dbo.lastError());
         return 0;
@@ -1148,6 +1017,7 @@ Trigger* MySQLDatabaseEngine::reverseEngineerTrigger(Connection *c, const QStrin
             result->setTime(timing);
         }
     }
+
     dbo.close();
     return result;
 }
@@ -1238,132 +1108,53 @@ QStringList MySQLDatabaseEngine::getCodepageList()
 {
     QStringList codepages;
     codepages << ""<<"--Unicode - UCS2"  <<
-                 "ucs2_bin"<<
-                 "ucs2_czech_ci"<<
-                 "ucs2_danish_ci"<<
-                 "ucs2_esperanto_ci"<<
-                 "ucs2_estonia_ci"<<
-                 "ucs2_general_ci"<<
-                 "ucs2_hungarian_ci"<<
-                 "ucs2_icelandic_ci"<<
-                 "ucs2_latvian_ci"<<
-                 "ucs2_lithuanian_ci"<<
-                 "ucs2_persian_ci"<<
-                 "ucs2_polish_ci"<<
-                 "ucs2_roman_ci"<<
-                 "ucs2_romanian_ci"<<
-                 "ucs2_slovak_ci"<<
-                 "ucs2_slovenian_ci"<<
-                 "ucs2_spanish2_ci"<<
-                 "ucs2_spanish_ci"<<
-                 "ucs2_swedish_ci"<<
-                 "ucs2_turkish_ci"<<
-                 "ucs2_unicode_ci"<<
+                 "ucs2_bin"<< "ucs2_czech_ci"<< "ucs2_danish_ci"<< "ucs2_esperanto_ci"<<
+                 "ucs2_estonia_ci"<< "ucs2_general_ci"<< "ucs2_hungarian_ci"<<
+                 "ucs2_icelandic_ci"<< "ucs2_latvian_ci"<< "ucs2_lithuanian_ci"<<
+                 "ucs2_persian_ci"<< "ucs2_polish_ci"<< "ucs2_roman_ci"<<
+                 "ucs2_romanian_ci"<< "ucs2_slovak_ci"<< "ucs2_slovenian_ci"<<
+                 "ucs2_spanish2_ci"<< "ucs2_spanish_ci"<< "ucs2_swedish_ci"<<
+                 "ucs2_turkish_ci"<< "ucs2_unicode_ci"<<
                  "--Unicode - UTF8"<<
-                 "utf8_bin"<<
-                 "utf8_czech_ci"<<
-                 "utf8_danish_ci"<<
-                 "utf8_esperanto_ci"<<
-                 "utf8_estonia_ci"<<
-                 "utf8_general_ci"<<
-                 "utf8_hungarian_ci"<<
-                 "utf8_icelandic_ci"<<
-                 "utf8_latvian_ci"<<
-                 "utf8_lithuanian_ci"<<
-                 "utf8_persian_ci"<<
-                 "utf8_polish_ci"<<
-                 "utf8_roman_ci"<<
-                 "utf8_romanian_ci"<<
-                 "utf8_slovak_ci"<<
-                 "utf8_slovenian_ci"<<
-                 "utf8_spanish2_ci"<<
-                 "utf8_spanish_ci"<<
-                 "utf8_swedish_ci"<<
-                 "utf8_turkish_ci"<<
-                 "utf8_unicode_ci"<<
+                 "utf8_bin"<< "utf8_czech_ci"<< "utf8_danish_ci"<<
+                 "utf8_esperanto_ci"<< "utf8_estonia_ci"<< "utf8_general_ci"<<
+                 "utf8_hungarian_ci"<< "utf8_icelandic_ci"<< "utf8_latvian_ci"<<
+                 "utf8_lithuanian_ci"<< "utf8_persian_ci"<< "utf8_polish_ci"<<
+                 "utf8_roman_ci"<< "utf8_romanian_ci"<< "utf8_slovak_ci"<<
+                 "utf8_slovenian_ci"<< "utf8_spanish2_ci"<< "utf8_spanish_ci"<<
+                 "utf8_swedish_ci"<< "utf8_turkish_ci"<< "utf8_unicode_ci"<<
                  "--Western European"<<
-                 "ascii_bin"<<
-                 "ascii_general"<<
-                 "dec8_bin"<<
-                 "dec8_swedish_ci "<<
-                 "hp8_bin"<<
-                 "hp8_english_ci "<<
-                 "latin1_bin"<<
-                 "latin1_danish_ci"<<
-                 "latin1_general_ci"<<
-                 "latin1_general_cs" <<
-                 "latin1_german1_ci" <<
-                 "latin1_german2_ci" <<
-                 "latin1_spanish_ci" <<
-                 "latin1_swedish_ci"<<
+                 "ascii_bin"<< "ascii_general"<< "dec8_bin"<< "dec8_swedish_ci "<<
+                 "hp8_bin"<< "hp8_english_ci "<< "latin1_bin"<< "latin1_danish_ci"<<
+                 "latin1_general_ci"<< "latin1_general_cs" << "latin1_german1_ci" <<
+                 "latin1_german2_ci" << "latin1_spanish_ci" << "latin1_swedish_ci"<<
                  "--Central European"<<
-                 "cp1250_bin"<<
-                 "cp1250_croatian_ci" <<
-                 "cp1250_czech_cs" <<
-                 "cp1250_general_ci" <<
-                 "cp852_bin"<<
-                 "cp852_general_ci" <<
-                 "keybcs2_bin"<<
-                 "keybcs2_general_ci" <<
-                 "latin2_bin"<<
-                 "latin2_croatian_ci" <<
-                 "latin2_czech_cs" <<
-                 "latin2_general_ci"<<
-                 "latin2_hungarian_ci"<<
-                 "macce_bin"<<
-                 "macce_general_ci" <<
+                 "cp1250_bin"<< "cp1250_croatian_ci" << "cp1250_czech_cs" <<
+                 "cp1250_general_ci" << "cp852_bin"<< "cp852_general_ci" <<
+                 "keybcs2_bin"<< "keybcs2_general_ci" << "latin2_bin"<<
+                 "latin2_croatian_ci" << "latin2_czech_cs" << "latin2_general_ci"<<
+                 "latin2_hungarian_ci"<< "macce_bin"<< "macce_general_ci" <<
                  "--South European"<<
-                 "armscii8_bin"<<
-                 "armscii8_general_ci" <<
-                 "cp1256_bin"<<
-                 "cp1256_general_ci" <<
-                 "geostd8_bin"<<
-                 "geostd8_general_ci" <<
-                 "greek_bin"<<
-                 "greek_general_ci" <<
-                 "hebrew_bin"<<
-                 "hebrew_general_ci" <<
-                 "latin5_bin"<<
-                 "latin5_turkish_ci"<<
+                 "armscii8_bin"<< "armscii8_general_ci" << "cp1256_bin"<<
+                 "cp1256_general_ci" << "geostd8_bin"<< "geostd8_general_ci" <<
+                 "greek_bin"<< "greek_general_ci" << "hebrew_bin"<< "hebrew_general_ci" <<
+                 "latin5_bin"<< "latin5_turkish_ci"<<
                  "--Baltic"<<
-                 "cp1257_bin"<<
-                 "cp1257_general_ci"<<
-                 "cp1257_lithuanian_ci"<<
-                 "latin7_bin"<<
-                 "latin7_estonia_cs" <<
-                 "latin7_general_ci"<<
+                 "cp1257_bin"<< "cp1257_general_ci"<< "cp1257_lithuanian_ci"<<
+                 "latin7_bin"<< "latin7_estonia_cs" << "latin7_general_ci"<<
                  "latin7_general_cs"<<
                  "--Cyrillic"<<
-                 "cp1251_bin"<<
-                 "cp1251_bulgarian_ci"<<
-                 "cp1251_general_ci"<<
-                 "cp1251_general_cs"<<
-                 "cp1251_ukrainian_ci"<<
-                 "cp866_bin"<<
-                 "cp866_general_ci" <<
-                 "koi8r_bin"<<
-                 "koi8r_general_ci" <<
-                 "koi8u_bin"<<
-                 "koi8u_general_ci" <<
+                 "cp1251_bin"<< "cp1251_bulgarian_ci"<< "cp1251_general_ci"<<
+                 "cp1251_general_cs"<< "cp1251_ukrainian_ci"<< "cp866_bin"<<
+                 "cp866_general_ci" << "koi8r_bin"<< "koi8r_general_ci" <<
+                 "koi8u_bin"<< "koi8u_general_ci" <<
                  "--Asian"<<
-                 "big5_bin"<<
-                 "big5_chinese_ci" <<
-                 "cp932_bin"<<
-                 "cp932_japanese_ci" <<
-                 "eucjpms_bin"<<
-                 "eucjpms_japanese_ci" <<
-                 "euckr_bin"<<
-                 "euckr_korean_ci" <<
-                 "gb2312_bin"<<
-                 "gb2312_chinese_ci"<<
-                 "gbk_bin"<<
-                 "gbk_chinese_ci" <<
-                 "sjis_bin"<<
-                 "sjis_japanese_ci" <<
-                 "tis620_bin"<<
-                 "tis620_thai_ci" <<
-                 "ujis_bin"<<
-                 "ujis_japanese_ci" ;
+                 "big5_bin"<< "big5_chinese_ci" << "cp932_bin"<<
+                 "cp932_japanese_ci" << "eucjpms_bin"<< "eucjpms_japanese_ci" <<
+                 "euckr_bin"<< "euckr_korean_ci" << "gb2312_bin"<<
+                 "gb2312_chinese_ci"<< "gbk_bin"<< "gbk_chinese_ci" <<
+                 "sjis_bin"<< "sjis_japanese_ci" << "tis620_bin"<<
+                 "tis620_thai_ci" << "ujis_bin"<< "ujis_japanese_ci" ;
 
     return codepages;
 }
@@ -1372,245 +1163,34 @@ QStringList MySQLDatabaseEngine::getKeywords() const
 {
     QStringList keywordPatterns;
     keywordPatterns
-            <<"ADD"
-            <<"ALL"
-            <<"ALTER"
-            <<"ANALYZE"
-            <<"AND"
-            <<"AS"
-            <<"ASC"
-            <<"ASENSITIVE"
-            <<"BEFORE"
-            <<"BEGIN"
-            <<"END"
-            <<"BETWEEN"
-            <<"BOTH"
-            <<"BY"
-            <<"CALL"
-            <<"CASCADE"
-            <<"CASE"
-            <<"CHANGE"
-            <<"CHECK"
-            <<"CHARACTER"
-            <<"COLLATE"
-            <<"COLUMN"
-            <<"CONDITION"
-            <<"CONSTRAINT"
-            <<"CONTINUE"
-            <<"CONVERT"
-            <<"CREATE"
-            <<"CROSS"
-            <<"CURRENT_DATE"
-            <<"CURRENT_TIME"
-            <<"CURRENT_TIMESTAMP"
-            <<"CURRENT_USER"
-            <<"CURSOR"
-            <<"DATABASE"
-            <<"DATABASES"
-            <<"DAY_HOUR"
-            <<"DAY_MICROSECOND"
-            <<"DAY_MINUTE"
-            <<"DAY_SECOND"
-            <<"DECLARE"
-            <<"DEFAULT"
-            <<"DELAYED"
-            <<"DELETE"
-            <<"DESC"
-            <<"DESCRIBE"
-            <<"DETERMINISTIC"
-            <<"DISTINCT"
-            <<"DISTINCTROW"
-            <<"DIV"
-            <<"DROP"
-            <<"DUAL"
-            <<"EACH"
-            <<"ELSE"
-            <<"ELSEIF"
-            <<"ENCLOSED"
-            <<"ESCAPED"
-            <<"EXISTS"
-            <<"EXIT"
-            <<"EXPLAIN"
-            <<"FALSE"
-            <<"FETCH"
-            <<"FOR"
-            <<"FORCE"
-            <<"FOREIGN"
-            <<"FROM"
-            <<"FULLTEXT"
-            <<"GRANT"
-            <<"GROUP"
-            <<"HAVING"
-            <<"HIGH_PRIORITY"
-            <<"HOUR_MICROSECOND"
-            <<"HOUR_MINUTE"
-            <<"HOUR_SECOND"
-            <<"IF"
-            <<"IGNORE"
-            <<"IN"
-            <<"INDEX"
-            <<"INFILE"
-            <<"INNER"
-            <<"INOUT"
-            <<"INSENSITIVE"
-            <<"INSERT"
-            <<"INTERVAL"
-            <<"INTO"
-            <<"IS"
-            <<"ITERATE"
-            <<"JOIN"
-            <<"KEY"
-            <<"KEYS"
-            <<"KILL"
-            <<"LEADING"
-            <<"LEAVE"
-            <<"LEFT"
-            <<"LIKE"
-            <<"LIMIT"
-            <<"LINES"
-            <<"LOAD"
-            <<"LOCALTIME"
-            <<"LOCALTIMESTAMP"
-            <<"LOCK"
-            <<"LONG"
-            <<"LONGBLOB"
-            <<"LONGTEXT"
-            <<"LOOP"
-            <<"LOW_PRIORITY"
-            <<"MATCH"
-            <<"MEDIUMBLOB"
-            <<"MEDIUMINT"
-            <<"MEDIUMTEXT"
-            <<"MIDDLEINT"
-            <<"MINUTE_MICROSECOND"
-            <<"MINUTE_SECOND"
-            <<"MOD"
-            <<"MODIFIES"
-            <<"NATURAL"
-            <<"NOT"
-            <<"NO_WRITE_TO_BINLOG"
-            <<"NULL"
-            <<"ON"
-            <<"OPTIMIZE"
-            <<"OPTION"
-            <<"OPTIONALLY"
-            <<"OR"
-            <<"ORDER"
-            <<"OUT"
-            <<"OUTER"
-            <<"OUTFILE"
-            <<"PRECISION"
-            <<"PRIMARY"
-            <<"PROCEDURE"
-            <<"PURGE"
-            <<"READ"
-            <<"READS"
-            <<"REAL"
-            <<"REFERENCES"
-            <<"REGEXP"
-            <<"RELEASE"
-            <<"RENAME"
-            <<"REPEAT"
-            <<"REPLACE"
-            <<"REQUIRE"
-            <<"RESTRICT"
-            <<"RETURN"
-            <<"REVOKE"
-            <<"RIGHT"
-            <<"RLIKE"
-            <<"SCHEMA"
-            <<"SCHEMAS"
-            <<"SECOND_MICROSECOND"
-            <<"SELECT"
-            <<"SENSITIVE"
-            <<"SEPARATOR"
-            <<"SET"
-            <<"SHOW"
-            <<"SONAME"
-            <<"SPATIAL"
-            <<"SPECIFIC"
-            <<"SQL"
-            <<"SQLEXCEPTION"
-            <<"SQLSTATE"
-            <<"SQLWARNING"
-            <<"SQL_BIG_RESULT"
-            <<"SQL_CALC_FOUND_ROWS"
-            <<"SQL_SMALL_RESULT"
-            <<"SSL"
-            <<"STARTING"
-            <<"STRAIGHT_JOIN"
-            <<"TABLE"
-            <<"TEMPORARY"
-            <<"TERMINATED"
-            <<"THEN"
-            <<"TO"
-            <<"TRAILING"
-            <<"TRIGGER"
-            <<"TRUE"
-            <<"UNDO"
-            <<"UNION"
-            <<"UNIQUE"
-            <<"UNLOCK"
-            <<"UNSIGNED"
-            <<"UPDATE"
-            <<"USAGE"
-            <<"USE"
-            <<"USING"
-            <<"UTC_DATE"
-            <<"UTC_TIME"
-            <<"UTC_TIMESTAMP"
-            <<"VALUES"
-            <<"VARYING"
-            <<"WHEN"
-            <<"WHERE"
-            <<"WHILE"
-            <<"WITH"
-            <<"WRITE"
-            <<"XOR"
-            <<"YEAR_MONTH"
-            <<"ZEROFILL"
-            <<"ASENSITIVE"
-            <<"CONNECTION"
-            <<"DECLARE"
-            <<"ELSEIF"
-            <<"GOTO"
-            <<"ITERATE"
-            <<"LOOP"
-            <<"READS"
-            <<"RETURN"
-            <<"SENSITIVE"
-            <<"SQLEXCEPTION"
-            <<"TRIGGER"
-            <<"WHILE"
-            <<"CALL"
-            <<"CONTINUE"
-            <<"DETERMINISTIC"
-            <<"EXIT"
-            <<"INOUT"
-            <<"LABEL"
-            <<"MODIFIES"
-            <<"RELEASE"
-            <<"SCHEMA"
-            <<"SPECIFIC"
-            <<"SQLSTATE"
-            <<"UNDO"
-            <<"CONDITION"
-            <<"CURSOR"
-            <<"EACH"
-            <<"FETCH"
-            <<"INSENSITIVE"
-            <<"LEAVE"
-            <<"OUT"
-            <<"REPEAT"
-            <<"SCHEMAS"
-            <<"VIEW"
-            <<"SORT"
-            <<"SQL"
-            <<"SQLWARNING"
-            <<"UPGRADE"
-            <<"DELIMITER"
-            <<"BEGIN"
-            <<"END";
+     << "ADD" << "ALL" << "ALTER" << "ANALYZE" << "AND" << "AS" << "ASC" << "ASENSITIVE" << "BEFORE"
+     << "BEGIN" << "END" << "BETWEEN" << "BOTH" << "BY" << "CALL" << "CASCADE" << "CASE" << "CHANGE"
+     << "CHECK" << "CHARACTER" << "COLLATE" << "COLUMN" << "CONDITION" << "CONSTRAINT" << "CONTINUE" << "CONVERT"
+     << "CREATE" << "CROSS" << "CURRENT_DATE" << "CURRENT_TIME" << "CURRENT_TIMESTAMP" << "CURRENT_USER" << "CURSOR"
+     << "DATABASE" << "DATABASES" << "DAY_HOUR" << "DAY_MICROSECOND" << "DAY_MINUTE" << "DAY_SECOND" << "DECLARE" << "DEFAULT"
+     << "DELAYED" << "DELETE" << "DESC" << "DESCRIBE" << "DETERMINISTIC" << "DISTINCT" << "DISTINCTROW" << "DIV"
+     << "DROP" << "DUAL" << "EACH" << "ELSE" << "ELSEIF" << "ENCLOSED" << "ESCAPED" << "EXISTS" << "EXIT"
+     << "EXPLAIN" << "FALSE" << "FETCH" << "FOR" << "FORCE" << "FOREIGN" << "FROM" << "FULLTEXT" << "GRANT"
+     << "GROUP" << "HAVING" << "HIGH_PRIORITY" << "HOUR_MICROSECOND" << "HOUR_MINUTE" << "HOUR_SECOND" << "IF"
+     << "IGNORE" << "IN" << "INDEX" << "INFILE" << "INNER" << "INOUT" << "INSENSITIVE" << "INSERT" << "INTERVAL"
+     << "INTO" << "IS" << "ITERATE" << "JOIN" << "KEY" << "KEYS" << "KILL" << "LEADING" << "LEAVE"
+     << "LEFT" << "LIKE" << "LIMIT" << "LINES" << "LOAD" << "LOCALTIME" << "LOCALTIMESTAMP" << "LOCK"
+     << "LONG" << "LONGBLOB" << "LONGTEXT" << "LOOP" << "LOW_PRIORITY" << "MATCH" << "MEDIUMBLOB" << "MEDIUMINT"
+     << "MEDIUMTEXT" << "MIDDLEINT" << "MINUTE_MICROSECOND" << "MINUTE_SECOND" << "MOD" << "MODIFIES" << "NATURAL" << "NOT"
+     << "NO_WRITE_TO_BINLOG" << "NULL" << "ON" << "OPTIMIZE" << "OPTION" << "OPTIONALLY" << "OR" << "ORDER"
+     << "OUT" << "OUTER" << "OUTFILE" << "PRECISION" << "PRIMARY" << "PROCEDURE" << "PURGE" << "READ" << "READS"
+     << "REAL" << "REFERENCES" << "REGEXP" << "RELEASE" << "RENAME" << "REPEAT" << "REPLACE" << "REQUIRE" << "RESTRICT"
+     << "RETURN" << "REVOKE" << "RIGHT" << "RLIKE" << "SCHEMA" << "SCHEMAS" << "SECOND_MICROSECOND" << "SELECT"
+     << "SENSITIVE" << "SEPARATOR" << "SET" << "SHOW" << "SONAME" << "SPATIAL" << "SPECIFIC" << "SQL"
+     << "SQLEXCEPTION" << "SQLSTATE" << "SQLWARNING" << "SQL_BIG_RESULT" << "SQL_CALC_FOUND_ROWS" << "SQL_SMALL_RESULT" << "SSL"
+     << "STARTING" << "STRAIGHT_JOIN" << "TABLE" << "TEMPORARY" << "TERMINATED" << "THEN" << "TO" << "TRAILING" << "TRIGGER"
+     << "TRUE" << "UNDO" << "UNION" << "UNIQUE" << "UNLOCK" << "UNSIGNED" << "UPDATE" << "USAGE" << "USE" << "USING"
+     << "UTC_DATE" << "UTC_TIME" << "UTC_TIMESTAMP" << "VALUES" << "VARYING" << "WHEN" << "WHERE" << "WHILE" << "WITH"
+     << "WRITE" << "XOR" << "YEAR_MONTH" << "ZEROFILL" << "ASENSITIVE" << "CONNECTION" << "DECLARE" << "ELSEIF" << "GOTO"
+     << "ITERATE" << "LOOP" << "READS" << "RETURN" << "SENSITIVE" << "SQLEXCEPTION" << "TRIGGER" << "WHILE" << "CALL"
+     << "CONTINUE" << "DETERMINISTIC" << "EXIT" << "INOUT" << "LABEL" << "MODIFIES" << "RELEASE" << "SCHEMA" << "SPECIFIC"
+     << "SQLSTATE" << "UNDO" << "CONDITION" << "CURSOR" << "EACH" << "FETCH" << "INSENSITIVE" << "LEAVE" << "OUT"
+     << "REPEAT" << "SCHEMAS" << "VIEW" << "SORT" << "SQL" << "SQLWARNING" << "UPGRADE" << "DELIMITER" << "BEGIN" << "END";
     return keywordPatterns;
 }
 
@@ -1658,19 +1238,6 @@ QVector<Sp*> MySQLDatabaseEngine::buildSps()
     return result;
 }
 
-Sp* MySQLDatabaseEngine::getSpForSqlRole(const QString& uid) const
-{
-    const QVector<Sp*>& allsps = getDatabaseSpecificProperties();
-    for(int i=0; i<allsps.size(); i++)
-    {
-        if(allsps.at(i)->getSqlRoleUid() == uid)
-        {
-            return allsps.at(i);
-        }
-    }
-    return 0;
-}
-
 bool MySQLDatabaseEngine::tableBlocksForeignKeyFunctionality(const Table* table) const
 {
     SpInstance* spi = table->getInstanceForSqlRoleUid(this, uidMysqlStorageEngineTable);
@@ -1710,48 +1277,6 @@ QStringList MySQLDatabaseEngine::getSupportedStorageEngines(const QString& host,
     db.close();
 
     return result;
-}
-
-bool MySQLDatabaseEngine::injectMetadata(Connection *c, const Version *v)
-{
-    QDomDocument doc("DBM");
-    QDomElement root = doc.createElement("Metadata");
-    v->serialize(doc, root);
-
-    doc.appendChild(root);
-    QString xml = doc.toString();
-//    qDebug() << xml;
-
-    QStringList sqls;
-    sqls << "DROP TABLE IF EXISTS DDM_META";
-    sqls << "create table DDM_META                                          \
-            (                                                               \
-                INJECT_TIME timestamp,                                      \
-                IDX integer(10) primary key auto_increment ,                \
-                METADATA_CHUNK text                                         \
-            )";
-
-    QString last;
-    bool b = executeSql(c, sqls, QStringList(), last, false);
-    if(!b) return false;
-
-    QSqlDatabase db = getQSqlDatabaseForConnection(c);
-    if(!db.isOpen()) return false;
-    QSqlQuery q(db);
-    q.prepare("INSERT INTO DDM_META(inject_time, metadata_chunk)  VALUES(SYSDATE(), :md)");
-    QString hexedXml = toHexString(xml);
-    QStringList chopped = chopUpString(hexedXml, 200);
-    for(int i=0; i<chopped.size(); i++)
-    {
-        q.bindValue(":md", chopped.at(i));
-        if(!q.exec())
-        {
-            lastError = formatLastError(QObject::tr("Cannot inject metadata"), db.lastError());
-//            qDebug() << lastError;
-            return false;
-        }
-    }
-    return true;
 }
 
 QString MySQLDatabaseEngine::spiExtension(QUuid uid)

@@ -102,8 +102,15 @@ QString SingleExpressionQueryComponent::get() const
             case CELLTYPE_COLUMN:
             {
                 QString t;
-                if(!m_columnsAtGivenPosition[i]->tinst) t= m_columnsAtGivenPosition[i]->tab->getName();
-                else t= m_columnsAtGivenPosition[i]->tinst->getName();
+                if(!m_columnsAtGivenPosition[i]->tinst)
+                {
+                    t= m_columnsAtGivenPosition[i]->tab->getName();
+                }
+                else
+                {
+                    t= m_columnsAtGivenPosition[i]->tinst->getName();
+                }
+                t = m_helper->applyAlias(t);
                 result += t + "." + m_columnsAtGivenPosition[i]->c->getName();   // this goes into IssueOriginator! Beware!
 
                 break;

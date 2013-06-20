@@ -7,7 +7,11 @@
 #include "IconFactory.h"
 #include "Workspace.h"
 #include "db_DatabaseEngine.h"
+#include "qbr_TableQueryComponent.h"
 #include "db_DatabaseBuiltinFunction.h"
+#include "core_TableInstance.h"
+#include "core_Table.h"
+#include "qbr_SelectQueryAsComponent.h"
 
 QueryGraphicsHelper::QueryGraphicsHelper() : hotCells(), m_lstDlg(0), m_scene(0), m_form(0)
 {
@@ -122,4 +126,44 @@ void QueryGraphicsHelper::triggerReRender()
 {
     hotCells.clear();
     m_form->rerenderQuery(m_query);
+}
+
+void QueryGraphicsHelper::setQueryGlobalAlias(const SelectQueryAsComponent* as, const TableQueryComponent* tab)
+{
+    m_queryAliases[tab] = as;
+}
+
+void QueryGraphicsHelper::deleteQueryGlobalAlias(const TableQueryComponent *tab)
+{
+    if(m_queryAliases.contains(tab))
+    {
+        m_queryAliases.remove(tab);
+    }
+}
+
+QString QueryGraphicsHelper::applyAlias(const QString &t)
+{
+    for(int i=0; i<m_queryAliases.keys().size(); i++)
+    {
+        const TableQueryComponent* tqc = m_queryAliases.keys()[i];
+        QString tab;
+        if(tqc->getTable() == 0)
+        {
+            tab = tqc->getTableInstance()->getName();
+        }
+        else
+        {
+            tab = tqc->getTable()->getName();
+        }
+        if(tab == t)
+        {
+            return m_queryAliases[m_queryAliases.keys()[i]]->getAs();
+        }
+    }
+    return t;
+}
+
+void QueryGraphicsHelper::tableRemoved(const QString& t)
+{
+    m_query->tableRemovedFromQuery(t);
 }

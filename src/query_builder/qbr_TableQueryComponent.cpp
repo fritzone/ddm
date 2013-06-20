@@ -35,6 +35,7 @@ QueryGraphicsItem* TableQueryComponent::createGraphicsItem(QueryGraphicsHelper* 
     if(m_as)
     {
         m_tgitm->setAs(new CellAsCommand(helper, m_level + 1, m_tgitm, m_as, true));
+        m_helper->setQueryGlobalAlias(m_as, this);
     }
     for(int i=0; i<m_joins.size(); i++)
     {
@@ -79,6 +80,7 @@ void TableQueryComponent::handleAction(const QString &action, QueryComponent *)
         {
             m_as = new SelectQueryAsComponent(this, m_level + 1, version());
             addChild(m_as);
+            m_helper->setQueryGlobalAlias(m_as, this);
             m_helper->triggerReRender();
         }
         return;
@@ -88,7 +90,7 @@ void TableQueryComponent::handleAction(const QString &action, QueryComponent *)
     {
         SelectQueryJoinComponent* join = new SelectQueryJoinComponent(this, m_level + 1, version());
         join->setHelper(m_helper);
-        //addChild(join);   // TODO: Check if this still works ...
+        addChild(join);   // TODO: Check if this still works ...
         m_joins.append(join);
         m_helper->triggerReRender();
 
@@ -147,6 +149,8 @@ QueryComponent* TableQueryComponent::duplicate()
                                                   :new TableQueryComponent(m_tinst, m_parent, m_level, version());
 
     newc->m_as = m_as?dynamic_cast<SelectQueryAsComponent*>(m_as->duplicate()):0;
+    // TODO: qgh alias mapping
+
     // Joins do not duplicate for now
     //for(int i=0; i<m_joins.size(); i++)
     //{
@@ -168,6 +172,7 @@ QSet<OptionsType> TableQueryComponent::provideOptions()
 void TableQueryComponent::removeAs()
 {
     m_as = 0;
+    m_helper->deleteQueryGlobalAlias(this);
     m_helper->triggerReRender();
 }
 
@@ -247,6 +252,12 @@ QString TableQueryComponent::get() const
     {
         result = m_tinst->getName();
     }
+
+    if(m_as)
+    {
+        result += m_as->get();
+    }
+
     if(!m_joins.isEmpty())
     {
         for(int i=0; i<m_joins.size(); i++)
@@ -256,10 +267,7 @@ QString TableQueryComponent::get() const
             result += m_joins.at(i)->get();
         }
     }
-    if(m_as)
-    {
-        result += m_as->get();
-    }
+
 
     return result;
 }

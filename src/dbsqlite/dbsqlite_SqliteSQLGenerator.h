@@ -26,9 +26,6 @@ public:
 
     virtual QString sqlForAColumn(const Column* col) const;
 
-private:
-
-    QString createTableOnlyScript(Table* table, const QStringList &foreignKeys, const QString &tabName, const Connection *pdest) const;
 };
 
 #endif // SQLITESQLGENERATOR_H

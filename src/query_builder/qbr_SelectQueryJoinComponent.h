@@ -6,6 +6,7 @@
 
 class SingleExpressionQueryComponent;
 class Table;
+class TableInstance;
 
 class SelectQueryJoinComponent : public QueryComponent
 {
@@ -33,6 +34,7 @@ public:
     void removeExpression(SingleExpressionQueryComponent*);
     virtual void serialize(QDomDocument& doc, QDomElement& parent) const;
     QVector<const Table*> getJoinedTables() const;
+    QVector<const TableInstance*> getJoinedTableInstances() const;
     void addJoinExpression(SingleExpressionQueryComponent* je)
     {
         m_joinExpressions.append(je);
