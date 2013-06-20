@@ -55,12 +55,22 @@ void CellTableChooser::mousePress(int /*x*/, int /*y*/)
         return;
     }
 
+    QString oldName = m_name;
     m_name = selected;
     m_txt->setPlainText(m_name);
     TableQueryComponent* tc = dynamic_cast<TableQueryComponent*>(m_parent->getParent()->getOwner());
     if(tc != 0)
     {
         tc->setTable(m_name);
+
+        if(oldName != m_name)
+        {
+            // now call upon the query helper and notify the other components, that
+            // a table was removed
+
+            m_helper->tableRemoved(oldName);
+        }
+
         m_helper->triggerReRender();
     }
 }

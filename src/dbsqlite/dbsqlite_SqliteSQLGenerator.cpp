@@ -102,15 +102,3 @@ QString SqliteSQLGenerator::getAlterTableForNewColumn(const QString& table, cons
 
     return res;
 }
-
-QString SqliteSQLGenerator::createTableOnlyScript(Table* table,
-                                            const QStringList& foreignKeys,
-                                            const QString& tabName,
-                                            const Connection */*pdest*/) const
-{
-    QString createTable = basicCreateTableScript(table, foreignKeys, tabName, true);
-    // done
-    createTable += strSemicolon + strNewline;
-    return createTable;
-
-}

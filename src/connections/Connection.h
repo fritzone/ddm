@@ -46,6 +46,7 @@ public:
         return m_engine;
     }
     QSqlDatabase getQSqlDatabase();
+
     QStringList getTables()
     {
         return m_tables;
@@ -60,7 +61,6 @@ public:
     {
         m_tables.clear();
     }
-
 
     bool getAC() const
     {

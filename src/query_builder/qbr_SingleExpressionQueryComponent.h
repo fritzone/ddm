@@ -37,8 +37,6 @@ public:
         NOT_FORCED = 2
     };
 
-
-
     SingleExpressionQueryComponent(QueryComponent*, int, Version *v);
     virtual QString get() const;
     virtual QString getClass() const {return "SingleExpressionQueryComponent";}

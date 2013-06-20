@@ -3,7 +3,6 @@
 
 #include "db_DatabaseEngine.h"
 
-class Version;
 class ForeignKey;
 
 class DefaultDatabaseEngine : public DatabaseEngine
@@ -37,13 +36,20 @@ public:
     }
 
     ForeignKey *createForeignKey(bool& foundAtLeastOneForeignKey,
-                                                const QString& referenceeTableName,
-                                                Version* v,
-                                                const QString& referencedColumnName,
-                                                const QString& referenceeColumnName,
-                                                const QString& referencedTableName, const QString &name);
+                                 const QString& referenceeTableName,
+                                 Version* v,
+                                 const QString& referencedColumnName,
+                                 const QString& referenceeColumnName,
+                                 const QString& referencedTableName,
+                                 const QString &name);
+
+    QString formatLastError(const QString& header, const QSqlError &error);
+    QStringList getResultOfQuery(const QString& squery, Connection* conn, const QString &error, int column);
 
     QString getDbMetadata(Connection *c);
+    bool injectMetadata(Connection *c, const Version *v);
+    bool tableBlocksForeignKeyFunctionality(const Table*) const;
+    Sp* getSpForSqlRole(const QString& uid) const;
 
 };
 

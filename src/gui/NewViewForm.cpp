@@ -69,7 +69,7 @@ NewViewForm::NewViewForm(Version* v, bool queryBuilder, QueryGraphicsHelper* c, 
     else
     {
         ui->tabWidget->removeTab(0);
-        ui->tabWidget->removeTab(1);    //remains only the SQL tab
+        ui->tabWidget->removeTab(0);    //remains only the SQL tab
 
         delete ui->txtViewName;
 
@@ -119,7 +119,6 @@ void NewViewForm::disableEditingControls(bool dis)
 {
     ui->lstColumnsForView->setDisabled(dis);
     m_mainWsp->setDisabled(dis);
-//    m_qgv->setInteractive(dis);
     m_qgv->setDisabled(dis);
 }
 
@@ -149,9 +148,8 @@ void NewViewForm::getCenter(int &x, int &y)
     if(m_queryBuilder)
     {
 //        QPoint centre = m_qgv->viewport()->mapTo(this, QPoint(0,0));;
-//          x = m_qgv->mapToScene(centre).x();
+//        x = m_qgv->mapToScene(centre).x();
 //        y = m_qgv->mapToScene(centre).y();
-        qDebug() << m_qgv->viewport()->rect();
         QPoint centre = m_qgv->viewport()->rect().center();
         x = centre.x() + m_qgv->horizontalScrollBar()->value();;
         y = centre.y() + m_qgv->verticalScrollBar()->value();;

@@ -32,7 +32,6 @@ public:
     virtual QString getAlterTableToDropForeignKey(const QString& table, const QString& fkName);
     virtual QString getDropProcedure(const QString& proc);
     virtual QString getDropFunction(const QString& func);
-
     virtual QString sqlForAColumn(const Column* col) const;
 
 private:
@@ -43,11 +42,11 @@ private:
     QString createViewReplaceability(View* v) const;
     QString createViewColumnNames(View *v) const;
 
-    QString provideCodepage(Table* table) const;
-    QString provideDatabaseEngine(Table* table, const MySqlConnection *dest) const;
-    QString provideChecksum(Table* table, const MySqlConnection *dest) const;
-    QString provideAutoIncrementForTable(Table* table) const;
-    QString provideAverageRowLength(Table* table) const;
+    QString provideCodepageScript(Table* table) const;
+    QString provideDatabaseEngineScript(Table* table, const MySqlConnection *dest) const;
+    QString provideChecksumScript(Table* table, const MySqlConnection *dest) const;
+    QString provideAutoIncrementForTableScript(Table* table) const;
+    QString provideAverageRowLengthScript(Table* table) const;
     QString dbEngineName(Table* , const MySqlConnection *dest) const;
 
 };

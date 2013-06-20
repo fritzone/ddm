@@ -44,6 +44,13 @@ public:
     virtual void serialize(QDomDocument& doc, QDomElement& parent) const = 0;
     virtual QUuid getClassUid() const = 0;
 
+    /**
+     * @brief tableRemovedFromQuery called when a table was removed from the query
+     * in order to remove the components that were referencing it
+     * @param tabName
+     */
+    virtual void tableRemovedFromQuery(const QString& tabName) = 0;
+
 protected:
     QueryGraphicsHelper* m_helper;
     QueryGraphicsItem* m_graphicsItem;

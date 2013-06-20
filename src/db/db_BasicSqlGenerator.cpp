@@ -784,3 +784,16 @@ QString BasicSqlGenerator::getAlterTableForColumnDeletion(const QString&, const 
 {
     return "";
 }
+
+
+QString BasicSqlGenerator::createTableOnlyScript(Table* table,
+                                            const QStringList& foreignKeys,
+                                            const QString& tabName,
+                                            const Connection */*pdest*/) const
+{
+    QString createTable = basicCreateTableScript(table, foreignKeys, tabName, true);
+    // done
+    createTable += strSemicolon + strNewline;
+    return createTable;
+
+}

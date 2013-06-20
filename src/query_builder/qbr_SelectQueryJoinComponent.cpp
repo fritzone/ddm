@@ -133,7 +133,29 @@ QVector<const Table*> SelectQueryJoinComponent::getJoinedTables() const
         TableQueryComponent* tc = dynamic_cast<TableQueryComponent*>(m_children.at(i));
         if(tc)
         {
-            result.push_back(tc->getTable());
+            const Table* t = tc->getTable();
+            if(t)
+            {
+                result.push_back(t);
+            }
+        }
+    }
+    return result;
+}
+
+QVector<const TableInstance*> SelectQueryJoinComponent::getJoinedTableInstances() const
+{
+    QVector<const TableInstance*> result;
+    for(int i=0; i<m_children.size(); i++)
+    {
+        TableQueryComponent* tc = dynamic_cast<TableQueryComponent*>(m_children.at(i));
+        if(tc)
+        {
+            const TableInstance* ti = tc->getTableInstance();
+            if(ti)
+            {
+                result.push_back(ti);
+            }
         }
     }
     return result;

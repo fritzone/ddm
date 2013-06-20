@@ -104,6 +104,8 @@ public:
     virtual void serialize(QDomDocument& doc, QDomElement& parent) const;
     virtual QUuid getClassUid() const;
     virtual CloneableElement* clone(Version* sourceVersion, Version* targetVersion);
+    virtual void tableRemovedFromQuery(const QString &tabName);
+
 private:
     SelectQuerySelectComponent* m_select;
     SelectQueryFromComponent* m_from;

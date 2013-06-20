@@ -51,6 +51,8 @@ public:
 
     QString basicCreateTableScript(Table *table, const QStringList &foreignKeys, const QString &tabName, bool needfk) const;
 
+    void appendCreateIndexCommands(Table* table, QStringList& toReturn, const QString& tabName) const;
+
     virtual QStringList generateCreateTableSql(Table *table,
                                                const QHash<QString, QString> &options,
                                                const QString& tabName,
@@ -61,12 +63,6 @@ public:
     QStringList generateDefaultValuesSql(Table* table, const QHash<QString, QString>& options) const;
     QStringList generateCreateViewSql(View *v, const QHash<QString, QString> &options) const;
     QStringList generateTriggerSql(Trigger* t, const QHash<QString, QString>& options) const;
-
-
-    void appendCreateIndexCommands(Table* table, QStringList& toReturn, const QString& tabName) const;
-
-
-    virtual QString createTableOnlyScript(Table* table, const QStringList &foreignKeys, const QString &tabName, const Connection *dest) const = 0;
 
     // stuff returning empty results. other generators should override if needed
     virtual QString getIndexUsedLength(Index*, const Column*) const;
@@ -92,6 +88,8 @@ public:
     QString getDropTrigger(const QString& trig);
     QString getUpdateTableForColumns(const QString& table, const QStringList& pkeys, const QStringList& pvalues, const QString& destCol, const QString& destValue);
     QString getDropTable(const QString& table);
+
+    virtual QString createTableOnlyScript(Table* table, const QStringList &foreignKeys, const QString &tabName, const Connection *dest) const;
 
 protected:
 
