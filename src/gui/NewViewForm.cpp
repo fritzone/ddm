@@ -126,7 +126,6 @@ void NewViewForm::setGraphicsItem(QueryGraphicsItem * itm)
 {
     if(m_queryBuilder)
     {
-        qDebug() << "add";
         m_qgs->clear();
         m_qgv->centerOn(0, 0);
         m_qgs->addItem(itm);
@@ -137,7 +136,6 @@ void NewViewForm::scrollTo(int hor, int ver)
 {
     if(m_queryBuilder)
     {
-        qDebug() << "scroll to " << hor << ver;
         m_qgv->centerOn(hor, ver);
         m_qgs->invalidate();
     }

@@ -28,7 +28,7 @@ QBrush CellAsCommand::getCellBrush()
     return selectBrush;
 }
 
-CellQuerySmallOptionsBox* CellAsCommand::provideOptionsBox(QueryGraphicsHelper* /*c*/, int /*level*/, QueryGraphicsItem* /*parent*/, QueryComponent* /*owner*/)
+CellQuerySmallOptionsBox* CellAsCommand::provideOptionsBox()
 {
     return 0;
 }

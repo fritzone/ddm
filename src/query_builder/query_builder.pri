@@ -35,7 +35,11 @@ HEADERS += query_builder/qbr_CellAsCommand.h                          \
         query_builder/qbr_OptionTypes.h                               \
         query_builder/qbr_QueryItemListDialog.h                       \
         query_builder/qbr_SelectQueryOrderByComponent.h               \
-        query_builder/ColumnProviderForQuery.h
+        query_builder/ColumnProviderForQuery.h \
+    query_builder/qbr_ColorProvider.h \
+    query_builder/qbr_CellQuerySmallOptionsBoxRect.h \
+    query_builder/qbr_CellQuerySmallOptionsBoxCircle.h \
+    query_builder/qbr_CellQuerySmallOptionsBoxDiamond.h
 
 SOURCES += query_builder/qbr_CellAsCommand.cpp                        \
         query_builder/qbr_CellQuerySmallOptionsBox.cpp                \
@@ -72,6 +76,9 @@ SOURCES += query_builder/qbr_CellAsCommand.cpp                        \
         query_builder/qbr_CellOrderByCommand.cpp                      \
         query_builder/qbr_QueryAsGenerator.cpp                        \
         query_builder/qbr_QueryTextInputItem.cpp                      \
-        query_builder/qbr_SelectQuerySelectComponent.cpp
+        query_builder/qbr_SelectQuerySelectComponent.cpp \
+    query_builder/qbr_CellQuerySmallOptionsBoxRect.cpp \
+    query_builder/qbr_CellQuerySmallOptionsBoxCircle.cpp \
+    query_builder/qbr_CellQuerySmallOptionsBoxDiamond.cpp
 
 FORMS +=     query_builder/QueryItemListDialog.ui

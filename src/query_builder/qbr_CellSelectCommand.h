@@ -19,7 +19,7 @@ public:
     }
     virtual bool hasTypeChooser() {return false;}
     virtual void onClose();
-    virtual CellQuerySmallOptionsBox* provideOptionsBox(QueryGraphicsHelper* c, int level, QueryGraphicsItem* parent, QueryComponent* owner);
+    virtual CellQuerySmallOptionsBox* provideOptionsBox();
 };
 
 #endif // CELLSELECTCOMMAND_H

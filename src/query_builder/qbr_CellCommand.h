@@ -30,7 +30,7 @@ public:
     virtual QString getCommand() = 0;
     virtual bool hasClose() = 0;
     virtual bool hasTypeChooser() = 0;
-    virtual CellQuerySmallOptionsBox* provideOptionsBox(QueryGraphicsHelper* c, int level, QueryGraphicsItem* parent, QueryComponent* owner) = 0;
+    virtual CellQuerySmallOptionsBox* provideOptionsBox() = 0;
 
     int getLevel() const { return m_level; }
 

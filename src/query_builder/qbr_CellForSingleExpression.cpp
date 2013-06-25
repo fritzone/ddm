@@ -6,7 +6,7 @@
 #include "qbr_DatabaseFunctionInstantiationComponent.h"
 #include "qbr_QueryGraphicsItem.h"
 #include "qbr_CellAsCommand.h"
-#include "qbr_CellQuerySmallOptionsBox.h"
+#include "qbr_CellQuerySmallOptionsBoxDiamond.h"
 
 #include <QBrush>
 
@@ -131,7 +131,7 @@ QGraphicsItemGroup* CellForSingleExpression::render(int &x, int &y, int &w, int 
         QSet<OptionsType> more = m_as->getOwner()->provideOptions();
         t.unite(more);
 
-        CellQuerySmallOptionsBox* smb = new CellQuerySmallOptionsBox(t, m_helper, m_as->getLevel(), m_parent, m_as->getOwner(), CellQuerySmallOptionsBox::SHAPE_DIAMOND);
+        CellQuerySmallOptionsBox* smb = new CellQuerySmallOptionsBoxDiamond(t, m_helper, m_as->getLevel(), m_parent, m_as->getOwner());
         int tx = x-15 + 2; int ty = halfway; int tw = w; int th = h;
         grp->addToGroup(smb->render(tx, ty, tw, th));
 

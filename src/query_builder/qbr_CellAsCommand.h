@@ -26,7 +26,7 @@ public:
     virtual bool hasTypeChooser() {return false;}
 
     QGraphicsItemGroup* render(int& x, int& y, int& w, int &h);
-    virtual CellQuerySmallOptionsBox* provideOptionsBox(QueryGraphicsHelper* c, int level, QueryGraphicsItem* parent, QueryComponent* owner);
+    virtual CellQuerySmallOptionsBox* provideOptionsBox();
 private:
     QGraphicsRectItem* m_textInputRect;
     QueryTextInputItem* m_textItem;

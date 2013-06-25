@@ -1,7 +1,10 @@
 #include "qbr_CellSelectCommand.h"
-#include "qbr_CellQuerySmallOptionsBox.h"
+#include "qbr_CellQuerySmallOptionsBoxRect.h"
 
-CellSelectCommand::CellSelectCommand(QueryGraphicsHelper* c, int level, QueryGraphicsItem* parent, QueryComponent* owner) :
+CellSelectCommand::CellSelectCommand(QueryGraphicsHelper* c,
+                                     int level,
+                                     QueryGraphicsItem* parent,
+                                     QueryComponent* owner) :
         CellCommand(c, level, parent, owner)
 {
 }
@@ -12,9 +15,9 @@ QBrush CellSelectCommand::getCellBrush()
     return selectBrush;
 }
 
-CellQuerySmallOptionsBox* CellSelectCommand::provideOptionsBox(QueryGraphicsHelper* /*c*/, int /*level*/, QueryGraphicsItem* /*parent*/, QueryComponent* /*owner*/)
+CellQuerySmallOptionsBox* CellSelectCommand::provideOptionsBox()
 {
-    CellQuerySmallOptionsBox* smb = new CellQuerySmallOptionsBox(m_owner->provideOptions(), m_helper, m_level, m_parent, m_owner, CellQuerySmallOptionsBox::SHAPE_RECT);
+    CellQuerySmallOptionsBox* smb = new CellQuerySmallOptionsBoxRect(m_owner->provideOptions(), m_helper, m_level, m_parent, m_owner);
     return smb;
 }
 

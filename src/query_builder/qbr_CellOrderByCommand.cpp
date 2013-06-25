@@ -1,6 +1,6 @@
 #include "qbr_CellOrderByCommand.h"
 #include "qbr_SelectQueryFromComponent.h"
-#include "qbr_CellQuerySmallOptionsBox.h"
+#include "qbr_CellQuerySmallOptionsBoxRect.h"
 
 CellOrderByCommand::CellOrderByCommand(QueryGraphicsHelper* c, int level, QueryGraphicsItem* parent, QueryComponent* owner) :
         CellCommand(c, level, parent, owner)
@@ -13,9 +13,9 @@ QBrush CellOrderByCommand::getCellBrush()
     return fromBrush;
 }
 
-CellQuerySmallOptionsBox* CellOrderByCommand::provideOptionsBox(QueryGraphicsHelper* /*c*/, int /*level*/, QueryGraphicsItem* /*parent*/, QueryComponent* /*owner*/)
+CellQuerySmallOptionsBox* CellOrderByCommand::provideOptionsBox()
 {
-    CellQuerySmallOptionsBox* smb = new CellQuerySmallOptionsBox(m_owner->provideOptions(), m_helper, m_level, m_parent, m_owner, CellQuerySmallOptionsBox::SHAPE_RECT);
+    CellQuerySmallOptionsBox* smb = new CellQuerySmallOptionsBoxRect(m_owner->provideOptions(), m_helper, m_level, m_parent, m_owner);
     return smb;
 }
 

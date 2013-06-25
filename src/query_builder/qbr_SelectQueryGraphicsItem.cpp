@@ -6,7 +6,7 @@
 #include "qbr_TableGraphicsItem.h"
 #include "qbr_CellAsCommand.h"
 #include "qbr_CellOrderByCommand.h"
-#include "qbr_CellQuerySmallOptionsBox.h"
+#include "qbr_CellQuerySmallOptionsBoxCircle.h"
 
 #include <QPen>
 
@@ -64,7 +64,7 @@ QGraphicsItemGroup* SelectQueryGraphicsItem::render(int& x, int& y, int& w, int 
 
     y += 2;
 
-    CellQuerySmallOptionsBox* smb = new CellQuerySmallOptionsBox(m_owner->provideOptions(), m_helper, m_level, m_parent, m_owner, CellQuerySmallOptionsBox::SHAPE_CIRCLE);
+    CellQuerySmallOptionsBox* smb = new CellQuerySmallOptionsBoxCircle(m_owner->provideOptions(), m_helper, m_level, m_parent, m_owner);
     int tx = x + 5 + 2; int ty = y-1; int tw = w; int th = h;
     QGraphicsLineItem* lineUp = new QGraphicsLineItem(tx, ty-5, tx , ty + 5, this);
     lineUp->setZValue(-5);

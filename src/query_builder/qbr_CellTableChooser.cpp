@@ -1,6 +1,7 @@
 #include "qbr_CellTableChooser.h"
 #include "qbr_QueryGraphicsScene.h"
 #include "qbr_TableQueryComponent.h"
+#include "qbr_ColorProvider.h"
 
 #include <QBrush>
 #include <QFont>
@@ -18,20 +19,34 @@ CellTableChooser::CellTableChooser(const QString& name, int level, QueryGraphics
     m_level = level;
 }
 
-QGraphicsItemGroup* CellTableChooser::render(int &x, int &y, int &w, int &/*h*/)
+QGraphicsItemGroup* CellTableChooser::render(int &x, int &y, int &w, int &h)
 {
     int lx = x;
     int ly = y;
+
+    // the name of the table
     m_txt = new QGraphicsTextItem(m_name, this);
-    m_txt->setPos(lx + CELL_SIZE + 3, ly);
-    QRect rct(lx + CELL_SIZE + 3, ly, m_txt->boundingRect().width() + 3 + 15, 30);
-    m_frame = new QGraphicsRectItem(rct, this);
-    m_frame->setBrush(QBrush(Qt::white));
+    m_txt->setPos(lx + 4, ly + 2);
+    m_txt->setFont( ColorProvider::getfontForTableName() );
     m_txt->setZValue(1);
+
+    int textWidth =m_txt->boundingRect().width();
+
+    // the white rect below the table name
+    QRect rct(lx + 2,
+              ly + 2,
+              textWidth,
+              m_txt->boundingRect().height());
+
+    m_frame = new QGraphicsRectItem(rct, this);
+    m_frame->setBrush( QBrush(Qt::white) );
     m_frame->setZValue(0);
-    m_txt->setFont(QFont("Arial", 14, 2));
-    int tw = m_txt->boundingRect().width() + CHILDREN_ALIGNMENT * (m_level+1) + m_txt->boundingRect().left() + 2 * CELL_SIZE;
-    w = w<tw?tw:w;
+
+    h = m_frame->boundingRect().height();
+
+    int tw = textWidth + CHILDREN_ALIGNMENT * (m_level+1) + m_txt->boundingRect().left() + 2 * CELL_SIZE;
+
+    w = w<tw ? tw : w;
 
     return this;
 }

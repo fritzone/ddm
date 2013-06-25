@@ -65,19 +65,24 @@ QueryItemListDialog::QueryItemListDialog(QueryGraphicsHelper* helper, QueryGraph
     }
 }
 
-QueryItemListDialog::QueryItemListDialog(QueryGraphicsHelper* helper, QStringList lst, QList<QIcon> icons, bool checks, QWidget *parent) : QDialog(parent), ui(new Ui::QueryItemListDialog), m_selected(), m_helper(helper)
+QueryItemListDialog::QueryItemListDialog(QueryGraphicsHelper* helper,
+                                         const QStringList& textLst,
+                                         const QList<QIcon>& icons,
+                                         bool checks, QWidget *parent) :
+    QDialog(parent),
+    ui(new Ui::QueryItemListDialog), m_selected(), m_helper(helper)
 {
     ui->setupUi(this);
     ui->txtInput->hide();
     ui->frameButtonBox->hide();
 
-    for(int i=0; i<lst.size(); i++)
+    for(int i=0; i<textLst.size(); i++)
     {
-        QString str = lst.at(i);
+        QString str = textLst.at(i);
         if(str.startsWith("@"))
         {
             str = str.right(str.length() - 1);
-            m_beforeAfter[str] = lst.at(i);
+            m_beforeAfter[str] = textLst.at(i);
         }
 
 
@@ -93,8 +98,9 @@ QueryItemListDialog::QueryItemListDialog(QueryGraphicsHelper* helper, QStringLis
         }
         ui->lstValues->addItem(lwi);
     }
-    resize(200, 20 * (lst.size()));
-    ui->lstValues->resize(200, 20 * (lst.size()));
+
+    resize(200, 25 * (textLst.size()) + 1); // +1 to not to have scrollbars :)
+    ui->lstValues->resize(200, 25 * (textLst.size()));
 
 }
 

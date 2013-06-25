@@ -10,44 +10,10 @@
 #include <QGraphicsView>
 #include <QScrollBar>
 
-CellQuerySmallOptionsBox::CellQuerySmallOptionsBox(QSet<OptionsType> types, QueryGraphicsHelper* c, int level, QueryGraphicsItem* parent, QueryComponent* owner, OptionsBoxShape shape):
-        QueryGraphicsItem(level, parent, c, owner), m_box(0), m_ellipse(0), m_diamond(0), m_types(types), m_shape(shape)
-
+CellQuerySmallOptionsBox::CellQuerySmallOptionsBox(QSet<OptionsType> types, QueryGraphicsHelper* c, int level, QueryGraphicsItem* parent, QueryComponent* owner):
+        QueryGraphicsItem(level, parent, c, owner),
+        m_types(types)
 {
-}
-
-QGraphicsItemGroup* CellQuerySmallOptionsBox::render(int& x, int& y, int& /*w*/, int &/*h*/)
-{
-    QGraphicsItemGroup* grp = new QGraphicsItemGroup();
-
-    if(m_shape == SHAPE_RECT)
-    {
-        m_box = new QGraphicsRectItem(x, y, 10, 10, grp);
-        m_helper->addNewHotCell(this, m_box->rect().toRect());
-    }
-    else
-    if(m_shape == SHAPE_CIRCLE)
-    {
-        m_ellipse = new QGraphicsEllipseItem(x, y, 10, 10, grp);
-        m_helper->addNewHotCell(this, m_ellipse->rect().toRect());
-    }
-    else
-    {
-        QPointF p1(x, y+5); QPointF p2(x+5, y + 10); QPointF p3(x+10, y+5); QPointF p4(x+5, y);
-        QVector <QPointF> v; v << p1 << p2 << p3 << p4;
-        QPolygonF po(v);
-        m_diamond = new QGraphicsPolygonItem(po, grp);
-        m_helper->addNewHotCell(this, (new QGraphicsRectItem(x, y, 10, 10))->rect().toRect());
-    }
-
-    new QGraphicsLineItem(x, y + 5, x + 10, y+5, grp);
-    new QGraphicsLineItem(x + 5, y, x + 5, y+10, grp);
-    if(m_shape == SHAPE_RECT)
-    {
-        new QGraphicsLineItem(x + 5, y + 5, x + 5, y+16, grp);  // bottom one
-    }
-
-    return grp;
 }
 
 void CellQuerySmallOptionsBox::mouseMove(int /*x*/, int /*y*/)
@@ -58,20 +24,16 @@ void CellQuerySmallOptionsBox::mouseMove(int /*x*/, int /*y*/)
         return;
     }
 
-    QPen thick;
-    thick.setWidth(2);
-    if(m_shape == SHAPE_RECT) m_box->setPen(thick);
-    else if(m_shape == SHAPE_CIRCLE) m_ellipse->setPen(thick);
-    else m_diamond->setPen(thick);
+    QPen thickPen;
+    thickPen.setWidth(2);
+    highlight(thickPen);
 }
 
 void CellQuerySmallOptionsBox::mouseLeft(int /*x*/, int /*y*/)
 {
-    QPen normal;
-    normal.setWidth(1);
-    if(m_shape == SHAPE_RECT) m_box->setPen(normal);
-    else if(m_shape == SHAPE_CIRCLE) m_ellipse->setPen(normal);
-    else m_diamond->setPen(normal);
+    QPen normalPen;
+    normalPen.setWidth(1);
+    highlight(normalPen);
 }
 
 CellQuerySmallOptionsBox::OptionsList CellQuerySmallOptionsBox::prepareOptions()
@@ -101,7 +63,7 @@ CellQuerySmallOptionsBox::OptionsList CellQuerySmallOptionsBox::prepareOptions()
     if(m_types.contains(OPTIONS_NEW_COLUMN))
     {
         text.append(NEW_COLUMN);
-        icons.append(QIcon(IconFactory::getColumnIcon().pixmap(16, 16)));   // TODO: It is really time to get a nice set of dedicated icons :)
+        icons.append(QIcon(IconFactory::getColumnIcon().pixmap(16, 16)));
     }
 
     if(m_types.contains(OPTIONS_DUPLICATE))
@@ -184,9 +146,7 @@ void CellQuerySmallOptionsBox::mousePress(int x, int y)
 {
     QPen normal;
     normal.setWidth(1);
-    if(m_shape == SHAPE_RECT) m_box->setPen(normal);
-    else if(m_shape == SHAPE_CIRCLE) m_ellipse->setPen(normal);
-    else m_diamond->setPen(normal);
+    highlight(normal);
 
     CellQuerySmallOptionsBox::OptionsList op = prepareOptions();
     if(op.text.size() == 0)
@@ -195,9 +155,7 @@ void CellQuerySmallOptionsBox::mousePress(int x, int y)
     }
 
     QString selected = "";
-    QAbstractGraphicsShapeItem* item = 0;
-    if(m_shape == SHAPE_RECT)item = m_box; else if(m_shape == SHAPE_CIRCLE) item = m_ellipse; else item = m_diamond;
-
+    QAbstractGraphicsShapeItem* item = getGraphicsItem();
     QGraphicsScene* sc = item->scene();
     QList <QGraphicsView*> views =  sc->views();
     if(views.size() > 0)

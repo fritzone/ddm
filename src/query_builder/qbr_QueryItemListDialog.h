@@ -22,10 +22,17 @@ class QueryItemListDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit QueryItemListDialog(QueryGraphicsHelper* helper, QueryGraphicsHelper::ListType t, QWidget *parent = 0);
-    explicit QueryItemListDialog(QueryGraphicsHelper* helper, QStringList lst, QList<QIcon> icons, bool checks, QWidget *parent = 0);
+    explicit QueryItemListDialog(QueryGraphicsHelper* helper,
+                                 QueryGraphicsHelper::ListType t,
+                                 QWidget *parent = 0);
+
+    explicit QueryItemListDialog(QueryGraphicsHelper* helper,
+                                 const QStringList& lst,
+                                 const QList<QIcon>& icons,
+                                 bool checks, QWidget *parent = 0);
 
     ~QueryItemListDialog();
+
     QString getSelection() const
     {
         return m_selected;
