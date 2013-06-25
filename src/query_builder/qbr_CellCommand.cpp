@@ -1,5 +1,5 @@
 #include "qbr_CellCommand.h"
-#include "qbr_CellQuerySmallOptionsBox.h"
+#include "qbr_CellQuerySmallOptionsBoxDiamond.h"
 #include "qbr_CellJoinCommand.h"
 #include "qbr_CellWhereCommand.h"
 
@@ -80,7 +80,7 @@ QGraphicsItemGroup* CellCommand::render(int& x, int& y, int& w, int &h)
             t.clear();
         }
 
-        CellQuerySmallOptionsBox* smb = new CellQuerySmallOptionsBox(t, m_helper, m_level, m_parent, m_children.at(i)->getOwner(), CellQuerySmallOptionsBox::SHAPE_DIAMOND); //this?
+        CellQuerySmallOptionsBox* smb = new CellQuerySmallOptionsBoxDiamond(t, m_helper, m_level, m_parent, m_children.at(i)->getOwner()); //this?
         int tx = x-15 + 2; int ty = halfway; int tw = w; int th = h;
         grp->addToGroup(smb->render(tx, ty, tw, th));
 
@@ -88,7 +88,7 @@ QGraphicsItemGroup* CellCommand::render(int& x, int& y, int& w, int &h)
     }
 
     // the small command box (provided by the child classes)
-    CellQuerySmallOptionsBox* smb = provideOptionsBox(m_helper, m_level, m_parent, m_owner);
+    CellQuerySmallOptionsBox* smb = provideOptionsBox();
     if(smb)
     {
         new QGraphicsLineItem(x + 5 +2 , y-1, x + 5 + 2, y + 20, grp);

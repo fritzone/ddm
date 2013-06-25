@@ -17,7 +17,7 @@ public:
     virtual bool hasClose();
     virtual void onClose();
     virtual bool hasTypeChooser() {return false;}
-    virtual CellQuerySmallOptionsBox* provideOptionsBox(QueryGraphicsHelper* c, int level, QueryGraphicsItem* parent, QueryComponent* owner);
+    virtual CellQuerySmallOptionsBox* provideOptionsBox();
 };
 
 #endif // CELLFROMCOMMAND_H

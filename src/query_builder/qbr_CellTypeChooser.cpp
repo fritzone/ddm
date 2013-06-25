@@ -112,7 +112,7 @@ QGraphicsItemGroup* CellTypeChooser::render(int& x, int& y, int& w, int &/*h*/)
         }
         m_text->setFont(theFont);
         m_text->setX(x + CELL_SIZE + 1);
-        m_text->setY(y - 8);
+        m_text->setY(y - 4);
         addToGroup(m_text);
         width += m_text->boundingRect().width();
         w += m_text->boundingRect().width();

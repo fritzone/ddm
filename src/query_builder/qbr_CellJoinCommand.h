@@ -25,7 +25,8 @@ public:
     virtual void updateWidth(int newWidth);
     virtual bool hasTypeChooser() {return true;}
     QGraphicsItemGroup* render(int& x, int& y, int& w, int &h);
-    virtual CellQuerySmallOptionsBox* provideOptionsBox(QueryGraphicsHelper* /*c*/, int /*level*/, QueryGraphicsItem* /*parent*/, QueryComponent* /*owner*/) {return 0;}
+    virtual CellQuerySmallOptionsBox* provideOptionsBox()
+    {return 0;}
 };
 
 #endif // CELLJOINCOMMAND_H

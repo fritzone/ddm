@@ -38,7 +38,7 @@ public:
     QueryGraphicsItem* clicked(int x, int y);
     QString presentList(int, int, ListType);
     QString presentList(int, int, const QString&);
-    QString presentList(int, int, QStringList, QList<QIcon>);
+    QString presentList(int, int, const QStringList &, const QList<QIcon> &);
     void setScene(QueryGraphicsScene* sc) ;
     void setQuery(Query* q) ;
     void setForm(MainWindow*);

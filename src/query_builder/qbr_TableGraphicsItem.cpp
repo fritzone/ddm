@@ -1,7 +1,7 @@
 #include "qbr_TableGraphicsItem.h"
 #include "core_Table.h"
 #include "qbr_CellTable.h"
-#include "qbr_CellQuerySmallOptionsBox.h"
+#include "qbr_CellQuerySmallOptionsBoxDiamond.h"
 #include "qbr_CellAsCommand.h"
 #include "qbr_CellWhereCommand.h"
 #include "qbr_CellJoinCommand.h"
@@ -40,7 +40,7 @@ QGraphicsItemGroup* TableGraphicsItem::render(int &x, int &y, int& w, int &h)
         QSet<OptionsType> more = m_as->getOwner()->provideOptions();
         t.unite(more);
 
-        CellQuerySmallOptionsBox* smb = new CellQuerySmallOptionsBox(t, m_helper, m_as->getLevel(), m_parent, m_as->getOwner(), CellQuerySmallOptionsBox::SHAPE_DIAMOND);
+        CellQuerySmallOptionsBox* smb = new CellQuerySmallOptionsBoxDiamond(t, m_helper, m_as->getLevel(), m_parent, m_as->getOwner());
         int tx = x-15 + 2; int ty = halfway; int tw = w; int th = h;
         addToGroup(smb->render(tx, ty, tw, th));
 
@@ -78,7 +78,7 @@ QGraphicsItemGroup* TableGraphicsItem::render(int &x, int &y, int& w, int &h)
             QSet<OptionsType> more = m_joins.at(i)->getOwner()->provideOptions();
             t.unite(more);
 
-            CellQuerySmallOptionsBox* smb = new CellQuerySmallOptionsBox(t, m_helper, m_joins.at(i)->getLevel(), m_parent, m_joins.at(i)->getOwner(), CellQuerySmallOptionsBox::SHAPE_DIAMOND);
+            CellQuerySmallOptionsBox* smb = new CellQuerySmallOptionsBoxDiamond(t, m_helper, m_joins.at(i)->getLevel(), m_parent, m_joins.at(i)->getOwner());
             int tx = x-15 + 2; int ty = halfway; int tw = w; int th = h;
             addToGroup(smb->render(tx, ty, tw, th));
             new QGraphicsLineItem(x +5+2-CHILDREN_ALIGNMENT , halfway +10, x + 5+2-CHILDREN_ALIGNMENT, y, this);   // botton
@@ -109,7 +109,7 @@ QGraphicsItemGroup* TableGraphicsItem::render(int &x, int &y, int& w, int &h)
             t.insert(OPTIONS_NEW_WHERE_EXPR_AND);
             t.insert(OPTIONS_NEW_WHERE_EXPR_OR);
 
-            CellQuerySmallOptionsBox* smb = new CellQuerySmallOptionsBox(t, m_helper, m_ons.at(i)->getLevel(), m_parent, m_ons.at(i)->getOwner(), CellQuerySmallOptionsBox::SHAPE_DIAMOND);
+            CellQuerySmallOptionsBox* smb = new CellQuerySmallOptionsBoxDiamond(t, m_helper, m_ons.at(i)->getLevel(), m_parent, m_ons.at(i)->getOwner());
             int tx = x-15 + 2; int ty = halfway; int tw = w; int th = h;
             addToGroup(smb->render(tx, ty, tw, th));
 

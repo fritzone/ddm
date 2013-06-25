@@ -98,13 +98,16 @@ QString QueryGraphicsHelper::presentList(int x, int y, const QString& input)
 }
 
 
-QString QueryGraphicsHelper::presentList(int x, int y, QStringList lst, QList<QIcon> icons)
+QString QueryGraphicsHelper::presentList(int x, int y, const QStringList& lst,
+                                         const QList<QIcon>& icons)
 {
     if(m_lstDlg != 0)
     {
         m_lstDlg->close();
+        delete m_lstDlg;
         m_lstDlg = 0;
     }
+
     m_lstDlg = new QueryItemListDialog(this, lst, icons, false, 0);
     m_lstDlg->setWindowFlags(Qt::FramelessWindowHint | Qt::Tool);
     m_lstDlg->move(x, y);
@@ -118,7 +121,7 @@ void QueryGraphicsHelper::resetHighlightedItem()
 {
     for(int i=0; i<hotCells.keys().size(); i++)
     {
-        hotCells.keys().at(i)->mouseLeft(0,0);
+        hotCells.keys().at(i)->mouseLeft(0, 0);
     }
 }
 
