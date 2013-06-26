@@ -10,7 +10,11 @@
 #include <QGraphicsView>
 #include <QScrollBar>
 
-CellQuerySmallOptionsBox::CellQuerySmallOptionsBox(QSet<OptionsType> types, QueryGraphicsHelper* c, int level, QueryGraphicsItem* parent, QueryComponent* owner):
+CellQuerySmallOptionsBox::CellQuerySmallOptionsBox(QSet<OptionsType> types,
+                                                   QueryGraphicsHelper* c,
+                                                   int level,
+                                                   QueryGraphicsItem* parent,
+                                                   QueryComponent* owner):
         QueryGraphicsItem(level, parent, c, owner),
         m_types(types)
 {
@@ -43,17 +47,17 @@ CellQuerySmallOptionsBox::OptionsList CellQuerySmallOptionsBox::prepareOptions()
 
     if(m_types.contains(OPTIONS_NEW_TABLE))
     {
-        bool canGo = false;
+        bool haveTables = false;
         if(Workspace::getInstance()->currentProjectIsOop())
         {
-            canGo = Workspace::getInstance()->workingVersion()->getTableInstances().size() > 0;
+            haveTables = Workspace::getInstance()->workingVersion()->getTableInstances().size() > 0;
         }
         else
         {
-            canGo = Workspace::getInstance()->workingVersion()->getTables().size() > 0;
+            haveTables = Workspace::getInstance()->workingVersion()->getTables().size() > 0;
         }
 
-        if(canGo)
+        if(haveTables)
         {
             text.append(NEW_TABLE);
             icons.append(IconFactory::getTabinstIcon());

@@ -602,15 +602,30 @@ void InjectSqlDialog::setMysqlLayout()
 
 void InjectSqlDialog::onSelectFileForSqlite()
 {
-    QString fileName = QFileDialog::getOpenFileName(this,
-                                                    tr("Select Database file"), "",
-                                                    tr("Sqlite files (*.sqlite);;All files (*.*)"), 0,
-                                                    QFileDialog::DontConfirmOverwrite | QFileDialog::ReadOnly);
+    QFileDialog dialog(this);
+    dialog.setFileMode(QFileDialog::AnyFile);
+    dialog.setWindowTitle(tr("Specify the Sqlite file"));
+    dialog.setNameFilter(tr("Sqlite files (*.sqlite);;All files (*.*)"));
+    dialog.setViewMode(QFileDialog::Detail);
+
+    QStringList fileNames;
+    if (dialog.exec())
+    {
+        fileNames = dialog.selectedFiles();
+    }
+
+    QString fileName = fileNames.length()? fileNames[0]:"";
+
     if(fileName.length() == 0)
     {
         return;
     }
-    if(!fileName.endsWith(".sqlite")) fileName += ".sqlite";
+
+    if(!fileName.endsWith(".sqlite"))
+    {
+        fileName += ".sqlite";
+    }
+
     ui->txtDatabaseName->setText(fileName);
     enableOkButton();
 }
