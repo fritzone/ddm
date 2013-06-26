@@ -3316,8 +3316,35 @@ void MainWindow::onRepoItemClicked(QTreeWidgetItem* itm ,int)
     }
 }
 
-void MainWindow::createTableInConnection(Connection* c)
+// TODO: This is alittel bit ugly, refactor with the one below
+void MainWindow::createTableInConnection(Connection* c, bool alreadyTried)
 {
+    bool create = true;
+    if(!alreadyTried && !c->tryConnect())
+    {
+        if(m_btndlg && m_btndlg->isVisible())
+        {
+            m_btndlg->hide();
+    #ifdef Q_WS_WIN
+            Qt::WindowFlags flags = m_btndlg->windowFlags();
+            m_btndlg->setWindowFlags(flags ^ (Qt::SplashScreen |Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint));
+    #endif
+            delete m_btndlg;
+            m_btndlg = 0;
+        }
+
+        create = false;
+        if(QMessageBox::question(this, tr("Error"),
+                                 tr("Cannot connect to: <b>") + c->getName() + "</b>. Do yo still want to create the table?",
+                                 QMessageBox::Yes, QMessageBox::No
+                                 ==
+                                 QMessageBox::Yes
+                                 ))
+        {
+            create = true;
+        }
+    }
+
     if(m_btndlg && m_btndlg->isVisible())
     {
         m_btndlg->hide();
@@ -3329,8 +3356,11 @@ void MainWindow::createTableInConnection(Connection* c)
         m_btndlg = 0;
     }
 
-    BrowseTableForm* btf = BrowseTableForm::instance(this, c, "", NEW_TABLE_IN_DB);
-    setCentralWidget(btf);
+    if(create)
+    {
+        BrowseTableForm* btf = BrowseTableForm::instance(this, c, "", NEW_TABLE_IN_DB);
+        setCentralWidget(btf);
+    }
 
 }
 
@@ -3339,6 +3369,35 @@ void MainWindow::onConnectionCreateTable()
     Connection* c = getRightClickedConnection();
     if(c)
     {
-        createTableInConnection(c);
+        bool create = true;
+        if(!c->tryConnect())
+        {
+            if(m_btndlg && m_btndlg->isVisible())
+            {
+                m_btndlg->hide();
+        #ifdef Q_WS_WIN
+                Qt::WindowFlags flags = m_btndlg->windowFlags();
+                m_btndlg->setWindowFlags(flags ^ (Qt::SplashScreen |Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint));
+        #endif
+                delete m_btndlg;
+                m_btndlg = 0;
+            }
+
+            create = false;
+            if(QMessageBox::question(this, tr("Error"),
+                                     tr("Cannot connect to: <b>") + c->getName() + "</b>. Do yo still want to create the table?",
+                                     QMessageBox::Yes, QMessageBox::No
+                                     ==
+                                     QMessageBox::Yes
+                                     ))
+            {
+                create = true;
+            }
+        }
+
+        if(create)
+        {
+            createTableInConnection(c, true);
+        }
     }
 }
