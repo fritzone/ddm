@@ -109,7 +109,10 @@ public:
 
     void showDataTypesList(Version *foundVersion);
 
-    void createTableInConnection(Connection* c);
+    void createTableInConnection(Connection* c, bool alreadyTried);
+
+    void tryBrowseConnection(Connection* c);
+
 
 protected:
     virtual void closeEvent( QCloseEvent * event );
@@ -233,7 +236,7 @@ private:
     template <class T> void showNamedObjectList(showSomething s, const QVector<T*> items, const QIcon& icon, const QString& title);
 
     void hideSplashwindow();
-    void tryBrowseConnection(Connection* c);
+
     void showObjectWithGuidAndVersion(Version* v, QString uid, showSomething s, bool focus=true);
 
     void doLockLikeOperation(bool reLocking);

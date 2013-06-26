@@ -2284,6 +2284,11 @@ void NewTableForm::updateDefaultValuesTableHeader()
 
 void NewTableForm::onAddNewDefaultRow()
 {
+    if(m_table->getColumnCount() == 0)
+    {
+        return;
+    }
+
     addNewRowToTable(m_ui->tableStartupValues, m_table);
     onBtnUpdateTableWithDefaultValues();
     autoSave();
@@ -3188,4 +3193,7 @@ void NewTableForm::onCreateTableInDb()
     {
         setStatusTip(QString("Table ") + m_table->getName() + " succesfully created." );
     }
+
+    MainWindow::instance()->tryBrowseConnection(m_conn);
+    m_conn->getLocation()->setExpanded(true);
 }

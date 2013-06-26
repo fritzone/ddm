@@ -145,8 +145,16 @@ QString SingleExpressionQueryComponent::get() const
         }
     }
 
-    if(errorFound) result += QString("(") + QString("?") + QString("?") + QString(")");
-    if(result.trimmed().length() == 0) result = QString("(") + QString("?") + QString("?") + QString(")");
+    if(errorFound)
+    {
+        result += QString("(") + QString("?") + QString("?") + QString(")");
+    }
+
+    if(result.trimmed().length() == 0)
+    {
+        result = QString("(") + QString("?") + QString("?") + QString(")");
+    }
+
     return result;
 }
 

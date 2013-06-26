@@ -134,7 +134,7 @@ void ConnectionGuiElements::newConnection()
 
 void ConnectionGuiElements::newTable()
 {
-    MainWindow::instance()->createTableInConnection(m_lastConnection);
+    MainWindow::instance()->createTableInConnection(m_lastConnection, false);
 }
 
 ContextMenuEnabledTreeWidgetItem* ConnectionGuiElements::createConnectionTreeEntry(Connection* c)
