@@ -15,11 +15,20 @@
 #include "strings.h"
 #include "uids.h"
 #include "core_TableInstance.h"
+#include "qbr_Query.h"
+
 #include <QDebug>
 
-SingleExpressionQueryComponent::SingleExpressionQueryComponent(QueryComponent* p, int l, Version *v): QueryComponent(p,l,v),
-    m_helper(0), m_gritm(0), m_elements(), m_columnsAtGivenPosition(), m_functionsAtGivenPosition(), m_functionInstantiationAtGivenPosition(), m_typedValuesAtGivenPosition(), m_forcedType(NOT_FORCED),
-    m_ownedByOn(false), m_onOwner(0), m_onComponent(0), m_as(0), m_hasForcedType(false)
+SingleExpressionQueryComponent::SingleExpressionQueryComponent(Query* q,
+                                                               QueryComponent* p,
+                                                               int l,
+                                                               Version *v) :
+    QueryComponent(q, p, l, v),
+    m_helper(0), m_gritm(0), m_elements(), m_columnsAtGivenPosition(),
+    m_functionsAtGivenPosition(), m_functionInstantiationAtGivenPosition(),
+    m_typedValuesAtGivenPosition(), m_forcedType(NOT_FORCED),
+    m_ownedByOn(false), m_onOwner(0), m_onComponent(0), m_as(0),
+    m_hasForcedType(false)
 {
 }
 
@@ -28,11 +37,16 @@ QueryGraphicsItem* SingleExpressionQueryComponent::createGraphicsItem(QueryGraph
     m_helper = helper;
     int l = getLevel();
     int adder = 1;
-    if(l == -2) adder = 0;
+
+    if(l == QueryComponent::PARAMETER_LEVEL)
+    {
+        adder = 0;
+    }
+
     m_gritm = new CellForSingleExpression(l + adder, helper, parent, this);
     if(m_as)
     {
-        m_gritm->setAs(new CellAsCommand(helper, m_level + 1, m_gritm, m_as, true));
+        m_gritm->setAs(new CellAsCommand(helper, nextLevel(), m_gritm, m_as, true));
     }
 
     return m_gritm;
@@ -110,7 +124,7 @@ QString SingleExpressionQueryComponent::get() const
                 {
                     t= m_columnsAtGivenPosition[i]->tinst->getName();
                 }
-                t = m_helper->applyAlias(t);
+                t = getQuery()->applyAlias(t);
                 result += t + "." + m_columnsAtGivenPosition[i]->c->getName();   // this goes into IssueOriginator! Beware!
 
                 break;
@@ -198,7 +212,7 @@ void SingleExpressionQueryComponent::serialize(QDomDocument& doc, QDomElement& p
 QSet<OptionsType> SingleExpressionQueryComponent::provideOptions()
 {
     QSet<OptionsType> t;
-    if(dynamic_cast<SelectQuerySelectComponent*>(m_parent))
+    if(dynamic_cast<SelectQuerySelectComponent*>(getParent()))
     {
         t.insert(OPTIONS_AS);
     }
@@ -207,13 +221,13 @@ QSet<OptionsType> SingleExpressionQueryComponent::provideOptions()
 
 QueryComponent* SingleExpressionQueryComponent::duplicate()
 {
-    SingleExpressionQueryComponent* newc = new SingleExpressionQueryComponent(m_parent, m_level, version());
+    SingleExpressionQueryComponent* newc = new SingleExpressionQueryComponent(getQuery(), getParent(), getLevel(), version());
     return newc;
 }
 
 CloneableElement* SingleExpressionQueryComponent::clone(Version *sourceVersion, Version *targetVersion)
 {
-    SingleExpressionQueryComponent* newc = new SingleExpressionQueryComponent(m_parent, m_level, targetVersion);
+    SingleExpressionQueryComponent* newc = new SingleExpressionQueryComponent(getQuery(), getParent(), getLevel(), targetVersion);
     newc->m_elements = m_elements;
     // the m_columnsAtGivenPosition has columns from sourceVersion but should be referring to the tables in the targetVersion
     newc->m_columnsAtGivenPosition = m_columnsAtGivenPosition;
@@ -406,7 +420,7 @@ void SingleExpressionQueryComponent::handleAction(const QString& action, QueryCo
         else
         if(localAction == ADD_ALIAS)
         {
-            m_as = new SelectQueryAsComponent(this, m_level + 1, version());
+            m_as = new SelectQueryAsComponent(getQuery(), this, nextLevel(), version());
             addChild(m_as);
             m_helper->triggerReRender();
         }
@@ -439,20 +453,27 @@ void SingleExpressionQueryComponent::handleAction(const QString& action, QueryCo
         if(m_functionsAtGivenPosition.find(index) == m_functionsAtGivenPosition.end())
         {
             m_functionsAtGivenPosition.insert(index, &Workspace::getInstance()->currentProjectsEngine()->getBuiltinFunction(fName));
-            m_functionInstantiationAtGivenPosition.insert(index, new DatabaseFunctionInstantiationComponent(new SingleExpressionQueryComponent(this, m_level + 1, version()),
-                                                                                                            Workspace::getInstance()->currentProjectsEngine()->getBuiltinFunction(fName),
-                                                                                                            false,
-                                                                                                            version())
+            m_functionInstantiationAtGivenPosition.insert(index,
+                                                          new DatabaseFunctionInstantiationComponent(
+                                                              getQuery(),
+                                                              new SingleExpressionQueryComponent(
+                                                                  getQuery(), this, nextLevel(), version()
+                                                                  ),
+                                                              Workspace::getInstance()->currentProjectsEngine()->getBuiltinFunction(fName),
+                                                              false,
+                                                              version())
                                                           );
         }
         else
         {
             m_functionsAtGivenPosition[index] = &Workspace::getInstance()->currentProjectsEngine()->getBuiltinFunction(fName);
-            m_functionInstantiationAtGivenPosition[index] = new DatabaseFunctionInstantiationComponent(new SingleExpressionQueryComponent(this, m_level + 1, version()),
-                                                                                                       Workspace::getInstance()->currentProjectsEngine()->getBuiltinFunction(fName),
-                                                                                                       false,
-                                                                                                       version()
-                                                                                                       );
+            m_functionInstantiationAtGivenPosition[index] = new DatabaseFunctionInstantiationComponent(
+                        getQuery(),
+                        new SingleExpressionQueryComponent(getQuery(), this, getLevel() + 1, version()),
+                        Workspace::getInstance()->currentProjectsEngine()->getBuiltinFunction(fName),
+                        false,
+                        version()
+                        );
         }
 
         // let's see if we overwrote a column
@@ -585,7 +606,7 @@ void SingleExpressionQueryComponent::removeFromOn()
 
 void SingleExpressionQueryComponent::onClose()
 {
-    m_parent->removeChild(this);
+    getParent()->removeChild(this);
     if(m_ownedByOn)
     {
         removeFromOn();

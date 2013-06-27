@@ -1,47 +1,55 @@
 #include "qbr_TableQueryComponent.h"
+
 #include "core_Table.h"
 #include "core_TableInstance.h"
-#include "qbr_TableGraphicsItem.h"
+#include "core_Column.h"
 #include "Workspace.h"
 #include "Version.h"
-#include "strings.h"
+
 #include "qbr_SelectQueryAsComponent.h"
 #include "qbr_SelectQueryJoinComponent.h"
 #include "qbr_CellAsCommand.h"
 #include "qbr_CellJoinCommand.h"
 #include "qbr_CellWhereCommand.h"
-#include "core_Column.h"
+#include "qbr_Query.h"
+#include "qbr_TableGraphicsItem.h"
 #include "qbr_SingleExpressionQueryComponent.h"
+
 #include "UidWarehouse.h"
+#include "strings.h"
 
 #include <QGraphicsScene>
 #include <QGraphicsView>
 
-TableQueryComponent::TableQueryComponent(Table* tab, QueryComponent* p, int level, Version *v):
-    QueryComponent(p, level, v), m_table(tab), m_tinst(0), m_tabInsteadOfTinst(true), m_as(0), m_joins()
+TableQueryComponent::TableQueryComponent(Query* q, Table* tab, QueryComponent* p,
+                                         int level, Version *v):
+    QueryComponent(q, p, level, v),
+    m_table(tab), m_tinst(0), m_tabInsteadOfTinst(true), m_as(0), m_joins()
 {
 }
 
-TableQueryComponent::TableQueryComponent(TableInstance* tinst, QueryComponent* p, int level, Version *v):
-    QueryComponent(p, level, v), m_table(0), m_tinst(tinst), m_tabInsteadOfTinst(false), m_as(0), m_joins()
+TableQueryComponent::TableQueryComponent(Query* q, TableInstance* tinst,
+                                         QueryComponent* p, int level, Version *v):
+    QueryComponent(q, p, level, v),
+    m_table(0), m_tinst(tinst), m_tabInsteadOfTinst(false), m_as(0), m_joins()
 {
 }
 
 QueryGraphicsItem* TableQueryComponent::createGraphicsItem(QueryGraphicsHelper* helper, QueryGraphicsItem* parent)
 {
     m_helper = helper;
-    m_tgitm = m_tabInsteadOfTinst?new TableGraphicsItem(m_table->getName(), m_level, helper, parent, this):
-                                  new TableGraphicsItem(m_tinst->getName(), m_level, helper, parent, this);;
+    m_tgitm = m_tabInsteadOfTinst?new TableGraphicsItem(m_table->getName(), getLevel(), helper, parent, this):
+                                  new TableGraphicsItem(m_tinst->getName(), getLevel(), helper, parent, this);;
     if(m_as)
     {
-        m_tgitm->setAs(new CellAsCommand(helper, m_level + 1, m_tgitm, m_as, true));
-        m_helper->setQueryGlobalAlias(m_as, this);
+        m_tgitm->setAs(new CellAsCommand(helper, nextLevel(), m_tgitm, m_as, true));
+        getQuery()->setQueryGlobalAlias(m_as, this);
     }
     for(int i=0; i<m_joins.size(); i++)
     {
         m_joins.at(i)->setHelper(m_helper);
-        CellJoinCommand* joinCommand = new CellJoinCommand(helper, m_level + 1, m_tgitm, m_joins.at(i));
-        CellWhereCommand* on = new CellWhereCommand(helper, m_level + 1, m_tgitm, m_joins.at(i), SelectQueryWhereComponent::WHERETYPE_ON);
+        CellJoinCommand* joinCommand = new CellJoinCommand(helper, nextLevel(), m_tgitm, m_joins.at(i));
+        CellWhereCommand* on = new CellWhereCommand(helper, nextLevel(), m_tgitm, m_joins.at(i), SelectQueryWhereComponent::WHERETYPE_ON);
         for(int j=0; j<m_joins.at(i)->getChildren().size(); j++)
         {
             QueryGraphicsItem* gritm = m_joins.at(i)->getChildren().at(j)->createGraphicsItem(helper, joinCommand);
@@ -78,9 +86,9 @@ void TableQueryComponent::handleAction(const QString &action, QueryComponent *)
     {
         if(m_as == 0)
         {
-            m_as = new SelectQueryAsComponent(this, m_level + 1, version());
+            m_as = new SelectQueryAsComponent(getQuery(), this, nextLevel(), version());
             addChild(m_as);
-            m_helper->setQueryGlobalAlias(m_as, this);
+            getQuery()->setQueryGlobalAlias(m_as, this);
             m_helper->triggerReRender();
         }
         return;
@@ -88,21 +96,21 @@ void TableQueryComponent::handleAction(const QString &action, QueryComponent *)
 
     if(action == ADD_JOIN)
     {
-        SelectQueryJoinComponent* join = new SelectQueryJoinComponent(this, m_level + 1, version());
+        SelectQueryJoinComponent* join = new SelectQueryJoinComponent(getQuery(), this, nextLevel(), version());
         join->setHelper(m_helper);
-        addChild(join);   // TODO: Check if this still works ...
+        addChild(join);
         m_joins.append(join);
         m_helper->triggerReRender();
 
         return;
     }
-    m_parent->handleAction(action, this);
+    getParent()->handleAction(action, this);
 }
 
 CloneableElement* TableQueryComponent::clone(Version *sourceVersion, Version *targetVersion)
 {
-    TableQueryComponent* newc = m_tabInsteadOfTinst?new TableQueryComponent(m_table, m_parent, m_level, targetVersion)
-                                                  :new TableQueryComponent(m_tinst, m_parent, m_level, targetVersion);
+    TableQueryComponent* newc = m_tabInsteadOfTinst?new TableQueryComponent(getQuery(), m_table, getParent(), getLevel(), targetVersion)
+                                                  :new TableQueryComponent(getQuery(), m_tinst, getParent(), getLevel(), targetVersion);
 
     newc->m_as = m_as?dynamic_cast<SelectQueryAsComponent*>(m_as->clone(sourceVersion, targetVersion)):0;
     cloneTheChildren(sourceVersion, targetVersion, newc);
@@ -145,8 +153,8 @@ CloneableElement* TableQueryComponent::clone(Version *sourceVersion, Version *ta
 
 QueryComponent* TableQueryComponent::duplicate()
 {
-    TableQueryComponent* newc = m_tabInsteadOfTinst?new TableQueryComponent(m_table, m_parent, m_level, version())
-                                                  :new TableQueryComponent(m_tinst, m_parent, m_level, version());
+    TableQueryComponent* newc = m_tabInsteadOfTinst?new TableQueryComponent(getQuery(), m_table, getParent(), getLevel(), version())
+                                                  :new TableQueryComponent(getQuery(), m_tinst, getParent(), getLevel(), version());
 
     newc->m_as = m_as?dynamic_cast<SelectQueryAsComponent*>(m_as->duplicate()):0;
     // TODO: qgh alias mapping
@@ -172,7 +180,7 @@ QSet<OptionsType> TableQueryComponent::provideOptions()
 void TableQueryComponent::removeAs()
 {
     m_as = 0;
-    m_helper->deleteQueryGlobalAlias(this);
+    getQuery()->deleteQueryGlobalAlias(this);
     m_helper->triggerReRender();
 }
 
@@ -190,7 +198,9 @@ TableQueryComponent* TableQueryComponent::provideFirstTableIfAny(QueryComponent*
     {
         if(Workspace::getInstance()->workingVersion()->getTableInstances().size() > 0)
         {
-            tccp = new TableQueryComponent(Workspace::getInstance()->workingVersion()->getTableInstances().at(0), parent, level, parent->version());
+            tccp = new TableQueryComponent(parent->getQuery(),
+                                           Workspace::getInstance()->workingVersion()->getTableInstances().at(0),
+                                           parent, level, parent->version());
         }
         else
         {
@@ -201,7 +211,9 @@ TableQueryComponent* TableQueryComponent::provideFirstTableIfAny(QueryComponent*
     {
         if(Workspace::getInstance()->workingVersion()->getTables().size() > 0)
         {
-            tccp = new TableQueryComponent(Workspace::getInstance()->workingVersion()->getTables().at(0), parent, level, parent->version());
+            tccp = new TableQueryComponent(parent->getQuery(),
+                                           Workspace::getInstance()->workingVersion()->getTables().at(0),
+                                           parent, level, parent->version());
         }
         else
         {

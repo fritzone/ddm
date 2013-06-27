@@ -5,7 +5,8 @@
 
 #include <QDebug>
 
-SelectQueryOrderByComponent::SelectQueryOrderByComponent(QueryComponent* p, int l, Version *v):QueryComponent(p,l,v)
+SelectQueryOrderByComponent::SelectQueryOrderByComponent(Query* q, QueryComponent* p, int l, Version *v) :
+    QueryComponent(q, p, l, v)
 {
 }
 
@@ -14,10 +15,9 @@ void SelectQueryOrderByComponent::handleAction(const QString &action, QueryCompo
 {
     if(action == NEW_COLUMN)
     {
-        SelectQuery* sq = dynamic_cast<SelectQuery*>(m_parent);
-        if(sq)
+        if(getParent()->is<SelectQuery>())
         {
-            sq->newOrderByExpression();
+            getParent()->as<SelectQuery>()->newOrderByExpression();
         }
     }
 }
@@ -31,13 +31,13 @@ QSet<OptionsType> SelectQueryOrderByComponent::provideOptions()
 
 QueryComponent* SelectQueryOrderByComponent::duplicate()
 {
-    SelectQueryOrderByComponent* newc = new SelectQueryOrderByComponent(m_parent, m_level, version());
+    SelectQueryOrderByComponent* newc = new SelectQueryOrderByComponent(getQuery(), getParent(), getLevel(), version());
     return newc;
 }
 
 CloneableElement* SelectQueryOrderByComponent::clone(Version *sourceVersion, Version *targetVersion)
 {
-    SelectQueryOrderByComponent* newc = new SelectQueryOrderByComponent(m_parent, m_level, targetVersion);
+    SelectQueryOrderByComponent* newc = new SelectQueryOrderByComponent(getQuery(), getParent(), getLevel(), targetVersion);
     newc->setSourceUid(getObjectUid());
     cloneTheChildren(sourceVersion, targetVersion, newc);
     return newc;
@@ -46,12 +46,22 @@ CloneableElement* SelectQueryOrderByComponent::clone(Version *sourceVersion, Ver
 QString SelectQueryOrderByComponent::get() const
 {
     QString result = "ORDER BY";
-    if(m_children.size()) result += "\n";
-    for(int i=0; i<m_children.size(); i++)
+
+    if(hasChildren())
+    {
+        result += strNewline;
+    }
+
+    const QList<QueryComponent*>& children = getChildren();
+
+    for(int i=0; i<children.size(); i++)
     {
         result += getSpacesForLevel();
-        result+= m_children.at(i)->get();
-        if(i<m_children.size() - 1) result += ",";
+        result+= children[i]->get();
+        if(i < children.size() - 1)
+        {
+            result += strComma;
+        }
     }
     return result;
 }

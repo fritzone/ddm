@@ -15,7 +15,7 @@ public:
         WHERETYPE_ON = 2
     };
 
-    SelectQueryWhereComponent(QueryComponent*, int, WhereType, Version *v);
+    SelectQueryWhereComponent(Query *q, QueryComponent*, int, WhereType, Version *v);
     virtual QString get() const;
     virtual QString getClass() const
     {

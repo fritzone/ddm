@@ -4,10 +4,13 @@
 #include "qbr_SelectQueryAsComponent.h"
 #include "core_Column.h"
 #include "core_Table.h"
+#include "core_TableInstance.h"
 
 #include "strings.h"
 
-SelectQuerySelectComponent::SelectQuerySelectComponent(QueryComponent* p, int l, Version *v) : QueryComponent(p,l, v)
+SelectQuerySelectComponent::SelectQuerySelectComponent(Query* q, QueryComponent* p,
+                                                       int l, Version *v) :
+    QueryComponent(q, p, l, v)
 {
 }
 
@@ -20,21 +23,21 @@ QSet<OptionsType> SelectQuerySelectComponent::provideOptions()
 
 void SelectQuerySelectComponent::onClose()
 {
-    if(m_parent)
+    if(hasParent())
     {
-        m_parent->onClose();
+        getParent()->onClose();
     }
 }
 
 QueryComponent* SelectQuerySelectComponent::duplicate()
 {
-    SelectQuerySelectComponent* newc = new SelectQuerySelectComponent(m_parent, m_level, version());
+    SelectQuerySelectComponent* newc = new SelectQuerySelectComponent(getQuery(), getParent(), getLevel(), version());
     return newc;
 }
 
 CloneableElement* SelectQuerySelectComponent::clone(Version* sourceVersion, Version* targetVersion)
 {
-    SelectQuerySelectComponent* newc = new SelectQuerySelectComponent(m_parent, m_level, targetVersion);
+    SelectQuerySelectComponent* newc = new SelectQuerySelectComponent(getQuery(), getParent(), getLevel(), targetVersion);
     newc->setSourceUid(getObjectUid());
     cloneTheChildren(sourceVersion, targetVersion, newc);
     return newc;
@@ -44,22 +47,25 @@ void SelectQuerySelectComponent::handleAction(const QString& action, QueryCompon
 {
     if(action == ADD_WHERE_EXPRESSION)
     {
-        SelectQuery* sq = dynamic_cast<SelectQuery*>(m_parent);
-        if(sq)
+        if(getParent()->is<SelectQuery>())
         {
-            sq->newSelectExpression();
+            getParent()->as<SelectQuery>()->newSelectExpression();
         }
     }
 }
 
 bool SelectQuerySelectComponent::hasGroupByFunctions()
 {
-    for(int i=0; i<m_children.size(); i++)
+    const QList<QueryComponent*>& children = getChildren();
+
+    for(int i=0; i<children.size(); i++)
     {
-        SingleExpressionQueryComponent* seq = dynamic_cast<SingleExpressionQueryComponent*>(m_children.at(i));
-        if(seq)
+        if(children[i]->is<SingleExpressionQueryComponent>())
         {
-            if(seq->hasGroupByFunctions()) return true;
+            if(children[i]->as<SingleExpressionQueryComponent>()->hasGroupByFunctions())
+            {
+                return true;
+            }
         }
     }
     return false;
@@ -67,12 +73,16 @@ bool SelectQuerySelectComponent::hasGroupByFunctions()
 
 bool SelectQuerySelectComponent::hasAtLeastOneColumnSelected()
 {
-    for(int i=0; i<m_children.size(); i++)
+    const QList<QueryComponent*>& children = getChildren();
+
+    for(int i=0; i<children.size(); i++)
     {
-        SingleExpressionQueryComponent* seq = dynamic_cast<SingleExpressionQueryComponent*>(m_children.at(i));
-        if(seq)
+        if(children[i]->is<SingleExpressionQueryComponent>())
         {
-            if(seq->hasAtLeastOneColumnSelected()) return true;
+            if(children[i]->as<SingleExpressionQueryComponent>()->hasAtLeastOneColumnSelected())
+            {
+                return true;
+            }
         }
     }
     return false;
@@ -81,15 +91,16 @@ bool SelectQuerySelectComponent::hasAtLeastOneColumnSelected()
 QVector<const ColumnOfTabWithTabInstance*> SelectQuerySelectComponent::getSelectedColumns()
 {
     QVector<const ColumnOfTabWithTabInstance*> result;
-    for(int i=0; i<m_children.size(); i++)
+    const QList<QueryComponent*>& children = getChildren();
+
+    for(int i=0; i<children.size(); i++)
     {
         QVector<const ColumnOfTabWithTabInstance*> localResult;
-        SingleExpressionQueryComponent* seq = dynamic_cast<SingleExpressionQueryComponent*>(m_children.at(i));
-        if(seq)
+        if(children[i]->is<SingleExpressionQueryComponent>())
         {
-            if(seq->hasAtLeastOneColumnSelected())
+            if(children[i]->as<SingleExpressionQueryComponent>()->hasAtLeastOneColumnSelected())
             {
-                localResult = seq->getColumns();
+                localResult = children[i]->as<SingleExpressionQueryComponent>()->getColumns();
                 result += localResult;
             }
         }
@@ -100,12 +111,13 @@ QVector<const ColumnOfTabWithTabInstance*> SelectQuerySelectComponent::getSelect
 QVector<const QueryComponent*> SelectQuerySelectComponent::getSelectedComponents()
 {
     QVector<const QueryComponent*> result;
-    for(int i=0; i<m_children.size(); i++)
+    const QList<QueryComponent*>& children = getChildren();
+
+    for(int i=0; i<children.size(); i++)
     {
-        SingleExpressionQueryComponent* seq = dynamic_cast<SingleExpressionQueryComponent*>(m_children.at(i));
-        if(seq)
+        if(children[i]->is<SingleExpressionQueryComponent>())
         {
-            result.append(seq);
+            result.append(children[i]);
         }
     }
     return result;
@@ -115,13 +127,16 @@ QVector<const QueryComponent*> SelectQuerySelectComponent::getSelectedComponents
 QStringList SelectQuerySelectComponent::getOrderByElements()
 {
     QStringList result;
-    for(int i=0; i<m_children.size(); i++)
+    const QList<QueryComponent*>& children = getChildren();
+
+    for(int i=0; i<children.size(); i++)
     {
-        bool added = false;
-        QVector<const ColumnOfTabWithTabInstance*> columns;
-        SingleExpressionQueryComponent* seq = dynamic_cast<SingleExpressionQueryComponent*>(m_children.at(i));
+        bool somethingFound = false; // if something was added or not
+        SingleExpressionQueryComponent* seq = dynamic_cast<SingleExpressionQueryComponent*>(children[i]);
         if(seq)
         {
+            QVector<const ColumnOfTabWithTabInstance*> columns;
+
             if(seq->hasAtLeastOneColumnSelected())
             {
                 columns = seq->getColumns();
@@ -129,21 +144,36 @@ QStringList SelectQuerySelectComponent::getOrderByElements()
 
             for(int j=0; j<columns.size(); j++)
             {
-                result.push_back(QString("$") + columns.at(j)->tab->getName() + "." + columns.at(j)->c->getName());  // add the columns
-                added = true;
+                QString strTmp = strDollar;
+
+                if(columns[j]->tab)
+                {
+                    strTmp += columns[j]->tab->getName();
+                }
+                else
+                if(columns[j]->tinst)
+                {
+                    strTmp += columns[j]->tinst->getName();
+                }
+
+                strTmp += strDot + columns[j]->c->getName();
+
+                result.push_back(strTmp);  // add the columns
+                somethingFound = true;
             }
 
             if(const SelectQueryAsComponent* as = seq->hasAs())             // and the last one is added as the alias
             {
-                result.push_back(QString("~") + as->getAs());
-                added = true;
+                result.push_back(strTilde + as->getAs());
+                somethingFound = true;
             }
         }
 
-        if(!added)
+        if(!somethingFound)
         {
-            QString n;n.setNum(i + 1);
-            result.push_back(QString("#") + n);
+            QString n;
+            n.setNum(i + 1);
+            result.push_back(strHash + n);
         }
 
     }
@@ -154,12 +184,22 @@ QStringList SelectQuerySelectComponent::getOrderByElements()
 QString SelectQuerySelectComponent::get() const
 {
     QString result = "SELECT";
-    if(m_children.size()) result += "\n";
-    for(int i=0; i<m_children.size(); i++)
+
+    if(hasChildren())
+    {
+        result += strNewline;
+    }
+
+    const QList<QueryComponent*>& children = getChildren();
+
+    for(int i=0; i<children.size(); i++)
     {
         result += getSpacesForLevel();
-        result+= m_children.at(i)->get();
-        if(i<m_children.size() - 1) result += ",\n";
+        result+= children[i]->get();
+        if(i < children.size() - 1)
+        {
+            result += strComma + strNewline;
+        }
     }
     return result;
 }

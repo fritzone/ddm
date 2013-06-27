@@ -4,13 +4,18 @@
 #include "qbr_SingleExpressionQueryComponent.h"
 #include "uids.h"
 
-SelectQueryAsComponent::SelectQueryAsComponent(QueryComponent* p, int l, Version *v):QueryComponent(p, l, v)
+SelectQueryAsComponent::SelectQueryAsComponent(Query* q,
+                                               QueryComponent* p,
+                                               int l,
+                                               Version *v) :
+    QueryComponent(q, p, l, v)
 {
     m_as = QueryAsGenerator::instance().getNextValidAs();
 }
 
 
-void SelectQueryAsComponent::handleAction(const QString &/*action*/, QueryComponent* /*referringObject*/)
+void SelectQueryAsComponent::handleAction(const QString &/*action*/,
+                                          QueryComponent* /*referringObject*/)
 {
 }
 
@@ -22,12 +27,17 @@ QSet<OptionsType> SelectQueryAsComponent::provideOptions()
 
 QueryComponent* SelectQueryAsComponent::duplicate()
 {
-    SelectQueryAsComponent* newc = new SelectQueryAsComponent(m_parent, m_level, version());
+    SelectQueryAsComponent* newc = new SelectQueryAsComponent(getQuery(),
+                                                              getParent(),
+                                                              getLevel(),
+                                                              version());
+
     newc->m_as = (QueryAsGenerator::instance().getNextValidAs());
     return newc;
 }
 
-CloneableElement* SelectQueryAsComponent::clone(Version *sourceVersion, Version *targetVersion)
+CloneableElement* SelectQueryAsComponent::clone(Version *sourceVersion,
+                                                Version *targetVersion)
 {
     SelectQueryAsComponent* n = dynamic_cast<SelectQueryAsComponent*>(duplicate());
     n->m_as = m_as;
@@ -46,20 +56,14 @@ bool SelectQueryAsComponent::setAs(const QString& as)
 
 void SelectQueryAsComponent::onClose()
 {
+    if(getParent()->is<TableQueryComponent>())
     {
-    TableQueryComponent* parent = dynamic_cast<TableQueryComponent*>(m_parent);
-    if(parent)
-    {
-        parent->removeAs();
-    }
+        getParent()->as<TableQueryComponent>()->removeAs();
     }
 
+    if(getParent()->is<SingleExpressionQueryComponent>())
     {
-    SingleExpressionQueryComponent* parent = dynamic_cast<SingleExpressionQueryComponent*>(m_parent);
-    if(parent)
-    {
-        parent->removeAs();
-    }
+        getParent()->as<SingleExpressionQueryComponent>()->removeAs();
     }
 
 }

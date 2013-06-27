@@ -6,7 +6,11 @@
 #include "core_Table.h"
 #include "qbr_TableQueryComponent.h"
 
-SelectQueryFromComponent::SelectQueryFromComponent(QueryComponent* p, int l, Version *v):QueryComponent(p,l,v)
+SelectQueryFromComponent::SelectQueryFromComponent(Query* q,
+                                                   QueryComponent* p,
+                                                   int l,
+                                                   Version *v):
+    QueryComponent(q, p, l, v)
 {
 }
 
@@ -14,7 +18,7 @@ void SelectQueryFromComponent::handleAction(const QString &action, QueryComponen
 {
     if(action == NEW_TABLE)
     {
-        SelectQuery* sq = dynamic_cast<SelectQuery*>(m_parent);
+        SelectQuery* sq = dynamic_cast<SelectQuery*>(getParent());
         if(sq)
         {
             sq->newFromTableComponent();
@@ -22,7 +26,7 @@ void SelectQueryFromComponent::handleAction(const QString &action, QueryComponen
     }
     if(action == NEW_SUBQUERY)
     {
-        SelectQuery* sq = dynamic_cast<SelectQuery*>(m_parent);
+        SelectQuery* sq = dynamic_cast<SelectQuery*>(getParent());
         if(sq)
         {
             sq->newFromSelectQueryComponent();
@@ -30,7 +34,7 @@ void SelectQueryFromComponent::handleAction(const QString &action, QueryComponen
     }
     if(action == DUPLICATE)
     {
-        SelectQuery* sq = dynamic_cast<SelectQuery*>(m_parent);
+        SelectQuery* sq = dynamic_cast<SelectQuery*>(getParent());
         if(sq)
         {
             sq->duplicateFromsChild(referringObject);
@@ -60,9 +64,9 @@ QSet<OptionsType> SelectQueryFromComponent::provideOptions()
 
 void SelectQueryFromComponent::onClose()
 {
-    if(m_parent)
+    if(hasParent())
     {
-        SelectQuery* sq = dynamic_cast<SelectQuery*>(m_parent);
+        SelectQuery* sq = dynamic_cast<SelectQuery*>(getParent());
         if(sq)
         {
             sq->removeFrom();
@@ -72,9 +76,9 @@ void SelectQueryFromComponent::onClose()
 
 bool SelectQueryFromComponent::allowCloseButton()
 {
-    if(m_parent)
+    if(hasParent())
     {
-        SelectQuery* sq = dynamic_cast<SelectQuery*>(m_parent);
+        SelectQuery* sq = dynamic_cast<SelectQuery*>(getParent());
         if(sq)
         {
             return ! sq->hasWhere() && !sq->hasGroupBy();
@@ -85,13 +89,19 @@ bool SelectQueryFromComponent::allowCloseButton()
 
 QueryComponent* SelectQueryFromComponent::duplicate()
 {
-    SelectQueryFromComponent* newc = new SelectQueryFromComponent(m_parent, m_level, version());
+    SelectQueryFromComponent* newc =
+            new SelectQueryFromComponent(getQuery(), getParent(),
+                                         getLevel(), version());
+
     return newc;
 }
 
 CloneableElement* SelectQueryFromComponent::clone(Version *sourceVersion, Version *targetVersion)
 {
-    SelectQueryFromComponent* newc = new SelectQueryFromComponent(m_parent, m_level, targetVersion);
+    SelectQueryFromComponent* newc =
+            new SelectQueryFromComponent(getQuery(), getParent(),
+                                         getLevel(), targetVersion);
+
     newc->setSourceUid(getObjectUid());
     cloneTheChildren(sourceVersion, targetVersion, newc);
     return newc;
@@ -99,13 +109,14 @@ CloneableElement* SelectQueryFromComponent::clone(Version *sourceVersion, Versio
 
 QVector<const Table*> SelectQueryFromComponent::getTables() const
 {
-    QVector<const Table*>  result;
-    for(int i=0; i<m_children.size(); i++)
+    QVector<const Table*> result;
+    const QList<QueryComponent*>& children = getChildren();
+
+    for(int i=0; i<children.size(); i++)
     {
-        TableQueryComponent* tc = dynamic_cast<TableQueryComponent*>(m_children.at(i));
-        if(tc)
+        if(children[i]->is<TableQueryComponent>())
         {
-            result.push_back(tc->getTable());
+            result.push_back(children[i]->as<TableQueryComponent>()->getTable());
         }
     }
     return result;
@@ -113,14 +124,16 @@ QVector<const Table*> SelectQueryFromComponent::getTables() const
 
 QVector<const TableInstance*> SelectQueryFromComponent::getTableInstances() const
 {
-    QVector<const TableInstance*>  result;
-    for(int i=0; i<m_children.size(); i++)
+    QVector<const TableInstance*> result;
+    const QList<QueryComponent*>& children = getChildren();
+
+    for(int i=0; i<children.size(); i++)
     {
-        TableQueryComponent* tc = dynamic_cast<TableQueryComponent*>(m_children.at(i));
-        if(tc)
+        if(children[i]->is<TableQueryComponent>())
         {
-            result.push_back(tc->getTableInstance());
+            result.push_back(children[i]->as<TableQueryComponent>()->getTableInstance());
         }
+
     }
     return result;
 }
@@ -128,21 +141,26 @@ QVector<const TableInstance*> SelectQueryFromComponent::getTableInstances() cons
 QString SelectQueryFromComponent::get() const
 {
     QString result = "FROM";
-    if(m_children.size())
+    if(hasChildren())
     {
-        result += "\n";
+        result += strNewline;
     }
 
-    for(int i=0; i<m_children.size(); i++)
+    const QList<QueryComponent*>& children = getChildren();
+
+    for(int i=0; i<children.size(); i++)
     {
         result += getSpacesForLevel();
-        result += m_children.at(i)->get();
-        if(i<m_children.size() - 1)
+        result += children[i]->get();
+        if(i<children.size() - 1)
         {
-            result += ",\n";
+            result += strComma + strNewline;
         }
     }
-    if(m_children.size()) result += " ";
+    if(hasChildren())
+    {
+        result += " ";
+    }
     return result;
 }
 

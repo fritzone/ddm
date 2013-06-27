@@ -17,8 +17,8 @@ public:
     static TableQueryComponent* provideFirstTableIfAny(QueryComponent* parent, int level);
 
 public:
-    TableQueryComponent(Table*, QueryComponent*, int, Version *v);
-    TableQueryComponent(TableInstance* tinst, QueryComponent* p, int level, Version *v);
+    TableQueryComponent(Query *q, Table*, QueryComponent*, int, Version *v);
+    TableQueryComponent(Query *q, TableInstance* tinst, QueryComponent* p, int level, Version *v);
 
     virtual QString get() const;
     virtual QString getClass() const {return "TableQueryComponent";}

@@ -32,3 +32,18 @@ void QueryComponent::cloneTheChildren(Version* sourceVersion, Version* targetVer
         targetObject->addChild(dynamic_cast<QueryComponent*>(m_children.at(i)->clone(sourceVersion, targetVersion)));
     }
 }
+
+QString QueryComponent::getSpacesForLevel() const
+{
+    QString r = "";
+    for(int i=0; i<=m_level; i++)
+    {
+        r += " ";
+    }
+    return r;
+}
+
+Query* QueryComponent::getQuery() const
+{
+    return m_query;
+}

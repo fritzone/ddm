@@ -74,9 +74,6 @@ public:
         m_join = j;
     }
 
-    void setQueryGlobalAlias(const SelectQueryAsComponent* as, const TableQueryComponent* tab);
-    void deleteQueryGlobalAlias(const TableQueryComponent* tab);
-    QString applyAlias(const QString& t);
     void tableRemoved(const QString& t);
 
 private:
@@ -89,7 +86,6 @@ private:
     QVector<const ColumnOfTabWithTabInstance*> m_columnsToShow;
     QStringList m_orderByElements;
     const SelectQueryJoinComponent* m_join;
-    QMap<const TableQueryComponent*, const SelectQueryAsComponent*> m_queryAliases;
 };
 
 #endif // QUERYGRAPHICSHELPER_H

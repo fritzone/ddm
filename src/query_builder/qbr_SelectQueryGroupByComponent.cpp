@@ -3,8 +3,8 @@
 #include "strings.h"
 #include "uids.h"
 
-SelectQueryGroupByComponent::SelectQueryGroupByComponent(QueryComponent* p, int l, Version *v) :
-    QueryComponent(p, l, v)
+SelectQueryGroupByComponent::SelectQueryGroupByComponent(Query* q, QueryComponent* p, int l, Version *v) :
+    QueryComponent(q, p, l, v)
 {
 }
 
@@ -13,10 +13,9 @@ void SelectQueryGroupByComponent::handleAction(const QString &action, QueryCompo
 {
     if(action == NEW_COLUMN)
     {
-        SelectQuery* sq = dynamic_cast<SelectQuery*>(m_parent);
-        if(sq)
+        if(getParent()->is<SelectQuery>())
         {
-            sq->newGroupByExpression();
+            getParent()->as<SelectQuery>()->newGroupByExpression();
         }
     }
 }
@@ -30,13 +29,13 @@ QSet<OptionsType> SelectQueryGroupByComponent::provideOptions()
 
 QueryComponent* SelectQueryGroupByComponent::duplicate()
 {
-    SelectQueryGroupByComponent *newc = new SelectQueryGroupByComponent(m_parent, m_level, version());
+    SelectQueryGroupByComponent *newc = new SelectQueryGroupByComponent(getQuery(), getParent(), getLevel(), version());
     return newc;
 }
 
 CloneableElement* SelectQueryGroupByComponent::clone(Version *sourceVersion, Version *targetVersion)
 {
-    SelectQueryGroupByComponent *newc = new SelectQueryGroupByComponent(m_parent, m_level, targetVersion);
+    SelectQueryGroupByComponent *newc = new SelectQueryGroupByComponent(getQuery(), getParent(), getLevel(), targetVersion);
     newc->setSourceUid(getObjectUid());
     cloneTheChildren(sourceVersion, targetVersion, newc);
     return newc;
@@ -45,13 +44,22 @@ CloneableElement* SelectQueryGroupByComponent::clone(Version *sourceVersion, Ver
 QString SelectQueryGroupByComponent::get() const
 {
     QString result = "GROUP BY";
-    if(m_children.size()) result += "\n";
-    for(int i=0; i<m_children.size(); i++)
+    if(hasChildren())
+    {
+        result += strNewline;
+    }
+
+    const QList<QueryComponent*>& children = getChildren();
+    for(int i=0; i<children.size(); i++)
     {
         result += getSpacesForLevel();
-        result+= m_children.at(i)->get();
-        if(i<m_children.size() - 1) result += ",";
+        result+= children[i]->get();
+        if(i < children.size() - 1)
+        {
+            result += strSpace;
+        }
     }
+
     return result;
 }
 

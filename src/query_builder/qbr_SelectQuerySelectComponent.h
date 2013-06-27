@@ -9,7 +9,7 @@ struct ColumnOfTabWithTabInstance;
 class SelectQuerySelectComponent : public QueryComponent
 {
 public:
-    SelectQuerySelectComponent(QueryComponent*, int, Version *v);
+    SelectQuerySelectComponent(Query *q, QueryComponent*, int, Version *v);
     virtual QString get() const;
     virtual QString getClass() const {return "SelectQuerySelectComponent";}
     virtual void handleAction(const QString& action, QueryComponent* referringObject);
@@ -24,6 +24,12 @@ public:
     bool hasGroupByFunctions();
     bool hasAtLeastOneColumnSelected();
     QVector<const ColumnOfTabWithTabInstance *> getSelectedColumns();
+
+    /**
+     * Returns a list with the following format: "$TabName.ColName"
+     * Then "~AsText" if there is a component with AS
+     * Or if neither of these, then  "#number" (such as order by an expression)
+     */
     QStringList getOrderByElements();
 
     /**

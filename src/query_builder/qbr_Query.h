@@ -10,12 +10,18 @@ class QueryGraphicsHelper;
 class Table;
 class SqlSource;
 class TableInstance;
+class SelectQueryAsComponent;
+class TableQueryComponent;
 
 class Query : public QueryComponent
 {
 public:
 
-    Query(QueryGraphicsHelper* components, int level, SqlSource* se, Version *v) : QueryComponent(this, level, v), m_helper(components), m_graphicsItem(0), m_sqlSource(se) {}
+    Query(QueryGraphicsHelper* components, int level, SqlSource* se, Version *v) :
+        QueryComponent(this, this, level, v),
+        m_helper(components), m_graphicsItem(0), m_sqlSource(se)
+    {}
+
     virtual ~Query() {}
 
     QueryGraphicsItem* getGraphicsItem()
@@ -51,10 +57,18 @@ public:
      */
     virtual void tableRemovedFromQuery(const QString& tabName) = 0;
 
+    void setQueryGlobalAlias(const SelectQueryAsComponent* as, const TableQueryComponent* tab);
+    void deleteQueryGlobalAlias(const TableQueryComponent *tab);
+    QString applyAlias(const QString &t);
+
+
 protected:
     QueryGraphicsHelper* m_helper;
     QueryGraphicsItem* m_graphicsItem;
     SqlSource* m_sqlSource;
+
+    QMap<const TableQueryComponent*, const SelectQueryAsComponent*> m_queryAliases;
+
 };
 
 #endif // QUERY_H

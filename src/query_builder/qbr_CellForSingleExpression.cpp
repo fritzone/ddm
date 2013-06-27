@@ -25,7 +25,7 @@ QGraphicsItemGroup* CellForSingleExpression::render(int &x, int &y, int &w, int 
 
     QGraphicsItemGroup* grp = new QGraphicsItemGroup();
 
-    if(m_level != -2)
+    if(m_level != QueryComponent::PARAMETER_LEVEL)
     {
         QRectF rect(x, y , 10, CELL_SIZE*2+4);
         m_frame = new QGraphicsRectItem(rect, grp);
@@ -105,7 +105,11 @@ QGraphicsItemGroup* CellForSingleExpression::render(int &x, int &y, int &w, int 
     }
 
     w = sw;
-    if(m_level != -2) y += m_frame->boundingRect().height() + 4;
+    if(m_level != QueryComponent::PARAMETER_LEVEL)
+    {
+        y += m_frame->boundingRect().height() + 4;
+    }
+
     m_saveW = w;
     w = saveW>0?saveW:w;
 
@@ -114,7 +118,7 @@ QGraphicsItemGroup* CellForSingleExpression::render(int &x, int &y, int &w, int 
         int lmw = sw;
         x += CHILDREN_ALIGNMENT;
         int oldy = y-2;
-        int neww = lmw - (m_as->getLevel() + 1)* 20;
+        int neww = lmw - (m_as->getLevel() + 1) * 20;
         grp->addToGroup(m_as->render(x, y, neww, h));
         int halfway = (oldy + y) / 2 - 5;
         if(w<neww-20) {w = neww - 20; lmw = neww - 20;}

@@ -29,8 +29,12 @@ SelectQuery::SelectQuery(QueryGraphicsHelper* helper, int level, SqlSource* se, 
     m_as(0),
     m_orderBy(0)
 {
-    m_select = new SelectQuerySelectComponent(this, level, v);
-    if(m_level > 0) m_as = new SelectQueryAsComponent(this, level, v);
+    m_select = new SelectQuerySelectComponent(this, this, level, v);
+
+    if(getLevel() > 0)
+    {
+        m_as = new SelectQueryAsComponent(this, this, level, v);
+    }
 }
 
 SelectQuery::SelectQuery(QueryGraphicsHelper* helper, SqlSource* se, Version *v) :
@@ -47,20 +51,51 @@ SelectQuery::SelectQuery(QueryGraphicsHelper* helper, SqlSource* se, Version *v)
 
 QueryGraphicsItem* SelectQuery::createGraphicsItem(QueryGraphicsHelper*, QueryGraphicsItem*)
 {
-    SelectQueryGraphicsItem* gi = new SelectQueryGraphicsItem(m_helper, m_level, 0, this);
-    if(m_from) gi->createFromCell(m_from);
-    if(m_select) gi->createSelectCell(m_select);
-    if(m_where) gi->createWhereCell(m_where);
-    if(m_groupby) gi->createGroupByCell(m_groupby);
-    if(m_having) gi->createHavingCell(m_having);
-    if(m_as) gi->createAsCell(m_as);
-    if(m_orderBy) gi->createOrderByCell(m_orderBy);
+    SelectQueryGraphicsItem* gi = new SelectQueryGraphicsItem(
+                m_helper, getLevel(), 0, this);
+
+    if(m_from)
+    {
+        gi->createFromCell(m_from);
+    }
 
     if(m_select)
     {
-        for(int i=0; i<m_select->getChildren().size(); i++)
+        gi->createSelectCell(m_select);
+    }
+
+    if(m_where)
+    {
+        gi->createWhereCell(m_where);
+    }
+
+    if(m_groupby)
+    {
+        gi->createGroupByCell(m_groupby);
+    }
+
+    if(m_having)
+    {
+        gi->createHavingCell(m_having);
+    }
+
+    if(m_as)
+    {
+        gi->createAsCell(m_as);
+    }
+
+    if(m_orderBy)
+    {
+        gi->createOrderByCell(m_orderBy);
+    }
+
+    if(m_select)
+    {
+        const QList<QueryComponent*>& selectsChildren = getChildren();
+        for(int i=0; i<selectsChildren.size(); i++)
         {
-            QueryGraphicsItem* gritmI = m_select->getChildren().at(i)->createGraphicsItem(m_helper, (QueryGraphicsItem*)gi->getSelect());
+            QueryGraphicsItem* gritmI = selectsChildren[i]->createGraphicsItem(m_helper,
+                                                                               (QueryGraphicsItem*)gi->getSelect());
             gi->addSelectGraphicsItem(gritmI);
         }
     }
@@ -125,7 +160,7 @@ void SelectQuery::newSelectExpression()
 {
     if(m_select)
     {
-        SingleExpressionQueryComponent* c = new SingleExpressionQueryComponent(m_select, m_level, version());
+        SingleExpressionQueryComponent* c = new SingleExpressionQueryComponent(getQuery(), m_select, getLevel(), version());
         m_select->addChild(c);
         m_helper->triggerReRender();
     }
@@ -135,7 +170,7 @@ void SelectQuery::newGroupByExpression()
 {
     if(m_groupby)
     {
-        SingleExpressionQueryComponent* c = new SingleExpressionQueryComponent(m_groupby, m_level, version());
+        SingleExpressionQueryComponent* c = new SingleExpressionQueryComponent(getQuery(), m_groupby, getLevel(), version());
         m_groupby->addChild(c);
         m_helper->triggerReRender();
     }
@@ -145,7 +180,7 @@ void SelectQuery::newOrderByExpression()
 {
     if(m_orderBy)
     {
-        SingleExpressionQueryComponent* c = new SingleExpressionQueryComponent(m_orderBy, m_level, version());
+        SingleExpressionQueryComponent* c = new SingleExpressionQueryComponent(getQuery(), m_orderBy, getLevel(), version());
         m_orderBy->addChild(c);
         m_helper->triggerReRender();
     }
@@ -157,18 +192,18 @@ void SelectQuery::newWhereExpression(SelectQuery::NewWhereExpressionType t)
     {
         if(t == PLAIN_NEW_WHERE_EXPRESSION)
         {
-            SingleExpressionQueryComponent* c = new SingleExpressionQueryComponent(m_where, m_level, version());
+            SingleExpressionQueryComponent* c = new SingleExpressionQueryComponent(getQuery(), m_where, getLevel(), version());
             m_where->addChild(c);
         }
         if(t == OR_NEW_WHERE_EXPRESSION)
         {
-            SingleExpressionQueryComponent* orc = new SingleExpressionQueryComponent(m_where, m_level, version());
+            SingleExpressionQueryComponent* orc = new SingleExpressionQueryComponent(getQuery(), m_where, getLevel(), version());
             dynamic_cast<SingleExpressionQueryComponent*>(orc)->setForcedType(SingleExpressionQueryComponent::FORCED_OR);
             m_where->addChild(orc);
         }
         if(t == AND_NEW_WHERE_EXPRESSION)
         {
-            SingleExpressionQueryComponent* andc = new SingleExpressionQueryComponent(m_where, m_level, version());
+            SingleExpressionQueryComponent* andc = new SingleExpressionQueryComponent(getQuery(), m_where, getLevel(), version());
             dynamic_cast<SingleExpressionQueryComponent*>(andc)->setForcedType(SingleExpressionQueryComponent::FORCED_AND);
             m_where->addChild(andc);
         }
@@ -183,18 +218,18 @@ void SelectQuery::newHavingExpression(SelectQuery::NewWhereExpressionType t)
     {
         if(t == PLAIN_NEW_WHERE_EXPRESSION)
         {
-            SingleExpressionQueryComponent* c = new SingleExpressionQueryComponent(m_having, m_level, version());
+            SingleExpressionQueryComponent* c = new SingleExpressionQueryComponent(getQuery(), m_having, getLevel(), version());
             m_having->addChild(c);
         }
         if(t == OR_NEW_WHERE_EXPRESSION)
         {
-            SingleExpressionQueryComponent* orc = new SingleExpressionQueryComponent(m_having, m_level, version());
+            SingleExpressionQueryComponent* orc = new SingleExpressionQueryComponent(getQuery(), m_having, getLevel(), version());
             dynamic_cast<SingleExpressionQueryComponent*>(orc)->setForcedType(SingleExpressionQueryComponent::FORCED_OR);
             m_having->addChild(orc);
         }
         if(t == AND_NEW_WHERE_EXPRESSION)
         {
-            SingleExpressionQueryComponent* andc = new SingleExpressionQueryComponent(m_having, m_level, version());
+            SingleExpressionQueryComponent* andc = new SingleExpressionQueryComponent(getQuery(), m_having, getLevel(), version());
             dynamic_cast<SingleExpressionQueryComponent*>(andc)->setForcedType(SingleExpressionQueryComponent::FORCED_AND);
             m_having->addChild(andc);
         }
@@ -207,7 +242,7 @@ void SelectQuery::newFromTableComponent()
 {
     if(m_from)
     {
-        TableQueryComponent* tccp = TableQueryComponent::provideFirstTableIfAny(m_from, m_level);
+        TableQueryComponent* tccp = TableQueryComponent::provideFirstTableIfAny(m_from, getLevel());
         if(!tccp) return;
         m_from->addChild(tccp);
         m_helper->triggerReRender();
@@ -219,7 +254,7 @@ void SelectQuery::duplicateFromsChild(QueryComponent *c)
     if(m_from)
     {
         QueryComponent* copy = c->duplicate();
-        m_from->getChildren().insert(m_from->getChildren().indexOf(c), copy);
+        m_from->insertChild(m_from->getChildren().indexOf(c), copy);
         m_helper->triggerReRender();
     }
 }
@@ -228,7 +263,7 @@ void SelectQuery::newFromSelectQueryComponent()
 {
     if(m_from)
     {
-        SelectQuery* nq = new SelectQuery(m_helper, m_level + 1, m_sqlSource, version());
+        SelectQuery* nq = new SelectQuery(m_helper, nextLevel(), m_sqlSource, version());
         m_from->addChild(nq);
         nq->setParent(m_from);
         m_helper->triggerReRender();
@@ -242,7 +277,7 @@ void SelectQuery::handleAction(const QString &action, QueryComponent* /*referrin
     {
         if(!m_from)
         {
-            m_from = new SelectQueryFromComponent(this, m_level, version());
+            m_from = new SelectQueryFromComponent(getQuery(), this, getLevel(), version());
             m_helper->triggerReRender();
         }
     }
@@ -250,7 +285,7 @@ void SelectQuery::handleAction(const QString &action, QueryComponent* /*referrin
     {
         if(!m_where)
         {
-            m_where = new SelectQueryWhereComponent(this, m_level, SelectQueryWhereComponent::WHERETYPE_WHERE, version());
+            m_where = new SelectQueryWhereComponent(getQuery(), this, getLevel(), SelectQueryWhereComponent::WHERETYPE_WHERE, version());
             m_helper->triggerReRender();
         }
     }
@@ -258,7 +293,7 @@ void SelectQuery::handleAction(const QString &action, QueryComponent* /*referrin
     {
         if(!m_groupby)
         {
-            m_groupby = new SelectQueryGroupByComponent(this, m_level, version());
+            m_groupby = new SelectQueryGroupByComponent(getQuery(), this, getLevel(), version());
             m_helper->triggerReRender();
         }
     }
@@ -266,7 +301,7 @@ void SelectQuery::handleAction(const QString &action, QueryComponent* /*referrin
     {
         if(!m_having)
         {
-            m_having = new SelectQueryWhereComponent(this, m_level, SelectQueryWhereComponent::WHERETYPE_HAVING, version());
+            m_having = new SelectQueryWhereComponent(getQuery(), this, getLevel(), SelectQueryWhereComponent::WHERETYPE_HAVING, version());
             m_helper->triggerReRender();
         }
     }
@@ -274,15 +309,15 @@ void SelectQuery::handleAction(const QString &action, QueryComponent* /*referrin
     {
         if(!m_orderBy)
         {
-            m_orderBy = new SelectQueryOrderByComponent(this, m_level, version());
+            m_orderBy = new SelectQueryOrderByComponent(getQuery(), this, getLevel(), version());
             m_helper->triggerReRender();
         }
     }
-    if(action==DUPLICATE)
+    if(action == DUPLICATE)
     {
-        if(m_parent)
+        if(getParent())
         {
-            m_parent->handleAction(DUPLICATE, this);
+            getParent()->handleAction(DUPLICATE, this);
         }
     }
 }
@@ -312,9 +347,9 @@ QSet<OptionsType> SelectQuery::provideOptions()
 
 void SelectQuery::onClose()
 {
-    if(m_parent)
+    if(getParent())
     {
-        m_parent->removeChild(this);
+        getParent()->removeChild(this);
         m_helper->triggerReRender();
     }
 }
@@ -346,7 +381,7 @@ bool SelectQuery::hasGroupBy()
 
 QueryComponent* SelectQuery::duplicate()
 {
-    SelectQuery* newQuery = new SelectQuery(m_helper, m_level, m_sqlSource, version());
+    SelectQuery* newQuery = new SelectQuery(m_helper, getLevel(), m_sqlSource, version());
     newQuery->setParent(getParent());
     newQuery->m_select = m_select?dynamic_cast<SelectQuerySelectComponent*> (m_select->duplicate()):0;
     newQuery->m_from = m_from?dynamic_cast<SelectQueryFromComponent*>(m_from->duplicate()):0;
@@ -360,7 +395,7 @@ QueryComponent* SelectQuery::duplicate()
 
 CloneableElement* SelectQuery::clone(Version *sourceVersion, Version *targetVersion)
 {
-    SelectQuery* newQuery = new SelectQuery(m_helper, m_level, m_sqlSource, targetVersion);
+    SelectQuery* newQuery = new SelectQuery(m_helper, getLevel(), m_sqlSource, targetVersion);
     // TODO: set the parent from the new version: newQuery->setParent(getParent()); when there will be support for multiple queries.
     newQuery->m_select = m_select?dynamic_cast<SelectQuerySelectComponent*> (m_select->clone(sourceVersion, targetVersion)):0;
     newQuery->m_from = m_from?dynamic_cast<SelectQueryFromComponent*>(m_from->clone(sourceVersion, targetVersion)):0;
@@ -381,12 +416,12 @@ QString SelectQuery::get() const
     if(m_select)
     {
         result += m_select->get();
-        result += "\n";
+        result += strNewline;
     }
     if(m_from)
     {
         result += m_from->get();
-        result += "\n";
+        result += strNewline;
     }
     if(m_where)
     {
@@ -395,22 +430,22 @@ QString SelectQuery::get() const
     if(m_groupby)
     {
         result += m_groupby->get();
-        result += "\n";
+        result += strNewline;
     }
     if(m_having)
     {
         result += m_having->get();
-        result += "\n";
+        result += strNewline;
     }
     if(m_orderBy)
     {
         result += m_orderBy->get();
-        result += "\n";
+        result += strNewline;
     }
     if(m_as)
     {
         result += m_as->get();
-        result += "\n";
+        result += strNewline;
     }
 
     return result;

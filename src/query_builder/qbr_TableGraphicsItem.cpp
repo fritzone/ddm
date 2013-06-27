@@ -36,9 +36,7 @@ QGraphicsItemGroup* TableGraphicsItem::render(int &x, int &y, int& w, int &h)
         new QGraphicsLineItem(x +5+2-CHILDREN_ALIGNMENT +5 , halfway+5, x + 1, halfway+5, this);                    // to right
 
         // this will be the small options box before the AS
-        QSet<OptionsType> t;
-        QSet<OptionsType> more = m_as->getOwner()->provideOptions();
-        t.unite(more);
+        QSet<OptionsType> t = m_as->getOwner()->provideOptions();
 
         CellQuerySmallOptionsBox* smb = new CellQuerySmallOptionsBoxDiamond(t, m_helper, m_as->getLevel(), m_parent, m_as->getOwner());
         int tx = x-15 + 2; int ty = halfway; int tw = w; int th = h;
