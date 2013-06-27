@@ -84,6 +84,10 @@ static const QString strGEOp = ">=";
 static const QString strNotOp = "!";
 static const QString strBacktick = "`";
 static const QString strEmpty = "";
+static const QString strDollar = "$";
+static const QString strDot = ".";
+static const QString strTilde = "~";
+static const QString strHash = "#";
 
 static const QString strOpenParantheses = "(";
 static const QString strCloseParantheses = ")";

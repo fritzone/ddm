@@ -1,13 +1,18 @@
 #include "qbr_DatabaseFunctionInstantiationComponent.h"
 
-DatabaseFunctionInstantiationComponent::DatabaseFunctionInstantiationComponent(QueryComponent* parent, const DatabaseBuiltinFunction &f, bool deserialized, Version* v) :
+DatabaseFunctionInstantiationComponent::DatabaseFunctionInstantiationComponent(Query* q,
+                                                                               QueryComponent* parent,
+                                                                               const DatabaseBuiltinFunction &f,
+                                                                               bool deserialized, Version* v) :
     m_parent(parent), m_func(f)
 {
     if(!deserialized)
     {
         for(int i=0; i<f.getParameterCount(); i++)
         {
-            m_parameters.append(new SingleExpressionQueryComponent(m_parent, -2, v));
+            m_parameters.append(new SingleExpressionQueryComponent(q,
+                                           m_parent,
+                                           QueryComponent::PARAMETER_LEVEL, v));
         }
     }
 }

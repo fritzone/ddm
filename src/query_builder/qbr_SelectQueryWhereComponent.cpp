@@ -6,7 +6,10 @@
 
 #include "strings.h"
 
-SelectQueryWhereComponent::SelectQueryWhereComponent(QueryComponent* p, int l, WhereType w, Version* v) : QueryComponent(p, l, v),
+SelectQueryWhereComponent::SelectQueryWhereComponent(Query* q, QueryComponent* p,
+                                                     int l, WhereType w,
+                                                     Version* v) :
+    QueryComponent(q, p, l, v),
     m_whereType(w)
 {
 }
@@ -15,7 +18,7 @@ void SelectQueryWhereComponent::handleAction(const QString &action, QueryCompone
 {
     if(action == ADD_WHERE_EXPRESSION)
     {
-        SelectQuery* sq = dynamic_cast<SelectQuery*>(m_parent);
+        SelectQuery* sq = dynamic_cast<SelectQuery*>(getParent());
         if(sq)
         {
             if(m_whereType == WHERETYPE_HAVING)
@@ -31,7 +34,7 @@ void SelectQueryWhereComponent::handleAction(const QString &action, QueryCompone
 
     if(action == ADD_WHERE_EXPRESSION_OR)
     {
-        SelectQuery* sq = dynamic_cast<SelectQuery*>(m_parent);
+        SelectQuery* sq = dynamic_cast<SelectQuery*>(getParent());
         if(sq)
         {
             if(m_whereType == WHERETYPE_HAVING)
@@ -47,7 +50,7 @@ void SelectQueryWhereComponent::handleAction(const QString &action, QueryCompone
 
     if(action == ADD_WHERE_EXPRESSION_AND)
     {
-        SelectQuery* sq = dynamic_cast<SelectQuery*>(m_parent);
+        SelectQuery* sq = dynamic_cast<SelectQuery*>(getParent());
         if(sq)
         {
             if(m_whereType == WHERETYPE_HAVING)
@@ -73,11 +76,14 @@ QSet<OptionsType> SelectQueryWhereComponent::provideOptions()
 
 QueryComponent* SelectQueryWhereComponent::duplicate()
 {
-    SelectQueryWhereComponent* newc = new SelectQueryWhereComponent(m_parent, m_level, m_whereType, version());
+    SelectQueryWhereComponent* newc =
+            new SelectQueryWhereComponent(getQuery(), getParent(), getLevel(),
+                                          m_whereType, version());
     return newc;
 }
 
-CloneableElement* SelectQueryWhereComponent::clone(Version* sourceVersion, Version* targetVersion)
+CloneableElement* SelectQueryWhereComponent::clone(Version* sourceVersion,
+                                                   Version* targetVersion)
 {
     SelectQueryWhereComponent* nc = dynamic_cast<SelectQueryWhereComponent*>(duplicate());
     nc->setSourceUid(getObjectUid());
@@ -102,15 +108,21 @@ QString SelectQueryWhereComponent::get() const
         break;
     }
 
-    if(m_children.size()) result += "\n";
-    for(int i=0; i<m_children.size(); i++)
+    if(hasChildren())
+    {
+        result += strNewline;
+    }
+
+    const QList<QueryComponent*>& children = getChildren();
+
+    for(int i=0; i<children.size(); i++)
     {
         result += getSpacesForLevel();
-        result+= m_children.at(i)->get();
-        SingleExpressionQueryComponent* cI = dynamic_cast<SingleExpressionQueryComponent*>(m_children.at(i));
+        result+= children.at(i)->get();
+        SingleExpressionQueryComponent* cI = dynamic_cast<SingleExpressionQueryComponent*>(children.at(i));
         if(cI)
         {
-            if((i == 0 || i == m_children.size()-1) && cI->hasForcedType())
+            if((i == 0 || i == children.size()-1) && cI->hasForcedType())
             {
                 result += QString(" (") + QString("?") + QString("?") + QString(")"); // first/last should not be AND or OR
             }
@@ -119,7 +131,7 @@ QString SelectQueryWhereComponent::get() const
                 // if this is NOT a forced type before this there should be
                 if(!cI->hasForcedType())
                 {
-                    if(! (dynamic_cast<SingleExpressionQueryComponent*>(m_children.at(i-1))->hasForcedType()))
+                    if(! (dynamic_cast<SingleExpressionQueryComponent*>(children.at(i-1))->hasForcedType()))
                     {
                         result += QString(" (") + QString("?") + QString("?") + QString(")");
                     }

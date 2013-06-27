@@ -4,7 +4,10 @@
 #include "uids.h"
 #include "strings.h"
 
-SelectQueryJoinComponent::SelectQueryJoinComponent(QueryComponent* p, int l, Version *v):QueryComponent(p,l,v),  m_helper(0), m_joinExpressions()
+SelectQueryJoinComponent::SelectQueryJoinComponent(Query* q, QueryComponent* p,
+                                                   int l, Version *v) :
+    QueryComponent(q, p, l, v),
+    m_helper(0), m_joinExpressions()
 {
 }
 
@@ -12,7 +15,7 @@ void SelectQueryJoinComponent::handleAction(const QString& action, QueryComponen
 {
     if(action == NEW_TABLE)
     {
-        TableQueryComponent* tccp = TableQueryComponent::provideFirstTableIfAny(this, m_level);
+        TableQueryComponent* tccp = TableQueryComponent::provideFirstTableIfAny(this, getLevel());
         if(!tccp) return;
         addChild(tccp);
         m_helper->triggerReRender();
@@ -20,14 +23,14 @@ void SelectQueryJoinComponent::handleAction(const QString& action, QueryComponen
     }
     if(action == ADD_WHERE_EXPRESSION)  // we get here when the user clicked the New join expr...
     {
-        SingleExpressionQueryComponent* c = new SingleExpressionQueryComponent(this, m_level, version());
+        SingleExpressionQueryComponent* c = new SingleExpressionQueryComponent(getQuery(), this, getLevel(), version());
         m_joinExpressions.append(c);
         m_helper->triggerReRender();
         return;
     }
     if(action == ADD_WHERE_EXPRESSION_AND)
     {
-        SingleExpressionQueryComponent* c = new SingleExpressionQueryComponent(this, m_level, version());
+        SingleExpressionQueryComponent* c = new SingleExpressionQueryComponent(getQuery(), this, getLevel(), version());
         dynamic_cast<SingleExpressionQueryComponent*>(c)->setForcedType(SingleExpressionQueryComponent::FORCED_AND);
         m_joinExpressions.append(c);
         m_helper->triggerReRender();
@@ -35,7 +38,7 @@ void SelectQueryJoinComponent::handleAction(const QString& action, QueryComponen
     }
     if(action == ADD_WHERE_EXPRESSION_OR)
     {
-        SingleExpressionQueryComponent* c = new SingleExpressionQueryComponent(this, m_level, version());
+        SingleExpressionQueryComponent* c = new SingleExpressionQueryComponent(getQuery(), this, getLevel(), version());
         dynamic_cast<SingleExpressionQueryComponent*>(c)->setForcedType(SingleExpressionQueryComponent::FORCED_OR);
         m_joinExpressions.append(c);
         m_helper->triggerReRender();
@@ -58,7 +61,7 @@ QSet<OptionsType> SelectQueryJoinComponent::provideOptions()
 
 void SelectQueryJoinComponent::onClose()
 {
-    TableQueryComponent* parent = dynamic_cast<TableQueryComponent*>(m_parent);
+    TableQueryComponent* parent = dynamic_cast<TableQueryComponent*>(getParent());
     if(parent)
     {
         parent->removeJoin(this);
@@ -68,7 +71,7 @@ void SelectQueryJoinComponent::onClose()
 
 QueryComponent* SelectQueryJoinComponent::duplicate()
 {
-    SelectQueryJoinComponent* newc = new SelectQueryJoinComponent(m_parent, m_level, version());
+    SelectQueryJoinComponent* newc = new SelectQueryJoinComponent(getQuery(), getParent(), getLevel(), version());
     for(int i=0; i<m_joinExpressions.size(); i++)
     {
         newc->m_joinExpressions.append(dynamic_cast<SingleExpressionQueryComponent*>(m_joinExpressions.at(i)->duplicate()));
@@ -78,7 +81,7 @@ QueryComponent* SelectQueryJoinComponent::duplicate()
 
 CloneableElement* SelectQueryJoinComponent::clone(Version *sourceVersion, Version *targetVersion)
 {
-    SelectQueryJoinComponent* newc = new SelectQueryJoinComponent(m_parent, m_level, targetVersion);
+    SelectQueryJoinComponent* newc = new SelectQueryJoinComponent(getQuery(), getParent(), getLevel(), targetVersion);
     for(int i=0; i<m_joinExpressions.size(); i++)
     {
         newc->m_joinExpressions.append(dynamic_cast<SingleExpressionQueryComponent*>(m_joinExpressions.at(i)->clone(sourceVersion, targetVersion)));
@@ -95,10 +98,13 @@ void SelectQueryJoinComponent::removeExpression(SingleExpressionQueryComponent *
 QString SelectQueryJoinComponent::get() const
 {
     QString result = getSpacesForLevel() + "JOIN";
-    for(int i=0; i<m_children.size(); i++)
+
+    const QList<QueryComponent*>& children = getChildren();
+
+    for(int i=0; i<children.size(); i++)
     {
         result += getSpacesForLevel();
-        result+= m_children.at(i)->get();
+        result+= children.at(i)->get();
     }
     result += "\n" + getSpacesForLevel() + " ON";
     for(int i=0; i<m_joinExpressions.size(); i++)
@@ -128,12 +134,13 @@ void SelectQueryJoinComponent::serialize(QDomDocument &doc, QDomElement &parent)
 QVector<const Table*> SelectQueryJoinComponent::getJoinedTables() const
 {
     QVector<const Table*> result;
-    for(int i=0; i<m_children.size(); i++)
+    const QList<QueryComponent*>& children = getChildren();
+
+    for(int i=0; i<children.size(); i++)
     {
-        TableQueryComponent* tc = dynamic_cast<TableQueryComponent*>(m_children.at(i));
-        if(tc)
+        if(children[i]->is<TableQueryComponent>())
         {
-            const Table* t = tc->getTable();
+            const Table* t = children[i]->as<TableQueryComponent>()->getTable();
             if(t)
             {
                 result.push_back(t);
@@ -146,12 +153,13 @@ QVector<const Table*> SelectQueryJoinComponent::getJoinedTables() const
 QVector<const TableInstance*> SelectQueryJoinComponent::getJoinedTableInstances() const
 {
     QVector<const TableInstance*> result;
-    for(int i=0; i<m_children.size(); i++)
+    const QList<QueryComponent*>& children = getChildren();
+
+    for(int i=0; i<children.size(); i++)
     {
-        TableQueryComponent* tc = dynamic_cast<TableQueryComponent*>(m_children.at(i));
-        if(tc)
+        if(children[i]->is<TableQueryComponent>())
         {
-            const TableInstance* ti = tc->getTableInstance();
+            const TableInstance* ti = children[i]->as<TableQueryComponent>()->getTableInstance();
             if(ti)
             {
                 result.push_back(ti);

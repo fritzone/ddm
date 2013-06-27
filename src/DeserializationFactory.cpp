@@ -427,7 +427,7 @@ void DeserializationFactory::createMajorVersion(MajorVersion *mv, Project *p, Da
     }
 }
 
-QueryComponent* DeserializationFactory::createComponent(QueryComponent* parent, Project* p, Version* v, const QDomDocument &doc, const QDomElement &componentNode)
+QueryComponent* DeserializationFactory::createComponent(Query* query, QueryComponent* parent, Project* p, Version* v, const QDomDocument &doc, const QDomElement &componentNode)
 {
     QueryComponent* c = 0;
 
@@ -435,52 +435,52 @@ QueryComponent* DeserializationFactory::createComponent(QueryComponent* parent, 
 
     if(strClass == "SelectQuerySelectComponent")    // god, this is soo lame ... TODO: Find a more appropriate way to implement this mechanism
     {
-        c = new SelectQuerySelectComponent(parent, componentNode.attribute("level").toInt(), v);
+        c = new SelectQuerySelectComponent(query, parent, componentNode.attribute("level").toInt(), v);
     }
 
     if(strClass == "SelectQueryFromComponent")
     {
-        c = new SelectQueryFromComponent(parent, componentNode.attribute("level").toInt(), v);
+        c = new SelectQueryFromComponent(query, parent, componentNode.attribute("level").toInt(), v);
     }
 
     if(strClass == "SelectQueryWhereComponent")
     {
-        c = new SelectQueryWhereComponent(parent, componentNode.attribute("level").toInt(),
+        c = new SelectQueryWhereComponent(query, parent, componentNode.attribute("level").toInt(),
                                           static_cast<SelectQueryWhereComponent::WhereType>(componentNode.attribute("Type").toInt()),
                                           v);
     }
 
     if(strClass == "SelectQueryHavingComponent")
     {
-        c = new SelectQueryWhereComponent(parent, componentNode.attribute("level").toInt(),
+        c = new SelectQueryWhereComponent(query, parent, componentNode.attribute("level").toInt(),
                                           static_cast<SelectQueryWhereComponent::WhereType>(componentNode.attribute("Type").toInt()),
                                           v);
     }
 
     if(strClass == "SelectQueryGroupByComponent")
     {
-        c = new SelectQueryGroupByComponent(parent, componentNode.attribute("level").toInt(), v);
+        c = new SelectQueryGroupByComponent(query, parent, componentNode.attribute("level").toInt(), v);
     }
 
     if(strClass == "SelectQueryOrderByComponent")
     {
-        c = new SelectQueryOrderByComponent(parent, componentNode.attribute("level").toInt(), v);
+        c = new SelectQueryOrderByComponent(query, parent, componentNode.attribute("level").toInt(), v);
     }
 
     if(strClass == "SelectQueryJoinComponent")
     {
-        c = new SelectQueryJoinComponent(parent, componentNode.attribute("level").toInt(), v);
+        c = new SelectQueryJoinComponent(query, parent, componentNode.attribute("level").toInt(), v);
     }
 
     if(strClass == "SingleExpressionQueryComponent")
     {
-         c = new SingleExpressionQueryComponent(parent, componentNode.attribute("level").toInt(), v);    // This is <Expression>
+         c = new SingleExpressionQueryComponent(query, parent, componentNode.attribute("level").toInt(), v);    // This is <Expression>
          dynamic_cast<SingleExpressionQueryComponent*>(c)->setForcedType((SingleExpressionQueryComponent::ForcedSingleExpressionQueryComponent)componentNode.attribute("forced").toInt(), true);
 
          if(componentNode.hasAttribute("alias"))
          {
              QString a = componentNode.attribute("alias");
-             SelectQueryAsComponent* sqas = new SelectQueryAsComponent(c, c->getLevel() + 1, v);
+             SelectQueryAsComponent* sqas = new SelectQueryAsComponent(query, c, c->nextLevel(), v);
              sqas->setAs(a);
              dynamic_cast<SingleExpressionQueryComponent*>(c)->setAs(sqas);
          }
@@ -521,12 +521,12 @@ QueryComponent* DeserializationFactory::createComponent(QueryComponent* parent, 
                  QDomElement function = element.firstChild().firstChild().toElement();  // <Function>
                  QString name = function.attribute("Name");
                  const DatabaseBuiltinFunction& f = p->getEngine()->getBuiltinFunction(name.mid(1));
-                 DatabaseFunctionInstantiationComponent* fic = new DatabaseFunctionInstantiationComponent(c, f, true, v);
+                 DatabaseFunctionInstantiationComponent* fic = new DatabaseFunctionInstantiationComponent(query, c, f, true, v);
                  QDomElement parameters = function.firstChild().toElement();        // <Parameters>
                  for(int j=0; j<parameters.childNodes().count(); j++)
                  {
                      QDomElement parameterElement = parameters.childNodes().at(j).toElement();
-                     QueryComponent* parameter = createComponent(c, p, v, doc, parameterElement.firstChild().toElement());
+                     QueryComponent* parameter = createComponent(query, c, p, v, doc, parameterElement.firstChild().toElement());
                      fic->addParameter(dynamic_cast<SingleExpressionQueryComponent*>(parameter));
                  }
 
@@ -548,20 +548,22 @@ QueryComponent* DeserializationFactory::createComponent(QueryComponent* parent, 
         {
             Table* table = v->getTable(tName);
             if(table == 0) return 0;
-            c = new TableQueryComponent(table, parent, componentNode.attribute("level").toInt(), v);
+            c = new TableQueryComponent(query, table, parent, componentNode.attribute("level").toInt(), v);
         }
         else
         {
             TableInstance* tinst = v->getTableInstance(tName);
             if(tinst == 0) return 0;
-            c = new TableQueryComponent(tinst, parent, componentNode.attribute("level").toInt(), v);
+            c = new TableQueryComponent(query, tinst, parent, componentNode.attribute("level").toInt(), v);
         }
         if(componentNode.hasAttribute("As"))
         {
             QString a = componentNode.attribute("As");
-            SelectQueryAsComponent* sqas = new SelectQueryAsComponent(c, c->getLevel() + 1, v);
+            SelectQueryAsComponent* sqas = new SelectQueryAsComponent(query, c, c->nextLevel(), v);
             sqas->setAs(a);
             dynamic_cast<TableQueryComponent*>(c)->setAs(sqas);
+
+            query->setQueryGlobalAlias(sqas, dynamic_cast<TableQueryComponent*>(c));
         }
 
         if(componentNode.hasChildNodes())   // see if we have a joins
@@ -572,7 +574,7 @@ QueryComponent* DeserializationFactory::createComponent(QueryComponent* parent, 
                 {
                     for(int j=0; j<componentNode.childNodes().at(i).childNodes().count(); j++)
                     {
-                        SelectQueryJoinComponent* sqjc = dynamic_cast<SelectQueryJoinComponent*> (createComponent(c, p, v, doc, componentNode.childNodes().at(i).childNodes().at(j).toElement()));
+                        SelectQueryJoinComponent* sqjc = dynamic_cast<SelectQueryJoinComponent*> (createComponent(query, c, p, v, doc, componentNode.childNodes().at(i).childNodes().at(j).toElement()));
                         dynamic_cast<TableQueryComponent*>(c)->addJoin(sqjc);
                     }
                 }
@@ -590,7 +592,7 @@ QueryComponent* DeserializationFactory::createComponent(QueryComponent* parent, 
             {
                 QDomElement e = componentNode.childNodes().at(k).childNodes().at(i).toElement();    // This is <Child idx="12">
                 int idx = e.attribute("idx").toInt();
-                QueryComponent* child = createComponent(c, p, v, doc, e.firstChild().toElement()); // This is "Expression"
+                QueryComponent* child = createComponent(query, c, p, v, doc, e.firstChild().toElement()); // This is "Expression"
                 if(child)
                 {
                     c->setChild(child, idx);
@@ -602,7 +604,7 @@ QueryComponent* DeserializationFactory::createComponent(QueryComponent* parent, 
             for(int i=0; i<componentNode.childNodes().at(k).childNodes().count(); i++)
             {
                 QDomElement e = componentNode.childNodes().at(k).childNodes().at(i).toElement();    // This is <JoinExpression idx="12">
-                QueryComponent* child = createComponent(c, p, v, doc, e.firstChild().toElement()); // This is "Expression"
+                QueryComponent* child = createComponent(query, c, p, v, doc, e.firstChild().toElement()); // This is "Expression"
                 if(child)
                 {
                     dynamic_cast<SelectQueryJoinComponent*>(c)->addJoinExpression(dynamic_cast<SingleExpressionQueryComponent*>(child));
@@ -701,32 +703,32 @@ View* DeserializationFactory::createView(Version* v, DatabaseEngine* engine, con
                     QDomElement childNode = queryNode.childNodes().at(j).toElement();
                     if(childNode.nodeName() == "Select")
                     {
-                        SelectQuerySelectComponent* sqsc = dynamic_cast<SelectQuerySelectComponent*> (createComponent(q, v->getProject(), v, doc, childNode));
+                        SelectQuerySelectComponent* sqsc = dynamic_cast<SelectQuerySelectComponent*> (createComponent(q, q, v->getProject(), v, doc, childNode));
                         q->setSelect(sqsc);
                     }
                     if(childNode.nodeName() == "From")
                     {
-                        SelectQueryFromComponent* sqfc = dynamic_cast<SelectQueryFromComponent*> (createComponent(q, v->getProject(), v, doc, childNode));
+                        SelectQueryFromComponent* sqfc = dynamic_cast<SelectQueryFromComponent*> (createComponent(q, q, v->getProject(), v, doc, childNode));
                         q->setFrom(sqfc);
                     }
                     if(childNode.nodeName() == "WhereComponent")
                     {
-                        SelectQueryWhereComponent* sqwc = dynamic_cast<SelectQueryWhereComponent*> (createComponent(q, v->getProject(), v, doc, childNode));
+                        SelectQueryWhereComponent* sqwc = dynamic_cast<SelectQueryWhereComponent*> (createComponent(q, q, v->getProject(), v, doc, childNode));
                         q->setWhere(sqwc);
                     }
                     if(childNode.nodeName() == "GroupBy")
                     {
-                        SelectQueryGroupByComponent* sqgbc = dynamic_cast<SelectQueryGroupByComponent*> (createComponent(q, v->getProject(), v, doc, childNode));
+                        SelectQueryGroupByComponent* sqgbc = dynamic_cast<SelectQueryGroupByComponent*> (createComponent(q, q, v->getProject(), v, doc, childNode));
                         q->setGroupBy(sqgbc);
                     }
                     if(childNode.nodeName() == "HavingComponent")
                     {
-                        SelectQueryWhereComponent* sqwc = dynamic_cast<SelectQueryWhereComponent*> (createComponent(q, v->getProject(), v, doc, childNode));
+                        SelectQueryWhereComponent* sqwc = dynamic_cast<SelectQueryWhereComponent*> (createComponent(q, q, v->getProject(), v, doc, childNode));
                         q->setHaving(sqwc);
                     }
                     if(childNode.nodeName() == "OrderBy")
                     {
-                        SelectQueryOrderByComponent* sqobc = dynamic_cast<SelectQueryOrderByComponent*> (createComponent(q, v->getProject(), v, doc, childNode));
+                        SelectQueryOrderByComponent* sqobc = dynamic_cast<SelectQueryOrderByComponent*> (createComponent(q, q, v->getProject(), v, doc, childNode));
                         q->setOrderBy(sqobc);
                     }
                 }

@@ -28,6 +28,7 @@ class SpInstance;
 class ObjectWithSpInstances;
 class Patch;
 class ObjectWithUid;
+class Query;
 
 #include <QObject>
 
@@ -50,7 +51,7 @@ public:
     static Diagram* createDiagram(Version* v, const QDomDocument& doc, const QDomElement& element);
     static TableInstance* createTableInstance(Version* v, const QDomDocument& doc, const QDomElement& element, bool secondStep = false);
     static View* createView(Version* v, DatabaseEngine *engine, const QDomDocument& doc, const QDomElement& element);
-    static QueryComponent* createComponent(QueryComponent* parent, Project* p, Version* v, const QDomDocument& doc, const QDomElement& element);
+    static QueryComponent* createComponent(Query* query, QueryComponent* parent, Project* p, Version* v, const QDomDocument& doc, const QDomElement& element);
     static Procedure* createProcedure(Version* v, const QDomDocument& doc, const QDomElement& element);
     static Trigger* createTrigger(Version* v, const QDomDocument& doc, const QDomElement& element);
     static Function* createFunction(Version*,  const QDomDocument&, const QDomElement& element);

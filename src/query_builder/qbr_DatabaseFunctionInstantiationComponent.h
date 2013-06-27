@@ -16,7 +16,7 @@ class SingleExpressionQueryComponent;
 class DatabaseFunctionInstantiationComponent : public SerializableElement
 {
 public:
-    DatabaseFunctionInstantiationComponent(QueryComponent* parent, const DatabaseBuiltinFunction& f, bool deserialized, Version *v);
+    DatabaseFunctionInstantiationComponent(Query *q, QueryComponent* parent, const DatabaseBuiltinFunction& f, bool deserialized, Version *v);
     SingleExpressionQueryComponent* getInstantiatedParameter(int i);
     QString get();
     void addParameter(SingleExpressionQueryComponent* p)
