@@ -120,8 +120,6 @@ private:
     QueryGraphicsHelper* m_helper;
     QStringList m_columNames;
 
-//    bool m_canReplace; TODO: REMOVE THIS FEATURE; it was implemented as SPI for MySql
-
     // whether SQL for the view was manually typed in or the query builder was used
     bool m_manual;
     // if this is a manual query the m_sql is the SQL query

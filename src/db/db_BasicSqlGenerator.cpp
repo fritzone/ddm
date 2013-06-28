@@ -797,3 +797,10 @@ QString BasicSqlGenerator::createTableOnlyScript(Table* table,
     return createTable;
 
 }
+
+QString BasicSqlGenerator::getRecreateForeignKeySql(ForeignKey* fkI, const QString& foreignKeysTable)
+{
+    Q_UNUSED(fkI);
+    Q_UNUSED(foreignKeysTable);
+    return "";
+}
