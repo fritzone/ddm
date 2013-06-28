@@ -33,6 +33,8 @@ public:
     virtual QString getDropProcedure(const QString& proc);
     virtual QString getDropFunction(const QString& func);
     virtual QString sqlForAColumn(const Column* col) const;
+    virtual QString getRecreateForeignKeySql(ForeignKey* fkI, const QString &foreignKeysTable);
+
 
 private:
 

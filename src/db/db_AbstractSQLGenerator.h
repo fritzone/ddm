@@ -242,6 +242,14 @@ public:
      */
     virtual QString getDropTrigger(const QString& trig) = 0;
 
+    /**
+     * @brief getRecreateForeignKeySql gets an SQL to recreate the given foreign key
+     * @param fkI
+     * @return
+     */
+    virtual QString getRecreateForeignKeySql(ForeignKey* fkI, const QString& foreignKeysTable) = 0;
+
+
     virtual ~AbstractSqlGenerator() {}
 };
 

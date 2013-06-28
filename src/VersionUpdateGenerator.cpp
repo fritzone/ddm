@@ -27,12 +27,13 @@ struct DroppedFkWithTinst
     TableInstance* tinst;
 };
 
-VersionUpdateGenerator::VersionUpdateGenerator(Version *from, Version *to) : m_commands(), m_tablesReferencedWithFkFromOtherTables(), m_delayedCommands()
+
+VersionUpdateGenerator::VersionUpdateGenerator(Version *from, Version *to) :
+    m_commands(), m_tablesReferencedWithFkFromOtherTables(), m_delayedCommands()
 {
     if(from->getObjectUid() == to->getObjectUid()) return;
 
-    //m_commands << "-- Update script for version " + to->getVersionText() + " from " + from->getVersionText();
-    //m_commands << "\n-- Tables";
+    m_commands << "-- Update script for version " + to->getVersionText() + " from " + from->getVersionText();
 
     updateTables(from, to);
 
@@ -79,38 +80,8 @@ VersionUpdateGenerator::VersionUpdateGenerator(Version *from, Version *to) : m_c
                     // TODO: Duplicate from the TableUpdateGenerator, MysqlCodeGenerator and it is MySQL specific
                     {
                         // just pre-render the SQL for foreign keys
-                        QString foreignKeySql1 = "";
-                        QString foreignKeySql2 = "";
-
                         QString foreignKeysTable = fkI->getForeignTableName();
-                        for(int j=0; j<fkI->getAssociations().size(); j++)
-                        {
-
-                            ForeignKey::ColumnAssociation* assocJ = fkI->getAssociations().at(j);
-                            foreignKeySql1 += assocJ->getLocalColumn()->getName();
-                            foreignKeySql2 += assocJ->getForeignColumn()->getName();
-
-                            if(j < fkI->getAssociations().size() - 1)
-                            {
-                                foreignKeySql1 += ", ";
-                                foreignKeySql2 += ", ";
-                            }
-                        }
-                        QString foreignKeySql = " CONSTRAINT " + fkI->getName() + " FOREIGN KEY (";
-                        foreignKeySql += foreignKeySql1;
-                        foreignKeySql += ") REFERENCES ";
-                        foreignKeySql += foreignKeysTable;  // Not an OOP project, this is acceptable FOR NOW
-                        foreignKeySql += "(" + foreignKeySql2 + ")";
-                        QString t = fkI->getOnDelete();
-                        if(t.length() > 0) foreignKeySql += QString(" ") + ("ON DELETE ") + (t);
-                        t = fkI->getOnUpdate();
-                        if(t.length() > 0) foreignKeySql += QString(" ") + ("ON UPDATE ") + (t);
-
-                        // TODO: This is just MySQL for now
-                        QString f = "ALTER TABLE ";
-                        f += fkI->getLocalTable()->getName();
-                        f += " ADD ";
-                        f += foreignKeySql;
+                        QString f = to->getProject()->getEngine()->getSqlGenerator()->getRecreateForeignKeySql(fkI, foreignKeysTable);
                         createCommands << f;
                     }
                 }
@@ -164,48 +135,17 @@ VersionUpdateGenerator::VersionUpdateGenerator(Version *from, Version *to) : m_c
                 {
                     DroppedFkWithTinst* dfkwtI = droppedFks.at(i);
                     ForeignKey* fkI = dfkwtI->fk;
-                    // TODO: Duplicate from the TableUpdateGenerator, MysqlCodeGenerator and it is MySQL specific
+                    QString foreignKeysTable = fkI->getForeignTableName();
+                    QString tinstForfk = dfkwtI->tinst->getTinstForFk(fkI->getName());
+                    if(!tinstForfk.isEmpty())
                     {
-                        // just pre-render the SQL for foreign keys
-                        QString foreignKeySql1 = "";
-                        QString foreignKeySql2 = "";
-
-                        QString foreignKeysTable = fkI->getForeignTableName();
-                        QString tinstForfk = dfkwtI->tinst->getTinstForFk(fkI->getName());
-                        if(!tinstForfk.isEmpty())
-                        {
-                            foreignKeysTable = tinstForfk;
-                        }
-                        for(int j=0; j<fkI->getAssociations().size(); j++)
-                        {
-
-                            ForeignKey::ColumnAssociation* assocJ = fkI->getAssociations().at(j);
-                            foreignKeySql1 += assocJ->getLocalColumn()->getName();
-                            foreignKeySql2 += assocJ->getForeignColumn()->getName();
-
-                            if(j < fkI->getAssociations().size() - 1)
-                            {
-                                foreignKeySql1 += ", ";
-                                foreignKeySql2 += ", ";
-                            }
-                        }
-                        QString foreignKeySql = " CONSTRAINT " + fkI->getName() + " FOREIGN KEY (";
-                        foreignKeySql += foreignKeySql1;
-                        foreignKeySql += ") REFERENCES ";
-                        foreignKeySql += foreignKeysTable;
-                        foreignKeySql += "(" + foreignKeySql2 + ")";
-                        QString t = fkI->getOnDelete();
-                        if(t.length() > 0) foreignKeySql += QString(" ") + ("ON DELETE ") + (t);
-                        t = fkI->getOnUpdate();
-                        if(t.length() > 0) foreignKeySql += QString(" ") + ("ON UPDATE ") + (t);
-
-                        // TODO: This is just MySQL for now
-                        QString f = "ALTER TABLE ";
-                        f += dfkwtI->tinst->getName();
-                        f += " ADD ";
-                        f += foreignKeySql;
-                        createCommands << f;
+                        foreignKeysTable = tinstForfk;
                     }
+
+                    QString f = to->getProject()->getEngine()->getSqlGenerator()->getRecreateForeignKeySql(fkI, foreignKeysTable);
+
+                    // just pre-render the SQL for foreign keys
+                    createCommands << f;
                 }
                 QStringList tCommands = dropCommands;
                 tCommands << m_commands;
@@ -342,6 +282,7 @@ void VersionUpdateGenerator::updateTables(Version* from, Version* to)
     for(int i=0; i<toTables.size(); i++)
     {
         // a new table in the "to" version if it has a nullUid as the source ...
+        // obviously if we are downgrading, this will find all the new tables :(
         if(toTables[i]->getSourceUid() == nullUid)
         {
             newTabUids.append(toTables[i]->getObjectUid());

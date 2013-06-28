@@ -435,3 +435,40 @@ QString MySQLSQLGenerator::provideCodepageScript(Table *table) const
     }
     return result;
 }
+
+QString MySQLSQLGenerator::getRecreateForeignKeySql(ForeignKey* fkI, const QString& foreignKeysTable)
+{
+    QString foreignKeySql1 = "";
+    QString foreignKeySql2 = "";
+
+    for(int j=0; j<fkI->getAssociations().size(); j++)
+    {
+
+        ForeignKey::ColumnAssociation* assocJ = fkI->getAssociations().at(j);
+        foreignKeySql1 += assocJ->getLocalColumn()->getName();
+        foreignKeySql2 += assocJ->getForeignColumn()->getName();
+
+        if(j < fkI->getAssociations().size() - 1)
+        {
+            foreignKeySql1 += ", ";
+            foreignKeySql2 += ", ";
+        }
+    }
+    QString foreignKeySql = " CONSTRAINT " + fkI->getName() + " FOREIGN KEY (";
+    foreignKeySql += foreignKeySql1;
+    foreignKeySql += ") REFERENCES ";
+    foreignKeySql += foreignKeysTable;  // Not an OOP project, this is acceptable FOR NOW
+    foreignKeySql += "(" + foreignKeySql2 + ")";
+    QString t = fkI->getOnDelete();
+    if(t.length() > 0) foreignKeySql += QString(" ") + ("ON DELETE ") + (t);
+    t = fkI->getOnUpdate();
+    if(t.length() > 0) foreignKeySql += QString(" ") + ("ON UPDATE ") + (t);
+
+    // TODO: This is just MySQL for now
+    QString f = "ALTER TABLE ";
+    f += fkI->getLocalTable()->getName();
+    f += " ADD ";
+    f += foreignKeySql;
+
+    return f;
+}
