@@ -6,7 +6,7 @@
 
 #include "ui_NamedObjectListingForm.h"  // hmm... hacking the proper QT way... long live templates
 #include "MainWindow.h" // hm... plain ugliness ...
-#include "NamedItem.h" // if needed then needed
+#include "core_NamedItem.h" // if needed then needed
 
 class NamedObjectListingForm : public QWidget
 {

@@ -1,5 +1,5 @@
-#include "ForeignKey.h"
-#include "Index.h"
+#include "core_ForeignKey.h"
+#include "core_Index.h"
 #include "Version.h"
 #include "uids.h"
 #include "strings.h"
@@ -80,7 +80,7 @@ void ForeignKey::serialize(QDomDocument &doc, QDomElement &parent) const
     for(int i=0; i<m_autoGenIndices.size(); i++)
     {
         QDomElement autoGenElement = doc.createElement("Index");      // will hold the data in this element
-        autoGenElement.setAttribute("Table", m_autoGenIndices.at(i)->getOwner()->getName());
+        autoGenElement.setAttribute("Table", m_autoGenIndices.at(i)->getTable()->getName());
         autoGenElement.setAttribute("Name", m_autoGenIndices.at(i)->getName());
         autoGenIndices.appendChild(autoGenElement);
     }
@@ -202,7 +202,13 @@ void ForeignKey::onDelete()
 {
     for(int i=0; i<m_autoGenIndices.size(); i++)
     {
-        m_autoGenIndices.at(i)->getOwner()->removeIndex(m_autoGenIndices.at(i));
+        Table* t = m_autoGenIndices.at(i)->getTable();
+        if(!t)
+        {
+            continue;
+        }
+
+        t->removeIndex(m_autoGenIndices.at(i));
     }
 }
 

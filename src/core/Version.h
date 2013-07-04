@@ -1,12 +1,12 @@
 #ifndef VERSION_H
 #define VERSION_H
 
-#include "SerializableElement.h"
+#include "core_SerializableElement.h"
 #include "core_ObjectWithUid.h"
 #include "core_CloneableElement.h"
 #include "TreeItem.h"
 #include "core_LockableElement.h"
-#include "NamedItem.h"
+#include "core_NamedItem.h"
 
 class UserDataType;
 class Table;

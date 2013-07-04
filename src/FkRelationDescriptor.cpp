@@ -2,7 +2,7 @@
 #include "dgram_DraggableGraphicsItem.h"
 #include "dgram_DraggableGraphicsItemForForeignKey.h"
 #include "dgram_DiagramItemFactory.h"
-#include "ForeignKey.h"
+#include "core_ForeignKey.h"
 #include "dgram_ERGraphicsScene.h"
 #include "core_Diagram.h"
 

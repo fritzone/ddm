@@ -4,9 +4,9 @@
 #include <QtXml>
 
 #include "TreeItem.h"
-#include "SerializableElement.h"
+#include "core_SerializableElement.h"
 #include "IconFactory.h"
-#include "NamedItem.h"
+#include "core_NamedItem.h"
 #include "core_CloneableElement.h"
 #include "core_ObjectWithUid.h"
 #include "core_VersionElement.h"

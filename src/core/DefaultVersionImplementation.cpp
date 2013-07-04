@@ -6,7 +6,7 @@
 #include "IconFactory.h"
 #include "core_TableInstance.h"
 #include "Project.h"
-#include "ForeignKey.h"
+#include "core_ForeignKey.h"
 #include "NameGenerator.h"
 #include "VersionGuiElements.h"
 #include "Workspace.h"
@@ -21,7 +21,7 @@
 #include "core_Function.h"
 #include "strings.h"
 #include "UidWarehouse.h"
-#include "Index.h"
+#include "core_Index.h"
 #include "core_Patch.h"
 
 // TODO: This is horrible!!!

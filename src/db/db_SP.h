@@ -2,8 +2,8 @@
 #define DB_SP_H
 
 #include "core_ObjectWithUid.h"
-#include "NamedItem.h"
-#include "SerializableElement.h"
+#include "core_NamedItem.h"
+#include "core_SerializableElement.h"
 #include "core_VersionElement.h"
 
 #include <QString>
@@ -93,6 +93,7 @@ private:
 
     // this tells the sql query generator where to insert this property in the SQL query
     QUuid m_sqlRoleUid;
+
     // this is the class UID of the "class" this SP ois referring to. For example: Table -> uidTable
     QUuid m_referredObjectClasUid;
 

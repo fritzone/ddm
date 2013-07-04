@@ -7,8 +7,17 @@
 class CopyableElement
 {
 public:
-    virtual void copy() = 0;
+
+    /**
+     * @brief Destructor
+     */
     virtual ~CopyableElement(){}
+
+    /**
+     * @brief copy the element to the clipboard
+     */
+    virtual void copy() = 0;
+
 };
 
 #endif // COPYABLEELEMENT_H

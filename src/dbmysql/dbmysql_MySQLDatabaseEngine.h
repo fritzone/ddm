@@ -22,6 +22,7 @@ public:
 
     virtual QUuid getClassUid() const;
 
+    virtual void setup();
     virtual bool executeSql(Connection* c, const QStringList& sqls, const QStringList& uid, QString& lastSql, bool rollbackOnError);
     virtual QString getDefaultDatatypesLocation();
     virtual bool reverseEngineerDatabase(Connection *c, const QStringList& tables, const QStringList& views, const QStringList& procs, const QStringList& funcs, const QStringList& triggers, Project* p, bool relaxed);
@@ -37,7 +38,7 @@ public:
     virtual QVector<DatabaseBuiltinFunction> getBuiltinFunctions();
     virtual const DatabaseBuiltinFunction& getBuiltinFunction(const QString& name);
     virtual bool tryConnect(Connection* c);
-    virtual QSqlDatabase getQSqlDatabaseForConnection(Connection *c);
+    virtual QSqlDatabase getQSqlDatabaseForConnection(Connection *c) ;
     virtual QStringList getColumnsOfTable(Connection* c, const QString& tableName);
     virtual bool dropDatabase(Connection* c);
     virtual QStringList getIndexTypes();
@@ -55,7 +56,7 @@ public:
     virtual QVector<Sp*> getDatabaseSpecificProperties() const;
     virtual bool tableBlocksForeignKeyFunctionality(const Table* table) const;
     virtual bool supportsStoredMethods() {return true;}
-    virtual QString spiExtension(QUuid);
+    virtual QString spiExtension(QUuid) ;
 
     QStringList getSupportedStorageEngines(const QString& host, const QString& user, const QString& pass, int port);
 

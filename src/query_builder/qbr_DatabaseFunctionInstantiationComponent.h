@@ -4,7 +4,7 @@
 #include "db_DatabaseBuiltinFunction.h"
 #include "qbr_SingleExpressionQueryComponent.h"
 #include "qbr_QueryComponents.h"
-#include "SerializableElement.h"
+#include "core_SerializableElement.h"
 
 
 class SingleExpressionQueryComponent;

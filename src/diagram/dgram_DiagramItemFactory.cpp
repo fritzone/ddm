@@ -1,6 +1,6 @@
 #include "dgram_DiagramItemFactory.h"
 #include "core_Table.h"
-#include "ForeignKey.h"
+#include "core_ForeignKey.h"
 #include "core_Column.h"
 #include "dgram_DraggableGraphicsItem.h"
 #include "dgram_DraggableGraphicsItemForForeignKey.h"

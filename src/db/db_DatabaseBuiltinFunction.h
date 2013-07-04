@@ -3,7 +3,7 @@
 
 #include "qbr_OptionTypes.h"
 #include "db_DatabaseBuiltinFunctionsParameter.h"
-#include "NamedItem.h"
+#include "core_NamedItem.h"
 #include "core_UserDataType.h"
 
 #include <QVector>

@@ -16,7 +16,7 @@
 #include "core_View.h"
 #include "core_UserDataType.h"
 #include "core_LockableElement.h"
-#include "NamedItem.h"
+#include "core_NamedItem.h"
 
 #include <QDateTime>
 

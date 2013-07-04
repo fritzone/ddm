@@ -2,11 +2,11 @@
 #define DIAGRAM_H
 
 #include "TreeItem.h"
-#include "NamedItem.h"
+#include "core_NamedItem.h"
 #include "dgram_DiagramNoteDescriptor.h"
 #include "dgram_DiagramTableDescriptor.h"
 #include "dgram_DiagramFKDescriptor.h"
-#include "SerializableElement.h"
+#include "core_SerializableElement.h"
 #include "core_ObjectWithUid.h"
 #include "core_CloneableElement.h"
 #include "core_VersionElement.h"

@@ -51,14 +51,12 @@ HEADERS += \
     core/core_Patch.h \
     core/ActionDeleteTable.h \
     core/core_ColumnWithValue.h \
-    core/CopyableElement.h \
     core/DeploymentInitiator.h \
     core/core_Deployer.h \
     core/core_DeployerThread.h \
     core/core_InjectSqlGenerator.h \
     core/core_InjectSqlGeneratorThread.h \
     core/core_StoredMethod.h \
-    core/Index.h \
     core/Project.h \
     core/ObjectWithSpInstances.h \
     core/Solution.h \
@@ -70,14 +68,16 @@ HEADERS += \
     core/ValueSp.h \
     core/ValueSpInstance.h \
     core/Version.h \
-    core/VersionData.h \
     core/MajorVersion.h \
-    core/NamedItem.h \
-    core/SerializableElement.h \
-    core/ForeignKey.h \
     core/core_SqlSource.h \
     core/core_ParameterAndDescription.h \
     core/core_Repository.h \
     core/core_Role.h \
     core/core_Entity.h \
-    core/core_VersionElement.h
+    core/core_VersionElement.h \
+    core/core_CopyableElement.h \
+    core/core_ForeignKey.h \
+    core/core_NamedItem.h \
+    core/core_Index.h \
+    core/core_SerializableElement.h \
+    core/core_VersionData.h

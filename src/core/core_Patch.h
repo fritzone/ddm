@@ -5,9 +5,9 @@
 #include <QStringList>
 #include <QMap>
 
-#include "NamedItem.h"
+#include "core_NamedItem.h"
 #include "TreeItem.h"
-#include "SerializableElement.h"
+#include "core_SerializableElement.h"
 #include "core_ObjectWithUid.h"
 #include "ActionDeleteTable.h"
 #include "core_VersionElement.h"

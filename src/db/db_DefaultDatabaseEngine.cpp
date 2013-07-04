@@ -2,7 +2,7 @@
 #include "core_Table.h"
 #include "core_Column.h"
 #include "Version.h"
-#include "ForeignKey.h"
+#include "core_ForeignKey.h"
 #include "db_SP.h"
 
 #include <QSqlQuery>

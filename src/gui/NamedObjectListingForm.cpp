@@ -1,5 +1,5 @@
 #include "NamedObjectListingForm.h"
-#include "NamedItem.h"
+#include "core_NamedItem.h"
 #include "Workspace.h"
 
 #include <QDebug>

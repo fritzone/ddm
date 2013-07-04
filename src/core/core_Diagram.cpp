@@ -4,7 +4,7 @@
 #include "dgram_DraggableGraphicsItemForForeignKey.h"
 #include "dgram_DraggableGraphicsItemForText.h"
 #include "FkRelationDescriptor.h"
-#include "ForeignKey.h"
+#include "core_ForeignKey.h"
 #include "Version.h"
 #include "NameGenerator.h"
 #include "dgram_DiagramItemFactory.h"

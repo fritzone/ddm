@@ -10,7 +10,7 @@
 #include "core_TableInstance.h"
 #include "Configuration.h"
 #include "core_Column.h"
-#include "ForeignKey.h"
+#include "core_ForeignKey.h"
 #include "core_View.h"
 #include "core_Procedure.h"
 #include "core_Function.h"

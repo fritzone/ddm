@@ -1,7 +1,7 @@
 #ifndef CORE_ENTITY_H
 #define CORE_ENTITY_H
 
-#include "NamedItem.h"
+#include "core_NamedItem.h"
 #include "core_ObjectWithUid.h"
 
 #include <QString>

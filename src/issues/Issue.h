@@ -1,7 +1,7 @@
 #ifndef ISSUE_H
 #define ISSUE_H
 
-#include "NamedItem.h"
+#include "core_NamedItem.h"
 #include "TreeItem.h"
 
 #include <QString>

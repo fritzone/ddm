@@ -1,5 +1,5 @@
 #include "dgram_ERGraphicsScene.h"
-#include "ForeignKey.h"
+#include "core_ForeignKey.h"
 #include "TableListWidget.h"
 #include "core_Diagram.h"
 #include "EnterNoteTextDialog.h"

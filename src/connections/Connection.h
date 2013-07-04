@@ -1,8 +1,8 @@
 #ifndef CORE_CONNECTION_H
 #define CORE_CONNECTION_H
 
-#include "SerializableElement.h"
-#include "NamedItem.h"
+#include "core_SerializableElement.h"
+#include "core_NamedItem.h"
 #include "TreeItem.h"
 #include "IssueOriginator.h"
 #include "core_enums.h"
