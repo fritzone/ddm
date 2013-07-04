@@ -1,7 +1,7 @@
 #ifndef CORE_ROLE_H
 #define CORE_ROLE_H
 
-#include "NamedItem.h"
+#include "core_NamedItem.h"
 
 #include <QUuid>
 

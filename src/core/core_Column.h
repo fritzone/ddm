@@ -2,10 +2,10 @@
 #define COLUMN_H
 
 #include "TreeItem.h"
-#include "SerializableElement.h"
-#include "CopyableElement.h"
+#include "core_SerializableElement.h"
+#include "core_CopyableElement.h"
 #include "IssueOriginator.h"
-#include "NamedItem.h"
+#include "core_NamedItem.h"
 #include "core_ItemWithDescription.h"
 #include "core_ObjectWithUid.h"
 #include "ObjectWithSpInstances.h"

@@ -1,7 +1,7 @@
 #ifndef SPINSTANCE_H
 #define SPINSTANCE_H
 
-#include "SerializableElement.h"
+#include "core_SerializableElement.h"
 #include "core_ObjectWithUid.h"
 #include "db_SP.h"
 #include "core_CloneableElement.h"

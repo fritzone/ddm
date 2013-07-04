@@ -2,7 +2,7 @@
 #define DEFAULTVERSIONIMPLEMENTATION_H
 
 #include "Version.h"
-#include "VersionData.h"
+#include "core_VersionData.h"
 
 #include <QMap>
 

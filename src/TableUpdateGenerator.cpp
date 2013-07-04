@@ -5,7 +5,7 @@
 #include "db_AbstractSQLGenerator.h"
 #include "db_DatabaseEngine.h"
 #include "core_UserDataType.h"
-#include "ForeignKey.h"
+#include "core_ForeignKey.h"
 #include "Version.h"
 #include "core_ColumnWithValue.h"
 #include "VersionUpdateGenerator.h"

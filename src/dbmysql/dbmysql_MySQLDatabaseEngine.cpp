@@ -14,9 +14,9 @@
 #include "core_Column.h"
 #include "Project.h"
 #include "core_UserDataType.h"
-#include "Index.h"
+#include "core_Index.h"
 #include "core_TableInstance.h"
-#include "ForeignKey.h"
+#include "core_ForeignKey.h"
 #include "db_DatabaseBuiltinFunction.h"
 #include "core_View.h"
 #include "Connection.h"
@@ -30,6 +30,9 @@
 #include "SpInstance.h"
 #include "core_UserDataType.h"
 #include "MySqlConnection.h"
+#include "db_DatabaseEngineManager.h"
+#include "dbmysql_MySQLDTSupplier.h"
+#include "dbmysql_MySQLSQLGenerator.h"
 
 QVector<DatabaseBuiltinFunction>* MySQLDatabaseEngine::s_builtinFunctions = 0;
 QVector<Sp*>* MySQLDatabaseEngine::s_mysqlSpecificProperties = 0;
@@ -1289,4 +1292,21 @@ QString MySQLDatabaseEngine::spiExtension(QUuid uid)
     if(uid.toString() == uidMysqlAutoincrementTable) { return "AUTO_INCREMENT"; }
 
     return "";
+}
+
+void MySQLDatabaseEngine::setup()
+{
+    DatabaseEngineManager::instance().addEngine(strMySql, this);
+    DatabaseEngineManager::instance().addEngine(strQMySql, this);
+    DatabaseEngineManager::instance().addEngine(strQMySql3, this);
+
+    MySQLDTSupplier *mysqlDtSupplier = new MySQLDTSupplier();
+    DatabaseEngineManager::instance().addDtSupplier(strMySql, mysqlDtSupplier);
+    DatabaseEngineManager::instance().addDtSupplier(strQMySql, mysqlDtSupplier);
+    DatabaseEngineManager::instance().addDtSupplier(strQMySql3, mysqlDtSupplier);
+
+    MySQLSQLGenerator* mysqlGenerator = new MySQLSQLGenerator(this);
+    DatabaseEngineManager::instance().addSqlGenerator(strMySql, mysqlGenerator);
+    DatabaseEngineManager::instance().addSqlGenerator(strQMySql, mysqlGenerator);
+    DatabaseEngineManager::instance().addSqlGenerator(strQMySql3, mysqlGenerator);
 }

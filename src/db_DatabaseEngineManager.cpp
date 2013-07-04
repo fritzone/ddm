@@ -3,14 +3,7 @@
 #include <QDebug>
 
 #include "dbmysql_MySQLDatabaseEngine.h"
-#include "dbmysql_MySQLDTSupplier.h"
-#include "dbmysql_MySQLDatabaseEngine.h"
-#include "dbmysql_MySQLSQLGenerator.h"
-
 #include "dbsqlite_SqliteDatabaseEngine.h"
-#include "dbsqlite_SqliteDatabaseEngine.h"
-#include "dbsqlite_SqliteDTSupplier.h"
-#include "dbsqlite_SqliteSQLGenerator.h"
 
 #include "strings.h"
 
@@ -21,49 +14,45 @@ DatabaseEngineManager& DatabaseEngineManager::instance()
     if(m_instance == 0)
     {
         static DatabaseEngineManager instance;
-        m_instance = &instance;
+        if(m_instance != &instance)
+        {
+            qDebug() << "Strange ...";
+        }
+
     }
     return *m_instance;
 }
 
 DatabaseEngineManager::DatabaseEngineManager()
 {
+    // need this here, the DB engines will call the instance
+    m_instance = this;
+
     m_supportedEngines = QSqlDatabase::drivers();
-    m_supportedEngines << strMySql << strSqlite;
 
-    // initialize the database engines
-    MySQLDatabaseEngine* mysqlDBEngine = MySQLDatabaseEngine::instance();
-    m_dbEngines.insert(strMySql, mysqlDBEngine);
-    m_dbEngines.insert(strQMySql, mysqlDBEngine);
-    m_dbEngines.insert(strQMySql3, mysqlDBEngine);
+    // is there mysql driver?
+    if(m_supportedEngines.contains(strQMySql) || m_supportedEngines.contains(strQMySql3))
+    {
+        m_supportedEngines << strMySql;
+        MySQLDatabaseEngine* mysqlDBEngine = MySQLDatabaseEngine::instance();
+        mysqlDBEngine->setup();
+    }
 
-    SqliteDatabaseEngine* sqliteDBEngine = SqliteDatabaseEngine::instance();
-    m_dbEngines.insert(strSqlite, sqliteDBEngine);
-    m_dbEngines.insert(strQSqlite, sqliteDBEngine);
+    // is there sqlite driver?
+    if(m_supportedEngines.contains(strQSqlite))
+    {
+        m_supportedEngines << strSqlite;
+        SqliteDatabaseEngine* sqliteDBEngine = SqliteDatabaseEngine::instance();
+        sqliteDBEngine->setup();
+    }
 
-    // initialize the DT suppliers
-    MySQLDTSupplier *mysqlDtSupplier = new MySQLDTSupplier();
+    // is there CUBRID driver?
+    if(m_supportedEngines.contains(strQCubrid))
+    {
+        m_supportedEngines << strCubrid;
+    }
 
-    m_dtSuppliers.insert(strMySql, mysqlDtSupplier);
-    m_dtSuppliers.insert(strQMySql, mysqlDtSupplier);
-    m_dtSuppliers.insert(strQMySql3, mysqlDtSupplier);
-
-    SqliteDTSupplier* sqliteDtSupplier = new SqliteDTSupplier();
-    m_dtSuppliers.insert(strQSqlite, sqliteDtSupplier);
-    m_dtSuppliers.insert(strSqlite, sqliteDtSupplier);
-
-    // initialize the SQL Generators
-    MySQLSQLGenerator* mysqlGenerator = new MySQLSQLGenerator(mysqlDBEngine);
-
-    m_sqlGenerators.insert(strMySql, mysqlGenerator);
-    m_sqlGenerators.insert(strQMySql, mysqlGenerator);
-    m_sqlGenerators.insert(strQMySql3, mysqlGenerator);
-
-    SqliteSQLGenerator* sqliteGenrator = new SqliteSQLGenerator(sqliteDBEngine);
-    m_sqlGenerators.insert(strSqlite, sqliteGenrator);
-    m_sqlGenerators.insert(strQSqlite, sqliteGenrator);
 }
-
 
 DatabaseEngine* DatabaseEngineManager::engine(const QString &name)
 {
@@ -96,4 +85,26 @@ AbstractSqlGenerator* DatabaseEngineManager::sqlGenerator(const QString &name)
     }
 
     return 0;
+}
+
+bool DatabaseEngineManager::supportsEngine(const QString &name)
+{
+    QString upper = name.toUpper();
+    if(m_sqlGenerators.contains(upper))
+    {
+        return true;
+    }
+
+    return false;
+}
+
+
+void DatabaseEngineManager::addDtSupplier(const QString &name, AbstractDTSupplier *supplier)
+{
+    m_dtSuppliers.insert(name, supplier);
+}
+
+void DatabaseEngineManager::addSqlGenerator(const QString &name, AbstractSqlGenerator *gen)
+{
+    m_sqlGenerators.insert(name, gen);
 }

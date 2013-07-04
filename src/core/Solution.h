@@ -3,8 +3,8 @@
 
 #include "TreeItem.h"
 #include "Project.h"
-#include "SerializableElement.h"
-#include "NamedItem.h"
+#include "core_SerializableElement.h"
+#include "core_NamedItem.h"
 
 #include <QVector>
 

@@ -36,6 +36,40 @@ public:
      */
     AbstractSqlGenerator* sqlGenerator(const QString& name);
 
+    /**
+     * @brief supportsEngine returns true if the given engine is supported
+     * (ie: Qt sql plugin and driver were sucesfully loaded)
+     * @param name
+     * @return
+     */
+    bool supportsEngine(const QString& name);
+
+    /**
+     * @brief addEngine adds the given engine with the specific name. There
+     * can be more names for one engine.
+     * @param name
+     * @param engine
+     */
+    template <class T>
+    void addEngine(const QString& name, T* engine)
+    {
+        m_dbEngines.insert(name, engine);
+    }
+
+    /**
+     * @brief addDtsupplier adds a data type supplier to the manager.
+     * @param name
+     * @param supplier
+     */
+    void addDtSupplier(const QString& name, AbstractDTSupplier* supplier);
+
+    /**
+     * @brief addSqlGenerator adds an SQL generator.
+     * @param name
+     * @param gen
+     */
+    void addSqlGenerator(const QString& name, AbstractSqlGenerator* gen);
+
 private:
     DatabaseEngineManager();
 

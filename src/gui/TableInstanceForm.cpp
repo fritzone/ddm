@@ -13,7 +13,7 @@
 #include "SpInstance.h"
 #include "GuiElements.h"
 #include "uids.h"
-#include "ForeignKey.h"
+#include "core_ForeignKey.h"
 #include "strings.h"
 
 #include <QLineEdit>

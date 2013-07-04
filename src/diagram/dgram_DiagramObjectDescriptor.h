@@ -1,7 +1,7 @@
 #ifndef DIAGRAMOBJECTDESCRIPTOR_H
 #define DIAGRAMOBJECTDESCRIPTOR_H
 
-#include "SerializableElement.h"
+#include "core_SerializableElement.h"
 #include "core_ObjectWithUid.h"
 #include "core_CloneableElement.h"
 #include "core_VersionElement.h"

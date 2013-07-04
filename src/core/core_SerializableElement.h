@@ -18,8 +18,6 @@ public:
      */
     virtual void serialize(QDomDocument& doc, QDomElement& parent) const = 0;
 
-public:
-
     /**
      * Destructor
      */

@@ -15,9 +15,9 @@
 #include "core_Column.h"
 #include "Project.h"
 #include "core_UserDataType.h"
-#include "Index.h"
+#include "core_Index.h"
 #include "core_TableInstance.h"
-#include "ForeignKey.h"
+#include "core_ForeignKey.h"
 #include "db_DatabaseBuiltinFunction.h"
 #include "core_View.h"
 #include "Connection.h"
@@ -31,6 +31,9 @@
 #include "SpInstance.h"
 #include "core_UserDataType.h"
 #include "SqliteConnection.h"
+#include "db_DatabaseEngineManager.h"
+#include "dbsqlite_SqliteDTSupplier.h"
+#include "dbsqlite_SqliteSQLGenerator.h"
 
 QVector<DatabaseBuiltinFunction>* SqliteDatabaseEngine::s_builtinFunctions = 0;
 QVector<Sp*>* SqliteDatabaseEngine::s_sqliteSpecificProperties = 0;
@@ -1117,4 +1120,18 @@ QStringList SqliteDatabaseEngine::getKeywords() const
         "WHEN" <<
         "WHERE" ;
     return keywordPatterns;
+}
+
+void SqliteDatabaseEngine::setup()
+{
+    DatabaseEngineManager::instance().addEngine(strSqlite, this);
+    DatabaseEngineManager::instance().addEngine(strQSqlite, this);
+
+    SqliteDTSupplier* sqliteDtSupplier = new SqliteDTSupplier();
+    DatabaseEngineManager::instance().addDtSupplier(strQSqlite, sqliteDtSupplier);
+    DatabaseEngineManager::instance().addDtSupplier(strSqlite, sqliteDtSupplier);
+
+    SqliteSQLGenerator* sqliteGenrator = new SqliteSQLGenerator(this);
+    DatabaseEngineManager::instance().addSqlGenerator(strSqlite, sqliteGenrator);
+    DatabaseEngineManager::instance().addSqlGenerator(strQSqlite, sqliteGenrator);
 }

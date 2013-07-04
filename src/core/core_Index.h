@@ -2,8 +2,8 @@
 #define INDEX_H
 
 #include "TreeItem.h"
-#include "NamedItem.h"
-#include "SerializableElement.h"
+#include "core_NamedItem.h"
+#include "core_SerializableElement.h"
 #include "core_ObjectWithUid.h"
 #include "ObjectWithSpInstances.h"
 #include "core_CloneableElement.h"
@@ -15,12 +15,24 @@
 class Column;
 class Table;
 
-class Index : public TreeItem, public SerializableElement, public NamedItem, public VersionElement, public ObjectWithSpInstances, public CloneableElement
+class Index : public TreeItem,
+        public SerializableElement,
+        public NamedItem,
+        public VersionElement,
+        public ObjectWithSpInstances,
+        public CloneableElement
 {
 
-    struct ColumnAndOrder
+    /**
+     * @brief The ColumnAndOrder struct holds a column and the specified
+     * sort order in which the column will be sorted in the index.
+     */
+    struct ColumnAndSortOrder
     {
+        // the column
         const Column* c;
+
+        // the order
         QString order;
     };
 
@@ -40,14 +52,10 @@ public:
 
     void addSpToColumn(const Column* c, const QString& db, SpInstance* spi);
 
-    Table* getOwner() const
+    Table* getTable() const
     {
         return m_owner;
     }
-
-    virtual QUuid getClassUid() const;
-
-    virtual void serialize(QDomDocument &doc, QDomElement &parent) const;
 
     QMap<QString, QVector<SpInstance*> > getSpsOfColumn(const Column*) const;
 
@@ -55,16 +63,21 @@ public:
 
     QString getOrderForColumn(const Column*) const;
 
+    void finalizeCloning(Table*, Index *source);
+
     CloneableElement* clone(Version *sourceVersion, Version *targetVersion);
 
-    void finalizeCloning(Table*, Index *source);
+    virtual QUuid getClassUid() const;
+
+    virtual void serialize(QDomDocument &doc, QDomElement &parent) const;
 
 private:
 
+    // this is the table which has this index
     Table* m_owner;
 
     // this is here to just to keep the order of the columns
-    QVector<ColumnAndOrder*> m_columns;
+    QVector<ColumnAndSortOrder*> m_columns;
 
     // The following is to be interpreted as:
     // for each column there is a map, mapping a database name to a vector of SP instances from that specific database

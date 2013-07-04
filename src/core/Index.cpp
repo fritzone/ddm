@@ -1,4 +1,4 @@
-#include "Index.h"
+#include "core_Index.h"
 #include "core_Column.h"
 #include "uids.h"
 #include "SpInstance.h"
@@ -12,7 +12,7 @@ Index::Index(const QString &name, Table* tab, const QString& uid, Version* v) :
 
 void Index::addColumn(const Column* column, const QString &order)
 {
-    ColumnAndOrder* cando = new ColumnAndOrder;
+    ColumnAndSortOrder* cando = new ColumnAndSortOrder;
     cando->c = column;
     cando->order = order;
     m_columnsWithSpInstances.insert(column->getName(), QMap<QString, QVector<SpInstance*> > ());
@@ -22,7 +22,7 @@ void Index::addColumn(const Column* column, const QString &order)
 
 void Index::addColumn(const Column* column, const QString& order, int pos)
 {
-    ColumnAndOrder* cando = new ColumnAndOrder;
+    ColumnAndSortOrder* cando = new ColumnAndSortOrder;
     cando->c = column;
     cando->order = order;
 
@@ -200,8 +200,8 @@ void Index::finalizeCloning(Table *t, Index* source)
     // the columns and their order
     for(int i=0; i < source->m_columns.size(); i++)
     {
-        ColumnAndOrder* cAndO = new ColumnAndOrder;
-        ColumnAndOrder* cAndOOrig = source->m_columns.at(i);
+        ColumnAndSortOrder* cAndO = new ColumnAndSortOrder;
+        ColumnAndSortOrder* cAndOOrig = source->m_columns.at(i);
         cAndO->c = t->getColumn(cAndOOrig->c->getName());
         cAndO->order = cAndOOrig->order;
         m_columns.append(cAndO);

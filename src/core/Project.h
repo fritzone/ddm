@@ -1,9 +1,9 @@
 #ifndef PROJECT_H
 #define PROJECT_H
 
-#include "SerializableElement.h"
+#include "core_SerializableElement.h"
 #include "TreeItem.h"
-#include "NamedItem.h"
+#include "core_NamedItem.h"
 
 #include <QVector>
 #include <QStringList>

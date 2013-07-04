@@ -2,9 +2,9 @@
 #define FOREIGNKEY_H
 
 #include "TreeItem.h"
-#include "SerializableElement.h"
+#include "core_SerializableElement.h"
 #include "core_Column.h"
-#include "NamedItem.h"
+#include "core_NamedItem.h"
 #include "core_Table.h"
 #include "core_VersionElement.h"
 

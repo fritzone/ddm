@@ -4,7 +4,7 @@
 #include <QString>
 
 #include "Version.h"
-#include "NamedItem.h"
+#include "core_NamedItem.h"
 #include "commons.h"
 
 class NameGenerator

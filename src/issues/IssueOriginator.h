@@ -1,7 +1,7 @@
 #ifndef ISSUEORIGINATOR_H
 #define ISSUEORIGINATOR_H
 
-#include "NamedItem.h"
+#include "core_NamedItem.h"
 
 #include <QVector>
 

@@ -2,10 +2,10 @@
 #define _TABLE_H_
 
 
-#include "SerializableElement.h"
+#include "core_SerializableElement.h"
 #include "SqlSourceTreeItem.h"
-#include "CopyableElement.h"
-#include "NamedItem.h"
+#include "core_CopyableElement.h"
+#include "core_NamedItem.h"
 #include "core_ObjectWithUid.h"
 #include "ObjectWithSpInstances.h"
 #include "uids.h"

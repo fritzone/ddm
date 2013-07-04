@@ -77,19 +77,25 @@ public:
      */
     QString getLastError() const;
 
-
-    /**
-     * Returns a list of specific keywords for this database
-     * @return the keywords of the database
-     */
-    virtual QStringList getKeywords() const = 0;
-
 public:
 
     /**
      * @group
      * Pure virtual functions
      */
+
+    /**
+     * Set up the execution environment for this database engine. Create the
+     * SQL generator and the data supplier amongst the other issues, and feeds
+     * them in the DatabaseEngineManager
+     */
+    virtual void setup() = 0;
+
+    /**
+     * Returns a list of specific keywords for this database
+     * @return the keywords of the database
+     */
+    virtual QStringList getKeywords() const = 0;
 
     /**
      * @group Generic database related functions such as connection, run an SQL, etc...

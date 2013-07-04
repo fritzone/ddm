@@ -223,6 +223,7 @@
         <file>images/small/sqlite-icon.png</file>
         <file>images/small/applications_engineering.png</file>
         <file>images/small/entity.png</file>
+        <file>images/small/cubrid.png</file>
     </qresource>
     <qresource prefix="/bigger">
         <file>images/unaf.png</file>

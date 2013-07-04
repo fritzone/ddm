@@ -1,5 +1,5 @@
-#ifndef NAMEDITEM_H
-#define NAMEDITEM_H
+#ifndef _NAMEDITEM_H_
+#define _NAMEDITEM_H_
 
 #include <QString>
 #include <QDebug>
@@ -55,4 +55,4 @@ protected:
 
 };
 
-#endif // NAMEDITEM_H
+#endif // _NAMEDITEM_H_

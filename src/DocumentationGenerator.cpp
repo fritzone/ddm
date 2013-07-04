@@ -7,7 +7,7 @@
 #include "core_Table.h"
 #include "core_Column.h"
 #include "core_UserDataType.h"
-#include "Index.h"
+#include "core_Index.h"
 #include "core_Procedure.h"
 #include "core_Function.h"
 #include "core_Trigger.h"

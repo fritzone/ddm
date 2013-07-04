@@ -1,10 +1,10 @@
 #ifndef CORE_VIEW_H
 #define CORE_VIEW_H
 
-#include "NamedItem.h"
+#include "core_NamedItem.h"
 #include "SqlSourceTreeItem.h"
 #include "TreeItem.h"
-#include "SerializableElement.h"
+#include "core_SerializableElement.h"
 #include "core_ObjectWithUid.h"
 #include "core_CloneableElement.h"
 #include "core_SqlSource.h"

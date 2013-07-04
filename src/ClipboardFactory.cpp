@@ -2,7 +2,7 @@
 #include "DeserializationFactory.h"
 #include "Workspace.h"
 #include "core_Table.h"
-#include "ForeignKey.h"
+#include "core_ForeignKey.h"
 #include "core_Column.h"
 #include "core_Patch.h"
 #include "Version.h"

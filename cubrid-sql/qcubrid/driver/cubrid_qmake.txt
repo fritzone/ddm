@@ -1,0 +1,5 @@
+~/QtSDK/Desktop/Qt/4.8.0/gcc/bin/qmake "INCLUDEPATH+=/home/antonio/cubrid-cci-8.4.1.1018/include" "LIBS+=-L/home/antonio/cubrid-cci-8.4.1.1018/lib" cubrid.pro
+
+libcascci.so
+
+qmake "INCLUDEPATH+=C:\Users\Antonio\cubrid-cci-8.4.1.1018\include" "LIBS+=-LC:\Users\Antonio\cubrid-cci-8.4.1.1018\lib" cubrid.pro

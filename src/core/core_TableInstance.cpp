@@ -7,7 +7,7 @@
 #include "IconFactory.h"
 #include "core_Column.h"
 #include "ContextMenuCollection.h"
-#include "ForeignKey.h"
+#include "core_ForeignKey.h"
 #include "core_Trigger.h"
 
 TableInstance::TableInstance(Table *tab, bool ref, const QString& uid, Version *v) : TreeItem(),

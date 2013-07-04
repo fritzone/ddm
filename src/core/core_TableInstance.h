@@ -3,8 +3,8 @@
 
 #include "core_Table.h"
 #include "TreeItem.h"
-#include "NamedItem.h"
-#include "SerializableElement.h"
+#include "core_NamedItem.h"
+#include "core_SerializableElement.h"
 #include "SqlSourceTreeItem.h"
 #include "core_ObjectWithUid.h"
 #include "core_CloneableElement.h"
