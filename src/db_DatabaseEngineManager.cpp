@@ -47,9 +47,9 @@ DatabaseEngineManager::DatabaseEngineManager()
     }
 
     // is there CUBRID driver?
-    if(m_supportedEngines.contains(strQCubrid))
+    if(m_supportedEngines.contains(strQCUBRID))
     {
-        m_supportedEngines << strCubrid;
+        m_supportedEngines << strCUBRID;
     }
 
 }
