@@ -1,22 +1,21 @@
-#ifndef MYSQLCONNECTION_H
-#define MYSQLCONNECTION_H
+#ifndef CONN_CUBRID_H
+#define CONN_CUBRID_H
 
 #include "conn_AuthenticatedConnection.h"
-
 #include "strings.h"
 
-class MySqlConnection : public AuthenticatedConnection
+class CUBRIDConnection : public AuthenticatedConnection
 {
 public:
-
-    MySqlConnection(const QString& name, const QString& host,
+    CUBRIDConnection(const QString& name, const QString& host,
                     const QString& user, const QString& pass, const QString& db,
                     bool savePw, bool autoConnect, int port);
 
     virtual QString getDbType() const
     {
-        return strCamelMySql;
+        return strCUBRID;
     }
+
 };
 
-#endif // MYSQLCONNECTION_H
+#endif // CONN_CUBRID_H

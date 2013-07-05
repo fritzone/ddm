@@ -10,28 +10,3 @@ MySqlConnection::MySqlConnection(const QString& name,
 {
     m_engine = DatabaseEngineManager::instance().engine(strMySql);
 }
-
-void MySqlConnection::serialize(QDomDocument& doc, QDomElement& parent) const
-{
-    QDomElement connectionElement = doc.createElement("Connection");
-    connectionElement.setAttribute("Name", getName());
-    connectionElement.setAttribute("Host", getHost());
-    connectionElement.setAttribute("Pass", getPassword());
-    connectionElement.setAttribute("Port", getPort());
-    connectionElement.setAttribute("DB",   getDb());
-    connectionElement.setAttribute("User", getUser());
-    connectionElement.setAttribute("DbType", strMySql);
-    connectionElement.setAttribute("AutoConnect", m_autoConnect);
-    connectionElement.setAttribute("LastState", m_state);
-    parent.appendChild(connectionElement);
-}
-
-void MySqlConnection::saveIntoSettings(QSettings &s)
-{
-    s.setValue(strName, getName());
-    s.setValue(strHost, getHost());
-    s.setValue(strPass, getPassword());
-    s.setValue(strUser, getUser());
-    s.setValue(strDB, getDb());
-    s.setValue(strPort, QString::number(getPort()));
-}

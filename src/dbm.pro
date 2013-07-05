@@ -67,6 +67,9 @@ INCLUDEPATH += qhtml
 include (dbmysql/dbmysql.pri)
 INCLUDEPATH += dbmysql
 
+include (dbcubrid/dbcubrid.pri)
+INCLUDEPATH += dbcubrid
+
 include (dbsqlite/dbsqlite.pri)
 INCLUDEPATH += dbsqlite
 

@@ -79,6 +79,7 @@ static const QString uidPatch                       =       "{1000000B-0000-0000
 static const QString uidRepoEntity                  =       "{1000000C-0000-0000-0000-000000000001}";
 static const QString uidMysqlDb = "{100000DB-0000-0000-0000-000000000001}";
 static const QString uidSqliteDb = "{100000DB-0000-0000-0000-000000000002}";
+static const QString uidCUBRIDDb = "{100000DB-0000-0000-0000-000000000003}";
 static const QString uidKeyword = "{1000000D-0000-0000-0000-000000000001}";
 static const QString uidAttribute = "{1000000E-0000-0000-0000-000000000001}";
 static const QString uidReference = "{1000000F-0000-0000-0000-000000000001}";

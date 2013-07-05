@@ -55,6 +55,10 @@ public:
                  bool savePw,
                  bool autoConnect);
 
+    virtual void saveIntoSettings(QSettings& s);
+
+    void serialize(QDomDocument& doc, QDomElement& parent) const;
+
 private:
 
     QString m_host;

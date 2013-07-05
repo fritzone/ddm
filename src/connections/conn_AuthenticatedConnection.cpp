@@ -1,5 +1,7 @@
 #include "conn_AuthenticatedConnection.h"
 
+#include "strings.h"
+
 AuthenticatedConnection::AuthenticatedConnection(const QString &name,
                                                  const QString &host,
                                                  int port,
@@ -33,4 +35,29 @@ void AuthenticatedConnection::resetTo(const QString &name,
     m_autoConnect = autoConnect;
     m_port = port;
     tryConnect();
+}
+
+void AuthenticatedConnection::serialize(QDomDocument& doc, QDomElement& parent) const
+{
+    QDomElement connectionElement = doc.createElement("Connection");
+    connectionElement.setAttribute("Name", getName());
+    connectionElement.setAttribute("Host", getHost());
+    connectionElement.setAttribute("Pass", getPassword());
+    connectionElement.setAttribute("Port", getPort());
+    connectionElement.setAttribute("DB",   getDb());
+    connectionElement.setAttribute("User", getUser());
+    connectionElement.setAttribute("DbType", getDbType().toUpper());
+    connectionElement.setAttribute("AutoConnect", m_autoConnect);
+    connectionElement.setAttribute("LastState", m_state);
+    parent.appendChild(connectionElement);
+}
+
+void AuthenticatedConnection::saveIntoSettings(QSettings &s)
+{
+    s.setValue(strName, getName());
+    s.setValue(strHost, getHost());
+    s.setValue(strPass, getPassword());
+    s.setValue(strUser, getUser());
+    s.setValue(strDB, getDb());
+    s.setValue(strPort, QString::number(getPort()));
 }

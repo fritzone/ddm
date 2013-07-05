@@ -156,8 +156,9 @@ static const QString strQMySql3 = "QMYSQL3";
 static const QString strSqlite = "SQLITE";
 static const QString strQSqlite = "QSQLITE";
 static const QString strConnection = "connection";
-static const QString strCubrid = "CUBRID";
-static const QString strQCubrid = "QCUBRID";
+static const QString strCUBRID = "CUBRID";
+static const QString strQCUBRID = "QCUBRID";
+static const QString strCamelMySql = "MySql";
 
 static const QString strFalse = "FALSE";
 static const QString strTrue = "TRUE";
