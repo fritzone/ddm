@@ -1022,13 +1022,6 @@ bool MainWindow::onSaveNewDataType(const QString& name, const QString& type, con
 
 
     UserDataType* udt = new UserDataType(name, type, sqlType, size, defaultValue, mvs, unsi, desc, canBeNull, QUuid::createUuid().toString(), v);
-
-    if(! m_workspace->currentProjectsEngine()->getDTSupplier()->isValid(udt))
-    {
-        QMessageBox::critical (this, tr("Error"), tr("This datatype requires a length"), QMessageBox::Ok);
-        return false;
-    }
-
     UserDataType* other = v->getDataType(name);
 
     if(other &&  other != pudt)

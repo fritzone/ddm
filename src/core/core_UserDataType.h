@@ -120,6 +120,8 @@ public:
     }
 
     static DT_TYPE getDT_TYPE(const QString& typeString);
+    static DT_TYPE toDtType(int);
+    static QString getTypeStringFromDT_TYPE(DT_TYPE type);
 
     virtual CloneableElement* clone(Version* sourceVersion, Version* targetVersion);
 

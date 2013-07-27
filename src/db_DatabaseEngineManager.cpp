@@ -5,6 +5,8 @@
 #include "dbmysql_MySQLDatabaseEngine.h"
 #include "dbsqlite_SqliteDatabaseEngine.h"
 
+#include "db_GenericDatabaseType.h"
+
 #include "strings.h"
 
 DatabaseEngineManager* DatabaseEngineManager::m_instance = 0;
@@ -107,4 +109,8 @@ void DatabaseEngineManager::addDtSupplier(const QString &name, AbstractDTSupplie
 void DatabaseEngineManager::addSqlGenerator(const QString &name, AbstractSqlGenerator *gen)
 {
     m_sqlGenerators.insert(name, gen);
+}
+
+void DatabaseEngineManager::constructDtSupplier(const QString& dbName, const QVector<GenericDatabaseType*> dbtypes)
+{
 }
