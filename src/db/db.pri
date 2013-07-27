@@ -10,4 +10,6 @@ HEADERS += 	db/db_AbstractDTSupplier.h                     \
                 db/db_DatabaseEngine.h                         \
                 db/db_Codepage.h \
                 db/db_DefaultDatabaseEngine.h \
-                db/db_BasicSqlGenerator.h
+                db/db_BasicSqlGenerator.h \
+    db/db_GenericDTSupplier.h \
+    db/db_GenericDatabaseType.h

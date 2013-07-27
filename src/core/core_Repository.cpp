@@ -4,6 +4,8 @@
 #include "core_Role.h"
 #include "core_Entity.h"
 #include "uids.h"
+#include "db_GenericDatabaseType.h"
+#include "core_UserDataType.h"
 
 #include <QApplication>
 #include <QDomDocument>
@@ -97,17 +99,29 @@ void Repository::addDatabase(const QDomElement & el)
         {
             m_databases.append(dbe);
         }
+        QVector<GenericDatabaseType*> gdbts;
         for(int i=0; i<el.childNodes().size(); i++)
         {
-            if(el.childNodes().at(i).nodeName() == "keywords")
+            if(el.childNodes().at(i).nodeName() == "datatype-groups")
             {
-                QStringList l;
-                QDomElement el1 = el.childNodes().at(i).toElement();
-                for(int j=0; j<el1.childNodes().size(); j++)
+                QDomElement elDtgroups = el.childNodes().at(i).toElement();
+                for(int j=0; j<elDtgroups.childNodes().size(); j++)
                 {
-                    l.append(el1.childNodes().at(j).toElement().firstChild().nodeValue());
+                    QDomElement elDtGroup = elDtgroups.childNodes().at(j).toElement(); // <datatype-group>
+                    int type = elDtGroup.attribute("type").toInt();
+                    for(int k=0; k<elDtGroup.childNodes().size(); k++)
+                    {
+                        QDomElement elDt = elDtGroup.childNodes().at(k).toElement(); // <datatype>
+                        bool isDefault = elDt.hasAttribute("default") && elDt.attribute("default").toInt() == 1;
+                        QString name = elDt.attribute("name");
+                        int maxSize = elDt.hasAttribute("max-size")?
+                                    elDt.attribute("max-size").toInt():
+                                    0;
+
+                        GenericDatabaseType* gdt = new GenericDatabaseType(name, UserDataType::toDtType(type), maxSize, isDefault);
+                        gdbts.append(gdt);
+                    }
                 }
-                // dbe->setKeywords(l);
             }
         }
     }

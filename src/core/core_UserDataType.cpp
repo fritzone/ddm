@@ -114,9 +114,9 @@ bool UserDataType::isValid(const QString& v) const
     return true;
 }
 
-QString UserDataType::typeAsString() const
+QString UserDataType::getTypeStringFromDT_TYPE(DT_TYPE type)
 {
-    switch(m_type)
+    switch(type)
     {
     case DT_STRING: return strTextString;
     case DT_NUMERIC: return strNumeric;
@@ -131,6 +131,12 @@ QString UserDataType::typeAsString() const
         return strNA;
     }
     return QString("");
+
+}
+
+QString UserDataType::typeAsString() const
+{
+    return getTypeStringFromDT_TYPE(m_type);
 }
 
 bool UserDataType::supportsAutoIncrement() const
@@ -152,6 +158,24 @@ DT_TYPE UserDataType::getDT_TYPE(const QString& typeString)
     if(typeString == strMisc) return DT_MISC;
     if(typeString == strDateTime) return DT_DATETIME;
     if(typeString == strSpatial) return DT_SPATIAL;
+
+    return DT_INVALID;
+}
+
+DT_TYPE UserDataType::toDtType(int a)
+{
+    switch(a)
+    {
+    case 0: return DT_STRING;
+    case 1: return DT_NUMERIC;
+    case 2: return DT_BOOLEAN;
+    case 3: return DT_BLOB;
+    case 4: return DT_DATETIME;
+    case 5: return DT_MISC;
+    case 6: return DT_SPATIAL;
+    default:
+       return DT_INVALID;
+    }
 
     return DT_INVALID;
 }

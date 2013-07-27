@@ -3,10 +3,12 @@
 
 #include <QStringList>
 #include <QMap>
+#include <QDomElement>
 
 class AbstractDTSupplier;
 class AbstractSqlGenerator;
 class DatabaseEngine;
+class GenericDatabaseType;
 
 class DatabaseEngineManager
 {
@@ -69,6 +71,12 @@ public:
      * @param gen
      */
     void addSqlGenerator(const QString& name, AbstractSqlGenerator* gen);
+
+    /**
+     * @brief constructDtSupplier creates a new a DT supplier from the given XML
+     * @param el
+     */
+    void constructDtSupplier(const QString &dbName, const QVector<GenericDatabaseType *> dbtypes);
 
 private:
     DatabaseEngineManager();

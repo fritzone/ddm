@@ -10,15 +10,15 @@ enum ProcedureFormMode
 enum DT_TYPE
 {
     DT_STRING = 0,
-    DT_NUMERIC,
-    DT_BOOLEAN,
-    DT_DATETIME,
-    DT_BLOB,
-    DT_MISC,
-    DT_SPATIAL,
-    DT_INVALID,
-    DT_GENERIC,
-    DT_VARIABLE
+    DT_NUMERIC = 1,
+    DT_BOOLEAN = 2,
+    DT_DATETIME = 3,
+    DT_BLOB = 4,
+    DT_MISC = 5,
+    DT_SPATIAL = 6,
+    DT_INVALID = 7,
+    DT_GENERIC = 8,
+    DT_VARIABLE = 9
 } ;
 
 enum ConnectionState
