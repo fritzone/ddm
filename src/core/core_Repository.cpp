@@ -94,7 +94,8 @@ void Repository::addDatabase(const QDomElement & el)
 {
     if(el.nodeName() == "database")
     {
-        DatabaseEngine* dbe = DatabaseEngineManager::instance().engine(el.attribute("name"));
+        QString dbName = el.attribute("name");
+        DatabaseEngine* dbe = DatabaseEngineManager::instance().engine(dbName);
         if(dbe)
         {
             m_databases.append(dbe);
