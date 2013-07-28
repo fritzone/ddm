@@ -84,5 +84,11 @@
       </datatype-groups>
     </database>
 
+    <database name="Sqlite" id="SQLITE" class-uid="{100000DB-0000-0000-0000-000000000002}">
+      <datatype-groups>
+        <!-- Text types -->
+      </datatype-groups>
+    </database>
+
   </databases>
 </repository>

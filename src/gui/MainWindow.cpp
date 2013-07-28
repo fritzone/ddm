@@ -68,6 +68,7 @@
 #include "MySqlConnection.h"
 #include "SqliteConnection.h"
 #include "db_DatabaseEngineManager.h"
+#include "core_Repository.h"
 #include <QtGui>
 
 MainWindow* MainWindow::m_instance = 0;
@@ -80,6 +81,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), m_ui(new Ui::Main
     m_ui->setupUi(this);
     m_instance = this;
 
+    Repository::instance();
     Configuration::instance();
     ConnectionManager::instance();
     DatabaseEngineManager::instance();
