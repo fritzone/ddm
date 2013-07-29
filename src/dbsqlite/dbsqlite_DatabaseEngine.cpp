@@ -1,4 +1,4 @@
-#include "dbsqlite_SqliteDatabaseEngine.h"
+#include "dbsqlite_DatabaseEngine.h"
 
 #include <QSqlDriver>
 #include <QSqlDatabase>
@@ -32,8 +32,7 @@
 #include "core_UserDataType.h"
 #include "SqliteConnection.h"
 #include "db_DatabaseEngineManager.h"
-#include "dbsqlite_SqliteDTSupplier.h"
-#include "dbsqlite_SqliteSQLGenerator.h"
+#include "dbsqlite_SQLGenerator.h"
 
 QVector<DatabaseBuiltinFunction>* SqliteDatabaseEngine::s_builtinFunctions = 0;
 QVector<Sp*>* SqliteDatabaseEngine::s_sqliteSpecificProperties = 0;
@@ -1126,10 +1125,6 @@ void SqliteDatabaseEngine::setup()
 {
     DatabaseEngineManager::instance().addEngine(strSqlite, this);
     DatabaseEngineManager::instance().addEngine(strQSqlite, this);
-
-    SqliteDTSupplier* sqliteDtSupplier = new SqliteDTSupplier();
-    DatabaseEngineManager::instance().addDtSupplier(strQSqlite, sqliteDtSupplier);
-    DatabaseEngineManager::instance().addDtSupplier(strSqlite, sqliteDtSupplier);
 
     SqliteSQLGenerator* sqliteGenrator = new SqliteSQLGenerator(this);
     DatabaseEngineManager::instance().addSqlGenerator(strSqlite, sqliteGenrator);

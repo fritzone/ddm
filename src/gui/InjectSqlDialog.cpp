@@ -5,7 +5,7 @@
 #include "db_Codepage.h"
 #include "db_DatabaseEngine.h"
 #include "SimpleTextInputDialog.h"
-#include "dbmysql_MySQLDatabaseEngine.h"
+#include "dbmysql_DatabaseEngine.h"
 #include "ConnectionManager.h"
 #include "Connection.h"
 #include "core_Table.h"

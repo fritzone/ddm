@@ -1,4 +1,4 @@
-#include "dbmysql_MySQLDatabaseEngine.h"
+#include "dbmysql_DatabaseEngine.h"
 
 #include <QSqlDatabase>
 #include <QSqlError>
@@ -31,8 +31,7 @@
 #include "core_UserDataType.h"
 #include "MySqlConnection.h"
 #include "db_DatabaseEngineManager.h"
-#include "dbmysql_MySQLDTSupplier.h"
-#include "dbmysql_MySQLSQLGenerator.h"
+#include "dbmysql_SQLGenerator.h"
 
 QVector<DatabaseBuiltinFunction>* MySQLDatabaseEngine::s_builtinFunctions = 0;
 QVector<Sp*>* MySQLDatabaseEngine::s_mysqlSpecificProperties = 0;
@@ -1299,11 +1298,6 @@ void MySQLDatabaseEngine::setup()
     DatabaseEngineManager::instance().addEngine(strMySql, this);
     DatabaseEngineManager::instance().addEngine(strQMySql, this);
     DatabaseEngineManager::instance().addEngine(strQMySql3, this);
-
-    MySQLDTSupplier *mysqlDtSupplier = new MySQLDTSupplier();
-    DatabaseEngineManager::instance().addDtSupplier(strMySql, mysqlDtSupplier);
-    DatabaseEngineManager::instance().addDtSupplier(strQMySql, mysqlDtSupplier);
-    DatabaseEngineManager::instance().addDtSupplier(strQMySql3, mysqlDtSupplier);
 
     MySQLSQLGenerator* mysqlGenerator = new MySQLSQLGenerator(this);
     DatabaseEngineManager::instance().addSqlGenerator(strMySql, mysqlGenerator);

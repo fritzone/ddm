@@ -1,4 +1,4 @@
-#include "dbmysql_MySQLSQLGenerator.h"
+#include "dbmysql_SQLGenerator.h"
 #include "core_Table.h"
 #include "core_UserDataType.h"
 #include "core_Column.h"
@@ -12,7 +12,7 @@
 #include "strings.h"
 #include "SpInstance.h"
 #include "db_DatabaseEngine.h"
-#include "dbmysql_MySQLDatabaseEngine.h"
+#include "dbmysql_DatabaseEngine.h"
 #include "Configuration.h"
 #include "MySqlConnection.h"
 

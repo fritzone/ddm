@@ -1,12 +1,10 @@
 HEADERS += 						\
-	dbmysql/dbmysql_MySQLDTSupplier.h           	\
-	dbmysql/dbmysql_MySQLSQLGenerator.h		\
-	dbmysql/dbmysql_MySQLDatabaseEngine.h
+    dbmysql/dbmysql_DatabaseEngine.h \
+    dbmysql/dbmysql_SQLGenerator.h
 
 SOURCES +=						\
-	dbmysql/dbmysql_MySQLDatabaseEngine.cpp  	\
-	dbmysql/dbmysql_MySQLDTSupplier.cpp  		\
-	dbmysql/dbmysql_MySQLSQLGenerator.cpp
+    dbmysql/dbmysql_DatabaseEngine.cpp \
+    dbmysql/dbmysql_SQLGenerator.cpp
 	
 
 
