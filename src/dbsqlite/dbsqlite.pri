@@ -1,12 +1,10 @@
 HEADERS += 						\
-	dbsqlite/dbsqlite_SqliteDTSupplier.h           	\
-	dbsqlite/dbsqlite_SqliteSQLGenerator.h		\
-	dbsqlite/dbsqlite_SqliteDatabaseEngine.h
+    dbsqlite/dbsqlite_DatabaseEngine.h \
+    dbsqlite/dbsqlite_SQLGenerator.h
 
 SOURCES +=						\
-	dbsqlite/dbsqlite_SqliteDatabaseEngine.cpp  	\
-        dbsqlite/dbsqlite_SqliteDTSupplier.cpp  	\
-	dbsqlite/dbsqlite_SqliteSQLGenerator.cpp
+    dbsqlite/dbsqlite_DatabaseEngine.cpp \
+    dbsqlite/dbsqlite_SQLGenerator.cpp
 	
 
 

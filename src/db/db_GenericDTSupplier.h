@@ -5,10 +5,12 @@
 
 #include <QMap>
 
+class GenericDatabaseType;
+
 class GenericDTSupplier : public AbstractDTSupplier
 {
 public:
-    GenericDTSupplier();
+    GenericDTSupplier(const QVector<GenericDatabaseType*> dbtypes);
 
     virtual QList<UserDataType> textTypes()
     {
@@ -77,11 +79,11 @@ public:
 
     virtual DT_TYPE getDT_TYPE(const QString& usedSql)
     {
-        for(int i=0; i<m_dataTypesOfType.keys().size(); i++)
+        for(int i=0; i<m_dtTypes.keys().size(); i++)
         {
-            if(usedSql.toUpper().startsWith(m_dataTypesOfType.keys().at(i)))
+            if(usedSql.toUpper().startsWith(m_dtTypes.keys().at(i)))
             {
-                return m_dataTypesOfType[m_dataTypesOfType.keys().at(i)];
+                return m_dtTypes[m_dtTypes.keys().at(i)];
             }
         }
 

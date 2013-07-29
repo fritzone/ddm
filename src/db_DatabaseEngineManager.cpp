@@ -2,10 +2,11 @@
 #include <QSqlDatabase>
 #include <QDebug>
 
-#include "dbmysql_MySQLDatabaseEngine.h"
-#include "dbsqlite_SqliteDatabaseEngine.h"
+#include "dbmysql_DatabaseEngine.h"
+#include "dbsqlite_DatabaseEngine.h"
 
 #include "db_GenericDatabaseType.h"
+#include "db_GenericDTSupplier.h"
 
 #include "strings.h"
 
@@ -113,4 +114,6 @@ void DatabaseEngineManager::addSqlGenerator(const QString &name, AbstractSqlGene
 
 void DatabaseEngineManager::constructDtSupplier(const QString& dbName, const QVector<GenericDatabaseType*> dbtypes)
 {
+    GenericDTSupplier* gdts = new GenericDTSupplier(dbtypes);
+    addDtSupplier(dbName.toUpper(), gdts);
 }

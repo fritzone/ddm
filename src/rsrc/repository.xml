@@ -40,12 +40,12 @@
           <datatype name="BIT" max-size="64" />
         </datatype-group>
           
-          <!-- Boolean types -->
+        <!-- Boolean types -->
         <datatype-group type="2" name="Boolean">
           <datatype name="BOOL" default="1" />
         </datatype-group>
         
-          <!-- Date time types -->
+        <!-- Date time types -->
         <datatype-group type="3" name="Date/Time">
           <datatype name="DATE" />
           <datatype name="DATETIME" />
@@ -54,7 +54,7 @@
           <datatype name="YEAR" />
         </datatype-group>
         
-          <!-- Blob types -->
+        <!-- Blob types -->
         <datatype-group type="4" name="Blob/Binary">
           <datatype name="BINARY" max-size="65535" />
           <datatype name="BLOB" default="1" />
@@ -64,13 +64,13 @@
           <datatype name="VARBINARY" max-size="65535" />
         </datatype-group>
           
-          <!-- Miscellaneous types -->
+        <!-- Miscellaneous types -->
         <datatype-group type="5" name="Misc">
           <datatype name="ENUM" max-size="-1" default="1" />
           <datatype name="SET" max-size="-1" />
         </datatype-group>
           
-          <!-- Spatial types -->
+        <!-- Spatial types -->
         <datatype-group type="6" name="Spatial">
           <datatype name="GEOMETRY" />
           <datatype name="POINT" />
@@ -87,7 +87,93 @@
     <database name="Sqlite" id="SQLITE" class-uid="{100000DB-0000-0000-0000-000000000002}">
       <datatype-groups>
         <!-- Text types -->
+        <datatype-group type="0" name="Text/String" >
+        </datatype-group>
+          <datatype name="CHAR" max-size="-1" />
+          <datatype name="CLOB" max-size="-1" />
+          <datatype name="TEXT" max-size="-1" default = "1"/>
       </datatype-groups>
+      
+        <!-- Numerical types -->
+        <datatype-group type="1" name="Numeric">
+          <datatype name = "INT" max-size="-1" default="1" />
+          <datatype name = "REAL" max-size="-1" />
+        </datatype-group>
+        
+        <!-- Boolean types -->        
+        <datatype-group type="2" name="Boolean">
+        <datatype name="BOOLEAN" max-size="-1" default="1" />
+        </datatype-group>
+        
+        <!-- Date time types -->
+        <datatype-group type="3" name="Date/Time">
+          <datatype name="DATETIME" max-size="-1" default="1" />
+        </datatype-group>
+        
+        <!-- Blob types -->
+        <datatype-group type="4" name="Blob/Binary">
+          <datatype name="BLOB" default="1" />
+        </datatype-group>
+        
+        <!-- Miscellaneous types -->
+        <datatype-group type="5" name="Misc">
+        </datatype-group>
+        
+        <!-- Spatial types -->
+        <datatype-group type="6" name="Spatial">
+        </datatype-group>
+        
+    </database>
+
+    <database name="CUBRID" id="CUBRID" class-uid="{100000DB-0000-0000-0000-000000000003}">
+      <datatype-groups>
+        <!-- Text types -->
+        <datatype-group type="0" name="Text/String" >
+          <datatype name="CHAR" max-size="1073741823" />
+          <datatype name="VARCHAR" max-size="1073741823" default="1" />
+          <datatype name="STRING" />
+        </datatype-group>
+
+        <!-- Numerical types -->
+        <datatype-group type="1" name="Numeric">
+          <datatype name="SHORT" max-size="1" />
+          <datatype name="SMALLINT" max-size="1" /> 
+          <datatype name="INT" max-size="1" default="1" />
+          <datatype name="INTEGER" max-size="1" />
+          <datatype name="BIGINT" max-size="1" />
+          <datatype name="DECIMAL" max-size="1" />
+          <datatype name="NUMERIC" max-size="1" />
+          <datatype name="FLOAT" max-size="1" />
+          <datatype name="REAL" max-size="38" />
+          <datatype name="DOUBLE" max-size="38" />
+          <datatype name="DOUBLE PRECISION" max-size="1" />
+          <datatype name="BIT" max-size="1073741823" />
+          <datatype name="BIT VARYING" max-size="1073741823" />
+          <datatype name="MONETARY" /> 
+        </datatype-group>
+        
+        <!-- Date time types -->
+        <datatype-group type="3" name="Date/Time">
+          <datatype name="DATETIME" max-size="-1" default="1" />
+          <datatype name="DATE" max-size="-1" />
+          <datatype name="TIME" max-size="-1" />
+          <datatype name="TIMESTAMP" max-size="-1" />
+        </datatype-group>        
+      </datatype-groups>
+      
+      <!-- Blob types -->
+      <datatype-group type="4" name="Blob/Binary">
+        <datatype name="BLOB" default="1" />
+        <datatype name="CLOB" />
+      </datatype-group>
+      
+      <!-- Miscellaneous types -->
+      <datatype-group type="5" name="Misc">
+        <datatype name="ENUM" max-size="-1" default="1" />
+        <datatype name="SET" max-size="-1" />
+        <datatype name="MULTISET" max-size="-1" />
+        <datatype name="LIST" max-size="-1" />
+      </datatype-group>
     </database>
 
   </databases>

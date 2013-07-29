@@ -29,6 +29,31 @@ public:
     {
     }
 
+    QString getName() const
+    {
+        return m_name;
+    }
+
+    int getMaxSize() const
+    {
+        return m_maxSize;
+    }
+
+    DT_TYPE getDT_TYPE() const
+    {
+        return m_type;
+    }
+
+    bool isDefault() const
+    {
+        return m_default;
+    }
+
+    QString getGenericType() const
+    {
+        return m_genericType;
+    }
+
 private:
 
     // the name of the type (usually SQL, such as CHAR)

@@ -31,7 +31,6 @@
 #include "core_UserDataType.h"
 #include "conn_CUBRID.h"
 #include "db_DatabaseEngineManager.h"
-#include "dbcubrid_DTSupplier.h"
 #include "dbcubrid_SQLGenerator.h"
 
 QVector<DatabaseBuiltinFunction>* CUBRIDDatabaseEngine::s_builtinFunctions = 0;
@@ -1220,10 +1219,6 @@ void CUBRIDDatabaseEngine::setup()
 {
     DatabaseEngineManager::instance().addEngine(strCUBRID, this);
     DatabaseEngineManager::instance().addEngine(strQCUBRID, this);
-
-    CUBRIDDTSupplier *CUBRIDDtSupplier = new CUBRIDDTSupplier();
-    DatabaseEngineManager::instance().addDtSupplier(strCUBRID, CUBRIDDtSupplier);
-    DatabaseEngineManager::instance().addDtSupplier(strQCUBRID, CUBRIDDtSupplier);
 
     CUBRIDSQLGenerator* CUBRIDGenerator = new CUBRIDSQLGenerator(this);
     DatabaseEngineManager::instance().addSqlGenerator(strCUBRID, CUBRIDGenerator);

@@ -2594,7 +2594,8 @@ Version* MainWindow::getVersionOfLastRightClickedElement()
 {
     if(m_guiElements->getProjectTree()->getLastRightclickedItem() == 0)
     {
-        return 0;
+        // since we might get in here from the buttons too
+        return Workspace::getInstance()->workingVersion();
     }
 
     ContextMenuEnabledTreeWidgetItem* item = m_guiElements->getProjectTree()->getLastRightclickedItem();
