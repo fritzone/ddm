@@ -55,14 +55,13 @@ QUuid MySQLDatabaseEngine::getClassUid() const
 }
 
 MySQLDatabaseEngine::MySQLDatabaseEngine() : DefaultDatabaseEngine("MySQL", uidMysqlDb),
-    m_revEngMappings(), m_oneTimeMappings(), m_indexTypes(), m_defaultIndexType("BTREE")
+    m_revEngMappings(), m_oneTimeMappings()
 {
     static QVector<DatabaseBuiltinFunction> v = buildFunctions();
     static QVector<Sp*> t = buildSps();
     s_mysqlSpecificProperties = &t;
     s_builtinFunctions = &v;
     m_connectionMutex = new QMutex();
-    m_indexTypes << "BTREE" << "HASH" << "RTREE";
 }
 
 MySQLDatabaseEngine::~MySQLDatabaseEngine()
@@ -624,11 +623,6 @@ bool MySQLDatabaseEngine::executeSql(Connection* c, const QStringList& sqls, con
     return true;
 }
 
-QString MySQLDatabaseEngine::getDefaultDatatypesLocation()
-{
-    return "mysql.defaults";
-}
-
 QStringList MySQLDatabaseEngine::getAvailableDatabases(const QString& host, const QString& user, const QString& pass, int port)
 {
     Connection *c = new MySqlConnection("temp", host, user, pass, "", false, false, port);
@@ -965,30 +959,6 @@ bool MySQLDatabaseEngine::tryConnect(Connection* c)
 
 }
 
-QStringList MySQLDatabaseEngine::getIndexTypes()
-{
-    return m_indexTypes;
-}
-
-QString MySQLDatabaseEngine::getDelimiterKeyword()
-{
-    return "delimiter";
-}
-
-QStringList MySQLDatabaseEngine::getTriggerEvents()
-{
-    QStringList result;
-    result << "INSERT" << "UPDATE" << "DELETE";
-    return result;
-}
-
-QStringList MySQLDatabaseEngine::getTriggerTimings()
-{
-    QStringList result;
-    result << "BEFORE" << "AFTER";
-    return result;
-}
-
 Trigger* MySQLDatabaseEngine::reverseEngineerTrigger(Connection *c, const QString& procName, Version *v)
 {
     QSqlDatabase dbo = getQSqlDatabaseForConnection(c);
@@ -1161,41 +1131,6 @@ QStringList MySQLDatabaseEngine::getCodepageList()
     return codepages;
 }
 
-QStringList MySQLDatabaseEngine::getKeywords() const
-{
-    QStringList keywordPatterns;
-    keywordPatterns
-     << "ADD" << "ALL" << "ALTER" << "ANALYZE" << "AND" << "AS" << "ASC" << "ASENSITIVE" << "BEFORE"
-     << "BEGIN" << "END" << "BETWEEN" << "BOTH" << "BY" << "CALL" << "CASCADE" << "CASE" << "CHANGE"
-     << "CHECK" << "CHARACTER" << "COLLATE" << "COLUMN" << "CONDITION" << "CONSTRAINT" << "CONTINUE" << "CONVERT"
-     << "CREATE" << "CROSS" << "CURRENT_DATE" << "CURRENT_TIME" << "CURRENT_TIMESTAMP" << "CURRENT_USER" << "CURSOR"
-     << "DATABASE" << "DATABASES" << "DAY_HOUR" << "DAY_MICROSECOND" << "DAY_MINUTE" << "DAY_SECOND" << "DECLARE" << "DEFAULT"
-     << "DELAYED" << "DELETE" << "DESC" << "DESCRIBE" << "DETERMINISTIC" << "DISTINCT" << "DISTINCTROW" << "DIV"
-     << "DROP" << "DUAL" << "EACH" << "ELSE" << "ELSEIF" << "ENCLOSED" << "ESCAPED" << "EXISTS" << "EXIT"
-     << "EXPLAIN" << "FALSE" << "FETCH" << "FOR" << "FORCE" << "FOREIGN" << "FROM" << "FULLTEXT" << "GRANT"
-     << "GROUP" << "HAVING" << "HIGH_PRIORITY" << "HOUR_MICROSECOND" << "HOUR_MINUTE" << "HOUR_SECOND" << "IF"
-     << "IGNORE" << "IN" << "INDEX" << "INFILE" << "INNER" << "INOUT" << "INSENSITIVE" << "INSERT" << "INTERVAL"
-     << "INTO" << "IS" << "ITERATE" << "JOIN" << "KEY" << "KEYS" << "KILL" << "LEADING" << "LEAVE"
-     << "LEFT" << "LIKE" << "LIMIT" << "LINES" << "LOAD" << "LOCALTIME" << "LOCALTIMESTAMP" << "LOCK"
-     << "LONG" << "LONGBLOB" << "LONGTEXT" << "LOOP" << "LOW_PRIORITY" << "MATCH" << "MEDIUMBLOB" << "MEDIUMINT"
-     << "MEDIUMTEXT" << "MIDDLEINT" << "MINUTE_MICROSECOND" << "MINUTE_SECOND" << "MOD" << "MODIFIES" << "NATURAL" << "NOT"
-     << "NO_WRITE_TO_BINLOG" << "NULL" << "ON" << "OPTIMIZE" << "OPTION" << "OPTIONALLY" << "OR" << "ORDER"
-     << "OUT" << "OUTER" << "OUTFILE" << "PRECISION" << "PRIMARY" << "PROCEDURE" << "PURGE" << "READ" << "READS"
-     << "REAL" << "REFERENCES" << "REGEXP" << "RELEASE" << "RENAME" << "REPEAT" << "REPLACE" << "REQUIRE" << "RESTRICT"
-     << "RETURN" << "REVOKE" << "RIGHT" << "RLIKE" << "SCHEMA" << "SCHEMAS" << "SECOND_MICROSECOND" << "SELECT"
-     << "SENSITIVE" << "SEPARATOR" << "SET" << "SHOW" << "SONAME" << "SPATIAL" << "SPECIFIC" << "SQL"
-     << "SQLEXCEPTION" << "SQLSTATE" << "SQLWARNING" << "SQL_BIG_RESULT" << "SQL_CALC_FOUND_ROWS" << "SQL_SMALL_RESULT" << "SSL"
-     << "STARTING" << "STRAIGHT_JOIN" << "TABLE" << "TEMPORARY" << "TERMINATED" << "THEN" << "TO" << "TRAILING" << "TRIGGER"
-     << "TRUE" << "UNDO" << "UNION" << "UNIQUE" << "UNLOCK" << "UNSIGNED" << "UPDATE" << "USAGE" << "USE" << "USING"
-     << "UTC_DATE" << "UTC_TIME" << "UTC_TIMESTAMP" << "VALUES" << "VARYING" << "WHEN" << "WHERE" << "WHILE" << "WITH"
-     << "WRITE" << "XOR" << "YEAR_MONTH" << "ZEROFILL" << "ASENSITIVE" << "CONNECTION" << "DECLARE" << "ELSEIF" << "GOTO"
-     << "ITERATE" << "LOOP" << "READS" << "RETURN" << "SENSITIVE" << "SQLEXCEPTION" << "TRIGGER" << "WHILE" << "CALL"
-     << "CONTINUE" << "DETERMINISTIC" << "EXIT" << "INOUT" << "LABEL" << "MODIFIES" << "RELEASE" << "SCHEMA" << "SPECIFIC"
-     << "SQLSTATE" << "UNDO" << "CONDITION" << "CURSOR" << "EACH" << "FETCH" << "INSENSITIVE" << "LEAVE" << "OUT"
-     << "REPEAT" << "SCHEMAS" << "VIEW" << "SORT" << "SQL" << "SQLWARNING" << "UPGRADE" << "DELIMITER" << "BEGIN" << "END";
-    return keywordPatterns;
-}
-
 QVector<Sp*> MySQLDatabaseEngine::buildSps()
 {
 
@@ -1203,35 +1138,36 @@ QVector<Sp*> MySQLDatabaseEngine::buildSps()
 
     // General page
     QVector<Sp*> result;
-    result.push_back(new TrueFalseSp(uidTemporaryTable, uidTable, QString("Temporary"), QString("Temporary table"), QString("General"), false, 5, 0, 0));
-    result.push_back(new TrueFalseSp(uidIfDoesNotExistTable, uidTable, QString("IfNotExists"), QString("Create only if not exists"), QString("General"), true, 5, 0, 0));
+
+    //result.push_back(new TrueFalseSp(uidTemporaryTable, uidTable, QString("Temporary"), QString("Temporary table"), QString("General"), false, 5, 0, 0));
+    //result.push_back(new TrueFalseSp(uidIfDoesNotExistTable, uidTable, QString("IfNotExists"), QString("Create only if not exists"), QString("General"), true, 5, 0, 0));
 
     // "Performace" page
-    result.push_back(new ValueSp(uidMysqlAutoincrementTable, uidTable, QString("Auto Increment"), QString("Auto Increment Initial Value"), QString("Performance"), "0", 5, 1, 0 ) );
-    result.push_back(new ValueSp(uidMysqlAvgRowLengthTable, uidTable, QString("Average Row Length"), QString("Average Row Length"), QString("Performance"), "0", 5, 1, 0 ) );
+    //result.push_back(new ValueSp(uidMysqlAutoincrementTable, uidTable, QString("Auto Increment"), QString("Auto Increment Initial Value"), QString("Performance"), "0", 5, 1, 0 ) );
+//    result.push_back(new ValueSp(uidMysqlAvgRowLengthTable, uidTable, QString("Average Row Length"), QString("Average Row Length"), QString("Performance"), "0", 5, 1, 0 ) );
 
     // "Advanced" page
-    QStringList valuesForStrorageEngines;
-    valuesForStrorageEngines << "" << "MyISAM" << "InnoDB" << "Memory" << "Archive" << "Merge" << "BDB" << "Federated" << "Archive" << "CSV" << "Blackhole";
-    result.push_back(new ValueListSp(uidMysqlStorageEngineTable, uidTable, QString("StorageEngine"), QString("Storage Engine"), QString("Advanced"), valuesForStrorageEngines, 1, 5, 0, 0));
+//    QStringList valuesForStrorageEngines;
+//    valuesForStrorageEngines << "" << "MyISAM" << "InnoDB" << "Memory" << "Archive" << "Merge" << "BDB" << "Federated" << "Archive" << "CSV" << "Blackhole";
+//    result.push_back(new ValueListSp(uidMysqlStorageEngineTable, uidTable, QString("StorageEngine"), QString("Storage Engine"), QString("Advanced"), valuesForStrorageEngines, 1, 5, 0, 0));
 
-    QStringList valuesForCodepages = getCodepageList();
-    result.push_back(new ValueListSp(uidMysqlCodepageTable, uidTable, QString("Codepage"), QString("Codepage"), QString("Advanced"), valuesForCodepages, 0, 5, 0, 0));
+//    QStringList valuesForCodepages = getCodepageList();
+//    result.push_back(new ValueListSp(uidMysqlCodepageTable, uidTable, QString("Codepage"), QString("Codepage"), QString("Advanced"), valuesForCodepages, 0, 5, 0, 0));
 
     // SPs for INDEX
-    QStringList valuesForIndexTypes;
-    valuesForIndexTypes << "" << "BTREE" << "HASH";
-    result.push_back(new ValueListSp(uidMysqlIndexType, uidIndex, "Index Type", "Index Type", "General", valuesForIndexTypes, 0, 5, 0, 0));
+//    QStringList valuesForIndexTypes;
+//    valuesForIndexTypes << "" << "BTREE" << "HASH";
+//    result.push_back(new ValueListSp(uidMysqlIndexType, uidIndex, "Index Type", "Index Type", "General", valuesForIndexTypes, 0, 5, 0, 0));
 
-    QStringList valuesForIndexCategories;
-    valuesForIndexCategories << "" << "UNIQUE" << "FULLTEXT";
-    result.push_back(new ValueListSp(uidMysqlIndexCategory, uidIndex, "Index Category", "Index Category", "General", valuesForIndexCategories, 0, 5, 0, 0));
+//    QStringList valuesForIndexCategories;
+//    valuesForIndexCategories << "" << "UNIQUE" << "FULLTEXT";
+//    result.push_back(new ValueListSp(uidMysqlIndexCategory, uidIndex, "Index Category", "Index Category", "General", valuesForIndexCategories, 0, 5, 0, 0));
 
     // SPs for column of index
-    result.push_back(new ValueSp(uidMysqlColumnOfIndexLength, uidColumnOfIndex, "Column Length", "Used Column Length", "default", "", 5, 0, 0));
+//    result.push_back(new ValueSp(uidMysqlColumnOfIndexLength, uidColumnOfIndex, "Column Length", "Used Column Length", "default", "", 5, 0, 0));
 
     // SPs for column
-    result.push_back(new TrueFalseSp(uidColumnAutoIncrement, uidColumn, "Auto Increment", "Auto Increment", "General", false, 5, 0, 0));
+    //result.push_back(new TrueFalseSp(uidColumnAutoIncrement, uidColumn, "Auto Increment", "Auto Increment", "General", false, 5, 0, 0));
     result.push_back(new TrueFalseSp(uidMysqlColumnZeroFill, uidColumn, "Zero fill", "Zero fill", "General", false, 5, 0, 0));
 
     // SPs for view
@@ -1283,12 +1219,12 @@ QStringList MySQLDatabaseEngine::getSupportedStorageEngines(const QString& host,
 
 QString MySQLDatabaseEngine::spiExtension(QUuid uid)
 {
-    if(uid.toString() == uidTemporaryTable) { return "TEMPORARY"; }
-    if(uid.toString() == uidIfDoesNotExistTable) { return "IF NOT EXISTS"; }
+    //if(uid.toString() == uidTemporaryTable) { return "TEMPORARY"; }
+    //if(uid.toString() == uidIfDoesNotExistTable) { return "IF NOT EXISTS"; }
     if(uid.toString() == uidMysqlColumnZeroFill) { return "ZEROFILL"; }
-    if(uid.toString() == uidColumnAutoIncrement) { return "auto_increment"; }
+    //if(uid.toString() == uidColumnAutoIncrement) { return "auto_increment"; }
     if(uid.toString() == uidMysqlViewCanReplace) { return "or replace"; }
-    if(uid.toString() == uidMysqlAutoincrementTable) { return "AUTO_INCREMENT"; }
+//    if(uid.toString() == uidMysqlAutoincrementTable) { return "AUTO_INCREMENT"; }
 
     return "";
 }

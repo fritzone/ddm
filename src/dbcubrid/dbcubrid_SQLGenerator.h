@@ -45,11 +45,8 @@ private:
     QString createViewColumnNames(View *v) const;
 
     QString provideCodepageScript(Table* table) const;
-    QString provideDatabaseEngineScript(Table* table, const CUBRIDConnection *dest) const;
-    QString provideChecksumScript(Table* table, const CUBRIDConnection *dest) const;
     QString provideAutoIncrementForTableScript(Table* table) const;
     QString provideAverageRowLengthScript(Table* table) const;
-    QString dbEngineName(Table* , const CUBRIDConnection *dest) const;
 
 };
 

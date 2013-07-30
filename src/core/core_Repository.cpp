@@ -7,6 +7,11 @@
 #include "db_GenericDatabaseType.h"
 #include "core_UserDataType.h"
 
+#include "db_SP.h"
+#include "TrueFalseSp.h"
+#include "ValueSp.h"
+#include "ValueListSp.h"
+
 #include <QApplication>
 #include <QDomDocument>
 #include <QFile>
@@ -100,7 +105,16 @@ void Repository::addDatabase(const QDomElement & el)
         {
             m_databases.append(dbe);
         }
+
         QVector<GenericDatabaseType*> gdbts;
+        QStringList keywords;
+        QString delimiterKeyword = "";
+        QStringList triggerEvents;
+        QStringList triggerTimes;
+        QVector<Sp*> sps;
+        QMap<QString, QString> spsTooltips;
+        QMap<QString, QString> spsSqls;
+
         for(int i=0; i<el.childNodes().size(); i++)
         {
             if(el.childNodes().at(i).nodeName() == "datatype-groups")
@@ -124,9 +138,115 @@ void Repository::addDatabase(const QDomElement & el)
                     }
                 }
             }
+            if(el.childNodes().at(i).nodeName() == "keywords")
+            {
+                for(int j=0; j<el.childNodes().at(i).childNodes().size(); j++)
+                {
+                    QDomElement keywordEl = el.childNodes().at(i).childNodes().at(j).toElement();
+                    QString keyword = keywordEl.attribute("text");
+                    keywords.append(keyword);
+
+                    if(keywordEl.hasAttribute("role"))
+                    {
+                        QString role = keywordEl.attribute("role");
+                        if(role.toUpper() == "DELIMITER")
+                        {
+                            delimiterKeyword = keyword;
+                        }
+                    }
+                }
+            }
+            if(el.childNodes().at(i).nodeName() == "trigger-defs")
+            {
+                for(int j=0; j<el.childNodes().at(i).childNodes().size(); j++)
+                {
+                    QDomElement triggerEl = el.childNodes().at(i).childNodes().at(j).toElement();
+                    if(triggerEl.hasAttribute("role"))
+                    {
+                        QString role = triggerEl.attribute("role");
+                        QString value = triggerEl.attribute("value");
+                        if(role.toUpper() == "EVENT")
+                        {
+                            triggerEvents.append(value);
+                        }
+                        else
+                        {
+                            triggerTimes.append(value);
+                        }
+                    }
+                }
+            }
+            if(el.childNodes().at(i).nodeName() == "spis")
+            {
+                for(int j=0; j<el.childNodes().at(i).childNodes().size(); j++)
+                {
+                    QDomElement spEl = el.childNodes().at(i).childNodes().at(j).toElement();
+                    QString spClassUid = spEl.attribute("class-uid");
+                    QString spSqlRoleUid = spEl.attribute("sql-role-uid");
+                    QString spReferredClassUid = spEl.attribute("referred-class-uid");
+                    QString spName = spEl.attribute("name");
+                    QString spGuiText = spEl.attribute("gui-text");
+                    QString spGuiGroup = spEl.attribute("gui-group");
+                    QString spDefault = spEl.attribute("default");
+                    QString spDbMajor = spEl.attribute("db-major");
+                    QString spDbMinor = spEl.attribute("db-minor");
+                    QString spSql = spEl.attribute("sql");
+
+                    spsSqls[spSqlRoleUid] = spSql;
+
+                    QString spTooltip = "";
+
+                    if(spEl.hasChildNodes())
+                    {
+                        QDomElement spTtNode = spEl.firstChildElement("tooltip");
+                        QDomCDATASection cdata = spTtNode.firstChild().toCDATASection();
+                        spTooltip = cdata.toText().data();
+                        spsTooltips[spSqlRoleUid] = spTooltip;
+                    }
+
+                    Sp* sp = 0;
+
+                    if(spClassUid == uidTrueFalseSp)
+                    {
+                        sp = new TrueFalseSp(spSqlRoleUid, spReferredClassUid,
+                                             spName, spGuiText, spGuiGroup,
+                                             spDefault.toUpper() == "TRUE" || spDefault == "1",
+                                             spDbMajor.toInt(), spDbMinor.toInt(), 0);
+                    }
+                    else
+                    if(spClassUid == uidValueSp)
+                    {
+                        sp = new ValueSp(spSqlRoleUid, spReferredClassUid,
+                                         spName, spGuiText, spGuiGroup,
+                                         spDefault, spDbMajor.toInt(), spDbMinor.toInt(), 0);
+                    }
+                    else
+                    if(spClassUid == uidValueListSp)
+                    {
+                        sp = new ValueListSp(spSqlRoleUid, spReferredClassUid,
+                                             spName, spGuiText, spGuiGroup,
+                                             spDefault.split(","), 0,
+                                             spDbMajor.toInt(), spDbMinor.toInt(), 0);
+                    }
+
+                    if(sp)
+                    {
+                        sps.append(sp);
+                    }
+
+                }
+            }
         }
 
         DatabaseEngineManager::instance().constructDtSupplier(dbId, gdbts);
+        DatabaseEngineManager::instance().setKeywords(dbId, keywords);
+        DatabaseEngineManager::instance().setDelimiterKeyword(dbId, delimiterKeyword);
+        DatabaseEngineManager::instance().setTriggerEvents(dbId, triggerEvents);
+        DatabaseEngineManager::instance().setTriggerTimes(dbId, triggerTimes);
+        if(!sps.empty())
+        {
+            DatabaseEngineManager::instance().setSps(dbId.toUpper(), sps, spsSqls, spsTooltips);
+        }
     }
 }
 

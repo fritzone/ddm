@@ -23,7 +23,6 @@ public:
     virtual QUuid getClassUid() const;
     virtual void setup();
     virtual bool executeSql(Connection* c, const QStringList& sqls, const QStringList& uid, QString& lastSql, bool rollbackOnError);
-    virtual QString getDefaultDatatypesLocation();
     virtual bool reverseEngineerDatabase(Connection *c, const QStringList& tables, const QStringList& views, const QStringList& procs, const QStringList& funcs, const QStringList& triggers, Project* p, bool relaxed);
     virtual Table* reverseEngineerTable(Connection *c, const QString& tableName, Project* p, bool relaxed, Version* ver);
     virtual View* reverseEngineerView(Connection *c, const QString& viewName, Version* v);
@@ -40,9 +39,6 @@ public:
     virtual QSqlDatabase getQSqlDatabaseForConnection(Connection *c);
     virtual QStringList getColumnsOfTable(Connection* c, const QString& tableName);
     virtual bool dropDatabase(Connection* c);
-    virtual QString getDelimiterKeyword();
-    virtual QStringList getTriggerEvents();
-    virtual QStringList getTriggerTimings();
     virtual Procedure* reverseEngineerProc(Connection *c, const QString& procName, Version *v);
     virtual Function* reverseEngineerFunc(Connection *c, const QString& funcName, Version* v);
     virtual Trigger* reverseEngineerTrigger(Connection *c, const QString& procName, Version* v);
@@ -53,9 +49,6 @@ public:
     virtual QVector<Sp*> getDatabaseSpecificProperties() const;
     virtual bool supportsStoredMethods() {return false;}
     virtual QString spiExtension(QUuid uid);
-    virtual QStringList getKeywords() const;
-
-    QString formatLastError(const QString &header, const QSqlError&);
 
 private:
     SqliteDatabaseEngine();

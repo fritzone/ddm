@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+  <xs:element name="repository">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="databases"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="databases">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" ref="database"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="database">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="datatype-groups"/>
+        <xs:element ref="keywords"/>
+        <xs:element ref="trigger-defs"/>
+        <xs:element minOccurs="0" ref="spis"/>
+      </xs:sequence>
+      <xs:attribute name="class-uid" use="required"/>
+      <xs:attribute name="id" use="required" type="xs:NCName"/>
+      <xs:attribute name="name" use="required" type="xs:NCName"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="datatype-groups">
+    <xs:complexType>
+      <xs:choice maxOccurs="unbounded">
+        <xs:element ref="datatype"/>
+        <xs:element ref="datatype-group"/>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="datatype-group">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" maxOccurs="unbounded" ref="datatype"/>
+      </xs:sequence>
+      <xs:attribute name="name" use="required"/>
+      <xs:attribute name="type" use="required" type="xs:integer"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="keywords">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" ref="keyword"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="keyword">
+    <xs:complexType>
+      <xs:attribute name="description" use="required"/>
+      <xs:attribute name="role" type="xs:NCName"/>
+      <xs:attribute name="text" use="required"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="trigger-defs">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" ref="field"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="field">
+    <xs:complexType>
+      <xs:attribute name="role" use="required" type="xs:NCName"/>
+      <xs:attribute name="value" use="required"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="spis">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" ref="spi"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="spi">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="tooltip"/>
+      </xs:sequence>
+      <xs:attribute name="class-uid" use="required"/>
+      <xs:attribute name="db-major" use="required" type="xs:integer"/>
+      <xs:attribute name="db-minor" use="required" type="xs:integer"/>
+      <xs:attribute name="default" use="required"/>
+      <xs:attribute name="gui-group" use="required" type="xs:NCName"/>
+      <xs:attribute name="gui-text" use="required"/>
+      <xs:attribute name="name" use="required" type="xs:NCName"/>
+      <xs:attribute name="referred-class-uid" use="required"/>
+      <xs:attribute name="sql" use="required"/>
+      <xs:attribute name="sql-role-uid" use="required"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="tooltip" type="xs:string"/>
+  <xs:element name="datatype">
+    <xs:complexType>
+      <xs:attribute name="default" type="xs:integer"/>
+      <xs:attribute name="max-size" type="xs:integer"/>
+      <xs:attribute name="name" use="required"/>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>
