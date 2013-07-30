@@ -33,27 +33,15 @@ QStringList CUBRIDSQLGenerator::generateCreateTableSql(Table *table,
     return BasicSqlGenerator::generateCreateTableSql(table, options, tabName, fkMappings, pdest);
 }
 
-QString CUBRIDSQLGenerator::createTableOnlyScript(Table* table, const QStringList& foreignKeys, const QString& tabName, const Connection *pdest) const
+QString CUBRIDSQLGenerator::createTableOnlyScript(Table* table, const QStringList& foreignKeys, const QString& tabName, const Connection *) const
 {
-    const CUBRIDConnection* dest = dynamic_cast<const CUBRIDConnection*>(pdest);
-
     bool needfk = true;
 
-    if(dbEngineName(table, dest).toUpper() != "INNODB")
-    {
-        needfk = false;
-    }
-
     QString createTable = basicCreateTableScript(table, foreignKeys, tabName, needfk);
-
-    // extra CUBRID stuff: DB engine and codepage
-    createTable += provideDatabaseEngineScript(table, dest);
-    createTable += provideCodepageScript(table);
 
     // more extra mysql stuff: checksum, autoIncrement, etc...
     createTable += provideAutoIncrementForTableScript(table);
     createTable += provideAverageRowLengthScript(table);
-    createTable += provideChecksumScript(table, dest);
 
     // done
     createTable += strSemicolon + strNewline;
@@ -290,93 +278,6 @@ QString CUBRIDSQLGenerator::createViewColumnNames(View *v) const
         result += c + strCloseParantheses;
     }
     return result;
-}
-
-QString CUBRIDSQLGenerator::dbEngineName(Table* table, const CUBRIDConnection* dest) const
-{
-    // see if we have a storage eng ine
-    QString result = "";
-    SpInstance* spi = table->getInstanceForSqlRoleUid(m_engine, uidMysqlStorageEngineTable);
-    if(spi)
-    {
-        QString storageEngine = spi->get();
-        if(storageEngine.length())
-        {
-            CUBRIDDatabaseEngine* mysEng = dynamic_cast<CUBRIDDatabaseEngine*>(m_engine);
-            if(mysEng)
-            {
-                if(dest)
-                {
-                    QStringList supportedStroageEngines = mysEng->getSupportedStorageEngines(dest->getHost(), dest->getUser(), dest->getPassword(), dest->getPort());
-                    if(supportedStroageEngines.contains(storageEngine.toUpper()))
-                    {
-                        return storageEngine;
-                    }
-                }
-                else
-                {
-                    return storageEngine;
-                }
-            }
-        }
-    }
-    return "";
-
-}
-
-QString CUBRIDSQLGenerator::provideDatabaseEngineScript(Table *table, const CUBRIDConnection* dest) const
-{
-    // see if we have a storage eng ine
-    QString result = "";
-    SpInstance* spi = table->getInstanceForSqlRoleUid(m_engine, uidMysqlStorageEngineTable);
-    if(spi)
-    {
-        QString storageEngine = spi->get();
-        if(storageEngine.length())
-        {
-            CUBRIDDatabaseEngine* mysEng = dynamic_cast<CUBRIDDatabaseEngine*>(m_engine);
-            if(mysEng)
-            {
-                if(dest)
-                {
-                    QStringList supportedStroageEngines = mysEng->getSupportedStorageEngines(dest->getHost(), dest->getUser(), dest->getPassword(), dest->getPort());
-                    if(supportedStroageEngines.contains(storageEngine.toUpper()))
-                    {
-                        result = correctCase("engine = ")+ storageEngine;
-                    }
-                }
-                else
-                {
-                    result = correctCase("engine = ")+ storageEngine;
-                }
-            }
-        }
-    }
-    return result;
-}
-
-QString CUBRIDSQLGenerator::provideChecksumScript(Table *table, const CUBRIDConnection *dest) const
-{
-    if(dbEngineName(table, dest).toUpper() != "MYISAM")
-    {
-        return "";
-    }
-    QString result("");
-    // and the codepage
-    SpInstance* spi = table->getInstanceForSqlRoleUid(m_engine, uidMysqlChecksumTable);
-    if(spi)
-    {
-        QString checksum = spi->get();
-        if(checksum.length() && checksum != spi->getClass()->getDefaultValue())
-        {
-            QString aincCmd = correctCase("checksum");
-            QString value = checksum;
-
-            result = strSpace + aincCmd + strSpace + value + strSpace;
-        }
-    }
-    return result;
-
 }
 
 QString CUBRIDSQLGenerator::provideAutoIncrementForTableScript(Table *table) const

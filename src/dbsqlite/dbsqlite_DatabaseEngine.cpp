@@ -55,7 +55,8 @@ QUuid SqliteDatabaseEngine::getClassUid() const
     return QUuid(m_classUid);
 }
 
-SqliteDatabaseEngine::SqliteDatabaseEngine() : DefaultDatabaseEngine("Sqlite", uidSqliteDb), m_revEngMappings(), m_oneTimeMappings()
+SqliteDatabaseEngine::SqliteDatabaseEngine() : DefaultDatabaseEngine("Sqlite", uidSqliteDb),
+    m_revEngMappings(), m_oneTimeMappings()
 {
     static QVector<DatabaseBuiltinFunction> v = buildFunctions();
     static QVector<Sp*> t = buildSps();
@@ -605,11 +606,6 @@ bool SqliteDatabaseEngine::executeSql(Connection* c, const QStringList& sqls1, c
     return true;
 }
 
-QString SqliteDatabaseEngine::getDefaultDatatypesLocation()
-{
-    return "sqlite.defaults";
-}
-
 // poor guy, canot return anyting
 QStringList SqliteDatabaseEngine::getAvailableDatabases(const QString& /*host*/, const QString& /*user*/, const QString& /*pass*/, int /*port*/)
 {
@@ -620,31 +616,6 @@ QStringList SqliteDatabaseEngine::getAvailableDatabases(const QString& /*host*/,
 bool SqliteDatabaseEngine::dropDatabase(Connection* /*c*/)
 {
     return true;
-}
-
-QString SqliteDatabaseEngine::formatLastError(const QString& header, const QSqlError &error)
-{
-    QString errorText = "<b>" + header + "</b>";
-    errorText += "<br><br>";
-    errorText += "<b>"+ QObject::tr("DB Error: ")  + "</b><!-- DBE: -->"+ error.databaseText() + "<!-- /DBE --><br>";
-    errorText += "<b>" + QObject::tr("Driver Error: ")  + "</b><!-- DRV: -->"+ error.driverText() + "<!-- /DRV --><br>";
-    errorText += "<b>" + QObject::tr("Error Number: ")  + "</b><!-- NR: -->"+  QString::number(error.number()) + "<!-- /NR --><br>";
-    errorText += "<b>" + QObject::tr("Error Type: ") + "</b>";
-    switch(error.type())
-    {
-    case QSqlError::NoError: errorText += "<!-- TYPE: -->No Error<!-- /TYPE -->";
-        break;
-    case QSqlError::ConnectionError: errorText += "<!-- TYPE: -->Connection Error<!-- /TYPE -->";
-        break;
-    case QSqlError::StatementError: errorText += "<!-- TYPE: -->Statement Error<!-- /TYPE -->";
-        break;
-    case QSqlError::TransactionError: errorText += "<!-- TYPE: -->Transaction Error<!-- /TYPE -->";
-        break;
-    case QSqlError::UnknownError: errorText += "<!-- TYPE: -->Unknown Error<!-- /TYPE -->";
-        break;
-    }
-    errorText += "<br>";
-    return errorText;
 }
 
 // cannot create database
@@ -723,26 +694,6 @@ bool SqliteDatabaseEngine::tryConnect(Connection* c)
     dbo.close();
     return true;
 
-}
-
-
-QString SqliteDatabaseEngine::getDelimiterKeyword()
-{
-    return "delimiter";
-}
-
-QStringList SqliteDatabaseEngine::getTriggerEvents()
-{
-    QStringList result;
-    result << "INSERT" << "UPDATE" << "DELETE";
-    return result;
-}
-
-QStringList SqliteDatabaseEngine::getTriggerTimings()
-{
-    QStringList result;
-    result << "BEFORE" << "AFTER";
-    return result;
 }
 
 Trigger* SqliteDatabaseEngine::reverseEngineerTrigger(Connection *c, const QString& procName, Version *v)
@@ -991,134 +942,6 @@ QString SqliteDatabaseEngine::spiExtension(QUuid uid)
     if(uid.toString() == uidColumnAutoIncrement) { return "autoincrement"; }
 
     return "";
-}
-
-QStringList SqliteDatabaseEngine::getKeywords() const
-{
-    QStringList keywordPatterns;
-    keywordPatterns <<
-        "ABORT" <<
-        "ACTION" <<
-        "ADD" <<
-        "AFTER" <<
-        "ALL" <<
-        "ALTER" <<
-        "ANALYZE" <<
-        "AND" <<
-        "AS" <<
-        "ASC" <<
-        "ATTACH" <<
-        "AUTOINCREMENT" <<
-        "BEFORE" <<
-        "BEGIN" <<
-        "BETWEEN" <<
-        "BY" <<
-        "CASCADE" <<
-        "CASE" <<
-        "CAST" <<
-        "CHECK" <<
-        "COLLATE" <<
-        "COLUMN" <<
-        "COMMIT" <<
-        "CONFLICT" <<
-        "CONSTRAINT" <<
-        "CREATE" <<
-        "CROSS" <<
-        "CURRENT_DATE" <<
-        "CURRENT_TIME" <<
-        "CURRENT_TIMESTAMP" <<
-        "DATABASE" <<
-        "DEFAULT" <<
-        "DEFERRABLE" <<
-        "DEFERRED" <<
-        "DELETE" <<
-        "DESC" <<
-        "DETACH" <<
-        "DISTINCT" <<
-        "DROP" <<
-        "EACH" <<
-        "ELSE" <<
-        "END" <<
-        "ESCAPE" <<
-        "EXCEPT" <<
-        "EXCLUSIVE" <<
-        "EXISTS" <<
-        "EXPLAIN" <<
-        "FAIL" <<
-        "FOR" <<
-        "FOREIGN" <<
-        "FROM" <<
-        "FULL" <<
-        "GLOB" <<
-        "GROUP" <<
-        "HAVING" <<
-        "IF" <<
-        "IGNORE" <<
-        "IMMEDIATE" <<
-        "IN" <<
-        "INDEX" <<
-        "INDEXED" <<
-        "INITIALLY" <<
-        "INNER" <<
-        "INSERT" <<
-        "INSTEAD" <<
-        "INTERSECT" <<
-        "INTO" <<
-        "IS" <<
-        "ISNULL" <<
-        "JOIN" <<
-        "KEY" <<
-        "LEFT" <<
-        "LIKE" <<
-        "LIMIT" <<
-        "MATCH" <<
-        "NATURAL" <<
-        "NO" <<
-        "NOT" <<
-        "NOTNULL" <<
-        "NULL" <<
-        "OF" <<
-        "OFFSET" <<
-        "ON" <<
-        "OR" <<
-        "ORDER" <<
-        "OUTER" <<
-        "PLAN" <<
-        "PRAGMA" <<
-        "PRIMARY" <<
-        "QUERY" <<
-        "RAISE" <<
-        "REFERENCES" <<
-        "REGEXP" <<
-        "REINDEX" <<
-        "RELEASE" <<
-        "RENAME" <<
-        "REPLACE" <<
-        "RESTRICT" <<
-        "RIGHT" <<
-        "ROLLBACK" <<
-        "ROW" <<
-        "SAVEPOINT" <<
-        "SELECT" <<
-        "SET" <<
-        "TABLE" <<
-        "TEMP" <<
-        "TEMPORARY" <<
-        "THEN" <<
-        "TO" <<
-        "TRANSACTION" <<
-        "TRIGGER" <<
-        "UNION" <<
-        "UNIQUE" <<
-        "UPDATE" <<
-        "USING" <<
-        "VACUUM" <<
-        "VALUES" <<
-        "VIEW" <<
-        "VIRTUAL" <<
-        "WHEN" <<
-        "WHERE" ;
-    return keywordPatterns;
 }
 
 void SqliteDatabaseEngine::setup()

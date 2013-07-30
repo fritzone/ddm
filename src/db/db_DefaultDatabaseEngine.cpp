@@ -4,6 +4,7 @@
 #include "Version.h"
 #include "core_ForeignKey.h"
 #include "db_SP.h"
+#include "db_DatabaseEngineManager.h"
 
 #include <QSqlQuery>
 #include <QSqlError>
@@ -219,4 +220,29 @@ QStringList DefaultDatabaseEngine::getResultOfQuery(const QString& squery, Conne
     dbo.close();
     return result;
 
+}
+
+QStringList DefaultDatabaseEngine::getKeywords() const
+{
+    return DatabaseEngineManager::instance().getKeywords(getName().toUpper());
+}
+
+QString DefaultDatabaseEngine::getDelimiterKeyword()
+{
+    return DatabaseEngineManager::instance().getDelimiterKeyword(getName().toUpper());
+}
+
+QString DefaultDatabaseEngine::getDefaultDatatypesLocation()
+{
+    return getName().toLower() + ".defaults";
+}
+
+QStringList DefaultDatabaseEngine::getTriggerEvents()
+{
+    return DatabaseEngineManager::instance().getTriggerEvents(getName().toUpper());
+}
+
+QStringList DefaultDatabaseEngine::getTriggerTimings()
+{
+    return DatabaseEngineManager::instance().getTriggerTimes(getName().toUpper());
 }

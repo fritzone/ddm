@@ -9,6 +9,7 @@ class AbstractDTSupplier;
 class AbstractSqlGenerator;
 class DatabaseEngine;
 class GenericDatabaseType;
+class Sp;
 
 class DatabaseEngineManager
 {
@@ -78,6 +79,49 @@ public:
      */
     void constructDtSupplier(const QString &dbName, const QVector<GenericDatabaseType *> dbtypes);
 
+    /**
+     * @brief getKeywords returns the keywords of the given database
+     * @param dbName
+     * @return
+     */
+    QStringList getKeywords(const QString& dbName);
+
+    /**
+     * @brief setKeywords sets the keywords for the given database
+     * @param dbName
+     * @param keywords
+     */
+    void setKeywords(const QString& dbName, const QStringList& keywords);
+
+    /**
+     * @brief setDelimiterKeyword
+     * @param dbName
+     * @param keyword
+     */
+    void setDelimiterKeyword(const QString& dbName, const QString& keyword);
+
+    /**
+     * @brief getDelimiterKeyword returns the delimiter keyword for the given DB
+     * @param dbName
+     * @return
+     */
+    QString getDelimiterKeyword(const QString& dbName);
+
+    /**
+     * @brief setTriggerEvents
+     * @param dbName
+     * @param triggerEvents
+     */
+    void setTriggerEvents(const QString &dbName, const QStringList &triggerEvents);
+
+    QStringList getTriggerEvents(const QString &dbName);
+
+    void setTriggerTimes(const QString &dbName, const QStringList &triggerTimes);
+
+    QStringList getTriggerTimes(const QString &dbName);
+
+    void setSps(const QString& dbName, const QVector<Sp*> sps, const QMap<QString, QString> sqls, const QMap<QString, QString> tooltips);
+
 private:
     DatabaseEngineManager();
 
@@ -91,11 +135,32 @@ private:
     // the list of data type suppliers supported
     QMap<QString, AbstractDTSupplier*> m_dtSuppliers;
 
+    // the SQL generators
     QMap<QString, AbstractSqlGenerator*> m_sqlGenerators;
 
+    // the DB engines
     QMap<QString, DatabaseEngine*> m_dbEngines;
 
+    // stores the keywords, so that we don't have to keep them in the DB engines
+    QMap<QString, QStringList> m_keywords;
 
+    // the delimiter keywords for each database
+    QMap<QString, QString> m_delimiterKeywords;
+
+    // the map of trigger events per database
+    QMap<QString, QStringList> m_triggerEvents;
+
+    // the map of trigger times per database
+    QMap<QString, QStringList> m_triggerTimes;
+
+    // the SPs for each of the database
+    QMap<QString, QVector<Sp*> > m_sps;
+
+    // holds the tooltips of a given database (first key) for each SPs uid (second key)
+    QMap<QString, QMap<QString, QString> > m_spTooltips;
+
+    // holds the SQL command of a given database (first key) for each SPs uid (second key)
+    QMap<QString, QMap<QString, QString> > m_spSqlCommands;
 };
 
 #endif // DB_DATABASEENGINEMANAGER_H

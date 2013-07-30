@@ -24,7 +24,6 @@ public:
 
     virtual void setup();
     virtual bool executeSql(Connection* c, const QStringList& sqls, const QStringList& uid, QString& lastSql, bool rollbackOnError);
-    virtual QString getDefaultDatatypesLocation();
     virtual bool reverseEngineerDatabase(Connection *c, const QStringList& tables, const QStringList& views, const QStringList& procs, const QStringList& funcs, const QStringList& triggers, Project* p, bool relaxed);
     virtual Table* reverseEngineerTable(Connection *c, const QString& tableName, Project* p, bool relaxed, Version* ver);
     virtual View* reverseEngineerView(Connection *c, const QString& viewName, Version* v);
@@ -41,11 +40,6 @@ public:
     virtual QSqlDatabase getQSqlDatabaseForConnection(Connection *c) ;
     virtual QStringList getColumnsOfTable(Connection* c, const QString& tableName);
     virtual bool dropDatabase(Connection* c);
-    virtual QStringList getIndexTypes();
-    virtual QString getDelimiterKeyword();
-    virtual QStringList getTriggerEvents();
-    virtual QStringList getKeywords() const;
-    virtual QStringList getTriggerTimings();
     virtual Procedure* reverseEngineerProc(Connection *c, const QString& procName, Version *v);
     virtual Function* reverseEngineerFunc(Connection *c, const QString& funcName, Version* v);
     virtual Trigger* reverseEngineerTrigger(Connection *c, const QString& procName, Version* v);
@@ -74,8 +68,6 @@ private:
 
     QMultiMap <UserDataType*, Column*> m_revEngMappings;
     QMap <QString, UserDataType*> m_oneTimeMappings;
-    QStringList m_indexTypes;
-    QString m_defaultIndexType;
 
 private:
 

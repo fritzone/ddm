@@ -323,6 +323,7 @@ void WidgetForSpecificProperties::feedInSpecificProperties(const QVector<SpInsta
                         QStringList values = spi->getValues();
                         for(int j=0; j<values.size(); j++)
                         {
+                            qDebug() << values.at(j);
                             comboBox->addItem(values.at(j));
                         }
                     }

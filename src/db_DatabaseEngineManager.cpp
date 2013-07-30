@@ -117,3 +117,70 @@ void DatabaseEngineManager::constructDtSupplier(const QString& dbName, const QVe
     GenericDTSupplier* gdts = new GenericDTSupplier(dbtypes);
     addDtSupplier(dbName.toUpper(), gdts);
 }
+
+void DatabaseEngineManager::setKeywords(const QString &dbName, const QStringList &keywords)
+{
+    m_keywords[dbName.toUpper()] = keywords;
+}
+
+QStringList DatabaseEngineManager::getKeywords(const QString &dbName)
+{
+    if(m_keywords.contains(dbName.toUpper()))
+    {
+        return m_keywords[dbName.toUpper()];
+    }
+
+    return QStringList();
+}
+
+void DatabaseEngineManager::setDelimiterKeyword(const QString &dbName, const QString &keyword)
+{
+    m_delimiterKeywords[dbName.toUpper()] = keyword;
+}
+
+QString DatabaseEngineManager::getDelimiterKeyword(const QString &dbName)
+{
+    if(m_delimiterKeywords.contains(dbName.toUpper()))
+    {
+        return m_delimiterKeywords[dbName.toUpper()];
+    }
+
+    return "";
+}
+
+void DatabaseEngineManager::setTriggerEvents(const QString &dbName, const QStringList &triggerEvents)
+{
+    m_triggerEvents[dbName.toUpper()] = triggerEvents;
+}
+
+QStringList DatabaseEngineManager::getTriggerEvents(const QString &dbName)
+{
+    if(m_triggerEvents.contains(dbName.toUpper()))
+    {
+        return m_triggerEvents[dbName.toUpper()];
+    }
+
+    return QStringList();
+}
+
+void DatabaseEngineManager::setTriggerTimes(const QString &dbName, const QStringList &triggerTimes)
+{
+    m_triggerTimes[dbName.toUpper()] = triggerTimes;
+}
+
+QStringList DatabaseEngineManager::getTriggerTimes(const QString &dbName)
+{
+    if(m_triggerTimes.contains(dbName.toUpper()))
+    {
+        return m_triggerTimes[dbName.toUpper()];
+    }
+
+    return QStringList();
+}
+
+void DatabaseEngineManager::setSps(const QString& dbName, const QVector<Sp*> sps, const QMap<QString, QString> sqls, const QMap<QString, QString> tooltips)
+{
+    m_sps[dbName.toUpper()] = sps;
+    m_spSqlCommands[dbName.toUpper()] = sqls;
+    m_spTooltips[dbName.toUpper()] = tooltips;
+}

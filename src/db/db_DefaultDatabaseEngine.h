@@ -46,10 +46,15 @@ public:
     QString formatLastError(const QString& header, const QSqlError &error);
     QStringList getResultOfQuery(const QString& squery, Connection* conn, const QString &error, int column);
 
-    QString getDbMetadata(Connection *c);
-    bool injectMetadata(Connection *c, const Version *v);
-    bool tableBlocksForeignKeyFunctionality(const Table*) const;
-    Sp* getSpForSqlRole(const QString& uid) const;
+    virtual QString getDbMetadata(Connection *c);
+    virtual bool injectMetadata(Connection *c, const Version *v);
+    virtual bool tableBlocksForeignKeyFunctionality(const Table*) const;
+    virtual Sp* getSpForSqlRole(const QString& uid) const;
+    virtual QString getDefaultDatatypesLocation();
+    virtual QStringList getKeywords() const;
+    virtual QString getDelimiterKeyword();
+    virtual QStringList getTriggerEvents();
+    virtual QStringList getTriggerTimings();
 
 };
 
