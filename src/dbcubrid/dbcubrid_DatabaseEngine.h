@@ -34,8 +34,6 @@ public:
     virtual QStringList getAvailableStoredFunctions(Connection* c);
     virtual QStringList getAvailableTriggers(Connection* c);
     virtual bool createDatabase(Connection* c);
-    virtual QVector<DatabaseBuiltinFunction> getBuiltinFunctions();
-    virtual const DatabaseBuiltinFunction& getBuiltinFunction(const QString& name);
     virtual bool tryConnect(Connection* c);
     virtual QSqlDatabase getQSqlDatabaseForConnection(Connection *c) ;
     virtual QStringList getColumnsOfTable(Connection* c, const QString& tableName);
@@ -47,7 +45,6 @@ public:
     virtual QStringList getAvailableIndexes(Connection* c);
     virtual QString getTableCreationScript(Connection* c, const QString& tabName);
     virtual QString getViewCreationScript(Connection* c, const QString& tabName);
-    virtual QVector<Sp*> getDatabaseSpecificProperties() const;
     virtual bool supportsStoredMethods() {return true;}
     virtual QString spiExtension(QUuid) ;
 
@@ -57,7 +54,6 @@ private:
 private:
 
     static QVector<DatabaseBuiltinFunction> buildFunctions();
-    static QVector<Sp*> buildSps();
     static QString provideConnectionName(const QString&);
 
 private:
@@ -68,8 +64,6 @@ private:
 private:
 
     static CUBRIDDatabaseEngine* s_instance;
-    static QVector<DatabaseBuiltinFunction>* s_builtinFunctions;
-    static QVector<Sp*>* s_CUBRIDSpecificProperties;
     static int m_connectionCounter;
     static QMutex* m_connectionMutex;
 

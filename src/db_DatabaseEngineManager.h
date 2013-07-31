@@ -1,15 +1,19 @@
 #ifndef DB_DATABASEENGINEMANAGER_H
 #define DB_DATABASEENGINEMANAGER_H
 
+#include "db_DatabaseBuiltinFunction.h"
+
 #include <QStringList>
 #include <QMap>
 #include <QDomElement>
+#include <QUuid>
 
 class AbstractDTSupplier;
 class AbstractSqlGenerator;
 class DatabaseEngine;
 class GenericDatabaseType;
 class Sp;
+class DatabaseFunctionCategory;
 
 class DatabaseEngineManager
 {
@@ -122,6 +126,20 @@ public:
 
     void setSps(const QString& dbName, const QVector<Sp*> sps, const QMap<QString, QString> sqls, const QMap<QString, QString> tooltips);
 
+    QVector<Sp*> getSps(const QString& dbName);
+
+    QString getSpiExtensionSql(const QString& dbName, QUuid uid);
+
+    QString getSpiExtensionTooltip(const QString& dbName, QUuid uid);
+
+    void setFunctionCategories(const QString& dbName, QVector<DatabaseFunctionCategory*> categories);
+
+    QVector<DatabaseFunctionCategory*> getFunctionCategories(const QString& dbName);
+
+    void setFunctions(const QString& dbName, const QVector<DatabaseBuiltinFunction>& funcs);
+
+    QVector<DatabaseBuiltinFunction> getBuiltinFunctions(const QString& dbName);
+
 private:
     DatabaseEngineManager();
 
@@ -161,6 +179,12 @@ private:
 
     // holds the SQL command of a given database (first key) for each SPs uid (second key)
     QMap<QString, QMap<QString, QString> > m_spSqlCommands;
+
+    // holds the function categories of a database. Used in the query builder dialog
+    QMap<QString, QVector<DatabaseFunctionCategory*> > m_functionCategories;
+
+    // holds the functions of a database as defined in the repo
+    QMap<QString, QVector<DatabaseBuiltinFunction> > m_dbFunctions;
 };
 
 #endif // DB_DATABASEENGINEMANAGER_H

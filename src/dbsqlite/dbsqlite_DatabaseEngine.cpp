@@ -34,8 +34,6 @@
 #include "db_DatabaseEngineManager.h"
 #include "dbsqlite_SQLGenerator.h"
 
-QVector<DatabaseBuiltinFunction>* SqliteDatabaseEngine::s_builtinFunctions = 0;
-QVector<Sp*>* SqliteDatabaseEngine::s_sqliteSpecificProperties = 0;
 int SqliteDatabaseEngine::m_sqliteConnectionCounter = 1;
 QMutex* SqliteDatabaseEngine::m_connectionMutex = 0;
 SqliteDatabaseEngine* SqliteDatabaseEngine::s_instance = 0;
@@ -58,10 +56,6 @@ QUuid SqliteDatabaseEngine::getClassUid() const
 SqliteDatabaseEngine::SqliteDatabaseEngine() : DefaultDatabaseEngine("Sqlite", uidSqliteDb),
     m_revEngMappings(), m_oneTimeMappings()
 {
-    static QVector<DatabaseBuiltinFunction> v = buildFunctions();
-    static QVector<Sp*> t = buildSps();
-    s_sqliteSpecificProperties = &t;
-    s_builtinFunctions = &v;
     m_connectionMutex = new QMutex();
 }
 
@@ -624,62 +618,47 @@ bool SqliteDatabaseEngine::createDatabase(Connection* /*c*/)
     return true;
 }
 
-QVector<DatabaseBuiltinFunction> SqliteDatabaseEngine::getBuiltinFunctions()
-{
-    return *s_builtinFunctions;
-}
 
 
-QVector<DatabaseBuiltinFunction> SqliteDatabaseEngine::buildFunctions()
-{
-    static QVector<DatabaseBuiltinFunction> result;
-    QString X = QString("X");
+//QVector<DatabaseBuiltinFunction> SqliteDatabaseEngine::buildFunctions()
+//{
+//    static QVector<DatabaseBuiltinFunction> result;
+//    QString X = QString("X");
 
 
-#define RET_NUMERIC     UserDataType("return", DT_NUMERIC, nullUid, 0)
-#define RET_DATETIME    UserDataType("return", DT_DATETIME, nullUid, 0)
-#define RET_STRING      UserDataType("return", DT_STRING, nullUid, 0)
+//#define RET_NUMERIC     UserDataType("return", DT_NUMERIC, nullUid, 0)
+//#define RET_DATETIME    UserDataType("return", DT_DATETIME, nullUid, 0)
+//#define RET_STRING      UserDataType("return", DT_STRING, nullUid, 0)
 
-#define PAR_STRING      DatabaseBuiltinFunctionsParameter(X, UserDataType(X, DT_STRING, nullUid, 0), true)
-#define PAR_NUMERIC     DatabaseBuiltinFunctionsParameter(X, UserDataType(X, DT_NUMERIC, nullUid, 0), true)
-#define PAR_VARIABLE    DatabaseBuiltinFunctionsParameter(X, UserDataType(X, DT_VARIABLE, nullUid, 0), true)
+//#define PAR_STRING      DatabaseBuiltinFunctionsParameter(X, UserDataType(X, DT_STRING, nullUid, 0), true)
+//#define PAR_NUMERIC     DatabaseBuiltinFunctionsParameter(X, UserDataType(X, DT_NUMERIC, nullUid, 0), true)
+//#define PAR_VARIABLE    DatabaseBuiltinFunctionsParameter(X, UserDataType(X, DT_VARIABLE, nullUid, 0), true)
 
-#define OPAR_STRING      DatabaseBuiltinFunctionsParameter(X, UserDataType(X, DT_STRING, nullUid, 0), false)
-#define OPAR_NUMERIC     DatabaseBuiltinFunctionsParameter(X, UserDataType(X, DT_NUMERIC, nullUid, 0), false)
+//#define OPAR_STRING      DatabaseBuiltinFunctionsParameter(X, UserDataType(X, DT_STRING, nullUid, 0), false)
+//#define OPAR_NUMERIC     DatabaseBuiltinFunctionsParameter(X, UserDataType(X, DT_NUMERIC, nullUid, 0), false)
 
-#define FUNC result.append(DatabaseBuiltinFunction(QString
+//#define FUNC result.append(DatabaseBuiltinFunction(QString
 
-    FUNC("@if"),           FT_CONTROLFLOW,  RET_STRING, PAR_STRING, PAR_STRING, PAR_STRING, "IF(expr1,expr2,expr3) If expr1 is TRUE (expr1 <> 0 and expr1 <> NULL) then IF() returns expr2; otherwise it returns expr3. IF() returns a numeric or string value, depending on the context in which it is used."));
+//    FUNC("@if"),           FT_CONTROLFLOW,  RET_STRING, PAR_STRING, PAR_STRING, PAR_STRING, "IF(expr1,expr2,expr3) If expr1 is TRUE (expr1 <> 0 and expr1 <> NULL) then IF() returns expr2; otherwise it returns expr3. IF() returns a numeric or string value, depending on the context in which it is used."));
 
-    FUNC("@abs"),          FT_NUMERIC,   RET_NUMERIC, PAR_NUMERIC, "ABS(X) Returns the absolute value of X"));
+//    FUNC("@abs"),          FT_NUMERIC,   RET_NUMERIC, PAR_NUMERIC, "ABS(X) Returns the absolute value of X"));
 
-    FUNC("@date"),         FT_DATETIME,  RET_STRING, PAR_STRING, "DATE(expr) Extracts the date part of the date or datetime expression expr."));
-    FUNC("@time"),         FT_DATETIME,  RET_NUMERIC, PAR_STRING, "TIME(expr) Extracts the time part of the time or datetime expression expr and returns it as a string."));
+//    FUNC("@date"),         FT_DATETIME,  RET_STRING, PAR_STRING, "DATE(expr) Extracts the date part of the date or datetime expression expr."));
+//    FUNC("@time"),         FT_DATETIME,  RET_NUMERIC, PAR_STRING, "TIME(expr) Extracts the time part of the time or datetime expression expr and returns it as a string."));
 
-    FUNC("@avg"),          FT_AGGREGATE, RET_NUMERIC, PAR_NUMERIC,  "AVG(expr) Returns the average value of expr."));
-    FUNC("@count"),        FT_AGGREGATE, RET_NUMERIC, PAR_VARIABLE, "COUNT([DISTINCT]expr) Returns a count of the number of non-NULL values of expr in the rows retrieved by a SELECT statement. The result is a BIGINT value."));
-    FUNC("@group_concat"), FT_AGGREGATE, RET_STRING,  PAR_VARIABLE, "GROUP_CONCAT(expr) Returns a string result with the concatenated non-NULL values from a group. It returns NULL if there are no non-NULL values. "));
-    FUNC("@max"),          FT_AGGREGATE, RET_NUMERIC, PAR_NUMERIC,  "MAX(expr) Returns the max value of expr."));
-    FUNC("@min"),          FT_AGGREGATE, RET_NUMERIC, PAR_NUMERIC,  "MIN(expr) Returns the min value of expr."));
+//    FUNC("@avg"),          FT_AGGREGATE, RET_NUMERIC, PAR_NUMERIC,  "AVG(expr) Returns the average value of expr."));
+//    FUNC("@count"),        FT_AGGREGATE, RET_NUMERIC, PAR_VARIABLE, "COUNT([DISTINCT]expr) Returns a count of the number of non-NULL values of expr in the rows retrieved by a SELECT statement. The result is a BIGINT value."));
+//    FUNC("@group_concat"), FT_AGGREGATE, RET_STRING,  PAR_VARIABLE, "GROUP_CONCAT(expr) Returns a string result with the concatenated non-NULL values from a group. It returns NULL if there are no non-NULL values. "));
+//    FUNC("@max"),          FT_AGGREGATE, RET_NUMERIC, PAR_NUMERIC,  "MAX(expr) Returns the max value of expr."));
+//    FUNC("@min"),          FT_AGGREGATE, RET_NUMERIC, PAR_NUMERIC,  "MIN(expr) Returns the min value of expr."));
 
-    FUNC("@char"),         FT_STRING,   RET_STRING,   PAR_NUMERIC, PAR_VARIABLE,  "CHAR(N,...) interprets each argument N as an integer and returns a string consisting of the characters given by the code values of those integers. NULL values are skipped."));
-    FUNC("@upper"),        FT_STRING,   RET_STRING,   PAR_STRING, "UPPER(str) Returns the string str with all characters changed to uppercase according to the current character set mapping."));
+//    FUNC("@char"),         FT_STRING,   RET_STRING,   PAR_NUMERIC, PAR_VARIABLE,  "CHAR(N,...) interprets each argument N as an integer and returns a string consisting of the characters given by the code values of those integers. NULL values are skipped."));
+//    FUNC("@upper"),        FT_STRING,   RET_STRING,   PAR_STRING, "UPPER(str) Returns the string str with all characters changed to uppercase according to the current character set mapping."));
 
-    return result;
-}
+//    return result;
+//}
 
-const DatabaseBuiltinFunction& SqliteDatabaseEngine::getBuiltinFunction(const QString& name)
-{
-    static DatabaseBuiltinFunction no_function;
-    for(int i=0; i<(*s_builtinFunctions).size(); i++)
-    {
-        if((*s_builtinFunctions).at(i).getName().mid(1).toUpper() == name.toUpper())   // remove the leading @
-        {
-            return (*s_builtinFunctions).at(i);
-        }
-    }
-    return no_function;
-}
+
 
 bool SqliteDatabaseEngine::tryConnect(Connection* c)
 {
@@ -921,27 +900,6 @@ QString SqliteDatabaseEngine::getViewCreationScript(Connection* c, const QString
     }
     db.close();
     return result;
-}
-
-// TODO: find a way to not to create this vector all the time
-QVector<Sp*> SqliteDatabaseEngine::getDatabaseSpecificProperties() const
-{
-    return *s_sqliteSpecificProperties;
-}
-
-QVector<Sp*> SqliteDatabaseEngine::buildSps()
-{
-    QVector<Sp*> result;
-    return result;
-}
-
-QString SqliteDatabaseEngine::spiExtension(QUuid uid)
-{
-    if(uid.toString() == uidTemporaryTable) { return "TEMPORARY"; }
-    if(uid.toString() == uidIfDoesNotExistTable) { return "if not exists"; }
-    if(uid.toString() == uidColumnAutoIncrement) { return "autoincrement"; }
-
-    return "";
 }
 
 void SqliteDatabaseEngine::setup()

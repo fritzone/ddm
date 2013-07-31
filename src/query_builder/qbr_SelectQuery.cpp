@@ -91,7 +91,7 @@ QueryGraphicsItem* SelectQuery::createGraphicsItem(QueryGraphicsHelper*, QueryGr
 
     if(m_select)
     {
-        const QList<QueryComponent*>& selectsChildren = getChildren();
+        const QList<QueryComponent*>& selectsChildren = m_select->getChildren();
         for(int i=0; i<selectsChildren.size(); i++)
         {
             QueryGraphicsItem* gritmI = selectsChildren[i]->createGraphicsItem(m_helper,

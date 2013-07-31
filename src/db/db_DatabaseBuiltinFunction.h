@@ -1,10 +1,11 @@
 #ifndef DATABASEBUILTINFUNCTION_H
 #define DATABASEBUILTINFUNCTION_H
 
-#include "qbr_OptionTypes.h"
-#include "db_DatabaseBuiltinFunctionsParameter.h"
 #include "core_NamedItem.h"
 #include "core_UserDataType.h"
+
+#include "db_DatabaseBuiltinFunctionsParameter.h"
+#include "db_DatabaseFunctionCategory.h"
 
 #include <QVector>
 
@@ -16,96 +17,20 @@ class DatabaseBuiltinFunction : public NamedItem
 {
 public:
     explicit DatabaseBuiltinFunction() : NamedItem("invalid"),
-        m_type(FT_INVALID),
+        m_type(),
         m_returnType("return", DT_INVALID, nullUid, Workspace::getInstance()->currentProject()->getWorkingVersion()),
         m_parameters(),
         m_description("")
     {}
 
-    explicit DatabaseBuiltinFunction(QString name, FunctionType type, const UserDataType& returnType, const QString& desc) :
+    explicit DatabaseBuiltinFunction(QString name, DatabaseFunctionCategory type, const UserDataType& returnType, const QVector<DatabaseBuiltinFunctionsParameter>& p1, const QString& desc) :
             NamedItem(name),
             m_type(type),
             m_returnType(returnType),
             m_parameters(),
             m_description(desc)
     {
-    }
-
-
-
-    explicit DatabaseBuiltinFunction(QString name, FunctionType type, const UserDataType& returnType, DatabaseBuiltinFunctionsParameter p1, const QString& desc) :
-            NamedItem(name),
-            m_type(type),
-            m_returnType(returnType),
-            m_parameters(),
-            m_description(desc)
-    {
-        m_parameters << p1;
-    }
-
-    explicit DatabaseBuiltinFunction(QString name, FunctionType type, const UserDataType& returnType, DatabaseBuiltinFunctionsParameter p1,
-                                     DatabaseBuiltinFunctionsParameter p2, const QString& desc) :
-        NamedItem(name),
-        m_type(type),
-        m_returnType(returnType),
-        m_parameters(),
-        m_description(desc)
-    {
-        m_parameters << p1;
-        m_parameters << p2;
-    }
-
-    explicit DatabaseBuiltinFunction(QString name, FunctionType type, const UserDataType& returnType,
-                                     DatabaseBuiltinFunctionsParameter p1,
-                                     DatabaseBuiltinFunctionsParameter p2,
-                                     DatabaseBuiltinFunctionsParameter p3,
-                                     const QString& desc) : NamedItem(name), m_type(type), m_returnType(returnType), m_parameters(), m_description(desc)
-    {
-        m_parameters << p1;
-        m_parameters << p2;
-        m_parameters << p3;
-    }
-
-    explicit DatabaseBuiltinFunction(QString name, FunctionType type, const UserDataType& returnType, DatabaseBuiltinFunctionsParameter p1,
-                                     DatabaseBuiltinFunctionsParameter p2,
-                                     DatabaseBuiltinFunctionsParameter p3,
-                                     DatabaseBuiltinFunctionsParameter p4,
-                                     const QString& desc) : NamedItem(name), m_type(type), m_returnType(returnType), m_parameters(), m_description(desc)
-    {
-        m_parameters << p1;
-        m_parameters << p2;
-        m_parameters << p3;
-        m_parameters << p4;
-    }
-
-    explicit DatabaseBuiltinFunction(QString name, FunctionType type, const UserDataType& returnType, DatabaseBuiltinFunctionsParameter p1,
-                                     DatabaseBuiltinFunctionsParameter p2,
-                                     DatabaseBuiltinFunctionsParameter p3,
-                                     DatabaseBuiltinFunctionsParameter p4,
-                                     DatabaseBuiltinFunctionsParameter p5,
-                                     const QString& desc) : NamedItem(name), m_type(type), m_returnType(returnType), m_parameters(), m_description(desc)
-    {
-        m_parameters << p1;
-        m_parameters << p2;
-        m_parameters << p3;
-        m_parameters << p4;
-        m_parameters << p5;
-    }
-
-    explicit DatabaseBuiltinFunction(QString name, FunctionType type, const UserDataType& returnType, DatabaseBuiltinFunctionsParameter p1,
-                                     DatabaseBuiltinFunctionsParameter p2,
-                                     DatabaseBuiltinFunctionsParameter p3,
-                                     DatabaseBuiltinFunctionsParameter p4,
-                                     DatabaseBuiltinFunctionsParameter p5,
-                                     DatabaseBuiltinFunctionsParameter p6,
-                                     const QString& desc) : NamedItem(name), m_type(type), m_returnType(returnType), m_parameters(), m_description(desc)
-    {
-        m_parameters << p1;
-        m_parameters << p2;
-        m_parameters << p3;
-        m_parameters << p4;
-        m_parameters << p5;
-        m_parameters << p6;
+        m_parameters = p1;
     }
 
     int getParameterCount() const
@@ -118,11 +43,10 @@ public:
         return m_description;
     }
 
-    FunctionType getType() const
+    const DatabaseFunctionCategory& getType() const
     {
         return m_type;
     }
-
 
     QString getNiceName() const
     {
@@ -131,7 +55,7 @@ public:
     }
 
 private:
-    FunctionType m_type;
+    DatabaseFunctionCategory m_type;
     UserDataType m_returnType;
     QVector<DatabaseBuiltinFunctionsParameter> m_parameters;
     QString m_description;

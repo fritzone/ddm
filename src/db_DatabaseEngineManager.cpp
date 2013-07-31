@@ -184,3 +184,70 @@ void DatabaseEngineManager::setSps(const QString& dbName, const QVector<Sp*> sps
     m_spSqlCommands[dbName.toUpper()] = sqls;
     m_spTooltips[dbName.toUpper()] = tooltips;
 }
+
+QVector<Sp *> DatabaseEngineManager::getSps(const QString &dbName)
+{
+    if(m_sps.contains(dbName.toUpper()))
+    {
+        return m_sps[dbName.toUpper()];
+    }
+
+    return QVector<Sp*>();
+}
+
+QString DatabaseEngineManager::getSpiExtensionSql(const QString &dbName, QUuid uid)
+{
+    if(m_spSqlCommands.contains(dbName.toUpper()))
+    {
+        if(m_spSqlCommands[dbName.toUpper()].contains(uid.toString()))
+        {
+            return m_spSqlCommands[dbName.toUpper()].value(uid.toString());
+        }
+    }
+
+    return "";
+}
+
+QString DatabaseEngineManager::getSpiExtensionTooltip(const QString &dbName, QUuid uid)
+{
+    if(m_spTooltips.contains(dbName.toUpper()))
+    {
+        if(m_spTooltips[dbName.toUpper()].contains(uid.toString()))
+        {
+            return m_spTooltips[dbName.toUpper()].value(uid.toString());
+        }
+    }
+
+    return "";
+}
+
+void DatabaseEngineManager::setFunctionCategories(const QString &dbName, QVector<DatabaseFunctionCategory *> categories)
+{
+    m_functionCategories[dbName.toUpper()] = categories;
+}
+
+QVector<DatabaseFunctionCategory *> DatabaseEngineManager::getFunctionCategories(const QString &dbName)
+{
+    if(m_functionCategories.contains(dbName.toUpper()))
+    {
+        return m_functionCategories[dbName.toUpper()];
+    }
+
+    return QVector<DatabaseFunctionCategory*>();
+}
+
+void DatabaseEngineManager::setFunctions(const QString &dbName, const QVector<DatabaseBuiltinFunction> &funcs)
+{
+    m_dbFunctions[dbName.toUpper()] = funcs;
+}
+
+QVector<DatabaseBuiltinFunction> DatabaseEngineManager::getBuiltinFunctions(const QString &dbName)
+{
+    if(m_dbFunctions.contains(dbName.toUpper()))
+    {
+        return m_dbFunctions[dbName.toUpper()];
+    }
+
+    return QVector<DatabaseBuiltinFunction>();
+}
+

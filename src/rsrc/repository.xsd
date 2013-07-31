@@ -21,6 +21,10 @@
         <xs:element ref="keywords"/>
         <xs:element ref="trigger-defs"/>
         <xs:element minOccurs="0" ref="spis"/>
+        <xs:sequence minOccurs="0">
+          <xs:element ref="function-categories"/>
+          <xs:element ref="functions"/>
+        </xs:sequence>
       </xs:sequence>
       <xs:attribute name="class-uid" use="required"/>
       <xs:attribute name="id" use="required" type="xs:NCName"/>
@@ -91,11 +95,60 @@
       <xs:attribute name="gui-text" use="required"/>
       <xs:attribute name="name" use="required" type="xs:NCName"/>
       <xs:attribute name="referred-class-uid" use="required"/>
-      <xs:attribute name="sql" use="required"/>
+      <xs:attribute name="sql"/>
       <xs:attribute name="sql-role-uid" use="required"/>
     </xs:complexType>
   </xs:element>
   <xs:element name="tooltip" type="xs:string"/>
+  <xs:element name="function-categories">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" ref="function-category"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="function-category">
+    <xs:complexType>
+      <xs:attribute name="id" use="required" type="xs:NCName"/>
+      <xs:attribute name="name" use="required"/>
+      <xs:attribute name="role" type="xs:NCName"/>
+      <xs:attribute name="value" use="required" type="xs:integer"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="functions">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" ref="function"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="function">
+    <xs:complexType mixed="true">
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element ref="description"/>
+        <xs:element ref="parameters"/>
+      </xs:choice>
+      <xs:attribute name="category" use="required" type="xs:NCName"/>
+      <xs:attribute name="category-value" use="required" type="xs:integer"/>
+      <xs:attribute name="name" use="required"/>
+      <xs:attribute name="return" use="required" type="xs:NCName"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="description" type="xs:string"/>
+  <xs:element name="parameters">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" maxOccurs="unbounded" ref="parameter"/>
+      </xs:sequence>
+      <xs:attribute name="count" use="required" type="xs:integer"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="parameter">
+    <xs:complexType>
+      <xs:attribute name="name" use="required"/>
+      <xs:attribute name="type" use="required" type="xs:NCName"/>
+    </xs:complexType>
+  </xs:element>
   <xs:element name="datatype">
     <xs:complexType>
       <xs:attribute name="default" type="xs:integer"/>

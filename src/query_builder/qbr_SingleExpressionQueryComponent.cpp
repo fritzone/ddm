@@ -619,7 +619,7 @@ bool SingleExpressionQueryComponent::hasGroupByFunctions()
     QMap<int, const DatabaseBuiltinFunction*>::const_iterator it = m_functionsAtGivenPosition.constBegin();
     while (it != m_functionsAtGivenPosition.constEnd())
     {
-        if(it.value()->getType() == FT_AGGREGATE)
+        if(it.value()->getType().isAggregate())
         {
             return true;
         }
