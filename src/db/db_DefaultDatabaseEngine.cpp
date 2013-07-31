@@ -18,7 +18,17 @@ ForeignKey* DefaultDatabaseEngine::createForeignKey(bool& foundAtLeastOneForeign
                                              const QString& name)
 {
     Table* referenceeTable = v->getTable(referenceeTableName);
+    if(!referenceeTable)    // we might have not reverse engineered this table
+    {
+        return 0;
+    }
+
     Table* referencedTable = v->getTable(referencedTableName);
+    if(!referencedTable)
+    {
+        return 0;
+    }
+
     Column* referenceeColumn = referenceeTable->getColumn(referenceeColumnName);
     Column* referencedColumn = referencedTable->getColumn(referencedColumnName);
     // now we should check that the columns have the same data type ...
@@ -245,4 +255,32 @@ QStringList DefaultDatabaseEngine::getTriggerEvents()
 QStringList DefaultDatabaseEngine::getTriggerTimings()
 {
     return DatabaseEngineManager::instance().getTriggerTimes(getName().toUpper());
+}
+
+QString DefaultDatabaseEngine::spiExtension(QUuid uid)
+{
+    return DatabaseEngineManager::instance().getSpiExtensionSql(getName().toUpper(), uid);
+}
+
+QVector<Sp *> DefaultDatabaseEngine::getDatabaseSpecificProperties() const
+{
+    return DatabaseEngineManager::instance().getSps(getName().toUpper());
+}
+
+QVector<DatabaseBuiltinFunction> DefaultDatabaseEngine::getBuiltinFunctions()
+{
+    return DatabaseEngineManager::instance().getBuiltinFunctions(getName().toUpper());
+}
+
+const DatabaseBuiltinFunction& DefaultDatabaseEngine::getBuiltinFunction(const QString& name)
+{
+    static DatabaseBuiltinFunction no_function;
+    for(int i=0; i< getBuiltinFunctions().size(); i++)
+    {
+        if(getBuiltinFunctions().at(i).getName().mid(1).toUpper() == name.toUpper())   // remove the leading @
+        {
+            return getBuiltinFunctions().at(i);
+        }
+    }
+    return no_function;
 }

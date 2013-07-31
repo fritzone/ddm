@@ -4,12 +4,12 @@
 #include "db_SP.h"
 #include "SpInstance.h"
 #include "ObjectWithSpInstances.h"
-#include "SpsTooltipProviderForUid.h"
 #include "ValueListSp.h"
 #include "ValueListSpInstance.h"
 #include "core_Column.h"
 #include "db_DatabaseEngine.h"
 #include "core_UserDataType.h"
+#include "db_DatabaseEngineManager.h"
 #include "strings.h"
 
 #include <QLabel>
@@ -283,7 +283,7 @@ void WidgetForSpecificProperties::feedInSpecificProperties(const QVector<SpInsta
             {
                 QCheckBox* checkBox = new QCheckBox(page);
                 checkBox->setText(spInstances.at(i)->getClass()->getPropertyGuiText());
-                checkBox->setToolTip(SpsTooltipProviderForUid::provideTooltipForUid(spInstances.at(i)->getClass()->getSqlRoleUid()));
+                checkBox->setToolTip(DatabaseEngineManager::instance().getSpiExtensionTooltip(m_dbEngine->getName().toUpper(),spInstances.at(i)->getClass()->getSqlRoleUid()));
                 formLayout->setWidget(m_rowsForGroups[group], QFormLayout::FieldRole, checkBox);
                 UidToWidget* uiw = new UidToWidget(spInstances.at(i));
                 uiw->objectUid = spInstances.at(i)->getObjectUid();
@@ -331,6 +331,7 @@ void WidgetForSpecificProperties::feedInSpecificProperties(const QVector<SpInsta
 
                 QLabel* label = new QLabel(page);
                 label->setText(spInstances.at(i)->getClass()->getPropertyGuiText());
+                comboBox->setToolTip(DatabaseEngineManager::instance().getSpiExtensionTooltip(m_dbEngine->getName().toUpper(),spInstances.at(i)->getClass()->getSqlRoleUid()));
                 formLayout->setWidget(m_rowsForGroups[group], QFormLayout::LabelRole, label);
                 formLayout->setWidget(m_rowsForGroups[group], QFormLayout::FieldRole, comboBox);
                 UidToWidget* uiw = new UidToWidget(spInstances.at(i));
@@ -345,12 +346,13 @@ void WidgetForSpecificProperties::feedInSpecificProperties(const QVector<SpInsta
                 connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(comboBoxSelected(int))); // must be the last line
             }
 
-            if(spInstances.at(i)->getClass()->getClassUid().toString() == uidValueSp)
+            if(spInstances.at(i)->getClass()->getClassUid().toString() == uidValueSp) // create a text edit
             {   // create a QLineEdit
                 QLineEdit* lstValueSp = new QLineEdit(page);
                 QLabel* label = new QLabel(page);
 
                 lstValueSp->setText(spInstances.at(i)->get());
+                lstValueSp->setToolTip(DatabaseEngineManager::instance().getSpiExtensionTooltip(m_dbEngine->getName().toUpper(),spInstances.at(i)->getClass()->getSqlRoleUid()));
                 label->setText(spInstances.at(i)->getClass()->getPropertyGuiText());
                 formLayout->setWidget(m_rowsForGroups[group], QFormLayout::LabelRole, label);
                 formLayout->setWidget(m_rowsForGroups[group], QFormLayout::FieldRole, lstValueSp);

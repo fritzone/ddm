@@ -23,7 +23,6 @@ SOURCES += main.cpp \
     IssueManager.cpp \
     helper_MostRecentlyUsedFiles.cpp \
     UidWarehouse.cpp \
-    SpsTooltipProviderForUid.cpp \
     DocumentationGenerator.cpp \
     TableUpdateGenerator.cpp \
     VersionUpdateGenerator.cpp \
@@ -46,7 +45,6 @@ HEADERS += \
     commons.h \
     uids.h \
     UidWarehouse.h \
-    SpsTooltipProviderForUid.h \
     DocumentationGenerator.h \
     TableUpdateGenerator.h \
     VersionUpdateGenerator.h \

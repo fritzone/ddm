@@ -55,7 +55,10 @@ public:
     virtual QString getDelimiterKeyword();
     virtual QStringList getTriggerEvents();
     virtual QStringList getTriggerTimings();
-
+    virtual QString spiExtension(QUuid);
+    virtual QVector<Sp*> getDatabaseSpecificProperties() const;
+    virtual QVector<DatabaseBuiltinFunction> getBuiltinFunctions();
+    const DatabaseBuiltinFunction& getBuiltinFunction(const QString& name);
 };
 
 #endif // DB_DEFAULTDATABASEENGINE_H

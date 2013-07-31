@@ -1,16 +1,20 @@
 #include "core_Repository.h"
+#include "core_Role.h"
+#include "core_UserDataType.h"
+#include "core_Entity.h"
+
+#include "db_GenericDatabaseType.h"
+#include "db_DatabaseFunctionCategory.h"
+#include "db_DatabaseBuiltinFunction.h"
+#include "db_DatabaseBuiltinFunctionsParameter.h"
 #include "db_DatabaseEngineManager.h"
 #include "db_DatabaseEngine.h"
-#include "core_Role.h"
-#include "core_Entity.h"
-#include "uids.h"
-#include "db_GenericDatabaseType.h"
-#include "core_UserDataType.h"
-
 #include "db_SP.h"
 #include "TrueFalseSp.h"
 #include "ValueSp.h"
 #include "ValueListSp.h"
+
+#include "uids.h"
 
 #include <QApplication>
 #include <QDomDocument>
@@ -23,13 +27,14 @@ Repository::Repository()
 {
     QDomDocument doc ("xml");
     QString filename = QApplication::applicationDirPath() + "/rsrc/repository.xml";
-    qDebug()  << filename;
+
     QFile file (filename);
     if (file.open(QIODevice::ReadOnly))
     {
         if (!doc.setContent(&file))
         {
             file.close();
+            qDebug() << "Cannot set XML content. Giving up the idea of repository";
             return;
         }
         file.close();
@@ -114,6 +119,7 @@ void Repository::addDatabase(const QDomElement & el)
         QVector<Sp*> sps;
         QMap<QString, QString> spsTooltips;
         QMap<QString, QString> spsSqls;
+        QVector<DatabaseFunctionCategory*> funcCategories;
 
         for(int i=0; i<el.childNodes().size(); i++)
         {
@@ -176,6 +182,20 @@ void Repository::addDatabase(const QDomElement & el)
                     }
                 }
             }
+            if(el.childNodes().at(i).nodeName() == "function-categories")
+            {
+                for(int j=0; j<el.childNodes().at(i).childNodes().size(); j++)
+                {
+                    QDomElement funcCatgEl = el.childNodes().at(i).childNodes().at(j).toElement();
+                    QString sname = funcCatgEl.attribute("name");
+                    QString sid = funcCatgEl.attribute("id");
+                    int val = funcCatgEl.attribute("value").toInt();
+                    bool isAggregate = funcCatgEl.hasAttribute("role") && funcCatgEl.attribute("role").toUpper() == "AGGREGATE"?true:false;
+                    DatabaseFunctionCategory* dfc = new DatabaseFunctionCategory(sname, sid, val, isAggregate);
+                    funcCategories.append(dfc);
+                }
+            }
+
             if(el.childNodes().at(i).nodeName() == "spis")
             {
                 for(int j=0; j<el.childNodes().at(i).childNodes().size(); j++)
@@ -238,15 +258,138 @@ void Repository::addDatabase(const QDomElement & el)
             }
         }
 
+        QVector<DatabaseBuiltinFunction> dbFunctions;
+        // the functions need to be constructed after the other parts
+        for(int i=0; i<el.childNodes().size(); i++)
+        {
+            if(el.childNodes().at(i).nodeName() == "functions")
+            {
+                for(int j=0; j<el.childNodes().at(i).childNodes().size(); j++)
+                {
+                    QString X = QString("X");
+
+                    QDomElement funcEl = el.childNodes().at(i).childNodes().at(j).toElement();
+                    QString name = funcEl.attribute("name");
+                    QString category = funcEl.attribute("category");
+                    QString retType = funcEl.attribute("return");
+                    int category_value = funcEl.attribute("category-value").toInt();
+                    QString desc = "";
+
+                    // the description
+                    QDomElement elDesc = funcEl.firstChildElement("description");
+                    if(!elDesc.isNull())
+                    {
+                        desc = elDesc.firstChild().toCDATASection().data();
+                    }
+
+                    // building the parameters
+                    QVector<DatabaseBuiltinFunctionsParameter> parameters;
+                    QDomElement elParams = funcEl.firstChildElement("parameters");
+                    if(!elParams.isNull())
+                    {
+                        int parCount = elParams.attribute("count").toInt();
+                        if(parCount != elParams.childNodes().size())
+                        {
+                            qDebug() << "func par mismatch:" << name;
+                        }
+                        else
+                        {
+                            for(int k=0; k<elParams.childNodes().size(); k++)
+                            {
+                                QDomElement elParam = elParams.childNodes().at(k).toElement();
+                                QString paramType = elParam.attribute("type");
+                                if(paramType.toUpper().endsWith("PAR_NUMERIC"))
+                                {
+                                    if(paramType.toUpper().startsWith("O"))
+                                    {
+                                        parameters.append(DatabaseBuiltinFunctionsParameter(X, UserDataType(X, DT_NUMERIC, nullUid, 0), false));
+                                    }
+                                    else
+                                    {
+                                        parameters.append(DatabaseBuiltinFunctionsParameter(X, UserDataType(X, DT_NUMERIC, nullUid, 0), true));
+                                    }
+                                }
+                                if(paramType.toUpper().endsWith("PAR_STRING"))
+                                {
+                                    if(paramType.toUpper().startsWith("O"))
+                                    {
+                                        parameters.append(DatabaseBuiltinFunctionsParameter(X, UserDataType(X, DT_STRING, nullUid, 0), false));
+                                    }
+                                    else
+                                    {
+                                        parameters.append(DatabaseBuiltinFunctionsParameter(X, UserDataType(X, DT_STRING, nullUid, 0), true));
+                                    }
+                                }
+                                if(paramType.toUpper().endsWith("PAR_VARIABLE"))
+                                {
+                                    parameters.append(DatabaseBuiltinFunctionsParameter(X, UserDataType(X, DT_VARIABLE, nullUid, 0), true));
+                                }
+
+                            }
+                        }
+                    }
+
+                    // fetching the function category
+                    DatabaseFunctionCategory* dbfct = 0;
+                    for(int k=0; k<funcCategories.size(); k++)
+                    {
+                        if(funcCategories[k]->getIdName().toUpper() == category.toUpper())
+                        {
+                            dbfct = funcCategories[k];
+                            break;
+                        }
+                    }
+
+                    if(dbfct == 0)
+                    {
+                        qDebug() << "Not found a function category for: " << category << "func name:" << name;
+                        return;
+                    }
+
+                    if(category_value != dbfct->getId())
+                    {
+                        qDebug() << "Something wrong with func:" << name;
+                        return;
+                    }
+
+                    // creating the return type
+                    UserDataType* retTypeDataType = 0;
+                    if(retType.toUpper() == "RET_NUMERIC")
+                    {
+                        retTypeDataType = new UserDataType("return", DT_NUMERIC, nullUid, 0);
+                    }
+                    if(retType.toUpper() == "RET_DATETIME")
+                    {
+                        retTypeDataType = new UserDataType("return", DT_DATETIME, nullUid, 0);
+                    }
+                    if(retType.toUpper() == "RET_STRING")
+                    {
+                        retTypeDataType = new UserDataType("return", DT_STRING, nullUid, 0);
+                    }
+                    if(retTypeDataType == 0)
+                    {
+                        qDebug() << "Not found a return type for:" << retType;
+                        return;
+                    }
+
+                    // and creating the function itself
+                    dbFunctions.append(DatabaseBuiltinFunction(name, *dbfct, *retTypeDataType, parameters, desc));
+
+                }
+            }
+        }
+
         DatabaseEngineManager::instance().constructDtSupplier(dbId, gdbts);
         DatabaseEngineManager::instance().setKeywords(dbId, keywords);
         DatabaseEngineManager::instance().setDelimiterKeyword(dbId, delimiterKeyword);
         DatabaseEngineManager::instance().setTriggerEvents(dbId, triggerEvents);
         DatabaseEngineManager::instance().setTriggerTimes(dbId, triggerTimes);
+        DatabaseEngineManager::instance().setFunctionCategories(dbId, funcCategories);
         if(!sps.empty())
         {
             DatabaseEngineManager::instance().setSps(dbId.toUpper(), sps, spsSqls, spsTooltips);
         }
+        DatabaseEngineManager::instance().setFunctions(dbId, dbFunctions);
     }
 }
 
