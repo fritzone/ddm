@@ -46,7 +46,6 @@ public:
     virtual QString getTableCreationScript(Connection* c, const QString& tabName);
     virtual QString getViewCreationScript(Connection* c, const QString& tabName);
     virtual bool supportsStoredMethods() {return true;}
-    virtual QString spiExtension(QUuid) ;
 
 private:
     CUBRIDDatabaseEngine();

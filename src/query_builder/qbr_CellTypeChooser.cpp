@@ -43,7 +43,10 @@ QGraphicsItemGroup* CellTypeChooser::render(int& x, int& y, int& w, int &/*h*/)
     int size = width;
     w = size;
     m_needsFrame = true;
-    if(m_currentType == CELLTYPE_CURSOR)
+    if(m_currentType == CELLTYPE_CURSOR
+            || m_currentType == CELLTYPE_OPEN_PARANTHESES_FOR_FUNCTION_CALL
+            || m_currentType == CELLTYPE_CLOSE_PARANTHESES_FOR_FUNCTION_CALL
+            || m_currentType == CELLTYPE_COMMA)
     {
         w /= 2;
         width = w;
@@ -79,6 +82,7 @@ QGraphicsItemGroup* CellTypeChooser::render(int& x, int& y, int& w, int &/*h*/)
 
     QMap<CellTypeChooserType,QString> textMappings;
     textMappings[CELLTYPE_NOT_TEXT] = strNotText;
+    textMappings[CELLTYPE_COMMA] = strComma;
     textMappings[CELLTYPE_LIKE] = strLike;
     textMappings[CELLTYPE_DISTINCT] = strDistinct;
     textMappings[CELLTYPE_IN] = strIn;
@@ -93,7 +97,14 @@ QGraphicsItemGroup* CellTypeChooser::render(int& x, int& y, int& w, int &/*h*/)
 
     if(iconMappings.contains(m_currentType))
     {
-        typeIcon = new QGraphicsPixmapItem(iconMappings[m_currentType].pixmap(size, size), this);
+        if(m_currentType == CELLTYPE_OPEN_PARANTHESES_FOR_FUNCTION_CALL || m_currentType == CELLTYPE_CLOSE_PARANTHESES_FOR_FUNCTION_CALL)
+        {
+            typeIcon = new QGraphicsPixmapItem(iconMappings[m_currentType].pixmap(8, size), this);
+        }
+        else
+        {
+            typeIcon = new QGraphicsPixmapItem(iconMappings[m_currentType].pixmap(size, size), this);
+        }
         m_needsFrame = false;
     }
     else
@@ -218,8 +229,16 @@ QGraphicsItemGroup* CellTypeChooser::render(int& x, int& y, int& w, int &/*h*/)
         typeIcon->setY(y);
     }
 
-    // parantheses do not take any user input... unless the user wants them
-    if(m_currentType == CELLTYPE_CLOSE_PARANTHESES_FOR_FUNCTION_CALL || m_currentType == CELLTYPE_OPEN_PARANTHESES_FOR_FUNCTION_CALL || m_currentType == CELLTYPE_QUERY_AND || m_currentType == CELLTYPE_QUERY_OR ) return this;
+    // parantheses, Query AND/OR and Function parameter separator commas have no user input...
+    if(m_currentType == CELLTYPE_CLOSE_PARANTHESES_FOR_FUNCTION_CALL
+            || m_currentType == CELLTYPE_OPEN_PARANTHESES_FOR_FUNCTION_CALL
+            || m_currentType == CELLTYPE_QUERY_AND
+            || m_currentType == CELLTYPE_QUERY_OR
+            //|| m_currentType == CELLTYPE_COMMA
+            )
+    {
+        return this;
+    }
 
     QRect r(x, y, width-1, size-1);
     m_helper->addNewHotCell(this, r);
@@ -250,8 +269,12 @@ void CellTypeChooser::updateWidth(int /*newWidth*/)
 
 void CellTypeChooser::mouseMove(int /*x*/, int /*y*/)
 {
-    if(m_currentType == CELLTYPE_CLOSE_PARANTHESES_FOR_FUNCTION_CALL || m_currentType == CELLTYPE_OPEN_PARANTHESES_FOR_FUNCTION_CALL) return;
-    if(!m_needsFrame) return;
+    if(m_currentType == CELLTYPE_CLOSE_PARANTHESES_FOR_FUNCTION_CALL
+            || m_currentType == CELLTYPE_OPEN_PARANTHESES_FOR_FUNCTION_CALL)
+    {
+        return;
+    }
+
 
     QPen thick;
     thick.setWidth(2);
@@ -259,18 +282,26 @@ void CellTypeChooser::mouseMove(int /*x*/, int /*y*/)
     {
         thick.setStyle(Qt::DashLine);
     }
+    if(!m_needsFrame)
+    {
+        thick.setWidth(1);
+    }
     m_rect->setPen(thick);
 
 }
 
 void CellTypeChooser::mouseLeft(int /*x*/, int /*y*/)
 {
-    if(!m_needsFrame) return;
     QPen normal;
     normal.setWidth(1);
     if(m_currentType == CELLTYPE_CURSOR)
     {
         normal.setStyle(Qt::DashLine);
+    }
+
+    if(!m_needsFrame)
+    {
+        normal.setColor(Qt::white);
     }
     m_rect->setPen(normal);
 

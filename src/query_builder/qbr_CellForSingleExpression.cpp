@@ -44,45 +44,64 @@ QGraphicsItemGroup* CellForSingleExpression::render(int &x, int &y, int &w, int 
         QVector<CellTypeChooserType> elements = owner->getElements();
         for(i = 0; i<elements.size(); i++)
         {
-            CellTypeChooser* bigTypeModifier = new CellTypeChooser(m_level, CellTypeChooser::CELLTYPECHOOSER_BIG, elements.at(i), QSet<CellTypeChooserType>(), m_helper, this, m_owner, i);
+            CellTypeChooser* bigTypeModifier = new CellTypeChooser(m_level,
+                                                                   CellTypeChooser::CELLTYPECHOOSER_BIG,
+                                                                   elements.at(i), QSet<CellTypeChooserType>(),
+                                                                   m_helper, this, m_owner, i);
             bigTypeModifier->setFunction(owner->getFunctionAt(i));  // these might or might not set
             bigTypeModifier->setColumn(owner->getColumnAt(i));
             bigTypeModifier->setLiteral(owner->getTypedInValueAt(i));
 
-            {
             int localW = 0;
             bigTypeModifier->render(tx, cy, localW, h);
-            tx += localW; //bigTypeModifier->boundingRect().width();
-            }
+            tx += localW;
 
             if(const DatabaseBuiltinFunction* func = bigTypeModifier->getFunction())    // let's see if we have function here and in this case render the parameters of the function
             {
-                CellTypeChooser* op_par = new CellTypeChooser(m_level, CellTypeChooser::CELLTYPECHOOSER_BIG, CELLTYPE_OPEN_PARANTHESES_FOR_FUNCTION_CALL, QSet<CellTypeChooserType>(), m_helper, this, m_owner);
-                {
-                int localW = 0;
-                grp->addToGroup(op_par->render(tx, cy, localW, h));
-                tx += localW; op_par->boundingRect().width();
-                }
 
+                CellTypeChooser* op_par = new CellTypeChooser(m_level,
+                                                              CellTypeChooser::CELLTYPECHOOSER_BIG,
+                                                              CELLTYPE_OPEN_PARANTHESES_FOR_FUNCTION_CALL,
+                                                              QSet<CellTypeChooserType>(),
+                                                              m_helper, this, m_owner);
+                localW = 0;
+                tx ++;
+                grp->addToGroup(op_par->render(tx, cy, localW, h));
+                tx += localW;
+
+                // the parameters of the function
                 DatabaseFunctionInstantiationComponent* finstant = owner->getFunctionInstantiationAt(i);
                 for(int j=0; j<func->getParameterCount(); j++)
                 {
                     SingleExpressionQueryComponent* instParJ = finstant->getInstantiatedParameter(j);
                     QueryGraphicsItem* tItem = instParJ->createGraphicsItem(m_helper, this);
-                    {
-                    int localW = 0;
+                    localW = 0;
                     grp->addToGroup(tItem->render(tx, y, localW, h));
                     tx += localW;
+
+                    // render a comma between
+                    if(j < func->getParameterCount() - 1)
+                    {
+                        CellTypeChooser* op_comma = new CellTypeChooser(m_level,
+                                                                      CellTypeChooser::CELLTYPECHOOSER_BIG,
+                                                                      CELLTYPE_COMMA,
+                                                                      QSet<CellTypeChooserType>(),
+                                                                      m_helper, this, m_owner);
+                        localW = 0;
+                        grp->addToGroup(op_comma->render(tx, cy, localW, h));
+                        tx += localW + SMALL_DEPL;
                     }
                 }
 
                 // the closing paranthesis
-                CellTypeChooser* cl_par = new CellTypeChooser(m_level, CellTypeChooser::CELLTYPECHOOSER_BIG, CELLTYPE_CLOSE_PARANTHESES_FOR_FUNCTION_CALL, QSet<CellTypeChooserType>(), m_helper, this, m_owner);
-                {
-                int localW = 0;
+                CellTypeChooser* cl_par = new CellTypeChooser(m_level,
+                                                              CellTypeChooser::CELLTYPECHOOSER_BIG,
+                                                              CELLTYPE_CLOSE_PARANTHESES_FOR_FUNCTION_CALL,
+                                                              QSet<CellTypeChooserType>(),
+                                                              m_helper, this, m_owner);
+                localW = 0;
                 grp->addToGroup(cl_par->render(tx, cy, localW, h));
-                tx += localW;
-                }
+                tx += localW + SMALL_DEPL;
             }
 
             grp->addToGroup(bigTypeModifier);
@@ -90,16 +109,23 @@ QGraphicsItemGroup* CellForSingleExpression::render(int &x, int &y, int &w, int 
         }
 
         // the cursor after the expression, but only if the last element is not a QUERY OR aor a QUERY AND
-        if(elements.size() == 0 || (elements.at(i-1) != CELLTYPE_QUERY_OR && elements.at(i-1) != CELLTYPE_QUERY_AND))
+        if(elements.size() == 0
+                || (
+                    elements.at(i-1) != CELLTYPE_QUERY_OR
+                    && elements.at(i-1) != CELLTYPE_QUERY_AND
+                    )
+           )
         {
-            CellTypeChooser* cursor = new CellTypeChooser(m_level, CellTypeChooser::CELLTYPECHOOSER_BIG, CELLTYPE_CURSOR, QSet<CellTypeChooserType>(), m_helper, this, m_owner, elements.size());
-            {
+            CellTypeChooser* cursor = new CellTypeChooser(m_level,
+                                                          CellTypeChooser::CELLTYPECHOOSER_BIG,
+                                                          CELLTYPE_CURSOR,
+                                                          QSet<CellTypeChooserType>(),
+                                                          m_helper, this, m_owner, elements.size());
             int localW = 0;
             grp->addToGroup(cursor->render(tx, cy, localW, h));
             tx += localW;
-            }
             sw = tx - x;
-            sw += 15;
+            sw += CELL_SIZE + SMALL_DEPL;
         }
 
     }

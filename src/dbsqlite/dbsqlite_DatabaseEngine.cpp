@@ -32,7 +32,6 @@
 #include "core_UserDataType.h"
 #include "SqliteConnection.h"
 #include "db_DatabaseEngineManager.h"
-#include "dbsqlite_SQLGenerator.h"
 
 int SqliteDatabaseEngine::m_sqliteConnectionCounter = 1;
 QMutex* SqliteDatabaseEngine::m_connectionMutex = 0;
@@ -61,6 +60,7 @@ SqliteDatabaseEngine::SqliteDatabaseEngine() : DefaultDatabaseEngine("Sqlite", u
 
 SqliteDatabaseEngine::~SqliteDatabaseEngine()
 {
+    delete m_connectionMutex;
 }
 
 // this should be thread safe
@@ -77,36 +77,35 @@ bool SqliteDatabaseEngine::reverseEngineerDatabase(Connection *c, const QStringL
 {
     try
     {
-    Version* v = p->getWorkingVersion();
-    m_revEngMappings.clear();
-    m_oneTimeMappings.clear();
+        Version* v = p->getWorkingVersion();
+        m_revEngMappings.clear();
+        m_oneTimeMappings.clear();
 
-    QStringList foundTables;
+        QStringList foundTables;
 
-    for(int i=0; i<tables.size(); i++)
-    {
-        Table* tab = reverseEngineerTable(c, tables.at(i), p, relaxed, v);
-        if(tab)
+        for(int i=0; i<tables.size(); i++)
         {
-            v->addTable(tab, true);
-            foundTables.append(tab->getName());
+            Table* tab = reverseEngineerTable(c, tables.at(i), p, relaxed, v);
+            if(tab)
+            {
+                v->addTable(tab, true);
+                foundTables.append(tab->getName());
+            }
         }
-    }
 
-    for(int i=0; i<views.size(); i++)
-    {
-        View* view = reverseEngineerView(c, views.at(i), v);
-        if(view) v->addView(view, true);
-    }
+        for(int i=0; i<views.size(); i++)
+        {
+            View* view = reverseEngineerView(c, views.at(i), v);
+            if(view) v->addView(view, true);
+        }
 
-    for(int i=0; i<triggers.size(); i++)
-    {
-        Trigger* t= reverseEngineerTrigger(c, triggers.at(i), v);
-        if(t) v->addTrigger(t, true);
-    }
+        for(int i=0; i<triggers.size(); i++)
+        {
+            Trigger* t= reverseEngineerTrigger(c, triggers.at(i), v);
+            if(t) v->addTrigger(t, true);
+        }
 
-    // now populate the foreign keys
-    {
+        // now populate the foreign keys
         for(int i=0; i<foundTables.size(); i++)
         {
             QSqlDatabase dbo = getQSqlDatabaseForConnection(c);
@@ -154,13 +153,9 @@ bool SqliteDatabaseEngine::reverseEngineerDatabase(Connection *c, const QStringL
                 dbo.close();
             }
         }
-
     }
-    }
-
     catch(...)
     {
-        qDebug() << "exception";
         return false;
     }
 
@@ -250,17 +245,6 @@ QStringList SqliteDatabaseEngine::getAvailableTriggers(Connection* c)
     return result;
 }
 
-
-QStringList SqliteDatabaseEngine::getAvailableStoredProcedures(Connection* /*c*/)
-{
-     return QStringList();
-}
-
-QStringList SqliteDatabaseEngine::getAvailableStoredFunctions(Connection* /*c*/)
-{
-    return QStringList();
-}
-
 QStringList SqliteDatabaseEngine::getAvailableTables(Connection* c)
 {
     QSqlDatabase dbo = getQSqlDatabaseForConnection(c);
@@ -275,8 +259,6 @@ QStringList SqliteDatabaseEngine::getAvailableTables(Connection* c)
     }
 
     QSqlQuery query(dbo);
-
-
 
     ok = query.exec("select name from sqlite_master where type = 'table';");
     if(!ok)
@@ -293,16 +275,6 @@ QStringList SqliteDatabaseEngine::getAvailableTables(Connection* c)
     }
     dbo.close();
     return result;
-}
-
-Procedure* SqliteDatabaseEngine::reverseEngineerProc(Connection */*c*/, const QString &/*procName*/, Version */*v*/)
-{
-    return 0;
-}
-
-Function* SqliteDatabaseEngine::reverseEngineerFunc(Connection */*c*/, const QString &/*funcName*/, Version */*v*/)
-{
-    return 0;
 }
 
 View* SqliteDatabaseEngine::reverseEngineerView(Connection* c, const QString& viewName, Version *v)
@@ -600,66 +572,6 @@ bool SqliteDatabaseEngine::executeSql(Connection* c, const QStringList& sqls1, c
     return true;
 }
 
-// poor guy, canot return anyting
-QStringList SqliteDatabaseEngine::getAvailableDatabases(const QString& /*host*/, const QString& /*user*/, const QString& /*pass*/, int /*port*/)
-{
-    return QStringList();
-}
-
-// Sqlite cannot drop a database
-bool SqliteDatabaseEngine::dropDatabase(Connection* /*c*/)
-{
-    return true;
-}
-
-// cannot create database
-bool SqliteDatabaseEngine::createDatabase(Connection* /*c*/)
-{
-    return true;
-}
-
-
-
-//QVector<DatabaseBuiltinFunction> SqliteDatabaseEngine::buildFunctions()
-//{
-//    static QVector<DatabaseBuiltinFunction> result;
-//    QString X = QString("X");
-
-
-//#define RET_NUMERIC     UserDataType("return", DT_NUMERIC, nullUid, 0)
-//#define RET_DATETIME    UserDataType("return", DT_DATETIME, nullUid, 0)
-//#define RET_STRING      UserDataType("return", DT_STRING, nullUid, 0)
-
-//#define PAR_STRING      DatabaseBuiltinFunctionsParameter(X, UserDataType(X, DT_STRING, nullUid, 0), true)
-//#define PAR_NUMERIC     DatabaseBuiltinFunctionsParameter(X, UserDataType(X, DT_NUMERIC, nullUid, 0), true)
-//#define PAR_VARIABLE    DatabaseBuiltinFunctionsParameter(X, UserDataType(X, DT_VARIABLE, nullUid, 0), true)
-
-//#define OPAR_STRING      DatabaseBuiltinFunctionsParameter(X, UserDataType(X, DT_STRING, nullUid, 0), false)
-//#define OPAR_NUMERIC     DatabaseBuiltinFunctionsParameter(X, UserDataType(X, DT_NUMERIC, nullUid, 0), false)
-
-//#define FUNC result.append(DatabaseBuiltinFunction(QString
-
-//    FUNC("@if"),           FT_CONTROLFLOW,  RET_STRING, PAR_STRING, PAR_STRING, PAR_STRING, "IF(expr1,expr2,expr3) If expr1 is TRUE (expr1 <> 0 and expr1 <> NULL) then IF() returns expr2; otherwise it returns expr3. IF() returns a numeric or string value, depending on the context in which it is used."));
-
-//    FUNC("@abs"),          FT_NUMERIC,   RET_NUMERIC, PAR_NUMERIC, "ABS(X) Returns the absolute value of X"));
-
-//    FUNC("@date"),         FT_DATETIME,  RET_STRING, PAR_STRING, "DATE(expr) Extracts the date part of the date or datetime expression expr."));
-//    FUNC("@time"),         FT_DATETIME,  RET_NUMERIC, PAR_STRING, "TIME(expr) Extracts the time part of the time or datetime expression expr and returns it as a string."));
-
-//    FUNC("@avg"),          FT_AGGREGATE, RET_NUMERIC, PAR_NUMERIC,  "AVG(expr) Returns the average value of expr."));
-//    FUNC("@count"),        FT_AGGREGATE, RET_NUMERIC, PAR_VARIABLE, "COUNT([DISTINCT]expr) Returns a count of the number of non-NULL values of expr in the rows retrieved by a SELECT statement. The result is a BIGINT value."));
-//    FUNC("@group_concat"), FT_AGGREGATE, RET_STRING,  PAR_VARIABLE, "GROUP_CONCAT(expr) Returns a string result with the concatenated non-NULL values from a group. It returns NULL if there are no non-NULL values. "));
-//    FUNC("@max"),          FT_AGGREGATE, RET_NUMERIC, PAR_NUMERIC,  "MAX(expr) Returns the max value of expr."));
-//    FUNC("@min"),          FT_AGGREGATE, RET_NUMERIC, PAR_NUMERIC,  "MIN(expr) Returns the min value of expr."));
-
-//    FUNC("@char"),         FT_STRING,   RET_STRING,   PAR_NUMERIC, PAR_VARIABLE,  "CHAR(N,...) interprets each argument N as an integer and returns a string consisting of the characters given by the code values of those integers. NULL values are skipped."));
-//    FUNC("@upper"),        FT_STRING,   RET_STRING,   PAR_STRING, "UPPER(str) Returns the string str with all characters changed to uppercase according to the current character set mapping."));
-
-//    return result;
-//}
-
-
-
 bool SqliteDatabaseEngine::tryConnect(Connection* c)
 {
     QSqlDatabase dbo = getQSqlDatabaseForConnection(c);
@@ -714,14 +626,7 @@ Trigger* SqliteDatabaseEngine::reverseEngineerTrigger(Connection *c, const QStri
     return result;
 }
 
-
-/*
-CREATE TRIGGER trig before  insert  on ADDRESS_1  BEGIN
-select * from address_1;
-END;
-
-TODO: Who on earth wrote this code? a 2 years old? FIX FIX FIX
-*/
+//TODO: Who on earth wrote this code? a 2 years old? FIX FIX FIX
 void SqliteDatabaseEngine::parseTriggerSql(const QString &inSql, QString &outEvent, QString &outTime, QString &sql)
 {
     QString currentWord = "";
@@ -866,7 +771,6 @@ QString SqliteDatabaseEngine::getTableCreationScript(Connection* c, const QStrin
         return result;
     }
 
-
     QSqlQuery query(db);
     query.exec(QString("select sql from sqlite_master where type='table' and name='") + tabName + "'");
 
@@ -890,7 +794,6 @@ QString SqliteDatabaseEngine::getViewCreationScript(Connection* c, const QString
         return result;
     }
 
-
     QSqlQuery query(db);
     query.exec(QString("select sql from sqlite_master where type='view' and name='") + name + "'");
 
@@ -900,14 +803,4 @@ QString SqliteDatabaseEngine::getViewCreationScript(Connection* c, const QString
     }
     db.close();
     return result;
-}
-
-void SqliteDatabaseEngine::setup()
-{
-    DatabaseEngineManager::instance().addEngine(strSqlite, this);
-    DatabaseEngineManager::instance().addEngine(strQSqlite, this);
-
-    SqliteSQLGenerator* sqliteGenrator = new SqliteSQLGenerator(this);
-    DatabaseEngineManager::instance().addSqlGenerator(strSqlite, sqliteGenrator);
-    DatabaseEngineManager::instance().addSqlGenerator(strQSqlite, sqliteGenrator);
 }

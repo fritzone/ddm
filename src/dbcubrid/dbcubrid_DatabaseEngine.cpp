@@ -241,10 +241,7 @@ QStringList CUBRIDDatabaseEngine::getAvailableTables(Connection* conn)
 {
     if(!dynamic_cast<CUBRIDConnection*>(conn)) return QStringList();
 
-    return getResultOfQuery("select table_name from information_schema.tables where table_schema='"
-                            + dynamic_cast<CUBRIDConnection*>(conn)->getDb() +
-                            "' and table_type='BASE TABLE'",
-                            conn, "Cannot get list of tables", 0);
+    return getResultOfQuery("show tables", conn, "Cannot get list of tables", 0);
 }
 
 Procedure* CUBRIDDatabaseEngine::reverseEngineerProc(Connection *c, const QString &procName, Version *v)
@@ -805,11 +802,6 @@ QString CUBRIDDatabaseEngine::getTableCreationScript(Connection* c, const QStrin
     }
     db.close();
     return result;
-}
-
-QString CUBRIDDatabaseEngine::spiExtension(QUuid )
-{
-    return "";
 }
 
 void CUBRIDDatabaseEngine::setup()

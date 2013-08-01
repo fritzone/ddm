@@ -31,7 +31,6 @@
 #include "core_UserDataType.h"
 #include "MySqlConnection.h"
 #include "db_DatabaseEngineManager.h"
-#include "dbmysql_SQLGenerator.h"
 
 int MySQLDatabaseEngine::m_connectionCounter = 1;
 QMutex* MySQLDatabaseEngine::m_connectionMutex = 0;
@@ -60,6 +59,7 @@ MySQLDatabaseEngine::MySQLDatabaseEngine() : DefaultDatabaseEngine(strMySql, uid
 
 MySQLDatabaseEngine::~MySQLDatabaseEngine()
 {
+    delete m_connectionMutex;
 }
 
 // this should be thread safe
@@ -866,16 +866,4 @@ QStringList MySQLDatabaseEngine::getSupportedStorageEngines(const QString& host,
     db.close();
 
     return result;
-}
-
-void MySQLDatabaseEngine::setup()
-{
-    DatabaseEngineManager::instance().addEngine(strMySql, this);
-    DatabaseEngineManager::instance().addEngine(strQMySql, this);
-    DatabaseEngineManager::instance().addEngine(strQMySql3, this);
-
-    MySQLSQLGenerator* mysqlGenerator = new MySQLSQLGenerator(this);
-    DatabaseEngineManager::instance().addSqlGenerator(strMySql, mysqlGenerator);
-    DatabaseEngineManager::instance().addSqlGenerator(strQMySql, mysqlGenerator);
-    DatabaseEngineManager::instance().addSqlGenerator(strQMySql3, mysqlGenerator);
 }

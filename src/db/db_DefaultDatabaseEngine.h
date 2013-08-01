@@ -5,6 +5,10 @@
 
 class ForeignKey;
 
+/**
+ * Class doing some work which would be common for most of the database engines
+ * and also having methods returning default values for some functions
+ */
 class DefaultDatabaseEngine : public DatabaseEngine
 {
 public:
@@ -58,7 +62,16 @@ public:
     virtual QString spiExtension(QUuid);
     virtual QVector<Sp*> getDatabaseSpecificProperties() const;
     virtual QVector<DatabaseBuiltinFunction> getBuiltinFunctions();
-    const DatabaseBuiltinFunction& getBuiltinFunction(const QString& name);
+    virtual const DatabaseBuiltinFunction& getBuiltinFunction(const QString& name);
+    virtual QStringList getAvailableStoredFunctions(Connection*);
+    virtual QStringList getAvailableStoredProcedures(Connection*);
+    virtual Procedure* reverseEngineerProc(Connection*, const QString&, Version*);
+    virtual Function* reverseEngineerFunc(Connection*, const QString&, Version*);
+    virtual QStringList getAvailableDatabases(const QString&, const QString&,
+                                              const QString&, int);
+    virtual bool createDatabase(Connection*);
+    virtual bool dropDatabase(Connection*);
+
 };
 
 #endif // DB_DEFAULTDATABASEENGINE_H
