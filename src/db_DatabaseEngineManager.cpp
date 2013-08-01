@@ -5,6 +5,9 @@
 #include "dbmysql_DatabaseEngine.h"
 #include "dbsqlite_DatabaseEngine.h"
 
+#include "dbsqlite_SQLGenerator.h"
+#include "dbmysql_SQLGenerator.h"
+
 #include "db_GenericDatabaseType.h"
 #include "db_GenericDTSupplier.h"
 
@@ -38,7 +41,11 @@ DatabaseEngineManager::DatabaseEngineManager()
     {
         m_supportedEngines << strMySql;
         MySQLDatabaseEngine* mysqlDBEngine = MySQLDatabaseEngine::instance();
-        mysqlDBEngine->setup();
+        MySQLSQLGenerator* mysqlGenerator = new MySQLSQLGenerator(mysqlDBEngine);
+
+        addEngine(strMySql, mysqlDBEngine);
+        addSqlGenerator(strMySql, mysqlGenerator);
+
     }
 
     // is there sqlite driver?
@@ -46,7 +53,10 @@ DatabaseEngineManager::DatabaseEngineManager()
     {
         m_supportedEngines << strSqlite;
         SqliteDatabaseEngine* sqliteDBEngine = SqliteDatabaseEngine::instance();
-        sqliteDBEngine->setup();
+        SqliteSQLGenerator* sqliteGenrator = new SqliteSQLGenerator(sqliteDBEngine );
+
+        addEngine(strSqlite, sqliteDBEngine);
+        addSqlGenerator(strMySql, sqliteGenrator);
     }
 
     // is there CUBRID driver?
@@ -205,6 +215,7 @@ QString DatabaseEngineManager::getSpiExtensionSql(const QString &dbName, QUuid u
         }
     }
 
+    qDebug() << "No SPI for" << uid.toString() << "in" << dbName;
     return "";
 }
 

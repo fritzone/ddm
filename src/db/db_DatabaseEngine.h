@@ -85,13 +85,6 @@ public:
      */
 
     /**
-     * Set up the execution environment for this database engine. Create the
-     * SQL generator and the data supplier amongst the other issues, and feeds
-     * them in the DatabaseEngineManager
-     */
-    virtual void setup() = 0;
-
-    /**
      * Returns a list of specific keywords for this database
      * @return the keywords of the database
      */

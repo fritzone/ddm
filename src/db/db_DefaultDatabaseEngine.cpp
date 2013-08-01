@@ -284,3 +284,38 @@ const DatabaseBuiltinFunction& DefaultDatabaseEngine::getBuiltinFunction(const Q
     }
     return no_function;
 }
+
+QStringList DefaultDatabaseEngine::getAvailableStoredProcedures(Connection*)
+{
+     return QStringList();
+}
+
+QStringList DefaultDatabaseEngine::getAvailableStoredFunctions(Connection*)
+{
+    return QStringList();
+}
+
+Procedure* DefaultDatabaseEngine::reverseEngineerProc(Connection*, const QString&, Version*)
+{
+    return 0;
+}
+
+Function* DefaultDatabaseEngine::reverseEngineerFunc(Connection*, const QString&, Version*)
+{
+    return 0;
+}
+
+QStringList DefaultDatabaseEngine::getAvailableDatabases(const QString& /*host*/, const QString& /*user*/, const QString& /*pass*/, int /*port*/)
+{
+    return QStringList();
+}
+
+bool DefaultDatabaseEngine::dropDatabase(Connection*)
+{
+    return true;
+}
+
+bool DefaultDatabaseEngine::createDatabase(Connection*)
+{
+    return true;
+}
