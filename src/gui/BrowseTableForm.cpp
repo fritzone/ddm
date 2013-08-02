@@ -346,6 +346,7 @@ void BrowseTableForm::newPage(Connection *c, const QString &tab, BrowsedTableLay
         QSqlDatabase sqldb = c->getQSqlDatabase();
         QSqlTableModel *model = new QSqlTableModel(tableForTableData, sqldb);
         model->setTable(tab);
+        qDebug() << "BEFORE SELECT";
         model->select();
 
         if (model->lastError().type() == QSqlError::NoError)

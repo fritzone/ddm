@@ -18,6 +18,14 @@ namespace Ui
 class InjectSqlDialog : public QDialog
 {
     Q_OBJECT
+
+    enum Mode
+    {
+        MODE_MYSQL = 0,
+        MODE_SQLITE = 1,
+        MODE_CUBRID = 2
+    };
+
 public:
     InjectSqlDialog(DatabaseEngine* engine, QWidget *parent, Version* v, const QString& objNameToDeploy);
     ~InjectSqlDialog();
@@ -75,6 +83,7 @@ private slots:
     void onDbTypeChange(QString);
     void onSelectFileForSqlite();
     void onSqliteFileNameChange(QString);
+    void onTestConnection();
 
 protected:
     void changeEvent(QEvent *e);
@@ -84,8 +93,12 @@ private:
     void populateConnections();
     void createTreeItem(QTreeWidgetItem* parent, const QString& text, const QString& uid, const QIcon& icon);
     void toggleUidBelongeness(QStringList&, const QString&);
+
+    // various layouts for various databases
+    // TODO: this feels ugly, re-think
     void setSqliteLayout();
     void setMysqlLayout();
+    void setCUBRIDLayout();
 
     void disableOkButton();
     void enableOkButton();
@@ -100,7 +113,10 @@ private:
     QStringList m_UidsToDrop;
     QString m_objName;
     bool m_alreadyConnected;
+    bool m_cubridTested;
     QString m_strDbEngine;
+    InjectSqlDialog::Mode m_mode;
+
 private:
 
     static QString previousHost;

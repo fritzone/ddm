@@ -12,6 +12,11 @@ Connection::Connection(const QString &name, bool autoConnect) : SerializableElem
 bool Connection::tryConnect()
 {
     m_lastError = "";
+    if(!m_engine)
+    {
+        m_state = FAILED;
+        return false;
+    }
     if(!m_engine->tryConnect(this))
     {
         m_state = FAILED;
@@ -25,7 +30,6 @@ bool Connection::tryConnect()
     m_state = CONNECTED;
     return true;
 }
-
 
 QSqlDatabase Connection::getQSqlDatabase()
 {

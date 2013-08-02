@@ -51,6 +51,7 @@ private:
 
     ContextMenuEnabledTreeWidgetItem* m_mysqlConnections;
     ContextMenuEnabledTreeWidgetItem* m_sqliteConnections;
+    ContextMenuEnabledTreeWidgetItem* m_cubridConnections;
 
     QToolBar *bar;
     QAction* action_connectionNewTable;
