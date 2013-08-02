@@ -18,6 +18,7 @@
 #include "core_Function.h"
 #include "MySqlConnection.h"
 #include "SqliteConnection.h"
+#include "conn_CUBRID.h"
 
 #include <QSqlDatabase>
 #include <QMessageBox>
@@ -33,8 +34,12 @@ QString InjectSqlDialog::previousUser="";
 
 InjectSqlDialog::InjectSqlDialog(DatabaseEngine* engine, QWidget *parent, Version *v, const QString &objNameToDeploy) :
     QDialog(parent), ui(new Ui::InjectSqlDialog), m_dbEngine(engine),
-    m_nameWasChanged(false), m_injectMetadata(false), m_signalMapper(new QSignalMapper(this)),
-    m_UidsToDeploy(), m_UidsToDrop(), m_objName(objNameToDeploy), m_alreadyConnected(false), m_strDbEngine("MYSQL")
+    m_nameWasChanged(false), m_injectMetadata(false),
+    m_signalMapper(new QSignalMapper(this)),
+    m_UidsToDeploy(), m_UidsToDrop(), m_objName(objNameToDeploy),
+    m_alreadyConnected(false), m_cubridTested(false),
+    m_strDbEngine(strMySql.toUpper()),
+    m_mode(MODE_MYSQL)
 {
     ui->setupUi(this);
 
@@ -51,6 +56,7 @@ InjectSqlDialog::InjectSqlDialog(DatabaseEngine* engine, QWidget *parent, Versio
     ui->grpConnectionDetails->hide();
     ui->chkRollbackOnError->hide();
     ui->tabWidget->removeTab(1);
+    ui->btnTestConnection->setVisible(false);
 
     if(engine)
     {
@@ -256,7 +262,14 @@ void InjectSqlDialog::onConnect()
 
 QString InjectSqlDialog::getDatabase() const
 {
-    return ui->cmbDatabases->currentText();
+    if(m_mode == MODE_MYSQL)
+    {
+        return ui->cmbDatabases->currentText();
+    }
+    else
+    {
+        return ui->txtDatabaseName->text();
+    }
 }
 
 QString InjectSqlDialog::getUser() const
@@ -438,29 +451,38 @@ void InjectSqlDialog::populateConnectionDetails(Connection* conn)
 {
     ui->txtConnectionName->setText(conn->getName());
 
-    MySqlConnection* c = dynamic_cast<MySqlConnection*>(conn);
-    if(c)
+    if(MySqlConnection* c = dynamic_cast<MySqlConnection*>(conn))
     {
+        ui->cmbDatabaseType->setCurrentIndex(0);
         setMysqlLayout();
         blockSignals(true);
         ui->txtDatabaseHost->setText(c->getHost());
         ui->txtDatabaseUser->setText(c->getUser());
         ui->txtDatabasePassword->setText(c->getPassword());
-        ui->txtDatabaseName->setText(c->getDb());
         ui->txtPort->setText(QString::number(c->getPort()));
         ui->cmbDatabases->addItem(c->getDb());
         blockSignals(false);
+        return;
     }
-    else
+
+    if(CUBRIDConnection* c2 = dynamic_cast<CUBRIDConnection*>(conn))
     {
-        SqliteConnection* c1 = dynamic_cast<SqliteConnection*>(conn);
-        if(!c1)
-        {
-            return ;
-        }
+        ui->cmbDatabaseType->setCurrentIndex(2);
+        setCUBRIDLayout();
+        blockSignals(true);
+        ui->txtDatabaseHost->setText(c2->getHost());
+        ui->txtDatabaseUser->setText(c2->getUser());
+        ui->txtDatabasePassword->setText(c2->getPassword());
+        ui->txtDatabaseName->setText(c2->getDb());
+        ui->txtPort->setText(QString::number(c2->getPort()));
+        blockSignals(false);
+        return;
+    }
 
+    if(SqliteConnection* c1 = dynamic_cast<SqliteConnection*>(conn))
+    {
+        ui->cmbDatabaseType->setCurrentIndex(1);
         setSqliteLayout();
-
         ui->txtDatabaseName->setText(c1->getFileName());
         if(c1->getVersion() == 2) ui->cmbSqliteVersion->setCurrentIndex(1);
     }
@@ -532,13 +554,19 @@ void InjectSqlDialog::onDbTypeChange(QString a)
 {
     qDebug() << a;
     m_strDbEngine = a.toUpper();
-    if(m_strDbEngine == "SQLITE")
+    if(m_strDbEngine == strSqlite.toUpper())
     {
         setSqliteLayout();
     }
     else
+    if(m_strDbEngine == strMySql.toUpper())
     {
         setMysqlLayout();
+    }
+    else
+    if(m_strDbEngine == strCUBRID.toUpper())
+    {
+        setCUBRIDLayout();
     }
 }
 
@@ -563,8 +591,10 @@ void InjectSqlDialog::setSqliteLayout()
     ui->lblDatabase->setEnabled(true);
 
     ui->buttonBox->button(QDialogButtonBox::Ok)->setDisabled(ui->txtDatabaseName->text().length() == 0);
+    ui->btnTestConnection->setVisible(false);
 
     ui->cmbSqliteVersion->show();
+    m_mode = MODE_SQLITE;
 
 }
 
@@ -596,7 +626,33 @@ void InjectSqlDialog::setMysqlLayout()
     }
 
     ui->cmbSqliteVersion->hide();
+    ui->btnTestConnection->setVisible(false);
+    m_mode = MODE_MYSQL;
+}
 
+
+void InjectSqlDialog::setCUBRIDLayout()
+{
+    ui->lblHost->show();
+    ui->lblPassword->show();
+    ui->lblUser->show();
+    ui->lblPort->show();
+    ui->txtDatabaseHost->show();
+    ui->txtDatabasePassword->show();
+    ui->txtDatabaseUser->show();
+    ui->txtPort->show();
+    ui->cmbDatabases->hide();
+    ui->btnConnect->hide();
+    ui->btnCreateDatabase->hide();
+
+    ui->txtDatabaseName->show();
+    ui->btnBrowseForFile->hide();
+    ui->lblDatabase->setText(tr("Database"));
+    ui->btnTestConnection->setVisible(true);
+    ui->lblDatabase->setEnabled(true);
+
+    ui->cmbSqliteVersion->hide();
+    m_mode = MODE_CUBRID;
 }
 
 
@@ -639,6 +695,47 @@ void InjectSqlDialog::onSqliteFileNameChange(QString a)
     else
     {
         disableOkButton();
+    }
+}
+
+void InjectSqlDialog::onTestConnection()
+{
+    if(m_mode == MODE_CUBRID)
+    {
+        QSqlDatabase cubridDb = QSqlDatabase::addDatabase("QCUBRID");
+        cubridDb.setHostName(ui->txtDatabaseHost->text());
+        cubridDb.setUserName(ui->txtDatabaseUser->text());
+        cubridDb.setPassword(ui->txtDatabasePassword->text());
+        cubridDb.setPort(ui->txtPort->text().toInt());
+        cubridDb.setDatabaseName(ui->txtDatabaseName->text());
+
+        if(!cubridDb.open())
+        {
+            QSqlError error = cubridDb.lastError();
+            QMessageBox::information(0, "cannot connect",
+                                     error.databaseText() + " " + error.driverText() + " --> "  + QString::number(error.number()),
+                                     QMessageBox::Ok);
+            m_cubridTested = false;
+        }
+        else
+        {
+            QSqlQuery q(cubridDb);
+            q.prepare("select LIST_DBS()");
+            if(!q.exec())
+            {
+                QMessageBox::information(0, "no exec", "a", QMessageBox::Ok);
+            }
+            else
+
+            {
+                QString v = q.value(0).toString().split(" ").join("<br>");
+                QMessageBox::information(0, tr("Connection Succesful"),
+                                         tr("<b>Success</b><p>Following databases were found:<p><pre>") + v,
+                                         QMessageBox::Ok);
+            }
+            cubridDb.close();
+            m_cubridTested = true;
+        }
     }
 }
 

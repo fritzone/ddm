@@ -8,6 +8,9 @@
 #include "dbsqlite_SQLGenerator.h"
 #include "dbmysql_SQLGenerator.h"
 
+#include "dbcubrid_DatabaseEngine.h"
+#include "dbcubrid_SQLGenerator.h"
+
 #include "db_GenericDatabaseType.h"
 #include "db_GenericDTSupplier.h"
 
@@ -45,7 +48,6 @@ DatabaseEngineManager::DatabaseEngineManager()
 
         addEngine(strMySql, mysqlDBEngine);
         addSqlGenerator(strMySql, mysqlGenerator);
-
     }
 
     // is there sqlite driver?
@@ -63,6 +65,11 @@ DatabaseEngineManager::DatabaseEngineManager()
     if(m_supportedEngines.contains(strQCUBRID))
     {
         m_supportedEngines << strCUBRID;
+        CUBRIDDatabaseEngine* cubridDbEngine = CUBRIDDatabaseEngine::instance();
+        CUBRIDSQLGenerator* cubridGenerator = new CUBRIDSQLGenerator(cubridDbEngine);
+
+        addEngine(strCUBRID, cubridDbEngine);
+        addSqlGenerator(strCUBRID, cubridGenerator);
     }
 
 }

@@ -26,6 +26,7 @@
 #include "core_TableInstance.h"
 #include "MySqlConnection.h"
 #include "SqliteConnection.h"
+#include "conn_CUBRID.h"
 
 #include <QFile>
 #include <QApplication>
@@ -383,8 +384,9 @@ void Workspace::createNewConnection()
             MainWindow::instance()->showConnections();
         }
 
+        QString engine = injectDialog->getSDbEngine().toUpper();
         Connection* c = 0;
-        if(injectDialog->getSDbEngine() == "MYSQL")
+        if(engine == strMySql.toUpper())
         {
             QString host = injectDialog->getHost();
             QString user = injectDialog->getUser();
@@ -395,15 +397,26 @@ void Workspace::createNewConnection()
             c = new MySqlConnection(name, host, user, password, db, true, injectDialog->getAutoConnect(), port);
         }
         else
+        if(engine == strSqlite.toUpper())
         {
             c = new SqliteConnection(injectDialog->getName(), injectDialog->getFileName(), injectDialog->getAutoConnect(), injectDialog->getSqliteVersion());
+        }
+        else
+        if(engine == strCUBRID.toUpper())
+        {
+            QString host = injectDialog->getHost();
+            QString user = injectDialog->getUser();
+            QString password = injectDialog->getPassword();
+            QString db = injectDialog->getDatabase();
+            QString name = injectDialog->getName();
+            int port = injectDialog->getPort();
 
+            c = new CUBRIDConnection(name, host, user, password, db, true, injectDialog->getAutoConnect(), port);
         }
         if(!c) return;
 
         ConnectionManager::instance()->addConnection(c);
         MainWindow::instance()->getConnectionGuiElements()->createConnectionTreeEntry(c);
-
     }
 }
 

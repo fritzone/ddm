@@ -2,6 +2,7 @@
 #include "strings.h"
 #include "MySqlConnection.h"
 #include "SqliteConnection.h"
+#include "conn_CUBRID.h"
 
 #include <QSettings>
 
@@ -114,7 +115,8 @@ Connection* ConnectionManager::createConnection(const QString &dbType, const QSe
     bool ac = s.value(strAutoConnect).toBool();
     QString name = s.value(strName).toString();
 
-    if(dbType.toUpper() == "MYSQL")
+
+    if(dbType.toUpper() == "MYSQL" || dbType.toUpper() == "CUBRID")
     {
         QString host = s.value(strHost).toString();
         QString pass = s.value(strPass).toString();
@@ -128,7 +130,14 @@ Connection* ConnectionManager::createConnection(const QString &dbType, const QSe
         QString db = s.value(strDB).toString();
 
         int lastState = s.value("LastState").toInt();
-        c = new MySqlConnection(name, host, user, pass, db, true, ac, port);
+        if(dbType.toUpper() == "MYSQL")
+        {
+            c = new MySqlConnection(name, host, user, pass, db, true, ac, port);
+        }
+        else
+        {
+            c = new CUBRIDConnection(name, host, user, pass, db, true, ac, port);
+        }
         c->setState((ConnectionState)(lastState));
     }
     else

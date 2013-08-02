@@ -3,7 +3,7 @@
 
 #include "core_enums.h"
 #include "uids.h"
-
+#include "strings.h"
 #include <QIcon>
 
 namespace icons
@@ -49,6 +49,7 @@ static const QString strAddIcon = ":/images/actions/images/small/add.png";
 static const QString strEmptyIcon = ":/images/actions/images/actions/empty_icon.png";
 static const QString strMySqlIcon = ":/images/actions/images/small/mysql.png";
 static const QString strSqliteIcon = ":/images/actions/images/small/sqlite-icon.png";
+static const QString strCUBRIDIcon = ":/images/actions/images/small/cubrid.png";
 
 static const QString strTableIcon = ":/images/actions/images/actions/table.png";
 static const QString strTableLockIcon = ":/images/actions/images/actions/table_lock.png";
@@ -957,10 +958,17 @@ public:
         return icon;
     }
 
+    static const QIcon& getCUBRIDIcon()
+    {
+        static const QIcon icon(icons::strCUBRIDIcon);
+        return icon;
+    }
+
     static const QIcon& getIconForDatabase(const QString& db)
     {
-        if(db.toUpper() == "MYSQL") return getMySqlIcon();
-        if(db.toUpper() == "SQLITE") return getSqliteIcon();
+        if(db.toUpper() == strMySql.toUpper()) return getMySqlIcon();
+        if(db.toUpper() == strSqlite.toUpper()) return getSqliteIcon();
+        if(db.toUpper() == strCUBRID.toUpper()) return getCUBRIDIcon();
         return getEmptyIcon();
     }
 
@@ -1114,3 +1122,4 @@ public:
 };
 
 #endif // ICONFACTORY_H
+

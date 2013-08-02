@@ -342,7 +342,7 @@ QStringList CUBRIDDatabaseEngine::getColumnsOfTable(Connection *c, const QString
     }
 
     QSqlQuery query(db);
-    query.exec("desc " + tableName);
+    query.exec("show columns from " + tableName);
 
     int fieldNo = query.record().indexOf("Field");
     int fieldType = query.record().indexOf("Type");
@@ -381,7 +381,7 @@ Table* CUBRIDDatabaseEngine::reverseEngineerTable(Connection *conn, const QStrin
     // fetch all the columns of the table
     {
     QSqlQuery query(dbo);
-    query.exec("desc " + tableName);
+    query.exec("show columns from " + tableName);
 
     int fieldNo = query.record().indexOf("Field");
     int typeNo = query.record().indexOf("Type");
@@ -436,7 +436,6 @@ Table* CUBRIDDatabaseEngine::reverseEngineerTable(Connection *conn, const QStrin
     int packedNo = query.record().indexOf("Packed");
     int nullNo = query.record().indexOf("Null");
     int indextypeNo = query.record().indexOf("Index_type");
-    int commentNo = query.record().indexOf("Comment");
 
     QMap<QString, Index*> createdIndexes;
 
@@ -453,7 +452,6 @@ Table* CUBRIDDatabaseEngine::reverseEngineerTable(Connection *conn, const QStrin
         QString packed = query.value(packedNo).toString();
         QString nulld = query.value(nullNo).toString();
         QString indextype = query.value(indextypeNo).toString();
-        QString comment = query.value(commentNo).toString();
 
         QString finalIndexName = keyname;
         if(keyname == "PRIMARY") continue;
@@ -592,33 +590,6 @@ bool CUBRIDDatabaseEngine::executeSql(Connection* c, const QStringList& sqls, co
     }
     db.close();
     return true;
-}
-
-QStringList CUBRIDDatabaseEngine::getAvailableDatabases(const QString& host, const QString& user, const QString& pass, int port)
-{
-    Connection *c = new CUBRIDConnection("temp", host, user, pass, "", false, false, port);
-    QSqlDatabase db = getQSqlDatabaseForConnection(c);
-    bool ok = db.isOpen();
-
-    if(!ok)
-    {
-        lastError = formatLastError(QObject::tr("Cannot run a query"), db.lastError());
-
-        return QStringList();
-    }
-
-    QStringList result;
-    QSqlQuery query(db);
-    query.exec("show databases");
-
-    while(query.next())
-    {
-        QString dbName = query.value(0).toString();
-        result.append(dbName);
-    }
-    db.close();
-
-    return result;
 }
 
 bool CUBRIDDatabaseEngine::dropDatabase(Connection* conn)

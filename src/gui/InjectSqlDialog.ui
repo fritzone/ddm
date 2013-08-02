@@ -339,6 +339,13 @@
                 </property>
                </widget>
               </item>
+              <item>
+               <widget class="QPushButton" name="btnTestConnection">
+                <property name="text">
+                 <string>Test Connection</string>
+                </property>
+               </widget>
+              </item>
              </layout>
             </item>
            </layout>
@@ -550,23 +557,29 @@
   </layout>
  </widget>
  <tabstops>
+  <tabstop>txtConnectionName</tabstop>
+  <tabstop>cmbDatabaseType</tabstop>
+  <tabstop>cmbSqliteVersion</tabstop>
   <tabstop>txtDatabaseHost</tabstop>
   <tabstop>txtPort</tabstop>
   <tabstop>txtDatabaseUser</tabstop>
   <tabstop>txtDatabasePassword</tabstop>
+  <tabstop>btnConnect</tabstop>
+  <tabstop>txtDatabaseName</tabstop>
   <tabstop>cmbDatabases</tabstop>
+  <tabstop>btnBrowseForFile</tabstop>
   <tabstop>btnCreateDatabase</tabstop>
+  <tabstop>btnTestConnection</tabstop>
   <tabstop>chkAutoConnect</tabstop>
   <tabstop>chkSavePassword</tabstop>
-  <tabstop>tabWidget</tabstop>
-  <tabstop>lstAllConnections</tabstop>
-  <tabstop>chkRollbackOnError</tabstop>
-  <tabstop>chkInjectMetadata</tabstop>
-  <tabstop>btnDetails</tabstop>
-  <tabstop>buttonBox</tabstop>
-  <tabstop>txtDatabaseName</tabstop>
   <tabstop>treeObjectsToDeploy</tabstop>
   <tabstop>pushButton</tabstop>
+  <tabstop>buttonBox</tabstop>
+  <tabstop>chkRollbackOnError</tabstop>
+  <tabstop>tabWidget</tabstop>
+  <tabstop>lstAllConnections</tabstop>
+  <tabstop>chkInjectMetadata</tabstop>
+  <tabstop>btnDetails</tabstop>
  </tabstops>
  <resources>
   <include location="../dbm.qrc"/>
@@ -828,6 +841,22 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>btnTestConnection</sender>
+   <signal>clicked()</signal>
+   <receiver>InjectSqlDialog</receiver>
+   <slot>onTestConnection()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>627</x>
+     <y>349</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>358</x>
+     <y>258</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>onConnect()</slot>
@@ -841,5 +870,6 @@
   <slot>onDbTypeChange(QString)</slot>
   <slot>onSelectFileForSqlite()</slot>
   <slot>onSqliteFileNameChange(QString)</slot>
+  <slot>onTestConnection()</slot>
  </slots>
 </ui>
