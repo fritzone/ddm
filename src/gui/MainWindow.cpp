@@ -67,6 +67,7 @@
 #include "repo_RepositoryElementForm.h"
 #include "MySqlConnection.h"
 #include "SqliteConnection.h"
+#include "conn_CUBRID.h"
 #include "db_DatabaseEngineManager.h"
 #include "core_Repository.h"
 #include <QtGui>
@@ -2350,6 +2351,12 @@ void MainWindow::onEditConnection()
             if(dynamic_cast<SqliteConnection*>(c))
             {
                 dynamic_cast<SqliteConnection*>(c)->resetTo(ij->getFileName());
+            }
+            else
+            if(dynamic_cast<CUBRIDConnection*>(c))
+            {
+                dynamic_cast<CUBRIDConnection*>(c)->resetTo(ij->getName(), ij->getHost(), ij->getUser(),
+                                                            ij->getPassword(), ij->getDatabase(), ij->getPort(), true, ij->getAutoConnect());
             }
             c->setDisplayText(c->getName());
             c->getLocation()->setText(1, c->getFullLocation());

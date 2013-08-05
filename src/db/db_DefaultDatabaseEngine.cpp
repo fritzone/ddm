@@ -220,12 +220,33 @@ QStringList DefaultDatabaseEngine::getResultOfQuery(const QString& squery, Conne
     }
 
     QSqlQuery query(dbo);
-    query.exec(squery);
-
-    while(query.next())
+    bool run = query.exec(squery);
+    if(!run)
     {
-        QString tab = query.value(column).toString();
-        result.append(tab);
+        qDebug() << query.lastError().databaseText() << query.lastError().driverText();
+        dbo.close();
+        return result;
+    }
+
+    if(query.size() == -1 && query.isActive())
+    {
+        do
+        {
+            QString tab = query.value(column).toString();
+            result.append(tab);
+        }
+        while(query.next());
+    }
+    else
+    {
+        bool select = query.isSelect();
+        bool isActive = query.isActive();
+        int size = query.size();
+        while(query.next())
+        {
+            QString tab = query.value(column).toString();
+            result.append(tab);
+        }
     }
     dbo.close();
     return result;

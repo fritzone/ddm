@@ -55,11 +55,12 @@
 #include <limits.h>
 #include <math.h>
 
-Q_DECLARE_METATYPE(Cubrid_Query_Result*)
+Q_DECLARE_METATYPE(Cubrid_Query_Result *)
 
 QT_BEGIN_NAMESPACE
 
-class QCubridDriverPrivate {
+class QCubridDriverPrivate
+{
 public:
     QCubridDriverPrivate() : connection(0), isUtf8(false) {}
     Cubrid_Conn connection;
@@ -67,7 +68,8 @@ public:
     bool isUtf8;
 };
 
-class QCubridResultPrivate {
+class QCubridResultPrivate
+{
 public:
     QCubridResultPrivate(QCubridResult *qq): q(qq), driver(0), request(0), queryResult(0), columnsInfo(0), currentSize(-1), preparedQueriesEnabled(false) {}
 
@@ -90,7 +92,7 @@ public:
     bool processResults();
 };
 
-static QSqlError qMakeError(const QString& err, QSqlError::ErrorType type,
+static QSqlError qMakeError(const QString &err, QSqlError::ErrorType type,
                             const QCubridDriverPrivate *p)
 {
     const char *s = p->lastError.err_msg;
@@ -102,31 +104,42 @@ static QSqlError qMakeError(const QString& err, QSqlError::ErrorType type,
 bool QCubridResultPrivate::processResults()
 {
     if (request == 0)
+    {
         return false;
+    }
 
     int status = -1;
-    if (!preparedStmt.isEmpty()) {
+    if (!preparedStmt.isEmpty())
+    {
         // if command was a select
         if (commandType == SQLX_CMD_SELECT)
+        {
             status = 0;
+        }
     }
     else
+    {
         return false;
+    }
 
-    if (status == 0) {
+    if (status == 0)
+    {
         q->setSelect(true);
         q->setActive(true);
         if (cci_fetch_size(request, currentSize) != 0)
+        {
             currentSize = -1;
-        else {
-            //currentSize = affectedRows;
-            qWarning() << "currentSize: " << currentSize;
-            q->fetchFirst();
         }
-        qWarning() << "currentSize: " << currentSize;
+        else
+        {
+            //currentSize = affectedRows;
+            //q->fetchFirst(); // FLD: commented out
+            q->setAt(QSql::BeforeFirstRow); // FLD: added
+        }
         return true;
     }
-    else {
+    else
+    {
         q->setSelect(false);
         q->setActive(true);
         currentSize = -1;
@@ -139,38 +152,9 @@ bool QCubridResultPrivate::processResults()
 
 static QVariant::Type qDecodeCubridType(T_CCI_U_TYPE t)
 {
-    //    CCI_U_TYPE_FIRST = 0,
-    //    CCI_U_TYPE_UNKNOWN = 0,
-    //    CCI_U_TYPE_NULL = 0,
-
-    //    CCI_U_TYPE_CHAR = 1,
-    //    CCI_U_TYPE_STRING = 2,
-    //    CCI_U_TYPE_NCHAR = 3,
-    //    CCI_U_TYPE_VARNCHAR = 4,
-    //    CCI_U_TYPE_BIT = 5,
-    //    CCI_U_TYPE_VARBIT = 6,
-    //    CCI_U_TYPE_NUMERIC = 7,
-    //    CCI_U_TYPE_INT = 8,
-    //    CCI_U_TYPE_SHORT = 9,
-    //    CCI_U_TYPE_MONETARY = 10,
-    //    CCI_U_TYPE_FLOAT = 11,
-    //    CCI_U_TYPE_DOUBLE = 12,
-    //    CCI_U_TYPE_DATE = 13,
-    //    CCI_U_TYPE_TIME = 14,
-    //    CCI_U_TYPE_TIMESTAMP = 15,
-    //    CCI_U_TYPE_SET = 16,
-    //    CCI_U_TYPE_MULTISET = 17,
-    //    CCI_U_TYPE_SEQUENCE = 18,
-    //    CCI_U_TYPE_OBJECT = 19,
-    //    CCI_U_TYPE_RESULTSET = 20,
-    //    CCI_U_TYPE_BIGINT = 21,
-    //    CCI_U_TYPE_DATETIME = 22,
-    //    CCI_U_TYPE_BLOB = 23,
-    //    CCI_U_TYPE_CLOB = 24,
-
-
     QVariant::Type type = QVariant::Invalid;
-    switch (t) {
+    switch (t)
+    {
     case CCI_U_TYPE_BIT:
         type = QVariant::Bool;
         break;
@@ -207,20 +191,20 @@ static QVariant::Type qDecodeCubridType(T_CCI_U_TYPE t)
     return type;
 }
 
-//////////////////////////////////////////////////////////////////
-
 static void qDeallocatePreparedStmt(QCubridResultPrivate *d)
-{    
-    if (d->request > 0) {
+{
+    if (d->request > 0)
+    {
         if (cci_close_req_handle(d->request) != 0)
-            qWarning() << "Unable to free statement:" << d->preparedStmtId; //qWarning("Unable to free statement: %s", d->preparedStmtId);
+        {
+            qWarning() << "Unable to free statement:" << d->preparedStmtId;    //qWarning("Unable to free statement: %s", d->preparedStmtId);
+        }
     }
     d->preparedStmt.clear();
     d->preparedStmtId.clear();
 }
 
-
-QCubridResult::QCubridResult(const QCubridDriver* db, QCubridDriverPrivate* p)
+QCubridResult::QCubridResult(const QCubridDriver *db, QCubridDriverPrivate *p)
     : QSqlResult(db)
 {
     d = new QCubridResultPrivate(this);
@@ -230,13 +214,14 @@ QCubridResult::QCubridResult(const QCubridDriver* db, QCubridDriverPrivate* p)
 
 QCubridResult::~QCubridResult()
 {
-    if (d != 0) {
+    if (d != 0)
+    {
         delete d;
         d = 0;
     }
 }
 
-QString QCubridResult::executedQuery () const
+QString QCubridResult::executedQuery() const
 {
     return d->preparedStmt;
 }
@@ -248,17 +233,23 @@ QVariant QCubridResult::handle() const
 
 void QCubridResult::cleanup()
 {
-    if (d != 0) {
-        if (d->request > 0) {
-            if (d->queryResult != 0) {
+    if (d != 0)
+    {
+        if (d->request > 0)
+        {
+            if (d->queryResult != 0)
+            {
                 cci_query_result_free(d->queryResult, d->currentSize);
                 d->queryResult = 0;
             }
 
             if (cci_close_req_handle(d->request) != 0)
-                qWarning() << "Unable to free statement:" << d->preparedStmtId; //qWarning("Unable to free statement: %s", d->preparedStmtId);
+            {
+                qWarning() << "Unable to free statement:" << d->preparedStmtId;    //qWarning("Unable to free statement: %s", d->preparedStmtId);
+            }
         }
-        else {
+        else
+        {
             d->request = 0;
             setAt(QSql::BeforeFirstRow);
             d->currentSize = -1;
@@ -272,36 +263,49 @@ bool QCubridResult::fetch(int i)
     qWarning() << "fetching i : " << i << " - result count : " << d->queryResult->result_count;
 
     if (!isActive())
+    {
         return false;
-    if (i < 0) {
+    }
+    if (i < 0)
+    {
         setAt(QSql::BeforeFirstRow);
         return false;
     }
-    if (i > d->queryResult->result_count - 1) {
+    if (i > d->queryResult->result_count - 1)
+    {
         setAt(QSql::AfterLastRow);
         return false;
     }
 
-    if (i == 0) {
+    if (i == 0)
+    {
         int res = cci_cursor(d->request, 1, CCI_CURSOR_FIRST, &(d->driver->lastError));
         if (res == CCI_ER_NO_MORE_DATA)
+        {
             qWarning() << "Query END!";
-        if ((res=cci_fetch(d->request, &(d->driver->lastError)))<0) {
-            qWarning() << "Fetch error!";
+        }
+        if ((res = cci_fetch(d->request, &(d->driver->lastError))) < 0)
+        {
+            qWarning() << "Fetch error! (1)";
         }
         setAt(0);
         return true;
     }
 
     if (at() == i)
+    {
         return true;
+    }
 
-    int res = cci_cursor(d->request, (i-at()), CCI_CURSOR_CURRENT, &(d->driver->lastError));
-    qWarning() << "i (" << i << ") - " << "at() (" << at() << ") = " << (i-at());
+    int res = cci_cursor(d->request, (i - at()), CCI_CURSOR_CURRENT, &(d->driver->lastError));
+    qWarning() << "i (" << i << ") - " << "at() (" << at() << ") = " << (i - at());
     if (res == CCI_ER_NO_MORE_DATA)
+    {
         qWarning() << "Query END!";
-    if ((res=cci_fetch(d->request, &(d->driver->lastError)))<0) {
-        qWarning() << "Fetch error!";
+    }
+    if ((res = cci_fetch(d->request, &(d->driver->lastError))) < 0)
+    {
+        qWarning() << "Fetch error! (2)";
     }
     setAt(i);
     return true;
@@ -323,131 +327,187 @@ bool QCubridResult::fetchNext()
 {
     int i = at();
     if (i < d->queryResult->result_count - 1)
-        return fetch(i+1);
+    {
+        return fetch(i + 1);
+    }
     else
+    {
         return false;
+    }
 }
 
 bool QCubridResult::fetchPrevious()
 {
     int i = at();
     if (i > 0)
-        return fetch(i-1);
+    {
+        return fetch(i - 1);
+    }
     else
+    {
         return false;
+    }
 }
 
 QVariant QCubridResult::data(int i)
 {
-    if ((at() == QSql::BeforeFirstRow) || (at() == QSql::AfterLastRow))
+    int currentPos = at();
+    if ((currentPos == QSql::BeforeFirstRow) || (currentPos == QSql::AfterLastRow))
+    {
         return QVariant();
+    }
 
-    if (i >= d->ColumnCount) {
+    if (i >= d->ColumnCount)
+    {
         qWarning("QCubridResult::data: column %d out of range", i);
         return QVariant();
     }
 
     qWarning() << "CCI_GET_RESULT_INFO_TYPE";
 
-    Cubrid_Type ptype = CCI_GET_RESULT_INFO_TYPE (d->columnsInfo, i+1);
+    Cubrid_Type ptype = CCI_GET_RESULT_INFO_TYPE(d->columnsInfo, i + 1);
     QVariant::Type type = qDecodeCubridType(ptype);
 
     qWarning() << "Valor de QVariant::Type: " << type;
 
-    char *val;
+    char *val = 0;
     int indicator;
 
-    int res = cci_get_data(d->request, i+1, CCI_A_TYPE_STR, &val, &indicator);
+    int res = cci_get_data(d->request, i + 1, CCI_A_TYPE_STR, &val, &indicator);
 
-    //    qWarning("Valor de request: %d", d->request);
-    //    qWarning("Valor de queryResult.result_count: %d", d->queryResult->result_count);
-    //    qWarning("Valor de i: %d", i);
-    //    qWarning("Valor de data: %s", val);
-    //    qWarning("Valor de res: %d",res);
-    //    qWarning("Valor de indicator: %d",indicator);
+        qWarning("--> request: %d", d->request);
+        qWarning("--> queryResult.result_count: %d", d->queryResult->result_count);
+        qWarning("--> i: %d", i);
+        qWarning("--> val: %s", val);
+        qWarning("--> res: %d",res);
+        qWarning("--> indicator: %d",indicator);
 
+        if(res < 0)
+        {
+            char s[1024];
+            cci_get_err_msg(res, s, 1023);
+            qWarning() << s;
+        }
+
+    // is this null?
     if (indicator == -1)
+    {
         return QVariant(type);
-    //if (!(CCI_GET_RESULT_INFO_IS_NON_NULL (d->columnsInfo, i) ? true : false))
-    //    return QVariant(type);
-    switch (type) {
+    }
+
+    switch (type)
+    {
     case QVariant::Bool:
         return QVariant((bool)(val[0] == 't'));
     case QVariant::String:
         return d->driver->isUtf8 ? QString::fromUtf8(val) : QString::fromAscii(val);
     case QVariant::LongLong:
         if (val[0] == '-')
+        {
             return QString::fromLatin1(val).toLongLong();
+        }
         else
+        {
             return QString::fromLatin1(val).toULongLong();
+        }
     case QVariant::Int:
         return atoi(val);
     case QVariant::Double:
-        if (ptype == CCI_U_TYPE_NUMERIC) {
-            if (numericalPrecisionPolicy() != QSql::HighPrecision) {
+        if (ptype == CCI_U_TYPE_NUMERIC)
+        {
+            if (numericalPrecisionPolicy() != QSql::HighPrecision)
+            {
                 QVariant retval;
                 bool convert;
-                double dbl=QString::fromAscii(val).toDouble(&convert);
+                double dbl = QString::fromAscii(val).toDouble(&convert);
                 if (numericalPrecisionPolicy() == QSql::LowPrecisionInt64)
+                {
                     retval = (qlonglong)dbl;
+                }
                 else if (numericalPrecisionPolicy() == QSql::LowPrecisionInt32)
+                {
                     retval = (int)dbl;
+                }
                 else if (numericalPrecisionPolicy() == QSql::LowPrecisionDouble)
+                {
                     retval = dbl;
+                }
                 if (!convert)
+                {
                     return QVariant();
+                }
                 return retval;
             }
             return QString::fromAscii(val);
         }
         return QString::fromAscii(val).toDouble();
     case QVariant::Date:
-        if (val[0] == '\0') {
+        if (val[0] == '\0')
+        {
             return QVariant(QDate());
-        } else {
+        }
+        else
+        {
 #ifndef QT_NO_DATESTRING
             return QVariant(QDate::fromString(QString::fromLatin1(val), Qt::ISODate));
 #else
             return QVariant(QString::fromLatin1(val));
 #endif
         }
-    case QVariant::Time: {
+    case QVariant::Time:
+    {
         const QString str = QString::fromLatin1(val);
 #ifndef QT_NO_DATESTRING
         if (str.isEmpty())
+        {
             return QVariant(QTime());
+        }
         if (str.at(str.length() - 3) == QLatin1Char('+') || str.at(str.length() - 3) == QLatin1Char('-'))
             // strip the timezone
             // TODO: fix this when timestamp support comes into QDateTime
+        {
             return QVariant(QTime::fromString(str.left(str.length() - 3), Qt::ISODate));
+        }
         return QVariant(QTime::fromString(str, Qt::ISODate));
 #else
         return QVariant(str);
 #endif
     }
-    case QVariant::DateTime: {
+    case QVariant::DateTime:
+    {
         QString dtval = QString::fromLatin1(val);
 #ifndef QT_NO_DATESTRING
         if (dtval.length() < 10)
+        {
             return QVariant(QDateTime());
+        }
         // remove the timezone
         // TODO: fix this when timestamp support comes into QDateTime
         if (dtval.at(dtval.length() - 3) == QLatin1Char('+') || dtval.at(dtval.length() - 3) == QLatin1Char('-'))
+        {
             dtval.chop(3);
+        }
         // milliseconds are sometimes returned with 2 digits only
         if (dtval.at(dtval.length() - 3).isPunct())
+        {
             dtval += QLatin1Char('0');
+        }
         if (dtval.isEmpty())
+        {
             return QVariant(QDateTime());
+        }
         else
+        {
             return QVariant(QDateTime::fromString(dtval, Qt::ISODate));
+        }
 #else
         return QVariant(dtval);
 #endif
     }
-    case QVariant::ByteArray: {
+    case QVariant::ByteArray:
+    {
         char *data = val;
-        QByteArray ba((const char*)data);
+        QByteArray ba((const char *)data);
         return QVariant(ba);
     }
     default:
@@ -461,20 +521,26 @@ bool QCubridResult::isNull(int field)
 {
     char *val;
     int indicator;
-    cci_get_data(d->request, field+1, CCI_A_TYPE_STR, val, &indicator);
+    cci_get_data(d->request, field + 1, CCI_A_TYPE_STR, val, &indicator);
 
     return (indicator == -1);
 }
 
-bool QCubridResult::reset (const QString& query)
+bool QCubridResult::reset(const QString &query)
 {
     cleanup();
     if (!driver())
+    {
         return false;
+    }
     if (!driver()->isOpen() || driver()->isOpenError())
+    {
         return false;
+    }
     if (!prepare(query))
+    {
         return false;
+    }
     return exec();
     //return d->processResults();
 }
@@ -482,9 +548,13 @@ bool QCubridResult::reset (const QString& query)
 int QCubridResult::size()
 {
     if (d->currentSize == -1)
+    {
         return 0;
+    }
     else
+    {
         return d->currentSize;
+    }
 }
 
 int QCubridResult::numRowsAffected()
@@ -494,10 +564,13 @@ int QCubridResult::numRowsAffected()
 
 QVariant QCubridResult::lastInsertId() const
 {
-    if (isActive()) {
+    if (isActive())
+    {
         char *id = d->queryResult->oid;
         if (id != 0)
+        {
             return QString::fromLatin1(id);
+        }
     }
     return QVariant();
 }
@@ -506,64 +579,72 @@ QSqlRecord QCubridResult::record() const
 {
     QSqlRecord info;
     if (!isActive() || !isSelect())
+    {
         return info;
+    }
 
     int count = d->ColumnCount;
-    for (int i = 0; i < count; ++i) {
+    for (int i = 0; i < count; ++i)
+    {
         QSqlField f;
         if (d->driver->isUtf8)
-            f.setName(QString::fromUtf8( CCI_GET_RESULT_INFO_NAME(d->columnsInfo, i+1) ));
+        {
+            f.setName(QString::fromUtf8(CCI_GET_RESULT_INFO_NAME(d->columnsInfo, i + 1)));
+        }
         else
-            f.setName(QString::fromLocal8Bit( CCI_GET_RESULT_INFO_NAME(d->columnsInfo, i+1) ));
-        f.setType( qDecodeCubridType(CCI_GET_RESULT_INFO_TYPE(d->columnsInfo, i)) );
-        int len = CCI_GET_RESULT_INFO_SCALE(d->columnsInfo, i+1);
-        int precision = CCI_GET_RESULT_INFO_PRECISION(d->columnsInfo, i+1);
+        {
+            f.setName(QString::fromLocal8Bit(CCI_GET_RESULT_INFO_NAME(d->columnsInfo, i + 1)));
+        }
+        f.setType(qDecodeCubridType(CCI_GET_RESULT_INFO_TYPE(d->columnsInfo, i)));
+        int len = CCI_GET_RESULT_INFO_SCALE(d->columnsInfo, i + 1);
+        int precision = CCI_GET_RESULT_INFO_PRECISION(d->columnsInfo, i + 1);
         // swap length and precision if length == -1
-        if (len == -1 && precision > -1) {
+        if (len == -1 && precision > -1)
+        {
             len = precision - 4;
             precision = -1;
         }
         f.setLength(len);
         f.setPrecision(precision);
-        f.setSqlType(CCI_GET_RESULT_INFO_TYPE(d->columnsInfo, i+1));
+        f.setSqlType(CCI_GET_RESULT_INFO_TYPE(d->columnsInfo, i + 1));
         info.append(f);
     }
     return info;
 }
 
-//void QCubridResult::virtual_hook(int id, void *data)
-//{
-//    Q_ASSERT(data);
-
-//    switch (id) {
-//    default:
-//        QSqlResult::virtual_hook(id, data);
-//    }
-//}
-
 static QString qCreateParamString(const QVector<QVariant> boundValues, const QSqlDriver *driver)
 {
     if (boundValues.isEmpty())
+    {
         return QString();
+    }
 
     QString params;
     QSqlField f;
-    for (int i = 0; i < boundValues.count(); ++i) {
+    for (int i = 0; i < boundValues.count(); ++i)
+    {
         const QVariant &val = boundValues.at(i);
 
         f.setType(val.type());
         if (val.isNull())
+        {
             f.clear();
+        }
         else
+        {
             f.setValue(val);
-        if(!params.isNull())
+        }
+        if (!params.isNull())
+        {
             params.append(QLatin1String(", "));
+        }
         params.append(driver->formatValue(f));
     }
     return params;
 }
 
 Q_GLOBAL_STATIC(QMutex, qMutex)
+
 QString qMakePreparedStmtId()
 {
     qMutex()->lock();
@@ -573,7 +654,7 @@ QString qMakePreparedStmtId()
     return id;
 }
 
-void QCubridResult::setQuery ( const QString & query )
+void QCubridResult::setQuery(const QString &query)
 {
     prepare(query);
 }
@@ -581,7 +662,9 @@ void QCubridResult::setQuery ( const QString & query )
 bool QCubridResult::prepare(const QString &query)
 {
     if (!d->preparedQueriesEnabled)
+    {
         return QSqlResult::prepare(query);
+    }
     //QSqlResult::prepare(query);
 
     cleanup();
@@ -589,7 +672,9 @@ bool QCubridResult::prepare(const QString &query)
     qWarning() << "executing prepare()...";
 
     if (!d->preparedStmtId.isEmpty())
+    {
         qDeallocatePreparedStmt(d);
+    }
 
     const QString stmtId = qMakePreparedStmtId();
     const QString stmt = query;
@@ -598,23 +683,20 @@ bool QCubridResult::prepare(const QString &query)
 
     if ((d->request = cci_prepare(d->driver->connection,
                                   data,
-                                  CCI_PREPARE_INCLUDE_OID, &(d->driver->lastError) )) < 0) {
-
-        //d->driver->lastError = err_buf;
-
+                                  CCI_PREPARE_INCLUDE_OID, &(d->driver->lastError))) < 0)
+    {
         setLastError(qMakeError(QCoreApplication::translate("QCUBRIDResult",
-                                                            "Unable to prepare statement"), QSqlError::StatementError, d->driver));
+                                "Unable to prepare statement"), QSqlError::StatementError, d->driver));
 
         d->request = 0;
         d->preparedStmtId.clear();
         return false;
     }
-    else {
-        qWarning() << "request id: " << d->request;
+    else
+    {
+        qWarning() << "request id: " << d->request <<"query:" << query;
         d->columnsInfo = cci_get_result_info(d->request, &d->commandType, &d->ColumnCount);
     }
-
-
 
     d->preparedStmtId = stmtId;
     d->preparedStmt = query;
@@ -624,10 +706,14 @@ bool QCubridResult::prepare(const QString &query)
 bool QCubridResult::exec()
 {
     if (!d->preparedQueriesEnabled)
+    {
         return QSqlResult::exec();
+    }
 
     if (d->request == 0)
+    {
         prepare(d->preparedStmt);
+    }
 
     qWarning() << "executing exec()...";
     //cleanup();
@@ -638,28 +724,35 @@ bool QCubridResult::exec()
 
     const QString params = qCreateParamString(boundValues(), d->q->driver());
     if (params.isEmpty())
+    {
         stmt = QString::fromLatin1("%1").arg(d->preparedStmt);
+    }
     else
+    {
         stmt = QString::fromLatin1("EXECUTE %1 (%2)").arg(d->preparedStmt).arg(params);
+    }
 
 
     qWarning() << "STATEMENT: " << stmt << " REQUEST: " << d->request;
 
-    if ((res=cci_execute(d->request, CCI_EXEC_QUERY_ALL, 0, &(d->driver->lastError)))<0) {
+    if ((res = cci_execute(d->request, CCI_EXEC_QUERY_ALL, 0, &(d->driver->lastError))) < 0)
+    {
         setLastError(qMakeError(QCoreApplication::translate("QCUBRIDResult",
-                                                            "Unable to execute statement"), QSqlError::StatementError, d->driver));
+                                "Unable to execute statement"), QSqlError::StatementError, d->driver));
         qWarning() << "Unable to execute statement" << res;
         qWarning() << d->driver->lastError.err_code;
         qWarning() << d->driver->lastError.err_msg;
     }
-    else {
+    else
+    {
         d->affectedRows = res;
 
     }
 
-    if ((res=cci_fetch_size(d->request, 200))<0) {
+    if ((res = cci_fetch_size(d->request, 200)) < 0)
+    {
         setLastError(qMakeError(QCoreApplication::translate("QCUBRIDResult",
-                                                            "Unable to fetch size"), QSqlError::StatementError, d->driver));
+                                "Unable to fetch size"), QSqlError::StatementError, d->driver));
         qWarning() << "Unable to fetch size" << res;
     }
 
@@ -679,7 +772,7 @@ bool QCubridResult::exec()
 
 /////////////////////////////////////////////////////////////////
 
-QCubridDriver::QCubridDriver(QObject * parent): QSqlDriver(parent)
+QCubridDriver::QCubridDriver(QObject *parent): QSqlDriver(parent)
 {
     d = new QCubridDriverPrivate();
     setOpen(false);
@@ -692,7 +785,8 @@ QCubridDriver::~QCubridDriver()
     //        PQfinish(d->connection);
     close();
 
-    if (d != 0) {
+    if (d != 0)
+    {
         delete d;
         d = 0;
     }
@@ -701,20 +795,24 @@ QCubridDriver::~QCubridDriver()
 bool QCubridDriver::open(const QString &db, const QString &user, const QString &password, const QString &host, int port, const QString &options)
 {
     if (isOpen())
+    {
         close();
+    }
 
     qWarning() << "opening connection...";
 
     if ((d->connection = cci_connect(
-             host.toLocal8Bit().data(),
-             30000,
-             db.toLocal8Bit().data(),
-             user.toLocal8Bit().data(),
-             password.toLocal8Bit().data()))<0) {
+                             host.toLocal8Bit().data(),
+                             port,
+                             db.toLocal8Bit().data(),
+                             user.toLocal8Bit().data(),
+                             password.toLocal8Bit().data())) < 0)
+    {
 
         QString connErrorMsg = QString();
 
-        switch(d->connection) {
+        switch (d->connection)
+        {
         case CCI_ER_NO_MORE_MEMORY:
             connErrorMsg = QCoreApplication::tr("Memory error during connection");
             break;
@@ -740,7 +838,8 @@ bool QCubridDriver::open(const QString &db, const QString &user, const QString &
         setLastError(qMakeError(connErrorMsg, QSqlError::ConnectionError, d));
         return false;
     }
-    else {
+    else
+    {
         setOpen(true);
         setOpenError(false);
         //cci_set_autocommit(d->connection, CCI_AUTOCOMMIT_TRUE);
@@ -755,12 +854,16 @@ bool QCubridDriver::isOpen() const
 
 void QCubridDriver::close()
 {
-    if (isOpen()) {
-        if (cci_disconnect(d->connection, &d->lastError) != 0) {
+    if (isOpen())
+    {
+        if (cci_disconnect(d->connection, &d->lastError) != 0)
+        {
             qWarning() << tr("Can not disconnect!");
         }
         else
+        {
             d->connection = 0;
+        }
 
         setOpen(false);
         setOpenError(false);
@@ -776,36 +879,50 @@ QStringList QCubridDriver::tables(QSql::TableType type) const
 {
     QStringList tl;
     if (!isOpen())
+    {
         return tl;
+    }
     QSqlQuery t(createResult());
     t.setForwardOnly(true);
 
     if (type & QSql::Tables)
+    {
         t.exec(QLatin1String("SELECT class_name FROM db_class WHERE owner_name <> 'DBA' AND class_type = 'CLASS' ORDER BY class_name"));
+    }
     if (type & QSql::Views)
+    {
         t.exec(QLatin1String("SELECT class_name FROM db_class WHERE owner_name <> 'DBA' AND class_type = 'VCLASS' ORDER BY class_name"));
-    if (type & QSql::SystemTables) {
+    }
+    if (type & QSql::SystemTables)
+    {
         t.exec(QLatin1String("SELECT class_name FROM db_class WHERE owner_name = 'DBA' AND class_type = 'CLASS' ORDER BY class_name"));
         while (t.next())
+        {
             tl.append(t.value(0).toString());
+        }
     }
 
     return tl;
 }
 
-QString QCubridDriver::version() {
+QString QCubridDriver::version()
+{
     int res;
     char *db_ver;
-    if ((res=cci_get_db_version(d->connection, db_ver, sizeof(db_ver)))<0) {
+    if ((res = cci_get_db_version(d->connection, db_ver, sizeof(db_ver))) < 0)
+    {
         return QString();
     }
     else
+    {
         return QString::fromLocal8Bit(db_ver);
+    }
 }
 
 bool QCubridDriver::hasFeature(DriverFeature f) const
 {
-    switch (f) {
+    switch (f)
+    {
     case Transactions:
     case QuerySize:
     case LastInsertId:

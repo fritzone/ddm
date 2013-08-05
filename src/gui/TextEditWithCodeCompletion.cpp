@@ -82,12 +82,12 @@ TextEditWithCodeCompletion::TextEditWithCodeCompletion(QWidget* p, Connection* c
         {
             m_highlighter = new SqlHighlighter(document(),
                                        c->getEngine()->getKeywords(),
-                                       c->getEngine()->getDTSupplier()->numericTypes(),
-                                       c->getEngine()->getDTSupplier()->booleanTypes(),
-                                       c->getEngine()->getDTSupplier()->textTypes(),
-                                       c->getEngine()->getDTSupplier()->blobTypes(),
-                                       c->getEngine()->getDTSupplier()->dateTimeTypes(),
-                                       c->getEngine()->getDTSupplier()->miscTypes(),
+                                       dtSupplier->numericTypes(),
+                                       dtSupplier->booleanTypes(),
+                                       dtSupplier->textTypes(),
+                                       dtSupplier->blobTypes(),
+                                       dtSupplier->dateTimeTypes(),
+                                       dtSupplier->miscTypes(),
                                        QStringList());
             dbKeywords = c->getEngine()->getKeywords();
             funcs = c->getEngine()->getBuiltinFunctions();
