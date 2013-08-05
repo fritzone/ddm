@@ -759,11 +759,6 @@ QString CUBRIDDatabaseEngine::getTableCreationScript(Connection* c, const QStrin
         return result;
     }
 
-    {
-    QSqlQuery query(db);
-    query.exec("SET sql_mode = 'ANSI'");
-    }
-
     QSqlQuery query(db);
     query.exec("show create table " + tabName);
 

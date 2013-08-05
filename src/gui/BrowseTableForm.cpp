@@ -11,6 +11,9 @@
 #include "strings.h"
 #include "NewTableForm.h"
 
+// TODO: ugly ... But till we find out what's wrong with QCubrid keep it like this
+#include "dbcubrid_DatabaseEngine.h"
+
 #include <QtGui>
 #include <QSqlTableModel>
 #include <QSqlDriver>
@@ -231,6 +234,264 @@ QTableView* BrowseTableForm::createTable(QWidget *p)
     return table;
 }
 
+void BrowseTableForm::newPageForProcedure(BrowsedTableLayout layout, const QString &tab, Connection *c)
+{
+    queryFrame = new QFrame(this);
+    queryFrame->setObjectName(QString::fromUtf8("frame_q"));
+    queryFramesMainHorizontalLayout = new QHBoxLayout(queryFrame);
+    queryFramesMainVerticalLayout = new QVBoxLayout();
+    horizontalLayoutForButtons = new QHBoxLayout();
+    btnSaveQuery = new QToolButton(queryFrame);
+    btnSaveQuery->setIcon(IconFactory::getSaveIcon());
+    horizontalSpacer = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+    horizontalLayoutForButtons->addWidget(btnSaveQuery);
+    horizontalLayoutForButtons->addItem(horizontalSpacer);
+    queryFramesMainVerticalLayout->addLayout(horizontalLayoutForButtons);
+    horizontalLayoutForLineNumbersAndTextEdit = new QHBoxLayout();
+    queryFramesMainVerticalLayout->addLayout(horizontalLayoutForLineNumbersAndTextEdit);
+    queryFramesMainHorizontalLayout->addLayout(queryFramesMainVerticalLayout);
+
+    mainTabPageWidgetsLayout->addWidget(queryFrame);
+
+    m_textEdit = new TextEditWithCodeCompletion(this, c);
+
+    m_frameForLineNumbers = new FrameForLineNumbers(this);
+    horizontalLayoutForLineNumbersAndTextEdit->addWidget(m_frameForLineNumbers);
+
+    m_textEdit->setBrowseForm(this);
+    horizontalLayoutForLineNumbersAndTextEdit->addWidget(m_textEdit);
+    m_textEdit->setLineNumberFrame(m_frameForLineNumbers);
+    m_textEdit->updateLineNumbers();
+    m_textEdit->resetToConnection(c);
+
+    QObject::connect(btnSaveQuery, SIGNAL(clicked()), this, SLOT(onSaveQuery()));
+
+    if(layout == BROWSE_PROCEDURE)
+    {
+        Procedure* p = c->getEngine()->reverseEngineerProc(c, tab, 0);
+        if(p)
+        {
+            m_textEdit->setPlainText(p->getSql());
+        }
+
+        mainTab->addTab(queryFrame, IconFactory::getProcedureIcon(), tab + ":" + c->getFullLocation());
+    }
+    else
+    {
+        Function* p = c->getEngine()->reverseEngineerFunc(c, tab, 0);
+        if(p)
+        {
+            m_textEdit->setPlainText(p->getSql());
+        }
+
+        mainTab->addTab(queryFrame, IconFactory::getFunctionTreeIcon(), tab + ":" + c->getFullLocation());
+
+    }
+}
+
+void BrowseTableForm::newPageforTrigger(Connection *c, const QString &tab)
+{
+    queryFrame = new QFrame(this);
+    queryFrame->setObjectName(QString::fromUtf8("frame_q"));
+    queryFramesMainHorizontalLayout = new QHBoxLayout(queryFrame);
+    queryFramesMainVerticalLayout = new QVBoxLayout();
+    horizontalLayoutForButtons = new QHBoxLayout();
+//        btnSaveQuery = new QToolButton(queryFrame);
+//        btnSaveQuery->setIcon(IconFactory::getSaveIcon());
+//        horizontalSpacer = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+//        horizontalLayoutForButtons->addWidget(btnSaveQuery);
+//        horizontalLayoutForButtons->addItem(horizontalSpacer);
+//        queryFramesMainVerticalLayout->addLayout(horizontalLayoutForButtons);
+    horizontalLayoutForLineNumbersAndTextEdit = new QHBoxLayout();
+    queryFramesMainVerticalLayout->addLayout(horizontalLayoutForLineNumbersAndTextEdit);
+    queryFramesMainHorizontalLayout->addLayout(queryFramesMainVerticalLayout);
+
+
+    Trigger* t = c->getEngine()->reverseEngineerTrigger(c, tab, 0);
+    if(t)
+    {
+        TriggerForm* pf = new TriggerForm(0, true, true, this);
+        pf->feedInTables(QStringList(t->getTable()));
+        pf->setTrigger(t);
+        pf->showSql();
+
+        horizontalLayoutForLineNumbersAndTextEdit->addWidget(pf);
+        mainTab->addTab(queryFrame, IconFactory::getTriggerIcon(), tab + ":" + c->getFullLocation());
+    }
+}
+
+void BrowseTableForm::createTableDataTab(Connection *c, const QString &tab)
+{
+    dataTab = new QWidget();
+    dataTabsLayout = new QVBoxLayout(dataTab);
+    tableForTableData = createTable(dataTab);
+    dataTabsLayout->addWidget(tableForTableData);
+    tabWidget->addTab(dataTab, tr("Data"));
+    tableForTableData->raise();
+
+    // and fill in the data for the "data" tab
+    QSqlDatabase sqldb = c->getQSqlDatabase();
+    QSqlTableModel *model = new QSqlTableModel(tableForTableData, sqldb);
+    model->setTable(tab);
+    model->select();
+
+    if (model->lastError().type() == QSqlError::NoError)
+    {
+        tableForTableData->setModel(model);
+        tableForTableData->setEditTriggers(QAbstractItemView::DoubleClicked|QAbstractItemView::EditKeyPressed);
+    }
+    sqldb.close();
+}
+
+void BrowseTableForm::createTableColumnsTab(Connection *c, const QString &tab)
+{
+    columnsTab = new QWidget();
+    columnTabsLayout = new QVBoxLayout(columnsTab);
+
+    if(dynamic_cast<CUBRIDDatabaseEngine*>(c->getEngine()))
+    {
+        QTableWidget* tableForTableColumns = new QTableWidget(columnsTab);
+        QSizePolicy sizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+        sizePolicy.setHorizontalStretch(2);
+        sizePolicy.setVerticalStretch(0);
+        sizePolicy.setHeightForWidth(tableForTableColumns->sizePolicy().hasHeightForWidth());
+        tableForTableColumns->setSizePolicy(sizePolicy);
+        tableForTableColumns->setContextMenuPolicy(Qt::ActionsContextMenu);
+        tableForTableColumns->setAlternatingRowColors(true);
+        tableForTableColumns->setSelectionMode(QAbstractItemView::SingleSelection);
+        tableForTableColumns->setSelectionBehavior(QAbstractItemView::SelectItems);
+        tableForTableColumns->setSortingEnabled(true);
+        tableForTableColumns->setWordWrap(false);
+        tableForTableColumns->horizontalHeader()->setDefaultSectionSize(200);
+
+        columnTabsLayout->addWidget(tableForTableColumns);
+        tabWidget->addTab(columnsTab, QString("Columns"));
+
+        QSqlDatabase cubridDb = c->getQSqlDatabase();
+
+        if(!cubridDb.isOpen())
+        {
+            return;
+        }
+        else
+        {
+            QSqlQuery q(cubridDb);
+            q.prepare("desc " + tab);
+            if(!q.exec())
+            {
+                return;
+            }
+            else
+            {
+
+                // ugly header, creating
+                tableForTableColumns->setColumnCount(6);
+
+                QTableWidgetItem *columnHeaderItemField = new QTableWidgetItem("Field");
+                QTableWidgetItem *columnHeaderItemType = new QTableWidgetItem("Type");
+                QTableWidgetItem *columnHeaderItemNull= new QTableWidgetItem("Null");
+                QTableWidgetItem *columnHeaderItemKey = new QTableWidgetItem("Key");
+                QTableWidgetItem *columnHeaderItemDefault = new QTableWidgetItem("Default");
+                QTableWidgetItem *columnHeaderItemExtra = new QTableWidgetItem("Extra");
+
+                columnHeaderItemField->setTextAlignment(Qt::AlignVCenter);
+                columnHeaderItemType->setTextAlignment(Qt::AlignVCenter);
+                columnHeaderItemNull->setTextAlignment(Qt::AlignVCenter);
+                columnHeaderItemKey->setTextAlignment(Qt::AlignVCenter);
+                columnHeaderItemDefault->setTextAlignment(Qt::AlignVCenter);
+                columnHeaderItemExtra->setTextAlignment(Qt::AlignVCenter);
+
+                tableForTableColumns->setHorizontalHeaderItem(0, columnHeaderItemField);
+                tableForTableColumns->setHorizontalHeaderItem(1, columnHeaderItemType);
+                tableForTableColumns->setHorizontalHeaderItem(2, columnHeaderItemNull);
+                tableForTableColumns->setHorizontalHeaderItem(3, columnHeaderItemKey);
+                tableForTableColumns->setHorizontalHeaderItem(4, columnHeaderItemDefault);
+                tableForTableColumns->setHorizontalHeaderItem(5, columnHeaderItemExtra);
+
+                tableForTableColumns->setRowCount(0);
+
+                int i = 0;
+                while(q.next())
+                {
+                    tableForTableColumns->insertRow(tableForTableColumns->rowCount());
+                    for(int j=0; j<6; j++)
+                    {
+                        QString v = q.value(j).toString();
+                        tableForTableColumns->setItem(i, j,  new QTableWidgetItem(v));
+                    }
+                    i++;
+                }
+            }
+            cubridDb.close();
+        }
+
+    }
+    else
+    {
+        tableForTableColumns = createTable(columnsTab);
+        columnTabsLayout->addWidget(tableForTableColumns);
+        tabWidget->addTab(columnsTab, QString("Columns"));
+
+        QSqlQueryModel *model = new QSqlQueryModel(tableForTableColumns);
+        QSqlDatabase db2 = c->getQSqlDatabase();
+        QSqlQuery q(c->getEngine()->getTableDescriptionScript(tab), db2);
+        model->setQuery(q);
+        if(model->lastError().type() != QSqlError::NoError)
+        {
+            QMessageBox::critical(this, tr("Error"), model->lastError().text(), QMessageBox::Ok);
+            if(db2.isOpen()) db2.close();
+            return;
+        }
+        tableForTableColumns->setModel(model);
+        db2.close();
+    }
+
+}
+
+void BrowseTableForm::createTableScriptTab(BrowsedTableLayout layout, const QString &tab, Connection *c)
+{
+    queryFrame = new QFrame(this);
+    queryFramesMainHorizontalLayout = new QHBoxLayout(queryFrame);
+    queryFramesMainVerticalLayout = new QVBoxLayout();
+    horizontalLayoutForButtons = new QHBoxLayout();
+    btnSaveQuery = new QToolButton(queryFrame);
+    btnSaveQuery->setIcon(IconFactory::getSaveIcon());
+    horizontalSpacer = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+    horizontalLayoutForButtons->addWidget(btnSaveQuery);
+    horizontalLayoutForButtons->addItem(horizontalSpacer);
+    queryFramesMainVerticalLayout->addLayout(horizontalLayoutForButtons);
+    horizontalLayoutForLineNumbersAndTextEdit = new QHBoxLayout();
+    queryFramesMainVerticalLayout->addLayout(horizontalLayoutForLineNumbersAndTextEdit);
+    queryFramesMainHorizontalLayout->addLayout(queryFramesMainVerticalLayout);
+
+    mainTabPageWidgetsLayout->addWidget(queryFrame);
+
+    m_textEdit = new TextEditWithCodeCompletion(this, c);
+
+    m_frameForLineNumbers = new FrameForLineNumbers(this);
+    horizontalLayoutForLineNumbersAndTextEdit->addWidget(m_frameForLineNumbers);
+
+    m_textEdit->setBrowseForm(this);
+    horizontalLayoutForLineNumbersAndTextEdit->addWidget(m_textEdit);
+    m_textEdit->setLineNumberFrame(m_frameForLineNumbers);
+    QString s;
+    if(layout == BROWSE_TABLE)
+    {
+        s = c->getEngine()->getTableCreationScript(c, tab);
+    }
+    else
+    {
+        s = c->getEngine()->getViewCreationScript(c, tab);
+    }
+    m_textEdit->setPlainText(s);
+    m_textEdit->updateLineNumbers();
+    QKeyEvent* keyEvent = new QKeyEvent(QEvent::KeyPress, Qt::Key_Return, Qt::NoModifier);
+    m_textEdit->updateLineNumbers();
+    m_textEdit->keyPressEvent(keyEvent);
+    QObject::connect(btnSaveQuery, SIGNAL(clicked()), this, SLOT(onSaveQuery()));
+    tabWidget->addTab(queryFrame, tr("Script"));
+}
+
 void BrowseTableForm::newPage(Connection *c, const QString &tab, BrowsedTableLayout layout)
 {
     BrowseTableForm::BrowsedObjectAndConnection *x = new BrowseTableForm::BrowsedObjectAndConnection();
@@ -244,183 +505,21 @@ void BrowseTableForm::newPage(Connection *c, const QString &tab, BrowsedTableLay
 
     if(layout == BROWSE_PROCEDURE || layout == BROWSE_FUNCTION)
     {
-        queryFrame = new QFrame(this);
-        queryFrame->setObjectName(QString::fromUtf8("frame_q"));
-        queryFramesMainHorizontalLayout = new QHBoxLayout(queryFrame);
-        queryFramesMainVerticalLayout = new QVBoxLayout();
-        horizontalLayoutForButtons = new QHBoxLayout();
-        btnSaveQuery = new QToolButton(queryFrame);
-        btnSaveQuery->setIcon(IconFactory::getSaveIcon());
-        horizontalSpacer = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
-        horizontalLayoutForButtons->addWidget(btnSaveQuery);
-        horizontalLayoutForButtons->addItem(horizontalSpacer);
-        queryFramesMainVerticalLayout->addLayout(horizontalLayoutForButtons);
-        horizontalLayoutForLineNumbersAndTextEdit = new QHBoxLayout();
-        queryFramesMainVerticalLayout->addLayout(horizontalLayoutForLineNumbersAndTextEdit);
-        queryFramesMainHorizontalLayout->addLayout(queryFramesMainVerticalLayout);
-
-        mainTabPageWidgetsLayout->addWidget(queryFrame);
-
-        m_textEdit = new TextEditWithCodeCompletion(this, c);
-
-        m_frameForLineNumbers = new FrameForLineNumbers(this);
-        horizontalLayoutForLineNumbersAndTextEdit->addWidget(m_frameForLineNumbers);
-
-        m_textEdit->setBrowseForm(this);
-        horizontalLayoutForLineNumbersAndTextEdit->addWidget(m_textEdit);
-        m_textEdit->setLineNumberFrame(m_frameForLineNumbers);
-        m_textEdit->updateLineNumbers();
-        m_textEdit->resetToConnection(c);
-
-        QObject::connect(btnSaveQuery, SIGNAL(clicked()), this, SLOT(onSaveQuery()));
-
-        if(layout == BROWSE_PROCEDURE)
-        {
-            Procedure* p = c->getEngine()->reverseEngineerProc(c, tab, 0);
-            if(p)
-            {
-                m_textEdit->setPlainText(p->getSql());
-            }
-
-            mainTab->addTab(queryFrame, IconFactory::getProcedureIcon(), tab + ":" + c->getFullLocation());
-        }
-        else
-        {
-            Function* p = c->getEngine()->reverseEngineerFunc(c, tab, 0);
-            if(p)
-            {
-                m_textEdit->setPlainText(p->getSql());
-            }
-
-            mainTab->addTab(queryFrame, IconFactory::getFunctionTreeIcon(), tab + ":" + c->getFullLocation());
-
-        }
+        newPageForProcedure(layout, tab, c);
     }
 
     if(layout == BROWSE_TRIGGER)
     {
-        queryFrame = new QFrame(this);
-        queryFrame->setObjectName(QString::fromUtf8("frame_q"));
-        queryFramesMainHorizontalLayout = new QHBoxLayout(queryFrame);
-        queryFramesMainVerticalLayout = new QVBoxLayout();
-        horizontalLayoutForButtons = new QHBoxLayout();
-//        btnSaveQuery = new QToolButton(queryFrame);
-//        btnSaveQuery->setIcon(IconFactory::getSaveIcon());
-//        horizontalSpacer = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
-//        horizontalLayoutForButtons->addWidget(btnSaveQuery);
-//        horizontalLayoutForButtons->addItem(horizontalSpacer);
-//        queryFramesMainVerticalLayout->addLayout(horizontalLayoutForButtons);
-        horizontalLayoutForLineNumbersAndTextEdit = new QHBoxLayout();
-        queryFramesMainVerticalLayout->addLayout(horizontalLayoutForLineNumbersAndTextEdit);
-        queryFramesMainHorizontalLayout->addLayout(queryFramesMainVerticalLayout);
-
-
-        Trigger* t = c->getEngine()->reverseEngineerTrigger(c, tab, 0);
-        if(t)
-        {
-            TriggerForm* pf = new TriggerForm(0, true, true, this);
-            pf->feedInTables(QStringList(t->getTable()));
-            pf->setTrigger(t);
-            pf->showSql();
-
-            horizontalLayoutForLineNumbersAndTextEdit->addWidget(pf);
-            mainTab->addTab(queryFrame, IconFactory::getTriggerIcon(), tab + ":" + c->getFullLocation());
-        }
-        return;
+        newPageforTrigger(c, tab);
     }
 
     if(layout == BROWSE_TABLE || layout == BROWSE_VIEW)
     {
         tabWidget = new QTabWidget(mainTabPageWidget);
 
-        {
-        // create the "Data" tab
-        dataTab = new QWidget();
-        dataTabsLayout = new QVBoxLayout(dataTab);
-        tableForTableData = createTable(dataTab);
-        dataTabsLayout->addWidget(tableForTableData);
-        tabWidget->addTab(dataTab, tr("Data"));
-        tableForTableData->raise();
-
-        // and fill in the data for the "data" tab
-        QSqlDatabase sqldb = c->getQSqlDatabase();
-        QSqlTableModel *model = new QSqlTableModel(tableForTableData, sqldb);
-        model->setTable(tab);
-        qDebug() << "BEFORE SELECT";
-        model->select();
-
-        if (model->lastError().type() == QSqlError::NoError)
-        {
-            tableForTableData->setModel(model);
-            tableForTableData->setEditTriggers(QAbstractItemView::DoubleClicked|QAbstractItemView::EditKeyPressed);
-        }
-        sqldb.close();
-        }
-
-        {
-        // create the "columns" tab
-        columnsTab = new QWidget();
-        columnTabsLayout = new QVBoxLayout(columnsTab);
-        tableForTableColumns = createTable(columnsTab);
-        columnTabsLayout->addWidget(tableForTableColumns);
-        tabWidget->addTab(columnsTab, QString("Columns"));
-
-        QSqlQueryModel *model = new QSqlQueryModel(tableForTableColumns);
-        QSqlDatabase db2 = c->getQSqlDatabase();
-        model->setQuery(QSqlQuery(c->getEngine()->getTableDescriptionScript(tab), db2));
-        if(model->lastError().type() != QSqlError::NoError)
-        {
-            QMessageBox::critical(this, tr("Error"), model->lastError().text(), QMessageBox::Ok);
-            if(db2.isOpen()) db2.close();
-            return;
-        }
-        tableForTableColumns->setModel(model);
-        db2.close();
-        }
-
-        // create the Script tab
-        {
-            queryFrame = new QFrame(this);
-            queryFramesMainHorizontalLayout = new QHBoxLayout(queryFrame);
-            queryFramesMainVerticalLayout = new QVBoxLayout();
-            horizontalLayoutForButtons = new QHBoxLayout();
-            btnSaveQuery = new QToolButton(queryFrame);
-            btnSaveQuery->setIcon(IconFactory::getSaveIcon());
-            horizontalSpacer = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
-            horizontalLayoutForButtons->addWidget(btnSaveQuery);
-            horizontalLayoutForButtons->addItem(horizontalSpacer);
-            queryFramesMainVerticalLayout->addLayout(horizontalLayoutForButtons);
-            horizontalLayoutForLineNumbersAndTextEdit = new QHBoxLayout();
-            queryFramesMainVerticalLayout->addLayout(horizontalLayoutForLineNumbersAndTextEdit);
-            queryFramesMainHorizontalLayout->addLayout(queryFramesMainVerticalLayout);
-
-            mainTabPageWidgetsLayout->addWidget(queryFrame);
-
-            m_textEdit = new TextEditWithCodeCompletion(this, c);
-
-            m_frameForLineNumbers = new FrameForLineNumbers(this);
-            horizontalLayoutForLineNumbersAndTextEdit->addWidget(m_frameForLineNumbers);
-
-            m_textEdit->setBrowseForm(this);
-            horizontalLayoutForLineNumbersAndTextEdit->addWidget(m_textEdit);
-            m_textEdit->setLineNumberFrame(m_frameForLineNumbers);
-            QString s;
-            if(layout == BROWSE_TABLE)
-            {
-                s = c->getEngine()->getTableCreationScript(c, tab);
-            }
-            else
-            {
-                s = c->getEngine()->getViewCreationScript(c, tab);
-            }
-            m_textEdit->setPlainText(s);
-            m_textEdit->updateLineNumbers();
-            QKeyEvent* keyEvent = new QKeyEvent(QEvent::KeyPress, Qt::Key_Return, Qt::NoModifier);
-            m_textEdit->updateLineNumbers();
-            m_textEdit->keyPressEvent(keyEvent);
-            QObject::connect(btnSaveQuery, SIGNAL(clicked()), this, SLOT(onSaveQuery()));
-            tabWidget->addTab(queryFrame, tr("Script"));
-        }
+        createTableDataTab(c, tab);
+        createTableColumnsTab(c, tab);
+        createTableScriptTab(layout, tab, c);
 
         mainTabPageWidgetsLayout->addWidget(tabWidget);
 

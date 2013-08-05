@@ -712,8 +712,8 @@ void InjectSqlDialog::onTestConnection()
         if(!cubridDb.open())
         {
             QSqlError error = cubridDb.lastError();
-            QMessageBox::information(0, "cannot connect",
-                                     error.databaseText() + " " + error.driverText() + " --> "  + QString::number(error.number()),
+            QMessageBox::information(0, tr("Cannot test connection"),
+                                     error.databaseText() + "<p>" + error.driverText(),
                                      QMessageBox::Ok);
             m_cubridTested = false;
         }
@@ -723,10 +723,9 @@ void InjectSqlDialog::onTestConnection()
             q.prepare("select LIST_DBS()");
             if(!q.exec())
             {
-                QMessageBox::information(0, "no exec", "a", QMessageBox::Ok);
+                QMessageBox::information(0, tr("Cannot execute a query"), tr("Cannot execute <pre>select LIST_DBS()"), QMessageBox::Ok);
             }
             else
-
             {
                 QString v = q.value(0).toString().split(" ").join("<br>");
                 QMessageBox::information(0, tr("Connection Succesful"),

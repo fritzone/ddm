@@ -47,6 +47,11 @@ public:
     void focusOnTextEdit();
     void setTextAt(int index, const QString&);
 
+    void newPageForProcedure(BrowsedTableLayout layout, const QString &tab, Connection *c);
+    void newPageforTrigger(Connection *c, const QString &tab);
+    void createTableDataTab(Connection *c, const QString &tab);
+    void createTableColumnsTab(Connection *c, const QString &tab);
+    void createTableScriptTab(BrowsedTableLayout layout, const QString &tab, Connection *c);
 protected:
     void changeEvent(QEvent *e);
     void resizeEvent(QResizeEvent *);
