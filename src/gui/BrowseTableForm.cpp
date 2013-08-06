@@ -324,23 +324,105 @@ void BrowseTableForm::createTableDataTab(Connection *c, const QString &tab)
 {
     dataTab = new QWidget();
     dataTabsLayout = new QVBoxLayout(dataTab);
-    tableForTableData = createTable(dataTab);
-    dataTabsLayout->addWidget(tableForTableData);
-    tabWidget->addTab(dataTab, tr("Data"));
-    tableForTableData->raise();
 
-    // and fill in the data for the "data" tab
-    QSqlDatabase sqldb = c->getQSqlDatabase();
-    QSqlTableModel *model = new QSqlTableModel(tableForTableData, sqldb);
-    model->setTable(tab);
-    model->select();
-
-    if (model->lastError().type() == QSqlError::NoError)
+    if(dynamic_cast<CUBRIDDatabaseEngine*>(c->getEngine()))
     {
-        tableForTableData->setModel(model);
-        tableForTableData->setEditTriggers(QAbstractItemView::DoubleClicked|QAbstractItemView::EditKeyPressed);
+        QTableWidget* tableForTableData = new QTableWidget(columnsTab);
+        QSizePolicy sizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+        sizePolicy.setHorizontalStretch(2);
+        sizePolicy.setVerticalStretch(0);
+        sizePolicy.setHeightForWidth(tableForTableData->sizePolicy().hasHeightForWidth());
+        tableForTableData->setSizePolicy(sizePolicy);
+        tableForTableData->setContextMenuPolicy(Qt::ActionsContextMenu);
+        tableForTableData->setAlternatingRowColors(true);
+        tableForTableData->setSelectionMode(QAbstractItemView::SingleSelection);
+        tableForTableData->setSelectionBehavior(QAbstractItemView::SelectItems);
+        tableForTableData->setSortingEnabled(true);
+        tableForTableData->setWordWrap(false);
+        tableForTableData->horizontalHeader()->setDefaultSectionSize(200);
+
+        columnTabsLayout->addWidget(tableForTableData);
+        tabWidget->addTab(columnsTab, QString("Columns"));
+
+        QSqlDatabase cubridDb = c->getQSqlDatabase();
+        QStringList tabCols = c->getEngine()->getColumnsOfTable(c, tab);
+
+        if(!cubridDb.isOpen())
+        {
+            return;
+        }
+        else
+        {
+            QSqlQuery q(cubridDb);
+            QString sq = "select";
+
+            for(int i=0; i<tabCols.size(); i++)
+            {
+                QString name = tabCols[i].left(tabCols[i].indexOf("@"));
+                sq += " " + name;
+                if(i < tabCols.size() - 1)
+                {
+                    sq += ",";
+                }
+            }
+            sq += "from " + tab;
+
+            q.prepare(sq);
+            if(!q.exec())
+            {
+                return;
+            }
+            else
+            {
+
+                // ugly header, creating
+                tableForTableData->setColumnCount(tabCols.size());
+
+                for(int k=0; k<tabCols.size(); k++)
+                {
+                    QTableWidgetItem *columnHeaderItem = new QTableWidgetItem(tabCols.at(k));
+                    columnHeaderItem->setTextAlignment(Qt::AlignVCenter);
+                    tableForTableData->setHorizontalHeaderItem(k, columnHeaderItem);
+                }
+
+                tableForTableData->setRowCount(0);
+
+                int i = 0;
+                while(q.next())
+                {
+                    tableForTableData->insertRow(tableForTableData->rowCount());
+                    for(int j=0; j<tabCols.size(); j++)
+                    {
+                        QString v = q.value(j).toString();
+                        tableForTableData->setItem(i, j,  new QTableWidgetItem(v));
+                    }
+                    i++;
+                }
+            }
+            cubridDb.close();
+        }
+
     }
-    sqldb.close();
+    else
+    {
+        tableForTableData = createTable(dataTab);
+        dataTabsLayout->addWidget(tableForTableData);
+        tabWidget->addTab(dataTab, tr("Data"));
+        tableForTableData->raise();
+
+        // and fill in the data for the "data" tab
+        QSqlDatabase sqldb = c->getQSqlDatabase();
+        QSqlTableModel *model = new QSqlTableModel(tableForTableData, sqldb);
+        model->setTable(tab);
+        model->select();
+
+        if (model->lastError().type() == QSqlError::NoError)
+        {
+            tableForTableData->setModel(model);
+            tableForTableData->setEditTriggers(QAbstractItemView::DoubleClicked|QAbstractItemView::EditKeyPressed);
+        }
+        sqldb.close();
+    }
 }
 
 void BrowseTableForm::createTableColumnsTab(Connection *c, const QString &tab)
