@@ -70,6 +70,7 @@ SET(DDM_GUI_HDRS
 SET(DDM_GUI_MOC_HDRS
   ${CMAKE_CURRENT_SOURCE_DIR}/AboutBoxDialog.h
   ${CMAKE_CURRENT_SOURCE_DIR}/BrowseTableForm.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/ConnectionGuiElements.h
   ${CMAKE_CURRENT_SOURCE_DIR}/CreateTableInstancesDialog.h
   ${CMAKE_CURRENT_SOURCE_DIR}/DataTypesListForm.h
   ${CMAKE_CURRENT_SOURCE_DIR}/DiagramForm.h

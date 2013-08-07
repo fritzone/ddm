@@ -14,6 +14,7 @@ add_subdirectory(query_builder)
 add_subdirectory(qhtml)
 add_subdirectory(dbmysql)
 add_subdirectory(dbsqlite)
+add_subdirectory(dbcubrid)
 add_subdirectory(reverse_eng)
 
 #Put here CPPs
@@ -29,7 +30,6 @@ LIST( APPEND DDM_SRCS
   IssueManager.cpp
   main.cpp
   NameGenerator.cpp
-  SpsTooltipProviderForUid.cpp
   SqlNamesValidator.cpp
   StartupValuesHelper.cpp
   TableUpdateGenerator.cpp
@@ -51,7 +51,6 @@ LIST( APPEND DDM_HDRS
   helper_MostRecentlyUsedFiles.h
   helper_utils.h
   NameGenerator.h
-  SpsTooltipProviderForUid.h
   SqlNamesValidator.h
   StartupValuesHelper.h
   strings.h
@@ -64,6 +63,7 @@ LIST( APPEND DDM_HDRS
 )
 
 LIST( APPEND DDM_MOC_HDRS
+  Workspace.h
 )
 
 
@@ -88,6 +88,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_CURRENT_SOURCE_DIR}/qhtml
   ${CMAKE_CURRENT_SOURCE_DIR}/dbmysql
   ${CMAKE_CURRENT_SOURCE_DIR}/dbsqlite
+  ${CMAKE_CURRENT_SOURCE_DIR}/dbcubrid
   ${CMAKE_CURRENT_SOURCE_DIR}/reverse_eng
 )
 

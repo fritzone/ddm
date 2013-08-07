@@ -1,17 +1,22 @@
 #Put here CPPs
 SET(DDM_CONNECTIONS_SRCS
   ${CMAKE_CURRENT_SOURCE_DIR}/Connection.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/conn_AuthenticatedConnection.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/ConnectionManager.cpp 
   ${CMAKE_CURRENT_SOURCE_DIR}/MySqlConnection.cpp  
   ${CMAKE_CURRENT_SOURCE_DIR}/SqliteConnection.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/conn_CUBRID.cpp
+  
 
 )
 
 SET(DDM_CONNECTIONS_HDRS
   ${CMAKE_CURRENT_SOURCE_DIR}/Connection.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/conn_AuthenticatedConnection.h
   ${CMAKE_CURRENT_SOURCE_DIR}/ConnectionManager.h
   ${CMAKE_CURRENT_SOURCE_DIR}/MySqlConnection.h
   ${CMAKE_CURRENT_SOURCE_DIR}/SqliteConnection.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/conn_CUBRID.h
 )
 
 SET(DDM_CONNECTIONS_MOC_HDRS

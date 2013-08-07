@@ -12,7 +12,7 @@
 #include "NewTableForm.h"
 
 // TODO: ugly ... But till we find out what's wrong with QCubrid keep it like this
-#include "dbcubrid_DatabaseEngine.h"
+#include <dbcubrid_DatabaseEngine.h>
 
 #include <QtGui>
 #include <QSqlTableModel>
