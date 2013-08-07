@@ -1,14 +1,12 @@
 #Put here CPPs
 SET(DDM_DBSQLITE_SRCS
-  ${CMAKE_CURRENT_SOURCE_DIR}/dbsqlite_SqliteDatabaseEngine.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/dbsqlite_SqliteSQLGenerator.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/dbsqlite_SqliteDTSupplier.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/dbsqlite_DatabaseEngine.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/dbsqlite_SQLGenerator.cpp
 )
 
 SET(DDM_DBSQLITE_HDRS
-  ${CMAKE_CURRENT_SOURCE_DIR}/dbsqlite_SqliteDatabaseEngine.h
-  ${CMAKE_CURRENT_SOURCE_DIR}/dbsqlite_SqliteDTSupplier.h
-  ${CMAKE_CURRENT_SOURCE_DIR}/dbsqlite_SqliteSQLGenerator.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/dbsqlite_DatabaseEngine.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/dbsqlite_SQLGenerator.h
 )
 
 SET(DDM_DBSQLITE_MOC_HDRS
