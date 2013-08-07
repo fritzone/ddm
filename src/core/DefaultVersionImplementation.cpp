@@ -64,7 +64,7 @@ void DefaultVersionImplementation::updateGui()
         getGui()->getTableInstancesItem()->setForeground(0, QBrush(Qt::lightGray));
         getGui()->getDiagramsItem()->setForeground(0, QBrush(Qt::lightGray));
         getGui()->getDtsItem()->setForeground(0, QBrush(Qt::lightGray));
-        if(m_project->getEngine()->supportsStoredMethods())
+        if(m_project->getEngine()->storedMethodSupport())
         {
             getGui()->getProceduresItem()->setForeground(0, QBrush(Qt::lightGray));
             getGui()->getFunctionsItem()->setForeground(0, QBrush(Qt::lightGray));
@@ -94,7 +94,7 @@ void DefaultVersionImplementation::updateGui()
     getGui()->getTableInstancesItem()->setFont(0, f);
     getGui()->getDiagramsItem()->setFont(0, f);
     getGui()->getDtsItem()->setFont(0, f);
-    if(m_project->getEngine()->supportsStoredMethods())
+    if(m_project->getEngine()->storedMethodSupport())
     {
         getGui()->getProceduresItem()->setFont(0, f);
         getGui()->getFunctionsItem()->setFont(0, f);

@@ -174,9 +174,11 @@ public slots:
     void onViewDatatypesTree();
     void onNewView();
     void onNewViewWithSql();
-    void onNewProcedure();
+    void onNewProcedure();  // defaults to guided from now on: v01.j
+    void onNewSqlProcedure();
+    void onNewFunction();   // defaults to guided from now on: v01.j
+    void onNewSqlFunction();
     void onNewTrigger();
-    void onNewFunction();
     void onReverseEngineerWizardNextPage(int);
     void onReverseEngineerWizardAccept();
     void onGotoIssueLocation();

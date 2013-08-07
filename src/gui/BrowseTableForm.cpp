@@ -10,6 +10,7 @@
 #include "helper_utils.h"
 #include "strings.h"
 #include "NewTableForm.h"
+#include "db_AbstractDTSupplier.h"
 
 // TODO: ugly ... But till we find out what's wrong with QCubrid keep it like this
 #include "dbcubrid_DatabaseEngine.h"
@@ -22,6 +23,7 @@
 #include <QMessageBox>
 #include <QFileDialog>
 #include <QTabWidget>
+#include <QSqlRecord>
 
 QVector<BrowseTableForm::BrowsedObjectAndConnection*> BrowseTableForm::connectionsForTabs;
 BrowseTableForm* BrowseTableForm::m_instance = 0;
@@ -92,22 +94,68 @@ void BrowseTableForm::changeEvent(QEvent *e)
 
 void BrowseTableForm::onRunQuery()
 {
-    if(!tableForScriptResult) return;
+    if(!tableForScriptResult)
+    {
+        return;
+    }
+
     m_connection = connectionsForTabs[mainTab->currentIndex()]->conn;
     if(m_connection->getState() == DROPPED || m_connection->getState() == DELETED)
     {
         QMessageBox::critical(this, tr("Error"), tr("Cannot execute query on a dropped or deleted database"), QMessageBox::Ok);
         return;
     }
-    QSqlQueryModel *model = new QSqlQueryModel(tableForScriptResult);
     QSqlDatabase db = m_connection->getQSqlDatabase();
-    model->setQuery(QSqlQuery(retrieveCurrentQuery(), db));
-    if(model->lastError().type() != QSqlError::NoError)
+
+    QSqlQuery query(db);
+    query.prepare(retrieveCurrentQuery());
+
+    int crow = 0;
+    int cnt = -1;
+
+    if(query.exec())
     {
-        QMessageBox::critical(this, tr("Error"), model->lastError().text(), QMessageBox::Ok);
-        return;
+        while(query.next())
+        {
+            if(crow == 0)
+            {
+                QSqlRecord rec = query.record();
+                cnt = rec.count();
+                tableForScriptResult->setColumnCount(cnt);
+                for(int i=0; i<cnt; i++)
+                {
+                    QString name = rec.fieldName(i);
+                    QTableWidgetItem *columnHeaderItem = new QTableWidgetItem(name);
+                    columnHeaderItem->setTextAlignment(Qt::AlignVCenter);
+                    tableForScriptResult->setHorizontalHeaderItem(i, columnHeaderItem);
+                }
+
+                tableForScriptResult->setRowCount(0);
+            }
+
+            tableForScriptResult->setRowCount(tableForScriptResult->rowCount() + 1);
+            for(int j=0; j<cnt; j++)
+            {
+                QString v = "";
+
+                if(!query.value(j).isNull())
+                {
+                    if(query.value(j).canConvert(QVariant::Int))
+                    {
+                        v = QString::number(query.value(j).toInt());
+                    }
+                    else
+                    {
+                        v = query.value(j).toString();
+                    }
+                }
+                tableForScriptResult->setItem(crow, j,  new QTableWidgetItem(v));
+            }
+            crow ++;
+
+        }
     }
-    tableForScriptResult->setModel(model);
+
     db.close();
 }
 
@@ -234,6 +282,24 @@ QTableView* BrowseTableForm::createTable(QWidget *p)
     return table;
 }
 
+QTableWidget *BrowseTableForm::createTableWidget(QWidget *p)
+{
+    QTableWidget* table = new QTableWidget(p);
+    QSizePolicy sizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    sizePolicy.setHorizontalStretch(2);
+    sizePolicy.setVerticalStretch(0);
+    sizePolicy.setHeightForWidth(table->sizePolicy().hasHeightForWidth());
+    table->setSizePolicy(sizePolicy);
+    table->setContextMenuPolicy(Qt::ActionsContextMenu);
+    table->setAlternatingRowColors(true);
+    table->setSelectionMode(QAbstractItemView::SingleSelection);
+    table->setSelectionBehavior(QAbstractItemView::SelectItems);
+    table->setSortingEnabled(true);
+    table->setWordWrap(false);
+    table->horizontalHeader()->setDefaultSectionSize(200);
+    return table;
+}
+
 void BrowseTableForm::newPageForProcedure(BrowsedTableLayout layout, const QString &tab, Connection *c)
 {
     queryFrame = new QFrame(this);
@@ -325,104 +391,96 @@ void BrowseTableForm::createTableDataTab(Connection *c, const QString &tab)
     dataTab = new QWidget();
     dataTabsLayout = new QVBoxLayout(dataTab);
 
-    if(dynamic_cast<CUBRIDDatabaseEngine*>(c->getEngine()))
+    QTableWidget* tableForTableData = new QTableWidget(dataTab);
+    QSizePolicy sizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    sizePolicy.setHorizontalStretch(2);
+    sizePolicy.setVerticalStretch(0);
+    sizePolicy.setHeightForWidth(tableForTableData->sizePolicy().hasHeightForWidth());
+    tableForTableData->setSizePolicy(sizePolicy);
+    tableForTableData->setContextMenuPolicy(Qt::ActionsContextMenu);
+    tableForTableData->setAlternatingRowColors(true);
+    tableForTableData->setSelectionMode(QAbstractItemView::SingleSelection);
+    tableForTableData->setSelectionBehavior(QAbstractItemView::SelectItems);
+    tableForTableData->setSortingEnabled(true);
+    tableForTableData->setWordWrap(false);
+    tableForTableData->horizontalHeader()->setDefaultSectionSize(200);
+
+    dataTabsLayout->addWidget(tableForTableData);
+    tabWidget->addTab(dataTab, tr("Data"));
+    tableForTableData->raise();
+
+
+    QSqlDatabase database = c->getQSqlDatabase();
+    QStringList tabCols = c->getEngine()->getColumnsOfTable(c, tab);
+
+    if(!database.isOpen())
     {
-        QTableWidget* tableForTableData = new QTableWidget(columnsTab);
-        QSizePolicy sizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-        sizePolicy.setHorizontalStretch(2);
-        sizePolicy.setVerticalStretch(0);
-        sizePolicy.setHeightForWidth(tableForTableData->sizePolicy().hasHeightForWidth());
-        tableForTableData->setSizePolicy(sizePolicy);
-        tableForTableData->setContextMenuPolicy(Qt::ActionsContextMenu);
-        tableForTableData->setAlternatingRowColors(true);
-        tableForTableData->setSelectionMode(QAbstractItemView::SingleSelection);
-        tableForTableData->setSelectionBehavior(QAbstractItemView::SelectItems);
-        tableForTableData->setSortingEnabled(true);
-        tableForTableData->setWordWrap(false);
-        tableForTableData->horizontalHeader()->setDefaultSectionSize(200);
+        return;
+    }
+    else
+    {
+        QSqlQuery q(database);
+        QString sq = "select";
 
-        columnTabsLayout->addWidget(tableForTableData);
-        tabWidget->addTab(columnsTab, QString("Columns"));
+        for(int i=0; i<tabCols.size(); i++)
+        {
+            QString name = tabCols[i].left(tabCols[i].indexOf("@"));
+            sq += " " + name;
+            if(i < tabCols.size() - 1)
+            {
+                sq += ",";
+            }
+        }
+        sq += " from " + tab;
 
-        QSqlDatabase cubridDb = c->getQSqlDatabase();
-        QStringList tabCols = c->getEngine()->getColumnsOfTable(c, tab);
-
-        if(!cubridDb.isOpen())
+        q.prepare(sq);
+        if(!q.exec())
         {
             return;
         }
         else
         {
-            QSqlQuery q(cubridDb);
-            QString sq = "select";
+            tableForTableData->setColumnCount(tabCols.size());
 
-            for(int i=0; i<tabCols.size(); i++)
+            for(int k=0; k<tabCols.size(); k++)
             {
-                QString name = tabCols[i].left(tabCols[i].indexOf("@"));
-                sq += " " + name;
-                if(i < tabCols.size() - 1)
-                {
-                    sq += ",";
-                }
+                QString name = tabCols[k].left(tabCols[k].indexOf("@"));
+                QTableWidgetItem *columnHeaderItem = new QTableWidgetItem(name);
+                columnHeaderItem->setTextAlignment(Qt::AlignVCenter);
+                tableForTableData->setHorizontalHeaderItem(k, columnHeaderItem);
             }
-            sq += "from " + tab;
 
-            q.prepare(sq);
-            if(!q.exec())
+            tableForTableData->setRowCount(0);
+
+            int i = 0;
+            while(q.next())
             {
-                return;
-            }
-            else
-            {
-
-                // ugly header, creating
-                tableForTableData->setColumnCount(tabCols.size());
-
-                for(int k=0; k<tabCols.size(); k++)
+                tableForTableData->insertRow(tableForTableData->rowCount());
+                for(int j=0; j<tabCols.size(); j++)
                 {
-                    QTableWidgetItem *columnHeaderItem = new QTableWidgetItem(tabCols.at(k));
-                    columnHeaderItem->setTextAlignment(Qt::AlignVCenter);
-                    tableForTableData->setHorizontalHeaderItem(k, columnHeaderItem);
-                }
+                    QString v = "";
+                    QString type = tabCols[j].mid(tabCols[j].indexOf("@") + 1);
 
-                tableForTableData->setRowCount(0);
-
-                int i = 0;
-                while(q.next())
-                {
-                    tableForTableData->insertRow(tableForTableData->rowCount());
-                    for(int j=0; j<tabCols.size(); j++)
+                    if(!q.value(j).isNull())
                     {
-                        QString v = q.value(j).toString();
-                        tableForTableData->setItem(i, j,  new QTableWidgetItem(v));
+                        if(type.toUpper().startsWith("BIT"))
+                        {
+                            int t = q.value(j).toInt();
+                            v = QString::number(t);
+                        }
+                        else
+                        {
+                            v = q.value(j).toString();
+                        }
                     }
-                    i++;
+                    tableForTableData->setItem(i, j,  new QTableWidgetItem(v));
                 }
+                i++;
             }
-            cubridDb.close();
         }
-
+        database.close();
     }
-    else
-    {
-        tableForTableData = createTable(dataTab);
-        dataTabsLayout->addWidget(tableForTableData);
-        tabWidget->addTab(dataTab, tr("Data"));
-        tableForTableData->raise();
 
-        // and fill in the data for the "data" tab
-        QSqlDatabase sqldb = c->getQSqlDatabase();
-        QSqlTableModel *model = new QSqlTableModel(tableForTableData, sqldb);
-        model->setTable(tab);
-        model->select();
-
-        if (model->lastError().type() == QSqlError::NoError)
-        {
-            tableForTableData->setModel(model);
-            tableForTableData->setEditTriggers(QAbstractItemView::DoubleClicked|QAbstractItemView::EditKeyPressed);
-        }
-        sqldb.close();
-    }
 }
 
 void BrowseTableForm::createTableColumnsTab(Connection *c, const QString &tab)
@@ -567,9 +625,17 @@ void BrowseTableForm::createTableScriptTab(BrowsedTableLayout layout, const QStr
     }
     m_textEdit->setPlainText(s);
     m_textEdit->updateLineNumbers();
-    QKeyEvent* keyEvent = new QKeyEvent(QEvent::KeyPress, Qt::Key_Return, Qt::NoModifier);
+
+    // placing the cursor at the end
+    QTextCursor tmpCursor = m_textEdit->textCursor();
+    tmpCursor.movePosition(QTextCursor::End, QTextCursor::MoveAnchor, 1);
+    m_textEdit->setTextCursor(tmpCursor);
+
+    QKeyEvent* keyEventEnter = new QKeyEvent(QEvent::KeyPress, Qt::Key_Return, Qt::NoModifier);
+    QKeyEvent* keyEventBackspace = new QKeyEvent(QEvent::KeyPress, Qt::Key_Backspace, Qt::NoModifier);
     m_textEdit->updateLineNumbers();
-    m_textEdit->keyPressEvent(keyEvent);
+    m_textEdit->keyPressEvent(keyEventEnter);
+    m_textEdit->keyPressEvent(keyEventBackspace);
     QObject::connect(btnSaveQuery, SIGNAL(clicked()), this, SLOT(onSaveQuery()));
     tabWidget->addTab(queryFrame, tr("Script"));
 }
@@ -655,7 +721,7 @@ void BrowseTableForm::newPage(Connection *c, const QString &tab, BrowsedTableLay
         QObject::connect(btnOpenQuery, SIGNAL(clicked()), this, SLOT(onLoadQuery()));
 
         //
-        tableForScriptResult = createTable(queryFrame);
+        tableForScriptResult = createTableWidget(queryFrame);
         mainTabPageWidgetsLayout->addWidget(tableForScriptResult);
         tableForScriptResult->raise();
 

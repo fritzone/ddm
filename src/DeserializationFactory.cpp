@@ -1246,7 +1246,9 @@ Procedure* DeserializationFactory::createProcedure(Version* v,  const QDomDocume
     QString sourceUid = element.attribute("source-uid");
     QString locked = element.attribute("locked");
     QString wasLocked = element.attribute("was-locked");
+    QString guided = element.hasAttribute("guided")?element.attribute("guided"):"0";
 
+    bool guidedCreation = guided =="1";
     if(uid.length() == 0)
     {
         uid = QUuid::createUuid().toString();
@@ -1255,7 +1257,7 @@ Procedure* DeserializationFactory::createProcedure(Version* v,  const QDomDocume
     {
 
     }
-    Procedure* p = new Procedure(name, uid, v);
+    Procedure* p = new Procedure(name, uid, v, guidedCreation);
 
 
     if(sourceUid.length()) p->setSourceUid(sourceUid);
@@ -1294,6 +1296,9 @@ Function* DeserializationFactory::createFunction(Version* v,  const QDomDocument
     QString sourceUid = element.attribute("source-uid");
     QString locked = element.attribute("locked");
     QString wasLocked = element.attribute("was-locked");
+    QString guided = element.hasAttribute("guided")?element.attribute("guided"):"0";
+
+    bool guidedCreation = guided =="1";
 
     if(uid.length() == 0)
     {
@@ -1303,7 +1308,7 @@ Function* DeserializationFactory::createFunction(Version* v,  const QDomDocument
     {
 
     }
-    Function* func = new Function(name, uid, v);
+    Function* func = new Function(name, uid, v, guidedCreation);
 
     if(sourceUid.length()) func->setSourceUid(sourceUid);
     else func->setSourceUid(nullUid);

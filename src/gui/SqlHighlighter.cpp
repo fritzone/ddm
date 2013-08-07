@@ -57,7 +57,7 @@ SqlHighlighter::SqlHighlighter(QTextDocument *parent, const QStringList &keyword
     // the funny (??) question mark
     questionMarksFormat.setForeground(Qt::red);
     questionMarksFormat.setFontWeight(QFont::Bold);
-    rule.pattern = QRegExp("(?:\\s|^)\\(\\?\\?\\)(?:\\s|$)"); /*QRegExp("\\B\\(\\?\\?\\)\\B");*/
+    rule.pattern = QRegExp("(?:\\s|^)\\(\\?\\?\\)(?:\\s|$)");
     rule.format = questionMarksFormat;
     highlightingRules.append(rule);
 
@@ -72,19 +72,11 @@ SqlHighlighter::SqlHighlighter(QTextDocument *parent, const QStringList &keyword
         highlightingRules.append(rule);
     }
 
-    // the column names
-    /*columnNamesFormat.setForeground(columnColor);
-    columnNamesFormat.setFontWeight(QFont::Bold);
-    for(int i=0; i< tables.size(); i++)
-    {
-        for(int j=0; j<tables.at(i)->fullColumns().size(); j++)
-        {
-            QString p = "\\b" + tables.at(i)->fullColumns().at(j) + "\\b";
-            rule.pattern = QRegExp(p);
-            rule.format = columnNamesFormat;
-            highlightingRules.append(rule);
-        }
-    }*/
+    // text in double quote
+    quoteFormat.setForeground(Qt::red);
+    rule.pattern = QRegExp("\"([^\"']*)\"");
+    rule.format = quoteFormat;
+    highlightingRules.append(rule);
 
     // the one line comment (if you move this before the the tables the parser will highlight the table names in the comments too, so leave it here)
     singleLineCommentFormat.setForeground(Qt::darkGreen);
@@ -93,7 +85,6 @@ SqlHighlighter::SqlHighlighter(QTextDocument *parent, const QStringList &keyword
     rule.format = singleLineCommentFormat;
     highlightingRules.append(rule);
 
-    // TODO: Add the columns from the views too, with the same format as above
 }
 
 void SqlHighlighter::appendTypePattern(QStringList &ls, const QList<UserDataType> & tp)
@@ -110,7 +101,15 @@ void SqlHighlighter::highlightBlock(const QString &text)
     foreach (const HighlightingRule &rule, highlightingRules) {
         QRegExp expression(rule.pattern);
         int index = expression.indexIn(text);
-        while (index > 0) {
+        //qDebug() << index << " -> " << text << " @ " << rule.pattern.pattern();
+        while (index > 0)
+        {
+            int length = expression.matchedLength();
+            setFormat(index, length, rule.format);
+            index = expression.indexIn(text, index + length);
+        }
+        if(index == 0)
+        {
             int length = expression.matchedLength();
             setFormat(index, length, rule.format);
             index = expression.indexIn(text, index + length);

@@ -45,6 +45,7 @@ private:
     QTextCharFormat singleLineCommentFormat;
     QTextCharFormat stringFormat;
     QTextCharFormat questionMarksFormat;
+    QTextCharFormat quoteFormat;
     QTextCharFormat tableNamesFormat;
     QTextCharFormat columnNamesFormat;
     QTextCharFormat functionFormat;

@@ -50,6 +50,16 @@ public:
     }
     void updateLineNumbers();
 
+    void disableRow(int row)
+    {
+        m_disabledRows.append(row);
+    }
+
+    void enableRow(int row)
+    {
+        m_disabledRows.remove(m_disabledRows.indexOf(row));
+    }
+
 private slots:
     void onTimer();
     void onListItemDoubleClicked(QModelIndex);
@@ -73,6 +83,7 @@ private:
     Connection* m_connection;
     BrowseTableForm* m_browseForm;
     FrameForLineNumbers *m_frameForLineNumbers;
+    QVector<int> m_disabledRows;
 };
 
 #endif // QTEXTEDITWITHCODECOMPLETION_H

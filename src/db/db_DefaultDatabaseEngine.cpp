@@ -239,9 +239,6 @@ QStringList DefaultDatabaseEngine::getResultOfQuery(const QString& squery, Conne
     }
     else
     {
-        bool select = query.isSelect();
-        bool isActive = query.isActive();
-        int size = query.size();
         while(query.next())
         {
             QString tab = query.value(column).toString();

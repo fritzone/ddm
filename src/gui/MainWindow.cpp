@@ -321,7 +321,7 @@ void MainWindow::onNewSolution()
         //qDebug() << project->getEngine()->getDatabaseEngineName();
 
         setupGuiForNewSolution();
-        if(!engine->supportsStoredMethods())
+        if(!engine->storedMethodSupport())
         {
             m_ui->action_NewFunction->setVisible(false);
             m_ui->action_NewProcedure->setVisible(false);
@@ -531,7 +531,7 @@ void MainWindow::showProcedureWithGuid(Version *v, const QString & guid, bool /*
     Procedure* p = dynamic_cast<Procedure*>(UidWarehouse::instance().getElement(guid));
     if(p)
     {
-        ProcedureForm* pf = v->getGui()->getProcedureForm(MODE_PROCEDURE);
+        ProcedureForm* pf = v->getGui()->getProcedureForm(MODE_PROCEDURE, p->isGuided());
         pf->setProcedure(p);
         setCentralWidget(pf);
         pf->showSql();
@@ -543,7 +543,7 @@ void MainWindow::showFunctionWithGuid(Version *v, const QString & guid, bool /*f
     Function* p = dynamic_cast<Function*>(UidWarehouse::instance().getElement(guid));
     if(p)
     {
-        ProcedureForm* pf = v->getGui()->getProcedureForm(MODE_FUNCTION);
+        ProcedureForm* pf = v->getGui()->getProcedureForm(MODE_FUNCTION, p->isGuided());
         pf->setProcedure(p);
         setCentralWidget(pf);
         pf->showSql();
@@ -825,12 +825,10 @@ void MainWindow::onNewProcedureFromPopup()
     QString diagramsUid = qv.toString();
 
     Version* v = UidWarehouse::instance().getVersionForUid(diagramsUid);
-//    qDebug() << v->getVersionText();
 
-    // TODO: This is pure duplication with onNewProcedure except the version
-    ProcedureForm* frm = v->getGui()->getProcedureForm(MODE_PROCEDURE);
+    ProcedureForm* frm = v->getGui()->getProcedureForm(MODE_PROCEDURE, true);
     Procedure* p = new Procedure(NameGenerator::getUniqueName(v, (itemGetter)&Version::getProcedure, QString("proc")),
-                                                               QUuid::createUuid().toString(), v);
+                                                               QUuid::createUuid().toString(), v, true);
     frm->setProcedure(p);
     frm->initSql();
     v->addProcedure(p, false);
@@ -925,12 +923,11 @@ void MainWindow::onNewFunctionFromPopup()
     QString diagramsUid = qv.toString();
 
     Version* v = UidWarehouse::instance().getVersionForUid(diagramsUid);
-//    qDebug() << v->getVersionText();
 
     // TODO: This is pure duplication with onNewFunction except the version
-    ProcedureForm* frm = v->getGui()->getProcedureForm(MODE_FUNCTION);
+    ProcedureForm* frm = v->getGui()->getProcedureForm(MODE_FUNCTION, true);
     Function* p = new Function(NameGenerator::getUniqueName(v, (itemGetter)&Version::getFunction, QString("func")),
-                                                               QUuid::createUuid().toString(), v);
+                                                               QUuid::createUuid().toString(), v, true);
     frm->setProcedure(p);
     frm->initSql();
     v->addFunction(p, false);
@@ -953,7 +950,6 @@ void MainWindow::onNewDiagramFromPopup()
     QString diagramsUid = qv.toString();
 
     Version* v = UidWarehouse::instance().getVersionForUid(diagramsUid);
-//    qDebug() << v->getVersionText();
 
     // TODO: This is pure duplication with onNewDiagram
     Diagram* dgram = new Diagram(v, QUuid::createUuid().toString());
@@ -1225,6 +1221,8 @@ void MainWindow::enableActions()
     m_ui->action_NewTableInstance->setMenu(ContextMenuCollection::getInstance()->getCreateTableInstancesPopupMenu());
     m_ui->action_NewDataType->setMenu(ContextMenuCollection::getInstance()->getDatatypesPopupMenu());
     m_ui->action_NewView->setMenu(ContextMenuCollection::getInstance()->getCreateNewViewPopupMenu());
+    m_ui->action_NewProcedure->setMenu(ContextMenuCollection::getInstance()->getCreateNewProcedurePopupMenu());
+    m_ui->action_NewFunction->setMenu(ContextMenuCollection::getInstance()->getCreateNewFunctionPopupMenu());
     m_ui->action_Deploy->setMenu(ContextMenuCollection::getInstance()->getDeployPopupMenu());
 
 }
@@ -1274,7 +1272,6 @@ void MainWindow::connectActionsFromPopupMenus()
     QObject::connect(ContextMenuCollection::getInstance()->getAction_CreateViewUsingQueryBuilder(), SIGNAL(triggered()), this, SLOT(onNewView()));
     QObject::connect(ContextMenuCollection::getInstance()->getAction_CreateViewUsingSql(), SIGNAL(triggered()), this, SLOT(onNewViewWithSql()));
     QObject::connect(ContextMenuCollection::getInstance()->getAction_ConnectionConnect(), SIGNAL(triggered()), this, SLOT(onConnectConnection()));
-    ContextMenuCollection::getInstance()->getAction_BrowsedTableInject()->setVisible(true);
     QObject::connect(ContextMenuCollection::getInstance()->getAction_DeleteView(), SIGNAL(triggered()), this, SLOT(onDeleteViewFromPopup()));
     QObject::connect(ContextMenuCollection::getInstance()->getAction_DeleteProcedure(), SIGNAL(triggered()), this, SLOT(onDeleteProcedure()));
     QObject::connect(ContextMenuCollection::getInstance()->getAction_DeleteFunction(), SIGNAL(triggered()), this, SLOT(onDeleteFunction()));
@@ -1287,6 +1284,10 @@ void MainWindow::connectActionsFromPopupMenus()
     QObject::connect(ContextMenuCollection::getInstance()->getAction_Undelete(), SIGNAL(triggered()), this, SLOT(onUndeleteSomething()));
     QObject::connect(ContextMenuCollection::getInstance()->getAction_CompareTable(), SIGNAL(triggered()), this, SLOT(onCompareTables()));
     QObject::connect(ContextMenuCollection::getInstance()->getAction_AddProcedure(), SIGNAL(triggered()), this, SLOT(onNewProcedureFromPopup()));
+    QObject::connect(ContextMenuCollection::getInstance()->getAction_CreateGuidedProcedure(), SIGNAL(triggered()), this, SLOT(onNewProcedure()));
+    QObject::connect(ContextMenuCollection::getInstance()->getAction_CreateGuidedFunction(), SIGNAL(triggered()), this, SLOT(onNewFunction()));
+    QObject::connect(ContextMenuCollection::getInstance()->getAction_CreateSqlProcedure(), SIGNAL(triggered()), this, SLOT(onNewSqlProcedure()));
+    QObject::connect(ContextMenuCollection::getInstance()->getAction_CreateSqlFunction(), SIGNAL(triggered()), this, SLOT(onNewSqlFunction()));
     QObject::connect(ContextMenuCollection::getInstance()->getAction_AddFunction(), SIGNAL(triggered()), this, SLOT(onNewFunctionFromPopup()));
     QObject::connect(ContextMenuCollection::getInstance()->getAction_AddTrigger(), SIGNAL(triggered()), this, SLOT(onNewTriggerFromPopup()));
     QObject::connect(ContextMenuCollection::getInstance()->getAction_AddView(), SIGNAL(triggered()), this, SLOT(onNewViewFromPopup()));
@@ -1294,6 +1295,7 @@ void MainWindow::connectActionsFromPopupMenus()
     QObject::connect(ContextMenuCollection::getInstance()->getAction_InitiatePatch(), SIGNAL(triggered()), this, SLOT(onInitiatePatch()));
     QObject::connect(ContextMenuCollection::getInstance()->getAction_DeployVersion(), SIGNAL(triggered()), this, SLOT(onDeployVersion()));
 
+    ContextMenuCollection::getInstance()->getAction_BrowsedTableInject()->setVisible(true);
 }
 
 template <class T>
@@ -3071,10 +3073,10 @@ void MainWindow::onNewView()
 void MainWindow::onNewProcedure()
 {
     // Ok. New procedures from the button go always to the working version
-    ProcedureForm* frm = Workspace::getInstance()->workingVersion()->getGui()->getProcedureForm(MODE_PROCEDURE);
+    ProcedureForm* frm = Workspace::getInstance()->workingVersion()->getGui()->getProcedureForm(MODE_PROCEDURE, true);
     Procedure* p = new Procedure(NameGenerator::getUniqueName(Workspace::getInstance()->workingVersion(),
                                                               (itemGetter)&Version::getProcedure, QString("proc")),
-                                                               QUuid::createUuid().toString(), m_workspace->workingVersion());
+                                                               QUuid::createUuid().toString(), m_workspace->workingVersion(), true);
     frm->setProcedure(p);
     frm->initSql();
     Workspace::getInstance()->workingVersion()->addProcedure(p, false);
@@ -3086,14 +3088,44 @@ void MainWindow::onNewProcedure()
 void MainWindow::onNewFunction()
 {
     // Ok. New functions from the button go always to the working version
-    ProcedureForm* frm = Workspace::getInstance()->workingVersion()->getGui()->getProcedureForm(MODE_FUNCTION);
-    Function* func = new Function(NameGenerator::getUniqueName(Workspace::getInstance()->workingVersion(), (itemGetter)&Version::getFunction, QString("func")), QUuid::createUuid().toString(), m_workspace->workingVersion());
+    ProcedureForm* frm = Workspace::getInstance()->workingVersion()->getGui()->getProcedureForm(MODE_FUNCTION, true);
+    Function* func = new Function(NameGenerator::getUniqueName(Workspace::getInstance()->workingVersion(), (itemGetter)&Version::getFunction, QString("func")), QUuid::createUuid().toString(), m_workspace->workingVersion(), true);
     frm->setProcedure(func);
     frm->initSql();
     Workspace::getInstance()->workingVersion()->addFunction(func, false);
     Workspace::getInstance()->workingVersion()->getGui()->createFunctionTreeEntry(func);
     m_guiElements->getProjectTree()->setCurrentItem(func->getLocation());
-    //m_guiElements->getProjectTree()->setCurrentItem(p->getLocation());
+    setCentralWidget(frm);
+}
+
+// TODO: Next two methods are Duplicate (almost) with the two ones from above. Difference: the true/false parameter for the guidedness
+void MainWindow::onNewSqlProcedure()
+{
+    // Ok. New procedures from the button go always to the working version
+    ProcedureForm* frm = Workspace::getInstance()->workingVersion()->getGui()->getProcedureForm(MODE_PROCEDURE, false);
+    Procedure* p = new Procedure(NameGenerator::getUniqueName(Workspace::getInstance()->workingVersion(),
+                                                              (itemGetter)&Version::getProcedure, QString("proc")),
+                                                               QUuid::createUuid().toString(), m_workspace->workingVersion(), false);
+    frm->setProcedure(p);
+    frm->initSql();
+    Workspace::getInstance()->workingVersion()->addProcedure(p, false);
+    Workspace::getInstance()->workingVersion()->getGui()->createProcedureTreeEntry(p);
+    m_guiElements->getProjectTree()->setCurrentItem(p->getLocation());
+    setCentralWidget(frm);
+}
+
+void MainWindow::onNewSqlFunction()
+{
+    // Ok. New functions from the button go always to the working version
+    ProcedureForm* frm = Workspace::getInstance()->workingVersion()->getGui()->getProcedureForm(MODE_FUNCTION, false);
+    Function* func = new Function(NameGenerator::getUniqueName(Workspace::getInstance()->workingVersion(),
+                                                               (itemGetter)&Version::getFunction, QString("func")),
+                                  QUuid::createUuid().toString(), m_workspace->workingVersion(), false);
+    frm->setProcedure(func);
+    frm->initSql();
+    Workspace::getInstance()->workingVersion()->addFunction(func, false);
+    Workspace::getInstance()->workingVersion()->getGui()->createFunctionTreeEntry(func);
+    m_guiElements->getProjectTree()->setCurrentItem(func->getLocation());
     setCentralWidget(frm);
 }
 

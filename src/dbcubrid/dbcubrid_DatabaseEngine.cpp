@@ -205,9 +205,7 @@ QStringList CUBRIDDatabaseEngine::getAvailableViews(Connection* conn)
 {
     if(!dynamic_cast<CUBRIDConnection*>(conn)) return QStringList();
 
-    return getResultOfQuery(QString("select table_name from information_schema.tables where table_schema='")
-                             + dynamic_cast<CUBRIDConnection*>(conn)->getDb()
-                             + QString("' and table_type='VIEW'"),
+    return getResultOfQuery(QString("SELECT class_name FROM db_class WHERE is_system_class='NO' AND class_type = 'VCLASS' AND owner_name=current_user"),
                             conn,
                             QString("Cannot get list of available views"), 0);
 }
@@ -241,7 +239,9 @@ QStringList CUBRIDDatabaseEngine::getAvailableTables(Connection* conn)
 {
     if(!dynamic_cast<CUBRIDConnection*>(conn)) return QStringList();
 
-    return getResultOfQuery("show tables", conn, "Cannot get list of tables", 0);
+    return getResultOfQuery("SELECT * FROM db_class WHERE is_system_class='NO' AND class_type = 'CLASS' AND owner_name=current_user",
+                            conn,
+                            "Cannot get list of tables", 0);
 }
 
 Procedure* CUBRIDDatabaseEngine::reverseEngineerProc(Connection *c, const QString &procName, Version *v)
@@ -260,7 +260,7 @@ Procedure* CUBRIDDatabaseEngine::reverseEngineerProc(Connection *c, const QStrin
     while(query.next())
     {
         QString sql = query.value(2).toString();
-        proc = new Procedure(procName, QUuid::createUuid().toString(), v);
+        proc = new Procedure(procName, QUuid::createUuid().toString(), v, false);
         proc->setSql(sql);
     }
 
@@ -285,7 +285,7 @@ Function* CUBRIDDatabaseEngine::reverseEngineerFunc(Connection *c, const QString
     while(query.next())
     {
         QString sql = query.value(2).toString();
-        func = new Function(funcName, QUuid::createUuid().toString(), v);
+        func = new Function(funcName, QUuid::createUuid().toString(), v, false);
         func->setSql(sql);
     }
 
@@ -310,14 +310,9 @@ View* CUBRIDDatabaseEngine::reverseEngineerView(Connection* conn, const QString&
         return 0;
     }
 
-    {
-    QSqlQuery query(dbo);
-    query.exec("SET sql_mode = 'ANSI'");
-    }
-
     View* view = 0;
     QSqlQuery query(dbo);
-    QString t = "show create view "+c->getDb()+"."+viewName;
+    QString t = "show create view " + viewName;
     query.exec(t);
     while(query.next())
     {
@@ -742,9 +737,27 @@ QStringList CUBRIDDatabaseEngine::getAvailableIndexes(Connection* conn)
     return result;
 }
 
-QString CUBRIDDatabaseEngine::getViewCreationScript(Connection* c, const QString& tabName)
+QString CUBRIDDatabaseEngine::getViewCreationScript(Connection* c, const QString& name)
 {
-    return getTableCreationScript(c, tabName);
+    QSqlDatabase db = getQSqlDatabaseForConnection(c);
+    QString result;
+
+    bool ok = db.isOpen();
+
+    if(!ok)
+    {
+        return result;
+    }
+
+    QSqlQuery query(db);
+    query.exec("show create view " + name);
+
+    while(query.next())
+    {
+        result = query.value(1).toString();
+    }
+    db.close();
+    return result;
 }
 
 QString CUBRIDDatabaseEngine::getTableCreationScript(Connection* c, const QString& tabName)

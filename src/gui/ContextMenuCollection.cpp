@@ -21,6 +21,8 @@ ContextMenuCollection::ContextMenuCollection()
     m_issuesOfATablePopupMenu = new QMenu();
     m_createTableInstancesPopup = new QMenu();
     m_createNewViewPopupMenu = new QMenu();
+    m_createNewProcedurePopupMenu = new QMenu();
+    m_createNewFunctionPopupMenu = new QMenu();
     m_connectionPopupMenu = new QMenu();
     m_deployPopupMenu = new QMenu();
     m_browsedTablePopupMenu = new QMenu();
@@ -91,6 +93,10 @@ ContextMenuCollection::ContextMenuCollection()
     action_ignoreIssuesFromThisTable = new QAction(QObject::tr("Ignore issues"), 0);
     action_createViewUsingQueryBuilder = new QAction(QObject::tr("Using QueryBuilder"), 0);
     action_createViewUsingSql = new QAction(QObject::tr("SQL"), 0);
+    action_createGuidedProcedure = new QAction(QObject::tr("Create Guided Procedure"), 0);
+    action_createSqlProcedure = new QAction(QObject::tr("Create SQL Procedure"), 0);
+    action_createGuidedFunction = new QAction(QObject::tr("Create Guided Function"), 0);
+    action_createSqlFunction = new QAction(QObject::tr("Create SQL Function"), 0);
     action_connectionSqlQuery = new QAction(QObject::tr("Run Script"), 0);
     action_connectionSqlQuery->setIcon(IconFactory::getSqlIcon());
     action_connectionConnect = new QAction(QObject::tr("Test Connection"), 0);
@@ -209,6 +215,14 @@ ContextMenuCollection::ContextMenuCollection()
     // new view popup
     m_createNewViewPopupMenu->addAction(action_createViewUsingQueryBuilder);
     m_createNewViewPopupMenu->addAction(action_createViewUsingSql);
+
+    // new procedure popup
+    m_createNewProcedurePopupMenu->addAction(action_createGuidedProcedure);
+    m_createNewProcedurePopupMenu->addAction(action_createSqlProcedure);
+
+    // new function popup
+    m_createNewFunctionPopupMenu->addAction(action_createGuidedFunction);
+    m_createNewFunctionPopupMenu->addAction(action_createSqlFunction);
 
     // issues
     m_issuePopupMenu->addAction(action_gotoIssueLocation);

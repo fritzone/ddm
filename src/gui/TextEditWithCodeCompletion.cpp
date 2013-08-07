@@ -28,7 +28,9 @@ static bool skippableSinceWhitespace(QChar c)
 }
 
 TextEditWithCodeCompletion::TextEditWithCodeCompletion(QWidget* p, Connection* c) : QPlainTextEdit(p),
-    m_lst(0), m_timer(), m_currentBgColor(Qt::white), m_highlighter(0), dbKeywords(), funcs(), m_tabs(), m_connection(c), m_browseForm(0), m_frameForLineNumbers(0)
+    m_lst(0), m_timer(), m_currentBgColor(Qt::white), m_highlighter(0),
+    dbKeywords(), funcs(), m_tabs(), m_connection(c), m_browseForm(0),
+    m_frameForLineNumbers(0), m_disabledRows()
 {
     m_lst = new ListWidgetForCodeCompletion(this);
     m_lst->setSelectionMode(QAbstractItemView::SingleSelection);
@@ -46,29 +48,26 @@ TextEditWithCodeCompletion::TextEditWithCodeCompletion(QWidget* p, Connection* c
     setLineWrapMode(QPlainTextEdit::NoWrap);
 
     AbstractDTSupplier* dtSupplier = 0;
+    DatabaseEngine* dbEngine = 0;
+
     if(c)
     {
         dtSupplier = c->getEngine()->getDTSupplier();
+        dbEngine = c->getEngine();
     }
     else
     {
         dtSupplier = Workspace::getInstance()->currentProjectsEngine()->getDTSupplier();
+        dbEngine = Workspace::getInstance()->currentProjectsEngine();
     }
 
+    if(!dtSupplier || !dbEngine)
+    {
+        return;
+    }
 
     if(Workspace::getInstance()->hasCurrentSolution())
     {
-        m_highlighter = new SqlHighlighter(document(),
-                                       Workspace::getInstance()->currentProjectsEngine()->getKeywords(),
-                                       dtSupplier->numericTypes(),
-                                       dtSupplier->booleanTypes(),
-                                       dtSupplier->textTypes(),
-                                       dtSupplier->blobTypes(),
-                                       dtSupplier->dateTimeTypes(),
-                                       dtSupplier->miscTypes(),
-                                       Workspace::getInstance()->workingVersion()->getTableNames());
-        dbKeywords = Workspace::getInstance()->currentProjectsEngine()->getKeywords();
-        funcs = Workspace::getInstance()->currentProjectsEngine()->getBuiltinFunctions();
         QVector<Table*> t = Workspace::getInstance()->workingVersion()->getTables();
         for(int i=0; i<t.size(); i++)
         {
@@ -78,26 +77,21 @@ TextEditWithCodeCompletion::TextEditWithCodeCompletion(QWidget* p, Connection* c
 
     if(c)
     {
-        if(m_highlighter == 0)
-        {
-            m_highlighter = new SqlHighlighter(document(),
-                                       c->getEngine()->getKeywords(),
+        m_tabs.append(c->getTables());
+    }
+
+    m_highlighter = new SqlHighlighter(document(),
+                                       dbEngine->getKeywords(),
                                        dtSupplier->numericTypes(),
                                        dtSupplier->booleanTypes(),
                                        dtSupplier->textTypes(),
                                        dtSupplier->blobTypes(),
                                        dtSupplier->dateTimeTypes(),
                                        dtSupplier->miscTypes(),
-                                       QStringList());
-            dbKeywords = c->getEngine()->getKeywords();
-            funcs = c->getEngine()->getBuiltinFunctions();
-            m_tabs = c->getTables();
-        }
-        else
-        {
-            m_tabs.append(c->getTables());
-        }
-    }
+                                       m_tabs);
+    dbKeywords = dbEngine->getKeywords();
+    funcs = dbEngine->getBuiltinFunctions();
+
 }
 
 void TextEditWithCodeCompletion::onTimer()
@@ -167,6 +161,12 @@ void TextEditWithCodeCompletion::onVScroll(int)
 
 void TextEditWithCodeCompletion::keyPressEvent(QKeyEvent *e)
 {
+    if(m_disabledRows.indexOf(textCursor().blockNumber() + 1) != -1)
+    {
+        // Trying to edit a disabled row
+        return;
+    }
+
     Qt::KeyboardModifiers m = e->modifiers();
     m_timer.stop();
 

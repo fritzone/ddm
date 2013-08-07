@@ -88,7 +88,7 @@ public:
     SqlForm* getSqlForm();
     NewTableForm* getTableFormForNewTable();
     NewTableForm* getTableFormForExistingTable();
-    ProcedureForm* getProcedureForm(ProcedureFormMode);
+    ProcedureForm* getProcedureForm(ProcedureFormMode, bool guided);
     TriggerForm* getTriggerForm();
 
 private:

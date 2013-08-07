@@ -40,6 +40,8 @@ public:
     QMenu* getIssuesOfATablePopupMenuPopupMenu() { return m_issuesOfATablePopupMenu; }
     QMenu* getCreateTableInstancesPopupMenu() { return m_createTableInstancesPopup; }
     QMenu* getCreateNewViewPopupMenu() {return m_createNewViewPopupMenu; }
+    QMenu* getCreateNewProcedurePopupMenu() {return m_createNewProcedurePopupMenu; }
+    QMenu* getCreateNewFunctionPopupMenu() {return m_createNewFunctionPopupMenu; }
     QMenu* getConnectionsPopupMenu() { return m_connectionPopupMenu; }
     QMenu* getDeployPopupMenu() {return m_deployPopupMenu; }
     QMenu* getViewsPopupMenu() { return m_viewsPopupMenu; }
@@ -106,6 +108,10 @@ public:
     QAction* getAction_IgnoreIssuesFromThisTable() { return action_ignoreIssuesFromThisTable; }
     QAction* getAction_CreateViewUsingQueryBuilder() { return action_createViewUsingQueryBuilder; }
     QAction* getAction_CreateViewUsingSql() { return action_createViewUsingSql; }
+    QAction* getAction_CreateGuidedProcedure() { return action_createGuidedProcedure; }
+    QAction* getAction_CreateGuidedFunction() { return action_createGuidedFunction; }
+    QAction* getAction_CreateSqlProcedure() { return action_createSqlProcedure; }
+    QAction* getAction_CreateSqlFunction() { return action_createSqlFunction; }
     QAction* getAction_ConnectionSqlQuery() {return action_connectionSqlQuery; }
     QAction* getAction_ConnectionConnect() {return action_connectionConnect; }
     QAction* getAction_ConnectionDelete() {return action_connectionDelete; }
@@ -160,6 +166,8 @@ private:
     QMenu* m_connectionPopupMenu;               // popup menu for a connection
     QMenu* m_createTableInstancesPopup;         // popup menu for the table instances selection
     QMenu* m_createNewViewPopupMenu;            // popup for the create new view command.
+    QMenu* m_createNewProcedurePopupMenu;       // popup for the create new procedure command.
+    QMenu* m_createNewFunctionPopupMenu;        // popup for the create new function command.
     QMenu* m_deployPopupMenu;                   // popup menu for the deployment, will contain the list of connections
     QMenu* m_viewsPopupMenu;                    // popup menu for the views tree element
     QMenu* m_viewPopupMenu;                     // popup menu for one view tree element
@@ -246,6 +254,14 @@ private:
     // the view popup menu
     QAction* action_createViewUsingQueryBuilder;
     QAction* action_createViewUsingSql;
+
+    // the procedures popup menu
+    QAction* action_createGuidedProcedure;
+    QAction* action_createSqlProcedure;
+
+    // the functions popup menu
+    QAction* action_createGuidedFunction;
+    QAction* action_createSqlFunction;
 
     // a connections popup menu
     QAction* action_connectionConnect;

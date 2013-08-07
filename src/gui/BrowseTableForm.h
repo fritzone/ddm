@@ -14,7 +14,7 @@
 #include <QtGui/QHBoxLayout>
 #include <QtGui/QHeaderView>
 #include <QtGui/QSpacerItem>
-#include <QtGui/QTabWidget>
+#include <QTableWidget>
 #include <QtGui/QTableView>
 #include <QtGui/QToolButton>
 #include <QtGui/QVBoxLayout>
@@ -72,6 +72,7 @@ private:
     void firstTimeSetup(Connection*c);
     void retranslateUi();
     QTableView* createTable(QWidget* p);
+    QTableWidget* createTableWidget(QWidget* p);
     void updateCursor();
 
 private:
@@ -96,7 +97,7 @@ private:
     QVBoxLayout *columnTabsLayout;
     QTableView *tableForTableData;
     QTableView *tableForTableColumns;
-    QTableView *tableForScriptResult;
+    QTableWidget *tableForScriptResult;
     QWidget *columnsTab;
     QFrame *queryFrame;
     QHBoxLayout *queryFramesMainHorizontalLayout;

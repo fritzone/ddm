@@ -46,12 +46,11 @@ public:
 
 public:
 
-    StoredMethod(const QString& name, const QString& uid, Version *v);
+    StoredMethod(const QString& name, const QString& uid, Version *v, bool guided);
 
     virtual QStringList generateSqlSource(AbstractSqlGenerator*, QHash<QString,QString>, const Connection*);
 
     void setSql(const QString&);
-    virtual void rename(const QString&);
     QString getSql() const;
     QVector<ParameterAndDescription> getParametersWithDescription();
     QString getBriefDescription() const
@@ -68,8 +67,13 @@ public:
         return m_returns;
     }
 
-    virtual QString getSqlHash() const;
+    bool isGuided() const
+    {
+        return m_guidedCreation;
+    }
 
+    virtual QString getSqlHash() const;
+    virtual void rename(const QString&);
 
 protected:
 
@@ -79,6 +83,7 @@ protected:
     QString m_brief;
     QString m_desc;
     QString m_returns;
+    bool m_guidedCreation;
 };
 
 #endif // CORE_STOREDMETHOD_H

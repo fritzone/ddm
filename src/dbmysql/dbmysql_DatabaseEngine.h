@@ -45,7 +45,7 @@ public:
     virtual QString getTableCreationScript(Connection* c, const QString& tabName);
     virtual QString getViewCreationScript(Connection* c, const QString& tabName);
     virtual bool tableBlocksForeignKeyFunctionality(const Table* table) const;
-    virtual bool supportsStoredMethods() {return true;}
+    virtual bool storedMethodSupport() {return true;}
 
 
     QStringList getSupportedStorageEngines(const QString& host, const QString& user, const QString& pass, int port);

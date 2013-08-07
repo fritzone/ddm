@@ -6,10 +6,10 @@
 #include <QStringList>
 #include <QCryptographicHash>
 
-StoredMethod::StoredMethod(const QString& name, const QString& uid, Version *v) :
+StoredMethod::StoredMethod(const QString& name, const QString& uid, Version *v, bool guided) :
     NamedItem(name), SerializableElement(), CloneableElement(), VersionElement(uid, v),
     TreeItem(), SqlSourceTreeItem(),
-    m_sql(), m_brief(), m_desc(), m_returns()
+    m_sql(), m_brief(), m_desc(), m_returns(), m_guidedCreation(guided)
 {}
 
 

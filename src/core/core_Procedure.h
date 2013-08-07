@@ -6,7 +6,7 @@
 class Procedure : public StoredMethod
 {
 public:
-    Procedure(const QString& pname, const QString &uid, Version *v);
+    Procedure(const QString& pname, const QString &uid, Version *v, bool guided);
     virtual void serialize(QDomDocument& doc, QDomElement& parent) const;
     virtual QUuid getClassUid() const;
     virtual CloneableElement* clone(Version* sourceVersion, Version* targetVersion);

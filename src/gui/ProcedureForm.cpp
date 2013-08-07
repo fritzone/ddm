@@ -7,10 +7,11 @@
 #include "GuiElements.h"
 #include "strings.h"
 
-ProcedureForm::ProcedureForm(Version* v, ProcedureFormMode m, bool forced, Connection *c, QWidget *parent) :
+ProcedureForm::ProcedureForm(Version* v, ProcedureFormMode m, bool guided, bool forced, Connection *c, QWidget *parent) :
     QWidget(parent),
     ui(new Ui::ProcedureForm), m_textEdit(0), m_frameForLineNumbers(0), m_proc(0), m_forcedChange(forced), m_mode(m), m_version(v)
 {
+    m_init = true;
     ui->setupUi(this);
 
     m_frameForLineNumbers = new FrameForLineNumbers(this);
@@ -24,12 +25,39 @@ ProcedureForm::ProcedureForm(Version* v, ProcedureFormMode m, bool forced, Conne
     ui->btnInject->hide();
     connect(m_textEdit, SIGNAL(textChanged()), this, SLOT(textChanged()));
 
+    if(m == MODE_PROCEDURE)
+    {
+        ui->cmbReturnType->hide();
+    }
+    else
+    {
+        m_availableDataTypes = v->getDataTypes();
+        for(int i=0; i<m_availableDataTypes.size(); i++)
+        {
+            ui->cmbReturnType->addItem(IconFactory::getIconForDataType(m_availableDataTypes[i]->getType()),
+                                            m_availableDataTypes[i]->getName());
+        }
+    }
+
+    m_guided = guided;
+    toggleGuidedCreationControls(m_guided);
+    ui->txtParamDesc->hide();
+
 }
 
 void ProcedureForm::disableEditingControls(bool dis)
 {
     m_textEdit->setReadOnly(dis);
     ui->btnLoad->setDisabled(dis);
+}
+
+void ProcedureForm::toggleGuidedCreationControls(bool guided)
+{
+    ui->lblProcName->setVisible(guided);
+    ui->txtProcName->setVisible(guided);
+    ui->grpParameters->setVisible(guided);
+    ui->lblReturnType->setVisible(guided);
+    ui->cmbReturnType->setVisible(guided);
 }
 
 
@@ -79,13 +107,23 @@ void ProcedureForm::textChanged()
 void ProcedureForm::initSql()
 {
     QString sql = strCreate + " " + (m_mode == MODE_PROCEDURE?"PROCEDURE ":"FUNCTION ") + m_proc->getName();
+    ui->txtProcName->setText(m_proc->getName());
     sql += "()";
-    if(m_mode == MODE_FUNCTION) sql += " RETURNS ";
+    if(m_mode == MODE_FUNCTION) sql += " RETURNS " + (m_guided? ui->cmbReturnType->currentText() : "");
     sql += "\nBEGIN\n\nEND";
     m_forcedChange = true;
     m_textEdit->setPlainText(sql);
     m_forcedChange = false;
     m_textEdit->updateLineNumbers();
+
+    if(!m_guided)
+    {
+        return;
+    }
+    m_textEdit->disableRow(1); // disabling the first row
+    m_textEdit->disableRow(2); // and the one with BEGIN
+
+    m_init = false;
 }
 
 void ProcedureForm::showSql()
@@ -124,6 +162,8 @@ void ProcedureForm::onLockUnlock(bool checked)
 void ProcedureForm::setProcedure(StoredMethod *p)
 {
     m_proc = p;
+    toggleGuidedCreationControls(p->isGuided());
+
     ui->btnUndelete->hide();
 
     // TODO: duplicate with the other forms ... at least, the logic!
@@ -256,4 +296,48 @@ void ProcedureForm::onInject()
 
 void ProcedureForm::onNew()
 {
+}
+
+void ProcedureForm::onReturnTypeComboChange(QString a)
+{
+    if(m_init) return;
+
+    QString plainTextEditContents = m_textEdit->toPlainText();
+    QStringList lines = plainTextEditContents.split("\n");
+
+    if(lines.empty())
+    {
+        return;
+    }
+
+    UserDataType *dt = m_version->getDataType(a); // 0 if none found, used down
+
+    QString line0 = lines.at(0);
+    int idxOfReturns = line0.indexOf("RETURNS", Qt::CaseInsensitive);
+    line0 = line0.left(idxOfReturns + 8) + (dt ? dt->sqlAsString() : a);
+    lines[0] = line0;
+    m_textEdit->setPlainText(lines.join("\n"));
+}
+
+void ProcedureForm::onProcNameChange(QString a)
+{
+    if(m_init) return;
+
+    QString plainTextEditContents = m_textEdit->toPlainText();
+    QStringList lines = plainTextEditContents.split("\n");
+
+    if(lines.empty())
+    {
+        return;
+    }
+
+    QString t = m_mode == MODE_PROCEDURE?"PROCEDURE":"FUNCTION";
+    QString line0 = lines.at(0);
+    int idxOfType = line0.indexOf(t, Qt::CaseInsensitive);
+    int i = idxOfType + t.length();
+    while(line0.at(i).isSpace()) i++;   // skip space
+    while(line0.at(i).isLetterOrNumber()) i++; // skip the name
+    line0 = line0.left(idxOfType + t.length() + 1) + a + line0.mid(i);
+    lines[0] = line0;
+    m_textEdit->setPlainText(lines.join("\n"));
 }

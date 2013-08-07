@@ -442,7 +442,7 @@ public:
      * @brief supportsStoredMethods returns true if the database supports stored functions
      * and procedures.
      */
-    virtual bool supportsStoredMethods() = 0;
+    virtual bool storedMethodSupport() = 0;
 
     /**
      * @brief spiExtension returns the SQL extension for the given SPI uid,

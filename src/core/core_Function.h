@@ -7,7 +7,7 @@
 class Function : public StoredMethod
 {
 public:
-    Function(const QString& pname, const QString& guid, Version *v);
+    Function(const QString& pname, const QString& guid, Version *v, bool guided);
     virtual void serialize(QDomDocument& doc, QDomElement& parent) const;
     virtual QUuid getClassUid() const;
     virtual CloneableElement* clone(Version* sourceVersion, Version* targetVersion);

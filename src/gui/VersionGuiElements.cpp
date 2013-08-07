@@ -142,7 +142,7 @@ void VersionGuiElements::createGuiElements(ContextMenuEnabledTreeWidgetItem* /*p
     diagramsItem->setData(0, Qt::UserRole, QVariant(dgramsUid ));
     UidWarehouse::instance().addElement(dgramsUid , m_version);
 
-    if(dbEngine->supportsStoredMethods())
+    if(dbEngine->storedMethodSupport())
     {
         // procedures are still coming from the version
         proceduresItem = new ContextMenuEnabledTreeWidgetItem(versionItem, QStringList(QObject::tr("Procedures"))) ;
@@ -680,9 +680,9 @@ NewTableForm* VersionGuiElements::getTableFormForExistingTable()
                                                   MainWindow::instance(), false);
 }
 
-ProcedureForm* VersionGuiElements::getProcedureForm(ProcedureFormMode m)
+ProcedureForm* VersionGuiElements::getProcedureForm(ProcedureFormMode m, bool guided)
 {
-    return m_procedureForm = new ProcedureForm(m_version, m, false, 0, MainWindow::instance());
+    return m_procedureForm = new ProcedureForm(m_version, m, guided, false, 0, MainWindow::instance());
 }
 
 TriggerForm* VersionGuiElements::getTriggerForm()
