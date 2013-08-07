@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>ReverseEngineerWizardWelcomeForm</class>
+ <widget class="QWidget" name="ReverseEngineerWizardWelcomeForm">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>400</width>
+    <height>300</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="1" column="0">
+    <widget class="QToolBox" name="toolBox">
+     <property name="currentIndex">
+      <number>1</number>
+     </property>
+     <widget class="QWidget" name="page">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>382</width>
+        <height>222</height>
+       </rect>
+      </property>
+      <attribute name="icon">
+       <iconset resource="../dbm.qrc">
+        <normaloff>:/images/actions/images/small/mysql.png</normaloff>:/images/actions/images/small/mysql.png</iconset>
+      </attribute>
+      <attribute name="label">
+       <string>MySql</string>
+      </attribute>
+      <attribute name="toolTip">
+       <string>Reverse engineer a MySql database</string>
+      </attribute>
+      <layout class="QFormLayout" name="formLayout">
+       <item row="0" column="0">
+        <widget class="QLabel" name="label">
+         <property name="text">
+          <string>Host</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QLineEdit" name="txtDatabaseHost"/>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="label_2">
+         <property name="text">
+          <string>Port</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QLineEdit" name="txtPort">
+         <property name="text">
+          <string>0</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0">
+        <widget class="QLabel" name="label_4">
+         <property name="text">
+          <string>User</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <widget class="QLineEdit" name="txtDatabaseUser"/>
+       </item>
+       <item row="3" column="0">
+        <widget class="QLabel" name="label_5">
+         <property name="text">
+          <string>Password</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="1">
+        <widget class="QLineEdit" name="txtDatabasePassword">
+         <property name="echoMode">
+          <enum>QLineEdit::Password</enum>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="page_2">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>382</width>
+        <height>222</height>
+       </rect>
+      </property>
+      <attribute name="icon">
+       <iconset resource="../dbm.qrc">
+        <normaloff>:/images/actions/images/small/sqlite-icon.png</normaloff>:/images/actions/images/small/sqlite-icon.png</iconset>
+      </attribute>
+      <attribute name="label">
+       <string>Sqlite</string>
+      </attribute>
+      <attribute name="toolTip">
+       <string>Reverse Engineer an Sqlite database</string>
+      </attribute>
+      <layout class="QFormLayout" name="formLayout_2">
+       <item row="0" column="0">
+        <widget class="QLabel" name="label_3">
+         <property name="text">
+          <string>Database</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <layout class="QHBoxLayout" name="horizontalLayout">
+         <item>
+          <widget class="QLineEdit" name="txtSqliteFilename"/>
+         </item>
+         <item>
+          <widget class="QToolButton" name="btnBrowseForFile">
+           <property name="enabled">
+            <bool>true</bool>
+           </property>
+           <property name="toolTip">
+            <string>Create a new database</string>
+           </property>
+           <property name="statusTip">
+            <string>Create a new database</string>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+           <property name="icon">
+            <iconset resource="../dbm.qrc">
+             <normaloff>:/images/actions/images/big/folder_yellow.png</normaloff>:/images/actions/images/big/folder_yellow.png</iconset>
+           </property>
+           <property name="iconSize">
+            <size>
+             <width>22</width>
+             <height>22</height>
+            </size>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="label_6">
+         <property name="text">
+          <string>Version</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QComboBox" name="cmbSqliteVersion">
+         <item>
+          <property name="text">
+           <string>Version 3</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Version 2</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources>
+  <include location="../dbm.qrc"/>
+ </resources>
+ <connections>
+  <connection>
+   <sender>btnBrowseForFile</sender>
+   <signal>clicked()</signal>
+   <receiver>ReverseEngineerWizardWelcomeForm</receiver>
+   <slot>onBrowseFile()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>366</x>
+     <y>92</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>199</x>
+     <y>149</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>onBrowseFile()</slot>
+ </slots>
+</ui>

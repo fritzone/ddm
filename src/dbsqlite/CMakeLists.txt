@@ -1,0 +1,42 @@
+#Put here CPPs
+SET(DDM_DBSQLITE_SRCS
+  ${CMAKE_CURRENT_SOURCE_DIR}/dbsqlite_SqliteDatabaseEngine.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/dbsqlite_SqliteSQLGenerator.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/dbsqlite_SqliteDTSupplier.cpp
+)
+
+SET(DDM_DBSQLITE_HDRS
+  ${CMAKE_CURRENT_SOURCE_DIR}/dbsqlite_SqliteDatabaseEngine.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/dbsqlite_SqliteDTSupplier.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/dbsqlite_SqliteSQLGenerator.h
+)
+
+SET(DDM_DBSQLITE_MOC_HDRS
+)
+
+#Put here QRC files to be Rcc-ed
+SET(DDM_DBSQLITE_RCC
+)
+
+#Put here UI files
+SET(DDM_DBSQLITE_UIS
+
+)
+
+LIST( APPEND DDM_SRCS
+             ${DDM_DBSQLITE_SRCS} )
+
+LIST( APPEND DDM_HDRS
+             ${DDM_DBSQLITE_HDRS} )
+
+LIST( APPEND DDM_MOC_HDRS
+	     ${DDM_DBSQLITE_MOC_HDRS} )
+
+LIST( APPEND DDM_UIS
+             ${DDM_DBSQLITE_UIS} )
+
+set(DDM_SRCS ${DDM_SRCS} CACHE INTERNAL DDM_SRCS)
+set(DDM_HDRS ${DDM_HDRS} CACHE INTERNAL DDM_HDRS)
+set(DDM_MOC_HDRS ${DDM_MOC_HDRS} CACHE INTERNAL DDM_MOC_HDRS)
+set(DDM_UIS ${DDM_UIS} CACHE INTERNAL DDM_UIS)
+

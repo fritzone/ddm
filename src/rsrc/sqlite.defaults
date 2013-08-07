@@ -1,0 +1,36 @@
+<!DOCTYPE DBM>
+<Solutions>
+ <Solution Name="defaults">
+  <Projects>
+   <Project Name="DEFAULT" OOP="0" DB="Sqlite">
+    <Description></Description>
+    <MajorVersions>
+     <MajorVersion>
+      <Version>1.0</Version>
+      <DataTypes>
+       <DataType SqlType="TEXT" Size="" Type="Text/String" Name="TEXT" Codepage="" DefaultValue="" Unsigned="0" CanBeNull="1" AutoIncrement="0">
+        <Description>TEXT - Datatype for Sqlite</Description>
+        <Values/>
+       </DataType>
+       <DataType SqlType="INTEGER" Size="" Type="Numeric" Name="INTEGER" Codepage="" DefaultValue="0" Unsigned="0" CanBeNull="1" AutoIncrement="0">
+        <Description>INTEGER - Datatype for Sqlite</Description>
+        <Values/>
+       </DataType>
+       <DataType SqlType="REAL" Size="" Type="Numeric" Name="REAL" Codepage="" DefaultValue="0.0" Unsigned="0" CanBeNull="1" AutoIncrement="0">
+        <Description>REAL - Datatype for Sqlite</Description>
+        <Values/>
+       </DataType>
+       <DataType SqlType="BLOB" Size="" Type="Blob/Binary" Name="BLOB" Codepage="" DefaultValue="" Unsigned="0" CanBeNull="1" AutoIncrement="0">
+        <Description>BLOB - Datatype for Sqlite</Description>
+        <Values/>
+       </DataType>
+      </DataTypes>
+      <Tables/>
+      <Diagrams/>
+      <TableInstances/>
+     </MajorVersion>
+    </MajorVersions>
+   </Project>
+  </Projects>
+ </Solution>
+</Solutions>
