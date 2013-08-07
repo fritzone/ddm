@@ -14,6 +14,9 @@ SET(DDM_QUERY_BUILDER_SRCS
   ${CMAKE_CURRENT_SOURCE_DIR}/qbr_CellJoinCommand.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/qbr_CellOrderByCommand.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/qbr_CellQuerySmallOptionsBox.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/qbr_CellQuerySmallOptionsBoxCircle.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/qbr_CellQuerySmallOptionsBoxDiamond.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/qbr_CellQuerySmallOptionsBoxRect.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/qbr_CellSelectCommand.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/qbr_CellTableChooser.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/qbr_CellTable.cpp
@@ -54,6 +57,9 @@ SET(DDM_QUERY_BUILDER_HDRS
   ${CMAKE_CURRENT_SOURCE_DIR}/qbr_CellJoinCommand.h
   ${CMAKE_CURRENT_SOURCE_DIR}/qbr_CellOrderByCommand.h
   ${CMAKE_CURRENT_SOURCE_DIR}/qbr_CellQuerySmallOptionsBox.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/qbr_CellQuerySmallOptionsBoxCircle.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/qbr_CellQuerySmallOptionsBoxDiamond.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/qbr_CellQuerySmallOptionsBoxRect.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/qbr_CellSelectCommand.h
   ${CMAKE_CURRENT_SOURCE_DIR}/qbr_CellTableChooser.h
   ${CMAKE_CURRENT_SOURCE_DIR}/qbr_CellTable.h
