@@ -1,14 +1,12 @@
 #Put here CPPs
 SET(DDM_DBMYSQL_SRCS
-  ${CMAKE_CURRENT_SOURCE_DIR}/dbmysql_MySQLDatabaseEngine.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/dbmysql_MySQLSQLGenerator.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/dbmysql_MySQLDTSupplier.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/dbmysql_DatabaseEngine.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/dbmysql_SQLGenerator.cpp
 )
 
 SET(DDM_DBMYSQL_HDRS
-  ${CMAKE_CURRENT_SOURCE_DIR}/dbmysql_MySQLDatabaseEngine.h
-  ${CMAKE_CURRENT_SOURCE_DIR}/dbmysql_MySQLDTSupplier.h
-  ${CMAKE_CURRENT_SOURCE_DIR}/dbmysql_MySQLSQLGenerator.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/dbmysql_DatabaseEngine.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/dbmysql_SQLGenerator.h
 )
 
 SET(DDM_DBMYSQL_MOC_HDRS
