@@ -228,8 +228,8 @@ void DocumentationGenerator::getDocumentationForStoredMethod(StoredMethod *mth, 
     if(dynamic_cast<Function*>(mth))
     {
         doc.getBody()->addElement(new QHtmlBreak());
-        QHtmlText* funcReturn = new QHtmlText(QApplication::tr("Returns: ") + mth->getReturns(),
-                                              mth->getReturns().indexOf("TODO")>-1?
+        QHtmlText* funcReturn = new QHtmlText(QApplication::tr("Returns: ") + mth->getReturnDesc(),
+                                              mth->getReturnDesc().indexOf("TODO")>-1?
                                                   QHtmlCSSClass::classTODO():QHtmlCSSClass::classDescription());
         doc.getBody()->addElement(funcReturn);
     }

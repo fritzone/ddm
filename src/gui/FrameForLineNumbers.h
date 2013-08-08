@@ -11,16 +11,17 @@ class FrameForLineNumbers : public QFrame
 
     struct NumberPosition
     {
-        NumberPosition() : nr(0), y(0) {}
-        NumberPosition(int n, int a) : nr(n), y(a) {}
+        NumberPosition() : nr(0), y(0), disabled(false) {}
+        NumberPosition(int n, int a, bool d) : nr(n), y(a), disabled(d) {}
         int nr;
         int y;
+        bool disabled;
     };
 public:
     explicit FrameForLineNumbers(QWidget *parent = 0);
 
     void beginLineNumbers();
-    void addLineNumber(int nr, int y);
+    void addLineNumber(int nr, int y, bool disabled);
     void endLineNumbers();
 
 protected:

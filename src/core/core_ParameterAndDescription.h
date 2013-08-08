@@ -3,13 +3,39 @@
 
 #include <QString>
 
+enum PARAMETER_SOURCE
+{
+    DOC = 0,
+    PARAM_LIST = 1,
+    VER_IN_BOTH = 2,
+    GUIDED = 3,
+    INVALID = 4
+};
+
 struct ParameterAndDescription
 {
+    ParameterAndDescription() : m_parameter(""), m_type(""),
+        m_description(""), m_direction(""),
+        m_source(INVALID)
+    {}
+
+    ParameterAndDescription(const QString& name, const QString& type,
+                            const QString& descr, const QString& dir,
+                            PARAMETER_SOURCE source) :
+        m_parameter(name), m_type(type), m_description(descr), m_direction(dir),
+        m_source(source)
+    {}
+
+    ParameterAndDescription(const QString& name, const QString& type) :
+        m_parameter(name), m_type(type), m_description(""), m_direction(""),
+        m_source(DOC)
+    {}
+
     QString m_parameter;
     QString m_type;
     QString m_description;
     QString m_direction;
-    int m_source; // 0 - doc, 1 - parameter list, 2 - verified in both
+    PARAMETER_SOURCE m_source; // 0 - doc, 1 - parameter list, 2 - verified in both
 };
 
 #endif // CORE_PARAMETERANDDESCRIPTION_H

@@ -39,6 +39,11 @@ QString StoredMethod::getSql() const
 
 QVector<ParameterAndDescription> StoredMethod::getParametersWithDescription()
 {
+    if(m_guidedCreation)
+    {
+        return m_guidedParameters;
+    }
+
     m_brief = "TODO: write the brief description of the method";
     m_desc = "";
     m_returns = "TODO: document the return value of the function";
@@ -72,10 +77,7 @@ QVector<ParameterAndDescription> StoredMethod::getParametersWithDescription()
                 pDesc += lines.at(i).at(docKeywordIndex);
                 docKeywordIndex ++;
             }
-            ParameterAndDescription pad;
-            pad.m_parameter = pName;
-            pad.m_description = pDesc;
-            pad.m_source = 0;
+            ParameterAndDescription pad(pName, pDesc);
             result.push_back(pad);
         }
         else
@@ -201,19 +203,14 @@ QVector<ParameterAndDescription> StoredMethod::getParametersWithDescription()
                 {
                     result[i].m_direction = direction;
                     result[i].m_type = ptype;
-                    result[i].m_source = 2;
+                    result[i].m_source = VER_IN_BOTH;
                     found = true;
                     break;
                 }
             }
             if(!found)
             {
-                ParameterAndDescription pad;
-                pad.m_parameter = pname;
-                pad.m_description = QObject::tr("TODO: Write proper documentation.");
-                pad.m_direction = direction;
-                pad.m_type = ptype;
-                pad.m_source = 1;
+                ParameterAndDescription pad(pname, ptype, QObject::tr("TODO: Write proper documentation."), direction, PARAM_LIST);
                 result.push_back(pad);
             }
         }
@@ -312,6 +309,44 @@ QString StoredMethod::getNameFromSql(int stidx, int &nameidx)
     }
 
     return "UNNAMED";
+}
+
+bool StoredMethod::hasParameter(const QString &name)
+{
+    for(int i=0; i<m_guidedParameters.size(); i++)
+    {
+        if(m_guidedParameters[i].m_parameter == name)
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
+void StoredMethod::removeParameter(const QString &name)
+{
+    for(int i=0; i<m_guidedParameters.size(); i++)
+    {
+        if(m_guidedParameters.at(i).m_parameter == name)
+        {
+            m_guidedParameters.remove(i);
+            return;
+        }
+    }
+}
+
+void StoredMethod::moveDownParameter(int i)
+{
+    ParameterAndDescription temp = m_guidedParameters[i + 1];
+    m_guidedParameters[i + 1] = m_guidedParameters[i];
+    m_guidedParameters[i] = temp;
+}
+
+void StoredMethod::moveUpParameter(int i)
+{
+    ParameterAndDescription temp = m_guidedParameters[i - 1];
+    m_guidedParameters[i - 1] = m_guidedParameters[i];
+    m_guidedParameters[i] = temp;
 }
 
 QString StoredMethod::getSqlHash() const

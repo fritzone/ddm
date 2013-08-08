@@ -146,7 +146,7 @@ void TextEditWithCodeCompletion::updateLineNumbers()
         {
             QRectF f = blockBoundingGeometry(block);
             QPointF p = contentOffset();
-            m_frameForLineNumbers->addLineNumber(i, f.top() + p.y());
+            m_frameForLineNumbers->addLineNumber(i, f.top() + p.y(), m_disabledRows.indexOf(i) != -1);
             i++;
         }
 
@@ -161,13 +161,27 @@ void TextEditWithCodeCompletion::onVScroll(int)
 
 void TextEditWithCodeCompletion::keyPressEvent(QKeyEvent *e)
 {
+    Qt::KeyboardModifiers m = e->modifiers();
+
     if(m_disabledRows.indexOf(textCursor().blockNumber() + 1) != -1)
     {
-        // Trying to edit a disabled row
-        return;
+        bool process = false;
+
+        if(e->key() == Qt::Key_Home || e->key() == Qt::Key_End
+                || e->key() == Qt::Key_Left || e->key() == Qt::Key_Up
+                || e->key() == Qt::Key_Right || e->key() == Qt::Key_Down
+                || e->key() == Qt::Key_PageUp || e->key() == Qt::Key_PageDown
+                || e->key() == Qt::Key_Insert)
+        {
+            process = true;
+        }
+
+        if(!process)
+        {
+            return;
+        }
     }
 
-    Qt::KeyboardModifiers m = e->modifiers();
     m_timer.stop();
 
     if(e->key() == Qt::Key_Period)
