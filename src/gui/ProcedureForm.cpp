@@ -6,6 +6,7 @@
 #include "MainWindow.h"
 #include "GuiElements.h"
 #include "strings.h"
+#include "core_ParameterAndDescription.h"
 
 ProcedureForm::ProcedureForm(Version* v, ProcedureFormMode m, bool guided, bool forced, Connection *c, QWidget *parent) :
     QWidget(parent),
@@ -36,13 +37,41 @@ ProcedureForm::ProcedureForm(Version* v, ProcedureFormMode m, bool guided, bool 
         {
             ui->cmbReturnType->addItem(IconFactory::getIconForDataType(m_availableDataTypes[i]->getType()),
                                             m_availableDataTypes[i]->getName());
+            ui->cmbParameterType->addItem(IconFactory::getIconForDataType(m_availableDataTypes[i]->getType()),
+                                          m_availableDataTypes[i]->getName());
         }
     }
 
     m_guided = guided;
     toggleGuidedCreationControls(m_guided);
     ui->txtParamDesc->hide();
+    ui->tabWidget->setCurrentIndex(0);
 
+    if(m_mode == MODE_PROCEDURE)
+    {
+        ui->tabWidget->setTabIcon(0, IconFactory::getProcedureIcon());
+    }
+    else
+    {
+        ui->tabWidget->setTabIcon(0, IconFactory::getFunctionTreeIcon());
+    }
+
+    if(m_guided)
+    {
+        QTreeWidgetItem *header = ui->lstParameters->headerItem();
+        header->setText(0, tr("Name"));
+        header->setText(1, tr("Dir"));
+        header->setText(2, tr("Type"));
+        header->setText(3, tr("Desc"));
+
+        ui->btnLoad->hide();
+    }
+
+}
+
+ProcedureForm::~ProcedureForm()
+{
+    delete ui;
 }
 
 void ProcedureForm::disableEditingControls(bool dis)
@@ -55,15 +84,16 @@ void ProcedureForm::toggleGuidedCreationControls(bool guided)
 {
     ui->lblProcName->setVisible(guided);
     ui->txtProcName->setVisible(guided);
+    ui->txtBrief->setVisible(guided);
+    ui->lblBrief->setVisible(guided);
     ui->grpParameters->setVisible(guided);
     ui->lblReturnType->setVisible(guided);
     ui->cmbReturnType->setVisible(guided);
-}
 
-
-ProcedureForm::~ProcedureForm()
-{
-    delete ui;
+    if(!guided)
+    {
+        ui->tabWidget->removeTab(1);
+    }
 }
 
 void ProcedureForm::changeEvent(QEvent *e)
@@ -100,7 +130,10 @@ void ProcedureForm::textChanged()
     m_proc->setSql(m_textEdit->toPlainText());
     if(!m_forcedChange)
     {
-        getProcNameFromSql();
+        if(!m_guided)
+        {
+            getProcNameFromSql();
+        }
     }
 }
 
@@ -109,7 +142,11 @@ void ProcedureForm::initSql()
     QString sql = strCreate + " " + (m_mode == MODE_PROCEDURE?"PROCEDURE ":"FUNCTION ") + m_proc->getName();
     ui->txtProcName->setText(m_proc->getName());
     sql += "()";
-    if(m_mode == MODE_FUNCTION) sql += " RETURNS " + (m_guided? ui->cmbReturnType->currentText() : "");
+
+    UserDataType *dt = m_version->getDataType(ui->cmbReturnType->currentText()); // 0 if none found, used down
+    QString returns = (dt ? dt->sqlAsString() : "INT");
+
+    if(m_mode == MODE_FUNCTION) sql += " RETURNS " + (m_guided? returns : "");
     sql += "\nBEGIN\n\nEND";
     m_forcedChange = true;
     m_textEdit->setPlainText(sql);
@@ -122,7 +159,7 @@ void ProcedureForm::initSql()
     }
     m_textEdit->disableRow(1); // disabling the first row
     m_textEdit->disableRow(2); // and the one with BEGIN
-
+    m_textEdit->updateLineNumbers();
     m_init = false;
 }
 
@@ -156,7 +193,6 @@ void ProcedureForm::onLockUnlock(bool checked)
 
         MainWindow::instance()->finallyDoLockLikeOperation(true, m_proc->getObjectUid());
     }
-
 }
 
 void ProcedureForm::setProcedure(StoredMethod *p)
@@ -300,6 +336,9 @@ void ProcedureForm::onNew()
 
 void ProcedureForm::onReturnTypeComboChange(QString a)
 {
+    UserDataType *dt = m_version->getDataType(a); // 0 if none found, used down
+    QString returns = (dt ? dt->sqlAsString() : a);
+
     if(m_init) return;
 
     QString plainTextEditContents = m_textEdit->toPlainText();
@@ -310,18 +349,30 @@ void ProcedureForm::onReturnTypeComboChange(QString a)
         return;
     }
 
-    UserDataType *dt = m_version->getDataType(a); // 0 if none found, used down
-
+    m_proc->setReturn(returns);
     QString line0 = lines.at(0);
     int idxOfReturns = line0.indexOf("RETURNS", Qt::CaseInsensitive);
-    line0 = line0.left(idxOfReturns + 8) + (dt ? dt->sqlAsString() : a);
+    line0 = line0.left(idxOfReturns + 8) + " " + returns;
     lines[0] = line0;
     m_textEdit->setPlainText(lines.join("\n"));
 }
 
 void ProcedureForm::onProcNameChange(QString a)
 {
-    if(m_init) return;
+    if(m_init)
+    {
+        return;
+    }
+
+    if(a == "UNNAMED")
+    {
+        return;
+    }
+
+    if(m_proc->isDeleted())
+    {
+        return;
+    }
 
     QString plainTextEditContents = m_textEdit->toPlainText();
     QStringList lines = plainTextEditContents.split("\n");
@@ -336,8 +387,134 @@ void ProcedureForm::onProcNameChange(QString a)
     int idxOfType = line0.indexOf(t, Qt::CaseInsensitive);
     int i = idxOfType + t.length();
     while(line0.at(i).isSpace()) i++;   // skip space
-    while(line0.at(i).isLetterOrNumber()) i++; // skip the name
+    while(line0.at(i).isLetterOrNumber() || line0.at(i) == '_') i++; // skip the name
     line0 = line0.left(idxOfType + t.length() + 1) + a + line0.mid(i);
     lines[0] = line0;
     m_textEdit->setPlainText(lines.join("\n"));
+    m_proc->setDisplayText(a);
+    m_proc->setName(a);
+}
+
+void ProcedureForm::onBriefDescrChange(QString a)
+{
+    m_proc->setBriefDescr(a);
+}
+
+void ProcedureForm::onDescrChange()
+{
+    m_proc->setDescription(ui->txtDescription->toPlainText());
+}
+
+void ProcedureForm::updateSqlDueToParamChange()
+{
+    QString plainTextEditContents = m_textEdit->toPlainText();
+    QStringList lines = plainTextEditContents.split("\n");
+
+    if(!lines.empty())
+    {
+        QString line0 = lines.at(0);
+        int idxOfOpenParen = line0.indexOf("(");
+        int idxOfCloseParen = idxOfOpenParen;
+        int level = 0;
+        while(idxOfCloseParen < line0.length())
+        {
+            idxOfCloseParen ++;
+            if(line0[idxOfCloseParen] == '(') level ++;
+            if(line0[idxOfCloseParen] == ')')
+            {
+                level --;
+                if(level == -1)
+                {
+                    break;
+                }
+            }
+        }
+
+        QString params = "";
+        const QVector<ParameterAndDescription>& pars = m_proc->getParametersWithDescription();
+        for(int i=0; i<pars.size(); i++)
+        {
+            UserDataType *dt = m_version->getDataType(pars[i].m_type); // 0 if none found, used down
+            QString parT = (dt ? dt->sqlAsString() : pars[i].m_type);
+            params += pars[i].m_direction.trimmed() + (pars[i].m_direction.trimmed().isEmpty()?"":" ") + pars[i].m_parameter + " " + parT;
+            if(i < pars.size() - 1)
+            {
+                params += ", ";
+            }
+        }
+        QString newLine0 = line0.left(idxOfOpenParen) + "(" + params + line0.mid(idxOfCloseParen);
+        lines[0] = newLine0;
+        m_textEdit->setPlainText(lines.join("\n"));
+    }
+}
+
+void ProcedureForm::onAddParameter()
+{
+    QStringList paramEntry;
+
+    ParameterAndDescription pd(ui->txtParamName->text(),
+                               ui->cmbParameterType->currentText(),
+                               ui->txtParamDesc->toPlainText(),
+                               ui->cmbParameterDirection->currentText(), GUIDED);
+
+    if(m_proc->hasParameter(pd.m_parameter))
+    {
+        QMessageBox::critical(this, tr("Error"), tr("You cannot have another parameter named:<b> ") + pd.m_parameter, QMessageBox::Ok);
+        return;
+    }
+
+    m_proc->addParameter(pd);
+    paramEntry << pd.m_parameter << pd.m_direction << pd.m_type << pd.m_description;
+    QTreeWidgetItem* itm = new QTreeWidgetItem(paramEntry);
+    ui->lstParameters->addTopLevelItem(itm);
+
+    // and now patch the textfield
+    updateSqlDueToParamChange();
+}
+
+void ProcedureForm::onDeleteParameter()
+{
+    if(ui->lstParameters->currentItem() == 0)
+    {
+        return;
+    }
+
+    QString paramName = ui->lstParameters->currentItem()->text(1);
+    m_proc->removeParameter(paramName);
+    delete ui->lstParameters->currentItem();
+
+    // and now patch the textfield
+    updateSqlDueToParamChange();
+}
+
+void ProcedureForm::onMoveUpParameter()
+{
+    QTreeWidgetItem* item = ui->lstParameters->currentItem();
+    int              row  = ui->lstParameters->currentIndex().row();
+
+    if (item && row > 0)
+    {
+        ui->lstParameters->takeTopLevelItem(row);
+        ui->lstParameters->insertTopLevelItem(row - 1, item);
+        ui->lstParameters->setCurrentItem(item);
+
+        m_proc->moveUpParameter(row);
+        updateSqlDueToParamChange();
+    }
+}
+
+void ProcedureForm::onMoveDownParameter()
+{
+    QTreeWidgetItem* item = ui->lstParameters->currentItem();
+    int              row  = ui->lstParameters->currentIndex().row();
+
+    if (item && row < ui->lstParameters->topLevelItemCount() - 1)
+    {
+        ui->lstParameters->takeTopLevelItem(row);
+        ui->lstParameters->insertTopLevelItem(row + 1, item);
+        ui->lstParameters->setCurrentItem(item);
+
+        m_proc->moveDownParameter(row);
+        updateSqlDueToParamChange();
+    }
 }

@@ -23,10 +23,9 @@ void FrameForLineNumbers::beginLineNumbers()
     m_nrs.clear();
 }
 
-void FrameForLineNumbers::addLineNumber(int nr, int y)
+void FrameForLineNumbers::addLineNumber(int nr, int y, bool disabled)
 {
-
-    NumberPosition np(nr, y);
+    NumberPosition np(nr, y, disabled);
     m_nrs.append(np);
 }
 
@@ -38,7 +37,7 @@ void FrameForLineNumbers::endLineNumbers()
 void FrameForLineNumbers::paintEvent(QPaintEvent *)
 {
     QPainter a(this);
-    a.setPen(Qt::black);
+
     QFont f;
     f.setFamily("Courier");
     f.setBold(true);
@@ -56,6 +55,14 @@ void FrameForLineNumbers::paintEvent(QPaintEvent *)
         if(m_nrs.at(i).nr < 1000) s = "0" + s;
 
         QRect r(0, m_nrs.at(i).y, this->rect().width(), TSIZE);
+        if(m_nrs[i].disabled)
+        {
+            a.setPen(Qt::darkGray);
+        }
+        else
+        {
+            a.setPen(Qt::black);
+        }
         a.drawText(r, s);
    }
 

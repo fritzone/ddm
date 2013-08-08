@@ -62,15 +62,40 @@ public:
     {
         return m_desc;
     }
-    QString getReturns() const
+    QString getReturnDesc() const
     {
-        return m_returns;
+        return m_returnDesc;
     }
 
     bool isGuided() const
     {
         return m_guidedCreation;
     }
+
+    void setBriefDescr(const QString& a)
+    {
+        m_brief = a;
+    }
+
+    void setDescription(const QString& a)
+    {
+        m_desc= a;
+    }
+
+    void setReturn(const QString& a)
+    {
+        m_returns = a;
+    }
+
+    bool hasParameter(const QString& name);
+    void addParameter(ParameterAndDescription pd)
+    {
+        m_guidedParameters.append(pd);
+    }
+
+    void removeParameter(const QString& name);
+    void moveUpParameter(int);
+    void moveDownParameter(int);
 
     virtual QString getSqlHash() const;
     virtual void rename(const QString&);
@@ -80,10 +105,15 @@ protected:
     QString m_sql;
 
     // these are populated automatically by the documentation generator
+    // these are serialized oly if it's guided
     QString m_brief;
     QString m_desc;
     QString m_returns;
+    QString m_returnDesc;
     bool m_guidedCreation;
+
+    // this is populated only if the method was created with the guide
+    QVector<ParameterAndDescription> m_guidedParameters;
 };
 
 #endif // CORE_STOREDMETHOD_H

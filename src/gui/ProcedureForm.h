@@ -44,11 +44,18 @@ private slots:
     void onNew();
     void onReturnTypeComboChange(QString);
     void onProcNameChange(QString);
+    void onBriefDescrChange(QString);
+    void onDescrChange();
+    void onAddParameter();
+    void onDeleteParameter();
+    void onMoveUpParameter();
+    void onMoveDownParameter();
 
 private:
     QString getProcNameFromSql();
     void disableEditingControls(bool dis);
     void toggleGuidedCreationControls(bool guided);
+    void updateSqlDueToParamChange();
 
 private:
     Ui::ProcedureForm *ui;

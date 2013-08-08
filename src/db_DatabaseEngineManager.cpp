@@ -58,7 +58,7 @@ DatabaseEngineManager::DatabaseEngineManager()
         SqliteSQLGenerator* sqliteGenrator = new SqliteSQLGenerator(sqliteDBEngine );
 
         addEngine(strSqlite, sqliteDBEngine);
-        addSqlGenerator(strMySql, sqliteGenrator);
+        addSqlGenerator(strSqlite, sqliteGenrator);
     }
 
     // is there CUBRID driver?

@@ -219,20 +219,17 @@ QStringList CUBRIDDatabaseEngine::getAvailableStoredProcedures(Connection* conn)
 {
     if(!dynamic_cast<CUBRIDConnection*>(conn)) return QStringList();
 
-    return getResultOfQuery("show procedure status where db='"
-                            + dynamic_cast<CUBRIDConnection*>(conn)->getDb()
-                            + "'",
+    return getResultOfQuery("select sp_name from db_stored_procedure WHERE owner=current_user and sp_type='PROCEDURE'",
                             conn,
-                            "Cannot get stored procedures", 1);
+                            "Cannot get stored procedures", 0);
 }
 
 QStringList CUBRIDDatabaseEngine::getAvailableStoredFunctions(Connection* conn)
 {
     if(!dynamic_cast<CUBRIDConnection*>(conn)) return QStringList();
 
-    return getResultOfQuery("show function status where db='"
-                            + dynamic_cast<CUBRIDConnection*>(conn)->getDb() + "'",
-                            conn, "Cannot get list of available functions", 1);
+    return getResultOfQuery("select sp_name from db_stored_procedure WHERE owner=current_user and sp_type='FUNCTION'",
+                            conn, "Cannot get list of available functions", 0);
 }
 
 QStringList CUBRIDDatabaseEngine::getAvailableTables(Connection* conn)
