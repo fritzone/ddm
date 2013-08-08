@@ -17,13 +17,13 @@
    <item>
     <widget class="QWidget" name="widget" native="true">
      <layout class="QVBoxLayout" name="verticalLayout">
-      <property name="bottomMargin">
+      <property name="margin">
        <number>0</number>
       </property>
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout_15">
         <property name="spacing">
-         <number>1</number>
+         <number>3</number>
         </property>
         <item>
          <widget class="QToolButton" name="btnSave">
@@ -138,6 +138,12 @@
           <family>Courier New</family>
           <pointsize>11</pointsize>
          </font>
+        </property>
+        <property name="frameShape">
+         <enum>QFrame::NoFrame</enum>
+        </property>
+        <property name="frameShadow">
+         <enum>QFrame::Plain</enum>
         </property>
         <property name="readOnly">
          <bool>true</bool>

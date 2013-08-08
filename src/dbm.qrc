@@ -225,6 +225,7 @@
         <file>images/small/entity.png</file>
         <file>images/small/cubrid.png</file>
         <file>images/small/arrow-return-down-left-icon.png</file>
+        <file>images/small/java.png</file>
     </qresource>
     <qresource prefix="/bigger">
         <file>images/unaf.png</file>

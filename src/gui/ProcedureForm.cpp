@@ -82,8 +82,8 @@ void ProcedureForm::disableEditingControls(bool dis)
 
 void ProcedureForm::toggleGuidedCreationControls(bool guided)
 {
-    ui->lblProcName->setVisible(guided);
     ui->txtProcName->setVisible(guided);
+    ui->cmbProcedureType->setVisible(guided);
     ui->txtBrief->setVisible(guided);
     ui->lblBrief->setVisible(guided);
     ui->grpParameters->setVisible(guided);
