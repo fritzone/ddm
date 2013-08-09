@@ -986,7 +986,6 @@ void NewTableForm::showColumn(Column * c)
  */
 void NewTableForm::onSelectColumn(QTreeWidgetItem* current, int)
 {
-    QModelIndex x = lstColumns->currentIndex();
     m_currentColumn = m_table->getColumn(current->text(1));
 
     if(m_currentColumn == 0)

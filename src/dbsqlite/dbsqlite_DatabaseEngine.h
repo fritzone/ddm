@@ -36,7 +36,6 @@ public:
     virtual QStringList getAvailableIndexes(Connection* c);
     virtual QString getTableCreationScript(Connection* c, const QString& tabName);
     virtual QString getViewCreationScript(Connection* c, const QString& name);
-    virtual bool storedMethodSupport() {return false;}
 
 private:
     SqliteDatabaseEngine();

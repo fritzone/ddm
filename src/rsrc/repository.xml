@@ -12,6 +12,27 @@
                          Defaults to false if not present.
   -->
     <database name="MySql" id="MYSQL" class-uid="{100000DB-0000-0000-0000-000000000001}">
+      
+      <stored-methods support = "1">
+        <!-- What is the order of the parameters in the Stored methods. For example MySql has DIRECTION NAME TYPE
+             but other database engines have it like NAME DIRECTION TYPE. This will be used to seamlessly construct 
+             the SQL for the parameters -->
+        <parameter_fields>
+          <field id = "0" index = "1" name = "Name" />
+          <field id = "1" index = "0" name = "Direction" />
+          <field id = "2" index = "2" name = "Type" />
+        </parameter_fields>
+        <languages>
+          <language id="0" name="SQL" />
+        </languages>
+        <default-bodies>
+          <defult-body language-id="0">
+            <![CDATA[BEGIN
+END]]>  
+          </defult-body>
+        </default-bodies>
+      </stored-methods>
+      
       <datatype-groups>
         <!-- Text types -->
         <datatype-group type="0" name="Text/String" >
@@ -227,6 +248,7 @@
         <keyword description="" text= "REQUIRE" />
         <keyword description="" text= "RESTRICT"/>
         <keyword description="" text= "RETURN" />
+        <keyword description="" text= "RETURNS" role="returns"/>
         <keyword description="" text= "REVOKE" />
         <keyword description="" text= "RIGHT" />
         <keyword description="" text= "RLIKE" />
@@ -2255,6 +2277,9 @@
     </database>
 
     <database name="Sqlite" id="SQLITE" class-uid="{100000DB-0000-0000-0000-000000000002}">
+      
+      <stored-methods support = "0" />
+      
       <datatype-groups>
         <!-- Text types -->
         <datatype-group type="0" name="Text/String" >
@@ -2431,7 +2456,7 @@
         <function-category name = "Aggregate" id= "FT_AGGREGATE" value="10" role="aggregate"/>
       </function-categories>
       
-      <!-- The dunctions of SqLite -->
+      <!-- The functions of SqLite -->
       <functions>
         <function name="@if" category="FT_CONTROLFLOW" category-value="0" return="RET_STRING" >
           <parameters count="3" >
@@ -2492,6 +2517,24 @@
     </database>
 
     <database name="CUBRID" id="CUBRID" class-uid="{100000DB-0000-0000-0000-000000000003}">
+      
+      <stored-methods support = "1">
+        <parameter_fields>
+          <field id = "0" index = "0" name = "Name" />
+          <field id = "1" index = "1" name = "Direction" />
+          <field id = "2" index = "2" name = "Type" />
+        </parameter_fields>
+        <languages>
+          <language id="1" name="Java" />
+        </languages>
+        <default-bodies>
+          <defult-body language-id="1">
+            <![CDATA[AS LANGUAGE JAVA
+NAME 'YourClass.yourMethod()';]]>  
+          </defult-body>
+        </default-bodies>
+      </stored-methods>
+      
       <datatype-groups>
         <!-- Text types -->
         <datatype-group type="0" name="Text/String" >
@@ -2780,7 +2823,7 @@
         <keyword description="" text="RESTRIC" />
         <keyword description="" text="ROW" />
         <keyword description="" text="REFERENCES" />
-        <keyword description="" text="RETURN" />
+        <keyword description="" text="RETURN" role="returns"/>
         <keyword description="" text="ROWNUM" />
         <keyword description="" text="REFERENCING" />
         <keyword description="" text="RETURNS" />

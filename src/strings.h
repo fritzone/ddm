@@ -168,5 +168,11 @@ static const QString strConnection = "connection";
 static const QString strFalse = "FALSE";
 static const QString strTrue = "TRUE";
 
+static const QString strSql = "SQL";
+static const QString strJava = "Java";
+
+static const QString strProcedure = "PROCEDURE";
+static const QString strFunction = "FUNCTION";
+static const QString strInt = "INT";
 
 #endif // STRINGS_H

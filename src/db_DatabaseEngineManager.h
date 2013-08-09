@@ -2,6 +2,7 @@
 #define DB_DATABASEENGINEMANAGER_H
 
 #include "db_DatabaseBuiltinFunction.h"
+#include "dbcubrid_DatabaseEngine.h"
 
 #include <QStringList>
 #include <QMap>
@@ -140,6 +141,26 @@ public:
 
     QVector<DatabaseBuiltinFunction> getBuiltinFunctions(const QString& dbName);
 
+    void setStoredMethodSupport(const QString &dbName, bool support);
+
+    bool getStoredMethodSupport(const QString &dbName);
+
+    void setStoredMethodSupportedLanguages(const QString &dbName, QSet<PROGRAMMING_LANGUAGES> languages);
+
+    QSet<PROGRAMMING_LANGUAGES> getStoredMethodSupportedLanguages(const QString &dbName);
+
+    void setParameterFields(const QString &dbName, QMap<PARAMETER_FIELD_ROLES, int> fields);
+
+    QMap<PARAMETER_FIELD_ROLES, int> getParameterFields(const QString &dbName);
+
+    void setStoredMethodDefaultBodies(const QString &dbName, QMap<PROGRAMMING_LANGUAGES, QString> bodies);
+
+    QMap<PROGRAMMING_LANGUAGES, QString> getStoredMethodDefaultBodies(const QString &dbName);
+
+    void setStoredMethodReturnKeyword(const QString &dbName, QString keyword);
+
+    QString getStoredMethodReturnKeyword(const QString &dbName);
+
 private:
     DatabaseEngineManager();
 
@@ -185,6 +206,21 @@ private:
 
     // holds the functions of a database as defined in the repo
     QMap<QString, QVector<DatabaseBuiltinFunction> > m_dbFunctions;
+
+    // if the stored methods are supported for the given database
+    QMap<QString, bool> m_storedMethodsSupported;
+
+    // what language can be used to write sotred methods
+    QMap<QString, QSet<PROGRAMMING_LANGUAGES> > m_supportedLanguagesForStoredMethods;
+
+    // how to seamlessly define the parameters
+    QMap<QString, QMap<PARAMETER_FIELD_ROLES, int> > m_parameterFields;
+
+    // has the default bodies for the sotred methods of the specified language
+    QMap<QString, QMap<PROGRAMMING_LANGUAGES, QString> > m_storedMethodsDefaultBodies;
+
+    // the RETURN keyword for a specific database... It can be different :(
+    QMap<QString, QString> m_returnKeywordForStoredFunction;
 };
 
 #endif // DB_DATABASEENGINEMANAGER_H

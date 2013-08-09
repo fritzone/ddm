@@ -1,6 +1,7 @@
 #ifndef CORE_PARAMETERANDDESCRIPTION_H
 #define CORE_PARAMETERANDDESCRIPTION_H
 
+#include "TreeItem.h"
 #include <QString>
 
 enum PARAMETER_SOURCE
@@ -12,7 +13,7 @@ enum PARAMETER_SOURCE
     INVALID = 4
 };
 
-struct ParameterAndDescription
+struct ParameterAndDescription : public TreeItem
 {
     ParameterAndDescription() : m_parameter(""), m_type(""),
         m_description(""), m_direction(""),

@@ -333,7 +333,39 @@ bool DefaultDatabaseEngine::dropDatabase(Connection*)
     return true;
 }
 
+bool DefaultDatabaseEngine::storedMethodSupport()
+{
+    return DatabaseEngineManager::instance().getStoredMethodSupport(getName().toUpper());
+}
+
+QSet<PROGRAMMING_LANGUAGES> DefaultDatabaseEngine::storedMethodLanguages()
+{
+    return DatabaseEngineManager::instance().getStoredMethodSupportedLanguages(getName().toUpper());
+}
+
+QMap<PARAMETER_FIELD_ROLES, int> DefaultDatabaseEngine::parameterFieldOrders()
+{
+    return DatabaseEngineManager::instance().getParameterFields(getName().toUpper());
+}
+
+QString DefaultDatabaseEngine::getDefaultStoredMethodBody(PROGRAMMING_LANGUAGES lang)
+{
+    QMap<PROGRAMMING_LANGUAGES, QString> bodies = DatabaseEngineManager::instance().getStoredMethodDefaultBodies(getName().toUpper());
+    if(bodies.contains(lang))
+    {
+        return bodies[lang];
+    }
+
+    return "";
+}
+
+QString DefaultDatabaseEngine::getStoredMethodReturnKeyword()
+{
+    return DatabaseEngineManager::instance().getStoredMethodReturnKeyword(getName().toUpper());
+}
+
 bool DefaultDatabaseEngine::createDatabase(Connection*)
 {
     return true;
 }
+

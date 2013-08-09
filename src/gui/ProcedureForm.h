@@ -5,6 +5,7 @@
 #include "core_StoredMethod.h"
 
 #include <QWidget>
+#include <QSplitter>
 
 namespace Ui {
     class ProcedureForm;
@@ -50,12 +51,15 @@ private slots:
     void onDeleteParameter();
     void onMoveUpParameter();
     void onMoveDownParameter();
+    void onProcTargetLanguageChange(QString);
+    void onSelectParameter(QTreeWidgetItem*,int);
 
 private:
     QString getProcNameFromSql();
     void disableEditingControls(bool dis);
     void toggleGuidedCreationControls(bool guided);
     void updateSqlDueToParamChange();
+    PROGRAMMING_LANGUAGES getTargetLanguage();
 
 private:
     Ui::ProcedureForm *ui;
@@ -68,6 +72,8 @@ private:
     QVector<UserDataType*> m_availableDataTypes;
     bool m_init;
     bool m_guided;
+    QSplitter* m_splitter;
+    ParameterAndDescription* m_currentParameter;
 };
 
 #endif // PROCEDUREFORM_H

@@ -42,4 +42,25 @@ enum BrowsedTableLayout
     NEW_TABLE_IN_DB = 6
 };
 
+// the programming languages which can be used when defining functions
+// used in the Repository reader and in the Procedure Form to fix the
+// type combo box
+enum PROGRAMMING_LANGUAGES
+{
+    LANGUAGE_SQL = 0,
+    LANGUAGE_JAVA = 1,
+
+    LANGAUGE_INVALID
+};
+
+// this will be used in order to correctly create a parameter for the
+// guided procedure creation. Defined in the repository (the order)
+// and used in the procedure form
+enum PARAMETER_FIELD_ROLES
+{
+    PARAM_NAME = 0,
+    PARAM_DIRECTION = 1,
+    PARAM_TYPE = 2
+};
+
 #endif // ENUMS_H
