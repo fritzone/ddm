@@ -220,7 +220,7 @@ void DocumentationGenerator::getDocumentationForStoredMethod(StoredMethod *mth, 
     h4Proc->addElement(procName);
     doc.getBody()->addHeading(h4Proc);
 
-    QVector<ParameterAndDescription> pads = mth->getParametersWithDescription();
+    QVector<ParameterAndDescription*> pads = mth->getParametersWithDescription();
     QHtmlText* methodBriefDescription = new QHtmlText(mth->getBriefDescription(), mth->getBriefDescription().indexOf("TODO")>-1?
                                                           QHtmlCSSClass::classTODO():QHtmlCSSClass::classDescription());
     doc.getBody()->addElement(methodBriefDescription);
@@ -252,12 +252,12 @@ void DocumentationGenerator::getDocumentationForStoredMethod(StoredMethod *mth, 
     bool at_least_1_parameter_added = false;
     for(int j=0; j<pads.size(); j++)
     {
-        if(pads.at(j).m_source > 0)
+        if(pads.at(j)->m_source > 0)
         {
-            QHtmlText* colParName = new QHtmlText(pads.at(j).m_parameter, QHtmlCSSClass::classTableText());
-            QHtmlText* colParType = new QHtmlText(pads.at(j).m_type, QHtmlCSSClass::classTableText());
-            QHtmlText* colParDesc = new QHtmlText(pads.at(j).m_description,
-                                                  pads.at(j).m_description.indexOf("TODO")>-1?
+            QHtmlText* colParName = new QHtmlText(pads.at(j)->m_parameter, QHtmlCSSClass::classTableText());
+            QHtmlText* colParType = new QHtmlText(pads.at(j)->m_type, QHtmlCSSClass::classTableText());
+            QHtmlText* colParDesc = new QHtmlText(pads.at(j)->m_description,
+                                                  pads.at(j)->m_description.indexOf("TODO")>-1?
                                                       QHtmlCSSClass::classTODO():QHtmlCSSClass::classTableText());
 
             QHtmlRowData* dataN = new QHtmlRowData(colParName);

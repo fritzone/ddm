@@ -224,6 +224,15 @@ p, li { white-space: pre-wrap; }
               <normaloff>:/images/actions/images/small/sqlite-icon.png</normaloff>:/images/actions/images/small/sqlite-icon.png</iconset>
             </property>
            </item>
+           <item>
+            <property name="text">
+             <string>CUBRID</string>
+            </property>
+            <property name="icon">
+             <iconset resource="../dbm.qrc">
+              <normaloff>:/images/actions/images/small/cubrid.png</normaloff>:/images/actions/images/small/cubrid.png</iconset>
+            </property>
+           </item>
           </widget>
          </item>
          <item row="8" column="0" colspan="2">

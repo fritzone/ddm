@@ -37,7 +37,7 @@ QString StoredMethod::getSql() const
     return m_sql;
 }
 
-QVector<ParameterAndDescription> StoredMethod::getParametersWithDescription()
+QVector<ParameterAndDescription *> StoredMethod::getParametersWithDescription()
 {
     if(m_guidedCreation)
     {
@@ -48,7 +48,7 @@ QVector<ParameterAndDescription> StoredMethod::getParametersWithDescription()
     m_desc = "";
     m_returns = "TODO: document the return value of the function";
 
-    QVector<ParameterAndDescription> result;
+    QVector<ParameterAndDescription*> result;
     QStringList lines = m_sql.split('\n');
     int nameidx = 0;
     QString tName = getNameFromSql(0, nameidx);
@@ -77,7 +77,7 @@ QVector<ParameterAndDescription> StoredMethod::getParametersWithDescription()
                 pDesc += lines.at(i).at(docKeywordIndex);
                 docKeywordIndex ++;
             }
-            ParameterAndDescription pad(pName, pDesc);
+            ParameterAndDescription* pad = new ParameterAndDescription(pName, pDesc);
             result.push_back(pad);
         }
         else
@@ -199,18 +199,19 @@ QVector<ParameterAndDescription> StoredMethod::getParametersWithDescription()
             bool found = false;
             for(int i=0; i< result.size(); i++)
             {
-                if(result.at(i).m_parameter.toUpper() == pname.toUpper())
+                if(result.at(i)->m_parameter.toUpper() == pname.toUpper())
                 {
-                    result[i].m_direction = direction;
-                    result[i].m_type = ptype;
-                    result[i].m_source = VER_IN_BOTH;
+                    result[i]->m_direction = direction;
+                    result[i]->m_type = ptype;
+                    result[i]->m_source = VER_IN_BOTH;
                     found = true;
                     break;
                 }
             }
             if(!found)
             {
-                ParameterAndDescription pad(pname, ptype, QObject::tr("TODO: Write proper documentation."), direction, PARAM_LIST);
+                ParameterAndDescription* pad = new ParameterAndDescription(pname,
+                                            ptype, QObject::tr("TODO: Write proper documentation."), direction, PARAM_LIST);
                 result.push_back(pad);
             }
         }
@@ -315,7 +316,7 @@ bool StoredMethod::hasParameter(const QString &name)
 {
     for(int i=0; i<m_guidedParameters.size(); i++)
     {
-        if(m_guidedParameters[i].m_parameter == name)
+        if(m_guidedParameters[i]->m_parameter == name)
         {
             return true;
         }
@@ -323,11 +324,23 @@ bool StoredMethod::hasParameter(const QString &name)
     return false;
 }
 
+ParameterAndDescription *StoredMethod::getParameter(const QString &name)
+{
+    for(int i=0; i<m_guidedParameters.size(); i++)
+    {
+        if(m_guidedParameters[i]->m_parameter == name)
+        {
+            return m_guidedParameters[i];
+        }
+    }
+    return 0;
+}
+
 void StoredMethod::removeParameter(const QString &name)
 {
     for(int i=0; i<m_guidedParameters.size(); i++)
     {
-        if(m_guidedParameters.at(i).m_parameter == name)
+        if(m_guidedParameters.at(i)->m_parameter == name)
         {
             m_guidedParameters.remove(i);
             return;
@@ -337,14 +350,14 @@ void StoredMethod::removeParameter(const QString &name)
 
 void StoredMethod::moveDownParameter(int i)
 {
-    ParameterAndDescription temp = m_guidedParameters[i + 1];
+    ParameterAndDescription* temp = m_guidedParameters[i + 1];
     m_guidedParameters[i + 1] = m_guidedParameters[i];
     m_guidedParameters[i] = temp;
 }
 
 void StoredMethod::moveUpParameter(int i)
 {
-    ParameterAndDescription temp = m_guidedParameters[i - 1];
+    ParameterAndDescription* temp = m_guidedParameters[i - 1];
     m_guidedParameters[i - 1] = m_guidedParameters[i];
     m_guidedParameters[i] = temp;
 }

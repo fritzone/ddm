@@ -269,3 +269,77 @@ QVector<DatabaseBuiltinFunction> DatabaseEngineManager::getBuiltinFunctions(cons
     return QVector<DatabaseBuiltinFunction>();
 }
 
+void DatabaseEngineManager::setStoredMethodSupport(const QString &dbName, bool support)
+{
+    m_storedMethodsSupported[dbName.toUpper()] = support;
+}
+
+bool DatabaseEngineManager::getStoredMethodSupport(const QString &dbName)
+{
+    if(m_storedMethodsSupported.contains(dbName.toUpper()))
+    {
+        return m_storedMethodsSupported[dbName.toUpper()];
+    }
+
+    return false;
+}
+
+void DatabaseEngineManager::setStoredMethodSupportedLanguages(const QString &dbName, QSet<PROGRAMMING_LANGUAGES> languages)
+{
+    m_supportedLanguagesForStoredMethods[dbName.toUpper()] = languages;
+}
+
+QSet<PROGRAMMING_LANGUAGES> DatabaseEngineManager::getStoredMethodSupportedLanguages(const QString &dbName)
+{
+    if(m_supportedLanguagesForStoredMethods.contains(dbName.toUpper()))
+    {
+        return m_supportedLanguagesForStoredMethods[dbName.toUpper()];
+    }
+
+    return QSet<PROGRAMMING_LANGUAGES>();
+}
+
+void DatabaseEngineManager::setParameterFields(const QString &dbName, QMap<PARAMETER_FIELD_ROLES, int> fields)
+{
+    m_parameterFields[dbName.toUpper()] = fields;
+}
+
+QMap<PARAMETER_FIELD_ROLES, int> DatabaseEngineManager::getParameterFields(const QString &dbName)
+{
+    if(m_parameterFields.contains(dbName.toUpper()))
+    {
+        return m_parameterFields[dbName.toUpper()];
+    }
+
+    return QMap<PARAMETER_FIELD_ROLES, int>();
+}
+
+void DatabaseEngineManager::setStoredMethodDefaultBodies(const QString &dbName, QMap<PROGRAMMING_LANGUAGES, QString> bodies)
+{
+    m_storedMethodsDefaultBodies[dbName.toUpper()] = bodies;
+}
+
+QMap<PROGRAMMING_LANGUAGES, QString> DatabaseEngineManager::getStoredMethodDefaultBodies(const QString &dbName)
+{
+    if(m_storedMethodsDefaultBodies.contains(dbName.toUpper()))
+    {
+        return m_storedMethodsDefaultBodies[dbName.toUpper()];
+    }
+
+    return QMap<PROGRAMMING_LANGUAGES, QString>();
+}
+
+void DatabaseEngineManager::setStoredMethodReturnKeyword(const QString &dbName, QString keyword)
+{
+    m_returnKeywordForStoredFunction[dbName.toUpper()] = keyword;
+}
+
+QString DatabaseEngineManager::getStoredMethodReturnKeyword(const QString &dbName)
+{
+    if(m_returnKeywordForStoredFunction.contains(dbName.toUpper()))
+    {
+        return m_returnKeywordForStoredFunction[dbName.toUpper()];
+    }
+
+    return "";
+}

@@ -1,8 +1,8 @@
 #ifndef DATABASEENGINE_H
 #define DATABASEENGINE_H
 
-#include "core_ObjectWithUid.h"
 #include "core_Entity.h"
+#include "core_enums.h"
 
 #include <QMap>
 #include <QString>
@@ -23,7 +23,6 @@ class Function;
 class Trigger;
 class Sp;
 class Column;
-
 
 /**
  * The DatabaseEngine class is the common interface for accessing the database
@@ -443,6 +442,35 @@ public:
      * and procedures.
      */
     virtual bool storedMethodSupport() = 0;
+
+    /**
+     * @brief storedMethodLanguages returns a set of the programming languages the
+     * user can use to create stored methods.
+     * @return
+     */
+    virtual QSet<PROGRAMMING_LANGUAGES> storedMethodLanguages() = 0;
+
+    /**
+     * @brief parameterFieldOrders returns the map of the parameter fields where
+     * the key is the parameter type, and the value is the index in the
+     * parameter definition field.
+     * @return
+     */
+    virtual QMap<PARAMETER_FIELD_ROLES, int> parameterFieldOrders() = 0;
+
+    /**
+     * @brief getDefaultStoredMethodBody returns the default body for the given
+     * language of a stored method
+     * @param lang
+     * @return
+     */
+    virtual QString getDefaultStoredMethodBody(PROGRAMMING_LANGUAGES lang) = 0;
+
+    /**
+     * @brief getStoredMethodReturnKeyword return the "RETURN" keyword of the DB
+     * @return
+     */
+    virtual QString getStoredMethodReturnKeyword() = 0;
 
     /**
      * @brief spiExtension returns the SQL extension for the given SPI uid,

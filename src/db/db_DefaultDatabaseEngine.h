@@ -71,7 +71,11 @@ public:
                                               const QString&, int);
     virtual bool createDatabase(Connection*);
     virtual bool dropDatabase(Connection*);
-
+    virtual bool storedMethodSupport();
+    virtual QSet<PROGRAMMING_LANGUAGES> storedMethodLanguages();
+    virtual QMap<PARAMETER_FIELD_ROLES, int> parameterFieldOrders();
+    virtual QString getDefaultStoredMethodBody(PROGRAMMING_LANGUAGES lang);
+    virtual QString getStoredMethodReturnKeyword();
 };
 
 #endif // DB_DEFAULTDATABASEENGINE_H

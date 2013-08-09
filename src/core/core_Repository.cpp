@@ -114,12 +114,17 @@ void Repository::addDatabase(const QDomElement & el)
         QVector<GenericDatabaseType*> gdbts;
         QStringList keywords;
         QString delimiterKeyword = "";
+        QString keywordReturn = "";
         QStringList triggerEvents;
         QStringList triggerTimes;
         QVector<Sp*> sps;
         QMap<QString, QString> spsTooltips;
         QMap<QString, QString> spsSqls;
         QVector<DatabaseFunctionCategory*> funcCategories;
+        bool storedMethodsSupported = false;
+        QSet<PROGRAMMING_LANGUAGES> storedMethodSupportedLanguage;
+        QMap<PARAMETER_FIELD_ROLES, int> parameterFields;
+        QMap<PROGRAMMING_LANGUAGES, QString> defaultBodies;
 
         for(int i=0; i<el.childNodes().size(); i++)
         {
@@ -144,6 +149,46 @@ void Repository::addDatabase(const QDomElement & el)
                     }
                 }
             }
+
+            if(el.childNodes().at(i).nodeName() == "stored-methods")
+            {
+                storedMethodsSupported = el.childNodes().at(i).toElement().hasAttribute("support") &&
+                        el.childNodes().at(i).toElement().attribute("support").toInt() == 1;
+
+                if(storedMethodsSupported)
+                {
+                    QDomElement languagesEl = el.childNodes().at(i).firstChildElement("languages");
+                    for(int j=0; j< languagesEl.childNodes().size(); j++)
+                    {
+                        QDomElement languageEl = languagesEl.childNodes().at(j).toElement();
+                        int iLangId = languageEl.attribute("id").toInt();
+                        PROGRAMMING_LANGUAGES langId = static_cast<PROGRAMMING_LANGUAGES>(iLangId);
+                        storedMethodSupportedLanguage.insert(langId);
+                    }
+
+                    QDomElement fieldOrderEl = el.childNodes().at(i).firstChildElement("parameter_fields");
+                    for(int j=0; j< fieldOrderEl.childNodes().size(); j++)
+                    {
+                        QDomElement fieldEl = fieldOrderEl.childNodes().at(j).toElement();
+                        int iFieldId = fieldEl.attribute("id").toInt();
+                        int index = fieldEl.attribute("index").toInt();
+                        PARAMETER_FIELD_ROLES role = static_cast<PARAMETER_FIELD_ROLES>(iFieldId);
+                        parameterFields[role] = index;
+                    }
+
+                    QDomElement defaultBodiesEl = el.childNodes().at(i).firstChildElement("default-bodies");
+                    for(int j=0; j< defaultBodiesEl.childNodes().size(); j++)
+                    {
+                        QDomElement bodyEl = defaultBodiesEl.childNodes().at(j).toElement();
+                        int iLangId = bodyEl.attribute("language-id").toInt();
+                        PROGRAMMING_LANGUAGES langId = static_cast<PROGRAMMING_LANGUAGES>(iLangId);
+                        QDomCDATASection cdata = bodyEl.firstChild().toCDATASection();
+                        QString body = cdata.data();
+                        defaultBodies[langId] = body;
+                    }
+                }
+            }
+
             if(el.childNodes().at(i).nodeName() == "keywords")
             {
                 for(int j=0; j<el.childNodes().at(i).childNodes().size(); j++)
@@ -158,6 +203,10 @@ void Repository::addDatabase(const QDomElement & el)
                         if(role.toUpper() == "DELIMITER")
                         {
                             delimiterKeyword = keyword;
+                        }
+                        if(role.toUpper() == "RETURNS")
+                        {
+                            keywordReturn = keyword;
                         }
                     }
                 }
@@ -258,6 +307,7 @@ void Repository::addDatabase(const QDomElement & el)
             }
         }
 
+        // second run
         QVector<DatabaseBuiltinFunction> dbFunctions;
         // the functions need to be constructed after the other parts
         for(int i=0; i<el.childNodes().size(); i++)
@@ -387,9 +437,14 @@ void Repository::addDatabase(const QDomElement & el)
         DatabaseEngineManager::instance().setFunctionCategories(dbId, funcCategories);
         if(!sps.empty())
         {
-            DatabaseEngineManager::instance().setSps(dbId.toUpper(), sps, spsSqls, spsTooltips);
+            DatabaseEngineManager::instance().setSps(dbId, sps, spsSqls, spsTooltips);
         }
         DatabaseEngineManager::instance().setFunctions(dbId, dbFunctions);
+        DatabaseEngineManager::instance().setStoredMethodSupport(dbId, storedMethodsSupported);
+        DatabaseEngineManager::instance().setStoredMethodSupportedLanguages(dbId, storedMethodSupportedLanguage);
+        DatabaseEngineManager::instance().setParameterFields(dbId, parameterFields);
+        DatabaseEngineManager::instance().setStoredMethodDefaultBodies(dbId, defaultBodies);
+        DatabaseEngineManager::instance().setStoredMethodReturnKeyword(dbId, keywordReturn);
     }
 }
 

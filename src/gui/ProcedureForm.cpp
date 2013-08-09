@@ -7,13 +7,38 @@
 #include "GuiElements.h"
 #include "strings.h"
 #include "core_ParameterAndDescription.h"
+#include "db_DatabaseEngine.h"
 
 ProcedureForm::ProcedureForm(Version* v, ProcedureFormMode m, bool guided, bool forced, Connection *c, QWidget *parent) :
     QWidget(parent),
-    ui(new Ui::ProcedureForm), m_textEdit(0), m_frameForLineNumbers(0), m_proc(0), m_forcedChange(forced), m_mode(m), m_version(v)
+    ui(new Ui::ProcedureForm), m_textEdit(0), m_frameForLineNumbers(0), m_proc(0),
+    m_forcedChange(forced), m_mode(m), m_version(v), m_guided(guided),
+    m_currentParameter(0)
 {
-    m_init = true;
     ui->setupUi(this);
+
+    m_init = true;
+    if(m_guided)
+    {
+        QTreeWidgetItem *header = ui->lstParameters->headerItem();
+        header->setText(0, tr("Name"));
+        header->setText(1, tr("Dir"));
+        header->setText(2, tr("Type"));
+        header->setText(3, tr("Desc"));
+
+        ui->btnLoad->hide();
+
+        QSet<PROGRAMMING_LANGUAGES> supportedLanguages = v->getProject()->getEngine()->storedMethodLanguages();
+
+        if(!supportedLanguages.contains(LANGUAGE_SQL))
+        {
+            ui->cmbProcedureType->removeItem(ui->cmbProcedureType->findText("SQL"));
+        }
+        if(!supportedLanguages.contains(LANGUAGE_JAVA))
+        {
+            ui->cmbProcedureType->removeItem(ui->cmbProcedureType->findText("Java"));
+        }
+    }
 
     m_frameForLineNumbers = new FrameForLineNumbers(this);
     ui->horizontalLayout->addWidget(m_frameForLineNumbers);
@@ -26,6 +51,14 @@ ProcedureForm::ProcedureForm(Version* v, ProcedureFormMode m, bool guided, bool 
     ui->btnInject->hide();
     connect(m_textEdit, SIGNAL(textChanged()), this, SLOT(textChanged()));
 
+    // fill the data types for the parameters
+    m_availableDataTypes = v->getDataTypes();
+    for(int i=0; i<m_availableDataTypes.size(); i++)
+    {
+        ui->cmbParameterType->addItem(IconFactory::getIconForDataType(m_availableDataTypes[i]->getType()),
+                                      m_availableDataTypes[i]->getName());
+    }
+
     if(m == MODE_PROCEDURE)
     {
         ui->cmbReturnType->hide();
@@ -37,15 +70,27 @@ ProcedureForm::ProcedureForm(Version* v, ProcedureFormMode m, bool guided, bool 
         {
             ui->cmbReturnType->addItem(IconFactory::getIconForDataType(m_availableDataTypes[i]->getType()),
                                             m_availableDataTypes[i]->getName());
-            ui->cmbParameterType->addItem(IconFactory::getIconForDataType(m_availableDataTypes[i]->getType()),
-                                          m_availableDataTypes[i]->getName());
         }
     }
 
-    m_guided = guided;
     toggleGuidedCreationControls(m_guided);
     ui->txtParamDesc->hide();
-    ui->tabWidget->setCurrentIndex(0);
+
+    if(m_guided)
+    {
+        // create the funny splitter
+        m_splitter = new QSplitter(Qt::Vertical, ui->mainFrame);
+        m_splitter->addWidget(ui->frameForParam);
+        m_splitter->addWidget(ui->frameForEdit);
+        m_splitter->resize(ui->mainFrame->size());
+        m_splitter->setCollapsible(0, true);
+        QList<int> sizes;
+        sizes << 250 << 500;
+        m_splitter->setSizes(sizes);
+        // tricky ...
+        ui->tabWidget->removeTab(0);
+        ui->tabWidget->insertTab(0, m_splitter, tr("General"));
+    }
 
     if(m_mode == MODE_PROCEDURE)
     {
@@ -55,17 +100,7 @@ ProcedureForm::ProcedureForm(Version* v, ProcedureFormMode m, bool guided, bool 
     {
         ui->tabWidget->setTabIcon(0, IconFactory::getFunctionTreeIcon());
     }
-
-    if(m_guided)
-    {
-        QTreeWidgetItem *header = ui->lstParameters->headerItem();
-        header->setText(0, tr("Name"));
-        header->setText(1, tr("Dir"));
-        header->setText(2, tr("Type"));
-        header->setText(3, tr("Desc"));
-
-        ui->btnLoad->hide();
-    }
+    ui->tabWidget->setCurrentIndex(0);
 
 }
 
@@ -89,6 +124,7 @@ void ProcedureForm::toggleGuidedCreationControls(bool guided)
     ui->grpParameters->setVisible(guided);
     ui->lblReturnType->setVisible(guided);
     ui->cmbReturnType->setVisible(guided);
+    ui->frameForName->setVisible(guided);
 
     if(!guided)
     {
@@ -99,9 +135,13 @@ void ProcedureForm::toggleGuidedCreationControls(bool guided)
 void ProcedureForm::changeEvent(QEvent *e)
 {
     QWidget::changeEvent(e);
-    switch (e->type()) {
+    switch (e->type())
+    {
     case QEvent::LanguageChange:
         ui->retranslateUi(this);
+        break;
+    case QEvent::Resize:
+        m_splitter->resize(dynamic_cast<QResizeEvent*>(e)->size());
         break;
     default:
         break;
@@ -139,15 +179,21 @@ void ProcedureForm::textChanged()
 
 void ProcedureForm::initSql()
 {
-    QString sql = strCreate + " " + (m_mode == MODE_PROCEDURE?"PROCEDURE ":"FUNCTION ") + m_proc->getName();
+    QString sql = strCreate + strSpace + (m_mode == MODE_PROCEDURE ? strProcedure : strFunction) + strSpace + m_proc->getName();
     ui->txtProcName->setText(m_proc->getName());
-    sql += "()";
+    sql += strOpenParantheses + strCloseParantheses;
 
     UserDataType *dt = m_version->getDataType(ui->cmbReturnType->currentText()); // 0 if none found, used down
-    QString returns = (dt ? dt->sqlAsString() : "INT");
+    QString returns = (dt ? dt->sqlAsString() : strInt);
 
-    if(m_mode == MODE_FUNCTION) sql += " RETURNS " + (m_guided? returns : "");
-    sql += "\nBEGIN\n\nEND";
+    if(m_mode == MODE_FUNCTION)
+    {
+        sql += strSpace;
+        sql += m_version->getProject()->getEngine()->getStoredMethodReturnKeyword() + strSpace + (m_guided? returns : "");
+    }
+    sql += strNewline;
+    QString defaultBody = m_version->getProject()->getEngine()->getDefaultStoredMethodBody(getTargetLanguage());
+    sql += defaultBody;
     m_forcedChange = true;
     m_textEdit->setPlainText(sql);
     m_forcedChange = false;
@@ -157,8 +203,8 @@ void ProcedureForm::initSql()
     {
         return;
     }
-    m_textEdit->disableRow(1); // disabling the first row
-    m_textEdit->disableRow(2); // and the one with BEGIN
+    m_textEdit->disableRow(1); // disabling the first row with the name. Everything else is usually hand written
+
     m_textEdit->updateLineNumbers();
     m_init = false;
 }
@@ -247,7 +293,6 @@ void ProcedureForm::setProcedure(StoredMethod *p)
         }
     }
 }
-
 
 void ProcedureForm::onUndelete()
 {
@@ -431,12 +476,37 @@ void ProcedureForm::updateSqlDueToParamChange()
         }
 
         QString params = "";
-        const QVector<ParameterAndDescription>& pars = m_proc->getParametersWithDescription();
+        const QVector<ParameterAndDescription*>& pars = m_proc->getParametersWithDescription();
         for(int i=0; i<pars.size(); i++)
         {
-            UserDataType *dt = m_version->getDataType(pars[i].m_type); // 0 if none found, used down
-            QString parT = (dt ? dt->sqlAsString() : pars[i].m_type);
-            params += pars[i].m_direction.trimmed() + (pars[i].m_direction.trimmed().isEmpty()?"":" ") + pars[i].m_parameter + " " + parT;
+            UserDataType *dt = m_version->getDataType(pars[i]->m_type); // 0 if none found, used down
+            QString parT = (dt ? dt->sqlAsString() : pars[i]->m_type);
+
+            QMap<PARAMETER_FIELD_ROLES, QString> cpr;
+            cpr[PARAM_NAME] = pars[i]->m_parameter;
+            cpr[PARAM_DIRECTION] = pars[i]->m_direction.trimmed();
+            cpr[PARAM_TYPE] = parT;
+
+            QMap<PARAMETER_FIELD_ROLES, int> parmaps = m_version->getProject()->getEngine()->parameterFieldOrders();
+
+            int cidx = 0;
+            while(cidx < cpr.keys().size())
+            {
+                for(int j=0; j<parmaps.keys().size(); j++)
+                {
+                    if(parmaps.value(parmaps.keys().at(j)) == cidx)
+                    {
+                        if(cpr[parmaps.keys().at(j)].length())
+                        {
+                            params += strSpace;
+                            params += cpr[parmaps.keys().at(j)];
+                        }
+                    }
+
+                }
+                cidx ++;
+            }
+
             if(i < pars.size() - 1)
             {
                 params += ", ";
@@ -448,28 +518,64 @@ void ProcedureForm::updateSqlDueToParamChange()
     }
 }
 
-void ProcedureForm::onAddParameter()
+PROGRAMMING_LANGUAGES ProcedureForm::getTargetLanguage()
 {
-    QStringList paramEntry;
-
-    ParameterAndDescription pd(ui->txtParamName->text(),
-                               ui->cmbParameterType->currentText(),
-                               ui->txtParamDesc->toPlainText(),
-                               ui->cmbParameterDirection->currentText(), GUIDED);
-
-    if(m_proc->hasParameter(pd.m_parameter))
+    if(ui->cmbProcedureType->currentText().toUpper() == strSql.toUpper())
     {
-        QMessageBox::critical(this, tr("Error"), tr("You cannot have another parameter named:<b> ") + pd.m_parameter, QMessageBox::Ok);
-        return;
+        return LANGUAGE_SQL;
     }
 
-    m_proc->addParameter(pd);
-    paramEntry << pd.m_parameter << pd.m_direction << pd.m_type << pd.m_description;
-    QTreeWidgetItem* itm = new QTreeWidgetItem(paramEntry);
-    ui->lstParameters->addTopLevelItem(itm);
+    if(ui->cmbProcedureType->currentText().toUpper() == strJava.toUpper())
+    {
+        return LANGUAGE_JAVA;
+    }
+
+    return LANGAUGE_INVALID;
+}
+
+void ProcedureForm::onAddParameter()
+{
+    if(m_currentParameter != 0)
+    {
+        m_currentParameter->m_parameter = ui->txtParamName->text();
+        m_currentParameter->m_direction = ui->cmbParameterDirection->currentText();
+        m_currentParameter->m_type = ui->cmbParameterType->currentText();
+        m_currentParameter->m_description = ui->txtParamDesc->toPlainText();
+
+        m_currentParameter->getLocation()->setText(0, m_currentParameter->m_parameter);
+        m_currentParameter->getLocation()->setText(1, m_currentParameter->m_direction);
+        m_currentParameter->getLocation()->setText(2, m_currentParameter->m_type);
+        m_currentParameter->getLocation()->setText(3, m_currentParameter->m_description);
+    }
+    else
+    {
+        QStringList paramEntry;
+
+        ParameterAndDescription* pd = new ParameterAndDescription(ui->txtParamName->text(),
+                                   ui->cmbParameterType->currentText(),
+                                   ui->txtParamDesc->toPlainText(),
+                                   ui->cmbParameterDirection->currentText(), GUIDED);
+        if(m_proc->hasParameter(pd->m_parameter))
+        {
+            QMessageBox::critical(this, tr("Error"), tr("You cannot have another parameter named:<b> ") + pd->m_parameter, QMessageBox::Ok);
+            return;
+        }
+
+        m_proc->addParameter(pd);
+        paramEntry << pd->m_parameter << pd->m_direction << pd->m_type << pd->m_description;
+        ContextMenuEnabledTreeWidgetItem* itm = new ContextMenuEnabledTreeWidgetItem(0, paramEntry);
+        ui->lstParameters->addTopLevelItem(itm);
+        pd->setLocation(itm);
+    }
 
     // and now patch the textfield
     updateSqlDueToParamChange();
+
+    // and fix the gui
+    m_currentParameter = 0;
+    ui->btnAddParameter->setIcon(IconFactory::getAddIcon());
+    ui->txtParamName->clear();
+    ui->txtParamName->setFocus();
 }
 
 void ProcedureForm::onDeleteParameter()
@@ -490,7 +596,7 @@ void ProcedureForm::onDeleteParameter()
 void ProcedureForm::onMoveUpParameter()
 {
     QTreeWidgetItem* item = ui->lstParameters->currentItem();
-    int              row  = ui->lstParameters->currentIndex().row();
+    int row  = ui->lstParameters->currentIndex().row();
 
     if (item && row > 0)
     {
@@ -506,7 +612,7 @@ void ProcedureForm::onMoveUpParameter()
 void ProcedureForm::onMoveDownParameter()
 {
     QTreeWidgetItem* item = ui->lstParameters->currentItem();
-    int              row  = ui->lstParameters->currentIndex().row();
+    int row  = ui->lstParameters->currentIndex().row();
 
     if (item && row < ui->lstParameters->topLevelItemCount() - 1)
     {
@@ -517,4 +623,29 @@ void ProcedureForm::onMoveDownParameter()
         m_proc->moveDownParameter(row);
         updateSqlDueToParamChange();
     }
+}
+
+void ProcedureForm::onProcTargetLanguageChange(QString a)
+{
+    if(m_init)
+    {
+        return;
+    }
+    qDebug() << a;
+}
+
+void ProcedureForm::onSelectParameter(QTreeWidgetItem* current, int)
+{
+    ParameterAndDescription* pad = m_proc->getParameter(current->text(0));
+    if(!pad)
+    {
+        return;
+    }
+
+    ui->txtParamName->setText(pad->m_parameter);
+    ui->cmbParameterType->setCurrentIndex(ui->cmbParameterType->findText(pad->m_type));
+    ui->cmbParameterDirection->setCurrentIndex(ui->cmbParameterDirection->findText(pad->m_direction));
+    ui->txtDescription->setText(pad->m_description);
+    m_currentParameter = pad;
+    ui->btnAddParameter->setIcon(IconFactory::getApplyIcon());
 }

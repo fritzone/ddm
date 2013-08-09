@@ -52,7 +52,7 @@ public:
 
     void setSql(const QString&);
     QString getSql() const;
-    QVector<ParameterAndDescription> getParametersWithDescription();
+    QVector<ParameterAndDescription*> getParametersWithDescription();
     QString getBriefDescription() const
     {
         return m_brief;
@@ -88,7 +88,8 @@ public:
     }
 
     bool hasParameter(const QString& name);
-    void addParameter(ParameterAndDescription pd)
+    ParameterAndDescription* getParameter(const QString& name);
+    void addParameter(ParameterAndDescription* pd)
     {
         m_guidedParameters.append(pd);
     }
@@ -113,7 +114,7 @@ protected:
     bool m_guidedCreation;
 
     // this is populated only if the method was created with the guide
-    QVector<ParameterAndDescription> m_guidedParameters;
+    QVector<ParameterAndDescription*> m_guidedParameters;
 };
 
 #endif // CORE_STOREDMETHOD_H
