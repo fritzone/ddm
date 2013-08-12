@@ -17,7 +17,7 @@ struct ParameterAndDescription : public TreeItem
 {
     ParameterAndDescription() : m_parameter(""), m_type(""),
         m_description(""), m_direction(""),
-        m_source(INVALID)
+        m_source(INVALID), m_progLangType("")
     {}
 
     ParameterAndDescription(const QString& name, const QString& type,
@@ -37,6 +37,9 @@ struct ParameterAndDescription : public TreeItem
     QString m_description;
     QString m_direction;
     PARAMETER_SOURCE m_source; // 0 - doc, 1 - parameter list, 2 - verified in both
+
+    // to what type it's mapped in the programming language (Java for ex)
+    QString m_progLangType;
 };
 
 #endif // CORE_PARAMETERANDDESCRIPTION_H

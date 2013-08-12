@@ -37,6 +37,9 @@ static const QString strDtSpatialIcon = ":/images/actions/images/small/datatypes
 static const QString strDtLockedSpatialIcon = ":/images/actions/images/small/datatypes_spatial_locked.png";
 static const QString strDtFinalLockedSpatialIcon = ":/images/actions/images/small/datatypes_spatial_finallock.png";
 
+static const QString strDtGenericIcon = ":/images/actions/images/small/datatypes_generic.png";
+static const QString strDtVariableIcon = ":/images/actions/images/small/datatypes_variable.png";
+
 static const QString strLockedIcon = ":/images/actions/images/small/locked.png";
 static const QString strUnLockedIcon = ":/images/actions/images/small/unlocked.png";
 static const QString strFinalLockedIcon = ":/images/actions/images/small/locked_final.png";
@@ -493,6 +496,18 @@ public:
     static const QIcon& getSpatialDataTypeIcon()
     {
         static const QIcon icon(icons::strDtSpatialIcon);
+        return icon;
+    }
+
+    static const QIcon& getGenericDataTypeIcon()
+    {
+        static const QIcon icon(icons::strDtGenericIcon);
+        return icon;
+    }
+
+    static const QIcon& getVariableDataTypeIcon()
+    {
+        static const QIcon icon(icons::strDtVariableIcon);
         return icon;
     }
 
@@ -1047,8 +1062,10 @@ public:
         case DT_DATETIME: return getDateTimeDataTypeIcon();
         case DT_MISC: return getMiscDataTypeIcon();
         case DT_SPATIAL: return getSpatialDataTypeIcon();
+        case DT_GENERIC: return getGenericDataTypeIcon();
+        case DT_VARIABLE: return getVariableDataTypeIcon();
         case DT_INVALID:
-        case DT_GENERIC:
+
         default:
             return getEmptyIcon();
         }
@@ -1069,6 +1086,7 @@ public:
         case DT_SPATIAL: return getFinalLockedSpatialDataTypeIcon();
         case DT_INVALID:
         case DT_GENERIC:
+        case DT_VARIABLE:
         default:
             return getEmptyIcon();
         }

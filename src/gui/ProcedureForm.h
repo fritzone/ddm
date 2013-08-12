@@ -41,8 +41,6 @@ private slots:
     void onUndelete();
     void onSave();
     void onLoadFile();
-    void onInject();
-    void onNew();
     void onReturnTypeComboChange(QString);
     void onProcNameChange(QString);
     void onBriefDescrChange(QString);
@@ -53,6 +51,7 @@ private slots:
     void onMoveDownParameter();
     void onProcTargetLanguageChange(QString);
     void onSelectParameter(QTreeWidgetItem*,int);
+    void onParameterTypeChange(QString);
 
 private:
     QString getProcNameFromSql();
@@ -60,6 +59,8 @@ private:
     void toggleGuidedCreationControls(bool guided);
     void updateSqlDueToParamChange();
     PROGRAMMING_LANGUAGES getTargetLanguage();
+    void initJavaMaps();
+    DT_TYPE getDTtypeOfSql(const QString &sql);
 
 private:
     Ui::ProcedureForm *ui;
@@ -74,6 +75,12 @@ private:
     bool m_guided;
     QSplitter* m_splitter;
     ParameterAndDescription* m_currentParameter;
+    bool m_javaBinding;
+
+    //TODO: refactor these two out into repo XML for future releases where other
+    // databases will support Java
+    QMap<QString, DT_TYPE> m_sqlTypeToDTType; // used only for CUBRID and Java.
+    QMap<DT_TYPE, QStringList> m_DTTypeToJavaType; // used only for CUBRID and Java.
 };
 
 #endif // PROCEDUREFORM_H

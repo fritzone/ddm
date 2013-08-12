@@ -13,7 +13,8 @@ ProcedureForm::ProcedureForm(Version* v, ProcedureFormMode m, bool guided, bool 
     QWidget(parent),
     ui(new Ui::ProcedureForm), m_textEdit(0), m_frameForLineNumbers(0), m_proc(0),
     m_forcedChange(forced), m_mode(m), m_version(v), m_guided(guided),
-    m_currentParameter(0)
+    m_currentParameter(0), m_javaBinding(false),
+    m_sqlTypeToDTType(), m_DTTypeToJavaType()
 {
     ui->setupUi(this);
 
@@ -33,10 +34,20 @@ ProcedureForm::ProcedureForm(Version* v, ProcedureFormMode m, bool guided, bool 
         if(!supportedLanguages.contains(LANGUAGE_SQL))
         {
             ui->cmbProcedureType->removeItem(ui->cmbProcedureType->findText("SQL"));
+            // and add an extra Java entry to the parameters list box
+            header->setText(3, tr("Java Type"));
+            header->setText(4, tr("Desc"));
+
+            m_javaBinding = true;
+            initJavaMaps();
         }
         if(!supportedLanguages.contains(LANGUAGE_JAVA))
         {
             ui->cmbProcedureType->removeItem(ui->cmbProcedureType->findText("Java"));
+
+            // hide the java related gui controls
+            ui->cmbJavaParameterType->hide();
+            ui->grpJava->hide();
         }
     }
 
@@ -55,21 +66,61 @@ ProcedureForm::ProcedureForm(Version* v, ProcedureFormMode m, bool guided, bool 
     m_availableDataTypes = v->getDataTypes();
     for(int i=0; i<m_availableDataTypes.size(); i++)
     {
-        ui->cmbParameterType->addItem(IconFactory::getIconForDataType(m_availableDataTypes[i]->getType()),
+        if(m_javaBinding) // seems there is no cubrid support for blob and bool
+        {
+            if(! (m_availableDataTypes[i]->getType() == DT_BLOB
+                    || m_availableDataTypes[i]->getType() == DT_BOOLEAN) )
+            {
+                ui->cmbParameterType->addItem(IconFactory::getIconForDataType(m_availableDataTypes[i]->getType()),
+                                          m_availableDataTypes[i]->getName());
+            }
+        }
+        else
+        {
+            ui->cmbParameterType->addItem(IconFactory::getIconForDataType(m_availableDataTypes[i]->getType()),
                                       m_availableDataTypes[i]->getName());
+        }
     }
+
+    if(m_javaBinding)
+    {
+        ui->cmbParameterType->addItem(IconFactory::getIconForDataType(DT_MISC), "SET");
+        ui->cmbParameterType->addItem(IconFactory::getIconForDataType(DT_MISC), "MULTISET");
+        ui->cmbParameterType->addItem(IconFactory::getIconForDataType(DT_MISC), "SEQUENCE");
+        ui->cmbParameterType->addItem(IconFactory::getIconForDataType(DT_GENERIC), "CURSOR");
+        ui->cmbParameterType->addItem(IconFactory::getIconForDataType(DT_VARIABLE), "OBJECT");
+
+        ui->cmbReturnType->addItem(IconFactory::getIconForDataType(DT_MISC), "SET");
+        ui->cmbReturnType->addItem(IconFactory::getIconForDataType(DT_MISC), "MULTISET");
+        ui->cmbReturnType->addItem(IconFactory::getIconForDataType(DT_MISC), "SEQUENCE");
+        ui->cmbReturnType->addItem(IconFactory::getIconForDataType(DT_GENERIC), "CURSOR");
+        ui->cmbReturnType->addItem(IconFactory::getIconForDataType(DT_VARIABLE), "OBJECT");
+    }
+
 
     if(m == MODE_PROCEDURE)
     {
-        ui->cmbReturnType->hide();
+        ui->grpReturn->hide();
     }
     else
     {
         m_availableDataTypes = v->getDataTypes();
         for(int i=0; i<m_availableDataTypes.size(); i++)
         {
-            ui->cmbReturnType->addItem(IconFactory::getIconForDataType(m_availableDataTypes[i]->getType()),
+            if(m_javaBinding) // seems there is no cubrid support for blob and bool
+            {
+                if(! (m_availableDataTypes[i]->getType() == DT_BLOB
+                      || m_availableDataTypes[i]->getType() == DT_BOOLEAN) )
+                {
+                    ui->cmbReturnType->addItem(IconFactory::getIconForDataType(m_availableDataTypes[i]->getType()),
+                                               m_availableDataTypes[i]->getName());
+                }
+            }
+            else
+            {
+                ui->cmbReturnType->addItem(IconFactory::getIconForDataType(m_availableDataTypes[i]->getType()),
                                             m_availableDataTypes[i]->getName());
+            }
         }
     }
 
@@ -101,6 +152,10 @@ ProcedureForm::ProcedureForm(Version* v, ProcedureFormMode m, bool guided, bool 
         ui->tabWidget->setTabIcon(0, IconFactory::getFunctionTreeIcon());
     }
     ui->tabWidget->setCurrentIndex(0);
+    if(m_javaBinding)
+    {
+        onParameterTypeChange(ui->cmbParameterType->currentText());
+    }
 
 }
 
@@ -122,7 +177,6 @@ void ProcedureForm::toggleGuidedCreationControls(bool guided)
     ui->txtBrief->setVisible(guided);
     ui->lblBrief->setVisible(guided);
     ui->grpParameters->setVisible(guided);
-    ui->lblReturnType->setVisible(guided);
     ui->cmbReturnType->setVisible(guided);
     ui->frameForName->setVisible(guided);
 
@@ -204,6 +258,14 @@ void ProcedureForm::initSql()
         return;
     }
     m_textEdit->disableRow(1); // disabling the first row with the name. Everything else is usually hand written
+
+    if(m_javaBinding)
+    {
+        m_textEdit->disableRow(2); // disabling the other rows too
+        m_textEdit->disableRow(3); // three in total for CUBRID
+
+        // filling the Java Parameter Types Combo
+    }
 
     m_textEdit->updateLineNumbers();
     m_init = false;
@@ -371,14 +433,6 @@ void ProcedureForm::onLoadFile()
 
 }
 
-void ProcedureForm::onInject()
-{
-}
-
-void ProcedureForm::onNew()
-{
-}
-
 void ProcedureForm::onReturnTypeComboChange(QString a)
 {
     UserDataType *dt = m_version->getDataType(a); // 0 if none found, used down
@@ -396,10 +450,16 @@ void ProcedureForm::onReturnTypeComboChange(QString a)
 
     m_proc->setReturn(returns);
     QString line0 = lines.at(0);
-    int idxOfReturns = line0.indexOf("RETURNS", Qt::CaseInsensitive);
-    line0 = line0.left(idxOfReturns + 8) + " " + returns;
+    int idxOfReturns = line0.indexOf(m_version->getProject()->getEngine()->getStoredMethodReturnKeyword(), Qt::CaseInsensitive);
+    line0 = line0.left(idxOfReturns + m_version->getProject()->getEngine()->getStoredMethodReturnKeyword().length()) + " " + returns;
     lines[0] = line0;
     m_textEdit->setPlainText(lines.join("\n"));
+
+    // and now mangle out the java part of it
+    if(m_javaBinding)
+    {
+
+    }
 }
 
 void ProcedureForm::onProcNameChange(QString a)
@@ -533,6 +593,104 @@ PROGRAMMING_LANGUAGES ProcedureForm::getTargetLanguage()
     return LANGAUGE_INVALID;
 }
 
+void ProcedureForm::initJavaMaps()
+{
+    m_sqlTypeToDTType["CHAR"] = DT_STRING;
+    m_sqlTypeToDTType["VARCHAR"] = DT_STRING;
+
+    m_sqlTypeToDTType["NUMERIC"] = DT_NUMERIC;
+    m_sqlTypeToDTType["SHORT"] = DT_NUMERIC;
+    m_sqlTypeToDTType["INT"] = DT_NUMERIC;
+    m_sqlTypeToDTType["FLOAT"] = DT_NUMERIC;
+    m_sqlTypeToDTType["DOUBLE"] = DT_NUMERIC;
+    m_sqlTypeToDTType["CURRENCY"] = DT_NUMERIC;
+
+    m_sqlTypeToDTType["DATE"] = DT_DATETIME;
+    m_sqlTypeToDTType["TIME"] = DT_DATETIME;
+    m_sqlTypeToDTType["TIMESTAMP"] = DT_DATETIME;
+
+    m_sqlTypeToDTType["SET"] = DT_MISC;
+    m_sqlTypeToDTType["MULTISET"] = DT_MISC;
+    m_sqlTypeToDTType["SEQUENCE"] = DT_MISC;
+
+    m_sqlTypeToDTType["OBJECT"] = DT_VARIABLE;
+
+    m_sqlTypeToDTType["CURSOR"] = DT_GENERIC;
+
+    QStringList javaTextTypes;
+    javaTextTypes << "java.lang.String"
+                  << "java.sql.Date"
+                  << "java.sql.Time"
+                  << "java.sql.Timestamp"
+                  << "java.lang.Byte"
+                  << "java.lang.Short"
+                  << "java.lang.Integer"
+                  << "java.lang.Long"
+                  << "java.lang.Float"
+                  << "java.lang.Double"
+                  << "java.math.BigDecimal"
+                  << "byte"
+                  << "short"
+                  << "int"
+                  << "long"
+                  << "float"
+                  << "double";
+
+    m_DTTypeToJavaType[DT_STRING] = javaTextTypes;
+
+    QStringList javaNumericTypes;
+    javaNumericTypes << "java.lang.Byte"
+                   << "java.lang.Short"
+                   << "java.lang.Integer"
+                   << "java.lang.Long"
+                   << "java.lang.Float"
+                   << "java.lang.Double"
+                   << "java.math.BigDecimal"
+                   << "byte"
+                   << "short"
+                   << "int"
+                   << "long"
+                   << "float"
+                   << "double";
+
+    m_DTTypeToJavaType[DT_NUMERIC] = javaNumericTypes;
+
+    QStringList javaDateTypes;
+    javaDateTypes << "java.sql.Date" << "java.sql.Time"
+                  << "java.sql.Timestamp" << "java.lang.String";
+    m_DTTypeToJavaType[DT_DATETIME] = javaDateTypes;
+
+    QStringList javaMiscTypes;
+    javaMiscTypes << "java.lang.Object[]"
+                  << "java.lang.Integer[]"
+                  << "java.lang.String[]"
+                  << "byte[]"
+                  << "short[]"
+                  << "int[]"
+                  << "long[]"
+                  << "float[]"
+                  << "double[]";
+    m_DTTypeToJavaType[DT_MISC] = javaMiscTypes;
+
+    QStringList javaVariableTypes;
+    javaVariableTypes << "cubrid.sql.CUBRIDOID";
+    m_DTTypeToJavaType[DT_VARIABLE] = javaVariableTypes;
+
+    QStringList javaGenericTypes;
+    javaGenericTypes << "cubrid.jdbc.driver.CUBRIDResultSet";
+    m_DTTypeToJavaType[DT_GENERIC] = javaGenericTypes;
+}
+
+DT_TYPE ProcedureForm::getDTtypeOfSql(const QString& sql)
+{
+    if(m_sqlTypeToDTType.contains(sql))
+    {
+        return m_sqlTypeToDTType[sql];
+    }
+
+    return m_version->getDataType(sql)->getType();
+}
+
 void ProcedureForm::onAddParameter()
 {
     if(m_currentParameter != 0)
@@ -558,6 +716,7 @@ void ProcedureForm::onAddParameter()
         if(m_proc->hasParameter(pd->m_parameter))
         {
             QMessageBox::critical(this, tr("Error"), tr("You cannot have another parameter named:<b> ") + pd->m_parameter, QMessageBox::Ok);
+            delete pd;
             return;
         }
 
@@ -643,9 +802,32 @@ void ProcedureForm::onSelectParameter(QTreeWidgetItem* current, int)
     }
 
     ui->txtParamName->setText(pad->m_parameter);
-    ui->cmbParameterType->setCurrentIndex(ui->cmbParameterType->findText(pad->m_type));
+    int typeIdx = ui->cmbParameterType->findText(pad->m_type);
+    if(typeIdx > -1)
+    {
+        ui->cmbParameterType->setCurrentIndex(typeIdx);
+    }
+    else
+    {
+        ui->cmbParameterType->lineEdit()->setText(pad->m_type);
+    }
     ui->cmbParameterDirection->setCurrentIndex(ui->cmbParameterDirection->findText(pad->m_direction));
     ui->txtDescription->setText(pad->m_description);
     m_currentParameter = pad;
     ui->btnAddParameter->setIcon(IconFactory::getApplyIcon());
+}
+
+void ProcedureForm::onParameterTypeChange(QString a)
+{
+    DT_TYPE dtType = getDTtypeOfSql(a);
+    if(dtType == DT_INVALID) return;
+    if(m_DTTypeToJavaType.contains(dtType))
+    {
+        ui->cmbJavaParameterType->clear();
+        QStringList lst = m_DTTypeToJavaType.value(dtType);
+        for(int i=0; i<lst.size(); i++)
+        {
+            ui->cmbJavaParameterType->addItem(IconFactory::getIconForDataType(dtType), lst[i]);
+        }
+    }
 }
