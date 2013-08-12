@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1075</width>
-    <height>535</height>
+    <height>673</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -143,6 +143,9 @@
          </property>
          <item>
           <widget class="QLineEdit" name="txtProcName">
+           <property name="toolTip">
+            <string>The name of the stored method</string>
+           </property>
            <property name="placeholderText">
             <string>MethodName</string>
            </property>
@@ -150,6 +153,9 @@
          </item>
          <item>
           <widget class="QComboBox" name="cmbProcedureType">
+           <property name="toolTip">
+            <string>The type of the stored method</string>
+           </property>
            <item>
             <property name="text">
              <string>SQL</string>
@@ -227,13 +233,19 @@
                     <height>16777215</height>
                    </size>
                   </property>
+                  <property name="lineWidth">
+                   <number>0</number>
+                  </property>
+                  <property name="tabSpacing">
+                   <number>0</number>
+                  </property>
                   <widget class="QWidget" name="grpParametersPage1">
                    <property name="geometry">
                     <rect>
                      <x>0</x>
                      <y>0</y>
                      <width>952</width>
-                     <height>311</height>
+                     <height>258</height>
                     </rect>
                    </property>
                    <attribute name="icon">
@@ -248,6 +260,18 @@
                      <layout class="QHBoxLayout" name="horizontalLayout_5">
                       <item>
                        <widget class="QComboBox" name="cmbParameterDirection">
+                        <property name="sizePolicy">
+                         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                          <horstretch>0</horstretch>
+                          <verstretch>0</verstretch>
+                         </sizepolicy>
+                        </property>
+                        <property name="maximumSize">
+                         <size>
+                          <width>80</width>
+                          <height>16777215</height>
+                         </size>
+                        </property>
                         <property name="toolTip">
                          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The type of this parameter:&lt;/p&gt;&lt;ul style=&quot;margin-top: 0px; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; -qt-list-indent: 1;&quot;&gt;&lt;li style=&quot; margin-top:12px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;IN&lt;/span&gt; This is an incoming parameter. Passed in to the function. &lt;/li&gt;&lt;li style=&quot; margin-top:0px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;OUT&lt;/span&gt; This parameter is an outgoing parameter. Will be used in the caller &lt;/li&gt;&lt;li style=&quot; margin-top:0px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;INOUT&lt;/span&gt; Same parameter used for in and output operations&lt;/li&gt;&lt;/ul&gt;&lt;/body&gt;&lt;/html&gt;</string>
                         </property>
@@ -275,6 +299,12 @@
                       </item>
                       <item>
                        <widget class="QLineEdit" name="txtParamName">
+                        <property name="sizePolicy">
+                         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                          <horstretch>0</horstretch>
+                          <verstretch>0</verstretch>
+                         </sizepolicy>
+                        </property>
                         <property name="toolTip">
                          <string>The name of the parameter</string>
                         </property>
@@ -285,8 +315,24 @@
                       </item>
                       <item>
                        <widget class="QComboBox" name="cmbParameterType">
+                        <property name="sizePolicy">
+                         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                          <horstretch>0</horstretch>
+                          <verstretch>0</verstretch>
+                         </sizepolicy>
+                        </property>
                         <property name="toolTip">
                          <string>The type of the parameter</string>
+                        </property>
+                        <property name="editable">
+                         <bool>true</bool>
+                        </property>
+                       </widget>
+                      </item>
+                      <item>
+                       <widget class="QComboBox" name="cmbJavaParameterType">
+                        <property name="toolTip">
+                         <string>The Java type of the parameter</string>
                         </property>
                         <property name="editable">
                          <bool>true</bool>
@@ -422,20 +468,19 @@
                       </item>
                      </layout>
                     </item>
-                    <item>
-                     <layout class="QHBoxLayout" name="horizontalLayout_4"/>
-                    </item>
                    </layout>
                   </widget>
-                  <widget class="QWidget" name="page">
-                   <property name="geometry">
-                    <rect>
-                     <x>0</x>
-                     <y>0</y>
-                     <width>952</width>
-                     <height>311</height>
-                    </rect>
-                   </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QToolBox" name="grpReturn">
+                  <property name="lineWidth">
+                   <number>0</number>
+                  </property>
+                  <property name="tabSpacing">
+                   <number>0</number>
+                  </property>
+                  <widget class="QWidget" name="grpJava_2Page1" native="true">
                    <attribute name="icon">
                     <iconset resource="../dbm.qrc">
                      <normaloff>:/images/actions/images/small/arrow-return-down-left-icon.png</normaloff>:/images/actions/images/small/arrow-return-down-left-icon.png</iconset>
@@ -445,46 +490,79 @@
                    </attribute>
                    <layout class="QVBoxLayout" name="verticalLayout_8">
                     <item>
-                     <layout class="QFormLayout" name="formLayout_3">
-                      <property name="fieldGrowthPolicy">
-                       <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+                     <widget class="QComboBox" name="cmbReturnType">
+                      <property name="toolTip">
+                       <string>The SQL return type of the stored function</string>
                       </property>
-                      <item row="0" column="0">
-                       <widget class="QLabel" name="lblReturnType">
-                        <property name="text">
-                         <string>Return type</string>
-                        </property>
-                       </widget>
+                      <property name="editable">
+                       <bool>true</bool>
+                      </property>
+                     </widget>
+                    </item>
+                   </layout>
+                  </widget>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QToolBox" name="grpJava">
+                  <property name="frameShape">
+                   <enum>QFrame::NoFrame</enum>
+                  </property>
+                  <property name="frameShadow">
+                   <enum>QFrame::Plain</enum>
+                  </property>
+                  <property name="lineWidth">
+                   <number>0</number>
+                  </property>
+                  <property name="tabSpacing">
+                   <number>0</number>
+                  </property>
+                  <widget class="QWidget" name="grpJavaPage1" native="true">
+                   <attribute name="icon">
+                    <iconset resource="../dbm.qrc">
+                     <normaloff>:/images/actions/images/small/java.png</normaloff>:/images/actions/images/small/java.png</iconset>
+                   </attribute>
+                   <attribute name="label">
+                    <string>Java</string>
+                   </attribute>
+                   <layout class="QFormLayout" name="formLayout_2">
+                    <property name="fieldGrowthPolicy">
+                     <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+                    </property>
+                    <item row="1" column="0">
+                     <widget class="QLabel" name="lblClass">
+                      <property name="text">
+                       <string>Class</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="1" column="1">
+                     <widget class="QLineEdit" name="lineEdit"/>
+                    </item>
+                    <item row="2" column="0">
+                     <widget class="QLabel" name="lblClass_2">
+                      <property name="text">
+                       <string>Method</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="2" column="1">
+                     <widget class="QLineEdit" name="lineEdit_2"/>
+                    </item>
+                    <item row="3" column="0">
+                     <widget class="QLabel" name="lblClass_3">
+                      <property name="text">
+                       <string>Returns</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="3" column="1">
+                     <layout class="QHBoxLayout" name="horizontalLayout_7">
+                      <item>
+                       <widget class="QComboBox" name="comboBox"/>
                       </item>
-                      <item row="0" column="1">
-                       <widget class="QComboBox" name="cmbReturnType">
-                        <property name="editable">
-                         <bool>true</bool>
-                        </property>
-                       </widget>
-                      </item>
-                      <item row="1" column="0">
-                       <widget class="QLabel" name="lblReturnType_2">
-                        <property name="text">
-                         <string>Explain the return value</string>
-                        </property>
-                       </widget>
-                      </item>
-                      <item row="1" column="1">
-                       <widget class="QTextEdit" name="txtReturnExplanation">
-                        <property name="sizePolicy">
-                         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                          <horstretch>0</horstretch>
-                          <verstretch>0</verstretch>
-                         </sizepolicy>
-                        </property>
-                        <property name="maximumSize">
-                         <size>
-                          <width>16777215</width>
-                          <height>100</height>
-                         </size>
-                        </property>
-                       </widget>
+                      <item>
+                       <widget class="QLineEdit" name="lineEdit_3"/>
                       </item>
                      </layout>
                     </item>
@@ -632,16 +710,6 @@
           <string>Description</string>
          </attribute>
          <layout class="QFormLayout" name="formLayout">
-          <item row="1" column="1">
-           <widget class="QTextEdit" name="txtDescription"/>
-          </item>
-          <item row="1" column="0">
-           <widget class="QLabel" name="label">
-            <property name="text">
-             <string>Description</string>
-            </property>
-           </widget>
-          </item>
           <item row="0" column="0">
            <widget class="QLabel" name="lblBrief">
             <property name="text">
@@ -651,6 +719,39 @@
           </item>
           <item row="0" column="1">
            <widget class="QLineEdit" name="txtBrief"/>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="label">
+            <property name="text">
+             <string>Description</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QTextEdit" name="txtDescription"/>
+          </item>
+          <item row="3" column="1">
+           <widget class="QTextEdit" name="txtReturnExplanation">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>16777215</width>
+              <height>100</height>
+             </size>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="0">
+           <widget class="QLabel" name="lblReturnType_2">
+            <property name="text">
+             <string>Explain the return value</string>
+            </property>
+           </widget>
           </item>
          </layout>
         </widget>
@@ -738,22 +839,6 @@
     <hint type="sourcelabel">
      <x>138</x>
      <y>108</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>302</x>
-     <y>206</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>cmbReturnType</sender>
-   <signal>editTextChanged(QString)</signal>
-   <receiver>ProcedureForm</receiver>
-   <slot>onReturnTypeComboChange(QString)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>376</x>
-     <y>364</y>
     </hint>
     <hint type="destinationlabel">
      <x>302</x>
@@ -905,6 +990,38 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>cmbReturnType</sender>
+   <signal>activated(QString)</signal>
+   <receiver>ProcedureForm</receiver>
+   <slot>onReturnTypeComboChange(QString)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>569</x>
+     <y>435</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>537</x>
+     <y>336</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>cmbParameterType</sender>
+   <signal>activated(QString)</signal>
+   <receiver>ProcedureForm</receiver>
+   <slot>onParameterTypeChange(QString)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>869</x>
+     <y>137</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>537</x>
+     <y>336</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>onLockUnlock(bool)</slot>
@@ -923,5 +1040,6 @@
   <slot>onMoveDownParameter()</slot>
   <slot>onProcTargetLanguageChange(QString)</slot>
   <slot>onSelectParameter(QTreeWidgetItem*,int)</slot>
+  <slot>onParameterTypeChange(QString)</slot>
  </slots>
 </ui>
