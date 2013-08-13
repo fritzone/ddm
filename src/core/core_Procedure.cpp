@@ -14,6 +14,7 @@ Procedure::Procedure(const QString &pname, const QString& uid, Version *v, bool 
 
 void Procedure::serialize(QDomDocument &doc, QDomElement &parent) const
 {
+    // TODO: This is almost the same as with the function, refactor
     QDomElement procElement = doc.createElement("Procedure");
     procElement.setAttribute("Name", m_name);
     procElement.setAttribute("uid", getObjectUid());
@@ -21,6 +22,13 @@ void Procedure::serialize(QDomDocument &doc, QDomElement &parent) const
     procElement.setAttribute("locked", lockState() == LockableElement::LOCKED);
     procElement.setAttribute("was-locked", wasLocked());
     procElement.setAttribute("source-uid", getSourceUid());
+    procElement.setAttribute("guided", m_guidedCreation);
+
+    if(m_guidedCreation)
+    {
+        procElement.setAttribute("returns", getReturnType());
+        serialize_parameters(doc, procElement);
+    }
 
     QDomElement textElement = doc.createElement("Sql");
     textElement.setAttribute("Encoded", "Base64");

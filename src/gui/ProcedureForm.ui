@@ -831,22 +831,6 @@
    </hints>
   </connection>
   <connection>
-   <sender>btnInject</sender>
-   <signal>clicked()</signal>
-   <receiver>ProcedureForm</receiver>
-   <slot>onInject()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>138</x>
-     <y>108</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>302</x>
-     <y>206</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
    <sender>txtDescription</sender>
    <signal>textChanged()</signal>
    <receiver>ProcedureForm</receiver>
@@ -1029,7 +1013,6 @@
   <slot>onLoadFile()</slot>
   <slot>onSave()</slot>
   <slot>onNew()</slot>
-  <slot>onInject()</slot>
   <slot>onReturnTypeComboChange(QString)</slot>
   <slot>onProcNameChange(QString)</slot>
   <slot>onBriefDescrChange(QString)</slot>

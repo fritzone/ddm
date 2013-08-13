@@ -1288,6 +1288,31 @@ Procedure* DeserializationFactory::createProcedure(Version* v,  const QDomDocume
     return p;
 }
 
+void DeserializationFactory::populateGuidedParametersForStoredMethod(StoredMethod &mth, const QDomElement &element)
+{
+    int cnt = element.attribute("count").toInt();
+    if(cnt == 0)
+    {
+        return;
+    }
+    QVector<ParameterAndDescription*> pads(cnt);
+    for(int i=0; i<element.childNodes().size(); i++)
+    {
+        QDomElement elI = element.childNodes().at(i).toElement();
+        QString paramName = elI.attribute("name");
+        QString paramType = elI.attribute("type");
+        QString paramDirection = elI.attribute("direction");
+        QString paramprogLangType = elI.attribute("prog-lang-type");
+        QString paramDescr = elI.attribute("description");
+        int index = elI.attribute("index").toInt();
+
+        ParameterAndDescription* pad = new ParameterAndDescription(paramName, paramType, paramDescr, paramDirection, paramprogLangType, GUIDED);
+        pads[index] = pad;
+    }
+    mth.setParameters(pads);
+}
+
+
 Function* DeserializationFactory::createFunction(Version* v,  const QDomDocument&, const QDomElement& element)
 {
     QString name = element.attribute("Name");
@@ -1309,6 +1334,12 @@ Function* DeserializationFactory::createFunction(Version* v,  const QDomDocument
 
     }
     Function* func = new Function(name, uid, v, guidedCreation);
+
+    if(guidedCreation)
+    {
+        populateGuidedParametersForStoredMethod(*func, element.firstChildElement("Parameters"));
+        QString returns = element.attribute("returns");
+    }
 
     if(sourceUid.length()) func->setSourceUid(sourceUid);
     else func->setSourceUid(nullUid);

@@ -172,13 +172,15 @@ void ProcedureForm::disableEditingControls(bool dis)
 
 void ProcedureForm::toggleGuidedCreationControls(bool guided)
 {
+    ui->grpJava->setVisible(guided);
+    ui->grpParameters->setVisible(guided);
     ui->txtProcName->setVisible(guided);
     ui->cmbProcedureType->setVisible(guided);
     ui->txtBrief->setVisible(guided);
     ui->lblBrief->setVisible(guided);
-    ui->grpParameters->setVisible(guided);
     ui->cmbReturnType->setVisible(guided);
     ui->frameForName->setVisible(guided);
+    ui->grpReturn->setVisible(guided);
 
     if(!guided)
     {
@@ -307,6 +309,12 @@ void ProcedureForm::setProcedure(StoredMethod *p)
 {
     m_proc = p;
     toggleGuidedCreationControls(p->isGuided());
+
+    // and if it's guided populate the guide controls
+    if(p->isGuided())
+    {
+        ui->cmbReturnType->setCurrentIndex(ui->cmbReturnType->findText(p->getReturnType()));
+    }
 
     ui->btnUndelete->hide();
 
@@ -712,7 +720,9 @@ void ProcedureForm::onAddParameter()
         ParameterAndDescription* pd = new ParameterAndDescription(ui->txtParamName->text(),
                                    ui->cmbParameterType->currentText(),
                                    ui->txtParamDesc->toPlainText(),
-                                   ui->cmbParameterDirection->currentText(), GUIDED);
+                                   ui->cmbParameterDirection->currentText(),
+                                   m_javaBinding?ui->cmbJavaParameterType->currentText():"",
+                                   GUIDED);
         if(m_proc->hasParameter(pd->m_parameter))
         {
             QMessageBox::critical(this, tr("Error"), tr("You cannot have another parameter named:<b> ") + pd->m_parameter, QMessageBox::Ok);

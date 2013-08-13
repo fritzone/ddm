@@ -29,6 +29,7 @@ class ObjectWithSpInstances;
 class Patch;
 class ObjectWithUid;
 class Query;
+class StoredMethod;
 
 #include <QObject>
 
@@ -60,7 +61,7 @@ public:
     static void createObjectWithSpInstances(DatabaseEngine* engine, ObjectWithSpInstances* obj, const QDomDocument &doc, const QDomElement &element);
 
     static ObjectWithUid* createElementForClassUid(const QString& classUid, const QString& serialized, Version* v);
-
+    static void populateGuidedParametersForStoredMethod(StoredMethod& mth, const QDomElement& element);
 
 private:
     DeserializationFactory();
