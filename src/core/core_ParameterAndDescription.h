@@ -22,9 +22,10 @@ struct ParameterAndDescription : public TreeItem
 
     ParameterAndDescription(const QString& name, const QString& type,
                             const QString& descr, const QString& dir,
+                            const QString& progLangType,
                             PARAMETER_SOURCE source) :
         m_parameter(name), m_type(type), m_description(descr), m_direction(dir),
-        m_source(source)
+        m_source(source), m_progLangType(progLangType)
     {}
 
     ParameterAndDescription(const QString& name, const QString& type) :

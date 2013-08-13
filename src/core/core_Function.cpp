@@ -21,6 +21,13 @@ void Function::serialize(QDomDocument &doc, QDomElement &parent) const
     element.setAttribute("source-uid", getSourceUid());
     element.setAttribute("locked", lockState() == LockableElement::LOCKED);
     element.setAttribute("was-locked", wasLocked());
+    element.setAttribute("guided", m_guidedCreation);
+
+    if(m_guidedCreation)
+    {
+        element.setAttribute("returns", getReturnType());
+        serialize_parameters(doc, element);
+    }
 
     QDomElement textElement = doc.createElement("Sql");
     textElement.setAttribute("Encoded", "Base64");

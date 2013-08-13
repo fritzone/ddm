@@ -87,6 +87,11 @@ public:
         m_returns = a;
     }
 
+    QString getReturnType() const
+    {
+        return m_returns;
+    }
+
     bool hasParameter(const QString& name);
     ParameterAndDescription* getParameter(const QString& name);
     void addParameter(ParameterAndDescription* pd)
@@ -101,12 +106,20 @@ public:
     virtual QString getSqlHash() const;
     virtual void rename(const QString&);
 
+    // will serialize the parameters if this is a guided method
+    void serialize_parameters(QDomDocument& doc, QDomElement& parent) const;
+
+    void setParameters(const QVector<ParameterAndDescription*>& pads)
+    {
+        m_guidedParameters = pads;
+    }
+
 protected:
 
     QString m_sql;
 
     // these are populated automatically by the documentation generator
-    // these are serialized oly if it's guided
+    // these are serialized only if it's guided
     QString m_brief;
     QString m_desc;
     QString m_returns;

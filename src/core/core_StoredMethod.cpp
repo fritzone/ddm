@@ -32,6 +32,25 @@ void StoredMethod::rename(const QString &n)
     TreeItem::rename(n);
 }
 
+void StoredMethod::serialize_parameters(QDomDocument &doc, QDomElement &parent) const
+{
+    QDomElement parametersEl = doc.createElement("Parameters");
+    parametersEl.setAttribute("count", m_guidedParameters.size());
+    for(int i=0; i<m_guidedParameters.size(); i++)
+    {
+        QDomElement parameterEl = doc.createElement("Parameter");
+        parameterEl.setAttribute("index", i);
+        parameterEl.setAttribute("name", m_guidedParameters[i]->m_parameter);
+        parameterEl.setAttribute("type", m_guidedParameters[i]->m_type);
+        parameterEl.setAttribute("description", m_guidedParameters[i]->m_description);
+        parameterEl.setAttribute("direction", m_guidedParameters[i]->m_direction);
+        parameterEl.setAttribute("prog-lang-type", m_guidedParameters[i]->m_progLangType);
+
+        parametersEl.appendChild(parameterEl);
+    }
+    parent.appendChild(parametersEl);
+}
+
 QString StoredMethod::getSql() const
 {
     return m_sql;
@@ -211,7 +230,7 @@ QVector<ParameterAndDescription *> StoredMethod::getParametersWithDescription()
             if(!found)
             {
                 ParameterAndDescription* pad = new ParameterAndDescription(pname,
-                                            ptype, QObject::tr("TODO: Write proper documentation."), direction, PARAM_LIST);
+                                            ptype, QObject::tr("TODO: Write proper documentation."), direction, "", PARAM_LIST);
                 result.push_back(pad);
             }
         }
