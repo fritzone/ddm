@@ -46,6 +46,7 @@ private:
     QTextCharFormat stringFormat;
     QTextCharFormat questionMarksFormat;
     QTextCharFormat quoteFormat;
+    QTextCharFormat singleQuoteFormat;
     QTextCharFormat tableNamesFormat;
     QTextCharFormat columnNamesFormat;
     QTextCharFormat functionFormat;

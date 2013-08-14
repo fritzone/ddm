@@ -62,6 +62,7 @@ public:
 
     static ObjectWithUid* createElementForClassUid(const QString& classUid, const QString& serialized, Version* v);
     static void populateGuidedParametersForStoredMethod(StoredMethod& mth, const QDomElement& element);
+    static void populateGuidedDescrptionForStoredMethod(StoredMethod& mth, const QDomElement& element);
 
 private:
     DeserializationFactory();

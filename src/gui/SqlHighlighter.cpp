@@ -78,6 +78,12 @@ SqlHighlighter::SqlHighlighter(QTextDocument *parent, const QStringList &keyword
     rule.format = quoteFormat;
     highlightingRules.append(rule);
 
+    // text in single quote
+    singleQuoteFormat.setForeground(Qt::darkCyan);
+    rule.pattern = QRegExp("'([^\"']*)'");
+    rule.format = singleQuoteFormat;
+    highlightingRules.append(rule);
+
     // the one line comment (if you move this before the the tables the parser will highlight the table names in the comments too, so leave it here)
     singleLineCommentFormat.setForeground(Qt::darkGreen);
     singleLineCommentFormat.setFontItalic(true);

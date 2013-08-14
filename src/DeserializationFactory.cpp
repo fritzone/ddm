@@ -1259,6 +1259,11 @@ Procedure* DeserializationFactory::createProcedure(Version* v,  const QDomDocume
     }
     Procedure* p = new Procedure(name, uid, v, guidedCreation);
 
+    if(guidedCreation)
+    {
+        populateGuidedParametersForStoredMethod(*p, element.firstChildElement("Parameters"));
+        populateGuidedDescrptionForStoredMethod(*p, element.firstChildElement("Descriptions"));
+    }
 
     if(sourceUid.length()) p->setSourceUid(sourceUid);
     else p->setSourceUid(nullUid);
@@ -1268,7 +1273,7 @@ Procedure* DeserializationFactory::createProcedure(Version* v,  const QDomDocume
 
     p->forceSetWasLocked(wasLocked == "1");
 
-    QDomElement sqlElement = element.firstChild().toElement();
+    QDomElement sqlElement = element.firstChildElement("Sql");
     if(sqlElement.hasAttribute("Encoded"))
     {
         if(sqlElement.attribute("Encoded") == "Base64")
@@ -1312,6 +1317,12 @@ void DeserializationFactory::populateGuidedParametersForStoredMethod(StoredMetho
     mth.setParameters(pads);
 }
 
+void DeserializationFactory::populateGuidedDescrptionForStoredMethod(StoredMethod &mth, const QDomElement &element)
+{
+    mth.setBriefDescr(element.attribute("brief"));
+    mth.setDescription(element.firstChildElement("Description").firstChild().toCDATASection().data());
+}
+
 
 Function* DeserializationFactory::createFunction(Version* v,  const QDomDocument&, const QDomElement& element)
 {
@@ -1338,7 +1349,10 @@ Function* DeserializationFactory::createFunction(Version* v,  const QDomDocument
     if(guidedCreation)
     {
         populateGuidedParametersForStoredMethod(*func, element.firstChildElement("Parameters"));
+        populateGuidedDescrptionForStoredMethod(*func, element.firstChildElement("Descriptions"));
         QString returns = element.attribute("returns");
+        func->setReturn(returns);
+        func->setReturnDesc(element.firstChildElement("ReturnDescription").firstChild().toCDATASection().data());
     }
 
     if(sourceUid.length()) func->setSourceUid(sourceUid);
@@ -1349,7 +1363,7 @@ Function* DeserializationFactory::createFunction(Version* v,  const QDomDocument
 
     func->forceSetWasLocked(wasLocked == "1");
 
-    QDomElement sqlElement = element.firstChild().toElement();
+    QDomElement sqlElement = element.firstChildElement("Sql");
     if(sqlElement.hasAttribute("Encoded"))
     {
         if(sqlElement.attribute("Encoded") == "Base64")

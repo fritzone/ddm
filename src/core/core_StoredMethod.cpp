@@ -9,7 +9,8 @@
 StoredMethod::StoredMethod(const QString& name, const QString& uid, Version *v, bool guided) :
     NamedItem(name), SerializableElement(), CloneableElement(), VersionElement(uid, v),
     TreeItem(), SqlSourceTreeItem(),
-    m_sql(), m_brief(), m_desc(), m_returns(), m_guidedCreation(guided)
+    m_sql(), m_brief(), m_desc(), m_returns(), m_guidedCreation(guided),
+    m_javaMappedMethod(false), m_javaClassName(), m_javaMethodName()
 {}
 
 
@@ -49,6 +50,17 @@ void StoredMethod::serialize_parameters(QDomDocument &doc, QDomElement &parent) 
         parametersEl.appendChild(parameterEl);
     }
     parent.appendChild(parametersEl);
+
+    // and now the description part
+    QDomElement descsEl = doc.createElement("Descriptions");
+
+    QDomElement descEl = doc.createElement("Description");
+    QDomCDATASection cdDesc = doc.createCDATASection(m_desc);
+    descEl.appendChild(cdDesc);
+    descsEl.appendChild(descEl);
+
+    descsEl.setAttribute("brief", m_brief);
+    parent.appendChild(descsEl);
 }
 
 QString StoredMethod::getSql() const

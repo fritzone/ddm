@@ -8,6 +8,8 @@
 #include "core_TableInstance.h"
 #include "UidWarehouse.h"
 #include "Version.h"
+#include "IconedDockWidget.h"
+#include "db_DatabaseEngine.h"
 
 GuiElements::GuiElements() : m_projectTreeDock(0),m_issuesTreeDock(0),
     m_patchesTreeDock(0),
@@ -27,8 +29,9 @@ void GuiElements::createGuiElements()
     m_projectTreeDock->setFloating(false);
     m_projectTreeDock->setMinimumSize(300, 540);
     m_projectTreeDock->setMaximumSize(QApplication::desktop()->screenGeometry().width() / 4, 9999);
- //    m_projectTreeDock->setSizePolicy(QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Maximum));
     m_projectTreeDock->resize(301,541);
+    m_projectTreeDock->setStyle(new IconedDockWidget(IconFactory::getIconForDatabase(Workspace::getInstance()->currentProject()->getEngine()->getDatabaseEngineName()),
+                                                     m_projectTreeDock->style()));
 
     m_projectTree = new ContextMenuEnabledTreeWidget();
     m_projectTree->setAllColumnsShowFocus(true);

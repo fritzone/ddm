@@ -8,6 +8,7 @@
 #include "strings.h"
 #include "core_ParameterAndDescription.h"
 #include "db_DatabaseEngine.h"
+#include "core_Function.h"
 
 ProcedureForm::ProcedureForm(Version* v, ProcedureFormMode m, bool guided, bool forced, Connection *c, QWidget *parent) :
     QWidget(parent),
@@ -34,6 +35,8 @@ ProcedureForm::ProcedureForm(Version* v, ProcedureFormMode m, bool guided, bool 
         if(!supportedLanguages.contains(LANGUAGE_SQL))
         {
             ui->cmbProcedureType->removeItem(ui->cmbProcedureType->findText("SQL"));
+
+            // TODO: Future: This is plain CUBRID/MySql. Will be different
             // and add an extra Java entry to the parameters list box
             header->setText(3, tr("Java Type"));
             header->setText(4, tr("Desc"));
@@ -95,12 +98,16 @@ ProcedureForm::ProcedureForm(Version* v, ProcedureFormMode m, bool guided, bool 
         ui->cmbReturnType->addItem(IconFactory::getIconForDataType(DT_MISC), "SEQUENCE");
         ui->cmbReturnType->addItem(IconFactory::getIconForDataType(DT_GENERIC), "CURSOR");
         ui->cmbReturnType->addItem(IconFactory::getIconForDataType(DT_VARIABLE), "OBJECT");
+
+        ui->txtSpecialJavaReturnType->hide();
     }
 
 
     if(m == MODE_PROCEDURE)
     {
         ui->grpReturn->hide();
+        ui->txtReturnExplanation->hide();
+        ui->lblReturnDesc->hide();
     }
     else
     {
@@ -155,6 +162,7 @@ ProcedureForm::ProcedureForm(Version* v, ProcedureFormMode m, bool guided, bool 
     if(m_javaBinding)
     {
         onParameterTypeChange(ui->cmbParameterType->currentText());
+        ui->cmbReturnType->setCurrentIndex(0);
     }
 
 }
@@ -172,15 +180,14 @@ void ProcedureForm::disableEditingControls(bool dis)
 
 void ProcedureForm::toggleGuidedCreationControls(bool guided)
 {
-    ui->grpJava->setVisible(guided);
+    ui->grpJava->setVisible(guided && m_javaBinding);
     ui->grpParameters->setVisible(guided);
     ui->txtProcName->setVisible(guided);
     ui->cmbProcedureType->setVisible(guided);
     ui->txtBrief->setVisible(guided);
     ui->lblBrief->setVisible(guided);
-    ui->cmbReturnType->setVisible(guided);
     ui->frameForName->setVisible(guided);
-    ui->grpReturn->setVisible(guided);
+    ui->grpReturn->setVisible(guided && m_mode == MODE_FUNCTION);
 
     if(!guided)
     {
@@ -233,6 +240,21 @@ void ProcedureForm::textChanged()
     }
 }
 
+void ProcedureForm::updateTextEditForGuidedMethod()
+{
+    m_textEdit->disableRow(1); // disabling the first row with the name. Everything else is usually hand written
+
+    if(m_javaBinding)
+    {
+        m_textEdit->disableRow(2); // disabling the other rows too
+        m_textEdit->disableRow(3); // three in total for CUBRID
+
+        // filling the Java Parameter Types Combo
+    }
+
+    m_textEdit->updateLineNumbers();
+}
+
 void ProcedureForm::initSql()
 {
     QString sql = strCreate + strSpace + (m_mode == MODE_PROCEDURE ? strProcedure : strFunction) + strSpace + m_proc->getName();
@@ -259,17 +281,8 @@ void ProcedureForm::initSql()
     {
         return;
     }
-    m_textEdit->disableRow(1); // disabling the first row with the name. Everything else is usually hand written
+    updateTextEditForGuidedMethod();
 
-    if(m_javaBinding)
-    {
-        m_textEdit->disableRow(2); // disabling the other rows too
-        m_textEdit->disableRow(3); // three in total for CUBRID
-
-        // filling the Java Parameter Types Combo
-    }
-
-    m_textEdit->updateLineNumbers();
     m_init = false;
 }
 
@@ -277,6 +290,13 @@ void ProcedureForm::showSql()
 {
     m_textEdit->setPlainText(m_proc->getSql());
     m_textEdit->updateLineNumbers();
+    if(!m_guided)
+    {
+        return;
+    }
+    updateTextEditForGuidedMethod();
+
+    m_init = false;
 }
 
 void ProcedureForm::onLockUnlock(bool checked)
@@ -313,7 +333,30 @@ void ProcedureForm::setProcedure(StoredMethod *p)
     // and if it's guided populate the guide controls
     if(p->isGuided())
     {
-        ui->cmbReturnType->setCurrentIndex(ui->cmbReturnType->findText(p->getReturnType()));
+        if(m_mode == MODE_FUNCTION)
+        {
+            ui->cmbReturnType->setCurrentIndex(ui->cmbReturnType->findText(p->getReturnType()));
+            ui->txtReturnExplanation->setText(p->getReturnDesc());
+        }
+
+        for(int i=0; i<p->getParametersWithDescription().size(); i++)
+        {
+            ParameterAndDescription* pad = p->getParametersWithDescription()[i];
+            QStringList lst;
+            lst << pad->m_parameter << pad->m_direction << pad->m_type;
+            if(m_javaBinding)
+            {
+                lst << pad->m_progLangType;
+            }
+            lst << pad->m_description;
+
+            ContextMenuEnabledTreeWidgetItem* itm = new ContextMenuEnabledTreeWidgetItem(0, lst);
+            ui->lstParameters->addTopLevelItem(itm);
+            pad->setLocation(itm);
+        }
+
+        ui->txtDescription->setText(p->getDescription());
+        ui->txtBrief->setText(p->getBriefDescription());
     }
 
     ui->btnUndelete->hide();
@@ -466,7 +509,28 @@ void ProcedureForm::onReturnTypeComboChange(QString a)
     // and now mangle out the java part of it
     if(m_javaBinding)
     {
+        DT_TYPE dtType = getDTtypeOfSql(a);
+        if(dtType == DT_INVALID) return;
+        if(dtType == DT_MISC)
+        {
+            ui->cmbJavaReturnType->hide();
+            ui->txtSpecialJavaReturnType->show();
+            onJavaReturnTypeChange(ui->txtSpecialJavaReturnType->text());
+        }
+        else
+        if(m_DTTypeToJavaType.contains(dtType))
+        {
+            ui->cmbJavaReturnType->show();
+            ui->txtSpecialJavaReturnType->hide();
 
+            ui->cmbJavaReturnType->clear();
+            QStringList lst = m_DTTypeToJavaType.value(dtType);
+            for(int i=0; i<lst.size(); i++)
+            {
+                ui->cmbJavaReturnType->addItem(IconFactory::getIconForDataType(dtType), lst[i]);
+            }
+            onJavaReturnTypeChange(ui->cmbJavaReturnType->currentText());
+        }
     }
 }
 
@@ -583,6 +647,11 @@ void ProcedureForm::updateSqlDueToParamChange()
         QString newLine0 = line0.left(idxOfOpenParen) + "(" + params + line0.mid(idxOfCloseParen);
         lines[0] = newLine0;
         m_textEdit->setPlainText(lines.join("\n"));
+
+        if(m_javaBinding)
+        {
+            updateJavaBinding();
+        }
     }
 }
 
@@ -707,11 +776,23 @@ void ProcedureForm::onAddParameter()
         m_currentParameter->m_direction = ui->cmbParameterDirection->currentText();
         m_currentParameter->m_type = ui->cmbParameterType->currentText();
         m_currentParameter->m_description = ui->txtParamDesc->toPlainText();
+        if(m_javaBinding)
+        {
+            m_currentParameter->m_progLangType = ui->cmbJavaParameterType->currentText();
+        }
 
         m_currentParameter->getLocation()->setText(0, m_currentParameter->m_parameter);
         m_currentParameter->getLocation()->setText(1, m_currentParameter->m_direction);
         m_currentParameter->getLocation()->setText(2, m_currentParameter->m_type);
-        m_currentParameter->getLocation()->setText(3, m_currentParameter->m_description);
+        if(m_javaBinding)
+        {
+            m_currentParameter->getLocation()->setText(3, m_currentParameter->m_progLangType);
+            m_currentParameter->getLocation()->setText(4, m_currentParameter->m_description);
+        }
+        else
+        {
+            m_currentParameter->getLocation()->setText(3, m_currentParameter->m_description);
+        }
     }
     else
     {
@@ -723,6 +804,10 @@ void ProcedureForm::onAddParameter()
                                    ui->cmbParameterDirection->currentText(),
                                    m_javaBinding?ui->cmbJavaParameterType->currentText():"",
                                    GUIDED);
+
+        // TODO: For Java based parameters it would be nice to keep a list of
+        // previously typed in classes
+
         if(m_proc->hasParameter(pd->m_parameter))
         {
             QMessageBox::critical(this, tr("Error"), tr("You cannot have another parameter named:<b> ") + pd->m_parameter, QMessageBox::Ok);
@@ -731,7 +816,12 @@ void ProcedureForm::onAddParameter()
         }
 
         m_proc->addParameter(pd);
-        paramEntry << pd->m_parameter << pd->m_direction << pd->m_type << pd->m_description;
+        paramEntry << pd->m_parameter << pd->m_direction << pd->m_type ;
+        if(m_javaBinding)
+        {
+            paramEntry << pd->m_progLangType;
+        }
+        paramEntry << pd->m_description;
         ContextMenuEnabledTreeWidgetItem* itm = new ContextMenuEnabledTreeWidgetItem(0, paramEntry);
         ui->lstParameters->addTopLevelItem(itm);
         pd->setLocation(itm);
@@ -812,15 +902,28 @@ void ProcedureForm::onSelectParameter(QTreeWidgetItem* current, int)
     }
 
     ui->txtParamName->setText(pad->m_parameter);
+
+    DT_TYPE dtType = getDTtypeOfSql(pad->m_type);
     int typeIdx = ui->cmbParameterType->findText(pad->m_type);
+    if(dtType == DT_MISC)
+    {
+        ui->cmbParameterType->setEditable(true);
+    }
+    else
+    {
+        ui->cmbParameterType->setEditable(false);
+    }
+
     if(typeIdx > -1)
     {
         ui->cmbParameterType->setCurrentIndex(typeIdx);
     }
     else
     {
+
         ui->cmbParameterType->lineEdit()->setText(pad->m_type);
     }
+
     ui->cmbParameterDirection->setCurrentIndex(ui->cmbParameterDirection->findText(pad->m_direction));
     ui->txtDescription->setText(pad->m_description);
     m_currentParameter = pad;
@@ -830,7 +933,18 @@ void ProcedureForm::onSelectParameter(QTreeWidgetItem* current, int)
 void ProcedureForm::onParameterTypeChange(QString a)
 {
     DT_TYPE dtType = getDTtypeOfSql(a);
-    if(dtType == DT_INVALID) return;
+    if(dtType == DT_INVALID)
+    {
+        return;
+    }
+
+
+    ui->cmbJavaParameterType->setEditable(false);
+    if(dtType == DT_MISC)
+    {
+        ui->cmbJavaParameterType->setEditable(true);
+    }
+
     if(m_DTTypeToJavaType.contains(dtType))
     {
         ui->cmbJavaParameterType->clear();
@@ -840,4 +954,79 @@ void ProcedureForm::onParameterTypeChange(QString a)
             ui->cmbJavaParameterType->addItem(IconFactory::getIconForDataType(dtType), lst[i]);
         }
     }
+}
+
+void ProcedureForm::onReturnDescChange()
+{
+    if(m_init) return;
+    m_proc->setReturnDesc(ui->txtReturnExplanation->toPlainText());
+}
+
+void ProcedureForm::updateJavaBinding()
+{
+    QString s = "NAME '";
+    s += m_proc->getJavaClassName(); // name
+    if(m_proc->getJavaClassName().isEmpty())
+    {
+        s += "YourClass";
+    }
+
+    s+= strDot;
+
+    s += m_proc->getJavaMethodName();
+    if(m_proc->getJavaMethodName().isEmpty())
+    {
+        s += "YourMethod";
+    }
+
+    s += strOpenParantheses;
+    for(int i=0; i<m_proc->getParametersWithDescription().size(); i++)
+    {
+        s += m_proc->getParametersWithDescription()[i]->m_progLangType;
+        if(i < m_proc->getParametersWithDescription().size() - 1)
+        {
+            s += ", ";
+        }
+    }
+    s += strCloseParantheses;
+
+    if(m_mode == MODE_FUNCTION)
+    {
+        s += strSpace + "return" + strSpace + dynamic_cast<Function*>(m_proc)->getJavaReturnType();
+    }
+    s += "'";
+
+    QString plainTextEditContents = m_textEdit->toPlainText();
+    QStringList lines = plainTextEditContents.split("\n");
+    if(lines.size() == 3)
+    {
+        lines[2] = s;
+    }
+    else
+    {
+        lines.append(s);
+    }
+    m_textEdit->setPlainText(lines.join("\n"));
+}
+
+void ProcedureForm::onJavaClassNameChange(QString a)
+{
+    m_proc->setJavaClassName(a);
+
+    updateJavaBinding();
+}
+
+void ProcedureForm::onJavaReturnTypeChange(QString a)
+{
+    if(m_mode == MODE_FUNCTION && m_javaBinding)
+    {
+        dynamic_cast<Function*>(m_proc)->setJavaReturnType(a);
+        updateJavaBinding();
+    }
+}
+
+void ProcedureForm::onJavaFunctionNameChange(QString a)
+{
+    m_proc->setJavaMethodName(a);
+    updateJavaBinding();
 }

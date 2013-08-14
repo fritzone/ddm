@@ -15,27 +15,34 @@ Procedure::Procedure(const QString &pname, const QString& uid, Version *v, bool 
 void Procedure::serialize(QDomDocument &doc, QDomElement &parent) const
 {
     // TODO: This is almost the same as with the function, refactor
-    QDomElement procElement = doc.createElement("Procedure");
-    procElement.setAttribute("Name", m_name);
-    procElement.setAttribute("uid", getObjectUid());
-    procElement.setAttribute("class-uid", getClassUid());
-    procElement.setAttribute("locked", lockState() == LockableElement::LOCKED);
-    procElement.setAttribute("was-locked", wasLocked());
-    procElement.setAttribute("source-uid", getSourceUid());
-    procElement.setAttribute("guided", m_guidedCreation);
+    QDomElement element = doc.createElement("Procedure");
+    element.setAttribute("Name", m_name);
+    element.setAttribute("uid", getObjectUid());
+    element.setAttribute("class-uid", getClassUid());
+    element.setAttribute("locked", lockState() == LockableElement::LOCKED);
+    element.setAttribute("was-locked", wasLocked());
+    element.setAttribute("source-uid", getSourceUid());
+    element.setAttribute("guided", m_guidedCreation);
 
     if(m_guidedCreation)
     {
-        procElement.setAttribute("returns", getReturnType());
-        serialize_parameters(doc, procElement);
+        serialize_parameters(doc, element);
+
+        // TODO: Duplicate from the function
+        if(m_javaMappedMethod)
+        {
+            element.setAttribute("java-mapped", true);
+            element.setAttribute("java-class", m_javaClassName);
+            element.setAttribute("java-method", m_javaMethodName);
+        }
     }
 
     QDomElement textElement = doc.createElement("Sql");
     textElement.setAttribute("Encoded", "Base64");
     QDomCDATASection cdata = doc.createCDATASection(QString(m_sql.toUtf8().toBase64()));
     textElement.appendChild(cdata);
-    procElement.appendChild(textElement);
-    parent.appendChild(procElement);
+    element.appendChild(textElement);
+    parent.appendChild(element);
 }
 
 QUuid Procedure::getClassUid() const

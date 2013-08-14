@@ -85,7 +85,8 @@ HEADERS += \
     gui/repo_DatabaseDetailsForm.h \
     gui/RepositoryGuiElements.h \
     gui/repo_RoleListingForm.h \
-    gui/repo_RepositoryElementForm.h
+    gui/repo_RepositoryElementForm.h \
+    gui/IconedDockWidget.h
 
 FORMS += \
     gui/AboutBoxDialog.ui \

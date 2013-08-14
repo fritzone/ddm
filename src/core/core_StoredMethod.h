@@ -62,9 +62,15 @@ public:
     {
         return m_desc;
     }
+
     QString getReturnDesc() const
     {
         return m_returnDesc;
+    }
+
+    void setReturnDesc(const QString& a)
+    {
+        m_returnDesc = a;
     }
 
     bool isGuided() const
@@ -114,6 +120,26 @@ public:
         m_guidedParameters = pads;
     }
 
+    void setJavaClassName(const QString& a)
+    {
+        m_javaClassName = a;
+    }
+
+    QString getJavaClassName() const
+    {
+        return m_javaClassName;
+    }
+
+    void setJavaMethodName(const QString& a)
+    {
+        m_javaMethodName = a;
+    }
+
+    QString getJavaMethodName() const
+    {
+        return m_javaMethodName;
+    }
+
 protected:
 
     QString m_sql;
@@ -128,6 +154,12 @@ protected:
 
     // this is populated only if the method was created with the guide
     QVector<ParameterAndDescription*> m_guidedParameters;
+
+    // below: only if this is mapped to a java method (and of course if it's guided)
+    bool m_javaMappedMethod;
+    QString m_javaClassName;
+    QString m_javaMethodName;
+
 };
 
 #endif // CORE_STOREDMETHOD_H

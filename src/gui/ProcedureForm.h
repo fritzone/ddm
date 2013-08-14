@@ -32,6 +32,8 @@ public:
     void initSql();
     void showSql();
 
+    void updateTextEditForGuidedMethod();
+    void updateJavaBinding();
 protected:
     void changeEvent(QEvent *e);
 
@@ -52,6 +54,10 @@ private slots:
     void onProcTargetLanguageChange(QString);
     void onSelectParameter(QTreeWidgetItem*,int);
     void onParameterTypeChange(QString);
+    void onReturnDescChange();
+    void onJavaClassNameChange(QString);
+    void onJavaReturnTypeChange(QString);
+    void onJavaFunctionNameChange(QString);
 
 private:
     QString getProcNameFromSql();
