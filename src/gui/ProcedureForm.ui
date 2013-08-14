@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1075</width>
-    <height>673</height>
+    <width>1081</width>
+    <height>695</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -244,7 +244,7 @@
                     <rect>
                      <x>0</x>
                      <y>0</y>
-                     <width>952</width>
+                     <width>958</width>
                      <height>258</height>
                     </rect>
                    </property>
@@ -537,7 +537,7 @@
                      </widget>
                     </item>
                     <item row="1" column="1">
-                     <widget class="QLineEdit" name="lineEdit"/>
+                     <widget class="QLineEdit" name="txtJavaClassName"/>
                     </item>
                     <item row="2" column="0">
                      <widget class="QLabel" name="lblClass_2">
@@ -547,7 +547,7 @@
                      </widget>
                     </item>
                     <item row="2" column="1">
-                     <widget class="QLineEdit" name="lineEdit_2"/>
+                     <widget class="QLineEdit" name="txtJavaMethodName"/>
                     </item>
                     <item row="3" column="0">
                      <widget class="QLabel" name="lblClass_3">
@@ -559,10 +559,10 @@
                     <item row="3" column="1">
                      <layout class="QHBoxLayout" name="horizontalLayout_7">
                       <item>
-                       <widget class="QComboBox" name="comboBox"/>
+                       <widget class="QComboBox" name="cmbJavaReturnType"/>
                       </item>
                       <item>
-                       <widget class="QLineEdit" name="lineEdit_3"/>
+                       <widget class="QLineEdit" name="txtSpecialJavaReturnType"/>
                       </item>
                      </layout>
                     </item>
@@ -747,7 +747,7 @@
            </widget>
           </item>
           <item row="3" column="0">
-           <widget class="QLabel" name="lblReturnType_2">
+           <widget class="QLabel" name="lblReturnDesc">
             <property name="text">
              <string>Explain the return value</string>
             </property>
@@ -1006,6 +1006,102 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>txtReturnExplanation</sender>
+   <signal>textChanged()</signal>
+   <receiver>ProcedureForm</receiver>
+   <slot>onReturnDescChange()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>647</x>
+     <y>365</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>537</x>
+     <y>336</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>txtBrief</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>ProcedureForm</receiver>
+   <slot>onBriefDescrChange(QString)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>647</x>
+     <y>92</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>537</x>
+     <y>336</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>txtJavaClassName</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>ProcedureForm</receiver>
+   <slot>onJavaClassNameChange(QString)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>590</x>
+     <y>519</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>537</x>
+     <y>336</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>cmbJavaReturnType</sender>
+   <signal>activated(QString)</signal>
+   <receiver>ProcedureForm</receiver>
+   <slot>onJavaReturnTypeChange(QString)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>201</x>
+     <y>584</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>537</x>
+     <y>336</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>txtJavaMethodName</sender>
+   <signal>textEdited(QString)</signal>
+   <receiver>ProcedureForm</receiver>
+   <slot>onJavaFunctionNameChange(QString)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>601</x>
+     <y>563</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>540</x>
+     <y>347</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>txtSpecialJavaReturnType</sender>
+   <signal>textEdited(QString)</signal>
+   <receiver>ProcedureForm</receiver>
+   <slot>onJavaReturnTypeChange(QString)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>645</x>
+     <y>596</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>540</x>
+     <y>347</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>onLockUnlock(bool)</slot>
@@ -1024,5 +1120,9 @@
   <slot>onProcTargetLanguageChange(QString)</slot>
   <slot>onSelectParameter(QTreeWidgetItem*,int)</slot>
   <slot>onParameterTypeChange(QString)</slot>
+  <slot>onReturnDescChange()</slot>
+  <slot>onJavaClassNameChange(QString)</slot>
+  <slot>onJavaReturnTypeChange(QString)</slot>
+  <slot>onJavaFunctionNameChange(QString)</slot>
  </slots>
 </ui>

@@ -17,6 +17,21 @@ public:
     {
         return "FUNCTION";
     }
+
+    QString getJavaReturnType() const
+    {
+        return m_javaReturns;
+    }
+
+    void setJavaReturnType(const QString& a)
+    {
+        m_javaReturns = a;
+    }
+
+private:
+
+    QString m_javaReturns; // only if method
+
 };
 
 #endif // CORE_FUNCTION_H

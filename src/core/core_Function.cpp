@@ -27,13 +27,28 @@ void Function::serialize(QDomDocument &doc, QDomElement &parent) const
     {
         element.setAttribute("returns", getReturnType());
         serialize_parameters(doc, element);
+
+        QDomElement descEl = doc.createElement("ReturnDescription");
+        QDomCDATASection cdDesc = doc.createCDATASection(m_returnDesc);
+        descEl.appendChild(cdDesc);
+        element.appendChild(descEl);
+
+        if(m_javaMappedMethod)
+        {
+            element.setAttribute("java-mapped", true);
+            element.setAttribute("java-returns", m_javaReturns);
+            element.setAttribute("java-class", m_javaClassName);
+            element.setAttribute("java-method", m_javaMethodName);
+        }
     }
 
-    QDomElement textElement = doc.createElement("Sql");
-    textElement.setAttribute("Encoded", "Base64");
+    QDomElement sqlElement = doc.createElement("Sql");
+    sqlElement.setAttribute("Encoded", "Base64");
     QDomCDATASection cdata = doc.createCDATASection(QString(m_sql.toUtf8().toBase64()));
-    textElement.appendChild(cdata);
-    element.appendChild(textElement);
+    sqlElement.appendChild(cdata);
+    element.appendChild(sqlElement);
+
+
     parent.appendChild(element);
 }
 
