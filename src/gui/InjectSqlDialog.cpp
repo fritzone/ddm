@@ -727,10 +727,13 @@ void InjectSqlDialog::onTestConnection()
             }
             else
             {
-                QString v = q.value(0).toString().split(" ").join("<br>");
-                QMessageBox::information(0, tr("Connection Succesful"),
-                                         tr("<b>Success</b><p>Following databases were found:<p><pre>") + v,
-                                         QMessageBox::Ok);
+                if(q.next())
+                {
+                    QString v = q.value(0).toString().split(" ").join("<br>");
+                    QMessageBox::information(0, tr("Connection Succesful"),
+                                             tr("<b>Success</b><p>Following databases were found:<p><pre>") + v,
+                                             QMessageBox::Ok);
+                }
             }
             cubridDb.close();
             m_cubridTested = true;

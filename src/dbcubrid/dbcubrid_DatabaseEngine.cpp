@@ -251,15 +251,31 @@ Procedure* CUBRIDDatabaseEngine::reverseEngineerProc(Connection *c, const QStrin
     }
 
     QSqlQuery query(db);
-    QString t = "show create procedure " + procName;
+    QString javaBindingSql = "";
+    QString t = "select target from db_stored_procedure WHERE owner=current_user and sp_type='PROCEDURE' and sp_name='" + procName + "'";
     query.exec(t);
     Procedure* proc= 0;
     while(query.next())
     {
-        QString sql = query.value(2).toString();
-        proc = new Procedure(procName, QUuid::createUuid().toString(), v, false);
-        proc->setSql(sql);
+        javaBindingSql = query.value(0).toString();
     }
+    query.clear();
+
+    QString t2 = "SELECT arg_name || ' ' || mode || ' ' || DATA_TYPE FROM db_stored_procedure_args WHERE sp_name ='" + procName + "' ORDER BY index_of";
+    query.exec(t2);
+    QString paramQuery = "";
+    while(query.next())
+    {
+        paramQuery += query.value(0).toString();
+        paramQuery += ", ";
+    }
+
+    paramQuery = paramQuery.left(paramQuery.length() - 2); // remove last ", "
+    QString f = "CREATE PROCEDURE " + procName + "(" + paramQuery + ")\nAS LANGAUGE JAVA\nNAME '"
+            + javaBindingSql + "'";
+
+    proc = new Procedure(procName, QUuid::createUuid().toString(), v, false);
+    proc->setSql(f);
 
     db.close();
 
@@ -276,19 +292,37 @@ Function* CUBRIDDatabaseEngine::reverseEngineerFunc(Connection *c, const QString
     }
 
     QSqlQuery query(db);
-    QString t = "show create function " + funcName;
+    QString javaBindingSql = "";
+    QString returnSql = "";
+    QString t = "select target, return_type from db_stored_procedure WHERE owner=current_user and sp_type='FUNCTION' and sp_name='" + funcName + "'";
     query.exec(t);
-    Function* func= 0;
+    Function* proc= 0;
     while(query.next())
     {
-        QString sql = query.value(2).toString();
-        func = new Function(funcName, QUuid::createUuid().toString(), v, false);
-        func->setSql(sql);
+        javaBindingSql = query.value(0).toString();
+        returnSql = query.value(1).toString();
     }
+    query.clear();
+
+    QString t2 = "SELECT arg_name || ' ' || mode || ' ' || DATA_TYPE FROM db_stored_procedure_args WHERE sp_name ='" + funcName + "' ORDER BY index_of";
+    query.exec(t2);
+    QString paramQuery = "";
+    while(query.next())
+    {
+        paramQuery += query.value(0).toString();
+        paramQuery += ", ";
+    }
+
+    paramQuery = paramQuery.left(paramQuery.length() - 2); // remove last ", "
+    QString f = "CREATE FUNCTION " + funcName + "(" + paramQuery + ") RETURN " + returnSql + "\nAS LANGAUGE JAVA\nNAME '"
+            + javaBindingSql + "'";
+
+    proc = new Function(funcName, QUuid::createUuid().toString(), v, false);
+    proc->setSql(f);
 
     db.close();
 
-    return func;
+    return proc;
 }
 
 View* CUBRIDDatabaseEngine::reverseEngineerView(Connection* conn, const QString& viewName, Version *v)

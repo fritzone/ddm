@@ -38,7 +38,11 @@ void NewProjectDialog::changeEvent(QEvent *e)
 
 QString NewProjectDialog::getTargetDatabase() const
 {
-    return m_ui->cmbDatabase->currentText();
+    if(m_ui->radioMySql->isChecked()) return "MySql";
+    if(m_ui->radioSqlite->isChecked()) return "Sqlite";
+    if(m_ui->radioCubrid->isChecked()) return "CUBRID";
+
+    return "";
 }
 
 DatabaseEngine* NewProjectDialog::getDatabaseEngine() const
@@ -67,23 +71,11 @@ void NewProjectDialog::onChangeProjectType(int)
         setupGuiForDatamodelProject();
         break;
     case 2: // Bind to ... Project
-        m_ui->lblDataModelDescription->hide();
-        m_ui->lblBindDescriptor->show();
-        m_ui->lblReverseEngineer->hide();
-
-        m_ui->cmbDatabase->show();
-
         m_ui->chkInheritDefaultDatatypes->hide();
         m_ui->chkAllowOOPModel->hide();
 
         break;
     case 3: // Rev. Eng. Project
-        m_ui->lblDataModelDescription->hide();
-        m_ui->lblBindDescriptor->hide();
-        m_ui->lblReverseEngineer->show();
-
-        m_ui->cmbDatabase->show();
-
         m_ui->chkInheritDefaultDatatypes->show();
         m_ui->chkAllowOOPModel->show();
         break;
@@ -124,11 +116,6 @@ void NewProjectDialog::onAccept()
 
 void NewProjectDialog::setupGuiForDatamodelProject()
 {
-    m_ui->lblDataModelDescription->show();
-    m_ui->lblBindDescriptor->hide();
-    m_ui->lblReverseEngineer->hide();
-    m_ui->cmbDatabase->show();
-
     m_ui->chkInheritDefaultDatatypes->show();
     m_ui->chkAllowOOPModel->show();
 }

@@ -106,19 +106,22 @@ void SqlHighlighter::highlightBlock(const QString &text)
 {
     foreach (const HighlightingRule &rule, highlightingRules) {
         QRegExp expression(rule.pattern);
-        int index = expression.indexIn(text);
-        //qDebug() << index << " -> " << text << " @ " << rule.pattern.pattern();
-        while (index > 0)
+        qDebug() << expression.pattern();
         {
-            int length = expression.matchedLength();
-            setFormat(index, length, rule.format);
-            index = expression.indexIn(text, index + length);
-        }
-        if(index == 0)
-        {
-            int length = expression.matchedLength();
-            setFormat(index, length, rule.format);
-            index = expression.indexIn(text, index + length);
+            int index = expression.indexIn(text);
+            //qDebug() << index << " -> " << text << " @ " << rule.pattern.pattern();
+            while (index > 0)
+            {
+                int length = expression.matchedLength();
+                setFormat(index, length, rule.format);
+                index = expression.indexIn(text, index + length);
+            }
+            if(index == 0)
+            {
+                int length = expression.matchedLength();
+                setFormat(index, length, rule.format);
+                index = expression.indexIn(text, index + length);
+            }
         }
     }
 }
