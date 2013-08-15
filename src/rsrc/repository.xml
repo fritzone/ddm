@@ -2931,7 +2931,6 @@ NAME 'YourClass.yourMethod()';]]>
         <keyword description="" text="UTIME" />
         <keyword description="" text="YEAR" />
         <keyword description="" text="ZONE" />
-        <keyword description="" text="" />      
       </keywords>
       <trigger-defs>
         <field role="event" value="INSERT" />

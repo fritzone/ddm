@@ -233,4 +233,10 @@
         <file>images/unaf.png</file>
         <file>images/big/icon.png</file>
     </qresource>
+    <qresource prefix="/big_database_icons">
+        <file>images/big_db_icons/cubrid.png</file>
+        <file>images/big_db_icons/mssqlserver.png</file>
+        <file>images/big_db_icons/mysql.png</file>
+        <file>images/big_db_icons/sqlite.png</file>
+    </qresource>
 </RCC>
