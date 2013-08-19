@@ -13,13 +13,14 @@ class TextEditWithCodeCompletion;
 class FrameForLineNumbers;
 class Table;
 class Version;
+class Connection;
 
 class TriggerForm : public QWidget
 {
     Q_OBJECT
 
 public:
-    explicit TriggerForm(Version *v, bool reverseSource, bool fc, QWidget *parent);
+    explicit TriggerForm(Version *v, Connection *c, bool reverseSource, bool fc, QWidget *parent);
     ~TriggerForm();
     void setTrigger(Trigger* t);
     void initSql();

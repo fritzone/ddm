@@ -2472,7 +2472,7 @@ END]]>
         </function>
 
         <function name="@length" category="FT_STRING" category-value="1" return="RET_NUMERIC">
-          <parameters count="2">
+          <parameters count="1">
             <parameter name="" type="PAR_STRING"/>
           </parameters>
           <description>
@@ -2480,8 +2480,8 @@ END]]>
           </description>
         </function>
 
-        <function name="@lower" category="FT_STRING" category-value="1" return="RET_STRNG">
-          <parameters count="2">
+        <function name="@lower" category="FT_STRING" category-value="1" return="RET_STRING">
+          <parameters count="1">
             <parameter name="" type="PAR_STRING"/>
           </parameters>
           <description>
@@ -2489,7 +2489,7 @@ END]]>
           </description>
         </function>
 
-        <function name="@ltrim" category="FT_STRING" category-value="1" return="RET_STRNG">
+        <function name="@ltrim" category="FT_STRING" category-value="1" return="RET_STRING">
           <parameters count="2">
             <parameter name="" type="PAR_STRING"/>
             <parameter name="" type="OPAR_STRING"/>
@@ -2527,8 +2527,8 @@ END]]>
           </description>
         </function>
 
-        <function name="@quote" category="FT_STRING" category-value="1" return="RET_STRNG">
-          <parameters count="2">
+        <function name="@quote" category="FT_STRING" category-value="1" return="RET_STRING">
+          <parameters count="1">
             <parameter name="" type="PAR_STRING"/>
           </parameters>
           <description>
@@ -3094,9 +3094,6 @@ END]]>
 
       <!-- And the list of functions supported by this database. -->
       <functions>
-
-        <!-- Control Flow (Comparison) -->
-
         <function name="@coalesce" category="FT_CONTROLFLOW" category-value="0" return="RET_STRING">
           <parameters count="1">
             <parameter name="" type="PAR_VARIABLE"/>
@@ -3185,13 +3182,12 @@ END]]>
             <parameter name="" type="PAR_STRING"/>
           </parameters>
           <description>
-            <![CDATA["NVL2(expr1, expr2, expr3) Three parameters are specified for the NVL2 function. The second expression (expr2) is returned if the first expression (expr1) is not NULL; the third expression (expr3) is returned if it is NULL."]]>
+            <![CDATA["NVL(expr1, expr2, expr3) Three parameters are specified for the NVL2 function. The second expression (expr2) is returned if the first expression (expr1) is not NULL; the third expression (expr3) is returned if it is NULL."]]>
           </description>
         </function>
 
         <!-- Blob manipulation functions -->
 
-        <!-- BLOB_FROM_FILE, CLOB_FROM_FILE not supported -->
 
         <function name="@bit_to_blob" category="FT_BLOB" category-value="4" return="RET_BLOB">
           <parameters count="1">
@@ -3368,7 +3364,7 @@ END]]>
           </description>
         </function>
 
-        <function name="@hex" category="FT_NUMERIC" category-value="1" return="RET_STRING">
+        <function name="@hex" category="FT_NUMERIC" category-value="2" return="RET_STRING">
           <parameters count="1">
             <parameter name="" type="PAR_NUMERIC"/>
           </parameters>
@@ -4352,7 +4348,7 @@ END]]>
           </description>
         </function>
 
-        <function name="@str_to_date" category="FT_CAST" category-value="4" return="RET_DATETIME">
+        <function name="@str_to_date" category="FT_CAST" category-value="5" return="RET_DATETIME">
           <parameters count="2">
             <parameter name="" type="PAR_STRING"/>
             <parameter name="" type="PAR_STRING"/>
@@ -4362,7 +4358,7 @@ END]]>
           </description>
         </function>
 
-        <function name="@time_format" category="FT_CAST" category-value="4" return="RET_STRING">
+        <function name="@time_format" category="FT_CAST" category-value="5" return="RET_STRING">
           <parameters count="2">
             <parameter name="" type="PAR_STRING"/>
             <parameter name="" type="PAR_STRING"/>
@@ -4372,7 +4368,7 @@ END]]>
           </description>
         </function>
 
-        <function name="@to_char" category="FT_CAST" category-value="4" return="RET_STRING">
+        <function name="@to_char" category="FT_CAST" category-value="5" return="RET_STRING">
           <parameters count="3">
             <parameter name="" type="PAR_DATETIME"/>
             <parameter name="" type="OPAR_STRING"/>
@@ -4383,7 +4379,7 @@ END]]>
           </description>
         </function>
 
-        <function name="@to_char" category="FT_CAST" category-value="4" return="RET_STRING">
+        <function name="@to_char" category="FT_CAST" category-value="5" return="RET_STRING">
           <parameters count="3">
             <parameter name="" type="PAR_NUMERIC"/>
             <parameter name="" type="OPAR_STRING"/>
@@ -4394,7 +4390,7 @@ END]]>
           </description>
         </function>
 
-        <function name="@to_date" category="FT_CAST" category-value="4" return="RET_DATETIME">
+        <function name="@to_date" category="FT_CAST" category-value="5" return="RET_DATETIME">
           <parameters count="3">
             <parameter name="" type="PAR_STRING"/>
             <parameter name="" type="OPAR_STRING"/>
@@ -4405,7 +4401,7 @@ END]]>
           </description>
         </function>
 
-        <function name="@to_datetime" category="FT_CAST" category-value="4" return="RET_DATETIME">
+        <function name="@to_datetime" category="FT_CAST" category-value="5" return="RET_DATETIME">
           <parameters count="3">
             <parameter name="" type="PAR_STRING"/>
             <parameter name="" type="OPAR_STRING"/>
@@ -4416,7 +4412,7 @@ END]]>
           </description>
         </function>
 
-        <function name="@to_number" category="FT_CAST" category-value="4" return="RET_DATETIME">
+        <function name="@to_number" category="FT_CAST" category-value="5" return="RET_DATETIME">
           <parameters count="2">
             <parameter name="" type="PAR_STRING"/>
             <parameter name="" type="OPAR_STRING"/>
@@ -4426,7 +4422,7 @@ END]]>
           </description>
         </function>
 
-        <function name="@to_time" category="FT_CAST" category-value="4" return="RET_DATETIME">
+        <function name="@to_time" category="FT_CAST" category-value="5" return="RET_DATETIME">
           <parameters count="3">
             <parameter name="" type="PAR_STRING"/>
             <parameter name="" type="OPAR_STRING"/>
@@ -4437,7 +4433,7 @@ END]]>
           </description>
         </function>
 
-        <function name="@to_timestamp" category="FT_CAST" category-value="4" return="RET_DATETIME">
+        <function name="@to_timestamp" category="FT_CAST" category-value="5" return="RET_DATETIME">
           <parameters count="3">
             <parameter name="" type="PAR_STRING"/>
             <parameter name="" type="OPAR_STRING"/>
@@ -4679,11 +4675,7 @@ END]]>
           </description>
         </function>
       </functions>
-
-
     </database>
-
-
-
+    
   </databases>
 </repository>

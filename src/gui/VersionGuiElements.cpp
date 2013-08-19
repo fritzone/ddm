@@ -687,7 +687,8 @@ ProcedureForm* VersionGuiElements::getProcedureForm(ProcedureFormMode m, bool gu
 
 TriggerForm* VersionGuiElements::getTriggerForm()
 {
-    return m_triggerForm = new TriggerForm(m_version, false, false, MainWindow::instance());
+    return m_triggerForm = new TriggerForm(m_version, 0,
+                                           false, false, MainWindow::instance());
 }
 
 ContextMenuEnabledTreeWidgetItem* VersionGuiElements::getTablesItem() const

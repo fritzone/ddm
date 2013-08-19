@@ -8,6 +8,7 @@
 #include <QVariant>
 #include <QVector>
 #include <QMutexLocker>
+#include <QStringBuilder>
 
 #include "core_Table.h"
 #include "Version.h"
@@ -212,7 +213,7 @@ QStringList CUBRIDDatabaseEngine::getAvailableViews(Connection* conn)
 
 QStringList CUBRIDDatabaseEngine::getAvailableTriggers(Connection* c)
 {
-    return getResultOfQuery(QString("show triggers"), c, QString("Cannot get list of avilable triggers"), 0);
+    return getResultOfQuery(QString("select trigger_name from db_trig"), c, QString("Cannot get list of avilable triggers"), 0);
 }
 
 QStringList CUBRIDDatabaseEngine::getAvailableStoredProcedures(Connection* conn)
@@ -449,56 +450,38 @@ Table* CUBRIDDatabaseEngine::reverseEngineerTable(Connection *conn, const QStrin
     {
 
     QSqlQuery query(dbo);
-    query.exec("show indexes from " + tableName);
+    query.exec("SELECT class_name, index_name, asc_desc, key_order, key_attr_name "
+               "FROM db_index_key where class_name='" + tableName + "'");
 
-    int tableNo = query.record().indexOf("Table");
-    int nonuniqueNo = query.record().indexOf("Non_unique");
-    int keynameNo = query.record().indexOf("Key_name");
-    int seqinindexNo = query.record().indexOf("Seq_in_index");
-    int columnnameNo = query.record().indexOf("Column_name");
-    int collationNo = query.record().indexOf("Collation");
-    int cardinalityNo = query.record().indexOf("Cardinality");
-    int subpartNo = query.record().indexOf("Sub_part");
-    int packedNo = query.record().indexOf("Packed");
-    int nullNo = query.record().indexOf("Null");
-    int indextypeNo = query.record().indexOf("Index_type");
+    int indexNameNo = query.record().indexOf("index_name");
+    int ascDescNo = query.record().indexOf("asc_desc");
+    int keyOrderNo = query.record().indexOf("key_order");
+    int columnNameNo = query.record().indexOf("key_attr_name");
 
     QMap<QString, Index*> createdIndexes;
 
     while(query.next())
     {
-        QString table = query.value(tableNo).toString();
-        QString nonunique = query.value(nonuniqueNo).toString();
-        QString keyname = query.value(keynameNo).toString();
-        QString seqinindex = query.value(seqinindexNo).toString();
-        QString columnname = query.value(columnnameNo).toString();
-        QString collation = query.value(collationNo).toString();
-        QString cardinality = query.value(cardinalityNo).toString();
-        QString subpart = query.value(subpartNo).toString();
-        QString packed = query.value(packedNo).toString();
-        QString nulld = query.value(nullNo).toString();
-        QString indextype = query.value(indextypeNo).toString();
-
-        QString finalIndexName = keyname;
-        if(keyname == "PRIMARY") continue;
+        QString indexName = query.value(indexNameNo).toString();
+        QString keyOrder = query.value(keyOrderNo).toString();
+        QString columnName = query.value(columnNameNo).toString();
+        QString ascDesc = query.value(ascDescNo).toString();
 
         Index* idx = 0;
-        QString order = "DESC";
-        if(collation == "A") order = "ASC";
-        if(collation.toUpper() == "NULL") order = "";
-        if(createdIndexes.keys().contains(keyname))
+
+        if(createdIndexes.keys().contains(indexName))
         {
-            idx = createdIndexes[keyname];
+            idx = createdIndexes[indexName];
         }
         else
         {
-            idx = new Index(finalIndexName, tab, QUuid::createUuid().toString(), ver);
+            idx = new Index(indexName, tab, QUuid::createUuid().toString(), ver);
             // TODO: set the index type SPI based on indextype from above
-            createdIndexes.insert(keyname, idx);
+            createdIndexes.insert(indexName, idx);
         }
 
-        idx->addColumn(tab->getColumn(columnname), order, seqinindex.toInt());
-        if(!tab->hasIndex(finalIndexName))
+        idx->addColumn(tab->getColumn(columnName), ascDesc, keyOrder.toInt());
+        if(!tab->hasIndex(indexName))
         {
             tab->addIndex(idx);
         }
@@ -700,8 +683,21 @@ Trigger* CUBRIDDatabaseEngine::reverseEngineerTrigger(Connection *c, const QStri
     }
 
     QSqlQuery query (dbo);
+    QString s("select \
+              a.trigger_name, \
+              a.target_class_name, \
+              DECODE(b.event, 0 , 'UPDATE', 1, 'UPDATE STATEMENT', 2, 'DELETE', 3, 'DELETE STATEMENT', 4, 'INSERT', 5, 'INSERT STATEMENT', 8, 'COMMIT', 9, 'ROLLBACK') AS event,\
+              b.action_definition, \
+              DECODE(a.action_time, 1, 'BEFORE', 2, 'AFTER', 3, 'DEFERRED') AS timing\
+          from \
+              db_trig a, \
+              db_trigger b\
+          WHERE\
+               a.trigger_name='");
+    s += procName;
+    s += "' and a.trigger_name=b.name" ;
 
-    query.exec("show triggers");
+    query.exec(s);
 
     Trigger *result = 0;
     while(query.next())
@@ -709,8 +705,8 @@ Trigger* CUBRIDDatabaseEngine::reverseEngineerTrigger(Connection *c, const QStri
         QString trigName = query.value(0).toString();
         if(trigName == procName)
         {
-            QString event = query.value(1).toString();
-            QString table =  query.value(2).toString();
+            QString table =  query.value(1).toString();
+            QString event = query.value(2).toString();
             QString stmt =  query.value(3).toString();
             QString timing =  query.value(4).toString();
             result = new Trigger(trigName, QUuid::createUuid().toString(), v);
@@ -750,7 +746,7 @@ QStringList CUBRIDDatabaseEngine::getAvailableIndexes(Connection* conn)
     }
 
     QSqlQuery query(db);
-    query.exec("SELECT DISTINCT TABLE_NAME, INDEX_NAME, COLUMN_NAME FROM INFORMATION_SCHEMA.STATISTICS WHERE TABLE_SCHEMA = '" + c->getDb() + "'");
+    query.exec("SELECT class_name AS TABLE_NAME, index_name AS INDEX_NAME, key_attr_name AS COLUMN_NAME FROM db_index_key");
 
     int tabNameIdx = query.record().indexOf("TABLE_NAME");
     int indexNameIdx = query.record().indexOf("INDEX_NAME");

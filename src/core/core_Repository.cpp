@@ -23,6 +23,15 @@
 
 #include <QDebug>
 
+QDebug operator<<(QDebug dbg, const QDomNode& node)
+{
+  QString s;
+  QTextStream str(&s, QIODevice::WriteOnly);
+  node.save(str, 2);
+  dbg << qPrintable(s);
+  return dbg;
+}
+
 Repository::Repository()
 {
     QDomDocument doc ("xml");
@@ -312,14 +321,29 @@ void Repository::addDatabase(const QDomElement & el)
         // the functions need to be constructed after the other parts
         for(int i=0; i<el.childNodes().size(); i++)
         {
+
             if(el.childNodes().at(i).nodeName() == "functions")
             {
-                for(int j=0; j<el.childNodes().at(i).childNodes().size(); j++)
+                QDomNode funcsNode =  el.childNodes().at(i);
+                QDomElement funcsEl = funcsNode.toElement();
+
+                for(int j=0; j<funcsEl.childNodes().size(); j++)
                 {
                     QString X = QString("X");
 
-                    QDomElement funcEl = el.childNodes().at(i).childNodes().at(j).toElement();
+                    QDomElement funcEl = funcsEl.childNodes().at(j).toElement();
+                    if(funcEl.nodeName() != "function")
+                    {
+                        continue;
+                    }
+
+                    if(funcEl.isComment())
+                    {
+                        continue;
+                    }
+
                     QString name = funcEl.attribute("name");
+
                     QString category = funcEl.attribute("category");
                     QString retType = funcEl.attribute("return");
                     int category_value = funcEl.attribute("category-value").toInt();
@@ -415,6 +439,14 @@ void Repository::addDatabase(const QDomElement & el)
                     if(retType.toUpper() == "RET_STRING")
                     {
                         retTypeDataType = new UserDataType("return", DT_STRING, nullUid, 0);
+                    }
+                    if(retType.toUpper() == "RET_BLOB")
+                    {
+                        retTypeDataType = new UserDataType("return", DT_BLOB, nullUid, 0);
+                    }
+                    if(retType.toUpper() == "RET_GENERIC")
+                    {
+                        retTypeDataType = new UserDataType("return", DT_GENERIC, nullUid, 0);
                     }
                     if(retTypeDataType == 0)
                     {
