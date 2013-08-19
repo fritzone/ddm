@@ -11,7 +11,7 @@
 #include "core_Table.h"
 #include "core_TableInstance.h"
 
-TriggerForm::TriggerForm(Version *v, bool reverseSource, bool fc, QWidget *parent) :
+TriggerForm::TriggerForm(Version *v, Connection* c, bool reverseSource, bool fc, QWidget *parent) :
     QWidget(parent),
     ui(new Ui::TriggerForm), m_trigger(0), m_forcedChange(fc), m_reverseSource(reverseSource), m_version(v)
 {
@@ -22,7 +22,7 @@ TriggerForm::TriggerForm(Version *v, bool reverseSource, bool fc, QWidget *paren
 
     ui->horizontalLayout_4->addWidget(m_frameForLineNumbers);
 
-    m_textEdit = new TextEditWithCodeCompletion(ui->frame_2);
+    m_textEdit = new TextEditWithCodeCompletion(ui->frame_2, c);
     m_textEdit->setObjectName(QString::fromUtf8("m_textEdit"));
 
     ui->horizontalLayout_4->addWidget(m_textEdit);
@@ -63,7 +63,13 @@ void TriggerForm::setTrigger(Trigger *t)
 {
     m_trigger = t;
     ui->txtTriggerName->setText(t->getName());
-    ui->cmbTables->setCurrentIndex(ui->cmbTables->findText(t->getTable().toUpper()));
+
+    int tabIdx = ui->cmbTables->findText(t->getTable().toUpper());
+    if(tabIdx == -1)
+    {
+        tabIdx = 0; // (no table, select the first one)
+    }
+    ui->cmbTables->setCurrentIndex(tabIdx);
     ui->cmbEvent->setCurrentIndex(ui->cmbEvent->findText(t->getEvent().toUpper()));
     ui->cmbTime->setCurrentIndex(ui->cmbTime->findText(t->getTime().toUpper()));
     ui->txtDescription->setText(t->getDescription());

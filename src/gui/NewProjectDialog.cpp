@@ -102,6 +102,12 @@ void NewProjectDialog::onReject()
 
 void NewProjectDialog::onAccept()
 {
+    if(!m_ui->radioCubrid->isChecked() && !m_ui->radioMySql->isChecked() && !m_ui->radioSqlite->isChecked())
+    {
+        QMessageBox::critical (this, tr("Error"), tr("Please select a database"), QMessageBox::Ok);
+        return;
+    }
+
     if(m_ui->txtProjectName->text().size() > 0 && m_ui->txtSolutionName->text().size() > 0)
     {
         projectName = m_ui->txtProjectName->text();

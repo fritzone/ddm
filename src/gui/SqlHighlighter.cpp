@@ -106,7 +106,8 @@ void SqlHighlighter::highlightBlock(const QString &text)
 {
     foreach (const HighlightingRule &rule, highlightingRules) {
         QRegExp expression(rule.pattern);
-        qDebug() << expression.pattern();
+        QString ex = expression.pattern();
+        if(ex != "\\b\\b")
         {
             int index = expression.indexIn(text);
             //qDebug() << index << " -> " << text << " @ " << rule.pattern.pattern();
