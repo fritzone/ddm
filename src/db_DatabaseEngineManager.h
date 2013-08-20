@@ -161,6 +161,10 @@ public:
 
     QString getStoredMethodReturnKeyword(const QString &dbName);
 
+    void setTriggerBodyDefinitionStatement(const QString &dbName, QString keyword);
+
+    QString getTriggerBodyDefinitionStatement(const QString &dbName);
+
 private:
     DatabaseEngineManager();
 
@@ -221,6 +225,9 @@ private:
 
     // the RETURN keyword for a specific database... It can be different :(
     QMap<QString, QString> m_returnKeywordForStoredFunction;
+
+    // the trigger creation statement for a specific database
+    QMap<QString, QString> m_triggerStatements;
 };
 
 #endif // DB_DATABASEENGINEMANAGER_H

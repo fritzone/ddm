@@ -224,11 +224,11 @@ QStringList BasicSqlGenerator::generateCreateTableSql(Table *table,
     toReturn << createTable;
 
     // then creating the comments for the indexes if required
-    if(m_comments)
-    {
-        QString comment = table->fullIndices().size()>0?"\n-- Create the indexes for table " + tabName + "\n":"";
-        toReturn << comment;
-    }
+//    if(m_comments)
+//    {
+//        QString comment = table->fullIndices().size()>0?"\n-- Create the indexes for table " + tabName + "\n":"";
+//        toReturn << comment;
+//    }
 
     // now create the indexes of the table
     appendCreateIndexCommands(table, toReturn, tabName);
@@ -236,11 +236,11 @@ QStringList BasicSqlGenerator::generateCreateTableSql(Table *table,
     // and check if we have foreign keys
     if(m_fkpos == Configuration::AfterTable && foreignKeys.size() > 0)
     {
-        if(m_comments)
-        {
-            QString comment = "-- Create the foreign keys for table " + tabName + "\n";
-            toReturn << comment;
-        }
+//        if(m_comments)
+//        {
+//            QString comment = "-- Create the foreign keys for table " + tabName + "\n";
+//            toReturn << comment;
+//        }
 
         QString fkCommand = strNewline + correctCase("alter table") + tabName + correctCase("add");
         fkCommand += generateForeignKeys(foreignKeys);
@@ -587,7 +587,7 @@ QStringList BasicSqlGenerator::generateTriggerSql(Trigger* t, const QHash<QStrin
     s += correctCase(t->getEvent()) + strSpace;
     s += correctCase("on");
     s += t->getTable() + strSpace;
-    s += correctCase("for each row");
+    s += correctCase(m_engine->getTriggerBodyDefinitionStatement());
     s += strNewline + t->getSql() + strSemicolon + strNewline;
     result << s;
     return result;

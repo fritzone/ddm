@@ -353,6 +353,7 @@ END]]>
         <field role="event" value="DELETE"/>
         <field role="time" value="BEFORE"/>
         <field role="time" value="AFTER"/>
+        <field role="body-def-statement" value="for each row"/>
       </trigger-defs>
 
       <spis>
@@ -2375,13 +2376,16 @@ END]]>
         <keyword description="" text="WHEN"/>
         <keyword description="" text="WHERE"/>
       </keywords>
+      
       <trigger-defs>
         <field role="event" value="INSERT"/>
         <field role="event" value="UPDATE"/>
         <field role="event" value="DELETE"/>
         <field role="time" value="BEFORE"/>
         <field role="time" value="AFTER"/>
+        <field role="body-def-statement" value="for each row"/>
       </trigger-defs>
+      
       <!-- The function categories supported by this database engine -->
       <function-categories>
         <function-category name="Control Flow" id="FT_CONTROLFLOW" value="0"/>
@@ -3072,6 +3076,7 @@ END]]>
         <field role="time" value="BEFORE"/>
         <field role="time" value="AFTER"/>
         <field role="time" value="DEFERRED"/>
+        <field role="body-def-statement" value="execute"/>
       </trigger-defs>
 
       <!-- The function categories supported by this database engine -->

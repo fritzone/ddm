@@ -119,7 +119,12 @@ void SqlForm::presentSql(Project* /*p*/, Version *v)
     QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 
     QStringList uids;
-    QStringList finalSql = v->getSqlScript(true, 0, uids);
+    bool delimiters = true;
+    if(v->getProject()->getEngine()->getDatabaseEngineName().toUpper() == strCUBRID)
+    {
+        delimiters = false;
+    }
+    QStringList finalSql = v->getSqlScript(delimiters, 0, uids);
     QApplication::restoreOverrideCursor();
 
     QString fs = "";

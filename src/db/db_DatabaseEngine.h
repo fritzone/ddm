@@ -480,6 +480,14 @@ public:
      */
     virtual QString spiExtension(QUuid) = 0;
 
+    /**
+     * @brief getTriggerBodyDefinitionStatement returns the statement which
+     * is to be used when creating a trigger. For CUBRID this is "EXECUTE"
+     * and for the other it is "FOR EACH ROW"
+     * @return
+     */
+    virtual QString getTriggerBodyDefinitionStatement() = 0;
+
 private:
 
     // the database on which this is running

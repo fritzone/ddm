@@ -9,6 +9,8 @@ class ReverseEngineerWizardDatabasesForm;
 class ReverseEngineerWizardObjectListForm;
 class ReverseEngineerWizardOptionsForm;
 
+class Connection;
+
 class ReverseEngineerWizard : public QWizard
 {
 public:
@@ -43,6 +45,8 @@ public:
     QString getDbTypeName() const;
 
 private:
+
+    Connection* getConnectionforDb() const;
 
     DatabaseEngine* m_engine;
 

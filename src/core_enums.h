@@ -50,7 +50,7 @@ enum PROGRAMMING_LANGUAGES
     LANGUAGE_SQL = 0,
     LANGUAGE_JAVA = 1,
 
-    LANGAUGE_INVALID
+    LANGUAGE_INVALID
 };
 
 // this will be used in order to correctly create a parameter for the

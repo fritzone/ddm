@@ -124,6 +124,7 @@ void Repository::addDatabase(const QDomElement & el)
         QStringList keywords;
         QString delimiterKeyword = "";
         QString keywordReturn = "";
+        QString triggerDefStatement= "";
         QStringList triggerEvents;
         QStringList triggerTimes;
         QVector<Sp*> sps;
@@ -234,8 +235,14 @@ void Repository::addDatabase(const QDomElement & el)
                             triggerEvents.append(value);
                         }
                         else
+                        if(role.toUpper() == "TIME")
                         {
                             triggerTimes.append(value);
+                        }
+                        else
+                        if(role.toLower() == "body-def-statement")
+                        {
+                            triggerDefStatement = value;
                         }
                     }
                 }
@@ -477,6 +484,7 @@ void Repository::addDatabase(const QDomElement & el)
         DatabaseEngineManager::instance().setParameterFields(dbId, parameterFields);
         DatabaseEngineManager::instance().setStoredMethodDefaultBodies(dbId, defaultBodies);
         DatabaseEngineManager::instance().setStoredMethodReturnKeyword(dbId, keywordReturn);
+        DatabaseEngineManager::instance().setTriggerBodyDefinitionStatement(dbId, triggerDefStatement);
     }
 }
 

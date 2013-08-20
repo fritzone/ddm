@@ -2,6 +2,7 @@
 #include "db_DatabaseEngine.h"
 #include "MySqlConnection.h"
 #include "SqliteConnection.h"
+#include "conn_CUBRID.h"
 
 ReverseEngineererThread::ReverseEngineererThread(bool createDataTypesForColumns, DatabaseEngine* engine, Project* p,
                                                  const QString &host, const QString &user, const QString &pass,
@@ -38,19 +39,27 @@ ReverseEngineererThread::ReverseEngineererThread(bool createDataTypesForColumns,
 void ReverseEngineererThread::doWork()
 {
     Connection *c = 0;
-    if(m_engine->getDatabaseEngineName().toUpper() == "MYSQL")
+    QString dbName = m_engine->getDatabaseEngineName().toUpper();
+    QString temp("temp");
+
+    if(dbName == strMySql)
     {
-        c = new MySqlConnection("temp", m_host, m_user, m_pass, m_db, false, false, m_port);
+        c = new MySqlConnection(temp, m_host, m_user, m_pass, m_db, false, false, m_port);
+    }
+    else
+    if(dbName == strCUBRID)
+    {
+        c = new CUBRIDConnection(temp, m_host, m_user, m_pass, m_db, false, false, m_port);
     }
     else
     {
-        c = new SqliteConnection("temp", m_fileName, false, m_sqliteVersion);
+        c = new SqliteConnection(temp, m_fileName, false, m_sqliteVersion);
     }
 
     if(!m_engine->reverseEngineerDatabase(c, m_tabsToReverse, m_viewsToReverse, m_procsToReverse, m_funcsToReverse,
                                       m_triggersToReverse, m_project, m_createDataTypesForColumns))
     {
-        qDebug() << "exception caught";
+        qDebug() << "Exception caught while reerse engineering";
     }
     emit done(this);
     delete c;

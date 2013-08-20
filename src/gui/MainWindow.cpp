@@ -2850,7 +2850,7 @@ void MainWindow::onViewDatatypesTree()
 void MainWindow::onReverseEngineerWizardNextPage(int cpage)
 {
     // TODO: this switch with the IF is simply horrible, come up with a more NICER solution
-    if(m_revEngWizard->getDbTypeName() == "SQLITE")
+    if(m_revEngWizard->getDbTypeName() == strSqlite)
     {
         switch(cpage)
         {
@@ -2873,6 +2873,7 @@ void MainWindow::onReverseEngineerWizardNextPage(int cpage)
         }
     }
     else
+    if(m_revEngWizard->getDbTypeName() == strMySql)
     {
         switch(cpage)
         {
@@ -2928,6 +2929,57 @@ void MainWindow::onReverseEngineerWizardNextPage(int cpage)
             break;
         }
     }
+    else
+    if(m_revEngWizard->getDbTypeName() == strCUBRID)
+    {
+        switch(cpage)
+        {
+        case 1: // user selected a database to reverse engineer
+            m_revEngWizard->gatherConnectionData();
+
+            if(!m_revEngWizard->selectDatabase()) // did he?
+            {
+                QMessageBox::critical(m_revEngWizard, tr("Error"), tr("Please select a database"), QMessageBox::Ok);
+                m_revEngWizard->back();
+            }
+
+            m_revEngWizard->connectAndRetrieveTables();
+            break;
+        case 2: // user selected the tables, advanced to the views
+            if(!m_revEngWizard->selectDatabase()) // did he select a database?
+            {
+                QMessageBox::critical(m_revEngWizard, tr("Error"), tr("Please select a database"), QMessageBox::Ok);
+                m_revEngWizard->back();
+            }
+            m_revEngWizard->connectAndRetrieveViews();
+            break;
+        case 3: // procedures
+            if(!m_revEngWizard->selectDatabase()) // did he select a database?
+            {
+                QMessageBox::critical(m_revEngWizard, tr("Error"), tr("Please select a database"), QMessageBox::Ok);
+                m_revEngWizard->back();
+            }
+            m_revEngWizard->connectAndRetrieveProcedures();
+            break;
+        case 4: // functions
+            if(!m_revEngWizard->selectDatabase()) // did he select a database?
+            {
+                QMessageBox::critical(m_revEngWizard, tr("Error"), tr("Please select a database"), QMessageBox::Ok);
+                m_revEngWizard->back();
+            }
+            m_revEngWizard->connectAndRetrieveFunctions();
+            break;
+        case 5: // triggers
+            if(!m_revEngWizard->selectDatabase()) // did he select a database?
+            {
+                QMessageBox::critical(m_revEngWizard, tr("Error"), tr("Please select a database"), QMessageBox::Ok);
+                m_revEngWizard->back();
+            }
+            m_revEngWizard->connectAndRetrieveTriggers();
+            break;
+        }
+    }
+
 }
 
 void MainWindow::onReverseEngineerWizardAccept()
@@ -2937,8 +2989,9 @@ void MainWindow::onReverseEngineerWizardAccept()
     bool c = !m_revEngWizard->createDataTypesForColumns();
 
     ReverseEngineerer* revEng = 0;
+    QString targetDb = m_revEngWizard->getDbTypeName();
 
-    if(m_revEngWizard->getDbTypeName() == "SQLITE")
+    if(targetDb == strSqlite)
     {
         QString sqliteFile = m_revEngWizard->getSqliteFileName();
         int sqliteVersion = m_revEngWizard->getSqliteVersion();
@@ -2951,7 +3004,8 @@ void MainWindow::onReverseEngineerWizardAccept()
                                        m_revEngWizard->getTriggersToReverse(),
                                        0);
     }
-    else // MySql
+    else
+    if(targetDb == strMySql || targetDb == strCUBRID)
     {
         QString host = m_revEngWizard->getHost();
         QString user = m_revEngWizard->getUser();
@@ -2960,12 +3014,12 @@ void MainWindow::onReverseEngineerWizardAccept()
         int port = m_revEngWizard->getPort();
 
         revEng = new ReverseEngineerer(c, engine, p, host, user, pass, db, port,
-                                                          m_revEngWizard->getTablesToReverse(),
-                                                          m_revEngWizard->getViewsToReverse(),
-                                                          m_revEngWizard->getProceduresToReverse(),
-                                                          m_revEngWizard->getFunctionsToReverse(),
-                                                          m_revEngWizard->getTriggersToReverse(),
-                                                          0);
+                                          m_revEngWizard->getTablesToReverse(),
+                                          m_revEngWizard->getViewsToReverse(),
+                                          m_revEngWizard->getProceduresToReverse(),
+                                          m_revEngWizard->getFunctionsToReverse(),
+                                          m_revEngWizard->getTriggersToReverse(),
+                                          0);
     }
 
     if(revEng == 0)
