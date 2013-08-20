@@ -272,7 +272,7 @@ Procedure* CUBRIDDatabaseEngine::reverseEngineerProc(Connection *c, const QStrin
     }
 
     paramQuery = paramQuery.left(paramQuery.length() - 2); // remove last ", "
-    QString f = "CREATE PROCEDURE " + procName + "(" + paramQuery + ")\nAS LANGAUGE JAVA\nNAME '"
+    QString f = "CREATE PROCEDURE " + procName + "(" + paramQuery + ")\nAS LANGUAGE JAVA\nNAME '"
             + javaBindingSql + "'";
 
     proc = new Procedure(procName, QUuid::createUuid().toString(), v, false);
@@ -315,7 +315,7 @@ Function* CUBRIDDatabaseEngine::reverseEngineerFunc(Connection *c, const QString
     }
 
     paramQuery = paramQuery.left(paramQuery.length() - 2); // remove last ", "
-    QString f = "CREATE FUNCTION " + funcName + "(" + paramQuery + ") RETURN " + returnSql + "\nAS LANGAUGE JAVA\nNAME '"
+    QString f = "CREATE FUNCTION " + funcName + "(" + paramQuery + ") RETURN " + returnSql + "\nAS LANGUAGE JAVA\nNAME '"
             + javaBindingSql + "'";
 
     proc = new Function(funcName, QUuid::createUuid().toString(), v, false);
@@ -480,7 +480,7 @@ Table* CUBRIDDatabaseEngine::reverseEngineerTable(Connection *conn, const QStrin
             createdIndexes.insert(indexName, idx);
         }
 
-        idx->addColumn(tab->getColumn(columnName), ascDesc, keyOrder.toInt());
+        idx->addColumn(tab->getColumn(columnName), ascDesc, keyOrder.toInt() + 1);
         if(!tab->hasIndex(indexName))
         {
             tab->addIndex(idx);

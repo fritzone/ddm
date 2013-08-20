@@ -19,10 +19,14 @@ public:
     QString getUser();
     QString getPassword();
     int getPort();
+    QString getDatabase();
+
     QString getSqliteFile();
     int getSqliteVersion();
+
     void setMySqlMode();
     void setSqliteMode();
+    void setCubridMode();
 
 private slots:
 

@@ -667,7 +667,7 @@ PROGRAMMING_LANGUAGES ProcedureForm::getTargetLanguage()
         return LANGUAGE_JAVA;
     }
 
-    return LANGAUGE_INVALID;
+    return LANGUAGE_INVALID;
 }
 
 void ProcedureForm::initJavaMaps()

@@ -364,6 +364,11 @@ QString DefaultDatabaseEngine::getStoredMethodReturnKeyword()
     return DatabaseEngineManager::instance().getStoredMethodReturnKeyword(getName().toUpper());
 }
 
+QString DefaultDatabaseEngine::getTriggerBodyDefinitionStatement()
+{
+    return DatabaseEngineManager::instance().getTriggerBodyDefinitionStatement(getName().toUpper());
+}
+
 bool DefaultDatabaseEngine::createDatabase(Connection*)
 {
     return true;

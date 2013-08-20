@@ -7,6 +7,8 @@
 #include "db_DatabaseEngine.h"
 #include "MySqlConnection.h"
 #include "SqliteConnection.h"
+#include "conn_CUBRID.h"
+#include "strings.h"
 
 #include <QMessageBox>
 
@@ -21,21 +23,30 @@ ReverseEngineerWizard::ReverseEngineerWizard(DatabaseEngine* engine) : QWizard()
     m_optionsPage(new ReverseEngineerWizardOptionsForm),
     m_host(""), m_user(""), m_pass(""), m_database(""), m_port(0), m_sqliteFile(), m_sqliteVersion(3)
 {
-    if(getDbTypeName() == "MYSQL")
+    QString dbName = getDbTypeName();
+
+    if(dbName == strMySql)
     {
         m_welcomePage->setMySqlMode();
     }
     else
+    if(dbName == strCUBRID)
+    {
+        m_welcomePage->setCubridMode();
+    }
+    else
+    if(dbName == strSqlite)
     {
         m_welcomePage->setSqliteMode();
     }
 
     // the wizard is highly fragmented because the SQLITE DB does not support procedures and functions
+    // the CUBRID DB does not support database selection, etc...
 
     addPage(m_welcomePage);
 
     // add the databases page only if it works as a MySQL wizard
-    if(getDbTypeName() == "MYSQL")
+    if(dbName == strMySql)
     {
         addPage(m_databasesPage);
     }
@@ -43,24 +54,31 @@ ReverseEngineerWizard::ReverseEngineerWizard(DatabaseEngine* engine) : QWizard()
     addPage(m_tablesPage);
     addPage(m_viewsPage);
     // add the procedures and functions only if it acts like a mysql wizard
-    if(getDbTypeName() == "MYSQL")
+    if(dbName == strMySql || dbName == strCUBRID)
     {
         addPage(m_proceduresPage);
         addPage(m_functionsPage);
     }
     addPage(m_triggersPage);
     addPage(m_optionsPage);
+
     setWindowTitle(QObject::tr("Reverse Engineer a Database"));
 }
 
 void ReverseEngineerWizard::gatherConnectionData()
 {
-    if(getDbTypeName() == "MYSQL")
+    QString dbName = getDbTypeName();
+    if(dbName == strMySql || dbName == strCUBRID)
     {
         m_host = m_welcomePage->getHost();
         m_user = m_welcomePage->getUser();
         m_pass = m_welcomePage->getPassword();
         m_port = m_welcomePage->getPort();
+
+        if(dbName == strCUBRID)
+        {
+            m_database = m_welcomePage->getDatabase();
+        }
     }
     else
     {
@@ -89,31 +107,38 @@ bool ReverseEngineerWizard::connectAndRetrieveDatabases()
 
 bool ReverseEngineerWizard::selectDatabase()
 {
-    if(getDbTypeName() == "MYSQL")
+    QString dbName = getDbTypeName();
+    if(dbName == strMySql)
     {
         m_database = m_databasesPage->getSelectedDatabase();
-        if(m_database.length() > 0) return true;
+        if(m_database.length() > 0)
+        {
+            return true;
+        }
     }
     else
+    if(dbName == strCUBRID)
     {
-        if(m_sqliteFile.length() > 0) return true;
+        m_database = m_welcomePage->getDatabase();
+        if(m_database.length() > 0)
+        {
+            return true;
+        }
+    }
+    else
+    if(dbName == strCUBRID)
+    {
+        if(m_sqliteFile.length() > 0)
+        {
+            return true;
+        }
     }
     return false;
 }
 
 bool ReverseEngineerWizard::connectAndRetrieveViews()
 {
-    Connection* c = 0;
-
-    if(getDbTypeName() == "MYSQL")
-    {
-        c = new MySqlConnection("temp", m_host, m_user, m_pass, m_database, false, false, m_port);
-    }
-    else
-    {
-        c = new SqliteConnection("temp", m_sqliteFile, false, m_sqliteVersion);
-    }
-
+    Connection* c = getConnectionforDb();
     if(!c) return false;
 
     QStringList views = m_engine->getAvailableViews(c);
@@ -128,17 +153,7 @@ bool ReverseEngineerWizard::connectAndRetrieveViews()
 
 bool ReverseEngineerWizard::connectAndRetrieveFunctions()
 {
-    Connection* c = 0;
-
-    if(getDbTypeName() == "MYSQL")
-    {
-        c = new MySqlConnection("temp", m_host, m_user, m_pass, m_database, false, false, m_port);
-    }
-    else
-    {
-        c = new SqliteConnection("temp", m_sqliteFile, false, m_sqliteVersion);
-    }
-
+    Connection* c = getConnectionforDb();
     if(!c) return false;
 
     QStringList funcs = m_engine->getAvailableStoredFunctions(c);
@@ -153,17 +168,7 @@ bool ReverseEngineerWizard::connectAndRetrieveFunctions()
 
 bool ReverseEngineerWizard::connectAndRetrieveProcedures()
 {
-    Connection* c = 0;
-
-    if(getDbTypeName() == "MYSQL")
-    {
-        c = new MySqlConnection("temp", m_host, m_user, m_pass, m_database, false, false, m_port);
-    }
-    else
-    {
-        c = new SqliteConnection("temp", m_sqliteFile, false, m_sqliteVersion);
-    }
-
+    Connection* c = getConnectionforDb();
     if(!c) return false;
 
     QStringList procs = m_engine->getAvailableStoredProcedures(c);
@@ -178,17 +183,7 @@ bool ReverseEngineerWizard::connectAndRetrieveProcedures()
 
 bool ReverseEngineerWizard::connectAndRetrieveTriggers()
 {
-    Connection* c = 0;
-
-    if(getDbTypeName() == "MYSQL")
-    {
-        c = new MySqlConnection("temp", m_host, m_user, m_pass, m_database, false, false, m_port);
-    }
-    else
-    {
-        c = new SqliteConnection("temp", m_sqliteFile, false, m_sqliteVersion);
-    }
-
+    Connection* c = getConnectionforDb();
     if(!c) return false;
 
     QStringList triggers = m_engine->getAvailableTriggers(c);
@@ -203,17 +198,7 @@ bool ReverseEngineerWizard::connectAndRetrieveTriggers()
 
 bool ReverseEngineerWizard::connectAndRetrieveTables()
 {
-    Connection* c = 0;
-
-    if(getDbTypeName() == "MYSQL")
-    {
-        c = new MySqlConnection("temp", m_host, m_user, m_pass, m_database, false, false, m_port);
-    }
-    else
-    {
-        c = new SqliteConnection("temp", m_sqliteFile, false, m_sqliteVersion);
-    }
-
+    Connection *c = getConnectionforDb();
     if(!c) return false;
 
     QStringList tables = m_engine->getAvailableTables(c);
@@ -260,4 +245,26 @@ bool ReverseEngineerWizard::createDataTypesForColumns()
 QString ReverseEngineerWizard::getDbTypeName() const
 {
     return m_engine->getDatabaseEngineName().toUpper();
+}
+
+Connection *ReverseEngineerWizard::getConnectionforDb() const
+{
+    Connection* c = 0;
+    QString dbName = getDbTypeName();
+    QString temp("temp");
+    if(dbName == strMySql)
+    {
+        c = new MySqlConnection(temp, m_host, m_user, m_pass, m_database, false, false, m_port);
+    }
+    else
+    if(dbName == strCUBRID)
+    {
+        c = new CUBRIDConnection(temp, m_host, m_user, m_pass, m_database, false, false, m_port);
+    }
+    else
+    if(dbName == strSqlite)
+    {
+        c = new SqliteConnection(temp, m_sqliteFile, false, m_sqliteVersion);
+    }
+    return c;
 }

@@ -76,6 +76,8 @@ public:
     virtual QMap<PARAMETER_FIELD_ROLES, int> parameterFieldOrders();
     virtual QString getDefaultStoredMethodBody(PROGRAMMING_LANGUAGES lang);
     virtual QString getStoredMethodReturnKeyword();
+    virtual QString getTriggerBodyDefinitionStatement();
+
 };
 
 #endif // DB_DEFAULTDATABASEENGINE_H

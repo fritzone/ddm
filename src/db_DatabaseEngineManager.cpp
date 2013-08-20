@@ -343,3 +343,18 @@ QString DatabaseEngineManager::getStoredMethodReturnKeyword(const QString &dbNam
 
     return "";
 }
+
+void DatabaseEngineManager::setTriggerBodyDefinitionStatement(const QString &dbName, QString keyword)
+{
+    m_triggerStatements[dbName.toUpper()] = keyword;
+}
+
+QString DatabaseEngineManager::getTriggerBodyDefinitionStatement(const QString &dbName)
+{
+    if(m_triggerStatements.contains(dbName.toUpper()))
+    {
+        return m_triggerStatements[dbName.toUpper()];
+    }
+
+    return "";
+}

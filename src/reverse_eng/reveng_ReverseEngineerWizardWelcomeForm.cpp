@@ -43,18 +43,39 @@ int ReverseEngineerWizardWelcomeForm::getPort()
     return ui->txtPort->text().toInt();
 }
 
+QString ReverseEngineerWizardWelcomeForm::getDatabase()
+{
+    return ui->txtDatabaseName->text();
+}
+
 void ReverseEngineerWizardWelcomeForm::setMySqlMode()
 {
-    ui->toolBox->setCurrentIndex(0);
-    ui->toolBox->setItemEnabled(1, false);
-    m_mode = "MYSQL";
+    ui->tabWidget->removeTab(1);
+    ui->tabWidget->setTabIcon(0, IconFactory::getMySqlIcon());
+    ui->tabWidget->setTabText(0, strCamelMySql);
+
+    ui->txtDatabaseName->hide();
+    ui->lblDatabaseName->hide();
+
+    m_mode = strMySql;
 }
 
 void ReverseEngineerWizardWelcomeForm::setSqliteMode()
 {
-    ui->toolBox->setCurrentIndex(1);
-    ui->toolBox->setItemEnabled(0, false);
-    m_mode = "SQLITE";
+    ui->tabWidget->removeTab(0);
+    m_mode = strSqlite;
+}
+
+void ReverseEngineerWizardWelcomeForm::setCubridMode()
+{
+    ui->tabWidget->removeTab(1);
+    ui->tabWidget->setTabIcon(0, IconFactory::getCUBRIDIcon());
+    ui->tabWidget->setTabText(0, strCUBRID);
+
+    ui->txtDatabaseName->show();
+    ui->lblDatabaseName->show();
+
+    m_mode = strCUBRID;
 }
 
 QString ReverseEngineerWizardWelcomeForm::getSqliteFile()

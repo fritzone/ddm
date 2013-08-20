@@ -142,7 +142,7 @@ void TriggerForm::disableEditingControls(bool dis)
 
 void TriggerForm::initSql()
 {
-    QString sql = "BEGIN\nselect(\"write your trigger body here.\");\nEND";
+    QString sql = "";
     m_forcedChange = true;
     m_textEdit->setPlainText(sql);
     m_forcedChange = false;
