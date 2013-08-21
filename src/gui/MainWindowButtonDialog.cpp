@@ -4,7 +4,7 @@
 #include "gui_HelpWindow.h"
 #include "helper_MostRecentlyUsedFiles.h"
 #include "Configuration.h"
-
+#include <QDebug>
 #include <QApplication>
 #include <QDesktopWidget>
 #include <QKeyEvent>
@@ -22,9 +22,8 @@ MainWindowButtonDialog::MainWindowButtonDialog(QWidget *parent) :
     gradient.setColorAt(1, Qt::white);
     QBrush brush(gradient);
 
-#ifndef Q_WS_X11
+
     thePalette.setBrush(QPalette::Window, brush);
-#endif
 
     setPalette(thePalette);
 
@@ -155,20 +154,15 @@ void MainWindowButtonDialog::showMe()
                 Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint | Qt::X11BypassWindowManagerHint);
 
     QDesktopWidget *d = QApplication::desktop();
-
-
-    QRect t = d->availableGeometry(this);
-//    qDebug() <<d->screenCount() << "<-Cnt " << d->screen()->rect() << "<- ACTSCREEN " << d->screenNumber(MainWindow::instance()) << "AV_THS=" << d->availableGeometry(this) << " RECT=" << d->rect() << "AVAIL_MW_SCREE=" << d->availableGeometry(d->screenNumber(MainWindow::instance())) << " AVA_MW=" << t << " MAIN=" << MainWindow::instance()->rect();
-
+    int screen = d->screenNumber(MainWindow::instance());
+    QRect t = d->availableGeometry(MainWindow::instance());
     move(mapToGlobal(this->geometry().topLeft()).x() + t.center().x() - width() / 2, t.center().y()- height() / 2);
-//    qDebug() << rect();
     show();
     raise();
 }
 
 void MainWindowButtonDialog::keyPressEvent(QKeyEvent *e)
 {
-//    qDebug() << e->key();
     if(e->key() == Qt::Key_Escape)
     {
         close();

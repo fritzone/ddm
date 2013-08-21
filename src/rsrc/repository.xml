@@ -2221,25 +2221,26 @@ END]]>
 
       <datatype-groups>
         <!-- Text types -->
-        <datatype-group type="0" name="Text/String"> </datatype-group>
-        <datatype name="CHAR" max-size="-1"/>
-        <datatype name="CLOB" max-size="-1"/>
-        <datatype name="TEXT" max-size="-1" default="1"/>
-
+        <datatype-group type="0" name="Text/String"> 
+          <datatype name="CHAR" max-size="0"/>
+          <datatype name="CLOB" max-size="0"/>
+          <datatype name="TEXT" max-size="0" default="1"/>
+        </datatype-group>
+        
         <!-- Numerical types -->
         <datatype-group type="1" name="Numeric">
-          <datatype name="INT" max-size="-1" default="1"/>
-          <datatype name="REAL" max-size="-1"/>
+          <datatype name="INT" max-size="0" default="1"/>
+          <datatype name="REAL" max-size="0"/>
         </datatype-group>
 
         <!-- Boolean types -->
         <datatype-group type="2" name="Boolean">
-          <datatype name="BOOLEAN" max-size="-1" default="1"/>
+          <datatype name="BOOLEAN" max-size="0" default="1"/>
         </datatype-group>
 
         <!-- Date time types -->
         <datatype-group type="3" name="Date/Time">
-          <datatype name="DATETIME" max-size="-1" default="1"/>
+          <datatype name="DATETIME" max-size="0" default="1"/>
         </datatype-group>
 
         <!-- Blob types -->
@@ -2253,6 +2254,7 @@ END]]>
         <!-- Spatial types -->
         <datatype-group type="6" name="Spatial"> </datatype-group>
       </datatype-groups>
+      
       <keywords>
         <keyword description="" text="ABORT"/>
         <keyword description="" text="ACTION"/>
@@ -2645,6 +2647,29 @@ END]]>
         </function>
 
       </functions>
+      <spis>
+        <!-- The temporary table SPI -->
+        <spi class-uid="{10000002-0000-0000-0000-000000000001}"
+          sql-role-uid="{10000004-0000-0000-0000-000000000001}"
+          referred-class-uid="{10000001-0000-0000-0000-000000000001}" name="Temporary"
+          gui-text="Temporary table" gui-group="General" default="0" db-major="5" db-minor="0"
+          sql="TEMPORARY">
+          <tooltip>
+            <![CDATA[Create a <b>TEMPORARY</b> table.<p> A TEMPORARY table is visible only to the current connection, and is dropped automatically when the connection is closed.]]>
+          </tooltip>
+        </spi>
+
+        <!-- Create a table only if it does not exist SP -->
+        <spi class-uid="{10000002-0000-0000-0000-000000000001}"
+          sql-role-uid="{10000004-0000-0000-0000-000000000002}"
+          referred-class-uid="{10000001-0000-0000-0000-000000000001}" name="IfNotExists"
+          gui-text="Create only if the table does not exist" gui-group="General" default="1"
+          db-major="5" db-minor="0" sql="IF NOT EXISTS">
+          <tooltip>
+            <![CDATA[Specify the <b>IF NOT EXISTS</b> option.<p> The keywords IF NOT EXISTS prevent an error from occurring if the table exists. However, there is no verification that the existing table has a structure identical to that indicated by the CREATE TABLE statement.]]>
+          </tooltip>
+        </spi>
+      </spis>
     </database>
 
     <database name="CUBRID" id="CUBRID" class-uid="{100000DB-0000-0000-0000-000000000003}">

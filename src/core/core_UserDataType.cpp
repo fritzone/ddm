@@ -169,8 +169,8 @@ DT_TYPE UserDataType::toDtType(int a)
     case 0: return DT_STRING;
     case 1: return DT_NUMERIC;
     case 2: return DT_BOOLEAN;
-    case 3: return DT_BLOB;
-    case 4: return DT_DATETIME;
+    case 3: return DT_DATETIME;
+    case 4: return DT_BLOB;
     case 5: return DT_MISC;
     case 6: return DT_SPATIAL;
     default:

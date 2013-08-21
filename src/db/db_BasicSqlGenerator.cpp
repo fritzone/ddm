@@ -588,7 +588,7 @@ QStringList BasicSqlGenerator::generateTriggerSql(Trigger* t, const QHash<QStrin
     s += correctCase("on");
     s += t->getTable() + strSpace;
     s += correctCase(m_engine->getTriggerBodyDefinitionStatement());
-    s += strNewline + t->getSql() + strSemicolon + strNewline;
+    s += strNewline + t->getSql();
     result << s;
     return result;
 }
