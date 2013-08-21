@@ -601,9 +601,9 @@ void NewTableForm::disableEditingControls(bool disabled)
     m_ui->tableStartupValues->setEnabled(!disabled);
     m_ui->txtDescription->setEnabled(!disabled);
 
-    m_wspForColumn->setEnabled(!disabled);
-    m_wspForIndex->setEnabled(!disabled);
-    m_mainWsp->setEnabled(!disabled);
+    if(m_wspForColumn) m_wspForColumn->setEnabled(!disabled);
+    if(m_wspForIndex) m_wspForIndex->setEnabled(!disabled);
+    if(m_mainWsp) m_mainWsp->setEnabled(!disabled);
 }
 
 void NewTableForm::focusOnName()

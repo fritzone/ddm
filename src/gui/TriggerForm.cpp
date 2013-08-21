@@ -157,6 +157,7 @@ void TriggerForm::initSql()
                                            Configuration::instance().sqlGenerationOptions(), 0).join("\n");
         sql = sql.trimmed();
     }
+    sql += "\n";
     m_forcedChange = true;
     m_textEdit->setPlainText(sql);
     m_textEdit->disableRow(1);
