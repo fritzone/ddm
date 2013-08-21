@@ -1,4 +1,4 @@
-<!DOCTYPE DBM>
+﻿<!DOCTYPE DBM>
 <Solutions>
  <Solution Name="defaults">
   <Projects>
@@ -12,7 +12,7 @@
         <Description>TEXT - Datatype for Sqlite</Description>
         <Values/>
        </DataType>
-       <DataType SqlType="INTEGER" Size="" Type="Numeric" Name="INTEGER" Codepage="" DefaultValue="0" Unsigned="0" CanBeNull="1" AutoIncrement="0">
+       <DataType SqlType="INT" Size="" Type="Numeric" Name="INTEGER" Codepage="" DefaultValue="0" Unsigned="0" CanBeNull="1" AutoIncrement="0">
         <Description>INTEGER - Datatype for Sqlite</Description>
         <Values/>
        </DataType>
@@ -22,6 +22,10 @@
        </DataType>
        <DataType SqlType="BLOB" Size="" Type="Blob/Binary" Name="BLOB" Codepage="" DefaultValue="" Unsigned="0" CanBeNull="1" AutoIncrement="0">
         <Description>BLOB - Datatype for Sqlite</Description>
+        <Values/>
+       </DataType>
+       <DataType SqlType="DATETIME" Size="" Type="Date/Time" Name="DATETIME" Codepage="" DefaultValue="" Unsigned="0" CanBeNull="1" AutoIncrement="0">
+        <Description>DATETIME - Datatype for Sqlite</Description>
         <Values/>
        </DataType>
       </DataTypes>

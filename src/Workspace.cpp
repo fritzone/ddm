@@ -538,11 +538,11 @@ Trigger* Workspace::createTrigger(Version *v)
     Trigger* trigger = new Trigger(NameGenerator::getUniqueName(v, (itemGetter)&Version::getTrigger, QString("trig")),
                                    QUuid::createUuid().toString(), v);
     frm->setTrigger(trigger);
-    frm->initSql();
     frm->feedInTables(names);
     trigger->setTable(names[0]);
     frm->feedInTriggerEvents(Workspace::getInstance()->currentProjectsEngine()->getTriggerEvents());
     frm->feedInTriggerTimes(Workspace::getInstance()->currentProjectsEngine()->getTriggerTimings());
+    frm->initSql();
     v->addTrigger(trigger, false);
     v->getGui()->createTriggerTreeEntry(trigger);
     MainWindow::instance()->setCentralWidget(frm);

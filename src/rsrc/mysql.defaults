@@ -1,4 +1,4 @@
-<!DOCTYPE DBM>
+﻿<!DOCTYPE DBM>
 <Solutions>
  <Solution Name="defaults">
   <Projects>
@@ -150,6 +150,10 @@
        </DataType>
        <DataType SqlType="YEAR" Size="" Type="Date/Time" Name="YEAR" Codepage="" DefaultValue="" Unsigned="0" CanBeNull="1" AutoIncrement="1">
         <Description>YEAR - Datatype for MySQL</Description>
+        <Values/>
+       </DataType>
+       <DataType SqlType="BLOB" Size="" Type="Blob/Binary" Name="BLOB" Codepage="" DefaultValue="" Unsigned="0" CanBeNull="1" AutoIncrement="1">
+        <Description>BLOB - Datatype for MySQL</Description>
         <Values/>
        </DataType>
        <DataType SqlType="BINARY" Size="65535" Type="Blob/Binary" Name="BINARY(65535)" Codepage="" DefaultValue="" Unsigned="0" CanBeNull="1" AutoIncrement="1">

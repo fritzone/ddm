@@ -24,7 +24,6 @@ NewDataTypeForm::NewDataTypeForm(Version *v, DT_TYPE t, DatabaseEngine* dbe, QWi
 {
     m_ui->setupUi(this);
 
-    m_ui->lblUnsigned->hide();
     m_ui->chkUnsigned->hide();
 
     m_ui->lblWidth->hide();
@@ -97,7 +96,6 @@ void NewDataTypeForm::focusOnName()
 void NewDataTypeForm::basicDTselected(QString newSelection)
 {
     m_ui->cmbDTSQLType->clear();
-    m_ui->lblUnsigned->hide();
     m_ui->chkUnsigned->hide();
 
     hideSpecialComponents();
@@ -111,7 +109,6 @@ void NewDataTypeForm::basicDTselected(QString newSelection)
     }
     if(newSelection == strNumeric)
     {
-        m_ui->lblUnsigned->show();
         m_ui->chkUnsigned->show();
     }
 }
@@ -139,7 +136,6 @@ void NewDataTypeForm::resetContent()
     m_ui->txtWidth->setText("");
     m_ui->chkUnsigned->setChecked(false);
 
-    m_ui->lblUnsigned->hide();
     m_ui->chkUnsigned->hide();
 
     hideSpecialComponents();

@@ -1170,7 +1170,7 @@ QList<QString> DefaultVersionImplementation::getSqlScript(bool generateDelimiter
     }
 
     // and the triggers
-//    finalSql.append("\n");
+    finalSql.append(strNewline);
 
 //    if(m_data.m_triggers.size() && comments)
 //    {
@@ -1183,6 +1183,7 @@ QList<QString> DefaultVersionImplementation::getSqlScript(bool generateDelimiter
         QString s = "";
         //if (comments) s = "-- Trigger " + m_data.m_triggers.at(i)->getName() + strNewline;
         QStringList t = m_data.m_triggers.at(i)->generateSqlSource(m_project->getEngine()->getSqlGenerator(), opts, dest);
+        t << (strSemicolon + strNewline);
         for(int j=0; j<t.size(); j++)
         {
             s += t.at(j) + " ";

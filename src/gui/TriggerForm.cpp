@@ -10,6 +10,8 @@
 #include "GuiElements.h"
 #include "core_Table.h"
 #include "core_TableInstance.h"
+#include "db_DatabaseEngine.h"
+#include "Configuration.h"
 
 TriggerForm::TriggerForm(Version *v, Connection* c, bool reverseSource, bool fc, QWidget *parent) :
     QWidget(parent),
@@ -39,7 +41,9 @@ TriggerForm::TriggerForm(Version *v, Connection* c, bool reverseSource, bool fc,
 void TriggerForm::textChanged()
 {
     if(m_reverseSource) return;
-    m_trigger->setSql(m_textEdit->toPlainText());
+    QStringList lines = m_textEdit->toPlainText().split("\n");
+    lines.removeFirst();
+    m_trigger->setSql(lines.join("\n"));
 }
 
 TriggerForm::~TriggerForm()
@@ -143,32 +147,54 @@ void TriggerForm::disableEditingControls(bool dis)
 void TriggerForm::initSql()
 {
     QString sql = "";
+    if(m_trigger)
+    {
+        m_trigger->setTable(ui->cmbTables->currentText());
+        m_trigger->setTime(ui->cmbTime->currentText());
+        m_trigger->setEvent(ui->cmbEvent->currentText());
+
+        sql = m_trigger->generateSqlSource(m_version->getProject()->getEngine()->getSqlGenerator(),
+                                           Configuration::instance().sqlGenerationOptions(), 0).join("\n");
+        sql = sql.trimmed();
+    }
     m_forcedChange = true;
     m_textEdit->setPlainText(sql);
+    m_textEdit->disableRow(1);
     m_forcedChange = false;
     m_textEdit->updateLineNumbers();
 }
 
 void TriggerForm::feedInTables(const QVector<QString> &tables, bool oop)
 {
+    m_forcedChange = true;
+
     ui->cmbTables->clear();
     for(int i=0; i<tables.size(); i++)
     {
         ui->cmbTables->addItem(oop?IconFactory::getTabinstIcon():IconFactory::getTableIcon(), tables.at(i));
     }
+
+    m_forcedChange = false;
+
 }
 
 void TriggerForm::feedInTables(const QStringList &tables)
 {
+    m_forcedChange = true;
+
     ui->cmbTables->clear();
     for(int i=0; i<tables.size(); i++)
     {
         ui->cmbTables->addItem(IconFactory::getTableIcon(), tables.at(i));
     }
+
+    m_forcedChange = false;
+
 }
 
 void TriggerForm::feedInTriggerEvents(const QStringList &events)
 {
+    m_forcedChange = true;
     ui->cmbEvent->clear();
     for(int i=0; i<events.size(); i++)
     {
@@ -178,10 +204,13 @@ void TriggerForm::feedInTriggerEvents(const QStringList &events)
         if(events.at(i) == "UPDATE") icon = IconFactory::getTriggerUpdateIcon();
         ui->cmbEvent->addItem(icon, events.at(i));
     }
+    m_forcedChange = false;
 }
 
 void TriggerForm::feedInTriggerTimes(const QStringList &times)
 {
+    m_forcedChange = true;
+
     ui->cmbTime->clear();
     for(int i=0; i<times.size(); i++)
     {
@@ -190,11 +219,17 @@ void TriggerForm::feedInTriggerTimes(const QStringList &times)
         if(times.at(i) == "AFTER") icon = IconFactory::getTriggerAfterIcon();
         ui->cmbTime->addItem(icon, times.at(i));
     }
+    m_forcedChange = false;
 }
 
 void TriggerForm::showSql()
 {
-    m_textEdit->setPlainText(m_trigger->getSql());
+    QString sql = m_trigger->generateSqlSource(m_version->getProject()->getEngine()->getSqlGenerator(),
+                                       Configuration::instance().sqlGenerationOptions(), 0).join("\n");
+    sql = sql.trimmed();
+
+    m_textEdit->setPlainText(sql);
+    m_textEdit->disableRow(1);
     m_textEdit->updateLineNumbers();
 }
 
@@ -202,28 +237,37 @@ void TriggerForm::nameChanged(QString a)
 {
     if(m_reverseSource) return;
     if(!m_trigger) return;
+    if(m_forcedChange) return;
+
     m_trigger->setName(a);
     if(m_trigger->getLocation())
     {
         m_trigger->setDisplayText(a);
     }
+    showSql();
 }
 
 void TriggerForm::eventChanged(QString a)
 {
     if(m_reverseSource) return;
+    if(m_forcedChange) return;
     if(m_trigger) m_trigger->setEvent(a);
+    showSql();
 }
 
 void TriggerForm::whenChanged(QString a)
 {
     if(m_reverseSource) return;
+    if(m_forcedChange) return;
+
     if(m_trigger) m_trigger->setTime(a);
+    showSql();
 }
 
 void TriggerForm::tableChanged(QString a)
 {
     if(m_reverseSource) return;
+    if(m_forcedChange) return;
     if(!m_trigger) return;
 
     Table* t = m_trigger->version()->getTable(a);
@@ -239,6 +283,7 @@ void TriggerForm::tableChanged(QString a)
             m_trigger->setTable(tinst->getName());
         }
     }
+    showSql();
 }
 
 void TriggerForm::descriptionChanged()

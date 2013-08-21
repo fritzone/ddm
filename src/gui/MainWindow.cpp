@@ -105,7 +105,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), m_ui(new Ui::Main
     showMaximized();
     setWindowTitle(tr("DDM - [No Solution]"));
 
-    m_btndlg = new MainWindowButtonDialog();
+    m_btndlg = new MainWindowButtonDialog(this);
     if(Configuration::instance().showStartupdialog())
     {
         m_btndlg->showMe();
@@ -1007,7 +1007,8 @@ void MainWindow::showNewDataTypeWindow(int a, Version *v)
 
 void MainWindow::onNewDataType()
 {
-    showNewDataTypeWindow(DT_INVALID, m_workspace->workingVersion());
+    QWidget* w = m_ui->mainToolBar->widgetForAction(m_ui->action_NewDataType);
+    m_ui->action_NewDataType->menu()->popup(w->mapToGlobal(QPoint(0, w->height())));
 }
 
 bool MainWindow::onSaveNewDataType(const QString& name, const QString& type, const QString& sqlType, const QString& size, const QString& defaultValue,
@@ -1168,6 +1169,7 @@ void MainWindow::onOpenSolution()
             m_btndlg->setWindowFlags(flags |Qt::SplashScreen | Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint);
 #endif
             m_btndlg->show();
+            m_btndlg->fixButtons();
         }
         return;
     }

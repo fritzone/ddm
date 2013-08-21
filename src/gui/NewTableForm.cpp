@@ -2891,12 +2891,15 @@ void NewTableForm::prepareSpsTabs()
     if(m_table)
     {
         // and now create the tab widgets for the SPs
-        m_mainWsp = new WidgetForSpecificProperties(m_dbEngine, m_table, this);
         QVector<SpInstance*> allSps = m_table->getSpInstances(m_dbEngine);
-        m_mainWsp->feedInSpecificProperties(allSps, uidTable);
+        if(! allSps.isEmpty())
+        {
+            m_mainWsp = new WidgetForSpecificProperties(m_dbEngine, m_table, this);
+            m_mainWsp->feedInSpecificProperties(allSps, uidTable);
 
-        QString dbName = m_dbEngine->getDatabaseEngineName();
-        m_ui->tabWidget->insertTab(4, m_mainWsp, IconFactory::getIconForDatabase(dbName), dbName);
+            QString dbName = m_dbEngine->getDatabaseEngineName();
+            m_ui->tabWidget->insertTab(4, m_mainWsp, IconFactory::getIconForDatabase(dbName), dbName);
+        }
 
         prepareSpsTabsForIndex(0);
         prepareSpsTabsForColumn(0);
@@ -2905,14 +2908,6 @@ void NewTableForm::prepareSpsTabs()
 
 void NewTableForm::prepareSpsTabsForColumn(Column* col)
 {
-    // clean the tab
-    while(m_ui->tabWidgetForColumnDetails->count() > 1)
-    {
-        m_ui->tabWidgetForColumnDetails->removeTab(1);
-    }
-
-    // TODO: this is very similar to the one from the index below
-    m_wspForColumn = new WidgetForSpecificProperties(m_dbEngine, col, this);
     QVector<SpInstance*> allSps;
     if(col)
     {
@@ -2931,6 +2926,18 @@ void NewTableForm::prepareSpsTabsForColumn(Column* col)
         }
     }
 
+    if(allSps.isEmpty())
+    {
+        return;
+    }
+
+    // clean the tab
+    while(m_ui->tabWidgetForColumnDetails->count() > 1)
+    {
+        m_ui->tabWidgetForColumnDetails->removeTab(1);
+    }
+
+    m_wspForColumn = new WidgetForSpecificProperties(m_dbEngine, col, this);
     m_wspForColumn->feedInSpecificProperties(allSps, uidColumn);
     m_wspForColumn->taylorToSpecificObject(col);
 
@@ -2941,14 +2948,6 @@ void NewTableForm::prepareSpsTabsForColumn(Column* col)
 
 void NewTableForm::prepareSpsTabsForIndex(Index* idx)
 {
-    // clean the tab
-    while(m_ui->tabWidgetForIndex->count() > 1)
-    {
-        m_ui->tabWidgetForIndex->removeTab(1);
-    }
-
-    // create the new tab pages
-    m_wspForIndex = new WidgetForSpecificProperties(m_dbEngine, idx, this);
     QVector<SpInstance*> allSps;
     if(idx)
     {
@@ -2967,6 +2966,19 @@ void NewTableForm::prepareSpsTabsForIndex(Index* idx)
         }
     }
 
+    if(allSps.isEmpty())
+    {
+        return;
+    }
+
+    // clean the tab
+    while(m_ui->tabWidgetForIndex->count() > 1)
+    {
+        m_ui->tabWidgetForIndex->removeTab(1);
+    }
+
+    // create the new tab pages
+    m_wspForIndex = new WidgetForSpecificProperties(m_dbEngine, idx, this);
     m_wspForIndex->feedInSpecificProperties(allSps, uidIndex);
     m_wspForIndex->taylorToSpecificObject(m_table);
 

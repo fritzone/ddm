@@ -81,13 +81,28 @@ ContextMenuCollection::ContextMenuCollection()
     action_AddDiagram = new QAction(QObject::tr("New Diagram"), 0);
     action_CopyColumn = new QAction(QObject::tr("Copy"), 0);
     action_PasteColumn = new QAction(QObject::tr("Paste"), 0);
+
     action_addString = new QAction(QObject::tr("New String Type"), 0);
+    action_addString->setIcon(IconFactory::getIconForDataType(DT_STRING));
+
     action_addNumeric = new QAction(QObject::tr("New Numeric Type"), 0);
+    action_addNumeric->setIcon(IconFactory::getIconForDataType(DT_NUMERIC));
+
     action_addDateType = new QAction(QObject::tr("New Date/Time Type"), 0);
+    action_addDateType->setIcon(IconFactory::getIconForDataType(DT_DATETIME));
+
     action_addBool = new QAction(QObject::tr("New Boolean Type"), 0);
+    action_addBool->setIcon(IconFactory::getIconForDataType(DT_BOOLEAN));
+
     action_addMisc = new QAction(QObject::tr("New Misc Type"), 0);
+    action_addMisc->setIcon(IconFactory::getIconForDataType(DT_MISC));
+
     action_addBlob = new QAction(QObject::tr("New Blob Type"), 0);
+    action_addBlob->setIcon(IconFactory::getIconForDataType(DT_BLOB));
+
     action_addSpatial = new QAction(QObject::tr("New Spatial Type"), 0);
+    action_addSpatial->setIcon(IconFactory::getIconForDataType(DT_SPATIAL));
+
     action_gotoIssueLocation = new QAction(QObject::tr("Goto Issue Origin"), 0);
     action_ignoreIssue = new QAction(QObject::tr("Ignore this issue"), 0);
     action_ignoreIssuesFromThisTable = new QAction(QObject::tr("Ignore issues"), 0);
