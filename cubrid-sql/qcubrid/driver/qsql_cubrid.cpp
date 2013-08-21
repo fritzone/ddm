@@ -679,7 +679,17 @@ bool QCubridResult::prepare(const QString &query)
     const QString stmtId = qMakePreparedStmtId();
     const QString stmt = query;
 
-    char *data = d->driver->isUtf8 ? stmt.toUtf8().data() : stmt.toLocal8Bit().data();
+    QByteArray qba;
+    if(d->driver->isUtf8)
+    {
+        qba = stmt.toUtf8().data();
+    }
+    else
+    {
+        qba = stmt.toLocal8Bit().data();
+    }
+
+    char *data = qba.data();
 
     if ((d->request = cci_prepare(d->driver->connection,
                                   data,
