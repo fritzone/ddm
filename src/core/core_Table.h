@@ -239,9 +239,9 @@ public:
     QString getAvailableIndexName(const QString& prefix);
 
     /**
-     * Creates a new index for use with the
+     * Creates a new index.
      */
-    Index* createAutoIndex(QVector<const Column*> cols);
+    Index* createAutoIndex(QVector<const Column*> cols, bool dueTofk);
 
     void addInstance(TableInstance* tinst)
     {

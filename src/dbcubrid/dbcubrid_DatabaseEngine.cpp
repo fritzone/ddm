@@ -572,7 +572,7 @@ bool CUBRIDDatabaseEngine::executeSql(Connection* c, const QStringList& sqls, co
     for(int i=0; i<sqls.size(); i++)
     {
         lastSql = sqls[i].trimmed();
-        if(lastSql.length() > 0)
+        if(lastSql.length() > 0 && ! lastSql.startsWith(strSqlComment))
         {
             QSqlQuery query(db);
 

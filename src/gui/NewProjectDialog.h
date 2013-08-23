@@ -56,10 +56,7 @@ public slots:
     void onAccept();
     void onReject();
     void onChangeProjectType(int);
-
-private:
-
-    void setupGuiForDatamodelProject();
+    void onChangeDbType();
 
 private:
     Ui::NewProjectDialog *m_ui;

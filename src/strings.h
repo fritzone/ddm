@@ -148,7 +148,9 @@ static const QString strSemicolon = ";";
 static const QString strUnderline = "_";
 static const QString strComma = ",";
 static const QString strAutoIdx = "autoidx";
-static const QString strSqlComment = "-- ";
+static const QString strAutoIdxFk = "autoidx_fk";
+static const QString strFk = "fk_";
+static const QString strSqlComment = "--";
 
 // ID like database names
 static const QString strMySql = "MYSQL";

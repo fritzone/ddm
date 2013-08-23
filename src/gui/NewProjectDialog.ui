@@ -205,7 +205,7 @@ p, li { white-space: pre-wrap; }
           </widget>
          </item>
          <item>
-          <widget class="QGroupBox" name="groupBox_2">
+          <widget class="QGroupBox" name="grpOptions">
            <property name="title">
             <string> Options </string>
            </property>
@@ -434,6 +434,86 @@ p, li { white-space: pre-wrap; }
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>radioCubrid</sender>
+   <signal>clicked()</signal>
+   <receiver>NewProjectDialog</receiver>
+   <slot>onChangeDbType()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>487</x>
+     <y>120</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>340</x>
+     <y>219</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>radioMySql</sender>
+   <signal>clicked()</signal>
+   <receiver>NewProjectDialog</receiver>
+   <slot>onChangeDbType()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>487</x>
+     <y>50</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>340</x>
+     <y>219</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>radioSqlite</sender>
+   <signal>clicked()</signal>
+   <receiver>NewProjectDialog</receiver>
+   <slot>onChangeDbType()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>487</x>
+     <y>85</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>340</x>
+     <y>219</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>chkAllowOOPModel</sender>
+   <signal>clicked()</signal>
+   <receiver>NewProjectDialog</receiver>
+   <slot>onChangeDbType()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>487</x>
+     <y>217</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>340</x>
+     <y>219</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>chkInheritDefaultDatatypes</sender>
+   <signal>clicked()</signal>
+   <receiver>NewProjectDialog</receiver>
+   <slot>onChangeDbType()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>487</x>
+     <y>189</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>340</x>
+     <y>219</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>onHelp()</slot>
@@ -441,5 +521,6 @@ p, li { white-space: pre-wrap; }
   <slot>onReject()</slot>
   <slot>onAccept()</slot>
   <slot>onChangeProjectType(int)</slot>
+  <slot>onChangeDbType()</slot>
  </slots>
 </ui>
