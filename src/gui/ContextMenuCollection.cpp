@@ -112,6 +112,7 @@ ContextMenuCollection::ContextMenuCollection()
     action_createSqlProcedure = new QAction(QObject::tr("Create SQL Procedure"), 0);
     action_createGuidedFunction = new QAction(QObject::tr("Create Guided Function"), 0);
     action_createSqlFunction = new QAction(QObject::tr("Create SQL Function"), 0);
+
     action_connectionSqlQuery = new QAction(QObject::tr("Run Script"), 0);
     action_connectionSqlQuery->setIcon(IconFactory::getSqlIcon());
     action_connectionConnect = new QAction(QObject::tr("Test Connection"), 0);
@@ -128,6 +129,7 @@ ContextMenuCollection::ContextMenuCollection()
     action_connectionNewTable->setIcon(IconFactory::getTabinstIcon());
     action_connectionRecreate = new QAction(QObject::tr("Recreate Database"), 0);
     action_connectionRecreate->setIcon(IconFactory::getRecreateDatabaseIcon());
+
     action_browsedTableInjectIntoSolution = new QAction(QObject::tr("Add to current solution"), 0);
     action_browsedTableBrowse = new QAction(QObject::tr("Browse table"), 0);
     action_browsedTableView = new QAction(QObject::tr("View table details"), 0);

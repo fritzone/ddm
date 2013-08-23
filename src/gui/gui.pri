@@ -38,7 +38,8 @@ SOURCES += \
     gui/repo_DatabaseDetailsForm.cpp \
     gui/RepositoryGuiElements.cpp \
     gui/repo_RoleListingForm.cpp \
-    gui/repo_RepositoryElementForm.cpp
+    gui/repo_RepositoryElementForm.cpp \
+    gui/gui_DBMenu.cpp
 
 HEADERS += \
     gui/AboutBoxDialog.h \
@@ -86,7 +87,8 @@ HEADERS += \
     gui/RepositoryGuiElements.h \
     gui/repo_RoleListingForm.h \
     gui/repo_RepositoryElementForm.h \
-    gui/IconedDockWidget.h
+    gui/IconedDockWidget.h \
+    gui/gui_DBMenu.h
 
 FORMS += \
     gui/AboutBoxDialog.ui \
