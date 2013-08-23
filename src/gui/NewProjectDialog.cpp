@@ -11,7 +11,7 @@ NewProjectDialog::NewProjectDialog(QWidget *parent) :
     m_ui(new Ui::NewProjectDialog)
 {
     m_ui->setupUi(this);
-    setupGuiForDatamodelProject();
+    m_ui->grpOptions->show();
 }
 
 NewProjectDialog::~NewProjectDialog()
@@ -68,18 +68,22 @@ void NewProjectDialog::onChangeProjectType(int)
     switch(projectType)
     {
     case 1: // Datamodel Project
-        setupGuiForDatamodelProject();
+        m_ui->grpOptions->show();
         break;
     case 2: // Bind to ... Project
-        m_ui->chkInheritDefaultDatatypes->hide();
-        m_ui->chkAllowOOPModel->hide();
-
+        m_ui->grpOptions->hide();
         break;
     case 3: // Rev. Eng. Project
-        m_ui->chkInheritDefaultDatatypes->show();
-        m_ui->chkAllowOOPModel->show();
+        m_ui->grpOptions->show();
         break;
     }
+
+    m_ui->txtSolutionName->setFocus();
+}
+
+void NewProjectDialog::onChangeDbType()
+{
+    m_ui->txtSolutionName->setFocus();
 }
 
 void NewProjectDialog::onHelp()
@@ -118,10 +122,4 @@ void NewProjectDialog::onAccept()
     {
         QMessageBox::critical (this, tr("Error"), tr("Please specify a valid project and solution name"), QMessageBox::Ok);
     }
-}
-
-void NewProjectDialog::setupGuiForDatamodelProject()
-{
-    m_ui->chkInheritDefaultDatatypes->show();
-    m_ui->chkAllowOOPModel->show();
 }

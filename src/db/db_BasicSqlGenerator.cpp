@@ -28,13 +28,13 @@ QString BasicSqlGenerator::generateTableCreationComments(const Table *t, const Q
         {
             if(!lines.at(i).isEmpty())
             {
-                comment += strSqlComment +  lines.at(i) + strNewline;
+                comment += strSqlComment + strSpace + lines.at(i) + strNewline;
             }
         }
     }
     else
     {
-        comment = strSqlComment
+        comment = strSqlComment + strSpace
                   + (desc.length() > 0 ? desc: "Create table " + tabName)
                   + strNewline;
     }
@@ -342,6 +342,15 @@ void BasicSqlGenerator::appendCreateIndexCommands(Table* table, QStringList& toR
             }
         }
 
+        if(idx->getName().startsWith(strAutoIdx))
+        {
+            if(m_engine->tableBlocksForeignKeyFunctionality(table))
+            {
+                // autogen index will not be created if the table is not supporting FKs
+                continue;
+            }
+        }
+
         QString indexCommand = correctCase("create");
         indexCommand += spiResult(idx, uidMysqlIndexCategory);
         indexCommand += correctCase("index");
@@ -645,10 +654,9 @@ QString BasicSqlGenerator::indexTypeSpecified(Index* /*idx*/) const
 
 QString BasicSqlGenerator::getAlterTableForChangeColumnOrder(const QString& /*table*/, const Column* /*column*/, const QString& /*afterThis*/)
 {
-    return "";
+    return "-- This DB engine does not support the changing of the order of the columns";
 }
 
-// sqlite does not really support this
 QStringList BasicSqlGenerator::generateAlterTableForForeignKeys(Table* /*t*/, const QHash<QString, QString>& /*options*/) const
 {
     return QStringList();
@@ -661,7 +669,7 @@ QStringList BasicSqlGenerator::generateCreateStoredMethodSql(StoredMethod */*p*/
 
 QString BasicSqlGenerator::getAlterTableForColumnChange(const QString& /*table*/, const Column* /*col*/)
 {
-    return "";
+    return "-- This DB engine does not support the changing of the type of the column";
 }
 
 

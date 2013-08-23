@@ -420,7 +420,20 @@ void InjectSqlDialog::enableOkButton()
 
 void InjectSqlDialog::onSelectConnection(QListWidgetItem* item)
 {
+    if(!item)
+    {
+        disableOkButton();
+        return;
+    }
+
     QString connectionName =item->text();
+    connectionName = connectionName.left(connectionName.indexOf("(")).trimmed();
+    Connection* c = ConnectionManager::instance()->getConnection(connectionName);
+    if(c)
+    {
+        populateConnectionDetails(c);
+    }
+
     if(ui->lstAllConnections->selectedItems().empty())
     {
         disableOkButton();
@@ -428,12 +441,6 @@ void InjectSqlDialog::onSelectConnection(QListWidgetItem* item)
     else
     {
         enableOkButton();
-    }
-    connectionName = connectionName.left(connectionName.indexOf("(")).trimmed();
-    Connection* c = ConnectionManager::instance()->getConnection(connectionName);
-    if(c)
-    {
-        populateConnectionDetails(c);
     }
 
     blockSignals(true);

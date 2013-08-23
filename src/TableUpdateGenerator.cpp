@@ -252,17 +252,21 @@ TableUpdateGenerator::TableUpdateGenerator(Table *t1, Table *t2, DatabaseEngine*
         }
     }
 
-    if(deletedColumns.size()) m_commands.append("\n");
+    if(deletedColumns.size()) m_commands.append(strNewline);
     for(int i=0; i<deletedColumns.size(); i++)
     {
 //        m_commands.append("-- column " + deletedColumns[i] + " was deleted");
         m_commands.append(dbEngine->getSqlGenerator()->getAlterTableForColumnDeletion(t2->getName(), deletedColumns[i]));
     }
 
-    if(changedColumns.size()) m_commands.append("\n");
+    if(changedColumns.size())
+    {
+        m_commands.append(strNewline);
+    }
+
     for(int i=0; i<changedColumns.size(); i++)
     {
-//        m_commands.append("-- column " + changedColumns[i]->getName() + " has changed its datatype");
+        m_commands.append("-- column \"" + changedColumns[i]->getName() + "\" of \"" + t2->getName() + "\" has changed its datatype");
         m_commands.append(dbEngine->getSqlGenerator()->getAlterTableForColumnChange(t2->getName(), changedColumns[i]));
     }
 

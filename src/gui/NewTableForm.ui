@@ -182,7 +182,7 @@
          <enum>QTabWidget::Rounded</enum>
         </property>
         <property name="currentIndex">
-         <number>0</number>
+         <number>2</number>
         </property>
         <widget class="QWidget" name="tabWidgetPage1">
          <attribute name="icon">
@@ -2351,6 +2351,22 @@
     <hint type="destinationlabel">
      <x>408</x>
      <y>350</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>lstLocalColumn</sender>
+   <signal>itemDoubleClicked(QListWidgetItem*)</signal>
+   <receiver>NewTableForm</receiver>
+   <slot>onAddForeignKeyAssociation()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>824</x>
+     <y>449</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>534</x>
+     <y>431</y>
     </hint>
    </hints>
   </connection>

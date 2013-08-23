@@ -473,13 +473,24 @@ QString Table::getAvailableIndexName(const QString& prefix)
     return "None";
 }
 
-Index* Table::createAutoIndex(QVector<const Column*> cols)
+Index* Table::createAutoIndex(QVector<const Column*> cols, bool dueTofk)
 {
-    QString idxName = getAvailableIndexName(strAutoIdx + strUnderline + getName());
+    QString idxName = getAvailableIndexName(dueTofk?strAutoIdxFk:strAutoIdx + strUnderline + getName());
     Index* idx = new Index(idxName, this, QUuid::createUuid().toString(), version());
+    bool onlyPks = true;
     for(int i=0; i<cols.size(); i++)
     {
+        if(!cols[i]->isPk())
+        {
+            onlyPks = false;
+        }
         idx->addColumn(cols.at(i), "");
+    }
+
+    if(onlyPks) // this will create the index only for NON primary key columns
+    {
+        delete idx;
+        return 0;
     }
     addIndex(idx);
     return idx;
