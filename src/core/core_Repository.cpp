@@ -13,6 +13,7 @@
 #include "TrueFalseSp.h"
 #include "ValueSp.h"
 #include "ValueListSp.h"
+#include "gui_DBMenu.h"
 
 #include "uids.h"
 
@@ -109,6 +110,42 @@ Repository::~Repository()
     // TODO: Save the repo
 }
 
+DBMenu* Repository::createDbMenu(const QDomElement& elAction, DBMenu*& first)
+{
+    QString stype = elAction.attribute("type");
+    QString sid = elAction.attribute("id");
+    QString stext = elAction.attribute("text");
+    QString sindex = elAction.attribute("index");
+    QString sicon = elAction.attribute("icon");
+
+    DBMenu::MENU_TYPE menuType = DBMenu::MENU_SEPARATOR;
+
+    if(stype.toLower() == "single") menuType = DBMenu::MENU_SINGLE;
+    if(stype.toLower() == "group") menuType = DBMenu::MENU_GROUP;
+
+    DBMenu* menu = new DBMenu(stext, menuType, sicon, sid);
+
+    if(first == 0)
+    {
+        first = menu;
+    }
+    else
+    {
+        first->addSibling(menu, sindex.toInt());
+    }
+
+    if(elAction.hasChildNodes())
+    {
+        for(int i=0; i<elAction.childNodes().count(); i++)
+        {
+            DBMenu* child = createDbMenu(elAction.childNodes().at(i).toElement(), menu);
+            menu->addChild(child);
+        }
+    }
+
+    return menu;
+}
+
 void Repository::addDatabase(const QDomElement & el)
 {
     if(el.nodeName() == "database")
@@ -135,6 +172,7 @@ void Repository::addDatabase(const QDomElement & el)
         QSet<PROGRAMMING_LANGUAGES> storedMethodSupportedLanguage;
         QMap<PARAMETER_FIELD_ROLES, int> parameterFields;
         QMap<PROGRAMMING_LANGUAGES, QString> defaultBodies;
+        DBMenu* dbMenuFirst = 0;
 
         for(int i=0; i<el.childNodes().size(); i++)
         {
@@ -157,6 +195,16 @@ void Repository::addDatabase(const QDomElement & el)
                         GenericDatabaseType* gdt = new GenericDatabaseType(name, UserDataType::toDtType(type), maxSize, isDefault);
                         gdbts.append(gdt);
                     }
+                }
+            }
+
+            if(el.childNodes().at(i).nodeName() == "connection-actions")
+            {
+                QDomElement elActions = el.childNodes().at(i).toElement();
+                for(int j=0; j<elActions.childNodes().size(); j++)
+                {
+                    QDomElement elAction = elActions.childNodes().at(j).toElement();
+                    createDbMenu(elAction, dbMenuFirst);
                 }
             }
 
@@ -485,6 +533,24 @@ void Repository::addDatabase(const QDomElement & el)
         DatabaseEngineManager::instance().setStoredMethodDefaultBodies(dbId, defaultBodies);
         DatabaseEngineManager::instance().setStoredMethodReturnKeyword(dbId, keywordReturn);
         DatabaseEngineManager::instance().setTriggerBodyDefinitionStatement(dbId, triggerDefStatement);
+
+        // just debug out the dbMenu
+        DBMenu* q = dbMenuFirst;
+        if(q)
+        {
+            QMap<int, DBMenu*> ch = q->getSiblings();
+            QList<int> keys = ch.keys();
+            for(int i=0; i<keys.size(); i++)
+            {
+                DBMenu* m = ch.value(keys.at(i));
+                qDebug() << m->getText();
+                QVector<DBMenu*> c = m->getChildren();
+                for(int j=0; j<c.size(); j++)
+                {
+                    qDebug() << "-->" << c.at(j)->getText();
+                }
+            }
+        }
     }
 }
 

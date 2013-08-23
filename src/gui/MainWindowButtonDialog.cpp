@@ -154,7 +154,7 @@ void MainWindowButtonDialog::showMe()
                 Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint | Qt::X11BypassWindowManagerHint);
 
     QDesktopWidget *d = QApplication::desktop();
-    int screen = d->screenNumber(MainWindow::instance());
+
     QRect t = d->availableGeometry(MainWindow::instance());
     move(mapToGlobal(this->geometry().topLeft()).x() + t.center().x() - width() / 2, t.center().y()- height() / 2);
     show();

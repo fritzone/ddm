@@ -13,6 +13,23 @@
   -->
     <database name="MySql" id="MYSQL" class-uid="{100000DB-0000-0000-0000-000000000001}">
 
+      <connection-actions>
+        <action type="single" id="QUERY" text="Run Query" icon="RUNQUERY"  index="0"/>
+        <action type="separator"                                           index="1"/>
+        <action type="group" id="DATABASE" text="Database" icon="DATABASE" index="2">
+          <action type="single" id="DROP" text="Drop Database" icon="DROP" index="0"/>
+          <action type="single" id="RECREATE" text="Recreate Database" icon="RECREATE" index="1"/>
+          <action type="single" id="BROWSE" text="Browse Database" icon="BROWSE" index="2"/>
+        </action>
+        <action type="group" id="NEW" text="New..." icon="NEW"             index="3">
+          <action type="single" id="NEWTABLE" text="New Table" icon="NEWTABLE" index="0"/>
+        </action>
+        <action type="separator"                                           index="4"/>
+        <action type="single" id="TEST" text="Test Connection" icon="TEST" index="5"/>
+        <action type="single" id="EDIT" text="Edit Connection" icon="EDIT" index ="6"/>
+        <action type="single" id="DELETE" text="Delete Connection" icon="DELETE" index="7"/>
+      </connection-actions>
+
       <stored-methods support="1">
         <!-- What is the order of the parameters in the Stored methods. For example MySql has DIRECTION NAME TYPE
              but other database engines have it like NAME DIRECTION TYPE. This will be used to seamlessly construct 

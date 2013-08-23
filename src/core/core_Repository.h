@@ -7,6 +7,7 @@ class DatabaseEngine;
 class Role;
 class QDomElement;
 class Entity;
+class DBMenu;
 
 class Repository
 {
@@ -30,6 +31,7 @@ public:
         return m_entities;
     }
 
+    DBMenu *createDbMenu(const QDomElement &elAction, DBMenu *&first);
 private:
 
     Repository();
