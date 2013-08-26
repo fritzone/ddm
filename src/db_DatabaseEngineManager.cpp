@@ -358,3 +358,18 @@ QString DatabaseEngineManager::getTriggerBodyDefinitionStatement(const QString &
 
     return "";
 }
+
+void DatabaseEngineManager::setDBMenu(const QString &dbName, DBMenu* dbMenu)
+{
+    m_dbMenus[dbName.toUpper()] = dbMenu;
+}
+
+DBMenu* DatabaseEngineManager::getDBMenu(const QString &dbName)
+{
+    if(m_dbMenus.contains(dbName.toUpper()))
+    {
+        return m_dbMenus[dbName.toUpper()];
+    }
+
+    return 0;
+}

@@ -43,6 +43,16 @@ public:
         return m_children;
     }
 
+    QString getAction() const
+    {
+        return m_id;
+    }
+
+    MENU_TYPE getType() const
+    {
+        return m_type;
+    }
+
 private:
 
     QString m_id;

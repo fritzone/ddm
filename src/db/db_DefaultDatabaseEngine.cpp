@@ -5,6 +5,7 @@
 #include "core_ForeignKey.h"
 #include "db_SP.h"
 #include "db_DatabaseEngineManager.h"
+#include "Connection.h"
 
 #include <QSqlQuery>
 #include <QSqlError>
@@ -374,3 +375,46 @@ bool DefaultDatabaseEngine::createDatabase(Connection*)
     return true;
 }
 
+bool DefaultDatabaseEngine::executeSql(Connection* c, const QStringList& sqls, const QStringList &uid, QString& lastSql, bool rollbackOnError)
+{
+    QSqlDatabase db = getQSqlDatabaseForConnection(c);
+    bool ok = db.isOpen();
+    if(!ok)
+    {
+        lastError = formatLastError(QObject::tr("Cannot connect to:") + c->getFullLocation(), db.lastError());
+        return false;
+    }
+
+    bool transactionSucces = db.transaction();
+
+    for(int i=0; i<sqls.size(); i++)
+    {
+        lastSql = sqls[i].trimmed();
+        if(lastSql.length() > 0 && ! lastSql.startsWith(strSqlComment))
+        {
+            QSqlQuery query(db);
+
+            if(!query.exec(lastSql))
+            {
+                lastError = formatLastError(QObject::tr("Cannot run a query"), query.lastError());
+                QString theUid = nullUid;
+                if(i < uid.size() - 1) theUid = uid[i];
+                lastError += "<!-- UID:" + theUid + "<!-- /UID --> <br><br><pre>" + lastSql;
+                if(transactionSucces && rollbackOnError)
+                {
+                    db.rollback();
+                }
+
+                db.close();
+                return false;
+            }
+        }
+    }
+
+    if(transactionSucces)
+    {
+        db.commit();
+    }
+    db.close();
+    return true;
+}

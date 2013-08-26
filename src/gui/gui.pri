@@ -39,7 +39,8 @@ SOURCES += \
     gui/RepositoryGuiElements.cpp \
     gui/repo_RoleListingForm.cpp \
     gui/repo_RepositoryElementForm.cpp \
-    gui/gui_DBMenu.cpp
+    gui/gui_DBMenu.cpp \
+    gui/gui_IconFactory.cpp
 
 HEADERS += \
     gui/AboutBoxDialog.h \

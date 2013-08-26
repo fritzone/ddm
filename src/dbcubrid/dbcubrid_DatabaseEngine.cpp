@@ -132,6 +132,7 @@ bool CUBRIDDatabaseEngine::reverseEngineerDatabase(Connection *conn, const QStri
             }
         }
 
+        // TODO: CUB01
         // now populate the foreign keys
         QSqlDatabase dbo = getQSqlDatabaseForConnection(c);
         if(dbo.isOpen())
@@ -204,7 +205,10 @@ QSqlDatabase CUBRIDDatabaseEngine::getQSqlDatabaseForConnection(Connection *conn
 
 QStringList CUBRIDDatabaseEngine::getAvailableViews(Connection* conn)
 {
-    if(!dynamic_cast<CUBRIDConnection*>(conn)) return QStringList();
+    if(!dynamic_cast<CUBRIDConnection*>(conn))
+    {
+        return QStringList();
+    }
 
     return getResultOfQuery(QString("SELECT class_name FROM db_class WHERE is_system_class='NO' AND class_type = 'VCLASS' AND owner_name=current_user"),
                             conn,
@@ -218,7 +222,10 @@ QStringList CUBRIDDatabaseEngine::getAvailableTriggers(Connection* c)
 
 QStringList CUBRIDDatabaseEngine::getAvailableStoredProcedures(Connection* conn)
 {
-    if(!dynamic_cast<CUBRIDConnection*>(conn)) return QStringList();
+    if(!dynamic_cast<CUBRIDConnection*>(conn))
+    {
+        return QStringList();
+    }
 
     return getResultOfQuery("select sp_name from db_stored_procedure WHERE owner=current_user and sp_type='PROCEDURE'",
                             conn,
@@ -227,7 +234,10 @@ QStringList CUBRIDDatabaseEngine::getAvailableStoredProcedures(Connection* conn)
 
 QStringList CUBRIDDatabaseEngine::getAvailableStoredFunctions(Connection* conn)
 {
-    if(!dynamic_cast<CUBRIDConnection*>(conn)) return QStringList();
+    if(!dynamic_cast<CUBRIDConnection*>(conn))
+    {
+        return QStringList();
+    }
 
     return getResultOfQuery("select sp_name from db_stored_procedure WHERE owner=current_user and sp_type='FUNCTION'",
                             conn, "Cannot get list of available functions", 0);
@@ -235,9 +245,12 @@ QStringList CUBRIDDatabaseEngine::getAvailableStoredFunctions(Connection* conn)
 
 QStringList CUBRIDDatabaseEngine::getAvailableTables(Connection* conn)
 {
-    if(!dynamic_cast<CUBRIDConnection*>(conn)) return QStringList();
+    if(!dynamic_cast<CUBRIDConnection*>(conn))
+    {
+        return QStringList();
+    }
 
-    return getResultOfQuery("SELECT * FROM db_class WHERE is_system_class='NO' AND class_type = 'CLASS' AND owner_name=current_user",
+    return getResultOfQuery("SELECT class_name FROM db_class WHERE is_system_class='NO' AND class_type = 'CLASS' AND owner_name=current_user",
                             conn,
                             "Cannot get list of tables", 0);
 }
@@ -350,7 +363,7 @@ View* CUBRIDDatabaseEngine::reverseEngineerView(Connection* conn, const QString&
     {
         QString sql = query.value(1).toString();
         view = new View(true, QUuid::createUuid().toString(), v);
-        view->setSql(sql);
+        view->setSql("create view " + viewName + " as " + sql);
     }
     dbo.close();
     return view;
@@ -557,107 +570,6 @@ Table* CUBRIDDatabaseEngine::reverseEngineerTable(Connection *conn, const QStrin
     return tab;
 }
 
-bool CUBRIDDatabaseEngine::executeSql(Connection* c, const QStringList& sqls, const QStringList &uid, QString& lastSql, bool rollbackOnError)
-{
-    QSqlDatabase db = getQSqlDatabaseForConnection(c);
-    bool ok = db.isOpen();
-    if(!ok)
-    {
-        lastError = formatLastError(QObject::tr("Cannot connect to:") + c->getFullLocation(), db.lastError());
-        return false;
-    }
-
-    bool transactionSucces = db.transaction();
-
-    for(int i=0; i<sqls.size(); i++)
-    {
-        lastSql = sqls[i].trimmed();
-        if(lastSql.length() > 0 && ! lastSql.startsWith(strSqlComment))
-        {
-            QSqlQuery query(db);
-
-            if(!query.exec(lastSql))
-            {
-                lastError = formatLastError(QObject::tr("Cannot run a query"), query.lastError());
-                QString theUid = nullUid;
-                if(i < uid.size() - 1) theUid = uid[i];
-                lastError += "<!-- UID:" + theUid + "<!-- /UID --> <br><br><pre>" + lastSql;
-                if(transactionSucces && rollbackOnError)
-                {
-                    db.rollback();
-                }
-
-                db.close();
-                return false;
-            }
-        }
-    }
-
-    if(transactionSucces)
-    {
-        db.commit();
-    }
-    db.close();
-    return true;
-}
-
-bool CUBRIDDatabaseEngine::dropDatabase(Connection* conn)
-{
-    CUBRIDConnection* c = dynamic_cast<CUBRIDConnection*>(conn);
-    if(!c)
-    {
-        return 0;
-    }
-
-    QSqlDatabase db = getQSqlDatabaseForConnection(c);
-    bool ok = db.isOpen();
-    if(!ok)
-    {
-        lastError = formatLastError(QObject::tr("Cannot connect to the DB for dropping a database"), db.lastError());
-        return false;
-    }
-
-    QSqlQuery query(db);
-    bool t = query.exec("drop database "+ c->getDb());
-    if(!t)
-    {
-        lastError = formatLastError(QObject::tr("Cannot drop database: ") + c->getDb(), db.lastError());
-        return false;
-    }
-    db.close();
-    c->setState(DROPPED);
-    return true;
-}
-
-bool CUBRIDDatabaseEngine::createDatabase(Connection* conn)
-{
-    CUBRIDConnection* c = dynamic_cast<CUBRIDConnection*>(conn);
-    if(!c)
-    {
-        return 0;
-    }
-
-    CUBRIDConnection *c1 = new CUBRIDConnection("temp", c->getHost(), c->getUser(), c->getPassword(), "", false, false, c->getPort());
-    QSqlDatabase db = getQSqlDatabaseForConnection(c1);
-    bool ok = db.isOpen();
-
-    if(!ok)
-    {
-        lastError = formatLastError(QObject::tr("Cannot connect to the DB server to create a new database"), db.lastError());
-        return false;
-    }
-
-    QSqlQuery query(db);
-    bool t = query.exec("create database "+ c->getDb());
-    if(!t)
-    {
-        lastError = formatLastError(QObject::tr("Cannot create database: ") + c->getDb(), query.lastError());
-        return false;
-    }
-    db.close();
-    return true;
-}
-
 bool CUBRIDDatabaseEngine::tryConnect(Connection* c)
 {
     QSqlDatabase dbo = getQSqlDatabaseForConnection(c);
@@ -784,7 +696,7 @@ QString CUBRIDDatabaseEngine::getViewCreationScript(Connection* c, const QString
         result = query.value(1).toString();
     }
     db.close();
-    return result;
+    return "create view " + name + " as " + result;
 }
 
 QString CUBRIDDatabaseEngine::getTableCreationScript(Connection* c, const QString& tabName)
@@ -808,14 +720,4 @@ QString CUBRIDDatabaseEngine::getTableCreationScript(Connection* c, const QStrin
     }
     db.close();
     return result;
-}
-
-void CUBRIDDatabaseEngine::setup()
-{
-    DatabaseEngineManager::instance().addEngine(strCUBRID, this);
-    DatabaseEngineManager::instance().addEngine(strQCUBRID, this);
-
-    CUBRIDSQLGenerator* CUBRIDGenerator = new CUBRIDSQLGenerator(this);
-    DatabaseEngineManager::instance().addSqlGenerator(strCUBRID, CUBRIDGenerator);
-    DatabaseEngineManager::instance().addSqlGenerator(strQCUBRID, CUBRIDGenerator);
 }

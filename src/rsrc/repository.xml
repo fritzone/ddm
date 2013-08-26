@@ -2234,6 +2234,18 @@ END]]>
 
     <database name="Sqlite" id="SQLITE" class-uid="{100000DB-0000-0000-0000-000000000002}">
 
+      <connection-actions>
+        <action type="single" id="QUERY" text="Run Query" icon="RUNQUERY"  index="0"/>
+        <action type="separator"                                           index="1"/>
+        <action type="group" id="NEW" text="New..." icon="NEW"             index="2">
+          <action type="single" id="NEWTABLE" text="New Table" icon="NEWTABLE" index="0"/>
+        </action>
+        <action type="separator"                                           index="3"/>
+        <action type="single" id="TEST" text="Test Connection" icon="TEST" index="4"/>
+        <action type="single" id="EDIT" text="Edit Connection" icon="EDIT" index ="5"/>
+        <action type="single" id="DELETE" text="Delete Connection" icon="DELETE" index="6"/>
+      </connection-actions>
+
       <stored-methods support="0"/>
 
       <datatype-groups>
@@ -2690,6 +2702,18 @@ END]]>
     </database>
 
     <database name="CUBRID" id="CUBRID" class-uid="{100000DB-0000-0000-0000-000000000003}">
+
+      <connection-actions>
+        <action type="single" id="QUERY" text="Run Query" icon="RUNQUERY"  index="0"/>
+        <action type="separator"                                           index="1"/>
+        <action type="group" id="NEW" text="New..." icon="NEW"             index="2">
+          <action type="single" id="NEWTABLE" text="New Table" icon="NEWTABLE" index="0"/>
+        </action>
+        <action type="separator"                                           index="3"/>
+        <action type="single" id="TEST" text="Test Connection" icon="TEST" index="4"/>
+        <action type="single" id="EDIT" text="Edit Connection" icon="EDIT" index ="5"/>
+        <action type="single" id="DELETE" text="Delete Connection" icon="DELETE" index="6"/>
+      </connection-actions>
 
       <stored-methods support="1">
         <parameter_fields>

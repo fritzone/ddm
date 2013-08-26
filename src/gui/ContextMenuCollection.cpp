@@ -2,6 +2,9 @@
 #include "IconFactory.h"
 #include "ConnectionManager.h"
 #include "uids.h"
+#include <gui_DBMenu.h>
+#include "db_DatabaseEngineManager.h"
+#include "MainWindow.h"
 
 ContextMenuCollection* ContextMenuCollection::m_instance = 0;
 
@@ -23,7 +26,6 @@ ContextMenuCollection::ContextMenuCollection()
     m_createNewViewPopupMenu = new QMenu();
     m_createNewProcedurePopupMenu = new QMenu();
     m_createNewFunctionPopupMenu = new QMenu();
-    m_connectionPopupMenu = new QMenu();
     m_deployPopupMenu = new QMenu();
     m_browsedTablePopupMenu = new QMenu();
     m_viewsPopupMenu = new QMenu();
@@ -112,23 +114,6 @@ ContextMenuCollection::ContextMenuCollection()
     action_createSqlProcedure = new QAction(QObject::tr("Create SQL Procedure"), 0);
     action_createGuidedFunction = new QAction(QObject::tr("Create Guided Function"), 0);
     action_createSqlFunction = new QAction(QObject::tr("Create SQL Function"), 0);
-
-    action_connectionSqlQuery = new QAction(QObject::tr("Run Script"), 0);
-    action_connectionSqlQuery->setIcon(IconFactory::getSqlIcon());
-    action_connectionConnect = new QAction(QObject::tr("Test Connection"), 0);
-    action_connectionConnect->setIcon(IconFactory::getConnectConnectionIcon());
-    action_connectionDelete = new QAction(QObject::tr("Delete Connection"), 0);
-    action_connectionDelete->setIcon(IconFactory::getRemoveIcon());
-    action_connectionEdit = new QAction(QObject::tr("Edit Connection"), 0);
-    action_connectionEdit->setIcon(IconFactory::getEditConnectionIcon());
-    action_connectionBrowse = new QAction(QObject::tr("Browse Database"), 0);
-    action_connectionBrowse->setIcon(IconFactory::getBrowseConnectionIcon());
-    action_connectionDrop = new QAction(QObject::tr("Drop Database"), 0);
-    action_connectionDrop->setIcon(IconFactory::getDropDatabaseIcon());
-    action_connectionNewTable = new QAction(QObject::tr("New Table"), 0);
-    action_connectionNewTable->setIcon(IconFactory::getTabinstIcon());
-    action_connectionRecreate = new QAction(QObject::tr("Recreate Database"), 0);
-    action_connectionRecreate->setIcon(IconFactory::getRecreateDatabaseIcon());
 
     action_browsedTableInjectIntoSolution = new QAction(QObject::tr("Add to current solution"), 0);
     action_browsedTableBrowse = new QAction(QObject::tr("Browse table"), 0);
@@ -248,18 +233,6 @@ ContextMenuCollection::ContextMenuCollection()
     // issues of a table
     m_issuesOfATablePopupMenu->addAction(action_ignoreIssuesFromThisTable);
 
-    // connections
-    m_connectionPopupMenu->addAction(action_connectionSqlQuery);
-    m_connectionPopupMenu->addAction(action_connectionConnect);
-    m_connectionPopupMenu->addAction(action_connectionBrowse);
-    m_connectionPopupMenu->addAction(action_connectionRecreate);
-    m_connectionPopupMenu->addAction(action_connectionDrop);
-    m_connectionPopupMenu->addSeparator();
-    m_connectionPopupMenu->addAction(action_connectionNewTable);
-    m_connectionPopupMenu->addSeparator();
-    m_connectionPopupMenu->addAction(action_connectionEdit);
-    m_connectionPopupMenu->addAction(action_connectionDelete);
-
     // browsed table
     m_browsedTablePopupMenu->addAction(action_browsedTableInjectIntoSolution);
     m_browsedTablePopupMenu->addAction(action_browsedTableBrowse);
@@ -357,6 +330,11 @@ ContextMenuCollection::ContextMenuCollection()
     m_finalisedVersionPopupMenu->addAction(action_deployVersion);
 }
 
+QMenu *ContextMenuCollection::getConnectionsPopupMenu(const QString &dbName)
+{
+    return getDBMenu(DatabaseEngineManager::instance().getDBMenu(dbName.toUpper()));
+}
+
 QMenu* ContextMenuCollection::getUnLockMenuForClassUid(const QString& uid)
 {
     QMap<QString, QMenu*> mapping;
@@ -384,7 +362,6 @@ QMenu* ContextMenuCollection::getUnLockMenuForClassUid(const QString& uid)
     return 0;
 }
 
-
 QMenu* ContextMenuCollection::getReLockMenuForClassUid(const QString& uid)
 {
     QMap<QString, QMenu*> mapping;
@@ -410,6 +387,68 @@ QMenu* ContextMenuCollection::getReLockMenuForClassUid(const QString& uid)
     }
 
     return 0;
+}
+
+QMenu *ContextMenuCollection::getDBMenu(const DBMenu *dbMenuFirst)
+{
+    // just debug out the dbMenu
+    const DBMenu* q = dbMenuFirst;
+
+    if(q)
+    {
+        QMenu* menu = new QMenu;
+
+        // the very first entry
+        QAction* act = new QAction(IconFactory::getIconForActionId(q->getAction()), q->getText(), 0);
+        menu->addAction(act);
+        act->setData(QVariant(q->getAction()));
+        QObject::connect(act, SIGNAL(triggered()), MainWindow::instance(), SLOT(onActionTriggered()));
+
+        // and the rest
+        QMap<int, DBMenu*> ch = q->getSiblings();
+        QList<int> keys = ch.keys();
+        for(int i=0; i<keys.size(); i++)
+        {
+            DBMenu* m = ch.value(keys.at(i));
+            QVector<DBMenu*> c = m->getChildren();
+
+            if(m->getType() == DBMenu::MENU_SEPARATOR)
+            {
+                menu->addSeparator();
+            }
+            else
+            {
+                if(m->getType() == DBMenu::MENU_GROUP)
+                {
+                    QMenu* subMenu = new QMenu(m->getText());
+                    menu->addMenu(subMenu);
+                    for(int j=0; j<c.size(); j++)
+                    {
+                        QAction* act = new QAction(IconFactory::getIconForActionId(c.at(j)->getAction()), c.at(j)->getText(), 0);
+                        subMenu->addAction(act);
+                        act->setData(QVariant(c.at(j)->getAction()));
+                        QObject::connect(act, SIGNAL(triggered()), MainWindow::instance(), SLOT(onActionTriggered()));
+
+                    }
+                    menu->addMenu(subMenu);
+                }
+                else
+                {
+                    QAction* act = new QAction(IconFactory::getIconForActionId(m->getAction()), m->getText(), 0);
+                    menu->addAction(act);
+                    act->setData(QVariant(m->getAction()));
+                    QObject::connect(act, SIGNAL(triggered()), MainWindow::instance(), SLOT(onActionTriggered()));
+                }
+            }
+        }
+
+        return menu;
+    }
+    else
+    {
+        return 0;
+    }
+
 }
 
 QMenu* ContextMenuCollection::getMenuForClassUid(const QString& uid)
