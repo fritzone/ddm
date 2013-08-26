@@ -514,64 +514,6 @@ Table* SqliteDatabaseEngine::reverseEngineerTable(Connection *c, const QString& 
     return tab;
 }
 
-QStringList removeCommentsFromSqlList(const QStringList& sqls)
-{
-    QStringList result;
-    for(int i=0; i<sqls.size(); i++)
-    {
-        if(!sqls[i].trimmed().startsWith("--"))
-        {
-            result.append(sqls[i]);
-        }
-    }
-
-    return result;
-}
-
-bool SqliteDatabaseEngine::executeSql(Connection* c, const QStringList& sqls1, const QStringList &uid, QString& lastSql, bool rollbackOnError)
-{
-    QSqlDatabase db = getQSqlDatabaseForConnection(c);
-    QStringList sqls = removeCommentsFromSqlList(sqls1);
-    bool ok = db.isOpen();
-    if(!ok)
-    {
-        lastError = formatLastError(QObject::tr("Cannot connect to:") + c->getFullLocation(), db.lastError());
-        return false;
-    }
-
-    bool transactionSucces = db.transaction();
-
-    for(int i=0; i<sqls.size(); i++)
-    {
-        lastSql = sqls[i].trimmed();
-        if(lastSql.length() > 0)
-        {
-            QSqlQuery query(db);
-
-            if(!query.exec(lastSql))
-            {
-                lastError = formatLastError(QObject::tr("Cannot run a query"), query.lastError());
-                QString theUid = nullUid;
-                if(i < uid.size() - 1) theUid = uid[i];
-                lastError += "<!-- UID:" + theUid + "<!-- /UID --> <br><br><pre>" + lastSql;
-                if(transactionSucces && rollbackOnError)
-                {
-                    db.rollback();
-                }
-                db.close();
-                return false;
-            }
-        }
-    }
-
-    if(transactionSucces)
-    {
-        db.commit();
-    }
-    db.close();
-    return true;
-}
-
 bool SqliteDatabaseEngine::tryConnect(Connection* c)
 {
     QSqlDatabase dbo = getQSqlDatabaseForConnection(c);

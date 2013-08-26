@@ -662,9 +662,12 @@ QStringList BasicSqlGenerator::generateAlterTableForForeignKeys(Table* /*t*/, co
     return QStringList();
 }
 
-QStringList BasicSqlGenerator::generateCreateStoredMethodSql(StoredMethod */*p*/, const QHash<QString, QString>& /*options*/) const
+// we should never get here for SQlite, so it's ok to keep it in common place
+QStringList BasicSqlGenerator::generateCreateStoredMethodSql(StoredMethod *p, const QHash<QString, QString>& options) const
 {
-    return QStringList();
+    QStringList t;
+    t.append(p->getSql());
+    return t;
 }
 
 QString BasicSqlGenerator::getAlterTableForColumnChange(const QString& /*table*/, const Column* /*col*/)

@@ -15,6 +15,7 @@ class DatabaseEngine;
 class GenericDatabaseType;
 class Sp;
 class DatabaseFunctionCategory;
+class DBMenu;
 
 class DatabaseEngineManager
 {
@@ -165,6 +166,10 @@ public:
 
     QString getTriggerBodyDefinitionStatement(const QString &dbName);
 
+    void setDBMenu(const QString &dbName, DBMenu* dbMenu);
+
+    DBMenu* getDBMenu(const QString &dbName);
+
 private:
     DatabaseEngineManager();
 
@@ -228,6 +233,9 @@ private:
 
     // the trigger creation statement for a specific database
     QMap<QString, QString> m_triggerStatements;
+
+    // the map containing the context menu of a connection item
+    QMap<QString, DBMenu*> m_dbMenus;
 };
 
 #endif // DB_DATABASEENGINEMANAGER_H

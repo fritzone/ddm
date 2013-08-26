@@ -1273,7 +1273,6 @@ void MainWindow::connectActionsFromPopupMenus()
     QObject::connect(ContextMenuCollection::getInstance()->getAction_IgnoreIssuesFromThisTable(), SIGNAL(triggered()), this, SLOT(onIgnoreIssuesOfATable()));
     QObject::connect(ContextMenuCollection::getInstance()->getAction_CreateViewUsingQueryBuilder(), SIGNAL(triggered()), this, SLOT(onNewView()));
     QObject::connect(ContextMenuCollection::getInstance()->getAction_CreateViewUsingSql(), SIGNAL(triggered()), this, SLOT(onNewViewWithSql()));
-    QObject::connect(ContextMenuCollection::getInstance()->getAction_ConnectionConnect(), SIGNAL(triggered()), this, SLOT(onConnectConnection()));
     QObject::connect(ContextMenuCollection::getInstance()->getAction_DeleteView(), SIGNAL(triggered()), this, SLOT(onDeleteViewFromPopup()));
     QObject::connect(ContextMenuCollection::getInstance()->getAction_DeleteProcedure(), SIGNAL(triggered()), this, SLOT(onDeleteProcedure()));
     QObject::connect(ContextMenuCollection::getInstance()->getAction_DeleteFunction(), SIGNAL(triggered()), this, SLOT(onDeleteFunction()));
@@ -3489,6 +3488,50 @@ void MainWindow::onConnectionCreateTable()
         if(create)
         {
             createTableInConnection(c, true);
+        }
+    }
+}
+
+void MainWindow::onActionTriggered()
+{
+    QAction *act = qobject_cast<QAction*>(sender());
+
+    if(act)
+    {
+        QString sact = act->data().toString();
+        if(sact == "TEST")
+        {
+            onConnectConnection();
+        }
+
+        if(sact == "QUERY")
+        {
+            onSqlQueryInConnection();
+        }
+
+        if(sact == "DROP")
+        {
+            onDropConnection();
+        }
+
+        if(sact == "RECREATE")
+        {
+            onRecreateConnection();
+        }
+
+        if(sact == "BROWSE")
+        {
+            onBrowseConnection();
+        }
+
+        if(sact == "EDIT")
+        {
+            onEditConnection();
+        }
+
+        if(sact == "DELETE")
+        {
+            onDeleteConnection();
         }
     }
 }

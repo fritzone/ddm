@@ -77,6 +77,7 @@ public:
     virtual QString getDefaultStoredMethodBody(PROGRAMMING_LANGUAGES lang);
     virtual QString getStoredMethodReturnKeyword();
     virtual QString getTriggerBodyDefinitionStatement();
+    bool executeSql(Connection* c, const QStringList& sqls, const QStringList &uid, QString& lastSql, bool rollbackOnError);
 
 };
 

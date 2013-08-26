@@ -12,10 +12,13 @@
 #include "core_TableInstance.h"
 #include "db_DatabaseEngine.h"
 #include "Configuration.h"
+#include "Connection.h"
 
 TriggerForm::TriggerForm(Version *v, Connection* c, bool reverseSource, bool fc, QWidget *parent) :
     QWidget(parent),
-    ui(new Ui::TriggerForm), m_trigger(0), m_forcedChange(fc), m_reverseSource(reverseSource), m_version(v)
+    ui(new Ui::TriggerForm), m_trigger(0), m_forcedChange(fc),
+    m_reverseSource(reverseSource), m_version(v),
+    m_conn(c)
 {
     ui->setupUi(this);
 
@@ -68,7 +71,7 @@ void TriggerForm::setTrigger(Trigger *t)
     m_trigger = t;
     ui->txtTriggerName->setText(t->getName());
 
-    int tabIdx = ui->cmbTables->findText(t->getTable().toUpper());
+    int tabIdx = ui->cmbTables->findText(t->getTable());
     if(tabIdx == -1)
     {
         tabIdx = 0; // (no table, select the first one)
@@ -193,7 +196,7 @@ void TriggerForm::feedInTables(const QStringList &tables)
 
 }
 
-void TriggerForm::feedInTriggerEvents(const QStringList &events)
+void TriggerForm::feedInTriggerEvents(const QStringList &events, QString def)
 {
     m_forcedChange = true;
     ui->cmbEvent->clear();
@@ -203,12 +206,23 @@ void TriggerForm::feedInTriggerEvents(const QStringList &events)
         if(events.at(i) == "INSERT") icon = IconFactory::getTriggerInsertIcon();
         if(events.at(i) == "DELETE") icon = IconFactory::getTriggerDeleteIcon();
         if(events.at(i) == "UPDATE") icon = IconFactory::getTriggerUpdateIcon();
-        ui->cmbEvent->addItem(icon, events.at(i));
+        if(def.isEmpty())
+        {
+            ui->cmbEvent->addItem(icon, events.at(i));
+        }
+        else
+        {
+            if(events.at(i) == def )
+            {
+                ui->cmbEvent->addItem(icon, events.at(i));
+            }
+        }
+
     }
     m_forcedChange = false;
 }
 
-void TriggerForm::feedInTriggerTimes(const QStringList &times)
+void TriggerForm::feedInTriggerTimes(const QStringList &times, QString def)
 {
     m_forcedChange = true;
 
@@ -218,14 +232,25 @@ void TriggerForm::feedInTriggerTimes(const QStringList &times)
         QIcon icon = IconFactory::getEmptyIcon();
         if(times.at(i) == "BEFORE") icon = IconFactory::getTriggerBeforeIcon();
         if(times.at(i) == "AFTER") icon = IconFactory::getTriggerAfterIcon();
-        ui->cmbTime->addItem(icon, times.at(i));
+        if(def.isEmpty())
+        {
+            ui->cmbTime->addItem(icon, times.at(i));
+        }
+        else
+        {
+            if(times.at(i) == def )
+            {
+                ui->cmbTime->addItem(icon, times.at(i));
+            }
+        }
     }
     m_forcedChange = false;
 }
 
 void TriggerForm::showSql()
 {
-    QString sql = m_trigger->generateSqlSource(m_version->getProject()->getEngine()->getSqlGenerator(),
+    AbstractSqlGenerator* asg = m_version?m_version->getProject()->getEngine()->getSqlGenerator():m_conn->getEngine()->getSqlGenerator();
+    QString sql = m_trigger->generateSqlSource(asg,
                                        Configuration::instance().sqlGenerationOptions(), 0).join("\n");
     sql = sql.trimmed();
 

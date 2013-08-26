@@ -4,6 +4,8 @@
 #include <QAction>
 #include <QMenu>
 
+class DBMenu;
+
 /**
  * Singleton class holding the context menus
  */
@@ -42,7 +44,6 @@ public:
     QMenu* getCreateNewViewPopupMenu() {return m_createNewViewPopupMenu; }
     QMenu* getCreateNewProcedurePopupMenu() {return m_createNewProcedurePopupMenu; }
     QMenu* getCreateNewFunctionPopupMenu() {return m_createNewFunctionPopupMenu; }
-    QMenu* getConnectionsPopupMenu() { return m_connectionPopupMenu; }
     QMenu* getDeployPopupMenu() {return m_deployPopupMenu; }
     QMenu* getViewsPopupMenu() { return m_viewsPopupMenu; }
     QMenu* getTableFromBrowsePopupMenu() { return m_browsedTablePopupMenu; }
@@ -73,6 +74,8 @@ public:
     QMenu* getReleasedVersionPopupMenu() { return m_releasedVersionPopupMenu; }
     QMenu* getFinalisedVersionPopupMenu() { return m_finalisedVersionPopupMenu; }
     QMenu* getRepositoryDatabasesPopupMenu() { return m_repositoryDatabasesPopupMenu; }
+
+    QMenu* getConnectionsPopupMenu(const QString& dbName);
 
     /*
      * Actions
@@ -112,14 +115,6 @@ public:
     QAction* getAction_CreateGuidedFunction() { return action_createGuidedFunction; }
     QAction* getAction_CreateSqlProcedure() { return action_createSqlProcedure; }
     QAction* getAction_CreateSqlFunction() { return action_createSqlFunction; }
-    QAction* getAction_ConnectionSqlQuery() {return action_connectionSqlQuery; }
-    QAction* getAction_ConnectionConnect() {return action_connectionConnect; }
-    QAction* getAction_ConnectionDelete() {return action_connectionDelete; }
-    QAction* getAction_ConnectionEdit() {return action_connectionEdit; }
-    QAction* getAction_ConnectionRecreate() {return action_connectionRecreate; }
-    QAction* getAction_ConnectionBrowse() {return action_connectionBrowse; }
-    QAction* getAction_ConnectionDrop() {return action_connectionDrop; }
-    QAction* getAction_ConnectionNewTable() {return action_connectionNewTable; }
     QAction* getAction_BrowsedTableInject() {return action_browsedTableInjectIntoSolution; }
     QAction* getAction_BrowsedTableView() {return action_browsedTableView; }
     QAction* getAction_BrowsedTableBrowse() {return action_browsedTableBrowse; }
@@ -148,6 +143,12 @@ public:
     QMenu* getMenuForClassUid(const QString& uid);
     QMenu* getReLockMenuForClassUid(const QString& uid);
 
+    /**
+     * @brief getMenu generate a connection menu from the given DBMenu object
+     * @return
+     */
+    QMenu* getDBMenu(const DBMenu*);
+
 private:
 
     ContextMenuCollection();
@@ -163,7 +164,6 @@ private:
     QMenu* m_datatypesPopupMenu;                // popup menu for the datatypes
     QMenu* m_issuePopupMenu;                    // popup menu for an issue
     QMenu* m_issuesOfATablePopupMenu;           // popup menu for issues of a table
-    QMenu* m_connectionPopupMenu;               // popup menu for a connection
     QMenu* m_createTableInstancesPopup;         // popup menu for the table instances selection
     QMenu* m_createNewViewPopupMenu;            // popup for the create new view command.
     QMenu* m_createNewProcedurePopupMenu;       // popup for the create new procedure command.
@@ -262,16 +262,6 @@ private:
     // the functions popup menu
     QAction* action_createGuidedFunction;
     QAction* action_createSqlFunction;
-
-    // a connections popup menu
-    QAction* action_connectionConnect;
-    QAction* action_connectionDelete;
-    QAction* action_connectionEdit;
-    QAction* action_connectionBrowse;
-    QAction* action_connectionDrop;
-    QAction* action_connectionRecreate;
-    QAction* action_connectionSqlQuery;
-    QAction* action_connectionNewTable;
 
     // a browsed table popup menu
     QAction* action_browsedTableInjectIntoSolution;

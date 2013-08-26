@@ -21,7 +21,6 @@ public:
     virtual ~SqliteDatabaseEngine();
 
     virtual QUuid getClassUid() const;
-    virtual bool executeSql(Connection* c, const QStringList& sqls, const QStringList& uid, QString& lastSql, bool rollbackOnError);
     virtual bool reverseEngineerDatabase(Connection *c, const QStringList& tables, const QStringList& views, const QStringList& procs, const QStringList& funcs, const QStringList& triggers, Project* p, bool relaxed);
     virtual Table* reverseEngineerTable(Connection *c, const QString& tableName, Project* p, bool relaxed, Version* ver);
     virtual View* reverseEngineerView(Connection *c, const QString& viewName, Version* v);

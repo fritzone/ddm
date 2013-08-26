@@ -47,6 +47,7 @@ static const QString strFinalLockedIcon = ":/images/actions/images/small/locked_
 static const QString strKeyIcon = ":/images/actions/images/small/key.png";
 static const QString strChangedIcon = ":/images/actions/images/small/changed.png";
 static const QString strSaveIcon = ":/images/actions/images/actions/filesave.png";
+static const QString strNewIcon = ":/images/actions/images/actions/filenew.png";
 static const QString strApplyIcon = ":/images/actions/images/small/apply.png";
 static const QString strAddIcon = ":/images/actions/images/small/add.png";
 static const QString strEmptyIcon = ":/images/actions/images/actions/empty_icon.png";
@@ -180,6 +181,8 @@ class IconFactory
 
 public:
 
+    static const QIcon& getIconForActionId(const QString& id);
+
     static const QIcon& getRepoEntityIcon()
     {
         static const QIcon icon(icons::strRepositoryEntity);
@@ -208,6 +211,12 @@ public:
     static const QIcon& getSaveIcon()
     {
         static const QIcon save(icons::strSaveIcon);
+        return save;
+    }
+
+    static const QIcon& getNewIcon()
+    {
+        static const QIcon save(icons::strNewIcon);
         return save;
     }
 

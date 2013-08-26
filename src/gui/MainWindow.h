@@ -219,6 +219,9 @@ public slots:
     void onShowSolutionProperties();
     void onConnectionCreateTable();
 
+    // called from the constructed DB menu
+    void onActionTriggered();
+
 private:
 
     void setupGuiForNewSolution();

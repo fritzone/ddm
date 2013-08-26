@@ -533,24 +533,7 @@ void Repository::addDatabase(const QDomElement & el)
         DatabaseEngineManager::instance().setStoredMethodDefaultBodies(dbId, defaultBodies);
         DatabaseEngineManager::instance().setStoredMethodReturnKeyword(dbId, keywordReturn);
         DatabaseEngineManager::instance().setTriggerBodyDefinitionStatement(dbId, triggerDefStatement);
-
-        // just debug out the dbMenu
-        DBMenu* q = dbMenuFirst;
-        if(q)
-        {
-            QMap<int, DBMenu*> ch = q->getSiblings();
-            QList<int> keys = ch.keys();
-            for(int i=0; i<keys.size(); i++)
-            {
-                DBMenu* m = ch.value(keys.at(i));
-                qDebug() << m->getText();
-                QVector<DBMenu*> c = m->getChildren();
-                for(int j=0; j<c.size(); j++)
-                {
-                    qDebug() << "-->" << c.at(j)->getText();
-                }
-            }
-        }
+        DatabaseEngineManager::instance().setDBMenu(dbId, dbMenuFirst);
     }
 }
 

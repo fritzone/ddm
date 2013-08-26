@@ -81,17 +81,9 @@ void ConnectionGuiElements::createGuiElements()
         createConnectionTreeEntry(c);
     }
 
-    QObject::connect(ContextMenuCollection::getInstance()->getAction_ConnectionSqlQuery(), SIGNAL(triggered()), MainWindow::instance(), SLOT(onSqlQueryInConnection()));
-    QObject::connect(ContextMenuCollection::getInstance()->getAction_ConnectionConnect(), SIGNAL(triggered()), MainWindow::instance(), SLOT(onConnectConnection()));
-    QObject::connect(ContextMenuCollection::getInstance()->getAction_ConnectionBrowse(), SIGNAL(triggered()), MainWindow::instance(), SLOT(onBrowseConnection()));
-    QObject::connect(ContextMenuCollection::getInstance()->getAction_ConnectionDrop(), SIGNAL(triggered()), MainWindow::instance(), SLOT(onDropConnection()));
-    QObject::connect(ContextMenuCollection::getInstance()->getAction_ConnectionDelete(), SIGNAL(triggered()), MainWindow::instance(), SLOT(onDeleteConnection()));
-    QObject::connect(ContextMenuCollection::getInstance()->getAction_ConnectionEdit(), SIGNAL(triggered()), MainWindow::instance(), SLOT(onEditConnection()));
-    QObject::connect(ContextMenuCollection::getInstance()->getAction_ConnectionRecreate(), SIGNAL(triggered()), MainWindow::instance(), SLOT(onRecreateConnection()));
     QObject::connect(m_connectionsTree, SIGNAL(itemDoubleClicked(QTreeWidgetItem*,int)), MainWindow::instance(), SLOT(onConnectionItemDoubleClicked(QTreeWidgetItem*,int)));
     QObject::connect(ContextMenuCollection::getInstance()->getAction_BrowsedTableInject(), SIGNAL(triggered()), MainWindow::instance(), SLOT(onInjectBrowsedTable()));
     QObject::connect(ContextMenuCollection::getInstance()->getAction_BrowsedTableBrowse(), SIGNAL(triggered()), MainWindow::instance(), SLOT(onBrowseBrowsedTable()));
-    QObject::connect(ContextMenuCollection::getInstance()->getAction_ConnectionNewTable(), SIGNAL(triggered()), MainWindow::instance(), SLOT(onConnectionCreateTable()));
 
     QObject::connect(m_connectionsTree, SIGNAL(itemActivated(QTreeWidgetItem*,int)), this, SLOT(connectionItemActivated(QTreeWidgetItem*,int)));
 
@@ -181,7 +173,7 @@ ContextMenuEnabledTreeWidgetItem* ConnectionGuiElements::createConnectionTreeEnt
     newConnectionItem->setData(0, Qt::UserRole, var);
     newConnectionItem->setIcon(0, IconFactory::getConnectionStateIcon(c->getState()));
     m_connectionsTree->addTopLevelItem(newConnectionItem);
-    newConnectionItem->setPopupMenu(ContextMenuCollection::getInstance()->getConnectionsPopupMenu());
+    newConnectionItem->setPopupMenu(ContextMenuCollection::getInstance()->getConnectionsPopupMenu(c->getEngine()->getName()));
     c->setLocation(newConnectionItem);
 
     return newConnectionItem ;

@@ -61,25 +61,6 @@ QString CUBRIDSQLGenerator::getIndexUsedLength(Index* idx, const Column *c) cons
     return result;
 }
 
-QString CUBRIDSQLGenerator::indexTypeSpecified(Index *idx) const
-{
-    QString result = " ";
-    // See if this index has BTREE or HASH specified
-    {
-    SpInstance* spi = idx->getInstanceForSqlRoleUid(m_engine, uidMysqlIndexType);
-    if(spi)
-    {
-        QString t = spi->get();
-        if(t.length())
-        {
-            result = strSpace + correctCase("USING") + correctCase(t) + strSpace;
-        }
-    }
-    }
-
-    return result;
-}
-
 QStringList CUBRIDSQLGenerator::generateAlterTableForForeignKeys(Table *t, const QHash<QString, QString> &options) const
 {
     QStringList finalSql;
@@ -96,13 +77,6 @@ QStringList CUBRIDSQLGenerator::generateAlterTableForForeignKeys(Table *t, const
         finalSql << f;
     }
     return finalSql;
-}
-
-QStringList CUBRIDSQLGenerator::generateCreateStoredMethodSql(StoredMethod *p, const QHash<QString, QString>& /*options*/) const
-{
-    QStringList t;
-    t.append(p->getSql());
-    return t;
 }
 
 QString CUBRIDSQLGenerator::getTableRenameSql(const QString& from, const QString& to)

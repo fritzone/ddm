@@ -108,52 +108,74 @@ void BrowseTableForm::onRunQuery()
     QSqlDatabase db = m_connection->getQSqlDatabase();
 
     QSqlQuery query(db);
-    query.prepare(retrieveCurrentQuery());
+    QString sq = retrieveCurrentQuery();
 
     int crow = 0;
     int cnt = -1;
 
-    if(query.exec())
+    if(query.exec(sq))
     {
-        while(query.next())
-        {
-            if(crow == 0)
-            {
-                QSqlRecord rec = query.record();
-                cnt = rec.count();
-                tableForScriptResult->setColumnCount(cnt);
-                for(int i=0; i<cnt; i++)
-                {
-                    QString name = rec.fieldName(i);
-                    QTableWidgetItem *columnHeaderItem = new QTableWidgetItem(name);
-                    columnHeaderItem->setTextAlignment(Qt::AlignVCenter);
-                    tableForScriptResult->setHorizontalHeaderItem(i, columnHeaderItem);
-                }
 
-                tableForScriptResult->setRowCount(0);
+        if(crow == 0)
+        {
+            QSqlRecord rec = query.record();
+            cnt = rec.count();
+            tableForScriptResult->setColumnCount(cnt);
+            for(int i=0; i<cnt; i++)
+            {
+                QString name = rec.fieldName(i);
+                QTableWidgetItem *columnHeaderItem = new QTableWidgetItem(name);
+                columnHeaderItem->setTextAlignment(Qt::AlignVCenter);
+                tableForScriptResult->setHorizontalHeaderItem(i, columnHeaderItem);
             }
 
+            tableForScriptResult->setRowCount(0);
+        }
+
+        while(query.next())
+        {
             tableForScriptResult->setRowCount(tableForScriptResult->rowCount() + 1);
             for(int j=0; j<cnt; j++)
             {
                 QString v = "";
+                QVariant vj = query.value(j);
 
                 if(!query.value(j).isNull())
                 {
-                    if(query.value(j).canConvert(QVariant::Int))
+                    if(vj.canConvert<int>())
                     {
-                        v = QString::number(query.value(j).toInt());
+                        if(vj.canConvert<QString>())
+                        {
+                            QString tv = vj.toString();
+                            bool ok;
+                            int x = tv.toInt(&ok);
+                            if(ok)
+                            {
+                                v = QString::number(x);
+                            }
+                            else
+                            {
+                                v = tv;
+                            }
+                        }
+                        else
+                        {
+                            v = QString::number(vj.toInt());
+                        }
                     }
                     else
                     {
-                        v = query.value(j).toString();
+                        v = vj.toString();
                     }
                 }
                 tableForScriptResult->setItem(crow, j,  new QTableWidgetItem(v));
             }
             crow ++;
-
         }
+    }
+    else
+    {
+        QMessageBox::critical(this, tr("Error"), tr("Cannot execute the query:") + db.lastError().driverText() + "/" + db.lastError().databaseText(), QMessageBox::Ok);
     }
 
     db.close();
@@ -362,12 +384,6 @@ void BrowseTableForm::newPageforTrigger(Connection *c, const QString &tab)
     queryFramesMainHorizontalLayout = new QHBoxLayout(queryFrame);
     queryFramesMainVerticalLayout = new QVBoxLayout();
     horizontalLayoutForButtons = new QHBoxLayout();
-//        btnSaveQuery = new QToolButton(queryFrame);
-//        btnSaveQuery->setIcon(IconFactory::getSaveIcon());
-//        horizontalSpacer = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
-//        horizontalLayoutForButtons->addWidget(btnSaveQuery);
-//        horizontalLayoutForButtons->addItem(horizontalSpacer);
-//        queryFramesMainVerticalLayout->addLayout(horizontalLayoutForButtons);
     horizontalLayoutForLineNumbersAndTextEdit = new QHBoxLayout();
     queryFramesMainVerticalLayout->addLayout(horizontalLayoutForLineNumbersAndTextEdit);
     queryFramesMainHorizontalLayout->addLayout(queryFramesMainVerticalLayout);
@@ -378,11 +394,14 @@ void BrowseTableForm::newPageforTrigger(Connection *c, const QString &tab)
     {
         TriggerForm* pf = new TriggerForm(0, c, true, true, this);
         pf->feedInTables(QStringList(t->getTable()));
+        pf->feedInTriggerEvents(c->getEngine()->getTriggerEvents(), t->getEvent());
+        pf->feedInTriggerTimes(c->getEngine()->getTriggerTimings(), t->getTime());
         pf->setTrigger(t);
         pf->showSql();
 
         horizontalLayoutForLineNumbersAndTextEdit->addWidget(pf);
-        mainTab->addTab(queryFrame, IconFactory::getTriggerIcon(), tab + ":" + c->getFullLocation());
+        mainTab->addTab(queryFrame, IconFactory::getTriggerIcon(),
+                        tab + strSemicolon + c->getFullLocation());
     }
 }
 

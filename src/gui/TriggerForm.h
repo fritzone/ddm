@@ -26,8 +26,8 @@ public:
     void initSql();
     void feedInTables(const QVector<QString> &tables, bool oop);
     void feedInTables(const QStringList& tables);
-    void feedInTriggerEvents(const QStringList&);
-    void feedInTriggerTimes(const QStringList&);
+    void feedInTriggerEvents(const QStringList&, QString def="");
+    void feedInTriggerTimes(const QStringList&, QString def ="");
     void showSql();
 
 protected slots:
@@ -54,6 +54,7 @@ private:
     bool m_forcedChange;
     bool m_reverseSource;
     Version* m_version;
+    Connection* m_conn;
 };
 
 #endif // TRIGGERFORM_H
