@@ -36,9 +36,10 @@ void Function::serialize(QDomDocument &doc, QDomElement &parent) const
         if(m_javaMappedMethod)
         {
             element.setAttribute("java-mapped", true);
-            element.setAttribute("java-returns", m_javaReturns);
             element.setAttribute("java-class", m_javaClassName);
             element.setAttribute("java-method", m_javaMethodName);
+
+            element.setAttribute("java-returns", m_javaReturns);
         }
     }
 
@@ -47,7 +48,6 @@ void Function::serialize(QDomDocument &doc, QDomElement &parent) const
     QDomCDATASection cdata = doc.createCDATASection(QString(m_sql.toUtf8().toBase64()));
     sqlElement.appendChild(cdata);
     element.appendChild(sqlElement);
-
 
     parent.appendChild(element);
 }

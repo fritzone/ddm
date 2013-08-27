@@ -140,6 +140,16 @@ public:
         return m_javaMethodName;
     }
 
+    void setJavaBinding(bool a)
+    {
+        m_javaMappedMethod = a;
+    }
+
+    bool getJavaBinding() const
+    {
+        return m_javaMappedMethod;
+    }
+
 protected:
 
     QString m_sql;
@@ -159,7 +169,6 @@ protected:
     bool m_javaMappedMethod;
     QString m_javaClassName;
     QString m_javaMethodName;
-
 };
 
 #endif // CORE_STOREDMETHOD_H

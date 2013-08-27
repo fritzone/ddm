@@ -1263,6 +1263,18 @@ Procedure* DeserializationFactory::createProcedure(Version* v,  const QDomDocume
     {
         populateGuidedParametersForStoredMethod(*p, element.firstChildElement("Parameters"));
         populateGuidedDescrptionForStoredMethod(*p, element.firstChildElement("Descriptions"));
+
+        bool javaMap = element.attribute("java-mapped").toInt() == 1;
+        if(javaMap)
+        {
+            QString javaClass = element.attribute("java-class");
+            QString javaMethod = element.attribute("java-method");
+
+            p->setJavaClassName(javaClass);
+            p->setJavaMethodName(javaMethod);
+
+            p->setJavaBinding(true);
+        }
     }
 
     if(sourceUid.length()) p->setSourceUid(sourceUid);
@@ -1353,6 +1365,20 @@ Function* DeserializationFactory::createFunction(Version* v,  const QDomDocument
         QString returns = element.attribute("returns");
         func->setReturn(returns);
         func->setReturnDesc(element.firstChildElement("ReturnDescription").firstChild().toCDATASection().data());
+
+        bool javaMap = element.attribute("java-mapped").toInt() == 1;
+        if(javaMap)
+        {
+            QString javaReturns = element.attribute("java-returns");
+            QString javaClass = element.attribute("java-class");
+            QString javaMethod = element.attribute("java-method");
+
+            func->setJavaClassName(javaClass);
+            func->setJavaMethodName(javaMethod);
+            func->setJavaReturnType(javaReturns);
+
+            func->setJavaBinding(true);
+        }
     }
 
     if(sourceUid.length()) func->setSourceUid(sourceUid);

@@ -45,8 +45,6 @@ public:
 
     QString generateForeignKeys(const QStringList&) const;
 
-    QString backtickedName(const QString&) const;
-
     QStringList foreignKeyParticipants(Table* table, const QMap<QString, QString> &fkMappings) const;
 
     QString basicCreateTableScript(Table *table, const QStringList &foreignKeys, const QString &tabName, bool needfk) const;
@@ -92,6 +90,7 @@ public:
     QString getDropTable(const QString& table);
 
     virtual QString createTableOnlyScript(Table* table, const QStringList &foreignKeys, const QString &tabName, const Connection *dest) const;
+    virtual QString backtickedName(const QString&) const;
 
 protected:
 

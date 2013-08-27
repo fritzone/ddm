@@ -3,12 +3,7 @@
 #include "Workspace.h"
 #include "MainWindow.h"
 
-#include <QSqlDatabase>
-#include <QSqlError>
-#include <QSqlQuery>
 #include <QDebug>
-
-#include <QMessageBox>
 
 int main(int argc, char *argv[])
 {

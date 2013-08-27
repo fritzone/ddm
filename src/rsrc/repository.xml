@@ -2726,9 +2726,8 @@ END]]>
         </languages>
         <default-bodies>
           <defult-body language-id="1">
-            <!-- DO NOT CHANGE THE NEWLINE BELOW -->
             <![CDATA[AS LANGUAGE JAVA
-  NAME 'YourClass.yourMethod()';]]>
+NAME 'YourClass.yourMethod()';]]>
           </defult-body>
         </default-bodies>
       </stored-methods>

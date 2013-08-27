@@ -3,8 +3,10 @@
 #include "MySqlConnection.h"
 #include "SqliteConnection.h"
 #include "conn_CUBRID.h"
+#include "db_DatabaseEngine.h"
 
 #include <QSettings>
+#include <QDesktopServices>
 
 ConnectionManager* ConnectionManager::m_instance = 0;
 
@@ -30,6 +32,7 @@ ConnectionManager::ConnectionManager()
 
 void ConnectionManager::loadConnections()
 {
+
     QSettings s(strUnauthorizedFrog, strDDM);
     int l = s.value(strConnectionsCount, QVariant(-1)).toInt();
     if(l == -1) return;
@@ -63,6 +66,14 @@ void ConnectionManager::loadConnections()
 
 void ConnectionManager::saveConnections()
 {
+    // qDebug() << QDesktopServices::displayName(QDesktopServices::DataLocation);
+
+    SqliteConnection* saved = new SqliteConnection("save", QDesktopServices::displayName(QDesktopServices::DataLocation) + "conn.db", false, 3);
+
+    QStringList saveStuff;
+    QString tmp;
+    saved->getEngine()->executeSql(saved, saveStuff, QStringList(), tmp, false);
+
     QSettings s(strUnauthorizedFrog, strDDM);
     s.setValue(strConnectionsCount, m_connections.size());
 

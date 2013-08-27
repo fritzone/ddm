@@ -385,6 +385,14 @@ void Workspace::createNewConnection()
         }
 
         QString engine = injectDialog->getSDbEngine().toUpper();
+        QString name = injectDialog->getName();
+
+        if(ConnectionManager::instance()->getConnection(name))
+        {
+            QMessageBox::critical(MainWindow::instance(), tr("Error"), tr("There is already a connection called ") + name);
+            return;
+        }
+
         Connection* c = 0;
         if(engine == strMySql.toUpper())
         {
@@ -392,7 +400,7 @@ void Workspace::createNewConnection()
             QString user = injectDialog->getUser();
             QString password = injectDialog->getPassword();
             QString db = injectDialog->getDatabase();
-            QString name = injectDialog->getName();
+
             int port = injectDialog->getPort();
             c = new MySqlConnection(name, host, user, password, db, true, injectDialog->getAutoConnect(), port);
         }
@@ -408,7 +416,6 @@ void Workspace::createNewConnection()
             QString user = injectDialog->getUser();
             QString password = injectDialog->getPassword();
             QString db = injectDialog->getDatabase();
-            QString name = injectDialog->getName();
             int port = injectDialog->getPort();
 
             c = new CUBRIDConnection(name, host, user, password, db, true, injectDialog->getAutoConnect(), port);

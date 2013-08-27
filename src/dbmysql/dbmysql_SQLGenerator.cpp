@@ -109,70 +109,12 @@ QStringList MySQLSQLGenerator::generateAlterTableForForeignKeys(Table *t, const 
     return finalSql;
 }
 
-QStringList MySQLSQLGenerator::generateCreateStoredMethodSql(StoredMethod *p, const QHash<QString, QString>& /*options*/) const
+QString MySQLSQLGenerator::backtickedName(const QString& name) const
 {
-    QStringList t;
-    t.append(p->getSql());
-    return t;
-}
-
-QString MySQLSQLGenerator::getTableRenameSql(const QString& from, const QString& to)
-{
-    initForOptions(Configuration::instance().sqlGenerationOptions());
-    QString res = correctCase("rename table") + from + strSpace + correctCase("to") + to;
-    return res;
-}
-
-QString MySQLSQLGenerator::getAlterTableForChangeColumnOrder(const QString& table, const Column* column, const QString& afterThis)
-{
-    initForOptions(Configuration::instance().sqlGenerationOptions());
-
-    QString res = correctCase("ALTER TABLE") + table + strSpace +correctCase("MODIFY COLUMN") + sqlForAColumn(column);
-    if(afterThis.isEmpty())
-    {
-        res += strSpace + correctCase("FIRST");
-    }
-    else
-    {
-        res += strSpace + correctCase("AFTER") + afterThis;
-    }
-    return res;
-}
-
-QString MySQLSQLGenerator::getAlterTableForColumnRename(const QString& table, const Column* column, const QString& oldName)
-{
-    initForOptions(Configuration::instance().sqlGenerationOptions());
-
-    QString res = correctCase("ALTER TABLE")
-            + table + strSpace + correctCase("CHANGE `")
-            + oldName + "` "+ sqlForAColumn(column);
-
-    return res;
-}
-
-QString MySQLSQLGenerator::getAlterTableForNewColumn(const QString& table, const Column* column, const QString& after)
-{
-    initForOptions(Configuration::instance().sqlGenerationOptions());
-
-    QString res = correctCase("ALTER TABLE") + table + strSpace +
-            correctCase("ADD") + sqlForAColumn(column);
-    if(after.isEmpty())
-    {
-        res += strSpace + correctCase("FIRST");
-    }
-    else
-    {
-        res += strSpace + correctCase("AFTER") + after;
-    }
-    return res;
-}
-
-QString MySQLSQLGenerator::getAlterTableForColumnDeletion(const QString& table, const QString& column)
-{
-    initForOptions(Configuration::instance().sqlGenerationOptions());
-
-    QString res = correctCase("ALTER TABLE") + table + strSpace + correctCase("DROP") + column;
-    return res;
+    QString result = (m_backticks?"`":"") + name;
+    result += m_backticks?"`":"";
+    result += " ";
+    return result;
 }
 
 QString MySQLSQLGenerator::sqlForAColumn(const Column *col) const
@@ -233,22 +175,6 @@ QString MySQLSQLGenerator::sqlForAColumn(const Column *col) const
     }
 
     return columnsSql;
-}
-
-QString MySQLSQLGenerator::getAlterTableForColumnChange(const QString& table, const Column* col)
-{
-    initForOptions(Configuration::instance().sqlGenerationOptions());
-
-    QString res = correctCase("ALTER TABLE") + table + strSpace + correctCase("MODIFY COLUMN") + sqlForAColumn(col);
-    return res;
-}
-
-QString MySQLSQLGenerator::getAlterTableToDropForeignKey(const QString& table, const QString& fkName)
-{
-    initForOptions(Configuration::instance().sqlGenerationOptions());
-
-    QString res = correctCase("ALTER TABLE") + table + strSpace + correctCase("DROP FOREIGN KEY") + fkName;
-    return res;
 }
 
 QString MySQLSQLGenerator::getDropProcedure(const QString& proc)

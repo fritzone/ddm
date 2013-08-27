@@ -27,6 +27,7 @@
 #include <QListWidget>
 #include <QListWidgetItem>
 #include <QFileDialog>
+#include <QToolTip>
 
 QString InjectSqlDialog::previousHost="";
 QString InjectSqlDialog::previousUser="";
@@ -552,9 +553,26 @@ void InjectSqlDialog::onDbChange(QString newDb)
     }
 }
 
-void InjectSqlDialog::onConnectionNameEdited(QString)
+void InjectSqlDialog::onConnectionNameEdited(QString a)
 {
     m_nameWasChanged = true;
+
+    if(ConnectionManager::instance()->getConnection(a))
+    {
+        QPalette *palette = new QPalette();
+        palette->setColor(QPalette::Text,Qt::red);
+        ui->txtConnectionName->setPalette(*palette);
+        QString nt = tr("There si already a connection called <b>") + a;
+        QToolTip::showText(ui->txtConnectionName->mapToGlobal(QPoint()), nt);
+        ui->txtConnectionName->setToolTip(nt);
+    }
+    else
+    {
+        QPalette *palette = new QPalette();
+        palette->setColor(QPalette::Text,Qt::black);
+        ui->txtConnectionName->setPalette(*palette);
+        ui->txtConnectionName->setToolTip(tr("The name of the connection"));
+    }
 }
 
 void InjectSqlDialog::onDbTypeChange(QString a)
