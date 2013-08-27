@@ -49,7 +49,6 @@ ProcedureForm::ProcedureForm(Version* v, ProcedureFormMode m, bool guided, bool 
             ui->cmbProcedureType->removeItem(ui->cmbProcedureType->findText("Java"));
 
             // hide the java related gui controls
-            ui->cmbJavaParameterType->hide();
             ui->grpJava->hide();
         }
     }
@@ -133,6 +132,7 @@ ProcedureForm::ProcedureForm(Version* v, ProcedureFormMode m, bool guided, bool 
 
     toggleGuidedCreationControls(m_guided);
     ui->txtParamDesc->hide();
+    ui->cmbJavaReturnType->hide();
 
     if(m_guided)
     {
@@ -161,6 +161,7 @@ ProcedureForm::ProcedureForm(Version* v, ProcedureFormMode m, bool guided, bool 
     ui->tabWidget->setCurrentIndex(0);
     if(m_javaBinding)
     {
+        ui->txtSpecialJavaReturnType->hide();
         onParameterTypeChange(ui->cmbParameterType->currentText());
         ui->cmbReturnType->setCurrentIndex(0);
     }
@@ -188,6 +189,9 @@ void ProcedureForm::toggleGuidedCreationControls(bool guided)
     ui->lblBrief->setVisible(guided);
     ui->frameForName->setVisible(guided);
     ui->grpReturn->setVisible(guided && m_mode == MODE_FUNCTION);
+    ui->lblJavaReturn->setVisible(guided && m_mode == MODE_FUNCTION);
+    ui->cmbJavaReturnType->setVisible(guided && m_mode == MODE_FUNCTION);
+    ui->txtSpecialJavaReturnType->setVisible(guided && m_mode == MODE_FUNCTION);
 
     if(!guided)
     {
@@ -333,10 +337,21 @@ void ProcedureForm::setProcedure(StoredMethod *p)
     // and if it's guided populate the guide controls
     if(p->isGuided())
     {
+
+        if(m_javaBinding)
+        {
+            p->setJavaBinding(true);
+        }
+        else
+        {
+            p->setJavaBinding(false);
+        }
+
         if(m_mode == MODE_FUNCTION)
         {
             ui->cmbReturnType->setCurrentIndex(ui->cmbReturnType->findText(p->getReturnType()));
             ui->txtReturnExplanation->setText(p->getReturnDesc());
+            onReturnTypeComboChange(ui->cmbReturnType->currentText());
         }
 
         for(int i=0; i<p->getParametersWithDescription().size(); i++)
@@ -357,6 +372,12 @@ void ProcedureForm::setProcedure(StoredMethod *p)
 
         ui->txtDescription->setText(p->getDescription());
         ui->txtBrief->setText(p->getBriefDescription());
+
+        QString retT = p->getReturnType();
+        if(retT.isEmpty())
+        {
+            ui->cmbJavaReturnType->hide();
+        }
     }
 
     ui->btnUndelete->hide();

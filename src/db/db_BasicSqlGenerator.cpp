@@ -11,6 +11,7 @@
 #include "core_View.h"
 #include "qbr_SelectQuery.h"
 #include "core_Trigger.h"
+#include "core_StoredMethod.h"
 
 QString BasicSqlGenerator::generateTableCreationComments(const Table *t, const QString& tabName) const
 {
@@ -182,14 +183,6 @@ QString BasicSqlGenerator::generateForeignKeys(const QStringList& foreignKeys) c
     }
 
     return fkCommand;
-}
-
-QString BasicSqlGenerator::backtickedName(const QString& name) const
-{
-    QString result = (m_backticks?"`":"") + name;
-    result += m_backticks?"`":"";
-    result += " ";
-    return result;
 }
 
 QStringList BasicSqlGenerator::generateCreateTableSql(Table *table,
@@ -663,7 +656,7 @@ QStringList BasicSqlGenerator::generateAlterTableForForeignKeys(Table* /*t*/, co
 }
 
 // we should never get here for SQlite, so it's ok to keep it in common place
-QStringList BasicSqlGenerator::generateCreateStoredMethodSql(StoredMethod *p, const QHash<QString, QString>& options) const
+QStringList BasicSqlGenerator::generateCreateStoredMethodSql(StoredMethod *p, const QHash<QString, QString>& /*options*/) const
 {
     QStringList t;
     t.append(p->getSql());
@@ -807,6 +800,11 @@ QString BasicSqlGenerator::createTableOnlyScript(Table* table,
     createTable += strSemicolon + strNewline;
     return createTable;
 
+}
+
+QString BasicSqlGenerator::backtickedName(const QString &name) const
+{
+    return name;
 }
 
 QString BasicSqlGenerator::getRecreateForeignKeySql(ForeignKey* fkI, const QString& foreignKeysTable)

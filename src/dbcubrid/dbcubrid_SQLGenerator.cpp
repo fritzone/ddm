@@ -39,10 +39,6 @@ QString CUBRIDSQLGenerator::createTableOnlyScript(Table* table, const QStringLis
 
     QString createTable = basicCreateTableScript(table, foreignKeys, tabName, needfk);
 
-    // more extra mysql stuff: checksum, autoIncrement, etc...
-    createTable += provideAutoIncrementForTableScript(table);
-    createTable += provideAverageRowLengthScript(table);
-
     // done
     createTable += strSemicolon + strNewline;
 
@@ -77,65 +73,6 @@ QStringList CUBRIDSQLGenerator::generateAlterTableForForeignKeys(Table *t, const
         finalSql << f;
     }
     return finalSql;
-}
-
-QString CUBRIDSQLGenerator::getTableRenameSql(const QString& from, const QString& to)
-{
-    initForOptions(Configuration::instance().sqlGenerationOptions());
-    QString res = correctCase("rename table") + from + strSpace + correctCase("to") + to;
-    return res;
-}
-
-QString CUBRIDSQLGenerator::getAlterTableForChangeColumnOrder(const QString& table, const Column* column, const QString& afterThis)
-{
-    initForOptions(Configuration::instance().sqlGenerationOptions());
-
-    QString res = correctCase("ALTER TABLE") + table + strSpace +correctCase("MODIFY COLUMN") + sqlForAColumn(column);
-    if(afterThis.isEmpty())
-    {
-        res += strSpace + correctCase("FIRST");
-    }
-    else
-    {
-        res += strSpace + correctCase("AFTER") + afterThis;
-    }
-    return res;
-}
-
-QString CUBRIDSQLGenerator::getAlterTableForColumnRename(const QString& table, const Column* column, const QString& oldName)
-{
-    initForOptions(Configuration::instance().sqlGenerationOptions());
-
-    QString res = correctCase("ALTER TABLE")
-            + table + strSpace + correctCase("CHANGE `")
-            + oldName + "` "+ sqlForAColumn(column);
-
-    return res;
-}
-
-QString CUBRIDSQLGenerator::getAlterTableForNewColumn(const QString& table, const Column* column, const QString& after)
-{
-    initForOptions(Configuration::instance().sqlGenerationOptions());
-
-    QString res = correctCase("ALTER TABLE") + table + strSpace +
-            correctCase("ADD") + sqlForAColumn(column);
-    if(after.isEmpty())
-    {
-        res += strSpace + correctCase("FIRST");
-    }
-    else
-    {
-        res += strSpace + correctCase("AFTER") + after;
-    }
-    return res;
-}
-
-QString CUBRIDSQLGenerator::getAlterTableForColumnDeletion(const QString& table, const QString& column)
-{
-    initForOptions(Configuration::instance().sqlGenerationOptions());
-
-    QString res = correctCase("ALTER TABLE") + table + strSpace + correctCase("DROP") + column;
-    return res;
 }
 
 QString CUBRIDSQLGenerator::sqlForAColumn(const Column *col) const
@@ -198,27 +135,11 @@ QString CUBRIDSQLGenerator::sqlForAColumn(const Column *col) const
     return columnsSql;
 }
 
-QString CUBRIDSQLGenerator::getAlterTableForColumnChange(const QString& table, const Column* col)
-{
-    initForOptions(Configuration::instance().sqlGenerationOptions());
-
-    QString res = correctCase("ALTER TABLE") + table + strSpace + correctCase("MODIFY COLUMN") + sqlForAColumn(col);
-    return res;
-}
-
-QString CUBRIDSQLGenerator::getAlterTableToDropForeignKey(const QString& table, const QString& fkName)
-{
-    initForOptions(Configuration::instance().sqlGenerationOptions());
-
-    QString res = correctCase("ALTER TABLE") + table + strSpace + correctCase("DROP FOREIGN KEY") + fkName;
-    return res;
-}
-
 QString CUBRIDSQLGenerator::getDropProcedure(const QString& proc)
 {
     initForOptions(Configuration::instance().sqlGenerationOptions());
 
-    QString res = correctCase("DROP PROCEDURE IF EXISTS") + proc;
+    QString res = correctCase("DROP PROCEDURE") + proc;
     return res;
 }
 
@@ -226,7 +147,7 @@ QString CUBRIDSQLGenerator::getDropFunction(const QString& func)
 {
     initForOptions(Configuration::instance().sqlGenerationOptions());
 
-    QString res = correctCase("DROP FUNCTION IF EXISTS") + func;
+    QString res = correctCase("DROP FUNCTION") + func;
     return res;
 }
 
@@ -250,64 +171,6 @@ QString CUBRIDSQLGenerator::createViewColumnNames(View *v) const
             }
         }
         result += c + strCloseParantheses;
-    }
-    return result;
-}
-
-QString CUBRIDSQLGenerator::provideAutoIncrementForTableScript(Table *table) const
-{
-    QString result("");
-    // and the codepage
-    SpInstance* spi = table->getInstanceForSqlRoleUid(m_engine, uidMysqlAutoincrementTable);
-    if(spi)
-    {
-        QString autoInc = spi->get();
-        if(autoInc.length() && autoInc != spi->getClass()->getDefaultValue())
-        {
-            QString aincCmd = correctCase("auto_increment");
-            QString value = autoInc;
-
-            result = strSpace + aincCmd + strSpace + value + strSpace;
-        }
-    }
-    return result;
-}
-
-QString CUBRIDSQLGenerator::provideAverageRowLengthScript(Table *table) const
-{
-    QString result("");
-    // and the codepage
-    SpInstance* spi = table->getInstanceForSqlRoleUid(m_engine, uidMysqlAvgRowLengthTable);
-    if(spi)
-    {
-        QString autoInc = spi->get();
-        if(autoInc.length() && autoInc != spi->getClass()->getDefaultValue())
-        {
-            QString aincCmd = correctCase("avg_row_length");
-            QString value = autoInc;
-
-            result = strSpace + aincCmd + strSpace + value + strSpace;
-        }
-    }
-    return result;
-}
-
-QString CUBRIDSQLGenerator::provideCodepageScript(Table *table) const
-{
-    QString result("");
-    // and the codepage
-    SpInstance* spi = table->getInstanceForSqlRoleUid(m_engine, uidMysqlCodepageTable);
-    if(spi)
-    {
-        QString codepage = spi->get();
-        if(codepage.length())
-        {
-            QString charset = codepage.left(codepage.indexOf('_'));
-            QString dcs = correctCase("DEFAULT CHARACTER SET");
-            QString collate = correctCase("COLLATE");
-
-            result = strSpace + dcs + charset + strSpace + collate + codepage;
-        }
     }
     return result;
 }
@@ -347,4 +210,10 @@ QString CUBRIDSQLGenerator::getRecreateForeignKeySql(ForeignKey* fkI, const QStr
     f += foreignKeySql;
 
     return f;
+}
+
+QString CUBRIDSQLGenerator::backtickedName(const QString &name) const
+{
+    QString result = "["+ name + "] ";
+    return result;
 }

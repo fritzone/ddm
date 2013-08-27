@@ -3,18 +3,18 @@
 
 #include <QDebug>
 
-#include "db_BasicSqlGenerator.h"
+#include "db_AdvancedSqlGenerator.h"
 
 class DatabaseEngine;
 class ForeignKey;
 class Index;
 class MySqlConnection;
 
-class MySQLSQLGenerator : public BasicSqlGenerator
+class MySQLSQLGenerator : public AdvancedSqlGenerator
 {
 public:
 
-    MySQLSQLGenerator(DatabaseEngine* engine) : BasicSqlGenerator(engine)
+    MySQLSQLGenerator(DatabaseEngine* engine) : AdvancedSqlGenerator(engine)
     {
     }
 
@@ -22,18 +22,11 @@ public:
 
     virtual QStringList generateCreateTableSql(Table* table, const QHash<QString, QString>& options, const QString& tabName, const QMap<QString, QString> &fkMappings, const Connection* pdest) const;
     virtual QStringList generateAlterTableForForeignKeys(Table* t, const QHash<QString, QString>& options) const;
-    virtual QStringList generateCreateStoredMethodSql(StoredMethod* p, const QHash<QString, QString>& options) const;
-    virtual QString getTableRenameSql(const QString& from, const QString& to);
-    virtual QString getAlterTableForChangeColumnOrder(const QString& table, const Column* column, const QString& afterThis);
-    virtual QString getAlterTableForColumnRename(const QString& table, const Column* column, const QString& oldName);
-    virtual QString getAlterTableForNewColumn(const QString& table, const Column* column, const QString& after);
-    virtual QString getAlterTableForColumnDeletion(const QString& table, const QString& column);
-    virtual QString getAlterTableForColumnChange(const QString& table, const Column* col);
-    virtual QString getAlterTableToDropForeignKey(const QString& table, const QString& fkName);
     virtual QString getDropProcedure(const QString& proc);
     virtual QString getDropFunction(const QString& func);
     virtual QString sqlForAColumn(const Column* col) const;
     virtual QString getRecreateForeignKeySql(ForeignKey* fkI, const QString &foreignKeysTable);
+    virtual QString backtickedName(const QString& name) const;
 
 
 private:
