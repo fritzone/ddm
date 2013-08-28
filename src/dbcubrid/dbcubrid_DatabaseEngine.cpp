@@ -133,6 +133,7 @@ bool CUBRIDDatabaseEngine::reverseEngineerDatabase(Connection *conn, const QStri
         }
 
         // TODO: CUB01
+        // is this supported at all in CUBRID?
         // now populate the foreign keys
         QSqlDatabase dbo = getQSqlDatabaseForConnection(c);
         if(dbo.isOpen())

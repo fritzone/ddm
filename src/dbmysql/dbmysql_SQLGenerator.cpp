@@ -61,17 +61,6 @@ QString MySQLSQLGenerator::createTableOnlyScript(Table* table, const QStringList
     return createTable;
 }
 
-QString MySQLSQLGenerator::getIndexUsedLength(Index* idx, const Column *c) const
-{
-    QString result = "";
-    // Now see if we have an SPI for the given column
-    if(SpInstance* spi = idx->getSpiOfColumnForSpecificRole(c, uidMysqlColumnOfIndexLength, m_engine->getDatabaseEngineName()))
-    {
-        result = strOpenParantheses + spi->get() + strCloseParantheses;
-    }
-    return result;
-}
-
 QString MySQLSQLGenerator::indexTypeSpecified(Index *idx) const
 {
     QString result = " ";
@@ -89,24 +78,6 @@ QString MySQLSQLGenerator::indexTypeSpecified(Index *idx) const
     }
 
     return result;
-}
-
-QStringList MySQLSQLGenerator::generateAlterTableForForeignKeys(Table *t, const QHash<QString, QString> &options) const
-{
-    QStringList finalSql;
-    initForOptions(options);
-
-    for(int j=0; j<t->getForeignKeyCommands().size(); j++)
-    {
-        QString f = correctCase("alter table");
-        f += t->getName();
-        f += strSpace + correctCase("add");
-        f += t->getForeignKeyCommands().at(j);
-        f += strSemicolon + strNewline;
-
-        finalSql << f;
-    }
-    return finalSql;
 }
 
 QString MySQLSQLGenerator::backtickedName(const QString& name) const
@@ -191,30 +162,6 @@ QString MySQLSQLGenerator::getDropFunction(const QString& func)
 
     QString res = correctCase("DROP FUNCTION IF EXISTS") + func;
     return res;
-}
-
-QString MySQLSQLGenerator::createViewReplaceability(View* v) const
-{
-    return spiResult(v, uidMysqlViewCanReplace);
-}
-
-QString MySQLSQLGenerator::createViewColumnNames(View *v) const
-{
-    QString result = "";
-    if(v->getColumnNames().size() > 0)
-    {
-        QString c = strOpenParantheses;
-        for(int i=0; i<v->getColumnNames().size(); i++)
-        {
-            c += v->getColumnNames().at(i);
-            if(i<v->getColumnNames().size() - 1)
-            {
-                c += strComma + strSpace;
-            }
-        }
-        result += c + strCloseParantheses;
-    }
-    return result;
 }
 
 QString MySQLSQLGenerator::dbEngineName(Table* table, const MySqlConnection* dest) const
@@ -360,41 +307,4 @@ QString MySQLSQLGenerator::provideCodepageScript(Table *table) const
         }
     }
     return result;
-}
-
-QString MySQLSQLGenerator::getRecreateForeignKeySql(ForeignKey* fkI, const QString& foreignKeysTable)
-{
-    QString foreignKeySql1 = "";
-    QString foreignKeySql2 = "";
-
-    for(int j=0; j<fkI->getAssociations().size(); j++)
-    {
-
-        ForeignKey::ColumnAssociation* assocJ = fkI->getAssociations().at(j);
-        foreignKeySql1 += assocJ->getLocalColumn()->getName();
-        foreignKeySql2 += assocJ->getForeignColumn()->getName();
-
-        if(j < fkI->getAssociations().size() - 1)
-        {
-            foreignKeySql1 += ", ";
-            foreignKeySql2 += ", ";
-        }
-    }
-    QString foreignKeySql = " CONSTRAINT " + fkI->getName() + " FOREIGN KEY (";
-    foreignKeySql += foreignKeySql1;
-    foreignKeySql += ") REFERENCES ";
-    foreignKeySql += foreignKeysTable;  // Not an OOP project, this is acceptable FOR NOW
-    foreignKeySql += "(" + foreignKeySql2 + ")";
-    QString t = fkI->getOnDelete();
-    if(t.length() > 0) foreignKeySql += QString(" ") + ("ON DELETE ") + (t);
-    t = fkI->getOnUpdate();
-    if(t.length() > 0) foreignKeySql += QString(" ") + ("ON UPDATE ") + (t);
-
-    // TODO: This is just MySQL for now
-    QString f = "ALTER TABLE ";
-    f += fkI->getLocalTable()->getName();
-    f += " ADD ";
-    f += foreignKeySql;
-
-    return f;
 }

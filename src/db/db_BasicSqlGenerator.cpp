@@ -109,9 +109,7 @@ void BasicSqlGenerator::initForOptions(const QHash<QString, QString> &options) c
 
 QString BasicSqlGenerator::requestedTableName(const QString& tabName) const
 {
-    QString tableName = m_backticks ? strBacktick :strEmpty;
-    tableName += tabName;
-    tableName += m_backticks ? strBacktick : strEmpty;
+    QString tableName = backtickedName(tabName);
     tableName += strNewline + strOpenParantheses + strNewline;
     return tableName;
 
@@ -804,8 +802,8 @@ QString BasicSqlGenerator::createTableOnlyScript(Table* table,
 
 QString BasicSqlGenerator::backtickedName(const QString &name) const
 {
-    return name;
-}
+    QString result = "["+ name + "] ";
+    return result;}
 
 QString BasicSqlGenerator::getRecreateForeignKeySql(ForeignKey* fkI, const QString& foreignKeysTable)
 {

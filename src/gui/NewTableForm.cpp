@@ -2534,7 +2534,7 @@ void NewTableForm::onChangeName(QString a)
     m_ui->txtTableName->setPalette(pal);
 
     // and see if there is a table with this name already
-    if(m_table->getVersion()->hasTable(a) && another && another != m_table)
+    if((m_table->getVersion()->hasTable(a) && another && another != m_table) || m_dbEngine->getKeywords().contains(a, Qt::CaseInsensitive))
     {
         QPalette pal;
         pal.setColor(QPalette::Text, Qt::red);
@@ -3065,7 +3065,7 @@ void NewTableForm::onTriggerSpItemForIndexesColumn()
                     Column* c = m_table->getColumn(m_ui->lstSelectedColumnsForIndex->currentItem()->text(0));
                     if(c == 0) c = m_table->getColumnFromParents(m_ui->lstSelectedColumnsForIndex->currentItem()->text(0));
                     if(c == 0) return;
-                    if(c->getDataType()->getType() != DT_STRING && c->getDataType()->getType() != DT_BLOB && allSps.at(i)->getSqlRoleUid() == uidMysqlColumnOfIndexLength)
+                    if(c->getDataType()->getType() != DT_STRING && c->getDataType()->getType() != DT_BLOB && allSps.at(i)->getSqlRoleUid() == uidColumnOfIndexLength)
                     {
                         QMessageBox::warning(this, tr("Warning"), tr("You can add the property \"") + act->text() + "\" to string/blob type columns only.", QMessageBox::Ok);
                         return;
