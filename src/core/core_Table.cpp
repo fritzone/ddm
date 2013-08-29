@@ -63,7 +63,7 @@ bool Table::hasIndex(const QString& indexName) const
 {
     for(int i=0; i<m_indices.size(); i++)
     {
-        if(m_indices[i]->getName() == indexName)
+        if(m_indices[i]->getName().toUpper() == indexName.toUpper())
         {
             return true;
         }
@@ -75,7 +75,7 @@ bool Table::hasColumn(const QString& colName) const
 {
     for(int i=0; i<m_columns.size(); i++)
     {
-        if(m_columns[i]->getName() == colName)
+        if(m_columns[i]->getName().toUpper() == colName.toUpper())
         {
             return true;
         }
@@ -155,7 +155,7 @@ ForeignKey* Table::getForeignKey(const QString& name) const
 {
     for(int i=0; i<m_foreignKeys.size(); i++)
     {
-        if(m_foreignKeys[i]->getName() == name)
+        if(m_foreignKeys[i]->getName().toUpper() == name.toUpper())
         {
             return m_foreignKeys[i];
         }
@@ -167,7 +167,7 @@ ForeignKey* Table::getForeignKeyToTable(const QString& tableName) const
 {
     for(int i=0; i<m_foreignKeys.size(); i++)
     {
-        if(m_foreignKeys[i]->getForeignTableName() == tableName)
+        if(m_foreignKeys[i]->getForeignTableName().toUpper() == tableName.toUpper())
         {
             return m_foreignKeys[i];
         }
@@ -192,7 +192,7 @@ Column* Table::getColumn(const QString& name) const
 {
     for(int i = 0; i<m_columns.size(); i++)
     {
-        if(m_columns[i]->getName() == name)
+        if(m_columns[i]->getName().toUpper() == name.toUpper())
         {
             return m_columns[i];
         }
@@ -670,7 +670,7 @@ int Table::getIndexOfColumn(const QString& n)
 
     for(int i=0; i<cols.size(); i++)
     {
-        if(n == cols[i]->getName())
+        if(n.toUpper() == cols[i]->getName().toUpper())
         {
             return i;
         }

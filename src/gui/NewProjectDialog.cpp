@@ -38,9 +38,9 @@ void NewProjectDialog::changeEvent(QEvent *e)
 
 QString NewProjectDialog::getTargetDatabase() const
 {
-    if(m_ui->radioMySql->isChecked()) return "MySql";
-    if(m_ui->radioSqlite->isChecked()) return "Sqlite";
-    if(m_ui->radioCubrid->isChecked()) return "CUBRID";
+    if(m_ui->radioMySql->isChecked()) return strCamelMySql;
+    if(m_ui->radioSqlite->isChecked()) return strCamelSqlite;
+    if(m_ui->radioCubrid->isChecked()) return strCUBRID;
 
     return "";
 }

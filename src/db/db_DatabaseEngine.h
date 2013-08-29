@@ -488,6 +488,18 @@ public:
      */
     virtual QString getTriggerBodyDefinitionStatement() = 0;
 
+    /**
+     * @brief getOnUpdateActions
+     * @return the ON UPDATE actions supported by the database
+     */
+    virtual QStringList getOnUpdateActions() = 0;
+
+    /**
+     * @brief getOnDeleteActions
+     * @return the ON DELETE actions supported by the database
+     */
+    virtual QStringList getOnDeleteActions() = 0;
+
 private:
 
     // the database on which this is running

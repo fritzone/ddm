@@ -373,3 +373,48 @@ DBMenu* DatabaseEngineManager::getDBMenu(const QString &dbName)
 
     return 0;
 }
+
+void DatabaseEngineManager::setFkSupport(const QString &dbName, bool support)
+{
+    m_dbSupportsFks[dbName.toUpper()] = support;
+}
+
+bool DatabaseEngineManager::getFkSupport(const QString &dbName)
+{
+    if(m_dbMenus.contains(dbName.toUpper()))
+    {
+        return m_dbSupportsFks[dbName.toUpper()];
+    }
+
+    return false;
+}
+
+void DatabaseEngineManager::setFkSupportOnUpdate(const QString &dbName, QStringList support)
+{
+    m_dbFksOnUpdate[dbName.toUpper()] = support;
+}
+
+QStringList DatabaseEngineManager::getFkSupportOnUpdate(const QString &dbName)
+{
+    if(m_dbMenus.contains(dbName.toUpper()))
+    {
+        return m_dbFksOnUpdate[dbName.toUpper()];
+    }
+
+    return QStringList();
+}
+
+void DatabaseEngineManager::setFkSupportOnDelete(const QString &dbName, QStringList support)
+{
+    m_dbFksOnDelete[dbName.toUpper()] = support;
+}
+
+QStringList DatabaseEngineManager::getFkSupportOnDelete(const QString &dbName)
+{
+    if(m_dbMenus.contains(dbName.toUpper()))
+    {
+        return m_dbFksOnDelete[dbName.toUpper()];
+    }
+
+    return QStringList();
+}

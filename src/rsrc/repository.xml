@@ -29,7 +29,12 @@
         <action type="single" id="EDIT" text="Edit Connection" icon="EDIT" index ="6"/>
         <action type="single" id="DELETE" text="Delete Connection" icon="DELETE" index="7"/>
       </connection-actions>
-
+      
+      <foreign-keys support="1">
+        <on-update supported="CASCADE,RESTRICT,NO ACTION,SET NULL" />
+        <on-delete supported="CASCADE,RESTRICT,NO ACTION,SET NULL" />
+      </foreign-keys>
+      
       <stored-methods support="1">
         <!-- What is the order of the parameters in the Stored methods. For example MySql has DIRECTION NAME TYPE
              but other database engines have it like NAME DIRECTION TYPE. This will be used to seamlessly construct 
@@ -2245,7 +2250,12 @@ END]]>
         <action type="single" id="EDIT" text="Edit Connection" icon="EDIT" index ="5"/>
         <action type="single" id="DELETE" text="Delete Connection" icon="DELETE" index="6"/>
       </connection-actions>
-
+      
+      <foreign-keys support="1">
+        <on-update supported="CASCADE,RESTRICT,NO ACTION,SET NULL,SET DEFAULT" />
+        <on-delete supported="CASCADE,RESTRICT,NO ACTION,SET NULL,SET DEFAULT" />
+      </foreign-keys>
+      
       <stored-methods support="0"/>
 
       <datatype-groups>
@@ -2714,7 +2724,12 @@ END]]>
         <action type="single" id="EDIT" text="Edit Connection" icon="EDIT" index ="5"/>
         <action type="single" id="DELETE" text="Delete Connection" icon="DELETE" index="6"/>
       </connection-actions>
-
+      
+      <foreign-keys support="1">
+        <on-update supported="RESTRICT,NO ACTION,SET NULL" />
+        <on-delete supported="CASCADE,RESTRICT,NO ACTION,SET NULL" />
+      </foreign-keys>
+      
       <stored-methods support="1">
         <parameter_fields>
           <field id="0" index="0" name="Name"/>
@@ -4745,6 +4760,42 @@ NAME 'YourClass.yourMethod()';]]>
           </description>
         </function>
       </functions>
+
+      <spis>
+
+        <!-- The Auto Increment specification of a column -->
+        <spi class-uid="{10000002-0000-0000-0000-000000000001}"
+          sql-role-uid="{10000007-0000-0000-0000-000000000001}"
+          referred-class-uid="{10000001-0000-0000-0000-000000000007}" name="AutoIncrementColumn"
+          gui-text="This column is Auto Incrementing (AUTO_INCREMENT)" gui-group="General"
+          default="0" db-major="5" db-minor="0" sql="AUTO_INCREMENT">
+          <tooltip>
+            <![CDATA[Auto-increment allows a unique number to be generated when a new record is inserted into a table]]>
+          </tooltip>
+        </spi>
+        
+        <!-- The Columng Length of an Index SPI -->
+        <spi class-uid="{10000002-0000-0000-0000-000000000003}"
+          sql-role-uid="{10000006-0000-0000-0000-000000000001}"
+          referred-class-uid="{10000001-0000-0000-0000-00000000000B}" name="ColumnOfIndexUsedLength"
+          gui-text="The Length of the columns' data which is used in the length" gui-group="default"
+          default="" db-major="5" db-minor="0" sql="">
+          <tooltip>
+            <![CDATA[The Length of the column used in an index. This can be assigned only to TEXT/BLOB type columns]]>
+          </tooltip>
+        </spi>
+        
+        <spi class-uid="{10000002-0000-0000-0000-000000000001}"
+          sql-role-uid="{10000006-0000-0000-0000-000000000002}"
+          referred-class-uid="{10000001-0000-0000-0000-000000000003}" db-major="5" db-minor="0"
+          default="0" gui-group="General" gui-text="Can Replace" name="CanRepalce" sql="OR REPLACE">
+          <tooltip>
+            <![CDATA[Can this view replace an already existing one?]]>
+          </tooltip>
+        </spi>
+        
+      </spis>
+      
     </database>
     
   </databases>

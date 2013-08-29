@@ -330,42 +330,8 @@ TableUpdateGenerator::TableUpdateGenerator(Table *t1, Table *t2, DatabaseEngine*
 
                 if(newFksFromT2.contains(fkI->getName()))
                 {
-                    // just pre-render the SQL for foreign keys
-                    QString foreignKeySql1 = "";
-                    QString foreignKeySql2 = "";
-
                     QString foreignKeysTable = fkI->getForeignTableName();
-                    for(int j=0; j<fkI->getAssociations().size(); j++)
-                    {
-
-                        ForeignKey::ColumnAssociation* assocJ = fkI->getAssociations().at(j);
-                        foreignKeySql1 += assocJ->getLocalColumn()->getName();
-                        foreignKeySql2 += assocJ->getForeignColumn()->getName();
-
-                        if(j < fkI->getAssociations().size() - 1)
-                        {
-                            foreignKeySql1 += ", ";
-                            foreignKeySql2 += ", ";
-                        }
-                    }
-
-                    // TODO: This is duplicate and is MYSQL specific
-                    QString foreignKeySql = " CONSTRAINT " + fkI->getName() + " FOREIGN KEY (";
-                    foreignKeySql += foreignKeySql1;
-                    foreignKeySql += ") REFERENCES ";
-                    foreignKeySql += foreignKeysTable;  // Not an OOP project, it is ok
-                    foreignKeySql += "(" + foreignKeySql2 + ")";
-                    QString t = fkI->getOnDelete();
-                    if(t.length() > 0) foreignKeySql += QString(" ") + ("ON DELETE ") + (t);
-                    t = fkI->getOnUpdate();
-                    if(t.length() > 0) foreignKeySql += QString(" ") + ("ON UPDATE ") + (t);
-
-                    // TODO: This is just MySQL for now
-                    QString f = "ALTER TABLE ";
-                    f += t2->getName();
-                    f += " ADD ";
-                    f += foreignKeySql;
-                    m_newForeignKeys.append(f);
+                    m_newForeignKeys.append(t2->getVersion()->getProject()->getEngine()->getSqlGenerator()->getRecreateForeignKeySql(fkI, foreignKeysTable, t2->getName()));
                 }
             }
         }

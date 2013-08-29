@@ -170,6 +170,18 @@ public:
 
     DBMenu* getDBMenu(const QString &dbName);
 
+    void setFkSupport(const QString &dbName, bool support);
+
+    bool getFkSupport(const QString &dbName);
+
+    void setFkSupportOnUpdate(const QString &dbName, QStringList support);
+
+    QStringList getFkSupportOnUpdate(const QString &dbName);
+
+    void setFkSupportOnDelete(const QString &dbName, QStringList support);
+
+    QStringList getFkSupportOnDelete(const QString &dbName);
+
 private:
     DatabaseEngineManager();
 
@@ -236,6 +248,15 @@ private:
 
     // the map containing the context menu of a connection item
     QMap<QString, DBMenu*> m_dbMenus;
+
+    // if the database supports the foreign key feature
+    QMap<QString, bool> m_dbSupportsFks;
+
+    // the map containig the foreign key support for ON UPDATE referential action
+    QMap<QString, QStringList> m_dbFksOnUpdate;
+
+    // the map containig the foreign key support for ON DELETE referential action
+    QMap<QString, QStringList> m_dbFksOnDelete;
 };
 
 #endif // DB_DATABASEENGINEMANAGER_H

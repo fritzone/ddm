@@ -247,7 +247,7 @@ public:
      * @param fkI
      * @return
      */
-    virtual QString getRecreateForeignKeySql(ForeignKey* fkI, const QString& foreignKeysTable) = 0;
+    virtual QString getRecreateForeignKeySql(ForeignKey* fkI, const QString& foreignKeysTable, const QString &localTable) = 0;
 
 
     virtual ~AbstractSqlGenerator() {}

@@ -133,48 +133,8 @@ bool CUBRIDDatabaseEngine::reverseEngineerDatabase(Connection *conn, const QStri
         }
 
         // TODO: CUB01
-        // is this supported at all in CUBRID?
-        // now populate the foreign keys
-        QSqlDatabase dbo = getQSqlDatabaseForConnection(c);
-        if(dbo.isOpen())
-        {
-            QString s = "SELECT distinct CONCAT( table_name, '.', column_name, ':', referenced_table_name, '.', referenced_column_name ) AS list_of_fks, constraint_name "
-                    "FROM information_schema.KEY_COLUMN_USAGE WHERE REFERENCED_TABLE_SCHEMA = '"
-                    + c->getDb() +
-                    "' AND REFERENCED_TABLE_NAME is not null ORDER BY TABLE_NAME, COLUMN_NAME";
-            QSqlQuery query(dbo);
-            query.exec(s);
-
-            bool foundAtLeastOneForeignKey = false;
-            while(query.next())
-            {
-                QString val = query.value(0).toString();
-                QString name = query.value(1).toString();
-                QString referencee = val.left(val.indexOf(':'));
-                QString referenced = val.mid(val.indexOf(':') + 1);
-
-                QString referenceeTableName = referencee.left(referencee.indexOf('.'));
-                QString referenceeColumnName = referencee.mid(referencee.indexOf('.') + 1);
-
-                QString referencedTableName = referenced.left(referenced.indexOf('.'));
-                QString referencedColumnName = referenced.mid(referenced.indexOf('.') + 1);
-
-                ForeignKey* fk = createForeignKey(foundAtLeastOneForeignKey,
-                                                  referenceeTableName, v,
-                                                  referencedColumnName,
-                                                  referenceeColumnName,
-                                                  referencedTableName, name);
-
-                Q_UNUSED(fk);
-            }
-
-            if(!foundAtLeastOneForeignKey)
-            {
-                v->setSpecialValidationFlags(1);
-            }
-
-            dbo.close();
-        }
+        // ON HOLD - Will be implemented at a later stage when CUBRID
+        // will support it.
 
     }
     catch(...)

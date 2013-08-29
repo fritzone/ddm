@@ -125,9 +125,9 @@ Connection* ConnectionManager::createConnection(const QString &dbType, const QSe
 
     bool ac = s.value(strAutoConnect).toBool();
     QString name = s.value(strName).toString();
+    QString dbUpp = dbType.toUpper();
 
-
-    if(dbType.toUpper() == "MYSQL" || dbType.toUpper() == "CUBRID")
+    if(dbUpp == strMySql.toUpper() || dbUpp == strCUBRID.toUpper())
     {
         QString host = s.value(strHost).toString();
         QString pass = s.value(strPass).toString();
@@ -141,7 +141,7 @@ Connection* ConnectionManager::createConnection(const QString &dbType, const QSe
         QString db = s.value(strDB).toString();
 
         int lastState = s.value("LastState").toInt();
-        if(dbType.toUpper() == "MYSQL")
+        if(dbType.toUpper() == strMySql.toUpper())
         {
             c = new MySqlConnection(name, host, user, pass, db, true, ac, port);
         }
@@ -152,7 +152,7 @@ Connection* ConnectionManager::createConnection(const QString &dbType, const QSe
         c->setState((ConnectionState)(lastState));
     }
     else
-    if(dbType.toUpper() == "SQLITE")
+    if(dbUpp == strSqlite.toUpper())
     {
         QString f = s.value(strFile).toString();
         int lastState = s.value("LastState").toInt();

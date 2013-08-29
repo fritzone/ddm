@@ -82,10 +82,16 @@ QString MySQLSQLGenerator::indexTypeSpecified(Index *idx) const
 
 QString MySQLSQLGenerator::backtickedName(const QString& name) const
 {
-    QString result = (m_backticks?"`":"") + name;
-    result += m_backticks?"`":"";
-    result += " ";
-    return result;
+    if(m_engine->getKeywords().contains(name, Qt::CaseInsensitive))
+    {
+        QString result = " `" + name + "` ";
+        return result;
+    }
+    else
+    {
+        QString result = " " + name + " ";
+        return result;
+    }
 }
 
 QString MySQLSQLGenerator::sqlForAColumn(const Column *col) const

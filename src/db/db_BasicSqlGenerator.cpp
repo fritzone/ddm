@@ -802,12 +802,22 @@ QString BasicSqlGenerator::createTableOnlyScript(Table* table,
 
 QString BasicSqlGenerator::backtickedName(const QString &name) const
 {
-    QString result = "["+ name + "] ";
-    return result;}
+    if(m_engine->getKeywords().contains(name, Qt::CaseInsensitive))
+    {
+        QString result = " ["+ name + "] ";
+        return result;
+    }
+    else
+    {
+        QString result = " "+ name + " ";
+        return result;
+    }
+}
 
-QString BasicSqlGenerator::getRecreateForeignKeySql(ForeignKey* fkI, const QString& foreignKeysTable)
+QString BasicSqlGenerator::getRecreateForeignKeySql(ForeignKey* fkI, const QString& foreignKeysTable, const QString &localTable)
 {
     Q_UNUSED(fkI);
     Q_UNUSED(foreignKeysTable);
+    Q_UNUSED(localTable);
     return "";
 }
