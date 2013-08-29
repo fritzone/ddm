@@ -142,7 +142,7 @@ QString AdvancedSqlGenerator::getIndexUsedLength(Index* idx, const Column *c) co
 }
 
 
-QString AdvancedSqlGenerator::getRecreateForeignKeySql(ForeignKey* fkI, const QString& foreignKeysTable)
+QString AdvancedSqlGenerator::getRecreateForeignKeySql(ForeignKey* fkI, const QString& foreignKeysTable, const QString& localTable)
 {
     QString foreignKeySql1 = "";
     QString foreignKeySql2 = "";
@@ -171,7 +171,7 @@ QString AdvancedSqlGenerator::getRecreateForeignKeySql(ForeignKey* fkI, const QS
     if(t.length() > 0) foreignKeySql += QString(" ") + ("ON UPDATE ") + (t);
 
     QString f = "ALTER TABLE ";
-    f += fkI->getLocalTable()->getName();
+    f += localTable;
     f += " ADD ";
     f += foreignKeySql;
 

@@ -22,7 +22,7 @@ public:
     QStringList generateAlterTableForForeignKeys(Table *t, const QHash<QString, QString> &options) const;
     QString createViewColumnNames(View *v) const;
     QString getIndexUsedLength(Index* idx, const Column *c) const;
-    QString getRecreateForeignKeySql(ForeignKey* fkI, const QString& foreignKeysTable);
+    QString getRecreateForeignKeySql(ForeignKey* fkI, const QString& foreignKeysTable, const QString &localTable);
     virtual QString getDropProcedure(const QString& proc);
     virtual QString getDropFunction(const QString& func);
 

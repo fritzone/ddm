@@ -752,6 +752,8 @@ bool QCubridResult::exec()
         qWarning() << "Unable to execute statement" << res;
         qWarning() << d->driver->lastError.err_code;
         qWarning() << d->driver->lastError.err_msg;
+
+        return false;
     }
     else
     {

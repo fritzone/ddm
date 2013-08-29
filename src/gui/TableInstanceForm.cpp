@@ -15,6 +15,7 @@
 #include "uids.h"
 #include "core_ForeignKey.h"
 #include "strings.h"
+#include "SqlNamesValidator.h"
 
 #include <QLineEdit>
 
@@ -26,6 +27,8 @@ TableInstanceForm::TableInstanceForm(QWidget *parent) :
     ui->btnImportValues->hide();
     ui->tabWidget->setCurrentIndex(0);
     m_signalMapperForFKTinstCombos = new QSignalMapper(this);
+
+    ui->lineEdit->setValidator(new SqlNamesValidator());
 }
 
 TableInstanceForm::~TableInstanceForm()

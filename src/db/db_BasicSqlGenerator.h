@@ -78,7 +78,7 @@ public:
     QString getAlterTableToDropForeignKey(const QString& table, const QString& fkName);
     QString getAlterTableForColumnRename(const QString& table, const Column* column, const QString& oldName);
     QString getAlterTableForColumnDeletion(const QString& table, const QString& column);
-    QString getRecreateForeignKeySql(ForeignKey* fkI, const QString& foreignKeysTable);
+    QString getRecreateForeignKeySql(ForeignKey* fkI, const QString& foreignKeysTable, const QString &localTable);
 
 
     // common sense behavior for other queries, return SQL standard queries

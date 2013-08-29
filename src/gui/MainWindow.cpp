@@ -340,7 +340,7 @@ void MainWindow::onNewSolution()
             if(injectDialog->exec() == QDialog::Accepted)
             {
                 Connection* c = 0;
-                if(injectDialog->getSDbEngine() == "MYSQL")
+                if(injectDialog->getSDbEngine().toUpper() == strMySql.toUpper())
                 {
                     QString host = injectDialog->getHost();
                     QString user = injectDialog->getUser();

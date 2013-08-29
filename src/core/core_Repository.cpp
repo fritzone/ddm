@@ -173,6 +173,9 @@ void Repository::addDatabase(const QDomElement & el)
         QMap<PARAMETER_FIELD_ROLES, int> parameterFields;
         QMap<PROGRAMMING_LANGUAGES, QString> defaultBodies;
         DBMenu* dbMenuFirst = 0;
+        QStringList dbFkOnUpdate;
+        QStringList dbfkOnDelete;
+        bool fkSupport = false;
 
         for(int i=0; i<el.childNodes().size(); i++)
         {
@@ -207,6 +210,24 @@ void Repository::addDatabase(const QDomElement & el)
                     createDbMenu(elAction, dbMenuFirst);
                 }
             }
+
+            if(el.childNodes().at(i).nodeName() == "foreign-keys")
+            {
+                QDomElement elfks = el.childNodes().at(i).toElement();
+                if(elfks.hasAttribute("support") && elfks.attribute("support").toInt() == 1)
+                {
+                    fkSupport = true;
+
+                    QDomElement elUpd = elfks.firstChildElement("on-update");
+                    QString txtUpd = elUpd.attribute("supported");
+                    dbFkOnUpdate = txtUpd.split(',');
+
+                    QDomElement elDel = elfks.firstChildElement("on-delete");
+                    QString txtDel = elDel.attribute("supported");
+                    dbfkOnDelete = txtDel.split(',');
+                }
+            }
+
 
             if(el.childNodes().at(i).nodeName() == "stored-methods")
             {
@@ -534,6 +555,9 @@ void Repository::addDatabase(const QDomElement & el)
         DatabaseEngineManager::instance().setStoredMethodReturnKeyword(dbId, keywordReturn);
         DatabaseEngineManager::instance().setTriggerBodyDefinitionStatement(dbId, triggerDefStatement);
         DatabaseEngineManager::instance().setDBMenu(dbId, dbMenuFirst);
+        DatabaseEngineManager::instance().setFkSupport(dbId, fkSupport);
+        DatabaseEngineManager::instance().setFkSupportOnUpdate(dbId, dbFkOnUpdate);
+        DatabaseEngineManager::instance().setFkSupportOnDelete(dbId, dbfkOnDelete);
     }
 }
 

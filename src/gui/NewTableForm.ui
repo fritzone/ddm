@@ -182,7 +182,7 @@
          <enum>QTabWidget::Rounded</enum>
         </property>
         <property name="currentIndex">
-         <number>2</number>
+         <number>1</number>
         </property>
         <widget class="QWidget" name="tabWidgetPage1">
          <attribute name="icon">
@@ -1151,7 +1151,7 @@
                <item>
                 <widget class="QGroupBox" name="groupBox_5">
                  <property name="title">
-                  <string> ON Events </string>
+                  <string> ON Actions </string>
                  </property>
                  <layout class="QFormLayout" name="formLayout_3">
                   <property name="fieldGrowthPolicy">
@@ -1165,33 +1165,7 @@
                    </widget>
                   </item>
                   <item row="0" column="1">
-                   <widget class="QComboBox" name="cmbFkOnUpdate">
-                    <item>
-                     <property name="text">
-                      <string>CASCADE</string>
-                     </property>
-                    </item>
-                    <item>
-                     <property name="text">
-                      <string>RESTRICT</string>
-                     </property>
-                    </item>
-                    <item>
-                     <property name="text">
-                      <string>NO ACTION</string>
-                     </property>
-                    </item>
-                    <item>
-                     <property name="text">
-                      <string>SET NULL</string>
-                     </property>
-                    </item>
-                    <item>
-                     <property name="text">
-                      <string>SET DEFAULT</string>
-                     </property>
-                    </item>
-                   </widget>
+                   <widget class="QComboBox" name="cmbFkOnUpdate"/>
                   </item>
                   <item row="1" column="0">
                    <widget class="QLabel" name="label_7">
@@ -1201,33 +1175,7 @@
                    </widget>
                   </item>
                   <item row="1" column="1">
-                   <widget class="QComboBox" name="cmbFkOnDelete">
-                    <item>
-                     <property name="text">
-                      <string>CASCADE</string>
-                     </property>
-                    </item>
-                    <item>
-                     <property name="text">
-                      <string>RESTRICT</string>
-                     </property>
-                    </item>
-                    <item>
-                     <property name="text">
-                      <string>NO ACTION</string>
-                     </property>
-                    </item>
-                    <item>
-                     <property name="text">
-                      <string>SET NULL</string>
-                     </property>
-                    </item>
-                    <item>
-                     <property name="text">
-                      <string>SET DEFAULT</string>
-                     </property>
-                    </item>
-                   </widget>
+                   <widget class="QComboBox" name="cmbFkOnDelete"/>
                   </item>
                  </layout>
                 </widget>

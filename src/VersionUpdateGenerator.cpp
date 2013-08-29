@@ -24,7 +24,8 @@ struct IndexHolder
 struct DroppedFkWithTinst
 {
     ForeignKey* fk;
-    TableInstance* tinst;
+    TableInstance* toTinst;
+    TableInstance* fromTinst;
 };
 
 
@@ -77,13 +78,9 @@ VersionUpdateGenerator::VersionUpdateGenerator(Version *from, Version *to) :
                 for(int i=0; i<droppedFks.size(); i++)
                 {
                     ForeignKey* fkI = droppedFks.at(i);
-                    // TODO: Duplicate from the TableUpdateGenerator, MysqlCodeGenerator and it is MySQL specific
-                    {
-                        // just pre-render the SQL for foreign keys
-                        QString foreignKeysTable = fkI->getForeignTableName();
-                        QString f = to->getProject()->getEngine()->getSqlGenerator()->getRecreateForeignKeySql(fkI, foreignKeysTable);
-                        createCommands << f;
-                    }
+                    QString foreignKeysTable = fkI->getForeignTableName();
+                    QString f = to->getProject()->getEngine()->getSqlGenerator()->getRecreateForeignKeySql(fkI, foreignKeysTable, fkI->getLocalTable()->getName());
+                    createCommands << f;
                 }
                 QStringList tCommands = dropCommands;
                 tCommands << m_commands;
@@ -120,7 +117,7 @@ VersionUpdateGenerator::VersionUpdateGenerator(Version *from, Version *to) :
                                 dropCommands << to->getProject()->getEngine()->getSqlGenerator()->getAlterTableToDropForeignKey(otherSLocalTable, fkj->getName());;
                                 DroppedFkWithTinst* dfkwt = new DroppedFkWithTinst;
                                 dfkwt->fk = fkj;
-                                dfkwt->tinst = toTableInstances[i];
+                                dfkwt->toTinst = toTableInstances[i];
                                 droppedFks.append(dfkwt);
                             }
                         }
@@ -136,16 +133,13 @@ VersionUpdateGenerator::VersionUpdateGenerator(Version *from, Version *to) :
                     DroppedFkWithTinst* dfkwtI = droppedFks.at(i);
                     ForeignKey* fkI = dfkwtI->fk;
                     QString foreignKeysTable = fkI->getForeignTableName();
-                    QString tinstForfk = dfkwtI->tinst->getTinstForFk(fkI->getName());
+                    QString tinstForfk = dfkwtI->toTinst->getTinstForFk(fkI->getName());
                     if(!tinstForfk.isEmpty())
                     {
                         foreignKeysTable = tinstForfk;
                     }
-
-                    QString f = to->getProject()->getEngine()->getSqlGenerator()->getRecreateForeignKeySql(fkI, foreignKeysTable);
-
-                    // just pre-render the SQL for foreign keys
-                    createCommands << f;
+                    QString localTableName = fkI->getLocalTable()->getName();
+                    createCommands << to->getProject()->getEngine()->getSqlGenerator()->getRecreateForeignKeySql(fkI, foreignKeysTable, localTableName);
                 }
                 QStringList tCommands = dropCommands;
                 tCommands << m_commands;

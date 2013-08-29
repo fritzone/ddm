@@ -418,3 +418,13 @@ bool DefaultDatabaseEngine::executeSql(Connection* c, const QStringList& sqls, c
     db.close();
     return true;
 }
+
+QStringList DefaultDatabaseEngine::getOnUpdateActions()
+{
+    return DatabaseEngineManager::instance().getFkSupportOnUpdate(getName().toUpper());
+}
+
+QStringList DefaultDatabaseEngine::getOnDeleteActions()
+{
+    return DatabaseEngineManager::instance().getFkSupportOnDelete(getName().toUpper());
+}

@@ -78,7 +78,8 @@ public:
     virtual QString getStoredMethodReturnKeyword();
     virtual QString getTriggerBodyDefinitionStatement();
     bool executeSql(Connection* c, const QStringList& sqls, const QStringList &uid, QString& lastSql, bool rollbackOnError);
-
+    virtual QStringList getOnUpdateActions();
+    virtual QStringList getOnDeleteActions();
 };
 
 #endif // DB_DEFAULTDATABASEENGINE_H

@@ -140,9 +140,6 @@ NewTableForm::NewTableForm(DatabaseEngine* db, Project* prj, Version* v,
             resetForeignTablesCombo(tableNames);
         }
 
-
-
-
         prepareSpsTabs();
     }
 
@@ -162,6 +159,18 @@ NewTableForm::NewTableForm(DatabaseEngine* db, Project* prj, Version* v,
         m_ui->btnCreateTableInDb->show();
     }
 
+    // feed in the ON UPDATE and ON DELETE for the FKs
+    QStringList onupd = m_dbEngine->getOnUpdateActions();
+    for(int i=0; i<onupd.size(); i++)
+    {
+        m_ui->cmbFkOnUpdate->addItem(onupd[i]);
+    }
+
+    QStringList ondel = m_dbEngine->getOnDeleteActions();
+    for(int i=0; i<ondel.size(); i++)
+    {
+        m_ui->cmbFkOnDelete->addItem(ondel[i]);
+    }
 }
 
 NewTableForm::~NewTableForm()
@@ -789,8 +798,6 @@ void NewTableForm::onAddColumn()
         m_ui->txtNewColumnName->setFocus();
         updateIssues();
         autoSave();
-//        Workspace::getInstance()->workingVersion()->checkIssuesOfNewColumn(col, m_table);
-
     }
 
     m_ui->txtNewColumnName->setText("");
@@ -816,6 +823,12 @@ void NewTableForm::onAddColumn()
 
 void NewTableForm::onCancelColumnEditing()
 {
+    m_ui->btnAddColumn->setEnabled(true);
+
+    QPalette pal;
+    pal.setColor(QPalette::Text, Qt::black);
+    m_ui->txtNewColumnName->setPalette(pal);
+
     m_currentColumn = 0;
     m_ui->txtNewColumnName->clear();
     m_ui->cmbNewColumnType->setCurrentIndex(-1);
@@ -2542,7 +2555,7 @@ void NewTableForm::onChangeName(QString a)
     }
     else
     {
-        QVariant v(a);
+        //QVariant v(a);
         m_table->setName(a);
         m_table->setDisplayText(a);
         updateSqlDueToChange();
@@ -2720,18 +2733,55 @@ void NewTableForm::onDescriptionChange()
     }
 }
 
-void NewTableForm::onColumnNameChange(QString)
+void NewTableForm::onColumnNameChange(QString a)
 {
-    // TODO: this is commented out, since it breaks the default values in not OOP projects...
-    // see why.
+    qDebug() << a;
+    a = a.trimmed();
+    if(a.isEmpty())
+    {
+        return;
+    }
+
+    QPalette pal;
+    pal.setColor(QPalette::Text, Qt::black);
+    m_ui->txtNewColumnName->setPalette(pal);
+
+    // and see if there is a table, column or KEYWORD called "a"
+    if(m_dbEngine->getKeywords().contains(a, Qt::CaseInsensitive) || m_table->hasColumn(a))
+    {
+        QPalette pal;
+        pal.setColor(QPalette::Text, Qt::red);
+        m_ui->txtNewColumnName->setPalette(pal);
+
+        QString netTooltip = tr("This is not an allowed name for the column.");
+        if(m_dbEngine->getKeywords().contains(a, Qt::CaseInsensitive))
+        {
+            netTooltip += "<p><b>" + a + "</b>" + tr("is a reserved keyword for this database. DDM does not allow this to avoid future confusion.");
+        }
+        else
+        {
+            netTooltip += "<p>" + tr("There is already a column called <b> ") + a;
+        }
+
+        QToolTip::showText(m_ui->txtNewColumnName->mapToGlobal(QPoint()), netTooltip, m_ui->txtNewColumnName);
+        m_ui->txtNewColumnName->setToolTip(netTooltip);
+        m_ui->btnAddColumn->setEnabled(false);
+        return;
+    }
+    else
+    {
+        m_ui->txtNewColumnName->setToolTip(tr("The name of the column"));
+        m_ui->btnAddColumn->setEnabled(true);
+    }
+
+
     if(m_currentColumn)
     {
         backupDefaultValuesTable();
         m_columnOperation = 3;
-        if(m_ui->txtNewColumnName->text().length() == 0) return;
         QString prevName = m_currentColumn->getName();
-        m_table->tableInstancesRenameColumn(m_currentColumn->getName(), m_ui->txtNewColumnName->text());
-        m_currentColumn->setName(m_ui->txtNewColumnName->text());
+        m_table->tableInstancesRenameColumn(m_currentColumn->getName(), a);
+        m_currentColumn->setName(a);
         m_currentColumn->getLocation()->setText(1, m_currentColumn->getName());
         m_combos[m_currentColumn->getName()] = m_combos[prevName];
         m_oldColumnName = prevName;
@@ -2742,6 +2792,7 @@ void NewTableForm::onColumnNameChange(QString)
         restoreDefaultValuesTable();
         autoSave();
     }
+
 }
 
 void NewTableForm::onDatatypeComboChange(QString)
