@@ -23,11 +23,6 @@ AbstractSqlGenerator* DatabaseEngine::getSqlGenerator() const
     return DatabaseEngineManager::instance().sqlGenerator(database);
 }
 
-QString DatabaseEngine::getTypeStringForSqlType(const QString& sqlType)
-{
-    return getDTSupplier()->typeForSqlType(sqlType);
-}
-
 QString DatabaseEngine::getDatabaseEngineName() const
 {
     return database;

@@ -16,6 +16,7 @@
 #include "core_ForeignKey.h"
 #include "strings.h"
 #include "SqlNamesValidator.h"
+#include "db_DatabaseEngine.h"
 
 #include <QLineEdit>
 
@@ -457,15 +458,52 @@ void TableInstanceForm::onUndelete()
     }
 }
 
-void TableInstanceForm::onChangeName(QString t)
+void TableInstanceForm::onChangeName(QString a)
 {
-    m_tinst->setName(t);
-    m_tinst->setDisplayText(t);
-    m_tinst->getSqlLocation()->setText(0, t);
+    a = a.trimmed();
+    if(a.isEmpty())
+    {
+        return;
+    }
+
+    QPalette pal;
+    pal.setColor(QPalette::Text, Qt::black);
+    ui->lineEdit->setPalette(pal);
+    TableInstance* other = m_tinst->version()->getTableInstance(a);
+    // and see if there is a table, column or KEYWORD called "a"
+    if(m_tinst->version()->getProject()->getEngine()->getKeywords().contains(a, Qt::CaseInsensitive) || (other && other != m_tinst) )
+    {
+        QPalette pal;
+        pal.setColor(QPalette::Text, Qt::red);
+        ui->lineEdit->setPalette(pal);
+
+        QString netTooltip = tr("This is not an allowed name for the table.");
+        if(m_tinst->version()->getProject()->getEngine()->getKeywords().contains(a, Qt::CaseInsensitive))
+        {
+            netTooltip += "<p><b>" + a + "</b>" + tr(" is a reserved keyword for this database. DDM does not allow this to avoid future confusion.");
+        }
+        else
+        {
+            netTooltip += "<p>" + tr("There is already a table instance called <b> ") + a;
+        }
+
+        QToolTip::showText(ui->lineEdit->mapToGlobal(QPoint()), netTooltip, ui->lineEdit);
+        ui->lineEdit->setToolTip(netTooltip);
+
+        return;
+    }
+    else
+    {
+        ui->lineEdit->setToolTip(tr("TThe name of the table instance"));
+    }
+
+    m_tinst->setName(a);
+    m_tinst->setDisplayText(a);
+    m_tinst->getSqlLocation()->setText(0, a);
 
     if(m_tinst->version() != Workspace::getInstance()->workingVersion())
     {
-        MainWindow::instance()->getGuiElements()->updateItemForPatchWithState(m_tinst->version()->getWorkingPatch(), uidTableInstance, m_tinst->getObjectUid(), t, 2);
+        MainWindow::instance()->getGuiElements()->updateItemForPatchWithState(m_tinst->version()->getWorkingPatch(), uidTableInstance, m_tinst->getObjectUid(), a, 2);
     }
 
 }

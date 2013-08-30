@@ -9,6 +9,8 @@
 #include "core_ParameterAndDescription.h"
 #include "db_DatabaseEngine.h"
 #include "core_Function.h"
+#include "core_Procedure.h"
+#include "core_StoredMethod.h"
 
 ProcedureForm::ProcedureForm(Version* v, ProcedureFormMode m, bool guided, bool forced, Connection *c, QWidget *parent) :
     QWidget(parent),
@@ -312,7 +314,7 @@ void ProcedureForm::onLockUnlock(bool checked)
         disableEditingControls(false);
         m_proc->unlock();
         m_proc->updateGui();
-        ui->btnLock->setToolTip((m_mode == MODE_PROCEDURE?"Procedure ":"Function ") + QObject::tr("is <b>unlocked</b>. Click this button to lock it."));
+        ui->btnLock->setToolTip((m_mode == MODE_PROCEDURE?"Procedure":"Function") + QObject::tr(" is <b>unlocked</b>. Click this button to lock it."));
 
         MainWindow::instance()->finallyDoLockLikeOperation(false, m_proc->getObjectUid());
     }
@@ -323,7 +325,7 @@ void ProcedureForm::onLockUnlock(bool checked)
         disableEditingControls(true);
         m_proc->lock(LockableElement::LOCKED);
         m_proc->updateGui();
-        ui->btnLock->setToolTip((m_mode == MODE_PROCEDURE?"Procedure ":"Function ") + QObject::tr("is <b>locked</b>. Click this button to lock it."));
+        ui->btnLock->setToolTip((m_mode == MODE_PROCEDURE?"Procedure":"Function") + QObject::tr(" is <b>locked</b>. Click this button to lock it."));
 
         MainWindow::instance()->finallyDoLockLikeOperation(true, m_proc->getObjectUid());
     }
@@ -562,6 +564,8 @@ void ProcedureForm::onProcNameChange(QString a)
         return;
     }
 
+    a = a.trimmed();
+
     if(a == "UNNAMED")
     {
         return;
@@ -570,6 +574,43 @@ void ProcedureForm::onProcNameChange(QString a)
     if(m_proc->isDeleted())
     {
         return;
+    }
+
+    if(a.isEmpty())
+    {
+        return;
+    }
+
+    QPalette pal;
+    pal.setColor(QPalette::Text, Qt::black);
+    ui->txtProcName->setPalette(pal);
+
+    // and see if there is a table, column or KEYWORD called "a"
+    StoredMethod* other = dynamic_cast<StoredMethod*>(m_mode == MODE_PROCEDURE?dynamic_cast<StoredMethod*>(m_version->getProcedure(a))
+                                                                             :dynamic_cast<StoredMethod*>(m_version->getFunction(a)));
+    if(m_version->getProject()->getEngine()->getKeywords().contains(a, Qt::CaseInsensitive) || (other && other != m_proc) )
+    {
+        QPalette pal;
+        pal.setColor(QPalette::Text, Qt::red);
+        ui->txtProcName->setPalette(pal);
+
+        QString netTooltip = tr("This is not an allowed name for a stored method.");
+        if(m_version->getProject()->getEngine()->getKeywords().contains(a, Qt::CaseInsensitive))
+        {
+            netTooltip += "<p><b>" + a + "</b>" + tr(" is a reserved keyword for this database. DDM does not allow this to avoid future confusion.");
+        }
+        else
+        {
+            netTooltip += "<p>" + tr("There is already a stored method called <b> ") + a;
+        }
+
+        QToolTip::showText(ui->txtProcName->mapToGlobal(QPoint()), netTooltip, ui->txtProcName);
+        ui->txtProcName->setToolTip(netTooltip);
+        return;
+    }
+    else
+    {
+        ui->txtProcName->setToolTip(tr("The name of the stored method"));
     }
 
     QString plainTextEditContents = m_textEdit->toPlainText();

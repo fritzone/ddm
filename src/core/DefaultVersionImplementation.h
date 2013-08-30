@@ -54,7 +54,7 @@ public:
     virtual QVector<Table*> getTablesReferencingAColumnThroughForeignKeys(const Column*);
     virtual void setupForeignKeyRelationshipsForATable(Table *tab);
     virtual QList<QString> getSqlScript(bool generateDelimiters, const Connection*, QStringList &uids);
-    virtual UserDataType* provideDatatypeForSqlType(const QString& name, const QString& sql, bool nullable, const QString& defaultValue, bool relaxed);
+    virtual UserDataType* provideDatatypeForSqlType(const QString& name, const QString& sql, bool nullable, const QString& defaultValue, bool relaxed, AbstractDTSupplier *lastResort);
     virtual QVector<Issue*> checkIssuesOfNewColumn(Column* inNewColumn, Table* inTable);
     virtual void addIssuse(Issue*);
     virtual Issue* getIssue(const QString&);

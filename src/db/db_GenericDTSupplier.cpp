@@ -40,7 +40,8 @@ GenericDTSupplier::GenericDTSupplier(const QVector<GenericDatabaseType *> dbtype
         // the defaultness of the data type
         if(dbtypes[i]->isDefault())
         {
-            m_defaultTypes[UserDataType::getTypeStringFromDT_TYPE(dbtypes[i]->getDT_TYPE())] = dbtypes[i]->getName();
+            m_defaultTypesSql[UserDataType::getTypeStringFromDT_TYPE(dbtypes[i]->getDT_TYPE())] = dbtypes[i]->getName();
+            m_defaultTypes[dbtypes[i]->getDT_TYPE()] = dt;
         }
 
         // the ddm type of it

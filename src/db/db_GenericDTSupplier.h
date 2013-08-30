@@ -59,9 +59,9 @@ public:
 
     virtual QString defaultSqlForGenericType(const QString& genericType)
     {
-        if(m_defaultTypes.contains(genericType))
+        if(m_defaultTypesSql.contains(genericType))
         {
-            return m_defaultTypes[genericType];
+            return m_defaultTypesSql[genericType];
         }
 
         return "";
@@ -90,6 +90,11 @@ public:
         return DT_INVALID;
     }
 
+    virtual UserDataType* getDefaultForDT(DT_TYPE dt)
+    {
+        return m_defaultTypes[dt];
+    }
+
 private:
 
     // the various types of the database
@@ -108,12 +113,13 @@ private:
     QMap<QString, DT_TYPE> m_dtTypes;
 
     // the default types for the defineable User Data Types
-    QMap<QString, QString> m_defaultTypes;
+    QMap<QString, QString> m_defaultTypesSql;
+
+    // the default UDT types for a given DT
+    QMap<DT_TYPE, UserDataType*> m_defaultTypes;
 
     // the type of each data type (such as Numeric, Date/Time, etc...
     QMap<QString, QString> m_dataTypesOfType;
-
-
 };
 
 #endif // DB_GENERICDTSUPPLIER_H

@@ -119,7 +119,7 @@ QString AdvancedSqlGenerator::createViewColumnNames(View *v) const
         QString c = strOpenParantheses;
         for(int i=0; i<v->getColumnNames().size(); i++)
         {
-            c += v->getColumnNames().at(i);
+            c += backtickedName(v->getColumnNames().at(i));
             if(i<v->getColumnNames().size() - 1)
             {
                 c += strComma + strSpace;

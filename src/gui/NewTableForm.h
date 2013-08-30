@@ -123,6 +123,7 @@ public slots:
     void onBtnCancelForeignKeyEditing();
     void onSelectForeignKey(QTreeWidgetItem*,int);
     void onBtnRemoveForeignKey();
+    void onFkNameChange(QString);
 
     // default values page
     void onAddNewDefaultRow();
@@ -260,6 +261,10 @@ private:
     QVector<UserDataType*> m_availableDataTypes;
     Connection* m_conn;
     int m_mainTabIndex;
+
+    QString m_previousIndexName;
+    QString m_previousColumnName;
+    QString m_previousFkName;
 };
 
 #endif // NEWTABLEFORM_H

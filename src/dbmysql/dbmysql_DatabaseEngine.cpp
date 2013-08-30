@@ -411,7 +411,7 @@ Table* MySQLDatabaseEngine::reverseEngineerTable(Connection *conn, const QString
         else
         {
             bool bnullable = QString::compare(nullable, "YES", Qt::CaseInsensitive) == 0;
-            udt = v->provideDatatypeForSqlType(field_name, type, bnullable, defaultValue, relaxed);
+            udt = v->provideDatatypeForSqlType(field_name, type, bnullable, defaultValue, relaxed, getDTSupplier());
             m_oneTimeMappings.insert(oneTimeKey, udt);
         }
         Column* col = new Column(QUuid::createUuid().toString(), field_name, udt, QString::compare(keyness, "PRI", Qt::CaseInsensitive) == 0, ver);

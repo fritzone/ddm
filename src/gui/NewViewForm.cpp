@@ -290,6 +290,43 @@ void NewViewForm::setView(View *v)
 
 void NewViewForm::onNameChange(QString a)
 {
+    a = a.trimmed();
+    if(a.isEmpty())
+    {
+        return;
+    }
+
+    QPalette pal;
+    pal.setColor(QPalette::Text, Qt::black);
+    ui->txtViewName->setPalette(pal);
+
+    // and see if there is a table, column or KEYWORD called "a"
+    View* other = m_version->getView(a);
+    if(m_version->getProject()->getEngine()->getKeywords().contains(a, Qt::CaseInsensitive) || (other && other != m_view) )
+    {
+        QPalette pal;
+        pal.setColor(QPalette::Text, Qt::red);
+        ui->txtViewName->setPalette(pal);
+
+        QString netTooltip = tr("This is not an allowed name for the view.");
+        if(m_version->getProject()->getEngine()->getKeywords().contains(a, Qt::CaseInsensitive))
+        {
+            netTooltip += "<p><b>" + a + "</b>" + tr(" is a reserved keyword for this database. DDM does not allow this to avoid future confusion.");
+        }
+        else
+        {
+            netTooltip += "<p>" + tr("There is already a view called <b> ") + a;
+        }
+
+        QToolTip::showText(ui->txtViewName->mapToGlobal(QPoint()), netTooltip, ui->txtViewName);
+        ui->txtViewName->setToolTip(netTooltip);
+        return;
+    }
+    else
+    {
+        ui->txtViewName->setToolTip(tr("The name of the view"));
+    }
+
     m_view->setName(a);
     m_view->setDisplayText(a);
 

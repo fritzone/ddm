@@ -120,7 +120,7 @@
       <item>
        <widget class="QLineEdit" name="txtViewName">
         <property name="toolTip">
-         <string>The name of the View</string>
+         <string>The name of the view</string>
         </property>
         <property name="placeholderText">
          <string>Name</string>
