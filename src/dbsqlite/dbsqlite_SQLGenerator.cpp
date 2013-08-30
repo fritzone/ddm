@@ -37,7 +37,7 @@ QStringList SqliteSQLGenerator::generateCreateTableSql(Table *table,
 
 QString SqliteSQLGenerator::sqlForAColumn(const Column *col) const
 {
-    QString columnsSql = strSpace + col->getName() + strSpace;
+    QString columnsSql = strSpace + backtickedName(col->getName()) + strSpace;
 
     // column type
     const UserDataType* dt = col->getDataType();

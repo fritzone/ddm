@@ -265,6 +265,44 @@ void TriggerForm::nameChanged(QString a)
     if(!m_trigger) return;
     if(m_forcedChange) return;
 
+    a = a.trimmed();
+    if(a.isEmpty())
+    {
+        return;
+    }
+
+    QPalette pal;
+    pal.setColor(QPalette::Text, Qt::black);
+    ui->txtTriggerName->setPalette(pal);
+
+    // and see if there is a table, column or KEYWORD called "a"
+    Trigger* other = m_version->getTrigger(a);
+    if(m_version->getProject()->getEngine()->getKeywords().contains(a, Qt::CaseInsensitive) || (other && other != m_trigger) )
+    {
+        QPalette pal;
+        pal.setColor(QPalette::Text, Qt::red);
+        ui->txtTriggerName->setPalette(pal);
+
+        QString netTooltip = tr("This is not an allowed name for the trigger.");
+        if(m_version->getProject()->getEngine()->getKeywords().contains(a, Qt::CaseInsensitive))
+        {
+            netTooltip += "<p><b>" + a + "</b>" + tr(" is a reserved keyword for this database. DDM does not allow this to avoid future confusion.");
+        }
+        else
+        {
+            netTooltip += "<p>" + tr("There is already a trigger called <b> ") + a;
+        }
+
+        QToolTip::showText(ui->txtTriggerName->mapToGlobal(QPoint()), netTooltip, ui->txtTriggerName);
+        ui->txtTriggerName->setToolTip(netTooltip);
+        return;
+    }
+    else
+    {
+        ui->txtTriggerName->setToolTip(tr("The name of the trigger"));
+    }
+
+
     m_trigger->setName(a);
     if(m_trigger->getLocation())
     {

@@ -64,13 +64,6 @@ public:
     QString getDatabaseEngineName() const;
 
     /**
-     * Tells the name of the class of the DDM data type which provides access to
-     * this SQL type.
-     * @return the DataType name providin access to the given SQL
-     */
-    QString getTypeStringForSqlType(const QString& sqlType);
-
-    /**
      * Returns the last error of the database
      * @return the last error of the database
      */

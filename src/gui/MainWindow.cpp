@@ -2275,7 +2275,9 @@ void MainWindow::onInjectBrowsedTable()
 
             // finalize the table
             t->setName(validName);
-            Workspace::getInstance()->currentProject()->getWorkingVersion()->addTable(t, false);
+
+            // add it to the version, GUI, etc...
+            m_workspace->workingVersion()->addTable(t, false);
             m_workspace->workingVersion()->getGui()->createTableTreeEntry(t, m_workspace->workingVersion()->getGui()->getTablesItem());
             showTableWithGuid(m_workspace->workingVersion(), t->getObjectUid());
             QVector<TableInstance*> r = t->getTableInstances();

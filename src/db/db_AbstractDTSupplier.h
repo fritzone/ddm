@@ -91,6 +91,13 @@ public:
         default: return QList<UserDataType>();
         }
     }
+
+    /**
+     * @brief getDefaultForDT return the default datatype for the given group
+     * @param dt
+     * @return
+     */
+    virtual UserDataType* getDefaultForDT(DT_TYPE dt) = 0;
 };
 
 

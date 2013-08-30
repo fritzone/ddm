@@ -823,6 +823,27 @@ void NewTableForm::onAddColumn()
 
 void NewTableForm::onCancelColumnEditing()
 {
+
+    if(m_currentColumn)
+    {
+        QString a = m_previousColumnName;
+
+        backupDefaultValuesTable();
+        m_columnOperation = 3;
+        QString prevName = m_currentColumn->getName();
+        m_table->tableInstancesRenameColumn(m_currentColumn->getName(), a);
+        m_currentColumn->setName(a);
+        m_currentColumn->getLocation()->setText(1, m_currentColumn->getName());
+        m_combos[m_currentColumn->getName()] = m_combos[prevName];
+        m_oldColumnName = prevName;
+        m_newColumnName = m_currentColumn->getName();
+        m_combos.remove(prevName);
+        m_signalMapperForCombosInColumns->setMapping(m_combos[m_currentColumn->getName()], m_currentColumn->getName());
+        updateDefaultValuesTableHeader();
+        restoreDefaultValuesTable();
+        autoSave();
+    }
+
     m_ui->btnAddColumn->setEnabled(true);
 
     QPalette pal;
@@ -993,6 +1014,7 @@ void NewTableForm::showColumn(Column * c)
 
     prepareSpsTabsForColumn(c);
 
+    m_previousColumnName = c->getName();
 }
 
 /**
@@ -1374,6 +1396,12 @@ void NewTableForm::onAddIndex()
 
 void NewTableForm::resetIndexGui()
 {
+    m_ui->btnAddIndex->setEnabled(true);
+
+    QPalette pal;
+    pal.setColor(QPalette::Text, Qt::black);
+    m_ui->txtNewIndexName->setPalette(pal);
+
     m_ui->lstSelectedColumnsForIndex->clear();
     populateColumnsForIndices();
     m_ui->txtNewIndexName->setText("");
@@ -1487,6 +1515,7 @@ void NewTableForm::onSelectIndex(QTreeWidgetItem*, int)
     m_ui->btnAddIndex->setText(tr("Update Index"));
     prepareSpsTabsForIndex(m_currentIndex);
     m_ui->lstSelectedColumnsForIndex->header()->resizeSections(QHeaderView::Stretch);
+    m_previousIndexName = m_currentIndex->getName();
 
     if(m_table->lockState() == LockableElement::FINAL_LOCK || m_table->lockState() == LockableElement::LOCKED) disableEditingControls(true);
     else disableEditingControls(false);
@@ -1495,6 +1524,14 @@ void NewTableForm::onSelectIndex(QTreeWidgetItem*, int)
 
 void NewTableForm::onCancelIndexEditing()
 {
+
+    if(m_currentIndex)
+    {
+        m_currentIndex->setName(m_previousIndexName);
+        m_currentIndex->setDisplayText(m_previousIndexName);
+        autoSave();
+    }
+
     resetIndexGui();
 }
 
@@ -1766,7 +1803,7 @@ void NewTableForm::onForeignTableColumnChange()
                             break;
                         }
                     }
-                    qDebug() << foreignType << foreignName;
+                    // qDebug() << foreignType << foreignName;
                     if(col->getDataType()->getType() == m_conn->getEngine()->getDTSupplier()->getDT_TYPE(foreignType))
                     {
                         QListWidgetItem* qlwj = new QListWidgetItem(parentColumns[j], m_ui->lstLocalColumn);
@@ -2156,6 +2193,7 @@ void NewTableForm::populateFKGui(ForeignKey * fk)
     m_foreignKeySelected = true;
 
     m_ui->txtForeignKeyName->setText(fk->getName());
+    m_previousFkName = fk->getName();
 
     // create the columns associations
     QString tabName = "";
@@ -2261,6 +2299,7 @@ void NewTableForm::populateFKGui(ForeignKey * fk)
     idx = m_ui->cmbFkOnUpdate->findText(fk->getOnUpdate());
     m_ui->cmbFkOnUpdate->setCurrentIndex(idx);
     m_ui->btnAddForeignKey->setIcon(IconFactory::getApplyIcon());
+    m_ui->btnAddForeignKey->setText(tr("Update Foreign Key"));
 }
 
 void NewTableForm::onSelectForeignKey(QTreeWidgetItem*, int)
@@ -2466,9 +2505,23 @@ void NewTableForm::updateSqlDueToChange()
 
 void NewTableForm::onBtnCancelForeignKeyEditing()
 {
+    QPalette pal;
+    pal.setColor(QPalette::Text, Qt::black);
+    m_ui->txtForeignKeyName->setPalette(pal);
+    m_ui->btnAddForeignKey->setEnabled(true);
+
+    if(m_currentForeignKey)
+    {
+        m_currentForeignKey->getLocation()->setText(0, m_previousFkName);
+        m_currentForeignKey->setName(m_previousFkName);
+        autoSave();
+    }
+
     toggleFkFieldDisableness(false);
     resetFkGui();
     m_ui->btnAddForeignKey->setIcon(IconFactory::getAddIcon());
+    m_ui->btnAddForeignKey->setText(tr("Add Foreign Key"));
+
 }
 
 void NewTableForm::onBtnRemoveForeignKey()
@@ -2494,6 +2547,54 @@ void NewTableForm::onBtnRemoveForeignKey()
     m_currentForeignKey = 0;
     resetFkGui();
     autoSave();
+}
+
+void NewTableForm::onFkNameChange(QString a)
+{
+    a = a.trimmed();
+    if(a.isEmpty())
+    {
+        return;
+    }
+
+    QPalette pal;
+    pal.setColor(QPalette::Text, Qt::black);
+    m_ui->txtForeignKeyName->setPalette(pal);
+
+    ForeignKey* other = m_table->getForeignKey(a);
+    // and see if there is a table, column or KEYWORD called "a"
+    if(m_dbEngine->getKeywords().contains(a, Qt::CaseInsensitive) || (other && other != m_currentForeignKey) )
+    {
+        QPalette pal;
+        pal.setColor(QPalette::Text, Qt::red);
+        m_ui->txtForeignKeyName->setPalette(pal);
+
+        QString netTooltip = tr("This is not an allowed name for the foreign key.");
+        if(m_dbEngine->getKeywords().contains(a, Qt::CaseInsensitive))
+        {
+            netTooltip += "<p><b>" + a + "</b>" + tr(" is a reserved keyword for this database. DDM does not allow this to avoid future confusion.");
+        }
+        else
+        {
+            netTooltip += "<p>" + tr("There is already a foreign key called <b> ") + a;
+        }
+
+        QToolTip::showText(m_ui->txtForeignKeyName->mapToGlobal(QPoint()), netTooltip, m_ui->txtForeignKeyName);
+        m_ui->txtForeignKeyName->setToolTip(netTooltip);
+        m_ui->btnAddForeignKey->setEnabled(false);
+        return;
+    }
+    else
+    {
+        m_ui->txtForeignKeyName->setToolTip(tr("The name of the foreign key"));
+        m_ui->btnAddForeignKey->setEnabled(true);
+    }
+
+    if(m_currentForeignKey)
+    {
+        m_currentForeignKey->getLocation()->setText(0, a);
+        m_currentForeignKey->setName(a);
+    }
 }
 
 void NewTableForm::onDeleteDefaultRow()
@@ -2735,7 +2836,7 @@ void NewTableForm::onDescriptionChange()
 
 void NewTableForm::onColumnNameChange(QString a)
 {
-    qDebug() << a;
+    // qDebug() << a;
     a = a.trimmed();
     if(a.isEmpty())
     {
@@ -2756,7 +2857,7 @@ void NewTableForm::onColumnNameChange(QString a)
         QString netTooltip = tr("This is not an allowed name for the column.");
         if(m_dbEngine->getKeywords().contains(a, Qt::CaseInsensitive))
         {
-            netTooltip += "<p><b>" + a + "</b>" + tr("is a reserved keyword for this database. DDM does not allow this to avoid future confusion.");
+            netTooltip += "<p><b>" + a + "</b>" + tr(" is a reserved keyword for this database. DDM does not allow this to avoid future confusion.");
         }
         else
         {
@@ -2877,7 +2978,7 @@ void NewTableForm::onDatatypeComboChange(QString)
                 }
 
                 udt = new UserDataType(dtName,
-                                       eng->getTypeStringForSqlType(type),
+                                       eng->getDTSupplier()->typeForSqlType(type),
                                        type, ssize,
                                        "", QStringList(), false, type + " " + ssize + " - Dynamically Created User Datatype",
                                        true, QUuid::createUuid().toString(), 0);
@@ -2924,8 +3025,46 @@ void NewTableForm::onPrimaryChange(bool)
     }
 }
 
-void NewTableForm::onIndexNameChange(QString)
+void NewTableForm::onIndexNameChange(QString a)
 {
+    a = a.trimmed();
+    if(a.isEmpty())
+    {
+        return;
+    }
+
+    QPalette pal;
+    pal.setColor(QPalette::Text, Qt::black);
+    m_ui->txtNewIndexName->setPalette(pal);
+
+    // and see if there is a table, column or KEYWORD called "a"
+    if(m_dbEngine->getKeywords().contains(a, Qt::CaseInsensitive) || m_table->hasIndex(a))
+    {
+        QPalette pal;
+        pal.setColor(QPalette::Text, Qt::red);
+        m_ui->txtNewIndexName->setPalette(pal);
+
+        QString netTooltip = tr("This is not an allowed name for the index.");
+        if(m_dbEngine->getKeywords().contains(a, Qt::CaseInsensitive))
+        {
+            netTooltip += "<p><b>" + a + "</b>" + tr(" is a reserved keyword for this database. DDM does not allow this to avoid future confusion.");
+        }
+        else
+        {
+            netTooltip += "<p>" + tr("There is already an index called <b>") + a;
+        }
+
+        QToolTip::showText(m_ui->txtNewIndexName->mapToGlobal(QPoint()), netTooltip, m_ui->txtNewIndexName);
+        m_ui->txtNewIndexName->setToolTip(netTooltip);
+        m_ui->btnAddIndex->setEnabled(false);
+        return;
+    }
+    else
+    {
+        m_ui->txtNewIndexName->setToolTip(tr("The name of the index"));
+        m_ui->btnAddIndex->setEnabled(true);
+    }
+
     if(m_currentIndex)
     {
         if(m_ui->txtNewIndexName->text().length() == 0) return;
@@ -3082,7 +3221,7 @@ void NewTableForm::onTriggerSpItemForIndexesColumn()
     }
 
     QString selectedData = m_ui->lstSelectedColumnsForIndex->currentItem()->text(0);
-    qDebug() << selectedData;
+    // qDebug() << selectedData;
     // and is this item a column?
     if(!m_table->hasColumn(selectedData))
     {

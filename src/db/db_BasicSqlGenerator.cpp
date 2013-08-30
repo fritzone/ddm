@@ -345,16 +345,16 @@ void BasicSqlGenerator::appendCreateIndexCommands(Table* table, QStringList& toR
         QString indexCommand = correctCase("create");
         indexCommand += spiResult(idx, uidMysqlIndexCategory);
         indexCommand += correctCase("index");
-        indexCommand += table->fullIndices().at(i);
+        indexCommand += backtickedName(table->fullIndices().at(i));
 
         indexCommand += indexTypeSpecified(idx);
 
         // and the table
-        indexCommand += strSpace + correctCase("on") + tabName + strOpenParantheses;
+        indexCommand += strSpace + correctCase("on") + backtickedName(tabName) + strOpenParantheses;
 
         for(int j=0; j<idx->getColumns().size(); j++)
         {
-            indexCommand += strSpace + idx->getColumns().at(j)->getName();
+            indexCommand += strSpace + backtickedName(idx->getColumns().at(j)->getName());
             indexCommand += strSpace +getIndexUsedLength(idx, idx->getColumns().at(j));
             indexCommand += strSpace +idx->getOrderForColumn(idx->getColumns().at(j));
             if(j<idx->getColumns().size() - 1)
@@ -396,7 +396,7 @@ QStringList BasicSqlGenerator::generateDefaultValuesSql(TableInstance* tableInst
     for(int i=0; i<maxValues; i++)
     {
         QString insert = strNewline + correctCase("insert into");
-        insert += tableInstance->getName();
+        insert += backtickedName(tableInstance->getName());
         insert += " (";
         for(int j=0; j<tableInstance->columns().size(); j++)
         {
@@ -417,7 +417,7 @@ QStringList BasicSqlGenerator::generateDefaultValuesSql(TableInstance* tableInst
             }
             if(!ainc)
             {
-                insert += tableInstance->columns().at(j);
+                insert += backtickedName(tableInstance->columns().at(j));
                 if(j< tableInstance->columns().size() - 1)
                 {
                     insert += ", ";
@@ -495,11 +495,11 @@ QStringList BasicSqlGenerator::generateDefaultValuesSql(Table* table, const QHas
     {
         const QVector<QString> &rowI = sv[i];
         QString insert = correctCase("insert into");
-        insert += table->getName();
+        insert += backtickedName(table->getName());
         insert += strOpenParantheses;
         for(int j=0; j<rowI.size(); j++)
         {
-            insert += table->getColumns().at(j)->getName();
+            insert += backtickedName(table->getColumns().at(j)->getName());
             if(j< rowI.size() - 1)
             {
                 insert += strComma + strSpace;
@@ -563,7 +563,7 @@ QStringList BasicSqlGenerator::generateCreateViewSql(View *v, const QHash<QStrin
 
         createViewSql += createViewReplaceability(v);
 
-        createViewSql += correctCase("view") + v->getName() + strSpace;
+        createViewSql += correctCase("view") + backtickedName(v->getName()) + strSpace;
 
         // MySql supports column names, SQLITE does not
         createViewSql += createViewColumnNames(v);

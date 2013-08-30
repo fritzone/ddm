@@ -375,7 +375,7 @@ Table* SqliteDatabaseEngine::reverseEngineerTable(Connection *c, const QString& 
         else
         {
             bool bnullable = QString::compare(nullable, "0", Qt::CaseInsensitive) == 0;
-            udt = v->provideDatatypeForSqlType(field_name, type, bnullable, defaultValue, relaxed);
+            udt = v->provideDatatypeForSqlType(field_name, type, bnullable, defaultValue, relaxed, getDTSupplier());
             m_oneTimeMappings.insert(oneTimeKey, udt);
         }
 

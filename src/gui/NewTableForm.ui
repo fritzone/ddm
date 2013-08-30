@@ -182,7 +182,7 @@
          <enum>QTabWidget::Rounded</enum>
         </property>
         <property name="currentIndex">
-         <number>1</number>
+         <number>2</number>
         </property>
         <widget class="QWidget" name="tabWidgetPage1">
          <attribute name="icon">
@@ -536,6 +536,9 @@
                </item>
                <item row="0" column="2">
                 <widget class="QLineEdit" name="txtNewIndexName">
+                 <property name="toolTip">
+                  <string>The name of the index</string>
+                 </property>
                  <property name="placeholderText">
                   <string>IndexName</string>
                  </property>
@@ -913,7 +916,7 @@
           <item>
            <widget class="QGroupBox" name="grpNewForeignKey">
             <property name="title">
-             <string> New Foreign Key </string>
+             <string> Foreign Key Details </string>
             </property>
             <layout class="QVBoxLayout" name="verticalLayout_14">
              <item>
@@ -927,6 +930,9 @@
                </item>
                <item>
                 <widget class="QLineEdit" name="txtForeignKeyName">
+                 <property name="toolTip">
+                  <string>The name of the foreign key</string>
+                 </property>
                  <property name="placeholderText">
                   <string>ForeignKeyName</string>
                  </property>
@@ -2318,6 +2324,22 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>txtForeignKeyName</sender>
+   <signal>textEdited(QString)</signal>
+   <receiver>NewTableForm</receiver>
+   <slot>onFkNameChange(QString)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>598</x>
+     <y>304</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>534</x>
+     <y>431</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <designerdata>
   <property name="gridDeltaX">
@@ -2391,5 +2413,6 @@
   <slot>onInstantiate()</slot>
   <slot>onTableStartupValueChanged(int,int)</slot>
   <slot>onCreateTableInDb()</slot>
+  <slot>onFkNameChange(QString)</slot>
  </slots>
 </ui>

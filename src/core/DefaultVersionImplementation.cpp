@@ -23,6 +23,7 @@
 #include "UidWarehouse.h"
 #include "core_Index.h"
 #include "core_Patch.h"
+#include "db_AbstractDTSupplier.h"
 
 // TODO: This is horrible!!!
 #include "MainWindow.h"
@@ -1227,7 +1228,8 @@ UserDataType* DefaultVersionImplementation::provideDatatypeForSqlType(const QStr
                                                                       const QString& sql,
                                                                       bool nullable,
                                                                       const QString& defaultValue,
-                                                                      bool relaxed)
+                                                                      bool relaxed,
+                                                                      AbstractDTSupplier* lastResort)
 {
     QString type = sql;
     QString size = "";
@@ -1270,14 +1272,59 @@ UserDataType* DefaultVersionImplementation::provideDatatypeForSqlType(const QStr
     }
 
     // nothing found, we should create a new data type with some default values
-    UserDataType* newUdt = new UserDataType(finalName,
-                                            Workspace::getInstance()->currentProjectsEngine()->getTypeStringForSqlType(type),
-                                            type, size, defaultValue, QStringList(), false, type + " " + size,
-                                            nullable, QUuid::createUuid().toString(), this);
 
-    newUdt->setName(NameGenerator::getUniqueName(this, (itemGetter)&Version::getDataType, newUdt->getName()));
-    addNewDataType(newUdt, true);
-    return newUdt;
+
+    QString stype = Workspace::getInstance()->currentProjectsEngine()->getDTSupplier()->typeForSqlType(type);
+    DT_TYPE foundDT = UserDataType::getDT_TYPE(stype);
+    bool forceDefault = false;
+
+    if(foundDT == DT_INVALID)
+    {
+        stype = lastResort->typeForSqlType(type);
+        foundDT = UserDataType::getDT_TYPE(stype);
+        forceDefault = true;
+    }
+
+    if(foundDT != DT_INVALID && foundDT != DT_GENERIC && foundDT != DT_VARIABLE)
+    {
+        if(forceDefault)
+        {
+            UserDataType* tsGroupsDefault = Workspace::getInstance()->currentProjectsEngine()->getDTSupplier()->getDefaultForDT(foundDT);
+            UserDataType* newUdt = new UserDataType(tsGroupsDefault->getName(), stype, tsGroupsDefault->getName(),
+                                                    tsGroupsDefault->sizeAsString()=="N/A"?"":tsGroupsDefault->sizeAsString(),
+                                                    tsGroupsDefault->getDefaultValue(), QStringList(), false, "default value of " + stype, true,
+                                                    QUuid::createUuid().toString(), this);
+
+            addNewDataType(newUdt, true);
+            getGui()->createDataTypeTreeEntry(newUdt);
+            return newUdt;
+        }
+        else
+        {
+            UserDataType* newUdt = new UserDataType(finalName,
+                                                    stype,
+                                                    type, size, defaultValue, QStringList(), false, type + " " + size,
+                                                    nullable, QUuid::createUuid().toString(), this);
+
+            newUdt->setName(NameGenerator::getUniqueName(this, (itemGetter)&Version::getDataType, newUdt->getName()));
+            addNewDataType(newUdt, true);
+            getGui()->createDataTypeTreeEntry(newUdt);
+            return newUdt;
+        }
+    }
+    else
+    {
+        UserDataType* newUdt = new UserDataType(finalName + "_forced_string",
+                                                strTextString,
+                                                type, "1024", "", QStringList(), false, type + " " + size,
+                                                false, QUuid::createUuid().toString(), this);
+
+        newUdt->setName(NameGenerator::getUniqueName(this, (itemGetter)&Version::getDataType, newUdt->getName()));
+        addNewDataType(newUdt, true);
+        getGui()->createDataTypeTreeEntry(newUdt);
+        return newUdt;
+    }
+
 }
 
 QVector<Issue*> DefaultVersionImplementation::checkIssuesOfNewColumn(Column* inNewColumn, Table* inTable)
