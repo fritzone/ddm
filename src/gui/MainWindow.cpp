@@ -1334,6 +1334,31 @@ void MainWindow::onReleaseMajorVersion()
             m = dynamic_cast<MajorVersion*>(v);
             if(m)
             {
+                bool go = false;
+                if(!m->canSafelyRelease())
+                {
+                    QStringList offendingTables = m->getTablesWithEmptyPks();
+                    QString tables = "";
+                    for(int i=0; i<offendingTables.size(); i++)
+                    {
+                        tables +="<li>" + offendingTables[i];
+                    }
+                    if(QMessageBox::question(this, tr("Warning"), tr("It is not safe to release this version since the following tables have no primary key:<ul>")
+                                             + tables + tr("</ul><p>Do you still want to release?"),
+                                             QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
+                    {
+                        go = true;
+                    }
+                }
+                else
+                {
+                    go = true;
+                }
+
+                if(!go)
+                {
+                    return;
+                }
                 Version* newVersion = Workspace::getInstance()->currentProject()->releaseMajorVersion();
                 v->getGui()->getVersionItem()->setPopupMenu(ContextMenuCollection::getInstance()->getReleasedVersionPopupMenu());
 
@@ -2420,6 +2445,15 @@ void MainWindow::onBrowseConnection()
     }
 }
 
+void MainWindow::onRefreshConnection()
+{
+    Connection* c = getRightClickedConnection();
+    if(c)
+    {
+        Workspace::getInstance()->refreshConnection(c);
+    }
+}
+
 void MainWindow::onDropConnection()
 {
     Connection* c = getRightClickedConnection();
@@ -3267,8 +3301,7 @@ void MainWindow::onSqlQueryInConnection()
     if(c)
     {
         hideSplashwindow();
-        tryBrowseConnection(c);
-        c->getLocation()->setExpanded(true);
+        Workspace::getInstance()->refreshConnection(c);
         BrowseTableForm* frm = BrowseTableForm::instance(this, c, "", CREATE_SCRIPT);
         setCentralWidget(frm);
         frm->focusOnTextEdit();
@@ -3365,8 +3398,6 @@ void MainWindow::onCompareTables()
 void MainWindow::onUpdateDb()
 {
     TableComparisonForm* tcf = new TableComparisonForm(TableComparisonForm::COMPARE_VERSIONS);
-    tcf->setFromVersion(Workspace::getInstance()->workingVersion());
-    tcf->setToVersion(Workspace::getInstance()->workingVersion());
     setCentralWidget(tcf);
 }
 
@@ -3524,6 +3555,11 @@ void MainWindow::onActionTriggered()
         if(sact == "BROWSE")
         {
             onBrowseConnection();
+        }
+
+        if(sact == "REFRESH")
+        {
+            onRefreshConnection();
         }
 
         if(sact == "EDIT")

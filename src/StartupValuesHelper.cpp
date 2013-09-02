@@ -9,7 +9,7 @@
 
 void loadStartupValuesFromCSVIntoTable(QTableWidget *table, QWidget* parent)
 {
-    QString fileName = QFileDialog::getOpenFileName(parent,  "Load values", "", "CSV files (*.csv)");
+    QString fileName = QFileDialog::getOpenFileName(parent, QObject::tr("Load values"), "", QObject::tr("CSV files (*.csv)") );
     if(fileName.length() == 0)
     {
         return;
@@ -81,7 +81,7 @@ void saveStartupValuesToCSVFromTable(QTableWidget* table, QWidget* parent)
         }
         rows.append(rowI);
     }
-    QString fileName = QFileDialog::getSaveFileName(parent,  "Save values", "", "CSV files (*.csv)");
+    QString fileName = QFileDialog::getSaveFileName(parent,  QObject::tr("Save values"), "", QObject::tr("CSV files (*.csv)"));
     QFile file(fileName);
 
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text))

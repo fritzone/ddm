@@ -189,6 +189,7 @@ public slots:
     void onConnectConnection();
     void onSqlQueryInConnection();
     void onBrowseConnection();
+    void onRefreshConnection();
     void onDropConnection();
     void onDeleteConnection();
     void onEditConnection();

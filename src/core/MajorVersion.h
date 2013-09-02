@@ -37,6 +37,15 @@ public:
     virtual QUuid getClassUid() const;
     void setVersionNumbersFromString(const QString& n);
 
+    /**
+     * @brief canSafelyRelease checks if we can safely release this version,
+     * mainly to see that all the tables have a primary key and warn the user
+     * if not.
+     * @return
+     */
+    bool canSafelyRelease();
+    QStringList getTablesWithEmptyPks();
+
 };
 
 #endif // MAJORVERSION_H

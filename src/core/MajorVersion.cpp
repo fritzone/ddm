@@ -10,6 +10,7 @@
 #include "uids.h"
 #include "core_Patch.h"
 
+
 MajorVersion::MajorVersion(int major, int minor, Project* p) : DefaultVersionImplementation(p, major, minor)
 {
     // make the dts sub item coming from the project
@@ -33,6 +34,33 @@ void MajorVersion::setVersionNumbersFromString(const QString& n)
     QString sminor = n.mid(n.indexOf(".") + 1);
     setVersionNumbers(smajor.toInt(), sminor.toInt());
     version = n;
+}
+
+bool MajorVersion::canSafelyRelease()
+{
+    const QVector<Table*>& tabs = getTables();
+    for(int i=0; i<tabs.size(); i++)
+    {
+        if(tabs.at(i)->primaryKeyColumnsAsSet().isEmpty())
+        {
+            return false;
+        }
+    }
+    return true;
+}
+
+QStringList MajorVersion::getTablesWithEmptyPks()
+{
+    QStringList result;
+    const QVector<Table*>& tabs = getTables();
+    for(int i=0; i<tabs.size(); i++)
+    {
+        if(tabs.at(i)->primaryKeyColumnsAsSet().isEmpty())
+        {
+            result.append(tabs[i]->getName());
+        }
+    }
+    return result;
 }
 
 void MajorVersion::serialize(QDomDocument &doc, QDomElement &parent) const

@@ -178,6 +178,8 @@ void BrowseTableForm::onRunQuery()
         QMessageBox::critical(this, tr("Error"), tr("Cannot execute the query:") + db.lastError().driverText() + "/" + db.lastError().databaseText(), QMessageBox::Ok);
     }
 
+    Workspace::getInstance()->refreshConnection(m_connection);
+
     db.close();
 }
 

@@ -9,7 +9,7 @@
 
 DraggableGraphicsViewItem::DraggableGraphicsViewItem(const Table* tab) :
     QGraphicsItemGroup(),
-    VersionElement(QUuid::createUuid(), tab->version()),
+    VersionElement(QUuid::createUuid(), tab?tab->version():0),
     m_table(tab), lastX(0), lastY(0)
 {
     setAcceptDrops(true);
@@ -37,7 +37,7 @@ void DraggableGraphicsViewItem:: mousePressEvent ( QGraphicsSceneMouseEvent * ev
             QIcon remove(":/images/actions/images/small/remove.png");
             action_Remove->setIcon(remove);
 
-            QObject::connect(action_Remove, SIGNAL(activated()), dynamic_cast<ERGraphicsScene*>(this->scene())->getDiagram()->getDiagramForm(), SLOT(removeFromDiagram()));
+            QObject::connect(action_Remove, SIGNAL(triggered()), dynamic_cast<ERGraphicsScene*>(this->scene())->getDiagram()->getDiagramForm(), SLOT(removeFromDiagram()));
             dynamic_cast<ERGraphicsScene*>(this->scene())->getDiagram()->getDiagramForm()->setTableToRemoveFromDiagram(m_table->getName());
 
             popup.addAction(action_Remove);

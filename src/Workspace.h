@@ -13,6 +13,7 @@ class UserDataType;
 class Table;
 class Patch;
 class Trigger;
+class Connection;
 
 /**
  * The role of the Workspace class is to be a collection point for the "logical" elements of the
@@ -178,6 +179,8 @@ public:
     Trigger* createTrigger(Version *v);
 
     void addUserDefinedDataType(const QString& dbName, UserDataType* udt);
+
+    void refreshConnection(Connection* c);
 
 private:
 

@@ -18,7 +18,9 @@ SET(DDM_GUI_SRCS
   ${CMAKE_CURRENT_SOURCE_DIR}/EnterNoteTextDialog.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/FrameForLineNumbers.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/GuiElements.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/gui_DBMenu.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/gui_HelpWindow.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/gui_IconFactory.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/InjectSqlDialog.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/ListWidgetForCodeCompletion.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/MainWindowButtonDialog.cpp
@@ -41,7 +43,6 @@ SET(DDM_GUI_SRCS
   ${CMAKE_CURRENT_SOURCE_DIR}/TriggerForm.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/VersionGuiElements.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/WidgetForSpecificProperties.cpp
-
   ${CMAKE_CURRENT_SOURCE_DIR}/repo_DatabaseDetailsForm.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/repo_RoleListingForm.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/repo_RepositoryElementForm.cpp
@@ -55,6 +56,7 @@ SET(DDM_GUI_HDRS
   ${CMAKE_CURRENT_SOURCE_DIR}/ContextMenuEnabledTreeWidget.h
   ${CMAKE_CURRENT_SOURCE_DIR}/DocumentationSourceTreeItem.h
   ${CMAKE_CURRENT_SOURCE_DIR}/GuiElements.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/gui_DBMenu.h
   ${CMAKE_CURRENT_SOURCE_DIR}/IconFactory.h
   ${CMAKE_CURRENT_SOURCE_DIR}/SimpleTextInputDialog.h
   ${CMAKE_CURRENT_SOURCE_DIR}/SourceCodePresenterWidget.h
@@ -63,7 +65,6 @@ SET(DDM_GUI_HDRS
   ${CMAKE_CURRENT_SOURCE_DIR}/TableListWidget.h
   ${CMAKE_CURRENT_SOURCE_DIR}/TreeItem.h
   ${CMAKE_CURRENT_SOURCE_DIR}/VersionGuiElements.h
-  
   ${CMAKE_CURRENT_SOURCE_DIR}/RepositoryGuiElements.h
 )
 
@@ -79,6 +80,7 @@ SET(DDM_GUI_MOC_HDRS
   ${CMAKE_CURRENT_SOURCE_DIR}/EnterNoteTextDialog.h
   ${CMAKE_CURRENT_SOURCE_DIR}/FrameForLineNumbers.h
   ${CMAKE_CURRENT_SOURCE_DIR}/gui_HelpWindow.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/IconedDockWidget.h
   ${CMAKE_CURRENT_SOURCE_DIR}/InjectSqlDialog.h
   ${CMAKE_CURRENT_SOURCE_DIR}/ListWidgetForCodeCompletion.h
   ${CMAKE_CURRENT_SOURCE_DIR}/MainWindowButtonDialog.h

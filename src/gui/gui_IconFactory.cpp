@@ -7,6 +7,7 @@ const QIcon& IconFactory::getIconForActionId(const QString& id)
     if(id == "DROP") return getDropDatabaseIcon();
     if(id == "RECREATE") return getRecreateDatabaseIcon();
     if(id == "BROWSE") return getBrowseConnectionIcon();
+    if(id == "REFRESH") return getRefreshIcon();
     if(id == "NEW") return getNewIcon();
     if(id == "NEWTABLE") return getTableIcon();
     if(id == "DELETE") return getRemoveIcon();
