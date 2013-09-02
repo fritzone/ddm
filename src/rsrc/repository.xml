@@ -28,6 +28,7 @@
         <action type="single" id="TEST" text="Test Connection" icon="TEST" index="5"/>
         <action type="single" id="EDIT" text="Edit Connection" icon="EDIT" index ="6"/>
         <action type="single" id="DELETE" text="Delete Connection" icon="DELETE" index="7"/>
+        <action type="single" id="REFRESH" text="Refresh" icon="REFRESH" index="8"/>
       </connection-actions>
       
       <foreign-keys support="1">
@@ -2249,6 +2250,7 @@ END]]>
         <action type="single" id="TEST" text="Test Connection" icon="TEST" index="4"/>
         <action type="single" id="EDIT" text="Edit Connection" icon="EDIT" index ="5"/>
         <action type="single" id="DELETE" text="Delete Connection" icon="DELETE" index="6"/>
+        <action type="single" id="REFRESH" text="Refresh" icon="REFRESH" index="7"/>
       </connection-actions>
       
       <foreign-keys support="1">
@@ -2723,6 +2725,7 @@ END]]>
         <action type="single" id="TEST" text="Test Connection" icon="TEST" index="4"/>
         <action type="single" id="EDIT" text="Edit Connection" icon="EDIT" index ="5"/>
         <action type="single" id="DELETE" text="Delete Connection" icon="DELETE" index="6"/>
+        <action type="single" id="REFRESH" text="Refresh" icon="REFRESH" index="7"/>
       </connection-actions>
       
       <foreign-keys support="1">

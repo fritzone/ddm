@@ -769,8 +769,18 @@ QString BasicSqlGenerator::getUpdateTableForColumns(const QString& table, const 
         }
         else where += " ";
     }
-    QString res = correctCase("UPDATE") + table + correctCase(" SET ") + destCol + " = \"" + destValue + correctCase("\" WHERE ") + where;
-    return res;
+
+    where = where.trimmed();
+
+    if(!where.isEmpty())
+    {
+        QString res = correctCase("UPDATE") + table + correctCase(" SET ") + destCol + " = \"" + destValue + correctCase("\" WHERE ") + where;
+        return res;
+    }
+    else // this is a simply insert
+    {
+        return "";
+    }
 }
 
 

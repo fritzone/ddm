@@ -25,8 +25,8 @@ void DraggableGraphicsViewItemForText::mousePressEvent ( QGraphicsSceneMouseEven
             action_Change->setText("Change text");
 
 
-            QObject::connect(action_Remove, SIGNAL(activated()), dynamic_cast<ERGraphicsScene*>(this->scene())->getDiagram()->getDiagramForm(), SLOT(removeNoteFromDiagram()));
-            QObject::connect(action_Change, SIGNAL(activated()), dynamic_cast<ERGraphicsScene*>(this->scene())->getDiagram()->getDiagramForm(), SLOT(onEditNote()));
+            QObject::connect(action_Remove, SIGNAL(triggered()), dynamic_cast<ERGraphicsScene*>(this->scene())->getDiagram()->getDiagramForm(), SLOT(removeNoteFromDiagram()));
+            QObject::connect(action_Change, SIGNAL(triggered()), dynamic_cast<ERGraphicsScene*>(this->scene())->getDiagram()->getDiagramForm(), SLOT(onEditNote()));
             dynamic_cast<ERGraphicsScene*>(this->scene())->getDiagram()->getDiagramForm()->setCurrentWorkNoteOnDiagram(m_index);
 
             popup.addAction(action_Remove);

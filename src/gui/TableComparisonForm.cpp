@@ -28,6 +28,8 @@ TableComparisonForm::TableComparisonForm(Mode m, QWidget *parent) : QWidget(pare
 {
     ui->setupUi(this);
 
+    ui->cmbVersionRight->setEnabled(false);
+
     if(m_mode == COMPARE_TABLES)
     {
         m_spl = new QSplitter(Qt::Horizontal, this);
@@ -64,8 +66,9 @@ TableComparisonForm::TableComparisonForm(Mode m, QWidget *parent) : QWidget(pare
     for(int i=0; i<a.size(); i++)
     {
         ui->cmbVersionLeft->addItem(a[i]);
-        ui->cmbVersionRight->addItem(a[i]);
     }
+
+    ui->cmbVersionLeft->setCurrentIndex(-1);
 
     highlighter = new SqlHighlighter(ui->textEdit->document(),Workspace::getInstance()->currentProjectsEngine()->getKeywords(),
                                      Workspace::getInstance()->currentProjectsEngine()->getDTSupplier()->numericTypes(),
@@ -93,6 +96,7 @@ void TableComparisonForm::setFromVersion(Version *v)
     {
         VersionUpdateGenerator vug = VersionUpdateGenerator(m_from, m_to);
         ui->textEdit->setText(addCommands(vug.getCommands()));
+        m_engine = m_to->getProject()->getEngine();
     }
 }
 
@@ -192,12 +196,37 @@ void TableComparisonForm::leftItemSelected(const QString& v)
     }
     if(m_mode == COMPARE_VERSIONS)
     {
+        ui->cmbVersionRight->clear();
+        bool added = false;
+        QStringList a = Workspace::getInstance()->getAllVersions();
+        for(int i=0; i<a.size(); i++)
+        {
+            if(a[i] > v)
+            {
+                ui->cmbVersionRight->addItem(a[i]);
+                added = true;
+            }
+        }
+        ui->cmbVersionRight->setEnabled(added);
+
         Version* ver = Workspace::getInstance()->currentProject()->getVersionNamed(v);
         if(!ver)
         {
             return;
         }
         setFromVersion(ver);
+
+        if(ui->cmbVersionRight->count() == 1)
+        {
+            rightItemSelected(ui->cmbVersionRight->currentText());
+        }
+
+        if(m_from && m_to)
+        {
+            VersionUpdateGenerator vug = VersionUpdateGenerator(m_from, m_to);
+            ui->textEdit->setText(addCommands(vug.getCommands()));
+            m_engine = m_to->getProject()->getEngine();
+        }
     }
 }
 

@@ -27,6 +27,7 @@
 #include "MySqlConnection.h"
 #include "SqliteConnection.h"
 #include "conn_CUBRID.h"
+#include "Connection.h"
 
 #include <QFile>
 #include <QApplication>
@@ -567,6 +568,35 @@ void Workspace::addUserDefinedDataType(const QString& dbName, UserDataType *udt)
         QVector<UserDataType*> vec;
         vec.append(udt);
         m_userDefinedDataTypes.insert(dbName, vec);
+    }
+}
+
+void Workspace::refreshConnection(Connection *c)
+{
+    QVector<int> expanded;
+    int ctr = 0;
+    while(c->getLocation()->childCount())
+    {
+        if(c->getLocation()->child(0)->isExpanded())
+        {
+            expanded.append(ctr);
+        }
+        ctr ++;
+        c->getLocation()->removeChild(c->getLocation()->child(0));
+    }
+
+    qDebug() << expanded;
+
+    if(c->tryConnect())
+    {
+        MainWindow::instance()->getConnectionGuiElements()->resetConnectionTreeForConnection(c);
+        MainWindow::instance()->getConnectionGuiElements()->populateConnectionTreeForConnection(c);
+        c->getLocation()->setExpanded(true);
+
+        for(int i=0; i<expanded.size(); i++)
+        {
+            c->getLocation()->child(expanded[i])->setExpanded(true);
+        }
     }
 }
 

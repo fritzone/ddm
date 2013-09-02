@@ -805,6 +805,7 @@ void NewTableForm::onAddColumn()
     m_ui->txtColumnDescription->setText("");
     m_ui->chkPrimary->setChecked(false);
     m_ui->btnAddColumn->setIcon(IconFactory::getAddIcon());
+    m_ui->btnAddColumn->setText(tr("Add Column"));
 
     lstColumns->resizeColumnToContents(0);
     lstColumns->resizeColumnToContents(1);
