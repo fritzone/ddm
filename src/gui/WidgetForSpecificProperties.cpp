@@ -323,7 +323,7 @@ void WidgetForSpecificProperties::feedInSpecificProperties(const QVector<SpInsta
                         QStringList values = spi->getValues();
                         for(int j=0; j<values.size(); j++)
                         {
-                            qDebug() << values.at(j);
+//                            qDebug() << values.at(j);
                             comboBox->addItem(values.at(j));
                         }
                     }
@@ -493,7 +493,7 @@ void WidgetForSpecificProperties::editTextEdited(const QString& s)
         SpInstance* spi = getSpInstanceForWidget(edit);
         if(spi)
         {
-            qDebug() << spi->getClass()->getName();
+//            qDebug() << spi->getClass()->getName();
             spi->set(s);
         }
     }

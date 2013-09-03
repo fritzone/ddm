@@ -157,6 +157,8 @@ NewTableForm::NewTableForm(DatabaseEngine* db, Project* prj, Version* v,
     {
         m_ui->btnInstantiate->hide();
         m_ui->btnCreateTableInDb->show();
+
+        onChangeName(m_ui->txtTableName->text());
     }
 
     // feed in the ON UPDATE and ON DELETE for the FKs
@@ -2628,9 +2630,26 @@ void NewTableForm::onChangeName(QString a)
 {
     if(!m_table) return;
 
+    QPalette pal;
+    pal.setColor(QPalette::Text, Qt::black);
+    m_ui->txtTableName->setPalette(pal);
+    m_ui->txtTableName->setToolTip(tr("The name of the table"));
+
     // creating a table in the database?
     if(!m_version && m_dbEngine && m_conn)
     {
+        QStringList tabs = m_conn->getTables();
+        int idx = tabs.indexOf(a);
+//        qDebug() << idx;
+        if(idx != -1)
+        {
+            QPalette pal;
+            pal.setColor(QPalette::Text, Qt::red);
+            m_ui->txtTableName->setPalette(pal);
+            m_ui->txtTableName->setToolTip(tr("There is alread a table called <b>") + a + tr(" in the database."));
+            return;
+        }
+
         m_table->setName(a);
         if(m_mainTabIndex > -1)
         {
@@ -2643,10 +2662,6 @@ void NewTableForm::onChangeName(QString a)
     Table* another = m_table->getVersion()->getTable(a);
     QString prevName = m_table->getName();
     if(!m_table->getLocation()) return;
-
-    QPalette pal;
-    pal.setColor(QPalette::Text, Qt::black);
-    m_ui->txtTableName->setPalette(pal);
 
     // and see if there is a table with this name already
     if((m_table->getVersion()->hasTable(a) && another && another != m_table) || m_dbEngine->getKeywords().contains(a, Qt::CaseInsensitive))
@@ -3403,8 +3418,22 @@ void NewTableForm::onCreateTableInDb()
     else
     {
         setStatusTip(QString("Table ") + m_table->getName() + " succesfully created." );
-    }
+        Workspace::getInstance()->refreshConnection(m_conn);
+        m_conn->getLocation()->child(0)->setExpanded(true);
 
-    MainWindow::instance()->tryBrowseConnection(m_conn);
-    m_conn->getLocation()->setExpanded(true);
+        int idx = -1;
+        for(int i=0; i < m_conn->getLocation()->child(0)->childCount(); i++)
+        {
+            if(m_conn->getLocation()->child(0)->child(i)->text(0) == m_table->getName())
+            {
+                idx = i;
+                break;
+            }
+        }
+
+        if(idx >= 0)
+        {
+            m_conn->getLocation()->child(0)->child(idx)->setSelected(true);
+        }
+    }
 }

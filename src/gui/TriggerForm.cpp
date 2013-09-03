@@ -166,6 +166,8 @@ void TriggerForm::initSql()
     m_textEdit->disableRow(1);
     m_forcedChange = false;
     m_textEdit->updateLineNumbers();
+
+    m_textEdit->keyPressEvent(new QKeyEvent(QEvent::KeyPress, Qt::Key_Down, Qt::NoModifier));
 }
 
 void TriggerForm::feedInTables(const QVector<QString> &tables, bool oop)
@@ -253,10 +255,16 @@ void TriggerForm::showSql()
     QString sql = m_trigger->generateSqlSource(asg,
                                        Configuration::instance().sqlGenerationOptions(), 0).join("\n");
     sql = sql.trimmed();
+    if(sql.indexOf("\n") == -1)
+    {
+        sql += "\n";
+    }
 
     m_textEdit->setPlainText(sql);
     m_textEdit->disableRow(1);
     m_textEdit->updateLineNumbers();
+
+    m_textEdit->keyPressEvent(new QKeyEvent(QEvent::KeyPress, Qt::Key_Down, Qt::NoModifier));
 }
 
 void TriggerForm::nameChanged(QString a)

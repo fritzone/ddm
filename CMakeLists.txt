@@ -116,6 +116,10 @@ SET(DDM_BIN_DIR     ${CMAKE_INSTALL_PREFIX}/${DDM_BIN_SUBDIR})
 SET(DDM_RSRC_DIR    ${CMAKE_INSTALL_PREFIX}/${DDM_BIN_SUBDIR}/rsrc/)
 SET(DDM_DOC_DIR     ${CMAKE_INSTALL_PREFIX}/${DDM_BIN_SUBDIR}/doc/)
 
+
+# adding the files
+add_subdirectory(src)
+
 # Install the binary
 INSTALL(FILES ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/ddm DESTINATION ${DDM_BIN_DIR})
 
@@ -193,6 +197,7 @@ IF(DPKG_FOUND AND NOT WIN32)
     SET(CPACK_DEBIAN_PACKAGE_DEPENDS ${PACKAGE_REQUIRES})
     SET(CPACK_DEBIAN_PACKAGE_DEPENDS "libqt4-sql-mysql, libmysqlclient18, libqt4-network, libqt4-sql, libqt4-sql-sqlite, libqt4-xml, libqtcore4, libqtgui4, libqtwebkit4") # Specify dependencies here
     SET(CPACK_SET_DESTDIR TRUE)
+    SET(CPACK_DEBIAN_PACKAGE_CONTROL_EXTRA "debian/postinst")
 ENDIF(DPKG_FOUND AND NOT WIN32)
 
 SET(CPACK_PACKAGE_EXECUTABLES "ddm" "DDM")
