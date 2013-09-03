@@ -2,6 +2,10 @@
 
 set -e
 
-chmod +x /opt/ddm/bin/ddm
+chmod u+x /opt/ddm/bin/ddm
+chmod g+x /opt/ddm/bin/ddm
+chmod o+x /opt/ddm/bin/ddm
+chmod +r /opt/ddm/bin/ddm
+chmod +w /opt/ddm/bin/ddm
 
 exit 0

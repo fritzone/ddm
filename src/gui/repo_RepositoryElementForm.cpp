@@ -129,7 +129,7 @@ void RepositoryEntityForm::onDeleteAttribute()
 {
     if(ui->tblAttributes->currentRow() != -1)
     {
-        qDebug() << ui->tblAttributes->item(ui->tblAttributes->currentRow(), 0)->text();
+//        qDebug() << ui->tblAttributes->item(ui->tblAttributes->currentRow(), 0)->text();
     }
 }
 

@@ -3430,7 +3430,7 @@ void MainWindow::onRepoItemClicked(QTreeWidgetItem* itm ,int)
     else
     {
         QString uid = itm->data(0, Qt::UserRole).toString();
-        qDebug() << uid;
+//        qDebug() << uid;
         if(uid.isEmpty()) return;
         if(uid.at(0) == '{')
         {
@@ -3520,6 +3520,7 @@ void MainWindow::onConnectionCreateTable()
 
         if(create)
         {
+            Workspace::getInstance()->refreshConnection(c);
             createTableInConnection(c, true);
         }
     }
@@ -3570,6 +3571,11 @@ void MainWindow::onActionTriggered()
         if(sact == "DELETE")
         {
             onDeleteConnection();
+        }
+
+        if(sact == "NEWTABLE")
+        {
+            onConnectionCreateTable();
         }
     }
 }

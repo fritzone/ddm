@@ -162,7 +162,7 @@ int DefaultVersionImplementation::getDataTypeIndex(const QString& name)
 {
     for(int i=0; i < m_data.m_dataTypes.size(); i++)
     {
-        qDebug() << m_data.m_dataTypes.at(i)->getName() <<"=="<<name;
+        //qDebug() << m_data.m_dataTypes.at(i)->getName() <<"=="<<name;
         if(m_data.m_dataTypes.at(i)->getName() == name)
         {
             return i;

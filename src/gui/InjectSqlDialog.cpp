@@ -166,6 +166,12 @@ InjectSqlDialog::InjectSqlDialog(DatabaseEngine* engine, QWidget *parent, Versio
             ui->lblVersionToBeDeployed->hide();
         }
     }
+
+    // and now remove the unneeded radio buttons from the GUI. Ugly, just hardcode it.
+    QStringList supportedDbs = QSqlDatabase::drivers();
+    if(!supportedDbs.contains(strQCUBRID)) ui->cmbDatabaseType->removeItem(ui->cmbDatabaseType->findText(strCUBRID));
+    if(!supportedDbs.contains(strQSqlite)) ui->cmbDatabaseType->removeItem(ui->cmbDatabaseType->findText(strSqlite));
+    if(!supportedDbs.contains(strQMySql)) ui->cmbDatabaseType->removeItem(ui->cmbDatabaseType->findText(strMySql));
 }
 
 void InjectSqlDialog::createTreeItem(QTreeWidgetItem* parent, const QString &text, const QString &uid, const QIcon &icon)
@@ -370,7 +376,7 @@ void InjectSqlDialog::populateConnections()
         // add only the connections where the database is the same as the current project
         QString dbType = connections[i]->getDbType().toUpper() ;
         QString dbName =m_dbEngine->getDatabaseEngineName().toUpper();
-        qDebug() << dbType << dbName;
+        //qDebug() << dbType << dbName;
         if(m_dbEngine && dbType == dbName)
         {
             QListWidgetItem* lwi = new QListWidgetItem(ui->lstAllConnections);
@@ -577,7 +583,7 @@ void InjectSqlDialog::onConnectionNameEdited(QString a)
 
 void InjectSqlDialog::onDbTypeChange(QString a)
 {
-    qDebug() << a;
+//    qDebug() << a;
     m_strDbEngine = a.toUpper();
     if(m_strDbEngine == strSqlite.toUpper())
     {

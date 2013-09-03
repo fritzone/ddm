@@ -75,7 +75,7 @@ void TableQueryComponent::setTable(const QString &tab)
         m_table = Workspace::getInstance()->workingVersion()->getTable(tab);
         if(m_table == 0)
         {
-            qDebug() << "Something went horribly wrong... no table and no table instance for: " << tab;
+//            qDebug() << "Something went horribly wrong... no table and no table instance for: " << tab;
         }
     }
 }

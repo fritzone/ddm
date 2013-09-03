@@ -182,7 +182,7 @@ QSqlDatabase SqliteDatabaseEngine::getQSqlDatabaseForConnection(Connection *conn
 
     if(!dbo.isOpen())
     {
-        qDebug() << dbo.lastError();
+        //qDebug() << dbo.lastError();
     }
 
     return dbo;
@@ -264,7 +264,7 @@ QStringList SqliteDatabaseEngine::getAvailableTables(Connection* c)
     if(!ok)
     {
         lastError = formatLastError(QObject::tr("Cannot get tables") + QString(" <<< ") + dbo.databaseName() + ">>>", query.lastError() );
-        qDebug() << lastError;
+        //qDebug() << lastError;
         return result;
     }
 
@@ -573,7 +573,7 @@ void SqliteDatabaseEngine::parseTriggerSql(const QString &inSql, QString &outEve
 {
     QString currentWord = "";
     int i = 0;
-    qDebug() << inSql;
+    //qDebug() << inSql;
     while(i<inSql.length())
     {
 

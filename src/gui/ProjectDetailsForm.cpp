@@ -37,23 +37,25 @@ void ProjectDetailsForm::setProject(Project *prj, const QString & onDisk)
     ui->checkBox->setCheckState(prj->oopProject()?Qt::Checked:Qt::Unchecked);
     ui->txtLocationOnDisk->setText(onDisk);
 
+    // UI combo: MySql, Sqlite, CUBRID
+
     // TODO: This is pretty ugly ... Find a way to make it nicer
     if(prj->getEngine()->getDatabaseEngineName().toUpper() == strMySql)
     {
         ui->comboBox->removeItem(1); // removing the Sqlite entry
-        ui->comboBox->removeItem(2); // removing the CUBRID entry
+        ui->comboBox->removeItem(1); // removing the CUBRID entry
     }
     else
     if(prj->getEngine()->getDatabaseEngineName().toUpper() == strSqlite)
     {
         ui->comboBox->removeItem(0); // removing the Mysql entry
-        ui->comboBox->removeItem(2); // removing the CUBRID entry
+        ui->comboBox->removeItem(1); // removing the CUBRID entry
     }
     else
     if(prj->getEngine()->getDatabaseEngineName().toUpper() == strCUBRID)
     {
         ui->comboBox->removeItem(0); // removing the Mysql entry
-        ui->comboBox->removeItem(1); // removing the Sqlite entry
+        ui->comboBox->removeItem(0); // removing the Sqlite entry
     }
 }
 

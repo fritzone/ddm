@@ -44,7 +44,7 @@ Repository::Repository()
         if (!doc.setContent(&file))
         {
             file.close();
-            qDebug() << "Cannot set XML content. Giving up the idea of repository";
+            //qDebug() << "Cannot set XML content. Giving up the idea of repository";
             return;
         }
         file.close();
@@ -440,7 +440,7 @@ void Repository::addDatabase(const QDomElement & el)
                         int parCount = elParams.attribute("count").toInt();
                         if(parCount != elParams.childNodes().size())
                         {
-                            qDebug() << "func par mismatch:" << name;
+                            //qDebug() << "func par mismatch:" << name;
                         }
                         else
                         {
@@ -492,13 +492,13 @@ void Repository::addDatabase(const QDomElement & el)
 
                     if(dbfct == 0)
                     {
-                        qDebug() << "Not found a function category for: " << category << "func name:" << name;
+                        //qDebug() << "Not found a function category for: " << category << "func name:" << name;
                         return;
                     }
 
                     if(category_value != dbfct->getId())
                     {
-                        qDebug() << "Something wrong with func:" << name;
+                        //qDebug() << "Something wrong with func:" << name;
                         return;
                     }
 
@@ -526,7 +526,7 @@ void Repository::addDatabase(const QDomElement & el)
                     }
                     if(retTypeDataType == 0)
                     {
-                        qDebug() << "Not found a return type for:" << retType;
+                        //qDebug() << "Not found a return type for:" << retType;
                         return;
                     }
 
@@ -569,7 +569,7 @@ void Repository::addEntity(const QDomElement &el)
     bool hasDesc = el.hasAttribute("hasDescription") && el.attribute("hasDescription").toInt() == 1;
     bool supportSps = el.hasAttribute("supportsSps") && el.attribute("supportsSps").toInt() == 1;
 
-    qDebug() << "CUID:" << class_uid;
+    //qDebug() << "CUID:" << class_uid;
     Entity* ent = new Entity(name, class_uid, target_class_uid, hasDesc, supportSps);
     m_entities.append(ent);
 

@@ -144,6 +144,9 @@
           </item>
           <item>
            <widget class="QLineEdit" name="txtTableName">
+            <property name="toolTip">
+             <string>The name of the table</string>
+            </property>
             <property name="placeholderText">
              <string>TableName</string>
             </property>

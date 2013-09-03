@@ -224,7 +224,7 @@ QStringList DefaultDatabaseEngine::getResultOfQuery(const QString& squery, Conne
     bool run = query.exec(squery);
     if(!run)
     {
-        qDebug() << query.lastError().databaseText() << query.lastError().driverText();
+        //qDebug() << query.lastError().databaseText() << query.lastError().driverText();
         dbo.close();
         return result;
     }

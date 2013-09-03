@@ -25,7 +25,7 @@ DatabaseEngineManager& DatabaseEngineManager::instance()
         static DatabaseEngineManager instance;
         if(m_instance != &instance)
         {
-            qDebug() << "Strange ...";
+            //qDebug() << "Strange ...";
         }
 
     }

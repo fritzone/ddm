@@ -224,7 +224,7 @@ QVector<UserDataType*> Workspace::loadDefaultDatatypesIntoCurrentSolution(Soluti
 void Workspace::saveUserDefinedDatatypes()
 {
     QString dataLocation = QDesktopServices::storageLocation(QDesktopServices::DataLocation);
-    qDebug() << dataLocation;
+    //qDebug() << dataLocation;
     QDomDocument doc("DBM");
 
     QDomElement solutions = doc.createElement("Solutions");
@@ -585,7 +585,7 @@ void Workspace::refreshConnection(Connection *c)
         c->getLocation()->removeChild(c->getLocation()->child(0));
     }
 
-    qDebug() << expanded;
+    //qDebug() << expanded;
 
     if(c->tryConnect())
     {

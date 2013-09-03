@@ -946,13 +946,13 @@ void ProcedureForm::onMoveDownParameter()
     }
 }
 
-void ProcedureForm::onProcTargetLanguageChange(QString a)
+void ProcedureForm::onProcTargetLanguageChange(QString)
 {
     if(m_init)
     {
         return;
     }
-    qDebug() << a;
+//    qDebug() << a;
 }
 
 void ProcedureForm::onSelectParameter(QTreeWidgetItem* current, int)

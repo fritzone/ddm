@@ -24,6 +24,8 @@ ConnectionGuiElements::ConnectionGuiElements() :
 
 void ConnectionGuiElements::createGuiElements()
 {
+    QStringList supportedDbs = QSqlDatabase::drivers();
+
     // create the dock window
     m_connectionsTreeDock = new QDockWidget(QObject::tr("Connections"), MainWindow::instance());
     m_connectionsTreeDock->setAllowedAreas(Qt::AllDockWidgetAreas);
@@ -45,29 +47,39 @@ void ConnectionGuiElements::createGuiElements()
     headerItm->setText(0, QApplication::translate("MainWindow", "Name", 0, QApplication::UnicodeUTF8));
     m_connectionsTree->header()->setDefaultSectionSize(250);
 
+
     // create the MySql connection tree item
-    QStringList lstMySqlStr;
-    lstMySqlStr << strCamelMySql;
-    m_mysqlConnections = new ContextMenuEnabledTreeWidgetItem((ContextMenuEnabledTreeWidgetItem*)0, lstMySqlStr);
-    m_mysqlConnections->setIcon(0, IconFactory::getMySqlIcon());
-    m_connectionsTree->addTopLevelItem(m_mysqlConnections);
-    m_mysqlConnections->setData(0, Qt::UserRole, QVariant(connectionGroupPrefix + strMySql));
+    if(supportedDbs.contains(strQMySql))
+    {
+        QStringList lstMySqlStr;
+        lstMySqlStr << strCamelMySql;
+        m_mysqlConnections = new ContextMenuEnabledTreeWidgetItem((ContextMenuEnabledTreeWidgetItem*)0, lstMySqlStr);
+        m_mysqlConnections->setIcon(0, IconFactory::getMySqlIcon());
+        m_connectionsTree->addTopLevelItem(m_mysqlConnections);
+        m_mysqlConnections->setData(0, Qt::UserRole, QVariant(connectionGroupPrefix + strMySql));
+    }
 
     // create the Sqlite connection tree item
-    QStringList lstSqliteStr;
-    lstSqliteStr<< strCamelSqlite;
-    m_sqliteConnections = new ContextMenuEnabledTreeWidgetItem((ContextMenuEnabledTreeWidgetItem*)0, lstSqliteStr);
-    m_sqliteConnections->setIcon(0, IconFactory::getSqliteIcon());
-    m_connectionsTree->addTopLevelItem(m_sqliteConnections);
-    m_sqliteConnections->setData(0, Qt::UserRole, QVariant(connectionGroupPrefix + strSqlite));
+    if(supportedDbs.contains(strQSqlite))
+    {
+        QStringList lstSqliteStr;
+        lstSqliteStr<< strCamelSqlite;
+        m_sqliteConnections = new ContextMenuEnabledTreeWidgetItem((ContextMenuEnabledTreeWidgetItem*)0, lstSqliteStr);
+        m_sqliteConnections->setIcon(0, IconFactory::getSqliteIcon());
+        m_connectionsTree->addTopLevelItem(m_sqliteConnections);
+        m_sqliteConnections->setData(0, Qt::UserRole, QVariant(connectionGroupPrefix + strSqlite));
+    }
 
     // create the CUBRID connection tree item
-    QStringList lstCUBRIDStr;
-    lstCUBRIDStr << strCUBRID;
-    m_cubridConnections = new ContextMenuEnabledTreeWidgetItem((ContextMenuEnabledTreeWidgetItem*)0, lstCUBRIDStr);
-    m_cubridConnections->setIcon(0, IconFactory::getCUBRIDIcon());
-    m_connectionsTree->addTopLevelItem(m_cubridConnections);
-    m_cubridConnections->setData(0, Qt::UserRole, QVariant(connectionGroupPrefix + strCUBRID));
+    if(supportedDbs.contains(strQCUBRID))
+    {
+        QStringList lstCUBRIDStr;
+        lstCUBRIDStr << strCUBRID;
+        m_cubridConnections = new ContextMenuEnabledTreeWidgetItem((ContextMenuEnabledTreeWidgetItem*)0, lstCUBRIDStr);
+        m_cubridConnections->setIcon(0, IconFactory::getCUBRIDIcon());
+        m_connectionsTree->addTopLevelItem(m_cubridConnections);
+        m_cubridConnections->setData(0, Qt::UserRole, QVariant(connectionGroupPrefix + strCUBRID));
+    }
 
     // context handler
     m_connectionsContextMenuHandler = new ContextMenuHandler();
@@ -136,7 +148,7 @@ void ConnectionGuiElements::connectionItemActivated(QTreeWidgetItem* item,int)
                                               m_lastConnection->getName());
     }
 
-    qDebug() << d;
+    //qDebug() << d;
 }
 
 void ConnectionGuiElements::newConnection()

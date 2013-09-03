@@ -59,7 +59,7 @@ void ReverseEngineererThread::doWork()
     if(!m_engine->reverseEngineerDatabase(c, m_tabsToReverse, m_viewsToReverse, m_procsToReverse, m_funcsToReverse,
                                       m_triggersToReverse, m_project, m_createDataTypesForColumns))
     {
-        qDebug() << "Exception caught while reerse engineering";
+//        qDebug() << "Exception caught while reerse engineering";
     }
     emit done(this);
     delete c;
