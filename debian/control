@@ -8,6 +8,6 @@ Homepage: http://ddmproject.weebly.com/
 
 Package: ddm
 Architecture: i386
-Depends: ${shlibs:Depends}, ${misc:Depends}, libqt4-gui, libqt4-network, libqt4-xml, libqt4-svg, libqt4-sql-mysql, libqt4-sql, libmysqlclient18, libqt4-core, libqt4-webkit
+Depends: ${shlibs:Depends}, ${misc:Depends}, libqt4-gui, libqt4-network, libqt4-xml, libqt4-svg, libqt4-sql-mysql, libqt4-sql-sqlite, libqt4-sql, libmysqlclient18, libqt4-core, libqt4-webkit
 Description: DDM is a database deployment tool for MySQL
 
