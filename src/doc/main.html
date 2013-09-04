@@ -1,9 +1,10 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<html><head><title>Welcome</title>
+<html><head>
+  <title>Welcome</title>
 
-
-
-<style type="text/css">
+  
+  
+  <style type="text/css">
 <!--
 P {
 	border: 1px solid #000000;
@@ -13,43 +14,102 @@ P {
 	font-family: Arial, Helvetica, sans-serif;
 }
 -->
-</style></head><body dir="ltr" bgcolor="white" lang="en-US">
-<p style="border: medium none ; padding: 0in; background: white none repeat scroll 0%; margin-bottom: 0in; -moz-background-clip: -moz-initial; -moz-background-origin: -moz-initial; -moz-background-inline-policy: -moz-initial; font-style: normal; line-height: 115%; text-decoration: none;" align="center"> <span id="myfont"><b>Welcome to
-  DDM - The Database Deployment Manager</b></span></p>
-<p style="background: white none repeat scroll 0%; margin-bottom: 0in; -moz-background-clip: -moz-initial; -moz-background-origin: -moz-initial; -moz-background-inline-policy: -moz-initial; line-height: 115%;"> <span id="myfont">
-DDM is a unique tool for getting into control in the database creation
-and initial setup process by helping professionals to have consistent
-database layouts and delivery between projects, sites and versions.
-Database Deployment Manager is developed by the "Unauthorized Frog"
-project.<br>
-</span></p>
+  </style>
+</head><body dir="ltr" style="background-color: white;" lang="en-US">
+<p style="border: medium none ; padding: 0in; background: white none repeat scroll 0% 50%; margin-bottom: 0in; -moz-background-clip: -moz-initial; -moz-background-origin: -moz-initial; -moz-background-inline-policy: -moz-initial; font-style: normal; line-height: 115%; text-decoration: none;" align="center"> <span id="myfont"><b>Welcome to DDM - The Database
+Deployment Manager</b></span></p>
 
-<p style="background: white none repeat scroll 0%; -moz-background-clip: -moz-initial; -moz-background-origin: -moz-initial; -moz-background-inline-policy: -moz-initial;"><span id="myfont">At
-  the startup screen you have the following choices:<br>
-  </span><span id="myfont"><br>
-  <b>Open </b>an
-  existing solution<br>
-  <br>
-This will load a solution that you have created in the past, and you
-can continue your work on it. The quick buttons allow you to load the
-last projects you worked on.<br>
-  </span><br>
-<span id="myfont">
-Create
-  a <b>New
-  Solution<br>
-  <br>
-  </b>When
-  working with DDM, all your work (i.e. Data Types, Tables, Diagrams,
-  ...) is collected into a Project, which in itself is contained in a
-  Solution. By clicking the "<span style="font-weight: bold; font-style: italic;">New Solution</span>" button you will create a new solution and an associated project with the possibilty to import a
-  predefined set of data types for the chosen database.<br>
-  <br>
-Create a <strong>New Connection</strong><br>
-<br>DDM has a builtin connection manager, and it stores the connection
-so that you dont have to type them in every time you need to connect to
-a database. With the "<span style="font-weight: bold; font-style: italic;">New Connection</span>" button you can create a new connection. For a detailed description of the connections please see <a href="conn.html">this</a>.<br>
-<br> 
-You can close the startup screen using the "<em>Esc</em>" button.</span><br>
+<p style="background: white none repeat scroll 0% 50%; margin-bottom: 0in; -moz-background-clip: -moz-initial; -moz-background-origin: -moz-initial; -moz-background-inline-policy: -moz-initial; line-height: 115%;">
+<span id="myfont"><span style="font-style: italic;"><span style="font-weight: bold;">Introduction</span></span><br>
+<br>
+DDM is a unique database design tool for getting into control in the
+database creation
+and initial setup process by helping professionals to have consistent
+database layouts and delivery between projects, sites and versions. DDM
+is available for Linux and Windows operating systems.<br>
+<br>
+DDM supports the following database engines:<br>
+<br>
+&nbsp;- MySql (version 5.0 +)<br>
+&nbsp;- SqLite (version 2 and 3)<br>
+&nbsp;- CUBRID (version 9.1)<br>
+<br>
+For the first one user, a list of DDM features:<br>
+&nbsp;<br>
+&nbsp;- Creation of database objects (Tables, Views, Triggers,
+Procedures, Functions - where supported)<br>
+&nbsp;- Deploying the above mentioned DB objects into databases<br>
+&nbsp;- Maintaining a documentation for the project you deployed<br>
+&nbsp;- Version management for your projects<br>
+&nbsp;- E-R diagram creation<br>
+&nbsp;- Database browsing<br>
+<br>
+But DDM:<br>
+<br>
+&nbsp;- is not a database administration/management tool. There are
+much better alternatives more suitable for this purpose.<br>
+&nbsp;- is not a very good SQL code editor platform. However we are
+working to make it better :)<br>
+<br>
+<span style="font-style: italic;"><span style="font-weight: bold;">Getting
+around the application<br>
+<br>
+</span></span>The application has a classical windowed interface, with
+a main window, and various dock windows floating around. This setup is
+familiar to users of other applications, so it must be straightforward
+to use the app.<span style="font-style: italic;"><span style="font-weight: bold;"><br>
+<br>
+<span style="font-style: italic;">IDE overview<br>
+<br>
+<br>
+<img style="width: 1217px; height: 747px;" alt="The Main Window" src="mainw.png"></span><br>
+</span></span><br>
+The following main components are marked on the screenshot:<br>
+<br>
+1. Main Toolbar - this is the toolbar containing all the main actions
+you can perform with the application<br>
+<br>
+2. The Solution tree - this contains the solution and all the objects
+that were created<br>
+<br>
+3. Connections - this tree contains all the Connections to your
+databases.<br>
+<br>
+<span style="font-style: italic;"><span style="font-weight: bold;">The
+Main Toolbar<br>
+<br>
+<img style="width: 621px; height: 37px;" alt="The Main Toolbar" src="maint.png"><br>
+<br>
+</span></span>All the actions you can perform are located on this
+toolbar. From left to right these are:<br>
+<br>
+</span>
+<table style="text-align: left; width: 447px; height: 71px;" border="0" cellpadding="0" cellspacing="0">
+  <tbody>
+    <tr>
+      <td style="border: medium none ; padding: 0in; background: white none repeat scroll 0% 50%; margin-bottom: 0in; -moz-background-clip: -moz-initial; -moz-background-origin: -moz-initial; -moz-background-inline-policy: -moz-initial; font-style: normal; line-height: 115%; text-decoration: none;" align="center vertical-align: top;"> <span id="myfont"><img src="maint_new.png"><br>
+      </span></td>
+      <td style="text-align: left;" medium="" ;="" padding:="" background:="" white="" none="" repeat="" scroll="" 0%="" 50%;="" margin-bottom:="" 0in;="" font-style:="" normal;="" line-height:="" 115%;="" text-decoration:="" none;=""> <span style="font-family: Arial,Helvetica,sans-serif;">C</span><span id="myfont">licking this button will allow you to create a
+new solution. In the New Project Dialog you can specify what kind
+ofprojects do you want to create.<br>
+      </span></td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<br>
+<br>
+<br>
+<br>
 </p>
+
+<br>
+
+<br>
+
 </body></html>
