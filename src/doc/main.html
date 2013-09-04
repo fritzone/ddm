@@ -13,6 +13,7 @@ P {
 #myfont {
 	font-family: Arial, Helvetica, sans-serif;
 }
+.style1 {font-family: Arial, Helvetica, sans-serif}
 -->
   </style>
 </head><body dir="ltr" style="background-color: white;" lang="en-US">
@@ -61,9 +62,10 @@ to use the app.<span style="font-style: italic;"><span style="font-weight: bold;
 <br>
 <span style="font-style: italic;">IDE overview<br>
 <br>
+</span></span></span>This is the main window of the application<br>
 <br>
 <img style="width: 1217px; height: 747px;" alt="The Main Window" src="mainw.png"></span><br>
-</span></span><br>
+<span class="style1"></span></span><br>
 The following main components are marked on the screenshot:<br>
 <br>
 1. Main Toolbar - this is the toolbar containing all the main actions
@@ -76,29 +78,71 @@ that were created<br>
 databases.<br>
 <br>
 <span style="font-style: italic;"><span style="font-weight: bold;">The
-Main Toolbar<br>
+Main Toolbar</span></span></span><span style="font-style: italic;"><span style="font-weight: bold;"><br>
 <br>
 <img style="width: 621px; height: 37px;" alt="The Main Toolbar" src="maint.png"><br>
 <br>
-</span></span>All the actions you can perform are located on this
-toolbar. From left to right these are:<br>
+</span></span><span class="style1">All the actions you can perform are located on this
+toolbar. From left to right these are:</span><br>
 <br>
 </span>
-<table style="text-align: left; width: 447px; height: 71px;" border="0" cellpadding="0" cellspacing="0">
+<table style="text-align: left; width: 447px; height: 71px;" border="0" cellpadding="4" cellspacing="4">
   <tbody>
     <tr>
-      <td style="border: medium none ; padding: 0in; background: white none repeat scroll 0% 50%; margin-bottom: 0in; -moz-background-clip: -moz-initial; -moz-background-origin: -moz-initial; -moz-background-inline-policy: -moz-initial; font-style: normal; line-height: 115%; text-decoration: none;" align="center vertical-align: top;"> <span id="myfont"><img src="maint_new.png"><br>
-      </span></td>
-      <td style="text-align: left;" medium="" ;="" padding:="" background:="" white="" none="" repeat="" scroll="" 0%="" 50%;="" margin-bottom:="" 0in;="" font-style:="" normal;="" line-height:="" 115%;="" text-decoration:="" none;=""> <span style="font-family: Arial,Helvetica,sans-serif;">C</span><span id="myfont">licking this button will allow you to create a
-new solution. In the New Project Dialog you can specify what kind
-ofprojects do you want to create.<br>
-      </span></td>
+      <td style="vertical-align: top;"> <img src="maint_new.png"></td>
+      <td style="vertical-align: top;"> <span id="myfont"><strong>New Solution</strong> - Clicking this button will allow you to create a new solution. In the New Project Dialog you can specify what kind of project do you want to create.</span></td>
     </tr>
     <tr>
-      <td style="vertical-align: top;"><br>
-      </td>
-      <td style="vertical-align: top;"><br>
-      </td>
+      <td style="vertical-align: top;">&nbsp;</td>
+      <td style="vertical-align: top;"><span id="myfont"><strong>Open Solution</strong> - clicking this button will open a solution you have saved some time in the past. </span></td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">&nbsp;</td>
+      <td style="vertical-align: top;"><span id="myfont"><strong>Save Solution</strong> - clicking this button will save your solution to the disk.</span></td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">&nbsp;</td>
+      <td style="vertical-align: top;"><span id="myfont"><strong>Save Solution As...</strong> - clicking this button will save your solution to the disk under a different name</span></td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">&nbsp;</td>
+      <td style="vertical-align: top;"><span id="myfont"><strong>New Connection</strong> - clicking this button will open the Create New Connection window</span></td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">&nbsp;</td>
+      <td style="vertical-align: top;"><span id="myfont"><strong>New Datatype</strong> - clicking this button will open a popup menu where you can choose what kind of datatype to create</span></td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">&nbsp;</td>
+      <td style="vertical-align: top;"><span id="myfont"><strong>New Table</strong> - clicking this button will open the Create New Table window. If you are working on a project with OOP features you will also need to create table instances.</span></td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">&nbsp;</td>
+      <td style="vertical-align: top;"><span id="myfont"><strong>New Table Instance</strong> - clicking this button will create New Table Instances. If you are working on a project with OOP features you will need to create table instances since the SQL code is generated from them, not from Tables. By pressing and holding the mouse on the button you will get a menu where you can select one table instance, instead of the dialog which allows you to select the tables you want to instantiate.</span></td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">&nbsp;</td>
+      <td style="vertical-align: top;"><span id="myfont"><strong>New Diagram</strong> - clicking this button will open the Create New Diagram window.</span></td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">&nbsp;</td>
+      <td style="vertical-align: top;"><span id="myfont"><strong>New View</strong> - clicking this button will open the Create New View window. By default you are given the option to create a view with our standard query builder, however you can also create a view by typing in it's sql, in this case press and hold the mouse on the button til you get the menu.</span></td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">&nbsp;</td>
+      <td style="vertical-align: top;"><span id="myfont"><strong>New Procedure</strong> - clicking this button will open the Create New Guided Procedure window. By creating a guided procedure you are able to specify the parameters, name, type via a GUI, while creating the procedure and DDM will help you create the SQL for the method. The alternative is to create a procedure in SQL mode, so this way you will just type in all the SQL commands for creating the procedure. <br> Note: this button is available only for the MySql and CUBRID, Sqlite does not support stored methods. Pay special attention to code correctness and name uniqueness while manually creating items.</span></td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">&nbsp;</td>
+      <td style="vertical-align: top;"><span id="myfont"><strong>New Function</strong> - clicking this button will open the Create New Guided Function window. By creating a guided procedure you are able to specify the parameters, name, type, returrn type via a GUI, while creating the procedure and DDM will help you create the SQL for the method. The alternative is to create a function in SQL mode, so this way you will just type in all the SQL commands for creating the function. <br> Note: this button is available only for the MySql and CUBRID, Sqlite does not support stored methods.</span></td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">&nbsp;</td>
+      <td style="vertical-align: top;"><span id="myfont"><strong>New Trigger</strong> - clicking this button will open the Create New Trigger window.</span></td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">&nbsp;</td>
+      <td style="vertical-align: top;"><span id="myfont"><strong>Validate</strong> - clicking this button will Validate the solution.</span></td>
     </tr>
   </tbody>
 </table>
@@ -106,6 +150,7 @@ ofprojects do you want to create.<br>
 <br>
 <br>
 <br>
+
 </p>
 
 <br>
