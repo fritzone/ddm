@@ -19,7 +19,6 @@
         <action type="group" id="DATABASE" text="Database" icon="DATABASE" index="2">
           <action type="single" id="DROP" text="Drop Database" icon="DROP" index="0"/>
           <action type="single" id="RECREATE" text="Recreate Database" icon="RECREATE" index="1"/>
-          <action type="single" id="BROWSE" text="Browse Database" icon="BROWSE" index="2"/>
         </action>
         <action type="group" id="NEW" text="New..." icon="NEW"             index="3">
           <action type="single" id="NEWTABLE" text="New Table" icon="NEWTABLE" index="0"/>

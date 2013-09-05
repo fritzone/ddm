@@ -423,9 +423,10 @@ Table* CUBRIDDatabaseEngine::reverseEngineerTable(Connection *conn, const QStrin
     // now populate the indices of the table
     {
 
+    // do not fetch teh indexes if they were created due to a primary key ...
     QSqlQuery query(dbo);
     query.exec("SELECT class_name, index_name, asc_desc, key_order, key_attr_name "
-               "FROM db_index_key where class_name='" + tableName + "'");
+               "FROM db_index_key where class_name='" + tableName + "' and is_primary_key='NO'");
 
     int indexNameNo = query.record().indexOf("index_name");
     int ascDescNo = query.record().indexOf("asc_desc");
@@ -561,7 +562,8 @@ Trigger* CUBRIDDatabaseEngine::reverseEngineerTrigger(Connection *c, const QStri
               a.target_class_name, \
               DECODE(b.event, 0 , 'UPDATE', 1, 'UPDATE STATEMENT', 2, 'DELETE', 3, 'DELETE STATEMENT', 4, 'INSERT', 5, 'INSERT STATEMENT', 8, 'COMMIT', 9, 'ROLLBACK') AS event,\
               b.action_definition, \
-              DECODE(a.action_time, 1, 'BEFORE', 2, 'AFTER', 3, 'DEFERRED') AS timing\
+              DECODE(a.action_time, 1, 'BEFORE', 2, 'AFTER', 3, 'DEFERRED') AS timing,\
+              DECODE(b.action_type, 1 ,'', 2, 'REJECT', 3 , 'INVALIDATE TRANSACTION', 4 , 'PRINT') AS action_type\
           from \
               db_trig a, \
               db_trigger b\
@@ -582,10 +584,24 @@ Trigger* CUBRIDDatabaseEngine::reverseEngineerTrigger(Connection *c, const QStri
             QString event = query.value(2).toString();
             QString stmt =  query.value(3).toString();
             QString timing =  query.value(4).toString();
+            QString actionType = query.value(5).toString();
             result = new Trigger(trigName, QUuid::createUuid().toString(), v);
             result->setEvent(event);
             result->setTable(table);
-            result->setSql(stmt);
+            if(actionType.toUpper() == "PRINT")
+            {
+                result->setSql(actionType + "'" + stmt + "'");
+            }
+            else
+            if(actionType.toUpper() == "REJECT" || actionType.toUpper().startsWith("INVALIDATE"))
+            {
+                result->setSql(actionType);
+            }
+            else
+            {
+                result->setSql(stmt);
+            }
+
             result->setTime(timing);
         }
     }

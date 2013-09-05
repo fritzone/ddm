@@ -215,13 +215,18 @@ Please provide a description for this table. The generated description will go i
 </p>
 <p style="background: white none repeat scroll 0%; margin-bottom: 0in; -moz-background-clip: -moz-initial; -moz-background-origin: -moz-initial; -moz-background-inline-policy: -moz-initial; line-height: 115%;">
 <font style="font-size: 11pt;" color="#000000" face="Arial" size="2"><em><b>MySql Page</b></em><br>
-<br>This page contains the MySql specific properties for the table. The
-properties are grouped in "General" and "Advanced" groups. The
+<br>
+In case you have a MySql project this page contains the MySql specific properties for the table. The
+properties are grouped in "General" , &quot;Performance&quot; and "Advanced" groups. The
 following properties are implemented:<br>
 <br>
 <em>Temporary table (General) - </em>Creates a temporary table using the MySql TEMPORARY keyword<br>
 <br>
 <em>Create only if not exists (General)</em> - Creates a table only if the table does not exist.<br>
+<br>
+<em>Auto Increment Initial value (Performance)</em> - The initial AUTO_INCREMENT value for the table<br>
+<br>
+<em>Average Row Length (Performance)</em> - An approximation of the average row length for the table.<br>
 <br>
 <em>Storage engine (Advanced) - </em>Specify the storage engine of the
 table. If on deployment DDM discovers that the destination database
@@ -233,7 +238,15 @@ be used upon deployment. If the destination database does not support
 the required storage engine the behavior is database specific. Either
 it can return an error, thus failing the deployment or silently ignore
 it. Consult the manual of your database before trying exotic codepages.</font><br>
+</p>
+<p style="background: white none repeat scroll 0%; margin-bottom: 0in; -moz-background-clip: -moz-initial; -moz-background-origin: -moz-initial; -moz-background-inline-policy: -moz-initial; line-height: 115%;">
+<font style="font-size: 11pt;" color="#000000" face="Arial" size="2"><strong><em>Sqlite Page</em></strong><br>
 <br>
+In case you are creating a Sqlite project this page contains the Sqltie specific settings:<br>
+<br>
+<em>Temporary table (General) - </em>Creates a temporary table using the MySql TEMPORARY keyword<br>
+<br>
+<em>Create only if not exists (General)</em> - Creates a table only if the table does not exist.</font><br>
 </p>
 <p style="background: white none repeat scroll 0%; margin-bottom: 0in; -moz-background-clip: -moz-initial; -moz-background-origin: -moz-initial; -moz-background-inline-policy: -moz-initial; line-height: 115%;"><font style="font-size: 11pt;" color="#000000" face="Arial" size="2"><em><b>SQL Page</b></em><br><br>
 This page contains a preview of the SQL script for this table. You can

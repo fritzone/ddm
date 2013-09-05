@@ -4,18 +4,19 @@
 
   
   
-  <style type="text/css">
+<style type="text/css">
+  
 <!--
 P {
 	border: 1px solid #000000;
 	padding: 0.02in
 }
 #myfont {
-	font-family: Arial, Helvetica, sans-serif;
+ font-family: Arial, Helvetica, sans-serif;
 }
-.style1 {font-family: Arial, Helvetica, sans-serif}
 -->
-  </style>
+</style>
+
 </head><body dir="ltr" style="background-color: white;" lang="en-US">
 <p style="border: medium none ; padding: 0in; background: white none repeat scroll 0% 50%; margin-bottom: 0in; -moz-background-clip: -moz-initial; -moz-background-origin: -moz-initial; -moz-background-inline-policy: -moz-initial; font-style: normal; line-height: 115%; text-decoration: none;" align="center"> <span id="myfont"><b>Welcome to DDM - The Database
 Deployment Manager</b></span></p>
@@ -65,7 +66,7 @@ to use the app.<span style="font-style: italic;"><span style="font-weight: bold;
 </span></span></span>This is the main window of the application<br>
 <br>
 <img style="width: 1217px; height: 747px;" alt="The Main Window" src="mainw.png"></span><br>
-<span class="style1"></span></span><br>
+<span id="myfont"><br>
 The following main components are marked on the screenshot:<br>
 <br>
 1. Main Toolbar - this is the toolbar containing all the main actions
@@ -75,14 +76,13 @@ you can perform with the application<br>
 that were created<br>
 <br>
 3. Connections - this tree contains all the Connections to your
-databases.<br>
+databases.</span>
 <br>
-<span style="font-style: italic;"><span style="font-weight: bold;">The
-Main Toolbar</span></span></span><span style="font-style: italic;"><span style="font-weight: bold;"><br>
-<br>
+<br><span id="myfont" style="font-style: italic; font-weight: bold;">The
+    Main Toolbar</span><br><br>
 <img style="width: 621px; height: 37px;" alt="The Main Toolbar" src="maint.png"><br>
 <br>
-</span></span><span class="style1">All the actions you can perform are located on this
+</span></span><span class="myfont">All the actions you can perform are located on this
 toolbar. From left to right these are:</span><br>
 <br>
 </span>
@@ -93,64 +93,93 @@ toolbar. From left to right these are:</span><br>
       <td style="vertical-align: top;"> <span id="myfont"><strong>New Solution</strong> - Clicking this button will allow you to create a new solution. In the New Project Dialog you can specify what kind of project do you want to create.</span></td>
     </tr>
     <tr>
-      <td style="vertical-align: top;">&nbsp;</td>
+      <td style="vertical-align: top;"><img src="maint_open.png"></td>
       <td style="vertical-align: top;"><span id="myfont"><strong>Open Solution</strong> - clicking this button will open a solution you have saved some time in the past. </span></td>
     </tr>
     <tr>
-      <td style="vertical-align: top;">&nbsp;</td>
+      <td style="vertical-align: top;"><img src="maint_save.png"></td>
       <td style="vertical-align: top;"><span id="myfont"><strong>Save Solution</strong> - clicking this button will save your solution to the disk.</span></td>
     </tr>
     <tr>
-      <td style="vertical-align: top;">&nbsp;</td>
+      <td style="vertical-align: top;"><img src="maint_save_as.png"></td>
       <td style="vertical-align: top;"><span id="myfont"><strong>Save Solution As...</strong> - clicking this button will save your solution to the disk under a different name</span></td>
     </tr>
     <tr>
-      <td style="vertical-align: top;">&nbsp;</td>
+      <td style="vertical-align: top;"><img src="maint_new_conn.png"></td>
       <td style="vertical-align: top;"><span id="myfont"><strong>New Connection</strong> - clicking this button will open the Create New Connection window</span></td>
     </tr>
     <tr>
-      <td style="vertical-align: top;">&nbsp;</td>
+      <td style="vertical-align: top;"><img src="maint_newdt.png"></td>
       <td style="vertical-align: top;"><span id="myfont"><strong>New Datatype</strong> - clicking this button will open a popup menu where you can choose what kind of datatype to create</span></td>
     </tr>
     <tr>
-      <td style="vertical-align: top;">&nbsp;</td>
+      <td style="vertical-align: top;"><img src="maint_newtab.png"></td>
       <td style="vertical-align: top;"><span id="myfont"><strong>New Table</strong> - clicking this button will open the Create New Table window. If you are working on a project with OOP features you will also need to create table instances.</span></td>
     </tr>
     <tr>
-      <td style="vertical-align: top;">&nbsp;</td>
+      <td style="vertical-align: top;"><img src="maint_newtabinst.png"></td>
       <td style="vertical-align: top;"><span id="myfont"><strong>New Table Instance</strong> - clicking this button will create New Table Instances. If you are working on a project with OOP features you will need to create table instances since the SQL code is generated from them, not from Tables. By pressing and holding the mouse on the button you will get a menu where you can select one table instance, instead of the dialog which allows you to select the tables you want to instantiate.</span></td>
     </tr>
     <tr>
-      <td style="vertical-align: top;">&nbsp;</td>
+      <td style="vertical-align: top;"><img src="maint_new_dgram.png"></td>
       <td style="vertical-align: top;"><span id="myfont"><strong>New Diagram</strong> - clicking this button will open the Create New Diagram window.</span></td>
     </tr>
     <tr>
-      <td style="vertical-align: top;">&nbsp;</td>
+      <td style="vertical-align: top;"><img src="maint_new_view.png"></td>
       <td style="vertical-align: top;"><span id="myfont"><strong>New View</strong> - clicking this button will open the Create New View window. By default you are given the option to create a view with our standard query builder, however you can also create a view by typing in it's sql, in this case press and hold the mouse on the button til you get the menu.</span></td>
     </tr>
     <tr>
-      <td style="vertical-align: top;">&nbsp;</td>
+      <td style="vertical-align: top;"><img src="maint_new_proc.png"></td>
       <td style="vertical-align: top;"><span id="myfont"><strong>New Procedure</strong> - clicking this button will open the Create New Guided Procedure window. By creating a guided procedure you are able to specify the parameters, name, type via a GUI, while creating the procedure and DDM will help you create the SQL for the method. The alternative is to create a procedure in SQL mode, so this way you will just type in all the SQL commands for creating the procedure. <br> Note: this button is available only for the MySql and CUBRID, Sqlite does not support stored methods. Pay special attention to code correctness and name uniqueness while manually creating items.</span></td>
     </tr>
     <tr>
-      <td style="vertical-align: top;">&nbsp;</td>
+      <td style="vertical-align: top;"><img src="maint_new_func.png"></td>
       <td style="vertical-align: top;"><span id="myfont"><strong>New Function</strong> - clicking this button will open the Create New Guided Function window. By creating a guided procedure you are able to specify the parameters, name, type, returrn type via a GUI, while creating the procedure and DDM will help you create the SQL for the method. The alternative is to create a function in SQL mode, so this way you will just type in all the SQL commands for creating the function. <br> Note: this button is available only for the MySql and CUBRID, Sqlite does not support stored methods.</span></td>
     </tr>
     <tr>
-      <td style="vertical-align: top;">&nbsp;</td>
+      <td style="vertical-align: top;"><img src="maint_new_trg.png"></td>
       <td style="vertical-align: top;"><span id="myfont"><strong>New Trigger</strong> - clicking this button will open the Create New Trigger window.</span></td>
     </tr>
     <tr>
-      <td style="vertical-align: top;">&nbsp;</td>
+      <td style="vertical-align: top;"><img src="maint_validate.png"></td>
       <td style="vertical-align: top;"><span id="myfont"><strong>Validate</strong> - clicking this button will Validate the solution.</span></td>
     </tr>
+    <tr>
+      <td style="vertical-align: top;"><img src="maint_deploy.png"></td>
+      <td style="vertical-align: top;"><span id="myfont"><strong>Deploy solution</strong> - clicking this button will deploy the solution in the connections you specify in the Deploy solution dialog box</span></td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;"><img src="maint_upgrade.png"></td>
+      <td style="vertical-align: top;"><span id="myfont"><strong>Update Script</strong> - clicking this button will generate update script from the versions you specify.</span></td>
+    </tr>
+    
   </tbody>
 </table>
 <br>
 <br>
+<span id="myfont" style="font-style: italic; font-weight: bold;">The Solution Tree</span>  
 <br>
 <br>
-
+  <span id="myfont"> The solution tree groups together all the items you have created in your solution, but also has entries for the data types of the project, the generated code (for all the solution, or only for individual objects) and the documentation generated (also, together or pre individual items). In the upper left corner ofthe tree there is a small icon depending on the type of the solution you are working on.
+<br>
+<br>
+Since sqlite does not support stored methods, there will be no entries for these in an Sqlite project.
+<br>
+<br>
+ By clicking the individual items in the tree you can view the objects in the middle panel of the application.</span>
+<br>
+<br>
+<span id="myfont" style="font-style: italic; font-weight: bold;">The Connections Tree</span>  
+<br>
+<br>
+<span id="myfont"> 
+This tree contains all the connections you have defined for your databases. All the connections are grouped together with their respective database and can be accessed from there. If DDM detects that your system does not support one of the databases there will be no entry for the database.
+<br>
+<br>
+From version 0.1k DDM supports creating a new table directly in the connection (thus skipping creating a project, for this select the connection you want to create the table in and press the small "Create table" button on top of the Connection Tree.
+This button is initially disabled, you have to explicitly select a connection, then it will be enabled, and you will be able to create a table in the selected database. <br>
+<br>
+</span>
 </p>
 
 <br>

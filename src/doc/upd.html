@@ -31,10 +31,11 @@ into databases which have a deployment of the source version.<br>
 This is the procedure of executing a proper update: <br>
 <br>
 1. Click the "Update" button (Orange star) from the main toolbar<br>
-2. Select the required "<span style="font-weight: bold; font-style: italic;">From</span><span style="font-weight: bold;"></span>" and "<span style="font-weight: bold; font-style: italic;">To</span><span style="font-weight: bold;"></span>" versions. It is possible to generate
-"downgrade" scripts too.<br>
+2. Select the required "<span style="font-weight: bold; font-style: italic;">From</span><span style="font-weight: bold;"></span>" and "<span style="font-weight: bold; font-style: italic;">To</span><span style="font-weight: bold;"></span>" versions. From version 0.1k due to possible inconsistencies It is not possible to generate
+"downgrade" scripts.<br>
 3. Press the "Inject" button on the toolbar of the <span style="font-style: italic;"><span style="font-weight: bold;">Update</span></span> window. This will
-open the inject SQL dialog where you can select the destination database. Deploy.<br><br>
+open the inject SQL dialog where you can select the destination database.<br>
+<br>
 
 The followings are good to know before updating a database:<br>
 <br>
@@ -50,6 +51,7 @@ designated as primary keys this will be interpreted as deletinga row,
 inserting a new one.<br>
 - deleting an object (table, table instance, etc...) and the creating
 another one with the same name is considered a drop/create operation.<br>
+- Sqlite does not support a wide range of alter table commands, so the only things that work are renaming of a table and addition of a column.<br>
 </font></p>
 
 </body></html>

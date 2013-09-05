@@ -140,6 +140,12 @@ void ConnectionGuiElements::connectionItemActivated(QTreeWidgetItem* item,int)
     {
         m_lastConnection = c;
     }
+    else
+    {
+        m_lastConnection = 0;
+        action_connectionNewTable->setDisabled(true);
+        action_connectionNewTable->setToolTip(tr("Create new table"));
+    }
 
     if(m_lastConnection)
     {
