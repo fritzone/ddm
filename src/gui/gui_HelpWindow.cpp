@@ -84,6 +84,17 @@ void HelpWindow::showHelp(const QString &h)
     m_links.erase(m_links.begin() + m_cindex, m_links.end());
     m_links.append(QApplication::applicationDirPath() + h);
 
+    for(int i=0; i<ui->treeWidget->topLevelItemCount(); i++)
+    {
+        if(h.endsWith(ui->treeWidget->topLevelItem(i)->data(0, Qt::UserRole).toString()))
+        {
+            ui->treeWidget->topLevelItem(i)->setSelected(true);
+        }
+        else
+        {
+            ui->treeWidget->topLevelItem(i)->setSelected(false);
+        }
+    }
 }
 
 void HelpWindow::onDestroyed()
@@ -131,6 +142,18 @@ void HelpWindow::onNavigate(QUrl a)
     m_cindex ++;
     m_links.append(a.toString());
     m_buttonNavigate = false;
+
+    for(int i=0; i<ui->treeWidget->topLevelItemCount(); i++)
+    {
+        if(a.toString().endsWith(ui->treeWidget->topLevelItem(i)->data(0, Qt::UserRole).toString()))
+        {
+            ui->treeWidget->topLevelItem(i)->setSelected(true);
+        }
+        else
+        {
+            ui->treeWidget->topLevelItem(i)->setSelected(false);
+        }
+    }
 }
 
 void HelpWindow::treeItemChanged(QTreeWidgetItem* c, QTreeWidgetItem*)

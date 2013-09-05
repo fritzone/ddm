@@ -84,6 +84,7 @@ private slots:
     void onSelectFileForSqlite();
     void onSqliteFileNameChange(QString);
     void onTestConnection();
+    void onHelp();
 
 protected:
     void changeEvent(QEvent *e);

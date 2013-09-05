@@ -99,7 +99,9 @@ void MainWindowButtonDialog::changeEvent(QEvent *e)
 
 void MainWindowButtonDialog::onHelp()
 {
-    MainWindow::instance()->onHelp();
+    HelpWindow* hw = HelpWindow::instance();
+    hw->showHelp(QString("/doc/startup.html"));
+    hw->show();
 }
 
 void MainWindowButtonDialog::onQuick1()
