@@ -550,7 +550,7 @@
       <enum>Qt::Horizontal</enum>
      </property>
      <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Ok</set>
      </property>
     </widget>
    </item>
@@ -857,6 +857,22 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>helpRequested()</signal>
+   <receiver>InjectSqlDialog</receiver>
+   <slot>onHelp()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>358</x>
+     <y>492</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>358</x>
+     <y>258</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>onConnect()</slot>
@@ -871,5 +887,6 @@
   <slot>onSelectFileForSqlite()</slot>
   <slot>onSqliteFileNameChange(QString)</slot>
   <slot>onTestConnection()</slot>
+  <slot>onHelp()</slot>
  </slots>
 </ui>

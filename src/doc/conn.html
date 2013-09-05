@@ -1,8 +1,9 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML>
-<HEAD>
-<TITLE>Welcome</TITLE>
-<STYLE TYPE="text/css">
+<html><head><title>Welcome</title>
+
+
+
+<style type="text/css">
 <!--
 P {
 	border: 1px solid #000000;
@@ -12,46 +13,58 @@ P {
 	font-family: Arial, Helvetica, sans-serif;
 }
 -->
-</STYLE>
-</HEAD>
-<BODY LANG="en-US" BGCOLOR="white" DIR="LTR">
-<P ALIGN=CENTER STYLE="margin-bottom: 0in; background: white; border: none; padding: 0in; font-style: normal; line-height: 115%; text-decoration: none"> <span id="myfont"><B>Connections</B></span></P>
-<P STYLE="background: white; line-height: 115%"> <span id="myfont"> DDM supports the notion of &quot;Connection&quot; to a database. For you this basically means that you don't have to type in the database details every time you want to <a href="depl.html">deploy</a> something to a machine, but only once, when you create the connection, and from that point the connection is available for future use.<br>
+</style></head><body dir="ltr" bgcolor="white" lang="en-US">
+<p style="border: medium none ; padding: 0in; background: white none repeat scroll 0%; margin-bottom: 0in; -moz-background-clip: -moz-initial; -moz-background-origin: -moz-initial; -moz-background-inline-policy: -moz-initial; font-style: normal; line-height: 115%; text-decoration: none;" align="center"> <span id="myfont"><b>Connections</b></span></p>
+<p style="background: white none repeat scroll 0%; -moz-background-clip: -moz-initial; -moz-background-origin: -moz-initial; -moz-background-inline-policy: -moz-initial; line-height: 115%;"> <span id="myfont">
+DDM supports the notion of "Connection" to a database. For you this
+basically means that you don't have to type in the database details
+every time you want to <a href="depl.html">deploy</a> something to a
+machine, but only once, when you create the connection, and from that
+point the connection is available for future use.<br>
     <br>
-  To create a connection click the <img src="new_dbconn.png" width="16" height="16"> button in the application main toolbar (or in the Connection tree) and fill in the required details. You can specify the database from the &quot;Database Type&quot; combobox.<br>
+  To create a connection click the <img src="new_dbconn.png" height="16" width="16">
+button in the application main toolbar (or in the Connection tree) and
+fill in the required details. You can specify the database from the
+"Database Type" combobox.<br>
   <br>
   Some controls,  are common to all the databases. These are the following: <br>
   <br>
--  &quot;<em>Name</em>&quot; of the connection - either give a proper name, or let DDM generate one for you<br>
+-  "<em>Name</em>" of the connection - either give a proper name, or let DDM generate one for you<br>
 - 
-&quot;<em>Auto Connect</em>&quot;. Check the &quot;<em>Auto Connect</em>&quot; checkbox if you want to start this connection every time you start DDM.<br>
--  &quot;<em>Save Password</em>&quot; is a disabled checkbox reminding yo all the time that the password will be stored in plaintext in the connection configuration file.<br>
+"<em>Auto Connect</em>". Check the "<em>Auto Connect</em>" checkbox if you want to start this connection every time you start DDM.<br>
+-  "<em>Save Password</em>"
+is a disabled checkbox reminding yo all the time that the password will
+be stored in plaintext in the connection configuration file.<br>
 <br>
   The connection details vary for each of the different databases DDM supports.<br>
   <br>
   For <strong>MySql</strong> they are the following<br>
   <br>
-  - &quot;<em>Host</em>&quot; - the host where this database is located. Type in the IP or the hostname<br>
-  - The &quot;<em>Port</em>&quot; on which the mysql daemon is listening. The MySql default is 3306 but this might vary<br>
-  - &quot;<em>User</em>&quot; / &quot;<em>Password</em>&quot; the required authentication data.<br>
+  - "<em>Host</em>" - the host where this database is located. Type in the IP or the hostname<br>
+  - The "<em>Port</em>" on which the mysql daemon is listening. The MySql default is 3306 but this might vary<br>
+  - "<em>User</em>" / "<em>Password</em>" the required authentication data.<br>
   <br>
-  Now, click <em>the &quot;Connect</em>&quot; button.<br>
+  Now, click <em>the "Connect</em>" button.<br>
   <br>
-  The combo box of databases will be populated with the databases found at the given location. Or you can create a new database by clicking the &quot;<em>+</em>&quot; button. <br>
+The combo box of databases will be populated with the databases found
+at the given location. Or you can create a new database by clicking the
+"<em>+</em>" button. <br>
   <br>
   For <strong>Sqlite</strong> the following controls are relevant:<br>
   <br>
-  - The &quot;<em>Version</em>&quot;. DDM (via Qt) supports both version 2 and 3. Select the one you want.<br>
-  - The &quot;<em>Database</em>&quot; entry is the file name where the Sqlite database is located. Either type in the name or use the &quot;<em>Browse</em>&quot; (yellow folder) button to open an existing one.<br>
+  - The "<em>Version</em>". DDM (via Qt) supports both version 2 and 3. Select the one you want.<br>
+  - The "<em>Database</em>" entry is the file name where the Sqlite database is located. Either type in the name or use the "<em>Browse</em>" (yellow folder) button to open an existing one.<br>
   <br>
   For <strong>CUBRID</strong> the following controls are meaningful:<br>
   <br>
-- &quot;<em>Host</em>&quot; - the host where this database is located. Type in the IP or the hostname<br>
-- The &quot;<em>Port</em>&quot; on which the mysql daemon is listening. The CUBRID default port is 30000 but this might vary depending on the installation<br>
-- &quot;<em>User</em>&quot; / &quot;<em>Password</em>&quot; the required authentication data.<br>
-- In the &quot;<em>Database</em>&quot; field type in the name of the database and press &quot;<em>Test Connection</em>&quot; in order to see if it is valid or not. By pressing this button you will also get a list of available databases on that server.<br>
+- "<em>Host</em>" - the host where this database is located. Type in the IP or the hostname<br>
+- The "<em>Port</em>" on which the mysql daemon is listening. The CUBRID default port is 30000 but this might vary depending on the installation<br>
+- "<em>User</em>" / "<em>Password</em>" the required authentication data.<br>
+- In the "<em>Database</em>" field type in the name of the database and press "<em>Test Connection</em>" in order to see if it is valid or not. By pressing this button you will also get a list of available databases on that server.<br>
 <br>
-Once you have populated all the required database fields you can save it by pressing the &quot;<em>Ok</em>&quot; button. From this point your connection is remembered for future use. You have all your connections listed in the Conenction tree (accessible from the &quot;View&quot; menu) where you can either test the connection or delete or modify them.<br>
-  </span></P>
-</BODY>
-</HTML>
+Once you have populated all the required database fields you can save it by pressing the "<em>Ok</em>"
+button. From this point your connection is remembered for future use.
+You have all your connections listed in the Conenction tree (accessible
+from the "View" menu) where you can either <a href="brows.html">test</a> the connection or delete or modify them.<br>
+  </span></p>
+</body></html>

@@ -19,6 +19,7 @@
 #include "MySqlConnection.h"
 #include "SqliteConnection.h"
 #include "conn_CUBRID.h"
+#include "gui_HelpWindow.h"
 
 #include <QSqlDatabase>
 #include <QMessageBox>
@@ -770,6 +771,15 @@ void InjectSqlDialog::onTestConnection()
             m_cubridTested = true;
         }
     }
+}
+
+void InjectSqlDialog::onHelp()
+{
+    setModal(false);
+    HelpWindow* hw = HelpWindow::instance();
+    hw->showHelp(QString("/doc/conn.html"));
+    hw->show();
+
 }
 
 QString InjectSqlDialog::getFileName() const
