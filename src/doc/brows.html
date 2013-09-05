@@ -13,6 +13,10 @@ P {
 #myfont {
 	font-family: Arial, Helvetica, sans-serif;
 }
+.style1 {
+	font-family: "Courier New", Courier, monospace;
+	font-weight: bold;
+}
 -->
   </style>
 </head><body dir="ltr" style="background-color: white;" lang="en-US">
@@ -22,8 +26,8 @@ P {
 them. To do this, either<br>
 <br>
 1. Right click the connection in the connection tree and select
-"Connect" then Right click again and select "Browse" (you only can
-browse a connected connection).<br>
+"Refresh". This will connect to the database and retrieev all the elements found in it.<br>
+<br>
 2. Double click the connection in the connection tree, this will
 automatically connect the connection and starts browsing it.<br>
 <br>
@@ -44,17 +48,17 @@ possible to import only tables into the solution.<br>
 <strong>Other options regarding connections</strong><br>
 <br>
 When you right click a connection you will get a menu where
-the followings are the options you can choose from:<br>
+the followings are the top level options you can choose from:<br>
 <br>
-<em>Run Script</em><br>
+<em>Run Query</em><br>
 <br>
 By selecting this option an SQL editor window bound to the database
 specified in this connection will open. In this window you can type in
-SQL queries and execute them using Ctrl + Enter. Selecting this option
+SQL queries and execute them using <span class="style1">Ctrl+Enter</span>. Selecting this option
 automatically connects the database, starts browsing it and shows the
-content of the database.<br>
+content of the database. When you execute a data definition statement the connection tree is updated with the newly created object (or if you drop something the entry will be removed from the tree).<br>
 <br>
-<em>Connect</em><br>
+<em>Test Connection</em><br>
 <br>Selecting this option verifies whether the connection to the
 database
 is possible or not. This option does not start browsing the connection
@@ -64,33 +68,39 @@ If browsing the database connection is possible the icon is updated
 with a green
 signaller, otherwise it gets updated with a red one.<br>
 <br>
-<em>Browse</em><br>
-<br>
-Selecting this option will try to connect to the database represented
-by the connection object. Depending on the results of the operation it
-changes the icon of the connection. In case of success the database
-objects are displayed in the tree of the connection item.<br>
-<br>
-<em></em><em>Recreate</em><br>
-<br>
-Choosing this option will execute a "<span style="font-family: Courier New,Courier,monospace; font-weight: bold;">DROP
-DATABASE</span>" and "<span style="font-family: Courier New,Courier,monospace; font-weight: bold;">CREATE
-DATABASE</span>" script for the database represented by the given
-connection.<br>
-<br>
-<em></em><em>Drop</em><br>
-<br>
-Choosing this option will execute a "<span style="font-weight: bold; font-family: Courier New,Courier,monospace;">DROP DATABASE</span>" on the given
-connection.<br>
-<br>
-</span><span id="myfont"><em>Edit</em><br>
+</span><span id="myfont"><em>Edit Connection</em><br>
 <br>
 Will open the window to modify the properties of the connection. This option does not perform operations on the database.<br>
 <br>
 </span><span id="myfont"><em>Delete</em><br>
 <br>
 Choosing this option will remove the connection from the list of
-available connections, this does not affect the physical database.<em></em></span><br>
+available connections, this does not affect the physical database.<em></em><br>
+<em><br>
+Refresh</em><br>
+<br>
+Choosing this option will refresh the tree objects of the database (ie: clear the tree, connect to the database, fetch all the items again and populate the tree again).<em></em><br>
+<br>
+The <strong>&quot;New...&quot; </strong>top level menu entry is available for all databases. Contains:<br>
+<br>
+<em>New Table<br>
+<br>
+</em>You can create a new table in this connection.<br>
+<br>
+The <strong>&quot;Database&quot;</strong> top level menu item with the following entries is visible only for MySql databases:<br>
+<br>
+<em></em><em>Recreate</em><br>
+<br>
+Choosing this option will execute a "<span style="font-family: Courier New,Courier,monospace; font-weight: bold;">DROP
+DATABASE</span>" and "<span style="font-family: Courier New,Courier,monospace; font-weight: bold;">CREATE
+DATABASE</span>" script for the database represented by the given
+connection. This will remove all the objects from the database!<br>
+<br>
+<em></em><em>Drop</em><br>
+<br>
+Choosing this option will execute a "<span style="font-weight: bold; font-family: Courier New,Courier,monospace;">DROP DATABASE</span>" on the given
+connection.</span><br>
+<br>
 </p>
 
 </body></html>

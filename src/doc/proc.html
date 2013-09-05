@@ -7,30 +7,44 @@
 	<!--
 		P { border: 1px solid #000000; padding: 0.02in }
 .style1 {font-family: Arial, Helvetica, sans-serif}
-.style2 {font-family: "Courier New", Courier, monospace}
-.style3 {color: #0000FF}
-.style4 {color: #0000FF; font-family: "Courier New", Courier, monospace; }
 	-->
 	</style>
   </head>
   <body dir="LTR" bgcolor="white" lang="en-US">
-    <p class="style1" style="margin-bottom: 0in; background: white; border: none; padding: 0in; font-style: normal; line-height: 115%; text-decoration: none"
+    <p class="style1" style="margin-bottom: 0in; background: white; border: none; padding: 0in; font-style: normal; line-height: 115%; text-decoration: none"
+
       align="CENTER"> <b>Procedures and Functions</b></p>
     <p class="style1" style="margin-bottom: 0in; background: white; line-height: 115%">
+      <br>
       Stored procedures and functions are statements written in SQL language and
       stored in a database for later execution. For more details about the
-      syntax please consult the documentation of your database.</p>
-    <p class="style1" style="background: white">With DDM you can create a stored
+      syntax please consult the documentation of your database. Stored procedures are available only for <strong>MySql </strong>and <strong>CUBRID </strong>projects, since Sqlite has no support for them.<br>
+      <br>
+    </p>
+  <p class="style1" style="background: white">DDM has support for two kind of Stored Method creation.<br>
+      <br>
+    1. Guided method creation<br>
+    2. Plain SQL method cration<br>
+      <br>
+      <em><strong>Guided Method creation<br>
+      <br>
+      </strong></em>The guided method creation feature allows you to specify elements of your method (such as the name, parameters name, type, description, etc...) in a controlled manner, and this data is used to check the validaty of the method, and also to generate the required documentation and the SQL code. When you use this way of creating a stored method the application will auto generate the first line of the SQL command (for MySql) or the entire SQL command (for CUBRID) and these line will be disabled in the SQL editor. <br>
+      <br>
+      Since CUBRID supports Java based stored methods we reccomend reading the documentation if you don't understand the functionality.<br>
+      <br>
+    <em><strong>Plain Sql Method creation</strong></em><br>
+    <br>
+    With DDM you can create a stored
       procedure/function using the SQL syntax of your database using the DDM
       text editor which tries to offer some limited code completion and other
-      features to make your life easier. <br>
+features to make your life easier. <br>
       <br>
       We encourage you to add descriptive comments for your methods, in order
       for the automatic documentation generation tool to be able to generate
       documentation. The comments should be standard SQL comments (ie, starting
-      with "<code>--</code> " sinc the <code>) and the following javadoc-like
-        keywords are supported: <br>
-        <br>
+      with "<code>--</code> ") and the following javadoc-like
+      keywords are supported: <br>
+        <br><code>
         <font color="green"><code>@brief</code></font> - this should be the
         first line in your comment, please specify a one line description of the
         method <br>
@@ -43,21 +57,25 @@
         All the lines in the comment after this will go to the description of
         the method. <br>
         <br>
-      </code> If a line does not contain a keyword it is assumed that it is just
+      </code> If a line does not contain a create method keyword it is assumed that it is just
       description, and it will be used in the desription part of the
       documentation. <br>
       The following is an example on how to write a documentation: <br>
       <br>
-      <font face="Courier New, Courier, monospace"><font color="#009900">-- </font><font
+      <font face="Courier New, Courier, monospace"><font color="#009900">-- </font><font
+
           color="#3333ff">@brief</font><font color="#009900"> a procedure to
           test the documentation generator</font>
         <br>
-        <font color="#009900">-- </font><font color="#3333ff">@param</font><font
+        <font color="#009900">-- </font><font color="#3333ff">@param</font><font
+
           color="#009900"> p1 The parameter to the procedure</font>
         <br>
-        <font color="#009900">-- </font><font color="#3333ff">@desc</font><font
+        <font color="#009900">-- </font><font color="#3333ff">@desc</font><font
+
           color="#009900"> This procedure just does nothing</font> <br>
-        <font color="#3333ff"><strong>CREATE PROCEDURE</strong></font> proc(p1 <font
+        <font color="#3333ff"><strong>CREATE PROCEDURE</strong></font> proc(p1 <font
+
           color="#3333ff"><strong>VARCHAR</strong></font>(255)) <br>
         <font color="#3333ff"><strong>BEGIN <br>
             END</strong></font></font><br>
@@ -67,6 +85,6 @@
       This is not customizable, we believe that the quality of the product
       depends on the documentation too, so please provide it to your users.<br>
     </p>
-    <pre><br></pre>
+  <pre><br></pre>
   </body>
 </html>
