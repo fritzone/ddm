@@ -56,7 +56,7 @@
         <string/>
        </property>
        <property name="pixmap">
-        <pixmap resource="dbm.qrc">:/images/actions/images/big/icon.png</pixmap>
+        <pixmap resource="../dbm.qrc">:/images/actions/images/big/icon.png</pixmap>
        </property>
       </widget>
       <widget class="QLabel" name="label_2">
@@ -69,8 +69,8 @@
         </rect>
        </property>
        <property name="text">
-        <string>DDM v0.1j - The Database Deployment Manager
-© 2009 - 2012 - The Unauthorized Frog project
+        <string>DDM v0.1k - The Database Deployment Manager
+© 2009 - 2013 - The Unauthorized Frog project
 
 Programming - fritzone@gmail.com
 Testing - Nikos Mantas, Althaf Hameez, elancer2010</string>
@@ -95,7 +95,7 @@ Testing - Nikos Mantas, Althaf Hameez, elancer2010</string>
         <string/>
        </property>
        <property name="pixmap">
-        <pixmap resource="dbm.qrc">:/images/actions/images/unaf.png</pixmap>
+        <pixmap resource="../dbm.qrc">:/images/actions/images/unaf.png</pixmap>
        </property>
       </widget>
      </widget>
@@ -104,8 +104,8 @@ Testing - Nikos Mantas, Althaf Hameez, elancer2010</string>
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>582</width>
-        <height>181</height>
+        <width>96</width>
+        <height>26</height>
        </rect>
       </property>
       <attribute name="label">
@@ -146,7 +146,7 @@ Do you own the copyright for the Frog? Please contact us.</string>
   </layout>
  </widget>
  <resources>
-  <include location="dbm.qrc"/>
+  <include location="../dbm.qrc"/>
  </resources>
  <connections>
   <connection>
