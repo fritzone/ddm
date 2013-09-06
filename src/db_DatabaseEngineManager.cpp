@@ -40,7 +40,7 @@ DatabaseEngineManager::DatabaseEngineManager()
     m_supportedEngines = QSqlDatabase::drivers();
 
     // is there mysql driver?
-    if(m_supportedEngines.contains(strQMySql) || m_supportedEngines.contains(strQMySql3))
+    //if(m_supportedEngines.contains(strQMySql) || m_supportedEngines.contains(strQMySql3))
     {
         m_supportedEngines << strMySql;
         MySQLDatabaseEngine* mysqlDBEngine = MySQLDatabaseEngine::instance();
@@ -51,7 +51,7 @@ DatabaseEngineManager::DatabaseEngineManager()
     }
 
     // is there sqlite driver?
-    if(m_supportedEngines.contains(strQSqlite))
+    //if(m_supportedEngines.contains(strQSqlite))
     {
         m_supportedEngines << strSqlite;
         SqliteDatabaseEngine* sqliteDBEngine = SqliteDatabaseEngine::instance();
@@ -62,7 +62,7 @@ DatabaseEngineManager::DatabaseEngineManager()
     }
 
     // is there CUBRID driver?
-    if(m_supportedEngines.contains(strQCUBRID))
+    //if(m_supportedEngines.contains(strQCUBRID))
     {
         m_supportedEngines << strCUBRID;
         CUBRIDDatabaseEngine* cubridDbEngine = CUBRIDDatabaseEngine::instance();
