@@ -72,12 +72,24 @@ void NewProjectDialog::onChangeProjectType(int)
     switch(projectType)
     {
     case 1: // Datamodel Project
+    {
         m_ui->grpOptions->show();
         break;
+    }
     case 2: // Bind to ... Project
+    {
         m_ui->grpOptions->hide();
+
+
+        // and now remove the unneeded radio buttons from the GUI based on what DB we support
+        QStringList supportedDbs = QSqlDatabase::drivers();
+        if(!supportedDbs.contains(strQCUBRID)) m_ui->radioCubrid->hide();
+        if(!supportedDbs.contains(strQSqlite)) m_ui->radioSqlite->hide();
+        if(!supportedDbs.contains(strQMySql)) m_ui->radioMySql->hide();
         break;
+    }
     case 3: // Rev. Eng. Project
+    {
         m_ui->grpOptions->show();
 
         // and now remove the unneeded radio buttons from the GUI based on what DB we support
@@ -86,6 +98,7 @@ void NewProjectDialog::onChangeProjectType(int)
         if(!supportedDbs.contains(strQSqlite)) m_ui->radioSqlite->hide();
         if(!supportedDbs.contains(strQMySql)) m_ui->radioMySql->hide();
         break;
+    }
     }
 
     m_ui->txtSolutionName->setFocus();
