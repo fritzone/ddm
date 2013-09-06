@@ -38,10 +38,13 @@ QueryItemListDialog::QueryItemListDialog(QueryGraphicsHelper* helper, QueryGraph
             for(int i=0; i<Workspace::getInstance()->workingVersion()->getTableInstances().size(); i++)
             {
                 TableInstance* tabI = Workspace::getInstance()->workingVersion()->getTableInstances().at(i);
-                QListWidgetItem* lwi = new QListWidgetItem(tabI->getName());
-                lwi->setFont(QFont("Arial", 14, 2));
-                lwi->setIcon(IconFactory::getTabinstIcon());
-                ui->lstValues->addItem(lwi);
+                if(tabI->table()->getColumnCount() > 0)
+                {
+                    QListWidgetItem* lwi = new QListWidgetItem(tabI->getName());
+                    lwi->setFont(QFont("Arial", 14, 2));
+                    lwi->setIcon(IconFactory::getTabinstIcon());
+                    ui->lstValues->addItem(lwi);
+                }
             }
         }
         else
@@ -49,12 +52,14 @@ QueryItemListDialog::QueryItemListDialog(QueryGraphicsHelper* helper, QueryGraph
             for(int i=0; i<Workspace::getInstance()->workingVersion()->getTables().size(); i++)
             {
                 Table* tabI = Workspace::getInstance()->workingVersion()->getTables().at(i);
-                QListWidgetItem* lwi = new QListWidgetItem(tabI->getName());
-                lwi->setFont(QFont("Arial", 14, 2));
-                lwi->setIcon(IconFactory::getTablesIcon());
-                ui->lstValues->addItem(lwi);
+                if(tabI->getColumnCount() > 0)
+                {
+                    QListWidgetItem* lwi = new QListWidgetItem(tabI->getName());
+                    lwi->setFont(QFont("Arial", 14, 2));
+                    lwi->setIcon(IconFactory::getTablesIcon());
+                    ui->lstValues->addItem(lwi);
+                }
             }
-
         }
 
         break;

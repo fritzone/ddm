@@ -102,6 +102,10 @@ ProcedureForm::ProcedureForm(Version* v, ProcedureFormMode m, bool guided, bool 
 
         ui->txtSpecialJavaReturnType->hide();
     }
+    else
+    {
+        ui->cmbJavaParameterType->hide();
+    }
 
 
     if(m == MODE_PROCEDURE)
@@ -873,6 +877,20 @@ void ProcedureForm::onAddParameter()
         if(m_proc->hasParameter(pd->m_parameter))
         {
             QMessageBox::critical(this, tr("Error"), tr("You cannot have another parameter named:<b> ") + pd->m_parameter, QMessageBox::Ok);
+            delete pd;
+            return;
+        }
+
+        if(pd->m_parameter.isEmpty())
+        {
+            QMessageBox::critical(this, tr("Error"), tr("You need a name for the parameter."), QMessageBox::Ok);
+            delete pd;
+            return;
+        }
+
+        if(pd->m_type.isEmpty())
+        {
+            QMessageBox::critical(this, tr("Error"), tr("You need a type for the parameter."), QMessageBox::Ok);
             delete pd;
             return;
         }
