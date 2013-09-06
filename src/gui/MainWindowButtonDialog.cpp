@@ -99,9 +99,16 @@ void MainWindowButtonDialog::changeEvent(QEvent *e)
 
 void MainWindowButtonDialog::onHelp()
 {
+#ifdef Q_WS_WIN
+    setWindowFlags( windowFlags() & !Qt::WindowStaysOnTopHint);
+    show();
+    raise();
+#endif
+
     HelpWindow* hw = HelpWindow::instance();
     hw->showHelp(QString("/doc/startup.html"));
     hw->show();
+    hw->raise();
 }
 
 void MainWindowButtonDialog::onQuick1()
