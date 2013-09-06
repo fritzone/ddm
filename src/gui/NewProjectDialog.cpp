@@ -65,6 +65,10 @@ void NewProjectDialog::onChangeProjectType(int)
 {
     int projectType = m_ui->listWidget->currentRow() + 1;
 
+    m_ui->radioCubrid->show();
+    m_ui->radioSqlite->show();
+    m_ui->radioMySql->show();
+
     switch(projectType)
     {
     case 1: // Datamodel Project
@@ -75,6 +79,12 @@ void NewProjectDialog::onChangeProjectType(int)
         break;
     case 3: // Rev. Eng. Project
         m_ui->grpOptions->show();
+
+        // and now remove the unneeded radio buttons from the GUI based on what DB we support
+        QStringList supportedDbs = QSqlDatabase::drivers();
+        if(!supportedDbs.contains(strQCUBRID)) m_ui->radioCubrid->hide();
+        if(!supportedDbs.contains(strQSqlite)) m_ui->radioSqlite->hide();
+        if(!supportedDbs.contains(strQMySql)) m_ui->radioMySql->hide();
         break;
     }
 
