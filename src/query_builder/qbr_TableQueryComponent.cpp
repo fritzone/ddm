@@ -196,11 +196,20 @@ TableQueryComponent* TableQueryComponent::provideFirstTableIfAny(QueryComponent*
     TableQueryComponent* tccp = 0;
     if(Workspace::getInstance()->currentProjectIsOop())
     {
-        if(Workspace::getInstance()->workingVersion()->getTableInstances().size() > 0)
+        int tinstSize = Workspace::getInstance()->workingVersion()->getTableInstances().size() ;
+        if(tinstSize > 0)
         {
-            tccp = new TableQueryComponent(parent->getQuery(),
-                                           Workspace::getInstance()->workingVersion()->getTableInstances().at(0),
-                                           parent, level, parent->version());
+            int ctr = 0;
+            while(ctr < tinstSize)
+            {
+                TableInstance* tinst = Workspace::getInstance()->workingVersion()->getTableInstances().at(ctr);
+                if(tinst->table()->getColumnCount() > 0)
+                {
+                    tccp = new TableQueryComponent(parent->getQuery(), tinst, parent, level, parent->version());
+                    break;
+                }
+                ctr ++;
+            }
         }
         else
         {
@@ -209,11 +218,20 @@ TableQueryComponent* TableQueryComponent::provideFirstTableIfAny(QueryComponent*
     }
     else
     {
-        if(Workspace::getInstance()->workingVersion()->getTables().size() > 0)
+        int tSize = Workspace::getInstance()->workingVersion()->getTables().size() ;
+        if(tSize > 0)
         {
-            tccp = new TableQueryComponent(parent->getQuery(),
-                                           Workspace::getInstance()->workingVersion()->getTables().at(0),
-                                           parent, level, parent->version());
+            int ctr = 0;
+            while(ctr < tSize)
+            {
+                Table* t = Workspace::getInstance()->workingVersion()->getTables().at(ctr);
+                if(t->getColumnCount() > 0)
+                {
+                    tccp = new TableQueryComponent(parent->getQuery(), t, parent, level, parent->version());
+                    break;
+                }
+                ctr ++;
+            }
         }
         else
         {
