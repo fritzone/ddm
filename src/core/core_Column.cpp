@@ -90,7 +90,13 @@ QUuid Column::getClassUid() const
 
 CloneableElement* Column::clone(Version* /*sourceVersion*/, Version *targetVersion)
 {
-    UserDataType* udt = targetVersion->getDataType(getDataType()->getName());
+    const UserDataType* thisDataType = getDataType();
+    if(thisDataType == 0)
+    {
+        return 0;
+    }
+    QString thisDataTypeName = thisDataType->getName();
+    UserDataType* udt = targetVersion->getDataType(thisDataTypeName);
     Column* result = new Column(QUuid::createUuid().toString(), getName(), udt, isPk(), targetVersion);
     result->setSourceUid(getObjectUid());
     // now fix the SPs of the column

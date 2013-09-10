@@ -1378,6 +1378,10 @@ void MainWindow::onReleaseMajorVersion()
                     tcf->setToVersion(atcf->getToVersion());
                     setCentralWidget(tcf);
                 }
+                else
+                {
+                    setCentralWidget(new ProjectDetailsForm(this));
+                }
             }
         }
     }

@@ -757,8 +757,8 @@ void NewTableForm::onAddColumn()
                     const QVector<ForeignKey::ColumnAssociation*>& assocs = tabfks[j]->getAssociations();
                     for(int k=0; k<assocs.size(); k++)
                     {
-                        if(assocs[k]->getSForeignColumn() == prevName) assocs[k]->setSForeignTable(a);
-                        if(assocs[k]->getSLocalColumn() == prevName) assocs[k]->setSLocalTable(a);
+                        if(assocs[k]->getSForeignColumn() == prevName) assocs[k]->setSForeignColumn(a);
+                        if(assocs[k]->getSLocalColumn() == prevName) assocs[k]->setSLocalColumn(a);
                     }
                 }
             }
