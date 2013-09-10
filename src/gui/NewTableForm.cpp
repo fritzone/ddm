@@ -1048,49 +1048,60 @@ void NewTableForm::onSelectColumn(QTreeWidgetItem* current, int)
     }
 }
 
+void NewTableForm::createListentryForColumnInIndex(const QString &columnName)
+{
+    qDebug() << columnName;
+    QListWidgetItem* qlwi = new QListWidgetItem(columnName, m_ui->lstAvailableColumnsForIndex);
+    Column* col = m_table->getColumn(columnName);
+    if(col)
+    {
+        qlwi->setIcon(IconFactory::getIconForDataType(col->getDataType()->getType()));
+    }
+    else
+    {
+        col = m_table->getColumnFromParents(columnName);
+        if(col)
+        {
+            qlwi->setIcon(IconFactory::getIconForDataType(col->getDataType()->getType()));
+        }
+    }
+}
+
 void NewTableForm::populateColumnsForIndices()
 {
     m_ui->lstAvailableColumnsForIndex->clear();
-    for(int i=0; i<m_table->fullColumns().size(); i++)
+    int cntSelected = m_ui->lstSelectedColumnsForIndex->topLevelItemCount();
+
+    if(cntSelected == 0) // no item is selected, put in all columns
     {
-        if(m_ui->lstSelectedColumnsForIndex->topLevelItemCount() == 0)
+        for(int i=0; i<m_table->fullColumns().size(); i++)
         {
-            QListWidgetItem* qlwi = new QListWidgetItem(m_table->fullColumns()[i], m_ui->lstAvailableColumnsForIndex);
-            Column* col = m_table->getColumn(m_table->fullColumns()[i]);
-            if(col)
+            createListentryForColumnInIndex(m_table->fullColumns()[i]);
+        }
+    }
+    else // put in only those columns that are not there in the lstSelectedColumns tree
+    {
+        QSet <QString> alreadyCreated ;
+        for(int i =0; i<m_table->fullColumns().size(); i++) // for the tables' columns
+        {
+            bool shouldAdd = true;
+            QString currentColumnI = m_table->fullColumns()[i];
+
+            for(int j = 0; j<cntSelected; j++) // for the selected columns
             {
-                qlwi->setIcon(IconFactory::getIconForDataType(col->getDataType()->getType()));
-            }
-            else
-            {
-                col = m_table->getColumnFromParents(m_table->fullColumns()[i]);
-                if(col)
+                QString selectedJ = m_ui->lstSelectedColumnsForIndex->topLevelItem(j)->text(0);
+                if(selectedJ == currentColumnI)
                 {
-                    qlwi->setIcon(IconFactory::getIconForDataType(col->getDataType()->getType()));
+                    shouldAdd = false;
                 }
             }
-        }
-        else
-        {
-            for(int j = 0; j<m_ui->lstSelectedColumnsForIndex->topLevelItemCount(); j++)
+
+            if(shouldAdd)
             {
-                if(m_ui->lstSelectedColumnsForIndex->topLevelItem(j)->text(0) != m_table->getColumns()[i]->getName())
+                if(!alreadyCreated.contains(currentColumnI))
                 {
-                    QListWidgetItem* qlwi = new QListWidgetItem(m_table->fullColumns()[i], m_ui->lstAvailableColumnsForIndex);
-                    // TODO: duplication with the one above
-                    Column* col = m_table->getColumn(m_table->fullColumns()[i]);
-                    if(col)
-                    {
-                        qlwi->setIcon(IconFactory::getIconForDataType(col->getDataType()->getType()));
-                    }
-                    else
-                    {
-                        col = m_table->getColumnFromParents(m_table->fullColumns()[i]);
-                        if(col)
-                        {
-                            qlwi->setIcon(IconFactory::getIconForDataType(col->getDataType()->getType()));
-                        }
-                    }
+                    createListentryForColumnInIndex(currentColumnI);
+                    alreadyCreated.insert(currentColumnI);
                 }
             }
         }

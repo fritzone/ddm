@@ -100,7 +100,7 @@ void MainWindowButtonDialog::changeEvent(QEvent *e)
 void MainWindowButtonDialog::onHelp()
 {
 #ifdef Q_WS_WIN
-    setWindowFlags( windowFlags() & !Qt::WindowStaysOnTopHint);
+    setWindowFlags( windowFlags() & ~Qt::WindowStaysOnTopHint);
     show();
     raise();
 #endif

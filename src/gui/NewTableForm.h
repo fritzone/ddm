@@ -67,6 +67,7 @@ public:
         m_mainTabIndex = idx;
     }
 
+    void createListentryForColumnInIndex(const QString&);
 protected:
 
     void changeEvent(QEvent *e);
@@ -214,6 +215,8 @@ private:
     void disableEditingControls(bool disabled);
 
     UserDataType* getDataType(const QString& name);
+
+
 
 private:
     Ui::NewTableForm *m_ui;
