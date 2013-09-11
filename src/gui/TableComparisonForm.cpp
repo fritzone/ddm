@@ -88,15 +88,46 @@ TableComparisonForm::~TableComparisonForm()
     delete ui;
 }
 
+void TableComparisonForm::generateUpdateScript(Version* from, Version* to)
+{
+    // do the following: generate script from major version in steps from -> to
+    // such as: from 1.0 to 2.0
+    // from 2.0 to 3.0
+    // and so on...
+
+    QVector<Version*> versions;
+
+    Version* current = to;
+    versions.push_front(current);
+    while(current->getSourceUid() != from->getObjectUid())
+    {
+        current = static_cast<Version*>(UidWarehouse::instance().getElement(current->getSourceUid()));
+        if(!current)
+        {
+            break;
+        }
+        versions.push_front(current);
+    }
+    versions.push_front(from);
+
+    QStringList commands;
+    for(int i=0; i<versions.size() - 1; i++)
+    {
+        VersionUpdateGenerator vug = VersionUpdateGenerator(versions[i], versions[i + 1]);
+        commands.append(vug.getCommands());
+    }
+
+    ui->textEdit->setText(addCommands(commands));
+    m_engine = m_to->getProject()->getEngine();
+}
+
 void TableComparisonForm::setFromVersion(Version *v)
 {
     m_from = v;
     ui->cmbVersionLeft->setCurrentIndex(ui->cmbVersionLeft->findText(v->getVersionText()));
     if(m_from && m_to)
     {
-        VersionUpdateGenerator vug = VersionUpdateGenerator(m_from, m_to);
-        ui->textEdit->setText(addCommands(vug.getCommands()));
-        m_engine = m_to->getProject()->getEngine();
+        generateUpdateScript(m_from, m_to);
     }
 }
 
@@ -106,9 +137,7 @@ void TableComparisonForm::setToVersion(Version *v)
     ui->cmbVersionRight->setCurrentIndex(ui->cmbVersionRight->findText(v->getVersionText()));
     if(m_from && m_to)
     {
-        VersionUpdateGenerator vug = VersionUpdateGenerator(m_from, m_to);
-        ui->textEdit->setText(addCommands(vug.getCommands()));
-        m_engine = m_to->getProject()->getEngine();
+        generateUpdateScript(m_from, m_to);
     }
 }
 
@@ -223,9 +252,7 @@ void TableComparisonForm::leftItemSelected(const QString& v)
 
         if(m_from && m_to)
         {
-            VersionUpdateGenerator vug = VersionUpdateGenerator(m_from, m_to);
-            ui->textEdit->setText(addCommands(vug.getCommands()));
-            m_engine = m_to->getProject()->getEngine();
+            generateUpdateScript(m_from, m_to);
         }
     }
 }

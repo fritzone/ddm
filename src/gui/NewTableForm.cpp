@@ -1050,7 +1050,7 @@ void NewTableForm::onSelectColumn(QTreeWidgetItem* current, int)
 
 void NewTableForm::createListentryForColumnInIndex(const QString &columnName)
 {
-    qDebug() << columnName;
+//    qDebug() << columnName;
     QListWidgetItem* qlwi = new QListWidgetItem(columnName, m_ui->lstAvailableColumnsForIndex);
     Column* col = m_table->getColumn(columnName);
     if(col)

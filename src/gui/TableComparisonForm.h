@@ -59,6 +59,7 @@ public:
         return m_to;
     }
 
+    void generateUpdateScript(Version *from, Version *to);
 private:
 
     void populateColumns();
