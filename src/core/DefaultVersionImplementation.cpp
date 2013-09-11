@@ -35,6 +35,7 @@ DefaultVersionImplementation::DefaultVersionImplementation(Project* p, int major
     : Version(major, minor, p),
       version(""), m_data(), m_guiElements(0), m_validationFlags(0), m_patches(), m_currentPatchIndex(-1)
 {
+    UidWarehouse::instance().addElement(dynamic_cast<ObjectWithUid*>(this), this);
 }
 
 void DefaultVersionImplementation::createTreeItems(GuiElements* gui, ContextMenuEnabledTreeWidgetItem* projectItem, int idxAfter)
