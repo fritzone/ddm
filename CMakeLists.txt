@@ -83,8 +83,18 @@ IF (NOT WIN32)
     INCLUDE(${QT_USE_FILE})
     ADD_DEFINITIONS(${QT_DEFINITIONS})
 ELSE (NOT WIN32)
-    SET (DDM_LIBS QtNetwork QtSql QtWebkit QtXml QtGui QtCore 
-            ws2_32 winmm imm32 libeay32 ssleay32 crypt32 gdi32)
+#    SET (DDM_LIBS QtSql4 QtWebkit4 QtXml4 QtGui4 QtCore4 
+#            ws2_32 winmm imm32 libeay32 ssleay32 crypt32 gdi32)
+	    SET(DDM_LIBS ${QT_QTCORE_LIBRARY}
+                     ${QT_QTGUI_LIBRARY}
+                     ${QT_QTSVG_LIBRARY}
+                     ${QT_QTNETWORK_LIBRARY}
+                     ${QT_QTSQL_LIBRARY}
+                     ${QT_QTWEBKIT_LIBRARY}
+                     ${QT_QTXML_LIBRARY}) # Add here any other QT module or other library
+
+					 INCLUDE(${QT_USE_FILE})
+    ADD_DEFINITIONS(${QT_DEFINITIONS})
 ENDIF(NOT WIN32)
 
 # Copy the sh launcher
