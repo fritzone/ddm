@@ -1,0 +1,9 @@
+About
+=====
+
+Database Deployment Manager (DDM) is a multi-platform tool
+that allows database administrators and users to create database
+structures (tables, queries, etc...) using object oriented
+methodology which can be used to populate multiple databases.
+
+The application is developed by the Unauthorized Frog project.

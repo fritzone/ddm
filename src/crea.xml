@@ -1,0 +1,125 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<repository>
+
+  <!-- all the SPs that are present in the repository, regardless of the database engine or the target object-
+       SPs are defined in the GUI -->
+  <sps>
+    <sp class_uid="uidMysqlTemporaryTable" type_uid="extensionUid" category="General" target="uidTable" dbSupport="MySQL">
+      <provides>TEMPORARY</provides>
+      <description>Create a temporary table</description>
+    </sp>
+    <sp class_uid="uidMysqlIfNotExistsTable" type_uid="extensionUid" category="General" target="uidTable" dbSupport="MySQL">
+      <provides>IF NOT EXISTS</provides>
+      <description>Create the table only if it does not exist</description>
+    </sp>
+  </sps>
+  
+  <!-- the keywords that can be used by the SQL generators. Keywords are also defined in the GUI -->
+  <literals>
+    <literal class_uid="keywordCreate">
+      <text>CREATE</text>
+    </literal>
+    <literal class_uid="keywordTable">
+      <text>TABLE</text>
+    </literal>
+    <literal class_uid="openParanthesisUid">
+      <text> ( </text>
+    </literal>
+    <literal class_uid="closeParanthesisUid">
+      <text> ) </text>
+    </literal>
+  </literals>
+  
+  <!-- the queries that are there in the repository. Queries are created with the query builder -->
+  <queries>
+    <query class_uid="createTableUid" target_element_uid="uidTable">
+      <sequence>
+        <!-- The first element is the "CREATE" keyword. The action_uid tells the code generator what to do with 
+     	       the "child" of the element. uidInsert means: take the child element from the repository, create a C++
+	           object out of it and call the "get" method of it to get the "text" attribute of it. The condition_present
+             attribute tells the parser, that there is no condition in isnerting this literal 
+        -->
+        <element index="1" class_uid="classLiteral" action_uid="uidInsert">
+          <literal class_uid="keywordCreate" condition_present="0"/>
+        </element>
+        
+        <!-- The next element is the "Temporary table" check, but only for MySQL. The other engines will ignore 
+	           this element since the dbSupport of the sp is not equal to the name of the DB engine. On the C++ side
+	           what happens is: get the SPInstance of the table we are generating the SQL for which is
+	           uidMysqlTemporaryTable and insert its value here if it is yes. In the first round filter out
+	           the SPs that are not from the MySql 
+	      -->
+        <element index="2" class_uid="classSpUid" action_uid="uidInsert">
+          <sp class_uid="uidMysqlTemporaryTable" condition_present="0" db="MySQL"/>
+        </element>
+        
+        <!-- the next element is the "TABLE" keyword -->
+        <element index="3" class_uid="classLiteral" action_uid="uidInsert">
+          <literal class_uid="keywordTable" condition_present="0"/>
+        </element>
+        
+        <!-- the next element is the table name. It is treated as an local reference from the serialized table 
+	           which was sent into the SQL generator. This works like this: the SQL generator method gets in a table.
+	           it serializes it into the XML and the local reference goes to this table's XML, starts walking
+	           through it and where for the elements class_uid sees the class uid specified in the target_class_uid
+	           in the "localReference" node it checks the reference_type_uid, if it is an "attribute" then
+	           fetches the attribute of the table's XML which matches the "reference_name" and puts it in the generated
+	           SQL code, this is indicated by the uidInsertAttribute
+	      -->
+        <element index="4" class_uid="localReferenceUid">
+          <localReference target_class_uid="uidTable" reference_type_uid="attributeUid" reference_name="Name" action_uid="uidInsert" condition_present="0"/>
+        </element>
+        
+        <!-- the next element in the query is a simple parenthesis... yes, even these must be specified -->
+        <element index="5" class_uid="classLiteral">
+          <keyword class_uid="openParanthesisUid" condition_present="0"/>
+        </element>
+        
+        <!-- the next element in the sequence is the list of columns. This is represented as an iteration over then
+	           Children of the element with class_uid "uidColumns" ( TODO: to be defined and added to the serialization XML
+	           of a given table) 
+	      -->
+        <element index="6" class_uid="uidIteration">
+          <iteration target_uid="uidColumns">
+            <!-- and we get the stuff required to build the columns's SQL as a sequence of local references -->
+            <sequence>
+              <!-- first element is the column name. This is taken as an local reference from the column node,
+	           just insert here the attribute "name" -->
+              <element index="1" class_uid="localReferenceUid">
+                <localReference target_class_uid="uidColumn" reference_type_uid="attributeUid" reference_name="Name" action_uid="uidInsert" condition_present="0"/>
+              </element>
+              <!-- next element should be the SQL data type. This will be a global reference, but in this case to the data types
+	                 defined in the version. The SQL generator gets the DomDocument of the version also, to have access to the serialized form of
+		               all the data types. In this case we need the finalSql of the DT as a string that can be put in the final SQL.
+		               This is done by fetchingn the attribute of the localReference from the dataTypes with the given condition:
+		               the attribute "Name" of the DataType equals the attribute "Type" of the column. TODO: these should be uid based later 
+		          -->
+              <element index="2" class_uid="globalReferenceUid">
+                <globalReference target_class_uid="uidDataType" reference_type_uid="attributeUid" referenceName="finalSql" action_uid="uidInsert" condition_present="1">
+                  <condition index="1">
+                    <comparison type="equal">
+                      <left>
+                        <globalReference target_class_uid="uidDataType" reference_type_uid="attributeUid" referenceName="Name" action_uid="uidPeek" condition_present="0"/>
+                      </left>
+                      <right>
+                        <localReference target_class_uid="uidColumn" reference_type_uid="attributeUid" reference_name="Type" action_uid="uidPeek" condition_present="0"/>
+                      </right>
+                    </comparison>
+                  </condition>
+                </globalReference>
+              </element>
+              <!-- is this a ZEROFILL column for mysql? -->
+              <element index="3" class_uid="classSpUid" action_uid="uidInsert">
+                <sp class_uid="uidMysqlColumnZeroFill" condition_present="0" db="MySQL"/>
+              </element>
+              <!-- is this a primary key? -->
+              <element index="4" class_uid="classLiteral" action_uid="uidInsert">
+                <literal class_uid="uidPrimaryKey" condition_present="1"/>
+              </element>
+            </sequence>
+          </iteration>
+        </element>
+      </sequence>
+    </query>
+  </queries>
+</repository>
