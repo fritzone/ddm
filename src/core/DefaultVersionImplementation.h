@@ -105,6 +105,7 @@ public:
     virtual Table* getDescendantTable(Table*);
     virtual TableInstance* getDescendantTableInstance(TableInstance*);
     virtual QStringList getTableNames() const;
+    virtual void deleteObjectByUid(const QString& uid);
 
     void createTreeItems(GuiElements* gui, ContextMenuEnabledTreeWidgetItem* projectItem, int idxAfter);
     void deleteTableInstance(TableInstance *tinst, TableDeletionAction*& );
