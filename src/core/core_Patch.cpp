@@ -701,6 +701,13 @@ void Patch::suspendPatch()
         t = m_deletedUids.size();
     }
 
+    // and remove the new elements from the version
+    t = m_newUids.size();
+    for(int i = t - 1; i >= 0; i--)
+    {
+        m_version->deleteObjectByUid(m_newUids[i]);
+    }
+
     // upate GUI and flags
     delete getLocation();
 }
