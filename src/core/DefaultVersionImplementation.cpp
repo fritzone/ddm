@@ -355,6 +355,72 @@ QStringList DefaultVersionImplementation::getTableNames() const
     return result;
 }
 
+void DefaultVersionImplementation::deleteObjectByUid(const QString &uid)
+{
+    ObjectWithUid* obj = UidWarehouse::instance().getElement(uid);
+    Version* v = UidWarehouse::instance().getVersionForUid(uid);
+    if(v != this)
+    {
+        qDebug() << "different version?";
+        return;
+    }
+
+    if(UserDataType* t = dynamic_cast<UserDataType*>(obj))
+    {
+        deleteDataType(t->getName());
+        delete t->getLocation();
+        return;
+    }
+
+    if(Table* t = dynamic_cast<Table*>(obj))
+    {
+        deleteTable(t);
+        delete t->getLocation();
+        return;
+    }
+
+    if(Diagram* t = dynamic_cast<Diagram*>(obj))
+    {
+        deleteDiagram(t->getName());
+        delete t->getLocation();
+        return;
+    }
+
+    if(TableInstance* t = dynamic_cast<TableInstance*>(obj))
+    {
+        deleteTableInstance(t);
+        return;
+    }
+
+    if(View* t = dynamic_cast<View*>(obj))
+    {
+        deleteView(t->getName());
+        delete t->getLocation();
+        return;
+    }
+
+    if(Procedure* t = dynamic_cast<Procedure*>(obj))
+    {
+        deleteProcedure(t->getName());
+        delete t->getLocation();
+        return;
+    }
+
+    if(Function* t = dynamic_cast<Function*>(obj))
+    {
+        deleteFunction(t->getName());
+        delete t->getLocation();
+        return;
+    }
+
+    if(Trigger* t = dynamic_cast<Trigger*>(obj))
+    {
+        deleteTrigger(t->getName());
+        delete t->getLocation();
+        return;
+    }
+}
+
 void DefaultVersionImplementation::purgeSentencedTableInstances()
 {
     int i=0;
