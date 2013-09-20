@@ -517,6 +517,12 @@ public:
      */
     virtual TableInstance* getDescendantTableInstance(TableInstance*) = 0;
 
+    /**
+     * @brief deleteObjectByUid deletes the object with the given GUID from this
+     * @param uid
+     */
+    virtual void deleteObjectByUid(const QString& uid) = 0;
+
 protected:
     int m_major;
     int m_minor;
