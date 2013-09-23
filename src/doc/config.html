@@ -1,0 +1,68 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+	<STYLE TYPE="text/css">
+	<!--
+		P { border: 1px solid #000000; padding: 0.02in }
+	-->
+	</STYLE>
+</HEAD>
+<BODY LANG="en-US" BGCOLOR="white" DIR="LTR">
+<P ALIGN=CENTER STYLE="margin-bottom: 0in; background: white; border: none; padding: 0in; font-style: normal; line-height: 115%; text-decoration: none">
+<FONT COLOR="#000000" FACE="Arial" SIZE=3><B>Configuration</B></FONT></P>
+<P STYLE="margin-bottom: 0in; background: white; font-style: normal; font-weight: normal; line-height: 115%; text-decoration: none">
+<FONT COLOR="#000000" FACE="Arial" SIZE=2 STYLE="font-size: 11pt"><I><B>Code Generation</B></I>
+<BR><BR>
+<I>Use backticks</I><br>
+Specifies if you want to use backticks (`) in the SQL code generated. This is MySQL specific.
+<BR><BR>
+<I>Upcase</I><br>
+If you want to generate UPCASE sql instead of lowercase SQL check this box. This will generate SQL commands, however it will not change the case-ness of the table and column names.
+<BR><BR>
+<!-- <I>Generate comments</I><br>
+If you want to generate comments from teh description of tables check this field.
+<BR><BR> -->
+<I>Primary key position</I><br>
+You can specify where to put the primary key declarations in the generated SQL. <BR> 
+The difference will be like: <BR><BR>
+"AfterColumnsDeclaration" will generate SQL like: <BR>
+<font face = "Courier New" size=1>
+<font color =#0000FF>CREATE TABLE </font>`TEST_TABLE` <BR>
+(<BR>
+ `INDEX` <font color =#0000FF>INTEGER</font>(10) DEFAULT 0,<BR>
+ `ANOTHER_INDEX` <font color =#0000FF>INTEGER</font>(10) DEFAULT 0<BR>
+ ,<font color =#0000FF>PRIMARY KEY</font> (INDEX, ANOTHER_INDEX)<BR>
+);<BR>
+</font>
+<BR>
+and "ColumnsDeclaration" will generate SQL like:<BR>
+<font face = "Courier New" size=1>
+<font color =#0000FF>CREATE  TABLE</font> `TEST_TABLE`<BR>
+(<BR>
+	`test_key` <font color =#0000FF>FLOAT PRIMARY KEY  DEFAULT</font> 0.0,<BR>
+	`few` <font color =#0000FF>BIT</font>(1)<BR>
+);<BR>
+</font>
+<BR>
+There is one exception: in case the table contains more than one primary key, regardless that the ColumnsDeclaration was specified, the code generator still will use the AfterColumnsDeclaration to generate valid SQLs.
+<BR><BR>
+<I>Foreign Key Position</I>
+<BR>
+You can specify where to put the foreign keys in the generated SQL script.<BR>
+"InTable" will put the FOREIGN KEY in the CREATE TABLE command <BR>
+"AfterTable" will put the FOREIGN KEY in a separate ALTER TABLE command, outside the CREATE TABLE. 
+<BR>For the SQL prepared in the table details screen the foreign keys will not be shown, hoever they're present in the deployment SQL screen.
+<BR><BR>
+<strong><em>General</em></strong>
+<BR>
+<BR>
+<em>Allow foreign key propagation checkbox</em><BR>Tells the application that when the user is specializing a table it should also take over the foreign keys in the new table. By default this is turned off.
+<BR><BR>
+<em>Continuous validation</em><BR>
+Tells the application to perform validation in every possible situation which can create database validation errors. If unchecked the validation will be executed only by pressing the Validate button on the main toolbar.
+<BR>
+
+</FONT></P>
+
+</BODY>
+</HTML>

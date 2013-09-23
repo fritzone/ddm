@@ -1,0 +1,892 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>InjectSqlDialog</class>
+ <widget class="QDialog" name="InjectSqlDialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>717</width>
+    <height>518</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Deploy</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout_4">
+   <property name="spacing">
+    <number>6</number>
+   </property>
+   <property name="leftMargin">
+    <number>9</number>
+   </property>
+   <property name="rightMargin">
+    <number>9</number>
+   </property>
+   <item>
+    <widget class="QLabel" name="lblVersionToBeDeployed">
+     <property name="text">
+      <string>TextLabel</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QTabWidget" name="tabWidget">
+     <property name="currentIndex">
+      <number>0</number>
+     </property>
+     <widget class="QWidget" name="Page1">
+      <attribute name="title">
+       <string>Destination</string>
+      </attribute>
+      <layout class="QHBoxLayout" name="horizontalLayout">
+       <property name="spacing">
+        <number>0</number>
+       </property>
+       <item>
+        <widget class="QGroupBox" name="grpConnections">
+         <property name="title">
+          <string>Where to</string>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_3">
+          <property name="rightMargin">
+           <number>0</number>
+          </property>
+          <item>
+           <widget class="QListWidget" name="lstAllConnections">
+            <property name="selectionMode">
+             <enum>QAbstractItemView::MultiSelection</enum>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>16</width>
+              <height>16</height>
+             </size>
+            </property>
+            <property name="uniformItemSizes">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="chkRollbackOnError">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
+            <property name="text">
+             <string>Rollback on Error</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="chkInjectMetadata">
+            <property name="text">
+             <string>Inject Metadata</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QFrame" name="frame">
+         <property name="frameShape">
+          <enum>QFrame::NoFrame</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Raised</enum>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_2">
+          <property name="spacing">
+           <number>0</number>
+          </property>
+          <property name="margin">
+           <number>0</number>
+          </property>
+          <item>
+           <widget class="QToolButton" name="btnDetails">
+            <property name="toolTip">
+             <string>View details of the last clicked connection</string>
+            </property>
+            <property name="text">
+             <string>...</string>
+            </property>
+            <property name="icon">
+             <iconset resource="../dbm.qrc">
+              <normaloff>:/images/actions/images/small/alias.png</normaloff>:/images/actions/images/small/alias.png</iconset>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="grpConnectionDetails">
+         <property name="title">
+          <string> Connection details </string>
+         </property>
+         <layout class="QFormLayout" name="formLayout">
+          <property name="fieldGrowthPolicy">
+           <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+          </property>
+          <item row="0" column="0">
+           <widget class="QLabel" name="lblConnectionName">
+            <property name="text">
+             <string>Name</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QLineEdit" name="txtConnectionName">
+            <property name="toolTip">
+             <string>The name of the connection</string>
+            </property>
+            <property name="statusTip">
+             <string>The name of the connection</string>
+            </property>
+            <property name="whatsThis">
+             <string>The name of the connection</string>
+            </property>
+            <property name="text">
+             <string>localhost</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="0" colspan="2">
+           <widget class="Line" name="line_2">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="0">
+           <widget class="QLabel" name="lblHost">
+            <property name="text">
+             <string>Host</string>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="1">
+           <widget class="QLineEdit" name="txtDatabaseHost">
+            <property name="toolTip">
+             <string>The host which is hosting the database</string>
+            </property>
+            <property name="statusTip">
+             <string>The host which is hosting the database</string>
+            </property>
+            <property name="whatsThis">
+             <string>The host which is hosting the database</string>
+            </property>
+            <property name="text">
+             <string>localhost</string>
+            </property>
+           </widget>
+          </item>
+          <item row="5" column="0">
+           <widget class="QLabel" name="lblPort">
+            <property name="text">
+             <string>Port</string>
+            </property>
+           </widget>
+          </item>
+          <item row="5" column="1">
+           <widget class="QLineEdit" name="txtPort">
+            <property name="toolTip">
+             <string>The port of the connection</string>
+            </property>
+            <property name="statusTip">
+             <string>The port of the connection</string>
+            </property>
+            <property name="whatsThis">
+             <string>The port of the connection</string>
+            </property>
+            <property name="text">
+             <string>3306</string>
+            </property>
+           </widget>
+          </item>
+          <item row="6" column="0">
+           <widget class="QLabel" name="lblUser">
+            <property name="text">
+             <string>User</string>
+            </property>
+           </widget>
+          </item>
+          <item row="6" column="1">
+           <widget class="QLineEdit" name="txtDatabaseUser">
+            <property name="toolTip">
+             <string>User which is used to log in to the DB</string>
+            </property>
+            <property name="statusTip">
+             <string>User which is used to log in to the DB.</string>
+            </property>
+            <property name="whatsThis">
+             <string>User which is used to log in to the DB. Make sure the user has enough privileges for the operations you are trying to execute, such as he needs to be able to create tables, drop/create databases, enumerate objects, etc...</string>
+            </property>
+           </widget>
+          </item>
+          <item row="7" column="0">
+           <widget class="QLabel" name="lblPassword">
+            <property name="text">
+             <string>Password</string>
+            </property>
+           </widget>
+          </item>
+          <item row="7" column="1">
+           <widget class="QLineEdit" name="txtDatabasePassword">
+            <property name="toolTip">
+             <string>The password of the user</string>
+            </property>
+            <property name="statusTip">
+             <string>The password of the user.</string>
+            </property>
+            <property name="whatsThis">
+             <string>The password of the user. Right now (v0.1j) this is stored as plaintext, we will fix it in the future.</string>
+            </property>
+            <property name="echoMode">
+             <enum>QLineEdit::Password</enum>
+            </property>
+           </widget>
+          </item>
+          <item row="9" column="0">
+           <widget class="QLabel" name="lblDatabase">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
+            <property name="text">
+             <string>Database</string>
+            </property>
+           </widget>
+          </item>
+          <item row="9" column="1">
+           <layout class="QFormLayout" name="formLayout_2">
+            <property name="fieldGrowthPolicy">
+             <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+            </property>
+            <item row="0" column="0" colspan="2">
+             <layout class="QHBoxLayout" name="horizontalLayout_2">
+              <item>
+               <widget class="QLineEdit" name="txtDatabaseName"/>
+              </item>
+              <item>
+               <widget class="QComboBox" name="cmbDatabases">
+                <property name="enabled">
+                 <bool>false</bool>
+                </property>
+                <property name="toolTip">
+                 <string>The list of databases found on the server</string>
+                </property>
+                <property name="statusTip">
+                 <string>The list of databases found on the server</string>
+                </property>
+                <property name="whatsThis">
+                 <string>The list of databases found on the server</string>
+                </property>
+                <property name="editable">
+                 <bool>false</bool>
+                </property>
+                <property name="insertPolicy">
+                 <enum>QComboBox::InsertAlphabetically</enum>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QToolButton" name="btnBrowseForFile">
+                <property name="enabled">
+                 <bool>true</bool>
+                </property>
+                <property name="toolTip">
+                 <string>Create a new database</string>
+                </property>
+                <property name="statusTip">
+                 <string>Create a new database</string>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+                <property name="icon">
+                 <iconset resource="../dbm.qrc">
+                  <normaloff>:/images/actions/images/big/folder_yellow.png</normaloff>:/images/actions/images/big/folder_yellow.png</iconset>
+                </property>
+                <property name="iconSize">
+                 <size>
+                  <width>22</width>
+                  <height>22</height>
+                 </size>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QToolButton" name="btnCreateDatabase">
+                <property name="enabled">
+                 <bool>false</bool>
+                </property>
+                <property name="toolTip">
+                 <string>Create a new database</string>
+                </property>
+                <property name="statusTip">
+                 <string>Create a new database</string>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+                <property name="icon">
+                 <iconset resource="../dbm.qrc">
+                  <normaloff>:/images/actions/images/small/add.png</normaloff>:/images/actions/images/small/add.png</iconset>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="btnTestConnection">
+                <property name="text">
+                 <string>Test Connection</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+           </layout>
+          </item>
+          <item row="10" column="0" colspan="2">
+           <widget class="Line" name="line">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+           </widget>
+          </item>
+          <item row="11" column="0">
+           <widget class="QCheckBox" name="chkAutoConnect">
+            <property name="text">
+             <string>Auto Connect</string>
+            </property>
+           </widget>
+          </item>
+          <item row="12" column="0">
+           <widget class="QCheckBox" name="chkSavePassword">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
+            <property name="text">
+             <string>Save Password</string>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="8" column="0">
+           <widget class="QPushButton" name="btnConnect">
+            <property name="toolTip">
+             <string>Click this button to test the connection to the host.</string>
+            </property>
+            <property name="statusTip">
+             <string>Click this button to test the connection to the host.</string>
+            </property>
+            <property name="whatsThis">
+             <string>Click this button to test the connection to the host</string>
+            </property>
+            <property name="text">
+             <string>Connect</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <layout class="QHBoxLayout" name="horizontalLayout_4">
+            <item>
+             <widget class="QComboBox" name="cmbDatabaseType">
+              <property name="toolTip">
+               <string>The database engine that will support this connection</string>
+              </property>
+              <property name="statusTip">
+               <string>The database engine that will support this connection</string>
+              </property>
+              <property name="whatsThis">
+               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The database engine that will support this connection. Right now (v0.1j) Database Deployment Manager supports only MySql.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+              </property>
+              <item>
+               <property name="text">
+                <string>MySQL</string>
+               </property>
+               <property name="icon">
+                <iconset resource="../dbm.qrc">
+                 <normaloff>:/images/actions/images/small/mysql.png</normaloff>:/images/actions/images/small/mysql.png</iconset>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Sqlite</string>
+               </property>
+               <property name="icon">
+                <iconset resource="../dbm.qrc">
+                 <normaloff>:/images/actions/images/small/sqlite-icon.png</normaloff>:/images/actions/images/small/sqlite-icon.png</iconset>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>CUBRID</string>
+               </property>
+               <property name="icon">
+                <iconset resource="../dbm.qrc">
+                 <normaloff>:/images/actions/images/small/cubrid.png</normaloff>:/images/actions/images/small/cubrid.png</iconset>
+               </property>
+              </item>
+             </widget>
+            </item>
+            <item>
+             <widget class="QComboBox" name="cmbSqliteVersion">
+              <item>
+               <property name="text">
+                <string>Version 3</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Version 2</string>
+               </property>
+              </item>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="lblDatabaseType">
+            <property name="text">
+             <string>Database Type</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tab">
+      <attribute name="title">
+       <string>Objects to Deploy</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout">
+       <item>
+        <widget class="QTreeWidget" name="treeObjectsToDeploy">
+         <property name="alternatingRowColors">
+          <bool>true</bool>
+         </property>
+         <property name="uniformRowHeights">
+          <bool>true</bool>
+         </property>
+         <property name="animated">
+          <bool>true</bool>
+         </property>
+         <property name="headerHidden">
+          <bool>false</bool>
+         </property>
+         <property name="columnCount">
+          <number>3</number>
+         </property>
+         <attribute name="headerCascadingSectionResizes">
+          <bool>true</bool>
+         </attribute>
+         <attribute name="headerHighlightSections">
+          <bool>true</bool>
+         </attribute>
+         <column>
+          <property name="text">
+           <string>Object</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Deploy</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Drop if exists</string>
+          </property>
+         </column>
+        </widget>
+       </item>
+       <item>
+        <widget class="QFrame" name="frame_2">
+         <property name="frameShape">
+          <enum>QFrame::StyledPanel</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Raised</enum>
+         </property>
+         <layout class="QHBoxLayout" name="horizontalLayout_3">
+          <item>
+           <spacer name="horizontalSpacer">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
+           <widget class="QPushButton" name="pushButton">
+            <property name="text">
+             <string>Plans</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </widget>
+   </item>
+   <item>
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <tabstops>
+  <tabstop>txtConnectionName</tabstop>
+  <tabstop>cmbDatabaseType</tabstop>
+  <tabstop>cmbSqliteVersion</tabstop>
+  <tabstop>txtDatabaseHost</tabstop>
+  <tabstop>txtPort</tabstop>
+  <tabstop>txtDatabaseUser</tabstop>
+  <tabstop>txtDatabasePassword</tabstop>
+  <tabstop>btnConnect</tabstop>
+  <tabstop>txtDatabaseName</tabstop>
+  <tabstop>cmbDatabases</tabstop>
+  <tabstop>btnBrowseForFile</tabstop>
+  <tabstop>btnCreateDatabase</tabstop>
+  <tabstop>btnTestConnection</tabstop>
+  <tabstop>chkAutoConnect</tabstop>
+  <tabstop>chkSavePassword</tabstop>
+  <tabstop>treeObjectsToDeploy</tabstop>
+  <tabstop>pushButton</tabstop>
+  <tabstop>buttonBox</tabstop>
+  <tabstop>chkRollbackOnError</tabstop>
+  <tabstop>tabWidget</tabstop>
+  <tabstop>lstAllConnections</tabstop>
+  <tabstop>chkInjectMetadata</tabstop>
+  <tabstop>btnDetails</tabstop>
+ </tabstops>
+ <resources>
+  <include location="../dbm.qrc"/>
+ </resources>
+ <connections>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>accepted()</signal>
+   <receiver>InjectSqlDialog</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>257</x>
+     <y>508</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>157</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>rejected()</signal>
+   <receiver>InjectSqlDialog</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>325</x>
+     <y>508</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>286</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>txtDatabaseHost</sender>
+   <signal>returnPressed()</signal>
+   <receiver>InjectSqlDialog</receiver>
+   <slot>onConnect()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>685</x>
+     <y>160</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>358</x>
+     <y>244</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>txtDatabaseUser</sender>
+   <signal>returnPressed()</signal>
+   <receiver>InjectSqlDialog</receiver>
+   <slot>onConnect()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>685</x>
+     <y>224</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>358</x>
+     <y>244</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>txtDatabasePassword</sender>
+   <signal>returnPressed()</signal>
+   <receiver>InjectSqlDialog</receiver>
+   <slot>onConnect()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>685</x>
+     <y>256</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>358</x>
+     <y>244</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnConnect</sender>
+   <signal>clicked()</signal>
+   <receiver>InjectSqlDialog</receiver>
+   <slot>onConnect()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>399</x>
+     <y>289</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>358</x>
+     <y>244</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnCreateDatabase</sender>
+   <signal>clicked()</signal>
+   <receiver>InjectSqlDialog</receiver>
+   <slot>onCreateDatabase()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>683</x>
+     <y>327</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>358</x>
+     <y>244</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>txtDatabaseHost</sender>
+   <signal>textEdited(QString)</signal>
+   <receiver>InjectSqlDialog</receiver>
+   <slot>onHostChange(QString)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>685</x>
+     <y>160</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>358</x>
+     <y>244</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>txtDatabaseUser</sender>
+   <signal>textEdited(QString)</signal>
+   <receiver>InjectSqlDialog</receiver>
+   <slot>onUserChange(QString)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>685</x>
+     <y>224</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>358</x>
+     <y>244</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnDetails</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>grpConnectionDetails</receiver>
+   <slot>setVisible(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>308</x>
+     <y>275</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>503</x>
+     <y>236</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>lstAllConnections</sender>
+   <signal>itemClicked(QListWidgetItem*)</signal>
+   <receiver>InjectSqlDialog</receiver>
+   <slot>onSelectConnection(QListWidgetItem*)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>167</x>
+     <y>222</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>358</x>
+     <y>244</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>cmbDatabases</sender>
+   <signal>currentIndexChanged(QString)</signal>
+   <receiver>InjectSqlDialog</receiver>
+   <slot>onDbChange(QString)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>605</x>
+     <y>312</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>358</x>
+     <y>258</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>txtConnectionName</sender>
+   <signal>textEdited(QString)</signal>
+   <receiver>InjectSqlDialog</receiver>
+   <slot>onConnectionNameEdited(QString)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>562</x>
+     <y>369</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>358</x>
+     <y>258</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>cmbDatabaseType</sender>
+   <signal>currentIndexChanged(QString)</signal>
+   <receiver>InjectSqlDialog</receiver>
+   <slot>onDbTypeChange(QString)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>562</x>
+     <y>115</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>358</x>
+     <y>258</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnBrowseForFile</sender>
+   <signal>clicked()</signal>
+   <receiver>InjectSqlDialog</receiver>
+   <slot>onSelectFileForSqlite()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>632</x>
+     <y>341</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>358</x>
+     <y>258</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>txtDatabaseName</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>InjectSqlDialog</receiver>
+   <slot>onSqliteFileNameChange(QString)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>474</x>
+     <y>341</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>358</x>
+     <y>258</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnTestConnection</sender>
+   <signal>clicked()</signal>
+   <receiver>InjectSqlDialog</receiver>
+   <slot>onTestConnection()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>627</x>
+     <y>349</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>358</x>
+     <y>258</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>helpRequested()</signal>
+   <receiver>InjectSqlDialog</receiver>
+   <slot>onHelp()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>358</x>
+     <y>492</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>358</x>
+     <y>258</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>onConnect()</slot>
+  <slot>onCreateDatabase()</slot>
+  <slot>onSelectConnection(QListWidgetItem*)</slot>
+  <slot>onHostChange(QString)</slot>
+  <slot>onUserChange(QString)</slot>
+  <slot>changeConnection()</slot>
+  <slot>onDbChange(QString)</slot>
+  <slot>onConnectionNameEdited(QString)</slot>
+  <slot>onDbTypeChange(QString)</slot>
+  <slot>onSelectFileForSqlite()</slot>
+  <slot>onSqliteFileNameChange(QString)</slot>
+  <slot>onTestConnection()</slot>
+  <slot>onHelp()</slot>
+ </slots>
+</ui>

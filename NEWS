@@ -1,0 +1,41 @@
+* 0.1a - Initial release
+* 0.1b - Fixed a small bug in the foreign key handling
+* 0.1c - Fixed another bug in the table deletion mechanism when the table was 
+         part of a diagram
+* 0.1d - Fixed some small bugs
+       - Implemented copy/paste for tables and columns
+       - Implemented the grouping of the data types in color coded folders
+       - Minor GUI redesign for some windows
+* 0.1e - Fixed more bugs
+       - Some GUI redesign
+       - More documentation written
+       - Implemented the database reverse engineering feature
+       - Implemented a database validation
+* 0.1f - Even more bugs were fixed. Some more were introduced
+       - Visual Query builder for VIEW queries
+       - Connection manager
+       - Parallel deployment
+       - Changed to inno installer
+* 0.1g - Code completion for the SQL editor
+       - Some bugs fixed, some more bugs introduced
+       - Database browsing and query execution
+* 0.1h - Tracker issues 3477408, 3477376, 3474266, 3473043, 3470040, 3468464, 
+         3466097, 3463529 were resolved
+       - Implemented data validation for the table instances
+       - Lots of small annyoing issues were fixed
+       - Worked on the SQL editor
+       - Procedures implemented
+* 0.1i - more database object supported for deployment
+       - triggers implemented
+       - database specific properties implemented
+       - database browsing enhanced supporting more objects
+       - some fine tuning of GUI elements
+       - tracker issues 348283 and 3482824 fixed
+       - a new Help system
+* 0.1j - version management implemented
+       - bind to deployment implemented
+       - documentation generator implemented
+       - fixed issues with the renamed table instances - other objects now support 
+         the renamed table instances
+       - some gui refinements
+       - some bugs fixed
