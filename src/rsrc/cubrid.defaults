@@ -1,0 +1,176 @@
+﻿<!DOCTYPE DBM>
+<Solutions>
+ <Solution Name="defaults">
+  <Projects>
+   <Project Name="DEFAULT" OOP="0" DB="CUBRID">
+    <Description></Description>
+    <MajorVersions>
+     <MajorVersion>
+      <Version>1.0</Version>
+      <DataTypes>
+       <DataType SqlType="CHAR" Size="" Type="Text/String" Name="CHAR" Codepage="" DefaultValue="" Unsigned="0" CanBeNull="1" AutoIncrement="1">
+        <Description>CHAR - Datatype for CUBRID</Description>
+        <Values/>
+       </DataType>
+       <DataType SqlType="CHAR" Size="1" Type="Text/String" Name="CHAR(1)" Codepage="" DefaultValue="" Unsigned="0" CanBeNull="1" AutoIncrement="1">
+        <Description>CHAR(1) - Datatype for CUBRID</Description>
+        <Values/>
+       </DataType>
+       <DataType SqlType="CHAR" Size="255" Type="Text/String" Name="CHAR(255)" Codepage="" DefaultValue="null" Unsigned="0" CanBeNull="1" AutoIncrement="1">
+        <Description>CHAR(255) - Datatype for CUBRID</Description>
+        <Values/>
+       </DataType>
+       <DataType SqlType="VARCHAR" Size="" Type="Text/String" Name="VARCHAR" Codepage="" DefaultValue="" Unsigned="0" CanBeNull="1" AutoIncrement="1">
+        <Description>VARCHAR - Datatype for CUBRID</Description>
+        <Values/>
+       </DataType>
+       <DataType SqlType="VARCHAR" Size="1" Type="Text/String" Name="VARCHAR(1)" Codepage="" DefaultValue="" Unsigned="0" CanBeNull="1" AutoIncrement="1">
+        <Description>VARCHAR(1) - Datatype for CUBRID</Description>
+        <Values/>
+       </DataType>
+       <DataType SqlType="VARCHAR" Size="255" Type="Text/String" Name="VARCHAR(255)" Codepage="" DefaultValue="null" Unsigned="0" CanBeNull="1" AutoIncrement="1">
+        <Description>VARCHAR(255) - Datatype for CUBRID</Description>
+        <Values/>
+       </DataType>
+       <DataType SqlType="VARCHAR" Size="1024" Type="Text/String" Name="VARCHAR(1024)" Codepage="" DefaultValue="" Unsigned="0" CanBeNull="1" AutoIncrement="1">
+        <Description>VARCHAR(1024) - Datatype for CUBRID</Description>
+        <Values/>
+       </DataType>
+       <DataType SqlType="VARCHAR" Size="4096" Type="Text/String" Name="VARCHAR(4096)" Codepage="" DefaultValue="" Unsigned="0" CanBeNull="1" AutoIncrement="1">
+        <Description>VARCHAR(4096) - Datatype for CUBRID</Description>
+        <Values/>
+       </DataType>
+       <DataType SqlType="STRING" Size="" Type="Text/String" Name="STRING" Codepage="" DefaultValue="" Unsigned="0" CanBeNull="1" AutoIncrement="1">
+        <Description>STRING - Datatype for CUBRID</Description>
+        <Values/>
+       </DataType>
+       <DataType SqlType="INTEGER" Size="10" Type="Numeric" Name="INT(10)" Codepage="" DefaultValue="0" Unsigned="0" CanBeNull="1" AutoIncrement="1">
+        <Description>INT(10) - Datatype for CUBRID</Description>
+        <Values/>
+       </DataType>
+       <DataType SqlType="INTEGER" Size="1" Type="Numeric" Name="INT(1)" Codepage="" DefaultValue="0" Unsigned="0" CanBeNull="1" AutoIncrement="1">
+        <Description>INT(1) - Datatype for CUBRID</Description>
+        <Values/>
+       </DataType>
+       <DataType SqlType="INTEGER" Size="2" Type="Numeric" Name="INT(2)" Codepage="" DefaultValue="0" Unsigned="0" CanBeNull="1" AutoIncrement="1">
+        <Description>INT(2) - Datatype for CUBRID</Description>
+        <Values/>
+       </DataType>
+       <DataType SqlType="INTEGER" Size="3" Type="Numeric" Name="INT(3)" Codepage="" DefaultValue="0" Unsigned="0" CanBeNull="1" AutoIncrement="1">
+        <Description>INT(3) - Datatype for CUBRID</Description>
+        <Values/>
+       </DataType>
+       <DataType SqlType="INTEGER" Size="4" Type="Numeric" Name="INT(4)" Codepage="" DefaultValue="0" Unsigned="0" CanBeNull="1" AutoIncrement="1">
+        <Description>INT(4) - Datatype for CUBRID</Description>
+        <Values/>
+       </DataType>
+       <DataType SqlType="INTEGER" Size="" Type="Numeric" Name="INTEGER - UNSIGNED" Codepage="" DefaultValue="0" Unsigned="1" CanBeNull="1" AutoIncrement="1">
+        <Description>INTEGER UNSIGNED  - Datatype for CUBRID</Description>
+        <Values/>
+       </DataType>
+       <DataType SqlType="INTEGER" Size="" Type="Numeric" Name="INTEGER - SIGNED" Codepage="" DefaultValue="0" Unsigned="0" CanBeNull="1" AutoIncrement="1">
+        <Description>INTEGER - Datatype for CUBRID</Description>
+        <Values/>
+       </DataType>
+       <DataType SqlType="SMALLINT" Size="" Type="Numeric" Name="SMALLINT" Codepage="" DefaultValue="0" Unsigned="0" CanBeNull="1" AutoIncrement="1">
+        <Description>SMALLINT - Datatype for CUBRID</Description>
+        <Values/>
+       </DataType>
+       <DataType SqlType="BIGINT" Size="" Type="Numeric" Name="BIGINT" Codepage="" DefaultValue="0" Unsigned="0" CanBeNull="1" AutoIncrement="1">
+        <Description>BIGINT - Datatype for CUBRID</Description>
+        <Values/>
+       </DataType>
+       <DataType SqlType="DECIMAL" Size="5,2" Type="Numeric" Name="DECIMAL(5,2)" Codepage="" DefaultValue="0" Unsigned="0" CanBeNull="1" AutoIncrement="1">
+        <Description>DECIMAL(5,2) - Datatype for CUBRID</Description>
+        <Values/>
+       </DataType>
+       <DataType SqlType="DECIMAL" Size="6,2" Type="Numeric" Name="DECIMAL(6,2)" Codepage="" DefaultValue="0" Unsigned="0" CanBeNull="1" AutoIncrement="1">
+        <Description>DECIMAL(6,2) - Datatype for CUBRID</Description>
+        <Values/>
+       </DataType>
+       <DataType SqlType="DECIMAL" Size="7,2" Type="Numeric" Name="DECIMAL(7,2)" Codepage="" DefaultValue="0" Unsigned="0" CanBeNull="1" AutoIncrement="1">
+        <Description>DECIMAL(7,2) - Datatype for CUBRID</Description>
+        <Values/>
+       </DataType>
+       <DataType SqlType="FLOAT" Size="" Type="Numeric" Name="FLOAT" Codepage="" DefaultValue="0.0" Unsigned="0" CanBeNull="1" AutoIncrement="1">
+        <Description>FLOAT - Datatype for CUBRID</Description>
+        <Values/>
+       </DataType>
+       <DataType SqlType="REAL" Size="" Type="Numeric" Name="REAL" Codepage="" DefaultValue="0.0" Unsigned="0" CanBeNull="1" AutoIncrement="1">
+        <Description>REAL - Datatype for CUBRID</Description>
+        <Values/>
+       </DataType>
+       <DataType SqlType="MONETARY" Size="" Type="Numeric" Name="MONETARY" Codepage="" DefaultValue="0.0" Unsigned="0" CanBeNull="1" AutoIncrement="1">
+        <Description>MONETARY - Datatype for CUBRID</Description>
+        <Values/>
+       </DataType>
+       <DataType SqlType="DOUBLE PRECISION" Size="" Type="Numeric" Name="DOUBLE PRECISION" Codepage="" DefaultValue="0.0" Unsigned="0" CanBeNull="1" AutoIncrement="1">
+        <Description>DOUBLE PRECISION - Datatype for CUBRID</Description>
+        <Values/>
+       </DataType>
+       <DataType SqlType="BIT" Size="1" Type="Numeric" Name="BIT(1)" Codepage="" DefaultValue="" Unsigned="0" CanBeNull="1" AutoIncrement="1">
+        <Description>BIT(1) - Datatype for CUBRID</Description>
+        <Values/>
+       </DataType>
+       <DataType SqlType="BIT" Size="2" Type="Numeric" Name="BIT(2)" Codepage="" DefaultValue="" Unsigned="0" CanBeNull="1" AutoIncrement="1">
+        <Description>BIT(2) - Datatype for CUBRID</Description>
+        <Values/>
+       </DataType>
+       <DataType SqlType="BIT" Size="4" Type="Numeric" Name="BIT(4)" Codepage="" DefaultValue="" Unsigned="0" CanBeNull="1" AutoIncrement="1">
+        <Description>BIT(4) - Datatype for CUBRID</Description>
+        <Values/>
+       </DataType>
+       <DataType SqlType="BIT" Size="8" Type="Numeric" Name="BIT(8)" Codepage="" DefaultValue="" Unsigned="0" CanBeNull="1" AutoIncrement="1">
+        <Description>BIT(8) - Datatype for CUBRID</Description>
+        <Values/>
+       </DataType>
+       <DataType SqlType="BIT" Size="16" Type="Numeric" Name="BIT(16)" Codepage="" DefaultValue="" Unsigned="0" CanBeNull="1" AutoIncrement="1">
+        <Description>BIT(16) - Datatype for CUBRID</Description>
+        <Values/>
+       </DataType>
+       <DataType SqlType="BIT" Size="32" Type="Numeric" Name="BIT(32)" Codepage="" DefaultValue="" Unsigned="0" CanBeNull="1" AutoIncrement="1">
+        <Description>BIT(32) - Datatype for CUBRID</Description>
+        <Values/>
+       </DataType>
+       <DataType SqlType="BIT" Size="64" Type="Numeric" Name="BIT(64)" Codepage="" DefaultValue="" Unsigned="0" CanBeNull="1" AutoIncrement="1">
+        <Description>BIT(64) - Datatype for CUBRID</Description>
+        <Values/>
+       </DataType>
+       <DataType SqlType="BIT VARYING" Size="" Type="Numeric" Name="BIT VARYING" Codepage="" DefaultValue="" Unsigned="0" CanBeNull="1" AutoIncrement="1">
+        <Description>BIT VARYING - Datatype for CUBRID</Description>
+        <Values/>
+       </DataType>
+       <DataType SqlType="DATE" Size="" Type="Date/Time" Name="DATE" Codepage="" DefaultValue="" Unsigned="0" CanBeNull="1" AutoIncrement="1">
+        <Description>DATE - Datatype for CUBRID</Description>
+        <Values/>
+       </DataType>
+       <DataType SqlType="TIME" Size="" Type="Date/Time" Name="TIME" Codepage="" DefaultValue="" Unsigned="0" CanBeNull="1" AutoIncrement="1">
+        <Description>TIME - Datatype for CUBRID</Description>
+        <Values/>
+       </DataType>
+       <DataType SqlType="DATETIME" Size="" Type="Date/Time" Name="DATETIME" Codepage="" DefaultValue="" Unsigned="0" CanBeNull="1" AutoIncrement="1">
+        <Description>DATETIME - Datatype for CUBRID</Description>
+        <Values/>
+       </DataType>
+       <DataType SqlType="TIMESTAMP" Size="" Type="Date/Time" Name="TIMESTAMP" Codepage="" DefaultValue="" Unsigned="0" CanBeNull="1" AutoIncrement="1">
+        <Description>TIMESTAMP - Datatype for CUBRID</Description>
+        <Values/>
+       </DataType>
+       <DataType SqlType="BLOB" Size="" Type="Blob/Binary" Name="BLOB" Codepage="" DefaultValue="" Unsigned="0" CanBeNull="1" AutoIncrement="1">
+        <Description>BLOB - Datatype for CUBRID</Description>
+        <Values/>
+       </DataType>
+       <DataType SqlType="CLOB" Size="" Type="Blob/Binary" Name="CLOB" Codepage="" DefaultValue="" Unsigned="0" CanBeNull="1" AutoIncrement="1">
+        <Description>CLOB - Datatype for CUBRID</Description>
+        <Values/>
+       </DataType>
+      </DataTypes>
+      <Tables/>
+      <Diagrams/>
+      <TableInstances/>
+     </MajorVersion>
+    </MajorVersions>
+   </Project>
+  </Projects>
+ </Solution>
+</Solutions>

@@ -1,0 +1,57 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Views</title>
+
+
+	
+	<style type="text/css">
+	<!--
+		P { border: 1px solid #000000; padding: 0.02in }
+.style1 {font-family: Arial, Helvetica, sans-serif}
+.style2 {font-family: "Courier New", Courier, monospace}
+.style3 {color: #0000FF}
+.style4 {color: #0000FF; font-family: "Courier New", Courier, monospace; }
+	-->
+	</style></head><body dir="ltr" bgcolor="white" lang="en-US">
+<p class="style1" style="border: medium none ; padding: 0in; background: white none repeat scroll 0%; margin-bottom: 0in; -moz-background-clip: -moz-initial; -moz-background-origin: -moz-initial; -moz-background-inline-policy: -moz-initial; font-style: normal; line-height: 115%; text-decoration: none;" align="center">
+<font color="#000000" face="Arial" size="3"><b>Views</b></font></p>
+<p class="style1" style="background: white none repeat scroll 0%; margin-bottom: 0in; -moz-background-clip: -moz-initial; -moz-background-origin: -moz-initial; -moz-background-inline-policy: -moz-initial; line-height: 115%;">
+<font color="#000000" face="Arial" size="3">  <font style="font-size: 11pt;" size="2">
+A database View can be imagined as a stored query which upon invocation
+produces a result set that mimics the behavior of a table. Views are
+created using standard
+<strong style="font-family: Courier New,Courier,monospace; color: black;">"SELECT</strong><span style="font-family: Courier New,Courier,monospace; color: black;">"</span> statements based on already existing tables or other expressions.</font></font></p>
+
+<p class="style1" style="background: white none repeat scroll 0%; -moz-background-clip: -moz-initial; -moz-background-origin: -moz-initial; -moz-background-inline-policy: -moz-initial;"><font color="#000000" face="Arial" size="3">DDM offers support for two kind of view creation mechanisms:<br>
+  <br>
+&nbsp;&nbsp;1. Manual view creation<br>
+&nbsp;&nbsp;2. View creation with a query builder<br>
+<br>
+<em><strong>Manual views</strong></em><br>
+<br> When choosing to create a view manually you will need to type in
+the entire SQL query
+for the creation of the view. DDM has no control over the query, the
+SQL will be simply stored in the save file as plain text and deployed
+in the database as you have typed in.This method of creating a view can
+be used by professionals and also beginner SQL developers if they feel
+confident enough. An example of an SQL for creating a view is (please
+feel free to copy/paste this in the SQL window in case you create views
+manually):<br>
+<span class="style2"><br>
+<span class="style3">CREATE VIEW</span> &lt;MY_VIEW&gt;<br>
+</span><span class="style4">AS <br>
+SELECT</span><span class="style2"> * </span><span class="style4">FROM</span><span class="style2"> &lt;MY_TABLE&gt;</span><br>
+<br>
+When changing the name of the view from the query itself the name of
+the view in the name field and the project tree is updated, however
+when changin the name of the view from the name text field, the name in
+the SQL query takes precedence and it's not changed in the query, this
+allows you to give specific names for the views.<br>
+<br>
+<em><strong>Query builder</strong></em><br>
+<br>
+DDM has a nice feature, called a query builder. This allows you to
+build the SQL query for a view using mostly the mouse, and without
+having to worry about mistyping a command or a table name. For a
+through introduction to the query builder please click <a href="queryb.html" title="Quey Builder">here</a>.<br>
+</font></p>
+</body></html>

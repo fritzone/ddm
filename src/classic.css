@@ -1,0 +1,69 @@
+H1 {
+color: black; background: white; FONT-FAMILY: arial, helvetica, lucida-sans, sans-serif; FONT-SIZE: 18pt; FONT-STYLE: normal; FONT-VARIANT: normal
+}
+H2 {
+COLOR: #000000; FONT-FAMILY: verdana, helvetica, lucida-sans, sans-serif; FONT-SIZE: 14pt; FONT-STYLE: normal; FONT-VARIANT: normal
+}
+H3 {
+COLOR: #000000; FONT-FAMILY: lucida-sans, sans-serif; FONT-SIZE: 14pt; FONT-STYLE: normal; FONT-VARIANT: normal
+}
+H4 {
+COLOR: #000000; FONT-FAMILY: lucida-sans, sans-serif; FONT-SIZE: 12pt; FONT-STYLE: normal; FONT-VARIANT: normal
+}
+H5 {
+color: black; background: white; FONT-FAMILY: lucida-sans, sans-serif; FONT-SIZE: 12pt; FONT-STYLE: normal; FONT-VARIANT: normal
+}
+H6 {
+color: black; background: white; FONT-FAMILY: lucida-sans, sans-serif; FONT-SIZE: 10pt; FONT-STYLE: normal; FONT-VARIANT: normal
+}
+
+body {
+COLOR: #000000; FONT-FAMILY: lucida-sans, sans-serif; FONT-SIZE: 10pt; FONT-STYLE: normal; FONT-VARIANT: normal;
+}
+table{
+        border-width: 1px;
+        border-spacing: 1px;
+        border-style: none;
+        border-color: black;
+        border-collapse: collapse;
+        background-color: white;
+}
+th {
+        border-width: 1px;
+        padding: 1px;
+        border-style: inset;
+        border-color: black;
+        background-color: gainsboro;
+}
+td {
+        border-width: 1px;
+        padding: 1px;
+        border-style: inset;
+        border-color: black;
+        background-color: white;
+}
+
+.classProjectDescription{
+COLOR: #000000; FONT-FAMILY: lucida-sans, sans-serif; FONT-SIZE: 10pt; FONT-STYLE: normal; FONT-VARIANT: normal;
+}
+
+.classDescription{
+COLOR: #000000; FONT-FAMILY: lucida-sans, sans-serif; FONT-SIZE: 10pt; FONT-STYLE: normal; FONT-VARIANT: normal; line-height:2.0;
+}
+
+.classTableHeader{
+COLOR: #000000; background: gainsboro; FONT-FAMILY: lucida-sans, sans-serif; FONT-SIZE: 8pt; FONT-STYLE: normal; FONT-VARIANT: normal;
+}
+
+
+.classTODO {
+color: red; background: white; FONT-FAMILY: lucida-sans, sans-serif; FONT-SIZE: 10pt; FONT-STYLE: normal; FONT-VARIANT: normal
+}
+
+.classTableText{
+COLOR: #000000; background: white; FONT-FAMILY: lucida-sans, sans-serif; FONT-SIZE: 8pt; FONT-STYLE: normal; FONT-VARIANT: normal;
+}
+
+.classCode{
+COLOR: #000000; background: white; FONT-FAMILY: courier, fixed; FONT-SIZE: 8pt; FONT-STYLE: normal; FONT-VARIANT: normal;
+}
