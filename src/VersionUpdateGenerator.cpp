@@ -192,7 +192,7 @@ void VersionUpdateGenerator::updateTables(Version* from, Version* to)
             }
             if(!foundDescendant)
             {
-                droppedTables.append(fromTables[i]->getObjectUid());
+                droppedTables.append(fromTables[i]->getObjectUid().toString());
             }
         }
 
@@ -220,7 +220,7 @@ void VersionUpdateGenerator::updateTables(Version* from, Version* to)
             }
             if(!foundDescendant)
             {
-                droppedTables.append(fromTabInsts[i]->getObjectUid());
+                droppedTables.append(fromTabInsts[i]->getObjectUid().toString());
             }
         }
 
@@ -279,7 +279,7 @@ void VersionUpdateGenerator::updateTables(Version* from, Version* to)
         // obviously if we are downgrading, this will find all the new tables :(
         if(toTables[i]->getSourceUid() == nullUid)
         {
-            newTabUids.append(toTables[i]->getObjectUid());
+            newTabUids.append(toTables[i]->getObjectUid().toString());
         }
         else
         {
@@ -296,7 +296,7 @@ void VersionUpdateGenerator::updateTables(Version* from, Version* to)
 
             if(!foundARelation)
             {
-                newTabUids.append(toTables[i]->getObjectUid());
+                newTabUids.append(toTables[i]->getObjectUid().toString());
             }
         }
     }
@@ -348,18 +348,18 @@ void VersionUpdateGenerator::updateTables(Version* from, Version* to)
             {
                 // find the table
                 Table* t = toTinsts[i]->table();
-                if(newTabUids.contains(t->getObjectUid()))
+                if(newTabUids.contains(t->getObjectUid().toString()))
                 {
                     QStringList sql = toTinsts[i]->generateSqlSource(to->getProject()->getEngine()->getSqlGenerator(), fo, 0);
                     m_commands << sql;
-                    m_generatedTabinstUids.append(toTinsts[i]->getObjectUid());
+                    m_generatedTabinstUids.append(toTinsts[i]->getObjectUid().toString());
                     if(fkAllowed) fkAllowed = !to->getProject()->getEngine()->tableBlocksForeignKeyFunctionality(toTinsts[i]->table());
                 }
                 else    // a new instance of an existing table... basically the same code as above.
                 {
                     QStringList sql = toTinsts[i]->generateSqlSource(to->getProject()->getEngine()->getSqlGenerator(), fo, 0);
                     m_commands << sql;
-                    m_generatedTabinstUids.append(toTinsts[i]->getObjectUid());
+                    m_generatedTabinstUids.append(toTinsts[i]->getObjectUid().toString());
                     if(fkAllowed) fkAllowed = !to->getProject()->getEngine()->tableBlocksForeignKeyFunctionality(toTinsts[i]->table());
                 }
             }
@@ -391,7 +391,7 @@ void VersionUpdateGenerator::updateTables(Version* from, Version* to)
             {
                 if(toTinsts[j]->table()->getObjectUid() == newTabUids[i])
                 {
-                    if(!m_generatedTabinstUids.contains(toTinsts[j]->getObjectUid()))
+                    if(!m_generatedTabinstUids.contains(toTinsts[j]->getObjectUid().toString()))
                     {
                         QStringList sql = toTinsts[j]->generateSqlSource(to->getProject()->getEngine()->getSqlGenerator(), fo, 0);
                         m_commands << sql;
@@ -409,7 +409,7 @@ void VersionUpdateGenerator::updateTables(Version* from, Version* to)
                 {
                     if(toTinsts[j]->table()->getObjectUid() == newTabUids[i])
                     {
-                        if(!m_generatedTabinstUids.contains(toTinsts[j]->getObjectUid()))
+                        if(!m_generatedTabinstUids.contains(toTinsts[j]->getObjectUid().toString()))
                         {
                             QStringList foreignKeyCommands = to->getProject()->getEngine()->getSqlGenerator()->generateAlterTableForForeignKeys(toTinsts[j]->table(), fo);
                             m_commands << foreignKeyCommands;
@@ -454,7 +454,7 @@ void VersionUpdateGenerator::updateTables(Version* from, Version* to)
                 {
                     //tableChanges << "\n-- Update " + fromTables[i]->getName() + " (" +from->getVersionText() + ")  to " + toTables[j]->getName() + " (" +to->getVersionText() + ")";
                     TableUpdateGenerator* tud = new TableUpdateGenerator(fromTables[i], toTables[j], Workspace::getInstance()->currentProjectsEngine(), this);
-                    m_tableUpdates[toTables[j]->getObjectUid()] = tud;
+                    m_tableUpdates[toTables[j]->getObjectUid().toString()] = tud;
                     tableChanges << tud->commands();
                     fkCommands << tud->droppedFksCommands();
                     fkCommands << tud->newFksCommands();
@@ -1249,11 +1249,11 @@ void VersionUpdateGenerator::updateDifferentTableInstances(Version *from, Versio
     {
         if(!foundToTableInstances.contains(toTableInstances[i]))
         {
-            if(!m_generatedTabinstUids.contains(toTableInstances[i]->getObjectUid()))
+            if(!m_generatedTabinstUids.contains(toTableInstances[i]->getObjectUid().toString()))
             {
                 QStringList sql = toTableInstances[i]->generateSqlSource(to->getProject()->getEngine()->getSqlGenerator(), fo, 0);
                 m_commands << sql;
-                newUids.append(toTableInstances[i]->getObjectUid());
+                newUids.append(toTableInstances[i]->getObjectUid().toString());
                 if(fkAllowed) fkAllowed = !to->getProject()->getEngine()->tableBlocksForeignKeyFunctionality(toTableInstances[i]->table());
             }
 
@@ -1265,7 +1265,7 @@ void VersionUpdateGenerator::updateDifferentTableInstances(Version *from, Versio
         for(int j=0; j<newUids.size(); j++)
         {
             TableInstance* tinst = dynamic_cast<TableInstance*>(UidWarehouse::instance().getElement(newUids[j]));
-            if(tinst && !m_generatedTabinstUids.contains(tinst->getObjectUid()))
+            if(tinst && !m_generatedTabinstUids.contains(tinst->getObjectUid().toString()))
             {
                 QStringList foreignKeyCommands = to->getProject()->getEngine()->getSqlGenerator()->generateAlterTableForForeignKeys(tinst->table(), fo);
                 m_commands << foreignKeyCommands;

@@ -1,3 +1,4 @@
+#include <QApplication>
 #include <QtGui/QApplication>
 
 #include "Workspace.h"

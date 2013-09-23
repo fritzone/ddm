@@ -53,6 +53,8 @@ HEADERS += \
     core/DefaultVersionImplementation.h \
     db_DatabaseEngineManager.h
 
+INCLUDEPATH += .
+
 include (db/db.pri)
 INCLUDEPATH += db
 
