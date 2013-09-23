@@ -810,7 +810,7 @@ Table* DeserializationFactory::createTable(DatabaseEngine* engine, Version* ver,
 
     if(uid.length() == 0)
     {
-        uid = QUuid::createUuid();
+        uid = QUuid::createUuid().toString();
     }
 
     QString parent_uid = element.attribute("parent-uid");
@@ -1191,7 +1191,7 @@ TableInstance* DeserializationFactory::createTableInstance(Version* v, const QDo
     if(secondStep)
     {
         TableInstance* result = v->getTableInstance(name);
-        QStringList lst2 = instantiatedTableInstances.split(QChar(','), QString::SkipEmptyParts);
+        QStringList lst2 = instantiatedTableInstances.split(",", QString::SkipEmptyParts);
         for(int i=0; i<lst2.size(); i++)
         {
             TableInstance* tabInst= v->getTableInstance(lst2.at(i));
