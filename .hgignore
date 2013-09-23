@@ -7,3 +7,4 @@ qrc_*.*
 *.user
 *.orig
 *.pro.user.*
+build*
