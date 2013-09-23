@@ -28,8 +28,7 @@
 #include <QSvgGenerator>
 
 #if QT_VERSION >= 0x050000
-#include <QtPrintSupport/QPrintDialog>
-#include <QtPrintSupport/QPrinter>
+#include <QtPrintSupport/QtPrintSupport>
 #else
 #include <QPrintDialog>
 #include <QPrinter>

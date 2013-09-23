@@ -1,7 +1,8 @@
 # -------------------------------------------------
 # Project created by QtCreator 2009-11-25T12:54:30
 # -------------------------------------------------
-QT += network sql xml webkit svg widgets qtwebkitwidgets printsupport
+QT += core network sql xml webkit svg
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets webkitwidgets printsupport
 
 TARGET = ddm
 TEMPLATE = app
