@@ -25,9 +25,9 @@ void Column::serialize(QDomDocument &doc, QDomElement &parent) const
     columnElement.setAttribute("Name", m_name);
     columnElement.setAttribute("PK", m_pk);
     columnElement.setAttribute("Type", m_type->getName());
-    columnElement.setAttribute("uid", getObjectUid());
-    columnElement.setAttribute("class-uid", getClassUid());
-    columnElement.setAttribute("source-uid", getSourceUid());
+    columnElement.setAttribute("uid", getObjectUid().toString());
+    columnElement.setAttribute("class-uid", getClassUid().toString());
+    columnElement.setAttribute("source-uid", getSourceUid().toString());
 
     {
     QDomElement descElement = doc.createElement("Description");  // description

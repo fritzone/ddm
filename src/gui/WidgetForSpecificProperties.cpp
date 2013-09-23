@@ -286,12 +286,12 @@ void WidgetForSpecificProperties::feedInSpecificProperties(const QVector<SpInsta
                 checkBox->setToolTip(DatabaseEngineManager::instance().getSpiExtensionTooltip(m_dbEngine->getName().toUpper(),spInstances.at(i)->getClass()->getSqlRoleUid()));
                 formLayout->setWidget(m_rowsForGroups[group], QFormLayout::FieldRole, checkBox);
                 UidToWidget* uiw = new UidToWidget(spInstances.at(i));
-                uiw->objectUid = spInstances.at(i)->getObjectUid();
+                uiw->objectUid = spInstances.at(i)->getObjectUid().toString();
                 uiw->objectRoleUid = spInstances.at(i)->getClass()->getSqlRoleUid();
                 uiw->w = checkBox;
                 m_mappings.append(uiw);
 
-                m_signalMapper->setMapping(checkBox, spInstances.at(i)->getObjectUid());
+                m_signalMapper->setMapping(checkBox, spInstances.at(i)->getObjectUid().toString());
                 connect(checkBox, SIGNAL(clicked()), m_signalMapper, SLOT(map()));
 
                 const QString& v = spInstances.at(i)->get();
@@ -335,11 +335,11 @@ void WidgetForSpecificProperties::feedInSpecificProperties(const QVector<SpInsta
                 formLayout->setWidget(m_rowsForGroups[group], QFormLayout::LabelRole, label);
                 formLayout->setWidget(m_rowsForGroups[group], QFormLayout::FieldRole, comboBox);
                 UidToWidget* uiw = new UidToWidget(spInstances.at(i));
-                uiw->objectUid = spInstances.at(i)->getObjectUid();
+                uiw->objectUid = spInstances.at(i)->getObjectUid().toString();
                 uiw->w = comboBox;
                 uiw->objectRoleUid = spInstances.at(i)->getClass()->getSqlRoleUid();
                 m_mappings.append(uiw);
-                m_signalMapper->setMapping(comboBox, spInstances.at(i)->getObjectUid());
+                m_signalMapper->setMapping(comboBox, spInstances.at(i)->getObjectUid().toString());
                 int icv = comboBox->findText(cv);
                 if(comboBox->currentIndex() == -1) comboBox->setCurrentIndex(icv);
                 if(icv != -1) comboBox->setCurrentIndex(icv);
@@ -358,11 +358,11 @@ void WidgetForSpecificProperties::feedInSpecificProperties(const QVector<SpInsta
                 formLayout->setWidget(m_rowsForGroups[group], QFormLayout::FieldRole, lstValueSp);
 
                 UidToWidget* uiw = new UidToWidget(spInstances.at(i));
-                uiw->objectUid = spInstances.at(i)->getObjectUid();
+                uiw->objectUid = spInstances.at(i)->getObjectUid().toString();
                 uiw->w = lstValueSp;
                 uiw->objectRoleUid = spInstances.at(i)->getClass()->getSqlRoleUid();
                 m_mappings.append(uiw);
-                m_signalMapper->setMapping(lstValueSp, spInstances.at(i)->getObjectUid());
+                m_signalMapper->setMapping(lstValueSp, spInstances.at(i)->getObjectUid().toString());
                 connect(lstValueSp, SIGNAL(textEdited (const QString&)), this, SLOT(editTextEdited(const QString&))); // must be the last line
             }
 

@@ -36,6 +36,7 @@
 #include "db_DatabaseEngineManager.h"
 
 #include <QStringList>
+#include <QString>
 
 DeserializationFactory::DeserializationFactory()
 {
@@ -1191,10 +1192,12 @@ TableInstance* DeserializationFactory::createTableInstance(Version* v, const QDo
     if(secondStep)
     {
         TableInstance* result = v->getTableInstance(name);
-        QStringList lst2 = instantiatedTableInstances.split(",", QString::SkipEmptyParts);
-        for(int i=0; i<lst2.size(); i++)
+        QString::SplitBehavior skipper = QString::SkipEmptyParts;
+        QStringList lst = instantiatedTableInstances.split(strComma, skipper);
+
+        for(int i=0; i<lst.size(); i++)
         {
-            TableInstance* tabInst= v->getTableInstance(lst2.at(i));
+            TableInstance* tabInst= v->getTableInstance(lst.at(i));
             result->addInstantiatedTableInstance(tabInst);
         }
         return 0;

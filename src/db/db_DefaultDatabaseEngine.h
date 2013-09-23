@@ -17,7 +17,6 @@ public:
     {}
 
     QString toHexString(const QString &x);
-            QString hex = QString("%1").arg((int)(x.at(i).toAscii()), 0, 16);
 
     QStringList chopUpString(const QString &x, int size)
     {

@@ -337,7 +337,7 @@ void Table::serialize(QDomDocument &doc, QDomElement &parent) const
     QDomElement tableElement = doc.createElement("Table");      // will hold the data in this element
     tableElement.setAttribute("Name", m_name);
     tableElement.setAttribute("Parent",m_parent?m_parent->getName():strNA);
-    tableElement.setAttribute("uid", getObjectUid());
+    tableElement.setAttribute("uid", getObjectUid().toString());
     tableElement.setAttribute("class-uid", getClassUid().toString());
     tableElement.setAttribute("parent-uid", m_parent?m_parent->getObjectUid().toString():strNA);
 
@@ -525,7 +525,7 @@ void Table::copy()
 {
     QDomDocument doc("ClipboardData");
     QDomElement root = doc.createElement("CopiedTable");
-    root.setAttribute("version", version()->getObjectUid());
+    root.setAttribute("version", version()->getObjectUid().toString());
     serialize(doc, root);
     doc.appendChild(root);
 

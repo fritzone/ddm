@@ -104,7 +104,7 @@ void Index::serialize(QDomDocument &doc, QDomElement &parent) const
     QDomElement indexElement = doc.createElement("Index");      // will hold the Index
 
     indexElement.setAttribute("Name", getName());
-    indexElement.setAttribute("uid", getObjectUid());
+    indexElement.setAttribute("uid", getObjectUid().toString());
     indexElement.setAttribute("class-uid", getClassUid().toString());
 
     {

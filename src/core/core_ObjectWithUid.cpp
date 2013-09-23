@@ -17,11 +17,11 @@ ObjectWithUid::ObjectWithUid(const QUuid &uid):m_uid(uid), m_sourceUid(nullUid)
 QStringList ObjectWithUid::sourceUids() const
 {
     QStringList thisUpwardsSourceUids;
-    thisUpwardsSourceUids.append(getObjectUid());
+    thisUpwardsSourceUids.append(getObjectUid().toString());
     const ObjectWithUid* c = this;
     while(true)
     {
-        QString srcUid = c->getSourceUid();
+        QString srcUid = c->getSourceUid().toString();
         if(srcUid == nullUid) break;
 
         thisUpwardsSourceUids.append(srcUid);

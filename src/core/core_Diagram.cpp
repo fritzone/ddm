@@ -260,11 +260,11 @@ void Diagram::serialize(QDomDocument &doc, QDomElement &parent) const
 {
     QDomElement diagramElement = doc.createElement("Diagram");      // will hold the data in this element
     diagramElement.setAttribute("Name", m_name);
-    diagramElement.setAttribute("uid", getObjectUid());
-    diagramElement.setAttribute("class-uid", getClassUid());
+    diagramElement.setAttribute("uid", getObjectUid().toString());
+    diagramElement.setAttribute("class-uid", getClassUid().toString());
     diagramElement.setAttribute("locked", lockState() == LockableElement::LOCKED);
     diagramElement.setAttribute("was-locked", wasLocked());
-    diagramElement.setAttribute("source-uid", getSourceUid());
+    diagramElement.setAttribute("source-uid", getSourceUid().toString());
 
     // save the tables
     {

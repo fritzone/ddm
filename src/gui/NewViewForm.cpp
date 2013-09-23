@@ -28,8 +28,10 @@
 #include <QScrollBar>
 #include <QVBoxLayout>
 #include <QtGui>
-
+#include <QToolTip>
+#include <QFileDialog>
 #include <QDebug>
+#include <QMessageBox>
 
 NewViewForm::NewViewForm(Version* v, bool queryBuilder, QueryGraphicsHelper* c, QWidget *parent) :
     SourceCodePresenterWidget(v, parent),
@@ -75,7 +77,7 @@ NewViewForm::NewViewForm(Version* v, bool queryBuilder, QueryGraphicsHelper* c, 
 
         ui->txtViewName = new QLineEdit(ui->groupBox_3);
         ui->txtViewName->setObjectName(QString::fromUtf8("txtViewName"));
-        ui->txtViewName->setToolTip(QApplication::translate("NewViewForm", "The name of the View", 0, QApplication::UnicodeUTF8));
+        ui->txtViewName->setToolTip(QObject::tr("The name of the View"));
         ui->groupBox->hide();
         ui->verticalLayout_4->insertWidget(0, ui->txtViewName);
         connect(ui->txtViewName, SIGNAL(textChanged(QString)), this, SLOT(onNameChange(QString)));
@@ -429,7 +431,7 @@ void NewViewForm::onLockUnlock(bool checked)
         m_view->updateGui();
         ui->btnLock->setToolTip(QObject::tr("This view is <b>unlocked</b>. Click this button to lock it."));
 
-        MainWindow::instance()->finallyDoLockLikeOperation(false, m_view->getObjectUid());
+        MainWindow::instance()->finallyDoLockLikeOperation(false, m_view->getObjectUid().toString());
     }
     else
     {
@@ -440,7 +442,7 @@ void NewViewForm::onLockUnlock(bool checked)
         m_view->updateGui();
         ui->btnLock->setToolTip(QObject::tr("This view is <b>locked</b>. Click this button to unlock it."));
 
-        MainWindow::instance()->finallyDoLockLikeOperation(true, m_view->getObjectUid());
+        MainWindow::instance()->finallyDoLockLikeOperation(true, m_view->getObjectUid().toString());
     }
 
 }
@@ -448,9 +450,9 @@ void NewViewForm::onLockUnlock(bool checked)
 
 void NewViewForm::onUndelete()
 {
-    if(m_version->undeleteObject(m_view->getObjectUid(), false))
+    if(m_version->undeleteObject(m_view->getObjectUid().toString(), false))
     {
-        MainWindow::instance()->getGuiElements()->removeItemForPatch(m_version->getWorkingPatch(), m_view->getObjectUid());
+        MainWindow::instance()->getGuiElements()->removeItemForPatch(m_version->getWorkingPatch(), m_view->getObjectUid().toString());
         // TODO: Duplicate from above
         if(m_view->lockState() == LockableElement::LOCKED)
         {

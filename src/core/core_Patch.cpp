@@ -237,7 +237,7 @@ void Patch::addDeletedTable(const QString &uid, TableDeletionAction *td)
     // and also pull in the deleted table instances
     for(int i=0; i<td->deletedTableInstances.size(); i++)
     {
-        markElementForDeletion(td->deletedTableInstances.at(i)->getObjectUid());
+        markElementForDeletion(td->deletedTableInstances.at(i)->getObjectUid().toString());
     }
 
 }
@@ -357,7 +357,7 @@ void Patch::serialize(QDomDocument &doc, QDomElement &parent) const
 {
     QDomElement patchElement = doc.createElement("Patch");
     patchElement.setAttribute("name", m_name);
-    patchElement.setAttribute("uid", getObjectUid());
+    patchElement.setAttribute("uid", getObjectUid().toString());
     patchElement.setAttribute("class-uid", getClassUid().toString());
     patchElement.setAttribute("suspended", m_suspended);
 
@@ -430,12 +430,12 @@ void Patch::serialize(QDomDocument &doc, QDomElement &parent) const
         TableDeletionAction* tda = m_tableDeletions[m_tableDeletions.keys().at(i)];
         if(tda->parentTable)
         {
-            tableDel.setAttribute("parent-uid", tda->parentTable->getObjectUid());
+            tableDel.setAttribute("parent-uid", tda->parentTable->getObjectUid().toString());
         }
         for(int j=0; j<tda->deletedTableInstances.size(); j++)
         {
             QDomElement tinstDel = doc.createElement("PulledInObjects");
-            QString pulledInUid = tda->deletedTableInstances.at(j)->getObjectUid();
+            QString pulledInUid = tda->deletedTableInstances.at(j)->getObjectUid().toString();
             if(mainUid != pulledInUid)
             {
                 tinstDel.setAttribute("uid", pulledInUid);

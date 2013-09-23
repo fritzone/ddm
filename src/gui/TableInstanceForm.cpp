@@ -19,6 +19,8 @@
 #include "db_DatabaseEngine.h"
 
 #include <QLineEdit>
+#include <QComboBox>
+#include <QToolTip>
 
 TableInstanceForm::TableInstanceForm(QWidget *parent) :
     QWidget(parent),
@@ -280,7 +282,7 @@ void TableInstanceForm::onValuesDoubleClick()
 
 void TableInstanceForm::onGotoTable()
 {
-    MainWindow::instance()->showTableWithGuid(m_tinst->version(), m_tinst->table()->getObjectUid());
+    MainWindow::instance()->showTableWithGuid(m_tinst->version(), m_tinst->table()->getObjectUid().toString());
 }
 
 
@@ -294,7 +296,7 @@ void TableInstanceForm::onLockUnlock(bool checked)
         m_tinst->updateGui();
         ui->btnLock->setToolTip(QObject::tr("This table instance is <b>unlocked</b>. Click this button to lock it."));
 
-        MainWindow::instance()->finallyDoLockLikeOperation(false, m_tinst->getObjectUid());
+        MainWindow::instance()->finallyDoLockLikeOperation(false, m_tinst->getObjectUid().toString());
     }
     else
     {
@@ -304,7 +306,7 @@ void TableInstanceForm::onLockUnlock(bool checked)
         m_tinst->updateGui();
         ui->btnLock->setToolTip(QObject::tr("This table instance is <b>locked</b>. Click this button to unlock it."));
 
-        MainWindow::instance()->finallyDoLockLikeOperation(true, m_tinst->getObjectUid());
+        MainWindow::instance()->finallyDoLockLikeOperation(true, m_tinst->getObjectUid().toString());
     }
 }
 
@@ -431,9 +433,9 @@ void TableInstanceForm::onTInstSelectedForFk(const QString& d)
 
 void TableInstanceForm::onUndelete()
 {
-    if(m_tinst->version()->undeleteObject(m_tinst->getObjectUid(), false))
+    if(m_tinst->version()->undeleteObject(m_tinst->getObjectUid().toString(), false))
     {
-        MainWindow::instance()->getGuiElements()->removeItemForPatch(m_tinst->version()->getWorkingPatch(), m_tinst->getObjectUid());
+        MainWindow::instance()->getGuiElements()->removeItemForPatch(m_tinst->version()->getWorkingPatch(), m_tinst->getObjectUid().toString());
         // TODO: Duplicate from above
         if(m_tinst->lockState() == LockableElement::LOCKED)
         {
@@ -503,7 +505,7 @@ void TableInstanceForm::onChangeName(QString a)
 
     if(m_tinst->version() != Workspace::getInstance()->workingVersion())
     {
-        MainWindow::instance()->getGuiElements()->updateItemForPatchWithState(m_tinst->version()->getWorkingPatch(), uidTableInstance, m_tinst->getObjectUid(), a, 2);
+        MainWindow::instance()->getGuiElements()->updateItemForPatchWithState(m_tinst->version()->getWorkingPatch(), uidTableInstance, m_tinst->getObjectUid().toString(), a, 2);
     }
 
 }

@@ -5,6 +5,7 @@
 
 #include <QListWidget>
 #include <QDragEnterEvent>
+#include <QDrag>
 
 class ERGraphicsView;
 

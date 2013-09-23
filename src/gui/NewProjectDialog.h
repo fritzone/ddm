@@ -1,7 +1,7 @@
 #ifndef NEWPROJECTDIALOG_H
 #define NEWPROJECTDIALOG_H
 
-#include <QtGui/QDialog>
+#include <QDialog>
 #include <QString>
 #include <QMap>
 #include <QAbstractButton>

@@ -12,11 +12,16 @@
 #include "core_Table.h"
 #include "UidWarehouse.h"
 #include "QHtmlDocument.h"
-
+#if QT_VERSION >= 0x050000
+#include <QtPrintSupport/QPrinter>
+#include <QtWebKit>
+#include <QtWebKitWidgets/QWebFrame>
+#else
 #include <QPrinter>
-#include <QFileDialog>
 #include <QWebFrame>
-#include <QWebPage>
+#endif
+#include <QFileDialog>
+
 #include <QTextDocument>
 #include <QTextDocumentWriter>
 

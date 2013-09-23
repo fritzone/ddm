@@ -3,7 +3,7 @@
 
 #include "core_UserDataType.h"
 
-#include <QtGui/QWidget>
+#include <QWidget>
 #include <QAbstractButton>
 #include <QKeyEvent>
 

@@ -4,6 +4,7 @@
 #include "ContextMenuEnabledTreeWidget.h"
 
 #include <QtGui>
+#include <QDockWidget>
 
 class Patch;
 

@@ -4,6 +4,7 @@
 #include "SqliteConnection.h"
 #include "conn_CUBRID.h"
 #include "db_DatabaseEngine.h"
+#include "Workspace.h"
 
 #include <QSettings>
 #include <QDesktopServices>
@@ -68,7 +69,8 @@ void ConnectionManager::saveConnections()
 {
     // qDebug() << QDesktopServices::displayName(QDesktopServices::DataLocation);
 
-    SqliteConnection* saved = new SqliteConnection("save", QDesktopServices::displayName(QDesktopServices::DataLocation) + "conn.db", false, 3);
+    SqliteConnection* saved = new SqliteConnection("save",
+                                                   Workspace::getInstance()->getDataLocation()+ "/conn.db", false, 3);
 
     QStringList saveStuff;
     QString tmp;

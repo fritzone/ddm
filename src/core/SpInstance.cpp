@@ -13,8 +13,8 @@ void SpInstance::serialize(QDomDocument& doc, QDomElement& parent) const
     QDomElement spElement = doc.createElement("SpInstance");
     getClass()->serialize(doc, spElement);
     spElement.setAttribute("Value", get());
-    spElement.setAttribute("uid", getObjectUid());
-    spElement.setAttribute("class-uid", getClassUid());
+    spElement.setAttribute("uid", getObjectUid().toString());
+    spElement.setAttribute("class-uid", getClassUid().toString());
 
     parent.appendChild(spElement);
 }

@@ -17,11 +17,11 @@ void Procedure::serialize(QDomDocument &doc, QDomElement &parent) const
     // TODO: This is almost the same as with the function, refactor
     QDomElement element = doc.createElement("Procedure");
     element.setAttribute("Name", m_name);
-    element.setAttribute("uid", getObjectUid());
-    element.setAttribute("class-uid", getClassUid());
+    element.setAttribute("uid", getObjectUid().toString());
+    element.setAttribute("class-uid", getClassUid().toString());
     element.setAttribute("locked", lockState() == LockableElement::LOCKED);
     element.setAttribute("was-locked", wasLocked());
-    element.setAttribute("source-uid", getSourceUid());
+    element.setAttribute("source-uid", getSourceUid().toString());
     element.setAttribute("guided", m_guidedCreation);
 
     if(m_guidedCreation)

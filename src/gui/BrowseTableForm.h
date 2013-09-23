@@ -7,18 +7,18 @@
 #include <QWidget>
 #include <QSplitter>
 #include <QtCore/QVariant>
-#include <QtGui/QAction>
-#include <QtGui/QApplication>
-#include <QtGui/QButtonGroup>
-#include <QtGui/QFrame>
-#include <QtGui/QHBoxLayout>
-#include <QtGui/QHeaderView>
-#include <QtGui/QSpacerItem>
+#include <QAction>
+#include <QApplication>
+#include <QButtonGroup>
+#include <QFrame>
+#include <QHBoxLayout>
+#include <QHeaderView>
+#include <QSpacerItem>
 #include <QTableWidget>
-#include <QtGui/QTableView>
-#include <QtGui/QToolButton>
-#include <QtGui/QVBoxLayout>
-#include <QtGui/QWidget>
+#include <QTableView>
+#include <QToolButton>
+#include <QVBoxLayout>
+#include <QWidget>
 
 
 namespace Ui {

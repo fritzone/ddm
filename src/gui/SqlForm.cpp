@@ -163,21 +163,21 @@ void SqlForm::onGoToOriginator()
     if(m_sourceEntity)
     {
         Table* t = dynamic_cast<Table*>(m_sourceEntity);
-        if(t) MainWindow::instance()->showTableWithGuid(Workspace::getInstance()->workingVersion(), t->getObjectUid());
+        if(t) MainWindow::instance()->showTableWithGuid(Workspace::getInstance()->workingVersion(), t->getObjectUid().toString());
 
         TableInstance* tinst = dynamic_cast<TableInstance*>(m_sourceEntity);
-        if(tinst) MainWindow::instance()->showTableInstanceWithGuid(Workspace::getInstance()->workingVersion(), tinst->getObjectUid());
+        if(tinst) MainWindow::instance()->showTableInstanceWithGuid(Workspace::getInstance()->workingVersion(), tinst->getObjectUid().toString());
 
         Procedure* p = dynamic_cast<Procedure*>(m_sourceEntity);
-        if(p) MainWindow::instance()->showProcedureWithGuid(Workspace::getInstance()->workingVersion(), p->getObjectUid());
+        if(p) MainWindow::instance()->showProcedureWithGuid(Workspace::getInstance()->workingVersion(), p->getObjectUid().toString());
 
         Function* f = dynamic_cast<Function*>(m_sourceEntity);
-        if(f) MainWindow::instance()->showFunctionWithGuid(Workspace::getInstance()->workingVersion(), f->getObjectUid());
+        if(f) MainWindow::instance()->showFunctionWithGuid(Workspace::getInstance()->workingVersion(), f->getObjectUid().toString());
 
         Trigger* tr = dynamic_cast<Trigger*>(m_sourceEntity);
-        if(tr) MainWindow::instance()->showTriggerWithGuid(Workspace::getInstance()->workingVersion(), tr->getObjectUid());
+        if(tr) MainWindow::instance()->showTriggerWithGuid(Workspace::getInstance()->workingVersion(), tr->getObjectUid().toString());
 
         View* v = dynamic_cast<View*>(m_sourceEntity);
-        if(v) MainWindow::instance()->showViewWithGuid(Workspace::getInstance()->workingVersion(), v->getObjectUid());
+        if(v) MainWindow::instance()->showViewWithGuid(Workspace::getInstance()->workingVersion(), v->getObjectUid().toString());
     }
 }

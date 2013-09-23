@@ -7,6 +7,11 @@
 #include "ContextMenuCollection.h"
 #include "IconFactory.h"
 
+#include <QDockWidget>
+#include <QHeaderView>
+#include <QApplication>
+#include <QDesktopWidget>
+
 RepositoryGuiElements::RepositoryGuiElements()
 {
     m_repo = Repository::instance();
@@ -31,7 +36,7 @@ void RepositoryGuiElements::createGuiElements()
     m_repositoryTree->setHeaderHidden(false);
 
     QTreeWidgetItem *headerItm = m_repositoryTree->headerItem();
-    headerItm->setText(0, QApplication::translate("MainWindow", "Name", 0, QApplication::UnicodeUTF8));
+    headerItm->setText(0, QObject::tr("Name"));
     m_repositoryTree->header()->setDefaultSectionSize(250);
 
     m_connectionsContextMenuHandler = new ContextMenuHandler();

@@ -182,6 +182,7 @@ public:
 
     void refreshConnection(Connection* c);
 
+    QString getDataLocation();
 private:
 
     Workspace();

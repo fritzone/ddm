@@ -16,7 +16,7 @@ static const QString strHelpConfig = ":/help/help.config";
 
 static const QString NEW_TABLE = "New table reference";
 static const QString NEW_COLUMN = "New column";
-static const QString DUPLICATE = "Duplicate";
+static const QString STR_DUPLICATE = "Duplicate";
 static const QString ADD_FROM = "FROM...";
 static const QString ADD_WHERE = "WHERE...";
 static const QString NEW_SUBQUERY = "New subquery";

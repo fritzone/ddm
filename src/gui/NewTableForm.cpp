@@ -40,7 +40,8 @@
 #include <QtGui>
 #include <QList>
 #include <QMenu>
-
+#include <QFileDialog>
+#include <QToolTip>
 // the positions of various items in the columns view, used for icon retrieval mostly
 const int COL_POS_PK = 0;
 const int COL_POS_NM = 1;
@@ -3338,7 +3339,7 @@ void NewTableForm::onLockUnlock(bool checked)
         m_table->updateGui();
         m_ui->btnLock->setToolTip(QObject::tr("This table is <b>unlocked</b>. Click this button to lock it."));
 
-        MainWindow::instance()->finallyDoLockLikeOperation(false, m_table->getObjectUid());
+        MainWindow::instance()->finallyDoLockLikeOperation(false, m_table->getObjectUid().toString());
     }
     else
     {
@@ -3348,16 +3349,16 @@ void NewTableForm::onLockUnlock(bool checked)
         m_table->updateGui();
         m_ui->btnLock->setToolTip(QObject::tr("This table is <b>locked</b>. Click this button to unlock it."));
 
-        MainWindow::instance()->finallyDoLockLikeOperation(true, m_table->getObjectUid());
+        MainWindow::instance()->finallyDoLockLikeOperation(true, m_table->getObjectUid().toString());
     }
 
 }
 
 void NewTableForm::onUndelete()
 {
-    if(m_version->undeleteObject(m_table->getObjectUid(), false))
+    if(m_version->undeleteObject(m_table->getObjectUid().toString(), false))
     {
-        MainWindow::instance()->getGuiElements()->removeItemForPatch(m_version->getWorkingPatch(), m_table->getObjectUid());
+        MainWindow::instance()->getGuiElements()->removeItemForPatch(m_version->getWorkingPatch(), m_table->getObjectUid().toString());
         // TODO: Duplicate from above
         if(m_table->lockState() == LockableElement::LOCKED)
         {

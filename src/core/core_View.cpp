@@ -58,9 +58,9 @@ void View::serialize(QDomDocument& doc, QDomElement& parent) const
     QDomElement viewElement = doc.createElement("View");
     viewElement.setAttribute("Name", m_name);
     viewElement.setAttribute("Manual", m_manual);
-    viewElement.setAttribute("uid", getObjectUid());
-    viewElement.setAttribute("class-uid", getClassUid());
-    viewElement.setAttribute("source-uid", getSourceUid());
+    viewElement.setAttribute("uid", getObjectUid().toString());
+    viewElement.setAttribute("class-uid", getClassUid().toString());
+    viewElement.setAttribute("source-uid", getSourceUid().toString());
     viewElement.setAttribute("locked", lockState() == LockableElement::LOCKED);
     viewElement.setAttribute("was-locked", wasLocked());
 

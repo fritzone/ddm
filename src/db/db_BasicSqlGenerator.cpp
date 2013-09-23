@@ -58,7 +58,7 @@ QString BasicSqlGenerator::correctCase(QString a) const
 
 QString BasicSqlGenerator::spiResult(const ObjectWithSpInstances *object, QUuid uid) const
 {
-    SpInstance* spi = object->getInstanceForSqlRoleUid(m_engine, uid);
+    SpInstance* spi = object->getInstanceForSqlRoleUid(m_engine, uid.toString());
     if(spi)
     {
         QString spsClassUid = spi->getClass()->getClassUid().toString() ;
@@ -801,7 +801,7 @@ QString BasicSqlGenerator::getAlterTableForColumnDeletion(const QString&, const 
 QString BasicSqlGenerator::createTableOnlyScript(Table* table,
                                             const QStringList& foreignKeys,
                                             const QString& tabName,
-                                            const Connection */*pdest*/) const
+                                            const Connection* /*pdest*/) const
 {
     QString createTable = basicCreateTableScript(table, foreignKeys, tabName, true);
     // done

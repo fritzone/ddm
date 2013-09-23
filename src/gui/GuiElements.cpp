@@ -11,6 +11,10 @@
 #include "IconedDockWidget.h"
 #include "db_DatabaseEngine.h"
 
+#include <QApplication>
+#include <QDesktopWidget>
+#include <QHeaderView>
+
 GuiElements::GuiElements() : m_projectTreeDock(0),m_issuesTreeDock(0),
     m_patchesTreeDock(0),
     m_projectTree(0), m_issuesTree(0), m_patchesTree(0),
@@ -56,10 +60,10 @@ void GuiElements::createGuiElements()
     m_issuesTree->setExpandsOnDoubleClick(true);
     m_issuesTree->header()->setDefaultSectionSize(150);
     QTreeWidgetItem *headerItem = m_issuesTree->headerItem();
-    headerItem->setText(0, QApplication::translate("MainWindow", "", 0, QApplication::UnicodeUTF8));
-    headerItem->setText(1, QApplication::translate("MainWindow", "Type", 0, QApplication::UnicodeUTF8));
-    headerItem->setText(2, QApplication::translate("MainWindow", "Origin", 0, QApplication::UnicodeUTF8));
-    headerItem->setText(3, QApplication::translate("MainWindow", "Description", 0, QApplication::UnicodeUTF8));
+    headerItem->setText(0, QObject::tr(""));
+    headerItem->setText(1, QObject::tr("Type"));
+    headerItem->setText(2, QObject::tr("Origin"));
+    headerItem->setText(3, QObject::tr("Description"));
     m_issuesContextMenuHandler = new ContextMenuHandler();
     m_issuesTree->setItemDelegate(new ContextMenuDelegate(m_issuesContextMenuHandler, m_issuesTree));
 
@@ -222,7 +226,7 @@ ContextMenuEnabledTreeWidgetItem* GuiElements::updateItemForPatchWithState(Patch
                 LockableElement* le = dynamic_cast<LockableElement*>(obj);
                 if(le && le->lockState() == LockableElement::LOCKED)    // if the element was locked and deleted then "plain" undelete, ie, change the icon
                 {
-                    dynamic_cast<ContextMenuEnabledTreeWidgetItem*>(m_patchItems[p]->child(i))->setPopupMenu(ContextMenuCollection::getInstance()->getReLockMenuForClassUid(obj->getClassUid()));
+                    dynamic_cast<ContextMenuEnabledTreeWidgetItem*>(m_patchItems[p]->child(i))->setPopupMenu(ContextMenuCollection::getInstance()->getReLockMenuForClassUid(obj->getClassUid().toString()));
 
                     m_patchItems[p]->child(i)->setIcon(1, IconFactory::getChangedIcon());
                     return 0;
@@ -291,7 +295,7 @@ void GuiElements::removeItemForPatch(Patch *p, const QString& uid)
             if(le && !le->lockState() == LockableElement::LOCKED)   // if the element was locked, and then deleted re-state the locked state entry in the tree
             {
                 itm->child(i)->setIcon(1, IconFactory::getChangedIcon());
-                dynamic_cast<ContextMenuEnabledTreeWidgetItem*>(itm->child(i))->setPopupMenu(ContextMenuCollection::getInstance()->getReLockMenuForClassUid(obj->getClassUid()));
+                dynamic_cast<ContextMenuEnabledTreeWidgetItem*>(itm->child(i))->setPopupMenu(ContextMenuCollection::getInstance()->getReLockMenuForClassUid(obj->getClassUid().toString()));
 
                 return ;
             }

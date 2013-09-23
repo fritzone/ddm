@@ -138,10 +138,11 @@ void FkRelationDescriptor::updateContent(bool first)
     m_descriptor->setArrowP2(arrowP2);
     polyPoints.append(QPointF(0, 0));
 
-    QPolygonF polyf(polyPoints);
     m_arrowHead = new QGraphicsPolygonItem(polyPoints);
-    m_arrowHead->scale(1.2, 1.2);
-    m_arrowHead->rotate(180);
+
+    // yes, we all love Qt :)
+    fixArrowHead();
+
     m_arrowHead->setBrush(QBrush(Qt::black));
     m_arrowHead->setZValue(4);
 
@@ -187,6 +188,18 @@ void FkRelationDescriptor::freePreviousData()
         m_arrowHead = 0;
     }
 
+}
+
+void FkRelationDescriptor::fixArrowHead()
+{
+    // yes, we all love Qt :)
+    #if QT_VERSION >= 0x050000
+    m_arrowHead->setTransform(QTransform::fromScale(1.2, 1.2), true);
+    m_arrowHead->setRotation(m_arrowHead->rotation() + 180);
+    #else
+    m_arrowHead->scale(1.2, 1.2);
+    m_arrowHead->rotate(180);
+    #endif
 }
 
 QPointF FkRelationDescriptor::closest(QPointF to, QPointF left, QPointF right, QPointF top, QPointF bottom, int* which)
@@ -263,8 +276,7 @@ void FkRelationDescriptor::recreate(Diagram* dgr)
     polyPoints.append(QPointF(0, 0));
 
     m_arrowHead = new QGraphicsPolygonItem(polyPoints);
-    m_arrowHead->scale(1.2, 1.2);
-    m_arrowHead->rotate(180);
+    fixArrowHead();
     m_arrowHead->setBrush(QBrush(Qt::black));
     m_arrowHead->setZValue(4);
 

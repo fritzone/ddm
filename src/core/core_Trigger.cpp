@@ -27,11 +27,11 @@ void Trigger::serialize(QDomDocument &doc, QDomElement &parent) const
     triggerElement.setAttribute("Event", m_event);
     triggerElement.setAttribute("Time", m_ttime);
     triggerElement.setAttribute("Table", m_table);
-    triggerElement.setAttribute("uid", getObjectUid());
-    triggerElement.setAttribute("class-uid", getClassUid());
+    triggerElement.setAttribute("uid", getObjectUid().toString());
+    triggerElement.setAttribute("class-uid", getClassUid().toString());
     triggerElement.setAttribute("locked", lockState() == LockableElement::LOCKED);
     triggerElement.setAttribute("was-locked", wasLocked());
-    triggerElement.setAttribute("source-uid", getSourceUid());
+    triggerElement.setAttribute("source-uid", getSourceUid().toString());
 
     QDomElement textElement = doc.createElement("Body");
     textElement.setAttribute("Encoded", "Base64");

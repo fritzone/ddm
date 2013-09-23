@@ -70,7 +70,10 @@
 #include "conn_CUBRID.h"
 #include "db_DatabaseEngineManager.h"
 #include "core_Repository.h"
+
 #include <QtGui>
+#include <QMessageBox>
+#include <QFileDialog>
 
 MainWindow* MainWindow::m_instance = 0;
 
@@ -636,7 +639,7 @@ void MainWindow::patchTreeItemClicked(QTreeWidgetItem * current, int)
         QString classUid = nullUid;
         if(obj)
         {
-            classUid = obj->getClassUid();
+            classUid = obj->getClassUid().toString();
             classUid = classUid.toUpper();
         }
         UserDataType* udt = 0;
@@ -733,7 +736,7 @@ void MainWindow::projectTreeItemClicked(QTreeWidgetItem * current, int)
         QString classUid = nullUid;
         if(obj)
         {
-            classUid = obj->getClassUid();
+            classUid = obj->getClassUid().toString();
             classUid = classUid.toUpper();
             foundVersion = obj->version();
         }
@@ -1481,7 +1484,7 @@ void MainWindow::updatePatchElementToReflectState(Version *v, ObjectWithUid *ele
 {
     NamedItem *ni = dynamic_cast<NamedItem*>(element);
     if(!ni) return;
-    m_guiElements->updateItemForPatchWithState(v->getWorkingPatch(), element->getClassUid(), guid, ni->getName(), state);
+    m_guiElements->updateItemForPatchWithState(v->getWorkingPatch(), element->getClassUid().toString(), guid, ni->getName(), state);
 }
 
 void MainWindow::createPatchElement(Version* v, ObjectWithUid * element, const QString& guid, bool reLocking)
@@ -1497,7 +1500,7 @@ void MainWindow::createPatchElement(Version* v, ObjectWithUid * element, const Q
     if(!reLocking)
     {
         v->getWorkingPatch()->addElement(guid);
-        m_guiElements->createNewItemForPatch(v->getWorkingPatch(), element->getClassUid(), guid, ni->getName());
+        m_guiElements->createNewItemForPatch(v->getWorkingPatch(), element->getClassUid().toString(), guid, ni->getName());
     }
     else
     {
@@ -1511,7 +1514,7 @@ void MainWindow::doLockLikeOperation(bool reLocking)
     ObjectWithUid* obj = getRightClickedObject<ObjectWithUid>();
     if(obj)
     {
-        finallyDoLockLikeOperation(reLocking, obj->getObjectUid());
+        finallyDoLockLikeOperation(reLocking, obj->getObjectUid().toString());
     }
 }
 
@@ -1677,7 +1680,7 @@ void MainWindow::onInstantiateTableFromPopup()
     }
     v->getGui()->updateForms();
     TableInstance* tinst = instantiateTable(table->getName(), QStringList(), v);
-    showTableInstanceWithGuid(v, tinst->getObjectUid());
+    showTableInstanceWithGuid(v, tinst->getObjectUid().toString());
 }
 
 void MainWindow::onSpecializeTableFromPopup()
@@ -1690,7 +1693,7 @@ void MainWindow::onSpecializeTableFromPopup()
 
         specializedTable->setName(table->getName() + "_specialized");
         specializedTable->setParent(table);
-        specializedTable->setParentUid(table->getObjectUid());
+        specializedTable->setParentUid(table->getObjectUid().toString());
 
         ContextMenuEnabledTreeWidgetItem* newTblsItem = table->version()->getGui()->createTableTreeEntry(specializedTable, table->getLocation()) ;
 
@@ -1893,9 +1896,9 @@ void MainWindow::onPasteTableFromPopup()
 
         if(v->lockState() == LockableElement::LOCKED)
         {
-            createPatchElement(v, tab, tab->getObjectUid(), false);
-            v->getWorkingPatch()->addNewElement(tab->getObjectUid()); // this will be a new element ...
-            updatePatchElementToReflectState(v, tab, tab->getObjectUid(), 1);
+            createPatchElement(v, tab, tab->getObjectUid().toString(), false);
+            v->getWorkingPatch()->addNewElement(tab->getObjectUid().toString()); // this will be a new element ...
+            updatePatchElementToReflectState(v, tab, tab->getObjectUid().toString(), 1);
         }
         v->getGui()->updateForms();
     }
@@ -2169,7 +2172,7 @@ void MainWindow::onRenameInstanceFromPopup()
                 otherTinsts[i]->finalizeFkMappings(fksFailures);
             }
 
-            m_guiElements->updateItemForPatchWithState(tinst->version()->getWorkingPatch(), uidTableInstance, tinst->getObjectUid(), t, 2);
+            m_guiElements->updateItemForPatchWithState(tinst->version()->getWorkingPatch(), uidTableInstance, tinst->getObjectUid().toString(), t, 2);
         }
     }
 }
@@ -2308,7 +2311,7 @@ void MainWindow::onInjectBrowsedTable()
             // add it to the version, GUI, etc...
             m_workspace->workingVersion()->addTable(t, false);
             m_workspace->workingVersion()->getGui()->createTableTreeEntry(t, m_workspace->workingVersion()->getGui()->getTablesItem());
-            showTableWithGuid(m_workspace->workingVersion(), t->getObjectUid());
+            showTableWithGuid(m_workspace->workingVersion(), t->getObjectUid().toString());
             QVector<TableInstance*> r = t->getTableInstances();
             for(int i=0; i<r.size(); i++)
             {
@@ -2840,14 +2843,14 @@ void MainWindow::onDeploymentFinished(Deployer *d)
             ObjectWithUid* obj = UidWarehouse::instance().getElement(guid);
             if(obj)
             {
-                iss->getLocation()->setIcon(3, IconFactory::getIconForClassUid(obj->getClassUid()));
+                iss->getLocation()->setIcon(3, IconFactory::getIconForClassUid(obj->getClassUid().toString()));
             }
             if(!lblStatus)
             {
                 createStatusLabel();
             }
             lblStatus->setStyleSheet("QLabel { background-color : red; color : white; }");
-            QString t = QApplication::translate("MainWindow", "Deployment failed at ", 0, QApplication::UnicodeUTF8);
+            QString t = QObject::tr("Deployment failed at ");
             QTime now = QTime::currentTime();
             QDate nowd = QDate::currentDate();
             t += nowd.toString() + " - " + now.toString();
@@ -2856,7 +2859,7 @@ void MainWindow::onDeploymentFinished(Deployer *d)
     }
     else
     {
-        QString t = QApplication::translate("MainWindow", "Deployment succeeded at ", 0, QApplication::UnicodeUTF8);
+        QString t = QObject::tr("Deployment succeeded at ");
         QTime now = QTime::currentTime();
         QDate nowd = QDate::currentDate();
         t += nowd.toString() + " - " + now.toString();
@@ -3069,7 +3072,7 @@ void MainWindow::onReverseEngineerWizardAccept()
     }
 
     createStatusLabel();
-    lblStatus->setText(QApplication::translate("MainWindow", "Reverse engineering started", 0, QApplication::UnicodeUTF8));
+    lblStatus->setText(QObject::tr("Reverse engineering started"));
 
     connect(revEng, SIGNAL(done(ReverseEngineerer*)), this, SLOT(onReverseEngineeringFinished(ReverseEngineerer*)));
     revEng->reverseEngineer();
@@ -3077,7 +3080,7 @@ void MainWindow::onReverseEngineerWizardAccept()
 
 void MainWindow::onReverseEngineeringFinished(ReverseEngineerer*)
 {
-    lblStatus->setText(QApplication::translate("MainWindow", "Reverse engineering finished", 0, QApplication::UnicodeUTF8));
+    lblStatus->setText(QObject::tr("Reverse engineering finished"));
 
     // Ok, reverse engineering can happen only to the current version
     m_workspace->workingVersion()->getGui()->populateTreeItems();
@@ -3353,15 +3356,15 @@ void MainWindow::renamePatch()
 void MainWindow::onUndeleteSomething()
 {
     ObjectWithUid* obj = getRightClickedObject<ObjectWithUid>();
-    Version* v = UidWarehouse::instance().getVersionForUid(obj->getObjectUid());
-    Version::PatchTreeRemovalStatus removeFromTree = v->undeleteObject(obj->getObjectUid(), false);
+    Version* v = UidWarehouse::instance().getVersionForUid(obj->getObjectUid().toString());
+    Version::PatchTreeRemovalStatus removeFromTree = v->undeleteObject(obj->getObjectUid().toString(), false);
     if(removeFromTree != Version::DO_NOT_REMOVE_FROM_PATCH_TREE_FAILURE)
     {
 //        if(removeFromTree == Version::REMOVE_FROM_PATCH_TREE)
         {
-            m_guiElements->removeItemForPatch(v->getWorkingPatch(), obj->getObjectUid());
+            m_guiElements->removeItemForPatch(v->getWorkingPatch(), obj->getObjectUid().toString());
         }
-        showObjectWithGuid(obj->getObjectUid());
+        showObjectWithGuid(obj->getObjectUid().toString());
     }
 }
 

@@ -7,6 +7,11 @@
 #include "db_DatabaseEngine.h"
 #include "strings.h"
 
+#include <QApplication>
+#include <QDockWidget>
+#include <QDesktopWidget>
+#include <QHeaderView>
+
 ConnectionGuiElements::ConnectionGuiElements() :
     m_connectionsTreeDock(0),
     m_connectionsTree(0),
@@ -44,7 +49,7 @@ void ConnectionGuiElements::createGuiElements()
     m_connectionsTree->setHeaderHidden(false);
 
     QTreeWidgetItem *headerItm = m_connectionsTree->headerItem();
-    headerItm->setText(0, QApplication::translate("MainWindow", "Name", 0, QApplication::UnicodeUTF8));
+    headerItm->setText(0, QObject::tr("Name"));
     m_connectionsTree->header()->setDefaultSectionSize(250);
 
 

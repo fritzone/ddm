@@ -29,7 +29,7 @@ void Entity::setAttribute(const QString& a, const QString& v)
             {
                 if(roles[j]->getName() == v)
                 {
-                    m_attributes[i]->roleUid = roles[j]->getUid();
+                    m_attributes[i]->roleUid = roles[j]->getUid().toString();
                 }
             }
         }

@@ -8,8 +8,8 @@ void QueryComponent::removeChild(QueryComponent *c)
 void QueryComponent::serialize(QDomDocument &doc, QDomElement &parent) const
 {
     QDomElement component= doc.createElement("Children");
-    parent.setAttribute("uid", getObjectUid());
-    parent.setAttribute("class-uid", getClassUid());
+    parent.setAttribute("uid", getObjectUid().toString());
+    parent.setAttribute("class-uid", getClassUid().toString());
     parent.setAttribute("level", m_level);
     parent.setAttribute("class", getClass());
     parent.setAttribute("children", m_children.size());

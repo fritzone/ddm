@@ -1,7 +1,7 @@
 #ifndef DATATYPESLISTFORM_H
 #define DATATYPESLISTFORM_H
 
-#include <QtGui/QWidget>
+#include <QWidget>
 #include <QTreeWidgetItem>
 
 namespace Ui

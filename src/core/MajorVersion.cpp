@@ -69,7 +69,7 @@ void MajorVersion::serialize(QDomDocument &doc, QDomElement &parent) const
 
     majorVersionElement.setAttribute("major", m_major);
     majorVersionElement.setAttribute("minor", m_minor);
-    majorVersionElement.setAttribute("uid", getObjectUid());
+    majorVersionElement.setAttribute("uid", getObjectUid().toString());
     majorVersionElement.setAttribute("source-uid", getSourceUid().toString());
     majorVersionElement.setAttribute("class-uid", getClassUid().toString());
     majorVersionElement.setAttribute("locked", lockState());

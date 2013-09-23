@@ -14,6 +14,8 @@
 #include "Configuration.h"
 #include "Connection.h"
 
+#include <QToolTip>
+
 TriggerForm::TriggerForm(Version *v, Connection* c, bool reverseSource, bool fc, QWidget *parent) :
     QWidget(parent),
     ui(new Ui::TriggerForm), m_trigger(0), m_forcedChange(fc),
@@ -373,7 +375,7 @@ void TriggerForm::onLockUnlock(bool checked)
         m_trigger->updateGui();
         ui->btnLock->setToolTip(QObject::tr("Trigger is <b>unlocked</b>. Click this button to lock it."));
 
-        MainWindow::instance()->finallyDoLockLikeOperation(false, m_trigger->getObjectUid());
+        MainWindow::instance()->finallyDoLockLikeOperation(false, m_trigger->getObjectUid().toString());
     }
     else
     {
@@ -383,15 +385,15 @@ void TriggerForm::onLockUnlock(bool checked)
         m_trigger->updateGui();
         ui->btnLock->setToolTip(QObject::tr("Trigger is <b>locked</b>. Click this button to unlock it."));
 
-        MainWindow::instance()->finallyDoLockLikeOperation(true, m_trigger->getObjectUid());
+        MainWindow::instance()->finallyDoLockLikeOperation(true, m_trigger->getObjectUid().toString());
     }
 }
 
 void TriggerForm::onUndelete()
 {
-    if(m_version->undeleteObject(m_trigger->getObjectUid(), false))
+    if(m_version->undeleteObject(m_trigger->getObjectUid().toString(), false))
     {
-        MainWindow::instance()->getGuiElements()->removeItemForPatch(m_version->getWorkingPatch(), m_trigger->getObjectUid());
+        MainWindow::instance()->getGuiElements()->removeItemForPatch(m_version->getWorkingPatch(), m_trigger->getObjectUid().toString());
         // TODO: Duplicate from above
         if(m_trigger->lockState() == LockableElement::LOCKED)
         {

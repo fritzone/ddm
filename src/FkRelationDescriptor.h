@@ -114,6 +114,8 @@ private:
 
     void freePreviousData();
 
+    void fixArrowHead();
+
 private:
 
     DraggableGraphicsViewItemForForeignKey* m_fkitm;

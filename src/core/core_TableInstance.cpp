@@ -48,9 +48,9 @@ void TableInstance::serialize(QDomDocument &doc, QDomElement &parent) const
     tableInstanceElement.setAttribute("Name", getName());
     tableInstanceElement.setAttribute("Table", m_table->getName());
     tableInstanceElement.setAttribute("Ref", instantiatedBecuaseOfRkReference());
-    tableInstanceElement.setAttribute("uid", getObjectUid());
-    tableInstanceElement.setAttribute("class-uid", getClassUid());
-    tableInstanceElement.setAttribute("source-uid", getSourceUid());
+    tableInstanceElement.setAttribute("uid", getObjectUid().toString());
+    tableInstanceElement.setAttribute("class-uid", getClassUid().toString());
+    tableInstanceElement.setAttribute("source-uid", getSourceUid().toString());
     tableInstanceElement.setAttribute("locked", lockState() == LockableElement::LOCKED);
     tableInstanceElement.setAttribute("was-locked", wasLocked());
 

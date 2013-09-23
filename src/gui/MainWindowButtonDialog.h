@@ -1,7 +1,7 @@
 #ifndef MAINWINDOWBUTTONDIALOG_H
 #define MAINWINDOWBUTTONDIALOG_H
 
-#include <QtGui/QDialog>
+#include <QDialog>
 #include <QCommandLinkButton>
 
 namespace Ui {

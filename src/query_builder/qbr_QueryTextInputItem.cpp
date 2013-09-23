@@ -1,9 +1,16 @@
 #include <QtGui>
-
+#include <QGraphicsScene>
 #include "qbr_QueryTextInputItem.h"
 
-QueryTextInputItem::QueryTextInputItem(QGraphicsItem *parent, QGraphicsScene *scene) : QGraphicsTextItem(parent, scene)
+QueryTextInputItem::QueryTextInputItem(QGraphicsItem *parent, QGraphicsScene *scene) :
+    #if QT_VERSION >= 0x050000
+    QGraphicsTextItem(parent)
+    #else
+    QGraphicsTextItem(parent, scene)
+    #endif
 {
+ // TODO: add tho the scene the object
+    scene->addItem(this);
     setFlag(QGraphicsItem::ItemIsMovable);
     setFlag(QGraphicsItem::ItemIsSelectable);
 }

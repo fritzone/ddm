@@ -9,7 +9,7 @@
 
 DraggableGraphicsViewItem::DraggableGraphicsViewItem(const Table* tab) :
     QGraphicsItemGroup(),
-    VersionElement(QUuid::createUuid(), tab?tab->version():0),
+    VersionElement(QUuid::createUuid().toString(), tab?tab->version():0),
     m_table(tab), lastX(0), lastY(0)
 {
     setAcceptDrops(true);

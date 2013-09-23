@@ -398,7 +398,7 @@ void NewDataTypeForm::onLockUnlock(bool checked)
         m_udt->updateGui();
         m_ui->btnLock->setToolTip(QObject::tr("This data type is <b>unlocked</b>. Click this button to lock it."));
 
-        MainWindow::instance()->finallyDoLockLikeOperation(false, m_udt->getObjectUid());
+        MainWindow::instance()->finallyDoLockLikeOperation(false, m_udt->getObjectUid().toString());
     }
     else
     {
@@ -408,7 +408,7 @@ void NewDataTypeForm::onLockUnlock(bool checked)
         m_udt->updateGui();
         m_ui->btnLock->setToolTip(QObject::tr("This data type is <b>locked</b>. Click this button to unlock it."));
 
-        MainWindow::instance()->finallyDoLockLikeOperation(true, m_udt->getObjectUid());
+        MainWindow::instance()->finallyDoLockLikeOperation(true, m_udt->getObjectUid().toString());
     }
 }
 
@@ -453,9 +453,9 @@ void NewDataTypeForm::keyPressEvent(QKeyEvent *evt)
 
 void NewDataTypeForm::onUndelete()
 {
-    if(m_udt->version()->undeleteObject(m_udt->getObjectUid(), false))
+    if(m_udt->version()->undeleteObject(m_udt->getObjectUid().toString(), false))
     {
-        MainWindow::instance()->getGuiElements()->removeItemForPatch(m_udt->version()->getWorkingPatch(), m_udt->getObjectUid());
+        MainWindow::instance()->getGuiElements()->removeItemForPatch(m_udt->version()->getWorkingPatch(), m_udt->getObjectUid().toString());
         // TODO: Duplicate from above
         if(m_udt->lockState() == LockableElement::LOCKED)
         {

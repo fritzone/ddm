@@ -21,7 +21,7 @@ ReverseEngineerer::ReverseEngineerer(bool c, DatabaseEngine *engine, Project *p,
                                      const QString &fileName, int sqliteVersion,
                                      const QStringList &tabsToReverse, const QStringList &viewsToReverse,
                                      const QStringList &procsToReverse, const QStringList &funcsToReverse,
-                                     const QStringList &triggersToReverse, QObject */*parent*/) :
+                                     const QStringList &triggersToReverse, QObject* /*parent*/) :
     m_tabsToReverse(tabsToReverse), m_viewsToReverse(viewsToReverse), m_procsToReverse(procsToReverse),
     m_funcsToReverse(funcsToReverse), m_triggersToReverse(triggersToReverse),
     m_engine(engine), m_project(p), m_createDataTypesForColumns(c),

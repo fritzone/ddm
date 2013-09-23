@@ -778,19 +778,19 @@ void BrowseTableForm::newPage(Connection *c, const QString &tab, BrowsedTableLay
 
 void BrowseTableForm::retranslateUi()
 {
-    setWindowTitle(QApplication::translate("BrowseTableForm", "Form", 0, QApplication::UnicodeUTF8));
-    if(tabWidget) tabWidget->setTabText(tabWidget->indexOf(dataTab), QApplication::translate("BrowseTableForm", "Data", 0, QApplication::UnicodeUTF8));
-    if(tabWidget) tabWidget->setTabText(tabWidget->indexOf(columnsTab), QApplication::translate("BrowseTableForm", "Columns", 0, QApplication::UnicodeUTF8));
+    setWindowTitle(QObject::tr("Form"));
+    if(tabWidget) tabWidget->setTabText(tabWidget->indexOf(dataTab), QObject::tr("Data"));
+    if(tabWidget) tabWidget->setTabText(tabWidget->indexOf(columnsTab), QObject::tr("Columns"));
 #ifndef QT_NO_TOOLTIP
-    if(btnExecuteQuery) btnExecuteQuery->setToolTip(QApplication::translate("BrowseTableForm", "<b>Run</b> the query", 0, QApplication::UnicodeUTF8));
+    if(btnExecuteQuery) btnExecuteQuery->setToolTip(QObject::tr("<b>Run</b> the query"));
 #endif // QT_NO_TOOLTIP
-    if(btnExecuteQuery) btnExecuteQuery->setText(QApplication::translate("BrowseTableForm", "...", 0, QApplication::UnicodeUTF8));
+    if(btnExecuteQuery) btnExecuteQuery->setText(QObject::tr("..."));
 #ifndef QT_NO_TOOLTIP
-    if(btnOpenQuery) btnOpenQuery->setToolTip(QApplication::translate("BrowseTableForm", "<b>Open</b> a SQL file", 0, QApplication::UnicodeUTF8));
+    if(btnOpenQuery) btnOpenQuery->setToolTip(QObject::tr("<b>Open</b> a SQL file"));
 #endif // QT_NO_TOOLTIP
-    if(btnOpenQuery) btnOpenQuery->setText(QApplication::translate("BrowseTableForm", "...", 0, QApplication::UnicodeUTF8));
+    if(btnOpenQuery) btnOpenQuery->setText(QObject::tr("..."));
 #ifndef QT_NO_TOOLTIP
-    if(btnSaveQuery) btnSaveQuery->setToolTip(QApplication::translate("BrowseTableForm", "<b>Save</b> the query", 0, QApplication::UnicodeUTF8));
+    if(btnSaveQuery) btnSaveQuery->setToolTip(QObject::tr("<b>Save</b> the query"));
 #endif // QT_NO_TOOLTIP
-    if(btnSaveQuery) btnSaveQuery->setText(QApplication::translate("BrowseTableForm", "...", 0, QApplication::UnicodeUTF8));
+    if(btnSaveQuery) btnSaveQuery->setText(QObject::tr("..."));
 } // retranslateUi

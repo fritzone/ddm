@@ -30,6 +30,7 @@
 #include "GuiElements.h"
 
 #include <QtGui>
+#include <QMessageBox>
 
 DefaultVersionImplementation::DefaultVersionImplementation(Project* p, int major, int minor)
     : Version(major, minor, p),
@@ -127,9 +128,9 @@ void DefaultVersionImplementation::addNewDataType(UserDataType* dt, bool initial
 
     if(lockState() == LockableElement::LOCKED && !initial)
     {
-        MainWindow::instance()->createPatchElement(this, dt, dt->getObjectUid(), false);
-        getWorkingPatch()->addNewElement(dt->getObjectUid()); // this will be a new element ...
-        MainWindow::instance()->updatePatchElementToReflectState(this, dt, dt->getObjectUid(), 1);
+        MainWindow::instance()->createPatchElement(this, dt, dt->getObjectUid().toString(), false);
+        getWorkingPatch()->addNewElement(dt->getObjectUid().toString()); // this will be a new element ...
+        MainWindow::instance()->updatePatchElementToReflectState(this, dt, dt->getObjectUid().toString(), 1);
     }
 
 
@@ -177,9 +178,9 @@ inline void DefaultVersionImplementation::addTable(Table *t, bool initial)
     m_data.m_tables.append(t);
     if(lockState() == LockableElement::LOCKED && !initial)
     {
-        MainWindow::instance()->createPatchElement(this, t, t->getObjectUid(), false);
-        getWorkingPatch()->addNewElement(t->getObjectUid()); // this will be a new element ...
-        MainWindow::instance()->updatePatchElementToReflectState(this, t, t->getObjectUid(), 1);
+        MainWindow::instance()->createPatchElement(this, t, t->getObjectUid().toString(), false);
+        getWorkingPatch()->addNewElement(t->getObjectUid().toString()); // this will be a new element ...
+        MainWindow::instance()->updatePatchElementToReflectState(this, t, t->getObjectUid().toString(), 1);
     }
 }
 
@@ -189,9 +190,9 @@ inline void DefaultVersionImplementation::addDiagram(Diagram* d, bool initial)
 
     if(lockState() == LockableElement::LOCKED && !initial)
     {
-        MainWindow::instance()->createPatchElement(this, d, d->getObjectUid(), false);
-        getWorkingPatch()->addNewElement(d->getObjectUid()); // this will be a new element ...
-        MainWindow::instance()->updatePatchElementToReflectState(this, d, d->getObjectUid(), 1);
+        MainWindow::instance()->createPatchElement(this, d, d->getObjectUid().toString(), false);
+        getWorkingPatch()->addNewElement(d->getObjectUid().toString()); // this will be a new element ...
+        MainWindow::instance()->updatePatchElementToReflectState(this, d, d->getObjectUid().toString(), 1);
     }
 
 }
@@ -481,7 +482,7 @@ void DefaultVersionImplementation::doDeleteTableInstance(TableInstance *tinst, T
         {
             if(!insted.at(i)->sentenced() && insted.at(i)->instantiatedBecuaseOfRkReference())
             {
-                if(getWorkingPatch()->elementWasLockedInThisPatch(insted.at(i)->getObjectUid()))
+                if(getWorkingPatch()->elementWasLockedInThisPatch(insted.at(i)->getObjectUid().toString()))
                 {
                     QMessageBox::warning(0, QObject::tr("Locked Table Instance found"),
                                          QObject::tr("Cannot execute the deletion operation since the following table instance is already unlocked in the patch:<BR><UL><LI>") +
@@ -503,7 +504,7 @@ void DefaultVersionImplementation::doDeleteTableInstance(TableInstance *tinst, T
     {
         if(getTableInstances().at(i)->sentenced())
         {
-            QString uid = getTableInstances().at(i)->getObjectUid();
+            QString uid = getTableInstances().at(i)->getObjectUid().toString();
             ContextMenuEnabledTreeWidgetItem* tabInstItem = getGui()->getTableInstancesItem();
             for(int j=0; j<tabInstItem->childCount(); j++)
             {
@@ -541,17 +542,17 @@ void DefaultVersionImplementation::deleteTableInstance(TableInstance *tinst)
     if(lockState() == LockableElement::LOCKED)  // remove the entry from the patch
     {
         // check if this table instance was created as a NEW one in this patch
-        if(getWorkingPatch()->elementWasNewInThisPatch(tinst->getObjectUid()))
+        if(getWorkingPatch()->elementWasNewInThisPatch(tinst->getObjectUid().toString()))
         {
-            getWorkingPatch()->removeNewElementBecauseOfDeletion(tinst->getObjectUid());
-            MainWindow::instance()->updatePatchElementToReflectState(this, tinst, tinst->getObjectUid(), 4); // 4 is REMOVE FROM THE TREE
+            getWorkingPatch()->removeNewElementBecauseOfDeletion(tinst->getObjectUid().toString());
+            MainWindow::instance()->updatePatchElementToReflectState(this, tinst, tinst->getObjectUid().toString(), 4); // 4 is REMOVE FROM THE TREE
         }
         else
         {
-            MainWindow::instance()->createPatchElement(this, tinst, tinst->getObjectUid(), false);
-            getWorkingPatch()->markElementForDeletion(tinst->getObjectUid());
-            getWorkingPatch()->addDeletedTable(tinst->getObjectUid(), tda);
-            MainWindow::instance()->updatePatchElementToReflectState(this, tinst, tinst->getObjectUid(), 3); // 3 is DELETED
+            MainWindow::instance()->createPatchElement(this, tinst, tinst->getObjectUid().toString(), false);
+            getWorkingPatch()->markElementForDeletion(tinst->getObjectUid().toString());
+            getWorkingPatch()->addDeletedTable(tinst->getObjectUid().toString(), tda);
+            MainWindow::instance()->updatePatchElementToReflectState(this, tinst, tinst->getObjectUid().toString(), 3); // 3 is DELETED
         }
 
     }
@@ -677,7 +678,7 @@ bool DefaultVersionImplementation::deleteTable(Table *tab)
         if(m_data.m_tableInstances.at(i)->table()->getName() == tab->getName())
         {
             TableInstance* tinst = m_data.m_tableInstances.at(i);
-            if(getWorkingPatch()->elementWasLockedInThisPatch(tinst->getObjectUid()))
+            if(getWorkingPatch()->elementWasLockedInThisPatch(tinst->getObjectUid().toString()))
             {
                 QMessageBox::warning(0, QObject::tr("Locked Table Instance found"),
                                      QObject::tr("Cannot execute the deletion operation since the following table instance is already unlocked in the patch:<BR><UL><LI>") +
@@ -693,10 +694,10 @@ bool DefaultVersionImplementation::deleteTable(Table *tab)
                 return false;
             }
             // check if this table instance was created as a NEW one in this patch
-            if(getWorkingPatch()->elementWasNewInThisPatch(tinst->getObjectUid()))
+            if(getWorkingPatch()->elementWasNewInThisPatch(tinst->getObjectUid().toString()))
             {
-                getWorkingPatch()->removeNewElementBecauseOfDeletion(tinst->getObjectUid());
-                MainWindow::instance()->updatePatchElementToReflectState(this, tinst, tinst->getObjectUid(), 4); // 4 is REMOVE FROM THE TREE
+                getWorkingPatch()->removeNewElementBecauseOfDeletion(tinst->getObjectUid().toString());
+                MainWindow::instance()->updatePatchElementToReflectState(this, tinst, tinst->getObjectUid().toString(), 4); // 4 is REMOVE FROM THE TREE
             }
         }
         else
@@ -740,17 +741,17 @@ bool DefaultVersionImplementation::deleteTable(Table *tab)
 
     if(lockState() == LockableElement::LOCKED)  // marking the element as deleted, ro removing
     {
-        if(!getWorkingPatch()->elementWasNewInThisPatch(tab->getObjectUid())) // but only if it was NOT a newly created element
+        if(!getWorkingPatch()->elementWasNewInThisPatch(tab->getObjectUid().toString())) // but only if it was NOT a newly created element
         {
-            MainWindow::instance()->createPatchElement(this, tab, tab->getObjectUid(), false);
-            getWorkingPatch()->markElementForDeletion(tab->getObjectUid());
-            getWorkingPatch()->addDeletedTable(tab->getObjectUid(), tda);
-            MainWindow::instance()->updatePatchElementToReflectState(this, tab, tab->getObjectUid(), 3); // 3 is DELETED
+            MainWindow::instance()->createPatchElement(this, tab, tab->getObjectUid().toString(), false);
+            getWorkingPatch()->markElementForDeletion(tab->getObjectUid().toString());
+            getWorkingPatch()->addDeletedTable(tab->getObjectUid().toString(), tda);
+            MainWindow::instance()->updatePatchElementToReflectState(this, tab, tab->getObjectUid().toString(), 3); // 3 is DELETED
         }
         else
         {
-            getWorkingPatch()->removeNewElementBecauseOfDeletion(tab->getObjectUid());
-            MainWindow::instance()->updatePatchElementToReflectState(this, tab, tab->getObjectUid(), 4); // 4 is REMOVE FROM THE TREE
+            getWorkingPatch()->removeNewElementBecauseOfDeletion(tab->getObjectUid().toString());
+            MainWindow::instance()->updatePatchElementToReflectState(this, tab, tab->getObjectUid().toString(), 4); // 4 is REMOVE FROM THE TREE
         }
     }
     return true;
@@ -799,9 +800,9 @@ TableInstance* DefaultVersionImplementation::instantiateTable(Table* tab, bool b
     m_data.m_tableInstances.append(tabInst);
     if(lockState() == LockableElement::LOCKED)
     {
-        MainWindow::instance()->createPatchElement(this, tabInst, tabInst->getObjectUid(), false);
-        getWorkingPatch()->addNewElement(tabInst->getObjectUid()); // this will be a new element ...
-        MainWindow::instance()->updatePatchElementToReflectState(this, tabInst, tabInst->getObjectUid(), 1);
+        MainWindow::instance()->createPatchElement(this, tabInst, tabInst->getObjectUid().toString(), false);
+        getWorkingPatch()->addNewElement(tabInst->getObjectUid().toString()); // this will be a new element ...
+        MainWindow::instance()->updatePatchElementToReflectState(this, tabInst, tabInst->getObjectUid().toString(), 1);
 
     }
     return tabInst;
@@ -846,17 +847,17 @@ void DefaultVersionImplementation::deleteDataType(const QString& dtName)
 
             if(lockState() == LockableElement::LOCKED)  // marking the element as deleted, ro removing
             {
-                if(!getWorkingPatch()->elementWasNewInThisPatch(udt->getObjectUid())) // but only if it was NOT a newly created element
+                if(!getWorkingPatch()->elementWasNewInThisPatch(udt->getObjectUid().toString())) // but only if it was NOT a newly created element
                 {
-                    MainWindow::instance()->createPatchElement(this, udt, udt->getObjectUid(), false);
-                    getWorkingPatch()->markElementForDeletion(udt->getObjectUid());
-                    getWorkingPatch()->addDeletedDataType(udt->getObjectUid(), dtda);
-                    MainWindow::instance()->updatePatchElementToReflectState(this, udt, udt->getObjectUid(), 3); // 3 is DELETED
+                    MainWindow::instance()->createPatchElement(this, udt, udt->getObjectUid().toString(), false);
+                    getWorkingPatch()->markElementForDeletion(udt->getObjectUid().toString());
+                    getWorkingPatch()->addDeletedDataType(udt->getObjectUid().toString(), dtda);
+                    MainWindow::instance()->updatePatchElementToReflectState(this, udt, udt->getObjectUid().toString(), 3); // 3 is DELETED
                 }
                 else
                 {
-                    getWorkingPatch()->removeNewElementBecauseOfDeletion(udt->getObjectUid());
-                    MainWindow::instance()->updatePatchElementToReflectState(this, udt, udt->getObjectUid(), 4); // 4 is REMOVE FROM THE TREE
+                    getWorkingPatch()->removeNewElementBecauseOfDeletion(udt->getObjectUid().toString());
+                    MainWindow::instance()->updatePatchElementToReflectState(this, udt, udt->getObjectUid().toString(), 4); // 4 is REMOVE FROM THE TREE
                 }
             }
 
@@ -896,17 +897,17 @@ void DefaultVersionImplementation::deleteView(const QString &name)
 
     if(lockState() == LockableElement::LOCKED)  // marking the element as deleted, ro removing
     {
-        if(!getWorkingPatch()->elementWasNewInThisPatch(v->getObjectUid())) // but only if it was NOT a newly created element
+        if(!getWorkingPatch()->elementWasNewInThisPatch(v->getObjectUid().toString())) // but only if it was NOT a newly created element
         {
-            MainWindow::instance()->createPatchElement(this, v, v->getObjectUid(), false);
-            getWorkingPatch()->markElementForDeletion(v->getObjectUid());
-            getWorkingPatch()->addDeletedView(v->getObjectUid(), vda);
-            MainWindow::instance()->updatePatchElementToReflectState(this, v, v->getObjectUid(), 3); // 3 is DELETED
+            MainWindow::instance()->createPatchElement(this, v, v->getObjectUid().toString(), false);
+            getWorkingPatch()->markElementForDeletion(v->getObjectUid().toString());
+            getWorkingPatch()->addDeletedView(v->getObjectUid().toString(), vda);
+            MainWindow::instance()->updatePatchElementToReflectState(this, v, v->getObjectUid().toString(), 3); // 3 is DELETED
         }
         else
         {
-            getWorkingPatch()->removeNewElementBecauseOfDeletion(v->getObjectUid());
-            MainWindow::instance()->updatePatchElementToReflectState(this, v, v->getObjectUid(), 4); // 4 is REMOVE FROM THE TREE
+            getWorkingPatch()->removeNewElementBecauseOfDeletion(v->getObjectUid().toString());
+            MainWindow::instance()->updatePatchElementToReflectState(this, v, v->getObjectUid().toString(), 4); // 4 is REMOVE FROM THE TREE
         }
     }
 }
@@ -922,17 +923,17 @@ void DefaultVersionImplementation::deleteFunction(const QString& f)
 
     if(lockState() == LockableElement::LOCKED)  // marking the element as deleted, ro removing
     {
-        if(!getWorkingPatch()->elementWasNewInThisPatch(func->getObjectUid())) // but only if it was NOT a newly created element
+        if(!getWorkingPatch()->elementWasNewInThisPatch(func->getObjectUid().toString())) // but only if it was NOT a newly created element
         {
-            MainWindow::instance()->createPatchElement(this, func, func->getObjectUid(), false);
-            getWorkingPatch()->markElementForDeletion(func->getObjectUid());
-            getWorkingPatch()->addDeletedFunction(func->getObjectUid(), pda);
-            MainWindow::instance()->updatePatchElementToReflectState(this, func, func->getObjectUid(), 3); // 3 is DELETED
+            MainWindow::instance()->createPatchElement(this, func, func->getObjectUid().toString(), false);
+            getWorkingPatch()->markElementForDeletion(func->getObjectUid().toString());
+            getWorkingPatch()->addDeletedFunction(func->getObjectUid().toString(), pda);
+            MainWindow::instance()->updatePatchElementToReflectState(this, func, func->getObjectUid().toString(), 3); // 3 is DELETED
         }
         else
         {
-            getWorkingPatch()->removeNewElementBecauseOfDeletion(func->getObjectUid());
-            MainWindow::instance()->updatePatchElementToReflectState(this, func, func->getObjectUid(), 4); // 4 is REMOVE FROM THE TREE
+            getWorkingPatch()->removeNewElementBecauseOfDeletion(func->getObjectUid().toString());
+            MainWindow::instance()->updatePatchElementToReflectState(this, func, func->getObjectUid().toString(), 4); // 4 is REMOVE FROM THE TREE
         }
     }
 }
@@ -949,17 +950,17 @@ void DefaultVersionImplementation::deleteTrigger(const QString& t)
     // TODO: this is more or less a duplication with other places. Fix it.
     if(lockState() == LockableElement::LOCKED)  // marking the element as deleted, ro removing
     {
-        if(!getWorkingPatch()->elementWasNewInThisPatch(trg->getObjectUid())) // but only if it was NOT a newly created element
+        if(!getWorkingPatch()->elementWasNewInThisPatch(trg->getObjectUid().toString())) // but only if it was NOT a newly created element
         {
-            MainWindow::instance()->createPatchElement(this, trg, trg->getObjectUid(), false);
-            getWorkingPatch()->markElementForDeletion(trg->getObjectUid());
-            getWorkingPatch()->addDeletedTrigger(trg->getObjectUid(), tda);
-            MainWindow::instance()->updatePatchElementToReflectState(this, trg, trg->getObjectUid(), 3); // 3 is DELETED
+            MainWindow::instance()->createPatchElement(this, trg, trg->getObjectUid().toString(), false);
+            getWorkingPatch()->markElementForDeletion(trg->getObjectUid().toString());
+            getWorkingPatch()->addDeletedTrigger(trg->getObjectUid().toString(), tda);
+            MainWindow::instance()->updatePatchElementToReflectState(this, trg, trg->getObjectUid().toString(), 3); // 3 is DELETED
         }
         else
         {
-            getWorkingPatch()->removeNewElementBecauseOfDeletion(trg->getObjectUid());
-            MainWindow::instance()->updatePatchElementToReflectState(this, trg, trg->getObjectUid(), 4); // 4 is REMOVE FROM THE TREE
+            getWorkingPatch()->removeNewElementBecauseOfDeletion(trg->getObjectUid().toString());
+            MainWindow::instance()->updatePatchElementToReflectState(this, trg, trg->getObjectUid().toString(), 4); // 4 is REMOVE FROM THE TREE
         }
     }
 }
@@ -975,17 +976,17 @@ void DefaultVersionImplementation::deleteProcedure(const QString& p)
 
     if(lockState() == LockableElement::LOCKED)  // marking the element as deleted, ro removing
     {
-        if(!getWorkingPatch()->elementWasNewInThisPatch(v->getObjectUid())) // but only if it was NOT a newly created element
+        if(!getWorkingPatch()->elementWasNewInThisPatch(v->getObjectUid().toString())) // but only if it was NOT a newly created element
         {
-            MainWindow::instance()->createPatchElement(this, v, v->getObjectUid(), false);
-            getWorkingPatch()->markElementForDeletion(v->getObjectUid());
-            getWorkingPatch()->addDeletedProcedure(v->getObjectUid(), pda);
-            MainWindow::instance()->updatePatchElementToReflectState(this, v, v->getObjectUid(), 3); // 3 is DELETED
+            MainWindow::instance()->createPatchElement(this, v, v->getObjectUid().toString(), false);
+            getWorkingPatch()->markElementForDeletion(v->getObjectUid().toString());
+            getWorkingPatch()->addDeletedProcedure(v->getObjectUid().toString(), pda);
+            MainWindow::instance()->updatePatchElementToReflectState(this, v, v->getObjectUid().toString(), 3); // 3 is DELETED
         }
         else
         {
-            getWorkingPatch()->removeNewElementBecauseOfDeletion(v->getObjectUid());
-            MainWindow::instance()->updatePatchElementToReflectState(this, v, v->getObjectUid(), 4); // 4 is REMOVE FROM THE TREE
+            getWorkingPatch()->removeNewElementBecauseOfDeletion(v->getObjectUid().toString());
+            MainWindow::instance()->updatePatchElementToReflectState(this, v, v->getObjectUid().toString(), 4); // 4 is REMOVE FROM THE TREE
         }
     }
 }
@@ -1000,17 +1001,17 @@ void DefaultVersionImplementation::deleteDiagram(const QString& name)
 
     if(lockState() == LockableElement::LOCKED)  // marking the element as deleted, ro removing
     {
-        if(!getWorkingPatch()->elementWasNewInThisPatch(dgr->getObjectUid())) // but only if it was NOT a newly created element
+        if(!getWorkingPatch()->elementWasNewInThisPatch(dgr->getObjectUid().toString())) // but only if it was NOT a newly created element
         {
-            MainWindow::instance()->createPatchElement(this, dgr, dgr->getObjectUid(), false);
-            getWorkingPatch()->markElementForDeletion(dgr->getObjectUid());
-            getWorkingPatch()->addDeletedDiagram(dgr->getObjectUid(), dda);
-            MainWindow::instance()->updatePatchElementToReflectState(this, dgr, dgr->getObjectUid(), 3); // 3 is DELETED
+            MainWindow::instance()->createPatchElement(this, dgr, dgr->getObjectUid().toString(), false);
+            getWorkingPatch()->markElementForDeletion(dgr->getObjectUid().toString());
+            getWorkingPatch()->addDeletedDiagram(dgr->getObjectUid().toString(), dda);
+            MainWindow::instance()->updatePatchElementToReflectState(this, dgr, dgr->getObjectUid().toString(), 3); // 3 is DELETED
         }
         else
         {
-            getWorkingPatch()->removeNewElementBecauseOfDeletion(dgr->getObjectUid());
-            MainWindow::instance()->updatePatchElementToReflectState(this, dgr, dgr->getObjectUid(), 4); // 4 is REMOVE FROM THE TREE
+            getWorkingPatch()->removeNewElementBecauseOfDeletion(dgr->getObjectUid().toString());
+            MainWindow::instance()->updatePatchElementToReflectState(this, dgr, dgr->getObjectUid().toString(), 4); // 4 is REMOVE FROM THE TREE
         }
     }
 }
@@ -1089,7 +1090,10 @@ QList<QString> DefaultVersionImplementation::getSqlScript(bool generateDelimiter
         {
             QStringList sql = getTableInstances().at(i)->generateSqlSource(m_project->getEngine()->getSqlGenerator(), opts, dest);
             finalSql << sql;
-            for(int j=0; j<sql.size(); j++) uids << getTableInstances().at(i)->getObjectUid();
+            for(int j=0; j<sql.size(); j++)
+            {
+                uids << getTableInstances().at(i)->getObjectUid().toString();
+            }
 
             if(fkAllowed) fkAllowed = !m_project->getEngine()->tableBlocksForeignKeyFunctionality(getTableInstances().at(i)->table());
         }
@@ -1101,7 +1105,7 @@ QList<QString> DefaultVersionImplementation::getSqlScript(bool generateDelimiter
                 QStringList foreignKeyCommands = m_project->getEngine()->getSqlGenerator()->generateAlterTableForForeignKeys(getTableInstances().at(i)->table(), opts);
 
                 finalSql << foreignKeyCommands;
-                for(int j=0; j<foreignKeyCommands.size(); j++) uids << getTableInstances().at(i)->getObjectUid();
+                for(int j=0; j<foreignKeyCommands.size(); j++) uids << getTableInstances().at(i)->getObjectUid().toString();
             }
         }
     }
@@ -1112,7 +1116,7 @@ QList<QString> DefaultVersionImplementation::getSqlScript(bool generateDelimiter
         {
             QStringList sql = getTables().at(i)->generateSqlSource(m_project->getEngine()->getSqlGenerator(), opts, dest);
             finalSql << sql;
-            for(int j=0; j<sql.size(); j++) uids << getTables().at(i)->getObjectUid();
+            for(int j=0; j<sql.size(); j++) uids << getTables().at(i)->getObjectUid().toString();
             if(fkAllowed)
             {
                 fkAllowed =!m_project->getEngine()->tableBlocksForeignKeyFunctionality(getTables().at(i));
@@ -1125,7 +1129,7 @@ QList<QString> DefaultVersionImplementation::getSqlScript(bool generateDelimiter
             {
                 QStringList foreignKeyCommands = m_project->getEngine()->getSqlGenerator()->generateAlterTableForForeignKeys(getTables().at(i), opts);
                 finalSql << foreignKeyCommands;
-                for(int j=0; j<foreignKeyCommands.size(); j++) uids << getTables().at(i)->getObjectUid();
+                for(int j=0; j<foreignKeyCommands.size(); j++) uids << getTables().at(i)->getObjectUid().toString();
             }
         }
         else
@@ -1149,7 +1153,7 @@ QList<QString> DefaultVersionImplementation::getSqlScript(bool generateDelimiter
         }
         s += ";\n\n";
         finalSql << s;
-        uids << m_data.m_views.at(i)->getObjectUid();
+        uids << m_data.m_views.at(i)->getObjectUid().toString();
     }
 
     // and the procedures
@@ -1184,7 +1188,7 @@ QList<QString> DefaultVersionImplementation::getSqlScript(bool generateDelimiter
         {
             s += strSemicolon + strNewline;
         }
-        uids << m_data.m_procedures.at(i)->getObjectUid();
+        uids << m_data.m_procedures.at(i)->getObjectUid().toString();
         finalSql << s;
     }
 
@@ -1229,7 +1233,7 @@ QList<QString> DefaultVersionImplementation::getSqlScript(bool generateDelimiter
             s += strSemicolon + strNewline;
         }
         finalSql << s;
-        uids << m_data.m_functions.at(i)->getObjectUid();
+        uids << m_data.m_functions.at(i)->getObjectUid().toString();
     }
 
     if(m_data.m_functions.size() && generateDelimiters)
@@ -1258,7 +1262,7 @@ QList<QString> DefaultVersionImplementation::getSqlScript(bool generateDelimiter
             s += t.at(j) + " ";
         }
         finalSql << s;
-        uids << m_data.m_triggers.at(i)->getObjectUid();
+        uids << m_data.m_triggers.at(i)->getObjectUid().toString();
     }
 
     return finalSql;
@@ -1279,9 +1283,9 @@ void DefaultVersionImplementation::addTableInstance(TableInstance* inst, bool in
     m_data.m_tableInstances.append(inst);
     if(lockState() == LockableElement::LOCKED && !initial)
     {
-        MainWindow::instance()->createPatchElement(this, inst, inst->getObjectUid(), false);
-        getWorkingPatch()->addNewElement(inst->getObjectUid()); // this will be a new element ...
-        MainWindow::instance()->updatePatchElementToReflectState(this, inst, inst->getObjectUid(), 1);
+        MainWindow::instance()->createPatchElement(this, inst, inst->getObjectUid().toString(), false);
+        getWorkingPatch()->addNewElement(inst->getObjectUid().toString()); // this will be a new element ...
+        MainWindow::instance()->updatePatchElementToReflectState(this, inst, inst->getObjectUid().toString(), 1);
 
     }
 }
@@ -1540,9 +1544,9 @@ void DefaultVersionImplementation::addView(View* v, bool initial)
 
     if(lockState() == LockableElement::LOCKED && !initial)
     {
-        MainWindow::instance()->createPatchElement(this, v, v->getObjectUid(), false);
-        getWorkingPatch()->addNewElement(v->getObjectUid()); // this will be a new element ...
-        MainWindow::instance()->updatePatchElementToReflectState(this, v, v->getObjectUid(), 1);
+        MainWindow::instance()->createPatchElement(this, v, v->getObjectUid().toString(), false);
+        getWorkingPatch()->addNewElement(v->getObjectUid().toString()); // this will be a new element ...
+        MainWindow::instance()->updatePatchElementToReflectState(this, v, v->getObjectUid().toString(), 1);
     }
 
 }
@@ -1589,9 +1593,9 @@ void DefaultVersionImplementation::addProcedure(Procedure* p, bool initial)
 
     if(lockState() == LockableElement::LOCKED && !initial)
     {
-        MainWindow::instance()->createPatchElement(this, p, p->getObjectUid(), false);
-        getWorkingPatch()->addNewElement(p->getObjectUid()); // this will be a new element ...
-        MainWindow::instance()->updatePatchElementToReflectState(this, p, p->getObjectUid(), 1);
+        MainWindow::instance()->createPatchElement(this, p, p->getObjectUid().toString(), false);
+        getWorkingPatch()->addNewElement(p->getObjectUid().toString()); // this will be a new element ...
+        MainWindow::instance()->updatePatchElementToReflectState(this, p, p->getObjectUid().toString(), 1);
     }
 
 }
@@ -1601,9 +1605,9 @@ void DefaultVersionImplementation::addFunction(Function* p, bool initial)
     m_data.m_functions.append(p);
     if(lockState() == LockableElement::LOCKED && !initial)
     {
-        MainWindow::instance()->createPatchElement(this, p, p->getObjectUid(), false);
-        getWorkingPatch()->addNewElement(p->getObjectUid()); // this will be a new element ...
-        MainWindow::instance()->updatePatchElementToReflectState(this, p, p->getObjectUid(), 1);
+        MainWindow::instance()->createPatchElement(this, p, p->getObjectUid().toString(), false);
+        getWorkingPatch()->addNewElement(p->getObjectUid().toString()); // this will be a new element ...
+        MainWindow::instance()->updatePatchElementToReflectState(this, p, p->getObjectUid().toString(), 1);
     }
 }
 
@@ -1612,9 +1616,9 @@ void DefaultVersionImplementation::addTrigger(Trigger* t, bool initial)
     m_data.m_triggers.append(t);
     if(lockState() == LockableElement::LOCKED && !initial)
     {
-        MainWindow::instance()->createPatchElement(this, t, t->getObjectUid(), false);
-        getWorkingPatch()->addNewElement(t->getObjectUid()); // this will be a new element ...
-        MainWindow::instance()->updatePatchElementToReflectState(this, t, t->getObjectUid(), 1);
+        MainWindow::instance()->createPatchElement(this, t, t->getObjectUid().toString(), false);
+        getWorkingPatch()->addNewElement(t->getObjectUid().toString()); // this will be a new element ...
+        MainWindow::instance()->updatePatchElementToReflectState(this, t, t->getObjectUid().toString(), 1);
     }
 }
 
@@ -1786,7 +1790,7 @@ bool DefaultVersionImplementation::cloneInto(Version* other, LockType lt)
             Table* this_parent = other->getTable(pname);    // name should be the same
             Table* this_table= other->getTable(tabs.at(i)->getName());
             this_table->setParent(this_parent);
-            this_table->setParentUid(this_parent->getObjectUid());
+            this_table->setParentUid(this_parent->getObjectUid().toString());
         }
     }
 
@@ -2394,7 +2398,7 @@ Version::PatchTreeRemovalStatus DefaultVersionImplementation::undeleteObject(con
                 tda->deletedTableInstances.at(i)->undeleteObject();
                 tda->deletedTableInstances.at(i)->updateGui();
 
-                getWorkingPatch()->undeleteObject(tda->deletedTableInstances.at(i)->getObjectUid());
+                getWorkingPatch()->undeleteObject(tda->deletedTableInstances.at(i)->getObjectUid().toString());
             }
 
             tda->deletedTable->updateGui();
@@ -2409,7 +2413,7 @@ Version::PatchTreeRemovalStatus DefaultVersionImplementation::undeleteObject(con
                 tda->deletedTableInstances.at(i)->unSentence();
                 tda->deletedTableInstances.at(i)->undeleteObject();
                 tda->deletedTableInstances.at(i)->updateGui();
-                getWorkingPatch()->undeleteObject(tda->deletedTableInstances.at(i)->getObjectUid());
+                getWorkingPatch()->undeleteObject(tda->deletedTableInstances.at(i)->getObjectUid().toString());
             }
         }
     }

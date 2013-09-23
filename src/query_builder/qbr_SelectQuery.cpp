@@ -313,11 +313,11 @@ void SelectQuery::handleAction(const QString &action, QueryComponent* /*referrin
             m_helper->triggerReRender();
         }
     }
-    if(action == DUPLICATE)
+    if(action == STR_DUPLICATE)
     {
         if(getParent())
         {
-            getParent()->handleAction(DUPLICATE, this);
+            getParent()->handleAction(STR_DUPLICATE, this);
         }
     }
 }
@@ -483,8 +483,8 @@ void SelectQuery::serialize(QDomDocument &doc, QDomElement &parent) const
 {
     QDomElement queryElement = doc.createElement("Query");
     queryElement.setAttribute("Type", "Select");
-    queryElement.setAttribute("uid", getObjectUid());
-    queryElement.setAttribute("class-uid", getClassUid());
+    queryElement.setAttribute("uid", getObjectUid().toString());
+    queryElement.setAttribute("class-uid", getClassUid().toString());
 
     if(m_select)
     {

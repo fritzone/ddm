@@ -33,14 +33,26 @@
 #include <QApplication>
 #include <QTreeWidget>
 #include <QDockWidget>
+#include <QMessageBox>
 
 Workspace* Workspace::m_instance = 0;
+
+QString Workspace::getDataLocation()
+{
+    #if QT_VERSION >= 0x050000
+    QString dataLocation = QStandardPaths::writableLocation(QStandardPaths::DataLocation);
+    #else
+    QString dataLocation = QDesktopServices::storageLocation(QDesktopServices::DataLocation);
+    #endif
+
+    return dataLocation;
+}
 
 Workspace::Workspace() : m_solutions(), m_currentSolution(0), m_saved(true),
     m_userDefinedDataTypes()
 {
-    QString dataLocation = QDesktopServices::storageLocation(QDesktopServices::DataLocation);
-    QDir dir(dataLocation);
+
+    QDir dir(getDataLocation());
     if(!dir.exists())
     {
         dir.mkpath(".");
@@ -112,7 +124,7 @@ bool Workspace::saveCurrentSolution(const QString &fileName)
     {
         return false;
     }
-    f1.write(xml.toAscii());
+    f1.write(xml.toLatin1());
     f1.close();
 
     save();
@@ -205,7 +217,7 @@ QVector<UserDataType*> Workspace::loadDefaultDatatypesIntoCurrentSolution(Soluti
         {
             s->currentProject()->getWorkingVersion()->addNewDataType(dts.at(i), true);
             // make the working version of the "s" to be the version for dts[i] in UidWarehouse
-            UidWarehouse::instance().setForcedVersionForUid(dts[i]->getObjectUid(), s->currentProject()->getWorkingVersion());
+            UidWarehouse::instance().setForcedVersionForUid(dts[i]->getObjectUid().toString(), s->currentProject()->getWorkingVersion());
             dts[i]->setForcedVersion(s->currentProject()->getWorkingVersion());
         }
 
@@ -223,8 +235,6 @@ QVector<UserDataType*> Workspace::loadDefaultDatatypesIntoCurrentSolution(Soluti
 // just save the stuff as normal project
 void Workspace::saveUserDefinedDatatypes()
 {
-    QString dataLocation = QDesktopServices::storageLocation(QDesktopServices::DataLocation);
-    //qDebug() << dataLocation;
     QDomDocument doc("DBM");
 
     QDomElement solutions = doc.createElement("Solutions");
@@ -273,12 +283,12 @@ void Workspace::saveUserDefinedDatatypes()
     doc.appendChild(solutions);
 
     QString xml = doc.toString();
-    QFile f1(dataLocation + "/user_data_types.xml");
+    QFile f1(getDataLocation() + "/user_data_types.xml");
     if (!f1.open(QIODevice::WriteOnly | QIODevice::Truncate | QIODevice::Text))
     {
         return;
     }
-    f1.write(xml.toAscii());
+    f1.write(xml.toLatin1());
     f1.close();
 }
 
@@ -312,8 +322,7 @@ QVector<UserDataType *> Workspace::loadDefaultDatatypesIntoCurrentSolution(Datab
 
 void Workspace::loadUserDefinedDatatypes()
 {
-    QString dataLocation = QDesktopServices::storageLocation(QDesktopServices::DataLocation);
-    QFile file(dataLocation + "/user_data_types.xml");
+    QFile file(getDataLocation() + "/user_data_types.xml");
     QDomDocument doc ("DBM");
     if (file.open(QIODevice::ReadOnly))
     {

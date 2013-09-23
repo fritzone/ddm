@@ -23,10 +23,18 @@
 #include <QMessageBox>
 #include <QDragEnterEvent>
 #include <QDropEvent>
-#include <QPrintDialog>
+#include <QFileDialog>
 #include <QtGlobal>
 #include <QSvgGenerator>
-#include <qdebug.h>
+
+#if QT_VERSION >= 0x050000
+#include <QtPrintSupport/QPrintDialog>
+#include <QtPrintSupport/QPrinter>
+#else
+#include <QPrintDialog>
+#include <QPrinter>
+#endif
+
 
 DiagramForm::DiagramForm(Version* v, Diagram* dgram, QWidget *parent) : QWidget(parent),
         ui(new Ui::DiagramForm), m_version(v), m_diagram(dgram), m_tabToRemove(""), m_noteToRemove(-1)
@@ -443,7 +451,7 @@ void DiagramForm::onLockUnlock(bool checked)
         m_diagram->updateGui();
         ui->btnLock->setToolTip(QObject::tr("This diagram is <b>unlocked</b>. Click this button to lock it."));
 
-        MainWindow::instance()->finallyDoLockLikeOperation(false, m_diagram->getObjectUid());
+        MainWindow::instance()->finallyDoLockLikeOperation(false, m_diagram->getObjectUid().toString());
     }
     else
     {
@@ -453,16 +461,16 @@ void DiagramForm::onLockUnlock(bool checked)
         m_diagram->updateGui();
         ui->btnLock->setToolTip(QObject::tr("this diagram is <b>locked</b>. Click this button to unlock it."));
 
-        MainWindow::instance()->finallyDoLockLikeOperation(true, m_diagram->getObjectUid());
+        MainWindow::instance()->finallyDoLockLikeOperation(true, m_diagram->getObjectUid().toString());
     }
 
 }
 
 void DiagramForm::onUndelete()
 {
-    if(m_version->undeleteObject(m_diagram->getObjectUid(), false))
+    if(m_version->undeleteObject(m_diagram->getObjectUid().toString(), false))
     {
-        MainWindow::instance()->getGuiElements()->removeItemForPatch(m_version->getWorkingPatch(), m_diagram->getObjectUid());
+        MainWindow::instance()->getGuiElements()->removeItemForPatch(m_version->getWorkingPatch(), m_diagram->getObjectUid().toString());
         // TODO: Duplicate from above
         if(m_diagram->lockState() == LockableElement::LOCKED)
         {

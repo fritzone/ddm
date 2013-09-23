@@ -8,6 +8,7 @@
 class DatabaseEngine;
 class Repository;
 class Entity;
+class QDockWidget;
 
 class RepositoryGuiElements
 {

@@ -72,7 +72,7 @@ CellQuerySmallOptionsBox::OptionsList CellQuerySmallOptionsBox::prepareOptions()
 
     if(m_types.contains(OPTIONS_DUPLICATE))
     {
-        text.append(DUPLICATE);
+        text.append(STR_DUPLICATE);
         icons.append(IconFactory::getTabinstIcon());
     }
 

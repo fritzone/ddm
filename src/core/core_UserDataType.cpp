@@ -54,9 +54,9 @@ void UserDataType::serialize(QDomDocument& doc, QDomElement& parent) const
     dtElement.setAttribute("DefaultValue", getDefaultValue());
     dtElement.setAttribute("Unsigned", isUnsigned() );
     dtElement.setAttribute("CanBeNull", canBeNull);
-    dtElement.setAttribute("uid", getObjectUid());
+    dtElement.setAttribute("uid", getObjectUid().toString());
     dtElement.setAttribute("class-uid", getClassUid().toString());
-    dtElement.setAttribute("source-uid", getSourceUid());
+    dtElement.setAttribute("source-uid", getSourceUid().toString());
     dtElement.setAttribute("locked", lockState() == LockableElement::LOCKED);
     dtElement.setAttribute("was-locked", wasLocked());
     dtElement.setAttribute("finalSql", sqlAsString());

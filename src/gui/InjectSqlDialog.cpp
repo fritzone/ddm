@@ -29,6 +29,7 @@
 #include <QListWidgetItem>
 #include <QFileDialog>
 #include <QToolTip>
+#include <QHeaderView>
 
 QString InjectSqlDialog::previousHost="";
 QString InjectSqlDialog::previousUser="";
@@ -91,7 +92,7 @@ InjectSqlDialog::InjectSqlDialog(DatabaseEngine* engine, QWidget *parent, Versio
             QVector <TableInstance*> tabs = v->getTableInstances();
             for(int i=0; i<tabs.size(); i++)
             {
-                createTreeItem(tabItem, tabs.at(i)->getName(), tabs.at(i)->getObjectUid(), IconFactory::getTabinstIcon());
+                createTreeItem(tabItem, tabs.at(i)->getName(), tabs.at(i)->getObjectUid().toString(), IconFactory::getTabinstIcon());
             }
         }
         else
@@ -99,7 +100,7 @@ InjectSqlDialog::InjectSqlDialog(DatabaseEngine* engine, QWidget *parent, Versio
             QVector <Table*> tabs = v->getTables();
             for(int i=0; i<tabs.size(); i++)
             {
-                createTreeItem(tabItem, tabs.at(i)->getName(), tabs.at(i)->getObjectUid(), IconFactory::getTableIcon());
+                createTreeItem(tabItem, tabs.at(i)->getName(), tabs.at(i)->getObjectUid().toString(), IconFactory::getTableIcon());
             }
         }
         tabItem->setExpanded(true);
@@ -112,7 +113,7 @@ InjectSqlDialog::InjectSqlDialog(DatabaseEngine* engine, QWidget *parent, Versio
         QVector <View*> views = v->getViews();
         for(int i=0; i<views.size(); i++)
         {
-            createTreeItem(viewsItem, views.at(i)->getName(), views.at(i)->getObjectUid(), IconFactory::getViewIcon());
+            createTreeItem(viewsItem, views.at(i)->getName(), views.at(i)->getObjectUid().toString(), IconFactory::getViewIcon());
         }
         viewsItem->setExpanded(true);
 
@@ -124,7 +125,7 @@ InjectSqlDialog::InjectSqlDialog(DatabaseEngine* engine, QWidget *parent, Versio
         QVector <Procedure*> procedures = v->getProcedures();
         for(int i=0; i<procedures.size(); i++)
         {
-            createTreeItem(proceduresItem, procedures.at(i)->getName(), procedures.at(i)->getObjectUid(), IconFactory::getProcedureIcon());
+            createTreeItem(proceduresItem, procedures.at(i)->getName(), procedures.at(i)->getObjectUid().toString(), IconFactory::getProcedureIcon());
         }
         proceduresItem->setExpanded(true);
 
@@ -136,7 +137,7 @@ InjectSqlDialog::InjectSqlDialog(DatabaseEngine* engine, QWidget *parent, Versio
         QVector <Function*> functions = v->getFunctions();
         for(int i=0; i<functions.size(); i++)
         {
-            createTreeItem(functionsItem, functions.at(i)->getName(), functions.at(i)->getObjectUid(), IconFactory::getFunctionTreeIcon());
+            createTreeItem(functionsItem, functions.at(i)->getName(), functions.at(i)->getObjectUid().toString(), IconFactory::getFunctionTreeIcon());
         }
         functionsItem->setExpanded(true);
 
@@ -148,11 +149,16 @@ InjectSqlDialog::InjectSqlDialog(DatabaseEngine* engine, QWidget *parent, Versio
         QVector <Trigger*> triggers = v->getTriggers();
         for(int i=0; i<triggers.size(); i++)
         {
-            createTreeItem(triggersItem, triggers.at(i)->getName(), triggers.at(i)->getObjectUid(), IconFactory::getTriggerIcon());
+            createTreeItem(triggersItem, triggers.at(i)->getName(), triggers.at(i)->getObjectUid().toString(), IconFactory::getTriggerIcon());
         }
         triggersItem->setExpanded(true);
-
+        #if QT_VERSION >= 0x050000
+        ui->treeObjectsToDeploy->header()->setSectionResizeMode(0, QHeaderView::ResizeToContents);
+        #else
         ui->treeObjectsToDeploy->header()->setResizeMode(0, QHeaderView::ResizeToContents);
+        #endif
+
+
 
         connect(m_signalMapper, SIGNAL(mapped(QString)), this, SLOT(checkBoxToggled(QString)));
     }

@@ -35,7 +35,7 @@ void DeploymentInitiator::doDeployment(Version* v, QStringList connectionNames, 
         QVector <TableInstance*> tabs = v->getTableInstances();
         for(int i=0; i<tabs.size(); i++)
         {
-            uidsToDeploy.append(tabs.at(i)->getObjectUid());
+            uidsToDeploy.append(tabs.at(i)->getObjectUid().toString());
         }
     }
     else
@@ -43,28 +43,28 @@ void DeploymentInitiator::doDeployment(Version* v, QStringList connectionNames, 
         QVector <Table*> tabs = v->getTables();
         for(int i=0; i<tabs.size(); i++)
         {
-            uidsToDeploy.append(tabs.at(i)->getObjectUid());
+            uidsToDeploy.append(tabs.at(i)->getObjectUid().toString());
         }
     }
     QVector <View*> views = v->getViews();
     for(int i=0; i<views.size(); i++)
     {
-        uidsToDeploy.append(views.at(i)->getObjectUid());
+        uidsToDeploy.append(views.at(i)->getObjectUid().toString());
     }
     QVector <Procedure*> procedures = v->getProcedures();
     for(int i=0; i<procedures.size(); i++)
     {
-        uidsToDeploy.append(procedures.at(i)->getObjectUid());
+        uidsToDeploy.append(procedures.at(i)->getObjectUid().toString());
     }
     QVector <Function*> functions = v->getFunctions();
     for(int i=0; i<functions.size(); i++)
     {
-        uidsToDeploy.append(functions.at(i)->getObjectUid());
+        uidsToDeploy.append(functions.at(i)->getObjectUid().toString());
     }
     QVector <Trigger*> triggers = v->getTriggers();
     for(int i=0; i<triggers.size(); i++)
     {
-        uidsToDeploy.append(triggers.at(i)->getObjectUid());
+        uidsToDeploy.append(triggers.at(i)->getObjectUid().toString());
     }
     doDeployment(v, connectionNames, metadataInject, uidsToDeploy, QStringList());
 }

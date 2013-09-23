@@ -12,6 +12,10 @@
 #include "core_Procedure.h"
 #include "core_StoredMethod.h"
 
+#include <QToolTip>
+#include <QMessageBox>
+#include <QFileDialog>
+
 ProcedureForm::ProcedureForm(Version* v, ProcedureFormMode m, bool guided, bool forced, Connection *c, QWidget *parent) :
     QWidget(parent),
     ui(new Ui::ProcedureForm), m_textEdit(0), m_frameForLineNumbers(0), m_proc(0),
@@ -320,7 +324,7 @@ void ProcedureForm::onLockUnlock(bool checked)
         m_proc->updateGui();
         ui->btnLock->setToolTip((m_mode == MODE_PROCEDURE?"Procedure":"Function") + QObject::tr(" is <b>unlocked</b>. Click this button to lock it."));
 
-        MainWindow::instance()->finallyDoLockLikeOperation(false, m_proc->getObjectUid());
+        MainWindow::instance()->finallyDoLockLikeOperation(false, m_proc->getObjectUid().toString());
     }
     else
     {
@@ -331,7 +335,7 @@ void ProcedureForm::onLockUnlock(bool checked)
         m_proc->updateGui();
         ui->btnLock->setToolTip((m_mode == MODE_PROCEDURE?"Procedure":"Function") + QObject::tr(" is <b>locked</b>. Click this button to lock it."));
 
-        MainWindow::instance()->finallyDoLockLikeOperation(true, m_proc->getObjectUid());
+        MainWindow::instance()->finallyDoLockLikeOperation(true, m_proc->getObjectUid().toString());
     }
 }
 
@@ -436,9 +440,9 @@ void ProcedureForm::setProcedure(StoredMethod *p)
 
 void ProcedureForm::onUndelete()
 {
-    if(m_version->undeleteObject(m_proc->getObjectUid(), false))
+    if(m_version->undeleteObject(m_proc->getObjectUid().toString(), false))
     {
-        MainWindow::instance()->getGuiElements()->removeItemForPatch(m_version->getWorkingPatch(), m_proc->getObjectUid());
+        MainWindow::instance()->getGuiElements()->removeItemForPatch(m_version->getWorkingPatch(), m_proc->getObjectUid().toString());
         // TODO: Duplicate from above
         if(m_proc->lockState() == LockableElement::LOCKED)
         {

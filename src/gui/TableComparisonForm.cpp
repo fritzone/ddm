@@ -101,7 +101,7 @@ void TableComparisonForm::generateUpdateScript(Version* from, Version* to)
     versions.push_front(current);
     while(current->getSourceUid() != from->getObjectUid())
     {
-        current = static_cast<Version*>(UidWarehouse::instance().getElement(current->getSourceUid()));
+        current = static_cast<Version*>(UidWarehouse::instance().getElement(current->getSourceUid().toString()));
         if(!current)
         {
             break;
@@ -163,14 +163,14 @@ void TableComparisonForm::setupNewTable(const QString &v, Table *& table)
         {
             // our right table is in a version above the selected one. Source UID of our table should lead downwards N steps to the table in
             // the requried version.
-            QString srcTabUid = table->getSourceUid();
+            QString srcTabUid = table->getSourceUid().toString();
             Version* srcVer = table->version();
             Table* tab = 0;
             while(srcVer && srcVer->getVersionText() != ver->getVersionText())
             {
                 tab = dynamic_cast<Table*>(UidWarehouse::instance().getElement(srcTabUid));
                 if(!tab) return;
-                srcTabUid = table->getSourceUid();
+                srcTabUid = table->getSourceUid().toString();
                 srcVer = UidWarehouse::instance().getVersionForUid(srcTabUid);
             }
             if(tab == 0) return;

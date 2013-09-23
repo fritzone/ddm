@@ -5,6 +5,8 @@
 
 #include <QObject>
 #include <QtGui>
+#include <QDockWidget>
+#include <QToolBar>
 
 class Connection;
 

@@ -32,7 +32,7 @@ void SelectQueryFromComponent::handleAction(const QString &action, QueryComponen
             sq->newFromSelectQueryComponent();
         }
     }
-    if(action == DUPLICATE)
+    if(action == STR_DUPLICATE)
     {
         SelectQuery* sq = dynamic_cast<SelectQuery*>(getParent());
         if(sq)

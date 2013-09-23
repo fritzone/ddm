@@ -16,9 +16,9 @@ void Function::serialize(QDomDocument &doc, QDomElement &parent) const
 {
     QDomElement element = doc.createElement("Function");
     element.setAttribute("Name", m_name);
-    element.setAttribute("uid", getObjectUid());
-    element.setAttribute("class-uid", getClassUid());
-    element.setAttribute("source-uid", getSourceUid());
+    element.setAttribute("uid", getObjectUid().toString());
+    element.setAttribute("class-uid", getClassUid().toString());
+    element.setAttribute("source-uid", getSourceUid().toString());
     element.setAttribute("locked", lockState() == LockableElement::LOCKED);
     element.setAttribute("was-locked", wasLocked());
     element.setAttribute("guided", m_guidedCreation);

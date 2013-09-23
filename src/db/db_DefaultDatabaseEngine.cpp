@@ -113,7 +113,7 @@ QString DefaultDatabaseEngine::toHexString(const QString &x)
     QString result = "";
     for(int i=0; i<x.length(); i++)
     {
-        QString hex = QString("%1").arg((int)(x.at(i).toAscii()), 0, 16);
+        QString hex = QString("%1").arg((int)(x.at(i).toLatin1()), 0, 16);
         if(hex.length() == 1) hex = "0" + hex;
         result += hex;
     }

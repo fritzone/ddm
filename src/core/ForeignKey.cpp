@@ -55,7 +55,7 @@ void ForeignKey::serialize(QDomDocument &doc, QDomElement &parent) const
     fkElement.setAttribute("Name", m_name);
     fkElement.setAttribute("OnUpdate", m_onUpdate);
     fkElement.setAttribute("OnDelete", m_onDelete);
-    fkElement.setAttribute("uid", getObjectUid());
+    fkElement.setAttribute("uid", getObjectUid().toString());
     fkElement.setAttribute("class-uid", getClassUid().toString());
     fkElement.setAttribute("source-uid", getSourceUid().toString().length() ? getSourceUid().toString() : strNA);
 

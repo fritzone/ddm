@@ -1,11 +1,7 @@
 # -------------------------------------------------
 # Project created by QtCreator 2009-11-25T12:54:30
 # -------------------------------------------------
-QT += network \
-    sql \
-    xml \
-    webkit \
-    svg
+QT += network sql xml webkit svg widgets qtwebkitwidgets printsupport
 
 TARGET = ddm
 TEMPLATE = app
