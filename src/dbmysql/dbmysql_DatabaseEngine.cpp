@@ -201,52 +201,6 @@ QSqlDatabase MySQLDatabaseEngine::getQSqlDatabaseForConnection(Connection *conn)
     return dbo;
 }
 
-QStringList MySQLDatabaseEngine::getAvailableViews(Connection* conn)
-{
-    if(!dynamic_cast<MySqlConnection*>(conn)) return QStringList();
-
-    return getResultOfQuery(QString("select table_name from information_schema.tables where table_schema='")
-                             + dynamic_cast<MySqlConnection*>(conn)->getDb()
-                             + QString("' and table_type='VIEW'"),
-                            conn,
-                            QString("Cannot get list of available views"), 0);
-}
-
-QStringList MySQLDatabaseEngine::getAvailableTriggers(Connection* c)
-{
-    return getResultOfQuery(QString("show triggers"), c, QString("Cannot get list of avilable triggers"), 0);
-}
-
-QStringList MySQLDatabaseEngine::getAvailableStoredProcedures(Connection* conn)
-{
-    if(!dynamic_cast<MySqlConnection*>(conn)) return QStringList();
-
-    return getResultOfQuery("show procedure status where db='"
-                            + dynamic_cast<MySqlConnection*>(conn)->getDb()
-                            + "'",
-                            conn,
-                            "Cannot get stored procedures", 1);
-}
-
-QStringList MySQLDatabaseEngine::getAvailableStoredFunctions(Connection* conn)
-{
-    if(!dynamic_cast<MySqlConnection*>(conn)) return QStringList();
-
-    return getResultOfQuery("show function status where db='"
-                            + dynamic_cast<MySqlConnection*>(conn)->getDb() + "'",
-                            conn, "Cannot get list of available functions", 1);
-}
-
-QStringList MySQLDatabaseEngine::getAvailableTables(Connection* conn)
-{
-    if(!dynamic_cast<MySqlConnection*>(conn)) return QStringList();
-
-    return getResultOfQuery("select table_name from information_schema.tables where table_schema='"
-                            + dynamic_cast<MySqlConnection*>(conn)->getDb() +
-                            "' and table_type='BASE TABLE'",
-                            conn, "Cannot get list of tables", 0);
-}
-
 Procedure* MySQLDatabaseEngine::reverseEngineerProc(Connection *c, const QString &procName, Version *v)
 {
     QSqlDatabase db = getQSqlDatabaseForConnection(c);

@@ -164,58 +164,6 @@ QSqlDatabase CUBRIDDatabaseEngine::getQSqlDatabaseForConnection(Connection *conn
     return dbo;
 }
 
-QStringList CUBRIDDatabaseEngine::getAvailableViews(Connection* conn)
-{
-    if(!dynamic_cast<CUBRIDConnection*>(conn))
-    {
-        return QStringList();
-    }
-
-    return getResultOfQuery(QString("SELECT class_name FROM db_class WHERE is_system_class='NO' AND class_type = 'VCLASS' AND owner_name=current_user"),
-                            conn,
-                            QString("Cannot get list of available views"), 0);
-}
-
-QStringList CUBRIDDatabaseEngine::getAvailableTriggers(Connection* c)
-{
-    return getResultOfQuery(QString("select trigger_name from db_trig"), c, QString("Cannot get list of avilable triggers"), 0);
-}
-
-QStringList CUBRIDDatabaseEngine::getAvailableStoredProcedures(Connection* conn)
-{
-    if(!dynamic_cast<CUBRIDConnection*>(conn))
-    {
-        return QStringList();
-    }
-
-    return getResultOfQuery("select sp_name from db_stored_procedure WHERE owner=current_user and sp_type='PROCEDURE'",
-                            conn,
-                            "Cannot get stored procedures", 0);
-}
-
-QStringList CUBRIDDatabaseEngine::getAvailableStoredFunctions(Connection* conn)
-{
-    if(!dynamic_cast<CUBRIDConnection*>(conn))
-    {
-        return QStringList();
-    }
-
-    return getResultOfQuery("select sp_name from db_stored_procedure WHERE owner=current_user and sp_type='FUNCTION'",
-                            conn, "Cannot get list of available functions", 0);
-}
-
-QStringList CUBRIDDatabaseEngine::getAvailableTables(Connection* conn)
-{
-    if(!dynamic_cast<CUBRIDConnection*>(conn))
-    {
-        return QStringList();
-    }
-
-    return getResultOfQuery("SELECT class_name FROM db_class WHERE is_system_class='NO' AND class_type = 'CLASS' AND owner_name=current_user",
-                            conn,
-                            "Cannot get list of tables", 0);
-}
-
 Procedure* CUBRIDDatabaseEngine::reverseEngineerProc(Connection *c, const QString &procName, Version *v)
 {
     QSqlDatabase db = getQSqlDatabaseForConnection(c);

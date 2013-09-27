@@ -6,6 +6,7 @@
 #include "db_SP.h"
 #include "db_DatabaseEngineManager.h"
 #include "Connection.h"
+#include "db_RepositoryQuery.h"
 
 #include <QSqlQuery>
 #include <QSqlError>
@@ -223,19 +224,21 @@ QStringList DefaultDatabaseEngine::getResultOfQuery(const QString& squery, Conne
     bool run = query.exec(squery);
     if(!run)
     {
-        //qDebug() << query.lastError().databaseText() << query.lastError().driverText();
         dbo.close();
         return result;
     }
 
     if(query.size() == -1 && query.isActive())
     {
-        do
+        if(query.next())
         {
-            QString tab = query.value(column).toString();
-            result.append(tab);
+            do
+            {
+                QString tab = query.value(column).toString();
+                result.append(tab);
+            }
+            while(query.next());
         }
-        while(query.next());
     }
     else
     {
@@ -301,16 +304,6 @@ const DatabaseBuiltinFunction& DefaultDatabaseEngine::getBuiltinFunction(const Q
         }
     }
     return no_function;
-}
-
-QStringList DefaultDatabaseEngine::getAvailableStoredProcedures(Connection*)
-{
-     return QStringList();
-}
-
-QStringList DefaultDatabaseEngine::getAvailableStoredFunctions(Connection*)
-{
-    return QStringList();
 }
 
 Procedure* DefaultDatabaseEngine::reverseEngineerProc(Connection*, const QString&, Version*)
@@ -426,4 +419,44 @@ QStringList DefaultDatabaseEngine::getOnUpdateActions()
 QStringList DefaultDatabaseEngine::getOnDeleteActions()
 {
     return DatabaseEngineManager::instance().getFkSupportOnDelete(getName().toUpper());
+}
+
+QStringList DefaultDatabaseEngine::getResultOfRepoQuery(Connection* conn, const QString &queryId, const QString &objects)
+{
+    QSharedPointer<RepositoryQuery> p = DatabaseEngineManager::instance().getQuery(getName().toUpper(), queryId);
+    if(p.isNull())
+    {
+        return QStringList();
+    }
+    QString s = p->render(conn);
+    return getResultOfQuery(s, conn,
+                            QObject::tr("Cannot get list of available ") + objects,
+                            p->getResultIndex());
+}
+
+
+QStringList DefaultDatabaseEngine::getAvailableViews(Connection* conn)
+{
+    return getResultOfRepoQuery(conn, "getAvailabeViews", QObject::tr("views"));
+}
+
+QStringList DefaultDatabaseEngine::getAvailableTriggers(Connection* conn)
+{
+    return getResultOfRepoQuery(conn, "getAvailabeTriggers", QObject::tr("triggers"));
+}
+
+
+QStringList DefaultDatabaseEngine::getAvailableStoredProcedures(Connection* conn)
+{
+     return getResultOfRepoQuery(conn, "getAvailableStoredProcedures", QObject::tr("procedures"));
+}
+
+QStringList DefaultDatabaseEngine::getAvailableStoredFunctions(Connection* conn)
+{
+    return getResultOfRepoQuery(conn, "getAvailableStoredFunctions", QObject::tr("functions"));
+}
+
+QStringList DefaultDatabaseEngine::getAvailableTables(Connection* conn)
+{
+    return getResultOfRepoQuery(conn, "getAvailableTables", QObject::tr("tables"));
 }

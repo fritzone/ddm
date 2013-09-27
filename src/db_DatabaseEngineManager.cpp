@@ -452,3 +452,20 @@ QStringList DatabaseEngineManager::getFkSupportOnDelete(const QString &dbName)
 
     return QStringList();
 }
+
+void DatabaseEngineManager::setDataQueries(const QString &dbName, QMap<QString, QSharedPointer<RepositoryQuery> > queries)
+{
+    m_dataQueries[dbName.toUpper()] = queries;
+}
+
+QSharedPointer<RepositoryQuery> DatabaseEngineManager::getQuery(const QString &dbName, const QString &queryId)
+{
+    if(m_dataQueries.contains(dbName.toUpper()))
+    {
+        if(m_dataQueries[dbName.toUpper()].contains(queryId.toUpper()))
+        {
+            return m_dataQueries[dbName.toUpper()][queryId.toUpper()];
+        }
+    }
+    return QSharedPointer<RepositoryQuery>(0);
+}

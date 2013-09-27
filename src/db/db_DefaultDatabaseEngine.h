@@ -49,6 +49,8 @@ public:
 
     QString formatLastError(const QString& header, const QSqlError &error);
     QStringList getResultOfQuery(const QString& squery, Connection* conn, const QString &error, int column);
+    QStringList getResultOfRepoQuery(Connection *conn, const QString& queryId, const QString& objects);
+
 
     virtual QString getDbMetadata(Connection *c);
     virtual bool injectMetadata(Connection *c, const Version *v);
@@ -64,7 +66,7 @@ public:
     virtual QVector<DatabaseBuiltinFunction> getBuiltinFunctions();
     virtual const DatabaseBuiltinFunction& getBuiltinFunction(const QString& name);
     virtual QStringList getAvailableStoredFunctions(Connection*);
-    virtual QStringList getAvailableStoredProcedures(Connection*);
+    virtual QStringList getAvailableStoredProcedures(Connection*conn);
     virtual Procedure* reverseEngineerProc(Connection*, const QString&, Version*);
     virtual Function* reverseEngineerFunc(Connection*, const QString&, Version*);
     virtual QStringList getAvailableDatabases(const QString&, const QString&,
@@ -80,6 +82,10 @@ public:
     bool executeSql(Connection* c, const QStringList& sqls, const QStringList &uid, QString& lastSql, bool rollbackOnError);
     virtual QStringList getOnUpdateActions();
     virtual QStringList getOnDeleteActions();
+    virtual QStringList getAvailableViews(Connection* c);
+    virtual QStringList getAvailableTriggers(Connection* conn);
+    virtual QStringList getAvailableTables(Connection* conn);
+
 };
 
 #endif // DB_DEFAULTDATABASEENGINE_H

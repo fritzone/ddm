@@ -29,6 +29,10 @@ public:
     virtual void saveIntoSettings(QSettings& s) = 0;
     virtual QString getDbType() const = 0;
     virtual Table* getIssueTable() const { return 0; }
+    virtual QString getDb() const
+    {
+        return "";
+    }
 
     bool tryConnect();
 
