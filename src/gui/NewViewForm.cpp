@@ -450,7 +450,8 @@ void NewViewForm::onLockUnlock(bool checked)
 
 void NewViewForm::onUndelete()
 {
-    if(m_version->undeleteObject(m_view->getObjectUid().toString(), false))
+    QString tempError;
+    if(m_version->undeleteObject(m_view->getObjectUid().toString(), false, tempError))
     {
         MainWindow::instance()->getGuiElements()->removeItemForPatch(m_version->getWorkingPatch(), m_view->getObjectUid().toString());
         // TODO: Duplicate from above
@@ -474,5 +475,9 @@ void NewViewForm::onUndelete()
         }
         ui->btnUndelete->hide();
         ui->btnLock->show();
+    }
+    else
+    {
+        QMessageBox::critical(this, tr("Error"), tempError);
     }
 }

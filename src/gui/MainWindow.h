@@ -30,11 +30,14 @@ class Deployer;
 class ReverseEngineerer;
 class View;
 class Procedure;
+class Function;
 class GuiElements;
 class ConnectionGuiElements;
 class ObjectWithUid;
 class Version;
 class RepositoryGuiElements;
+class MainWindowSlotHouse;
+class DeleteHelper;
 
 namespace Ui
 {
@@ -49,6 +52,7 @@ public:
 
     typedef bool (MainWindow::*dynamicAction)(QString);
     typedef void (MainWindow::*showSomething)(Version*, const QString&, bool);
+    typedef void (MainWindow::*deleteSomething)();
 
     MainWindow(QWidget *parent = 0);
     ~MainWindow();
@@ -113,30 +117,29 @@ public:
 
     void tryBrowseConnection(Connection* c);
 
+    void updateSourceCodeWidget();
 
+    void newDiagramInVersion(Version* v);
+    void newTableInVersion(Version* v);
 protected:
     virtual void closeEvent( QCloseEvent * event );
     virtual void changeEvent(QEvent *e);
     virtual bool eventFilter(QObject *obj, QEvent *evt);
 
-
 public slots:
 
     void onNewSolution();
-    //void onProjectTreeClicked();
     void onNewDataType();
     void onNewTable();
     void onSaveSolution();
     void onOpenSolution();
     void onAbout();
-    void onDTTreeClicked();
     void onNewDiagram();
     void onSaveAs();
     void onCloseSolution();
     void onDestroyed();
     void onHelp();
     void projectTreeItemClicked(QTreeWidgetItem * current, int);
-    void dtTreeItemClicked ( QTreeWidgetItem * item, int column );
     void onNewTableInstance();
     void onNewTableInstanceFromPopup();
     void onNewTableInstanceHovered();
@@ -151,33 +154,17 @@ public slots:
     void onRenameInstanceFromPopup();
     void onDeleteDatatypeFromPopup();
     void onDuplicateDatatypeFromPopup();
-    void onDeleteDiagramFromPopup();
     void onRenameDiagramFromPopup();
-    void onNewDiagramFromPopup();
-    void onNewProcedureFromPopup();
-    void onNewFunctionFromPopup();
     void onNewTriggerFromPopup();
     void onNewViewFromPopup();
     void onNewViewWithSqlFromPopup();
     void onInitiatePatch();
-    void onNewStringType();
-    void onNewNumericType();
-    void onNewBoolType();
-    void onNewDateTimeType();
-    void onNewBlobType();
-    void onNewMiscType();
-    void onNewSpatialType();
-    void onDeploy();
     void onPreferences();
     void onViewProjectTree();
     void onViewConnectionsTree();
     void onViewDatatypesTree();
     void onNewView();
     void onNewViewWithSql();
-    void onNewProcedure();  // defaults to guided from now on: v01.j
-    void onNewSqlProcedure();
-    void onNewFunction();   // defaults to guided from now on: v01.j
-    void onNewSqlFunction();
     void onNewTrigger();
     void onReverseEngineerWizardNextPage(int);
     void onReverseEngineerWizardAccept();
@@ -200,21 +187,14 @@ public slots:
     void onConnectionItemDoubleClicked(QTreeWidgetItem*,int);
     void onInjectBrowsedTable();
     void onBrowseBrowsedTable();
-    void onDeleteViewFromPopup();
     void onDeleteUnusedDatatypes();
-    void onDeleteProcedure();
     void onReleaseMajorVersion();
-    void onUnlockSomething();
-    void onRelockSomething();
-    void onDeleteFunction();
-    void onDeleteTrigger();
     void patchTreeItemClicked(QTreeWidgetItem * current, int);
     void finalizePatch();
     void renamePatch();
-    void onNewTableFromPopup();
     void onUndeleteSomething();
     void onCompareTables();
-    void onDeployVersion();
+
     void onUpdateDb();
     void onRepoItemClicked(QTreeWidgetItem*,int);
     void onShowSolutionProperties();
@@ -242,6 +222,7 @@ private:
     template <class T> void showNamedObjectList(showSomething s, const QVector<T*> items, const QIcon& icon, const QString& title);
 
     void hideSplashwindow();
+    void showSplashwindow();
 
     void showObjectWithGuidAndVersion(Version* v, QString uid, showSomething s, bool focus=true);
 
@@ -250,8 +231,29 @@ private:
     Version* getVersionOfLastRightClickedElement();
     bool showObjectWithGuid(const QString&);
     bool showRepoObjectWithGuid(const QString&);
+    Function *createStoredFunction(bool guided, Version *v);
+    Procedure* createStoredProcedureInVersion(bool guided, Version *v);
+    void createTableInstancesInVersion(Version* v);
+    Version* getLastRightClickedVersion();
 
 private:
+
+    /**
+     * @brief The ClassUidsShowMethod class holds a map for the class UID and the
+     * correspondng showSomething method
+     */
+    class ClassUidsShowMethod
+    {
+    public:
+        ClassUidsShowMethod();
+        const QMap<QString, showSomething>& getMapping()
+        {
+            return mapping;
+        }
+    private:
+        QMap<QString, showSomething> mapping;
+    };
+
     Ui::MainWindow *m_ui;
     MainWindowButtonDialog* m_btndlg;
     Workspace* m_workspace;
@@ -264,6 +266,10 @@ private:
     ConnectionGuiElements* m_connectionGuiElements;
     RepositoryGuiElements* m_repositoryGuiElements;
     QString m_lastLoadedProject;
+    ClassUidsShowMethod m_showMethods;
+
+    friend class MainWindowSlotHouse;
+    friend class DeleteHelper;
 };
 
 #endif // MAINWINDOW_H

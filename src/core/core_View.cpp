@@ -241,3 +241,8 @@ bool View::usesTable(const Table *tab) const
     }
     return false;
 }
+
+const QVector<View *> &View::family(const View& v)
+{
+    return v.version()->getViews();
+}

@@ -1,11 +1,13 @@
 #include "SimpleTextInputDialog.h"
 #include "ui_SimpleTextInputDialog.h"
 
-SimpleTextInputDialog::SimpleTextInputDialog(QWidget *parent, const QString& caption) : QDialog(parent),
+SimpleTextInputDialog::SimpleTextInputDialog(QWidget *parent, const QString& caption, const QString& text) : QDialog(parent),
     ui(new Ui::SimpleTextInputDialog)
 {
     ui->setupUi(this);
     setWindowTitle(caption);
+    setText(text);
+    setModal(true);
 }
 
 

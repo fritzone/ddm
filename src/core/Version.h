@@ -7,6 +7,7 @@
 #include "TreeItem.h"
 #include "core_LockableElement.h"
 #include "core_NamedItem.h"
+#include "uids.h"
 
 class UserDataType;
 class Table;
@@ -195,6 +196,7 @@ public:
      * @return true if the table was succesfully deleted, false if not
      */
     virtual bool deleteTable(Table*) = 0;
+    virtual void deleteTableWithName(const QString&) = 0;
 
     /**
      * Deletes the given table instance, and also all the other table instances
@@ -202,6 +204,7 @@ public:
      * when it was instantiated
      */
     virtual void deleteTableInstance(TableInstance*) = 0;
+    virtual void deleteTableInstance(const QString&) = 0;
 
     /**
      * Duplicates the table
@@ -497,7 +500,7 @@ public:
      * @brief undeleteObject Undeletes the object with given UID. The object was supposed to be deleted in a patch.
      * @param uid
      */
-    virtual PatchTreeRemovalStatus undeleteObject(const QString& uid, bool suspend) = 0;
+    virtual PatchTreeRemovalStatus undeleteObject(const QString& uid, bool suspend, QString& outError) = 0;
 
     /**
      * @brief removePatch
@@ -523,12 +526,18 @@ public:
      */
     virtual void deleteObjectByUid(const QString& uid) = 0;
 
+    template <class T> const QVector<T*>& getListOfObjectsForUid(const T& t)
+    {
+        return T::family(t);
+    }
+
 protected:
     int m_major;
     int m_minor;
     Project* m_project;
 };
 
-typedef NamedItem* (Version::*itemGetter)(const QString&);
+typedef NamedItem* (Version::*itemGetter)(const QString& name);
+typedef void (Version::*itemDeleter)(const QString& name);
 
 #endif // VERSION_H

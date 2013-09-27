@@ -13,6 +13,8 @@ public:
 
 public:
 
+    explicit VersionElement() : m_version(0) {}
+
     VersionElement(const QString& uid, Version *v) : ObjectWithUid(uid), m_version(v)
     {
         // it is ok to cast this to an ObjectWithUid object, the base was already constructed

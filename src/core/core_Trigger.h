@@ -23,6 +23,7 @@ class Trigger :
 {
 public:
 
+    explicit Trigger() {}
     Trigger(const QString& name, const QString& uid, Version *v);
 
     virtual QStringList generateSqlSource(AbstractSqlGenerator*, QHash<QString,QString>, const Connection*);
@@ -83,6 +84,8 @@ public:
     virtual void updateGui();
 
     virtual QString getSqlHash() const;
+
+    static const QVector<Trigger*> &family(const Trigger&);
 
 private:
 

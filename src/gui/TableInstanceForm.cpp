@@ -433,7 +433,8 @@ void TableInstanceForm::onTInstSelectedForFk(const QString& d)
 
 void TableInstanceForm::onUndelete()
 {
-    if(m_tinst->version()->undeleteObject(m_tinst->getObjectUid().toString(), false))
+    QString tempError;
+    if(m_tinst->version()->undeleteObject(m_tinst->getObjectUid().toString(), false, tempError))
     {
         MainWindow::instance()->getGuiElements()->removeItemForPatch(m_tinst->version()->getWorkingPatch(), m_tinst->getObjectUid().toString());
         // TODO: Duplicate from above
@@ -457,6 +458,10 @@ void TableInstanceForm::onUndelete()
         }
         ui->btnUndelete->hide();
         ui->btnLock->show();
+    }
+    else
+    {
+        QMessageBox::critical(this, tr("Error"), tempError);
     }
 }
 

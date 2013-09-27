@@ -81,3 +81,8 @@ void Procedure::updateGui()
     }
     TreeItem::updateGui();
 }
+
+const QVector<Procedure *> &Procedure::family(const Procedure& p)
+{
+    return p.version()->getProcedures();
+}

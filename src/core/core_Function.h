@@ -7,6 +7,8 @@
 class Function : public StoredMethod
 {
 public:
+    explicit Function(){} // dummy
+
     Function(const QString& pname, const QString& guid, Version *v, bool guided);
     virtual void serialize(QDomDocument& doc, QDomElement& parent) const;
     virtual QUuid getClassUid() const;
@@ -27,6 +29,8 @@ public:
     {
         m_javaReturns = a;
     }
+
+    static const QVector<Function*>& family(const Function&);
 
 private:
 

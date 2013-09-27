@@ -6,6 +6,8 @@
 class Procedure : public StoredMethod
 {
 public:
+    explicit Procedure() {}
+
     Procedure(const QString& pname, const QString &uid, Version *v, bool guided);
     virtual void serialize(QDomDocument& doc, QDomElement& parent) const;
     virtual QUuid getClassUid() const;
@@ -15,6 +17,8 @@ public:
         return "PROCEDURE";
     }
     virtual void updateGui();
+
+    static const QVector<Procedure*>& family(const Procedure&);
 };
 
 #endif // CORE_PROCEDURE_H

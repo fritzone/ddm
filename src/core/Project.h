@@ -90,6 +90,11 @@ public:
         m_workingVersionIndex = u;
     }
 
+    QVector<MajorVersion*>& getMajorVersions()
+    {
+        return m_majorVersions;
+    }
+
 private:
 
     // the description of the project

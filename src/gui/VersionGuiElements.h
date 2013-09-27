@@ -49,6 +49,8 @@ public:
     ContextMenuEnabledTreeWidgetItem* getTriggersItem() const;
     ContextMenuEnabledTreeWidgetItem* getDocumentationItem() const;
 
+    ContextMenuEnabledTreeWidgetItem* treeItemForUid(const QString &uid);
+
     /** @group data type items */
     ContextMenuEnabledTreeWidgetItem* getDtsItem() const;
     ContextMenuEnabledTreeWidgetItem* getIntsDtsItem();

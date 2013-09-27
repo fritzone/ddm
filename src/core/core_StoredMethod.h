@@ -47,6 +47,7 @@ public:
 public:
 
     StoredMethod(const QString& name, const QString& uid, Version *v, bool guided);
+    explicit StoredMethod() {}
 
     virtual QStringList generateSqlSource(AbstractSqlGenerator*, QHash<QString,QString>, const Connection*);
 

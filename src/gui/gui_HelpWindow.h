@@ -18,6 +18,7 @@ public:
     static HelpWindow* instance();
     ~HelpWindow();
     void showHelp(const QString&);
+    void showHelpForWidget(QWidget* w);
 
 protected slots:
 
@@ -26,6 +27,7 @@ protected slots:
     void onForward();
     void onNavigate(QUrl);
     void treeItemChanged(QTreeWidgetItem*,QTreeWidgetItem*);
+
 protected:
     void changeEvent(QEvent *e);
     void resizeEvent(QResizeEvent *);

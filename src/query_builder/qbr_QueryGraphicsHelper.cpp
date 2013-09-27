@@ -13,7 +13,7 @@
 #include "core_Table.h"
 #include "qbr_SelectQueryAsComponent.h"
 
-QueryGraphicsHelper::QueryGraphicsHelper() : hotCells(), m_lstDlg(0), m_scene(0), m_form(0)
+QueryGraphicsHelper::QueryGraphicsHelper() : hotCells(), m_lstDlg(0), m_scene(0)
 {
 }
 
@@ -25,11 +25,6 @@ void QueryGraphicsHelper::setScene(QueryGraphicsScene*sc)
 void QueryGraphicsHelper::setQuery(Query *q)
 {
     m_query = q;
-}
-
-void QueryGraphicsHelper::setForm(MainWindow* f)
-{
-    m_form = f;
 }
 
 void QueryGraphicsHelper::addNewHotCell(QueryGraphicsItem *itm, QRect where)
@@ -128,7 +123,7 @@ void QueryGraphicsHelper::resetHighlightedItem()
 void QueryGraphicsHelper::triggerReRender()
 {
     hotCells.clear();
-    m_form->rerenderQuery(m_query);
+    MainWindow::instance()->rerenderQuery(m_query);
 }
 
 void QueryGraphicsHelper::tableRemoved(const QString& t)

@@ -5,7 +5,13 @@
 #include "VersionGuiElements.h"
 #include "MainWindow.h"
 #include "strings.h"
-
+#include "NewTableForm.h"
+#include "NewViewForm.h"
+#include "TableInstanceForm.h"
+#include "ProcedureForm.h"
+#include "NewDataTypeForm.h"
+#include "TriggerForm.h"
+#include "DiagramForm.h"
 #include <QDesktopWidget>
 #include <QFile>
 
@@ -161,6 +167,41 @@ void HelpWindow::treeItemChanged(QTreeWidgetItem* c, QTreeWidgetItem*)
     QVariant a = c->data(0, Qt::UserRole);
     QString l = a.toString();
     showHelp(QString("/doc/") + l);
+}
+
+void HelpWindow::showHelpForWidget(QWidget *w)
+{
+    QString s = QString("/doc/main.html");
+    if(dynamic_cast<NewTableForm*>(w))
+    {
+        s = QString("/doc/tabl.html");
+    }
+    if(dynamic_cast<TableInstanceForm*>(w))
+    {
+        s = QString("/doc/tinst.html");
+    }
+    if(dynamic_cast<NewViewForm*>(w))
+    {
+        s = QString("/doc/view.html");
+    }
+    if(dynamic_cast<NewDataTypeForm*>(w))
+    {
+        s = QString("/doc/dtyp.html");
+    }
+    if(dynamic_cast<TriggerForm*>(w))
+    {
+        s = QString("/doc/trig.html");
+    }
+    if(dynamic_cast<ProcedureForm*>(w))
+    {
+        s = QString("/doc/proc.html");
+    }
+    if(dynamic_cast<DiagramForm*>(w))
+    {
+        s = QString("/doc/dgram.html");
+    }
+    showHelp(s);
+    show();
 }
 
 void HelpWindow::keyPressEvent(QKeyEvent *e)

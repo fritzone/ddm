@@ -370,3 +370,8 @@ void Diagram::updateGui()
     }
     TreeItem::updateGui();
 }
+
+const QVector<Diagram *> &Diagram::family(const Diagram& d)
+{
+    return d.version()->getDiagrams();
+}

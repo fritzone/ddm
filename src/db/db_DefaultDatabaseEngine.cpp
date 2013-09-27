@@ -49,7 +49,6 @@ ForeignKey* DefaultDatabaseEngine::createForeignKey(bool& foundAtLeastOneForeign
     return fk;
 }
 
-
 // TODO: this should go to a common place
 QString DefaultDatabaseEngine::getDbMetadata(Connection *c)
 {

@@ -222,7 +222,7 @@ public:
         return m_uidsToTabInstUids;
     }
 
-    void suspendPatch();
+    bool suspendPatch(QString&);
 
 private:
 

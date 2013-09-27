@@ -395,9 +395,7 @@ void InjectSqlDialog::populateConnections()
 
 void InjectSqlDialog::onCreateDatabase()
 {
-    SimpleTextInputDialog* dlg = new SimpleTextInputDialog(this, tr("Enter the name of the new database"));
-    dlg->setModal(true);
-    dlg->setText(tr("database"));
+    SimpleTextInputDialog* dlg = new SimpleTextInputDialog(this, tr("Enter the name of the new database"), tr("database"));
     if(dlg->exec() == QDialog::Accepted)
     {
         QString t = dlg->getText();
@@ -797,4 +795,32 @@ int InjectSqlDialog::getSqliteVersion() const
 {
     if(ui->cmbSqliteVersion->currentText().contains("2")) return 2;
     else return 3;
+}
+
+Connection *InjectSqlDialog::provideConnection()
+{
+    Connection* c = 0;
+    if(getSDbEngine().toUpper() == strMySql.toUpper() || getSDbEngine().toUpper() == strCUBRID.toUpper())
+    {
+        QString host = getHost();
+        QString user = getUser();
+        QString password = getPassword();
+        int port = getPort();
+        QString db = getDatabase();
+
+        if(getSDbEngine().toUpper() == strCUBRID.toUpper())
+        {
+            c = new CUBRIDConnection("temp", host, user, password, db, false, false, port);
+        }
+        else
+        {
+            c = new MySqlConnection("temp", host, user, password, db, false, false, port);
+        }
+    }
+    else
+    {
+        QString dbFile = getFileName();
+        c = new SqliteConnection("temp", dbFile, false, getSqliteVersion());
+    }
+    return c;
 }

@@ -2,6 +2,9 @@
 #define UIDS_H
 
 #include <QString>
+#include <QObject>
+
+#include "strings.h"
 
 static const QString nullUid            =                   "{00000000-0000-0000-0000-000000000000}";
 
@@ -86,5 +89,23 @@ static const QString uidKeyword = "{1000000D-0000-0000-0000-000000000001}";
 static const QString uidAttribute = "{1000000E-0000-0000-0000-000000000001}";
 static const QString uidReference = "{1000000F-0000-0000-0000-000000000001}";
 static const QString uidCollection = "{10000010-0000-0000-0000-000000000001}";
+
+/**
+ * @brief getGroupName returns the group name for the given uid
+ * @param uid
+ */
+template<class T>
+QString getGroupName(const QString& uid)
+{
+    if(uid == uidFunction) return QObject::tr("Functions");
+    if(uid == uidProcedure) return QObject::tr("Procedures");
+    if(uid == uidTable) return QObject::tr("Tables");
+    if(uid == uidTableInstance) return QObject::tr("Table Instances");
+    if(uid == uidTrigger) return QObject::tr("Triggers");
+    if(uid == uidView) return QObject::tr("Views");
+    if(uid == uidDiagram) return QObject::tr("Diagrams");
+
+    return strNA;
+}
 
 #endif // UIDS_H

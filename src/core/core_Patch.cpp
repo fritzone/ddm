@@ -6,7 +6,6 @@
 #include "DeserializationFactory.h"
 #include "core_Table.h"
 #include "Version.h"
-#include "MainWindow.h" // TODO: horrible
 #include "GuiElements.h"
 #include "core_TableInstance.h"
 #include "core_Diagram.h"
@@ -17,6 +16,8 @@
 #include "core_UserDataType.h"
 #include "core_LockableElement.h"
 #include "core_NamedItem.h"
+
+#include "Workspace.h"
 
 #include <QDateTime>
 
@@ -30,7 +31,7 @@ Patch::Patch(Version *v, bool init) :
     {
         QString finalName = QObject::tr("Patch") + " (" + v->getVersionText() + ") - " + QDateTime::currentDateTime().toString();
         setName(finalName);
-        MainWindow::instance()->getGuiElements()->createNewPatchItem(this);
+        Workspace::getInstance()->createPatchItem(this);
     }
 }
 
@@ -39,7 +40,6 @@ QString Patch::serializedElementAsB64(const QString &uid)
     ObjectWithUid* element = UidWarehouse::instance().getElement(uid);
     if(!element)
     {
-//        qDebug() << "no element for " << uid;
         return "";
     }
     SerializableElement* e = dynamic_cast<SerializableElement*>(element);
@@ -666,8 +666,9 @@ void Patch::finalizePatchDeserialization()
     }
 }
 
-void Patch::suspendPatch()
+bool Patch::suspendPatch(QString& accumulatedErrors)
 {
+    bool result = true;
     // create the modified elements map
     for(int i=0; i<m_lockedUids.size(); i++)
     {
@@ -697,7 +698,13 @@ void Patch::suspendPatch()
     int t = m_deletedUids.size();
     for(int i=0; i<t; i++)
     {
-        m_version->undeleteObject(m_deletedUids.at(i), true); // if we delete the elements backwards we might get rid of the dependencies
+        QString tempError;
+        Version::PatchTreeRemovalStatus st = m_version->undeleteObject(m_deletedUids.at(i), true, tempError); // if we delete the elements backwards we might get rid of the dependencies
+        if(st == Version::DO_NOT_REMOVE_FROM_PATCH_TREE_FAILURE)
+        {
+            accumulatedErrors += tempError;
+            result = false;
+        }
         t = m_deletedUids.size();
     }
 
@@ -710,6 +717,7 @@ void Patch::suspendPatch()
 
     // upate GUI and flags
     delete getLocation();
+    return result;
 }
 
 
