@@ -51,7 +51,6 @@ public:
     QStringList getResultOfQuery(const QString& squery, Connection* conn, const QString &error, int column);
     QStringList getResultOfRepoQuery(Connection *conn, const QString& queryId, const QString& objects);
 
-
     virtual QString getDbMetadata(Connection *c);
     virtual bool injectMetadata(Connection *c, const Version *v);
     virtual bool tableBlocksForeignKeyFunctionality(const Table*) const;
@@ -69,8 +68,7 @@ public:
     virtual QStringList getAvailableStoredProcedures(Connection*conn);
     virtual Procedure* reverseEngineerProc(Connection*, const QString&, Version*);
     virtual Function* reverseEngineerFunc(Connection*, const QString&, Version*);
-    virtual QStringList getAvailableDatabases(const QString&, const QString&,
-                                              const QString&, int);
+    virtual QStringList getAvailableDatabases(const QString&, const QString&, const QString&, int);
     virtual bool createDatabase(Connection*);
     virtual bool dropDatabase(Connection*);
     virtual bool storedMethodSupport();

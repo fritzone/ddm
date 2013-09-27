@@ -38,6 +38,14 @@ public:
     void createConnectionTreeEntryForTriggers(Connection *c);
     void createConnectionTreeEntryForIndexes(Connection *c);
 
+    void createConnectionForDbEngine(const QString& dbEngineName, const QIcon& icon, const QString& text);
+    void createGenericConnectionTreeEntry(Connection* c,
+                                          const QString& parentName,
+                                          const QIcon& parentIcon,
+                                          const QStringList& childItems,
+                                          const QIcon& childIcons,
+                                          const QString& prefix);
+
 private slots:
     void connectionItemActivated(QTreeWidgetItem*,int);
     void newTable();
@@ -51,9 +59,7 @@ private:
 
     ContextMenuHandler* m_connectionsContextMenuHandler;
 
-    ContextMenuEnabledTreeWidgetItem* m_mysqlConnections;
-    ContextMenuEnabledTreeWidgetItem* m_sqliteConnections;
-    ContextMenuEnabledTreeWidgetItem* m_cubridConnections;
+    QMap<QString, ContextMenuEnabledTreeWidgetItem*> m_connectionTreeEntries;
 
     QToolBar *bar;
     QAction* action_connectionNewTable;

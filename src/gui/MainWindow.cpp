@@ -76,6 +76,7 @@
 #include <QtGui>
 #include <QMessageBox>
 #include <QFileDialog>
+#include <QSharedPointer>
 
 MainWindow* MainWindow::m_instance = 0;
 
@@ -2500,46 +2501,18 @@ void MainWindow::onReverseEngineerWizardAccept()
 {
     Project* p = m_workspace->currentProject();
     DatabaseEngine* engine = m_workspace->currentProjectsEngine();
-    bool c = !m_revEngWizard->createDataTypesForColumns();
+    bool createDTForColumns = !m_revEngWizard->createDataTypesForColumns();
 
     ReverseEngineerer* revEng = 0;
-    QString targetDb = m_revEngWizard->getDbTypeName();
 
-    if(targetDb == strSqlite)
-    {
-        QString sqliteFile = m_revEngWizard->getSqliteFileName();
-        int sqliteVersion = m_revEngWizard->getSqliteVersion();
-
-        revEng = new ReverseEngineerer(c, engine, p, sqliteFile, sqliteVersion,
-                                       m_revEngWizard->getTablesToReverse(),
-                                       m_revEngWizard->getViewsToReverse(),
-                                       m_revEngWizard->getProceduresToReverse(),
-                                       m_revEngWizard->getFunctionsToReverse(),
-                                       m_revEngWizard->getTriggersToReverse(),
-                                       0);
-    }
-    else
-    if(targetDb == strMySql || targetDb == strCUBRID)
-    {
-        QString host = m_revEngWizard->getHost();
-        QString user = m_revEngWizard->getUser();
-        QString pass = m_revEngWizard->getPasword();
-        QString db = m_revEngWizard->getDatabase();
-        int port = m_revEngWizard->getPort();
-
-        revEng = new ReverseEngineerer(c, engine, p, host, user, pass, db, port,
-                                          m_revEngWizard->getTablesToReverse(),
-                                          m_revEngWizard->getViewsToReverse(),
-                                          m_revEngWizard->getProceduresToReverse(),
-                                          m_revEngWizard->getFunctionsToReverse(),
-                                          m_revEngWizard->getTriggersToReverse(),
-                                          0);
-    }
-
-    if(revEng == 0)
-    {
-        return;
-    }
+    revEng = new ReverseEngineerer(createDTForColumns, engine, p,
+                                   QSharedPointer<Connection>(m_revEngWizard->getConnectionforDb()),
+                                   m_revEngWizard->getTablesToReverse(),
+                                   m_revEngWizard->getViewsToReverse(),
+                                   m_revEngWizard->getProceduresToReverse(),
+                                   m_revEngWizard->getFunctionsToReverse(),
+                                   m_revEngWizard->getTriggersToReverse(),
+                                   0);
 
     createStatusLabel();
     lblStatus->setText(QObject::tr("Reverse engineering started"));

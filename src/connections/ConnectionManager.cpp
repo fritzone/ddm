@@ -134,7 +134,9 @@ Connection* ConnectionManager::createConnection(const QString &dbType, const QSe
         QString host = s.value(strHost).toString();
         QString pass = s.value(strPass).toString();
         QString user = s.value(strUser).toString();
-        int port = 3306;
+        int port = 30000;
+        if(dbUpp == strMySql.toUpper()) port = 3306;
+
         if(s.contains(strPort))
         {
             QVariant portV = s.value(strPort);

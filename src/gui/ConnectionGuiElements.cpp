@@ -16,15 +16,23 @@ ConnectionGuiElements::ConnectionGuiElements() :
     m_connectionsTreeDock(0),
     m_connectionsTree(0),
     m_connectionsContextMenuHandler(0),
-    m_mysqlConnections(0),
-    m_sqliteConnections(0),
-    m_cubridConnections(0),
     bar(0),
     action_connectionNewTable(0),
     action_newConnection(0),
     m_lastConnection(0)
 
 {
+}
+
+void ConnectionGuiElements:: createConnectionForDbEngine(const QString& dbEngineNameCC, const QIcon& icon, const QString& text)
+{
+    QString dbEngineName = dbEngineNameCC.toUpper();
+    QStringList lstEntry;
+    lstEntry << text;
+    m_connectionTreeEntries[dbEngineName] = new ContextMenuEnabledTreeWidgetItem((ContextMenuEnabledTreeWidgetItem*)0, lstEntry);
+    m_connectionTreeEntries[dbEngineName]->setIcon(0, icon);
+    m_connectionsTree->addTopLevelItem(m_connectionTreeEntries[dbEngineName]);
+    m_connectionTreeEntries[dbEngineName]->setData(0, Qt::UserRole, QVariant(connectionGroupPrefix + dbEngineName));
 }
 
 void ConnectionGuiElements::createGuiElements()
@@ -56,34 +64,19 @@ void ConnectionGuiElements::createGuiElements()
     // create the MySql connection tree item
     if(supportedDbs.contains(strQMySql))
     {
-        QStringList lstMySqlStr;
-        lstMySqlStr << strCamelMySql;
-        m_mysqlConnections = new ContextMenuEnabledTreeWidgetItem((ContextMenuEnabledTreeWidgetItem*)0, lstMySqlStr);
-        m_mysqlConnections->setIcon(0, IconFactory::getMySqlIcon());
-        m_connectionsTree->addTopLevelItem(m_mysqlConnections);
-        m_mysqlConnections->setData(0, Qt::UserRole, QVariant(connectionGroupPrefix + strMySql));
+        createConnectionForDbEngine(strMySql, IconFactory::getMySqlIcon(), strCamelMySql);
     }
 
     // create the Sqlite connection tree item
     if(supportedDbs.contains(strQSqlite))
     {
-        QStringList lstSqliteStr;
-        lstSqliteStr<< strCamelSqlite;
-        m_sqliteConnections = new ContextMenuEnabledTreeWidgetItem((ContextMenuEnabledTreeWidgetItem*)0, lstSqliteStr);
-        m_sqliteConnections->setIcon(0, IconFactory::getSqliteIcon());
-        m_connectionsTree->addTopLevelItem(m_sqliteConnections);
-        m_sqliteConnections->setData(0, Qt::UserRole, QVariant(connectionGroupPrefix + strSqlite));
+        createConnectionForDbEngine(strSqlite, IconFactory::getSqliteIcon(), strCamelSqlite);
     }
 
     // create the CUBRID connection tree item
     if(supportedDbs.contains(strQCUBRID))
     {
-        QStringList lstCUBRIDStr;
-        lstCUBRIDStr << strCUBRID;
-        m_cubridConnections = new ContextMenuEnabledTreeWidgetItem((ContextMenuEnabledTreeWidgetItem*)0, lstCUBRIDStr);
-        m_cubridConnections->setIcon(0, IconFactory::getCUBRIDIcon());
-        m_connectionsTree->addTopLevelItem(m_cubridConnections);
-        m_cubridConnections->setData(0, Qt::UserRole, QVariant(connectionGroupPrefix + strCUBRID));
+        createConnectionForDbEngine(strCUBRID, IconFactory::getCUBRIDIcon(), strCUBRID);
     }
 
     // context handler
@@ -139,7 +132,6 @@ void ConnectionGuiElements::connectionItemActivated(QTreeWidgetItem* item,int)
 {
     QString d = item->data(0, Qt::UserRole).toString();
 
-    // filter out to which connection the entry belongs
     Connection* c = ConnectionManager::instance()->getConnection(d);
     if(c)
     {
@@ -158,8 +150,6 @@ void ConnectionGuiElements::connectionItemActivated(QTreeWidgetItem* item,int)
         action_connectionNewTable->setToolTip(tr("Create new table in: <b>") +
                                               m_lastConnection->getName());
     }
-
-    //qDebug() << d;
 }
 
 void ConnectionGuiElements::newConnection()
@@ -176,21 +166,7 @@ ContextMenuEnabledTreeWidgetItem* ConnectionGuiElements::createConnectionTreeEnt
 {
     QStringList items;
     items << c->getName();
-    ContextMenuEnabledTreeWidgetItem* parent = 0;
-    QString dbType = c->getDbType().toUpper();
-    if(dbType == strMySql.toUpper())
-    {
-        parent = m_mysqlConnections;
-    }
-    if(dbType == strSqlite.toUpper())
-    {
-        parent = m_sqliteConnections;
-    }
-    if(dbType == strCUBRID.toUpper())
-    {
-        parent = m_cubridConnections;
-    }
-
+    ContextMenuEnabledTreeWidgetItem* parent = m_connectionTreeEntries[c->getDbType().toUpper()];
     ContextMenuEnabledTreeWidgetItem* newConnectionItem = new ContextMenuEnabledTreeWidgetItem(parent, items);
     QVariant var(c->getName());
     newConnectionItem->setData(0, Qt::UserRole, var);
@@ -202,120 +178,71 @@ ContextMenuEnabledTreeWidgetItem* ConnectionGuiElements::createConnectionTreeEnt
     return newConnectionItem ;
 }
 
+void ConnectionGuiElements::createGenericConnectionTreeEntry(Connection* c,
+                                                             const QString& parentName,
+                                                             const QIcon &parentIcon,
+                                                             const QStringList& childItems,
+                                                             const QIcon& childIcons,
+                                                             const QString& prefix)
+{
+    ContextMenuEnabledTreeWidgetItem* genItem = new ContextMenuEnabledTreeWidgetItem(c->getLocation(), QStringList(parentName));
+    getConnectionsTree()->addTopLevelItem(genItem);
+    genItem->setIcon(0, parentIcon);
+
+    for(int i=0; i<childItems.size(); i++)
+    {
+        ContextMenuEnabledTreeWidgetItem* newChildItem = new ContextMenuEnabledTreeWidgetItem(genItem, QStringList(childItems.at(i)));
+        QVariant var(prefix + childItems.at(i) + "?" + c->getName());
+        newChildItem->setData(0, Qt::UserRole, var);
+        newChildItem->setIcon(0, childIcons);
+        getConnectionsTree()->addTopLevelItem(newChildItem);
+    }
+}
+
 void ConnectionGuiElements::createConnectionTreeEntryForViews(Connection *c)
 {
-    ContextMenuEnabledTreeWidgetItem* connViewsItem = new ContextMenuEnabledTreeWidgetItem(c->getLocation(), QStringList(QObject::tr("Views")));
-    getConnectionsTree()->addTopLevelItem(connViewsItem);
-    connViewsItem->setIcon(0, IconFactory::getViewsIcon());
-
-    // Now do the browsing
-    QStringList dbViews = c->getEngine()->getAvailableViews(c);
-    for(int i=0; i<dbViews.size(); i++)
-    {
-        ContextMenuEnabledTreeWidgetItem* newViewItem = new ContextMenuEnabledTreeWidgetItem(connViewsItem, QStringList(dbViews.at(i)));
-        QVariant var(browsedViewPrefix + dbViews.at(i) + "?" + c->getName());
-        newViewItem->setData(0, Qt::UserRole, var);
-        //newViewItem->setPopupMenu(ContextMenuCollection::getInstance()->getTableFromBrowsePopupMenu());
-        newViewItem->setIcon(0, IconFactory::getViewIcon());
-        getConnectionsTree()->addTopLevelItem(newViewItem);
-    }
-
-    // TODO: now come up with a mechanism that feeds continuously the reverse engineered tables into an object that feeds it in somewhere which
-    // is used by the code completion enabled text edit when editing a table. Highly possible the destination will be the Connection object
-    // since everyone has access to it.
+    createGenericConnectionTreeEntry(c, QObject::tr("Views"),
+                                     IconFactory::getViewsIcon(),
+                                     c->getEngine()->getAvailableViews(c),
+                                     IconFactory::getViewIcon(),
+                                     browsedViewPrefix);
 }
 
 void ConnectionGuiElements::createConnectionTreeEntryForProcs(Connection *c)
 {
-    ContextMenuEnabledTreeWidgetItem* connProcsItem = new ContextMenuEnabledTreeWidgetItem(c->getLocation(), QStringList(QObject::tr("Procedures")));
-    getConnectionsTree()->addTopLevelItem(connProcsItem);
-    connProcsItem->setIcon(0, IconFactory::getProceduresIcon());
-
-    // Now do the browsing
-    QStringList dbProcs = c->getEngine()->getAvailableStoredProcedures(c);
-    for(int i=0; i<dbProcs.size(); i++)
-    {
-        ContextMenuEnabledTreeWidgetItem* newProcItem = new ContextMenuEnabledTreeWidgetItem(connProcsItem, QStringList(dbProcs.at(i)));
-        QVariant var(browsedProcPrefix + dbProcs.at(i) + "?" + c->getName());
-        newProcItem->setData(0, Qt::UserRole, var);
-        //newViewItem->setPopupMenu(ContextMenuCollection::getInstance()->getTableFromBrowsePopupMenu());
-        newProcItem->setIcon(0, IconFactory::getProcedureIcon());
-        getConnectionsTree()->addTopLevelItem(newProcItem);
-    }
-
-    // TODO: now come up with a mechanism that feeds continuously the reverse engineered tables into an object that feeds it in somewhere which
-    // is used by the code completion enabled text edit when editing a table. Highly possible the destination will be the Connection object
-    // since everyone has access to it.
+    createGenericConnectionTreeEntry(c, QObject::tr("Procedures"),
+                                     IconFactory::getProceduresIcon(),
+                                     c->getEngine()->getAvailableStoredProcedures(c),
+                                     IconFactory::getProcedureIcon(),
+                                     browsedProcPrefix);
 }
 
 
 void ConnectionGuiElements::createConnectionTreeEntryForFuncs(Connection *c)
 {
-    ContextMenuEnabledTreeWidgetItem* connFuncsItem = new ContextMenuEnabledTreeWidgetItem(c->getLocation(), QStringList(QObject::tr("Functions")));
-    getConnectionsTree()->addTopLevelItem(connFuncsItem);
-    connFuncsItem->setIcon(0, IconFactory::getFunctionsTreeIcon());
-
-    // Now do the browsing
-    QStringList dbFuncs = c->getEngine()->getAvailableStoredFunctions(c);
-    for(int i=0; i<dbFuncs.size(); i++)
-    {
-        ContextMenuEnabledTreeWidgetItem* newFuncItem = new ContextMenuEnabledTreeWidgetItem(connFuncsItem, QStringList(dbFuncs.at(i)));
-        QVariant var(browsedFuncPrefix + dbFuncs.at(i) + "?" + c->getName());
-        newFuncItem->setData(0, Qt::UserRole, var);
-        //newViewItem->setPopupMenu(ContextMenuCollection::getInstance()->getTableFromBrowsePopupMenu());
-        newFuncItem->setIcon(0, IconFactory::getFunctionTreeIcon());
-        getConnectionsTree()->addTopLevelItem(newFuncItem);
-    }
-
-    // TODO: now come up with a mechanism that feeds continuously the reverse engineered tables into an object that feeds it in somewhere which
-    // is used by the code completion enabled text edit when editing a table. Highly possible the destination will be the Connection object
-    // since everyone has access to it.
+    createGenericConnectionTreeEntry(c, QObject::tr("Functions"),
+                                     IconFactory::getFunctionsTreeIcon(),
+                                     c->getEngine()->getAvailableStoredFunctions(c),
+                                     IconFactory::getFunctionTreeIcon(),
+                                     browsedFuncPrefix);
 }
 
 void ConnectionGuiElements::createConnectionTreeEntryForTriggers(Connection *c)
 {
-    ContextMenuEnabledTreeWidgetItem* connTriggerssItem = new ContextMenuEnabledTreeWidgetItem(c->getLocation(), QStringList(QObject::tr("Triggers")));
-    getConnectionsTree()->addTopLevelItem(connTriggerssItem);
-    connTriggerssItem->setIcon(0, IconFactory::getTriggersIcon());
-
-    // Now do the browsing
-    QStringList dbTriggers = c->getEngine()->getAvailableTriggers(c);
-    for(int i=0; i<dbTriggers.size(); i++)
-    {
-        ContextMenuEnabledTreeWidgetItem* newTriggerItem = new ContextMenuEnabledTreeWidgetItem(connTriggerssItem, QStringList(dbTriggers.at(i)));
-        QVariant var(browsedTriggerPrefix + dbTriggers.at(i) + "?" + c->getName());
-        newTriggerItem->setData(0, Qt::UserRole, var);
-        //newViewItem->setPopupMenu(ContextMenuCollection::getInstance()->getTableFromBrowsePopupMenu());
-        newTriggerItem->setIcon(0, IconFactory::getTriggerIcon());
-        getConnectionsTree()->addTopLevelItem(newTriggerItem);
-    }
-
-    // TODO: now come up with a mechanism that feeds continuously the reverse engineered tables into an object that feeds it in somewhere which
-    // is used by the code completion enabled text edit when editing a table. Highly possible the destination will be the Connection object
-    // since everyone has access to it.
+    createGenericConnectionTreeEntry(c, QObject::tr("Triggers"),
+                                     IconFactory::getTriggersIcon(),
+                                     c->getEngine()->getAvailableTriggers(c),
+                                     IconFactory::getTriggerIcon(),
+                                     browsedTriggerPrefix);
 }
 
 void ConnectionGuiElements::createConnectionTreeEntryForIndexes(Connection *c)
 {
-    ContextMenuEnabledTreeWidgetItem* connTriggerssItem = new ContextMenuEnabledTreeWidgetItem(c->getLocation(), QStringList(QObject::tr("Indexes")));
-    getConnectionsTree()->addTopLevelItem(connTriggerssItem);
-    connTriggerssItem->setIcon(0, IconFactory::getIndexIcon());
-
-    // Now do the browsing
-    QStringList dbIndexes = c->getEngine()->getAvailableIndexes(c);
-    for(int i=0; i<dbIndexes.size(); i++)
-    {
-        ContextMenuEnabledTreeWidgetItem* newIndexItem = new ContextMenuEnabledTreeWidgetItem(connTriggerssItem, QStringList(dbIndexes.at(i)));
-        QVariant var(browsedIndexPrefix + dbIndexes.at(i) + "?" + c->getName());
-        newIndexItem->setData(0, Qt::UserRole, var);
-        //newViewItem->setPopupMenu(ContextMenuCollection::getInstance()->getTableFromBrowsePopupMenu());
-        newIndexItem->setIcon(0, IconFactory::getIndexIcon());
-        getConnectionsTree()->addTopLevelItem(newIndexItem);
-    }
-
-    // TODO: now come up with a mechanism that feeds continuously the reverse engineered tables into an object that feeds it in somewhere which
-    // is used by the code completion enabled text edit when editing a table. Highly possible the destination will be the Connection object
-    // since everyone has access to it.
+    createGenericConnectionTreeEntry(c, QObject::tr("Indexes"),
+                                     IconFactory::getIndexIcon(),
+                                     c->getEngine()->getAvailableIndexes(c),
+                                     IconFactory::getIndexIcon(),
+                                     browsedIndexPrefix);
 }
 
 
@@ -325,7 +252,6 @@ void ConnectionGuiElements::createConnectionTreeEntryForTables(Connection *c)
     getConnectionsTree()->addTopLevelItem(connTablesItem);
     connTablesItem->setIcon(0, IconFactory::getTabinstIcon());
 
-    // Now do the browsing
     QStringList dbTables = c->getEngine()->getAvailableTables(c);
     c->clearTables();
     for(int i=0; i<dbTables.size(); i++)
@@ -338,17 +264,13 @@ void ConnectionGuiElements::createConnectionTreeEntryForTables(Connection *c)
         getConnectionsTree()->addTopLevelItem(newTblsItem);
         c->addTable(dbTables.at(i));
     }
-
-    // TODO: now come up with a mechanism that feeds continuously the reverse engineered tables into an object that feeds it in somewhere which
-    // is used by the code completion enabled text edit when editing a table. Highly possible the destination will be the Connection object
-    // since everyone has access to it.
 }
 
 void ConnectionGuiElements::populateConnectionTreeForConnection(Connection *c)
 {
     createConnectionTreeEntryForTables(c);
     createConnectionTreeEntryForViews(c);
-    if(c->getDbType().toUpper() != strSqlite.toUpper())
+    if(c->getEngine()->storedMethodSupport())
     {
         createConnectionTreeEntryForProcs(c);
         createConnectionTreeEntryForFuncs(c);
@@ -359,6 +281,9 @@ void ConnectionGuiElements::populateConnectionTreeForConnection(Connection *c)
 
 void ConnectionGuiElements::resetConnectionTreeForConnection(Connection *c)
 {
-    while(c->getLocation()->childCount() > 0) c->getLocation()->removeChild(c->getLocation()->child(0));
+    while(c->getLocation()->childCount() > 0)
+    {
+        c->getLocation()->removeChild(c->getLocation()->child(0));
+    }
     c->getLocation()->setIcon(0, IconFactory::getConnectedDatabaseIcon());
 }
