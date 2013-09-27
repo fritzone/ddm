@@ -49,9 +49,9 @@ public:
     bool createDataTypesForColumns();
     QString getDbTypeName() const;
 
-private:
-
     Connection* getConnectionforDb() const;
+
+private:
 
     DatabaseEngine* m_engine;
 

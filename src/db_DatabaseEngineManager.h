@@ -4,6 +4,7 @@
 #include "db_DatabaseBuiltinFunction.h"
 
 #include "reveng_ReverseEngineerWizard.h"
+#include "db_RepositoryQuery.h"
 
 #include <QStringList>
 #include <QMap>
@@ -17,7 +18,7 @@ class GenericDatabaseType;
 class Sp;
 class DatabaseFunctionCategory;
 class DBMenu;
-class RepositoryQuery;
+
 
 class DatabaseEngineManager
 {

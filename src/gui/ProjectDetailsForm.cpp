@@ -3,6 +3,7 @@
 #include "Project.h"
 #include "db_DatabaseEngine.h"
 #include "strings.h"
+#include "IconFactory.h"
 
 ProjectDetailsForm::ProjectDetailsForm(QWidget *parent) :
     QWidget(parent),
@@ -37,26 +38,8 @@ void ProjectDetailsForm::setProject(Project *prj, const QString & onDisk)
     ui->checkBox->setCheckState(prj->oopProject()?Qt::Checked:Qt::Unchecked);
     ui->txtLocationOnDisk->setText(onDisk);
 
-    // UI combo: MySql, Sqlite, CUBRID
-
-    // TODO: This is pretty ugly ... Find a way to make it nicer
-    if(prj->getEngine()->getDatabaseEngineName().toUpper() == strMySql)
-    {
-        ui->comboBox->removeItem(1); // removing the Sqlite entry
-        ui->comboBox->removeItem(1); // removing the CUBRID entry
-    }
-    else
-    if(prj->getEngine()->getDatabaseEngineName().toUpper() == strSqlite)
-    {
-        ui->comboBox->removeItem(0); // removing the Mysql entry
-        ui->comboBox->removeItem(1); // removing the CUBRID entry
-    }
-    else
-    if(prj->getEngine()->getDatabaseEngineName().toUpper() == strCUBRID)
-    {
-        ui->comboBox->removeItem(0); // removing the Mysql entry
-        ui->comboBox->removeItem(0); // removing the Sqlite entry
-    }
+    ui->lblDbName->setText(prj->getEngine()->getDatabaseEngineName());
+    ui->lblIcon->setPixmap(IconFactory::getIconForDatabase(prj->getEngine()->getDatabaseEngineName()).pixmap(16, 16));
 }
 
 void ProjectDetailsForm::onBtnUpdate()

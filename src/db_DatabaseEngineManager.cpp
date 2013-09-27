@@ -34,44 +34,27 @@ DatabaseEngineManager& DatabaseEngineManager::instance()
 
 DatabaseEngineManager::DatabaseEngineManager()
 {
-    // need this here, the DB engines will call the instance
     m_instance = this;
 
     m_supportedEngines = QSqlDatabase::drivers();
 
-    // is there mysql driver?
-    //if(m_supportedEngines.contains(strQMySql) || m_supportedEngines.contains(strQMySql3))
-    {
-        m_supportedEngines << strMySql;
-        MySQLDatabaseEngine* mysqlDBEngine = MySQLDatabaseEngine::instance();
-        MySQLSQLGenerator* mysqlGenerator = new MySQLSQLGenerator(mysqlDBEngine);
+    m_supportedEngines << strMySql;
+    MySQLDatabaseEngine* mysqlDBEngine = MySQLDatabaseEngine::instance();
+    MySQLSQLGenerator* mysqlGenerator = new MySQLSQLGenerator(mysqlDBEngine);
+    addEngine(strMySql, mysqlDBEngine);
+    addSqlGenerator(strMySql, mysqlGenerator);
 
-        addEngine(strMySql, mysqlDBEngine);
-        addSqlGenerator(strMySql, mysqlGenerator);
-    }
+    m_supportedEngines << strSqlite;
+    SqliteDatabaseEngine* sqliteDBEngine = SqliteDatabaseEngine::instance();
+    SqliteSQLGenerator* sqliteGenrator = new SqliteSQLGenerator(sqliteDBEngine );
+    addEngine(strSqlite, sqliteDBEngine);
+    addSqlGenerator(strSqlite, sqliteGenrator);
 
-    // is there sqlite driver?
-    //if(m_supportedEngines.contains(strQSqlite))
-    {
-        m_supportedEngines << strSqlite;
-        SqliteDatabaseEngine* sqliteDBEngine = SqliteDatabaseEngine::instance();
-        SqliteSQLGenerator* sqliteGenrator = new SqliteSQLGenerator(sqliteDBEngine );
-
-        addEngine(strSqlite, sqliteDBEngine);
-        addSqlGenerator(strSqlite, sqliteGenrator);
-    }
-
-    // is there CUBRID driver?
-    //if(m_supportedEngines.contains(strQCUBRID))
-    {
-        m_supportedEngines << strCUBRID;
-        CUBRIDDatabaseEngine* cubridDbEngine = CUBRIDDatabaseEngine::instance();
-        CUBRIDSQLGenerator* cubridGenerator = new CUBRIDSQLGenerator(cubridDbEngine);
-
-        addEngine(strCUBRID, cubridDbEngine);
-        addSqlGenerator(strCUBRID, cubridGenerator);
-    }
-
+    m_supportedEngines << strCUBRID;
+    CUBRIDDatabaseEngine* cubridDbEngine = CUBRIDDatabaseEngine::instance();
+    CUBRIDSQLGenerator* cubridGenerator = new CUBRIDSQLGenerator(cubridDbEngine);
+    addEngine(strCUBRID, cubridDbEngine);
+    addSqlGenerator(strCUBRID, cubridGenerator);
 }
 
 DatabaseEngine* DatabaseEngineManager::engine(const QString &name)

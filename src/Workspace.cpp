@@ -463,33 +463,7 @@ void Workspace::createNewConnection()
             return;
         }
 
-        Connection* c = 0;
-        if(engine == strMySql.toUpper())
-        {
-            QString host = injectDialog->getHost();
-            QString user = injectDialog->getUser();
-            QString password = injectDialog->getPassword();
-            QString db = injectDialog->getDatabase();
-
-            int port = injectDialog->getPort();
-            c = new MySqlConnection(name, host, user, password, db, true, injectDialog->getAutoConnect(), port);
-        }
-        else
-        if(engine == strSqlite.toUpper())
-        {
-            c = new SqliteConnection(injectDialog->getName(), injectDialog->getFileName(), injectDialog->getAutoConnect(), injectDialog->getSqliteVersion());
-        }
-        else
-        if(engine == strCUBRID.toUpper())
-        {
-            QString host = injectDialog->getHost();
-            QString user = injectDialog->getUser();
-            QString password = injectDialog->getPassword();
-            QString db = injectDialog->getDatabase();
-            int port = injectDialog->getPort();
-
-            c = new CUBRIDConnection(name, host, user, password, db, true, injectDialog->getAutoConnect(), port);
-        }
+        Connection* c = injectDialog->provideConnection();
         if(!c) return;
 
         ConnectionManager::instance()->addConnection(c);

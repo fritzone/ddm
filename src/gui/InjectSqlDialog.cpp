@@ -810,17 +810,17 @@ Connection *InjectSqlDialog::provideConnection()
 
         if(getSDbEngine().toUpper() == strCUBRID.toUpper())
         {
-            c = new CUBRIDConnection("temp", host, user, password, db, false, false, port);
+            c = new CUBRIDConnection("temp", host, user, password, db, false, getAutoConnect(), port);
         }
         else
         {
-            c = new MySqlConnection("temp", host, user, password, db, false, false, port);
+            c = new MySqlConnection("temp", host, user, password, db, false, getAutoConnect(), port);
         }
     }
     else
     {
         QString dbFile = getFileName();
-        c = new SqliteConnection("temp", dbFile, false, getSqliteVersion());
+        c = new SqliteConnection("temp", dbFile, getAutoConnect(), getSqliteVersion());
     }
     return c;
 }
