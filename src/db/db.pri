@@ -3,7 +3,8 @@ SOURCES +=      db/db_DatabaseEngine.cpp                       \
                 db/db_BasicSqlGenerator.cpp \
                 db/db_DefaultDatabaseEngine.cpp \
     db/db_GenericDTSupplier.cpp \
-    db/db_AdvancedSqlGenerator.cpp
+    db/db_AdvancedSqlGenerator.cpp \
+    db/db_RepositoryQuery.cpp
 
 HEADERS += 	db/db_AbstractDTSupplier.h                     \
                 db/db_AbstractSQLGenerator.h                   \
@@ -16,4 +17,5 @@ HEADERS += 	db/db_AbstractDTSupplier.h                     \
     db/db_GenericDTSupplier.h \
     db/db_GenericDatabaseType.h \
     db/db_DatabaseFunctionCategory.h \
-    db/db_AdvancedSqlGenerator.h
+    db/db_AdvancedSqlGenerator.h \
+    db/db_RepositoryQuery.h

@@ -14,7 +14,7 @@
 #include "ValueSp.h"
 #include "ValueListSp.h"
 #include "gui_DBMenu.h"
-
+#include "db_RepositoryQuery.h"
 #include "uids.h"
 
 #include <QApplication>
@@ -176,6 +176,7 @@ void Repository::addDatabase(const QDomElement & el)
         QStringList dbFkOnUpdate;
         QStringList dbfkOnDelete;
         bool fkSupport = false;
+        QMap<QString, QSharedPointer<RepositoryQuery> > dataQueries;
 
         for(int i=0; i<el.childNodes().size(); i++)
         {
@@ -228,6 +229,19 @@ void Repository::addDatabase(const QDomElement & el)
                 }
             }
 
+            if(el.childNodes().at(i).nodeName() == "data-queries")
+            {
+                QDomElement elQuery = el.childNodes().at(i).toElement();
+                for(int j=0; j< elQuery.childNodes().size(); j++)
+                {
+                    if(elQuery.childNodes().at(j).nodeName() == "query")
+                    {
+                        QSharedPointer<RepositoryQuery> rpQ(new RepositoryQuery(elQuery.childNodes().at(j).toElement()));
+                        dataQueries[rpQ->getId().toUpper()] = rpQ;
+                    }
+                }
+
+            }
 
             if(el.childNodes().at(i).nodeName() == "stored-methods")
             {
@@ -558,6 +572,7 @@ void Repository::addDatabase(const QDomElement & el)
         DatabaseEngineManager::instance().setFkSupport(dbId, fkSupport);
         DatabaseEngineManager::instance().setFkSupportOnUpdate(dbId, dbFkOnUpdate);
         DatabaseEngineManager::instance().setFkSupportOnDelete(dbId, dbfkOnDelete);
+        DatabaseEngineManager::instance().setDataQueries(dbId, dataQueries);
     }
 }
 

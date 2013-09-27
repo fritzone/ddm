@@ -2236,6 +2236,56 @@ general_ci,cp852_bin,cp852_general_ci,keybcs2_bin,keybcs2_general_ci,latin2_bin,
           </description>
         </function>
       </functions>
+    
+      <data-queries>
+      
+        <query id="getAvailabeViews" result_index="0">
+          <query_part index="0" type="plaintext">
+              <![CDATA[select table_name from information_schema.tables where table_schema=']]>
+          </query_part>
+          <query_part index="1" type="reference" referred="@DB_NAME"/>
+          <query_part index="2" type="plaintext">
+            <![CDATA[' and table_type='VIEW']]>
+          </query_part>
+        </query>
+
+        <query id="getAvailabeTriggers" result_index="0">
+          <query_part index="0" type="plaintext">
+              <![CDATA[show triggers]]>
+          </query_part>
+        </query>
+
+        <query id="getAvailableStoredProcedures" result_index="1">
+          <query_part index="0" type="plaintext">
+              <![CDATA[show procedure status where db=']]>
+          </query_part>
+          <query_part index="1" type="reference" referred="@DB_NAME"/>
+          <query_part index="2" type="plaintext">
+            <![CDATA[']]>
+          </query_part>
+        </query>
+
+        <query id="getAvailableStoredFunctions" result_index="1">
+          <query_part index="0" type="plaintext">
+              <![CDATA[show function status where db=']]>
+          </query_part>
+          <query_part index="1" type="reference" referred="@DB_NAME"/>
+          <query_part index="2" type="plaintext">
+            <![CDATA[']]>
+          </query_part>
+        </query>
+
+        <query id="getAvailableTables" result_index="0">
+          <query_part index="0" type="plaintext">
+              <![CDATA[select table_name from information_schema.tables where table_schema=']]>
+          </query_part>
+          <query_part index="1" type="reference" referred="@DB_NAME"/>
+          <query_part index="2" type="plaintext">
+            <![CDATA[' and table_type='BASE TABLE']]>
+          </query_part>
+        </query>
+        
+      </data-queries>
     </database>
 
     <database name="Sqlite" id="SQLITE" class-uid="{100000DB-0000-0000-0000-000000000002}">
@@ -2712,6 +2762,28 @@ general_ci,cp852_bin,cp852_general_ci,keybcs2_bin,keybcs2_general_ci,latin2_bin,
           </tooltip>
         </spi>
       </spis>
+      <data-queries>
+      
+        <query id="getAvailabeViews" result_index="0">
+          <query_part index="0" type="plaintext">
+              <![CDATA[select name from sqlite_master where type = 'view']]>
+          </query_part>
+        </query>
+
+        <query id="getAvailabeTriggers" result_index="0">
+          <query_part index="0" type="plaintext">
+              <![CDATA[select name from SQLite_Master where Type = 'trigger']]>
+          </query_part>
+        </query>
+
+        <query id="getAvailableTables" result_index="0">
+          <query_part index="0" type="plaintext">
+              <![CDATA[select name from sqlite_master where type = 'table']]>
+          </query_part>
+        </query>
+
+      </data-queries>    
+    
     </database>
 
     <database name="CUBRID" id="CUBRID" class-uid="{100000DB-0000-0000-0000-000000000003}">
@@ -4800,6 +4872,40 @@ NAME 'YourClass.yourMethod()';]]>
         
       </spis>
       
+      <data-queries>
+      
+        <query id="getAvailabeViews" result_index="0">
+          <query_part index="0" type="plaintext">
+              <![CDATA[SELECT class_name FROM db_class WHERE is_system_class='NO' AND class_type = 'VCLASS' AND owner_name=current_user]]>
+          </query_part>
+        </query>
+
+        <query id="getAvailabeTriggers" result_index="0">
+          <query_part index="0" type="plaintext">
+              <![CDATA[select trigger_name from db_trig]]>
+          </query_part>
+        </query>
+
+        <query id="getAvailableStoredProcedures" result_index="0">
+          <query_part index="0" type="plaintext">
+              <![CDATA[select sp_name from db_stored_procedure WHERE owner=current_user and sp_type='PROCEDURE']]>
+          </query_part>
+        </query>
+
+        <query id="getAvailableStoredFunctions" result_index="0">
+          <query_part index="0" type="plaintext">
+              <![CDATA[select sp_name from db_stored_procedure WHERE owner=current_user and sp_type='FUNCTION']]>
+          </query_part>
+        </query>
+
+        <query id="getAvailableTables" result_index="0">
+          <query_part index="0" type="plaintext">
+              <![CDATA[SELECT class_name FROM db_class WHERE is_system_class='NO' AND class_type = 'CLASS' AND owner_name=current_user]]>
+          </query_part>
+        </query>
+
+
+      </data-queries>
     </database>
     
   </databases>

@@ -24,11 +24,6 @@ public:
     virtual bool reverseEngineerDatabase(Connection *c, const QStringList& tables, const QStringList& views, const QStringList& procs, const QStringList& funcs, const QStringList& triggers, Project* p, bool relaxed);
     virtual Table* reverseEngineerTable(Connection *c, const QString& tableName, Project* p, bool relaxed, Version* ver);
     virtual View* reverseEngineerView(Connection *c, const QString& viewName, Version* v);
-    virtual QStringList getAvailableTables(Connection* c);
-    virtual QStringList getAvailableViews(Connection* c);
-    virtual QStringList getAvailableStoredProcedures(Connection* c);
-    virtual QStringList getAvailableStoredFunctions(Connection* c);
-    virtual QStringList getAvailableTriggers(Connection* c);
     virtual bool tryConnect(Connection* c);
     virtual QSqlDatabase getQSqlDatabaseForConnection(Connection *c) ;
     virtual QStringList getColumnsOfTable(Connection* c, const QString& tableName);

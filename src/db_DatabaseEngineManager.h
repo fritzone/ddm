@@ -17,6 +17,7 @@ class GenericDatabaseType;
 class Sp;
 class DatabaseFunctionCategory;
 class DBMenu;
+class RepositoryQuery;
 
 class DatabaseEngineManager
 {
@@ -186,6 +187,10 @@ public:
 
     QStringList getFkSupportOnDelete(const QString &dbName);
 
+    void setDataQueries(const QString& dbName, QMap<QString, QSharedPointer<RepositoryQuery> > queries);
+
+    QSharedPointer<RepositoryQuery> getQuery(const QString& dbName, const QString& queryId);
+
 private:
     DatabaseEngineManager();
 
@@ -261,6 +266,9 @@ private:
 
     // the map containig the foreign key support for ON DELETE referential action
     QMap<QString, QStringList> m_dbFksOnDelete;
+
+    // the data queries of each of the databases
+    QMap<QString, QMap<QString, QSharedPointer<RepositoryQuery> > > m_dataQueries;
 };
 
 #endif // DB_DATABASEENGINEMANAGER_H
