@@ -105,15 +105,16 @@ bool ReverseEngineerWizard::connectAndRetrieveDatabases()
     return true;
 }
 
-bool ReverseEngineerWizard::selectDatabase()
+bool ReverseEngineerWizard::databaseWasSelected()
 {
+    bool selected = false;
     QString dbName = getDbTypeName();
     if(dbName == strMySql)
     {
         m_database = m_databasesPage->getSelectedDatabase();
         if(m_database.length() > 0)
         {
-            return true;
+            selected = true;
         }
     }
     else
@@ -122,18 +123,39 @@ bool ReverseEngineerWizard::selectDatabase()
         m_database = m_welcomePage->getDatabase();
         if(m_database.length() > 0)
         {
-            return true;
+            selected = true;
         }
     }
     else
-    if(dbName == strCUBRID)
+    if(dbName == strSqlite)
     {
         if(m_sqliteFile.length() > 0)
         {
-            return true;
+            selected = true;
         }
     }
-    return false;
+
+    if(!selected)
+    {
+        return false;
+    }
+
+    // now see if we can connect or not to it
+    Connection* c = getConnectionforDb();
+    if(!c)
+    {
+        qDebug() << "get connection connect";
+        return false;
+    }
+
+    if(!c->tryConnect())
+    {
+        qDebug() << "cannot connect";
+        return false;
+    }
+
+
+    return true;
 }
 
 bool ReverseEngineerWizard::connectAndRetrieveViews()
@@ -193,6 +215,42 @@ bool ReverseEngineerWizard::connectAndRetrieveTriggers()
         m_triggersPage->addObject(triggers.at(i));
     }
     delete c;
+    return true;
+}
+
+bool ReverseEngineerWizard::gatherConnectionDataAndTablesStep()
+{
+    gatherConnectionData();
+    if(!databaseWasSelected()) // did he?
+    {
+        QMessageBox::critical(this, tr("Error"), tr("Please select an existing database"), QMessageBox::Ok);
+        back();
+        return false;
+    }
+    connectAndRetrieveTables();
+    return true;
+}
+
+bool ReverseEngineerWizard::gatherConnectionDataAndCheckDatabase()
+{
+    gatherConnectionData();
+    if(!connectAndRetrieveDatabases())  //failed?... don't go forward, there won't be databases
+    {
+        back();
+        return false;
+    }
+    return true;
+}
+
+bool ReverseEngineerWizard::checkDatabaseAndCollectTables()
+{
+    if(!databaseWasSelected()) // did he?
+    {
+        QMessageBox::critical(this, tr("Error"), tr("Please select a valid database"), QMessageBox::Ok);
+        back();
+        return false;
+    }
+    connectAndRetrieveTables();
     return true;
 }
 

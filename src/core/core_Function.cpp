@@ -88,3 +88,8 @@ void Function::updateGui()
     }
     TreeItem::updateGui();
 }
+
+const QVector<Function *> &Function::family(const Function &t)
+{
+    return t.version()->getFunctions();
+}

@@ -391,7 +391,8 @@ void TriggerForm::onLockUnlock(bool checked)
 
 void TriggerForm::onUndelete()
 {
-    if(m_version->undeleteObject(m_trigger->getObjectUid().toString(), false))
+    QString tempError;
+    if(m_version->undeleteObject(m_trigger->getObjectUid().toString(), false, tempError))
     {
         MainWindow::instance()->getGuiElements()->removeItemForPatch(m_version->getWorkingPatch(), m_trigger->getObjectUid().toString());
         // TODO: Duplicate from above
@@ -415,5 +416,9 @@ void TriggerForm::onUndelete()
         }
         ui->btnUndelete->hide();
         ui->btnLock->show();
+    }
+    else
+    {
+        QMessageBox::critical(this, tr("Error"), tempError);
     }
 }

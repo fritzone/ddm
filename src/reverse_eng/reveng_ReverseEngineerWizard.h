@@ -15,16 +15,21 @@ class ReverseEngineerWizard : public QWizard
 {
 public:
 
+    typedef bool (ReverseEngineerWizard::*collectOperation)();
+
     ReverseEngineerWizard(DatabaseEngine* engine);
 
     void gatherConnectionData();
     bool connectAndRetrieveDatabases();
-    bool selectDatabase();
+    bool databaseWasSelected();
     bool connectAndRetrieveTables();
     bool connectAndRetrieveViews();
     bool connectAndRetrieveProcedures();
     bool connectAndRetrieveFunctions();
     bool connectAndRetrieveTriggers();
+    bool gatherConnectionDataAndTablesStep();
+    bool gatherConnectionDataAndCheckDatabase();
+    bool checkDatabaseAndCollectTables();
 
     QStringList getTablesToReverse();
     QStringList getViewsToReverse();

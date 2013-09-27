@@ -2,7 +2,8 @@
 #define DB_DATABASEENGINEMANAGER_H
 
 #include "db_DatabaseBuiltinFunction.h"
-#include "dbcubrid_DatabaseEngine.h"
+
+#include "reveng_ReverseEngineerWizard.h"
 
 #include <QStringList>
 #include <QMap>
@@ -112,6 +113,9 @@ public:
      * @return
      */
     QString getDelimiterKeyword(const QString& dbName);
+
+    QMap<int, ReverseEngineerWizard::collectOperation> getCollectOperations(const QString& name);
+
 
     /**
      * @brief setTriggerEvents

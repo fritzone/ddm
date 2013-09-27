@@ -128,6 +128,8 @@ public:
 
     virtual void updateGui();
 
+    static const QVector<Diagram*>& family(const Diagram&);
+
 public:
 
     friend class ERGraphicsScene;

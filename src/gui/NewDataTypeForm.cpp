@@ -453,7 +453,8 @@ void NewDataTypeForm::keyPressEvent(QKeyEvent *evt)
 
 void NewDataTypeForm::onUndelete()
 {
-    if(m_udt->version()->undeleteObject(m_udt->getObjectUid().toString(), false))
+    QString tempError;
+    if(m_udt->version()->undeleteObject(m_udt->getObjectUid().toString(), false, tempError))
     {
         MainWindow::instance()->getGuiElements()->removeItemForPatch(m_udt->version()->getWorkingPatch(), m_udt->getObjectUid().toString());
         // TODO: Duplicate from above
@@ -477,6 +478,10 @@ void NewDataTypeForm::onUndelete()
         }
         m_ui->btnUndelete->hide();
         m_ui->btnLock->show();
+    }
+    else
+    {
+        QMessageBox::critical(this, tr("Error"), tempError);
     }
 }
 

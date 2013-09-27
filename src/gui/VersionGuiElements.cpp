@@ -743,6 +743,19 @@ ContextMenuEnabledTreeWidgetItem* VersionGuiElements::getDocumentationItem() con
     return documentationItem;
 }
 
+ContextMenuEnabledTreeWidgetItem *VersionGuiElements::treeItemForUid(const QString& uid)
+{
+    if(uid == uidFunction) return getFunctionsItem();
+    if(uid == uidProcedure) return getProceduresItem();
+    if(uid == uidTable) return getTablesItem();
+    if(uid == uidTableInstance) return getTableInstancesItem();
+    if(uid == uidTrigger) return getTriggersItem();
+    if(uid == uidView) return getViewsItem();
+    if(uid == uidDiagram) return getDiagramsItem();
+
+    return 0;
+}
+
 ContextMenuEnabledTreeWidgetItem* VersionGuiElements::getDtsItem() const
 {
     return dtsItem;

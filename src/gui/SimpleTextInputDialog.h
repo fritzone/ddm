@@ -10,7 +10,7 @@ namespace Ui {
 class SimpleTextInputDialog : public QDialog {
     Q_OBJECT
 public:
-    SimpleTextInputDialog(QWidget *parent = 0, const QString& caption = QString("Enter the data"));
+    SimpleTextInputDialog(QWidget *parent, const QString& caption, const QString &text);
     ~SimpleTextInputDialog();
     void setText(const QString& txt);
     QString getText();

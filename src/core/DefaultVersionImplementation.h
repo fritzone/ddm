@@ -33,7 +33,9 @@ public:
     virtual bool hasTable(Table*);
     virtual bool hasTable(const QString&);
     virtual bool deleteTable(Table*);
+    virtual void deleteTableWithName(const QString&);
     virtual void deleteTableInstance(TableInstance*);
+    virtual void deleteTableInstance(const QString&);
     virtual void purgeSentencedTableInstances();
     virtual void deleteDataType(const QString&);
     virtual Table* getTable(const QString& name) const;
@@ -99,7 +101,7 @@ public:
     virtual void replaceUserDataType(const QString& uid, UserDataType* dt);
     virtual void replaceFunction(const QString& uid, Function* func);
     virtual Patch* getWorkingPatch();
-    virtual PatchTreeRemovalStatus undeleteObject(const QString& uid, bool suspend);
+    virtual PatchTreeRemovalStatus undeleteObject(const QString& uid, bool suspend, QString &outError);
     virtual void removePatch(const Patch* p);
     virtual void lockVersion(LockableElement::LockType);
     virtual Table* getDescendantTable(Table*);

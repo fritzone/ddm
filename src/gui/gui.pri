@@ -40,7 +40,8 @@ SOURCES += \
     gui/repo_RoleListingForm.cpp \
     gui/repo_RepositoryElementForm.cpp \
     gui/gui_DBMenu.cpp \
-    gui/gui_IconFactory.cpp
+    gui/gui_IconFactory.cpp \
+    gui/gui_MainWindowSlotHouse.cpp
 
 HEADERS += \
     gui/AboutBoxDialog.h \
@@ -89,7 +90,9 @@ HEADERS += \
     gui/repo_RoleListingForm.h \
     gui/repo_RepositoryElementForm.h \
     gui/IconedDockWidget.h \
-    gui/gui_DBMenu.h
+    gui/gui_DBMenu.h \
+    gui/gui_MainWindowSlotHouse.h \
+    gui/gui_DeleteHelper.h
 
 FORMS += \
     gui/AboutBoxDialog.ui \

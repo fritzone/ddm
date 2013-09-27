@@ -82,7 +82,6 @@ private:
     QueryItemListDialog* m_lstDlg;
     QueryGraphicsScene* m_scene;
     Query* m_query;
-    MainWindow* m_form;
     QVector<const ColumnOfTabWithTabInstance*> m_columnsToShow;
     QStringList m_orderByElements;
     const SelectQueryJoinComponent* m_join;

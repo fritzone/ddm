@@ -102,3 +102,8 @@ QString Trigger::getSqlHash() const
     QString hash = QString(QCryptographicHash::hash((spaceless.toUpper().toLocal8Bit()),QCryptographicHash::Md5).toHex());
     return hash;
 }
+
+const QVector<Trigger *> &Trigger::family(const Trigger& t)
+{
+    return t.version()->getTriggers();
+}

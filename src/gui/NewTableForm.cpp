@@ -3356,7 +3356,8 @@ void NewTableForm::onLockUnlock(bool checked)
 
 void NewTableForm::onUndelete()
 {
-    if(m_version->undeleteObject(m_table->getObjectUid().toString(), false))
+    QString tempError;
+    if(m_version->undeleteObject(m_table->getObjectUid().toString(), false, tempError))
     {
         MainWindow::instance()->getGuiElements()->removeItemForPatch(m_version->getWorkingPatch(), m_table->getObjectUid().toString());
         // TODO: Duplicate from above
@@ -3380,6 +3381,10 @@ void NewTableForm::onUndelete()
         }
         m_ui->btnUndelete->hide();
         m_ui->btnLock->show();
+    }
+    else
+    {
+        QMessageBox::critical(this, tr("Error"), tempError);
     }
 }
 

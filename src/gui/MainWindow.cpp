@@ -70,6 +70,8 @@
 #include "conn_CUBRID.h"
 #include "db_DatabaseEngineManager.h"
 #include "core_Repository.h"
+#include "gui_MainWindowSlotHouse.h"
+#include "gui_DeleteHelper.h"
 
 #include <QtGui>
 #include <QMessageBox>
@@ -80,7 +82,7 @@ MainWindow* MainWindow::m_instance = 0;
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), m_ui(new Ui::MainWindow),
     m_btndlg(0), m_workspace(Workspace::getInstance()), m_revEngWizard(0), m_nvf(0),
     lblStatus(0), m_splashWasVisible(false),
-    m_guiElements(0), m_connectionGuiElements(0)
+    m_guiElements(0), m_connectionGuiElements(0), m_showMethods()
 {
     m_ui->setupUi(this);
     m_instance = this;
@@ -89,18 +91,15 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), m_ui(new Ui::Main
     Configuration::instance();
     ConnectionManager::instance();
     DatabaseEngineManager::instance();
+    MainWindowSlotHouse::instance();
 
     m_connectionGuiElements = new ConnectionGuiElements();
     m_connectionGuiElements->createGuiElements();
-
-    //m_repositoryGuiElements = new RepositoryGuiElements();
-    //m_repositoryGuiElements->createGuiElements();
 
     m_ui->action_ConnectionsTree->setChecked(true);
     m_ui->action_Repository->setChecked(true);
 
     showConnections();
-    //showRepository();
 
     m_ui->action_Repository->setVisible(false);
 
@@ -113,9 +112,20 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), m_ui(new Ui::Main
     {
         m_btndlg->showMe();
     }
-    //m_btndlg->raise();
 
     QApplication::instance()->installEventFilter(this);
+}
+
+MainWindow::~MainWindow()
+{
+    ConnectionManager::instance()->shutDown();
+    delete m_ui;
+    delete m_connectionGuiElements;
+    delete m_guiElements;
+    delete m_btndlg;
+    delete m_revEngWizard;
+    delete m_nvf;
+    delete lblStatus;
 }
 
 void MainWindow::keyPressEvent(QKeyEvent *e)
@@ -130,47 +140,15 @@ void MainWindow::keyPressEvent(QKeyEvent *e)
     }
     if(e->key() == Qt::Key_F1)
     {
-        // based on the centralWidget select the desried help...
-        // TODO: these things should come from the centralWidget somehow :)
         QWidget* c = centralWidget();
-        QString s = QString("/doc/main.html");
-        if(dynamic_cast<NewTableForm*>(c))
-        {
-            s = QString("/doc/tabl.html");
-        }
-        if(dynamic_cast<TableInstanceForm*>(c))
-        {
-            s = QString("/doc/tinst.html");
-        }
-        if(dynamic_cast<NewViewForm*>(c))
-        {
-            s = QString("/doc/view.html");
-        }
-        if(dynamic_cast<NewDataTypeForm*>(c))
-        {
-            s = QString("/doc/dtyp.html");
-        }
-        if(dynamic_cast<TriggerForm*>(c))
-        {
-            s = QString("/doc/trig.html");
-        }
-        if(dynamic_cast<ProcedureForm*>(c))
-        {
-            s = QString("/doc/proc.html");
-        }
-        if(dynamic_cast<DiagramForm*>(c))
-        {
-            s = QString("/doc/dgram.html");
-        }
         HelpWindow* hw = HelpWindow::instance();
-        hw->showHelp(s);
-        hw->show();
+        hw->showHelpForWidget(c);
     }
 }
 
 bool MainWindow::eventFilter(QObject *obj, QEvent *evt)
 {
-    if(obj==qApp && ( evt->type() == QEvent::ApplicationActivate
+    if(obj == qApp && ( evt->type() == QEvent::ApplicationActivate
                       || evt->type() == QEvent::ApplicationDeactivate))
     {
         bool shouldHide = evt->type() == QEvent::ApplicationDeactivate;
@@ -185,13 +163,6 @@ bool MainWindow::eventFilter(QObject *obj, QEvent *evt)
         return true;
     }
     return QMainWindow::eventFilter(obj, evt);
-}
-
-
-MainWindow::~MainWindow()
-{
-    ConnectionManager::instance()->shutDown();
-    delete m_ui;
 }
 
 void MainWindow::setCentralWidget(QWidget *widget)
@@ -253,7 +224,6 @@ void MainWindow::setupGuiForNewSolution()
 
     addDockWidget(Qt::LeftDockWidgetArea, m_guiElements->getProjectDock());
     addDockWidget(Qt::BottomDockWidgetArea, m_guiElements->getIssuesDock());
-//    addDockWidget(Qt::LeftDockWidgetArea, m_guiElements->getGenDock());
 
     IssueManager::getInstance().setIssuesDock(m_guiElements->getIssuesDock());
 
@@ -265,13 +235,7 @@ void MainWindow::onNewSolution()
     bool w = false;
     if(m_btndlg && m_btndlg->isVisible())
     {
-        m_btndlg->hide();
-
-#ifdef Q_WS_WIN
-        Qt::WindowFlags flags = m_btndlg->windowFlags();
-        m_btndlg->setWindowFlags(flags ^ (Qt::SplashScreen |Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint));
-#endif
-
+        hideSplashwindow();
         w = true;
     }
 
@@ -291,11 +255,7 @@ void MainWindow::onNewSolution()
                 QMessageBox::critical (this, tr("Error"), tr("Cannot create a solution. Not enough memory?"), QMessageBox::Ok);
                 if(m_btndlg && m_btndlg->isVisible() && w)
                 {
-#ifdef Q_WS_WIN
-                    Qt::WindowFlags flags = m_btndlg->windowFlags();
-                    m_btndlg->setWindowFlags(flags | Qt::SplashScreen |Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint);
-#endif
-                    m_btndlg->show();
+                    showSplashwindow();
                 }
                 return;
             }
@@ -307,11 +267,7 @@ void MainWindow::onNewSolution()
                 QMessageBox::critical (this, tr("Error"), tr("Cannot create a solution. Not enough memory?"), QMessageBox::Ok);
                 if(m_btndlg && m_btndlg->isVisible() && w)
                 {
-#ifdef Q_WS_WIN
-                    Qt::WindowFlags flags = m_btndlg->windowFlags();
-                    m_btndlg->setWindowFlags(flags | Qt::SplashScreen |Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint);
-#endif
-                    m_btndlg->show();
+                    showSplashwindow();
                 }
                 return;
             }
@@ -321,19 +277,11 @@ void MainWindow::onNewSolution()
         DatabaseEngine* engine = nprjdlg->getDatabaseEngine();
         m_workspace->addProjectToSolution(m_workspace->currentSolution(), project);
         project->setEngine(engine);
-        //qDebug() << project->getEngine()->getDatabaseEngineName();
 
         setupGuiForNewSolution();
-        if(!engine->storedMethodSupport())
-        {
-            m_ui->action_NewFunction->setVisible(false);
-            m_ui->action_NewProcedure->setVisible(false);
-        }
-        else
-        {
-            m_ui->action_NewFunction->setVisible(true);
-            m_ui->action_NewProcedure->setVisible(true);
-        }
+
+        m_ui->action_NewFunction->setVisible(engine->storedMethodSupport());
+        m_ui->action_NewProcedure->setVisible(engine->storedMethodSupport());
 
         if(nprjdlg->getProjectType() == NewProjectDialog::PRJ_BINDTODATABASE)
         {
@@ -342,34 +290,41 @@ void MainWindow::onNewSolution()
             injectDialog->setModal(true);
             if(injectDialog->exec() == QDialog::Accepted)
             {
-                Connection* c = 0;
-                if(injectDialog->getSDbEngine().toUpper() == strMySql.toUpper())
+                Connection* c = injectDialog->provideConnection();
+                if(!c)
                 {
-                    QString host = injectDialog->getHost();
-                    QString user = injectDialog->getUser();
-                    QString password = injectDialog->getPassword();
-                    int port = injectDialog->getPort();
-                    QString db = injectDialog->getDatabase();
-
-                    c = new MySqlConnection("temp", host, user, password, db, false, false, port);
+                    qDebug() << "Cannot give a connection to bind to";
+                    project->createMajorVersion(1, 0);
                 }
                 else
                 {
-                    QString dbFile = injectDialog->getFileName();
-                    c = new SqliteConnection("temp", dbFile, false, injectDialog->getSqliteVersion());
+                    QString meta = nprjdlg->getDatabaseEngine()->getDbMetadata(c);
+                    if(meta.isEmpty())
+                    {
+                        QMessageBox::critical(this, tr("Error"),
+                                tr("There is no metadata at the given location") );
+                        project->createMajorVersion(1, 0);
+                    }
+                    else
+                    {
+                        QDomDocument doc;
+                        QString lastErr;
+                        if(!doc.setContent(meta, &lastErr))
+                        {
+                            QMessageBox::critical(this, tr("Error"), tr("Invalid metadata: ") + lastErr);
+                            project->createMajorVersion(1, 0);
+                        }
+                        else
+                        {
+                            MajorVersion* mv = new MajorVersion;
+                            project->addMajorVersion(mv);
+                            DeserializationFactory::createMajorVersion(mv, project,
+                                        project->getEngine(), doc,
+                                        doc.firstChildElement().firstChildElement());
+                        }
+                    }
+                    delete c;
                 }
-                QString meta = nprjdlg->getDatabaseEngine()->getDbMetadata(c);
-                QDomDocument doc;
-                QString lastErr;
-                if(!doc.setContent(meta, &lastErr))
-                {
-//                    qDebug() << "Cannot set data:" << lastErr;
-                }
-                MajorVersion* mv = new MajorVersion;
-                project->addMajorVersion(mv);
-                DeserializationFactory::createMajorVersion(mv, project, project->getEngine(), doc, doc.firstChildElement().firstChildElement());
-
-                delete c;
             }
             else
             {
@@ -380,6 +335,7 @@ void MainWindow::onNewSolution()
         {
             project->createMajorVersion(1, 0);
         }
+
         project->createTreeItem(m_guiElements);
         project->populateTreeItem(m_guiElements);
 
@@ -392,7 +348,6 @@ void MainWindow::onNewSolution()
             {
                 m_workspace->workingVersion()->getGui()->createDataTypeTreeEntry(dts.at(i));
             }
-
         }
 
         // expand the tree
@@ -416,7 +371,6 @@ void MainWindow::onNewSolution()
             m_revEngWizard = new ReverseEngineerWizard(nprjdlg->getDatabaseEngine());
             m_revEngWizard->show();
 
-
             QObject::connect(m_revEngWizard, SIGNAL(currentIdChanged(int)), this, SLOT(onReverseEngineerWizardNextPage(int)));
             QObject::connect(m_revEngWizard, SIGNAL(accepted()), this, SLOT(onReverseEngineerWizardAccept()));
         }
@@ -429,11 +383,7 @@ void MainWindow::onNewSolution()
     {
         if(m_btndlg && w)
         {
-#ifdef Q_WS_WIN
-            Qt::WindowFlags flags = m_btndlg->windowFlags();
-            m_btndlg->setWindowFlags(flags | Qt::SplashScreen |Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint);
-#endif
-            m_btndlg->show();
+            showSplashwindow();
         }
     }
 }
@@ -443,14 +393,8 @@ void MainWindow::onShowSolutionProperties()
     showProjectDetails();
 }
 
-void MainWindow::onDTTreeClicked()
-{
-}
-
 void MainWindow::showNothing(Version* /*v*/, const QString &, bool /*focus*/ )
-{
-
-}
+{}
 
 NewTableForm* MainWindow::showExistingTable(Table *table, Version* v)
 {
@@ -616,7 +560,6 @@ void MainWindow::showViewWithGuid(Version * ver, const QString & guid, bool /*fo
         {
             m_nvf = 0;
             v->getHelper()->resetContent();
-            v->getHelper()->setForm(this);
             rerenderQuery(v->getQuery());
         }
     }
@@ -652,15 +595,7 @@ void MainWindow::patchTreeItemClicked(QTreeWidgetItem * current, int)
         }
         else
         {
-            QMap<QString, showSomething> mapping;
-            mapping.insert(uidTable, (showSomething)&MainWindow::showTableWithGuid);
-            mapping.insert(uidTableInstance, (showSomething)&MainWindow::showTableInstanceWithGuid);
-            mapping.insert(uidDiagram, (showSomething)&MainWindow::showDiagramWithGuid);
-            mapping.insert(uidProcedure, (showSomething)&MainWindow::showProcedureWithGuid);
-            mapping.insert(uidFunction, (showSomething)&MainWindow::showFunctionWithGuid);
-            mapping.insert(uidTrigger, (showSomething)&MainWindow::showTriggerWithGuid);
-            mapping.insert(uidView, (showSomething)&MainWindow::showViewWithGuid);
-
+            QMap<QString, showSomething> mapping = m_showMethods.getMapping();
             if(mapping.contains(classUid))
             {
                 showObjectWithGuidAndVersion(foundVersion, uid, mapping[classUid], false);
@@ -679,7 +614,6 @@ void MainWindow::projectTreeItemClicked(QTreeWidgetItem * current, int)
 {
     if(current)
     {
-
         QVariant qv = current->data(0, Qt::UserRole);
         QString uid = qv.toString();
 
@@ -731,7 +665,6 @@ void MainWindow::projectTreeItemClicked(QTreeWidgetItem * current, int)
             setCentralWidget(frm);
             return;
         }
-
 
         QString classUid = nullUid;
         if(obj)
@@ -814,53 +747,29 @@ void MainWindow::projectTreeItemClicked(QTreeWidgetItem * current, int)
     }
 }
 
-void MainWindow::onNewProcedureFromPopup()
+Procedure* MainWindow::createStoredProcedureInVersion(bool guided, Version* v)
 {
-    if(m_guiElements->getProjectTree()->getLastRightclickedItem() == 0)
-    {
-        return;
-    }
-
-    ContextMenuEnabledTreeWidgetItem* item = m_guiElements->getProjectTree()->getLastRightclickedItem();
-    m_guiElements->getProjectTree()->setLastRightclickedItem(0);
-
-    QVariant qv = item->data(0, Qt::UserRole);
-    QString diagramsUid = qv.toString();
-
-    Version* v = UidWarehouse::instance().getVersionForUid(diagramsUid);
-
-    ProcedureForm* frm = v->getGui()->getProcedureForm(MODE_PROCEDURE, true);
+    ProcedureForm* frm = v->getGui()->getProcedureForm(MODE_PROCEDURE, guided);
     Procedure* p = new Procedure(NameGenerator::getUniqueName(v, (itemGetter)&Version::getProcedure, QString("proc")),
-                                                               QUuid::createUuid().toString(), v, true);
+                                 QUuid::createUuid().toString(), v, guided);
     frm->setProcedure(p);
     frm->initSql();
     v->addProcedure(p, false);
     v->getGui()->createProcedureTreeEntry(p);
-
+    m_guiElements->getProjectTree()->setCurrentItem(p->getLocation());
     setCentralWidget(frm);
+    return p;
 }
-
 
 void MainWindow::onNewViewWithSqlFromPopup()
 {
-    if(m_guiElements->getProjectTree()->getLastRightclickedItem() == 0)
-    {
-        return;
-    }
-
-    ContextMenuEnabledTreeWidgetItem* item = m_guiElements->getProjectTree()->getLastRightclickedItem();
-    m_guiElements->getProjectTree()->setLastRightclickedItem(0);
-
-    QVariant qv = item->data(0, Qt::UserRole);
-    QString diagramsUid = qv.toString();
-
-    Version* ver = UidWarehouse::instance().getVersionForUid(diagramsUid);
-    // Ok. New views from the button go always to the working version
-    m_nvf = new NewViewForm(ver, false, 0, this);
+    Version* ver = getLastRightClickedVersion();
     View* v = new View(true, QUuid::createUuid().toString(), ver);
+
     ver->addView(v, false);
     ver->getGui()->createViewTreeEntry(v);
 
+    m_nvf = new NewViewForm(ver, false, 0, this);
     m_nvf->setSqlSource(v);
     m_nvf->setView(v);
     m_nvf->presentSql(Workspace::getInstance()->currentProject(), ver);
@@ -870,134 +779,80 @@ void MainWindow::onNewViewWithSqlFromPopup()
 
 void MainWindow::onNewViewFromPopup()
 {
-    if(m_guiElements->getProjectTree()->getLastRightclickedItem() == 0)
-    {
-        return;
-    }
-
-    ContextMenuEnabledTreeWidgetItem* item = m_guiElements->getProjectTree()->getLastRightclickedItem();
-    m_guiElements->getProjectTree()->setLastRightclickedItem(0);
-
-    QVariant qv = item->data(0, Qt::UserRole);
-    QString diagramsUid = qv.toString();
-
-    Version* ver = UidWarehouse::instance().getVersionForUid(diagramsUid);
-    // Ok. New views from the button go always to the working version
+    Version* ver = getLastRightClickedVersion();
     View* v = new View(false, QUuid::createUuid().toString(), ver);
     m_nvf = 0;
-    v->getHelper()->setForm(this);
     ver->addView(v, false);
     ver->getGui()->createViewTreeEntry(v);
-
     rerenderQuery(v->getQuery());
 }
 
 
 void MainWindow::onNewTriggerFromPopup()
 {
-
-    if(m_guiElements->getProjectTree()->getLastRightclickedItem() == 0)
-    {
-        return;
-    }
-
-    ContextMenuEnabledTreeWidgetItem* item = m_guiElements->getProjectTree()->getLastRightclickedItem();
-    m_guiElements->getProjectTree()->setLastRightclickedItem(0);
-
-    QVariant qv = item->data(0, Qt::UserRole);
-    QString diagramsUid = qv.toString();
-
-    Version* v = UidWarehouse::instance().getVersionForUid(diagramsUid);
-
-    Workspace::getInstance()->createTrigger(v);
+    Workspace::getInstance()->createTrigger(getLastRightClickedVersion());
 }
 
-void MainWindow::onNewFunctionFromPopup()
+Function* MainWindow::createStoredFunction(bool guided, Version* v)
 {
-    if(m_guiElements->getProjectTree()->getLastRightclickedItem() == 0)
-    {
-        return;
-    }
-
-    ContextMenuEnabledTreeWidgetItem* item = m_guiElements->getProjectTree()->getLastRightclickedItem();
-    m_guiElements->getProjectTree()->setLastRightclickedItem(0);
-
-    QVariant qv = item->data(0, Qt::UserRole);
-    QString diagramsUid = qv.toString();
-
-    Version* v = UidWarehouse::instance().getVersionForUid(diagramsUid);
-
-    // TODO: This is pure duplication with onNewFunction except the version
-    ProcedureForm* frm = v->getGui()->getProcedureForm(MODE_FUNCTION, true);
-    Function* p = new Function(NameGenerator::getUniqueName(v, (itemGetter)&Version::getFunction, QString("func")),
-                                                               QUuid::createUuid().toString(), v, true);
-    frm->setProcedure(p);
+    ProcedureForm* frm = v->getGui()->getProcedureForm(MODE_FUNCTION, guided);
+    Function* func = new Function(NameGenerator::getUniqueName(v, (itemGetter)&Version::getFunction, QString("func")),
+                                  QUuid::createUuid().toString(), v, guided);
+    frm->setProcedure(func);
     frm->initSql();
-    v->addFunction(p, false);
-    v->getGui()->createFunctionTreeEntry(p);
-
+    v->addFunction(func, false);
+    v->getGui()->createFunctionTreeEntry(func);
+    m_guiElements->getProjectTree()->setCurrentItem(func->getLocation());
     setCentralWidget(frm);
+    return func;
 }
 
-void MainWindow::onNewDiagramFromPopup()
+void MainWindow::newDiagramInVersion(Version* v)
 {
-    if(m_guiElements->getProjectTree()->getLastRightclickedItem() == 0)
-    {
-        return;
-    }
-
-    ContextMenuEnabledTreeWidgetItem* item = m_guiElements->getProjectTree()->getLastRightclickedItem();
-    m_guiElements->getProjectTree()->setLastRightclickedItem(0);
-
-    QVariant qv = item->data(0, Qt::UserRole);
-    QString diagramsUid = qv.toString();
-
-    Version* v = UidWarehouse::instance().getVersionForUid(diagramsUid);
-
-    // TODO: This is pure duplication with onNewDiagram
     Diagram* dgram = new Diagram(v, QUuid::createUuid().toString());
     DiagramForm* df = new DiagramForm(v, dgram, this);
     v->addDiagram(dgram, false);
     setCentralWidget(df);
     dgram->setForm(df);
     onSaveDiagram(dgram, v);
+    m_guiElements->getProjectTree()->setCurrentItem(dgram->getLocation());
 }
 
-void MainWindow::onNewTableFromPopup()
+Version* MainWindow::getLastRightClickedVersion()
 {
     if(m_guiElements->getProjectTree()->getLastRightclickedItem() == 0)
     {
-        return;
+        return Workspace::getInstance()->workingVersion();
     }
 
     ContextMenuEnabledTreeWidgetItem* item = m_guiElements->getProjectTree()->getLastRightclickedItem();
     m_guiElements->getProjectTree()->setLastRightclickedItem(0);
 
     QVariant qv = item->data(0, Qt::UserRole);
-    QString tablesUid = qv.toString();
+    QString diagramsUid = qv.toString();
 
-    Version* v = UidWarehouse::instance().getVersionForUid(tablesUid);
+    return UidWarehouse::instance().getVersionForUid(diagramsUid);
+}
 
-    // TODO: duplicate with below
+void MainWindow::onNewDiagram()
+{
+    newDiagramInVersion(Workspace::getInstance()->workingVersion());
+}
+
+void MainWindow::newTableInVersion(Version* v)
+{
     m_ui->action_NewTable->setDisabled(true);
 
     NewTableForm* frm = v->getGui()->getTableFormForNewTable();
     frm->focusOnName();
-    m_guiElements->getProjectTree()->setCurrentItem(0);
+    m_guiElements->getProjectTree()->setCurrentItem(frm->getTable()->getLocation());
     setCentralWidget(frm);
     m_ui->action_NewTable->setDisabled(false);
-
 }
 
 void MainWindow::onNewTable()
 {
-    m_ui->action_NewTable->setDisabled(true);
-    NewTableForm* frm = Workspace::getInstance()->workingVersion()->getGui()->getTableFormForNewTable();
-    frm->focusOnName();
-
-    m_guiElements->getProjectTree()->setCurrentItem(frm->getTable()->getLocation());
-    setCentralWidget(frm);
-    m_ui->action_NewTable->setDisabled(false);
+    newTableInVersion(Workspace::getInstance()->workingVersion());
 }
 
 void MainWindow::showNewDataTypeWindow(int a, Version *v)
@@ -1097,6 +952,28 @@ void MainWindow::populateTreeWithSolution(Solution* sol)
     {
         sol->projects()[i]->createTreeItem(m_guiElements);
         sol->projects()[i]->populateTreeItem(m_guiElements);
+
+        QVector<MajorVersion*>& majorVersions = sol->projects()[i]->getMajorVersions();
+
+        for(int j=0; j<majorVersions.size(); j++)
+        {
+            // and now the patches
+            const QVector<Patch*>& patches = majorVersions[j]->getPatches();
+            if(patches.size())
+            {
+                m_guiElements->getPatchesDock()->show();
+                MainWindow::instance()->addDockWidget(Qt::LeftDockWidgetArea, m_guiElements->getPatchesDock());
+            }
+
+            for(int k=0; k<patches.size(); k++)
+            {
+                ContextMenuEnabledTreeWidgetItem* patchItem = m_guiElements->createNewPatchItem(patches.at(k));
+                m_guiElements->populatePathcItem(patchItem, patches.at(k));
+            }
+
+            majorVersions[j]->getGui()->getVersionItem()->treeWidget()->collapseItem(majorVersions[j]->getGui()->getVersionItem());
+        }
+
     }
 }
 
@@ -1107,28 +984,18 @@ void MainWindow::doLoadSolution(const QString& fileName, bool splashVisible)
         QMessageBox::critical (this, tr("Error"), tr("Cannot load the solution."), QMessageBox::Ok);
         if(m_btndlg && splashVisible)
         {
-#ifdef Q_WS_WIN
-            Qt::WindowFlags flags = m_btndlg->windowFlags();
-            m_btndlg->setWindowFlags(flags | Qt::SplashScreen |Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint);
-#endif
-            m_btndlg->show();
+            showSplashwindow();
         }
-
         return;
     }
-
     freeGuiElements();
-
     setupGuiForNewSolution();
-
     populateTreeWithSolution(m_workspace->currentSolution());
-
     if(!m_workspace->currentProjectIsOop())
     {
         m_workspace->workingVersion()->getGui()->getTablesItem()->setText(0, tr("Tables"));
     }
 
-    //m_guiElements->getProjectTree()->expandAll();
     Workspace::getInstance()->workingVersion()->getGui()->collapseDTEntries();
 
     ProjectDetailsForm* prjDetailsForm = new ProjectDetailsForm(this);
@@ -1137,9 +1004,7 @@ void MainWindow::doLoadSolution(const QString& fileName, bool splashVisible)
 
     setWindowTitle(tr("DDM - [") + m_workspace->currentSolution()->getName() + tr("] - [") + fileName + tr("]"));
     m_lastLoadedProject = fileName;
-
     connectActionsFromPopupMenus();
-
     enableActions();
 
     if(m_btndlg)
@@ -1154,11 +1019,7 @@ void MainWindow::onOpenSolution()
     bool splashVisible = false;
     if(m_btndlg && m_btndlg->isVisible())
     {
-        m_btndlg->hide();
-#ifdef Q_WS_WIN
-        Qt::WindowFlags flags = m_btndlg->windowFlags();
-        m_btndlg->setWindowFlags(flags ^ (Qt::SplashScreen |Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint));
-#endif
+        hideSplashwindow();
         splashVisible = true;
     }
 
@@ -1167,18 +1028,13 @@ void MainWindow::onOpenSolution()
     {
         if(splashVisible)
         {
-#ifdef Q_WS_WIN
-            Qt::WindowFlags flags = m_btndlg->windowFlags();
-            m_btndlg->setWindowFlags(flags |Qt::SplashScreen | Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint);
-#endif
-            m_btndlg->show();
+            showSplashwindow();
             m_btndlg->fixButtons();
         }
         return;
     }
 
     MostRecentlyUsedFiles::instance().addFile(fileName);
-
     doLoadSolution(fileName, splashVisible);
 }
 
@@ -1234,8 +1090,9 @@ void MainWindow::enableActions()
 
 void MainWindow::connectActionsFromPopupMenus()
 {
+    MainWindowSlotHouse::instance()->connectSignalsToSlots();
+
     QObject::connect(ContextMenuCollection::getInstance()->getAction_RemoveTable(), SIGNAL(triggered()), this, SLOT(onDeleteTableFromPopup()));
-    QObject::connect(ContextMenuCollection::getInstance()->getAction_AddTable(), SIGNAL(triggered()), this, SLOT(onNewTableFromPopup()));
     QObject::connect(ContextMenuCollection::getInstance()->getAction_TableAddColumn(), SIGNAL(triggered()), this, SLOT(onTableAddColumnFromPopup()));
     if(m_workspace->currentProjectIsOop())
     {
@@ -1261,43 +1118,25 @@ void MainWindow::connectActionsFromPopupMenus()
     QObject::connect(ContextMenuCollection::getInstance()->getAction_PasteTable(), SIGNAL(triggered()), this, SLOT(onPasteTableFromPopup()));
     QObject::connect(ContextMenuCollection::getInstance()->getAction_DeleteDataType(), SIGNAL(triggered()), this, SLOT(onDeleteDatatypeFromPopup()));
     QObject::connect(ContextMenuCollection::getInstance()->getAction_DuplicateDataType(), SIGNAL(triggered()), this, SLOT(onDuplicateDatatypeFromPopup()));
-    QObject::connect(ContextMenuCollection::getInstance()->getAction_DeleteDiagram(), SIGNAL(triggered()), this, SLOT(onDeleteDiagramFromPopup()));
     QObject::connect(ContextMenuCollection::getInstance()->getAction_RenameDiagram(), SIGNAL(triggered()), this, SLOT(onRenameDiagramFromPopup()));
-    QObject::connect(ContextMenuCollection::getInstance()->getAction_AddDiagram(), SIGNAL(triggered()), this, SLOT(onNewDiagramFromPopup()));
-    QObject::connect(ContextMenuCollection::getInstance()->getAction_AddString(), SIGNAL(triggered()), this, SLOT(onNewStringType()));
-    QObject::connect(ContextMenuCollection::getInstance()->getAction_AddNumeric(), SIGNAL(triggered()), this, SLOT(onNewNumericType()));
-    QObject::connect(ContextMenuCollection::getInstance()->getAction_AddBool(), SIGNAL(triggered()), this, SLOT(onNewBoolType()));
-    QObject::connect(ContextMenuCollection::getInstance()->getAction_AddDateType(), SIGNAL(triggered()), this, SLOT(onNewDateTimeType()));
-    QObject::connect(ContextMenuCollection::getInstance()->getAction_AddMisc(), SIGNAL(triggered()), this, SLOT(onNewMiscType()));
-    QObject::connect(ContextMenuCollection::getInstance()->getAction_AddBlob(), SIGNAL(triggered()), this, SLOT(onNewBlobType()));
-    QObject::connect(ContextMenuCollection::getInstance()->getAction_AddSpatial(), SIGNAL(triggered()), this, SLOT(onNewSpatialType()));
     QObject::connect(ContextMenuCollection::getInstance()->getAction_GotoIssueLocation(), SIGNAL(triggered()), this, SLOT(onGotoIssueLocation()));
     QObject::connect(ContextMenuCollection::getInstance()->getAction_IgnoreIssue(), SIGNAL(triggered()), this, SLOT(onIgnoreIssue()));
     QObject::connect(ContextMenuCollection::getInstance()->getAction_IgnoreIssuesFromThisTable(), SIGNAL(triggered()), this, SLOT(onIgnoreIssuesOfATable()));
     QObject::connect(ContextMenuCollection::getInstance()->getAction_CreateViewUsingQueryBuilder(), SIGNAL(triggered()), this, SLOT(onNewView()));
     QObject::connect(ContextMenuCollection::getInstance()->getAction_CreateViewUsingSql(), SIGNAL(triggered()), this, SLOT(onNewViewWithSql()));
-    QObject::connect(ContextMenuCollection::getInstance()->getAction_DeleteView(), SIGNAL(triggered()), this, SLOT(onDeleteViewFromPopup()));
-    QObject::connect(ContextMenuCollection::getInstance()->getAction_DeleteProcedure(), SIGNAL(triggered()), this, SLOT(onDeleteProcedure()));
-    QObject::connect(ContextMenuCollection::getInstance()->getAction_DeleteFunction(), SIGNAL(triggered()), this, SLOT(onDeleteFunction()));
-    QObject::connect(ContextMenuCollection::getInstance()->getAction_DeleteTrigger(), SIGNAL(triggered()), this, SLOT(onDeleteTrigger()));
     QObject::connect(ContextMenuCollection::getInstance()->getAction_ReleaseMajorVersion(), SIGNAL(triggered()), this, SLOT(onReleaseMajorVersion()));
-    QObject::connect(ContextMenuCollection::getInstance()->getAction_unlock(), SIGNAL(triggered()), this, SLOT(onUnlockSomething()));
-    QObject::connect(ContextMenuCollection::getInstance()->getAction_relock(), SIGNAL(triggered()), this, SLOT(onRelockSomething()));
     QObject::connect(ContextMenuCollection::getInstance()->getAction_FinalizePatch(), SIGNAL(triggered()), this, SLOT(finalizePatch()));
     QObject::connect(ContextMenuCollection::getInstance()->getAction_RenamePatch(), SIGNAL(triggered()), this, SLOT(renamePatch()));
     QObject::connect(ContextMenuCollection::getInstance()->getAction_Undelete(), SIGNAL(triggered()), this, SLOT(onUndeleteSomething()));
     QObject::connect(ContextMenuCollection::getInstance()->getAction_CompareTable(), SIGNAL(triggered()), this, SLOT(onCompareTables()));
-    QObject::connect(ContextMenuCollection::getInstance()->getAction_AddProcedure(), SIGNAL(triggered()), this, SLOT(onNewProcedureFromPopup()));
-    QObject::connect(ContextMenuCollection::getInstance()->getAction_CreateGuidedProcedure(), SIGNAL(triggered()), this, SLOT(onNewProcedure()));
-    QObject::connect(ContextMenuCollection::getInstance()->getAction_CreateGuidedFunction(), SIGNAL(triggered()), this, SLOT(onNewFunction()));
-    QObject::connect(ContextMenuCollection::getInstance()->getAction_CreateSqlProcedure(), SIGNAL(triggered()), this, SLOT(onNewSqlProcedure()));
-    QObject::connect(ContextMenuCollection::getInstance()->getAction_CreateSqlFunction(), SIGNAL(triggered()), this, SLOT(onNewSqlFunction()));
-    QObject::connect(ContextMenuCollection::getInstance()->getAction_AddFunction(), SIGNAL(triggered()), this, SLOT(onNewFunctionFromPopup()));
     QObject::connect(ContextMenuCollection::getInstance()->getAction_AddTrigger(), SIGNAL(triggered()), this, SLOT(onNewTriggerFromPopup()));
     QObject::connect(ContextMenuCollection::getInstance()->getAction_AddView(), SIGNAL(triggered()), this, SLOT(onNewViewFromPopup()));
     QObject::connect(ContextMenuCollection::getInstance()->getAction_AddViewWithSql(), SIGNAL(triggered()), this, SLOT(onNewViewWithSqlFromPopup()));
     QObject::connect(ContextMenuCollection::getInstance()->getAction_InitiatePatch(), SIGNAL(triggered()), this, SLOT(onInitiatePatch()));
-    QObject::connect(ContextMenuCollection::getInstance()->getAction_DeployVersion(), SIGNAL(triggered()), this, SLOT(onDeployVersion()));
+
+    QObject::connect(m_ui->action_NewProcedure, SIGNAL(triggered()), MainWindowSlotHouse::instance(), SLOT(onNewProcedure()));
+    QObject::connect(m_ui->action_NewFunction, SIGNAL(triggered()), MainWindowSlotHouse::instance(), SLOT(onNewFunction()));
+    QObject::connect(m_ui->action_Deploy, SIGNAL(triggered()), MainWindowSlotHouse::instance(), SLOT(onDeploy()));
 
     ContextMenuCollection::getInstance()->getAction_BrowsedTableInject()->setVisible(true);
 }
@@ -1308,18 +1147,6 @@ void MainWindow::showNamedObjectList(showSomething s, const QVector<T*> items, c
     NamedObjectListingForm* lstForm = new NamedObjectListingForm(this, s, icon, title);
     lstForm->populateObjects(items);
     setCentralWidget(lstForm);
-}
-
-void MainWindow::onDeployVersion()
-{
-    if(m_guiElements->getProjectTree()->getLastRightclickedItem() != 0)
-    {
-        Version* v = getRightClickedVersion();
-        if(v)
-        {
-            Workspace::getInstance()->deployVersion(v);
-        }
-    }
 }
 
 void MainWindow::onReleaseMajorVersion()
@@ -1395,19 +1222,11 @@ bool MainWindow::showObjectWithGuid(const QString & guid)
     ObjectWithUid* element = UidWarehouse::instance().getElement(guid);
     QString classUid = element->getClassUid().toString().toUpper();
     Version* v = UidWarehouse::instance().getVersionForUid(guid);
-    // TODO: this map is a duplicate from the tree change
-    QMap<QString, showSomething> mapping;
-    mapping.insert(uidTable, (showSomething)&MainWindow::showTableWithGuid);
-    mapping.insert(uidTableInstance, (showSomething)&MainWindow::showTableInstanceWithGuid);
-    mapping.insert(uidDiagram, (showSomething)&MainWindow::showDiagramWithGuid);
-    mapping.insert(uidProcedure, (showSomething)&MainWindow::showProcedureWithGuid);
-    mapping.insert(uidFunction, (showSomething)&MainWindow::showFunctionWithGuid);
-    mapping.insert(uidTrigger, (showSomething)&MainWindow::showTriggerWithGuid);
-    mapping.insert(uidView, (showSomething)&MainWindow::showViewWithGuid);
+    Q_ASSERT(v != 0);
 
-    if(mapping.contains(classUid))
+    if(m_showMethods.getMapping().contains(classUid))
     {
-        showObjectWithGuidAndVersion(v, guid, mapping[classUid], false);
+        showObjectWithGuidAndVersion(v, guid, m_showMethods.getMapping()[classUid], false);
         return true;
     }
     else
@@ -1432,52 +1251,17 @@ void MainWindow::finallyDoLockLikeOperation(bool reLocking, const QString& guid)
 {
     ObjectWithUid* element = UidWarehouse::instance().getElement(guid);
     Version* v = UidWarehouse::instance().getVersionForUid(guid);
-    // now find the type of this element
-    UserDataType* udt = dynamic_cast<UserDataType*>(element);
-    bool doneSomething = false;
-
-    if(udt)
+    if(v == 0 || element == 0)
     {
-        if(!reLocking)
-        {
-            udt->unlock();
-        }
-        else
-        {
-            udt->lock(LockableElement::LOCKED);
-        }
-
-        udt->updateGui();
-        showDataType(v, udt->getName(), true);
-        doneSomething = true;
+        return;
     }
 
-    LockableElement* le = dynamic_cast<LockableElement*>(element);
-
-    if(le && !doneSomething)
-    {
-        if(!reLocking)
-        {
-            le->unlock();
-        }
-        else
-        {
-            le->lock(LockableElement::LOCKED);
-        }
-
-        le->updateGui();
-        doneSomething = true;
-
-    }
-
-    // and finally tell the version of the element that a new patch is about to be born
-    if(doneSomething)
+    if(Workspace::getInstance()->doLockLikeOperation(reLocking, element, v))
     {
         createPatchElement(v, element, guid, reLocking);
         showObjectWithGuid(guid);
         m_guiElements->getProjectTree()->setCurrentItem( (dynamic_cast<TreeItem*>(element)->getLocation()));
     }
-
 }
 
 void MainWindow::updatePatchElementToReflectState(Version *v, ObjectWithUid *element, const QString &guid, int state)
@@ -1490,7 +1274,11 @@ void MainWindow::updatePatchElementToReflectState(Version *v, ObjectWithUid *ele
 void MainWindow::createPatchElement(Version* v, ObjectWithUid * element, const QString& guid, bool reLocking)
 {
     NamedItem *ni = dynamic_cast<NamedItem*>(element);
-    if(!ni) return;
+    if(!ni)
+    {
+        return;
+    }
+
     if(!m_guiElements->getPatchesDock()->isVisible() && !reLocking)
     {
         m_guiElements->getPatchesDock()->show();
@@ -1518,104 +1306,12 @@ void MainWindow::doLockLikeOperation(bool reLocking)
     }
 }
 
-void MainWindow::onUnlockSomething()
-{
-    doLockLikeOperation(false);
-}
-
-void MainWindow::onRelockSomething()
-{
-    doLockLikeOperation(true);
-}
-
-void MainWindow::onDeleteFunction()
-{
-    Function* f = getRightClickedObject<Function>();
-    if(f)
-    {
-        if(QMessageBox::question(this, tr("Are you sure?"), tr("Really delete ") + f->getName()+ "?", QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
-        {
-            return;
-        }
-        f->version()->deleteFunction(f->getName());
-        f->version()->getGui()->updateForms();
-
-        showNamedObjectList(&MainWindow::showFunctionWithGuid, f->version()->getFunctions(), IconFactory::getFunctionIcon(), "Functions");
-
-        f->version()->getGui()->getFunctionsItem()->treeWidget()->clearSelection();
-        f->version()->getGui()->getFunctionsItem()->setSelected(true);
-    }
-}
-
-void MainWindow::onDeleteTrigger()
-{
-    Trigger* t = getRightClickedObject<Trigger>();
-    if(t)
-    {
-        if(QMessageBox::question(this, tr("Are you sure?"), tr("Really delete ") + t->getName()+ "?", QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
-        {
-            return;
-        }
-        t->version()->deleteTrigger(t->getName());
-        t->version()->getGui()->updateForms();
-
-        showNamedObjectList(&MainWindow::showTriggerWithGuid, t->version()->getTriggers(), IconFactory::getTriggerIcon(), "Triggers");
-
-        t->version()->getGui()->getTriggersItem()->treeWidget()->clearSelection();
-        t->version()->getGui()->getTriggersItem()->setSelected(true);
-    }
-}
-
-void MainWindow::onDeleteProcedure()
-{
-    Procedure* p = getRightClickedObject<Procedure>();
-    if(p)
-    {
-        if(QMessageBox::question(this, tr("Are you sure?"), tr("Really delete ") + p->getName()+ "?", QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
-        {
-            return;
-        }
-        p->version()->deleteProcedure(p->getName());
-        p->version()->getGui()->updateForms();
-
-        showNamedObjectList(&MainWindow::showProcedureWithGuid, p->version()->getProcedures(), IconFactory::getProcedureIcon(), "Procedures");
-
-        p->version()->getGui()->getProceduresItem()->treeWidget()->clearSelection();
-        p->version()->getGui()->getProceduresItem()->setSelected(true);
-    }
-}
-
-
-void MainWindow::onDeleteViewFromPopup()
-{
-    View* v = getRightClickedObject<View>();
-    if(v)
-    {
-        if(QMessageBox::question(this, tr("Are you sure?"), tr("Really delete ") + v->getName()+ "?", QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
-        {
-            return;
-        }
-        v->version()->deleteView(v->getName());
-        v->version()->getGui()->updateForms();
-
-        showNamedObjectList(&MainWindow::showViewWithGuid, v->version()->getViews(), IconFactory::getViewsIcon(), "Views");
-
-        v->version()->getGui()->getViewsItem()->treeWidget()->clearSelection();
-        v->version()->getGui()->getViewsItem()->setSelected(true);
-
-    }
-}
-
 void MainWindow::onAbout()
 {
     bool wasBtndlg = false;
     if(m_btndlg && m_btndlg->isVisible())
     {
-        m_btndlg->hide();
-#ifdef Q_WS_WIN
-        Qt::WindowFlags flags = m_btndlg->windowFlags();
-        m_btndlg->setWindowFlags(flags ^ (Qt::SplashScreen |Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint));
-#endif
+        hideSplashwindow();
         wasBtndlg = true;
     }
 
@@ -1625,24 +1321,8 @@ void MainWindow::onAbout()
 
     if(m_btndlg && wasBtndlg)
     {
-#ifdef Q_WS_WIN
-        Qt::WindowFlags flags = m_btndlg->windowFlags();
-        m_btndlg->setWindowFlags(flags | Qt::SplashScreen |Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint);
-#endif
-        m_btndlg->show();
+        showSplashwindow();
     }
-
-}
-
-void MainWindow::onNewDiagram()
-{
-    Diagram* dgram = new Diagram(m_workspace->workingVersion(), QUuid::createUuid().toString());
-    DiagramForm* df = new DiagramForm(m_workspace->workingVersion(), dgram, this);
-    m_workspace->workingVersion()->addDiagram(dgram, false);
-    setCentralWidget(df);
-    dgram->setForm(df);
-    onSaveDiagram(dgram, m_workspace->workingVersion());
-    m_guiElements->getProjectTree()->setCurrentItem(dgram->getLocation());
 }
 
 bool MainWindow::onSaveDiagram(Diagram* dgram, Version* v)
@@ -1670,7 +1350,6 @@ void MainWindow::onInstantiateTableFromPopup()
     Table* table =getRightClickedObject<Table>();
     if(table == 0)  // shouldn't be ...
     {
-//        qDebug() << "table is null";
         return;
     }
     Version* v = table->version();
@@ -1755,6 +1434,10 @@ T* MainWindow::getRightClickedObject()
 Version* MainWindow::getRightClickedVersion()
 {
     ContextMenuEnabledTreeWidgetItem* item = m_guiElements->getProjectTree()->getLastRightclickedItem();
+    if(item == 0)
+    {
+        return 0;
+    }
     m_guiElements->getProjectTree()->setLastRightclickedItem(0);
     QVariant qv = item->data(0, Qt::UserRole);
     QString name = qv.toString();
@@ -1960,22 +1643,8 @@ void MainWindow::onDuplicateTableFromPopup()
     }
 }
 
-void MainWindow::onNewTableInstanceFromPopup()
+void MainWindow::createTableInstancesInVersion(Version* v)
 {
-    // TODO: Duplicate from various spaces :)
-    if(m_guiElements->getProjectTree()->getLastRightclickedItem() == 0)
-    {
-        return;
-    }
-
-    ContextMenuEnabledTreeWidgetItem* item = m_guiElements->getProjectTree()->getLastRightclickedItem();
-    m_guiElements->getProjectTree()->setLastRightclickedItem(0);
-
-    QVariant qv = item->data(0, Qt::UserRole);
-    QString tablesUid = qv.toString();
-
-    Version* v = UidWarehouse::instance().getVersionForUid(tablesUid);
-
     // Duplicate with the one below
     CreateTableInstancesDialog* newDialog = new CreateTableInstancesDialog(this);
     for(int i=0; i<v->getTables().size(); i++)
@@ -1993,31 +1662,31 @@ void MainWindow::onNewTableInstanceFromPopup()
 
         // This is OK, the button defaultly adds to the working version
         v->getGui()->updateForms();
+        m_guiElements->getProjectTree()->setCurrentItem(v->getGui()->getTableInstancesItem());
+        v->getGui()->getTableInstancesItem()->setExpanded(true);
     }
+}
+
+void MainWindow::onNewTableInstanceFromPopup()
+{
+    if(m_guiElements->getProjectTree()->getLastRightclickedItem() == 0)
+    {
+        return;
+    }
+
+    ContextMenuEnabledTreeWidgetItem* item = m_guiElements->getProjectTree()->getLastRightclickedItem();
+    m_guiElements->getProjectTree()->setLastRightclickedItem(0);
+
+    QVariant qv = item->data(0, Qt::UserRole);
+    QString tablesUid = qv.toString();
+
+    Version* v = UidWarehouse::instance().getVersionForUid(tablesUid);
+    createTableInstancesInVersion(v);
 }
 
 void MainWindow::onNewTableInstance()
 {
-    CreateTableInstancesDialog* newDialog = new CreateTableInstancesDialog(this);
-    for(int i=0; i<m_workspace->workingVersion()->getTables().size(); i++)
-    {
-        newDialog->addTable(m_workspace->workingVersion()->getTables()[i]->getName());
-    }
-
-    if(newDialog->exec() == QDialog::Accepted)
-    {
-        QStringList items = newDialog->getSelectedTables();
-        for(int i=0; i<items.size(); i++)
-        {
-            instantiateTable(items.at(i), items, m_workspace->workingVersion());
-        }
-
-        // This is OK, the button defaultly adds to the working version
-        m_workspace->workingVersion()->getGui()->updateForms();
-        m_guiElements->getProjectTree()->setCurrentItem(m_workspace->workingVersion()->getGui()->getTableInstancesItem());
-
-
-    }
+    createTableInstancesInVersion(Workspace::getInstance()->workingVersion());
 }
 
 void MainWindow::specificDeploymentCallback(const QString &connName)
@@ -2041,11 +1710,11 @@ void MainWindow::onDeployHovered()
         act->setIcon(IconFactory::getConnectionStateIcon(cons.at(i)->getState()));
         deployPopupMenu->addAction(act);
         QObject::connect(act, SIGNAL(triggered()),
-                new DynamicActionHandlerforMainWindow(cons.at(i)->getName(), this, (MainWindow::dynamicAction)&MainWindow::specificDeploymentCallback),
+                new DynamicActionHandlerforMainWindow(cons.at(i)->getName(), this,
+                                                      (MainWindow::dynamicAction)&MainWindow::specificDeploymentCallback),
                 SLOT(called()));
     }
 }
-
 
 void MainWindow::onNewTableInstanceHovered()
 {
@@ -2128,12 +1797,8 @@ TableInstance *MainWindow::instantiateTable(const QString& tabName, QStringList 
     return tinst;
 }
 
-void MainWindow::onPreferences()
+void MainWindow::updateSourceCodeWidget()
 {
-    PreferencesDialog* dlg = new PreferencesDialog(this);
-    dlg->setModal(true);
-    dlg->exec();
-
     QWidget* mainwidget = centralWidget();
     if(mainwidget)
     {
@@ -2145,15 +1810,22 @@ void MainWindow::onPreferences()
     }
 }
 
+void MainWindow::onPreferences()
+{
+    PreferencesDialog* dlg = new PreferencesDialog(this);
+    dlg->setModal(true);
+    dlg->exec();
+
+    updateSourceCodeWidget();
+}
+
 void MainWindow::onRenameInstanceFromPopup()
 {
     TableInstance* tinst =  getRightClickedObject<TableInstance>();
 
     if(tinst)
     {
-        SimpleTextInputDialog* dlg = new SimpleTextInputDialog(this, tr("Enter the new name"));
-        dlg->setModal(true);
-        dlg->setText(tinst->getName());
+        SimpleTextInputDialog* dlg = new SimpleTextInputDialog(this, tr("Enter the new name"), tinst->getName());
         if(dlg->exec() == QDialog::Accepted)
         {
             QString t = dlg->getText();
@@ -2173,6 +1845,7 @@ void MainWindow::onRenameInstanceFromPopup()
             }
 
             m_guiElements->updateItemForPatchWithState(tinst->version()->getWorkingPatch(), uidTableInstance, tinst->getObjectUid().toString(), t, 2);
+            updateSourceCodeWidget();
         }
     }
 }
@@ -2182,9 +1855,7 @@ void MainWindow::onRenameDiagramFromPopup()
     Diagram* dgr =  getRightClickedObject<Diagram>();
     if(dgr)
     {
-        SimpleTextInputDialog* dlg = new SimpleTextInputDialog(this, tr("Enter the new name"));
-        dlg->setModal(true);
-        dlg->setText(dgr->getName());
+        SimpleTextInputDialog* dlg = new SimpleTextInputDialog(this, tr("Enter the new name"), dgr->getName());
         if(dlg->exec() == QDialog::Accepted)
         {
             QString t = dlg->getText();
@@ -2366,11 +2037,7 @@ void MainWindow::onEditConnection()
         bool w = false;
         if(m_btndlg && m_btndlg->isVisible())
         {
-            m_btndlg->hide();
-#ifdef Q_WS_WIN
-            Qt::WindowFlags flags = m_btndlg->windowFlags();
-            m_btndlg->setWindowFlags(flags ^ (Qt::SplashScreen |Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint));
-#endif
+            hideSplashwindow();
             w = true;
         }
 
@@ -2404,13 +2071,8 @@ void MainWindow::onEditConnection()
 
         if(m_btndlg && w)
         {
-#ifdef Q_WS_WIN
-            Qt::WindowFlags flags = m_btndlg->windowFlags();
-            m_btndlg->setWindowFlags(flags | Qt::SplashScreen |Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint);
-#endif
-            m_btndlg->show();
+            showSplashwindow();
         }
-
     }
 }
 
@@ -2469,11 +2131,7 @@ void MainWindow::onDropConnection()
         bool w = false;
         if(m_btndlg && m_btndlg->isVisible())
         {
-            m_btndlg->hide();
-#ifdef Q_WS_WIN
-            Qt::WindowFlags flags = m_btndlg->windowFlags();
-            m_btndlg->setWindowFlags(flags ^ (Qt::SplashScreen |Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint));
-#endif
+            hideSplashwindow();
             w = true;
         }
 
@@ -2487,11 +2145,7 @@ void MainWindow::onDropConnection()
 
         if(m_btndlg && w)
         {
-#ifdef Q_WS_WIN
-            Qt::WindowFlags flags = m_btndlg->windowFlags();
-            m_btndlg->setWindowFlags(flags | Qt::SplashScreen |Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint);
-#endif
-            m_btndlg->show();
+            showSplashwindow();
         }
     }
 }
@@ -2505,6 +2159,18 @@ void MainWindow::hideSplashwindow()
         m_btndlg->setWindowFlags(flags ^ (Qt::SplashScreen |Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint));
 #endif
         m_btndlg->hide();
+    }
+}
+
+void MainWindow::showSplashwindow()
+{
+    if(m_btndlg && !m_btndlg->isVisible())
+    {
+#ifdef Q_WS_WIN
+        Qt::WindowFlags flags = m_btndlg->windowFlags();
+        m_btndlg->setWindowFlags(flags | Qt::SplashScreen |Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint);
+#endif
+        m_btndlg->show();
     }
 }
 
@@ -2577,11 +2243,7 @@ void MainWindow::onConnectConnection()
             bool w = false;
             if(m_btndlg && m_btndlg->isVisible())
             {
-                m_btndlg->hide();
-    #ifdef Q_WS_WIN
-                Qt::WindowFlags flags = m_btndlg->windowFlags();
-                m_btndlg->setWindowFlags(flags ^ (Qt::SplashScreen |Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint));
-    #endif
+                hideSplashwindow();
                 w = true;
             }
 
@@ -2589,11 +2251,7 @@ void MainWindow::onConnectConnection()
 
             if(m_btndlg && w)
             {
-    #ifdef Q_WS_WIN
-                Qt::WindowFlags flags = m_btndlg->windowFlags();
-                m_btndlg->setWindowFlags(flags | Qt::SplashScreen |Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint);
-    #endif
-                m_btndlg->show();
+                showSplashwindow();
             }
         }
     }
@@ -2619,30 +2277,6 @@ void MainWindow::onDuplicateDatatypeFromPopup()
     }
 }
 
-void MainWindow::onDeleteDiagramFromPopup()
-{
-    Diagram* dgr =  getRightClickedObject<Diagram>();
-    if(dgr)
-    {
-        if(QMessageBox::question(this, tr("Are you sure?"), tr("Really delete ") + dgr->getName()+ "?", QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
-        {
-            return;
-        }
-        Version *v = dgr->version();
-        v->deleteDiagram(dgr->getName());
-        v->getGui()->updateForms();
-
-        showNamedObjectList(&MainWindow::showDiagramWithGuid, v->getTables(), IconFactory::getDiagramIcon(), "Diagrams");
-        v->getGui()->getDiagramsItem()->treeWidget()->clearSelection();
-        v->getGui()->getDiagramsItem()->setSelected(true);
-    }
-}
-
-void MainWindow::dtTreeItemClicked ( QTreeWidgetItem *, int)
-{
-    onDTTreeClicked();
-}
-
 Version* MainWindow::getVersionOfLastRightClickedElement()
 {
     if(m_guiElements->getProjectTree()->getLastRightclickedItem() == 0)
@@ -2659,41 +2293,6 @@ Version* MainWindow::getVersionOfLastRightClickedElement()
 
     Version* ver = UidWarehouse::instance().getVersionForUid(diagramsUid);
     return ver;
-}
-
-void MainWindow::onNewStringType()
-{
-    showNewDataTypeWindow(DT_STRING, getVersionOfLastRightClickedElement());
-}
-
-void MainWindow::onNewNumericType()
-{
-    showNewDataTypeWindow(DT_NUMERIC, getVersionOfLastRightClickedElement());
-}
-
-void MainWindow::onNewBoolType()
-{
-    showNewDataTypeWindow(DT_BOOLEAN, getVersionOfLastRightClickedElement());
-}
-
-void MainWindow::onNewDateTimeType()
-{
-    showNewDataTypeWindow(DT_DATETIME, getVersionOfLastRightClickedElement());
-}
-
-void MainWindow::onNewBlobType()
-{
-    showNewDataTypeWindow(DT_BLOB, getVersionOfLastRightClickedElement());
-}
-
-void MainWindow::onNewMiscType()
-{
-    showNewDataTypeWindow(DT_MISC, getVersionOfLastRightClickedElement());
-}
-
-void MainWindow::onNewSpatialType()
-{
-    showNewDataTypeWindow(DT_SPATIAL, getVersionOfLastRightClickedElement());
 }
 
 void MainWindow::onGotoIssueLocation()
@@ -2780,12 +2379,6 @@ void MainWindow::createStatusLabel()
     lblStatus->setFrameShadow(QFrame::Sunken);
     m_ui->statusBar->addWidget(lblStatus);
     lblStatus->setText(tr("Deploying"));
-
-}
-
-void MainWindow::onDeploy()
-{
-    Workspace::getInstance()->deployVersion(Workspace::getInstance()->workingVersion());
 }
 
 void MainWindow::setStatus(const QString& s, bool err)
@@ -2893,137 +2486,14 @@ void MainWindow::onViewDatatypesTree()
 
 void MainWindow::onReverseEngineerWizardNextPage(int cpage)
 {
-    // TODO: this switch with the IF is simply horrible, come up with a more NICER solution
-    if(m_revEngWizard->getDbTypeName() == strSqlite)
+    QMap<int, ReverseEngineerWizard::collectOperation> ops = DatabaseEngineManager::instance().getCollectOperations(m_revEngWizard->getDbTypeName());
+    if(! ops.empty() )
     {
-        switch(cpage)
+        if(ops.contains(cpage))
         {
-        case 1: // user just filled in the connection stuff, tell the wizard to fetch the data and feed it to the next page
-            m_revEngWizard->gatherConnectionData();
-            if(!m_revEngWizard->selectDatabase()) // did he?
-            {
-                QMessageBox::critical(m_revEngWizard, tr("Error"), tr("Please select a database"), QMessageBox::Ok);
-                m_revEngWizard->back();
-            }
-
-            m_revEngWizard->connectAndRetrieveTables();
-            break;
-        case 2: // user selected the tables, advanced to the views
-            m_revEngWizard->connectAndRetrieveViews();
-            break;
-        case 3: // triggers
-            m_revEngWizard->connectAndRetrieveTriggers();
-            break;
+            (m_revEngWizard->*ops[cpage])();
         }
     }
-    else
-    if(m_revEngWizard->getDbTypeName() == strMySql)
-    {
-        switch(cpage)
-        {
-        case 1: // user just filled in the connection stuff, tell the wizard to fetch the data and feed ti to the next page
-            m_revEngWizard->gatherConnectionData();
-
-            if(!m_revEngWizard->connectAndRetrieveDatabases())  //failed?... don't go forward, there won't be databases
-            {
-                m_revEngWizard->back();
-            }
-            break;
-
-        case 2: // user selected a database to reverse engineer
-            if(!m_revEngWizard->selectDatabase()) // did he?
-            {
-                QMessageBox::critical(m_revEngWizard, tr("Error"), tr("Please select a database"), QMessageBox::Ok);
-                m_revEngWizard->back();
-            }
-
-            m_revEngWizard->connectAndRetrieveTables();
-            break;
-        case 3: // user selected the tables, advanced to the views
-            if(!m_revEngWizard->selectDatabase()) // did he select a database?
-            {
-                QMessageBox::critical(m_revEngWizard, tr("Error"), tr("Please select a database"), QMessageBox::Ok);
-                m_revEngWizard->back();
-            }
-            m_revEngWizard->connectAndRetrieveViews();
-            break;
-        case 4: // procedures
-            if(!m_revEngWizard->selectDatabase()) // did he select a database?
-            {
-                QMessageBox::critical(m_revEngWizard, tr("Error"), tr("Please select a database"), QMessageBox::Ok);
-                m_revEngWizard->back();
-            }
-            m_revEngWizard->connectAndRetrieveProcedures();
-            break;
-        case 5: // functions
-            if(!m_revEngWizard->selectDatabase()) // did he select a database?
-            {
-                QMessageBox::critical(m_revEngWizard, tr("Error"), tr("Please select a database"), QMessageBox::Ok);
-                m_revEngWizard->back();
-            }
-            m_revEngWizard->connectAndRetrieveFunctions();
-            break;
-        case 6: // triggers
-            if(!m_revEngWizard->selectDatabase()) // did he select a database?
-            {
-                QMessageBox::critical(m_revEngWizard, tr("Error"), tr("Please select a database"), QMessageBox::Ok);
-                m_revEngWizard->back();
-            }
-            m_revEngWizard->connectAndRetrieveTriggers();
-            break;
-        }
-    }
-    else
-    if(m_revEngWizard->getDbTypeName() == strCUBRID)
-    {
-        switch(cpage)
-        {
-        case 1: // user selected a database to reverse engineer
-            m_revEngWizard->gatherConnectionData();
-
-            if(!m_revEngWizard->selectDatabase()) // did he?
-            {
-                QMessageBox::critical(m_revEngWizard, tr("Error"), tr("Please select a database"), QMessageBox::Ok);
-                m_revEngWizard->back();
-            }
-
-            m_revEngWizard->connectAndRetrieveTables();
-            break;
-        case 2: // user selected the tables, advanced to the views
-            if(!m_revEngWizard->selectDatabase()) // did he select a database?
-            {
-                QMessageBox::critical(m_revEngWizard, tr("Error"), tr("Please select a database"), QMessageBox::Ok);
-                m_revEngWizard->back();
-            }
-            m_revEngWizard->connectAndRetrieveViews();
-            break;
-        case 3: // procedures
-            if(!m_revEngWizard->selectDatabase()) // did he select a database?
-            {
-                QMessageBox::critical(m_revEngWizard, tr("Error"), tr("Please select a database"), QMessageBox::Ok);
-                m_revEngWizard->back();
-            }
-            m_revEngWizard->connectAndRetrieveProcedures();
-            break;
-        case 4: // functions
-            if(!m_revEngWizard->selectDatabase()) // did he select a database?
-            {
-                QMessageBox::critical(m_revEngWizard, tr("Error"), tr("Please select a database"), QMessageBox::Ok);
-                m_revEngWizard->back();
-            }
-            m_revEngWizard->connectAndRetrieveFunctions();
-            break;
-        case 5: // triggers
-            if(!m_revEngWizard->selectDatabase()) // did he select a database?
-            {
-                QMessageBox::critical(m_revEngWizard, tr("Error"), tr("Please select a database"), QMessageBox::Ok);
-                m_revEngWizard->back();
-            }
-            m_revEngWizard->connectAndRetrieveTriggers();
-            break;
-        }
-    }
-
 }
 
 void MainWindow::onReverseEngineerWizardAccept()
@@ -3081,21 +2551,14 @@ void MainWindow::onReverseEngineerWizardAccept()
 void MainWindow::onReverseEngineeringFinished(ReverseEngineerer*)
 {
     lblStatus->setText(QObject::tr("Reverse engineering finished"));
-
-    // Ok, reverse engineering can happen only to the current version
     m_workspace->workingVersion()->getGui()->populateTreeItems();
-
 }
 
 void MainWindow::onHelp()
 {
     if(m_btndlg && m_btndlg->isVisible())
     {
-        m_btndlg->hide();
-#ifdef Q_WS_WIN
-        Qt::WindowFlags flags = m_btndlg->windowFlags();
-        m_btndlg->setWindowFlags(flags ^ (Qt::SplashScreen |Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint));
-#endif
+        hideSplashwindow();
         delete m_btndlg;
         m_btndlg = 0;
     }
@@ -3110,22 +2573,13 @@ void MainWindow::onNewConnection()
     bool wasVisible = false;
     if(m_btndlg && m_btndlg->isVisible())
     {
-#ifdef Q_WS_WIN
-            Qt::WindowFlags flags = m_btndlg->windowFlags();
-            m_btndlg->setWindowFlags(flags ^ (Qt::SplashScreen |Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint));
-#endif
-        m_btndlg->hide();
+        hideSplashwindow();
         wasVisible = true;
     }
     m_workspace->createNewConnection();
     if(wasVisible)
     {
-#ifdef Q_WS_WIN
-        Qt::WindowFlags flags = m_btndlg->windowFlags();
-        m_btndlg->setWindowFlags(flags | Qt::SplashScreen |Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint);
-#endif
-
-        m_btndlg->show();
+        showSplashwindow();
         m_btndlg->fixButtons();
     }
 }
@@ -3137,13 +2591,14 @@ void MainWindow::onValidate()
     m_ui->statusBar->showMessage(tr("Validation finished"), 1000);
     if(m_workspace->workingVersion()->getIssues().size() == 0)
     {
-        QMessageBox::information(this, tr("Congratulations"), tr("DDM has run a full validation on your database and it seems there were no issues found. Good work."), QMessageBox::Ok);
+        QMessageBox::information(this, tr("Congratulations"),
+                tr("DDM has run a full validation on your database and it seems there were no issues found. Good work."),
+                QMessageBox::Ok);
     }
 }
 
 void MainWindow::onNewViewWithSql()
 {
-    // Ok. New views from the button go always to the working version
     m_nvf = new NewViewForm(m_workspace->workingVersion(), false, 0, this);
     View* v = new View(true, QUuid::createUuid().toString(), m_workspace->workingVersion());
     Workspace::getInstance()->workingVersion()->addView(v, false);
@@ -3158,78 +2613,16 @@ void MainWindow::onNewViewWithSql()
 
 void MainWindow::onNewView()
 {
-    // Ok. New views from the button go always to the working version
     View* v = new View(false, QUuid::createUuid().toString(), m_workspace->workingVersion());
     m_nvf = 0;
-    v->getHelper()->setForm(this);
     Workspace::getInstance()->workingVersion()->addView(v, false);
     Workspace::getInstance()->workingVersion()->getGui()->createViewTreeEntry(v);
     m_guiElements->getProjectTree()->setCurrentItem(v->getLocation());
     rerenderQuery(v->getQuery());
 }
 
-void MainWindow::onNewProcedure()
-{
-    // Ok. New procedures from the button go always to the working version
-    ProcedureForm* frm = Workspace::getInstance()->workingVersion()->getGui()->getProcedureForm(MODE_PROCEDURE, true);
-    Procedure* p = new Procedure(NameGenerator::getUniqueName(Workspace::getInstance()->workingVersion(),
-                                                              (itemGetter)&Version::getProcedure, QString("proc")),
-                                                               QUuid::createUuid().toString(), m_workspace->workingVersion(), true);
-    frm->setProcedure(p);
-    frm->initSql();
-    Workspace::getInstance()->workingVersion()->addProcedure(p, false);
-    Workspace::getInstance()->workingVersion()->getGui()->createProcedureTreeEntry(p);
-    m_guiElements->getProjectTree()->setCurrentItem(p->getLocation());
-    setCentralWidget(frm);
-}
-
-void MainWindow::onNewFunction()
-{
-    // Ok. New functions from the button go always to the working version
-    ProcedureForm* frm = Workspace::getInstance()->workingVersion()->getGui()->getProcedureForm(MODE_FUNCTION, true);
-    Function* func = new Function(NameGenerator::getUniqueName(Workspace::getInstance()->workingVersion(), (itemGetter)&Version::getFunction, QString("func")), QUuid::createUuid().toString(), m_workspace->workingVersion(), true);
-    frm->setProcedure(func);
-    frm->initSql();
-    Workspace::getInstance()->workingVersion()->addFunction(func, false);
-    Workspace::getInstance()->workingVersion()->getGui()->createFunctionTreeEntry(func);
-    m_guiElements->getProjectTree()->setCurrentItem(func->getLocation());
-    setCentralWidget(frm);
-}
-
-// TODO: Next two methods are Duplicate (almost) with the two ones from above. Difference: the true/false parameter for the guidedness
-void MainWindow::onNewSqlProcedure()
-{
-    // Ok. New procedures from the button go always to the working version
-    ProcedureForm* frm = Workspace::getInstance()->workingVersion()->getGui()->getProcedureForm(MODE_PROCEDURE, false);
-    Procedure* p = new Procedure(NameGenerator::getUniqueName(Workspace::getInstance()->workingVersion(),
-                                                              (itemGetter)&Version::getProcedure, QString("proc")),
-                                                               QUuid::createUuid().toString(), m_workspace->workingVersion(), false);
-    frm->setProcedure(p);
-    frm->initSql();
-    Workspace::getInstance()->workingVersion()->addProcedure(p, false);
-    Workspace::getInstance()->workingVersion()->getGui()->createProcedureTreeEntry(p);
-    m_guiElements->getProjectTree()->setCurrentItem(p->getLocation());
-    setCentralWidget(frm);
-}
-
-void MainWindow::onNewSqlFunction()
-{
-    // Ok. New functions from the button go always to the working version
-    ProcedureForm* frm = Workspace::getInstance()->workingVersion()->getGui()->getProcedureForm(MODE_FUNCTION, false);
-    Function* func = new Function(NameGenerator::getUniqueName(Workspace::getInstance()->workingVersion(),
-                                                               (itemGetter)&Version::getFunction, QString("func")),
-                                  QUuid::createUuid().toString(), m_workspace->workingVersion(), false);
-    frm->setProcedure(func);
-    frm->initSql();
-    Workspace::getInstance()->workingVersion()->addFunction(func, false);
-    Workspace::getInstance()->workingVersion()->getGui()->createFunctionTreeEntry(func);
-    m_guiElements->getProjectTree()->setCurrentItem(func->getLocation());
-    setCentralWidget(frm);
-}
-
 void MainWindow::onNewTrigger()
 {
-    // Ok. New triggers from the button go always to the working version
     Workspace::getInstance()->createTrigger(Workspace::getInstance()->workingVersion());
 }
 
@@ -3320,7 +2713,12 @@ void MainWindow::finalizePatch()
     Patch* p = getRightClickedObject<Patch>();
     if(p)
     {
-        Workspace::getInstance()->finalizePatch(p);
+        QString tempError;
+        bool t = Workspace::getInstance()->finalizePatch(p, tempError);
+        if(!t)
+        {
+            QMessageBox::critical(this, tr("Could not finalize"), tempError);
+        }
     }
 
 }
@@ -3336,17 +2734,10 @@ void MainWindow::renamePatch()
         Patch* p = dynamic_cast<Patch*>(UidWarehouse::instance().getElement(uid));
         if(!p) return;
 
-        SimpleTextInputDialog* dlg = new SimpleTextInputDialog(this, tr("Enter the new name"));
-        dlg->setModal(true);
-        dlg->setText(p->getName());
+        SimpleTextInputDialog* dlg = new SimpleTextInputDialog(this, tr("Enter the new name"), p->getName());
         if(dlg->exec() == QDialog::Accepted)
         {
             QString t = dlg->getText();
-            //if(m_workspace->getInstance()->workingVersion()->getTableInstance(t))
-            //{
-            //    QMessageBox::critical(this, tr("Error"), tr("You can have only one table instance called ") + t, QMessageBox::Ok);
-            //    return;
-            //}
             p->setName(t);
             p->setDisplayText(t);
         }
@@ -3357,14 +2748,16 @@ void MainWindow::onUndeleteSomething()
 {
     ObjectWithUid* obj = getRightClickedObject<ObjectWithUid>();
     Version* v = UidWarehouse::instance().getVersionForUid(obj->getObjectUid().toString());
-    Version::PatchTreeRemovalStatus removeFromTree = v->undeleteObject(obj->getObjectUid().toString(), false);
+    QString tempError;
+    Version::PatchTreeRemovalStatus removeFromTree = v->undeleteObject(obj->getObjectUid().toString(), false, tempError);
     if(removeFromTree != Version::DO_NOT_REMOVE_FROM_PATCH_TREE_FAILURE)
     {
-//        if(removeFromTree == Version::REMOVE_FROM_PATCH_TREE)
-        {
-            m_guiElements->removeItemForPatch(v->getWorkingPatch(), obj->getObjectUid().toString());
-        }
+        m_guiElements->removeItemForPatch(v->getWorkingPatch(), obj->getObjectUid().toString());
         showObjectWithGuid(obj->getObjectUid().toString());
+    }
+    else
+    {
+        QMessageBox::critical(this, tr("Error"), tempError);
     }
 }
 
@@ -3420,11 +2813,7 @@ void MainWindow::onRepoItemClicked(QTreeWidgetItem* itm ,int)
 {
     if(m_btndlg && m_btndlg->isVisible())
     {
-        m_btndlg->hide();
-#ifdef Q_WS_WIN
-        Qt::WindowFlags flags = m_btndlg->windowFlags();
-        m_btndlg->setWindowFlags(flags ^ (Qt::SplashScreen |Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint));
-#endif
+        hideSplashwindow();
     }
 
     QString txt = itm->text(0);
@@ -3437,7 +2826,6 @@ void MainWindow::onRepoItemClicked(QTreeWidgetItem* itm ,int)
     else
     {
         QString uid = itm->data(0, Qt::UserRole).toString();
-//        qDebug() << uid;
         if(uid.isEmpty()) return;
         if(uid.at(0) == '{')
         {
@@ -3454,11 +2842,7 @@ void MainWindow::createTableInConnection(Connection* c, bool alreadyTried)
     {
         if(m_btndlg && m_btndlg->isVisible())
         {
-            m_btndlg->hide();
-    #ifdef Q_WS_WIN
-            Qt::WindowFlags flags = m_btndlg->windowFlags();
-            m_btndlg->setWindowFlags(flags ^ (Qt::SplashScreen |Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint));
-    #endif
+            hideSplashwindow();
             delete m_btndlg;
             m_btndlg = 0;
         }
@@ -3477,11 +2861,7 @@ void MainWindow::createTableInConnection(Connection* c, bool alreadyTried)
 
     if(m_btndlg && m_btndlg->isVisible())
     {
-        m_btndlg->hide();
-#ifdef Q_WS_WIN
-        Qt::WindowFlags flags = m_btndlg->windowFlags();
-        m_btndlg->setWindowFlags(flags ^ (Qt::SplashScreen |Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint));
-#endif
+        hideSplashwindow();
         delete m_btndlg;
         m_btndlg = 0;
     }
@@ -3504,22 +2884,17 @@ void MainWindow::onConnectionCreateTable()
         {
             if(m_btndlg && m_btndlg->isVisible())
             {
-                m_btndlg->hide();
-        #ifdef Q_WS_WIN
-                Qt::WindowFlags flags = m_btndlg->windowFlags();
-                m_btndlg->setWindowFlags(flags ^ (Qt::SplashScreen |Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint));
-        #endif
+                hideSplashwindow();
                 delete m_btndlg;
                 m_btndlg = 0;
             }
 
             create = false;
-            if(QMessageBox::question(this, tr("Error"),
-                                     tr("Cannot connect to: <b>") + c->getName() + "</b>. Do yo still want to create the table?",
-                                     QMessageBox::Yes, QMessageBox::No
-                                     ==
-                                     QMessageBox::Yes
-                                     ))
+            QString msg = tr("Cannot connect to: <b>") +
+                    c->getName() +
+                    "</b>. Do yo still want to create the table?";
+
+            if(QMessageBox::question(this, tr("Error"), msg, QMessageBox::Yes, QMessageBox::No) == QMessageBox::Yes)
             {
                 create = true;
             }
@@ -3585,4 +2960,15 @@ void MainWindow::onActionTriggered()
             onConnectionCreateTable();
         }
     }
+}
+
+MainWindow::ClassUidsShowMethod::ClassUidsShowMethod()
+{
+    mapping.insert(uidTable, (showSomething)&MainWindow::showTableWithGuid);
+    mapping.insert(uidTableInstance, (showSomething)&MainWindow::showTableInstanceWithGuid);
+    mapping.insert(uidDiagram, (showSomething)&MainWindow::showDiagramWithGuid);
+    mapping.insert(uidProcedure, (showSomething)&MainWindow::showProcedureWithGuid);
+    mapping.insert(uidFunction, (showSomething)&MainWindow::showFunctionWithGuid);
+    mapping.insert(uidTrigger, (showSomething)&MainWindow::showTriggerWithGuid);
+    mapping.insert(uidView, (showSomething)&MainWindow::showViewWithGuid);
 }

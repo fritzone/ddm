@@ -14,6 +14,7 @@ class Table;
 class Patch;
 class Trigger;
 class Connection;
+class ObjectWithUid;
 
 /**
  * The role of the Workspace class is to be a collection point for the "logical" elements of the
@@ -174,7 +175,7 @@ public:
 
     bool deployVersion(Version *v);
 
-    bool finalizePatch(Patch* p);
+    bool finalizePatch(Patch* p, QString &tempError);
 
     Trigger* createTrigger(Version *v);
 
@@ -183,6 +184,12 @@ public:
     void refreshConnection(Connection* c);
 
     QString getDataLocation();
+
+    bool doLockLikeOperation(bool reLocking, ObjectWithUid *element, Version *v);
+
+    void createPatchElementForGui(Version* v, ObjectWithUid * element, const QString& guid, bool reLocking);
+    void updatePatchElementGuiToReflectState(Version *v, ObjectWithUid*, const QString &guid, int state);
+    void createPatchItem(Patch*);
 private:
 
     Workspace();

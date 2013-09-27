@@ -1152,6 +1152,12 @@ public:
         return getEmptyIcon();
     }
 
+    static QIcon getIconForUid(const QString& uid)
+    {
+        if(uid == uidFunction) return getFunctionTreeIcon();
+
+        return getEmptyIcon();
+    }
 
 };
 

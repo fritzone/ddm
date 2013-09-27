@@ -48,6 +48,64 @@ QString Workspace::getDataLocation()
     return dataLocation;
 }
 
+bool Workspace::doLockLikeOperation(bool reLocking, ObjectWithUid* element, Version* v)
+{
+    bool doneSomething = false;
+
+    // now find the type of this element
+    UserDataType* udt = dynamic_cast<UserDataType*>(element);
+    if(udt)
+    {
+        if(!reLocking)
+        {
+            udt->unlock();
+        }
+        else
+        {
+            udt->lock(LockableElement::LOCKED);
+        }
+
+        udt->updateGui();
+        MainWindow::instance()->showDataType(v, udt->getName(), true);
+        doneSomething = true;
+    }
+
+    LockableElement* le = dynamic_cast<LockableElement*>(element);
+
+    if(le && !doneSomething)
+    {
+        if(!reLocking)
+        {
+            le->unlock();
+        }
+        else
+        {
+            le->lock(LockableElement::LOCKED);
+        }
+
+        le->updateGui();
+        doneSomething = true;
+    }
+
+    return doneSomething;
+}
+
+void Workspace::createPatchElementForGui(Version *v, ObjectWithUid *element, const QString &guid, bool reLocking)
+{
+    MainWindow::instance()->createPatchElement(v, element, guid, reLocking);
+}
+
+void Workspace::updatePatchElementGuiToReflectState(Version *v, ObjectWithUid *d, const QString &guid, int state)
+{
+    MainWindow::instance()->updatePatchElementToReflectState(v, d, guid, state);
+}
+
+void Workspace::createPatchItem(Patch* p)
+{
+    MainWindow::instance()->getGuiElements()->createNewPatchItem(p);
+
+}
+
 Workspace::Workspace() : m_solutions(), m_currentSolution(0), m_saved(true),
     m_userDefinedDataTypes()
 {
@@ -196,7 +254,7 @@ DatabaseEngine* Workspace::currentProjectsEngine() const
 QVector<UserDataType*> Workspace::loadDefaultDatatypesIntoCurrentSolution(Solution* s)
 {
     QDomDocument doc ("DBM");
-    QFile file (QApplication::applicationDirPath() + "/rsrc/" + Workspace::getInstance()->currentProjectsEngine()->getDefaultDatatypesLocation()); // TODO: This will not work for other databases :)
+    QFile file (QApplication::applicationDirPath() + "/rsrc/" + Workspace::getInstance()->currentProjectsEngine()->getDefaultDatatypesLocation());
     if (file.open(QIODevice::ReadOnly))
     {
         if (!doc.setContent(&file))
@@ -211,14 +269,16 @@ QVector<UserDataType*> Workspace::loadDefaultDatatypesIntoCurrentSolution(Soluti
         DeserializationFactory::createSolution(tempSolution, doc, docElem.firstChild().toElement());
         QVector<UserDataType*> dts = tempSolution->currentProject()->getWorkingVersion()->getDataTypes();
 
-        // now load the user defined datatypes, if any
-
+        // now load the user defined datatypes, if any, if not found already
         for(int i=0; i<dts.size(); i++)        // add to the project itself
         {
-            s->currentProject()->getWorkingVersion()->addNewDataType(dts.at(i), true);
-            // make the working version of the "s" to be the version for dts[i] in UidWarehouse
-            UidWarehouse::instance().setForcedVersionForUid(dts[i]->getObjectUid().toString(), s->currentProject()->getWorkingVersion());
-            dts[i]->setForcedVersion(s->currentProject()->getWorkingVersion());
+            if(!s->currentProject()->getWorkingVersion()->hasDataType(dts[i]->getName()))
+            {
+                s->currentProject()->getWorkingVersion()->addNewDataType(dts.at(i), true);
+                // make the working version of the "s" to be the version for dts[i] in UidWarehouse
+                UidWarehouse::instance().setForcedVersionForUid(dts[i]->getObjectUid().toString(), s->currentProject()->getWorkingVersion());
+                dts[i]->setForcedVersion(s->currentProject()->getWorkingVersion());
+            }
         }
 
         QVector<UserDataType*> defaultDataTypes = m_userDefinedDataTypes[s->currentProject()->getEngine()->getName()];
@@ -476,6 +536,11 @@ bool Workspace::deleteDataType(UserDataType *udt)
 
 bool Workspace::deployVersion(Version *v)
 {
+    if(!v)
+    {
+        return false;
+    }
+
     InjectSqlDialog* injectDialog = new InjectSqlDialog(currentProjectsEngine(), MainWindow::instance(), v, "");
     injectDialog->setModal(true);
     if(injectDialog->exec() == QDialog::Accepted)
@@ -491,7 +556,7 @@ bool Workspace::deployVersion(Version *v)
     return true;
 }
 
-bool Workspace::finalizePatch(Patch *p)
+bool Workspace::finalizePatch(Patch *p, QString& tempError)
 {
     Version* v = p->version();
     Project* prj = v->getProject();
@@ -514,12 +579,12 @@ bool Workspace::finalizePatch(Patch *p)
 
     v->getGui()->getVersionItem()->setPopupMenu(ContextMenuCollection::getInstance()->getFinalisedVersionPopupMenu());
 
-    p->suspendPatch();
+    bool t = p->suspendPatch(tempError);
 
     v->lockVersion(LockableElement::FINAL_LOCK);
     newVersion->lockVersion(LockableElement::LOCKED);
 
-    return true;
+    return t;
 }
 
 Trigger* Workspace::createTrigger(Version *v)

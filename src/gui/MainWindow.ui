@@ -740,22 +740,6 @@
    </hints>
   </connection>
   <connection>
-   <sender>action_Deploy</sender>
-   <signal>triggered()</signal>
-   <receiver>MainWindow</receiver>
-   <slot>onDeploy()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>-1</x>
-     <y>-1</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>233</x>
-     <y>67</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
    <sender>action_ProjectTree</sender>
    <signal>triggered()</signal>
    <receiver>MainWindow</receiver>
@@ -868,22 +852,6 @@
    </hints>
   </connection>
   <connection>
-   <sender>action_NewProcedure</sender>
-   <signal>triggered()</signal>
-   <receiver>MainWindow</receiver>
-   <slot>onNewProcedure()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>-1</x>
-     <y>-1</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>454</x>
-     <y>67</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
    <sender>action_DeleteUnusuedDatatypes</sender>
    <signal>triggered()</signal>
    <receiver>MainWindow</receiver>
@@ -904,22 +872,6 @@
    <signal>triggered()</signal>
    <receiver>MainWindow</receiver>
    <slot>onNewTrigger()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>-1</x>
-     <y>-1</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>454</x>
-     <y>67</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>action_NewFunction</sender>
-   <signal>triggered()</signal>
-   <receiver>MainWindow</receiver>
-   <slot>onNewFunction()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>-1</x>

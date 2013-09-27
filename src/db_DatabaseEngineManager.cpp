@@ -165,6 +165,40 @@ QString DatabaseEngineManager::getDelimiterKeyword(const QString &dbName)
     return "";
 }
 
+QMap<int, ReverseEngineerWizard::collectOperation> DatabaseEngineManager::getCollectOperations(const QString &name)
+{
+    static QMap<QString, QMap<int, ReverseEngineerWizard::collectOperation> > ops;
+    static bool inited = false;
+    if(!inited)
+    {
+        inited = true;
+
+        QMap<int, ReverseEngineerWizard::collectOperation> opSqlite;
+        opSqlite[1] = &ReverseEngineerWizard::gatherConnectionDataAndTablesStep;
+        opSqlite[2] = &ReverseEngineerWizard::connectAndRetrieveViews;
+        opSqlite[3] = &ReverseEngineerWizard::connectAndRetrieveTriggers;
+        ops[strSqlite.toUpper()] = opSqlite;
+
+        QMap<int, ReverseEngineerWizard::collectOperation> opMysql;
+        opMysql[1] = &ReverseEngineerWizard::gatherConnectionDataAndCheckDatabase;
+        opMysql[2] = &ReverseEngineerWizard::checkDatabaseAndCollectTables;
+        opMysql[3] = &ReverseEngineerWizard::connectAndRetrieveViews;
+        opMysql[4] = &ReverseEngineerWizard::connectAndRetrieveProcedures;
+        opMysql[5] = &ReverseEngineerWizard::connectAndRetrieveFunctions;
+        opMysql[6] = &ReverseEngineerWizard::connectAndRetrieveTriggers;
+        ops[strMySql.toUpper()] = opMysql;
+
+        QMap<int, ReverseEngineerWizard::collectOperation> opCUBRID;
+        opCUBRID[1] = &ReverseEngineerWizard::gatherConnectionDataAndTablesStep;
+        opCUBRID[2] = &ReverseEngineerWizard::connectAndRetrieveViews;
+        opCUBRID[3] = &ReverseEngineerWizard::connectAndRetrieveProcedures;
+        opCUBRID[4] = &ReverseEngineerWizard::connectAndRetrieveFunctions;
+        opCUBRID[5] = &ReverseEngineerWizard::connectAndRetrieveTriggers;
+        ops[strCUBRID.toUpper()] = opCUBRID;
+    }
+    return ops[name.toUpper()];
+}
+
 void DatabaseEngineManager::setTriggerEvents(const QString &dbName, const QStringList &triggerEvents)
 {
     m_triggerEvents[dbName.toUpper()] = triggerEvents;

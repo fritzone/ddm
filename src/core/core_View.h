@@ -29,6 +29,8 @@ class View :
 
 {
 public:
+    explicit View() {}
+
     View(Version *v, bool manual, QString uid);
     View(bool manual, QString uid, Version* v); // used by the deserialization engine
 
@@ -110,6 +112,9 @@ public:
      */
     bool usesTable(const Table* tab) const;
     bool usesTableInstance(const TableInstance* tab) const;
+
+    static const QVector<View*>& family(const View&);
+
 
 private:
 

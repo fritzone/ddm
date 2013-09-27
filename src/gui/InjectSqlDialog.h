@@ -70,6 +70,8 @@ public:
 
     int getSqliteVersion() const;
 
+    Connection* provideConnection();
+
 private slots:
 
     void onConnect();

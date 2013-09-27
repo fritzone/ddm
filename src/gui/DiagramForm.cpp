@@ -467,7 +467,8 @@ void DiagramForm::onLockUnlock(bool checked)
 
 void DiagramForm::onUndelete()
 {
-    if(m_version->undeleteObject(m_diagram->getObjectUid().toString(), false))
+    QString tempError;
+    if(m_version->undeleteObject(m_diagram->getObjectUid().toString(), false, tempError))
     {
         MainWindow::instance()->getGuiElements()->removeItemForPatch(m_version->getWorkingPatch(), m_diagram->getObjectUid().toString());
         // TODO: Duplicate from above
@@ -491,5 +492,9 @@ void DiagramForm::onUndelete()
         }
         ui->btnUndelete->hide();
         ui->btnLock->show();
+    }
+    else
+    {
+        QMessageBox::critical(this, tr("Error"), tempError);
     }
 }
