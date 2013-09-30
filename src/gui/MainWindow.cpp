@@ -859,6 +859,7 @@ void MainWindow::onNewTable()
 void MainWindow::showNewDataTypeWindow(int a, Version *v)
 {
     NewDataTypeForm* frm = new NewDataTypeForm(v, (DT_TYPE)a, m_workspace->currentProjectsEngine(), this);
+    frm->hideDeleteButton();
     frm->focusOnName();
     m_guiElements->getProjectTree()->setCurrentItem(0);
     setCentralWidget(frm);
@@ -868,52 +869,6 @@ void MainWindow::onNewDataType()
 {
     QWidget* w = m_ui->mainToolBar->widgetForAction(m_ui->action_NewDataType);
     m_ui->action_NewDataType->menu()->popup(w->mapToGlobal(QPoint(0, w->height())));
-}
-
-bool MainWindow::onSaveNewDataType(const QString& name, const QString& type, const QString& sqlType, const QString& size, const QString& defaultValue,
-                             const QStringList& mvs, const QString& desc, bool unsi, bool canBeNull,  UserDataType* pudt, Version *v)
-{
-    if(name.length() == 0 || type.length() == 0 || sqlType.length() == 0)
-    {
-        QMessageBox::critical (this, tr("Error"), tr("Please specify all the required data"), QMessageBox::Ok);
-        return false;
-    }
-
-
-    UserDataType* udt = new UserDataType(name, type, sqlType, size, defaultValue, mvs, unsi, desc, canBeNull, QUuid::createUuid().toString(), v);
-    UserDataType* other = v->getDataType(name);
-
-    if(other &&  other != pudt)
-    {
-        QMessageBox::critical (this, tr("Error"), tr("Only one datatype with the name ") + name + tr(" can exist in the project."), QMessageBox::Ok);
-        return false;
-    }
-
-    // check if this is Saving an existing data type or updating a new one
-    if(pudt)    // saving
-    {
-        *pudt = *udt;
-        pudt->getLocation()->setIcon(0, IconFactory::getIconForDataType(pudt->getType()));
-        pudt->setDisplayText(name);
-        pudt->getLocation()->setText(1, pudt->sqlAsString());
-
-        // updating the "data" of the tree item
-        QVariant var;
-        var.setValue(udt->getObjectUid().toString());
-        pudt->getLocation()->setData(0, Qt::UserRole, var);
-    }
-    else        // new stuff
-    {
-        // add to the project itself
-        v->addNewDataType(udt, false);
-
-        // create the tree entry
-        ContextMenuEnabledTreeWidgetItem* newDtItem = v->getGui()->createDataTypeTreeEntry(udt);
-
-        m_guiElements->getProjectTree()->setCurrentItem(newDtItem);
-        return true;
-    }
-    return false;
 }
 
 void MainWindow::saveProject(bool saveAs)
@@ -2693,8 +2648,8 @@ void MainWindow::finalizePatch()
             QMessageBox::critical(this, tr("Could not finalize"), tempError);
         }
     }
-
 }
+
 void MainWindow::renamePatch()
 {
     if(m_guiElements->getPatchesTree()->getLastRightclickedItem() != 0)

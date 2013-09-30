@@ -20,7 +20,8 @@
 #include <QListWidgetItem>
 
 NewDataTypeForm::NewDataTypeForm(Version *v, DT_TYPE t, DatabaseEngine* dbe, QWidget *parent) :
-    QWidget(parent), m_ui(new Ui::NewDataTypeForm), m_dbEngine(dbe), m_udt(0), m_version(v)
+    QWidget(parent), m_ui(new Ui::NewDataTypeForm), m_dbEngine(dbe), m_udt(0), m_version(v),
+    m_init(true)
 {
     m_ui->setupUi(this);
 
@@ -68,6 +69,7 @@ NewDataTypeForm::NewDataTypeForm(Version *v, DT_TYPE t, DatabaseEngine* dbe, QWi
     }
 
     m_ui->frameForUnlockButton->hide();
+    m_init = false;
 }
 
 NewDataTypeForm::~NewDataTypeForm()
@@ -178,15 +180,15 @@ void NewDataTypeForm::onSave()
         defaultValue = "null";
     }
 
-    if(MainWindow::instance()->onSaveNewDataType(m_ui->txtDTName->text(),
-                               m_ui->cmbDTType->currentText(),
-                               m_ui->cmbDTSQLType->currentText(),
-                               m_ui->txtWidth->text(),
-                               defaultValue,
-                               mv, m_ui->txtDescription->toPlainText(),
-                               m_ui->chkUnsigned->isChecked(),
-                               m_ui->chkCanBeNull->isChecked(),
-                               m_udt, m_version))
+    if(onSaveNewDataType(m_ui->txtDTName->text(),
+                         m_ui->cmbDTType->currentText(),
+                         m_ui->cmbDTSQLType->currentText(),
+                         m_ui->txtWidth->text(),
+                         defaultValue,
+                         mv, m_ui->txtDescription->toPlainText(),
+                         m_ui->chkUnsigned->isChecked(),
+                         m_ui->chkCanBeNull->isChecked(),
+                         m_udt, m_version))
     {
         resetContent();
     }
@@ -204,6 +206,7 @@ void NewDataTypeForm::onSqlTypeSelected(QString selectedItem)
 
     m_ui->txtDefaultValue->show();
     m_ui->cmbEnumItems->hide();
+
     // enum/set?
     if(size == -1)
     {
@@ -238,7 +241,20 @@ void NewDataTypeForm::onSqlTypeSelected(QString selectedItem)
         if(size != 1 && Configuration::instance().defaultLengths())
         {
             m_ui->txtWidth->setText(QString::number(size));
+            if(m_udt)
+            {
+                m_init = true;
+                onSave();
+                m_init =false;
+            }
         }
+    }
+
+    if(m_udt)
+    {
+        m_init = true;
+        onSave();
+        m_init = false;
     }
 }
 
@@ -249,7 +265,6 @@ void NewDataTypeForm::onAddMiscValue()
     m_ui->cmbEnumItems->addItem(m_ui->txtEnumCurrentValue->text());
     m_ui->cmbEnumItems->setCurrentIndex(-1);
     m_ui->txtEnumCurrentValue->clear();
-
 }
 
 void NewDataTypeForm::onRemoveSelectedMiscValue()
@@ -265,6 +280,7 @@ void NewDataTypeForm::onRemoveSelectedMiscValue()
 
 void NewDataTypeForm::setDataType(UserDataType* udt)
 {
+    m_init = true;
     if(udt == 0 || udt->typeAsString() == strNA)
     {
         QMessageBox::critical (this, tr("Error"), tr("This is an invalid DataType"), QMessageBox::Ok);
@@ -283,6 +299,7 @@ void NewDataTypeForm::setDataType(UserDataType* udt)
     else
     {
         QMessageBox::critical (this, tr("Error"), tr("This is an invalid DataType"), QMessageBox::Ok);
+        m_init = false;
         return;
     }
 
@@ -294,6 +311,7 @@ void NewDataTypeForm::setDataType(UserDataType* udt)
     else
     {
         QMessageBox::critical (this, tr("Error"), tr("This is an invalid DataType for this DB engine"), QMessageBox::Ok);
+        m_init = false;
         return;
     }
 
@@ -386,6 +404,13 @@ void NewDataTypeForm::setDataType(UserDataType* udt)
     }
 
     m_ui->cmbDTType->setDisabled(true);
+
+    m_init = false;
+}
+
+void NewDataTypeForm::hideDeleteButton()
+{
+    m_ui->btnDeleteDataType->hide();
 }
 
 void NewDataTypeForm::onLockUnlock(bool checked)
@@ -493,4 +518,95 @@ void NewDataTypeForm::onDeleteDataType()
         delete m_udt->getLocation();
         MainWindow::instance()->showDataTypesList(m_udt->version());
     }
+}
+
+void NewDataTypeForm::onNameEdited(QString a)
+{
+    if(m_udt)
+    {
+        UserDataType* other = m_version->getDataType(a);
+        if(other && other != m_udt)
+        {
+            QPalette pal;
+            pal.setColor(QPalette::Text, Qt::red);
+            m_ui->txtDTName->setPalette(pal);
+            m_ui->txtDTName->setToolTip(QObject::tr("There is alread a Data Type called <b>") + a);
+            return;
+        }
+        else
+        {
+            QPalette pal;
+            pal.setColor(QPalette::Text, Qt::black);
+            m_ui->txtDTName->setPalette(pal);
+            m_ui->txtDTName->setToolTip(tr("The name of the Data Type"));
+        }
+        m_udt->setName(a);
+        m_udt->getLocation()->setText(0, a);
+        m_init = true;
+        onSave();
+        m_init = false;
+    }
+}
+
+void NewDataTypeForm::onWidthChanged(QString)
+{
+    if(m_udt)
+    {
+        m_init = true;
+        onSave();
+        m_init = false;
+    }
+}
+
+
+bool NewDataTypeForm::onSaveNewDataType(const QString& name, const QString& type, const QString& sqlType, const QString& size, const QString& defaultValue,
+                             const QStringList& mvs, const QString& desc, bool unsi, bool canBeNull,  UserDataType*& pudt, Version *v)
+{
+    if(name.length() == 0 || type.length() == 0 || sqlType.length() == 0)
+    {
+        if(!m_init)
+        {
+            QMessageBox::critical (this, tr("Error"), tr("Please specify all the required data"), QMessageBox::Ok);
+        }
+        return false;
+    }
+
+
+    UserDataType* udt = new UserDataType(name, type, sqlType, size, defaultValue, mvs, unsi, desc, canBeNull, QUuid::createUuid().toString(), v);
+    UserDataType* other = v->getDataType(name);
+
+    if(other &&  other != pudt)
+    {
+        if(!m_init)
+        {
+            QMessageBox::critical (this, tr("Error"), tr("Only one datatype with the name ") + name + tr(" can exist in the project."), QMessageBox::Ok);
+        }
+        return false;
+    }
+
+    // check if this is Saving an existing data type or updating a new one
+    if(pudt)    // saving
+    {
+        *pudt = *udt;
+        pudt->getLocation()->setIcon(0, IconFactory::getIconForDataType(pudt->getType()));
+        pudt->setDisplayText(name);
+        pudt->getLocation()->setText(1, pudt->sqlAsString());
+
+        // updating the "data" of the tree item
+        QVariant var;
+        var.setValue(udt->getObjectUid().toString());
+        pudt->getLocation()->setData(0, Qt::UserRole, var);
+    }
+    else        // new stuff
+    {
+        // add to the project itself
+        v->addNewDataType(udt, false);
+
+        // create the tree entry
+        ContextMenuEnabledTreeWidgetItem* newDtItem = v->getGui()->createDataTypeTreeEntry(udt);
+
+        newDtItem->treeWidget()->setCurrentItem(newDtItem);
+        return true;
+    }
+    return false;
 }
