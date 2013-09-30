@@ -14,9 +14,9 @@ UserDataType::UserDataType(const QString& name, const QString& typeString,
         VersionElement(uid, v),
         CloneableElement(),
         TreeItem(),
-        sqlType(_sqlType),
-        size(_s), defaultValue(_defaultValue), miscStuff(_mvs),
-        unsignedDT(unsi), description(desc), canBeNull(nullable), m_type(getDT_TYPE(typeString))
+        m_sqlType(_sqlType),
+        m_size(_s), m_defaultValue(_defaultValue), m_miscStuff(_mvs),
+        m_unsigned(unsi), m_description(desc), m_canBeNull(nullable), m_type(getDT_TYPE(typeString))
 {
 }
 
@@ -26,13 +26,13 @@ UserDataType& UserDataType::operator = (const UserDataType& other)
     {
         setName(other.getName());
         m_type = other.m_type;
-        sqlType = other.sqlType;
-        size = other.size;
-        defaultValue = other.defaultValue;
-        miscStuff = other.miscStuff;
-        unsignedDT = other.unsignedDT;
-        description = other.description;
-        canBeNull = other.canBeNull;
+        m_sqlType = other.m_sqlType;
+        m_size = other.m_size;
+        m_defaultValue = other.m_defaultValue;
+        m_miscStuff = other.m_miscStuff;
+        m_unsigned = other.m_unsigned;
+        m_description = other.m_description;
+        m_canBeNull = other.m_canBeNull;
     }
 
     return *this;
@@ -40,7 +40,7 @@ UserDataType& UserDataType::operator = (const UserDataType& other)
 
 QString UserDataType::sizeAsString() const
 {
-    return size>0?size:QString("N/A");
+    return m_size>0?m_size:QString("N/A");
 }
 
 void UserDataType::serialize(QDomDocument& doc, QDomElement& parent) const
@@ -53,7 +53,7 @@ void UserDataType::serialize(QDomDocument& doc, QDomElement& parent) const
     dtElement.setAttribute("Size", getSize());
     dtElement.setAttribute("DefaultValue", getDefaultValue());
     dtElement.setAttribute("Unsigned", isUnsigned() );
-    dtElement.setAttribute("CanBeNull", canBeNull);
+    dtElement.setAttribute("CanBeNull", m_canBeNull);
     dtElement.setAttribute("uid", getObjectUid().toString());
     dtElement.setAttribute("class-uid", getClassUid().toString());
     dtElement.setAttribute("source-uid", getSourceUid().toString());
@@ -183,13 +183,13 @@ DT_TYPE UserDataType::toDtType(int a)
 CloneableElement* UserDataType::clone(Version* /*sourceVersion*/, Version *targetVersion)
 {
     UserDataType* newUdt = new UserDataType(getName(), getType(), QUuid::createUuid().toString(), targetVersion);
-    newUdt->size = this->size;
-    newUdt->sqlType = this->sqlType;
-    newUdt->defaultValue = this->defaultValue;
-    newUdt->miscStuff = this->miscStuff;
-    newUdt->unsignedDT = this->unsignedDT;
-    newUdt->description = this->description;
-    newUdt->canBeNull = this->canBeNull;
+    newUdt->m_size = this->m_size;
+    newUdt->m_sqlType = this->m_sqlType;
+    newUdt->m_defaultValue = this->m_defaultValue;
+    newUdt->m_miscStuff = this->m_miscStuff;
+    newUdt->m_unsigned = this->m_unsigned;
+    newUdt->m_description = this->m_description;
+    newUdt->m_canBeNull = this->m_canBeNull;
 
     newUdt->setSourceUid(getObjectUid());
 

@@ -27,9 +27,9 @@ public:
         SerializableElement(),
         VersionElement(uid, v),
         CloneableElement(),
-        sqlType(""),
-        size(""), defaultValue(""), miscStuff(),
-        unsignedDT(false), description(""), canBeNull(true), m_type(type)
+        m_sqlType(""),
+        m_size(""), m_defaultValue(""), m_miscStuff(),
+        m_unsigned(false), m_description(""), m_canBeNull(true), m_type(type)
     {}
 
 
@@ -49,42 +49,42 @@ public:
 
     QString sqlAsString() const
     {
-        return sqlType + (size>0?"(" + size + ")":"");
+        return m_sqlType + (m_size>0?"(" + m_size + ")":"");
     }
 
     const QString& getSqlType() const
     {
-        return sqlType;
+        return m_sqlType;
     }
 
     const QString& getSize() const
     {
-        return size;
+        return m_size;
     }
 
     bool isUnsigned() const
     {
-        return unsignedDT;
+        return m_unsigned;
     }
 
     const QString getDefaultValue() const
     {
-        return defaultValue ;
+        return m_defaultValue ;
     }
 
     const QStringList& getMiscValues() const
     {
-        return miscStuff;
+        return m_miscStuff;
     }
 
     const QString& getDescription() const
     {
-        return description;
+        return m_description;
     }
 
     bool isNullable() const
     {
-        return canBeNull;
+        return m_canBeNull;
     }
 
     /**
@@ -127,28 +127,36 @@ public:
 
     virtual QUuid getClassUid() const;
     virtual void updateGui();
+    void setSqlType(const QString& t)
+    {
+        m_sqlType = t;
+    }
 
+    void setSize(int s)
+    {
+        m_size = QString::number(s);
+    }
 
 private:
 
     // the SQL type of this Data Type
-    QString sqlType;
+    QString m_sqlType;
 
     // the size of this Data Type
-    QString size;
+    QString m_size;
 
     // the default value for this UDT
-    QString defaultValue;
+    QString m_defaultValue;
 
     // the stuff for the ENUMs, SETs, etcs...
-    QStringList miscStuff;
+    QStringList m_miscStuff;
 
     // if the data type is numeric and this will be unsigned
-    bool unsignedDT;
+    bool m_unsigned;
 
-    QString description;
+    QString m_description;
 
-    bool canBeNull;
+    bool m_canBeNull;
 
     DT_TYPE m_type;
 

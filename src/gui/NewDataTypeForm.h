@@ -45,6 +45,8 @@ public:
      */
     void setDataType(UserDataType* udt);
 
+    void hideDeleteButton();
+
 public slots:
 
     /// called when the selection of the basic data type combo has changed
@@ -74,6 +76,8 @@ public slots:
     void onLockUnlock(bool);
     void onUndelete();
     void onDeleteDataType();
+    void onNameEdited(QString);
+    void onWidthChanged(QString);
 
 protected:
 
@@ -89,11 +93,17 @@ private:
     // resets the content of the dialog to default values
     void resetContent();
 
+    bool onSaveNewDataType(const QString& name, const QString& type,
+                             const QString& sqlType, const QString& size,
+                             const QString& defaultValue, const QStringList &mvs,
+                             const QString &desc, bool unsi,
+                             bool canBeNull, UserDataType *&pudt, Version *v);
 private:
     Ui::NewDataTypeForm *m_ui;
     DatabaseEngine* m_dbEngine;
     UserDataType* m_udt;
     Version* m_version;
+    bool m_init;
 };
 
 #endif // NEWDATATYPEFORM_H

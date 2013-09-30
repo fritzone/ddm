@@ -57,15 +57,6 @@ public:
     MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
-    /**
-     * Getting here from the NewDataTypeForm, onSave
-     */
-    bool onSaveNewDataType(const QString& name, const QString& type,
-                             const QString& sqlType, const QString& size,
-                             const QString& defaultValue, const QStringList &mvs,
-                             const QString &desc, bool unsi,
-                             bool canBeNull, UserDataType *pudt, Version *v);
-
     bool onSaveDiagram(Diagram*, Version *v);
 
     void instantiateTableCallback(const QString& tabName);

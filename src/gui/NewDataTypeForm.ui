@@ -184,6 +184,9 @@
       </item>
       <item>
        <widget class="QLineEdit" name="txtDTName">
+        <property name="toolTip">
+         <string>The name of the Data Type</string>
+        </property>
         <property name="placeholderText">
          <string>Name</string>
         </property>
@@ -579,6 +582,38 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>txtDTName</sender>
+   <signal>textEdited(QString)</signal>
+   <receiver>NewDataTypeForm</receiver>
+   <slot>onNameEdited(QString)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>512</x>
+     <y>68</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>479</x>
+     <y>330</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>txtWidth</sender>
+   <signal>textEdited(QString)</signal>
+   <receiver>NewDataTypeForm</receiver>
+   <slot>onWidthChanged(QString)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>551</x>
+     <y>209</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>479</x>
+     <y>330</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>basicDTselected(QString)</slot>
@@ -594,5 +629,7 @@
   <slot>onLockUnlock(bool)</slot>
   <slot>onUndelete()</slot>
   <slot>onDeleteDataType()</slot>
+  <slot>onNameEdited(QString)</slot>
+  <slot>onWidthChanged(QString)</slot>
  </slots>
 </ui>
