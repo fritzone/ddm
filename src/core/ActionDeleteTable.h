@@ -22,34 +22,14 @@ struct TableDeletionAction
     const Table* parentTable;
 };
 
-struct DiagramDeletionAction
+struct BasicDeletionAction
 {
-    Diagram* deletedDiagram;
 };
 
-struct ProcedureDeletionAction
+template<class T>
+struct DeletionAction : public BasicDeletionAction
 {
-    Procedure* deletedProcedure;
-};
-
-struct FunctionDeletionAction
-{
-    Function* deletedFunction;
-};
-
-struct TriggerDeletionAction
-{
-    Trigger* deletedTrigger;
-};
-
-struct ViewDeletionAction
-{
-    View* deletedView;
-};
-
-struct DataTypeDeletionAction
-{
-    UserDataType* deletedDataType;
+    T* deletedObject;
 };
 
 #endif // ACTIONDELETETABLE_H

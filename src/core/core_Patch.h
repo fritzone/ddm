@@ -9,8 +9,13 @@
 #include "TreeItem.h"
 #include "core_SerializableElement.h"
 #include "core_ObjectWithUid.h"
-#include "ActionDeleteTable.h"
 #include "core_VersionElement.h"
+#include "core_Function.h"
+#include "core_Procedure.h"
+#include "core_View.h"
+#include "core_Diagram.h"
+#include "core_Diagram.h"
+#include "ActionDeleteTable.h"
 
 class Version;
 
@@ -67,25 +72,11 @@ public:
      * @param uid
      * @param td
      */
-    void addDeletedDiagram(const QString& uid, DiagramDeletionAction* dda);
-
-    /**
-     * @brief addDeletedProcedure
-     * @param uid
-     * @param dda
-     */
-    void addDeletedProcedure(const QString& uid, ProcedureDeletionAction* pda);
-
-    /**
-     * @brief addDeletedFunction
-     * @param uid
-     * @param pda
-     */
-    void addDeletedFunction(const QString &uid, FunctionDeletionAction *pda);
-
-    void addDeletedTrigger(const QString &uid, TriggerDeletionAction *tda);
-    void addDeletedView(const QString &uid, ViewDeletionAction *vda);
-    void addDeletedDataType(const QString &uid, DataTypeDeletionAction *dtda);
+    template<class T>
+    void addDeletedObject(const QString& uid, DeletionAction<T> *dda)
+    {
+        m_deletions[UidWarehouse::instance().getElement(uid)->getClassUid()][uid] = dda;
+    }
 
     /**
      * @brief getTDA
@@ -93,12 +84,26 @@ public:
      * @return
      */
     TableDeletionAction* getTDA(const QString& uid);
-    DiagramDeletionAction *getDDA(const QString& uid);
-    ProcedureDeletionAction *getPDA(const QString& uid);
-    FunctionDeletionAction *getFDA(const QString& uid);
-    TriggerDeletionAction *getTrDA(const QString& uid);
-    ViewDeletionAction* getVDA(const QString &uid);
-    DataTypeDeletionAction* getDtDA(const QString &uid);
+
+    template<class T>
+    DeletionAction<T>* getDeletionAction(const QString &uid)
+    {
+        ObjectWithUid* ouid = UidWarehouse::instance().getElement(uid);
+        QString classUid = ouid->getClassUid();
+        if(!m_deletions.contains(classUid))
+        {
+            return 0;
+        }
+
+        if(!m_deletions[classUid].contains(uid))
+        {
+            return 0;
+        }
+
+        DeletionAction<T>* da = static_cast<DeletionAction<T>*> (m_deletions[classUid][uid]);
+        return da;
+
+    }
 
     /**
      * @brief removeTDA
@@ -252,12 +257,16 @@ private:
 
     // the mappings of the deleted objects. These will NOT be serialized, except the table deletions. Then it will be recreated from the originals
     QMap<QString, TableDeletionAction*> m_tableDeletions;
-    QMap<QString, DiagramDeletionAction*> m_diagramDeletions;
-    QMap<QString, ProcedureDeletionAction*> m_procedureDeletions;
-    QMap<QString, FunctionDeletionAction*> m_functionDeletions;
-    QMap<QString, TriggerDeletionAction*> m_triggerDeletions;
-    QMap<QString, ViewDeletionAction*> m_viewDeletions;
-    QMap<QString, DataTypeDeletionAction*> m_dtDeletions;
+
+    // class UID to QMap<QString, DeletionAction>
+    QMap<QString, QMap<QString, BasicDeletionAction* > > m_deletions;
+
+    /*QMap<QString, DeletionAction<Diagram>*> m_diagramDeletions;
+    QMap<QString, DeletionAction<Procedure>*> m_procedureDeletions;
+    QMap<QString, DeletionAction<Function>*> m_functionDeletions;
+    QMap<QString, DeletionAction<Trigger>*> m_triggerDeletions;
+    QMap<QString, DeletionAction<View>*> m_viewDeletions;
+    QMap<QString, DeletionAction<UserDataType>*> m_dtDeletions;*/
 
     //temporayr stuff used for deserialization
     QMap<QString, QString> m_objUidToClassUid; // contains a map of obj uid to class uid just for the patch internals

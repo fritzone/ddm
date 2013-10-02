@@ -9,8 +9,12 @@ QueryTextInputItem::QueryTextInputItem(QGraphicsItem *parent, QGraphicsScene *sc
     QGraphicsTextItem(parent, scene)
     #endif
 {
- // TODO: add tho the scene the object
-    scene->addItem(this);
+    // TODO: add tho the scene the object
+    if(scene)
+    {
+        scene->addItem(this);
+    }
+
     setFlag(QGraphicsItem::ItemIsMovable);
     setFlag(QGraphicsItem::ItemIsSelectable);
 }
