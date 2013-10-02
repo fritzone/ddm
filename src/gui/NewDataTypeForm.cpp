@@ -152,6 +152,8 @@ void NewDataTypeForm::resetContent()
 
     m_ui->txtDTName->setFocus();
 
+    m_udt = 0;
+
 }
 
 void NewDataTypeForm::onSave()
@@ -265,6 +267,13 @@ void NewDataTypeForm::onAddMiscValue()
     m_ui->cmbEnumItems->addItem(m_ui->txtEnumCurrentValue->text());
     m_ui->cmbEnumItems->setCurrentIndex(-1);
     m_ui->txtEnumCurrentValue->clear();
+
+    if(m_udt)
+    {
+        m_init = true;
+        onSave();
+        m_init = false;
+    }
 }
 
 void NewDataTypeForm::onRemoveSelectedMiscValue()
@@ -275,6 +284,13 @@ void NewDataTypeForm::onRemoveSelectedMiscValue()
         QString s = m_ui->lstEnumValues->item(x)->text();
         m_ui->lstEnumValues->takeItem (x);
         m_ui->cmbEnumItems->removeItem(x);
+
+        if(m_udt)
+        {
+            m_init = true;
+            onSave();
+            m_init = false;
+        }
     }
 }
 
@@ -449,6 +465,14 @@ void NewDataTypeForm::onNullClicked()
         m_ui->cmbEnumItems->setEnabled(true);
         m_ui->txtDefaultValue->setEnabled(true);
     }
+
+    if(m_udt)
+    {
+        m_init = true;
+        onSave();
+        m_init = false;
+    }
+
 }
 
 
@@ -461,6 +485,13 @@ void NewDataTypeForm::onCanBeNullClicked()
     else
     {
         m_ui->chkNullIsDefault->setEnabled(false);
+    }
+
+    if(m_udt)
+    {
+        m_init = true;
+        onSave();
+        m_init = false;
     }
 }
 
@@ -479,7 +510,7 @@ void NewDataTypeForm::keyPressEvent(QKeyEvent *evt)
 void NewDataTypeForm::onUndelete()
 {
     QString tempError;
-    if(m_udt->version()->undeleteObject(m_udt->getObjectUid().toString(), false, tempError))
+    if(Version::DO_NOT_REMOVE_FROM_PATCH_TREE_FAILURE != m_udt->version()->undeleteObject(m_udt->getObjectUid().toString(), false, tempError))
     {
         MainWindow::instance()->getGuiElements()->removeItemForPatch(m_udt->version()->getWorkingPatch(), m_udt->getObjectUid().toString());
         // TODO: Duplicate from above
@@ -517,6 +548,9 @@ void NewDataTypeForm::onDeleteDataType()
     {
         delete m_udt->getLocation();
         MainWindow::instance()->showDataTypesList(m_udt->version());
+        m_udt->version()->getGui()->getDtsItem()->setSelected(true);
+        delete m_udt;
+        m_udt = 0;
     }
 }
 
@@ -549,6 +583,16 @@ void NewDataTypeForm::onNameEdited(QString a)
 }
 
 void NewDataTypeForm::onWidthChanged(QString)
+{
+    if(m_udt)
+    {
+        m_init = true;
+        onSave();
+        m_init = false;
+    }
+}
+
+void NewDataTypeForm::onChkUnsignedClick()
 {
     if(m_udt)
     {

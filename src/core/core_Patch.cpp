@@ -242,83 +242,11 @@ void Patch::addDeletedTable(const QString &uid, TableDeletionAction *td)
 
 }
 
-void Patch::addDeletedDiagram(const QString &uid, DiagramDeletionAction *dda)
-{
-    m_diagramDeletions[uid] = dda;
-}
-
-void Patch::addDeletedProcedure(const QString &uid, ProcedureDeletionAction *pda)
-{
-    m_procedureDeletions[uid] = pda;
-}
-
-void Patch::addDeletedFunction(const QString &uid, FunctionDeletionAction *pda)
-{
-    m_functionDeletions[uid] = pda;
-}
-
-void Patch::addDeletedView(const QString &uid, ViewDeletionAction *vda)
-{
-    m_viewDeletions[uid] = vda;
-}
-
-void Patch::addDeletedDataType(const QString &uid, DataTypeDeletionAction *dtda)
-{
-    m_dtDeletions[uid] = dtda;
-}
-
-void Patch::addDeletedTrigger(const QString &uid, TriggerDeletionAction *tda)
-{
-    m_triggerDeletions[uid] = tda;
-}
-
 TableDeletionAction* Patch::getTDA(const QString &uid)
 {
     if(!m_tableDeletions.contains(uid)) return 0;
     TableDeletionAction* tda = m_tableDeletions.value(uid);
     return tda;
-}
-
-DiagramDeletionAction* Patch::getDDA(const QString &uid)
-{
-    if(!m_diagramDeletions.contains(uid)) return 0;
-    DiagramDeletionAction* dda = m_diagramDeletions.value(uid);
-    return dda;
-}
-
-ProcedureDeletionAction* Patch::getPDA(const QString &uid)
-{
-    if(!m_procedureDeletions.contains(uid)) return 0;
-    ProcedureDeletionAction* pda = m_procedureDeletions.value(uid);
-    return pda;
-}
-
-FunctionDeletionAction* Patch::getFDA(const QString &uid)
-{
-    if(!m_functionDeletions.contains(uid)) return 0;
-    FunctionDeletionAction* fda = m_functionDeletions.value(uid);
-    return fda;
-}
-
-TriggerDeletionAction* Patch::getTrDA(const QString &uid)
-{
-    if(!m_triggerDeletions.contains(uid)) return 0;
-    TriggerDeletionAction* tda = m_triggerDeletions.value(uid);
-    return tda;
-}
-
-ViewDeletionAction* Patch::getVDA(const QString &uid)
-{
-    if(!m_viewDeletions.contains(uid)) return 0;
-    ViewDeletionAction* vda = m_viewDeletions.value(uid);
-    return vda;
-}
-
-DataTypeDeletionAction* Patch::getDtDA(const QString &uid)
-{
-    if(!m_dtDeletions.contains(uid)) return 0;
-    DataTypeDeletionAction* dtda = m_dtDeletions.value(uid);
-    return dtda;
 }
 
 void Patch::removeTDA(const QString &uid)
@@ -582,10 +510,10 @@ void Patch::finalizePatchDeserialization()
         QString classUid = m_objUidToClassUid[uid];
         if(classUid.toUpper() == uidDiagram.toUpper())
         {
-            DiagramDeletionAction* dda = new DiagramDeletionAction;
+            DeletionAction<Diagram>* dda = new DeletionAction<Diagram>;
             ObjectWithUid* o = (m_deletedObjects[uid]);
-            dda->deletedDiagram = dynamic_cast<Diagram*>(o);
-            m_diagramDeletions.insert(uid, dda);
+            dda->deletedObject = dynamic_cast<Diagram*>(o);
+            m_deletions[classUid].insert(uid, dda);
         }
     }
 
@@ -596,10 +524,10 @@ void Patch::finalizePatchDeserialization()
         QString classUid = m_objUidToClassUid[uid];
         if(classUid.toUpper() == uidProcedure.toUpper())
         {
-            ProcedureDeletionAction* pda = new ProcedureDeletionAction;
+            DeletionAction<Procedure>* pda = new DeletionAction<Procedure>;
             ObjectWithUid* o = (m_deletedObjects[uid]);
-            pda->deletedProcedure = dynamic_cast<Procedure*>(o);
-            m_procedureDeletions.insert(uid, pda);
+            pda->deletedObject = dynamic_cast<Procedure*>(o);
+            m_deletions[classUid].insert(uid, pda);
         }
     }
 
@@ -610,10 +538,10 @@ void Patch::finalizePatchDeserialization()
         QString classUid = m_objUidToClassUid[uid];
         if(classUid.toUpper() == uidFunction.toUpper())
         {
-            FunctionDeletionAction* fda = new FunctionDeletionAction;
+            DeletionAction<Function>* fda = new DeletionAction<Function>;
             ObjectWithUid* o = (m_deletedObjects[uid]);
-            fda->deletedFunction = dynamic_cast<Function*>(o);
-            m_functionDeletions.insert(uid, fda);
+            fda->deletedObject = dynamic_cast<Function*>(o);
+            m_deletions[classUid].insert(uid, fda);
         }
     }
 
@@ -624,10 +552,10 @@ void Patch::finalizePatchDeserialization()
         QString classUid = m_objUidToClassUid[uid];
         if(classUid.toUpper() == uidTrigger.toUpper())
         {
-            TriggerDeletionAction* tda = new TriggerDeletionAction;
+            DeletionAction<Trigger>* tda = new DeletionAction<Trigger>;
             ObjectWithUid* o = (m_deletedObjects[uid]);
-            tda->deletedTrigger= dynamic_cast<Trigger*>(o);
-            m_triggerDeletions.insert(uid, tda);
+            tda->deletedObject = dynamic_cast<Trigger*>(o);
+            m_deletions[classUid].insert(uid, tda);
         }
     }
 
@@ -638,10 +566,10 @@ void Patch::finalizePatchDeserialization()
         QString classUid = m_objUidToClassUid[uid];
         if(classUid.toUpper() == uidView.toUpper())
         {
-            ViewDeletionAction* vda = new ViewDeletionAction;
+            DeletionAction<View>* vda = new DeletionAction<View>;
             ObjectWithUid* o = (m_deletedObjects[uid]);
-            vda->deletedView = dynamic_cast<View*>(o);
-            m_viewDeletions.insert(uid, vda);
+            vda->deletedObject = dynamic_cast<View*>(o);
+            m_deletions[classUid].insert(uid, vda);
         }
     }
 
@@ -658,10 +586,10 @@ void Patch::finalizePatchDeserialization()
             || classUid.toUpper() == uidMiscDT.toUpper()
             || classUid.toUpper() == uidSpatialDT.toUpper())
         {
-            DataTypeDeletionAction* dtda = new DataTypeDeletionAction;
+            DeletionAction<UserDataType>* dtda = new DeletionAction<UserDataType>;
             ObjectWithUid* o = (m_deletedObjects[uid]);
-            dtda->deletedDataType = dynamic_cast<UserDataType*>(o);
-            m_dtDeletions.insert(uid, dtda);
+            dtda->deletedObject = dynamic_cast<UserDataType*>(o);
+            m_deletions[classUid].insert(uid, dtda);
         }
     }
 }
@@ -720,19 +648,17 @@ bool Patch::suspendPatch(QString& accumulatedErrors)
     return result;
 }
 
-
 void Patch::removeDeletionAction(const QString &uid)
 {
     if(m_tableDeletions.contains(uid)) m_tableDeletions.remove(uid);
-    if(m_dtDeletions.contains(uid)) m_dtDeletions.remove(uid);
-    if(m_viewDeletions.contains(uid)) m_viewDeletions.remove(uid);
-    if(m_triggerDeletions.contains(uid)) m_triggerDeletions.remove(uid);
-    if(m_functionDeletions.contains(uid)) m_functionDeletions.remove(uid);
-    if(m_procedureDeletions.contains(uid)) m_procedureDeletions.remove(uid);
-    if(m_diagramDeletions.contains(uid)) m_diagramDeletions.remove(uid);
+    ObjectWithUid* ouid = UidWarehouse::instance().getElement(uid);
+    QString classUid = ouid->getClassUid();
+
+    if(m_deletions[classUid].contains(uid))
+    {
+        m_deletions[classUid].remove(uid);
+    }
 }
-
-
 
 void Patch::addObjUidToClassUidMapEntry(const QString& objUid, const QString& classUid)
 {

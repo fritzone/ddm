@@ -451,7 +451,7 @@ void NewViewForm::onLockUnlock(bool checked)
 void NewViewForm::onUndelete()
 {
     QString tempError;
-    if(m_version->undeleteObject(m_view->getObjectUid().toString(), false, tempError))
+    if(Version::DO_NOT_REMOVE_FROM_PATCH_TREE_FAILURE != m_version->undeleteObject(m_view->getObjectUid().toString(), false, tempError))
     {
         MainWindow::instance()->getGuiElements()->removeItemForPatch(m_version->getWorkingPatch(), m_view->getObjectUid().toString());
         // TODO: Duplicate from above

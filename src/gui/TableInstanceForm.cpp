@@ -434,7 +434,7 @@ void TableInstanceForm::onTInstSelectedForFk(const QString& d)
 void TableInstanceForm::onUndelete()
 {
     QString tempError;
-    if(m_tinst->version()->undeleteObject(m_tinst->getObjectUid().toString(), false, tempError))
+    if(Version::DO_NOT_REMOVE_FROM_PATCH_TREE_FAILURE != m_tinst->version()->undeleteObject(m_tinst->getObjectUid().toString(), false, tempError))
     {
         MainWindow::instance()->getGuiElements()->removeItemForPatch(m_tinst->version()->getWorkingPatch(), m_tinst->getObjectUid().toString());
         // TODO: Duplicate from above

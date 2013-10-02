@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>960</width>
-    <height>662</height>
+    <width>722</width>
+    <height>657</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -114,74 +114,18 @@
       <string/>
      </property>
      <property name="flat">
-      <bool>false</bool>
+      <bool>true</bool>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_2">
-      <item>
-       <widget class="QWidget" name="widget" native="true">
-        <layout class="QHBoxLayout" name="horizontalLayout">
-         <property name="spacing">
-          <number>1</number>
-         </property>
-         <property name="margin">
-          <number>0</number>
-         </property>
-         <item>
-          <widget class="QToolButton" name="btnSave">
-           <property name="maximumSize">
-            <size>
-             <width>32</width>
-             <height>32</height>
-            </size>
-           </property>
-           <property name="toolTip">
-            <string>&lt;b&gt; Save &lt;/b&gt; the datatype</string>
-           </property>
-           <property name="text">
-            <string/>
-           </property>
-           <property name="icon">
-            <iconset resource="../dbm.qrc">
-             <normaloff>:/images/actions/images/actions/filesave.png</normaloff>:/images/actions/images/actions/filesave.png</iconset>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QToolButton" name="btnDeleteDataType">
-           <property name="maximumSize">
-            <size>
-             <width>32</width>
-             <height>32</height>
-            </size>
-           </property>
-           <property name="toolTip">
-            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Delete &lt;/span&gt;this datatype&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-           </property>
-           <property name="text">
-            <string/>
-           </property>
-           <property name="icon">
-            <iconset resource="../dbm.qrc">
-             <normaloff>:/images/actions/images/actions/remove-icon.png</normaloff>:/images/actions/images/actions/remove-icon.png</iconset>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <spacer name="horizontalSpacer">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>40</width>
-             <height>20</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-        </layout>
-       </widget>
-      </item>
+      <property name="leftMargin">
+       <number>0</number>
+      </property>
+      <property name="topMargin">
+       <number>0</number>
+      </property>
+      <property name="rightMargin">
+       <number>0</number>
+      </property>
       <item>
        <widget class="QLineEdit" name="txtDTName">
         <property name="toolTip">
@@ -203,13 +147,16 @@
         <property name="currentIndex">
          <number>0</number>
         </property>
+        <property name="documentMode">
+         <bool>false</bool>
+        </property>
         <widget class="QWidget" name="tabWidgetPage1">
          <attribute name="icon">
           <iconset resource="../dbm.qrc">
            <normaloff>:/images/actions/images/big/bigdatatypes.png</normaloff>:/images/actions/images/big/bigdatatypes.png</iconset>
          </attribute>
          <attribute name="title">
-          <string>Basic properties</string>
+          <string>Properties</string>
          </attribute>
          <layout class="QFormLayout" name="formLayout">
           <item row="0" column="0">
@@ -410,10 +357,98 @@
         </widget>
        </widget>
       </item>
+      <item>
+       <widget class="QWidget" name="widget" native="true">
+        <layout class="QHBoxLayout" name="horizontalLayout">
+         <property name="spacing">
+          <number>6</number>
+         </property>
+         <property name="margin">
+          <number>0</number>
+         </property>
+         <item>
+          <widget class="QToolButton" name="btnSave">
+           <property name="toolTip">
+            <string>&lt;b&gt; Save &lt;/b&gt; the datatype</string>
+           </property>
+           <property name="text">
+            <string>Save datatype</string>
+           </property>
+           <property name="icon">
+            <iconset resource="../dbm.qrc">
+             <normaloff>:/images/actions/images/actions/filesave.png</normaloff>:/images/actions/images/actions/filesave.png</iconset>
+           </property>
+           <property name="iconSize">
+            <size>
+             <width>16</width>
+             <height>24</height>
+            </size>
+           </property>
+           <property name="toolButtonStyle">
+            <enum>Qt::ToolButtonTextBesideIcon</enum>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QToolButton" name="btnDeleteDataType">
+           <property name="toolTip">
+            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Delete &lt;/span&gt;this datatype&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+           </property>
+           <property name="text">
+            <string>Delete Datatype</string>
+           </property>
+           <property name="icon">
+            <iconset resource="../dbm.qrc">
+             <normaloff>:/images/actions/images/actions/remove-icon.png</normaloff>:/images/actions/images/actions/remove-icon.png</iconset>
+           </property>
+           <property name="iconSize">
+            <size>
+             <width>16</width>
+             <height>24</height>
+            </size>
+           </property>
+           <property name="toolButtonStyle">
+            <enum>Qt::ToolButtonTextBesideIcon</enum>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QToolButton" name="btnCancelEditing">
+           <property name="toolTip">
+            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Delete &lt;/span&gt;this datatype&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+           </property>
+           <property name="text">
+            <string>Cancel Editing</string>
+           </property>
+           <property name="icon">
+            <iconset resource="../dbm.qrc">
+             <normaloff>:/images/actions/images/small/cancel.png</normaloff>:/images/actions/images/small/cancel.png</iconset>
+           </property>
+           <property name="toolButtonStyle">
+            <enum>Qt::ToolButtonTextBesideIcon</enum>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="horizontalSpacer">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
+       </widget>
+      </item>
      </layout>
      <zorder>tabWidget</zorder>
-     <zorder>widget</zorder>
      <zorder>txtDTName</zorder>
+     <zorder>widget</zorder>
     </widget>
    </item>
   </layout>
@@ -614,6 +649,38 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>chkUnsigned</sender>
+   <signal>clicked()</signal>
+   <receiver>NewDataTypeForm</receiver>
+   <slot>onChkUnsignedClick()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>551</x>
+     <y>497</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>479</x>
+     <y>330</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnCancelEditing</sender>
+   <signal>clicked()</signal>
+   <receiver>NewDataTypeForm</receiver>
+   <slot>onReset()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>414</x>
+     <y>630</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>360</x>
+     <y>328</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>basicDTselected(QString)</slot>
@@ -631,5 +698,6 @@
   <slot>onDeleteDataType()</slot>
   <slot>onNameEdited(QString)</slot>
   <slot>onWidthChanged(QString)</slot>
+  <slot>onChkUnsignedClick()</slot>
  </slots>
 </ui>

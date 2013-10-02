@@ -841,7 +841,6 @@ TableInstance* DefaultVersionImplementation::getTableInstanceWithUid(const QStri
     return 0;
 }
 
-
 void DefaultVersionImplementation::deleteDataType(const QString& dtName)
 {
     for(int i=0; i<m_data.m_dataTypes.size(); i++)
@@ -851,16 +850,16 @@ void DefaultVersionImplementation::deleteDataType(const QString& dtName)
             UserDataType* udt = m_data.m_dataTypes.at(i);
             m_data.m_dataTypes.remove(i);
 
-            DataTypeDeletionAction* dtda = new DataTypeDeletionAction;
-            dtda->deletedDataType = udt;
-
             if(lockState() == LockableElement::LOCKED)  // marking the element as deleted, ro removing
             {
+                DeletionAction<UserDataType>* dtda = new DeletionAction<UserDataType>;
+                dtda->deletedObject = udt;
+
                 if(!getWorkingPatch()->elementWasNewInThisPatch(udt->getObjectUid().toString())) // but only if it was NOT a newly created element
                 {
                     Workspace::getInstance()->createPatchElementForGui(this, udt, udt->getObjectUid().toString(), false);
                     getWorkingPatch()->markElementForDeletion(udt->getObjectUid().toString());
-                    getWorkingPatch()->addDeletedDataType(udt->getObjectUid().toString(), dtda);
+                    getWorkingPatch()->addDeletedObject(udt->getObjectUid().toString(), dtda);
                     Workspace::getInstance()->updatePatchElementGuiToReflectState(this, udt, udt->getObjectUid().toString(), 3); // 3 is DELETED
                 }
                 else
@@ -869,7 +868,6 @@ void DefaultVersionImplementation::deleteDataType(const QString& dtName)
                     Workspace::getInstance()->updatePatchElementGuiToReflectState(this, udt, udt->getObjectUid().toString(), 4); // 4 is REMOVE FROM THE TREE
                 }
             }
-
         }
     }
 }
@@ -901,16 +899,17 @@ void DefaultVersionImplementation::deleteView(const QString &name)
     m_data.m_views.remove(m_data.m_views.indexOf(v));
     delete v->getLocation();
     delete v->getSqlLocation();
-    ViewDeletionAction* vda = new ViewDeletionAction;
-    vda->deletedView = v;
 
     if(lockState() == LockableElement::LOCKED)  // marking the element as deleted, ro removing
     {
+        DeletionAction<View>* vda = new DeletionAction<View>;
+        vda->deletedObject = v;
+
         if(!getWorkingPatch()->elementWasNewInThisPatch(v->getObjectUid().toString())) // but only if it was NOT a newly created element
         {
             Workspace::getInstance()->createPatchElementForGui(this, v, v->getObjectUid().toString(), false);
             getWorkingPatch()->markElementForDeletion(v->getObjectUid().toString());
-            getWorkingPatch()->addDeletedView(v->getObjectUid().toString(), vda);
+            getWorkingPatch()->addDeletedObject(v->getObjectUid().toString(), vda);
             Workspace::getInstance()->updatePatchElementGuiToReflectState(this, v, v->getObjectUid().toString(), 3); // 3 is DELETED
         }
         else
@@ -927,16 +926,17 @@ void DefaultVersionImplementation::deleteFunction(const QString& f)
     m_data.m_functions.remove(m_data.m_functions.indexOf(func));
     delete func->getLocation();
     delete func->getSqlLocation();
-    FunctionDeletionAction* pda = new FunctionDeletionAction;
-    pda->deletedFunction = func;
 
     if(lockState() == LockableElement::LOCKED)  // marking the element as deleted, ro removing
     {
+        DeletionAction<Function>* pda = new DeletionAction<Function>;
+        pda->deletedObject = func;
+
         if(!getWorkingPatch()->elementWasNewInThisPatch(func->getObjectUid().toString())) // but only if it was NOT a newly created element
         {
             Workspace::getInstance()->createPatchElementForGui(this, func, func->getObjectUid().toString(), false);
             getWorkingPatch()->markElementForDeletion(func->getObjectUid().toString());
-            getWorkingPatch()->addDeletedFunction(func->getObjectUid().toString(), pda);
+            getWorkingPatch()->addDeletedObject(func->getObjectUid().toString(), pda);
             Workspace::getInstance()->updatePatchElementGuiToReflectState(this, func, func->getObjectUid().toString(), 3); // 3 is DELETED
         }
         else
@@ -953,17 +953,18 @@ void DefaultVersionImplementation::deleteTrigger(const QString& t)
     m_data.m_triggers.remove(m_data.m_triggers.indexOf(trg));
     delete trg->getLocation();
     delete trg->getSqlLocation();
-    TriggerDeletionAction* tda = new TriggerDeletionAction;
-    tda->deletedTrigger= trg;
 
     // TODO: this is more or less a duplication with other places. Fix it.
     if(lockState() == LockableElement::LOCKED)  // marking the element as deleted, ro removing
     {
+        DeletionAction<Trigger>* tda = new DeletionAction<Trigger>;
+        tda->deletedObject = trg;
+
         if(!getWorkingPatch()->elementWasNewInThisPatch(trg->getObjectUid().toString())) // but only if it was NOT a newly created element
         {
             Workspace::getInstance()->createPatchElementForGui(this, trg, trg->getObjectUid().toString(), false);
             getWorkingPatch()->markElementForDeletion(trg->getObjectUid().toString());
-            getWorkingPatch()->addDeletedTrigger(trg->getObjectUid().toString(), tda);
+            getWorkingPatch()->addDeletedObject(trg->getObjectUid().toString(), tda);
             Workspace::getInstance()->updatePatchElementGuiToReflectState(this, trg, trg->getObjectUid().toString(), 3); // 3 is DELETED
         }
         else
@@ -980,16 +981,17 @@ void DefaultVersionImplementation::deleteProcedure(const QString& p)
     m_data.m_procedures.remove(m_data.m_procedures.indexOf(v));
     delete v->getLocation();
     delete v->getSqlLocation();
-    ProcedureDeletionAction* pda = new ProcedureDeletionAction;
-    pda->deletedProcedure = v;
 
     if(lockState() == LockableElement::LOCKED)  // marking the element as deleted, ro removing
     {
+        DeletionAction<Procedure>* pda = new DeletionAction<Procedure>;
+        pda->deletedObject = v;
+
         if(!getWorkingPatch()->elementWasNewInThisPatch(v->getObjectUid().toString())) // but only if it was NOT a newly created element
         {
             Workspace::getInstance()->createPatchElementForGui(this, v, v->getObjectUid().toString(), false);
             getWorkingPatch()->markElementForDeletion(v->getObjectUid().toString());
-            getWorkingPatch()->addDeletedProcedure(v->getObjectUid().toString(), pda);
+            getWorkingPatch()->addDeletedObject(v->getObjectUid().toString(), pda);
             Workspace::getInstance()->updatePatchElementGuiToReflectState(this, v, v->getObjectUid().toString(), 3); // 3 is DELETED
         }
         else
@@ -1005,16 +1007,17 @@ void DefaultVersionImplementation::deleteDiagram(const QString& name)
     Diagram* dgr = getDiagram(name);
     m_data.m_diagrams.remove(m_data.m_diagrams.indexOf(dgr));
     delete dgr->getLocation();
-    DiagramDeletionAction* dda = new DiagramDeletionAction;
-    dda->deletedDiagram = dgr;
 
     if(lockState() == LockableElement::LOCKED)  // marking the element as deleted, ro removing
     {
+        DeletionAction<Diagram>* dda = new DeletionAction<Diagram>;
+        dda->deletedObject = dgr;
+
         if(!getWorkingPatch()->elementWasNewInThisPatch(dgr->getObjectUid().toString())) // but only if it was NOT a newly created element
         {
             Workspace::getInstance()->createPatchElementForGui(this, dgr, dgr->getObjectUid().toString(), false);
             getWorkingPatch()->markElementForDeletion(dgr->getObjectUid().toString());
-            getWorkingPatch()->addDeletedDiagram(dgr->getObjectUid().toString(), dda);
+            getWorkingPatch()->addDeletedObject(dgr->getObjectUid().toString(), dda);
             Workspace::getInstance()->updatePatchElementGuiToReflectState(this, dgr, dgr->getObjectUid().toString(), 3); // 3 is DELETED
         }
         else
@@ -2143,13 +2146,13 @@ DefaultVersionImplementation::CAN_UNDELETE_STATUS DefaultVersionImplementation::
         return DELETED_OBJECT_WAS_NOT_FOUND_IN_PATCH;
     }
 
-    DiagramDeletionAction* dda = getWorkingPatch()->getDDA(uid);
+    DeletionAction<Diagram>* dda = getWorkingPatch()->getDeletionAction<Diagram>(uid);
     if(!dda)
     {
         return DELETED_OBJECT_WAS_NOT_FOUND_IN_PATCH;
     }
 
-    Diagram* dgr = dda->deletedDiagram;
+    Diagram* dgr = dynamic_cast<Diagram*>(dda->deletedObject);
     QStringList tabsInDgr = dgr->getTableNames();
     for(int i=0; i<tabsInDgr.size(); i++)
     {
@@ -2170,7 +2173,7 @@ DefaultVersionImplementation::CAN_UNDELETE_STATUS DefaultVersionImplementation::
         return DELETED_OBJECT_WAS_NOT_FOUND_IN_PATCH;
     }
 
-    ProcedureDeletionAction* pda = getWorkingPatch()->getPDA(uid);
+    DeletionAction<Procedure>* pda = getWorkingPatch()->getDeletionAction<Procedure>(uid);
     if(!pda)
     {
         return DELETED_OBJECT_WAS_NOT_FOUND_IN_PATCH;
@@ -2187,7 +2190,7 @@ DefaultVersionImplementation::CAN_UNDELETE_STATUS DefaultVersionImplementation::
         return DELETED_OBJECT_WAS_NOT_FOUND_IN_PATCH;
     }
 
-    FunctionDeletionAction* pda = getWorkingPatch()->getFDA(uid);
+    DeletionAction<Function>* pda = getWorkingPatch()->getDeletionAction<Function>(uid);
     if(!pda)
     {
         return DELETED_OBJECT_WAS_NOT_FOUND_IN_PATCH;
@@ -2204,15 +2207,16 @@ DefaultVersionImplementation::CAN_UNDELETE_STATUS DefaultVersionImplementation::
         return DELETED_OBJECT_WAS_NOT_FOUND_IN_PATCH;
     }
 
-    TriggerDeletionAction* tda = getWorkingPatch()->getTrDA(uid);
+    DeletionAction<Trigger>* tda = getWorkingPatch()->getDeletionAction<Trigger>(uid);
     if(!tda)
     {
         return DELETED_OBJECT_WAS_NOT_FOUND_IN_PATCH;
     }
 
-    if(!hasTable(tda->deletedTrigger->getTable()))
+    QString tab = dynamic_cast<Trigger*>(tda->deletedObject)->getTable();
+    if(!hasTable(tab))
     {
-        extra = tda->deletedTrigger->getTable();
+        extra = tab;
         return DEPENDENT_TABLE_WAS_NOT_FOUND_IN_VERSION;
     }
 
@@ -2227,13 +2231,14 @@ DefaultVersionImplementation::CAN_UNDELETE_STATUS DefaultVersionImplementation::
         return DELETED_OBJECT_WAS_NOT_FOUND_IN_PATCH;
     }
 
-    ViewDeletionAction* tda = getWorkingPatch()->getVDA(uid);
+    DeletionAction<View>* tda = getWorkingPatch()->getDeletionAction<View>(uid);
     if(!tda)
     {
         return DELETED_OBJECT_WAS_NOT_FOUND_IN_PATCH;
     }
 
-    QVector<const Table*> usedTabs = tda->deletedView->getSourceTables();
+    View* v = dynamic_cast<View*>(tda->deletedObject);
+    QVector<const Table*> usedTabs = v->getSourceTables();
     for(int i=0; i<usedTabs.size(); i++)
     {
         if(!hasTable(usedTabs.at(i)->getName()))
@@ -2254,7 +2259,7 @@ DefaultVersionImplementation::CAN_UNDELETE_STATUS DefaultVersionImplementation::
         return DELETED_OBJECT_WAS_NOT_FOUND_IN_PATCH;
     }
 
-    DataTypeDeletionAction* dtda = getWorkingPatch()->getDtDA(uid);
+    DeletionAction<UserDataType>* dtda = getWorkingPatch()->getDeletionAction<UserDataType>(uid);
     if(!dtda)
     {
         return DELETED_OBJECT_WAS_NOT_FOUND_IN_PATCH;
@@ -2271,15 +2276,16 @@ Version::PatchTreeRemovalStatus DefaultVersionImplementation::undeleteObject(con
     DefaultVersionImplementation::CAN_UNDELETE_STATUS canUndelete = canUndeleteTable(uid, extra);
     if(canUndelete != CAN_UNDELETE)
     {
-
         // can we undelete a diagram?
         canUndelete = canUndeleteDiagram(uid, extra);
         if(canUndelete == CAN_UNDELETE)
         {
-            DiagramDeletionAction* dda = getWorkingPatch()->getDDA(uid);
-            addDiagram(dda->deletedDiagram, true);
-            getGui()->createDiagramTreeEntry(dda->deletedDiagram);
-            dda->deletedDiagram->updateGui();
+            DeletionAction<Diagram>* dda = getWorkingPatch()->getDeletionAction<Diagram>(uid);
+            Diagram* d = dynamic_cast<Diagram*>(dda->deletedObject);
+
+            addDiagram(d, true);
+            getGui()->createDiagramTreeEntry(d);
+            d->updateGui();
             bool x = getWorkingPatch()->undeleteObject(uid);
             if(x)
                 return REMOVE_FROM_PATCH_TREE;
@@ -2291,10 +2297,12 @@ Version::PatchTreeRemovalStatus DefaultVersionImplementation::undeleteObject(con
         canUndelete = canUndeleteProcedure(uid, extra);
         if(canUndelete == CAN_UNDELETE)
         {
-            ProcedureDeletionAction* pda = getWorkingPatch()->getPDA(uid);
-            addProcedure(pda->deletedProcedure, true);
-            getGui()->createProcedureTreeEntry(pda->deletedProcedure);
-            pda->deletedProcedure->updateGui();
+            DeletionAction<Procedure>* pda = getWorkingPatch()->getDeletionAction<Procedure>(uid);
+            Procedure* p = dynamic_cast<Procedure*>(pda->deletedObject);
+
+            addProcedure(p, true);
+            getGui()->createProcedureTreeEntry(p);
+            p->updateGui();
             bool x = getWorkingPatch()->undeleteObject(uid);
             if(x)
                 return REMOVE_FROM_PATCH_TREE;
@@ -2306,10 +2314,12 @@ Version::PatchTreeRemovalStatus DefaultVersionImplementation::undeleteObject(con
         canUndelete = canUndeleteFunction(uid, extra);
         if(canUndelete == CAN_UNDELETE)
         {
-            FunctionDeletionAction* pda = getWorkingPatch()->getFDA(uid);
-            addFunction(pda->deletedFunction, true);
-            getGui()->createFunctionTreeEntry(pda->deletedFunction);
-            pda->deletedFunction->updateGui();
+            DeletionAction<Function>* fda = getWorkingPatch()->getDeletionAction<Function>(uid);
+            Function* f = dynamic_cast<Function*>(fda->deletedObject);
+
+            addFunction(f, true);
+            getGui()->createFunctionTreeEntry(f);
+            f->updateGui();
             bool x = getWorkingPatch()->undeleteObject(uid);
             if(x)
                 return REMOVE_FROM_PATCH_TREE;
@@ -2321,10 +2331,12 @@ Version::PatchTreeRemovalStatus DefaultVersionImplementation::undeleteObject(con
         canUndelete = canUndeleteTrigger(uid, extra);
         if(canUndelete == CAN_UNDELETE)
         {
-            TriggerDeletionAction* tda = getWorkingPatch()->getTrDA(uid);
-            addTrigger(tda->deletedTrigger, true);
-            getGui()->createTriggerTreeEntry(tda->deletedTrigger);
-            tda->deletedTrigger->updateGui();
+            DeletionAction<Trigger>* tda = getWorkingPatch()->getDeletionAction<Trigger>(uid);
+            Trigger* t = dynamic_cast<Trigger*>(tda->deletedObject);
+
+            addTrigger(t, true);
+            getGui()->createTriggerTreeEntry(t);
+            t->updateGui();
             bool x = getWorkingPatch()->undeleteObject(uid);
             if(x)
                 return REMOVE_FROM_PATCH_TREE;
@@ -2336,10 +2348,12 @@ Version::PatchTreeRemovalStatus DefaultVersionImplementation::undeleteObject(con
         canUndelete = canUndeleteView(uid, extra);
         if(canUndelete == CAN_UNDELETE)
         {
-            ViewDeletionAction* vda = getWorkingPatch()->getVDA(uid);
-            addView(vda->deletedView, true);
-            getGui()->createViewTreeEntry(vda->deletedView);
-            vda->deletedView->updateGui();
+            DeletionAction<View>* vda = getWorkingPatch()->getDeletionAction<View>(uid);
+            View* v = dynamic_cast<View*>(vda->deletedObject);
+
+            addView(v, true);
+            getGui()->createViewTreeEntry(v);
+            v->updateGui();
             bool x = getWorkingPatch()->undeleteObject(uid);
             if(x)
                 return REMOVE_FROM_PATCH_TREE;
@@ -2351,10 +2365,12 @@ Version::PatchTreeRemovalStatus DefaultVersionImplementation::undeleteObject(con
         canUndelete = canUndeleteDataType(uid, extra);
         if(canUndelete == CAN_UNDELETE)
         {
-            DataTypeDeletionAction* dtda = getWorkingPatch()->getDtDA(uid);
-            addNewDataType(dtda->deletedDataType, true);
-            getGui()->createDataTypeTreeEntry(dtda->deletedDataType);
-            dtda->deletedDataType->updateGui();
+            DeletionAction<UserDataType>* dtda = getWorkingPatch()->getDeletionAction<UserDataType>(uid);
+            UserDataType* udt = dynamic_cast<UserDataType*>(dtda->deletedObject);
+
+            addNewDataType(udt, true);
+            getGui()->createDataTypeTreeEntry(udt);
+            udt->updateGui();
             bool x = getWorkingPatch()->undeleteObject(uid);
             if(x)
                 return REMOVE_FROM_PATCH_TREE;

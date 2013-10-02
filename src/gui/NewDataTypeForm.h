@@ -78,6 +78,7 @@ public slots:
     void onDeleteDataType();
     void onNameEdited(QString);
     void onWidthChanged(QString);
+    void onChkUnsignedClick();
 
 protected:
 
