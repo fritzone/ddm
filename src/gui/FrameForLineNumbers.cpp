@@ -40,7 +40,7 @@ void FrameForLineNumbers::paintEvent(QPaintEvent *)
 
     QFont f;
     f.setFamily("Courier");
-    f.setBold(true);
+    f.setBold(false);
     int TSIZE= 16;
     f.setPixelSize(TSIZE);
     a.setFont(f);
@@ -64,6 +64,10 @@ void FrameForLineNumbers::paintEvent(QPaintEvent *)
             a.setPen(Qt::black);
         }
         a.drawText(r, s);
+
+        QRect anotherRect(this->rect().width() - 8, m_nrs.at(i).y + 5, 7, 7);
+        a.drawRect(anotherRect);
+
    }
 
     a.end();

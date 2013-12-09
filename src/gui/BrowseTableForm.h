@@ -61,6 +61,7 @@ public slots:
 
 private slots:
     void onSaveQuery();
+    void onInsertNewRow();
     void onLoadQuery();
     void onTabCloseRequested(int);
 
@@ -101,11 +102,14 @@ private:
     QWidget *columnsTab;
     QFrame *queryFrame;
     QHBoxLayout *queryFramesMainHorizontalLayout;
+    QHBoxLayout *dataTabVerticalLayout;
+    QHBoxLayout *dataTabHorizontalLayoutForButtons;
     QVBoxLayout *queryFramesMainVerticalLayout;
     QHBoxLayout *horizontalLayoutForButtons;
     QToolButton *btnExecuteQuery;
     QToolButton *btnOpenQuery;
     QToolButton *btnSaveQuery;
+    QToolButton *btnInsertElements;
     QSpacerItem *horizontalSpacer;
     QHBoxLayout *horizontalLayoutForLineNumbersAndTextEdit;
 };
