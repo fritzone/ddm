@@ -11,6 +11,7 @@
 #include "strings.h"
 #include "NewTableForm.h"
 #include "db_AbstractDTSupplier.h"
+#include "InsertNewRecordDialog.h"
 
 // TODO: ugly ... But till we find out what's wrong with QCubrid keep it like this
 #include <dbcubrid_DatabaseEngine.h>
@@ -51,11 +52,16 @@ BrowseTableForm* BrowseTableForm::instance()
 }
 
 BrowseTableForm::BrowseTableForm(QWidget *parent, Connection* c, const QString& tab) :
-    QWidget(parent), m_textEdit(0), m_frameForLineNumbers(0), m_firstP(0), m_lastP(0), m_connection(c), m_tab(tab), spl(0), mainTab(0), mainFormsVerticalLayout(0),
-    mainTabPageWidget(0), mainTabPageWidgetsLayout(0), tabWidget(0), dataTab(0), dataTabsLayout(0), columnTabsLayout(0),
-    tableForTableData(0), tableForTableColumns(0), tableForScriptResult(0),
-    columnsTab(0), queryFrame(0), queryFramesMainHorizontalLayout(0), queryFramesMainVerticalLayout(0), horizontalLayoutForButtons(0), btnExecuteQuery(0),
-    btnOpenQuery(0), btnSaveQuery(0), horizontalSpacer(0), horizontalLayoutForLineNumbersAndTextEdit(0)
+    QWidget(parent),
+    m_textEdit(0), m_frameForLineNumbers(0), m_firstP(0), m_lastP(0),
+    m_connection(c), m_tab(tab), spl(0), mainTab(0), mainFormsVerticalLayout(0),
+    mainTabPageWidget(0), mainTabPageWidgetsLayout(0), tabWidget(0), dataTab(0),
+    dataTabsLayout(0), columnTabsLayout(0), tableForTableData(0),
+    tableForTableColumns(0), tableForScriptResult(0), columnsTab(0),
+    queryFrame(0), queryFramesMainHorizontalLayout(0), dataTabVerticalLayout(0),
+    dataTabHorizontalLayoutForButtons(0), queryFramesMainVerticalLayout(0),
+    horizontalLayoutForButtons(0), btnExecuteQuery(0), btnOpenQuery(0),
+    btnSaveQuery(0), btnInsertElements(0), horizontalSpacer(0),  horizontalLayoutForLineNumbersAndTextEdit(0)
 {
 }
 
@@ -257,6 +263,12 @@ void BrowseTableForm::onSaveQuery()
     DDM::saveTextFileWithType(this, m_textEdit->toPlainText(), tr("Save SQL Script"), tr("SQL files (*.sql)"));
 }
 
+void BrowseTableForm::onInsertNewRow()
+{
+    InsertNewRecordDialog* inrd = new InsertNewRecordDialog(this, m_tab, m_connection);
+    inrd->exec();
+}
+
 void BrowseTableForm::resizeEvent(QResizeEvent *e)
 {
     QWidget::resizeEvent(e);
@@ -426,11 +438,22 @@ void BrowseTableForm::createTableDataTab(Connection *c, const QString &tab)
     tableForTableData->setWordWrap(false);
     tableForTableData->horizontalHeader()->setDefaultSectionSize(200);
 
+    dataTabHorizontalLayoutForButtons = new QHBoxLayout();
+    btnInsertElements = new QToolButton(queryFrame);
+    btnInsertElements->setIcon(IconFactory::getInsertRowIcon());
+    btnInsertElements->setToolTip(tr("Insert a new record"));
+    horizontalSpacer = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+    dataTabHorizontalLayoutForButtons->addWidget(btnInsertElements);
+    dataTabHorizontalLayoutForButtons->addItem(horizontalSpacer);
+
+    dataTabsLayout->addLayout(dataTabHorizontalLayoutForButtons);
+
     dataTabsLayout->addWidget(tableForTableData);
+
     tabWidget->addTab(dataTab, tr("Data"));
     tableForTableData->raise();
 
-
+    QObject::connect(btnInsertElements, SIGNAL(clicked()), this, SLOT(onInsertNewRow()));
     QSqlDatabase database = c->getQSqlDatabase();
     QStringList tabCols = c->getEngine()->getColumnsOfTable(c, tab);
 

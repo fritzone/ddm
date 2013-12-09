@@ -159,6 +159,7 @@ static const QString strForeignKeyIcon = ":/images/actions/images/small/foreign_
 static const QString strTriggerUpdateIcon = ":/images/actions/images/small/trigger_update.png";
 static const QString strTriggerDeleteIcon = ":/images/actions/images/small/delete_table_row.png";
 static const QString strTriggerInsertIcon = ":/images/actions/images/small/insert_table_row.png";
+static const QString strTriggerInsertRecordIcon = ":/images/actions/images/small/insert-icon.png";
 static const QString strTriggerBeforeIcon = ":/images/actions/images/small/before.png";
 static const QString strTriggerAfterIcon = ":/images/actions/images/small/after.png";
 static const QString strRecreateDatabaseIcon = ":/images/actions/images/small/agt_reload.png";
@@ -938,6 +939,12 @@ public:
     static const QIcon& getTriggerInsertIcon()
     {
         static const QIcon icon(icons::strTriggerInsertIcon);
+        return icon;
+    }
+
+    static const QIcon& getInsertRowIcon()
+    {
+        static const QIcon icon(icons::strTriggerInsertRecordIcon);
         return icon;
     }
 

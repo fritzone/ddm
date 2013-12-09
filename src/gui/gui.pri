@@ -41,7 +41,8 @@ SOURCES += \
     gui/repo_RepositoryElementForm.cpp \
     gui/gui_DBMenu.cpp \
     gui/gui_IconFactory.cpp \
-    gui/gui_MainWindowSlotHouse.cpp
+    gui/gui_MainWindowSlotHouse.cpp \
+    gui/InsertNewRecordDialog.cpp
 
 HEADERS += \
     gui/AboutBoxDialog.h \
@@ -92,7 +93,8 @@ HEADERS += \
     gui/IconedDockWidget.h \
     gui/gui_DBMenu.h \
     gui/gui_MainWindowSlotHouse.h \
-    gui/gui_DeleteHelper.h
+    gui/gui_DeleteHelper.h \
+    gui/InsertNewRecordDialog.h
 
 FORMS += \
     gui/AboutBoxDialog.ui \
@@ -122,4 +124,5 @@ FORMS += \
     gui/WidgetForSpecificProperties.ui \
     gui/repo_DatabaseDetailsForm.ui \
     gui/repo_RoleListingForm.ui \
-    gui/repo_RepositoryElementForm.ui
+    gui/repo_RepositoryElementForm.ui \
+    gui/InsertNewRecordDialog.ui
