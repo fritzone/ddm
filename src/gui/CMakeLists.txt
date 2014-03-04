@@ -21,7 +21,9 @@ SET(DDM_GUI_SRCS
   ${CMAKE_CURRENT_SOURCE_DIR}/gui_DBMenu.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/gui_HelpWindow.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/gui_IconFactory.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/gui_MainWindowSlotHouse.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/InjectSqlDialog.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/InsertNewRecordDialog.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/ListWidgetForCodeCompletion.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/MainWindowButtonDialog.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/MainWindow.cpp
@@ -57,6 +59,7 @@ SET(DDM_GUI_HDRS
   ${CMAKE_CURRENT_SOURCE_DIR}/DocumentationSourceTreeItem.h
   ${CMAKE_CURRENT_SOURCE_DIR}/GuiElements.h
   ${CMAKE_CURRENT_SOURCE_DIR}/gui_DBMenu.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/gui_MainWindowSlotHouse.h
   ${CMAKE_CURRENT_SOURCE_DIR}/IconFactory.h
   ${CMAKE_CURRENT_SOURCE_DIR}/SimpleTextInputDialog.h
   ${CMAKE_CURRENT_SOURCE_DIR}/SourceCodePresenterWidget.h
@@ -79,8 +82,11 @@ SET(DDM_GUI_MOC_HDRS
   ${CMAKE_CURRENT_SOURCE_DIR}/DynamicActionHandlerForMainWindow.h
   ${CMAKE_CURRENT_SOURCE_DIR}/EnterNoteTextDialog.h
   ${CMAKE_CURRENT_SOURCE_DIR}/FrameForLineNumbers.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/gui_DeleteHelper.h
   ${CMAKE_CURRENT_SOURCE_DIR}/gui_HelpWindow.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/gui_MainWindowSlotHouse.h
   ${CMAKE_CURRENT_SOURCE_DIR}/IconedDockWidget.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/InsertNewRecordDialog.h
   ${CMAKE_CURRENT_SOURCE_DIR}/InjectSqlDialog.h
   ${CMAKE_CURRENT_SOURCE_DIR}/ListWidgetForCodeCompletion.h
   ${CMAKE_CURRENT_SOURCE_DIR}/MainWindowButtonDialog.h
@@ -121,6 +127,7 @@ SET(DDM_GUI_UIS
   ${CMAKE_CURRENT_SOURCE_DIR}/EnterNoteTextDialog.ui
   ${CMAKE_CURRENT_SOURCE_DIR}/HelpWindow.ui
   ${CMAKE_CURRENT_SOURCE_DIR}/InjectSqlDialog.ui
+  ${CMAKE_CURRENT_SOURCE_DIR}/InsertNewRecordDialog.ui
   ${CMAKE_CURRENT_SOURCE_DIR}/MainWindowButtonDialog.ui
   ${CMAKE_CURRENT_SOURCE_DIR}/MainWindow.ui
   ${CMAKE_CURRENT_SOURCE_DIR}/NamedObjectListingForm.ui
