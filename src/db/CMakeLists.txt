@@ -8,9 +8,10 @@ SET(DDM_DB_SRCS
   ${CMAKE_CURRENT_SOURCE_DIR}/db_AdvancedSqlGenerator.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/db_BasicSqlGenerator.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/db_DatabaseEngine.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/db_SP.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/db_DefaultDatabaseEngine.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/db_GenericDTSupplier.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/db_RepositoryQuery.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/db_SP.cpp
 )
 
 SET(DDM_DB_HDRS
@@ -25,6 +26,7 @@ SET(DDM_DB_HDRS
   ${CMAKE_CURRENT_SOURCE_DIR}/db_DefaultDatabaseEngine.h
   ${CMAKE_CURRENT_SOURCE_DIR}/db_SpCollection.h
   ${CMAKE_CURRENT_SOURCE_DIR}/db_GenericDTSupplier.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/db_RepositoryQuery.h
   ${CMAKE_CURRENT_SOURCE_DIR}/db_SP.h
 )
 
