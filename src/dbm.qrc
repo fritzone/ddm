@@ -231,6 +231,7 @@
         <file>images/small/refresh1.png</file>
         <file>images/small/insert-icon.png</file>
         <file>images/small/table_row.png</file>
+        <file>images/small/postgresql.png</file>
     </qresource>
     <qresource prefix="/bigger">
         <file>images/unaf.png</file>

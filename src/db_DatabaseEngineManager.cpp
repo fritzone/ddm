@@ -14,6 +14,9 @@
 #include "db_GenericDatabaseType.h"
 #include "db_GenericDTSupplier.h"
 
+#include "dbpostgres_DatabaseEngine.h"
+#include "dbpostgres_SQLGenerator.h"
+
 #include "strings.h"
 
 DatabaseEngineManager* DatabaseEngineManager::m_instance = 0;
@@ -38,23 +41,38 @@ DatabaseEngineManager::DatabaseEngineManager()
 
     m_supportedEngines = QSqlDatabase::drivers();
 
+    {
     m_supportedEngines << strMySql;
     MySQLDatabaseEngine* mysqlDBEngine = MySQLDatabaseEngine::instance();
     MySQLSQLGenerator* mysqlGenerator = new MySQLSQLGenerator(mysqlDBEngine);
     addEngine(strMySql, mysqlDBEngine);
     addSqlGenerator(strMySql, mysqlGenerator);
+    }
 
+    {
     m_supportedEngines << strSqlite;
     SqliteDatabaseEngine* sqliteDBEngine = SqliteDatabaseEngine::instance();
     SqliteSQLGenerator* sqliteGenrator = new SqliteSQLGenerator(sqliteDBEngine );
     addEngine(strSqlite, sqliteDBEngine);
     addSqlGenerator(strSqlite, sqliteGenrator);
+    }
 
+    {
     m_supportedEngines << strCUBRID;
     CUBRIDDatabaseEngine* cubridDbEngine = CUBRIDDatabaseEngine::instance();
     CUBRIDSQLGenerator* cubridGenerator = new CUBRIDSQLGenerator(cubridDbEngine);
     addEngine(strCUBRID, cubridDbEngine);
     addSqlGenerator(strCUBRID, cubridGenerator);
+    }
+
+    {
+    m_supportedEngines << strPostgres;
+    PostgresDatabaseEngine* postgresDBEngine = PostgresDatabaseEngine::instance();
+    PostgresSQLGenerator* postgresGenerator = new PostgresSQLGenerator(postgresDBEngine);
+    addEngine(strPostgres, postgresDBEngine);
+    addSqlGenerator(strPostgres, postgresGenerator);
+    }
+
 }
 
 DatabaseEngine* DatabaseEngineManager::engine(const QString &name)

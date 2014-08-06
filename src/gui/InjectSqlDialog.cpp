@@ -6,6 +6,7 @@
 #include "db_DatabaseEngine.h"
 #include "SimpleTextInputDialog.h"
 #include "dbmysql_DatabaseEngine.h"
+#include "dbpostgres_DatabaseEngine.h"
 #include "ConnectionManager.h"
 #include "Connection.h"
 #include "core_Table.h"
@@ -19,6 +20,7 @@
 #include "MySqlConnection.h"
 #include "SqliteConnection.h"
 #include "conn_CUBRID.h"
+#include "conn_Postgres.h"
 #include "gui_HelpWindow.h"
 
 #include <QSqlDatabase>
@@ -176,10 +178,22 @@ InjectSqlDialog::InjectSqlDialog(DatabaseEngine* engine, QWidget *parent, Versio
 
     // and now remove the unneeded radio buttons from the GUI. Ugly, just hardcode it.
     QStringList supportedDbs = QSqlDatabase::drivers();
-    if(!supportedDbs.contains(strQCUBRID)) ui->cmbDatabaseType->removeItem(ui->cmbDatabaseType->findText(strCUBRID));
-    if(!supportedDbs.contains(strQSqlite)) ui->cmbDatabaseType->removeItem(ui->cmbDatabaseType->findText(strSqlite));
-    if(!supportedDbs.contains(strQMySql)) ui->cmbDatabaseType->removeItem(ui->cmbDatabaseType->findText(strMySql));
-}
+    if(!supportedDbs.contains(strQCUBRID))
+    {
+        ui->cmbDatabaseType->removeItem(ui->cmbDatabaseType->findText(strCUBRID, Qt::MatchExactly ));
+    }
+    if(!supportedDbs.contains(strQSqlite))
+    {
+        ui->cmbDatabaseType->removeItem(ui->cmbDatabaseType->findText(strCamelSqlite, Qt::MatchExactly ));
+    }
+    if(!supportedDbs.contains(strQMySql))
+    {
+        ui->cmbDatabaseType->removeItem(ui->cmbDatabaseType->findText(strMySql, Qt::MatchExactly ));
+    }
+    if(!supportedDbs.contains(strQPostgres))
+    {
+        ui->cmbDatabaseType->removeItem(ui->cmbDatabaseType->findText(strPostgres, Qt::MatchExactly ));
+    }}
 
 void InjectSqlDialog::createTreeItem(QTreeWidgetItem* parent, const QString &text, const QString &uid, const QIcon &icon)
 {
@@ -276,7 +290,7 @@ void InjectSqlDialog::onConnect()
 
 QString InjectSqlDialog::getDatabase() const
 {
-    if(m_mode == MODE_MYSQL)
+    if(m_mode == MODE_MYSQL || m_mode == MODE_POSTGRES)
     {
         return ui->cmbDatabases->currentText();
     }
@@ -600,6 +614,11 @@ void InjectSqlDialog::onDbTypeChange(QString a)
         setMysqlLayout();
     }
     else
+    if(m_strDbEngine == strPostgres.toUpper())
+    {
+        setPostgresLayout();
+    }
+    else
     if(m_strDbEngine == strCUBRID.toUpper())
     {
         setCUBRIDLayout();
@@ -664,6 +683,42 @@ void InjectSqlDialog::setMysqlLayout()
     ui->cmbSqliteVersion->hide();
     ui->btnTestConnection->setVisible(false);
     m_mode = MODE_MYSQL;
+}
+
+// TODO: This is almost the same as mysql layout
+void InjectSqlDialog::setPostgresLayout()
+{
+    ui->lblHost->show();
+    ui->lblPassword->show();
+    ui->lblUser->show();
+    ui->lblPort->show();
+    ui->txtDatabaseHost->show();
+    ui->txtDatabasePassword->show();
+    ui->txtDatabaseUser->show();
+    ui->txtPort->show();
+    ui->cmbDatabases->show();
+    ui->btnConnect->show();
+    ui->btnCreateDatabase->show();
+
+    ui->txtDatabaseName->hide();
+    ui->btnBrowseForFile->hide();
+    ui->lblDatabase->setText(tr("Database"));
+
+    ui->lblDatabase->setEnabled(m_alreadyConnected);
+
+    // set the button state only if there are no uids/objects to deploy, ie, this is
+    // a dalog setting up things, connection, etc...
+    if(m_UidsToDeploy.isEmpty() && m_objName.isEmpty())
+    {
+        ui->buttonBox->button(QDialogButtonBox::Ok)->setDisabled(!m_alreadyConnected);
+    }
+
+    ui->cmbSqliteVersion->hide();
+    ui->btnTestConnection->setVisible(false);
+    m_mode = MODE_POSTGRES;
+
+    m_dbEngine = PostgresDatabaseEngine::instance();
+
 }
 
 
@@ -800,7 +855,7 @@ int InjectSqlDialog::getSqliteVersion() const
 Connection *InjectSqlDialog::provideConnection()
 {
     Connection* c = 0;
-    if(getSDbEngine().toUpper() == strMySql.toUpper() || getSDbEngine().toUpper() == strCUBRID.toUpper())
+    if(getSDbEngine().toUpper() == strMySql.toUpper() || getSDbEngine().toUpper() == strCUBRID.toUpper() || getSDbEngine().toUpper() == strPostgres.toUpper())
     {
         QString host = getHost();
         QString user = getUser();
@@ -813,8 +868,14 @@ Connection *InjectSqlDialog::provideConnection()
             c = new CUBRIDConnection("temp", host, user, password, db, false, getAutoConnect(), port);
         }
         else
+        if(getSDbEngine().toUpper() == strMySql.toUpper())
         {
             c = new MySqlConnection("temp", host, user, password, db, false, getAutoConnect(), port);
+        }
+        else
+        if(getSDbEngine().toUpper() == strPostgres.toUpper())
+        {
+            c = new PostgresConnection("temp", host, user, password, db, false, getAutoConnect(), port);
         }
     }
     else

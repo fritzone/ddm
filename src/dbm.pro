@@ -67,6 +67,9 @@ INCLUDEPATH += dbmysql
 include (dbcubrid/dbcubrid.pri)
 INCLUDEPATH += dbcubrid
 
+include (dbpostgres/dbpostgres.pri)
+INCLUDEPATH += dbpostgres
+
 include (dbsqlite/dbsqlite.pri)
 INCLUDEPATH += dbsqlite
 

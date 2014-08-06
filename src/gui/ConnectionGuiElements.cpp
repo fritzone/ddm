@@ -79,6 +79,12 @@ void ConnectionGuiElements::createGuiElements()
         createConnectionForDbEngine(strCUBRID, IconFactory::getCUBRIDIcon(), strCUBRID);
     }
 
+    // create the Postgres connection tree item
+    if(supportedDbs.contains(strQPostgres))
+    {
+        createConnectionForDbEngine(strPostgres, IconFactory::getPostgresIcon(), strPostgres);
+    }
+
     // context handler
     m_connectionsContextMenuHandler = new ContextMenuHandler();
     m_connectionsTree->setItemDelegate(new ContextMenuDelegate(m_connectionsContextMenuHandler, m_connectionsTree));
@@ -172,8 +178,12 @@ ContextMenuEnabledTreeWidgetItem* ConnectionGuiElements::createConnectionTreeEnt
     newConnectionItem->setData(0, Qt::UserRole, var);
     newConnectionItem->setIcon(0, IconFactory::getConnectionStateIcon(c->getState()));
     m_connectionsTree->addTopLevelItem(newConnectionItem);
-    newConnectionItem->setPopupMenu(ContextMenuCollection::getInstance()->getConnectionsPopupMenu(c->getEngine()->getName()));
-    c->setLocation(newConnectionItem);
+    DatabaseEngine* e = c->getEngine();
+    if(e)
+    {
+        newConnectionItem->setPopupMenu(ContextMenuCollection::getInstance()->getConnectionsPopupMenu(e->getName()));
+        c->setLocation(newConnectionItem);
+    }
 
     return newConnectionItem ;
 }
