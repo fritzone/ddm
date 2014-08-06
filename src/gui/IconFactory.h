@@ -54,6 +54,7 @@ static const QString strEmptyIcon = ":/images/actions/images/actions/empty_icon.
 static const QString strMySqlIcon = ":/images/actions/images/small/mysql.png";
 static const QString strSqliteIcon = ":/images/actions/images/small/sqlite-icon.png";
 static const QString strCUBRIDIcon = ":/images/actions/images/small/cubrid.png";
+static const QString strPostgresIcon = ":/images/actions/images/small/postgresql.png";
 
 static const QString strTableIcon = ":/images/actions/images/actions/table.png";
 static const QString strTableLockIcon = ":/images/actions/images/actions/table_lock.png";
@@ -999,6 +1000,12 @@ public:
     static const QIcon& getCUBRIDIcon()
     {
         static const QIcon icon(icons::strCUBRIDIcon);
+        return icon;
+    }
+
+    static const QIcon& getPostgresIcon()
+    {
+        static const QIcon icon(icons::strPostgresIcon);
         return icon;
     }
 

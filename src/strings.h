@@ -160,6 +160,8 @@ static const QString strSqlite = "SQLITE";
 static const QString strQSqlite = "QSQLITE";
 static const QString strCUBRID = "CUBRID";
 static const QString strQCUBRID = "QCUBRID";
+static const QString strPostgres = "Postgresql";
+static const QString strQPostgres = "QPSQL";
 
 // human readable database names
 static const QString strCamelMySql = "MySql";

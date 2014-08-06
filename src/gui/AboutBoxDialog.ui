@@ -27,20 +27,30 @@
   </property>
   <layout class="QHBoxLayout" name="horizontalLayout">
    <item>
-    <widget class="QToolBox" name="toolBox">
-     <property name="currentIndex">
-      <number>0</number>
+    <widget class="QTabWidget" name="tabWidget">
+     <property name="tabPosition">
+      <enum>QTabWidget::South</enum>
      </property>
-     <widget class="QWidget" name="page">
-      <property name="geometry">
-       <rect>
-        <x>0</x>
-        <y>0</y>
-        <width>582</width>
-        <height>181</height>
-       </rect>
-      </property>
-      <attribute name="label">
+     <property name="tabShape">
+      <enum>QTabWidget::Triangular</enum>
+     </property>
+     <property name="currentIndex">
+      <number>1</number>
+     </property>
+     <property name="elideMode">
+      <enum>Qt::ElideNone</enum>
+     </property>
+     <property name="usesScrollButtons">
+      <bool>false</bool>
+     </property>
+     <property name="documentMode">
+      <bool>true</bool>
+     </property>
+     <property name="tabsClosable">
+      <bool>false</bool>
+     </property>
+     <widget class="QWidget" name="tabWidgetPage1" native="true">
+      <attribute name="title">
        <string>About</string>
       </attribute>
       <widget class="QLabel" name="label">
@@ -64,16 +74,16 @@
         <rect>
          <x>60</x>
          <y>0</y>
-         <width>351</width>
+         <width>331</width>
          <height>111</height>
         </rect>
        </property>
        <property name="text">
-        <string>DDM v0.1k - The Database Deployment Manager
-© 2009 - 2013 - The Unauthorized Frog project
+        <string>Database Deployment Manager v0.1l
 
-Programming - fritzone@gmail.com
-Testing - Nikos Mantas, Althaf Hameez, elancer2010</string>
+© 2009 - 2014 - The Unauthorized Frog project
+
+</string>
        </property>
        <property name="textFormat">
         <enum>Qt::PlainText</enum>
@@ -85,8 +95,8 @@ Testing - Nikos Mantas, Althaf Hameez, elancer2010</string>
       <widget class="QLabel" name="label_3">
        <property name="geometry">
         <rect>
-         <x>420</x>
-         <y>-20</y>
+         <x>390</x>
+         <y>10</y>
          <width>151</width>
          <height>211</height>
         </rect>
@@ -99,37 +109,35 @@ Testing - Nikos Mantas, Althaf Hameez, elancer2010</string>
        </property>
       </widget>
      </widget>
-     <widget class="QWidget" name="page_2">
-      <property name="geometry">
-       <rect>
-        <x>0</x>
-        <y>0</y>
-        <width>96</width>
-        <height>26</height>
-       </rect>
-      </property>
-      <attribute name="label">
-       <string>Icons</string>
+     <widget class="QWidget" name="tab">
+      <attribute name="title">
+       <string>Databases</string>
       </attribute>
-      <widget class="QLabel" name="label_4">
-       <property name="geometry">
-        <rect>
-         <x>10</x>
-         <y>0</y>
-         <width>521</width>
-         <height>131</height>
-        </rect>
-       </property>
-       <property name="text">
-        <string>Fugue © Yusuke Kamiyamane, Oxygen Project, 
+      <layout class="QHBoxLayout" name="horizontalLayout_2">
+       <item>
+        <widget class="QTextEdit" name="textEdit"/>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tabWidgetPage2" native="true">
+      <attribute name="title">
+       <string>(C)</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout">
+       <item>
+        <widget class="QLabel" name="label_4">
+         <property name="text">
+          <string>Fugue © Yusuke Kamiyamane, Oxygen Project, 
 Free Application Icon Pack by Aha-Soft Team 
 Vaga Icons © Ed Merritt
 Crystal Icons © YellowIcon
 
 Frog - The unauthorized frog is from a mug.
 Do you own the copyright for the Frog? Please contact us.</string>
-       </property>
-      </widget>
+         </property>
+        </widget>
+       </item>
+      </layout>
      </widget>
     </widget>
    </item>

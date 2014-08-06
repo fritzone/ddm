@@ -23,7 +23,8 @@ class InjectSqlDialog : public QDialog
     {
         MODE_MYSQL = 0,
         MODE_SQLITE = 1,
-        MODE_CUBRID = 2
+        MODE_CUBRID = 2,
+        MODE_POSTGRES = 4
     };
 
 public:
@@ -102,6 +103,7 @@ private:
     void setSqliteLayout();
     void setMysqlLayout();
     void setCUBRIDLayout();
+    void setPostgresLayout();
 
     void disableOkButton();
     void enableOkButton();
