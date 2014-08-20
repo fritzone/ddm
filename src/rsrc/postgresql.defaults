@@ -1,0 +1,148 @@
+﻿<!DOCTYPE DBM>
+<Solutions>
+ <Solution Name="defaults">
+  <Projects>
+   <Project Name="DEFAULT" OOP="0" DB="Postgresql">
+    <Description></Description>
+    <MajorVersions>
+     <MajorVersion>
+      <Version>1.0</Version>
+      <DataTypes>
+       <DataType SqlType="CHAR" Size="255" Type="Text/String" Name="CHAR(255)" Codepage="" DefaultValue="null" Unsigned="0" CanBeNull="1" AutoIncrement="1">
+        <Description>CHAR(255) - Datatype for Postgresql</Description>
+        <Values/>
+       </DataType>
+       <DataType SqlType="VARCHAR" Size="255" Type="Text/String" Name="VARCHAR(255)" Codepage="" DefaultValue="null" Unsigned="0" CanBeNull="1" AutoIncrement="1">
+        <Description>VARCHAR(255) - Datatype for Postgresql</Description>
+        <Values/>
+       </DataType>
+       <DataType SqlType="TEXT" Size="" Type="Text/String" Name="TEXT" Codepage="" DefaultValue="" Unsigned="0" CanBeNull="1" AutoIncrement="1">
+        <Description>TEXT - Datatype for Postgresql</Description>
+        <Values/>
+       </DataType>
+       <DataType SqlType="INTEGER" Size="10" Type="Numeric" Name="INT(10)" Codepage="" DefaultValue="0" Unsigned="0" CanBeNull="1" AutoIncrement="1">
+        <Description>INT(10) - Datatype for Postgresql</Description>
+        <Values/>
+       </DataType>
+       <DataType SqlType="INTEGER" Size="1" Type="Numeric" Name="INT(1)" Codepage="" DefaultValue="0" Unsigned="0" CanBeNull="1" AutoIncrement="1">
+        <Description>INT(1) - Datatype for Postgresql</Description>
+        <Values/>
+       </DataType>
+       <DataType SqlType="INTEGER" Size="2" Type="Numeric" Name="INT(2)" Codepage="" DefaultValue="0" Unsigned="0" CanBeNull="1" AutoIncrement="1">
+        <Description>INT(2) - Datatype for Postgresql</Description>
+        <Values/>
+       </DataType>
+       <DataType SqlType="INTEGER" Size="3" Type="Numeric" Name="INT(3)" Codepage="" DefaultValue="0" Unsigned="0" CanBeNull="1" AutoIncrement="1">
+        <Description>INT(3) - Datatype for Postgresql</Description>
+        <Values/>
+       </DataType>
+       <DataType SqlType="INTEGER" Size="4" Type="Numeric" Name="INT(4)" Codepage="" DefaultValue="0" Unsigned="0" CanBeNull="1" AutoIncrement="1">
+        <Description>INT(4) - Datatype for Postgresql</Description>
+        <Values/>
+       </DataType>
+       <DataType SqlType="SERIAL" Size="" Type="Numeric" Name="SERIAL" Codepage="" DefaultValue="0" Unsigned="0" CanBeNull="1" AutoIncrement="1">
+        <Description>SERIAL - Datatype for Postgresql</Description>
+        <Values/>
+       </DataType>
+       <DataType SqlType="BIGSERIAL" Size="" Type="Numeric" Name="BIGSERIAL" Codepage="" DefaultValue="0" Unsigned="0" CanBeNull="1" AutoIncrement="1">
+        <Description>BIGSERIAL - Datatype for Postgresql</Description>
+        <Values/>
+       </DataType>
+       <DataType SqlType="INTEGER" Size="" Type="Numeric" Name="INTEGER - UNSIGNED" Codepage="" DefaultValue="0" Unsigned="1" CanBeNull="1" AutoIncrement="1">
+        <Description>INTEGER UNSIGNED  - Datatype for Postgresql</Description>
+        <Values/>
+       </DataType>
+       <DataType SqlType="INTEGER" Size="" Type="Numeric" Name="INTEGER - SIGNED" Codepage="" DefaultValue="0" Unsigned="0" CanBeNull="1" AutoIncrement="1">
+        <Description>INTEGER - Datatype for Postgresql</Description>
+        <Values/>
+       </DataType>
+       <DataType SqlType="SMALLINT" Size="" Type="Numeric" Name="SMALLINT" Codepage="" DefaultValue="0" Unsigned="0" CanBeNull="1" AutoIncrement="1">
+        <Description>SMALLINT - Datatype for Postgresql</Description>
+        <Values/>
+       </DataType>
+       <DataType SqlType="BIGINT" Size="" Type="Numeric" Name="BIGINT" Codepage="" DefaultValue="0" Unsigned="0" CanBeNull="1" AutoIncrement="1">
+        <Description>BIGINT - Datatype for Postgresql</Description>
+        <Values/>
+       </DataType>
+       <DataType SqlType="DECIMAL" Size="5,2" Type="Numeric" Name="DECIMAL(5,2)" Codepage="" DefaultValue="0" Unsigned="0" CanBeNull="1" AutoIncrement="1">
+        <Description>DECIMAL(5,2) - Datatype for Postgresql</Description>
+        <Values/>
+       </DataType>
+       <DataType SqlType="DECIMAL" Size="6,2" Type="Numeric" Name="DECIMAL(6,2)" Codepage="" DefaultValue="0" Unsigned="0" CanBeNull="1" AutoIncrement="1">
+        <Description>DECIMAL(6,2) - Datatype for Postgresql</Description>
+        <Values/>
+       </DataType>
+       <DataType SqlType="DECIMAL" Size="7,2" Type="Numeric" Name="DECIMAL(7,2)" Codepage="" DefaultValue="0" Unsigned="0" CanBeNull="1" AutoIncrement="1">
+        <Description>DECIMAL(7,2) - Datatype for Postgresql</Description>
+        <Values/>
+       </DataType>
+       <DataType SqlType="REAL" Size="" Type="Numeric" Name="REAL" Codepage="" DefaultValue="0.0" Unsigned="0" CanBeNull="1" AutoIncrement="1">
+        <Description>REAL - Datatype for Postgresql</Description>
+        <Values/>
+       </DataType>
+       <DataType SqlType="DOUBLE PRECISION" Size="" Type="Numeric" Name="DOUBLE PRECISION" Codepage="" DefaultValue="0.0" Unsigned="0" CanBeNull="1" AutoIncrement="1">
+        <Description>DOUBLE PRECISION - Datatype for Postgresql</Description>
+        <Values/>
+       </DataType>
+       <DataType SqlType="BIT" Size="1" Type="Numeric" Name="BIT(1)" Codepage="" DefaultValue="" Unsigned="0" CanBeNull="1" AutoIncrement="1">
+        <Description>BIT(1) - Datatype for Postgresql</Description>
+        <Values/>
+       </DataType>
+       <DataType SqlType="BIT" Size="2" Type="Numeric" Name="BIT(2)" Codepage="" DefaultValue="" Unsigned="0" CanBeNull="1" AutoIncrement="1">
+        <Description>BIT(2) - Datatype for Postgresql</Description>
+        <Values/>
+       </DataType>
+       <DataType SqlType="BIT" Size="4" Type="Numeric" Name="BIT(4)" Codepage="" DefaultValue="" Unsigned="0" CanBeNull="1" AutoIncrement="1">
+        <Description>BIT(4) - Datatype for Postgresql</Description>
+        <Values/>
+       </DataType>
+       <DataType SqlType="BIT" Size="8" Type="Numeric" Name="BIT(8)" Codepage="" DefaultValue="" Unsigned="0" CanBeNull="1" AutoIncrement="1">
+        <Description>BIT(8) - Datatype for Postgresql</Description>
+        <Values/>
+       </DataType>
+       <DataType SqlType="BIT" Size="16" Type="Numeric" Name="BIT(16)" Codepage="" DefaultValue="" Unsigned="0" CanBeNull="1" AutoIncrement="1">
+        <Description>BIT(16) - Datatype for Postgresql</Description>
+        <Values/>
+       </DataType>
+       <DataType SqlType="BIT" Size="32" Type="Numeric" Name="BIT(32)" Codepage="" DefaultValue="" Unsigned="0" CanBeNull="1" AutoIncrement="1">
+        <Description>BIT(32) - Datatype for Postgresql</Description>
+        <Values/>
+       </DataType>
+       <DataType SqlType="BIT" Size="64" Type="Numeric" Name="BIT(64)" Codepage="" DefaultValue="" Unsigned="0" CanBeNull="1" AutoIncrement="1">
+        <Description>BIT(64) - Datatype for Postgresql</Description>
+        <Values/>
+       </DataType>
+       <DataType SqlType="BOOL" Size="" Type="Boolean" Name="BOOL" Codepage="" DefaultValue="false" Unsigned="0" CanBeNull="1" AutoIncrement="1">
+        <Description>BOOL - Datatype for Postgresql</Description>
+        <Values/>
+       </DataType>
+       <DataType SqlType="DATE" Size="" Type="Date/Time" Name="DATE" Codepage="" DefaultValue="" Unsigned="0" CanBeNull="1" AutoIncrement="1">
+        <Description>DATE - Datatype for Postgresql</Description>
+        <Values/>
+       </DataType>
+       <DataType SqlType="TIME" Size="" Type="Date/Time" Name="TIME" Codepage="" DefaultValue="" Unsigned="0" CanBeNull="1" AutoIncrement="1">
+        <Description>TIME - Datatype for Postgresql</Description>
+        <Values/>
+       </DataType>
+       <DataType SqlType="INTERVAL" Size="" Type="Date/Time" Name="INTERVAL" Codepage="" DefaultValue="" Unsigned="0" CanBeNull="1" AutoIncrement="1">
+        <Description>INTERVAL - Datatype for Postgresql</Description>
+        <Values/>
+       </DataType>
+       <DataType SqlType="TIMESTAMP" Size="" Type="Date/Time" Name="TIMESTAMP" Codepage="" DefaultValue="" Unsigned="0" CanBeNull="1" AutoIncrement="1">
+        <Description>TIMESTAMP - Datatype for Postgresql</Description>
+        <Values/>
+       </DataType>
+       <DataType SqlType="BYTEA" Size="" Type="Blob/Binary" Name="BYTEA" Codepage="" DefaultValue="" Unsigned="0" CanBeNull="1" AutoIncrement="1">
+        <Description>BYTEA - Datatype for Postgresql</Description>
+        <Values/>
+       </DataType>
+      </DataTypes>
+      <Tables/>
+      <Diagrams/>
+      <TableInstances/>
+     </MajorVersion>
+    </MajorVersions>
+   </Project>
+  </Projects>
+ </Solution>
+</Solutions>

@@ -683,6 +683,7 @@ void InjectSqlDialog::setMysqlLayout()
     ui->cmbSqliteVersion->hide();
     ui->btnTestConnection->setVisible(false);
     m_mode = MODE_MYSQL;
+    m_dbEngine = MySQLDatabaseEngine::instance();
 }
 
 // TODO: This is almost the same as mysql layout
@@ -865,23 +866,23 @@ Connection *InjectSqlDialog::provideConnection()
 
         if(getSDbEngine().toUpper() == strCUBRID.toUpper())
         {
-            c = new CUBRIDConnection("temp", host, user, password, db, false, getAutoConnect(), port);
+            c = new CUBRIDConnection(getName(), host, user, password, db, false, getAutoConnect(), port);
         }
         else
         if(getSDbEngine().toUpper() == strMySql.toUpper())
         {
-            c = new MySqlConnection("temp", host, user, password, db, false, getAutoConnect(), port);
+            c = new MySqlConnection(getName(), host, user, password, db, false, getAutoConnect(), port);
         }
         else
         if(getSDbEngine().toUpper() == strPostgres.toUpper())
         {
-            c = new PostgresConnection("temp", host, user, password, db, false, getAutoConnect(), port);
+            c = new PostgresConnection(getName(), host, user, password, db, false, getAutoConnect(), port);
         }
     }
     else
     {
         QString dbFile = getFileName();
-        c = new SqliteConnection("temp", dbFile, getAutoConnect(), getSqliteVersion());
+        c = new SqliteConnection(getName(), dbFile, getAutoConnect(), getSqliteVersion());
     }
     return c;
 }

@@ -65,7 +65,7 @@ public:
     template <class T>
     void addEngine(const QString& name, T* engine)
     {
-        m_dbEngines.insert(name, engine);
+        m_dbEngines.insert(name.toUpper(), engine);
     }
 
     /**

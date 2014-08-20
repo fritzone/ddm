@@ -3,6 +3,7 @@
 #include "MySqlConnection.h"
 #include "SqliteConnection.h"
 #include "conn_CUBRID.h"
+#include "conn_Postgres.h"
 #include "db_DatabaseEngine.h"
 #include "Workspace.h"
 
@@ -129,13 +130,12 @@ Connection* ConnectionManager::createConnection(const QString &dbType, const QSe
     QString name = s.value(strName).toString();
     QString dbUpp = dbType.toUpper();
 
-    if(dbUpp == strMySql.toUpper() || dbUpp == strCUBRID.toUpper())
+    if(dbUpp == strMySql.toUpper() || dbUpp == strCUBRID.toUpper() || dbUpp == strPostgres.toUpper())
     {
         QString host = s.value(strHost).toString();
         QString pass = s.value(strPass).toString();
         QString user = s.value(strUser).toString();
-        int port = 30000;
-        if(dbUpp == strMySql.toUpper()) port = 3306;
+        int port = 0;
 
         if(s.contains(strPort))
         {
@@ -148,6 +148,11 @@ Connection* ConnectionManager::createConnection(const QString &dbType, const QSe
         if(dbType.toUpper() == strMySql.toUpper())
         {
             c = new MySqlConnection(name, host, user, pass, db, true, ac, port);
+        }
+        else
+        if(dbType.toUpper() == strPostgres.toUpper())
+        {
+            c = new PostgresConnection(name, host, user, pass, db, true, ac, port);
         }
         else
         {
