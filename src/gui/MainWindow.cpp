@@ -90,8 +90,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), m_ui(new Ui::Main
 
     Repository::instance();
     Configuration::instance();
-    ConnectionManager::instance();
     DatabaseEngineManager::instance();
+    ConnectionManager::instance();
     MainWindowSlotHouse::instance();
 
     m_connectionGuiElements = new ConnectionGuiElements();
