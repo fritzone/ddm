@@ -41,6 +41,7 @@ QString NewProjectDialog::getTargetDatabase() const
     if(m_ui->radioMySql->isChecked()) return strCamelMySql;
     if(m_ui->radioSqlite->isChecked()) return strCamelSqlite;
     if(m_ui->radioCubrid->isChecked()) return strCUBRID;
+    if(m_ui->radioPostgresql->isChecked()) return strPostgres;
 
     return "";
 }
@@ -68,6 +69,7 @@ void NewProjectDialog::onChangeProjectType(int)
     m_ui->radioCubrid->show();
     m_ui->radioSqlite->show();
     m_ui->radioMySql->show();
+    m_ui->radioPostgresql->show();
 
     switch(projectType)
     {
@@ -80,12 +82,12 @@ void NewProjectDialog::onChangeProjectType(int)
     {
         m_ui->grpOptions->hide();
 
-
         // and now remove the unneeded radio buttons from the GUI based on what DB we support
         QStringList supportedDbs = QSqlDatabase::drivers();
         if(!supportedDbs.contains(strQCUBRID)) m_ui->radioCubrid->hide();
         if(!supportedDbs.contains(strQSqlite)) m_ui->radioSqlite->hide();
         if(!supportedDbs.contains(strQMySql)) m_ui->radioMySql->hide();
+        if(!supportedDbs.contains(strQPostgres)) m_ui->radioPostgresql->hide();
         break;
     }
     case 3: // Rev. Eng. Project
@@ -97,6 +99,7 @@ void NewProjectDialog::onChangeProjectType(int)
         if(!supportedDbs.contains(strQCUBRID)) m_ui->radioCubrid->hide();
         if(!supportedDbs.contains(strQSqlite)) m_ui->radioSqlite->hide();
         if(!supportedDbs.contains(strQMySql)) m_ui->radioMySql->hide();
+        if(!supportedDbs.contains(strQPostgres)) m_ui->radioPostgresql->hide();
         break;
     }
     }
@@ -129,7 +132,7 @@ void NewProjectDialog::onReject()
 
 void NewProjectDialog::onAccept()
 {
-    if(!m_ui->radioCubrid->isChecked() && !m_ui->radioMySql->isChecked() && !m_ui->radioSqlite->isChecked())
+    if(!m_ui->radioCubrid->isChecked() && !m_ui->radioMySql->isChecked() && !m_ui->radioSqlite->isChecked() && !m_ui->radioPostgresql->isChecked())
     {
         QMessageBox::critical (this, tr("Error"), tr("Please select a database"), QMessageBox::Ok);
         return;

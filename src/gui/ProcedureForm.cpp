@@ -40,7 +40,8 @@ ProcedureForm::ProcedureForm(Version* v, ProcedureFormMode m, bool guided, bool 
 
         if(!supportedLanguages.contains(LANGUAGE_SQL))
         {
-            ui->cmbProcedureType->removeItem(ui->cmbProcedureType->findText("SQL"));
+            // the only DB not supporting SQL is CUBRID
+            ui->cmbProcedureType->removeItem(ui->cmbProcedureType->findText(strSql));
 
             // TODO: Future: This is plain CUBRID/MySql. Will be different
             // and add an extra Java entry to the parameters list box
@@ -50,13 +51,30 @@ ProcedureForm::ProcedureForm(Version* v, ProcedureFormMode m, bool guided, bool 
             m_javaBinding = true;
             initJavaMaps();
         }
+
         if(!supportedLanguages.contains(LANGUAGE_JAVA))
         {
-            ui->cmbProcedureType->removeItem(ui->cmbProcedureType->findText("Java"));
+            ui->cmbProcedureType->removeItem(ui->cmbProcedureType->findText(strJava));
 
             // hide the java related gui controls
             ui->grpJava->hide();
         }
+
+        if(!supportedLanguages.contains(LANGUAGE_TCL))
+        {
+            ui->cmbProcedureType->removeItem(ui->cmbProcedureType->findText(strTcl));
+        }
+
+        if(!supportedLanguages.contains(LANGUAGE_PERL))
+        {
+            ui->cmbProcedureType->removeItem(ui->cmbProcedureType->findText(strPerl));
+        }
+
+        if(!supportedLanguages.contains(LANGUAGE_PYTHON))
+        {
+            ui->cmbProcedureType->removeItem(ui->cmbProcedureType->findText(strPython));
+        }
+
     }
 
     m_frameForLineNumbers = new FrameForLineNumbers(this);
@@ -229,7 +247,7 @@ QString ProcedureForm::getProcNameFromSql()
 {
     int t = 0;
     QString n = m_proc->getNameFromSql(0, t);
-    if(n != "UNNAMED")
+    if(n != strUnnamed)
     {
         if(!m_proc->isDeleted())
         {
@@ -283,6 +301,11 @@ void ProcedureForm::initSql()
         sql += strSpace;
         sql += m_version->getProject()->getEngine()->getStoredMethodReturnKeyword() + strSpace + (m_guided? returns : "");
     }
+    if(m_version->getProject()->getEngine()->getDatabaseEngineName() == strPostgres)
+    {
+        sql += " AS $$";
+    }
+
     sql += strNewline;
     QString defaultBody = m_version->getProject()->getEngine()->getDefaultStoredMethodBody(getTargetLanguage());
     sql += defaultBody;
@@ -313,6 +336,11 @@ void ProcedureForm::showSql()
     m_init = false;
 }
 
+QString ProcedureForm::modeName() const
+{
+    return m_mode == MODE_PROCEDURE?QObject::tr("Procedure"):QObject::tr("Function");
+}
+
 void ProcedureForm::onLockUnlock(bool checked)
 {
     if(checked)
@@ -322,7 +350,7 @@ void ProcedureForm::onLockUnlock(bool checked)
         disableEditingControls(false);
         m_proc->unlock();
         m_proc->updateGui();
-        ui->btnLock->setToolTip((m_mode == MODE_PROCEDURE?"Procedure":"Function") + QObject::tr(" is <b>unlocked</b>. Click this button to lock it."));
+        ui->btnLock->setToolTip(modeName() + QObject::tr(" is <b>unlocked</b>. Click this button to lock it."));
 
         MainWindow::instance()->finallyDoLockLikeOperation(false, m_proc->getObjectUid().toString());
     }
@@ -333,7 +361,7 @@ void ProcedureForm::onLockUnlock(bool checked)
         disableEditingControls(true);
         m_proc->lock(LockableElement::LOCKED);
         m_proc->updateGui();
-        ui->btnLock->setToolTip((m_mode == MODE_PROCEDURE?"Procedure":"Function") + QObject::tr(" is <b>locked</b>. Click this button to lock it."));
+        ui->btnLock->setToolTip(modeName() + QObject::tr(" is <b>locked</b>. Click this button to lock it."));
 
         MainWindow::instance()->finallyDoLockLikeOperation(true, m_proc->getObjectUid().toString());
     }
@@ -417,7 +445,7 @@ void ProcedureForm::setProcedure(StoredMethod *p)
             ui->btnLock->blockSignals(false);
             //ui->grpContent->setEnabled(false);
             disableEditingControls(true);
-            ui->btnLock->setToolTip((m_mode == MODE_PROCEDURE?"This Procedure ":"This Function ") + QObject::tr("is <b>locked</b>. Click this button to unlock it."));
+            ui->btnLock->setToolTip(strThis + modeName() + QObject::tr("is <b>locked</b>. Click this button to unlock it."));
         }
         else
         {
@@ -427,7 +455,7 @@ void ProcedureForm::setProcedure(StoredMethod *p)
             ui->btnLock->blockSignals(false);
             //ui->grpContent->setEnabled(true);
             disableEditingControls(false);
-            ui->btnLock->setToolTip((m_mode == MODE_PROCEDURE?"This Procedure ":"This Function ") + QObject::tr("is <b>unlocked</b>. Click this button to unlock it."));
+            ui->btnLock->setToolTip(strThis + modeName() + QObject::tr("is <b>unlocked</b>. Click this button to unlock it."));
         }
 
         if(m_proc->isDeleted())
@@ -453,7 +481,7 @@ void ProcedureForm::onUndelete()
             ui->btnLock->blockSignals(false);
             //ui->grpContent->setEnabled(false);
             disableEditingControls(true);
-            ui->btnLock->setToolTip((m_mode == MODE_PROCEDURE?"This Procedure ":"This Function ") + QObject::tr("is <b>locked</b>. Click this button to unlock it."));
+            ui->btnLock->setToolTip(strThis + modeName() + QObject::tr("is <b>locked</b>. Click this button to unlock it."));
         }
         else
         {
@@ -463,7 +491,7 @@ void ProcedureForm::onUndelete()
             ui->btnLock->blockSignals(false);
             //ui->grpContent->setEnabled(true);
             disableEditingControls(false);
-            ui->btnLock->setToolTip((m_mode == MODE_PROCEDURE?"This Procedure ":"This Function ") + QObject::tr("is <b>unlocked</b>. Click this button to unlock it."));
+            ui->btnLock->setToolTip(strThis + modeName() + QObject::tr("is <b>unlocked</b>. Click this button to unlock it."));
         }
         ui->btnUndelete->hide();
         ui->btnLock->show();
@@ -490,7 +518,7 @@ void ProcedureForm::onSave()
 
 void ProcedureForm::onLoadFile()
 {
-    QString fileName = QFileDialog::getOpenFileName(this,  "Load values", "", "SQL files (*.sql)");
+    QString fileName = QFileDialog::getOpenFileName(this,  tr("Load values"), "", tr("SQL files (*.sql)"));
     if(fileName.length() == 0)
     {
         return;
@@ -528,7 +556,7 @@ void ProcedureForm::onReturnTypeComboChange(QString a)
     if(m_init) return;
 
     QString plainTextEditContents = m_textEdit->toPlainText();
-    QStringList lines = plainTextEditContents.split("\n");
+    QStringList lines = plainTextEditContents.split(strNewline);
 
     if(lines.empty())
     {
@@ -540,7 +568,7 @@ void ProcedureForm::onReturnTypeComboChange(QString a)
     int idxOfReturns = line0.indexOf(m_version->getProject()->getEngine()->getStoredMethodReturnKeyword(), Qt::CaseInsensitive);
     line0 = line0.left(idxOfReturns + m_version->getProject()->getEngine()->getStoredMethodReturnKeyword().length()) + " " + returns;
     lines[0] = line0;
-    m_textEdit->setPlainText(lines.join("\n"));
+    m_textEdit->setPlainText(lines.join(strNewline));
 
     // and now mangle out the java part of it
     if(m_javaBinding)
@@ -579,7 +607,7 @@ void ProcedureForm::onProcNameChange(QString a)
 
     a = a.trimmed();
 
-    if(a == "UNNAMED")
+    if(a == strUnnamed)
     {
         return;
     }
@@ -627,14 +655,14 @@ void ProcedureForm::onProcNameChange(QString a)
     }
 
     QString plainTextEditContents = m_textEdit->toPlainText();
-    QStringList lines = plainTextEditContents.split("\n");
+    QStringList lines = plainTextEditContents.split(strNewline);
 
     if(lines.empty())
     {
         return;
     }
 
-    QString t = m_mode == MODE_PROCEDURE?"PROCEDURE":"FUNCTION";
+    QString t = modeName().toUpper();
     QString line0 = lines.at(0);
     int idxOfType = line0.indexOf(t, Qt::CaseInsensitive);
     int i = idxOfType + t.length();
@@ -642,7 +670,7 @@ void ProcedureForm::onProcNameChange(QString a)
     while(line0.at(i).isLetterOrNumber() || line0.at(i) == '_') i++; // skip the name
     line0 = line0.left(idxOfType + t.length() + 1) + a + line0.mid(i);
     lines[0] = line0;
-    m_textEdit->setPlainText(lines.join("\n"));
+    m_textEdit->setPlainText(lines.join(strNewline));
     m_proc->setDisplayText(a);
     m_proc->setName(a);
 }
@@ -660,12 +688,12 @@ void ProcedureForm::onDescrChange()
 void ProcedureForm::updateSqlDueToParamChange()
 {
     QString plainTextEditContents = m_textEdit->toPlainText();
-    QStringList lines = plainTextEditContents.split("\n");
+    QStringList lines = plainTextEditContents.split(strNewline);
 
     if(!lines.empty())
     {
         QString line0 = lines.at(0);
-        int idxOfOpenParen = line0.indexOf("(");
+        int idxOfOpenParen = line0.indexOf(strOpenParantheses);
         int idxOfCloseParen = idxOfOpenParen;
         int level = 0;
         while(idxOfCloseParen < line0.length())
@@ -719,9 +747,9 @@ void ProcedureForm::updateSqlDueToParamChange()
                 params += ", ";
             }
         }
-        QString newLine0 = line0.left(idxOfOpenParen) + "(" + params + line0.mid(idxOfCloseParen);
+        QString newLine0 = line0.left(idxOfOpenParen) + strOpenParantheses + params + line0.mid(idxOfCloseParen);
         lines[0] = newLine0;
-        m_textEdit->setPlainText(lines.join("\n"));
+        m_textEdit->setPlainText(lines.join(strNewline));
 
         if(m_javaBinding)
         {
@@ -979,7 +1007,9 @@ void ProcedureForm::onProcTargetLanguageChange(QString)
     {
         return;
     }
-//    qDebug() << a;
+
+    // Now fetch the default template for the given procedure
+
 }
 
 void ProcedureForm::onSelectParameter(QTreeWidgetItem* current, int)
@@ -1081,12 +1111,12 @@ void ProcedureForm::updateJavaBinding()
 
     if(m_mode == MODE_FUNCTION)
     {
-        s += strSpace + "return" + strSpace + dynamic_cast<Function*>(m_proc)->getJavaReturnType();
+        s += strSpace + strReturn + strSpace + dynamic_cast<Function*>(m_proc)->getJavaReturnType();
     }
     s += "'";
 
     QString plainTextEditContents = m_textEdit->toPlainText();
-    QStringList lines = plainTextEditContents.split("\n");
+    QStringList lines = plainTextEditContents.split(strNewline);
     if(lines.size() == 3)
     {
         lines[2] = s;
@@ -1095,7 +1125,7 @@ void ProcedureForm::updateJavaBinding()
     {
         lines.append(s);
     }
-    m_textEdit->setPlainText(lines.join("\n"));
+    m_textEdit->setPlainText(lines.join(strNewline));
 }
 
 void ProcedureForm::onJavaClassNameChange(QString a)

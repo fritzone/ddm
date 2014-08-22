@@ -232,6 +232,9 @@
         <file>images/small/insert-icon.png</file>
         <file>images/small/table_row.png</file>
         <file>images/small/postgresql.png</file>
+        <file>images/small/perl.png</file>
+        <file>images/small/python.png</file>
+        <file>images/small/tcl.png</file>
     </qresource>
     <qresource prefix="/bigger">
         <file>images/unaf.png</file>

@@ -67,6 +67,7 @@ private:
     PROGRAMMING_LANGUAGES getTargetLanguage();
     void initJavaMaps();
     DT_TYPE getDTtypeOfSql(const QString &sql);
+    QString modeName() const;
 
 private:
     Ui::ProcedureForm *ui;

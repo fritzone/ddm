@@ -48,7 +48,16 @@
       <property name="spacing">
        <number>6</number>
       </property>
-      <property name="margin">
+      <property name="leftMargin">
+       <number>0</number>
+      </property>
+      <property name="topMargin">
+       <number>0</number>
+      </property>
+      <property name="rightMargin">
+       <number>0</number>
+      </property>
+      <property name="bottomMargin">
        <number>0</number>
       </property>
       <item>
@@ -75,7 +84,16 @@
          <string> Project Type </string>
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_2">
-         <property name="margin">
+         <property name="leftMargin">
+          <number>9</number>
+         </property>
+         <property name="topMargin">
+          <number>9</number>
+         </property>
+         <property name="rightMargin">
+          <number>9</number>
+         </property>
+         <property name="bottomMargin">
           <number>9</number>
          </property>
          <item>
@@ -176,6 +194,17 @@ p, li { white-space: pre-wrap; }
               <property name="icon">
                <iconset resource="../dbm.qrc">
                 <normaloff>:/images/actions/images/small/mysql.png</normaloff>:/images/actions/images/small/mysql.png</iconset>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QRadioButton" name="radioPostgresql">
+              <property name="text">
+               <string>Postgresql</string>
+              </property>
+              <property name="icon">
+               <iconset resource="../dbm.qrc">
+                <normaloff>:/images/actions/images/small/postgresql.png</normaloff>:/images/actions/images/small/postgresql.png</iconset>
               </property>
              </widget>
             </item>
@@ -507,6 +536,22 @@ p, li { white-space: pre-wrap; }
     <hint type="sourcelabel">
      <x>487</x>
      <y>189</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>340</x>
+     <y>219</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>radioPostgresql</sender>
+   <signal>clicked()</signal>
+   <receiver>NewProjectDialog</receiver>
+   <slot>onChangeDbType()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>491</x>
+     <y>72</y>
     </hint>
     <hint type="destinationlabel">
      <x>340</x>
