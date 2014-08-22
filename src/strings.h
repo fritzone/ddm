@@ -126,6 +126,7 @@ static const QString strPort = "Port";
 static const QString strDB = "DB";
 static const QString strAutoConnect = "AutoConnect";
 static const QString strDbType = "DbType";
+static const QString strThis = "This ";
 
 static const QString strMru1 = "mru1";
 static const QString strMru2 = "mru2";
@@ -174,9 +175,15 @@ static const QString strTrue = "TRUE";
 
 static const QString strSql = "SQL";
 static const QString strJava = "Java";
+static const QString strPerl = "Perl";
+static const QString strPython = "Python";
+static const QString strTcl = "Tcl";
 
 static const QString strProcedure = "PROCEDURE";
 static const QString strFunction = "FUNCTION";
 static const QString strInt = "INT";
+static const QString strUnnamed = "UNNAMED";
+static const QString strReturn = "return";
+
 
 #endif // STRINGS_H

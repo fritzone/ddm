@@ -4908,5 +4908,2135 @@ NAME 'YourClass.yourMethod()';]]>
       </data-queries>
     </database>
     
+    <database name="Postgresql" id="POSTGRESQL" class-uid="{100000DB-0000-0000-0000-000000000004}">
+
+      <connection-actions>
+        <action type="single" id="QUERY" text="Run Query" icon="RUNQUERY"  index="0"/>
+        <action type="separator"                                           index="1"/>
+        <action type="group" id="NEW" text="New..." icon="NEW"             index="2">
+          <action type="single" id="NEWTABLE" text="New Table" icon="NEWTABLE" index="0"/>
+        </action>
+        <action type="separator"                                           index="3"/>
+        <action type="single" id="TEST" text="Test Connection" icon="TEST" index="4"/>
+        <action type="single" id="EDIT" text="Edit Connection" icon="EDIT" index ="5"/>
+        <action type="single" id="DELETE" text="Delete Connection" icon="DELETE" index="6"/>
+        <action type="single" id="REFRESH" text="Refresh" icon="REFRESH" index="7"/>
+      </connection-actions>
+      
+      <foreign-keys support="1">
+        <on-update supported="CASCADE,RESTRICT,NO ACTION,SET NULL,SET DEFAULT" />
+        <on-delete supported="CASCADE,RESTRICT,NO ACTION,SET NULL,SET DEFAULT" />
+      </foreign-keys>
+      
+      <stored-methods support="1">
+        <!-- What is the order of the parameters in the Stored methods. For example MySql has DIRECTION NAME TYPE
+             but other database engines have it like NAME DIRECTION TYPE. This will be used to seamlessly construct 
+             the SQL for the parameters -->
+        <parameter_fields>
+          <field id="0" index="1" name="Name"/>
+          <field id="1" index="0" name="Direction"/>
+          <field id="2" index="2" name="Type"/>
+        </parameter_fields>
+        <languages>
+          <language id="0" name="SQL"/>
+          <language id="2" name="Tcl"/>
+          <language id="3" name="Perl"/>
+          <language id="4" name="Python"/>
+        </languages>
+        <default-bodies>
+          <defult-body language-id="0">
+            <![CDATA[BEGIN
+END;
+$$ LANGUAGE plpgsql;]]>
+          </defult-body>
+        </default-bodies>
+      </stored-methods>
+
+      <datatype-groups>
+        <!-- Text types -->
+        <datatype-group type="0" name="Text/String">
+          <datatype name="CHAR" max-size="1073741823"/>
+          <datatype name="VARCHAR" max-size="1073741823" default="1"/>
+          <datatype name="STRING"/>
+        </datatype-group>
+
+        <!-- Numerical types -->
+        <datatype-group type="1" name="Numeric">
+          <datatype name="SHORT" max-size="1"/>
+          <datatype name="SMALLINT" max-size="1"/>
+          <datatype name="INT" max-size="1" default="1"/>
+          <datatype name="INTEGER" max-size="1"/>
+          <datatype name="BIGINT" max-size="1"/>
+          <datatype name="DECIMAL" max-size="1"/>
+          <datatype name="NUMERIC" max-size="1"/>
+          <datatype name="FLOAT" max-size="1"/>
+          <datatype name="REAL" max-size="38"/>
+          <datatype name="DOUBLE" max-size="38"/>
+          <datatype name="DOUBLE PRECISION" max-size="1"/>
+          <datatype name="BIT" max-size="1073741823"/>
+          <datatype name="BIT VARYING" max-size="1073741823"/>
+          <datatype name="MONETARY"/>
+        </datatype-group>
+
+        <!-- Date time types -->
+        <datatype-group type="3" name="Date/Time">
+          <datatype name="DATETIME" max-size="-1" default="1"/>
+          <datatype name="DATE" max-size="-1"/>
+          <datatype name="TIME" max-size="-1"/>
+          <datatype name="TIMESTAMP" max-size="-1"/>
+        </datatype-group>
+
+        <!-- Blob types -->
+        <datatype-group type="4" name="Blob/Binary">
+          <datatype name="BLOB" default="1"/>
+          <datatype name="CLOB"/>
+        </datatype-group>
+
+        <!-- Miscellaneous types -->
+        <datatype-group type="5" name="Misc">
+          <datatype name="ENUM" max-size="-1" default="1"/>
+          <datatype name="SET" max-size="-1"/>
+          <datatype name="MULTISET" max-size="-1"/>
+          <datatype name="LIST" max-size="-1"/>
+        </datatype-group>
+      </datatype-groups>
+
+      <keywords>
+        <keyword description="" text="ABSOLUTE"/>
+        <keyword description="" text="ALLOCATE"/>
+        <keyword description="" text="ASSERTION"/>
+        <keyword description="" text="ACTION"/>
+        <keyword description="" text="ALTER"/>
+        <keyword description="" text="ASYNC"/>
+        <keyword description="" text="ADD"/>
+        <keyword description="" text="AND"/>
+        <keyword description="" text="AT"/>
+        <keyword description="" text="ADD_MONTH"/>
+        <keyword description="" text="ANY"/>
+        <keyword description="" text="ATTACH"/>
+        <keyword description="" text="AFTER"/>
+        <keyword description="" text="ARE"/>
+        <keyword description="" text="ATTRIBUTE"/>
+        <keyword description="" text="ALIAS"/>
+        <keyword description="" text="AS"/>
+        <keyword description="" text="AVG"/>
+        <keyword description="" text="ALL"/>
+        <keyword description="" text="ASC"/>
+        <keyword description="" text="BEFORE"/>
+        <keyword description="" text="BIT"/>
+        <keyword description="" text="BREADTH"/>
+        <keyword description="" text="BEGIN"/>
+        <keyword description="" text="BIT_LENGTH"/>
+        <keyword description="" text="BY"/>
+        <keyword description="" text="BETWEEN"/>
+        <keyword description="" text="BOOLEAN"/>
+        <keyword description="" text="BIGINT"/>
+        <keyword description="" text="BOTH"/>
+        <keyword description="" text="CALL"/>
+        <keyword description="" text="CLOSE"/>
+        <keyword description="" text="CORRESPONDING"/>
+        <keyword description="" text="CASCADE"/>
+        <keyword description="" text="CLUSTER"/>
+        <keyword description="" text="COUNT"/>
+        <keyword description="" text="CASCADED"/>
+        <keyword description="" text="COALESCE"/>
+        <keyword description="" text="CREATE"/>
+        <keyword description="" text="CASE"/>
+        <keyword description="" text="COLLATE"/>
+        <keyword description="" text="CROSS"/>
+        <keyword description="" text="CAST"/>
+        <keyword description="" text="COLLATION"/>
+        <keyword description="" text="CURRENT"/>
+        <keyword description="" text="CATALOG"/>
+        <keyword description="" text="COLUMN"/>
+        <keyword description="" text="CURRENT_DATE"/>
+        <keyword description="" text="CHANGE"/>
+        <keyword description="" text="COMMIT"/>
+        <keyword description="" text="CURRENT_DATETIME"/>
+        <keyword description="" text="CHAR"/>
+        <keyword description="" text="COMPLETION"/>
+        <keyword description="" text="CURRENT_TIME"/>
+        <keyword description="" text="CHARACTER"/>
+        <keyword description="" text="CONNECT"/>
+        <keyword description="" text="CURRENT_TIMESTAMP"/>
+        <keyword description="" text="CHARACTER_LENGTH"/>
+        <keyword description="" text="CONNECTION"/>
+        <keyword description="" text="CURRENT_USER"/>
+        <keyword description="" text="CHAR_LENGTH"/>
+        <keyword description="" text="CONSTRAINT"/>
+        <keyword description="" text="CURSOR"/>
+        <keyword description="" text="CHECK"/>
+        <keyword description="" text="CONSTRAINTS"/>
+        <keyword description="" text="CYCLE"/>
+        <keyword description="" text="CLASS"/>
+        <keyword description="" text="CONTINUE"/>
+        <keyword description="" text="CLASSES"/>
+        <keyword description="" text="CONVERT"/>
+        <keyword description="" text="DATA"/>
+        <keyword description="" text="DEFERRABLE"/>
+        <keyword description="" text="DICTIONARY"/>
+        <keyword description="" text="DATA_TYPE"/>
+        <keyword description="" text="DEFERRED"/>
+        <keyword description="" text="DIFFERENCE"/>
+        <keyword description="" text="DATE"/>
+        <keyword description="" text="DELETE"/>
+        <keyword description="" text="DISCONNECT"/>
+        <keyword description="" text="DATETIME"/>
+        <keyword description="" text="DEPTH"/>
+        <keyword description="" text="DISTINCT"/>
+        <keyword description="" text="DAY"/>
+        <keyword description="" text="DESC"/>
+        <keyword description="" text="DOMAIN"/>
+        <keyword description="" text="DEALLOCATE"/>
+        <keyword description="" text="DESCRIBE"/>
+        <keyword description="" text="DOUBLE"/>
+        <keyword description="" text="DECLARE"/>
+        <keyword description="" text="DESCRIPTOR"/>
+        <keyword description="" text="DROP"/>
+        <keyword description="" text="DEFAULT"/>
+        <keyword description="" text="DIAGNOSTICS"/>
+        <keyword description="" text="EACH"/>
+        <keyword description="" text="ESCAPE"/>
+        <keyword description="" text="EXECUTE"/>
+        <keyword description="" text="ELSE"/>
+        <keyword description="" text="EXCEPT"/>
+        <keyword description="" text="EXISTS"/>
+        <keyword description="" text="ELSEIF"/>
+        <keyword description="" text="EXCEPTION"/>
+        <keyword description="" text="EXTERNAL"/>
+        <keyword description="" text="END"/>
+        <keyword description="" text="EXCLUDE"/>
+        <keyword description="" text="EXTRACT"/>
+        <keyword description="" text="EQUALS"/>
+        <keyword description="" text="EXEC"/>
+        <keyword description="" text="FALSE"/>
+        <keyword description="" text="GENERAL"/>
+        <keyword description="" text="HAVING"/>
+        <keyword description="" text="FETCH"/>
+        <keyword description="" text="GET"/>
+        <keyword description="" text="HOUR"/>
+        <keyword description="" text="FILE"/>
+        <keyword description="" text="GLOBAL"/>
+        <keyword description="" text="FIRST"/>
+        <keyword description="" text="GO"/>
+        <keyword description="" text="FLOAT"/>
+        <keyword description="" text="GOTO"/>
+        <keyword description="" text="FOR"/>
+        <keyword description="" text="GRANT"/>
+        <keyword description="" text="FOREIGN"/>
+        <keyword description="" text="GROUP"/>
+        <keyword description="" text="FOUND"/>
+        <keyword description="" text="FROM"/>
+        <keyword description="" text="FULL"/>
+        <keyword description="" text="FUNCTION"/>
+        <keyword description="" text="IDENTITY"/>
+        <keyword description="" text="INHERIT"/>
+        <keyword description="" text="INTERSECT"/>
+        <keyword description="" text="IF"/>
+        <keyword description="" text="INITIALLY"/>
+        <keyword description="" text="INTERSECTION"/>
+        <keyword description="" text="IGNORE"/>
+        <keyword description="" text="INNER"/>
+        <keyword description="" text="INTERVAL"/>
+        <keyword description="" text="IMMEDIATE"/>
+        <keyword description="" text="INOUT"/>
+        <keyword description="" text="INTO"/>
+        <keyword description="" text="IN"/>
+        <keyword description="" text="INSERT"/>
+        <keyword description="" text="IS"/>
+        <keyword description="" text="INDEX"/>
+        <keyword description="" text="INT"/>
+        <keyword description="" text="ISOLATION"/>
+        <keyword description="" text="INDICATOR"/>
+        <keyword description="" text="INTEGER"/>
+        <keyword description="" text="JOIN"/>
+        <keyword description="" text="KEY"/>
+        <keyword description="" text="LANGUAGE"/>
+        <keyword description="" text="MATCH"/>
+        <keyword description="" text="NA"/>
+        <keyword description="" text="LAST"/>
+        <keyword description="" text="MAX"/>
+        <keyword description="" text="NAMES"/>
+        <keyword description="" text="LDB"/>
+        <keyword description="" text="METHOD"/>
+        <keyword description="" text="NATIONAL"/>
+        <keyword description="" text="LEADING"/>
+        <keyword description="" text="MILLISECOND"/>
+        <keyword description="" text="NATURAL"/>
+        <keyword description="" text="LEAVE"/>
+        <keyword description="" text="MIN"/>
+        <keyword description="" text="NCHAR"/>
+        <keyword description="" text="LEFT"/>
+        <keyword description="" text="MINUTE"/>
+        <keyword description="" text="NEXT"/>
+        <keyword description="" text="LESS"/>
+        <keyword description="" text="MODIFY"/>
+        <keyword description="" text="NO"/>
+        <keyword description="" text="LEVEL"/>
+        <keyword description="" text="MODULE"/>
+        <keyword description="" text="NOCYCLE"/>
+        <keyword description="" text="LIKE"/>
+        <keyword description="" text="MONETARY"/>
+        <keyword description="" text="NONE"/>
+        <keyword description="" text="LIMIT"/>
+        <keyword description="" text="MONTH"/>
+        <keyword description="" text="NOT"/>
+        <keyword description="" text="LIST"/>
+        <keyword description="" text="MULTISET"/>
+        <keyword description="" text="NULL"/>
+        <keyword description="" text="LOCAL"/>
+        <keyword description="" text="MULTISET_OF"/>
+        <keyword description="" text="NULLIF"/>
+        <keyword description="" text="LOCAL_TRANSACTION_ID"/>
+        <keyword description="" text="NUMERIC"/>
+        <keyword description="" text="LOOP"/>
+        <keyword description="" text="LOWER"/>
+        <keyword description="" text="OBJECT"/>
+        <keyword description="" text="ON_"/>
+        <keyword description="" text="ORDER"/>
+        <keyword description="" text="OCTET_LENGTH"/>
+        <keyword description="" text="OPEN"/>
+        <keyword description="" text="OTHERS"/>
+        <keyword description="" text="OF"/>
+        <keyword description="" text="OPERATION"/>
+        <keyword description="" text="OUT"/>
+        <keyword description="" text="OFF"/>
+        <keyword description="" text="OPERATORS"/>
+        <keyword description="" text="OUTER"/>
+        <keyword description="" text="OID"/>
+        <keyword description="" text="OPTIMIZATION"/>
+        <keyword description="" text="OUTPUT"/>
+        <keyword description="" text="OLD"/>
+        <keyword description="" text="OPTION"/>
+        <keyword description="" text="OVERLAPS"/>
+        <keyword description="" text="ONLY"/>
+        <keyword description="" text="OR"/>
+        <keyword description="" text="PARAMETERS"/>
+        <keyword description="" text="PREORDER"/>
+        <keyword description="" text="PRIVATE"/>
+        <keyword description="" text="PARTIAL"/>
+        <keyword description="" text="PREPARE"/>
+        <keyword description="" text="PRIVILEGES"/>
+        <keyword description="" text="PENDANT"/>
+        <keyword description="" text="PRESERVE"/>
+        <keyword description="" text="PROCEDURE"/>
+        <keyword description="" text="POSITION"/>
+        <keyword description="" text="PRIMARY"/>
+        <keyword description="" text="PROTECTED"/>
+        <keyword description="" text="PRECISION"/>
+        <keyword description="" text="PRIOR"/>
+        <keyword description="" text="PROXY"/>
+        <keyword description="" text="QUERY"/>
+        <keyword description="" text="READ"/>
+        <keyword description="" text="RENAME"/>
+        <keyword description="" text="ROLE"/>
+        <keyword description="" text="REAL"/>
+        <keyword description="" text="REPLACE"/>
+        <keyword description="" text="ROLLBACK"/>
+        <keyword description="" text="RECURSIVE"/>
+        <keyword description="" text="RESIGNAL"/>
+        <keyword description="" text="ROUTINE"/>
+        <keyword description="" text="REF"/>
+        <keyword description="" text="RESTRIC"/>
+        <keyword description="" text="ROW"/>
+        <keyword description="" text="REFERENCES"/>
+        <keyword description="" text="RETURNS" role="returns"/>
+        <keyword description="" text="ROWNUM"/>
+        <keyword description="" text="REFERENCING"/>
+        <keyword description="" text="RETURNS"/>
+        <keyword description="" text="ROWS"/>
+        <keyword description="" text="REGISTER"/>
+        <keyword description="" text="REVOKE"/>
+        <keyword description="" text="RELATIVE"/>
+        <keyword description="" text="RIGHT"/>
+        <keyword description="" text="SAVEPOINT"/>
+        <keyword description="" text="SHREAD"/>
+        <keyword description="" text="SUBSET"/>
+        <keyword description="" text="SCHEMA"/>
+        <keyword description="" text="SIBLINGS"/>
+        <keyword description="" text="SUBSETEQ"/>
+        <keyword description="" text="SCOPE"/>
+        <keyword description="" text="SIGNAL"/>
+        <keyword description="" text="SUBSTRING"/>
+        <keyword description="" text="SCROLL"/>
+        <keyword description="" text="SIMILAR"/>
+        <keyword description="" text="SUM"/>
+        <keyword description="" text="SEARCH"/>
+        <keyword description="" text="SIZE"/>
+        <keyword description="" text="SUPERCLASS"/>
+        <keyword description="" text="SECOND"/>
+        <keyword description="" text="SMALLINT"/>
+        <keyword description="" text="SUPERSET"/>
+        <keyword description="" text="SECTION"/>
+        <keyword description="" text="SOME"/>
+        <keyword description="" text="SUPERSETEQ"/>
+        <keyword description="" text="SELECT"/>
+        <keyword description="" text="SQL"/>
+        <keyword description="" text="SYSDATE"/>
+        <keyword description="" text="SENSITIVE"/>
+        <keyword description="" text="SQLCODE"/>
+        <keyword description="" text="SYSDATETIME"/>
+        <keyword description="" text="SEQUENCE"/>
+        <keyword description="" text="SQLERROR"/>
+        <keyword description="" text="SYSTEM_USER"/>
+        <keyword description="" text="SEQUENCE_OF"/>
+        <keyword description="" text="SQLEXCEPTION"/>
+        <keyword description="" text="SYSTIME"/>
+        <keyword description="" text="SERIALIZABLE"/>
+        <keyword description="" text="SQLSTATE"/>
+        <keyword description="" text="SYS_DATE"/>
+        <keyword description="" text="SESSION"/>
+        <keyword description="" text="SQLWARNING"/>
+        <keyword description="" text="SYS_DATETIME"/>
+        <keyword description="" text="SESSION_USER"/>
+        <keyword description="" text="STATISTICS"/>
+        <keyword description="" text="SYS_TIME"/>
+        <keyword description="" text="SET"/>
+        <keyword description="" text="STRING"/>
+        <keyword description="" text="SYS_TIMESTAMP"/>
+        <keyword description="" text="SETEQ"/>
+        <keyword description="" text="STRUCTURE"/>
+        <keyword description="" text="SYS_USER"/>
+        <keyword description="" text="SET_OF"/>
+        <keyword description="" text="SUBCLASS"/>
+        <keyword description="" text="TABLE"/>
+        <keyword description="" text="TIMESTAMP"/>
+        <keyword description="" text="TRANSLATE"/>
+        <keyword description="" text="TEMPORARY"/>
+        <keyword description="" text="TIMEZONE_HOUR"/>
+        <keyword description="" text="TRANSLATION"/>
+        <keyword description="" text="TEST"/>
+        <keyword description="" text="TIMEZONE_MINUTE"/>
+        <keyword description="" text="TRIGGER"/>
+        <keyword description="" text="THEN"/>
+        <keyword description="" text="TO"/>
+        <keyword description="" text="TRIM"/>
+        <keyword description="" text="THERE"/>
+        <keyword description="" text="TRAILING"/>
+        <keyword description="" text="TRUE"/>
+        <keyword description="" text="TIME"/>
+        <keyword description="" text="TRANSACTION"/>
+        <keyword description="" text="TYPE"/>
+        <keyword description="" text="UNDER"/>
+        <keyword description="" text="VALUE"/>
+        <keyword description="" text="WAIT"/>
+        <keyword description="" text="UNION"/>
+        <keyword description="" text="VALUES"/>
+        <keyword description="" text="WHEN"/>
+        <keyword description="" text="UNIQUE"/>
+        <keyword description="" text="VARCHAR"/>
+        <keyword description="" text="WHENEVER"/>
+        <keyword description="" text="UNKNOWN"/>
+        <keyword description="" text="VARIABLE"/>
+        <keyword description="" text="WHERE"/>
+        <keyword description="" text="UPDATE"/>
+        <keyword description="" text="VARYING"/>
+        <keyword description="" text="WHILE"/>
+        <keyword description="" text="UPPER"/>
+        <keyword description="" text="VCLASS"/>
+        <keyword description="" text="WITH"/>
+        <keyword description="" text="USAGE"/>
+        <keyword description="" text="VIEW"/>
+        <keyword description="" text="WITHOUT"/>
+        <keyword description="" text="USE"/>
+        <keyword description="" text="VIRTUAL"/>
+        <keyword description="" text="WORK"/>
+        <keyword description="" text="USER"/>
+        <keyword description="" text="VISIBLE"/>
+        <keyword description="" text="WRITE"/>
+        <keyword description="" text="USING"/>
+        <keyword description="" text="UTIME"/>
+        <keyword description="" text="YEAR"/>
+        <keyword description="" text="ZONE"/>
+      </keywords>
+      <trigger-defs>
+        <field role="event" value="INSERT"/>
+        <field role="event" value="STATEMENT INSERT"/>
+        <field role="event" value="UPDATE"/>
+        <field role="event" value="STATEMENT UPDATE"/>
+        <field role="event" value="DELETE"/>
+        <field role="event" value="STATEMENT DELETE"/>
+        <field role="event" value="ROLLBACK"/>
+        <field role="event" value="COMMIT"/>
+        <field role="time" value="BEFORE"/>
+        <field role="time" value="AFTER"/>
+        <field role="time" value="DEFERRED"/>
+        <field role="body-def-statement" value="execute"/>
+      </trigger-defs>
+
+      <!-- The function categories supported by this database engine -->
+      <function-categories>
+        <function-category name="Control Flow" id="FT_CONTROLFLOW" value="0"/>
+        <function-category name="String" id="FT_STRING" value="1"/>
+        <function-category name="Numerical" id="FT_NUMERIC" value="2"/>
+        <function-category name="Date/Time" id="FT_DATETIME" value="3"/>
+        <function-category name="Blob Manipulation" id="FT_BLOB" value="4"/>
+        <function-category name="Casting" id="FT_CAST" value="5"/>
+        <function-category name="Bit operation" id="FT_BIT" value="6"/>
+        <function-category name="Cryptography" id="FT_CRYPT" value="7"/>
+        <function-category name="Information" id="FT_INFO" value="8"/>
+        <function-category name="Miscellaneous" id="FT_MISC" value="9"/>
+        <function-category name="Aggregate" id="FT_AGGREGATE" value="10" role="aggregate"/>
+      </function-categories>
+
+      <!-- Control Flow: CASE is not supported -->
+      <!-- POSITION (sub IN str) function not supported due to complexity -->
+
+      <!-- And the list of functions supported by this database. -->
+      <functions>
+        <function name="@coalesce" category="FT_CONTROLFLOW" category-value="0" return="RET_STRING">
+          <parameters count="1">
+            <parameter name="" type="PAR_VARIABLE"/>
+          </parameters>
+          <description>
+            <![CDATA["COALESCE(expression [,expression ]...) If the first argument is non-NULL, the corresponding value is returned if it is NULL, the second argument is returned."]]>
+          </description>
+        </function>
+
+        <function name="@if" category="FT_CONTROLFLOW" category-value="0" return="RET_STRING">
+          <parameters count="3">
+            <parameter name="" type="PAR_STRING"/>
+            <parameter name="" type="PAR_STRING"/>
+            <parameter name="" type="PAR_STRING"/>
+          </parameters>
+          <description>
+            <![CDATA["IF(expr1,expr2,expr3) If expr1 is TRUE (expr1 <> 0 and expr1 <> NULL) then IF() returns expr2; otherwise it returns expr3. IF() returns a numeric or string value, depending on the context in which it is used."]]>
+          </description>
+        </function>
+
+        <function name="@decode" category="FT_CONTROLFLOW" category-value="0" return="RET_STRING">
+          <parameters count="4">
+            <parameter name="" type="PAR_STRING"/>
+            <parameter name="" type="PAR_STRING"/>
+            <parameter name="" type="PAR_STRING"/>
+            <parameter name="" type="OPAR_STRING"/>
+          </parameters>
+          <description>
+            <![CDATA["DECODE(expression,search,result [, search,result]* [,default]) The DECODE function performs the same functionality as the IF ... THEN ... ELSE statement. It compares the expression argument with search argument, and returns the result corresponding to search that has the same value. It returns default if there is no search with the same value, and returns NULL if default is omitted."]]>
+          </description>
+        </function>
+
+        <function name="@greatest" category="FT_CONTROLFLOW" category-value="0" return="RET_STRING">
+          <parameters count="2">
+            <parameter name="" type="PAR_GENERIC"/>
+            <parameter name="" type="PAR_VARIABLE"/>
+          </parameters>
+          <description>
+            <![CDATA["GREATEST(expression [,expression ]...) The GREATEST function compares more than one expression specified as parameters and returns the greatest value. If only one expression has been specified, the expression is returned because there is no expression to be compared with."]]>
+          </description>
+        </function>
+
+        <function name="@ifnull" category="FT_CONTROLFLOW" category-value="0" return="RET_STRING">
+          <parameters count="2">
+            <parameter name="" type="PAR_STRING"/>
+            <parameter name="" type="PAR_STRING"/>
+          </parameters>
+          <description>
+            <![CDATA["IFNULL(expr1,expr2) If expr1 is not NULL, IFNULL() returns expr1; otherwise it returns expr2. IFNULL() returns a numeric or string value, depending on the context in which it is used."]]>
+          </description>
+        </function>
+
+        <function name="@isnull" category="FT_CONTROLFLOW" category-value="0" return="RET_NUMERIC">
+          <parameters count="1">
+            <parameter name="" type="PAR_STRING"/>
+          </parameters>
+          <description>
+            <![CDATA["ISNULL(expr) The ISNULL function performs a comparison to determine if the result of the expression specified as an argument is NULL. The function returns 1 if it is NULL or 0 otherwise. "]]>
+          </description>
+        </function>
+
+        <function name="@least" category="FT_CONTROLFLOW" category-value="0" return="RET_STRING">
+          <parameters count="2">
+            <parameter name="" type="PAR_GENERIC"/>
+            <parameter name="" type="PAR_VARIABLE"/>
+          </parameters>
+          <description>
+            <![CDATA["LEAST(expression [,expression ]...) The LEAST function compares more than one expression specified as parameters and returns the smallest value. If only one expression has been specified, the expression is returned because there is no expression to be compared with."]]>
+          </description>
+        </function>
+
+        <function name="@nullif" category="FT_CONTROLFLOW" category-value="0" return="RET_STRING">
+          <parameters count="2">
+            <parameter name="" type="PAR_STRING"/>
+            <parameter name="" type="PAR_STRING"/>
+          </parameters>
+          <description>
+            <![CDATA["NULLIF(expr1,expr2) Returns NULL if expr1 = expr2 is true, otherwise returns expr1."]]>
+          </description>
+        </function>
+
+        <function name="@nvl" category="FT_CONTROLFLOW" category-value="0" return="RET_STRING">
+          <parameters count="3">
+            <parameter name="" type="PAR_STRING"/>
+            <parameter name="" type="PAR_STRING"/>
+            <parameter name="" type="PAR_STRING"/>
+          </parameters>
+          <description>
+            <![CDATA["NVL(expr1, expr2, expr3) Three parameters are specified for the NVL2 function. The second expression (expr2) is returned if the first expression (expr1) is not NULL; the third expression (expr3) is returned if it is NULL."]]>
+          </description>
+        </function>
+
+        <!-- Blob manipulation functions -->
+
+
+        <function name="@bit_to_blob" category="FT_BLOB" category-value="4" return="RET_BLOB">
+          <parameters count="1">
+            <parameter name="" type="PAR_GENERIC"/>
+          </parameters>
+          <description>
+            <![CDATA["BIT_TO_BLOB(blob_type_column_or_value) This function converts BIT or VARYING BIT type into BLOB type"]]>
+          </description>
+        </function>
+
+        <function name="@blob_length" category="FT_BLOB" category-value="4" return="RET_NUMERIC">
+          <parameters count="1">
+            <parameter name="" type="PAR_BLOB"/>
+          </parameters>
+          <description>
+            <![CDATA["BLOB_LENGTH(blob_type_column) Return the length of the blob"]]>
+          </description>
+        </function>
+
+        <function name="@blob_to_bit" category="FT_BLOB" category-value="4" return="RET_GENERIC">
+          <parameters count="1">
+            <parameter name="" type="PAR_BLOB"/>
+          </parameters>
+          <description>
+            <![CDATA["BLOB_LENGTH(blob_type_column) Converts the BLOB column to VARYING BIT type"]]>
+          </description>
+        </function>
+
+        <function name="@char_to_blob" category="FT_BLOB" category-value="4" return="RET_BLOB">
+          <parameters count="1">
+            <parameter name="" type="PAR_STRING"/>
+          </parameters>
+          <description>
+            <![CDATA["CHAR_TO_BLOB(char_type_column_or_value) This function converts CHAR or VARCHAR into BLOB type"]]>
+          </description>
+        </function>
+
+        <function name="@char_to_clob" category="FT_BLOB" category-value="4" return="RET_BLOB">
+          <parameters count="1">
+            <parameter name="" type="PAR_STRING"/>
+          </parameters>
+          <description>
+            <![CDATA["CHAR_TO_CLOB(char_type_column_or_value) This function converts CHAR or VARCHAR into CLOB type"]]>
+          </description>
+        </function>
+
+        <function name="@clob_length" category="FT_BLOB" category-value="4" return="RET_NUMERIC">
+          <parameters count="1">
+            <parameter name="" type="PAR_BLOB"/>
+          </parameters>
+          <description>
+            <![CDATA["CLOB_LENGTH(blob_type_column) Return the length of the clob"]]>
+          </description>
+        </function>
+
+        <function name="@clob_to_char" category="FT_BLOB" category-value="4" return="RET_STRING">
+          <parameters count="1">
+            <parameter name="" type="PAR_BLOB"/>
+          </parameters>
+          <description>
+            <![CDATA["CLOB_T_CHAR(blob_type_column) Converts the CLOB column to VARCHAR type"]]>
+          </description>
+        </function>
+
+        <!-- Numeric functions -->
+
+        <function name="@abs" category="FT_NUMERIC" category-value="2" return="RET_NUMERIC">
+          <parameters count="1">
+            <parameter name="" type="PAR_NUMERIC"/>
+          </parameters>
+          <description>
+            <![CDATA["ABS(X) Returns the absolute value of X"]]>
+          </description>
+        </function>
+
+        <function name="@acos" category="FT_NUMERIC" category-value="2" return="RET_NUMERIC">
+          <parameters count="1">
+            <parameter name="" type="PAR_NUMERIC"/>
+          </parameters>
+          <description>
+            <![CDATA["ACOS(X) Returns the arc cosine of X, that is, the value whose cosine is X. Returns NULL if X is not in the range -1 to 1. "]]>
+          </description>
+        </function>
+
+        <function name="@asin" category="FT_NUMERIC" category-value="2" return="RET_NUMERIC">
+          <parameters count="1">
+            <parameter name="" type="PAR_NUMERIC"/>
+          </parameters>
+          <description>
+            <![CDATA["ASIN(X) Returns the arc sine of X, that is, the value whose sine is X. Returns NULL if X is not in the range -1 to 1. "]]>
+          </description>
+        </function>
+
+        <function name="@atan" category="FT_NUMERIC" category-value="2" return="RET_NUMERIC">
+          <parameters count="1">
+            <parameter name="" type="PAR_NUMERIC"/>
+          </parameters>
+          <description>
+            <![CDATA["ATAN(X) Returns the arc tangent of X, that is, the value whose tangent is X."]]>
+          </description>
+        </function>
+
+        <function name="@ceil" category="FT_NUMERIC" category-value="2" return="RET_NUMERIC">
+          <parameters count="1">
+            <parameter name="" type="PAR_NUMERIC"/>
+          </parameters>
+          <description>
+            <![CDATA["CEIL(X) Returns the smallest integer value not less than X."]]>
+          </description>
+        </function>
+
+        <function name="@conv" category="FT_NUMERIC" category-value="2" return="RET_STRING">
+          <parameters count="3">
+            <parameter name="" type="PAR_STRING"/>
+            <parameter name="" type="PAR_NUMERIC"/>
+            <parameter name="" type="PAR_NUMERIC"/>
+          </parameters>
+          <description>
+            <![CDATA["CONV(X,from_base,to_base) Converts numbers between different number bases. Returns a string representation of the number N, converted from base from_base to base to_base."]]>
+          </description>
+        </function>
+
+        <function name="@cos" category="FT_NUMERIC" category-value="2" return="RET_NUMERIC">
+          <parameters count="1">
+            <parameter name="" type="PAR_NUMERIC"/>
+          </parameters>
+          <description>
+            <![CDATA["COS(X) Returns the cosine of X, where X is given in radians. "]]>
+          </description>
+        </function>
+
+        <function name="@cot" category="FT_NUMERIC" category-value="2" return="RET_NUMERIC">
+          <parameters count="1">
+            <parameter name="" type="PAR_NUMERIC"/>
+          </parameters>
+          <description>
+            <![CDATA["COT(X) Returns the cotangent of X."]]>
+          </description>
+        </function>
+
+        <function name="@degrees" category="FT_NUMERIC" category-value="2" return="RET_NUMERIC">
+          <parameters count="1">
+            <parameter name="" type="PAR_NUMERIC"/>
+          </parameters>
+          <description>
+            <![CDATA["DEGREES(X) Returns the argument X, converted from radians to degrees. "]]>
+          </description>
+        </function>
+
+        <function name="@drand" category="FT_NUMERIC" category-value="2" return="RET_NUMERIC">
+          <parameters count="1">
+            <parameter name="" type="OPAR_NUMERIC"/>
+          </parameters>
+          <description>
+            <![CDATA["DRAND([N]) Returns a double preceision random floating-point value v in the range 0 <= v < 1.0. If a constant integer argument N is specified, it is used as the seed value."]]>
+          </description>
+        </function>
+
+        <function name="@exp" category="FT_NUMERIC" category-value="2" return="RET_NUMERIC">
+          <parameters count="1">
+            <parameter name="" type="PAR_NUMERIC"/>
+          </parameters>
+          <description>
+            <![CDATA["EXP(X) Returns the value of e (the base of natural logarithms) raised to the power of X."]]>
+          </description>
+        </function>
+
+        <function name="@floor" category="FT_NUMERIC" category-value="2" return="RET_NUMERIC">
+          <parameters count="1">
+            <parameter name="" type="PAR_NUMERIC"/>
+          </parameters>
+          <description>
+            <![CDATA["FLOOR(X) Returns the largest integer value not greater than X."]]>
+          </description>
+        </function>
+
+        <function name="@hex" category="FT_NUMERIC" category-value="2" return="RET_STRING">
+          <parameters count="1">
+            <parameter name="" type="PAR_NUMERIC"/>
+          </parameters>
+          <description>
+            <![CDATA["HEX(N) For a numeric argument N, HEX() returns a hexadecimal string representation of the value of N treated as a longlong (BIGINT) number."]]>
+          </description>
+        </function>
+
+        <function name="@ln" category="FT_NUMERIC" category-value="2" return="RET_NUMERIC">
+          <parameters count="1">
+            <parameter name="" type="PAR_NUMERIC"/>
+          </parameters>
+          <description>
+            <![CDATA["LN(X) Returns the natural logarithm of X; that is, the base-e logarithm of X."]]>
+          </description>
+        </function>
+
+        <function name="@log2" category="FT_NUMERIC" category-value="2" return="RET_NUMERIC">
+          <parameters count="1">
+            <parameter name="" type="PAR_NUMERIC"/>
+          </parameters>
+          <description>
+            <![CDATA["LOG2(X) Returns the 2-base logarithm of X"]]>
+          </description>
+        </function>
+
+        <function name="@log10" category="FT_NUMERIC" category-value="2" return="RET_NUMERIC">
+          <parameters count="1">
+            <parameter name="" type="PAR_NUMERIC"/>
+          </parameters>
+          <description>
+            <![CDATA["LOG10(X) Returns the 10-base logarithm of X"]]>
+          </description>
+        </function>
+
+        <function name="@mod" category="FT_NUMERIC" category-value="2" return="RET_NUMERIC">
+          <parameters count="2">
+            <parameter name="" type="PAR_NUMERIC"/>
+            <parameter name="" type="PAR_NUMERIC"/>
+          </parameters>
+          <description>
+            <![CDATA["MOD(m,n) The MOD function returns the remainder of the first parameter m divided by the second parameter n"]]>
+          </description>
+        </function>
+
+
+        <function name="@pi" category="FT_NUMERIC" category-value="2" return="RET_NUMERIC">
+          <parameters count="0"/>
+          <description>
+            <![CDATA["PI() Returns the value of p (pi)."]]>
+          </description>
+        </function>
+
+        <function name="@pow" category="FT_NUMERIC" category-value="2" return="RET_NUMERIC">
+          <parameters count="2">
+            <parameter name="" type="PAR_NUMERIC"/>
+            <parameter name="" type="PAR_NUMERIC"/>
+          </parameters>
+          <description>
+            <![CDATA["POW(X,Y) Returns the value of X raised to the power of Y."]]>
+          </description>
+        </function>
+
+        <function name="@radians" category="FT_NUMERIC" category-value="2" return="RET_NUMERIC">
+          <parameters count="1">
+            <parameter name="" type="PAR_NUMERIC"/>
+          </parameters>
+          <description>
+            <![CDATA["RADIANS(X) Returns the argument X, converted from degrees to radians. (Note that π radians equals 180 degrees.)"]]>
+          </description>
+        </function>
+
+        <function name="@rand" category="FT_NUMERIC" category-value="2" return="RET_NUMERIC">
+          <parameters count="1">
+            <parameter name="" type="OPAR_NUMERIC"/>
+          </parameters>
+          <description>
+            <![CDATA["RAND([N]) Returns a random floating-point value v in the range 0 <= v < 1.0. If a constant integer argument N is specified, it is used as the seed value."]]>
+          </description>
+        </function>
+
+        <function name="@round" category="FT_NUMERIC" category-value="2" return="RET_NUMERIC">
+          <parameters count="2">
+            <parameter name="" type="PAR_NUMERIC"/>
+            <parameter name="" type="OPAR_NUMERIC"/>
+          </parameters>
+          <description>
+            <![CDATA["ROUND(X,D) Rounds the argument X to D decimal places."]]>
+          </description>
+        </function>
+
+        <function name="@sign" category="FT_NUMERIC" category-value="2" return="RET_NUMERIC">
+          <parameters count="1">
+            <parameter name="" type="PAR_NUMERIC"/>
+          </parameters>
+          <description>
+            <![CDATA["SIGN(X) Returns the sign of the argument as -1, 0, or 1, depending on whether X is negative, zero, or positive."]]>
+          </description>
+        </function>
+
+        <function name="@sin" category="FT_NUMERIC" category-value="2" return="RET_NUMERIC">
+          <parameters count="1">
+            <parameter name="" type="PAR_NUMERIC"/>
+          </parameters>
+          <description>
+            <![CDATA["SIN(X) Returns the sine of X, where X is given in radians."]]>
+          </description>
+        </function>
+
+        <function name="@sqrt" category="FT_NUMERIC" category-value="2" return="RET_NUMERIC">
+          <parameters count="1">
+            <parameter name="" type="PAR_NUMERIC"/>
+          </parameters>
+          <description>
+            <![CDATA["SQRT(X) Returns the square root of a nonnegative number X."]]>
+          </description>
+        </function>
+
+        <function name="@tan" category="FT_NUMERIC" category-value="2" return="RET_NUMERIC">
+          <parameters count="1">
+            <parameter name="" type="PAR_NUMERIC"/>
+          </parameters>
+          <description>
+            <![CDATA["TAN(X) Returns the tangent of X, where X is given in radians."]]>
+          </description>
+        </function>
+
+        <function name="@truncate" category="FT_NUMERIC" category-value="2" return="RET_NUMERIC">
+          <parameters count="2">
+            <parameter name="" type="PAR_NUMERIC"/>
+            <parameter name="" type="OPAR_NUMERIC"/>
+          </parameters>
+          <description>
+            <![CDATA["TRUNCATE(X,D) Returns the number X, truncated to D decimal places."]]>
+          </description>
+        </function>
+
+        <function name="@width_bucket" category="FT_NUMERIC" category-value="2" return="RET_NUMERIC">
+          <parameters count="4">
+            <parameter name="" type="PAR_NUMERIC"/>
+            <parameter name="" type="PAR_NUMERIC"/>
+            <parameter name="" type="PAR_NUMERIC"/>
+            <parameter name="" type="PAR_NUMERIC"/>
+          </parameters>
+          <description>
+            <![CDATA["WIDTH_BUCKET(expression, from, to, num_buckets) WIDTH_BUCKET distributes the rows in an ordered partition into a specified number of buckets."]]>
+          </description>
+        </function>
+
+        <!-- Time/Date functions -->
+
+        <function name="@addtime" category="FT_DATETIME" category-value="3" return="RET_STRING">
+          <parameters count="2">
+            <parameter name="" type="PAR_STRING"/>
+            <parameter name="" type="PAR_STRING"/>
+          </parameters>
+          <description>
+            <![CDATA["ADDTIME(expr1,expr2) Adds expr2 to expr1 and returns the result. expr1 is a time or datetime expression, and expr2 is a time expression."]]>
+          </description>
+        </function>
+
+        <function name="@add_months" category="FT_DATETIME" category-value="3" return="RET_DATETIME">
+          <parameters count="2">
+            <parameter name="" type="PAR_STRING"/>
+            <parameter name="" type="PAR_NUMERIC"/>
+          </parameters>
+          <description>
+            <![CDATA["ADD_MONTHS(date_argument,month) The ADD_MONTHS function adds a month value to the expression date_argument of DATE type, and it returns a DATE type value."]]>
+          </description>
+        </function>
+
+        <function name="@curdate" category="FT_DATETIME" category-value="3" return="RET_STRING">
+          <parameters count="0"/>
+          <description>
+            <![CDATA["CURDATE() Returns the current date as a value in 'YYYY-MM-DD' or YYYYMMDD format, depending on whether the function is used in a string or numeric context."]]>
+          </description>
+        </function>
+
+        <function name="@curtime" category="FT_DATETIME" category-value="3" return="RET_STRING">
+          <parameters count="0"/>
+          <description>
+            <![CDATA["CURTIME() Returns the current time as a value in 'HH:MM:SS' or HHMMSS.uuuuuu format, depending on whether the function is used in a string or numeric context. The value is expressed in the current time zone."]]>
+          </description>
+        </function>
+
+        <function name="@date" category="FT_DATETIME" category-value="3" return="RET_STRING">
+          <parameters count="1">
+            <parameter name="" type="PAR_STRING"/>
+          </parameters>
+          <description>
+            <![CDATA["DATE(expr) Extracts the date part of the date or datetime expression expr."]]>
+          </description>
+        </function>
+
+        <function name="@datediff" category="FT_DATETIME" category-value="3" return="RET_STRING">
+          <parameters count="2">
+            <parameter name="" type="PAR_STRING"/>
+            <parameter name="" type="PAR_STRING"/>
+          </parameters>
+          <description>
+            <![CDATA["DATEDIFF(expr1,expr2) Returns expr1 – expr2 expressed as a value in days from one date to the other. expr1 and expr2 are date or date-and-time expressions. Only the date parts of the values are used in the calculation. "]]>
+          </description>
+        </function>
+
+        <function name="@date_sub" category="FT_DATETIME" category-value="3" return="RET_STRING">
+          <parameters count="2">
+            <parameter name="" type="PAR_STRING"/>
+            <parameter name="" type="PAR_STRING"/>
+          </parameters>
+          <description>
+            <![CDATA["DATE_SUB(date,INTERVAL expr unit) Performs date arithmetic. The date argument specifies the starting date or datetime value. expr is an expression specifying the interval value to be added or subtracted from the starting date."]]>
+          </description>
+        </function>
+
+        <function name="@dayofmonth" category="FT_DATETIME" category-value="3" return="RET_STRING">
+          <parameters count="1">
+            <parameter name="" type="PAR_STRING"/>
+          </parameters>
+          <description>
+            <![CDATA["DAYOFMONTH(date) Returns the day of the month for date, in the range 1 to 31, or 0 for dates such as '0000-00-00' or '2008-00-00' that have a zero day part."]]>
+          </description>
+        </function>
+
+        <function name="@dayofweek" category="FT_DATETIME" category-value="3" return="RET_STRING">
+          <parameters count="1">
+            <parameter name="" type="PAR_STRING"/>
+          </parameters>
+          <description>
+            <![CDATA["DAYOFWEEK(date) Returns the weekday index for date (1 = Sunday, 2 = Monday, ... , 7 = Saturday)."]]>
+          </description>
+        </function>
+
+        <function name="@dayofyear" category="FT_DATETIME" category-value="3" return="RET_STRING">
+          <parameters count="1">
+            <parameter name="" type="PAR_STRING"/>
+          </parameters>
+          <description>
+            <![CDATA["DAYOFYEAR(date) Returns the day of the year for date, in the range 1 to 366."]]>
+          </description>
+        </function>
+
+        <function name="@extract" category="FT_DATETIME" category-value="3" return="RET_STRING">
+          <parameters count="1">
+            <parameter name="" type="PAR_STRING"/>
+          </parameters>
+          <description>
+            <![CDATA["EXTRACT(unit FROM date) The EXTRACT() function uses the same kinds of unit specifiers as DATE_ADD() or DATE_SUB( category=" but extracts parts from the date rather than performing date arithmetic."]]>
+          </description>
+        </function>
+
+        <function name="@from_days" category="FT_DATETIME" category-value="3" return="RET_STRING">
+          <parameters count="1">
+            <parameter name="" type="PAR_STRING"/>
+          </parameters>
+          <description>
+            <![CDATA["FROM_DAYS(N) Given a day number N, returns a DATE value. "]]>
+          </description>
+        </function>
+
+        <function name="@from_unixtime" category="FT_DATETIME" category-value="3"
+          return="RET_STRING">
+          <parameters count="2">
+            <parameter name="" type="PAR_NUMERIC"/>
+            <parameter name="" type="OPAR_STRING"/>
+          </parameters>
+          <description>
+            <![CDATA["FROM_UNIXTIME(N,[FORMAT]) Returns a representation of the unix_timestamp argument as a value in 'YYYY-MM-DD HH:MM:SS' or YYYYMMDDHHMMSS.uuuuuu format, depending on whether the function is used in a string or numeric context. If format is given, the result is formatted according to the format string."]]>
+          </description>
+        </function>
+
+        <function name="@hour" category="FT_DATETIME" category-value="3" return="RET_NUMERIC">
+          <parameters count="1">
+            <parameter name="" type="PAR_STRING"/>
+          </parameters>
+          <description>
+            <![CDATA["HOUR(time) Returns the hour for time."]]>
+          </description>
+        </function>
+
+        <function name="@last_day" category="FT_DATETIME" category-value="3" return="RET_STRING">
+          <parameters count="1">
+            <parameter name="" type="PAR_STRING"/>
+          </parameters>
+          <description>
+            <![CDATA["LAST_DAY(date) Takes a date or datetime value and returns the corresponding value for the last day of the month."]]>
+          </description>
+        </function>
+
+        <function name="@localtime" category="FT_DATETIME" category-value="3" return="RET_DATETIME">
+          <parameters count="0"/>
+          <description>
+            <![CDATA["LOCALTIME() Returns the current date and time as TIMESTAMP type"]]>
+          </description>
+        </function>
+
+        <function name="@makedate" category="FT_DATETIME" category-value="3" return="RET_STRING">
+          <parameters count="2">
+            <parameter name="" type="PAR_STRING"/>
+            <parameter name="" type="PAR_STRING"/>
+          </parameters>
+          <description>
+            <![CDATA["MAKEDATE(year,dayofyear) Returns a date, given year and day-of-year values. dayofyear must be greater than 0 or the result is NULL."]]>
+          </description>
+        </function>
+
+        <function name="@maketime" category="FT_DATETIME" category-value="3" return="RET_STRING">
+          <parameters count="3">
+            <parameter name="" type="PAR_NUMERIC"/>
+            <parameter name="" type="PAR_NUMERIC"/>
+            <parameter name="" type="PAR_NUMERIC"/>
+          </parameters>
+          <description>
+            <![CDATA["MAKETIME(hour,min,second) Returns a time value calculated from the hour, minute, and second arguments."]]>
+          </description>
+        </function>
+
+        <function name="@minute" category="FT_DATETIME" category-value="3" return="RET_NUMERIC">
+          <parameters count="1">
+            <parameter name="" type="PAR_STRING"/>
+          </parameters>
+          <description>
+            <![CDATA["MINUTE(time) Returns the minute for time."]]>
+          </description>
+        </function>
+
+        <function name="@month" category="FT_DATETIME" category-value="3" return="RET_NUMERIC">
+          <parameters count="1">
+            <parameter name="" type="PAR_STRING"/>
+          </parameters>
+          <description>
+            <![CDATA["MONTH(date) Returns the month for date, in the range 1 to 12 for January to December, or 0 for dates such as '0000-00-00' or '2008-00-00' that have a zero month part."]]>
+          </description>
+        </function>
+
+        <function name="@months_between" category="FT_DATETIME" category-value="3"
+          return="RET_NUMERIC">
+          <parameters count="2">
+            <parameter name="" type="PAR_DATETIME"/>
+            <parameter name="" type="PAR_DATETIME"/>
+          </parameters>
+          <description>
+            <![CDATA["MONTHS_BETWEEN(date_argument,date_argument) The MONTHS_BETWEEN function returns the difference between the given DATE value."]]>
+          </description>
+        </function>
+
+        <function name="@now" category="FT_DATETIME" category-value="3" return="RET_DATETIME">
+          <parameters count="0"/>
+          <description>
+            <![CDATA["NOW() Returns the current date and time as a DATETIME type"]]>
+          </description>
+        </function>
+
+        <function name="@quarter" category="FT_DATETIME" category-value="3" return="RET_STRING">
+          <parameters count="1">
+            <parameter name="" type="PAR_STRING"/>
+          </parameters>
+          <description>
+            <![CDATA["QUARTER(date) Returns the quarter of the year for date, in the range 1 to 4."]]>
+          </description>
+        </function>
+
+        <function name="@round" category="FT_DATETIME" category-value="3" return="RET_DATETIME">
+          <parameters count="2">
+            <parameter name="" type="PAR_DATETIME"/>
+            <parameter name="" type="PAR_STRING"/>
+          </parameters>
+          <description>
+            <![CDATA["ROUND(date,fmt) This function rounds date to the unit specified by the format string, fmt."]]>
+          </description>
+        </function>
+
+        <function name="@second" category="FT_DATETIME" category-value="3" return="RET_NUMERIC">
+          <parameters count="1">
+            <parameter name="" type="PAR_STRING"/>
+          </parameters>
+          <description>
+            <![CDATA["SECOND(time) Returns the second of the time in range 0 to 59."]]>
+          </description>
+        </function>
+
+        <function name="@sec_to_time" category="FT_DATETIME" category-value="3" return="RET_STRING">
+          <parameters count="1">
+            <parameter name="" type="PAR_STRING"/>
+          </parameters>
+          <description>
+            <![CDATA["SEC_TO_TIME(seconds) Returns the seconds argument, converted to hours, minutes, and seconds, as a TIME value."]]>
+          </description>
+        </function>
+
+        <function name="@time" category="FT_DATETIME" category-value="3" return="RET_NUMERIC">
+          <parameters count="1">
+            <parameter name="" type="PAR_STRING"/>
+          </parameters>
+          <description>
+            <![CDATA["TIME(expr) Extracts the time part of the time or datetime expression expr and returns it as a string."]]>
+          </description>
+        </function>
+
+        <function name="@time_to_sec" category="FT_DATETIME" category-value="3" return="RET_NUMERIC">
+          <parameters count="1">
+            <parameter name="" type="PAR_DATETIME"/>
+          </parameters>
+          <description>
+            <![CDATA["TIME_TO_SEC(time) The TIME_TO_SEC function returns the seconds in the range of 0 to 86,399 from specified argument."]]>
+          </description>
+        </function>
+
+        <function name="@timediff" category="FT_DATETIME" category-value="3" return="RET_DATETIME">
+          <parameters count="2">
+            <parameter name="" type="PAR_STRING"/>
+            <parameter name="" type="PAR_STRING"/>
+          </parameters>
+          <description>
+            <![CDATA["TIMEDIFF(expr1,expr2) Returns expr1 – expr2 expressed as a time value. expr1 and expr2 are time or date-and-time expressions, but both must be of the same type."]]>
+          </description>
+        </function>
+
+        <function name="@timestamp" category="FT_DATETIME" category-value="3" return="RET_DATETIME">
+          <parameters count="2">
+            <parameter name="" type="PAR_STRING"/>
+            <parameter name="" type="OPAR_STRING"/>
+          </parameters>
+          <description>
+            <![CDATA["TIMESTAMP(expr1,expr2) It adds the time expression expr2 to the date or datetime expression expr1 and returns the result as a datetime value."]]>
+          </description>
+        </function>
+
+        <function name="@to_days" category="FT_DATETIME" category-value="3" return="RET_NUMERIC">
+          <parameters count="1">
+            <parameter name="" type="PAR_STRING"/>
+          </parameters>
+          <description>
+            <![CDATA["TO_DAYS(date) Given a date date, returns a day number (the number of days since year 0)."]]>
+          </description>
+        </function>
+
+        <function name="@trunc" category="FT_DATETIME" category-value="3" return="RET_DATETIME">
+          <parameters count="2">
+            <parameter name="" type="PAR_DATETIME"/>
+            <parameter name="" type="OPAR_STRING"/>
+          </parameters>
+          <description>
+            <![CDATA["TRUNC(date,[fmt]) This function truncs the date to the unit specified by the format string, fmt."]]>
+          </description>
+        </function>
+
+        <function name="@unix_timestamp" category="FT_DATETIME" category-value="3"
+          return="RET_NUMERIC">
+          <parameters count="1">
+            <parameter name="" type="OPAR_STRING"/>
+          </parameters>
+          <description>
+            <![CDATA["UNIX_TIMESTAMP([date]) Returns returns the value of the argument seconds since '1970-01-01 00:00:00' UTC as an unsigned integer"]]>
+          </description>
+        </function>
+
+        <function name="@utc_date" category="FT_DATETIME" category-value="3" return="RET_STRING">
+          <parameters count="0"/>
+          <description>
+            <![CDATA["UTC_DATE() Returns the current UTC date as a value in 'YYYY-MM-DD' or YYYYMMDD format, depending on whether the function is used in a string or numeric context."]]>
+          </description>
+        </function>
+
+        <function name="@utc_time" category="FT_DATETIME" category-value="3" return="RET_STRING">
+          <parameters count="0"/>
+          <description>
+            <![CDATA["UTC_TIME() Returns the current UTC time as a value in 'HH:MM:SS' or HHMMSS.uuuuuu format, depending on whether the function is used in a string or numeric context."]]>
+          </description>
+        </function>
+
+        <function name="@week" category="FT_DATETIME" category-value="3" return="RET_NUMERIC">
+          <parameters count="1">
+            <parameter name="" type="PAR_STRING"/>
+          </parameters>
+          <description>
+            <![CDATA["WEEK(date) This function returns the week number for date."]]>
+          </description>
+        </function>
+
+        <function name="@weekday" category="FT_DATETIME" category-value="3" return="RET_NUMERIC">
+          <parameters count="1">
+            <parameter name="" type="PAR_STRING"/>
+          </parameters>
+          <description>
+            <![CDATA["WEEKDAY(date) This function returns the weekday index for date."]]>
+          </description>
+        </function>
+
+        <function name="@year" category="FT_DATETIME" category-value="3" return="RET_NUMERIC">
+          <parameters count="1">
+            <parameter name="" type="PAR_STRING"/>
+          </parameters>
+          <description>
+            <![CDATA["YEAR(date) Returns the year for date, in the range 1000 to 9999, or 0 for the “zero” date."]]>
+          </description>
+        </function>
+
+        <!-- Aggregate functions 
+            DENSE_RANK, LAG, LEAD, NTILE, RANK, ROW_NUMBER not supported in the quer tbuilder due to the complexity of implementation
+            -->
+
+        <function name="@avg" category="FT_AGGREGATE" category-value="10" return="RET_NUMERIC">
+          <parameters count="1">
+            <parameter name="" type="PAR_NUMERIC"/>
+          </parameters>
+          <description>
+            <![CDATA["AVG(expr) Returns the average value of expr."]]>
+          </description>
+        </function>
+
+        <function name="@bit_and" category="FT_AGGREGATE" category-value="10" return="RET_NUMERIC">
+          <parameters count="1">
+            <parameter name="" type="PAR_NUMERIC"/>
+          </parameters>
+          <description>
+            <![CDATA["BIT_AND(X) Returns the bitwise AND of all bits in expr. The calculation is performed with 64-bit (BIGINT) precision. "]]>
+          </description>
+        </function>
+
+        <function name="@bit_or" category="FT_AGGREGATE" category-value="10" return="RET_NUMERIC">
+          <parameters count="1">
+            <parameter name="" type="PAR_NUMERIC"/>
+          </parameters>
+          <description>
+            <![CDATA["BIT_XOR(X) Returns the bitwise OR of all bits in expr. The calculation is performed with 64-bit (BIGINT) precision. "]]>
+          </description>
+        </function>
+
+        <function name="@bit_xor" category="FT_AGGREGATE" category-value="10" return="RET_NUMERIC">
+          <parameters count="1">
+            <parameter name="" type="PAR_NUMERIC"/>
+          </parameters>
+          <description>
+            <![CDATA["BIT_XOR(X) Returns the bitwise XOR of all bits in expr. The calculation is performed with 64-bit (BIGINT) precision. "]]>
+          </description>
+        </function>
+
+        <function name="@count" category="FT_AGGREGATE" category-value="10" return="RET_NUMERIC">
+          <parameters count="1">
+            <parameter name="" type="PAR_VARIABLE"/>
+          </parameters>
+          <description>
+            <![CDATA["COUNT([DISTINCT]expr) Returns a count of the number of non-NULL values of expr in the rows retrieved by a SELECT statement. The result is a BIGINT value."]]>
+          </description>
+        </function>
+
+        <function name="@group_concat" category="FT_AGGREGATE" category-value="10"
+          return="RET_STRING">
+          <parameters count="1">
+            <parameter name="" type="PAR_VARIABLE"/>
+          </parameters>
+          <description>
+            <![CDATA["GROUP_CONCAT(expr) Returns a string result with the concatenated non-NULL values from a group. It returns NULL if there are no non-NULL values. "]]>
+          </description>
+        </function>
+
+        <function name="@max" category="FT_AGGREGATE" category-value="10" return="RET_NUMERIC">
+          <parameters count="1">
+            <parameter name="" type="PAR_NUMERIC"/>
+          </parameters>
+          <description>
+            <![CDATA["MAX(expr) Returns the max value of expr."]]>
+          </description>
+        </function>
+
+        <function name="@min" category="FT_AGGREGATE" category-value="10" return="RET_NUMERIC">
+          <parameters count="1">
+            <parameter name="" type="PAR_NUMERIC"/>
+          </parameters>
+          <description>
+            <![CDATA["MIN(expr) Returns the min value of expr."]]>
+          </description>
+        </function>
+
+        <function name="@stddev" category="FT_AGGREGATE" category-value="10" return="RET_NUMERIC">
+          <parameters count="1">
+            <parameter name="" type="PAR_NUMERIC"/>
+          </parameters>
+          <description>
+            <![CDATA["STDDEV(expr) Returns the population standard deviation of expr."]]>
+          </description>
+        </function>
+
+        <function name="@stddev_pop" category="FT_AGGREGATE" category-value="10"
+          return="RET_NUMERIC">
+          <parameters count="1">
+            <parameter name="" type="PAR_NUMERIC"/>
+          </parameters>
+          <description>
+            <![CDATA["STDDEV_POP(expr) Returns the population standard deviation of expr."]]>
+          </description>
+        </function>
+
+        <function name="@stddev_samp" category="FT_AGGREGATE" category-value="10"
+          return="RET_NUMERIC">
+          <parameters count="1">
+            <parameter name="" type="PAR_NUMERIC"/>
+          </parameters>
+          <description>
+            <![CDATA["STDDEV_SAMP(expr) Returns the sample standard deviation of expr."]]>
+          </description>
+        </function>
+
+        <function name="@sum" category="FT_AGGREGATE" category-value="10" return="RET_NUMERIC">
+          <parameters count="1">
+            <parameter name="" type="PAR_NUMERIC"/>
+          </parameters>
+          <description>
+            <![CDATA["SUM(expr) Returns the sum of expr."]]>
+          </description>
+        </function>
+
+        <function name="@var_pop" category="FT_AGGREGATE" category-value="10" return="RET_NUMERIC">
+          <parameters count="1">
+            <parameter name="" type="PAR_NUMERIC"/>
+          </parameters>
+          <description>
+            <![CDATA["VAR_POP(expr) Returns the population standard variance of expr."]]>
+          </description>
+        </function>
+
+        <function name="@var_samp" category="FT_AGGREGATE" category-value="10" return="RET_NUMERIC">
+          <parameters count="1">
+            <parameter name="" type="PAR_NUMERIC"/>
+          </parameters>
+          <description>
+            <![CDATA["VAR_SAMP(expr) Returns the sample variance of expr."]]>
+          </description>
+        </function>
+
+        <!-- String functions -->
+
+        <function name="@ascii" category="FT_STRING" category-value="1" return="RET_NUMERIC">
+          <parameters count="1">
+            <parameter name="" type="PAR_STRING"/>
+          </parameters>
+          <description>
+            <![CDATA["ASCII(str) Returns the numeric value of the leftmost character of the string str. Returns 0 if str is the empty string. Returns NULL if str is NULL. ASCII() works for 8-bit characters."]]>
+          </description>
+        </function>
+
+        <function name="@bin" category="FT_STRING" category-value="1" return="RET_STRING">
+          <parameters count="1">
+            <parameter name="" type="PAR_NUMERIC"/>
+          </parameters>
+          <description>
+            <![CDATA["BIN(N) Returns a string representation of the binary value of N, where N is a longlong (BIGINT) number. This is equivalent to CONV(N,10,2). Returns NULL if N is NULL."]]>
+          </description>
+        </function>
+
+        <function name="@bit_length" category="FT_STRING" category-value="1" return="RET_NUMERIC">
+          <parameters count="1">
+            <parameter name="" type="PAR_STRING"/>
+          </parameters>
+          <description>
+            <![CDATA["BIT_LENGTH(str) Returns the length of the string str in bits."]]>
+          </description>
+        </function>
+
+        <function name="@chr" category="FT_STRING" category-value="1" return="RET_STRING">
+          <parameters count="2">
+            <parameter name="" type="PAR_NUMERIC"/>
+            <parameter name="" type="PAR_VARIABLE"/>
+          </parameters>
+          <description>
+            <![CDATA["CHR(N) The CHR function returns a character that corresponds to the return value of the expression specified as an argument. It returns 0 if it exceeds range of character code."]]>
+          </description>
+        </function>
+
+        <function name="@char_length" category="FT_STRING" category-value="1" return="RET_NUMERIC">
+          <parameters count="1">
+            <parameter name="" type="PAR_STRING"/>
+          </parameters>
+          <description>
+            <![CDATA["CHAR_LENGTH(str) Returns the length of the string str, measured in characters. A multi-byte character counts as a single character."]]>
+          </description>
+        </function>
+
+        <function name="@concat" category="FT_STRING" category-value="1" return="RET_STRING">
+          <parameters count="1">
+            <parameter name="" type="PAR_VARIABLE"/>
+          </parameters>
+          <description>
+            <![CDATA["CONCAT(str1,str2,...) Returns the string that results from concatenating the arguments. May have one or more arguments."]]>
+          </description>
+        </function>
+
+        <function name="@concat_ws" category="FT_STRING" category-value="1" return="RET_STRING">
+          <parameters count="1">
+            <parameter name="" type="PAR_VARIABLE"/>
+          </parameters>
+          <description>
+            <![CDATA["CONCAT_WS(separator,str1,str2,...) stands for Concatenate With Separator and is a special form of CONCAT(). The first argument is the separator for the rest of the arguments. The separator is added between the strings to be concatenated."]]>
+          </description>
+        </function>
+
+        <function name="@elt" category="FT_STRING" category-value="1" return="RET_STRING">
+          <parameters count="2">
+            <parameter name="" type="PAR_NUMERIC"/>
+            <parameter name="" type="PAR_VARIABLE"/>
+          </parameters>
+          <description>
+            <![CDATA["ELT(N,str1,str2,str3,...) Returns str1 if N = 1, str2 if N = 2, and so on. Returns NULL if N is less than 1 or greater than the number of arguments."]]>
+          </description>
+        </function>
+
+        <function name="@field" category="FT_STRING" category-value="1" return="RET_NUMERIC">
+          <parameters count="1">
+            <parameter name="" type="PAR_VARIABLE"/>
+          </parameters>
+          <description>
+            <![CDATA["FIELD(str,str1,str2,str3,...) Returns the index (position) of str in the str1, str2, str3, ... list. Returns 0 if str is not found. "]]>
+          </description>
+        </function>
+
+        <function name="@find_in_set" category="FT_STRING" category-value="1" return="RET_NUMERIC">
+          <parameters count="2">
+            <parameter name="" type="PAR_STRING"/>
+            <parameter name="" type="PAR_STRING"/>
+          </parameters>
+          <description>
+            <![CDATA["FIND_IN_SET(str,strlist) Returns a value in the range of 1 to N if the string str is in the string list strlist consisting of N substrings."]]>
+          </description>
+        </function>
+
+        <function name="@insert" category="FT_STRING" category-value="1" return="RET_STRING">
+          <parameters count="4">
+            <parameter name="" type="PAR_STRING"/>
+            <parameter name="" type="PAR_NUMERIC"/>
+            <parameter name="" type="PAR_NUMERIC"/>
+            <parameter name="" type="PAR_STRING"/>
+          </parameters>
+          <description>
+            <![CDATA["INSERT(str,pos,len,newstr) Returns the string str, with the substring beginning at position pos and len characters long replaced by the string newstr."]]>
+          </description>
+        </function>
+
+        <function name="@instr" category="FT_STRING" category-value="1" return="RET_NUMERIC">
+          <parameters count="3">
+            <parameter name="" type="PAR_STRING"/>
+            <parameter name="" type="PAR_STRING"/>
+            <parameter name="" type="OPAR_NUMERIC"/>
+          </parameters>
+          <description>
+            <![CDATA["INSTR(str,substr) Returns the position of the first occurrence of substring substr in string str."]]>
+          </description>
+        </function>
+
+        <function name="@left" category="FT_STRING" category-value="1" return="RET_STRING">
+          <parameters count="2">
+            <parameter name="" type="PAR_STRING"/>
+            <parameter name="" type="PAR_NUMERIC"/>
+          </parameters>
+          <description>
+            <![CDATA["LEFT(str,len) Returns the leftmost len characters from the string str, or NULL if any argument is NULL."]]>
+          </description>
+        </function>
+
+        <function name="@locate" category="FT_STRING" category-value="1" return="RET_STRING">
+          <parameters count="3">
+            <parameter name="" type="PAR_STRING"/>
+            <parameter name="" type="PAR_STRING"/>
+            <parameter name="" type="OPAR_NUMERIC"/>
+          </parameters>
+          <description>
+            <![CDATA["LOCATE(substr,str,pos) Returns the position of the first occurrence of substring substr in string str starting at position pos."]]>
+          </description>
+        </function>
+
+        <function name="@lower" category="FT_STRING" category-value="1" return="RET_STRING">
+          <parameters count="1">
+            <parameter name="" type="PAR_STRING"/>
+          </parameters>
+          <description>
+            <![CDATA["LOWER(str) Returns the string str with all characters changed to lowercase according to the current character set mapping."]]>
+          </description>
+        </function>
+
+        <function name="@lpad" category="FT_STRING" category-value="1" return="RET_STRING">
+          <parameters count="3">
+            <parameter name="" type="PAR_STRING"/>
+            <parameter name="" type="PAR_NUMERIC"/>
+            <parameter name="" type="OPAR_STRING"/>
+          </parameters>
+          <description>
+            <![CDATA["LPAD(str,len,padstr) Returns the string str, left-padded with the string padstr to a length of len characters. If str is longer than len, the return value is shortened to len characters. "]]>
+          </description>
+        </function>
+
+        <function name="@ltrim" category="FT_STRING" category-value="1" return="RET_STRING">
+          <parameters count="1">
+            <parameter name="" type="PAR_STRING"/>
+          </parameters>
+          <description>
+            <![CDATA["LTRIM(str) Returns the string str with leading space characters removed. "]]>
+          </description>
+        </function>
+
+        <function name="@mid" category="FT_STRING" category-value="1" return="RET_STRING">
+          <parameters count="3">
+            <parameter name="" type="PAR_STRING"/>
+            <parameter name="" type="PAR_NUMERIC"/>
+            <parameter name="" type="PAR_NUMERIC"/>
+          </parameters>
+          <description>
+            <![CDATA["MID(str,pos,len) is a synonym for SUBSTRING(str,pos,len). "]]>
+          </description>
+        </function>
+
+        <function name="@octet_length" category="FT_STRING" category-value="1" return="RET_NUMERIC">
+          <parameters count="1">
+            <parameter name="" type="PAR_STRING"/>
+          </parameters>
+          <description>
+            <![CDATA["OCTET_LENGTH(S) The OCTET_LENGTH function returns the length (byte) of a character string or bit string as an integer. Therefore, it returns 1 (byte) if the length of the bit string is 8 bits, but 2 (bytes) if the length is 9 bits."]]>
+          </description>
+        </function>
+
+        <function name="@repeat" category="FT_STRING" category-value="1" return="RET_STRING">
+          <parameters count="2">
+            <parameter name="" type="PAR_STRING"/>
+            <parameter name="" type="PAR_NUMERIC"/>
+          </parameters>
+          <description>
+            <![CDATA["REPEAT(str,count) Returns a string consisting of the string str repeated count times. If count is less than 1, returns an empty string. Returns NULL if str or count are NULL."]]>
+          </description>
+        </function>
+
+        <function name="@replace" category="FT_STRING" category-value="1" return="RET_STRING">
+          <parameters count="3">
+            <parameter name="" type="PAR_STRING"/>
+            <parameter name="" type="PAR_STRING"/>
+            <parameter name="" type="OPAR_STRING"/>
+          </parameters>
+          <description>
+            <![CDATA["REPLACE(str,from_str,to_str) Returns the string str with all occurrences of the string from_str replaced by the string to_str."]]>
+          </description>
+        </function>
+
+        <function name="@reverse" category="FT_STRING" category-value="1" return="RET_STRING">
+          <parameters count="1">
+            <parameter name="" type="PAR_STRING"/>
+          </parameters>
+          <description>
+            <![CDATA["REVERSE(str) Returns the string str with the order of the characters reversed."]]>
+          </description>
+        </function>
+
+        <function name="@right" category="FT_STRING" category-value="1" return="RET_STRING">
+          <parameters count="2">
+            <parameter name="" type="PAR_STRING"/>
+            <parameter name="" type="PAR_NUMERIC"/>
+          </parameters>
+          <description>
+            <![CDATA["RIGHT(str,len) Returns the rightmost len characters from the string str, or NULL if any argument is NULL."]]>
+          </description>
+        </function>
+
+        <function name="@rpad" category="FT_STRING" category-value="1" return="RET_STRING">
+          <parameters count="3">
+            <parameter name="" type="PAR_STRING"/>
+            <parameter name="" type="PAR_NUMERIC"/>
+            <parameter name="" type="OPAR_STRING"/>
+          </parameters>
+          <description>
+            <![CDATA["RPAD(str,len,padstr) Returns the string str, right-padded with the string padstr to a length of len characters. If str is longer than len, the return value is shortened to len characters."]]>
+          </description>
+        </function>
+
+        <function name="@rtrim" category="FT_STRING" category-value="1" return="RET_STRING">
+          <parameters count="2">
+            <parameter name="" type="PAR_STRING"/>
+            <parameter name="" type="OPAR_STRING"/>
+          </parameters>
+          <description>
+            <![CDATA["RTRIM(str) Returns the string str with trailing (space) characters removed. "]]>
+          </description>
+        </function>
+
+        <function name="@space" category="FT_STRING" category-value="1" return="RET_STRING">
+          <parameters count="1">
+            <parameter name="" type="PAR_NUMERIC"/>
+          </parameters>
+          <description>
+            <![CDATA["SPACE(N) Returns a string consisting of N space characters."]]>
+          </description>
+        </function>
+
+        <function name="@strcmp" category="FT_STRING" category-value="1" return="RET_NUMERIC">
+          <parameters count="2">
+            <parameter name="" type="PAR_STRING"/>
+            <parameter name="" type="PAR_STRING"/>
+          </parameters>
+          <description>
+            <![CDATA["STRCMP(str1,str2) The STRCMP function compares two strings, string1 and string2, and returns 0 if they are identical, 1 if string1 is greater, or -1 if string1 is smaller. If any of the parameters is NULL, NULL is returned."]]>
+          </description>
+        </function>
+
+        <function name="@substring" category="FT_STRING" category-value="1" return="RET_STRING">
+          <parameters count="3">
+            <parameter name="" type="PAR_STRING"/>
+            <parameter name="" type="PAR_NUMERIC"/>
+            <parameter name="" type="OPAR_NUMERIC"/>
+          </parameters>
+          <description>
+            <![CDATA["SUBSTRING(str,pos,len) Return a substring len characters long from string str, starting at position pos."]]>
+          </description>
+        </function>
+
+        <function name="@substring_index" category="FT_STRING" category-value="1"
+          return="RET_STRING">
+          <parameters count="3">
+            <parameter name="" type="PAR_STRING"/>
+            <parameter name="" type="PAR_STRING"/>
+            <parameter name="" type="PAR_NUMERIC"/>
+          </parameters>
+          <description>
+            <![CDATA["SUBSTRING_INDEX(str,delim,count) Returns the substring from string str before count occurrences of the delimiter delim."]]>
+          </description>
+        </function>
+
+        <function name="@translate" category="FT_STRING" category-value="1" return="RET_STRING">
+          <parameters count="3">
+            <parameter name="" type="PAR_STRING"/>
+            <parameter name="" type="PAR_STRING"/>
+            <parameter name="" type="PAR_STRING"/>
+          </parameters>
+          <description>
+            <![CDATA["TRANSLATE(string,from_substring,tro_substring) The TRANSLATE function replaces a character into the character specified in to_substring if the character exists in the specified string. Correspondence relationship is determined based on the order of characters specified in from_substring and to_substring. Any characters in from_substring that do not have one on one relationship to to_substring are all removed. This function is working like the REPLACE() but the argument of to_substring cannot be omitted in this function."]]>
+          </description>
+        </function>
+
+        <function name="@trim" category="FT_STRING" category-value="1" return="RET_STRING">
+          <parameters count="2">
+            <parameter name="" type="OPAR_STRING"/>
+            <parameter name="" type="PAR_STRING"/>
+          </parameters>
+          <description>
+            <![CDATA["TRIM([remstr FROM] str) Returns the string str with all remstr prefixes or suffixes removed."]]>
+          </description>
+        </function>
+
+        <function name="@upper" category="FT_STRING" category-value="1" return="RET_STRING">
+          <parameters count="1">
+            <parameter name="" type="PAR_STRING"/>
+          </parameters>
+          <description>
+            <![CDATA["UPPER(str) Returns the string str with all characters changed to uppercase according to the current character set mapping."]]>
+          </description>
+        </function>
+
+        <!-- Casting functions -->
+
+        <function name="@cast" category="FT_CAST" category-value="5" return="RET_STRING">
+          <parameters count="2">
+            <parameter name="" type="PAR_STRING"/>
+            <parameter name="" type="PAR_STRING"/>
+          </parameters>
+          <description>
+            <![CDATA["cast(operand AS type) The CAST operator can be used to explicitly cast one data type to another in the SELECT statement."]]>
+          </description>
+        </function>
+
+        <function name="@date_format" category="FT_CAST" category-value="5" return="RET_STRING">
+          <parameters count="2">
+            <parameter name="" type="PAR_DATETIME"/>
+            <parameter name="" type="PAR_STRING"/>
+          </parameters>
+          <description>
+            <![CDATA["DATE_FORMAT(date,format) The DATE_FORMAT function converts the value of strings with DATE format ('YYYY-MM-DD' or 'MM/DD/YYYY') or that of date/time data type (DATE, TIMESTAMP, DATETIME) to specified date/time format and then return the value with the VARCHAR data type."]]>
+          </description>
+        </function>
+
+        <function name="@format" category="FT_CAST" category-value="5" return="RET_STRING">
+          <parameters count="2">
+            <parameter name="" type="PAR_GENERIC"/>
+            <parameter name="" type="PAR_NUMERIC"/>
+          </parameters>
+          <description>
+            <![CDATA["FORMAT(x, dec) The FORMAT function displays the number x by using digit grouping symbol as thousands delimiters, so that its format becomes '#,###,###.#####’ and performs rounding after the decimal symbol to express as many as dec digits after it. The return value is a VARCHAR type."]]>
+          </description>
+        </function>
+
+        <function name="@str_to_date" category="FT_CAST" category-value="5" return="RET_DATETIME">
+          <parameters count="2">
+            <parameter name="" type="PAR_STRING"/>
+            <parameter name="" type="PAR_STRING"/>
+          </parameters>
+          <description>
+            <![CDATA["STR_TO_DATE(str,format) Returns a DATETIME value if the format string contains both date and time parts, or a DATE or TIME value if the string contains only date or time parts."]]>
+          </description>
+        </function>
+
+        <function name="@time_format" category="FT_CAST" category-value="5" return="RET_STRING">
+          <parameters count="2">
+            <parameter name="" type="PAR_STRING"/>
+            <parameter name="" type="PAR_STRING"/>
+          </parameters>
+          <description>
+            <![CDATA["TIME_FORMAT(time,expr) Formats the time value according to the format string."]]>
+          </description>
+        </function>
+
+        <function name="@to_char" category="FT_CAST" category-value="5" return="RET_STRING">
+          <parameters count="3">
+            <parameter name="" type="PAR_DATETIME"/>
+            <parameter name="" type="OPAR_STRING"/>
+            <parameter name="" type="OPAR_STRING"/>
+          </parameters>
+          <description>
+            <![CDATA["TO_CHAR(date_time[, format[, date_language_string_literal]]) Formats the time value according to the format string and language."]]>
+          </description>
+        </function>
+
+        <function name="@to_char" category="FT_CAST" category-value="5" return="RET_STRING">
+          <parameters count="3">
+            <parameter name="" type="PAR_NUMERIC"/>
+            <parameter name="" type="OPAR_STRING"/>
+            <parameter name="" type="OPAR_STRING"/>
+          </parameters>
+          <description>
+            <![CDATA["TO_CHAR(number[, format[, date_language_string_literal]]) Formats the number value according to the format string and language."]]>
+          </description>
+        </function>
+
+        <function name="@to_date" category="FT_CAST" category-value="5" return="RET_DATETIME">
+          <parameters count="3">
+            <parameter name="" type="PAR_STRING"/>
+            <parameter name="" type="OPAR_STRING"/>
+            <parameter name="" type="OPAR_STRING"/>
+          </parameters>
+          <description>
+            <![CDATA["TO_DATE(string[, format[, date_lang_string_literal]]) The TO_DATE function interprets a character string based on the date format given as an argument, converts it to a DATE type value, and returns it."]]>
+          </description>
+        </function>
+
+        <function name="@to_datetime" category="FT_CAST" category-value="5" return="RET_DATETIME">
+          <parameters count="3">
+            <parameter name="" type="PAR_STRING"/>
+            <parameter name="" type="OPAR_STRING"/>
+            <parameter name="" type="OPAR_STRING"/>
+          </parameters>
+          <description>
+            <![CDATA["TO_DATETIME(string[, format[, date_lang_string_literal]]) The TO_DATETIME function interprets a character string based on the date format given as an argument, converts it to a DATETIME type value, and returns it."]]>
+          </description>
+        </function>
+
+        <function name="@to_number" category="FT_CAST" category-value="5" return="RET_DATETIME">
+          <parameters count="2">
+            <parameter name="" type="PAR_STRING"/>
+            <parameter name="" type="OPAR_STRING"/>
+          </parameters>
+          <description>
+            <![CDATA["TO_NUMBER(string[, format]) The TO_NUMBER function interprets a character string based on the number format given as an argument, converts it to a NUMERIC type value, and returns it."]]>
+          </description>
+        </function>
+
+        <function name="@to_time" category="FT_CAST" category-value="5" return="RET_DATETIME">
+          <parameters count="3">
+            <parameter name="" type="PAR_STRING"/>
+            <parameter name="" type="OPAR_STRING"/>
+            <parameter name="" type="OPAR_STRING"/>
+          </parameters>
+          <description>
+            <![CDATA["TO_TIME(string[, format[, date_lang_string_literal]]) The TO_TIME function interprets a character string based on the time format given as an argument, converts it to a TIME type value, and returns it."]]>
+          </description>
+        </function>
+
+        <function name="@to_timestamp" category="FT_CAST" category-value="5" return="RET_DATETIME">
+          <parameters count="3">
+            <parameter name="" type="PAR_STRING"/>
+            <parameter name="" type="OPAR_STRING"/>
+            <parameter name="" type="OPAR_STRING"/>
+          </parameters>
+          <description>
+            <![CDATA["TO_TIMESTAMP(string[, format[, date_lang_string_literal]]) The TO_TIMESTAMP function interprets a character string based on the time format given as an argument, converts it to a TIMESTAMP type value, and returns it."]]>
+          </description>
+        </function>
+
+        <!-- Bit functions -->
+
+        <function name="@bit_count" category="FT_BIT" category-value="6" return="RET_NUMERIC">
+          <parameters count="1">
+            <parameter name="" type="PAR_NUMERIC"/>
+          </parameters>
+          <description>
+            <![CDATA["BIT_COUNT(N) Returns the number of bits that are set in the argument N. "]]>
+          </description>
+        </function>
+
+        <!-- Crypto functions -->
+
+        <function name="@md5" category="FT_CRYPT" category-value="7" return="RET_STRING">
+          <parameters count="1">
+            <parameter name="" type="PAR_STRING"/>
+          </parameters>
+          <description>
+            <![CDATA["MD5(str) Calculates an MD5 128-bit checksum for the string. The value is returned as a binary string of 32 hex digits, or NULL if the argument was NULL."]]>
+          </description>
+        </function>
+
+        <!-- Info functions -->
+
+        <function name="@charset" category="FT_INFO" category-value="8" return="RET_STRING">
+          <parameters count="1">
+            <parameter name="" type="PAR_STRING"/>
+          </parameters>
+          <description>
+            <![CDATA["CHARSET(str) Returns the character set of the string argument."]]>
+          </description>
+        </function>
+
+        <function name="@coercibilty" category="FT_INFO" category-value="8" return="RET_STRING">
+          <parameters count="1">
+            <parameter name="" type="PAR_STRING"/>
+          </parameters>
+          <description>
+            <![CDATA["COERCIBILITY(str) Returns the collation coercibility value of the string argument."]]>
+          </description>
+        </function>
+
+        <function name="@collation" category="FT_INFO" category-value="8" return="RET_STRING">
+          <parameters count="1">
+            <parameter name="" type="PAR_STRING"/>
+          </parameters>
+          <description>
+            <![CDATA["COLLATION(str) Returns the collation of the string argument."]]>
+          </description>
+        </function>
+
+        <function name="@current_user" category="FT_INFO" category-value="8" return="RET_STRING">
+          <parameters count="0"/>
+          <description>
+            <![CDATA["CURRENT_USER() Returns the user name and host name combination for the MySQL account that the server used to authenticate the current client."]]>
+          </description>
+        </function>
+
+        <function name="@database" category="FT_INFO" category-value="8" return="RET_STRING">
+          <parameters count="0"/>
+          <description>
+            <![CDATA["DATABASE() Returns the default (current) database name as a string in the utf8 character set. If there is no default database, DATABASE() returns NULL."]]>
+          </description>
+        </function>
+
+        <function name="@inet_aton" category="FT_INFO" category-value="8" return="RET_NUMERIC">
+          <parameters count="1">
+            <parameter name="" type="PAR_STRING"/>
+          </parameters>
+          <description>
+            <![CDATA["INET_ATON(ip_string) The INET_ATON function receives the string of an IPv4 address and returns a number."]]>
+          </description>
+        </function>
+
+        <function name="@inet_ntoa" category="FT_INFO" category-value="8" return="RET_STRING">
+          <parameters count="1">
+            <parameter name="" type="PAR_NUMERIC"/>
+          </parameters>
+          <description>
+            <![CDATA["INET_NTOA(expr) The INET_NTOA function receives a number and returns an IPv4 address string."]]>
+          </description>
+        </function>
+
+        <function name="@last_insert_id" category="FT_INFO" category-value="8" return="RET_NUMERIC">
+          <parameters count="0"/>
+          <description>
+            <![CDATA["LAST_INSERT_ID() Returns the first automatically generated value that was set for an AUTO_INCREMENT column by the most recently executed INSERT statement to affect such a column."]]>
+          </description>
+        </function>
+
+        <function name="@list_dbs" category="FT_INFO" category-value="8" return="RET_STRING">
+          <parameters count="0"/>
+          <description>
+            <![CDATA["LIST_DBS() Returns the list of the databases found on the host."]]>
+          </description>
+        </function>
+
+        <function name="@row_count" category="FT_INFO" category-value="8" return="RET_NUMERIC">
+          <parameters count="0"/>
+          <description>
+            <![CDATA["ROW_COUNT() Returns the number of rows changed, deleted, or inserted by the last statement if it was an UPDATE, DELETE, or INSERT."]]>
+          </description>
+        </function>
+
+        <function name="@user" category="FT_INFO" category-value="8" return="RET_STRING">
+          <parameters count="0"/>
+          <description>
+            <![CDATA["USER() Returns the current MySQL user name and host name as a string in the utf8 character set."]]>
+          </description>
+        </function>
+
+        <function name="@version" category="FT_INFO" category-value="8" return="RET_STRING">
+          <parameters count="0"/>
+          <description>
+            <![CDATA["VERSION() Returns a string that indicates the MySQL server version."]]>
+          </description>
+        </function>
+
+        <!-- Miscellaneous functions -->
+
+        <function name="@default" category="FT_MISC" category-value="9" return="RET_STRING">
+          <parameters count="1">
+            <parameter name="" type="PAR_STRING"/>
+          </parameters>
+          <description>
+            <![CDATA["DEFAULT(col_name) Returns the default value for a table column."]]>
+          </description>
+        </function>
+
+        <function name="@format" category="FT_MISC" category-value="9" return="RET_STRING">
+          <parameters count="2">
+            <parameter name="" type="PAR_NUMERIC"/>
+            <parameter name="" type="PAR_STRING"/>
+          </parameters>
+          <description>
+            <![CDATA["FORMAT(X,D) Formats the number X to a format like '#,###,###.##', rounded to D decimal places, and returns the result as a string."]]>
+          </description>
+        </function>
+
+        <function name="@get_lock" category="FT_MISC" category-value="9" return="RET_NUMERIC">
+          <parameters count="2">
+            <parameter name="" type="PAR_STRING"/>
+            <parameter name="" type="PAR_NUMERIC"/>
+          </parameters>
+          <description>
+            <![CDATA["GET_LOCK(str,timeout) Tries to obtain a lock with a name given by the string str, using a timeout of timeout seconds. Returns 1 if the lock was obtained successfully, 0 if the attempt timed out."]]>
+          </description>
+        </function>
+
+        <function name="@inet_aton" category="FT_MISC" category-value="9" return="RET_NUMERIC">
+          <parameters count="1">
+            <parameter name="" type="PAR_STRING"/>
+          </parameters>
+          <description>
+            <![CDATA["INET_ATON(expr) Given the dotted-quad representation of an IPv4 network address as a string, returns an integer that represents the numeric value of the address in network byte order (big endian)."]]>
+          </description>
+        </function>
+
+        <function name="@inet_ntoa" category="FT_MISC" category-value="9" return="RET_STRING">
+          <parameters count="1">
+            <parameter name="" type="PAR_NUMERIC"/>
+          </parameters>
+          <description>
+            <![CDATA["INET_NTOA(expr) Given a numeric IPv4 network address in network byte order, returns the dotted-quad representation of the address as a binary string."]]>
+          </description>
+        </function>
+
+        <function name="@is_free_lock" category="FT_MISC" category-value="9" return="RET_NUMERIC">
+          <parameters count="1">
+            <parameter name="" type="PAR_STRING"/>
+          </parameters>
+          <description>
+            <![CDATA["IS_FREE_LOCK(str) Checks whether the lock named str is free to use (that is, not locked)."]]>
+          </description>
+        </function>
+
+        <function name="@is_used_lock" category="FT_MISC" category-value="9" return="RET_NUMERIC">
+          <parameters count="1">
+            <parameter name="" type="PAR_STRING"/>
+          </parameters>
+          <description>
+            <![CDATA["IS_USED_LOCK(str) Checks whether the lock named str is in use (that is, locked)."]]>
+          </description>
+        </function>
+
+        <function name="@master_pos_wait" category="FT_MISC" category-value="9" return="RET_NUMERIC">
+          <parameters count="3">
+            <parameter name="" type="PAR_STRING"/>
+            <parameter name="" type="PAR_NUMERIC"/>
+            <parameter name="" type="OPAR_NUMERIC"/>
+          </parameters>
+          <description>
+            <![CDATA["MASTER_POS_WAIT(log_name,log_pos[,timeout]) This function is useful for control of master/slave synchronization. It blocks until the slave has read and applied all updates up to the specified position in the master log. The return value is the number of log events the slave had to wait for to advance to the specified position."]]>
+          </description>
+        </function>
+
+        <function name="@name_const" category="FT_MISC" category-value="9" return="RET_NUMERIC">
+          <parameters count="2">
+            <parameter name="" type="PAR_STRING"/>
+            <parameter name="" type="PAR_STRING"/>
+          </parameters>
+          <description>
+            <![CDATA["NAME_CONST(name,value) Returns the given value. When used to produce a result set column, NAME_CONST() causes the column to have the given name. The arguments should be constants."]]>
+          </description>
+        </function>
+
+        <function name="@release_lock" category="FT_MISC" category-value="9" return="RET_NUMERIC">
+          <parameters count="1">
+            <parameter name="" type="PAR_STRING"/>
+          </parameters>
+          <description>
+            <![CDATA["RELEASE_LOCK(str) Releases the lock named by the string str that was obtained with GET_LOCK()."]]>
+          </description>
+        </function>
+
+        <function name="@sleep" category="FT_MISC" category-value="9" return="RET_NUMERIC">
+          <parameters count="1">
+            <parameter name="" type="PAR_NUMERIC"/>
+          </parameters>
+          <description>
+            <![CDATA["SLEEP(duration) Sleeps (pauses) for the number of seconds given by the duration argument, then returns 0. If SLEEP() is interrupted, it returns 1."]]>
+          </description>
+        </function>
+
+        <function name="@uuid" category="FT_MISC" category-value="9" return="RET_STRING">
+          <parameters count="0"/>
+          <description>
+            <![CDATA["UUID()Returns a Universal Unique Identifier (UUID) generated according to “DCE 1.1: Remote Procedure Call” (Appendix A) CAE (Common Applications Environment) Specifications published by The Open Group in October 1997 (Document Number C706, http://www.opengroup.org/public/pubs/catalog/c706.htm). "]]>
+          </description>
+        </function>
+      </functions>
+
+      <spis>
+
+        <!-- The Auto Increment specification of a column -->
+        <spi class-uid="{10000002-0000-0000-0000-000000000001}"
+          sql-role-uid="{10000007-0000-0000-0000-000000000001}"
+          referred-class-uid="{10000001-0000-0000-0000-000000000007}" name="AutoIncrementColumn"
+          gui-text="This column is Auto Incrementing (AUTO_INCREMENT)" gui-group="General"
+          default="0" db-major="5" db-minor="0" sql="AUTO_INCREMENT">
+          <tooltip>
+            <![CDATA[Auto-increment allows a unique number to be generated when a new record is inserted into a table]]>
+          </tooltip>
+        </spi>
+        
+        <!-- The Columng Length of an Index SPI -->
+        <spi class-uid="{10000002-0000-0000-0000-000000000003}"
+          sql-role-uid="{10000006-0000-0000-0000-000000000001}"
+          referred-class-uid="{10000001-0000-0000-0000-00000000000B}" name="ColumnOfIndexUsedLength"
+          gui-text="The Length of the columns' data which is used in the length" gui-group="default"
+          default="" db-major="5" db-minor="0" sql="">
+          <tooltip>
+            <![CDATA[The Length of the column used in an index. This can be assigned only to TEXT/BLOB type columns]]>
+          </tooltip>
+        </spi>
+        
+        <spi class-uid="{10000002-0000-0000-0000-000000000001}"
+          sql-role-uid="{10000006-0000-0000-0000-000000000002}"
+          referred-class-uid="{10000001-0000-0000-0000-000000000003}" db-major="5" db-minor="0"
+          default="0" gui-group="General" gui-text="Can Replace" name="CanRepalce" sql="OR REPLACE">
+          <tooltip>
+            <![CDATA[Can this view replace an already existing one?]]>
+          </tooltip>
+        </spi>
+        
+      </spis>
+      
+      <data-queries>
+      
+        <query id="getAvailabeViews" result_index="0">
+          <query_part index="0" type="plaintext">
+              <![CDATA[SELECT class_name FROM db_class WHERE is_system_class='NO' AND class_type = 'VCLASS' AND owner_name=current_user]]>
+          </query_part>
+        </query>
+
+        <query id="getAvailabeTriggers" result_index="0">
+          <query_part index="0" type="plaintext">
+              <![CDATA[select trigger_name from db_trig]]>
+          </query_part>
+        </query>
+
+        <query id="getAvailableStoredProcedures" result_index="0">
+          <query_part index="0" type="plaintext">
+              <![CDATA[select sp_name from db_stored_procedure WHERE owner=current_user and sp_type='PROCEDURE']]>
+          </query_part>
+        </query>
+
+        <query id="getAvailableStoredFunctions" result_index="0">
+          <query_part index="0" type="plaintext">
+              <![CDATA[select sp_name from db_stored_procedure WHERE owner=current_user and sp_type='FUNCTION']]>
+          </query_part>
+        </query>
+
+        <query id="getAvailableTables" result_index="0">
+          <query_part index="0" type="plaintext">
+              <![CDATA[SELECT class_name FROM db_class WHERE is_system_class='NO' AND class_type = 'CLASS' AND owner_name=current_user]]>
+          </query_part>
+        </query>
+
+
+      </data-queries>
+    </database>
+    
+
   </databases>
 </repository>

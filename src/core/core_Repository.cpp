@@ -21,6 +21,7 @@
 #include <QDomDocument>
 #include <QFile>
 #include <QDomElement>
+#include <QMessageBox>
 
 #include <QDebug>
 
@@ -44,7 +45,7 @@ Repository::Repository()
         if (!doc.setContent(&file))
         {
             file.close();
-            //qDebug() << "Cannot set XML content. Giving up the idea of repository";
+            QMessageBox::critical(0, QObject::tr("Error"), QObject::tr("Cannot find the repository of the application. The application will work with reduced functionality"), QMessageBox::Ok);
             return;
         }
         file.close();
