@@ -64,7 +64,7 @@ public:
             return;
         }
 
-        if(getDeleters().contains(ouid->getClassUid()))
+        if(getDeleters().contains(ouid->getClassUid().toString()))
         {
             NamedItem* ni = dynamic_cast<NamedItem*>(ouid);
             if(!ni)
@@ -83,11 +83,11 @@ public:
                 return;
             }
 
-            itemDeleter versionDeleter = getDeleters()[ouid->getClassUid()].m_versionDeleter;
+            itemDeleter versionDeleter = getDeleters()[ouid->getClassUid().toString()].m_versionDeleter;
             (ve->version()->*versionDeleter)(ni->getName());
             ve->version()->getGui()->updateForms();
 
-            MainWindow::instance()->showNamedObjectList(getDeleters()[ouid->getClassUid()].m_showSomething,
+            MainWindow::instance()->showNamedObjectList(getDeleters()[ouid->getClassUid().toString()].m_showSomething,
                     ve->version()->getListOfObjectsForUid<T>( *(dynamic_cast<T*>(ouid)) ) ,
                     IconFactory::getIconForUid(ouid->getClassUid().toString()),
                     getGroupName<T>(ouid->getClassUid().toString()));

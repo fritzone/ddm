@@ -5,7 +5,7 @@
 #include "Connection.h"
 #include "MainWindow.h"
 #include "GuiElements.h"
-#include "strings.h"
+#include "ddm_strings.h"
 #include "core_ParameterAndDescription.h"
 #include "db_DatabaseEngine.h"
 #include "core_Function.h"

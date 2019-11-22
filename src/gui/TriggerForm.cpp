@@ -15,6 +15,7 @@
 #include "Connection.h"
 
 #include <QToolTip>
+#include <QMessageBox>
 
 TriggerForm::TriggerForm(Version *v, Connection* c, bool reverseSource, bool fc, QWidget *parent) :
     QWidget(parent),

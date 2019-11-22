@@ -1,7 +1,7 @@
 #include "core_StoredMethod.h"
 #include "db_AbstractSQLGenerator.h"
 #include "Configuration.h"
-#include "strings.h"
+#include "ddm_strings.h"
 
 #include <QStringList>
 #include <QCryptographicHash>

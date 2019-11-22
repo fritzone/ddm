@@ -1,5 +1,5 @@
 #include "Configuration.h"
-#include "strings.h"
+#include "ddm_strings.h"
 
 #include <QSettings>
 

@@ -10,7 +10,7 @@
 #include "db_DatabaseEngine.h"
 #include "core_UserDataType.h"
 #include "db_DatabaseEngineManager.h"
-#include "strings.h"
+#include "ddm_strings.h"
 
 #include <QLabel>
 #include <QCheckBox>

@@ -1,7 +1,7 @@
 #include "helper_MostRecentlyUsedFiles.h"
-#include "strings.h"
+#include "ddm_strings.h"
 
-#include <QDomDocument>
+#include <QtXml/QDomDocument>
 #include <QFile>
 #include <QVector>
 #include <QSettings>

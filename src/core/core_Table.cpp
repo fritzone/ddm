@@ -14,7 +14,7 @@
 #include "Version.h"
 #include "uids.h"
 #include "UidWarehouse.h"
-#include "strings.h"
+#include "ddm_strings.h"
 #include "ContextMenuCollection.h"
 #include <QApplication>
 #include <QClipboard>

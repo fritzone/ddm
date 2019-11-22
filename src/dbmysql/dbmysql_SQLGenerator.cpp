@@ -9,7 +9,7 @@
 #include "qbr_SelectQuery.h"
 #include "core_StoredMethod.h"
 #include "core_Trigger.h"
-#include "strings.h"
+#include "ddm_strings.h"
 #include "SpInstance.h"
 #include "db_DatabaseEngine.h"
 #include "dbmysql_DatabaseEngine.h"

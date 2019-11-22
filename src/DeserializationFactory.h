@@ -1,8 +1,8 @@
 #ifndef DESERIALIZATIONFACTORY_H
 #define DESERIALIZATIONFACTORY_H
 
-#include <QDomDocument>
-#include <QDomElement>
+#include <QtXml/QDomDocument>
+#include <QtXml/QDomElement>
 
 class UserDataType;
 class Index;

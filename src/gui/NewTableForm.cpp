@@ -25,7 +25,7 @@
 #include "VersionGuiElements.h"
 #include "gui_HelpWindow.h"
 #include "ConnectionManager.h"
-#include "strings.h"
+#include "ddm_strings.h"
 #include "WidgetForSpecificProperties.h"
 #include "SpInstance.h"
 #include "GuiElements.h"
@@ -86,14 +86,16 @@ NewTableForm::NewTableForm(DatabaseEngine* db, Project* prj, Version* v,
     QStringList tableNames = v?v->getTableNames():
                                            (db&&conn)?db->getAvailableTables(conn):QStringList();
 
+    AbstractDTSupplier* supplier = db->getDTSupplier();
+
     highlighter = new SqlHighlighter(m_ui->txtSql->document(),
                                      db->getKeywords(),
-                                     db->getDTSupplier()->numericTypes(),
-                                     db->getDTSupplier()->booleanTypes(),
-                                     db->getDTSupplier()->textTypes(),
-                                     db->getDTSupplier()->blobTypes(),
-                                     db->getDTSupplier()->dateTimeTypes(),
-                                     db->getDTSupplier()->miscTypes(),
+                                     supplier->numericTypes(),
+                                     supplier->booleanTypes(),
+                                     supplier->textTypes(),
+                                     supplier->blobTypes(),
+                                     supplier->dateTimeTypes(),
+                                     supplier->miscTypes(),
                                      tableNames); // this is not really relevant here
 
     m_availableDataTypes = v? v->getDataTypes() : Workspace::getInstance()->loadDefaultDatatypesIntoCurrentSolution(db);

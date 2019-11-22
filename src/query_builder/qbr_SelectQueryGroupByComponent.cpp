@@ -1,6 +1,6 @@
 #include "qbr_SelectQueryGroupByComponent.h"
 #include "qbr_SelectQuery.h"
-#include "strings.h"
+#include "ddm_strings.h"
 #include "uids.h"
 
 SelectQueryGroupByComponent::SelectQueryGroupByComponent(Query* q, QueryComponent* p, int l, Version *v) :

@@ -7,7 +7,7 @@
 #include "qbr_SelectQueryAsComponent.h"
 #include "qbr_SelectQueryGroupByComponent.h"
 #include "qbr_SelectQueryOrderByComponent.h"
-#include "strings.h"
+#include "ddm_strings.h"
 #include "Workspace.h"
 #include "Version.h"
 #include "qbr_SingleExpressionQueryComponent.h"

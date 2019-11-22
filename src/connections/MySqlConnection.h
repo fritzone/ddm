@@ -3,7 +3,7 @@
 
 #include "conn_AuthenticatedConnection.h"
 
-#include "strings.h"
+#include "ddm_strings.h"
 
 class MySqlConnection : public AuthenticatedConnection
 {

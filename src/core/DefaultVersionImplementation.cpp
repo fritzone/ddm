@@ -19,7 +19,7 @@
 #include "db_AbstractSQLGenerator.h"
 #include "core_Trigger.h"
 #include "core_Function.h"
-#include "strings.h"
+#include "ddm_strings.h"
 #include "UidWarehouse.h"
 #include "core_Index.h"
 #include "core_Patch.h"

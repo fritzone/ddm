@@ -1,6 +1,6 @@
 #include "db_BasicSqlGenerator.h"
 #include "core_Table.h"
-#include "strings.h"
+#include "ddm_strings.h"
 #include "SpInstance.h"
 #include "ObjectWithSpInstances.h"
 #include "db_DatabaseEngine.h"

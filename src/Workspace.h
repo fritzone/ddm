@@ -16,6 +16,8 @@ class Trigger;
 class Connection;
 class ObjectWithUid;
 
+#include <QObject>
+
 /**
  * The role of the Workspace class is to be a collection point for the "logical" elements of the
  * current session. The Workspace is a singleton, since in a session there can be only one

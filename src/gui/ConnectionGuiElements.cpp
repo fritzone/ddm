@@ -5,7 +5,7 @@
 #include "ContextMenuCollection.h"
 #include "IconFactory.h"
 #include "db_DatabaseEngine.h"
-#include "strings.h"
+#include "ddm_strings.h"
 
 #include <QApplication>
 #include <QDockWidget>

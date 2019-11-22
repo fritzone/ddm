@@ -2,7 +2,7 @@
 #define CONN_POSTGRES_H
 
 #include "conn_AuthenticatedConnection.h"
-#include "strings.h"
+#include "ddm_strings.h"
 
 class PostgresConnection : public AuthenticatedConnection
 {

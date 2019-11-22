@@ -14,7 +14,7 @@
 #include "core_View.h"
 #include "core_Procedure.h"
 #include "core_Function.h"
-#include "strings.h"
+#include "ddm_strings.h"
 #include "core_Trigger.h"
 
 struct IndexHolder

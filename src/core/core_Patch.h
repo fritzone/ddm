@@ -75,7 +75,7 @@ public:
     template<class T>
     void addDeletedObject(const QString& uid, DeletionAction<T> *dda)
     {
-        m_deletions[UidWarehouse::instance().getElement(uid)->getClassUid()][uid] = dda;
+        m_deletions[UidWarehouse::instance().getElement(uid)->getClassUid().toString()][uid] = dda;
     }
 
     /**
@@ -89,7 +89,7 @@ public:
     DeletionAction<T>* getDeletionAction(const QString &uid)
     {
         ObjectWithUid* ouid = UidWarehouse::instance().getElement(uid);
-        QString classUid = ouid->getClassUid();
+        QString classUid = ouid->getClassUid().toString();
         if(!m_deletions.contains(classUid))
         {
             return 0;

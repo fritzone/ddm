@@ -5,8 +5,8 @@
 #include <QUuid>
 #include <QMap>
 
-#include <QDomDocument>
-#include <QDomElement>
+#include <QtXml/QDomDocument>
+#include <QtXml/QDomElement>
 
 class DatabaseEngine;
 class SpInstance;

@@ -14,13 +14,14 @@
 #include "GuiElements.h"
 #include "uids.h"
 #include "core_ForeignKey.h"
-#include "strings.h"
+#include "ddm_strings.h"
 #include "SqlNamesValidator.h"
 #include "db_DatabaseEngine.h"
 
 #include <QLineEdit>
 #include <QComboBox>
 #include <QToolTip>
+#include <QMessageBox>
 
 TableInstanceForm::TableInstanceForm(QWidget *parent) :
     QWidget(parent),

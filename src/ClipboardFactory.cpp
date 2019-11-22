@@ -8,8 +8,8 @@
 #include "Version.h"
 #include "MainWindow.h"
 
-#include <QDomDocument>
-#include <QDomElement>
+#include <QtXml/QDomDocument>
+#include <QtXml/QDomElement>
 #include <QApplication>
 #include <QClipboard>
 

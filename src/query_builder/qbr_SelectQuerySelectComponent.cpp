@@ -6,7 +6,7 @@
 #include "core_Table.h"
 #include "core_TableInstance.h"
 
-#include "strings.h"
+#include "ddm_strings.h"
 
 SelectQuerySelectComponent::SelectQuerySelectComponent(Query* q, QueryComponent* p,
                                                        int l, Version *v) :

@@ -8,7 +8,7 @@
 #include "core_Trigger.h"
 #include "TriggerForm.h"
 #include "helper_utils.h"
-#include "strings.h"
+#include "ddm_strings.h"
 #include "NewTableForm.h"
 #include "db_AbstractDTSupplier.h"
 #include "InsertNewRecordDialog.h"

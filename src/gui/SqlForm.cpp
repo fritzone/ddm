@@ -18,7 +18,7 @@
 #include "core_Function.h"
 #include "core_Trigger.h"
 #include "core_View.h"
-#include "strings.h"
+#include "ddm_strings.h"
 #include "helper_utils.h"
 
 #include <QFileDialog>

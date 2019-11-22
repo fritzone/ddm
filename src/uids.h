@@ -4,7 +4,7 @@
 #include <QString>
 #include <QObject>
 
-#include "strings.h"
+#include "ddm_strings.h"
 
 static const QString nullUid            =                   "{00000000-0000-0000-0000-000000000000}";
 

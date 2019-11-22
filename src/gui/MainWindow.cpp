@@ -29,7 +29,7 @@
 #include "PreferencesDialog.h"
 #include "SimpleTextInputDialog.h"
 #include "ContextMenuCollection.h"
-#include "strings.h"
+#include "ddm_strings.h"
 #include "Workspace.h"
 #include "VersionGuiElements.h"
 #include "InjectSqlDialog.h"

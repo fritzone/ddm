@@ -8,7 +8,7 @@
 
 #include <QStringList>
 #include <QMap>
-#include <QDomElement>
+#include <QtXml/QDomElement>
 #include <QUuid>
 
 class AbstractDTSupplier;

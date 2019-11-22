@@ -8,7 +8,7 @@
 #include "db_DatabaseEngine.h"
 #include "core_ForeignKey.h"
 
-#include "strings.h"
+#include "ddm_strings.h"
 
 QString AdvancedSqlGenerator::getTableRenameSql(const QString& from, const QString& to)
 {

@@ -1,8 +1,6 @@
 #ifndef USERDATATYPE_H
 #define USERDATATYPE_H
 
-#include <QtXml>
-
 #include "TreeItem.h"
 #include "core_SerializableElement.h"
 #include "IconFactory.h"

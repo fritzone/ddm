@@ -1,5 +1,5 @@
-#ifndef STRINGS_H
-#define STRINGS_H
+#ifndef DDM_STRINGS_H
+#define DDM_STRINGS_H
 
 #include <QString>
 

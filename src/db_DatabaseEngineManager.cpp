@@ -17,7 +17,7 @@
 #include "dbpostgres_DatabaseEngine.h"
 #include "dbpostgres_SQLGenerator.h"
 
-#include "strings.h"
+#include "ddm_strings.h"
 
 DatabaseEngineManager* DatabaseEngineManager::m_instance = 0;
 

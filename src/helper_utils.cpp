@@ -1,5 +1,5 @@
 #include "helper_utils.h"
-#include "strings.h"
+#include "ddm_strings.h"
 
 #include <QFileDialog>
 #include <QTextStream>

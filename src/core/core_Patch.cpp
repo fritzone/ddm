@@ -652,7 +652,7 @@ void Patch::removeDeletionAction(const QString &uid)
 {
     if(m_tableDeletions.contains(uid)) m_tableDeletions.remove(uid);
     ObjectWithUid* ouid = UidWarehouse::instance().getElement(uid);
-    QString classUid = ouid->getClassUid();
+    QString classUid = ouid->getClassUid().toString();
 
     if(m_deletions[classUid].contains(uid))
     {

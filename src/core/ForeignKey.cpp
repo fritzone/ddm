@@ -2,7 +2,7 @@
 #include "core_Index.h"
 #include "Version.h"
 #include "uids.h"
-#include "strings.h"
+#include "ddm_strings.h"
 
 ForeignKey::ForeignKey(Version *v, const QString &uid) : TreeItem(), SerializableElement(), NamedItem(), VersionElement(uid, v),
     m_associations(), m_autoGenIndices(), tempautogenIndices(), m_onUpdate(), m_onDelete()

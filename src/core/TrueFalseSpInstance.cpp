@@ -1,5 +1,5 @@
 #include "TrueFalseSpInstance.h"
-#include "strings.h"
+#include "ddm_strings.h"
 
 QString TrueFalseSpInstance::get() const
 {

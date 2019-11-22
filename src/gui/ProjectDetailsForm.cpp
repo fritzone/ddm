@@ -2,7 +2,7 @@
 #include "ui_ProjectDetailsForm.h"
 #include "Project.h"
 #include "db_DatabaseEngine.h"
-#include "strings.h"
+#include "ddm_strings.h"
 #include "IconFactory.h"
 
 ProjectDetailsForm::ProjectDetailsForm(QWidget *parent) :

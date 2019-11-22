@@ -1,6 +1,6 @@
 #include "AboutBoxDialog.h"
 #include "ui_AboutBoxDialog.h"
-#include "strings.h"
+#include "ddm_strings.h"
 
 #include <QSqlDatabase>
 

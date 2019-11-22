@@ -3,7 +3,7 @@
 
 #include "../core_enums.h"
 #include "../uids.h"
-#include "strings.h"
+#include "ddm_strings.h"
 #include <QIcon>
 
 namespace icons

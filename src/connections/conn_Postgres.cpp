@@ -1,7 +1,7 @@
 #include "conn_Postgres.h"
 
 #include "db_DatabaseEngine.h"
-#include "strings.h"
+#include "ddm_strings.h"
 #include "db_DatabaseEngineManager.h"
 
 PostgresConnection::PostgresConnection(const QString& name,

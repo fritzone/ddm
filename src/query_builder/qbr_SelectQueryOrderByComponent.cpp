@@ -1,7 +1,7 @@
 #include "qbr_SelectQueryOrderByComponent.h"
 #include "qbr_SelectQuery.h"
 #include "uids.h"
-#include "strings.h"
+#include "ddm_strings.h"
 
 #include <QDebug>
 

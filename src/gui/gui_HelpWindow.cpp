@@ -4,7 +4,7 @@
 #include "Version.h"
 #include "VersionGuiElements.h"
 #include "MainWindow.h"
-#include "strings.h"
+#include "ddm_strings.h"
 #include "NewTableForm.h"
 #include "NewViewForm.h"
 #include "TableInstanceForm.h"

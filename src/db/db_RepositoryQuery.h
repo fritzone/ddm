@@ -1,7 +1,7 @@
 #ifndef DB_REPOSITORYQUERY_H
 #define DB_REPOSITORYQUERY_H
 
-#include <QDomElement>
+#include <QtXml/QDomElement>
 #include <QMap>
 #include <QString>
 

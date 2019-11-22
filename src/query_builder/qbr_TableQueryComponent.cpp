@@ -16,7 +16,7 @@
 #include "qbr_SingleExpressionQueryComponent.h"
 
 #include "UidWarehouse.h"
-#include "strings.h"
+#include "ddm_strings.h"
 
 #include <QGraphicsScene>
 #include <QGraphicsView>

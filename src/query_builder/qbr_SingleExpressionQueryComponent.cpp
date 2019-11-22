@@ -12,7 +12,7 @@
 #include "qbr_SelectQuerySelectComponent.h"
 #include "qbr_CellAsCommand.h"
 #include "qbr_SelectQueryAsComponent.h"
-#include "strings.h"
+#include "ddm_strings.h"
 #include "uids.h"
 #include "core_TableInstance.h"
 #include "qbr_Query.h"

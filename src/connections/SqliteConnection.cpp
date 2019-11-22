@@ -1,5 +1,5 @@
 #include "SqliteConnection.h"
-#include "strings.h"
+#include "ddm_strings.h"
 #include "db_DatabaseEngineManager.h"
 
 SqliteConnection::SqliteConnection(const QString &name, const QString &filename, bool autoConnect, int sqliteVersion) : Connection(name, autoConnect),

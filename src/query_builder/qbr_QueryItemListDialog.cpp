@@ -12,7 +12,7 @@
 #include "core_Column.h"
 #include "core_UserDataType.h"
 #include "qbr_SelectQueryJoinComponent.h"
-#include "strings.h"
+#include "ddm_strings.h"
 #include "db_DatabaseEngineManager.h"
 
 // TODO: this should not be here, it is here only for ColumnOfTabWithTabInstance

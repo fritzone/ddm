@@ -1,8 +1,8 @@
 #ifndef _SERIALIZABLEELEMENT_H_
 #define _SERIALIZABLEELEMENT_H_
 
-#include <QDomDocument>
-#include <QDomElement>
+#include <QtXml/QDomDocument>
+#include <QtXml/QDomElement>
 
 /**
  * All the classes that can be serialized should be derived from this class

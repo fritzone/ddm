@@ -1,5 +1,5 @@
 #include "ConnectionManager.h"
-#include "strings.h"
+#include "ddm_strings.h"
 #include "MySqlConnection.h"
 #include "SqliteConnection.h"
 #include "conn_CUBRID.h"

@@ -1,5 +1,5 @@
 #include "qbr_SelectQueryFromComponent.h"
-#include "strings.h"
+#include "ddm_strings.h"
 #include "qbr_SelectQuery.h"
 #include "Workspace.h"
 #include "Version.h"

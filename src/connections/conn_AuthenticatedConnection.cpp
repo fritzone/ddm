@@ -1,6 +1,6 @@
 #include "conn_AuthenticatedConnection.h"
 
-#include "strings.h"
+#include "ddm_strings.h"
 
 AuthenticatedConnection::AuthenticatedConnection(const QString &name,
                                                  const QString &host,

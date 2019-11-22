@@ -2,7 +2,7 @@
 #include "Configuration.h"
 #include "gui_HelpWindow.h"
 #include "ui_PreferencesDialog.h"
-#include "strings.h"
+#include "ddm_strings.h"
 
 #include<QMessageBox>
 

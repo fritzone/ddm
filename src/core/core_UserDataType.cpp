@@ -1,5 +1,5 @@
 #include "core_UserDataType.h"
-#include "strings.h"
+#include "ddm_strings.h"
 #include "uids.h"
 #include "ContextMenuCollection.h"
 

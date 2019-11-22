@@ -2,7 +2,7 @@
 #include "qbr_TableQueryComponent.h"
 #include "qbr_SingleExpressionQueryComponent.h"
 #include "uids.h"
-#include "strings.h"
+#include "ddm_strings.h"
 
 SelectQueryJoinComponent::SelectQueryJoinComponent(Query* q, QueryComponent* p,
                                                    int l, Version *v) :

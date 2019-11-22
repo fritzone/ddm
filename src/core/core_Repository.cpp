@@ -18,9 +18,9 @@
 #include "uids.h"
 
 #include <QApplication>
-#include <QDomDocument>
+#include <QtXml/QDomDocument>
 #include <QFile>
-#include <QDomElement>
+#include <QtXml/QDomElement>
 #include <QMessageBox>
 
 #include <QDebug>

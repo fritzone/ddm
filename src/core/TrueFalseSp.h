@@ -2,7 +2,7 @@
 #define TRUEFALSESP_H
 
 #include "db_SP.h"
-#include "strings.h"
+#include "ddm_strings.h"
 
 /**
  * Class representing a special property with a TRUE/FALSE value

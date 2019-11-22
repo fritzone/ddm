@@ -4,7 +4,7 @@ CMAKE_MINIMUM_REQUIRED(VERSION 2.6.0)
 SET(PROJECT_NAME_SHORT   "DDM")
 SET(PROJECT_NAME_LONG    "Database Deployment Manager")
 SET(PROJECT_DESCRIPTION  "A tool for managing database deployments")
-SET(PROJECT_COPYRIGHT    "Copyright (C) 2010-2013 Ferenc Deak")
+SET(PROJECT_COPYRIGHT    "Copyright (C) 2010-2019 Ferenc Deak")
 SET(PROJECT_CONTACT      "fritzone@gmail.com")
 SET(PROJECT_VENDOR       "Ferenc Deak")
 SET(ORG_WEBSITE          "http://ddmproject.weebly.com/")
@@ -69,33 +69,117 @@ ENDIF(UNIX)
 # Search and include Qt4 parameters
 # Set Qt min required version and add modules here
 
-FIND_PACKAGE(Qt4 COMPONENTS QtCore QtGui QtXml QtSvg QtNetwork QtSql QtWebkit REQUIRED )
+find_package(Qt5Core QUIET)
+find_package(Qt5Sql QUIET)
+find_package(Qt5Widgets QUIET)
+find_package(Qt5Gui QUIET)
+find_package(Qt5Network QUIET)
+find_package(Qt5Svg QUIET)
+find_package(Qt5Webkit QUIET)
 
-IF (NOT WIN32)
-    #FindQt4.cmake is so brain-dead when Xcompiling
-    SET(DDM_LIBS ${QT_QTCORE_LIBRARY}
-                     ${QT_QTGUI_LIBRARY}
-                     ${QT_QTSVG_LIBRARY}
-                     ${QT_QTNETWORK_LIBRARY}
-                     ${QT_QTSQL_LIBRARY}
-                     ${QT_QTWEBKIT_LIBRARY}
-                     ${QT_QTXML_LIBRARY}) # Add here any other QT module or other library
-    INCLUDE(${QT_USE_FILE})
-    ADD_DEFINITIONS(${QT_DEFINITIONS})
-ELSE (NOT WIN32)
-#    SET (DDM_LIBS QtSql4 QtWebkit4 QtXml4 QtGui4 QtCore4 
-#            ws2_32 winmm imm32 libeay32 ssleay32 crypt32 gdi32)
-	    SET(DDM_LIBS ${QT_QTCORE_LIBRARY}
-                     ${QT_QTGUI_LIBRARY}
-                     ${QT_QTSVG_LIBRARY}
-                     ${QT_QTNETWORK_LIBRARY}
-                     ${QT_QTSQL_LIBRARY}
-                     ${QT_QTWEBKIT_LIBRARY}
-                     ${QT_QTXML_LIBRARY}) # Add here any other QT module or other library
 
-					 INCLUDE(${QT_USE_FILE})
-    ADD_DEFINITIONS(${QT_DEFINITIONS})
-ENDIF(NOT WIN32)
+if (Qt5Core_FOUND)
+
+    find_package(Qt5 COMPONENTS Core Widgets Sql Gui Network Xml PrintSupport WebEngine WebKitWidgets REQUIRED)
+
+    if(Qt5_FOUND AND WIN32 AND TARGET Qt5::qmake AND NOT TARGET Qt5::windeployqt)
+      get_target_property(_qt5_qmake_location  Qt5::qmake IMPORTED_LOCATION)
+
+      execute_process(
+          COMMAND "${_qt5_qmake_location}" -query QT_INSTALL_PREFIX
+          RESULT_VARIABLE return_code
+          OUTPUT_VARIABLE qt5_install_prefix
+          OUTPUT_STRIP_TRAILING_WHITESPACE
+      )
+
+      set(imported_location "${qt5_install_prefix}/bin/windeployqt.exe")
+
+      if(EXISTS ${imported_location})
+          add_executable(Qt5::windeployqt IMPORTED)
+
+          set_target_properties(Qt5::windeployqt PROPERTIES
+              IMPORTED_LOCATION ${imported_location}
+          )
+      endif()
+    endif()
+
+    message("Found Qt5")
+    set(QT_LIBRARIES 
+        ${Qt5Core_LIBRARIES} 
+        ${Qt5Network_LIBRARIES} 
+        ${Qt5Widgets_LIBRARIES} 
+        ${Qt5Sql_LIBRARIES} 
+        ${Qt5Svg_LIBRARIES} 
+        ${Qt5Webkit_LIBRARIES} 
+        ${Qt5Xml_LIBRARIES}
+        ${Qt5PrintSupport_LIBRARIES}
+        ${Qt5PrintWebEngine_LIBRARIES}
+        ${Qt5WebKitWidgets_LIBRARIES}
+    )
+
+    message(${QT_LIBRARIES})
+
+    include_directories(
+        ${Qt5Core_INCLUDE_DIRS} 
+        ${Qt5Sql_INCLUDE_DIRS} 
+        ${Qt5Svg_INCLUDE_DIRS}
+        ${Qt5Xml_INCLUDE_DIRS}
+        ${Qt5Widgets_INCLUDE_DIRS}
+        ${Qt5Webkit_INCLUDE_DIRS}
+    )
+
+
+    macro(qt_add_resources)
+       qt5_add_resources(${ARGN})
+    endmacro()
+
+    macro(qt_wrap_cpp)
+        qt5_wrap_cpp(${ARGN})
+    endmacro()
+
+    macro(qt_wrap_ui)
+        qt5_wrap_ui(${ARGN})
+    endmacro()
+
+  get_target_property (QT_QMAKE_EXECUTABLE Qt5::qmake IMPORTED_LOCATION)
+  if ("${QT_ROOT}" STREQUAL "")
+      set(QT_ROOT ${QT_QTCORE_INCLUDE_DIR}/../..)
+  endif()
+  include_directories(${Qt5Core_INCLUDE_DIRS} ${Qt5Sql_INCLUDE_DIRS})
+endif()
+
+
+# Compile flags
+if(NOT WIN32)
+
+  set(COMMON_COMPILER_FLAGS "-std=c++17 -ggdb -pedantic -Wno-old-style-cast -fPIC")
+  
+  # C++11 for linux common for both gcc and clang
+  if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+
+    if(CLANG_SANITIZE)
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${COMMON_COMPILER_FLAGS} -fsanitize=address -fno-omit-frame-pointer -O1 -fno-optimize-sibling-calls")
+    else()
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${COMMON_COMPILER_FLAGS} -fPIC -fsanitize=address -fno-omit-frame-pointer -O1 -fno-optimize-sibling-calls")
+    endif()
+
+  else()
+    if(COVERAGE_BUILD)
+      set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${COMMON_COMPILER_FLAGS} -ftest-coverage -fprofile-arcs -fpermissive -finline-functions -Wno-long-long -fvisibility-inlines-hidden")
+    else()
+      set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${COMMON_COMPILER_FLAGS} -fpermissive -finline-functions -Wno-long-long -fvisibility-inlines-hidden")
+    endif()
+  endif()
+
+  MESSAGE("CMAKE FLAGS: ${CMAKE_CXX_FLAGS}")
+
+  add_definitions("-D_GLIBCXX_USE_CXX11_ABI")
+
+else() # Windows part of compilation flags
+
+    add_definitions("/D_CRT_SECURE_NO_WARNINGS")
+
+endif()
 
 # Copy the sh launcher
 IF(NOT WIN32)

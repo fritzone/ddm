@@ -5,7 +5,7 @@
 #include "db_AbstractDTSupplier.h"
 #include "db_Codepage.h"
 #include "core_UserDataType.h"
-#include "strings.h"
+#include "ddm_strings.h"
 #include "Configuration.h"
 #include "Workspace.h"
 #include "Version.h"

@@ -15,6 +15,7 @@ add_subdirectory(qhtml)
 add_subdirectory(dbmysql)
 add_subdirectory(dbsqlite)
 add_subdirectory(dbcubrid)
+add_subdirectory(dbpostgres)
 add_subdirectory(reverse_eng)
 
 #Put here CPPs
@@ -53,7 +54,7 @@ LIST( APPEND DDM_HDRS
   NameGenerator.h
   SqlNamesValidator.h
   StartupValuesHelper.h
-  strings.h
+  ddm_ddm_strings.h
   TableUpdateGenerator.h
   uids.h
   UidWarehouse.h
@@ -88,6 +89,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_CURRENT_SOURCE_DIR}/dbmysql
   ${CMAKE_CURRENT_SOURCE_DIR}/dbsqlite
   ${CMAKE_CURRENT_SOURCE_DIR}/dbcubrid
+  ${CMAKE_CURRENT_SOURCE_DIR}/dbpostgres
   ${CMAKE_CURRENT_SOURCE_DIR}/reverse_eng
 )
 
@@ -102,9 +104,9 @@ set(DDM_HDRS ${DDM_HDRS} CACHE INTERNAL DDM_HDRS)
 set(DDM_MOC_HDRS ${DDM_MOC_HDRS} CACHE INTERNAL DDM_MOC_HDRS)
 set(DDM_UIS ${DDM_UIS} CACHE INTERNAL DDM_UIS)
 
-QT4_WRAP_UI(DDM_UIS_H ${DDM_UIS})
-QT4_ADD_RESOURCES(DDM_RCC_SRCS ${DDM_RCC})
-QT4_WRAP_CPP(DDM_MOC_SRCS ${DDM_MOC_HDRS})
+qt_wrap_ui(DDM_UIS_H ${DDM_UIS})
+qt_add_resources(DDM_RCC_SRCS ${DDM_RCC})
+qt_wrap_cpp(DDM_MOC_SRCS ${DDM_MOC_HDRS})
 
 ADD_EXECUTABLE(ddm ${DDM_SRCS} ${DDM_RCC_SRCS} ${DDM_UIS_H} ${DDM_MOC_SRCS}
 )
@@ -113,7 +115,7 @@ ADD_EXECUTABLE(ddm ${DDM_SRCS} ${DDM_RCC_SRCS} ${DDM_UIS_H} ${DDM_MOC_SRCS}
 ADD_DEPENDENCIES(ddm translations)
 
 # Link the target against the Qt libraries
-TARGET_LINK_LIBRARIES(ddm ${DDM_LIBS})
+TARGET_LINK_LIBRARIES(ddm ${DDM_LIBS} ${QT_LIBRARIES})
 
 # Now we are done.
 
