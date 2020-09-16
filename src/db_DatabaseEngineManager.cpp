@@ -70,7 +70,7 @@ DatabaseEngineManager::DatabaseEngineManager()
     PostgresDatabaseEngine* postgresDBEngine = PostgresDatabaseEngine::instance();
     PostgresSQLGenerator* postgresGenerator = new PostgresSQLGenerator(postgresDBEngine);
     addEngine(strPostgres, postgresDBEngine);
-    addSqlGenerator(strPostgres, postgresGenerator);
+    addSqlGenerator(strPostgres.toUpper(), postgresGenerator);
     }
 
 }

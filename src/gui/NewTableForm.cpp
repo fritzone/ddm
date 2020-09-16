@@ -2768,7 +2768,8 @@ void NewTableForm::presentSql(Project *, Version *)
     }
 
     DatabaseEngine* eng = m_project?m_project->getEngine():m_dbEngine;
-    finalSql = eng->getSqlGenerator()->generateCreateTableSql(m_table, fo, m_table->getName(), QMap<QString, QString>(), 0);
+    auto* sqlGenerator = eng->getSqlGenerator();
+    finalSql = sqlGenerator->generateCreateTableSql(m_table, fo, m_table->getName(), QMap<QString, QString>(), 0);
 
     if(m_project)
     {
