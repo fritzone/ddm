@@ -29,7 +29,7 @@ public:
 
     QString generateTableCreationComments(const Table *t, const QString &tabName) const;
 
-    QString correctCase(QString) const;
+    QString correctCase(const QString &) const;
 
     void initForOptions(const QHash<QString, QString> &options) const;
 

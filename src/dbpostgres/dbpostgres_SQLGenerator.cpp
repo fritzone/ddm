@@ -84,11 +84,16 @@ QString PostgresSQLGenerator::sqlForAColumn(const Column *col) const
     // do we have a default value for this columns' data type? Only for non auto inc.
     if(dt->getDefaultValue().length() > 0 && autoInc != strTrue)
     {
-        QString g = dt->getDefaultValue();
-        columnsSql += correctCase("default")+
-                (dt->getDefaultValue().toUpper() == "NULL"? ("NULL ") :
-                (QString( (dt->getType()==DT_STRING) || (dt->getType()==DT_DATETIME && g.toUpper()!="SYS_TIMESTAMP") ? "\"" : "") + dt->getDefaultValue() +
-                QString( (dt->getType()==DT_STRING) || (dt->getType()==DT_DATETIME && g.toUpper()!="SYS_TIMESTAMP") ? "\"" : "") ));
+        // SERIAL type has no default value
+        if(dt->getName().toUpper() != "SERIAL")
+        {
+            QString g = dt->getDefaultValue();
+            columnsSql += correctCase("default")+
+                    (dt->getDefaultValue().toUpper() == "NULL"? ("NULL ") :
+                    (QString( (dt->getType()==DT_STRING) || (dt->getType()==DT_DATETIME && g.toUpper()!="SYS_TIMESTAMP") ? "\"" : "") + dt->getDefaultValue() +
+                    QString( (dt->getType()==DT_STRING) || (dt->getType()==DT_DATETIME && g.toUpper()!="SYS_TIMESTAMP") ? "\"" : "") ));
+        }
+
     }
 
     // and set the auto inc

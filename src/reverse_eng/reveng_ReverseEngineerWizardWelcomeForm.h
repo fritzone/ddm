@@ -27,6 +27,7 @@ public:
     void setMySqlMode();
     void setSqliteMode();
     void setCubridMode();
+    void setPostgresqlMode();
 
 private slots:
 

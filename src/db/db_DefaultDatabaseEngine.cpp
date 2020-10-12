@@ -221,6 +221,7 @@ QStringList DefaultDatabaseEngine::getResultOfQuery(const QString& squery, Conne
     }
 
     QSqlQuery query(dbo);
+    qDebug() << squery;
     bool run = query.exec(squery);
     if(!run)
     {

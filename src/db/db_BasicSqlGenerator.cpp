@@ -43,14 +43,17 @@ QString BasicSqlGenerator::generateTableCreationComments(const Table *t, const Q
 }
 
 
-QString BasicSqlGenerator::correctCase(QString a) const
+QString BasicSqlGenerator::correctCase(const QString& a) const
 {
     QString result;
     if(m_upcase)
     {
         result = a.toUpper();
     }
-    result = a.toLower();
+    else
+    {
+        result = a.toLower();
+    }
     result += strSpace;
 
     return result;

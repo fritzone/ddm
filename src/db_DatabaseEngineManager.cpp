@@ -196,6 +196,16 @@ QMap<int, ReverseEngineerWizard::collectOperation> DatabaseEngineManager::getCol
         opCUBRID[4] = &ReverseEngineerWizard::connectAndRetrieveFunctions;
         opCUBRID[5] = &ReverseEngineerWizard::connectAndRetrieveTriggers;
         ops[strCUBRID.toUpper()] = opCUBRID;
+
+        QMap<int, ReverseEngineerWizard::collectOperation> opPostgres;
+        opPostgres[1] = &ReverseEngineerWizard::gatherConnectionDataAndCheckDatabase;
+        opPostgres[2] = &ReverseEngineerWizard::checkDatabaseAndCollectTables;
+        opPostgres[3] = &ReverseEngineerWizard::connectAndRetrieveViews;
+        opPostgres[4] = &ReverseEngineerWizard::connectAndRetrieveProcedures;
+        opPostgres[5] = &ReverseEngineerWizard::connectAndRetrieveFunctions;
+        opPostgres[6] = &ReverseEngineerWizard::connectAndRetrieveTriggers;
+        ops[strPostgres.toUpper()] = opPostgres;
+
     }
     return ops[name.toUpper()];
 }

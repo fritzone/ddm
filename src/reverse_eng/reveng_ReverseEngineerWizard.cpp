@@ -7,6 +7,7 @@
 #include "db_DatabaseEngine.h"
 #include "MySqlConnection.h"
 #include "SqliteConnection.h"
+#include "conn_Postgres.h"
 #include "conn_CUBRID.h"
 #include "ddm_strings.h"
 
@@ -39,6 +40,11 @@ ReverseEngineerWizard::ReverseEngineerWizard(DatabaseEngine* engine) : QWizard()
     {
         m_welcomePage->setSqliteMode();
     }
+    else
+    if(dbName.toUpper() == strPostgres.toUpper())
+    {
+        m_welcomePage->setPostgresqlMode();
+    }
 
     // the wizard is highly fragmented because the SQLITE DB does not support procedures and functions
     // the CUBRID DB does not support database selection, etc...
@@ -46,7 +52,7 @@ ReverseEngineerWizard::ReverseEngineerWizard(DatabaseEngine* engine) : QWizard()
     addPage(m_welcomePage);
 
     // add the databases page only if it works as a MySQL wizard
-    if(dbName == strMySql)
+    if(dbName == strMySql || dbName.toUpper() == strPostgres.toUpper())
     {
         addPage(m_databasesPage);
     }
@@ -54,7 +60,7 @@ ReverseEngineerWizard::ReverseEngineerWizard(DatabaseEngine* engine) : QWizard()
     addPage(m_tablesPage);
     addPage(m_viewsPage);
     // add the procedures and functions only if it acts like a mysql wizard
-    if(dbName == strMySql || dbName == strCUBRID)
+    if(dbName == strMySql || dbName == strCUBRID || dbName.toUpper() == strPostgres.toUpper())
     {
         addPage(m_proceduresPage);
         addPage(m_functionsPage);
@@ -68,7 +74,7 @@ ReverseEngineerWizard::ReverseEngineerWizard(DatabaseEngine* engine) : QWizard()
 void ReverseEngineerWizard::gatherConnectionData()
 {
     QString dbName = getDbTypeName();
-    if(dbName == strMySql || dbName == strCUBRID)
+    if(dbName == strMySql || dbName == strCUBRID || dbName.toUpper() == strPostgres.toUpper())
     {
         m_host = m_welcomePage->getHost();
         m_user = m_welcomePage->getUser();
@@ -109,7 +115,7 @@ bool ReverseEngineerWizard::databaseWasSelected()
 {
     bool selected = false;
     QString dbName = getDbTypeName();
-    if(dbName == strMySql)
+    if(dbName == strMySql || dbName.toUpper() == strPostgres.toUpper())
     {
         m_database = m_databasesPage->getSelectedDatabase();
         if(m_database.length() > 0)
@@ -257,7 +263,11 @@ bool ReverseEngineerWizard::checkDatabaseAndCollectTables()
 bool ReverseEngineerWizard::connectAndRetrieveTables()
 {
     Connection *c = getConnectionforDb();
-    if(!c) return false;
+    if(!c)
+    {
+        QMessageBox::critical(this, tr("Error"), tr("Can't get a DB connection"), QMessageBox::Ok);
+        return false;
+    }
 
     QStringList tables = m_engine->getAvailableTables(c);
     m_tablesPage->clearList();
@@ -323,6 +333,11 @@ Connection *ReverseEngineerWizard::getConnectionforDb() const
     if(dbName == strSqlite)
     {
         c = new SqliteConnection(temp, m_sqliteFile, false, m_sqliteVersion);
+    }
+    else
+    if(dbName.toUpper() == strPostgres.toUpper())
+    {
+        c = new PostgresConnection(temp, m_host, m_user, m_pass, m_database, false, false, m_port);
     }
     return c;
 }

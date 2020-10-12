@@ -78,6 +78,19 @@ void ReverseEngineerWizardWelcomeForm::setCubridMode()
     m_mode = strCUBRID;
 }
 
+void ReverseEngineerWizardWelcomeForm::setPostgresqlMode()
+{
+    ui->tabWidget->removeTab(1);
+    ui->tabWidget->setTabIcon(0, IconFactory::getPostgresIcon());
+    ui->tabWidget->setTabText(0, strPostgres);
+
+    ui->txtDatabaseName->hide();
+    ui->lblDatabaseName->hide();
+
+    m_mode = strPostgres;
+
+}
+
 QString ReverseEngineerWizardWelcomeForm::getSqliteFile()
 {
     return ui->txtSqliteFilename->text();

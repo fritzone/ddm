@@ -167,6 +167,7 @@ static const QString strQPostgres = "QPSQL";
 // human readable database names
 static const QString strCamelMySql = "MySql";
 static const QString strCamelSqlite = "Sqlite";
+static const QString strCamelPostgres = "Postgresql";
 
 static const QString strConnection = "connection";
 
