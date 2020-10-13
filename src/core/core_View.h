@@ -29,7 +29,7 @@ class View :
 
 {
 public:
-    explicit View() {}
+    explicit View();
 
     View(Version *v, bool manual, QString uid);
     View(bool manual, QString uid, Version* v); // used by the deserialization engine

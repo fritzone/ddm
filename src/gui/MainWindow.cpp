@@ -2542,6 +2542,8 @@ void MainWindow::onNewViewWithSql()
 void MainWindow::onNewView()
 {
     View* v = new View(false, QUuid::createUuid().toString(), m_workspace->workingVersion());
+    v->initializeFor(m_workspace->currentProject()->getEngine(), QUuid(uidView));
+
     m_nvf = 0;
     Workspace::getInstance()->workingVersion()->addView(v, false);
     Workspace::getInstance()->workingVersion()->getGui()->createViewTreeEntry(v);

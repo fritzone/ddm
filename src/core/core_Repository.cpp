@@ -24,6 +24,7 @@
 #include <QMessageBox>
 
 #include <QDebug>
+#include <QDirIterator>
 
 QDebug operator<<(QDebug dbg, const QDomNode& node)
 {
@@ -36,10 +37,17 @@ QDebug operator<<(QDebug dbg, const QDomNode& node)
 
 Repository::Repository()
 {
-    QDomDocument doc ("xml");
-    QString filename = QApplication::applicationDirPath() + "/rsrc/repository.xml";
 
-    QFile file (filename);
+    QDirIterator it(":", QDirIterator::Subdirectories);
+    while (it.hasNext()) {
+        qDebug() << it.next();
+    }
+
+
+    QDomDocument doc ("xml");
+    // QString filename = QApplication::applicationDirPath() + "/rsrc/repository.xml";
+
+    QFile file (strRepository);
     if (file.open(QIODevice::ReadOnly))
     {
         if (!doc.setContent(&file))
@@ -49,6 +57,11 @@ Repository::Repository()
             return;
         }
         file.close();
+    }
+    else
+    {
+        QMessageBox::critical(0, QObject::tr("Error"), QObject::tr("Cannot find the repository of the application. The application will work with reduced functionality"), QMessageBox::Ok);
+        return;
     }
 
     QDomElement docElem = doc.documentElement();

@@ -63,7 +63,11 @@ ReverseEngineerWizard::ReverseEngineerWizard(DatabaseEngine* engine) : QWizard()
     if(dbName == strMySql || dbName == strCUBRID || dbName.toUpper() == strPostgres.toUpper())
     {
         addPage(m_proceduresPage);
-        addPage(m_functionsPage);
+
+        if(dbName.toUpper() != strPostgres.toUpper())
+        {
+            addPage(m_functionsPage);
+        }
     }
     addPage(m_triggersPage);
     addPage(m_optionsPage);

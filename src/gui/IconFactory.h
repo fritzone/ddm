@@ -186,992 +186,307 @@ public:
 
     static const QIcon& getIconForActionId(const QString& id);
 
-    static const QIcon& getRepoEntityIcon()
-    {
-        static const QIcon icon(icons::strRepositoryEntity);
-        return icon;
-    }
-
-    static const QIcon& getRepoDatabasesIcon()
-    {
-        static const QIcon icon(icons::strRepositoryDatabases);
-        return icon;
-    }
-
-    static const QIcon& getRefreshIcon()
-    {
-        static const QIcon icon(icons::strRefreshIcon);
-        return icon;
-    }
-
-    static const QIcon& getRepoRoleIcon()
-    {
-        static const QIcon icon(icons::strRepositoryRole);
-        return icon;
-
-    }
-
-    static const QIcon& getKeyIcon()
-    {
-        static const QIcon key(icons::strKeyIcon);
-        return key;
-    }
-
-    static const QIcon& getSaveIcon()
-    {
-        static const QIcon save(icons::strSaveIcon);
-        return save;
-    }
-
-    static const QIcon& getNewIcon()
-    {
-        static const QIcon save(icons::strNewIcon);
-        return save;
-    }
-
-    static const QIcon& getApplyIcon()
-    {
-        static const QIcon apply(icons::strApplyIcon);
-        return apply;
-    }
-
-    static const QIcon& getAddIcon()
-    {
-        static const QIcon icon(icons::strAddIcon);
-        return icon;
-    }
-
-    static const QIcon& getEmptyIcon()
-    {
-        static const QIcon icon(icons::strEmptyIcon);
-        return icon;
-    }
-
-    static const QIcon& getTablesIcon()
-    {
-        static const QIcon icon(icons::strTablesIcon);
-        return icon;
-    }
-
-    static const QIcon& getLockedTableIcon()
-    {
-        static const QIcon icon(icons::strTableLockIcon);
-        return icon;
-    }
-
-    static const QIcon& getFinalLockedTableIcon()
-    {
-        static const QIcon icon(icons::strTableFinalLockIcon);
-        return icon;
-    }
-
-    static const QIcon& getTableIcon()
-    {
-        static const QIcon icon(icons::strTableIcon);
-        return icon;
-    }
-
-    static const QIcon& getNotIcon()
-    {
-        static const QIcon icon(icons::strNotIcon);
-        return icon;
-    }
-
-    static const QIcon& getBigNotIcon()
-    {
-        static const QIcon icon(icons::strBigNotIcon);
-        return icon;
-    }
-
-    static const QIcon& getNegIcon()
-    {
-        static const QIcon icon(icons::strNegIcon);
-        return icon;
-    }
-
-    static const QIcon& getMinusIcon()
-    {
-        static const QIcon icon(icons::strMinusIcon);
-        return icon;
-    }
-
-    static const QIcon& getOpenParanthesesIcon()
-    {
-        static const QIcon icon(icons::strParanthesesOpenIcon);
-        return icon;
-    }
-
-    static const QIcon& getCloseParanthesesIcon()
-    {
-        static const QIcon icon(icons::strParanthesesCloseIcon);
-        return icon;
-    }
-
-    static const QIcon& getFunctionIcon()
-    {
-        static const QIcon icon(icons::strFunctionIcon);
-        return icon;
-    }
-
-    static const QIcon& getBigMinusIcon()
-    {
-        static const QIcon icon(icons::strBigMinusIcon);
-        return icon;
-    }
-
-    static const QIcon& getBigNegIcon()
-    {
-        static const QIcon icon(icons::strBigNegIcon);
-        return icon;
-    }
-
-    static const QIcon& getDatabaseIcon()
-    {
-        static const QIcon icon(icons::strDatabaseIcon);
-        return icon;
-    }
-
-    static const QIcon& getTabinstIcon()
-    {
-        static const QIcon icon(icons::strTableInstIcon);
-        return icon;
-    }
-
-    static const QIcon& getLockedTabinstIcon()
-    {
-        static const QIcon icon(icons::strLockedTableInstIcon);
-        return icon;
-    }
-
-    static const QIcon& getFinalLockedTabinstIcon()
-    {
-        static const QIcon icon(icons::strFinalLockedTableInstIcon);
-        return icon;
-    }
-
-    static const QIcon& getLiteralIcon()
-    {
-        static const QIcon icon(icons::strTypeHereIcon);
-        return icon;
-    }
-
-    static const QIcon& getTabinstLockIcon()
-    {
-        static const QIcon icon(icons::strTableInstLockIcon);
-        return icon;
-    }
-
-    static const QIcon& getDataTypesIcon()
-    {
-        static const QIcon icon(icons::strDataTypesIcon);
-        return icon;
-    }
-
-    static const QIcon& getStringDataTypesIcon()
-    {
-        static const QIcon icon(icons::strStringsFolder);
-        return icon;
-    }
-
-    static const QIcon& getStringDataTypeIcon()
-    {
-        static const QIcon icon(icons::strDtTextIcon);
-        return icon;
-    }
-
-    static const QIcon& getFinalLockedStringDataTypeIcon()
-    {
-        static const QIcon icon(icons::strDtFinalLockedTextIcon);
-        return icon;
-    }
-
-    static const QIcon& getLockedStringDataTypeIcon()
-    {
-        static const QIcon icon(icons::strDtLockedTextIcon);
-        return icon;
-    }
-
-    static const QIcon& getIntDataTypesIcon()
-    {
-        static const QIcon icon(icons::strIntsFolder);
-        return icon;
-    }
-
-    static const QIcon& getIntDataTypeIcon()
-    {
-        static const QIcon icon(icons::strDtNumericIcon);
-        return icon;
-    }
-
-    static const QIcon& getLockedIntDataTypeIcon()
-    {
-        static const QIcon icon(icons::strDtLockedNumericIcon);
-        return icon;
-    }
-
-    static const QIcon& getFinalLockedIntDataTypeIcon()
-    {
-        static const QIcon icon(icons::strDtFinalLockedNumericIcon);
-        return icon;
-    }
-
-    static const QIcon& getBlobDataTypesIcon()
-    {
-        static const QIcon icon(icons::strBlobFolder);
-        return icon;
-    }
-
-    static const QIcon& getLockedBlobDataTypeIcon()
-    {
-        static const QIcon icon(icons::strDtLockedBlobIcon);
-        return icon;
-    }
-
-    static const QIcon& getFinalLockedBlobDataTypeIcon()
-    {
-        static const QIcon icon(icons::strDtFinalLockedBlobIcon);
-        return icon;
-    }
-
-    static const QIcon& getLockedIcon()
-    {
-        static const QIcon icon(icons::strLockedIcon);
-        return icon;
-    }
-
-    static const QIcon& getFinalLockedIcon()
-    {
-        static const QIcon icon(icons::strFinalLockedIcon);
-        return icon;
-    }
-
-    static const QIcon& getUnLockedIcon()
-    {
-        static const QIcon icon(icons::strUnLockedIcon);
-        return icon;
-    }
-
-    static const QIcon& getBlobDataTypeIcon()
-    {
-        static const QIcon icon(icons::strDtBlobIcon);
-        return icon;
-    }
-
-    static const QIcon& getBoolDataTypesIcon()
-    {
-        static const QIcon icon(icons::strBoolFolder);
-        return icon;
-    }
-
-    static const QIcon& getLockedBoolDataTypeIcon()
-    {
-        static const QIcon icon(icons::strDtLockedBoolIcon);
-        return icon;
-    }
-
-    static const QIcon& getFinalLockedBoolDataTypeIcon()
-    {
-        static const QIcon icon(icons::strDtFinalLockedBoolIcon);
-        return icon;
-    }
-
-    static const QIcon& getBoolDataTypeIcon()
-    {
-        static const QIcon icon(icons::strDtBoolIcon);
-        return icon;
-    }
-
-    static const QIcon& getMiscDataTypesIcon()
-    {
-        static const QIcon icon(icons::strMiscFolder);
-        return icon;
-    }
-
-    static const QIcon& getMiscDataTypeIcon()
-    {
-        static const QIcon icon(icons::strDtMiscIcon);
-        return icon;
-    }
-
-    static const QIcon& getLockedMiscDataTypeIcon()
-    {
-        static const QIcon icon(icons::strDtLockedMiscIcon);
-        return icon;
-    }
-
-    static const QIcon& getFinalLockedMiscDataTypeIcon()
-    {
-        static const QIcon icon(icons::strDtFinalLockedMiscIcon);
-        return icon;
-    }
-
-    static const QIcon& getSpatialDataTypesIcon()
-    {
-        static const QIcon icon(icons::strSpatialFolder);
-        return icon;
-    }
-
-    static const QIcon& getSpatialDataTypeIcon()
-    {
-        static const QIcon icon(icons::strDtSpatialIcon);
-        return icon;
-    }
-
-    static const QIcon& getGenericDataTypeIcon()
-    {
-        static const QIcon icon(icons::strDtGenericIcon);
-        return icon;
-    }
-
-    static const QIcon& getVariableDataTypeIcon()
-    {
-        static const QIcon icon(icons::strDtVariableIcon);
-        return icon;
-    }
-
-    static const QIcon& getFinalLockedSpatialDataTypeIcon()
-    {
-        static const QIcon icon(icons::strDtFinalLockedSpatialIcon);
-        return icon;
-    }
-
-    static const QIcon& getLockedSpatialDataTypeIcon()
-    {
-        static const QIcon icon(icons::strDtLockedSpatialIcon);
-        return icon;
-    }
-
-    static const QIcon& getDateTimeDataTypesIcon()
-    {
-        static const QIcon icon(icons::strDateTimesFolder);
-        return icon;
-    }
-
-    static const QIcon& getDateTimeDataTypeIcon()
-    {
-        static const QIcon icon(icons::strDtDateTimeIcon);
-        return icon;
-    }
-
-    static const QIcon& getLockedDateTimeDataTypeIcon()
-    {
-        static const QIcon icon(icons::strDtLockedDateTimeIcon);
-        return icon;
-    }
-
-    static const QIcon& getFinalLockedDateTimeDataTypeIcon()
-    {
-        static const QIcon icon(icons::strDtFinalLockedDateTimeIcon);
-        return icon;
-    }
-
-    static const QIcon& getCodeIcon()
-    {
-        static const QIcon icon(icons::strCodeIcon);
-        return icon;
-    }
-
-    static const QIcon& getSqlIcon()
-    {
-        static const QIcon icon(icons::strSqlIcon);
-        return icon;
-    }
-
-    static const QIcon& getVersionIcon()
-    {
-        static const QIcon icon(icons::strMajorVersionIcon);
-        return icon;
-    }
-
-    static const QIcon& getLockedVersionIcon()
-    {
-        static const QIcon icon(icons::strMajorVersionLockedIcon);
-        return icon;
-    }
-
-    static const QIcon& getFinalLockedVersionIcon()
-    {
-        static const QIcon icon(icons::strMajorVersionFinalLockedIcon);
-        return icon;
-    }
-
-    static const QIcon& getRemoveIcon()
-    {
-        static const QIcon icon(icons::strRemoveIcon);
-        return icon;
-    }
-
-    static const QIcon& getProjectOpenIcon()
-    {
-        static const QIcon icon(icons::strProjectOpenIcon);
-        return icon;
-    }
-
-    static const QIcon& getViewsIcon()
-    {
-        static const QIcon icon(icons::strViewsIcon);
-        return icon;
-    }
-
-    static const QIcon& getTriggersIcon()
-    {
-        static const QIcon icon(icons::strTriggersIcon);
-        return icon;
-    }
-
-    static const QIcon& getTriggerIcon()
-    {
-        static const QIcon icon(icons::strTriggerIcon);
-        return icon;
-    }
-
-    static const QIcon& getLockedTriggerIcon()
-    {
-        static const QIcon icon(icons::strLockedTriggerIcon);
-        return icon;
-    }
-
-    static const QIcon& getFinalLockedTriggerIcon()
-    {
-        static const QIcon icon(icons::strFinalLockedTriggerIcon);
-        return icon;
-    }
-
-    static const QIcon& getDiagramIcon()
-    {
-        static const QIcon icon(icons::strDiagramIcon);
-        return icon;
-    }
-
-    static const QIcon& getLockedDiagramIcon()
-    {
-        static const QIcon icon(icons::strLockedDiagramIcon);
-        return icon;
-    }
-
-    static const QIcon& getFinalLockedDiagramIcon()
-    {
-        static const QIcon icon(icons::strFinalLockedDiagramIcon);
-        return icon;
-    }
-
-    static const QIcon& getIndexIcon()
-    {
-        static const QIcon icon(icons::strIndexIcon);
-        return icon;
-    }
-
-    static const QIcon& getHelpIcon()
-    {
-        static const QIcon icon(icons::strHelpIcon);
-        return icon;
-    }
-
-    static const QIcon& getWarningIcon()
-    {
-        static const QIcon icon(icons::strWarningIcon);
-        return icon;
-    }
-
-    static const QIcon& getRecommendIcon()
-    {
-        static const QIcon icon(icons::strRecommendIcon);
-        return icon;
-    }
-
-    static const QIcon& getCloseIcon()
-    {
-        static const QIcon icon(icons::strCloseIcon);
-        return icon;
-    }
-
-    static const QIcon& getXorIcon()
-    {
-        static const QIcon icon(icons::strXorIcon);
-        return icon;
-    }
-
-    static const QIcon& getBinaryOrIcon()
-    {
-        static const QIcon icon(icons::strBinaryOrIcon);
-        return icon;
-    }
-
-    static const QIcon& getLeftShiftIcon()
-    {
-        static const QIcon icon(icons::strLeftShiftIcon);
-        return icon;
-    }
-
-    static const QIcon& getRightShiftIcon()
-    {
-        static const QIcon icon(icons::strRightShiftIcon);
-        return icon;
-    }
-
-    static const QIcon& getBinaryAndIcon()
-    {
-        static const QIcon icon(icons::strBinaryAndIcon);
-        return icon;
-    }
-
-    static const QIcon& getPlusIcon()
-    {
-        static const QIcon icon(icons::strPlusIcon);
-        return icon;
-    }
-
-    static const QIcon& getDivideIcon()
-    {
-        static const QIcon icon(icons::strDivideIcon);
-        return icon;
-    }
-
-    static const QIcon& getModuloIcon()
-    {
-        static const QIcon icon(icons::strModuloIcon);
-        return icon;
-    }
-
-    static const QIcon& getMultiplyIcon()
-    {
-        static const QIcon icon(icons::strMultiplyIcon);
-        return icon;
-    }
-
-    static const QIcon& getNotEqNullSafeIcon()
-    {
-        static const QIcon icon(icons::strNotEqNullSafeIcon);
-        return icon;
-    }
-
-    static const QIcon& getNotEq1Icon()
-    {
-        static const QIcon icon(icons::strNotEq1Icon);
-        return icon;
-    }
-
-    static const QIcon& getNotEqIcon()
-    {
-        static const QIcon icon(icons::strNotEqIcon);
-        return icon;
-    }
-
-    static const QIcon& getLessIcon()
-    {
-        static const QIcon icon(icons::strLessIcon);
-        return icon;
-    }
-
-    static const QIcon& getGreaterIcon()
-    {
-        static const QIcon icon(icons::strGreaterIcon);
-        return icon;
-    }
-
-    static const QIcon& getLessOrEqualIcon()
-    {
-        static const QIcon icon(icons::strLessOrEqualIcon);
-        return icon;
-    }
-
-    static const QIcon& getGreaterOrEqualIcon()
-    {
-        static const QIcon icon(icons::strGreaterOrEqualIcon);
-        return icon;
-    }
-
-    static const QIcon& getEqualIcon()
-    {
-        static const QIcon icon(icons::strEqualIcon);
-        return icon;
-    }
-
-    static const QIcon& getAliasIcon()
-    {
-        static const QIcon icon(icons::strAliasIcon);
-        return icon;
-    }
-
-    static const QIcon& getOrderIcon()
-    {
-        static const QIcon icon(icons::strOrderIcon);
-        return icon;
-    }
-
-    static const QIcon& getColumnIcon()
-    {
-        static const QIcon icon(icons::strColumnIcon);
-        return icon;
-    }
-
-    static const QIcon& getViewIcon()
-    {
-        static const QIcon icon(icons::strViewIcon);
-        return icon;
-    }
-
-    static const QIcon& getLockedViewIcon()
-    {
-        static const QIcon icon(icons::strLockedViewIcon);
-        return icon;
-    }
-
-    static const QIcon& getFinalLockedViewIcon()
-    {
-        static const QIcon icon(icons::strFinalLockedViewIcon);
-        return icon;
-    }
-
-    static const QIcon& getConnectedDatabaseIcon()
-    {
-        static const QIcon icon(icons::strConnectedDatabaseIcon);
-        return icon;
-    }
-
-    static const QIcon& getConnectConnectionIcon()
-    {
-        static const QIcon icon(icons::strConnectConnectionIcon);
-        return icon;
-    }
-
-    static const QIcon& getBrowseConnectionIcon()
-    {
-        static const QIcon icon(icons::strBrowseConnectionIcon);
-        return icon;
-    }
-
-    static const QIcon& getEditConnectionIcon()
-    {
-        static const QIcon icon(icons::strEditConnectionIcon);
-        return icon;
-    }
-
-    static const QIcon& getDroppedDatabaseIcon()
-    {
-        static const QIcon icon(icons::strDroppedDatabaseIcon);
-        return icon;
-    }
-
-    static const QIcon& getDropDatabaseIcon()
-    {
-        static const QIcon icon(icons::strDropDatabaseIcon);
-        return icon;
-    }
-
-    static const QIcon& getUnConnectedDatabaseIcon()
-    {
-        static const QIcon icon(icons::strUnConnectedDatabaseIcon);
-        return icon;
-    }
-
-    static const QIcon& getForeignKeyIcon()
-    {
-        static const QIcon icon(icons::strForeignKeyIcon);
-        return icon;
-    }
-
-    static const QIcon& getProcedureIcon()
-    {
-        static const QIcon icon(icons::strProcedureIcon);
-        return icon;
-    }
-
-    static const QIcon& getLockedProcedureIcon()
-    {
-        static const QIcon icon(icons::strLockedProcedureIcon);
-        return icon;
-    }
-
-    static const QIcon& getFinalLockedProcedureIcon()
-    {
-        static const QIcon icon(icons::strFinalLockedProcedureIcon);
-        return icon;
-    }
-
-    static const QIcon& getProceduresIcon()
-    {
-        static const QIcon icon(icons::strProcedureIcon);
-        return icon;
-    }
-
-    static const QIcon& getRecreateDatabaseIcon()
-    {
-        static const QIcon icon(icons::strRecreateDatabaseIcon);
-        return icon;
-    }
-
-    static const QIcon& getFunctionTreeIcon()
-    {
-        static const QIcon icon(icons::strFunctionTreeIcon);
-        return icon;
-    }
-
-    static const QIcon& getLockedFunctionTreeIcon()
-    {
-        static const QIcon icon(icons::strLockedFunctionTreeIcon);
-        return icon;
-    }
-
-    static const QIcon& getFinalLockedFunctionTreeIcon()
-    {
-        static const QIcon icon(icons::strFinalLockedFunctionTreeIcon);
-        return icon;
-    }
-
-    static const QIcon& getFunctionsTreeIcon()
-    {
-        static const QIcon icon(icons::strFunctionTreeIcon);
-        return icon;
-    }
-
-    static const QIcon& getTriggerUpdateIcon()
-    {
-        static const QIcon icon(icons::strTriggerUpdateIcon);
-        return icon;
-    }
-
-    static const QIcon& getTriggerDeleteIcon()
-    {
-        static const QIcon icon(icons::strTriggerDeleteIcon);
-        return icon;
-    }
-
-    static const QIcon& getTriggerInsertIcon()
-    {
-        static const QIcon icon(icons::strTriggerInsertIcon);
-        return icon;
-    }
-
-    static const QIcon& getInsertRowIcon()
-    {
-        static const QIcon icon(icons::strTriggerInsertRecordIcon);
-        return icon;
-    }
-
-    static const QIcon& getTriggerAfterIcon()
-    {
-        static const QIcon icon(icons::strTriggerAfterIcon);
-        return icon;
-    }
-
-    static const QIcon& getTriggerBeforeIcon()
-    {
-        static const QIcon icon(icons::strTriggerBeforeIcon);
-        return icon;
-    }
-
-    static const QIcon& getOpenFileIcon()
-    {
-        static const QIcon icon(icons::strOpenFileIcon);
-        return icon;
-    }
-
-    static const QIcon& getBindToDbIcon()
-    {
-        static const QIcon icon(icons::strBindToDbIcon);
-        return icon;
-    }
-
-    static const QIcon& getRunQueryIcon()
-    {
-        static const QIcon icon(icons::strRunQueryIcon);
-        return icon;
-    }
-
-    static const QIcon& getReleaseMajorVersionIcon()
-    {
-        static const QIcon icon(icons::strReleaseMajorVersionIcon);
-        return icon;
-    }
-
-    static const QIcon& getMySqlIcon()
-    {
-        static const QIcon icon(icons::strMySqlIcon);
-        return icon;
-    }
-
-    static const QIcon& getSqliteIcon()
-    {
-        static const QIcon icon(icons::strSqliteIcon);
-        return icon;
-    }
-
-    static const QIcon& getCUBRIDIcon()
-    {
-        static const QIcon icon(icons::strCUBRIDIcon);
-        return icon;
-    }
-
-    static const QIcon& getPostgresIcon()
-    {
-        static const QIcon icon(icons::strPostgresIcon);
-        return icon;
-    }
-
-    static const QIcon& getIconForDatabase(const QString& db)
-    {
-        if(db.toUpper() == strMySql.toUpper()) return getMySqlIcon();
-        if(db.toUpper() == strSqlite.toUpper()) return getSqliteIcon();
-        if(db.toUpper() == strCUBRID.toUpper()) return getCUBRIDIcon();
-        return getEmptyIcon();
-    }
-
-    static const QIcon& getChangedIcon()
-    {
-        static const QIcon icon(icons::strChangedIcon);
-        return icon;
-    }
-
-    static const QIcon& getPatchIcon()
-    {
-        static const QIcon icon(icons::strPatchIcon);
-        return icon;
-    }
-
-    static const QIcon& getSuspendPatchIcon()
-    {
-        static const QIcon icon(icons::strSuspendPatchIcon);
-        return icon;
-    }
-
-    static const QIcon& getDeployIcon()
-    {
-        static const QIcon icon(icons::strDeployIcon);
-        return icon;
-    }
-
-    static const QIcon& getSuspendedPatchIcon()
-    {
-        static const QIcon icon(icons::strSuspendedPatchIcon);
-        return icon;
-    }
-
-    static const QIcon& getAllDataTypes()
-    {
-        static const QIcon icon(icons::strIcon);
-        return icon;
-    }
-
-    static const QIcon& getUndeleteIcon()
-    {
-        static const QIcon key(icons::strUndeleteIcon);
-        return key;
-    }
-
-    static const QIcon& getIconForClassUid(const QString& uid)
-    {
-        QString cuid = uid.toUpper();
-        if(cuid == uidTable) return getTableIcon();
-        if(cuid == uidTableInstance) return getTabinstIcon();
-        if(cuid == uidDiagram) return getDiagramIcon();
-        if(cuid == uidProcedure) return getProcedureIcon();
-        if(cuid == uidFunction) return getFunctionTreeIcon();
-        if(cuid == uidView) return getViewIcon();
-        if(cuid == uidTrigger) return getTriggerIcon();
-
-        if(cuid == uidNumericDT) return getIntDataTypeIcon();
-        if(cuid == uidStringDT) return getStringDataTypeIcon();
-        if(cuid == uidDateTimeDT) return getDateTimeDataTypeIcon();
-        if(cuid == uidBooleanDT) return getBoolDataTypeIcon();
-        if(cuid == uidBlobDT) return getBlobDataTypeIcon();
-        if(cuid == uidMiscDT) return getMiscDataTypeIcon();
-        if(cuid == uidSpatialDT) return getSpatialDataTypeIcon();
-
-        return getEmptyIcon();
-    }
-
-    static QIcon getIconForDataType(DT_TYPE dt)
-    {
-        switch(dt)
-        {
-        case DT_STRING: return getStringDataTypeIcon();
-        case DT_NUMERIC: return getIntDataTypeIcon();
-        case DT_BOOLEAN: return getBoolDataTypeIcon();
-        case DT_BLOB: return getBlobDataTypeIcon();
-        case DT_DATETIME: return getDateTimeDataTypeIcon();
-        case DT_MISC: return getMiscDataTypeIcon();
-        case DT_SPATIAL: return getSpatialDataTypeIcon();
-        case DT_GENERIC: return getGenericDataTypeIcon();
-        case DT_VARIABLE: return getVariableDataTypeIcon();
-        case DT_INVALID:
-
-        default:
-            return getEmptyIcon();
-        }
-
-        return getEmptyIcon();
-    }
-
-    static QIcon getFinalLockedIconForDataType(DT_TYPE dt)
-    {
-        switch(dt)
-        {
-        case DT_STRING: return getFinalLockedStringDataTypeIcon();
-        case DT_NUMERIC: return getFinalLockedIntDataTypeIcon();
-        case DT_BOOLEAN: return getFinalLockedBoolDataTypeIcon();
-        case DT_BLOB: return getFinalLockedBlobDataTypeIcon();
-        case DT_DATETIME: return getFinalLockedDateTimeDataTypeIcon();
-        case DT_MISC: return getFinalLockedMiscDataTypeIcon();
-        case DT_SPATIAL: return getFinalLockedSpatialDataTypeIcon();
-        case DT_INVALID:
-        case DT_GENERIC:
-        case DT_VARIABLE:
-        default:
-            return getEmptyIcon();
-        }
-
-        return getEmptyIcon();
-    }
-
-    static QIcon getLockedIconForDataType(DT_TYPE dt)
-    {
-        switch(dt)
-        {
-        case DT_STRING: return getLockedStringDataTypeIcon();
-        case DT_NUMERIC: return getLockedIntDataTypeIcon();
-        case DT_BOOLEAN: return getLockedBoolDataTypeIcon();
-        case DT_BLOB: return getLockedBlobDataTypeIcon();
-        case DT_DATETIME: return getLockedDateTimeDataTypeIcon();
-        case DT_MISC: return getLockedMiscDataTypeIcon();
-        case DT_SPATIAL: return getLockedSpatialDataTypeIcon();
-        case DT_INVALID:
-        case DT_GENERIC:
-        default:
-            return getEmptyIcon();
-        }
-
-        return getEmptyIcon();
-    }
-
-    static QIcon getConnectionStateIcon(ConnectionState c)
-    {
-        switch(c)
-        {
-        case DID_NOT_TRY:
-        case UNDEFINED:
-            return (getDatabaseIcon());
-            break;
-        case FAILED:
-            return (getUnConnectedDatabaseIcon());
-            break;
-        case CONNECTED:
-            return (getConnectedDatabaseIcon());
-            break;
-        case DROPPED:
-        case DELETED:
-            return (getDroppedDatabaseIcon());
-            break;
-        }
-        return getEmptyIcon();
-    }
-
-    static QIcon getIconForUid(const QString& uid)
-    {
-        if(uid == uidFunction) return getFunctionTreeIcon();
-
-        return getEmptyIcon();
-    }
+    static const QIcon& getRepoEntityIcon();
+
+    static const QIcon& getRepoDatabasesIcon();
+
+    static const QIcon& getRefreshIcon();
+
+    static const QIcon& getRepoRoleIcon();
+
+    static const QIcon& getKeyIcon();
+
+    static const QIcon& getSaveIcon();
+
+    static const QIcon& getNewIcon();
+
+    static const QIcon& getApplyIcon();
+
+    static const QIcon& getAddIcon();
+
+    static const QIcon& getEmptyIcon();
+
+    static const QIcon& getTablesIcon();
+
+    static const QIcon& getLockedTableIcon();
+
+    static const QIcon& getFinalLockedTableIcon();
+
+    static const QIcon& getTableIcon();
+
+    static const QIcon& getNotIcon();
+
+    static const QIcon& getBigNotIcon();
+
+    static const QIcon& getNegIcon();
+
+    static const QIcon& getMinusIcon();
+
+    static const QIcon& getOpenParanthesesIcon();
+
+    static const QIcon& getCloseParanthesesIcon();
+
+    static const QIcon& getFunctionIcon();
+
+    static const QIcon& getBigMinusIcon();
+
+    static const QIcon& getBigNegIcon();
+
+    static const QIcon& getDatabaseIcon();
+
+    static const QIcon& getTabinstIcon();
+
+    static const QIcon& getLockedTabinstIcon();
+
+    static const QIcon& getFinalLockedTabinstIcon();
+
+    static const QIcon& getLiteralIcon();
+
+    static const QIcon& getTabinstLockIcon();
+
+    static const QIcon& getDataTypesIcon();
+
+    static const QIcon& getStringDataTypesIcon();
+
+    static const QIcon& getStringDataTypeIcon();
+
+    static const QIcon& getFinalLockedStringDataTypeIcon();
+
+    static const QIcon& getLockedStringDataTypeIcon();
+
+    static const QIcon& getIntDataTypesIcon();
+
+    static const QIcon& getIntDataTypeIcon();
+
+    static const QIcon& getLockedIntDataTypeIcon();
+
+    static const QIcon& getFinalLockedIntDataTypeIcon();
+
+    static const QIcon& getBlobDataTypesIcon();
+
+    static const QIcon& getLockedBlobDataTypeIcon();
+
+    static const QIcon& getFinalLockedBlobDataTypeIcon();
+
+    static const QIcon& getLockedIcon();
+
+    static const QIcon& getFinalLockedIcon();
+
+    static const QIcon& getUnLockedIcon();
+
+    static const QIcon& getBlobDataTypeIcon();
+
+    static const QIcon& getBoolDataTypesIcon();
+
+    static const QIcon& getLockedBoolDataTypeIcon();
+
+    static const QIcon& getFinalLockedBoolDataTypeIcon();
+
+    static const QIcon& getBoolDataTypeIcon();
+
+    static const QIcon& getMiscDataTypesIcon();
+
+    static const QIcon& getMiscDataTypeIcon();
+
+    static const QIcon& getLockedMiscDataTypeIcon();
+
+    static const QIcon& getFinalLockedMiscDataTypeIcon();
+
+    static const QIcon& getSpatialDataTypesIcon();
+
+    static const QIcon& getSpatialDataTypeIcon();
+
+    static const QIcon& getGenericDataTypeIcon();
+
+    static const QIcon& getVariableDataTypeIcon();
+
+    static const QIcon& getFinalLockedSpatialDataTypeIcon();
+
+    static const QIcon& getLockedSpatialDataTypeIcon();
+
+    static const QIcon& getDateTimeDataTypesIcon();
+
+    static const QIcon& getDateTimeDataTypeIcon();
+
+    static const QIcon& getLockedDateTimeDataTypeIcon();
+
+    static const QIcon& getFinalLockedDateTimeDataTypeIcon();
+
+    static const QIcon& getCodeIcon();
+
+    static const QIcon& getSqlIcon();
+
+    static const QIcon& getVersionIcon();
+
+    static const QIcon& getLockedVersionIcon();
+
+    static const QIcon& getFinalLockedVersionIcon();
+
+    static const QIcon& getRemoveIcon();
+
+    static const QIcon& getProjectOpenIcon();
+
+    static const QIcon& getViewsIcon();
+
+    static const QIcon& getTriggersIcon();
+
+    static const QIcon& getTriggerIcon();
+
+    static const QIcon& getLockedTriggerIcon();
+
+    static const QIcon& getFinalLockedTriggerIcon();
+
+    static const QIcon& getDiagramIcon();
+
+    static const QIcon& getLockedDiagramIcon();
+
+    static const QIcon& getFinalLockedDiagramIcon();
+
+    static const QIcon& getIndexIcon();
+
+    static const QIcon& getHelpIcon();
+
+    static const QIcon& getWarningIcon();
+
+    static const QIcon& getRecommendIcon();
+
+    static const QIcon& getCloseIcon();
+
+    static const QIcon& getXorIcon();
+
+    static const QIcon& getBinaryOrIcon();
+
+    static const QIcon& getLeftShiftIcon();
+
+    static const QIcon& getRightShiftIcon();
+
+    static const QIcon& getBinaryAndIcon();
+
+    static const QIcon& getPlusIcon();
+
+    static const QIcon& getDivideIcon();
+
+    static const QIcon& getModuloIcon();
+
+    static const QIcon& getMultiplyIcon();
+
+    static const QIcon& getNotEqNullSafeIcon();
+
+    static const QIcon& getNotEq1Icon();
+
+    static const QIcon& getNotEqIcon();
+
+    static const QIcon& getLessIcon();
+
+    static const QIcon& getGreaterIcon();
+
+    static const QIcon& getLessOrEqualIcon();
+
+    static const QIcon& getGreaterOrEqualIcon();
+
+    static const QIcon& getEqualIcon();
+
+    static const QIcon& getAliasIcon();
+
+    static const QIcon& getOrderIcon();
+
+    static const QIcon& getColumnIcon();
+
+    static const QIcon& getViewIcon();
+
+    static const QIcon& getLockedViewIcon();
+
+    static const QIcon& getFinalLockedViewIcon();
+
+    static const QIcon& getConnectedDatabaseIcon();
+
+    static const QIcon& getConnectConnectionIcon();
+
+    static const QIcon& getBrowseConnectionIcon();
+
+    static const QIcon& getEditConnectionIcon();
+
+    static const QIcon& getDroppedDatabaseIcon();
+
+    static const QIcon& getDropDatabaseIcon();
+
+    static const QIcon& getUnConnectedDatabaseIcon();
+
+    static const QIcon& getForeignKeyIcon();
+
+    static const QIcon& getProcedureIcon();
+
+    static const QIcon& getLockedProcedureIcon();
+
+    static const QIcon& getFinalLockedProcedureIcon();
+
+    static const QIcon& getProceduresIcon();
+
+    static const QIcon& getRecreateDatabaseIcon();
+
+    static const QIcon& getFunctionTreeIcon();
+
+    static const QIcon& getLockedFunctionTreeIcon();
+
+    static const QIcon& getFinalLockedFunctionTreeIcon();
+
+    static const QIcon& getFunctionsTreeIcon();
+
+    static const QIcon& getTriggerUpdateIcon();
+
+    static const QIcon& getTriggerDeleteIcon();
+
+    static const QIcon& getTriggerInsertIcon();
+
+    static const QIcon& getInsertRowIcon();
+
+    static const QIcon& getTriggerAfterIcon();
+
+    static const QIcon& getTriggerBeforeIcon();
+
+    static const QIcon& getOpenFileIcon();
+
+    static const QIcon& getBindToDbIcon();
+
+    static const QIcon& getRunQueryIcon();
+
+    static const QIcon& getReleaseMajorVersionIcon();
+
+    static const QIcon& getMySqlIcon();
+
+    static const QIcon& getSqliteIcon();
+
+    static const QIcon& getCUBRIDIcon();
+
+    static const QIcon& getPostgresIcon();
+
+    static const QIcon& getIconForDatabase(const QString& db);
+
+    static const QIcon& getChangedIcon();
+
+    static const QIcon& getPatchIcon();
+
+    static const QIcon& getSuspendPatchIcon();
+
+    static const QIcon& getDeployIcon();
+
+    static const QIcon& getSuspendedPatchIcon();
+
+    static const QIcon& getAllDataTypes();
+
+    static const QIcon& getUndeleteIcon();
+
+    static const QIcon& getIconForClassUid(const QString& uid);
+
+    static QIcon getIconForDataType(DT_TYPE dt);
+
+    static QIcon getFinalLockedIconForDataType(DT_TYPE dt);
+
+    static QIcon getLockedIconForDataType(DT_TYPE dt);
+
+    static QIcon getConnectionStateIcon(ConnectionState c);
+
+    static QIcon getIconForUid(const QString& uid);
 
 };
 

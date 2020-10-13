@@ -233,7 +233,6 @@ void NewViewForm::setView(View *v)
         QString dbName = engine->getDatabaseEngineName();
         ui->tabWidget->insertTab(2, m_mainWsp, IconFactory::getIconForDatabase(dbName), dbName);
 
-
         SelectQuery* sq = dynamic_cast<SelectQuery*>(m_qgh->getQuery());
         QStringList columnNamesForView;
         if(sq)

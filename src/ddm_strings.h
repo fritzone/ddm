@@ -13,6 +13,7 @@ static const QString strSpatial = "Spatial";
 static const QString strNA = "N/A";
 
 static const QString strHelpConfig = ":/help/help.config";
+static const QString strRepository = ":/rsrc/repository.xml";
 
 static const QString NEW_TABLE = "New table reference";
 static const QString NEW_COLUMN = "New column";

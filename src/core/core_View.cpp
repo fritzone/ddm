@@ -26,6 +26,8 @@ View::View(bool manual, QString uid, Version *v) :
     m_helper->setQuery(m_selectQuery);
 }
 
+View::View() {}
+
 View::View(Version*v, bool manual, QString uid) :
     SqlSourceTreeItem(),
     NamedItem(NameGenerator::getUniqueName(v, (itemGetter)&Version::getView, QString("my_view"))),

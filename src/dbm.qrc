@@ -246,4 +246,7 @@
         <file>images/big_db_icons/mysql.png</file>
         <file>images/big_db_icons/sqlite.png</file>
     </qresource>
+    <qresource prefix="/">
+        <file>rsrc/repository.xml</file>
+    </qresource>
 </RCC>
