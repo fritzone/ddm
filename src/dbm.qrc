@@ -248,5 +248,9 @@
     </qresource>
     <qresource prefix="/">
         <file>rsrc/repository.xml</file>
+        <file>rsrc/cubrid.defaults</file>
+        <file>rsrc/mysql.defaults</file>
+        <file>rsrc/postgresql.defaults</file>
+        <file>rsrc/sqlite.defaults</file>
     </qresource>
 </RCC>

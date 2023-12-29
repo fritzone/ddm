@@ -5,6 +5,8 @@
 #include "Workspace.h"
 #include "Version.h"
 #include "UidWarehouse.h"
+#include "SpInstance.h"
+#include "db_DatabaseEngine.h"
 
 #include <QApplication>
 #include <QClipboard>
@@ -103,4 +105,21 @@ CloneableElement* Column::clone(Version* /*sourceVersion*/, Version *targetVersi
     cloneSps(result);
 
     return result;
+}
+
+bool Column::autoIncrements()
+{
+    SpInstance* spi = getInstanceForSqlRoleUid(Workspace::getInstance()->currentProjectsEngine(), uidColumnAutoIncrement);
+    if(spi && spi->get() == strTrue )
+    {
+        return true;
+    }
+
+    QString cpe = Workspace::getInstance()->currentProjectsEngine()->getName().toUpper() ;
+    if(cpe == strPostgres.toUpper() && getDataType()->getSqlType() == "SERIAL")
+    {
+        return true;
+    }
+
+    return false;
 }

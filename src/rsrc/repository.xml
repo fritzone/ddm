@@ -3569,7 +3569,9 @@ $$ LANGUAGE plpgsql;]]></defult-body>
     <datatype-group type="0" name="Text/String">
      <datatype name="CHAR" max-size="1073741823"/>
      <datatype name="VARCHAR" max-size="1073741823" default="1"/>
-     <datatype name="STRING"/>
+     <datatype name="TEXT"/>
+     <datatype name="CHARACTER VARYING" max-size="1073741823" default="1"/>
+     <datatype name="CHARACTER" max-size="1073741823"/>
     </datatype-group>
     <!-- Numerical types -->
     <datatype-group type="1" name="Numeric">
@@ -3587,6 +3589,8 @@ $$ LANGUAGE plpgsql;]]></defult-body>
      <datatype name="BIT" max-size="1073741823"/>
      <datatype name="BIT VARYING" max-size="1073741823"/>
      <datatype name="MONETARY"/>
+     <datatype name="SERIAL" max-size="1"/>
+     <datatype name="BIGSERIAL" max-size="1"/>
     </datatype-group>
     <!-- Date time types -->
     <datatype-group type="3" name="Date/Time">
@@ -5054,7 +5058,6 @@ $$ LANGUAGE plpgsql;]]></defult-body>
     </function>
    </functions>
    <spis>
-    <!-- The Auto Increment specification of a column -->
     <!-- The Columng Length of an Index SPI -->
     <spi class-uid="{10000002-0000-0000-0000-000000000003}" sql-role-uid="{10000006-0000-0000-0000-000000000001}" referred-class-uid="{10000001-0000-0000-0000-00000000000B}" name="ColumnOfIndexUsedLength" gui-text="The Length of the columns' data which is used in the length" gui-group="default" default="" db-major="5" db-minor="0" sql="">
      <tooltip><![CDATA[The Length of the column used in an index. This can be assigned only to TEXT/BLOB type columns]]></tooltip>
@@ -5065,7 +5068,7 @@ $$ LANGUAGE plpgsql;]]></defult-body>
    </spis>
    <data-queries>
     <query id="getAvailabeViews" result_index="0">
-     <query_part index="0" type="plaintext"><![CDATA[SELECT class_name FROM db_class WHERE is_system_class='NO' AND class_type = 'VCLASS' AND owner_name=current_user]]></query_part>
+     <query_part index="0" type="plaintext"><![CDATA[select table_name as name from information_schema.views where table_schema not in ('information_schema', 'pg_catalog') order by name]]></query_part>
     </query>
     <query id="getAvailabeTriggers" result_index="0">
      <query_part index="0" type="plaintext"><![CDATA[select trigger_name from information_schema.triggers]]></query_part>

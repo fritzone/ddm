@@ -790,3 +790,23 @@ Column* Table::getDescendantColumn(const Column* sourceColumn)
     }
     return 0;
 }
+
+Table *Table::duplicate()
+{
+    Table* result = new Table();
+
+    result->m_description = m_description;
+    result->m_columns = m_columns;
+    result->m_indices = m_indices;
+    result->m_foreignKeys = m_foreignKeys;
+    result->m_startupValues = m_startupValues;
+    result->m_parent = m_parent;
+    result->m_version = m_version;
+    result->m_foreignKeyCommands = m_foreignKeyCommands;
+    result->m_tableInstances = m_tableInstances;
+    result->m_children = m_children;
+    result->m_parentUid = m_parentUid;
+    result->m_tempTabName = m_tempTabName;
+
+    return result;
+}

@@ -50,7 +50,7 @@ public:
      */
     Table(Version* v, QString uid);
 
-    virtual ~Table() {}
+    Table() = default;
 
     /**
      * Adds a new column to the table
@@ -329,6 +329,12 @@ public:
      */
     Column* getDescendantColumn(const Column *sourceColumn);
 
+    /**
+     * @brief duplicate Will create a copy of this table. This is here to circumvent the non copyabilty of a QObject
+     * @return
+     */
+    Table* duplicate();
+
 
 
 private:
@@ -364,7 +370,6 @@ private:
     QString m_parentUid;
 
     QString m_tempTabName;
-private:
 
 };
 

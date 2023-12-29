@@ -410,16 +410,11 @@ QStringList BasicSqlGenerator::generateDefaultValuesSql(TableInstance* tableInst
                 return QStringList();
             }
 
-            bool ainc = false;
-            {
-                SpInstance* spi = c->getInstanceForSqlRoleUid(m_engine, uidColumnAutoIncrement);
-                if(spi && spi->get() == strTrue )
-                {
-                    ainc = true;
-                }
-            }
+            bool ainc = c->autoIncrements();
+
             if(!ainc)
             {
+
                 insert += backtickedName(tableInstance->columns().at(j));
                 if(j< tableInstance->columns().size() - 1)
                 {
@@ -439,14 +434,8 @@ QStringList BasicSqlGenerator::generateDefaultValuesSql(TableInstance* tableInst
             {
                 return QStringList();
             }
-            bool ainc = false;
-            {
-                SpInstance* spi = c->getInstanceForSqlRoleUid(m_engine, uidColumnAutoIncrement);
-                if(spi && spi->get() == strTrue)
-                {
-                    ainc = true;
-                }
-            }
+            bool ainc = c->autoIncrements();
+
             if(!ainc)
             {
                 QString val = vals.at(i);

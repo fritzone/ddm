@@ -1,6 +1,7 @@
 #ifndef OBJECTWITHSPINSTANCES_H
 #define OBJECTWITHSPINSTANCES_H
 
+#include <QObject>
 #include <QVector>
 #include <QUuid>
 #include <QMap>
@@ -11,11 +12,12 @@
 class DatabaseEngine;
 class SpInstance;
 
-class ObjectWithSpInstances
+class ObjectWithSpInstances : public QObject
 {
+
+
 public:
-    ObjectWithSpInstances();
-    virtual ~ObjectWithSpInstances(){}
+
     void initializeFor(const DatabaseEngine* engine, const QUuid& uid);
     void initializeRemainingSps(const DatabaseEngine* engine, const QUuid& uid);
     QVector<SpInstance*>& getSpInstances(const DatabaseEngine* engine);
@@ -27,8 +29,10 @@ public:
 
     // copies the SPs over to the specified object
     void cloneSps(ObjectWithSpInstances* target);
+
 private:
     void addSpInstance(const QString&, SpInstance*);
+
 private:
     QMap<QString, QVector<SpInstance*> > m_spInstances;
 };

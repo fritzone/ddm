@@ -778,7 +778,7 @@ void DefaultVersionImplementation::removeForeignKeyFromDiagrams(ForeignKey* fkTo
 
 Table* DefaultVersionImplementation::duplicateTable(Table *src)
 {
-    Table* dup = new Table(*src);
+    Table* dup = src->duplicate();
     dup->setForcedUid(QUuid::createUuid().toString());
     UidWarehouse::instance().addElement(dup, this);
 

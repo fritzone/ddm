@@ -131,11 +131,6 @@ bool PostgresDatabaseEngine::reverseEngineerDatabase(Connection *conn, const QSt
                 v->addTrigger(t, true);
             }
         }
-
-        // TODO: CUB01
-        // ON HOLD - Will be implemented at a later stage when Postgres
-        // will support it.
-
     }
     catch(...)
     {
@@ -330,7 +325,12 @@ Table* PostgresDatabaseEngine::reverseEngineerTable(Connection *conn, const QStr
     // fetch all the columns of the table
     {
     QSqlQuery query(dbo);
-    query.exec("show columns from " + tableName);
+    QString q = "SELECT c.column_name as Field, CASE WHEN c.column_default like '%::%' THEN ''     ELSE c.column_default END as Default, c.is_nullable as Null, c.data_type as Type, tco.constraint_type as Key FROM information_schema.columns c, information_schema.table_constraints tco where c.table_name='" + tableName + "' AND c.table_name=tco.table_name";
+    qDebug() << q;
+    if(!query.exec(q))
+    {
+        qDebug() << "Cannot execute the query:" << dbo.lastError().text();
+    }
 
     int fieldNo = query.record().indexOf("Field");
     int typeNo = query.record().indexOf("Type");

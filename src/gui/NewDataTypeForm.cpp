@@ -13,6 +13,7 @@
 #include "gui_HelpWindow.h"
 #include "MainWindow.h"
 #include "GuiElements.h"
+#include "core_SignalBlocker.h"
 
 #include <QMessageBox>
 #include <QComboBox>
@@ -107,6 +108,7 @@ void NewDataTypeForm::basicDTselected(QString newSelection)
 
     for(int i=0; i< types.size(); i++)
     {
+        SignalBlocker b(m_ui->cmbDTSQLType, m_defaultSelected);
         m_ui->cmbDTSQLType->addItem(IconFactory::getIconForDataType(type), types[i].getName());
     }
     if(newSelection == strNumeric)
@@ -132,23 +134,23 @@ void NewDataTypeForm::hideSpecialComponents()
 
 void NewDataTypeForm::resetContent()
 {
-    m_ui->txtDTName->setText("");
-    m_ui->cmbDTSQLType->setCurrentIndex(-1);
-    m_ui->cmbDTType->setCurrentIndex(-1);
-    m_ui->txtWidth->setText("");
-    m_ui->chkUnsigned->setChecked(false);
+    blocked(m_ui->txtDTName)->setText("");
+    blocked(m_ui->cmbDTSQLType)->setCurrentIndex(-1);
+    blocked(m_ui->cmbDTType)->setCurrentIndex(-1);
+    blocked(m_ui->txtWidth)->setText("");
+    blocked(m_ui->chkUnsigned)->setChecked(false);
 
     m_ui->chkUnsigned->hide();
 
     hideSpecialComponents();
 
-    m_ui->txtEnumCurrentValue->clear();
-    m_ui->lstEnumValues->clear();
+    blocked(m_ui->txtEnumCurrentValue)->clear();
+    blocked(m_ui->lstEnumValues)->clear();
 
     m_ui->tabWidget->setCurrentIndex(0);
-    m_ui->txtDescription->clear();
-    m_ui->chkCanBeNull->setChecked(true);
-    m_ui->chkNullIsDefault->setChecked(false);
+    blocked(m_ui->txtDescription)->clear();
+    blocked(m_ui->chkCanBeNull)->setChecked(true);
+    blocked(m_ui->chkNullIsDefault)->setChecked(false);
 
     m_ui->txtDTName->setFocus();
 
@@ -322,6 +324,7 @@ void NewDataTypeForm::setDataType(UserDataType* udt)
     int isqlty = m_ui->cmbDTSQLType->findText(udt->getSqlType()) ;
     if(isqlty != -1)
     {
+        SignalBlocker b(m_ui->cmbDTSQLType, m_defaultSelected);
         m_ui->cmbDTSQLType->setCurrentIndex(isqlty);
     }
     else
@@ -427,6 +430,11 @@ void NewDataTypeForm::setDataType(UserDataType* udt)
 void NewDataTypeForm::hideDeleteButton()
 {
     m_ui->btnDeleteDataType->hide();
+}
+
+void NewDataTypeForm::setDefaultSelected(bool b)
+{
+    m_defaultSelected = b;
 }
 
 void NewDataTypeForm::onLockUnlock(bool checked)

@@ -24,7 +24,7 @@ SET(DDM_CORE_SRCS
   ${CMAKE_CURRENT_SOURCE_DIR}/DefaultVersionImplementation.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/DeploymentInitiator.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/ForeignKey.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/Index.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/core_Index.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/MajorVersion.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/ObjectWithSpInstances.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/Project.cpp
@@ -46,7 +46,6 @@ SET(DDM_CORE_HDRS
   ${CMAKE_CURRENT_SOURCE_DIR}/ActionDeleteTable.h
   ${CMAKE_CURRENT_SOURCE_DIR}/CopyableElement.h
   ${CMAKE_CURRENT_SOURCE_DIR}/core_CloneableElement.h
-  ${CMAKE_CURRENT_SOURCE_DIR}/core_Column.h
   ${CMAKE_CURRENT_SOURCE_DIR}/core_ColumnWithValue.h
   ${CMAKE_CURRENT_SOURCE_DIR}/core_Diagram.h
   ${CMAKE_CURRENT_SOURCE_DIR}/core_Function.h
@@ -58,14 +57,11 @@ SET(DDM_CORE_HDRS
   ${CMAKE_CURRENT_SOURCE_DIR}/core_Procedure.h
   ${CMAKE_CURRENT_SOURCE_DIR}/core_SqlSource.h
   ${CMAKE_CURRENT_SOURCE_DIR}/core_StoredMethod.h
-  ${CMAKE_CURRENT_SOURCE_DIR}/core_Table.h
   ${CMAKE_CURRENT_SOURCE_DIR}/core_TableInstance.h
   ${CMAKE_CURRENT_SOURCE_DIR}/core_Trigger.h
   ${CMAKE_CURRENT_SOURCE_DIR}/core_UserDataType.h
-  ${CMAKE_CURRENT_SOURCE_DIR}/core_View.h
   ${CMAKE_CURRENT_SOURCE_DIR}/DefaultVersionImplementation.h
   ${CMAKE_CURRENT_SOURCE_DIR}/ForeignKey.h
-  ${CMAKE_CURRENT_SOURCE_DIR}/Index.h
   ${CMAKE_CURRENT_SOURCE_DIR}/MajorVersion.h
   ${CMAKE_CURRENT_SOURCE_DIR}/NamedItem.h
   ${CMAKE_CURRENT_SOURCE_DIR}/ObjectWithSpInstances.h
@@ -93,6 +89,10 @@ SET(DDM_CORE_MOC_HDRS
   ${CMAKE_CURRENT_SOURCE_DIR}/DeploymentInitiator.h
   ${CMAKE_CURRENT_SOURCE_DIR}/core_InjectSqlGenerator.h
   ${CMAKE_CURRENT_SOURCE_DIR}/core_InjectSqlGeneratorThread.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/core_Column.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/core_View.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/core_Table.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/core_Index.h
 )
 
 #Put here QRC files to be Rcc-ed

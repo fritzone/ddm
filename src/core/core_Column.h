@@ -68,6 +68,12 @@ public:
 
     CloneableElement* clone(Version *sourceVersion, Version *targetVersion);
 
+    /**
+     * @brief autoIncrements will tell us if this column will autoincrement or not
+     * @return
+     */
+    bool autoIncrements();
+
 private:
 
     const UserDataType* m_type;

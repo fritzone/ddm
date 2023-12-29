@@ -5,10 +5,6 @@
 #include "db_DatabaseEngine.h"
 #include "SpInstance.h"
 
-ObjectWithSpInstances::ObjectWithSpInstances() : m_spInstances()
-{
-}
-
 void ObjectWithSpInstances::initializeFor(const DatabaseEngine* engine, const QUuid &uid)
 {
     const QVector<Sp*> allSps = engine->getDatabaseSpecificProperties();

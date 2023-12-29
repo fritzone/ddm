@@ -47,6 +47,9 @@ public:
 
     void hideDeleteButton();
 
+    // called if we click on a default datatype from the tree
+    void setDefaultSelected(bool b);
+
 public slots:
 
     /// called when the selection of the basic data type combo has changed
@@ -99,12 +102,16 @@ private:
                              const QString& defaultValue, const QStringList &mvs,
                              const QString &desc, bool unsi,
                              bool canBeNull, UserDataType *&pudt, Version *v);
+
+
+
 private:
     Ui::NewDataTypeForm *m_ui;
     DatabaseEngine* m_dbEngine;
     UserDataType* m_udt;
     Version* m_version;
     bool m_init;
+    bool m_defaultSelected = false;
 };
 
 #endif // NEWDATATYPEFORM_H

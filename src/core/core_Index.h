@@ -22,7 +22,6 @@ class Index : public TreeItem,
         public ObjectWithSpInstances,
         public CloneableElement
 {
-
     /**
      * @brief The ColumnAndOrder struct holds a column and the specified
      * sort order in which the column will be sorted in the index.

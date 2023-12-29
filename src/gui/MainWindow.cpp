@@ -737,8 +737,10 @@ void MainWindow::projectTreeItemClicked(QTreeWidgetItem * current, int)
             {
                 NewDataTypeForm* frm = new NewDataTypeForm(foundVersion, DT_INVALID, m_workspace->currentProjectsEngine(), this);
                 frm->focusOnName();
+                frm->setDefaultSelected(true);
                 frm->setDataType(udt);
                 setCentralWidget(frm);
+                frm->setDefaultSelected(false);
             }
             else
             {
